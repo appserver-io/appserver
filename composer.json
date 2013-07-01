@@ -1,0 +1,17 @@
+{
+    "name": "techdivision/appserver",
+    "type": "package",
+    "description": "Thread based PHP daemon to implement stuff like message queues.",
+    "homepage": "https://github.com/techdivision/TechDivision_ApplicationServer",
+    "license": ["OSL-3.0"],
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/techdivision/TechDivision_ApplicationServer"
+        }
+    ],
+    "require": {
+        "php" : ">=5.4.0",
+        "techdivision/socket": "*"
+    }
+}
