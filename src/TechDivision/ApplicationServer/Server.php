@@ -51,10 +51,10 @@ class Server {
     public function start() {
         
         // initialize the SimpleXMLElement with the content XML configuration file
-        $sxe = simplexml_load_file('cfg/appserver.xml');
+        $sxe = simplexml_load_file('etc/appserver.xml');
         
         // load the container configurations
-        $this->configurations = Configuration::loadFromFile('cfg/appserver.xml');
+        $this->configurations = Configuration::loadFromFile('etc/appserver.xml');
         
         // start each container in his own thread
         foreach ($this->configurations->getChilds('/appserver/containers/container') as $i => $configuration) {
