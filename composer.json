@@ -13,5 +13,8 @@
     "require": {
         "php" : ">=5.4.0",
         "techdivision/socket": "dev-master"
+    },
+    "autoload": {
+        "psr-0": {"TechDivision": "src/"}
     }
 }
