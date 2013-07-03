@@ -12,7 +12,6 @@
 
 namespace TechDivision\ApplicationServer;
 
-use TechDivision\SplClassLoader;
 use TechDivision\ApplicationServer\InitialContext;
 use TechDivision\ApplicationServer\Interfaces\ContainerInterface;
 

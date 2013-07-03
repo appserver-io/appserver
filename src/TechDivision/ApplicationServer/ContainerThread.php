@@ -12,8 +12,6 @@
 
 namespace TechDivision\ApplicationServer;
 
-use TechDivision\SplClassLoader;
-
 /**
  * @package     TechDivision\ApplicationServer
  * @copyright  	Copyright (c) 2010 <info@techdivision.com> - TechDivision GmbH
@@ -45,8 +43,8 @@ class ContainerThread extends \Thread {
     public function run() {
         
         // register class loader again, because we are in a thread
-        $classLoader = new SplClassLoader();
-        $classLoader->register();
+        $loader = require 'app/code/vendor/autoload.php'; // composer autoloader;
+        $loader->register(true);
         
         // load the container configuration
         $configuration = $this->getConfiguration();
@@ -67,7 +65,7 @@ class ContainerThread extends \Thread {
      * @param array $args The parameters to pass to the constructor
      * @return object The created instance
      */
-    public function newInstance($className, array $args = array()) { 
+    public function newInstance($className, array $args = array()) {
         return InitialContext::get()->newInstance($className, $args);
     }
     
