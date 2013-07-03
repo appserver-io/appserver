@@ -68,7 +68,6 @@ class ContainerThread extends \Thread {
      * @return object The created instance
      */
     public function newInstance($className, array $args = array()) {
-        error_log(get_include_path());
         return InitialContext::get()->newInstance($className, $args);
     }
     
