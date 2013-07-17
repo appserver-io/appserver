@@ -22,20 +22,6 @@ namespace TechDivision\ApplicationServer\Interfaces;
 interface ContainerInterface {
     
     /**
-     * Starts thei containers deployment process.
-     * 
-     * @return \TechDivision\ApplicationServer\Interfaces\ContainerInterface The instance itself
-     */
-    public function deploy();
-
-    /**
-     * Main method that starts the server.
-     * 
-     * @return void
-     */
-    public function start();
-    
-    /**
      * Returns the receiver instance ready to be started.
      * 
      * @return \TechDivision\ApplicationServer\Interfaces\ReceiverInterface The receiver instance

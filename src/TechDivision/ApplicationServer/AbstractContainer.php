@@ -22,7 +22,7 @@ use TechDivision\ApplicationServer\Interfaces\ContainerInterface;
  *              Open Software License (OSL 3.0)
  * @author      Tim Wagner <tw@techdivision.com>
  */
-abstract class AbstractContainer implements ContainerInterface {
+abstract class AbstractContainer extends \Stackable implements ContainerInterface {
     
     /**
      * Path to the container's receiver configuration.
@@ -74,19 +74,17 @@ abstract class AbstractContainer implements ContainerInterface {
      * @todo Application deployment only works this way because of Thread compatibilty 
      * @return void
      */
-    public function __construct($configuration) {
+    public function __construct($configuration, $applications) {
 
-        // set the configuration
+        // set configuration + applications
         $this->setConfiguration($configuration);
-
-        // deploy applications
-        $this->deploy();
+        $this->setApplications($applications);
     }
 
     /**
-     * @see \TechDivision\ApplicationServer\Interfaces\ContainerInterface::start()
+     * @see \Stackable::run()
      */
-    public function start() {
+    public function run() {
         $this->getReceiver()->start();
     }
     
@@ -96,6 +94,17 @@ abstract class AbstractContainer implements ContainerInterface {
     public function getReceiver() {
         // create and return a new receiver instance
         return $this->newInstance($this->getReceiverType(), array($this));
+    }
+
+    /**
+     * Sets an array with the deployed applications.
+     *
+     * @param array $applications Array with the deployed applications
+     * @return \TechDivision\ServletContainer\Container The container instance itself
+     */
+    public function setApplications($applications) {
+        $this->applications = $applications;
+        return $this;
     }
     
     /**

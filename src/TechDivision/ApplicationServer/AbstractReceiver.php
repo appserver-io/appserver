@@ -96,6 +96,8 @@ abstract class AbstractReceiver implements ReceiverInterface {
 
         // check of container configuration has to be reloaded
         $this->checkConfiguration();
+
+        return $this;
     }
     
     /**
@@ -110,7 +112,7 @@ abstract class AbstractReceiver implements ReceiverInterface {
         $request = $this->newStackable(array($socket->getResource()));
         
         // initialize a new worker request instance
-        $this->stack($request);   
+        $this->stack($request)->shutdownARandomWorker();
     }
     
     /**
@@ -122,6 +124,26 @@ abstract class AbstractReceiver implements ReceiverInterface {
      */
     public function newStackable($params) {
         return $this->newInstance($this->getStackableType(), $params);
+    }
+
+    /**
+     * Shutdown not working workers if maximum worker number has been reached.
+     *
+     * @return void
+     */
+    public function shutdownARandomWorker() {
+
+        // get a random worker number
+        $randomWorker = rand(0, $this->getWorkerNumber() - 1);
+
+        if ($this->workers[$randomWorker]->isWorking() === false) {
+
+            // shutdown worker and unset instance
+            $this->workers[$randomWorker]->shutdown();
+
+            unset($this->workers[$randomWorker]);
+
+        }
     }
 
     /**
@@ -144,6 +166,12 @@ abstract class AbstractReceiver implements ReceiverInterface {
             $this->workers[$randomWorker] = $this->newInstance($this->getWorkerType(), array($this->getContainer()));
             $this->workers[$randomWorker]->start();
             
+        } else {
+
+            // check if the worker is shutting down actually
+            if ($this->workers[$randomWorker]->isShutdown() === true) {
+                return $this->newWorker($recursion++);
+            }
         }
 
         // return the random worker

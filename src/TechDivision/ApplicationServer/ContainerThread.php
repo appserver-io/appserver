@@ -22,18 +22,23 @@ use TechDivision\SplClassLoader;
  * @author      Tim Wagner <tw@techdivision.com>
  */
 class ContainerThread extends \Thread {
+
+    /**
+     * Path to the container's deployment configuration.
+     * @var string
+     */
+    const CONTAINER_DEPLOYMENT = '/container/deployment';
     
     /**
-     * The fully qualified class name of the container to start in the thread.
-     * @var string
+     * The container's configuration
+     * @var \TechDivision\ApplicationServer\Configuration
      */
     protected $configuration;
     
     /**
-     * Set's the fully qualified class name of the container to start 
-     * in the thread.
+     * Set's the configuration with the container information to be started in the thread.
      * 
-     * @param string $containerType The container's fully qualified class name
+     * @param \TechDivision\ApplicationServer\Configuration $configuration The container's configuration
      */
     public function __construct($configuration) {
         $this->configuration = $configuration;
@@ -51,12 +56,15 @@ class ContainerThread extends \Thread {
         // load the container configuration
         $configuration = $this->getConfiguration();
         
-        // load the container type to initialize
+        // load the container type and deploy the applications
         $containerType = $configuration->getType();
-        
+
+        // deploy the applications and return them in an array
+        $applications = $this->getDeployment()->deploy()->getApplications();
+
         // create and start the container instance
-        $containerInstance = $this->newInstance($containerType, array($configuration));
-        $containerInstance->start();
+        $containerInstance = $this->newInstance($containerType, array($configuration, $applications));
+        $containerInstance->run();
     }
     
     /**
@@ -78,5 +86,13 @@ class ContainerThread extends \Thread {
      */
     public function getConfiguration() {
         return $this->configuration;
+    }
+
+    /**
+     * @return object
+     */
+    public function getDeployment() {
+        $deploymentType = $this->getConfiguration()->getChild(self::CONTAINER_DEPLOYMENT)->getType();
+        return $this->newInstance($deploymentType, array($this));
     }
 }

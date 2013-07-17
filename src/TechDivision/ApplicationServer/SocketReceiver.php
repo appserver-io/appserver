@@ -36,9 +36,6 @@ class SocketReceiver extends AbstractReceiver {
             // load the receiver params
             $parameters = $this->getContainer()->getParameters();
             
-            // load the stackable type
-            $stackableType = $this->getContainer()->getStackableType();
-            
             // load the socket instance
             $socket = $this->newInstance('\TechDivision\Socket\Client');
             
@@ -56,7 +53,7 @@ class SocketReceiver extends AbstractReceiver {
     
                 try {
                     
-                    // accept a new connection and process it asynchrously
+                    // accept a new connection and process it asynchronously
                     $client = $socket->accept();
                     $this->processRequest($client);
                     
