@@ -91,9 +91,6 @@ abstract class AbstractReceiver implements ReceiverInterface {
             
         // load the stackable type
         $this->setStackableType($this->getContainer()->getStackableType());
-
-        // load the thread type
-        $this->setThreadType($this->getContainer()->getThreadType());
     }
     
     /**
