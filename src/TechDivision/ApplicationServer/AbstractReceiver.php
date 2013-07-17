@@ -24,6 +24,7 @@ use TechDivision\PersistenceContainerClient\Interfaces\RemoteMethod;
  * @license    	http://opensource.org/licenses/osl-3.0.php
  *              Open Software License (OSL 3.0)
  * @author      Tim Wagner <tw@techdivision.com>
+ * @author      Johann Zelger <j.zelger@techdivision.com>
  */
 abstract class AbstractReceiver implements ReceiverInterface {
     
@@ -56,7 +57,13 @@ abstract class AbstractReceiver implements ReceiverInterface {
      * @var string
      */
     protected $stackableType = '';
-    
+
+    /**
+     * The thread type to use.
+     * @var string
+     */
+    protected $threadType = '';
+
     /**
      * Sets the reference to the container instance.
      * 
@@ -84,6 +91,9 @@ abstract class AbstractReceiver implements ReceiverInterface {
             
         // load the stackable type
         $this->setStackableType($this->getContainer()->getStackableType());
+
+        // load the thread type
+        $this->setThreadType($this->getContainer()->getThreadType());
     }
     
     /**
@@ -114,7 +124,19 @@ abstract class AbstractReceiver implements ReceiverInterface {
         // initialize a new worker request instance
         $this->stack($request)->shutdownARandomWorker();
     }
-    
+
+    /**
+     * Create's and return's a new request instance (thread) and
+     * passes the the params to the constructor.
+     *
+     * @param array $params Array with the params
+     * @return \Thread The request instance
+     */
+    public function newThread($params)
+    {
+        return $this->newInstance($this->getThreadType(), $params);
+    }
+
     /**
      * Create's and return's a new request instance (stackable) and
      * passes the the params to the constructor.
@@ -178,7 +200,7 @@ abstract class AbstractReceiver implements ReceiverInterface {
         // return the random worker
         return $this->workers[$randomWorker];
     }
-    
+
     /**
      * Returns the refrence to the container instance.
      * 
@@ -240,6 +262,24 @@ abstract class AbstractReceiver implements ReceiverInterface {
      */
     public function getStackableType() {
         return $this->stackableType;
+    }
+
+    /**
+     * Set's the thread's class name to use.
+     *
+     * @param string $threadType The thread's class name to use
+     * @return \TechDivision\ApplicationServer\Interfaces\ReceiverInterface The receiver instance
+     */
+    public function setThreadType($threadType) {
+        $this->threadType = $threadType;
+        return $this;
+    }
+
+    /**
+     * @see \TechDivision\ApplicationServer\Interfaces\ReceiverInterface::getStackableType()
+     */
+    public function getThreadType() {
+        return $this->threadType;
     }
     
     /**

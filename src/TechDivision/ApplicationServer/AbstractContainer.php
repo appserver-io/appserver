@@ -21,6 +21,7 @@ use TechDivision\ApplicationServer\Interfaces\ContainerInterface;
  * @license    	http://opensource.org/licenses/osl-3.0.php
  *              Open Software License (OSL 3.0)
  * @author      Tim Wagner <tw@techdivision.com>
+ * @author      Johann Zelger <j.zelger@techdivision.com>
  */
 abstract class AbstractContainer extends \Stackable implements ContainerInterface {
     
@@ -47,6 +48,12 @@ abstract class AbstractContainer extends \Stackable implements ContainerInterfac
      * @var string
      */
     const CONFIGURATION_WORKER = '/container/receiver/worker';
+
+    /**
+     * Path to the receiver's thread.
+     * @var string
+     */
+    const CONFIGURATION_THREAD = '/container/receiver/thread';
 
     /**
      * Array with deployed applications.
@@ -163,7 +170,16 @@ abstract class AbstractContainer extends \Stackable implements ContainerInterfac
     public function getStackableType() {
         return current($this->getConfiguration()->getChilds(self::CONFIGURATION_STACKABLE))->getType();
     }
-    
+
+    /**
+     * Return's the class name of the receiver's stackable type.
+     *
+     * @return string The class name of the receiver's stackable type
+     */
+    public function getThreadType() {
+        return current($this->getConfiguration()->getChilds(self::CONFIGURATION_THREAD))->getType();
+    }
+
     /**
      * Return's the class name of the receiver's worker type.
      * 
