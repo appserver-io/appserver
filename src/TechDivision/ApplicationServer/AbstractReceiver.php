@@ -136,13 +136,14 @@ abstract class AbstractReceiver implements ReceiverInterface {
         // get a random worker number
         $randomWorker = rand(0, $this->getWorkerNumber() - 1);
 
-        if ($this->workers[$randomWorker]->isWorking() === false) {
+        // check if the worker is running and working
+        if (array_key_exists($randomWorker, $this->workers) === true
+            && $this->workers[$randomWorker]->isWorking() === false) {
 
             // shutdown worker and unset instance
             $this->workers[$randomWorker]->shutdown();
 
             unset($this->workers[$randomWorker]);
-
         }
     }
 
