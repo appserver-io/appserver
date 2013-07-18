@@ -12,10 +12,7 @@
 
 namespace TechDivision\ApplicationServer;
 
-use TechDivision\Socket\Client;
 use TechDivision\ApplicationServer\AbstractReceiver;
-use TechDivision\ServletContainer\WorkerRequest;
-use TechDivision\ServletContainer\RequestHandler;
 
 /**
  * @package     TechDivision\ApplicationServer
@@ -49,20 +46,21 @@ class SocketThreadReceiver extends AbstractReceiver {
         $this->gcEnable()->checkConfiguration();
 
         // load the thread type
-        $this->setThreadType($this->getContainer()->getThreadType());
+        $this->setWorkerType($this->getContainer()->getWorkerType());
     }
 
     /**
      * @see TechDivision\ApplicationServer\Interfaces\ReceiverInterface::start()
      */
     public function start() {
-        
+
         try {
         
             // load the receiver params
             $parameters = $this->getContainer()->getParameters();
             
             // load the socket instance
+            /** @var \TechDivision\Socket\Client $socket */
             $socket = $this->newInstance('\TechDivision\Socket\Client');
             
             // prepare the main socket and listen
@@ -73,43 +71,43 @@ class SocketThreadReceiver extends AbstractReceiver {
                    ->setReuseAddr()
                    ->bind()
                    ->listen();
-            
-            // start the infinite loop and listen to clients (in blocking mode)
-            while (true) {
-    
-                try {
-                    
-                    // accept a new connection and process it asynchronously
-                    $client = $socket->accept();
-                    $this->processRequest($client);
-                    
-                } catch (\Exception $e) {
-                    error_log($e->__toString());
+
+            try {
+                // check if resource been initiated
+                if ($socket->getResource()) {
+                    // init worker number
+                    $worker = 0;
+                    // init workers array holder
+                    $workers = array();
+                    // open threads where accept connections
+                    while ($worker++ < $this->getWorkerNumber()) {
+                        // init thread
+                        $workers[$worker] = $this->newThread($socket->getResource());
+                        // start thread async
+                        $workers[$worker]->start();
+                    }
                 }
+            } catch (\Exception $e) {
+                error_log($e->__toString());
             }
-            
+
         } catch (\Exception $ge) {
             
             error_log($ge->__toString());
             
             if (is_resource($socket->getResource())) {
                 $socket->close();
-            }           
+            }
         } 
     }
 
     /**
-     * Process the request by creating a new request instance (stackable)
-     * and stack's it on one of the workers.
+     * Returns a thread
      *
-     * @return void
+     * @return \Thread The request acceptor thread
      */
-    public function processRequest(\TechDivision\Socket $socket) {
-
-        // create a new request instance
-        $request = $this->newThread(array($this->container, $socket->getResource()));
-
-        // initialize a new worker request instance
-        $request->start();
+    public function newThread($socketResource) {
+        return $this->newInstance($this->getWorkerType(), array($this->getContainer(), $socketResource));
     }
+
 }

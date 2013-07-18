@@ -50,12 +50,6 @@ abstract class AbstractContainer extends \Stackable implements ContainerInterfac
     const CONFIGURATION_WORKER = '/container/receiver/worker';
 
     /**
-     * Path to the receiver's thread.
-     * @var string
-     */
-    const CONFIGURATION_THREAD = '/container/receiver/thread';
-
-    /**
      * Array with deployed applications.
      * @var array
      */
@@ -169,15 +163,6 @@ abstract class AbstractContainer extends \Stackable implements ContainerInterfac
      */
     public function getStackableType() {
         return current($this->getConfiguration()->getChilds(self::CONFIGURATION_STACKABLE))->getType();
-    }
-
-    /**
-     * Return's the class name of the receiver's stackable type.
-     *
-     * @return string The class name of the receiver's stackable type
-     */
-    public function getThreadType() {
-        return current($this->getConfiguration()->getChilds(self::CONFIGURATION_THREAD))->getType();
     }
 
     /**
