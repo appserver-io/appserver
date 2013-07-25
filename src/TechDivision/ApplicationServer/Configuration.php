@@ -92,6 +92,7 @@ class Configuration implements ContainerConfiguration {
      */
     public function addChild($configuration) {
         $this->children[] = $configuration;
+        return $this;
     }
     
     /**
