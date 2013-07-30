@@ -19,7 +19,7 @@ use TechDivision\ApplicationServer\AbstractReceiver;
  * @copyright  	Copyright (c) 2013 <info@techdivision.com> - TechDivision GmbH
  * @license    	http://opensource.org/licenses/osl-3.0.php
  *              Open Software License (OSL 3.0)
- * @author      Johann Zelger <j.zelger@techdivision.com>
+ * @author      Johann Zelger <jz@techdivision.com>
  */
 class SocketThreadReceiver extends AbstractReceiver {
 
@@ -45,8 +45,11 @@ class SocketThreadReceiver extends AbstractReceiver {
         // enable garbage collector and initialize configuration
         $this->gcEnable()->checkConfiguration();
 
-        // load the thread type
+        // load the worker type
         $this->setWorkerType($this->getContainer()->getWorkerType());
+
+        // load the thread type
+        $this->setThreadType($this->getContainer()->getThreadType());
     }
 
     /**
@@ -82,7 +85,7 @@ class SocketThreadReceiver extends AbstractReceiver {
                     // open threads where accept connections
                     while ($worker++ < $this->getWorkerNumber()) {
                         // init thread
-                        $workers[$worker] = $this->newThread($socket->getResource());
+                        $workers[$worker] = $this->newWorker($socket->getResource());
                         // start thread async
                         $workers[$worker]->start();
                     }
@@ -106,8 +109,15 @@ class SocketThreadReceiver extends AbstractReceiver {
      *
      * @return \Thread The request acceptor thread
      */
-    public function newThread($socketResource) {
-        return $this->newInstance($this->getWorkerType(), array($this->getContainer(), $socketResource));
+    public function newWorker($socketResource) {
+        return $this->newInstance(
+            $this->getWorkerType(),
+            array(
+                $this->getContainer(),
+                $socketResource,
+                $this->getThreadType()
+            )
+        );
     }
 
 }

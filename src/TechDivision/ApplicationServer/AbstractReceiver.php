@@ -24,7 +24,7 @@ use TechDivision\PersistenceContainerClient\Interfaces\RemoteMethod;
  * @license    	http://opensource.org/licenses/osl-3.0.php
  *              Open Software License (OSL 3.0)
  * @author      Tim Wagner <tw@techdivision.com>
- * @author      Johann Zelger <j.zelger@techdivision.com>
+ * @author      Johann Zelger <jz@techdivision.com>
  */
 abstract class AbstractReceiver implements ReceiverInterface {
     
@@ -141,7 +141,8 @@ abstract class AbstractReceiver implements ReceiverInterface {
      * @param array $params Array with the params
      * @return \Stackable The request instance
      */
-    public function newStackable($params) {
+    public function newStackable($params)
+    {
         return $this->newInstance($this->getStackableType(), $params);
     }
 
@@ -171,7 +172,7 @@ abstract class AbstractReceiver implements ReceiverInterface {
      *
      * @return \Worker The random worker instance
      */
-    public function newWorker($recursion = 0) {
+    public function newWorker($recursion) {
         
         // get the maximum number of workers
         $workerNumber = $this->getWorkerNumber();
