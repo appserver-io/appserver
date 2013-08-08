@@ -13,7 +13,7 @@
 namespace TechDivision\ApplicationServer;
 
 use TechDivision\ApplicationServer\Interfaces\ContainerInterface;
-use TechDivision\SplClassLoader;
+use TechDivision\ApplicationServer\AbstractThread;
 
 /**
  * The thread implementation that handles the request.
@@ -24,7 +24,7 @@ use TechDivision\SplClassLoader;
  *              Open Software License (OSL 3.0)
  * @author      Johann Zelger <jz@techdivision.com>
  */
-class SocketRequestAcceptor extends \Thread {
+class SocketRequestAcceptor extends AbstractThread {
 
     /**
      * Holds the container implementation
@@ -56,7 +56,7 @@ class SocketRequestAcceptor extends \Thread {
      * @param string $threadType The thread type class to instantiate
      * @return \TechDivision\ApplicationServer\SocketRequestAcceptor
      */
-    public function __construct(ContainerInterface $container, $resource, $threadType) {
+    public function init(ContainerInterface $container, $resource, $threadType) {
         $this->container = $container;
         $this->resource = $resource;
         $this->threadType = $threadType;
@@ -65,10 +65,7 @@ class SocketRequestAcceptor extends \Thread {
     /**
      * @see \Thread::run()
      */
-    public function run() {
-        // register class loader again, because we are in a thread
-        $classLoader = new SplClassLoader();
-        $classLoader->register();
+    public function main() {
         // start acceptor loop
         while (true) {
             // accept client connection

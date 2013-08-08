@@ -13,6 +13,7 @@
 namespace TechDivision\ApplicationServer;
 
 use TechDivision\SplClassLoader;
+use TechDivision\ApplicationServer\AbstractContextThread;
 
 /**
  * @package     TechDivision\ApplicationServer
@@ -20,8 +21,9 @@ use TechDivision\SplClassLoader;
  * @license    	http://opensource.org/licenses/osl-3.0.php
  *              Open Software License (OSL 3.0)
  * @author      Tim Wagner <tw@techdivision.com>
+ * @author      Johann Zelger <jz@techdivision.com>
  */
-class ContainerThread extends \Thread {
+class ContainerThread extends AbstractContextThread {
 
     /**
      * Path to the container's deployment configuration.
@@ -40,28 +42,18 @@ class ContainerThread extends \Thread {
      * 
      * @param \TechDivision\ApplicationServer\Configuration $configuration The container's configuration
      */
-    public function __construct($initialContext, $configuration) {
-        $this->initialContext = $initialContext;
+    public function init($configuration) {
         $this->configuration = $configuration;
-    }
-
-    public function getInitialContext()
-    {
-        return $this->initialContext;
     }
     
     /**
-     * @see \Thread::run()
+     * @see AbstractContextThread::run()
      */
-    public function run() {
-
-        // register class loader again, because we are in a thread
-        $classLoader = new SplClassLoader();
-        $classLoader->register();
+    public function main() {
         
         // load the container configuration
         $configuration = $this->getConfiguration();
-        
+
         // load the container type and deploy the applications
         $containerType = $configuration->getType();
 
