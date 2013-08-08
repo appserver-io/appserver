@@ -53,7 +53,8 @@ abstract class AbstractDeployment implements DeploymentInterface {
      *
      * @param \TechDivision\ApplicationServer\ContainerThread $containerThread
      */
-    public function __construct($containerThread) {
+    public function __construct($initialContext, $containerThread) {
+        $this->initialContext = $initialContext;
         $this->containerThread = $containerThread;
     }
 
@@ -84,6 +85,6 @@ abstract class AbstractDeployment implements DeploymentInterface {
      * @return object The created instance
      */
     public function newInstance($className, array $args = array()) {
-        return InitialContext::get()->newInstance($className, $args);
+        return $this->initialContext->newInstance($className, $args);
     }
 }

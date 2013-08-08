@@ -40,8 +40,14 @@ class ContainerThread extends \Thread {
      * 
      * @param \TechDivision\ApplicationServer\Configuration $configuration The container's configuration
      */
-    public function __construct($configuration) {
+    public function __construct($initialContext, $configuration) {
+        $this->initialContext = $initialContext;
         $this->configuration = $configuration;
+    }
+
+    public function getInitialContext()
+    {
+        return $this->initialContext;
     }
     
     /**
@@ -63,7 +69,7 @@ class ContainerThread extends \Thread {
         $applications = $this->getDeployment()->deploy()->getApplications();
 
         // create and start the container instance
-        $containerInstance = $this->newInstance($containerType, array($configuration, $applications));
+        $containerInstance = $this->newInstance($containerType, array($this->getInitialContext(), $configuration, $applications));
         $containerInstance->run();
     }
     
@@ -76,7 +82,7 @@ class ContainerThread extends \Thread {
      * @return object The created instance
      */
     public function newInstance($className, array $args = array()) {
-        return InitialContext::get()->newInstance($className, $args);
+        return $this->getInitialContext()->newInstance($className, $args);
     }
     
     /**
@@ -93,6 +99,6 @@ class ContainerThread extends \Thread {
      */
     public function getDeployment() {
         $deploymentType = $this->getConfiguration()->getChild(self::CONTAINER_DEPLOYMENT)->getType();
-        return $this->newInstance($deploymentType, array($this));
+        return $this->newInstance($deploymentType, array($this->getInitialContext(), $this));
     }
 }

@@ -69,7 +69,7 @@ abstract class AbstractReceiver implements ReceiverInterface {
      * 
      * @param \TechDivision\ApplicationServer\Interfaces\ContainerInterface $container The container instance
      */
-    public function __construct($container) {
+    public function __construct($initialContext, $container) {
         
         // set the container instance
         $this->container = $container;
@@ -81,7 +81,7 @@ abstract class AbstractReceiver implements ReceiverInterface {
         $this->setConfiguration($configuration);
         
         // set the configuration in the initial context
-        InitialContext::get()->setAttribute(get_class($this), $configuration);
+        $this->initialContext->setAttribute(get_class($this), $configuration);
 
         // enable garbage collector and initialize configuration
         $this->gcEnable()->checkConfiguration();
@@ -321,7 +321,7 @@ abstract class AbstractReceiver implements ReceiverInterface {
     public function checkConfiguration() {
         
         // load the configuration from the initial context
-        $nc = InitialContext::get()->getAttribute(get_class($this));
+        $nc = $this->initialContext->getAttribute(get_class($this));
 
         // check if configuration has changed
         if ($nc != null && !$this->getConfiguration()->equals($nc)) {
@@ -380,6 +380,6 @@ abstract class AbstractReceiver implements ReceiverInterface {
      * @return object The created instance
      */
     public function newInstance($className, array $args = array()) { 
-        return InitialContext::get()->newInstance($className, $args);
+        return $this->initialContext->newInstance($className, $args);
     }
 }

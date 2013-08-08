@@ -74,6 +74,8 @@ class Server {
      */
     public function start() {
 
+        // init initial context
+        $initialContext = new InitialContext();
         // load the container configurations
         $this->configurations = Configuration::loadFromFile($this->getBaseDirectory() . '/etc/appserver.xml');
 
@@ -85,7 +87,7 @@ class Server {
         // start each container in his own thread
         foreach ($this->configurations->getChilds('/appserver/containers/container') as $i => $configuration) {
             // initialize the container configuration with the base directory and pass it to the thread
-            $this->threads[$i] = new ContainerThread($configuration->addChild($node));
+            $this->threads[$i] = new ContainerThread($initialContext, $configuration->addChild($node));
             $this->threads[$i]->start();
         }
     }

@@ -81,8 +81,9 @@ abstract class AbstractContainer extends \Stackable implements ContainerInterfac
      * @todo Application deployment only works this way because of Thread compatibilty 
      * @return void
      */
-    public function __construct($configuration, $applications) {
+    public function __construct($initialContext, $configuration, $applications) {
 
+        $this->initialContext = $initialContext;
         // set configuration + applications
         $this->setConfiguration($configuration);
         $this->setApplications($applications);
@@ -100,7 +101,7 @@ abstract class AbstractContainer extends \Stackable implements ContainerInterfac
      */
     public function getReceiver() {
         // create and return a new receiver instance
-        return $this->newInstance($this->getReceiverType(), array($this));
+        return $this->newInstance($this->getReceiverType(), array($this->initialContext, $this));
     }
 
     /**
@@ -206,6 +207,6 @@ abstract class AbstractContainer extends \Stackable implements ContainerInterfac
      * @return object The created instance
      */
     public function newInstance($className, array $args = array()) { 
-        return InitialContext::get()->newInstance($className, $args);
+        return $this->initialContext->newInstance($className, $args);
     }
 }
