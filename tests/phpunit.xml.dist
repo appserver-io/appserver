@@ -1,0 +1,22 @@
+<phpunit bootstrap="bootstrap.php">
+    <testsuites>
+	    <testsuite name="ApplicationServer Unit Tests">
+	        <directory suffix="Test.php">.</directory>
+	    </testsuite>
+	</testsuites>
+    <filter>
+        <whitelist>
+            <directory suffix=".php">app/code</directory>
+            <exclude/>
+        </whitelist>
+    </filter>
+    <!-- Code coverage report, optional -->
+    <logging>
+        <log type="coverage-html" target="reports/unit/coverage"/>
+        <log type="coverage-clover" target="reports/unit/clover.xml"/>
+        <log type="junit" target="reports/unit/junit.xml" logIncompleteSkipped="false"/>
+    </logging>
+    <php>
+        <ini name="date.timezone" value="Europe/Berlin"/>
+    </php>
+</phpunit>

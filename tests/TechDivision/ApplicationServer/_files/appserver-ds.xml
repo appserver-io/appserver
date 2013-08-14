@@ -1,0 +1,12 @@
+<datasources>
+    <datasource type="TechDivision\PersistenceContainer\Application">
+        <name>TechDivision\Example</name>
+        <pathToEntities>TechDivision/Example/Entities</pathToEntities>
+        <database>
+            <driver>pdo_mysql</driver>
+            <user>appserver</user>
+            <password>appserver</password>
+            <databaseName>appserver_ApplicationServer</databaseName>
+        </database>
+    </datasource>
+</datasources>

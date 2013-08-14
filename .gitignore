@@ -1,4 +1,7 @@
 /target
 /.idea
 /instance-src
+/.buildpath
+/.project
+/.settings/
 /build.properties

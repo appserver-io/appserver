@@ -152,6 +152,7 @@ class SplClassLoader
 				$toRequire = $path . DIRECTORY_SEPARATOR . $fileName;
 				if (file_exists($toRequire)) {
 					require_once $toRequire;
+					break;
 				}
 			}
         }

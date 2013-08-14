@@ -1,9 +1,12 @@
 <?xml version="1.0"?>
 <project name="TechDivision_ApplicationServer" default="deploy" basedir=".">
+	
 	<property file="${basedir}/build.properties"/>
 	<property file="${basedir}/build.default.properties"/>
     <property file="${basedir}/build.${os.family}.properties"/>
+	
 	<property environment="env" />
+	
 	<property name="namespace" value="techdivision" />
 	<property name="module" value="appserver"/>
 	<property name="codepool" value="vendor"/>
@@ -11,12 +14,14 @@
 	<property name="php-src.dir" value="${basedir}/src" />
 	<property name="php-test.dir" value="${basedir}/tests" />
 	<property name="php-target.dir" value="${basedir}/target"/>
+	
 	<!-- ==================================================================== -->
 	<!-- Cleans the directories with the generated source files				  -->
 	<!-- ==================================================================== -->
 	<target name="clean" description="Cleans almost everything, so use carefully.">
 		<delete dir="${php-target.dir}" includeemptydirs="true" quiet="false" verbose="true" failonerror="true"/>
 	</target>
+	
 	<!-- ==================================================================== -->
 	<!-- Prepares all the required directories								  -->
 	<!-- ==================================================================== -->
@@ -25,6 +30,7 @@
         <mkdir dir="${php-target.dir}/reports" />
         <mkdir dir="${php-target.dir}/reports/coverage" />
 	</target>
+	
     <!-- ==================================================================== -->
     <!-- Copies the sources to the target directory                           -->
     <!-- ==================================================================== -->
@@ -35,6 +41,7 @@
             </fileset>
         </copy>
     </target>
+	
 	<!-- ==================================================================== -->
 	<!-- Copies the sources to the deploy directory     					  -->
 	<!-- ==================================================================== -->
@@ -47,58 +54,96 @@
 			</fileset>
 		</copy>
 	</target>
+	
     <!-- ==================================================================== -->
     <!-- Generates the API documentation                                      -->
     <!-- ==================================================================== -->   
     <target name="apidoc" description="Generates the API documentation.">
          <exec executable="${pear.bin.dir}/phpdoc">  
-            <arg line="-ct type -ue on -s on -t ${php-target.dir}/docs -o HTML:frames:earthli -d ${php-src.dir}"/>  
+            <arg line="--sourcecode --target ${php-target.dir}/docs --directory ${php-src.dir}"/>  
          </exec>
     </target>
+	
     <!-- ==================================================================== -->
     <!-- Runs the code sniffer and generates a report                         -->
     <!-- ==================================================================== -->
-    <target name="phpcs" depends="apidoc" description="Runs the code sniffer and generates a report.">
+    <target name="phpcs" description="Runs the code sniffer and generates a report.">
         <exec executable="${pear.bin.dir}/phpcs">
             <arg line="--extensions=php,phtml --standard=Zend --report=checkstyle --report-file=${php-target.dir}/reports/checkstyle.xml ${php-src.dir}"/>
         </exec>
     </target>
+	
     <!-- ==================================================================== -->
     <!-- Runs the copy and paste detection                                    -->
     <!-- ==================================================================== -->
-    <target name="phpcpd" depends="phpcs" description="Runs the copy and paste detection.">
+    <target name="phpcpd" description="Runs the copy and paste detection.">
         <exec executable="${pear.bin.dir}/phpcpd">
             <arg line="--log-pmd ${php-target.dir}/reports/pmd-cpd.xml ${php-src.dir}"/>
         </exec>
     </target>
+	
     <!-- ==================================================================== -->
     <!-- Generate phploc.csv                                                  -->
     <!-- ==================================================================== -->
-    <target name="phploc" depends="phpcpd" description="Generate phploc.csv">
+    <target name="phploc" description="Generate phploc.csv">
         <exec executable="${pear.bin.dir}/phploc">
             <arg line="--log-xml ${php-target.dir}/reports/phploc.xml ${php-src.dir}"/>
         </exec>
     </target>
+	
     <!-- ==================================================================== -->
     <!-- Runs the PHPDepend tool and generats a graphs                        -->
     <!-- ==================================================================== -->
-    <target name="pdepend" depends="phploc" description="Runs the PHPDepend tool and generats a graphs.">
+    <target name="pdepend" description="Runs the PHPDepend tool and generats a graphs.">
         <exec executable="${pear.bin.dir}/pdepend">
             <arg line="--summary-xml=${php-target.dir}/reports/pdepend.xml --jdepend-xml=${php-target.dir}/reports/jdepend.xml --jdepend-chart=${php-target.dir}/reports/jdepend.svg --overview-pyramid=${php-target.dir}/reports/pdepend-pyramid.svg ${php-src.dir}" />
         </exec>
     </target>
+	
     <!-- ==================================================================== -->
     <!-- Runs the PHP mess detector tool                                      -->
     <!-- ==================================================================== -->
-    <target name="phpmd" depends="pdepend" description="Runs the PHP Mess detector tool.">
+    <target name="phpmd" description="Runs the PHP Mess detector tool.">
         <exec executable="${pear.bin.dir}/phpmd">
             <arg line="${php-src.dir} xml codesize,unusedcode --reportfile ${php-target.dir}/reports/pmd.xml" />
         </exec>
     </target>
-	<!-- ==================================================================== -->
-	<!-- Runs the PHPUnit tests and generates a report						  -->
-	<!-- ==================================================================== -->
-	<target name="build" description="Runs the PHPUnit tests and generates a report.">
-        <antcall target="phpmd"/>
-	</target>
+
+    <!-- ==================================================================== -->
+    <!-- Copies the test sources to the target directory					  -->
+    <!-- ==================================================================== -->
+    <target name="copy-tests" depends="copy" description="Copies the test sources to the target directory.">
+        <copy todir="${php-target.dir}/${unique.name}/src">
+            <fileset dir="${php-test.dir}">
+                <include name="**/*" />
+            </fileset>
+            <filterchain>
+                <expandproperties/>
+            </filterchain>
+        </copy>
+    </target>
+
+    <!-- ==================================================================== -->
+    <!-- Runs the PHPUnit tests and generates a report                        -->
+    <!-- ==================================================================== -->
+    <target name="run-tests" depends="copy-tests" description="Runs the PHPUnit tests and generates a report.">
+        <exec executable="phpunit" dir="${php-target.dir}/${unique.name}/src">
+            <arg line="--configuration phpunit.xml.dist" />
+        </exec>
+    </target>
+
+    <!-- ==================================================================== -->
+    <!-- Runs the PHPUnit tests and generates a report						  -->
+    <!-- ==================================================================== -->
+    <target name="build" description="Runs the PHPUnit tests and generates a report.">
+    	<antcall target="copy"/>
+    	<antcall target="apidoc"/>
+    	<antcall target="phpcs"/>
+    	<antcall target="phpcpd"/>
+    	<antcall target="phploc"/>
+    	<antcall target="pdepend"/>
+    	<antcall target="phpmd"/>
+        <antcall target="run-tests"/>
+    </target>
+	
 </project>
