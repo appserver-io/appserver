@@ -19,45 +19,10 @@ namespace TechDivision\ApplicationServer;
  *              Open Software License (OSL 3.0)
  * @author      Tim Wagner <tw@techdivision.com>
  */
-class InitialContext {
-    
-    /**
-     * The cache instance, e. g. Memcached
-     * @var \Memcached
-     */
-    protected $cache;
+class InitialContext extends \Stackable {
 
-    /**
-     * Factory method implementation.
-     * 
-     * @return \TechDivision\ApplicationServer\InitialContext The singleton instance
-     */
-    public static function get() {
-        return new InitialContext();
-    }
-    
-    /**
-     * Initializes the context with the connection to the persistence
-     * backend, e. g. Memcached
-     * 
-     * @return void
-     */
-    public function __construct() {
-        $this->cache = new \Memcached();
-        $this->cache->setOption(\Memcached::OPT_LIBKETAMA_COMPATIBLE, true);
-        $this->cache->addServers(array(array('127.0.0.1', 11211)));        
-    }
-    
-    /**
-     * Reinitializes the context with the connection to the persistence
-     * backend, e. g. Memcached
-     */
-    public function __wakeup() {
-        $this->cache = new \Memcached();
-        $this->cache->setOption(\Memcached::OPT_LIBKETAMA_COMPATIBLE, true);
-        $this->cache->addServers(array(array('127.0.0.1', 11211))); 
-    }
-    
+    public function run() {}
+
     /**
      * Stores the passed key value pair in the initial context.
      * 
@@ -66,7 +31,7 @@ class InitialContext {
      * @return mixed The value added to the initial context
      */
     public function setAttribute($key, $value) {
-        $this->cache->set($key, $value);
+        $this[$key] = $value;
         return $value;
     }
     
@@ -77,7 +42,9 @@ class InitialContext {
      * @return mixed The value stored in the initial context
      */
     public function getAttribute($key) {
-        return $this->cache->get($key);
+        if (array_key_exists($key, get_object_vars($this))) {
+            return $this[$key];
+        }
     }
     
     /**

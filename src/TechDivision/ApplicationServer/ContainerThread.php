@@ -13,6 +13,7 @@
 namespace TechDivision\ApplicationServer;
 
 use TechDivision\SplClassLoader;
+use TechDivision\ApplicationServer\AbstractContextThread;
 
 /**
  * @package     TechDivision\ApplicationServer
@@ -20,8 +21,9 @@ use TechDivision\SplClassLoader;
  * @license    	http://opensource.org/licenses/osl-3.0.php
  *              Open Software License (OSL 3.0)
  * @author      Tim Wagner <tw@techdivision.com>
+ * @author      Johann Zelger <jz@techdivision.com>
  */
-class ContainerThread extends \Thread {
+class ContainerThread extends AbstractContextThread {
 
     /**
      * Path to the container's deployment configuration.
@@ -40,22 +42,18 @@ class ContainerThread extends \Thread {
      * 
      * @param \TechDivision\ApplicationServer\Configuration $configuration The container's configuration
      */
-    public function __construct($configuration) {
+    public function init($configuration) {
         $this->configuration = $configuration;
     }
     
     /**
-     * @see \Thread::run()
+     * @see AbstractContextThread::run()
      */
-    public function run() {
-
-        // register class loader again, because we are in a thread
-        $classLoader = new SplClassLoader();
-        $classLoader->register();
+    public function main() {
         
         // load the container configuration
         $configuration = $this->getConfiguration();
-        
+
         // load the container type and deploy the applications
         $containerType = $configuration->getType();
 
@@ -63,7 +61,7 @@ class ContainerThread extends \Thread {
         $applications = $this->getDeployment()->deploy()->getApplications();
 
         // create and start the container instance
-        $containerInstance = $this->newInstance($containerType, array($configuration, $applications));
+        $containerInstance = $this->newInstance($containerType, array($this->getInitialContext(), $configuration, $applications));
         $containerInstance->run();
     }
     
@@ -76,7 +74,7 @@ class ContainerThread extends \Thread {
      * @return object The created instance
      */
     public function newInstance($className, array $args = array()) {
-        return InitialContext::get()->newInstance($className, $args);
+        return $this->getInitialContext()->newInstance($className, $args);
     }
     
     /**
@@ -93,6 +91,6 @@ class ContainerThread extends \Thread {
      */
     public function getDeployment() {
         $deploymentType = $this->getConfiguration()->getChild(self::CONTAINER_DEPLOYMENT)->getType();
-        return $this->newInstance($deploymentType, array($this));
+        return $this->newInstance($deploymentType, array($this->getInitialContext(), $this));
     }
 }

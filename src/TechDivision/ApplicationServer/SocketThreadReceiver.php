@@ -28,8 +28,9 @@ class SocketThreadReceiver extends AbstractReceiver {
      *
      * @param \TechDivision\ApplicationServer\Interfaces\ContainerInterface $container The container instance
      */
-    public function __construct($container) {
+    public function __construct($initialContext, $container) {
 
+        $this->initialContext = $initialContext;
         // set the container instance
         $this->container = $container;
 
@@ -40,7 +41,7 @@ class SocketThreadReceiver extends AbstractReceiver {
         $this->setConfiguration($configuration);
 
         // set the configuration in the initial context
-        InitialContext::get()->setAttribute(get_class($this), $configuration);
+        $this->initialContext->setAttribute(get_class($this), $configuration);
 
         // enable garbage collector and initialize configuration
         $this->gcEnable()->checkConfiguration();
