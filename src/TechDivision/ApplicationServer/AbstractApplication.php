@@ -48,6 +48,12 @@ abstract class AbstractApplication implements ApplicationInterface
      * @var \TechDivision\ApplicationServer\Configuration
      */
     protected $configuration;
+    
+    /**
+     * The initial context instance.
+     * @var \TechDivision\ApplicationServer\InitialContext
+     */
+    protected $initialContext;
 
     /**
      * Passes the application name That has to be the class namespace.
@@ -56,6 +62,8 @@ abstract class AbstractApplication implements ApplicationInterface
      * @param type $name The application name
      */
     public function __construct($initialContext, $name) {
+        
+        // initialize the member variables with the passed values
         $this->initialContext = $initialContext;
         $this->name = $name;
     }
@@ -129,5 +137,4 @@ abstract class AbstractApplication implements ApplicationInterface
     public function newInstance($className, array $args = array()) {
         return $this->initialContext->newInstance($className, $args);
     }
-
 }

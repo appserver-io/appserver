@@ -96,18 +96,16 @@ class Configuration implements ContainerConfiguration {
     }
     
     /**
+     * Initializes the configuration with the XML information found
+     * in the file with the passed relative or absolute path.
      * 
-     * @param unknown $file
-     * @return \TechDivision\ApplicationServer\Configuration
+     * @param string $file The path to the file
+     * @return \TechDivision\ApplicationServer\Configuration The initialized configuration
      */
-    public static function loadFromFile($file) {
-
+    public function initFromFile($file) {
         // initialize the SimpleXMLElement with the content XML configuration file
         $root = simplexml_load_file($file);
-        
-        // initialize and return the root node
-        $cnt = new Configuration();
-        return $cnt->init($root);
+        return $this->init($root);
     }
     
     /**
@@ -272,14 +270,31 @@ class Configuration implements ContainerConfiguration {
         }
     }
     
+    /**
+     * Sets the configuration node's value e. g. <node>VALUE</node>.
+     * 
+     * @param string $value The node's value
+     * @return void
+     */
     public function setValue($value) {
     	$this->value = $value;
     }
     
+    /**
+     * Return's the configuration node's value.
+     * 
+     * @return string The node's value
+     */
     public function getValue() {
     	return $this->value;
     }	
     
+    /**
+     * Returns the configuration node's value.
+     * 
+     * @return string The configuration node's value
+     * @see \TechDivision\ApplicationServer\Configuration::getValue()
+     */
     public function __toString() {
     	return $this->getValue();
     }

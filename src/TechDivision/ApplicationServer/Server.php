@@ -13,6 +13,8 @@
 namespace TechDivision\ApplicationServer;
 
 use TechDivision\Socket\Client;
+use TechDivision\ApplicationServer\SplClassLoader;
+use TechDivision\ApplicationServer\InitialContext;
 use TechDivision\ApplicationServer\Configuration;
 use TechDivision\ApplicationServer\ContainerThread;
 
@@ -30,12 +32,6 @@ class Server {
      * @var string
      */
     const XPATH_CONTAINERS = '/appserver';
-
-    /**
-     * The container configurations.
-     * @var array
-     */
-    protected $configurations = array();
 
     /**
      * Initialize the array for the running threads.
@@ -70,37 +66,34 @@ class Server {
     /**
      * Start's the server and initializes the containers.
      *
+     * @param string $configurationFile The path to the configuration file relativ to the base directory
      * @return void
+     * @see TechDivision\ApplicationServer\Server::getBaseDirectory()
      */
-    public function start() {
-
-        // init initial context
+    public function start($configurationFile = 'etc/appserver.xml') {
+        
+        // the initial context instance to use
         $initialContext = new InitialContext();
-        // load the container configurations
-        $this->configurations = Configuration::loadFromFile($this->getBaseDirectory() . '/etc/appserver.xml');
+        $initialContext->setClassLoader(new SplClassLoader());
+
+        // initialize the SimpleXMLElement with the content XML configuration file
+        $configuration = $initialContext->newInstance('TechDivision\ApplicationServer\Configuration');
+        $configuration->initFromFile($this->getBaseDirectory() . DS . $configurationFile);
 
         // initialize a configuration node containing the base directory
-        $node = new Configuration();
+        $node = $initialContext->newInstance('TechDivision\ApplicationServer\Configuration');
         $node->setNodeName('baseDirectory');
         $node->setValue($this->getBaseDirectory());
 
         // start each container in his own thread
-        foreach ($this->configurations->getChilds('/appserver/containers/container') as $i => $configuration) {
+        foreach ($configuration->getChilds('/appserver/containers/container') as $i => $containerConfiguration) {
+            
+            // add the base directory to the container configuration
+            $containerConfiguration->addChild($node);
+            
             // initialize the container configuration with the base directory and pass it to the thread
-            $this->threads[$i] = new ContainerThread($initialContext, $configuration->addChild($node));
+            $this->threads[$i] = $initialContext->newInstance('TechDivision\ApplicationServer\ContainerThread', array($initialContext, $containerConfiguration));
             $this->threads[$i]->start();
         }
-    }
-
-    /**
-     * Creates a new instance of the passed class name and passes the
-     * args to the instance constructor.
-     *
-     * @param string $className The class name to create the instance of
-     * @param array $args The parameters to pass to the constructor
-     * @return object The created instance
-     */
-    public function newInstance($className, array $args = array()) {
-        return InitialContext::get()->newInstance($className, $args);
     }
 }

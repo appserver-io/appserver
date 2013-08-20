@@ -12,7 +12,7 @@
 
 namespace TechDivision\ApplicationServer;
 
-use TechDivision\SplClassLoader;
+use TechDivision\ApplicationServer\SplClassLoader;
 use TechDivision\ApplicationServer\AbstractContextThread;
 
 /**

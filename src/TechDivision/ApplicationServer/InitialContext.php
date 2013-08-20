@@ -21,7 +21,36 @@ namespace TechDivision\ApplicationServer;
  */
 class InitialContext extends \Stackable {
 
-    public function run() {}
+    /**
+     * Key used to store the used class loader.
+     * @var string
+     */
+    const CLASS_LOADER = 'classLoader';
+    
+    /**
+     * \Stackable::run();
+     */
+    public function run() {
+    }
+    
+    /**
+     * Set's the initial context's class loader.
+     * 
+     * @param object $classLoader The class loader to use
+     * @return void
+     */
+    public function setClassLoader($classLoader) {
+        $this->setAttribute(md5(self::CLASS_LOADER), $classLoader);
+    }
+    
+    /**
+     * Return's the initial context's class loader.
+     * 
+     * @return callable The class loader used
+     */
+    public function getClassLoader() {
+        return $this->getAttribute(md5(self::CLASS_LOADER));
+    }
 
     /**
      * Stores the passed key value pair in the initial context.
@@ -63,8 +92,14 @@ class InitialContext extends \Stackable {
      * @param string $className The fully qualified class name to return the instance for
      * @param array $args Arguments to pass to the constructor of the instance
      * @return object The instance itself
+     * @todo Has to be refactored to avoid registering autoloader on every call
      */
-    public function newInstance($className, array $args = array()) { 
+    public function newInstance($className, array $args = array()) {
+        
+        // register the class loader again, because in a Thread the context has been lost maybe
+        $this->getClassLoader()->register(true);
+        
+        // create and return a new instance
         $reflectionClass = $this->newReflectionClass($className);
         return $reflectionClass->newInstanceArgs($args);
     }
@@ -87,7 +122,7 @@ class InitialContext extends \Stackable {
         
         // if the class is a stateless session bean simply return a new instance
         if ($reflectionClass->implementsInterface('TechDivision\PersistenceContainer\Interfaces\Stateless')) {
-            return $reflectionClass->newInstanceArgs($args);
+            return $this->newInstance($className, $args);
         }
         
         // if the class is a statefull session bean, first check the container for a initialized instance
@@ -106,7 +141,7 @@ class InitialContext extends \Stackable {
             }
             
             // if not, initialize a new instance, add it to the container and return it
-            $instance = $reflectionClass->newInstanceArgs($args);           
+            $instance = $this->newInstance($className, $args);           
             $session[$className] = $instance;           
             $this->setAttribute($sessionId, $session);        
             return $instance;
@@ -121,7 +156,7 @@ class InitialContext extends \Stackable {
             }
             
             // if not create a new instance and return it
-            $instance = $reflectionClass->newInstanceArgs($args);            
+            $instance = $this->newInstance($className, $args);            
             $this->setAttribute($className, $instance);           
             return $instance;
         }

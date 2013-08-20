@@ -12,7 +12,7 @@
 
 namespace TechDivision\ApplicationServer;
 
-use TechDivision\SplClassLoader;
+use TechDivision\ApplicationServer\SplClassLoader;
 
 /**
  * An abstraction layer for Threads
@@ -48,10 +48,6 @@ abstract class AbstractThread extends \Thread
      */
     public function run()
     {
-        // register class loader again, because we are in a thread
-        $classLoader = new SplClassLoader();
-        $classLoader->register();
-        // call main function.
         $this->main();
     }
 
