@@ -12,6 +12,10 @@
 
 namespace TechDivision\ApplicationServer;
 
+use Herrera\Annotations\Tokens;
+use Herrera\Annotations\Tokenizer;
+use Herrera\Annotations\Convert\ToArray;
+
 /**
  * @package     TechDivision\ApplicationServer
  * @copyright  	Copyright (c) 2010 <info@techdivision.com> - TechDivision GmbH
@@ -19,18 +23,42 @@ namespace TechDivision\ApplicationServer;
  *              Open Software License (OSL 3.0)
  * @author      Tim Wagner <tw@techdivision.com>
  */
-class InitialContext extends \Stackable {
-
-    /**
-     * Key used to store the used class loader.
-     * @var string
-     */
-    const CLASS_LOADER = 'classLoader';
+class InitialContext {
     
     /**
-     * \Stackable::run();
+     * The cache instance, e. g. Memcached
+     * @var \Memcached
      */
-    public function run() {
+    protected $cache;
+    
+    /**
+     * Array containing the available bean annotations.
+     * @var array
+     */
+    protected $beanAnnotations = array('entity', 'singleton', 'statefull', 'stateless');
+    
+    /**
+     * Initializes the context with the connection to the persistence
+     * backend, e. g. Memcached
+     * 
+     * @return void
+     */
+    public function __construct() {
+        $this->cache = new \Memcached();
+        $this->cache->setOption(\Memcached::OPT_LIBKETAMA_COMPATIBLE, true);
+        $this->cache->addServers(array(array('127.0.0.1', 11211)));     
+    }
+    
+    /**
+     * Reinitializes the context with the connection to the persistence
+     * backend, e. g. Memcached
+     * 
+     * @return void
+     */
+    public function __wakeup() {
+        $this->cache = new \Memcached();
+        $this->cache->setOption(\Memcached::OPT_LIBKETAMA_COMPATIBLE, true);
+        $this->cache->addServers(array(array('127.0.0.1', 11211))); 
     }
     
     /**
@@ -40,7 +68,7 @@ class InitialContext extends \Stackable {
      * @return void
      */
     public function setClassLoader($classLoader) {
-        $this->setAttribute(md5(self::CLASS_LOADER), $classLoader);
+        $this->classLoader = $classLoader;
     }
     
     /**
@@ -49,7 +77,7 @@ class InitialContext extends \Stackable {
      * @return callable The class loader used
      */
     public function getClassLoader() {
-        return $this->getAttribute(md5(self::CLASS_LOADER));
+        return $this->classLoader;
     }
 
     /**
@@ -57,11 +85,10 @@ class InitialContext extends \Stackable {
      * 
      * @param string $key The key to store the value under
      * @param mixed $value The value to add to the inital context
-     * @return mixed The value added to the initial context
+     * @return void
      */
     public function setAttribute($key, $value) {
-        $this[$key] = $value;
-        return $value;
+        $this->cache->set($key, $value);
     }
     
     /**
@@ -71,9 +98,7 @@ class InitialContext extends \Stackable {
      * @return mixed The value stored in the initial context
      */
     public function getAttribute($key) {
-        if (array_key_exists($key, get_object_vars($this))) {
-            return $this[$key];
-        }
+        return $this->cache->get($key);
     }
     
     /**
@@ -105,6 +130,55 @@ class InitialContext extends \Stackable {
     }
     
     /**
+     * Returns the bean annotation for the passed reflection class, that can be
+     * one of Entity, Stateful, Stateless, Singleton.
+     * 
+     * @param \ReflectionClass $reflectionClass The class to return the annotation for
+     * @throws \Exception Is thrown if the class has NO bean annotation
+     * @return string The found bean annotation
+     */
+    protected function getBeanAnnotation($reflectionClass) {
+        
+        // load the class name to get the annotation for
+        $className = $reflectionClass->getName();
+        
+        // check if an array with the bean types has already been registered
+        $beanTypes = $this->getAttribute('beanTypes');
+        if (is_array($beanTypes)) {
+            if (array_key_exists($className, $beanTypes)) {
+                return $beanTypes[$className];
+            }
+        } else {
+            $beanTypes = array();
+        }
+        
+        // initialize the annotation tokenizer
+        $tokenizer = new Tokenizer();
+        $tokenizer->ignore(array('author', 'package', 'license', 'copyright'));
+        $aliases = array();
+        
+        // parse the doc block
+        $parsed = $tokenizer->parse($reflectionClass->getDocComment(), $aliases);
+
+        // convert tokens and return one 
+        $tokens = new Tokens($parsed);
+        $toArray = new ToArray();
+        
+        // iterate over the tokens
+        foreach ($toArray->convert($tokens) as $token) {
+            $tokeName = strtolower($token->name);
+            if (in_array($tokeName, $this->beanAnnotations)) {
+                $beanTypes[$className] = $tokeName;
+                $this->setAttribute('beanTypes', $beanTypes);
+                return $tokeName;
+            }
+        }
+        
+        // throw an exception if the requested class
+        throw new \Exception(sprintf("Mission enterprise bean annotation for %s", $reflectionClass->getName()));
+    }
+    
+    /**
      * Run's a lookup for the session bean with the passed class name and 
      * session ID. If the passed class name is a session bean an instance
      * will be returned.
@@ -113,52 +187,53 @@ class InitialContext extends \Stackable {
      * @param string $sessionId The session ID
      * @param array $args The arguments passed to the session beans constructor
      * @return object The requested session bean
-     * @throws \Exception Is thrown if passed class name is no session bean
+     * @throws \Exception Is thrown if passed class name is no session bean or is a entity bean (not implmented yet)
      */
     public function lookup($className, $sessionId, array $args = array()) {
         
         // get the reflection class for the passed class name
         $reflectionClass = $this->newReflectionClass($className);
-        
-        // if the class is a stateless session bean simply return a new instance
-        if ($reflectionClass->implementsInterface('TechDivision\PersistenceContainer\Interfaces\Stateless')) {
-            return $this->newInstance($className, $args);
-        }
-        
-        // if the class is a statefull session bean, first check the container for a initialized instance
-        if ($reflectionClass->implementsInterface('TechDivision\PersistenceContainer\Interfaces\Statefull')) {
             
-            // load the session's from the initial context
-            $session = $this->getAttribute($sessionId);
+        switch ($this->getBeanAnnotation($reflectionClass)) {
             
-            // if an instance exists, load and return it
-            if (is_array($session)) {              
-                if (array_key_exists($className, $session)) {
-                    return $session[$className];
+            case 'entity':
+                throw new \Exception("Entity beans are not implemented yet");
+                
+            case 'stateful':
+              
+                // load the session's from the initial context
+                $session = $this->getAttribute($sessionId);
+                
+                // if an instance exists, load and return it
+                if (is_array($session)) {
+                    if (array_key_exists($className, $session)) {
+                        return $session[$className];
+                    }
+                } else {
+                    $session = array();
                 }
-            } else {
-                $session = array();
-            }
-            
-            // if not, initialize a new instance, add it to the container and return it
-            $instance = $this->newInstance($className, $args);           
-            $session[$className] = $instance;           
-            $this->setAttribute($sessionId, $session);        
-            return $instance;
-        }
-        
-        // if the class is a singleton session bean, return the singleton instance if available
-        if ($reflectionClass->implementsInterface('TechDivision\PersistenceContainer\Interfaces\Singleton')) {
-            
-            // check if an instance is available
-            if ($this->getAttribute($className)) {
-                return $this->getAttribute($className);
-            }
-            
-            // if not create a new instance and return it
-            $instance = $this->newInstance($className, $args);            
-            $this->setAttribute($className, $instance);           
-            return $instance;
+                
+                // if not, initialize a new instance, add it to the container and return it
+                $instance = $this->newInstance($className, $args);
+                $session[$className] = $instance;
+                $this->setAttribute($sessionId, $session);
+                return $instance;
+                
+            case 'singleton':
+                         
+                // check if an instance is available
+                if ($this->getAttribute($className)) {
+                    return $this->getAttribute($className);
+                }
+                
+                // if not create a new instance and return it
+                $instance = $this->newInstance($className, $args);            
+                $this->setAttribute($className, $instance);           
+                return $instance;
+                
+            default: // @Stateless
+                
+                return $this->newInstance($className, $args);;
         }
         
         // if the class is no session bean, throw an exception

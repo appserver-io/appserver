@@ -38,7 +38,7 @@ abstract class AbstractContextThread extends AbstractThread
      * @params \Stackable $initialContext
      * @return void
      */
-    public function __construct(\Stackable $initialContext)
+    public function __construct($initialContext)
     {
         // get function args
         $functionArgs = func_get_args();

@@ -66,16 +66,21 @@ class SocketRequestAcceptor extends AbstractThread {
      * @see \Thread::run()
      */
     public function main() {
+        
         // start acceptor loop
         while (true) {
+            
+            // reinitialize the server socket
+            $serverSocket = $this->container->newInstance('TechDivision\Socket', array($this->resource)); 
+            
             // accept client connection
-            if ($clientSocket = socket_accept($this->resource)) {
+            if ($clientSocket = $serverSocket->accept()) {
+                
                 // init new thread type instance
-                $request = $this->container->newInstance($this->threadType, array($this->container, $clientSocket));
+                $request = $this->container->newInstance($this->threadType, array($this->container, $clientSocket->getResource()));
                 // start thread
                 $request->start();
             }
         }
     }
-
 }
