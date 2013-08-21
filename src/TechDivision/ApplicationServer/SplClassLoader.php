@@ -80,7 +80,7 @@ class SplClassLoader extends \Stackable
      */
     public function getIncludePath()
     {
-        return explode(PS, get_include_path());
+        return explode(PATH_SEPARATOR, get_include_path());
     }
 
     /**

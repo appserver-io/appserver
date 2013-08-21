@@ -78,7 +78,7 @@ class Server {
 
         // initialize the SimpleXMLElement with the content XML configuration file
         $configuration = $initialContext->newInstance('TechDivision\ApplicationServer\Configuration');
-        $configuration->initFromFile($this->getBaseDirectory() . APPSERVER_DS . $configurationFile);
+        $configuration->initFromFile($this->getBaseDirectory() . DIRECTORY_SEPARATOR . $configurationFile);
 
         // initialize a configuration node containing the base directory
         $node = $initialContext->newInstance('TechDivision\ApplicationServer\Configuration');

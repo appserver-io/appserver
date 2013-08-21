@@ -123,7 +123,7 @@ abstract class AbstractApplication implements ApplicationInterface
      * @return string The path to the web application
      */
     public function getWebappPath() {
-        return $this->getAppBase() . DS . $this->getName();
+        return $this->getAppBase() . DIRECTORY_SEPARATOR . $this->getName();
     }
 
     /**
