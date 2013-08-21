@@ -51,7 +51,7 @@ class Server {
      * @return void
      */
     public function __construct() {
-        $this->baseDirectory = getcwd();
+        $this->baseDirectory = APPSERVER_BP;
     }
 
     /**
