@@ -114,6 +114,7 @@ class SocketThreadReceiver extends AbstractReceiver {
         return $this->newInstance(
             $this->getWorkerType(),
             array(
+                $this->initialContext,
                 $this->getContainer(),
                 $socketResource,
                 $this->getThreadType()

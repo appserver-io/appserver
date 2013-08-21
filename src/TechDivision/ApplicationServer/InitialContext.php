@@ -102,6 +102,25 @@ class InitialContext {
     }
     
     /**
+     * Removes the attribute with the passed key from the initial context.
+     * 
+     * @param string $key The key of the value to delete
+     * @return void
+     */
+    public function removeAttribute($key) {
+        $this->cache->delete($key);
+    }
+    
+    /**
+     * Returns all keys of elements stored in initial context.
+     * 
+     * @return array Array with all keys
+     */
+    public function getAllKeys() {
+        return $this->cache->getAllKeys();
+    }
+    
+    /**
      * Returns a reflection class intance for the passed class name.
      * 
      * @param string $className The class name to return the reflection instance for

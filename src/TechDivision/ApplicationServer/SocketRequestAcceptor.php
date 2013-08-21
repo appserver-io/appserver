@@ -13,7 +13,7 @@
 namespace TechDivision\ApplicationServer;
 
 use TechDivision\ApplicationServer\Interfaces\ContainerInterface;
-use TechDivision\ApplicationServer\AbstractThread;
+use TechDivision\ApplicationServer\AbstractContextThread;
 
 /**
  * The thread implementation that handles the request.
@@ -24,7 +24,7 @@ use TechDivision\ApplicationServer\AbstractThread;
  *              Open Software License (OSL 3.0)
  * @author      Johann Zelger <jz@techdivision.com>
  */
-class SocketRequestAcceptor extends AbstractThread {
+class SocketRequestAcceptor extends AbstractContextThread {
 
     /**
      * Holds the container implementation
@@ -71,13 +71,13 @@ class SocketRequestAcceptor extends AbstractThread {
         while (true) {
             
             // reinitialize the server socket
-            $serverSocket = $this->container->newInstance('TechDivision\Socket', array($this->resource)); 
+            $serverSocket = $this->initialContext->newInstance('TechDivision\Socket', array($this->resource)); 
             
             // accept client connection
             if ($clientSocket = $serverSocket->accept()) {
                 
                 // init new thread type instance
-                $request = $this->container->newInstance($this->threadType, array($this->container, $clientSocket->getResource()));
+                $request = $this->initialContext->newInstance($this->threadType, array($this->initialContext, $this->container, $clientSocket->getResource()));
                 // start thread
                 $request->start();
             }
