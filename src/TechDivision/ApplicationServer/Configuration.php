@@ -96,6 +96,21 @@ class Configuration implements ContainerConfiguration {
     }
     
     /**
+     * Creates a new child configuration node with the passed name and value
+     * and adds it as child to this node.
+     * 
+     * @param string $nodeName The child's node name
+     * @param string $value The child's node value
+     * @return void
+     */
+    public function addChildWithNameAndValue($nodeName, $value) {
+        $node = new Configuration();
+        $node->setNodeName($nodeName);
+        $node->setValue($value);
+        $this->addChild($node);
+    }
+    
+    /**
      * Initializes the configuration with the XML information found
      * in the file with the passed relative or absolute path.
      * 

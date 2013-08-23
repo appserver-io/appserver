@@ -87,12 +87,12 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase {
 
     public function testLoadFromFile() {
 
-        $configuration = Configuration::loadFromFile(__DIR__ . '/_files/appserver-ds.xml');
+        $this->configuration->initFromFile(__DIR__ . '/_files/META-INF/appserver-ds.xml');
 
-        $driver = $configuration->getChild('/datasources/datasource/database/driver');
-        $user = $configuration->getChild('/datasources/datasource/database/user');
-        $password = $configuration->getChild('/datasources/datasource/database/password');
-        $databaseName = $configuration->getChild('/datasources/datasource/database/databaseName');
+        $driver = $this->configuration->getChild('/datasources/datasource/database/driver');
+        $user = $this->configuration->getChild('/datasources/datasource/database/user');
+        $password = $this->configuration->getChild('/datasources/datasource/database/password');
+        $databaseName = $this->configuration->getChild('/datasources/datasource/database/databaseName');
 
         $this->assertEquals('pdo_mysql', $driver);
         $this->assertEquals('appserver', $user);

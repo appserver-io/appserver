@@ -26,6 +26,24 @@ use Herrera\Annotations\Convert\ToArray;
 class InitialContext {
     
     /**
+     * XPath expression for the initial context's class loader configuration.
+     * @var string
+     */
+    const XPATH_CLASS_LOADER = '/initialContext/classLoader';
+    
+    /**
+     * XPath expression for the initial context's server configurations.
+     * @var string
+     */
+    const XPATH_SERVER = 'initialContext/servers/server';
+    
+    /**
+     * The container configuration.
+     * @var \TechDivision\ApplicationServer\Configuration
+     */
+    protected $configuration;
+    
+    /**
      * The cache instance, e. g. Memcached
      * @var \Memcached
      */
@@ -43,10 +61,21 @@ class InitialContext {
      * 
      * @return void
      */
-    public function __construct() {
-        $this->cache = new \Memcached();
+    public function __construct($configuration) {
+        
+        // initialize the configuration
+        $this->configuration = $configuration;
+        
+        // initialize the class loader instance
+        $reflectionClass = $this->newReflectionClass($configuration->getChild(self::XPATH_CLASS_LOADER)->getType());
+        $this->classLoader = $reflectionClass->newInstance();
+        
+        // initialze the memcache servers
+        $this->cache = new \Memcached;
         $this->cache->setOption(\Memcached::OPT_LIBKETAMA_COMPATIBLE, true);
-        $this->cache->addServers(array(array('127.0.0.1', 11211)));     
+        foreach ($this->getConfiguration()->getChilds(self::XPATH_SERVER) as $server) {
+            $this->cache->addServer($server->getAddress(), $server->getPort(), $server->getWeight());
+        }   
     }
     
     /**
@@ -56,19 +85,21 @@ class InitialContext {
      * @return void
      */
     public function __wakeup() {
-        $this->cache = new \Memcached();
+        // initialze the memcache servers
+        $this->cache = new \Memcached;
         $this->cache->setOption(\Memcached::OPT_LIBKETAMA_COMPATIBLE, true);
-        $this->cache->addServers(array(array('127.0.0.1', 11211))); 
+        foreach ($this->getConfiguration()->getChilds(self::XPATH_SERVER) as $server) {
+            $this->cache->addServer($server->getAddress(), $server->getPort(), $server->getWeight());
+        }  
     }
     
     /**
-     * Set's the initial context's class loader.
+     * Returns the container configuration.
      * 
-     * @param object $classLoader The class loader to use
-     * @return void
+     * @return \TechDivision\ApplicationServer\Configuration The container configuration
      */
-    public function setClassLoader($classLoader) {
-        $this->classLoader = $classLoader;
+    public function getConfiguration() {
+        return $this->configuration;
     }
     
     /**

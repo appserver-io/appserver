@@ -1,0 +1,118 @@
+<appserver>
+
+	<!-- 
+		The initial context configuration.
+	-->
+	<initialContext type="TechDivision\ApplicationServer\InitialContext">
+		<classLoader type="TechDivision\ApplicationServer\SplClassLoader"/>
+		<servers>
+			<server address="127.0.0.1" port="11211" weight="0"/>
+		</servers>
+	</initialContext>
+	
+    <containers>
+        <!--
+            This is an example of a container that uses a socket for
+            sending and receiving messages. This solution can be used
+            for clients connecting over a network.
+        -->
+        <container type="TechDivision\PersistenceContainer\Container">
+            <!--
+            <receiver type="TechDivision\ApplicationServer\SocketReceiver">
+	           	<worker type="TechDivision\PersistenceContainer\RequestHandler"/>
+	           	<stackable type="TechDivision\PersistenceContainer\WorkerRequest"/>
+	           	<params workerNumber="8" address="0.0.0.0" port="8585"/>
+	        </receiver>
+	        -->
+            <receiver type="TechDivision\ApplicationServer\SocketThreadReceiver">
+                <worker type="TechDivision\ApplicationServer\SocketRequestAcceptor"/>
+                <thread type="TechDivision\PersistenceContainer\ThreadRequest"/>
+                <params workerNumber="16" address="0.0.0.0" port="8585"/>
+            </receiver>
+            <deployment type="TechDivision\PersistenceContainer\Deployment"/>
+            <host name="localhost"
+                  appBase="/webapps"
+                  serverAdmin="${appserver.admin.email}"
+                  serverSoftware="appserver/${appserver.version} (${os.family}) PHP/${appserver.php.version}">
+            </host>
+        </container>
+        <!--
+            This is an example of a servlet container that uses a socket for
+            sending and receiving HTML requests/responses. This solution can
+            be used for running a web server.
+        -->
+        <container type="TechDivision\ServletContainer\Container">
+            <!--
+            <receiver type="TechDivision\ApplicationServer\SocketReceiver">
+	           	<worker type="TechDivision\ServletContainer\RequestHandler"/>
+	           	<stackable type="TechDivision\ServletContainer\WorkerRequest"/>
+                <params workerNumber="4" address="0.0.0.0" port="8586"/>
+            </receiver>
+            -->
+            <receiver type="TechDivision\ApplicationServer\SocketThreadReceiver">
+                <worker type="TechDivision\ApplicationServer\SocketRequestAcceptor"/>
+                <thread type="TechDivision\ServletContainer\ThreadRequest"/>
+                <params workerNumber="16" address="0.0.0.0" port="8586"/>
+            </receiver>
+            <deployment type="TechDivision\ServletContainer\Deployment"/>
+            <host name="localhost"
+                  appBase="/webapps"
+                  serverAdmin="${appserver.admin.email}"
+                  serverSoftware="appserver/${appserver.version} (${os.family}) PHP/${appserver.php.version}">
+                <vhosts>
+                    <vhost name="www.appserver.io" appBase="/site">
+                        <aliases>
+                            <alias>appserver.io</alias>
+                            <alias>appserver.local</alias>
+                        </aliases>
+                    </vhost>
+                    <vhost name="magento.local" appBase="/magento" />
+                </vhosts>
+            </host>
+        </container>
+        <!--
+            This is an example of a message queue that uses a socket to
+            receive messages. This solution can be used for clients connecting 
+            over a network.
+        -->
+        <container type="TechDivision\MessageQueue\Container">
+            <!--
+            <receiver type="TechDivision\MessageQueue\SocketReceiver">
+	           	<worker type="TechDivision\MessageQueue\RequestHandler"/>
+	           	<stackable type="TechDivision\MessageQueue\WorkerRequest"/>
+                <params workerNumber="10" address="0.0.0.0" port="8587"/>
+            </receiver>
+            -->
+            <receiver type="TechDivision\ApplicationServer\SocketThreadReceiver">
+                <worker type="TechDivision\ApplicationServer\SocketRequestAcceptor"/>
+                <thread type="TechDivision\MessageQueue\ThreadRequest"/>
+                <params workerNumber="16" address="0.0.0.0" port="8587"/>
+            </receiver>
+            <deployment type="TechDivision\MessageQueue\Deployment"/>
+            <host name="localhost"
+                  appBase="/webapps"
+                  serverAdmin="${appserver.admin.email}"
+                  serverSoftware="appserver/${appserver.version} (${os.family}) PHP/${appserver.php.version}">
+            </host>
+        </container>
+
+        <!--
+            This is an example of a servlet container that uses React PHP for
+            sending and receiving HTML requests/responses. This solution can
+            be used for running a web server.
+        -->
+        <!--
+        <container type="TechDivision\ServletContainer\Container">
+            <receiver type="TechDivision\ServletContainer\ReactReceiver">
+                <params address="0.0.0.0" port="8588"/>
+            </receiver>
+            <deployment type="TechDivision\ServletContainer\Deployment"/>
+            <host name="localhost"
+                  appBase="/webapps"
+                  serverAdmin="${appserver.admin.email}"
+                  serverSoftware="appserver/${appserver.version} (${os.family}) PHP/${appserver.php.version}"/>
+        </container>
+        -->
+    </containers>
+
+</appserver>
