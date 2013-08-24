@@ -133,4 +133,101 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase {
 	public function testGetDataNotAvailable() {
 		$this->assertNull($this->configuration->getData('foo'));
 	}
+	
+	/**
+	 * Tests the configuration's equals method be return FALSE if
+	 * not a reference has been passed.
+	 * 
+	 * @return void
+	 */
+	public function testEqualsAndExpectFalse() {
+	    $this->configuration->init($this->getTestNode('test', 'testValue'));
+	    $configuration = new Configuration();
+	    $configuration->init($this->getTestNode('test', 'testValue'));
+	    $this->assertFalse($this->configuration->equals($configuration));
+	}
+	
+	/**
+	 * Tests the configuration's equals method be return TRUE if
+	 * a reference has been passed.
+	 * 
+	 * @return void
+	 */
+	public function testEqualsAndExpectTrue() {
+	    $this->configuration->init($this->getTestNode('test', 'testValue'));
+	    $this->assertTrue($this->configuration->equals($this->configuration));
+	}
+	
+	/**
+	 * Tests if NULL will be returned if an invalid configuration
+	 * path has been requested.
+	 * 
+	 * @return void
+	 */
+	public function testGetChildWithInvalidPath() {
+	    $this->assertNull($this->configuration->getChild('/invalid/path'));
+	}
+	
+	/**
+	 * Tests if the method returns FALSE if the configuration
+	 * has NO children.
+	 * 
+	 * @return void
+	 */
+	public function testHasChildrenWithEmptyConfiguration() {
+	    $this->assertFalse($this->configuration->hasChildren());
+	}
+	
+	/**
+	 * Tests if the method returns TRUE if the configuration
+	 * HAS children.
+	 * 
+	 * @return void
+	 */
+	public function testHasChildrenWithConfiguration() {
+	    $this->configuration->init($this->getTestNode('test', 'testValue'));
+	    $this->assertTrue($this->configuration->hasChildren());
+	}
+	
+	/**
+	 * Tests if the magic function __call throws an exception if invoked
+	 * nor with a getter or setter.
+	 * 
+	 * @return void
+	 * @expectedException \Exception
+	 */
+	public function testCallMagicFunctionNoGetterOrSetter() {
+	    $this->configuration->someUnknownPath();
+	}
+	
+	/**
+	 * Tests if the magic function __call returns NULL if invoked
+	 * with a non existing child or attribute name.
+	 * 
+	 * @return void
+	 */
+	public function testCallMagicFunctionWithInvalidPath() {
+	    $this->assertNull($this->configuration->getSomeUnknownPath());
+	}
+	
+	/**
+	 * Tests if the magic function __call returns the configuration value
+	 * if invoked with a existing child name.
+	 * 
+	 * @return void
+	 */
+	public function testCallMagicFunctionWithValidChildName() {
+	    $this->configuration->init($this->getTestNode('test', 'testValue'));
+	    $this->assertInstanceOf('TechDivision\ApplicationServer\Configuration', $this->configuration->getTestNode());
+	}
+	/**
+	 * Tests if the magic function __call returns the configuration value
+	 * if invoked with a existing child name.
+	 * 
+	 * @return void
+	 */
+	public function testCallMagicFunctionWithValidAttributeName() {
+	    $this->configuration->init($this->getTestNode($testAttrValue = 'test', 'testValue'));
+	    $this->assertEquals($testAttrValue, $this->configuration->getTestNode()->getAttr());
+	}
 }

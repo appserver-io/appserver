@@ -158,7 +158,7 @@ class Server {
             $containerConfiguration->addChild($this->getBaseDirectoryConfiguration());
             
             // initialize the container configuration with the base directory and pass it to the thread
-            $this->threads[$i] = $this->newInstance('TechDivision\ApplicationServer\ContainerThread', array($this->getInitialContext(), $containerConfiguration));
+            $this->threads[$i] = $this->newInstance($containerConfiguration->getThreadType(), array($this->getInitialContext(), $containerConfiguration));
             $this->threads[$i]->start();
         }
     }

@@ -6,15 +6,18 @@
 	</testsuites>
     <filter>
         <whitelist>
-            <directory suffix=".php">app/code</directory>
-            <exclude/>
+            <directory suffix=".php">.</directory>
+		    <exclude>
+		        <directory prefix="Mock">.</directory>
+		        <directory suffix="Test.php">.</directory>
+		    </exclude>
         </whitelist>
     </filter>
     <!-- Code coverage report, optional -->
     <logging>
-        <log type="coverage-html" target="reports/unit/coverage"/>
-        <log type="coverage-clover" target="reports/unit/clover.xml"/>
-        <log type="junit" target="reports/unit/junit.xml" logIncompleteSkipped="false"/>
+        <log type="coverage-html" target="${php-target.dir}/reports/unit/coverage"/>
+        <log type="coverage-clover" target="${php-target.dir}/reports/unit/clover.xml"/>
+        <log type="junit" target="${php-target.dir}/reports/unit/junit.xml" logIncompleteSkipped="false"/>
     </logging>
     <php>
         <ini name="date.timezone" value="Europe/Berlin"/>

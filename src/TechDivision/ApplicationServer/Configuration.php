@@ -275,7 +275,12 @@ class Configuration implements ContainerConfiguration {
         // check if a getter/setter has been called
         switch (substr($method, 0, 3)) {
             case 'get':
-                return $this->getData($key);
+                $child = $this->getChild("/{$this->getNodeName()}/$key");
+                if ($child instanceof Configuration) {
+                    return $child;
+                } else {
+                    return $this->getData($key);
+                }
                 break;
             case 'set':
                 $this->setData($key, isset($args[0]) ? $args[0] : null);

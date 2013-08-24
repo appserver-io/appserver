@@ -27,8 +27,7 @@
 	<!-- ==================================================================== -->
 	<target name="prepare" depends="clean" description="Prepares all the required directories.">
 		<mkdir dir="${php-target.dir}" />
-        <mkdir dir="${php-target.dir}/reports" />
-        <mkdir dir="${php-target.dir}/reports/coverage" />
+        <mkdir dir="${php-target.dir}/reports/unit/coverage" />
 	</target>
 	
     <!-- ==================================================================== -->

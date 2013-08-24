@@ -74,4 +74,36 @@ class ServerTest extends \PHPUnit_Framework_TestCase {
 	public function testGetContainerConfiguration() {
 	    $this->assertCount(3, $this->server->getContainerConfiguration());
 	}
+	
+	/**
+	 * Test if the initial context configuration has been initialized.
+	 *
+	 * @return void
+	 */
+	public function testGetInitialContextConfiguration() {
+	    $initialContextConfiguration = $this->server->getInitialContextConfiguration();
+	    $this->assertInstanceOf('TechDivision\ApplicationServer\Configuration', $initialContextConfiguration);
+	    $this->assertEquals('TechDivision\ApplicationServer\InitialContext', $initialContextConfiguration->getType());
+	}
+	
+	/**
+	 * Test the server's start method.
+	 * 
+	 * @return void
+	 */
+	public function testStart() {
+	    $this->server->start();
+	    $this->assertCount(3, $this->server->getThreads());
+	}
+	
+	/**
+	 * Test the new instance method.
+	 * 
+	 * @return void
+	 */
+	public function testNewInstance() {
+	    $className = 'TechDivision\ApplicationServer\MockContainerThread';
+	    $instance = $this->server->newInstance($className, array($this->server->getInitialContext()));
+	    $this->assertInstanceOf($className, $instance);
+	}
 }
