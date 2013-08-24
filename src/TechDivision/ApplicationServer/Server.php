@@ -12,8 +12,6 @@
 
 namespace TechDivision\ApplicationServer;
 
-use Monolog\Logger;
-use Monolog\Handler\ErrorLogHandler;
 use TechDivision\Socket\Client;
 use TechDivision\ApplicationServer\SplClassLoader;
 use TechDivision\ApplicationServer\InitialContext;
@@ -83,10 +81,6 @@ class Server {
         
         // initialize the configuration and the base directory
         $this->configuration = $configuration;
-
-        // create a log channel
-        $this->logger = new Logger(__CLASS__);
-        $this->logger->pushHandler(new ErrorLogHandler(0, Logger::DEBUG));
         
         // initialize the initial context instance
         $reflectionClass = new \ReflectionClass($this->getInitialContextConfiguration()->getType());
@@ -163,9 +157,6 @@ class Server {
      * @return void
      */
     public function start() {
-
-        // send a log message that the servers will start now
-        $this->logger->addInfo("Now starting Application Server");
         
         // start each container in his own thread
         foreach ($this->getContainerConfiguration() as $i => $containerConfiguration) {
@@ -176,9 +167,6 @@ class Server {
             // initialize the container configuration with the base directory and pass it to the thread
             $this->threads[$i] = $this->newInstance($containerConfiguration->getThreadType(), array($this->getInitialContext(), $containerConfiguration));
             $this->threads[$i]->start();
-
-            // send a log message that the container has been started
-            $this->logger->addInfo("Successfully started container '{$containerConfiguration->getType()}'");
         }
     }
     
