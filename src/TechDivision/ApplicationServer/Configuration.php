@@ -118,8 +118,19 @@ class Configuration implements ContainerConfiguration {
      * @return \TechDivision\ApplicationServer\Configuration The initialized configuration
      */
     public function initFromFile($file) {
-        // initialize the SimpleXMLElement with the content XML configuration file
         $root = simplexml_load_file($file);
+        return $this->init($root);
+    }
+    
+    /**
+     * Initializes the configuration with the XML information found
+     * in the passed DOMDocument.
+     * 
+     * @param \DOMDocument $domDocument The DOMDocument with XML information
+     * @return \TechDivision\ApplicationServer\Configuration The initialized configuration
+     */
+    public function initFromDomDocument(\DOMDocument $domDocument) {
+        $root = simplexml_import_dom($domDocument);
         return $this->init($root);
     }
     

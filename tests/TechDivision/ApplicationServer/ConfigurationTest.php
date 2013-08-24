@@ -85,9 +85,37 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase {
 		$this->assertEquals(array($toBeTested), $this->configuration->getChildren());
 	}
 
-    public function testLoadFromFile() {
+	/**
+	 * Test to initialize the configuration from a simple XML file.
+	 * 
+	 * @return void
+	 */
+    public function testInitFromFile() {
 
         $this->configuration->initFromFile(__DIR__ . '/_files/META-INF/appserver-ds.xml');
+
+        $driver = $this->configuration->getChild('/datasources/datasource/database/driver');
+        $user = $this->configuration->getChild('/datasources/datasource/database/user');
+        $password = $this->configuration->getChild('/datasources/datasource/database/password');
+        $databaseName = $this->configuration->getChild('/datasources/datasource/database/databaseName');
+
+        $this->assertEquals('pdo_mysql', $driver);
+        $this->assertEquals('appserver', $user);
+        $this->assertEquals('appserver', $password);
+        $this->assertEquals('appserver_ApplicationServer', $databaseName);
+    }
+
+	/**
+	 * Test to initialize the configuration from a DOM document.
+	 * 
+	 * @return void
+	 */
+    public function testInitFromDomDocument() {
+
+        $domDocument = new \DOMDocument();
+        $domDocument->load(__DIR__ . '/_files/META-INF/appserver-ds.xml');
+        
+        $this->configuration->initFromDomDocument($domDocument);
 
         $driver = $this->configuration->getChild('/datasources/datasource/database/driver');
         $user = $this->configuration->getChild('/datasources/datasource/database/user');
