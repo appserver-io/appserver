@@ -29,31 +29,25 @@ abstract class AbstractContainer extends \Stackable implements ContainerInterfac
      * Path to the container's receiver configuration.
      * @var string
      */
-    const CONFIGURATION_RECEIVER = '/container/receiver';
-    
-    /**
-     * Path to the receiver's initialization parameters.
-     * @var string
-     */
-    const CONFIGURATION_PARAMETERS = '/container/receiver/params';
+    const XPATH_CONFIGURATION_RECEIVER = '/container/receiver';
     
     /**
      * Path to the receiver's stackable.
      * @var string
      */
-    const CONFIGURATION_STACKABLE = '/container/receiver/stackable';
+    const XPATH_CONFIGURATION_STACKABLE = '/container/receiver/stackable';
     
     /**
      * Path to the receiver's worker.
      * @var string
      */
-    const CONFIGURATION_WORKER = '/container/receiver/worker';
+    const XPATH_CONFIGURATION_WORKER = '/container/receiver/worker';
 
     /**
      * Path to the receiver's worker.
      * @var string
      */
-    const CONFIGURATION_THREAD = '/container/receiver/thread';
+    const XPATH_CONFIGURATION_THREAD = '/container/receiver/thread';
 
     /**
      * Array with deployed applications.
@@ -100,7 +94,6 @@ abstract class AbstractContainer extends \Stackable implements ContainerInterfac
      * @see \TechDivision\ApplicationServer\Interfaces\ContainerInterface::getReceiver()
      */
     public function getReceiver() {
-        // create and return a new receiver instance
         return $this->newInstance($this->getReceiverType(), array($this->initialContext, $this));
     }
 
@@ -150,7 +143,7 @@ abstract class AbstractContainer extends \Stackable implements ContainerInterfac
      * @return \TechDivision\ApplicationServer\Configuration The receiver configuration instance
      */
     public function getReceiverConfiguration() {
-        return current($this->getConfiguration()->getChilds(self::CONFIGURATION_RECEIVER));
+        return current($this->getConfiguration()->getChilds(self::XPATH_CONFIGURATION_RECEIVER));
     }
     
     /**
@@ -168,7 +161,7 @@ abstract class AbstractContainer extends \Stackable implements ContainerInterfac
      * @return string The class name of the receiver's stackable type
      */
     public function getStackableType() {
-        return current($this->getConfiguration()->getChilds(self::CONFIGURATION_STACKABLE))->getType();
+        return current($this->getConfiguration()->getChilds(self::XPATH_CONFIGURATION_STACKABLE))->getType();
     }
 
     /**
@@ -177,7 +170,7 @@ abstract class AbstractContainer extends \Stackable implements ContainerInterfac
      * @return string The class name of the receiver's worker type
      */
     public function getWorkerType() {
-        return current($this->getConfiguration()->getChilds(self::CONFIGURATION_WORKER))->getType();
+        return current($this->getConfiguration()->getChilds(self::XPATH_CONFIGURATION_WORKER))->getType();
     }
 
     /**
@@ -186,16 +179,7 @@ abstract class AbstractContainer extends \Stackable implements ContainerInterfac
      * @return string The class name of the receiver's worker type
      */
     public function getThreadType() {
-        return current($this->getConfiguration()->getChilds(self::CONFIGURATION_THREAD))->getType();
-    }
-    
-    /**
-     * Return's the receiver's initialization parameters.
-     * 
-     * @return \TechDivision\ApplicationServer\Configuration  The receiver's initialization parameters.
-     */
-    public function getParameters() {
-        return current($this->getConfiguration()->getChilds(self::CONFIGURATION_PARAMETERS));
+        return current($this->getConfiguration()->getChilds(self::XPATH_CONFIGURATION_THREAD))->getType();
     }
     
     /**

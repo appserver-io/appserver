@@ -9,6 +9,31 @@
 		</servers>
 	</initialContext>
 	
+	<systemLogger type="Monolog\Logger" channelName="system">
+		<processors>
+			<processor type="Monolog\Processor\MemoryUsageProcessor">
+				<params>
+					<param name="realUsage" type="boolean">true</param>
+				</params>
+			</processor>
+		</processors>
+		<handlers>
+			<handler type="Monolog\Handler\ErrorLogHandler">
+				<formatter type="Monolog\Formatter\LineFormatter">
+					<params>
+						<param name="output" type="string"><![CDATA[[%datetime%] %channel%.%level_name%: %message% %context% %extra%\n]]></param>
+						<param name="dateFormat" type="string"><![CDATA[Y-m-d H:i:s]]></param>
+					</params>
+				</formatter>
+				<params>
+					<param name="messageType" type="integer">ErrorLogHandler::OPERATING_SYSTEM</param>
+					<param name="level" type="integer">Logger::DEBUG"</param>
+					<param name="bubble" type="boolean">true</param>
+				</params>
+			</handler>
+		</handlers>
+	</systemLogger>
+	
     <containers>
 
         <container threadType="TechDivision\ApplicationServer\MockContainerThread" type="TechDivision\PersistenceContainer\Container">
@@ -16,7 +41,11 @@
             <receiver type="TechDivision\ApplicationServer\SocketThreadReceiver">
                 <worker type="TechDivision\ApplicationServer\SocketRequestAcceptor"/>
                 <thread type="TechDivision\PersistenceContainer\ThreadRequest"/>
-                <params workerNumber="16" address="0.0.0.0" port="8585"/>
+				<params>
+					<param name="workerNumber" type="integer">16</param>
+					<param name="address" type="string">0.0.0.0</param>
+					<param name="port" type="integer">8585</param>
+				</params>
             </receiver>
             <deployment type="TechDivision\PersistenceContainer\Deployment"/>
             <host name="localhost"
@@ -31,7 +60,11 @@
             <receiver type="TechDivision\ApplicationServer\SocketThreadReceiver">
                 <worker type="TechDivision\ApplicationServer\SocketRequestAcceptor"/>
                 <thread type="TechDivision\ServletContainer\ThreadRequest"/>
-                <params workerNumber="16" address="0.0.0.0" port="8586"/>
+				<params>
+					<param name="workerNumber" type="integer">16</param>
+					<param name="address" type="string">0.0.0.0</param>
+					<param name="port" type="integer">8586</param>
+				</params>
             </receiver>
             <deployment type="TechDivision\ServletContainer\Deployment"/>
             <host name="localhost"
@@ -55,7 +88,11 @@
             <receiver type="TechDivision\ApplicationServer\SocketThreadReceiver">
                 <worker type="TechDivision\ApplicationServer\SocketRequestAcceptor"/>
                 <thread type="TechDivision\MessageQueue\ThreadRequest"/>
-                <params workerNumber="16" address="0.0.0.0" port="8587"/>
+				<params>
+					<param name="workerNumber" type="integer">16</param>
+					<param name="address" type="string">0.0.0.0</param>
+					<param name="port" type="integer">8587</param>
+				</params>
             </receiver>
             <deployment type="TechDivision\MessageQueue\Deployment"/>
             <host name="localhost"

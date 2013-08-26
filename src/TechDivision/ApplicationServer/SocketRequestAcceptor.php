@@ -49,12 +49,12 @@ class SocketRequestAcceptor extends AbstractContextThread {
 
     /**
      * Init acceptor with container and acceptable socket resource
-     * and threadType class
+     * and thread type class.
      *
      * @param ContainerInterface $container A container implementation
      * @param resource $resource The client socket instance
      * @param string $threadType The thread type class to instantiate
-     * @return \TechDivision\ApplicationServer\SocketRequestAcceptor
+     * @return void
      */
     public function init(ContainerInterface $container, $resource, $threadType) {
         $this->container = $container;
@@ -67,18 +67,15 @@ class SocketRequestAcceptor extends AbstractContextThread {
      */
     public function main() {
         
-        // start acceptor loop
         while (true) {
             
             // reinitialize the server socket
             $serverSocket = $this->initialContext->newInstance('TechDivision\Socket', array($this->resource)); 
             
-            // accept client connection
+            // accept client connection and process the request
             if ($clientSocket = $serverSocket->accept()) {
-                
-                // init new thread type instance
-                $request = $this->initialContext->newInstance($this->threadType, array($this->initialContext, $this->container, $clientSocket->getResource()));
-                // start thread
+                $params = array($this->initialContext, $this->container, $clientSocket->getResource());
+                $request = $this->initialContext->newInstance($this->threadType, $params);
                 $request->start();
             }
         }

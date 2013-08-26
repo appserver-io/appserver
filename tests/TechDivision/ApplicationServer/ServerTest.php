@@ -49,6 +49,15 @@ class ServerTest extends \PHPUnit_Framework_TestCase {
 	}
 	
 	/**
+	 * Test if the system logger has successfully been initialized.
+	 *
+	 * @return void
+	 */
+	public function testGetSystemLogger() {
+	    $this->assertInstanceOf('Monolog\Logger', $this->server->getSystemLogger());
+	}
+	
+	/**
 	 * Test if the configuration has been passed successfully.
 	 *
 	 * @return void
@@ -73,6 +82,17 @@ class ServerTest extends \PHPUnit_Framework_TestCase {
 	 */
 	public function testGetContainerConfiguration() {
 	    $this->assertCount(3, $this->server->getContainerConfiguration());
+	}
+	
+	/**
+	 * Test if the system logger configuration has been initialized.
+	 *
+	 * @return void
+	 */
+	public function testGetSystemLoggerConfiguration() {
+	    $systemLoggerConfiguration = $this->server->getSystemLoggerConfiguration();
+	    $this->assertInstanceOf('TechDivision\ApplicationServer\Configuration', $systemLoggerConfiguration);
+	    $this->assertEquals('Monolog\Logger', $systemLoggerConfiguration->getType());
 	}
 	
 	/**

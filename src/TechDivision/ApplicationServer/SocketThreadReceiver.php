@@ -24,44 +24,11 @@ use TechDivision\ApplicationServer\AbstractReceiver;
 class SocketThreadReceiver extends AbstractReceiver {
 
     /**
-     * Sets the reference to the container instance.
-     *
-     * @param \TechDivision\ApplicationServer\Interfaces\ContainerInterface $container The container instance
-     */
-    public function __construct($initialContext, $container) {
-
-        $this->initialContext = $initialContext;
-        // set the container instance
-        $this->container = $container;
-
-        // load the receiver configuration
-        $configuration = $this->getContainer()->getReceiverConfiguration();
-
-        // set the receiver configuration
-        $this->setConfiguration($configuration);
-
-        // set the configuration in the initial context
-        $this->initialContext->setAttribute(get_class($this), $configuration);
-
-        // enable garbage collector and initialize configuration
-        $this->gcEnable()->checkConfiguration();
-
-        // load the worker type
-        $this->setWorkerType($this->getContainer()->getWorkerType());
-
-        // load the thread type
-        $this->setThreadType($this->getContainer()->getThreadType());
-    }
-
-    /**
      * @see TechDivision\ApplicationServer\Interfaces\ReceiverInterface::start()
      */
     public function start() {
 
         try {
-        
-            // load the receiver params
-            $parameters = $this->getContainer()->getParameters();
             
             // load the socket instance
             /** @var \TechDivision\Socket\Client $socket */
@@ -69,8 +36,8 @@ class SocketThreadReceiver extends AbstractReceiver {
             
             // prepare the main socket and listen
             $socket->create()
-                   ->setAddress($parameters->getAddress())
-                   ->setPort($parameters->getPort())
+                   ->setAddress($this->getAddress())
+                   ->setPort($this->getPort())
                    ->setBlock()
                    ->setReuseAddr()
                    ->bind()
@@ -104,22 +71,4 @@ class SocketThreadReceiver extends AbstractReceiver {
             }
         } 
     }
-
-    /**
-     * Returns a thread
-     *
-     * @return \Thread The request acceptor thread
-     */
-    public function newWorker($socketResource) {
-        return $this->newInstance(
-            $this->getWorkerType(),
-            array(
-                $this->initialContext,
-                $this->getContainer(),
-                $socketResource,
-                $this->getThreadType()
-            )
-        );
-    }
-
 }

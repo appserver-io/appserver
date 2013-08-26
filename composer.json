@@ -12,7 +12,8 @@
     ],
     "require": {
         "php" : ">=5.4.0",
-        "techdivision/socket": "dev-master"
+        "techdivision/socket": "dev-master",
+        "monolog/monolog": "*"
     },
     "autoload": {
         "psr-0": {"TechDivision": "src/"}

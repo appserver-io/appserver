@@ -1,11 +1,4 @@
 <?php
 
-// set the new include path
-set_include_path(get_include_path(). PATH_SEPARATOR . __DIR__);
-
-require 'TechDivision/ApplicationServer/SplClassLoader.php';
-
-$classLoader = new TechDivision\ApplicationServer\SplClassLoader();
-$classLoader->register();
-
-// require '${dir.www}/${instance.base.dir}/bootstrap.php';
+$loader = require '${php-target.dir}/vendor/autoload.php';
+$loader->add('TechDivision\\ApplicationServer\\', '${php-target.dir}/vendor/techdivision/appserver/src');

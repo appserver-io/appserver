@@ -29,7 +29,7 @@ class ContainerThread extends AbstractContextThread {
      * Path to the container's deployment configuration.
      * @var string
      */
-    const CONTAINER_DEPLOYMENT = '/container/deployment';
+    const XPATH_CONTAINER_DEPLOYMENT = '/container/deployment';
     
     /**
      * The container's configuration
@@ -90,7 +90,7 @@ class ContainerThread extends AbstractContextThread {
      * @return object
      */
     public function getDeployment() {
-        $deploymentType = $this->getConfiguration()->getChild(self::CONTAINER_DEPLOYMENT)->getType();
+        $deploymentType = $this->getConfiguration()->getChild(self::XPATH_CONTAINER_DEPLOYMENT)->getType();
         return $this->newInstance($deploymentType, array($this->getInitialContext(), $this));
     }
 }

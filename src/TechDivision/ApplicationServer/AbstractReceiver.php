@@ -29,174 +29,53 @@ use TechDivision\PersistenceContainerClient\Interfaces\RemoteMethod;
 abstract class AbstractReceiver implements ReceiverInterface {
     
     /**
+     * Path to the receiver's initialization parameters.
+     * @var string
+     */
+    const XPATH_CONFIGURATION_PARAMETERS = '/receiver/params/param';
+    
+    /**
      * The container instance.
      * @var \TechDivision\ApplicationServer\Interfaces\ContainerInterface
      */
     protected $container;
     
     /**
-     * The number of parallel workers to handle client connections.
-     * @var integer
-     */
-    protected $workerNumber = 4;
-
-    /**
-     * Array with the worker instances.
-     * @var array
-     */
-    protected $workers = array();
-    
-    /**
      * The worker type to use.
      * @var string
      */
-    protected $workerType = '';
-    
-    /**
-     * The stackable type to use.
-     * @var string
-     */
-    protected $stackableType = '';
+    protected $workerType;
 
     /**
      * The thread type to use.
      * @var string
      */
-    protected $threadType = '';
+    protected $threadType;
 
     /**
      * Sets the reference to the container instance.
-     * 
+     *
      * @param \TechDivision\ApplicationServer\Interfaces\ContainerInterface $container The container instance
      */
     public function __construct($initialContext, $container) {
+
+        // initialize the initial context
+        $this->initialContext = $initialContext;
         
         // set the container instance
         $this->container = $container;
-        
-        // load the receiver configuration
-        $configuration = $this->getContainer()->getReceiverConfiguration();
+
+        // enable garbage collector
+        $this->gcEnable();
 
         // set the receiver configuration
-        $this->setConfiguration($configuration);
-        
-        // set the configuration in the initial context
-        $this->initialContext->setAttribute(get_class($this), $configuration);
+        $this->setConfiguration($this->getContainer()->getReceiverConfiguration());
 
-        // enable garbage collector and initialize configuration
-        $this->gcEnable()->checkConfiguration();
-        
         // load the worker type
         $this->setWorkerType($this->getContainer()->getWorkerType());
-            
-        // load the stackable type
-        $this->setStackableType($this->getContainer()->getStackableType());
-    }
-    
-    /**
-     * @see \TechDivision\ApplicationServer\Interfaces\ReceiverInterface::stack()
-     */
-    public function stack(\Stackable $request) {
-        
-        // start a new worker and stack the request
-        $this->newWorker()->stack($request);
 
-        // check of container configuration has to be reloaded
-        $this->checkConfiguration();
-
-        return $this;
-    }
-    
-    /**
-     * Process the request by creating a new request instance (stackable)
-     * and stack's it on one of the workers.
-     * 
-     * @return void
-     */
-    public function processRequest(\TechDivision\Socket $socket) {
-        
-        // create a new request instance
-        $request = $this->newStackable(array($socket->getResource()));
-        
-        // initialize a new worker request instance
-        $this->stack($request)->shutdownARandomWorker();
-    }
-
-    /**
-     * Create's and return's a new request instance (thread) and
-     * passes the the params to the constructor.
-     *
-     * @param array $params Array with the params
-     * @return \Thread The request instance
-     */
-    public function newThread($params)
-    {
-        return $this->newInstance($this->getThreadType(), $params);
-    }
-
-    /**
-     * Create's and return's a new request instance (stackable) and
-     * passes the the params to the constructor.
-     * 
-     * @param array $params Array with the params
-     * @return \Stackable The request instance
-     */
-    public function newStackable($params)
-    {
-        return $this->newInstance($this->getStackableType(), $params);
-    }
-
-    /**
-     * Shutdown not working workers if maximum worker number has been reached.
-     *
-     * @return void
-     */
-    public function shutdownARandomWorker() {
-
-        // get a random worker number
-        $randomWorker = rand(0, $this->getWorkerNumber() - 1);
-
-        // check if the worker is running and working
-        if (array_key_exists($randomWorker, $this->workers) === true
-            && $this->workers[$randomWorker]->isWorking() === false) {
-
-            // shutdown worker and unset instance
-            $this->workers[$randomWorker]->shutdown();
-
-            unset($this->workers[$randomWorker]);
-        }
-    }
-
-    /**
-     * Returns a random worker.
-     *
-     * @return \Worker The random worker instance
-     */
-    public function newWorker($recursion) {
-        
-        // get the maximum number of workers
-        $workerNumber = $this->getWorkerNumber();
-
-        // get a random worker number
-        $randomWorker = rand(0, $workerNumber - 1);
-        
-        // check if the worker is already initialized
-        if (array_key_exists($randomWorker, $this->workers) === false) {
-            
-            // initialize a new worker
-            $this->workers[$randomWorker] = $this->newInstance($this->getWorkerType(), array($this->getContainer()));
-            $this->workers[$randomWorker]->start();
-            
-        } else {
-
-            // check if the worker is shutting down actually
-            if ($this->workers[$randomWorker]->isShutdown() === true) {
-                return $this->newWorker($recursion++);
-            }
-        }
-
-        // return the random worker
-        return $this->workers[$randomWorker];
+        // load the thread type
+        $this->setThreadType($this->getContainer()->getThreadType());
     }
 
     /**
@@ -207,23 +86,38 @@ abstract class AbstractReceiver implements ReceiverInterface {
     public function getContainer() {
         return $this->container;
     }
-
-    /**
-     * Set's the maximum number of workers to start.
-     * 
-     * @param integer $workerNumber The maximum number of worker's to start
-     * @return \TechDivision\ApplicationServer\Interfaces\ReceiverInterface The receiver instance
-     */
-    public function setWorkerNumber($workerNumber) {
-        $this->workerNumber = $workerNumber;
-        return $this;
-    }
     
     /**
      * @see \TechDivision\ApplicationServer\Interfaces\ReceiverInterface::getWorkerNumber()
      */
     public function getWorkerNumber() {
-        return $this->workerNumber;
+        foreach ($this->getConfiguration()->getChilds(self::XPATH_CONFIGURATION_PARAMETERS) as $param) {
+            if ($param->getData('name') == 'workerNumber') {
+                return $param->getValue();
+            }
+        }
+    }
+    
+    /**
+     * @see \TechDivision\ApplicationServer\Interfaces\ReceiverInterface::getAddress()
+     */
+    public function getAddress() {
+        foreach ($this->getConfiguration()->getChilds(self::XPATH_CONFIGURATION_PARAMETERS) as $param) {
+            if ($param->getData('name') == 'address') {
+                return $param->getValue();
+            }
+        }
+    }
+    
+    /**
+     * @see \TechDivision\ApplicationServer\Interfaces\ReceiverInterface::getPort()
+     */
+    public function getPort() {
+        foreach ($this->getConfiguration()->getChilds(self::XPATH_CONFIGURATION_PARAMETERS) as $param) {
+            if ($param->getData('name') == 'port') {
+                return $param->getValue();
+            }
+        }   
     }
 
     /**
@@ -245,24 +139,6 @@ abstract class AbstractReceiver implements ReceiverInterface {
     }
 
     /**
-     * Set's the stackable's class name to use.
-     * 
-     * @param string $stackableType The stackable's class name to use
-     * @return \TechDivision\ApplicationServer\Interfaces\ReceiverInterface The receiver instance
-     */
-    public function setStackableType($stackableType) {
-        $this->stackableType = $stackableType;
-        return $this;
-    }
-    
-    /**
-     * @see \TechDivision\ApplicationServer\Interfaces\ReceiverInterface::getStackableType()
-     */
-    public function getStackableType() {
-        return $this->stackableType;
-    }
-
-    /**
      * Set's the thread's class name to use.
      *
      * @param string $threadType The thread's class name to use
@@ -274,7 +150,7 @@ abstract class AbstractReceiver implements ReceiverInterface {
     }
 
     /**
-     * @see \TechDivision\ApplicationServer\Interfaces\ReceiverInterface::getStackableType()
+     * @see \TechDivision\ApplicationServer\Interfaces\ReceiverInterface::getThreadType()
      */
     public function getThreadType() {
         return $this->threadType;
@@ -299,34 +175,6 @@ abstract class AbstractReceiver implements ReceiverInterface {
      */
     public function getConfiguration() {
         return $this->configuration;
-    }
-    
-    /**
-     * Sets the new container configuration data.
-     * 
-     * @return void
-     */
-    public function reloadConfiguration() {
-        $parameters = $this->getContainer()->getParameters();
-        $this->setWorkerNumber((integer) $parameters->getWorkerNumber());
-    }
-    
-    /**
-     * Check's if container configuration as changed, if yes, the 
-     * configuration will be reloaded.
-     * 
-     * @todo Refactor configuration reinitialization
-     * @return void
-     */
-    public function checkConfiguration() {
-        
-        // load the configuration from the initial context
-        $nc = $this->initialContext->getAttribute(get_class($this));
-
-        // check if configuration has changed
-        if ($nc != null && !$this->getConfiguration()->equals($nc)) {
-            $this->setConfiguration($nc)->reloadConfiguration();
-        }
     }
     
     /**
@@ -369,6 +217,16 @@ abstract class AbstractReceiver implements ReceiverInterface {
     public function gcDisable() {
         gc_disable();
         return $this;
+    }
+
+    /**
+     * Returns a thread
+     *
+     * @return \Thread The request acceptor thread
+     */
+    public function newWorker($socketResource) {
+        $params = array($this->initialContext, $this->getContainer(), $socketResource, $this->getThreadType());
+        return $this->newInstance($this->getWorkerType(), $params);
     }
     
     /**

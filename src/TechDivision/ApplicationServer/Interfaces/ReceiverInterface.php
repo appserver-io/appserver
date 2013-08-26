@@ -29,23 +29,25 @@ interface ReceiverInterface {
     public function start();
     
     /**
-     * Stacks the passed request to one of the
-     * internal workers and returns.
-     * 
-     * If enabled the garbage collection will be run and the configuration
-     * will be refreshed.
-     * 
-     * @param \Stackable $request The request to be stacked
-     * @return void
-     */
-    public function stack(\Stackable $request);
-    
-    /**
      * Returns the maximum number of workers to start.
      * 
      * @return integer The maximum worker number 
      */
     public function getWorkerNumber();
+    
+    /**
+     * Returns the IP address to listen to.
+     * 
+     * @return integer The IP address to listen to
+     */
+    public function getAddress();
+    
+    /**
+     * Returns the port to listen to.
+     * 
+     * @return integer The port to listen to
+     */
+    public function getPort();
     
     /**
      * Returns the worker class name to use.
@@ -55,9 +57,9 @@ interface ReceiverInterface {
     public function getWorkerType();
     
     /**
-     * Returns the stackable class name to use.
+     * Returns the thread class name to use.
      * 
-     * @return string The stackable class name 
+     * @return string The thread class name 
      */
-    public function getStackableType();
+    public function getThreadType();
 }

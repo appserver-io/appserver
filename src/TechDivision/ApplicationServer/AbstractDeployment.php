@@ -28,13 +28,13 @@ abstract class AbstractDeployment implements DeploymentInterface {
      * Path to the container's base directory.
      * @var string
      */
-    const CONTAINER_BASE_DIRECTORY = '/container/baseDirectory';
+    const XPATH_CONTAINER_BASE_DIRECTORY = '/container/baseDirectory';
 
     /**
      * Path to the container's host configuration.
      * @var string
      */
-    const CONTAINER_HOST = '/container/host';
+    const XPATH_CONTAINER_HOST = '/container/host';
 
     /**
      * The container thread

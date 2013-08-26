@@ -47,6 +47,12 @@ class Server {
     const XPATH_INITIAL_CONTEXT = '/appserver/initialContext';
 
     /**
+     * XPath expression for the system logger configuration.
+     * @var string
+     */
+    const XPATH_SYSTEM_LOGGER = '/appserver/systemLogger';
+
+    /**
      * Initialize the array for the running threads.
      * @var array
      */
@@ -66,9 +72,9 @@ class Server {
     
     /**
      * The server's logger instance.
-     * @var unknown
+     * @var \Psr\Log\LoggerInterface
      */
-    protected $logger;
+    protected $systemLogger;
 
     /**
      * Initializes the the server with the base directory.
@@ -82,9 +88,103 @@ class Server {
         // initialize the configuration and the base directory
         $this->configuration = $configuration;
         
-        // initialize the initial context instance
+        // initialize the server
+        $this->init();
+    }
+    
+    /**
+     * Initialize's the server instance.
+     * 
+     * @return void
+     */
+    protected function init() {
+        $this->initInitialContext();
+        $this->initSystemLogger();
+        $this->initContainers();
+    }
+    
+    /**
+     * Initialize the system logger.
+     * 
+     * @return void
+     */
+    protected function initSystemLogger() {
+        
+        // initialize the logger instance itself
+        $systemLoggerConfiguration = $this->getSystemLoggerConfiguration();
+        $this->systemLogger = $this->newInstance($systemLoggerConfiguration->getType(), array($systemLoggerConfiguration->getChannelName()));
+        
+        // initialize the processors
+        foreach ($systemLoggerConfiguration->getChilds('/systemLogger/processors/processor') as $processorConfiguration) {
+            $params = array();
+            if ($processorConfiguration->getParams() != null) {
+                foreach ($processorConfiguration->getParams()->getChilds('/params/param') as $param) {
+                    $value = $param->getValue();
+                    settype($value, $param->getType());
+                    $params[$param->getName()] = $value;
+                }
+            }
+            $processor = $this->newInstance($processorConfiguration->getType(), $params);
+            $this->systemLogger->pushProcessor($processor);
+            
+        }
+        
+        // initialize the handlers
+        foreach ($systemLoggerConfiguration->getChilds('/systemLogger/handlers/handler') as $handlerConfiguration) {
+            $params = array();
+            if ($handlerConfiguration->getParams() != null) {
+                foreach ($handlerConfiguration->getParams()->getChilds('/params/param') as $param) {
+                    $value = $param->getValue();
+                    settype($value, $param->getType());
+                    $params[$param->getName()] = $value;
+                }
+            }
+            $handler = $this->newInstance($handlerConfiguration->getType(), $params);
+            
+            // initialize the handlers formatter
+            $params = array();
+            $formatterConfiguration = $handlerConfiguration->getFormatter();
+            if ($formatterConfiguration->getParams() != null) {
+                foreach ($formatterConfiguration->getParams()->getChilds('/params/param') as $param) {
+                    $value = $param->getValue();
+                    settype($value, $param->getType());
+                    $params[$param->getName()] = $value;
+                }
+            }
+            
+            // set the handlers formatter and add the handler to the logger
+            $handler->setFormatter($this->newInstance($formatterConfiguration->getType(), $params));
+            $this->systemLogger->pushHandler($handler);
+        }
+    }
+    
+    /**
+     * Initialize the initial context instance.
+     * 
+     * @return void
+     */
+    protected function initInitialContext() {
         $reflectionClass = new \ReflectionClass($this->getInitialContextConfiguration()->getType());
         $this->initialContext = $reflectionClass->newInstanceArgs(array($this->getInitialContextConfiguration()));
+    }
+    
+    /**
+     * Initialize the container threads.
+     * 
+     * @return void
+     */
+    protected function initContainers() {
+
+        // start each container in his own thread
+        foreach ($this->getContainerConfiguration() as $containerConfiguration) {
+            
+            // pass the base directory through to the container configuration
+            $containerConfiguration->addChild($this->getBaseDirectoryConfiguration());
+        
+            // initialize the container configuration with the base directory and pass it to the thread
+            $params = array($this->getInitialContext(), $containerConfiguration);
+            $this->threads[] = $this->newInstance($containerConfiguration->getThreadType(), $params);
+        }
     }
     
     /**
@@ -143,6 +243,15 @@ class Server {
     }
     
     /**
+     * Return's the system logger configuration.
+     * 
+     * @return \TechDivision\ApplicationServer\Configuration The system logger configuration
+     */
+    public function getSystemLoggerConfiguration() {
+        return $this->getConfiguration()->getChild(self::XPATH_SYSTEM_LOGGER);
+    }
+    
+    /**
      * Return's the container configuration.
      * 
      * @return array<\TechDivision\ApplicationServer\Configuration> The container configuration
@@ -152,21 +261,22 @@ class Server {
     }
     
     /**
-     * Start's the server and initializes the containers.
+     * Return's the system logger instance.
+     * 
+     * @return \Psr\Log\LoggerInterface
+     */
+    public function getSystemLogger() {
+        return $this->systemLogger;
+    }
+    
+    /**
+     * Start the container threads.
      * 
      * @return void
      */
     public function start() {
-        
-        // start each container in his own thread
-        foreach ($this->getContainerConfiguration() as $i => $containerConfiguration) {
-            
-            // pass the base directory through to the container configuration
-            $containerConfiguration->addChild($this->getBaseDirectoryConfiguration());
-            
-            // initialize the container configuration with the base directory and pass it to the thread
-            $this->threads[$i] = $this->newInstance($containerConfiguration->getThreadType(), array($this->getInitialContext(), $containerConfiguration));
-            $this->threads[$i]->start();
+        foreach ($this->getThreads() as $thread) {
+            $thread->start();
         }
     }
     

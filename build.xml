@@ -120,6 +120,13 @@
                 <expandproperties/>
             </filterchain>
         </copy>
+    	
+    	<copy file="${basedir}/composer.json" todir="${php-target.dir}" />
+    	
+        <!-- install composer packages -->
+        <exec dir="${php-target.dir}" executable="composer">
+            <arg line="update"/>
+        </exec>
     </target>
 
     <!-- ==================================================================== -->
