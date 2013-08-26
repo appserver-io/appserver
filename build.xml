@@ -112,6 +112,7 @@
     <!-- Copies the test sources to the target directory					  -->
     <!-- ==================================================================== -->
     <target name="copy-tests" depends="copy" description="Copies the test sources to the target directory.">
+    	<!-- copy the test classes to the target directory -->
         <copy todir="${php-target.dir}/${unique.name}/src">
             <fileset dir="${php-test.dir}">
                 <include name="**/*" />
@@ -120,9 +121,8 @@
                 <expandproperties/>
             </filterchain>
         </copy>
-    	
+    	<!-- copy the composer configuration file to the target directory -->
     	<copy file="${basedir}/composer.json" todir="${php-target.dir}" />
-    	
         <!-- install composer packages -->
         <exec dir="${php-target.dir}" executable="composer">
             <arg line="update"/>
@@ -142,14 +142,13 @@
     <!-- Runs the PHPUnit tests and generates a report						  -->
     <!-- ==================================================================== -->
     <target name="build" description="Runs the PHPUnit tests and generates a report.">
-    	<antcall target="copy"/>
+        <antcall target="run-tests"/>
     	<antcall target="apidoc"/>
     	<antcall target="phpcs"/>
     	<antcall target="phpcpd"/>
     	<antcall target="phploc"/>
     	<antcall target="pdepend"/>
     	<antcall target="phpmd"/>
-        <antcall target="run-tests"/>
     </target>
 	
 </project>
