@@ -14,7 +14,7 @@
         "php" : ">=5.4.0",
         "techdivision/socket": "dev-master",
         "monolog/monolog": "*",
-        "herrera-io/annotations": "dev-master"
+        "herrera-io/annotations": "1.0.*"
     },
     "autoload": {
         "psr-0": {"TechDivision": "src/"}
