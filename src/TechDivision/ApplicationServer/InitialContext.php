@@ -71,11 +71,14 @@ class InitialContext {
         $this->classLoader = $reflectionClass->newInstance();
         
         // initialze the memcache servers
-        $this->cache = new \Memcached;
-        $this->cache->setOption(\Memcached::OPT_LIBKETAMA_COMPATIBLE, true);
-        foreach ($this->getConfiguration()->getChilds(self::XPATH_SERVER) as $server) {
-            $this->cache->addServer($server->getAddress(), $server->getPort(), $server->getWeight());
-        }   
+        $this->cache = new \Memcached(__CLASS__);
+        $serverList = $this->cache->getServerList();
+        if (empty($serverList)) {
+            $this->cache->setOption(\Memcached::OPT_LIBKETAMA_COMPATIBLE, true);
+            foreach ($this->getConfiguration()->getChilds(self::XPATH_SERVER) as $server) {
+                $this->cache->addServer($server->getAddress(), $server->getPort(), $server->getWeight());
+            } 
+        }  
     }
     
     /**
@@ -85,12 +88,15 @@ class InitialContext {
      * @return void
      */
     public function __wakeup() {
-        // initialze the memcache servers
-        $this->cache = new \Memcached;
-        $this->cache->setOption(\Memcached::OPT_LIBKETAMA_COMPATIBLE, true);
-        foreach ($this->getConfiguration()->getChilds(self::XPATH_SERVER) as $server) {
-            $this->cache->addServer($server->getAddress(), $server->getPort(), $server->getWeight());
-        }  
+        // reinitialze the memcache servers
+        $this->cache = new \Memcached(__CLASS__);
+        $serverList = $this->cache->getServerList();
+        if (empty($serverList)) {
+            $this->cache->setOption(\Memcached::OPT_LIBKETAMA_COMPATIBLE, true);
+            foreach ($this->getConfiguration()->getChilds(self::XPATH_SERVER) as $server) {
+                $this->cache->addServer($server->getAddress(), $server->getPort(), $server->getWeight());
+            } 
+        } 
     }
     
     /**
