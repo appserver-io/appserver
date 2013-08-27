@@ -32,10 +32,10 @@ class InitialContext {
     const XPATH_CLASS_LOADER = '/initialContext/classLoader';
     
     /**
-     * XPath expression for the initial context's server configurations.
+     * XPath expression for the initial context's storage configuration.
      * @var string
      */
-    const XPATH_SERVER = 'initialContext/servers/server';
+    const XPATH_STORAGE = '/initialContext/storage';
     
     /**
      * The container configuration.
@@ -44,10 +44,10 @@ class InitialContext {
     protected $configuration;
     
     /**
-     * The cache instance, e. g. Memcached
-     * @var \Memcached
+     * The storage instance
+     * @var \TechDivision\ApplicationServer\InitialContext\StorageInterface
      */
-    protected $cache;
+    protected $storage;
     
     /**
      * Array containing the available bean annotations.
@@ -56,8 +56,7 @@ class InitialContext {
     protected $beanAnnotations = array('entity', 'singleton', 'statefull', 'stateless');
     
     /**
-     * Initializes the context with the connection to the persistence
-     * backend, e. g. Memcached
+     * Initializes the context with the connection to the storage backend.
      * 
      * @return void
      */
@@ -70,33 +69,18 @@ class InitialContext {
         $reflectionClass = $this->newReflectionClass($configuration->getChild(self::XPATH_CLASS_LOADER)->getType());
         $this->classLoader = $reflectionClass->newInstance();
         
-        // initialze the memcache servers
-        $this->cache = new \Memcached(__CLASS__);
-        $serverList = $this->cache->getServerList();
-        if (empty($serverList)) {
-            $this->cache->setOption(\Memcached::OPT_LIBKETAMA_COMPATIBLE, true);
-            foreach ($this->getConfiguration()->getChilds(self::XPATH_SERVER) as $server) {
-                $this->cache->addServer($server->getAddress(), $server->getPort(), $server->getWeight());
-            } 
-        }  
+        // initialze the storage
+        $reflectionClass = $this->newReflectionClass($configuration->getChild(self::XPATH_STORAGE)->getType());
+        $this->storage = $reflectionClass->newInstanceArgs(array($configuration->getChild(self::XPATH_STORAGE))); 
     }
     
     /**
-     * Reinitializes the context with the connection to the persistence
-     * backend, e. g. Memcached
+     * Returns the storage instance.
      * 
-     * @return void
+     * @return \TechDivision\ApplicationServer\InitialContext\StorageInterface The storage instance
      */
-    public function __wakeup() {
-        // reinitialze the memcache servers
-        $this->cache = new \Memcached(__CLASS__);
-        $serverList = $this->cache->getServerList();
-        if (empty($serverList)) {
-            $this->cache->setOption(\Memcached::OPT_LIBKETAMA_COMPATIBLE, true);
-            foreach ($this->getConfiguration()->getChilds(self::XPATH_SERVER) as $server) {
-                $this->cache->addServer($server->getAddress(), $server->getPort(), $server->getWeight());
-            } 
-        } 
+    public function getStorage() {
+        return $this->storage;
     }
     
     /**
@@ -125,7 +109,7 @@ class InitialContext {
      * @return void
      */
     public function setAttribute($key, $value) {
-        $this->cache->set($key, $value);
+        $this->storage->set($key, $value);
     }
     
     /**
@@ -135,7 +119,7 @@ class InitialContext {
      * @return mixed The value stored in the initial context
      */
     public function getAttribute($key) {
-        return $this->cache->get($key);
+        return $this->storage->get($key);
     }
     
     /**
@@ -145,16 +129,7 @@ class InitialContext {
      * @return void
      */
     public function removeAttribute($key) {
-        $this->cache->delete($key);
-    }
-    
-    /**
-     * Returns all keys of elements stored in initial context.
-     * 
-     * @return array Array with all keys
-     */
-    public function getAllKeys() {
-        return $this->cache->getAllKeys();
+        $this->storage->remove($key);
     }
     
     /**

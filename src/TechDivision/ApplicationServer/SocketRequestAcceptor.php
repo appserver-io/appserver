@@ -74,6 +74,7 @@ class SocketRequestAcceptor extends AbstractContextThread {
             
             // accept client connection and process the request
             if ($clientSocket = $serverSocket->accept()) {
+                
                 $params = array($this->initialContext, $this->container, $clientSocket->getResource());
                 $request = $this->initialContext->newInstance($this->threadType, $params);
                 $request->start();
