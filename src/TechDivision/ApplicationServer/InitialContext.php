@@ -168,7 +168,7 @@ class InitialContext {
      * @throws \Exception Is thrown if the class has NO bean annotation
      * @return string The found bean annotation
      */
-    protected function getBeanAnnotation($reflectionClass) {
+    public function getBeanAnnotation($reflectionClass) {
         
         // load the class name to get the annotation for
         $className = $reflectionClass->getName();
@@ -206,7 +206,7 @@ class InitialContext {
         }
         
         // throw an exception if the requested class
-        throw new \Exception(sprintf("Mission enterprise bean annotation for %s", $reflectionClass->getName()));
+        throw new \Exception(sprintf("Missing enterprise bean annotation for %s", $reflectionClass->getName()));
     }
     
     /**

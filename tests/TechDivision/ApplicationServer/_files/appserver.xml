@@ -3,12 +3,7 @@
 	<initialContext type="TechDivision\ApplicationServer\InitialContext">
 		<description><![CDATA[The initial context configuration.]]></description>
 		<classLoader type="TechDivision\ApplicationServer\SplClassLoader"/>
-		<storage type="TechDivision\ApplicationServer\InitialContext\MemcachedStorage">
-			<servers>
-				<server address="127.0.0.1" port="11211" weight="0"/>
-				<server address="127.0.0.1" port="11211" weight="1"/>
-			</servers>
-		</storage>
+		<storage type="TechDivision\ApplicationServer\InitialContext\MockStorage"/>
 	</initialContext>
 	
 	<systemLogger type="Monolog\Logger" channelName="system">

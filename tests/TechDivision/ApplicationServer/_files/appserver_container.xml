@@ -1,0 +1,27 @@
+<container threadType="TechDivision\ApplicationServer\MockContainerThread" type="TechDivision\ServletContainer\Container">
+	<description><![CDATA[This is an example of a servlet container that uses a socket for sending and receiving HTML requests/responses. This solution can be used for running a web server.]]></description>
+    <receiver type="TechDivision\ApplicationServer\SocketThreadReceiver">
+        <worker type="TechDivision\ApplicationServer\SocketRequestAcceptor"/>
+        <thread type="TechDivision\ServletContainer\ThreadRequest"/>
+		<params>
+			<param name="workerNumber" type="integer">16</param>
+			<param name="address" type="string">0.0.0.0</param>
+			<param name="port" type="integer">8586</param>
+		</params>
+    </receiver>
+    <deployment type="TechDivision\ServletContainer\Deployment"/>
+    <host name="localhost"
+          appBase="/webapps"
+          serverAdmin="${appserver.admin.email}"
+          serverSoftware="appserver/${appserver.version} (${os.family}) PHP/${appserver.php.version}">
+        <vhosts>
+            <vhost name="www.appserver.io" appBase="/site">
+                <aliases>
+                    <alias>appserver.io</alias>
+                    <alias>appserver.local</alias>
+                </aliases>
+            </vhost>
+            <vhost name="magento.local" appBase="/magento" />
+        </vhosts>
+    </host>
+</container>

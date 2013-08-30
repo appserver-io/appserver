@@ -34,8 +34,8 @@ class InitialContextTest extends \PHPUnit_Framework_TestCase {
 	 */
 	public function setUp() {
 	    $configuration = new Configuration();
-        $configuration->initFromFile(__DIR__ . '/_files/appserver.xml');
-		$this->initialContext = new InitialContext($configuration->getChild('/appserver/initialContext'));
+        $configuration->initFromFile(__DIR__ . '/_files/appserver_initial_context.xml');
+		$this->initialContext = new InitialContext($configuration);
 	}
 	
 	/**
@@ -120,6 +120,40 @@ class InitialContextTest extends \PHPUnit_Framework_TestCase {
 	public function testNewReflectionClass() {
 	    $reflectionClass = $this->initialContext->newReflectionClass('TechDivision\ApplicationServer\Configuration');
 	    $this->assertInstanceOf('\ReflectionClass', $reflectionClass);
+	}
+	
+	/**
+	 * Test if the method returns the correct bean annotation for a singleton
+	 * session bean.
+	 * 
+	 * @return void
+	 */
+	public function testGetBeanAnnotationWithoutBeanTypesDeclared() {
+	    $reflectionClass = $this->initialContext->newReflectionClass('TechDivision\ApplicationServer\MockSingletonSessionBean');
+	    $this->initialContext->removeAttribute('beanTypes');
+	    $this->assertEquals('singleton', $this->initialContext->getBeanAnnotation($reflectionClass));
+	}
+	
+	/**
+	 * Test if the method returns the correct bean annotation for a singleton
+	 * session bean.
+	 * 
+	 * @return void
+	 */
+	public function testGetBeanAnnotation() {
+	    $reflectionClass = $this->initialContext->newReflectionClass('TechDivision\ApplicationServer\MockSingletonSessionBean');
+	    $this->assertEquals('singleton', $this->initialContext->getBeanAnnotation($reflectionClass));
+	}
+	
+	/**
+	 * Test if the method throws an exception for a missing session bean annotation.
+	 * 
+	 * @return void
+	 * @expectedException \Exception
+	 */
+	public function testGetBeanAnnotationExcpectingAnException() {
+	    $reflectionClass = $this->initialContext->newReflectionClass('TechDivision\ApplicationServer\Configuration');
+	    $this->assertEquals('singleton', $this->initialContext->getBeanAnnotation($reflectionClass));
 	}
 	
 	/**
