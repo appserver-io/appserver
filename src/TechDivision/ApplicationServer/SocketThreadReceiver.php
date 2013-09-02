@@ -32,16 +32,12 @@ class SocketThreadReceiver extends AbstractReceiver {
             
             // load the socket instance
             /** @var \TechDivision\Socket\Client $socket */
-            $socket = $this->newInstance('\TechDivision\Socket\Client');
+            $socket = $this->newInstance('\TechDivision\Socket\Server');
             
             // prepare the main socket and listen
-            $socket->create()
-                   ->setAddress($this->getAddress())
+            $socket->setAddress($this->getAddress())
                    ->setPort($this->getPort())
-                   ->setBlock()
-                   ->setReuseAddr()
-                   ->bind()
-                   ->listen();
+                   ->start();
 
             try {
                 // check if resource been initiated
