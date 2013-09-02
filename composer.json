@@ -12,9 +12,11 @@
     ],
     "require": {
         "php" : ">=5.4.0",
-        "techdivision/socket": "dev-master",
         "monolog/monolog": "*",
         "herrera-io/annotations": "1.0.*"
+    },
+    "require-dev": {
+        "techdivision/socket": "dev-master"
     },
     "autoload": {
         "psr-0": {"TechDivision": "src/"}
