@@ -12,11 +12,8 @@
 
 namespace TechDivision\ApplicationServer;
 
-use TechDivision\PersistenceContainer\Request;
-use TechDivision\PersistenceContainer\RequestHandler;
 use TechDivision\ApplicationServer\InitialContext;
 use TechDivision\ApplicationServer\Interfaces\ReceiverInterface;
-use TechDivision\PersistenceContainerClient\Interfaces\RemoteMethod;
 
 /**
  * @package     TechDivision\ApplicationServer
@@ -76,6 +73,57 @@ abstract class AbstractReceiver implements ReceiverInterface {
 
         // load the thread type
         $this->setThreadType($this->getContainer()->getThreadType());
+    }
+
+    /**
+     * Returns the resource class used to create a new socket.
+     *
+     * @return string The resource class name
+     */
+    protected abstract function getResourceClass();
+
+    /**
+     *
+     * @see TechDivision\ApplicationServer\Interfaces\ReceiverInterface::start()
+     */
+    public function start()
+    {
+        try {
+            
+            /** @var \TechDivision\Socket\Client $socket */
+            $socket = $this->newInstance($this->getResourceClass());
+            
+            // prepare the main socket and listen
+            $socket->setAddress($this->getAddress())
+                ->setPort($this->getPort())
+                ->start();
+            
+            try {
+                // check if resource been initiated
+                if ($socket->getResource()) {
+                    // init worker number
+                    $worker = 0;
+                    // init workers array holder
+                    $workers = array();
+                    // open threads where accept connections
+                    while ($worker ++ < $this->getWorkerNumber()) {
+                        // init thread
+                        $workers[$worker] = $this->newWorker($socket->getResource());
+                        // start thread async
+                        $workers[$worker]->start();
+                    }
+                }
+            } catch (\Exception $e) {
+                error_log($e->__toString());
+            }
+        } catch (\Exception $ge) {
+            
+            error_log($ge->__toString());
+            
+            if (is_resource($socket->getResource())) {
+                $socket->close();
+            }
+        }
     }
 
     /**
