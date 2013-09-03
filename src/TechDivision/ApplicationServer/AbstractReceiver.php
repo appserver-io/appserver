@@ -94,9 +94,7 @@ abstract class AbstractReceiver implements ReceiverInterface {
             $socket = $this->newInstance($this->getResourceClass());
             
             // prepare the main socket and listen
-            $socket->setAddress($this->getAddress())
-                ->setPort($this->getPort())
-                ->start();
+            $socket->setAddress($this->getAddress())->setPort($this->getPort())->start();
             
             try {
                 // check if resource been initiated

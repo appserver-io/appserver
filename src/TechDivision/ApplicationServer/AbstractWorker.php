@@ -88,6 +88,7 @@ abstract class AbstractWorker extends AbstractContextThread
             
             // accept client connection and process the request
             if ($clientSocket = $serverSocket->accept()) {
+        
                 $params = array(
                     $this->initialContext,
                     $this->container,
