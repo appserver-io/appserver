@@ -136,9 +136,8 @@
     <!-- Runs the PHPUnit tests and generates a report                        -->
     <!-- ==================================================================== -->
     <target name="run-tests" depends="copy-tests" description="Runs the PHPUnit tests and generates a report.">
-        <exec executable="${bin.phpunit}" dir="${php-target.dir}/${unique.name}/src">
-            <env key="PATH" value="${instance.base.dir}/bin:${env.PATH}"/>
-        	<arg line="--configuration phpunit.xml.dist" />
+        <exec executable="${instance.base.dir}/bin/php" dir="${php-target.dir}/${unique.name}/src">
+        	<arg line="-d zend_extension=xdebug.so ${instance.base.dir}/bin/phpunit --configuration phpunit.xml.dist" />
         </exec>
     </target>
 
