@@ -1,13 +1,15 @@
 language: php
   
+php:
+	- 5.5
+	- 5.4
+  
 before_install:
+	- pecl install pthreads
+	- echo "extension=pthreads.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 
-- sudo apt-get install libc6 libbz2-1.0 libcomerr2 libdb5.1 libgcc1 libgssapi-krb5-2 libk5crypto3 libkrb5-3 libmagic1 libonig2 libpcre3 libqdbm14 libssl1.0.0 libxml2 mime-support tzdata ucf zlib1g libmcrypt4 libpng12-0 libjpeg62 libcurl3 libltdl7 libjpeg8 libmemcached-dev libevent-dev libev-dev libcloog-ppl0 curl make autoconf git redis-server memcached
-- sudo wget http://deb.appserver.io/pool/main/a/appserver/appserver_0.5.6beta_amd64.deb
-- sudo dpkg -i appserver_0.5.6beta_amd64.deb
- 
 script:
- - ant run-tests
+	- ant run-tests
 
 notifications:
-  email: tw@techdivision.com
+  	email: info@appserver.io
