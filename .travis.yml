@@ -5,7 +5,7 @@ php:
   - 5.4
   
 before_install:
-  - pecl install pthreads
+  - pecl install pthreads-beta
   - echo "extension=pthreads.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   
 script:
