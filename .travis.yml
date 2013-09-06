@@ -9,7 +9,7 @@ before_install:
   - echo "extension=pthreads.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   
 script:
-  - ant run-tests
+  - ant run-tests-on-travis
 
 notifications:
   email: info@appserver.io

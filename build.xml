@@ -133,6 +133,15 @@
     </target>
 
     <!-- ==================================================================== -->
+    <!-- Runs the PHPUnit tests on Travis-CI and generates a report           -->
+    <!-- ==================================================================== -->
+    <target name="run-tests-on-travis" depends="copy-tests" description="Runs the PHPUnit tests on Travis-CI and generates a report.">
+        <exec executable="phpunit" dir="${php-target.dir}/${unique.name}/src">
+        	<arg line="--configuration phpunit.xml.dist" />
+        </exec>
+    </target>
+
+    <!-- ==================================================================== -->
     <!-- Runs the PHPUnit tests and generates a report                        -->
     <!-- ==================================================================== -->
     <target name="run-tests" depends="copy-tests" description="Runs the PHPUnit tests and generates a report.">
