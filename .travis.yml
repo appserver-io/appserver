@@ -1,7 +1,7 @@
 language: php
   
 before_install:
-- sudo echo "deb http://deb.appserver.io/ wheezy main" >> /etc/apt/sources.list
+- sudo echo "deb http://deb.appserver.io/ wheezy main" > /etc/apt/sources.list.d/appserver.list
 - sudo wget http://deb.appserver.io/appserver.gpg
 - sudo cat appserver.gpg | apt-key add - 
 - sudo aptitude update
