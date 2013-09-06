@@ -8,7 +8,7 @@ before_install:
   - pecl install pthreads-beta
   
 script:
-  - ant build
+  - ant run-tests
 
 notifications:
   email: info@appserver.io
