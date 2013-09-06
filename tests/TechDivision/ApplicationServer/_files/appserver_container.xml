@@ -1,8 +1,8 @@
 <container threadType="TechDivision\ApplicationServer\MockContainerThread" type="TechDivision\ServletContainer\Container">
 	<description><![CDATA[This is an example of a servlet container that uses a socket for sending and receiving HTML requests/responses. This solution can be used for running a web server.]]></description>
-    <receiver type="TechDivision\ApplicationServer\SocketThreadReceiver">
-        <worker type="TechDivision\ApplicationServer\SocketRequestAcceptor"/>
-        <thread type="TechDivision\ServletContainer\ThreadRequest"/>
+    <receiver type="TechDivision\ApplicationServer\Socket\Receiver">
+        <worker type="TechDivision\ApplicationServer\Socket\Worker"/>
+        <thread type="TechDivision\ApplicationServer\Socket\MockRequest"/>
 		<params>
 			<param name="workerNumber" type="integer">16</param>
 			<param name="address" type="string">0.0.0.0</param>

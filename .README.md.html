@@ -1,0 +1,315 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Strict//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>/Users/wagnert/Workspace/appserver/TechDivision_ApplicationServer/.README.md.html</title>
+
+
+<style type="text/css">
+
+.markdown-body {
+    border: 1px solid #CACACA;
+    padding: 30px;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.markdown-body h2 {
+    border-bottom: 1px solid #CCCCCC;
+}
+
+.markdown-body code {
+    white-space: nowrap;
+}
+
+.markdown-body code, .markdown-body tt {
+    background-color: #F8F8F8;
+    border: 1px solid #EAEAEA;
+    border-radius: 3px 3px 3px 3px;
+    margin: 0 2px;
+    padding: 0 5px;
+}
+
+.markdown-body .highlight pre, .markdown-body pre {
+    background-color: #F8F8F8;
+    border: 1px solid #CCCCCC;
+    border-radius: 3px 3px 3px 3px;
+    font-size: 13px;
+    line-height: 19px;
+    overflow: auto;
+    padding: 6px 10px;
+}
+
+.markdown-body img {
+    border: 0 none;
+}
+
+pre, code, tt {
+    font-family: Consolas,"Liberation Mono",Courier,monospace;
+    font-size: 12px;
+}
+</style>
+
+
+<script type="text/javascript">
+
+function getDocumentScrollTop() 
+{
+   var res = document.body.scrollTop || document.documentElement.scrollTop || window.pageYOffset || 0;
+   // alert(res);
+   return res;
+}
+
+function setDocumentScrollTop(ypos) 
+{
+	window.scrollTo(0, ypos);
+}
+
+</script>
+
+
+</head>
+<body class="markdown-body">
+<h1> <a name="php-application-server" class="anchor" href="..md.html#php-application-server"><span class="octicon octicon-link"></span></a>PHP Application Server</h1> 
+<p>Ziel des Projekts ist die Entwicklung eines multithreaded Application Servers f&uuml;r PHP, geschrieben in PHP. Geschrieben in PHP um m&ouml;glichst vielen Entwicklern aus der PHP Gemeinde die Mitarbeit zu erm&ouml;glichen und das Projekt durch die m&ouml;glichst breite Unterst&uuml;tzung der PHP Community als Standardl&ouml;sung f&uuml;r Enterprise Application im PHP Umfeld zu etablieren.</p> 
+<h2> <a name="highlights" class="anchor" href="..md.html#highlights"><span class="octicon octicon-link"></span></a>Highlights</h2> 
+<ul> 
+ <li>Doctrine als Standard Persistence Provider</li> 
+ <li>Session Beans (Stateful, Stateless + Singleton)</li> 
+ <li>Message Beans</li> 
+ <li>Timer Service (tbd)</li> 
+ <li>Servlet Engine</li> 
+ <li>Integrierte Message Queue</li> 
+ <li>Einfache Skalierung</li> 
+ <li>Webservices</li> 
+</ul>
+<h2> <a name="technical-features" class="anchor" href="..md.html#technical-features"><span class="octicon octicon-link"></span></a>Technical Features</h2> 
+<ul> 
+ <li>Verwendung der phtreads Library von Joe Watkins (<a href="https://github.com/krakjoe/pthreads">https://github.com/krakjoe/pthreads</a>)</li> 
+ <li>Verwendung von DI &amp; AOP innerhalb der jeweiligen Container</li> 
+ <li>Einsatz von Annotations zur Konfiguration der Beans</li> 
+ <li>Configration by Exception (optional Verwendung von Deployment Descriptoren m&ouml;glich)</li> 
+</ul>
+<p>Die Implementierung einer Webanwendung sowie deren Betrieb im PHP Application Server muss so einfach wie m&ouml;glich sein. Hierzu werden zum Einen, wann immer m&ouml;glich, bereits bestehenden Komponenten als Standardl&ouml;sung, so z. B. Doctrine, verwendet, zum Anderen darf, durch das Paradigma Configuration by Exception, f&uuml;r den Betrieb einer Anwendung nur ein Minimum an Konfiguration notwendig sein. So wird breits durch das Standardverhalten der jeweiligen Kompenenten ein Gro&szlig;teil der Verwendungsf&auml;lle abgedeckt wodurch sich der Enwickler h&auml;ufig keine deklarativen Angaben zur Konfiguration machen muss.</p> 
+<p>Um eine m&ouml;glichst breite Community anzusprechen muss die Architektur des PHP Application Servers so aufgebaut werden, das &uuml;ber Adapter eine m&ouml;glichst gro&szlig;e Anzahl an bereits bestehenden Anwendungen einfach migriert werden k&ouml;nnen. Weiterhin wird die zuk&uuml;nftige Entwicklung von Webanwendungen auf Basis aller relevanten PHP Frameworks durch die Bereitstellung von Libraries unterst&uuml;tzt.</p> 
+<h2> <a name="requirements" class="anchor" href="..md.html#requirements"><span class="octicon octicon-link"></span></a>Requirements</h2> 
+<ul> 
+ <li>PHP5.3+ on x64 or x86</li> 
+ <li>ZTS Enabled (Thread Safety)</li> 
+ <li>Posix Threads Implementierung</li> 
+ <li>Memcached (2.1+)</li> 
+</ul>
+<p>Die aktuelle Version bisher lediglich auf Mac OS X 10.7+ getestet. Aufgrund der verwendeten Komponenten sollten allerdings auch auf anderen Plattformen der Betrieb m&ouml;glich sein.</p> 
+<h3> <a name="supported-php-versionen" class="anchor" href="..md.html#supported-php-versionen"><span class="octicon octicon-link"></span></a>Supported PHP Versionen</h3> 
+<p>Der PHP Application Server sollte auf jeder PHP Version ab 5.3.0 laufen, allerdings traten bei diversen Tests mit PHP 5.3.x immer wieder Segmentation Faults auf die sich allerdings auf das fr&uuml;he Entwicklungsstadium der pthreads Library zur&uuml;ckf&uuml;hren lassen. Aktuell wird f&uuml;r die Entwicklung PHP 5.4.10 verwendet.</p> 
+<h2> <a name="php-mit-pthreads-bauen" class="anchor" href="..md.html#php-mit-pthreads-bauen"><span class="octicon octicon-link"></span></a>PHP mit pthreads bauen</h2> 
+<p>Je nach Debian Version &amp; PHP Konfiguration m&uuml;ssen vorab folgende Libraries m&uuml;ssen installiert werden:</p> 
+<pre><code>$ apt-get install \
+    apache2-prefork-dev \
+    php5-dev \
+    libxml2 \
+    libxml2-dev \
+    libcurl3-dev \
+    libbz2-dev \
+    libxpm4 \
+    libxpm-dev \
+    libc-client2007e \
+    libc-client2007e-dev \
+    libmcrypt4 \
+    libmcrypt-dev \
+    libmemcached-dev \
+    libjpeg62 \
+    libjpeg62-dev \
+    libpng12-0 \
+    libpng12-dev \
+    libfreetype6 \
+    libfreetype6-dev \
+    g++
+</code></pre> 
+<p>Einen guten &Uuml;berblick &uuml;ber die Fehlermeldungen und die Libraries die f&uuml;r die Behebung notwendig sind findet man unter <a href="http://www.robo47.net/text/6-PHP-Configure-und-Compile-Fehler">http://www.robo47.net/text/6-PHP-Configure-und-Compile-Fehler</a>.</p> 
+<p>PHP 5.4.x f&uuml;r Debian 6.0.x mit folgender Konfiguration kompilieren:</p> 
+<pre><code>$ ./configure \
+    --with-apxs2=/usr/bin/apxs2 \
+    --prefix=/usr \
+    --with-libdir=lib64 \
+    --with-config-file-path=/etc/php5/apache2 \
+    --with-config-file-scan-dir=/etc/php5/conf.d \
+    --enable-libxml \
+    --enable-session \
+    --with-pcre-regex=/usr \
+    --enable-xml \
+    --enable-simplexml \
+    --enable-filter \
+    --disable-debug \
+    --enable-inline-optimization \
+    --disable-rpath \
+    --disable-static \
+    --enable-shared \
+    --with-pic \
+    --with-gnu-ld \
+    --with-mysql \
+    --with-gd \
+    --with-jpeg-dir \
+    --with-png-dir \
+    --with-xpm-dir \
+    --enable-exif \
+    --with-zlib \
+    --with-bz2 \
+    --with-curl \
+    --with-ldap \
+    --with-mysqli \
+    --with-freetype-dir \
+    --enable-soap \
+    --enable-sockets \
+    --enable-calendar \
+    --enable-ftp \
+    --enable-mbstring \
+    --enable-gd-native-ttf \
+    --enable-bcmath \
+    --enable-zip \
+    --with-pear \
+    --with-openssl \
+    --with-imap \
+    --with-imap-ssl \
+    --with-kerberos \
+    --enable-phar \
+    --enable-pdo \
+    --with-pdo-mysql \
+    --with-mysqli \
+    --enable-maintainer-zts \
+    --enable-roxen-zts \
+    --with-mcrypt \
+    --with-tsrm-pthreads \
+    --enable-pcntl
+</code></pre> 
+<p>Anschlie&szlig;end muss die pthreads Extension aus dem Github Repository ausgecheckt, compiliert und installiert werden:</p> 
+<pre><code>$ git clone https://github.com/krakjoe/pthreads.git
+$ cd pthreads
+$ phpize
+$ ./configure --enable-shared --enable-static
+$ make &amp;&amp; make install
+</code></pre> 
+<p>Nicht vergessen die Extension in der php.ini mit:</p> 
+<pre><code>extension = pthreads.so
+</code></pre> 
+<p>zu aktivieren.</p> 
+<p>Der PHP Application Server ben&ouml;tigt in der aktuellen Version Memcached. Um die hierf&uuml;r f&uuml;r PHP notwendige PECL Extension installieren zu k&ouml;nnen ben&ouml;tigen wir libmemcache. libmemcache herunterladen, kompilieren + installeren:</p> 
+<pre><code>$ wget https://launchpad.net/libmemcached/1.0/1.0.15/+download/libmemcached-1.0.15.tar.gz
+$ tar xvfz libmemcached-1.0.15.tar.gz
+$ cd libmemcached-1.0.15
+$ ./configure
+$ make
+$ make install
+</code></pre> 
+<p>Anschlie&szlig;end kann mit:</p> 
+<pre><code>$ pecl install memcached
+</code></pre> 
+<p>die PECL Extension installieret werden. Auch diese muss in der php.ini aktiviert werden.</p> 
+<h2> <a name="installation-application-server" class="anchor" href="..md.html#installation-application-server"><span class="octicon octicon-link"></span></a>Installation Application Server</h2> 
+<h3> <a name="build" class="anchor" href="..md.html#build"><span class="octicon octicon-link"></span></a>Build</h3> 
+<p>F&uuml;r den Build Prozess wir aktuell ANT verwendet. Um eine neue Version des Application Servers zu erzeugen kannst du auf der Konsole &uuml;ber das ANT-Target</p> 
+<pre><code>$ ant UPDATE-pack
+</code></pre> 
+<p>ein neues tar.gz erzeugen, das die Ausgangsbasis f&uuml;r deine lokale Installation darstellt.</p> 
+<h3> <a name="installation" class="anchor" href="..md.html#installation"><span class="octicon octicon-link"></span></a>Installation</h3> 
+<p>Mit diesem Paket, das du nach Aufruf des ANT Targets im target Verzeichnis findest, kannst du die Installation &uuml;ber die Kommandozeile schnell und einfach durchf&uuml;hren. Hierzu kopierst du das Archiv auf der Kommandozeile mit</p> 
+<pre><code>$ cp target/appserver-0.4.6beta.tar.gz /var/www
+</code></pre> 
+<p>in das Basisverzeichnis deines Webservers, in unserem Fall /var/<a href="http://www">www</a>. Anschlie&szlig;end wechsels du mit</p> 
+<pre><code>$ cd /var/www
+</code></pre> 
+<p>in das Basisverzeichnis und entpackst die Sourcen mit</p> 
+<pre><code>$ tar xvfz appserver-0.4.0beta.tar.gz
+$ ln -s appserver-0.4.0beta appserver
+</code></pre> 
+<p>Zus&auml;tzlich erzeugst du gleich noch einen symbolischen Link. Wenn du sp&auml;ter ein Update machen m&ouml;chtest kannst du diesen dann einfach auf das neue Verzeichnis umbiegen. Der PHP Application Server verwendet ein internes PEAR Repository f&uuml;r die Installation von zus&auml;tzlich Pakete wie z. B. Doctrine. Dieses kannst du mit</p> 
+<pre><code>$ cd appserver
+$ chmod +x bin/webapp
+$ bin/webapp setup
+</code></pre> 
+<p>initialisieren. Da als Standard Persistence Provider Doctrine zum Einsatz kommt, die Sourcen jedoch nicht mit dem PHP Application Server ausgeliefert werden erfolgt die Installation im integrierten PEAR Repository mit</p> 
+<pre><code>$ bin/webapp channel-discover pear.doctrine-project.org
+$ bin/webapp install doctrine/DoctrineORM
+</code></pre> 
+<p>Anschlie&szlig;end legst du &uuml;ber die MySQL Kommandozeile die Datenbank mit</p> 
+<pre><code>mysql$ create database appserver_ApplicationServer;
+mysql$ grant all on appserver_ApplicationServer.* to &quot;appserver&quot;@&quot;localhost&quot; identified by &quot;appserver&quot;;
+mysql$ flush privileges;
+</code></pre> 
+<p>an. Abschlie&szlig;end kannst du den PHP Application Server mit</p> 
+<pre><code>$ php -f server.php
+</code></pre> 
+<p>starten und die notwendigen Tabellen durch Aufruf der URL im Browser</p> 
+<pre><code>http://&lt;appserver-ip&gt;/appserver/examples/index.php?action=createSchema
+</code></pre> 
+<p>erzeugen lassen. &Uuml;ber die URL</p> 
+<pre><code>http://&lt;appserver-ip&gt;/appserver/examples/
+</code></pre> 
+<p>ist eine kleine Beispiel Anwendung erreichbar die die Funktionalit&auml;t des PHP Application Servers anhand eines CRUD Beispiels demonstriert. Zus&auml;tzlich ist &uuml;ber die URL</p> 
+<pre><code>http://&lt;appserver-ip&gt;:8586/example/hello-world.do
+</code></pre> 
+<p>ein rudiment&auml;res Servlet ansprechbar. Allerdings wird im aktuellen Stand hier lediglich statischer Content ausgegeben. &Uuml;ber die URL</p> 
+<pre><code>http://&lt;appserver-ip&gt;:8586/example/index.php
+</code></pre> 
+<p>kann ein PHP Skript, analog zur Ausf&uuml;hrung &uuml;ber den Apache, aufgerufen werden. Hierbei wird im Hintergrund ein Servlet (PhpServlet) aufgerufen, das eine PHP Runtime Umgebung bereitstellt. Allerdings handelt es sich hierbei lediglich um eine sehr rudiment&auml;re Implementierung, so werden z. B. globale Variablen wie $_REQUEST noch nicht bereitgestellt.</p> 
+<h3> <a name="weiterentwicklung" class="anchor" href="..md.html#weiterentwicklung"><span class="octicon octicon-link"></span></a>Weiterentwicklung</h3> 
+<p>Um dich auch w&auml;hrend der Weiterentwicklung zu unterst&uuml;tzen kannst du die &Auml;nderungen an deinen Sourcen, ebenfalls &uuml;ber ein ANT Target jederzeit in deine Entwicklungsinstanz kopieren. M&ouml;chtest du die aktuellen Sourcen aus deinem Projekt in die Entwicklungsinstanz zu kopieren startest du &uuml;ber die Kommandozeile das ANT-Target</p> 
+<pre><code>$ ant deploy
+</code></pre> 
+<p>Wenn du dich an diese Vorgehensweise h&auml;ltst, dann kommst du nicht in das Problem, dass du st&auml;ndig aufpassen musst, nicht erw&uuml;nschte Dateien wie die Symfony oder Doctrine Klassen oder irgendwelche Cache-Dateien die PEAR erzeugt, zu committen.</p> 
+<h2> <a name="verwendung" class="anchor" href="..md.html#verwendung"><span class="octicon octicon-link"></span></a>Verwendung</h2> 
+<h3> <a name="mit-dem-persistencecontainer-verbinden" class="anchor" href="..md.html#mit-dem-persistencecontainer-verbinden"><span class="octicon octicon-link"></span></a>Mit dem PersistenceContainer verbinden</h3> 
+<p>Der Verbindungsaufbau zum PersistenceContainer erfolgt &uuml;ber eine Client Library. Hierbei ist in der aktuellen Version wichtig, dass bereits eine Session existiert. Nach dem Verbindungsaufbau kann &uuml;ber die lookup() Methode ein Proxyobjekt des gew&uuml;nschten SessionBeans geholt werden:</p> 
+<div class="highlight">
+ <pre><span class="o">&lt;?</span><span class="nx">php</span>
+
+<span class="c1">// initialize the session</span>
+<span class="nb">session_start</span><span class="p">();</span>
+
+<span class="c1">// initialize the connection, and the initial context</span>
+<span class="nv">$connection</span> <span class="o">=</span> <span class="nx">Factory</span><span class="o">::</span><span class="na">createContextConnection</span><span class="p">();</span>
+<span class="nv">$session</span> <span class="o">=</span> <span class="nv">$connection</span><span class="o">-&gt;</span><span class="na">createContextSession</span><span class="p">();</span>
+<span class="nv">$initialContext</span> <span class="o">=</span> <span class="nv">$session</span><span class="o">-&gt;</span><span class="na">createInitialContext</span><span class="p">();</span>
+
+<span class="c1">// lookup the remote processor implementation</span>
+<span class="nv">$processor</span> <span class="o">=</span> <span class="nv">$initialContext</span><span class="o">-&gt;</span><span class="na">lookup</span><span class="p">(</span><span class="s1">'TechDivision\Example\Services\SampleProcessor'</span><span class="p">);</span>
+
+<span class="c1">// load all sample entities</span>
+<span class="nv">$allEntities</span> <span class="o">=</span> <span class="nv">$processor</span><span class="o">-&gt;</span><span class="na">findAll</span><span class="p">();</span>
+
+<span class="cp">?&gt;</span><span class="x"></span>
+</pre>
+</div> 
+<h2> <a name="vagrant-box" class="anchor" href="..md.html#vagrant-box"><span class="octicon octicon-link"></span></a>Vagrant Box</h2> 
+<p>Um sich das Kompilieren und Zusammenstellen der einzelnen Abh&auml;nigkeiten einfacher zu gestalten, gibt es eine Vagrant Konfiguration mit der man sehr einfach eine virtuelle Maschine mit der f&uuml;r den App-Server notwendigen Konfiguration aufsetzen kann.</p> 
+<h3> <a name="voraussetzungen" class="anchor" href="..md.html#voraussetzungen"><span class="octicon octicon-link"></span></a>Voraussetzungen</h3> 
+<p>Um die Vagrant Box zu nutzen ben&ouml;tigt man Vagrant, VirtualBox und Librarian Chef.</p> 
+<p>Zun&auml;chst muss VirtualBox wie auf der Projektwebsite beschrieben heruntergeladen und installiert werden:</p> 
+<p><a href="https://www.virtualbox.org/wiki/Downloads">https://www.virtualbox.org/wiki/Downloads</a></p> 
+<p>Anschlie&szlig;end verf&auml;hrt man ebenso mit Vagrant, dessen Download-Seite sich hier findet:</p> 
+<p><a href="http://downloads.vagrantup.com/">http://downloads.vagrantup.com/</a></p> 
+<p>Schlie&szlig;lich muss noch Chef, Librarian &amp; Librarian-Chef installiert werden. Die Projektseite dazu findet sich auf Github <a href="https://github.com/applicationsonline/librarian">https://github.com/applicationsonline/librarian</a> Da es sich um ein Ruby Paket handelt, ist die Installation</p> 
+<ul> 
+ <li>bei vorhandem Ruby - recht einfach</li> 
+</ul>
+<pre><code>$ sudo gem install chef librarian librarian-chef --no-rdoc --no-ri --verbose
+</code></pre> 
+<p><strong>Wichtig!</strong>: Wenn du Mac OS X verwendest m&uuml;ssen, damit die Kompilierung der Ruby Pakete erfolgreich durchl&auml;uft, zwingend die aktuellsten CommandLineTools via <a href="http://connect.apple.com">http://connect.apple.com</a> installiert und die ruby version wie folgt aktualisiert werden. Terminal &ouml;ffnen und die Ruby Installation als normaler Nutzer durchf&uuml;hren (kein root erforderlich). Vorest noch homebrew installieren (“The missing package manager for OS X”) um das fehlende automake zu installieren.</p> 
+<pre><code>$ ruby -e &quot;$(curl -fsSkL raw.github.com/mxcl/homebrew/go)&quot;
+$ brew install automake
+$ brew doctor
+</code></pre> 
+<p>Wenn brew doctor keine Fehlermeldung ausgibt, mit dem n&auml;chsten Schritt fortfahren. Ansonsten Fehler bereinigen.</p> 
+<pre><code>$ \curl -L https://get.rvm.io | bash -s stable --ruby source ~/.rvm/scripts/rvm
+$ \curl -L https://get.rvm.io | bash -s stable --rails --autolibs=enabled
+</code></pre> 
+<p>Wenn alles fertig ist einfach kurz im Terminal aus -/ einloggen. Nun sollte der Installation von Chef, Librarian &amp; Librarian-Chef nichts mehr im wege stehen.</p> 
+<p>Nach Installation von Chef, Librarian und Librarian-Chef kannst du die ben&ouml;tigten Cookbooks von Github automatisch herunterladen. Nachdem du in dein Projektverzeichnis gewechselt bist kannst du den Download &uuml;ber die Konsole mit</p> 
+<pre><code>$ librarian-chef install
+</code></pre> 
+<p>starten. Die heruntergeladenen Cookbooks solltest du anschlie&szlig;end im Verzeichnis coobooks finden. Zu guter Letzt fehlt noch ein hilfreiches Plugin f&uuml;r Vagrant das die VirtualBox Guest Additions auf dem Laufenden h&auml;lt</p> 
+<p><a href="https://github.com/dotless-de/vagrant-vbguest">https://github.com/dotless-de/vagrant-vbguest</a></p> 
+<h3> <a name="starten-der-vagrant-box" class="anchor" href="..md.html#starten-der-vagrant-box"><span class="octicon octicon-link"></span></a>Starten der Vagrant Box</h3> 
+<p>Im Hauptverzeichnis des Application Servers <code>vagrant up</code> eingeben. Nach einigen Minuten sollte eine virtuelle Maschine mit einem angepassten und neu kompilierten PHP laufen. Mit <code>vagrant up</code> kann man sich in die neue Maschine einloggen.</p>
+</body>
+</html>

@@ -35,9 +35,9 @@
 
         <container threadType="TechDivision\ApplicationServer\MockContainerThread" type="TechDivision\PersistenceContainer\Container">
 			<description><![CDATA[This is an example of a container that uses a socket for sending and receiving messages. This solution can be used for clients connecting over a network.]]></description>
-            <receiver type="TechDivision\ApplicationServer\SocketThreadReceiver">
-                <worker type="TechDivision\ApplicationServer\SocketRequestAcceptor"/>
-                <thread type="TechDivision\PersistenceContainer\ThreadRequest"/>
+            <receiver type="TechDivision\ApplicationServer\Socket\Receiver">
+                <worker type="TechDivision\ApplicationServer\Socket\Worker"/>
+                <thread type="TechDivision\ApplicationServer\Socket\MockRequest"/>
 				<params>
 					<param name="workerNumber" type="integer">16</param>
 					<param name="address" type="string">0.0.0.0</param>
@@ -54,9 +54,9 @@
         
         <container threadType="TechDivision\ApplicationServer\MockContainerThread" type="TechDivision\ServletContainer\Container">
 			<description><![CDATA[This is an example of a servlet container that uses a socket for sending and receiving HTML requests/responses. This solution can be used for running a web server.]]></description>
-            <receiver type="TechDivision\ApplicationServer\SocketThreadReceiver">
-                <worker type="TechDivision\ApplicationServer\SocketRequestAcceptor"/>
-                <thread type="TechDivision\ServletContainer\ThreadRequest"/>
+            <receiver type="TechDivision\ApplicationServer\Socket\Receiver">
+                <worker type="TechDivision\ApplicationServer\Socket\Worker"/>
+                <thread type="TechDivision\ApplicationServer\Socket\MockRequest"/>
 				<params>
 					<param name="workerNumber" type="integer">16</param>
 					<param name="address" type="string">0.0.0.0</param>
@@ -82,9 +82,9 @@
 
         <container threadType="TechDivision\ApplicationServer\MockContainerThread" type="TechDivision\MessageQueue\Container">
 			<description><![CDATA[This is an example of a message queue that uses a socket to receive messages. This solution can be used for clients connecting over a network.]]></description>
-            <receiver type="TechDivision\ApplicationServer\SocketThreadReceiver">
-                <worker type="TechDivision\ApplicationServer\SocketRequestAcceptor"/>
-                <thread type="TechDivision\MessageQueue\ThreadRequest"/>
+            <receiver type="TechDivision\ApplicationServer\Socket\Receiver">
+                <worker type="TechDivision\ApplicationServer\Socket\Worker"/>
+                <thread type="TechDivision\ApplicationServer\Socket\MockRequest"/>
 				<params>
 					<param name="workerNumber" type="integer">16</param>
 					<param name="address" type="string">0.0.0.0</param>
