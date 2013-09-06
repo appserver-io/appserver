@@ -1,9 +1,45 @@
 language: php
   
 before_install:
+
+- sudo aptitude install  \
+  libc6 \
+  libbz2-1.0 \
+  libcomerr2 \
+  libdb5.1 \
+  libgcc1 \
+  libgssapi-krb5-2 \
+  libk5crypto3 \
+  libkrb5-3 \
+  libmagic1 \
+  libonig2 \
+  libpcre3 \
+  libqdbm14 \
+  libssl1.0.0 \
+  libxml2 \
+  mime-support \
+  tzdata \
+  ucf \
+  zlib1g \
+  libmcrypt4 \
+  libpng12-0 \
+  libjpeg62 \
+  libcurl3 \
+  libltdl7 \
+  libjpeg8 \
+  libmemcached-dev \
+  libevent-dev \
+  libev-dev \
+  libcloog-ppl0 | libcloog-ppl1 \
+  curl \
+  make \
+  autoconf \
+  git \
+  redis-server \
+  memcached
+
 - sudo wget http://deb.appserver.io/pool/main/a/appserver/appserver_0.5.6beta_amd64.deb
 - sudo dpkg -i appserver_0.5.6beta_amd64.deb
-- sudo aptitude install -f
  
 script:
  - ant run-tests
