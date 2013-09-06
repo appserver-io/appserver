@@ -1,15 +1,15 @@
 language: php
-  
+
 php:
-	- 5.5
-	- 5.4
+  - 5.5
+  - 5.4
   
 before_install:
-	- pecl install pthreads
-	- echo "extension=pthreads.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
-
+  - pecl install pthreads
+  - echo "extension=pthreads.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+  
 script:
-	- ant run-tests
+  - ant run-tests
 
 notifications:
-  	email: info@appserver.io
+  email: info@appserver.io
