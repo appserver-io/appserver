@@ -20,6 +20,7 @@
 	<!-- ==================================================================== -->
 	<target name="clean" description="Cleans almost everything, so use carefully.">
 		<delete dir="${php-target.dir}" includeemptydirs="true" quiet="false" verbose="true" failonerror="true"/>
+        <symlink action="delete" link="instance-src"/>
 	</target>
 	
 	<!-- ==================================================================== -->
@@ -28,6 +29,7 @@
 	<target name="prepare" depends="clean" description="Prepares all the required directories.">
 		<mkdir dir="${php-target.dir}" />
         <mkdir dir="${php-target.dir}/reports/unit/coverage" />
+        <symlink resource="${instance.base.dir}" link="instance-src" overwrite="true"/>
 	</target>
 	
     <!-- ==================================================================== -->
@@ -47,7 +49,7 @@
 	<target name="deploy" description="Copies the sources to the deploy directory.">				
 		<antcall target="prepare"/>
 		<antcall target="copy"/>
-		<copy todir="${dir.www}/${deploy.dir}/app/code" preservelastmodified="true" overwrite="true">
+		<copy todir="${instance.base.dir}/app/code" preservelastmodified="true" overwrite="true">
 			<fileset dir="${php-target.dir}">
 				<include name="**/*"/>
 			</fileset>
@@ -58,8 +60,8 @@
     <!-- Generates the API documentation                                      -->
     <!-- ==================================================================== -->   
     <target name="apidoc" description="Generates the API documentation.">
-         <exec executable="${pear.bin.dir}/phpdoc">  
-            <arg line="--sourcecode --target ${php-target.dir}/docs --directory ${php-src.dir}"/>  
+         <exec executable="phpdoc">
+            <arg line="-t ${php-target.dir}/docs -d ${php-src.dir}"/>
          </exec>
     </target>
 	
@@ -67,7 +69,7 @@
     <!-- Runs the code sniffer and generates a report                         -->
     <!-- ==================================================================== -->
     <target name="phpcs" description="Runs the code sniffer and generates a report.">
-        <exec executable="${pear.bin.dir}/phpcs">
+        <exec executable="phpcs">
             <arg line="--extensions=php,phtml --standard=Zend --report=checkstyle --report-file=${php-target.dir}/reports/checkstyle.xml ${php-src.dir}"/>
         </exec>
     </target>
@@ -76,7 +78,7 @@
     <!-- Runs the copy and paste detection                                    -->
     <!-- ==================================================================== -->
     <target name="phpcpd" description="Runs the copy and paste detection.">
-        <exec executable="${pear.bin.dir}/phpcpd">
+        <exec executable="phpcpd">
             <arg line="--log-pmd ${php-target.dir}/reports/pmd-cpd.xml ${php-src.dir}"/>
         </exec>
     </target>
@@ -85,7 +87,7 @@
     <!-- Generate phploc.csv                                                  -->
     <!-- ==================================================================== -->
     <target name="phploc" description="Generate phploc.csv">
-        <exec executable="${pear.bin.dir}/phploc">
+        <exec executable="phploc">
             <arg line="--log-xml ${php-target.dir}/reports/phploc.xml ${php-src.dir}"/>
         </exec>
     </target>
@@ -94,7 +96,7 @@
     <!-- Runs the PHPDepend tool and generats a graphs                        -->
     <!-- ==================================================================== -->
     <target name="pdepend" description="Runs the PHPDepend tool and generats a graphs.">
-        <exec executable="${pear.bin.dir}/pdepend">
+        <exec executable="pdepend">
             <arg line="--summary-xml=${php-target.dir}/reports/pdepend.xml --jdepend-xml=${php-target.dir}/reports/jdepend.xml --jdepend-chart=${php-target.dir}/reports/jdepend.svg --overview-pyramid=${php-target.dir}/reports/pdepend-pyramid.svg ${php-src.dir}" />
         </exec>
     </target>
@@ -103,7 +105,7 @@
     <!-- Runs the PHP mess detector tool                                      -->
     <!-- ==================================================================== -->
     <target name="phpmd" description="Runs the PHP Mess detector tool.">
-        <exec executable="${pear.bin.dir}/phpmd">
+        <exec executable="phpmd">
             <arg line="${php-src.dir} xml codesize,unusedcode --reportfile ${php-target.dir}/reports/pmd.xml" />
         </exec>
     </target>
@@ -125,6 +127,7 @@
     	<copy file="${basedir}/composer.json" todir="${php-target.dir}" />
         <!-- install composer packages -->
         <exec dir="${php-target.dir}" executable="composer">
+            <env key="PATH" value="${instance.base.dir}/bin:${env.PATH}"/>
             <arg line="update"/>
         </exec>
     </target>
@@ -133,15 +136,15 @@
     <!-- Runs the PHPUnit tests and generates a report                        -->
     <!-- ==================================================================== -->
     <target name="run-tests" depends="copy-tests" description="Runs the PHPUnit tests and generates a report.">
-        <exec executable="phpunit" dir="${php-target.dir}/${unique.name}/src">
-        	<arg line="--configuration phpunit.xml.dist" />
+        <exec executable="${instance.base.dir}/bin/php" dir="${php-target.dir}/${unique.name}/src">
+        	<arg line="-d zend_extension=xdebug.so ${instance.base.dir}/bin/phpunit --configuration phpunit.xml.dist" />
         </exec>
     </target>
 
     <!-- ==================================================================== -->
-    <!-- Runs the PHPUnit tests and generates a report						  -->
+    <!-- Runs the PHPUnit tests and generates the code metrics				  -->
     <!-- ==================================================================== -->
-    <target name="build" description="Runs the PHPUnit tests and generates a report.">
+    <target name="build" description="Runs the PHPUnit tests and generates the code metrics.">
         <antcall target="run-tests"/>
     	<antcall target="apidoc"/>
     	<antcall target="phpcs"/>
