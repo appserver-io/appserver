@@ -1,11 +1,9 @@
 language: php
   
 before_install:
-- sudo echo "deb http://deb.appserver.io/ wheezy main" > /etc/apt/sources.list.d/appserver.list
-- sudo wget http://deb.appserver.io/appserver.gpg
-- sudo cat appserver.gpg | apt-key add - 
-- sudo aptitude update
-- sudo aptitude install appserver
+- sudo wget http://deb.appserver.io/pool/main/a/appserver/appserver_0.5.6beta_amd64.deb
+- sudo dpkg -i appserver_0.5.6beta_amd64.deb
+- sudo aptitude install -f
  
 script:
  - ant run-tests
