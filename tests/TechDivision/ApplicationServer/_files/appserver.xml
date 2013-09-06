@@ -1,5 +1,5 @@
-<appserver>
-
+<?xml version="1.0" encoding="UTF-8"?>
+<appserver xmlns="http://www.appserver.io/appserver">
 	<initialContext type="TechDivision\ApplicationServer\InitialContext">
 		<description><![CDATA[The initial context configuration.]]></description>
 		<classLoader type="TechDivision\ApplicationServer\SplClassLoader"/>
