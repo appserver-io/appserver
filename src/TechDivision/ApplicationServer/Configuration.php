@@ -212,7 +212,7 @@ class Configuration implements ContainerConfiguration
         $next = substr($path, strlen('/' . $token));
         if ($this->getNodeName() == $token && empty($next)) {
             return $this;
-        } elseif ($this->getNodeName() == $token && ! empty($next)) {
+        } elseif ($this->getNodeName() == $token && empty($next) === false) {
             $matches = array();
             foreach ($this->getChildren() as $child) {
                 $result = $child->getChilds($next);
@@ -258,9 +258,7 @@ class Configuration implements ContainerConfiguration
     {
         $token = strtok($path, '/');
         $next = substr($path, strlen('/' . $token));
-        if ($this->getNodeName() == $token && empty($next)) {
-            return $this;
-        } elseif ($this->getNodeName() == $token && ! empty($next)) {
+        if ($this->getNodeName() == $token && empty($next) === false) {
             $this->children = array();
             return $this;
         } else {
