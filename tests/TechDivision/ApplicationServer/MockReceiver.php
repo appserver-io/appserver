@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\ApplicationServer\Socket\MockReceiver
+ * TechDivision\ApplicationServer\MockReceiver
  *
  * NOTICE OF LICENSE
  *
@@ -9,7 +9,7 @@
  * that is available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  */
-namespace TechDivision\ApplicationServer\Socket;
+namespace TechDivision\ApplicationServer;
 
 use TechDivision\ApplicationServer\AbstractReceiver;
 

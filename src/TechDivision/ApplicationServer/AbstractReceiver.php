@@ -140,8 +140,11 @@ abstract class AbstractReceiver implements ReceiverInterface {
      */
     public function getWorkerNumber() {
         foreach ($this->getConfiguration()->getChilds(self::XPATH_CONFIGURATION_PARAMETERS) as $param) {
-            if ($param->getData('name') == 'workerNumber') {
-                return $param->getValue();
+            if ($param->getData('name') == 'workerNumber' && $param->getData('type')) {
+                $var = $param->getValue();
+                $type = $param->getData('type');
+                settype($var, $type);
+                return $var;
             }
         }
     }
@@ -151,8 +154,11 @@ abstract class AbstractReceiver implements ReceiverInterface {
      */
     public function getAddress() {
         foreach ($this->getConfiguration()->getChilds(self::XPATH_CONFIGURATION_PARAMETERS) as $param) {
-            if ($param->getData('name') == 'address') {
-                return $param->getValue();
+            if ($param->getData('name') == 'address' && $param->getData('type')) {
+                $var = $param->getValue();
+                $type = $param->getData('type');
+                settype($var, $type);
+                return $var;
             }
         }
     }
@@ -162,8 +168,11 @@ abstract class AbstractReceiver implements ReceiverInterface {
      */
     public function getPort() {
         foreach ($this->getConfiguration()->getChilds(self::XPATH_CONFIGURATION_PARAMETERS) as $param) {
-            if ($param->getData('name') == 'port') {
-                return $param->getValue();
+            if ($param->getData('name') == 'port' && $param->getData('type')) {
+                $var = $param->getValue();
+                $type = $param->getData('type');
+                settype($var, $type);
+                return $var;
             }
         }   
     }
@@ -209,7 +218,6 @@ abstract class AbstractReceiver implements ReceiverInterface {
      * 
      * @param \TechDivision\ApplicationServer\Interfaces\ContainerConfiguration $configuration The configuration for the container
      * @return \TechDivision\ApplicationServer\Interfaces\ReceiverInterface The receiver instance
-     * @todo Actually it's not possible to add interfaces as type hints for method parameters, this results in an infinite loop 
      */
     public function setConfiguration($configuration) {
         $this->configuration = $configuration;
