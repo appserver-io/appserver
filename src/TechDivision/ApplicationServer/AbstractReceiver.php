@@ -110,6 +110,8 @@ abstract class AbstractReceiver implements ReceiverInterface {
                         // start thread async
                         $workers[$worker]->start();
                     }
+                    // set the container started
+                    $this->getContainer()->setStarted();
                 }
             } catch (\Exception $e) {
                 error_log($e->__toString());
@@ -285,5 +287,15 @@ abstract class AbstractReceiver implements ReceiverInterface {
      */
     public function newInstance($className, array $args = array()) { 
         return $this->initialContext->newInstance($className, $args);
+    }
+    
+    /**
+     * Returns the inital context instance.
+     * 
+     * @return \TechDivision\ApplicationServer\InitialContext The initial context instance
+     */
+    public function getInitialContext()
+    {
+    	return $this->initialContext;
     }
 }

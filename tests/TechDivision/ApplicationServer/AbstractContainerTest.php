@@ -13,6 +13,7 @@
 namespace TechDivision\ApplicationServer;
 
 use TechDivision\ApplicationServer\MockApplication;
+use TechDivision\ApplicationServer\Socket\MockReceiver;
 use TechDivision\ApplicationServer\Configuration;
 use TechDivision\ApplicationServer\InitialContext;
 
@@ -36,7 +37,8 @@ class AbstractContainerTest extends \PHPUnit_Framework_TestCase {
 	 *
 	 * @return void
 	 */
-	public function setUp() {
+	public function setUp()
+	{
 	    $configuration = new Configuration();
         $configuration->initFromFile(__DIR__ . '/_files/appserver_initial_context.xml');
 		$initialContext = new InitialContext($configuration);
@@ -51,6 +53,10 @@ class AbstractContainerTest extends \PHPUnit_Framework_TestCase {
 	 */
 	public function testGetApplicationsFromConstructor()
 	{
+		$ext = new \ReflectionExtension('pthreads');
+		if (version_compare($ext->getVersion(), '0.45rc', '<')) {
+			$this->markTestSkipped('Need at least pthreads-0.0.45rc to run these test.');
+		}	
 		$this->assertCount(1, $this->container->getApplications());
 	}
 	
@@ -60,11 +66,12 @@ class AbstractContainerTest extends \PHPUnit_Framework_TestCase {
 	 * 
 	 * @return void
 	 */
-	public function testGetSetApplications()
+	public function testSetGetApplications()
 	{
 		$applications = $this->getMockApplications($size = 3);
 		$this->container->setApplications($applications);
-		$this->assertCount($size, $this->container->getApplications());
+		// assertSame() doesn't work here because the AbstractContainer extends a \Stackable
+		$this->assertEquals($applications, $this->container->getApplications());
 	}
 	
 	/**
@@ -76,6 +83,97 @@ class AbstractContainerTest extends \PHPUnit_Framework_TestCase {
 	public function testGetReceiver()
 	{
 		$this->assertInstanceOf('TechDivision\ApplicationServer\Interfaces\ReceiverInterface', $this->container->getReceiver());
+	}
+	
+	/**
+	 * Tests the if the receiver configuration specified in the
+	 * configuration file is used by the container.
+	 * 
+	 * @return void
+	 */
+	public function testGetReceiverConfiguration()
+	{
+		$this->assertInstanceOf('TechDivision\ApplicationServer\Configuration', $this->container->getReceiverConfiguration());
+	}
+	
+	/**
+	 * Tests the if the receiver type specified in the configuration file 
+	 * is used by the container.
+	 * 
+	 * @return void
+	 */
+	public function testGetReceiverType()
+	{
+		$this->assertEquals('TechDivision\ApplicationServer\Socket\MockReceiver', $this->container->getReceiverType());
+	}
+	
+	/**
+	 * Tests the if the worker type specified in the configuration file 
+	 * is used by the container.
+	 * 
+	 * @return void
+	 */
+	public function testGetWorkerType()
+	{
+		$this->assertEquals('TechDivision\ApplicationServer\Socket\Worker', $this->container->getWorkerType());
+	}
+	
+	/**
+	 * Tests the if the thread type specified in the configuration file 
+	 * is used by the container.
+	 * 
+	 * @return void
+	 */
+	public function testGetThreadType()
+	{
+		$this->assertEquals('TechDivision\ApplicationServer\Socket\MockRequest', $this->container->getThreadType());
+	}
+    
+	/**
+	 * Checks if the new instance method works correctly.
+	 * 
+	 * @return void
+	 */
+	public function testNewInstance()
+	{
+	    $className = 'TechDivision\ApplicationServer\Configuration';
+	    $this->assertInstanceOf($className, $this->container->newInstance($className));
+	}
+	
+	/**
+	 * Checks if the container configuration passed with setter equals the one
+	 * returned by the setter.
+	 * 
+	 * @return void
+	 */
+	public function testSetGetConfiguration()
+	{
+		$configuration = $this->getContainerConfiguration();
+		$this->container->setConfiguration($configuration);
+		// assertSame() doesn't work here because the AbstractContainer extends a \Stackable
+		$this->assertEquals($configuration, $this->container->getConfiguration());
+	}
+	
+	/**
+	 * Test if the run method starts the receiver.
+	 * 
+	 * @return void
+	 */
+	public function testRun()
+	{
+		$this->container->run();
+		$this->assertTrue($this->container->isStarted());
+	}
+	
+	/**
+	 * Checks if the context thread returns the initial context
+	 * passed with the constructor.
+	 * 
+	 * @return void
+	 */
+	public function testGetInitialContext()
+	{
+		$this->assertInstanceOf('TechDivision\ApplicationServer\InitialContext', $this->container->getInitialContext());
 	}
 	
 	/**
