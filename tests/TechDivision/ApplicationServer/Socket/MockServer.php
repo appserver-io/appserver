@@ -11,6 +11,8 @@
  */
 namespace TechDivision\ApplicationServer\Socket;
 
+use TechDivision\Socket\Server;
+
 /**
  * The mock request implementation.
  *
@@ -20,6 +22,23 @@ namespace TechDivision\ApplicationServer\Socket;
  *          Open Software License (OSL 3.0)
  * @author Tim Wagner <tw@techdivision.com>
  */
-class MockRequest
+class MockServer extends Server
 {
+    
+    /**
+     * (non-PHPdoc)
+     * @see \TechDivision\Socket\Server::start()
+     */
+    public function start()
+    {
+    }
+    
+    /**
+     * (non-PHPdoc)
+     * @see \TechDivision\Socket::getResource()
+     */
+    public function getResource()
+    {
+        return true;
+    }
 }

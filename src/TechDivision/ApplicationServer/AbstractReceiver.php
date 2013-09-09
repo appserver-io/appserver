@@ -96,34 +96,34 @@ abstract class AbstractReceiver implements ReceiverInterface {
             // prepare the main socket and listen
             $socket->setAddress($this->getAddress())->setPort($this->getPort())->start();
             
-            try {
-                // check if resource been initiated
-                if ($socket->getResource()) {
-                    // init worker number
-                    $worker = 0;
-                    // init workers array holder
-                    $workers = array();
-                    // open threads where accept connections
-                    while ($worker ++ < $this->getWorkerNumber()) {
-                        // init thread
-                        $workers[$worker] = $this->newWorker($socket->getResource());
-                        // start thread async
-                        $workers[$worker]->start();
-                    }
-                    // set the container started
-                    $this->getContainer()->setStarted();
+            // check if resource been initiated
+            if ($resource = $socket->getResource()) {
+                
+                // init worker number
+                $worker = 0;
+                // init workers array holder
+                $workers = array();
+                
+                // open threads where accept connections
+                while ($worker ++ < $this->getWorkerNumber()) {
+                    // init thread
+                    $workers[$worker] = $this->newWorker($socket->getResource());
+                    // start thread async
+                    $workers[$worker]->start();
                 }
-            } catch (\Exception $e) {
-                error_log($e->__toString());
+                
+                return true;
             }
-        } catch (\Exception $ge) {
             
-            error_log($ge->__toString());
-            
-            if (is_resource($socket->getResource())) {
-                $socket->close();
-            }
+        } catch (\Exception $e) {
+            error_log($e->__toString());
         }
+        
+        if (is_resource($resource)) {
+            $socket->close();
+        }
+        
+        return false;
     }
 
     /**

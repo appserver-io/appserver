@@ -112,7 +112,7 @@ class AbstractContainerTest extends \PHPUnit_Framework_TestCase {
 	 */
 	public function testGetWorkerType()
 	{
-		$this->assertEquals('TechDivision\ApplicationServer\Socket\Worker', $this->container->getWorkerType());
+		$this->assertEquals('TechDivision\ApplicationServer\Socket\MockWorker', $this->container->getWorkerType());
 	}
 	
 	/**

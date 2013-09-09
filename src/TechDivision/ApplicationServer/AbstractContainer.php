@@ -97,7 +97,7 @@ abstract class AbstractContainer extends \Stackable implements ContainerInterfac
      */
     public function run()
     {
-        $this->getReceiver()->start();
+        $this->setStarted($this->getReceiver()->start());
     }
 
     /**

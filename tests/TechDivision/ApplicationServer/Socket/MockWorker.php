@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\ApplicationServer\Socket\MockRequest
+ * TechDivision\ApplicationServer\Socket\MockWorker
  *
  * NOTICE OF LICENSE
  *
@@ -10,6 +10,8 @@
  * http://opensource.org/licenses/osl-3.0.php
  */
 namespace TechDivision\ApplicationServer\Socket;
+
+use TechDivision\ApplicationServer\AbstractWorker;
 
 /**
  * The mock request implementation.
@@ -20,6 +22,23 @@ namespace TechDivision\ApplicationServer\Socket;
  *          Open Software License (OSL 3.0)
  * @author Tim Wagner <tw@techdivision.com>
  */
-class MockRequest
+class MockWorker extends AbstractWorker
 {
+
+    /**
+     * @see \TechDivision\ApplicationServer\AbstractWorker::getResourceClass()
+     */
+    protected function getResourceClass()
+    {
+        return 'TechDivision\Socket\MockSocket';
+    }
+    
+    /**
+     * (non-PHPdoc)
+     * @see \TechDivision\ApplicationServer\AbstractWorker::main()
+     */
+    public function main()
+    {
+        return;
+    }
 }

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\ApplicationServer\Socket\MockRequest
+ * TechDivision\ApplicationServer\Socket\MockSocket
  *
  * NOTICE OF LICENSE
  *
@@ -11,8 +11,10 @@
  */
 namespace TechDivision\ApplicationServer\Socket;
 
+use TechDivision\Socket;
+
 /**
- * The mock request implementation.
+ * The mock socket implementation.
  *
  * @package TechDivision\ApplicationServer
  * @copyright Copyright (c) 2013 <info@techdivision.com> - TechDivision GmbH
@@ -20,6 +22,6 @@ namespace TechDivision\ApplicationServer\Socket;
  *          Open Software License (OSL 3.0)
  * @author Tim Wagner <tw@techdivision.com>
  */
-class MockRequest
-{
+class MockSocket extends Socket
+{   
 }

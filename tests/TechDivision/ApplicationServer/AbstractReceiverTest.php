@@ -52,10 +52,10 @@ class AbstractReceiverTest extends \PHPUnit_Framework_TestCase {
 	public function setUp()
 	{
 	    $configuration = new Configuration();
-        $configuration->initFromFile(__DIR__ . '/_files/appserver_initial_context.xml');
-		$this->initialContext = new InitialContext($configuration);
-		$this->container = new MockContainer($this->initialContext, $this->getContainerConfiguration(), $this->getMockApplications());
-		$this->receiver = new MockReceiver($this->initialContext, $this->container);
+	    $configuration->initFromFile(__DIR__ . '/_files/appserver_initial_context.xml');
+	    $this->initialContext = new InitialContext($configuration);
+	    $this->container = new MockContainer($this->initialContext, $this->getContainerConfiguration(), $this->getMockApplications());
+	    $this->receiver = new MockReceiver($this->initialContext, $this->container);
 	}
 	
 	/**
@@ -88,7 +88,7 @@ class AbstractReceiverTest extends \PHPUnit_Framework_TestCase {
 	 */
 	public function testGetWorkerType()
 	{
-	    $this->assertSame('TechDivision\ApplicationServer\Socket\Worker', $this->receiver->getWorkerType());
+	    $this->assertSame('TechDivision\ApplicationServer\Socket\MockWorker', $this->receiver->getWorkerType());
 	}
 	
 	/**
@@ -222,9 +222,8 @@ class AbstractReceiverTest extends \PHPUnit_Framework_TestCase {
 	 */
 	public function testNewWorker()
 	{
-	    // load the socket pair
 	    list ($client, $server) = $this->getSocketPair();
-	    $this->assertInstanceOf('TechDivision\ApplicationServer\Socket\Worker', $this->receiver->newWorker($server));
+	    $this->assertInstanceOf('TechDivision\ApplicationServer\Socket\MockWorker', $this->receiver->newWorker($server));
 	}
     
 	/**
@@ -246,6 +245,29 @@ class AbstractReceiverTest extends \PHPUnit_Framework_TestCase {
 	public function testGetInitialContext()
 	{
 	    $this->assertSame($this->initialContext, $this->receiver->getInitialContext());
+	}
+	
+	/**
+	 * Test's the start method.
+	 * 
+	 * @runInSeparateProcess
+	 * @return void
+	 */
+	public function testStart()
+	{
+	    $this->assertTrue($this->receiver->start());
+	}
+	
+	/**
+	 * Test's the start method when socket can't be created.
+	 * 
+	 * @runInSeparateProcess
+	 * @return void
+	 */
+	public function testStartWhenSocketCantBeCreated()
+	{
+	    $this->receiver->setResourceClass('TechDivision\ApplicationServer\Socket\MockServerThatCantCreateSocket');
+	    $this->assertFalse($this->receiver->start());
 	}
 	
 	/**

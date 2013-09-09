@@ -24,20 +24,29 @@ use TechDivision\ApplicationServer\AbstractReceiver;
  */
 class MockReceiver extends AbstractReceiver
 {
+    
+    /**
+     * The resource class name to use for the test.
+     * @var string
+     */
+    protected $resourceClass = 'TechDivision\ApplicationServer\Socket\MockServer';
 	
+    /**
+     * Helper method that allows to specify different resource class names.
+     * 
+     * @param string $resourceClass The resource class name to use for the test
+     */
+    public function setResourceClass($resourceClass)
+    {
+        $this->resourceClass = $resourceClass;
+    }
+    
 	/**
 	 * (non-PHPdoc)
 	 * @see \TechDivision\ApplicationServer\AbstractReceiver::getResourceClass()
 	 */
 	public function getResourceClass()
 	{
-	}
-	
-	/**
-     * @see TechDivision\ApplicationServer\Interfaces\ReceiverInterface::start()
-	 */
-	public function start()
-	{
-		$this->getContainer()->setStarted();
+	    return $this->resourceClass;
 	}
 }

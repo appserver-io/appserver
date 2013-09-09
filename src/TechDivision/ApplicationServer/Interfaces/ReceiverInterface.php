@@ -24,7 +24,7 @@ interface ReceiverInterface {
     /**
      * Starts the receiver in an infinite loop.
      * 
-     * @return void
+     * @return boolean TRUE if the receiver has been started successfully, else FALSE
      */
     public function start();
     
