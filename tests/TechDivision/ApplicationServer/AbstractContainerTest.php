@@ -158,6 +158,7 @@ class AbstractContainerTest extends \PHPUnit_Framework_TestCase {
 	 */
 	public function testRun()
 	{
+	    // $this->markTestSkipped('Seems to be a pthread error.');
 		$this->container->run();
 		$this->assertTrue($this->container->isStarted());
 	}
