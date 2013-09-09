@@ -26,5 +26,6 @@ class MockDeployment extends AbstractDeployment {
      */
     public function deploy()
     {
+        return $this;
     }
 }

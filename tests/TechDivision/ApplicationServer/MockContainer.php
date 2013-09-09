@@ -20,4 +20,12 @@ namespace TechDivision\ApplicationServer;
  * @author      Tim Wagner <tw@techdivision.com>
  */
 class MockContainer extends AbstractContainer {
+    
+    /**
+     * (non-PHPdoc)
+     * @see \TechDivision\ApplicationServer\AbstractContainer::run()
+     */
+    public function run() {
+        return;
+    }
 }
