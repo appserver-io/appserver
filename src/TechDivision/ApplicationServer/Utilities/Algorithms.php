@@ -12,7 +12,7 @@ namespace TechDivision\ApplicationServer\Utilities;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
-require_once 'PHP/iSecurity/Security_Randomizer.php';
+require_once 'PHP/iSecurity/SecurityRandomizer.php';
 
 /**
  * A utility class for various algorithms.
@@ -41,7 +41,7 @@ class Algorithms {
      * @return string Random bytes
      */
     static public function generateRandomBytes($count) {
-        return \Security_Randomizer::getRandomBytes($count);
+        return \SecurityRandomizer::getRandomBytes($count);
     }
 
     /**
@@ -51,7 +51,7 @@ class Algorithms {
      * @return string A random token
      */
     static public function generateRandomToken($count) {
-        return \Security_Randomizer::getRandomToken($count);
+        return \SecurityRandomizer::getRandomToken($count);
     }
 
     /**
@@ -62,7 +62,7 @@ class Algorithms {
      * @return string A random string
      */
     static public function generateRandomString($count, $characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789') {
-        return \Security_Randomizer::getRandomString($count, $characters);
+        return \SecurityRandomizer::getRandomString($count, $characters);
     }
 
 }
