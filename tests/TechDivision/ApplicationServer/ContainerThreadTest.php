@@ -12,7 +12,7 @@
 
 namespace TechDivision\ApplicationServer;
 
-use TechDivision\ApplicationServer\MockContainerThread;
+use TechDivision\ApplicationServer\Mock\MockContainerThread;
 use TechDivision\ApplicationServer\Configuration;
 use TechDivision\ApplicationServer\InitialContext;
 
@@ -23,26 +23,26 @@ use TechDivision\ApplicationServer\InitialContext;
  *              Open Software License (OSL 3.0)
  * @author      Tim Wagner <tw@techdivision.com>
  */
-class ContainerThreadTest extends \PHPUnit_Framework_TestCase {
+class ContainerThreadTest extends AbstractTest {
 
     /**
      * The application instance to test.
      * @var \TechDivision\ApplicationServer\ContainerThread
      */
     protected $containerThread;
-    
+
     /**
      * The initial context instance passed to the receiver.
      * @var \TechDivision\ApplicationServer\InitialContext
      */
     protected $initialContext;
-    
+
     /**
      * The configuration instance passed to the receiver.
      * @var \TechDivision\ApplicationServer\Configuration
      */
     protected $configuration;
-    
+
 	/**
 	 * Initializes the application instance to test.
 	 *
@@ -55,11 +55,11 @@ class ContainerThreadTest extends \PHPUnit_Framework_TestCase {
 		$this->configuration = $this->getContainerConfiguration();
 		$this->containerThread = new ContainerThread($this->initialContext, $this->configuration);
 	}
-	
+
 	/**
 	 * Test's if the configuration instance passed to the constructor is returned by
 	 * the getter method.
-	 * 
+	 *
 	 * @return void
 	 */
 	public function testGetConfiguration()
@@ -67,21 +67,21 @@ class ContainerThreadTest extends \PHPUnit_Framework_TestCase {
 		// assertSame() doesn't work here because the ContainerThread extends from \Thread
 	    $this->assertEquals($this->configuration, $this->containerThread->getConfiguration());
 	}
-	
+
 	/**
 	 * Test's if the configuration instance passed to the constructor is returned by
 	 * the getter method.
-	 * 
+	 *
 	 * @return void
 	 */
 	public function testGetDeployment()
 	{
-	    $this->assertInstanceOf('TechDivision\ApplicationServer\MockDeployment', $this->containerThread->getDeployment());
+	    $this->assertInstanceOf('TechDivision\ApplicationServer\Mock\MockDeployment', $this->containerThread->getDeployment());
 	}
-    
+
 	/**
 	 * Checks if the new instance method works correctly.
-	 * 
+	 *
 	 * @return void
 	 */
 	public function testNewInstance()
@@ -89,10 +89,10 @@ class ContainerThreadTest extends \PHPUnit_Framework_TestCase {
 	    $className = 'TechDivision\ApplicationServer\Configuration';
 	    $this->assertInstanceOf($className, $this->containerThread->newInstance($className));
 	}
-	
+
 	/**
 	 * Test's the container thread's start method.
-	 * 
+	 *
 	 * @return void
 	 */
 	public function testStart()
@@ -100,17 +100,5 @@ class ContainerThreadTest extends \PHPUnit_Framework_TestCase {
 	    $this->markTestSkipped('Seems to be a pthread error.');
 	    $this->containerThread->start();
 	    $this->containerThread->join();
-	}
-	
-	/**
-	 * Returns a dummy container configuration.
-	 * 
-	 * @return \TechDivision\ApplicationServer\Configuration The dummy configuration
-	 */
-	public function getContainerConfiguration() {
-	    $configuration = new Configuration();
-	    $configuration->initFromFile(__DIR__ . '/_files/appserver_container.xml');
-	    $configuration->addChildWithNameAndValue('baseDirectory', '/opt/appserver');
-	    return $configuration;
 	}
 }

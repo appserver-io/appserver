@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\ApplicationServer\Socket\MockSocket
+ * TechDivision\ApplicationServer\Mock\MockSingletonSessionBean
  *
  * NOTICE OF LICENSE
  *
@@ -9,19 +9,30 @@
  * that is available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  */
-namespace TechDivision\ApplicationServer\Socket;
-
-use TechDivision\Socket;
+namespace TechDivision\ApplicationServer\Mock;
 
 /**
- * The mock socket implementation.
+ * The mock singleton session bean implementation.
  *
  * @package TechDivision\ApplicationServer
  * @copyright Copyright (c) 2013 <info@techdivision.com> - TechDivision GmbH
  * @license http://opensource.org/licenses/osl-3.0.php
  *          Open Software License (OSL 3.0)
  * @author Tim Wagner <tw@techdivision.com>
+ * @Singleton
  */
-class MockSocket extends Socket
-{   
+class MockSingletonSessionBean
+{
+
+    protected $persistentValue;
+
+    public function setPersistentValue($persistentValue)
+    {
+        $this->persistentValue = $persistentValue;
+    }
+
+    public function getPersistentValue()
+    {
+        return $this->persistentValue;
+    }
 }
