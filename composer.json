@@ -23,7 +23,7 @@
     "autoload": {
         "psr-0": {
             "TechDivision\\ApplicationServer": "src/",
-            "TechDivision\\ApplicationServe": "tests/"        
+            "TechDivision\\ApplicationServer": "tests/"        
         }
     }
 }
