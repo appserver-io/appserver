@@ -1,15 +1,15 @@
-<container threadType="TechDivision\ApplicationServer\MockContainerThread" type="TechDivision\ApplicationServer\MockContainer">
+<container threadType="TechDivision\ApplicationServer\Mock\MockContainerThread" type="TechDivision\ApplicationServer\Mock\MockContainer">
 	<description><![CDATA[This is an example of a servlet container that uses a socket for sending and receiving HTML requests/responses. This solution can be used for running a web server.]]></description>
-    <receiver type="TechDivision\ApplicationServer\MockReceiver">
-        <worker type="TechDivision\ApplicationServer\Socket\MockWorker"/>
-        <thread type="TechDivision\ApplicationServer\Socket\MockRequest"/>
+    <receiver type="TechDivision\ApplicationServer\Mock\MockReceiver">
+        <worker type="TechDivision\ApplicationServer\Mock\Socket\MockWorker"/>
+        <thread type="TechDivision\ApplicationServer\Mock\Socket\MockRequest"/>
 		<params>
 			<param name="workerNumber" type="integer">16</param>
 			<param name="address" type="string">0.0.0.0</param>
 			<param name="port" type="integer">8586</param>
 		</params>
     </receiver>
-    <deployment type="TechDivision\ApplicationServer\MockDeployment"/>
+    <deployment type="TechDivision\ApplicationServer\Mock\MockDeployment"/>
     <host name="localhost"
           appBase="/webapps"
           serverAdmin="${appserver.admin.email}"

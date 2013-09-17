@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\ApplicationServer\Socket\MockRequest
+ * TechDivision\ApplicationServer\Mock\Socket\MockServerThatCantCreateSocket
  *
  * NOTICE OF LICENSE
  *
@@ -10,6 +10,9 @@
  * http://opensource.org/licenses/osl-3.0.php
  */
 namespace TechDivision\ApplicationServer\Socket;
+
+use TechDivision\Socket\Server;
+use TechDivision\SocketException;
 
 /**
  * The mock request implementation.
@@ -20,6 +23,16 @@ namespace TechDivision\ApplicationServer\Socket;
  *          Open Software License (OSL 3.0)
  * @author Tim Wagner <tw@techdivision.com>
  */
-class MockRequest
+class MockServerThatCantCreateSocket extends MockServer
 {
+
+    /**
+     * (non-PHPdoc)
+     * @see \TechDivision\Socket\Server::start()
+     */
+    public function start()
+    {
+        $this->resource = socket_create(AF_UNIX, SOCK_STREAM, 0);
+        throw new SocketException('Address already in use');
+    }
 }

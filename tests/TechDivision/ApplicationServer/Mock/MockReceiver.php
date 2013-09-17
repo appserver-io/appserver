@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\ApplicationServer\MockReceiver
+ * TechDivision\ApplicationServer\Mock\MockReceiver
  *
  * NOTICE OF LICENSE
  *
@@ -9,7 +9,7 @@
  * that is available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  */
-namespace TechDivision\ApplicationServer;
+namespace TechDivision\ApplicationServer\Mock;
 
 use TechDivision\ApplicationServer\AbstractReceiver;
 
@@ -24,23 +24,23 @@ use TechDivision\ApplicationServer\AbstractReceiver;
  */
 class MockReceiver extends AbstractReceiver
 {
-    
+
     /**
      * The resource class name to use for the test.
      * @var string
      */
     protected $resourceClass = 'TechDivision\ApplicationServer\Socket\MockServer';
-	
+
     /**
      * Helper method that allows to specify different resource class names.
-     * 
+     *
      * @param string $resourceClass The resource class name to use for the test
      */
     public function setResourceClass($resourceClass)
     {
         $this->resourceClass = $resourceClass;
     }
-    
+
 	/**
 	 * (non-PHPdoc)
 	 * @see \TechDivision\ApplicationServer\AbstractReceiver::getResourceClass()

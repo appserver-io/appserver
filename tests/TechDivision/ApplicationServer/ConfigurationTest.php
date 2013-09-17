@@ -19,12 +19,12 @@ namespace TechDivision\ApplicationServer;
  *          Open Software License (OSL 3.0)
  * @author Tim Wagner <tw@techdivision.com>
  */
-class ConfigurationTest extends \PHPUnit_Framework_TestCase
+class ConfigurationTest extends AbstractTest
 {
 
     /**
      * The configuration instance to test.
-     * 
+     *
      * @var TechDivision\ApplicationServer\Configuration
      */
     protected $configuration;
@@ -81,7 +81,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Test's the remove childs method when removing one child.
-     * 
+     *
      * @return void
      */
     public function testRemoveChildsWithOneChild()
@@ -94,7 +94,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Test's the remove childs method with an invalid path.
-     * 
+     *
      * @return void
      */
     public function testRemoveChildsWithInvalidPath()
@@ -107,7 +107,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Test's the remove childs method with an invalid path.
-     * 
+     *
      * @return void
      */
     public function testRemoveChildsOnLastChild()
@@ -143,12 +143,12 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
     public function testInitFromFile()
     {
         $this->configuration->initFromFile(__DIR__ . '/_files/META-INF/appserver-ds.xml');
-        
+
         $driver = $this->configuration->getChild('/datasources/datasource/database/driver');
         $user = $this->configuration->getChild('/datasources/datasource/database/user');
         $password = $this->configuration->getChild('/datasources/datasource/database/password');
         $databaseName = $this->configuration->getChild('/datasources/datasource/database/databaseName');
-        
+
         $this->assertEquals('pdo_mysql', $driver);
         $this->assertEquals('appserver', $user);
         $this->assertEquals('appserver', $password);
@@ -164,14 +164,14 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
     {
         $domDocument = new \DOMDocument();
         $domDocument->load(__DIR__ . '/_files/META-INF/appserver-ds.xml');
-        
+
         $this->configuration->initFromDomDocument($domDocument);
-        
+
         $driver = $this->configuration->getChild('/datasources/datasource/database/driver');
         $user = $this->configuration->getChild('/datasources/datasource/database/user');
         $password = $this->configuration->getChild('/datasources/datasource/database/password');
         $databaseName = $this->configuration->getChild('/datasources/datasource/database/databaseName');
-        
+
         $this->assertEquals('pdo_mysql', $driver);
         $this->assertEquals('appserver', $user);
         $this->assertEquals('appserver', $password);
