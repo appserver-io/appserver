@@ -22,8 +22,8 @@
     },
     "autoload": {
         "psr-0": {
-            "TechDivision\\ApplicationServer": "src/",
-            "TechDivision\\ApplicationServer": "tests/"        
+            "TechDivision": "src/",
+            "TechDivision": "tests/"        
         }
     }
 }
