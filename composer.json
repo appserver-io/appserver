@@ -22,8 +22,7 @@
     },
     "autoload": {
         "psr-0": {
-            "TechDivision": "src/",
-            "TechDivision": "tests/"        
+            "TechDivision": "src/"      
         }
     }
 }
