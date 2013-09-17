@@ -12,7 +12,7 @@
 
 namespace TechDivision\ApplicationServer;
 
-use TechDivision\ApplicationServer\MockApplication;
+use TechDivision\ApplicationServer\Mock\MockApplication;
 use TechDivision\ApplicationServer\Configuration;
 use TechDivision\ApplicationServer\InitialContext;
 
@@ -23,7 +23,7 @@ use TechDivision\ApplicationServer\InitialContext;
  *              Open Software License (OSL 3.0)
  * @author      Tim Wagner <tw@techdivision.com>
  */
-class AbstractApplicationTest extends \PHPUnit_Framework_TestCase {
+class AbstractApplicationTest extends AbstractTest {
 
     /**
      * The application instance to test.
@@ -36,7 +36,7 @@ class AbstractApplicationTest extends \PHPUnit_Framework_TestCase {
      * @var string
      */
     protected $applicationName = 'testApplication';
-    
+
 	/**
 	 * Initializes the application instance to test.
 	 *
@@ -49,71 +49,59 @@ class AbstractApplicationTest extends \PHPUnit_Framework_TestCase {
 		$this->application = new MockApplication($initialContext, $this->applicationName);
 	    $this->application->setConfiguration($this->getContainerConfiguration());
 	}
-    
+
 	/**
 	 * Checks if the application returns the correct application name.
-	 * 
+	 *
 	 * @return void
 	 */
 	public function testGetName() {
 	    $this->assertEquals($this->applicationName, $this->application->getName());
 	}
-	
+
 	/**
 	 * Checks if the application instance returns the configuration instance.
-	 * 
+	 *
 	 * @return void
 	 */
 	public function testGetConfiguration() {
 	    $this->assertInstanceOf('\TechDivision\ApplicationServer\Configuration', $this->application->getConfiguration());
 	}
-    
+
 	/**
 	 * Checks if the application returns the correct container base path.
-	 * 
+	 *
 	 * @return void
 	 */
 	public function testGetAppBase() {
 	    $this->assertEquals('/opt/appserver/webapps', $this->application->getAppBase());
 	}
-    
+
 	/**
 	 * Checks if the application returns the correct webapp path.
-	 * 
+	 *
 	 * @return void
 	 */
 	public function testGetWebappPath() {
 	    $this->assertEquals('/opt/appserver/webapps/' .  $this->getApplicationName(), $this->application->getWebappPath());
 	}
-    
+
 	/**
 	 * Checks if the new instance method works correctly.
-	 * 
+	 *
 	 * @return void
 	 */
 	public function testNewInstance() {
 	    $className = 'TechDivision\ApplicationServer\Configuration';
 	    $this->assertInstanceOf($className, $this->application->newInstance($className));
 	}
-	
+
 	/**
 	 * Returns a dummy application name.
-	 * 
+	 *
 	 * @return string A dummy application name
 	 */
 	public function getApplicationName() {
 	    return $this->applicationName;
-	}
-	
-	/**
-	 * Returns a dummy container configuration.
-	 * 
-	 * @return \TechDivision\ApplicationServer\Configuration The dummy configuration
-	 */
-	public function getContainerConfiguration() {
-	    $configuration = new Configuration();
-	    $configuration->initFromFile(__DIR__ . '/_files/appserver_container.xml');
-	    $configuration->addChildWithNameAndValue('baseDirectory', '/opt/appserver');
-	    return $configuration;
 	}
 }

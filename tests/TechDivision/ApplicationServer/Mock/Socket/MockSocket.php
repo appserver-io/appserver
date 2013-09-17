@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\ApplicationServer\Socket\MockRequest
+ * TechDivision\ApplicationServer\Mock\Socket\MockSocket
  *
  * NOTICE OF LICENSE
  *
@@ -9,12 +9,12 @@
  * that is available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  */
-namespace TechDivision\ApplicationServer\Socket;
+namespace TechDivision\ApplicationServer\Mock\Socket;
 
-use TechDivision\Socket\Server;
+use TechDivision\Socket;
 
 /**
- * The mock request implementation.
+ * The mock socket implementation.
  *
  * @package TechDivision\ApplicationServer
  * @copyright Copyright (c) 2013 <info@techdivision.com> - TechDivision GmbH
@@ -22,23 +22,6 @@ use TechDivision\Socket\Server;
  *          Open Software License (OSL 3.0)
  * @author Tim Wagner <tw@techdivision.com>
  */
-class MockServer extends Server
+class MockSocket extends Socket
 {
-    
-    /**
-     * (non-PHPdoc)
-     * @see \TechDivision\Socket\Server::start()
-     */
-    public function start()
-    {
-    }
-    
-    /**
-     * (non-PHPdoc)
-     * @see \TechDivision\Socket::getResource()
-     */
-    public function getResource()
-    {
-        return true;
-    }
 }

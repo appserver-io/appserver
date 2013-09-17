@@ -3,7 +3,7 @@
 	<initialContext type="TechDivision\ApplicationServer\InitialContext">
 		<description><![CDATA[The initial context configuration.]]></description>
 		<classLoader type="TechDivision\ApplicationServer\SplClassLoader"/>
-		<storage type="TechDivision\ApplicationServer\InitialContext\MockStorage"/>
+		<storage type="TechDivision\ApplicationServer\Mock\InitialContext\MockStorage"/>
 	</initialContext>
 	
 	<systemLogger type="Monolog\Logger" channelName="system">
@@ -33,11 +33,11 @@
 	
     <containers>
 
-        <container threadType="TechDivision\ApplicationServer\MockContainerThread" type="TechDivision\PersistenceContainer\Container">
+        <container threadType="TechDivision\ApplicationServer\Mock\MockContainerThread" type="TechDivision\PersistenceContainer\Container">
 			<description><![CDATA[This is an example of a container that uses a socket for sending and receiving messages. This solution can be used for clients connecting over a network.]]></description>
             <receiver type="TechDivision\ApplicationServer\Socket\Receiver">
                 <worker type="TechDivision\ApplicationServer\Socket\Worker"/>
-                <thread type="TechDivision\ApplicationServer\Socket\MockRequest"/>
+                <thread type="TechDivision\ApplicationServer\Mock\Socket\MockRequest"/>
 				<params>
 					<param name="workerNumber" type="integer">16</param>
 					<param name="address" type="string">0.0.0.0</param>
@@ -52,11 +52,11 @@
             </host>
         </container>
         
-        <container threadType="TechDivision\ApplicationServer\MockContainerThread" type="TechDivision\ServletContainer\Container">
+        <container threadType="TechDivision\ApplicationServer\Mock\MockContainerThread" type="TechDivision\ServletContainer\Container">
 			<description><![CDATA[This is an example of a servlet container that uses a socket for sending and receiving HTML requests/responses. This solution can be used for running a web server.]]></description>
             <receiver type="TechDivision\ApplicationServer\Socket\Receiver">
                 <worker type="TechDivision\ApplicationServer\Socket\Worker"/>
-                <thread type="TechDivision\ApplicationServer\Socket\MockRequest"/>
+                <thread type="TechDivision\ApplicationServer\Mock\Socket\MockRequest"/>
 				<params>
 					<param name="workerNumber" type="integer">16</param>
 					<param name="address" type="string">0.0.0.0</param>
@@ -80,11 +80,11 @@
             </host>
         </container>
 
-        <container threadType="TechDivision\ApplicationServer\MockContainerThread" type="TechDivision\MessageQueue\Container">
+        <container threadType="TechDivision\ApplicationServer\Mock\MockContainerThread" type="TechDivision\MessageQueue\Container">
 			<description><![CDATA[This is an example of a message queue that uses a socket to receive messages. This solution can be used for clients connecting over a network.]]></description>
             <receiver type="TechDivision\ApplicationServer\Socket\Receiver">
                 <worker type="TechDivision\ApplicationServer\Socket\Worker"/>
-                <thread type="TechDivision\ApplicationServer\Socket\MockRequest"/>
+                <thread type="TechDivision\ApplicationServer\Mock\Socket\MockRequest"/>
 				<params>
 					<param name="workerNumber" type="integer">16</param>
 					<param name="address" type="string">0.0.0.0</param>

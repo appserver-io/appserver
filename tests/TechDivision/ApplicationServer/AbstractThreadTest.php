@@ -12,7 +12,7 @@
 
 namespace TechDivision\ApplicationServer;
 
-use TechDivision\ApplicationServer\MockThread;
+use TechDivision\ApplicationServer\Mock\MockThread;
 use TechDivision\ApplicationServer\Configuration;
 use TechDivision\ApplicationServer\InitialContext;
 
@@ -23,11 +23,11 @@ use TechDivision\ApplicationServer\InitialContext;
  *              Open Software License (OSL 3.0)
  * @author      Tim Wagner <tw@techdivision.com>
  */
-class AbstractThreadTest extends \PHPUnit_Framework_TestCase {
-    
+class AbstractThreadTest extends AbstractTest {
+
 	/**
 	 * Test's if the thread's constructor works as expected.
-	 * 
+	 *
 	 * @return void
 	 */
 	public function testConstructor()
@@ -35,10 +35,10 @@ class AbstractThreadTest extends \PHPUnit_Framework_TestCase {
 	    $thread = new MockThread($someInstance = new \stdClass());
 	    $this->assertEquals($someInstance, $thread->getSomeInstance());
 	}
-	
+
 	/**
 	 * Test's if the threads main method has been invoked.
-	 * 
+	 *
 	 * @return void
 	 */
 	public function testMain()
