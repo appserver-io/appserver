@@ -30,27 +30,27 @@ class ContainerThread extends AbstractContextThread {
      * @var string
      */
     const XPATH_CONTAINER_DEPLOYMENT = '/container/deployment';
-    
+
     /**
      * The container's configuration
      * @var \TechDivision\ApplicationServer\Configuration
      */
     protected $configuration;
-    
+
     /**
      * Set's the configuration with the container information to be started in the thread.
-     * 
+     *
      * @param \TechDivision\ApplicationServer\Configuration $configuration The container's configuration
      */
     public function init($configuration) {
         $this->configuration = $configuration;
     }
-    
+
     /**
      * @see AbstractContextThread::run()
      */
     public function main() {
-        
+
         // load the container configuration
         $configuration = $this->getConfiguration();
 
@@ -58,17 +58,17 @@ class ContainerThread extends AbstractContextThread {
         $containerType = $configuration->getType();
 
         // deploy the applications and return them in an array
-        $applications = $this->getDeployment()->deploy()->getApplications();
+        $applications = $this->getDeployment()->deployWebapps()->deploy()->getApplications();
 
         // create and start the container instance
         $containerInstance = $this->newInstance($containerType, array($this->getInitialContext(), $configuration, $applications));
         $containerInstance->run();
     }
-    
+
     /**
      * Creates a new instance of the passed class name and passes the
      * args to the instance constructor.
-     * 
+     *
      * @param string $className The class name to create the instance of
      * @param array $args The parameters to pass to the constructor
      * @return object The created instance
@@ -76,10 +76,10 @@ class ContainerThread extends AbstractContextThread {
     public function newInstance($className, array $args = array()) {
         return $this->getInitialContext()->newInstance($className, $args);
     }
-    
+
     /**
      * The configuration found in the cfg/appserver.xml file.
-     * 
+     *
      * @return \TechDivision\ApplicationServer\Configuration The configuration instance
      */
     public function getConfiguration() {
