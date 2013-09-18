@@ -35,7 +35,7 @@ class AbstractTest extends \PHPUnit_Framework_TestCase
     public function getContainerConfiguration()
     {
         $configuration = new Configuration();
-        $configuration->initFromFile(__DIR__ . '/_files/appserver_container.xml');
+        $configuration->initFromFile('_files/appserver_container.xml');
         $configuration->addChildWithNameAndValue('baseDirectory', '/opt/appserver');
         return $configuration;
     }
@@ -50,7 +50,7 @@ class AbstractTest extends \PHPUnit_Framework_TestCase
     public function getMockApplication($applicationName)
     {
         $configuration = new Configuration();
-        $configuration->initFromFile(__DIR__ . '/_files/appserver_initial_context.xml');
+        $configuration->initFromFile('_files/appserver_initial_context.xml');
         $initialContext = new InitialContext($configuration);
         $application = new MockApplication($initialContext, $applicationName);
         $application->setConfiguration($this->getContainerConfiguration());

@@ -42,7 +42,7 @@ class AbstractDeploymentTest extends AbstractTest
     public function setUp()
     {
         $configuration = new Configuration();
-        $configuration->initFromFile(__DIR__ . '/_files/appserver_initial_context.xml');
+        $configuration->initFromFile('_files/appserver_initial_context.xml');
         $initialContext = new InitialContext($configuration);
         $containerThread = new ContainerThread($initialContext, $this->getContainerConfiguration());
         $this->deployment = new MockDeployment($initialContext, $containerThread);

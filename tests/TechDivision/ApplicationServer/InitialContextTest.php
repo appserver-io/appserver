@@ -37,7 +37,7 @@ class InitialContextTest extends AbstractTest
     public function setUp()
     {
         $configuration = new Configuration();
-        $configuration->initFromFile(__DIR__ . '/_files/appserver_initial_context.xml');
+        $configuration->initFromFile('_files/appserver_initial_context.xml');
         $this->initialContext = new InitialContext($configuration);
     }
 
