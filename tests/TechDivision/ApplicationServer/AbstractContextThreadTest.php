@@ -41,7 +41,7 @@ class AbstractContextThreadTest extends AbstractTest
     public function setUp()
     {
         $configuration = new Configuration();
-        $configuration->initFromFile(__DIR__ . '/_files/appserver_initial_context.xml');
+        $configuration->initFromFile('_files/appserver_initial_context.xml');
         $initialContext = new InitialContext($configuration);
         $this->contextThread = new MockContextThread($initialContext);
     }
