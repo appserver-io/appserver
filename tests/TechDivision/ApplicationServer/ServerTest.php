@@ -37,7 +37,7 @@ class ServerTest extends AbstractTest
     public function setUp()
     {
         $configuration = new Configuration();
-        $configuration->initFromFile('_files/appserver.xml');
+        $configuration->initFromFile(__DIR__ . '/_files/appserver.xml');
         $configuration->addChildWithNameAndValue('baseDirectory', '/opt/appserver');
         $this->server = new Server($configuration);
     }
