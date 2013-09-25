@@ -44,7 +44,7 @@ class AbstractDeploymentTest extends AbstractTest
         $configuration = new Configuration();
         $configuration->initFromFile('_files/appserver_initial_context.xml');
         $initialContext = new InitialContext($configuration);
-        $containerThread = new ContainerThread($initialContext, $this->getContainerConfiguration());
+        $containerThread = new ContainerThread($initialContext, $this->getContainerConfiguration(), \Mutex::create(false));
         $this->deployment = new MockDeployment($initialContext, $containerThread);
     }
 

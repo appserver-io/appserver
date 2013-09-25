@@ -1,15 +1,15 @@
-<phpunit bootstrap="bootstrap.php">
+<phpunit bootstrap="${php-target.dir}/${unique.name}/src/bootstrap.php">
     <testsuites>
 	    <testsuite name="ApplicationServer Unit Tests">
-	        <directory suffix="Test.php">.</directory>
+	        <directory suffix="Test.php">${php-target.dir}/${unique.name}/src</directory>
 	    </testsuite>
 	</testsuites>
     <filter>
         <whitelist>
-            <directory suffix=".php">.</directory>
+            <directory suffix=".php">${php-target.dir}/${unique.name}/src</directory>
 		    <exclude>
-		        <directory prefix="Mock">.</directory>
-		        <directory suffix="Test.php">.</directory>
+		        <directory prefix="Mock">${php-target.dir}/${unique.name}/src/Mock</directory>
+		        <directory suffix="Test.php">${php-target.dir}/${unique.name}/src</directory>
 		    </exclude>
         </whitelist>
     </filter>

@@ -53,7 +53,7 @@ class ContainerThreadTest extends AbstractTest {
         $configuration->initFromFile('_files/appserver_initial_context.xml');
 		$this->initialContext = new InitialContext($configuration);
 		$this->configuration = $this->getContainerConfiguration();
-		$this->containerThread = new ContainerThread($this->initialContext, $this->configuration);
+		$this->containerThread = new ContainerThread($this->initialContext, $this->configuration, \Mutex::create(false));
 	}
 
 	/**

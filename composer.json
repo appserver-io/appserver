@@ -16,10 +16,6 @@
         "techdivision/socket": "dev-master",
         "techdivision/stream": "dev-master"
     },
-    "require-dev": {
-        "techdivision/socket": "dev-master",
-        "techdivision/stream": "dev-master"
-    },
     "autoload": {
         "psr-0": {
             "TechDivision": ["src/", "tests/"]      

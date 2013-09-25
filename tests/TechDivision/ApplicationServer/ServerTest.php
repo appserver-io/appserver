@@ -136,8 +136,10 @@ class ServerTest extends AbstractTest
     {
         $className = 'TechDivision\ApplicationServer\Mock\MockContainerThread';
         $instance = $this->server->newInstance($className, array(
-            $this->server->getInitialContext()
-        ));
+            $this->server->getInitialContext(),
+            \Mutex::create(false)
+        ))
+        ;
         $this->assertInstanceOf($className, $instance);
     }
 }

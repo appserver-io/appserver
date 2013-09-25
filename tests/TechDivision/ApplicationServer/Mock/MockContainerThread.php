@@ -26,16 +26,20 @@ class MockContainerThread
 {
 
     /**
-     *
-     * @see \TechDivision\ApplicationServer\ContainerThread::__construct($initialContext)
+     *@see \TechDivision\ApplicationServer\ContainerThread::__construct($initialContext, $mutex)
      */
-    public function __construct($initialContext)
+    public function __construct($initialContext, $mutex)
     {}
 
     /**
-     *
      * @see \Thread::start()
      */
     public function start()
+    {}
+
+    /**
+     * @see \Thread::join()
+     */
+    public function join()
     {}
 }
