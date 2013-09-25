@@ -9,48 +9,55 @@
  * that is available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  */
-
 namespace TechDivision\ApplicationServer;
 
 use TechDivision\ApplicationServer\InitialContext;
 use TechDivision\ApplicationServer\Interfaces\ApplicationInterface;
+use JMS\Serializer\Context;
 
 /**
- * @package     TechDivision\ApplicationServer
- * @copyright  	Copyright (c) 2013 <info@techdivision.com> - TechDivision GmbH
- * @license    	http://opensource.org/licenses/osl-3.0.php
- *              Open Software License (OSL 3.0)
- * @author      Tim Wagner <tw@techdivision.com>
- * @author      Johann Zelger <jz@techdivision.com>
+ *
+ * @package TechDivision\ApplicationServer
+ * @copyright Copyright (c) 2013 <info@techdivision.com> - TechDivision GmbH
+ * @license http://opensource.org/licenses/osl-3.0.php
+ *          Open Software License (OSL 3.0)
+ * @author Tim Wagner <tw@techdivision.com>
+ * @author Johann Zelger <jz@techdivision.com>
  */
 abstract class AbstractApplication implements ApplicationInterface
 {
+
     /**
      * Path to the container's host configuration.
+     *
      * @var string
      */
     const XPATH_CONTAINER_HOST = '/container/host';
 
     /**
      * Path to the container's base directory.
+     *
      * @var string
      */
     const XPATH_CONTAINER_BASE_DIRECTORY = '/container/baseDirectory';
 
     /**
      * The unique application name.
+     *
      * @var string
      */
     protected $name;
 
     /**
      * The host configuration.
+     *
      * @var \TechDivision\ApplicationServer\Configuration
      */
     protected $configuration;
-    
+
     /**
      * The initial context instance.
+     *
      * @var \TechDivision\ApplicationServer\InitialContext
      */
     protected $initialContext;
@@ -59,10 +66,12 @@ abstract class AbstractApplication implements ApplicationInterface
      * Passes the application name That has to be the class namespace.
      *
      * @param InitialContext $initialContext
-     * @param type $name The application name
+     * @param type $name
+     *            The application name
      */
-    public function __construct($initialContext, $name) {
-        
+    public function __construct($initialContext, $name)
+    {
+
         // initialize the member variables with the passed values
         $this->initialContext = $initialContext;
         $this->name = $name;
@@ -78,21 +87,25 @@ abstract class AbstractApplication implements ApplicationInterface
 
     /**
      * Returns the application name (that has to be the class namespace,
-     * e. g. TechDivision\Example).
+     * e.
+     * g. TechDivision\Example).
      *
      * @return string The application name
      */
-    public function getName() {
+    public function getName()
+    {
         return $this->name;
     }
 
     /**
      * Set's the host configuration.
      *
-     * @param \TechDivision\ApplicationServer\Configuration $configuration The host configuration
+     * @param \TechDivision\ApplicationServer\Configuration $configuration
+     *            The host configuration
      * @return \TechDivision\ServletContainer\Application The application instance
      */
-    public function setConfiguration($configuration) {
+    public function setConfiguration($configuration)
+    {
         $this->configuration = $configuration;
         return $this;
     }
@@ -102,7 +115,8 @@ abstract class AbstractApplication implements ApplicationInterface
      *
      * @return \TechDivision\ApplicationServer\Configuration The host configuration
      */
-    public function getConfiguration() {
+    public function getConfiguration()
+    {
         return $this->configuration;
     }
 
@@ -111,9 +125,14 @@ abstract class AbstractApplication implements ApplicationInterface
      *
      * @return string The path to the appserver webapp base directory
      */
-    public function getAppBase() {
-        $baseDir = $this->getConfiguration()->getChild(self::XPATH_CONTAINER_BASE_DIRECTORY)->getValue();
-        $appBase = $this->getConfiguration()->getChild(self::XPATH_CONTAINER_HOST)->getAppBase();
+    public function getAppBase()
+    {
+        $baseDir = $this->getConfiguration()
+            ->getChild(self::XPATH_CONTAINER_BASE_DIRECTORY)
+            ->getValue();
+        $appBase = $this->getConfiguration()
+            ->getChild(self::XPATH_CONTAINER_HOST)
+            ->getAppBase();
         return $baseDir . $appBase;
     }
 
@@ -122,7 +141,8 @@ abstract class AbstractApplication implements ApplicationInterface
      *
      * @return string The path to the web application
      */
-    public function getWebappPath() {
+    public function getWebappPath()
+    {
         return $this->getAppBase() . DIRECTORY_SEPARATOR . $this->getName();
     }
 
@@ -130,11 +150,24 @@ abstract class AbstractApplication implements ApplicationInterface
      * Creates a new instance of the passed class name and passes the
      * args to the instance constructor.
      *
-     * @param string $className The class name to create the instance of
-     * @param array $args The parameters to pass to the constructor
+     * @param string $className
+     *            The class name to create the instance of
+     * @param array $args
+     *            The parameters to pass to the constructor
      * @return object The created instance
      */
-    public function newInstance($className, array $args = array()) {
-        return $this->initialContext->newInstance($className, $args);
+    public function newInstance($className, array $args = array())
+    {
+        return $this->getInitialContext()->newInstance($className, $args);
+    }
+
+    /**
+     * Returns the initial context instance.
+     *
+     * @return \TechDivision\ApplicationServer\InitialContext The initial Context
+     */
+    public function getInitialContext()
+    {
+        return $this->initialContext;
     }
 }
