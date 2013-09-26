@@ -86,6 +86,7 @@ class Server
 
     /**
      * The mutex toprevent PHAR deployment errors
+     *
      * @var \Mutex
      */
     protected $mutex;
@@ -203,6 +204,9 @@ class Server
         $this->initialContext = $reflectionClass->newInstanceArgs(array(
             $this->getInitialContextConfiguration()
         ));
+
+        // add the system configuration to the initial context
+        $this->initialContext->setSystemConfiguration($this->configuration);
     }
 
     /**

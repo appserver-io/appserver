@@ -167,34 +167,34 @@ class Configuration implements ContainerConfiguration
      */
     public function init($node, $xpath = '/')
     {
-        
+
         // set the node name + value
         $this->setNodeName($node->getName());
-        
+
         $nodeValue = (string) $node;
-        
+
         if (empty($nodeValue) === false) {
             $this->setValue(trim($nodeValue));
         }
-        
+
         // load the attributes
         foreach ($node->attributes() as $key => $value) {
             $this->setData($key, (string) $value);
         }
-        
+
         // append childs
         foreach ($node->children() as $name => $child) {
-            
+
             // create a new configuration node
             $cnt = new Configuration();
-            
+
             // parse the configuration recursive
             $cnt->init($child, $name);
-            
+
             // append the configuration node to the parent
             $this->addChild($cnt);
         }
-        
+
         // return the instance node itself
         return $this;
     }
@@ -319,6 +319,16 @@ class Configuration implements ContainerConfiguration
     }
 
     /**
+     * Returns all attributes.
+     *
+     * @return array The array with all attributes
+     */
+    public function getAllData()
+    {
+        return $this->data;
+    }
+
+    /**
      * Wrapper method for getter/setter methods.
      *
      * @param string $method
@@ -330,10 +340,10 @@ class Configuration implements ContainerConfiguration
      */
     public function __call($method, $args)
     {
-        
+
         // lowercase the first character of the member
         $key = lcfirst(substr($method, 3));
-        
+
         // check if a getter/setter has been called
         switch (substr($method, 0, 3)) {
             case 'get':
