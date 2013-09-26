@@ -13,6 +13,7 @@ namespace TechDivision\ApplicationServer;
 
 use TechDivision\ApplicationServer\SplClassLoader;
 use TechDivision\ApplicationServer\AbstractContextThread;
+use TechDivision\ApplicationServer\Configuration;
 
 /**
  *
@@ -34,6 +35,13 @@ class ContainerThread extends AbstractContextThread
     const XPATH_CONTAINER_DEPLOYMENT = '/container/deployment';
 
     /**
+     * XPath expression for the container configurations.
+     *
+     * @var string
+     */
+    const XPATH_CONTAINERS = '/appserver/containers/container';
+
+    /**
      * The container's configuration
      *
      * @var \TechDivision\ApplicationServer\Configuration
@@ -42,6 +50,7 @@ class ContainerThread extends AbstractContextThread
 
     /**
      * The mutex to prevent parallel deployment of PHAR files.
+     *
      * @var \Mutex
      */
     protected $mutex;
@@ -80,6 +89,17 @@ class ContainerThread extends AbstractContextThread
             ->deploy()
             ->getApplications();
 
+        // create configuration nodes for applications
+        $applicationConfiguration = $this->newInstance('TechDivision\ApplicationServer\Configuration');
+        $applicationConfiguration->setNodeName('applications');
+        foreach ($applications as $application) {
+            $applicationConfiguration->addChild($application->newConfiguration());
+        }
+
+        // add applications to container/system configuration
+        $configuration->addChild($applicationConfiguration);
+        $this->mergeInSystemConfiguration($applicationConfiguration);
+
         // unlock the mutex to allow other containers own deployment
         \Mutex::unlock($this->mutex);
 
@@ -91,6 +111,22 @@ class ContainerThread extends AbstractContextThread
         ));
 
         $containerInstance->run();
+    }
+
+    /**
+     * Merge the passed application configurations into the system configuration
+     * and refreshes it in the initial context, to make it available to the API.
+     *
+     * @param \TechDivision\ApplicationServer\Configuration $applicationConfigurations
+     *            The application configurations to merge into the system configuration
+     */
+    public function mergeInSystemConfiguration(Configuration $applicationConfiguration)
+    {
+        $systemConfiguration = $this->getInitialContext()->getSystemConfiguration();
+        foreach ($systemConfiguration->getChilds(self::XPATH_CONTAINERS) as $containerConfiguration) {
+            $containerConfiguration->addChild($applicationConfiguration);
+        }
+        $this->getInitialContext()->setSystemConfiguration($systemConfiguration);
     }
 
     /**
