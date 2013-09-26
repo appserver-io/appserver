@@ -24,19 +24,19 @@ use TechDivision\ApplicationServer\Interfaces\ReceiverInterface;
  * @author      Johann Zelger <jz@techdivision.com>
  */
 abstract class AbstractReceiver implements ReceiverInterface {
-    
+
     /**
      * Path to the receiver's initialization parameters.
      * @var string
      */
     const XPATH_CONFIGURATION_PARAMETERS = '/receiver/params/param';
-    
+
     /**
      * The container instance.
      * @var \TechDivision\ApplicationServer\Interfaces\ContainerInterface
      */
     protected $container;
-    
+
     /**
      * The worker type to use.
      * @var string
@@ -58,7 +58,7 @@ abstract class AbstractReceiver implements ReceiverInterface {
 
         // initialize the initial context
         $this->initialContext = $initialContext;
-        
+
         // set the container instance
         $this->container = $container;
 
@@ -89,21 +89,21 @@ abstract class AbstractReceiver implements ReceiverInterface {
     public function start()
     {
         try {
-            
+
             /** @var \TechDivision\Socket\Client $socket */
             $socket = $this->newInstance($this->getResourceClass());
-            
+
             // prepare the main socket and listen
             $socket->setAddress($this->getAddress())->setPort($this->getPort())->start();
-            
+
             // check if resource been initiated
             if ($resource = $socket->getResource()) {
-                
+
                 // init worker number
                 $worker = 0;
                 // init workers array holder
                 $workers = array();
-                
+
                 // open threads where accept connections
                 while ($worker ++ < $this->getWorkerNumber()) {
                     // init thread
@@ -111,30 +111,30 @@ abstract class AbstractReceiver implements ReceiverInterface {
                     // start thread async
                     $workers[$worker]->start();
                 }
-                
+
                 return true;
             }
-            
+
         } catch (\Exception $e) {
             error_log($e->__toString());
         }
-        
+
         if (is_resource($resource)) {
             $socket->close();
         }
-        
+
         return false;
     }
 
     /**
      * Returns the refrence to the container instance.
-     * 
+     *
      * @return \TechDivision\ApplicationServer\Interfaces\ContainerInterface The container instance
      */
     public function getContainer() {
         return $this->container;
     }
-    
+
     /**
      * @see \TechDivision\ApplicationServer\Interfaces\ReceiverInterface::getWorkerNumber()
      */
@@ -148,7 +148,7 @@ abstract class AbstractReceiver implements ReceiverInterface {
             }
         }
     }
-    
+
     /**
      * @see \TechDivision\ApplicationServer\Interfaces\ReceiverInterface::getAddress()
      */
@@ -162,7 +162,7 @@ abstract class AbstractReceiver implements ReceiverInterface {
             }
         }
     }
-    
+
     /**
      * @see \TechDivision\ApplicationServer\Interfaces\ReceiverInterface::getPort()
      */
@@ -174,12 +174,12 @@ abstract class AbstractReceiver implements ReceiverInterface {
                 settype($var, $type);
                 return $var;
             }
-        }   
+        }
     }
 
     /**
      * Set's the worker's class name to use.
-     * 
+     *
      * @param string $workerType The worker's class name to use
      * @return \TechDivision\ApplicationServer\Interfaces\ReceiverInterface The receiver instance
      */
@@ -187,7 +187,7 @@ abstract class AbstractReceiver implements ReceiverInterface {
         $this->workerType = $workerType;
         return $this;
     }
-    
+
     /**
      * @see \TechDivision\ApplicationServer\Interfaces\ReceiverInterface::getWorkerType()
      */
@@ -212,10 +212,10 @@ abstract class AbstractReceiver implements ReceiverInterface {
     public function getThreadType() {
         return $this->threadType;
     }
-    
+
     /**
      * Sets the passed container configuration.
-     * 
+     *
      * @param \TechDivision\ApplicationServer\Interfaces\ContainerConfiguration $configuration The configuration for the container
      * @return \TechDivision\ApplicationServer\Interfaces\ReceiverInterface The receiver instance
      */
@@ -226,36 +226,36 @@ abstract class AbstractReceiver implements ReceiverInterface {
 
     /**
      * Returns the actual container configuration.
-     * 
+     *
      * @return \TechDivision\ApplicationServer\Interfaces\ContainerConfiguration The actual container configuration
      */
     public function getConfiguration() {
         return $this->configuration;
     }
-    
+
     /**
      * Forces collection of any existing garbage cycles.
-     * 
+     *
      * @return integer The number of collected cycles
      * @link http://php.net/manual/en/features.gc.collecting-cycles.php
      */
     public function gc() {
         return gc_collect_cycles();
     }
-    
+
     /**
      * Returns TRUE if the PHP internal garbage collection is enabled.
-     * 
+     *
      * @return boolean TRUE if the PHP internal garbage collection is enabled
      * @link http://php.net/manual/en/function.gc-enabled.php
      */
     public function gcEnabled() {
         return gc_enabled();
     }
-    
+
     /**
      * Enables PHP internal garbage collection.
-     * 
+     *
      * @return \TechDivision\PersistenceContainer\Container The container instance
      * @link http://php.net/manual/en/function.gc-enable.php
      */
@@ -263,10 +263,10 @@ abstract class AbstractReceiver implements ReceiverInterface {
         gc_enable();
         return $this;
     }
-    
+
     /**
      * Disables PHP internal garbage collection.
-     * 
+     *
      * @return \TechDivision\PersistenceContainer\Container The container instance
      * @link http://php.net/manual/en/function.gc-disable.php
      */
@@ -284,22 +284,22 @@ abstract class AbstractReceiver implements ReceiverInterface {
         $params = array($this->initialContext, $this->getContainer(), $socketResource, $this->getThreadType());
         return $this->newInstance($this->getWorkerType(), $params);
     }
-    
+
     /**
      * Creates a new instance of the passed class name and passes the
      * args to the instance constructor.
-     * 
+     *
      * @param string $className The class name to create the instance of
      * @param array $args The parameters to pass to the constructor
      * @return object The created instance
      */
-    public function newInstance($className, array $args = array()) { 
+    public function newInstance($className, array $args = array()) {
         return $this->initialContext->newInstance($className, $args);
     }
-    
+
     /**
      * Returns the inital context instance.
-     * 
+     *
      * @return \TechDivision\ApplicationServer\InitialContext The initial context instance
      */
     public function getInitialContext()

@@ -33,26 +33,40 @@ class ContainerService extends AbstractService
     const XPATH_CONTAINERS = '/appserver/containers/container';
 
     /**
-     * Primary key field to use for container entity.
+     * XPath expression for the application configurations.
      *
      * @var string
      */
-    const PRIMARY_KEY = 'id';
+    const XPATH_APPLICATION = '/container/applications/application';
 
     /**
      * Return's all container configurations.
      *
      * @return array<\stdClass> An array with all container configurations
+     * @see \TechDivision\ApplicationServer\Api\ServiceInterface::findAll()
      */
     public function findAll()
     {
         $containers = array();
-        $counter = 1;
+        $containerIds = 1;
+
         foreach ($this->getSystemConfiguration()->getChilds(self::XPATH_CONTAINERS) as $containerConfiguration) {
-            $containerConfiguration->setData(self::PRIMARY_KEY, $counter++);
-            $containers[] = $this->normalize($containerConfiguration);
+
+            $containerConfiguration->setData(self::PRIMARY_KEY, $containerIds ++);
+            $container = $this->normalize($containerConfiguration);
+            $container->app_ids = array();
+
+            $appIds = 1;
+            foreach ($containerConfiguration->getChilds(self::XPATH_APPLICATION) as $application) {
+                $container->app_ids[] = $appIds;
+                $appIds ++;
+            }
+
+            $containers[] = $container;
         }
-        return array('containers' => $containers);
+        return array(
+            'containers' => $containers
+        );
     }
 
     /**
@@ -61,29 +75,47 @@ class ContainerService extends AbstractService
      * @param integer $id
      *            ID of the container to return
      * @return \stdClass The container with the ID passed as parameter
+     * @see \TechDivision\ApplicationServer\Api\ServiceInterface::load($id)
      */
     public function load($id)
     {
         $containers = $this->findAll();
         foreach ($containers['containers'] as $container) {
             if ($container->{self::PRIMARY_KEY} == $id) {
-                return array('container' => $container);
+                return array(
+                    'container' => $container
+                );
             }
         }
     }
 
+    /**
+     * Creates a new container based on the passed information.
+     *
+     * @param \stdClass $stdClass
+     *            The data with the information for the container to be created
+     * @see \TechDivision\ApplicationServer\Api\ServiceInterface::create($id)
+     */
     public function create($stdClass)
-    {
-        error_log(var_export($stdClass, true));
-    }
+    {}
 
+    /**
+     * Updates the container with the passed data.
+     *
+     * @param \stdClass $stdClass
+     *            The container data to update
+     * @see \TechDivision\ApplicationServer\Api\ServiceInterface::update($id)
+     */
     public function update($stdClass)
-    {
-        error_log(var_export($stdClass, true));
-    }
+    {}
 
+    /**
+     * Deletes the container with passed ID.
+     *
+     * @param string $id
+     *            The ID of the container to be deleted
+     * @see \TechDivision\ApplicationServer\Api\ServiceInterface::delete($id)
+     */
     public function delete($id)
-    {
-        error_log("Now deleting ID: $id");
-    }
+    {}
 }

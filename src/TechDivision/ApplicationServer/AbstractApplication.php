@@ -170,4 +170,18 @@ abstract class AbstractApplication implements ApplicationInterface
     {
         return $this->initialContext;
     }
+
+    /**
+     * Creates a new configuration node with the application data and
+     * returns it.
+     *
+     * @return \TechDivision\ApplicationServer\Configuration The configuration instance
+     */
+    public function newConfiguration()
+    {
+        $configuration = $this->newInstance('\TechDivision\ApplicationServer\Configuration');
+        $configuration->setNodeName('application');
+        $configuration->setData('name', $this->getName());
+        return $configuration;
+    }
 }

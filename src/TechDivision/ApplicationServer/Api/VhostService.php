@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\ApplicationServerApi\Services\VhostProcessor
+ * TechDivision\ApplicationServer\Api\VhostService
  *
  * NOTICE OF LICENSE
  *
@@ -28,9 +28,10 @@ class VhostService extends AbstractService
     /**
      * Returns all vhost configurations.
      *
-     * @return array<\TechDivision\ApplicationServer\Vhost> An array with all vhost configurations
+     * @return array<\stdClass> An array with all vhost configurations
+     * @see \TechDivision\ApplicationServer\Api\ServiceInterface::findAll()
      */
-    public function getVhostOverviewData()
+    public function findAll()
     {}
 
     /**
@@ -38,8 +39,39 @@ class VhostService extends AbstractService
      *
      * @param string $name
      *            Name of the vhost to return
-     * @return \TechDivision\ApplicationServer\Vhost The vhost with the name passed as parameter
+     * @return \stdClass The vhost with the name passed as parameter
+     * @see \TechDivision\ApplicationServer\Api\ServiceInterface::load($id)
      */
-    public function getVhostViewData($name)
+    public function load($id)
+    {}
+
+    /**
+     * Creates a new vhost based on the passed information.
+     *
+     * @param \stdClass $stdClass
+     *            The data with the information for the vhost to be created
+     * @see \TechDivision\ApplicationServer\Api\ServiceInterface::create($id)
+     */
+    public function create($stdClass)
+    {}
+
+    /**
+     * Updates the vhost with the passed data.
+     *
+     * @param \stdClass $stdClass
+     *            The vhost data to update
+     * @see \TechDivision\ApplicationServer\Api\ServiceInterface::update($id)
+     */
+    public function update($stdClass)
+    {}
+
+    /**
+     * Deletes the vhost with passed ID.
+     *
+     * @param string $id
+     *            The ID of the vhost to be deleted
+     * @see \TechDivision\ApplicationServer\Api\ServiceInterface::delete($id)
+     */
+    public function delete($id)
     {}
 }

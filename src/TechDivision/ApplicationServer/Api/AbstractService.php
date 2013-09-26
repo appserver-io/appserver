@@ -11,37 +11,42 @@
  */
 namespace TechDivision\ApplicationServer\Api;
 
+use TechDivision\ApplicationServer\Configuration;
 use TechDivision\ApplicationServer\InitialContext;
+use TechDivision\ApplicationServer\Api\ServiceInterface;
 use TechDivision\PersistenceContainer\Application;
 
 /**
- * A stateless session bean implementation handling the vhost data.
+ * Abstract service implementation.
  *
  * @package TechDivision\ApplicationServer
  * @copyright Copyright (c) 2013 <info@techdivision.com> - TechDivision GmbH
  * @license http://opensource.org/licenses/osl-3.0.php
  *          Open Software License (OSL 3.0)
  * @author Tim Wagner <tw@techdivision.com>
- * @Stateless
  */
-class AbstractService
+abstract class AbstractService implements ServiceInterface
 {
 
     /**
-     * The application instance that provides the entity manager.
+     * Primary key field to use for container entity.
      *
-     * @var Application
+     * @var string
+     */
+    const PRIMARY_KEY = 'id';
+
+    /**
+     * The initial context instance containing the system configuration.
+     *
+     * @var \TechDivision\ApplicationServer\InitialContext
      */
     protected $initialContext;
 
     /**
-     * Initializes the session bean with the Application instance.
+     * Initializes the service with the initial context instance.
      *
-     * Checks on every start if the database already exists, if not
-     * the database will be created immediately.
-     *
-     * @param Application $application
-     *            The application instance
+     * @param \TechDivision\ApplicationServer\InitialContext $initialContext
+     *            The initial context instance
      * @return void
      */
     public function __construct(InitialContext $initialContext)
@@ -49,31 +54,40 @@ class AbstractService
         $this->initialContext = $initialContext;
     }
 
-    /**
-     * Returns the initial context instance.
-     *
-     * @return \TechDivision\ApplicationServer\InitialContext The initial Context
-     */
     public function getInitialContext()
     {
         return $this->initialContext;
     }
 
-    /**
-     * Returns the system configuration.
-     *
-     * @return \TechDivision\ApplicationServer\Configuration The system configuration
-     */
     public function getSystemConfiguration()
     {
         return $this->getInitialContext()->getSystemConfiguration();
     }
 
-    public function normalize($configuration, $recursive = false)
+    /**
+     *
+     * @see \TechDivision\ApplicationServer\InitialContext::newInstance($className, array $args = array())
+     */
+    public function newInstance($className, array $args = array())
+    {
+        return $this->getInitialContext()->newInstance($className, $args);
+    }
+
+    /**
+     * Normalizes the passed configuration node and returns a \stdClass
+     * representation of it.
+     *
+     * @param \TechDivision\ApplicationServer\Configuration $configuration
+     *            The configuration node to normalize
+     * @return \stdClass The normalized configuration node
+     */
+    public function normalize(Configuration $configuration)
     {
 
+        // initialize the \stdClass instance
         $node = new \stdClass();
 
+        // set the node value if available
         if ($value = $configuration->getValue()) {
             $node->value = $value;
         }
@@ -83,6 +97,7 @@ class AbstractService
             $node->{strtolower(preg_replace('/([a-z])([A-Z])/', '$1_$2', $member))} = $value;
         }
 
+        // return the normalized node instance
         return $node;
     }
 }
