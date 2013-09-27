@@ -53,24 +53,30 @@ class ApplicationService extends AbstractService
         $applications = array();
         $applicationIds = 1;
         $containerIds = 1;
+
+        $result = new \stdClass();
+
         foreach ($this->getSystemConfiguration()->getChilds(self::XPATH_CONTAINERS) as $containerConfiguration) {
+
             foreach ($containerConfiguration->getChilds(self::XPATH_APPLICATION) as $applicationConfiguration) {
 
-                $applicationConfiguration->setData(self::PRIMARY_KEY, $applicationIds ++);
-
+                $applicationConfiguration->setData(self::PRIMARY_KEY, $applicationIds++);
                 $application = $this->normalize($applicationConfiguration);
 
                 if (array_key_exists($application->name, $applications)) {
                     $applications[$application->name]->container_ids[] = $containerIds;
                 } else {
                     $applications[$application->name] = $application;
+                    $applications[$application->name]->container_ids = array();
+                    $applications[$application->name]->container_ids[] = $containerIds;
                 }
             }
             $containerIds ++;
         }
-        return array(
-            'apps' => array_values($applications)
-        );
+
+        $result->apps = array_values($applications);
+
+        return $result;
     }
 
     /**
@@ -83,12 +89,11 @@ class ApplicationService extends AbstractService
      */
     public function load($id)
     {
-        $applications = $this->findAll();
-        foreach ($applications['applications'] as $application) {
+        $result = new \stdClass();
+        foreach ($this->findAll()->apps as $application) {
             if ($application->{self::PRIMARY_KEY} == $id) {
-                return array(
-                    'app' => $application
-                );
+                $result->app = $application;
+                return $result;
             }
         }
     }
@@ -98,32 +103,43 @@ class ApplicationService extends AbstractService
      *
      * @param \stdClass $stdClass
      *            The data with the information for the application to be created
-     * @see \TechDivision\ApplicationServer\Api\ServiceInterface::create($id)
+     * @see \TechDivision\ApplicationServer\Api\ServiceInterface::create(\stdClass $stdClass)
      */
-    public function create($stdClass)
+    public function create(\stdClass $stdClass)
     {
-        $configuration = $this->newInstance('TechDivision\ApplicationServer\Configuration');
-        $configuration->setNodeName('application');
-        $configuration->setData('name', $stdClass->name);
 
+        // create a new node for the applications
         $applicationsConfiguration = $this->newInstance('TechDivision\ApplicationServer\Configuration');
         $applicationsConfiguration->setNodeName('applications');
-        $applicationsConfiguration->addChild($configuration);
 
+        // initialize the array that contains the existing applications
         $applications = array();
-
         foreach ($this->getSystemConfiguration()->getChilds(self::XPATH_CONTAINERS) as $containerConfiguration) {
             foreach ($containerConfiguration->getChilds(self::XPATH_APPLICATION) as $applicationConfiguration) {
-                if (array_key_exists($applicationConfiguration->getName(), $applications) === false) {
-                    $applications[$applicationConfiguration->getName()] = $applicationConfiguration;
+                if (array_key_exists($applicationConfiguration->getId(), $applications) === false) {
+                    $applications[$applicationConfiguration->getId()] = $applicationConfiguration;
                 }
             }
         }
 
+        // sort the applications, load the highest ID and create a new ID
+        asort($applications);
+        $keys = array_keys($applications);
+        $id = end($keys) + 1;
+
+        // create a new configuration instance and add it to the applications
+        $configuration = $this->newInstance('TechDivision\ApplicationServer\Configuration');
+        $configuration->setNodeName('application');
+        $configuration->setData('name', $stdClass->name);
+        $configuration->setData('id', $id);
+        $applications[] = $configuration;
+
+        // apply the applications as childs to the applications configuration node
         foreach ($applications as $config) {
             $applicationsConfiguration->addChild($config);
         }
 
+        // merge the applications into the system configuration
         $this->mergeInSystemConfiguration($applicationsConfiguration);
     }
 
@@ -150,9 +166,9 @@ class ApplicationService extends AbstractService
      *
      * @param \stdClass $stdClass
      *            The application data to update
-     * @see \TechDivision\ApplicationServer\Api\ServiceInterface::update($id)
+     * @see \TechDivision\ApplicationServer\Api\ServiceInterface::update(\stdClass $stdClass)
      */
-    public function update($stdClass)
+    public function update(\stdClass $stdClass)
     {}
 
     /**

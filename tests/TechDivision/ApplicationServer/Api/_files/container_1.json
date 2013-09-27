@@ -1,0 +1,13 @@
+{
+    "container":{
+        "name":"persistence",
+        "thread_type":"TechDivision\\ApplicationServer\\Mock\\MockContainerThread",
+        "type":"TechDivision\\PersistenceContainer\\Container",
+        "id":1,
+        "app_ids":[
+            1,
+            2,
+            3
+        ]
+    }
+}

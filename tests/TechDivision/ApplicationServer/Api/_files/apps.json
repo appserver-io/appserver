@@ -1,0 +1,31 @@
+{
+    "apps":[
+        {
+            "name":"api",
+            "id":1,
+            "container_ids":[
+                1,
+                2,
+                3
+            ]
+        },
+        {
+            "name":"demo",
+            "id":2,
+            "container_ids":[
+                1,
+                2,
+                3
+            ]
+        },
+        {
+            "name":"example",
+            "id":3,
+            "container_ids":[
+                1,
+                2,
+                3
+            ]
+        }
+    ]
+}

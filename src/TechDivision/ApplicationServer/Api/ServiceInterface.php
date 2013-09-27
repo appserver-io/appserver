@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * TechDivision\ApplicationServer\Api\ServiceInterface
  *
@@ -40,24 +39,44 @@ interface ServiceInterface
     public function getSystemConfiguration();
 
     /**
-     * Return's all container configurations.
+     * Return's all entity configurations.
      *
-     * @return array<\stdClass> An array with all container configurations
+     * @return array<\stdClass> An array with all entity configurations
      */
     public function findAll();
 
     /**
-     * Returns the containers with the passed name.
+     * Returns the containers with the passed ID.
      *
      * @param integer $id
-     *            ID of the container to return
+     *            ID of the entity to return
      * @return \stdClass The container with the ID passed as parameter
      */
     public function load($id);
 
-    public function create($stdClass);
+    /**
+     * Creates a new entity from the passed class information.
+     *
+     * @param \stdClass $stdClass
+     *            The class information to create the entity from
+     * @return void
+     */
+    public function create(\stdClass $stdClass);
 
-    public function update($stdClass);
+    /**
+     * Updates the entity with the passed class information.
+     *
+     * @param \stdClass $stdClass
+     *            The entity with the passed class information.
+     * @return void
+     */
+    public function update(\stdClass $stdClass);
 
+    /**
+     * Deletes the entity with the passed ID.
+     *
+     * @param string $id
+     *            ID of the entity to remove
+     */
     public function delete($id);
 }

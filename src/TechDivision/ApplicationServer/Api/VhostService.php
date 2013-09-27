@@ -50,9 +50,9 @@ class VhostService extends AbstractService
      *
      * @param \stdClass $stdClass
      *            The data with the information for the vhost to be created
-     * @see \TechDivision\ApplicationServer\Api\ServiceInterface::create($id)
+     * @see \TechDivision\ApplicationServer\Api\ServiceInterface::create(\stdClass $stdClass)
      */
-    public function create($stdClass)
+    public function create(\stdClass $stdClass)
     {}
 
     /**
@@ -60,9 +60,9 @@ class VhostService extends AbstractService
      *
      * @param \stdClass $stdClass
      *            The vhost data to update
-     * @see \TechDivision\ApplicationServer\Api\ServiceInterface::update($id)
+     * @see \TechDivision\ApplicationServer\Api\ServiceInterface::update(\stdClass $stdClass)
      */
-    public function update($stdClass)
+    public function update(\stdClass $stdClass)
     {}
 
     /**

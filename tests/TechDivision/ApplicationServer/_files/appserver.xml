@@ -2,10 +2,11 @@
 <appserver xmlns="http://www.appserver.io/appserver">
 	<initialContext type="TechDivision\ApplicationServer\InitialContext">
 		<description><![CDATA[The initial context configuration.]]></description>
-		<classLoader type="TechDivision\ApplicationServer\SplClassLoader"/>
-		<storage type="TechDivision\ApplicationServer\Mock\InitialContext\MockStorage"/>
+		<classLoader type="TechDivision\ApplicationServer\SplClassLoader" />
+		<storage
+			type="TechDivision\ApplicationServer\Mock\InitialContext\MockStorage" />
 	</initialContext>
-	
+
 	<systemLogger type="Monolog\Logger" channelName="system">
 		<processors>
 			<processor type="Monolog\Processor\MemoryUsageProcessor">
@@ -23,82 +24,104 @@
 					</params>
 				</formatter>
 				<params>
-					<param name="messageType" type="integer">ErrorLogHandler::OPERATING_SYSTEM</param>
+					<param name="messageType" type="integer">ErrorLogHandler::OPERATING_SYSTEM
+					</param>
 					<param name="level" type="integer">Logger::DEBUG"</param>
 					<param name="bubble" type="boolean">true</param>
 				</params>
 			</handler>
 		</handlers>
 	</systemLogger>
-	
-    <containers>
 
-        <container threadType="TechDivision\ApplicationServer\Mock\MockContainerThread" type="TechDivision\PersistenceContainer\Container">
+	<containers>
+
+		<container name="persistence"
+			threadType="TechDivision\ApplicationServer\Mock\MockContainerThread"
+			type="TechDivision\PersistenceContainer\Container">
 			<description><![CDATA[This is an example of a container that uses a socket for sending and receiving messages. This solution can be used for clients connecting over a network.]]></description>
-            <receiver type="TechDivision\ApplicationServer\Socket\Receiver">
-                <worker type="TechDivision\ApplicationServer\Socket\Worker"/>
-                <thread type="TechDivision\ApplicationServer\Mock\Socket\MockRequest"/>
+			<receiver type="TechDivision\ApplicationServer\Socket\Receiver">
+				<worker type="TechDivision\ApplicationServer\Socket\Worker" />
+				<thread type="TechDivision\ApplicationServer\Mock\Socket\MockRequest" />
 				<params>
 					<param name="workerNumber" type="integer">16</param>
 					<param name="address" type="string">0.0.0.0</param>
 					<param name="port" type="integer">8585</param>
 				</params>
-            </receiver>
-            <deployment type="TechDivision\PersistenceContainer\Deployment"/>
-            <host name="localhost"
-                  appBase="/webapps"
-                  serverAdmin="${appserver.admin.email}"
-                  serverSoftware="appserver/${appserver.version} (${os.family}) PHP/${appserver.php.version}">
-            </host>
-        </container>
-        
-        <container threadType="TechDivision\ApplicationServer\Mock\MockContainerThread" type="TechDivision\ServletContainer\Container">
-			<description><![CDATA[This is an example of a servlet container that uses a socket for sending and receiving HTML requests/responses. This solution can be used for running a web server.]]></description>
-            <receiver type="TechDivision\ApplicationServer\Socket\Receiver">
-                <worker type="TechDivision\ApplicationServer\Socket\Worker"/>
-                <thread type="TechDivision\ApplicationServer\Mock\Socket\MockRequest"/>
-				<params>
-					<param name="workerNumber" type="integer">16</param>
-					<param name="address" type="string">0.0.0.0</param>
-					<param name="port" type="integer">8586</param>
-				</params>
-            </receiver>
-            <deployment type="TechDivision\ServletContainer\Deployment"/>
-            <host name="localhost"
-                  appBase="/webapps"
-                  serverAdmin="${appserver.admin.email}"
-                  serverSoftware="appserver/${appserver.version} (${os.family}) PHP/${appserver.php.version}">
-                <vhosts>
-                    <vhost name="www.appserver.io" appBase="/site">
-                        <aliases>
-                            <alias>appserver.io</alias>
-                            <alias>appserver.local</alias>
-                        </aliases>
-                    </vhost>
-                    <vhost name="magento.local" appBase="/magento" />
-                </vhosts>
-            </host>
-        </container>
+			</receiver>
+			<deployment type="TechDivision\PersistenceContainer\Deployment" />
+			<host name="localhost" appBase="/webapps" serverAdmin="${appserver.admin.email}"
+				serverSoftware="appserver/${appserver.version} (${os.family}) PHP/${appserver.php.version}">
+			</host>
+            
+            <applications>
+                 <application id="1" name="api"/>
+                 <application id="2" name="demo"/>
+                 <application id="3" name="example"/>
+            </applications>
+            
+		</container>
 
-        <container threadType="TechDivision\ApplicationServer\Mock\MockContainerThread" type="TechDivision\MessageQueue\Container">
+		<container name="message-queue"
+			threadType="TechDivision\ApplicationServer\Mock\MockContainerThread"
+			type="TechDivision\MessageQueue\Container">
 			<description><![CDATA[This is an example of a message queue that uses a socket to receive messages. This solution can be used for clients connecting over a network.]]></description>
-            <receiver type="TechDivision\ApplicationServer\Socket\Receiver">
-                <worker type="TechDivision\ApplicationServer\Socket\Worker"/>
-                <thread type="TechDivision\ApplicationServer\Mock\Socket\MockRequest"/>
+			<receiver type="TechDivision\ApplicationServer\Socket\Receiver">
+				<worker type="TechDivision\ApplicationServer\Socket\Worker" />
+				<thread type="TechDivision\ApplicationServer\Mock\Socket\MockRequest" />
 				<params>
 					<param name="workerNumber" type="integer">16</param>
 					<param name="address" type="string">0.0.0.0</param>
 					<param name="port" type="integer">8587</param>
 				</params>
-            </receiver>
-            <deployment type="TechDivision\MessageQueue\Deployment"/>
-            <host name="localhost"
-                  appBase="/webapps"
-                  serverAdmin="${appserver.admin.email}"
-                  serverSoftware="appserver/${appserver.version} (${os.family}) PHP/${appserver.php.version}">
-            </host>
-        </container>
-        
-    </containers>
+			</receiver>
+			<deployment type="TechDivision\MessageQueue\Deployment" />
+			<host name="localhost" appBase="/webapps" serverAdmin="${appserver.admin.email}"
+				serverSoftware="appserver/${appserver.version} (${os.family}) PHP/${appserver.php.version}">
+			</host>
+			
+			<applications>
+			     <application id="1" name="api"/>
+                 <application id="2" name="demo"/>
+                 <application id="3" name="example"/>
+			</applications>
+			
+		</container>
+
+		<container name="http"
+			threadType="TechDivision\ApplicationServer\Mock\MockContainerThread"
+			type="TechDivision\ServletContainer\Container">
+			<description><![CDATA[This is an example of a servlet container that uses a socket for sending and receiving HTML requests/responses. This solution can be used for running a web server.]]></description>
+			<receiver type="TechDivision\ApplicationServer\Socket\Receiver">
+				<worker type="TechDivision\ApplicationServer\Socket\Worker" />
+				<thread type="TechDivision\ApplicationServer\Mock\Socket\MockRequest" />
+				<params>
+					<param name="workerNumber" type="integer">16</param>
+					<param name="address" type="string">0.0.0.0</param>
+					<param name="port" type="integer">8586</param>
+				</params>
+			</receiver>
+			<deployment type="TechDivision\ServletContainer\Deployment" />
+			<host name="localhost" appBase="/webapps" serverAdmin="${appserver.admin.email}"
+				serverSoftware="appserver/${appserver.version} (${os.family}) PHP/${appserver.php.version}">
+				<vhosts>
+					<vhost name="www.appserver.io" appBase="/site">
+						<aliases>
+							<alias>appserver.io</alias>
+							<alias>appserver.local</alias>
+						</aliases>
+					</vhost>
+					<vhost name="magento.local" appBase="/magento" />
+				</vhosts>
+			</host>
+            
+            <applications>
+                 <application id="1" name="api"/>
+                 <application id="2" name="demo"/>
+                 <application id="3" name="example"/>
+            </applications>
+            
+		</container>
+
+	</containers>
 
 </appserver>

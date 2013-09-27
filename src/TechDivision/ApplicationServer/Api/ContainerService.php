@@ -50,6 +50,8 @@ class ContainerService extends AbstractService
         $containers = array();
         $containerIds = 1;
 
+        $result = new \stdClass();
+
         foreach ($this->getSystemConfiguration()->getChilds(self::XPATH_CONTAINERS) as $containerConfiguration) {
 
             $containerConfiguration->setData(self::PRIMARY_KEY, $containerIds ++);
@@ -64,9 +66,10 @@ class ContainerService extends AbstractService
 
             $containers[] = $container;
         }
-        return array(
-            'containers' => $containers
-        );
+
+        $result->containers = $containers;
+
+        return $result;
     }
 
     /**
@@ -79,12 +82,11 @@ class ContainerService extends AbstractService
      */
     public function load($id)
     {
-        $containers = $this->findAll();
-        foreach ($containers['containers'] as $container) {
+        $result = new \stdClass();
+        foreach ($this->findAll()->containers as $container) {
             if ($container->{self::PRIMARY_KEY} == $id) {
-                return array(
-                    'container' => $container
-                );
+                $result->container = $container;
+                return $result;
             }
         }
     }
@@ -94,9 +96,9 @@ class ContainerService extends AbstractService
      *
      * @param \stdClass $stdClass
      *            The data with the information for the container to be created
-     * @see \TechDivision\ApplicationServer\Api\ServiceInterface::create($id)
+     * @see \TechDivision\ApplicationServer\Api\ServiceInterface::create(\stdClass $stdClass)
      */
-    public function create($stdClass)
+    public function create(\stdClass $stdClass)
     {}
 
     /**
@@ -104,9 +106,9 @@ class ContainerService extends AbstractService
      *
      * @param \stdClass $stdClass
      *            The container data to update
-     * @see \TechDivision\ApplicationServer\Api\ServiceInterface::update($id)
+     * @see \TechDivision\ApplicationServer\Api\ServiceInterface::update(\stdClass $stdClass)
      */
-    public function update($stdClass)
+    public function update(\stdClass $stdClass)
     {}
 
     /**

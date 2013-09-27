@@ -1,0 +1,37 @@
+{
+    "containers":[
+        {
+            "name":"persistence",
+            "thread_type":"TechDivision\\ApplicationServer\\Mock\\MockContainerThread",
+            "type":"TechDivision\\PersistenceContainer\\Container",
+            "id":1,
+            "app_ids":[
+                1,
+                2,
+                3
+            ]
+        },
+        {
+            "name":"message-queue",
+            "thread_type":"TechDivision\\ApplicationServer\\Mock\\MockContainerThread",
+            "type":"TechDivision\\MessageQueue\\Container",
+            "id":2,
+            "app_ids":[
+                1,
+                2,
+                3
+            ]
+        },
+        {
+            "name":"http",
+            "thread_type":"TechDivision\\ApplicationServer\\Mock\\MockContainerThread",
+            "type":"TechDivision\\ServletContainer\\Container",
+            "id":3,
+            "app_ids":[
+                1,
+                2,
+                3
+            ]
+        }
+    ]
+}

@@ -54,11 +54,19 @@ abstract class AbstractService implements ServiceInterface
         $this->initialContext = $initialContext;
     }
 
+    /**
+     * (non-PHPdoc)
+     * @see \TechDivision\ApplicationServer\Api\ServiceInterface::getInitialContext()
+     */
     public function getInitialContext()
     {
         return $this->initialContext;
     }
 
+    /**
+     * (non-PHPdoc)
+     * @see \TechDivision\ApplicationServer\Api\ServiceInterface::getSystemConfiguration()
+     */
     public function getSystemConfiguration()
     {
         return $this->getInitialContext()->getSystemConfiguration();
