@@ -94,17 +94,15 @@ class Server
     /**
      * Initializes the the server with the base directory.
      *
-     * @param string $baseDirectory
-     *            The application servers base directory
-     * @param string $configurationFile
-     *            The path to the configuration file relativ to the base directory
+     * @param \TechDivision\ApplicationServer\Configuration $systemConfiguration
+     *            The system configuration instance
      * @return void
      */
-    public function __construct($configuration)
+    public function __construct($systemConfiguration)
     {
 
         // initialize the configuration and the base directory
-        $this->configuration = $configuration;
+        $this->systemConfiguration = $systemConfiguration;
 
         // initialize the mutex to prevent PHAR deployment errors
         $this->mutex = \Mutex::create(false);
@@ -206,7 +204,7 @@ class Server
         ));
 
         // add the system configuration to the initial context
-        $this->initialContext->setSystemConfiguration($this->configuration);
+        $this->initialContext->setSystemConfiguration($this->getSystemConfiguration());
     }
 
     /**
@@ -217,21 +215,21 @@ class Server
     protected function initContainers()
     {
 
-        // start each container in his own thread
-        foreach ($this->getContainerConfiguration() as $containerConfiguration) {
+        // load the container service
+        $containerService = $this->newService('TechDivision\ApplicationServer\Api\ContainerService');
 
-            // pass the base directory through to the container configuration
-            $containerConfiguration->addChild($this->getBaseDirectoryConfiguration());
+        // and initialize a container thread for each container
+        foreach ($containerService->findAll()->containers as $container) {
 
             // initialize the container configuration with the base directory and pass it to the thread
             $params = array(
                 $this->getInitialContext(),
-                $containerConfiguration,
-                $this->mutex
+                $this->mutex,
+                $container->container->id
             );
 
-            $threadType = $containerConfiguration->getThreadType();
-            $this->threads[] = $this->newInstance($threadType, $params);
+            // create and append the thread instance to the internal array
+            $this->threads[] = $this->newInstance($container->container->thread_type, $params);
         }
     }
 
@@ -246,13 +244,13 @@ class Server
     }
 
     /**
-     * Returns the container configuration.
+     * Returns the system configuration.
      *
-     * @return \TechDivision\ApplicationServer\Configuration The container configuration
+     * @return \TechDivision\ApplicationServer\Configuration The system configuration
      */
-    public function getConfiguration()
+    public function getSystemConfiguration()
     {
-        return $this->configuration;
+        return $this->systemConfiguration;
     }
 
     /**
@@ -266,34 +264,13 @@ class Server
     }
 
     /**
-     * Returns the server's base directory.
-     *
-     * @return string The server's base directory
-     * @see \TechDivision\ApplicationServer\Server::getBaseDirectoryConfiguration()
-     */
-    public function getBaseDirectory()
-    {
-        return $this->getBaseDirectoryConfiguration()->getValue();
-    }
-
-    /**
-     * Returns the server's base directory configuration.
-     *
-     * @return \TechDivision\ApplicationServer\Configuration The server's base directory configuration
-     */
-    public function getBaseDirectoryConfiguration()
-    {
-        return $this->getConfiguration()->getChild(self::XPATH_BASE_DIRECTORY);
-    }
-
-    /**
      * Return's the initial context configuration.
      *
      * @return \TechDivision\ApplicationServer\Configuration The initial context configuration
      */
     public function getInitialContextConfiguration()
     {
-        return $this->getConfiguration()->getChild(self::XPATH_INITIAL_CONTEXT);
+        return $this->getSystemConfiguration()->getChild(self::XPATH_INITIAL_CONTEXT);
     }
 
     /**
@@ -303,17 +280,7 @@ class Server
      */
     public function getSystemLoggerConfiguration()
     {
-        return $this->getConfiguration()->getChild(self::XPATH_SYSTEM_LOGGER);
-    }
-
-    /**
-     * Return's the container configuration.
-     *
-     * @return array<\TechDivision\ApplicationServer\Configuration> The container configuration
-     */
-    public function getContainerConfiguration()
-    {
-        return $this->getConfiguration()->getChilds(self::XPATH_CONTAINERS);
+        return $this->getSystemConfiguration()->getChild(self::XPATH_SYSTEM_LOGGER);
     }
 
     /**
@@ -342,17 +309,22 @@ class Server
     }
 
     /**
-     * Returns a new instance of the passed class name.
+     * (non-PHPdoc)
      *
-     * @param string $className
-     *            The fully qualified class name to return the instance for
-     * @param array $args
-     *            Arguments to pass to the constructor of the instance
-     * @return object The instance itself
-     * @todo Has to be refactored to avoid registering autoloader on every call
+     * @see \TechDivision\ApplicationServer\InitialContext::newInstance()
      */
     public function newInstance($className, array $args = array())
     {
         return $this->getInitialContext()->newInstance($className, $args);
+    }
+
+    /**
+     * (non-PHPdoc)
+     *
+     * @see \TechDivision\ApplicationServer\InitialContext::newService()
+     */
+    public function newService($className)
+    {
+        return $this->getInitialContext()->newService($className);
     }
 }

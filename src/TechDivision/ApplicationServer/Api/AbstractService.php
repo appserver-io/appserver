@@ -36,6 +36,13 @@ abstract class AbstractService implements ServiceInterface
     const PRIMARY_KEY = 'id';
 
     /**
+     * XPath expression for the container base directory configuration.
+     *
+     * @var string
+     */
+    const XPATH_BASE_DIRECTORY = '/appserver/baseDirectory';
+
+    /**
      * The initial context instance containing the system configuration.
      *
      * @var \TechDivision\ApplicationServer\InitialContext
@@ -43,7 +50,15 @@ abstract class AbstractService implements ServiceInterface
     protected $initialContext;
 
     /**
-     * Initializes the service with the initial context instance.
+     * The normalizer instance to use.
+     *
+     * @var \TechDivision\ApplicationServer\Api\NormalizerInterface
+     */
+    protected $normalizer;
+
+    /**
+     * Initializes the service with the initial context instance and the
+     * default normalizer instance.
      *
      * @param \TechDivision\ApplicationServer\InitialContext $initialContext
      *            The initial context instance
@@ -52,10 +67,12 @@ abstract class AbstractService implements ServiceInterface
     public function __construct(InitialContext $initialContext)
     {
         $this->initialContext = $initialContext;
+        $this->setNormalizer($this->newInstance('TechDivision\ApplicationServer\Api\RecursiveNormalizer'));
     }
 
     /**
      * (non-PHPdoc)
+     *
      * @see \TechDivision\ApplicationServer\Api\ServiceInterface::getInitialContext()
      */
     public function getInitialContext()
@@ -65,6 +82,28 @@ abstract class AbstractService implements ServiceInterface
 
     /**
      * (non-PHPdoc)
+     *
+     * @see \TechDivision\ApplicationServer\Api\ServiceInterface::getNormalizer()
+     */
+    public function getNormalizer()
+    {
+        return $this->normalizer;
+    }
+
+    /**
+     * Set's the normalizer to use.
+     *
+     * @param \TechDivision\ApplicationServer\Api\NormalizerInterface $normalizer
+     *            The normalizer to use
+     */
+    public function setNormalizer(NormalizerInterface $normalizer)
+    {
+        $this->normalizer = $normalizer;
+    }
+
+    /**
+     * (non-PHPdoc)
+     *
      * @see \TechDivision\ApplicationServer\Api\ServiceInterface::getSystemConfiguration()
      */
     public function getSystemConfiguration()
@@ -74,11 +113,34 @@ abstract class AbstractService implements ServiceInterface
 
     /**
      *
-     * @see \TechDivision\ApplicationServer\InitialContext::newInstance($className, array $args = array())
+     * @see \TechDivision\ApplicationServer\InitialContext::newInstance()
      */
     public function newInstance($className, array $args = array())
     {
         return $this->getInitialContext()->newInstance($className, $args);
+    }
+
+    /**
+     * (non-PHPdoc)
+     *
+     * @see \TechDivision\ApplicationServer\InitialContext::newService()
+     */
+    public function newService($className)
+    {
+        return $this->getInitialContext()->newService($className);
+    }
+
+    /**
+     * Return's the application server's base directory, that is
+     * /opt/appserver by default.
+     *
+     * @return string The application server's base directory
+     */
+    public function getBaseDirectory()
+    {
+        return $this->getSystemConfiguration()
+            ->getChild(self::XPATH_BASE_DIRECTORY)
+            ->getValue();
     }
 
     /**
@@ -91,21 +153,30 @@ abstract class AbstractService implements ServiceInterface
      */
     public function normalize(Configuration $configuration)
     {
+        return $this->getNormalizer()->normalize($configuration);
+    }
 
-        // initialize the \stdClass instance
-        $node = new \stdClass();
-
-        // set the node value if available
-        if ($value = $configuration->getValue()) {
-            $node->value = $value;
-        }
-
-        // set members by converting camel case to underscore (necessary for ember.js)
-        foreach ($configuration->getAllData() as $member => $value) {
-            $node->{strtolower(preg_replace('/([a-z])([A-Z])/', '$1_$2', $member))} = $value;
-        }
-
-        // return the normalized node instance
-        return $node;
+    /**
+     * Creates a new application configuration node with the application data and
+     * returns it.
+     *
+     * @param string $nodeName
+     *            The node name to be used
+     * @param array $data
+     *            The array with the configuration's attributes
+     * @param array $children
+     *            The array with the configuration's children
+     * @param string $value
+     *            The configuration's node value
+     * @return \TechDivision\ApplicationServer\Configuration The application configuration instance
+     */
+    public function newConfiguration($nodeName, array $data = array(), array $children = array(), $value = null)
+    {
+        $configuration = $this->newInstance('\TechDivision\ApplicationServer\Configuration');
+        $configuration->setNodeName($nodeName);
+        $configuration->setAllData($data);
+        $configuration->setChildren($children);
+        $configuration->setValue($value);
+        return $configuration;
     }
 }

@@ -259,7 +259,7 @@ class Configuration implements ContainerConfiguration
         $token = strtok($path, '/');
         $next = substr($path, strlen('/' . $token));
         if ($this->getNodeName() == $token && empty($next) === false) {
-            $this->children = array();
+            $this->setChildren(array());
             return $this;
         } else {
             return $this;
@@ -277,6 +277,17 @@ class Configuration implements ContainerConfiguration
     }
 
     /**
+     * Replaces actual children with the passed array. If children
+     * already exists they will be lost.
+     *
+     * @param array $data The array with the children to set
+     */
+    public function setChildren(array $children)
+    {
+        $this->children = $children;
+    }
+
+    /**
      * Check's if the node has children, if yes the method
      * returns TRUE, else the method returns FALSE.
      *
@@ -285,7 +296,7 @@ class Configuration implements ContainerConfiguration
     public function hasChildren()
     {
         // check the children size
-        if (sizeof($this->children) == 0) {
+        if (sizeof($this->getChildren()) == 0) {
             return false;
         }
         return true;
@@ -316,6 +327,32 @@ class Configuration implements ContainerConfiguration
         if (array_key_exists($key, $this->data)) {
             return $this->data[$key];
         }
+    }
+
+    /**
+     * Appends the passed attributes to the configuration
+     * node. If the attribute already exists it will be
+     * overwritten by default.
+     *
+     * @param array $data The data with the attributes to append
+     * @param boolean $overwrite TRUE if the attribute should be overwritten, else FALSE
+     */
+    public function appendData(array $data, $overwrite = true)
+    {
+        foreach ($data as $key => $value) {
+            $this->data[$key] = $value;
+        }
+    }
+
+    /**
+     * Replaces actual attributes with the passed array. If attributes
+     * already exists they will be lost.
+     *
+     * @param array $data The array with the key value attribute pairs
+     */
+    public function setAllData($data)
+    {
+        $this->data = $data;
     }
 
     /**

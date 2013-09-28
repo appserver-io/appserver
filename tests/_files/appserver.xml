@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <appserver xmlns="http://www.appserver.io/appserver">
+
+    <baseDirectory>/opt/appserver</baseDirectory>
+
 	<initialContext type="TechDivision\ApplicationServer\InitialContext">
 		<description><![CDATA[The initial context configuration.]]></description>
 		<classLoader type="TechDivision\ApplicationServer\SplClassLoader" />
@@ -39,8 +42,8 @@
 			threadType="TechDivision\ApplicationServer\Mock\MockContainerThread"
 			type="TechDivision\PersistenceContainer\Container">
 			<description><![CDATA[This is an example of a container that uses a socket for sending and receiving messages. This solution can be used for clients connecting over a network.]]></description>
-			<receiver type="TechDivision\ApplicationServer\Socket\Receiver">
-				<worker type="TechDivision\ApplicationServer\Socket\Worker" />
+			<receiver type="TechDivision\ApplicationServer\Mock\MockReceiver">
+				<worker type="TechDivision\ApplicationServer\Mock\Socket\MockWorker" />
 				<thread type="TechDivision\ApplicationServer\Mock\Socket\MockRequest" />
 				<params>
 					<param name="workerNumber" type="integer">16</param>
@@ -48,16 +51,16 @@
 					<param name="port" type="integer">8585</param>
 				</params>
 			</receiver>
-			<deployment type="TechDivision\PersistenceContainer\Deployment" />
+			<deployment type="TechDivision\ApplicationServer\Mock\MockDeployment" />
 			<host name="localhost" appBase="/webapps" serverAdmin="${appserver.admin.email}"
 				serverSoftware="appserver/${appserver.version} (${os.family}) PHP/${appserver.php.version}">
 			</host>
             
-            <applications>
-                 <application id="1" name="api"/>
-                 <application id="2" name="demo"/>
-                 <application id="3" name="example"/>
-            </applications>
+            <apps>
+                 <app id="1" name="api"/>
+                 <app id="2" name="demo"/>
+                 <app id="3" name="example"/>
+            </apps>
             
 		</container>
 
@@ -65,8 +68,8 @@
 			threadType="TechDivision\ApplicationServer\Mock\MockContainerThread"
 			type="TechDivision\MessageQueue\Container">
 			<description><![CDATA[This is an example of a message queue that uses a socket to receive messages. This solution can be used for clients connecting over a network.]]></description>
-			<receiver type="TechDivision\ApplicationServer\Socket\Receiver">
-				<worker type="TechDivision\ApplicationServer\Socket\Worker" />
+			<receiver type="TechDivision\ApplicationServer\Mock\MockReceiver">
+				<worker type="TechDivision\ApplicationServer\Mock\Socket\MockWorker" />
 				<thread type="TechDivision\ApplicationServer\Mock\Socket\MockRequest" />
 				<params>
 					<param name="workerNumber" type="integer">16</param>
@@ -74,16 +77,16 @@
 					<param name="port" type="integer">8587</param>
 				</params>
 			</receiver>
-			<deployment type="TechDivision\MessageQueue\Deployment" />
+			<deployment type="TechDivision\ApplicationServer\Mock\MockDeployment" />
 			<host name="localhost" appBase="/webapps" serverAdmin="${appserver.admin.email}"
 				serverSoftware="appserver/${appserver.version} (${os.family}) PHP/${appserver.php.version}">
 			</host>
-			
-			<applications>
-			     <application id="1" name="api"/>
-                 <application id="2" name="demo"/>
-                 <application id="3" name="example"/>
-			</applications>
+            
+            <apps>
+                 <app id="1" name="api"/>
+                 <app id="2" name="demo"/>
+                 <app id="3" name="example"/>
+            </apps>
 			
 		</container>
 
@@ -91,8 +94,8 @@
 			threadType="TechDivision\ApplicationServer\Mock\MockContainerThread"
 			type="TechDivision\ServletContainer\Container">
 			<description><![CDATA[This is an example of a servlet container that uses a socket for sending and receiving HTML requests/responses. This solution can be used for running a web server.]]></description>
-			<receiver type="TechDivision\ApplicationServer\Socket\Receiver">
-				<worker type="TechDivision\ApplicationServer\Socket\Worker" />
+			<receiver type="TechDivision\ApplicationServer\Mock\MockReceiver">
+				<worker type="TechDivision\ApplicationServer\Mock\Socket\MockWorker" />
 				<thread type="TechDivision\ApplicationServer\Mock\Socket\MockRequest" />
 				<params>
 					<param name="workerNumber" type="integer">16</param>
@@ -100,7 +103,7 @@
 					<param name="port" type="integer">8586</param>
 				</params>
 			</receiver>
-			<deployment type="TechDivision\ServletContainer\Deployment" />
+			<deployment type="TechDivision\ApplicationServer\Mock\MockDeployment" />
 			<host name="localhost" appBase="/webapps" serverAdmin="${appserver.admin.email}"
 				serverSoftware="appserver/${appserver.version} (${os.family}) PHP/${appserver.php.version}">
 				<vhosts>
@@ -114,11 +117,11 @@
 				</vhosts>
 			</host>
             
-            <applications>
-                 <application id="1" name="api"/>
-                 <application id="2" name="demo"/>
-                 <application id="3" name="example"/>
-            </applications>
+            <apps>
+                 <app id="1" name="api"/>
+                 <app id="2" name="demo"/>
+                 <app id="3" name="example"/>
+            </apps>
             
 		</container>
 

@@ -53,7 +53,6 @@ class AbstractTest extends \PHPUnit_Framework_TestCase
         $configuration->initFromFile('_files/appserver_initial_context.xml');
         $initialContext = new InitialContext($configuration);
         $application = new MockApplication($initialContext, $applicationName);
-        $application->setConfiguration($this->getContainerConfiguration());
         return $application;
     }
 
@@ -72,6 +71,32 @@ class AbstractTest extends \PHPUnit_Framework_TestCase
             $applications[$application->getName()] = $application;
         }
         return $applications;
+    }
+
+    /**
+     * Returns a initial context instance with a mock configuration.
+     *
+     * @return \TechDivision\ApplicationServer\InitialContext Initial context with mock configuration
+     */
+    public function getMockInitialContext()
+    {
+        $configuration = new Configuration();
+        $configuration->initFromFile('_files/appserver_initial_context.xml');
+        $initialContext = new InitialContext($configuration);
+        $initialContext->setSystemConfiguration($this->getMockSystemConfiguration());
+        return $initialContext;
+    }
+
+    /**
+     * Returns the system configuration.
+     *
+     * @return \TechDivision\ApplicationServer\Configuration The system configuration
+     */
+    public function getMockSystemConfiguration()
+    {
+        $configuration = new Configuration();
+        $configuration->initFromFile('_files/appserver.xml');
+        return $configuration;
     }
 
     /**

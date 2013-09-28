@@ -42,11 +42,11 @@ class ContainerThread extends AbstractContextThread
     const XPATH_CONTAINERS = '/appserver/containers/container';
 
     /**
-     * The container's configuration
+     * The container's unique ID.
      *
-     * @var \TechDivision\ApplicationServer\Configuration
+     * @var string
      */
-    protected $configuration;
+    protected $id;
 
     /**
      * The mutex to prevent parallel deployment of PHAR files.
@@ -56,15 +56,18 @@ class ContainerThread extends AbstractContextThread
     protected $mutex;
 
     /**
-     * Set's the configuration with the container information to be started in the thread.
+     * Set's the unique container name to be started by this thread.
      *
-     * @param \TechDivision\ApplicationServer\Configuration $configuration
-     *            The container's configuration
+     * @param \Mutex $mutex
+     *            The mutex that locks related threads when deployment starts
+     * @param string $id
+     *            The unique container ID
+     * @return void
      */
-    public function init($configuration, $mutex)
+    public function init($mutex, $id)
     {
-        $this->configuration = $configuration;
         $this->mutex = $mutex;
+        $this->id = $id;
     }
 
     /**
@@ -74,70 +77,47 @@ class ContainerThread extends AbstractContextThread
     public function main()
     {
 
-        // load the container configuration
-        $configuration = $this->getConfiguration();
-
-        // load the container type and deploy the applications
-        $containerType = $configuration->getType();
-
         // lock the mutex to prevent other containers to parallel deploy PHAR files
         \Mutex::lock($this->mutex);
 
-        // deploy the applications and return them in an array
+        // deploy the applications and return them as array
         $applications = $this->getDeployment()
             ->deployWebapps()
             ->deploy()
             ->getApplications();
 
-        // create configuration nodes for applications
-        $applicationConfiguration = $this->newInstance('TechDivision\ApplicationServer\Configuration');
-        $applicationConfiguration->setNodeName('applications');
-        foreach ($applications as $application) {
-            $applicationConfiguration->addChild($application->newConfiguration());
-        }
-
-        // add applications to container/system configuration
-        $configuration->addChild($applicationConfiguration);
-        $this->mergeInSystemConfiguration($applicationConfiguration);
+        // load the container configuration
+        $containerService = $this->newService('TechDivision\ApplicationServer\Api\ContainerService');
+        $container = $containerService->load($this->getId());
 
         // unlock the mutex to allow other containers own deployment
         \Mutex::unlock($this->mutex);
 
-        // create and start the container instance
-        $containerInstance = $this->newInstance($containerType, array(
+        // create the container instance
+        $containerInstance = $this->newInstance($container->type, array(
             $this->getInitialContext(),
-            $configuration,
+            $this->getId(),
             $applications
         ));
 
+        // finally start the container instance
         $containerInstance->run();
     }
 
     /**
-     * Merge the passed application configurations into the system configuration
-     * and refreshes it in the initial context, to make it available to the API.
+     * (non-PHPdoc)
      *
-     * @param \TechDivision\ApplicationServer\Configuration $applicationConfigurations
-     *            The application configurations to merge into the system configuration
+     * @see \TechDivision\ApplicationServer\InitialContext::newService()
      */
-    public function mergeInSystemConfiguration(Configuration $applicationConfiguration)
+    public function newService($className)
     {
-        $systemConfiguration = $this->getInitialContext()->getSystemConfiguration();
-        foreach ($systemConfiguration->getChilds(self::XPATH_CONTAINERS) as $containerConfiguration) {
-            $containerConfiguration->addChild($applicationConfiguration);
-        }
-        $this->getInitialContext()->setSystemConfiguration($systemConfiguration);
+        return $this->getInitialContext()->newService($className);
     }
 
     /**
-     * Creates a new instance of the passed class name and passes the
-     * args to the instance constructor.
+     * (non-PHPdoc)
      *
-     * @param string $className
-     *            The class name to create the instance of
-     * @param array $args
-     *            The parameters to pass to the constructor
-     * @return object The created instance
+     * @see \TechDivision\ApplicationServer\InitialContext::newInstance()
      */
     public function newInstance($className, array $args = array())
     {
@@ -145,27 +125,37 @@ class ContainerThread extends AbstractContextThread
     }
 
     /**
-     * The configuration found in the cfg/appserver.xml file.
+     * The unique container ID.
      *
-     * @return \TechDivision\ApplicationServer\Configuration The configuration instance
+     * @return string The unique container ID
      */
-    public function getConfiguration()
+    public function getId()
     {
-        return $this->configuration;
+        return $this->id;
     }
 
     /**
+     * Returns the deployment class name from the system configuration.
      *
-     * @return object
+     * @return string The deployment class name
+     */
+    public function getDeploymentType()
+    {
+        $deploymentService = $this->newService('TechDivision\ApplicationServer\Api\DeploymentService');
+        return $deploymentService->loadByContainerId($this->getId())->deployment->type;
+    }
+
+    /**
+     * Returns the deployment interface for the container for
+     * this container thread.
+     *
+     * @return \TechDivision\ApplicationServer\Interfaces\DeploymentInterface The deployment instance for this container thread
      */
     public function getDeployment()
     {
-        $deploymentType = $this->getConfiguration()
-            ->getChild(self::XPATH_CONTAINER_DEPLOYMENT)
-            ->getType();
-        return $this->newInstance($deploymentType, array(
+        return $this->newInstance($this->getDeploymentType(), array(
             $this->getInitialContext(),
-            $this
+            $this->getId()
         ));
     }
 }

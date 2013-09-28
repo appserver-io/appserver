@@ -32,6 +32,13 @@ interface ServiceInterface
     public function getInitialContext();
 
     /**
+     * Returns the used normalizer instance.
+     *
+     * @return \TechDivision\ApplicationServer\Api\NormalizerInterface The normalizer instance
+     */
+    public function getNormalizer();
+
+    /**
      * Returns the system configuration.
      *
      * @return \TechDivision\ApplicationServer\Configuration The system configuration
@@ -59,6 +66,7 @@ interface ServiceInterface
      *
      * @param \stdClass $stdClass
      *            The class information to create the entity from
+     * @return string The new ID of the created entity
      * @return void
      */
     public function create(\stdClass $stdClass);

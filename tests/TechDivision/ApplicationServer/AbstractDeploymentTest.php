@@ -41,22 +41,9 @@ class AbstractDeploymentTest extends AbstractTest
      */
     public function setUp()
     {
-        $configuration = new Configuration();
-        $configuration->initFromFile('_files/appserver_initial_context.xml');
-        $initialContext = new InitialContext($configuration);
+        $initialContext = $this->getMockInitialContext();
         $containerThread = new ContainerThread($initialContext, $this->getContainerConfiguration(), \Mutex::create(false));
         $this->deployment = new MockDeployment($initialContext, $containerThread);
-    }
-
-    /**
-     * Checks if the container thread passed to the constructor
-     * is returned by the getter.
-     *
-     * @return void
-     */
-    public function testGetContainerThread()
-    {
-        $this->assertInstanceOf('TechDivision\ApplicationServer\ContainerThread', $this->deployment->getContainerThread());
     }
 
     /**
@@ -79,7 +66,9 @@ class AbstractDeploymentTest extends AbstractTest
     public function testSetGetApplications()
     {
         $applications = $this->getMockApplications($size = 3);
-        $this->deployment->setApplications($applications);
+        foreach ($applications as $application) {
+            $this->deployment->addApplication($application);
+        }
         $this->assertSame($applications, $this->deployment->getApplications());
     }
 }

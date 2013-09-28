@@ -42,11 +42,25 @@ abstract class AbstractApplication implements ApplicationInterface
     const XPATH_CONTAINER_BASE_DIRECTORY = '/container/baseDirectory';
 
     /**
+     * The unique application ID.
+     *
+     * @var string
+     */
+    protected $id;
+
+    /**
      * The unique application name.
      *
      * @var string
      */
     protected $name;
+
+    /**
+     * Array with available VHost configurations.
+     *
+     * @var array
+     */
+    protected $vhosts = array();
 
     /**
      * The host configuration.
@@ -65,25 +79,80 @@ abstract class AbstractApplication implements ApplicationInterface
     /**
      * Passes the application name That has to be the class namespace.
      *
-     * @param InitialContext $initialContext
-     * @param type $name
+     * @param TechDivision\ApplicationServer\InitialContext $initialContext
+     *            The initial context instance
+     * @param string $name
      *            The application name
+     * @return void
      */
     public function __construct($initialContext, $name)
     {
-
-        // initialize the member variables with the passed values
         $this->initialContext = $initialContext;
         $this->name = $name;
     }
 
     /**
-     * Has been automatically invoked by the container after the application
-     * instance has been created.
+     * (non-PHPdoc)
      *
-     * @return \TechDivision\ApplicationServer\Interfaces\ApplicationInterface The connected application
+     * @see \TechDivision\ApplicationServer\Interfaces\ApplicationInterface::connect()
      */
-    abstract public function connect();
+    public function connect()
+    {
+
+        $vhostService = $this->newService('TechDivision\ApplicationServer\Api\VhostService');
+        $vhosts = $vhostService->findAllByAppBase($this->getAppBase())->vhosts;
+
+        // prepare the VHost configurations
+        foreach ($vhosts as $vhost) {
+
+            // check if vhost configuration belongs to application
+            if ($this->getName() == ltrim($vhost->app_base, '/')) {
+
+                // prepare the aliases if available
+                $aliases = array();
+                foreach ($vhost->getChilds(Vhost::XPATH_CONTAINER_ALIAS) as $alias) {
+                    $aliases[] = $alias->getValue();
+                }
+
+                // initialize VHost classname and parameters
+                $vhostClassname = '\TechDivision\ApplicationServer\Vhost';
+                $vhostParameter = array(
+                    $vhost->getName(),
+                    $vhost->getAppBase(),
+                    $aliases
+                );
+
+                // register VHost in array with app base folder
+                $this->vhosts[] = $this->newInstance($vhostClassname, $vhostParameter);
+            }
+        }
+
+        // return the instance itself
+        return $this;
+    }
+
+    /**
+     * Set's the unique application ID from the system configuration.
+     *
+     * @param string $id
+     *            The unique application ID from the system configuration
+     * @return \TechDivision\ServletContainer\Application The application instance
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+        return $this;
+    }
+
+    /**
+     * Return's the unique application ID from the system configuration.
+     *
+     * @return string The unique application ID from the system configuration
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
     /**
      * Returns the application name (that has to be the class namespace,
@@ -98,19 +167,6 @@ abstract class AbstractApplication implements ApplicationInterface
     }
 
     /**
-     * Set's the host configuration.
-     *
-     * @param \TechDivision\ApplicationServer\Configuration $configuration
-     *            The host configuration
-     * @return \TechDivision\ServletContainer\Application The application instance
-     */
-    public function setConfiguration($configuration)
-    {
-        $this->configuration = $configuration;
-        return $this;
-    }
-
-    /**
      * Returns the host configuration.
      *
      * @return \TechDivision\ApplicationServer\Configuration The host configuration
@@ -121,44 +177,63 @@ abstract class AbstractApplication implements ApplicationInterface
     }
 
     /**
-     * Returns the path to the appserver webapp base directory.
+     * (non-PHPdoc)
      *
-     * @return string The path to the appserver webapp base directory
+     * @see \TechDivision\ApplicationServer\Api\ApplicationService::getAppBase()
      */
     public function getAppBase()
     {
-        $baseDir = $this->getConfiguration()
-            ->getChild(self::XPATH_CONTAINER_BASE_DIRECTORY)
-            ->getValue();
-        $appBase = $this->getConfiguration()
-            ->getChild(self::XPATH_CONTAINER_HOST)
-            ->getAppBase();
-        return $baseDir . $appBase;
+        return $this->newService('TechDivision\ApplicationServer\Api\ApplicationService')->getAppBase($this->getId());
     }
 
     /**
-     * Return's the path to the web application.
+     * (non-PHPdoc)
      *
-     * @return string The path to the web application
+     * @see \TechDivision\ApplicationServer\Api\ApplicationService::getWebappPath()
      */
     public function getWebappPath()
     {
-        return $this->getAppBase() . DIRECTORY_SEPARATOR . $this->getName();
+        return $this->newService('TechDivision\ApplicationServer\Api\ApplicationService')->getWebappPath($this->getId());
     }
 
     /**
-     * Creates a new instance of the passed class name and passes the
-     * args to the instance constructor.
+     * (non-PHPdoc)
      *
-     * @param string $className
-     *            The class name to create the instance of
-     * @param array $args
-     *            The parameters to pass to the constructor
-     * @return object The created instance
+     * @see \TechDivision\ApplicationServer\Api\ApplicationService::getServerSoftware()
+     */
+    public function getServerSoftware()
+    {
+        return $this->newService('TechDivision\ApplicationServer\Api\ApplicationService')->getServerSoftware($this->getId());
+    }
+
+    /**
+     * (non-PHPdoc)
+     *
+     * @see \TechDivision\ApplicationServer\Api\ApplicationService::getServerAdmin()
+     */
+    public function getServerAdmin()
+    {
+        return $this->newService('TechDivision\ApplicationServer\Api\ApplicationService')->getServerAdmin($this->getId());
+    }
+
+    /**
+     * (non-PHPdoc)
+     *
+     * @see \TechDivision\ApplicationServer\InitialContext::newInstance()
      */
     public function newInstance($className, array $args = array())
     {
         return $this->getInitialContext()->newInstance($className, $args);
+    }
+
+    /**
+     * (non-PHPdoc)
+     *
+     * @see \TechDivision\ApplicationServer\InitialContext::newService()
+     */
+    public function newService($className)
+    {
+        return $this->getInitialContext()->newService($className);
     }
 
     /**
@@ -172,16 +247,51 @@ abstract class AbstractApplication implements ApplicationInterface
     }
 
     /**
-     * Creates a new configuration node with the application data and
-     * returns it.
+     * Return's the applications available VHost configurations.
      *
-     * @return \TechDivision\ApplicationServer\Configuration The configuration instance
+     * @return array The available VHost configurations
      */
-    public function newConfiguration()
+    public function getVhosts()
     {
-        $configuration = $this->newInstance('\TechDivision\ApplicationServer\Configuration');
-        $configuration->setNodeName('application');
-        $configuration->setData('name', $this->getName());
-        return $configuration;
+        return $this->vhosts;
+    }
+
+    /**
+     * Checks if the application is the VHost for the passed server name.
+     *
+     * @param string $serverName
+     *            The server name to check the application being a VHost of
+     * @return boolean TRUE if the application is the VHost, else FALSE
+     */
+    public function isVhostOf($serverName)
+    {
+
+        // check if the application is VHost for the passed server name
+        foreach ($this->getVhosts() as $vhost) {
+
+            // compare the VHost name itself
+            if (strcmp($vhost->getName(), $serverName) === 0) {
+                return true;
+            }
+
+            // then compare all aliases
+            if (in_array($serverName, $vhost->getAliases())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * (non-PHPdoc)
+     *
+     * @see \TechDivision\ApplicationServer\Interfaces\ApplicationInterface::toStdClass()
+     */
+    public function toStdClass()
+    {
+        $stdClass = new \stdClass();
+        $stdClass->id = $this->getId();
+        $stdClass->name = $this->getName();
+        return $stdClass;
     }
 }

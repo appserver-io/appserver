@@ -12,6 +12,7 @@
 namespace TechDivision\ApplicationServer;
 
 use TechDivision\ApplicationServer\Api\ApplicationService;
+use TechDivision\ApplicationServer\Api\Normalizer;
 
 /**
  *
@@ -38,16 +39,8 @@ class ApplicationServiceTest extends AbstractTest
      */
     public function setUp()
     {
-        $configuration = new Configuration();
-        $configuration->initFromFile('_files/appserver_initial_context.xml');
-
-        $systemConfiguration = new Configuration();
-        $systemConfiguration->initFromFile('TechDivision/ApplicationServer/_files/appserver.xml');
-
-        $initialContext = new InitialContext($configuration);
-        $initialContext->setSystemConfiguration($systemConfiguration);
-
-        $this->service = new ApplicationService($initialContext);
+        $this->service = new ApplicationService($this->getMockInitialContext());
+        $this->service->setNormalizer(new Normalizer());
     }
 
     /**

@@ -215,6 +215,17 @@ class InitialContext
     }
 
     /**
+     * Returns a new instance of the passed API service.
+     *
+     * @param string $className The API service class name to return the instance for
+     * @return \TechDivision\ApplicationsServer\Api\ServiceInterface The service instance
+     */
+    public function newService($className)
+    {
+        return $this->newInstance($className, array($this));
+    }
+
+    /**
      * Returns the bean annotation for the passed reflection class, that can be
      * one of Entity, Stateful, Stateless, Singleton.
      *

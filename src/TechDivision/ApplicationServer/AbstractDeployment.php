@@ -13,6 +13,7 @@ namespace TechDivision\ApplicationServer;
 
 use TechDivision\ApplicationServer\InitialContext;
 use TechDivision\ApplicationServer\Interfaces\DeploymentInterface;
+use TechDivision\ApplicationServer\Interfaces\ApplicationInterface;
 
 /**
  *
@@ -40,11 +41,11 @@ abstract class AbstractDeployment implements DeploymentInterface
     const XPATH_CONTAINER_HOST = '/container/host';
 
     /**
-     * The container thread
+     * The container's unique ID.
      *
-     * @var \TechDivision\ApplicationServer\ContainerThread
+     * @var string
      */
-    protected $containerThread;
+    protected $id;
 
     /**
      * Array with the initialized applications.
@@ -56,34 +57,48 @@ abstract class AbstractDeployment implements DeploymentInterface
     /**
      * Initializes the deployment with the container thread.
      *
-     * @param \TechDivision\ApplicationServer\ContainerThread $containerThread
-     */
-    public function __construct($initialContext, $containerThread)
-    {
-        $this->initialContext = $initialContext;
-        $this->containerThread = $containerThread;
-    }
-
-    /**
-     * Returns the container thread.
-     *
-     * @return \TechDivision\ApplicationServer\ContainerThread The container thread
-     */
-    public function getContainerThread()
-    {
-        return $this->containerThread;
-    }
-
-    /**
-     * Set's the deployed applications.
-     *
-     * @param array $applications
-     *            The deployed applications
+     * @param \TechDivision\ApplicationServer\InitialContext $initialContext
+     *            The initial context instance
+     * @param string $id
+     *            The container's unique ID
      * @return void
      */
-    public function setApplications(array $applications)
+    public function __construct(InitialContext $initialContext, $id)
     {
-        $this->applications = $applications;
+        $this->initialContext = $initialContext;
+        $this->id = $id;
+    }
+
+    /**
+     * Returns the initialContext object
+     *
+     * @return \Stackable
+     */
+    public function getInitialContext()
+    {
+        return $this->initialContext;
+    }
+
+    /**
+     * Append the deployed application to the deployment instance
+     * and registers it in the system configuration.
+     *
+     * @param ApplicationInterface $application The application to append
+     * @return void
+     */
+    public function addApplication(ApplicationInterface $application)
+    {
+        // create a new API application service instance
+        $applicationService = $this->newService('TechDivision\ApplicationServer\Api\ApplicationService');
+
+        // append the application in the system configuration first and connect it to the container
+        $applicationService->create($application->toStdClass());
+        $newApplication = $applicationService->loadByName($application->getName())->app;
+        $application->setId($newApplication->id);
+        $application->connect();
+
+        // register the application in this instance
+        $this->applications[$application->getName()] = $application;
     }
 
     /**
@@ -97,25 +112,31 @@ abstract class AbstractDeployment implements DeploymentInterface
     }
 
     /**
-     * Creates a new instance of the passed class name and passes the
-     * args to the instance constructor.
+     * (non-PHPdoc)
      *
-     * @param string $className
-     *            The class name to create the instance of
-     * @param array $args
-     *            The parameters to pass to the constructor
-     * @return object The created instance
+     * @see \TechDivision\ApplicationServer\InitialContext::newInstance()
      */
     public function newInstance($className, array $args = array())
     {
-        return $this->initialContext->newInstance($className, $args);
+        return $this->getInitialContext()->newInstance($className, $args);
+    }
+
+    /**
+     * (non-PHPdoc)
+     *
+     * @see \TechDivision\ApplicationServer\InitialContext::newService()
+     */
+    public function newService($className)
+    {
+        return $this->getInitialContext()->newService($className);
     }
 
     /**
      * Extracts the passed PHAR archive to a folder with the
      * basename of the archive file.
      *
-     * @param \SplFileInfo $archive The PHAR file to be deployed
+     * @param \SplFileInfo $archive
+     *            The PHAR file to be deployed
      * @return void
      */
     protected function deployArchive(\SplFileInfo $archive)
@@ -150,15 +171,22 @@ abstract class AbstractDeployment implements DeploymentInterface
     }
 
     /**
-     * Returns the path to the appserver webapp base directory.
+     * (non-PHPdoc)
      *
-     * @return string The path to the appserver webapp base directory
+     * @see \TechDivision\ApplicationServer\Api\ContainerService::getAppBase()
      */
     public function getAppBase()
     {
-        $configuration = $this->getContainerThread()->getConfiguration();
-        $baseDir = $configuration->getChild(self::XPATH_CONTAINER_BASE_DIRECTORY)->getValue();
-        $appBase = $configuration->getChild(self::XPATH_CONTAINER_HOST)->getAppBase();
-        return $baseDir . $appBase;
+        return $this->newService('TechDivision\ApplicationServer\Api\ContainerService')->getAppBase($this->getId());
+    }
+
+    /**
+     * The unique container ID.
+     *
+     * @return string The unique container ID
+     */
+    public function getId()
+    {
+        return $this->id;
     }
 }

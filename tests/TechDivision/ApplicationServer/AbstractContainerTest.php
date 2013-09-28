@@ -42,10 +42,7 @@ class AbstractContainerTest extends AbstractTest
      */
     public function setUp()
     {
-        $configuration = new Configuration();
-        $configuration->initFromFile('_files/appserver_initial_context.xml');
-        $initialContext = new InitialContext($configuration);
-        $this->container = new MockContainer($initialContext, $this->getContainerConfiguration(), $this->getMockApplications());
+        $this->container = new MockContainer($this->getMockInitialContext(), $id = 1, $this->getMockApplications());
     }
 
     /**
@@ -68,7 +65,7 @@ class AbstractContainerTest extends AbstractTest
      */
     public function testSetGetApplications()
     {
-        $applications = $this->getMockApplications($size = 3);
+        $applications = $this->getMockApplications($size = 4);
         $this->container->setApplications($applications);
         // assertSame() doesn't work here because the AbstractContainer extends a \Stackable
         $this->assertEquals($applications, $this->container->getApplications());
@@ -86,17 +83,6 @@ class AbstractContainerTest extends AbstractTest
     }
 
     /**
-     * Tests the if the receiver configuration specified in the
-     * configuration file is used by the container.
-     *
-     * @return void
-     */
-    public function testGetReceiverConfiguration()
-    {
-        $this->assertInstanceOf('TechDivision\ApplicationServer\Configuration', $this->container->getReceiverConfiguration());
-    }
-
-    /**
      * Tests the if the receiver type specified in the configuration file
      * is used by the container.
      *
@@ -108,28 +94,6 @@ class AbstractContainerTest extends AbstractTest
     }
 
     /**
-     * Tests the if the worker type specified in the configuration file
-     * is used by the container.
-     *
-     * @return void
-     */
-    public function testGetWorkerType()
-    {
-        $this->assertEquals('TechDivision\ApplicationServer\Mock\Socket\MockWorker', $this->container->getWorkerType());
-    }
-
-    /**
-     * Tests the if the thread type specified in the configuration file
-     * is used by the container.
-     *
-     * @return void
-     */
-    public function testGetThreadType()
-    {
-        $this->assertEquals('TechDivision\ApplicationServer\Mock\Socket\MockRequest', $this->container->getThreadType());
-    }
-
-    /**
      * Checks if the new instance method works as expected.
      *
      * @return void
@@ -138,20 +102,6 @@ class AbstractContainerTest extends AbstractTest
     {
         $className = 'TechDivision\ApplicationServer\Configuration';
         $this->assertInstanceOf($className, $this->container->newInstance($className));
-    }
-
-    /**
-     * Checks if the container configuration passed with setter equals the one
-     * returned by the setter.
-     *
-     * @return void
-     */
-    public function testSetGetConfiguration()
-    {
-        $configuration = $this->getContainerConfiguration();
-        $this->container->setConfiguration($configuration);
-        // assertSame() doesn't work here because the AbstractContainer extends a \Stackable
-        $this->assertEquals($configuration, $this->container->getConfiguration());
     }
 
     /**

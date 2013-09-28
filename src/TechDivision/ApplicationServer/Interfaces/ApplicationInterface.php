@@ -39,21 +39,6 @@ interface ApplicationInterface
     public function getName();
 
     /**
-     * Set's the host configuration.
-     *
-     * @param \TechDivision\ApplicationServer\Configuration $configuration The host configuration
-     * @return \TechDivision\ServletContainer\Application The application instance
-     */
-    public function setConfiguration($configuration);
-
-    /**
-     * Returns the host configuration.
-     *
-     * @return \TechDivision\ApplicationServer\Configuration The host configuration
-     */
-    public function getConfiguration();
-
-    /**
      * Returns the path to the appserver webapp base directory.
      *
      * @return string The path to the appserver webapp base directory
@@ -76,5 +61,12 @@ interface ApplicationInterface
      * @return object The created instance
      */
     public function newInstance($className, array $args = array());
+
+    /**
+     * Returns the application as a \stdClass representation.
+     *
+     * @return \stdClass The \stdClass representation of the application
+     */
+    public function toStdClass();
 
 }
