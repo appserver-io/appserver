@@ -22,7 +22,7 @@ use TechDivision\ApplicationServer\Configuration;
  *          Open Software License (OSL 3.0)
  * @author Tim Wagner <tw@techdivision.com>
  */
-class Normalizer implements NormalizerInterface
+class Normalizer extends AbstractNormalizer
 {
 
     /**
@@ -37,7 +37,7 @@ class Normalizer implements NormalizerInterface
     {
 
         // initialize the \stdClass instance
-        $node = new \stdClass();
+        $node = $this->newInstance('\stdClass');
         $node->{$configuration->getNodeName()} = new \stdClass();
 
         // set the node value if available

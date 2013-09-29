@@ -34,4 +34,11 @@ interface NormalizerInterface
      * @return \stdClass The normalized configuration node
      */
     public function normalize(Configuration $configuration);
+
+    /**
+     * Returns the initial context instance.
+     *
+     * @return \TechDivision\ApplicationServer\InitialContext The initial Context
+     */
+    public function getInitialContext();
 }

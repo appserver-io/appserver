@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\ApplicationServer\Api\Dto\BaseDirectoryValueObject
+ * TechDivision\ApplicationServer\Api\Node\DeploymentNode
  *
  * NOTICE OF LICENSE
  *
@@ -9,10 +9,10 @@
  * that is available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  */
-namespace TechDivision\ApplicationServer\Api\Dto;
+namespace TechDivision\ApplicationServer\Api\Node;
 
 /**
- * DTO to transfer the base directory information.
+ * DTO to transfer deployment information.
  *
  * @package TechDivision\ApplicationServer
  * @copyright Copyright (c) 2013 <info@techdivision.com> - TechDivision GmbH
@@ -20,6 +20,14 @@ namespace TechDivision\ApplicationServer\Api\Dto;
  *          Open Software License (OSL 3.0)
  * @author Tim Wagner <tw@techdivision.com>
  */
-class BaseDirectoryValueObject extends AbstractValueObject
+class DeploymentNode extends AbstractNode
 {
+
+    /**
+     * The deployment class name.
+     *
+     * @var string
+     * @AS\Mapping(nodeType="string")
+     */
+    protected $type;
 }

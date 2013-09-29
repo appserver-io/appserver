@@ -92,9 +92,6 @@ class ApplicationServiceTest extends AbstractTest
 
         foreach ($systemConfiguration->getChilds(ApplicationService::XPATH_CONTAINERS) as $containerConfiguration) {
             foreach ($containerConfiguration->getChilds(ApplicationService::XPATH_APPLICATION) as $applicationConfiguration) {
-
-                error_log(var_export($applicationConfiguration, true));
-
                 $this->assertEquals($mockApplications[$applicationConfiguration->getId()], $applicationConfiguration);
             }
         }

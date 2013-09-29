@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\ApplicationServer\Api\Dto\InitialContextValueObject
+ * TechDivision\ApplicationServer\Api\Node\InitialContextNode
  *
  * NOTICE OF LICENSE
  *
@@ -9,7 +9,7 @@
  * that is available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  */
-namespace TechDivision\ApplicationServer\Api\Dto;
+namespace TechDivision\ApplicationServer\Api\Node;
 
 /**
  * DTO to transfer initial context information.
@@ -20,24 +20,27 @@ namespace TechDivision\ApplicationServer\Api\Dto;
  *          Open Software License (OSL 3.0)
  * @author Tim Wagner <tw@techdivision.com>
  */
-class InitialContextValueObject extends AbstractValueObject
+class InitialContextNode extends AbstractNode
 {
 
     /**
      *
-     * @var \TechDivision\ApplicationServer\Api\Dto\NodeValueObject>
+     * @var  \TechDivision\ApplicationServer\Api\Node\DescriptionNode
+     * @AS\Mapping(nodeName="description", nodeType="TechDivision\ApplicationServer\Api\Node\DescriptionNode")
      */
     protected $description;
 
     /**
      *
-     * @var array<\TechDivision\ApplicationServer\Api\Dto\ClassLoaderValueObject>
+     * @var \TechDivision\ApplicationServer\Api\Node\ClassLoaderNode
+     * @AS\Mapping(nodeName="classLoader", nodeType="TechDivision\ApplicationServer\Api\Node\ClassLoaderNode")
      */
     protected $classLoader;
 
     /**
      *
-     * @var array<\TechDivision\ApplicationServer\Api\Dto\StorageValueObject>
+     * @var \TechDivision\ApplicationServer\Api\Node\StorageNode
+     * @AS\Mapping(nodeName="storage", nodeType="TechDivision\ApplicationServer\Api\Node\StorageNode")
      */
     protected $storage;
 }

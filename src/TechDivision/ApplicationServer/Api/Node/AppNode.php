@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\ApplicationServer\Api\Dto\AppValueObject
+ * TechDivision\ApplicationServer\Api\Node\AppNode
  *
  * NOTICE OF LICENSE
  *
@@ -9,7 +9,7 @@
  * that is available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  */
-namespace TechDivision\ApplicationServer\Api\Dto;
+namespace TechDivision\ApplicationServer\Api\Node;
 
 /**
  * DTO to transfer a app.
@@ -20,12 +20,14 @@ namespace TechDivision\ApplicationServer\Api\Dto;
  *          Open Software License (OSL 3.0)
  * @author Tim Wagner <tw@techdivision.com>
  */
-class AppValueObject extends AbstractValueObject
+class AppNode extends AbstractNode
 {
 
     /**
-     * The params's name.
+     * The application's name.
+     *
      * @var string
+     * @AS\Mapping(nodeType="string")
      */
     protected $name;
 }

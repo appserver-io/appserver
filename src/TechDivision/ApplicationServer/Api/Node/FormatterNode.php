@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\ApplicationServer\Api\Dto\ClassLoaderValueObject
+ * TechDivision\ApplicationServer\Api\Node\FormatterNode
  *
  * NOTICE OF LICENSE
  *
@@ -9,10 +9,10 @@
  * that is available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  */
-namespace TechDivision\ApplicationServer\Api\Dto;
+namespace TechDivision\ApplicationServer\Api\Node;
 
 /**
- * DTO to transfer a app.
+ * DTO to transfer formatter information.
  *
  * @package TechDivision\ApplicationServer
  * @copyright Copyright (c) 2013 <info@techdivision.com> - TechDivision GmbH
@@ -20,12 +20,13 @@ namespace TechDivision\ApplicationServer\Api\Dto;
  *          Open Software License (OSL 3.0)
  * @author Tim Wagner <tw@techdivision.com>
  */
-class ClassLoaderValueObject extends AbstractValueObject
+class FormatterNode extends AbstractNode
 {
 
     /**
-     * The class loader class name.
-     * @var string
+     *
+     * @var array<\TechDivision\ApplicationServer\Api\Node\ParamNode>
+     * @AS\Mapping(nodeName="params/param", nodeType="array", elementType="TechDivision\ApplicationServer\Api\Node\ParamNode")
      */
-    protected $type;
+    protected $params = array();
 }

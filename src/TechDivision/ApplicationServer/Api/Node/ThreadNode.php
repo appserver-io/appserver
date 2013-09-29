@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\ApplicationServer\Api\Dto\FormatterValueObject
+ * TechDivision\ApplicationServer\Api\Node\ThreadNode
  *
  * NOTICE OF LICENSE
  *
@@ -9,10 +9,10 @@
  * that is available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  */
-namespace TechDivision\ApplicationServer\Api\Dto;
+namespace TechDivision\ApplicationServer\Api\Node;
 
 /**
- * DTO to transfer formatter information.
+ * DTO to transfer a thread.
  *
  * @package TechDivision\ApplicationServer
  * @copyright Copyright (c) 2013 <info@techdivision.com> - TechDivision GmbH
@@ -20,12 +20,14 @@ namespace TechDivision\ApplicationServer\Api\Dto;
  *          Open Software License (OSL 3.0)
  * @author Tim Wagner <tw@techdivision.com>
  */
-class FormatterValueObject extends AbstractValueObject
+class ThreadNode extends AbstractNode
 {
 
     /**
+     * The thread's class name.
      *
-     * @var array<\TechDivision\ApplicationServer\Api\Dto\ParamsValueObject>
+     * @var string
+     * @AS\Mapping(nodeType="string")
      */
-    protected $params = array();
+    protected $type;
 }

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\ApplicationServer\Api\Dto\AbstractValueObject
+ * TechDivision\ApplicationServer\Api\Node\WorkerNode
  *
  * NOTICE OF LICENSE
  *
@@ -9,10 +9,10 @@
  * that is available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  */
-namespace TechDivision\ApplicationServer\Api\Dto;
+namespace TechDivision\ApplicationServer\Api\Node;
 
 /**
- * DTO to transfer aliases.
+ * DTO to transfer a worker.
  *
  * @package TechDivision\ApplicationServer
  * @copyright Copyright (c) 2013 <info@techdivision.com> - TechDivision GmbH
@@ -20,19 +20,14 @@ namespace TechDivision\ApplicationServer\Api\Dto;
  *          Open Software License (OSL 3.0)
  * @author Tim Wagner <tw@techdivision.com>
  */
-abstract class AbstractValueObject
+class WorkerNode extends AbstractNode
 {
 
     /**
-     * Virtual ID applied by API services.
+     * The worker's class name.
      *
-     * @var integer
+     * @var string
+     * @AS\Mapping(nodeType="string")
      */
-    protected $id;
-
-    /**
-     *
-     * @var \TechDivision\ApplicationServer\Api\Dto\NodeValue
-     */
-    protected $nodeValue;
+    protected $type;
 }

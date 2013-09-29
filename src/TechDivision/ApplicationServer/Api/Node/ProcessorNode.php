@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\ApplicationServer\Api\Dto\ProcessorValueObject
+ * TechDivision\ApplicationServer\Api\Node\ProcessorNode
  *
  * NOTICE OF LICENSE
  *
@@ -9,7 +9,7 @@
  * that is available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  */
-namespace TechDivision\ApplicationServer\Api\Dto;
+namespace TechDivision\ApplicationServer\Api\Node;
 
 /**
  * DTO to transfer processor information.
@@ -20,18 +20,21 @@ namespace TechDivision\ApplicationServer\Api\Dto;
  *          Open Software License (OSL 3.0)
  * @author Tim Wagner <tw@techdivision.com>
  */
-class ProcessorValueObject extends AbstractValueObject
+class ProcessorNode extends AbstractNode
 {
 
     /**
-     * The class loader class name.
+     * The processor class name.
+     *
      * @var string
+     * @AS\Mapping(nodeType="string")
      */
     protected $type;
 
     /**
      *
-     * @var array<\TechDivision\ApplicationServer\Api\Dto\ParamsValueObject>
+     * @var array<\TechDivision\ApplicationServer\Api\Node\ParamNode>
+     * @AS\Mapping(nodeName="params/param", nodeType="array", elementType="TechDivision\ApplicationServer\Api\Node\ParamNode")
      */
     protected $params = array();
 }

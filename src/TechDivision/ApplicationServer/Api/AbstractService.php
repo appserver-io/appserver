@@ -67,7 +67,7 @@ abstract class AbstractService implements ServiceInterface
     public function __construct(InitialContext $initialContext)
     {
         $this->initialContext = $initialContext;
-        $this->setNormalizer($this->newInstance('TechDivision\ApplicationServer\Api\RecursiveNormalizer'));
+        $this->setNormalizer($this->newInstance('TechDivision\ApplicationServer\Api\DtoNormalizer', array($this->getInitialContext())));
     }
 
     /**

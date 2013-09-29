@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\ApplicationServer\Api\Dto\AliasValueObject
+ * TechDivision\ApplicationServer\Api\DtoNormalizer
  *
  * NOTICE OF LICENSE
  *
@@ -9,10 +9,12 @@
  * that is available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  */
-namespace TechDivision\ApplicationServer\Api\Dto;
+namespace TechDivision\ApplicationServer\Api;
+
+use TechDivision\ApplicationServer\Configuration;
 
 /**
- * DTO to transfer a alias.
+ * Normalizes configuration nodes to DTO instances.
  *
  * @package TechDivision\ApplicationServer
  * @copyright Copyright (c) 2013 <info@techdivision.com> - TechDivision GmbH
@@ -20,6 +22,15 @@ namespace TechDivision\ApplicationServer\Api\Dto;
  *          Open Software License (OSL 3.0)
  * @author Tim Wagner <tw@techdivision.com>
  */
-class AliasValueObject extends AbstractValueObject
+class DtoNormalizer extends AbstractNormalizer
 {
+
+    /**
+     * (non-PHPdoc)
+     * @see \TechDivision\ApplicationServer\Api\NormalizerInterface::normalize()
+     */
+    public function normalize(Configuration $configuration)
+    {
+        // do something here
+    }
 }

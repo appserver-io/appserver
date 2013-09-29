@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\ApplicationServer\Api\Dto\VhostsValueObject
+ * TechDivision\ApplicationServer\Api\Node\StorageNode
  *
  * NOTICE OF LICENSE
  *
@@ -9,10 +9,10 @@
  * that is available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  */
-namespace TechDivision\ApplicationServer\Api\Dto;
+namespace TechDivision\ApplicationServer\Api\Node;
 
 /**
- * DTO to transfer vhosts.
+ * DTO to transfer storage information.
  *
  * @package TechDivision\ApplicationServer
  * @copyright Copyright (c) 2013 <info@techdivision.com> - TechDivision GmbH
@@ -20,12 +20,14 @@ namespace TechDivision\ApplicationServer\Api\Dto;
  *          Open Software License (OSL 3.0)
  * @author Tim Wagner <tw@techdivision.com>
  */
-class VhostsValueObject extends AbstractValueObject
+class StorageNode extends AbstractNode
 {
 
     /**
+     * The storage class name.
      *
-     * @var array<\TechDivision\ApplicationServer\Api\Dto\VhostValueObject>
+     * @var string
+     * @AS\Mapping(nodeType="string")
      */
-    protected $vhosts = array();
+    protected $type;
 }

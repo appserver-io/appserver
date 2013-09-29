@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\ApplicationServer\Api\Dto\StringValue
+ * TechDivision\ApplicationServer\Api\Node\AbstractNode
  *
  * NOTICE OF LICENSE
  *
@@ -9,10 +9,10 @@
  * that is available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  */
-namespace TechDivision\ApplicationServer\Api\Dto;
+namespace TechDivision\ApplicationServer\Api\Node;
 
 /**
- * Represents a node's value.
+ * DTO to transfer aliases.
  *
  * @package TechDivision\ApplicationServer
  * @copyright Copyright (c) 2013 <info@techdivision.com> - TechDivision GmbH
@@ -20,20 +20,24 @@ namespace TechDivision\ApplicationServer\Api\Dto;
  *          Open Software License (OSL 3.0)
  * @author Tim Wagner <tw@techdivision.com>
  */
-class StringValue
+abstract class AbstractValueNode extends AbstractNode implements NodeValueInterface
 {
 
     /**
-     * Some node's value.
+     * The node value.
      *
      * @var string
+     * @AS\Mapping(nodeType="TechDivision\ApplicationServer\Api\Node\NodeValue")
      */
-    protected $value;
+    protected $nodeValue;
 
     /**
-     * The value's type.
+     * (non-PHPdoc)
      *
-     * @var string
+     * @see \TechDivision\ApplicationServer\Api\Node\NodeValueInterface::getNodeValue()
      */
-    protected $type;
+    public function getNodeValue()
+    {
+        return $this->nodeValue;
+    }
 }

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\ApplicationServer\Api\Dto\HandlerValueObject
+ * TechDivision\ApplicationServer\Api\Node\HandlerNode
  *
  * NOTICE OF LICENSE
  *
@@ -9,7 +9,7 @@
  * that is available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  */
-namespace TechDivision\ApplicationServer\Api\Dto;
+namespace TechDivision\ApplicationServer\Api\Node;
 
 /**
  * DTO to transfer handler information.
@@ -20,18 +20,20 @@ namespace TechDivision\ApplicationServer\Api\Dto;
  *          Open Software License (OSL 3.0)
  * @author Tim Wagner <tw@techdivision.com>
  */
-class HandlerValueObject extends AbstractValueObject
+class HandlerNode extends AbstractNode
 {
 
     /**
      *
-     * @var \TechDivision\ApplicationServer\Api\Dto\FormatterValueObject
+     * @var \TechDivision\ApplicationServer\Api\Node\FormatterNode
+     * @AS\Mapping(nodeName="formatter", nodeType="TechDivision\ApplicationServer\Api\Node\FormatterNode")
      */
     protected $formatter;
 
     /**
      *
-     * @var array<\TechDivision\ApplicationServer\Api\Dto\ParamsValueObject>
+     * @var array<\TechDivision\ApplicationServer\Api\Node\ParamNode>
+     * @AS\Mapping(nodeName="params/param", nodeType="array", elementType="TechDivision\ApplicationServer\Api\Node\ParamNode")
      */
     protected $params = array();
 }

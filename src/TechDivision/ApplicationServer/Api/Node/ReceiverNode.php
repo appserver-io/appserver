@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\ApplicationServer\Api\Dto\ReceiverValueObject
+ * TechDivision\ApplicationServer\Api\Node\ReceiverNode
  *
  * NOTICE OF LICENSE
  *
@@ -9,7 +9,7 @@
  * that is available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  */
-namespace TechDivision\ApplicationServer\Api\Dto;
+namespace TechDivision\ApplicationServer\Api\Node;
 
 /**
  * DTO to transfer a receiver.
@@ -20,31 +20,35 @@ namespace TechDivision\ApplicationServer\Api\Dto;
  *          Open Software License (OSL 3.0)
  * @author Tim Wagner <tw@techdivision.com>
  */
-class ReceiverValueObject extends AbstractValueObject
+class ReceiverNode extends AbstractNode
 {
 
     /**
      * The receiver's class name.
      *
      * @var string
+     * @AS\Mapping(nodeType="string")
      */
     protected $type;
 
     /**
      *
-     * @var \TechDivision\ApplicationServer\Api\Dto\ThreadValueObject
+     * @var \TechDivision\ApplicationServer\Api\Node\ThreadNode
+     * @AS\Mapping(nodeName="thread", nodeType="TechDivision\ApplicationServer\Api\Node\ThreadNode")
      */
     protected $thread;
 
     /**
      *
-     * @var \TechDivision\ApplicationServer\Api\Dto\WorkerValueObject
+     * @var \TechDivision\ApplicationServer\Api\Node\WorkerNode
+     * @AS\Mapping(nodeName="worker", nodeType="TechDivision\ApplicationServer\Api\Node\WorkerNode")
      */
     protected $worker;
 
     /**
      *
-     * @var array<\TechDivision\ApplicationServer\Api\Dto\ParamsValueObject>
+     * @var array<\TechDivision\ApplicationServer\Api\Node\ParamNode>
+     * @AS\Mapping(nodeName="params/param", nodeType="array", elementType="TechDivision\ApplicationServer\Api\Node\ParamNode")
      */
     protected $params = array();
 }
