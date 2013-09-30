@@ -24,10 +24,20 @@ class DeploymentNode extends AbstractNode
 {
 
     /**
-     * The deployment class name.
+     * The deployment's class name.
      *
      * @var string
      * @AS\Mapping(nodeType="string")
      */
     protected $type;
+
+    /**
+     * Returns the deployment's class name.
+     *
+     * @return string The deployment's class name
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
 }

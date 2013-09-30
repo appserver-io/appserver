@@ -29,9 +29,9 @@ class ReceiverNode extends AbstractNode
      * @var string
      * @AS\Mapping(nodeType="string")
      */
-    protected $type;
 
     /**
+     * The thread configuration the receiver uses.
      *
      * @var \TechDivision\ApplicationServer\Api\Node\ThreadNode
      * @AS\Mapping(nodeName="thread", nodeType="TechDivision\ApplicationServer\Api\Node\ThreadNode")
@@ -39,6 +39,7 @@ class ReceiverNode extends AbstractNode
     protected $thread;
 
     /**
+     * The worker configuration the receiver uses.
      *
      * @var \TechDivision\ApplicationServer\Api\Node\WorkerNode
      * @AS\Mapping(nodeName="worker", nodeType="TechDivision\ApplicationServer\Api\Node\WorkerNode")
@@ -46,9 +47,50 @@ class ReceiverNode extends AbstractNode
     protected $worker;
 
     /**
+     * The receiver's start params, e. g. the IP address to be used.
      *
      * @var array<\TechDivision\ApplicationServer\Api\Node\ParamNode>
      * @AS\Mapping(nodeName="params/param", nodeType="array", elementType="TechDivision\ApplicationServer\Api\Node\ParamNode")
      */
     protected $params = array();
+
+    /**
+     * Returns information about the receiver's class name.
+     *
+     * @return string The receiver's class name
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * Returns the thread configuration the receiver uses.
+     *
+     * @return \TechDivision\ApplicationServer\Api\Node\ThreadNode The thread configuration
+     */
+    public function getThread()
+    {
+        return $this->thread;
+    }
+
+    /**
+     * Returns the worker configuration the receiver uses.
+     *
+     * @return \TechDivision\ApplicationServer\Api\Node\ThreadNode The worker configuration
+     */
+    public function getWorker()
+    {
+        return $this->worker;
+    }
+
+    /**
+     *  Returns the receiver's start params, e. g. the IP address to be used.
+     *
+     *  @return array<\TechDivision\ApplicationServer\Api\Node\ParamNode> The receiver's start params
+     */
+    public function getParams()
+    {
+        return $this->params;
+    }
 }

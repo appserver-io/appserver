@@ -30,4 +30,32 @@ class StorageNode extends AbstractNode
      * @AS\Mapping(nodeType="string")
      */
     protected $type;
+
+    /**
+     * Array with the servers used by the storage.
+     *
+     * @var array<\TechDivision\ApplicationServer\Api\Node\ServerNode>
+     * @AS\Mapping(nodeName="servers/server", nodeType="array", elementType="TechDivision\ApplicationServer\Api\Node\ServerNode")
+     */
+    protected $servers = array();
+
+    /**
+     * Returns the class name.
+     *
+     * @return string The class name
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * Returns the array with the servers used by the storage.
+     *
+     * @return array The servers used by the storage
+     */
+    public function getServers()
+    {
+        return $this->servers;
+    }
 }

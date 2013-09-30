@@ -40,9 +40,40 @@ class VhostNode extends AbstractNode
     protected $appBase;
 
     /**
+     * The vhost aliases configuration.
      *
      * @var array<\TechDivision\ApplicationServer\Api\Node\AliasNode>
      * @AS\Mapping(nodeName="aliases/alias", nodeType="array", elementType="TechDivision\ApplicationServer\Api\Node\AliasNode")
      */
     protected $aliases = array();
+
+    /**
+     * Returns the vhost's name.
+     *
+     * @return string The vhost's name
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * Returns the vhost's application base directory.
+     *
+     * @return string The vhost's application base directory
+     */
+    public function getAppBase()
+    {
+        return $this->appBase;
+    }
+
+    /**
+     * Returns the vhost's aliases configuration.
+     *
+     * @return array<\TechDivision\ApplicationServer\Api\Node\AliasNode> The aliases configuration
+     */
+    public function getAliases()
+    {
+        return $this->aliases;
+    }
 }

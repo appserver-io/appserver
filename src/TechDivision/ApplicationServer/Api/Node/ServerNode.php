@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\ApplicationServer\Api\Node\FormatterNode
+ * TechDivision\ApplicationServer\Api\Node\ServerNode
  *
  * NOTICE OF LICENSE
  *
@@ -12,7 +12,7 @@
 namespace TechDivision\ApplicationServer\Api\Node;
 
 /**
- * DTO to transfer formatter information.
+ * DTO to transfer server information.
  *
  * @package TechDivision\ApplicationServer
  * @copyright Copyright (c) 2013 <info@techdivision.com> - TechDivision GmbH
@@ -20,24 +20,30 @@ namespace TechDivision\ApplicationServer\Api\Node;
  *          Open Software License (OSL 3.0)
  * @author Tim Wagner <tw@techdivision.com>
  */
-class FormatterNode extends AbstractNode
+class ServerNode extends AbstractNode
 {
 
     /**
-     * The handler params to use.
+     * The server's IP address.
      *
-     * @var array<\TechDivision\ApplicationServer\Api\Node\ParamNode>
-     * @AS\Mapping(nodeName="params/param", nodeType="array", elementType="TechDivision\ApplicationServer\Api\Node\ParamNode")
+     * @var string
+     * @AS\Mapping(nodeType="string")
      */
-    protected $params = array();
+    protected $address;
 
     /**
-     * Array with the handler params to use.
+     * The server's port.
      *
-     * @return array<\TechDivision\ApplicationServer\Api\Node\ParamNode>
+     * @var integer
+     * @AS\Mapping(nodeType="integer")
      */
-    public function getParams()
-    {
-        return $this->params;
-    }
+    protected $port;
+
+    /**
+     * The server's weight.
+     *
+     * @var integer
+     * @AS\Mapping(nodeType="integer")
+     */
+    protected $weight;
 }

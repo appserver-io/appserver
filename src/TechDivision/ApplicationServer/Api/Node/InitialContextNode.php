@@ -24,6 +24,7 @@ class InitialContextNode extends AbstractNode
 {
 
     /**
+     * Description for the initial context configuration.
      *
      * @var  \TechDivision\ApplicationServer\Api\Node\DescriptionNode
      * @AS\Mapping(nodeName="description", nodeType="TechDivision\ApplicationServer\Api\Node\DescriptionNode")
@@ -31,6 +32,7 @@ class InitialContextNode extends AbstractNode
     protected $description;
 
     /**
+     * Node containing information about the class loader used by the initial context.
      *
      * @var \TechDivision\ApplicationServer\Api\Node\ClassLoaderNode
      * @AS\Mapping(nodeName="classLoader", nodeType="TechDivision\ApplicationServer\Api\Node\ClassLoaderNode")
@@ -38,9 +40,40 @@ class InitialContextNode extends AbstractNode
     protected $classLoader;
 
     /**
+     * Node containing information about the storage implementation used by the inital context.
      *
      * @var \TechDivision\ApplicationServer\Api\Node\StorageNode
      * @AS\Mapping(nodeName="storage", nodeType="TechDivision\ApplicationServer\Api\Node\StorageNode")
      */
     protected $storage;
+
+    /**
+     * Returns the initial context description.
+     *
+     * @return \TechDivision\ApplicationServer\Api\Node\DescriptionNode The initial context description
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * Returns the class loader configuration information.
+     *
+     * @return \TechDivision\ApplicationServer\Api\Node\ClassLoaderNode The node with the class loader information
+     */
+    public function getClassLoader()
+    {
+        return $this->classLoader;
+    }
+
+    /**
+     * Returns the storage configuration information.
+     *
+     * @return \TechDivision\ApplicationServer\Api\Node\StorageNode The node with the storage information
+     */
+    public function getStorage()
+    {
+        return $this->storage;
+    }
 }

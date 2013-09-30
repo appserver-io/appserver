@@ -30,4 +30,14 @@ class ClassLoaderNode extends AbstractNode
      * @AS\Mapping(nodeType="string")
      */
     protected $type;
+
+    /**
+     * Returns the class name.
+     *
+     * @return string The class name
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
 }

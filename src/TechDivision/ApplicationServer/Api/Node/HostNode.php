@@ -32,7 +32,7 @@ class HostNode extends AbstractNode
     protected $name;
 
     /**
-     * The application base directory.
+     * The applications base directory.
      *
      * @var string
      * @AS\Mapping(nodeType="string")
@@ -40,7 +40,7 @@ class HostNode extends AbstractNode
     protected $appBase;
 
     /**
-     * The server admin mail address.
+     * The server admin's mail address.
      *
      * @var string
      * @AS\Mapping(nodeType="string")
@@ -48,7 +48,7 @@ class HostNode extends AbstractNode
     protected $serverAdmin;
 
     /**
-     * The server software string.
+     * The server's software signature.
      *
      * @var string
      * @AS\Mapping(nodeType="string")
@@ -56,9 +56,60 @@ class HostNode extends AbstractNode
     protected $serverSoftware;
 
     /**
+     * The server's vhosts configuration.
      *
      * @var array<\TechDivision\ApplicationServer\Api\Node\VhostNode>
      * @AS\Mapping(nodeName="vhosts/vhost", nodeType="array", elementType="TechDivision\ApplicationServer\Api\Node\VhostNode")
      */
     protected $vhosts = array();
+
+    /**
+     * Returns the host name.
+     *
+     * @return string The host name
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * Returns the applications base directory.
+     *
+     * @return string The applications base directory
+     */
+    public function getAppBase()
+    {
+        return $this->appBase;
+    }
+
+    /**
+     * Returns the server admin's mail address.
+     *
+     * @return string The server admin's mail address
+     */
+    public function getServerAdmin()
+    {
+        return $this->serverAdmin;
+    }
+
+    /**
+     * Returns the server's software signature.
+     *
+     * @return string The server's software signature
+     */
+    public function getServerSofteare()
+    {
+        return $this->serverSoftware;
+    }
+
+    /**
+     * Returns the server's vhosts configuration.
+     *
+     * @return array<\TechDivision\ApplicationServer\Api\Node\VhostNode> The server's vhosts configuration
+     */
+    public function getVhosts()
+    {
+        return $this->vhosts;
+    }
 }

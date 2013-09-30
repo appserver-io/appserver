@@ -30,11 +30,4 @@ class ProcessorNode extends AbstractNode
      * @AS\Mapping(nodeType="string")
      */
     protected $type;
-
-    /**
-     *
-     * @var array<\TechDivision\ApplicationServer\Api\Node\ParamNode>
-     * @AS\Mapping(nodeName="params/param", nodeType="array", elementType="TechDivision\ApplicationServer\Api\Node\ParamNode")
-     */
-    protected $params = array();
 }

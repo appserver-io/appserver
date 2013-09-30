@@ -24,10 +24,20 @@ class AppNode extends AbstractNode
 {
 
     /**
-     * The application's name.
+     * The unique application name.
      *
      * @var string
      * @AS\Mapping(nodeType="string")
      */
     protected $name;
+
+    /**
+     * Returns the application name.
+     *
+     * @return string The unique application name
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
 }
