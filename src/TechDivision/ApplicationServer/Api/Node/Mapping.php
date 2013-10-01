@@ -31,9 +31,13 @@ class Mapping
 
     protected $elementType;
 
+    protected $attachMethod;
+
     public function __construct(\stdClass $token)
     {
         $this->name = $token->name;
+
+        $this->attachMethod = "attach{ucfirst($this->name)}";
 
         foreach ($token->values as $member => $value) {
             $this->$member = $value;
@@ -58,5 +62,10 @@ class Mapping
     public function getElementType()
     {
         return $this->elementType;
+    }
+
+    public function getAttachMethod()
+    {
+        return $this->attachMethod;
     }
 }

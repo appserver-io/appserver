@@ -11,6 +11,7 @@
  */
 namespace TechDivision\ApplicationServer\Api;
 
+use Symfony\Component\Config\Definition\NodeInterface;
 /**
  * This interface defines the basic method each API service has
  * to provide.
@@ -32,59 +33,32 @@ interface ServiceInterface
     public function getInitialContext();
 
     /**
-     * Returns the used normalizer instance.
+     * Returns the system configuration.
      *
-     * @return \TechDivision\ApplicationServer\Api\NormalizerInterface The normalizer instance
+     * @return \TechDivision\ApplicationServer\Api\Node\AppserverNode The system configuration
      */
-    public function getNormalizer();
+    public function setSystemConfiguration($systemConfiguration);
 
     /**
      * Returns the system configuration.
      *
-     * @return \TechDivision\ApplicationServer\Configuration The system configuration
+     * @return \TechDivision\ApplicationServer\Api\Node\AppserverNode The system configuration
      */
     public function getSystemConfiguration();
 
     /**
-     * Return's all entity configurations.
+     * Return's all nodes.
      *
-     * @return array<\stdClass> An array with all entity configurations
+     * @return array<\TechDivision\ApplicationServer\Api\Node\NodeInterface> An array with all nodes
      */
     public function findAll();
 
     /**
-     * Returns the containers with the passed ID.
+     * Returns the node with the passed UUID.
      *
-     * @param integer $id
-     *            ID of the entity to return
-     * @return \stdClass The container with the ID passed as parameter
+     * @param integer $uuid
+     *            UUID of the node to return
+     * @return \TechDivision\ApplicationServer\Api\Node\NodeInterface The node with the UUID passed as parameter
      */
-    public function load($id);
-
-    /**
-     * Creates a new entity from the passed class information.
-     *
-     * @param \stdClass $stdClass
-     *            The class information to create the entity from
-     * @return string The new ID of the created entity
-     * @return void
-     */
-    public function create(\stdClass $stdClass);
-
-    /**
-     * Updates the entity with the passed class information.
-     *
-     * @param \stdClass $stdClass
-     *            The entity with the passed class information.
-     * @return void
-     */
-    public function update(\stdClass $stdClass);
-
-    /**
-     * Deletes the entity with the passed ID.
-     *
-     * @param string $id
-     *            ID of the entity to remove
-     */
-    public function delete($id);
+    public function load($uuid);
 }

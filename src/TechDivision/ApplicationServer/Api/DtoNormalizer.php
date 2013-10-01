@@ -27,10 +27,14 @@ class DtoNormalizer extends AbstractNormalizer
 
     /**
      * (non-PHPdoc)
+     *
      * @see \TechDivision\ApplicationServer\Api\NormalizerInterface::normalize()
      */
     public function normalize(Configuration $configuration)
     {
-        // do something here
+        $nodeType = $this->getService()->getNodeType();
+        return $this->newInstance($nodeType, array(
+            $configuration
+        ));
     }
 }

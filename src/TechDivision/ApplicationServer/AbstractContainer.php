@@ -27,27 +27,6 @@ abstract class AbstractContainer extends \Stackable implements ContainerInterfac
 {
 
     /**
-     * Path to the container's receiver configuration.
-     *
-     * @var string
-     */
-    const XPATH_CONFIGURATION_RECEIVER = '/container/receiver';
-
-    /**
-     * Path to the receiver's worker.
-     *
-     * @var string
-     */
-    const XPATH_CONFIGURATION_WORKER = '/container/receiver/worker';
-
-    /**
-     * Path to the receiver's worker.
-     *
-     * @var string
-     */
-    const XPATH_CONFIGURATION_THREAD = '/container/receiver/thread';
-
-    /**
      * Array with deployed applications.
      *
      * @var array
@@ -62,11 +41,11 @@ abstract class AbstractContainer extends \Stackable implements ContainerInterfac
     protected $server;
 
     /**
-     * The container's unique ID.
+     * The container node.
      *
-     * @var string
+     * @var \TechDivision\ApplicationServer\Api\Node\ContainerNode
      */
-    protected $id;
+    protected $containerNode;
 
     /**
      * TRUE if the container has been started, else FALSE.
@@ -80,26 +59,38 @@ abstract class AbstractContainer extends \Stackable implements ContainerInterfac
      *
      * @param \TechDivision\ApplicationServer\InitialContext $initialContext
      *            The initial context instance
-     * @param string $id
-     *            The unique container ID
+     * @param \TechDivision\ApplicationServer\Api\Node\ContainerNode $containerNode
+     *            The container's UUID
      * @todo Application deployment only works this way because of Thread compatibilty
      * @return void
      */
-    public function __construct($initialContext, $id, $applications)
+    public function __construct($initialContext, $containerNode, $applications)
     {
         $this->initialContext = $initialContext;
-        $this->id = $id;
+        $this->setContainerNode($containerNode);
         $this->setApplications($applications);
     }
 
     /**
-     * The unique container ID.
+     * Set's the app node the application is belonging to
      *
-     * @return string The unique container ID
+     * @param \TechDivision\ApplicationServer\Api\Node\AppNode $appNode
+     *            The app node the application is belonging to
+     * @return void
      */
-    public function getId()
+    public function setContainerNode($containerNode)
     {
-        return $this->id;
+        $this->containerNode = $containerNode;
+    }
+
+    /**
+     * Return's the container node.
+     *
+     * @return \TechDivision\ApplicationServer\Api\Node\ContainerNode The container node
+     */
+    public function getContainerNode()
+    {
+        return $this->containerNode;
     }
 
     /**
@@ -153,8 +144,7 @@ abstract class AbstractContainer extends \Stackable implements ContainerInterfac
      */
     public function getReceiverType()
     {
-        $receiverService = $this->newService('TechDivision\ApplicationServer\Api\ContainerService');
-        return $receiverService->getReceiverType($this->getId());
+        return $this->getContainerNode()->getReceiver()->getType();
     }
 
     /**

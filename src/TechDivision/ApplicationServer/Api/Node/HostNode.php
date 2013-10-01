@@ -98,7 +98,7 @@ class HostNode extends AbstractNode
      *
      * @return string The server's software signature
      */
-    public function getServerSofteare()
+    public function getServerSoftware()
     {
         return $this->serverSoftware;
     }

@@ -55,7 +55,6 @@ class AbstractApplicationTest extends AbstractTest
     public function setUp()
     {
         $this->application = new MockApplication($this->getMockInitialContext(), $this->getApplicationName());
-        $this->application->setId($this->getApplicationId());
     }
 
     /**

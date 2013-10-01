@@ -24,12 +24,30 @@ class FormatterNode extends AbstractNode
 {
 
     /**
+     * The formatter's class name.
+     *
+     * @var string
+     * @AS\Mapping(nodeType="string")
+     */
+    protected $type;
+
+    /**
      * The handler params to use.
      *
      * @var array<\TechDivision\ApplicationServer\Api\Node\ParamNode>
      * @AS\Mapping(nodeName="params/param", nodeType="array", elementType="TechDivision\ApplicationServer\Api\Node\ParamNode")
      */
     protected $params = array();
+
+    /**
+     * Returns information about the formatter's class name.
+     *
+     * @return string The formatter's class name
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
 
     /**
      * Array with the handler params to use.

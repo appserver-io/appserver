@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <appserver xmlns="http://www.appserver.io/appserver">
 
-    <baseDirectory>/opt/appserver</baseDirectory>
+	<baseDirectory>/opt/appserver</baseDirectory>
 
 	<initialContext type="TechDivision\ApplicationServer\InitialContext">
 		<description><![CDATA[The initial context configuration.]]></description>
@@ -36,6 +36,12 @@
 		</handlers>
 	</systemLogger>
 
+     <apps>
+         <app name="api" />
+         <app name="demo" />
+         <app name="example" />
+     </apps>
+
 	<containers>
 
 		<container name="persistence"
@@ -53,15 +59,8 @@
 			</receiver>
 			<deployment type="TechDivision\ApplicationServer\Mock\MockDeployment" />
 			<host name="localhost" appBase="/webapps" serverAdmin="${appserver.admin.email}"
-				serverSoftware="appserver/${appserver.version} (${os.family}) PHP/${appserver.php.version}">
-			</host>
-            
-            <apps>
-                 <app id="1" name="api"/>
-                 <app id="2" name="demo"/>
-                 <app id="3" name="example"/>
-            </apps>
-            
+				serverSoftware="appserver/${appserver.version} (${os.family}) PHP/${appserver.php.version}" />
+
 		</container>
 
 		<container name="message-queue"
@@ -79,15 +78,8 @@
 			</receiver>
 			<deployment type="TechDivision\ApplicationServer\Mock\MockDeployment" />
 			<host name="localhost" appBase="/webapps" serverAdmin="${appserver.admin.email}"
-				serverSoftware="appserver/${appserver.version} (${os.family}) PHP/${appserver.php.version}">
-			</host>
-            
-            <apps>
-                 <app id="1" name="api"/>
-                 <app id="2" name="demo"/>
-                 <app id="3" name="example"/>
-            </apps>
-			
+				serverSoftware="appserver/${appserver.version} (${os.family}) PHP/${appserver.php.version}" />
+				
 		</container>
 
 		<container name="http"
@@ -116,13 +108,7 @@
 					<vhost name="magento.local" appBase="/magento" />
 				</vhosts>
 			</host>
-            
-            <apps>
-                 <app id="1" name="api"/>
-                 <app id="2" name="demo"/>
-                 <app id="3" name="example"/>
-            </apps>
-            
+
 		</container>
 
 	</containers>

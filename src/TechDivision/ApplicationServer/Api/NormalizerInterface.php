@@ -41,4 +41,11 @@ interface NormalizerInterface
      * @return \TechDivision\ApplicationServer\InitialContext The initial Context
      */
     public function getInitialContext();
+
+    /**
+     * Return the service to normalize for.
+     *
+     * @return ServiceInterface The service instance
+     */
+    public function getService();
 }

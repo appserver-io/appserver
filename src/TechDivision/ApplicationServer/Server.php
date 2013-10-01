@@ -85,7 +85,7 @@ class Server
     protected $systemLogger;
 
     /**
-     * The mutex toprevent PHAR deployment errors
+     * The mutex to prevent PHAR deployment errors.
      *
      * @var \Mutex
      */
@@ -112,14 +112,24 @@ class Server
     }
 
     /**
-     * Destroys the mutexes.
+     * Destroys the mutex to prevent PHAR deployment errors.
      *
      * @return void
      */
     public function __destruct()
     {
-        \Mutex::unlock($this->mutex);
-        \Mutex::destroy($this->mutex);
+        \Mutex::unlock($this->getMutex());
+        \Mutex::destroy($this->getMutex());
+    }
+
+    /**
+     * Returns the mutex to prevent PHAR deployment errors.
+     *
+     * @return \Mutex The mutex
+     */
+    public function getMutex()
+    {
+        return $this->mutex;
     }
 
     /**
@@ -203,8 +213,11 @@ class Server
             $this->getInitialContextConfiguration()
         ));
 
+        $node = $this->newInstance('TechDivision\ApplicationServer\Api\Node\AppserverNode');
+        $node->initFromConfiguration($this->getSystemConfiguration());
+
         // add the system configuration to the initial context
-        $this->initialContext->setSystemConfiguration($this->getSystemConfiguration());
+        $this->initialContext->setSystemConfiguration($node);
     }
 
     /**
@@ -219,17 +232,17 @@ class Server
         $containerService = $this->newService('TechDivision\ApplicationServer\Api\ContainerService');
 
         // and initialize a container thread for each container
-        foreach ($containerService->findAll()->containers as $container) {
+        foreach ($containerService->findAll() as $containerNode) {
 
             // initialize the container configuration with the base directory and pass it to the thread
             $params = array(
                 $this->getInitialContext(),
-                $this->mutex,
-                $container->container->id
+                $this->getMutex(),
+                $containerNode
             );
 
             // create and append the thread instance to the internal array
-            $this->threads[] = $this->newInstance($container->container->thread_type, $params);
+            $this->threads[] = $this->newInstance($containerNode->getThreadType(), $params);
         }
     }
 

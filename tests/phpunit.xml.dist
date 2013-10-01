@@ -1,7 +1,7 @@
 <phpunit bootstrap="${php-target.dir}/${unique.name}/src/bootstrap.php">
     <testsuites>
 	    <testsuite name="ApplicationServer Unit Tests">
-	        <directory suffix="Test.php">${php-target.dir}/${unique.name}/src</directory>
+	        <directory suffix="Test.php">${php-target.dir}/${unique.name}/src/TechDivision/ApplicationServer/Api/Node</directory>
 	    </testsuite>
 	</testsuites>
     <filter>

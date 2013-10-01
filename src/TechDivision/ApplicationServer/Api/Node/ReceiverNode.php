@@ -29,6 +29,7 @@ class ReceiverNode extends AbstractNode
      * @var string
      * @AS\Mapping(nodeType="string")
      */
+    protected $type;
 
     /**
      * The thread configuration the receiver uses.
@@ -92,5 +93,14 @@ class ReceiverNode extends AbstractNode
     public function getParams()
     {
         return $this->params;
+    }
+
+    public function getParam($name)
+    {
+        foreach ($this->getParams() as $param) {
+            if ($param->getName() == $name) {
+                return $param->getNodeValue()->__toString();
+            }
+        }
     }
 }

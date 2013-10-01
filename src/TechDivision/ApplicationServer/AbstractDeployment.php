@@ -27,25 +27,11 @@ abstract class AbstractDeployment implements DeploymentInterface
 {
 
     /**
-     * Path to the container's base directory.
+     * The container node the deployment is for.
      *
      * @var string
      */
-    const XPATH_CONTAINER_BASE_DIRECTORY = '/container/baseDirectory';
-
-    /**
-     * Path to the container's host configuration.
-     *
-     * @var string
-     */
-    const XPATH_CONTAINER_HOST = '/container/host';
-
-    /**
-     * The container's unique ID.
-     *
-     * @var string
-     */
-    protected $id;
+    protected $containerNode;
 
     /**
      * Array with the initialized applications.
@@ -59,20 +45,23 @@ abstract class AbstractDeployment implements DeploymentInterface
      *
      * @param \TechDivision\ApplicationServer\InitialContext $initialContext
      *            The initial context instance
-     * @param string $id
-     *            The container's unique ID
+     * @param \TechDivision\ApplicationServer\Api\Node\ContainerNode $containerNode
+     *            The container node the deployment is for
+     * @param \TechDivision\ApplicationServer\Api\Node\DeploymentNode $deploymentNode
+     *            The deployment node
      * @return void
      */
-    public function __construct(InitialContext $initialContext, $id)
+    public function __construct(InitialContext $initialContext, $containerNode, $deploymentNode)
     {
         $this->initialContext = $initialContext;
-        $this->id = $id;
+        $this->containerNode = $containerNode;
+        $this->deploymentNode = $deploymentNode;
     }
 
     /**
-     * Returns the initialContext object
+     * Returns the initialContext instance
      *
-     * @return \Stackable
+     * @return \TechDivision\ApplicationServer\InitialContext The initial context instance
      */
     public function getInitialContext()
     {
@@ -80,21 +69,51 @@ abstract class AbstractDeployment implements DeploymentInterface
     }
 
     /**
+     * Returns the container node the deployment is for.
+     *
+     * @return \TechDivision\ApplicationServer\Api\Node\ContainerNode The container node
+     */
+    public function getContainerNode()
+    {
+        return $this->containerNode;
+    }
+
+    /**
+     * Returns the deployment node.
+     *
+     * @return \TechDivision\ApplicationServer\Api\Node\ContainerNode The deployment node
+     */
+    public function getDeploymentNode()
+    {
+        return $this->deploymentNode;
+    }
+
+    /**
      * Append the deployed application to the deployment instance
      * and registers it in the system configuration.
      *
-     * @param ApplicationInterface $application The application to append
+     * @param ApplicationInterface $application
+     *            The application to append
      * @return void
      */
     public function addApplication(ApplicationInterface $application)
     {
-        // create a new API application service instance
-        $applicationService = $this->newService('TechDivision\ApplicationServer\Api\ApplicationService');
 
-        // append the application in the system configuration first and connect it to the container
-        $applicationService->create($application->toStdClass());
-        $newApplication = $applicationService->loadByName($application->getName())->app;
-        $application->setId($newApplication->id);
+        // create a new API app service instance
+        $appService = $this->newService('TechDivision\ApplicationServer\Api\AppService');
+        $appNode = $appService->load($application->getWebappPath());
+
+        // check if the application has already been attached to the container
+        if ($appNode == null) {
+            $application->newAppNode($this->getContainerNode());
+        } else {
+            $application->setAppNode($appNode);
+        }
+
+        // persist the application
+        $appService->persist($application->getAppNode());
+
+        // connect the application to the container
         $application->connect();
 
         // register the application in this instance
@@ -144,7 +163,8 @@ abstract class AbstractDeployment implements DeploymentInterface
         try {
 
             // create folder name based on the archive's basename
-            $folderName = $this->getAppBase() . DIRECTORY_SEPARATOR . $archive->getBaseName('.phar');
+            $baseDirectory = $this->getBaseDirectory($this->getAppBase());
+            $folderName = $baseDirectory . DIRECTORY_SEPARATOR . $archive->getBaseName('.phar');
 
             // check if application has already been deployed
             if (is_dir($folderName) === false) {
@@ -164,10 +184,20 @@ abstract class AbstractDeployment implements DeploymentInterface
      */
     public function deployWebapps()
     {
-        foreach (new \RegexIterator(new \FilesystemIterator($this->getAppBase()), '/^.*\.phar$/') as $archive) {
+        foreach (new \RegexIterator(new \FilesystemIterator($this->getBaseDirectory($this->getAppBase())), '/^.*\.phar$/') as $archive) {
             $this->deployArchive($archive);
         }
         return $this;
+    }
+
+    /**
+     * (non-PHPdoc)
+     *
+     * @see \TechDivision\ApplicationServer\Api\ContainerService::getBaseDirectory()
+     */
+    public function getBaseDirectory($directoryToAppend = null)
+    {
+        return $this->newService('TechDivision\ApplicationServer\Api\ContainerService')->getBaseDirectory($directoryToAppend);
     }
 
     /**
@@ -177,16 +207,6 @@ abstract class AbstractDeployment implements DeploymentInterface
      */
     public function getAppBase()
     {
-        return $this->newService('TechDivision\ApplicationServer\Api\ContainerService')->getAppBase($this->getId());
-    }
-
-    /**
-     * The unique container ID.
-     *
-     * @return string The unique container ID
-     */
-    public function getId()
-    {
-        return $this->id;
+        return $this->getContainerNode()->getHost()->getAppBase();
     }
 }

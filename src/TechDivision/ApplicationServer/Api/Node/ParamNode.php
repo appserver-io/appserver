@@ -38,4 +38,24 @@ class ParamNode extends AbstractValueNode
      * @AS\Mapping(nodeType="string")
      */
     protected $type;
+
+    /**
+     * Returns the param name.
+     *
+     * @return string The param name
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * Returns the param type.
+     *
+     * @return string The param type
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
 }

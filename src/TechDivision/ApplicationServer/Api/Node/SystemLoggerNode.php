@@ -24,6 +24,22 @@ class SystemLoggerNode extends AbstractNode
 {
 
     /**
+     * The system logger's class name.
+     *
+     * @var string
+     * @AS\Mapping(nodeType="string")
+     */
+    protected $type;
+
+    /**
+     * The system logger's channel name.
+     *
+     * @var string
+     * @AS\Mapping(nodeType="string")
+     */
+    protected $channelName;
+
+    /**
      * Array with nodes for the registered processors.
      *
      * @var array<\TechDivision\ApplicationServer\Api\Node\ProcessorNode>
@@ -38,6 +54,26 @@ class SystemLoggerNode extends AbstractNode
      * @AS\Mapping(nodeName="handlers/handler", nodeType="array", elementType="TechDivision\ApplicationServer\Api\Node\HandlerNode")
      */
     protected $handlers = array();
+
+    /**
+     * Returns information about the system logger's class name.
+     *
+     * @return string The system logger's class name
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * Returns information about the system logger's channel name.
+     *
+     * @return string The system logger's channel name
+     */
+    public function getChannelName()
+    {
+        return $this->channelName;
+    }
 
     /**
      * Returns the array with all registered processors.

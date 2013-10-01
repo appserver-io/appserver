@@ -56,6 +56,14 @@ class AppserverNode extends AbstractNode
     protected $containers = array();
 
     /**
+     * Array with the information about the deployed applications.
+     *
+     * @var array<\TechDivision\ApplicationServer\Api\Node\AppNode>
+     * @AS\Mapping(nodeName="apps/app", nodeType="array", elementType="TechDivision\ApplicationServer\Api\Node\AppNode")
+     */
+    protected $apps = array();
+
+    /**
      * Returns the node with the base directory information.
      *
      * @return \TechDivision\ApplicationServer\Api\Node\BaseDirectoryNode The base directory information
@@ -93,5 +101,20 @@ class AppserverNode extends AbstractNode
     public function getContainers()
     {
         return $this->containers;
+    }
+
+    /**
+     * Returns an array with the information about the deployed applications.
+     *
+     * @return array<\TechDivision\ApplicationServer\Api\Node\ReceiverNode> The array with the information about the deployed applications
+     */
+    public function getApps()
+    {
+        return $this->apps;
+    }
+
+    public function attachApp(AppNode $app)
+    {
+        $this->apps[$app->getPrimaryKey()] = $app;
     }
 }

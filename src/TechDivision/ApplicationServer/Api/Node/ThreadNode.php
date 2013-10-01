@@ -30,4 +30,14 @@ class ThreadNode extends AbstractNode
      * @AS\Mapping(nodeType="string")
      */
     protected $type;
+
+    /**
+     * Returns the param type.
+     *
+     * @return string The param type
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
 }

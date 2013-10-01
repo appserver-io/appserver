@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:appserver="http://www.appserver.io/appserver"
+    targetNamespace="http://www.appserver.io/appserver"
+    elementFormDefault="unqualified"
+    attributeFormDefault="unqualified">
+    
+	<xs:element name="appserver">
+		<xs:complexType>
+			<xs:choice maxOccurs="unbounded">
+                <xs:element ref="appserver:baseDirectory" />
+				<xs:element ref="appserver:initialContext" />
+				<xs:element ref="appserver:systemLogger" />
+				<xs:element ref="appserver:containers" />
+			</xs:choice>
+            <xs:attribute name="uuid" type="xs:string" />
+			<xs:anyAttribute />
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="baseDirectory">
+		<xs:complexType>
+			<xs:simpleContent>
+				<xs:extension base="xs:string">
+					<xs:anyAttribute />
+				</xs:extension>
+			</xs:simpleContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="initialContext">
+		<xs:complexType>
+			<xs:choice maxOccurs="unbounded">
+				<xs:element ref="appserver:description" />
+				<xs:element ref="appserver:classLoader" />
+				<xs:element ref="appserver:storage" />
+			</xs:choice>
+			<xs:attribute name="type" type="xs:string" />
+			<xs:anyAttribute />
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="description">
+		<xs:complexType>
+			<xs:simpleContent>
+				<xs:extension base="xs:string">
+					<xs:anyAttribute />
+				</xs:extension>
+			</xs:simpleContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="classLoader">
+		<xs:complexType>
+			<xs:attribute name="type" type="xs:string" />
+			<xs:anyAttribute />
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="storage">
+		<xs:complexType>
+			<xs:choice maxOccurs="unbounded">
+				<xs:element ref="appserver:servers" />
+			</xs:choice>
+			<xs:attribute name="type" type="xs:string" />
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="servers">
+		<xs:complexType>
+			<xs:choice maxOccurs="unbounded">
+				<xs:element ref="appserver:server" />
+			</xs:choice>
+			<xs:anyAttribute />
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="server">
+		<xs:complexType>
+			<xs:attribute name="address" type="xs:string" />
+			<xs:attribute name="port" type="xs:string" />
+			<xs:attribute name="weight" type="xs:string" />
+			<xs:anyAttribute />
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="systemLogger">
+		<xs:complexType>
+			<xs:choice maxOccurs="unbounded">
+				<xs:element ref="appserver:processors" />
+				<xs:element ref="appserver:handlers" />
+			</xs:choice>
+			<xs:attribute name="type" type="xs:string" />
+			<xs:attribute name="channelName" type="xs:string" />
+			<xs:anyAttribute />
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="containers">
+		<xs:complexType>
+			<xs:choice minOccurs="1" maxOccurs="unbounded">
+				<xs:element ref="appserver:container" />
+			</xs:choice>
+			<xs:anyAttribute />
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="container">
+		<xs:complexType>
+			<xs:choice maxOccurs="unbounded">
+				<xs:element ref="appserver:description" />
+				<xs:element ref="appserver:receiver" />
+				<xs:element ref="appserver:deployment" />
+				<xs:element ref="appserver:host" />
+			</xs:choice>
+            <xs:attribute name="name" type="xs:string" />
+			<xs:attribute name="threadType" type="xs:string" />
+			<xs:attribute name="type" type="xs:string" />
+			<xs:anyAttribute />
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="receiver">
+		<xs:complexType>
+			<xs:choice maxOccurs="unbounded">
+				<xs:element ref="appserver:worker" />
+				<xs:element ref="appserver:thread" />
+				<xs:element ref="appserver:params" />
+			</xs:choice>
+			<xs:attribute name="type" type="xs:string" />
+			<xs:anyAttribute />
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="worker">
+		<xs:complexType>
+			<xs:attribute name="type" type="xs:string" />
+			<xs:anyAttribute />
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="thread">
+		<xs:complexType>
+			<xs:attribute name="type" type="xs:string" />
+			<xs:anyAttribute />
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="deployment">
+		<xs:complexType>
+			<xs:attribute name="type" type="xs:string" />
+			<xs:anyAttribute />
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="host">
+		<xs:complexType>
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element ref="appserver:vhosts" />
+			</xs:choice>
+			<xs:attribute name="appBase" type="xs:string" />
+			<xs:attribute name="name" type="xs:string" />
+			<xs:attribute name="serverAdmin" type="xs:string" />
+			<xs:attribute name="serverSoftware" type="xs:string" />
+			<xs:anyAttribute />
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="vhosts">
+		<xs:complexType>
+			<xs:choice maxOccurs="unbounded">
+				<xs:element ref="appserver:vhost" />
+			</xs:choice>
+			<xs:anyAttribute />
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="vhost">
+		<xs:complexType>
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element ref="appserver:aliases" />
+			</xs:choice>
+			<xs:attribute name="appBase" type="xs:string" />
+			<xs:attribute name="name" type="xs:string" />
+			<xs:anyAttribute />
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="aliases">
+		<xs:complexType>
+			<xs:choice maxOccurs="unbounded">
+				<xs:element ref="appserver:alias" />
+			</xs:choice>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="alias">
+		<xs:complexType>
+			<xs:simpleContent>
+				<xs:extension base="xs:string"/>
+			</xs:simpleContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="formatter">
+		<xs:complexType>
+			<xs:choice maxOccurs="unbounded">
+				<xs:element ref="appserver:params" />
+			</xs:choice>
+			<xs:attribute name="type" type="xs:string" />
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="processors">
+		<xs:complexType>
+			<xs:choice minOccurs="1" maxOccurs="unbounded">
+				<xs:element ref="appserver:processor" />
+			</xs:choice>
+			<xs:anyAttribute />
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="processor">
+		<xs:complexType>
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element ref="appserver:params" />
+			</xs:choice>
+			<xs:attribute name="type" type="xs:string" />
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="handlers">
+		<xs:complexType>
+			<xs:choice minOccurs="1" maxOccurs="unbounded">
+				<xs:element ref="appserver:handler" />
+			</xs:choice>
+			<xs:anyAttribute />
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="handler">
+		<xs:complexType>
+			<xs:choice maxOccurs="unbounded">
+				<xs:element ref="appserver:formatter" />
+				<xs:element ref="appserver:params" />
+			</xs:choice>
+			<xs:attribute name="type" type="xs:string" />
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="params">
+		<xs:complexType>
+			<xs:choice maxOccurs="unbounded">
+				<xs:element ref="appserver:param" />
+			</xs:choice>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="param">
+		<xs:complexType>
+			<xs:simpleContent>
+				<xs:extension base="xs:string">
+					<xs:attribute name="name" type="xs:string" />
+					<xs:attribute name="type" type="xs:string" />
+				</xs:extension>
+			</xs:simpleContent>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

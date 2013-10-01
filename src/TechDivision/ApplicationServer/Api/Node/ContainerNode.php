@@ -79,14 +79,6 @@ class ContainerNode extends AbstractNode
     protected $deployment;
 
     /**
-     * Array with the information about the deployed applications.
-     *
-     * @var array<\TechDivision\ApplicationServer\Api\Node\AppNode>
-     * @AS\Mapping(nodeName="apps/app", nodeType="array", elementType="TechDivision\ApplicationServer\Api\Node\AppNode")
-     */
-    protected $apps = array();
-
-    /**
      * Returns the unique container name.
      *
      * @return string The unique container name
@@ -154,15 +146,5 @@ class ContainerNode extends AbstractNode
     public function getDeployment()
     {
         return $this->deployment;
-    }
-
-    /**
-     * Returns an array with the information about the deployed applications.
-     *
-     * @return array<\TechDivision\ApplicationServer\Api\Node\ReceiverNode> The array with the information about the deployed applications
-     */
-    public function getApps()
-    {
-        return $this->apps;
     }
 }

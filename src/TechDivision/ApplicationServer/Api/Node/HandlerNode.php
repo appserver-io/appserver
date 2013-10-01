@@ -24,6 +24,14 @@ class HandlerNode extends AbstractNode
 {
 
     /**
+     * The handler's class name.
+     *
+     * @var string
+     * @AS\Mapping(nodeType="string")
+     */
+    protected $type;
+
+    /**
      * The handler's formatter configuration.
      *
      * @var \TechDivision\ApplicationServer\Api\Node\FormatterNode
@@ -38,6 +46,16 @@ class HandlerNode extends AbstractNode
      * @AS\Mapping(nodeName="params/param", nodeType="array", elementType="TechDivision\ApplicationServer\Api\Node\ParamNode")
      */
     protected $params = array();
+
+    /**
+     * Returns information about the handler's class name.
+     *
+     * @return string The handler's class name
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
 
     /**
      * Returns the formatter configuration.

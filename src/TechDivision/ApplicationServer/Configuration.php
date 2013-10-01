@@ -25,6 +25,13 @@ class Configuration implements ContainerConfiguration
 {
 
     /**
+     * XSD schema filename used for validation.
+     *
+     * @var string
+     */
+    protected $schemaFile;
+
+    /**
      * the node name to use.
      *
      * @var string
@@ -103,7 +110,7 @@ class Configuration implements ContainerConfiguration
      *            The child configuration itself
      * @return \TechDivision\ApplicationServer\Configuration The configuration instance
      */
-    public function addChild($configuration)
+    public function addChild(Configuration $configuration)
     {
         $this->children[] = $configuration;
         return $this;
@@ -431,5 +438,75 @@ class Configuration implements ContainerConfiguration
     public function __toString()
     {
         return $this->getValue();
+    }
+
+    public function save($filename)
+    {
+        $this->toDomDocument()->save($filename);
+    }
+
+    public function toDomDocument()
+    {
+        $domDocument = new \DOMDocument('1.0', 'UTF-8');
+
+        $domDocument->appendChild($this->toDomElement($domDocument, 'http://www.appserver.io/appserver'));
+        return $domDocument;
+    }
+
+    public function setSchemaFile($schemaFile)
+    {
+        $this->schemaFile = $schemaFile;
+    }
+
+    public function getSchemaFile()
+    {
+        return $this->schemaFile;
+    }
+
+    public function toDomElement(\DOMDocument $domDocument, $namespaceURI = null)
+    {
+
+        if ($namespaceURI) {
+            $domElement = $domDocument->createElementNS($namespaceURI, $this->getNodeName(), $this->getValue());
+        } else {
+            $domElement = $domDocument->createElement($this->getNodeName(), $this->getValue());
+        }
+
+        foreach ($this->getAllData() as $key => $value) {
+            $domElement->setAttribute($key, $value);
+        }
+
+        foreach ($this->getChildren() as $child) {
+            $domElement->appendChild($child->toDomElement($domDocument));
+        }
+
+        return $domElement;
+    }
+
+    public function validate()
+    {
+
+        if ($this->getSchemaFile() == null) {
+            throw new \Exception("Missing XSD schema file for validation");
+        }
+
+        if (file_exists($this->getSchemaFile()) === false) {
+            throw new \Exception(sprintf("XSD schema file %s for validation not available", $this->getSchemaFile()));
+        }
+
+        // activate internal error handling, necessary to catch errors with libxml_get_errors()
+        libxml_use_internal_errors(true);
+
+        $domDocument = $this->toDomDocument();
+
+        if ($domDocument->schemaValidate($this->getSchemaFile()) === false) {
+            foreach (libxml_get_errors() as $error) {
+                $message = "Found a schema validation error on line %s with code %s and message %s when validating configuration file %s";
+                error_log(var_export($error, true));
+                throw new \Exception(sprintf($message, $error->line, $error->code, $error->message, $error->file));
+            }
+        }
+
+        return $domDocument;
     }
 }

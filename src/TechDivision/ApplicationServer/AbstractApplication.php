@@ -14,6 +14,8 @@ namespace TechDivision\ApplicationServer;
 use TechDivision\ApplicationServer\InitialContext;
 use TechDivision\ApplicationServer\Interfaces\ApplicationInterface;
 use JMS\Serializer\Context;
+use TechDivision\ApplicationServer\Api\Node\AppNode;
+use TechDivision\ApplicationServer\Api\Node\ContainerNode;
 
 /**
  *
@@ -28,25 +30,18 @@ abstract class AbstractApplication implements ApplicationInterface
 {
 
     /**
-     * Path to the container's host configuration.
+     * The app node the application is belonging to.
      *
-     * @var string
+     * @var \TechDivision\ApplicationServer\Api\Node\AppNode
      */
-    const XPATH_CONTAINER_HOST = '/container/host';
+    protected $appNode;
 
     /**
-     * Path to the container's base directory.
+     * The app node the application is belonging to.
      *
-     * @var string
+     * @var \TechDivision\ApplicationServer\Api\Node\ContainerNode
      */
-    const XPATH_CONTAINER_BASE_DIRECTORY = '/container/baseDirectory';
-
-    /**
-     * The unique application ID.
-     *
-     * @var string
-     */
-    protected $id;
+    protected $containerNode;
 
     /**
      * The unique application name.
@@ -85,9 +80,10 @@ abstract class AbstractApplication implements ApplicationInterface
      *            The application name
      * @return void
      */
-    public function __construct($initialContext, $name)
+    public function __construct($initialContext, $containerNode, $name)
     {
         $this->initialContext = $initialContext;
+        $this->containerNode = $containerNode;
         $this->name = $name;
     }
 
@@ -99,19 +95,19 @@ abstract class AbstractApplication implements ApplicationInterface
     public function connect()
     {
 
-        $vhostService = $this->newService('TechDivision\ApplicationServer\Api\VhostService');
-        $vhosts = $vhostService->findAllByAppBase($this->getAppBase())->vhosts;
+        // load the containers vhosts
+        $vhosts = $this->getContainerNode()->getHost()->getVhosts();
 
         // prepare the VHost configurations
         foreach ($vhosts as $vhost) {
 
             // check if vhost configuration belongs to application
-            if ($this->getName() == ltrim($vhost->app_base, '/')) {
+            if ($this->getName() == ltrim($vhost->getAppBase(), '/')) {
 
                 // prepare the aliases if available
                 $aliases = array();
-                foreach ($vhost->getChilds(Vhost::XPATH_CONTAINER_ALIAS) as $alias) {
-                    $aliases[] = $alias->getValue();
+                foreach ($vhost->getAliases() as $alias) {
+                    $aliases[] = $alias->getNodeValue();
                 }
 
                 // initialize VHost classname and parameters
@@ -132,26 +128,47 @@ abstract class AbstractApplication implements ApplicationInterface
     }
 
     /**
-     * Set's the unique application ID from the system configuration.
+     * Set's the app node the application is belonging to
      *
-     * @param string $id
-     *            The unique application ID from the system configuration
-     * @return \TechDivision\ServletContainer\Application The application instance
+     * @param \TechDivision\ApplicationServer\Api\Node\AppNode $appNode
+     *            The app node the application is belonging to
+     * @return void
      */
-    public function setId($id)
+    public function setAppNode($appNode)
     {
-        $this->id = $id;
-        return $this;
+        $this->appNode = $appNode;
     }
 
     /**
-     * Return's the unique application ID from the system configuration.
+     * Return'sthe app node the application is belonging to.
      *
-     * @return string The unique application ID from the system configuration
+     * @return string The app node the application is belonging to
      */
-    public function getId()
+    public function getAppNode()
     {
-        return $this->id;
+        return $this->appNode;
+    }
+
+    /**
+     * Set's the app node the application is belonging to
+     *
+     * @param \TechDivision\ApplicationServer\Api\Node\AppNode $appNode
+     *            The app node the application is belonging to
+     * @return void
+     */
+    public function setContainerNode($containerNode)
+    {
+        $this->containerNode = $containerNode;
+    }
+
+    /**
+     * Return'sthe app node the application is belonging to.
+     *
+     * @return string The app node the application is belonging to
+     */
+    public function getContainerNode()
+    {
+        return $this->containerNode;
     }
 
     /**
@@ -167,23 +184,13 @@ abstract class AbstractApplication implements ApplicationInterface
     }
 
     /**
-     * Returns the host configuration.
-     *
-     * @return \TechDivision\ApplicationServer\Configuration The host configuration
-     */
-    public function getConfiguration()
-    {
-        return $this->configuration;
-    }
-
-    /**
      * (non-PHPdoc)
      *
-     * @see \TechDivision\ApplicationServer\Api\ApplicationService::getAppBase()
+     * @see \TechDivision\ApplicationServer\Api\ContainerService::getBaseDirectory()
      */
-    public function getAppBase()
+    public function getBaseDirectory($directoryToAppend = null)
     {
-        return $this->newService('TechDivision\ApplicationServer\Api\ApplicationService')->getAppBase($this->getId());
+        return $this->newService('TechDivision\ApplicationServer\Api\ContainerService')->getBaseDirectory($directoryToAppend);
     }
 
     /**
@@ -193,7 +200,17 @@ abstract class AbstractApplication implements ApplicationInterface
      */
     public function getWebappPath()
     {
-        return $this->newService('TechDivision\ApplicationServer\Api\ApplicationService')->getWebappPath($this->getId());
+        return $this->getBaseDirectory($this->getAppBase() . DIRECTORY_SEPARATOR . $this->getName());
+    }
+
+    /**
+     * (non-PHPdoc)
+     *
+     * @see \TechDivision\ApplicationServer\Api\ContainerService::getAppBase()
+     */
+    public function getAppBase()
+    {
+        return $this->getContainerNode()->getHost()->getAppBase();
     }
 
     /**
@@ -203,7 +220,7 @@ abstract class AbstractApplication implements ApplicationInterface
      */
     public function getServerSoftware()
     {
-        return $this->newService('TechDivision\ApplicationServer\Api\ApplicationService')->getServerSoftware($this->getId());
+        return $this->getContainerNode()->getHost()->getServerSoftware();
     }
 
     /**
@@ -213,7 +230,7 @@ abstract class AbstractApplication implements ApplicationInterface
      */
     public function getServerAdmin()
     {
-        return $this->newService('TechDivision\ApplicationServer\Api\ApplicationService')->getServerAdmin($this->getId());
+        return $this->getContainerNode()->getHost()->getServerAdmin();
     }
 
     /**
@@ -285,13 +302,20 @@ abstract class AbstractApplication implements ApplicationInterface
     /**
      * (non-PHPdoc)
      *
-     * @see \TechDivision\ApplicationServer\Interfaces\ApplicationInterface::toStdClass()
+     * @see \TechDivision\ApplicationServer\Interfaces\ApplicationInterface::newAppNode()
      */
-    public function toStdClass()
+    public function newAppNode()
     {
-        $stdClass = new \stdClass();
-        $stdClass->id = $this->getId();
-        $stdClass->name = $this->getName();
-        return $stdClass;
+
+        $appNode = $this->newInstance('TechDivision\ApplicationServer\Api\Node\AppNode');
+        $appNode->setNodeName('application');
+        $appNode->setName($this->getName());
+        $appNode->setWebappPath($this->getWebappPath());
+        $appNode->setParentUuid($this->getContainerNode()->getParentUuid());
+        $appNode->setUuid($appNode->newUuid());
+
+        $this->setAppNode($appNode);
+
+        return $appNode;
     }
 }

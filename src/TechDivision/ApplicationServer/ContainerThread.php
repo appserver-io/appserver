@@ -28,25 +28,11 @@ class ContainerThread extends AbstractContextThread
 {
 
     /**
-     * Path to the container's deployment configuration.
+     * The container's to be deployed.
      *
-     * @var string
+     * @var \TechDivision\ApplicationServer\Api\Node\ContainerNode
      */
-    const XPATH_CONTAINER_DEPLOYMENT = '/container/deployment';
-
-    /**
-     * XPath expression for the container configurations.
-     *
-     * @var string
-     */
-    const XPATH_CONTAINERS = '/appserver/containers/container';
-
-    /**
-     * The container's unique ID.
-     *
-     * @var string
-     */
-    protected $id;
+    protected $containerNode;
 
     /**
      * The mutex to prevent parallel deployment of PHAR files.
@@ -60,14 +46,14 @@ class ContainerThread extends AbstractContextThread
      *
      * @param \Mutex $mutex
      *            The mutex that locks related threads when deployment starts
-     * @param string $id
-     *            The unique container ID
+     * @param string $containerNode
+     *            The container node
      * @return void
      */
-    public function init($mutex, $id)
+    public function init($mutex, $containerNode)
     {
         $this->mutex = $mutex;
-        $this->id = $id;
+        $this->containerNode = $containerNode;
     }
 
     /**
@@ -86,17 +72,16 @@ class ContainerThread extends AbstractContextThread
             ->deploy()
             ->getApplications();
 
-        // load the container configuration
-        $containerService = $this->newService('TechDivision\ApplicationServer\Api\ContainerService');
-        $container = $containerService->load($this->getId());
-
         // unlock the mutex to allow other containers own deployment
         \Mutex::unlock($this->mutex);
 
+        // load the container node
+        $containerNode = $this->getContainerNode();
+
         // create the container instance
-        $containerInstance = $this->newInstance($container->type, array(
+        $containerInstance = $this->newInstance($containerNode->getType(), array(
             $this->getInitialContext(),
-            $this->getId(),
+            $containerNode,
             $applications
         ));
 
@@ -125,24 +110,13 @@ class ContainerThread extends AbstractContextThread
     }
 
     /**
-     * The unique container ID.
+     * Return's the container node.
      *
-     * @return string The unique container ID
+     * @return \TechDivision\ApplicationServer\Api\Node\ContainerNode The container node
      */
-    public function getId()
+    public function getContainerNode()
     {
-        return $this->id;
-    }
-
-    /**
-     * Returns the deployment class name from the system configuration.
-     *
-     * @return string The deployment class name
-     */
-    public function getDeploymentType()
-    {
-        $deploymentService = $this->newService('TechDivision\ApplicationServer\Api\DeploymentService');
-        return $deploymentService->loadByContainerId($this->getId())->deployment->type;
+        return $this->containerNode;
     }
 
     /**
@@ -153,9 +127,11 @@ class ContainerThread extends AbstractContextThread
      */
     public function getDeployment()
     {
-        return $this->newInstance($this->getDeploymentType(), array(
+        $deploymentNode = $this->getContainerNode()->getDeployment();
+        return $this->newInstance($deploymentNode->getType(), array(
             $this->getInitialContext(),
-            $this->getId()
+            $this->getContainerNode(),
+            $deploymentNode
         ));
     }
 }

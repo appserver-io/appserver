@@ -38,7 +38,7 @@ class NodeValue implements ValueInterface
      * @param string $value The value to initialize the node with
      * @return void
      */
-    public function __construct(Configuration $configuration)
+    public function initFromConfiguration(Configuration $configuration)
     {
         $this->value = $configuration->getValue();
     }

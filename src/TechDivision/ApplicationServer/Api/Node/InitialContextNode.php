@@ -24,6 +24,14 @@ class InitialContextNode extends AbstractNode
 {
 
     /**
+     * The initial context's class name.
+     *
+     * @var string
+     * @AS\Mapping(nodeType="string")
+     */
+    protected $type;
+
+    /**
      * Description for the initial context configuration.
      *
      * @var  \TechDivision\ApplicationServer\Api\Node\DescriptionNode
@@ -46,6 +54,16 @@ class InitialContextNode extends AbstractNode
      * @AS\Mapping(nodeName="storage", nodeType="TechDivision\ApplicationServer\Api\Node\StorageNode")
      */
     protected $storage;
+
+    /**
+     * Returns information about the initial context's class name.
+     *
+     * @return string The initial context's class name
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
 
     /**
      * Returns the initial context description.

@@ -27,13 +27,6 @@ abstract class AbstractReceiver implements ReceiverInterface
 {
 
     /**
-     * Path to the receiver's initialization parameters.
-     *
-     * @var string
-     */
-    const XPATH_CONFIGURATION_PARAMETERS = '/receiver/params/param';
-
-    /**
      * The container instance.
      *
      * @var \TechDivision\ApplicationServer\Interfaces\ContainerInterface
@@ -143,8 +136,7 @@ abstract class AbstractReceiver implements ReceiverInterface
      */
     public function getWorkerNumber()
     {
-        $receiverService = $this->newService('TechDivision\ApplicationServer\Api\ContainerService');
-        return $receiverService->getWorkerNumber($this->getContainer()->getId());
+        return $this->getContainer()->getContainerNode()->getReceiver()->getParam('workerNumber');
     }
 
     /**
@@ -153,8 +145,7 @@ abstract class AbstractReceiver implements ReceiverInterface
      */
     public function getAddress()
     {
-        $receiverService = $this->newService('TechDivision\ApplicationServer\Api\ContainerService');
-        return $receiverService->getAddress($this->getContainer()->getId());
+        return $this->getContainer()->getContainerNode()->getReceiver()->getParam('address');
     }
 
     /**
@@ -163,8 +154,7 @@ abstract class AbstractReceiver implements ReceiverInterface
      */
     public function getPort()
     {
-        $receiverService = $this->newService('TechDivision\ApplicationServer\Api\ContainerService');
-        return $receiverService->getPort($this->getContainer()->getId());
+        return $this->getContainer()->getContainerNode()->getReceiver()->getParam('port');
     }
 
     /**
@@ -174,8 +164,7 @@ abstract class AbstractReceiver implements ReceiverInterface
      */
     public function getWorkerType()
     {
-        $receiverService = $this->newService('TechDivision\ApplicationServer\Api\ContainerService');
-        return $receiverService->getWorkerType($this->getContainer()->getId());
+        return $this->getContainer()->getContainerNode()->getReceiver()->getWorker()->getType();
     }
 
     /**
@@ -185,8 +174,7 @@ abstract class AbstractReceiver implements ReceiverInterface
      */
     public function getThreadType()
     {
-        $receiverService = $this->newService('TechDivision\ApplicationServer\Api\ContainerService');
-        return $receiverService->getThreadType($this->getContainer()->getId());
+        return $this->getContainer()->getContainerNode()->getReceiver()->getThread()->getType();
     }
 
     /**

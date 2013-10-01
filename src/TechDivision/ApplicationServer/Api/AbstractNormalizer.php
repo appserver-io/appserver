@@ -36,12 +36,16 @@ abstract class AbstractNormalizer implements NormalizerInterface
     /**
      * Initializes the normalizer with the initial context.
      *
-     * @param InitialContext $initalContext The initial context instance
+     * @param InitialContext $initalContext
+     *            The initial context instance
+     * @param ServiceInterface $service
+     *            The service to normalize for
      * @return void
      */
-    public function __construct(InitialContext $initalContext)
+    public function __construct(InitialContext $initalContext, ServiceInterface $service)
     {
         $this->initialContext = $initalContext;
+        $this->service = $service;
     }
 
     /**
@@ -52,6 +56,16 @@ abstract class AbstractNormalizer implements NormalizerInterface
     public function getInitialContext()
     {
         return $this->initialContext;
+    }
+
+    /**
+     * (non-PHPdoc)
+     *
+     * @see \TechDivision\ApplicationServer\Api\NormalizerInterface::getService()
+     */
+    public function getService()
+    {
+        return $this->service;
     }
 
     /**

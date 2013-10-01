@@ -12,6 +12,8 @@
 
 namespace TechDivision\ApplicationServer\Interfaces;
 
+use TechDivision\ApplicationServer\Api\Node\ContainerNode;
+
 /**
  * @package     TechDivision\ApplicationServer
  * @copyright  	Copyright (c) 2013 <info@techdivision.com> - TechDivision GmbH
@@ -63,10 +65,9 @@ interface ApplicationInterface
     public function newInstance($className, array $args = array());
 
     /**
-     * Returns the application as a \stdClass representation.
+     * Returns the application as a node representation.
      *
-     * @return \stdClass The \stdClass representation of the application
+     * @return \TechDivision\ApplicationServer\Api\Node\AppNode The node representation of the application
      */
-    public function toStdClass();
-
+    public function newAppNode();
 }
