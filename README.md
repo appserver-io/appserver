@@ -33,18 +33,18 @@ The lastest version is only tested with Mac OS 10.8+ and Debian Wheezy. PHP Appl
 
 # Installation
 
-Actually we support Mac OS X Mountain Lion and Debian Wheezy. We also plan to release a Windows installer and a RPM package as soon as possible but as we're only Mac users we'll be happy if someone is out there to support us with that stuff. Finally it's possible to build the runtime by yourself. This can be done by cloning our runtime environment project (https://github.com/techdivision/TechDivision_Runtime). We've added two ANT targets `create-pkg` and `create-deb` that should do the stuff for you.
+Actually we support Mac OS X Mountain Lion and Debian Wheezy. We also plan to release a Windows installer and a RPM package as soon as possible but as we're only Mac users we'll be happy if someone is out there to support us with that stuff. Finally it's possible to build the runtime by yourself. This can be done by cloning our [Runtime Environment] (https://github.com/techdivision/TechDivision_Runtime). We've added two ANT targets `create-pkg` and `create-deb` that should do the stuff for you.
 
 ## Installation on Mountain Lion
 
 To install on your Mac OS X Mountain Lion please download the actual .pkg Package from http://www.appserver.io. 
 After downlaod the .pkg you can start installation process with a double click on the package. To install the 
 software you need to have administration privileges (sudo). After the installation process, that is really simple, 
-you'll find the Application Server software in the folder /opt/appserver. 
+you'll find the Application Server software in the folder `/opt/appserver`. 
 
 When the installation has been finished the Application Server will be started automatically. If you need to restart 
 the Application Server, after you've deployed a new app for example, you can use the init scripts `sbin/appserverctl` 
-and `sbin/memcachectl` therefore. Both accept start | stop | restart as parameter.
+and `sbin/memcachectl` therefore. Both accept `start`, `stop` and `restart` as parameter.
 
 Start your favorite browser and open the URL `http://127.0.0.1:8586/demo` to load the demo application.
 
@@ -61,8 +61,77 @@ root@debian:~# aptitude install appserver
 ```
 
 This will install the Application Server in directory `/opt/appserver`. Also it'll be started automatically, but you 
-can start, stop or restart it with the init-script `/etc/init.d/appserver` stop | start | restart. Additionally it is 
-necessary that the memcached daemon has been started BEFORE the Application Server will be started itself.
+can start, stop or restart it with the init-script `/etc/init.d/appserver` and the parameter `start`, `stop` and `restart`. Additionally it is necessary that the memcached daemon has been started before the Application Server will be started itself.
 
 After installation you can open a really simply example app with your favorite browser open the URL 
 `http://127.0.0.1:8586/demo`.
+
+# Roadmap
+
+As we're in heavy development it may be, that we've to move some tasks from the following roadmap to a earlier/later version, please be aware of that. If you've ideas or features that definitely has to be in one of the next releases, please contact us. We're always open for new ideas or feedback.
+
+And yes, we've plans for a Community and a Enterprise edition. The Community Edition will provide all functionality needed to develop, run maintain all kind of web applications. The Enterprise Edition will focus on large software solutions that run on many servers and needs real cluster functionality.
+
+## Community Edition
+
+### Version 0.6 - Application Server
+
+- [ ] Logging
+- [ ] AOP
+- [ ] DI
+- [ ] Refactoring routing
+- [ ] Merging XML configuration files
+- [ ] Separate configuration files for server, container and application
+- [ ] Set environment variables in XML configuration files
+- [ ] PHAR based deployment
+- [ ] 100 % Coverage for PHPUnit test suite for TechDivision_ApplicationServer project
+- [ ] Automated Build- and Deployment using Travis-CI
+- [ ] Running Magento CE 1.7.x demo application
+- [ ] Running TYPO3 6.x demo application
+- [ ] Running TYPO3 Flow 2.0.x demo application
+- [ ] Running TYPO3 Neos 1.x demo application
+- [ ] Mac OS X Universal installer
+- [ ] RPM packages
+- [ ] Windows installer
+- [ ] Generic management API
+
+### Version 0.7 - [Servlet Container](https://github.com/techdivision/TechDivision_ServletContainer)
+
+- [ ] Integrate annotations for session beans
+- [ ] Administration interface with drag-and-drop PHAR installer
+- [ ] SSL Encryption for TechDivision_ServletContainer project
+- [ ] HTTP basic authentication for TechDivision_ServletContainer project
+- [ ] mod_rewrite functionality for TechDivision_ServletContainer project
+- [ ] Add dynamic load of application specific PECL extensions
+- [ ] 100 % Coverage for PHPUnit test suite for TechDivision_ServletContainer project
+
+### Version 0.8 - [Persistence Container](https://github.com/techdivision/TechDivision_PersistenceContainer)
+
+- [ ] Stateful + Singleton session bean functionality
+- [ ] Container managed entity beans for Doctrine
+- [ ] Webservice for session beans
+- [ ] 100 % Coverage for PHPUnit test suite for TechDivision_PersistenceContainer project
+
+### Version 0.9 - [Message Queue](https://github.com/techdivision/TechDivision_MessageQueue)
+
+- [ ] Message bean functionality
+- [ ] 100 % Coverage for PHPUnit test suite for TechDivision_MessageQueue project
+
+### Version 1.0 - Timer Service
+
+- [ ] Timer Service
+- [ ] 100 % Coverage for PHPUnit test suite for TechDivision_TimerService project
+
+### Version 1.1 - Additional Containers
+
+- [ ] Distributed and redundant cluster caching system with automated failover
+- [ ] Fast-CGI container
+- [ ] WebSocket integration
+
+## Enterprise Edition
+
+### Version 1.2 - Cluster Functionality
+
+- [ ] Cluster functionality
+- [ ] Container based transactions
+- [ ] Farming deployment
