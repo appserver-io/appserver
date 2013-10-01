@@ -10,7 +10,7 @@ The objective of the project is to develop a multi-threaded application server f
 * Integrate message queue
 * Web services
 * Cluster functionality
-
+* 
 # Technical Features
 * Joe Watkins (https://github.com/krakjoe/pthreads) phtreads Library is used 
 * DI & AO  usage within the respective container
