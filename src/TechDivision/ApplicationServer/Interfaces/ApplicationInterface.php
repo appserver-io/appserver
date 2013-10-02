@@ -41,6 +41,15 @@ interface ApplicationInterface
     public function getName();
 
     /**
+     * Return's the applications servers base directory, which is
+     * /opt/appserver by default.
+     *
+     * @param string $directoryToAppend Directory to append before returning the base directory
+     * @return string The application server's base directory
+     */
+    public function getBaseDirectory($directoryToAppend = null);
+
+    /**
      * Returns the path to the appserver webapp base directory.
      *
      * @return string The path to the appserver webapp base directory
@@ -53,6 +62,14 @@ interface ApplicationInterface
      * @return string The path to the web application
      */
     public function getWebappPath();
+
+    /**
+     * Returns the application servers base directory (the base directory appended
+     * with the container's webroot), /opt/appserver/webapps by default.
+     *
+     * @return string The container's document root directory
+     */
+    public function getDocumentRoot();
 
     /**
      * Creates a new instance of the passed class name and passes the

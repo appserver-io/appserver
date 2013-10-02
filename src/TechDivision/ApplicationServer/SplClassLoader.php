@@ -38,20 +38,20 @@ class SplClassLoader extends \Stackable
     protected $namespaceSeparator;
 
     /**
-     * Creates a new <tt>SplClassLoader</tt> that loads classes of the specified 
-     * namespace and searches for the class files in the include paths passed as 
+     * Creates a new <tt>SplClassLoader</tt> that loads classes of the specified
+     * namespace and searches for the class files in the include paths passed as
      * array.
-     * 
+     *
      * @param string $namespace The namespace to use
      * @param array $includePath The include path to use
      */
     public function __construct($namespace = null, array $includePath = null, $namespaceSeparator = '\\', $fileExtension = '.php')
-    {   
+    {
 
         // ATTENTION: Don't delete this, it's necessary because this IS a \Stackable
         $this->fileExtension = $fileExtension;
         $this->namespaceSeparator = $namespaceSeparator;
-    
+
         // set namespace and initialize include path
         $this->namespace = $namespace;
         $this->includePath = explode(PATH_SEPARATOR, get_include_path());
@@ -59,7 +59,7 @@ class SplClassLoader extends \Stackable
             $this->includePath = array_merge($this->includePath, $includePath);
         }
     }
-    
+
     public function run() {
     }
 
@@ -118,14 +118,14 @@ class SplClassLoader extends \Stackable
      */
     public function loadClass($className)
     {
-        
+
         // concatenate namespace and separator
         $namespaceAndSeparator = $this->namespace . $this->namespaceSeparator;
-        
+
         // if a namespace is available OR the classname contains a namespace
         if ($namespaceAndSeparator === substr($className, 0, strlen($namespaceAndSeparator)) ||
             $this->namespace === null) {
-            
+
             // initialize filename, classname and namespace
             $fileName = '';
             $namespace = '';
@@ -134,10 +134,10 @@ class SplClassLoader extends \Stackable
                 $className = substr($className, $lastNsPos + 1);
                 $fileName = str_replace($this->namespaceSeparator, DIRECTORY_SEPARATOR, $namespace) . DIRECTORY_SEPARATOR;
             }
-            
+
             // replace _ with / for PHP 5.2 compatibility
             $fileName .= str_replace('_', DIRECTORY_SEPARATOR, $className) . $this->fileExtension;
-            
+
             // try to load the requested class
 			foreach ($this->getIncludePath() as $includePath) {
 			    $toRequire = $includePath . DIRECTORY_SEPARATOR . $fileName;
