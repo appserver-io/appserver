@@ -40,6 +40,16 @@ class ProcessorNode extends AbstractNode
     protected $params = array();
 
     /**
+     * Returns the class name.
+     *
+     * @return string The class name
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
      * Array with the handler params to use.
      *
      * @return array<\TechDivision\ApplicationServer\Api\Node\ParamNode>
@@ -47,5 +57,20 @@ class ProcessorNode extends AbstractNode
     public function getParams()
     {
         return $this->params;
+    }
+
+    /**
+     * Returns the params casted to the defined type
+     * as associative array.
+     *
+     * @return array The array with the casted params
+     */
+    public function getParamsAsArray()
+    {
+        $params = array();
+        foreach ($this->getParams() as $param) {
+            $params[$param->getName()] = $param->castToType();
+        }
+        return $params;
     }
 }

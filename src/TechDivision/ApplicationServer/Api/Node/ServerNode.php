@@ -46,4 +46,34 @@ class ServerNode extends AbstractNode
      * @AS\Mapping(nodeType="integer")
      */
     protected $weight;
+
+    /**
+     * Returns the IP address the server listens to.
+     *
+     * @return string the IP address the server listens to
+     */
+    public function getAddress()
+    {
+        return $this->address;
+    }
+
+    /**
+     * Returns the port the server listens to.
+     *
+     * @return string the port the server listens to
+     */
+    public function getPort()
+    {
+        return $this->port;
+    }
+
+    /**
+     * Returns weight the server has in the storage cluster.
+     *
+     * @return integer The weight the server has in the storage cluster
+     */
+    public function getWeight()
+    {
+        return $this->weight;
+    }
 }

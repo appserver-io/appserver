@@ -58,4 +58,16 @@ class ParamNode extends AbstractValueNode
     {
         return $this->type;
     }
+
+    /**
+     * Cast's the param's value to the defined type and returns it.
+     *
+     * @return mixed The casted value
+     */
+    public function castToType()
+    {
+        $value = $this->getNodeValue()->__toString();
+        settype($value, $this->getType());
+        return $value;
+    }
 }

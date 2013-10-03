@@ -14,7 +14,10 @@ namespace TechDivision\ApplicationServer;
 use Herrera\Annotations\Tokens;
 use Herrera\Annotations\Tokenizer;
 use Herrera\Annotations\Convert\ToArray;
+use TechDivision\ApplicationServer\InitialContext\StorageInterface;
 use TechDivision\ApplicationServer\InitialContext\ContextKeys;
+use TechDivision\ApplicationServer\Api\Node\NodeInterface;
+use TechDivision\ApplicationServer\SplClassLoader;
 
 /**
  *
@@ -26,27 +29,6 @@ use TechDivision\ApplicationServer\InitialContext\ContextKeys;
  */
 class InitialContext
 {
-
-    /**
-     * XPath expression for the initial context's class loader configuration.
-     *
-     * @var string
-     */
-    const XPATH_CLASS_LOADER = '/initialContext/classLoader';
-
-    /**
-     * XPath expression for the initial context's storage configuration.
-     *
-     * @var string
-     */
-    const XPATH_STORAGE = '/initialContext/storage';
-
-    /**
-     * The container configuration.
-     *
-     * @var \TechDivision\ApplicationServer\Configuration
-     */
-    protected $configuration;
 
     /**
      * The storage instance
@@ -72,23 +54,33 @@ class InitialContext
      *
      * @return void
      */
-    public function __construct($configuration)
+    public function __construct(NodeInterface $systemConfiguration)
     {
-
-        // initialize the configuration
-        $this->configuration = $configuration;
-
         // initialize the class loader instance
-        $reflectionClass = $this->newReflectionClass($configuration->getChild(self::XPATH_CLASS_LOADER)
-            ->getType());
-        $this->classLoader = $reflectionClass->newInstance();
+        $initialContextNode = $systemConfiguration->getInitialContext();
+        $classLoaderNode = $initialContextNode->getClassLoader();
+        $reflectionClass = $this->newReflectionClass($classLoaderNode->getType());
+        $this->setClassLoader($reflectionClass->newInstance());
 
-        // initialze the storage
-        $reflectionClass = $this->newReflectionClass($configuration->getChild(self::XPATH_STORAGE)
-            ->getType());
-        $this->storage = $reflectionClass->newInstanceArgs(array(
-            $configuration->getChild(self::XPATH_STORAGE)
-        ));
+        // initialize the storage
+        $storageNode = $initialContextNode->getStorage();
+        $reflectionClass = $this->newReflectionClass($storageNode->getType());
+        $this->setStorage($reflectionClass->newInstanceArgs(array(
+            $storageNode
+        )));
+
+        // attach the system configuration to the initial context
+        $this->setSystemConfiguration($systemConfiguration);
+    }
+
+    /**
+     * Returns the storage instance.
+     *
+     * @return \TechDivision\ApplicationServer\InitialContext\StorageInterface The storage instance
+     */
+    public function setStorage(StorageInterface $storage)
+    {
+        return $this->storage = $storage;
     }
 
     /**
@@ -102,19 +94,21 @@ class InitialContext
     }
 
     /**
-     * Returns the container configuration.
+     * Set's the initial context's class loader.
      *
-     * @return \TechDivision\ApplicationServer\Configuration The container configuration
+     * @param \TechDivision\ApplicationServer\SplClassLoader $classLoader
+     *            The class loader used
+     * @return void
      */
-    public function getConfiguration()
+    public function setClassLoader(SplClassLoader $classLoader)
     {
-        return $this->configuration;
+        $this->classLoader = $classLoader;
     }
 
     /**
      * Return's the initial context's class loader.
      *
-     * @return callable The class loader used
+     * @return \TechDivision\ApplicationServer\ClassLoader The class loader used
      */
     public function getClassLoader()
     {
@@ -217,12 +211,15 @@ class InitialContext
     /**
      * Returns a new instance of the passed API service.
      *
-     * @param string $className The API service class name to return the instance for
+     * @param string $className
+     *            The API service class name to return the instance for
      * @return \TechDivision\ApplicationsServer\Api\ServiceInterface The service instance
      */
     public function newService($className)
     {
-        return $this->newInstance($className, array($this));
+        return $this->newInstance($className, array(
+            $this
+        ));
     }
 
     /**

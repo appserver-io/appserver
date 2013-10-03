@@ -58,4 +58,19 @@ class FormatterNode extends AbstractNode
     {
         return $this->params;
     }
+
+    /**
+     * Returns the params casted to the defined type
+     * as associative array.
+     *
+     * @return array The array with the casted params
+     */
+    public function getParamsAsArray()
+    {
+        $params = array();
+        foreach ($this->getParams() as $param) {
+            $params[$param->getName()] = $param->castToType();
+        }
+        return $params;
+    }
 }
