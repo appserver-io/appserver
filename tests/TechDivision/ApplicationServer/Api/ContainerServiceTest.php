@@ -40,30 +40,5 @@ class ContainerServiceTest extends AbstractTest
     public function setUp()
     {
         $this->service = new ContainerService($this->getMockInitialContext());
-        $this->service->setNormalizer(new Normalizer());
-    }
-
-    /**
-     * Tests if all containers have been initialized successfully.
-     *
-     * @return void
-     */
-    public function testFindAll()
-    {
-        $result = $this->service->findAll();
-        $toCompare = json_decode(file_get_contents('TechDivision/ApplicationServer/Api/_files/containers.json'));
-        $this->assertEquals($toCompare, $result);
-    }
-
-    /**
-     * Tests if a dedicated container has been initialized successfully.
-     *
-     * @return void
-     */
-    public function testLoad()
-    {
-        $result = $this->service->load(1);
-        $toCompare = json_decode(file_get_contents('TechDivision/ApplicationServer/Api/_files/container_1.json'));
-        $this->assertEquals($toCompare, $result);
     }
 }

@@ -64,6 +64,14 @@ class AppserverNode extends AbstractNode
     protected $apps = array();
 
     /**
+     * Array with nodes for the registered datasources.
+     *
+     * @var array<\TechDivision\ApplicationServer\Api\Node\DatasourceNode>
+     * @AS\Mapping(nodeName="datasources/datasource", nodeType="array", elementType="TechDivision\ApplicationServer\Api\Node\DatasourceNode")
+     */
+    protected $datasources = array();
+
+    /**
      * Returns the node with the base directory information.
      *
      * @return \TechDivision\ApplicationServer\Api\Node\BaseDirectoryNode The base directory information
@@ -113,8 +121,35 @@ class AppserverNode extends AbstractNode
         return $this->apps;
     }
 
+    /**
+     * Attaches the passed app node.
+     *
+     * @param AppNode $app The app node to attach
+     * @return void
+     */
     public function attachApp(AppNode $app)
     {
         $this->apps[$app->getPrimaryKey()] = $app;
+    }
+
+    /**
+     * Returns an array with the information about the deployed datasources.
+     *
+     * @return array<\TechDivision\ApplicationServer\Api\Node\DatasourceNode> The array with the information about the deployed datasources
+     */
+    public function getDatasources()
+    {
+        return $this->datasources;
+    }
+
+    /**
+     * Attaches the passed datasource node.
+     *
+     * @param DatasourceNode $datasource The datasource node to attach
+     * @return void
+     */
+    public function attachDatasource(DatasourceNode $datasource)
+    {
+        $this->datasources[$datasource->getPrimaryKey()] = $datasource;
     }
 }

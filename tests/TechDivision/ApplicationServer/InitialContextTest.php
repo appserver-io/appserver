@@ -50,16 +50,6 @@ class InitialContextTest extends AbstractTest
     }
 
     /**
-     * Test's the if the configuration has been passed successfully.
-     *
-     * @return void
-     */
-    public function testGetConfiguration()
-    {
-        $this->assertInstanceOf('TechDivision\ApplicationServer\Configuration', $this->initialContext->getConfiguration());
-    }
-
-    /**
      * Test's the if the class loader has been initialized successfully.
      *
      * @return void

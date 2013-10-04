@@ -440,6 +440,42 @@ class Configuration implements ContainerConfiguration
         return $this->getValue();
     }
 
+    /**
+     * Merge the
+     * @param Configuration $configuration
+     */
+    public function merge(Configuration $configuration)
+    {
+
+        if ($this->getNodeName() == $configuration->getNodeName()) {
+
+            $this->setValue($configuration->getValue());
+            $this->setAllData($configuration->getAllData());
+
+            if ($configuration->hasChildren()) {
+
+                foreach ($configuration->getChildren() as $child) {
+
+                    foreach ($this->getChildren() as $thisChild) {
+                        $thisChild->merge($child);
+                    }
+                }
+
+            } else {
+
+                foreach ($configuration->getChildren() as $child) {
+                    $this->addChild($configuration);
+                }
+            }
+
+        } else {
+
+            foreach ($configuration->getChildren() as $child) {
+                $child->merge($configuration);
+            }
+        }
+    }
+
     public function save($filename)
     {
         $this->toDomDocument()->save($filename);

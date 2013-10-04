@@ -15,6 +15,8 @@ use TechDivision\ApplicationServer\Mock\MockDeployment;
 use TechDivision\ApplicationServer\ContainerThread;
 use TechDivision\ApplicationServer\Configuration;
 use TechDivision\ApplicationServer\InitialContext;
+use TechDivision\ApplicationServer\Api\Node\ContainerNode;
+use TechDivision\ApplicationServer\Api\Node\DeploymentNode;
 
 /**
  *
@@ -43,7 +45,13 @@ class AbstractDeploymentTest extends AbstractTest
     {
         $initialContext = $this->getMockInitialContext();
         $containerThread = new ContainerThread($initialContext, $this->getContainerConfiguration(), \Mutex::create(false));
-        $this->deployment = new MockDeployment($initialContext, $containerThread);
+        $configuration = new Configuration();
+        $configuration->initFromFile('_files/appserver_container.xml');
+        $containerNode = new ContainerNode();
+        $containerNode->initFromConfiguration($configuration);
+        $deploymentNode = new DeploymentNode();
+        $deploymentNode->initFromConfiguration($containerNode->getDeployment());
+        $this->deployment = new MockDeployment($initialContext, $containerNode, $deploymentNode);
     }
 
     /**

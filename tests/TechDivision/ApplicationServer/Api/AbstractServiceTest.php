@@ -40,7 +40,6 @@ class AbstractServiceTest extends AbstractTest
     public function setUp()
     {
         $this->service = new MockService($this->getMockInitialContext());
-        $this->service->setNormalizer(new Normalizer());
     }
 
     /**
@@ -61,36 +60,6 @@ class AbstractServiceTest extends AbstractTest
     public function testGetSystemConfiguration()
     {
         $this->assertInstanceOf('TechDivision\ApplicationServer\Configuration', $this->service->getSystemConfiguration());
-    }
-
-    /**
-     * Test the normalization of a Configuration node.
-     *
-     * @return void
-     */
-    public function testNormalize()
-    {
-        // initialize the configuration
-        $configuration = new Configuration();
-        $configuration->setNodeName('aNodeName');
-        $configuration->setValue($value = 'Some string');
-        $configuration->setData($key01 = 'key_01', $value01 = 'value_01');
-        $configuration->setData($key02 = 'key_02', $value02 = 'value_02');
-
-        // add a child node
-        $child = new Configuration();
-        $child->setNodeName('childNode');
-        $configuration->addChild($child);
-
-        // normalize the configuration node
-        $node = $this->service->normalize($configuration);
-
-        // and compare it
-        $nodeToCompare = new \stdClass();
-        $nodeToCompare->value = $value;
-        $nodeToCompare->$key01 = $value01;
-        $nodeToCompare->$key02 = $value02;
-        $this->assertEquals($nodeToCompare, $node);
     }
 
     /**

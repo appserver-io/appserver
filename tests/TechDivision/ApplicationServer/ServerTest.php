@@ -69,31 +69,7 @@ class ServerTest extends AbstractTest
      */
     public function testGetSystemConfiguration()
     {
-        $this->assertInstanceOf('TechDivision\ApplicationServer\Configuration', $this->server->getSystemConfiguration());
-    }
-
-    /**
-     * Test if the system logger configuration has been initialized.
-     *
-     * @return void
-     */
-    public function testGetSystemLoggerConfiguration()
-    {
-        $systemLoggerConfiguration = $this->server->getSystemLoggerConfiguration();
-        $this->assertInstanceOf('TechDivision\ApplicationServer\Configuration', $systemLoggerConfiguration);
-        $this->assertEquals('Monolog\Logger', $systemLoggerConfiguration->getType());
-    }
-
-    /**
-     * Test if the initial context configuration has been initialized.
-     *
-     * @return void
-     */
-    public function testGetInitialContextConfiguration()
-    {
-        $initialContextConfiguration = $this->server->getInitialContextConfiguration();
-        $this->assertInstanceOf('TechDivision\ApplicationServer\Configuration', $initialContextConfiguration);
-        $this->assertEquals('TechDivision\ApplicationServer\InitialContext', $initialContextConfiguration->getType());
+        $this->assertInstanceOf('TechDivision\ApplicationServer\Api\Node\AppserverNode', $this->server->getSystemConfiguration());
     }
 
     /**

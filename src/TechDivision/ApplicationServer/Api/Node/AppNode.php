@@ -12,7 +12,7 @@
 namespace TechDivision\ApplicationServer\Api\Node;
 
 /**
- * DTO to transfer a app.
+ * DTO to transfer an app.
  *
  * @package TechDivision\ApplicationServer
  * @copyright Copyright (c) 2013 <info@techdivision.com> - TechDivision GmbH
@@ -22,13 +22,6 @@ namespace TechDivision\ApplicationServer\Api\Node;
  */
 class AppNode extends AbstractNode
 {
-
-    /**
-     * The containers the app belongs to.
-     *
-     * @var array
-     */
-    protected $containers = array();
 
     /**
      * The unique application name.
@@ -97,20 +90,5 @@ class AppNode extends AbstractNode
     public function getWebappPath()
     {
         return $this->webappPath;
-    }
-
-    public function inContainer($containerUuid)
-    {
-        return array_key_exists($containerUuid, $this->getContainers());
-    }
-
-    public function addContainer(ContainerNode $container)
-    {
-        $this->containers[$container->getUuid()] = $container;
-    }
-
-    public function getContainers()
-    {
-        return $this->containers;
     }
 }

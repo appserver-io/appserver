@@ -16,6 +16,7 @@ use TechDivision\ApplicationServer\Mock\MockContainer;
 use TechDivision\ApplicationServer\Mock\MockReceiver;
 use TechDivision\ApplicationServer\Configuration;
 use TechDivision\ApplicationServer\InitialContext;
+use TechDivision\ApplicationServer\Api\Node\ContainerNode;
 
 /**
  *
@@ -57,7 +58,11 @@ class AbstractReceiverTest extends AbstractTest
     public function setUp()
     {
         $this->initialContext = $this->getMockInitialContext();
-        $this->container = new MockContainer($this->initialContext, $id = 1, $this->getMockApplications());
+        $configuration = new Configuration();
+        $configuration->initFromFile('_files/appserver_container.xml');
+        $containerNode = new ContainerNode();
+        $containerNode->initFromConfiguration($configuration);
+        $this->container = new MockContainer($this->initialContext, $containerNode, $this->getMockApplications());
         $this->receiver = new MockReceiver($this->initialContext, $this->container);
     }
 

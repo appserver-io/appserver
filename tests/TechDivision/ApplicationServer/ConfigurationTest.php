@@ -319,4 +319,14 @@ class ConfigurationTest extends AbstractTest
         $this->assertEquals($testAttrValue, $this->configuration->getTestNode()
             ->getAttr());
     }
+
+    public function testMerge()
+    {
+
+        $this->configuration->initFromFile('_files/appserver.xml');
+        $configuration->initFromFile(__DIR__ . '/_files/META-INF/appserver-ds.xml');
+        $this->configuration->merge($configuration);
+
+        error_log(var_export($this->configuration, true));
+    }
 }

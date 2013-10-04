@@ -15,6 +15,9 @@ use TechDivision\ApplicationServer\Mock\MockApplication;
 use TechDivision\ApplicationServer\Mock\MockContainer;
 use TechDivision\ApplicationServer\Configuration;
 use TechDivision\ApplicationServer\InitialContext;
+use TechDivision\ApplicationServer\Api\Node\AppserverNode;
+use TechDivision\ApplicationServer\Api\Node\ContainerNode;
+use TechDivision\ApplicationServer\Api\Node\InitialContextNode;
 
 /**
  *
@@ -50,9 +53,15 @@ class AbstractTest extends \PHPUnit_Framework_TestCase
     public function getMockApplication($applicationName)
     {
         $configuration = new Configuration();
-        $configuration->initFromFile('_files/appserver_initial_context.xml');
-        $initialContext = new InitialContext($configuration);
-        $application = new MockApplication($initialContext, $applicationName);
+        $configuration->initFromFile('_files/appserver.xml');
+        $appserverNode = new AppserverNode();
+        $appserverNode->initFromConfiguration($configuration);
+        $initialContext = new InitialContext($appserverNode);
+        $containerConfiguration = new Configuration();
+        $containerConfiguration->initFromFile('_files/appserver_container.xml');
+        $containerNode = new ContainerNode();
+        $containerNode->initFromConfiguration($containerConfiguration);
+        $application = new MockApplication($initialContext, $containerNode, $applicationName);
         return $application;
     }
 
@@ -81,8 +90,10 @@ class AbstractTest extends \PHPUnit_Framework_TestCase
     public function getMockInitialContext()
     {
         $configuration = new Configuration();
-        $configuration->initFromFile('_files/appserver_initial_context.xml');
-        $initialContext = new InitialContext($configuration);
+        $configuration->initFromFile('_files/appserver.xml');
+        $appserverNode = new AppserverNode();
+        $appserverNode->initFromConfiguration($configuration);
+        $initialContext = new InitialContext($appserverNode);
         $initialContext->setSystemConfiguration($this->getMockSystemConfiguration());
         return $initialContext;
     }

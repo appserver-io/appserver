@@ -14,6 +14,7 @@ namespace TechDivision\ApplicationServer;
 use TechDivision\ApplicationServer\Mock\MockContainerThread;
 use TechDivision\ApplicationServer\Configuration;
 use TechDivision\ApplicationServer\InitialContext;
+use TechDivision\ApplicationServer\Api\Node\ContainerNode;
 
 /**
  *
@@ -40,7 +41,11 @@ class ContainerThreadTest extends AbstractTest
      */
     public function setUp()
     {
-        $this->containerThread = new ContainerThread($this->getMockInitialContext(), \Mutex::create(false), 1);
+        $configuration = new Configuration();
+        $containerNode->initFromFile('_files/appserver_container.xml');
+        $containerNode = new ContainerNode();
+        $containerNode->initFromConfiguration($configuration);
+        $this->containerThread = new ContainerThread($this->getMockInitialContext(), \Mutex::create(false), $containerNode);
     }
 
     /**

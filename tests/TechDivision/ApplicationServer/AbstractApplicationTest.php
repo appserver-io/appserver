@@ -14,6 +14,7 @@ namespace TechDivision\ApplicationServer;
 use TechDivision\ApplicationServer\Mock\MockApplication;
 use TechDivision\ApplicationServer\Configuration;
 use TechDivision\ApplicationServer\InitialContext;
+use TechDivision\ApplicationServer\Api\Node\ContainerNode;
 
 /**
  *
@@ -54,7 +55,11 @@ class AbstractApplicationTest extends AbstractTest
      */
     public function setUp()
     {
-        $this->application = new MockApplication($this->getMockInitialContext(), $this->getApplicationName());
+        $configuration = new Configuration();
+        $configuration->initFromFile('_files/appserver_container.xml');
+        $containerNode = new ContainerNode();
+        $containerNode->initFromConfiguration($configuration);
+        $this->application = new MockApplication($this->getMockInitialContext(), $containerNode, $this->getApplicationName());
     }
 
     /**
@@ -75,16 +80,6 @@ class AbstractApplicationTest extends AbstractTest
     public function testGetAppBase()
     {
         $this->assertEquals('/opt/appserver/webapps', $this->application->getAppBase());
-    }
-
-    /**
-     * Checks if the application returns the correct webapp path.
-     *
-     * @return void
-     */
-    public function testGetWebappPath()
-    {
-        $this->assertEquals('/opt/appserver/webapps/' . $this->getApplicationName(), $this->application->getWebappPath());
     }
 
     /**
