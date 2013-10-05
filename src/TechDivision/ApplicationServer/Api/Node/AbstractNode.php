@@ -51,6 +51,13 @@ abstract class AbstractNode implements NodeInterface
      */
     private $nodeName;
 
+    public function initFromFile($filename)
+    {
+        $configuration = new Configuration();
+        $configuration->initFromFile($filename);
+        $this->initFromConfiguration($configuration);
+    }
+
     public function initFromConfiguration(Configuration $configuration)
     {
 
@@ -185,13 +192,12 @@ abstract class AbstractNode implements NodeInterface
 
             // return new $nodeType($configuration->getChild($configurationNodeName), $this->getUuid());
 
-            if ($configuration->getChild($configurationNodeName) == false) {
-                error_log("Can't find child for node type $nodeType");
-                error_log("Can't find child for configuration node $configurationNodeName");
+            $newNode = new $nodeType();
+
+            if ($child = $configuration->getChild($configurationNodeName)) {
+                $newNode->initFromConfiguration($child);
             }
 
-            $newNode = new $nodeType();
-            $newNode->initFromConfiguration($configuration->getChild($configurationNodeName));
             $newNode->setParentUuid($this->getUuid());
 
             return $this->{$reflectionProperty->getName()} = $newNode;

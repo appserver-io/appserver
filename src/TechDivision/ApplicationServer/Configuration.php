@@ -446,86 +446,138 @@ class Configuration implements ContainerConfiguration
      */
     public function merge(Configuration $configuration)
     {
-
-        if ($this->getNodeName() == $configuration->getNodeName()) {
-
+        if ($this->hasSameSignature($configuration)) {
             $this->setValue($configuration->getValue());
             $this->setAllData($configuration->getAllData());
-
             if ($configuration->hasChildren()) {
-
                 foreach ($configuration->getChildren() as $child) {
-
-                    foreach ($this->getChildren() as $thisChild) {
-                        $thisChild->merge($child);
+                    $path = $this->getNodeName() . "/" . $child->getNodeName();
+                    if ($this->getChild($path)) {
+                        if ($newChild = $this->getChild($path)->merge($child)) {
+                            $this->addChild($newChild);
+                        }
+                    } else {
+                        $this->addChild($child);
                     }
                 }
-
-            } else {
-
-                foreach ($configuration->getChildren() as $child) {
-                    $this->addChild($configuration);
-                }
             }
-
         } else {
-
-            foreach ($configuration->getChildren() as $child) {
-                $child->merge($configuration);
-            }
+            return $configuration;
         }
     }
 
+    /**
+     * Return's the node signature using a md5 hash based on
+     * the node name and the param data.
+     *
+     * @return string The node signature as md5 hash
+     */
+    public function getSignature()
+    {
+        return md5($this->getNodeName() . implode('', $this->getAllData()));
+    }
+
+    /**
+     * Returns TRUE if the node signatures are equals, else FALSE
+     *
+     * @param \TechDivision\ApplicationServer\Configuration $configuration The configuration node to check the signature
+     * @return boolean TRUE if the signature of the passed node equals the signature of this instance, else FALSE
+     */
+    public function hasSameSignature(Configuration $configuration)
+    {
+        return $this->getSignature() === $configuration->getSignature();
+    }
+
+    /**
+     * Save's the configuration node recursively to the
+     * file with the passed name.
+     *
+     * @param string $filename The filename to save the configuration node to
+     * @return void
+     */
     public function save($filename)
     {
         $this->toDomDocument()->save($filename);
     }
 
-    public function toDomDocument()
+    /**
+     * Creates and returns a DOM document by recursively parsing
+     * the configuration node and it's childs.
+     *
+     * @return \DOMDocument The configuration node as DOM document
+     */
+    public function toDomDocument($namespaceURI = 'http://www.appserver.io/appserver')
     {
         $domDocument = new \DOMDocument('1.0', 'UTF-8');
-
-        $domDocument->appendChild($this->toDomElement($domDocument, 'http://www.appserver.io/appserver'));
+        $domDocument->appendChild($this->toDomElement($domDocument, $namespaceURI));
         return $domDocument;
     }
 
+    /**
+     * Set's the filename of the schema file used for validation.
+     *
+     * @param string $schemaFile Filename of the schema for validation of the configuration node
+     * @return void
+     */
     public function setSchemaFile($schemaFile)
     {
         $this->schemaFile = $schemaFile;
     }
 
+    /**
+     * Return's the filename of the schema file used for validation.
+     *
+     * @return string The filename of the schema file used for validation
+     */
     public function getSchemaFile()
     {
         return $this->schemaFile;
     }
 
+    /**
+     * Recursively creates and returns a DOM element of this configuration node.
+     *
+     * @param \DOMDocument $domDocument The DOM document necessary to create a \DOMElement instance
+     * @param string $namespaceURI The namespace URI to use
+     * @return \DOMElement The initialized DOM element
+     */
     public function toDomElement(\DOMDocument $domDocument, $namespaceURI = null)
     {
-
+        // if a namespace URI was given, create namespaced DOM element
         if ($namespaceURI) {
             $domElement = $domDocument->createElementNS($namespaceURI, $this->getNodeName(), $this->getValue());
         } else {
             $domElement = $domDocument->createElement($this->getNodeName(), $this->getValue());
         }
 
+        // append the element's attributes
         foreach ($this->getAllData() as $key => $value) {
             $domElement->setAttribute($key, $value);
         }
 
+        // append the element's child nodes
         foreach ($this->getChildren() as $child) {
             $domElement->appendChild($child->toDomElement($domDocument));
         }
 
+        // return the
         return $domElement;
     }
 
+    /**
+     * Validates the configuration node against the schema file.
+     *
+     * @throws \Exception Is thrown if the validation was not succsessful
+     * @return \DOMDocument The validated DOM document
+     * @see \TechDivision\ApplicationServer\Configuration::setSchemaFile()
+     */
     public function validate()
     {
 
+        // check if a schema file was specified and exists
         if ($this->getSchemaFile() == null) {
             throw new \Exception("Missing XSD schema file for validation");
         }
-
         if (file_exists($this->getSchemaFile()) === false) {
             throw new \Exception(sprintf("XSD schema file %s for validation not available", $this->getSchemaFile()));
         }
@@ -533,8 +585,8 @@ class Configuration implements ContainerConfiguration
         // activate internal error handling, necessary to catch errors with libxml_get_errors()
         libxml_use_internal_errors(true);
 
+        // recursively create a DOM document from the configuration node and validate it
         $domDocument = $this->toDomDocument();
-
         if ($domDocument->schemaValidate($this->getSchemaFile()) === false) {
             foreach (libxml_get_errors() as $error) {
                 $message = "Found a schema validation error on line %s with code %s and message %s when validating configuration file %s";
@@ -542,7 +594,6 @@ class Configuration implements ContainerConfiguration
                 throw new \Exception(sprintf($message, $error->line, $error->code, $error->message, $error->file));
             }
         }
-
         return $domDocument;
     }
 }

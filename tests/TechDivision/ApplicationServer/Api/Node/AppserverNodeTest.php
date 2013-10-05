@@ -48,23 +48,19 @@ class AppserverNodeTest extends AbstractTest
      */
     public function testGetBaseDirectory()
     {
-        // error_log(var_export($this->appserverNode, true));
         $baseDirectory = $this->appserverNode->getBaseDirectory();
         $this->assertInstanceOf('TechDivision\ApplicationServer\Api\Node\BaseDirectoryNode', $baseDirectory);
     }
 
     /**
-     * Test if the base directory getter.
+     * Test's the export as configuration method.
      *
      * @return void
      */
     public function testExportToConfiguration()
     {
-        // error_log(var_export($this->appserverNode->exportToConfiguration(), true));
         $configuration = $this->appserverNode->exportToConfiguration();
-        $configuration->setSchemaFile('_files/appserver.xsd');
-        $configuration->save('/tmp/appserver.xml');
-        $configuration->validate();
+        $this->assertInstanceOf('TechDivision\ApplicationServer\Configuration', $configuration);
     }
 
     /**

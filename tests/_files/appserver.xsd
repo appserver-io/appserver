@@ -12,16 +12,16 @@
 				<xs:element ref="appserver:initialContext" />
 				<xs:element ref="appserver:systemLogger" />
 				<xs:element ref="appserver:containers" />
+                <xs:element ref="appserver:apps" />
 			</xs:choice>
             <xs:attribute name="uuid" type="xs:string" />
-			<xs:anyAttribute />
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="baseDirectory">
 		<xs:complexType>
 			<xs:simpleContent>
 				<xs:extension base="xs:string">
-					<xs:anyAttribute />
+                    <xs:attribute name="uuid" type="xs:string" />
 				</xs:extension>
 			</xs:simpleContent>
 		</xs:complexType>
@@ -34,14 +34,14 @@
 				<xs:element ref="appserver:storage" />
 			</xs:choice>
 			<xs:attribute name="type" type="xs:string" />
-			<xs:anyAttribute />
+            <xs:attribute name="uuid" type="xs:string" />
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="description">
 		<xs:complexType>
 			<xs:simpleContent>
 				<xs:extension base="xs:string">
-					<xs:anyAttribute />
+                    <xs:attribute name="uuid" type="xs:string" />
 				</xs:extension>
 			</xs:simpleContent>
 		</xs:complexType>
@@ -49,15 +49,16 @@
 	<xs:element name="classLoader">
 		<xs:complexType>
 			<xs:attribute name="type" type="xs:string" />
-			<xs:anyAttribute />
+            <xs:attribute name="uuid" type="xs:string" />
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="storage">
 		<xs:complexType>
-			<xs:choice maxOccurs="unbounded">
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
 				<xs:element ref="appserver:servers" />
 			</xs:choice>
 			<xs:attribute name="type" type="xs:string" />
+            <xs:attribute name="uuid" type="xs:string" />
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="servers">
@@ -65,7 +66,7 @@
 			<xs:choice maxOccurs="unbounded">
 				<xs:element ref="appserver:server" />
 			</xs:choice>
-			<xs:anyAttribute />
+            <xs:attribute name="uuid" type="xs:string" />
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="server">
@@ -73,7 +74,7 @@
 			<xs:attribute name="address" type="xs:string" />
 			<xs:attribute name="port" type="xs:string" />
 			<xs:attribute name="weight" type="xs:string" />
-			<xs:anyAttribute />
+            <xs:attribute name="uuid" type="xs:string" />
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="systemLogger">
@@ -84,7 +85,7 @@
 			</xs:choice>
 			<xs:attribute name="type" type="xs:string" />
 			<xs:attribute name="channelName" type="xs:string" />
-			<xs:anyAttribute />
+            <xs:attribute name="uuid" type="xs:string" />
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="containers">
@@ -92,9 +93,25 @@
 			<xs:choice minOccurs="1" maxOccurs="unbounded">
 				<xs:element ref="appserver:container" />
 			</xs:choice>
-			<xs:anyAttribute />
+            <xs:attribute name="uuid" type="xs:string" />
 		</xs:complexType>
 	</xs:element>
+    <xs:element name="apps">
+        <xs:complexType>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element ref="appserver:app" />
+            </xs:choice>
+            <xs:attribute name="uuid" type="xs:string" />
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="datasources">
+        <xs:complexType>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element ref="appserver:datasource" />
+            </xs:choice>
+            <xs:attribute name="uuid" type="xs:string" />
+        </xs:complexType>
+    </xs:element>
 	<xs:element name="container">
 		<xs:complexType>
 			<xs:choice maxOccurs="unbounded">
@@ -106,9 +123,82 @@
             <xs:attribute name="name" type="xs:string" />
 			<xs:attribute name="threadType" type="xs:string" />
 			<xs:attribute name="type" type="xs:string" />
-			<xs:anyAttribute />
+            <xs:attribute name="uuid" type="xs:string" />
 		</xs:complexType>
 	</xs:element>
+    <xs:element name="app">
+        <xs:complexType>
+            <xs:attribute name="name" type="xs:string" />
+            <xs:attribute name="webappPath" type="xs:string" />
+            <xs:attribute name="uuid" type="xs:string" />
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="datasource">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="appserver:database" />
+            </xs:choice>
+            <xs:attribute name="name" type="xs:string" />
+            <xs:attribute name="uuid" type="xs:string" />
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="database">
+        <xs:complexType>
+            <xs:choice maxOccurs="1">
+                <xs:element ref="appserver:driver" />
+                <xs:element ref="appserver:user" />
+                <xs:element ref="appserver:password" />
+                <xs:element ref="appserver:databaseName" />
+                <xs:element ref="appserver:path" />
+            </xs:choice>
+            <xs:attribute name="uuid" type="xs:string" />
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="driver">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string" />
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="user">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string" />
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="password">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string" />
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="databaseName">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string" />
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="path">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string" />
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
 	<xs:element name="receiver">
 		<xs:complexType>
 			<xs:choice maxOccurs="unbounded">
@@ -117,25 +207,25 @@
 				<xs:element ref="appserver:params" />
 			</xs:choice>
 			<xs:attribute name="type" type="xs:string" />
-			<xs:anyAttribute />
+            <xs:attribute name="uuid" type="xs:string" />
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="worker">
 		<xs:complexType>
 			<xs:attribute name="type" type="xs:string" />
-			<xs:anyAttribute />
+            <xs:attribute name="uuid" type="xs:string" />
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="thread">
 		<xs:complexType>
 			<xs:attribute name="type" type="xs:string" />
-			<xs:anyAttribute />
+            <xs:attribute name="uuid" type="xs:string" />
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="deployment">
 		<xs:complexType>
 			<xs:attribute name="type" type="xs:string" />
-			<xs:anyAttribute />
+            <xs:attribute name="uuid" type="xs:string" />
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="host">
@@ -147,7 +237,7 @@
 			<xs:attribute name="name" type="xs:string" />
 			<xs:attribute name="serverAdmin" type="xs:string" />
 			<xs:attribute name="serverSoftware" type="xs:string" />
-			<xs:anyAttribute />
+            <xs:attribute name="uuid" type="xs:string" />
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="vhosts">
@@ -155,7 +245,7 @@
 			<xs:choice maxOccurs="unbounded">
 				<xs:element ref="appserver:vhost" />
 			</xs:choice>
-			<xs:anyAttribute />
+            <xs:attribute name="uuid" type="xs:string" />
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="vhost">
@@ -165,7 +255,7 @@
 			</xs:choice>
 			<xs:attribute name="appBase" type="xs:string" />
 			<xs:attribute name="name" type="xs:string" />
-			<xs:anyAttribute />
+            <xs:attribute name="uuid" type="xs:string" />
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="aliases">
@@ -173,12 +263,15 @@
 			<xs:choice maxOccurs="unbounded">
 				<xs:element ref="appserver:alias" />
 			</xs:choice>
+            <xs:attribute name="uuid" type="xs:string" />
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="alias">
 		<xs:complexType>
 			<xs:simpleContent>
-				<xs:extension base="xs:string"/>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string" />
+                </xs:extension>
 			</xs:simpleContent>
 		</xs:complexType>
 	</xs:element>
@@ -188,6 +281,7 @@
 				<xs:element ref="appserver:params" />
 			</xs:choice>
 			<xs:attribute name="type" type="xs:string" />
+            <xs:attribute name="uuid" type="xs:string" />
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="processors">
@@ -195,7 +289,7 @@
 			<xs:choice minOccurs="1" maxOccurs="unbounded">
 				<xs:element ref="appserver:processor" />
 			</xs:choice>
-			<xs:anyAttribute />
+            <xs:attribute name="uuid" type="xs:string" />
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="processor">
@@ -204,6 +298,7 @@
 				<xs:element ref="appserver:params" />
 			</xs:choice>
 			<xs:attribute name="type" type="xs:string" />
+            <xs:attribute name="uuid" type="xs:string" />
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="handlers">
@@ -211,7 +306,7 @@
 			<xs:choice minOccurs="1" maxOccurs="unbounded">
 				<xs:element ref="appserver:handler" />
 			</xs:choice>
-			<xs:anyAttribute />
+            <xs:attribute name="uuid" type="xs:string" />
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="handler">
@@ -221,6 +316,7 @@
 				<xs:element ref="appserver:params" />
 			</xs:choice>
 			<xs:attribute name="type" type="xs:string" />
+            <xs:attribute name="uuid" type="xs:string" />
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="params">
@@ -236,6 +332,7 @@
 				<xs:extension base="xs:string">
 					<xs:attribute name="name" type="xs:string" />
 					<xs:attribute name="type" type="xs:string" />
+                    <xs:attribute name="uuid" type="xs:string" />
 				</xs:extension>
 			</xs:simpleContent>
 		</xs:complexType>

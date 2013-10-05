@@ -69,9 +69,8 @@ class AppService extends AbstractService
      * @see \TechDivision\ApplicationServer\Api\ServiceInterface::load()
      */
     public function load($uuid)
-    {
-        $appNodes = $this->findAll();
-        foreach ($appNodes as $appNode) {
+    {;
+        foreach ($this->findAll() as $appNode) {
             if ($appNode->getPrimaryKey() == $uuid) {
                 return $appNode;
             }
@@ -84,7 +83,7 @@ class AppService extends AbstractService
      * @param \TechDivision\ApplicationServer\Api\Node\AppNode $appNode The app to persist
      * @return void
      */
-    public function persist(AppNode $appNode)
+    public function attachApp(AppNode $appNode)
     {
         $systemConfiguration = $this->getSystemConfiguration();
         $systemConfiguration->attachApp($appNode);

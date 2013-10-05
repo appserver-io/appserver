@@ -138,4 +138,13 @@ abstract class AbstractService implements ServiceInterface
 
         return $baseDirectory;
     }
+
+    /**
+     * Persists the system configuration.
+     *
+     * @return void
+     */
+    public function persist()
+    {
+    }
 }
