@@ -95,12 +95,33 @@ class ReceiverNode extends AbstractNode
         return $this->params;
     }
 
+    /**
+     * Returns the param with the passed name casted to
+     * the specified type.
+     *
+     * @param string $name The name of the param to be returned
+     * @return mixed The requested param casted to the specified type
+     */
     public function getParam($name)
     {
-        foreach ($this->getParams() as $param) {
-            if ($param->getName() == $name) {
-                return $param->getNodeValue()->__toString();
-            }
+        $params = $this->getParamsAsArray();
+        if (array_key_exists($name, $params)) {
+            return $params[$name];
         }
+    }
+
+    /**
+     * Returns the params casted to the defined type
+     * as associative array.
+     *
+     * @return array The array with the casted params
+     */
+    public function getParamsAsArray()
+    {
+        $params = array();
+        foreach ($this->getParams() as $param) {
+            $params[$param->getName()] = $param->castToType();
+        }
+        return $params;
     }
 }

@@ -12,8 +12,6 @@
 namespace TechDivision\ApplicationServer\Api;
 
 use TechDivision\ApplicationServer\Api\AbstractService;
-use TechDivision\ApplicationServer\Api\ContainerService;
-use TechDivision\ApplicationServer\Configuration;
 use TechDivision\ApplicationServer\Api\Node\AppNode;
 
 /**

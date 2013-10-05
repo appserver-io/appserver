@@ -78,6 +78,21 @@ class HandlerNode extends AbstractNode
     }
 
     /**
+     * Returns the param with the passed name casted to
+     * the specified type.
+     *
+     * @param string $name The name of the param to be returned
+     * @return mixed The requested param casted to the specified type
+     */
+    public function getParam($name)
+    {
+        $params = $this->getParamsAsArray();
+        if (array_key_exists($name, $params)) {
+            return $params[$name];
+        }
+    }
+
+    /**
      * Returns the params casted to the defined type
      * as associative array.
      *

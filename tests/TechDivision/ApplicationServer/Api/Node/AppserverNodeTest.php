@@ -38,8 +38,7 @@ class AppserverNodeTest extends AbstractTest
      */
     public function setUp()
     {
-        $this->appserverNode = new AppserverNode();
-        $this->appserverNode->initFromConfiguration($this->getMockSystemConfiguration());
+        $this->appserverNode = $this->getAppserverNode();
     }
 
     /**

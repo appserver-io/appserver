@@ -17,7 +17,7 @@ use TechDivision\ApplicationServer\Configuration;
 use TechDivision\ApplicationServer\InitialContext;
 use TechDivision\ApplicationServer\Api\Node\AppserverNode;
 use TechDivision\ApplicationServer\Api\Node\ContainerNode;
-use TechDivision\ApplicationServer\Api\Node\InitialContextNode;
+use TechDivision\ApplicationServer\Api\Node\DeploymentNode;
 
 /**
  *
@@ -31,16 +31,85 @@ class AbstractTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
+     * Returns the system configuration.
+     *
+     * @return \TechDivision\ApplicationServer\Configuration The system configuration
+     */
+    public function getAppserverConfiguration()
+    {
+        $configuration = new Configuration();
+        $configuration->initFromFile('_files/appserver.xml');
+        return $configuration;
+    }
+
+    /**
      * Returns a dummy container configuration.
      *
-     * @return \TechDivision\ApplicationServer\Configuration The dummy configuration
+     * @return \TechDivision\ApplicationServer\Api\Node The dummy configuration
      */
     public function getContainerConfiguration()
     {
         $configuration = new Configuration();
         $configuration->initFromFile('_files/appserver_container.xml');
-        $configuration->addChildWithNameAndValue('baseDirectory', '/opt/appserver');
         return $configuration;
+    }
+
+    /**
+     * Returns a dummy deployment configuration.
+     *
+     * @return \TechDivision\ApplicationServer\Configuration A dummy deployment configuration
+     */
+    public function getDeploymentConfiguration()
+    {
+        $configuration = new Configuration();
+        $configuration->initFromFile('_files/appserver_container_deployment.xml');
+        return $configuration;
+    }
+
+    /**
+     * Returns a appserver node initialized with a mock system configuration.
+     *
+     * @return \TechDivision\ApplicationServer\Api\Node\AppserverNode The requested appserver node
+     */
+    public function getAppserverNode()
+    {
+        $appserverNode = new AppserverNode();
+        $appserverNode->initFromConfiguration($this->getAppserverConfiguration());
+        return $appserverNode;
+    }
+
+    /**
+     * Returns a container node initialized with a mock container configuration.
+     *
+     * @return \TechDivision\ApplicationServer\Api\Node\ContainerNode The requested container node
+     */
+    public function getContainerNode()
+    {
+        $containerNode = new ContainerNode();
+        $containerNode->initFromConfiguration($this->getContainerConfiguration());
+        return $containerNode;
+    }
+
+    /**
+     * Returns a deployment node initialized with a mock deployment configuration.
+     *
+     * @return \TechDivision\ApplicationServer\Api\Node\DeplyomentNode The requested deployment node
+     */
+    public function getDeploymentNode()
+    {
+        $deploymentNode = new DeploymentNode();
+        $deploymentNode->initFromConfiguration($this->getDeploymentConfiguration());
+        return $deploymentNode;
+    }
+
+    /**
+     * Returns a mock container.
+     *
+     * @return \TechDivision\ApplicationServer\Mock\MockContainer The mock container
+     */
+    public function getMockContainer()
+    {
+        return new MockContainer($this->getMockInitialContext(), $this->getContainerNode(), $this->getMockApplications());
     }
 
     /**
@@ -52,17 +121,7 @@ class AbstractTest extends \PHPUnit_Framework_TestCase
      */
     public function getMockApplication($applicationName)
     {
-        $configuration = new Configuration();
-        $configuration->initFromFile('_files/appserver.xml');
-        $appserverNode = new AppserverNode();
-        $appserverNode->initFromConfiguration($configuration);
-        $initialContext = new InitialContext($appserverNode);
-        $containerConfiguration = new Configuration();
-        $containerConfiguration->initFromFile('_files/appserver_container.xml');
-        $containerNode = new ContainerNode();
-        $containerNode->initFromConfiguration($containerConfiguration);
-        $application = new MockApplication($initialContext, $containerNode, $applicationName);
-        return $application;
+        return new MockApplication($this->getMockInitialContext(), $this->getContainerNode(), $applicationName);
     }
 
     /**
@@ -89,25 +148,7 @@ class AbstractTest extends \PHPUnit_Framework_TestCase
      */
     public function getMockInitialContext()
     {
-        $configuration = new Configuration();
-        $configuration->initFromFile('_files/appserver.xml');
-        $appserverNode = new AppserverNode();
-        $appserverNode->initFromConfiguration($configuration);
-        $initialContext = new InitialContext($appserverNode);
-        $initialContext->setSystemConfiguration($this->getMockSystemConfiguration());
-        return $initialContext;
-    }
-
-    /**
-     * Returns the system configuration.
-     *
-     * @return \TechDivision\ApplicationServer\Configuration The system configuration
-     */
-    public function getMockSystemConfiguration()
-    {
-        $configuration = new Configuration();
-        $configuration->initFromFile('_files/appserver.xml');
-        return $configuration;
+        return new InitialContext($this->getAppserverNode());
     }
 
     /**

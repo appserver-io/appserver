@@ -57,12 +57,8 @@ class AbstractReceiverTest extends AbstractTest
      */
     public function setUp()
     {
-        $this->initialContext = $this->getMockInitialContext();
-        $configuration = new Configuration();
-        $configuration->initFromFile('_files/appserver_container.xml');
-        $containerNode = new ContainerNode();
-        $containerNode->initFromConfiguration($configuration);
-        $this->container = new MockContainer($this->initialContext, $containerNode, $this->getMockApplications());
+        $this->container = $this->getMockContainer();
+        $this->initialContext = $this->container->getInitialContext();
         $this->receiver = new MockReceiver($this->initialContext, $this->container);
     }
 

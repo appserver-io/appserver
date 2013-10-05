@@ -55,11 +55,7 @@ class AbstractApplicationTest extends AbstractTest
      */
     public function setUp()
     {
-        $configuration = new Configuration();
-        $configuration->initFromFile('_files/appserver_container.xml');
-        $containerNode = new ContainerNode();
-        $containerNode->initFromConfiguration($configuration);
-        $this->application = new MockApplication($this->getMockInitialContext(), $containerNode, $this->getApplicationName());
+        $this->application = new MockApplication($this->getMockInitialContext(), $this->getContainerNode(), $this->getApplicationName());
     }
 
     /**
@@ -79,7 +75,7 @@ class AbstractApplicationTest extends AbstractTest
      */
     public function testGetAppBase()
     {
-        $this->assertEquals('/opt/appserver/webapps', $this->application->getAppBase());
+        $this->assertEquals('/webapps', $this->application->getAppBase());
     }
 
     /**

@@ -12,8 +12,6 @@
 namespace TechDivision\ApplicationServer\Api;
 
 use TechDivision\ApplicationServer\Api\AbstractService;
-use TechDivision\ApplicationServer\Api\Node\NodeInterface;
-use TechDivision\ApplicationServer\Api\Node\AppNode;
 
 /**
  * A service that handles container configuration data.

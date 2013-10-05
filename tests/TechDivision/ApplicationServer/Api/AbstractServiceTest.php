@@ -59,7 +59,7 @@ class AbstractServiceTest extends AbstractTest
      */
     public function testGetSystemConfiguration()
     {
-        $this->assertInstanceOf('TechDivision\ApplicationServer\Configuration', $this->service->getSystemConfiguration());
+        $this->assertInstanceOf('TechDivision\ApplicationServer\Api\Node\AppserverNode', $this->service->getSystemConfiguration());
     }
 
     /**

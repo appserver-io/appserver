@@ -12,11 +12,6 @@
 namespace TechDivision\ApplicationServer;
 
 use TechDivision\ApplicationServer\Mock\MockDeployment;
-use TechDivision\ApplicationServer\ContainerThread;
-use TechDivision\ApplicationServer\Configuration;
-use TechDivision\ApplicationServer\InitialContext;
-use TechDivision\ApplicationServer\Api\Node\ContainerNode;
-use TechDivision\ApplicationServer\Api\Node\DeploymentNode;
 
 /**
  *
@@ -43,15 +38,7 @@ class AbstractDeploymentTest extends AbstractTest
      */
     public function setUp()
     {
-        $initialContext = $this->getMockInitialContext();
-        $containerThread = new ContainerThread($initialContext, $this->getContainerConfiguration(), \Mutex::create(false));
-        $configuration = new Configuration();
-        $configuration->initFromFile('_files/appserver_container.xml');
-        $containerNode = new ContainerNode();
-        $containerNode->initFromConfiguration($configuration);
-        $deploymentNode = new DeploymentNode();
-        $deploymentNode->initFromConfiguration($containerNode->getDeployment());
-        $this->deployment = new MockDeployment($initialContext, $containerNode, $deploymentNode);
+        $this->deployment = new MockDeployment($this->getMockInitialContext(), $this->getContainerNode(), $this->getDeploymentNode());
     }
 
     /**

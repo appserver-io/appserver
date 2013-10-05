@@ -41,4 +41,26 @@ class ContainerServiceTest extends AbstractTest
     {
         $this->service = new ContainerService($this->getMockInitialContext());
     }
+
+    /**
+     * Test if the application server's base directory will be returned.
+     *
+     * @return void
+     */
+    public function testGetBaseDirectory()
+    {
+        $this->assertSame('/opt/appserver', $this->service->getBaseDirectory());
+    }
+
+    /**
+     * Test if the application server's base directory will be returned appended
+     * with the directory passed as parameter.
+     *
+     * @return void
+     */
+    public function testGetBaseDirectoryWithDirectoryToAppend()
+    {
+        $directoryToAppend = '/webapps';
+        $this->assertSame('/opt/appserver' . $directoryToAppend, $this->service->getBaseDirectory($directoryToAppend));
+    }
 }

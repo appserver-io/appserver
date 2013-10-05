@@ -43,11 +43,7 @@ class AbstractContainerTest extends AbstractTest
      */
     public function setUp()
     {
-        $configuration = new Configuration();
-        $configuration->initFromFile('_files/appserver_container.xml');
-        $containerNode = new ContainerNode();
-        $containerNode->initFromConfiguration($configuration);
-        $this->container = new MockContainer($this->getMockInitialContext(), $containerNode, $this->getMockApplications());
+        $this->container = new MockContainer($this->getMockInitialContext(), $this->getContainerNode(), $this->getMockApplications());
     }
 
     /**

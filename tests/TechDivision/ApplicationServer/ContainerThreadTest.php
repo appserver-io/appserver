@@ -41,11 +41,7 @@ class ContainerThreadTest extends AbstractTest
      */
     public function setUp()
     {
-        $configuration = new Configuration();
-        $containerNode->initFromFile('_files/appserver_container.xml');
-        $containerNode = new ContainerNode();
-        $containerNode->initFromConfiguration($configuration);
-        $this->containerThread = new ContainerThread($this->getMockInitialContext(), \Mutex::create(false), $containerNode);
+        $this->containerThread = new ContainerThread($this->getMockInitialContext(), \Mutex::create(false), $this->getContainerNode());
     }
 
     /**
