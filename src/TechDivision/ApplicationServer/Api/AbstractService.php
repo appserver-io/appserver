@@ -138,4 +138,15 @@ abstract class AbstractService implements ServiceInterface
 
         return $baseDirectory;
     }
+
+    /**
+     * Persists the system configuration.
+     *
+     * @param \TechDivision\ApplicationServer\Api\Node\NodeInterface
+     * @return void
+     */
+    public function persist(NodeInterface $node)
+    {
+        // implement this
+    }
 }
