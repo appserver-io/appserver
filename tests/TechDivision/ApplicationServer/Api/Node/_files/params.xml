@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<params>
+    <param name="workerNumber" type="integer">16</param>
+    <param name="address" type="string">0.0.0.0</param>
+    <param name="port" type="integer">8585</param>
+</params>

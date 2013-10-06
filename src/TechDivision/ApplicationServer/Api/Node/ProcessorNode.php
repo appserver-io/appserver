@@ -20,7 +20,7 @@ namespace TechDivision\ApplicationServer\Api\Node;
  *          Open Software License (OSL 3.0)
  * @author Tim Wagner <tw@techdivision.com>
  */
-class ProcessorNode extends AbstractNode
+class ProcessorNode extends AbstractParamsNode
 {
 
     /**
@@ -32,14 +32,6 @@ class ProcessorNode extends AbstractNode
     protected $type;
 
     /**
-     * The handler params to use.
-     *
-     * @var array<\TechDivision\ApplicationServer\Api\Node\ParamNode>
-     * @AS\Mapping(nodeName="params/param", nodeType="array", elementType="TechDivision\ApplicationServer\Api\Node\ParamNode")
-     */
-    protected $params = array();
-
-    /**
      * Returns the class name.
      *
      * @return string The class name
@@ -47,30 +39,5 @@ class ProcessorNode extends AbstractNode
     public function getType()
     {
         return $this->type;
-    }
-
-    /**
-     * Array with the handler params to use.
-     *
-     * @return array<\TechDivision\ApplicationServer\Api\Node\ParamNode>
-     */
-    public function getParams()
-    {
-        return $this->params;
-    }
-
-    /**
-     * Returns the params casted to the defined type
-     * as associative array.
-     *
-     * @return array The array with the casted params
-     */
-    public function getParamsAsArray()
-    {
-        $params = array();
-        foreach ($this->getParams() as $param) {
-            $params[$param->getName()] = $param->castToType();
-        }
-        return $params;
     }
 }

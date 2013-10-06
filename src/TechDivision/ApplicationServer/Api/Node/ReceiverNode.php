@@ -20,7 +20,7 @@ namespace TechDivision\ApplicationServer\Api\Node;
  *          Open Software License (OSL 3.0)
  * @author Tim Wagner <tw@techdivision.com>
  */
-class ReceiverNode extends AbstractNode
+class ReceiverNode extends AbstractParamsNode
 {
 
     /**
@@ -46,14 +46,6 @@ class ReceiverNode extends AbstractNode
      * @AS\Mapping(nodeName="worker", nodeType="TechDivision\ApplicationServer\Api\Node\WorkerNode")
      */
     protected $worker;
-
-    /**
-     * The receiver's start params, e. g. the IP address to be used.
-     *
-     * @var array<\TechDivision\ApplicationServer\Api\Node\ParamNode>
-     * @AS\Mapping(nodeName="params/param", nodeType="array", elementType="TechDivision\ApplicationServer\Api\Node\ParamNode")
-     */
-    protected $params = array();
 
     /**
      * Returns information about the receiver's class name.
@@ -83,45 +75,5 @@ class ReceiverNode extends AbstractNode
     public function getWorker()
     {
         return $this->worker;
-    }
-
-    /**
-     *  Returns the receiver's start params, e. g. the IP address to be used.
-     *
-     *  @return array<\TechDivision\ApplicationServer\Api\Node\ParamNode> The receiver's start params
-     */
-    public function getParams()
-    {
-        return $this->params;
-    }
-
-    /**
-     * Returns the param with the passed name casted to
-     * the specified type.
-     *
-     * @param string $name The name of the param to be returned
-     * @return mixed The requested param casted to the specified type
-     */
-    public function getParam($name)
-    {
-        $params = $this->getParamsAsArray();
-        if (array_key_exists($name, $params)) {
-            return $params[$name];
-        }
-    }
-
-    /**
-     * Returns the params casted to the defined type
-     * as associative array.
-     *
-     * @return array The array with the casted params
-     */
-    public function getParamsAsArray()
-    {
-        $params = array();
-        foreach ($this->getParams() as $param) {
-            $params[$param->getName()] = $param->castToType();
-        }
-        return $params;
     }
 }

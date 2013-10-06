@@ -63,6 +63,18 @@ class AbstractServiceTest extends AbstractTest
     }
 
     /**
+     * Test if the getter/setter for the system configuration.
+     *
+     * @return void
+     */
+    public function testGetSetSystemConfiguration()
+    {
+        $systemConfiguration = $this->service->getSystemConfiguration();
+        $this->service->setSystemConfiguration($systemConfiguration);
+        $this->assertSame($systemConfiguration, $this->service->getSystemConfiguration());
+    }
+
+    /**
      * Test the new instance method.
      *
      * @return void
@@ -75,5 +87,17 @@ class AbstractServiceTest extends AbstractTest
             \Mutex::create(false)
         ));
         $this->assertInstanceOf($className, $instance);
+    }
+
+    /**
+     * Test the new service method.
+     *
+     * @return void
+     */
+    public function testNewService()
+    {
+        $className = 'TechDivision\ApplicationServer\Api\Mock\MockService';
+        $service = $this->service->newService($className);
+        $this->assertInstanceOf($className, $service);
     }
 }

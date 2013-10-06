@@ -95,4 +95,56 @@ class AppserverNodeTest extends AbstractTest
         $containers = $this->appserverNode->getContainers();
         $this->assertCount(3, $containers);
     }
+
+    /**
+     * Test if the apps has been successfully initialized.
+     *
+     * @return void
+     */
+    public function testGetApps()
+    {
+        $apps = $this->appserverNode->getApps();
+        $this->assertCount(4, $apps);
+    }
+
+    /**
+     * Test if the datasources has been successfully initialized.
+     *
+     * @return void
+     */
+    public function testGetDatasources()
+    {
+        $datasources = $this->appserverNode->getDatasources();
+        $this->assertCount(0, $datasources);
+    }
+
+    /**
+     * Test if it is possible to attach a new app.
+     *
+     * @return void
+     */
+    public function testAttachApp()
+    {
+        $appNode = new AppNode();
+        $appNode->setNodeName('application');
+        $appNode->setName('someApp');
+        $appNode->setWebappPath('/someApp');
+
+        $this->appserverNode->attachApp($appNode);
+        $this->assertCount(5, $this->appserverNode->getApps());
+    }
+
+    /**
+     * Test if it is possible to attach a new datasource.
+     *
+     * @return void
+     */
+    public function testAttachDatasource()
+    {
+        $datasourceNode = new DatasourceNode();
+        $datasourceNode->setNodeName('datasource');
+
+        $this->appserverNode->attachDatasource($datasourceNode);
+        $this->assertCount(1, $this->appserverNode->getDatasources());
+    }
 }
