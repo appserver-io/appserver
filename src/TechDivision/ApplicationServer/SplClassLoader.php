@@ -54,7 +54,7 @@ class SplClassLoader extends \Stackable
     
         // set namespace and initialize include path
         $this->namespace = $namespace;
-        $this->includePath = explode(PATH_SEPARATOR, get_include_path());
+        $this->includePath = $this->getIncludePath();
         if ($includePath != null) {
             $this->includePath = array_merge($this->includePath, $includePath);
         }
