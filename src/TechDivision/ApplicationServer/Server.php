@@ -135,7 +135,23 @@ class Server
         $this->initSystemLogger();
         $this->initContainers();
     }
-
+    
+    /**
+     * organize params.
+     *
+     * @return array
+     */
+    private function _organizeParams($configuration) {
+        $params = array();
+        if ($configuration->getParams()) {
+            foreach ($configuration->getParams()->getChilds('/params/param') as $param) {
+                $value = $param->getValue();
+                settype($value, $param->getType());
+                $params[$param->getName()] = $value;
+            }
+        }
+        return $params;
+    }
     /**
      * Initialize the system logger.
      *
@@ -152,43 +168,18 @@ class Server
 
         // initialize the processors
         foreach ($systemLoggerConfiguration->getChilds('/systemLogger/processors/processor') as $processorConfiguration) {
-            $params = array();
-            if ($processorConfiguration->getParams() != null) {
-                foreach ($processorConfiguration->getParams()->getChilds('/params/param') as $param) {
-                    $value = $param->getValue();
-                    settype($value, $param->getType());
-                    $params[$param->getName()] = $value;
-                }
-            }
-            $processor = $this->newInstance($processorConfiguration->getType(), $params);
+            $processor = $this->newInstance($processorConfiguration->getType(), $this->_organizeParams($processorConfiguration));
             $this->systemLogger->pushProcessor($processor);
         }
 
         // initialize the handlers
         foreach ($systemLoggerConfiguration->getChilds('/systemLogger/handlers/handler') as $handlerConfiguration) {
-            $params = array();
-            if ($handlerConfiguration->getParams() != null) {
-                foreach ($handlerConfiguration->getParams()->getChilds('/params/param') as $param) {
-                    $value = $param->getValue();
-                    settype($value, $param->getType());
-                    $params[$param->getName()] = $value;
-                }
-            }
-            $handler = $this->newInstance($handlerConfiguration->getType(), $params);
+            $handler = $this->newInstance($handlerConfiguration->getType(), $this->_organizeParams($handlerConfiguration));
 
             // initialize the handlers formatter
-            $params = array();
             $formatterConfiguration = $handlerConfiguration->getFormatter();
-            if ($formatterConfiguration->getParams() != null) {
-                foreach ($formatterConfiguration->getParams()->getChilds('/params/param') as $param) {
-                    $value = $param->getValue();
-                    settype($value, $param->getType());
-                    $params[$param->getName()] = $value;
-                }
-            }
-
             // set the handlers formatter and add the handler to the logger
-            $handler->setFormatter($this->newInstance($formatterConfiguration->getType(), $params));
+            $handler->setFormatter($this->newInstance($formatterConfiguration->getType(), $this->_organizeParams($formatterConfiguration)));
             $this->systemLogger->pushHandler($handler);
         }
     }
