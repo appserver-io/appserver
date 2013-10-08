@@ -12,6 +12,8 @@
 
 namespace TechDivision\ApplicationServer\Interfaces;
 
+use TechDivision\ApplicationServer\Api\Node\ContainerNode;
+
 /**
  * @package     TechDivision\ApplicationServer
  * @copyright  	Copyright (c) 2013 <info@techdivision.com> - TechDivision GmbH
@@ -39,19 +41,13 @@ interface ApplicationInterface
     public function getName();
 
     /**
-     * Set's the host configuration.
+     * Return's the applications servers base directory, which is
+     * /opt/appserver by default.
      *
-     * @param \TechDivision\ApplicationServer\Configuration $configuration The host configuration
-     * @return \TechDivision\ServletContainer\Application The application instance
+     * @param string $directoryToAppend Directory to append before returning the base directory
+     * @return string The application server's base directory
      */
-    public function setConfiguration($configuration);
-
-    /**
-     * Returns the host configuration.
-     *
-     * @return \TechDivision\ApplicationServer\Configuration The host configuration
-     */
-    public function getConfiguration();
+    public function getBaseDirectory($directoryToAppend = null);
 
     /**
      * Returns the path to the appserver webapp base directory.
@@ -68,6 +64,14 @@ interface ApplicationInterface
     public function getWebappPath();
 
     /**
+     * Returns the application servers base directory (the base directory appended
+     * with the container's webroot), /opt/appserver/webapps by default.
+     *
+     * @return string The container's document root directory
+     */
+    public function getDocumentRoot();
+
+    /**
      * Creates a new instance of the passed class name and passes the
      * args to the instance constructor.
      *
@@ -77,4 +81,10 @@ interface ApplicationInterface
      */
     public function newInstance($className, array $args = array());
 
+    /**
+     * Returns the application as a node representation.
+     *
+     * @return \TechDivision\ApplicationServer\Api\Node\AppNode The node representation of the application
+     */
+    public function newAppNode();
 }

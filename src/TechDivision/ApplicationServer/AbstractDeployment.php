@@ -13,6 +13,7 @@ namespace TechDivision\ApplicationServer;
 
 use TechDivision\ApplicationServer\InitialContext;
 use TechDivision\ApplicationServer\Interfaces\DeploymentInterface;
+use TechDivision\ApplicationServer\Interfaces\ApplicationInterface;
 
 /**
  *
@@ -26,25 +27,11 @@ abstract class AbstractDeployment implements DeploymentInterface
 {
 
     /**
-     * Path to the container's base directory.
+     * The container node the deployment is for.
      *
      * @var string
      */
-    const XPATH_CONTAINER_BASE_DIRECTORY = '/container/baseDirectory';
-
-    /**
-     * Path to the container's host configuration.
-     *
-     * @var string
-     */
-    const XPATH_CONTAINER_HOST = '/container/host';
-
-    /**
-     * The container thread
-     *
-     * @var \TechDivision\ApplicationServer\ContainerThread
-     */
-    protected $containerThread;
+    protected $containerNode;
 
     /**
      * Array with the initialized applications.
@@ -56,34 +43,81 @@ abstract class AbstractDeployment implements DeploymentInterface
     /**
      * Initializes the deployment with the container thread.
      *
-     * @param \TechDivision\ApplicationServer\ContainerThread $containerThread
-     */
-    public function __construct($initialContext, $containerThread)
-    {
-        $this->initialContext = $initialContext;
-        $this->containerThread = $containerThread;
-    }
-
-    /**
-     * Returns the container thread.
-     *
-     * @return \TechDivision\ApplicationServer\ContainerThread The container thread
-     */
-    public function getContainerThread()
-    {
-        return $this->containerThread;
-    }
-
-    /**
-     * Set's the deployed applications.
-     *
-     * @param array $applications
-     *            The deployed applications
+     * @param \TechDivision\ApplicationServer\InitialContext $initialContext
+     *            The initial context instance
+     * @param \TechDivision\ApplicationServer\Api\Node\ContainerNode $containerNode
+     *            The container node the deployment is for
+     * @param \TechDivision\ApplicationServer\Api\Node\DeploymentNode $deploymentNode
+     *            The deployment node
      * @return void
      */
-    public function setApplications(array $applications)
+    public function __construct(InitialContext $initialContext, $containerNode, $deploymentNode)
     {
-        $this->applications = $applications;
+        $this->initialContext = $initialContext;
+        $this->containerNode = $containerNode;
+        $this->deploymentNode = $deploymentNode;
+    }
+
+    /**
+     * Returns the initialContext instance
+     *
+     * @return \TechDivision\ApplicationServer\InitialContext The initial context instance
+     */
+    public function getInitialContext()
+    {
+        return $this->initialContext;
+    }
+
+    /**
+     * Returns the container node the deployment is for.
+     *
+     * @return \TechDivision\ApplicationServer\Api\Node\ContainerNode The container node
+     */
+    public function getContainerNode()
+    {
+        return $this->containerNode;
+    }
+
+    /**
+     * Returns the deployment node.
+     *
+     * @return \TechDivision\ApplicationServer\Api\Node\ContainerNode The deployment node
+     */
+    public function getDeploymentNode()
+    {
+        return $this->deploymentNode;
+    }
+
+    /**
+     * Append the deployed application to the deployment instance
+     * and registers it in the system configuration.
+     *
+     * @param ApplicationInterface $application
+     *            The application to append
+     * @return void
+     */
+    public function addApplication(ApplicationInterface $application)
+    {
+
+        // create a new API app service instance
+        $appService = $this->newService('TechDivision\ApplicationServer\Api\AppService');
+        $appNode = $appService->load($application->getWebappPath());
+
+        // check if the application has already been attached to the container
+        if ($appNode == null) {
+            $application->newAppNode($this->getContainerNode());
+        } else {
+            $application->setAppNode($appNode);
+        }
+
+        // persist the application
+        $appService->persist($application->getAppNode());
+
+        // connect the application to the container
+        $application->connect();
+
+        // register the application in this instance
+        $this->applications[$application->getName()] = $application;
     }
 
     /**
@@ -97,25 +131,31 @@ abstract class AbstractDeployment implements DeploymentInterface
     }
 
     /**
-     * Creates a new instance of the passed class name and passes the
-     * args to the instance constructor.
+     * (non-PHPdoc)
      *
-     * @param string $className
-     *            The class name to create the instance of
-     * @param array $args
-     *            The parameters to pass to the constructor
-     * @return object The created instance
+     * @see \TechDivision\ApplicationServer\InitialContext::newInstance()
      */
     public function newInstance($className, array $args = array())
     {
-        return $this->initialContext->newInstance($className, $args);
+        return $this->getInitialContext()->newInstance($className, $args);
+    }
+
+    /**
+     * (non-PHPdoc)
+     *
+     * @see \TechDivision\ApplicationServer\InitialContext::newService()
+     */
+    public function newService($className)
+    {
+        return $this->getInitialContext()->newService($className);
     }
 
     /**
      * Extracts the passed PHAR archive to a folder with the
      * basename of the archive file.
      *
-     * @param \SplFileInfo $archive The PHAR file to be deployed
+     * @param \SplFileInfo $archive
+     *            The PHAR file to be deployed
      * @return void
      */
     protected function deployArchive(\SplFileInfo $archive)
@@ -123,7 +163,8 @@ abstract class AbstractDeployment implements DeploymentInterface
         try {
 
             // create folder name based on the archive's basename
-            $folderName = $this->getAppBase() . DIRECTORY_SEPARATOR . $archive->getBaseName('.phar');
+            $baseDirectory = $this->getBaseDirectory($this->getAppBase());
+            $folderName = $baseDirectory . DIRECTORY_SEPARATOR . $archive->getBaseName('.phar');
 
             // check if application has already been deployed
             if (is_dir($folderName) === false) {
@@ -143,22 +184,29 @@ abstract class AbstractDeployment implements DeploymentInterface
      */
     public function deployWebapps()
     {
-        foreach (new \RegexIterator(new \FilesystemIterator($this->getAppBase()), '/^.*\.phar$/') as $archive) {
+        foreach (new \RegexIterator(new \FilesystemIterator($this->getBaseDirectory($this->getAppBase())), '/^.*\.phar$/') as $archive) {
             $this->deployArchive($archive);
         }
         return $this;
     }
 
     /**
-     * Returns the path to the appserver webapp base directory.
+     * (non-PHPdoc)
      *
-     * @return string The path to the appserver webapp base directory
+     * @see \TechDivision\ApplicationServer\Api\ContainerService::getBaseDirectory()
+     */
+    public function getBaseDirectory($directoryToAppend = null)
+    {
+        return $this->newService('TechDivision\ApplicationServer\Api\ContainerService')->getBaseDirectory($directoryToAppend);
+    }
+
+    /**
+     * (non-PHPdoc)
+     *
+     * @see \TechDivision\ApplicationServer\Api\ContainerService::getAppBase()
      */
     public function getAppBase()
     {
-        $configuration = $this->getContainerThread()->getConfiguration();
-        $baseDir = $configuration->getChild(self::XPATH_CONTAINER_BASE_DIRECTORY)->getValue();
-        $appBase = $configuration->getChild(self::XPATH_CONTAINER_HOST)->getAppBase();
-        return $baseDir . $appBase;
+        return $this->getContainerNode()->getHost()->getAppBase();
     }
 }

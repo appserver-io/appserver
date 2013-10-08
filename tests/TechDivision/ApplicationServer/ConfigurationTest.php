@@ -319,4 +319,38 @@ class ConfigurationTest extends AbstractTest
         $this->assertEquals($testAttrValue, $this->configuration->getTestNode()
             ->getAttr());
     }
+
+    /**
+     * Tests if the merge of two datasources into the application server
+     * configuration returns the expected configuration node structure.
+     *
+     * @return void
+     */
+    public function testMergeDatasourcesIntoAppserver()
+    {
+        $configurationOne = new Configuration();
+        $configurationOne->initFromFile(__DIR__ . '/_files/META-INF/appserver-ds.xml');
+        $configurationTwo = new Configuration();
+        $configurationTwo->initFromFile(__DIR__ . '/_files/META-INF/appserver-01-ds.xml');
+        $configurationOne->merge($configurationTwo);
+        $this->configuration->initFromFile('_files/appserver.xml');
+        $this->configuration->addChild($configurationOne);
+        $this->assertCount(2, $this->configuration->getChilds('/appserver/datasources/datasource'));
+
+    }
+
+    /**
+     * Tests if the merge of two datasources returns the expected
+     * configuration node structure.
+     *
+     * @return void
+     */
+    public function testMergeDatasources()
+    {
+        $configuration = new Configuration();
+        $configuration->initFromFile(__DIR__ . '/_files/META-INF/appserver-01-ds.xml');
+        $this->configuration->initFromFile(__DIR__ . '/_files/META-INF/appserver-ds.xml');
+        $this->configuration->merge($configuration);
+        $this->assertCount(2, $this->configuration->getChilds('/datasources/datasource'));
+    }
 }

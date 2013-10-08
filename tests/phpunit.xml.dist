@@ -8,7 +8,7 @@
         <whitelist>
             <directory suffix=".php">${php-target.dir}/${unique.name}/src</directory>
 		    <exclude>
-		        <directory prefix="Mock">${php-target.dir}/${unique.name}/src/Mock</directory>
+		        <directory prefix="Mock">${php-target.dir}/${unique.name}/src</directory>
 		        <directory suffix="Test.php">${php-target.dir}/${unique.name}/src</directory>
 		    </exclude>
         </whitelist>

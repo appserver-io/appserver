@@ -28,25 +28,11 @@ class ContainerThread extends AbstractContextThread
 {
 
     /**
-     * Path to the container's deployment configuration.
+     * The container's to be deployed.
      *
-     * @var string
+     * @var \TechDivision\ApplicationServer\Api\Node\ContainerNode
      */
-    const XPATH_CONTAINER_DEPLOYMENT = '/container/deployment';
-
-    /**
-     * XPath expression for the container configurations.
-     *
-     * @var string
-     */
-    const XPATH_CONTAINERS = '/appserver/containers/container';
-
-    /**
-     * The container's configuration
-     *
-     * @var \TechDivision\ApplicationServer\Configuration
-     */
-    protected $configuration;
+    protected $containerNode;
 
     /**
      * The mutex to prevent parallel deployment of PHAR files.
@@ -56,15 +42,18 @@ class ContainerThread extends AbstractContextThread
     protected $mutex;
 
     /**
-     * Set's the configuration with the container information to be started in the thread.
+     * Set's the unique container name to be started by this thread.
      *
-     * @param \TechDivision\ApplicationServer\Configuration $configuration
-     *            The container's configuration
+     * @param \Mutex $mutex
+     *            The mutex that locks related threads when deployment starts
+     * @param string $containerNode
+     *            The container node
+     * @return void
      */
-    public function init($configuration, $mutex)
+    public function init($mutex, $containerNode)
     {
-        $this->configuration = $configuration;
         $this->mutex = $mutex;
+        $this->containerNode = $containerNode;
     }
 
     /**
@@ -74,70 +63,46 @@ class ContainerThread extends AbstractContextThread
     public function main()
     {
 
-        // load the container configuration
-        $configuration = $this->getConfiguration();
-
-        // load the container type and deploy the applications
-        $containerType = $configuration->getType();
-
         // lock the mutex to prevent other containers to parallel deploy PHAR files
         \Mutex::lock($this->mutex);
 
-        // deploy the applications and return them in an array
+        // deploy the applications and return them as array
         $applications = $this->getDeployment()
             ->deployWebapps()
             ->deploy()
             ->getApplications();
 
-        // create configuration nodes for applications
-        $applicationConfiguration = $this->newInstance('TechDivision\ApplicationServer\Configuration');
-        $applicationConfiguration->setNodeName('applications');
-        foreach ($applications as $application) {
-            $applicationConfiguration->addChild($application->newConfiguration());
-        }
-
-        // add applications to container/system configuration
-        $configuration->addChild($applicationConfiguration);
-        $this->mergeInSystemConfiguration($applicationConfiguration);
-
         // unlock the mutex to allow other containers own deployment
         \Mutex::unlock($this->mutex);
 
-        // create and start the container instance
-        $containerInstance = $this->newInstance($containerType, array(
+        // load the container node
+        $containerNode = $this->getContainerNode();
+
+        // create the container instance
+        $containerInstance = $this->newInstance($containerNode->getType(), array(
             $this->getInitialContext(),
-            $configuration,
+            $containerNode,
             $applications
         ));
 
+        // finally start the container instance
         $containerInstance->run();
     }
 
     /**
-     * Merge the passed application configurations into the system configuration
-     * and refreshes it in the initial context, to make it available to the API.
+     * (non-PHPdoc)
      *
-     * @param \TechDivision\ApplicationServer\Configuration $applicationConfigurations
-     *            The application configurations to merge into the system configuration
+     * @see \TechDivision\ApplicationServer\InitialContext::newService()
      */
-    public function mergeInSystemConfiguration(Configuration $applicationConfiguration)
+    public function newService($className)
     {
-        $systemConfiguration = $this->getInitialContext()->getSystemConfiguration();
-        foreach ($systemConfiguration->getChilds(self::XPATH_CONTAINERS) as $containerConfiguration) {
-            $containerConfiguration->addChild($applicationConfiguration);
-        }
-        $this->getInitialContext()->setSystemConfiguration($systemConfiguration);
+        return $this->getInitialContext()->newService($className);
     }
 
     /**
-     * Creates a new instance of the passed class name and passes the
-     * args to the instance constructor.
+     * (non-PHPdoc)
      *
-     * @param string $className
-     *            The class name to create the instance of
-     * @param array $args
-     *            The parameters to pass to the constructor
-     * @return object The created instance
+     * @see \TechDivision\ApplicationServer\InitialContext::newInstance()
      */
     public function newInstance($className, array $args = array())
     {
@@ -145,27 +110,28 @@ class ContainerThread extends AbstractContextThread
     }
 
     /**
-     * The configuration found in the cfg/appserver.xml file.
+     * Return's the container node.
      *
-     * @return \TechDivision\ApplicationServer\Configuration The configuration instance
+     * @return \TechDivision\ApplicationServer\Api\Node\ContainerNode The container node
      */
-    public function getConfiguration()
+    public function getContainerNode()
     {
-        return $this->configuration;
+        return $this->containerNode;
     }
 
     /**
+     * Returns the deployment interface for the container for
+     * this container thread.
      *
-     * @return object
+     * @return \TechDivision\ApplicationServer\Interfaces\DeploymentInterface The deployment instance for this container thread
      */
     public function getDeployment()
     {
-        $deploymentType = $this->getConfiguration()
-            ->getChild(self::XPATH_CONTAINER_DEPLOYMENT)
-            ->getType();
-        return $this->newInstance($deploymentType, array(
+        $deploymentNode = $this->getContainerNode()->getDeployment();
+        return $this->newInstance($deploymentNode->getType(), array(
             $this->getInitialContext(),
-            $this
+            $this->getContainerNode(),
+            $deploymentNode
         ));
     }
 }

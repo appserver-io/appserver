@@ -36,10 +36,7 @@ class ServerTest extends AbstractTest
      */
     public function setUp()
     {
-        $configuration = new Configuration();
-        $configuration->initFromFile(__DIR__ . '/_files/appserver.xml');
-        $configuration->addChildWithNameAndValue('baseDirectory', '/opt/appserver');
-        $this->server = new Server($configuration);
+        $this->server = new Server($this->getAppserverConfiguration());
     }
 
     /**
@@ -63,57 +60,13 @@ class ServerTest extends AbstractTest
     }
 
     /**
-     * Test if the configuration has been passed successfully.
+     * Test if the system configuration has been passed successfully.
      *
      * @return void
      */
-    public function testGetConfiguration()
+    public function testGetSystemConfiguration()
     {
-        $this->assertInstanceOf('TechDivision\ApplicationServer\Configuration', $this->server->getConfiguration());
-    }
-
-    /**
-     * Test if the base directory has been initialized.
-     *
-     * @return void
-     */
-    public function testGetBaseDirectory()
-    {
-        $this->assertEquals('/opt/appserver', $this->server->getBaseDirectory());
-    }
-
-    /**
-     * Test if the container configuration has been initialized.
-     *
-     * @return void
-     */
-    public function testGetContainerConfiguration()
-    {
-        $this->assertCount(3, $this->server->getContainerConfiguration());
-    }
-
-    /**
-     * Test if the system logger configuration has been initialized.
-     *
-     * @return void
-     */
-    public function testGetSystemLoggerConfiguration()
-    {
-        $systemLoggerConfiguration = $this->server->getSystemLoggerConfiguration();
-        $this->assertInstanceOf('TechDivision\ApplicationServer\Configuration', $systemLoggerConfiguration);
-        $this->assertEquals('Monolog\Logger', $systemLoggerConfiguration->getType());
-    }
-
-    /**
-     * Test if the initial context configuration has been initialized.
-     *
-     * @return void
-     */
-    public function testGetInitialContextConfiguration()
-    {
-        $initialContextConfiguration = $this->server->getInitialContextConfiguration();
-        $this->assertInstanceOf('TechDivision\ApplicationServer\Configuration', $initialContextConfiguration);
-        $this->assertEquals('TechDivision\ApplicationServer\InitialContext', $initialContextConfiguration->getType());
+        $this->assertInstanceOf('TechDivision\ApplicationServer\Api\Node\AppserverNode', $this->server->getSystemConfiguration());
     }
 
     /**
@@ -137,7 +90,8 @@ class ServerTest extends AbstractTest
         $className = 'TechDivision\ApplicationServer\Mock\MockContainerThread';
         $instance = $this->server->newInstance($className, array(
             $this->server->getInitialContext(),
-            \Mutex::create(false)
+            \Mutex::create(false),
+            $id = 1
         ))
         ;
         $this->assertInstanceOf($className, $instance);
