@@ -1,5 +1,5 @@
 <initialContext type="TechDivision\ApplicationServer\InitialContext">
-	<description><![CDATA[The initial context configuration.]]></description>
-	<classLoader type="TechDivision\ApplicationServer\SplClassLoader"/>
-	<storage type="TechDivision\ApplicationServer\Mock\InitialContext\MockStorage"/>
+    <description><![CDATA[The initial context configuration.]]></description>
+    <classLoader type="TechDivision\ApplicationServer\SplClassLoader"/>
+    <storage type="TechDivision\ApplicationServer\Mock\InitialContext\MockStorage"/>
 </initialContext>

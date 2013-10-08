@@ -16,6 +16,9 @@ use TechDivision\ApplicationServer\SplClassLoader;
 use TechDivision\ApplicationServer\InitialContext;
 use TechDivision\ApplicationServer\Configuration;
 use TechDivision\ApplicationServer\ContainerThread;
+use TechDivision\ApplicationServer\Api\Node\NodeInterface;
+use TechDivision\ApplicationServer\Api\Node\AppserverNode;
+use \Psr\Log\LoggerInterface;
 
 /**
  *
@@ -29,46 +32,18 @@ class Server
 {
 
     /**
-     * XPath expression for the container configurations.
-     *
-     * @var string
-     */
-    const XPATH_CONTAINERS = '/appserver/containers/container';
-
-    /**
-     * XPath expression for the container's base directory configuration.
-     *
-     * @var string
-     */
-    const XPATH_BASE_DIRECTORY = '/appserver/baseDirectory';
-
-    /**
-     * XPath expression for the initial context configuration.
-     *
-     * @var string
-     */
-    const XPATH_INITIAL_CONTEXT = '/appserver/initialContext';
-
-    /**
-     * XPath expression for the system logger configuration.
-     *
-     * @var string
-     */
-    const XPATH_SYSTEM_LOGGER = '/appserver/systemLogger';
-
-    /**
      * Initialize the array for the running threads.
      *
-     * @var array
+     * @var array<\Thread>
      */
     protected $threads = array();
 
     /**
-     * The container configuration.
+     * The system configuration.
      *
-     * @var \TechDivision\ApplicationServer\Configuration
+     * @var \TechDivision\ApplicationServer\Api\Node\NodeInterface
      */
-    protected $configuration;
+    protected $systemConfiguration;
 
     /**
      * The server's initial context instance.
@@ -85,43 +60,65 @@ class Server
     protected $systemLogger;
 
     /**
-     * The mutex toprevent PHAR deployment errors
+     * The mutex to prevent PHAR deployment errors.
      *
-     * @var \Mutex
+     * @var integer
      */
     protected $mutex;
 
     /**
-     * Initializes the the server with the base directory.
+     * Initializes the the server with the parsed configuration file.
      *
-     * @param string $baseDirectory
-     *            The application servers base directory
-     * @param string $configurationFile
-     *            The path to the configuration file relativ to the base directory
+     * @param \TechDivision\ApplicationServer\Configuration $configuration
+     *            The parsed configuration file
      * @return void
      */
-    public function __construct($configuration)
+    public function __construct(Configuration $configuration)
     {
 
         // initialize the configuration and the base directory
-        $this->configuration = $configuration;
+        $systemConfiguration = new AppserverNode();
+        $systemConfiguration->initFromConfiguration($configuration);
+        $this->setSystemConfiguration($systemConfiguration);
 
         // initialize the mutex to prevent PHAR deployment errors
-        $this->mutex = \Mutex::create(false);
+        $this->setMutex(\Mutex::create(false));
 
         // initialize the server
         $this->init();
     }
 
     /**
-     * Destroys the mutexes.
+     * Destroys the mutex to prevent PHAR deployment errors.
      *
      * @return void
      */
     public function __destruct()
     {
-        \Mutex::unlock($this->mutex);
-        \Mutex::destroy($this->mutex);
+        \Mutex::unlock($this->getMutex());
+        \Mutex::destroy($this->getMutex());
+    }
+
+    /**
+     * Set's the mutex to prevent PHAR deployment errors.
+     *
+     * @param
+     *            integer The mutex
+     * @return void
+     */
+    public function setMutex($mutex)
+    {
+        $this->mutex = $mutex;
+    }
+
+    /**
+     * Returns the mutex to prevent PHAR deployment errors.
+     *
+     * @return integer The mutex
+     */
+    public function getMutex()
+    {
+        return $this->mutex;
     }
 
     /**
@@ -145,52 +142,27 @@ class Server
     {
 
         // initialize the logger instance itself
-        $systemLoggerConfiguration = $this->getSystemLoggerConfiguration();
-        $this->systemLogger = $this->newInstance($systemLoggerConfiguration->getType(), array(
-            $systemLoggerConfiguration->getChannelName()
+        $systemLoggerNode = $this->getSystemConfiguration()->getSystemLogger();
+        $systemLogger = $this->newInstance($systemLoggerNode->getType(), array(
+            $systemLoggerNode->getChannelName()
         ));
 
         // initialize the processors
-        foreach ($systemLoggerConfiguration->getChilds('/systemLogger/processors/processor') as $processorConfiguration) {
-            $params = array();
-            if ($processorConfiguration->getParams() != null) {
-                foreach ($processorConfiguration->getParams()->getChilds('/params/param') as $param) {
-                    $value = $param->getValue();
-                    settype($value, $param->getType());
-                    $params[$param->getName()] = $value;
-                }
-            }
-            $processor = $this->newInstance($processorConfiguration->getType(), $params);
-            $this->systemLogger->pushProcessor($processor);
+        foreach ($systemLoggerNode->getProcessors() as $processorNode) {
+            $processor = $this->newInstance($processorNode->getType(), $processorNode->getParamsAsArray());
+            $systemLogger->pushProcessor($processor);
         }
 
         // initialize the handlers
-        foreach ($systemLoggerConfiguration->getChilds('/systemLogger/handlers/handler') as $handlerConfiguration) {
-            $params = array();
-            if ($handlerConfiguration->getParams() != null) {
-                foreach ($handlerConfiguration->getParams()->getChilds('/params/param') as $param) {
-                    $value = $param->getValue();
-                    settype($value, $param->getType());
-                    $params[$param->getName()] = $value;
-                }
-            }
-            $handler = $this->newInstance($handlerConfiguration->getType(), $params);
-
-            // initialize the handlers formatter
-            $params = array();
-            $formatterConfiguration = $handlerConfiguration->getFormatter();
-            if ($formatterConfiguration->getParams() != null) {
-                foreach ($formatterConfiguration->getParams()->getChilds('/params/param') as $param) {
-                    $value = $param->getValue();
-                    settype($value, $param->getType());
-                    $params[$param->getName()] = $value;
-                }
-            }
-
-            // set the handlers formatter and add the handler to the logger
-            $handler->setFormatter($this->newInstance($formatterConfiguration->getType(), $params));
-            $this->systemLogger->pushHandler($handler);
+        foreach ($systemLoggerNode->getHandlers() as $handlerNode) {
+            $handler = $this->newInstance($handlerNode->getType(), $handlerNode->getParamsAsArray());
+            $formatterNode = $handlerNode->getFormatter();
+            $handler->setFormatter($this->newInstance($formatterNode->getType(), $formatterNode->getParamsAsArray()));
+            $systemLogger->pushHandler($handler);
         }
+
+        // set the initialized logger finally
+        $this->setSystemLogger($systemLogger);
     }
 
     /**
@@ -200,13 +172,13 @@ class Server
      */
     protected function initInitialContext()
     {
-        $reflectionClass = new \ReflectionClass($this->getInitialContextConfiguration()->getType());
-        $this->initialContext = $reflectionClass->newInstanceArgs(array(
-            $this->getInitialContextConfiguration()
+        $initialContextNode = $this->getSystemConfiguration()->getInitialContext();
+        $reflectionClass = new \ReflectionClass($initialContextNode->getType());
+        $initialContext = $reflectionClass->newInstanceArgs(array(
+            $this->getSystemConfiguration()
         ));
-
-        // add the system configuration to the initial context
-        $this->initialContext->setSystemConfiguration($this->configuration);
+        // set the initial context
+        $this->setInitialContext($initialContext);
     }
 
     /**
@@ -217,21 +189,18 @@ class Server
     protected function initContainers()
     {
 
-        // start each container in his own thread
-        foreach ($this->getContainerConfiguration() as $containerConfiguration) {
-
-            // pass the base directory through to the container configuration
-            $containerConfiguration->addChild($this->getBaseDirectoryConfiguration());
+        // and initialize a container thread for each container
+        foreach ($this->getSystemConfiguration()->getContainers() as $containerNode) {
 
             // initialize the container configuration with the base directory and pass it to the thread
             $params = array(
                 $this->getInitialContext(),
-                $containerConfiguration,
-                $this->mutex
+                $this->getMutex(),
+                $containerNode
             );
 
-            $threadType = $containerConfiguration->getThreadType();
-            $this->threads[] = $this->newInstance($threadType, $params);
+            // create and append the thread instance to the internal array
+            $this->threads[] = $this->newInstance($containerNode->getThreadType(), $params);
         }
     }
 
@@ -246,13 +215,35 @@ class Server
     }
 
     /**
-     * Returns the container configuration.
+     * Set's the system configuration.
      *
-     * @return \TechDivision\ApplicationServer\Configuration The container configuration
+     * @return \TechDivision\ApplicationServer\Api\Node\NodeInterface The system configuration
      */
-    public function getConfiguration()
+    public function setSystemConfiguration(NodeInterface $systemConfiguration)
     {
-        return $this->configuration;
+        return $this->systemConfiguration = $systemConfiguration;
+    }
+
+    /**
+     * Returns the system configuration.
+     *
+     * @return \TechDivision\ApplicationServer\Api\Node\NodeInterface The system configuration
+     */
+    public function getSystemConfiguration()
+    {
+        return $this->systemConfiguration;
+    }
+
+    /**
+     * Set's the initial context instance.
+     *
+     * @param \TechDivision\ApplicationServer\InitialContext $initialContext
+     *            The initial context instance
+     * @return void
+     */
+    public function setInitialContext(InitialContext $initialContext)
+    {
+        return $this->initialContext = $initialContext;
     }
 
     /**
@@ -266,54 +257,15 @@ class Server
     }
 
     /**
-     * Returns the server's base directory.
+     * Set's the system logger instance.
      *
-     * @return string The server's base directory
-     * @see \TechDivision\ApplicationServer\Server::getBaseDirectoryConfiguration()
+     * @param \Psr\Log\LoggerInterface $systemLogger
+     *            The system logger
+     * @return void
      */
-    public function getBaseDirectory()
+    public function setSystemLogger(LoggerInterface $systemLogger)
     {
-        return $this->getBaseDirectoryConfiguration()->getValue();
-    }
-
-    /**
-     * Returns the server's base directory configuration.
-     *
-     * @return \TechDivision\ApplicationServer\Configuration The server's base directory configuration
-     */
-    public function getBaseDirectoryConfiguration()
-    {
-        return $this->getConfiguration()->getChild(self::XPATH_BASE_DIRECTORY);
-    }
-
-    /**
-     * Return's the initial context configuration.
-     *
-     * @return \TechDivision\ApplicationServer\Configuration The initial context configuration
-     */
-    public function getInitialContextConfiguration()
-    {
-        return $this->getConfiguration()->getChild(self::XPATH_INITIAL_CONTEXT);
-    }
-
-    /**
-     * Return's the system logger configuration.
-     *
-     * @return \TechDivision\ApplicationServer\Configuration The system logger configuration
-     */
-    public function getSystemLoggerConfiguration()
-    {
-        return $this->getConfiguration()->getChild(self::XPATH_SYSTEM_LOGGER);
-    }
-
-    /**
-     * Return's the container configuration.
-     *
-     * @return array<\TechDivision\ApplicationServer\Configuration> The container configuration
-     */
-    public function getContainerConfiguration()
-    {
-        return $this->getConfiguration()->getChilds(self::XPATH_CONTAINERS);
+        $this->systemLogger = $systemLogger;
     }
 
     /**
@@ -342,17 +294,22 @@ class Server
     }
 
     /**
-     * Returns a new instance of the passed class name.
+     * (non-PHPdoc)
      *
-     * @param string $className
-     *            The fully qualified class name to return the instance for
-     * @param array $args
-     *            Arguments to pass to the constructor of the instance
-     * @return object The instance itself
-     * @todo Has to be refactored to avoid registering autoloader on every call
+     * @see \TechDivision\ApplicationServer\InitialContext::newInstance()
      */
     public function newInstance($className, array $args = array())
     {
         return $this->getInitialContext()->newInstance($className, $args);
+    }
+
+    /**
+     * (non-PHPdoc)
+     *
+     * @see \TechDivision\ApplicationServer\InitialContext::newService()
+     */
+    public function newService($className)
+    {
+        return $this->getInitialContext()->newService($className);
     }
 }

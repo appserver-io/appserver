@@ -14,7 +14,8 @@
         "monolog/monolog": "*",
         "herrera-io/annotations": "1.0.*",
         "techdivision/socket": "dev-master",
-        "techdivision/stream": "dev-master"
+        "techdivision/stream": "dev-master",
+        "rhumsaa/uuid": "~2.4"
     },
     "autoload": {
         "psr-0": {

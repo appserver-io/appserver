@@ -27,47 +27,26 @@ abstract class AbstractContainer extends \Stackable implements ContainerInterfac
 {
 
     /**
-     * Path to the container's receiver configuration.
-     * 
-     * @var string
-     */
-    const XPATH_CONFIGURATION_RECEIVER = '/container/receiver';
-
-    /**
-     * Path to the receiver's worker.
-     * 
-     * @var string
-     */
-    const XPATH_CONFIGURATION_WORKER = '/container/receiver/worker';
-
-    /**
-     * Path to the receiver's worker.
-     * 
-     * @var string
-     */
-    const XPATH_CONFIGURATION_THREAD = '/container/receiver/thread';
-
-    /**
      * Array with deployed applications.
-     * 
+     *
      * @var array
      */
     protected $applications = array();
 
     /**
-     * The container configuration.
-     * 
-     * @var \TechDivision\ApplicationServer\Interfaces\ContainerConfiguration
-     */
-    protected $configuration;
-
-    /**
      * The server instance.
-     * 
+     *
      * @var \TechDivision\ApplicationServer\Server
      */
     protected $server;
-    
+
+    /**
+     * The container node.
+     *
+     * @var \TechDivision\ApplicationServer\Api\Node\ContainerNode
+     */
+    protected $containerNode;
+
     /**
      * TRUE if the container has been started, else FALSE.
      * @var boolean
@@ -75,20 +54,43 @@ abstract class AbstractContainer extends \Stackable implements ContainerInterfac
     protected $started = false;
 
     /**
-     * Initializes the server instance with the configuration.
+     * Initializes the container with the initial context, the unique container ID
+     * and the deployed applications.
      *
-     * @param \TechDivision\ApplicationServer\Server $server
-     *            The server instance
-     * @param \TechDivision\ApplicationServer\Configuration $configuration
-     *            The container configuration
+     * @param \TechDivision\ApplicationServer\InitialContext $initialContext
+     *            The initial context instance
+     * @param \TechDivision\ApplicationServer\Api\Node\ContainerNode $containerNode
+     *            The container's UUID
      * @todo Application deployment only works this way because of Thread compatibilty
      * @return void
      */
-    public function __construct($initialContext, $configuration, $applications)
+    public function __construct($initialContext, $containerNode, $applications)
     {
         $this->initialContext = $initialContext;
-        $this->setConfiguration($configuration);
+        $this->setContainerNode($containerNode);
         $this->setApplications($applications);
+    }
+
+    /**
+     * Set's the app node the application is belonging to
+     *
+     * @param \TechDivision\ApplicationServer\Api\Node\AppNode $appNode
+     *            The app node the application is belonging to
+     * @return void
+     */
+    public function setContainerNode($containerNode)
+    {
+        $this->containerNode = $containerNode;
+    }
+
+    /**
+     * Return's the container node.
+     *
+     * @return \TechDivision\ApplicationServer\Api\Node\ContainerNode The container node
+     */
+    public function getContainerNode()
+    {
+        return $this->containerNode;
     }
 
     /**
@@ -136,81 +138,33 @@ abstract class AbstractContainer extends \Stackable implements ContainerInterfac
     }
 
     /**
-     * Sets the passed container configuration.
-     *
-     * @param \TechDivision\ApplicationServer\Interfaces\ContainerConfiguration $configuration
-     *            The configuration for the container
-     * @return \TechDivision\ServletContainer\Container The container instance itself
-     */
-    public function setConfiguration($configuration)
-    {
-        $this->configuration = $configuration;
-        return $this;
-    }
-
-    /**
-     * Returns the actual container configuration.
-     *
-     * @return \TechDivision\ApplicationServer\Interfaces\ContainerConfiguration The actual container configuration
-     */
-    public function getConfiguration()
-    {
-        return $this->configuration;
-    }
-
-    /**
-     * Return's the path to the container's receiver configuration.
-     *
-     * @return \TechDivision\ApplicationServer\Configuration The receiver configuration instance
-     */
-    public function getReceiverConfiguration()
-    {
-        return current($this->getConfiguration()->getChilds(self::XPATH_CONFIGURATION_RECEIVER));
-    }
-
-    /**
      * Return's the class name of the container's receiver type.
      *
      * @return string The class name of the container's receiver type
      */
     public function getReceiverType()
     {
-        return $this->getReceiverConfiguration()->getType();
+        return $this->getContainerNode()->getReceiver()->getType();
     }
 
     /**
-     * Return's the class name of the receiver's worker type.
+     * (non-PHPdoc)
      *
-     * @return string The class name of the receiver's worker type
-     */
-    public function getWorkerType()
-    {
-        return current($this->getConfiguration()->getChilds(self::XPATH_CONFIGURATION_WORKER))->getType();
-    }
-
-    /**
-     * Return's the class name of the receiver's thread type.
-     *
-     * @return string The class name of the receiver's thread type
-     */
-    public function getThreadType()
-    {
-        return current($this->getConfiguration()->getChilds(self::XPATH_CONFIGURATION_THREAD))->getType();
-    }
-
-    /**
-     * Creates a new instance of the passed class name and passes the
-     * args to the instance constructor.
-     *
-     * @param string $className
-     *            The class name to create the instance of
-     * @param array $args
-     *            The parameters to pass to the constructor
-     * @return object The created instance
+     * @see \TechDivision\ApplicationServer\InitialContext::newInstance()
      */
     public function newInstance($className, array $args = array())
     {
         return $this->initialContext->newInstance($className, $args);
+    }
+
+    /**
+     * (non-PHPdoc)
+     *
+     * @see \TechDivision\ApplicationServer\InitialContext::newService()
+     */
+    public function newService($className)
+    {
+        return $this->getInitialContext()->newService($className);
     }
 
     /**
@@ -222,20 +176,20 @@ abstract class AbstractContainer extends \Stackable implements ContainerInterfac
     {
         return $this->initialContext;
     }
-    
+
     /**
      * Marks the container as started.
-     * 
+     *
      * @return void
      */
     public function setStarted()
     {
         $this->started = true;
     }
-    
+
     /**
      * Returns TRUE if the container has been started, else FALSE.
-     * 
+     *
      * @return boolean TRUE if the container has been started, else FALSE
      */
     public function isStarted()

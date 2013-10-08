@@ -14,6 +14,7 @@ namespace TechDivision\ApplicationServer\Api;
 use TechDivision\ApplicationServer\Configuration;
 use TechDivision\ApplicationServer\InitialContext;
 use TechDivision\ApplicationServer\Api\ServiceInterface;
+use TechDivision\ApplicationServer\Api\Node\NodeInterface;
 use TechDivision\PersistenceContainer\Application;
 
 /**
@@ -29,11 +30,11 @@ abstract class AbstractService implements ServiceInterface
 {
 
     /**
-     * Primary key field to use for container entity.
+     * The node type to normalize to.
      *
      * @var string
      */
-    const PRIMARY_KEY = 'id';
+    CONST NODE_TYPE = 'TechDivision\ApplicationServer\Api\Node\AppserverNode';
 
     /**
      * The initial context instance containing the system configuration.
@@ -43,7 +44,22 @@ abstract class AbstractService implements ServiceInterface
     protected $initialContext;
 
     /**
-     * Initializes the service with the initial context instance.
+     * The normalizer instance to use.
+     *
+     * @var \TechDivision\ApplicationServer\Api\NormalizerInterface
+     */
+    protected $normalizer;
+
+    /**
+     * The initialized base directory node.
+     *
+     * @var \TechDivision\ApplicationServer\Api\Node\NodeInterface
+     */
+    protected $node;
+
+    /**
+     * Initializes the service with the initial context instance and the
+     * default normalizer instance.
      *
      * @param \TechDivision\ApplicationServer\InitialContext $initialContext
      *            The initial context instance
@@ -54,19 +70,39 @@ abstract class AbstractService implements ServiceInterface
         $this->initialContext = $initialContext;
     }
 
+    /**
+     * (non-PHPdoc)
+     *
+     * @see \TechDivision\ApplicationServer\Api\ServiceInterface::getInitialContext()
+     */
     public function getInitialContext()
     {
         return $this->initialContext;
     }
 
+    /**
+     * (non-PHPdoc)
+     *
+     * @see \TechDivision\ApplicationServer\Api\ServiceInterface::getSystemConfiguration()
+     */
     public function getSystemConfiguration()
     {
         return $this->getInitialContext()->getSystemConfiguration();
     }
 
     /**
+     * (non-PHPdoc)
      *
-     * @see \TechDivision\ApplicationServer\InitialContext::newInstance($className, array $args = array())
+     * @see \TechDivision\ApplicationServer\Api\ServiceInterface::setSystemConfiguration()
+     */
+    public function setSystemConfiguration($systemConfiguration)
+    {
+        $this->getInitialContext()->setSystemConfiguration($systemConfiguration);
+    }
+
+    /**
+     *
+     * @see \TechDivision\ApplicationServer\InitialContext::newInstance()
      */
     public function newInstance($className, array $args = array())
     {
@@ -74,30 +110,43 @@ abstract class AbstractService implements ServiceInterface
     }
 
     /**
-     * Normalizes the passed configuration node and returns a \stdClass
-     * representation of it.
+     * (non-PHPdoc)
      *
-     * @param \TechDivision\ApplicationServer\Configuration $configuration
-     *            The configuration node to normalize
-     * @return \stdClass The normalized configuration node
+     * @see \TechDivision\ApplicationServer\InitialContext::newService()
      */
-    public function normalize(Configuration $configuration)
+    public function newService($className)
     {
+        return $this->getInitialContext()->newService($className);
+    }
 
-        // initialize the \stdClass instance
-        $node = new \stdClass();
+    /**
+     * Returns the application servers base directory.
+     *
+     * @param string $directoryToAppend Append this directory to the base directory before returning it
+     * @return string The base directory
+     */
+    public function getBaseDirectory($directoryToAppend = null)
+    {
+        $baseDirectory = $this->getSystemConfiguration()
+            ->getBaseDirectory()
+            ->getNodeValue()
+            ->__toString();
 
-        // set the node value if available
-        if ($value = $configuration->getValue()) {
-            $node->value = $value;
+        if ($directoryToAppend != null) {
+            $baseDirectory .= $directoryToAppend;
         }
 
-        // set members by converting camel case to underscore (necessary for ember.js)
-        foreach ($configuration->getAllData() as $member => $value) {
-            $node->{strtolower(preg_replace('/([a-z])([A-Z])/', '$1_$2', $member))} = $value;
-        }
+        return $baseDirectory;
+    }
 
-        // return the normalized node instance
-        return $node;
+    /**
+     * Persists the system configuration.
+     *
+     * @param \TechDivision\ApplicationServer\Api\Node\NodeInterface
+     * @return void
+     */
+    public function persist(NodeInterface $node)
+    {
+        // implement this
     }
 }

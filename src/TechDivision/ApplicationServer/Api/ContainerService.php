@@ -26,96 +26,41 @@ class ContainerService extends AbstractService
 {
 
     /**
-     * XPath expression for the container configurations.
+     * Return's all container node configurations.
      *
-     * @var string
-     */
-    const XPATH_CONTAINERS = '/appserver/containers/container';
-
-    /**
-     * XPath expression for the application configurations.
-     *
-     * @var string
-     */
-    const XPATH_APPLICATION = '/container/applications/application';
-
-    /**
-     * Return's all container configurations.
-     *
-     * @return array<\stdClass> An array with all container configurations
+     * @return array<\TechDivision\ApplicationServer\Api\Node\ContainerNode> An array with container node configurations
      * @see \TechDivision\ApplicationServer\Api\ServiceInterface::findAll()
      */
     public function findAll()
     {
-        $containers = array();
-        $containerIds = 1;
-
-        foreach ($this->getSystemConfiguration()->getChilds(self::XPATH_CONTAINERS) as $containerConfiguration) {
-
-            $containerConfiguration->setData(self::PRIMARY_KEY, $containerIds ++);
-            $container = $this->normalize($containerConfiguration);
-            $container->app_ids = array();
-
-            $appIds = 1;
-            foreach ($containerConfiguration->getChilds(self::XPATH_APPLICATION) as $application) {
-                $container->app_ids[] = $appIds;
-                $appIds ++;
-            }
-
-            $containers[] = $container;
-        }
-        return array(
-            'containers' => $containers
-        );
+        return $this->getSystemConfiguration()->getContainers();
     }
 
     /**
-     * Returns the containers with the passed name.
+     * Returns the container for the passed UUID.
      *
-     * @param integer $id
-     *            ID of the container to return
-     * @return \stdClass The container with the ID passed as parameter
-     * @see \TechDivision\ApplicationServer\Api\ServiceInterface::load($id)
+     * @param string $uuid
+     *            Unique UUID of the container to return
+     * @return \TechDivision\ApplicationServer\Api\Node\ContainerNode The container with the UUID passed as parameter
+     * @see \TechDivision\ApplicationServer\Api\ServiceInterface::load($uuid)
      */
-    public function load($id)
+    public function load($uuid)
     {
         $containers = $this->findAll();
-        foreach ($containers['containers'] as $container) {
-            if ($container->{self::PRIMARY_KEY} == $id) {
-                return array(
-                    'container' => $container
-                );
-            }
+        if (array_key_exists($uuid, $containers)) {
+            return $containers[$uuid];
         }
     }
 
     /**
-     * Creates a new container based on the passed information.
+     * Returns the application base directory for the container
+     * with the passed UUID.
      *
-     * @param \stdClass $stdClass
-     *            The data with the information for the container to be created
-     * @see \TechDivision\ApplicationServer\Api\ServiceInterface::create($id)
+     * @param string $uuid UUID of the container to return the application base directory for
+     * @return string The application base directory for this container
      */
-    public function create($stdClass)
-    {}
-
-    /**
-     * Updates the container with the passed data.
-     *
-     * @param \stdClass $stdClass
-     *            The container data to update
-     * @see \TechDivision\ApplicationServer\Api\ServiceInterface::update($id)
-     */
-    public function update($stdClass)
-    {}
-
-    /**
-     * Deletes the container with passed ID.
-     *
-     * @param string $id
-     *            The ID of the container to be deleted
-     * @see \TechDivision\ApplicationServer\Api\ServiceInterface::delete($id)
-     */
-    public function delete($id)
-    {}
+    public function getAppBase($uuid)
+    {
+        return $this->load($uuid)->getHost()->getAppBase();
+    }
 }

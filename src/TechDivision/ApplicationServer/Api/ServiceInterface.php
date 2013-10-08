@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * TechDivision\ApplicationServer\Api\ServiceInterface
  *
@@ -12,6 +11,7 @@
  */
 namespace TechDivision\ApplicationServer\Api;
 
+use Symfony\Component\Config\Definition\NodeInterface;
 /**
  * This interface defines the basic method each API service has
  * to provide.
@@ -35,29 +35,30 @@ interface ServiceInterface
     /**
      * Returns the system configuration.
      *
-     * @return \TechDivision\ApplicationServer\Configuration The system configuration
+     * @return \TechDivision\ApplicationServer\Api\Node\AppserverNode The system configuration
+     */
+    public function setSystemConfiguration($systemConfiguration);
+
+    /**
+     * Returns the system configuration.
+     *
+     * @return \TechDivision\ApplicationServer\Api\Node\AppserverNode The system configuration
      */
     public function getSystemConfiguration();
 
     /**
-     * Return's all container configurations.
+     * Return's all nodes.
      *
-     * @return array<\stdClass> An array with all container configurations
+     * @return array<\TechDivision\ApplicationServer\Api\Node\NodeInterface> An array with all nodes
      */
     public function findAll();
 
     /**
-     * Returns the containers with the passed name.
+     * Returns the node with the passed UUID.
      *
-     * @param integer $id
-     *            ID of the container to return
-     * @return \stdClass The container with the ID passed as parameter
+     * @param integer $uuid
+     *            UUID of the node to return
+     * @return \TechDivision\ApplicationServer\Api\Node\NodeInterface The node with the UUID passed as parameter
      */
-    public function load($id);
-
-    public function create($stdClass);
-
-    public function update($stdClass);
-
-    public function delete($id);
+    public function load($uuid);
 }

@@ -9,7 +9,7 @@
  * that is available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  */
-namespace TechDivision\ApplicationServerApi\Services;
+namespace TechDivision\ApplicationServer\Api;
 
 use TechDivision\ApplicationServer\Api\AbstractService;
 
@@ -28,50 +28,20 @@ class VhostService extends AbstractService
     /**
      * Returns all vhost configurations.
      *
-     * @return array<\stdClass> An array with all vhost configurations
+     * @return \stdClass The vhost configurations
      * @see \TechDivision\ApplicationServer\Api\ServiceInterface::findAll()
      */
     public function findAll()
     {}
 
     /**
-     * Returns the vhost with the passed name.
+     * Returns the vhost with the passed UUID.
      *
-     * @param string $name
-     *            Name of the vhost to return
-     * @return \stdClass The vhost with the name passed as parameter
-     * @see \TechDivision\ApplicationServer\Api\ServiceInterface::load($id)
+     * @param string $uuid
+     *            The UUID of the vhost to return
+     * @return \TechDivision\ApplicationServer\Api\Node\VhostNode The vhost with the UUID passed as parameter
+     * @see \TechDivision\ApplicationServer\Api\ServiceInterface::load()
      */
-    public function load($id)
-    {}
-
-    /**
-     * Creates a new vhost based on the passed information.
-     *
-     * @param \stdClass $stdClass
-     *            The data with the information for the vhost to be created
-     * @see \TechDivision\ApplicationServer\Api\ServiceInterface::create($id)
-     */
-    public function create($stdClass)
-    {}
-
-    /**
-     * Updates the vhost with the passed data.
-     *
-     * @param \stdClass $stdClass
-     *            The vhost data to update
-     * @see \TechDivision\ApplicationServer\Api\ServiceInterface::update($id)
-     */
-    public function update($stdClass)
-    {}
-
-    /**
-     * Deletes the vhost with passed ID.
-     *
-     * @param string $id
-     *            The ID of the vhost to be deleted
-     * @see \TechDivision\ApplicationServer\Api\ServiceInterface::delete($id)
-     */
-    public function delete($id)
+    public function load($uuid)
     {}
 }

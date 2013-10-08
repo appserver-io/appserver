@@ -16,6 +16,7 @@ use TechDivision\ApplicationServer\Mock\MockContainer;
 use TechDivision\ApplicationServer\Mock\MockReceiver;
 use TechDivision\ApplicationServer\Configuration;
 use TechDivision\ApplicationServer\InitialContext;
+use TechDivision\ApplicationServer\Api\Node\ContainerNode;
 
 /**
  *
@@ -56,10 +57,8 @@ class AbstractReceiverTest extends AbstractTest
      */
     public function setUp()
     {
-        $configuration = new Configuration();
-        $configuration->initFromFile('_files/appserver_initial_context.xml');
-        $this->initialContext = new InitialContext($configuration);
-        $this->container = new MockContainer($this->initialContext, $this->getContainerConfiguration(), $this->getMockApplications());
+        $this->container = $this->getMockContainer();
+        $this->initialContext = $this->container->getInitialContext();
         $this->receiver = new MockReceiver($this->initialContext, $this->container);
     }
 
@@ -108,18 +107,6 @@ class AbstractReceiverTest extends AbstractTest
     }
 
     /**
-     * Test's that the worker number specified in the configuration file
-     * returns null if not specified.
-     *
-     * @return void
-     */
-    public function testGetWorkerNumberWithMissingConfiguration()
-    {
-        $this->receiver->getConfiguration()->removeChilds(MockReceiver::XPATH_CONFIGURATION_PARAMETERS);
-        $this->assertNull($this->receiver->getWorkerNumber());
-    }
-
-    /**
      * Test's that the address specified in the configuration file
      * is the same as returned by the getter.
      *
@@ -131,18 +118,6 @@ class AbstractReceiverTest extends AbstractTest
     }
 
     /**
-     * Test's that the address specified in the configuration file
-     * returns null if not specified.
-     *
-     * @return void
-     */
-    public function testGetAddressWithMissingConfiguration()
-    {
-        $this->receiver->getConfiguration()->removeChilds(MockReceiver::XPATH_CONFIGURATION_PARAMETERS);
-        $this->assertNull($this->receiver->getAddress());
-    }
-
-    /**
      * Test's that the port specified in the configuration file
      * is the same as returned by the getter.
      *
@@ -151,18 +126,6 @@ class AbstractReceiverTest extends AbstractTest
     public function testGetPort()
     {
         $this->assertSame(8586, $this->receiver->getPort());
-    }
-
-    /**
-     * Test's that the port specified in the configuration file
-     * returns null if not specified.
-     *
-     * @return void
-     */
-    public function testGetPortWithMissingConfiguration()
-    {
-        $this->receiver->getConfiguration()->removeChilds(MockReceiver::XPATH_CONFIGURATION_PARAMETERS);
-        $this->assertNull($this->receiver->getPort());
     }
 
     /**
