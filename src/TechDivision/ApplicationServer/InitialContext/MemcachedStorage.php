@@ -116,9 +116,11 @@ class MemcachedStorage extends AbstractStorage
      */
     public function flush()
     {
-        foreach ($this->getAllKeys() as $key) {
-            if (substr_compare($key, $this->getIdentifier(), 0)) {
-                $this->remove($key);
+        if ($allKeys = $this->getAllKeys()) {
+            foreach ($allKeys as $key) {
+                if (substr_compare($key, $this->getIdentifier(), 0)) {
+                    $this->remove($key);
+                }
             }
         }
     }
