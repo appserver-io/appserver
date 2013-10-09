@@ -177,8 +177,9 @@ class Server
         $initialContext = $reflectionClass->newInstanceArgs(array(
             $this->getSystemConfiguration()
         ));
-        // set the initial context
+        // set the initial context and flush it initially
         $this->setInitialContext($initialContext);
+        $this->getInitialContext()->getStorage()->flush();
     }
 
     /**
