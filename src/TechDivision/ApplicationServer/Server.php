@@ -179,7 +179,6 @@ class Server
         ));
         // set the initial context and flush it initially
         $this->setInitialContext($initialContext);
-        $this->getInitialContext()->getStorage()->flush();
     }
 
     /**
