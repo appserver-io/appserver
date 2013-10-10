@@ -1,5 +1,5 @@
 # Introduction
-The objective of the project is to develop a multi-threaded application server for PHP, written in PHP. Yes, pure PHP! You think we're serious? Maybe! But we think, in order to enable as many developers in our great community, this will be the one and only way to enable you helping us. Through the broadest possible support of the PHP community we hopefully establish this solution as the standard for enterprise applications in PHP environment.
+The objective of the project is to develop a multi-threaded application server for PHP, written in PHP. Yes, pure PHP! You think we aren't serious? Maybe! But we think, in order to enable as many developers in our great community, this will be the one and only way to enable you helping us. Through the broadest possible support of the PHP community we hopefully establish this solution as the standard for enterprise applications in PHP environment.
 
 # Highlights
 * Servlet engine, with full HTTP 1.1 support
