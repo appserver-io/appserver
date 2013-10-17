@@ -316,16 +316,15 @@ abstract class AbstractApplication implements ApplicationInterface
      */
     public function newAppNode()
     {
-
+        // create a new AppNode and initialize it with the values from this instance
         $appNode = $this->newInstance('TechDivision\ApplicationServer\Api\Node\AppNode');
         $appNode->setNodeName('application');
         $appNode->setName($this->getName());
         $appNode->setWebappPath($this->getWebappPath());
         $appNode->setParentUuid($this->getContainerNode()->getParentUuid());
         $appNode->setUuid($appNode->newUuid());
-
+        // set the AppNode in the instance itself and return it
         $this->setAppNode($appNode);
-
         return $appNode;
     }
 }
