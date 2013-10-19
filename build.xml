@@ -13,7 +13,7 @@
 	<property name="unique.name" value="${codepool}/${namespace}/${module}" />
 	<property name="php-src.dir" value="${basedir}/src" />
 	<property name="php-test.dir" value="${basedir}/tests" />
-	<property name="php-target.dir" value="${basedir}/targ  et"/>
+	<property name="php-target.dir" value="${basedir}/target"/>
 
 	<!-- ==================================================================== -->
 	<!-- Cleans the directories with the generated source files				  -->
