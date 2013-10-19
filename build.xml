@@ -13,8 +13,8 @@
 	<property name="unique.name" value="${codepool}/${namespace}/${module}" />
 	<property name="php-src.dir" value="${basedir}/src" />
 	<property name="php-test.dir" value="${basedir}/tests" />
-	<property name="php-target.dir" value="${basedir}/target"/>
-	
+	<property name="php-target.dir" value="${basedir}/targ  et"/>
+
 	<!-- ==================================================================== -->
 	<!-- Cleans the directories with the generated source files				  -->
 	<!-- ==================================================================== -->
@@ -162,5 +162,15 @@
     	<antcall target="pdepend"/>
     	<antcall target="phpmd"/>
     </target>
-	
+
+    <!-- ==================================================================== -->
+    <!-- Copies the documentation to the target directory                     -->
+    <!-- ==================================================================== -->
+    <target name="copy-doc" description="Copies the documentation to the target directory.">
+        <exec executable="make" dir="${basedir}/doc" failonerror="true">
+            <arg line="html" />
+        </exec>
+        <copy file="${doc.build.file}" tofile="${doc.target.file}" overwrite="true"/>
+    </target>
+
 </project>
