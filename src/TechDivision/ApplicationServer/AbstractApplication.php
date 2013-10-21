@@ -216,16 +216,6 @@ abstract class AbstractApplication implements ApplicationInterface
     /**
      * (non-PHPdoc)
      *
-     * @see \TechDivision\ApplicationServer\Interfaces\ApplicationInterface::getDocumentRoot()
-     */
-    public function getDocumentRoot()
-    {
-        return $this->getBaseDirectory($this->getAppBase());
-    }
-
-    /**
-     * (non-PHPdoc)
-     *
      * @see \TechDivision\ApplicationServer\Api\ApplicationService::getServerSoftware()
      */
     public function getServerSoftware()
