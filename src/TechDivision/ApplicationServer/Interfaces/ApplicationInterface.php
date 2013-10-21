@@ -64,14 +64,6 @@ interface ApplicationInterface
     public function getWebappPath();
 
     /**
-     * Returns the application servers base directory (the base directory appended
-     * with the container's webroot), /opt/appserver/webapps by default.
-     *
-     * @return string The container's document root directory
-     */
-    public function getDocumentRoot();
-
-    /**
      * Creates a new instance of the passed class name and passes the
      * args to the instance constructor.
      *
