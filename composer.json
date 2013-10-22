@@ -13,8 +13,8 @@
         "php" : ">=5.4.0",
         "monolog/monolog": "*",
         "herrera-io/annotations": "1.0.*",
-        "techdivision/socket": "~0.5.8@beta",
-        "techdivision/stream": "~0.5.8@beta",
+        "techdivision/socket": "~0.5.8@dev",
+        "techdivision/stream": "~0.5.8@dev",
         "rhumsaa/uuid": "~2.4"
     },
     "autoload": {

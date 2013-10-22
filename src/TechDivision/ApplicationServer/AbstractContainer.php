@@ -48,7 +48,15 @@ abstract class AbstractContainer extends \Stackable implements ContainerInterfac
     protected $containerNode;
 
     /**
+     * The container's base directory.
+     *
+     * @var string
+     */
+    protected $baseDirectory;
+
+    /**
      * TRUE if the container has been started, else FALSE.
+     * 
      * @var boolean
      */
     protected $started = false;
@@ -67,6 +75,8 @@ abstract class AbstractContainer extends \Stackable implements ContainerInterfac
     public function __construct($initialContext, $containerNode, $applications)
     {
         $this->initialContext = $initialContext;
+        $this->baseDirectory = $this->newService('TechDivision\ApplicationServer\Api\ContainerService')->getBaseDirectory();
+        
         $this->setContainerNode($containerNode);
         $this->setApplications($applications);
     }
@@ -99,7 +109,8 @@ abstract class AbstractContainer extends \Stackable implements ContainerInterfac
      */
     public function run()
     {
-        $this->setStarted($this->getReceiver()->start());
+        $this->setStarted($this->getReceiver()
+            ->start());
     }
 
     /**
@@ -144,7 +155,9 @@ abstract class AbstractContainer extends \Stackable implements ContainerInterfac
      */
     public function getReceiverType()
     {
-        return $this->getContainerNode()->getReceiver()->getType();
+        return $this->getContainerNode()
+            ->getReceiver()
+            ->getType();
     }
 
     /**
@@ -195,5 +208,18 @@ abstract class AbstractContainer extends \Stackable implements ContainerInterfac
     public function isStarted()
     {
         return $this->started;
+    }
+
+    /**
+     * (non-PHPdoc)
+     *
+     * @see \TechDivision\ApplicationServer\Api\ContainerService::getBaseDirectory()
+     */
+    public function getBaseDirectory($directoryToAppend = null)
+    {
+        if ($directoryToAppend != null) {
+            return $this->baseDirectory . $directoryToAppend;
+        }
+        return $this->baseDirectory;
     }
 }
