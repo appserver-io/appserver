@@ -180,7 +180,6 @@ htmlhelp_basename = 'TechDivision_ApplicationServerdoc'
 
 html_add_permalinks = None
 
-
 # -- Options for LaTeX output ---------------------------------------------
 
 latex_elements = {
