@@ -167,6 +167,7 @@
     <!-- Copies the documentation to the target directory                     -->
     <!-- ==================================================================== -->
     <target name="copy-doc" description="Copies the documentation to the target directory.">
+        <delete dir="${basedir}/doc/build" includeemptydirs="true" quiet="false" failonerror="false"/>
         <exec executable="make" dir="${basedir}/doc" failonerror="true">
             <arg line="html" />
         </exec>
