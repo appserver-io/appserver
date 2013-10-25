@@ -60,8 +60,8 @@ abstract class AbstractStorage implements StorageInterface
     public function __construct(NodeInterface $storageNode, $identifier = null)
     {
         $this->storageNode = $storageNode;
-        $this->flush();
         $this->init();
+        $this->flush();
         if ($identifier != null) {
             $this->identifier = $identifier;
         }
