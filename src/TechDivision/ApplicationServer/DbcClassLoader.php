@@ -44,21 +44,36 @@ class DbcClassLoader extends SplClassLoader
      * Default constructor
      *
      * We will do all the necessary work to load without any further hassle.
+     * Will check if there is content in the cache directory.
+     * If not we will parse anew.
      */
     public function __construct()
     {
         // We need an autoloader to delegate to
         $this->autoLoader = new AutoLoader();
 
+        // Check if there are files in the cache
+        $fileIterator = new \FilesystemIterator(PBC_CACHE_DIR, \FilesystemIterator::SKIP_DOTS);
+        if (iterator_count($fileIterator) <= 2) {
+
+            $this->fillCache();
+        }
+    }
+
+    /**
+     * Will initiate the creation of a structure map and the parsing process of all found structures
+     */
+    protected function fillCache()
+    {
         // Get the configuration, get the AutoLoader specific config as well
-        $this->config = new Config();
-        $autoLoaderConfig = $this->config->getConfig('AutoLoader');
+        $config = new Config();
+        $autoLoaderConfig = $config->getConfig('AutoLoader');
 
         // We will need the structure map to initially parse all files
         $structureMap = new StructureMap($autoLoaderConfig['projectRoot'], $this->config);
 
         // Get all the structures we found
-        $structures = $structureMap->getIdentifiers();
+        $structures = $structureMap->getEntries();
 
         // We will need a CacheMap instance which we can pass to the ProxyFactory
         $cacheMap = new CacheMap(PBC_CACHE_DIR);
@@ -69,7 +84,10 @@ class DbcClassLoader extends SplClassLoader
         // Iterate over all found structures and generate their proxies
         foreach ($structures as $structure) {
 
-            $proxyFactory->createProxy($structure);
+            if ($structure->hasContracts()) {
+
+                $proxyFactory->createProxy($structure->getIdentifier());
+            }
         }
     }
 
@@ -78,13 +96,21 @@ class DbcClassLoader extends SplClassLoader
      *
      * This method will delegate to the php-by-contract's AutoLoader class.
      *
-     * @param   string  $className
+     * @param   string $className
      *
      * @return  bool
      */
     public function loadClass($className)
     {
-        return $this->autoLoader->loadClass($className);
+        // Do we have the file in our cache dir? If we are in development mode we have to ignore this.
+        $cachePath = PBC_CACHE_DIR . DIRECTORY_SEPARATOR . str_replace('\\', '_', $className) . '.php';
+        if (is_readable($cachePath)) {
+
+            require $cachePath;
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -93,9 +119,19 @@ class DbcClassLoader extends SplClassLoader
      */
     public function register($throws = true, $prepends = true)
     {
-        // We will require the composer autoloader as a fallback
-        require __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' .
-            DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'autoload.php';
+        // We will unregister all currently registered classloader, as multi-threading messes the list up badly!
+        $functions = spl_autoload_functions();
+        if (is_array($functions)) {
+
+            foreach ($functions as $function) {
+
+                spl_autoload_unregister($function);
+            }
+        }
+
+        // Register the default loader, so we can load files which do not have any contracts
+        $classLoader = new SplClassLoader();
+        $classLoader->register($throws, $prepends);
 
         // We want to let our autoloader be the first in line so we can react on loads and create/return our proxies.
         // So lets use the prepend parameter here.
