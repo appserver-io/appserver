@@ -116,5 +116,12 @@ And yes, we've plans for a Community and a Enterprise edition. The Community Edi
 ## Enterprise Edition
 ### Version 1.2 - Cluster Functionality
 - [ ] Cluster functionality
+- [ ] Appserver nodes get known each other in same network automatically
+- [ ] Webapps running on nodes in same network can be executed via all appserver nodes
+- [ ] Webapps can be synchronized between appserver nodes to be executed locally
+- [ ] Snapshot functionality for webapps
+- [ ] HA Loadbalancing Container
 - [ ] Container based transactions
+- [ ] Hot-Deploment
 - [ ] Farming deployment
+- [ ] Web Application Firewall (WAF)
