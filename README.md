@@ -122,6 +122,6 @@ And yes, we've plans for a Community and a Enterprise edition. The Community Edi
 - [ ] Snapshot functionality for webapps
 - [ ] HA Loadbalancing Container
 - [ ] Container based transactions
-- [ ] Hot-Deploment
+- [ ] Hot-Deployment
 - [ ] Farming deployment
 - [ ] Web Application Firewall (WAF)
