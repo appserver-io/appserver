@@ -139,16 +139,19 @@ class SplClassLoader extends \Stackable
                 $fileName = str_replace($this->namespaceSeparator, DIRECTORY_SEPARATOR, $namespace) . DIRECTORY_SEPARATOR;
             }
 
-            // replace _ with / for PHP 5.2 compatibility
-            $fileName .= str_replace('_', DIRECTORY_SEPARATOR, $className) . $this->fileExtension;
-
+            // prepare filename
+            $fileName .= $className . $this->fileExtension;
+            
             // try to load the requested class
 			foreach ($this->getIncludePath() as $includePath) {
 			    $toRequire = $includePath . DIRECTORY_SEPARATOR . $fileName;
 				if (file_exists($toRequire)) {
-				    return require $toRequire;
+				    require $toRequire;
+				    return true;
 				}
 			}
         }
+        
+        return false;
     }
 }
