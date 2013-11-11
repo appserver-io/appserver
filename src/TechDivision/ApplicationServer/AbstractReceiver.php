@@ -128,7 +128,7 @@ abstract class AbstractReceiver implements ReceiverInterface
                         $this->worker[$i]->start();
                     }    
                 }
-                usleep(1000);
+                usleep(10000);
             }
             
         } catch (\Exception $e) {
