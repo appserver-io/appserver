@@ -29,20 +29,26 @@ namespace TechDivision\ApplicationServer;
  * @author Kris Wallsmith <kris.wallsmith@gmail.com>
  * @author Fabien Potencie <fabien.potencier@symfony-project.org>
  */
-class ClassMap extends \Stackable
-{
-    public function run() {}
-}
-
 class SplClassLoader extends \Stackable
 {
-
+    
     protected $fileExtension;
     protected $namespace;
     protected $includePath;
     protected $namespaceSeparator;
     
+    /**
+     * The mutex to lock when add a file to the class map.
+     * 
+     * @var \Mutex
+     */
     protected $mutex;
+    
+    /**
+     * The storage for the class mapping.
+     * 
+     * @var \TechDivision\ApplicationServer\ClassMap
+     */
     protected $classMap;
     
     /**
@@ -56,9 +62,9 @@ class SplClassLoader extends \Stackable
     public function __construct($namespace = null, array $includePath = null, $namespaceSeparator = '\\', $fileExtension = '.php')
     {
         
+        // initialize the class map and the mutex
         $this->classMap = new ClassMap();
         $this->classMap[__CLASS__] = '__FILE__';
-        
         $this->mutex = \Mutex::create(false);
 
         // ATTENTION: Don't delete this, it's necessary because this IS a \Stackable
@@ -73,8 +79,12 @@ class SplClassLoader extends \Stackable
         }
     }
 
-    public function run() {
-    }
+    /**
+     * (non-PHPdoc)
+     *
+     * @see \Stackable::run()
+     */
+    public function run() {}
 
     /**
      * Gets the namespace seperator used by classes in the namespace of this class loader.
