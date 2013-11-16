@@ -199,10 +199,6 @@ class InitialContext
      */
     public function newInstance($className, array $args = array())
     {
-
-        // register the class loader again, because in a Thread the context has been lost maybe
-        $this->getClassLoader()->register(true);
-
         // create and return a new instance
         $reflectionClass = $this->newReflectionClass($className);
         return $reflectionClass->newInstanceArgs($args);

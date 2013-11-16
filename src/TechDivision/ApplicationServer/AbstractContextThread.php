@@ -47,6 +47,20 @@ abstract class AbstractContextThread extends AbstractThread
         // call parent
         call_user_func_array(array('parent', '__construct'), $functionArgs);
     }
+    
+    /**
+     * (non-PHPdoc)
+     * 
+     * @see \TechDivision\ApplicationServer\AbstractThread::run()
+     */
+    public function run()
+    {
+        // register the class loader again, because in a Thread the context has been lost maybe
+        $this->getInitialContext()->getClassLoader()->register(true);
+
+        // call the parent run method to start the thread
+        parent::run();
+    }
 
     /**
      * Returns the initialContext object
