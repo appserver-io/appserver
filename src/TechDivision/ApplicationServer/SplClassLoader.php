@@ -147,7 +147,7 @@ class SplClassLoader extends \Stackable
     {
         
         // check if the requested class name has already been loaded
-        if (array_key_exists($className, $this->classMap)) {
+        if (isset($this->classMap[$className])) {
 			require $this->classMap[$className];
 			return true;
         }
