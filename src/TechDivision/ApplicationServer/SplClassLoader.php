@@ -29,6 +29,11 @@ namespace TechDivision\ApplicationServer;
  * @author Kris Wallsmith <kris.wallsmith@gmail.com>
  * @author Fabien Potencie <fabien.potencier@symfony-project.org>
  */
+class ClassMap extends \Stackable
+{
+    public function run() {}
+}
+
 class SplClassLoader extends \Stackable
 {
 
@@ -36,7 +41,10 @@ class SplClassLoader extends \Stackable
     protected $namespace;
     protected $includePath;
     protected $namespaceSeparator;
-
+    
+    protected $mutex;
+    protected $classMap;
+    
     /**
      * Creates a new <tt>SplClassLoader</tt> that loads classes of the specified
      * namespace and searches for the class files in the include paths passed as
@@ -47,6 +55,11 @@ class SplClassLoader extends \Stackable
      */
     public function __construct($namespace = null, array $includePath = null, $namespaceSeparator = '\\', $fileExtension = '.php')
     {
+        
+        $this->classMap = new ClassMap();
+        $this->classMap[__CLASS__] = '__FILE__';
+        
+        $this->mutex = \Mutex::create(false);
 
         // ATTENTION: Don't delete this, it's necessary because this IS a \Stackable
         $this->fileExtension = $fileExtension;
@@ -122,7 +135,16 @@ class SplClassLoader extends \Stackable
      */
     public function loadClass($className)
     {
+        
+        // check if the requested class name has already been loaded
+        if (array_key_exists($className, $this->classMap)) {
+			require $this->classMap[$className];
+			return true;
+        }
 
+        // backup the requested class name
+        $requestedClassName = $className;
+        
         // concatenate namespace and separator
         $namespaceAndSeparator = $this->namespace . $this->namespaceSeparator;
 
@@ -146,12 +168,20 @@ class SplClassLoader extends \Stackable
 			foreach ($this->getIncludePath() as $includePath) {
 			    $toRequire = $includePath . DIRECTORY_SEPARATOR . $fileName;
 				if (file_exists($toRequire)) {
+				    
+				    // add the found file to the class map
+				    \Mutex::lock($this->mutex);
+				    $this->classMap[$requestedClassName] = $toRequire;
+				    \Mutex::unlock($this->mutex);
+				    
+				    // require the file and return TRUE
 				    require $toRequire;
 				    return true;
 				}
 			}
         }
         
+        // return FALSE, because the class loader can't require the requested class name
         return false;
     }
 }
