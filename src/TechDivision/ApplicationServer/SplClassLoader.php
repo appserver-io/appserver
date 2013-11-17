@@ -34,6 +34,8 @@ use \TechDivision\ApplicationServer\InitialContext;
 class SplClassLoader extends \Stackable
 {
     
+    const CLASS_MAP = 'SplClassLoader.classMap';
+    
     protected $fileExtension;
     protected $namespace;
     protected $includePath;
@@ -60,8 +62,9 @@ class SplClassLoader extends \Stackable
      */
     public function __construct(InitialContext $initialContext, $namespace = null, array $includePath = null, $namespaceSeparator = '\\', $fileExtension = '.php')
     {
-        // set the initial context
+        // set the initial context and initialize the class map
         $this->initialContext = $initialContext;
+        $this->getInitialContext()->setAttribute(self::CLASS_MAP, array());
 
         // ATTENTION: Don't delete this, it's necessary because this IS a \Stackable
         $this->fileExtension = $fileExtension;
@@ -152,14 +155,17 @@ class SplClassLoader extends \Stackable
     public function loadClass($className)
     {
         
-        // check if the requested class name has already been loaded
-        if (($toRequire = $this->getInitialContext()->getAttribute($className)) !== false) {
-			require $toRequire;
-			return true;
-        }
-
         // backup the requested class name
         $requestedClassName = $className;
+        
+        // try to load the class map from the inital context
+        $classMap = $this->getInitialContext()->getAttribute(self::CLASS_MAP);
+        
+        // check if the requested class name has already been loaded
+        if (isset($classMap[$requestedClassName]) !== false) {
+			require $classMap[$requestedClassName];
+			return true;
+        }
         
         // concatenate namespace and separator
         $namespaceAndSeparator = $this->namespace . $this->namespaceSeparator;
@@ -185,7 +191,8 @@ class SplClassLoader extends \Stackable
 			    $toRequire = $includePath . DIRECTORY_SEPARATOR . $fileName;
 				if (file_exists($toRequire)) {
 				    // add the found file to the class map
-				    $this->getInitialContext()->setAttribute($requestedClassName, $toRequire);
+				    $classMap[$requestedClassName] = $toRequire;
+				    $this->getInitialContext()->setAttribute(self::CLASS_MAP, $classMap);
 				    // require the file and return TRUE
 				    require $toRequire;
 				    return true;
