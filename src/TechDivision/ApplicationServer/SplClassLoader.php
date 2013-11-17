@@ -12,6 +12,8 @@
 
 namespace TechDivision\ApplicationServer;
 
+use \TechDivision\ApplicationServer\InitialContext;
+
 /**
  * SplClassLoader implementation that implements the technical interoperability
  * standards for PHP 5.3 namespaces and class names.
@@ -38,34 +40,28 @@ class SplClassLoader extends \Stackable
     protected $namespaceSeparator;
     
     /**
-     * The mutex to lock when add a file to the class map.
+     * The initial context instance.
      * 
-     * @var \Mutex
+     * @var \TechDivision\ApplicationServer\InitialContext
      */
-    protected $mutex;
-    
-    /**
-     * The storage for the class mapping.
-     * 
-     * @var \TechDivision\ApplicationServer\ClassMap
-     */
-    protected $classMap;
+    protected $initialContext;
     
     /**
      * Creates a new <tt>SplClassLoader</tt> that loads classes of the specified
      * namespace and searches for the class files in the include paths passed as
      * array.
      *
+     * @param \TechDivision\ApplicationServer\InitialContext The initial context instance
      * @param string $namespace The namespace to use
      * @param array $includePath The include path to use
+     * @param string $namespaceSeparator The namespace separator
+     * @param string $fileExtension The filename extension
+     * @return void
      */
-    public function __construct($namespace = null, array $includePath = null, $namespaceSeparator = '\\', $fileExtension = '.php')
+    public function __construct(InitialContext $initialContext, $namespace = null, array $includePath = null, $namespaceSeparator = '\\', $fileExtension = '.php')
     {
-        
-        // initialize the class map and the mutex
-        $this->classMap = new ClassMap();
-        $this->classMap[__CLASS__] = '__FILE__';
-        $this->mutex = \Mutex::create(false);
+        // set the initial context
+        $this->initialContext = $initialContext;
 
         // ATTENTION: Don't delete this, it's necessary because this IS a \Stackable
         $this->fileExtension = $fileExtension;
@@ -105,9 +101,19 @@ class SplClassLoader extends \Stackable
     {
         $includePath = explode(PATH_SEPARATOR, get_include_path());
         foreach($includePath as $key => $val) {
-            if($val === '') unset($includePath[$key]);
+            if ($val === '') unset($includePath[$key]);
         }
         return $includePath;
+    }
+    
+    /**
+     * Returns the initial context instance.
+     * 
+     * @return \TechDivision\ApplicationServer\InitialContext The initial context instance
+     */
+    public function getInitialContext()
+    {
+        return $this->initialContext;
     }
 
     /**
@@ -147,8 +153,8 @@ class SplClassLoader extends \Stackable
     {
         
         // check if the requested class name has already been loaded
-        if (isset($this->classMap[$className])) {
-			require $this->classMap[$className];
+        if (($toRequire = $this->getInitialContext()->getAttribute($className)) !== false) {
+			require $toRequire;
 			return true;
         }
 
@@ -178,12 +184,8 @@ class SplClassLoader extends \Stackable
 			foreach ($this->getIncludePath() as $includePath) {
 			    $toRequire = $includePath . DIRECTORY_SEPARATOR . $fileName;
 				if (file_exists($toRequire)) {
-				    
 				    // add the found file to the class map
-				    \Mutex::lock($this->mutex);
-				    $this->classMap[$requestedClassName] = $toRequire;
-				    \Mutex::unlock($this->mutex);
-				    
+				    $this->getInitialContext()->setAttribute($requestedClassName, $toRequire);
 				    // require the file and return TRUE
 				    require $toRequire;
 				    return true;
