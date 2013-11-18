@@ -148,4 +148,11 @@ interface StorageInterface {
      */
     public function getAllKeys();
     
+    /**
+     * Returns the internal storage object that
+     * handles data persistence.
+     * 
+     * @return object The storage object itself
+     */
+    public function getStorage();
 }
