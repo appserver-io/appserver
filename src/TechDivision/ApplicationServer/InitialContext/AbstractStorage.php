@@ -104,4 +104,92 @@ abstract class AbstractStorage implements StorageInterface
     {
         return $this->identifier;
     }
+
+    /**
+     * (non-PHPdoc)
+     *
+     * @see \TechDivision\ApplicationServer\InitialContext\StorageInterface::collectGarbage()
+     */
+    public function collectGarbage()
+    {
+        // nothing to do here, because gc is handled by memcache
+    }
+
+    /**
+     * (non-PHPdoc)
+     *
+     * @see \TechDivision\ApplicationServer\InitialContext\StorageInterface::getByTag()
+     */
+    public function getByTag($tag)
+    {
+        return $this->get($this->getIdentifier() . $tag);
+    }
+
+    /**
+     * (non-PHPdoc)
+     *
+     * @see \TechDivision\ApplicationServer\InitialContext\StorageInterface::has()
+     */
+    public function has($entryIdentifier)
+    {
+        if ($this->get($this->getIdentifier() . $entryIdentifier) !== false) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * (non-PHPdoc)
+     *
+     * @see \TechDivision\ApplicationServer\InitialContext\StorageInterface::flush()
+     */
+    public function flush()
+    {
+        if ($allKeys = $this->getAllKeys()) {
+            foreach ($allKeys as $key) {
+                if (substr_compare($key, $this->getIdentifier(), 0)) {
+                    $this->remove($key);
+                }
+            }
+        }
+    }
+
+    /**
+     * (non-PHPdoc)
+     *
+     * @see \TechDivision\ApplicationServer\InitialContext\StorageInterface::flushByTag()
+     */
+    public function flushByTag($tag)
+    {
+        $tagData = $this->get($this->getIdentifier() . $tag);
+        if (is_array($tagData)) {
+            foreach ($tagData as $cacheKey) {
+                $this->remove($cacheKey);
+            }
+            $this->remove($this->getIdentifier() . $tag);
+        }
+    }
+
+    /**
+     * (non-PHPdoc)
+     *
+     * @see \TechDivision\ApplicationServer\InitialContext\StorageInterface::isValidTag()
+     */
+    public function isValidTag($tag)
+    {
+        return $this->isValidEntryIdentifier($tag);
+    }
+
+    /**
+     * (non-PHPdoc)
+     *
+     * @see \TechDivision\ApplicationServer\InitialContext\StorageInterface::isValidEntryIdentifier()
+     */
+    public function isValidEntryIdentifier($identifier)
+    {
+        if (preg_match('^[0-9A-Za-z_]+$', $identifier) === 1) {
+            return true;
+        }
+        return false;
+    }
 }
