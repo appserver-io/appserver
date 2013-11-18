@@ -1,0 +1,15 @@
+<div class="row-fluid">
+
+    <div class="span4">
+        <div id="bootstrap-nav">
+        {{ toctree(maxdepth=1, collapse=False, includehidden=True) }}
+        </div>
+    </div>
+
+    <div class="span8">
+        <div id="doc-content">
+        {% block body %}{% endblock %}
+        </div>
+    </div>
+</div>
+
