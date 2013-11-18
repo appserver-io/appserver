@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\ApplicationServer\ClassMap
+ * TechDivision\ApplicationServer\GenericStackable
  *
  * NOTICE OF LICENSE
  *
@@ -13,7 +13,8 @@
 namespace TechDivision\ApplicationServer;
 
 /**
- * The class map to store already loaded files when autoloading via SplClassLoader.
+ * A generic stackable implementation that can be used as data container
+ * in a thread context.
  *
  * @package TechDivision\ServletContainer
  * @copyright Copyright (c) 2013 <info@techdivision.com> - TechDivision GmbH
@@ -21,7 +22,7 @@ namespace TechDivision\ApplicationServer;
  *          Open Software License (OSL 3.0)
  * @author Tim Wagner <tw@techdivision.com>
  */
-class ClassMap extends \Stackable
+class GenericStackable extends \Stackable
 {
 
     /**
