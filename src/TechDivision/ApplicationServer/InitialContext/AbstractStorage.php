@@ -192,4 +192,14 @@ abstract class AbstractStorage implements StorageInterface
         }
         return false;
     }
+
+    /**
+     * (non-PHPdoc)
+     *
+     * @see \TechDivision\ApplicationServer\InitialContext\StorageInterface::getStorage()
+     */
+    public function getStorage()
+    {
+        return $this->storage;
+    }
 }
