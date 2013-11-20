@@ -76,6 +76,8 @@ abstract class AbstractApplication implements ApplicationInterface
      *
      * @param TechDivision\ApplicationServer\InitialContext $initialContext
      *            The initial context instance
+     * @param TechDivision\ApplicationServer\Api\Node\ContainerNode $containerNode
+     *            The container node the deployment is for
      * @param string $name
      *            The application name
      * @return void
