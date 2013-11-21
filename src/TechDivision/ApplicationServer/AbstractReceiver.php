@@ -46,6 +46,20 @@ abstract class AbstractReceiver implements ReceiverInterface
      * @var string
      */
     protected $threadType;
+    
+    /**
+     * The actual number of workers running.
+     * 
+     * @var integer
+     */
+    protected $workerCounter = 0;
+    
+    /**
+     * The array containing the running worker.
+     * 
+     * @var array
+     */
+    protected $worker = array();
 
     /**
      * Sets the reference to the container instance.
@@ -90,25 +104,33 @@ abstract class AbstractReceiver implements ReceiverInterface
             $socket->setAddress($this->getAddress())
                 ->setPort($this->getPort())
                 ->start();
-
+            
             // check if resource been initiated
             if ($resource = $socket->getResource()) {
-
-                // init worker number
-                $worker = 0;
-                // init workers array holder
-                $workers = array();
-
                 // open threads where accept connections
-                while ($worker ++ < $this->getWorkerNumber()) {
+                while ($workerCounter ++ < $this->getWorkerNumber()) {
                     // init thread
-                    $workers[$worker] = $this->newWorker($socket->getResource());
+                    $this->worker[$workerCounter] = $this->newWorker($socket->getResource());
                     // start thread async
-                    $workers[$worker]->start();
+                    $this->worker[$workerCounter]->start();
                 }
-
-                return true;
             }
+            
+            // collect garbage and free memory/sockets
+            while (true) {
+                for ($i = 0; $i < sizeof($this->worker); $i++) {
+                    if ($this->worker[$i] != null && $this->worker[$i]->isRunning() === false) {
+                        // unset the worker and free memory and sockets
+                        unset($this->worker[$i]);
+                        // init thread
+                        $this->worker[$i] = $this->newWorker($socket->getResource());
+                        // start thread async
+                        $this->worker[$i]->start();
+                    }    
+                }
+                usleep(10000);
+            }
+            
         } catch (\Exception $e) {
             error_log($e->__toString());
         }

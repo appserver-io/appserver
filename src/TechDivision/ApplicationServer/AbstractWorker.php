@@ -79,7 +79,8 @@ abstract class AbstractWorker extends AbstractContextThread
      */
     public function main()
     {
-        while (true) {
+        $i = 0;
+        while ($i++ < 100) {
             
             // reinitialize the server socket
             $serverSocket = $this->initialContext->newInstance($this->getResourceClass(), array(

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\ApplicationServer\InitialContext\ApcuStorage
+ * TechDivision\ApplicationServer\InitialContext\StackableStorage
  *
  * NOTICE OF LICENSE
  *
@@ -11,22 +11,49 @@
  */
 namespace TechDivision\ApplicationServer\InitialContext;
 
+use TechDivision\ApplicationServer\GenericStackable;
 use TechDivision\ApplicationServer\Api\Node\NodeInterface;
 
 /**
- *
+ * A storage implementation that uses a \Stackable to hold the data persistent
+ * in memory.
+ * 
+ * This storage will completely be flushed when the the object is destroyed,
+ * there is no automatic persistence functionality available.
+ * 
  * @package TechDivision\ApplicationServer
  * @copyright Copyright (c) 2010 <info@techdivision.com> - TechDivision GmbH
  * @license http://opensource.org/licenses/osl-3.0.php
  *          Open Software License (OSL 3.0)
  * @author Tim Wagner <tw@techdivision.com>
  */
-class ApcuStorage extends AbstractStorage
+class StackableStorage extends AbstractStorage
 {
+    
+    /**
+     * Passes the configuration and initializes the storage.
+     * The identifier will be
+     * set after the init() function has been invoked, so it'll overwrite the one
+     * specified in the configuration if set.
+     *
+     * @param \TechDivision\ApplicationServer\Api\Node\NodeInterface $storageNode
+     *            The storage configuration node
+     * @param string $identifier
+     *            Unique identifier for the cache storage
+     * @return void
+     */
+    public function __construct(NodeInterface $storageNode, $identifier = null)
+    {
+        // initialize the stackable storage
+        $this->storage = new GenericStackable();
+        $this->storage[__CLASS__] = __FILE__;
+        parent::__construct($storageNode, $identifier);
+    }
 
     /**
-     *
-     * @see TechDivision\ApplicationServer\InitialContext\AbstractStorage::init();
+     * (non-PHPdoc)
+     * 
+     * @see \TechDivision\ApplicationServer\InitialContext\AbstractStorage::init()
      */
     public function init()
     {
@@ -42,10 +69,16 @@ class ApcuStorage extends AbstractStorage
     {
         // create a unique cache key and add the passed value to the storage
         $cacheKey = $this->getIdentifier() . $entryIdentifier;
-        apc_store($cacheKey, $data, $lifetime);
+
+        // set the data in the storage
+        $this->storage->lock();
+        $this->storage[$cacheKey] = $data;
+        $this->storage->unlock();
         
         // if tags has been set, tag the data additionally
         foreach ($tags as $tag) {
+            
+            // assemble the tag data
             $tagData = $this->get($this->getIdentifier() . $tag);
             if (is_array($tagData) && in_array($cacheKey, $tagData, true) === true) {
                 // do nothing here
@@ -56,7 +89,11 @@ class ApcuStorage extends AbstractStorage
                     $cacheKey
                 );
             }
-            apc_store($tag, $tagData);
+
+            // tag the data
+            $this->storage->lock();
+            $this->storage[$tag] = $tagData;
+            $this->storage->unlock();
         }
     }
 
@@ -67,7 +104,7 @@ class ApcuStorage extends AbstractStorage
      */
     public function get($entryIdentifier)
     {
-        return apc_fetch($entryIdentifier);
+        return $this->storage[$entryIdentifier];
     }
 
     /**
@@ -77,7 +114,7 @@ class ApcuStorage extends AbstractStorage
      */
     public function has($entryIdentifier)
     {
-        return apc_exists($this->getIdentifier() . $entryIdentifier);
+        return isset($this->storage[$this->getIdentifier() . $entryIdentifier]);
     }
 
     /**
@@ -87,7 +124,13 @@ class ApcuStorage extends AbstractStorage
      */
     public function remove($entryIdentifier)
     {
-        return apc_delete($this->getIdentifier() . $entryIdentifier);
+        if ($this->has($entryIdentifier)) {
+            $this->storage->lock();
+            unset($this->storage[$this->getIdentifier() . $entryIdentifier]);
+            $this->storage->unlock();
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -97,10 +140,9 @@ class ApcuStorage extends AbstractStorage
      */
     public function getAllKeys()
     {
-        $iter = new \APCIterator('user');
         $keys = array();
-        foreach ($iter as $item) {
-            echo $keys[] = $item['key'];
+        foreach ($this->storage as $key => $value) {
+            $keys[] = $key;
         }
         return $keys;
     }

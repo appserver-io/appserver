@@ -34,11 +34,25 @@ abstract class AbstractDeployment implements DeploymentInterface
     protected $containerNode;
 
     /**
+     * The deployment node.
+     *
+     * @var string
+     */
+    protected $deploymentNode;
+
+    /**
      * Array with the initialized applications.
      *
      * @var array
      */
     protected $applications;
+    
+    /**
+     * The initial context instance.
+     * 
+     * @var \TechDivision\ApplicationServer\InitialContext
+     */
+    protected $initialContext;
 
     /**
      * Initializes the deployment with the container thread.

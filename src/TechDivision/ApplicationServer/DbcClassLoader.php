@@ -14,7 +14,7 @@ use TechDivision\PBC\AutoLoader;
 use TechDivision\PBC\CacheMap;
 use TechDivision\PBC\Proxies\ProxyFactory;
 use TechDivision\PBC\StructureMap;
-use TechDivision\PBC\Config;
+use TechDivision\ApplicationServer\PBC\Config;
 
 /**
  * This class is used to delegate to php-by-contract's autoloader.
@@ -30,8 +30,12 @@ use TechDivision\PBC\Config;
 class DbcClassLoader extends SplClassLoader
 {
 
+    protected $config;
+
+    protected $initialContext;
+
     /**
-     * @var TechDivision\PBC\AutoLoader
+     * @var AutoLoader
      */
     private $autoLoader;
 
@@ -47,10 +51,15 @@ class DbcClassLoader extends SplClassLoader
      * Will check if there is content in the cache directory.
      * If not we will parse anew.
      */
-    public function __construct()
+    public function __construct($initialContext)
     {
+
+        $this->initialContext = $initialContext;
+        $this->config = new Config();
+
         // We need an autoloader to delegate to
         $this->autoLoader = new AutoLoader();
+        $this->autoLoader->setConfig($this->config);
 
         // Check if there are files in the cache
         $fileIterator = new \FilesystemIterator(PBC_CACHE_DIR, \FilesystemIterator::SKIP_DOTS);
@@ -66,8 +75,7 @@ class DbcClassLoader extends SplClassLoader
     protected function fillCache()
     {
         // Get the configuration, get the AutoLoader specific config as well
-        $config = new Config();
-        $autoLoaderConfig = $config->getConfig('AutoLoader');
+        $autoLoaderConfig = $this->config->getConfig('AutoLoader');
 
         // We will need the structure map to initially parse all files
         $structureMap = new StructureMap($autoLoaderConfig['projectRoot'], $this->config);
@@ -130,7 +138,8 @@ class DbcClassLoader extends SplClassLoader
         }
 
         // Register the default loader, so we can load files which do not have any contracts
-        $classLoader = new SplClassLoader();
+        $classLoader = new SplClassLoader($this->initialContext);
+
         $classLoader->register($throws, $prepends);
 
         // We want to let our autoloader be the first in line so we can react on loads and create/return our proxies.

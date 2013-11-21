@@ -46,9 +46,8 @@ Start your favorite browser and open the URL `http://127.0.0.1:8586/demo` to loa
 If you're on a Debian system you don't need to download the .deb package. Follow these instructions:
 
 ```
-root@debian:~# echo “deb http://deb.appserver.io/ wheezy main” >> /etc/apt/sources.list
-root@debian:~# wget http://deb.appserver.io/appserver.gpg
-root@debian:~# cat appserver.gpg | apt-key add -
+root@debian:~# echo "deb http://deb.appserver.io/ wheezy main" > /etc/apt/sources.list.d/appserver.list
+root@debian:~# wget http://deb.appserver.io/appserver.gpg -O - | apt-key add -
 root@debian:~# aptitude update
 root@debian:~# aptitude install appserver
 ```
@@ -116,5 +115,12 @@ And yes, we've plans for a Community and a Enterprise edition. The Community Edi
 ## Enterprise Edition
 ### Version 1.2 - Cluster Functionality
 - [ ] Cluster functionality
+- [ ] Appserver nodes get known each other in same network automatically
+- [ ] Webapps running on nodes in same network can be executed via all appserver nodes
+- [ ] Webapps can be synchronized between appserver nodes to be executed locally
+- [ ] Snapshot functionality for webapps
+- [ ] HA Loadbalancing Container
 - [ ] Container based transactions
+- [ ] Hot-Deployment
 - [ ] Farming deployment
+- [ ] Web Application Firewall (WAF)

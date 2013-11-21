@@ -12,6 +12,8 @@
 
 namespace TechDivision\ApplicationServer;
 
+use \TechDivision\ApplicationServer\InitialContext;
+
 /**
  * SplClassLoader implementation that implements the technical interoperability
  * standards for PHP 5.3 namespaces and class names.
@@ -31,22 +33,43 @@ namespace TechDivision\ApplicationServer;
  */
 class SplClassLoader extends \Stackable
 {
-
+    
+    /**
+     * The unique key to store the class map in the initial context.
+     * 
+     * @var string
+     */
+    const CLASS_MAP = 'SplClassLoader.classMap';
+    
     protected $fileExtension;
     protected $namespace;
     protected $includePath;
     protected $namespaceSeparator;
-
+    
+    /**
+     * The initial context instance.
+     * 
+     * @var \TechDivision\ApplicationServer\InitialContext
+     */
+    protected $initialContext;
+    
     /**
      * Creates a new <tt>SplClassLoader</tt> that loads classes of the specified
      * namespace and searches for the class files in the include paths passed as
      * array.
      *
+     * @param \TechDivision\ApplicationServer\InitialContext The initial context instance
      * @param string $namespace The namespace to use
      * @param array $includePath The include path to use
+     * @param string $namespaceSeparator The namespace separator
+     * @param string $fileExtension The filename extension
+     * @return void
      */
-    public function __construct($namespace = null, array $includePath = null, $namespaceSeparator = '\\', $fileExtension = '.php')
+    public function __construct(InitialContext $initialContext, $namespace = null, array $includePath = null, $namespaceSeparator = '\\', $fileExtension = '.php')
     {
+        // set the initial context and initialize the class map
+        $this->initialContext = $initialContext;
+        $this->getInitialContext()->setAttribute(self::CLASS_MAP, array());
 
         // ATTENTION: Don't delete this, it's necessary because this IS a \Stackable
         $this->fileExtension = $fileExtension;
@@ -60,8 +83,12 @@ class SplClassLoader extends \Stackable
         }
     }
 
-    public function run() {
-    }
+    /**
+     * (non-PHPdoc)
+     *
+     * @see \Stackable::run()
+     */
+    public function run() {}
 
     /**
      * Gets the namespace seperator used by classes in the namespace of this class loader.
@@ -82,9 +109,19 @@ class SplClassLoader extends \Stackable
     {
         $includePath = explode(PATH_SEPARATOR, get_include_path());
         foreach($includePath as $key => $val) {
-            if($val === '') unset($includePath[$key]);
+            if ($val === '') unset($includePath[$key]);
         }
         return $includePath;
+    }
+    
+    /**
+     * Returns the initial context instance.
+     * 
+     * @return \TechDivision\ApplicationServer\InitialContext The initial context instance
+     */
+    public function getInitialContext()
+    {
+        return $this->initialContext;
     }
 
     /**
@@ -122,7 +159,19 @@ class SplClassLoader extends \Stackable
      */
     public function loadClass($className)
     {
-
+        
+        // backup the requested class name
+        $requestedClassName = $className;
+        
+        // try to load the class map from the inital context
+        $classMap = $this->getInitialContext()->getAttribute(self::CLASS_MAP);
+        
+        // check if the requested class name has already been loaded
+        if (isset($classMap[$requestedClassName]) !== false) {
+			require $classMap[$requestedClassName];
+			return true;
+        }
+        
         // concatenate namespace and separator
         $namespaceAndSeparator = $this->namespace . $this->namespaceSeparator;
 
@@ -146,12 +195,17 @@ class SplClassLoader extends \Stackable
 			foreach ($this->getIncludePath() as $includePath) {
 			    $toRequire = $includePath . DIRECTORY_SEPARATOR . $fileName;
 				if (file_exists($toRequire)) {
+				    // add the found file to the class map
+				    $classMap[$requestedClassName] = $toRequire;
+				    $this->getInitialContext()->setAttribute(self::CLASS_MAP, $classMap);
+				    // require the file and return TRUE
 				    require $toRequire;
 				    return true;
 				}
 			}
         }
         
+        // return FALSE, because the class loader can't require the requested class name
         return false;
     }
 }

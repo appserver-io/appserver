@@ -56,18 +56,18 @@ class InitialContext
      */
     public function __construct(NodeInterface $systemConfiguration)
     {
-        // initialize the class loader instance
-        $initialContextNode = $systemConfiguration->getInitialContext();
-        $classLoaderNode = $initialContextNode->getClassLoader();
-        $reflectionClass = $this->newReflectionClass($classLoaderNode->getType());
-        $this->setClassLoader($reflectionClass->newInstance());
-
         // initialize the storage
+        $initialContextNode = $systemConfiguration->getInitialContext();
         $storageNode = $initialContextNode->getStorage();
         $reflectionClass = $this->newReflectionClass($storageNode->getType());
         $this->setStorage($reflectionClass->newInstanceArgs(array(
             $storageNode
         )));
+        
+        // initialize the class loader instance
+        $classLoaderNode = $initialContextNode->getClassLoader();
+        $reflectionClass = $this->newReflectionClass($classLoaderNode->getType());
+        $this->setClassLoader($reflectionClass->newInstanceArgs(array($this)));
 
         // attach the system configuration to the initial context
         $this->setSystemConfiguration($systemConfiguration);
@@ -199,10 +199,6 @@ class InitialContext
      */
     public function newInstance($className, array $args = array())
     {
-
-        // register the class loader again, because in a Thread the context has been lost maybe
-        $this->getClassLoader()->register(true);
-
         // create and return a new instance
         $reflectionClass = $this->newReflectionClass($className);
         return $reflectionClass->newInstanceArgs($args);
