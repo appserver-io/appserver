@@ -10,11 +10,10 @@
  */
 namespace TechDivision\ApplicationServer;
 
-use TechDivision\PBC\AutoLoader;
 use TechDivision\PBC\CacheMap;
-use TechDivision\PBC\Proxies\ProxyFactory;
+use TechDivision\PBC\Generator;
 use TechDivision\PBC\StructureMap;
-use TechDivision\ApplicationServer\PBC\Config;
+use TechDivision\PBC\Config;
 
 /**
  * This class is used to delegate to php-by-contract's autoloader.
@@ -30,19 +29,25 @@ use TechDivision\ApplicationServer\PBC\Config;
 class DbcClassLoader extends SplClassLoader
 {
 
+    /**
+     * @var Config
+     */
     protected $config;
 
-    protected $initialContext;
-
     /**
-     * @var AutoLoader
+     * @var InitialContext
      */
-    private $autoLoader;
+    protected $initialContext;
 
     /**
      * @const string
      */
     const OUR_LOADER = 'loadClass';
+
+    /**
+     * @const string
+     */
+    const CONFIG_FILE = '/opt/appserver/etc/pbc.conf.json';
 
     /**
      * Default constructor
@@ -53,17 +58,15 @@ class DbcClassLoader extends SplClassLoader
      */
     public function __construct($initialContext)
     {
-
         $this->initialContext = $initialContext;
-        $this->config = new Config();
 
-        // We need an autoloader to delegate to
-        $this->autoLoader = new AutoLoader();
-        $this->autoLoader->setConfig($this->config);
+        // Get our Config instance and load our configuration
+        $this->config = Config::getInstance();
+        $this->config->load(self::CONFIG_FILE);
 
         // Check if there are files in the cache
         $fileIterator = new \FilesystemIterator(PBC_CACHE_DIR, \FilesystemIterator::SKIP_DOTS);
-        if (iterator_count($fileIterator) <= 2) {
+        if (iterator_count($fileIterator) <= 2 || $this->config->getConfig('environment') === 'development') {
 
             $this->fillCache();
         }
@@ -74,28 +77,22 @@ class DbcClassLoader extends SplClassLoader
      */
     protected function fillCache()
     {
-        // Get the configuration, get the AutoLoader specific config as well
-        $autoLoaderConfig = $this->config->getConfig('AutoLoader');
-
         // We will need the structure map to initially parse all files
-        $structureMap = new StructureMap($autoLoaderConfig['projectRoot'], $this->config);
+        $structureMap = new StructureMap($this->config->getConfig('project-dirs'), $this->config);
 
         // Get all the structures we found
-        $structures = $structureMap->getEntries();
+        $structures = $structureMap->getEntries(true);
 
         // We will need a CacheMap instance which we can pass to the ProxyFactory
         $cacheMap = new CacheMap(PBC_CACHE_DIR);
 
         // We need a ProxyFactory so we can create our proxies initially
-        $proxyFactory = new ProxyFactory($structureMap, $cacheMap);
+        $generator = new Generator($structureMap, $cacheMap);
 
         // Iterate over all found structures and generate their proxies
         foreach ($structures as $structure) {
 
-            if ($structure->hasContracts()) {
-
-                $proxyFactory->createProxy($structure->getIdentifier());
-            }
+            $generator->createProxy($structure->getIdentifier());
         }
     }
 
@@ -118,7 +115,7 @@ class DbcClassLoader extends SplClassLoader
             return true;
         }
 
-        return false;
+        return parent::loadClass($className);
     }
 
     /**
@@ -136,11 +133,6 @@ class DbcClassLoader extends SplClassLoader
                 spl_autoload_unregister($function);
             }
         }
-
-        // Register the default loader, so we can load files which do not have any contracts
-        $classLoader = new SplClassLoader($this->initialContext);
-
-        $classLoader->register($throws, $prepends);
 
         // We want to let our autoloader be the first in line so we can react on loads and create/return our proxies.
         // So lets use the prepend parameter here.
