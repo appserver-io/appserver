@@ -14,9 +14,7 @@ use TechDivision\PBC\CacheMap;
 use TechDivision\PBC\Generator;
 use TechDivision\PBC\StructureMap;
 use TechDivision\PBC\Config;
-
-// We need our constants in order to work
-require '/opt/appserver/app/code/vendor/techdivision/php-by-contract/src/TechDivision/PBC/Constants.php';
+use TechDivision\PBC\AutoLoader;
 
 /**
  * This class is used to delegate to php-by-contract's autoloader.
@@ -31,6 +29,11 @@ require '/opt/appserver/app/code/vendor/techdivision/php-by-contract/src/TechDiv
  */
 class DbcClassLoader extends SplClassLoader
 {
+
+    /**
+     * @var AutoLoader
+     */
+    protected $autoloader;
 
     /**
      * @var Config
@@ -69,6 +72,9 @@ class DbcClassLoader extends SplClassLoader
 
         // We need the cacheing configuration
         $cacheConfig = $this->config->getConfig('cache');
+
+        // We need our autoloader to delegate to
+        $this->autoloader = new AutoLoader();
 
         // Check if there are files in the cache
         $fileIterator = new \FilesystemIterator($cacheConfig['dir'], \FilesystemIterator::SKIP_DOTS);
@@ -115,19 +121,16 @@ class DbcClassLoader extends SplClassLoader
      */
     public function loadClass($className)
     {
-        // We need the cacheing configuration
-        $cacheConfig = $this->config->getConfig('cache');
+        $tmp = $this->autoloader->loadClass($className);
 
-        // Do we have the file in our cache dir? If we are in development mode we have to ignore this.
-        $cachePath = $cacheConfig['dir'] . DIRECTORY_SEPARATOR . str_replace('\\', '_', $className) . '.php';
+        if ($tmp === true) {
 
-        if (is_readable($cachePath)) {
+            return $tmp;
 
-            require $cachePath;
-            return true;
+        } else {
+
+            return parent::loadClass($className);
         }
-
-        return parent::loadClass($className);
     }
 
     /**
@@ -136,15 +139,8 @@ class DbcClassLoader extends SplClassLoader
      */
     public function register($throws = true, $prepends = true)
     {
-        // We will unregister all currently registered classloader, as multi-threading messes the list up badly!
-        $functions = spl_autoload_functions();
-        if (is_array($functions)) {
-
-            foreach ($functions as $function) {
-
-                spl_autoload_unregister($function);
-            }
-        }
+        // We should get the composer autoloader as a fallback
+        require '/opt/appserver/app/code/vendor/autoload.php';
 
         // We want to let our autoloader be the first in line so we can react on loads and create/return our proxies.
         // So lets use the prepend parameter here.
