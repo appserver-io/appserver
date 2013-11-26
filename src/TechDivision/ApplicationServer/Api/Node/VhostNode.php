@@ -42,7 +42,7 @@ class VhostNode extends AbstractNode
     /**
      * The vhost aliases configuration.
      *
-     * @var array<\TechDivision\ApplicationServer\Api\Node\AliasNode>
+     * @var array
      * @AS\Mapping(nodeName="aliases/alias", nodeType="array", elementType="TechDivision\ApplicationServer\Api\Node\AliasNode")
      */
     protected $aliases = array();
@@ -70,7 +70,7 @@ class VhostNode extends AbstractNode
     /**
      * Returns the vhost's aliases configuration.
      *
-     * @return array<\TechDivision\ApplicationServer\Api\Node\AliasNode> The aliases configuration
+     * @return array The aliases configuration
      */
     public function getAliases()
     {

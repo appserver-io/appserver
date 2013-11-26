@@ -49,7 +49,7 @@ interface ServiceInterface
     /**
      * Return's all nodes.
      *
-     * @return array<\TechDivision\ApplicationServer\Api\Node\NodeInterface> An array with all nodes
+     * @return array An array with all nodes
      */
     public function findAll();
 

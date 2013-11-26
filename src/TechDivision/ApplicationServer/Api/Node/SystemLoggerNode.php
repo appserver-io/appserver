@@ -42,7 +42,7 @@ class SystemLoggerNode extends AbstractNode
     /**
      * Array with nodes for the registered processors.
      *
-     * @var array<\TechDivision\ApplicationServer\Api\Node\ProcessorNode>
+     * @var array
      * @AS\Mapping(nodeName="processors/processor", nodeType="array", elementType="TechDivision\ApplicationServer\Api\Node\ProcessorNode")
      */
     protected $processors = array();
@@ -50,7 +50,7 @@ class SystemLoggerNode extends AbstractNode
     /**
      * Array with nodes for the registered handlers.
      *
-     * @var array<\TechDivision\ApplicationServer\Api\Node\HandlerNode>
+     * @var array
      * @AS\Mapping(nodeName="handlers/handler", nodeType="array", elementType="TechDivision\ApplicationServer\Api\Node\HandlerNode")
      */
     protected $handlers = array();
@@ -78,7 +78,7 @@ class SystemLoggerNode extends AbstractNode
     /**
      * Returns the array with all registered processors.
      *
-     * @return array<\TechDivision\ApplicationServer\Api\Node\ProcessorNode> The registered processors
+     * @return array The registered processors
      */
     public function getProcessors()
     {
@@ -88,7 +88,7 @@ class SystemLoggerNode extends AbstractNode
     /**
      * Returns the array with all registered handlers.
      *
-     * @return array<\TechDivision\ApplicationServer\Api\Node\HandlerNode> The registered handlers
+     * @return array The registered handlers
      */
     public function getHandlers()
     {

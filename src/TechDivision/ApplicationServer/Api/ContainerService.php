@@ -28,7 +28,7 @@ class ContainerService extends AbstractService
     /**
      * Return's all container node configurations.
      *
-     * @return array<\TechDivision\ApplicationServer\Api\Node\ContainerNode> An array with container node configurations
+     * @return array An array with container node configurations
      * @see \TechDivision\ApplicationServer\Api\ServiceInterface::findAll()
      */
     public function findAll()

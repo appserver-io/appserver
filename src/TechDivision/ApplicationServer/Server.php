@@ -34,7 +34,7 @@ class Server
     /**
      * Initialize the array for the running threads.
      *
-     * @var array<\Thread>
+     * @var array
      */
     protected $threads = array();
 
@@ -207,7 +207,7 @@ class Server
     /**
      * Returns the running container threads.
      *
-     * @return array<\TechDivision\ApplicationServer\ContainerThread> Array with the running container threads
+     * @return array Array with the running container threads
      */
     public function getThreads()
     {

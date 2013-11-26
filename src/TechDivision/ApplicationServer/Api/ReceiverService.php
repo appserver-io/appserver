@@ -28,7 +28,7 @@ class ReceiverService extends AbstractService
     /**
      * Return's all receiver configurations.
      *
-     * @return array<\TechDivision\ApplicationServer\Api\Node\ReceiverNode> The receiver configurations
+     * @return array The receiver configurations
      * @see \TechDivision\ApplicationServer\Api\ServiceInterface::findAll()
      */
     public function findAll()
