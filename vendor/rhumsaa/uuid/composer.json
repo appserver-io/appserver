@@ -1,0 +1,42 @@
+{
+    "name": "rhumsaa/uuid",
+    "description": "A PHP 5.3+ library for generating RFC 4122 version 1, 3, 4, and 5 universally unique identifiers (UUID).",
+    "type": "library",
+    "keywords": ["uuid", "identifier", "guid"],
+    "homepage": "https://github.com/ramsey/uuid",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ben Ramsey",
+            "homepage": "http://benramsey.com"
+        },
+        {
+            "name": "Marijn Huizendveld",
+            "email": "marijn.huizendveld@gmail.com"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/ramsey/uuid/issues",
+        "source": "https://github.com/ramsey/uuid"
+    },
+    "require": {
+        "php": ">=5.3.3"
+    },
+    "require-dev": {
+        "doctrine/dbal": ">=2.3",
+        "moontoast/math": "1.1.0",
+        "phpunit/phpunit": "~3.7"
+    },
+    "suggest": {
+        "doctrine/dbal": "Allow the use of a UUID as doctrine field type.",
+        "moontoast/math": "Provides support for large integers."
+    },
+    "autoload": {
+        "psr-0": {"Rhumsaa\\Uuid": "src/"}
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "2.5.x-dev"
+        }
+    }
+}

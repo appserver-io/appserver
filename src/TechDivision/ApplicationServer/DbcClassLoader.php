@@ -15,6 +15,9 @@ use TechDivision\PBC\Generator;
 use TechDivision\PBC\StructureMap;
 use TechDivision\PBC\Config;
 
+// We need our constants in order to work
+require '/opt/appserver/app/code/vendor/techdivision/php-by-contract/src/TechDivision/PBC/Constants.php';
+
 /**
  * This class is used to delegate to php-by-contract's autoloader.
  * This is needed as our multi-threaded environment would not allow any out-of-the-box code generation
@@ -62,10 +65,13 @@ class DbcClassLoader extends SplClassLoader
 
         // Get our Config instance and load our configuration
         $this->config = Config::getInstance();
-        $this->config->load(self::CONFIG_FILE);
+        $this->config = $this->config->load(self::CONFIG_FILE);
+
+        // We need the cacheing configuration
+        $cacheConfig = $this->config->getConfig('cache');
 
         // Check if there are files in the cache
-        $fileIterator = new \FilesystemIterator(PBC_CACHE_DIR, \FilesystemIterator::SKIP_DOTS);
+        $fileIterator = new \FilesystemIterator($cacheConfig['dir'], \FilesystemIterator::SKIP_DOTS);
         if (iterator_count($fileIterator) <= 2 || $this->config->getConfig('environment') === 'development') {
 
             $this->fillCache();
@@ -83,10 +89,12 @@ class DbcClassLoader extends SplClassLoader
         // Get all the structures we found
         $structures = $structureMap->getEntries(true);
 
-        // We will need a CacheMap instance which we can pass to the ProxyFactory
-        $cacheMap = new CacheMap(PBC_CACHE_DIR);
+        // We will need a CacheMap instance which we can pass to the generator
+        // We need the cacheing configuration
+        $cacheConfig = $this->config->getConfig('cache');
+        $cacheMap = new CacheMap($cacheConfig['dir']);
 
-        // We need a ProxyFactory so we can create our proxies initially
+        // We need a generator so we can create our proxies initially
         $generator = new Generator($structureMap, $cacheMap);
 
         // Iterate over all found structures and generate their proxies
@@ -107,8 +115,12 @@ class DbcClassLoader extends SplClassLoader
      */
     public function loadClass($className)
     {
+        // We need the cacheing configuration
+        $cacheConfig = $this->config->getConfig('cache');
+
         // Do we have the file in our cache dir? If we are in development mode we have to ignore this.
-        $cachePath = PBC_CACHE_DIR . DIRECTORY_SEPARATOR . str_replace('\\', '_', $className) . '.php';
+        $cachePath = $cacheConfig['dir'] . DIRECTORY_SEPARATOR . str_replace('\\', '_', $className) . '.php';
+
         if (is_readable($cachePath)) {
 
             require $cachePath;

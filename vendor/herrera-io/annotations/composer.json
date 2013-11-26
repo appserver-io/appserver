@@ -1,0 +1,39 @@
+{
+    "name": "herrera-io/annotations",
+    "description": "A tokenizer for Doctrine annotations.",
+    "keywords": ["doctrine", "annotations", "tokenizer"],
+    "homepage": "https://github.com/herrera-io/php-annotations",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Kevin Herrera",
+            "email": "kevin@herrera.io",
+            "homepage": "http://kevin.herrera.io"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/herrera-io/php-annotations/issues"
+    },
+    "require": {
+        "php": ">=5.3.3",
+        "doctrine/annotations": "~1.0"
+    },
+    "require-dev": {
+        "herrera-io/phpunit-test-case": "1.*",
+        "phpunit/phpunit": "3.7.*"
+    },
+    "autoload": {
+        "psr-0": {
+            "Herrera\\Annotations": "src/lib"
+        }
+    },
+    "config": {
+        "bin-dir": "bin",
+        "vendor-dir": "src/vendors"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
+    }
+}

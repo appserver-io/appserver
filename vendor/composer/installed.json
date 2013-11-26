@@ -1,0 +1,517 @@
+[
+    {
+        "name": "doctrine/lexer",
+        "version": "v1.0",
+        "version_normalized": "1.0.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/doctrine/lexer.git",
+            "reference": "2f708a85bb3aab5d99dab8be435abd73e0b18acb"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/doctrine/lexer/zipball/2f708a85bb3aab5d99dab8be435abd73e0b18acb",
+            "reference": "2f708a85bb3aab5d99dab8be435abd73e0b18acb",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.2"
+        },
+        "time": "2013-01-12 18:59:04",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-0": {
+                "Doctrine\\Common\\Lexer\\": "lib/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Guilherme Blanco",
+                "email": "guilhermeblanco@gmail.com",
+                "homepage": "http://www.instaclick.com"
+            },
+            {
+                "name": "Roman Borschel",
+                "email": "roman@code-factory.org"
+            },
+            {
+                "name": "Johannes M. Schmitt",
+                "email": "schmittjoh@gmail.com",
+                "homepage": "http://jmsyst.com",
+                "role": "Developer of wrapped JMSSerializerBundle"
+            }
+        ],
+        "description": "Base library for a lexer that can be used in Top-Down, Recursive Descent Parsers.",
+        "homepage": "http://www.doctrine-project.org",
+        "keywords": [
+            "lexer",
+            "parser"
+        ]
+    },
+    {
+        "name": "doctrine/annotations",
+        "version": "v1.1.2",
+        "version_normalized": "1.1.2.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/doctrine/annotations.git",
+            "reference": "40db0c96985aab2822edbc4848b3bd2429e02670"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/doctrine/annotations/zipball/40db0c96985aab2822edbc4848b3bd2429e02670",
+            "reference": "40db0c96985aab2822edbc4848b3bd2429e02670",
+            "shasum": ""
+        },
+        "require": {
+            "doctrine/lexer": "1.*",
+            "php": ">=5.3.2"
+        },
+        "require-dev": {
+            "doctrine/cache": "1.*"
+        },
+        "time": "2013-06-16 21:33:03",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "1.0.x-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-0": {
+                "Doctrine\\Common\\Annotations\\": "lib/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Jonathan H. Wage",
+                "email": "jonwage@gmail.com",
+                "homepage": "http://www.jwage.com/",
+                "role": "Creator"
+            },
+            {
+                "name": "Guilherme Blanco",
+                "email": "guilhermeblanco@gmail.com",
+                "homepage": "http://www.instaclick.com"
+            },
+            {
+                "name": "Roman Borschel",
+                "email": "roman@code-factory.org"
+            },
+            {
+                "name": "Benjamin Eberlei",
+                "email": "kontakt@beberlei.de"
+            },
+            {
+                "name": "Johannes M. Schmitt",
+                "email": "schmittjoh@gmail.com",
+                "homepage": "http://jmsyst.com",
+                "role": "Developer of wrapped JMSSerializerBundle"
+            }
+        ],
+        "description": "Docblock Annotations Parser",
+        "homepage": "http://www.doctrine-project.org",
+        "keywords": [
+            "annotations",
+            "docblock",
+            "parser"
+        ]
+    },
+    {
+        "name": "herrera-io/annotations",
+        "version": "1.0.0",
+        "version_normalized": "1.0.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/herrera-io/php-annotations.git",
+            "reference": "43838d74a258e7305f98dea4eafe09c14389e5d0"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/herrera-io/php-annotations/zipball/43838d74a258e7305f98dea4eafe09c14389e5d0",
+            "reference": "43838d74a258e7305f98dea4eafe09c14389e5d0",
+            "shasum": ""
+        },
+        "require": {
+            "doctrine/annotations": "~1.0",
+            "php": ">=5.3.3"
+        },
+        "require-dev": {
+            "herrera-io/phpunit-test-case": "1.*",
+            "phpunit/phpunit": "3.7.*"
+        },
+        "time": "2013-08-09 22:12:24",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "1.0-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-0": {
+                "Herrera\\Annotations": "src/lib"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Kevin Herrera",
+                "email": "kevin@herrera.io",
+                "homepage": "http://kevin.herrera.io"
+            }
+        ],
+        "description": "A tokenizer for Doctrine annotations.",
+        "homepage": "https://github.com/herrera-io/php-annotations",
+        "keywords": [
+            "annotations",
+            "doctrine",
+            "tokenizer"
+        ]
+    },
+    {
+        "name": "techdivision/socket",
+        "version": "dev-0.5.8-beta",
+        "version_normalized": "dev-0.5.8-beta",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/techdivision/TechDivision_Socket.git",
+            "reference": "653123e4a0ff2d2c8a35d710057d080ced18f4ae"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/techdivision/TechDivision_Socket/zipball/653123e4a0ff2d2c8a35d710057d080ced18f4ae",
+            "reference": "653123e4a0ff2d2c8a35d710057d080ced18f4ae",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.4.0"
+        },
+        "time": "2013-11-12 12:13:47",
+        "type": "package",
+        "installation-source": "source",
+        "autoload": {
+            "psr-0": {
+                "TechDivision": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "OSL-3.0"
+        ],
+        "description": "Socket wrapper for thread based PHP ApplicationServer implementation.",
+        "homepage": "https://github.com/techdivision/TechDivision_Socket"
+    },
+    {
+        "name": "techdivision/stream",
+        "version": "dev-0.5.8-beta",
+        "version_normalized": "dev-0.5.8-beta",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/techdivision/TechDivision_Stream.git",
+            "reference": "4f2d1ed9b272ea272ed3754e4c962d9a2adf96c1"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/techdivision/TechDivision_Stream/zipball/4f2d1ed9b272ea272ed3754e4c962d9a2adf96c1",
+            "reference": "4f2d1ed9b272ea272ed3754e4c962d9a2adf96c1",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.4.0"
+        },
+        "time": "2013-11-12 12:13:29",
+        "type": "library",
+        "installation-source": "source",
+        "autoload": {
+            "psr-0": {
+                "TechDivision": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "OSL-3.0"
+        ],
+        "description": "Stream wrapper for thread based PHP ApplicationServer implementation.",
+        "homepage": "https://github.com/techdivision/TechDivision_Stream"
+    },
+    {
+        "name": "psr/log",
+        "version": "1.0.0",
+        "version_normalized": "1.0.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/php-fig/log.git",
+            "reference": "fe0936ee26643249e916849d48e3a51d5f5e278b"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/php-fig/log/zipball/fe0936ee26643249e916849d48e3a51d5f5e278b",
+            "reference": "fe0936ee26643249e916849d48e3a51d5f5e278b",
+            "shasum": ""
+        },
+        "time": "2012-12-21 11:40:51",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-0": {
+                "Psr\\Log\\": ""
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "PHP-FIG",
+                "homepage": "http://www.php-fig.org/"
+            }
+        ],
+        "description": "Common interface for logging libraries",
+        "keywords": [
+            "log",
+            "psr",
+            "psr-3"
+        ]
+    },
+    {
+        "name": "nikic/php-parser",
+        "version": "v0.9.4",
+        "version_normalized": "0.9.4.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/nikic/PHP-Parser.git",
+            "reference": "1e5e280ae88a27effa2ae4aa2bd088494ed8594f"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/1e5e280ae88a27effa2ae4aa2bd088494ed8594f",
+            "reference": "1e5e280ae88a27effa2ae4aa2bd088494ed8594f",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.2"
+        },
+        "time": "2013-08-25 17:11:40",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "0.9-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-0": {
+                "PHPParser": "lib/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "BSD-3-Clause"
+        ],
+        "authors": [
+            {
+                "name": "Nikita Popov"
+            }
+        ],
+        "description": "A PHP parser written in PHP",
+        "keywords": [
+            "parser",
+            "php"
+        ]
+    },
+    {
+        "name": "techdivision/php-by-contract",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/wick-ed/php-by-contract.git",
+            "reference": "03ddceaf5a5c0b04ab9917344155dec3fd8236fc"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/wick-ed/php-by-contract/zipball/03ddceaf5a5c0b04ab9917344155dec3fd8236fc",
+            "reference": "03ddceaf5a5c0b04ab9917344155dec3fd8236fc",
+            "shasum": ""
+        },
+        "require": {
+            "nikic/php-parser": "0.9.*@dev",
+            "php": ">=5.3.0",
+            "psr/log": "*"
+        },
+        "time": "2013-11-25 20:03:26",
+        "type": "library",
+        "installation-source": "source",
+        "autoload": {
+            "psr-0": {
+                "TechDivision": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "OSL 3.0"
+        ],
+        "authors": [
+            {
+                "name": "Bernhard Wick",
+                "email": "b.wick@techdivision.com"
+            }
+        ],
+        "description": "A lightweight Design-by-Contract library for PHP",
+        "keywords": [
+            "Design-by-Contract",
+            "contract",
+            "dbc",
+            "invariant",
+            "library",
+            "postcondition",
+            "precondition"
+        ]
+    },
+    {
+        "name": "monolog/monolog",
+        "version": "1.7.0",
+        "version_normalized": "1.7.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/Seldaek/monolog.git",
+            "reference": "6225b22de9dcf36546be3a0b2fa8e3d986153f57"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/Seldaek/monolog/zipball/6225b22de9dcf36546be3a0b2fa8e3d986153f57",
+            "reference": "6225b22de9dcf36546be3a0b2fa8e3d986153f57",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.0",
+            "psr/log": "~1.0"
+        },
+        "require-dev": {
+            "aws/aws-sdk-php": "~2.4.8",
+            "doctrine/couchdb": "dev-master",
+            "mlehner/gelf-php": "1.0.*",
+            "phpunit/phpunit": "~3.7.0",
+            "raven/raven": "0.5.*",
+            "ruflin/elastica": "0.90.*"
+        },
+        "suggest": {
+            "aws/aws-sdk-php": "Allow sending log messages to AWS services like DynamoDB",
+            "doctrine/couchdb": "Allow sending log messages to a CouchDB server",
+            "ext-amqp": "Allow sending log messages to an AMQP server (1.0+ required)",
+            "ext-mongo": "Allow sending log messages to a MongoDB server",
+            "mlehner/gelf-php": "Allow sending log messages to a GrayLog2 server",
+            "raven/raven": "Allow sending log messages to a Sentry server",
+            "ruflin/elastica": "Allow sending log messages to an Elastic Search server"
+        },
+        "time": "2013-11-14 19:48:31",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "1.7.x-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-0": {
+                "Monolog": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Jordi Boggiano",
+                "email": "j.boggiano@seld.be",
+                "homepage": "http://seld.be",
+                "role": "Developer"
+            }
+        ],
+        "description": "Sends your logs to files, sockets, inboxes, databases and various web services",
+        "homepage": "http://github.com/Seldaek/monolog",
+        "keywords": [
+            "log",
+            "logging",
+            "psr-3"
+        ]
+    },
+    {
+        "name": "rhumsaa/uuid",
+        "version": "2.5.0",
+        "version_normalized": "2.5.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/ramsey/uuid.git",
+            "reference": "4b0bd0f6cb740dec8c4aebf20957925981a21706"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/ramsey/uuid/zipball/4b0bd0f6cb740dec8c4aebf20957925981a21706",
+            "reference": "4b0bd0f6cb740dec8c4aebf20957925981a21706",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.3"
+        },
+        "require-dev": {
+            "doctrine/dbal": ">=2.3",
+            "moontoast/math": "1.1.0",
+            "phpunit/phpunit": "~3.7"
+        },
+        "suggest": {
+            "doctrine/dbal": "Allow the use of a UUID as doctrine field type.",
+            "moontoast/math": "Provides support for large integers."
+        },
+        "time": "2013-10-30 22:43:52",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "2.5.x-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-0": {
+                "Rhumsaa\\Uuid": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Marijn Huizendveld",
+                "email": "marijn.huizendveld@gmail.com"
+            },
+            {
+                "name": "Ben Ramsey",
+                "homepage": "http://benramsey.com"
+            }
+        ],
+        "description": "A PHP 5.3+ library for generating RFC 4122 version 1, 3, 4, and 5 universally unique identifiers (UUID).",
+        "homepage": "https://github.com/ramsey/uuid",
+        "keywords": [
+            "guid",
+            "identifier",
+            "uuid"
+        ]
+    }
+]

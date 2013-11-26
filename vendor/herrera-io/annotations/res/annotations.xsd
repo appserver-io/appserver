@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:element name="annotations">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="annotation" type="annotation"/>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+  <xs:complexType name="annotation">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="annotation" type="annotationNested"/>
+      <xs:element name="value" type="value"/>
+      <xs:element name="values" type="values"/>
+    </xs:choice>
+    <xs:attribute name="name" type="xs:string"/>
+  </xs:complexType>
+  <xs:complexType name="annotationNested">
+    <xs:complexContent>
+      <xs:extension base="annotation">
+        <xs:attribute name="key" type="xs:string"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="value">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="key" type="xs:string"/>
+        <xs:attribute name="type" type="xs:string"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="values">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="annotation" type="annotationNested"/>
+      <xs:element name="value" type="value"/>
+      <xs:element name="values" type="values"/>
+    </xs:choice>
+    <xs:attribute name="key" type="xs:string"/>
+  </xs:complexType>
+</xs:schema>
