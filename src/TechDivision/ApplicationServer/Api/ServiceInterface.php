@@ -11,7 +11,7 @@
  */
 namespace TechDivision\ApplicationServer\Api;
 
-use Symfony\Component\Config\Definition\NodeInterface;
+use TechDivision\ApplicationServer\Api\Node\NodeInterface;
 /**
  * This interface defines the basic method each API service has
  * to provide.
@@ -35,14 +35,14 @@ interface ServiceInterface
     /**
      * Returns the system configuration.
      *
-     * @return \TechDivision\ApplicationServer\Api\Node\AppserverNode The system configuration
+     * @param \TechDivision\ApplicationServer\Api\Node\NodeInterface The system configuration
      */
-    public function setSystemConfiguration($systemConfiguration);
+    public function setSystemConfiguration(NodeInterface $systemConfiguration);
 
     /**
      * Returns the system configuration.
      *
-     * @return \TechDivision\ApplicationServer\Api\Node\AppserverNode The system configuration
+     * @return \TechDivision\ApplicationServer\Api\Node\NodeInterface The system configuration
      */
     public function getSystemConfiguration();
 

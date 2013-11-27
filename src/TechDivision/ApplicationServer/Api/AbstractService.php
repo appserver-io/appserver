@@ -16,6 +16,7 @@ use TechDivision\ApplicationServer\InitialContext;
 use TechDivision\ApplicationServer\Api\ServiceInterface;
 use TechDivision\ApplicationServer\Api\Node\NodeInterface;
 use TechDivision\PersistenceContainer\Application;
+use TechDivision\ApplicationServer\Interfaces\ContainerConfiguration;
 
 /**
  * Abstract service implementation.
@@ -95,7 +96,7 @@ abstract class AbstractService implements ServiceInterface
      *
      * @see \TechDivision\ApplicationServer\Api\ServiceInterface::setSystemConfiguration()
      */
-    public function setSystemConfiguration($systemConfiguration)
+    public function setSystemConfiguration(NodeInterface $systemConfiguration)
     {
         $this->getInitialContext()->setSystemConfiguration($systemConfiguration);
     }
@@ -122,7 +123,7 @@ abstract class AbstractService implements ServiceInterface
     /**
      * Returns the application servers base directory.
      *
-     * @param string $directoryToAppend Append this directory to the base directory before returning it
+     * @param string|null $directoryToAppend Append this directory to the base directory before returning it
      * @return string The base directory
      */
     public function getBaseDirectory($directoryToAppend = null)
