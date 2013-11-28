@@ -50,6 +50,13 @@ class InitialContext
     );
 
     /**
+     * The server's logger instance.
+     *
+     * @var \Psr\Log\LoggerInterface
+     */
+    protected $systemLogger;
+
+    /**
      * Initializes the context with the connection to the storage backend.
      *
      * @return void
@@ -272,6 +279,28 @@ class InitialContext
 
         // throw an exception if the requested class
         throw new \Exception(sprintf("Missing enterprise bean annotation for %s", $reflectionClass->getName()));
+    }
+
+    /**
+     * Set's the system logger instance.
+     *
+     * @param \Psr\Log\LoggerInterface $systemLogger
+     *            The system logger
+     * @return void
+     */
+    public function setSystemLogger($systemLogger)
+    {
+        $this->systemLogger = $systemLogger;
+    }
+
+    /**
+     * Return's the system logger instance.
+     *
+     * @return \Psr\Log\LoggerInterface
+     */
+    public function getSystemLogger()
+    {
+        return $this->systemLogger;
     }
 
     /**
