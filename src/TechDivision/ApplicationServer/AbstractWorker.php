@@ -72,6 +72,16 @@ abstract class AbstractWorker extends AbstractContextThread
      * @return string.
      */
     protected abstract function getResourceClass();
+    
+    /**
+     * Returns the container instance.
+     * 
+     * @return \TechDivision\ApplicationServer\Interfaces\ContainerInterface The container instance
+     */
+    public function getContainer()
+    {
+        return $this->container;
+    }
 
     /**
      *
@@ -79,8 +89,9 @@ abstract class AbstractWorker extends AbstractContextThread
      */
     public function main()
     {
-        $i = 0;
-        while ($i++ < 100) {
+        
+        // handle requests as long as container has been started
+        while ($this->getContainer()->isStarted()) {
             
             // reinitialize the server socket
             $serverSocket = $this->initialContext->newInstance($this->getResourceClass(), array(
@@ -90,11 +101,14 @@ abstract class AbstractWorker extends AbstractContextThread
             // accept client connection and process the request
             if ($clientSocket = $serverSocket->accept()) {
         
+                // prepare the request thread params
                 $params = array(
                     $this->initialContext,
                     $this->container,
                     $clientSocket->getResource()
                 );
+                
+                // process the request in a separate thread
                 $request = $this->initialContext->newInstance($this->threadType, $params);
                 $request->start();
             }

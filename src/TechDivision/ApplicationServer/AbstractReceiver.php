@@ -116,19 +116,9 @@ abstract class AbstractReceiver implements ReceiverInterface
                 }
             }
             
-            // collect garbage and free memory/sockets
-            while (true) {
-                for ($i = 0; $i < sizeof($this->worker); $i++) {
-                    if ($this->worker[$i] != null && $this->worker[$i]->isRunning() === false) {
-                        // unset the worker and free memory and sockets
-                        unset($this->worker[$i]);
-                        // init thread
-                        $this->worker[$i] = $this->newWorker($socket->getResource());
-                        // start thread async
-                        $this->worker[$i]->start();
-                    }    
-                }
-                usleep(100000);
+            // wait till all workers have been finished
+            foreach ($this->worker as $worker) {
+                $worker->join(); 
             }
             
         } catch (\Exception $e) {
