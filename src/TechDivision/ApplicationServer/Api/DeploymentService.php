@@ -28,7 +28,7 @@ class DeploymentService extends AbstractService
     /**
      * Return's all deployment configurations.
      *
-     * @return array<\TechDivision\ApplicationServer\Api\Node\DeploymentNode> An array with all deployment configurations
+     * @return array An array with all deployment configurations
      * @see \TechDivision\ApplicationServer\Api\ServiceInterface::findAll()
      */
     public function findAll()

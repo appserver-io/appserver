@@ -31,7 +31,7 @@ class DatasourceService extends AbstractService
     /**
      * Returns all deployed applications.
      *
-     * @return array<\TechDivision\ApplicationServer\Api\Node\DatasourceNode> All deployed applications
+     * @return array All deployed applications
      * @see \TechDivision\ApplicationServer\Api\ServiceInterface::findAll()
      */
     public function findAll()
@@ -48,7 +48,7 @@ class DatasourceService extends AbstractService
      *
      * @param string $name
      *            Name of the datasource to return
-     * @return array<\TechDivision\ApplicationServer\Api\Node\DatasourceNode> The datasources with the name passed as parameter
+     * @return array The datasources with the name passed as parameter
      */
     public function findAllByName($name)
     {
@@ -83,7 +83,7 @@ class DatasourceService extends AbstractService
      * file with the passed name.
      *
      * @param string $filename The filename to initialize the datasources from
-     * @return array<\TechDivision\ApplicationServer\Api\Node\DatasourceNode>
+     * @return array
      */
     public function initFromFile($filename)
     {

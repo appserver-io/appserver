@@ -30,7 +30,7 @@ class AppService extends AbstractService
     /**
      * Returns all deployed applications.
      *
-     * @return array<\TechDivision\ApplicationServer\Api\Node\AppNode> All deployed applications
+     * @return array All deployed applications
      * @see \TechDivision\ApplicationServer\Api\ServiceInterface::findAll()
      */
     public function findAll()
@@ -47,7 +47,7 @@ class AppService extends AbstractService
      *
      * @param string $name
      *            Name of the application to return
-     * @return array<\TechDivision\ApplicationServer\Api\Node\AppNode> The applications with the name passed as parameter
+     * @return array The applications with the name passed as parameter
      */
     public function findAllByName($name)
     {

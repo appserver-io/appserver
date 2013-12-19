@@ -58,7 +58,7 @@ class HostNode extends AbstractNode
     /**
      * The server's vhosts configuration.
      *
-     * @var array<\TechDivision\ApplicationServer\Api\Node\VhostNode>
+     * @var array
      * @AS\Mapping(nodeName="vhosts/vhost", nodeType="array", elementType="TechDivision\ApplicationServer\Api\Node\VhostNode")
      */
     protected $vhosts = array();
@@ -106,7 +106,7 @@ class HostNode extends AbstractNode
     /**
      * Returns the server's vhosts configuration.
      *
-     * @return array<\TechDivision\ApplicationServer\Api\Node\VhostNode> The server's vhosts configuration
+     * @return array The server's vhosts configuration
      */
     public function getVhosts()
     {
