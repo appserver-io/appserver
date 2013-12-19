@@ -122,7 +122,7 @@ abstract class AbstractService implements ServiceInterface
     /**
      * Returns the application servers base directory.
      *
-     * @param string $directoryToAppend Append this directory to the base directory before returning it
+     * @param string|null $directoryToAppend Append this directory to the base directory before returning it
      * @return string The base directory
      */
     public function getBaseDirectory($directoryToAppend = null)

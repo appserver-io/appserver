@@ -35,7 +35,8 @@ interface ServiceInterface
     /**
      * Returns the system configuration.
      *
-     * @return \TechDivision\ApplicationServer\Api\Node\AppserverNode The system configuration
+     * @param \TechDivision\ApplicationServer\Api\Node\AppserverNode $systemConfiguration
+     *         The system configuration
      */
     public function setSystemConfiguration($systemConfiguration);
 
