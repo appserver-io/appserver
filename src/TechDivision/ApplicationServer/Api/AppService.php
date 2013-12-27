@@ -65,6 +65,7 @@ class AppService extends AbstractService
      *
      * @param string $uuid
      *            UUID of the application to return
+     *            
      * @return \TechDivision\ApplicationServer\Api\Node\AppNode|null The application with the UUID passed as parameter
      * @see \TechDivision\ApplicationServer\Api\ServiceInterface::load()
      */

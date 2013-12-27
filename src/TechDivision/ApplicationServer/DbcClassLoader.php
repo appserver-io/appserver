@@ -101,12 +101,12 @@ class DbcClassLoader extends SplClassLoader
         $cacheMap = new CacheMap($cacheConfig['dir']);
 
         // We need a generator so we can create our proxies initially
-        $generator = new Generator($structureMap, $cacheMap);
+        $generator = new Generator($cacheMap);
 
         // Iterate over all found structures and generate their proxies
         foreach ($structures as $structure) {
 
-            $generator->createProxy($structure->getIdentifier());
+            $generator->create($structure);
         }
     }
 
