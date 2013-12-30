@@ -26,7 +26,7 @@ abstract class AbstractParamsNode extends AbstractNode
     /**
      * The handler params to use.
      *
-     * @var array<\TechDivision\ApplicationServer\Api\Node\ParamNode>
+     * @var array
      * @AS\Mapping(nodeName="params/param", nodeType="array", elementType="TechDivision\ApplicationServer\Api\Node\ParamNode")
      */
     protected $params = array();
@@ -34,7 +34,7 @@ abstract class AbstractParamsNode extends AbstractNode
     /**
      * Array with the handler params to use.
      *
-     * @return array<\TechDivision\ApplicationServer\Api\Node\ParamNode>
+     * @return array
      */
     public function getParams()
     {

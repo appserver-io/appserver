@@ -74,7 +74,7 @@ class AppNode extends AbstractNode
     /**
      * Set's the application's path.
      *
-     * @param string $name The application's path
+     * @param string $webappPath The application's path
      * @return void
      */
     public function setWebappPath($webappPath)

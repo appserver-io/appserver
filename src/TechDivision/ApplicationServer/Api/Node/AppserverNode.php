@@ -50,7 +50,7 @@ class AppserverNode extends AbstractNode
     /**
      * Array with nodes for the registered containers.
      *
-     * @var array<\TechDivision\ApplicationServer\Api\Node\ContainerNode>
+     * @var array
      * @AS\Mapping(nodeName="containers/container", nodeType="array", elementType="TechDivision\ApplicationServer\Api\Node\ContainerNode")
      */
     protected $containers = array();
@@ -58,7 +58,7 @@ class AppserverNode extends AbstractNode
     /**
      * Array with the information about the deployed applications.
      *
-     * @var array<\TechDivision\ApplicationServer\Api\Node\AppNode>
+     * @var array
      * @AS\Mapping(nodeName="apps/app", nodeType="array", elementType="TechDivision\ApplicationServer\Api\Node\AppNode")
      */
     protected $apps = array();
@@ -66,7 +66,7 @@ class AppserverNode extends AbstractNode
     /**
      * Array with nodes for the registered datasources.
      *
-     * @var array<\TechDivision\ApplicationServer\Api\Node\DatasourceNode>
+     * @var array
      * @AS\Mapping(nodeName="datasources/datasource", nodeType="array", elementType="TechDivision\ApplicationServer\Api\Node\DatasourceNode")
      */
     protected $datasources = array();
@@ -114,7 +114,7 @@ class AppserverNode extends AbstractNode
     /**
      * Returns an array with the information about the deployed applications.
      *
-     * @return array<\TechDivision\ApplicationServer\Api\Node\ReceiverNode> The array with the information about the deployed applications
+     * @return array The array with the information about the deployed applications
      */
     public function getApps()
     {
@@ -135,7 +135,7 @@ class AppserverNode extends AbstractNode
     /**
      * Returns an array with the information about the deployed datasources.
      *
-     * @return array<\TechDivision\ApplicationServer\Api\Node\DatasourceNode> The array with the information about the deployed datasources
+     * @return array The array with the information about the deployed datasources
      */
     public function getDatasources()
     {

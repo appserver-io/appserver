@@ -34,7 +34,7 @@ class Server
     /**
      * Initialize the array for the running threads.
      *
-     * @var array<\Thread>
+     * @var array
      */
     protected $threads = array();
 
@@ -51,13 +51,6 @@ class Server
      * @var \TechDivision\ApplicationServer\InitialContext
      */
     protected $initialContext;
-
-    /**
-     * The server's logger instance.
-     *
-     * @var \Psr\Log\LoggerInterface
-     */
-    protected $systemLogger;
 
     /**
      * The mutex to prevent PHAR deployment errors.
@@ -162,7 +155,7 @@ class Server
         }
 
         // set the initialized logger finally
-        $this->setSystemLogger($systemLogger);
+        $this->getInitialContext()->setSystemLogger($systemLogger);
     }
 
     /**
@@ -207,7 +200,7 @@ class Server
     /**
      * Returns the running container threads.
      *
-     * @return array<\TechDivision\ApplicationServer\ContainerThread> Array with the running container threads
+     * @return array Array with the running container threads
      */
     public function getThreads()
     {
@@ -257,25 +250,13 @@ class Server
     }
 
     /**
-     * Set's the system logger instance.
-     *
-     * @param \Psr\Log\LoggerInterface $systemLogger
-     *            The system logger
-     * @return void
-     */
-    public function setSystemLogger(LoggerInterface $systemLogger)
-    {
-        $this->systemLogger = $systemLogger;
-    }
-
-    /**
      * Return's the system logger instance.
      *
      * @return \Psr\Log\LoggerInterface
      */
     public function getSystemLogger()
     {
-        return $this->systemLogger;
+        return $this->getInitialContext()->getSystemLogger();
     }
 
     /**

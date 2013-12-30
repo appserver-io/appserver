@@ -58,6 +58,9 @@ can start, stop or restart it with the init-script `/etc/init.d/appserver` and t
 After installation you can open a really simply example app with your favorite browser open the URL 
 `http://127.0.0.1:8586/demo`.
 
+# Uninstall
+To uninstall the Application Server on Mac OS X, you simply have to delete the folder `/opt/appserver` and the configuration files for the launch deameons. These are files are located in folder `/Library/LaunchDaemons` and named `io.appserver.appserver.plist`, `io.appserver.memcached.plist` and `io.appserver.redis.plist`. On Linux you can simple uninstall the Application Server with the package managment tool you've installed it. If you're using Debian you can use `apitude remove appserver` for example.
+
 # Roadmap
 As we're in heavy development it may be, that we've to move some tasks from the following roadmap to a earlier/later version, please be aware of that. If you've ideas or features that definitely has to be in one of the next releases, please contact us. We're always open for new ideas or feedback.
 

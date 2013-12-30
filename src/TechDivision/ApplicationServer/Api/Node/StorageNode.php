@@ -34,7 +34,7 @@ class StorageNode extends AbstractNode
     /**
      * Array with the servers used by the storage.
      *
-     * @var array<\TechDivision\ApplicationServer\Api\Node\ServerNode>
+     * @var array
      * @AS\Mapping(nodeName="servers/server", nodeType="array", elementType="TechDivision\ApplicationServer\Api\Node\ServerNode")
      */
     protected $servers = array();
