@@ -79,4 +79,13 @@ interface ApplicationInterface
      * @return \TechDivision\ApplicationServer\Api\Node\AppNode The node representation of the application
      */
     public function newAppNode();
+
+    /**
+     * Return'sthe app node the application is belonging to.
+     *
+     * @return \TechDivision\ApplicationServer\Api\Node\AppNode
+     *          The app node the application is belonging to
+     */
+    public function getAppNode();
+
 }

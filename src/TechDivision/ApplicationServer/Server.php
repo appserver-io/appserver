@@ -79,6 +79,12 @@ class Server
 
         // initialize the server
         $this->init();
+        $this->getSystemLogger()->info(sprintf('Server successfully started in basedirectory %s ',
+            $this->getSystemConfiguration()
+            ->getBaseDirectory()
+            ->getNodeValue()
+            ->__toString()));
+
     }
 
     /**

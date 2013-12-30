@@ -29,14 +29,14 @@ abstract class AbstractDeployment implements DeploymentInterface
     /**
      * The container node the deployment is for.
      *
-     * @var string
+     * @var \TechDivision\ApplicationServer\Api\Node\ContainerNode
      */
     protected $containerNode;
 
     /**
      * The deployment node.
      *
-     * @var string
+     * @var \TechDivision\ApplicationServer\Api\Node\DeploymentNode
      */
     protected $deploymentNode;
 
@@ -95,7 +95,7 @@ abstract class AbstractDeployment implements DeploymentInterface
     /**
      * Returns the deployment node.
      *
-     * @return \TechDivision\ApplicationServer\Api\Node\ContainerNode The deployment node
+     * @return \TechDivision\ApplicationServer\Api\Node\DeploymentNode The deployment node
      */
     public function getDeploymentNode()
     {
@@ -129,6 +129,14 @@ abstract class AbstractDeployment implements DeploymentInterface
 
         // connect the application to the container
         $application->connect();
+
+        $this->getInitialContext()->getSystemLogger()->info(
+            sprintf('Application %s succesfully started for container %s (Webapppath: %s Uuid: %s ParentUuid: %s)',
+                $application->getName(), $application->getWebappPath(),
+                $application->getContainerNode()->getName(),
+                $application->getAppNode()->getUuid(),
+                $application->getAppNode()->getParentUuid()
+            ));
 
         // register the application in this instance
         $this->applications[$application->getName()] = $application;
@@ -187,7 +195,7 @@ abstract class AbstractDeployment implements DeploymentInterface
             }
 
         } catch (\Exception $e) {
-            error_log($e->__toString());
+            $this->getInitialContext()->getSystemLogger()->error($e->__toString());
         }
     }
 
