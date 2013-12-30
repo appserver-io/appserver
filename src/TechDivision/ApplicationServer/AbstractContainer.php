@@ -56,7 +56,7 @@ abstract class AbstractContainer extends \Stackable implements ContainerInterfac
 
     /**
      * TRUE if the container has been started, else FALSE.
-     * 
+     *
      * @var boolean
      */
     protected $started = false;
@@ -76,7 +76,7 @@ abstract class AbstractContainer extends \Stackable implements ContainerInterfac
     {
         $this->initialContext = $initialContext;
         $this->baseDirectory = $this->newService('TechDivision\ApplicationServer\Api\ContainerService')->getBaseDirectory();
-        
+
         $this->setContainerNode($containerNode);
         $this->setApplications($applications);
     }
