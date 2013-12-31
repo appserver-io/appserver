@@ -28,7 +28,7 @@ class MockContainerThread
     /**
      *@see \TechDivision\ApplicationServer\ContainerThread::__construct()
      */
-    public function __construct($initialContext, $mutex, $id)
+    public function __construct($initialContext, $id)
     {}
 
     /**
