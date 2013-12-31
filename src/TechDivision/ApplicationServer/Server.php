@@ -11,6 +11,8 @@
  */
 namespace TechDivision\ApplicationServer;
 
+use TechDivision\ApplicationServer\Extractors\PharExtractor;
+use TechDivision\ApplicationServer\Interfaces\ExtractorInterface;
 use TechDivision\Socket\Client;
 use TechDivision\ApplicationServer\SplClassLoader;
 use TechDivision\ApplicationServer\InitialContext;
@@ -53,11 +55,11 @@ class Server
     protected $initialContext;
 
     /**
-     * The mutex to prevent PHAR deployment errors.
+     * The server's webapp extractor
      *
-     * @var integer
+     * @var \TechDivision\ApplicationServer\Interfaces\ExtractorInterface
      */
-    protected $mutex;
+    protected $extractor;
 
     /**
      * Initializes the the server with the parsed configuration file.
@@ -74,50 +76,8 @@ class Server
         $systemConfiguration->initFromConfiguration($configuration);
         $this->setSystemConfiguration($systemConfiguration);
 
-        // initialize the mutex to prevent PHAR deployment errors
-        $this->setMutex(\Mutex::create(false));
-
         // initialize the server
         $this->init();
-        $this->getSystemLogger()->info(sprintf('Server successfully started in basedirectory %s ',
-            $this->getSystemConfiguration()
-            ->getBaseDirectory()
-            ->getNodeValue()
-            ->__toString()));
-
-    }
-
-    /**
-     * Destroys the mutex to prevent PHAR deployment errors.
-     *
-     * @return void
-     */
-    public function __destruct()
-    {
-        \Mutex::unlock($this->getMutex());
-        \Mutex::destroy($this->getMutex());
-    }
-
-    /**
-     * Set's the mutex to prevent PHAR deployment errors.
-     *
-     * @param
-     *            integer The mutex
-     * @return void
-     */
-    public function setMutex($mutex)
-    {
-        $this->mutex = $mutex;
-    }
-
-    /**
-     * Returns the mutex to prevent PHAR deployment errors.
-     *
-     * @return integer The mutex
-     */
-    public function getMutex()
-    {
-        return $this->mutex;
     }
 
     /**
@@ -127,8 +87,13 @@ class Server
      */
     protected function init()
     {
+        // init initial context
         $this->initInitialContext();
+        // init main system logger
         $this->initSystemLogger();
+        // init extractor
+        $this->initExtractor();
+        // init containers
         $this->initContainers();
     }
 
@@ -165,6 +130,44 @@ class Server
     }
 
     /**
+     * Initializes the extractor
+     *
+     * @return void
+     */
+    protected function initExtractor()
+    {
+        // @TODO: read extractor type from configuration
+        $this->setExtractor(
+            new PharExtractor()
+        );
+        // extract all webapps
+        $this->getExtractor()->extractWebapps();
+    }
+
+    /**
+     * Set's the extractor
+     *
+     * @param \TechDivision\ApplicationServer\Interfaces\ExtractorInterface $extractor
+     *            The initial context instance
+     *
+     * @return void
+     */
+    public function setExtractor(ExtractorInterface $extractor)
+    {
+        return $this->extractor = $extractor;
+    }
+
+    /**
+     * Returns the extractor
+     *
+     * @return \TechDivision\ApplicationServer\Interfaces\ExtractorInterface The extractor instance
+     */
+    public function getExtractor()
+    {
+        return $this->extractor;
+    }
+
+    /**
      * Initialize the initial context instance.
      *
      * @return void
@@ -194,7 +197,6 @@ class Server
             // initialize the container configuration with the base directory and pass it to the thread
             $params = array(
                 $this->getInitialContext(),
-                $this->getMutex(),
                 $containerNode
             );
 
