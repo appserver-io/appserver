@@ -24,12 +24,33 @@ use TechDivision\ApplicationServer\Interfaces\ExtractorInterface;
  */
 class AbstractExtractor
 {
+    /**
+     * The container's base directory.
+     *
+     * @var string
+     */
+    protected $baseDirectory;
+
+    /**
+     * The initial context instance.
+     *
+     * @var \TechDivision\ApplicationServer\InitialContext
+     */
+    protected $initialContext;
 
     /**
      * Contructor
+     *
+     * @param \TechDivision\ApplicationServer\InitialContext $initialContext
+     *            The initial context instance
      */
-    public function __construct()
+    public function __construct($initialContext)
     {
+        // add initialContext
+        $this->initialContext = $initialContext;
+        // init base dir
+        $this->baseDirectory =
+            $this->newService('TechDivision\ApplicationServer\Api\ContainerService')->getBaseDirectory();
         // prepare filesystem
         $this->prepareFileSystem();
     }
@@ -37,10 +58,14 @@ class AbstractExtractor
     /**
      * Prepares filesystem to be sure that everything is on place as expected
      *
-     * @return void
+     * @return bool
      */
     public function prepareFileSystem()
     {
+        // first check if base dir exists for testing purpose
+        if (!is_dir($this->getBaseDir())) {
+            return false;
+        }
         // check if directories exists
         if (!is_dir($this->getDeployDir())) {
             mkdir($this->getDeployDir());
@@ -48,6 +73,8 @@ class AbstractExtractor
         if (!is_dir($this->getTmpDir())) {
             mkdir($this->getTmpDir());
         }
+        // finally return true
+        return true;
     }
 
     /**
@@ -57,7 +84,7 @@ class AbstractExtractor
      */
     protected function getBaseDir()
     {
-        return APPSERVER_BP;
+        return $this->baseDirectory;
     }
 
     /**
@@ -165,11 +192,35 @@ class AbstractExtractor
      */
     public function extractWebapps()
     {
-        // init file iterator on deployment directory
-        $fileIterator = new \FilesystemIterator($this->getDeployDir());
-        // Iterate through all phar files and extract them to tmp dir
-        foreach (new \RegexIterator($fileIterator, '/^.*\.phar$/') as $archive) {
-            $this->extractArchive($archive);
+        // check if deploy dir exists
+        if (is_dir($this->getDeployDir())) {
+            // init file iterator on deployment directory
+            $fileIterator = new \FilesystemIterator($this->getDeployDir());
+            // Iterate through all phar files and extract them to tmp dir
+            foreach (new \RegexIterator($fileIterator, '/^.*\.phar$/') as $archive) {
+                $this->extractArchive($archive);
+            }
         }
     }
+
+    /**
+     * (non-PHPdoc)
+     *
+     * @see \TechDivision\ApplicationServer\InitialContext::newService()
+     */
+    public function newService($className)
+    {
+        return $this->getInitialContext()->newService($className);
+    }
+
+    /**
+     * Returns the inital context instance.
+     *
+     * @return \TechDivision\ApplicationServer\InitialContext The initial context instance
+     */
+    public function getInitialContext()
+    {
+        return $this->initialContext;
+    }
+
 }
