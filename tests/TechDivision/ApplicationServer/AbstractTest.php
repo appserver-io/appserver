@@ -14,10 +14,10 @@ namespace TechDivision\ApplicationServer;
 use TechDivision\ApplicationServer\Mock\MockApplication;
 use TechDivision\ApplicationServer\Mock\MockContainer;
 use TechDivision\ApplicationServer\Configuration;
-use TechDivision\ApplicationServer\InitialContext;
 use TechDivision\ApplicationServer\Api\Node\AppserverNode;
 use TechDivision\ApplicationServer\Api\Node\ContainerNode;
 use TechDivision\ApplicationServer\Api\Node\DeploymentNode;
+use TechDivision\ApplicationServer\Mock\MockInitialContext;
 
 /**
  *
@@ -148,7 +148,7 @@ class AbstractTest extends \PHPUnit_Framework_TestCase
      */
     public function getMockInitialContext()
     {
-        return new InitialContext($this->getAppserverNode());
+        return new MockInitialContext($this->getAppserverNode());
     }
 
     /**
