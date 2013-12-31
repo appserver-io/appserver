@@ -192,11 +192,14 @@ class AbstractExtractor
      */
     public function extractWebapps()
     {
-        // init file iterator on deployment directory
-        $fileIterator = new \FilesystemIterator($this->getDeployDir());
-        // Iterate through all phar files and extract them to tmp dir
-        foreach (new \RegexIterator($fileIterator, '/^.*\.phar$/') as $archive) {
-            $this->extractArchive($archive);
+        // check if deploy dir exists
+        if (is_dir($this->getDeployDir())) {
+            // init file iterator on deployment directory
+            $fileIterator = new \FilesystemIterator($this->getDeployDir());
+            // Iterate through all phar files and extract them to tmp dir
+            foreach (new \RegexIterator($fileIterator, '/^.*\.phar$/') as $archive) {
+                $this->extractArchive($archive);
+            }
         }
     }
 
