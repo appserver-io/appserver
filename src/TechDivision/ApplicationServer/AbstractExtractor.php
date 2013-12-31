@@ -58,10 +58,14 @@ class AbstractExtractor
     /**
      * Prepares filesystem to be sure that everything is on place as expected
      *
-     * @return void
+     * @return bool
      */
     public function prepareFileSystem()
     {
+        // first check if base dir exists for testing purpose
+        if (!is_dir($this->getBaseDir())) {
+            return false;
+        }
         // check if directories exists
         if (!is_dir($this->getDeployDir())) {
             mkdir($this->getDeployDir());
@@ -69,6 +73,8 @@ class AbstractExtractor
         if (!is_dir($this->getTmpDir())) {
             mkdir($this->getTmpDir());
         }
+        // finally return true
+        return true;
     }
 
     /**
