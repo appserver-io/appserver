@@ -144,7 +144,7 @@ class Server
     {
         // @TODO: read extractor type from configuration
         $this->setExtractor(
-            new PharExtractor()
+            new PharExtractor($this->getInitialContext())
         );
         // extract all webapps
         $this->getExtractor()->extractWebapps();

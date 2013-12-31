@@ -24,12 +24,33 @@ use TechDivision\ApplicationServer\Interfaces\ExtractorInterface;
  */
 class AbstractExtractor
 {
+    /**
+     * The container's base directory.
+     *
+     * @var string
+     */
+    protected $baseDirectory;
+
+    /**
+     * The initial context instance.
+     *
+     * @var \TechDivision\ApplicationServer\InitialContext
+     */
+    protected $initialContext;
 
     /**
      * Contructor
+     *
+     * @param \TechDivision\ApplicationServer\InitialContext $initialContext
+     *            The initial context instance
      */
-    public function __construct()
+    public function __construct($initialContext)
     {
+        // add initialContext
+        $this->initialContext = $initialContext;
+        // init base dir
+        $this->baseDirectory =
+            $this->newService('TechDivision\ApplicationServer\Api\ContainerService')->getBaseDirectory();
         // prepare filesystem
         $this->prepareFileSystem();
     }
@@ -57,7 +78,7 @@ class AbstractExtractor
      */
     protected function getBaseDir()
     {
-        return APPSERVER_BP;
+        return $this->baseDirectory;
     }
 
     /**
@@ -172,4 +193,25 @@ class AbstractExtractor
             $this->extractArchive($archive);
         }
     }
+
+    /**
+     * (non-PHPdoc)
+     *
+     * @see \TechDivision\ApplicationServer\InitialContext::newService()
+     */
+    public function newService($className)
+    {
+        return $this->getInitialContext()->newService($className);
+    }
+
+    /**
+     * Returns the inital context instance.
+     *
+     * @return \TechDivision\ApplicationServer\InitialContext The initial context instance
+     */
+    public function getInitialContext()
+    {
+        return $this->initialContext;
+    }
+
 }
