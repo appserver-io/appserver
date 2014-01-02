@@ -37,10 +37,10 @@
 	</systemLogger>
 
      <apps>
-         <app name="api" webappPath="/opt/appserver/webapps" />
-         <app name="demo" webappPath="/opt/appserver/webapps" />
-         <app name="example" webappPath="/opt/appserver/webapps" />
-         <app name="api" webappPath="/opt/appserver/otherwebappsfolder" />
+         <app name="api" webappPath="/opt/appserver/webapps/api" />
+         <app name="demo" webappPath="/opt/appserver/webapps/demo" />
+         <app name="example" webappPath="/opt/appserver/webapps/example" />
+         <app name="api" webappPath="/opt/appserver/otherwebappsfolder/api" />
      </apps>
 
 	<containers>

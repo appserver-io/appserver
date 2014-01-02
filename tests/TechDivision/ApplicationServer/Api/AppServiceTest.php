@@ -73,7 +73,7 @@ class AppServiceTest extends AbstractTest
         $appNode->setNodeName('application');
         $appNode->setWebappPath('/opt/appserver/anotherwebapppath');
         $appNode->setName('someappname');
-        $this->appService->attachApp($appNode);
+        $this->appService->persist($appNode);
         $this->assertSame($appNode, $this->appService->load($appNode->getPrimaryKey()));
     }
 
