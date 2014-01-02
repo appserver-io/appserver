@@ -47,7 +47,7 @@ class AppNode extends AbstractNode
      */
     public function getPrimaryKey()
     {
-        return $this->getWebappPath() . DIRECTORY_SEPARATOR . $this->getName();
+        return $this->getWebappPath();
     }
 
     /**

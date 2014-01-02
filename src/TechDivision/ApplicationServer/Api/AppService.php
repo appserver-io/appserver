@@ -13,6 +13,7 @@ namespace TechDivision\ApplicationServer\Api;
 
 use TechDivision\ApplicationServer\Api\AbstractService;
 use TechDivision\ApplicationServer\Api\Node\AppNode;
+use TechDivision\ApplicationServer\Api\Node\NodeInterface;
 
 /**
  * This services provides access to the deplyed applications and allows
@@ -79,15 +80,15 @@ class AppService extends AbstractService
     }
 
     /**
-     * Persists the passed app.
+     * Persists the system configuration.
      *
-     * @param \TechDivision\ApplicationServer\Api\Node\AppNode $appNode The app to persist
+     * @param \TechDivision\ApplicationServer\Api\Node\NodeInterface
      * @return void
      */
-    public function attachApp(AppNode $appNode)
+    public function persist(NodeInterface $node)
     {
         $systemConfiguration = $this->getSystemConfiguration();
-        $systemConfiguration->attachApp($appNode);
+        $systemConfiguration->attachApp($node);
         $this->setSystemConfiguration($systemConfiguration);
     }
 }
