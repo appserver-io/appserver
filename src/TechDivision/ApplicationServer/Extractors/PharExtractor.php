@@ -17,11 +17,11 @@ use TechDivision\ApplicationServer\Interfaces\ExtractorInterface;
 /**
  * An extractor implementation for phar files
  *
- * @package    TechDivision\ApplicationServer
+ * @package TechDivision\ApplicationServer
  * @subpackage Extractors
- * @copyright  2013 TechDivision GmbH <info@techdivision.com>
- * @license    Open Software License (OSL 3.0) http://opensource.org/licenses/osl-3.0.php
- * @author     Johann Zelger <j.zelger@techdivision.com>
+ * @copyright 2013 TechDivision GmbH <info@techdivision.com>
+ * @license Open Software License (OSL 3.0) http://opensource.org/licenses/osl-3.0.php
+ * @author Johann Zelger <j.zelger@techdivision.com>
  */
 class PharExtractor extends AbstractExtractor implements ExtractorInterface
 {
@@ -29,8 +29,9 @@ class PharExtractor extends AbstractExtractor implements ExtractorInterface
     /**
      * Check if archive is extractable
      *
-     * @param $archive \SplFileInfo The archive object
-     *
+     * @param $archive \SplFileInfo
+     *            The archive object
+     *            
      * @return bool
      */
     public function isExtractable(\SplFileInfo $archive)
@@ -52,8 +53,8 @@ class PharExtractor extends AbstractExtractor implements ExtractorInterface
      * Extracts the passed PHAR archive to a folder with the
      * basename of the archive file.
      *
-     * @param \SplFileInfo $archive The PHAR file to be deployed
-     *
+     * @param \SplFileInfo $archive
+     *            The PHAR file to be deployed
      * @throws \Exception
      * @return void
      */
@@ -62,38 +63,36 @@ class PharExtractor extends AbstractExtractor implements ExtractorInterface
         try {
             // create folder names based on the archive's basename
             $tmpFolderName = $this->getTmpDir() . DIRECTORY_SEPARATOR . $archive->getFilename();
-            $webappFolderName = $this->getWebappsDir() . DIRECTORY_SEPARATOR . $archive->getFilename();
-
+            $webappFolderName = $this->getWebappsDir() . DIRECTORY_SEPARATOR . basename($archive->getFilename(), '.phar');
+            
             // check if archive has not been deployed yet or failed sometime
             if ($this->isExtractable($archive)) {
-
+                
                 // flag webapp as deploying
                 $this->flagArchive($archive, ExtractorInterface::FLAG_DEPLOYING);
-
+                
                 // extract phar to tmp directory
                 $p = new \Phar($archive);
                 $p->extractTo($tmpFolderName);
-
+                
                 // check if archive was deployed before to do replace deployment
                 if (is_dir($webappFolderName)) {
-
+                    
                     // remove folder from webapps dir
                     $this->removeDir($webappFolderName);
                 }
-
+                
                 // move extracted content to webapps folder
                 rename($tmpFolderName, $webappFolderName);
-
+                
                 // flag webapp as deployed
                 $this->flagArchive($archive, ExtractorInterface::FLAG_DEPLOYED);
             }
-
         } catch (\Exception $e) {
             // log error
             error_log($e->__toString());
             // flag webapp as failed
             $this->flagArchive($archive, ExtractorInterface::FLAG_FAILED);
         }
-
     }
 }
