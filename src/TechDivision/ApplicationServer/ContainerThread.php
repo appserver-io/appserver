@@ -35,24 +35,15 @@ class ContainerThread extends AbstractContextThread
     protected $containerNode;
 
     /**
-     * The mutex to prevent parallel deployment of PHAR files.
-     *
-     * @var \Mutex
-     */
-    protected $mutex;
-
-    /**
      * Set's the unique container name to be started by this thread.
      *
-     * @param \Mutex $mutex
-     *            The mutex that locks related threads when deployment starts
      * @param string $containerNode
      *            The container node
+     *
      * @return void
      */
-    public function init($mutex, $containerNode)
+    public function init($containerNode)
     {
-        $this->mutex = $mutex;
         $this->containerNode = $containerNode;
     }
 
@@ -62,18 +53,10 @@ class ContainerThread extends AbstractContextThread
      */
     public function main()
     {
-
-        // lock the mutex to prevent other containers to parallel deploy PHAR files
-        \Mutex::lock($this->mutex);
-
         // deploy the applications and return them as array
         $applications = $this->getDeployment()
-            ->deployWebapps()
             ->deploy()
             ->getApplications();
-
-        // unlock the mutex to allow other containers own deployment
-        \Mutex::unlock($this->mutex);
 
         // load the container node
         $containerNode = $this->getContainerNode();
