@@ -337,4 +337,30 @@ abstract class AbstractNode implements NodeInterface
             }
         }
     }
+    
+    /**
+     * Returns the node as stdClass representation.
+     * 
+     * @return \stdClass The node as stdClass representation
+     */
+    public function toStdClass()
+    {
+        
+        // initialize a new stdClass instance
+        $stdClass = new \stdClass();
+        
+        // iterate over the PROTECTED properties and initialize them with the configuration data
+        $reflectionObject = new \ReflectionObject($this);
+        foreach ($reflectionObject->getProperties(\ReflectionProperty::IS_PROTECTED) as $reflectionProperty) {
+            // ONLY use PROTECTED properties, NOT PRIVATE, else UUID's will be overwritten!!
+            $propertyName = $reflectionProperty->getName();
+            $stdClass->$propertyName = $this->$propertyName;
+        }
+        
+        // set the primary key
+        $stdClass->id = $this->getPrimaryKey();
+        
+        // return the instance
+        return $stdClass;
+    }
 }

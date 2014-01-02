@@ -32,7 +32,15 @@ class VhostService extends AbstractService
      * @see \TechDivision\ApplicationServer\Api\ServiceInterface::findAll()
      */
     public function findAll()
-    {}
+    {
+        $vhostNodes = array();       
+        foreach ($this->getSystemConfiguration()->getContainers() as $containerNode) {
+            foreach ($containerNode->getHost()->getVhosts() as $vhostNode) {
+                $vhostNodes[$vhostNode->getPrimaryKey()] = $vhostNode;
+            }
+        }
+        return $vhostNodes;
+    }
 
     /**
      * Returns the vhost with the passed UUID.
