@@ -66,7 +66,6 @@ class AppService extends AbstractService
      *
      * @param string $uuid
      *            UUID of the application to return
-     *            
      * @return \TechDivision\ApplicationServer\Api\Node\AppNode|null The application with the UUID passed as parameter
      * @see \TechDivision\ApplicationServer\Api\ServiceInterface::load()
      */
@@ -74,6 +73,22 @@ class AppService extends AbstractService
     {
         foreach ($this->findAll() as $appNode) {
             if ($appNode->getPrimaryKey() == $uuid) {
+                return $appNode;
+            }
+        }
+    }
+
+    /**
+     * Returns the application with the passed webapp path.
+     *
+     * @param string $webappPath
+     *            webapp path of the application to return
+     * @return \TechDivision\ApplicationServer\Api\Node\AppNode|null The application with the webapp path passed as parameter
+     */
+    public function loadByWebappPath($webappPath)
+    {
+        foreach ($this->findAll() as $appNode) {
+            if ($appNode->getWebappPath() == $webappPath) {
                 return $appNode;
             }
         }

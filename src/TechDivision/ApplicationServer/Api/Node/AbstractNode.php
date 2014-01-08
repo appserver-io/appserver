@@ -346,15 +346,16 @@ abstract class AbstractNode implements NodeInterface
     public function toStdClass()
     {
         
-        // initialize a new stdClass instance
+        // initialize a new stdClass representation
         $stdClass = new \stdClass();
         
         // iterate over the PROTECTED properties and initialize them with the configuration data
         $reflectionObject = new \ReflectionObject($this);
         foreach ($reflectionObject->getProperties(\ReflectionProperty::IS_PROTECTED) as $reflectionProperty) {
-            // ONLY use PROTECTED properties, NOT PRIVATE, else UUID's will be overwritten!!
+            // load property name
             $propertyName = $reflectionProperty->getName();
-            $stdClass->$propertyName = $this->$propertyName;
+            // uncamelcase property names in stdClass representation
+            $stdClass->{ltrim(strtolower(preg_replace('/[A-Z]/', '_$0', $propertyName)), '_')} = $this->$propertyName;
         }
         
         // set the primary key

@@ -40,17 +40,6 @@ class AppNode extends AbstractNode
     protected $webappPath;
 
     /**
-     * Returns the nodes primary key.
-     *
-     * @return string The nodes primary key
-     * @see \TechDivision\ApplicationServer\Api\Node\AbstractNode::getPrimaryKey();
-     */
-    public function getPrimaryKey()
-    {
-        return $this->getWebappPath();
-    }
-
-    /**
      * Set's the application name.
      *
      * @param string $name The unique application name
