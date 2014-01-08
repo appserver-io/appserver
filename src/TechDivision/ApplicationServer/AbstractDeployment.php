@@ -115,7 +115,7 @@ abstract class AbstractDeployment implements DeploymentInterface
 
         // create a new API app service instance
         $appService = $this->newService('TechDivision\ApplicationServer\Api\AppService');
-        $appNode = $appService->load($application->getWebappPath());
+        $appNode = $appService->loadByWebappPath($application->getWebappPath());
 
         // check if the application has already been attached to the container
         if ($appNode == null) {
