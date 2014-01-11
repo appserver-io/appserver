@@ -100,13 +100,10 @@ class AppService extends AbstractService
      * @param \TechDivision\ApplicationServer\Api\Node\NodeInterface
      * @return void
      */
-    public function persist(AppNode $appNode)
+    public function persist(NodeInterface $appNode)
     {
-        // check that no application with the webapp path already exists
-        if ($this->loadByWebappPath($appNode->getWebappPath()) == null) {
-            $systemConfiguration = $this->getSystemConfiguration();
-            $systemConfiguration->attachApp($appNode);
-            $this->setSystemConfiguration($systemConfiguration);
-        }
+        $systemConfiguration = $this->getSystemConfiguration();
+        $systemConfiguration->attachApp($appNode);
+        $this->setSystemConfiguration($systemConfiguration);
     }
 }
