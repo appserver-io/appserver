@@ -117,10 +117,33 @@ abstract class AbstractReceiver implements ReceiverInterface
                 }
             }
 
+            // log a message that the container has been started successfully
             $this->getInitialContext()->getSystemLogger()->info(
                 sprintf('Receiver successfully started in container %s, listening on IP: %s Port: %s Number of workers started: %s, Workertype: %s',
                 $this->getContainer()->getContainerNode()->getName(), $this->getAddress(), $this->getPort(),
                 $this->getWorkerNumber(), $this->getWorkerType()));
+
+
+            // collect garbage and free memory/sockets
+            while (true) {
+                
+                // make sure that the number of configured workers are running
+                for ($i = 0; $i < sizeof($this->worker); $i++) {
+                    
+                    // if not, start a new worker
+                    if ($this->worker[$i] != null && $this->worker[$i]->isRunning() === false) {
+                        // unset the worker and free memory and sockets
+                        unset($this->worker[$i]);
+                        // init thread
+                        $this->worker[$i] = $this->newWorker($socket->getResource());
+                        // start thread async
+                        $this->worker[$i]->start();
+                    }
+                }
+                
+                // sleep for 0.1 seconds to lower system load
+                usleep(100000);
+            }
             
             // wait till all workers have been finished
             foreach ($this->worker as $worker) {
