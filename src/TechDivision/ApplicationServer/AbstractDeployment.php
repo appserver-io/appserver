@@ -45,7 +45,7 @@ abstract class AbstractDeployment implements DeploymentInterface
      *
      * @var array
      */
-    protected $applications;
+    protected $applications = array();
     
     /**
      * The initial context instance.
