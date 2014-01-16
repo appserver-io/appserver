@@ -103,9 +103,27 @@ class DbcClassLoader extends SplClassLoader
         // We need a generator so we can create our proxies initially
         $generator = new Generator($cacheMap);
 
-        // Iterate over all found structures and generate their proxies
+        // Iterate over all found structures and generate their proxies, but ignore the ones with omitted
+        // namespaces
+        $autoLoaderConfig = $this->config->getConfig('autoloader');
+        $omittedNamespaces = array();
+        if (isset($autoLoaderConfig['omit'])) {
+
+            $omittedNamespaces = $autoLoaderConfig['omit'];
+        }
         foreach ($structures as $structure) {
 
+            // Might this be an omitted structure after all?
+            foreach ($omittedNamespaces as $omittedNamespace) {
+
+                // If our class name begins with the omitted part e.g. it's namespace
+                if (strpos($structure->getIdentifier(), $omittedNamespace) === 0) {
+
+                    continue 2;
+                }
+            }
+
+            // Create the new file
             $generator->create($structure);
         }
     }
