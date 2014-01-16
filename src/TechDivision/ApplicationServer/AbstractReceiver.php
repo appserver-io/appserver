@@ -62,6 +62,11 @@ abstract class AbstractReceiver implements ReceiverInterface
     protected $worker = array();
 
     /**
+     * @var InitialContext
+     */
+    protected $initialContext;
+
+    /**
      * Sets the reference to the container instance.
      *
      * @param \TechDivision\ApplicationServer\InitialContext $initialContext The initial context instance
