@@ -37,6 +37,7 @@ class ServerTest extends AbstractTest
     public function setUp()
     {
         $this->server = new Server($this->getAppserverConfiguration());
+        $this->server->setDirectories(array());
     }
 
     /**

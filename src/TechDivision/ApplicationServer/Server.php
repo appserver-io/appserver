@@ -60,6 +60,16 @@ class Server
      * @var \TechDivision\ApplicationServer\Interfaces\ExtractorInterface
      */
     protected $extractor;
+    
+    /**
+     * The directory structure to be created at first start.
+     * 
+     * @var array
+     */
+    protected $directories = array(
+    	'tmp' => 'tmp',
+        'log' => 'var/log'
+    );
 
     /**
      * Initializes the the server with the parsed configuration file.
@@ -107,24 +117,21 @@ class Server
      */
     protected function initDirectoryStructure()
     {
-    	
-    	// load the base directory
-    	$baseDirectory = $this->getSystemConfiguration()
+        
+        // load the base directory
+        $baseDirectory = $this->getSystemConfiguration()
             ->getBaseDirectory()
             ->getNodeValue()
             ->__toString();
-    	
-    	// prepare the array with the directories to be created
-    	$directories = array(
-    	   'tmp' => $baseDirectory . DIRECTORY_SEPARATOR . 'tmp',
-    	   'log' => $baseDirectory . DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR . 'log'
-    	);
-    	
+        
     	// check if the log directory already exists, if not, create it
-    	foreach ($directories as $name => $directory) {
-	    	if (!is_dir($directory)) {
-	    		mkdir($directory);
-	    		$this->getSystemLogger()->info(sprintf("Successfully created %s directory (%s)", $name, $directory));
+    	foreach ($this->getDirectories() as $name => $directory) {
+            // prepare the path to the directory to be created
+    	    $toBeCreated = $baseDirectory . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $directory);
+    	    // prepare the directory name and check if the directory already exists
+	    	if (is_dir($toBeCreated) === false) {
+	    	    //  if not create it
+	    	    mkdir($toBeCreated);
 	    	}
     	}
     }
@@ -343,5 +350,26 @@ class Server
     public function newService($className)
     {
         return $this->getInitialContext()->newService($className);
+    }
+    
+    /**
+     * Set's the directory structure to be created at first start.
+     * 
+     * @param array The directory structure to be created if necessary
+     * @return void
+     */
+    public function setDirectories($directories)
+    {
+        $this->directories = $directories;
+    }
+    
+    /**
+     * Return's the directory structure to be created at first start.
+     * 
+     * @return array The directory structure to be created if necessary
+     */
+    public function getDirectories()
+    {
+        return $this->directories;
     }
 }
