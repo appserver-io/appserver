@@ -91,10 +91,42 @@ class Server
         $this->initInitialContext();
         // init main system logger
         $this->initSystemLogger();
+        // init the directory structure
+        $this->initDirectoryStructure();
         // init extractor
         $this->initExtractor();
         // init containers
         $this->initContainers();
+    }
+    
+    /**
+     * Initialize the directory structure that is necessary for
+     * running the application server.
+     * 
+     * @return void
+     */
+    protected function initDirectoryStructure()
+    {
+    	
+    	// load the base directory
+    	$baseDirectory = $this->getSystemConfiguration()
+            ->getBaseDirectory()
+            ->getNodeValue()
+            ->__toString();
+    	
+    	// prepare the array with the directories to be created
+    	$directories = array(
+    	   'tmp' => $baseDirectory . DIRECTORY_SEPARATOR . 'tmp',
+    	   'log' => $baseDirectory . DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR . 'log'
+    	);
+    	
+    	// check if the log directory already exists, if not, create it
+    	foreach ($directories as $name => $directory) {
+	    	if (!is_dir($directory)) {
+	    		mkdir($directory);
+	    		$this->getSystemLogger()->info(sprintf("Successfully created %s directory (%s)", $name, $directory));
+	    	}
+    	}
     }
 
     /**
@@ -274,20 +306,23 @@ class Server
      */
     public function start()
     {
+    	
+    	// log that the server will be started now
         $this->getSystemLogger()->info(sprintf('Server successfully started in basedirectory %s ',
             $this->getSystemConfiguration()
                 ->getBaseDirectory()
                 ->getNodeValue()
                 ->__toString()));
 
+        // start the container threads
         foreach ($this->getThreads() as $thread) {
             $thread->start();
         }
 
+        // wait for the container thread to finish
         foreach ($this->getThreads() as $thread) {
             $thread->join();
         }
-
     }
 
     /**
