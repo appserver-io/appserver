@@ -60,6 +60,16 @@ class Server
      * @var \TechDivision\ApplicationServer\Interfaces\ExtractorInterface
      */
     protected $extractor;
+    	
+    /**
+     * The directory structure to be created at first server start.
+     * 
+     * @array
+     */
+    protected $directories = array(
+    	'tmp' => 'tmp';
+	    'log' => 'var' . DIRECTORY_SEPARATOR . 'log';		
+    );
 
     /**
      * Initializes the the server with the parsed configuration file.
@@ -91,10 +101,33 @@ class Server
         $this->initInitialContext();
         // init main system logger
         $this->initSystemLogger();
+        // init the directory structure
+        $this->initDirectoryStructure();
         // init extractor
         $this->initExtractor();
         // init containers
         $this->initContainers();
+    }
+    
+    /**
+     * Initialize the directory structure that is necessary for
+     * running the application server.
+     * 
+     * @return void
+     */
+    protected function initDirectoryStructure()
+    {
+    	
+    	// load the base directory
+    	$baseDirectory = $this->getSystemConfiguration()->getBaseDirectory();
+    	
+    	// check if the log directory already exists, if not, create it
+    	foreach ($this->getDirectories() as $name => $directory) {
+	    	if (!is_dir($toCreate = $baseDirectory . DIRECTORY_SEPARATOR . $directory)) {
+	    		mkdir($toCreate);
+	    		$this->getSystemLogger()->info(sprintf("Successfully created %s directory (%s)", $name, $directory));
+	    	}
+    	}
     }
 
     /**
@@ -204,6 +237,16 @@ class Server
             $this->threads[] = $this->newInstance($containerNode->getThreadType(), $params);
         }
     }
+    
+    /**
+	 * The directory structure to be created at first server start.
+	 * 
+	 * @return array The directory structure
+     */
+    public function getDirectories()
+    {
+    	return $this->directories;
+    }
 
     /**
      * Returns the running container threads.
@@ -274,20 +317,23 @@ class Server
      */
     public function start()
     {
+    	
+    	// log that the server will be started now
         $this->getSystemLogger()->info(sprintf('Server successfully started in basedirectory %s ',
             $this->getSystemConfiguration()
                 ->getBaseDirectory()
                 ->getNodeValue()
                 ->__toString()));
 
+        // start the container threads
         foreach ($this->getThreads() as $thread) {
             $thread->start();
         }
 
+        // wait for the container thread to finish
         foreach ($this->getThreads() as $thread) {
             $thread->join();
         }
-
     }
 
     /**
