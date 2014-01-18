@@ -60,16 +60,6 @@ class Server
      * @var \TechDivision\ApplicationServer\Interfaces\ExtractorInterface
      */
     protected $extractor;
-    	
-    /**
-     * The directory structure to be created at first server start.
-     * 
-     * @array
-     */
-    protected $directories = array(
-    	'tmp' => 'tmp';
-	    'log' => 'var' . DIRECTORY_SEPARATOR . 'log';		
-    );
 
     /**
      * Initializes the the server with the parsed configuration file.
@@ -119,12 +109,21 @@ class Server
     {
     	
     	// load the base directory
-    	$baseDirectory = $this->getSystemConfiguration()->getBaseDirectory();
+    	$baseDirectory = $this->getSystemConfiguration()
+            ->getBaseDirectory()
+            ->getNodeValue()
+            ->__toString();
+    	
+    	// prepare the array with the directories to be created
+    	$directories = array(
+    	   'tmp' => $baseDirectory . DIRECTORY_SEPARATOR . 'tmp',
+    	   'log' => $baseDirectory . DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR . 'log'
+    	);
     	
     	// check if the log directory already exists, if not, create it
-    	foreach ($this->getDirectories() as $name => $directory) {
-	    	if (!is_dir($toCreate = $baseDirectory . DIRECTORY_SEPARATOR . $directory)) {
-	    		mkdir($toCreate);
+    	foreach ($directories as $name => $directory) {
+	    	if (!is_dir($directory)) {
+	    		mkdir($directory);
 	    		$this->getSystemLogger()->info(sprintf("Successfully created %s directory (%s)", $name, $directory));
 	    	}
     	}
@@ -236,16 +235,6 @@ class Server
             // create and append the thread instance to the internal array
             $this->threads[] = $this->newInstance($containerNode->getThreadType(), $params);
         }
-    }
-    
-    /**
-	 * The directory structure to be created at first server start.
-	 * 
-	 * @return array The directory structure
-     */
-    public function getDirectories()
-    {
-    	return $this->directories;
     }
 
     /**

@@ -130,8 +130,9 @@ abstract class AbstractDeployment implements DeploymentInterface
         // connect the application to the container
         $application->connect();
 
-        $this->getInitialContext()->getSystemLogger()->info(
-            sprintf('Application %s succesfully started for container %s',
+        // log a message that the app has been started
+        $this->getInitialContext()->getSystemLogger()->debug(
+            sprintf('Successfully started app %s in container %s',
                 $application->getName(), $application->getWebappPath(),
                 $application->getContainerNode()->getName()
             ));
