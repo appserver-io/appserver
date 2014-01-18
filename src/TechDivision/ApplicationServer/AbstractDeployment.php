@@ -131,11 +131,9 @@ abstract class AbstractDeployment implements DeploymentInterface
         $application->connect();
 
         $this->getInitialContext()->getSystemLogger()->info(
-            sprintf('Application %s succesfully started for container %s (Webapppath: %s Uuid: %s ParentUuid: %s)',
+            sprintf('Application %s succesfully started for container %s',
                 $application->getName(), $application->getWebappPath(),
-                $application->getContainerNode()->getName(),
-                $application->getAppNode()->getUuid(),
-                $application->getAppNode()->getParentUuid()
+                $application->getContainerNode()->getName()
             ));
 
         // register the application in this instance
