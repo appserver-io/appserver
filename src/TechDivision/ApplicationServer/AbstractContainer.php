@@ -89,7 +89,7 @@ abstract class AbstractContainer extends \Stackable implements ContainerInterfac
     /**
      * Set's the app node the application is belonging to
      *
-     * @param \TechDivision\ApplicationServer\Api\Node\AppNode $appNode
+     * @param \TechDivision\ApplicationServer\Api\Node\ContainerNode $containerNode
      *            The app node the application is belonging to
      * @return void
      */
@@ -135,7 +135,7 @@ abstract class AbstractContainer extends \Stackable implements ContainerInterfac
      *
      * @param array $applications
      *            Array with the deployed applications
-     * @return \TechDivision\ServletContainer\Container The container instance itself
+     * @return \TechDivision\ApplicationServer\Interfaces\ContainerInterface The container instance itself
      */
     public function setApplications($applications)
     {
