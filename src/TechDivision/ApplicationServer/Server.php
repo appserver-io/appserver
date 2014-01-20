@@ -320,7 +320,14 @@ class Server
         
         // start the container threads
         foreach ($this->getThreads() as $thread) {
+            
+            // start the thread
             $thread->start();
+
+            // synchronize container threads to avoid registring apps several times
+            $thread->synchronized(function ($self) {
+                $self->wait();
+            }, $thread);
         }
         
         // wait for the container thread to finish
