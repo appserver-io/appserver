@@ -26,10 +26,21 @@ abstract class AbstractValueNode extends AbstractNode implements NodeValueInterf
     /**
      * The node value.
      *
-     * @var string
-     * @AS\Mapping(nodeType="TechDivision\ApplicationServer\Api\Node\NodeValue")
+     * @var string @AS\Mapping(nodeType="TechDivision\ApplicationServer\Api\Node\NodeValue")
      */
     protected $nodeValue;
+
+    /**
+     * Set's the node value instance.
+     *
+     * @param \TechDivision\ApplicationServer\Api\Node\ValueInterface $nodeValue
+     *            The node value to set
+     * @return void
+     */
+    public function setNodeValue(ValueInterface $nodeValue)
+    {
+        $this->nodeValue = $nodeValue;
+    }
 
     /**
      * (non-PHPdoc)

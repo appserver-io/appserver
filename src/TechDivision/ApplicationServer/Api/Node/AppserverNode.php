@@ -26,50 +26,56 @@ class AppserverNode extends AbstractNode
     /**
      * The node containing information about the base directory.
      *
-     * @var \TechDivision\ApplicationServer\Api\Node\BaseDirectoryNode
-     * @AS\Mapping(nodeName="baseDirectory", nodeType="TechDivision\ApplicationServer\Api\Node\BaseDirectoryNode")
+     * @var \TechDivision\ApplicationServer\Api\Node\BaseDirectoryNode @AS\Mapping(nodeName="baseDirectory", nodeType="TechDivision\ApplicationServer\Api\Node\BaseDirectoryNode")
      */
     protected $baseDirectory;
 
     /**
      * The node containing information about the initial context.
      *
-     * @var \TechDivision\ApplicationServer\Api\Node\InitialContextNode
-     * @AS\Mapping(nodeName="initialContext", nodeType="TechDivision\ApplicationServer\Api\Node\InitialContextNode")
+     * @var \TechDivision\ApplicationServer\Api\Node\InitialContextNode @AS\Mapping(nodeName="initialContext", nodeType="TechDivision\ApplicationServer\Api\Node\InitialContextNode")
      */
     protected $initialContext;
 
     /**
      * The node containing information about the system logger.
      *
-     * @var \TechDivision\ApplicationServer\Api\Node\SystemLoggerNode
-     * @AS\Mapping(nodeName="systemLogger", nodeType="TechDivision\ApplicationServer\Api\Node\SystemLoggerNode")
+     * @var \TechDivision\ApplicationServer\Api\Node\SystemLoggerNode @AS\Mapping(nodeName="systemLogger", nodeType="TechDivision\ApplicationServer\Api\Node\SystemLoggerNode")
      */
     protected $systemLogger;
 
     /**
      * Array with nodes for the registered containers.
      *
-     * @var array
-     * @AS\Mapping(nodeName="containers/container", nodeType="array", elementType="TechDivision\ApplicationServer\Api\Node\ContainerNode")
+     * @var array @AS\Mapping(nodeName="containers/container", nodeType="array", elementType="TechDivision\ApplicationServer\Api\Node\ContainerNode")
      */
     protected $containers = array();
 
     /**
      * Array with the information about the deployed applications.
      *
-     * @var array
-     * @AS\Mapping(nodeName="apps/app", nodeType="array", elementType="TechDivision\ApplicationServer\Api\Node\AppNode")
+     * @var array @AS\Mapping(nodeName="apps/app", nodeType="array", elementType="TechDivision\ApplicationServer\Api\Node\AppNode")
      */
     protected $apps = array();
 
     /**
      * Array with nodes for the registered datasources.
      *
-     * @var array
-     * @AS\Mapping(nodeName="datasources/datasource", nodeType="array", elementType="TechDivision\ApplicationServer\Api\Node\DatasourceNode")
+     * @var array @AS\Mapping(nodeName="datasources/datasource", nodeType="array", elementType="TechDivision\ApplicationServer\Api\Node\DatasourceNode")
      */
     protected $datasources = array();
+
+    /**
+     * Set's the passed base directory node.
+     *
+     * @param \TechDivision\ApplicationServer\Api\Node\BaseDirectoryNode $baseDirectory
+     *            The base directory node to set
+     * @return void
+     */
+    public function setBaseDirectory($baseDirectory)
+    {
+        $this->baseDirectory = $baseDirectory;
+    }
 
     /**
      * Returns the node with the base directory information.
@@ -124,7 +130,8 @@ class AppserverNode extends AbstractNode
     /**
      * Attaches the passed app node.
      *
-     * @param AppNode $app The app node to attach
+     * @param AppNode $app
+     *            The app node to attach
      * @return void
      */
     public function attachApp(AppNode $app)
@@ -145,7 +152,8 @@ class AppserverNode extends AbstractNode
     /**
      * Attaches the passed datasource node.
      *
-     * @param DatasourceNode $datasource The datasource node to attach
+     * @param DatasourceNode $datasource
+     *            The datasource node to attach
      * @return void
      */
     public function attachDatasource(DatasourceNode $datasource)

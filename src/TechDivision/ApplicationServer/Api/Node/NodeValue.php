@@ -42,6 +42,16 @@ class NodeValue implements ValueInterface
     {
         $this->value = $configuration->getValue();
     }
+    
+    /**
+     * Set's the node's value.
+     * 
+     * @param string $value The value to set
+     */
+    public function setValue($value)
+    {
+        $this->value = $value;
+    }
 
     /**
      * Return's the node value.
