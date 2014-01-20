@@ -106,4 +106,21 @@ class AppService extends AbstractService
         $systemConfiguration->attachApp($appNode);
         $this->setSystemConfiguration($systemConfiguration);
     }
+
+    /**
+     * Removes the application with the passed UUID from the system 
+     * configuration and sets the .undeploy flag.
+     *
+     * @param string $uuid
+     *            UUID of the application to delete
+     * @return void
+     * @todo Add functionality to delete the deployed app
+     */
+    public function delete($uuid)
+    {
+        $appNodes = $this->getSystemConfiguration()->getApps();
+        if (array_key_exists($uuid, $appNodes)) {
+            unset($appNodes[$uuid]);
+        }
+    }
 }

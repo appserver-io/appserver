@@ -57,6 +57,11 @@ class ContainerThread extends AbstractContextThread
         $applications = $this->getDeployment()
             ->deploy()
             ->getApplications();
+        
+        // synchronize container threads to avoid registring apps several times
+        $this->synchronized(function () {
+            $this->notify();
+        });
 
         // load the container node
         $containerNode = $this->getContainerNode();

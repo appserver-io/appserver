@@ -62,6 +62,11 @@ abstract class AbstractContainer extends \Stackable implements ContainerInterfac
     protected $started = false;
 
     /**
+     * @var InitialContext
+     */
+    protected $initialContext;
+
+    /**
      * Initializes the container with the initial context, the unique container ID
      * and the deployed applications.
      *

@@ -42,4 +42,10 @@ class MockContainerThread
      */
     public function join()
     {}
+    
+    /**
+     * @see \Thread::synchronized()
+     */
+    public function synchronized(\Closure $block)
+    {}
 }

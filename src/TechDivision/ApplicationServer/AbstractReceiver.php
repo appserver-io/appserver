@@ -62,6 +62,11 @@ abstract class AbstractReceiver implements ReceiverInterface
     protected $worker = array();
 
     /**
+     * @var InitialContext
+     */
+    protected $initialContext;
+
+    /**
      * Sets the reference to the container instance.
      *
      * @param \TechDivision\ApplicationServer\InitialContext $initialContext The initial context instance
@@ -119,7 +124,7 @@ abstract class AbstractReceiver implements ReceiverInterface
 
             // log a message that the container has been started successfully
             $this->getInitialContext()->getSystemLogger()->info(
-                sprintf('Receiver successfully started in container %s, listening on IP: %s Port: %s Number of workers started: %s, Workertype: %s',
+                sprintf('Successfully started receiver for container %s, listening on IP: %s Port: %s Number of workers started: %s, Workertype: %s',
                 $this->getContainer()->getContainerNode()->getName(), $this->getAddress(), $this->getPort(),
                 $this->getWorkerNumber(), $this->getWorkerType()));
 
@@ -272,7 +277,7 @@ abstract class AbstractReceiver implements ReceiverInterface
     public function newWorker($socketResource)
     {
         $params = array(
-            $this->initialContext,
+            $this->getInitialContext(),
             $this->getContainer(),
             $socketResource,
             $this->getThreadType()
@@ -287,7 +292,7 @@ abstract class AbstractReceiver implements ReceiverInterface
      */
     public function newInstance($className, array $args = array())
     {
-        return $this->initialContext->newInstance($className, $args);
+        return $this->getInitialContext()->newInstance($className, $args);
     }
 
     /**

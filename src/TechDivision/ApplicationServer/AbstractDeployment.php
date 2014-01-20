@@ -45,7 +45,7 @@ abstract class AbstractDeployment implements DeploymentInterface
      *
      * @var array
      */
-    protected $applications;
+    protected $applications = array();
     
     /**
      * The initial context instance.
@@ -130,12 +130,11 @@ abstract class AbstractDeployment implements DeploymentInterface
         // connect the application to the container
         $application->connect();
 
-        $this->getInitialContext()->getSystemLogger()->info(
-            sprintf('Application %s succesfully started for container %s (Webapppath: %s Uuid: %s ParentUuid: %s)',
+        // log a message that the app has been started
+        $this->getInitialContext()->getSystemLogger()->debug(
+            sprintf('Successfully started app %s in container %s',
                 $application->getName(), $application->getWebappPath(),
-                $application->getContainerNode()->getName(),
-                $application->getAppNode()->getUuid(),
-                $application->getAppNode()->getParentUuid()
+                $application->getContainerNode()->getName()
             ));
 
         // register the application in this instance
