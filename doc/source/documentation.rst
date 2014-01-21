@@ -14,7 +14,7 @@ hopefully establish this solution as the standard for enterprise applications in
 Highlights
 ----------
 * Servlet engine, with full HTTP 1.1 support
-* Web Socket engine, based on [Ratchet](http://socketo.me/) 
+* Web Socket engine, based on `Ratchet <http://socketo.me/>`_ 
 * Session beans (stateful, stateless + singleton)
 * Message beans
 * Doctrine as standard Persistence provider
@@ -104,28 +104,28 @@ solutions that run on many servers and needs real cluster functionality.
 
 Community Edition
 -----------------
-Version 0.5.8 - [Application Server] + [WebSocketContainer](https://github.com/techdivision/TechDivision_WebSocketContainer)
+Version 0.5.8 - Application Server + `WebSocketContainer <https://github.com/techdivision/TechDivision_WebSocketContainer>`_
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-- [*] Logging with (monolog)[https://github.com/Seldaek/monolog]
-- [*] Generic management API
-- [*] HTTP basic + digest authentication for Servlet Container
-- [*] Integrate annotations for session beans
-- [*] Administration interface with drag-and-drop PHAR installer
-- [*] Automated Build- and Deployment using Travis-CI
-- [*] Set environment variables in XML configuration files
-- [*] Merging XML configuration files
-- [*] WebSocket integration
-- [*] Running Magento CE 1.7.x + 1.8.x demo applications
+- [x] Logging with `monolog <https://github.com/Seldaek/monolog>`_
+- [x] Generic management API
+- [x] HTTP basic + digest authentication for Servlet Container
+- [x] Integrate annotations for session beans
+- [x] Administration interface with drag-and-drop PHAR installer
+- [x] Automated Build- and Deployment using Travis-CI
+- [x] Set environment variables in XML configuration files
+- [x] Merging XML configuration files
+- [x] WebSocket integration
+- [x] Running Magento CE 1.7.x + 1.8.x demo applications
 
-Version 0.5.9 - [Application Server] + [ServletContainer](https://github.com/techdivision/TechDivision_ServletContainer)
+Version 0.5.9 - Application Server + `ServletContainer <https://github.com/techdivision/TechDivision_ServletContainer>`_
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 - [ ] Windows installer
 - [ ] PHAR based deployment
-- [ ] [Design by Contract](https://github.com/wick-ed/php-by-contract)
+- [ ] `Design by Contract <https://github.com/wick-ed/php-by-contract>`_
 - [ ] SSL Encryption for TechDivision_ServletContainer project
 - [ ] RPM packages + Repository
 
-Version 0.6.0 - [Application Server] + [ServletContainer](https://github.com/techdivision/TechDivision_ServletContainer)
+Version 0.6.0 - Application Server + `ServletContainer <https://github.com/techdivision/TechDivision_ServletContainer>`_
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 - [ ] AOP
 - [ ] DI
@@ -137,21 +137,21 @@ Version 0.6.0 - [Application Server] + [ServletContainer](https://github.com/tec
 - [ ] Mac OS X Universal installer
 - [ ] 100 % Coverage for PHPUnit test suite for TechDivision_ApplicationServer project
 
-Version 0.7 - [Servlet Container](https://github.com/techdivision/TechDivision_ServletContainer)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Version 0.7 - `Servlet Container <https://github.com/techdivision/TechDivision_ServletContainer>`_
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 - [ ] mod_rewrite functionality for TechDivision_ServletContainer project
 - [ ] Add dynamic load of application specific PECL extensions
 - [ ] 100 % Coverage for PHPUnit test suite for TechDivision_ServletContainer project
 
-Version 0.8 - [Persistence Container](https://github.com/techdivision/TechDivision_PersistenceContainer)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Version 0.8 - `Persistence Container <https://github.com/techdivision/TechDivision_PersistenceContainer>`_
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 - [ ] Stateful + Singleton session bean functionality
 - [ ] Container managed entity beans for Doctrine
 - [ ] Webservice for session beans
 - [ ] 100 % Coverage for PHPUnit test suite for TechDivision_PersistenceContainer project
 
-Version 0.9 - [Message Queue](https://github.com/techdivision/TechDivision_MessageQueue)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Version 0.9 - `Message Queue <https://github.com/techdivision/TechDivision_MessageQueue>`_
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 - [ ] Message bean functionality
 - [ ] 100 % Coverage for PHPUnit test suite for TechDivision_MessageQueue project
 
