@@ -110,7 +110,7 @@ And yes, we've plans for a Community and a Enterprise edition. The Community Edi
 - [ ] Webservice for session beans
 - [ ] 100 % Coverage for PHPUnit test suite for TechDivision_PersistenceContainer project
 
-### Version 0.9 - [Message Queue(https://github.com/techdivision/TechDivision_MessageQueue)
+### Version 0.9 - [Message Queue](https://github.com/techdivision/TechDivision_MessageQueue)
 - [ ] Message bean functionality
 - [ ] 100 % Coverage for PHPUnit test suite for TechDivision_MessageQueue project
 
