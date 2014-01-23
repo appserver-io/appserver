@@ -45,7 +45,7 @@ abstract class AbstractDeployment implements DeploymentInterface
      *
      * @var array
      */
-    protected $applications;
+    protected $applications = array();
     
     /**
      * The initial context instance.
@@ -115,7 +115,7 @@ abstract class AbstractDeployment implements DeploymentInterface
 
         // create a new API app service instance
         $appService = $this->newService('TechDivision\ApplicationServer\Api\AppService');
-        $appNode = $appService->load($application->getWebappPath());
+        $appNode = $appService->loadByWebappPath($application->getWebappPath());
 
         // check if the application has already been attached to the container
         if ($appNode == null) {
@@ -130,12 +130,11 @@ abstract class AbstractDeployment implements DeploymentInterface
         // connect the application to the container
         $application->connect();
 
-        $this->getInitialContext()->getSystemLogger()->info(
-            sprintf('Application %s succesfully started for container %s (Webapppath: %s Uuid: %s ParentUuid: %s)',
+        // log a message that the app has been started
+        $this->getInitialContext()->getSystemLogger()->debug(
+            sprintf('Successfully started app %s in container %s',
                 $application->getName(), $application->getWebappPath(),
-                $application->getContainerNode()->getName(),
-                $application->getAppNode()->getUuid(),
-                $application->getAppNode()->getParentUuid()
+                $application->getContainerNode()->getName()
             ));
 
         // register the application in this instance

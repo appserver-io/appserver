@@ -115,7 +115,7 @@ class InitialContext
     /**
      * Return's the initial context's class loader.
      *
-     * @return \TechDivision\ApplicationServer\ClassLoader The class loader used
+     * @return \TechDivision\ApplicationServer\SplClassLoader The class loader used
      */
     public function getClassLoader()
     {
@@ -216,7 +216,7 @@ class InitialContext
      *
      * @param string $className
      *            The API service class name to return the instance for
-     * @return \TechDivision\ApplicationsServer\Api\ServiceInterface The service instance
+     * @return \TechDivision\ApplicationServer\Api\ServiceInterface The service instance
      */
     public function newService($className)
     {

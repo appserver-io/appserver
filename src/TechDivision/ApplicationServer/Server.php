@@ -62,6 +62,16 @@ class Server
     protected $extractor;
 
     /**
+     * The directory structure to be created at first start.
+     *
+     * @var array
+     */
+    protected $directories = array(
+        'tmp' => 'tmp',
+        'log' => 'var/log'
+    );
+
+    /**
      * Initializes the the server with the parsed configuration file.
      *
      * @param \TechDivision\ApplicationServer\Configuration $configuration
@@ -70,12 +80,12 @@ class Server
      */
     public function __construct(Configuration $configuration)
     {
-
+        
         // initialize the configuration and the base directory
         $systemConfiguration = new AppserverNode();
         $systemConfiguration->initFromConfiguration($configuration);
         $this->setSystemConfiguration($systemConfiguration);
-
+        
         // initialize the server
         $this->init();
     }
@@ -91,10 +101,39 @@ class Server
         $this->initInitialContext();
         // init main system logger
         $this->initSystemLogger();
+        // init the directory structure
+        $this->initDirectoryStructure();
         // init extractor
         $this->initExtractor();
         // init containers
         $this->initContainers();
+    }
+
+    /**
+     * Initialize the directory structure that is necessary for
+     * running the application server.
+     *
+     * @return void
+     */
+    protected function initDirectoryStructure()
+    {
+        
+        // load the base directory
+        $baseDirectory = $this->getSystemConfiguration()
+            ->getBaseDirectory()
+            ->getNodeValue()
+            ->__toString();
+        
+        // check if the log directory already exists, if not, create it
+        foreach ($this->getDirectories() as $name => $directory) {
+            // prepare the path to the directory to be created
+            $toBeCreated = $baseDirectory . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $directory);
+            // prepare the directory name and check if the directory already exists
+            if (is_dir($toBeCreated) === false) {
+                // if not create it
+                mkdir($toBeCreated, 0755, true);
+            }
+        }
     }
 
     /**
@@ -104,19 +143,19 @@ class Server
      */
     protected function initSystemLogger()
     {
-
+        
         // initialize the logger instance itself
         $systemLoggerNode = $this->getSystemConfiguration()->getSystemLogger();
         $systemLogger = $this->newInstance($systemLoggerNode->getType(), array(
             $systemLoggerNode->getChannelName()
         ));
-
+        
         // initialize the processors
         foreach ($systemLoggerNode->getProcessors() as $processorNode) {
             $processor = $this->newInstance($processorNode->getType(), $processorNode->getParamsAsArray());
             $systemLogger->pushProcessor($processor);
         }
-
+        
         // initialize the handlers
         foreach ($systemLoggerNode->getHandlers() as $handlerNode) {
             $handler = $this->newInstance($handlerNode->getType(), $handlerNode->getParamsAsArray());
@@ -124,7 +163,7 @@ class Server
             $handler->setFormatter($this->newInstance($formatterNode->getType(), $formatterNode->getParamsAsArray()));
             $systemLogger->pushHandler($handler);
         }
-
+        
         // set the initialized logger finally
         $this->getInitialContext()->setSystemLogger($systemLogger);
     }
@@ -137,9 +176,7 @@ class Server
     protected function initExtractor()
     {
         // @TODO: read extractor type from configuration
-        $this->setExtractor(
-            new PharExtractor($this->getInitialContext())
-        );
+        $this->setExtractor(new PharExtractor($this->getInitialContext()));
         // extract all webapps
         $this->getExtractor()->extractWebapps();
     }
@@ -149,7 +186,7 @@ class Server
      *
      * @param \TechDivision\ApplicationServer\Interfaces\ExtractorInterface $extractor
      *            The initial context instance
-     *
+     *            
      * @return void
      */
     public function setExtractor(ExtractorInterface $extractor)
@@ -190,16 +227,16 @@ class Server
      */
     protected function initContainers()
     {
-
+        
         // and initialize a container thread for each container
         foreach ($this->getSystemConfiguration()->getContainers() as $containerNode) {
-
+            
             // initialize the container configuration with the base directory and pass it to the thread
             $params = array(
                 $this->getInitialContext(),
                 $containerNode
             );
-
+            
             // create and append the thread instance to the internal array
             $this->threads[] = $this->newInstance($containerNode->getThreadType(), $params);
         }
@@ -274,20 +311,29 @@ class Server
      */
     public function start()
     {
-        $this->getSystemLogger()->info(sprintf('Server successfully started in basedirectory %s ',
-            $this->getSystemConfiguration()
-                ->getBaseDirectory()
-                ->getNodeValue()
-                ->__toString()));
-
+        
+        // log that the server will be started now
+        $this->getSystemLogger()->info(sprintf('Server successfully started in basedirectory %s ', $this->getSystemConfiguration()
+            ->getBaseDirectory()
+            ->getNodeValue()
+            ->__toString()));
+        
+        // start the container threads
         foreach ($this->getThreads() as $thread) {
+            
+            // start the thread
             $thread->start();
-        }
 
+            // synchronize container threads to avoid registring apps several times
+            $thread->synchronized(function ($self) {
+                $self->wait();
+            }, $thread);
+        }
+        
+        // wait for the container thread to finish
         foreach ($this->getThreads() as $thread) {
             $thread->join();
         }
-
     }
 
     /**
@@ -308,5 +354,15 @@ class Server
     public function newService($className)
     {
         return $this->getInitialContext()->newService($className);
+    }
+
+    /**
+     * Return's the directory structure to be created at first start.
+     *
+     * @return array The directory structure to be created if necessary
+     */
+    public function getDirectories()
+    {
+        return $this->directories;
     }
 }

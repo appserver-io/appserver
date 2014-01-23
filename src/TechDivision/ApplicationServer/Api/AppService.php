@@ -66,7 +66,6 @@ class AppService extends AbstractService
      *
      * @param string $uuid
      *            UUID of the application to return
-     *            
      * @return \TechDivision\ApplicationServer\Api\Node\AppNode|null The application with the UUID passed as parameter
      * @see \TechDivision\ApplicationServer\Api\ServiceInterface::load()
      */
@@ -80,15 +79,48 @@ class AppService extends AbstractService
     }
 
     /**
+     * Returns the application with the passed webapp path.
+     *
+     * @param string $webappPath
+     *            webapp path of the application to return
+     * @return \TechDivision\ApplicationServer\Api\Node\AppNode|null The application with the webapp path passed as parameter
+     */
+    public function loadByWebappPath($webappPath)
+    {
+        foreach ($this->findAll() as $appNode) {
+            if ($appNode->getWebappPath() == $webappPath) {
+                return $appNode;
+            }
+        }
+    }
+
+    /**
      * Persists the system configuration.
      *
      * @param \TechDivision\ApplicationServer\Api\Node\NodeInterface
      * @return void
      */
-    public function persist(NodeInterface $node)
+    public function persist(NodeInterface $appNode)
     {
         $systemConfiguration = $this->getSystemConfiguration();
-        $systemConfiguration->attachApp($node);
+        $systemConfiguration->attachApp($appNode);
         $this->setSystemConfiguration($systemConfiguration);
+    }
+
+    /**
+     * Removes the application with the passed UUID from the system 
+     * configuration and sets the .undeploy flag.
+     *
+     * @param string $uuid
+     *            UUID of the application to delete
+     * @return void
+     * @todo Add functionality to delete the deployed app
+     */
+    public function delete($uuid)
+    {
+        $appNodes = $this->getSystemConfiguration()->getApps();
+        if (array_key_exists($uuid, $appNodes)) {
+            unset($appNodes[$uuid]);
+        }
     }
 }
