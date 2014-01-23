@@ -13,6 +13,7 @@ namespace TechDivision\ApplicationServer;
 
 use TechDivision\ApplicationServer\Extractors\PharExtractor;
 use TechDivision\ApplicationServer\Interfaces\ExtractorInterface;
+use TechDivision\ApplicationServer\Utilities\DirectoryKeys;
 use TechDivision\Socket\Client;
 use TechDivision\ApplicationServer\SplClassLoader;
 use TechDivision\ApplicationServer\InitialContext;
@@ -23,7 +24,10 @@ use TechDivision\ApplicationServer\Api\Node\AppserverNode;
 use \Psr\Log\LoggerInterface;
 
 /**
- *
+ * This is the main server class that starts the application server
+ * and creates a separate thread for each container found in the
+ * configuration file.
+ * 
  * @package TechDivision\ApplicationServer
  * @copyright Copyright (c) 2010 <info@techdivision.com> - TechDivision GmbH
  * @license http://opensource.org/licenses/osl-3.0.php
@@ -67,8 +71,7 @@ class Server
      * @var array
      */
     protected $directories = array(
-        'tmp' => 'tmp',
-        'log' => 'var/log'
+        DirectoryKeys::TMP, DirectoryKeys::DEPLOY, DirectoryKeys::LOG
     );
 
     /**
@@ -125,7 +128,7 @@ class Server
             ->__toString();
         
         // check if the log directory already exists, if not, create it
-        foreach ($this->getDirectories() as $name => $directory) {
+        foreach ($this->getDirectories() as $directory) {
             // prepare the path to the directory to be created
             $toBeCreated = $baseDirectory . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $directory);
             // prepare the directory name and check if the directory already exists
