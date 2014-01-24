@@ -12,6 +12,7 @@
 namespace TechDivision\ApplicationServer\Extractors;
 
 use TechDivision\ApplicationServer\AbstractExtractor;
+use TechDivision\ApplicationServer\Api\Node\AppNode;
 use TechDivision\ApplicationServer\Interfaces\ExtractorInterface;
 
 /**
@@ -23,50 +24,41 @@ use TechDivision\ApplicationServer\Interfaces\ExtractorInterface;
  * @license Open Software License (OSL 3.0) http://opensource.org/licenses/osl-3.0.php
  * @author Johann Zelger <j.zelger@techdivision.com>
  */
-class PharExtractor extends AbstractExtractor implements ExtractorInterface
+class PharExtractor extends AbstractExtractor
 {
 
     /**
-     * Check if archive is extractable
+     * The archive suffix.
      *
-     * @param $archive \SplFileInfo
-     *            The archive object
-     *            
-     * @return bool
+     * @var string
      */
-    public function isExtractable(\SplFileInfo $archive)
-    {
-        $deployFolderName = $this->getDeployDir() . DIRECTORY_SEPARATOR . $archive->getFilename();
-        // check if deployed flag exists
-        if (file_exists($deployFolderName . ExtractorInterface::FLAG_DEPLOYED)) {
-            return false;
-        }
-        // check if failed flag exists
-        if (file_exists($deployFolderName . ExtractorInterface::FLAG_FAILED)) {
-            return false;
-        }
-        // by default its extractable
-        return true;
-    }
-
+    const EXTENSION_SUFFIX = '.phar';
+    
     /**
-     * Extracts the passed PHAR archive to a folder with the
-     * basename of the archive file.
-     *
-     * @param \SplFileInfo $archive
-     *            The PHAR file to be deployed
-     * @throws \Exception
-     * @return void
+     * (non-PHPdoc)
+     * 
+     * @see \TechDivision\ApplicationServer\AbstractExtractor::getExtensionSuffix()
      */
-    protected function extractArchive(\SplFileInfo $archive)
+    public function getExtensionSuffix()
+    {
+        return PharExtractor::EXTENSION_SUFFIX;
+    }
+    
+    /**
+     * (non-PHPdoc)
+     * 
+     * @see \TechDivision\ApplicationServer\AbstractExtractor::deployArchive()
+     */
+    public function deployArchive(\SplFileInfo $archive)
     {
         try {
+            
             // create folder names based on the archive's basename
             $tmpFolderName = $this->getTmpDir() . DIRECTORY_SEPARATOR . $archive->getFilename();
-            $webappFolderName = $this->getWebappsDir() . DIRECTORY_SEPARATOR . basename($archive->getFilename(), '.phar');
+            $webappFolderName = $this->getWebappsDir() . DIRECTORY_SEPARATOR . basename($archive->getFilename(), $this->getExtensionSuffix());
             
             // check if archive has not been deployed yet or failed sometime
-            if ($this->isExtractable($archive)) {
+            if ($this->isDeployable($archive)) {
                 
                 // flag webapp as deploying
                 $this->flagArchive($archive, ExtractorInterface::FLAG_DEPLOYING);
@@ -75,22 +67,42 @@ class PharExtractor extends AbstractExtractor implements ExtractorInterface
                 $p = new \Phar($archive);
                 $p->extractTo($tmpFolderName);
                 
-                // check if archive was deployed before to do replace deployment
-                if (is_dir($webappFolderName)) {
-                    
-                    // remove folder from webapps dir
-                    $this->removeDir($webappFolderName);
-                }
-                
                 // move extracted content to webapps folder
                 rename($tmpFolderName, $webappFolderName);
                 
                 // flag webapp as deployed
                 $this->flagArchive($archive, ExtractorInterface::FLAG_DEPLOYED);
             }
+            
         } catch (\Exception $e) {
             // log error
-            error_log($e->__toString());
+            $this->getInitialContext()->getSystemLogger()->error($e->__toString());
+            // flag webapp as failed
+            $this->flagArchive($archive, ExtractorInterface::FLAG_FAILED);
+        }
+    }
+    
+    /**
+     * (non-PHPdoc)
+     * 
+     * @see \TechDivision\ApplicationServer\Interfaces\ExtractorInterface::undeployArchive()
+     */
+    public function undeployArchive(\SplFileInfo $archive)
+    {
+        
+        try {
+
+            // create webapp folder name based on the archive's basename
+            $webappFolderName = $this->getWebappsDir() . DIRECTORY_SEPARATOR . basename($archive->getFilename(), $this->getExtensionSuffix());
+            
+            // check if app has to be undeployed
+            if ($this->isUndeployable($archive) && is_dir($webappFolderName)) {
+                $this->removeDir($webappFolderName);  
+            }
+            
+        } catch (\Exception $e) {
+            // log error
+            $this->getInitialContext()->getSystemLogger()->error($e->__toString());
             // flag webapp as failed
             $this->flagArchive($archive, ExtractorInterface::FLAG_FAILED);
         }

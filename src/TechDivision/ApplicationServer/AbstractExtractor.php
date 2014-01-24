@@ -9,27 +9,29 @@
  * that is available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
  */
-
 namespace TechDivision\ApplicationServer;
 
 use TechDivision\ApplicationServer\Interfaces\ExtractorInterface;
+use TechDivision\ApplicationServer\Utilities\DirectoryKeys;
+use TechDivision\ApplicationServer\Api\ServiceInterface;
 
 /**
  * Abstract extractor functionality
  *
- * @package    TechDivision\ApplicationServer
- * @copyright  2013 TechDivision GmbH <info@techdivision.com>
- * @license    Open Software License (OSL 3.0) http://opensource.org/licenses/osl-3.0.php
- * @author     Johann Zelger <j.zelger@techdivision.com>
+ * @package TechDivision\ApplicationServer
+ * @copyright 2013 TechDivision GmbH <info@techdivision.com>
+ * @license Open Software License (OSL 3.0) http://opensource.org/licenses/osl-3.0.php
+ * @author Johann Zelger <j.zelger@techdivision.com>
  */
-class AbstractExtractor
+abstract class AbstractExtractor implements ExtractorInterface
 {
+
     /**
      * The container's base directory.
      *
      * @var string
      */
-    protected $baseDirectory;
+    protected $service;
 
     /**
      * The initial context instance.
@@ -48,43 +50,8 @@ class AbstractExtractor
     {
         // add initialContext
         $this->initialContext = $initialContext;
-        // init base dir
-        $this->baseDirectory =
-            $this->newService('TechDivision\ApplicationServer\Api\ContainerService')->getBaseDirectory();
-        // prepare filesystem
-        $this->prepareFileSystem();
-    }
-
-    /**
-     * Prepares filesystem to be sure that everything is on place as expected
-     *
-     * @return bool
-     */
-    public function prepareFileSystem()
-    {
-        // first check if base dir exists for testing purpose
-        if (!is_dir($this->getBaseDir())) {
-            return false;
-        }
-        // check if directories exists
-        if (!is_dir($this->getDeployDir())) {
-            mkdir($this->getDeployDir());
-        }
-        if (!is_dir($this->getTmpDir())) {
-            mkdir($this->getTmpDir());
-        }
-        // finally return true
-        return true;
-    }
-
-    /**
-     * Returns the servers base directory
-     *
-     * @return string
-     */
-    protected function getBaseDir()
-    {
-        return $this->baseDirectory;
+        // init API service to use
+        $this->service = $this->newService('TechDivision\ApplicationServer\Api\ContainerService');
     }
 
     /**
@@ -94,7 +61,7 @@ class AbstractExtractor
      */
     protected function getTmpDir()
     {
-        return $this->getBaseDir() . DIRECTORY_SEPARATOR . 'tmp';
+        return $this->getService()->getTmpDir();
     }
 
     /**
@@ -104,7 +71,7 @@ class AbstractExtractor
      */
     protected function getDeployDir()
     {
-        return $this->getBaseDir() . DIRECTORY_SEPARATOR . 'deploy';
+        return $this->getService()->getDeployDir();
     }
 
     /**
@@ -114,7 +81,7 @@ class AbstractExtractor
      */
     protected function getWebappsDir()
     {
-        return $this->getBaseDir() . DIRECTORY_SEPARATOR . 'webapps';
+        return $this->getService()->getWebappsDir();
     }
 
     /**
@@ -127,7 +94,8 @@ class AbstractExtractor
         return array(
             ExtractorInterface::FLAG_DEPLOYED,
             ExtractorInterface::FLAG_DEPLOYING,
-            ExtractorInterface::FLAG_FAILED
+            ExtractorInterface::FLAG_DODEPLOY,
+            ExtractorInterface::FLAG_FAILED,
         );
     }
 
@@ -135,18 +103,15 @@ class AbstractExtractor
      * Flags the archive in specific states of extraction
      *
      * @param \SplFileInfo $archive
-     * @param string $flag The flag to set
-     *
+     *            The archive to flag
+     * @param string $flag
+     *            The flag to set
      * @return void
      */
     public function flagArchive(\SplFileInfo $archive, $flag)
     {
-        // delete old flags
-        foreach ($this->getFlags() as $flagString) {
-            if (file_exists($archive->getRealPath() . $flagString)) {
-                unlink($archive->getRealPath() . $flagString);
-            }
-        }
+        // delete all old flags
+        $this->unflagArchive($archive);
         // get archives folder name from deploy dir
         $deployFolderName = $this->getDeployDir() . DIRECTORY_SEPARATOR . $archive->getFilename();
         // flag archive
@@ -154,25 +119,109 @@ class AbstractExtractor
     }
 
     /**
-     * Removes a directory recursively
+     * Deletes all old flags, so the app will be undeployed with
+     * the next appserver restart.
      *
-     * @param string $dir The directory to remove
+     * @param \SplFileInfo $archive
+     *            The archive to unflag
+     * @return void
+     */
+    public function unflagArchive(\SplFileInfo $archive)
+    {
+        foreach ($this->getFlags() as $flagString) {
+            if (file_exists($archive->getRealPath() . $flagString)) {
+                unlink($archive->getRealPath() . $flagString);
+            }
+        }
+    }
+    
+    /**
+     * (non-PHPdoc)
      *
+     * @see \TechDivision\ApplicationServer\Interfaces\ExtractorInterface::isDeployable()
+     */
+    public function isDeployable(\SplFileInfo $archive)
+    {
+
+        // prepare the deploy folder
+        $deployFolderName = $this->getDeployDir() . DIRECTORY_SEPARATOR . $archive->getFilename();
+        
+        // check if .deployed flag exists
+        if (file_exists($deployFolderName . ExtractorInterface::FLAG_DEPLOYED)) {
+            return false;
+        }
+        // check if .failed flag exists
+        if (file_exists($deployFolderName . ExtractorInterface::FLAG_FAILED)) {
+            return false;
+        }
+        // check if the .dodeploy flag file exists
+        if (file_exists($deployFolderName . ExtractorInterface::FLAG_DODEPLOY) === false) {
+            return false;
+        }
+        
+        // by default it's deployable
+        return true;
+    }
+    
+    /**
+     * (non-PHPdoc)
+     * 
+     * @see \TechDivision\ApplicationServer\Interfaces\ExtractorInterface::isRedeployable()
+     */
+    public function isRedeployable(\SplFileInfo $archive)
+    {
+
+        // prepare the deploy and webapp folder name
+        $deployFolderName = $this->getDeployDir() . DIRECTORY_SEPARATOR . $archive->getFilename();
+        $webappFolderName = $this->getWebappsDir() . DIRECTORY_SEPARATOR . basename($archive->getFilename(), $this->getExtensionSuffix());
+
+        // check if the .redeploy flag file exists
+        if (file_exists($deployFolderName . ExtractorInterface::FLAG_REDEPLOY) && is_dir($webappFolderName)) {
+            return true;
+        }
+        
+        // by default it's NOT redeployable
+        return false;
+    }
+    
+    /**
+     * (non-PHPdoc)
+     *
+     * @see \TechDivision\ApplicationServer\Interfaces\ExtractorInterface::isUndeployable()
+     */
+    public function isUndeployable(\SplFileInfo $archive)
+    {
+
+        // prepare the deploy folder
+        $deployFolderName = $this->getDeployDir() . DIRECTORY_SEPARATOR . $archive->getFilename();
+        
+        foreach ($this->getFlags() as $flag) {
+            if (file_exists($deployFolderName . $flag)) {
+                return false;
+            }
+        }
+        
+        // by default its extractable
+        return true;
+    }
+
+    /**
+     * Removes a directory recursively.
+     *
+     * @param string $dir
+     *            The directory to remove
      * @return void
      */
     protected function removeDir($dir)
     {
         // remove old archive from webapps folder recursively
-        $files = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator($dir),
-            \RecursiveIteratorIterator::CHILD_FIRST
-        );
-        foreach($files as $file) {
+        $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($dir), \RecursiveIteratorIterator::CHILD_FIRST);
+        foreach ($files as $file) {
             // skip . and .. dirs
             if ($file->getFilename() === '.' || $file->getFilename() === '..') {
                 continue;
             }
-            if ($file->isDir()){
+            if ($file->isDir()) {
                 // remove dir if is dir
                 rmdir($file->getRealPath());
             } else {
@@ -183,26 +232,26 @@ class AbstractExtractor
         // delete empty webapp folder
         rmdir($dir);
     }
-
-
+    
     /**
-     * Gathers all available archived webapps and extract them for usage.
+     * (non-PHPdoc)
      *
-     * @return void
+     * @see \TechDivision\ApplicationServer\InitialContext::deployWebapps()
      */
-    public function extractWebapps()
+    public function deployWebapps()
     {
         // check if deploy dir exists
         if (is_dir($this->getDeployDir())) {
             // init file iterator on deployment directory
             $fileIterator = new \FilesystemIterator($this->getDeployDir());
             // Iterate through all phar files and extract them to tmp dir
-            foreach (new \RegexIterator($fileIterator, '/^.*\.phar$/') as $archive) {
-                $this->extractArchive($archive);
+            foreach (new \RegexIterator($fileIterator, '/^.*\\' . $this->getExtensionSuffix() . '$/') as $archive) {
+                $this->deployArchive($archive);
+                $this->undeployArchive($archive);
             }
         }
     }
-
+    
     /**
      * (non-PHPdoc)
      *
@@ -223,4 +272,13 @@ class AbstractExtractor
         return $this->initialContext;
     }
 
+    /**
+     * Returns the service instance to use.
+     *
+     * @return \TechDivision\ApplicationServer\Api\ServiceInterface $service The service to use
+     */
+    public function getService()
+    {
+        return $this->service;
+    }
 }
