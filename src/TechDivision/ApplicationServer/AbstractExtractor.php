@@ -95,6 +95,7 @@ abstract class AbstractExtractor implements ExtractorInterface
             ExtractorInterface::FLAG_DEPLOYED,
             ExtractorInterface::FLAG_DEPLOYING,
             ExtractorInterface::FLAG_DODEPLOY,
+            ExtractorInterface::FLAG_REDEPLOY,
             ExtractorInterface::FLAG_FAILED,
         );
     }
@@ -126,7 +127,7 @@ abstract class AbstractExtractor implements ExtractorInterface
      *            The archive to unflag
      * @return void
      */
-    public function unflagArchive(\SplFileInfo $archive)
+    protected function unflagArchive(\SplFileInfo $archive)
     {
         foreach ($this->getFlags() as $flagString) {
             if (file_exists($archive->getRealPath() . $flagString)) {
@@ -212,8 +213,14 @@ abstract class AbstractExtractor implements ExtractorInterface
      *            The directory to remove
      * @return void
      */
-    protected function removeDir($dir)
+    protected function removeDir($dir, $alsoRemoveFiles = true)
     {
+        
+        // first check if the directory exists, if not return immediately
+        if (is_dir($dir) === false) {
+            return;
+        }
+        
         // remove old archive from webapps folder recursively
         $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($dir), \RecursiveIteratorIterator::CHILD_FIRST);
         foreach ($files as $file) {
@@ -222,15 +229,44 @@ abstract class AbstractExtractor implements ExtractorInterface
                 continue;
             }
             if ($file->isDir()) {
-                // remove dir if is dir
-                rmdir($file->getRealPath());
-            } else {
-                // remove file
+                @rmdir($file->getRealPath());
+            } elseif ($file->isFile() && $alsoRemoveFiles) {
                 unlink($file->getRealPath());
+            } else {
+                // do nothing, because file should NOT be deleted obviously
             }
         }
-        // delete empty webapp folder
-        rmdir($dir);
+        // delete the directory itself if empty
+        @rmdir($dir);
+    }
+
+    /**
+     * Copies a directory recursively.
+     *
+     * @param string $dir
+     *            The directory to remove
+     * @return void
+     */
+    public function copyDir($src, $dst)
+    {
+        if (is_link($src)) {
+            symlink(readlink($src), $dst);
+        } elseif (is_dir($src)) {
+            if (is_dir($dst) === false) {
+                mkdir($dst, 0775, true);
+            }
+            // copy files recursive
+            foreach (scandir($src) as $file) {
+                if ($file != '.' && $file != '..') {
+                    $this->copyDir("$src/$file", "$dst/$file");
+                }
+            }
+            
+        } elseif (is_file($src)) {
+            copy($src, $dst);
+        } else {
+            $this->getInitialContext()->getSystemLogger()->error("Directory $src is not available");
+        }
     }
     
     /**
@@ -247,6 +283,7 @@ abstract class AbstractExtractor implements ExtractorInterface
             // Iterate through all phar files and extract them to tmp dir
             foreach (new \RegexIterator($fileIterator, '/^.*\\' . $this->getExtensionSuffix() . '$/') as $archive) {
                 $this->deployArchive($archive);
+                $this->redeployArchive($archive);
                 $this->undeployArchive($archive);
             }
         }

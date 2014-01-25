@@ -28,25 +28,37 @@ class PharExtractor extends AbstractExtractor
 {
 
     /**
-     * The archive suffix.
+     * The PHAR identifier.
      *
      * @var string
      */
-    const EXTENSION_SUFFIX = '.phar';
-    
+    const IDENTIFIER = 'phar';
+
     /**
      * (non-PHPdoc)
-     * 
+     *
      * @see \TechDivision\ApplicationServer\AbstractExtractor::getExtensionSuffix()
      */
     public function getExtensionSuffix()
     {
-        return PharExtractor::EXTENSION_SUFFIX;
+        return '.' . PharExtractor::IDENTIFIER;
     }
-    
+
+    /**
+     * Returns the URL for the passed pathname.
+     *
+     * @param string $pathname
+     *            The pathname to return the URL for
+     * @return string The URL itself
+     */
+    public function createUrl($fileName)
+    {
+        return PharExtractor::IDENTIFIER . '://' . $fileName;
+    }
+
     /**
      * (non-PHPdoc)
-     * 
+     *
      * @see \TechDivision\ApplicationServer\AbstractExtractor::deployArchive()
      */
     public function deployArchive(\SplFileInfo $archive)
@@ -70,21 +82,25 @@ class PharExtractor extends AbstractExtractor
                 // move extracted content to webapps folder
                 rename($tmpFolderName, $webappFolderName);
                 
+                // restore backup if available
+                $this->restoreBackup($archive);
+                
                 // flag webapp as deployed
                 $this->flagArchive($archive, ExtractorInterface::FLAG_DEPLOYED);
             }
-            
         } catch (\Exception $e) {
             // log error
-            $this->getInitialContext()->getSystemLogger()->error($e->__toString());
+            $this->getInitialContext()
+                ->getSystemLogger()
+                ->error($e->__toString());
             // flag webapp as failed
             $this->flagArchive($archive, ExtractorInterface::FLAG_FAILED);
         }
     }
-    
+
     /**
      * (non-PHPdoc)
-     * 
+     *
      * @see \TechDivision\ApplicationServer\Interfaces\ExtractorInterface::redeployArchive()
      */
     public function redeployArchive(\SplFileInfo $archive)
@@ -94,17 +110,16 @@ class PharExtractor extends AbstractExtractor
             $this->deployArchive($archive);
         }
     }
-    
+
     /**
      * (non-PHPdoc)
-     * 
+     *
      * @see \TechDivision\ApplicationServer\Interfaces\ExtractorInterface::undeployArchive()
      */
     public function undeployArchive(\SplFileInfo $archive)
     {
-        
         try {
-
+            
             // create webapp folder name based on the archive's basename
             $webappFolderName = $this->getWebappsDir() . DIRECTORY_SEPARATOR . basename($archive->getFilename(), $this->getExtensionSuffix());
             
@@ -114,75 +129,67 @@ class PharExtractor extends AbstractExtractor
                 // backup files that are NOT part of the archive
                 $this->backupArchive($archive);
                 
-                // remove the webapp folder
-                $this->removeDir($webappFolderName);  
+                // delete directories previously backed up
+                $this->removeDir($webappFolderName);
             }
             
         } catch (\Exception $e) {
             // log error
-            $this->getInitialContext()->getSystemLogger()->error($e->__toString());
+            $this->getInitialContext()
+                ->getSystemLogger()
+                ->error($e->__toString());
             // flag webapp as failed
             $this->flagArchive($archive, ExtractorInterface::FLAG_FAILED);
         }
     }
-    
+
     /**
      * Creates a backup of files that are NOT part of the
      * passed archive.
-     * 
-     * @param \SplFileInfo $archive Backup files that are NOT part of this archive
-     * @return void 
+     *
+     * @param \SplFileInfo $archive
+     *            Backup files that are NOT part of this archive
+     * @return void
      */
     public function backupArchive(\SplFileInfo $archive)
     {
-
-        // load the PHAR archive's basename
-        $pharBasename = $archive->getBasename();
         
-        $this->getInitialContext()->getSystemLogger()->error("Found PHAR basename: $pharBasename");
+        // load the PHAR archive's pathname
+        $pharPathname = $archive->getPathname();
         
-        // create webapp folder name based on the archive's basename
+        // create tmp & webapp folder name based on the archive's basename
         $webappFolderName = $this->getWebappsDir() . DIRECTORY_SEPARATOR . basename($archive->getFilename(), $this->getExtensionSuffix());
-        
-        $this->getInitialContext()->getSystemLogger()->error("Found webapp folder: $webappFolderName");
+        $tmpFolderName = $this->getTmpDir() . DIRECTORY_SEPARATOR . md5(basename($archive->getFilename(), $this->getExtensionSuffix()));
         
         // initialize PHAR archive
         $p = new \Phar($archive);
         
         // iterate over the PHAR content to backup files that are NOT part of the archive
         foreach (new \RecursiveIteratorIterator($p) as $file) {
-            $this->getInitialContext()->getSystemLogger()->error(str_replace($pharBasename, $webappsDir, $file->getPathName()));
-            // unlink(str_replace($pharBasename, $webappsDir, file->getPathName()));
+            unlink(str_replace($this->createUrl($pharPathname), $webappFolderName, $file->getPathName()));
         }
+        
+        // delete empty directories but LEAVE files created by app
+        $this->removeDir($webappFolderName, false);
+        
+        // copy backup to tmp directory
+        $this->copyDir($webappFolderName, $tmpFolderName);
     }
-    
-
 
     /**
-     * Removes a directory recursively.
-     *
-     * @param string $dir
-     *            The directory to remove
+     * Restores the backup files from the backup directory.
+     * 
+     * @param \SplFileInfo $archive To restore the files for
      * @return void
      */
-    protected function cleanDirByPhar($dir)
+    public function restoreBackup(\SplFileInfo $archive)
     {
-        // remove old archive from webapps folder recursively
-        $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($dir), \RecursiveIteratorIterator::CHILD_FIRST);
-        foreach ($files as $file) {
-            // skip . and .. dirs
-            if ($file->getFilename() === '.' || $file->getFilename() === '..') {
-                continue;
-            }
-            if ($file->isDir()) {
-                // remove dir if is dir
-                rmdir($file->getRealPath());
-            } else {
-                // remove file
-                unlink($file->getRealPath());
-            }
-        }
-        // delete empty webapp folder
-        rmdir($dir);
+        
+        // create tmp & webapp folder name based on the archive's basename
+        $webappFolderName = $this->getWebappsDir() . DIRECTORY_SEPARATOR . basename($archive->getFilename(), $this->getExtensionSuffix());
+        $tmpFolderName = $this->getTmpDir() . DIRECTORY_SEPARATOR . md5(basename($archive->getFilename(), $this->getExtensionSuffix()));
+        
+        // copy backup to webapp directory
+        $this->copyDir($tmpFolderName, $webappFolderName);
     }
 }
