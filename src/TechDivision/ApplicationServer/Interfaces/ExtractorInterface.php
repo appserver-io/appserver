@@ -52,14 +52,26 @@ interface ExtractorInterface
     public function deployArchive(\SplFileInfo $archive);
 
     /**
-     * Undeployes the passed archive.
+     * Undeployes the passed archive after backing up
+     * files that are NOT part of the archive.
+     *
+     * @param \SplFileInfo $archive
+     *            The archive file to be undeployed
+     * @throws \Exception
+     * @return void
+     */
+    public function undeployArchive(\SplFileInfo $archive);
+
+    /**
+     * Redeploys the passed archive after backing up
+     * files that are NOT part of the archive.
      *
      * @param \SplFileInfo $archive
      *            The archive file to be deployed
      * @throws \Exception
      * @return void
      */
-    public function undeployArchive(\SplFileInfo $archive);
+    public function redeployArchive(\SplFileInfo $archive);
 
     /**
      * Checks if archive is deployable.
