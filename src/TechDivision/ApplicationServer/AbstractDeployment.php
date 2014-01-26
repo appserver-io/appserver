@@ -172,46 +172,6 @@ abstract class AbstractDeployment implements DeploymentInterface
     }
 
     /**
-     * Extracts the passed PHAR archive to a folder with the
-     * basename of the archive file.
-     *
-     * @param \SplFileInfo $archive
-     *            The PHAR file to be deployed
-     * @return void
-     */
-    protected function deployArchive(\SplFileInfo $archive)
-    {
-        try {
-
-            // create folder name based on the archive's basename
-            $baseDirectory = $this->getBaseDirectory($this->getAppBase());
-            $folderName = $baseDirectory . DIRECTORY_SEPARATOR . $archive->getBaseName('.phar');
-
-            // check if application has already been deployed
-            if (is_dir($folderName) === false) {
-                $p = new \Phar($archive);
-                $p->extractTo($folderName, null, true);
-            }
-
-        } catch (\Exception $e) {
-            $this->getInitialContext()->getSystemLogger()->error($e->__toString());
-        }
-    }
-
-    /**
-     * Gathers all available archived webapps and deploys them for usage.
-     *
-     * @return \TechDivision\ApplicationServer\Interfaces\DeploymentInterface The deployment instance itself
-     */
-    public function deployWebapps()
-    {
-        foreach (new \RegexIterator(new \FilesystemIterator($this->getBaseDirectory($this->getAppBase())), '/^.*\.phar$/') as $archive) {
-            $this->deployArchive($archive);
-        }
-        return $this;
-    }
-
-    /**
      * (non-PHPdoc)
      *
      * @see \TechDivision\ApplicationServer\Api\ContainerService::getBaseDirectory()

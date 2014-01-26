@@ -12,6 +12,7 @@
 namespace TechDivision\ApplicationServer\Extractors;
 
 use TechDivision\ApplicationServer\AbstractExtractor;
+use TechDivision\ApplicationServer\Api\Node\AppNode;
 use TechDivision\ApplicationServer\Interfaces\ExtractorInterface;
 
 /**
@@ -23,50 +24,56 @@ use TechDivision\ApplicationServer\Interfaces\ExtractorInterface;
  * @license Open Software License (OSL 3.0) http://opensource.org/licenses/osl-3.0.php
  * @author Johann Zelger <j.zelger@techdivision.com>
  */
-class PharExtractor extends AbstractExtractor implements ExtractorInterface
+class PharExtractor extends AbstractExtractor
 {
 
     /**
-     * Check if archive is extractable
+     * The PHAR identifier.
      *
-     * @param $archive \SplFileInfo
-     *            The archive object
-     *            
-     * @return bool
+     * @var string
      */
-    public function isExtractable(\SplFileInfo $archive)
+    const IDENTIFIER = 'phar';
+
+    /**
+     * (non-PHPdoc)
+     *
+     * @see \TechDivision\ApplicationServer\AbstractExtractor::getExtensionSuffix()
+     */
+    public function getExtensionSuffix()
     {
-        $deployFolderName = $this->getDeployDir() . DIRECTORY_SEPARATOR . $archive->getFilename();
-        // check if deployed flag exists
-        if (file_exists($deployFolderName . ExtractorInterface::FLAG_DEPLOYED)) {
-            return false;
-        }
-        // check if failed flag exists
-        if (file_exists($deployFolderName . ExtractorInterface::FLAG_FAILED)) {
-            return false;
-        }
-        // by default its extractable
-        return true;
+        return '.' . PharExtractor::IDENTIFIER;
     }
 
     /**
-     * Extracts the passed PHAR archive to a folder with the
-     * basename of the archive file.
+     * Returns the URL for the passed pathname.
      *
-     * @param \SplFileInfo $archive
-     *            The PHAR file to be deployed
-     * @throws \Exception
-     * @return void
+     * @param string $pathname
+     *            The pathname to return the URL for
+     * @return string The URL itself
      */
-    protected function extractArchive(\SplFileInfo $archive)
+    public function createUrl($fileName)
+    {
+        return PharExtractor::IDENTIFIER . '://' . $fileName;
+    }
+    
+    /**
+     * (non-PHPdoc)
+     *
+     * @see \TechDivision\ApplicationServer\AbstractExtractor::deployArchive()
+     */
+    public function deployArchive(\SplFileInfo $archive)
     {
         try {
+            
             // create folder names based on the archive's basename
             $tmpFolderName = $this->getTmpDir() . DIRECTORY_SEPARATOR . $archive->getFilename();
-            $webappFolderName = $this->getWebappsDir() . DIRECTORY_SEPARATOR . basename($archive->getFilename(), '.phar');
+            $webappFolderName = $this->getWebappsDir() . DIRECTORY_SEPARATOR . basename($archive->getFilename(), $this->getExtensionSuffix());
             
             // check if archive has not been deployed yet or failed sometime
-            if ($this->isExtractable($archive)) {
+            if ($this->isDeployable($archive)) {
+                
+                // remove old temporary directory
+                $this->removeDir($tmpFolderName);
                 
                 // flag webapp as deploying
                 $this->flagArchive($archive, ExtractorInterface::FLAG_DEPLOYING);
@@ -75,24 +82,55 @@ class PharExtractor extends AbstractExtractor implements ExtractorInterface
                 $p = new \Phar($archive);
                 $p->extractTo($tmpFolderName);
                 
-                // check if archive was deployed before to do replace deployment
-                if (is_dir($webappFolderName)) {
-                    
-                    // remove folder from webapps dir
-                    $this->removeDir($webappFolderName);
-                }
-                
                 // move extracted content to webapps folder
                 rename($tmpFolderName, $webappFolderName);
+                
+                // restore backup if available
+                $this->restoreBackup($archive);
                 
                 // flag webapp as deployed
                 $this->flagArchive($archive, ExtractorInterface::FLAG_DEPLOYED);
             }
         } catch (\Exception $e) {
             // log error
-            error_log($e->__toString());
+            $this->getInitialContext()
+                ->getSystemLogger()
+                ->error($e->__toString());
             // flag webapp as failed
             $this->flagArchive($archive, ExtractorInterface::FLAG_FAILED);
         }
+    }
+
+    /**
+     * Creates a backup of files that are NOT part of the
+     * passed archive.
+     *
+     * @param \SplFileInfo $archive
+     *            Backup files that are NOT part of this archive
+     * @return void
+     */
+    public function backupArchive(\SplFileInfo $archive)
+    {
+        
+        // load the PHAR archive's pathname
+        $pharPathname = $archive->getPathname();
+        
+        // create tmp & webapp folder name based on the archive's basename
+        $webappFolderName = $this->getWebappsDir() . DIRECTORY_SEPARATOR . basename($archive->getFilename(), $this->getExtensionSuffix());
+        $tmpFolderName = $this->getTmpDir() . DIRECTORY_SEPARATOR . md5(basename($archive->getFilename(), $this->getExtensionSuffix()));
+        
+        // initialize PHAR archive
+        $p = new \Phar($archive);
+        
+        // iterate over the PHAR content to backup files that are NOT part of the archive
+        foreach (new \RecursiveIteratorIterator($p) as $file) {
+            unlink(str_replace($this->createUrl($pharPathname), $webappFolderName, $file->getPathName()));
+        }
+        
+        // delete empty directories but LEAVE files created by app
+        $this->removeDir($webappFolderName, false);
+        
+        // copy backup to tmp directory
+        $this->copyDir($webappFolderName, $tmpFolderName);
     }
 }

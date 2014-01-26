@@ -13,6 +13,7 @@ namespace TechDivision\ApplicationServer;
 
 use TechDivision\ApplicationServer\Extractors\PharExtractor;
 use TechDivision\ApplicationServer\Interfaces\ExtractorInterface;
+use TechDivision\ApplicationServer\Utilities\DirectoryKeys;
 use TechDivision\Socket\Client;
 use TechDivision\ApplicationServer\SplClassLoader;
 use TechDivision\ApplicationServer\InitialContext;
@@ -23,7 +24,10 @@ use TechDivision\ApplicationServer\Api\Node\AppserverNode;
 use \Psr\Log\LoggerInterface;
 
 /**
- *
+ * This is the main server class that starts the application server
+ * and creates a separate thread for each container found in the
+ * configuration file.
+ * 
  * @package TechDivision\ApplicationServer
  * @copyright Copyright (c) 2010 <info@techdivision.com> - TechDivision GmbH
  * @license http://opensource.org/licenses/osl-3.0.php
@@ -62,16 +66,6 @@ class Server
     protected $extractor;
 
     /**
-     * The directory structure to be created at first start.
-     *
-     * @var array
-     */
-    protected $directories = array(
-        'tmp' => 'tmp',
-        'log' => 'var/log'
-    );
-
-    /**
      * Initializes the the server with the parsed configuration file.
      *
      * @param \TechDivision\ApplicationServer\Configuration $configuration
@@ -99,10 +93,10 @@ class Server
     {
         // init initial context
         $this->initInitialContext();
+        // init the file system
+        $this->initFileSystem();
         // init main system logger
         $this->initSystemLogger();
-        // init the directory structure
-        $this->initDirectoryStructure();
         // init extractor
         $this->initExtractor();
         // init containers
@@ -110,24 +104,37 @@ class Server
     }
 
     /**
-     * Initialize the directory structure that is necessary for
-     * running the application server.
+     * Initialize the initial context instance.
      *
      * @return void
      */
-    protected function initDirectoryStructure()
+    protected function initInitialContext()
+    {
+        $initialContextNode = $this->getSystemConfiguration()->getInitialContext();
+        $reflectionClass = new \ReflectionClass($initialContextNode->getType());
+        $initialContext = $reflectionClass->newInstanceArgs(array(
+            $this->getSystemConfiguration()
+        ));
+        // set the initial context and flush it initially
+        $this->setInitialContext($initialContext);
+    }
+
+    /**
+     * Prepares filesystem to be sure that everything is on place as expected
+     *
+     * @return void
+     */
+    public function initFileSystem()
     {
         
-        // load the base directory
-        $baseDirectory = $this->getSystemConfiguration()
-            ->getBaseDirectory()
-            ->getNodeValue()
-            ->__toString();
+        // init API service to use
+        $service = $this->newService('TechDivision\ApplicationServer\Api\ContainerService');
         
         // check if the log directory already exists, if not, create it
-        foreach ($this->getDirectories() as $name => $directory) {
+        foreach ($service->getDirectories() as $directory) {
+            
             // prepare the path to the directory to be created
-            $toBeCreated = $baseDirectory . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $directory);
+            $toBeCreated = $service->realpath($directory);
             // prepare the directory name and check if the directory already exists
             if (is_dir($toBeCreated) === false) {
                 // if not create it
@@ -178,46 +185,7 @@ class Server
         // @TODO: read extractor type from configuration
         $this->setExtractor(new PharExtractor($this->getInitialContext()));
         // extract all webapps
-        $this->getExtractor()->extractWebapps();
-    }
-
-    /**
-     * Set's the extractor
-     *
-     * @param \TechDivision\ApplicationServer\Interfaces\ExtractorInterface $extractor
-     *            The initial context instance
-     *            
-     * @return void
-     */
-    public function setExtractor(ExtractorInterface $extractor)
-    {
-        return $this->extractor = $extractor;
-    }
-
-    /**
-     * Returns the extractor
-     *
-     * @return \TechDivision\ApplicationServer\Interfaces\ExtractorInterface The extractor instance
-     */
-    public function getExtractor()
-    {
-        return $this->extractor;
-    }
-
-    /**
-     * Initialize the initial context instance.
-     *
-     * @return void
-     */
-    protected function initInitialContext()
-    {
-        $initialContextNode = $this->getSystemConfiguration()->getInitialContext();
-        $reflectionClass = new \ReflectionClass($initialContextNode->getType());
-        $initialContext = $reflectionClass->newInstanceArgs(array(
-            $this->getSystemConfiguration()
-        ));
-        // set the initial context and flush it initially
-        $this->setInitialContext($initialContext);
+        $this->getExtractor()->deployWebapps();
     }
 
     /**
@@ -305,6 +273,29 @@ class Server
     }
 
     /**
+     * Set's the extractor
+     *
+     * @param \TechDivision\ApplicationServer\Interfaces\ExtractorInterface $extractor
+     *            The initial context instance
+     *            
+     * @return void
+     */
+    public function setExtractor(ExtractorInterface $extractor)
+    {
+        return $this->extractor = $extractor;
+    }
+
+    /**
+     * Returns the extractor
+     *
+     * @return \TechDivision\ApplicationServer\Interfaces\ExtractorInterface The extractor instance
+     */
+    public function getExtractor()
+    {
+        return $this->extractor;
+    }
+
+    /**
      * Start the container threads.
      *
      * @return void
@@ -354,15 +345,5 @@ class Server
     public function newService($className)
     {
         return $this->getInitialContext()->newService($className);
-    }
-
-    /**
-     * Return's the directory structure to be created at first start.
-     *
-     * @return array The directory structure to be created if necessary
-     */
-    public function getDirectories()
-    {
-        return $this->directories;
     }
 }
