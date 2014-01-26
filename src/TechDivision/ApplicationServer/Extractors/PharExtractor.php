@@ -55,7 +55,7 @@ class PharExtractor extends AbstractExtractor
     {
         return PharExtractor::IDENTIFIER . '://' . $fileName;
     }
-
+    
     /**
      * (non-PHPdoc)
      *
@@ -71,6 +71,9 @@ class PharExtractor extends AbstractExtractor
             
             // check if archive has not been deployed yet or failed sometime
             if ($this->isDeployable($archive)) {
+                
+                // remove old temporary directory
+                $this->removeDir($tmpFolderName);
                 
                 // flag webapp as deploying
                 $this->flagArchive($archive, ExtractorInterface::FLAG_DEPLOYING);
@@ -88,51 +91,6 @@ class PharExtractor extends AbstractExtractor
                 // flag webapp as deployed
                 $this->flagArchive($archive, ExtractorInterface::FLAG_DEPLOYED);
             }
-        } catch (\Exception $e) {
-            // log error
-            $this->getInitialContext()
-                ->getSystemLogger()
-                ->error($e->__toString());
-            // flag webapp as failed
-            $this->flagArchive($archive, ExtractorInterface::FLAG_FAILED);
-        }
-    }
-
-    /**
-     * (non-PHPdoc)
-     *
-     * @see \TechDivision\ApplicationServer\Interfaces\ExtractorInterface::redeployArchive()
-     */
-    public function redeployArchive(\SplFileInfo $archive)
-    {
-        if ($this->isRedeployable($archive)) {
-            $this->undeployArchive($archive);
-            $this->deployArchive($archive);
-        }
-    }
-
-    /**
-     * (non-PHPdoc)
-     *
-     * @see \TechDivision\ApplicationServer\Interfaces\ExtractorInterface::undeployArchive()
-     */
-    public function undeployArchive(\SplFileInfo $archive)
-    {
-        try {
-            
-            // create webapp folder name based on the archive's basename
-            $webappFolderName = $this->getWebappsDir() . DIRECTORY_SEPARATOR . basename($archive->getFilename(), $this->getExtensionSuffix());
-            
-            // check if app has to be undeployed
-            if ($this->isUndeployable($archive) && is_dir($webappFolderName)) {
-                
-                // backup files that are NOT part of the archive
-                $this->backupArchive($archive);
-                
-                // delete directories previously backed up
-                $this->removeDir($webappFolderName);
-            }
-            
         } catch (\Exception $e) {
             // log error
             $this->getInitialContext()
@@ -174,22 +132,5 @@ class PharExtractor extends AbstractExtractor
         
         // copy backup to tmp directory
         $this->copyDir($webappFolderName, $tmpFolderName);
-    }
-
-    /**
-     * Restores the backup files from the backup directory.
-     * 
-     * @param \SplFileInfo $archive To restore the files for
-     * @return void
-     */
-    public function restoreBackup(\SplFileInfo $archive)
-    {
-        
-        // create tmp & webapp folder name based on the archive's basename
-        $webappFolderName = $this->getWebappsDir() . DIRECTORY_SEPARATOR . basename($archive->getFilename(), $this->getExtensionSuffix());
-        $tmpFolderName = $this->getTmpDir() . DIRECTORY_SEPARATOR . md5(basename($archive->getFilename(), $this->getExtensionSuffix()));
-        
-        // copy backup to webapp directory
-        $this->copyDir($tmpFolderName, $webappFolderName);
     }
 }

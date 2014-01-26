@@ -108,6 +108,19 @@ class AppService extends AbstractService
         $systemConfiguration->attachApp($appNode);
         $this->setSystemConfiguration($systemConfiguration);        
     }
+    
+    /**
+     * Soaks the passed archive into from a location in the filesystem
+     * to the deploy directory.
+     * 
+     * @param \SplFileInfo $archive The archive to soak
+     * @return void
+     */
+    public function soak(\SplFileInfo $archive)
+    {
+        $p = new PharExtractor($this->getInitialContext());
+        $p->soakArchive($archive);
+    }
 
     /**
      * Adds the .dodeploy flag file in the deploy folder, therefore the

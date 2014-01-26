@@ -42,6 +42,17 @@ interface ExtractorInterface
     public function deployWebapps();
 
     /**
+     * Soaks the passed archive from a location in the filesystem
+     * into the deploy directory and prepares it for the next
+     * restart by setting the apropriate flag.
+     *
+     * @param \SplFileInfo $archive
+     *            The archive to be soaked
+     * @return void
+     */
+    public function soakArchive(\SplFileInfo $archive);
+
+    /**
      * Extracts the passed archive to a folder with the
      * basename of the archive file.
      *
@@ -82,7 +93,7 @@ interface ExtractorInterface
      * @return bool
      */
     public function isDeployable(\SplFileInfo $archive);
-    
+
     /**
      * Check if archive is redeployable.
      *
@@ -108,7 +119,6 @@ interface ExtractorInterface
      *            The archive file
      * @param string $flag
      *            The flag to set
-     *            
      * @return void
      */
     public function flagArchive(\SplFileInfo $archive, $flag);
