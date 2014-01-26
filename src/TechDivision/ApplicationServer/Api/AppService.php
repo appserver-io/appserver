@@ -159,7 +159,8 @@ class AppService extends AbstractService
         if ($appNode = $this->load($uuid)) {
             
             // prepare file name
-            $fileName = $appNode->getName() . PharExtractor::EXTENSION_SUFFIX;
+            $extractor = new PharExtractor($this->getInitialContext());
+            $fileName = $appNode->getName() . $extractor->getExtensionSuffix();
             
             // load the file info
             $archive = new \SplFileInfo($this->getDeployDir() . DIRECTORY_SEPARATOR . $fileName);

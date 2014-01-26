@@ -147,7 +147,7 @@ abstract class AbstractExtractor implements ExtractorInterface
      *            The archive to unflag
      * @return void
      */
-    protected function unflagArchive(\SplFileInfo $archive)
+    public function unflagArchive(\SplFileInfo $archive)
     {
         foreach ($this->getFlags() as $flagString) {
             if (file_exists($archive->getRealPath() . $flagString)) {
