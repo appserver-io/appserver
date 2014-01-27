@@ -32,7 +32,6 @@ interface ExtractorInterface
     const FLAG_FAILED = '.failed';
     const FLAG_DEPLOYING = '.deploying';
     const FLAG_DODEPLOY = '.dodeploy';
-    const FLAG_REDEPLOY = '.redeploy';
     const FLAG_UNDEPLOYING = '.undeploying';
     const FLAG_UNDEPLOYED = '.undeployed';
 
@@ -77,17 +76,6 @@ interface ExtractorInterface
     public function undeployArchive(\SplFileInfo $archive);
 
     /**
-     * Redeploys the passed archive after backing up
-     * files that are NOT part of the archive.
-     *
-     * @param \SplFileInfo $archive
-     *            The archive file to be deployed
-     * @throws \Exception
-     * @return void
-     */
-    public function redeployArchive(\SplFileInfo $archive);
-
-    /**
      * Checks if archive is deployable.
      *
      * @param $archive \SplFileInfo
@@ -95,15 +83,6 @@ interface ExtractorInterface
      * @return bool
      */
     public function isDeployable(\SplFileInfo $archive);
-
-    /**
-     * Check if archive is redeployable.
-     *
-     * @param $archive \SplFileInfo
-     *            The archive object
-     * @return bool
-     */
-    public function isRedeployable(\SplFileInfo $archive);
 
     /**
      * Check if archive is undeployable.
