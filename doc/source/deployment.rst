@@ -102,7 +102,7 @@ Windows users: the examples below use UNIX shell commands; see the `Windows Note
 Windows Notes
 -------------
 
-The above examples use Unix shell commands. Windows equivalents are:
+The above examples use UNIX shell commands. Windows equivalents are:
 
 +-----------------------------------------+----------------------------------------+
 | UNIX                                    | Windows                                |
