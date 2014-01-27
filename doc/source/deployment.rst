@@ -75,7 +75,8 @@ Basic workflows
 ---------------
 
 All examples assume variable $AS points to the root of the appserver.io AS distribution.
-Windows users: the examples below use Unix shell commands; see the `Windows Notes`_ below.
+
+Windows users: the examples below use UNIX shell commands; see the `Windows Notes`_ below.
 
 #. Add new zipped (.phar) content and deploy it:
 
