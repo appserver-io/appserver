@@ -35,64 +35,85 @@ example.phar.dodeploy. Different marker file suffixes have different meanings.
 
 The relevant marker file types are:
 
-.dodeploy      -- Placed by the user to indicate that the given content should
-                  be deployed into the runtime.
-                  
-.redeploy      -- Placed by the user to indicate that the given content should
-                  be redployed into the runtime.
++---------------+------------------------------------------------------------------+
+| Marker        | Description                                                      |
++===============+==================================================================+
+| .dodeploy     | Placed by the user to indicate that the given content should     |
+|               | be deployed into the runtime.                                    |
++---------------+------------------------------------------------------------------+
+| .redeploy     | Placed by the user to indicate that the given content should     |
+|               | be redployed into the runtime.                                   |
++---------------+------------------------------------------------------------------+
+| .deploying    | Placed by the deployment scanner service to indicate that it     |
+|               | has noticed a .dodeploy file and is in the process of deploying  |
+|               | the content. This marker file will be deleted when the           |
+|               | deployment process completes.                                    |
++---------------+------------------------------------------------------------------+
+| .deployed     | Placed by the deployment scanner service to indicate that the    |
+|               | given content has been deployed into the runtime. If an end      |
+|               | user deletes this file and no other marker is available, the     |
+|               | content will be undeployed.                                      |
++---------------+------------------------------------------------------------------+
+| .failed       | Placed by the deployment scanner service to indicate that the    |
+|               | given content failed to deploy into the runtime. The content     |
+|               | of the file will include some information about the cause of     |
+|               | the failure. Note that, removing this file will make the         |
+|               | deployment eligible for deployment again.                        |
++---------------+------------------------------------------------------------------+
+| .undeploying  | Placed by the deployment scanner service to indicate that it     |
+|               | has noticed a .deployed file has been deleted and the            |
+|               | content is being undeployed. This marker file will be deleted    |
+|               | when the undeployment process completes.                         |
++---------------+------------------------------------------------------------------+
+| .undeployed   | Placed by the deployment scanner service to indicate that the    |
+|               | given content has been undeployed from the runtime. If an end    |
+|               | content is being undeployed. This marker file will be deleted    |
+|               | user deletes this file, it has no impact.                        |
++---------------+------------------------------------------------------------------+
 
-.deploying     -- Placed by the deployment scanner service to indicate that it
-                  has noticed a .dodeploy file and is in the process of deploying 
-                  the content. This marker file will be deleted when the 
-                  deployment process completes.
-
-.deployed      -- Placed by the deployment scanner service to indicate that the
-                  given content has been deployed into the runtime. If an end
-                  user deletes this file and no other marker is available, the 
-                  content will be undeployed.
-
-.failed        -- Placed by the deployment scanner service to indicate that the
-                  given content failed to deploy into the runtime. The content
-                  of the file will include some information about the cause of
-                  the failure. Note that, removing this file will make the 
-                  deployment eligible for deployment again.
-
-.undeploying   -- Placed by the deployment scanner service to indicate that it
-                  has noticed a .deployed file has been deleted and the
-                  content is being undeployed. This marker file will be deleted
-                  when the undeployment process completes.
-
-.undeployed    -- Placed by the deployment scanner service to indicate that the
-                  given content has been undeployed from the runtime. If an end
-                  user deletes this file, it has no impact.
-
-Basic workflows:
+Basic workflows
+---------------
 
 All examples assume variable $AS points to the root of the appserver.io AS distribution.
-Windows users: the examples below use Unix shell commands; see the "Windows Notes" below.
+Windows users: the examples below use Unix shell commands; see the :ref:`windows-notest-label` below.
 
-A) Add new zipped (.phar) content and deploy it:
+#. Add new zipped (.phar) content and deploy it:
 
-1. cp target/example.phar $AS/deploy
-2. touch $AS/deploy/example.phar.dodeploy
+    .. code-block:: shell
+    
+        $ cp target/example.phar $AS/deploy
+        $ touch $AS/deploy/example.phar.dodeploy
 
-B) Undeploy currently deployed zipped (.phar) content:
+#. Undeploy currently deployed zipped (.phar) content:
 
-1. rm $AS/deploy/example.phar.deployed
+    .. code-block:: shell
+    
+        $ rm $AS/deploy/example.phar.deployed
 
-C) Replace currently deployed zipped (.phar) content with a new version and redeploy it:
+#. Replace currently deployed zipped (.phar) content with a new version and redeploy it:
 
-1. cp target/example.phar $AS/deploy
-2. mv $AS/deploy/example.phar.deployed $AS/deploy/example.phar.redeploy
+    .. code-block:: shell
+    
+        $ cp target/example.phar $AS/deploy
+        $ $AS/deploy/example.phar.deployed $AS/deploy/example.phar.redeploy
 
-Windows Notes:
+.. _windows-notes-label:
+Windows Notes
+-------------
 
 The above examples use Unix shell commands. Windows equivalents are:
 
-cp src dest --> xcopy /y src dest
-cp -r src dest --> xcopy /e /s /y src dest
-rm afile --> del afile
-touch afile --> echo>> afile
++-----------------------------------------+----------------------------------------+
+| UNIX                                    | Windows                                |
++=========================================+========================================+
+| cp src dest                             | xcopy /y src dest                      |
++-----------------------------------------+----------------------------------------+
+| cp -r src dest                          | xcopy /e /s /y src dest                |
++-----------------------------------------+----------------------------------------+
+| rm afile                                | del afile                              |
++-----------------------------------------+----------------------------------------+
+| touch afile                             | echo >> afile                          |
++-----------------------------------------+----------------------------------------+
 
-Note that the behavior of 'touch' and 'echo' are different but thedifferences are not relevant to the usages in 
-the examples above.
+Note that the behavior of ``touch`` and ``echo`` are different but thedifferences are not relevant to the usages 
+in the examples above.
