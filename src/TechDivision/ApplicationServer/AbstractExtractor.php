@@ -97,6 +97,8 @@ abstract class AbstractExtractor implements ExtractorInterface
             ExtractorInterface::FLAG_DODEPLOY,
             ExtractorInterface::FLAG_REDEPLOY,
             ExtractorInterface::FLAG_FAILED,
+            ExtractorInterface::FLAG_UNDEPLOYED,
+            ExtractorInterface::FLAG_UNDEPLOYING
         );
     }
     
@@ -267,12 +269,18 @@ abstract class AbstractExtractor implements ExtractorInterface
             
             // check if app has to be undeployed
             if ($this->isUndeployable($archive) && is_dir($webappFolderName)) {
+
+                // flag webapp as undeploing
+                $this->flagArchive($archive, ExtractorInterface::FLAG_UNDEPLOYING);
                 
                 // backup files that are NOT part of the archive
                 $this->backupArchive($archive);
                 
                 // delete directories previously backed up
                 $this->removeDir($webappFolderName);
+
+                // flag webapp as undeployed
+                $this->flagArchive($archive, ExtractorInterface::FLAG_UNDEPLOYED);
             }
             
         } catch (\Exception $e) {

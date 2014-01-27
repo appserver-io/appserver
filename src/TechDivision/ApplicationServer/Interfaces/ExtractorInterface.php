@@ -33,6 +33,8 @@ interface ExtractorInterface
     const FLAG_DEPLOYING = '.deploying';
     const FLAG_DODEPLOY = '.dodeploy';
     const FLAG_REDEPLOY = '.redeploy';
+    const FLAG_UNDEPLOYING = '.undeploying';
+    const FLAG_UNDEPLOYED = '.undeployed';
 
     /**
      * Gathers all available archived webapps and extract them for usage.
