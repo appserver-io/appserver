@@ -95,8 +95,9 @@ abstract class AbstractExtractor implements ExtractorInterface
             ExtractorInterface::FLAG_DEPLOYED,
             ExtractorInterface::FLAG_DEPLOYING,
             ExtractorInterface::FLAG_DODEPLOY,
-            ExtractorInterface::FLAG_REDEPLOY,
             ExtractorInterface::FLAG_FAILED,
+            ExtractorInterface::FLAG_UNDEPLOYED,
+            ExtractorInterface::FLAG_UNDEPLOYING
         );
     }
     
@@ -113,9 +114,8 @@ abstract class AbstractExtractor implements ExtractorInterface
             $fileIterator = new \FilesystemIterator($this->getDeployDir());
             // Iterate through all phar files and extract them to tmp dir
             foreach (new \RegexIterator($fileIterator, '/^.*\\' . $this->getExtensionSuffix() . '$/') as $archive) {
-                $this->deployArchive($archive);
-                $this->redeployArchive($archive);
                 $this->undeployArchive($archive);
+                $this->deployArchive($archive);
             }
         }
     }
@@ -167,41 +167,12 @@ abstract class AbstractExtractor implements ExtractorInterface
         // prepare the deploy folder
         $deployFolderName = $this->getDeployDir() . DIRECTORY_SEPARATOR . $archive->getFilename();
         
-        // check if .deployed flag exists
-        if (file_exists($deployFolderName . ExtractorInterface::FLAG_DEPLOYED)) {
-            return false;
-        }
-        // check if .failed flag exists
-        if (file_exists($deployFolderName . ExtractorInterface::FLAG_FAILED)) {
-            return false;
-        }
         // check if the .dodeploy flag file exists
-        if (file_exists($deployFolderName . ExtractorInterface::FLAG_DODEPLOY) === false) {
-            return false;
-        }
-        
-        // by default it's deployable
-        return true;
-    }
-    
-    /**
-     * (non-PHPdoc)
-     * 
-     * @see \TechDivision\ApplicationServer\Interfaces\ExtractorInterface::isRedeployable()
-     */
-    public function isRedeployable(\SplFileInfo $archive)
-    {
-
-        // prepare the deploy and webapp folder name
-        $deployFolderName = $this->getDeployDir() . DIRECTORY_SEPARATOR . $archive->getFilename();
-        $webappFolderName = $this->getWebappsDir() . DIRECTORY_SEPARATOR . basename($archive->getFilename(), $this->getExtensionSuffix());
-
-        // check if the .redeploy flag file exists
-        if (file_exists($deployFolderName . ExtractorInterface::FLAG_REDEPLOY) && is_dir($webappFolderName)) {
+        if (file_exists($deployFolderName . ExtractorInterface::FLAG_DODEPLOY)) {
             return true;
         }
         
-        // by default it's NOT redeployable
+        // by default it's NOT deployable
         return false;
     }
     
@@ -223,7 +194,7 @@ abstract class AbstractExtractor implements ExtractorInterface
             }
         }
         
-        // by default its extractable
+        // it's undeployable if NOT marker file exists
         return true;
     }
 
@@ -239,18 +210,11 @@ abstract class AbstractExtractor implements ExtractorInterface
         $deployDirectory = $this->getDeployDir();
         $target = $deployDirectory . DIRECTORY_SEPARATOR . $archive->getFilename();
         
-        // prepare archive flag
-        if (file_exists($target)) {
-            $archiveFlag = ExtractorInterface::FLAG_REDEPLOY;
-        } else {
-            $archiveFlag = ExtractorInterface::FLAG_DODEPLOY;
-        }
-        
         // move the uploaded file from the tmp to the deploy directory
         rename($archive->getPathname(), $target);
         
-        // flag the file for the next restart
-        $this->flagArchive(new \SplFileInfo($target), $archiveFlag);
+        // makr the file to be deployed with the next restart
+        $this->flagArchive(new \SplFileInfo($target), ExtractorInterface::FLAG_DODEPLOY);
     }
 
     /**
@@ -267,12 +231,18 @@ abstract class AbstractExtractor implements ExtractorInterface
             
             // check if app has to be undeployed
             if ($this->isUndeployable($archive) && is_dir($webappFolderName)) {
+
+                // flag webapp as undeploing
+                $this->flagArchive($archive, ExtractorInterface::FLAG_UNDEPLOYING);
                 
                 // backup files that are NOT part of the archive
                 $this->backupArchive($archive);
                 
                 // delete directories previously backed up
                 $this->removeDir($webappFolderName);
+
+                // flag webapp as undeployed
+                $this->flagArchive($archive, ExtractorInterface::FLAG_UNDEPLOYED);
             }
             
         } catch (\Exception $e) {
@@ -282,21 +252,6 @@ abstract class AbstractExtractor implements ExtractorInterface
                 ->error($e->__toString());
             // flag webapp as failed
             $this->flagArchive($archive, ExtractorInterface::FLAG_FAILED);
-        }
-    }
-
-    /**
-     * (non-PHPdoc)
-     *
-     * @see \TechDivision\ApplicationServer\Interfaces\ExtractorInterface::redeployArchive()
-     */
-    public function redeployArchive(\SplFileInfo $archive)
-    {
-        if ($this->isRedeployable($archive)) {
-            $this->unflagArchive($archive);
-            $this->undeployArchive($archive);
-            $this->flagArchive($archive, ExtractorInterface::FLAG_DODEPLOY);
-            $this->deployArchive($archive);
         }
     }
 

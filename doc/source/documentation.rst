@@ -2,6 +2,7 @@
     :hidden:
 
     documentation
+    deployment
 
 1. Introduction
 ===============
