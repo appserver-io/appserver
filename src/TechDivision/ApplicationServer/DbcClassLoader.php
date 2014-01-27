@@ -101,7 +101,7 @@ class DbcClassLoader extends SplClassLoader
         $cacheMap = new CacheMap($cacheConfig['dir']);
 
         // We need a generator so we can create our proxies initially
-        $generator = new Generator($cacheMap);
+        $generator = new Generator($structureMap, $cacheMap);
 
         // Iterate over all found structures and generate their proxies, but ignore the ones with omitted
         // namespaces
@@ -159,6 +159,11 @@ class DbcClassLoader extends SplClassLoader
     {
         // We should get the composer autoloader as a fallback
         require '/opt/appserver/app/code/vendor/autoload.php';
+
+        // Get our Config instance and load our configuration
+        // We have to do this again, as the constructor will not get called within new threads.
+        $this->config = Config::getInstance();
+        $this->config = $this->config->load(self::CONFIG_FILE);
 
         // We want to let our autoloader be the first in line so we can react on loads and create/return our proxies.
         // So lets use the prepend parameter here.
