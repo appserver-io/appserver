@@ -15,8 +15,9 @@ use TechDivision\ApplicationServer\Configuration;
 use TechDivision\ApplicationServer\InitialContext;
 use TechDivision\ApplicationServer\Api\ServiceInterface;
 use TechDivision\ApplicationServer\Api\Node\NodeInterface;
-use TechDivision\PersistenceContainer\Application;
+use TechDivision\ApplicationServer\Utilities\DirectoryKeys;
 use TechDivision\ApplicationServer\Interfaces\ContainerConfiguration;
+use TechDivision\PersistenceContainer\Application;
 
 /**
  * Abstract service implementation.
@@ -138,6 +139,69 @@ abstract class AbstractService implements ServiceInterface
         }
 
         return $baseDirectory;
+    }
+
+    /**
+     * Return's the directory structure to be created at first start.
+     *
+     * @return array The directory structure to be created if necessary
+     */
+    public function getDirectories()
+    {
+        return DirectoryKeys::getDirectories();
+    }
+
+    /**
+     * Returns the servers tmp directory
+     *
+     * @return string
+     */
+    public function getTmpDir()
+    {
+        return $this->realpath(DirectoryKeys::TMP);
+    }
+
+    /**
+     * Returns the servers deploy directory
+     *
+     * @return string
+     */
+    public function getDeployDir()
+    {
+        return $this->realpath(DirectoryKeys::DEPLOY);
+    }
+
+    /**
+     * Returns the servers webapps directory
+     *
+     * @return string
+     */
+    public function getWebappsDir()
+    {
+        return $this->realpath(DirectoryKeys::WEBAPPS);
+    }
+
+    /**
+     * Returns the servers log directory
+     *
+     * @return string
+     */
+    public function getLogDir()
+    {
+        return $this->realpath(DirectoryKeys::LOG);
+    }
+
+    /**
+     * Returns the absolute path to the passed directory, also
+     * working on Windows.
+     *
+     * @param string $relativeDirectory
+     *            The relativ path of the directory to return the absolute path for
+     * @return string The absolute path of the apssed directory
+     */
+    public function realpath($relativeDirectory)
+    {
+        return $this->getBaseDirectory(DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $relativeDirectory));
     }
 
     /**

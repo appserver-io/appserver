@@ -34,6 +34,13 @@ abstract class AbstractReceiver implements ReceiverInterface
     protected $container;
 
     /**
+     * The socket instance
+     *
+     * @var \TechDivision\Socket\Client
+     */
+    protected $socket;
+
+    /**
      * The worker type to use.
      *
      * @var string
@@ -82,6 +89,12 @@ abstract class AbstractReceiver implements ReceiverInterface
         // set the container instance
         $this->container = $container;
 
+        // set the socket instance
+        $this->socket = $this->newInstance($this->getResourceClass());
+
+        // setup socket instance
+        $this->setupSocket();
+
         // enable garbage collector
         $this->gcEnable();
     }
@@ -94,29 +107,36 @@ abstract class AbstractReceiver implements ReceiverInterface
     protected abstract function getResourceClass();
 
     /**
+     * Sets up the specific socket instance
+     *
+     * @return void
+     */
+    protected function setupSocket() {
+        // set address and port
+        $this->getSocket()
+            ->setAddress($this->getAddress())
+            ->setPort($this->getPort());
+    }
+
+    /**
      *
      * @see TechDivision\ApplicationServer\Interfaces\ReceiverInterface::start()
      */
     public function start()
     {
         try {
+            // init counter var
+            $workerCounter = 0;
 
-            /**
-             * @var \TechDivision\Socket\Client $socket
-             */
-            $socket = $this->newInstance($this->getResourceClass());
-
-            // prepare the main socket and listen
-            $socket->setAddress($this->getAddress())
-                ->setPort($this->getPort())
-                ->start();
+            // start main socket
+            $this->getSocket()->start();
             
             // check if resource been initiated
-            if ($resource = $socket->getResource()) {
+            if ($resource = $this->getSocket()->getResource()) {
                 // open threads where accept connections
-                while ($workerCounter ++ < $this->getWorkerNumber()) {
+                while ($workerCounter++ < $this->getWorkerNumber()) {
                     // init thread
-                    $this->worker[$workerCounter] = $this->newWorker($socket->getResource());
+                    $this->worker[$workerCounter] = $this->newWorker($this->getSocket()->getResource());
                     // start thread async
                     $this->worker[$workerCounter]->start();
                 }
@@ -140,7 +160,7 @@ abstract class AbstractReceiver implements ReceiverInterface
                         // unset the worker and free memory and sockets
                         unset($this->worker[$i]);
                         // init thread
-                        $this->worker[$i] = $this->newWorker($socket->getResource());
+                        $this->worker[$i] = $this->newWorker($this->getSocket()->getResource());
                         // start thread async
                         $this->worker[$i]->start();
                     }
@@ -160,10 +180,20 @@ abstract class AbstractReceiver implements ReceiverInterface
         }
 
         if (is_resource($resource)) {
-            $socket->close();
+            $this->getSocket()->close();
         }
 
         return false;
+    }
+
+    /**
+     * Returns the socket instance
+     *
+     * @return \TechDivision\Socket\Client
+     */
+    public function getSocket()
+    {
+        return $this->socket;
     }
 
     /**
