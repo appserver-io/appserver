@@ -15,6 +15,10 @@ use TechDivision\PBC\Generator;
 use TechDivision\PBC\StructureMap;
 use TechDivision\PBC\Config;
 use TechDivision\PBC\AutoLoader;
+use TechDivision\ApplicationServer\InitialContext;
+
+// We should get the composer autoloader as a fallback
+require '/opt/appserver/app/code/vendor/autoload.php';
 
 /**
  * This class is used to delegate to php-by-contract's autoloader.
@@ -31,27 +35,27 @@ class DbcClassLoader extends SplClassLoader
 {
 
     /**
-     * @var AutoLoader
+     * @var AutoLoader  The original PBC Autoloader we will delegate to
      */
     protected $autoloader;
 
     /**
-     * @var Config
+     * @var Config  Will hold the PBC configuration
      */
     protected $config;
 
     /**
-     * @var InitialContext
+     * @var InitialContext  Will hold the initial context instance
      */
     protected $initialContext;
 
     /**
-     * @const string
+     * @const string    The name of our autoload method
      */
     const OUR_LOADER = 'loadClass';
 
     /**
-     * @const string
+     * @const string    Our default configuration file
      */
     const CONFIG_FILE = '/opt/appserver/etc/pbc.conf.json';
 
@@ -61,6 +65,8 @@ class DbcClassLoader extends SplClassLoader
      * We will do all the necessary work to load without any further hassle.
      * Will check if there is content in the cache directory.
      * If not we will parse anew.
+     *
+     * @param InitialContext $initialContext Will give us the needed initial context
      */
     public function __construct($initialContext)
     {
@@ -73,19 +79,22 @@ class DbcClassLoader extends SplClassLoader
         // We need the cacheing configuration
         $cacheConfig = $this->config->getConfig('cache');
 
-        // We need our autoloader to delegate to
-        $this->autoloader = new AutoLoader();
-
         // Check if there are files in the cache
         $fileIterator = new \FilesystemIterator($cacheConfig['dir'], \FilesystemIterator::SKIP_DOTS);
         if (iterator_count($fileIterator) <= 2 || $this->config->getConfig('environment') === 'development') {
 
             $this->fillCache();
         }
+
+        // We need our autoloader to delegate to.
+        // Getting it after the cache was filled to get the complete structure map
+        $this->autoloader = new AutoLoader();
     }
 
     /**
      * Will initiate the creation of a structure map and the parsing process of all found structures
+     *
+     * @return void
      */
     protected function fillCache()
     {
@@ -133,33 +142,41 @@ class DbcClassLoader extends SplClassLoader
      *
      * This method will delegate to the php-by-contract's AutoLoader class.
      *
-     * @param   string $className
+     * @param string $className Name of the structure to load
      *
      * @return  bool
      */
     public function loadClass($className)
     {
+        // Try our loader first
         $tmp = $this->autoloader->loadClass($className);
 
+        // Did we succeed?
         if ($tmp === true) {
 
             return $tmp;
 
         } else {
 
+            // Call the parent constructor so we can build up the environment
+            parent::__construct($this->initialContext);
+
+            // Delegate to the parent class loader
             return parent::loadClass($className);
         }
     }
 
     /**
-     * @param bool $throws
-     * @param bool $prepends
+     * Will register this autoloader as first one on the stack.
+     * We already register the composer loader as a fallback.
+     *
+     * @param bool $throws   SplAutoload compatible
+     * @param bool $prepends SplAutoload compatible but will be ignored
+     *
+     * @return void
      */
     public function register($throws = true, $prepends = true)
     {
-        // We should get the composer autoloader as a fallback
-        require '/opt/appserver/app/code/vendor/autoload.php';
-
         // Get our Config instance and load our configuration
         // We have to do this again, as the constructor will not get called within new threads.
         $this->config = Config::getInstance();
