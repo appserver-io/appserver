@@ -14,6 +14,8 @@ namespace TechDivision\ApplicationServer\Api;
 use TechDivision\ApplicationServer\Api\AbstractService;
 use TechDivision\ApplicationServer\Api\Node\AppNode;
 use TechDivision\ApplicationServer\Api\Node\NodeInterface;
+use TechDivision\ApplicationServer\Interfaces\ExtractorInterface;
+use TechDivision\ApplicationServer\Extractors\PharExtractor;
 
 /**
  * This services provides access to the deplyed applications and allows
@@ -104,23 +106,68 @@ class AppService extends AbstractService
     {
         $systemConfiguration = $this->getSystemConfiguration();
         $systemConfiguration->attachApp($appNode);
-        $this->setSystemConfiguration($systemConfiguration);
+        $this->setSystemConfiguration($systemConfiguration);        
+    }
+    
+    /**
+     * Soaks the passed archive into from a location in the filesystem
+     * to the deploy directory.
+     * 
+     * @param \SplFileInfo $archive The archive to soak
+     * @return void
+     */
+    public function soak(\SplFileInfo $archive)
+    {
+        $p = new PharExtractor($this->getInitialContext());
+        $p->soakArchive($archive);
     }
 
     /**
-     * Removes the application with the passed UUID from the system 
-     * configuration and sets the .undeploy flag.
+     * Adds the .dodeploy flag file in the deploy folder, therefore the
+     * app will be deployed with the next restart.
+     *
+     * @param \TechDivision\ApplicationServer\Api\Node\NodeInterface
+     * @return void
+     */
+    public function deploy(NodeInterface $appNode)
+    {
+
+        // prepare file name
+        $fileName = $appNode->getName() . PharExtractor::EXTENSION_SUFFIX;
+        
+        // load the file info
+        $archive = new \SplFileInfo($this->getDeployDir() . DIRECTORY_SEPARATOR . $fileName);
+        
+        // flag the archiv => deploy it with the next restart
+        $extractor = new PharExtractor($this->getInitialContext());
+        $extractor->flagArchive($archive, ExtractorInterface::FLAG_DODEPLOY);
+    }
+
+    /**
+     * Removes the .deployed flag file from the deploy folder, therefore the
+     * app will be undeployed with the next restart.
      *
      * @param string $uuid
      *            UUID of the application to delete
      * @return void
      * @todo Add functionality to delete the deployed app
      */
-    public function delete($uuid)
+    public function undeploy($uuid)
     {
-        $appNodes = $this->getSystemConfiguration()->getApps();
-        if (array_key_exists($uuid, $appNodes)) {
-            unset($appNodes[$uuid]);
+        
+        // try to load the app node with the passe UUID
+        if ($appNode = $this->load($uuid)) {
+            
+            // prepare file name
+            $extractor = new PharExtractor($this->getInitialContext());
+            $fileName = $appNode->getName() . $extractor->getExtensionSuffix();
+            
+            // load the file info
+            $archive = new \SplFileInfo($this->getDeployDir() . DIRECTORY_SEPARATOR . $fileName);
+            
+            // unflag the archiv => undeploy it with the next restart
+            $extractor = new PharExtractor($this->getInitialContext());
+            $extractor->unflagArchive($archive);
         }
     }
 }

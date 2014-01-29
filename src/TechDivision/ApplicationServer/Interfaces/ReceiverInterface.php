@@ -38,7 +38,7 @@ interface ReceiverInterface {
     /**
      * Returns the IP address to listen to.
      * 
-     * @return integer The IP address to listen to
+     * @return string The IP address to listen to
      */
     public function getAddress();
     
