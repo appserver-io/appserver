@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\ApplicationServerApi\DatasourceService
+ * TechDivision\ApplicationServer\Api\DatasourceService
  *
  * NOTICE OF LICENSE
  *
