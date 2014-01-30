@@ -19,7 +19,8 @@ namespace TechDivision\ApplicationServer\InitialContext;
  *              Open Software License (OSL 3.0)
  * @author      Tim Wagner <tw@techdivision.com>
  */
-interface StorageInterface {
+interface StorageInterface
+{
 
     /**
      * "Magic" tag for class-related entries
@@ -59,7 +60,7 @@ interface StorageInterface {
      * @return void
      * @api
      */
-    public function set($entryIdentifier, $data, array $tags = array(), $lifetime = NULL);
+    public function set($entryIdentifier, $data, array $tags = array(), $lifetime = null);
 
     /**
      * Finds and returns data from the cache.

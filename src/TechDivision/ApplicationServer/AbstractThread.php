@@ -57,5 +57,4 @@ abstract class AbstractThread extends \Thread
      * @return mixed
      */
     abstract public function main();
-
 }

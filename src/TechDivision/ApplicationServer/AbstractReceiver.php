@@ -104,14 +104,15 @@ abstract class AbstractReceiver implements ReceiverInterface
      *
      * @return string The resource class name
      */
-    protected abstract function getResourceClass();
+    abstract protected function getResourceClass();
 
     /**
      * Sets up the specific socket instance
      *
      * @return void
      */
-    protected function setupSocket() {
+    protected function setupSocket()
+    {
         // set address and port
         $this->getSocket()
             ->setAddress($this->getAddress())
@@ -144,10 +145,16 @@ abstract class AbstractReceiver implements ReceiverInterface
 
             // log a message that the container has been started successfully
             $this->getInitialContext()->getSystemLogger()->info(
-                sprintf('Successfully started receiver for container %s, listening on IP: %s Port: %s Number of workers started: %s, Workertype: %s',
-                $this->getContainer()->getContainerNode()->getName(), $this->getAddress(), $this->getPort(),
-                $this->getWorkerNumber(), $this->getWorkerType()));
-
+                sprintf(
+                    'Successfully started receiver for container %s, ' .
+                    'listening on IP: %s Port: %s Number of workers started: %s, Workertype: %s',
+                    $this->getContainer()->getContainerNode()->getName(),
+                    $this->getAddress(),
+                    $this->getPort(),
+                    $this->getWorkerNumber(),
+                    $this->getWorkerType()
+                )
+            );
 
             // collect garbage and free memory/sockets
             while (true) {
@@ -172,7 +179,7 @@ abstract class AbstractReceiver implements ReceiverInterface
             
             // wait till all workers have been finished
             foreach ($this->worker as $worker) {
-                $worker->join(); 
+                $worker->join();
             }
             
         } catch (\Exception $e) {

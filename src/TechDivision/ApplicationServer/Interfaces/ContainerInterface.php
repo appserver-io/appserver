@@ -19,7 +19,8 @@ namespace TechDivision\ApplicationServer\Interfaces;
  *              Open Software License (OSL 3.0)
  * @author      Tim Wagner <tw@techdivision.com>
  */
-interface ContainerInterface {
+interface ContainerInterface
+{
     
     /**
      * Returns the receiver instance ready to be started.

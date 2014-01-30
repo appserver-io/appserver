@@ -34,14 +34,18 @@ class ContextKeys
      *
      * @return void
      */
-    private final function __construct()
-    {}
+    final private function __construct()
+    {
+
+    }
 
     /**
      * This is a utility, so don't allow direct instanciation
      *
      * @return void
      */
-    private final function __clone()
-    {}
+    final private function __clone()
+    {
+
+    }
 }

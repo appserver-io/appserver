@@ -1,30 +1,37 @@
 <?php
-
 /**
- * TechDivision\ApplicationServer\AbstractContainer
+ * TechDivision\ApplicationServer\AbstractApplication
  *
- * NOTICE OF LICENSE
+ * PHP version 5
  *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
+ * @category  appserver.io
+ * @package   TechDivision_ApplicationServer
+ * @author    Tim Wagner <tw@techdivision.com>
+ * @author    Johann Zelger <jz@techdivision.com>
+ * @copyright 2013 TechDivision GmbH <info@techdivision.com>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      http://www.appserver.io
  */
+
 namespace TechDivision\ApplicationServer;
 
 use TechDivision\ApplicationServer\InitialContext;
 use TechDivision\ApplicationServer\Interfaces\ApplicationInterface;
+use TechDivision\ApplicationServer\Api\ServiceInterface;
 use JMS\Serializer\Context;
 use TechDivision\ApplicationServer\Api\Node\AppNode;
 use TechDivision\ApplicationServer\Api\Node\ContainerNode;
 
 /**
+ * Implements abstract application functionality
  *
- * @package TechDivision\ApplicationServer
- * @copyright Copyright (c) 2013 <info@techdivision.com> - TechDivision GmbH
- * @license http://opensource.org/licenses/osl-3.0.php
- *          Open Software License (OSL 3.0)
- * @author Tim Wagner <tw@techdivision.com>
- * @author Johann Zelger <jz@techdivision.com>
+ * @category  appserver.io
+ * @package   TechDivision_ApplicationServer
+ * @author    Tim Wagner <tw@techdivision.com>
+ * @author    Johann Zelger <jz@techdivision.com>
+ * @copyright 2013 TechDivision GmbH <info@techdivision.com>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      http://www.appserver.io
  */
 abstract class AbstractApplication implements ApplicationInterface
 {
@@ -74,12 +81,10 @@ abstract class AbstractApplication implements ApplicationInterface
     /**
      * Passes the application name That has to be the class namespace.
      *
-     * @param TechDivision\ApplicationServer\InitialContext $initialContext
-     *            The initial context instance
-     * @param TechDivision\ApplicationServer\Api\Node\ContainerNode $containerNode
-     *            The container node the deployment is for
-     * @param string $name
-     *            The application name
+     * @param InitialContext $initialContext The initial context instance
+     * @param ContainerNode  $containerNode  The container node the deployment is for
+     * @param string         $name           The application name
+     *
      * @return void
      */
     public function __construct($initialContext, $containerNode, $name)
@@ -92,7 +97,8 @@ abstract class AbstractApplication implements ApplicationInterface
     /**
      * (non-PHPdoc)
      *
-     * @see \TechDivision\ApplicationServer\Interfaces\ApplicationInterface::connect()
+     * @return AbstractApplication
+     * @see ApplicationInterface::connect()
      */
     public function connect()
     {
@@ -132,8 +138,8 @@ abstract class AbstractApplication implements ApplicationInterface
     /**
      * Set's the app node the application is belonging to
      *
-     * @param \TechDivision\ApplicationServer\Api\Node\AppNode $appNode
-     *            The app node the application is belonging to
+     * @param AppNode $appNode The app node the application is belonging to
+     *
      * @return void
      */
     public function setAppNode($appNode)
@@ -142,10 +148,9 @@ abstract class AbstractApplication implements ApplicationInterface
     }
 
     /**
-     * Return'sthe app node the application is belonging to.
+     * Return's the app node the application is belonging to.
      *
-     * @return \TechDivision\ApplicationServer\Api\Node\AppNode
-     *          The app node the application is belonging to
+     * @return AppNode The app node the application is belonging to
      */
     public function getAppNode()
     {
@@ -155,8 +160,8 @@ abstract class AbstractApplication implements ApplicationInterface
     /**
      * Set's the app node the application is belonging to
      *
-     * @param \TechDivision\ApplicationServer\Api\Node\AppNode $appNode
-     *            The app node the application is belonging to
+     * @param ContainerNode $containerNode The container node the application is belonging to
+     *
      * @return void
      */
     public function setContainerNode($containerNode)
@@ -165,9 +170,9 @@ abstract class AbstractApplication implements ApplicationInterface
     }
 
     /**
-     * Return'sthe app node the application is belonging to.
+     * Return's the app node the application is belonging to.
      *
-     * @return string The app node the application is belonging to
+     * @return ContainerNode The app node the application is belonging to
      */
     public function getContainerNode()
     {
@@ -175,9 +180,7 @@ abstract class AbstractApplication implements ApplicationInterface
     }
 
     /**
-     * Returns the application name (that has to be the class namespace,
-     * e.
-     * g. TechDivision\Example).
+     * Returns the application name (that has to be the class namespace, e.g. TechDivision\Example)
      *
      * @return string The application name
      */
@@ -189,17 +192,23 @@ abstract class AbstractApplication implements ApplicationInterface
     /**
      * (non-PHPdoc)
      *
-     * @see \TechDivision\ApplicationServer\Api\ContainerService::getBaseDirectory()
+     * @param string $directoryToAppend The directory to append to the base directory
+     *
+     * @return string The base directory with appended dir if given
+     * @see ContainerService::getBaseDirectory()
      */
     public function getBaseDirectory($directoryToAppend = null)
     {
-        return $this->newService('TechDivision\ApplicationServer\Api\ContainerService')->getBaseDirectory($directoryToAppend);
+        return $this
+            ->newService('TechDivision\ApplicationServer\Api\ContainerService')
+            ->getBaseDirectory($directoryToAppend);
     }
 
     /**
      * (non-PHPdoc)
      *
-     * @see \TechDivision\ApplicationServer\Api\ApplicationService::getWebappPath()
+     * @return string The path to the webapps folder
+     * @see ApplicationService::getWebappPath()
      */
     public function getWebappPath()
     {
@@ -209,7 +218,8 @@ abstract class AbstractApplication implements ApplicationInterface
     /**
      * (non-PHPdoc)
      *
-     * @see \TechDivision\ApplicationServer\Api\ContainerService::getAppBase()
+     * @return string The app base
+     * @see ContainerService::getAppBase()
      */
     public function getAppBase()
     {
@@ -219,7 +229,8 @@ abstract class AbstractApplication implements ApplicationInterface
     /**
      * (non-PHPdoc)
      *
-     * @see \TechDivision\ApplicationServer\Api\ApplicationService::getServerSoftware()
+     * @return string The servers software definition
+     * @seeApplicationService::getServerSoftware()
      */
     public function getServerSoftware()
     {
@@ -229,7 +240,8 @@ abstract class AbstractApplication implements ApplicationInterface
     /**
      * (non-PHPdoc)
      *
-     * @see \TechDivision\ApplicationServer\Api\ApplicationService::getServerAdmin()
+     * @return string The servers admin definition
+     * @see ApplicationService::getServerAdmin()
      */
     public function getServerAdmin()
     {
@@ -239,7 +251,11 @@ abstract class AbstractApplication implements ApplicationInterface
     /**
      * (non-PHPdoc)
      *
-     * @see \TechDivision\ApplicationServer\InitialContext::newInstance()
+     * @param string $className The fully qualified class name to return the instance for
+     * @param array  $args      Arguments to pass to the constructor of the instance
+     *
+     * @return object The instance itself
+     * @see InitialContext::newInstance()
      */
     public function newInstance($className, array $args = array())
     {
@@ -249,7 +265,10 @@ abstract class AbstractApplication implements ApplicationInterface
     /**
      * (non-PHPdoc)
      *
-     * @see \TechDivision\ApplicationServer\InitialContext::newService()
+     * @param string $className The API service class name to return the instance for
+     *
+     * @return ServiceInterface The service instance
+     * @see InitialContext::newService()
      */
     public function newService($className)
     {
@@ -259,7 +278,7 @@ abstract class AbstractApplication implements ApplicationInterface
     /**
      * Returns the initial context instance.
      *
-     * @return \TechDivision\ApplicationServer\InitialContext The initial Context
+     * @return InitialContext The initial Context
      */
     public function getInitialContext()
     {
@@ -279,8 +298,8 @@ abstract class AbstractApplication implements ApplicationInterface
     /**
      * Checks if the application is the VHost for the passed server name.
      *
-     * @param string $serverName
-     *            The server name to check the application being a VHost of
+     * @param string $serverName The server name to check the application being a VHost of
+     *
      * @return boolean TRUE if the application is the VHost, else FALSE
      */
     public function isVhostOf($serverName)
@@ -305,7 +324,8 @@ abstract class AbstractApplication implements ApplicationInterface
     /**
      * (non-PHPdoc)
      *
-     * @see \TechDivision\ApplicationServer\Interfaces\ApplicationInterface::newAppNode()
+     * @return AppNode The node representation of the application
+     * @see ApplicationInterface::newAppNode()
      */
     public function newAppNode()
     {

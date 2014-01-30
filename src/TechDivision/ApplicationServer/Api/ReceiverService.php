@@ -52,8 +52,8 @@ class ReceiverService extends AbstractService
     public function load($uuid)
     {
         $receivers = $this->findAll();
-    	if (array_key_exists($uuid, $receivers)) {
-    	    return $receivers[$uuid];
-    	}
+        if (array_key_exists($uuid, $receivers)) {
+            return $receivers[$uuid];
+        }
     }
 }

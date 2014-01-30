@@ -106,7 +106,7 @@ class AppService extends AbstractService
     {
         $systemConfiguration = $this->getSystemConfiguration();
         $systemConfiguration->attachApp($appNode);
-        $this->setSystemConfiguration($systemConfiguration);        
+        $this->setSystemConfiguration($systemConfiguration);
     }
     
     /**

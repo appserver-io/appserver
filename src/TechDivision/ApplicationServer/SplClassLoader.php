@@ -88,7 +88,10 @@ class SplClassLoader extends \Stackable
      *
      * @see \Stackable::run()
      */
-    public function run() {}
+    public function run()
+    {
+
+    }
 
     /**
      * Gets the namespace seperator used by classes in the namespace of this class loader.
@@ -108,8 +111,10 @@ class SplClassLoader extends \Stackable
     public function getIncludePath()
     {
         $includePath = explode(PATH_SEPARATOR, get_include_path());
-        foreach($includePath as $key => $val) {
-            if ($val === '') unset($includePath[$key]);
+        foreach ($includePath as $key => $val) {
+            if ($val === '') {
+                unset($includePath[$key]);
+            }
         }
         return $includePath;
     }
@@ -168,8 +173,8 @@ class SplClassLoader extends \Stackable
         
         // check if the requested class name has already been loaded
         if (isset($classMap[$requestedClassName]) !== false) {
-			require $classMap[$requestedClassName];
-			return true;
+            require $classMap[$requestedClassName];
+            return true;
         }
         
         // concatenate namespace and separator
@@ -192,17 +197,17 @@ class SplClassLoader extends \Stackable
             $fileName .= $className . $this->fileExtension;
             
             // try to load the requested class
-			foreach ($this->getIncludePath() as $includePath) {
-			    $toRequire = $includePath . DIRECTORY_SEPARATOR . $fileName;
-				if (file_exists($toRequire)) {
-				    // add the found file to the class map
-				    $classMap[$requestedClassName] = $toRequire;
-				    $this->getInitialContext()->setAttribute(self::CLASS_MAP, $classMap);
-				    // require the file and return TRUE
-				    require $toRequire;
-				    return true;
-				}
-			}
+            foreach ($this->getIncludePath() as $includePath) {
+                $toRequire = $includePath . DIRECTORY_SEPARATOR . $fileName;
+                if (file_exists($toRequire)) {
+                    // add the found file to the class map
+                    $classMap[$requestedClassName] = $toRequire;
+                    $this->getInitialContext()->setAttribute(self::CLASS_MAP, $classMap);
+                    // require the file and return TRUE
+                    require $toRequire;
+                    return true;
+                }
+            }
         }
         
         // return FALSE, because the class loader can't require the requested class name

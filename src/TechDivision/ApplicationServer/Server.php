@@ -304,10 +304,15 @@ class Server
     {
         
         // log that the server will be started now
-        $this->getSystemLogger()->info(sprintf('Server successfully started in basedirectory %s ', $this->getSystemConfiguration()
-            ->getBaseDirectory()
-            ->getNodeValue()
-            ->__toString()));
+        $this->getSystemLogger()->info(
+            sprintf(
+                'Server successfully started in basedirectory %s ',
+                $this->getSystemConfiguration()
+                    ->getBaseDirectory()
+                    ->getNodeValue()
+                    ->__toString()
+            )
+        );
         
         // start the container threads
         foreach ($this->getThreads() as $thread) {

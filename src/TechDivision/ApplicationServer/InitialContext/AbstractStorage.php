@@ -84,7 +84,7 @@ abstract class AbstractStorage implements StorageInterface
      *
      * @return void
      */
-    public abstract function init();
+    abstract public function init();
 
     /**
      * Returns the storage node configuration.

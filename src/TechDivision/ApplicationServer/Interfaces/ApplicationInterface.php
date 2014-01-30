@@ -87,5 +87,4 @@ interface ApplicationInterface
      *          The app node the application is belonging to
      */
     public function getAppNode();
-
 }

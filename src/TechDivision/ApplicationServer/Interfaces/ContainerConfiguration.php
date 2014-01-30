@@ -19,7 +19,8 @@ namespace TechDivision\ApplicationServer\Interfaces;
  *              Open Software License (OSL 3.0)
  * @author      Tim Wagner <tw@techdivision.com>
  */
-interface ContainerConfiguration {
+interface ContainerConfiguration
+{
     
     /**
      * Checks if the passed configuration is equal. If yes, the method

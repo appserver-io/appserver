@@ -65,7 +65,7 @@ class StackableStorage extends AbstractStorage
      *
      * @see \TechDivision\ApplicationServer\InitialContext\StorageInterface::set()
      */
-    public function set($entryIdentifier, $data, array $tags = array(), $lifetime = NULL)
+    public function set($entryIdentifier, $data, array $tags = array(), $lifetime = null)
     {
         // create a unique cache key and add the passed value to the storage
         $cacheKey = $this->getIdentifier() . $entryIdentifier;
