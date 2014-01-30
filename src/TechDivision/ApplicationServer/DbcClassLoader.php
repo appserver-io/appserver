@@ -79,11 +79,23 @@ class DbcClassLoader extends SplClassLoader
         // We need the cacheing configuration
         $cacheConfig = $this->config->getConfig('cache');
 
-        // Check if there are files in the cache
+        // Check if there are files in the cache.
+        // If not we will fill the cache, if there are we will check if there have been any changes to the project dirs
         $fileIterator = new \FilesystemIterator($cacheConfig['dir'], \FilesystemIterator::SKIP_DOTS);
         if (iterator_count($fileIterator) <= 2 || $this->config->getConfig('environment') === 'development') {
 
+            // Fill the cache
             $this->fillCache();
+
+        } else {
+
+            // We need a standalone structure map to check for its version
+            $structureMap = new StructureMap($this->config->getConfig('project-dirs'), $this->config);
+
+            if (!$structureMap->isRecent()) {
+
+                $this->refillCache($cacheConfig, $structureMap);
+            }
         }
 
         // We need our autoloader to delegate to.
@@ -94,13 +106,48 @@ class DbcClassLoader extends SplClassLoader
     /**
      * Will initiate the creation of a structure map and the parsing process of all found structures
      *
-     * @return void
+     * @return bool
      */
     protected function fillCache()
     {
         // We will need the structure map to initially parse all files
         $structureMap = new StructureMap($this->config->getConfig('project-dirs'), $this->config);
 
+        // Lets create the definitions
+        return $this->createDefinitions($structureMap);
+    }
+
+    /**
+     * We will refill the cache dir by emptying it and filling it again
+     *
+     * @param array        $cacheConfig
+     * @param StructureMap $structureMap
+     *
+     * @return bool
+     */
+    protected function refillCache(array $cacheConfig, StructureMap $structureMap)
+    {
+        // Lets clear the cache so we can fill it anew
+        foreach (new \DirectoryIterator($cacheConfig['dir']) as $fileInfo) {
+
+            if (!$fileInfo->isDot()) {
+
+                // Unlink the file
+                unlink($fileInfo->getPathname());
+            }
+        }
+
+        // Lets create the definitions anew
+        return $this->createDefinitions($structureMap);
+    }
+
+    /**
+     * @param StructureMap $structureMap
+     *
+     * @return bool
+     */
+    protected function createDefinitions(StructureMap $structureMap)
+    {
         // Get all the structures we found
         $structures = $structureMap->getEntries(true);
 
@@ -135,6 +182,9 @@ class DbcClassLoader extends SplClassLoader
             // Create the new file
             $generator->create($structure);
         }
+
+        // Still here? Sounds about right
+        return true;
     }
 
     /**
