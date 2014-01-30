@@ -33,7 +33,7 @@ class VhostService extends AbstractService
      */
     public function findAll()
     {
-        $vhostNodes = array();       
+        $vhostNodes = array();
         foreach ($this->getSystemConfiguration()->getContainers() as $containerNode) {
             foreach ($containerNode->getHost()->getVhosts() as $vhostNode) {
                 $vhostNodes[$vhostNode->getPrimaryKey()] = $vhostNode;
@@ -51,5 +51,7 @@ class VhostService extends AbstractService
      * @see \TechDivision\ApplicationServer\Api\ServiceInterface::load()
      */
     public function load($uuid)
-    {}
+    {
+
+    }
 }

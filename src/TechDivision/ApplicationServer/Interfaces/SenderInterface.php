@@ -19,7 +19,8 @@ namespace TechDivision\ApplicationServer\Interfaces;
  *              Open Software License (OSL 3.0)
  * @author      Tim Wagner <tw@techdivision.com>
  */
-interface SenderInterface {
+interface SenderInterface
+{
     
     /**
      * Sends the passed data to the receiver (the client by default).

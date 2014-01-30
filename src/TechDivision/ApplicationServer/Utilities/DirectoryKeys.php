@@ -59,13 +59,17 @@ class DirectoryKeys
      * @return void
      */
     private function __construct()
-    {}
+    {
+
+    }
 
     /**
      * This is a utility class, so protect it agains cloning.
      */
     private function __clone()
-    {}
+    {
+
+    }
 
     /**
      * Returns the application server's directory structure,

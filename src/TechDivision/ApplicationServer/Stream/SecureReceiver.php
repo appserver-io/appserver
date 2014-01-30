@@ -28,14 +28,14 @@ class SecureReceiver extends AbstractReceiver
      *
      * @return void
      */
-    protected function setupSocket() {
+    protected function setupSocket()
+    {
         // first call parent setup routine
         parent::setupSocket();
         // set secure receiver params
         $this->getSocket()
             ->setCertPath($this->getCertPath())
             ->setCertPassphrase($this->getCertPassphrase());
-
     }
 
     /**

@@ -30,5 +30,8 @@ class GenericStackable extends \Stackable
      *
      * @see \Stackable::run()
      */
-    public function run() {}
+    public function run()
+    {
+
+    }
 }

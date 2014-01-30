@@ -188,7 +188,7 @@ abstract class AbstractNode implements NodeInterface
 
             return $this->{$reflectionProperty->getName()} = $newNode;
 
-        } elseif (class_exists($nodeType))  {
+        } elseif (class_exists($nodeType)) {
 
             // return new $nodeType($configuration->getChild($configurationNodeName), $this->getUuid());
 
@@ -265,7 +265,7 @@ abstract class AbstractNode implements NodeInterface
 
         if (class_exists($nodeType) && $this->isValueClass($nodeType)) {
             return $configuration->setValue($this->{$reflectionProperty->getName()}->getValue());
-        } elseif (class_exists($nodeType))  {
+        } elseif (class_exists($nodeType)) {
             return $configuration->addChild($this->{$reflectionProperty->getName()}->exportToConfiguration());
         }
 

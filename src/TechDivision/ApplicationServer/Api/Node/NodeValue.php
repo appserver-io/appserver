@@ -69,6 +69,6 @@ class NodeValue implements ValueInterface
      */
     public function __toString()
     {
-       return $this->getValue();
+        return $this->getValue();
     }
 }

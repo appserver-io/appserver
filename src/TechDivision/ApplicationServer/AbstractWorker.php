@@ -71,7 +71,7 @@ abstract class AbstractWorker extends AbstractContextThread
      *
      * @return string.
      */
-    protected abstract function getResourceClass();
+    abstract protected function getResourceClass();
     
     /**
      * Returns the container instance.

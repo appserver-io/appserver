@@ -17,7 +17,8 @@ require_once 'PHP/iSecurity/SecurityRandomizer.php';
 /**
  * A utility class for various algorithms.
  */
-class Algorithms {
+class Algorithms
+{
 
     /**
      * Generates a universally unique identifier (UUID) according to RFC 4122.
@@ -26,12 +27,19 @@ class Algorithms {
      * @return string The universally unique id
      * @todo check for randomness, optionally generate type 1 and type 5 UUIDs, use php5-uuid extension if available
      */
-    static public function generateUUID() {
-        return sprintf( '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
-            mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff ),
-            mt_rand( 0, 0x0fff ) | 0x4000,
-            mt_rand( 0, 0x3fff ) | 0x8000,
-            mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff ) );
+    public static function generateUUID()
+    {
+        return sprintf(
+            '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0x0fff) | 0x4000,
+            mt_rand(0, 0x3fff) | 0x8000,
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff)
+        );
     }
 
     /**
@@ -40,7 +48,8 @@ class Algorithms {
      * @param integer $count Number of bytes to generate
      * @return string Random bytes
      */
-    static public function generateRandomBytes($count) {
+    public static function generateRandomBytes($count)
+    {
         return \SecurityRandomizer::getRandomBytes($count);
     }
 
@@ -50,7 +59,8 @@ class Algorithms {
      * @param integer $count Token length
      * @return string A random token
      */
-    static public function generateRandomToken($count) {
+    public static function generateRandomToken($count)
+    {
         return \SecurityRandomizer::getRandomToken($count);
     }
 
@@ -61,8 +71,8 @@ class Algorithms {
      * @param string $characters Allowed characters, defaults to alpha-numeric (a-zA-Z0-9)
      * @return string A random string
      */
-    static public function generateRandomString($count, $characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789') {
+    public static function generateRandomString($count, $characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789')
+    {
         return \SecurityRandomizer::getRandomString($count, $characters);
     }
-
 }

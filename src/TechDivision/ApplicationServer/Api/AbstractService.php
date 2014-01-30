@@ -36,7 +36,7 @@ abstract class AbstractService implements ServiceInterface
      *
      * @var string
      */
-    CONST NODE_TYPE = 'TechDivision\ApplicationServer\Api\Node\AppserverNode';
+    const NODE_TYPE = 'TechDivision\ApplicationServer\Api\Node\AppserverNode';
 
     /**
      * The initial context instance containing the system configuration.
