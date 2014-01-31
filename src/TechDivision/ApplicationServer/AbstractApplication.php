@@ -4,7 +4,7 @@
  *
  * PHP version 5
  *
- * @category  appserver.io
+ * @category  Appserver
  * @package   TechDivision_ApplicationServer
  * @author    Tim Wagner <tw@techdivision.com>
  * @author    Johann Zelger <jz@techdivision.com>
@@ -25,7 +25,7 @@ use TechDivision\ApplicationServer\Api\Node\ContainerNode;
 /**
  * Implements abstract application functionality
  *
- * @category  appserver.io
+ * @category  Appserver
  * @package   TechDivision_ApplicationServer
  * @author    Tim Wagner <tw@techdivision.com>
  * @author    Johann Zelger <jz@techdivision.com>

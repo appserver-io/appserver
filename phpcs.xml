@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<ruleset name="appserver.io">
+
+    <description>The appserver.io coding standard.</description>
+
+    <exclude-pattern type="relative">^/tests/*</exclude-pattern>
+    <exclude-pattern type="relative">^/doc/*</exclude-pattern>
+
+    <!-- Mainly use PSR2 coding standard -->
+    <rule ref="PSR2"/>
+
+    <!-- Include commenting sniffs from PEAR standard -->
+    <rule ref="PEAR.Commenting.FileComment"/>
+    <rule ref="PEAR.Commenting.ClassComment"/>
+    <rule ref="PEAR.Commenting.FunctionComment"/>
+    <rule ref="PEAR.Commenting.InlineComment"/>
+
+    <!-- Include commenting sniffs from Generic -->
+    <rule ref="Generic.Commenting.Fixme"/>
+    <rule ref="Generic.Commenting.Todo"/>
+
+</ruleset>
