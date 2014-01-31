@@ -1,25 +1,30 @@
 <?php
-
 /**
  * TechDivision\ApplicationServer\Configuration
  *
- * NOTICE OF LICENSE
+ * PHP version 5
  *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
+ * @category  Appserver
+ * @package   TechDivision_ApplicationServer
+ * @author    Tim Wagner <tw@techdivision.com>
+ * @copyright 2013 TechDivision GmbH <info@techdivision.com>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      http://www.appserver.io
  */
+
 namespace TechDivision\ApplicationServer;
 
 use TechDivision\ApplicationServer\Interfaces\ContainerConfiguration;
 
 /**
+ * Class Configuration
  *
- * @package TechDivision\ApplicationServer
- * @copyright Copyright (c) 2010 <info@techdivision.com> - TechDivision GmbH
- * @license http://opensource.org/licenses/osl-3.0.php
- *          Open Software License (OSL 3.0)
- * @author Tim Wagner <tw@techdivision.com>
+ * @category  Appserver
+ * @package   TechDivision_ApplicationServer
+ * @author    Tim Wagner <tw@techdivision.com>
+ * @copyright 2013 TechDivision GmbH <info@techdivision.com>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      http://www.appserver.io
  */
 class Configuration implements ContainerConfiguration
 {
@@ -63,8 +68,8 @@ class Configuration implements ContainerConfiguration
      * Initializes the configuration with the node name of the
      * node in the XML structure.
      *
-     * @param string $nodeName
-     *            The configuration element's node name
+     * @param string $nodeName The configuration element's node name
+     *
      * @return void
      */
     public function __construct($nodeName = null)
@@ -75,8 +80,8 @@ class Configuration implements ContainerConfiguration
     /**
      * Set's the configuration element's node name.
      *
-     * @param string $nodeName
-     *            The node name
+     * @param string $nodeName The node name
+     *
      * @return \TechDivision\ApplicationServer\Configuration The instance itself
      */
     public function setNodeName($nodeName)
@@ -95,8 +100,12 @@ class Configuration implements ContainerConfiguration
     }
 
     /**
+     * Checks if the passed configuration is equal. If yes, the method
+     * returns TRUE, if not FALSE.
      *
-     * @see \TechDivision\ApplicationServer\Interfaces\ContainerConfiguration::equals()
+     * @param \TechDivision\ApplicationServer\Interfaces\ContainerConfiguration $configuration The configuration to compare to
+     *
+     * @return boolean TRUE if the configurations are equal, else FALSE
      */
     public function equals($configuration)
     {
@@ -106,8 +115,8 @@ class Configuration implements ContainerConfiguration
     /**
      * Adds a new child configuration.
      *
-     * @param Configuration $configuration
-     *            The child configuration itself
+     * @param Configuration $configuration The child configuration itself
+     *
      * @return \TechDivision\ApplicationServer\Configuration The configuration instance
      */
     public function addChild(Configuration $configuration)
@@ -120,10 +129,9 @@ class Configuration implements ContainerConfiguration
      * Creates a new child configuration node with the passed name and value
      * and adds it as child to this node.
      *
-     * @param string $nodeName
-     *            The child's node name
-     * @param string $value
-     *            The child's node value
+     * @param string $nodeName The child's node name
+     * @param string $value    The child's node value
+     *
      * @return void
      */
     public function addChildWithNameAndValue($nodeName, $value)
@@ -138,8 +146,8 @@ class Configuration implements ContainerConfiguration
      * Initializes the configuration with the XML information found
      * in the file with the passed relative or absolute path.
      *
-     * @param string $file
-     *            The path to the file
+     * @param string $file The path to the file
+     *
      * @return \TechDivision\ApplicationServer\Configuration The initialized configuration
      */
     public function initFromFile($file)
@@ -152,8 +160,8 @@ class Configuration implements ContainerConfiguration
      * Initializes the configuration with the XML information found
      * in the passed DOMDocument.
      *
-     * @param \DOMDocument $domDocument
-     *            The DOMDocument with XML information
+     * @param \DOMDocument $domDocument The DOMDocument with XML information
+     *
      * @return \TechDivision\ApplicationServer\Configuration The initialized configuration
      */
     public function initFromDomDocument(\DOMDocument $domDocument)
@@ -166,10 +174,9 @@ class Configuration implements ContainerConfiguration
      * Recursively initializes the configuration instance with the data from the
      * passed SimpleXMLElement.
      *
-     * @param \SimpleXMLElement $node
-     *            The node to load the data from
-     * @param string $xpath
-     *            The XPath expression of the XML node to load the data from
+     * @param \SimpleXMLElement $node  The node to load the data from
+     * @param string            $xpath The XPath expression of the XML node to load the data from
+     *
      * @return \TechDivision\ApplicationServer\Configuration The node instance itself
      */
     public function init($node, $xpath = '/')
@@ -209,8 +216,8 @@ class Configuration implements ContainerConfiguration
     /**
      * Returns the child configuration nodes with the passed type.
      *
-     * @param string $name
-     *            The name of the configuration to return
+     * @param string $path The path of the configuration to return
+     *
      * @return array The requested child configuration nodes
      */
     public function getChilds($path)
@@ -240,8 +247,8 @@ class Configuration implements ContainerConfiguration
     /**
      * Returns the child configuration with the passed type.
      *
-     * @param string $name
-     *            The name of the configuration to return
+     * @param string $path The path of the configuration to return
+     *
      * @return \TechDivision\ApplicationServer\Configuration The requested configuration
      */
     public function getChild($path)
@@ -255,8 +262,8 @@ class Configuration implements ContainerConfiguration
      * Removes the children of the configuration with passed path and
      * returns the parent configuration.
      *
-     * @param string $name
-     *            The name of the configuration to remove the children for
+     * @param string $path The path of the configuration to remove the children for
+     *
      * @return \TechDivision\ApplicationServer\Configuration The instance the childs has been removed
      * @see \TechDivision\ApplicationServer\Configuration::getChild($path)
      * @see \TechDivision\ApplicationServer\Configuration::getChilds($path)
@@ -287,7 +294,9 @@ class Configuration implements ContainerConfiguration
      * Replaces actual children with the passed array. If children
      * already exists they will be lost.
      *
-     * @param array $data The array with the children to set
+     * @param array $children The array with the children to set
+     *
+     * @return void
      */
     public function setChildren(array $children)
     {
@@ -312,10 +321,10 @@ class Configuration implements ContainerConfiguration
     /**
      * Adds the passed configuration value.
      *
-     * @param string $key
-     *            Name of the configuration value
-     * @param mixed $value
-     *            The configuration value
+     * @param string $key   Name of the configuration value
+     * @param mixed  $value The configuration value
+     *
+     * @return void
      */
     public function setData($key, $value)
     {
@@ -325,8 +334,8 @@ class Configuration implements ContainerConfiguration
     /**
      * Returns the configuration value with the passed name.
      *
-     * @param string $key
-     *            The name of the requested configuration value.
+     * @param string $key The name of the requested configuration value.
+     *
      * @return mixed The configuration value itself
      */
     public function getData($key)
@@ -341,8 +350,10 @@ class Configuration implements ContainerConfiguration
      * node. If the attribute already exists it will be
      * overwritten by default.
      *
-     * @param array $data The data with the attributes to append
+     * @param array   $data      The data with the attributes to append
      * @param boolean $overwrite TRUE if the attribute should be overwritten, else FALSE
+     *
+     * @return void
      */
     public function appendData(array $data, $overwrite = true)
     {
@@ -356,6 +367,8 @@ class Configuration implements ContainerConfiguration
      * already exists they will be lost.
      *
      * @param array $data The array with the key value attribute pairs
+     *
+     * @return void
      */
     public function setAllData($data)
     {
@@ -375,19 +388,16 @@ class Configuration implements ContainerConfiguration
     /**
      * Wrapper method for getter/setter methods.
      *
-     * @param string $method
-     *            The called method name
-     * @param array $args
-     *            The methods arguments
+     * @param string $method The called method name
+     * @param array  $args   The methods arguments
+     *
      * @return mixed The value if a getter has been invoked
      * @throws \Exception Is thrown if nor a getter/setter has been invoked
      */
     public function __call($method, $args)
     {
-
         // lowercase the first character of the member
         $key = lcfirst(substr($method, 3));
-
         // check if a getter/setter has been called
         switch (substr($method, 0, 3)) {
             case 'get':
@@ -407,11 +417,10 @@ class Configuration implements ContainerConfiguration
     }
 
     /**
-     * Sets the configuration node's value e.
-     * g. <node>VALUE</node>.
+     * Sets the configuration node's value e.g. <node>VALUE</node>.
      *
-     * @param string $value
-     *            The node's value
+     * @param string $value The node's value
+     *
      * @return void
      */
     public function setValue($value)
@@ -441,8 +450,11 @@ class Configuration implements ContainerConfiguration
     }
 
     /**
-     * Merge the
-     * @param Configuration $configuration
+     * Merge the configuration
+     *
+     * @param \TechDivision\ApplicationServer\Configuration $configuration A configuration to merge
+     *
+     * @return \TechDivision\ApplicationServer\Configuration
      */
     public function merge(Configuration $configuration)
     {
@@ -481,6 +493,7 @@ class Configuration implements ContainerConfiguration
      * Returns TRUE if the node signatures are equals, else FALSE
      *
      * @param \TechDivision\ApplicationServer\Configuration $configuration The configuration node to check the signature
+     *
      * @return boolean TRUE if the signature of the passed node equals the signature of this instance, else FALSE
      */
     public function hasSameSignature(Configuration $configuration)
@@ -493,6 +506,7 @@ class Configuration implements ContainerConfiguration
      * file with the passed name.
      *
      * @param string $filename The filename to save the configuration node to
+     *
      * @return void
      */
     public function save($filename)
@@ -503,6 +517,8 @@ class Configuration implements ContainerConfiguration
     /**
      * Creates and returns a DOM document by recursively parsing
      * the configuration node and it's childs.
+     *
+     * @param string $namespaceURI The dom document namespace
      *
      * @return \DOMDocument The configuration node as DOM document
      */
@@ -517,6 +533,7 @@ class Configuration implements ContainerConfiguration
      * Set's the filename of the schema file used for validation.
      *
      * @param string $schemaFile Filename of the schema for validation of the configuration node
+     *
      * @return void
      */
     public function setSchemaFile($schemaFile)
@@ -537,8 +554,9 @@ class Configuration implements ContainerConfiguration
     /**
      * Recursively creates and returns a DOM element of this configuration node.
      *
-     * @param \DOMDocument $domDocument The DOM document necessary to create a \DOMElement instance
-     * @param string $namespaceURI The namespace URI to use
+     * @param \DOMDocument $domDocument  The DOM document necessary to create a \DOMElement instance
+     * @param string       $namespaceURI The namespace URI to use
+     *
      * @return \DOMElement The initialized DOM element
      */
     public function toDomElement(\DOMDocument $domDocument, $namespaceURI = null)

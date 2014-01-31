@@ -2,12 +2,16 @@
 /**
  * TechDivision\ApplicationServer\DbcClassLoader
  *
- * NOTICE OF LICENSE
+ * PHP version 5
  *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
+ * @category  Appserver
+ * @package   TechDivision_ApplicationServer
+ * @author    Bernhard Wick <b.wick@techdivision.com>
+ * @copyright 2013 TechDivision GmbH <info@techdivision.com>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      http://www.appserver.io
  */
+
 namespace TechDivision\ApplicationServer;
 
 use TechDivision\PBC\CacheMap;
@@ -25,27 +29,28 @@ require '/opt/appserver/app/code/vendor/autoload.php';
  * This is needed as our multi-threaded environment would not allow any out-of-the-box code generation
  * in an on-the-fly manner.
  *
- * @package    TechDivision\ApplicationServer
- * @copyright  Copyright (c) 2013 <info@techdivision.com> - TechDivision GmbH
- * @license    http://opensource.org/licenses/osl-3.0.php
- *             Open Software License (OSL 3.0)
- * @author     Bernhard Wick <b.wick@techdivision.com>
+ * @category  Appserver
+ * @package   TechDivision_ApplicationServer
+ * @author    Bernhard Wick <b.wick@techdivision.com>
+ * @copyright 2013 TechDivision GmbH <info@techdivision.com>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      http://www.appserver.io
  */
 class DbcClassLoader extends SplClassLoader
 {
 
     /**
-     * @var AutoLoader  The original PBC Autoloader we will delegate to
+     * @var \TechDivision\PBC\AutoLoader  The original PBC Autoloader we will delegate to
      */
     protected $autoloader;
 
     /**
-     * @var Config  Will hold the PBC configuration
+     * @var \TechDivision\PBC\Config  Will hold the PBC configuration
      */
     protected $config;
 
     /**
-     * @var InitialContext  Will hold the initial context instance
+     * @var \TechDivision\ApplicationServer\InitialContext  Will hold the initial context instance
      */
     protected $initialContext;
 
@@ -66,7 +71,7 @@ class DbcClassLoader extends SplClassLoader
      * Will check if there is content in the cache directory.
      * If not we will parse anew.
      *
-     * @param InitialContext $initialContext Will give us the needed initial context
+     * @param \TechDivision\ApplicationServer\InitialContext $initialContext Will give us the needed initial context
      */
     public function __construct($initialContext)
     {
@@ -120,8 +125,8 @@ class DbcClassLoader extends SplClassLoader
     /**
      * We will refill the cache dir by emptying it and filling it again
      *
-     * @param array        $cacheConfig
-     * @param StructureMap $structureMap
+     * @param array                          $cacheConfig  The cache config as array
+     * @param \TechDivision\PBC\StructureMap $structureMap A structure map instance
      *
      * @return bool
      */
@@ -142,7 +147,9 @@ class DbcClassLoader extends SplClassLoader
     }
 
     /**
-     * @param StructureMap $structureMap
+     * Creates the definitions by given structure map
+     *
+     * @param \TechDivision\PBC\StructureMap $structureMap A structure map instance
      *
      * @return bool
      */

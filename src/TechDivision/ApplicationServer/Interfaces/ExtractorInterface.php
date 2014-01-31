@@ -1,24 +1,30 @@
 <?php
-
 /**
  * TechDivision\ApplicationServer\Interfaces\ExtractorInterface
  *
- * NOTICE OF LICENSE
+ * PHP version 5
  *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
+ * @category   Appserver
+ * @package    TechDivision_ApplicationServer
+ * @subpackage Interfaces
+ * @author     Johann Zelger <j.zelger@techdivision.com>
+ * @copyright  2013 TechDivision GmbH <info@techdivision.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link       http://www.appserver.io
  */
+
 namespace TechDivision\ApplicationServer\Interfaces;
 
 /**
  * An extractor interface
  *
- * @package TechDivision\ApplicationServer
- * @subpackage Extractors
- * @copyright 2013 TechDivision GmbH <info@techdivision.com>
- * @license Open Software License (OSL 3.0) http://opensource.org/licenses/osl-3.0.php
- * @author Johann Zelger <j.zelger@techdivision.com>
+ * @category   Appserver
+ * @package    TechDivision_ApplicationServer
+ * @subpackage Interfaces
+ * @author     Johann Zelger <j.zelger@techdivision.com>
+ * @copyright  2013 TechDivision GmbH <info@techdivision.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link       http://www.appserver.io
  */
 interface ExtractorInterface
 {
@@ -47,8 +53,8 @@ interface ExtractorInterface
      * into the deploy directory and prepares it for the next
      * restart by setting the apropriate flag.
      *
-     * @param \SplFileInfo $archive
-     *            The archive to be soaked
+     * @param \SplFileInfo $archive The archive to be soaked
+     *
      * @return void
      */
     public function soakArchive(\SplFileInfo $archive);
@@ -57,8 +63,8 @@ interface ExtractorInterface
      * Extracts the passed archive to a folder with the
      * basename of the archive file.
      *
-     * @param \SplFileInfo $archive
-     *            The archive file to be deployed
+     * @param \SplFileInfo $archive The archive file to be deployed
+     *
      * @throws \Exception
      * @return void
      */
@@ -68,8 +74,8 @@ interface ExtractorInterface
      * Undeployes the passed archive after backing up
      * files that are NOT part of the archive.
      *
-     * @param \SplFileInfo $archive
-     *            The archive file to be undeployed
+     * @param \SplFileInfo $archive The archive file to be undeployed
+     *
      * @throws \Exception
      * @return void
      */
@@ -78,8 +84,8 @@ interface ExtractorInterface
     /**
      * Checks if archive is deployable.
      *
-     * @param $archive \SplFileInfo
-     *            The archive object
+     * @param \SplFileInfo $archive The archive object
+     *
      * @return bool
      */
     public function isDeployable(\SplFileInfo $archive);
@@ -87,8 +93,8 @@ interface ExtractorInterface
     /**
      * Check if archive is undeployable.
      *
-     * @param $archive \SplFileInfo
-     *            The archive object
+     * @param \SplFileInfo $archive The archive object
+     *
      * @return bool
      */
     public function isUndeployable(\SplFileInfo $archive);
@@ -96,17 +102,15 @@ interface ExtractorInterface
     /**
      * Flags the archive in specific states of extraction
      *
-     * @param \SplFileInfo $archive
-     *            The archive file
-     * @param string $flag
-     *            The flag to set
+     * @param \SplFileInfo $archive The archive file
+     * @param string       $flag    The flag to set
+     *
      * @return void
      */
     public function flagArchive(\SplFileInfo $archive, $flag);
 
     /**
-     * Returns the archive extension suffix e.
-     * g. .phar
+     * Returns the archive extension suffix e.g. .phar
      *
      * @return string the archive extension suffix
      */

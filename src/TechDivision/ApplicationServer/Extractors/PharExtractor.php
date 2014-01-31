@@ -1,28 +1,33 @@
 <?php
-
 /**
  * TechDivision\ApplicationServer\Extractors\PharExtractor
  *
- * NOTICE OF LICENSE
+ * PHP version 5
  *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
+ * @category   Appserver
+ * @package    TechDivision_ApplicationServer
+ * @subpackage Extractors
+ * @author     Johann Zelger <j.zelger@techdivision.com>
+ * @copyright  2013 TechDivision GmbH <info@techdivision.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link       http://www.appserver.io
  */
+
 namespace TechDivision\ApplicationServer\Extractors;
 
 use TechDivision\ApplicationServer\AbstractExtractor;
-use TechDivision\ApplicationServer\Api\Node\AppNode;
 use TechDivision\ApplicationServer\Interfaces\ExtractorInterface;
 
 /**
  * An extractor implementation for phar files
  *
- * @package TechDivision\ApplicationServer
+ * @category   Appserver
+ * @package    TechDivision_ApplicationServer
  * @subpackage Extractors
- * @copyright 2013 TechDivision GmbH <info@techdivision.com>
- * @license Open Software License (OSL 3.0) http://opensource.org/licenses/osl-3.0.php
- * @author Johann Zelger <j.zelger@techdivision.com>
+ * @author     Johann Zelger <j.zelger@techdivision.com>
+ * @copyright  2013 TechDivision GmbH <info@techdivision.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link       http://www.appserver.io
  */
 class PharExtractor extends AbstractExtractor
 {
@@ -37,7 +42,7 @@ class PharExtractor extends AbstractExtractor
     /**
      * (non-PHPdoc)
      *
-     * @see \TechDivision\ApplicationServer\AbstractExtractor::getExtensionSuffix()
+     * @return string the archive extension suffix
      */
     public function getExtensionSuffix()
     {
@@ -47,8 +52,8 @@ class PharExtractor extends AbstractExtractor
     /**
      * Returns the URL for the passed pathname.
      *
-     * @param string $pathname
-     *            The pathname to return the URL for
+     * @param string $fileName The pathname to return the URL for
+     *
      * @return string The URL itself
      */
     public function createUrl($fileName)
@@ -59,6 +64,9 @@ class PharExtractor extends AbstractExtractor
     /**
      * (non-PHPdoc)
      *
+     * @param \SplFileInfo $archive The archive file to be deployed
+     *
+     * @return void
      * @see \TechDivision\ApplicationServer\AbstractExtractor::deployArchive()
      */
     public function deployArchive(\SplFileInfo $archive)
@@ -114,8 +122,8 @@ class PharExtractor extends AbstractExtractor
      * Creates a backup of files that are NOT part of the
      * passed archive.
      *
-     * @param \SplFileInfo $archive
-     *            Backup files that are NOT part of this archive
+     * @param \SplFileInfo $archive Backup files that are NOT part of this archive
+     *
      * @return void
      */
     public function backupArchive(\SplFileInfo $archive)

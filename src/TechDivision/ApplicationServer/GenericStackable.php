@@ -1,13 +1,15 @@
 <?php
-
 /**
  * TechDivision\ApplicationServer\GenericStackable
  *
- * NOTICE OF LICENSE
+ * PHP version 5
  *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
+ * @category  Appserver
+ * @package   TechDivision_ApplicationServer
+ * @author    Tim Wagner <tw@techdivision.com>
+ * @copyright 2013 TechDivision GmbH <info@techdivision.com>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      http://www.appserver.io
  */
 
 namespace TechDivision\ApplicationServer;
@@ -16,11 +18,12 @@ namespace TechDivision\ApplicationServer;
  * A generic stackable implementation that can be used as data container
  * in a thread context.
  *
- * @package TechDivision\ServletContainer
- * @copyright Copyright (c) 2013 <info@techdivision.com> - TechDivision GmbH
- * @license http://opensource.org/licenses/osl-3.0.php
- *          Open Software License (OSL 3.0)
- * @author Tim Wagner <tw@techdivision.com>
+ * @category  Appserver
+ * @package   TechDivision_ApplicationServer
+ * @author    Tim Wagner <tw@techdivision.com>
+ * @copyright 2013 TechDivision GmbH <info@techdivision.com>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      http://www.appserver.io
  */
 class GenericStackable extends \Stackable
 {
@@ -28,6 +31,7 @@ class GenericStackable extends \Stackable
     /**
      * (non-PHPdoc)
      *
+     * @return void
      * @see \Stackable::run()
      */
     public function run()

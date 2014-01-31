@@ -1,24 +1,30 @@
 <?php
-
 /**
  * TechDivision\ApplicationServer\Api\Node\AppserverNode
  *
- * NOTICE OF LICENSE
+ * PHP version 5
  *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
+ * @category   Appserver
+ * @package    TechDivision_ApplicationServer
+ * @subpackage Api
+ * @author     Tim Wagner <tw@techdivision.com>
+ * @copyright  2013 TechDivision GmbH <info@techdivision.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link       http://www.appserver.io
  */
+
 namespace TechDivision\ApplicationServer\Api\Node;
 
 /**
  * DTO to transfer the application server's complete configuration.
  *
- * @package TechDivision\ApplicationServer
- * @copyright Copyright (c) 2013 <info@techdivision.com> - TechDivision GmbH
- * @license http://opensource.org/licenses/osl-3.0.php
- *          Open Software License (OSL 3.0)
- * @author Tim Wagner <tw@techdivision.com>
+ * @category   Appserver
+ * @package    TechDivision_ApplicationServer
+ * @subpackage Api
+ * @author     Tim Wagner <tw@techdivision.com>
+ * @copyright  2013 TechDivision GmbH <info@techdivision.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link       http://www.appserver.io
  */
 class AppserverNode extends AbstractNode
 {
@@ -68,8 +74,8 @@ class AppserverNode extends AbstractNode
     /**
      * Set's the passed base directory node.
      *
-     * @param \TechDivision\ApplicationServer\Api\Node\BaseDirectoryNode $baseDirectory
-     *            The base directory node to set
+     * @param \TechDivision\ApplicationServer\Api\Node\BaseDirectoryNode $baseDirectory The base directory node to set
+     *
      * @return void
      */
     public function setBaseDirectory($baseDirectory)
@@ -130,8 +136,8 @@ class AppserverNode extends AbstractNode
     /**
      * Attaches the passed app node.
      *
-     * @param AppNode $app
-     *            The app node to attach
+     * @param \TechDivision\ApplicationServer\Api\Node\AppNode $app The app node to attach
+     *
      * @return void
      */
     public function attachApp(AppNode $app)
@@ -152,8 +158,8 @@ class AppserverNode extends AbstractNode
     /**
      * Attaches the passed datasource node.
      *
-     * @param DatasourceNode $datasource
-     *            The datasource node to attach
+     * @param \TechDivision\ApplicationServer\Api\Node\DatasourceNode $datasource The datasource node to attach
+     *
      * @return void
      */
     public function attachDatasource(DatasourceNode $datasource)

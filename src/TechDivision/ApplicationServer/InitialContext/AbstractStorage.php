@@ -1,25 +1,32 @@
 <?php
-
 /**
  * TechDivision\ApplicationServer\InitialContext\MemcachedStorage
  *
- * NOTICE OF LICENSE
+ * PHP version 5
  *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
+ * @category   Appserver
+ * @package    TechDivision_ApplicationServer
+ * @subpackage InitialContext
+ * @author     Tim Wagner <tw@techdivision.com>
+ * @copyright  2013 TechDivision GmbH <info@techdivision.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link       http://www.appserver.io
  */
+
 namespace TechDivision\ApplicationServer\InitialContext;
 
 use TechDivision\ApplicationServer\Api\Node\NodeInterface;
 
 /**
+ * Class AbstractStorage
  *
- * @package TechDivision\ApplicationServer
- * @copyright Copyright (c) 2010 <info@techdivision.com> - TechDivision GmbH
- * @license http://opensource.org/licenses/osl-3.0.php
- *          Open Software License (OSL 3.0)
- * @author Tim Wagner <tw@techdivision.com>
+ * @category   Appserver
+ * @package    TechDivision_ApplicationServer
+ * @subpackage InitialContext
+ * @author     Tim Wagner <tw@techdivision.com>
+ * @copyright  2013 TechDivision GmbH <info@techdivision.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link       http://www.appserver.io
  */
 abstract class AbstractStorage implements StorageInterface
 {
@@ -47,14 +54,13 @@ abstract class AbstractStorage implements StorageInterface
 
     /**
      * Passes the configuration and initializes the storage.
-     * The identifier will be
-     * set after the init() function has been invoked, so it'll overwrite the one
+     *
+     * The identifier will be set after the init() function has been invoked, so it'll overwrite the one
      * specified in the configuration if set.
      *
-     * @param \TechDivision\ApplicationServer\Api\Node\NodeInterface $storageNode
-     *            The storage configuration node
-     * @param string $identifier
-     *            Unique identifier for the cache storage
+     * @param \TechDivision\ApplicationServer\Api\Node\NodeInterface $storageNode The storage configuration node
+     * @param string                                                 $identifier  Unique identifier for the cache storage
+     *
      * @return void
      */
     public function __construct(NodeInterface $storageNode, $identifier = null)
@@ -97,8 +103,10 @@ abstract class AbstractStorage implements StorageInterface
     }
 
     /**
+     * (non-PHPdoc)
      *
      * @see \TechDivision\ApplicationServer\InitialContext\StorageInterface::getIdentifier()
+     * @return string The identifier for this cache
      */
     public function getIdentifier()
     {
@@ -108,6 +116,7 @@ abstract class AbstractStorage implements StorageInterface
     /**
      * (non-PHPdoc)
      *
+     * @return void
      * @see \TechDivision\ApplicationServer\InitialContext\StorageInterface::collectGarbage()
      */
     public function collectGarbage()
@@ -118,6 +127,9 @@ abstract class AbstractStorage implements StorageInterface
     /**
      * (non-PHPdoc)
      *
+     * @param string $tag The tag to search for
+     *
+     * @return array An array with the identifier (key) and content (value) of all matching entries. An empty array if no entries matched
      * @see \TechDivision\ApplicationServer\InitialContext\StorageInterface::getByTag()
      */
     public function getByTag($tag)
@@ -128,6 +140,9 @@ abstract class AbstractStorage implements StorageInterface
     /**
      * (non-PHPdoc)
      *
+     * @param string $entryIdentifier An identifier specifying the cache entry
+     *
+     * @return boolean TRUE if such an entry exists, FALSE if not
      * @see \TechDivision\ApplicationServer\InitialContext\StorageInterface::has()
      */
     public function has($entryIdentifier)
@@ -141,6 +156,7 @@ abstract class AbstractStorage implements StorageInterface
     /**
      * (non-PHPdoc)
      *
+     * @return void
      * @see \TechDivision\ApplicationServer\InitialContext\StorageInterface::flush()
      */
     public function flush()
@@ -157,6 +173,9 @@ abstract class AbstractStorage implements StorageInterface
     /**
      * (non-PHPdoc)
      *
+     * @param string $tag The tag the entries must have
+     *
+     * @return void
      * @see \TechDivision\ApplicationServer\InitialContext\StorageInterface::flushByTag()
      */
     public function flushByTag($tag)
@@ -173,6 +192,9 @@ abstract class AbstractStorage implements StorageInterface
     /**
      * (non-PHPdoc)
      *
+     * @param string $tag A tag to be checked for validity
+     *
+     * @return boolean
      * @see \TechDivision\ApplicationServer\InitialContext\StorageInterface::isValidTag()
      */
     public function isValidTag($tag)
@@ -183,6 +205,9 @@ abstract class AbstractStorage implements StorageInterface
     /**
      * (non-PHPdoc)
      *
+     * @param string $identifier An identifier to be checked for validity
+     *
+     * @return boolean
      * @see \TechDivision\ApplicationServer\InitialContext\StorageInterface::isValidEntryIdentifier()
      */
     public function isValidEntryIdentifier($identifier)
@@ -196,6 +221,7 @@ abstract class AbstractStorage implements StorageInterface
     /**
      * (non-PHPdoc)
      *
+     * @return object The storage object itself
      * @see \TechDivision\ApplicationServer\InitialContext\StorageInterface::getStorage()
      */
     public function getStorage()

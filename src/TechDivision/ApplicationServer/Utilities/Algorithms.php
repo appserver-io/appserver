@@ -1,4 +1,17 @@
 <?php
+/**
+ * TechDivision\ApplicationServer\Utilities\Algorithms
+ *
+ * PHP version 5
+ *
+ * @category   Appserver
+ * @package    TechDivision_ApplicationServer
+ * @subpackage Utilities
+ * @author     Tim Wagner <tw@techdivision.com>
+ * @copyright  2013 TechDivision GmbH <info@techdivision.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link       http://www.appserver.io
+ */
 
 namespace TechDivision\ApplicationServer\Utilities;
 
@@ -16,6 +29,14 @@ require_once 'PHP/iSecurity/SecurityRandomizer.php';
 
 /**
  * A utility class for various algorithms.
+ *
+ * @category   Appserver
+ * @package    TechDivision_ApplicationServer
+ * @subpackage Utilities
+ * @author     Tim Wagner <tw@techdivision.com>
+ * @copyright  2013 TechDivision GmbH <info@techdivision.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link       http://www.appserver.io
  */
 class Algorithms
 {
@@ -46,6 +67,7 @@ class Algorithms
      * Returns a string of random bytes.
      *
      * @param integer $count Number of bytes to generate
+     *
      * @return string Random bytes
      */
     public static function generateRandomBytes($count)
@@ -57,6 +79,7 @@ class Algorithms
      * Returns a random token in hex format.
      *
      * @param integer $count Token length
+     *
      * @return string A random token
      */
     public static function generateRandomToken($count)
@@ -67,8 +90,9 @@ class Algorithms
     /**
      * Returns a random string with alpha-numeric characters.
      *
-     * @param integer $count Number of characters to generate
-     * @param string $characters Allowed characters, defaults to alpha-numeric (a-zA-Z0-9)
+     * @param integer $count      Number of characters to generate
+     * @param string  $characters Allowed characters, defaults to alpha-numeric (a-zA-Z0-9)
+     *
      * @return string A random string
      */
     public static function generateRandomString($count, $characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789')

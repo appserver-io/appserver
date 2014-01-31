@@ -1,13 +1,15 @@
 <?php
-
 /**
  * TechDivision\ApplicationServer\AbstractContainer
  *
- * NOTICE OF LICENSE
+ * PHP version 5
  *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
+ * @category  Appserver
+ * @package   TechDivision_ApplicationServer
+ * @author    Johann Zelger <jz@techdivision.com>
+ * @copyright 2013 TechDivision GmbH <info@techdivision.com>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      http://www.appserver.io
  */
 
 namespace TechDivision\ApplicationServer;
@@ -16,11 +18,12 @@ namespace TechDivision\ApplicationServer;
  * An abstraction context layer for Threads.
  * It will automatically register the intitialContext object.
  *
- * @package     TechDivision\ApplicationServer
- * @copyright  	Copyright (c) 2013 <info@techdivision.com> - TechDivision GmbH
- * @license    	http://opensource.org/licenses/osl-3.0.php
- *              Open Software License (OSL 3.0)
- * @author      Johann Zelger <jz@techdivision.com>
+ * @category  Appserver
+ * @package   TechDivision_ApplicationServer
+ * @author    Johann Zelger <jz@techdivision.com>
+ * @copyright 2013 TechDivision GmbH <info@techdivision.com>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      http://www.appserver.io
  */
 abstract class AbstractContextThread extends AbstractThread
 {
@@ -35,8 +38,7 @@ abstract class AbstractContextThread extends AbstractThread
      * Constructor sets initialContext object per default and calls
      * init function to pass other args.
      *
-     * @params \Stackable $initialContext
-     * @return void
+     * @param \Stackable $initialContext The initial context instance
      */
     public function __construct($initialContext)
     {
@@ -50,7 +52,8 @@ abstract class AbstractContextThread extends AbstractThread
     
     /**
      * (non-PHPdoc)
-     * 
+     *
+     * @return void
      * @see \TechDivision\ApplicationServer\AbstractThread::run()
      */
     public function run()
@@ -77,7 +80,8 @@ abstract class AbstractContextThread extends AbstractThread
      * args to the instance constructor.
      * 
      * @param string $className The class name to create the instance of
-     * @param array $args The parameters to pass to the constructor
+     * @param array  $args      The parameters to pass to the constructor
+     *
      * @return object The created instance
      */
     public function newInstance($className, array $args = array())

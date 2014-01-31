@@ -8,8 +8,9 @@
     <description>appserver.io coding standard</description>
 
     <!-- Define global exclude patterns -->
-    <exclude-pattern type="relative">^/doc/*</exclude-pattern>
-    <exclude-pattern type="relative">^/target/*</exclude-pattern>
+    <exclude-pattern type="relative">doc/*</exclude-pattern>
+    <exclude-pattern type="relative">target/*</exclude-pattern>
+    <exclude-pattern type="relative">tests/*</exclude-pattern>
 
     <!-- Mainly use PSR2 coding standard -->
     <rule ref="PSR2"/>
@@ -17,12 +18,8 @@
     <!-- Include commenting sniffs from PEAR standard -->
     <rule ref="PEAR.Commenting.FileComment"/>
     <rule ref="PEAR.Commenting.ClassComment"/>
-    <rule ref="PEAR.Commenting.FunctionComment">
-        <exclude-pattern type="relative">^/tests/*</exclude-pattern>
-    </rule>
-    <rule ref="PEAR.Commenting.InlineComment">
-        <exclude-pattern type="relative">^/tests/*</exclude-pattern>
-    </rule>
+    <rule ref="PEAR.Commenting.FunctionComment"/>
+    <rule ref="PEAR.Commenting.InlineComment"/>
 
     <!-- Include generic commenting sniffs -->
     <rule ref="Generic.Commenting.Fixme"/>
