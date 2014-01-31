@@ -42,7 +42,8 @@ abstract class AbstractParamsNode extends AbstractNode
      *
      * @return array
      */
-    public function getParams(){
+    public function getParams()
+    {
         return $this->params;
     }
 
@@ -51,6 +52,7 @@ abstract class AbstractParamsNode extends AbstractNode
      * the specified type.
      *
      * @param string $name The name of the param to be returned
+     *
      * @return mixed The requested param casted to the specified type
      */
     public function getParam($name)

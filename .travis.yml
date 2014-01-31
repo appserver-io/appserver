@@ -6,8 +6,7 @@ php:
   
 before_install:
   - pecl install pthreads-beta
-  - pear channel-discover pear.phpqatools.org
-  - pear install -f phpqatools/phpqatools
+  - pyrus install pear/PHP_CodeSniffer
   - phpenv rehash
   
 script:
