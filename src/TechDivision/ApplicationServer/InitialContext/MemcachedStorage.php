@@ -1,29 +1,38 @@
 <?php
-
 /**
  * TechDivision\ApplicationServer\InitialContext\MemcachedStorage
  *
- * NOTICE OF LICENSE
+ * PHP version 5
  *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
+ * @category   Appserver
+ * @package    TechDivision_ApplicationServer
+ * @subpackage InitialContext
+ * @author     Tim Wagner <tw@techdivision.com>
+ * @copyright  2013 TechDivision GmbH <info@techdivision.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link       http://www.appserver.io
  */
+
 namespace TechDivision\ApplicationServer\InitialContext;
 
 /**
+ * Class MemcachedStorage
  *
- * @package TechDivision\ApplicationServer
- * @copyright Copyright (c) 2010 <info@techdivision.com> - TechDivision GmbH
- * @license http://opensource.org/licenses/osl-3.0.php
- *          Open Software License (OSL 3.0)
- * @author Tim Wagner <tw@techdivision.com>
+ * @category   Appserver
+ * @package    TechDivision_ApplicationServer
+ * @subpackage InitialContext
+ * @author     Tim Wagner <tw@techdivision.com>
+ * @copyright  2013 TechDivision GmbH <info@techdivision.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link       http://www.appserver.io
  */
 class MemcachedStorage extends AbstractStorage
 {
 
     /**
+     * (non-PHPdoc)
      *
+     * @return void
      * @see TechDivision\ApplicationServer\InitialContext\AbstractStorage::init();
      */
     public function init()
@@ -42,6 +51,13 @@ class MemcachedStorage extends AbstractStorage
     /**
      * (non-PHPdoc)
      *
+     * @param string  $entryIdentifier Something which identifies the data - depends on concrete cache
+     * @param mixed   $data            The data to cache - also depends on the concrete cache implementation
+     * @param array   $tags            Tags to associate with this cache entry
+     * @param integer $lifetime        Lifetime of this cache entry in seconds. If NULL is specified,
+     *                                 the default lifetime is used. "0" means unlimited lifetime.
+     *
+     * @return void
      * @see \TechDivision\ApplicationServer\InitialContext\StorageInterface::set()
      */
     public function set($entryIdentifier, $data, array $tags = array(), $lifetime = null)
@@ -69,6 +85,9 @@ class MemcachedStorage extends AbstractStorage
     /**
      * (non-PHPdoc)
      *
+     * @param string $entryIdentifier Something which identifies the cache entry - depends on concrete cache
+     *
+     * @return mixed
      * @see \TechDivision\ApplicationServer\InitialContext\StorageInterface::get()
      */
     public function get($entryIdentifier)
@@ -79,6 +98,9 @@ class MemcachedStorage extends AbstractStorage
     /**
      * (non-PHPdoc)
      *
+     * @param string $entryIdentifier An identifier specifying the cache entry
+     *
+     * @return boolean TRUE if such an entry exists, FALSE if not
      * @see \TechDivision\ApplicationServer\InitialContext\StorageInterface::remove()
      */
     public function remove($entryIdentifier)
@@ -89,6 +111,7 @@ class MemcachedStorage extends AbstractStorage
     /**
      * (non-PHPdoc)
      *
+     * @return array
      * @see \TechDivision\ApplicationServer\InitialContext\StorageInterface::getAllKeys()
      */
     public function getAllKeys()

@@ -1,27 +1,33 @@
 <?php
-
 /**
  * TechDivision\ApplicationServer\AbstractReceiver
  *
- * NOTICE OF LICENSE
+ * PHP version 5
  *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
+ * @category  Appserver
+ * @package   TechDivision_ApplicationServer
+ * @author    Johann Zelger <j.zelger@techdivision.com>
+ * @author    Tim Wagner <tw@techdivision.com>
+ * @copyright 2013 TechDivision GmbH <info@techdivision.com>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      http://www.appserver.io
  */
+
 namespace TechDivision\ApplicationServer;
 
 use TechDivision\ApplicationServer\InitialContext;
 use TechDivision\ApplicationServer\Interfaces\ReceiverInterface;
 
 /**
+ * Class AbstractReceiver
  *
- * @package TechDivision\ApplicationServer
- * @copyright Copyright (c) 2010 <info@techdivision.com> - TechDivision GmbH
- * @license http://opensource.org/licenses/osl-3.0.php
- *          Open Software License (OSL 3.0)
- * @author Tim Wagner <tw@techdivision.com>
- * @author Johann Zelger <jz@techdivision.com>
+ * @category  Appserver
+ * @package   TechDivision_ApplicationServer
+ * @author    Johann Zelger <j.zelger@techdivision.com>
+ * @author    Tim Wagner <tw@techdivision.com>
+ * @copyright 2013 TechDivision GmbH <info@techdivision.com>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      http://www.appserver.io
  */
 abstract class AbstractReceiver implements ReceiverInterface
 {
@@ -76,9 +82,8 @@ abstract class AbstractReceiver implements ReceiverInterface
     /**
      * Sets the reference to the container instance.
      *
-     * @param \TechDivision\ApplicationServer\InitialContext $initialContext The initial context instance
-     * @param \TechDivision\ApplicationServer\Interfaces\ContainerInterface $container
-     *            The container instance
+     * @param \TechDivision\ApplicationServer\InitialContext                $initialContext The initial context instance
+     * @param \TechDivision\ApplicationServer\Interfaces\ContainerInterface $container      The container instance
      */
     public function __construct($initialContext, $container)
     {
@@ -120,8 +125,10 @@ abstract class AbstractReceiver implements ReceiverInterface
     }
 
     /**
+     * Starts the receiver in an infinite loop.
      *
-     * @see TechDivision\ApplicationServer\Interfaces\ReceiverInterface::start()
+     * @return boolean TRUE if the receiver has been started successfully, else FALSE
+     * @see \TechDivision\ApplicationServer\Interfaces\ReceiverInterface::start()
      */
     public function start()
     {
@@ -214,7 +221,9 @@ abstract class AbstractReceiver implements ReceiverInterface
     }
 
     /**
+     * Returns the maximum number of workers to start.
      *
+     * @return integer The maximum worker number
      * @see \TechDivision\ApplicationServer\Interfaces\ReceiverInterface::getWorkerNumber()
      */
     public function getWorkerNumber()
@@ -223,7 +232,9 @@ abstract class AbstractReceiver implements ReceiverInterface
     }
 
     /**
+     * Returns the IP address to listen to.
      *
+     * @return string The IP address to listen to
      * @see \TechDivision\ApplicationServer\Interfaces\ReceiverInterface::getAddress()
      */
     public function getAddress()
@@ -232,7 +243,9 @@ abstract class AbstractReceiver implements ReceiverInterface
     }
 
     /**
+     * Returns the port to listen to.
      *
+     * @return integer The port to listen to
      * @see \TechDivision\ApplicationServer\Interfaces\ReceiverInterface::getPort()
      */
     public function getPort()
@@ -309,6 +322,8 @@ abstract class AbstractReceiver implements ReceiverInterface
     /**
      * Returns a thread
      *
+     * @param resource $socketResource A socket resource to transmit via construct
+     *
      * @return \Thread The request acceptor thread
      */
     public function newWorker($socketResource)
@@ -325,6 +340,10 @@ abstract class AbstractReceiver implements ReceiverInterface
     /**
      * (non-PHPdoc)
      *
+     * @param string $className The fully qualified class name to return the instance for
+     * @param array  $args      Arguments to pass to the constructor of the instance
+     *
+     * @return object The instance itself
      * @see \TechDivision\ApplicationServer\InitialContext::newInstance()
      */
     public function newInstance($className, array $args = array())
@@ -335,6 +354,9 @@ abstract class AbstractReceiver implements ReceiverInterface
     /**
      * (non-PHPdoc)
      *
+     * @param string $className The API service class name to return the instance for
+     *
+     * @return \TechDivision\ApplicationServer\Api\ServiceInterface The service instance
      * @see \TechDivision\ApplicationServer\InitialContext::newService()
      */
     public function newService($className)

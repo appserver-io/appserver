@@ -1,14 +1,18 @@
 <?php
-
 /**
  * TechDivision\ApplicationServer\Api\Normalizer
  *
- * NOTICE OF LICENSE
+ * PHP version 5
  *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
+ * @category   Appserver
+ * @package    TechDivision_ApplicationServer
+ * @subpackage Api
+ * @author     Tim Wagner <tw@techdivision.com>
+ * @copyright  2013 TechDivision GmbH <info@techdivision.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link       http://www.appserver.io
  */
+
 namespace TechDivision\ApplicationServer\Api;
 
 use TechDivision\ApplicationServer\Configuration;
@@ -16,11 +20,13 @@ use TechDivision\ApplicationServer\Configuration;
 /**
  * Normalizes configuration nodes to \stdClass instances.
  *
- * @package TechDivision\ApplicationServer
- * @copyright Copyright (c) 2013 <info@techdivision.com> - TechDivision GmbH
- * @license http://opensource.org/licenses/osl-3.0.php
- *          Open Software License (OSL 3.0)
- * @author Tim Wagner <tw@techdivision.com>
+ * @category   Appserver
+ * @package    TechDivision_ApplicationServer
+ * @subpackage Api
+ * @author     Tim Wagner <tw@techdivision.com>
+ * @copyright  2013 TechDivision GmbH <info@techdivision.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link       http://www.appserver.io
  */
 class Normalizer extends AbstractNormalizer
 {
@@ -29,13 +35,12 @@ class Normalizer extends AbstractNormalizer
      * Normalizes the passed configuration node and returns a \stdClass
      * representation of it.
      *
-     * @param \TechDivision\ApplicationServer\Configuration $configuration
-     *            The configuration node to normalize
+     * @param Configuration $configuration The configuration node to normalize
+     *
      * @return \stdClass The normalized configuration node
      */
     public function normalize(Configuration $configuration)
     {
-
         // initialize the \stdClass instance
         $node = $this->newInstance('\stdClass');
         $node->{$configuration->getNodeName()} = new \stdClass();

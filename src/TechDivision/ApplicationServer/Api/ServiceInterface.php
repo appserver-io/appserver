@@ -1,27 +1,34 @@
 <?php
-
 /**
  * TechDivision\ApplicationServer\Api\ServiceInterface
  *
- * NOTICE OF LICENSE
+ * PHP version 5
  *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
+ * @category   Appserver
+ * @package    TechDivision_ApplicationServer
+ * @subpackage Api
+ * @author     Tim Wagner <tw@techdivision.com>
+ * @copyright  2013 TechDivision GmbH <info@techdivision.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link       http://www.appserver.io
  */
+
 namespace TechDivision\ApplicationServer\Api;
 
 use TechDivision\ApplicationServer\Api\Node\NodeInterface;
+use TechDivision\ApplicationServer\InitialContext;
 
 /**
  * This interface defines the basic method each API service has
  * to provide.
  *
- * @package TechDivision\ApplicationServer
- * @copyright Copyright (c) 2013 <info@techdivision.com> - TechDivision GmbH
- * @license http://opensource.org/licenses/osl-3.0.php
- *          Open Software License (OSL 3.0)
- * @author Tim Wagner <tw@techdivision.com>
+ * @category   Appserver
+ * @package    TechDivision_ApplicationServer
+ * @subpackage Api
+ * @author     Tim Wagner <tw@techdivision.com>
+ * @copyright  2013 TechDivision GmbH <info@techdivision.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link       http://www.appserver.io
  */
 interface ServiceInterface
 {
@@ -29,21 +36,23 @@ interface ServiceInterface
     /**
      * Returns the initial context instance.
      *
-     * @return \TechDivision\ApplicationServer\InitialContext The initial Context
+     * @return InitialContext The initial Context
      */
     public function getInitialContext();
 
     /**
      * Returns the system configuration.
      *
-     * @param \TechDivision\ApplicationServer\Api\Node\NodeInterface The system configuration
+     * @param NodeInterface $systemConfiguration The system configuration
+     *
+     * @return ServiceInterface
      */
     public function setSystemConfiguration(NodeInterface $systemConfiguration);
 
     /**
      * Returns the system configuration.
      *
-     * @return \TechDivision\ApplicationServer\Api\Node\NodeInterface The system configuration
+     * @return NodeInterface The system configuration
      */
     public function getSystemConfiguration();
 
@@ -57,9 +66,9 @@ interface ServiceInterface
     /**
      * Returns the node with the passed UUID.
      *
-     * @param integer $uuid
-     *            UUID of the node to return
-     * @return \TechDivision\ApplicationServer\Api\Node\NodeInterface The node with the UUID passed as parameter
+     * @param integer $uuid UUID of the node to return
+     *
+     * @return NodeInterface The node with the UUID passed as parameter
      */
     public function load($uuid);
 }
