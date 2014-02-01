@@ -59,8 +59,8 @@ class DirectoryKeys
     const DEPLOY = 'deploy';
 
     /**
-     * This is a utility class, so protect it agains direct
-     * instanciation.
+     * This is a utility class, so protect it against direct
+     * instantiation.
      *
      * @return void
      */
@@ -70,7 +70,7 @@ class DirectoryKeys
     }
 
     /**
-     * This is a utility class, so protect it agains cloning.
+     * This is a utility class, so protect it against cloning.
      *
      * @return void
      */
