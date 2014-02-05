@@ -34,7 +34,7 @@ class Worker extends AbstractWorker
     /**
      * Returns the resource class used to receive data over the socket.
      *
-     * @return string.
+     * @return string
      * @see \TechDivision\ApplicationServer\AbstractWorker::getResourceClass()
      */
     protected function getResourceClass()

@@ -176,6 +176,12 @@ class DbcClassLoader extends SplClassLoader
         }
         foreach ($structures as $structure) {
 
+            // Working on our own files has very weird side effects, so don't do it
+            if (strpos($structure->getIdentifier(), 'TechDivision\\PBC')) {
+
+                continue;
+            }
+
             // Might this be an omitted structure after all?
             foreach ($omittedNamespaces as $omittedNamespace) {
 
