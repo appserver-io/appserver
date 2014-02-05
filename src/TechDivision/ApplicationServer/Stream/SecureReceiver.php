@@ -1,25 +1,32 @@
 <?php
-
 /**
  * TechDivision\ApplicationServer\Stream\SecureReceiver
  *
- * NOTICE OF LICENSE
+ * PHP version 5
  *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
+ * @category   Appserver
+ * @package    TechDivision_ApplicationServer
+ * @subpackage Stream
+ * @author     Johann Zelger <jz@techdivision.com>
+ * @copyright  2013 TechDivision GmbH <info@techdivision.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link       http://www.appserver.io
  */
+
 namespace TechDivision\ApplicationServer\Stream;
 
 use TechDivision\ApplicationServer\AbstractReceiver;
 
 /**
+ * Class SecureReceiver
  *
- * @package TechDivision\ApplicationServer
- * @copyright Copyright (c) 2013 <info@techdivision.com> - TechDivision GmbH
- * @license http://opensource.org/licenses/osl-3.0.php
- *          Open Software License (OSL 3.0)
- * @author Johann Zelger <jz@techdivision.com>
+ * @category   Appserver
+ * @package    TechDivision_ApplicationServer
+ * @subpackage Stream
+ * @author     Johann Zelger <jz@techdivision.com>
+ * @copyright  2013 TechDivision GmbH <info@techdivision.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link       http://www.appserver.io
  */
 class SecureReceiver extends AbstractReceiver
 {
@@ -28,14 +35,14 @@ class SecureReceiver extends AbstractReceiver
      *
      * @return void
      */
-    protected function setupSocket() {
+    protected function setupSocket()
+    {
         // first call parent setup routine
         parent::setupSocket();
         // set secure receiver params
         $this->getSocket()
             ->setCertPath($this->getCertPath())
             ->setCertPassphrase($this->getCertPassphrase());
-
     }
 
     /**
@@ -59,7 +66,10 @@ class SecureReceiver extends AbstractReceiver
     }
 
     /**
-     * @see \TechDivision\ApplicationServer\AbstractReceiver
+     * Returns the resource class used to create a new socket.
+     *
+     * @return string The resource class name
+     * @see \TechDivision\ApplicationServer\AbstractReceiver::getResourceClass()
      */
     protected function getResourceClass()
     {

@@ -1,17 +1,20 @@
 <?php
-
 /**
  * TechDivision\ApplicationServer\Api\AppService
  *
- * NOTICE OF LICENSE
+ * PHP version 5
  *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
+ * @category   Appserver
+ * @package    TechDivision_ApplicationServer
+ * @subpackage Api
+ * @author     Tim Wagner <tw@techdivision.com>
+ * @copyright  2013 TechDivision GmbH <info@techdivision.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link       http://www.appserver.io
  */
+
 namespace TechDivision\ApplicationServer\Api;
 
-use TechDivision\ApplicationServer\Api\AbstractService;
 use TechDivision\ApplicationServer\Api\Node\AppNode;
 use TechDivision\ApplicationServer\Api\Node\NodeInterface;
 use TechDivision\ApplicationServer\Interfaces\ExtractorInterface;
@@ -21,11 +24,13 @@ use TechDivision\ApplicationServer\Extractors\PharExtractor;
  * This services provides access to the deplyed applications and allows
  * to deploy new applications or remove a deployed one.
  *
- * @package TechDivision\ApplicationServer
- * @copyright Copyright (c) 2013 <info@techdivision.com> - TechDivision GmbH
- * @license http://opensource.org/licenses/osl-3.0.php
- *          Open Software License (OSL 3.0)
- * @author Tim Wagner <tw@techdivision.com>
+ * @category   Appserver
+ * @package    TechDivision_ApplicationServer
+ * @subpackage Api
+ * @author     Tim Wagner <tw@techdivision.com>
+ * @copyright  2013 TechDivision GmbH <info@techdivision.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link       http://www.appserver.io
  */
 class AppService extends AbstractService
 {
@@ -34,7 +39,7 @@ class AppService extends AbstractService
      * Returns all deployed applications.
      *
      * @return array All deployed applications
-     * @see \TechDivision\ApplicationServer\Api\ServiceInterface::findAll()
+     * @see ServiceInterface::findAll()
      */
     public function findAll()
     {
@@ -48,8 +53,8 @@ class AppService extends AbstractService
     /**
      * Returns the applications with the passed name.
      *
-     * @param string $name
-     *            Name of the application to return
+     * @param string $name Name of the application to return
+     *
      * @return array The applications with the name passed as parameter
      */
     public function findAllByName($name)
@@ -66,10 +71,10 @@ class AppService extends AbstractService
     /**
      * Returns the application with the passed UUID.
      *
-     * @param string $uuid
-     *            UUID of the application to return
+     * @param string $uuid UUID of the application to return
+     *
      * @return \TechDivision\ApplicationServer\Api\Node\AppNode|null The application with the UUID passed as parameter
-     * @see \TechDivision\ApplicationServer\Api\ServiceInterface::load()
+     * @see ServiceInterface::load()
      */
     public function load($uuid)
     {
@@ -83,9 +88,10 @@ class AppService extends AbstractService
     /**
      * Returns the application with the passed webapp path.
      *
-     * @param string $webappPath
-     *            webapp path of the application to return
-     * @return \TechDivision\ApplicationServer\Api\Node\AppNode|null The application with the webapp path passed as parameter
+     * @param string $webappPath webapp path of the application to return
+     *
+     * @return \TechDivision\ApplicationServer\Api\Node\AppNode|null The application with the webapp path
+     *                                                               passed as parameter
      */
     public function loadByWebappPath($webappPath)
     {
@@ -99,14 +105,15 @@ class AppService extends AbstractService
     /**
      * Persists the system configuration.
      *
-     * @param \TechDivision\ApplicationServer\Api\Node\NodeInterface
+     * @param \TechDivision\ApplicationServer\Api\Node\NodeInterface $appNode The application node object
+     *
      * @return void
      */
     public function persist(NodeInterface $appNode)
     {
         $systemConfiguration = $this->getSystemConfiguration();
         $systemConfiguration->attachApp($appNode);
-        $this->setSystemConfiguration($systemConfiguration);        
+        $this->setSystemConfiguration($systemConfiguration);
     }
     
     /**
@@ -114,6 +121,7 @@ class AppService extends AbstractService
      * to the deploy directory.
      * 
      * @param \SplFileInfo $archive The archive to soak
+     *
      * @return void
      */
     public function soak(\SplFileInfo $archive)
@@ -126,12 +134,12 @@ class AppService extends AbstractService
      * Adds the .dodeploy flag file in the deploy folder, therefore the
      * app will be deployed with the next restart.
      *
-     * @param \TechDivision\ApplicationServer\Api\Node\NodeInterface
+     * @param \TechDivision\ApplicationServer\Api\Node\NodeInterface $appNode The application node object
+     *
      * @return void
      */
     public function deploy(NodeInterface $appNode)
     {
-
         // prepare file name
         $fileName = $appNode->getName() . PharExtractor::EXTENSION_SUFFIX;
         
@@ -147,8 +155,8 @@ class AppService extends AbstractService
      * Removes the .deployed flag file from the deploy folder, therefore the
      * app will be undeployed with the next restart.
      *
-     * @param string $uuid
-     *            UUID of the application to delete
+     * @param string $uuid UUID of the application to delete
+     *
      * @return void
      * @todo Add functionality to delete the deployed app
      */

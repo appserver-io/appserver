@@ -1,24 +1,22 @@
 <?php
-
 /**
  * TechDivision\ApplicationServer\Server
  *
- * NOTICE OF LICENSE
+ * PHP version 5
  *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
+ * @category  Appserver
+ * @package   TechDivision_ApplicationServer
+ * @author    Tim Wagner <tw@techdivision.com>
+ * @copyright 2013 TechDivision GmbH <info@techdivision.com>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      http://www.appserver.io
  */
+
 namespace TechDivision\ApplicationServer;
 
 use TechDivision\ApplicationServer\Extractors\PharExtractor;
 use TechDivision\ApplicationServer\Interfaces\ExtractorInterface;
-use TechDivision\ApplicationServer\Utilities\DirectoryKeys;
-use TechDivision\Socket\Client;
-use TechDivision\ApplicationServer\SplClassLoader;
 use TechDivision\ApplicationServer\InitialContext;
-use TechDivision\ApplicationServer\Configuration;
-use TechDivision\ApplicationServer\ContainerThread;
 use TechDivision\ApplicationServer\Api\Node\NodeInterface;
 use TechDivision\ApplicationServer\Api\Node\AppserverNode;
 use \Psr\Log\LoggerInterface;
@@ -27,12 +25,13 @@ use \Psr\Log\LoggerInterface;
  * This is the main server class that starts the application server
  * and creates a separate thread for each container found in the
  * configuration file.
- * 
- * @package TechDivision\ApplicationServer
- * @copyright Copyright (c) 2010 <info@techdivision.com> - TechDivision GmbH
- * @license http://opensource.org/licenses/osl-3.0.php
- *          Open Software License (OSL 3.0)
- * @author Tim Wagner <tw@techdivision.com>
+ *
+ * @category  Appserver
+ * @package   TechDivision_ApplicationServer
+ * @author    Tim Wagner <tw@techdivision.com>
+ * @copyright 2013 TechDivision GmbH <info@techdivision.com>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      http://www.appserver.io
  */
 class Server
 {
@@ -68,8 +67,8 @@ class Server
     /**
      * Initializes the the server with the parsed configuration file.
      *
-     * @param \TechDivision\ApplicationServer\Configuration $configuration
-     *            The parsed configuration file
+     * @param \TechDivision\ApplicationServer\Configuration $configuration The parsed configuration file
+     *
      * @return void
      */
     public function __construct(Configuration $configuration)
@@ -223,6 +222,8 @@ class Server
     /**
      * Set's the system configuration.
      *
+     * @param \TechDivision\ApplicationServer\Api\Node\NodeInterface $systemConfiguration The system configuration object
+     *
      * @return \TechDivision\ApplicationServer\Api\Node\NodeInterface The system configuration
      */
     public function setSystemConfiguration(NodeInterface $systemConfiguration)
@@ -243,8 +244,8 @@ class Server
     /**
      * Set's the initial context instance.
      *
-     * @param \TechDivision\ApplicationServer\InitialContext $initialContext
-     *            The initial context instance
+     * @param \TechDivision\ApplicationServer\InitialContext $initialContext The initial context instance
+     *
      * @return void
      */
     public function setInitialContext(InitialContext $initialContext)
@@ -275,8 +276,7 @@ class Server
     /**
      * Set's the extractor
      *
-     * @param \TechDivision\ApplicationServer\Interfaces\ExtractorInterface $extractor
-     *            The initial context instance
+     * @param \TechDivision\ApplicationServer\Interfaces\ExtractorInterface $extractor The initial context instance
      *            
      * @return void
      */
@@ -304,10 +304,15 @@ class Server
     {
         
         // log that the server will be started now
-        $this->getSystemLogger()->info(sprintf('Server successfully started in basedirectory %s ', $this->getSystemConfiguration()
-            ->getBaseDirectory()
-            ->getNodeValue()
-            ->__toString()));
+        $this->getSystemLogger()->info(
+            sprintf(
+                'Server successfully started in basedirectory %s ',
+                $this->getSystemConfiguration()
+                    ->getBaseDirectory()
+                    ->getNodeValue()
+                    ->__toString()
+            )
+        );
         
         // start the container threads
         foreach ($this->getThreads() as $thread) {
@@ -328,8 +333,12 @@ class Server
     }
 
     /**
-     * (non-PHPdoc)
+     * Returns a new instance of the passed class name.
      *
+     * @param string $className The fully qualified class name to return the instance for
+     * @param array  $args      Arguments to pass to the constructor of the instance
+     *
+     * @return object The instance itself
      * @see \TechDivision\ApplicationServer\InitialContext::newInstance()
      */
     public function newInstance($className, array $args = array())
@@ -338,8 +347,11 @@ class Server
     }
 
     /**
-     * (non-PHPdoc)
+     * Returns a new instance of the passed API service.
      *
+     * @param string $className The API service class name to return the instance for
+     *
+     * @return \TechDivision\ApplicationServer\Api\ServiceInterface The service instance
      * @see \TechDivision\ApplicationServer\InitialContext::newService()
      */
     public function newService($className)

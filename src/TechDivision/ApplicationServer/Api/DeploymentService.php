@@ -1,26 +1,34 @@
 <?php
-
 /**
  * TechDivision\ApplicationServer\Api\DeploymentService
  *
- * NOTICE OF LICENSE
+ * PHP version 5
  *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
+ * @category   Appserver
+ * @package    TechDivision_ApplicationServer
+ * @subpackage Api
+ * @author     Tim Wagner <tw@techdivision.com>
+ * @copyright  2013 TechDivision GmbH <info@techdivision.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link       http://www.appserver.io
  */
+
 namespace TechDivision\ApplicationServer\Api;
 
 use TechDivision\ApplicationServer\Api\AbstractService;
+use TechDivision\ApplicationServer\Api\Node\DeploymentNode;
+use TechDivision\ApplicationServer\Api\ServiceInterface;
 
 /**
  * A service that handles deployment configuration data.
  *
- * @package TechDivision\ApplicationServer
- * @copyright Copyright (c) 2013 <info@techdivision.com> - TechDivision GmbH
- * @license http://opensource.org/licenses/osl-3.0.php
- *          Open Software License (OSL 3.0)
- * @author Tim Wagner <tw@techdivision.com>
+ * @category   Appserver
+ * @package    TechDivision_ApplicationServer
+ * @subpackage Api
+ * @author     Tim Wagner <tw@techdivision.com>
+ * @copyright  2013 TechDivision GmbH <info@techdivision.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link       http://www.appserver.io
  */
 class DeploymentService extends AbstractService
 {
@@ -44,10 +52,10 @@ class DeploymentService extends AbstractService
     /**
      * Returns the deployment with the passed UUID.
      *
-     * @param integer $uuid
-     *            UUID of the deployment to return
-     * @return \TechDivision\ApplicationServer\Api\Node\DeploymentNode The deployment with the UUID passed as parameter
-     * @see \TechDivision\ApplicationServer\Api\ServiceInterface::load()
+     * @param integer $uuid UUID of the deployment to return
+     *
+     * @return DeploymentNode The deployment with the UUID passed as parameter
+     * @see ServiceInterface::load()
      */
     public function load($uuid)
     {

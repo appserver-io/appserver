@@ -3,11 +3,14 @@
 /**
  * TechDivision\ApplicationServer\SplClassLoader
  *
- * NOTICE OF LICENSE
+ * PHP version 5
  *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
+ * @category  Appserver
+ * @package   TechDivision_ApplicationServer
+ * @author    Tim Wagner <tw@techdivision.com>
+ * @copyright 2013 TechDivision GmbH <info@techdivision.com>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      http://www.appserver.io
  */
 
 namespace TechDivision\ApplicationServer;
@@ -25,11 +28,17 @@ use \TechDivision\ApplicationServer\InitialContext;
  *     $classLoader = new SplClassLoader('Doctrine\Common', '/path/to/doctrine');
  *     $classLoader->register();
  *
- * @author Jonathan H. Wage <jonwage@gmail.com>
- * @author Roman S. Borschel <roman@code-factory.org>
- * @author Matthew Weier O'Phinney <matthew@zend.com>
- * @author Kris Wallsmith <kris.wallsmith@gmail.com>
- * @author Fabien Potencie <fabien.potencier@symfony-project.org>
+ * @category  Appserver
+ * @package   TechDivision_ApplicationServer
+ * @author    Jonathan H. Wage <jonwage@gmail.com>
+ * @author    Roman S. Borschel <roman@code-factory.org>
+ * @author    Matthew Weier O'Phinney <matthew@zend.com>
+ * @author    Kris Wallsmith <kris.wallsmith@gmail.com>
+ * @author    Fabien Potencie <fabien.potencier@symfony-project.org>
+ * @author    Tim Wagner <tw@techdivision.com>
+ * @copyright 2013 TechDivision GmbH <info@techdivision.com>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      http://www.appserver.io
  */
 class SplClassLoader extends \Stackable
 {
@@ -58,11 +67,12 @@ class SplClassLoader extends \Stackable
      * namespace and searches for the class files in the include paths passed as
      * array.
      *
-     * @param \TechDivision\ApplicationServer\InitialContext The initial context instance
-     * @param string $namespace The namespace to use
-     * @param array $includePath The include path to use
-     * @param string $namespaceSeparator The namespace separator
-     * @param string $fileExtension The filename extension
+     * @param \TechDivision\ApplicationServer\InitialContext $initialContext     The initial context instance
+     * @param string                                         $namespace          The namespace to use
+     * @param array                                          $includePath        The include path to use
+     * @param string                                         $namespaceSeparator The namespace separator
+     * @param string                                         $fileExtension      The filename extension
+     *
      * @return void
      */
     public function __construct(InitialContext $initialContext, $namespace = null, array $includePath = null, $namespaceSeparator = '\\', $fileExtension = '.php')
@@ -86,9 +96,13 @@ class SplClassLoader extends \Stackable
     /**
      * (non-PHPdoc)
      *
+     * @return void
      * @see \Stackable::run()
      */
-    public function run() {}
+    public function run()
+    {
+
+    }
 
     /**
      * Gets the namespace seperator used by classes in the namespace of this class loader.
@@ -108,8 +122,10 @@ class SplClassLoader extends \Stackable
     public function getIncludePath()
     {
         $includePath = explode(PATH_SEPARATOR, get_include_path());
-        foreach($includePath as $key => $val) {
-            if ($val === '') unset($includePath[$key]);
+        foreach ($includePath as $key => $val) {
+            if ($val === '') {
+                unset($includePath[$key]);
+            }
         }
         return $includePath;
     }
@@ -136,6 +152,11 @@ class SplClassLoader extends \Stackable
 
     /**
      * Installs this class loader on the SPL autoload stack.
+     *
+     * @param bool $throw   If register should throw an exception or not
+     * @param bool $prepend If register should prepend
+     *
+     * @return void
      */
     public function register($throw = true, $prepend = false)
     {
@@ -144,6 +165,8 @@ class SplClassLoader extends \Stackable
 
     /**
      * Uninstalls this class loader from the SPL autoloader stack.
+     *
+     * @return void
      */
     public function unregister()
     {
@@ -154,6 +177,7 @@ class SplClassLoader extends \Stackable
      * Loads the given class or interface.
      *
      * @param string $className The name of the class to load.
+     *
      * @return void
      * @todo Has to be refactored to improve performance
      */
@@ -168,8 +192,8 @@ class SplClassLoader extends \Stackable
         
         // check if the requested class name has already been loaded
         if (isset($classMap[$requestedClassName]) !== false) {
-			require $classMap[$requestedClassName];
-			return true;
+            require $classMap[$requestedClassName];
+            return true;
         }
         
         // concatenate namespace and separator
@@ -192,17 +216,17 @@ class SplClassLoader extends \Stackable
             $fileName .= $className . $this->fileExtension;
             
             // try to load the requested class
-			foreach ($this->getIncludePath() as $includePath) {
-			    $toRequire = $includePath . DIRECTORY_SEPARATOR . $fileName;
-				if (file_exists($toRequire)) {
-				    // add the found file to the class map
-				    $classMap[$requestedClassName] = $toRequire;
-				    $this->getInitialContext()->setAttribute(self::CLASS_MAP, $classMap);
-				    // require the file and return TRUE
-				    require $toRequire;
-				    return true;
-				}
-			}
+            foreach ($this->getIncludePath() as $includePath) {
+                $toRequire = $includePath . DIRECTORY_SEPARATOR . $fileName;
+                if (file_exists($toRequire)) {
+                    // add the found file to the class map
+                    $classMap[$requestedClassName] = $toRequire;
+                    $this->getInitialContext()->setAttribute(self::CLASS_MAP, $classMap);
+                    // require the file and return TRUE
+                    require $toRequire;
+                    return true;
+                }
+            }
         }
         
         // return FALSE, because the class loader can't require the requested class name

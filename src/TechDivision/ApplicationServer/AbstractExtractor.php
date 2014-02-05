@@ -1,27 +1,30 @@
 <?php
-
 /**
  * TechDivision\ApplicationServer\AbstractExtractor
  *
- * NOTICE OF LICENSE
+ * PHP version 5
  *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
+ * @category  Appserver
+ * @package   TechDivision_ApplicationServer
+ * @author    Johann Zelger <j.zelger@techdivision.com>
+ * @copyright 2013 TechDivision GmbH <info@techdivision.com>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      http://www.appserver.io
  */
+
 namespace TechDivision\ApplicationServer;
 
 use TechDivision\ApplicationServer\Interfaces\ExtractorInterface;
-use TechDivision\ApplicationServer\Utilities\DirectoryKeys;
-use TechDivision\ApplicationServer\Api\ServiceInterface;
 
 /**
  * Abstract extractor functionality
  *
- * @package TechDivision\ApplicationServer
+ * @category  Appserver
+ * @package   TechDivision_ApplicationServer
+ * @author    Johann Zelger <j.zelger@techdivision.com>
  * @copyright 2013 TechDivision GmbH <info@techdivision.com>
- * @license Open Software License (OSL 3.0) http://opensource.org/licenses/osl-3.0.php
- * @author Johann Zelger <j.zelger@techdivision.com>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      http://www.appserver.io
  */
 abstract class AbstractExtractor implements ExtractorInterface
 {
@@ -43,8 +46,7 @@ abstract class AbstractExtractor implements ExtractorInterface
     /**
      * Contructor
      *
-     * @param \TechDivision\ApplicationServer\InitialContext $initialContext
-     *            The initial context instance
+     * @param \TechDivision\ApplicationServer\InitialContext $initialContext The initial context instance
      */
     public function __construct($initialContext)
     {
@@ -100,11 +102,11 @@ abstract class AbstractExtractor implements ExtractorInterface
             ExtractorInterface::FLAG_UNDEPLOYING
         );
     }
-    
+
     /**
-     * (non-PHPdoc)
+     * Will actually deploy all webapps
      *
-     * @see \TechDivision\ApplicationServer\InitialContext::deployWebapps()
+     * @return void
      */
     public function deployWebapps()
     {
@@ -123,10 +125,9 @@ abstract class AbstractExtractor implements ExtractorInterface
     /**
      * Flags the archive in specific states of extraction
      *
-     * @param \SplFileInfo $archive
-     *            The archive to flag
-     * @param string $flag
-     *            The flag to set
+     * @param \SplFileInfo $archive The archive to flag
+     * @param string       $flag    The flag to set
+     *
      * @return void
      */
     public function flagArchive(\SplFileInfo $archive, $flag)
@@ -143,8 +144,8 @@ abstract class AbstractExtractor implements ExtractorInterface
      * Deletes all old flags, so the app will be undeployed with
      * the next appserver restart.
      *
-     * @param \SplFileInfo $archive
-     *            The archive to unflag
+     * @param \SplFileInfo $archive The archive to unflag
+     *
      * @return void
      */
     public function unflagArchive(\SplFileInfo $archive)
@@ -159,6 +160,9 @@ abstract class AbstractExtractor implements ExtractorInterface
     /**
      * (non-PHPdoc)
      *
+     * @param \SplFileInfo $archive The archive object
+     *
+     * @return bool
      * @see \TechDivision\ApplicationServer\Interfaces\ExtractorInterface::isDeployable()
      */
     public function isDeployable(\SplFileInfo $archive)
@@ -179,6 +183,9 @@ abstract class AbstractExtractor implements ExtractorInterface
     /**
      * (non-PHPdoc)
      *
+     * @param \SplFileInfo $archive The archive object
+     *
+     * @return bool
      * @see \TechDivision\ApplicationServer\Interfaces\ExtractorInterface::isUndeployable()
      */
     public function isUndeployable(\SplFileInfo $archive)
@@ -200,7 +207,10 @@ abstract class AbstractExtractor implements ExtractorInterface
 
     /**
      * (non-PHPdoc)
-     * 
+     *
+     * @param \SplFileInfo $archive The archive to be soaked
+     *
+     * @return void
      * @see \TechDivision\ApplicationServer\Interfaces\ExtractorInterface::soakArchive()
      */
     public function soakArchive(\SplFileInfo $archive)
@@ -220,6 +230,10 @@ abstract class AbstractExtractor implements ExtractorInterface
     /**
      * (non-PHPdoc)
      *
+     * @param \SplFileInfo $archive The archive file to be undeployed
+     *
+     * @throws \Exception
+     * @return void
      * @see \TechDivision\ApplicationServer\Interfaces\ExtractorInterface::undeployArchive()
      */
     public function undeployArchive(\SplFileInfo $archive)
@@ -227,7 +241,8 @@ abstract class AbstractExtractor implements ExtractorInterface
         try {
             
             // create webapp folder name based on the archive's basename
-            $webappFolderName = $this->getWebappsDir() . DIRECTORY_SEPARATOR . basename($archive->getFilename(), $this->getExtensionSuffix());
+            $webappFolderName = $this->getWebappsDir() . DIRECTORY_SEPARATOR
+                . basename($archive->getFilename(), $this->getExtensionSuffix());
             
             // check if app has to be undeployed
             if ($this->isUndeployable($archive) && is_dir($webappFolderName)) {
@@ -259,14 +274,16 @@ abstract class AbstractExtractor implements ExtractorInterface
      * Restores the backup files from the backup directory.
      * 
      * @param \SplFileInfo $archive To restore the files for
+     *
      * @return void
      */
     public function restoreBackup(\SplFileInfo $archive)
     {
-        
         // create tmp & webapp folder name based on the archive's basename
-        $webappFolderName = $this->getWebappsDir() . DIRECTORY_SEPARATOR . basename($archive->getFilename(), $this->getExtensionSuffix());
-        $tmpFolderName = $this->getTmpDir() . DIRECTORY_SEPARATOR . md5(basename($archive->getFilename(), $this->getExtensionSuffix()));
+        $webappFolderName = $this->getWebappsDir() . DIRECTORY_SEPARATOR
+            . basename($archive->getFilename(), $this->getExtensionSuffix());
+        $tmpFolderName = $this->getTmpDir() . DIRECTORY_SEPARATOR
+            . md5(basename($archive->getFilename(), $this->getExtensionSuffix()));
         
         // copy backup to webapp directory
         $this->copyDir($tmpFolderName, $webappFolderName);
@@ -275,8 +292,9 @@ abstract class AbstractExtractor implements ExtractorInterface
     /**
      * Removes a directory recursively.
      *
-     * @param string $dir
-     *            The directory to remove
+     * @param string $dir             The directory to remove
+     * @param bool   $alsoRemoveFiles The flag for removing files also
+     *
      * @return void
      */
     protected function removeDir($dir, $alsoRemoveFiles = true)
@@ -288,7 +306,10 @@ abstract class AbstractExtractor implements ExtractorInterface
         }
         
         // remove old archive from webapps folder recursively
-        $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($dir), \RecursiveIteratorIterator::CHILD_FIRST);
+        $files = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($dir),
+            \RecursiveIteratorIterator::CHILD_FIRST
+        );
         foreach ($files as $file) {
             // skip . and .. dirs
             if ($file->getFilename() === '.' || $file->getFilename() === '..') {
@@ -309,8 +330,9 @@ abstract class AbstractExtractor implements ExtractorInterface
     /**
      * Copies a directory recursively.
      *
-     * @param string $dir
-     *            The directory to remove
+     * @param string $src The source directory to copy
+     * @param string $dst The target directory
+     *
      * @return void
      */
     public function copyDir($src, $dst)
@@ -338,6 +360,9 @@ abstract class AbstractExtractor implements ExtractorInterface
     /**
      * (non-PHPdoc)
      *
+     * @param string $className The API service class name to return the instance for
+     *
+     * @return \TechDivision\ApplicationServer\Api\ServiceInterface The service instance
      * @see \TechDivision\ApplicationServer\InitialContext::newService()
      */
     public function newService($className)

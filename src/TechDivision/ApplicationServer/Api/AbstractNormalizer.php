@@ -1,27 +1,33 @@
 <?php
-
 /**
- * TechDivision\ApplicationServer\Api\AbstractNormalizer
+ * TechDivision\ApplicationServer\AbstractApplication
  *
- * NOTICE OF LICENSE
+ * PHP version 5
  *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
+ * @category   Appserver
+ * @package    TechDivision_ApplicationServer
+ * @subpackage Api
+ * @author     Tim Wagner <tw@techdivision.com>
+ * @copyright  2013 TechDivision GmbH <info@techdivision.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link       http://www.appserver.io
  */
 namespace TechDivision\ApplicationServer\Api;
 
-use TechDivision\ApplicationServer\Configuration;
 use TechDivision\ApplicationServer\InitialContext;
+use TechDivision\ApplicationServer\Api\NormalizerInterface;
+use TechDivision\ApplicationServer\Api\ServiceInterface;
 
 /**
  * Normalizes configuration nodes to \stdClass instances.
  *
- * @package TechDivision\ApplicationServer
- * @copyright Copyright (c) 2013 <info@techdivision.com> - TechDivision GmbH
- * @license http://opensource.org/licenses/osl-3.0.php
- *          Open Software License (OSL 3.0)
- * @author Tim Wagner <tw@techdivision.com>
+ * @category   Appserver
+ * @package    TechDivision_ApplicationServer
+ * @subpackage Api
+ * @author     Tim Wagner <tw@techdivision.com>
+ * @copyright  2013 TechDivision GmbH <info@techdivision.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link       http://www.appserver.io
  */
 abstract class AbstractNormalizer implements NormalizerInterface
 {
@@ -36,22 +42,20 @@ abstract class AbstractNormalizer implements NormalizerInterface
     /**
      * Initializes the normalizer with the initial context.
      *
-     * @param InitialContext $initalContext
-     *            The initial context instance
-     * @param ServiceInterface $service
-     *            The service to normalize for
-     * @return void
+     * @param InitialContext   $initialContext The initial context instance
+     * @param ServiceInterface $service        The service to normalize for
      */
-    public function __construct(InitialContext $initalContext, ServiceInterface $service)
+    public function __construct(InitialContext $initialContext, ServiceInterface $service)
     {
-        $this->initialContext = $initalContext;
+        $this->initialContext = $initialContext;
         $this->service = $service;
     }
 
     /**
      * (non-PHPdoc)
      *
-     * @see \TechDivision\ApplicationServer\Api\NormalizerInterface::getInitialContext()
+     * @return InitialContext
+     * @see NormalizerInterface::getInitialContext()
      */
     public function getInitialContext()
     {
@@ -61,7 +65,8 @@ abstract class AbstractNormalizer implements NormalizerInterface
     /**
      * (non-PHPdoc)
      *
-     * @see \TechDivision\ApplicationServer\Api\NormalizerInterface::getService()
+     * @return ServiceInterface
+     * @see NormalizerInterface::getService()
      */
     public function getService()
     {
@@ -69,8 +74,13 @@ abstract class AbstractNormalizer implements NormalizerInterface
     }
 
     /**
+     * (non-PHPdoc)
      *
-     * @see \TechDivision\ApplicationServer\InitialContext::newInstance()
+     * @param string $className The fully qualified class name to return the instance for
+     * @param array  $args      Arguments to pass to the constructor of the instance
+     *
+     * @return InitialContext
+     * @see InitialContext::newInstance()
      */
     public function newInstance($className, array $args = array())
     {

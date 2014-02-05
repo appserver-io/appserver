@@ -1,27 +1,30 @@
 <?php
-
 /**
  * TechDivision\ApplicationServer\AbstractWorker
  *
- * NOTICE OF LICENSE
+ * PHP version 5
  *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
+ * @category  Appserver
+ * @package   TechDivision_ApplicationServer
+ * @author    Johann Zelger <j.zelger@techdivision.com>
+ * @copyright 2013 TechDivision GmbH <info@techdivision.com>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      http://www.appserver.io
  */
+
 namespace TechDivision\ApplicationServer;
 
 use TechDivision\ApplicationServer\Interfaces\ContainerInterface;
-use TechDivision\ApplicationServer\AbstractContextThread;
 
 /**
  * The worker implementation that handles the request.
  *
- * @package TechDivision\ServletContainer
- * @copyright Copyright (c) 2013 <info@techdivision.com> - TechDivision GmbH
- * @license http://opensource.org/licenses/osl-3.0.php
- *          Open Software License (OSL 3.0)
- * @author Johann Zelger <jz@techdivision.com>
+ * @category  Appserver
+ * @package   TechDivision_ApplicationServer
+ * @author    Johann Zelger <j.zelger@techdivision.com>
+ * @copyright 2013 TechDivision GmbH <info@techdivision.com>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      http://www.appserver.io
  */
 abstract class AbstractWorker extends AbstractContextThread
 {
@@ -51,12 +54,10 @@ abstract class AbstractWorker extends AbstractContextThread
      * Init acceptor with container and acceptable socket resource
      * and thread type class.
      *
-     * @param ContainerInterface $container
-     *            A container implementation
-     * @param resource $resource
-     *            The client socket instance
-     * @param string $threadType
-     *            The thread type class to instantiate
+     * @param \TechDivision\ApplicationServer\Interfaces\ContainerInterface $container  A container implementation
+     * @param resource                                                      $resource   The client socket instance
+     * @param string                                                        $threadType The thread type class to init
+     *
      * @return void
      */
     public function init(ContainerInterface $container, $resource, $threadType)
@@ -71,7 +72,7 @@ abstract class AbstractWorker extends AbstractContextThread
      *
      * @return string.
      */
-    protected abstract function getResourceClass();
+    abstract protected function getResourceClass();
     
     /**
      * Returns the container instance.
@@ -84,8 +85,9 @@ abstract class AbstractWorker extends AbstractContextThread
     }
 
     /**
+     * The main function which will be called by doing start()
      *
-     * @see \Thread::run()
+     * @return void
      */
     public function main()
     {
