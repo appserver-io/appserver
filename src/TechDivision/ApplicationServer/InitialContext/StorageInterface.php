@@ -1,25 +1,33 @@
 <?php
-
 /**
  * TechDivision\ApplicationServer\InitialContext\StorageInterface
  *
- * NOTICE OF LICENSE
+ * PHP version 5
  *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
+ * @category   Appserver
+ * @package    TechDivision_ApplicationServer
+ * @subpackage InitialContext
+ * @author     Tim Wagner <tw@techdivision.com>
+ * @copyright  2013 TechDivision GmbH <info@techdivision.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link       http://www.appserver.io
  */
 
 namespace TechDivision\ApplicationServer\InitialContext;
 
 /**
- * @package     TechDivision\ApplicationServer
- * @copyright  	Copyright (c) 2010 <info@techdivision.com> - TechDivision GmbH
- * @license    	http://opensource.org/licenses/osl-3.0.php
- *              Open Software License (OSL 3.0)
- * @author      Tim Wagner <tw@techdivision.com>
+ * Interface StorageInterface
+ *
+ * @category   Appserver
+ * @package    TechDivision_ApplicationServer
+ * @subpackage InitialContext
+ * @author     Tim Wagner <tw@techdivision.com>
+ * @copyright  2013 TechDivision GmbH <info@techdivision.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link       http://www.appserver.io
  */
-interface StorageInterface {
+interface StorageInterface
+{
 
     /**
      * "Magic" tag for class-related entries
@@ -52,19 +60,22 @@ interface StorageInterface {
     /**
      * Saves data in the cache.
      *
-     * @param string $entryIdentifier Something which identifies the data - depends on concrete cache
-     * @param mixed $data The data to cache - also depends on the concrete cache implementation
-     * @param array $tags Tags to associate with this cache entry
-     * @param integer $lifetime Lifetime of this cache entry in seconds. If NULL is specified, the default lifetime is used. "0" means unlimited lifetime.
+     * @param string  $entryIdentifier Something which identifies the data - depends on concrete cache
+     * @param mixed   $data            The data to cache - also depends on the concrete cache implementation
+     * @param array   $tags            Tags to associate with this cache entry
+     * @param integer $lifetime        Lifetime of this cache entry in seconds. If NULL is specified,
+     *                                 the default lifetime is used. "0" means unlimited lifetime.
+     *
      * @return void
      * @api
      */
-    public function set($entryIdentifier, $data, array $tags = array(), $lifetime = NULL);
+    public function set($entryIdentifier, $data, array $tags = array(), $lifetime = null);
 
     /**
      * Finds and returns data from the cache.
      *
      * @param string $entryIdentifier Something which identifies the cache entry - depends on concrete cache
+     *
      * @return mixed
      * @api
      */
@@ -74,6 +85,7 @@ interface StorageInterface {
      * Finds and returns all cache entries which are tagged by the specified tag.
      *
      * @param string $tag The tag to search for
+     *
      * @return array An array with the identifier (key) and content (value) of all matching entries. An empty array if no entries matched
      * @api
      */
@@ -83,6 +95,7 @@ interface StorageInterface {
      * Checks if a cache entry with the specified identifier exists.
      *
      * @param string $entryIdentifier An identifier specifying the cache entry
+     *
      * @return boolean TRUE if such an entry exists, FALSE if not
      * @api
      */
@@ -92,6 +105,7 @@ interface StorageInterface {
      * Removes the given cache entry from the cache.
      *
      * @param string $entryIdentifier An identifier specifying the cache entry
+     *
      * @return boolean TRUE if such an entry exists, FALSE if not
      * @api
      */
@@ -109,6 +123,7 @@ interface StorageInterface {
      * Removes all cache entries of this cache which are tagged by the specified tag.
      *
      * @param string $tag The tag the entries must have
+     *
      * @return void
      * @api
      */
@@ -126,6 +141,7 @@ interface StorageInterface {
      * Checks the validity of an entry identifier. Returns true if it's valid.
      *
      * @param string $identifier An identifier to be checked for validity
+     *
      * @return boolean
      * @api
      */
@@ -135,6 +151,7 @@ interface StorageInterface {
      * Checks the validity of a tag. Returns true if it's valid.
      *
      * @param string $tag A tag to be checked for validity
+     *
      * @return boolean
      * @api
      */
@@ -143,8 +160,8 @@ interface StorageInterface {
     /**
      * Returns the keys for all values stored.
      * 
-     *  @return array
-     *  @api
+     * @return array
+     * @api
      */
     public function getAllKeys();
     

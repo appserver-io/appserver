@@ -1,14 +1,18 @@
 <?php
-
 /**
- * TechDivision\ApplicationServerApi\DatasourceService
+ * TechDivision\ApplicationServer\Api\DatasourceService
  *
- * NOTICE OF LICENSE
+ * PHP version 5
  *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
+ * @category   Appserver
+ * @package    TechDivision_ApplicationServer
+ * @subpackage Api
+ * @author     Tim Wagner <tw@techdivision.com>
+ * @copyright  2013 TechDivision GmbH <info@techdivision.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link       http://www.appserver.io
  */
+
 namespace TechDivision\ApplicationServer\Api;
 
 use TechDivision\ApplicationServer\Configuration;
@@ -19,11 +23,13 @@ use TechDivision\ApplicationServer\Api\Node\DatasourceNode;
  * This services provides access to the deployed datasources and allows
  * to deploy new datasources or remove a deployed one.
  *
- * @package TechDivision\ApplicationServer
- * @copyright Copyright (c) 2013 <info@techdivision.com> - TechDivision GmbH
- * @license http://opensource.org/licenses/osl-3.0.php
- *          Open Software License (OSL 3.0)
- * @author Tim Wagner <tw@techdivision.com>
+ * @category   Appserver
+ * @package    TechDivision_ApplicationServer
+ * @subpackage Api
+ * @author     Tim Wagner <tw@techdivision.com>
+ * @copyright  2013 TechDivision GmbH <info@techdivision.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link       http://www.appserver.io
  */
 class DatasourceService extends AbstractService
 {
@@ -46,8 +52,8 @@ class DatasourceService extends AbstractService
     /**
      * Returns the datasources with the passed name.
      *
-     * @param string $name
-     *            Name of the datasource to return
+     * @param string $name Name of the datasource to return
+     *
      * @return array The datasources with the name passed as parameter
      */
     public function findAllByName($name)
@@ -64,8 +70,8 @@ class DatasourceService extends AbstractService
     /**
      * Returns the datasource with the passed UUID.
      *
-     * @param string $uuid
-     *            UUID of the datasource to return
+     * @param string $uuid UUID of the datasource to return
+     *
      * @return \TechDivision\ApplicationServer\Api\Node\DatasourceNode The datasource with the UUID passed as parameter
      * @see \TechDivision\ApplicationServer\Api\ServiceInterface::load()
      */
@@ -83,6 +89,7 @@ class DatasourceService extends AbstractService
      * file with the passed name.
      *
      * @param string $filename The filename to initialize the datasources from
+     *
      * @return array
      */
     public function initFromFile($filename)
@@ -106,6 +113,7 @@ class DatasourceService extends AbstractService
      * Persists the passed datasource.
      *
      * @param \TechDivision\ApplicationServer\Api\Node\DatasourceNode $datasourceNode The datasource to persist
+     *
      * @return void
      */
     public function attachDatasource(DatasourceNode $datasourceNode)
