@@ -1,14 +1,18 @@
 <?php
-
 /**
  * TechDivision\ApplicationServer\Api\Node\AbstractNode
  *
- * NOTICE OF LICENSE
+ * PHP version 5
  *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
+ * @category   Appserver
+ * @package    TechDivision_ApplicationServer
+ * @subpackage Api
+ * @author     Tim Wagner <tw@techdivision.com>
+ * @copyright  2013 TechDivision GmbH <info@techdivision.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link       http://www.appserver.io
  */
+
 namespace TechDivision\ApplicationServer\Api\Node;
 
 use Herrera\Annotations\Tokens;
@@ -21,11 +25,13 @@ use TheSeer\Autoload\Config;
 /**
  * DTO to transfer aliases.
  *
- * @package TechDivision\ApplicationServer
- * @copyright Copyright (c) 2013 <info@techdivision.com> - TechDivision GmbH
- * @license http://opensource.org/licenses/osl-3.0.php
- *          Open Software License (OSL 3.0)
- * @author Tim Wagner <tw@techdivision.com>
+ * @category   Appserver
+ * @package    TechDivision_ApplicationServer
+ * @subpackage Api
+ * @author     Tim Wagner <tw@techdivision.com>
+ * @copyright  2013 TechDivision GmbH <info@techdivision.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link       http://www.appserver.io
  */
 abstract class AbstractNode implements NodeInterface
 {
@@ -51,6 +57,13 @@ abstract class AbstractNode implements NodeInterface
      */
     private $nodeName;
 
+    /**
+     * Initialise from file
+     *
+     * @param string $filename The filename as string
+     *
+     * @return void
+     */
     public function initFromFile($filename)
     {
         $configuration = new Configuration();
@@ -58,9 +71,15 @@ abstract class AbstractNode implements NodeInterface
         $this->initFromConfiguration($configuration);
     }
 
+    /**
+     * Initialise from configuration instance
+     *
+     * @param \TechDivision\ApplicationServer\Configuration $configuration The configuration instance
+     *
+     * @return void
+     */
     public function initFromConfiguration(Configuration $configuration)
     {
-
         // create a UUID and set the UUID of the parent node
         if ($configuration->getData('uuid') == null) {
             $this->setUuid($this->newUuid());
@@ -93,6 +112,7 @@ abstract class AbstractNode implements NodeInterface
      * Set's the the virtual ID applied by API services.
      *
      * @param string $uuid The the virtual ID applied by API services
+     *
      * @return void
      */
     public function setUuid($uuid)
@@ -114,6 +134,7 @@ abstract class AbstractNode implements NodeInterface
      * Set's the unique virtual ID of the parent node.
      *
      * @param string $parentUuid The unique virtual ID of the parent node
+     *
      * @return void
      */
     public function setParentUuid($parentUuid)
@@ -131,27 +152,48 @@ abstract class AbstractNode implements NodeInterface
         return $this->parentUuid;
     }
 
+    /**
+     * Set's the node's name
+     *
+     * @param string $nodeName The node's name
+     *
+     * @return void
+     */
     public function setNodeName($nodeName)
     {
         $this->nodeName = $nodeName;
     }
 
+    /**
+     * Return's the node's name
+     *
+     * @return string The node's name
+     */
     public function getNodeName()
     {
         return $this->nodeName;
     }
 
     /**
+     * Generates a uuid
      *
+     * @return string The generated uuid
      */
     public function newUuid()
     {
         return Uuid::uuid4()->__toString();
     }
 
-    public function getConfigurationNodeName($configuration, $mapping)
+    /**
+     * Return's the configuration node name by given mapping and configuration
+     *
+     * @param \TechDivision\ApplicationServer\Configuration    $configuration The configuration instance
+     * @param \TechDivision\ApplicationServer\Api\Node\Mapping $mapping       The mapping instance
+     *
+     * @return string
+     */
+    public function getConfigurationNodeName(Configuration $configuration, Mapping $mapping)
     {
-
         $parts = array();
         $parts[] = $configuration->getNodeName();
 
@@ -162,13 +204,29 @@ abstract class AbstractNode implements NodeInterface
         return '/' . implode('/', $parts);
     }
 
+    /**
+     * Checks if given classname is an implementation of ValueInterface
+     *
+     * @param string $className The class name to check
+     *
+     * @return bool true if its an implementation of ValueInterface or false if not.
+     */
     public function isValueClass($className)
     {
         $reflectionClass = new \ReflectionClass($className);
         return $reflectionClass->implementsInterface('TechDivision\ApplicationServer\Api\Node\ValueInterface');
     }
 
-    public function getValueForReflectionProperty($reflectionProperty, $configuration)
+    /**
+     * Return's the value for a given reflection property and configuration
+     *
+     * @param \ReflectionProperty                           $reflectionProperty The reflection property
+     * @param \TechDivision\ApplicationServer\Configuration $configuration      The configuration instance
+     *
+     * @return array An array with all values from given reflection property
+     * @throws \Exception
+     */
+    public function getValueForReflectionProperty(\ReflectionProperty $reflectionProperty, Configuration $configuration)
     {
         $mapping = $this->getPropertyTypeFromDocComment($reflectionProperty);
 
@@ -188,7 +246,7 @@ abstract class AbstractNode implements NodeInterface
 
             return $this->{$reflectionProperty->getName()} = $newNode;
 
-        } elseif (class_exists($nodeType))  {
+        } elseif (class_exists($nodeType)) {
 
             // return new $nodeType($configuration->getChild($configurationNodeName), $this->getUuid());
 
@@ -234,6 +292,11 @@ abstract class AbstractNode implements NodeInterface
         throw new \Exception(sprintf("Found invalid property type %s in node %s", $nodeType, get_class($this)));
     }
 
+    /**
+     * Exports to the configuration
+     *
+     * @return \TechDivision\ApplicationServer\Configuration The configuraton instance
+     */
     public function exportToConfiguration()
     {
 
@@ -253,8 +316,18 @@ abstract class AbstractNode implements NodeInterface
         return $configuration;
     }
 
-    public function setConfigurationByReflectionProperty($reflectionProperty, $configuration)
-    {
+    /**
+     * Set's the configuration by reflected property
+     *
+     * @param \ReflectionProperty                           $reflectionProperty The reflection property to set
+     * @param \TechDivision\ApplicationServer\Configuration $configuration      The configuration instance
+     *
+     * @return void|Configuration The configuration or nothing
+     */
+    public function setConfigurationByReflectionProperty(
+        \ReflectionProperty $reflectionProperty,
+        Configuration $configuration
+    ) {
         $mapping = $this->getPropertyTypeFromDocComment($reflectionProperty);
 
         if ($mapping == null) {
@@ -265,7 +338,7 @@ abstract class AbstractNode implements NodeInterface
 
         if (class_exists($nodeType) && $this->isValueClass($nodeType)) {
             return $configuration->setValue($this->{$reflectionProperty->getName()}->getValue());
-        } elseif (class_exists($nodeType))  {
+        } elseif (class_exists($nodeType)) {
             return $configuration->addChild($this->{$reflectionProperty->getName()}->exportToConfiguration());
         }
 
@@ -278,8 +351,21 @@ abstract class AbstractNode implements NodeInterface
         }
     }
 
-    public function appendConfigurationChild($reflectionProperty, $configuration, $path)
-    {
+    /**
+     * Appends the configuration on a given path with a given child
+     *
+     * @param \ReflectionProperty                           $reflectionProperty The reflection property
+     * @param \TechDivision\ApplicationServer\Configuration $configuration      The configuration instance
+     * @param string                                        $path               A path were to append to
+     *
+     * @return void
+     * @throws \Exception
+     */
+    public function appendConfigurationChild(
+        \ReflectionProperty $reflectionProperty,
+        Configuration $configuration,
+        $path
+    ) {
 
         $token = strtok($path, '/');
 
@@ -309,12 +395,12 @@ abstract class AbstractNode implements NodeInterface
      * Returns the property type found in the properties configuration
      * annotation.
      *
-     * @param \ReflectionProperty $reflectionProperty
-     *            The property to return the type for
+     * @param \ReflectionProperty $reflectionProperty The property to return the type for
+     *
      * @throws \Exception Is thrown if the property has NO bean annotation
-     * @return \TechDivision\ApplicationServer\Api\Node\Mapping The found property type mapping
+     * @return Mapping The found property type mapping
      */
-    public function getPropertyTypeFromDocComment($reflectionProperty)
+    public function getPropertyTypeFromDocComment(\ReflectionProperty $reflectionProperty)
     {
 
         // initialize the annotation tokenizer

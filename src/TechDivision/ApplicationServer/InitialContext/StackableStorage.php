@@ -1,14 +1,18 @@
 <?php
-
 /**
  * TechDivision\ApplicationServer\InitialContext\StackableStorage
  *
- * NOTICE OF LICENSE
+ * PHP version 5
  *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
+ * @category   Appserver
+ * @package    TechDivision_ApplicationServer
+ * @subpackage InitialContext
+ * @author     Tim Wagner <tw@techdivision.com>
+ * @copyright  2013 TechDivision GmbH <info@techdivision.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link       http://www.appserver.io
  */
+
 namespace TechDivision\ApplicationServer\InitialContext;
 
 use TechDivision\ApplicationServer\GenericStackable;
@@ -20,12 +24,14 @@ use TechDivision\ApplicationServer\Api\Node\NodeInterface;
  * 
  * This storage will completely be flushed when the the object is destroyed,
  * there is no automatic persistence functionality available.
- * 
- * @package TechDivision\ApplicationServer
- * @copyright Copyright (c) 2010 <info@techdivision.com> - TechDivision GmbH
- * @license http://opensource.org/licenses/osl-3.0.php
- *          Open Software License (OSL 3.0)
- * @author Tim Wagner <tw@techdivision.com>
+ *
+ * @category   Appserver
+ * @package    TechDivision_ApplicationServer
+ * @subpackage InitialContext
+ * @author     Tim Wagner <tw@techdivision.com>
+ * @copyright  2013 TechDivision GmbH <info@techdivision.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link       http://www.appserver.io
  */
 class StackableStorage extends AbstractStorage
 {
@@ -36,10 +42,9 @@ class StackableStorage extends AbstractStorage
      * set after the init() function has been invoked, so it'll overwrite the one
      * specified in the configuration if set.
      *
-     * @param \TechDivision\ApplicationServer\Api\Node\NodeInterface $storageNode
-     *            The storage configuration node
-     * @param string $identifier
-     *            Unique identifier for the cache storage
+     * @param \TechDivision\ApplicationServer\Api\Node\NodeInterface $storageNode The storage configuration node
+     * @param string                                                 $identifier  Unique identifier for the cache storage
+     *
      * @return void
      */
     public function __construct(NodeInterface $storageNode, $identifier = null)
@@ -52,7 +57,8 @@ class StackableStorage extends AbstractStorage
 
     /**
      * (non-PHPdoc)
-     * 
+     *
+     * @return void
      * @see \TechDivision\ApplicationServer\InitialContext\AbstractStorage::init()
      */
     public function init()
@@ -63,9 +69,17 @@ class StackableStorage extends AbstractStorage
     /**
      * (non-PHPdoc)
      *
+     * @param string  $entryIdentifier Something which identifies the data - depends on concrete cache
+     * @param mixed   $data            The data to cache - also depends on the concrete cache implementation
+     * @param array   $tags            Tags to associate with this cache entry
+     * @param integer $lifetime        Lifetime of this cache entry in seconds. If NULL is specified,
+     *                                 the default lifetime is used. "0" means unlimited lifetime.
+     *
+     * @return void
+     *
      * @see \TechDivision\ApplicationServer\InitialContext\StorageInterface::set()
      */
-    public function set($entryIdentifier, $data, array $tags = array(), $lifetime = NULL)
+    public function set($entryIdentifier, $data, array $tags = array(), $lifetime = null)
     {
         // create a unique cache key and add the passed value to the storage
         $cacheKey = $this->getIdentifier() . $entryIdentifier;
@@ -100,6 +114,9 @@ class StackableStorage extends AbstractStorage
     /**
      * (non-PHPdoc)
      *
+     * @param string $entryIdentifier Something which identifies the cache entry - depends on concrete cache
+     *
+     * @return mixed
      * @see \TechDivision\ApplicationServer\InitialContext\StorageInterface::get()
      */
     public function get($entryIdentifier)
@@ -110,6 +127,9 @@ class StackableStorage extends AbstractStorage
     /**
      * (non-PHPdoc)
      *
+     * @param string $entryIdentifier An identifier specifying the cache entry
+     *
+     * @return boolean TRUE if such an entry exists, FALSE if not
      * @see \TechDivision\ApplicationServer\InitialContext\StorageInterface::has()
      */
     public function has($entryIdentifier)
@@ -120,6 +140,9 @@ class StackableStorage extends AbstractStorage
     /**
      * (non-PHPdoc)
      *
+     * @param string $entryIdentifier An identifier specifying the cache entry
+     *
+     * @return boolean TRUE if such an entry exists, FALSE if not
      * @see \TechDivision\ApplicationServer\InitialContext\StorageInterface::remove()
      */
     public function remove($entryIdentifier)
@@ -136,6 +159,7 @@ class StackableStorage extends AbstractStorage
     /**
      * (non-PHPdoc)
      *
+     * @return array
      * @see \TechDivision\ApplicationServer\InitialContext\StorageInterface::getAllKeys()
      */
     public function getAllKeys()
