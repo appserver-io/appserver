@@ -58,7 +58,7 @@ class SecureReceiver extends AbstractReceiver
     /**
      * Returns the passphrase for the certificate.
      *
-     * @return string The path to cert file
+     * @return string|null The path to cert file
      */
     public function getCertPassphrase()
     {
