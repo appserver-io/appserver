@@ -60,17 +60,17 @@ abstract class AbstractReceiver implements ReceiverInterface
      * @var string
      */
     protected $threadType;
-    
+
     /**
      * The actual number of workers running.
-     * 
+     *
      * @var integer
      */
     protected $workerCounter = 0;
-    
+
     /**
      * The array containing the running worker.
-     * 
+     *
      * @var array
      */
     protected $worker = array();
@@ -149,7 +149,7 @@ abstract class AbstractReceiver implements ReceiverInterface
 
             // start main socket
             $this->getSocket()->start();
-            
+
             // check if resource been initiated
             if ($resource = $this->getSocket()->getResource()) {
                 // open threads where accept connections
@@ -176,10 +176,9 @@ abstract class AbstractReceiver implements ReceiverInterface
             
             // collect garbage and free memory/sockets
             while ($this->shutdown() === false) {
-                
                 // make sure that the number of configured workers are running
                 for ($i = 0; $i < sizeof($this->worker); $i++) {
-                    
+
                     // if not, start a new worker
                     if ($this->worker[$i] != null && $this->worker[$i]->isRunning() === false) {
                         // unset the worker and free memory and sockets
@@ -190,16 +189,16 @@ abstract class AbstractReceiver implements ReceiverInterface
                         $this->worker[$i]->start();
                     }
                 }
-                
+
                 // sleep for 0.1 seconds to lower system load
                 usleep(100000);
             }
-                    
+            
             // wait till all workers have been finished
             foreach ($this->worker as $worker) {
                 $worker->kill();
             }
-            
+
         } catch (\Exception $e) {
             $this->getInitialContext()->getSystemLogger()->error($e->__toString());
         }
@@ -221,7 +220,7 @@ abstract class AbstractReceiver implements ReceiverInterface
     /**
      * Returns the socket instance
      *
-     * @return \TechDivision\Socket\Client
+     * @return \TechDivision\Socket\Server|\TechDivision\Stream\SecureServer
      */
     public function getSocket()
     {
@@ -316,7 +315,7 @@ abstract class AbstractReceiver implements ReceiverInterface
     /**
      * Enables PHP internal garbage collection.
      *
-     * @return \TechDivision\PersistenceContainer\Container The container instance
+     * @return \TechDivision\ApplicationServer\Interfaces\ReceiverInterface The container instance
      * @link http://php.net/manual/en/function.gc-enable.php
      */
     public function gcEnable()
@@ -328,7 +327,7 @@ abstract class AbstractReceiver implements ReceiverInterface
     /**
      * Disables PHP internal garbage collection.
      *
-     * @return \TechDivision\PersistenceContainer\Container The container instance
+     * @return \TechDivision\ApplicationServer\Interfaces\ReceiverInterface The container instance
      * @link http://php.net/manual/en/function.gc-disable.php
      */
     public function gcDisable()
