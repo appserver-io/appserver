@@ -15,6 +15,7 @@
 namespace TechDivision\ApplicationServer;
 
 use TechDivision\ApplicationServer\Interfaces\ExtractorInterface;
+use TechDivision\ApplicationServer\Utilities\DirectoryKeys;
 
 /**
  * Abstract extractor functionality
@@ -28,7 +29,7 @@ use TechDivision\ApplicationServer\Interfaces\ExtractorInterface;
  */
 abstract class AbstractExtractor implements ExtractorInterface
 {
-
+    
     /**
      * The container's base directory.
      *
@@ -61,7 +62,7 @@ abstract class AbstractExtractor implements ExtractorInterface
      *
      * @return string
      */
-    protected function getTmpDir()
+    public function getTmpDir()
     {
         return $this->getService()->getTmpDir();
     }
@@ -71,7 +72,7 @@ abstract class AbstractExtractor implements ExtractorInterface
      *
      * @return string
      */
-    protected function getDeployDir()
+    public function getDeployDir()
     {
         return $this->getService()->getDeployDir();
     }
@@ -81,7 +82,7 @@ abstract class AbstractExtractor implements ExtractorInterface
      *
      * @return string
      */
-    protected function getWebappsDir()
+    public function getWebappsDir()
     {
         return $this->getService()->getWebappsDir();
     }
@@ -104,7 +105,7 @@ abstract class AbstractExtractor implements ExtractorInterface
     }
 
     /**
-     * Will actually deploy all webapps
+     * Will actually deploy all webapps.
      *
      * @return void
      */
@@ -120,6 +121,14 @@ abstract class AbstractExtractor implements ExtractorInterface
                 $this->deployArchive($archive);
             }
         }
+        
+        // prepare the filename for the file with the last succesfull deployment timestamp
+        $successFile = $this->getService()->realpath(
+            DirectoryKeys::DEPLOY . DIRECTORY_SEPARATOR . ExtractorInterface::FILE_DEPLOYMENT_SUCCESSFULL
+        );
+        
+        // create a flag file with date of the last successfull deployment
+        touch($successFile);
     }
 
     /**

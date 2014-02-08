@@ -19,6 +19,8 @@ use TechDivision\ApplicationServer\Interfaces\ExtractorInterface;
 use TechDivision\ApplicationServer\InitialContext;
 use TechDivision\ApplicationServer\Api\Node\NodeInterface;
 use TechDivision\ApplicationServer\Api\Node\AppserverNode;
+use TechDivision\ApplicationServer\Utilities\StateKeys;
+use TechDivision\ApplicationServer\Monitor\DeploymentMonitor;
 use \Psr\Log\LoggerInterface;
 
 /**
@@ -195,6 +197,8 @@ class Server
     protected function initContainers()
     {
         
+        $this->threads = array();
+        
         // and initialize a container thread for each container
         foreach ($this->getSystemConfiguration()->getContainers() as $containerNode) {
             
@@ -302,7 +306,6 @@ class Server
      */
     public function start()
     {
-        
         // log that the server will be started now
         $this->getSystemLogger()->info(
             sprintf(
@@ -315,21 +318,115 @@ class Server
         );
         
         // start the container threads
+        $this->startContainers();
+    }
+    
+    /**
+     * Watches the deployment directory for changes and restarts
+     * the server instance if necessary.
+     * 
+     * This is an alternative method to call start() because the
+     * monitor is running exclusively like the start() method.
+     * 
+     * @return void
+     * @see \TechDivision\ApplicationServer\Server::start();
+     */
+    public function watch()
+    {        
+        // initialize the default monitor for the deployment directory
+        $monitor = new DeploymentMonitor($this->getInitialContext());
+        
+        // start the monitor
+        $monitor->start();        
+    }
+    
+    /**
+     * Starts the registered container threads.
+     * 
+     * @return void
+     */
+    public function startContainers()
+    {
+        // set the flag that the application will be started
+        $this->getInitialContext()->setAttribute(StateKeys::KEY, StateKeys::get(StateKeys::STARTING));
+        
+        // start the container threads
         foreach ($this->getThreads() as $thread) {
-            
+        
             // start the thread
             $thread->start();
-
+        
             // synchronize container threads to avoid registring apps several times
             $thread->synchronized(function ($self) {
                 $self->wait();
             }, $thread);
         }
         
-        // wait for the container thread to finish
-        foreach ($this->getThreads() as $thread) {
-            $thread->join();
-        }
+        // set the flag that the application has been started
+        $this->getInitialContext()->setAttribute(StateKeys::KEY, StateKeys::get(StateKeys::RUNNING));        
+    }
+    
+    /**
+     * Stops the appserver by setting the apropriate flag in the 
+     * initial context.
+     * 
+     * @return void
+     */
+    public function stopContainers()
+    {
+
+        // calculate the start time
+        $start = microtime(true);
+        
+        // set the flag that the application has to be stopped
+        $this->getInitialContext()->setAttribute(StateKeys::KEY, StateKeys::get(StateKeys::STOPPING));
+                        
+        // log a message with the time needed for restart
+        $this->getSystemLogger()->info(
+            sprintf(
+                "Successfully stopped appserver (in %d sec)", 
+                microtime(true) - $start
+            )
+        );
+    }
+
+    /**
+     * Redeploys the apps and restarts the appserver.
+     *
+     * @return void
+     */
+    public function restartContainers()
+    {
+
+        // log a message that the appserver will be restarted now
+        $this->getSystemLogger()->info(
+            sprintf(
+                "Now restarting appserver"
+            )
+        );
+
+        // calculate the start time
+        $start = microtime(true);
+                        
+        // stop the container threads
+        $this->stopContainers();
+        
+        // check if apps has to be redeployed
+        $this->getExtractor()->deployWebapps();
+        
+        // reinitialize the container threads
+        $this->initContainers();
+        
+        // start the container threads
+        $this->startContainers();
+                        
+        // log a message with the time needed for restart
+        $this->getSystemLogger()->info(
+            sprintf(
+                "Successfully restarted appserver (in %d sec)", 
+                microtime(true) - $start
+            )
+        );
     }
 
     /**
