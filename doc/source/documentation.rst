@@ -14,7 +14,7 @@ hopefully establish this solution as the standard for enterprise applications in
 Highlights
 ----------
 * Servlet engine, with full HTTP 1.1 support
-* Web Socket engine, based on `Ratchet <http://socketo.me/>`_ 
+* Web Socket engine, based on `Ratchet <http://socketo.me/>`_
 * Session beans (stateful, stateless + singleton)
 * Message beans
 * Doctrine as standard Persistence provider
@@ -532,6 +532,9 @@ folder we create the ``CustomerProcessor.php`` class as follows.
     use TechDivision\Example\Services\AbstractProcessor;
     use Doctrine\ORM\Tools\SchemaTool;
 
+    /**
+     * @Singleton
+     */
     class CustomerProcessor extends AbstractProcessor
     {
         public function createSchema()
@@ -569,9 +572,12 @@ folder we create the ``CustomerProcessor.php`` class as follows.
     }
 
 We overwrite the ``createSchema()`` method of the abstract processor as we have a different entity. But the rest of the
-abstract class works for us as well. The ``persist()`` method gets the doctrine entity manager in order to persist
-entities. After successful persistence we want to display all entities in the frontend. We therefore implement the
-following method into our customer processor.
+abstract class works for us as well. You may have noticed the ``@Singleton`` above the class name. This exhibits that
+the customer processor is a singleton bean. It means that only one instance of it is created which is necessary as there
+are no conflicts while persisting. There are also stateless and stateful beans which are for other purposes, as they
+either know the state between two requests of the same user or not. The ``persist()`` method gets the doctrine entity
+manager in order to persist entities. After successful persistence we want to display all entities in the frontend. We
+therefore implement the following method into our customer processor.
 
 .. code-block:: php
     :linenos:
