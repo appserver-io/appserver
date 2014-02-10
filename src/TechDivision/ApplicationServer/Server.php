@@ -335,7 +335,7 @@ class Server
     {
         // initialize the default monitor for the deployment directory
         $monitor = $this->newInstance(
-            'TechDivision\ApplicationServer\Scanner\DeploymentScannner',
+            'TechDivision\ApplicationServer\Scanner\DeploymentScanner',
             array($this->getInitialContext())
         );
         
