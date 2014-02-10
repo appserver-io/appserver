@@ -125,7 +125,7 @@ class StateKeys
      * Returns TRUE if the passed state key equals
      * the actual one, else FALSE.
      * 
-     * @param \TechDivision\ApplicationServer\Utilities\StateKey $stateKey The state key to check
+     * @param \TechDivision\ApplicationServer\Utilities\StateKeys $stateKey The state key to check
      * 
      * @return boolean TRUE if equal, else FALSE
      */
@@ -139,7 +139,7 @@ class StateKeys
      * 
      * @param string $state The state to create an instance for
      * 
-     * @return \TechDivision\ApplicationServer\Utilities\StateKey The state instance
+     * @return \TechDivision\ApplicationServer\Utilities\StateKeys The state instance
      * @throws \TechDivision\ApplicationServer\Utilities\InvalidStateException 
      *      Is thrown if the state is not available
      */
