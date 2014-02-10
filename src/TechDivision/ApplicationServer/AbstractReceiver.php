@@ -1,27 +1,34 @@
 <?php
-
 /**
  * TechDivision\ApplicationServer\AbstractReceiver
  *
- * NOTICE OF LICENSE
+ * PHP version 5
  *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
+ * @category  Appserver
+ * @package   TechDivision_ApplicationServer
+ * @author    Johann Zelger <j.zelger@techdivision.com>
+ * @author    Tim Wagner <tw@techdivision.com>
+ * @copyright 2013 TechDivision GmbH <info@techdivision.com>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      http://www.appserver.io
  */
+
 namespace TechDivision\ApplicationServer;
 
 use TechDivision\ApplicationServer\InitialContext;
 use TechDivision\ApplicationServer\Interfaces\ReceiverInterface;
+use TechDivision\ApplicationServer\Utilities\StateKeys;
 
 /**
+ * Class AbstractReceiver
  *
- * @package TechDivision\ApplicationServer
- * @copyright Copyright (c) 2010 <info@techdivision.com> - TechDivision GmbH
- * @license http://opensource.org/licenses/osl-3.0.php
- *          Open Software License (OSL 3.0)
- * @author Tim Wagner <tw@techdivision.com>
- * @author Johann Zelger <jz@techdivision.com>
+ * @category  Appserver
+ * @package   TechDivision_ApplicationServer
+ * @author    Johann Zelger <j.zelger@techdivision.com>
+ * @author    Tim Wagner <tw@techdivision.com>
+ * @copyright 2013 TechDivision GmbH <info@techdivision.com>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      http://www.appserver.io
  */
 abstract class AbstractReceiver implements ReceiverInterface
 {
@@ -32,6 +39,13 @@ abstract class AbstractReceiver implements ReceiverInterface
      * @var \TechDivision\ApplicationServer\Interfaces\ContainerInterface
      */
     protected $container;
+
+    /**
+     * The socket instance
+     *
+     * @var \TechDivision\Socket\Client
+     */
+    protected $socket;
 
     /**
      * The worker type to use.
@@ -48,19 +62,53 @@ abstract class AbstractReceiver implements ReceiverInterface
     protected $threadType;
 
     /**
+     * The actual number of workers running.
+     *
+     * @var integer
+     */
+    protected $workerCounter = 0;
+
+    /**
+     * The array containing the running worker.
+     *
+     * @var array
+     */
+    protected $worker = array();
+
+    /**
+     * @var InitialContext
+     */
+    protected $initialContext;
+    
+    /**
+     * The server's stop state.
+     * 
+     * @var \TechDivision\ApplicationServer\Utilities\StateKeys
+     */
+    protected $stopState;
+
+    /**
      * Sets the reference to the container instance.
      *
-     * @param \TechDivision\ApplicationServer\Interfaces\ContainerInterface $container
-     *            The container instance
+     * @param \TechDivision\ApplicationServer\InitialContext                $initialContext The initial context instance
+     * @param \TechDivision\ApplicationServer\Interfaces\ContainerInterface $container      The container instance
      */
     public function __construct($initialContext, $container)
     {
+        // initialize the server's stop state
+        $this->stopState = StateKeys::get(StateKeys::STOPPING);
 
         // initialize the initial context
         $this->initialContext = $initialContext;
 
         // set the container instance
         $this->container = $container;
+
+        // set the socket instance
+        $this->socket = $this->newInstance($this->getResourceClass());
+
+        // setup socket instance
+        $this->setupSocket();
 
         // enable garbage collector
         $this->gcEnable();
@@ -71,53 +119,112 @@ abstract class AbstractReceiver implements ReceiverInterface
      *
      * @return string The resource class name
      */
-    protected abstract function getResourceClass();
+    abstract protected function getResourceClass();
 
     /**
+     * Sets up the specific socket instance
      *
-     * @see TechDivision\ApplicationServer\Interfaces\ReceiverInterface::start()
+     * @return void
+     */
+    protected function setupSocket()
+    {
+        // set address and port
+        $this->getSocket()
+            ->setAddress($this->getAddress())
+            ->setPort($this->getPort());
+    }
+
+    /**
+     * Starts the receiver in an infinite loop.
+     *
+     * @return boolean TRUE if the receiver has been started successfully, else FALSE
+     * @see \TechDivision\ApplicationServer\Interfaces\ReceiverInterface::start()
      */
     public function start()
     {
         try {
+            
+            // init counter var
+            $workerCounter = 0;
 
-            /**
-             * @var \TechDivision\Socket\Client $socket
-             */
-            $socket = $this->newInstance($this->getResourceClass());
-
-            // prepare the main socket and listen
-            $socket->setAddress($this->getAddress())
-                ->setPort($this->getPort())
-                ->start();
+            // start main socket
+            $this->getSocket()->start();
 
             // check if resource been initiated
-            if ($resource = $socket->getResource()) {
-
-                // init worker number
-                $worker = 0;
-                // init workers array holder
-                $workers = array();
-
+            if ($resource = $this->getSocket()->getResource()) {
                 // open threads where accept connections
-                while ($worker ++ < $this->getWorkerNumber()) {
+                while ($workerCounter++ < $this->getWorkerNumber()) {
                     // init thread
-                    $workers[$worker] = $this->newWorker($socket->getResource());
+                    $this->worker[$workerCounter] = $this->newWorker($this->getSocket()->getResource());
                     // start thread async
-                    $workers[$worker]->start();
+                    $this->worker[$workerCounter]->start();
+                }
+            }
+
+            // log a message that the container has been started successfully
+            $this->getInitialContext()->getSystemLogger()->info(
+                sprintf(
+                    'Successfully started receiver for container %s, ' .
+                    'listening on IP: %s Port: %s Number of workers started: %s, Workertype: %s',
+                    $this->getContainer()->getContainerNode()->getName(),
+                    $this->getAddress(),
+                    $this->getPort(),
+                    $this->getWorkerNumber(),
+                    $this->getWorkerType()
+                )
+            );
+            
+            // collect garbage and free memory/sockets
+            while ($this->shutdown() === false) {
+                // make sure that the number of configured workers are running
+                for ($i = 0; $i < sizeof($this->worker); $i++) {
+
+                    // if not, start a new worker
+                    if ($this->worker[$i] != null && $this->worker[$i]->isRunning() === false) {
+                        // unset the worker and free memory and sockets
+                        unset($this->worker[$i]);
+                        // init thread
+                        $this->worker[$i] = $this->newWorker($this->getSocket()->getResource());
+                        // start thread async
+                        $this->worker[$i]->start();
+                    }
                 }
 
-                return true;
+                // sleep for 0.1 seconds to lower system load
+                usleep(100000);
             }
+            
+            // wait till all workers have been finished
+            foreach ($this->worker as $worker) {
+                $worker->kill();
+            }
+
         } catch (\Exception $e) {
-            error_log($e->__toString());
+            $this->getInitialContext()->getSystemLogger()->error($e->__toString());
         }
 
+        // close the socket if still open
         if (is_resource($resource)) {
-            $socket->close();
+            $this->getSocket()->close();
         }
 
+        // log that the receiver has successfully been shutdown
+        $this->getInitialContext()->getSystemLogger()->info(
+            "Successfully stopped receiver " . $this->getContainer()->getContainerNode()->getName()
+        );
+
+        // return FALSE
         return false;
+    }
+
+    /**
+     * Returns the socket instance
+     *
+     * @return \TechDivision\Socket\Server|\TechDivision\Stream\SecureServer
+     */
+    public function getSocket()
+    {
+        return $this->socket;
     }
 
     /**
@@ -131,7 +238,9 @@ abstract class AbstractReceiver implements ReceiverInterface
     }
 
     /**
+     * Returns the maximum number of workers to start.
      *
+     * @return integer The maximum worker number
      * @see \TechDivision\ApplicationServer\Interfaces\ReceiverInterface::getWorkerNumber()
      */
     public function getWorkerNumber()
@@ -140,7 +249,9 @@ abstract class AbstractReceiver implements ReceiverInterface
     }
 
     /**
+     * Returns the IP address to listen to.
      *
+     * @return string The IP address to listen to
      * @see \TechDivision\ApplicationServer\Interfaces\ReceiverInterface::getAddress()
      */
     public function getAddress()
@@ -149,7 +260,9 @@ abstract class AbstractReceiver implements ReceiverInterface
     }
 
     /**
+     * Returns the port to listen to.
      *
+     * @return integer The port to listen to
      * @see \TechDivision\ApplicationServer\Interfaces\ReceiverInterface::getPort()
      */
     public function getPort()
@@ -202,7 +315,7 @@ abstract class AbstractReceiver implements ReceiverInterface
     /**
      * Enables PHP internal garbage collection.
      *
-     * @return \TechDivision\PersistenceContainer\Container The container instance
+     * @return \TechDivision\ApplicationServer\Interfaces\ReceiverInterface The container instance
      * @link http://php.net/manual/en/function.gc-enable.php
      */
     public function gcEnable()
@@ -214,7 +327,7 @@ abstract class AbstractReceiver implements ReceiverInterface
     /**
      * Disables PHP internal garbage collection.
      *
-     * @return \TechDivision\PersistenceContainer\Container The container instance
+     * @return \TechDivision\ApplicationServer\Interfaces\ReceiverInterface The container instance
      * @link http://php.net/manual/en/function.gc-disable.php
      */
     public function gcDisable()
@@ -226,12 +339,14 @@ abstract class AbstractReceiver implements ReceiverInterface
     /**
      * Returns a thread
      *
+     * @param resource $socketResource A socket resource to transmit via construct
+     *
      * @return \Thread The request acceptor thread
      */
     public function newWorker($socketResource)
     {
         $params = array(
-            $this->initialContext,
+            $this->getInitialContext(),
             $this->getContainer(),
             $socketResource,
             $this->getThreadType()
@@ -242,16 +357,23 @@ abstract class AbstractReceiver implements ReceiverInterface
     /**
      * (non-PHPdoc)
      *
+     * @param string $className The fully qualified class name to return the instance for
+     * @param array  $args      Arguments to pass to the constructor of the instance
+     *
+     * @return object The instance itself
      * @see \TechDivision\ApplicationServer\InitialContext::newInstance()
      */
     public function newInstance($className, array $args = array())
     {
-        return $this->initialContext->newInstance($className, $args);
+        return $this->getInitialContext()->newInstance($className, $args);
     }
 
     /**
      * (non-PHPdoc)
      *
+     * @param string $className The API service class name to return the instance for
+     *
+     * @return \TechDivision\ApplicationServer\Api\ServiceInterface The service instance
      * @see \TechDivision\ApplicationServer\InitialContext::newService()
      */
     public function newService($className)
@@ -267,5 +389,27 @@ abstract class AbstractReceiver implements ReceiverInterface
     public function getInitialContext()
     {
         return $this->initialContext;
+    }
+    
+    /**
+     * Returns the server's stop state.
+     * 
+     * @return \TechDivision\ApplicationServer\Utilities\StateKeys The stop state
+     */
+    public function getStopState()
+    {
+        return $this->stopState;
+    }
+    
+    /**
+     * Returns TRUE if the appserver sends the shudown flag else FALSE.
+     * 
+     * @return boolean TRUE if the server has to be shutdown, else FALSE
+     */
+    public function shutdown()
+    {
+        return $this->getStopState()->equals(
+            $this->getInitialContext()->getAttribute(StateKeys::KEY)
+        );
     }
 }

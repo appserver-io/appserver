@@ -3,6 +3,7 @@ The objective of the project is to develop a multi-threaded application server f
 
 # Highlights
 * Servlet engine, with full HTTP 1.1 support
+* Web Socket engine, based on [Ratchet](http://socketo.me/)
 * Session beans (stateful, stateless + singleton)
 * Message beans
 * Doctrine as standard Persistence provider
@@ -12,7 +13,7 @@ The objective of the project is to develop a multi-threaded application server f
 * Cluster functionality
 
 # Technical Features
-* Joe Watkins (https://github.com/krakjoe/pthreads) phtreads Library is used 
+* Joe Watkins [phtreads](https://github.com/krakjoe/pthreads) library is used 
 * DI & AO  usage within the respective container
 * Use of annotations to configure beans
 * Configuration by Exception (optional Usage of Deployment Descriptor possible)
@@ -46,9 +47,8 @@ Start your favorite browser and open the URL `http://127.0.0.1:8586/demo` to loa
 If you're on a Debian system you don't need to download the .deb package. Follow these instructions:
 
 ```
-root@debian:~# echo “deb http://deb.appserver.io/ wheezy main” >> /etc/apt/sources.list
-root@debian:~# wget http://deb.appserver.io/appserver.gpg
-root@debian:~# cat appserver.gpg | apt-key add -
+root@debian:~# echo "deb http://deb.appserver.io/ wheezy main" > /etc/apt/sources.list.d/appserver.list
+root@debian:~# wget http://deb.appserver.io/appserver.gpg -O - | apt-key add -
 root@debian:~# aptitude update
 root@debian:~# aptitude install appserver
 ```
@@ -59,37 +59,47 @@ can start, stop or restart it with the init-script `/etc/init.d/appserver` and t
 After installation you can open a really simply example app with your favorite browser open the URL 
 `http://127.0.0.1:8586/demo`.
 
+# Uninstall
+To uninstall the Application Server on Mac OS X, you simply have to delete the folder `/opt/appserver` and the configuration files for the launch deameons. These are files are located in folder `/Library/LaunchDaemons` and named `io.appserver.appserver.plist`, `io.appserver.memcached.plist` and `io.appserver.redis.plist`. On Linux you can simple uninstall the Application Server with the package managment tool you've installed it. If you're using Debian you can use `apitude remove appserver` for example.
+
 # Roadmap
 As we're in heavy development it may be, that we've to move some tasks from the following roadmap to a earlier/later version, please be aware of that. If you've ideas or features that definitely has to be in one of the next releases, please contact us. We're always open for new ideas or feedback.
 
 And yes, we've plans for a Community and a Enterprise edition. The Community Edition will provide all functionality needed to develop, run maintain all kind of web applications. The Enterprise Edition will focus on large software solutions that run on many servers and needs real cluster functionality.
 
 ## Community Edition
-### Version 0.6 - Application Server
-- [ ] Logging
+
+### Version 0.5.8 - Application Server + [WebSocketContainer](https://github.com/techdivision/TechDivision_WebSocketContainer)
+- [x] Logging with [monolog](https://github.com/Seldaek/monolog>)
+- [x] Generic management API
+- [x] HTTP basic + digest authentication for Servlet Container
+- [x] Integrate annotations for session beans
+- [x] Administration interface with drag-and-drop PHAR installer
+- [x] Automated Build- and Deployment using Travis-CI
+- [x] Set environment variables in XML configuration files
+- [x] Merging XML configuration files
+- [x] WebSocket integration
+- [x] Running Magento CE 1.7.x + 1.8.x demo applications
+
+### Version 0.5.9 - Application Server + [ServletContainer](https://github.com/techdivision/TechDivision_ServletContainer)
+- [ ] Windows installer
+- [ ] PHAR based deployment
+- [ ] [Design by Contract](https://github.com/wick-ed/php-by-contract)
+- [ ] SSL Encryption for TechDivision_ServletContainer project
+- [ ] RPM packages + Repository
+
+### Version 0.6.0 - Application Server + [ServletContainer](https://github.com/techdivision/TechDivision_ServletContainer)
 - [ ] AOP
 - [ ] DI
-- [ ] Refactoring routing
-- [ ] Merging XML configuration files
+- [ ] Refactor routing
 - [ ] Separate configuration files for server, container and application
-- [ ] Set environment variables in XML configuration files
-- [ ] PHAR based deployment
-- [ ] 100 % Coverage for PHPUnit test suite for TechDivision_ApplicationServer project
-- [ ] Automated Build- and Deployment using Travis-CI
-- [ ] Running Magento CE 1.7.x demo application
 - [ ] Running TYPO3 6.x demo application
 - [ ] Running TYPO3 Flow 2.0.x demo application
 - [ ] Running TYPO3 Neos 1.x demo application
 - [ ] Mac OS X Universal installer
-- [ ] RPM packages
-- [ ] Windows installer
-- [ ] Generic management API
+- [ ] 100 % Coverage for PHPUnit test suite for TechDivision_ApplicationServer project
 
 ### Version 0.7 - [Servlet Container](https://github.com/techdivision/TechDivision_ServletContainer)
-- [ ] Integrate annotations for session beans
-- [ ] Administration interface with drag-and-drop PHAR installer
-- [ ] SSL Encryption for TechDivision_ServletContainer project
-- [ ] HTTP basic authentication for TechDivision_ServletContainer project
 - [ ] mod_rewrite functionality for TechDivision_ServletContainer project
 - [ ] Add dynamic load of application specific PECL extensions
 - [ ] 100 % Coverage for PHPUnit test suite for TechDivision_ServletContainer project
@@ -111,10 +121,16 @@ And yes, we've plans for a Community and a Enterprise edition. The Community Edi
 ### Version 1.1 - Additional Containers
 - [ ] Distributed and redundant cluster caching system with automated failover
 - [ ] Fast-CGI container
-- [ ] WebSocket integration
 
 ## Enterprise Edition
 ### Version 1.2 - Cluster Functionality
 - [ ] Cluster functionality
+- [ ] Appserver nodes get known each other in same network automatically
+- [ ] Webapps running on nodes in same network can be executed via all appserver nodes
+- [ ] Webapps can be synchronized between appserver nodes to be executed locally
+- [ ] Snapshot functionality for webapps
+- [ ] HA Loadbalancing Container
 - [ ] Container based transactions
+- [ ] Hot-Deployment
 - [ ] Farming deployment
+- [ ] Web Application Firewall (WAF)

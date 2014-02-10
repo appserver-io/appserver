@@ -1,24 +1,30 @@
 <?php
-
 /**
  * TechDivision\ApplicationServer\Api\Node\HostNode
  *
- * NOTICE OF LICENSE
+ * PHP version 5
  *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
+ * @category   Appserver
+ * @package    TechDivision_ApplicationServer
+ * @subpackage Api
+ * @author     Tim Wagner <tw@techdivision.com>
+ * @copyright  2013 TechDivision GmbH <info@techdivision.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link       http://www.appserver.io
  */
+
 namespace TechDivision\ApplicationServer\Api\Node;
 
 /**
  * DTO to transfer a host.
  *
- * @package TechDivision\ApplicationServer
- * @copyright Copyright (c) 2013 <info@techdivision.com> - TechDivision GmbH
- * @license http://opensource.org/licenses/osl-3.0.php
- *          Open Software License (OSL 3.0)
- * @author Tim Wagner <tw@techdivision.com>
+ * @category   Appserver
+ * @package    TechDivision_ApplicationServer
+ * @subpackage Api
+ * @author     Tim Wagner <tw@techdivision.com>
+ * @copyright  2013 TechDivision GmbH <info@techdivision.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link       http://www.appserver.io
  */
 class HostNode extends AbstractNode
 {
@@ -58,7 +64,7 @@ class HostNode extends AbstractNode
     /**
      * The server's vhosts configuration.
      *
-     * @var array<\TechDivision\ApplicationServer\Api\Node\VhostNode>
+     * @var array
      * @AS\Mapping(nodeName="vhosts/vhost", nodeType="array", elementType="TechDivision\ApplicationServer\Api\Node\VhostNode")
      */
     protected $vhosts = array();
@@ -106,7 +112,7 @@ class HostNode extends AbstractNode
     /**
      * Returns the server's vhosts configuration.
      *
-     * @return array<\TechDivision\ApplicationServer\Api\Node\VhostNode> The server's vhosts configuration
+     * @return array The server's vhosts configuration
      */
     public function getVhosts()
     {

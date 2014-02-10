@@ -20,7 +20,6 @@
 	<!-- ==================================================================== -->
 	<target name="clean" description="Cleans almost everything, so use carefully.">
 		<delete dir="${php-target.dir}" includeemptydirs="true" quiet="false" verbose="true" failonerror="true"/>
-        <symlink action="delete" link="instance-src"/>
 	</target>
 	
 	<!-- ==================================================================== -->
@@ -29,7 +28,6 @@
 	<target name="prepare" depends="clean" description="Prepares all the required directories.">
 		<mkdir dir="${php-target.dir}" />
         <mkdir dir="${php-target.dir}/reports/unit/coverage" />
-        <symlink resource="${instance.base.dir}" link="instance-src" overwrite="true"/>
 	</target>
 	
     <!-- ==================================================================== -->
@@ -69,8 +67,9 @@
     <!-- Runs the code sniffer and generates a report                         -->
     <!-- ==================================================================== -->
     <target name="phpcs" description="Runs the code sniffer and generates a report.">
-        <exec executable="phpcs">
-            <arg line="--extensions=php,phtml --standard=Zend --report=checkstyle --report-file=${php-target.dir}/reports/checkstyle.xml ${php-src.dir}"/>
+        <exec executable="phpcs" failonerror="true">
+            <!-- call phpcs without report-file to get error message on build console -->
+            <arg line="-n --extensions=php --standard=phpcs.xml ."/>
         </exec>
     </target>
 	
@@ -154,13 +153,35 @@
     <!-- Runs the PHPUnit tests and generates the code metrics				  -->
     <!-- ==================================================================== -->
     <target name="build" description="Runs the PHPUnit tests and generates the code metrics.">
+        <antcall target="phpcs"/>
         <antcall target="run-tests"/>
+        <!--
     	<antcall target="apidoc"/>
-    	<antcall target="phpcs"/>
     	<antcall target="phpcpd"/>
     	<antcall target="phploc"/>
     	<antcall target="pdepend"/>
     	<antcall target="phpmd"/>
+    	-->
+    </target>
+
+    <!-- ==================================================================== -->
+    <!-- Copies the documentation to the target directory                     -->
+    <!-- ==================================================================== -->
+    <target name="copy-doc" description="Copies the documentation to the target directory.">
+        <exec executable="make" dir="${basedir}/doc" failonerror="true">
+            <arg line="html" />
+        </exec>
+        <copy file="${doc.build.file}" tofile="${doc.target.file}" overwrite="true"/>
+        <copy todir="${doc.image.target.dir}" preservelastmodified="true" overwrite="true">
+            <fileset dir="${doc.image.build.dir}">
+                <include name="**/*" />
+            </fileset>
+        </copy>
+        <replaceregexp file="${doc.target.file}"
+                       match="src=&quot;_images"
+                       replace="src=&quot;static/img/docs"
+                       byline="true"
+        />
     </target>
 
 </project>

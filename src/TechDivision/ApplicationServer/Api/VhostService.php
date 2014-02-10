@@ -1,26 +1,30 @@
 <?php
-
 /**
  * TechDivision\ApplicationServer\Api\VhostService
  *
- * NOTICE OF LICENSE
+ * PHP version 5
  *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
+ * @category   Appserver
+ * @package    TechDivision_ApplicationServer
+ * @subpackage Api
+ * @author     Tim Wagner <tw@techdivision.com>
+ * @copyright  2013 TechDivision GmbH <info@techdivision.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link       http://www.appserver.io
  */
-namespace TechDivision\ApplicationServer\Api;
 
-use TechDivision\ApplicationServer\Api\AbstractService;
+namespace TechDivision\ApplicationServer\Api;
 
 /**
  * A stateless session bean implementation handling the vhost data.
  *
- * @package TechDivision\ApplicationServer
- * @copyright Copyright (c) 2013 <info@techdivision.com> - TechDivision GmbH
- * @license http://opensource.org/licenses/osl-3.0.php
- *          Open Software License (OSL 3.0)
- * @author Tim Wagner <tw@techdivision.com>
+ * @category   Appserver
+ * @package    TechDivision_ApplicationServer
+ * @subpackage Api
+ * @author     Tim Wagner <tw@techdivision.com>
+ * @copyright  2013 TechDivision GmbH <info@techdivision.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link       http://www.appserver.io
  */
 class VhostService extends AbstractService
 {
@@ -32,16 +36,26 @@ class VhostService extends AbstractService
      * @see \TechDivision\ApplicationServer\Api\ServiceInterface::findAll()
      */
     public function findAll()
-    {}
+    {
+        $vhostNodes = array();
+        foreach ($this->getSystemConfiguration()->getContainers() as $containerNode) {
+            foreach ($containerNode->getHost()->getVhosts() as $vhostNode) {
+                $vhostNodes[$vhostNode->getPrimaryKey()] = $vhostNode;
+            }
+        }
+        return $vhostNodes;
+    }
 
     /**
      * Returns the vhost with the passed UUID.
      *
-     * @param string $uuid
-     *            The UUID of the vhost to return
+     * @param string $uuid The UUID of the vhost to return
+     *
      * @return \TechDivision\ApplicationServer\Api\Node\VhostNode The vhost with the UUID passed as parameter
      * @see \TechDivision\ApplicationServer\Api\ServiceInterface::load()
      */
     public function load($uuid)
-    {}
+    {
+
+    }
 }

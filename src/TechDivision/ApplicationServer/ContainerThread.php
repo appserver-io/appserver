@@ -1,28 +1,30 @@
 <?php
-
 /**
  * TechDivision\ApplicationServer\ContainerThread
  *
- * NOTICE OF LICENSE
+ * PHP version 5
  *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
+ * @category  Appserver
+ * @package   TechDivision_ApplicationServer
+ * @author    Tim Wagner <tw@techdivision.com>
+ * @author    Johann Zelger <jz@techdivision.com>
+ * @copyright 2013 TechDivision GmbH <info@techdivision.com>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      http://www.appserver.io
  */
+
 namespace TechDivision\ApplicationServer;
 
-use TechDivision\ApplicationServer\SplClassLoader;
-use TechDivision\ApplicationServer\AbstractContextThread;
-use TechDivision\ApplicationServer\Configuration;
-
 /**
+ * Class ContainerThread
  *
- * @package TechDivision\ApplicationServer
- * @copyright Copyright (c) 2010 <info@techdivision.com> - TechDivision GmbH
- * @license http://opensource.org/licenses/osl-3.0.php
- *          Open Software License (OSL 3.0)
- * @author Tim Wagner <tw@techdivision.com>
- * @author Johann Zelger <jz@techdivision.com>
+ * @category  Appserver
+ * @package   TechDivision_ApplicationServer
+ * @author    Tim Wagner <tw@techdivision.com>
+ * @author    Johann Zelger <jz@techdivision.com>
+ * @copyright 2013 TechDivision GmbH <info@techdivision.com>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      http://www.appserver.io
  */
 class ContainerThread extends AbstractContextThread
 {
@@ -35,56 +37,41 @@ class ContainerThread extends AbstractContextThread
     protected $containerNode;
 
     /**
-     * The mutex to prevent parallel deployment of PHAR files.
-     *
-     * @var \Mutex
-     */
-    protected $mutex;
-
-    /**
      * Set's the unique container name to be started by this thread.
      *
-     * @param \Mutex $mutex
-     *            The mutex that locks related threads when deployment starts
-     * @param string $containerNode
-     *            The container node
+     * @param string $containerNode The container node
+     *
      * @return void
      */
-    public function init($mutex, $containerNode)
+    public function init($containerNode)
     {
-        $this->mutex = $mutex;
         $this->containerNode = $containerNode;
     }
 
     /**
+     * (non-PHPdoc)
      *
-     * @see AbstractContextThread::run()
+     * @return void
+     * @see \TechDivision\ApplicationServer\AbstractContextThread::main()
      */
     public function main()
     {
-
-        // lock the mutex to prevent other containers to parallel deploy PHAR files
-        \Mutex::lock($this->mutex);
-
         // deploy the applications and return them as array
         $applications = $this->getDeployment()
-            ->deployWebapps()
             ->deploy()
             ->getApplications();
-
-        // unlock the mutex to allow other containers own deployment
-        \Mutex::unlock($this->mutex);
-
+        // synchronize container threads to avoid registring apps several times
+        $this->synchronized(function () {
+            $this->notify();
+        });
         // load the container node
         $containerNode = $this->getContainerNode();
-
         // create the container instance
         $containerInstance = $this->newInstance($containerNode->getType(), array(
             $this->getInitialContext(),
             $containerNode,
             $applications
         ));
-
         // finally start the container instance
         $containerInstance->run();
     }
@@ -92,6 +79,9 @@ class ContainerThread extends AbstractContextThread
     /**
      * (non-PHPdoc)
      *
+     * @param string $className The API service class name to return the instance for
+     *
+     * @return \TechDivision\ApplicationServer\Api\ServiceInterface The service instance
      * @see \TechDivision\ApplicationServer\InitialContext::newService()
      */
     public function newService($className)
@@ -102,6 +92,10 @@ class ContainerThread extends AbstractContextThread
     /**
      * (non-PHPdoc)
      *
+     * @param string $className The fully qualified class name to return the instance for
+     * @param array  $args      Arguments to pass to the constructor of the instance
+     *
+     * @return object The instance itself
      * @see \TechDivision\ApplicationServer\InitialContext::newInstance()
      */
     public function newInstance($className, array $args = array())

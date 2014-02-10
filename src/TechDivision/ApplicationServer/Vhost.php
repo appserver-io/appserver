@@ -1,24 +1,28 @@
 <?php
-
 /**
  * TechDivision\ApplicationServer\Vhost
  *
- * NOTICE OF LICENSE
+ * PHP version 5
  *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
+ * @category  Appserver
+ * @package   TechDivision_ApplicationServer
+ * @author    Tim Wagner <tw@techdivision.com>
+ * @copyright 2013 TechDivision GmbH <info@techdivision.com>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      http://www.appserver.io
  */
+
 namespace TechDivision\ApplicationServer;
 
 /**
  * A basic vhost class containing domain name, base directory and aliases.
  *
- * @package TechDivision\ApplicationServer
- * @copyright Copyright (c) 2010 <info@techdivision.com> - TechDivision GmbH
- * @license http://opensource.org/licenses/osl-3.0.php
- *          Open Software License (OSL 3.0)
- * @author Tim Wagner <tw@techdivision.com>
+ * @category  Appserver
+ * @package   TechDivision_ApplicationServer
+ * @author    Tim Wagner <tw@techdivision.com>
+ * @copyright 2013 TechDivision GmbH <info@techdivision.com>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      http://www.appserver.io
  */
 class Vhost
 {
@@ -61,12 +65,9 @@ class Vhost
     /**
      * Initializes the vhost with the necessary information.
      *
-     * @param string $name
-     *            The vhost's domain name
-     * @param string $appBase
-     *            The vhost's base directory
-     * @param array $aliases
-     *            The aliases
+     * @param string $name    The vhost's domain name
+     * @param string $appBase The vhost's base directory
+     * @param array  $aliases The aliases
      */
     public function __construct($name, $appBase, $aliases)
     {

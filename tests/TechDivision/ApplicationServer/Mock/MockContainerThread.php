@@ -28,7 +28,7 @@ class MockContainerThread
     /**
      *@see \TechDivision\ApplicationServer\ContainerThread::__construct()
      */
-    public function __construct($initialContext, $mutex, $id)
+    public function __construct($initialContext, $id)
     {}
 
     /**
@@ -41,5 +41,11 @@ class MockContainerThread
      * @see \Thread::join()
      */
     public function join()
+    {}
+    
+    /**
+     * @see \Thread::synchronized()
+     */
+    public function synchronized(\Closure $block)
     {}
 }
