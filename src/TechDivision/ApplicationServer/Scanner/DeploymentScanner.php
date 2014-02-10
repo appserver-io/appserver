@@ -21,12 +21,13 @@ use TechDivision\ApplicationServer\AbstractContextThread;
  * This is a monitor that watches the deployment directory and restarts
  * the appserver by using the sbin/appserverctl script.
  *
- * @category  Appserver
- * @package   TechDivision_ApplicationServer
- * @author    Tim Wagner <tw@techdivision.com>
- * @copyright 2013 TechDivision GmbH <info@techdivision.com>
- * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link      http://www.appserver.io
+ * @category   Appserver
+ * @package    TechDivision_ApplicationServer
+ * @subpackage Scanner
+ * @author     Tim Wagner <tw@techdivision.com>
+ * @copyright  2013 TechDivision GmbH <info@techdivision.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link       http://www.appserver.io
  */
 class DeploymentScanner extends AbstractContextThread
 {
