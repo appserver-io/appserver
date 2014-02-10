@@ -172,6 +172,16 @@
             <arg line="html" />
         </exec>
         <copy file="${doc.build.file}" tofile="${doc.target.file}" overwrite="true"/>
+        <copy todir="${doc.image.target.dir}" preservelastmodified="true" overwrite="true">
+            <fileset dir="${doc.image.build.dir}">
+                <include name="**/*" />
+            </fileset>
+        </copy>
+        <replaceregexp file="${doc.target.file}"
+                       match="src=&quot;_images"
+                       replace="src=&quot;static/img/docs"
+                       byline="true"
+        />
     </target>
 
 </project>
