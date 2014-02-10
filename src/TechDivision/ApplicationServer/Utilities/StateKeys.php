@@ -68,6 +68,8 @@ class StateKeys
      * This is a utility class, so protect it against direct
      * instantiation.
      *
+     * @param string $state The state to initialize the instance with
+     * 
      * @return void
      */
     private function __construct($state)
@@ -124,6 +126,7 @@ class StateKeys
      * the actual one, else FALSE.
      * 
      * @param \TechDivision\ApplicationServer\Utilities\StateKey $stateKey The state key to check
+     * 
      * @return boolean TRUE if equal, else FALSE
      */
     public function equals(StateKeys $stateKey)
@@ -135,6 +138,7 @@ class StateKeys
      * Factory method to create a new state instance.
      * 
      * @param string $state The state to create an instance for
+     * 
      * @return \TechDivision\ApplicationServer\Utilities\StateKey The state instance
      * @throws \TechDivision\ApplicationServer\Utilities\InvalidStateException 
      *      Is thrown if the state is not available

@@ -20,7 +20,6 @@ use TechDivision\ApplicationServer\InitialContext;
 use TechDivision\ApplicationServer\Api\Node\NodeInterface;
 use TechDivision\ApplicationServer\Api\Node\AppserverNode;
 use TechDivision\ApplicationServer\Utilities\StateKeys;
-use TechDivision\ApplicationServer\Monitor\DeploymentMonitor;
 use \Psr\Log\LoggerInterface;
 
 /**
@@ -303,6 +302,7 @@ class Server
      * Start the container threads.
      *
      * @return void
+     * @see \TechDivision\ApplicationServer\Server::watch();
      */
     public function start()
     {
@@ -322,7 +322,7 @@ class Server
     }
     
     /**
-     * Watches the deployment directory for changes and restarts
+     * Scan's the deployment directory for changes and restarts
      * the server instance if necessary.
      * 
      * This is an alternative method to call start() because the
@@ -332,12 +332,15 @@ class Server
      * @see \TechDivision\ApplicationServer\Server::start();
      */
     public function watch()
-    {        
+    {
         // initialize the default monitor for the deployment directory
-        $monitor = new DeploymentMonitor($this->getInitialContext());
+        $monitor = $this->newInstance(
+            'TechDivision\ApplicationServer\Scanner\DeploymentScannner',
+            array($this->getInitialContext())
+        );
         
         // start the monitor
-        $monitor->start();        
+        $monitor->start();
     }
     
     /**
@@ -363,7 +366,7 @@ class Server
         }
         
         // set the flag that the application has been started
-        $this->getInitialContext()->setAttribute(StateKeys::KEY, StateKeys::get(StateKeys::RUNNING));        
+        $this->getInitialContext()->setAttribute(StateKeys::KEY, StateKeys::get(StateKeys::RUNNING));
     }
     
     /**
@@ -384,7 +387,7 @@ class Server
         // log a message with the time needed for restart
         $this->getSystemLogger()->info(
             sprintf(
-                "Successfully stopped appserver (in %d sec)", 
+                "Successfully stopped appserver (in %d sec)",
                 microtime(true) - $start
             )
         );
@@ -423,7 +426,7 @@ class Server
         // log a message with the time needed for restart
         $this->getSystemLogger()->info(
             sprintf(
-                "Successfully restarted appserver (in %d sec)", 
+                "Successfully restarted appserver (in %d sec)",
                 microtime(true) - $start
             )
         );

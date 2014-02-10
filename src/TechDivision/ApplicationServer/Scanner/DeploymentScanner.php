@@ -1,6 +1,6 @@
 <?php
 /**
- * TechDivision\ApplicationServer\Monitor\DeploymentMonitor
+ * TechDivision\ApplicationServer\Scanner\DeploymentScanner
  *
  * PHP version 5
  *
@@ -12,7 +12,7 @@
  * @link      http://www.appserver.io
  */
 
-namespace TechDivision\ApplicationServer\Monitor;
+namespace TechDivision\ApplicationServer\Scanner;
 
 use TechDivision\ApplicationServer\Interfaces\ExtractorInterface;
 use TechDivision\ApplicationServer\AbstractContextThread;
@@ -28,7 +28,7 @@ use TechDivision\ApplicationServer\AbstractContextThread;
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      http://www.appserver.io
  */
-class DeploymentMonitor extends AbstractContextThread
+class DeploymentScanner extends AbstractContextThread
 {
     
     /**
@@ -82,6 +82,9 @@ class DeploymentMonitor extends AbstractContextThread
     }
     
     /**
+     * Initalizes the scanner with the necessary service instance.
+     * 
+     * @return void
      * @see \TechDivision\ApplicationServer\AbstractThread::init()
      */
     public function init()
@@ -90,6 +93,10 @@ class DeploymentMonitor extends AbstractContextThread
     }
     
     /**
+     * Start's the deployment scanner that restarts the server
+     * when a PHAR should be deployed or undeployed.
+     * 
+     * @return void
      * @see \TechDivision\ApplicationServer\AbstractThread::main()
      */
     public function main()
@@ -145,7 +152,7 @@ class DeploymentMonitor extends AbstractContextThread
                     sleep(1);
                 }
                 
-                // set the directory new hash value after successfull deployment 
+                // set the directory new hash value after successfull deployment
                 $oldHash = $this->getDirectoryHash($directory);
 
                 // log that the appserver has been restarted successfull
@@ -166,6 +173,7 @@ class DeploymentMonitor extends AbstractContextThread
      * returned is a UNIX timestamp.
      * 
      * @param \SplFileInfo $directory The deployment directory
+     * 
      * @return integer The UNIX timestamp with the last successfully deplomyent date
      */
     public function getLastSuccessfullyDeployment(\SplFileInfo $directory)
@@ -190,6 +198,7 @@ class DeploymentMonitor extends AbstractContextThread
      * has to be deployed or undepoyed.
      *  
      * @param \SplFileInfo $directory The deployment directory to watch
+     * 
      * @return string The hash value build out of the found filenames
      */
     public function getDirectoryHash(\SplFileInfo $directory)
