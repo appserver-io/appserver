@@ -42,6 +42,13 @@ interface ExtractorInterface
     const FLAG_UNDEPLOYED = '.undeployed';
 
     /**
+     * Filename of the hidden file that contains timestamp with last succuessfull deployment.
+     * 
+     * @var string
+     */
+    const FILE_DEPLOYMENT_SUCCESSFULL = '.appserver-last-successfull-deployment';
+
+    /**
      * Gathers all available archived webapps and extract them for usage.
      *
      * @return void

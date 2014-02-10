@@ -17,6 +17,7 @@ namespace TechDivision\ApplicationServer;
 
 use TechDivision\ApplicationServer\InitialContext;
 use TechDivision\ApplicationServer\Interfaces\ReceiverInterface;
+use TechDivision\ApplicationServer\Utilities\StateKeys;
 
 /**
  * Class AbstractReceiver
@@ -78,6 +79,13 @@ abstract class AbstractReceiver implements ReceiverInterface
      * @var InitialContext
      */
     protected $initialContext;
+    
+    /**
+     * The server's stop state.
+     * 
+     * @var \TechDivision\ApplicationServer\Utilities\StateKeys
+     */
+    protected $stopState;
 
     /**
      * Sets the reference to the container instance.
@@ -87,6 +95,8 @@ abstract class AbstractReceiver implements ReceiverInterface
      */
     public function __construct($initialContext, $container)
     {
+        // initialize the server's stop state
+        $this->stopState = StateKeys::get(StateKeys::STOPPING);
 
         // initialize the initial context
         $this->initialContext = $initialContext;
@@ -133,6 +143,7 @@ abstract class AbstractReceiver implements ReceiverInterface
     public function start()
     {
         try {
+            
             // init counter var
             $workerCounter = 0;
 
@@ -162,10 +173,9 @@ abstract class AbstractReceiver implements ReceiverInterface
                     $this->getWorkerType()
                 )
             );
-
+            
             // collect garbage and free memory/sockets
-            while (true) {
-
+            while ($this->shutdown() === false) {
                 // make sure that the number of configured workers are running
                 for ($i = 0; $i < sizeof($this->worker); $i++) {
 
@@ -183,20 +193,27 @@ abstract class AbstractReceiver implements ReceiverInterface
                 // sleep for 0.1 seconds to lower system load
                 usleep(100000);
             }
-
+            
             // wait till all workers have been finished
             foreach ($this->worker as $worker) {
-                $worker->join();
+                $worker->kill();
             }
 
         } catch (\Exception $e) {
             $this->getInitialContext()->getSystemLogger()->error($e->__toString());
         }
 
+        // close the socket if still open
         if (is_resource($resource)) {
             $this->getSocket()->close();
         }
 
+        // log that the receiver has successfully been shutdown
+        $this->getInitialContext()->getSystemLogger()->info(
+            "Successfully stopped receiver " . $this->getContainer()->getContainerNode()->getName()
+        );
+
+        // return FALSE
         return false;
     }
 
@@ -372,5 +389,27 @@ abstract class AbstractReceiver implements ReceiverInterface
     public function getInitialContext()
     {
         return $this->initialContext;
+    }
+    
+    /**
+     * Returns the server's stop state.
+     * 
+     * @return \TechDivision\ApplicationServer\Utilities\StateKeys The stop state
+     */
+    public function getStopState()
+    {
+        return $this->stopState;
+    }
+    
+    /**
+     * Returns TRUE if the appserver sends the shudown flag else FALSE.
+     * 
+     * @return boolean TRUE if the server has to be shutdown, else FALSE
+     */
+    public function shutdown()
+    {
+        return $this->getStopState()->equals(
+            $this->getInitialContext()->getAttribute(StateKeys::KEY)
+        );
     }
 }
