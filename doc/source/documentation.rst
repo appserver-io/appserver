@@ -156,6 +156,7 @@ be overridden. Most of the time you will use ``doGet()`` or ``doPost()`` for GET
 .. code-block:: php
     :linenos:
 
+    <?php
     public function doGet(Request $req, Response $res)
     {
         // build path to template
