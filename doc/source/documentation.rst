@@ -4,8 +4,8 @@
     documentation
     deployment
 
-1. Introduction
-===============
+Introduction
+============
 
 The objective of the project is to develop a multi-threaded application server for PHP, written in PHP. Yes, pure PHP!
 You think we aren't serious? Maybe! But we think, in order to enable as many developers in our great community, this
@@ -40,8 +40,8 @@ appeal to the widest possible community the architecture of the Application Serv
 a number of existing applications can easily be migrated via adapter. Furthermore, the future development of Web
 applications based on all relevant PHP frameworks by providing libraries is supported.
 
-2. Installation
-===============
+Installation
+============
 
 Requirements
 ------------
@@ -92,8 +92,8 @@ be started itself.
 After installation you can open a really simply example app with your favorite browser open the URL
 ``http://127.0.0.1:8586/demo``.
 
-4. Getting Started Tutorial
-===========================
+Getting Started Tutorial
+========================
 
 This is a getting started tutorial for all folks who want to get in touch with appserver and want to learn how it works.
 It will guide you through setting up your first webapp, which serves HTTP requests. All necessary steps are explained in
