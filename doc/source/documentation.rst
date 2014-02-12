@@ -170,7 +170,9 @@ be overridden. Most of the time you will use ``doGet()`` or ``doPost()`` for GET
         $baseUrl = '/';
         // if the application has NOT been called over a
         //VHost configuration append application folder naem
-        if (!$this->getServletConfig()->getApplication()->isVhostOf($req->getServerName())) {
+        if (!$this->getServletConfig()->getApplication()->isVhostOf(
+            $req->getServerName())
+        ) {
             $baseUrl .= $this->getServletConfig()->getApplication()->getName() . '/';
         }
 
@@ -266,7 +268,9 @@ delivered on the same way.
                 $pathToTemplate = $webappPath .
                 DIRECTORY_SEPARATOR . 'static/templates/customer.phtml'
         )) {
-            throw new \Exception("Requested template '$pathToTemplate' is not available");
+            throw new \Exception(
+                "Requested template '$pathToTemplate' is not available"
+            );
         }
 
         // render template
@@ -299,7 +303,7 @@ its output is set as the response's content. The only thing to do is to fill the
     </body>
     </html>
 
-    As you can see the form uses the POST method to post its data. As we only support GET in ``CustomerServlet`` we have to
+As you can see the form uses the POST method to post its data. As we only support GET in ``CustomerServlet`` we have to
 implement a corresponding method which can handle POST.
 
 .. code-block:: php
