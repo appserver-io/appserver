@@ -159,26 +159,26 @@ be overridden. Most of the time you will use ``doGet()`` or ``doPost()`` for GET
     <?php
     public function doGet(Request $req, Response $res)
     {
-        // build path to template
+        /* build path to template */
         $pathToTemplate = $this->getServletConfig()->getWebappPath()
             . DIRECTORY_SEPARATOR . 'static' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'layout.phtml';
 
-        // init template
+        /* init template */
         $template = new DemoTemplate($pathToTemplate);
 
         $baseUrl = '/';
-        // if the application has NOT been called over a VHost configuration append application folder naem
+        /* if the application has NOT been called over a VHost configuration append application folder name */
         if (!$this->getServletConfig()->getApplication()->isVhostOf($req->getServerName())) {
             $baseUrl .= $this->getServletConfig()->getApplication()->getName() . '/';
         }
 
-        // set vars in template
+        /* set vars in template */
         $template->setBaseUrl($baseUrl);
         $template->setRequestUri($req->getUri());
         $template->setUserAgent($req->getHeader("User-Agent"));
         $template->setWebappName($this->getServletConfig()->getApplication()->getName());
 
-        // set response content by render template
+        /* set response content by render template */
         $res->setContent($template->render());
     }
 
