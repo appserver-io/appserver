@@ -4,8 +4,8 @@
     documentation
     deployment
 
-1. Introduction
-===============
+Introduction
+============
 
 The objective of the project is to develop a multi-threaded application server for PHP, written in PHP. Yes, pure PHP!
 You think we aren't serious? Maybe! But we think, in order to enable as many developers in our great community, this
@@ -40,8 +40,8 @@ appeal to the widest possible community the architecture of the Application Serv
 a number of existing applications can easily be migrated via adapter. Furthermore, the future development of Web
 applications based on all relevant PHP frameworks by providing libraries is supported.
 
-2. Installation
-===============
+Installation
+============
 
 Requirements
 ------------
@@ -92,90 +92,8 @@ be started itself.
 After installation you can open a really simply example app with your favorite browser open the URL
 ``http://127.0.0.1:8586/demo``.
 
-3. Roadmap
-==========
-
-As we're in heavy development it may be, that we've to move some tasks from the following roadmap to a earlier/later
-version, please be aware of that. If you've ideas or features that definitely has to be in one of the next releases,
-please contact us. We're always open for new ideas or feedback.
-
-And yes, we've plans for a Community and a Enterprise edition. The Community Edition will provide all functionality
-needed to develop, run maintain all kind of web applications. The Enterprise Edition will focus on large software
-solutions that run on many servers and needs real cluster functionality.
-
-Community Edition
------------------
-Version 0.5.8 - Application Server + `WebSocketContainer <https://github.com/techdivision/TechDivision_WebSocketContainer>`_
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-- [x] Logging with `monolog <https://github.com/Seldaek/monolog>`_
-- [x] Generic management API
-- [x] HTTP basic + digest authentication for Servlet Container
-- [x] Integrate annotations for session beans
-- [x] Administration interface with drag-and-drop PHAR installer
-- [x] Automated Build- and Deployment using Travis-CI
-- [x] Set environment variables in XML configuration files
-- [x] Merging XML configuration files
-- [x] WebSocket integration
-- [x] Running Magento CE 1.7.x + 1.8.x demo applications
-
-Version 0.5.9 - Application Server + `ServletContainer <https://github.com/techdivision/TechDivision_ServletContainer>`_
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-- [ ] Windows installer
-- [ ] PHAR based deployment
-- [ ] `Design by Contract <https://github.com/wick-ed/php-by-contract>`_
-- [ ] SSL Encryption for TechDivision_ServletContainer project
-- [ ] RPM packages + Repository
-
-Version 0.6.0 - Application Server + `ServletContainer <https://github.com/techdivision/TechDivision_ServletContainer>`_
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-- [ ] AOP
-- [ ] DI
-- [ ] Refactor routing
-- [ ] Separate configuration files for server, container and application
-- [ ] Running TYPO3 6.x demo application
-- [ ] Running TYPO3 Flow 2.0.x demo application
-- [ ] Running TYPO3 Neos 1.x demo application
-- [ ] Mac OS X Universal installer
-- [ ] 100 % Coverage for PHPUnit test suite for TechDivision_ApplicationServer project
-
-Version 0.7 - `Servlet Container <https://github.com/techdivision/TechDivision_ServletContainer>`_
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-- [ ] mod_rewrite functionality for TechDivision_ServletContainer project
-- [ ] Add dynamic load of application specific PECL extensions
-- [ ] 100 % Coverage for PHPUnit test suite for TechDivision_ServletContainer project
-
-Version 0.8 - `Persistence Container <https://github.com/techdivision/TechDivision_PersistenceContainer>`_
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-- [ ] Stateful + Singleton session bean functionality
-- [ ] Container managed entity beans for Doctrine
-- [ ] Webservice for session beans
-- [ ] 100 % Coverage for PHPUnit test suite for TechDivision_PersistenceContainer project
-
-Version 0.9 - `Message Queue <https://github.com/techdivision/TechDivision_MessageQueue>`_
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-- [ ] Message bean functionality
-- [ ] 100 % Coverage for PHPUnit test suite for TechDivision_MessageQueue project
-
-Version 1.0 - Timer Service
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
-- [ ] Timer Service
-- [ ] 100 % Coverage for PHPUnit test suite for TechDivision_TimerService project
-
-Version 1.1 - Additional Containers
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-- [ ] Distributed and redundant cluster caching system with automated failover
-- [ ] Fast-CGI container
-
-Enterprise Edition
-------------------
-Version 1.2 - Cluster Functionality
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-- [ ] Cluster functionality
-- [ ] Container based transactions
-- [ ] Farming deployment
-
-4. Getting Started Tutorial
-===========================
+Getting Started Tutorial
+========================
 
 This is a getting started tutorial for all folks who want to get in touch with appserver and want to learn how it works.
 It will guide you through setting up your first webapp, which serves HTTP requests. All necessary steps are explained in
@@ -211,7 +129,7 @@ for your servlet container. A servlet can be defined as follows:
     :linenos:
 
     <servlet>
-        <description><![CDATA[A demo servlet that renders a template showing the current uri requested]]></description>
+        <description><![CDATA[A demo servlet]]></description>
         <display-name>DemoServlet</display-name>
         <servlet-name>DemoServlet</servlet-name>
         <servlet-class>\TechDivision\Example\Servlets\DemoServlet</servlet-class>
@@ -241,15 +159,20 @@ be overridden. Most of the time you will use ``doGet()`` or ``doPost()`` for GET
     public function doGet(Request $req, Response $res)
     {
         // build path to template
-        $pathToTemplate = $this->getServletConfig()->getWebappPath()
-            . DIRECTORY_SEPARATOR . 'static' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'layout.phtml';
+        $pathToTemplate = $this->getServletConfig()->getWebappPath() .
+            DIRECTORY_SEPARATOR . 'static' .
+            DIRECTORY_SEPARATOR . 'templates' .
+            DIRECTORY_SEPARATOR . 'layout.phtml';
 
         // init template
         $template = new DemoTemplate($pathToTemplate);
 
         $baseUrl = '/';
-        // if the application has NOT been called over a VHost configuration append application folder naem
-        if (!$this->getServletConfig()->getApplication()->isVhostOf($req->getServerName())) {
+        // if the application has NOT been called over a
+        //VHost configuration append application folder naem
+        if (!$this->getServletConfig()->getApplication()->isVhostOf(
+            $req->getServerName())
+        ) {
             $baseUrl .= $this->getServletConfig()->getApplication()->getName() . '/';
         }
 
@@ -311,7 +234,6 @@ class in the path ``WEB-INF/classes/TechDivision/Example/Servlets`` (this depend
 .. code-block:: php
     :linenos:
 
-    <?php
     namespace TechDivision\Example\Servlets;
 
     use TechDivision\ServletContainer\Interfaces\Request;
@@ -342,8 +264,13 @@ delivered on the same way.
         $webappPath = $this->getServletConfig()->getWebappPath();
 
         // check if the template is available
-        if (!file_exists($pathToTemplate = $webappPath . DIRECTORY_SEPARATOR . 'static/templates/customer.phtml')) {
-            throw new \Exception("Requested template '$pathToTemplate' is not available");
+        if (!file_exists(
+                $pathToTemplate = $webappPath .
+                DIRECTORY_SEPARATOR . 'static/templates/customer.phtml'
+        )) {
+            throw new \Exception(
+                "Requested template '$pathToTemplate' is not available"
+            );
         }
 
         // render template
@@ -376,7 +303,7 @@ its output is set as the response's content. The only thing to do is to fill the
     </body>
     </html>
 
-    As you can see the form uses the POST method to post its data. As we only support GET in ``CustomerServlet`` we have to
+As you can see the form uses the POST method to post its data. As we only support GET in ``CustomerServlet`` we have to
 implement a corresponding method which can handle POST.
 
 .. code-block:: php
@@ -410,7 +337,8 @@ it to the following.
     :linenos:
 
     <datasources>
-        <datasource name="TechDivision\Example" type="TechDivision\PersistenceContainer\Application">
+        <datasource name="TechDivision\Example"
+            type="TechDivision\PersistenceContainer\Application">
             <database>
                 <driver>pdo_sqlite</driver>
                 <user>appserver</user>
@@ -429,8 +357,6 @@ time to create our customer entity. Create the following class
 
 .. code-block:: php
     :linenos:
-
-    <?php
 
     namespace TechDivision\Example\Entities;
 
@@ -490,7 +416,9 @@ following lines right before the method ``doPost()`` ends:
     $entity->setName($name);
 
     $initialContext = $this->session->createInitialContext();
-    $proxy = $initialContext->lookup('TechDivision\Example\Services\CustomerProcessor');
+    $proxy = $initialContext->lookup(
+        'TechDivision\Example\Services\CustomerProcessor'
+    );
     $proxy->persist($entity);
 
     $res->setContent('Hello ' . $name);
@@ -586,7 +514,9 @@ therefore implement the following method into our customer processor.
     public function findAll()
     {
         $entityManager = $this->getEntityManager();
-        $repository = $entityManager->getRepository('TechDivision\Example\Entities\Customer');
+        $repository = $entityManager->getRepository(
+            'TechDivision\Example\Entities\Customer'
+        );
         return $repository->findAll();
     }
 
