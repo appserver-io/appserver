@@ -21,15 +21,30 @@ use TechDivision\ApplicationServer\AbstractContextThread;
  * This is a monitor that watches the deployment directory and restarts
  * the appserver by using the sbin/appserverctl script.
  *
- * @category  Appserver
- * @package   TechDivision_ApplicationServer
- * @author    Tim Wagner <tw@techdivision.com>
- * @copyright 2013 TechDivision GmbH <info@techdivision.com>
- * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link      http://www.appserver.io
+ * @category   Appserver
+ * @package    TechDivision_ApplicationServer
+ * @subpackage Scanner
+ * @author     Tim Wagner <tw@techdivision.com>
+ * @copyright  2013 TechDivision GmbH <info@techdivision.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link       http://www.appserver.io
  */
 class DeploymentScanner extends AbstractContextThread
 {
+    
+    /**
+     * OS signature when calling php_uname('s') on Mac OS x 10.8.x/10.9.x.
+     * 
+     * @var string
+     */
+    const DARWIN = 'Darwin';
+    
+    /**
+     * OS signature when calling php_uname('s') on Linux Debian/Ubuntu/Fedora and CentOS.
+     * 
+     * @var string
+     */
+    const LINUX = 'Linux';
     
     /**
      * The API service used to load the deployment directory.
@@ -37,6 +52,13 @@ class DeploymentScanner extends AbstractContextThread
      * @var \TechDivision\ApplicationServer\Api\ContainerService
      */
     protected $service;
+    
+    /**
+     * Array that contains the available startup scripts.
+     * 
+     * @var array
+     */
+    protected $restartCommands;
     
     /**
      * Returns The API service, e. g. to load the deployment directory.
@@ -89,7 +111,14 @@ class DeploymentScanner extends AbstractContextThread
      */
     public function init()
     {
+        // initialize the service class
         $this->service = $this->newService('TechDivision\ApplicationServer\Api\ContainerService');
+        
+        // initialize the available restart commands
+        $this->restartCommands = array(
+            DeploymentScanner::DARWIN => '/sbin/appserverctl restart',
+            DeploymentScanner::LINUX  => '/etc/init.d/appserver restart'
+        );
     }
     
     /**
@@ -222,6 +251,37 @@ class DeploymentScanner extends AbstractContextThread
     }
     
     /**
+     * Returns the restart command for the passed OS 
+     * if available.
+     * 
+     * @param string $os The OS to return the restart command for
+     * 
+     * @return string The restart command
+     * @throws \Exception Is thrown if the restart command for the passed OS is can't found
+     */
+    public function getRestartCommand($os)
+    {
+        
+        // check if the restart command is registered
+        if (array_key_exists($os, $this->restartCommands)) {
+            
+            // load the command
+            $command = $this->restartCommands[$os];
+            
+            // for Mac OS X the base directory has to be appended
+            if ($os === DeploymentScanner::DARWIN) {
+                $command = $this->getService()->realpath($command);
+            }
+            
+            // return the command
+            return $command;
+        }
+        
+        // throw an exception if the restart command is not available
+        throw new \Exception("Can't find restart command for OS $os");
+    }
+    
+    /**
      * Restart the appserver using the appserverctl file in the sbin folder.
      * 
      * @return void
@@ -229,8 +289,30 @@ class DeploymentScanner extends AbstractContextThread
      */
     public function restart()
     {
-        exec(
-            APPSERVER_BP . DIRECTORY_SEPARATOR . 'sbin' . DIRECTORY_SEPARATOR . 'appserverctl restart'
+
+        // laod the OS signature
+        $os = php_uname('s');
+        
+        // log the found OS
+        $this->getSystemLogger()->debug(
+            "Found operating system: $os"
         );
+
+        // check what OS we are running on
+        switch ($os) {
+
+            // restart with the linux rc script
+            case DeploymentScanner::LINUX:
+            case DeploymentScanner::DARWIN:
+                exec($this->getRestartCommand($os));
+                break;
+
+            // all other OS are NOT supported actually
+            default:
+                $this->getSystemLogger()->error(
+                    "OS $os actually not supports auto restart"
+                );
+                break;
+        }
     }
 }
