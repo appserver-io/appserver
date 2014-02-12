@@ -129,7 +129,7 @@ for your servlet container. A servlet can be defined as follows:
     :linenos:
 
     <servlet>
-        <description><![CDATA[A demo servlet that renders a template showing the current uri requested]]></description>
+        <description><![CDATA[A demo servlet]]></description>
         <display-name>DemoServlet</display-name>
         <servlet-name>DemoServlet</servlet-name>
         <servlet-class>\TechDivision\Example\Servlets\DemoServlet</servlet-class>
@@ -156,29 +156,31 @@ be overridden. Most of the time you will use ``doGet()`` or ``doPost()`` for GET
 .. code-block:: php
     :linenos:
 
-    <?php
     public function doGet(Request $req, Response $res)
     {
-        /* build path to template */
-        $pathToTemplate = $this->getServletConfig()->getWebappPath()
-            . DIRECTORY_SEPARATOR . 'static' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'layout.phtml';
+        // build path to template
+        $pathToTemplate = $this->getServletConfig()->getWebappPath() .
+            DIRECTORY_SEPARATOR . 'static' .
+            DIRECTORY_SEPARATOR . 'templates' .
+            DIRECTORY_SEPARATOR . 'layout.phtml';
 
-        /* init template */
+        // init template
         $template = new DemoTemplate($pathToTemplate);
 
         $baseUrl = '/';
-        /* if the application has NOT been called over a VHost configuration append application folder name */
+        // if the application has NOT been called over a
+        //VHost configuration append application folder naem
         if (!$this->getServletConfig()->getApplication()->isVhostOf($req->getServerName())) {
             $baseUrl .= $this->getServletConfig()->getApplication()->getName() . '/';
         }
 
-        /* set vars in template */
+        // set vars in template
         $template->setBaseUrl($baseUrl);
         $template->setRequestUri($req->getUri());
         $template->setUserAgent($req->getHeader("User-Agent"));
         $template->setWebappName($this->getServletConfig()->getApplication()->getName());
 
-        /* set response content by render template */
+        // set response content by render template
         $res->setContent($template->render());
     }
 
@@ -230,7 +232,6 @@ class in the path ``WEB-INF/classes/TechDivision/Example/Servlets`` (this depend
 .. code-block:: php
     :linenos:
 
-    <?php
     namespace TechDivision\Example\Servlets;
 
     use TechDivision\ServletContainer\Interfaces\Request;
@@ -261,7 +262,10 @@ delivered on the same way.
         $webappPath = $this->getServletConfig()->getWebappPath();
 
         // check if the template is available
-        if (!file_exists($pathToTemplate = $webappPath . DIRECTORY_SEPARATOR . 'static/templates/customer.phtml')) {
+        if (!file_exists(
+                $pathToTemplate = $webappPath .
+                DIRECTORY_SEPARATOR . 'static/templates/customer.phtml'
+        )) {
             throw new \Exception("Requested template '$pathToTemplate' is not available");
         }
 
@@ -329,7 +333,8 @@ it to the following.
     :linenos:
 
     <datasources>
-        <datasource name="TechDivision\Example" type="TechDivision\PersistenceContainer\Application">
+        <datasource name="TechDivision\Example"
+            type="TechDivision\PersistenceContainer\Application">
             <database>
                 <driver>pdo_sqlite</driver>
                 <user>appserver</user>
@@ -348,8 +353,6 @@ time to create our customer entity. Create the following class
 
 .. code-block:: php
     :linenos:
-
-    <?php
 
     namespace TechDivision\Example\Entities;
 
@@ -409,7 +412,9 @@ following lines right before the method ``doPost()`` ends:
     $entity->setName($name);
 
     $initialContext = $this->session->createInitialContext();
-    $proxy = $initialContext->lookup('TechDivision\Example\Services\CustomerProcessor');
+    $proxy = $initialContext->lookup(
+        'TechDivision\Example\Services\CustomerProcessor'
+    );
     $proxy->persist($entity);
 
     $res->setContent('Hello ' . $name);
@@ -505,7 +510,9 @@ therefore implement the following method into our customer processor.
     public function findAll()
     {
         $entityManager = $this->getEntityManager();
-        $repository = $entityManager->getRepository('TechDivision\Example\Entities\Customer');
+        $repository = $entityManager->getRepository(
+            'TechDivision\Example\Entities\Customer'
+        );
         return $repository->findAll();
     }
 
