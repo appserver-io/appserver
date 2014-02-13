@@ -79,6 +79,9 @@ class Server
         $systemConfiguration = new AppserverNode();
         $systemConfiguration->initFromConfiguration($configuration);
         $this->setSystemConfiguration($systemConfiguration);
+        
+        // initialize the server instance
+        $this->init();
     }
 
     /**
@@ -300,8 +303,6 @@ class Server
     public function start()
     {
         
-        // initialize the server
-        $this->init();
         // init the extractor
         $this->initExtractor();
         // init the containers
@@ -334,9 +335,6 @@ class Server
      */
     public function watch()
     {
-        
-        // init initial context
-        $this->init();
 
         // initialize the default monitor for the deployment directory
         $monitor = $this->newInstance(
