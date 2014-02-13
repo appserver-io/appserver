@@ -142,6 +142,12 @@ class DeploymentScanner extends AbstractContextThread
             )
         );
         
+        // wait until the server has been successfully started at least once
+        while ($this->getLastSuccessfullyDeployment($directory) === 0) {
+            $this->getSystemLogger()->debug('Deplyoment scanner is waiting for first successfull deployment ...');
+            sleep(1);
+        }
+        
         // load the initial hash value of the deployment directory
         $oldHash = $this->getDirectoryHash($directory);
         
@@ -199,14 +205,21 @@ class DeploymentScanner extends AbstractContextThread
     
     /**
      * Returns the time when the contents of the file were changed. The time 
-     * returned is a UNIX timestamp.
+     * returned is a UNIX timestamp. 
+     * 
+     * If the file doesn't exists, the method returns 0 to signal that the no 
+     * successfull depolyment has been processed so far, e. g. the server has
+     * been installed and not been started yet.
      * 
      * @param \SplFileInfo $directory The deployment directory
      * 
-     * @return integer The UNIX timestamp with the last successfully deplomyent date
+     * @return integer The UNIX timestamp with the last successfully deplomyent date or 0 if no successfull deployment has been processed
      */
     public function getLastSuccessfullyDeployment(\SplFileInfo $directory)
     {
+        
+        // initialize the file's mtime to 0
+        $mtime = 0;
         
         // clear the stat cache to get real mtime if changed
         clearstatcache();
@@ -215,9 +228,14 @@ class DeploymentScanner extends AbstractContextThread
         $file = new \SplFileInfo(
             $directory . DIRECTORY_SEPARATOR . ExtractorInterface::FILE_DEPLOYMENT_SUCCESSFULL
         );
-        
+
         // return the change date (last successfull deployment date)
-        return $file->getMTime();
+        if ($file->isFile()) {
+            $mtime = $file->getMTime();
+        }
+        
+        // return the file's mtime
+        return $mtime;
     }
         
     /**
