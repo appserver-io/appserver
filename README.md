@@ -82,11 +82,11 @@ And yes, we've plans for a Community and a Enterprise edition. The Community Edi
 - [x] Running Magento CE 1.7.x + 1.8.x demo applications
 
 ### Version 0.5.9 - Application Server + [ServletContainer](https://github.com/techdivision/TechDivision_ServletContainer)
-- [ ] Windows installer
-- [ ] PHAR based deployment
-- [ ] [Design by Contract](https://github.com/wick-ed/php-by-contract)
-- [ ] SSL Encryption for TechDivision_ServletContainer project
-- [ ] RPM packages + Repository
+- [x] Windows installer
+- [x] PHAR based deployment
+- [x] [Design by Contract](https://github.com/wick-ed/php-by-contract)
+- [x] SSL Encryption for TechDivision_ServletContainer project
+- [x] RPM packages
 
 ### Version 0.6.0 - Application Server + [ServletContainer](https://github.com/techdivision/TechDivision_ServletContainer)
 - [ ] AOP
@@ -98,6 +98,7 @@ And yes, we've plans for a Community and a Enterprise edition. The Community Edi
 - [ ] Running TYPO3 Neos 1.x demo application
 - [ ] Mac OS X Universal installer
 - [ ] 100 % Coverage for PHPUnit test suite for TechDivision_ApplicationServer project
+- [ ] RPM repository
 
 ### Version 0.7 - [Servlet Container](https://github.com/techdivision/TechDivision_ServletContainer)
 - [ ] mod_rewrite functionality for TechDivision_ServletContainer project
