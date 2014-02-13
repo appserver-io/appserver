@@ -80,7 +80,7 @@ class Server
         $systemConfiguration->initFromConfiguration($configuration);
         $this->setSystemConfiguration($systemConfiguration);
         
-        // initialize the server
+        // initialize the server instance
         $this->init();
     }
 
@@ -97,10 +97,6 @@ class Server
         $this->initFileSystem();
         // init main system logger
         $this->initSystemLogger();
-        // init extractor
-        $this->initExtractor();
-        // init containers
-        $this->initContainers();
     }
 
     /**
@@ -306,6 +302,12 @@ class Server
      */
     public function start()
     {
+        
+        // init the extractor
+        $this->initExtractor();
+        // init the containers
+        $this->initContainers();
+        
         // log that the server will be started now
         $this->getSystemLogger()->info(
             sprintf(
@@ -333,6 +335,7 @@ class Server
      */
     public function watch()
     {
+
         // initialize the default monitor for the deployment directory
         $monitor = $this->newInstance(
             'TechDivision\ApplicationServer\Scanner\DeploymentScanner',

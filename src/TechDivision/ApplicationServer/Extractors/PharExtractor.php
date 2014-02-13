@@ -83,14 +83,19 @@ class PharExtractor extends AbstractExtractor
 
                 // flag webapp as deploying
                 $this->flagArchive($archive, ExtractorInterface::FLAG_DEPLOYING);
+
+                // backup actual webapp folder, if available
+                if (is_dir($webappFolderName)) {
+                
+                    // backup files that are NOT part of the archive
+                    $this->backupArchive($archive);
+                    
+                    // delete directories previously backed up
+                    $this->removeDir($webappFolderName);
+                }
                 
                 // remove old temporary directory
                 $this->removeDir($tmpFolderName);
-                
-                // backup actual webapp folder, if available
-                if (is_dir($webappFolderName)) {
-                    $this->backupArchive($archive);
-                }
                 
                 // extract phar to tmp directory
                 $p = new \Phar($archive);
