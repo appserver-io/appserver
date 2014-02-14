@@ -127,7 +127,7 @@
         <!-- install composer packages -->
         <exec dir="${php-target.dir}" executable="composer">
             <env key="PATH" value="${instance.base.dir}/bin:${env.PATH}"/>
-            <arg line="update"/>
+            <arg line="--no-interaction update"/>
         </exec>
     </target>
 
