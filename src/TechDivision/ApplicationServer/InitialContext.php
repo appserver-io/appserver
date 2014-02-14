@@ -1,14 +1,17 @@
 <?php
-
 /**
  * TechDivision\ApplicationServer\InitialContext
  *
- * NOTICE OF LICENSE
+ * PHP version 5
  *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
+ * @category  Appserver
+ * @package   TechDivision_ApplicationServer
+ * @author    Tim Wagner <tw@techdivision.com>
+ * @copyright 2013 TechDivision GmbH <info@techdivision.com>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      http://www.appserver.io
  */
+
 namespace TechDivision\ApplicationServer;
 
 use Herrera\Annotations\Tokens;
@@ -20,12 +23,14 @@ use TechDivision\ApplicationServer\Api\Node\NodeInterface;
 use TechDivision\ApplicationServer\SplClassLoader;
 
 /**
+ * Class InitialContext
  *
- * @package TechDivision\ApplicationServer
- * @copyright Copyright (c) 2010 <info@techdivision.com> - TechDivision GmbH
- * @license http://opensource.org/licenses/osl-3.0.php
- *          Open Software License (OSL 3.0)
- * @author Tim Wagner <tw@techdivision.com>
+ * @category  Appserver
+ * @package   TechDivision_ApplicationServer
+ * @author    Tim Wagner <tw@techdivision.com>
+ * @copyright 2013 TechDivision GmbH <info@techdivision.com>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      http://www.appserver.io
  */
 class InitialContext
 {
@@ -50,24 +55,33 @@ class InitialContext
     );
 
     /**
+     * The server's logger instance.
+     *
+     * @var \Psr\Log\LoggerInterface
+     */
+    protected $systemLogger;
+
+    /**
      * Initializes the context with the connection to the storage backend.
+     *
+     * @param \TechDivision\ApplicationServer\Api\Node\NodeInterface $systemConfiguration The system configuration
      *
      * @return void
      */
-    public function __construct(NodeInterface $systemConfiguration)
+    public function __construct(\TechDivision\ApplicationServer\Api\Node\NodeInterface $systemConfiguration)
     {
-        // initialize the class loader instance
-        $initialContextNode = $systemConfiguration->getInitialContext();
-        $classLoaderNode = $initialContextNode->getClassLoader();
-        $reflectionClass = $this->newReflectionClass($classLoaderNode->getType());
-        $this->setClassLoader($reflectionClass->newInstance());
-
         // initialize the storage
+        $initialContextNode = $systemConfiguration->getInitialContext();
         $storageNode = $initialContextNode->getStorage();
         $reflectionClass = $this->newReflectionClass($storageNode->getType());
         $this->setStorage($reflectionClass->newInstanceArgs(array(
             $storageNode
         )));
+        
+        // initialize the class loader instance
+        $classLoaderNode = $initialContextNode->getClassLoader();
+        $reflectionClass = $this->newReflectionClass($classLoaderNode->getType());
+        $this->setClassLoader($reflectionClass->newInstanceArgs(array($this)));
 
         // attach the system configuration to the initial context
         $this->setSystemConfiguration($systemConfiguration);
@@ -75,6 +89,8 @@ class InitialContext
 
     /**
      * Returns the storage instance.
+     *
+     * @param \TechDivision\ApplicationServer\InitialContext\StorageInterface $storage A storage instance
      *
      * @return \TechDivision\ApplicationServer\InitialContext\StorageInterface The storage instance
      */
@@ -96,8 +112,8 @@ class InitialContext
     /**
      * Set's the initial context's class loader.
      *
-     * @param \TechDivision\ApplicationServer\SplClassLoader $classLoader
-     *            The class loader used
+     * @param \TechDivision\ApplicationServer\SplClassLoader $classLoader The class loader used
+     *
      * @return void
      */
     public function setClassLoader(SplClassLoader $classLoader)
@@ -108,7 +124,7 @@ class InitialContext
     /**
      * Return's the initial context's class loader.
      *
-     * @return \TechDivision\ApplicationServer\ClassLoader The class loader used
+     * @return \TechDivision\ApplicationServer\SplClassLoader The class loader used
      */
     public function getClassLoader()
     {
@@ -118,8 +134,8 @@ class InitialContext
     /**
      * Adds the system configuration to the inital context.
      *
-     * @param \TechDivision\ApplicationServer\Configuration $systemConfiguration
-     *            The system configuration
+     * @param object $systemConfiguration The system configuration
+     *
      * @return void
      */
     public function setSystemConfiguration($systemConfiguration)
@@ -140,10 +156,9 @@ class InitialContext
     /**
      * Stores the passed key value pair in the initial context.
      *
-     * @param string $key
-     *            The key to store the value under
-     * @param mixed $value
-     *            The value to add to the inital context
+     * @param string $key   The key to store the value under
+     * @param mixed  $value The value to add to the inital context
+     *
      * @return void
      */
     public function setAttribute($key, $value)
@@ -154,8 +169,8 @@ class InitialContext
     /**
      * Returns the value with the passed key from the initial context.
      *
-     * @param string $key
-     *            The key of the value to return
+     * @param string $key The key of the value to return
+     *
      * @return mixed The value stored in the initial context
      */
     public function getAttribute($key)
@@ -166,8 +181,8 @@ class InitialContext
     /**
      * Removes the attribute with the passed key from the initial context.
      *
-     * @param string $key
-     *            The key of the value to delete
+     * @param string $key The key of the value to delete
+     *
      * @return void
      */
     public function removeAttribute($key)
@@ -178,8 +193,8 @@ class InitialContext
     /**
      * Returns a reflection class intance for the passed class name.
      *
-     * @param string $className
-     *            The class name to return the reflection instance for
+     * @param string $className The class name to return the reflection instance for
+     *
      * @return \ReflectionClass The reflection instance
      */
     public function newReflectionClass($className)
@@ -190,19 +205,14 @@ class InitialContext
     /**
      * Returns a new instance of the passed class name.
      *
-     * @param string $className
-     *            The fully qualified class name to return the instance for
-     * @param array $args
-     *            Arguments to pass to the constructor of the instance
+     * @param string $className The fully qualified class name to return the instance for
+     * @param array  $args      Arguments to pass to the constructor of the instance
+     *
      * @return object The instance itself
      * @todo Has to be refactored to avoid registering autoloader on every call
      */
     public function newInstance($className, array $args = array())
     {
-
-        // register the class loader again, because in a Thread the context has been lost maybe
-        $this->getClassLoader()->register(true);
-
         // create and return a new instance
         $reflectionClass = $this->newReflectionClass($className);
         return $reflectionClass->newInstanceArgs($args);
@@ -211,9 +221,9 @@ class InitialContext
     /**
      * Returns a new instance of the passed API service.
      *
-     * @param string $className
-     *            The API service class name to return the instance for
-     * @return \TechDivision\ApplicationsServer\Api\ServiceInterface The service instance
+     * @param string $className The API service class name to return the instance for
+     *
+     * @return \TechDivision\ApplicationServer\Api\ServiceInterface The service instance
      */
     public function newService($className)
     {
@@ -226,8 +236,8 @@ class InitialContext
      * Returns the bean annotation for the passed reflection class, that can be
      * one of Entity, Stateful, Stateless, Singleton.
      *
-     * @param \ReflectionClass $reflectionClass
-     *            The class to return the annotation for
+     * @param \ReflectionClass $reflectionClass The class to return the annotation for
+     *
      * @throws \Exception Is thrown if the class has NO bean annotation
      * @return string The found bean annotation
      */
@@ -279,17 +289,37 @@ class InitialContext
     }
 
     /**
+     * Set's the system logger instance.
+     *
+     * @param \Psr\Log\LoggerInterface $systemLogger The system logger
+     *
+     * @return void
+     */
+    public function setSystemLogger($systemLogger)
+    {
+        $this->systemLogger = $systemLogger;
+    }
+
+    /**
+     * Return's the system logger instance.
+     *
+     * @return \Psr\Log\LoggerInterface
+     */
+    public function getSystemLogger()
+    {
+        return $this->systemLogger;
+    }
+
+    /**
      * Run's a lookup for the session bean with the passed class name and
      * session ID.
      * If the passed class name is a session bean an instance
      * will be returned.
      *
-     * @param string $className
-     *            The name of the session bean's class
-     * @param string $sessionId
-     *            The session ID
-     * @param array $args
-     *            The arguments passed to the session beans constructor
+     * @param string $className The name of the session bean's class
+     * @param string $sessionId The session ID
+     * @param array  $args      The arguments passed to the session beans constructor
+     *
      * @return object The requested session bean
      * @throws \Exception Is thrown if passed class name is no session bean or is a entity bean (not implmented yet)
      */

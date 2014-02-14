@@ -29,7 +29,7 @@ class MockReceiver extends AbstractReceiver
      * The resource class name to use for the test.
      * @var string
      */
-    protected $resourceClass = 'TechDivision\ApplicationServer\Socket\MockServer';
+    protected $resourceClass = 'TechDivision\ApplicationServer\Mock\Socket\MockServer';
 
     /**
      * Helper method that allows to specify different resource class names.

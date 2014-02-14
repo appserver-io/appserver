@@ -1,31 +1,38 @@
 <?php
-
 /**
  * TechDivision\ApplicationServer\InitialContext\ApcuStorage
  *
- * NOTICE OF LICENSE
+ * PHP version 5
  *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
+ * @category   Appserver
+ * @package    TechDivision_ApplicationServer
+ * @subpackage InitialContext
+ * @author     Tim Wagner <tw@techdivision.com>
+ * @copyright  2013 TechDivision GmbH <info@techdivision.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link       http://www.appserver.io
  */
+
 namespace TechDivision\ApplicationServer\InitialContext;
 
-use TechDivision\ApplicationServer\Api\Node\NodeInterface;
-
 /**
+ * Class ApcuStorage
  *
- * @package TechDivision\ApplicationServer
- * @copyright Copyright (c) 2010 <info@techdivision.com> - TechDivision GmbH
- * @license http://opensource.org/licenses/osl-3.0.php
- *          Open Software License (OSL 3.0)
- * @author Tim Wagner <tw@techdivision.com>
+ * @category   Appserver
+ * @package    TechDivision_ApplicationServer
+ * @subpackage InitialContext
+ * @author     Tim Wagner <tw@techdivision.com>
+ * @copyright  2013 TechDivision GmbH <info@techdivision.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link       http://www.appserver.io
  */
 class ApcuStorage extends AbstractStorage
 {
 
     /**
+     * Initializes the storage when the instance is constructed and the __wakeup() method is invoked.
      *
+     * @return void
      * @see TechDivision\ApplicationServer\InitialContext\AbstractStorage::init();
      */
     public function init()
@@ -36,9 +43,17 @@ class ApcuStorage extends AbstractStorage
     /**
      * (non-PHPdoc)
      *
+     * @param string  $entryIdentifier Something which identifies the data - depends on concrete cache
+     * @param mixed   $data            The data to cache - also depends on the concrete cache implementation
+     * @param array   $tags            Tags to associate with this cache entry
+     * @param integer $lifetime        Lifetime of this cache entry in seconds.
+     *                                 If NULL is specified, the default lifetime is used. "0" means unlimited lifetime.
+     *
+     * @return void
+     *
      * @see \TechDivision\ApplicationServer\InitialContext\StorageInterface::set()
      */
-    public function set($entryIdentifier, $data, array $tags = array(), $lifetime = NULL)
+    public function set($entryIdentifier, $data, array $tags = array(), $lifetime = null)
     {
         // create a unique cache key and add the passed value to the storage
         $cacheKey = $this->getIdentifier() . $entryIdentifier;
@@ -63,6 +78,9 @@ class ApcuStorage extends AbstractStorage
     /**
      * (non-PHPdoc)
      *
+     * @param string $entryIdentifier Something which identifies the cache entry - depends on concrete cache
+     *
+     * @return mixed
      * @see \TechDivision\ApplicationServer\InitialContext\StorageInterface::get()
      */
     public function get($entryIdentifier)
@@ -73,16 +91,9 @@ class ApcuStorage extends AbstractStorage
     /**
      * (non-PHPdoc)
      *
-     * @see \TechDivision\ApplicationServer\InitialContext\StorageInterface::getByTag()
-     */
-    public function getByTag($tag)
-    {
-        return $this->get($this->getIdentifier() . $tag);
-    }
-
-    /**
-     * (non-PHPdoc)
+     * @param string $entryIdentifier An identifier specifying the cache entry
      *
+     * @return boolean TRUE if such an entry exists, FALSE if not
      * @see \TechDivision\ApplicationServer\InitialContext\StorageInterface::has()
      */
     public function has($entryIdentifier)
@@ -93,6 +104,9 @@ class ApcuStorage extends AbstractStorage
     /**
      * (non-PHPdoc)
      *
+     * @param string $entryIdentifier An identifier specifying the cache entry
+     *
+     * @return boolean TRUE if such an entry exists, FALSE if not
      * @see \TechDivision\ApplicationServer\InitialContext\StorageInterface::remove()
      */
     public function remove($entryIdentifier)
@@ -103,71 +117,7 @@ class ApcuStorage extends AbstractStorage
     /**
      * (non-PHPdoc)
      *
-     * @see \TechDivision\ApplicationServer\InitialContext\StorageInterface::flush()
-     */
-    public function flush()
-    {
-        if ($allKeys = $this->getAllKeys()) {
-            foreach ($allKeys as $key) {
-                if (substr_compare($key, $this->getIdentifier(), 0)) {
-                    $this->remove($key);
-                }
-            }
-        }
-    }
-
-    /**
-     * (non-PHPdoc)
-     *
-     * @see \TechDivision\ApplicationServer\InitialContext\StorageInterface::flushByTag()
-     */
-    public function flushByTag($tag)
-    {
-        $tagData = $this->get($this->getIdentifier() . $tag);
-        if (is_array($tagData)) {
-            foreach ($tagData as $cacheKey) {
-                $this->remove($cacheKey);
-            }
-            $this->remove($this->getIdentifier() . $tag);
-        }
-    }
-
-    /**
-     * (non-PHPdoc)
-     *
-     * @see \TechDivision\ApplicationServer\InitialContext\StorageInterface::collectGarbage()
-     */
-    public function collectGarbage()
-    {
-        // nothing to do here, because gc is handled by memcache
-    }
-
-    /**
-     * (non-PHPdoc)
-     *
-     * @see \TechDivision\ApplicationServer\InitialContext\StorageInterface::isValidEntryIdentifier()
-     */
-    public function isValidEntryIdentifier($identifier)
-    {
-        if (preg_match('^[0-9A-Za-z_]+$', $identifier) === 1) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * (non-PHPdoc)
-     *
-     * @see \TechDivision\ApplicationServer\InitialContext\StorageInterface::isValidTag()
-     */
-    public function isValidTag($tag)
-    {
-        return $this->isValidEntryIdentifier($tag);
-    }
-
-    /**
-     * (non-PHPdoc)
-     *
+     * @return array
      * @see \TechDivision\ApplicationServer\InitialContext\StorageInterface::getAllKeys()
      */
     public function getAllKeys()

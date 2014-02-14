@@ -1,26 +1,30 @@
 <?php
-
 /**
  * TechDivision\ApplicationServer\Api\ReceiverService
  *
- * NOTICE OF LICENSE
+ * PHP version 5
  *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
+ * @category   Appserver
+ * @package    TechDivision_ApplicationServer
+ * @subpackage Api
+ * @author     Tim Wagner <tw@techdivision.com>
+ * @copyright  2013 TechDivision GmbH <info@techdivision.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link       http://www.appserver.io
  */
-namespace TechDivision\ApplicationServer\Api;
 
-use TechDivision\ApplicationServer\Api\AbstractService;
+namespace TechDivision\ApplicationServer\Api;
 
 /**
  * A service that handles receiver configuration data.
  *
- * @package TechDivision\ApplicationServer
- * @copyright Copyright (c) 2013 <info@techdivision.com> - TechDivision GmbH
- * @license http://opensource.org/licenses/osl-3.0.php
- *          Open Software License (OSL 3.0)
- * @author Tim Wagner <tw@techdivision.com>
+ * @category   Appserver
+ * @package    TechDivision_ApplicationServer
+ * @subpackage Api
+ * @author     Tim Wagner <tw@techdivision.com>
+ * @copyright  2013 TechDivision GmbH <info@techdivision.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link       http://www.appserver.io
  */
 class ReceiverService extends AbstractService
 {
@@ -28,7 +32,7 @@ class ReceiverService extends AbstractService
     /**
      * Return's all receiver configurations.
      *
-     * @return array<\TechDivision\ApplicationServer\Api\Node\ReceiverNode> The receiver configurations
+     * @return array The receiver configurations
      * @see \TechDivision\ApplicationServer\Api\ServiceInterface::findAll()
      */
     public function findAll()
@@ -44,16 +48,16 @@ class ReceiverService extends AbstractService
     /**
      * Returns the receiver node for the passed UUID.
      *
-     * @param string $uuid
-     *            UUID of the container to return
+     * @param string $uuid UUID of the container to return
+     *
      * @return \TechDivision\ApplicationServer\Api\Node\ReceiverNode The receiver node with the UUID passed as parameter
      * @see \TechDivision\ApplicationServer\Api\ServiceInterface::load()
      */
     public function load($uuid)
     {
         $receivers = $this->findAll();
-    	if (array_key_exists($uuid, $receivers)) {
-    	    return $receivers[$uuid];
-    	}
+        if (array_key_exists($uuid, $receivers)) {
+            return $receivers[$uuid];
+        }
     }
 }

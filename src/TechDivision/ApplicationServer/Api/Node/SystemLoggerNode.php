@@ -1,24 +1,30 @@
 <?php
-
 /**
  * TechDivision\ApplicationServer\Api\Node\SystemLoggerNode
  *
- * NOTICE OF LICENSE
+ * PHP version 5
  *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
+ * @category   Appserver
+ * @package    TechDivision_ApplicationServer
+ * @subpackage Api
+ * @author     Tim Wagner <tw@techdivision.com>
+ * @copyright  2013 TechDivision GmbH <info@techdivision.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link       http://www.appserver.io
  */
+
 namespace TechDivision\ApplicationServer\Api\Node;
 
 /**
  * DTO to transfer system logger information.
  *
- * @package TechDivision\ApplicationServer
- * @copyright Copyright (c) 2013 <info@techdivision.com> - TechDivision GmbH
- * @license http://opensource.org/licenses/osl-3.0.php
- *          Open Software License (OSL 3.0)
- * @author Tim Wagner <tw@techdivision.com>
+ * @category   Appserver
+ * @package    TechDivision_ApplicationServer
+ * @subpackage Api
+ * @author     Tim Wagner <tw@techdivision.com>
+ * @copyright  2013 TechDivision GmbH <info@techdivision.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link       http://www.appserver.io
  */
 class SystemLoggerNode extends AbstractNode
 {
@@ -42,7 +48,7 @@ class SystemLoggerNode extends AbstractNode
     /**
      * Array with nodes for the registered processors.
      *
-     * @var array<\TechDivision\ApplicationServer\Api\Node\ProcessorNode>
+     * @var array
      * @AS\Mapping(nodeName="processors/processor", nodeType="array", elementType="TechDivision\ApplicationServer\Api\Node\ProcessorNode")
      */
     protected $processors = array();
@@ -50,7 +56,7 @@ class SystemLoggerNode extends AbstractNode
     /**
      * Array with nodes for the registered handlers.
      *
-     * @var array<\TechDivision\ApplicationServer\Api\Node\HandlerNode>
+     * @var array
      * @AS\Mapping(nodeName="handlers/handler", nodeType="array", elementType="TechDivision\ApplicationServer\Api\Node\HandlerNode")
      */
     protected $handlers = array();
@@ -78,7 +84,7 @@ class SystemLoggerNode extends AbstractNode
     /**
      * Returns the array with all registered processors.
      *
-     * @return array<\TechDivision\ApplicationServer\Api\Node\ProcessorNode> The registered processors
+     * @return array The registered processors
      */
     public function getProcessors()
     {
@@ -88,7 +94,7 @@ class SystemLoggerNode extends AbstractNode
     /**
      * Returns the array with all registered handlers.
      *
-     * @return array<\TechDivision\ApplicationServer\Api\Node\HandlerNode> The registered handlers
+     * @return array The registered handlers
      */
     public function getHandlers()
     {
