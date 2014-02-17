@@ -58,8 +58,8 @@ Installation
 ------------
 Actually we support Mac OS X Mountain Lion and Debian Wheezy. We also plan to release a Windows installer and a RPM
 package as soon as possible but as we're only Mac users we'll be happy if someone is out there to support us with that
-stuff. Finally it's possible to build the runtime by yourself. This can be done by cloning our [Runtime Environment]
-(https://github.com/techdivision/TechDivision_Runtime). We've added two ANT targets ``create-pkg`` and ``create-deb``
+stuff. Finally it's possible to build the runtime by yourself. This can be done by cloning our
+`Runtime Environment <https://github.com/techdivision/TechDivision_Runtime>`_. We've added two ANT targets ``create-pkg`` and ``create-deb``
 that should do the stuff for you.
 
 Installation on Mountain Lion
@@ -71,9 +71,9 @@ you'll find the Application Server software in the folder ``/opt/appserver``.
 
 When the installation has been finished the Application Server will be started automatically. If you need to restart
 the Application Server, after you've deployed a new app for example, you can use the init scripts ``sbin/appserverctl``
-and ``sbin/memcachectl`` therefore. Both accept ``start``, ``stop`` and ``restart`` as parameter.
+and ``sbin/memcachectl`` therefore. Both accept ``start``, ``stop`` and ``restart`` as parameter.
 
-Start your favorite browser and open the URL ``http://127.0.0.1:8586/demo`` to load the demo application.
+Start your favorite browser and open the URL http://127.0.0.1:8586/demo to load the demo application.
 
 Installation on a Debian Wheezy
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -86,28 +86,28 @@ If you're on a Debian system you don't need to download the .deb package. Follow
     root@debian:~# aptitude install appserver
 
 This will install the Application Server in directory ``/opt/appserver``. Also it'll be started automatically, but you
-can start, stop or restart it with the init-script ``/etc/init.d/appserver`` and the parameter ``start``, ``stop`` and
-``restart``. Additionally it is necessary that the memcached daemon has been started before the Application Server will
+can start, stop or restart it with the init-script ``/etc/init.d/appserver`` and the parameter ``start``, ``stop`` and ``restart``.
+Additionally it is necessary that the memcached daemon has been started before the Application Server will
 be started itself.
 
 After installation you can open a really simply example app with your favorite browser open the URL
-``http://127.0.0.1:8586/demo``.
+http://127.0.0.1:8586/demo.
 
 Installation on Windows (7+)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 To install the Application Server on Windows you first have to download the latest .jar archive from http://appserver.io/downloads.
 After doing so you have to check your system for an installed Java Runtime Environment (or JDK that is).
 This is a vital requirement for you to use the .jar file.
-If the JRE is not installed you have to get it from http://www.oracle.com/technetwork/java/javase/downloads/jre7-downloads-1880261.html first.
+If the JRE is not installed you have to get it from `this link <http://www.oracle.com/technetwork/java/javase/downloads/jre7-downloads-1880261.html>`_ first.
 
 If this requirement is met you can start the installation by simply double-clicking the .jar archive.
 After authorizing the access to your computer, a guided installation wizard will appear and perform the installation.
 
 After the installation you can start the Application Server with the server.bat file located within the root directory of your installation.
 To do so make sure you execute the file as an administrator.
-Best thing to do would be starting a command prompt as an administrator and run the server.bat from there.
+Best thing to do would be starting a command prompt as an administrator and run the ``server.bat`` from there.
 
-As a final step you can start your favorite browser and open the URL ``http://127.0.0.1:8586/demo`` to load the demo application.
+As a final step you can start your favorite browser and open the URL http://127.0.0.1:8586/demo to load the demo application.
 
 Installation on Fedora
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -116,7 +116,7 @@ http://appserver.io/downloads.
 You can double click the .rpm package for installation or use yum with ``yum install <PATH_TO_RPM>`` as root.
 This will install the appserver within ``/opt/appserver`` and start it together with a file watcher daemon as soon as installation finishes.
 
-Now start your favorite browser and open the URL ``http://127.0.0.1:8586/demo`` to load the demo application.
+Now start your favorite browser and open the URL http://127.0.0.1:8586/demo to load the demo application.
 
 During installation we registered systemd units for the appserver, so you can controll it with ``systemctl <COMMAND> appserver`` where command
 are the basic systemd commands like ``start``, ``stop``, ``restart`` and ``status``.
@@ -131,20 +131,20 @@ If you want to better understand how and why Web Apps are special in their struc
 where we explain the concept a bit more.
 
 For using these Web Apps we only need to know how to deploy and manage them.
-This can be done using the ``Àdmin Web App`` which we deliver with every installation (you might have opted out on it during the installation!).
-You can access this Admin backend at ``http://127.0.0.1:8586/admin`` which will open a password prompt.
+This can be done using the ``Admin Web App`` which we deliver with every installation (you might have opted out on it during the installation!).
+You can access this Admin backend at http://127.0.0.1:8586/admin which will open a password prompt.
 
 Default settings are:
 
-Username: ``appserver``
-Password: ``appserver.i0`` (the "o" is a zero)
+* Username: ``appserver``
+* Password: ``appserver.i0`` (the "o" is a zero)
 
 Within this backend you can do several things:
 
 Manage your Web Apps
 --------------------
 At ``http://127.0.0.1:8586/admin#apps`` you can manage all deployed Web Apps and deploy new ones via simple drag and drop.
-You can see how in this [video] (http://www.youtube.com/watch?v=V1BSePQal10) we made for a previous version of the Admin backend showing
+You can see how in this `video <http://www.youtube.com/watch?v=V1BSePQal10>`_ we made for a previous version of the Admin backend showing
 the installation of Magento 1.7.0.2 as a specially prepared Web App.
 Just drag and drop a .phar-packed Web App into the upload area.
 If you use the Mac OS X or Debian installation the Application Server will restart automatically and you are done already!
