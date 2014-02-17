@@ -23,6 +23,7 @@ Highlights
 * Integrate message queue
 * Web services
 * Cluster functionality
+* Hot deployment of Web Apps (Mac OS X and Debian only)
 
 Technical Features
 ------------------
@@ -92,7 +93,73 @@ be started itself.
 After installation you can open a really simply example app with your favorite browser open the URL
 ``http://127.0.0.1:8586/demo``.
 
-Getting Started Tutorial
+Installation on Windows (7+)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+To install the Application Server on Windows you first have to download the latest .jar archive from http://appserver.io/downloads.
+After doing so you have to check your system for an installed Java Runtime Environment (or JDK that is).
+This is a vital requirement for you to use the .jar file.
+If the JRE is not installed you have to get it from http://www.oracle.com/technetwork/java/javase/downloads/jre7-downloads-1880261.html first.
+
+If this requirement is met you can start the installation by simply double-clicking the .jar archive.
+After authorizing the access to your computer, a guided installation wizard will appear and perform the installation.
+
+After the installation you can start the Application Server with the server.bat file located within the root directory of your installation.
+To do so make sure you execute the file as an administrator.
+Best thing to do would be starting a command prompt as an administrator and run the server.bat from there.
+
+As a final step you can start your favorite browser and open the URL ``http://127.0.0.1:8586/demo`` to load the demo application.
+
+Installation on Fedora
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+To install the Application Server on Fedora (other RedHat-ish systems are not tested yet) you first have to download the latest .rpm archive from
+http://appserver.io/downloads.
+You can double click the .rpm package for installation or use yum with ``yum install <PATH_TO_RPM>`` as root.
+This will install the appserver within ``/opt/appserver`` and start it together with a file watcher daemon as soon as installation finishes.
+
+Now start your favorite browser and open the URL ``http://127.0.0.1:8586/demo`` to load the demo application.
+
+During installation we registered systemd units for the appserver, so you can controll it with ``systemctl <COMMAND> appserver`` where command
+are the basic systemd commands like ``start``, ``stop``, ``restart`` and ``status``.
+
+Getting Started Using it
+========================
+
+To make use of the Application Server you need to understand that all sites we deliver are Web App based.
+A Web App is, simply speaking, a website specifically structured website.
+
+If you want to better understand how and why Web Apps are special in their structure you can have a look at ``Getting Started Developing``
+where we explain the concept a bit more.
+
+For using these Web Apps we only need to know how to deploy and manage them.
+This can be done using the ``Àdmin Web App`` which we deliver with every installation (you might have opted out on it during the installation!).
+You can access this Admin backend at ``http://127.0.0.1:8586/admin`` which will open a password prompt.
+
+Default settings are:
+
+Username: ``appserver``
+Password: ``appserver.i0`` (the "o" is a zero)
+
+Within this backend you can do several things:
+
+Manage your Web Apps
+--------------------
+At ``http://127.0.0.1:8586/admin#apps`` you can manage all deployed Web Apps and deploy new ones via simple drag and drop.
+You can see how in this [video] (http://www.youtube.com/watch?v=V1BSePQal10) we made for a previous version of the Admin backend showing
+the installation of Magento 1.7.0.2 as a specially prepared Web App.
+Just drag and drop a .phar-packed Web App into the upload area.
+If you use the Mac OS X or Debian installation the Application Server will restart automatically and you are done already!
+For Windows and Fedora users you will have to restart the server yourself (we are working on it).
+
+Manage your Web Apps
+--------------------
+Using the other taps you can keep track of your Application Server and it's settings.
+You can:
+
+* See what Vhosts you have configured (http://127.0.0.1:8586/admin/#/vhosts)
+* See which containers (service providers your apps can use) are loaded (http://127.0.0.1:8586/admin/#/containers)
+* Have a look at your server's log in near realtime (http://127.0.0.1:8586/admin/#/logs)
+
+Getting Started Developing
 ========================
 
 This is a getting started tutorial for all folks who want to get in touch with appserver and want to learn how it works.
