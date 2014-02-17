@@ -37,21 +37,23 @@ class ShellFacade
      * @var array Commands which are prohibited to pass the facade
      */
     protected $prohibitedCommands;
-    
+
     /**
      * Default constructor
-     * 
+     *
      * @param array $prohibitedCommands Initially prohibited commands
      */
-    public function __construct($prohibitedCommands = array()) 
+    public function __construct($prohibitedCommands = array())
     {
         $this->prohibitedCommands = $prohibitedCommands;
     }
-    
+
     /**
      * Will execute a shell command using exec() function.
      *
      * @param string $command The command to execute over the shell
+     *
+     * @throws \Exception
      *
      * @return mixed
      */
@@ -59,30 +61,32 @@ class ShellFacade
     {
         // Check for prohibited commands
         foreach ($this->prohibitedCommands as $prohibitedCommand) {
-            
+
             if (strpos(trim($command), $prohibitedCommand) !== false) {
-                
-                throw new Exception('The shell command ' . $command . ' is prohibited');
+
+                throw new \Exception('The shell command ' . $command . ' is prohibited');
             }
         }
-        
+
         return exec($command);
     }
-    
+
     /**
      * Getter for the list of prohibited commands
-     * 
+     *
      * @return array
      */
     public function getProhibitedCommands()
     {
         return $this->prohibitedCommands;
     }
-    
+
     /**
      * Setter for the list of prohibited commands
-     * 
+     *
      * @param array $prohibitedCommands The list of prohibited commands
+     *
+     * @return void
      */
     public function setProhibitedCommands(array $prohibitedCommands)
     {
