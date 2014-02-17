@@ -69,9 +69,13 @@ If the JRE is not installed you have to get it from http://www.oracle.com/techne
 If this requirement is met you can start the installation by simply double-clicking the .jar archive.
 After authorizing the access to your computer, a guided installation wizard will appear and perform the installation.
 
-After the installation you can start the Application Server with the server.bat file located within the root directory of your installation.
-To do so make sure you execute the file as an administrator.
-Best thing to do would be starting a command prompt as an administrator and run the server.bat from there.
+After the installation you can start the Application Server with the ``server.bat`` file located within the root directory of your installation.
+Best thing to do would be starting a command prompt as an administrator and run the following commands (assuming default installation path):
+
+```
+C:\Windows\system32>cd "C:\Program Files\appserver"
+C:\Program Files\appserver>server.bat
+```
 
 As a final step you can start your favorite browser and open the URL `http://127.0.0.1:8586/demo` to load the demo application.
 
