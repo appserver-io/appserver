@@ -48,7 +48,7 @@ class DatasourceNode extends AbstractNode
     /**
      * Returns the unique datasource name.
      *
-     * @return string The unique datasource name
+     * @return string|null The unique datasource name
      */
     public function getName()
     {
