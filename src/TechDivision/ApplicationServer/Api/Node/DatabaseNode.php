@@ -70,6 +70,14 @@ class DatabaseNode extends AbstractNode
     protected $path;
 
     /**
+     * The database host information
+     *
+     * @var \TechDivision\ApplicationServer\Api\Node\DatabaseHostNode
+     * @AS\Mapping(nodeName="databaseHost", nodeType="TechDivision\ApplicationServer\Api\Node\DatabaseHostNode")
+     */
+    protected $databaseHost;
+
+    /**
      * Returns the database driver information.
      *
      * @return \TechDivision\ApplicationServer\Api\Node\DriverNode The database driver information
@@ -117,5 +125,15 @@ class DatabaseNode extends AbstractNode
     public function getPath()
     {
         return $this->path;
+    }
+
+    /**
+     * Returns the database host information
+     *
+     * @return \TechDivision\ApplicationServer\Api\Node\DatabaseHostNode The database host information
+     */
+    public function getDatabaseHost()
+    {
+        return $this->databaseHost;
     }
 }
