@@ -608,7 +608,7 @@ class Configuration implements ContainerConfiguration
         if ($domDocument->schemaValidate($this->getSchemaFile()) === false) {
             foreach (libxml_get_errors() as $error) {
                 $message = "Found a schema validation error on line %s with code %s and message %s when validating configuration file %s";
-                error_log(var_export($error, true));
+                
                 throw new \Exception(sprintf($message, $error->line, $error->code, $error->message, $error->file));
             }
         }
