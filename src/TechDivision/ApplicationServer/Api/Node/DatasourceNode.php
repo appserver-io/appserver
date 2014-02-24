@@ -38,12 +38,28 @@ class DatasourceNode extends AbstractNode
     protected $name;
 
     /**
+     * The type of the datasource.
+     *
+     * @var string
+     * @AS\Mapping(nodeType="string")
+     */
+    protected $type;
+
+    /**
      * The database connection information.
      *
      * @var \TechDivision\ApplicationServer\Api\Node\DatabaseNode
      * @AS\Mapping(nodeName="database", nodeType="TechDivision\ApplicationServer\Api\Node\DatabaseNode")
      */
     protected $database;
+
+    /**
+     * The container which can use this datasource
+     *
+     * @var string
+     * @AS\Mapping(nodeName="container", nodeType="string")
+     */
+    protected $containerName;
 
     /**
      * Returns the unique datasource name.
@@ -56,6 +72,16 @@ class DatasourceNode extends AbstractNode
     }
 
     /**
+     * Returns the datasource's type.
+     *
+     * @return string|null The datasource type
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
      * Returns the database connection information.
      *
      * @return \TechDivision\ApplicationServer\Api\Node\DatabaseNode The database connection information
@@ -63,5 +89,15 @@ class DatasourceNode extends AbstractNode
     public function getDatabase()
     {
         return $this->database;
+    }
+
+    /**
+     * Returns the name of the container which can use this datasource
+     *
+     * @return string
+     */
+    public function getContainerName()
+    {
+        return $this->containerName;
     }
 }
