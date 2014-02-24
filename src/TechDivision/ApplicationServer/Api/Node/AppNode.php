@@ -46,6 +46,14 @@ class AppNode extends AbstractNode
     protected $webappPath;
 
     /**
+     * The application's datasources (if any).
+     *
+     * @var array<\TechDivision\ApplicationServer\Api\Node\DatasourceNode>
+     * @AS\Mapping(nodeType="array")
+     */
+    protected $datasources;
+
+    /**
      * Set's the application name.
      *
      * @param string $name The unique application name
@@ -87,5 +95,28 @@ class AppNode extends AbstractNode
     public function getWebappPath()
     {
         return $this->webappPath;
+    }
+
+    /**
+     * Sets the list of datasources for this app.
+     *
+     * @param array<\TechDivision\ApplicationServer\Api\Node\DatasourceNode> $datasources The list of datasources
+     *                                                                                    for this app
+     *
+     * @return void
+     */
+    public function setDatasources(array $datasources)
+    {
+        $this->datasources = $datasources;
+    }
+
+    /**
+     * Returns the list of datasources for this app.
+     *
+     * @return array<\TechDivision\ApplicationServer\Api\Node\DatasourceNode> The list of datasources for this app
+     */
+    public function getDatasources()
+    {
+        return $this->datasources;
     }
 }

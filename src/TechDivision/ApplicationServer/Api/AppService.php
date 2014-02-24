@@ -115,11 +115,11 @@ class AppService extends AbstractService
         $systemConfiguration->attachApp($appNode);
         $this->setSystemConfiguration($systemConfiguration);
     }
-    
+
     /**
      * Soaks the passed archive into from a location in the filesystem
      * to the deploy directory.
-     * 
+     *
      * @param \SplFileInfo $archive The archive to soak
      *
      * @return void
@@ -142,10 +142,10 @@ class AppService extends AbstractService
     {
         // prepare file name
         $fileName = $appNode->getName() . PharExtractor::EXTENSION_SUFFIX;
-        
+
         // load the file info
         $archive = new \SplFileInfo($this->getDeployDir() . DIRECTORY_SEPARATOR . $fileName);
-        
+
         // flag the archiv => deploy it with the next restart
         $extractor = new PharExtractor($this->getInitialContext());
         $extractor->flagArchive($archive, ExtractorInterface::FLAG_DODEPLOY);
@@ -162,17 +162,17 @@ class AppService extends AbstractService
      */
     public function undeploy($uuid)
     {
-        
+
         // try to load the app node with the passe UUID
         if ($appNode = $this->load($uuid)) {
-            
+
             // prepare file name
             $extractor = new PharExtractor($this->getInitialContext());
             $fileName = $appNode->getName() . $extractor->getExtensionSuffix();
-            
+
             // load the file info
             $archive = new \SplFileInfo($this->getDeployDir() . DIRECTORY_SEPARATOR . $fileName);
-            
+
             // unflag the archiv => undeploy it with the next restart
             $extractor = new PharExtractor($this->getInitialContext());
             $extractor->unflagArchive($archive);

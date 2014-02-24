@@ -37,7 +37,7 @@ class DatasourceService extends AbstractService
     /**
      * Returns all deployed applications.
      *
-     * @return array All deployed applications
+     * @return array<\TechDivision\ApplicationServer\Api\Node\DatasourceNode> All deployed applications
      * @see \TechDivision\ApplicationServer\Api\ServiceInterface::findAll()
      */
     public function findAll()
@@ -46,6 +46,7 @@ class DatasourceService extends AbstractService
         foreach ($this->getSystemConfiguration()->getDatasources() as $datasourceNode) {
             $datasourceNodes[$datasourceNode->getPrimaryKey()] = $datasourceNode;
         }
+
         return $datasourceNodes;
     }
 
@@ -54,7 +55,8 @@ class DatasourceService extends AbstractService
      *
      * @param string $name Name of the datasource to return
      *
-     * @return array The datasources with the name passed as parameter
+     * @return array<\TechDivision\ApplicationServer\Api\Node\DatasourceNode> The datasources with the name passed as
+     *                                                                        parameter
      */
     public function findAllByName($name)
     {
@@ -64,6 +66,7 @@ class DatasourceService extends AbstractService
                 $datasourceNodes[$datasourceNode->getPrimaryKey()] = $datasourceNode;
             }
         }
+
         return $datasourceNodes;
     }
 
@@ -88,11 +91,12 @@ class DatasourceService extends AbstractService
      * Creates an array with datasources found in the configuration
      * file with the passed name.
      *
-     * @param string $filename The filename to initialize the datasources from
+     * @param string $filename      The filename to initialize the datasources from
+     * @param string $containerName The name of the container the datasource can be used in
      *
      * @return array
      */
-    public function initFromFile($filename)
+    public function initFromFile($filename, $containerName = '')
     {
 
         // initialize the configuration and load the data from the passed file
@@ -102,10 +106,16 @@ class DatasourceService extends AbstractService
         // iterate over the found datasources, append them to the array and return the array
         $datasourceNodes = array();
         foreach ($configuration->getChilds('/datasources/datasource') as $datasourceConfiguration) {
-            $datasourceNode = $this->newInstance('TechDivision\ApplicationServer\Api\Node\DatasourceNode');
+
+            // Add the information about the container name here
+            $datasourceConfiguration->appendData(array('containerName' => $containerName));
+
+            // Instantiate the datasource node using the configuration
+            $datasourceNode = $this->newInstance('\TechDivision\ApplicationServer\Api\Node\DatasourceNode');
             $datasourceNode->initFromConfiguration($datasourceConfiguration);
             $datasourceNodes[$datasourceNode->getPrimaryKey()] = $datasourceNode;
         }
+
         return $datasourceNodes;
     }
 
