@@ -6,9 +6,11 @@ php:
   
 before_install:
   - pecl install pthreads-beta
+  - pyrus install pear/PHP_CodeSniffer
+  - phpenv rehash
   
 script:
-  - ant run-tests
+  - ant build
 
 notifications:
   email: info@appserver.io

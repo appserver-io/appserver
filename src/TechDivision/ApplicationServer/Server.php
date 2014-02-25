@@ -1,32 +1,38 @@
 <?php
-
 /**
  * TechDivision\ApplicationServer\Server
  *
- * NOTICE OF LICENSE
+ * PHP version 5
  *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
+ * @category  Appserver
+ * @package   TechDivision_ApplicationServer
+ * @author    Tim Wagner <tw@techdivision.com>
+ * @copyright 2013 TechDivision GmbH <info@techdivision.com>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      http://www.appserver.io
  */
+
 namespace TechDivision\ApplicationServer;
 
-use TechDivision\Socket\Client;
-use TechDivision\ApplicationServer\SplClassLoader;
+use TechDivision\ApplicationServer\Extractors\PharExtractor;
+use TechDivision\ApplicationServer\Interfaces\ExtractorInterface;
 use TechDivision\ApplicationServer\InitialContext;
-use TechDivision\ApplicationServer\Configuration;
-use TechDivision\ApplicationServer\ContainerThread;
 use TechDivision\ApplicationServer\Api\Node\NodeInterface;
 use TechDivision\ApplicationServer\Api\Node\AppserverNode;
+use TechDivision\ApplicationServer\Utilities\StateKeys;
 use \Psr\Log\LoggerInterface;
 
 /**
+ * This is the main server class that starts the application server
+ * and creates a separate thread for each container found in the
+ * configuration file.
  *
- * @package TechDivision\ApplicationServer
- * @copyright Copyright (c) 2010 <info@techdivision.com> - TechDivision GmbH
- * @license http://opensource.org/licenses/osl-3.0.php
- *          Open Software License (OSL 3.0)
- * @author Tim Wagner <tw@techdivision.com>
+ * @category  Appserver
+ * @package   TechDivision_ApplicationServer
+ * @author    Tim Wagner <tw@techdivision.com>
+ * @copyright 2013 TechDivision GmbH <info@techdivision.com>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      http://www.appserver.io
  */
 class Server
 {
@@ -34,7 +40,7 @@ class Server
     /**
      * Initialize the array for the running threads.
      *
-     * @var array<\Thread>
+     * @var array
      */
     protected $threads = array();
 
@@ -53,72 +59,29 @@ class Server
     protected $initialContext;
 
     /**
-     * The server's logger instance.
+     * The server's webapp extractor
      *
-     * @var \Psr\Log\LoggerInterface
+     * @var \TechDivision\ApplicationServer\Interfaces\ExtractorInterface
      */
-    protected $systemLogger;
-
-    /**
-     * The mutex to prevent PHAR deployment errors.
-     *
-     * @var integer
-     */
-    protected $mutex;
+    protected $extractor;
 
     /**
      * Initializes the the server with the parsed configuration file.
      *
-     * @param \TechDivision\ApplicationServer\Configuration $configuration
-     *            The parsed configuration file
+     * @param \TechDivision\ApplicationServer\Configuration $configuration The parsed configuration file
+     *
      * @return void
      */
     public function __construct(Configuration $configuration)
     {
-
+        
         // initialize the configuration and the base directory
         $systemConfiguration = new AppserverNode();
         $systemConfiguration->initFromConfiguration($configuration);
         $this->setSystemConfiguration($systemConfiguration);
-
-        // initialize the mutex to prevent PHAR deployment errors
-        $this->setMutex(\Mutex::create(false));
-
-        // initialize the server
+        
+        // initialize the server instance
         $this->init();
-    }
-
-    /**
-     * Destroys the mutex to prevent PHAR deployment errors.
-     *
-     * @return void
-     */
-    public function __destruct()
-    {
-        \Mutex::unlock($this->getMutex());
-        \Mutex::destroy($this->getMutex());
-    }
-
-    /**
-     * Set's the mutex to prevent PHAR deployment errors.
-     *
-     * @param
-     *            integer The mutex
-     * @return void
-     */
-    public function setMutex($mutex)
-    {
-        $this->mutex = $mutex;
-    }
-
-    /**
-     * Returns the mutex to prevent PHAR deployment errors.
-     *
-     * @return integer The mutex
-     */
-    public function getMutex()
-    {
-        return $this->mutex;
     }
 
     /**
@@ -128,41 +91,12 @@ class Server
      */
     protected function init()
     {
+        // init initial context
         $this->initInitialContext();
+        // init the file system
+        $this->initFileSystem();
+        // init main system logger
         $this->initSystemLogger();
-        $this->initContainers();
-    }
-
-    /**
-     * Initialize the system logger.
-     *
-     * @return void
-     */
-    protected function initSystemLogger()
-    {
-
-        // initialize the logger instance itself
-        $systemLoggerNode = $this->getSystemConfiguration()->getSystemLogger();
-        $systemLogger = $this->newInstance($systemLoggerNode->getType(), array(
-            $systemLoggerNode->getChannelName()
-        ));
-
-        // initialize the processors
-        foreach ($systemLoggerNode->getProcessors() as $processorNode) {
-            $processor = $this->newInstance($processorNode->getType(), $processorNode->getParamsAsArray());
-            $systemLogger->pushProcessor($processor);
-        }
-
-        // initialize the handlers
-        foreach ($systemLoggerNode->getHandlers() as $handlerNode) {
-            $handler = $this->newInstance($handlerNode->getType(), $handlerNode->getParamsAsArray());
-            $formatterNode = $handlerNode->getFormatter();
-            $handler->setFormatter($this->newInstance($formatterNode->getType(), $formatterNode->getParamsAsArray()));
-            $systemLogger->pushHandler($handler);
-        }
-
-        // set the initialized logger finally
-        $this->setSystemLogger($systemLogger);
     }
 
     /**
@@ -182,23 +116,93 @@ class Server
     }
 
     /**
+     * Prepares filesystem to be sure that everything is on place as expected
+     *
+     * @return void
+     */
+    public function initFileSystem()
+    {
+        
+        // init API service to use
+        $service = $this->newService('TechDivision\ApplicationServer\Api\ContainerService');
+        
+        // check if the log directory already exists, if not, create it
+        foreach ($service->getDirectories() as $directory) {
+            
+            // prepare the path to the directory to be created
+            $toBeCreated = $service->realpath($directory);
+            // prepare the directory name and check if the directory already exists
+            if (is_dir($toBeCreated) === false) {
+                // if not create it
+                mkdir($toBeCreated, 0755, true);
+            }
+        }
+    }
+
+    /**
+     * Initialize the system logger.
+     *
+     * @return void
+     */
+    protected function initSystemLogger()
+    {
+        
+        // initialize the logger instance itself
+        $systemLoggerNode = $this->getSystemConfiguration()->getSystemLogger();
+        $systemLogger = $this->newInstance($systemLoggerNode->getType(), array(
+            $systemLoggerNode->getChannelName()
+        ));
+        
+        // initialize the processors
+        foreach ($systemLoggerNode->getProcessors() as $processorNode) {
+            $processor = $this->newInstance($processorNode->getType(), $processorNode->getParamsAsArray());
+            $systemLogger->pushProcessor($processor);
+        }
+        
+        // initialize the handlers
+        foreach ($systemLoggerNode->getHandlers() as $handlerNode) {
+            $handler = $this->newInstance($handlerNode->getType(), $handlerNode->getParamsAsArray());
+            $formatterNode = $handlerNode->getFormatter();
+            $handler->setFormatter($this->newInstance($formatterNode->getType(), $formatterNode->getParamsAsArray()));
+            $systemLogger->pushHandler($handler);
+        }
+        
+        // set the initialized logger finally
+        $this->getInitialContext()->setSystemLogger($systemLogger);
+    }
+
+    /**
+     * Initializes the extractor
+     *
+     * @return void
+     */
+    protected function initExtractor()
+    {
+        // @TODO: read extractor type from configuration
+        $this->setExtractor(new PharExtractor($this->getInitialContext()));
+        // extract all webapps
+        $this->getExtractor()->deployWebapps();
+    }
+
+    /**
      * Initialize the container threads.
      *
      * @return void
      */
     protected function initContainers()
     {
-
+        
+        $this->threads = array();
+        
         // and initialize a container thread for each container
         foreach ($this->getSystemConfiguration()->getContainers() as $containerNode) {
-
+            
             // initialize the container configuration with the base directory and pass it to the thread
             $params = array(
                 $this->getInitialContext(),
-                $this->getMutex(),
                 $containerNode
             );
-
+            
             // create and append the thread instance to the internal array
             $this->threads[] = $this->newInstance($containerNode->getThreadType(), $params);
         }
@@ -207,7 +211,7 @@ class Server
     /**
      * Returns the running container threads.
      *
-     * @return array<\TechDivision\ApplicationServer\ContainerThread> Array with the running container threads
+     * @return array Array with the running container threads
      */
     public function getThreads()
     {
@@ -216,6 +220,8 @@ class Server
 
     /**
      * Set's the system configuration.
+     *
+     * @param \TechDivision\ApplicationServer\Api\Node\NodeInterface $systemConfiguration The system configuration object
      *
      * @return \TechDivision\ApplicationServer\Api\Node\NodeInterface The system configuration
      */
@@ -237,8 +243,8 @@ class Server
     /**
      * Set's the initial context instance.
      *
-     * @param \TechDivision\ApplicationServer\InitialContext $initialContext
-     *            The initial context instance
+     * @param \TechDivision\ApplicationServer\InitialContext $initialContext The initial context instance
+     *
      * @return void
      */
     public function setInitialContext(InitialContext $initialContext)
@@ -257,45 +263,185 @@ class Server
     }
 
     /**
-     * Set's the system logger instance.
-     *
-     * @param \Psr\Log\LoggerInterface $systemLogger
-     *            The system logger
-     * @return void
-     */
-    public function setSystemLogger(LoggerInterface $systemLogger)
-    {
-        $this->systemLogger = $systemLogger;
-    }
-
-    /**
      * Return's the system logger instance.
      *
      * @return \Psr\Log\LoggerInterface
      */
     public function getSystemLogger()
     {
-        return $this->systemLogger;
+        return $this->getInitialContext()->getSystemLogger();
+    }
+
+    /**
+     * Set's the extractor
+     *
+     * @param \TechDivision\ApplicationServer\Interfaces\ExtractorInterface $extractor The initial context instance
+     *            
+     * @return void
+     */
+    public function setExtractor(ExtractorInterface $extractor)
+    {
+        return $this->extractor = $extractor;
+    }
+
+    /**
+     * Returns the extractor
+     *
+     * @return \TechDivision\ApplicationServer\Interfaces\ExtractorInterface The extractor instance
+     */
+    public function getExtractor()
+    {
+        return $this->extractor;
     }
 
     /**
      * Start the container threads.
      *
      * @return void
+     * @see \TechDivision\ApplicationServer\Server::watch();
      */
     public function start()
     {
+        
+        // init the extractor
+        $this->initExtractor();
+        // init the containers
+        $this->initContainers();
+        
+        // log that the server will be started now
+        $this->getSystemLogger()->info(
+            sprintf(
+                'Server successfully started in basedirectory %s ',
+                $this->getSystemConfiguration()
+                    ->getBaseDirectory()
+                    ->getNodeValue()
+                    ->__toString()
+            )
+        );
+        
+        // start the container threads
+        $this->startContainers();
+    }
+    
+    /**
+     * Scan's the deployment directory for changes and restarts
+     * the server instance if necessary.
+     * 
+     * This is an alternative method to call start() because the
+     * monitor is running exclusively like the start() method.
+     * 
+     * @return void
+     * @see \TechDivision\ApplicationServer\Server::start();
+     */
+    public function watch()
+    {
+
+        // initialize the default monitor for the deployment directory
+        $monitor = $this->newInstance(
+            'TechDivision\ApplicationServer\Scanner\DeploymentScanner',
+            array($this->getInitialContext())
+        );
+        
+        // start the monitor
+        $monitor->start();
+    }
+    
+    /**
+     * Starts the registered container threads.
+     * 
+     * @return void
+     */
+    public function startContainers()
+    {
+        // set the flag that the application will be started
+        $this->getInitialContext()->setAttribute(StateKeys::KEY, StateKeys::get(StateKeys::STARTING));
+        
+        // start the container threads
         foreach ($this->getThreads() as $thread) {
+        
+            // start the thread
             $thread->start();
+        
+            // synchronize container threads to avoid registring apps several times
+            $thread->synchronized(function ($self) {
+                $self->wait();
+            }, $thread);
         }
-        foreach ($this->getThreads() as $thread) {
-            $thread->join();
-        }
+        
+        // set the flag that the application has been started
+        $this->getInitialContext()->setAttribute(StateKeys::KEY, StateKeys::get(StateKeys::RUNNING));
+    }
+    
+    /**
+     * Stops the appserver by setting the apropriate flag in the 
+     * initial context.
+     * 
+     * @return void
+     */
+    public function stopContainers()
+    {
+
+        // calculate the start time
+        $start = microtime(true);
+        
+        // set the flag that the application has to be stopped
+        $this->getInitialContext()->setAttribute(StateKeys::KEY, StateKeys::get(StateKeys::STOPPING));
+                        
+        // log a message with the time needed for restart
+        $this->getSystemLogger()->info(
+            sprintf(
+                "Successfully stopped appserver (in %d sec)",
+                microtime(true) - $start
+            )
+        );
     }
 
     /**
-     * (non-PHPdoc)
+     * Redeploys the apps and restarts the appserver.
      *
+     * @return void
+     */
+    public function restartContainers()
+    {
+
+        // log a message that the appserver will be restarted now
+        $this->getSystemLogger()->info(
+            sprintf(
+                "Now restarting appserver"
+            )
+        );
+
+        // calculate the start time
+        $start = microtime(true);
+                        
+        // stop the container threads
+        $this->stopContainers();
+        
+        // check if apps has to be redeployed
+        $this->getExtractor()->deployWebapps();
+        
+        // reinitialize the container threads
+        $this->initContainers();
+        
+        // start the container threads
+        $this->startContainers();
+                        
+        // log a message with the time needed for restart
+        $this->getSystemLogger()->info(
+            sprintf(
+                "Successfully restarted appserver (in %d sec)",
+                microtime(true) - $start
+            )
+        );
+    }
+
+    /**
+     * Returns a new instance of the passed class name.
+     *
+     * @param string $className The fully qualified class name to return the instance for
+     * @param array  $args      Arguments to pass to the constructor of the instance
+     *
+     * @return object The instance itself
      * @see \TechDivision\ApplicationServer\InitialContext::newInstance()
      */
     public function newInstance($className, array $args = array())
@@ -304,8 +450,11 @@ class Server
     }
 
     /**
-     * (non-PHPdoc)
+     * Returns a new instance of the passed API service.
      *
+     * @param string $className The API service class name to return the instance for
+     *
+     * @return \TechDivision\ApplicationServer\Api\ServiceInterface The service instance
      * @see \TechDivision\ApplicationServer\InitialContext::newService()
      */
     public function newService($className)

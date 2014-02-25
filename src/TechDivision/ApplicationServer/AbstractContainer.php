@@ -1,27 +1,33 @@
 <?php
-
 /**
  * TechDivision\ApplicationServer\AbstractContainer
  *
- * NOTICE OF LICENSE
+ * PHP version 5
  *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
+ * @category  Appserver
+ * @package   TechDivision_ApplicationServer
+ * @author    Tim Wagner <tw@techdivision.com>
+ * @author    Johann Zelger <jz@techdivision.com>
+ * @copyright 2013 TechDivision GmbH <info@techdivision.com>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      http://www.appserver.io
  */
+
 namespace TechDivision\ApplicationServer;
 
 use TechDivision\ApplicationServer\InitialContext;
 use TechDivision\ApplicationServer\Interfaces\ContainerInterface;
 
 /**
+ * Class AbstractContainer
  *
- * @package TechDivision\ApplicationServer
- * @copyright Copyright (c) 2010 <info@techdivision.com> - TechDivision GmbH
- * @license http://opensource.org/licenses/osl-3.0.php
- *          Open Software License (OSL 3.0)
- * @author Tim Wagner <tw@techdivision.com>
- * @author Johann Zelger <jz@techdivision.com>
+ * @category  Appserver
+ * @package   TechDivision_ApplicationServer
+ * @author    Tim Wagner <tw@techdivision.com>
+ * @author    Johann Zelger <jz@techdivision.com>
+ * @copyright 2013 TechDivision GmbH <info@techdivision.com>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      http://www.appserver.io
  */
 abstract class AbstractContainer extends \Stackable implements ContainerInterface
 {
@@ -48,25 +54,41 @@ abstract class AbstractContainer extends \Stackable implements ContainerInterfac
     protected $containerNode;
 
     /**
+     * The container's base directory.
+     *
+     * @var string
+     */
+    protected $baseDirectory;
+
+    /**
      * TRUE if the container has been started, else FALSE.
+     *
      * @var boolean
      */
     protected $started = false;
 
     /**
+     * @var InitialContext
+     */
+    protected $initialContext;
+
+    /**
      * Initializes the container with the initial context, the unique container ID
      * and the deployed applications.
      *
-     * @param \TechDivision\ApplicationServer\InitialContext $initialContext
-     *            The initial context instance
-     * @param \TechDivision\ApplicationServer\Api\Node\ContainerNode $containerNode
-     *            The container's UUID
+     * @param \TechDivision\ApplicationServer\InitialContext                         $initialContext The initial context
+     * @param \TechDivision\ApplicationServer\Api\Node\ContainerNode                 $containerNode  The container's UUID
+     * @param array<\TechDivision\ApplicationServer\Interfaces\ApplicationInterface> $applications   The application instance
+     *
      * @todo Application deployment only works this way because of Thread compatibilty
      * @return void
      */
     public function __construct($initialContext, $containerNode, $applications)
     {
         $this->initialContext = $initialContext;
+        $this->baseDirectory = $this->newService('TechDivision\ApplicationServer\Api\ContainerService')
+            ->getBaseDirectory();
+
         $this->setContainerNode($containerNode);
         $this->setApplications($applications);
     }
@@ -74,8 +96,9 @@ abstract class AbstractContainer extends \Stackable implements ContainerInterfac
     /**
      * Set's the app node the application is belonging to
      *
-     * @param \TechDivision\ApplicationServer\Api\Node\AppNode $appNode
-     *            The app node the application is belonging to
+     * @param \TechDivision\ApplicationServer\Api\Node\ContainerNode $containerNode The app node the application
+     *                                                                              is belonging to
+     *
      * @return void
      */
     public function setContainerNode($containerNode)
@@ -94,16 +117,21 @@ abstract class AbstractContainer extends \Stackable implements ContainerInterfac
     }
 
     /**
+     * run
      *
+     * @return void
      * @see \Stackable::run()
      */
     public function run()
     {
-        $this->setStarted($this->getReceiver()->start());
+        $this->setStarted();
+        $this->getReceiver()->start();
     }
 
     /**
+     * Returns the receiver instance ready to be started.
      *
+     * @return \TechDivision\ApplicationServer\Interfaces\ReceiverInterface The receiver instance
      * @see \TechDivision\ApplicationServer\Interfaces\ContainerInterface::getReceiver()
      */
     public function getReceiver()
@@ -117,9 +145,9 @@ abstract class AbstractContainer extends \Stackable implements ContainerInterfac
     /**
      * Sets an array with the deployed applications.
      *
-     * @param array $applications
-     *            Array with the deployed applications
-     * @return \TechDivision\ServletContainer\Container The container instance itself
+     * @param array $applications Array with the deployed applications
+     *
+     * @return \TechDivision\ApplicationServer\Interfaces\ContainerInterface The container instance itself
      */
     public function setApplications($applications)
     {
@@ -144,11 +172,18 @@ abstract class AbstractContainer extends \Stackable implements ContainerInterfac
      */
     public function getReceiverType()
     {
-        return $this->getContainerNode()->getReceiver()->getType();
+        return $this->getContainerNode()
+            ->getReceiver()
+            ->getType();
     }
 
     /**
-     * (non-PHPdoc)
+     * Returns a new instance of the passed class name.
+     *
+     * @param string $className The fully qualified class name to return the instance for
+     * @param array  $args      Arguments to pass to the constructor of the instance
+     *
+     * @return object The instance itself
      *
      * @see \TechDivision\ApplicationServer\InitialContext::newInstance()
      */
@@ -160,6 +195,9 @@ abstract class AbstractContainer extends \Stackable implements ContainerInterfac
     /**
      * (non-PHPdoc)
      *
+     * @param string $className The API service class name to return the instance for
+     *
+     * @return \TechDivision\ApplicationServer\Api\ServiceInterface The service instance
      * @see \TechDivision\ApplicationServer\InitialContext::newService()
      */
     public function newService($className)
@@ -195,5 +233,21 @@ abstract class AbstractContainer extends \Stackable implements ContainerInterfac
     public function isStarted()
     {
         return $this->started;
+    }
+
+    /**
+     * (non-PHPdoc)
+     *
+     * @param string|null $directoryToAppend Append this directory to the base directory before returning it
+     *
+     * @return string The base directory
+     * @see \TechDivision\ApplicationServer\Api\ContainerService::getBaseDirectory()
+     */
+    public function getBaseDirectory($directoryToAppend = null)
+    {
+        if ($directoryToAppend != null) {
+            return $this->baseDirectory . $directoryToAppend;
+        }
+        return $this->baseDirectory;
     }
 }

@@ -1,30 +1,35 @@
 <?php
-
 /**
  * TechDivision\ApplicationServer\Api\AbstractService
  *
- * NOTICE OF LICENSE
+ * PHP version 5
  *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
+ * @category   Appserver
+ * @package    TechDivision_ApplicationServer
+ * @subpackage Api
+ * @author     Tim Wagner <tw@techdivision.com>
+ * @copyright  2013 TechDivision GmbH <info@techdivision.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link       http://www.appserver.io
  */
+
 namespace TechDivision\ApplicationServer\Api;
 
-use TechDivision\ApplicationServer\Configuration;
 use TechDivision\ApplicationServer\InitialContext;
-use TechDivision\ApplicationServer\Api\ServiceInterface;
 use TechDivision\ApplicationServer\Api\Node\NodeInterface;
+use TechDivision\ApplicationServer\Utilities\DirectoryKeys;
 use TechDivision\PersistenceContainer\Application;
 
 /**
  * Abstract service implementation.
  *
- * @package TechDivision\ApplicationServer
- * @copyright Copyright (c) 2013 <info@techdivision.com> - TechDivision GmbH
- * @license http://opensource.org/licenses/osl-3.0.php
- *          Open Software License (OSL 3.0)
- * @author Tim Wagner <tw@techdivision.com>
+ * @category   Appserver
+ * @package    TechDivision_ApplicationServer
+ * @subpackage Api
+ * @author     Tim Wagner <tw@techdivision.com>
+ * @copyright  2013 TechDivision GmbH <info@techdivision.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link       http://www.appserver.io
  */
 abstract class AbstractService implements ServiceInterface
 {
@@ -34,7 +39,7 @@ abstract class AbstractService implements ServiceInterface
      *
      * @var string
      */
-    CONST NODE_TYPE = 'TechDivision\ApplicationServer\Api\Node\AppserverNode';
+    const NODE_TYPE = 'TechDivision\ApplicationServer\Api\Node\AppserverNode';
 
     /**
      * The initial context instance containing the system configuration.
@@ -61,9 +66,7 @@ abstract class AbstractService implements ServiceInterface
      * Initializes the service with the initial context instance and the
      * default normalizer instance.
      *
-     * @param \TechDivision\ApplicationServer\InitialContext $initialContext
-     *            The initial context instance
-     * @return void
+     * @param \TechDivision\ApplicationServer\InitialContext $initialContext The initial context instance
      */
     public function __construct(InitialContext $initialContext)
     {
@@ -73,7 +76,8 @@ abstract class AbstractService implements ServiceInterface
     /**
      * (non-PHPdoc)
      *
-     * @see \TechDivision\ApplicationServer\Api\ServiceInterface::getInitialContext()
+     * @return \TechDivision\ApplicationServer\InitialContext The initial Context
+     * @see ServiceInterface::getInitialContext()
      */
     public function getInitialContext()
     {
@@ -83,6 +87,7 @@ abstract class AbstractService implements ServiceInterface
     /**
      * (non-PHPdoc)
      *
+     * @return \TechDivision\ApplicationServer\Api\Node\NodeInterface The system configuration
      * @see \TechDivision\ApplicationServer\Api\ServiceInterface::getSystemConfiguration()
      */
     public function getSystemConfiguration()
@@ -93,15 +98,23 @@ abstract class AbstractService implements ServiceInterface
     /**
      * (non-PHPdoc)
      *
+     * @param \TechDivision\ApplicationServer\Api\Node\NodeInterface $systemConfiguration The system configuration
+     *
+     * @return \TechDivision\ApplicationServer\Api\ServiceInterface
      * @see \TechDivision\ApplicationServer\Api\ServiceInterface::setSystemConfiguration()
      */
-    public function setSystemConfiguration($systemConfiguration)
+    public function setSystemConfiguration(NodeInterface $systemConfiguration)
     {
         $this->getInitialContext()->setSystemConfiguration($systemConfiguration);
     }
 
     /**
+     * (non-PHPdoc)
      *
+     * @param string $className The fully qualified class name to return the instance for
+     * @param array  $args      Arguments to pass to the constructor of the instance
+     *
+     * @return object The instance itself
      * @see \TechDivision\ApplicationServer\InitialContext::newInstance()
      */
     public function newInstance($className, array $args = array())
@@ -112,6 +125,9 @@ abstract class AbstractService implements ServiceInterface
     /**
      * (non-PHPdoc)
      *
+     * @param string $className The API service class name to return the instance for
+     *
+     * @return \TechDivision\ApplicationServer\Api\ServiceInterface The service instance
      * @see \TechDivision\ApplicationServer\InitialContext::newService()
      */
     public function newService($className)
@@ -122,7 +138,8 @@ abstract class AbstractService implements ServiceInterface
     /**
      * Returns the application servers base directory.
      *
-     * @param string $directoryToAppend Append this directory to the base directory before returning it
+     * @param string|null $directoryToAppend Append this directory to the base directory before returning it
+     *
      * @return string The base directory
      */
     public function getBaseDirectory($directoryToAppend = null)
@@ -140,9 +157,73 @@ abstract class AbstractService implements ServiceInterface
     }
 
     /**
+     * Return's the directory structure to be created at first start.
+     *
+     * @return array The directory structure to be created if necessary
+     */
+    public function getDirectories()
+    {
+        return DirectoryKeys::getDirectories();
+    }
+
+    /**
+     * Returns the servers tmp directory
+     *
+     * @return string
+     */
+    public function getTmpDir()
+    {
+        return $this->realpath(DirectoryKeys::TMP);
+    }
+
+    /**
+     * Returns the servers deploy directory
+     *
+     * @return string
+     */
+    public function getDeployDir()
+    {
+        return $this->realpath(DirectoryKeys::DEPLOY);
+    }
+
+    /**
+     * Returns the servers webapps directory
+     *
+     * @return string
+     */
+    public function getWebappsDir()
+    {
+        return $this->realpath(DirectoryKeys::WEBAPPS);
+    }
+
+    /**
+     * Returns the servers log directory
+     *
+     * @return string
+     */
+    public function getLogDir()
+    {
+        return $this->realpath(DirectoryKeys::LOG);
+    }
+
+    /**
+     * Returns the absolute path to the passed directory, also
+     * working on Windows.
+     *
+     * @param string $relativeDirectory The relativ path of the directory to return the absolute path for
+     *
+     * @return string The absolute path of the passed directory
+     */
+    public function realpath($relativeDirectory)
+    {
+        return $this->getBaseDirectory(DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $relativeDirectory));
+    }
+
+    /**
      * Persists the system configuration.
      *
-     * @param \TechDivision\ApplicationServer\Api\Node\NodeInterface
+     * @param NodeInterface $node A node to persist
+     *
      * @return void
      */
     public function persist(NodeInterface $node)

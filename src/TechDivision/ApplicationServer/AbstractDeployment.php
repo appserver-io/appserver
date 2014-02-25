@@ -1,14 +1,17 @@
 <?php
-
 /**
  * TechDivision\ApplicationServer\Deployment
  *
- * NOTICE OF LICENSE
+ * PHP version 5
  *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
+ * @category  Appserver
+ * @package   TechDivision_ApplicationServer
+ * @author    Tim Wagner <tw@techdivision.com>
+ * @copyright 2013 TechDivision GmbH <info@techdivision.com>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      http://www.appserver.io
  */
+
 namespace TechDivision\ApplicationServer;
 
 use TechDivision\ApplicationServer\InitialContext;
@@ -16,12 +19,14 @@ use TechDivision\ApplicationServer\Interfaces\DeploymentInterface;
 use TechDivision\ApplicationServer\Interfaces\ApplicationInterface;
 
 /**
+ * Class AbstractDeployment
  *
- * @package TechDivision\MessageQueue
- * @copyright Copyright (c) 2010 <info@techdivision.com> - TechDivision GmbH
- * @license http://opensource.org/licenses/osl-3.0.php
- *          Open Software License (OSL 3.0)
- * @author Tim Wagner <tw@techdivision.com>
+ * @category  Appserver
+ * @package   TechDivision_ApplicationServer
+ * @author    Tim Wagner <tw@techdivision.com>
+ * @copyright 2013 TechDivision GmbH <info@techdivision.com>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      http://www.appserver.io
  */
 abstract class AbstractDeployment implements DeploymentInterface
 {
@@ -29,26 +34,39 @@ abstract class AbstractDeployment implements DeploymentInterface
     /**
      * The container node the deployment is for.
      *
-     * @var string
+     * @var \TechDivision\ApplicationServer\Api\Node\ContainerNode
      */
     protected $containerNode;
+
+    /**
+     * The deployment node.
+     *
+     * @var \TechDivision\ApplicationServer\Api\Node\DeploymentNode
+     */
+    protected $deploymentNode;
 
     /**
      * Array with the initialized applications.
      *
      * @var array
      */
-    protected $applications;
+    protected $applications = array();
+    
+    /**
+     * The initial context instance.
+     * 
+     * @var \TechDivision\ApplicationServer\InitialContext
+     */
+    protected $initialContext;
 
     /**
      * Initializes the deployment with the container thread.
      *
-     * @param \TechDivision\ApplicationServer\InitialContext $initialContext
-     *            The initial context instance
-     * @param \TechDivision\ApplicationServer\Api\Node\ContainerNode $containerNode
-     *            The container node the deployment is for
-     * @param \TechDivision\ApplicationServer\Api\Node\DeploymentNode $deploymentNode
-     *            The deployment node
+     * @param \TechDivision\ApplicationServer\InitialContext          $initialContext The initial context instance
+     * @param \TechDivision\ApplicationServer\Api\Node\ContainerNode  $containerNode  The container node
+     *                                                                                the deployment is for
+     * @param \TechDivision\ApplicationServer\Api\Node\DeploymentNode $deploymentNode The deployment node
+     *
      * @return void
      */
     public function __construct(InitialContext $initialContext, $containerNode, $deploymentNode)
@@ -81,7 +99,7 @@ abstract class AbstractDeployment implements DeploymentInterface
     /**
      * Returns the deployment node.
      *
-     * @return \TechDivision\ApplicationServer\Api\Node\ContainerNode The deployment node
+     * @return \TechDivision\ApplicationServer\Api\Node\DeploymentNode The deployment node
      */
     public function getDeploymentNode()
     {
@@ -92,8 +110,8 @@ abstract class AbstractDeployment implements DeploymentInterface
      * Append the deployed application to the deployment instance
      * and registers it in the system configuration.
      *
-     * @param ApplicationInterface $application
-     *            The application to append
+     * @param ApplicationInterface $application The application to append
+     *
      * @return void
      */
     public function addApplication(ApplicationInterface $application)
@@ -101,7 +119,7 @@ abstract class AbstractDeployment implements DeploymentInterface
 
         // create a new API app service instance
         $appService = $this->newService('TechDivision\ApplicationServer\Api\AppService');
-        $appNode = $appService->load($application->getWebappPath());
+        $appNode = $appService->loadByWebappPath($application->getWebappPath());
 
         // check if the application has already been attached to the container
         if ($appNode == null) {
@@ -115,6 +133,16 @@ abstract class AbstractDeployment implements DeploymentInterface
 
         // connect the application to the container
         $application->connect();
+
+        // log a message that the app has been started
+        $this->getInitialContext()->getSystemLogger()->debug(
+            sprintf(
+                'Successfully started app %s in container %s',
+                $application->getName(),
+                $application->getWebappPath(),
+                $application->getContainerNode()->getName()
+            )
+        );
 
         // register the application in this instance
         $this->applications[$application->getName()] = $application;
@@ -133,6 +161,10 @@ abstract class AbstractDeployment implements DeploymentInterface
     /**
      * (non-PHPdoc)
      *
+     * @param string $className The fully qualified class name to return the instance for
+     * @param array  $args      Arguments to pass to the constructor of the instance
+     *
+     * @return object The instance itself
      * @see \TechDivision\ApplicationServer\InitialContext::newInstance()
      */
     public function newInstance($className, array $args = array())
@@ -143,6 +175,9 @@ abstract class AbstractDeployment implements DeploymentInterface
     /**
      * (non-PHPdoc)
      *
+     * @param string $className The API service class name to return the instance for
+     *
+     * @return \TechDivision\ApplicationServer\Api\ServiceInterface The service instance
      * @see \TechDivision\ApplicationServer\InitialContext::newService()
      */
     public function newService($className)
@@ -151,58 +186,23 @@ abstract class AbstractDeployment implements DeploymentInterface
     }
 
     /**
-     * Extracts the passed PHAR archive to a folder with the
-     * basename of the archive file.
-     *
-     * @param \SplFileInfo $archive
-     *            The PHAR file to be deployed
-     * @return void
-     */
-    protected function deployArchive(\SplFileInfo $archive)
-    {
-        try {
-
-            // create folder name based on the archive's basename
-            $baseDirectory = $this->getBaseDirectory($this->getAppBase());
-            $folderName = $baseDirectory . DIRECTORY_SEPARATOR . $archive->getBaseName('.phar');
-
-            // check if application has already been deployed
-            if (is_dir($folderName) === false) {
-                $p = new \Phar($archive);
-                $p->extractTo($folderName, null, true);
-            }
-
-        } catch (\Exception $e) {
-            error_log($e->__toString());
-        }
-    }
-
-    /**
-     * Gathers all available archived webapps and deploys them for usage.
-     *
-     * @return \TechDivision\ApplicationServer\Interfaces\DeploymentInterface The deployment instance itself
-     */
-    public function deployWebapps()
-    {
-        foreach (new \RegexIterator(new \FilesystemIterator($this->getBaseDirectory($this->getAppBase())), '/^.*\.phar$/') as $archive) {
-            $this->deployArchive($archive);
-        }
-        return $this;
-    }
-
-    /**
      * (non-PHPdoc)
      *
+     * @param string|null $directoryToAppend Append this directory to the base directory before returning it
+     *
+     * @return string The base directory
      * @see \TechDivision\ApplicationServer\Api\ContainerService::getBaseDirectory()
      */
     public function getBaseDirectory($directoryToAppend = null)
     {
-        return $this->newService('TechDivision\ApplicationServer\Api\ContainerService')->getBaseDirectory($directoryToAppend);
+        return $this->newService('TechDivision\ApplicationServer\Api\ContainerService')
+            ->getBaseDirectory($directoryToAppend);
     }
 
     /**
      * (non-PHPdoc)
      *
+     * @return string The application base directory for this container
      * @see \TechDivision\ApplicationServer\Api\ContainerService::getAppBase()
      */
     public function getAppBase()
