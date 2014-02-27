@@ -47,5 +47,5 @@ interface ContextInterface
      *
      * @return mixed The value stored in the context
      */
-    public function getAttribute($key)
+    public function getAttribute($key);
 }
