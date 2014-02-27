@@ -121,11 +121,12 @@ class ContainerThread extends AbstractContextThread
      */
     public function getDeployment()
     {
-        $deploymentNode = $this->getContainerNode()->getDeployment();
-        return $this->newInstance($deploymentNode->getType(), array(
-            $this->getInitialContext(),
-            $this->getContainerNode(),
-            $deploymentNode
-        ));
+        return $this->newInstance(
+            $this->getContainerNode()->getDeployment()->getType(),
+            array(
+                $this->getInitialContext(),
+                $this->getContainerNode()
+            )
+        );
     }
 }

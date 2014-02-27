@@ -39,13 +39,6 @@ abstract class AbstractDeployment implements DeploymentInterface
     protected $containerNode;
 
     /**
-     * The deployment node.
-     *
-     * @var \TechDivision\ApplicationServer\Api\Node\DeploymentNode
-     */
-    protected $deploymentNode;
-
-    /**
      * Array with the initialized applications.
      *
      * @var array
@@ -65,15 +58,13 @@ abstract class AbstractDeployment implements DeploymentInterface
      * @param \TechDivision\ApplicationServer\InitialContext          $initialContext The initial context instance
      * @param \TechDivision\ApplicationServer\Api\Node\ContainerNode  $containerNode  The container node
      *                                                                                the deployment is for
-     * @param \TechDivision\ApplicationServer\Api\Node\DeploymentNode $deploymentNode The deployment node
      *
      * @return void
      */
-    public function __construct(InitialContext $initialContext, $containerNode, $deploymentNode)
+    public function __construct(InitialContext $initialContext, $containerNode)
     {
         $this->initialContext = $initialContext;
         $this->containerNode = $containerNode;
-        $this->deploymentNode = $deploymentNode;
     }
 
     /**
@@ -95,15 +86,33 @@ abstract class AbstractDeployment implements DeploymentInterface
     {
         return $this->containerNode;
     }
-
+    
     /**
-     * Returns the deployment node.
-     *
-     * @return \TechDivision\ApplicationServer\Api\Node\DeploymentNode The deployment node
+     * Connects the passed application to the system configuration.
+     * 
+     * @param \TechDivision\ApplicationServer\Interfaces\ApplicationInterface $application The application to be prepared
+     * 
+     * @return void
      */
-    public function getDeploymentNode()
+    protected function addApplicationToSystemConfiguration(ApplicationInterface $application)
     {
-        return $this->deploymentNode;
+
+        // create a new API app service instance
+        $appService = $this->newService('TechDivision\ApplicationServer\Api\AppService');
+        $appNode = $appService->loadByWebappPath($application->getWebappPath());
+        
+        // check if the application has already been attached to the container
+        if ($appNode == null) {
+            $application->newAppNode($this->getContainerNode());
+        } else {
+            $application->setAppNode($appNode);
+        }
+        
+        // persist the application
+        $appService->persist($application->getAppNode());
+        
+        // connect the application to the container
+        $application->connect();
     }
 
     /**
@@ -117,23 +126,12 @@ abstract class AbstractDeployment implements DeploymentInterface
     public function addApplication(ApplicationInterface $application)
     {
 
-        // create a new API app service instance
-        $appService = $this->newService('TechDivision\ApplicationServer\Api\AppService');
-        $appNode = $appService->loadByWebappPath($application->getWebappPath());
-
-        // check if the application has already been attached to the container
-        if ($appNode == null) {
-            $application->newAppNode($this->getContainerNode());
-        } else {
-            $application->setAppNode($appNode);
-        }
-
-        // persist the application
-        $appService->persist($application->getAppNode());
-
-        // connect the application to the container
-        $application->connect();
-
+        // adds the application to the system configuration
+        $this->addApplicationToSystemConfiguration($application);
+        
+        // register the application in this instance
+        $this->applications[$application->getName()] = $application;
+        
         // log a message that the app has been started
         $this->getInitialContext()->getSystemLogger()->debug(
             sprintf(
@@ -143,9 +141,6 @@ abstract class AbstractDeployment implements DeploymentInterface
                 $application->getContainerNode()->getName()
             )
         );
-
-        // register the application in this instance
-        $this->applications[$application->getName()] = $application;
     }
 
     /**
