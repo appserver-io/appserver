@@ -86,6 +86,7 @@ class ContainerThread extends AbstractContextThread
      */
     public function newService($className)
     {
+        error_log($className);
         return $this->getInitialContext()->newService($className);
     }
 

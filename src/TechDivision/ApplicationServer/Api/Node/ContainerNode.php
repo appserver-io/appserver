@@ -8,6 +8,7 @@
  * @package    TechDivision_ApplicationServer
  * @subpackage Api
  * @author     Tim Wagner <tw@techdivision.com>
+ * @author     Johann Zelger <jz@techdivision.com>
  * @copyright  2013 TechDivision GmbH <info@techdivision.com>
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       http://www.appserver.io
@@ -22,6 +23,7 @@ namespace TechDivision\ApplicationServer\Api\Node;
  * @package    TechDivision_ApplicationServer
  * @subpackage Api
  * @author     Tim Wagner <tw@techdivision.com>
+ * @author     Johann Zelger <jz@techdivision.com>
  * @copyright  2013 TechDivision GmbH <info@techdivision.com>
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       http://www.appserver.io
@@ -67,6 +69,14 @@ class ContainerNode extends AbstractNode
      * @AS\Mapping(nodeName="receiver", nodeType="TechDivision\ApplicationServer\Api\Node\ReceiverNode")
      */
     protected $receiver;
+
+    /**
+     * The servers used in container
+     *
+     * @var array
+     * @AS\Mapping(nodeName="servers/server", nodeType="array", elementType="TechDivision\ApplicationServer\Api\Node\ServerNode")
+     */
+    protected $servers;
 
     /**
      * The host configuration information.
@@ -152,5 +162,15 @@ class ContainerNode extends AbstractNode
     public function getDeployment()
     {
         return $this->deployment;
+    }
+
+    /**
+     * Return's all server nodes
+     *
+     * @return array
+     */
+    public function getServers()
+    {
+        return $this->servers;
     }
 }
