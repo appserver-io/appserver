@@ -81,7 +81,7 @@ class InitialContext implements ContextInterface
         $storage = $reflectionClass->newInstance();
         
         // append the servers registered in system configuration
-        foreach ($this->getStorageNode()->getServers() as $server) {
+        foreach ($storageNode->getServers() as $server) {
             $storage->addServer($server->getAddress(), $server->getPort(), $server->getWeight());
         }
         
