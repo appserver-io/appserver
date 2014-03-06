@@ -8,6 +8,7 @@
  * @package    TechDivision_ApplicationServer
  * @subpackage Api
  * @author     Tim Wagner <tw@techdivision.com>
+ * @author     Johann Zelger <jz@techdivision.com>
  * @copyright  2013 TechDivision GmbH <info@techdivision.com>
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       http://www.appserver.io
@@ -22,64 +23,137 @@ namespace TechDivision\ApplicationServer\Api\Node;
  * @package    TechDivision_ApplicationServer
  * @subpackage Api
  * @author     Tim Wagner <tw@techdivision.com>
+ * @author     Johann Zelger <jz@techdivision.com>
  * @copyright  2013 TechDivision GmbH <info@techdivision.com>
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       http://www.appserver.io
  */
-class ServerNode extends AbstractNode
+class ServerNode extends AbstractParamsNode
 {
 
     /**
-     * The server's IP address.
+     * The server's type
      *
      * @var string
      * @AS\Mapping(nodeType="string")
      */
-    protected $address;
+    protected $type;
 
     /**
-     * The server's port.
+     * The worker to use
      *
-     * @var integer
-     * @AS\Mapping(nodeType="integer")
+     * @var string
+     * @AS\Mapping(nodeType="string")
      */
-    protected $port;
+    protected $worker;
 
     /**
-     * The server's weight.
+     * The socket to use
      *
-     * @var integer
-     * @AS\Mapping(nodeType="integer")
+     * @var string
+     * @AS\Mapping(nodeType="string")
      */
-    protected $weight;
+    protected $socket;
 
     /**
-     * Returns the IP address the server listens to.
+     * The server context to use
      *
-     * @return string the IP address the server listens to
+     * @var string
+     * @AS\Mapping(nodeType="string")
      */
-    public function getAddress()
+    protected $serverContext;
+
+    /**
+     * The connection handlers
+     *
+     * @var array
+     * @AS\Mapping(nodeName="connectionHandlers/connectionHandler", nodeType="array", elementType="TechDivision\ApplicationServer\Api\Node\ConnectionHandlerNode")
+     */
+    protected $connectionHandlers;
+
+    /**
+     * The modules
+     *
+     * @var array
+     * @AS\Mapping(nodeName="modules/module", nodeType="array", elementType="TechDivision\ApplicationServer\Api\Node\ModuleNode")
+     */
+    protected $modules;
+
+    /**
+     * The file handlers
+     *
+     * @var array
+     * @AS\Mapping(nodeName="fileHandlers/fileHandler", nodeType="array", elementType="TechDivision\ApplicationServer\Api\Node\FileHandlerNode")
+     */
+    protected $fileHandlers;
+
+    /**
+     * Returns the sserver's type
+     *
+     * @return string The server's type
+     */
+    public function getType()
     {
-        return $this->address;
+        return $this->type;
     }
 
     /**
-     * Returns the port the server listens to.
+     * Returns the worker to use for server
      *
-     * @return string the port the server listens to
+     * @return string The worker type to use for server
      */
-    public function getPort()
+    public function getWorker()
     {
-        return $this->port;
+        return $this->worker;
     }
 
     /**
-     * Returns weight the server has in the storage cluster.
+     * Return's the socket to use
      *
-     * @return integer The weight the server has in the storage cluster
+     * @return string The socket type
      */
-    public function getWeight()
+    public function getSocket()
     {
-        return $this->weight;
+        return $this->socket;
+    }
+
+    /**
+     * Return's the server context to use
+     *
+     * @return string The server context type
+     */
+    public function getServerContext()
+    {
+        return $this->serverContext;
+    }
+
+    /**
+     * Return's the connection handler nodes
+     *
+     * @return array
+     */
+    public function getConnectionHandlers()
+    {
+        return $this->connectionHandlers;
+    }
+
+    /**
+     * Return's the file handler nodes
+     *
+     * @return array
+     */
+    public function getFileHandlers()
+    {
+        return $this->fileHandlers;
+    }
+
+    /**
+     * Return's the module nodes
+     *
+     * @return array
+     */
+    public function getModules()
+    {
+        return $this->modules;
     }
 }
