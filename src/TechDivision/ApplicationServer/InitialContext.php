@@ -17,8 +17,8 @@ namespace TechDivision\ApplicationServer;
 use Herrera\Annotations\Tokens;
 use Herrera\Annotations\Tokenizer;
 use Herrera\Annotations\Convert\ToArray;
+use TechDivision\Storage\StorageInterface;
 use TechDivision\ApplicationServer\Interfaces\ContextInterface;
-use TechDivision\ApplicationServer\InitialContext\StorageInterface;
 use TechDivision\ApplicationServer\InitialContext\ContextKeys;
 use TechDivision\ApplicationServer\Api\Node\NodeInterface;
 use TechDivision\ApplicationServer\SplClassLoader;
@@ -39,7 +39,7 @@ class InitialContext implements ContextInterface
     /**
      * The storage instance
      *
-     * @var \TechDivision\ApplicationServer\InitialContext\StorageInterface
+     * @var \TechDivision\Storage\StorageInterface
      */
     protected $storage;
 
@@ -71,13 +71,22 @@ class InitialContext implements ContextInterface
      */
     public function __construct(\TechDivision\ApplicationServer\Api\Node\NodeInterface $systemConfiguration)
     {
+        
         // initialize the storage
         $initialContextNode = $systemConfiguration->getInitialContext();
         $storageNode = $initialContextNode->getStorage();
         $reflectionClass = $this->newReflectionClass($storageNode->getType());
-        $this->setStorage($reflectionClass->newInstanceArgs(array(
-            $storageNode
-        )));
+        
+        // create the storage instance
+        $storage = $reflectionClass->newInstance();
+        
+        // append the servers registered in system configuration
+        foreach ($this->getStorageNode()->getServers() as $server) {
+            $storage->addServer($server->getAddress(), $server->getPort(), $server->getWeight());
+        }
+        
+        // add the storage to the initial context
+        $this->setStorage($storage);
         
         // initialize the class loader instance
         $classLoaderNode = $initialContextNode->getClassLoader();
@@ -91,9 +100,9 @@ class InitialContext implements ContextInterface
     /**
      * Returns the storage instance.
      *
-     * @param \TechDivision\ApplicationServer\InitialContext\StorageInterface $storage A storage instance
+     * @param \TechDivision\Storage\StorageInterface $storage A storage instance
      *
-     * @return \TechDivision\ApplicationServer\InitialContext\StorageInterface The storage instance
+     * @return \TechDivision\Storage\StorageInterface The storage instance
      */
     public function setStorage(StorageInterface $storage)
     {
@@ -103,7 +112,7 @@ class InitialContext implements ContextInterface
     /**
      * Returns the storage instance.
      *
-     * @return \TechDivision\ApplicationServer\InitialContext\StorageInterface The storage instance
+     * @return \TechDivision\Storage\StorageInterface The storage instance
      */
     public function getStorage()
     {
