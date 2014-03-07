@@ -99,8 +99,8 @@ abstract class AbstractApplication implements ApplicationInterface
     {
         $this->initialContext = $initialContext;
         $this->containerNode = $containerNode;
-        $this->name = $name;
         $this->datasources = $datasources;
+        $this->name = $name;
     }
 
     /**
