@@ -64,6 +64,14 @@ class ServerNode extends AbstractParamsNode
     protected $serverContext;
 
     /**
+     * The virtual hosts
+     *
+     * @var array
+     * @AS\Mapping(nodeName="virtualHosts/virtualHost", nodeType="array", elementType="TechDivision\ApplicationServer\Api\Node\VirtualHostNode")
+     */
+    protected $virtualHosts;
+
+    /**
      * The connection handlers
      *
      * @var array
@@ -125,6 +133,16 @@ class ServerNode extends AbstractParamsNode
     public function getServerContext()
     {
         return $this->serverContext;
+    }
+
+    /**
+     * Return's the virtual hosts
+     *
+     * @return array
+     */
+    public function getVirtualHosts()
+    {
+        return $this->virtualHosts;
     }
 
     /**
