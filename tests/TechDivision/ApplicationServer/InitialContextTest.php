@@ -46,7 +46,7 @@ class InitialContextTest extends AbstractTest
      */
     public function testGetStorage()
     {
-        $this->assertInstanceOf('TechDivision\ApplicationServer\InitialContext\StorageInterface', $this->initialContext->getStorage());
+        $this->assertInstanceOf('TechDivision\Storage\StorageInterface', $this->initialContext->getStorage());
     }
 
     /**

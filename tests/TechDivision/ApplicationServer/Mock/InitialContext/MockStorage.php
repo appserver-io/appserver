@@ -11,7 +11,7 @@
  */
 namespace TechDivision\ApplicationServer\Mock\InitialContext;
 
-use TechDivision\ApplicationServer\InitialContext\AbstractStorage;
+use TechDivision\Storage\AbstractStorage;
 
 /**
  *

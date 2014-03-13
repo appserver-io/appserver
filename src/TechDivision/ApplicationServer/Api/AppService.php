@@ -189,7 +189,7 @@ class AppService extends AbstractService
     /**
      * Returns an new app node instance.
      *
-     * @param \TechDivision\ApplicationServer\Interfaces\ApplicationInterface The application to create a new app node instance from
+     * @param \TechDivision\ApplicationServer\Interfaces\ApplicationInterface $application The application to create a new app node instance from
      *
      * @return \TechDivision\ApplicationServer\Api\Node\AppNode The app node representation of the application
      */
