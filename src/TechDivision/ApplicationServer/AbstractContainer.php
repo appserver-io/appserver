@@ -54,11 +54,18 @@ abstract class AbstractContainer extends \Stackable implements ContainerInterfac
     protected $containerNode;
 
     /**
-     * The container's base directory.
+     * The containers base directory.
      *
      * @var string
      */
     protected $baseDirectory;
+
+    /**
+     * The containers web application base directory.
+     *
+     * @var string
+     */
+    protected $webappsDir;
 
     /**
      * TRUE if the container has been started, else FALSE.
@@ -86,9 +93,8 @@ abstract class AbstractContainer extends \Stackable implements ContainerInterfac
     public function __construct($initialContext, $containerNode, $applications)
     {
         $this->initialContext = $initialContext;
-        $this->baseDirectory = $this->newService('TechDivision\ApplicationServer\Api\ContainerService')
-            ->getBaseDirectory();
-
+        $this->baseDirectory = $this->newService('TechDivision\ApplicationServer\Api\ContainerService')->getBaseDirectory();
+        $this->webappsDir = $this->newService('TechDivision\ApplicationServer\Api\ContainerService')->getWebappsDir();
         $this->setContainerNode($containerNode);
         $this->setApplications($applications);
     }
@@ -96,8 +102,7 @@ abstract class AbstractContainer extends \Stackable implements ContainerInterfac
     /**
      * Set's the app node the application is belonging to
      *
-     * @param \TechDivision\ApplicationServer\Api\Node\ContainerNode $containerNode The app node the application
-     *                                                                              is belonging to
+     * @param \TechDivision\ApplicationServer\Api\Node\ContainerNode $containerNode The app node the application is belonging to
      *
      * @return void
      */
@@ -233,6 +238,17 @@ abstract class AbstractContainer extends \Stackable implements ContainerInterfac
     public function isStarted()
     {
         return $this->started;
+    }
+    
+    /**
+     * Returns the containers web application base directory.
+     *
+     * @return string The containers web application base directory
+     * @see \TechDivision\ApplicationServer\Api\ContainerService::getWebappsDir()
+     */
+    public function getWebappsDir()
+    {
+        return $this->webappsDir;
     }
 
     /**

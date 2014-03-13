@@ -15,6 +15,7 @@
         "herrera-io/annotations": "1.0.*",
         "techdivision/socket": "dev-master",
         "techdivision/stream": "dev-master",
+        "techdivision/storage": "dev-master",
         "rhumsaa/uuid": "~2.4"
     },
     "autoload": {

@@ -17,7 +17,8 @@ namespace TechDivision\ApplicationServer;
 use Herrera\Annotations\Tokens;
 use Herrera\Annotations\Tokenizer;
 use Herrera\Annotations\Convert\ToArray;
-use TechDivision\ApplicationServer\InitialContext\StorageInterface;
+use TechDivision\Storage\StorageInterface;
+use TechDivision\ApplicationServer\Interfaces\ContextInterface;
 use TechDivision\ApplicationServer\InitialContext\ContextKeys;
 use TechDivision\ApplicationServer\Api\Node\NodeInterface;
 use TechDivision\ApplicationServer\SplClassLoader;
@@ -32,13 +33,13 @@ use TechDivision\ApplicationServer\SplClassLoader;
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      http://www.appserver.io
  */
-class InitialContext
+class InitialContext implements ContextInterface
 {
 
     /**
      * The storage instance
      *
-     * @var \TechDivision\ApplicationServer\InitialContext\StorageInterface
+     * @var \TechDivision\Storage\StorageInterface
      */
     protected $storage;
 
@@ -70,13 +71,22 @@ class InitialContext
      */
     public function __construct(\TechDivision\ApplicationServer\Api\Node\NodeInterface $systemConfiguration)
     {
+        
         // initialize the storage
         $initialContextNode = $systemConfiguration->getInitialContext();
         $storageNode = $initialContextNode->getStorage();
         $reflectionClass = $this->newReflectionClass($storageNode->getType());
-        $this->setStorage($reflectionClass->newInstanceArgs(array(
-            $storageNode
-        )));
+        
+        // create the storage instance
+        $storage = $reflectionClass->newInstance();
+        
+        // append the storage servers registered in system configuration
+        foreach ($storageNode->getStorageServers() as $storageServer) {
+            $storage->addServer($storageServer->getAddress(), $storageServer->getPort(), $storageServer->getWeight());
+        }
+        
+        // add the storage to the initial context
+        $this->setStorage($storage);
         
         // initialize the class loader instance
         $classLoaderNode = $initialContextNode->getClassLoader();
@@ -90,9 +100,9 @@ class InitialContext
     /**
      * Returns the storage instance.
      *
-     * @param \TechDivision\ApplicationServer\InitialContext\StorageInterface $storage A storage instance
+     * @param \TechDivision\Storage\StorageInterface $storage A storage instance
      *
-     * @return \TechDivision\ApplicationServer\InitialContext\StorageInterface The storage instance
+     * @return \TechDivision\Storage\StorageInterface The storage instance
      */
     public function setStorage(StorageInterface $storage)
     {
@@ -102,7 +112,7 @@ class InitialContext
     /**
      * Returns the storage instance.
      *
-     * @return \TechDivision\ApplicationServer\InitialContext\StorageInterface The storage instance
+     * @return \TechDivision\Storage\StorageInterface The storage instance
      */
     public function getStorage()
     {

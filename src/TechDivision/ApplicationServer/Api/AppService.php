@@ -34,6 +34,13 @@ use TechDivision\ApplicationServer\Extractors\PharExtractor;
  */
 class AppService extends AbstractService
 {
+    
+    /**
+     * The unique XML configuration node name for a app node.
+     * 
+     * @var string
+     */
+    const NODE_NAME = 'application';
 
     /**
      * Returns all deployed applications.
@@ -177,5 +184,27 @@ class AppService extends AbstractService
             $extractor = new PharExtractor($this->getInitialContext());
             $extractor->unflagArchive($archive);
         }
+    }
+    
+    /**
+     * Returns an new app node instance.
+     *
+     * @param \TechDivision\ApplicationServer\Interfaces\ApplicationInterface $application The application to create a new app node instance from
+     *
+     * @return \TechDivision\ApplicationServer\Api\Node\AppNode The app node representation of the application
+     */
+    protected function create(ApplicationInterface $application)
+    {
+    
+        // create a new AppNode and initialize it with the values from this instance
+        $appNode = new AppNode();
+        $appNode->setNodeName(AppService::NODE_NAME);
+        $appNode->setUuid($appNode->newUuid());
+        $appNode->setName($application->getName());
+        $appNode->setWebappPath($application->getWebappPath());
+        $appNode->setDatasources($application->getDatasources());
+    
+        // return the AppNode instance
+        return $appNode;
     }
 }
