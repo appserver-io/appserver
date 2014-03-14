@@ -16,7 +16,7 @@
 namespace TechDivision\ApplicationServer\Api\Node;
 
 /**
- * DTO to transfer virtual host information.
+ * DTO to transfer authentication information.
  *
  * @category   Appserver
  * @package    TechDivision_ApplicationServer
