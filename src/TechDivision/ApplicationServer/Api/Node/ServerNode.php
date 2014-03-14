@@ -72,6 +72,14 @@ class ServerNode extends AbstractParamsNode
     protected $virtualHosts;
 
     /**
+     * The rewrite rules.
+     *
+     * @var array
+     * @AS\Mapping(nodeName="rewrites/rewrite", nodeType="array", elementType="TechDivision\ApplicationServer\Api\Node\RewriteNode")
+     */
+    protected $rewrites = array();
+
+    /**
      * The connection handlers
      *
      * @var array
@@ -143,6 +151,16 @@ class ServerNode extends AbstractParamsNode
     public function getVirtualHosts()
     {
         return $this->virtualHosts;
+    }
+
+    /**
+     * Returns the rewrite nodes.
+     *
+     * @return array
+     */
+    public function getRewrites()
+    {
+        return $this->rewrites;
     }
 
     /**
