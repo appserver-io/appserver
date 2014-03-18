@@ -30,20 +30,20 @@ class AuthenticationNode extends AbstractParamsNode
 {
 
     /**
-     * The authentication type
+     * The authentication uri to match for
      *
      * @var string
      * @AS\Mapping(nodeType="string")
      */
-    protected $type;
+    protected $uri;
 
     /**
      * Returns the authentication type
      *
      * @return string The authentication type
      */
-    public function getType()
+    public function getUri()
     {
-        return $this->type;
+        return $this->uri;
     }
 }
