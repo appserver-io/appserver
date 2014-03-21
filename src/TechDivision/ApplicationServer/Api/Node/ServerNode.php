@@ -28,7 +28,7 @@ namespace TechDivision\ApplicationServer\Api\Node;
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       http://www.appserver.io
  */
-class ServerNode extends AbstractParamsNode
+class ServerNode extends AbstractRewritesNode
 {
 
     /**
@@ -78,14 +78,6 @@ class ServerNode extends AbstractParamsNode
      * @AS\Mapping(nodeName="virtualHosts/virtualHost", nodeType="array", elementType="TechDivision\ApplicationServer\Api\Node\VirtualHostNode")
      */
     protected $virtualHosts;
-
-    /**
-     * The rewrite rules.
-     *
-     * @var array
-     * @AS\Mapping(nodeName="rewrites/rewrite", nodeType="array", elementType="TechDivision\ApplicationServer\Api\Node\RewriteNode")
-     */
-    protected $rewrites = array();
 
     /**
      * The connection handlers
@@ -169,16 +161,6 @@ class ServerNode extends AbstractParamsNode
     public function getVirtualHosts()
     {
         return $this->virtualHosts;
-    }
-
-    /**
-     * Returns the rewrite nodes.
-     *
-     * @return array
-     */
-    public function getRewrites()
-    {
-        return $this->rewrites;
     }
 
     /**
