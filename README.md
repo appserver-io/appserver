@@ -93,6 +93,22 @@ are the basic systemd commands like `start`, `stop`, `restart` and `status`.
 # Uninstall
 To uninstall the Application Server on Mac OS X, you simply have to delete the folder `/opt/appserver` and the configuration files for the launch deameons. These are files are located in folder `/Library/LaunchDaemons` and named `io.appserver.appserver.plist`, `io.appserver.memcached.plist` and `io.appserver.redis.plist`. On Linux you can simple uninstall the Application Server with the package managment tool you've installed it. If you're using Debian you can use `apitude remove appserver` for example.
 
+# Component Documentation FAQ
+Most components the Application Server composes of have their own documentation. If you miss a piece of information you might look there.
+But to shorten your search have a look below:
+
+- *Runtime Installation* : Can be found [here](<https://github.com/techdivision/TechDivision_Runtime>)
+
+- *Creating a Webapp* : Can be done using [this](<https://github.com/techdivision/TechDivision_ApplicationServerProject>) template
+
+- *Direct App deployment* : Similar to [Red Hat WildFly](http://en.wikipedia.org/wiki/WildFly). See more [here](https://github.com/techdivision/TechDivision_Runtime/tree/master/src/deploy)
+
+- *WebServer Options and Structure* : Have a look [here](<https://github.com/techdivision/TechDivision_WebServer>)
+
+- *WebServer Rewrite Rules* : Similar to [Apache's mod_rewrite]. See more [here](http://httpd.apache.org/docs/current/mod/mod_rewrite.html)
+
+- *Design by Contract usage* : Can be done using the [down here](<#flags>)
+
 # Roadmap
 As we're in heavy development it may be, that we've to move some tasks from the following roadmap to a earlier/later version, please be aware of that. If you've ideas or features that definitely has to be in one of the next releases, please contact us. We're always open for new ideas or feedback.
 
@@ -118,23 +134,24 @@ And yes, we've plans for a Community and a Enterprise edition. The Community Edi
 - [x] SSL Encryption for TechDivision_ServletContainer project
 - [x] RPM packages
 
-### Version 0.6.0 - Application Server + [ServletContainer](https://github.com/techdivision/TechDivision_ServletContainer)
-- [ ] AOP
-- [ ] DI
-- [ ] Refactor routing
+### Version 0.6.0 - Application Server + [WebServer](https://github.com/techdivision/TechDivision_WebServer)
+- [ ] Integration of TechDivision_WebServer project as single point of entry request handler
+- [X] mod_rewrite functionality for TechDivision_WebServer project
+- [X] Refactor routing
 - [ ] [Design by Contract](https://github.com/wick-ed/php-by-contract)
-- [ ] Separate configuration files for server, container and application
 - [ ] Running TYPO3 6.x demo application
 - [ ] Running TYPO3 Flow 2.0.x demo application
 - [ ] Running TYPO3 Neos 1.x demo application
-- [ ] Mac OS X Universal installer
+- [ ] 100 % Coverage for PHPUnit test suite for TechDivision_WebServer project
+
+### Version 0.7 - Application Server + [Runtime](https://github.com/techdivision/TechDivision_Runtime)
+- [ ] AOP
+- [ ] DI
+- [ ] Separate configuration files for server, container and application
+- [ ] Add dynamic load of application specific PECL extensions
 - [ ] 100 % Coverage for PHPUnit test suite for TechDivision_ApplicationServer project
 - [ ] RPM repository
-
-### Version 0.7 - [Servlet Container](https://github.com/techdivision/TechDivision_ServletContainer)
-- [ ] mod_rewrite functionality for TechDivision_ServletContainer project
-- [ ] Add dynamic load of application specific PECL extensions
-- [ ] 100 % Coverage for PHPUnit test suite for TechDivision_ServletContainer project
+- [ ] Mac OS X Universal installer
 
 ### Version 0.8 - [Persistence Container](https://github.com/techdivision/TechDivision_PersistenceContainer)
 - [ ] Stateful + Singleton session bean functionality
