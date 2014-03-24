@@ -107,7 +107,7 @@ But to shorten your search have a look below:
 
 - *WebServer Rewrite Rules* : Similar to [Apache's mod_rewrite]. See more [here](http://httpd.apache.org/docs/current/mod/mod_rewrite.html)
 
-- *Design by Contract usage* : Can be done using the [down here](<#flags>)
+- *Design by Contract usage* : You can use design by contract like described [here](<https://github.com/wick-ed/php-by-contract>)
 
 # Roadmap
 As we're in heavy development it may be, that we've to move some tasks from the following roadmap to a earlier/later version, please be aware of that. If you've ideas or features that definitely has to be in one of the next releases, please contact us. We're always open for new ideas or feedback.
