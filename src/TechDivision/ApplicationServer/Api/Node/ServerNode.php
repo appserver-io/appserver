@@ -30,6 +30,8 @@ namespace TechDivision\ApplicationServer\Api\Node;
  */
 class ServerNode extends AbstractRewritesNode
 {
+    // We use the EnvironmentVariablesNodeTrait to give use the possibility to manage EnvironmentVariableNodes.
+    use EnvironmentVariablesNodeTrait;
 
     /**
      * The server's type
