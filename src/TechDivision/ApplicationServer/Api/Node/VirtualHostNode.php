@@ -30,6 +30,9 @@ namespace TechDivision\ApplicationServer\Api\Node;
  */
 class VirtualHostNode extends AbstractRewritesNode
 {
+    // We use the EnvironmentVariablesNodeTrait to give use the possibility to manage EnvironmentVariableNodes.
+    use EnvironmentVariablesNodeTrait;
+
     /**
      * The virtual host name
      *
