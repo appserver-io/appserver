@@ -28,7 +28,7 @@ use TechDivision\ApplicationServer\Interfaces\ContainerConfiguration;
  */
 class Configuration implements ContainerConfiguration
 {
-
+    
     /**
      * XSD schema filename used for validation.
      *
@@ -149,10 +149,49 @@ class Configuration implements ContainerConfiguration
      * @param string $file The path to the file
      *
      * @return \TechDivision\ApplicationServer\Configuration The initialized configuration
+     * @throws \Exception Is thrown if the file with the passed name is not a valid XML file
      */
     public function initFromFile($file)
     {
-        $root = simplexml_load_file($file);
+        if (($root = simplexml_load_file($file)) === false) {
+            $errors = array();
+            foreach (libxml_get_errors() as $error) {
+                $errors[] = sprintf(
+                    'Found a schema validation error on line %s with code %s and message %s when validating configuration file %s',
+                    $error->line,
+                    $error->code,
+                    $error->message,
+                    $error->file
+                );
+            }
+            throw new \Exception(implode(PHP_EOL, $errors));
+        }
+        return $this->init($root);
+    }
+
+    /**
+     * Initializes the configuration with the XML information passed as string.
+     *
+     * @param string $string The string with the XML content to initialize from
+     *
+     * @return \TechDivision\ApplicationServer\Configuration The initialized configuration
+     * @throws \Exception Is thrown if the passed XML string is not valid
+     */
+    public function initFromString($string)
+    {
+        if (($root = simplexml_load_string($string)) === false) {
+            $errors = array();
+            foreach (libxml_get_errors() as $error) {
+                $errors[] = sprintf(
+                    'Found a schema validation error on line %s with code %s and message %s when validating configuration file %s',
+                    $error->line,
+                    $error->code,
+                    $error->message,
+                    $error->file
+                );
+            }
+            throw new \Exception(implode(PHP_EOL, $errors));
+        }
         return $this->init($root);
     }
 
@@ -179,7 +218,7 @@ class Configuration implements ContainerConfiguration
      *
      * @return \TechDivision\ApplicationServer\Configuration The node instance itself
      */
-    public function init($node, $xpath = '/')
+    public function init(\SimpleXMLElement $node, $xpath = '/')
     {
 
         // set the node name + value

@@ -37,6 +37,7 @@ namespace TechDivision\ApplicationServer\Api\Node;
  */
 trait EnvironmentVariablesNodeTrait
 {
+    
     /**
      * The environment variables specified within the parent node
      *
@@ -46,9 +47,9 @@ trait EnvironmentVariablesNodeTrait
     protected $environmentVariables = array();
 
     /**
-     * Will return the environmentVariables array.
+     * Will return the environment variables array.
      *
-     * @return array
+     * @return array The array with the environment variables
      */
     public function getEnvironmentVariables()
     {
