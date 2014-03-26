@@ -15,6 +15,7 @@
 namespace TechDivision\ApplicationServer;
 
 use TechDivision\ApplicationServer\Extractors\PharExtractor;
+use TechDivision\ApplicationServer\Interfaces\ProvisionerInterface;
 use TechDivision\ApplicationServer\Interfaces\ExtractorInterface;
 use TechDivision\ApplicationServer\InitialContext;
 use TechDivision\ApplicationServer\Api\Node\NodeInterface;
@@ -52,18 +53,25 @@ class Server
     protected $systemConfiguration;
 
     /**
-     * The server's initial context instance.
+     * The servers initial context instance.
      *
      * @var \TechDivision\ApplicationServer\InitialContext
      */
     protected $initialContext;
 
     /**
-     * The server's webapp extractor
+     * The servers webapp extractor
      *
      * @var \TechDivision\ApplicationServer\Interfaces\ExtractorInterface
      */
     protected $extractor;
+
+    /**
+     * The servers provisioners.
+     *
+     * @var array
+     */
+    protected $provisioners = array();
 
     /**
      * Initializes the the server with the parsed configuration file.
@@ -172,16 +180,33 @@ class Server
     }
 
     /**
-     * Initializes the extractor
+     * Initializes the extractor.
      *
      * @return void
      */
     protected function initExtractor()
     {
-        // @TODO: read extractor type from configuration
+        // @TODO: Read extractor type from configuration
         $this->setExtractor(new PharExtractor($this->getInitialContext()));
         // extract all webapps
         $this->getExtractor()->deployWebapps();
+    }
+    
+    /**
+     * Initializes the provisioners.
+     * 
+     * @return void
+     */
+    protected function initProvisioners()
+    {
+        // @TODO: Read provisioner type from configuration
+        $this->addProvisioner(new DatasourceProvisioner($this->getInitialContext()));
+        $this->addProvisioner(new StandardProvisioner($this->getInitialContext()));
+
+        // invoke the provisioners
+        foreach ($this->getProvisioners() as $provisioner) {
+            $provisioner->provision();
+        }
     }
 
     /**
@@ -192,16 +217,14 @@ class Server
     protected function initContainers()
     {
         
+        // initialize the array for the threads
         $this->threads = array();
         
         // and initialize a container thread for each container
         foreach ($this->getSystemConfiguration()->getContainers() as $containerNode) {
             
             // initialize the container configuration with the base directory and pass it to the thread
-            $params = array(
-                $this->getInitialContext(),
-                $containerNode
-            );
+            $params = array($this->getInitialContext(), $containerNode);
             
             // create and append the thread instance to the internal array
             $this->threads[] = $this->newInstance($containerNode->getThreadType(), $params);
@@ -263,7 +286,7 @@ class Server
     }
 
     /**
-     * Return's the system logger instance.
+     * Returns the system logger instance.
      *
      * @return \Psr\Log\LoggerInterface
      */
@@ -273,7 +296,7 @@ class Server
     }
 
     /**
-     * Set's the extractor
+     * Sets the extractor
      *
      * @param \TechDivision\ApplicationServer\Interfaces\ExtractorInterface $extractor The initial context instance
      *            
@@ -295,6 +318,28 @@ class Server
     }
 
     /**
+     * Sets the provisioner.
+     *
+     * @param \TechDivision\ApplicationServer\Interfaces\ProvisionerInterface $provisioner The initial context instance
+     *            
+     * @return void
+     */
+    public function addProvisioner(ProvisionerInterface $provisioner)
+    {
+        return $this->provisioners[] = $provisioner;
+    }
+
+    /**
+     * Returns the provisioners.
+     *
+     * @return array The provisioners
+     */
+    public function getProvisioners()
+    {
+        return $this->provisioners;
+    }
+
+    /**
      * Start the container threads.
      *
      * @return void
@@ -305,6 +350,10 @@ class Server
         
         // init the extractor
         $this->initExtractor();
+        
+        // init the provisioner
+        $this->initProvisioners();
+        
         // init the containers
         $this->initContainers();
         
@@ -405,11 +454,7 @@ class Server
     {
 
         // log a message that the appserver will be restarted now
-        $this->getSystemLogger()->info(
-            sprintf(
-                "Now restarting appserver"
-            )
-        );
+        $this->getSystemLogger()->info('Now restarting appserver');
 
         // calculate the start time
         $start = microtime(true);

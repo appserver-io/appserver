@@ -72,6 +72,20 @@ abstract class AbstractNode implements NodeInterface
     }
 
     /**
+     * Initialise from string
+     *
+     * @param string $string The string to configure from
+     *
+     * @return void
+     */
+    public function initFromString($string)
+    {
+        $configuration = new Configuration();
+        $configuration->initFromString($string);
+        $this->initFromConfiguration($configuration);
+    }
+
+    /**
      * Initialise from configuration instance
      *
      * @param \TechDivision\ApplicationServer\Configuration $configuration The configuration instance

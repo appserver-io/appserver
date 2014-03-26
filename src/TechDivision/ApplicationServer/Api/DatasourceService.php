@@ -51,23 +51,38 @@ class DatasourceService extends AbstractService
     }
 
     /**
-     * Returns the datasources with the passed name.
+     * Returns an array with the datasources with the passed name.
      *
      * @param string $name Name of the datasource to return
      *
-     * @return array<\TechDivision\ApplicationServer\Api\Node\DatasourceNode> The datasources with the name passed as
-     *                                                                        parameter
+     * @return array The datasources with the name passed as parameter
      */
     public function findAllByName($name)
     {
         $datasourceNodes = array();
         foreach ($this->findAll() as $datasourceNode) {
-            if ($datasourceNode->getName() == $name) {
+            if ($datasourceNode->getName() === $name) {
                 $datasourceNodes[$datasourceNode->getPrimaryKey()] = $datasourceNode;
             }
         }
 
         return $datasourceNodes;
+    }
+
+    /**
+     * Returns the datasource with the passed name.
+     *
+     * @param string $name Name of the datasource to return
+     *
+     * @return \TechDivision\ApplicationServer\Api\Node\DatasourceNode The datasource with the name passed as parameter
+     */
+    public function findByName($name)
+    {
+        foreach ($this->findAll() as $datasourceNode) {
+            if ($datasourceNode->getName() === $name) {
+                return $datasourceNode;
+            }
+        }
     }
 
     /**

@@ -1,6 +1,6 @@
 <?php
 /**
- * TechDivision\ApplicationServer\Api\Node\ParamNode
+ * TechDivision\ApplicationServer\Api\Node\StepNode
  *
  * PHP version 5
  *
@@ -16,7 +16,7 @@
 namespace TechDivision\ApplicationServer\Api\Node;
 
 /**
- * DTO to transfer a param.
+ * DTO to transfer a applications provision configuration.
  *
  * @category   Appserver
  * @package    TechDivision_ApplicationServer
@@ -26,19 +26,11 @@ namespace TechDivision\ApplicationServer\Api\Node;
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       http://www.appserver.io
  */
-class ParamNode extends AbstractValueNode
+class StepNode extends AbstractNode
 {
 
     /**
-     * The params's name.
-     *
-     * @var string
-     * @AS\Mapping(nodeType="string")
-     */
-    protected $name;
-
-    /**
-     * The param's class name.
+     * The step type
      *
      * @var string
      * @AS\Mapping(nodeType="string")
@@ -46,19 +38,17 @@ class ParamNode extends AbstractValueNode
     protected $type;
 
     /**
-     * Returns the param name.
+     * The node containing the information to execute something like a script.
      *
-     * @return string The param name
+     * @var \TechDivision\ApplicationServer\Api\Node\ExecuteNode 
+     * @AS\Mapping(nodeName="execute", nodeType="TechDivision\ApplicationServer\Api\Node\ExecuteNode")
      */
-    public function getName()
-    {
-        return $this->name;
-    }
+    protected $execute;
 
     /**
-     * Returns the param type.
+     * Returns the step type
      *
-     * @return string The param type
+     * @return string The step type
      */
     public function getType()
     {
@@ -66,14 +56,12 @@ class ParamNode extends AbstractValueNode
     }
 
     /**
-     * Casts the param's value to the defined type and returns it.
+     * Returns the node containing installation information.
      *
-     * @return mixed The casted value
+     * @return \TechDivision\ApplicationServer\Api\Node\InstallationNode The node containing installation information
      */
-    public function castToType()
+    public function getExecute()
     {
-        $value = $this->getNodeValue()->__toString();
-        settype($value, $this->getType());
-        return $value;
+        return $this->execute;
     }
 }
