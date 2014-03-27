@@ -11,7 +11,8 @@
  */
 namespace TechDivision\ApplicationServer\Api\Node\Mock;
 
-use TechDivision\ApplicationServer\Api\Node\AbstractParamsNode;
+use TechDivision\ApplicationServer\Api\Node\AbstractNode;
+use TechDivision\ApplicationServer\Api\Node\ParamsNodeTrait;
 
 /**
  * A mock class that allows us to instanciate an AbstractParamsNode instance.
@@ -22,8 +23,12 @@ use TechDivision\ApplicationServer\Api\Node\AbstractParamsNode;
  *          Open Software License (OSL 3.0)
  * @author Tim Wagner <tw@techdivision.com>
  */
-class MockAbstractParamsNode extends AbstractParamsNode
+class MockAbstractParamsNode extends AbstractNode
 {
+    // We use several traits which give us the possibility to have collections of the child nodes mentioned in the
+    // corresponding trait name
+    use ParamsNodeTrait;
+
 
     /**
      * The params to test.
