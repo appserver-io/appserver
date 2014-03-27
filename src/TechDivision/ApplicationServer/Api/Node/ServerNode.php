@@ -35,6 +35,7 @@ class ServerNode extends AbstractNode
     use EnvironmentVariablesNodeTrait;
     use ParamsNodeTrait;
     use RewritesNodeTrait;
+    use AccessesNodeTrait;
 
     /**
      * The server's type
