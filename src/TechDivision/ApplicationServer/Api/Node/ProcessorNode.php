@@ -26,8 +26,11 @@ namespace TechDivision\ApplicationServer\Api\Node;
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       http://www.appserver.io
  */
-class ProcessorNode extends AbstractParamsNode
+class ProcessorNode extends AbstractNode
 {
+    // We use several traits which give us the possibility to have collections of the child nodes mentioned in the
+    // corresponding trait name
+    use ParamsNodeTrait;
 
     /**
      * The processor class name.

@@ -28,10 +28,13 @@ namespace TechDivision\ApplicationServer\Api\Node;
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       http://www.appserver.io
  */
-class ServerNode extends AbstractRewritesNode
+class ServerNode extends AbstractNode
 {
-    // We use the EnvironmentVariablesNodeTrait to give use the possibility to manage EnvironmentVariableNodes.
+    // We use several traits which give us the possibility to have collections of the child nodes mentioned in the
+    // corresponding trait name
     use EnvironmentVariablesNodeTrait;
+    use ParamsNodeTrait;
+    use RewritesNodeTrait;
 
     /**
      * The server's type
