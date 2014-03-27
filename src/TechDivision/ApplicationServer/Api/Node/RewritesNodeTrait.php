@@ -21,10 +21,9 @@
 namespace TechDivision\ApplicationServer\Api\Node;
 
 /**
- * TechDivision\ApplicationServer\Api\Node\AbstractRewritesNode
+ * TechDivision\ApplicationServer\Api\Node\ParamsNodeTrait
  *
- * Abstract node that serves nodes having a params/param (we extends from AbstractParamsNode) and a
- * rewrites/rewrite child.
+ * Abstract node that serves nodes having a rewrites/rewrite child.
  *
  * @category   Appserver
  * @package    TechDivision_ApplicationServer
@@ -35,7 +34,7 @@ namespace TechDivision\ApplicationServer\Api\Node;
  *             Open Software License (OSL 3.0)
  * @link       http://www.techdivision.com/
  */
-abstract class AbstractRewritesNode extends AbstractParamsNode
+trait RewritesNodeTrait
 {
     /**
      * The virtual host specific rewrite rules.
