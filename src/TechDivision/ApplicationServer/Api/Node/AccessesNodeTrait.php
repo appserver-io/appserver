@@ -55,26 +55,6 @@ trait AccessesNodeTrait
     }
 
     /**
-     * Will return the access node
-     *
-     * @param string $type The type of the access definition
-     *
-     * @return \TechDivision\ApplicationServer\Api\Node\AccessNode|boolean The requested access node
-     */
-    public function getAccess($type)
-    {
-        // Iterate over all rewrites
-        foreach ($this->getAccesses() as $accessNode) {
-            // If we found one with a matching condition we will return it
-            if ($accessNode->getCondition() === $type) {
-                return $accessNode;
-            }
-        }
-        // Still here? Seems we did not find anything
-        return false;
-    }
-
-    /**
      * Returns the rewrites as an associative array.
      *
      * @return array The array with the sorted rewrites
