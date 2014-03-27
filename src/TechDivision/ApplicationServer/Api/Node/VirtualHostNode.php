@@ -35,6 +35,7 @@ class VirtualHostNode extends AbstractNode
     use EnvironmentVariablesNodeTrait;
     use ParamsNodeTrait;
     use RewritesNodeTrait;
+    use AccessesNodeTrait;
 
     /**
      * The virtual host name
