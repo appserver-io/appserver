@@ -42,7 +42,7 @@ class DirectoryKeys
      *
      * @var string
      */
-    const TMP = 'tmp';
+    const TMP = 'var/tmp';
 
     /**
      * Key for the log directory.
