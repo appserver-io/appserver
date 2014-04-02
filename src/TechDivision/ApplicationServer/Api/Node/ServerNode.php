@@ -156,7 +156,7 @@ class ServerNode extends AbstractNode
      */
     public function getAuthentications()
     {
-        return $this->authentications;
+        return (array) $this->authentications;
     }
 
     /**
