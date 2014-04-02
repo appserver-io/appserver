@@ -63,6 +63,13 @@ class InitialContext implements ContextInterface
     protected $systemLogger;
 
     /**
+     * The server's classLoading instance
+     *
+     * @var \TechDivision\ApplicationServer\SplClassLoader
+     */
+    protected $classLoader;
+
+    /**
      * Initializes the context with the connection to the storage backend.
      *
      * @param \TechDivision\ApplicationServer\Api\Node\NodeInterface $systemConfiguration The system configuration
@@ -71,23 +78,23 @@ class InitialContext implements ContextInterface
      */
     public function __construct(\TechDivision\ApplicationServer\Api\Node\NodeInterface $systemConfiguration)
     {
-        
+
         // initialize the storage
         $initialContextNode = $systemConfiguration->getInitialContext();
         $storageNode = $initialContextNode->getStorage();
         $reflectionClass = $this->newReflectionClass($storageNode->getType());
-        
+
         // create the storage instance
         $storage = $reflectionClass->newInstance();
-        
+
         // append the storage servers registered in system configuration
         foreach ($storageNode->getStorageServers() as $storageServer) {
             $storage->addServer($storageServer->getAddress(), $storageServer->getPort(), $storageServer->getWeight());
         }
-        
+
         // add the storage to the initial context
         $this->setStorage($storage);
-        
+
         // initialize the class loader instance
         $classLoaderNode = $initialContextNode->getClassLoader();
         $reflectionClass = $this->newReflectionClass($classLoaderNode->getType());
