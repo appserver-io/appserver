@@ -320,6 +320,8 @@ class InitialContext implements ContextInterface
     /**
      * Set's logger array
      *
+     * @param array $loggers The loggers array to set
+     *
      * @return void
      */
     public function setLoggers(array $loggers)
@@ -340,7 +342,7 @@ class InitialContext implements ContextInterface
     /**
      * Get's the logger by given name
      *
-     * @param string $name the loggers name
+     * @param string $loggerName the loggers name
      *
      * @return \Psr\Log\LoggerInterface
      */
