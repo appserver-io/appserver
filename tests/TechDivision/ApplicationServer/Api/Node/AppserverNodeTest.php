@@ -75,17 +75,6 @@ class AppserverNodeTest extends AbstractTest
     }
 
     /**
-     * Test if the system logger has been successfully initialized.
-     *
-     * @return void
-     */
-    public function testGetSystemLogger()
-    {
-        $systemLogger = $this->appserverNode->getSystemLogger();
-        $this->assertInstanceOf('TechDivision\ApplicationServer\Api\Node\SystemLoggerNode', $systemLogger);
-    }
-
-    /**
      * Test if the containers has been successfully initialized.
      *
      * @return void

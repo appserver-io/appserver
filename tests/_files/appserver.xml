@@ -10,31 +10,47 @@
 			type="TechDivision\ApplicationServer\Mock\InitialContext\MockStorage" />
 	</initialContext>
 
-	<systemLogger type="Monolog\Logger" channelName="system">
-		<processors>
-			<processor type="Monolog\Processor\MemoryUsageProcessor">
-				<params>
-					<param name="realUsage" type="boolean">true</param>
-				</params>
-			</processor>
-		</processors>
-		<handlers>
-			<handler type="Monolog\Handler\ErrorLogHandler">
-				<formatter type="Monolog\Formatter\LineFormatter">
-					<params>
-						<param name="output" type="string"><![CDATA[[%datetime%] %channel%.%level_name%: %message% %context% %extra%\n]]></param>
-						<param name="dateFormat" type="string"><![CDATA[Y-m-d H:i:s]]></param>
-					</params>
-				</formatter>
-				<params>
-					<param name="messageType" type="integer">ErrorLogHandler::OPERATING_SYSTEM
-					</param>
-					<param name="level" type="integer">Logger::DEBUG"</param>
-					<param name="bubble" type="boolean">true</param>
-				</params>
-			</handler>
-		</handlers>
-	</systemLogger>
+    <loggers>
+        <logger channelName="system" name="System" type="\Monolog\Logger">
+            <processors>
+                <processor type="\Monolog\Processor\IntrospectionProcessor" />
+            </processors>
+            <handlers>
+                <handler type="\Monolog\Handler\ErrorLogHandler">
+                    <formatter type="\Monolog\Formatter\LineFormatter">
+                        <params>
+                            <param name="output" type="string">
+                                <![CDATA[[%datetime%] %channel%.%level_name%: %message% %context% %extra%]]></param>
+                            <param name="dateFormat" type="string"><![CDATA[Y-m-d H:i:s]]></param>
+                        </params>
+                    </formatter>
+                    <params>
+                        <param name="messageType" type="integer">0</param>
+                        <param name="level" type="integer">200</param>
+                        <param name="bubble" type="boolean">0</param>
+                    </params>
+                </handler>
+            </handlers>
+        </logger>
+        <logger channelName="access" name="Access" type="\Monolog\Logger">
+            <handlers>
+                <handler type="\Monolog\Handler\StreamHandler">
+                    <formatter type="\Monolog\Formatter\LineFormatter">
+                        <params>
+                            <param name="format" type="string">%message%</param>
+                            <param name="dateFormat" type="string">Y-m-d H:i:s</param>
+                            <param name="allowInlineLineBreaks" type="boolean">1</param>
+                        </params>
+                    </formatter>
+                    <params>
+                        <param name="stream" type="string">var/log/appserver-access.log</param>
+                        <param name="level" type="integer">100</param>
+                        <param name="bubble" type="boolean">1</param>
+                    </params>
+                </handler>
+            </handlers>
+        </logger>
+    </loggers>
 
      <apps>
          <app name="api" webappPath="/opt/appserver/webapps/api" />
@@ -80,7 +96,7 @@
 			<deployment type="TechDivision\ApplicationServer\Mock\MockDeployment" />
 			<host name="localhost" appBase="/webapps" serverAdmin="${appserver.admin.email}"
 				serverSoftware="appserver/${appserver.version} (${os.family}) PHP/${appserver.php.version}" />
-				
+
 		</container>
 
 		<container name="http"
