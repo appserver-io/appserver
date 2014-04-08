@@ -51,6 +51,13 @@ class AppserverNode extends AbstractNode
     protected $systemLogger;
 
     /**
+     * Array with nodes for the registered loggers.
+     *
+     * @var array @AS\Mapping(nodeName="loggers/logger", nodeType="array", elementType="TechDivision\ApplicationServer\Api\Node\LoggerNode")
+     */
+    protected $loggers = array();
+
+    /**
      * Array with nodes for the registered containers.
      *
      * @var array @AS\Mapping(nodeName="containers/container", nodeType="array", elementType="TechDivision\ApplicationServer\Api\Node\ContainerNode")
@@ -104,13 +111,13 @@ class AppserverNode extends AbstractNode
     }
 
     /**
-     * Returns the node containing information about the system logger.
+     * Returns the array with all available loggers.
      *
-     * @return \TechDivision\ApplicationServer\Api\Node\BaseDirectoryNode The system logger information
+     * @return array The available loggers
      */
-    public function getSystemLogger()
+    public function getLoggers()
     {
-        return $this->systemLogger;
+        return $this->loggers;
     }
 
     /**

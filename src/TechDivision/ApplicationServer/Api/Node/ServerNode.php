@@ -46,6 +46,14 @@ class ServerNode extends AbstractNode
     protected $type;
 
     /**
+     * The server's name
+     *
+     * @var string
+     * @AS\Mapping(nodeType="string")
+     */
+    protected $name;
+
+    /**
      * The worker to use
      *
      * @var string
@@ -60,6 +68,14 @@ class ServerNode extends AbstractNode
      * @AS\Mapping(nodeType="string")
      */
     protected $socket;
+
+    /**
+     * The logger'name to use
+     *
+     * @var string
+     * @AS\Mapping(nodeType="string")
+     */
+    protected $loggerName;
 
     /**
      * The server context to use
@@ -120,6 +136,16 @@ class ServerNode extends AbstractNode
     }
 
     /**
+     * Return's the server name
+     *
+     * @return mixed
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
      * Returns the worker to use for server
      *
      * @return string The worker type to use for server
@@ -137,6 +163,16 @@ class ServerNode extends AbstractNode
     public function getSocket()
     {
         return $this->socket;
+    }
+
+    /**
+     * Return's the logger's name to use
+     *
+     * @return string The logger's name
+     */
+    public function getLoggerName()
+    {
+        return $this->loggerName;
     }
 
     /**

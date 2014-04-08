@@ -318,6 +318,43 @@ class InitialContext implements ContextInterface
     }
 
     /**
+     * Set's logger array
+     *
+     * @param array $loggers The loggers array to set
+     *
+     * @return void
+     */
+    public function setLoggers(array $loggers)
+    {
+        $this->loggers = $loggers;
+    }
+
+    /**
+     * Return
+     *
+     * @return array
+     */
+    public function getLoggers()
+    {
+        return $this->loggers;
+    }
+
+    /**
+     * Get's the logger by given name
+     *
+     * @param string $loggerName the loggers name
+     *
+     * @return \Psr\Log\LoggerInterface
+     */
+    public function getLogger($loggerName)
+    {
+        if (isset($this->logger[$loggerName])) {
+            return $this->logger[$loggerName];
+        }
+        throw new \Exception(sprintf("Logger not found '%s'", $loggerName));
+    }
+
+    /**
      * Return's the system logger instance.
      *
      * @return \Psr\Log\LoggerInterface
