@@ -104,7 +104,7 @@ class Server
         // init the file system
         $this->initFileSystem();
         // init main system logger
-        $this->initSystemLogger();
+        $this->initLoggers();
     }
 
     /**
@@ -148,35 +148,38 @@ class Server
     }
 
     /**
-     * Initialize the system logger.
+     * Initialize all loggers.
      *
      * @return void
      */
-    protected function initSystemLogger()
+    protected function initLoggers()
     {
-        
-        // initialize the logger instance itself
-        $systemLoggerNode = $this->getSystemConfiguration()->getSystemLogger();
-        $systemLogger = $this->newInstance($systemLoggerNode->getType(), array(
-            $systemLoggerNode->getChannelName()
-        ));
-        
-        // initialize the processors
-        foreach ($systemLoggerNode->getProcessors() as $processorNode) {
-            $processor = $this->newInstance($processorNode->getType(), $processorNode->getParamsAsArray());
-            $systemLogger->pushProcessor($processor);
+        $loggers = array();
+        foreach ($this->getSystemConfiguration()->getLoggers() as $loggerNode) {
+            // initialize the processors
+            $processors = array();
+            foreach ($loggerNode->getProcessors() as $processorNode) {
+                $processors[] = $this->newInstance($processorNode->getType(), $processorNode->getParamsAsArray());
+            }
+
+            // initialize the handlers
+            $handlers = array();
+            foreach ($loggerNode->getHandlers() as $handlerNode) {
+                $handler = $this->newInstance($handlerNode->getType(), $handlerNode->getParamsAsArray());
+                $formatterNode = $handlerNode->getFormatter();
+                $handler->setFormatter($this->newInstance($formatterNode->getType(), $formatterNode->getParamsAsArray()));
+                $handlers[] = $handler;
+            }
+
+            // initialize the logger instance itself
+            $loggers[$loggerNode->getName()] = $this->newInstance($loggerNode->getType(), array(
+                $loggerNode->getChannelName(), $handlers, $processors
+            ));
         }
-        
-        // initialize the handlers
-        foreach ($systemLoggerNode->getHandlers() as $handlerNode) {
-            $handler = $this->newInstance($handlerNode->getType(), $handlerNode->getParamsAsArray());
-            $formatterNode = $handlerNode->getFormatter();
-            $handler->setFormatter($this->newInstance($formatterNode->getType(), $formatterNode->getParamsAsArray()));
-            $systemLogger->pushHandler($handler);
-        }
-        
-        // set the initialized logger finally
-        $this->getInitialContext()->setSystemLogger($systemLogger);
+        // set the initialized loggers finally
+        $this->getInitialContext()->setLoggers($loggers);
+        // @deprecated todo: refactor hard coded SystemLogger getter
+        $this->getInitialContext()->setSystemLogger($loggers['System']);
     }
 
     /**
