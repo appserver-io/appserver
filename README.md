@@ -186,4 +186,3 @@ And yes, we've plans for a Community and a Enterprise edition. The Community Edi
 - [ ] Hot-Deployment
 - [ ] Farming deployment
 - [ ] Web Application Firewall (WAF)
-
