@@ -407,8 +407,10 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     public function prepareModules(NodeInterface $node)
     {
         $modules = array();
-        foreach ($node->getModules() as $module) {
-            $modules[$module->getUuid()] = $module->getType();
+        if (is_array($node->getModules())) {
+            foreach ($node->getModules() as $module) {
+                $modules[$module->getUuid()] = $module->getType();
+            }
         }
         return $modules;
     }
