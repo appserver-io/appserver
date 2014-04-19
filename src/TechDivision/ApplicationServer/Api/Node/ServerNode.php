@@ -36,6 +36,7 @@ class ServerNode extends AbstractNode
     use ParamsNodeTrait;
     use RewritesNodeTrait;
     use AccessesNodeTrait;
+    use LocationsNodeTrait;
 
     /**
      * The server's type
