@@ -449,7 +449,10 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     {
         $handlers = array();
         foreach ($node->getFileHandlers() as $fileHandler) {
-            $handlers[$fileHandler->getExtension()] = $fileHandler->getName();
+            $handlers[$fileHandler->getExtension()] = array(
+                'name' => $fileHandler->getName(),
+                'params' => $fileHandler->getParamsAsArray()
+            );
         }
         return $handlers;
     }
