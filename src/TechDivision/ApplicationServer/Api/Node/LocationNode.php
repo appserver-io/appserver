@@ -36,17 +36,17 @@ class LocationNode extends AbstractNode
      * @AS\Mapping(nodeType="string")
      */
     protected $condition;
-    
-    /**
-     * The node that specifies the file handler to be used for this location.
-     *
-     * @var \TechDivision\ApplicationServer\Api\Node\FileHandlerNode 
-     * @AS\Mapping(nodeName="datasource", nodeType="TechDivision\ApplicationServer\Api\Node\FileHandlerNode")
-     */
-    protected $fileHandler;
 
     /**
-     * Returns the condition to match for
+     * The file handlers
+     *
+     * @var array
+     * @AS\Mapping(nodeName="fileHandlers/fileHandler", nodeType="array", elementType="TechDivision\ApplicationServer\Api\Node\FileHandlerNode")
+     */
+    protected $fileHandlers;
+
+    /**
+     * Returns the condition to match for.
      *
      * @return string The condition to match for
      */
@@ -56,12 +56,12 @@ class LocationNode extends AbstractNode
     }
 
     /**
-     * Returns the node that specifies the file handler to be used for this location.
+     * Returns the file handler nodes.
      *
-     * @return \TechDivision\ApplicationServer\Api\Node\FileHandlerNode The node that specifies the file handler to be used for this location
+     * @return array The file handler nodes
      */
-    public function getFileHandler()
+    public function getFileHandlers()
     {
-        return $this->fileHandler;
+        return $this->fileHandlers;
     }
 }

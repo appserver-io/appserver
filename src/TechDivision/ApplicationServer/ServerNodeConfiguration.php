@@ -518,7 +518,8 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
         foreach ($node->getLocations() as $location) {
             // Build up the array entry
             $locations[] = array(
-                'condition' => $location->getCondition()
+                'condition' => $location->getCondition(),
+                'handlers' => $this->prepareHandlers($location)
             );
         }
         return $locations;
