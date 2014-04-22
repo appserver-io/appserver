@@ -117,6 +117,26 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     }
 
     /**
+     * Returns the username we want to execute the processes with.
+     *
+     * @return string
+     */
+    public function getUser()
+    {
+        return $this->node->getParam('user');
+    }
+
+    /**
+     * Returns the groupname we want to execute the processes with.
+     *
+     * @return string
+     */
+    public function getGroup()
+    {
+        return $this->node->getParam('group');
+    }
+
+    /**
      * Return's type
      *
      * @return string
