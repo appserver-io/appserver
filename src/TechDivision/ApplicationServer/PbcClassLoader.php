@@ -59,14 +59,19 @@ class PbcClassLoader extends SplClassLoader
     protected $map;
 
     /**
-     * @const string    The name of our autoload method
+     * @const string OUR_LOADER The name of our autoload method
      */
     const OUR_LOADER = 'loadClass';
 
     /**
-     * @const string    Our default configuration file
+     * @const string CONFIG_FILE Our default configuration file
      */
     const CONFIG_FILE = '/opt/appserver/etc/pbc.conf.json';
+
+    /**
+     * @const int GENERATOR_STACK_COUNT The amount of structures we will generate per thread
+     */
+    const GENERATOR_STACK_COUNT = 25;
 
     /**
      * Default constructor
@@ -177,7 +182,10 @@ class PbcClassLoader extends SplClassLoader
 
             $omittedNamespaces = $autoLoaderConfig['omit'];
         }
-        foreach ($structures as $structure) {
+
+        // Now check which structures we have to create and split them up for multi-threaded creation
+        $generatorStack = array();
+        foreach ($structures as $identifier => $structure) {
 
             // Working on our own files has very weird side effects, so don't do it
             if (strpos($structure->getIdentifier(), 'TechDivision\PBC') !== false || !$structure->isEnforced()) {
@@ -195,8 +203,25 @@ class PbcClassLoader extends SplClassLoader
                 }
             }
 
-            // Create the new file
-            $generator->create($structure);
+            // Fill it into the generator stack
+            $generatorStack[$identifier] = $structure;
+        }
+
+        // Chuck the stack and start generating
+        $generatorStack = array_chunk($generatorStack, self::GENERATOR_STACK_COUNT, true);
+
+        // Generate all the structures!
+        $generatorThreads = array();
+        foreach ($generatorStack as $key => $generatorStackChunk) {
+
+            $generatorThreads[$key] = new GeneratorThread($generator, $generatorStackChunk, $this->getInitialContext());
+            $generatorThreads[$key]->start();
+        }
+
+        // Wait on the threads
+        foreach ($generatorThreads as $generatorThread) {
+
+            $generatorThread->join();
         }
 
         // Still here? Sounds about right
