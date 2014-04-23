@@ -28,6 +28,9 @@ namespace TechDivision\ApplicationServer\Api\Node;
  */
 class FileHandlerNode extends AbstractNode
 {
+    // We use several traits which give us the possibility to have collections of the child nodes mentioned in the
+    // corresponding trait name
+    use ParamsNodeTrait;
 
     /**
      * The file handler name

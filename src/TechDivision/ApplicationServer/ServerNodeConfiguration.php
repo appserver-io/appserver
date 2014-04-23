@@ -100,6 +100,13 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     protected $environmentVariables;
 
     /**
+     * Hold's the locations array.
+     *
+     * @var array
+     */
+    protected $locations;
+
+    /**
      * Constructs config
      *
      * @param \TechDivision\ApplicationServer\Api\Node\NodeInterface $node The node instance
@@ -107,6 +114,26 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     public function __construct($node)
     {
         $this->node = $node;
+    }
+
+    /**
+     * Returns the username we want to execute the processes with.
+     *
+     * @return string
+     */
+    public function getUser()
+    {
+        return $this->node->getParam('user');
+    }
+
+    /**
+     * Returns the groupname we want to execute the processes with.
+     *
+     * @return string
+     */
+    public function getGroup()
+    {
+        return $this->node->getParam('group');
     }
 
     /**
@@ -442,7 +469,10 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     {
         $handlers = array();
         foreach ($node->getFileHandlers() as $fileHandler) {
-            $handlers[$fileHandler->getExtension()] = $fileHandler->getName();
+            $handlers[$fileHandler->getExtension()] = array(
+                'name' => $fileHandler->getName(),
+                'params' => $fileHandler->getParamsAsArray()
+            );
         }
         return $handlers;
     }
@@ -467,6 +497,7 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
                     'rewrites' => $this->prepareRewrites($virtualHost),
                     'environmentVariables' => $this->prepareEnvironmentVariables($virtualHost),
                     'accesses' => $this->prepareAccesses($virtualHost),
+                    'locations' => $this->prepareLocations($virtualHost),
                     // todo: add authentications
                 );
             }
@@ -494,6 +525,27 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
             );
         }
         return $rewrites;
+    }
+
+    /**
+     * Prepares the locations array based on a node implementing NodeInterface
+     *
+     * @param \TechDivision\ApplicationServer\Api\Node\NodeInterface $node The node instance
+     *
+     * @return array
+     */
+    public function prepareLocations(NodeInterface $node)
+    {
+        $locations = array();
+        // prepare the array with the locations
+        foreach ($node->getLocations() as $location) {
+            // Build up the array entry
+            $locations[] = array(
+                'condition' => $location->getCondition(),
+                'handlers' => $this->prepareHandlers($location)
+            );
+        }
+        return $locations;
     }
 
     /**
@@ -560,5 +612,20 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
             $accesses[$accessType][] = $access->getParamsAsArray();
         }
         return $accesses;
+    }
+
+    /**
+     * Returns the locations.
+     *
+     * @return array
+     */
+    public function getLocations()
+    {
+        // init locations
+        if (!$this->locations) {
+            $this->locations = $this->prepareLocations($this->node);
+        }
+        // return the locations
+        return $this->locations;
     }
 }

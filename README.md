@@ -138,13 +138,13 @@ And yes, we've plans for a Community and a Enterprise edition. The Community Edi
 - [x] RPM packages
 
 ### Version 0.6.0 - Application Server + [WebServer](https://github.com/techdivision/TechDivision_WebServer)
-- [ ] Integration of TechDivision_WebServer project as single point of entry request handler
 - [X] mod_rewrite functionality for TechDivision_WebServer project
 - [X] Refactor routing
+- [X] Running TYPO3 Flow 2.0.x demo application
+- [X] Running TYPO3 Neos 1.x demo application
 - [ ] [Design by Contract](https://github.com/wick-ed/php-by-contract)
 - [ ] Running TYPO3 6.x demo application
-- [ ] Running TYPO3 Flow 2.0.x demo application
-- [ ] Running TYPO3 Neos 1.x demo application
+- [ ] Integration of TechDivision_WebServer project as single point of entry request handler
 - [ ] 100 % Coverage for PHPUnit test suite for TechDivision_WebServer project
 
 ### Version 0.7 - Application Server + [Runtime](https://github.com/techdivision/TechDivision_Runtime)
