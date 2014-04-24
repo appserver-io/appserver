@@ -36,7 +36,7 @@ require '/opt/appserver/app/code/vendor/autoload.php';
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      http://www.appserver.io
  */
-class DbcClassLoader extends SplClassLoader
+class PbcClassLoader extends SplClassLoader
 {
 
     /**
@@ -54,15 +54,24 @@ class DbcClassLoader extends SplClassLoader
      */
     protected $initialContext;
 
+    protected $structureMap;
+
+    protected $map;
+
     /**
-     * @const string    The name of our autoload method
+     * @const string OUR_LOADER The name of our autoload method
      */
     const OUR_LOADER = 'loadClass';
 
     /**
-     * @const string    Our default configuration file
+     * @const string CONFIG_FILE Our default configuration file
      */
     const CONFIG_FILE = '/opt/appserver/etc/pbc.conf.json';
+
+    /**
+     * @const int GENERATOR_STACK_COUNT The amount of structures we will generate per thread
+     */
+    const GENERATOR_STACK_COUNT = 25;
 
     /**
      * Default constructor
@@ -84,28 +93,33 @@ class DbcClassLoader extends SplClassLoader
         // We need the cacheing configuration
         $cacheConfig = $this->config->getConfig('cache');
 
+        // We need a standalone structure map to check for its version
+        $this->structureMap = new StructureMapWrapper($this->config->getConfig(
+            'autoloader'
+        )['dirs'], $this->config->getConfig('enforcement')['dirs'], $this->config, $initialContext);
+
+        if (empty($this->autoloader)) {
+
+            // We need our autoloader to delegate to.
+            $this->autoloader = new AutoLoader($this->structureMap);
+        }
+
         // Check if there are files in the cache.
         // If not we will fill the cache, if there are we will check if there have been any changes to the project dirs
         $fileIterator = new \FilesystemIterator($cacheConfig['dir'], \FilesystemIterator::SKIP_DOTS);
-        if (iterator_count($fileIterator) <= 2 || $this->config->getConfig('environment') === 'development') {
+        if (iterator_count($fileIterator) <= 1 || $this->config->getConfig('environment') === 'development') {
 
             // Fill the cache
             $this->fillCache();
 
         } else {
 
-            // We need a standalone structure map to check for its version
-            $structureMap = new StructureMap($this->config->getConfig('project-dirs'), $this->config);
+            if (!$this->structureMap->isRecent()) {
 
-            if (!$structureMap->isRecent()) {
+                $this->refillCache($cacheConfig);
 
-                $this->refillCache($cacheConfig, $structureMap);
             }
         }
-
-        // We need our autoloader to delegate to.
-        // Getting it after the cache was filled to get the complete structure map
-        $this->autoloader = new AutoLoader();
     }
 
     /**
@@ -115,22 +129,18 @@ class DbcClassLoader extends SplClassLoader
      */
     protected function fillCache()
     {
-        // We will need the structure map to initially parse all files
-        $structureMap = new StructureMap($this->config->getConfig('project-dirs'), $this->config);
-
         // Lets create the definitions
-        return $this->createDefinitions($structureMap);
+        return $this->createDefinitions();
     }
 
     /**
      * We will refill the cache dir by emptying it and filling it again
      *
-     * @param array                          $cacheConfig  The cache config as array
-     * @param \TechDivision\PBC\StructureMap $structureMap A structure map instance
+     * @param array $cacheConfig The cache config as array
      *
      * @return bool
      */
-    protected function refillCache(array $cacheConfig, StructureMap $structureMap)
+    protected function refillCache(array $cacheConfig)
     {
         // Lets clear the cache so we can fill it anew
         foreach (new \DirectoryIterator($cacheConfig['dir']) as $fileInfo) {
@@ -143,28 +153,26 @@ class DbcClassLoader extends SplClassLoader
         }
 
         // Lets create the definitions anew
-        return $this->createDefinitions($structureMap);
+        return $this->createDefinitions($this->structureMap);
     }
 
     /**
      * Creates the definitions by given structure map
      *
-     * @param \TechDivision\PBC\StructureMap $structureMap A structure map instance
-     *
      * @return bool
      */
-    protected function createDefinitions(StructureMap $structureMap)
+    protected function createDefinitions()
     {
         // Get all the structures we found
-        $structures = $structureMap->getEntries(true);
+        $structures = $this->structureMap->getEntries(true);
 
         // We will need a CacheMap instance which we can pass to the generator
-        // We need the cacheing configuration
+        // We need the caching configuration
         $cacheConfig = $this->config->getConfig('cache');
-        $cacheMap = new CacheMap($cacheConfig['dir']);
+        $cacheMap = new CacheMap($cacheConfig['dir'], array());
 
         // We need a generator so we can create our proxies initially
-        $generator = new Generator($structureMap, $cacheMap);
+        $generator = new Generator($this->structureMap, $cacheMap);
 
         // Iterate over all found structures and generate their proxies, but ignore the ones with omitted
         // namespaces
@@ -174,10 +182,13 @@ class DbcClassLoader extends SplClassLoader
 
             $omittedNamespaces = $autoLoaderConfig['omit'];
         }
-        foreach ($structures as $structure) {
+
+        // Now check which structures we have to create and split them up for multi-threaded creation
+        $generatorStack = array();
+        foreach ($structures as $identifier => $structure) {
 
             // Working on our own files has very weird side effects, so don't do it
-            if (strpos($structure->getIdentifier(), 'TechDivision\PBC') !== false) {
+            if (strpos($structure->getIdentifier(), 'TechDivision\PBC') !== false || !$structure->isEnforced()) {
 
                 continue;
             }
@@ -192,8 +203,25 @@ class DbcClassLoader extends SplClassLoader
                 }
             }
 
-            // Create the new file
-            $generator->create($structure);
+            // Fill it into the generator stack
+            $generatorStack[$identifier] = $structure;
+        }
+
+        // Chuck the stack and start generating
+        $generatorStack = array_chunk($generatorStack, self::GENERATOR_STACK_COUNT, true);
+
+        // Generate all the structures!
+        $generatorThreads = array();
+        foreach ($generatorStack as $key => $generatorStackChunk) {
+
+            $generatorThreads[$key] = new GeneratorThread($generator, $generatorStackChunk, $this->getInitialContext());
+            $generatorThreads[$key]->start();
+        }
+
+        // Wait on the threads
+        foreach ($generatorThreads as $generatorThread) {
+
+            $generatorThread->join();
         }
 
         // Still here? Sounds about right
@@ -240,11 +268,6 @@ class DbcClassLoader extends SplClassLoader
      */
     public function register($throws = true, $prepends = true)
     {
-        // Get our Config instance and load our configuration
-        // We have to do this again, as the constructor will not get called within new threads.
-        $this->config = Config::getInstance();
-        $this->config = $this->config->load(self::CONFIG_FILE);
-
         // We want to let our autoloader be the first in line so we can react on loads and create/return our proxies.
         // So lets use the prepend parameter here.
         spl_autoload_register(array($this, self::OUR_LOADER), $throws, true);

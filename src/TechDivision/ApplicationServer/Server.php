@@ -82,12 +82,12 @@ class Server
      */
     public function __construct(Configuration $configuration)
     {
-        
+
         // initialize the configuration and the base directory
         $systemConfiguration = new AppserverNode();
         $systemConfiguration->initFromConfiguration($configuration);
         $this->setSystemConfiguration($systemConfiguration);
-        
+
         // initialize the server instance
         $this->init();
     }
@@ -130,13 +130,13 @@ class Server
      */
     public function initFileSystem()
     {
-        
+
         // init API service to use
         $service = $this->newService('TechDivision\ApplicationServer\Api\ContainerService');
-        
+
         // check if the log directory already exists, if not, create it
         foreach ($service->getDirectories() as $directory) {
-            
+
             // prepare the path to the directory to be created
             $toBeCreated = $service->realpath($directory);
             // prepare the directory name and check if the directory already exists
@@ -194,10 +194,10 @@ class Server
         // extract all webapps
         $this->getExtractor()->deployWebapps();
     }
-    
+
     /**
      * Initializes the provisioners.
-     * 
+     *
      * @return void
      */
     protected function initProvisioners()
@@ -219,16 +219,16 @@ class Server
      */
     protected function initContainers()
     {
-        
+
         // initialize the array for the threads
         $this->threads = array();
-        
+
         // and initialize a container thread for each container
         foreach ($this->getSystemConfiguration()->getContainers() as $containerNode) {
-            
+
             // initialize the container configuration with the base directory and pass it to the thread
             $params = array($this->getInitialContext(), $containerNode);
-            
+
             // create and append the thread instance to the internal array
             $this->threads[] = $this->newInstance($containerNode->getThreadType(), $params);
         }
@@ -302,7 +302,7 @@ class Server
      * Sets the extractor
      *
      * @param \TechDivision\ApplicationServer\Interfaces\ExtractorInterface $extractor The initial context instance
-     *            
+     *
      * @return void
      */
     public function setExtractor(ExtractorInterface $extractor)
@@ -324,7 +324,7 @@ class Server
      * Sets the provisioner.
      *
      * @param \TechDivision\ApplicationServer\Interfaces\ProvisionerInterface $provisioner The initial context instance
-     *            
+     *
      * @return void
      */
     public function addProvisioner(ProvisionerInterface $provisioner)
@@ -350,16 +350,16 @@ class Server
      */
     public function start()
     {
-        
+
         // init the extractor
         $this->initExtractor();
-        
+
         // init the provisioner
         $this->initProvisioners();
-        
+
         // init the containers
         $this->initContainers();
-        
+
         // log that the server will be started now
         $this->getSystemLogger()->info(
             sprintf(
@@ -370,18 +370,26 @@ class Server
                     ->__toString()
             )
         );
-        
+
+        // As the extractors have to run BEFORE we start all containers we also have to change the user rights
+        // of the extracted files accordingly as a change of the process user and group will follow
+        // @TODO This behaviour has to be simplified
+        $this->initUserRights();
+
         // start the container threads
         $this->startContainers();
+
+        // Switch to the configured user (if any)
+        $this->initProcessUser();
     }
-    
+
     /**
      * Scan's the deployment directory for changes and restarts
      * the server instance if necessary.
-     * 
+     *
      * This is an alternative method to call start() because the
      * monitor is running exclusively like the start() method.
-     * 
+     *
      * @return void
      * @see \TechDivision\ApplicationServer\Server::start();
      */
@@ -393,41 +401,173 @@ class Server
             'TechDivision\ApplicationServer\Scanner\DeploymentScanner',
             array($this->getInitialContext())
         );
-        
+
         // start the monitor
         $monitor->start();
     }
-    
+
     /**
      * Starts the registered container threads.
-     * 
+     *
      * @return void
      */
     public function startContainers()
     {
         // set the flag that the application will be started
         $this->getInitialContext()->setAttribute(StateKeys::KEY, StateKeys::get(StateKeys::STARTING));
-        
+
         // start the container threads
         foreach ($this->getThreads() as $thread) {
-        
+
             // start the thread
             $thread->start();
-        
+
             // synchronize container threads to avoid registring apps several times
             $thread->synchronized(function ($self) {
                 $self->wait();
             }, $thread);
         }
-        
+
         // set the flag that the application has been started
         $this->getInitialContext()->setAttribute(StateKeys::KEY, StateKeys::get(StateKeys::RUNNING));
     }
-    
+
     /**
-     * Stops the appserver by setting the apropriate flag in the 
+     * <TODO FUNCTION DESCRIPTION>
+     *
+     * @return null
+     */
+    protected function initUserRights()
+    {
+        // If there is no POSIX we do not have to make any changes at all
+        if (!extension_loaded('posix')) {
+
+            return;
+        }
+
+        // Get our base dir
+        $baseDir = $this->getSystemConfiguration()->getBaseDirectory()->getNodeValue();
+
+        // Lets collect all possible app bases of all containers and don't forget the deploy dir
+        $targetDirs = array($baseDir . DIRECTORY_SEPARATOR . 'deploy');
+        foreach ($this->getSystemConfiguration()->getContainers() as $container) {
+
+            if (is_string($appBase = $container->getHost()->getAppBase())) {
+
+                $targetDirs[] = $baseDir . DIRECTORY_SEPARATOR . substr($appBase, 1);
+            }
+        }
+
+        // Kill duplicates which are likely
+        $targetDirs = array_unique($targetDirs);
+
+        // As we might have several rootPaths we have to create several RecursiveDirectoryIterators.
+        $directoryIterators = array();
+        foreach ($targetDirs as $targetDir) {
+
+            $directoryIterators[] = new \RecursiveDirectoryIterator(
+                $targetDir,
+                \RecursiveIteratorIterator::SELF_FIRST
+            );
+        }
+
+        // We got them all, now append them onto a new RecursiveIteratorIterator and return it.
+        $recursiveIterator = new \AppendIterator();
+        foreach ($directoryIterators as $directoryIterator) {
+
+            // Append the directory iterator
+            $recursiveIterator->append(
+                new \RecursiveIteratorIterator(
+                    $directoryIterator,
+                    \RecursiveIteratorIterator::SELF_FIRST
+                )
+            );
+        }
+
+        // Check for the existence of a user
+        $user = $this->getSystemConfiguration()->getParam('user');
+        if (!empty($user)) {
+
+            // Change the rights of everything within the defined dirs
+            foreach ($recursiveIterator as $file) {
+
+                chown($file, $user);
+            }
+        }
+
+        // Check for the existence of a group
+        $group = $this->getSystemConfiguration()->getParam('group');
+        if (!empty($group)) {
+
+            // Change the rights of everything within the defined dirs
+            foreach ($recursiveIterator as $file) {
+
+                chgrp($file, $user);
+            }
+        }
+    }
+
+    /**
+     * This method will set the system user we might have configured as appserver params.
+     * Will set the user and his group.
+     *
+     * @return void
+     */
+    protected function initProcessUser()
+    {
+        // if we're on a OS (not Windows) that supports POSIX we have
+        // to change the configured user/group for security reasons.
+        if (!extension_loaded('posix')) {
+
+            // Log that we were not able to change the user
+            $this->getSystemLogger()->info(
+                "Could not change user due to missing POSIX extension"
+            );
+            return;
+        }
+
+        // Check for the existence of a user
+        $user = $this->getSystemConfiguration()->getParam('user');
+        if (!empty($user)) {
+
+            // Get the user id and set it accordingly
+            $userId = posix_getpwnam($user)['uid'];
+
+            // Did we get something useful?
+            if (is_int($userId)) {
+
+                posix_setuid($userId);
+            }
+        }
+
+        // Check for the existence of a group
+        $group = $this->getSystemConfiguration()->getParam('group');
+        if (!empty($group)) {
+
+            // Get the user id and set it accordingly
+            $groupId = posix_getgrnam($group)['gid'];
+
+            // Did we get something useful?
+            if (is_int($groupId)) {
+
+                posix_setgid($groupId);
+            }
+        }
+
+        // log a message with the time needed for restart
+        $this->getSystemLogger()->info(
+            sprintf(
+                "Changing process group and user to %s:%s",
+                $user,
+                $group
+            )
+        );
+    }
+
+    /**
+     * Stops the appserver by setting the apropriate flag in the
      * initial context.
-     * 
+     *
      * @return void
      */
     public function stopContainers()
@@ -435,10 +575,10 @@ class Server
 
         // calculate the start time
         $start = microtime(true);
-        
+
         // set the flag that the application has to be stopped
         $this->getInitialContext()->setAttribute(StateKeys::KEY, StateKeys::get(StateKeys::STOPPING));
-                        
+
         // log a message with the time needed for restart
         $this->getSystemLogger()->info(
             sprintf(
@@ -461,19 +601,19 @@ class Server
 
         // calculate the start time
         $start = microtime(true);
-                        
+
         // stop the container threads
         $this->stopContainers();
-        
+
         // check if apps has to be redeployed
         $this->getExtractor()->deployWebapps();
-        
+
         // reinitialize the container threads
         $this->initContainers();
-        
+
         // start the container threads
         $this->startContainers();
-                        
+
         // log a message with the time needed for restart
         $this->getSystemLogger()->info(
             sprintf(

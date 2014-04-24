@@ -28,6 +28,8 @@ namespace TechDivision\ApplicationServer\Api\Node;
  */
 class AppserverNode extends AbstractNode
 {
+    // The appserver itself can (but does not have to) have param elements as children
+    use ParamsNodeTrait;
 
     /**
      * The node containing information about the base directory.
