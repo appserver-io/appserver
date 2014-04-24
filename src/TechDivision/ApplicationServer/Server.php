@@ -371,11 +371,6 @@ class Server
             )
         );
 
-        // As the extractors have to run BEFORE we start all containers we also have to change the user rights
-        // of the extracted files accordingly as a change of the process user and group will follow
-        // @TODO This behaviour has to be simplified
-        $this->initUserRights();
-
         // start the container threads
         $this->startContainers();
 
@@ -430,81 +425,6 @@ class Server
 
         // set the flag that the application has been started
         $this->getInitialContext()->setAttribute(StateKeys::KEY, StateKeys::get(StateKeys::RUNNING));
-    }
-
-    /**
-     * <TODO FUNCTION DESCRIPTION>
-     *
-     * @return null
-     */
-    protected function initUserRights()
-    {
-        // If there is no POSIX we do not have to make any changes at all
-        if (!extension_loaded('posix')) {
-
-            return;
-        }
-
-        // Get our base dir
-        $baseDir = $this->getSystemConfiguration()->getBaseDirectory()->getNodeValue();
-
-        // Lets collect all possible app bases of all containers and don't forget the deploy dir
-        $targetDirs = array($baseDir . DIRECTORY_SEPARATOR . 'deploy');
-        foreach ($this->getSystemConfiguration()->getContainers() as $container) {
-
-            if (is_string($appBase = $container->getHost()->getAppBase())) {
-
-                $targetDirs[] = $baseDir . DIRECTORY_SEPARATOR . substr($appBase, 1);
-            }
-        }
-
-        // Kill duplicates which are likely
-        $targetDirs = array_unique($targetDirs);
-
-        // As we might have several rootPaths we have to create several RecursiveDirectoryIterators.
-        $directoryIterators = array();
-        foreach ($targetDirs as $targetDir) {
-
-            $directoryIterators[] = new \RecursiveDirectoryIterator(
-                $targetDir,
-                \RecursiveIteratorIterator::SELF_FIRST
-            );
-        }
-
-        // We got them all, now append them onto a new RecursiveIteratorIterator and return it.
-        $recursiveIterator = new \AppendIterator();
-        foreach ($directoryIterators as $directoryIterator) {
-
-            // Append the directory iterator
-            $recursiveIterator->append(
-                new \RecursiveIteratorIterator(
-                    $directoryIterator,
-                    \RecursiveIteratorIterator::SELF_FIRST
-                )
-            );
-        }
-
-        // Check for the existence of a user
-        $user = $this->getSystemConfiguration()->getParam('user');
-        if (!empty($user)) {
-
-            // Change the rights of everything within the defined dirs
-            foreach ($recursiveIterator as $file) {
-
-                chown($file, $user);
-            }
-        }
-
-        // Check for the existence of a group
-        $group = $this->getSystemConfiguration()->getParam('group');
-        if (!empty($group)) {
-
-            // Change the rights of everything within the defined dirs
-            foreach ($recursiveIterator as $file) {
-
-                chgrp($file, $user);
-            }
-        }
     }
 
     /**
