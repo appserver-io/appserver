@@ -30,7 +30,7 @@ use TechDivision\ApplicationServer\Utilities\DirectoryKeys;
  */
 abstract class AbstractExtractor implements ExtractorInterface
 {
-    
+
     /**
      * The container's base directory.
      *
@@ -122,12 +122,12 @@ abstract class AbstractExtractor implements ExtractorInterface
                 $this->deployArchive($archive);
             }
         }
-        
+
         // prepare the filename for the file with the last succesfull deployment timestamp
         $successFile = $this->getService()->realpath(
             DirectoryKeys::DEPLOY . DIRECTORY_SEPARATOR . ExtractorInterface::FILE_DEPLOYMENT_SUCCESSFULL
         );
-        
+
         // create a flag file with date of the last successfull deployment
         touch($successFile);
     }
@@ -166,7 +166,7 @@ abstract class AbstractExtractor implements ExtractorInterface
             }
         }
     }
-    
+
     /**
      * (non-PHPdoc)
      *
@@ -180,16 +180,16 @@ abstract class AbstractExtractor implements ExtractorInterface
 
         // prepare the deploy folder
         $deployFolderName = $this->getDeployDir() . DIRECTORY_SEPARATOR . $archive->getFilename();
-        
+
         // check if the .dodeploy flag file exists
         if (file_exists($deployFolderName . ExtractorInterface::FLAG_DODEPLOY)) {
             return true;
         }
-        
+
         // by default it's NOT deployable
         return false;
     }
-    
+
     /**
      * (non-PHPdoc)
      *
@@ -203,14 +203,14 @@ abstract class AbstractExtractor implements ExtractorInterface
 
         // prepare the deploy folder
         $deployFolderName = $this->getDeployDir() . DIRECTORY_SEPARATOR . $archive->getFilename();
-        
+
         // make sure that NO flag for the archive is available
         foreach ($this->getFlags() as $flag) {
             if (file_exists($deployFolderName . $flag)) {
                 return false;
             }
         }
-        
+
         // it's undeployable if NOT marker file exists
         return true;
     }
@@ -229,10 +229,10 @@ abstract class AbstractExtractor implements ExtractorInterface
         // prepare the upload target in the deploy directory
         $deployDirectory = $this->getDeployDir();
         $target = $deployDirectory . DIRECTORY_SEPARATOR . $archive->getFilename();
-        
+
         // move the uploaded file from the tmp to the deploy directory
         rename($archive->getPathname(), $target);
-        
+
         // makr the file to be deployed with the next restart
         $this->flagArchive(new \SplFileInfo($target), ExtractorInterface::FLAG_DODEPLOY);
     }
@@ -249,27 +249,27 @@ abstract class AbstractExtractor implements ExtractorInterface
     public function undeployArchive(\SplFileInfo $archive)
     {
         try {
-            
+
             // create webapp folder name based on the archive's basename
             $webappFolderName = $this->getWebappsDir() . DIRECTORY_SEPARATOR
                 . basename($archive->getFilename(), $this->getExtensionSuffix());
-            
+
             // check if app has to be undeployed
             if ($this->isUndeployable($archive) && is_dir($webappFolderName)) {
 
                 // flag webapp as undeploing
                 $this->flagArchive($archive, ExtractorInterface::FLAG_UNDEPLOYING);
-                
+
                 // backup files that are NOT part of the archive
                 $this->backupArchive($archive);
-                
+
                 // delete directories previously backed up
                 $this->removeDir($webappFolderName);
 
                 // flag webapp as undeployed
                 $this->flagArchive($archive, ExtractorInterface::FLAG_UNDEPLOYED);
             }
-            
+
         } catch (\Exception $e) {
             // log error
             $this->getInitialContext()
@@ -282,7 +282,7 @@ abstract class AbstractExtractor implements ExtractorInterface
 
     /**
      * Restores the backup files from the backup directory.
-     * 
+     *
      * @param \SplFileInfo $archive To restore the files for
      *
      * @return void
@@ -294,7 +294,7 @@ abstract class AbstractExtractor implements ExtractorInterface
             . basename($archive->getFilename(), $this->getExtensionSuffix());
         $tmpFolderName = $this->getTmpDir() . DIRECTORY_SEPARATOR
             . md5(basename($archive->getFilename(), $this->getExtensionSuffix()));
-        
+
         // copy backup to webapp directory
         $this->copyDir($tmpFolderName, $webappFolderName);
     }
@@ -309,12 +309,12 @@ abstract class AbstractExtractor implements ExtractorInterface
      */
     protected function removeDir($dir, $alsoRemoveFiles = true)
     {
-        
+
         // first check if the directory exists, if not return immediately
         if (is_dir($dir) === false) {
             return;
         }
-        
+
         // remove old archive from webapps folder recursively
         $files = new \RecursiveIteratorIterator(
             new \RecursiveDirectoryIterator($dir),
@@ -359,14 +359,14 @@ abstract class AbstractExtractor implements ExtractorInterface
                     $this->copyDir("$src/$file", "$dst/$file");
                 }
             }
-            
+
         } elseif (is_file($src)) {
             copy($src, $dst);
         } else {
             $this->getInitialContext()->getSystemLogger()->error("Directory $src is not available");
         }
     }
-    
+
     /**
      * (non-PHPdoc)
      *
@@ -398,5 +398,63 @@ abstract class AbstractExtractor implements ExtractorInterface
     public function getService()
     {
         return $this->service;
+    }
+
+    /**
+     * Will set the owner and group of a
+     *
+     * @param string $targetDir The directory to set the rights for
+     *
+     * @return void
+     */
+    protected function setUserRights($targetDir)
+    {
+        // Don't do anything under windows
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+
+            return;
+        }
+
+        // Get our system configuration as it contains the user and group to set
+        $systemConfiguration = $this->getInitialContext()->getSystemConfiguration();
+
+        // As we might have several rootPaths we have to create several RecursiveDirectoryIterators.
+        $directoryIterator = new \RecursiveDirectoryIterator(
+            $targetDir,
+            \RecursiveIteratorIterator::SELF_FIRST
+        );
+
+        // We got them all, now append them onto a new RecursiveIteratorIterator and return it.
+        $recursiveIterator = new \AppendIterator();
+            // Append the directory iterator
+            $recursiveIterator->append(
+                new \RecursiveIteratorIterator(
+                    $directoryIterator,
+                    \RecursiveIteratorIterator::SELF_FIRST,
+                    \RecursiveIteratorIterator::CATCH_GET_CHILD
+                )
+            );
+
+        // Check for the existence of a user
+        $user = $systemConfiguration->getParam('user');
+        if (!empty($user)) {
+
+            // Change the rights of everything within the defined dirs
+            foreach ($recursiveIterator as $file) {
+
+                chown($file, $user);
+            }
+        }
+
+        // Check for the existence of a group
+        $group = $systemConfiguration->getParam('group');
+        if (!empty($group)) {
+
+            // Change the rights of everything within the defined dirs
+            foreach ($recursiveIterator as $file) {
+
+                chgrp($file, $user);
+            }
+        }
     }
 }
