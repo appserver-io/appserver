@@ -485,8 +485,8 @@ class Server
         }
 
         // Check for the existence of a user
-        $user = '';
-        if (!empty($user = $this->getSystemConfiguration()->getParam('user'))) {
+        $user = $this->getSystemConfiguration()->getParam('user');
+        if (!empty($user)) {
 
             // Change the rights of everything within the defined dirs
             foreach ($recursiveIterator as $file) {
@@ -496,8 +496,8 @@ class Server
         }
 
         // Check for the existence of a group
-        $group = '';
-        if (!empty($group = $this->getSystemConfiguration()->getParam('group'))) {
+        $group = $this->getSystemConfiguration()->getParam('group');
+        if (!empty($group)) {
 
             // Change the rights of everything within the defined dirs
             foreach ($recursiveIterator as $file) {
@@ -527,8 +527,8 @@ class Server
         }
 
         // Check for the existence of a user
-        $user = '';
-        if (!empty($user = $this->getSystemConfiguration()->getParam('user'))) {
+        $user = $this->getSystemConfiguration()->getParam('user');
+        if (!empty($user)) {
 
             // Get the user id and set it accordingly
             $userId = posix_getpwnam($user)['uid'];
@@ -541,8 +541,8 @@ class Server
         }
 
         // Check for the existence of a group
-        $group = '';
-        if (!empty($group = $this->getSystemConfiguration()->getParam('group'))) {
+        $group = $this->getSystemConfiguration()->getParam('group');
+        if (!empty($group)) {
 
             // Get the user id and set it accordingly
             $groupId = posix_getgrnam($group)['gid'];
