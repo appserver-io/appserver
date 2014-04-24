@@ -445,13 +445,16 @@ class Server
             return;
         }
 
+        // Get our base dir
+        $baseDir = $this->getSystemConfiguration()->getBaseDirectory()->getNodeValue();
+
         // Lets collect all possible app bases of all containers and don't forget the deploy dir
-        $targetDirs = array(APPSERVER_BP . DIRECTORY_SEPARATOR . 'deploy');
+        $targetDirs = array($baseDir . DIRECTORY_SEPARATOR . 'deploy');
         foreach ($this->getSystemConfiguration()->getContainers() as $container) {
 
             if (is_string($appBase = $container->getHost()->getAppBase())) {
 
-                $targetDirs[] = APPSERVER_BP . DIRECTORY_SEPARATOR . substr($appBase, 1);
+                $targetDirs[] = $baseDir . DIRECTORY_SEPARATOR . substr($appBase, 1);
             }
         }
 
