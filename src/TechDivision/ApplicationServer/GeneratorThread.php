@@ -51,8 +51,8 @@ class GeneratorThread extends \Thread
     /**
      * Default constructor
      *
-     * @param \TechDivision\PBC\Generator                    $generator
-     * @param array                                          $structures
+     * @param \TechDivision\PBC\Generator                    $generator      Our PBC generator instance
+     * @param array                                          $structures     List of structures to generate
      * @param \TechDivision\ApplicationServer\InitialContext $initialContext Will give us the needed initial context
      */
     public function __construct(Generator $generator, array $structures, $initialContext)

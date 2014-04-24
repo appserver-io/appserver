@@ -486,7 +486,7 @@ class Server
         if (!empty($user = $this->getSystemConfiguration()->getParam('user'))) {
 
             // Change the rights of everything within the defined dirs
-            foreach($recursiveIterator as $file) {
+            foreach ($recursiveIterator as $file) {
 
                 chown($file, $user);
             }
@@ -497,7 +497,7 @@ class Server
         if (!empty($group = $this->getSystemConfiguration()->getParam('group'))) {
 
             // Change the rights of everything within the defined dirs
-            foreach($recursiveIterator as $file) {
+            foreach ($recursiveIterator as $file) {
 
                 chgrp($file, $user);
             }
@@ -518,7 +518,7 @@ class Server
 
             // Log that we were not able to change the user
             $this->getSystemLogger()->info(
-                    "Could not change user due to missing POSIX extension"
+                "Could not change user due to missing POSIX extension"
             );
             return;
         }
@@ -555,7 +555,8 @@ class Server
         $this->getSystemLogger()->info(
             sprintf(
                 "Changing process group and user to %s:%s",
-                $user, $group
+                $user,
+                $group
             )
         );
     }
