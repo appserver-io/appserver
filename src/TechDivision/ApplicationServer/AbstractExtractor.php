@@ -453,7 +453,7 @@ abstract class AbstractExtractor implements ExtractorInterface
             // Change the rights of everything within the defined dirs
             foreach ($recursiveIterator as $file) {
 
-                chgrp($file, $user);
+                chgrp($file, $group);
             }
         }
     }
