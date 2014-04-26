@@ -93,18 +93,39 @@ class Server
     }
 
     /**
-     * Initialize's the server instance.
+     * Initialize the server instance.
      *
      * @return void
      */
     protected function init()
     {
+        
+        // init the umask to use creating files/directories
+        $this->initUmask();
         // init initial context
         $this->initInitialContext();
         // init the file system
         $this->initFileSystem();
         // init main system logger
         $this->initLoggers();
+    }
+    
+    /**
+     * Init the umask to use creating files/directories.
+     * 
+     * @return void
+     */
+    protected function initUmask()
+    {
+        // don't do anything under Windows
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+            return;
+        }
+        // set the configured umask to use
+        umask($newUmask = $this->getSystemConfiguration()->getParam('umask'));
+        if (umask() != $newUmask) { // check if set, throw an exception if not
+            throw new \Exception("Can't set configured umask '$newUmask' found '" . umask() . "' instead");
+        }
     }
 
     /**
@@ -445,6 +466,9 @@ class Server
             );
             return;
         }
+        
+        // init API service to use
+        $service = $this->newService('TechDivision\ApplicationServer\Api\ContainerService');
 
         // Check for the existence of a user
         $user = $this->getSystemConfiguration()->getParam('user');
@@ -455,7 +479,18 @@ class Server
 
             // Did we get something useful?
             if (is_int($userId)) {
-
+                
+                // check if deploy dir exists
+                if (is_dir(new \DirectoryIterator($logDir = $service->getLogDir()))) {
+                    // init file iterator on deployment directory
+                    $fileIterator = new \FilesystemIterator($logDir);
+                    // Iterate through all phar files and extract them to tmp dir
+                    foreach (new \RegexIterator($fileIterator, '/^.*\\.log$/') as $logFile) {
+                        chown($logFile, $userId);
+                    }
+                }
+                
+                // change the user ID
                 posix_setuid($userId);
             }
         }
@@ -470,10 +505,21 @@ class Server
             // Did we get something useful?
             if (is_int($groupId)) {
 
+                // check if deploy dir exists
+                if (is_dir(new \DirectoryIterator($logDir = $service->getLogDir()))) {
+                    // init file iterator on deployment directory
+                    $fileIterator = new \FilesystemIterator($logDir);
+                    // Iterate through all phar files and extract them to tmp dir
+                    foreach (new \RegexIterator($fileIterator, '/^.*\\.log$/') as $logFile) {
+                        chgrp($logFile, $groupId);
+                    }
+                }
+
+                // change the group ID
                 posix_setgid($groupId);
             }
         }
-
+        
         // log a message with the time needed for restart
         $this->getSystemLogger()->info(
             sprintf(
