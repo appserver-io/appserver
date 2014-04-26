@@ -157,5 +157,8 @@ class PharExtractor extends AbstractExtractor
 
         // copy backup to tmp directory
         $this->copyDir($webappFolderName, $tmpFolderName);
+
+        // we have to set the user rights to the user:group configured within the system configuration
+        $this->setUserRights($tmpFolderName);
     }
 }
