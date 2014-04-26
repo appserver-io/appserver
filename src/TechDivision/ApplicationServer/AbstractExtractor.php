@@ -147,7 +147,9 @@ abstract class AbstractExtractor implements ExtractorInterface
         // get archives folder name from deploy dir
         $deployFolderName = $this->getDeployDir() . DIRECTORY_SEPARATOR . $archive->getFilename();
         // flag archive
-        return file_put_contents($deployFolderName . $flag, $archive->getFilename());
+        file_put_contents($deployFolderName . $flag, $archive->getFilename());
+        // set correct user/group for the flag file
+        $this->setUserRight(new \SplFileInfo($deployFolderName . $flag));
     }
 
     /**
@@ -363,7 +365,7 @@ abstract class AbstractExtractor implements ExtractorInterface
         } elseif (is_file($src)) {
             copy($src, $dst);
         } else {
-            $this->getInitialContext()->getSystemLogger()->error("Directory $src is not available");
+            // do nothing, we didn't have a directory to copy
         }
     }
 
@@ -399,6 +401,37 @@ abstract class AbstractExtractor implements ExtractorInterface
     {
         return $this->service;
     }
+    
+    /**
+     * Sets the configured user/group settings on the passed file.
+     * 
+     * @param \SplFileInfo $fileInfo The file to set user/group for
+     * 
+     * @return void
+     */
+    protected function setUserRight(\SplFileInfo $fileInfo)
+    {
+        
+        // don't do anything under windows
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+            return;
+        }
+
+        // Get our system configuration as it contains the user and group to set
+        $systemConfiguration = $this->getInitialContext()->getSystemConfiguration();
+
+        // Check for the existence of a user
+        $user = $systemConfiguration->getParam('user');
+        if (!empty($user)) {
+            chown($fileInfo, $user);
+        }
+
+        // Check for the existence of a group
+        $group = $systemConfiguration->getParam('group');
+        if (!empty($group)) {
+            chgrp($fileInfo, $group);
+        }
+    }
 
     /**
      * Will set the owner and group of a
@@ -409,9 +442,13 @@ abstract class AbstractExtractor implements ExtractorInterface
      */
     protected function setUserRights($targetDir)
     {
-        // Don't do anything under windows
+        // we don't do anything under Windows
         if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-
+            return;
+        }
+        
+        // we don't have a directory to change the user/group permissions for
+        if (!is_dir($targetDir)) {
             return;
         }
 
