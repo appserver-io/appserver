@@ -16,6 +16,8 @@
 
 namespace TechDivision\ApplicationServer\Api\Node;
 
+use TechDivision\ApplicationServer\Api\ExtensionInjectorParameterTrait;
+
 /**
  * DTO to transfer virtual host information.
  *
@@ -37,6 +39,7 @@ class VirtualHostNode extends AbstractNode
     use RewritesNodeTrait;
     use AccessesNodeTrait;
     use LocationsNodeTrait;
+    use ExtensionInjectorParameterTrait;
 
     /**
      * The virtual host name

@@ -28,7 +28,7 @@ use TechDivision\ApplicationServer\Interfaces\ContainerConfiguration;
  */
 class Configuration implements ContainerConfiguration
 {
-    
+
     /**
      * XSD schema filename used for validation.
      *

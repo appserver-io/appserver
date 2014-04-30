@@ -486,13 +486,21 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
      */
     public function prepareVirtualHosts(NodeInterface $node)
     {
-        $virutalHosts = array();
+        $virtualHosts = array();
         // iterate config
         foreach ($node->getVirtualHosts() as $virtualHost) {
+
             $virtualHostNames = explode(' ', $virtualHost->getName());
+
+            // Some virtual hosts might have an extensionType to expand their name attribute, check for that
+            if ($virtualHost->hasInjector()) {
+
+                $virtualHostNames = array_merge($virtualHostNames, explode(' ', $virtualHost->getInjection()));
+            }
+
             foreach ($virtualHostNames as $virtualHostName) {
                 // set all virtual hosts params per key for faster matching later on
-                $virutalHosts[trim($virtualHostName)] = array(
+                $virtualHosts[trim($virtualHostName)] = array(
                     'params' => $virtualHost->getParamsAsArray(),
                     'rewrites' => $this->prepareRewrites($virtualHost),
                     'environmentVariables' => $this->prepareEnvironmentVariables($virtualHost),
@@ -502,7 +510,7 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
                 );
             }
         }
-        return $virutalHosts;
+        return $virtualHosts;
     }
 
     /**
@@ -517,10 +525,21 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
         $rewrites = array();
         // prepare the array with the rewrite rules
         foreach ($node->getRewrites() as $rewrite) {
+
+            // Rewrites might be extended using different injector extension types, check for that
+            if ($rewrite->hasInjector()) {
+
+                $target = $rewrite->getInjection();
+
+            } else {
+
+                $target = $rewrite->getTarget();
+            }
+
             // Build up the array entry
             $rewrites[] = array(
                 'condition' => $rewrite->getCondition(),
-                'target' => $rewrite->getTarget(),
+                'target' => $target,
                 'flag' => $rewrite->getFlag()
             );
         }
