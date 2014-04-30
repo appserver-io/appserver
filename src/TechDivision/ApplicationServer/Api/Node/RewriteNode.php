@@ -15,6 +15,8 @@
 
 namespace TechDivision\ApplicationServer\Api\Node;
 
+use TechDivision\ApplicationServer\Api\ExtensionInjectorParameterTrait;
+
 /**
  * DTO to transfer module information.
  *
@@ -28,6 +30,8 @@ namespace TechDivision\ApplicationServer\Api\Node;
  */
 class RewriteNode extends AbstractNode
 {
+    // We have to use this trait to allow for the injection of additional target strings
+    use ExtensionInjectorParameterTrait;
 
     /**
      * The rewrite condition.
