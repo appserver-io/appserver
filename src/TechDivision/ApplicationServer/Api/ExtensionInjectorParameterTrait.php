@@ -52,7 +52,7 @@ trait ExtensionInjectorParameterTrait
     private $injector;
 
     /**
-     * <TODO FUNCTION DESCRIPTION>
+     * Will init the injector from the given extensionType
      *
      * @return null
      * @throws \Exception
@@ -81,9 +81,9 @@ trait ExtensionInjectorParameterTrait
     }
 
     /**
-     * <TODO FUNCTION DESCRIPTION>
+     * Getter for the injector, will lazy-init it
      *
-     * @return null
+     * @return \TechDivision\WebServer\Configuration\Extension\InjectorInterface
      */
     public function getInjector()
     {
@@ -96,7 +96,7 @@ trait ExtensionInjectorParameterTrait
     }
 
     /**
-     * <TODO FUNCTION DESCRIPTION>
+     * Will return true if the class has a filled extensionType attribute and therefor an injector
      *
      * @return boolean
      */
@@ -106,9 +106,9 @@ trait ExtensionInjectorParameterTrait
     }
 
     /**
-     * <TODO FUNCTION DESCRIPTION>
+     * Will return the data the defined injector creates
      *
-     * @return null
+     * @return mixed
      */
     public function getInjection()
     {
@@ -116,7 +116,7 @@ trait ExtensionInjectorParameterTrait
     }
 
     /**
-     * <TODO FUNCTION DESCRIPTION>
+     * Getter for extensionType attribute
      *
      * @return string
      */
