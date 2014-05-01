@@ -33,7 +33,10 @@ The implementation of a Web application and its operation in the PHP Application
 The lastest version is only tested with Mac OS 10.8+ and Debian Wheezy. PHP Application Server should run on any PHP version from 5.3+. However segmentation faults occurred in various tests with PHP 5.3.x repeatedly. Meanwhile this can lead to the early development stage of the pthreads library. We actually use PHP 5.5.+ for development.
 
 # Installation
-Actually we support Mac OS X Mountain Lion and Debian Wheezy. We also plan to release a Windows installer and a RPM package as soon as possible but as we're only Mac users we'll be happy if someone is out there to support us with that stuff. Finally it's possible to build the runtime by yourself. This can be done by cloning our [Runtime Environment] (https://github.com/techdivision/TechDivision_Runtime). We've added two ANT targets `create-pkg` and `create-deb` that should do the stuff for you.
+Actually we support Mac OS X Mountain Lion, Fedora, CentOS and Debian Wheezy via prepared packages. You might get stable packages from our project page http://www.appserver.io
+and bleeding edge development packages from http://snapshots.appserver.io.
+Finally it's possible to build the runtime by yourself. This can be done by cloning our [Runtime Environment] (https://github.com/techdivision/TechDivision_Runtime).
+Then update the `os.family` and `os.distribution` (you might as well change other things e.g. for 32bit support) within `build.default.properties` and build the appserver with the ant target appropriate for your environment (e.g. `create-pkg` for Mac).
 
 ## Installation on Mountain Lion
 To install on your Mac OS X Mountain Lion please download the actual .pkg Package from http://www.appserver.io.
@@ -83,7 +86,7 @@ C:\Program Files\appserver>server.bat
 As a final step you can start your favorite browser and open the URL `http://127.0.0.1:8586/demo` to load the demo application.
 
 ## Installation on Fedora
-To install the Application Server on Fedora (other RedHat-ish systems are not tested yet) you first have to download the latest .rpm archive from
+To install the Application Server on Fedora you first have to download the latest .rpm archive from
 http://appserver.io/downloads.
 You can double click the .rpm package for installation or use yum with `yum install <PATH_TO_RPM>` as root.
 This will install the appserver within `/opt/appserver` and start it together with a file watcher daemon as soon as installation finishes.
@@ -93,8 +96,13 @@ Now start your favorite browser and open the URL `http://127.0.0.1:8586/demo` to
 During installation we registered systemd units for the appserver, so you can controll it with `systemctl <COMMAND> appserver` where command
 are the basic systemd commands like `start`, `stop`, `restart` and `status`.
 
+## Installation on CentOS
+Installation and basic usage is the same as on Fedora **but** CentOS requires additional repositories like [remi](<http://rpms.famillecollet.com/>) or
+[EPEL](<http://fedoraproject.org/wiki/EPEL>) to satisfy additional dependencies.
+
 # Uninstall
-To uninstall the Application Server on Mac OS X, you simply have to delete the folder `/opt/appserver` and the configuration files for the launch deameons. These are files are located in folder `/Library/LaunchDaemons` and named `io.appserver.appserver.plist`, `io.appserver.memcached.plist` and `io.appserver.redis.plist`. On Linux you can simple uninstall the Application Server with the package managment tool you've installed it. If you're using Debian you can use `apitude remove appserver` for example.
+To uninstall the Application Server on Mac OS X, you simply have to delete the folder `/opt/appserver` and the configuration files for the launch deameons. These are files are located in folder `/Library/LaunchDaemons` and named `io.appserver.appserver.plist`, `io.appserver.memcached.plist` and `io.appserver.redis.plist`. On Linux you can simple uninstall the Application Server with the package managment tool you've installed it.
+If you're using any Linux distribution you might use your package management tool.
 
 # Component Documentation FAQ
 Most components the Application Server composes of have their own documentation. If you miss a piece of information you might look there.
@@ -145,7 +153,6 @@ And yes, we've plans for a Community and a Enterprise edition. The Community Edi
 - [ ] [Design by Contract](https://github.com/wick-ed/php-by-contract)
 - [ ] Running TYPO3 6.x demo application
 - [ ] Integration of TechDivision_WebServer project as single point of entry request handler
-- [ ] 100 % Coverage for PHPUnit test suite for TechDivision_WebServer project
 
 ### Version 0.7 - Application Server + [Runtime](https://github.com/techdivision/TechDivision_Runtime)
 - [ ] AOP
