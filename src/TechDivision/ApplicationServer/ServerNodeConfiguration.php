@@ -502,6 +502,7 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
                 // set all virtual hosts params per key for faster matching later on
                 $virtualHosts[trim($virtualHostName)] = array(
                     'params' => $virtualHost->getParamsAsArray(),
+                    'rewriteMaps' => $this->prepareRewriteMaps($virtualHost),
                     'rewrites' => $this->prepareRewrites($virtualHost),
                     'environmentVariables' => $this->prepareEnvironmentVariables($virtualHost),
                     'accesses' => $this->prepareAccesses($virtualHost),
@@ -634,6 +635,24 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     }
 
     /**
+     * Prepares the rewrite maps array based on a node implementing NodeInterface
+     *
+     * @param \TechDivision\ApplicationServer\Api\Node\NodeInterface $node The node instance
+     *
+     * @return array
+     */
+    public function prepareRewriteMaps(NodeInterface $node)
+    {
+        $rewriteMaps = array();
+        foreach ($node->getRewriteMaps() as $rewriteMap) {
+            $rewriteMapType = $rewriteMap->getType();
+            // set all rewrite maps information's
+            $rewriteMaps[$rewriteMapType] = $rewriteMap->getParamsAsArray();
+        }
+        return $rewriteMaps;
+    }
+
+    /**
      * Returns the locations.
      *
      * @return array
@@ -646,5 +665,20 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
         }
         // return the locations
         return $this->locations;
+    }
+
+    /**
+     * Returns the locations.
+     *
+     * @return array
+     */
+    public function getRewriteMaps()
+    {
+        // init locations
+        if (!$this->rewriteMaps) {
+            $this->rewriteMaps = $this->prepareRewriteMaps($this->node);
+        }
+        // return the locations
+        return $this->rewriteMaps;
     }
 }
