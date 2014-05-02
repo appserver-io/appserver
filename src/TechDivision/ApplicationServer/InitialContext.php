@@ -14,9 +14,6 @@
 
 namespace TechDivision\ApplicationServer;
 
-use Herrera\Annotations\Tokens;
-use Herrera\Annotations\Tokenizer;
-use Herrera\Annotations\Convert\ToArray;
 use TechDivision\Storage\StorageInterface;
 use TechDivision\ApplicationServer\Interfaces\ContextInterface;
 use TechDivision\ApplicationServer\InitialContext\ContextKeys;
@@ -42,18 +39,6 @@ class InitialContext implements ContextInterface
      * @var \TechDivision\Storage\StorageInterface
      */
     protected $storage;
-
-    /**
-     * Array containing the available bean annotations.
-     *
-     * @var array
-     */
-    protected $beanAnnotations = array(
-        'entity',
-        'singleton',
-        'statefull',
-        'stateless'
-    );
 
     /**
      * The server's logger instance.
@@ -250,62 +235,6 @@ class InitialContext implements ContextInterface
     }
 
     /**
-     * Returns the bean annotation for the passed reflection class, that can be
-     * one of Entity, Stateful, Stateless, Singleton.
-     *
-     * @param \ReflectionClass $reflectionClass The class to return the annotation for
-     *
-     * @throws \Exception Is thrown if the class has NO bean annotation
-     * @return string The found bean annotation
-     */
-    public function getBeanAnnotation($reflectionClass)
-    {
-
-        // load the class name to get the annotation for
-        $className = $reflectionClass->getName();
-
-        // check if an array with the bean types has already been registered
-        $beanTypes = $this->getAttribute('beanTypes');
-        if (is_array($beanTypes)) {
-            if (array_key_exists($className, $beanTypes)) {
-                return $beanTypes[$className];
-            }
-        } else {
-            $beanTypes = array();
-        }
-
-        // initialize the annotation tokenizer
-        $tokenizer = new Tokenizer();
-        $tokenizer->ignore(array(
-            'author',
-            'package',
-            'license',
-            'copyright'
-        ));
-        $aliases = array();
-
-        // parse the doc block
-        $parsed = $tokenizer->parse($reflectionClass->getDocComment(), $aliases);
-
-        // convert tokens and return one
-        $tokens = new Tokens($parsed);
-        $toArray = new ToArray();
-
-        // iterate over the tokens
-        foreach ($toArray->convert($tokens) as $token) {
-            $tokeName = strtolower($token->name);
-            if (in_array($tokeName, $this->beanAnnotations)) {
-                $beanTypes[$className] = $tokeName;
-                $this->setAttribute('beanTypes', $beanTypes);
-                return $tokeName;
-            }
-        }
-
-        // throw an exception if the requested class
-        throw new \Exception(sprintf("Missing enterprise bean annotation for %s", $reflectionClass->getName()));
-    }
-
-    /**
      * Set's the system logger instance.
      *
      * @param \Psr\Log\LoggerInterface $systemLogger The system logger
@@ -362,70 +291,5 @@ class InitialContext implements ContextInterface
     public function getSystemLogger()
     {
         return $this->systemLogger;
-    }
-
-    /**
-     * Run's a lookup for the session bean with the passed class name and
-     * session ID.
-     * If the passed class name is a session bean an instance
-     * will be returned.
-     *
-     * @param string $className The name of the session bean's class
-     * @param string $sessionId The session ID
-     * @param array  $args      The arguments passed to the session beans constructor
-     *
-     * @return object The requested session bean
-     * @throws \Exception Is thrown if passed class name is no session bean or is a entity bean (not implmented yet)
-     */
-    public function lookup($className, $sessionId, array $args = array())
-    {
-
-        // get the reflection class for the passed class name
-        $reflectionClass = $this->newReflectionClass($className);
-
-        switch ($this->getBeanAnnotation($reflectionClass)) {
-
-            case 'entity':
-                throw new \Exception("Entity beans are not implemented yet");
-
-            case 'stateful':
-
-                // load the session's from the initial context
-                $session = $this->getAttribute($sessionId);
-
-                // if an instance exists, load and return it
-                if (is_array($session)) {
-                    if (array_key_exists($className, $session)) {
-                        return $session[$className];
-                    }
-                } else {
-                    $session = array();
-                }
-
-                // if not, initialize a new instance, add it to the container and return it
-                $instance = $this->newInstance($className, $args);
-                $session[$className] = $instance;
-                $this->setAttribute($sessionId, $session);
-                return $instance;
-
-            case 'singleton':
-
-                // check if an instance is available
-                if ($this->getAttribute($className)) {
-                    return $this->getAttribute($className);
-                }
-
-                // if not create a new instance and return it
-                $instance = $this->newInstance($className, $args);
-                $this->setAttribute($className, $instance);
-                return $instance;
-
-            default: // @Stateless
-
-                return $this->newInstance($className, $args);
-        }
-
-        // if the class is no session bean, throw an exception
-        throw new \Exception("Can\'t find session bean with class name '$className'");
     }
 }
