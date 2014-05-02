@@ -48,7 +48,7 @@ When the installation has been finished the Application Server will be started a
 the Application Server, after you've deployed a new app for example, you can use the init scripts `sbin/appserverctl`
 and `sbin/memcachectl` therefore. Both accept `start`, `stop` and `restart` as parameter.
 
-Start your favorite browser and open the URL `http://127.0.0.1:8586/demo` to load the demo application.
+Start your favorite browser and open the URL `http://127.0.0.1:9080/demo` to load the demo application.
 
 ## Installation on a Debian Wheezy
 If you're on a Debian system you don't need to download the .deb package. Follow these instructions:
@@ -64,7 +64,7 @@ This will install the Application Server in directory `/opt/appserver`. Also it'
 can start, stop or restart it with the init-script `/etc/init.d/appserver` and the parameter `start`, `stop` and `restart`. Additionally it is necessary that the memcached daemon has been started before the Application Server will be started itself.
 
 After installation you can open a really simply example app with your favorite browser open the URL
-`http://127.0.0.1:8586/demo`.
+`http://127.0.0.1:9080/demo`.
 
 ## Installation on Windows (7+)
 To install the Application Server on Windows you first have to download the latest .jar archive from http://appserver.io/downloads.
@@ -83,7 +83,7 @@ C:\Windows\system32>cd "C:\Program Files\appserver"
 C:\Program Files\appserver>server.bat
 ```
 
-As a final step you can start your favorite browser and open the URL `http://127.0.0.1:8586/demo` to load the demo application.
+As a final step you can start your favorite browser and open the URL `http://127.0.0.1:9080/demo` to load the demo application.
 
 ## Installation on Fedora
 To install the Application Server on Fedora you first have to download the latest .rpm archive from
@@ -91,7 +91,7 @@ http://appserver.io/downloads.
 You can double click the .rpm package for installation or use yum with `yum install <PATH_TO_RPM>` as root.
 This will install the appserver within `/opt/appserver` and start it together with a file watcher daemon as soon as installation finishes.
 
-Now start your favorite browser and open the URL `http://127.0.0.1:8586/demo` to load the demo application.
+Now start your favorite browser and open the URL `http://127.0.0.1:9080/demo` to load the demo application.
 
 During installation we registered systemd units for the appserver, so you can controll it with `systemctl <COMMAND> appserver` where command
 are the basic systemd commands like `start`, `stop`, `restart` and `status`.
@@ -146,13 +146,21 @@ And yes, we've plans for a Community and a Enterprise edition. The Community Edi
 - [x] RPM packages
 
 ### Version 0.6.0 - Application Server + [WebServer](https://github.com/techdivision/TechDivision_WebServer)
-- [X] mod_rewrite functionality for TechDivision_WebServer project
-- [X] Refactor routing
-- [X] Running TYPO3 Flow 2.0.x demo application
-- [X] Running TYPO3 Neos 1.x demo application
+- [x] Webserver functionality to handle static content
+- [x] Rewrite functionality for Webserver project
+- [x] Authentication functionality for Webserver project
+- [x] PHP Module to handle PHP scripts like Apache mod_php
+- [x] FastCGI functionality with support for PHP-FPM and HHVM for Webserver
+- [x] Easy configuration for Webserver Environment Variables
+- [x] gzip/deflate compression handling for Webserver
+- [x] Servlet Engine now runs as Webserver module
+- [x] Refactored Servlet Engine routing, now using fnmatch instead of Symfony Routing
+- [x] Running TYPO3 Flow 2.0.x demo application with PHP Module
+- [x] Running TYPO3 Neos 1.x demo application with PHP Module
+- [x] Running TYPO3 6.x demo application over FastCGI
+- [x] Running all type of PHP applications over FastCGI
+- [ ] Integration of Webserver as single point of entry request handler
 - [ ] [Design by Contract](https://github.com/wick-ed/php-by-contract)
-- [ ] Running TYPO3 6.x demo application
-- [ ] Integration of TechDivision_WebServer project as single point of entry request handler
 
 ### Version 0.7 - Application Server + [Runtime](https://github.com/techdivision/TechDivision_Runtime)
 - [ ] AOP
@@ -177,13 +185,8 @@ And yes, we've plans for a Community and a Enterprise edition. The Community Edi
 - [ ] Timer Service
 - [ ] 100 % Coverage for PHPUnit test suite for TechDivision_TimerService project
 
-### Version 1.1 - Additional Containers
-- [ ] Distributed and redundant cluster caching system with automated failover
-- [ ] Fast-CGI container
-
 ## Enterprise Edition
-### Version 1.2 - Cluster Functionality
-- [ ] Cluster functionality
+### Version 1.1 - Cluster Functionality for all Services
 - [ ] Appserver nodes get known each other in same network automatically
 - [ ] Webapps running on nodes in same network can be executed via all appserver nodes
 - [ ] Webapps can be synchronized between appserver nodes to be executed locally

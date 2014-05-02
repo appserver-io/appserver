@@ -73,7 +73,7 @@ When the installation has been finished the Application Server will be started a
 the Application Server, after you've deployed a new app for example, you can use the init scripts ``sbin/appserverctl``
 and ``sbin/memcachectl`` therefore. Both accept ``start``, ``stop`` and ``restart`` as parameter.
 
-Start your favorite browser and open the URL http://127.0.0.1:8586/demo to load the demo application.
+Start your favorite browser and open the URL http://127.0.0.1:9080/demo to load the demo application.
 
 Installation on a Debian Wheezy
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -91,10 +91,10 @@ Additionally it is necessary that the memcached daemon has been started before t
 be started itself.
 
 After installation you can open a really simply example app with your favorite browser open the URL
-http://127.0.0.1:8586/demo.
+http://127.0.0.1:9080/demo.
 
 Installation on Windows (7+)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 To install the Application Server on Windows you first have to download the latest .jar archive from http://appserver.io/downloads.
 After doing so you have to check your system for an installed Java Runtime Environment (or JDK that is).
 This is a vital requirement for you to use the .jar file.
@@ -109,16 +109,16 @@ Best thing to do would be starting a command prompt as an administrator and run 
     C:\Windows\system32>cd "C:\Program Files\appserver"
     C:\Program Files\appserver>server.bat
 
-As a final step you can start your favorite browser and open the URL http://127.0.0.1:8586/demo to load the demo application.
+As a final step you can start your favorite browser and open the URL http://127.0.0.1:9080/demo to load the demo application.
 
 Installation on Fedora
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~
 To install the Application Server on Fedora (other RedHat-ish systems are not tested yet) you first have to download the latest .rpm archive from
 http://appserver.io/downloads.
 You can double click the .rpm package for installation or use yum with ``yum install <PATH_TO_RPM>`` as root.
 This will install the appserver within ``/opt/appserver`` and start it together with a file watcher daemon as soon as installation finishes.
 
-Now start your favorite browser and open the URL http://127.0.0.1:8586/demo to load the demo application.
+Now start your favorite browser and open the URL http://127.0.0.1:9080/demo to load the demo application.
 
 During installation we registered systemd units for the appserver, so you can controll it with ``systemctl <COMMAND> appserver`` where command
 are the basic systemd commands like ``start``, ``stop``, ``restart`` and ``status``.
@@ -134,7 +134,7 @@ where we explain the concept a bit more.
 
 For using these Web Apps we only need to know how to deploy and manage them.
 This can be done using the ``Admin Web App`` which we deliver with every installation (you might have opted out on it during the installation!).
-You can access this Admin backend at http://127.0.0.1:8586/admin which will open a password prompt.
+You can access this Admin backend at http://127.0.0.1:9080/admin which will open a password prompt.
 
 Default settings are:
 
@@ -145,9 +145,9 @@ Within this backend you can do several things:
 
 Manage your Web Apps
 --------------------
-At ``http://127.0.0.1:8586/admin#apps`` you can manage all deployed Web Apps and deploy new ones via simple drag and drop.
+At ``http://127.0.0.1:9080/admin#apps`` you can manage all deployed Web Apps and deploy new ones via simple drag and drop.
 You can see how in this `video <http://www.youtube.com/watch?v=V1BSePQal10>`_ we made for a previous version of the Admin backend showing
-the installation of Magento 1.7.0.2 as a specially prepared Web App.
+the installation of Magento 1.8.1.0 as a specially prepared Web App.
 Just drag and drop a .phar-packed Web App into the upload area.
 If you use the Mac OS X or Debian installation the Application Server will restart automatically and you are done already!
 For Windows and Fedora users you will have to restart the server yourself (we are working on it).
@@ -157,12 +157,12 @@ Manage your Web Apps
 Using the other taps you can keep track of your Application Server and it's settings.
 You can:
 
-* See what Vhosts you have configured (http://127.0.0.1:8586/admin/#/vhosts)
-* See which containers (service providers your apps can use) are loaded (http://127.0.0.1:8586/admin/#/containers)
-* Have a look at your server's log in near realtime (http://127.0.0.1:8586/admin/#/logs)
+* See what Vhosts you have configured (http://127.0.0.1:9080/admin/#/vhosts)
+* See which containers (service providers your apps can use) are loaded (http://127.0.0.1:9080/admin/#/containers)
+* Have a look at your server's log in near realtime (http://127.0.0.1:9080/admin/#/logs)
 
 Getting Started Developing
-========================
+==========================
 
 This is a getting started tutorial for all folks who want to get in touch with appserver and want to learn how it works.
 It will guide you through setting up your first webapp, which serves HTTP requests. All necessary steps are explained in
@@ -225,7 +225,7 @@ be overridden. Most of the time you will use ``doGet()`` or ``doPost()`` for GET
 .. code-block:: php
     :linenos:
 
-    public function doGet(Request $req, Response $res)
+    public function doGet(HttpServletRequest $req, HttpServletResponse $res)
     {
         // build path to template
         $pathToTemplate = $this->getServletConfig()->getWebappPath() .
@@ -237,11 +237,9 @@ be overridden. Most of the time you will use ``doGet()`` or ``doPost()`` for GET
         $template = new DemoTemplate($pathToTemplate);
 
         $baseUrl = '/';
-        // if the application has NOT been called over a
-        //VHost configuration append application folder naem
-        if (!$this->getServletConfig()->getApplication()->isVhostOf(
-            $req->getServerName())
-        ) {
+        // if the application has NOT been called over a vhost
+        // configuration append application folder naem
+        if (!$this->getServletConfig()->getApplication()->isVhostOf($req->getServerName())) {
             $baseUrl .= $this->getServletConfig()->getApplication()->getName() . '/';
         }
 
@@ -252,7 +250,7 @@ be overridden. Most of the time you will use ``doGet()`` or ``doPost()`` for GET
         $template->setWebappName($this->getServletConfig()->getApplication()->getName());
 
         // set response content by render template
-        $res->setContent($template->render());
+        $res->appendBodyStream($template->render());
     }
 
 First the path to the template is built, afterwards the template is constructed. The template needs some data to display,
@@ -304,16 +302,16 @@ class in the path ``WEB-INF/classes/TechDivision/Example/Servlets`` (this depend
     :linenos:
 
     namespace TechDivision\Example\Servlets;
-
-    use TechDivision\ServletContainer\Interfaces\Request;
-    use TechDivision\ServletContainer\Interfaces\Response;
-    use TechDivision\ServletContainer\Servlets\HttpServlet;
+   
+    use TechDivision\Servlet\Http\HttpServlet;
+    use TechDivision\Servlet\Http\HttpServletRequest;
+    use TechDivision\Servlet\Http\HttpServletResponse;
 
     class CustomerServlet extends HttpServlet
     {
-        public function doGet(Request $req, Response $res)
+        public function doGet(HttpServletRequest $req, HttpServletResponse $res)
         {
-            $res->setContent('Hello World');
+            $res->appendBodyStream('Hello World');
         }
     }
 
@@ -328,7 +326,7 @@ delivered on the same way.
 .. code-block:: php
     :linenos:
 
-    public function doGet(Request $req, Response $res)
+    public function doGet(HttpServletRequest $req, HttpServletResponse $res)
     {
         $webappPath = $this->getServletConfig()->getWebappPath();
 
@@ -347,7 +345,7 @@ delivered on the same way.
         require $pathToTemplate;
         $html = ob_get_clean();
 
-        $res->setContent($html);
+        $res->appendBodyStream($html);
     }
 
 The templates are in the directory ``static/templates`` of the webapp root directory. If it exists it gets rendered and
@@ -378,7 +376,7 @@ implement a corresponding method which can handle POST.
 .. code-block:: php
     :linenos:
 
-    public function doPost(Request $req, Response $res)
+    public function doPost(HttpServletRequest $req, HttpServletResponse $res)
     {
         // load the params with the entity data
         $parameterMap = $req->getParameterMap();
