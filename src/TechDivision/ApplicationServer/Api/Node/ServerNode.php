@@ -34,6 +34,7 @@ class ServerNode extends AbstractNode
     // corresponding trait name
     use EnvironmentVariablesNodeTrait;
     use ParamsNodeTrait;
+    use RewriteMapsNodeTrait;
     use RewritesNodeTrait;
     use AccessesNodeTrait;
     use LocationsNodeTrait;
