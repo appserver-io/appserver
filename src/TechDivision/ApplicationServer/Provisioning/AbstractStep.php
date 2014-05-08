@@ -17,6 +17,7 @@
 namespace TechDivision\ApplicationServer\Provisioning;
 
 use TechDivision\ApplicationServer\Api\Node\StepNode;
+use TechDivision\ApplicationServer\Api\Node\DatasourceNode;
 
 /**
  * Abstract base class for a step implementation.
@@ -38,80 +39,109 @@ abstract class AbstractStep implements Step
      * @var \TechDivision\ApplicationServer\Api\Node\StepNode
      */
     protected $stepNode;
-    
+
+    /**
+     * The datasource node found in the provisioning configuration.
+     *
+     * @var \TechDivision\ApplicationServer\Api\Node\DatasourceNode
+     */
+    protected $dataSourceNode;
+
     /**
      * The absolute path to the appserver PHP executable.
-     * 
+     *
      * @var string
      */
     protected $phpExecutable;
-    
+
     /**
      * The absolute path to the applications folder.
-     * 
+     *
      * @var string
      */
     protected $webappPath;
-    
+
     /**
      * Injects the step node with the configuration data for this step.
-     * 
+     *
      * @param \TechDivision\ApplicationServer\Api\Node\StepNode $stepNode The step node data
-     * 
+     *
      * @return void
      */
     public function injectStepNode(StepNode $stepNode)
     {
         $this->stepNode = $stepNode;
     }
-    
+
+    /**
+     * Injects the datasource node found in the provisioning configuration.
+     *
+     * @param \TechDivision\ApplicationServer\Api\Node\DatasourceNode $datasourceNode The datasource node data
+     *
+     * @return void
+     */
+    public function injectDatasourceNode(DatasourceNode $datasourceNode)
+    {
+        $this->datasourceNode = $datasourceNode;
+    }
+
     /**
      * Injects the absolute path to the appservers PHP executable.
-     * 
+     *
      * @param string $phpExecutable The absolute path to the appservers PHP executable
-     * 
+     *
      * @return void
      */
     public function injectPhpExecutable($phpExecutable)
     {
         $this->phpExecutable = $phpExecutable;
     }
-    
+
     /**
      * Injects the absolute path to the applications folder.
-     * 
+     *
      * @param string $webappPath The absolute path to applications folder
-     * 
+     *
      * @return void
      */
     public function injectWebappPath($webappPath)
     {
         $this->webappPath = $webappPath;
     }
-    
+
     /**
      * Returns the step node data.
-     * 
-     * @return \TechDivision\ApplicationServer\Api\Node\StepNode $stepNode The step node data
+     *
+     * @return \TechDivision\ApplicationServer\Api\Node\StepNode The step node data
      */
     public function getStepNode()
     {
         return $this->stepNode;
     }
-    
+
+    /**
+     * Returns the datasource node found in the provisioning configuration.
+     *
+     * @return \TechDivision\ApplicationServer\Api\Node\DatasourceNode The datasource node data
+     */
+    public function getDatasourceNode()
+    {
+        return $this->datasourceNode;
+    }
+
     /**
      * Returns the absolute path to the appservers PHP executable.
-     * 
+     *
      * @return string The absolute path to the appservers PHP executable
      */
     public function getPhpExecutable()
     {
         return $this->phpExecutable;
     }
-    
+
     /**
      * Returns the absolute path to the applications folder.
-     * 
+     *
      * @return string The applications folder
      */
     public function getWebappPath()

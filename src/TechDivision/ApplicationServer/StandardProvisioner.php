@@ -30,14 +30,14 @@ use TechDivision\ApplicationServer\Interfaces\ProvisionerInterface;
  */
 class StandardProvisioner implements ProvisionerInterface
 {
-    
+
     /**
      * Path the to appservers PHP executable.
-     * 
+     *
      * @var string
      */
     const PHP_EXECUTABLE = '/bin/php';
-    
+
     /**
      * The containers base directory.
      *
@@ -74,35 +74,34 @@ class StandardProvisioner implements ProvisionerInterface
     {
         // check if deploy dir exists
         if (is_dir($this->getWebappsDir())) {
-            
-            // iterate through all web applications
-            foreach (new \FilesystemIterator($this->getWebappsDir()) as $webappPath) {
 
-                // the phar files have been deployed into folders
-                if ($webappPath->isDir()) {
-                
-                    $provisionFile = new \SplFileInfo(
-                        $webappPath . DIRECTORY_SEPARATOR . 'WEB-INF' . DIRECTORY_SEPARATOR . 'provision.xml'
-                    );
-                    
-                    // if we don't find a provisioning file
-                    if ($provisionFile->isFile() === false) {
-                        continue;
-                    }
-                
-                    // execute the provisioning workflow
-                    $this->executeProvision($provisionFile, $webappPath);
+        	// init file iterator on webapps directory
+        	$directory = new \RecursiveDirectoryIterator($this->getWebappsDir());
+        	$iterator = new \RecursiveIteratorIterator($directory);
+
+        	// Iterate through all provisioning files (provision.xml) and attach them to the configuration
+        	foreach (new \RegexIterator($iterator, '/^.*\/(META-INF|WEB-INF)\/provision.xml$/') as $provisionFile) {
+
+                // if we don't find a provisioning file
+                if ($provisionFile->isFile() === false) {
+                    continue;
                 }
+
+                // create the webapp path info
+                $webappPath = new \SplFileInfo(dirname($provisionFile->getPath()));
+
+                // execute the provisioning workflow
+                $this->executeProvision($provisionFile, $webappPath);
             }
         }
     }
-    
+
     /**
      * Executes the passed applications provisioning workflow.
-     * 
+     *
      * @param \SplFileInfo $provisionFile The file with the provisioning information
      * @param \SplFileInfo $webappPath    The path to the webapp folder
-     * 
+     *
      * @return void
      */
     protected function executeProvision(\SplFileInfo $provisionFile, \SplFileInfo $webappPath)
@@ -111,37 +110,50 @@ class StandardProvisioner implements ProvisionerInterface
         // load the provisioning configuration
         $provisionNode = new ProvisionNode();
         $provisionNode->initFromFile($provisionFile->getPathname());
-        
-        // load the datasource from the system configuration
+
+        // try to load the datasource from the system configuration
         $datasourceNode = $this->getService()->findByName(
             $provisionNode->getDatasource()->getName()
         );
-        
-        /* Inject the datasource and reprovision (reinitialize).
-         * 
+
+        // try to inject the datasource node if available
+        if ($datasourceNode != null) {
+        	$provisionNode->injectDatasource($datasourceNode);
+        }
+
+        /* Reprovision the provision.xml (reinitialize).
+         *
          * ATTENTION: The reprovisioning is extremely important, because
          * this allows dynamic replacment of placeholders by using the
          * XML file as a template that will reinterpreted with the PHP
          * interpreter!
          */
-        $provisionNode->injectDatasource($datasourceNode);
         $provisionNode->reprovision($provisionFile->getPathname());
-        
+
         // load the steps from the configuration
         $stepNodes = $provisionNode->getInstallation()->getSteps();
-        
+
         // execute all steps found in the configuration
         foreach ($stepNodes as $stepNode) {
-            
+
             try {
-                
+
                 $reflectionClass = new \ReflectionClass($stepNode->getType());
                 $step = $reflectionClass->newInstance();
+
+                // try to inject the datasource node if available
+                if ($datasourceNode != null) {
+                	$step->injectDataSourceNode($datasourceNode);
+                }
+
+                // inject all other information
                 $step->injectStepNode($stepNode);
                 $step->injectWebappPath($webappPath);
                 $step->injectPhpExecutable($this->getAbsolutPathToPhpExecutable());
+
+                // execute the step finally
                 $step->execute();
-                
+
             } catch (\Exception $e) {
                 $this->getInitialContext()->getSystemLogger()->error($e->__toString());
             }
@@ -157,17 +169,17 @@ class StandardProvisioner implements ProvisionerInterface
     {
         return $this->getService()->getWebappsDir();
     }
-    
+
     /**
      * Returns the absolute path to the appservers PHP executable.
-     * 
+     *
      * @return string The absolute path to the appserver PHP executable
      */
     public function getAbsolutPathToPhpExecutable()
     {
         return $this->getService()->realpath(StandardProvisioner::PHP_EXECUTABLE);
     }
-    
+
     /**
      * (non-PHPdoc)
      *

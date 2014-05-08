@@ -65,13 +65,6 @@ abstract class AbstractApplication implements ApplicationInterface
     protected $vhosts = array();
 
     /**
-     * The datasources the app might use.
-     *
-     * @var array
-     */
-    protected $datasources;
-
-    /**
      * The host configuration.
      *
      * @var \TechDivision\ApplicationServer\Configuration
@@ -91,15 +84,13 @@ abstract class AbstractApplication implements ApplicationInterface
      * @param InitialContext $initialContext The initial context instance
      * @param ContainerNode  $containerNode  The container node the deployment is for
      * @param string         $name           The application name
-     * @param array          $datasources    The datasources the app might use
      *
      * @return void
      */
-    public function __construct($initialContext, $containerNode, $name, array $datasources = array())
+    public function __construct($initialContext, $containerNode, $name)
     {
         $this->initialContext = $initialContext;
         $this->containerNode = $containerNode;
-        $this->datasources = $datasources;
         $this->name = $name;
     }
 
@@ -305,28 +296,6 @@ abstract class AbstractApplication implements ApplicationInterface
     }
 
     /**
-     * Sets the application's usable datasources.
-     *
-     * @param array $datasources The available datasources
-     *
-     * @return void
-     */
-    public function setDatasources($datasources)
-    {
-        $this->datasources = $datasources;
-    }
-
-    /**
-     * Returns the application's usable datasources.
-     *
-     * @return array The available datasources
-     */
-    public function getDatasources()
-    {
-        return $this->datasources;
-    }
-
-    /**
      * Checks if the application is the VHost for the passed server name.
      *
      * @param string $serverName The server name to check the application being a VHost of
@@ -366,7 +335,6 @@ abstract class AbstractApplication implements ApplicationInterface
         $appNode->setNodeName('application');
         $appNode->setName($this->getName());
         $appNode->setWebappPath($this->getWebappPath());
-        $appNode->setDatasources($this->getDatasources());
         $appNode->setParentUuid($this->getContainerNode()->getParentUuid());
         $appNode->setUuid($appNode->newUuid());
         // set the AppNode in the instance itself and return it

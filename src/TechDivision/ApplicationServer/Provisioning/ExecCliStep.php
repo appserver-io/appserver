@@ -32,7 +32,7 @@ class ExecCliStep extends AbstractStep
 
     /**
      * Executes the functionality for this step, in this case the execution of
-     * the PHP script defined in the step configuration. 
+     * the PHP script defined in the step configuration.
      *
      * @return void
      * @throws \Exception Is thrown if the script can't be executed
@@ -40,20 +40,20 @@ class ExecCliStep extends AbstractStep
      */
     public function execute()
     {
-        
+
         // try to load the script from the configuration
         if ($script = $this->getStepNode()->getExecute()->getScript()) {
-        
+
             // prepare script by prepending the webapp directory
             $script = new \SplFileInfo(
                 $this->getWebappPath() . DIRECTORY_SEPARATOR . ltrim($script, DIRECTORY_SEPARATOR)
             );
-            
+
             // check if the configured script is a file
             if ($script->isFile() === false) {
                 throw new \Exception(sprintf('Script %s is not a file', $script));
             }
-            
+
             // prepare the scripts arguments
             $args = '';
             if ($params = $this->getStepNode()->getExecute()->getArgs()) {
@@ -62,13 +62,13 @@ class ExecCliStep extends AbstractStep
                     $args .= ' --' . $param->getName() . ' ' . $param->castToType();
                 }
             }
-        
+
             // prepare the PHP executable, the script and the arguments
             $toExecute = $this->getPhpExecutable()  . ' -f ' . $script . $args;
-            
+
             // execute the script on the command line
             exec($toExecute, $output, $returnVar);
-            
+
             // check if script has been executed successully
             if ($returnVar !== 0) { // if not, throw an exception
                 throw new \Exception(implode(PHP_EOL, $output));

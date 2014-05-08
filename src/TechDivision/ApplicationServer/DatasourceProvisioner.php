@@ -30,7 +30,7 @@ use TechDivision\ApplicationServer\Interfaces\ProvisionerInterface;
  */
 class DatasourceProvisioner implements ProvisionerInterface
 {
-    
+
     /**
      * The containers base directory.
      *
@@ -65,19 +65,20 @@ class DatasourceProvisioner implements ProvisionerInterface
      */
     public function provision()
     {
-        
+
         // check if deploy dir exists
         if (is_dir($this->getWebappsDir())) {
-            
-            // init file iterator on webapps directory
-            $fileIterator = new \FilesystemIterator($this->getWebappsDir());
-            
-            // Iterate through all datasource files (*-ds.xml) and attach them to the configuration
-            foreach (new \RegexIterator($fileIterator, '/^.*\\-ds.xml$/') as $datasourceFile) {
-                
+
+        	// init file iterator on webapps directory
+        	$directory = new \RecursiveDirectoryIterator($this->getWebappsDir());
+        	$iterator = new \RecursiveIteratorIterator($directory);
+
+        	// Iterate through all provisioning files (provision.xml) and attach them to the configuration
+        	foreach (new \RegexIterator($iterator, '/^.*\\-ds.xml$/') as $datasourceFile) {
+
                 // load the database configuration
                 $datasourceNodes = $this->getService()->initFromFile($datasourceFile);
-                
+
                 // store the datasource in the system configuration
                 foreach ($datasourceNodes as $datasourceNode) {
                     $this->getService()->attachDatasource($datasourceNode);
@@ -95,7 +96,7 @@ class DatasourceProvisioner implements ProvisionerInterface
     {
         return $this->getService()->getWebappsDir();
     }
-    
+
     /**
      * (non-PHPdoc)
      *

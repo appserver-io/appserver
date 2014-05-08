@@ -29,6 +29,13 @@ namespace TechDivision\ApplicationServer\Api\Node;
 class StepNode extends AbstractNode
 {
 
+	/**
+	 * We want to use params here.
+	 *
+	 * @var \Trait
+	 */
+	use ParamsNodeTrait;
+
     /**
      * The step type
      *
@@ -40,7 +47,7 @@ class StepNode extends AbstractNode
     /**
      * The node containing the information to execute something like a script.
      *
-     * @var \TechDivision\ApplicationServer\Api\Node\ExecuteNode 
+     * @var \TechDivision\ApplicationServer\Api\Node\ExecuteNode
      * @AS\Mapping(nodeName="execute", nodeType="TechDivision\ApplicationServer\Api\Node\ExecuteNode")
      */
     protected $execute;
