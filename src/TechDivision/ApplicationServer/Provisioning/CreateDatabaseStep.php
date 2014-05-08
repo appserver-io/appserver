@@ -17,8 +17,9 @@
 namespace TechDivision\ApplicationServer\Provisioning;
 
 use Doctrine\DBAL\DBALException;
-use Doctrine\ORM\Tools\Setup;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Tools\Setup;
+use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\Common\Persistence\ObjectManager;
 
 /**
@@ -53,17 +54,10 @@ class CreateDatabaseStep extends AbstractStep
     public function execute()
     {
 
-		error_log(__METHOD__ . ':' . __LINE__);
-
     	// check if we have a valid datasource node
 		if ($this->getDatasourceNode() == null) {
 			return;
 		}
-
-		error_log(__METHOD__ . ':' . __LINE__);
-
-		// initialize the connection parameters
-		$this->initConnectionParameters();
 
 		// prepare the path to the entities
 		$absolutePaths = array();
@@ -84,8 +78,6 @@ class CreateDatabaseStep extends AbstractStep
 		// drop the schema if it already exists and create it new
 		$schemaTool->dropSchema($classes);
 		$schemaTool->createSchema($classes);
-
-		error_log(__METHOD__ . ':' . __LINE__);
     }
 
     /**

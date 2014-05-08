@@ -76,19 +76,19 @@ class StandardProvisioner implements ProvisionerInterface
         if (is_dir($this->getWebappsDir())) {
 
         	// init file iterator on webapps directory
-        	$fileIterator = new \FilesystemIterator($this->getWebappsDir());
-
-        	error_log("Now try to provision apps in directory: " . $this->getWebappsDir());
+        	$directory = new \RecursiveDirectoryIterator($this->getWebappsDir());
+        	$iterator = new \RecursiveIteratorIterator($directory);
 
         	// Iterate through all provisioning files (provision.xml) and attach them to the configuration
-        	foreach (new \RegexIterator($fileIterator, '/^provision.xml$/') as $provisionFile) {
-
-        		error_log("Found provisioning file: $provisionFile");
+        	foreach (new \RegexIterator($iterator, '/^.*\/(META-INF|WEB-INF)\/provision.xml$/') as $provisionFile) {
 
                 // if we don't find a provisioning file
                 if ($provisionFile->isFile() === false) {
                     continue;
                 }
+
+                // create the webapp path info
+                $webappPath = new \SplFileInfo(dirname($provisionFile->getPath()));
 
                 // execute the provisioning workflow
                 $this->executeProvision($provisionFile, $webappPath);
@@ -111,19 +111,23 @@ class StandardProvisioner implements ProvisionerInterface
         $provisionNode = new ProvisionNode();
         $provisionNode->initFromFile($provisionFile->getPathname());
 
-        // load the datasource from the system configuration
+        // try to load the datasource from the system configuration
         $datasourceNode = $this->getService()->findByName(
             $provisionNode->getDatasource()->getName()
         );
 
-        /* Inject the datasource and reprovision (reinitialize).
+        // try to inject the datasource node if available
+        if ($datasourceNode != null) {
+        	$provisionNode->injectDatasource($datasourceNode);
+        }
+
+        /* Reprovision the provision.xml (reinitialize).
          *
          * ATTENTION: The reprovisioning is extremely important, because
          * this allows dynamic replacment of placeholders by using the
          * XML file as a template that will reinterpreted with the PHP
          * interpreter!
          */
-        $provisionNode->injectDatasource($datasourceNode);
         $provisionNode->reprovision($provisionFile->getPathname());
 
         // load the steps from the configuration
@@ -136,10 +140,18 @@ class StandardProvisioner implements ProvisionerInterface
 
                 $reflectionClass = new \ReflectionClass($stepNode->getType());
                 $step = $reflectionClass->newInstance();
+
+                // try to inject the datasource node if available
+                if ($datasourceNode != null) {
+                	$step->injectDataSourceNode($datasourceNode);
+                }
+
+                // inject all other information
                 $step->injectStepNode($stepNode);
                 $step->injectWebappPath($webappPath);
-                $step->injectDataSource($datasourceNode);
                 $step->injectPhpExecutable($this->getAbsolutPathToPhpExecutable());
+
+                // execute the step finally
                 $step->execute();
 
             } catch (\Exception $e) {

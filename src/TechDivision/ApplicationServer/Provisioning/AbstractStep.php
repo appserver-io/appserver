@@ -126,7 +126,7 @@ abstract class AbstractStep implements Step
      */
     public function getDatasourceNode()
     {
-        return $this->dataSourceNode;
+        return $this->datasourceNode;
     }
 
     /**
