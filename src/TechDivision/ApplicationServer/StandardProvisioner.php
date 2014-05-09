@@ -62,7 +62,7 @@ class StandardProvisioner implements ProvisionerInterface
         // add initialContext
         $this->initialContext = $initialContext;
         // init API service to use
-        $this->service = $this->newService('TechDivision\ApplicationServer\Api\DatasourceService');
+        $this->service = $this->newService('TechDivision\ApplicationServer\Api\ProvisioningService');
     }
 
     /**
@@ -107,12 +107,15 @@ class StandardProvisioner implements ProvisionerInterface
     protected function executeProvision(\SplFileInfo $provisionFile, \SplFileInfo $webappPath)
     {
 
+    	// load the service instance
+    	$service = $this->getService();
+
         // load the provisioning configuration
         $provisionNode = new ProvisionNode();
         $provisionNode->initFromFile($provisionFile->getPathname());
 
         // try to load the datasource from the system configuration
-        $datasourceNode = $this->getService()->findByName(
+        $datasourceNode = $service->findByName(
             $provisionNode->getDatasource()->getName()
         );
 
@@ -147,6 +150,7 @@ class StandardProvisioner implements ProvisionerInterface
                 }
 
                 // inject all other information
+                $step->injectService($service);
                 $step->injectStepNode($stepNode);
                 $step->injectWebappPath($webappPath);
                 $step->injectPhpExecutable($this->getAbsolutPathToPhpExecutable());

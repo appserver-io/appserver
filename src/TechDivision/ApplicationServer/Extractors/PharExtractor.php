@@ -108,7 +108,7 @@ class PharExtractor extends AbstractExtractor
                 $this->restoreBackup($archive);
 
                 // We have to set the user rights to the user:group configured within the system configuration
-                $this->setUserRights($webappFolderName);
+                $this->setUserRights(new \SplFileInfo($webappFolderName));
 
                 // flag webapp as deployed
                 $this->flagArchive($archive, ExtractorInterface::FLAG_DEPLOYED);
@@ -159,6 +159,6 @@ class PharExtractor extends AbstractExtractor
         $this->copyDir($webappFolderName, $tmpFolderName);
 
         // we have to set the user rights to the user:group configured within the system configuration
-        $this->setUserRights($tmpFolderName);
+        $this->setUserRights(new \SplFileInfo($tmpFolderName));
     }
 }

@@ -18,6 +18,7 @@ namespace TechDivision\ApplicationServer\Provisioning;
 
 use TechDivision\ApplicationServer\Api\Node\StepNode;
 use TechDivision\ApplicationServer\Api\Node\DatasourceNode;
+use TechDivision\ApplicationServer\Api\ServiceInterface;
 
 /**
  * Abstract base class for a step implementation.
@@ -32,6 +33,13 @@ use TechDivision\ApplicationServer\Api\Node\DatasourceNode;
  */
 abstract class AbstractStep implements Step
 {
+
+	/**
+	 * The provisioning service.
+	 *
+	 * @var \TechDivision\ApplicationServer\Api\ServiceInterface;
+	 */
+	protected $service;
 
     /**
      * The step node with the configuration data for this step.
@@ -60,6 +68,18 @@ abstract class AbstractStep implements Step
      * @var string
      */
     protected $webappPath;
+
+    /**
+     * Injects the provisioning service.
+     *
+     * @param \TechDivision\ApplicationServer\Api\ServiceInterface $service The provisioning service
+     *
+     * @return void
+     */
+    public function injectService(ServiceInterface $service)
+    {
+        $this->service = $service;
+    }
 
     /**
      * Injects the step node with the configuration data for this step.
@@ -107,6 +127,16 @@ abstract class AbstractStep implements Step
     public function injectWebappPath($webappPath)
     {
         $this->webappPath = $webappPath;
+    }
+
+    /**
+     * Returns the provisioning service.
+     *
+     * @return \TechDivision\ApplicationServer\Api\ServiceInterface The provisioning service
+     */
+    public function getService()
+    {
+        return $this->service;
     }
 
     /**

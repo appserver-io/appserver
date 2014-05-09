@@ -43,6 +43,35 @@ class CreateDatabaseStep extends AbstractStep
 	 */
 	const PARAM_PATH_TO_ENTITIES = 'pathToEntities';
 
+	/**
+	 * The DB connection parameter with the path the database file.
+	 *
+	 * @var string
+	 */
+	const CONNECTION_PARAM_PATH = 'path';
+
+	/**
+	 * The DB connection parameter with the driver to use.
+	 *
+	 * @var string
+	 */
+	const CONNECTION_PARAM_DRIVER = 'driver';
+
+	/**
+	 * The DB connection parameter with user to connect.
+	 *
+	 * @var string
+	 */
+	const CONNECTION_PARAM_USER = 'user';
+
+
+	/**
+	 * The DB connection parameter with the passwort to connect.
+	 *
+	 * @var string
+	 */
+	const CONNECTION_PARAM_PASSWORD = 'password';
+
     /**
      * Executes the functionality for this step, in this case the execution of
      * the PHP script defined in the step configuration.
@@ -67,9 +96,12 @@ class CreateDatabaseStep extends AbstractStep
 			}
 		}
 
+		// load the database connection parameters
+		$connectionParameters = $this->getConnectionParameters();
+
 		// initialize and load the entity manager and the schema tool
 		$metadataConfiguration = Setup::createAnnotationMetadataConfiguration($absolutePaths, true);
-		$entityManager = EntityManager::create($this->getConnectionParameters(), $metadataConfiguration);
+		$entityManager = EntityManager::create($connectionParameters, $metadataConfiguration);
 		$schemaTool = new SchemaTool($entityManager);
 
 		// load the class definitions
@@ -78,6 +110,11 @@ class CreateDatabaseStep extends AbstractStep
 		// drop the schema if it already exists and create it new
 		$schemaTool->dropSchema($classes);
 		$schemaTool->createSchema($classes);
+
+		// set the user rights for the database we've created
+		if (isset($connectionParameters[CreateDatabaseStep::CONNECTION_PARAM_PATH])) {
+			$this->getService()->setUserRight(new \SplFileInfo($connectionParameters[CreateDatabaseStep::CONNECTION_PARAM_PATH]));
+		}
     }
 
     /**
@@ -97,14 +134,14 @@ class CreateDatabaseStep extends AbstractStep
 
         // initialize the connection parameters
         $connectionParameters = array(
-            'driver'   => $databaseNode->getDriver()->getNodeValue()->__toString(),
-            'user'     => $databaseNode->getUser()->getNodeValue()->__toString(),
-            'password' => $databaseNode->getPassword()->getNodeValue()->__toString()
+            CreateDatabaseStep::CONNECTION_PARAM_DRIVER   => $databaseNode->getDriver()->getNodeValue()->__toString(),
+            CreateDatabaseStep::CONNECTION_PARAM_USER     => $databaseNode->getUser()->getNodeValue()->__toString(),
+            CreateDatabaseStep::CONNECTION_PARAM_PASSWORD => $databaseNode->getPassword()->getNodeValue()->__toString()
         );
 
         // initialize the path to the database when we use sqlite for example
         if ($path = $databaseNode->getPath()->getNodeValue()->__toString()) {
-            $connectionParameters['path'] = $this->getWebappPath() . DIRECTORY_SEPARATOR . $path;
+            $connectionParameters[CreateDatabaseStep::CONNECTION_PARAM_PATH] = $this->getWebappPath() . DIRECTORY_SEPARATOR . $path;
         }
 
         // set the connection parameters
