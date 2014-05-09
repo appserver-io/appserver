@@ -401,95 +401,28 @@ abstract class AbstractExtractor implements ExtractorInterface
     {
         return $this->service;
     }
-    
+
     /**
      * Sets the configured user/group settings on the passed file.
-     * 
+     *
      * @param \SplFileInfo $fileInfo The file to set user/group for
-     * 
+     *
      * @return void
      */
     protected function setUserRight(\SplFileInfo $fileInfo)
     {
-        
-        // don't do anything under windows
-        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-            return;
-        }
-
-        // Get our system configuration as it contains the user and group to set
-        $systemConfiguration = $this->getInitialContext()->getSystemConfiguration();
-
-        // Check for the existence of a user
-        $user = $systemConfiguration->getParam('user');
-        if (!empty($user)) {
-            chown($fileInfo, $user);
-        }
-
-        // Check for the existence of a group
-        $group = $systemConfiguration->getParam('group');
-        if (!empty($group)) {
-            chgrp($fileInfo, $group);
-        }
+        $this->getService()->setUserRight($fileInfo);
     }
 
     /**
-     * Will set the owner and group of a
+     * Will set the owner and group on the passed directory.
      *
-     * @param string $targetDir The directory to set the rights for
+     * @param \SplFileInfo $targetDir The directory to set the rights for
      *
      * @return void
      */
-    protected function setUserRights($targetDir)
+    protected function setUserRights(\SplFileInfo $targetDir)
     {
-        // we don't do anything under Windows
-        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-            return;
-        }
-        
-        // we don't have a directory to change the user/group permissions for
-        if (!is_dir($targetDir)) {
-            return;
-        }
-
-        // Get our system configuration as it contains the user and group to set
-        $systemConfiguration = $this->getInitialContext()->getSystemConfiguration();
-
-        // As we might have several rootPaths we have to create several RecursiveDirectoryIterators.
-        $directoryIterator = new \RecursiveDirectoryIterator(
-            $targetDir,
-            \RecursiveIteratorIterator::SELF_FIRST
-        );
-
-        // We got them all, now append them onto a new RecursiveIteratorIterator and return it.
-        $recursiveIterator = new \AppendIterator();
-            // Append the directory iterator
-            $recursiveIterator->append(
-                new \RecursiveIteratorIterator(
-                    $directoryIterator,
-                    \RecursiveIteratorIterator::SELF_FIRST,
-                    \RecursiveIteratorIterator::CATCH_GET_CHILD
-                )
-            );
-
-        // Check for the existence of a user
-        $user = $systemConfiguration->getParam('user');
-        if (!empty($user)) {
-
-            // Change the rights of everything within the defined dirs
-            foreach ($recursiveIterator as $file) {
-                chown($file, $user);
-            }
-        }
-
-        // Check for the existence of a group
-        $group = $systemConfiguration->getParam('group');
-        if (!empty($group)) {
-
-            // Change the rights of everything within the defined dirs
-            foreach ($recursiveIterator as $file) {
-                chgrp($file, $group);
-            }
-        }
+        $this->getService()->setUserRights($targetDir);
     }
 }
