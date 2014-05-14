@@ -166,7 +166,7 @@ class DeploymentScanner extends AbstractContextThread
 
         // wait until the server has been successfully started at least once
         while ($this->getLastSuccessfullyDeployment($directory) === 0) {
-            $this->getSystemLogger()->debug('Deplyoment scanner is waiting for first successfull deployment ...');
+            $this->getSystemLogger()->debug('Deplyoment scanner is waiting for first successful deployment ...');
             sleep(1);
         }
 
@@ -193,7 +193,7 @@ class DeploymentScanner extends AbstractContextThread
                 // log that changes have been found
                 $this->getSystemLogger()->debug(
                     sprintf(
-                        "Found changes in deplyoment directory",
+                        "Found changes in deployment directory",
                         $directory
                     )
                 );
@@ -330,7 +330,7 @@ class DeploymentScanner extends AbstractContextThread
     public function restart()
     {
 
-        // laod the OS signature
+        // load the OS signature
         $os = php_uname('s');
 
         // log the found OS
