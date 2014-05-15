@@ -45,10 +45,12 @@ software you need to have administration privileges (sudo). After the installati
 you'll find the Application Server software in the folder `/opt/appserver`.
 
 When the installation has been finished the Application Server will be started automatically. If you need to restart
-the Application Server, after you've deployed a new app for example, you can use the init scripts `sbin/appserverctl`
-and `sbin/memcachectl` therefore. Both accept `start`, `stop` and `restart` as parameter.
+the Application Server, after changing the configuration for example, you can use the init scripts `sbin/appserverctl`
+and `sbin/watcherctl` therefore.
+You might as well start additional services, `sbin/phpfpmctl` would be useful, as it is out default FastCGI backend.
+All of them accept `start`, `stop` and `restart` as parameter.
 
-Start your favorite browser and open the URL `http://127.0.0.1:9080/demo` to load the demo application.
+Start your favorite browser and open the URL `http://127.0.0.1:9080/example` to load the example application.
 
 ## Installation on a Debian Wheezy
 If you're on a Debian system you don't need to download the .deb package. Follow these instructions:
@@ -61,10 +63,10 @@ root@debian:~# aptitude install appserver
 ```
 
 This will install the Application Server in directory `/opt/appserver`. Also it'll be started automatically, but you
-can start, stop or restart it with the init-script `/etc/init.d/appserver` and the parameter `start`, `stop` and `restart`. Additionally it is necessary that the memcached daemon has been started before the Application Server will be started itself.
+can start, stop or restart it with the init-script `/etc/init.d/appserver` and the parameter `start`, `stop` and `restart`.
+Additionally it is necessary that the watcher and php5-ts-fpm daemon is started. Both of them have init scripts in `/etc/init.d`.
 
-After installation you can open a really simply example app with your favorite browser open the URL
-`http://127.0.0.1:9080/demo`.
+Start your favorite browser and open the URL `http://127.0.0.1:9080/example` to load the example application.
 
 ## Installation on Windows (7+)
 To install the Application Server on Windows you first have to download the latest .jar archive from http://appserver.io/downloads.
@@ -83,7 +85,7 @@ C:\Windows\system32>cd "C:\Program Files\appserver"
 C:\Program Files\appserver>server.bat
 ```
 
-As a final step you can start your favorite browser and open the URL `http://127.0.0.1:9080/demo` to load the demo application.
+Start your favorite browser and open the URL `http://127.0.0.1:9080/example` to load the example application.
 
 ## Installation on Fedora
 To install the Application Server on Fedora you first have to download the latest .rpm archive from
@@ -91,14 +93,16 @@ http://appserver.io/downloads.
 You can double click the .rpm package for installation or use yum with `yum install <PATH_TO_RPM>` as root.
 This will install the appserver within `/opt/appserver` and start it together with a file watcher daemon as soon as installation finishes.
 
-Now start your favorite browser and open the URL `http://127.0.0.1:9080/demo` to load the demo application.
+Start your favorite browser and open the URL `http://127.0.0.1:9080/example` to load the example application.
 
-During installation we registered systemd units for the appserver, so you can controll it with `systemctl <COMMAND> appserver` where command
+During installation we registered systemd units for the appserver, so you can control it with `systemctl <COMMAND> appserver` where command
 are the basic systemd commands like `start`, `stop`, `restart` and `status`.
+Please also restart the `watcher` and `appserver-fpm` daemon if necessary.
 
 ## Installation on CentOS
 Installation and basic usage is the same as on Fedora **but** CentOS requires additional repositories like [remi](<http://rpms.famillecollet.com/>) or
 [EPEL](<http://fedoraproject.org/wiki/EPEL>) to satisfy additional dependencies.
+Please also be aware that CentOS init scripts reside in `/etc/init.d` as there is no systemd support yet.
 
 # Uninstall
 To uninstall the Application Server on Mac OS X, you simply have to delete the folder `/opt/appserver` and the configuration files for the launch deameons. These are files are located in folder `/Library/LaunchDaemons` and named `io.appserver.appserver.plist`, `io.appserver.memcached.plist` and `io.appserver.redis.plist`. On Linux you can simple uninstall the Application Server with the package managment tool you've installed it.
@@ -159,12 +163,12 @@ And yes, we've plans for a Community and a Enterprise edition. The Community Edi
 - [x] Running TYPO3 Neos 1.x demo application with PHP Module
 - [x] Running TYPO3 6.x demo application over FastCGI
 - [x] Running all type of PHP applications over FastCGI
-- [ ] Integration of Webserver as single point of entry request handler
-- [ ] [Design by Contract](https://github.com/wick-ed/php-by-contract)
+- [x] Integration of Webserver as single point of entry request handler
 
 ### Version 0.7 - Application Server + [Runtime](https://github.com/techdivision/TechDivision_Runtime)
 - [ ] AOP
 - [ ] DI
+- [ ] [Design by Contract](https://github.com/wick-ed/php-by-contract) default integration
 - [ ] Separate configuration files for server, container and application
 - [ ] Add dynamic load of application specific PECL extensions
 - [ ] 100 % Coverage for PHPUnit test suite for TechDivision_ApplicationServer project
