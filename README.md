@@ -97,6 +97,7 @@ Start your favorite browser and open the URL `http://127.0.0.1:9080/example` to 
 
 During installation we registered systemd units for the appserver, so you can control it with `systemctl <COMMAND> appserver` where command
 are the basic systemd commands like `start`, `stop`, `restart` and `status`.
+Please also restart the `watcher` and `appserver-fpm` daemon if necessary.
 
 ## Installation on CentOS
 Installation and basic usage is the same as on Fedora **but** CentOS requires additional repositories like [remi](<http://rpms.famillecollet.com/>) or
@@ -104,8 +105,8 @@ Installation and basic usage is the same as on Fedora **but** CentOS requires ad
 Please also be aware that CentOS init scripts reside in `/etc/init.d` as there is no systemd support yet.
 
 # Uninstall
-To uninstall the Application Server on Mac OS X, you simply have to delete the folder `/opt/appserver` and the configuration files for the launch deameons. These are files are located in folder `/Library/LaunchDaemons` and named `io.appserver.appserver.plist`, `io.appserver.memcached.plist` and `io.appserver.redis.plist`. On Linux you can simple uninstall the Application Server with the package managment tool you've installed it.
-If you're using any Linux distribution you might use your package management tool.
+To uninstall the Application Server on Mac OS X, you simply have to delete the folder `/opt/appserver` and the configuration files for the launch deameons. These are files are located in folder `/Library/LaunchDaemons` and named `io.appserver.<DAEMON>.plist`.
+If you're using any Linux distribution you might use your package management tool to remove the appserver after you stopped its daemons.
 
 # Component Documentation FAQ
 Most components the Application Server composes of have their own documentation. If you miss a piece of information you might look there.
