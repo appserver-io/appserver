@@ -47,6 +47,15 @@ class DeploymentScanner extends AbstractContextThread
     const LINUX = 'Linux';
 
     /**
+     * There are some major init systems which are re-used within different OSs
+     *
+     * @var string
+     */
+    const LAUNCHD_INIT_STRING = '/sbin/appserverctl restart';
+    const SYSTEMV_INIT_STRING = '/etc/init.d/appserver restart';
+    const SYSTEMD_INIT_STRING = 'systemctl restart appserver';
+
+    /**
      * The mapping of Linux distributions to their release file's name
      *
      * @link http://linuxmafia.com/faq/Admin/release-files.html
@@ -137,9 +146,11 @@ class DeploymentScanner extends AbstractContextThread
 
         // initialize the available restart commands
         $this->restartCommands = array(
-            DeploymentScanner::DARWIN => '/sbin/appserverctl restart',
-            'Debian' . DeploymentScanner::LINUX => '/etc/init.d/appserver restart',
-            'Fedora' . DeploymentScanner::LINUX => 'systemctl restart appserver'
+            DeploymentScanner::DARWIN => DeploymentScanner::LAUNCHD_INIT_STRING,
+            'Debian' . DeploymentScanner::LINUX => DeploymentScanner::SYSTEMV_INIT_STRING,
+            'Ubuntu' . DeploymentScanner::LINUX => DeploymentScanner::SYSTEMV_INIT_STRING,
+            'CentOS' . DeploymentScanner::LINUX => DeploymentScanner::SYSTEMV_INIT_STRING,
+            'Fedora' . DeploymentScanner::LINUX => DeploymentScanner::SYSTEMD_INIT_STRING
         );
     }
 
@@ -166,7 +177,7 @@ class DeploymentScanner extends AbstractContextThread
 
         // wait until the server has been successfully started at least once
         while ($this->getLastSuccessfullyDeployment($directory) === 0) {
-            $this->getSystemLogger()->debug('Deplyoment scanner is waiting for first successfull deployment ...');
+            $this->getSystemLogger()->debug('Deplyoment scanner is waiting for first successful deployment ...');
             sleep(1);
         }
 
@@ -193,7 +204,7 @@ class DeploymentScanner extends AbstractContextThread
                 // log that changes have been found
                 $this->getSystemLogger()->debug(
                     sprintf(
-                        "Found changes in deplyoment directory",
+                        "Found changes in deployment directory",
                         $directory
                     )
                 );
@@ -330,7 +341,7 @@ class DeploymentScanner extends AbstractContextThread
     public function restart()
     {
 
-        // laod the OS signature
+        // load the OS signature
         $os = php_uname('s');
 
         // log the found OS
@@ -386,26 +397,50 @@ class DeploymentScanner extends AbstractContextThread
      * This method will check for the Linux release file normally stored in /etc and will return
      * the corresponding distribution
      *
+     * @param array $etcList List of already collected AND flipped release files we need to filter
+     *
      * @return string|boolean
      */
-    protected function getLinuxDistribution()
+    protected function getLinuxDistribution($etcList = array())
     {
-        //Get everything from /etc directory and flip the result for faster search
+        // Get everything from /etc directory and flip the result for faster search,
+        // but only if there is no list provided already
         $etcDir = '/etc';
-        $etcList = scandir($etcDir);
-        $etcList = array_flip($etcList);
+        if (empty($etcList)) {
+
+            $etcList = scandir($etcDir);
+            $etcList = array_flip($etcList);
+        }
 
         //Loop through our mapping and look if we have a match
         foreach ($this->distroMapping as $distribution => $releaseFile) {
 
-            // Do we have a match which is not just a soft link on the actual file? If so return the distro
+            // Do we have a match which is not just a soft link on the actual file? If so collect the distro
+            $distributionCandidates = array();
             if (isset($etcList[$releaseFile]) && !is_link($etcDir . DIRECTORY_SEPARATOR . $releaseFile)) {
 
-                return $distribution;
+                $distributionCandidates[$releaseFile] = $distribution;
             }
         }
 
-        // Still here? That does not sound good
-        return false;
+        // If we have several matches we might have to resort
+        if (count($distributionCandidates) === 1) {
+
+            return array_pop($distributionCandidates);
+
+        } elseif (count($distributionCandidates) > 1) {
+            // the file lsb-release might be existent in several Linux systems, filter it out
+            if (isset($distributionCandidates['lsb-release'])) {
+
+                unset($distributionCandidates['lsb-release']);
+            }
+
+        } else {
+            // It does not make sense to check any further
+            return false;
+        }
+
+        // Recursively filter the found files
+        return $this->getLinuxDistribution($distributionCandidates);
     }
 }

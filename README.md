@@ -105,8 +105,8 @@ Installation and basic usage is the same as on Fedora **but** CentOS requires ad
 Please also be aware that CentOS init scripts reside in `/etc/init.d` as there is no systemd support yet.
 
 # Uninstall
-To uninstall the Application Server on Mac OS X, you simply have to delete the folder `/opt/appserver` and the configuration files for the launch deameons. These are files are located in folder `/Library/LaunchDaemons` and named `io.appserver.appserver.plist`, `io.appserver.memcached.plist` and `io.appserver.redis.plist`. On Linux you can simple uninstall the Application Server with the package managment tool you've installed it.
-If you're using any Linux distribution you might use your package management tool.
+To uninstall the Application Server on Mac OS X, you simply have to delete the folder `/opt/appserver` and the configuration files for the launch deameons. These are files are located in folder `/Library/LaunchDaemons` and named `io.appserver.<DAEMON>.plist`.
+If you're using any Linux distribution you might use your package management tool to remove the appserver after you stopped its daemons.
 
 # Component Documentation FAQ
 Most components the Application Server composes of have their own documentation. If you miss a piece of information you might look there.
