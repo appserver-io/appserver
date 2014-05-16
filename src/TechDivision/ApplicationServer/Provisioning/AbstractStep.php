@@ -53,7 +53,7 @@ abstract class AbstractStep implements Step
      *
      * @var \TechDivision\ApplicationServer\Api\Node\DatasourceNode
      */
-    protected $dataSourceNode;
+    protected $datasourceNode;
 
     /**
      * The absolute path to the appserver PHP executable.
@@ -156,7 +156,7 @@ abstract class AbstractStep implements Step
      */
     public function getDatasourceNode()
     {
-        return $this->dataSourceNode;
+        return $this->datasourceNode;
     }
 
     /**
