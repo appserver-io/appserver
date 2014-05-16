@@ -88,7 +88,6 @@ abstract class AbstractContainer extends \Stackable implements ContainerInterfac
      * @param array<\TechDivision\ApplicationServer\Interfaces\ApplicationInterface> $applications   The application instance
      *
      * @todo Application deployment only works this way because of Thread compatibilty
-     * @return void
      */
     public function __construct($initialContext, $containerNode, $applications)
     {

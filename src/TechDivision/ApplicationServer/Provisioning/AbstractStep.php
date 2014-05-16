@@ -34,12 +34,12 @@ use TechDivision\ApplicationServer\Api\ServiceInterface;
 abstract class AbstractStep implements Step
 {
 
-	/**
-	 * The provisioning service.
-	 *
-	 * @var \TechDivision\ApplicationServer\Api\ServiceInterface;
-	 */
-	protected $service;
+    /**
+     * The provisioning service.
+     *
+     * @var \TechDivision\ApplicationServer\Api\ServiceInterface;
+     */
+    protected $service;
 
     /**
      * The step node with the configuration data for this step.
@@ -156,7 +156,7 @@ abstract class AbstractStep implements Step
      */
     public function getDatasourceNode()
     {
-        return $this->datasourceNode;
+        return $this->dataSourceNode;
     }
 
     /**

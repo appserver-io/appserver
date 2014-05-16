@@ -57,8 +57,6 @@ abstract class AbstractDeployment implements DeploymentInterface
      *
      * @param \TechDivision\ApplicationServer\InitialContext         $initialContext The initial context instance
      * @param \TechDivision\ApplicationServer\Api\Node\ContainerNode $containerNode  The container node the deployment is for
-     *
-     * @return void
      */
     public function __construct(InitialContext $initialContext, $containerNode)
     {

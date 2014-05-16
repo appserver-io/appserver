@@ -36,41 +36,41 @@ use Doctrine\Common\Persistence\ObjectManager;
 class CreateDatabaseStep extends AbstractStep
 {
 
-	/**
-	 * The path to the Doctrine entities.
-	 *
-	 * @var string
-	 */
-	const PARAM_PATH_TO_ENTITIES = 'pathToEntities';
+    /**
+     * The path to the Doctrine entities.
+     *
+     * @var string
+     */
+    const PARAM_PATH_TO_ENTITIES = 'pathToEntities';
 
-	/**
-	 * The DB connection parameter with the path the database file.
-	 *
-	 * @var string
-	 */
-	const CONNECTION_PARAM_PATH = 'path';
+    /**
+     * The DB connection parameter with the path the database file.
+     *
+     * @var string
+     */
+    const CONNECTION_PARAM_PATH = 'path';
 
-	/**
-	 * The DB connection parameter with the driver to use.
-	 *
-	 * @var string
-	 */
-	const CONNECTION_PARAM_DRIVER = 'driver';
+    /**
+     * The DB connection parameter with the driver to use.
+     *
+     * @var string
+     */
+    const CONNECTION_PARAM_DRIVER = 'driver';
 
-	/**
-	 * The DB connection parameter with user to connect.
-	 *
-	 * @var string
-	 */
-	const CONNECTION_PARAM_USER = 'user';
+    /**
+     * The DB connection parameter with user to connect.
+     *
+     * @var string
+     */
+    const CONNECTION_PARAM_USER = 'user';
 
 
-	/**
-	 * The DB connection parameter with the passwort to connect.
-	 *
-	 * @var string
-	 */
-	const CONNECTION_PARAM_PASSWORD = 'password';
+    /**
+     * The DB connection parameter with the passwort to connect.
+     *
+     * @var string
+     */
+    const CONNECTION_PARAM_PASSWORD = 'password';
 
     /**
      * Executes the functionality for this step, in this case the execution of
@@ -83,38 +83,40 @@ class CreateDatabaseStep extends AbstractStep
     public function execute()
     {
 
-    	// check if we have a valid datasource node
-		if ($this->getDatasourceNode() == null) {
-			return;
-		}
+        // check if we have a valid datasource node
+        if ($this->getDatasourceNode() == null) {
+            return;
+        }
 
-		// prepare the path to the entities
-		$absolutePaths = array();
-		if ($relativePaths = $this->getStepNode()->getParam(CreateDatabaseStep::PARAM_PATH_TO_ENTITIES)) {
-			foreach (explode(PATH_SEPARATOR, $relativePaths) as $relativePath) {
-				$absolutePaths[] = $this->getWebappPath() . DIRECTORY_SEPARATOR . $relativePath;
-			}
-		}
+        // prepare the path to the entities
+        $absolutePaths = array();
+        if ($relativePaths = $this->getStepNode()->getParam(CreateDatabaseStep::PARAM_PATH_TO_ENTITIES)) {
+            foreach (explode(PATH_SEPARATOR, $relativePaths) as $relativePath) {
+                $absolutePaths[] = $this->getWebappPath() . DIRECTORY_SEPARATOR . $relativePath;
+            }
+        }
 
-		// load the database connection parameters
-		$connectionParameters = $this->getConnectionParameters();
+        // load the database connection parameters
+        $connectionParameters = $this->getConnectionParameters();
 
-		// initialize and load the entity manager and the schema tool
-		$metadataConfiguration = Setup::createAnnotationMetadataConfiguration($absolutePaths, true);
-		$entityManager = EntityManager::create($connectionParameters, $metadataConfiguration);
-		$schemaTool = new SchemaTool($entityManager);
+        // initialize and load the entity manager and the schema tool
+        $metadataConfiguration = Setup::createAnnotationMetadataConfiguration($absolutePaths, true);
+        $entityManager = EntityManager::create($connectionParameters, $metadataConfiguration);
+        $schemaTool = new SchemaTool($entityManager);
 
-		// load the class definitions
-		$classes = $entityManager->getMetadataFactory()->getAllMetadata();
+        // load the class definitions
+        $classes = $entityManager->getMetadataFactory()->getAllMetadata();
 
-		// drop the schema if it already exists and create it new
-		$schemaTool->dropSchema($classes);
-		$schemaTool->createSchema($classes);
+        // drop the schema if it already exists and create it new
+        $schemaTool->dropSchema($classes);
+        $schemaTool->createSchema($classes);
 
-		// set the user rights for the database we've created
-		if (isset($connectionParameters[CreateDatabaseStep::CONNECTION_PARAM_PATH])) {
-			$this->getService()->setUserRight(new \SplFileInfo($connectionParameters[CreateDatabaseStep::CONNECTION_PARAM_PATH]));
-		}
+        // set the user rights for the database we've created
+        if (isset($connectionParameters[CreateDatabaseStep::CONNECTION_PARAM_PATH])) {
+            $this->getService()->setUserRight(
+                new \SplFileInfo($connectionParameters[CreateDatabaseStep::CONNECTION_PARAM_PATH])
+            );
+        }
     }
 
     /**
@@ -126,7 +128,7 @@ class CreateDatabaseStep extends AbstractStep
     public function getConnectionParameters()
     {
 
-    	// load the datasource node
+        // load the datasource node
         $datasourceNode = $this->getDatasourceNode();
 
         // initialize the database node
@@ -134,14 +136,15 @@ class CreateDatabaseStep extends AbstractStep
 
         // initialize the connection parameters
         $connectionParameters = array(
-            CreateDatabaseStep::CONNECTION_PARAM_DRIVER   => $databaseNode->getDriver()->getNodeValue()->__toString(),
-            CreateDatabaseStep::CONNECTION_PARAM_USER     => $databaseNode->getUser()->getNodeValue()->__toString(),
+            CreateDatabaseStep::CONNECTION_PARAM_DRIVER => $databaseNode->getDriver()->getNodeValue()->__toString(),
+            CreateDatabaseStep::CONNECTION_PARAM_USER => $databaseNode->getUser()->getNodeValue()->__toString(),
             CreateDatabaseStep::CONNECTION_PARAM_PASSWORD => $databaseNode->getPassword()->getNodeValue()->__toString()
         );
 
         // initialize the path to the database when we use sqlite for example
         if ($path = $databaseNode->getPath()->getNodeValue()->__toString()) {
-            $connectionParameters[CreateDatabaseStep::CONNECTION_PARAM_PATH] = $this->getWebappPath() . DIRECTORY_SEPARATOR . $path;
+            $connectionParameters[CreateDatabaseStep::CONNECTION_PARAM_PATH] = $this->getWebappPath(
+                ) . DIRECTORY_SEPARATOR . $path;
         }
 
         // set the connection parameters

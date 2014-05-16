@@ -69,12 +69,12 @@ class DatasourceProvisioner implements ProvisionerInterface
         // check if deploy dir exists
         if (is_dir($this->getWebappsDir())) {
 
-        	// init file iterator on webapps directory
-        	$directory = new \RecursiveDirectoryIterator($this->getWebappsDir());
-        	$iterator = new \RecursiveIteratorIterator($directory);
+            // init file iterator on webapps directory
+            $directory = new \RecursiveDirectoryIterator($this->getWebappsDir());
+            $iterator = new \RecursiveIteratorIterator($directory);
 
-        	// Iterate through all provisioning files (provision.xml) and attach them to the configuration
-        	foreach (new \RegexIterator($iterator, '/^.*\\-ds.xml$/') as $datasourceFile) {
+            // Iterate through all provisioning files (provision.xml) and attach them to the configuration
+            foreach (new \RegexIterator($iterator, '/^.*\\-ds.xml$/') as $datasourceFile) {
 
                 // load the database configuration
                 $datasourceNodes = $this->getService()->initFromFile($datasourceFile);

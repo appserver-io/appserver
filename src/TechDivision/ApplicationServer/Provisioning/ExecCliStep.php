@@ -64,12 +64,12 @@ class ExecCliStep extends AbstractStep
             }
 
             // prepare the PHP executable, the script and the arguments
-            $toExecute = $this->getPhpExecutable()  . ' -f ' . $script . $args;
+            $toExecute = $this->getPhpExecutable() . ' -f ' . $script . $args;
 
             // execute the script on the command line
             exec($toExecute, $output, $returnVar);
 
-            // check if script has been executed successully
+            // check if script has been executed successfully
             if ($returnVar !== 0) { // if not, throw an exception
                 throw new \Exception(implode(PHP_EOL, $output));
             }

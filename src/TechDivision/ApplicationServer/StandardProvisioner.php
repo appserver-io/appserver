@@ -75,12 +75,12 @@ class StandardProvisioner implements ProvisionerInterface
         // check if deploy dir exists
         if (is_dir($this->getWebappsDir())) {
 
-        	// init file iterator on webapps directory
-        	$directory = new \RecursiveDirectoryIterator($this->getWebappsDir());
-        	$iterator = new \RecursiveIteratorIterator($directory);
+            // init file iterator on webapps directory
+            $directory = new \RecursiveDirectoryIterator($this->getWebappsDir());
+            $iterator = new \RecursiveIteratorIterator($directory);
 
-        	// Iterate through all provisioning files (provision.xml) and attach them to the configuration
-        	foreach (new \RegexIterator($iterator, '/^.*\/(META-INF|WEB-INF)\/provision.xml$/') as $provisionFile) {
+            // Iterate through all provisioning files (provision.xml) and attach them to the configuration
+            foreach (new \RegexIterator($iterator, '/^.*\/(META-INF|WEB-INF)\/provision.xml$/') as $provisionFile) {
 
                 // if we don't find a provisioning file
                 if ($provisionFile->isFile() === false) {
@@ -100,15 +100,15 @@ class StandardProvisioner implements ProvisionerInterface
      * Executes the passed applications provisioning workflow.
      *
      * @param \SplFileInfo $provisionFile The file with the provisioning information
-     * @param \SplFileInfo $webappPath    The path to the webapp folder
+     * @param \SplFileInfo $webappPath The path to the webapp folder
      *
      * @return void
      */
     protected function executeProvision(\SplFileInfo $provisionFile, \SplFileInfo $webappPath)
     {
 
-    	// load the service instance
-    	$service = $this->getService();
+        // load the service instance
+        $service = $this->getService();
 
         // load the provisioning configuration
         $provisionNode = new ProvisionNode();
@@ -121,7 +121,7 @@ class StandardProvisioner implements ProvisionerInterface
 
         // try to inject the datasource node if available
         if ($datasourceNode != null) {
-        	$provisionNode->injectDatasource($datasourceNode);
+            $provisionNode->injectDatasource($datasourceNode);
         }
 
         /* Reprovision the provision.xml (reinitialize).
@@ -146,7 +146,7 @@ class StandardProvisioner implements ProvisionerInterface
 
                 // try to inject the datasource node if available
                 if ($datasourceNode != null) {
-                	$step->injectDataSourceNode($datasourceNode);
+                    $step->injectDataSourceNode($datasourceNode);
                 }
 
                 // inject all other information
