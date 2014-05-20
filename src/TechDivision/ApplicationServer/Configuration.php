@@ -69,8 +69,6 @@ class Configuration implements ContainerConfiguration
      * node in the XML structure.
      *
      * @param string $nodeName The configuration element's node name
-     *
-     * @return void
      */
     public function __construct($nodeName = null)
     {

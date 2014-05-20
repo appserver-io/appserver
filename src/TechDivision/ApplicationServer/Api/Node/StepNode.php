@@ -28,13 +28,8 @@ namespace TechDivision\ApplicationServer\Api\Node;
  */
 class StepNode extends AbstractNode
 {
-
-	/**
-	 * We want to use params here.
-	 *
-	 * @var \Trait
-	 */
-	use ParamsNodeTrait;
+    // We want to use params here.
+    use ParamsNodeTrait;
 
     /**
      * The step type

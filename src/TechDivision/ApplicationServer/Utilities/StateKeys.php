@@ -69,8 +69,6 @@ class StateKeys
      * instantiation.
      *
      * @param string $state The state to initialize the instance with
-     * 
-     * @return void
      */
     private function __construct($state)
     {

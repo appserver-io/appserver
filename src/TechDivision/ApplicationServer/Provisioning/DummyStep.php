@@ -29,11 +29,11 @@ namespace TechDivision\ApplicationServer\Provisioning;
  */
 class DummyStep extends AbstractStep
 {
-    
+
     /**
      * Executes the functionality for this step, nothing in this case,
      * because this is a dummy implementation.
-     * 
+     *
      * @return void
      * @see \TechDivision\ApplicationServer\Provisioning\Step::execute()
      */

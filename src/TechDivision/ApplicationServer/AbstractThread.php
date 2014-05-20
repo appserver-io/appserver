@@ -33,8 +33,6 @@ abstract class AbstractThread extends \Thread
     /**
      * Constructor sets initialContext object per default and calls
      * init function to pass other args.
-     *
-     * @return void
      */
     public function __construct()
     {

@@ -84,8 +84,6 @@ abstract class AbstractApplication implements ApplicationInterface
      * @param InitialContext $initialContext The initial context instance
      * @param ContainerNode  $containerNode  The container node the deployment is for
      * @param string         $name           The application name
-     *
-     * @return void
      */
     public function __construct($initialContext, $containerNode, $name)
     {

@@ -34,12 +34,12 @@ use TechDivision\ApplicationServer\Api\ServiceInterface;
 abstract class AbstractStep implements Step
 {
 
-	/**
-	 * The provisioning service.
-	 *
-	 * @var \TechDivision\ApplicationServer\Api\ServiceInterface;
-	 */
-	protected $service;
+    /**
+     * The provisioning service.
+     *
+     * @var \TechDivision\ApplicationServer\Api\ServiceInterface;
+     */
+    protected $service;
 
     /**
      * The step node with the configuration data for this step.
@@ -53,7 +53,7 @@ abstract class AbstractStep implements Step
      *
      * @var \TechDivision\ApplicationServer\Api\Node\DatasourceNode
      */
-    protected $dataSourceNode;
+    protected $datasourceNode;
 
     /**
      * The absolute path to the appserver PHP executable.
