@@ -37,16 +37,14 @@ class ContextKeys
     const SYSTEM_CONFIGURATION = 'context_keys_system_configuration';
 
     /**
-     * This is a utility, so don't allow direct instanciation
-     *
-     * @return void
+     * This is a utility, so don't allow direct instantiation
      */
     final private function __construct()
     {
     }
 
     /**
-     * This is a utility, so don't allow direct instanciation
+     * This is a utility, so don't allow direct instantiation
      *
      * @return void
      */

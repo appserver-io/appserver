@@ -100,7 +100,7 @@ class StandardProvisioner implements ProvisionerInterface
      * Executes the passed applications provisioning workflow.
      *
      * @param \SplFileInfo $provisionFile The file with the provisioning information
-     * @param \SplFileInfo $webappPath The path to the webapp folder
+     * @param \SplFileInfo $webappPath    The path to the webapp folder
      *
      * @return void
      */

@@ -72,8 +72,6 @@ class SplClassLoader extends \Stackable
      * @param array                                          $includePath        The include path to use
      * @param string                                         $namespaceSeparator The namespace separator
      * @param string                                         $fileExtension      The filename extension
-     *
-     * @return void
      */
     public function __construct(InitialContext $initialContext, $namespace = null, array $includePath = null, $namespaceSeparator = '\\', $fileExtension = '.php')
     {

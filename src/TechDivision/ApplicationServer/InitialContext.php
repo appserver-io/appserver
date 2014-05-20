@@ -58,8 +58,6 @@ class InitialContext implements ContextInterface
      * Initializes the context with the connection to the storage backend.
      *
      * @param \TechDivision\ApplicationServer\Api\Node\NodeInterface $systemConfiguration The system configuration
-     *
-     * @return void
      */
     public function __construct(\TechDivision\ApplicationServer\Api\Node\NodeInterface $systemConfiguration)
     {

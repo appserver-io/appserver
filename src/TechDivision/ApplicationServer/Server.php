@@ -77,8 +77,6 @@ class Server
      * Initializes the the server with the parsed configuration file.
      *
      * @param \TechDivision\ApplicationServer\Configuration $configuration The parsed configuration file
-     *
-     * @return void
      */
     public function __construct(Configuration $configuration)
     {
