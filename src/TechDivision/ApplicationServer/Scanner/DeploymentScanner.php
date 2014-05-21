@@ -52,7 +52,7 @@ class DeploymentScanner extends AbstractContextThread
      * @var string
      */
     const LAUNCHD_INIT_STRING = '/sbin/appserverctl restart';
-    const SYSTEMV_INIT_STRING = '/etc/init.d/appserver restart';
+    const SYSTEMV_INIT_STRING = '/etc/init.d/appserver restart > /dev/null';
     const SYSTEMD_INIT_STRING = 'systemctl restart appserver';
 
     /**
