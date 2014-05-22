@@ -26,7 +26,7 @@ namespace TechDivision\ApplicationServer;
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      http://www.appserver.io
  */
-class ContainerThread extends AbstractContextThread
+abstract class AbstractContainerThread extends AbstractContextThread
 {
 
     /**
@@ -46,34 +46,6 @@ class ContainerThread extends AbstractContextThread
     public function init($containerNode)
     {
         $this->containerNode = $containerNode;
-    }
-
-    /**
-     * (non-PHPdoc)
-     *
-     * @return void
-     * @see \TechDivision\ApplicationServer\AbstractContextThread::main()
-     */
-    public function main()
-    {
-        // deploy the applications and return them as array
-        $applications = $this->getDeployment()
-            ->deploy()
-            ->getApplications();
-        // synchronize container threads to avoid registring apps several times
-        $this->synchronized(function () {
-            $this->notify();
-        });
-        // load the container node
-        $containerNode = $this->getContainerNode();
-        // create the container instance
-        $containerInstance = $this->newInstance($containerNode->getType(), array(
-            $this->getInitialContext(),
-            $containerNode,
-            $applications
-        ));
-        // finally start the container instance
-        $containerInstance->run();
     }
 
     /**

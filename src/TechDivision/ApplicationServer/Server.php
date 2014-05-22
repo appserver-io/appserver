@@ -249,7 +249,7 @@ class Server
             $params = array($this->getInitialContext(), $containerNode);
 
             // create and append the thread instance to the internal array
-            $this->threads[] = $this->newInstance($containerNode->getThreadType(), $params);
+            $this->threads[] = $this->newInstance($containerNode->getType(), $params);
         }
     }
 
@@ -436,9 +436,11 @@ class Server
             // start the thread
             $thread->start();
 
-            // synchronize container threads to avoid registring apps several times
+            // synchronize container threads to avoid registering apps several times
             $thread->synchronized(function ($self) {
+                    error_log('Waiting for container thread');
                 $self->wait();
+                    error_log('Notified by container thread');
             }, $thread);
         }
 
@@ -470,6 +472,7 @@ class Server
 
         // Check for the existence of a user
         $user = $this->getSystemConfiguration()->getParam('user');
+        $userChangeable = false;
         if (!empty($user)) {
 
             // Get the user id and set it accordingly
@@ -487,14 +490,15 @@ class Server
                         chown($logFile, $userId);
                     }
                 }
-                
-                // change the user ID
-                posix_setuid($userId);
+
+                // Tell them that we are able to change the user
+                $userChangeable = true;
             }
         }
 
         // Check for the existence of a group
         $group = $this->getSystemConfiguration()->getParam('group');
+        $groupChangeable = false;
         if (!empty($group)) {
 
             // Get the user id and set it accordingly
@@ -513,11 +517,24 @@ class Server
                     }
                 }
 
-                // change the group ID
-                posix_setgid($groupId);
+                // Tell them we are able to change the group
+                $groupChangeable = true;
             }
         }
-        
+
+        // As we should only change user and group AFTER we made all chown and chgrp changes we will do it here
+        // after collecting if we are able to
+        if ($userChangeable) {
+
+            // change the user ID
+            posix_setuid($userId);
+        }
+        if ($groupChangeable) {
+
+            // change the group ID
+            posix_setgid($groupId);
+        }
+
         // log a message with the time needed for restart
         $this->getSystemLogger()->info(
             sprintf(
