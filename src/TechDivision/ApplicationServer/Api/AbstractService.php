@@ -250,13 +250,13 @@ abstract class AbstractService implements ServiceInterface
         $systemConfiguration = $this->getInitialContext()->getSystemConfiguration();
 
         // Check for the existence of a user
-        $user = $systemConfiguration->getParam('serviceUser');
+        $user = $systemConfiguration->getParam('user');
         if (!empty($user)) {
             chown($fileInfo, $user);
         }
 
         // Check for the existence of a group
-        $group = $systemConfiguration->getParam('serviceGroup');
+        $group = $systemConfiguration->getParam('group');
         if (!empty($group)) {
             chgrp($fileInfo, $group);
         }
@@ -302,7 +302,7 @@ abstract class AbstractService implements ServiceInterface
             );
 
         // Check for the existence of a user
-        $user = $systemConfiguration->getParam('serviceUser');
+        $user = $systemConfiguration->getParam('user');
         if (!empty($user)) {
 
             // Change the rights of everything within the defined dirs
@@ -312,7 +312,7 @@ abstract class AbstractService implements ServiceInterface
         }
 
         // Check for the existence of a group
-        $group = $systemConfiguration->getParam('serviceGroup');
+        $group = $systemConfiguration->getParam('group');
         if (!empty($group)) {
 
             // Change the rights of everything within the defined dirs
