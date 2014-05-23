@@ -97,7 +97,7 @@ class Server
      */
     protected function init()
     {
-        
+
         // init the umask to use creating files/directories
         $this->initUmask();
         // init initial context
@@ -107,10 +107,10 @@ class Server
         // init main system logger
         $this->initLoggers();
     }
-    
+
     /**
      * Init the umask to use creating files/directories.
-     * 
+     *
      * @return void
      */
     protected function initUmask()
@@ -135,9 +135,11 @@ class Server
     {
         $initialContextNode = $this->getSystemConfiguration()->getInitialContext();
         $reflectionClass = new \ReflectionClass($initialContextNode->getType());
-        $initialContext = $reflectionClass->newInstanceArgs(array(
-            $this->getSystemConfiguration()
-        ));
+        $initialContext = $reflectionClass->newInstanceArgs(
+            array(
+                $this->getSystemConfiguration()
+            )
+        );
         // set the initial context and flush it initially
         $this->setInitialContext($initialContext);
     }
@@ -186,14 +188,21 @@ class Server
             foreach ($loggerNode->getHandlers() as $handlerNode) {
                 $handler = $this->newInstance($handlerNode->getType(), $handlerNode->getParamsAsArray());
                 $formatterNode = $handlerNode->getFormatter();
-                $handler->setFormatter($this->newInstance($formatterNode->getType(), $formatterNode->getParamsAsArray()));
+                $handler->setFormatter(
+                    $this->newInstance($formatterNode->getType(), $formatterNode->getParamsAsArray())
+                );
                 $handlers[] = $handler;
             }
 
             // initialize the logger instance itself
-            $loggers[$loggerNode->getName()] = $this->newInstance($loggerNode->getType(), array(
-                $loggerNode->getChannelName(), $handlers, $processors
-            ));
+            $loggers[$loggerNode->getName()] = $this->newInstance(
+                $loggerNode->getType(),
+                array(
+                    $loggerNode->getChannelName(),
+                    $handlers,
+                    $processors
+                )
+            );
         }
         // set the initialized loggers finally
         $this->getInitialContext()->setLoggers($loggers);
@@ -437,11 +446,12 @@ class Server
             $thread->start();
 
             // synchronize container threads to avoid registering apps several times
-            $thread->synchronized(function ($self) {
-                    error_log('Waiting for container thread');
-                $self->wait();
-                    error_log('Notified by container thread');
-            }, $thread);
+            $thread->synchronized(
+                function ($self) {
+                    $self->wait();
+                },
+                $thread
+            );
         }
 
         // set the flag that the application has been started
@@ -466,7 +476,7 @@ class Server
             );
             return;
         }
-        
+
         // init API service to use
         $service = $this->newService('TechDivision\ApplicationServer\Api\ContainerService');
 
@@ -480,7 +490,7 @@ class Server
 
             // Did we get something useful?
             if (is_int($userId)) {
-                
+
                 // check if deploy dir exists
                 if (is_dir(new \DirectoryIterator($logDir = $service->getLogDir()))) {
                     // init file iterator on deployment directory
@@ -608,7 +618,7 @@ class Server
      * Returns a new instance of the passed class name.
      *
      * @param string $className The fully qualified class name to return the instance for
-     * @param array  $args      Arguments to pass to the constructor of the instance
+     * @param array $args Arguments to pass to the constructor of the instance
      *
      * @return object The instance itself
      * @see \TechDivision\ApplicationServer\InitialContext::newInstance()

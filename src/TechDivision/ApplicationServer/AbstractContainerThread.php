@@ -1,6 +1,6 @@
 <?php
 /**
- * TechDivision\ApplicationServer\ContainerThread
+ * TechDivision\ApplicationServer\AbstractContainerThread
  *
  * PHP version 5
  *
@@ -8,6 +8,7 @@
  * @package   TechDivision_ApplicationServer
  * @author    Tim Wagner <tw@techdivision.com>
  * @author    Johann Zelger <jz@techdivision.com>
+ * @author    Bernhard Wick <b.wick@techdivision.com>
  * @copyright 2013 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      http://www.appserver.io
@@ -15,18 +16,21 @@
 
 namespace TechDivision\ApplicationServer;
 
+use TechDivision\ApplicationServer\Interfaces\ContainerInterface;
+
 /**
- * Class ContainerThread
+ * Class AbstractContainerThread
  *
  * @category  Appserver
  * @package   TechDivision_ApplicationServer
  * @author    Tim Wagner <tw@techdivision.com>
  * @author    Johann Zelger <jz@techdivision.com>
+ * @author    Bernhard Wick <b.wick@techdivision.com>
  * @copyright 2013 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      http://www.appserver.io
  */
-abstract class AbstractContainerThread extends AbstractContextThread
+abstract class AbstractContainerThread extends AbstractContextThread implements ContainerInterface
 {
 
     /**
@@ -37,15 +41,137 @@ abstract class AbstractContainerThread extends AbstractContextThread
     protected $containerNode;
 
     /**
-     * Set's the unique container name to be started by this thread.
+     * The applications registered at this container
      *
-     * @param string $containerNode The container node
+     * @var array<\TechDivision\ApplicationServer\Interfaces\ApplicationInterface> $applications
+     */
+    protected $applications;
+
+    /**
+     * Initializes the container with the initial context, the unique container ID
+     * and the deployed applications.
+     *
+     * @param \TechDivision\ApplicationServer\InitialContext $initialContext The initial context
+     * @param \TechDivision\ApplicationServer\Api\Node\ContainerNode $containerNode The container node
+     */
+    public function __construct($initialContext, $containerNode)
+    {
+        $this->initialContext = $initialContext;
+        $this->containerNode = $containerNode;
+    }
+
+    /**
+     * Returns the receiver instance ready to be started.
+     *
+     * @return \TechDivision\ApplicationServer\Interfaces\ReceiverInterface The receiver instance
+     */
+    public function getReceiver()
+    {
+        // nothing
+    }
+
+    /**
+     * Run the containers logic
      *
      * @return void
      */
-    public function init($containerNode)
+    public function main()
     {
-        $this->containerNode = $containerNode;
+        // deploy the applications and return them as array
+        $this->applications = $this->getDeployment()
+            ->deploy()
+            ->getApplications();
+
+        // define webservers base dir
+        define(
+        'WEBSERVER_BASEDIR',
+            $this->getInitialContext()->getSystemConfiguration()->getBaseDirectory()->getNodeValue()->__toString()
+            . DIRECTORY_SEPARATOR
+        );
+        define(
+        'WEBSERVER_AUTOLOADER',
+            WEBSERVER_BASEDIR .
+            'app' . DIRECTORY_SEPARATOR . 'code' . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php'
+        );
+
+        // setup configurations
+        $serverConfigurations = array();
+        foreach ($this->getContainerNode()->getServers() as $serverNode) {
+            $serverConfigurations[] = new ServerNodeConfiguration($serverNode);
+        }
+
+        // init server array
+        $servers = array();
+
+        // start servers by given configurations
+        foreach ($serverConfigurations as $serverConfig) {
+
+            // get type definitions
+            $serverType = $serverConfig->getType();
+            $serverContextType = $serverConfig->getServerContextType();
+
+            // create a new instance server context
+            /* @var \TechDivision\WebServer\Interfaces\ServerContextInterface $serverContext */
+            $serverContext = new $serverContextType();
+
+            // inject container to be available in specific mods etc. and initialize the module
+            $serverContext->injectContainer($this);
+            $serverContext->init($serverConfig);
+
+            $serverContext->injectLoggers($this->getInitialContext()->getLoggers());
+
+            // Create the server (which should start it automatically)
+            $server = new $serverType($serverContext);
+            // Collect the servers we started
+            $servers[] = $server;
+
+            // Synchronize the server so we can wait until preparation of the server finished.
+            // This is used e.g. to wait for port opening or other important dependencies to proper server functionality
+            $server->synchronized(
+                function ($self) {
+                    $self->wait();
+                },
+                $server
+            );
+
+        }
+        // We have to notify the logical parent thread, the appserver, as it has to
+        // know the port has been opened
+        $this->synchronized(
+            function () {
+                $this->notify();
+            }
+        );
+    }
+
+    /**
+     * Returns an array with the deployed applications.
+     *
+     * @return array The array with applications
+     */
+    public function getApplications()
+    {
+        return $this->applications;
+    }
+
+    /**
+     * Return's the containers config node
+     *
+     * @return \TechDivision\ApplicationServer\Api\Node\ContainerNode
+     */
+    public function getContainerNode()
+    {
+        return $this->containerNode;
+    }
+
+    /**
+     * Return's the initial context instance
+     *
+     * @return \TechDivision\ApplicationServer\InitialContext
+     */
+    public function getInitialContext()
+    {
+        return $this->initialContext;
     }
 
     /**
@@ -65,7 +191,7 @@ abstract class AbstractContainerThread extends AbstractContextThread
      * (non-PHPdoc)
      *
      * @param string $className The fully qualified class name to return the instance for
-     * @param array  $args      Arguments to pass to the constructor of the instance
+     * @param array $args Arguments to pass to the constructor of the instance
      *
      * @return object The instance itself
      * @see \TechDivision\ApplicationServer\InitialContext::newInstance()
@@ -73,16 +199,6 @@ abstract class AbstractContainerThread extends AbstractContextThread
     public function newInstance($className, array $args = array())
     {
         return $this->getInitialContext()->newInstance($className, $args);
-    }
-
-    /**
-     * Return's the container node.
-     *
-     * @return \TechDivision\ApplicationServer\Api\Node\ContainerNode The container node
-     */
-    public function getContainerNode()
-    {
-        return $this->containerNode;
     }
 
     /**

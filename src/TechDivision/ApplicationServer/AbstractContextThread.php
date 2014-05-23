@@ -29,16 +29,17 @@ use TechDivision\ApplicationServer\Utilities\StateKeys;
  */
 abstract class AbstractContextThread extends AbstractThread
 {
+
     /**
-     * Holds the initialContext object
+     * The initial context instance containing the system configuration.
      *
-     * @var \Stackable
+     * @var \TechDivision\ApplicationServer\InitialContext
      */
-    public $initialContext;
-    
+    protected $initialContext;
+
     /**
      * The server's stop state.
-     * 
+     *
      * @var \TechDivision\ApplicationServer\Utilities\StateKeys
      */
     protected $stopState;
@@ -60,7 +61,7 @@ abstract class AbstractContextThread extends AbstractThread
         // call parent
         call_user_func_array(array('parent', '__construct'), $functionArgs);
     }
-    
+
     /**
      * (non-PHPdoc)
      *
@@ -85,13 +86,13 @@ abstract class AbstractContextThread extends AbstractThread
     {
         return $this->initialContext;
     }
-    
+
     /**
      * Creates a new instance of the passed class name and passes the
      * args to the instance constructor.
-     * 
+     *
      * @param string $className The class name to create the instance of
-     * @param array  $args      The parameters to pass to the constructor
+     * @param array $args The parameters to pass to the constructor
      *
      * @return object The created instance
      */
@@ -99,20 +100,20 @@ abstract class AbstractContextThread extends AbstractThread
     {
         return $this->getInitialContext()->newInstance($className, $args);
     }
-    
+
     /**
      * Returns the server's stop state.
-     * 
+     *
      * @return \TechDivision\ApplicationServer\Utilities\StateKeys The stop state
      */
     public function getStopState()
     {
         return $this->stopState;
     }
-    
+
     /**
      * Returns TRUE if the appserver sends the shudown flag else FALSE.
-     * 
+     *
      * @return boolean TRUE if the server has to be shutdown, else FALSE
      */
     public function shutdown()
