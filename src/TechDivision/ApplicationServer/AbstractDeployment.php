@@ -44,10 +44,10 @@ abstract class AbstractDeployment implements DeploymentInterface
      * @var array
      */
     protected $applications = array();
-    
+
     /**
      * The initial context instance.
-     * 
+     *
      * @var \TechDivision\ApplicationServer\InitialContext
      */
     protected $initialContext;
@@ -56,7 +56,7 @@ abstract class AbstractDeployment implements DeploymentInterface
      * Initializes the deployment with the container thread.
      *
      * @param \TechDivision\ApplicationServer\InitialContext         $initialContext The initial context instance
-     * @param \TechDivision\ApplicationServer\Api\Node\ContainerNode $containerNode  The container node the deployment is for
+     * @param \TechDivision\ApplicationServer\Api\Node\ContainerNode $containerNode  The container node we deploy for
      */
     public function __construct(InitialContext $initialContext, $containerNode)
     {
@@ -83,12 +83,12 @@ abstract class AbstractDeployment implements DeploymentInterface
     {
         return $this->containerNode;
     }
-    
+
     /**
      * Connects the passed application to the system configuration.
-     * 
+     *
      * @param \TechDivision\ApplicationServer\Interfaces\ApplicationInterface $application The application to be prepared
-     * 
+     *
      * @return void
      */
     protected function addApplicationToSystemConfiguration(ApplicationInterface $application)
@@ -97,17 +97,17 @@ abstract class AbstractDeployment implements DeploymentInterface
         // create a new API app service instance
         $appService = $this->newService('TechDivision\ApplicationServer\Api\AppService');
         $appNode = $appService->loadByWebappPath($application->getWebappPath());
-        
+
         // check if the application has already been attached to the container
         if ($appNode == null) {
             $application->newAppNode($this->getContainerNode());
         } else {
             $application->setAppNode($appNode);
         }
-        
+
         // persist the application
         $appService->persist($application->getAppNode());
-        
+
         // connect the application to the container
         $application->connect();
     }
@@ -125,10 +125,10 @@ abstract class AbstractDeployment implements DeploymentInterface
 
         // adds the application to the system configuration
         $this->addApplicationToSystemConfiguration($application);
-        
+
         // register the application in this instance
         $this->applications[$application->getName()] = $application;
-        
+
         // log a message that the app has been started
         $this->getInitialContext()->getSystemLogger()->debug(
             sprintf(

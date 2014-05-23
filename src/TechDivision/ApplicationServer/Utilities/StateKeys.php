@@ -31,7 +31,7 @@ class StateKeys
 
     /**
      * The unique class name.
-     * 
+     *
      * @var string
      */
     const KEY = __CLASS__;
@@ -59,7 +59,7 @@ class StateKeys
 
     /**
      * The actual state.
-     * 
+     *
      * @var string
      */
     private $state;
@@ -86,7 +86,7 @@ class StateKeys
     
     /**
      * Returns the state representation as string.
-     * 
+     *
      * @return string The string representation of the state
      */
     public function getState()
@@ -96,7 +96,7 @@ class StateKeys
     
     /**
      * Returns the state representation as string.
-     * 
+     *
      * @return string The string representation of the state
      * @see \TechDivision\ApplicationServer\Utilities\StateKeys::getState()
      */
@@ -122,9 +122,9 @@ class StateKeys
     /**
      * Returns TRUE if the passed state key equals
      * the actual one, else FALSE.
-     * 
+     *
      * @param \TechDivision\ApplicationServer\Utilities\StateKeys $stateKey The state key to check
-     * 
+     *
      * @return boolean TRUE if equal, else FALSE
      */
     public function equals(StateKeys $stateKey)
@@ -134,11 +134,11 @@ class StateKeys
     
     /**
      * Factory method to create a new state instance.
-     * 
+     *
      * @param string $state The state to create an instance for
-     * 
+     *
      * @return \TechDivision\ApplicationServer\Utilities\StateKeys The state instance
-     * @throws \TechDivision\ApplicationServer\Utilities\InvalidStateException 
+     * @throws \TechDivision\ApplicationServer\Utilities\InvalidStateException
      *      Is thrown if the state is not available
      */
     public static function get($state)

@@ -40,9 +40,9 @@ abstract class AbstractArgsNode extends AbstractNode
 
     /**
      * Attaches the passed arg to the list.
-     * 
+     *
      * @param \TechDivision\ApplicationServer\Api\Node\ArgNode $arg The arg to attach
-     * 
+     *
      * @return void
      */
     public function attachArg(ArgNode $arg)

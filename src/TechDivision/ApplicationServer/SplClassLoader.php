@@ -45,7 +45,7 @@ class SplClassLoader extends \Stackable
     
     /**
      * The unique key to store the class map in the initial context.
-     * 
+     *
      * @var string
      */
     const CLASS_MAP = 'SplClassLoader.classMap';
@@ -57,7 +57,7 @@ class SplClassLoader extends \Stackable
     
     /**
      * The initial context instance.
-     * 
+     *
      * @var \TechDivision\ApplicationServer\InitialContext
      */
     protected $initialContext;
@@ -130,7 +130,7 @@ class SplClassLoader extends \Stackable
     
     /**
      * Returns the initial context instance.
-     * 
+     *
      * @return \TechDivision\ApplicationServer\InitialContext The initial context instance
      */
     public function getInitialContext()

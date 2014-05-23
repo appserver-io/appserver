@@ -97,7 +97,7 @@ class Server
      */
     protected function init()
     {
-        
+
         // init the umask to use creating files/directories
         $this->initUmask();
         // init initial context
@@ -107,10 +107,10 @@ class Server
         // init main system logger
         $this->initLoggers();
     }
-    
+
     /**
      * Init the umask to use creating files/directories.
-     * 
+     *
      * @return void
      */
     protected function initUmask()
@@ -135,9 +135,11 @@ class Server
     {
         $initialContextNode = $this->getSystemConfiguration()->getInitialContext();
         $reflectionClass = new \ReflectionClass($initialContextNode->getType());
-        $initialContext = $reflectionClass->newInstanceArgs(array(
-            $this->getSystemConfiguration()
-        ));
+        $initialContext = $reflectionClass->newInstanceArgs(
+            array(
+                $this->getSystemConfiguration()
+            )
+        );
         // set the initial context and flush it initially
         $this->setInitialContext($initialContext);
     }
@@ -186,14 +188,21 @@ class Server
             foreach ($loggerNode->getHandlers() as $handlerNode) {
                 $handler = $this->newInstance($handlerNode->getType(), $handlerNode->getParamsAsArray());
                 $formatterNode = $handlerNode->getFormatter();
-                $handler->setFormatter($this->newInstance($formatterNode->getType(), $formatterNode->getParamsAsArray()));
+                $handler->setFormatter(
+                    $this->newInstance($formatterNode->getType(), $formatterNode->getParamsAsArray())
+                );
                 $handlers[] = $handler;
             }
 
             // initialize the logger instance itself
-            $loggers[$loggerNode->getName()] = $this->newInstance($loggerNode->getType(), array(
-                $loggerNode->getChannelName(), $handlers, $processors
-            ));
+            $loggers[$loggerNode->getName()] = $this->newInstance(
+                $loggerNode->getType(),
+                array(
+                    $loggerNode->getChannelName(),
+                    $handlers,
+                    $processors
+                )
+            );
         }
         // set the initialized loggers finally
         $this->getInitialContext()->setLoggers($loggers);
@@ -249,7 +258,7 @@ class Server
             $params = array($this->getInitialContext(), $containerNode);
 
             // create and append the thread instance to the internal array
-            $this->threads[] = $this->newInstance($containerNode->getThreadType(), $params);
+            $this->threads[] = $this->newInstance($containerNode->getType(), $params);
         }
     }
 
@@ -436,10 +445,13 @@ class Server
             // start the thread
             $thread->start();
 
-            // synchronize container threads to avoid registring apps several times
-            $thread->synchronized(function ($self) {
-                $self->wait();
-            }, $thread);
+            // synchronize container threads to avoid registering apps several times
+            $thread->synchronized(
+                function ($self) {
+                    $self->wait();
+                },
+                $thread
+            );
         }
 
         // set the flag that the application has been started
@@ -464,12 +476,13 @@ class Server
             );
             return;
         }
-        
+
         // init API service to use
         $service = $this->newService('TechDivision\ApplicationServer\Api\ContainerService');
 
         // Check for the existence of a user
         $user = $this->getSystemConfiguration()->getParam('user');
+        $userChangeable = false;
         if (!empty($user)) {
 
             // Get the user id and set it accordingly
@@ -477,7 +490,7 @@ class Server
 
             // Did we get something useful?
             if (is_int($userId)) {
-                
+
                 // check if deploy dir exists
                 if (is_dir(new \DirectoryIterator($logDir = $service->getLogDir()))) {
                     // init file iterator on deployment directory
@@ -487,14 +500,15 @@ class Server
                         chown($logFile, $userId);
                     }
                 }
-                
-                // change the user ID
-                posix_setuid($userId);
+
+                // Tell them that we are able to change the user
+                $userChangeable = true;
             }
         }
 
         // Check for the existence of a group
         $group = $this->getSystemConfiguration()->getParam('group');
+        $groupChangeable = false;
         if (!empty($group)) {
 
             // Get the user id and set it accordingly
@@ -513,11 +527,24 @@ class Server
                     }
                 }
 
-                // change the group ID
-                posix_setgid($groupId);
+                // Tell them we are able to change the group
+                $groupChangeable = true;
             }
         }
-        
+
+        // As we should only change user and group AFTER we made all chown and chgrp changes we will do it here
+        // after collecting if we are able to
+        if ($userChangeable) {
+
+            // change the user ID
+            posix_setuid($userId);
+        }
+        if ($groupChangeable) {
+
+            // change the group ID
+            posix_setgid($groupId);
+        }
+
         // log a message with the time needed for restart
         $this->getSystemLogger()->info(
             sprintf(

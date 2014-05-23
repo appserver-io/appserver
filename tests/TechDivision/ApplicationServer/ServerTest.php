@@ -93,7 +93,7 @@ class ServerTest extends AbstractTest
     public function testStart()
     {
         $this->server->start();
-        $this->assertCount(3, $this->server->getThreads());
+        $this->assertCount(1, $this->server->getThreads());
     }
 
     /**

@@ -2,7 +2,7 @@
 
 /**
  * TechDivision\ApplicationServer\Api\Node\LocationsNodeTrait
- * 
+ *
  * NOTICE OF LICENSE
  *
  * This source file is subject to the Open Software License (OSL 3.0)

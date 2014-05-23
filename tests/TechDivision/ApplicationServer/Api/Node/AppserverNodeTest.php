@@ -82,7 +82,7 @@ class AppserverNodeTest extends AbstractTest
     public function testGetContainers()
     {
         $containers = $this->appserverNode->getContainers();
-        $this->assertCount(3, $containers);
+        $this->assertCount(1, $containers);
     }
 
     /**

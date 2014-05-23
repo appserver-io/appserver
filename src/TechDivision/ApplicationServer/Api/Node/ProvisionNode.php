@@ -32,7 +32,7 @@ class ProvisionNode extends AbstractNode
     /**
      * The node containing datasource information.
      *
-     * @var \TechDivision\ApplicationServer\Api\Node\DatasourceNode 
+     * @var \TechDivision\ApplicationServer\Api\Node\DatasourceNode
      * @AS\Mapping(nodeName="datasource", nodeType="TechDivision\ApplicationServer\Api\Node\DatasourceNode")
      */
     protected $datasource;
@@ -40,16 +40,16 @@ class ProvisionNode extends AbstractNode
     /**
      * The node containing installation information.
      *
-     * @var \TechDivision\ApplicationServer\Api\Node\InstallationNode 
+     * @var \TechDivision\ApplicationServer\Api\Node\InstallationNode
      * @AS\Mapping(nodeName="installation", nodeType="TechDivision\ApplicationServer\Api\Node\InstallationNode")
      */
     protected $installation;
 
     /**
      * Injects the datasource node.
-     * 
+     *
      * @param \TechDivision\ApplicationServer\Api\Node\DatasourceNode $datasource The datasource node to inject
-     * 
+     *
      * @return void
      */
     public function injectDatasource(DatasourceNode $datasource)
@@ -79,13 +79,13 @@ class ProvisionNode extends AbstractNode
     
     /**
      * This method reprovisions the provision node with the data from the file passed as parameter.
-     * 
-     * Before reinitializing the provisioning node, the file will be reinterpreted with be invoking 
+     *
+     * Before reinitializing the provisioning node, the file will be reinterpreted with be invoking
      * the PHP parser again, what again gives you the possibility to replace content by calling the
      * PHP methods of this class.
-     * 
+     *
      * @param string $provisionFile The absolute pathname of the file to reprovision from
-     * 
+     *
      * @return void
      */
     public function reprovision($provisionFile)

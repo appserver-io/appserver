@@ -31,7 +31,7 @@ interface ContainerInterface
     
     /**
      * Returns the receiver instance ready to be started.
-     * 
+     *
      * @return \TechDivision\ApplicationServer\Interfaces\ReceiverInterface The receiver instance
      */
     public function getReceiver();
