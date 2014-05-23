@@ -62,7 +62,7 @@
 	<containers>
 
 		<container name="persistence"
-			type="TechDivision\PersistenceContainer\PersistenceContainer">
+			type="TechDivision\ApplicationServer\Mock\MockAbstractContainerThread">
 			<description><![CDATA[This is an example of a container that uses a socket for sending and receiving messages. This solution can be used for clients connecting over a network.]]></description>
 			<receiver type="TechDivision\ApplicationServer\Mock\MockReceiver">
 				<worker type="TechDivision\ApplicationServer\Mock\Socket\MockWorker" />

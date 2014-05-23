@@ -38,7 +38,13 @@ class MockAbstractContainerThread extends AbstractContainerThread
 {
     public function main()
     {
-
+        // We have to notify the logical parent thread, the appserver, as it has to
+        // know the port has been opened
+        $this->synchronized(
+            function () {
+                $this->notify();
+            }
+        );
     }
 }
 
