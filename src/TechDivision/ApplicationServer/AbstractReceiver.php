@@ -82,7 +82,7 @@ abstract class AbstractReceiver implements ReceiverInterface
     
     /**
      * The server's stop state.
-     * 
+     *
      * @var \TechDivision\ApplicationServer\Utilities\StateKeys
      */
     protected $stopState;
@@ -393,7 +393,7 @@ abstract class AbstractReceiver implements ReceiverInterface
     
     /**
      * Returns the server's stop state.
-     * 
+     *
      * @return \TechDivision\ApplicationServer\Utilities\StateKeys The stop state
      */
     public function getStopState()
@@ -403,7 +403,7 @@ abstract class AbstractReceiver implements ReceiverInterface
     
     /**
      * Returns TRUE if the appserver sends the shudown flag else FALSE.
-     * 
+     *
      * @return boolean TRUE if the server has to be shutdown, else FALSE
      */
     public function shutdown()

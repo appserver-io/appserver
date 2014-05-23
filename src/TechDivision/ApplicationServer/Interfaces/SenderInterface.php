@@ -31,7 +31,7 @@ interface SenderInterface
     
     /**
      * Sends the passed data to the receiver (the client by default).
-     * 
+     *
      * @param string $data The data to send to the client
      *
      * @return void
@@ -40,15 +40,15 @@ interface SenderInterface
     
     /**
      * Closes the sender and all connections, e. g. to the client.
-     * 
-     * @return void 
+     *
+     * @return void
      */
     public function close();
     
     /**
      * Prepares the sender with the data of the passed remote method and
      * returns the initialized instance, ready to send data.
-     * 
+     *
      * @param \TechDivision\PersistenceContainerClient\Interfaces\RemoteMethod $remoteMethod The remote method
      *
      * @return \TechDivision\ApplicationServer\Interfaces\SenderInterface The instance itself

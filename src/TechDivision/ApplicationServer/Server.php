@@ -618,7 +618,7 @@ class Server
      * Returns a new instance of the passed class name.
      *
      * @param string $className The fully qualified class name to return the instance for
-     * @param array $args Arguments to pass to the constructor of the instance
+     * @param array  $args      Arguments to pass to the constructor of the instance
      *
      * @return object The instance itself
      * @see \TechDivision\ApplicationServer\InitialContext::newInstance()

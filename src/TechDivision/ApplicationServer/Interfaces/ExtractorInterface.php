@@ -43,7 +43,7 @@ interface ExtractorInterface
 
     /**
      * Filename of the hidden file that contains timestamp with last succuessfull deployment.
-     * 
+     *
      * @var string
      */
     const FILE_DEPLOYMENT_SUCCESSFULL = '.appserver-last-successfull-deployment';

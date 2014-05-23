@@ -37,7 +37,7 @@ class AppService extends AbstractService
     
     /**
      * The unique XML configuration node name for a app node.
-     * 
+     *
      * @var string
      */
     const NODE_NAME = 'application';

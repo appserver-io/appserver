@@ -92,7 +92,7 @@ abstract class AbstractContextThread extends AbstractThread
      * args to the instance constructor.
      *
      * @param string $className The class name to create the instance of
-     * @param array $args The parameters to pass to the constructor
+     * @param array  $args      The parameters to pass to the constructor
      *
      * @return object The created instance
      */

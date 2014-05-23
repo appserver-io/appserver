@@ -31,43 +31,43 @@ interface ReceiverInterface
     
     /**
      * Starts the receiver in an infinite loop.
-     * 
+     *
      * @return boolean TRUE if the receiver has been started successfully, else FALSE
      */
     public function start();
     
     /**
      * Returns the maximum number of workers to start.
-     * 
-     * @return integer The maximum worker number 
+     *
+     * @return integer The maximum worker number
      */
     public function getWorkerNumber();
     
     /**
      * Returns the IP address to listen to.
-     * 
+     *
      * @return string The IP address to listen to
      */
     public function getAddress();
     
     /**
      * Returns the port to listen to.
-     * 
+     *
      * @return integer The port to listen to
      */
     public function getPort();
     
     /**
      * Returns the worker class name to use.
-     * 
-     * @return string The worker class name 
+     *
+     * @return string The worker class name
      */
     public function getWorkerType();
     
     /**
      * Returns the thread class name to use.
-     * 
-     * @return string The thread class name 
+     *
+     * @return string The thread class name
      */
     public function getThreadType();
 }

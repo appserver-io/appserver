@@ -51,8 +51,8 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
      * Initializes the container with the initial context, the unique container ID
      * and the deployed applications.
      *
-     * @param \TechDivision\ApplicationServer\InitialContext $initialContext The initial context
-     * @param \TechDivision\ApplicationServer\Api\Node\ContainerNode $containerNode The container node
+     * @param \TechDivision\ApplicationServer\InitialContext         $initialContext The initial context
+     * @param \TechDivision\ApplicationServer\Api\Node\ContainerNode $containerNode  The container node
      */
     public function __construct($initialContext, $containerNode)
     {
@@ -84,12 +84,12 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
 
         // define webservers base dir
         define(
-        'WEBSERVER_BASEDIR',
+            'WEBSERVER_BASEDIR',
             $this->getInitialContext()->getSystemConfiguration()->getBaseDirectory()->getNodeValue()->__toString()
             . DIRECTORY_SEPARATOR
         );
         define(
-        'WEBSERVER_AUTOLOADER',
+            'WEBSERVER_AUTOLOADER',
             WEBSERVER_BASEDIR .
             'app' . DIRECTORY_SEPARATOR . 'code' . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php'
         );
@@ -191,7 +191,7 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
      * (non-PHPdoc)
      *
      * @param string $className The fully qualified class name to return the instance for
-     * @param array $args Arguments to pass to the constructor of the instance
+     * @param array  $args      Arguments to pass to the constructor of the instance
      *
      * @return object The instance itself
      * @see \TechDivision\ApplicationServer\InitialContext::newInstance()

@@ -52,7 +52,7 @@ class NodeValue implements ValueInterface
     
     /**
      * Set's the node's value.
-     * 
+     *
      * @param string $value The value to set
      *
      * @return void
