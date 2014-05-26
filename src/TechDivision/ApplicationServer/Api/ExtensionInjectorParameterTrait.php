@@ -45,7 +45,7 @@ trait ExtensionInjectorParameterTrait
     /**
      * Instance of the
      *
-     * @var \TechDivision\WebServer\Configuration\Extension\InjectorInterface $instance
+     * @var \TechDivision\Server\Configuration\Extension\InjectorInterface $instance
      */
     private $injector;
 
@@ -81,7 +81,7 @@ trait ExtensionInjectorParameterTrait
     /**
      * Getter for the injector, will lazy-init it
      *
-     * @return \TechDivision\WebServer\Configuration\Extension\InjectorInterface
+     * @return \TechDivision\Server\Configuration\Extension\InjectorInterface
      */
     public function getInjector()
     {

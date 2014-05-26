@@ -84,13 +84,13 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
 
         // define webservers base dir
         define(
-            'WEBSERVER_BASEDIR',
+            'SERVER_BASEDIR',
             $this->getInitialContext()->getSystemConfiguration()->getBaseDirectory()->getNodeValue()->__toString()
             . DIRECTORY_SEPARATOR
         );
         define(
-            'WEBSERVER_AUTOLOADER',
-            WEBSERVER_BASEDIR .
+            'SERVER_AUTOLOADER',
+            SERVER_BASEDIR .
             'app' . DIRECTORY_SEPARATOR . 'code' . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php'
         );
 

@@ -21,7 +21,7 @@
 namespace TechDivision\ApplicationServer;
 
 use TechDivision\ApplicationServer\Api\Node\NodeInterface;
-use TechDivision\WebServer\Interfaces\ServerConfigurationInterface;
+use TechDivision\Server\Interfaces\ServerConfigurationInterface;
 
 /**
  * Class ServerNodeConfiguration
