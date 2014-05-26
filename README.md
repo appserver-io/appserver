@@ -1,59 +1,81 @@
 # TechDivision_ApplicationServer
+Main repository for the [appserver.io](<http://www.appserver.io/>) project.
+____________________________________________
+
 [![Latest Stable Version](https://poser.pugx.org/techdivision/appserver/v/stable.png)](https://packagist.org/packages/techdivision/appserver) [![Total Downloads](https://poser.pugx.org/techdivision/appserver/downloads.png)](https://packagist.org/packages/techdivision/appserver) [![Latest Unstable Version](https://poser.pugx.org/techdivision/appserver/v/unstable.png)](https://packagist.org/packages/techdivision/appserver) [![License](https://poser.pugx.org/techdivision/appserver/license.png)](https://packagist.org/packages/techdivision/appserver) [![Build Status](https://travis-ci.org/techdivision/TechDivision_ApplicationServer.png)](https://travis-ci.org/techdivision/TechDivision_ApplicationServer)
-
+____________________________________________
 # Introduction
-The objective of the project is to develop a multi-threaded application server for PHP, written in PHP. Yes, pure PHP! You think we aren't serious? Maybe! But we think, in order to enable as many developers in our great community, this will be the one and only way to enable you helping us. Through the broadest possible support of the PHP community we hopefully establish this solution as the standard for enterprise applications in PHP environment.
+The objective of the project is to develop a multi-threaded application server for PHP, written in PHP. Yes, pure PHP! You think we aren't serious? Maybe! But we think, in order to enable as many developers in our great community, this will be the one and only way. So with your help we hopefully establish a solution as the standard for enterprise applications in PHP environments.
 
-# Highlights
-* Servlet engine, with full HTTP 1.1 support
-* Web Socket engine, based on [Ratchet](http://socketo.me/)
-* Session beans (stateful, stateless + singleton)
-* Message beans
-* Doctrine as standard Persistence provider
-* Timer service
-* Integrate message queue
-* Web services
-* Cluster functionality
-* Hot deployment of Web Apps (Mac OS X and Debian only)
+## Navigation
+For faster navigation within the documentation (it grew quite long):
 
-# Technical Features
-* Joe Watkins [phtreads](https://github.com/krakjoe/pthreads) library is used
-* DI & AO  usage within the respective container
-* Use of annotations to configure beans
-* Configuration by Exception (optional Usage of Deployment Descriptor possible)
+- [Getting started](<#getting-started>)
+	* [Installation](<#installation>)
+		- [Mac OS X](<#mac-os-x>)
+		- [Windows](<#windows>)
+		- [Debian](<#debian>)
+		- [Fedora](<#fedora>)
+		- [CentOS](<#centos>)
+		- [Raspbian](<#raspbian>)
+	* [Basic Usage](<#basic-usage>)
+		- [Start and Stop Scripts](<start-and-stop-scripts>)
+	* [Uninstallation](<#uninstallation>)
+- [Webapp Basics](<#webapp-basics>)
+	* [App Deployment](<https://github.com/techdivision/TechDivision_Runtime/tree/master/src/deploy>)
+	* [App Development](<#app-development>)
 
-The implementation of a Web application and its operation in the PHP Application Server must be as simple as possible. For this purpose, whenever possible, the utilization of standard solution based on existing components as a, such as Doctrine, are used. On the other hand, with the paradigm Configuration by exception, the operation of an application with a minimum of configuration is needed. So a lot of the use cases is already covered by the default behavior of the respective integrated components so that the developer often does not need declarative configuration information.To appeal to the widest possible community the architecture of the Application Server must be constructed so that as large a number of existing applications can easily be migrated via adapter. Furthermore, the future development of Web applications based on all relevant PHP frameworks by providing libraries is supported.
 
-# Requirements
-* PHP 5.4+ on x64 or x86
-* ZTS Enabled (Thread Safety)
-* Posix Threads Implementation
-* Memcached (2.1+)
+____________________________________________
+# Getting started
+Below are some simple steps to get you started using the appserver.
 
-The lastest version is only tested with Mac OS 10.8+ and Debian Wheezy. PHP Application Server should run on any PHP version from 5.3+. However segmentation faults occurred in various tests with PHP 5.3.x repeatedly. Meanwhile this can lead to the early development stage of the pthreads library. We actually use PHP 5.5.+ for development.
+## Installation 
+Besides supporting several operating systems and their specific ways of installing software, we also support several ways of getting this software.
+So to get your appserver.io package you might do any of the following:
 
-# Installation
-Actually we support Mac OS X Mountain Lion, Fedora, CentOS and Debian Wheezy via prepared packages. You might get stable packages from our project page http://www.appserver.io
-and bleeding edge development packages from http://snapshots.appserver.io.
-Finally it's possible to build the runtime by yourself. This can be done by cloning our [Runtime Environment] (https://github.com/techdivision/TechDivision_Runtime).
-Then update the `os.family` and `os.distribution` (you might as well change other things e.g. for 32bit support) within `build.default.properties` and build the appserver with the ant target appropriate for your environment (e.g. `create-pkg` for Mac).
+* Download one of our [**releases**](<https://github.com/techdivision/TechDivision_ApplicationServer/releases>) right from this repository which provide tested install packages
 
-## Installation on Mountain Lion
-To install on your Mac OS X Mountain Lion please download the actual .pkg Package from http://www.appserver.io.
-After downloading the .pkg you can start installation process with a double click on the package. To install the
-software you need to have administration privileges (sudo). After the installation process, which is really simple,
-you'll find the Application Server software in the folder `/opt/appserver`.
+* Grab any of our [**nightlies**](<http://builds.appserver.io/>) from our project page to get bleeding edge install packages which still might have some bugs
 
-When the installation has been finished the Application Server will be started automatically. If you need to restart
-the Application Server, after changing the configuration for example, you can use the init scripts `sbin/appserverctl`
-and `sbin/watcherctl` therefore.
-You might as well start additional services, `sbin/phpfpmctl` would be useful, as it is out default FastCGI backend.
-All of them accept `start`, `stop` and `restart` as parameter.
+* Build your own package using [ant](<http://ant.apache.org/>)! To do so clone [TechDivision_Runtime](<https://github.com/techdivision/TechDivision_Runtime>) first. Then update at least the `os.family` and `os.distribution` build properties according to your environment and build the appserver with the ant target appropriate for your installer (e.g. `create-pkg` for Mac or `create-deb` for Debian based systems).
 
-Start your favorite browser and open the URL `http://127.0.0.1:9080/example` to load the example application.
+The package will install with these basic default characteristics:
 
-## Installation on a Debian Wheezy
-If you're on a Debian system you don't need to download the .deb package. Follow these instructions:
+* Install dir: `/opt/appserver`
+* Autostart after installation, no autostart on reboot
+* Reachable under pre-configured ports as described [here](<#basic-usage>) 
+
+For OS specific steps and characteristics see below for tested environments.
+
+### Mac OS X
+
+* Tested versions: 10.8.x +
+* Ant build: 
+	- `os.family` = mac 
+	- target `create-pkg`
+
+
+### Windows
+* Tested versions: 7 +
+* Ant build: 
+	- `os.family` = win
+	- target `WIN-create-jar`
+
+
+As we deliver the Windows appserver as a .jar file, a installed Java Runtime Environment (or JDK that is) is a vital requirement for using it.
+If the JRE/JDK is not installed you have to do so first. You might get it from [Oracle's download page](<http://www.oracle.com/technetwork/java/javase/downloads/jre7-downloads-1880261.html>).
+If this requirement is met you can start the installation by simply double-clicking the .jar archive.
+
+### Debian
+
+* Tested versions: Squeeze +
+* Ant build: 
+	- `os.family` = linux
+	- `os.distribution` = debian 
+	- target `create-deb`
+
+If you're on a Debian system you might also try our .deb repository:
 
 ```
 root@debian:~# echo "deb http://deb.appserver.io/ wheezy main" > /etc/apt/sources.list.d/appserver.list
@@ -62,21 +84,93 @@ root@debian:~# aptitude update
 root@debian:~# aptitude install appserver
 ```
 
-This will install the Application Server in directory `/opt/appserver`. Also it'll be started automatically, but you
-can start, stop or restart it with the init-script `/etc/init.d/appserver` and the parameter `start`, `stop` and `restart`.
-Additionally it is necessary that the watcher and php5-ts-fpm daemon is started. Both of them have init scripts in `/etc/init.d`.
+### Fedora
+* Tested versions: 20
+* Ant build: 
+	- `os.family` = linux
+	- `os.distribution` = fedora 
+	- target `create-rpm`
+	
 
-Start your favorite browser and open the URL `http://127.0.0.1:9080/example` to load the example application.
+### CentOS
+* Tested versions: 6.5
+* Ant build: 
+	- `os.family` = linux
+	- `os.distribution` = centos 
+	- target `create-rpm`
 
-## Installation on Windows (7+)
-To install the Application Server on Windows you first have to download the latest .jar archive from http://appserver.io/downloads.
-After doing so you have to check your system for an installed Java Runtime Environment (or JDK that is).
-This is a vital requirement for you to use the .jar file.
-If the JRE is not installed you have to get it from http://www.oracle.com/technetwork/java/javase/downloads/jre7-downloads-1880261.html first.
+Installation and basic usage is the same as on Fedora **but** CentOS requires additional repositories like [remi](<http://rpms.famillecollet.com/>) or
+[EPEL](<http://fedoraproject.org/wiki/EPEL>) to satisfy additional dependencies.
 
-If this requirement is met you can start the installation by simply double-clicking the .jar archive.
-After authorizing the access to your computer, a guided installation wizard will appear and perform the installation.
+### Raspbian
+As an experiment we offer Raspbian and brought the appserver to an ARM environment. What should we say, it worked! :D
+With `os.distribution` = raspbian you might give it a try to build it yourself (plan at least 5 hours) as we currently do not offer prepared install packages.  
 
+## Basic Usage
+The appserver will automatically start after your intstallation wizard (or package manager) finishes the setup. You can use it without limitations from now on.
+
+Below you can find basic instructions on how to make use of the appserver.
+After the installation you might want to have a look and some of the bundled apps.
+Two of are interesting in particular:
+
+* **Example** shows basic usage of services. You can reach it at `http://127.0.0.1:9080/example`
+
+* **Admin** appserver and app management `http://127.0.0.1:9080/admin`
+
+Start your favorite browser and have a look at what we can do. :)
+You will see that we provide basic frontend implementations of services the appserver runtime provides.
+If you want to use these services yourself you should have a look into the code of our apps and read about [app development](<#app-development>)
+
+You might be curious about the different port we use.
+Per default the appserver will open several ports at which it's services are available. As we do not want to block (or be blocked by) other services we use ports of a higher range.
+
+As a default we use the following ports:
+
+* WebContainer
+	- Http-Server: `9080`
+	- Https-Server: `9443`
+	- WebSocketServer: `8589`  
+* Persistence-MQ-Container
+	- PersistenceServer: `8585`
+	- PersistenceServer: `8587`
+* LemCacheContainer
+	- MemcacheServer: `11210`
+
+You can change this default port mapping by using the [configuration file](<#appserver.xml-the-configuration>).
+If you are interested in our naming, you can see our container->server pattern, you might want to have a deeper look into our [architecture](<#technical-background-&-architecture>)
+
+### Start and Stop Scripts
+
+We provide start and stop scripts for all *nix like operating systems.
+These work the way they normally would on the regarding systems.
+
+Currently we support three different types of init scripts:
+
+**Mac OS X (LAUNCHD)**
+The LAUNCHD launch daemons are located within the appserver installation at `/opt/appserver/sbin`.
+They can be used with the schema `/opt/appserver/sbin/<DAEMON> <COMMAND>`
+
+**Debian, Raspbian, CentOS, ...(SystemV)**
+
+
+**Fedora, ... (systemd)**
+
+To uninstall the Application Server on Mac OS X, you simply have to delete the folder `/opt/appserver` and the configuration files for the launch deameons. These are files are located in folder `/Library/LaunchDaemons` and named `io.appserver.<DAEMON>.plist`.
+If you're using any Linux distribution you might use your package management tool to remove the appserver after you stopped its daemons.
+
+To install the Application Server on Fedora you first have to download the latest .rpm archive from
+http://appserver.io/downloads.
+You can double click the .rpm package for installation or use yum with `yum install <PATH_TO_RPM>` as root.
+This will install the appserver within `/opt/appserver` and start it together with a file watcher daemon as soon as installation finishes.
+
+
+
+During installation we registered systemd units for the appserver, so you can control it with `systemctl <COMMAND> appserver` where command
+are the basic systemd commands like `start`, `stop`, `restart` and `status`.
+Please also restart the `watcher` and `appserver-fpm` daemon if necessary.
+
+
+On Windows we do not offer any of these scripts.
 After the installation you can start the Application Server with the ``server.bat`` file located within the root directory of your installation.
 Best thing to do would be starting a command prompt as an administrator and run the following commands (assuming default installation path):
 
@@ -85,28 +179,488 @@ C:\Windows\system32>cd "C:\Program Files\appserver"
 C:\Program Files\appserver>server.bat
 ```
 
-Start your favorite browser and open the URL `http://127.0.0.1:9080/example` to load the example application.
+# Uninstall
+To uninstall the Application Server on Mac OS X, you simply have to delete the folder `/opt/appserver` and the configuration files for the launch deameons. These are files are located in folder `/Library/LaunchDaemons` and named `io.appserver.<DAEMON>.plist`.
+If you're using any Linux distribution you might use your package management tool to remove the appserver after you stopped its daemons.
 
-## Installation on Fedora
 To install the Application Server on Fedora you first have to download the latest .rpm archive from
 http://appserver.io/downloads.
 You can double click the .rpm package for installation or use yum with `yum install <PATH_TO_RPM>` as root.
 This will install the appserver within `/opt/appserver` and start it together with a file watcher daemon as soon as installation finishes.
 
-Start your favorite browser and open the URL `http://127.0.0.1:9080/example` to load the example application.
+
 
 During installation we registered systemd units for the appserver, so you can control it with `systemctl <COMMAND> appserver` where command
 are the basic systemd commands like `start`, `stop`, `restart` and `status`.
 Please also restart the `watcher` and `appserver-fpm` daemon if necessary.
+____________________________________________
+# Webapp Basics
+Below you will find instructions and further information about our concept of webapps, php applications running within the appserver.
 
-## Installation on CentOS
-Installation and basic usage is the same as on Fedora **but** CentOS requires additional repositories like [remi](<http://rpms.famillecollet.com/>) or
-[EPEL](<http://fedoraproject.org/wiki/EPEL>) to satisfy additional dependencies.
-Please also be aware that CentOS init scripts reside in `/etc/init.d` as there is no systemd support yet.
+## App Deployment
+We implemented a deployment system which took notes at the WildFly deployment workflow. You can either use it via file manipulations or our own management API.
+A documentation of general deployment can be found [here](<https://github.com/techdivision/TechDivision_Runtime/tree/master/src/deploy>)
 
-# Uninstall
-To uninstall the Application Server on Mac OS X, you simply have to delete the folder `/opt/appserver` and the configuration files for the launch deameons. These are files are located in folder `/Library/LaunchDaemons` and named `io.appserver.<DAEMON>.plist`.
-If you're using any Linux distribution you might use your package management tool to remove the appserver after you stopped its daemons.
+
+## App Development
+This is a getting started tutorial for all folks who want to get in touch with appserver and want to learn how it works.
+It will guide you through setting up your first webapp, which serves HTTP requests. All necessary steps are explained in
+detail. It is assumed that you already installed appserver via the installer packages (explained above).
+
+### Let's get started
+The appserver has its own runtime environment. After you installed appserver successfully on your system, it is accessible
+under ``/opt/appserver``. This runtime already contains all necessary files and binaries to run appserver. There is a
+folder ``webapps`` where all your web applications are deployed. So let's get you up running your first webapp. Type
+the following into your terminal::
+
+    cd /opt/appserver/webapps
+    composer.phar create-project techdivision/techdivision_applicationserverproject myfirstapp dev-master
+
+*myfirstapp* is the name of the webapp, it is necessary to call it by url. If you haven't already started the appserver
+do it now by typing (user *restart* if appserver is already running)::
+
+    [Mac OS] sudo /opt/appserver/sbin/appserverctl start
+    [Debian] sudo /etc/init.d/appserver start
+
+By default the appserver is running on port 8586. Therefore head over to ``localhost:8586/myfirstapp``. Notice the webapp
+name in the url, if you have chosen something else as the name, use it instead of *myfirstapp*.
+
+.. image:: images/myfirstapp.png
+
+Let's look into some source code to get to know how everything works. Open up your webapps folder ``webapps/myfirstapp``
+in your favourite editor. The structure of the web application is similar to webapp structures of Tomcat or JBoss. Open
+``WEB-INF/web.xml``. This is the configuration file for your webapp's routes. In general it is the servlet configuration
+for your servlet container. A servlet can be defined as follows:
+
+```xml
+<servlet>
+	<description><![CDATA[A demo servlet]]></description>
+    <display-name>DemoServlet</display-name>
+    <servlet-name>DemoServlet</servlet-name>
+    <servlet-class>\TechDivision\Example\Servlets\DemoServlet</servlet-class>
+</servlet>
+```
+There you define the servlet name and map it to a servlet class defined by a namespace. If you open ``WEB-INF/classes``
+you will find the defined servlet. This servlet can now be used in a route mapping like the following.
+
+```xml
+<servlet-mapping>
+   	<servlet-name>DemoServlet</servlet-name>
+    <url-pattern>/</url-pattern>
+</servlet-mapping>
+```
+
+Try some other url patterns here, restart the appserver and test them in the browser's url bar. It will always call the
+same servlet which delivers the same content. Let's inspect the corresponding servlet class by opening
+``WEB-INF/webapps/classes/TechDivisioon/Example/Servlets/DemoServlet.php``. The servlet deviates from ``HttpServlet`` as
+it conforms to the HTTP 1.1 protocol. For every method of this protocol a function is provided by this class which can
+be overridden. Most of the time you will use ``doGet()`` or ``doPost()`` for GET and POST methods. Let's inspect the
+``doGet()`` in detail.
+
+```php
+public function doGet(HttpServletRequest $req, HttpServletResponse $res)
+{
+  	// build path to template
+    $pathToTemplate = $this->getServletConfig()->getWebappPath() .
+      	DIRECTORY_SEPARATOR . 'static' .
+       	DIRECTORY_SEPARATOR . 'templates' .
+       	DIRECTORY_SEPARATOR . 'layout.phtml';
+
+    // init template
+    $template = new DemoTemplate($pathToTemplate);
+
+   	$baseUrl = '/';
+    // if the application has NOT been called over a vhost
+    // configuration append application folder naem
+    if (!$this->getServletConfig()->getApplication()->isVhostOf($req->getServerName())) {
+     	$baseUrl .= $this->getServletConfig()->getApplication()->getName() . '/';
+    }
+
+    // set vars in template
+    $template->setBaseUrl($baseUrl);
+    $template->setRequestUri($req->getUri());
+    $template->setUserAgent($req->getHeader("User-Agent"));
+    $template->setWebappName($this->getServletConfig()->getApplication()->getName());
+
+    // set response content by render template
+   	$res->appendBodyStream($template->render());
+}
+```
+
+First the path to the template is built, afterwards the template is constructed. The template needs some data to display,
+which is set by several functions. The last line of the function sets the response content, which is send back to the
+client. You can inspect the template on your own. It is easy enough to understand by reading the code. You can of course
+use your own template functionalities or engines if you want. This template class is just a simple approach for
+demonstration purposes.
+
+If you want to add static content like images to your template you have to define a static servlet. Fortunately there
+already exists one. Open ``WEB-INF/web.xml`` again and search for ``StaticResourceServlet``. You see the corresponding
+url pattern is defined as ``/components/*`` or ``/static/*``, which means that all static content should be loaded by `
+these url patterns. You can define whatever url pattern you want for your static resources. We simply separated between
+libraries and custom stuff.
+
+### Let's build something CRUDish
+
+You already learned how to configure and create a servlet, which is conform to the HTTP protocol and can deliver content
+to the client. Now it is time to dive deep into the structure of the appserver. As a first webapp we will build something
+CRUDish, which involves data handling. In order to store some data you can set up your own database somewhere you can
+connect to. In your servlet you can connect to it and everything is fine. But wait! This is just the old school PHP
+stuff, how to handle data with Apache or similar servers. As we use the appserver we have much more advantages. The
+appserver comes along with a persistence container. With this architecture, your webapp is scalable, as containers can
+scale. You will learn by this tutorial how this works in detail.
+
+Let's build a little system which can save customers. After creating a new customer, we can view them again. The first
+step is to build a little form which takes the users input data and send it to the server. Therefore, we head over to
+``WEB-INF/web.xml`` and add our route for this form.
+
+.. code-block:: xml
+    :linenos:
+
+    <servlet>
+        <description><![CDATA[A customer servlet]]></description>
+        <display-name>CustomerServlet</display-name>
+        <servlet-name>CustomerServlet</servlet-name>
+        <servlet-class>\TechDivision\Example\Servlets\CustomerServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>CustomerServlet</servlet-name>
+        <url-pattern>/customer</url-pattern>
+    </servlet-mapping>
+
+The customer servlet is now callable via the route ``/customer``. But before we do so, let's create the servlet. It is a
+class in the path ``WEB-INF/classes/TechDivision/Example/Servlets`` (this depends on the namespace you defined in
+``web.xml``).
+
+.. code-block:: php
+    :linenos:
+
+    namespace TechDivision\Example\Servlets;
+   
+    use TechDivision\Servlet\Http\HttpServlet;
+    use TechDivision\Servlet\Http\HttpServletRequest;
+    use TechDivision\Servlet\Http\HttpServletResponse;
+
+    class CustomerServlet extends HttpServlet
+    {
+        public function doGet(HttpServletRequest $req, HttpServletResponse $res)
+        {
+            $res->appendBodyStream('Hello World');
+        }
+    }
+
+It is now time to restart your appserver in order to reload the changes made. After that open the url of your webapp
+and you will see this:
+
+.. image:: images/helloworld.png
+
+As we can see the content we set to the response is transmitted to the client. A first template can now be build and
+delivered on the same way.
+
+.. code-block:: php
+    :linenos:
+
+    public function doGet(HttpServletRequest $req, HttpServletResponse $res)
+    {
+        $webappPath = $this->getServletConfig()->getWebappPath();
+
+        // check if the template is available
+        if (!file_exists(
+                $pathToTemplate = $webappPath .
+                DIRECTORY_SEPARATOR . 'static/templates/customer.phtml'
+        )) {
+            throw new \Exception(
+                "Requested template '$pathToTemplate' is not available"
+            );
+        }
+
+        // render template
+        ob_start();
+        require $pathToTemplate;
+        $html = ob_get_clean();
+
+        $res->appendBodyStream($html);
+    }
+
+The templates are in the directory ``static/templates`` of the webapp root directory. If it exists it gets rendered and
+its output is set as the response's content. The only thing to do is to fill the template with life. Create the file
+``static/templates/customer.phtml`` and insert the following.
+
+.. code-block:: html
+    :linenos:
+
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="utf-8">
+    </head>
+    <body>
+        <form action="customer" method="post">
+            <input type="hidden" name="action" value="persist" />
+            <input type="hidden" name="customerId" value="<?php echo $customerId ?>" />
+            <input name="name" type="text" placeholder="Enter customer name" />
+            <button type="submit" class="btn">Submit</button>
+        </form>
+    </body>
+    </html>
+
+As you can see the form uses the POST method to post its data. As we only support GET in ``CustomerServlet`` we have to
+implement a corresponding method which can handle POST.
+
+.. code-block:: php
+    :linenos:
+
+    public function doPost(HttpServletRequest $req, HttpServletResponse $res)
+    {
+        // load the params with the entity data
+        $parameterMap = $req->getParameterMap();
+
+        // check if the necessary params has been specified and are valid
+        if (!array_key_exists('customerId', $parameterMap)) {
+            throw new \Exception();
+        } else {
+            $customerId = filter_var($parameterMap['customerId'], FILTER_VALIDATE_INT);
+        }
+        if (!array_key_exists('name', $parameterMap)) {
+            throw new \Exception();
+        } else {
+            $name = filter_var($parameterMap['name'], FILTER_SANITIZE_STRING);
+        }
+
+        $res->setContent('Hello ' . $name);
+    }
+
+So far so good, but we want to persist the customer to the database. Therefore we have to take a look on the persistence
+container. Open ``META-INF/appserver-ds.xml``. This is a dummy configuration file for the persistence container. Change
+it to the following.
+
+.. code-block:: xml
+    :linenos:
+
+    <datasources>
+        <datasource name="TechDivision\Example"
+            type="TechDivision\PersistenceContainer\Application">
+            <database>
+                <driver>pdo_sqlite</driver>
+                <user>appserver</user>
+                <password>appserver</password>
+                <path>META-INF/data/customers.sqlite</path>
+                <memory>false</memory>
+            </database>
+        </datasource>
+    </datasources>
+
+
+This configuration defines a data source connection to a database. In this case we use a sqlite database for demonstration
+purposes. We defined the path to the database as well as the path to the entities which get persisted to it. It is now
+time to create our customer entity. Create the following class
+``META-INF/classes/TechDivision/Example/Entities/Customer.php``.
+
+.. code-block:: php
+    :linenos:
+
+    namespace TechDivision\Example\Entities;
+
+    /**
+     * @Entity @Table(name="customer")
+     */
+    class Customer {
+        /**
+         * @Id
+         * @Column(type="integer")
+         * @GeneratedValue
+         */
+        public $customerId;
+
+        /**
+         * @Column(type="string", length=255)
+         */
+        public $name;
+
+        public function setCustomerId($customerId) {
+            $this->customerId = $customerId;
+        }
+
+        public function getCustomerId() {
+            return $this->customerId;
+        }
+
+        public function setName($name) {
+            $this->name = $name;
+        }
+
+        public function getName() {
+            return $this->name;
+        }
+    }
+
+Maybe you can guess from the annotations which persistence layer we use here. It is Doctrine which is already part of the
+appserver. This is an entity which Doctrine can parse and persist. The entity gets persisted by an entity processor which
+takes care of the entities' states. At this point there is the tricky but cool part of appserver. As we want to persist
+the customer we have to talk to the persistence container which is all part of the ``META-INF`` folder. This is done by
+sockets in order to deploy both containers (servlet and persistence) on different machines, if necessary. Therefore, you
+can scale appserver as much as you want. Right now only the persistence container has the customer class and the servlet
+container does not know anything about it. We have to copy the customer class into the servlet container right into
+``WEB-INF/classes/TechDivision/Example/Entities/Customer.php``. As such we can now use it in our servlet. Insert the
+following lines right before the method ``doPost()`` ends:
+
+.. code-block:: php
+    :linenos:
+
+    use TechDivision\Example\Entities\Customer;
+
+    ...
+
+    // create a new entity and persist it
+    $entity = new Customer();
+    $entity->setCustomerId((integer) $customerId);
+    $entity->setName($name);
+
+    $initialContext = $this->session->createInitialContext();
+    $proxy = $initialContext->lookup(
+        'TechDivision\Example\Services\CustomerProcessor'
+    );
+    $proxy->persist($entity);
+
+    $res->setContent('Hello ' . $name);
+
+As you can already see we have a session attribute. This session is a context session which can handle our current
+context. The initial context provides us with a proxy class for a class of the persistence container. In this example
+we want to connect to the ``CustomerProcessor`` class as it handles our CRUD actions for our entity. We can communicate
+to the processor via a socket which is represented by the proxy class whereas the proxy class is just a general proxy
+implementation and not dependent on the ``CustomerProcessor`` class. The method call of ``persist()`` is actually done
+by remote method invocation via sockets. In order to make the code lines work we have to add the following lines to
+our customer servlet.
+
+.. code-block:: php
+    :linenos:
+
+    use TechDivision\PersistenceContainerClient\Context\Connection\Factory;
+
+    ...
+
+    protected $connection;
+    protected $session;
+
+    public function __construct() {
+        $this->connection = Factory::createContextConnection();
+        $this->session = $this->connection->createContextSession();
+    }
+
+We are now ready to start the implementation of ``CustomerProcessor``. As we don't want to overwhelm the documentation
+with lines of code we will copy some prepared one. We head over to the ``example`` webapp of the appserver. You can
+find the example webapp in appserver's root directory in the folder ``webapps``. Copy the class
+``META-INF/classes/TechDivision/Example/Services/AbstractProcessor.php`` to our project at the same path. In the same
+folder we create the ``CustomerProcessor.php`` class as follows.
+
+.. code-block:: php
+    :linenos:
+
+    namespace TechDivision\Example\Services;
+
+    use TechDivision\Example\Entities\Customer;
+    use TechDivision\Example\Services\AbstractProcessor;
+    use Doctrine\ORM\Tools\SchemaTool;
+
+    /**
+     * @Singleton
+     */
+    class CustomerProcessor extends AbstractProcessor
+    {
+        public function createSchema()
+        {
+            // load the entity manager and the schema tool
+            $entityManager = $this->getEntityManager();
+            $tool = new SchemaTool($entityManager);
+
+            // initialize the schema data from the entities
+            $classes = array(
+                $entityManager->getClassMetadata('TechDivision\Example\Entities\Customer')
+            );
+
+            // drop the schema if it already exists and create it new
+            $tool->dropSchema($classes);
+            $tool->createSchema($classes);
+        }
+
+        public function persist(Customer $entity)
+        {
+            // load the entity manager
+            $entityManager = $this->getEntityManager();
+            // check if a detached entity has been passed
+            if ($entity->getCustomerId()) {
+                $merged = $entityManager->merge($entity);
+                $entityManager->persist($merged);
+            } else {
+                $entityManager->persist($entity);
+            }
+            // flush the entity manager
+            $entityManager->flush();
+            // and return the entity itself
+            return $entity;
+        }
+    }
+
+We overwrite the ``createSchema()`` method of the abstract processor as we have a different entity. But the rest of the
+abstract class works for us as well. You may have noticed the ``@Singleton`` above the class name. This exhibits that
+the customer processor is a singleton bean. It means that only one instance of it is created which is necessary as there
+are no conflicts while persisting. There are also stateless and stateful beans which are for other purposes, as they
+either know the state between two requests of the same user or not. The ``persist()`` method gets the doctrine entity
+manager in order to persist entities. After successful persistence we want to display all entities in the frontend. We
+therefore implement the following method into our customer processor.
+
+.. code-block:: php
+    :linenos:
+
+    public function findAll()
+    {
+        $entityManager = $this->getEntityManager();
+        $repository = $entityManager->getRepository(
+            'TechDivision\Example\Entities\Customer'
+        );
+        return $repository->findAll();
+    }
+
+This works again with the doctrine entity manager as it does all the work for us. In order to display all customers
+in the frontend we add the following lines of code at the start of the ``doGet()`` method in our customer servlet.
+
+.. code-block:: php
+    :linenos:
+
+    // member variable
+    protected $customers;
+
+    ...
+
+    // doGet() method
+    $initialContext = $this->session->createInitialContext();
+    $proxy = $initialContext->lookup('TechDivision\Example\Services\CustomerProcessor');
+    $this->customers = $proxy->findAll();
+
+It is the same principle. We request again a proxy class which takes all the communication for us via the socket. We just
+call the ``findAll()`` method we already implemented in our customer processor. The final step is now to customize the
+template like this:
+
+.. code-block:: php
+    :linenos:
+
+    <?php foreach ($this->customers as $customer): ?>
+        <div><?php echo $customer->getName() ?></div>
+    <?php endforeach; ?>
+
+We iterate over all customers and echo their names. The final step is now to change the ``doPost()`` method as we still
+return the Hello World example. Change the last line of the method to this line:
+
+.. code-block:: php
+    :linenos:
+
+    $this->doGet($req, $res);
+
+It is now time to restart the appserver again and go to ``localhost:8586/myfirstapp/customer`` to see what we have built.
+You can now type in new customer names and view them in the frontend. Please note that this is just a very simple example
+to demonstrate how appserver works. It is a beginner tutorial. The demonstrated code should clearly be refactored, but
+for this tutorial it is good to go. Feel free to try out more functionality like updating and deleting entities.
+
 
 # Component Documentation FAQ
 Most components the Application Server composes of have their own documentation. If you miss a piece of information you might look there.
@@ -123,7 +677,20 @@ But to shorten your search have a look below:
 - *WebServer Rewrite Rules* : Similar to [Apache's mod_rewrite]. See more [here](http://httpd.apache.org/docs/current/mod/mod_rewrite.html)
 
 - *Design by Contract usage* : You can use design by contract like described [here](<https://github.com/wick-ed/php-by-contract>)
+____________________________________________
+# Appserver Basics
 
+## Technical Background & Architecture
+* Joe Watkins [phtreads](https://github.com/krakjoe/pthreads) library is used
+* DI & AO  usage within the respective container
+* Use of annotations to configure beans
+* Configuration by Exception (optional Usage of Deployment Descriptor possible)
+
+The implementation of a Web application and its operation in the PHP Application Server must be as simple as possible. For this purpose, whenever possible, the utilization of standard solution based on existing components as a, such as Doctrine, are used. On the other hand, with the paradigm Configuration by exception, the operation of an application with a minimum of configuration is needed. So a lot of the use cases is already covered by the default behavior of the respective integrated components so that the developer often does not need declarative configuration information.To appeal to the widest possible community the architecture of the Application Server must be constructed so that as large a number of existing applications can easily be migrated via adapter. Furthermore, the future development of Web applications based on all relevant PHP frameworks by providing libraries is supported.
+
+## appserver.xml the Configuration
+
+____________________________________________
 # Roadmap
 As we're in heavy development it may be, that we've to move some tasks from the following roadmap to a earlier/later version, please be aware of that. If you've ideas or features that definitely has to be in one of the next releases, please contact us. We're always open for new ideas or feedback.
 
