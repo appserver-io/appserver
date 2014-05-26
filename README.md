@@ -19,13 +19,16 @@ For faster navigation within the documentation (it grew quite long):
 		- [CentOS](<#centos>)
 		- [Raspbian](<#raspbian>)
 	* [Basic Usage](<#basic-usage>)
-		- [Start and Stop Scripts](<start-and-stop-scripts>)
+		- [Start and Stop Scripts](<#start-and-stop-scripts>)
 	* [Uninstallation](<#uninstallation>)
-- [Webapp Basics](<#webapp-basics>)
+- [Appserver Basics](<#appserver-basics>)
 	* [App Deployment](<https://github.com/techdivision/TechDivision_Runtime/tree/master/src/deploy>)
 	* [App Development](<#app-development>)
-
-
+- [Webapp Basics](<#webapp-basics>)
+	* [Technical Background and Architecture](<#technical-background-and-architecture>)
+	* [Appserver.xml the Configuration](<#appserver.xml-the-configuration>)
+	* [Creating your own server](<#creating-your-own-server>)
+- [Roadmap](<#roadmap>)
 ____________________________________________
 # Getting started
 Below are some simple steps to get you started using the appserver.
@@ -141,36 +144,37 @@ If you are interested in our naming, you can see our container->server pattern, 
 
 ### Start and Stop Scripts
 
-We provide start and stop scripts for all *nix like operating systems.
-These work the way they normally would on the regarding systems.
+Together with the appserver we deliver several standalone processes which we need for proper functioning of different features.
 
-Currently we support three different types of init scripts:
+For these processes we provide start and stop scripts for all *nix like operating systems.
+These work the way they normally would on the regarding system.
+They are:
+
+* `appserver`: The main process which will start the appserver itself
+
+* `appserver-php5-fpm`: php-fpm + appserver configuration. Our default FastCGI backend. Others might be added the same way
+
+* `appserver-watcher`: A watchdog which monitors filesystem changes and manages appserver restarts
+
+On a normal system all three of these processes should run to enable the full feature set.
+To ultimately run the appserver only the appserver process is needed but you will miss simple on-the-fly deployment (`appserver-watcher`) and might have problems with legacy applications.
+Depending on the FastCGI Backend you want to use you might ditch `appserver-php5-fpm` for other processes e.g. supplying you with a hhvm backend.
+
+Currently we support three different types of init scripts which support the commands `start`, `stop`, `status` and `restart` (additional commands migth be available on other systems).
 
 **Mac OS X (LAUNCHD)**
 The LAUNCHD launch daemons are located within the appserver installation at `/opt/appserver/sbin`.
 They can be used with the schema `/opt/appserver/sbin/<DAEMON> <COMMAND>`
 
 **Debian, Raspbian, CentOS, ...(SystemV)**
-
+Commonly known and located in `/etc/init.d/` they too support the commands mentioned above  provided in the form `/etc/init.d/<DAEMON> <COMMAND>`.
 
 **Fedora, ... (systemd)**
+systemd init scripts can be used using the `systemctl` command with the syntax `systemctl <COMMAND> <DAEMON>`.
 
-To uninstall the Application Server on Mac OS X, you simply have to delete the folder `/opt/appserver` and the configuration files for the launch deameons. These are files are located in folder `/Library/LaunchDaemons` and named `io.appserver.<DAEMON>.plist`.
-If you're using any Linux distribution you might use your package management tool to remove the appserver after you stopped its daemons.
+**Windows**
 
-To install the Application Server on Fedora you first have to download the latest .rpm archive from
-http://appserver.io/downloads.
-You can double click the .rpm package for installation or use yum with `yum install <PATH_TO_RPM>` as root.
-This will install the appserver within `/opt/appserver` and start it together with a file watcher daemon as soon as installation finishes.
-
-
-
-During installation we registered systemd units for the appserver, so you can control it with `systemctl <COMMAND> appserver` where command
-are the basic systemd commands like `start`, `stop`, `restart` and `status`.
-Please also restart the `watcher` and `appserver-fpm` daemon if necessary.
-
-
-On Windows we do not offer any of these scripts.
+On Windows we sadly do not offer any of these scripts.
 After the installation you can start the Application Server with the ``server.bat`` file located within the root directory of your installation.
 Best thing to do would be starting a command prompt as an administrator and run the following commands (assuming default installation path):
 
@@ -180,57 +184,54 @@ C:\Program Files\appserver>server.bat
 ```
 
 # Uninstall
-To uninstall the Application Server on Mac OS X, you simply have to delete the folder `/opt/appserver` and the configuration files for the launch deameons. These are files are located in folder `/Library/LaunchDaemons` and named `io.appserver.<DAEMON>.plist`.
-If you're using any Linux distribution you might use your package management tool to remove the appserver after you stopped its daemons.
 
-To install the Application Server on Fedora you first have to download the latest .rpm archive from
-http://appserver.io/downloads.
-You can double click the .rpm package for installation or use yum with `yum install <PATH_TO_RPM>` as root.
-This will install the appserver within `/opt/appserver` and start it together with a file watcher daemon as soon as installation finishes.
+Before uninstalling you might stop all services which are still running, otherwise there might be probpems with existing pid-files on Linux for the next time you install it.
 
+To uninstall the appserver on Linux you might rely on your package management system. 
+On Windows you can use the normal uninstall process provided by the operating system.
 
+Under Mac OS X you can simply delete the `/opt/appserver` folder and delete the configuration
+files for the launch deameons. These are files are located in folder `/Library/LaunchDaemons` and named `io.appserver.<DAEMON>.plist`.
 
-During installation we registered systemd units for the appserver, so you can control it with `systemctl <COMMAND> appserver` where command
-are the basic systemd commands like `start`, `stop`, `restart` and `status`.
-Please also restart the `watcher` and `appserver-fpm` daemon if necessary.
 ____________________________________________
 # Webapp Basics
 Below you will find instructions and further information about our concept of webapps, php applications running within the appserver.
+To understand why we coined the term "webapps" for them we need to have a look on the two concepts we offer as a base for such apps.
+The first one is well known in the PHP community: **PHP scripts**. These cover basically every PHP application right now which get bootstrapped by a script and mostly consists of basic object oriented structures PHP offers.
+The second is a concept derived from the Java world we would like to introduce to the PHP world: [**servlets**](<http://en.wikipedia.org/wiki/Servlet>).
+Servlets, and therefor the apps using them, are not bootstrapped by scripts but rather by the appserver itself. That in combination with the multithreaded [architecture](<#technical-background-and-architecture>) allows for a very unique use of PHP classes which are implemented as servlets.
+To further get to know the concept you might check for a more [practical example](<#app-development>).
 
 ## App Deployment
-We implemented a deployment system which took notes at the WildFly deployment workflow. You can either use it via file manipulations or our own management API.
+We implemented a deployment system which took notes at the [WildFly](<http://en.wikipedia.org/wiki/Wildfly>)(formerly JBoss) deployment workflow. You can either use it via file manipulations or our own management API.
 A documentation of general deployment can be found [here](<https://github.com/techdivision/TechDivision_Runtime/tree/master/src/deploy>)
 
 
 ## App Development
-This is a getting started tutorial for all folks who want to get in touch with appserver and want to learn how it works.
+This is a "getting started" tutorial for everyone who wants to learn about the appserver speciality: servlets.
 It will guide you through setting up your first webapp, which serves HTTP requests. All necessary steps are explained in
-detail. It is assumed that you already installed appserver via the installer packages (explained above).
+detail. It is assumed that you already installed the appserver as described [here](<#installation>).
 
 ### Let's get started
-The appserver has its own runtime environment. After you installed appserver successfully on your system, it is accessible
-under ``/opt/appserver``. This runtime already contains all necessary files and binaries to run appserver. There is a
-folder ``webapps`` where all your web applications are deployed. So let's get you up running your first webapp. Type
+Within the appserver runtime there is a folder ``webapps`` where all your web applications are deployed. So let's get you up running your own webapp. Type
 the following into your terminal::
 
     cd /opt/appserver/webapps
     composer.phar create-project techdivision/techdivision_applicationserverproject myfirstapp dev-master
 
 *myfirstapp* is the name of the webapp, it is necessary to call it by url. If you haven't already started the appserver
-do it now by typing (user *restart* if appserver is already running)::
+do it now by typing using the appropriate restart commands as described [here](<#start-and-stop-scripts>).
 
-    [Mac OS] sudo /opt/appserver/sbin/appserverctl start
-    [Debian] sudo /etc/init.d/appserver start
-
-By default the appserver is running on port 8586. Therefore head over to ``localhost:8586/myfirstapp``. Notice the webapp
+By default the appserver is running on port 9080. Therefore head over to ``127.0.0.1:9080/myfirstapp/demo.do``. Notice the webapp
 name in the url, if you have chosen something else as the name, use it instead of *myfirstapp*.
+The basic app stub should be visible and should look like this.
 
-.. image:: images/myfirstapp.png
+![myfirstapp landing page](doc/images/myfirstapp.png)
 
-Let's look into some source code to get to know how everything works. Open up your webapps folder ``webapps/myfirstapp``
-in your favourite editor. The structure of the web application is similar to webapp structures of Tomcat or JBoss. Open
-``WEB-INF/web.xml``. This is the configuration file for your webapp's routes. In general it is the servlet configuration
-for your servlet container. A servlet can be defined as follows:
+Let's look into some source code to get to know where the `.do` comes from. Open up your webapps folder ``webapps/myfirstapp``
+in your favourite editor. You will see that the structure of the web application is similar to webapp structures of [Tomcat](<http://en.wikipedia.org/wiki/Apache_Tomcat>) or WildFly. 
+Open ``WEB-INF/web.xml``. This is the configuration file for your webapp's routes which contains servlets and their mapping to URIs.
+A servlet can be defined as follows:
 
 ```xml
 <servlet>
@@ -240,20 +241,26 @@ for your servlet container. A servlet can be defined as follows:
     <servlet-class>\TechDivision\Example\Servlets\DemoServlet</servlet-class>
 </servlet>
 ```
+
 There you define the servlet name and map it to a servlet class defined by a namespace. If you open ``WEB-INF/classes``
 you will find the defined servlet. This servlet can now be used in a route mapping like the following.
+
 
 ```xml
 <servlet-mapping>
    	<servlet-name>DemoServlet</servlet-name>
-    <url-pattern>/</url-pattern>
+    <url-pattern>/*</url-pattern>
 </servlet-mapping>
 ```
 
-Try some other url patterns here, restart the appserver and test them in the browser's url bar. It will always call the
+This means that the servlet `DemoServlet` is mapped to every URI (or PATH_INFO if your app is not your document root) and will therefor handle every request to your app.
+So why the `.do`? As you will learn [later](<#technical-background-and-architecture>) the appserver's work-horse is the *Server* component. And simply put: the server responsible for http requests needs to know when it has to handle servlets.
+So consider the `.do` a, in this case imaginary, file extension like .php or .html.
+
+So try some other URI patterns here e.g. `/index.do*`, restart the appserver and test them in the browser's url bar. It will always call the
 same servlet which delivers the same content. Let's inspect the corresponding servlet class by opening
-``WEB-INF/webapps/classes/TechDivisioon/Example/Servlets/DemoServlet.php``. The servlet deviates from ``HttpServlet`` as
-it conforms to the HTTP 1.1 protocol. For every method of this protocol a function is provided by this class which can
+``WEB-INF/webapps/classes/TechDivisioon/Example/Servlets/DemoServlet.php``. The servlet inherits from ``HttpServlet`` as
+it conforms to the HTTP 1.1 protocol. For every method of this protocol a method is provided by this class which can
 be overridden. Most of the time you will use ``doGet()`` or ``doPost()`` for GET and POST methods. Let's inspect the
 ``doGet()`` in detail.
 
@@ -288,78 +295,49 @@ public function doGet(HttpServletRequest $req, HttpServletResponse $res)
 ```
 
 First the path to the template is built, afterwards the template is constructed. The template needs some data to display,
-which is set by several functions. The last line of the function sets the response content, which is send back to the
-client. You can inspect the template on your own. It is easy enough to understand by reading the code. You can of course
-use your own template functionalities or engines if you want. This template class is just a simple approach for
-demonstration purposes.
+which is set by several methods. The last line of the method sets the response content, which is sent back to the
+client.
+You can of course use your own template functionalities, engines or build a webservice on this base if you want. This template class is just a simple approach for demonstration purposes.
 
-If you want to add static content like images to your template you have to define a static servlet. Fortunately there
-already exists one. Open ``WEB-INF/web.xml`` again and search for ``StaticResourceServlet``. You see the corresponding
-url pattern is defined as ``/components/*`` or ``/static/*``, which means that all static content should be loaded by `
-these url patterns. You can define whatever url pattern you want for your static resources. We simply separated between
-libraries and custom stuff.
+Please note that you only have to handle requests against servlets this way! Every other file, like images or other static content, will be delivered by the server automatically.
 
 ### Let's build something CRUDish
 
 You already learned how to configure and create a servlet, which is conform to the HTTP protocol and can deliver content
 to the client. Now it is time to dive deep into the structure of the appserver. As a first webapp we will build something
-CRUDish, which involves data handling. In order to store some data you can set up your own database somewhere you can
-connect to. In your servlet you can connect to it and everything is fine. But wait! This is just the old school PHP
-stuff, how to handle data with Apache or similar servers. As we use the appserver we have much more advantages. The
-appserver comes along with a persistence container. With this architecture, your webapp is scalable, as containers can
-scale. You will learn by this tutorial how this works in detail.
+CRUDish, which involves data handling. You would normally do this with a database. But why implement a database layer in your app when the server can do that for you? As we use the appserver we have much more advantages. 
+The appserver comes along with a persistence container. With this architecture, your webapp is scalable, as containers, which contain servers, can scale. You will learn by this tutorial how this works in detail.
 
-Let's build a little system which can save customers. After creating a new customer, we can view them again. The first
+So let's build a little system which can save customers. After creating a new customer, we can view them again. The first
 step is to build a little form which takes the users input data and send it to the server. Therefore, we head over to
 ``WEB-INF/web.xml`` and add our route for this form.
 
-.. code-block:: xml
-    :linenos:
+```xml
+<servlet>
+  	<description><![CDATA[A customer servlet]]></description>
+   	<display-name>CustomerServlet</display-name>
+   	<servlet-name>CustomerServlet</servlet-name>
+   	<servlet-class>\TechDivision\Example\Servlets\CustomerServlet</servlet-class>
+</servlet>
 
-    <servlet>
-        <description><![CDATA[A customer servlet]]></description>
-        <display-name>CustomerServlet</display-name>
-        <servlet-name>CustomerServlet</servlet-name>
-        <servlet-class>\TechDivision\Example\Servlets\CustomerServlet</servlet-class>
-    </servlet>
+<servlet-mapping>
+  	<servlet-name>CustomerServlet</servlet-name>
+   	<url-pattern>/customer.do*</url-pattern>
+</servlet-mapping>
+```
 
-    <servlet-mapping>
-        <servlet-name>CustomerServlet</servlet-name>
-        <url-pattern>/customer</url-pattern>
-    </servlet-mapping>
+The customer servlet is now callable via the route ``/customer.do``. But before we do so, let's create the servlet. It is a
+class in the path ``WEB-INF/classes/TechDivision/Example/Servlets`` (if you did not change it within the ``web.xml``).
 
-The customer servlet is now callable via the route ``/customer``. But before we do so, let's create the servlet. It is a
-class in the path ``WEB-INF/classes/TechDivision/Example/Servlets`` (this depends on the namespace you defined in
-``web.xml``).
-
-.. code-block:: php
-    :linenos:
-
-    namespace TechDivision\Example\Servlets;
+```php
+namespace TechDivision\Example\Servlets;
    
-    use TechDivision\Servlet\Http\HttpServlet;
-    use TechDivision\Servlet\Http\HttpServletRequest;
-    use TechDivision\Servlet\Http\HttpServletResponse;
+use TechDivision\Servlet\Http\HttpServlet;
+use TechDivision\Servlet\Http\HttpServletRequest;
+use TechDivision\Servlet\Http\HttpServletResponse;
 
-    class CustomerServlet extends HttpServlet
-    {
-        public function doGet(HttpServletRequest $req, HttpServletResponse $res)
-        {
-            $res->appendBodyStream('Hello World');
-        }
-    }
-
-It is now time to restart your appserver in order to reload the changes made. After that open the url of your webapp
-and you will see this:
-
-.. image:: images/helloworld.png
-
-As we can see the content we set to the response is transmitted to the client. A first template can now be build and
-delivered on the same way.
-
-.. code-block:: php
-    :linenos:
-
+class CustomerServlet extends HttpServlet
+{
     public function doGet(HttpServletRequest $req, HttpServletResponse $res)
     {
         $webappPath = $this->getServletConfig()->getWebappPath();
@@ -380,55 +358,56 @@ delivered on the same way.
         $html = ob_get_clean();
 
         $res->appendBodyStream($html);
-    }
+    }  
+    // ... 
+```
 
+A template containing a form can now be build and delivered as already seen above.
 The templates are in the directory ``static/templates`` of the webapp root directory. If it exists it gets rendered and
 its output is set as the response's content. The only thing to do is to fill the template with life. Create the file
 ``static/templates/customer.phtml`` and insert the following.
 
-.. code-block:: html
-    :linenos:
-
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="utf-8">
-    </head>
-    <body>
-        <form action="customer" method="post">
-            <input type="hidden" name="action" value="persist" />
-            <input type="hidden" name="customerId" value="<?php echo $customerId ?>" />
-            <input name="name" type="text" placeholder="Enter customer name" />
-            <button type="submit" class="btn">Submit</button>
-        </form>
-    </body>
-    </html>
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  	<meta charset="utf-8">
+</head>
+<body>
+ 	<form action="customer" method="post">
+       	<input type="hidden" name="action" value="persist" />
+      	<input type="hidden" name="customerId" value="<?php echo $customerId ?>" />
+       	input name="name" type="text" placeholder="Enter customer name" />
+      	<button type="submit" class="btn">Submit</button>
+  	</form>
+</body>
+</html>
+```
 
 As you can see the form uses the POST method to post its data. As we only support GET in ``CustomerServlet`` we have to
 implement a corresponding method which can handle POST.
 
-.. code-block:: php
-    :linenos:
+```php
+public function doPost(HttpServletRequest $req, HttpServletResponse $res)
+{
+  	// load the params with the entity data
+   	$parameterMap = $req->getParameterMap();
 
-    public function doPost(HttpServletRequest $req, HttpServletResponse $res)
-    {
-        // load the params with the entity data
-        $parameterMap = $req->getParameterMap();
+   	// check if the necessary params has been specified and are valid
+   	if (!array_key_exists('customerId', $parameterMap)) {
+      	throw new \Exception();
+   	} else {
+       	$customerId = filter_var($parameterMap['customerId'], FILTER_VALIDATE_INT);
+   	}
+   	if (!array_key_exists('name', $parameterMap)) {
+       	throw new \Exception();
+   	} else {
+       	$name = filter_var($parameterMap['name'], FILTER_SANITIZE_STRING);
+   	}
 
-        // check if the necessary params has been specified and are valid
-        if (!array_key_exists('customerId', $parameterMap)) {
-            throw new \Exception();
-        } else {
-            $customerId = filter_var($parameterMap['customerId'], FILTER_VALIDATE_INT);
-        }
-        if (!array_key_exists('name', $parameterMap)) {
-            throw new \Exception();
-        } else {
-            $name = filter_var($parameterMap['name'], FILTER_SANITIZE_STRING);
-        }
-
-        $res->setContent('Hello ' . $name);
-    }
+  	$res->setContent('Hello ' . $name);
+}
+```
 
 So far so good, but we want to persist the customer to the database. Therefore we have to take a look on the persistence
 container. Open ``META-INF/appserver-ds.xml``. This is a dummy configuration file for the persistence container. Change
@@ -681,14 +660,31 @@ ____________________________________________
 # Appserver Basics
 
 ## Technical Background & Architecture
-* Joe Watkins [phtreads](https://github.com/krakjoe/pthreads) library is used
-* DI & AO  usage within the respective container
-* Use of annotations to configure beans
-* Configuration by Exception (optional Usage of Deployment Descriptor possible)
+
+The technical foundation was given by the introduction of PHP userland threads in the form of Joe Watkins' [phtreads](https://github.com/krakjoe/pthreads) library.
+Using this library we are able to utilize real [POSIX](<http://en.wikipedia.org/wiki/Posix>) compatible threads which allows us to build up complex structures and non-blocking connection handlers within only one PHP process.
+It also allows for communication in between these threads.
+
+With this technology we can build up a versatile, component based and scaleable environment.
+To structure this environment we use certain terms which represent specialized classes for building up component blocks, handling external communication or do the actual work. ;)
+These components are:
+
+* *Container*: 
+
+* *Container*: 
+
+* *Container*: 
+
+* *Container*: 
+
+
+![myfirstapp landing page](doc/images/myfirstapp.png)
 
 The implementation of a Web application and its operation in the PHP Application Server must be as simple as possible. For this purpose, whenever possible, the utilization of standard solution based on existing components as a, such as Doctrine, are used. On the other hand, with the paradigm Configuration by exception, the operation of an application with a minimum of configuration is needed. So a lot of the use cases is already covered by the default behavior of the respective integrated components so that the developer often does not need declarative configuration information.To appeal to the widest possible community the architecture of the Application Server must be constructed so that as large a number of existing applications can easily be migrated via adapter. Furthermore, the future development of Web applications based on all relevant PHP frameworks by providing libraries is supported.
 
 ## appserver.xml the Configuration
+
+## Creating your own service
 
 ____________________________________________
 # Roadmap
