@@ -134,7 +134,6 @@ abstract class AbstractDeployment implements DeploymentInterface
             sprintf(
                 'Successfully started app %s in container %s',
                 $application->getName(),
-                $application->getWebappPath(),
                 $application->getContainerNode()->getName()
             )
         );
