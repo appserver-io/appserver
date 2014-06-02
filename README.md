@@ -10,7 +10,7 @@ The objective of the project is to develop a multi-threaded application server f
 
 # Documentation
 
-Look for help?
+Looking for help?
 Our [documentation can found here](<https://github.com/techdivision/TechDivision_AppserverDocumentation>)!
 Either browse around or just have a look on [how to get started](<https://github.com/techdivision/TechDivision_AppserverDocumentation/tree/master/docs/getting-started>). :)
 
