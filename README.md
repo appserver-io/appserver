@@ -7,14 +7,14 @@ ____________________________________________
 # Introduction
 The objective of the project is to develop a multi-threaded application server for PHP, written in PHP. Yes, pure PHP! You think we aren't serious? Maybe! But we think, in order to enable as many developers in our great community, this will be the one and only way. So with your help we hopefully establish a solution as the standard for enterprise applications in PHP environments.
 
-____________________________________________
+
 # Documentation
 
 Look for help?
 Our [documentation can found here](<https://github.com/techdivision/TechDivision_AppserverDocumentation>)!
 Either browse around or just have a look on [how to get started](<https://github.com/techdivision/TechDivision_AppserverDocumentation/tree/master/docs/getting-started>). :)
 
-____________________________________________
+
 # Roadmap
 As we're in heavy development it may be, that we've to move some tasks from the following roadmap to a earlier/later version, please be aware of that. If you've ideas or features that definitely has to be in one of the next releases, please contact us. We're always open for new ideas or feedback.
 
