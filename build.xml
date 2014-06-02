@@ -168,7 +168,7 @@
     <!-- Copies the documentation to the target directory                     -->
     <!-- ==================================================================== -->
     <target name="copy-doc" description="Copies the documentation to the target directory.">
-        <exec executable="make" dir="${basedir}/doc" failonerror="true">
+        <exec executable="make" dir="${basedir}/doc-generator" failonerror="true">
             <arg line="html" />
         </exec>
         <copy file="${doc.build.file}" tofile="${doc.target.file}" overwrite="true"/>

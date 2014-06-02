@@ -16,9 +16,9 @@ Either browse around or just have a look on [how to get started](<https://github
 
 
 # Roadmap
-As we're in heavy development it may be, that we've to move some tasks from the following roadmap to a earlier/later version, please be aware of that. If you've ideas or features that definitely has to be in one of the next releases, please contact us. We're always open for new ideas or feedback.
+As we're in heavy development it may be, that we've to move some tasks from the following roadmap to a earlier/later version, please be aware of that. If you've got ideas or features that definitely have to be in one of the next releases, please contact us. We're always open for new ideas or feedback.
 
-And yes, we've plans for a Community and a Enterprise edition. The Community Edition will provide all functionality needed to develop, run maintain all kind of web applications. The Enterprise Edition will focus on large software solutions that run on many servers and needs real cluster functionality.
+And yes, we have plans for a Community and an Enterprise edition. The Community Edition will provide all functionality needed to develop, run and maintain all kind of web applications. The Enterprise Edition will focus on large software solutions that run on many servers and need advanced features like cluster functionality.
 
 ## Community Edition
 
