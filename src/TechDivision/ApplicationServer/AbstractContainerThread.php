@@ -77,10 +77,6 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
      */
     public function main()
     {
-        // deploy the applications and return them as array
-        $this->applications = $this->getDeployment()
-            ->deploy()
-            ->getApplications();
 
         // define webservers base dir
         define(
@@ -93,6 +89,13 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
             SERVER_BASEDIR .
             'app' . DIRECTORY_SEPARATOR . 'code' . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php'
         );
+
+        // application deployment
+        $deployment = $this->getDeployment();
+        $deployment->deploy();
+
+        // make applications available in container
+        $this->applications = $deployment->getApplications();
 
         // setup configurations
         $serverConfigurations = array();
@@ -142,6 +145,17 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
                 $this->notify();
             }
         );
+
+        /*
+         * IMPORTANT: This is necessary to allow access of stackables
+         * 	          inside of applications.
+         *
+         * @author: Tim Wagner
+         * @date:   2014-05-28
+         */
+        foreach ($servers as $server) {
+            $server->join();
+        }
     }
 
     /**
