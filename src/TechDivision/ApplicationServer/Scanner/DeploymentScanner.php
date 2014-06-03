@@ -413,10 +413,10 @@ class DeploymentScanner extends AbstractContextThread
         }
 
         //Loop through our mapping and look if we have a match
+        $distributionCandidates = array();
         foreach ($this->distroMapping as $distribution => $releaseFile) {
 
             // Do we have a match which is not just a soft link on the actual file? If so collect the distro
-            $distributionCandidates = array();
             if (isset($etcList[$releaseFile]) && !is_link($etcDir . DIRECTORY_SEPARATOR . $releaseFile)) {
 
                 $distributionCandidates[$releaseFile] = $distribution;
