@@ -76,10 +76,10 @@ class DeploymentScanner extends AbstractScanner
 
         // wait until the server has been successfully started at least once
         while ($this->getLastSuccessfullyDeployment(
-                new \SplFileInfo(
-                    $directory . DIRECTORY_SEPARATOR . ExtractorInterface::FILE_DEPLOYMENT_SUCCESSFULL
-                )
-            ) === 0) {
+            new \SplFileInfo(
+                $directory . DIRECTORY_SEPARATOR . ExtractorInterface::FILE_DEPLOYMENT_SUCCESSFULL
+            )
+        ) === 0) {
             $this->getSystemLogger()->debug('Deplyoment scanner is waiting for first successful deployment ...');
             sleep(1);
         }

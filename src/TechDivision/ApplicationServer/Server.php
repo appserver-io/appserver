@@ -374,6 +374,8 @@ class Server
 
     /**
      * Will safely put the appserver to rest by cleaning up after the last run
+     *
+     * @return void
      */
     public function cleanup()
     {

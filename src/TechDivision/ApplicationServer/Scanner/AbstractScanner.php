@@ -24,7 +24,7 @@ use TechDivision\ApplicationServer\AbstractContextThread;
 /**
  * TechDivision\ApplicationServer\Scanner\AbstractScanner
  *
- * <TODO CLASS DESCRIPTION>
+ * Abstract scanner which provides basic functionality to its children.
  *
  * @category   Appserver
  * @package    TechDivision_ApplicationServer
@@ -346,5 +346,3 @@ abstract class AbstractScanner extends AbstractContextThread
         return md5($files->serialize());
     }
 }
-
- 

@@ -162,8 +162,4 @@ class HeartbeatScanner extends AbstractScanner
             }
         }
     }
-
-
 }
-
- 
