@@ -3,12 +3,12 @@ language: php
 php:
   - 5.5
   - 5.4
-  
+
 before_install:
   - pecl install pthreads-beta
   - pyrus install pear/PHP_CodeSniffer
   - phpenv rehash
-  
+
 script:
   - ant build
 

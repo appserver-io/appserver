@@ -20,7 +20,9 @@ use TechDivision\ApplicationServer\Interfaces\ExtractorInterface;
 use TechDivision\ApplicationServer\InitialContext;
 use TechDivision\ApplicationServer\Api\Node\NodeInterface;
 use TechDivision\ApplicationServer\Api\Node\AppserverNode;
+use TechDivision\ApplicationServer\Scanner\HeartbeatScanner;
 use TechDivision\ApplicationServer\Utilities\StateKeys;
+use TechDivision\ApplicationServer\Utilities\DirectoryKeys;
 use \Psr\Log\LoggerInterface;
 
 /**
@@ -353,7 +355,7 @@ class Server
      *
      * @param \TechDivision\ApplicationServer\Interfaces\ProvisionerInterface $provisioner The initial context instance
      *
-     * @return void
+     * @return array
      */
     public function addProvisioner(ProvisionerInterface $provisioner)
     {
@@ -371,6 +373,19 @@ class Server
     }
 
     /**
+     * Will safely put the appserver to rest by cleaning up after the last run
+     */
+    public function cleanup()
+    {
+        // We need to delete the heartbeat file as the watcher might restart the appserver otherwise
+        unlink(
+            APPSERVER_BP . DIRECTORY_SEPARATOR .
+            DirectoryKeys::RUN . DIRECTORY_SEPARATOR .
+            HeartbeatScanner::HEARTBEAT_FILE_NAME
+        );
+    }
+
+    /**
      * Start the container threads.
      *
      * @return void
@@ -378,7 +393,6 @@ class Server
      */
     public function start()
     {
-
         // init the extractor
         $this->initExtractor();
 
@@ -404,6 +418,20 @@ class Server
 
         // Switch to the configured user (if any)
         $this->initProcessUser();
+
+        // Start giving the heartbeat to tell everyone we are alive
+        while (true) {
+
+            // Tell them we are alive
+            touch(
+                APPSERVER_BP . DIRECTORY_SEPARATOR .
+                DirectoryKeys::RUN . DIRECTORY_SEPARATOR .
+                HeartbeatScanner::HEARTBEAT_FILE_NAME
+            );
+
+            // Sleep a little
+            sleep(1);
+        }
     }
 
     /**
@@ -420,13 +448,25 @@ class Server
     {
 
         // initialize the default monitor for the deployment directory
-        $monitor = $this->newInstance(
+        $monitors = array();
+
+        // Add a deployment scanner
+        $monitors[] = $this->newInstance(
             'TechDivision\ApplicationServer\Scanner\DeploymentScanner',
             array($this->getInitialContext())
         );
 
-        // start the monitor
-        $monitor->start();
+        // Add a heartbeat scanner
+        $monitors[] = $this->newInstance(
+            'TechDivision\ApplicationServer\Scanner\HeartbeatScanner',
+            array($this->getInitialContext())
+        );
+
+        // Start all monitors
+        foreach ($monitors as $monitor) {
+
+            $monitor->start();
+        }
     }
 
     /**
@@ -556,7 +596,7 @@ class Server
     }
 
     /**
-     * Stops the appserver by setting the apropriate flag in the
+     * Stops the appserver by setting the appropriate flag in the
      * initial context.
      *
      * @return void

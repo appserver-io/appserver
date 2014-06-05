@@ -52,6 +52,13 @@ class DirectoryKeys
     const LOG = 'var/log';
 
     /**
+     * Key for the run directory.
+     *
+     * @var string
+     */
+    const RUN = 'var/run';
+
+    /**
      * Key for the deployment directory.
      *
      * @var string
@@ -90,7 +97,8 @@ class DirectoryKeys
             DirectoryKeys::WEBAPPS,
             DirectoryKeys::TMP,
             DirectoryKeys::DEPLOY,
-            DirectoryKeys::LOG
+            DirectoryKeys::LOG,
+            DirectoryKeys::RUN
         );
     }
 }
