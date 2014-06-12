@@ -381,7 +381,10 @@ class Server
     {
         // We need to delete the heartbeat file as the watcher might restart the appserver otherwise
         unlink(
-            APPSERVER_BP . DIRECTORY_SEPARATOR .
+            $this->getSystemConfiguration()
+                ->getBaseDirectory()
+                ->getNodeValue()
+                ->__toString() . DIRECTORY_SEPARATOR .
             DirectoryKeys::RUN . DIRECTORY_SEPARATOR .
             HeartbeatScanner::HEARTBEAT_FILE_NAME
         );
@@ -426,7 +429,10 @@ class Server
 
             // Tell them we are alive
             touch(
-                APPSERVER_BP . DIRECTORY_SEPARATOR .
+                $this->getSystemConfiguration()
+                    ->getBaseDirectory()
+                    ->getNodeValue()
+                    ->__toString() . DIRECTORY_SEPARATOR .
                 DirectoryKeys::RUN . DIRECTORY_SEPARATOR .
                 HeartbeatScanner::HEARTBEAT_FILE_NAME
             );
