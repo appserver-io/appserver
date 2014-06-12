@@ -458,12 +458,6 @@ class Server
             array($this->getInitialContext())
         );
 
-        // Add a heartbeat scanner
-        $monitors[] = $this->newInstance(
-            'TechDivision\ApplicationServer\Scanner\HeartbeatScanner',
-            array($this->getInitialContext())
-        );
-
         // Start all monitors
         foreach ($monitors as $monitor) {
 
