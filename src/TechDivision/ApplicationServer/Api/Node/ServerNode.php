@@ -38,6 +38,7 @@ class ServerNode extends AbstractNode
     use RewritesNodeTrait;
     use AccessesNodeTrait;
     use LocationsNodeTrait;
+    use AuthenticationsNodeTrait;
 
     /**
      * The server's type
@@ -86,14 +87,6 @@ class ServerNode extends AbstractNode
      * @AS\Mapping(nodeType="string")
      */
     protected $serverContext;
-
-    /**
-     * The virtual hosts
-     *
-     * @var array
-     * @AS\Mapping(nodeName="authentications/authentication", nodeType="array", elementType="TechDivision\ApplicationServer\Api\Node\AuthenticationNode")
-     */
-    protected $authentications;
 
     /**
      * The virtual hosts
@@ -185,16 +178,6 @@ class ServerNode extends AbstractNode
     public function getServerContext()
     {
         return $this->serverContext;
-    }
-
-    /**
-     * Return's the authentications
-     *
-     * @return array
-     */
-    public function getAuthentications()
-    {
-        return (array) $this->authentications;
     }
 
     /**

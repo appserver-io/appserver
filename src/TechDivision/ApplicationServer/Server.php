@@ -20,7 +20,9 @@ use TechDivision\ApplicationServer\Interfaces\ExtractorInterface;
 use TechDivision\ApplicationServer\InitialContext;
 use TechDivision\ApplicationServer\Api\Node\NodeInterface;
 use TechDivision\ApplicationServer\Api\Node\AppserverNode;
+use TechDivision\ApplicationServer\Scanner\HeartbeatScanner;
 use TechDivision\ApplicationServer\Utilities\StateKeys;
+use TechDivision\ApplicationServer\Utilities\DirectoryKeys;
 use \Psr\Log\LoggerInterface;
 
 /**
@@ -110,6 +112,8 @@ class Server
 
     /**
      * Init the umask to use creating files/directories.
+     *
+     * @throws \Exception
      *
      * @return void
      */
@@ -353,7 +357,7 @@ class Server
      *
      * @param \TechDivision\ApplicationServer\Interfaces\ProvisionerInterface $provisioner The initial context instance
      *
-     * @return void
+     * @return array
      */
     public function addProvisioner(ProvisionerInterface $provisioner)
     {
@@ -371,6 +375,24 @@ class Server
     }
 
     /**
+     * Will safely put the appserver to rest by cleaning up after the last run
+     *
+     * @return void
+     */
+    public function cleanup()
+    {
+        // We need to delete the heartbeat file as the watcher might restart the appserver otherwise
+        unlink(
+            $this->getSystemConfiguration()
+                ->getBaseDirectory()
+                ->getNodeValue()
+                ->__toString() . DIRECTORY_SEPARATOR .
+            DirectoryKeys::RUN . DIRECTORY_SEPARATOR .
+            HeartbeatScanner::HEARTBEAT_FILE_NAME
+        );
+    }
+
+    /**
      * Start the container threads.
      *
      * @return void
@@ -378,7 +400,6 @@ class Server
      */
     public function start()
     {
-
         // init the extractor
         $this->initExtractor();
 
@@ -407,6 +428,33 @@ class Server
     }
 
     /**
+     * Starts giving the heartbeat to tell everyone we are alive.
+     * This will keep your server in an endless loop, so be wary!
+     *
+     * @return void
+     *
+     * @TODO integrate this into a maintenance layer
+     */
+    protected function initHeartbeat()
+    {
+        while (true) {
+
+            // Tell them we are alive
+            touch(
+                $this->getSystemConfiguration()
+                    ->getBaseDirectory()
+                    ->getNodeValue()
+                    ->__toString() . DIRECTORY_SEPARATOR .
+                DirectoryKeys::RUN . DIRECTORY_SEPARATOR .
+                HeartbeatScanner::HEARTBEAT_FILE_NAME
+            );
+
+            // Sleep a little
+            sleep(1);
+        }
+    }
+
+    /**
      * Scan's the deployment directory for changes and restarts
      * the server instance if necessary.
      *
@@ -420,13 +468,19 @@ class Server
     {
 
         // initialize the default monitor for the deployment directory
-        $monitor = $this->newInstance(
+        $monitors = array();
+
+        // Add a deployment scanner
+        $monitors[] = $this->newInstance(
             'TechDivision\ApplicationServer\Scanner\DeploymentScanner',
             array($this->getInitialContext())
         );
 
-        // start the monitor
-        $monitor->start();
+        // Start all monitors
+        foreach ($monitors as $monitor) {
+
+            $monitor->start();
+        }
     }
 
     /**
@@ -556,7 +610,7 @@ class Server
     }
 
     /**
-     * Stops the appserver by setting the apropriate flag in the
+     * Stops the appserver by setting the appropriate flag in the
      * initial context.
      *
      * @return void
