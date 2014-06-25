@@ -67,19 +67,13 @@ class DeploymentScanner extends AbstractScanner
         $directory = $this->getDirectory();
 
         // log the configured deployment directory
-        $this->getSystemLogger()->debug(
-            sprintf(
-                "Start watching deployment directory %s",
-                $directory
-            )
-        );
+        $this->getSystemLogger()->debug(sprintf('Start watching deployment directory %s', $directory));
+
+        // open the deployment flag
+        $deploymentFlag = new \SplFileInfo($directory . DIRECTORY_SEPARATOR . ExtractorInterface::FILE_DEPLOYMENT_SUCCESSFULL);
 
         // wait until the server has been successfully started at least once
-        while ($this->getLastSuccessfullyDeployment(
-            new \SplFileInfo(
-                $directory . DIRECTORY_SEPARATOR . ExtractorInterface::FILE_DEPLOYMENT_SUCCESSFULL
-            )
-        ) === 0) {
+        while ($this->getLastSuccessfullyDeployment($deploymentFlag) === 0) {
             $this->getSystemLogger()->debug('Deplyoment scanner is waiting for first successful deployment ...');
             sleep(1);
         }
@@ -96,33 +90,22 @@ class DeploymentScanner extends AbstractScanner
             $newHash = $this->getDirectoryHash($directory, $extensionsToWatch);
 
             // log the found directory hash value
-            $this->getSystemLogger()->debug(
-                sprintf(
-                    "Comparing directory hash %s (previous) : %s (actual)",
-                    $oldHash,
-                    $newHash
-                )
-            );
+            $this->getSystemLogger()->debug(sprintf("Comparing directory hash %s (previous) : %s (actual)", $oldHash, $newHash));
 
             // compare the hash values, if not equal restart the appserver
             if ($oldHash !== $newHash) {
 
                 // log that changes have been found
-                $this->getSystemLogger()->debug(
-                    sprintf(
-                        "Found changes in deployment directory",
-                        $directory
-                    )
-                );
+                $this->getSystemLogger()->debug(sprintf('Found changes in deployment directory %s', $directory));
 
                 // log the UNIX timestamp of the last successfull deployment
-                $lastSuccessfullDeployment = $this->getLastSuccessfullyDeployment($directory);
+                $lastSuccessfullDeployment = $this->getLastSuccessfullyDeployment($deploymentFlag);
 
                 // restart the appserver
                 $this->restart();
 
                 // wait until deployment has been finished
-                while ($lastSuccessfullDeployment == $this->getLastSuccessfullyDeployment($directory)) {
+                while ($lastSuccessfullDeployment == $this->getLastSuccessfullyDeployment($deploymentFlag)) {
                     sleep(1);
                 }
 
@@ -130,11 +113,7 @@ class DeploymentScanner extends AbstractScanner
                 $oldHash = $this->getDirectoryHash($directory, $extensionsToWatch);
 
                 // log that the appserver has been restarted successfull
-                $this->getSystemLogger()->debug(
-                    sprintf(
-                        "appserver has successfully been restarted"
-                    )
-                );
+                $this->getSystemLogger()->debug('appserver has successfully been restarted');
 
             } else { // if no changes has been found, wait a second
                 sleep(1);
