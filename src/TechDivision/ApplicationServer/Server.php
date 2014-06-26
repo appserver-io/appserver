@@ -113,6 +113,8 @@ class Server
     /**
      * Init the umask to use creating files/directories.
      *
+     * @throws \Exception
+     *
      * @return void
      */
     protected function initUmask()
@@ -381,7 +383,10 @@ class Server
     {
         // We need to delete the heartbeat file as the watcher might restart the appserver otherwise
         unlink(
-            APPSERVER_BP . DIRECTORY_SEPARATOR .
+            $this->getSystemConfiguration()
+                ->getBaseDirectory()
+                ->getNodeValue()
+                ->__toString() . DIRECTORY_SEPARATOR .
             DirectoryKeys::RUN . DIRECTORY_SEPARATOR .
             HeartbeatScanner::HEARTBEAT_FILE_NAME
         );
@@ -420,13 +425,26 @@ class Server
 
         // Switch to the configured user (if any)
         $this->initProcessUser();
+    }
 
-        // Start giving the heartbeat to tell everyone we are alive
+    /**
+     * Starts giving the heartbeat to tell everyone we are alive.
+     * This will keep your server in an endless loop, so be wary!
+     *
+     * @return void
+     *
+     * @TODO integrate this into a maintenance layer
+     */
+    protected function initHeartbeat()
+    {
         while (true) {
 
             // Tell them we are alive
             touch(
-                APPSERVER_BP . DIRECTORY_SEPARATOR .
+                $this->getSystemConfiguration()
+                    ->getBaseDirectory()
+                    ->getNodeValue()
+                    ->__toString() . DIRECTORY_SEPARATOR .
                 DirectoryKeys::RUN . DIRECTORY_SEPARATOR .
                 HeartbeatScanner::HEARTBEAT_FILE_NAME
             );
@@ -455,12 +473,6 @@ class Server
         // Add a deployment scanner
         $monitors[] = $this->newInstance(
             'TechDivision\ApplicationServer\Scanner\DeploymentScanner',
-            array($this->getInitialContext())
-        );
-
-        // Add a heartbeat scanner
-        $monitors[] = $this->newInstance(
-            'TechDivision\ApplicationServer\Scanner\HeartbeatScanner',
             array($this->getInitialContext())
         );
 

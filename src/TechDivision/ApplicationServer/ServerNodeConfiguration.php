@@ -527,7 +527,7 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
                     'environmentVariables' => $this->prepareEnvironmentVariables($virtualHost),
                     'accesses' => $this->prepareAccesses($virtualHost),
                     'locations' => $this->prepareLocations($virtualHost),
-                    // todo: add authentications
+                    'authentications' => $this->prepareAuthentications($virtualHost),
                 );
             }
         }
