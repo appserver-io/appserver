@@ -257,6 +257,26 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     }
 
     /**
+     * Return's worker's accept min count
+     *
+     * @return int
+     */
+    public function getWorkerAcceptMin()
+    {
+        return $this->node->getParam('workerAcceptMin');
+    }
+
+    /**
+     * Return's worker's accept max count
+     *
+     * @return int
+     */
+    public function getWorkerAcceptMax()
+    {
+        return $this->node->getParam('workerAcceptMax');
+    }
+
+    /**
      * Return's context type
      *
      * @return string
