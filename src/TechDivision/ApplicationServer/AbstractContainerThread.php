@@ -162,10 +162,12 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
             if (!$gotNotified) {
 
                 // Log the issue
-                $this->getInitialContext()->getSystemLogger()->error(sprintf(
+                $this->getInitialContext()->getSystemLogger()->error(
+                    sprintf(
                         'The server at %s did not notify for a ready state in time! It might be unavailable.',
                         $serverConfig->getAddress() . ':' . $serverConfig->getPort()
-                    ));
+                    )
+                );
             }
         }
         // We have to notify the logical parent thread, the appserver, as it has to
