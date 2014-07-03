@@ -48,6 +48,14 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
     protected $applications;
 
     /**
+     * Default timeout for the container when waiting on a single(!) server.
+     * Time is in microseconds, so 1000000 => 1 second.
+     *
+     * @const integer
+     */
+    const DEFAULT_WAIT_TIMEOUT = 1000000;
+
+    /**
      * Initializes the container with the initial context, the unique container ID
      * and the deployed applications.
      *
@@ -129,14 +137,38 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
             $servers[] = $server;
 
             // Synchronize the server so we can wait until preparation of the server finished.
-            // This is used e.g. to wait for port opening or other important dependencies to proper server functionality
-            $server->synchronized(
-                function ($self) {
-                    $self->wait();
+            // This is used e.g. to wait for port opening or other important dependencies to proper server functionality.
+            // We will also check if the wait timed out our if the server notified as it should. If not we will return false
+            $gotNotified = $server->synchronized(
+                function ($server, $timeout) {
+                    $startedWaiting = microtime(true);
+                    $server->wait($timeout);
+
+                    // Did the waiting take longer as the timeout? If so we definitely ran into it.
+                    // Don't forget to convert the units
+                    if (microtime(true) - $startedWaiting > ($timeout / 1000000)) {
+
+                        return false;
+                    }
+
+                    // Return true otherwise
+                    return true;
                 },
-                $server
+                $server,
+                $this->getWaitTimeout()
             );
 
+            // If we did not get notified we have to tell the user
+            if (!$gotNotified) {
+
+                // Log the issue
+                $this->getInitialContext()->getSystemLogger()->error(
+                    sprintf(
+                        'The server at %s did not notify for a ready state in time! It might be unavailable.',
+                        $serverConfig->getAddress() . ':' . $serverConfig->getPort()
+                    )
+                );
+            }
         }
         // We have to notify the logical parent thread, the appserver, as it has to
         // know the port has been opened
@@ -156,6 +188,18 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
         foreach ($servers as $server) {
             $server->join();
         }
+    }
+
+    /**
+     * Will return the wait timeout currently in use.
+     *
+     * @return integer
+     *
+     * @todo make this look up the appserver config as well if it might be needed in the future (longer server boot, etc)
+     */
+    public function getWaitTimeout()
+    {
+        return self::DEFAULT_WAIT_TIMEOUT;
     }
 
     /**
