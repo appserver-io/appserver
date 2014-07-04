@@ -30,8 +30,8 @@ use TechDivision\ServletEngine\StandardSessionMarshaller;
 use TechDivision\ServletEngine\SessionFactory;
 use TechDivision\ServletEngine\FilesystemPersistenceManager;
 use TechDivision\ServletEngine\StandardGarbageCollector;
-use TechDivision\WebContainer\ServletLocator;
-use TechDivision\WebContainer\ServletManager;
+use TechDivision\ServletEngine\ServletLocator;
+use TechDivision\ServletEngine\ServletManager;
 use TechDivision\MessageQueue\QueueManager;
 use TechDivision\MessageQueue\QueueLocator;
 use TechDivision\WebSocketServer\HandlerManager;
@@ -110,7 +110,7 @@ class GenericDeployment extends AbstractDeployment
      *
      * @param \SplFileInfo $folder The folder with the web application
      *
-     * @return \TechDivision\WebContainer\ServletManager The initialized servlet context
+     * @return \TechDivision\ServletEngine\ServletManager The initialized servlet context
      */
     protected function getServletContext(\SplFileInfo $folder)
     {
@@ -124,7 +124,7 @@ class GenericDeployment extends AbstractDeployment
      * Creates and returns a new resource locator to locate the servlet that
      * has to handle a request.
      *
-     * @return \TechDivision\WebContainer\ServletLocator The resource locator instance
+     * @return \TechDivision\ServletEngine\ServletLocator The resource locator instance
      */
     protected function getResourceLocator()
     {

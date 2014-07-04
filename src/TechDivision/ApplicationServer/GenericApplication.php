@@ -21,22 +21,21 @@
 
 namespace TechDivision\ApplicationServer;
 
+use TechDivision\PBC\AutoLoader;
+use TechDivision\PBC\Config;
+
 use TechDivision\Storage\GenericStackable;
 use TechDivision\Servlet\Servlet;
 use TechDivision\Servlet\ServletContext;
 use TechDivision\ServletEngine\Http\RequestContext;
 use TechDivision\ServletEngine\VirtualHost;
-use TechDivision\PBC\AutoLoader;
-use TechDivision\PBC\Config;
-
+use TechDivision\ServletEngine\ServletManager;
+use TechDivision\MessageQueue\QueueManager;
+use TechDivision\WebSocketServer\HandlerManager;
 use TechDivision\ApplicationServer\Interfaces\ApplicationInterface;
 use TechDivision\ApplicationServer\Api\ContainerService;
 use TechDivision\ApplicationServer\Api\Node\AppNode;
 use TechDivision\ApplicationServer\Api\Node\NodeInterface;
-
-use TechDivision\WebContainer\ServletManager;
-use TechDivision\MessageQueue\QueueManager;
-use TechDivision\WebSocketServer\HandlerManager;
 
 /**
  * The application instance holds all information about the deployed application
