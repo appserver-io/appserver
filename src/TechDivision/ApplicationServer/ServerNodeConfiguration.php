@@ -287,6 +287,16 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     }
 
     /**
+     * Return's request type
+     *
+     * @return string
+     */
+    public function getRequestContextType()
+    {
+        return $this->node->getRequestContext();
+    }
+
+    /**
      * Return's socket type
      *
      * @return string
