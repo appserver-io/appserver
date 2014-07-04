@@ -28,11 +28,13 @@ namespace TechDivision\ApplicationServer\Interfaces;
  */
 interface DeploymentInterface
 {
-    
+
     /**
-     * Starts the containers deployment.
+     * Initializes the available applications and adds them to the deployment instance.
+     *
+     * @param \TechDivision\ApplicationServer\Interfaces\ContainerInterface The container we want to add the applications to
      *
      * @return void
      */
-    public function deploy();
+    public function deploy(ContainerInterface $container);
 }

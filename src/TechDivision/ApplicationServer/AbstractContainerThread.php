@@ -17,6 +17,7 @@
 namespace TechDivision\ApplicationServer;
 
 use TechDivision\ApplicationServer\Interfaces\ContainerInterface;
+use TechDivision\ApplicationServer\Interfaces\ApplicationInterface;
 
 /**
  * Class AbstractContainerThread
@@ -34,16 +35,16 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
 {
 
     /**
-     * The container's to be deployed.
+     * The container node information.
      *
      * @var \TechDivision\ApplicationServer\Api\Node\ContainerNode
      */
     protected $containerNode;
 
     /**
-     * The applications registered at this container
+     * The initialized applications.
      *
-     * @var array<\TechDivision\ApplicationServer\Interfaces\ApplicationInterface> $applications
+     * @var \ArrayAccess $applications
      */
     protected $applications;
 
@@ -61,11 +62,21 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
      *
      * @param \TechDivision\ApplicationServer\InitialContext         $initialContext The initial context
      * @param \TechDivision\ApplicationServer\Api\Node\ContainerNode $containerNode  The container node
+     *
+     * @return void
      */
     public function __construct($initialContext, $containerNode)
     {
+
+        // initialize the initial context + the container node
         $this->initialContext = $initialContext;
         $this->containerNode = $containerNode;
+
+        // initialize instance that contains the applications
+        $this->applications = new GenericStackable();
+
+        // create a new API app service instance
+        $this->service = $this->newService('TechDivision\ApplicationServer\Api\AppService');
     }
 
     /**
@@ -98,12 +109,8 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
             'app' . DIRECTORY_SEPARATOR . 'code' . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php'
         );
 
-        // application deployment
-        $deployment = $this->getDeployment();
-        $deployment->deploy();
-
-        // make applications available in container
-        $this->applications = $deployment->getApplications();
+        // deploy and initialize the applications for this container
+        $this->getDeployment()->deploy($this);
 
         // setup configurations
         $serverConfigurations = array();
@@ -223,6 +230,16 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
     }
 
     /**
+     * Returns the service instance we need to handle systen configuration tasks.
+     *
+     * @return \TechDivision\ApplicationServer\Api\AppService The service instance we need
+     */
+    public function getService()
+    {
+        return $this->service;
+    }
+
+    /**
      * Return's the initial context instance
      *
      * @return \TechDivision\ApplicationServer\InitialContext
@@ -270,9 +287,77 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
         return $this->newInstance(
             $this->getContainerNode()->getDeployment()->getType(),
             array(
-                $this->getInitialContext(),
-                $this->getContainerNode()
+                $this->getInitialContext()
             )
+        );
+    }
+
+    /**
+     * (non-PHPdoc)
+     *
+     * @param string|null $directoryToAppend Append this directory to the base directory before returning it
+     *
+     * @return string The base directory
+     * @see \TechDivision\ApplicationServer\Api\ContainerService::getBaseDirectory()
+     */
+    public function getBaseDirectory($directoryToAppend = null)
+    {
+        return $this->getService()->getBaseDirectory($directoryToAppend);
+    }
+
+    /**
+     * (non-PHPdoc)
+     *
+     * @return string The application base directory for this container
+     * @see \TechDivision\ApplicationServer\Api\ContainerService::getAppBase()
+     */
+    public function getAppBase()
+    {
+        return $this->getBaseDirectory($this->getContainerNode()->getHost()->getAppBase());
+    }
+
+    /**
+     * Connects the passed application to the system configuration.
+     *
+     * @param \TechDivision\ApplicationServer\Interfaces\ApplicationInterface $application The application to be prepared
+     *
+     * @return void
+     */
+    protected function addApplicationToSystemConfiguration(ApplicationInterface $application)
+    {
+
+        // try to load the API app service instance
+        $appNode = $this->getService()->loadByWebappPath($application->getWebappPath());
+
+        // check if the application has already been attached to the container
+        if ($appNode == null) {
+            $appNode = $this->getService()->newFromApplication($application);
+        }
+
+        // connect the application to the container
+        $application->connect();
+    }
+
+    /**
+     * Append the deployed application to the deployment instance
+     * and registers it in the system configuration.
+     *
+     * @param ApplicationInterface $application The application to append
+     *
+     * @return void
+     */
+    protected function addApplication(ApplicationInterface $application)
+    {
+
+        // adds the application to the system configuration
+        $this->addApplicationToSystemConfiguration($application);
+
+        // register the application in this instance
+        $this->applications[$application->getName()] = $application;
+
+        // log a message that the app has been started
+        $this->getInitialContext()->getSystemLogger()->debug(
+            sprintf('Successfully initialized and deployed app', $application->getName())
         );
     }
 }

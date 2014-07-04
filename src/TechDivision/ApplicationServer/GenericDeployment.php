@@ -22,8 +22,6 @@
 namespace TechDivision\ApplicationServer;
 
 use TechDivision\Storage\StackableStorage;
-use TechDivision\WebSocketServer\HandlerManager;
-use TechDivision\WebSocketServer\HandlerLocator;
 use TechDivision\ServletEngine\DefaultSessionSettings;
 use TechDivision\ServletEngine\PersistentSessionManager;
 use TechDivision\ServletEngine\StandardSessionManager;
@@ -32,9 +30,14 @@ use TechDivision\ServletEngine\StandardSessionMarshaller;
 use TechDivision\ServletEngine\SessionFactory;
 use TechDivision\ServletEngine\FilesystemPersistenceManager;
 use TechDivision\ServletEngine\StandardGarbageCollector;
+use TechDivision\WebContainer\ServletLocator;
+use TechDivision\WebContainer\ServletManager;
 use TechDivision\MessageQueue\QueueManager;
-use TechDivision\MessageQueue\Service\Locator\QueueLocator;
+use TechDivision\MessageQueue\QueueLocator;
+use TechDivision\WebSocketServer\HandlerManager;
+use TechDivision\WebSocketServer\HandlerLocator;
 use TechDivision\ApplicationServer\AbstractDeployment;
+use TechDivision\ApplicationServer\Interfaces\ContainerInterface;
 
 /**
  * Specific deployment implementation for web applications.
@@ -52,43 +55,53 @@ class GenericDeployment extends AbstractDeployment
     /**
      * Initializes the available applications and adds them to the deployment instance.
      *
-     * @return \TechDivision\ApplicationServer\Interfaces\DeploymentInterface The deployment instance itself
+     * @param \TechDivision\ApplicationServer\Interfaces\ContainerInterface The container we want to add the applications to
+     *
+     * @return void
      */
-    public function deploy()
+    public function deploy(ContainerInterface $container)
     {
 
-        // create authentication and session manager instance
-        $authenticationManager = $this->getAuthenticationManager();
-
         // gather all the deployed web applications
-        foreach (new \FilesystemIterator($this->getWebappPath()) as $folder) {
+        foreach (new \FilesystemIterator($container->getAppBase()) as $folder) {
+
+            // prepare directories for web and persistence container specific deployment descriptors
+            $webInf = new \SplFileInfo($folder . DIRECTORY_SEPARATOR . 'WEB-INF');
+            $metaInf = new \SplFileInfo($folder . DIRECTORY_SEPARATOR . 'META-INF');
 
             // check if file or subdirectory has been found and a deployment descriptor is available
-            if ($folder->isDir()) {
+            if ($folder->isDir() && ($webInf->isDir() || $metaInf->isDir())) {
 
                 // initialize the application instance
                 $application = new GenericApplication();
-                $application->injectAuthenticationManager($authenticationManager);
-                $application->injectInitialContext($this->getInitialContext());
-                $application->injectContainerNode($this->getContainerNode());
-                $application->injectName($folder->getBasename());
-                $application->injectAppBase($this->getAppBase());
-                $application->injectBaseDirectory($this->getBaseDirectory());
-                $application->injectSessionManager($this->getSessionManager());
-                $application->injectServletContext($this->getServletContext($folder));
-                $application->injectHandlerManager($this->getHandlerManager($folder));
-                $application->injectQueueManager($this->getQueueManager($folder));
 
-                // adds the default class loader
+                // initialize the generic instances and information
+                $application->injectInitialContext($this->getInitialContext());
+                $application->injectContainerNode($container->getContainerNode());
+                $application->injectAppBase($container->getAppBase());
+                $application->injectBaseDirectory($container->getBaseDirectory());
+                $application->injectName($folder->getBasename());
+
+                // add the default class loader
                 $application->addClassLoader($this->getInitialContext()->getClassLoader());
 
+                // if we found a WEB-INF directory, we've to initialize the web container specific managers
+                if ($webInf->isDir()) {
+                    $application->injectAuthenticationManager($this->getAuthenticationManager());
+                    $application->injectSessionManager($this->getSessionManager());
+                    $application->injectServletContext($this->getServletContext($folder));
+                    $application->injectHandlerManager($this->getHandlerManager($folder));
+                }
+
+                // if we found a META-INF directory, we've to initialize the persistence container specific managers
+                if ($metaInf->isDir()) {
+                    $application->injectQueueManager($this->getQueueManager($folder));
+                }
+
                 // add the application to the available applications
-                $this->addApplication($application);
+                $container->addApplication($application);
             }
         }
-
-        // return initialized applications
-        return $this;
     }
 
     /**
@@ -219,7 +232,7 @@ class GenericDeployment extends AbstractDeployment
     {
         $queueManager = new QueueManager();
         $queueManager->injectWebappPath($folder->getPathname());
-        $queueManager->injectQueueLocator($this->getQueueLocator());
+        $queueManager->injectResourceLocator($this->getQueueLocator());
         return $queueManager;
     }
 
@@ -232,16 +245,5 @@ class GenericDeployment extends AbstractDeployment
     protected function getQueueLocator()
     {
         return new QueueLocator();
-    }
-
-    /**
-     * (non-PHPdoc)
-     *
-     * @return string The path to the webapps folder
-     * @see ApplicationService::getWebappPath()
-     */
-    public function getWebappPath()
-    {
-        return $this->getBaseDirectory($this->getAppBase());
     }
 }

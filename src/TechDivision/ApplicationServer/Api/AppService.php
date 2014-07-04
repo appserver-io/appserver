@@ -18,6 +18,7 @@ namespace TechDivision\ApplicationServer\Api;
 use TechDivision\ApplicationServer\Api\Node\AppNode;
 use TechDivision\ApplicationServer\Api\Node\NodeInterface;
 use TechDivision\ApplicationServer\Interfaces\ExtractorInterface;
+use TechDivision\ApplicationServer\Interfaces\ApplicationInterface;
 use TechDivision\ApplicationServer\Extractors\PharExtractor;
 
 /**
@@ -34,13 +35,39 @@ use TechDivision\ApplicationServer\Extractors\PharExtractor;
  */
 class AppService extends AbstractService
 {
-    
+
     /**
      * The unique XML configuration node name for a app node.
      *
      * @var string
      */
     const NODE_NAME = 'application';
+
+    /**
+     * Creates a new app node for the passed application and attaches
+     * it to the system configuration.
+     *
+     * @param \TechDivision\ApplicationServer\Interfaces\ApplicationInterface $application The application to create a new AppNode for
+     *
+     * @return void
+     */
+    public function newFromApplication(ApplicationInterface $application)
+    {
+
+        // load the system configuration
+        $systemConfiguration = $this->getInitialContext()->getSystemConfiguration();
+
+        // create a new AppNode and initialize it with the values from this instance
+        $appNode = new AppNode();
+        $appNode->setNodeName(AppService::NODE_NAME);
+        $appNode->setName($application->getName());
+        $appNode->setWebappPath($application->getWebappPath());
+        $appNode->setParentUuid($systemConfiguration->getUuid());
+        $appNode->setUuid($appNode->newUuid());
+
+        // persist the AppNode instance
+        $this->persist($appNode);
+    }
 
     /**
      * Returns all deployed applications.
@@ -185,7 +212,7 @@ class AppService extends AbstractService
             $extractor->unflagArchive($archive);
         }
     }
-    
+
     /**
      * Returns an new app node instance.
      *
@@ -195,7 +222,7 @@ class AppService extends AbstractService
      */
     protected function create(ApplicationInterface $application)
     {
-    
+
         // create a new AppNode and initialize it with the values from this instance
         $appNode = new AppNode();
         $appNode->setNodeName(AppService::NODE_NAME);
@@ -203,7 +230,7 @@ class AppService extends AbstractService
         $appNode->setName($application->getName());
         $appNode->setWebappPath($application->getWebappPath());
         $appNode->setDatasources($application->getDatasources());
-    
+
         // return the AppNode instance
         return $appNode;
     }

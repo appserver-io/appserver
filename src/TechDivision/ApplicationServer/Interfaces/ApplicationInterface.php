@@ -68,30 +68,4 @@ interface ApplicationInterface
      * @return string The path to the web application
      */
     public function getWebappPath();
-
-    /**
-     * Creates a new instance of the passed class name and passes the
-     * args to the instance constructor.
-     *
-     * @param string $className The class name to create the instance of
-     * @param array  $args      The parameters to pass to the constructor
-     *
-     * @return object The created instance
-     */
-    public function newInstance($className, array $args = array());
-
-    /**
-     * Returns the application as a node representation.
-     *
-     * @return \TechDivision\ApplicationServer\Api\Node\AppNode The node representation of the application
-     */
-    public function newAppNode();
-
-    /**
-     * Return'sthe app node the application is belonging to.
-     *
-     * @return \TechDivision\ApplicationServer\Api\Node\AppNode
-     *          The app node the application is belonging to
-     */
-    public function getAppNode();
 }

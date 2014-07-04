@@ -24,18 +24,19 @@ namespace TechDivision\ApplicationServer;
 use TechDivision\Storage\GenericStackable;
 use TechDivision\Servlet\Servlet;
 use TechDivision\Servlet\ServletContext;
-use TechDivision\Servlet\Http\HttpServletRequest;
 use TechDivision\ServletEngine\Http\RequestContext;
 use TechDivision\ServletEngine\VirtualHost;
 use TechDivision\PBC\AutoLoader;
 use TechDivision\PBC\Config;
+
 use TechDivision\ApplicationServer\Interfaces\ApplicationInterface;
 use TechDivision\ApplicationServer\Api\ContainerService;
 use TechDivision\ApplicationServer\Api\Node\AppNode;
 use TechDivision\ApplicationServer\Api\Node\NodeInterface;
+
+use TechDivision\WebContainer\ServletManager;
+use TechDivision\MessageQueue\QueueManager;
 use TechDivision\WebSocketServer\HandlerManager;
-use TechDivision\WebSocketServer\ResourceLocatorInterface;
-use TechDivision\WebSocketProtocol\Request;
 
 /**
  * The application instance holds all information about the deployed application
@@ -52,13 +53,6 @@ class GenericApplication extends \Thread implements ApplicationInterface
 {
 
     /**
-     * The app node the application is belonging to.
-     *
-     * @var \TechDivision\ApplicationServer\Api\Node\AppNode
-     */
-    protected $appNode;
-
-    /**
      * The applications base directory.
      *
      * @var string
@@ -71,13 +65,6 @@ class GenericApplication extends \Thread implements ApplicationInterface
      * @var string
      */
     protected $baseDirectory;
-
-    /**
-     * The app node the application is belonging to.
-     *
-     * @var \TechDivision\ApplicationServer\Api\Node\ContainerNode
-     */
-    protected $containerNode;
 
     /**
      * The unique application name.
@@ -322,38 +309,6 @@ class GenericApplication extends \Thread implements ApplicationInterface
     }
 
     /**
-     * Set's the app node the application is belonging to
-     *
-     * @param AppNode $appNode The app node the application is belonging to
-     *
-     * @return void
-     */
-    public function setAppNode($appNode)
-    {
-        $this->appNode = $appNode;
-    }
-
-    /**
-     * Return's the app node the application is belonging to.
-     *
-     * @return AppNode The app node the application is belonging to
-     */
-    public function getAppNode()
-    {
-        return $this->appNode;
-    }
-
-    /**
-     * Return's the app node the application is belonging to.
-     *
-     * @return ContainerNode The app node the application is belonging to
-     */
-    public function getContainerNode()
-    {
-        return $this->containerNode;
-    }
-
-    /**
      * Returns the application name (that has to be the class namespace, e.g. TechDivision\Example)
      *
      * @return string The application name
@@ -403,11 +358,10 @@ class GenericApplication extends \Thread implements ApplicationInterface
      * (non-PHPdoc)
      *
      * @return string The path to the webapps folder
-     * @see ApplicationService::getWebappPath()
      */
     public function getWebappPath()
     {
-        return $this->getBaseDirectory($this->getAppBase() . DIRECTORY_SEPARATOR . $this->getName());
+        return $this->getAppBase() . DIRECTORY_SEPARATOR . $this->getName();
     }
 
     /**
@@ -501,36 +455,13 @@ class GenericApplication extends \Thread implements ApplicationInterface
     }
 
     /**
-     * (non-PHPdoc)
-     *
-     * @return AppNode The node representation of the application
-     * @see ApplicationInterface::newAppNode()
-     */
-    public function newAppNode()
-    {
-        // create a new AppNode and initialize it with the values from this instance
-        $appNode = new AppNode();
-        $appNode->setNodeName('application');
-        $appNode->setName($this->getName());
-        $appNode->setWebappPath($this->getWebappPath());
-        $appNode->setParentUuid($this->getContainerNode()->getParentUuid());
-        $appNode->setUuid($appNode->newUuid());
-
-        // set the AppNode in the instance itself
-        $this->setAppNode($appNode);
-
-        // return the AppNode instance
-        return $appNode;
-    }
-
-    /**
      * Bounds the application to the passed virtual host.
      *
      * @param \TechDivision\ServletEngine\VirtualHost $virtualHost The virtual host to add
      *
      * @return void
      */
-    protected function addVirtualHost(VirtualHost $virtualHost)
+    public function addVirtualHost(VirtualHost $virtualHost)
     {
         $this->vhosts[] = $virtualHost;
     }
@@ -542,7 +473,7 @@ class GenericApplication extends \Thread implements ApplicationInterface
      *
      * @return void
      */
-    protected function addClassLoader($classLoader)
+    public function addClassLoader($classLoader)
     {
         $this->classLoaders[] = $classLoader;
     }
