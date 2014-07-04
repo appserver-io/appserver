@@ -482,8 +482,10 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     public function prepareConnectionHandlers(NodeInterface $node)
     {
         $connectionHandlers = array();
-        foreach ($node->getConnectionHandlers() as $connectionHandler) {
-            $connectionHandlers[$connectionHandler->getUuid()] = $connectionHandler->getType();
+        if (is_array($node->getConnectionHandlers())) {
+            foreach ($node->getConnectionHandlers() as $connectionHandler) {
+                $connectionHandlers[$connectionHandler->getUuid()] = $connectionHandler->getType();
+            }
         }
         return $connectionHandlers;
     }
@@ -498,11 +500,13 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     public function prepareHandlers(NodeInterface $node)
     {
         $handlers = array();
-        foreach ($node->getFileHandlers() as $fileHandler) {
-            $handlers[$fileHandler->getExtension()] = array(
-                'name' => $fileHandler->getName(),
-                'params' => $fileHandler->getParamsAsArray()
-            );
+        if (is_array($node->getFileHandlers())) {
+            foreach ($node->getFileHandlers() as $fileHandler) {
+                $handlers[$fileHandler->getExtension()] = array(
+                    'name' => $fileHandler->getName(),
+                    'params' => $fileHandler->getParamsAsArray()
+                );
+            }
         }
         return $handlers;
     }
@@ -517,28 +521,30 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     public function prepareVirtualHosts(NodeInterface $node)
     {
         $virtualHosts = array();
-        // iterate config
-        foreach ($node->getVirtualHosts() as $virtualHost) {
 
-            $virtualHostNames = explode(' ', $virtualHost->getName());
+        if (is_array($node->getVirtualHosts())) {
+            // iterate hosts
+            foreach ($node->getVirtualHosts() as $virtualHost) {
+                $virtualHostNames = explode(' ', $virtualHost->getName());
 
-            // Some virtual hosts might have an extensionType to expand their name attribute, check for that
-            if ($virtualHost->hasInjector()) {
+                // Some virtual hosts might have an extensionType to expand their name attribute, check for that
+                if ($virtualHost->hasInjector()) {
 
-                $virtualHostNames = array_merge($virtualHostNames, explode(' ', $virtualHost->getInjection()));
-            }
+                    $virtualHostNames = array_merge($virtualHostNames, explode(' ', $virtualHost->getInjection()));
+                }
 
-            foreach ($virtualHostNames as $virtualHostName) {
-                // set all virtual hosts params per key for faster matching later on
-                $virtualHosts[trim($virtualHostName)] = array(
-                    'params' => $virtualHost->getParamsAsArray(),
-                    'rewriteMaps' => $this->prepareRewriteMaps($virtualHost),
-                    'rewrites' => $this->prepareRewrites($virtualHost),
-                    'environmentVariables' => $this->prepareEnvironmentVariables($virtualHost),
-                    'accesses' => $this->prepareAccesses($virtualHost),
-                    'locations' => $this->prepareLocations($virtualHost),
-                    'authentications' => $this->prepareAuthentications($virtualHost),
-                );
+                foreach ($virtualHostNames as $virtualHostName) {
+                    // set all virtual hosts params per key for faster matching later on
+                    $virtualHosts[trim($virtualHostName)] = array(
+                        'params' => $virtualHost->getParamsAsArray(),
+                        'rewriteMaps' => $this->prepareRewriteMaps($virtualHost),
+                        'rewrites' => $this->prepareRewrites($virtualHost),
+                        'environmentVariables' => $this->prepareEnvironmentVariables($virtualHost),
+                        'accesses' => $this->prepareAccesses($virtualHost),
+                        'locations' => $this->prepareLocations($virtualHost),
+                        'authentications' => $this->prepareAuthentications($virtualHost),
+                    );
+                }
             }
         }
         return $virtualHosts;
@@ -554,25 +560,28 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     public function prepareRewrites(NodeInterface $node)
     {
         $rewrites = array();
-        // prepare the array with the rewrite rules
-        foreach ($node->getRewrites() as $rewrite) {
 
-            // Rewrites might be extended using different injector extension types, check for that
-            if ($rewrite->hasInjector()) {
+        if (is_array($node->getRewrites())) {
+            // prepare the array with the rewrite rules
+            foreach ($node->getRewrites() as $rewrite) {
 
-                $target = $rewrite->getInjection();
+                // Rewrites might be extended using different injector extension types, check for that
+                if ($rewrite->hasInjector()) {
 
-            } else {
+                    $target = $rewrite->getInjection();
 
-                $target = $rewrite->getTarget();
+                } else {
+
+                    $target = $rewrite->getTarget();
+                }
+
+                // Build up the array entry
+                $rewrites[] = array(
+                    'condition' => $rewrite->getCondition(),
+                    'target' => $target,
+                    'flag' => $rewrite->getFlag()
+                );
             }
-
-            // Build up the array entry
-            $rewrites[] = array(
-                'condition' => $rewrite->getCondition(),
-                'target' => $target,
-                'flag' => $rewrite->getFlag()
-            );
         }
         return $rewrites;
     }
@@ -587,13 +596,15 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     public function prepareLocations(NodeInterface $node)
     {
         $locations = array();
-        // prepare the array with the locations
-        foreach ($node->getLocations() as $location) {
-            // Build up the array entry
-            $locations[] = array(
-                'condition' => $location->getCondition(),
-                'handlers' => $this->prepareHandlers($location)
-            );
+        if (is_array($node->getLocations())) {
+            // prepare the array with the locations
+            foreach ($node->getLocations() as $location) {
+                // Build up the array entry
+                $locations[] = array(
+                    'condition' => $location->getCondition(),
+                    'handlers' => $this->prepareHandlers($location)
+                );
+            }
         }
         return $locations;
     }
@@ -639,9 +650,11 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     public function prepareAuthentications(NodeInterface $node)
     {
         $authentications = array();
-        foreach ($node->getAuthentications() as $authentication) {
-            $authenticationUri = $authentication->getUri();
-            $authentications[$authenticationUri] = $authentication->getParamsAsArray();
+        if (is_array($node->getAuthentications())) {
+            foreach ($node->getAuthentications() as $authentication) {
+                $authenticationUri = $authentication->getUri();
+                $authentications[$authenticationUri] = $authentication->getParamsAsArray();
+            }
         }
         return $authentications;
     }
@@ -656,10 +669,12 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     public function prepareAccesses(NodeInterface $node)
     {
         $accesses = array();
-        foreach ($node->getAccesses() as $access) {
-            $accessType = $access->getType();
-            // set all accesses information's
-            $accesses[$accessType][] = $access->getParamsAsArray();
+        if (is_array($node->getAccesses())) {
+            foreach ($node->getAccesses() as $access) {
+                $accessType = $access->getType();
+                // set all accesses information's
+                $accesses[$accessType][] = $access->getParamsAsArray();
+            }
         }
         return $accesses;
     }
@@ -674,10 +689,12 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     public function prepareRewriteMaps(NodeInterface $node)
     {
         $rewriteMaps = array();
-        foreach ($node->getRewriteMaps() as $rewriteMap) {
-            $rewriteMapType = $rewriteMap->getType();
-            // set all rewrite maps information's
-            $rewriteMaps[$rewriteMapType] = $rewriteMap->getParamsAsArray();
+        if (is_array($node->getRewriteMaps())) {
+            foreach ($node->getRewriteMaps() as $rewriteMap) {
+                $rewriteMapType = $rewriteMap->getType();
+                // set all rewrite maps information's
+                $rewriteMaps[$rewriteMapType] = $rewriteMap->getParamsAsArray();
+            }
         }
         return $rewriteMaps;
     }
