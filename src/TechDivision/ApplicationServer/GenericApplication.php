@@ -31,6 +31,7 @@ use TechDivision\ServletEngine\Http\RequestContext;
 use TechDivision\ServletEngine\VirtualHost;
 use TechDivision\ServletEngine\ServletManager;
 use TechDivision\MessageQueue\QueueManager;
+use TechDivision\PersistenceContainer\BeanManager;
 use TechDivision\WebSocketServer\HandlerManager;
 use TechDivision\ApplicationServer\Interfaces\ApplicationInterface;
 use TechDivision\ApplicationServer\Api\ContainerService;
@@ -106,6 +107,13 @@ class GenericApplication extends \Thread implements ApplicationInterface
      * @var \TechDivision\MessageQueue\QueueManager
      */
     protected $queueManager;
+
+    /**
+     * The queue manager.
+     *
+     * @var \TechDivision\PersistenceContainer\BeanManager
+     */
+    protected $beanManager;
 
     /**
      * The servlet context that handles the servlets of this application.
@@ -278,6 +286,18 @@ class GenericApplication extends \Thread implements ApplicationInterface
     }
 
     /**
+     * Injects the applications bean manager instance.
+     *
+     * @param \TechDivision\PersistenceContainer\BeanManager $beanManager The bean manager instance
+     *
+     * @return void
+     */
+    public function injectBeanManager(BeanManager $beanManager)
+    {
+        $this->beanManager = $beanManager;
+    }
+
+    /**
      * Returns the session manager instance associated with this request.
      *
      * @return \TechDivision\ServletEngine\SessionManager The session manager instance
@@ -335,6 +355,16 @@ class GenericApplication extends \Thread implements ApplicationInterface
     public function getHandlerManager()
     {
         return $this->handlerManager;
+    }
+
+    /**
+     * Return the bean manager instance.
+     *
+     * @return \TechDivision\PersistenceContainer\BeanManager The bean manager instance
+     */
+    public function getBeanManager()
+    {
+        return $this->beanManager;
     }
 
     /**
@@ -505,6 +535,8 @@ class GenericApplication extends \Thread implements ApplicationInterface
         set_include_path(get_include_path() . PATH_SEPARATOR . $this->getWebappPath());
         set_include_path(get_include_path() . PATH_SEPARATOR . $this->getWebappPath() . DIRECTORY_SEPARATOR . 'WEB-INF' . DIRECTORY_SEPARATOR . 'classes');
         set_include_path(get_include_path() . PATH_SEPARATOR . $this->getWebappPath() . DIRECTORY_SEPARATOR . 'WEB-INF' . DIRECTORY_SEPARATOR . 'lib');
+        set_include_path(get_include_path() . PATH_SEPARATOR . $this->getWebappPath() . DIRECTORY_SEPARATOR . 'META-INF' . DIRECTORY_SEPARATOR . 'classes');
+        set_include_path(get_include_path() . PATH_SEPARATOR . $this->getWebappPath() . DIRECTORY_SEPARATOR . 'META-INF' . DIRECTORY_SEPARATOR . 'lib');
 
         /**
          * @TODO Refactor to allow PBC class loader also, maybe with a class loader factory!

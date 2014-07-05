@@ -34,6 +34,8 @@ use TechDivision\ServletEngine\ServletLocator;
 use TechDivision\ServletEngine\ServletManager;
 use TechDivision\MessageQueue\QueueManager;
 use TechDivision\MessageQueue\QueueLocator;
+use TechDivision\PersistenceContainer\BeanManager;
+use TechDivision\PersistenceContainer\BeanLocator;
 use TechDivision\WebSocketServer\HandlerManager;
 use TechDivision\WebSocketServer\HandlerLocator;
 use TechDivision\ApplicationServer\AbstractDeployment;
@@ -95,6 +97,7 @@ class GenericDeployment extends AbstractDeployment
 
                 // if we found a META-INF directory, we've to initialize the persistence container specific managers
                 if ($metaInf->isDir()) {
+                    $application->injectBeanManager($this->getBeanManager($folder));
                     $application->injectQueueManager($this->getQueueManager($folder));
                 }
 
@@ -133,7 +136,7 @@ class GenericDeployment extends AbstractDeployment
 
     /**
      * Creates and returns a new handler manager that handles the handler
-     * found in the passe web application folder.
+     * found in the passed web application folder.
      *
      * @param \SplFileInfo $folder The folder with the web application
      *
@@ -156,6 +159,33 @@ class GenericDeployment extends AbstractDeployment
     protected function getHandlerLocator()
     {
         return new HandlerLocator();
+    }
+
+    /**
+     * Creates and returns a new bean manager that handles the beans
+     * found in the passed web application folder.
+     *
+     * @param \SplFileInfo $folder The folder with the web application
+     *
+     * @return \TechDivision\PersistenceContainer\BeanManager The initialized bean manager
+     */
+    protected function getBeanManager(\SplFileInfo $folder)
+    {
+        $beanManager = new BeanManager();
+        $beanManager->injectWebappPath($folder->getPathname());
+        $beanManager->injectResourceLocator($this->getBeanLocator());
+        return $beanManager;
+    }
+
+    /**
+     * Creates and returns a new bean locator to locate the beans that
+     * has to handle a request.
+     *
+     * @return \TechDivision\PersistenceContainer\BeanLocator The bean locator instance
+     */
+    protected function getBeanLocator()
+    {
+        return new BeanLocator();
     }
 
     /**
