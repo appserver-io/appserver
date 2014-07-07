@@ -89,6 +89,14 @@ class ServerNode extends AbstractNode
     protected $serverContext;
 
     /**
+     * The request context to use
+     *
+     * @var string
+     * @AS\Mapping(nodeType="string")
+     */
+    protected $requestContext;
+
+    /**
      * The virtual hosts
      *
      * @var array
@@ -178,6 +186,16 @@ class ServerNode extends AbstractNode
     public function getServerContext()
     {
         return $this->serverContext;
+    }
+
+    /**
+     * Return's the request context to use
+     *
+     * @return string The request context type
+     */
+    public function getRequestContext()
+    {
+        return $this->requestContext;
     }
 
     /**
