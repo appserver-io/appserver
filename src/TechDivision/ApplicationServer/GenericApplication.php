@@ -581,6 +581,16 @@ class GenericApplication extends \Thread implements ApplicationInterface
             $this->handlerManager->initialize();
         }
 
+        // load and initialize the handlers
+        if ($this->queueManager) {
+            $this->queueManager->initialize();
+        }
+
+        // load and initialize the handlers
+        if ($this->beanManager) {
+            $this->beanManager->initialize();
+        }
+
         // load and initialize the session manager
         if ($this->sessionManager) {
 
