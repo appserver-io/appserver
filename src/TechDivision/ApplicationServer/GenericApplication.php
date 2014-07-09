@@ -23,7 +23,7 @@ namespace TechDivision\ApplicationServer;
 
 use TechDivision\PBC\AutoLoader;
 use TechDivision\PBC\Config;
-
+use TechDivision\Context\Context;
 use TechDivision\Storage\GenericStackable;
 use TechDivision\Servlet\Servlet;
 use TechDivision\Servlet\ServletContext;
@@ -49,7 +49,7 @@ use TechDivision\ApplicationServer\Api\Node\NodeInterface;
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      http://www.appserver.io
  */
-class GenericApplication extends \Thread implements ApplicationInterface
+class GenericApplication extends \Thread implements Context, ApplicationInterface
 {
 
     /**
