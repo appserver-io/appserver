@@ -31,7 +31,7 @@ use TechDivision\ApplicationServer\Api\ServiceInterface;
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       http://www.appserver.io
  */
-abstract class AbstractStep implements Step
+abstract class AbstractStep extends \Thread implements Step
 {
 
     /**
@@ -177,5 +177,15 @@ abstract class AbstractStep implements Step
     public function getWebappPath()
     {
         return $this->webappPath;
+    }
+
+    /**
+     * Executes the steps functionality in a separate context.
+     *
+     * @return void
+     */
+    public function run()
+    {
+        $this->execute();
     }
 }

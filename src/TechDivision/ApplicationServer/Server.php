@@ -153,7 +153,7 @@ class Server
      *
      * @return void
      */
-    public function initFileSystem()
+    protected function initFileSystem()
     {
 
         // init API service to use
