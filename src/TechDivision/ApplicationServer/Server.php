@@ -45,7 +45,7 @@ class Server
      *
      * @var array
      */
-    protected $threads = array();
+    protected $containers = array();
 
     /**
      * The system configuration.
@@ -153,7 +153,7 @@ class Server
      *
      * @return void
      */
-    public function initFileSystem()
+    protected function initFileSystem()
     {
 
         // init API service to use
@@ -253,7 +253,7 @@ class Server
     {
 
         // initialize the array for the threads
-        $this->threads = array();
+        $this->containers = array();
 
         // and initialize a container thread for each container
         foreach ($this->getSystemConfiguration()->getContainers() as $containerNode) {
@@ -262,7 +262,7 @@ class Server
             $params = array($this->getInitialContext(), $containerNode);
 
             // create and append the thread instance to the internal array
-            $this->threads[] = $this->newInstance($containerNode->getType(), $params);
+            $this->containers[] = $this->newInstance($containerNode->getType(), $params);
         }
     }
 
@@ -271,9 +271,9 @@ class Server
      *
      * @return array Array with the running container threads
      */
-    public function getThreads()
+    public function getContainers()
     {
-        return $this->threads;
+        return $this->containers;
     }
 
     /**
@@ -403,9 +403,6 @@ class Server
         // init the extractor
         $this->initExtractor();
 
-        // init the provisioner
-        $this->initProvisioners();
-
         // init the containers
         $this->initContainers();
 
@@ -422,6 +419,9 @@ class Server
 
         // start the container threads
         $this->startContainers();
+
+        // init the provisioner
+        $this->initProvisioners();
 
         // Switch to the configured user (if any)
         $this->initProcessUser();
@@ -494,17 +494,17 @@ class Server
         $this->getInitialContext()->setAttribute(StateKeys::KEY, StateKeys::get(StateKeys::STARTING));
 
         // start the container threads
-        foreach ($this->getThreads() as $thread) {
+        foreach ($this->getContainers() as $container) {
 
             // start the thread
-            $thread->start();
+            $container->start();
 
             // synchronize container threads to avoid registering apps several times
-            $thread->synchronized(
+            $container->synchronized(
                 function ($self) {
                     $self->wait();
                 },
-                $thread
+                $container
             );
         }
 
