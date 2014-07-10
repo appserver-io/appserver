@@ -14,16 +14,17 @@
 
 namespace TechDivision\ApplicationServer;
 
+use \Psr\Log\LoggerInterface;
+use TechDivision\Configuration\Interfaces\NodeInterface;
+use TechDivision\Configuration\Interfaces\ConfigurationInterface;
 use TechDivision\ApplicationServer\Extractors\PharExtractor;
 use TechDivision\ApplicationServer\Interfaces\ProvisionerInterface;
 use TechDivision\ApplicationServer\Interfaces\ExtractorInterface;
 use TechDivision\ApplicationServer\InitialContext;
-use TechDivision\ApplicationServer\Api\Node\NodeInterface;
 use TechDivision\ApplicationServer\Api\Node\AppserverNode;
 use TechDivision\ApplicationServer\Scanner\HeartbeatScanner;
 use TechDivision\ApplicationServer\Utilities\StateKeys;
 use TechDivision\ApplicationServer\Utilities\DirectoryKeys;
-use \Psr\Log\LoggerInterface;
 
 /**
  * This is the main server class that starts the application server
@@ -50,14 +51,14 @@ class Server
     /**
      * The system configuration.
      *
-     * @var \TechDivision\ApplicationServer\Api\Node\NodeInterface
+     * @var \TechDivision\Configuration\Interfaces\NodeInterface
      */
     protected $systemConfiguration;
 
     /**
      * The servers initial context instance.
      *
-     * @var \TechDivision\ApplicationServer\InitialContext
+     * @var \TechDivision\Application\Interfaces\ContextInterface
      */
     protected $initialContext;
 
@@ -78,9 +79,9 @@ class Server
     /**
      * Initializes the the server with the parsed configuration file.
      *
-     * @param \TechDivision\ApplicationServer\Configuration $configuration The parsed configuration file
+     * @param \TechDivision\Configuration\Interfaces\ConfigurationInterface $configuration The parsed configuration file
      */
-    public function __construct(Configuration $configuration)
+    public function __construct(ConfigurationInterface $configuration)
     {
 
         // initialize the configuration and the base directory
@@ -279,9 +280,9 @@ class Server
     /**
      * Set's the system configuration.
      *
-     * @param \TechDivision\ApplicationServer\Api\Node\NodeInterface $systemConfiguration The system configuration object
+     * @param \TechDivision\Configuration\Interfaces\NodeInterface $systemConfiguration The system configuration object
      *
-     * @return \TechDivision\ApplicationServer\Api\Node\NodeInterface The system configuration
+     * @return \TechDivision\Configuration\Interfaces\NodeInterface The system configuration
      */
     public function setSystemConfiguration(NodeInterface $systemConfiguration)
     {
@@ -291,7 +292,7 @@ class Server
     /**
      * Returns the system configuration.
      *
-     * @return \TechDivision\ApplicationServer\Api\Node\NodeInterface The system configuration
+     * @return \TechDivision\Configuration\Interfaces\NodeInterface The system configuration
      */
     public function getSystemConfiguration()
     {

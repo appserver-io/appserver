@@ -105,10 +105,10 @@ class InitialContextTest extends AbstractTest
      */
     public function testNewInstanceWithArgument()
     {
-        $configuration = $this->initialContext->newInstance('TechDivision\ApplicationServer\Configuration', array(
+        $configuration = $this->initialContext->newInstance('TechDivision\Configuration\Configuration', array(
             $nodeName = 'test'
         ));
-        $this->assertInstanceOf('TechDivision\ApplicationServer\Configuration', $configuration);
+        $this->assertInstanceOf('TechDivision\Configuration\Configuration', $configuration);
         $this->assertEquals($nodeName, $configuration->getNodeName());
     }
 
@@ -119,7 +119,7 @@ class InitialContextTest extends AbstractTest
      */
     public function testNewReflectionClass()
     {
-        $reflectionClass = $this->initialContext->newReflectionClass('TechDivision\ApplicationServer\Configuration');
+        $reflectionClass = $this->initialContext->newReflectionClass('TechDivision\Configuration\Configuration');
         $this->assertInstanceOf('\ReflectionClass', $reflectionClass);
     }
 }

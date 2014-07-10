@@ -15,7 +15,7 @@
 
 namespace TechDivision\ApplicationServer\Api;
 
-use TechDivision\ApplicationServer\Configuration;
+use TechDivision\Configuration\Interfaces\ConfigurationInterface;
 
 /**
  * Normalizes configuration nodes to \stdClass instances.
@@ -35,11 +35,11 @@ class Normalizer extends AbstractNormalizer
      * Normalizes the passed configuration node and returns a \stdClass
      * representation of it.
      *
-     * @param Configuration $configuration The configuration node to normalize
+     * @param \TechDivision\Configuration\Interfaces\ConfigurationInterface $configuration The configuration node to normalize
      *
      * @return \stdClass The normalized configuration node
      */
-    public function normalize(Configuration $configuration)
+    public function normalize(ConfigurationInterface $configuration)
     {
         // initialize the \stdClass instance
         $node = $this->newInstance('\stdClass');

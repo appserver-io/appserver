@@ -15,10 +15,10 @@
 
 namespace TechDivision\ApplicationServer\Api;
 
+use TechDivision\Configuration\Interfaces\NodeInterface;
+use TechDivision\Application\Interfaces\ApplicationInterface;
 use TechDivision\ApplicationServer\Api\Node\AppNode;
-use TechDivision\ApplicationServer\Api\Node\NodeInterface;
 use TechDivision\ApplicationServer\Interfaces\ExtractorInterface;
-use TechDivision\ApplicationServer\Interfaces\ApplicationInterface;
 use TechDivision\ApplicationServer\Extractors\PharExtractor;
 
 /**
@@ -47,7 +47,7 @@ class AppService extends AbstractService
      * Creates a new app node for the passed application and attaches
      * it to the system configuration.
      *
-     * @param \TechDivision\ApplicationServer\Interfaces\ApplicationInterface $application The application to create a new AppNode for
+     * @param \TechDivision\Application\Interfaces\ApplicationInterface $application The application to create a new AppNode for
      *
      * @return void
      */
@@ -139,7 +139,7 @@ class AppService extends AbstractService
     /**
      * Persists the system configuration.
      *
-     * @param \TechDivision\ApplicationServer\Api\Node\NodeInterface $appNode The application node object
+     * @param \TechDivision\Configuration\Interfaces\NodeInterface $appNode The application node object
      *
      * @return void
      */
@@ -168,7 +168,7 @@ class AppService extends AbstractService
      * Adds the .dodeploy flag file in the deploy folder, therefore the
      * app will be deployed with the next restart.
      *
-     * @param \TechDivision\ApplicationServer\Api\Node\NodeInterface $appNode The application node object
+     * @param \TechDivision\Configuration\Interfaces\NodeInterface $appNode The application node object
      *
      * @return void
      */
@@ -216,7 +216,7 @@ class AppService extends AbstractService
     /**
      * Returns an new app node instance.
      *
-     * @param \TechDivision\ApplicationServer\Interfaces\ApplicationInterface $application The application to create a new app node instance from
+     * @param \TechDivision\Application\Interfaces\ApplicationInterface $application The application to create a new app node instance from
      *
      * @return \TechDivision\ApplicationServer\Api\Node\AppNode The app node representation of the application
      */

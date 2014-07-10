@@ -14,9 +14,9 @@
 
 namespace TechDivision\ApplicationServer;
 
+use TechDivision\Application\Interfaces\ApplicationInterface;
 use TechDivision\ApplicationServer\InitialContext;
 use TechDivision\ApplicationServer\Interfaces\DeploymentInterface;
-use TechDivision\ApplicationServer\Interfaces\ApplicationInterface;
 
 /**
  * Class AbstractDeployment

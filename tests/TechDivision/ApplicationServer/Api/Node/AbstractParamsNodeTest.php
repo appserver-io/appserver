@@ -11,8 +11,8 @@
  */
 namespace TechDivision\ApplicationServer\Api\Node;
 
+use TechDivision\Configuration\Configuration;
 use TechDivision\ApplicationServer\AbstractTest;
-use TechDivision\ApplicationServer\Configuration;
 use TechDivision\ApplicationServer\Api\Node\Mock\MockAbstractParamsNode;
 
 /**

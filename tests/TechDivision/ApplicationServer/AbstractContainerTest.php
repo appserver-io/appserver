@@ -11,10 +11,10 @@
  */
 namespace TechDivision\ApplicationServer;
 
+use TechDivision\Configuration\Configuration;
 use TechDivision\ApplicationServer\Mock\MockContainer;
 use TechDivision\ApplicationServer\Mock\MockApplication;
 use TechDivision\ApplicationServer\Mock\MockReceiver;
-use TechDivision\ApplicationServer\Configuration;
 use TechDivision\ApplicationServer\InitialContext;
 use TechDivision\ApplicationServer\Api\Node\ContainerNode;
 
@@ -101,7 +101,7 @@ class AbstractContainerTest extends AbstractTest
      */
     public function testNewInstance()
     {
-        $className = 'TechDivision\ApplicationServer\Configuration';
+        $className = 'TechDivision\Configuration\Configuration';
         $this->assertInstanceOf($className, $this->container->newInstance($className));
     }
 

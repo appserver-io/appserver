@@ -16,6 +16,8 @@
         "techdivision/socket": "dev-master",
         "techdivision/stream": "dev-master",
         "techdivision/storage": "dev-master",
+        "techdivision/configuration": "dev-master",
+        "techdivision/application": "dev-master",
         "rhumsaa/uuid": "~2.4"
     },
     "autoload": {

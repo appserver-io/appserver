@@ -15,12 +15,14 @@
 
 namespace TechDivision\ApplicationServer\Api\Node;
 
+use Rhumsaa\Uuid\Uuid;
+use TheSeer\Autoload\Config;
 use Herrera\Annotations\Tokens;
 use Herrera\Annotations\Tokenizer;
 use Herrera\Annotations\Convert\ToArray;
-use Rhumsaa\Uuid\Uuid;
-use TechDivision\ApplicationServer\Configuration;
-use TheSeer\Autoload\Config;
+use TechDivision\Configuration\Configuration;
+use TechDivision\Configuration\Interfaces\NodeInterface;
+use TechDivision\Configuration\Interfaces\ConfigurationInterface;
 
 /**
  * DTO to transfer aliases.
@@ -88,11 +90,11 @@ abstract class AbstractNode implements NodeInterface
     /**
      * Initialise from configuration instance
      *
-     * @param \TechDivision\ApplicationServer\Configuration $configuration The configuration instance
+     * @param \TechDivision\Configuration\Interfaces\ConfigurationInterface $configuration The configuration instance
      *
      * @return void
      */
-    public function initFromConfiguration(Configuration $configuration)
+    public function initFromConfiguration(ConfigurationInterface $configuration)
     {
         // create a UUID and set the UUID of the parent node
         if ($configuration->getData('uuid') == null) {
@@ -201,12 +203,12 @@ abstract class AbstractNode implements NodeInterface
     /**
      * Return's the configuration node name by given mapping and configuration
      *
-     * @param \TechDivision\ApplicationServer\Configuration    $configuration The configuration instance
-     * @param \TechDivision\ApplicationServer\Api\Node\Mapping $mapping       The mapping instance
+     * @param \TechDivision\Configuration\ConfigurationInterface $configuration The configuration instance
+     * @param \TechDivision\ApplicationServer\Api\Node\Mapping   $mapping       The mapping instance
      *
      * @return string
      */
-    public function getConfigurationNodeName(Configuration $configuration, Mapping $mapping)
+    public function getConfigurationNodeName(ConfigurationInterface $configuration, Mapping $mapping)
     {
         $parts = array();
         $parts[] = $configuration->getNodeName();
@@ -228,19 +230,19 @@ abstract class AbstractNode implements NodeInterface
     public function isValueClass($className)
     {
         $reflectionClass = new \ReflectionClass($className);
-        return $reflectionClass->implementsInterface('TechDivision\ApplicationServer\Api\Node\ValueInterface');
+        return $reflectionClass->implementsInterface('TechDivision\Configuration\Interfaces\ValueInterface');
     }
 
     /**
      * Return's the value for a given reflection property and configuration
      *
-     * @param \ReflectionProperty                           $reflectionProperty The reflection property
-     * @param \TechDivision\ApplicationServer\Configuration $configuration      The configuration instance
+     * @param \ReflectionProperty                                           $reflectionProperty The reflection property
+     * @param \TechDivision\Configuration\Interfaces\ConfigurationInterface $configuration      The configuration instance
      *
      * @return array An array with all values from given reflection property
      * @throws \Exception
      */
-    public function getValueForReflectionProperty(\ReflectionProperty $reflectionProperty, Configuration $configuration)
+    public function getValueForReflectionProperty(\ReflectionProperty $reflectionProperty, ConfigurationInterface $configuration)
     {
         $mapping = $this->getPropertyTypeFromDocComment($reflectionProperty);
 
@@ -309,7 +311,7 @@ abstract class AbstractNode implements NodeInterface
     /**
      * Exports to the configuration
      *
-     * @return \TechDivision\ApplicationServer\Configuration The configuraton instance
+     * @return \TechDivision\Configuration\Interfaces\ConfigurationInterface The configuraton instance
      */
     public function exportToConfiguration()
     {
@@ -333,14 +335,14 @@ abstract class AbstractNode implements NodeInterface
     /**
      * Set's the configuration by reflected property
      *
-     * @param \ReflectionProperty                           $reflectionProperty The reflection property to set
-     * @param \TechDivision\ApplicationServer\Configuration $configuration      The configuration instance
+     * @param \ReflectionProperty                                           $reflectionProperty The reflection property to set
+     * @param \TechDivision\Configuration\Interfaces\ConfigurationInterface $configuration      The configuration instance
      *
-     * @return void|Configuration The configuration or nothing
+     * @return \TechDivision\Configuration\Interfaces\ConfigurationInterface|void The configuration or nothing
      */
     public function setConfigurationByReflectionProperty(
         \ReflectionProperty $reflectionProperty,
-        Configuration $configuration
+        ConfigurationInterface $configuration
     ) {
         $mapping = $this->getPropertyTypeFromDocComment($reflectionProperty);
 
@@ -368,16 +370,16 @@ abstract class AbstractNode implements NodeInterface
     /**
      * Appends the configuration on a given path with a given child
      *
-     * @param \ReflectionProperty                           $reflectionProperty The reflection property
-     * @param \TechDivision\ApplicationServer\Configuration $configuration      The configuration instance
-     * @param string                                        $path               A path were to append to
+     * @param \ReflectionProperty                                           $reflectionProperty The reflection property
+     * @param \TechDivision\Configuration\Interfaces\ConfigurationInterface $configuration      The configuration instance
+     * @param string                                                        $path               A path were to append to
      *
      * @return void
      * @throws \Exception
      */
     public function appendConfigurationChild(
         \ReflectionProperty $reflectionProperty,
-        Configuration $configuration,
+        ConfigurationInterface $configuration,
         $path
     ) {
 

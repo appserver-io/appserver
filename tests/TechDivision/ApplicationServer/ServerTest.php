@@ -11,6 +11,7 @@
  */
 namespace TechDivision\ApplicationServer;
 
+use TechDivision\Configuration\Configuration;
 use TechDivision\ApplicationServer\Api\Node\BaseDirectoryNode;
 use TechDivision\ApplicationServer\Api\Node\NodeValue;
 
@@ -41,7 +42,7 @@ class ServerTest extends AbstractTest
     {
         // initialize the configuration
         $configuration = $this->getAppserverConfiguration();
-        
+
         // replace the base directory
         $appserverConfiguration = new Configuration();
         $appserverConfiguration->setNodeName('appserver');
@@ -50,7 +51,7 @@ class ServerTest extends AbstractTest
         $baseDirectoryConfiguration->setValue(__DIR__);
         $appserverConfiguration->addChild($baseDirectoryConfiguration);
         $configuration->merge($appserverConfiguration);
-        
+
         // initialize the server instance
         $this->server = new Server($configuration);
     }
@@ -93,7 +94,7 @@ class ServerTest extends AbstractTest
     public function testStart()
     {
         $this->server->start();
-        $this->assertCount(1, $this->server->getThreads());
+        $this->assertCount(1, $this->server->getContainers());
     }
 
     /**

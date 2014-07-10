@@ -22,6 +22,7 @@
 namespace TechDivision\ApplicationServer;
 
 use TechDivision\Storage\StackableStorage;
+use TechDivision\Application\Application;
 use TechDivision\ServletEngine\DefaultSessionSettings;
 use TechDivision\ServletEngine\PersistentSessionManager;
 use TechDivision\ServletEngine\StandardSessionManager;
@@ -75,11 +76,10 @@ class GenericDeployment extends AbstractDeployment
             if ($folder->isDir() && ($webInf->isDir() || $metaInf->isDir())) {
 
                 // initialize the application instance
-                $application = new GenericApplication();
+                $application = new Application();
 
                 // initialize the generic instances and information
                 $application->injectInitialContext($this->getInitialContext());
-                $application->injectContainerNode($container->getContainerNode());
                 $application->injectAppBase($container->getAppBase());
                 $application->injectBaseDirectory($container->getBaseDirectory());
                 $application->injectName($folder->getBasename());
@@ -89,16 +89,23 @@ class GenericDeployment extends AbstractDeployment
 
                 // if we found a WEB-INF directory, we've to initialize the web container specific managers
                 if ($webInf->isDir()) {
-                    $application->injectAuthenticationManager($this->getAuthenticationManager());
-                    $application->injectSessionManager($this->getSessionManager());
-                    $application->injectServletContext($this->getServletContext($folder));
-                    $application->injectHandlerManager($this->getHandlerManager($folder));
+
+                    // initialize servlet + session manager
+                    $servletManager = $this->getServletContext($folder);
+                    $sessionManager = $this->getSessionManager();
+                    $sessionManager->injectServletManager($servletManager);
+
+                    // init the application with necessary managers
+                    $application->addManager($servletManager);
+                    $application->addManager($sessionManager);
+                    $application->addManager($this->getAuthenticationManager());
+                    $application->addManager($this->getHandlerManager($folder));
                 }
 
                 // if we found a META-INF directory, we've to initialize the persistence container specific managers
                 if ($metaInf->isDir()) {
-                    $application->injectBeanManager($this->getBeanManager($folder));
-                    $application->injectQueueManager($this->getQueueManager($folder));
+                    $application->addManager($this->getBeanManager($folder));
+                    $application->addManager($this->getQueueManager($folder));
                 }
 
                 // add the application to the available applications

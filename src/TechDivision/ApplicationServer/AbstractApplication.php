@@ -16,9 +16,8 @@
 namespace TechDivision\ApplicationServer;
 
 use TechDivision\ApplicationServer\InitialContext;
-use TechDivision\ApplicationServer\Interfaces\ApplicationInterface;
+use TechDivision\Application\Interfaces\ApplicationInterface;
 use TechDivision\ApplicationServer\Api\ServiceInterface;
-use JMS\Serializer\Context;
 use TechDivision\ApplicationServer\Api\Node\AppNode;
 use TechDivision\ApplicationServer\Api\Node\ContainerNode;
 
@@ -67,7 +66,7 @@ abstract class AbstractApplication implements ApplicationInterface
     /**
      * The host configuration.
      *
-     * @var \TechDivision\ApplicationServer\Configuration
+     * @var \TechDivision\Configuration\Interfaces\ConfigurationInterface
      */
     protected $configuration;
 

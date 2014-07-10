@@ -11,8 +11,8 @@
  */
 namespace TechDivision\ApplicationServer;
 
+use TechDivision\Configuration\Configuration;
 use TechDivision\ApplicationServer\Mock\MockApplication;
-use TechDivision\ApplicationServer\Configuration;
 use TechDivision\ApplicationServer\InitialContext;
 use TechDivision\ApplicationServer\Api\Node\ContainerNode;
 
@@ -85,7 +85,7 @@ class AbstractApplicationTest extends AbstractTest
      */
     public function testNewInstance()
     {
-        $className = 'TechDivision\ApplicationServer\Configuration';
+        $className = 'TechDivision\Configuration\Configuration';
         $this->assertInstanceOf($className, $this->application->newInstance($className));
     }
 

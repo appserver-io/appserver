@@ -1,4 +1,5 @@
 <?php
+
 /**
  * TechDivision\ApplicationServer\AbstractContainerThread
  *
@@ -16,8 +17,8 @@
 
 namespace TechDivision\ApplicationServer;
 
+use TechDivision\Application\Interfaces\ApplicationInterface;
 use TechDivision\ApplicationServer\Interfaces\ContainerInterface;
-use TechDivision\ApplicationServer\Interfaces\ApplicationInterface;
 
 /**
  * Class AbstractContainerThread
@@ -319,7 +320,7 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
     /**
      * Connects the passed application to the system configuration.
      *
-     * @param \TechDivision\ApplicationServer\Interfaces\ApplicationInterface $application The application to be prepared
+     * @param \TechDivision\Application\Interfaces\ApplicationInterface $application The application to be prepared
      *
      * @return void
      */
@@ -342,7 +343,7 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
      * Append the deployed application to the deployment instance
      * and registers it in the system configuration.
      *
-     * @param ApplicationInterface $application The application to append
+     * @param \TechDivision\Application\Interfaces\ApplicationInterface $application The application to append
      *
      * @return void
      */
