@@ -2,7 +2,7 @@
     "name": "techdivision/appserver",
     "description": "Thread based PHP daemon to implement stuff like message queues.",
     "homepage": "https://github.com/techdivision/TechDivision_ApplicationServer",
-    "license": ["OSL-3.0"],
+    "license": [ "OSL-3.0" ],
     "require": {
         "php" : ">=5.4.0",
         "monolog/monolog": "*",
@@ -12,7 +12,7 @@
     },
     "autoload": {
         "psr-0": {
-            "TechDivision\\ApplicationServer": ["src/", "tests/"]      
+            "TechDivision\\ApplicationServer": [ "src/", "tests/" ]      
         }
     },
     "config":{
