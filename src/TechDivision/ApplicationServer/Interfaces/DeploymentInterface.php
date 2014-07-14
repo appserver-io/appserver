@@ -32,7 +32,7 @@ interface DeploymentInterface
     /**
      * Initializes the available applications and adds them to the deployment instance.
      *
-     * @param \TechDivision\ApplicationServer\Interfaces\ContainerInterface The container we want to add the applications to
+     * @param \TechDivision\ApplicationServer\Interfaces\ContainerInterface $container The container we want to add the applications to
      *
      * @return void
      */
