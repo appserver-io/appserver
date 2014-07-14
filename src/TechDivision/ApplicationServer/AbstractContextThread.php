@@ -33,7 +33,7 @@ abstract class AbstractContextThread extends AbstractThread
     /**
      * The initial context instance containing the system configuration.
      *
-     * @var \TechDivision\ApplicationServer\InitialContext
+     * @var \TechDivision\Application\Interfaces\ContextInterface
      */
     protected $initialContext;
 

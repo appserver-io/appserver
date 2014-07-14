@@ -15,10 +15,10 @@
 namespace TechDivision\ApplicationServer;
 
 use TechDivision\Storage\StorageInterface;
-use TechDivision\ApplicationServer\Interfaces\ContextInterface;
 use TechDivision\ApplicationServer\InitialContext\ContextKeys;
-use TechDivision\ApplicationServer\Api\Node\NodeInterface;
+use TechDivision\Configuration\Interfaces\NodeInterface;
 use TechDivision\ApplicationServer\SplClassLoader;
+use TechDivision\Application\Interfaces\ContextInterface;
 
 /**
  * Class InitialContext
@@ -57,9 +57,9 @@ class InitialContext implements ContextInterface
     /**
      * Initializes the context with the connection to the storage backend.
      *
-     * @param \TechDivision\ApplicationServer\Api\Node\NodeInterface $systemConfiguration The system configuration
+     * @param \TechDivision\Configuration\Interfaces\NodeInterface $systemConfiguration The system configuration
      */
-    public function __construct(\TechDivision\ApplicationServer\Api\Node\NodeInterface $systemConfiguration)
+    public function __construct(NodeInterface $systemConfiguration)
     {
 
         // initialize the storage
@@ -146,7 +146,7 @@ class InitialContext implements ContextInterface
     /**
      * Returns the system configuration.
      *
-     * @return \TechDivision\ApplicationServer\Configuration The system configuration
+     * @return \TechDivision\Configuration\Interfaces\ConfigurationInterface The system configuration
      */
     public function getSystemConfiguration()
     {

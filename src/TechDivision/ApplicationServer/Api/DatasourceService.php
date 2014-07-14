@@ -15,7 +15,7 @@
 
 namespace TechDivision\ApplicationServer\Api;
 
-use TechDivision\ApplicationServer\Configuration;
+use TechDivision\Configuration\Configuration;
 use TechDivision\ApplicationServer\Api\AbstractService;
 use TechDivision\ApplicationServer\Api\Node\DatasourceNode;
 

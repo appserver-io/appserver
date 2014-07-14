@@ -11,6 +11,7 @@
  */
 namespace TechDivision\ApplicationServer;
 
+use TechDivision\Configuration\Configuration;
 use TechDivision\ApplicationServer\Api\Node\BaseDirectoryNode;
 use TechDivision\ApplicationServer\Api\Node\NodeValue;
 
@@ -41,7 +42,7 @@ class ServerTest extends AbstractTest
     {
         // initialize the configuration
         $configuration = $this->getAppserverConfiguration();
-        
+
         // replace the base directory
         $appserverConfiguration = new Configuration();
         $appserverConfiguration->setNodeName('appserver');
@@ -50,7 +51,7 @@ class ServerTest extends AbstractTest
         $baseDirectoryConfiguration->setValue(__DIR__);
         $appserverConfiguration->addChild($baseDirectoryConfiguration);
         $configuration->merge($appserverConfiguration);
-        
+
         // initialize the server instance
         $this->server = new Server($configuration);
     }
@@ -92,8 +93,30 @@ class ServerTest extends AbstractTest
      */
     public function testStart()
     {
-        $this->server->start();
-        $this->assertCount(1, $this->server->getThreads());
+
+        // initialize the configuration
+        $configuration = $this->getAppserverConfiguration();
+
+        // replace the base directory
+        $appserverConfiguration = new Configuration();
+        $appserverConfiguration->setNodeName('appserver');
+        $baseDirectoryConfiguration = new Configuration();
+        $baseDirectoryConfiguration->setNodeName('baseDirectory');
+        $baseDirectoryConfiguration->setValue(__DIR__);
+        $appserverConfiguration->addChild($baseDirectoryConfiguration);
+        $configuration->merge($appserverConfiguration);
+
+        // create a new mock server implementation
+        $server = $this->getMock('TechDivision\ApplicationServer\Server', array('startContainers'), array($configuration));
+
+        // mock the servers start method
+        $server->expects($this->once())->method('startContainers');
+
+        // start the server instance
+        $server->start();
+
+        // check that we found the configured container
+        $this->assertCount(1, $server->getContainers());
     }
 
     /**

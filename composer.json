@@ -5,10 +5,15 @@
     "license": [ "OSL-3.0" ],
     "require": {
         "php" : ">=5.4.0",
-        "monolog/monolog": "*",
+        "psr/log": "*",
+        "rhumsaa/uuid": "~2.4",
+        "monolog/monolog": "1.10.*",
         "herrera-io/annotations": "1.0.*",
+        "techdivision/context": "0.5.*",
         "techdivision/storage": "0.5.*",
-        "rhumsaa/uuid": "~2.4"
+        "techdivision/configuration": "0.1.*",
+        "techdivision/application": "0.1.*",
+        "techdivision/php-by-contract": "0.1.*"
     },
     "autoload": {
         "psr-0": {

@@ -141,6 +141,7 @@ class StandardProvisioner implements ProvisionerInterface
 
             try {
 
+                // create a new reflection class of the step
                 $reflectionClass = new \ReflectionClass($stepNode->getType());
                 $step = $reflectionClass->newInstance();
 
@@ -152,11 +153,13 @@ class StandardProvisioner implements ProvisionerInterface
                 // inject all other information
                 $step->injectService($service);
                 $step->injectStepNode($stepNode);
-                $step->injectWebappPath($webappPath);
+                $step->injectWebappPath($webappPath->getPathname());
+                $step->injectInitialContext($this->getInitialContext());
                 $step->injectPhpExecutable($this->getAbsolutPathToPhpExecutable());
 
                 // execute the step finally
-                $step->execute();
+                $step->start();
+                $step->join();
 
             } catch (\Exception $e) {
                 $this->getInitialContext()->getSystemLogger()->error($e->__toString());

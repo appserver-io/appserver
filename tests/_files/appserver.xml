@@ -26,7 +26,7 @@
                     </formatter>
                     <params>
                         <param name="messageType" type="integer">0</param>
-                        <param name="level" type="integer">200</param>
+                        <param name="level" type="integer">300</param>
                         <param name="bubble" type="boolean">0</param>
                     </params>
                 </handler>

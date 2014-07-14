@@ -25,11 +25,24 @@ class MockApplication extends AbstractApplication
 {
 
     /**
-     * (non-PHPdoc)
-     * @see \TechDivision\ApplicationServer\AbstractApplication::connect()
+     * Has been automatically invoked by the container after the application
+     * instance has been created.
+     *
+     * @return \TechDivision\ApplicationServer\Interfaces\ApplicationInterface The connected application
      */
     public function connect()
     {
         return $this;
+    }
+
+    /**
+     * Returns the value with the passed name from the context.
+     *
+     * @param string $key The key of the value to return from the context.
+     *
+     * @return mixed The requested attribute
+     */
+    public function getAttribute($key)
+    {
     }
 }

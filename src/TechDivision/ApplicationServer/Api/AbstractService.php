@@ -15,8 +15,8 @@
 
 namespace TechDivision\ApplicationServer\Api;
 
+use TechDivision\Configuration\Interfaces\NodeInterface;
 use TechDivision\ApplicationServer\InitialContext;
-use TechDivision\ApplicationServer\Api\Node\NodeInterface;
 use TechDivision\ApplicationServer\Utilities\DirectoryKeys;
 use TechDivision\PersistenceContainer\Application;
 
@@ -58,7 +58,7 @@ abstract class AbstractService implements ServiceInterface
     /**
      * The initialized base directory node.
      *
-     * @var \TechDivision\ApplicationServer\Api\Node\NodeInterface
+     * @var \TechDivision\Configuration\Interfaces\NodeInterface;
      */
     protected $node;
 
@@ -87,7 +87,7 @@ abstract class AbstractService implements ServiceInterface
     /**
      * (non-PHPdoc)
      *
-     * @return \TechDivision\ApplicationServer\Api\Node\NodeInterface The system configuration
+     * @return \TechDivision\Configuration\Interfaces\NodeInterface The system configuration
      * @see \TechDivision\ApplicationServer\Api\ServiceInterface::getSystemConfiguration()
      */
     public function getSystemConfiguration()
@@ -98,7 +98,7 @@ abstract class AbstractService implements ServiceInterface
     /**
      * (non-PHPdoc)
      *
-     * @param \TechDivision\ApplicationServer\Api\Node\NodeInterface $systemConfiguration The system configuration
+     * @param \TechDivision\Configuration\Interfaces\NodeInterface $systemConfiguration The system configuration
      *
      * @return \TechDivision\ApplicationServer\Api\ServiceInterface
      * @see \TechDivision\ApplicationServer\Api\ServiceInterface::setSystemConfiguration()
@@ -222,7 +222,7 @@ abstract class AbstractService implements ServiceInterface
     /**
      * Persists the system configuration.
      *
-     * @param NodeInterface $node A node to persist
+     * @param \TechDivision\Configuration\Interfaces\NodeInterface $node A node to persist
      *
      * @return void
      */
