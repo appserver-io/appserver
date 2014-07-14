@@ -14,16 +14,17 @@
 
 namespace TechDivision\ApplicationServer;
 
+use \Psr\Log\LoggerInterface;
+use TechDivision\Configuration\Interfaces\NodeInterface;
+use TechDivision\Configuration\Interfaces\ConfigurationInterface;
 use TechDivision\ApplicationServer\Extractors\PharExtractor;
 use TechDivision\ApplicationServer\Interfaces\ProvisionerInterface;
 use TechDivision\ApplicationServer\Interfaces\ExtractorInterface;
 use TechDivision\ApplicationServer\InitialContext;
-use TechDivision\ApplicationServer\Api\Node\NodeInterface;
 use TechDivision\ApplicationServer\Api\Node\AppserverNode;
 use TechDivision\ApplicationServer\Scanner\HeartbeatScanner;
 use TechDivision\ApplicationServer\Utilities\StateKeys;
 use TechDivision\ApplicationServer\Utilities\DirectoryKeys;
-use \Psr\Log\LoggerInterface;
 
 /**
  * This is the main server class that starts the application server
@@ -45,19 +46,19 @@ class Server
      *
      * @var array
      */
-    protected $threads = array();
+    protected $containers = array();
 
     /**
      * The system configuration.
      *
-     * @var \TechDivision\ApplicationServer\Api\Node\NodeInterface
+     * @var \TechDivision\Configuration\Interfaces\NodeInterface
      */
     protected $systemConfiguration;
 
     /**
      * The servers initial context instance.
      *
-     * @var \TechDivision\ApplicationServer\InitialContext
+     * @var \TechDivision\Application\Interfaces\ContextInterface
      */
     protected $initialContext;
 
@@ -78,9 +79,9 @@ class Server
     /**
      * Initializes the the server with the parsed configuration file.
      *
-     * @param \TechDivision\ApplicationServer\Configuration $configuration The parsed configuration file
+     * @param \TechDivision\Configuration\Interfaces\ConfigurationInterface $configuration The parsed configuration file
      */
-    public function __construct(Configuration $configuration)
+    public function __construct(ConfigurationInterface $configuration)
     {
 
         // initialize the configuration and the base directory
@@ -153,7 +154,7 @@ class Server
      *
      * @return void
      */
-    public function initFileSystem()
+    protected function initFileSystem()
     {
 
         // init API service to use
@@ -253,7 +254,7 @@ class Server
     {
 
         // initialize the array for the threads
-        $this->threads = array();
+        $this->containers = array();
 
         // and initialize a container thread for each container
         foreach ($this->getSystemConfiguration()->getContainers() as $containerNode) {
@@ -262,7 +263,7 @@ class Server
             $params = array($this->getInitialContext(), $containerNode);
 
             // create and append the thread instance to the internal array
-            $this->threads[] = $this->newInstance($containerNode->getType(), $params);
+            $this->containers[] = $this->newInstance($containerNode->getType(), $params);
         }
     }
 
@@ -271,17 +272,17 @@ class Server
      *
      * @return array Array with the running container threads
      */
-    public function getThreads()
+    public function getContainers()
     {
-        return $this->threads;
+        return $this->containers;
     }
 
     /**
      * Set's the system configuration.
      *
-     * @param \TechDivision\ApplicationServer\Api\Node\NodeInterface $systemConfiguration The system configuration object
+     * @param \TechDivision\Configuration\Interfaces\NodeInterface $systemConfiguration The system configuration object
      *
-     * @return \TechDivision\ApplicationServer\Api\Node\NodeInterface The system configuration
+     * @return \TechDivision\Configuration\Interfaces\NodeInterface The system configuration
      */
     public function setSystemConfiguration(NodeInterface $systemConfiguration)
     {
@@ -291,7 +292,7 @@ class Server
     /**
      * Returns the system configuration.
      *
-     * @return \TechDivision\ApplicationServer\Api\Node\NodeInterface The system configuration
+     * @return \TechDivision\Configuration\Interfaces\NodeInterface The system configuration
      */
     public function getSystemConfiguration()
     {
@@ -403,9 +404,6 @@ class Server
         // init the extractor
         $this->initExtractor();
 
-        // init the provisioner
-        $this->initProvisioners();
-
         // init the containers
         $this->initContainers();
 
@@ -422,6 +420,9 @@ class Server
 
         // start the container threads
         $this->startContainers();
+
+        // init the provisioner
+        $this->initProvisioners();
 
         // Switch to the configured user (if any)
         $this->initProcessUser();
@@ -494,17 +495,17 @@ class Server
         $this->getInitialContext()->setAttribute(StateKeys::KEY, StateKeys::get(StateKeys::STARTING));
 
         // start the container threads
-        foreach ($this->getThreads() as $thread) {
+        foreach ($this->getContainers() as $container) {
 
             // start the thread
-            $thread->start();
+            $container->start();
 
             // synchronize container threads to avoid registering apps several times
-            $thread->synchronized(
+            $container->synchronized(
                 function ($self) {
                     $self->wait();
                 },
-                $thread
+                $container
             );
         }
 

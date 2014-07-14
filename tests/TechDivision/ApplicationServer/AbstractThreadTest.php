@@ -11,8 +11,8 @@
  */
 namespace TechDivision\ApplicationServer;
 
+use TechDivision\Configuration\Configuration;
 use TechDivision\ApplicationServer\Mock\MockThread;
-use TechDivision\ApplicationServer\Configuration;
 use TechDivision\ApplicationServer\InitialContext;
 
 /**

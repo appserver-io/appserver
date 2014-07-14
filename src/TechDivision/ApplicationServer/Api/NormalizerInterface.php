@@ -15,7 +15,7 @@
 
 namespace TechDivision\ApplicationServer\Api;
 
-use TechDivision\ApplicationServer\Configuration;
+use TechDivision\Configuration\Interfaces\ConfigurationInterface;
 
 /**
  * Interface for all normalizers.
@@ -35,16 +35,16 @@ interface NormalizerInterface
      * Normalizes the passed configuration node and returns a \stdClass
      * representation of it.
      *
-     * @param \TechDivision\ApplicationServer\Configuration $configuration The configuration node to normalize
+     * @param \TechDivision\Configuration\Interfaces\ConfigurationInterface $configuration The configuration node to normalize
      *
      * @return \stdClass The normalized configuration node
      */
-    public function normalize(Configuration $configuration);
+    public function normalize(ConfigurationInterface $configuration);
 
     /**
      * Returns the initial context instance.
      *
-     * @return \TechDivision\ApplicationServer\InitialContext The initial Context
+     * @return \TechDivision\Application\Interfaces\ContextInterface The initial Context
      */
     public function getInitialContext();
 

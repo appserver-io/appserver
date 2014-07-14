@@ -11,9 +11,9 @@
  */
 namespace TechDivision\ApplicationServer;
 
+use TechDivision\Configuration\Configuration;
 use TechDivision\ApplicationServer\Mock\MockApplication;
 use TechDivision\ApplicationServer\Mock\MockContainer;
-use TechDivision\ApplicationServer\Configuration;
 use TechDivision\ApplicationServer\Api\Node\AppserverNode;
 use TechDivision\ApplicationServer\Api\Node\ContainerNode;
 use TechDivision\ApplicationServer\Api\Node\DeploymentNode;
@@ -33,7 +33,7 @@ class AbstractTest extends \PHPUnit_Framework_TestCase
     /**
      * Returns the system configuration.
      *
-     * @return \TechDivision\ApplicationServer\Configuration The system configuration
+     * @return \TechDivision\Configuration\Configuration The system configuration
      */
     public function getAppserverConfiguration()
     {
@@ -57,7 +57,7 @@ class AbstractTest extends \PHPUnit_Framework_TestCase
     /**
      * Returns a dummy deployment configuration.
      *
-     * @return \TechDivision\ApplicationServer\Configuration A dummy deployment configuration
+     * @return \TechDivision\Configuration\Configuration A dummy deployment configuration
      */
     public function getDeploymentConfiguration()
     {

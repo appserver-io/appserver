@@ -15,7 +15,8 @@
 
 namespace TechDivision\ApplicationServer\Api\Node;
 
-use TechDivision\ApplicationServer\Configuration;
+use TechDivision\Configuration\Interfaces\ValueInterface;
+use TechDivision\Configuration\Interfaces\ConfigurationInterface;
 
 /**
  * Represents a node's value.
@@ -41,15 +42,15 @@ class NodeValue implements ValueInterface
     /**
      * Initializes the node with the value.
      *
-     * @param \TechDivision\ApplicationServer\Configuration $configuration The configuration instance
+     * @param \TechDivision\Configuration\Interfaces\ConfigurationInterface $configuration The configuration instance
      *
      * @return void
      */
-    public function initFromConfiguration(Configuration $configuration)
+    public function initFromConfiguration(ConfigurationInterface $configuration)
     {
         $this->value = $configuration->getValue();
     }
-    
+
     /**
      * Set's the node's value.
      *

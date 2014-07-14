@@ -12,6 +12,7 @@
 namespace TechDivision\ApplicationServer\Mock;
 
 use TechDivision\ApplicationServer\AbstractDeployment;
+use TechDivision\ApplicationServer\Interfaces\ContainerInterface;
 
 /**
  *
@@ -25,10 +26,13 @@ class MockDeployment extends AbstractDeployment
 {
 
     /**
+     * Initializes the available applications and adds them to the deployment instance.
      *
-     * @see \TechDivision\ApplicationServer\Interfaces\DeploymentInterface::deploy()
+     * @param \TechDivision\ApplicationServer\Interfaces\ContainerInterface The container we want to add the applications to
+     *
+     * @return void
      */
-    public function deploy()
+    public function deploy(ContainerInterface $container)
     {
         return $this;
     }

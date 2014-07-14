@@ -14,9 +14,9 @@
 
 namespace TechDivision\ApplicationServer;
 
+use TechDivision\Application\Interfaces\ApplicationInterface;
 use TechDivision\ApplicationServer\InitialContext;
 use TechDivision\ApplicationServer\Interfaces\DeploymentInterface;
-use TechDivision\ApplicationServer\Interfaces\ApplicationInterface;
 
 /**
  * Class AbstractDeployment
@@ -32,20 +32,6 @@ abstract class AbstractDeployment implements DeploymentInterface
 {
 
     /**
-     * The container node the deployment is for.
-     *
-     * @var \TechDivision\ApplicationServer\Api\Node\ContainerNode
-     */
-    protected $containerNode;
-
-    /**
-     * Array with the initialized applications.
-     *
-     * @var array
-     */
-    protected $applications = array();
-
-    /**
      * The initial context instance.
      *
      * @var \TechDivision\ApplicationServer\InitialContext
@@ -55,13 +41,13 @@ abstract class AbstractDeployment implements DeploymentInterface
     /**
      * Initializes the deployment with the container thread.
      *
-     * @param \TechDivision\ApplicationServer\InitialContext         $initialContext The initial context instance
-     * @param \TechDivision\ApplicationServer\Api\Node\ContainerNode $containerNode  The container node we deploy for
+     * @param \TechDivision\ApplicationServer\InitialContext $initialContext The initial context instance
+     *
+     * @return void
      */
-    public function __construct(InitialContext $initialContext, $containerNode)
+    public function __construct(InitialContext $initialContext)
     {
         $this->initialContext = $initialContext;
-        $this->containerNode = $containerNode;
     }
 
     /**
@@ -72,81 +58,6 @@ abstract class AbstractDeployment implements DeploymentInterface
     public function getInitialContext()
     {
         return $this->initialContext;
-    }
-
-    /**
-     * Returns the container node the deployment is for.
-     *
-     * @return \TechDivision\ApplicationServer\Api\Node\ContainerNode The container node
-     */
-    public function getContainerNode()
-    {
-        return $this->containerNode;
-    }
-
-    /**
-     * Connects the passed application to the system configuration.
-     *
-     * @param \TechDivision\ApplicationServer\Interfaces\ApplicationInterface $application The application to be prepared
-     *
-     * @return void
-     */
-    protected function addApplicationToSystemConfiguration(ApplicationInterface $application)
-    {
-
-        // create a new API app service instance
-        $appService = $this->newService('TechDivision\ApplicationServer\Api\AppService');
-        $appNode = $appService->loadByWebappPath($application->getWebappPath());
-
-        // check if the application has already been attached to the container
-        if ($appNode == null) {
-            $application->newAppNode($this->getContainerNode());
-        } else {
-            $application->setAppNode($appNode);
-        }
-
-        // persist the application
-        $appService->persist($application->getAppNode());
-
-        // connect the application to the container
-        $application->connect();
-    }
-
-    /**
-     * Append the deployed application to the deployment instance
-     * and registers it in the system configuration.
-     *
-     * @param ApplicationInterface $application The application to append
-     *
-     * @return void
-     */
-    public function addApplication(ApplicationInterface $application)
-    {
-
-        // adds the application to the system configuration
-        $this->addApplicationToSystemConfiguration($application);
-
-        // register the application in this instance
-        $this->applications[$application->getName()] = $application;
-
-        // log a message that the app has been started
-        $this->getInitialContext()->getSystemLogger()->debug(
-            sprintf(
-                'Successfully started app %s in container %s',
-                $application->getName(),
-                $application->getContainerNode()->getName()
-            )
-        );
-    }
-
-    /**
-     * Return's the deployed applications.
-     *
-     * @return array The deployed applications
-     */
-    public function getApplications()
-    {
-        return $this->applications;
     }
 
     /**
@@ -161,43 +72,5 @@ abstract class AbstractDeployment implements DeploymentInterface
     public function newInstance($className, array $args = array())
     {
         return $this->getInitialContext()->newInstance($className, $args);
-    }
-
-    /**
-     * (non-PHPdoc)
-     *
-     * @param string $className The API service class name to return the instance for
-     *
-     * @return \TechDivision\ApplicationServer\Api\ServiceInterface The service instance
-     * @see \TechDivision\ApplicationServer\InitialContext::newService()
-     */
-    public function newService($className)
-    {
-        return $this->getInitialContext()->newService($className);
-    }
-
-    /**
-     * (non-PHPdoc)
-     *
-     * @param string|null $directoryToAppend Append this directory to the base directory before returning it
-     *
-     * @return string The base directory
-     * @see \TechDivision\ApplicationServer\Api\ContainerService::getBaseDirectory()
-     */
-    public function getBaseDirectory($directoryToAppend = null)
-    {
-        return $this->newService('TechDivision\ApplicationServer\Api\ContainerService')
-            ->getBaseDirectory($directoryToAppend);
-    }
-
-    /**
-     * (non-PHPdoc)
-     *
-     * @return string The application base directory for this container
-     * @see \TechDivision\ApplicationServer\Api\ContainerService::getAppBase()
-     */
-    public function getAppBase()
-    {
-        return $this->getContainerNode()->getHost()->getAppBase();
     }
 }

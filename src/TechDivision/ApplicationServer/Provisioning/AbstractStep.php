@@ -19,6 +19,7 @@ namespace TechDivision\ApplicationServer\Provisioning;
 use TechDivision\ApplicationServer\Api\Node\StepNode;
 use TechDivision\ApplicationServer\Api\Node\DatasourceNode;
 use TechDivision\ApplicationServer\Api\ServiceInterface;
+use TechDivision\ApplicationServer\InitialContext;
 
 /**
  * Abstract base class for a step implementation.
@@ -31,7 +32,7 @@ use TechDivision\ApplicationServer\Api\ServiceInterface;
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       http://www.appserver.io
  */
-abstract class AbstractStep implements Step
+abstract class AbstractStep extends \Thread implements Step
 {
 
     /**
@@ -54,6 +55,13 @@ abstract class AbstractStep implements Step
      * @var \TechDivision\ApplicationServer\Api\Node\DatasourceNode
      */
     protected $datasourceNode;
+
+    /**
+     * The initial context.
+     *
+     * @var \TechDivision\ApplicationServer\Interfaces\ContextInterface
+     */
+    protected $initialContext;
 
     /**
      * The absolute path to the appserver PHP executable.
@@ -130,6 +138,18 @@ abstract class AbstractStep implements Step
     }
 
     /**
+     * Injects the initial context.
+     *
+     * @param \TechDivision\ApplicationServer\Interfaces\ContextInterface $initialContext The initial context instance
+     *
+     * @return void
+     */
+    public function injectInitialContext(InitialContext $initialContext)
+    {
+        $this->initialContext = $initialContext;
+    }
+
+    /**
      * Returns the provisioning service.
      *
      * @return \TechDivision\ApplicationServer\Api\ServiceInterface The provisioning service
@@ -160,6 +180,16 @@ abstract class AbstractStep implements Step
     }
 
     /**
+     * Returns the initial context instance.
+     *
+     * @return \TechDivision\ApplicationServer\Interfaces\ContextInterface The initial context
+     */
+    public function getInitialContext()
+    {
+        return $this->initialContext;
+    }
+
+    /**
      * Returns the absolute path to the appservers PHP executable.
      *
      * @return string The absolute path to the appservers PHP executable
@@ -177,5 +207,15 @@ abstract class AbstractStep implements Step
     public function getWebappPath()
     {
         return $this->webappPath;
+    }
+
+    /**
+     * Executes the steps functionality in a separate context.
+     *
+     * @return void
+     */
+    public function run()
+    {
+        $this->execute();
     }
 }

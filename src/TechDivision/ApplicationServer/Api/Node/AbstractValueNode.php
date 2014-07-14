@@ -15,6 +15,9 @@
 
 namespace TechDivision\ApplicationServer\Api\Node;
 
+use TechDivision\Configuration\Interfaces\ValueInterface;
+use TechDivision\Configuration\Interfaces\NodeValueInterface;
+
 /**
  * DTO to transfer aliases.
  *
@@ -39,7 +42,7 @@ abstract class AbstractValueNode extends AbstractNode implements NodeValueInterf
     /**
      * Set's the node value instance.
      *
-     * @param \TechDivision\ApplicationServer\Api\Node\ValueInterface $nodeValue The node value to set
+     * @param \TechDivision\Configuration\Interfaces\ValueInterface $nodeValue The node value to set
      *
      * @return void
      */
@@ -51,8 +54,8 @@ abstract class AbstractValueNode extends AbstractNode implements NodeValueInterf
     /**
      * (non-PHPdoc)
      *
-     * @return \TechDivision\ApplicationServer\Api\Node\NodeValue The node's value
-     * @see \TechDivision\ApplicationServer\Api\Node\NodeValueInterface::getNodeValue()
+     * @return \TechDivision\Configuration\Interfaces\ValueInterface The node's value
+     * @see \TechDivision\Configuration\Interfaces\NodeValueInterface::getNodeValue()
      */
     public function getNodeValue()
     {

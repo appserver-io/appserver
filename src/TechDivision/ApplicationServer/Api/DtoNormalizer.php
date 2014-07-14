@@ -15,7 +15,7 @@
 
 namespace TechDivision\ApplicationServer\Api;
 
-use TechDivision\ApplicationServer\Configuration;
+use TechDivision\Configuration\Interfaces\ConfigurationInterface;
 use TechDivision\ApplicationServer\Api\NormalizerInterface;
 
 /**
@@ -35,12 +35,12 @@ class DtoNormalizer extends AbstractNormalizer
     /**
      * (non-PHPdoc)
      *
-     * @param \TechDivision\ApplicationServer\Configuration $configuration The configuration node to normalize
+     * @param \TechDivision\Configuration\Interfaces\ConfigurationInterface $configuration The configuration node to normalize
      *
      * @return \stdClass The normalized configuration node
      * @see \TechDivision\ApplicationServer\Api\NormalizerInterface::normalize()
      */
-    public function normalize(Configuration $configuration)
+    public function normalize(ConfigurationInterface $configuration)
     {
         $nodeType = $this->getService()->getNodeType();
         return $this->newInstance($nodeType, array(

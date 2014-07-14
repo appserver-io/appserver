@@ -48,22 +48,7 @@ class AbstractDeploymentTest extends AbstractTest
      */
     public function testNewInstance()
     {
-        $className = 'TechDivision\ApplicationServer\Configuration';
+        $className = 'TechDivision\Configuration\Configuration';
         $this->assertInstanceOf($className, $this->deployment->newInstance($className));
-    }
-
-    /**
-     * Checks if the number of applications equals to the number that has been
-     * passed to the setter.
-     *
-     * @return void
-     */
-    public function testSetGetApplications()
-    {
-        $applications = $this->getMockApplications($size = 3);
-        foreach ($applications as $application) {
-            $this->deployment->addApplication($application);
-        }
-        $this->assertSame($applications, $this->deployment->getApplications());
     }
 }

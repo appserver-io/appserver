@@ -15,7 +15,7 @@
 
 namespace TechDivision\ApplicationServer\Api;
 
-use TechDivision\ApplicationServer\Api\Node\NodeInterface;
+use TechDivision\Configuration\Interfaces\NodeInterface;
 use TechDivision\ApplicationServer\InitialContext;
 
 /**
@@ -43,7 +43,7 @@ interface ServiceInterface
     /**
      * Returns the system configuration.
      *
-     * @param NodeInterface $systemConfiguration The system configuration
+     * @param \TechDivision\Configuration\Interfaces\NodeInterface $systemConfiguration The system configuration
      *
      * @return ServiceInterface
      */
@@ -52,7 +52,7 @@ interface ServiceInterface
     /**
      * Returns the system configuration.
      *
-     * @return NodeInterface The system configuration
+     * @return \TechDivision\Configuration\Interfaces\NodeInterface The system configuration
      */
     public function getSystemConfiguration();
 
@@ -68,7 +68,7 @@ interface ServiceInterface
      *
      * @param integer $uuid UUID of the node to return
      *
-     * @return NodeInterface The node with the UUID passed as parameter
+     * @return \TechDivision\Configuration\Interfaces\NodeInterface The node with the UUID passed as parameter
      */
     public function load($uuid);
 }

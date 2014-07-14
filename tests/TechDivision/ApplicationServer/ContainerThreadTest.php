@@ -11,9 +11,9 @@
  */
 namespace TechDivision\ApplicationServer;
 
+use TechDivision\Configuration\Configuration;
 use TechDivision\ApplicationServer\Mock\MockAbstractContainerThread;
 use TechDivision\ApplicationServer\Mock\MockContainerThread;
-use TechDivision\ApplicationServer\Configuration;
 use TechDivision\ApplicationServer\InitialContext;
 use TechDivision\ApplicationServer\Api\Node\ContainerNode;
 
@@ -63,7 +63,7 @@ class ContainerThreadTest extends AbstractTest
      */
     public function testNewInstance()
     {
-        $className = 'TechDivision\ApplicationServer\Configuration';
+        $className = 'TechDivision\Configuration\Configuration';
         $this->assertInstanceOf($className, $this->containerThread->newInstance($className));
     }
 
