@@ -13,7 +13,7 @@
         "techdivision/storage": "0.5.*",
         "techdivision/configuration": "0.1.*",
         "techdivision/application": "0.1.*",
-        "techdivision/php-by-contract": "0.1.*"
+        "techdivision/php-by-contract": "0.2.*"
     },
     "autoload": {
         "psr-0": {

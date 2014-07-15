@@ -321,4 +321,60 @@ abstract class AbstractService implements ServiceInterface
             }
         }
     }
+
+    /**
+     * Init the umask to use creating files/directories.
+     *
+     * @return void
+     * @throws \Exception Is thrown if the umask can not be set
+     */
+    protected function initUmask()
+    {
+
+        // don't do anything under Windows
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+            return;
+        }
+
+        // set the configured umask to use
+        umask($newUmask = $this->getInitialContext()->getSystemConfiguration()->getParam('umask'));
+
+        // check if we have successfull set the umask
+        if (umask() != $newUmask) { // check if set, throw an exception if not
+            throw new \Exception(sprintf('Can\'t set configured umask \'%s\' found \'%\' instead', $newUmask, umask()));
+        }
+    }
+
+    /**
+     * Creates the passed directory with the umask specified in the system
+     * configuration and sets the user permissions.
+     *
+     * @param \SplFileInfo $directoryToCreate The directory that should be created
+     *
+     * @return void
+     * @throws \Exception Is thrown if the directory can't be created
+     */
+    public function createDirectory(\SplFileInfo $directoryToCreate)
+    {
+
+        // we don't do anything under Windows
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+            return;
+        }
+
+        // set the umask that is necessary to create the directory
+        $this->initUmask();
+
+        // we don't have a directory to change the user/group permissions for
+        if ($directoryToCreate->isDir() === false) {
+
+            // create the directory if necessary
+            if (mkdir($directoryToCreate) === false) {
+                throw new \Exception(sprintf('Directory %s can\'t be created', $directoryToCreate));
+            }
+        }
+
+        // load the deployment service
+        $this->setUserRights($directoryToCreate);
+    }
 }
