@@ -21,6 +21,8 @@
 
 namespace TechDivision\ApplicationServer;
 
+use TechDivision\PBC\Config;
+use TechDivision\PBC\AutoLoader;
 use TechDivision\Storage\StackableStorage;
 use TechDivision\Application\Application;
 use TechDivision\ServletEngine\DefaultSessionSettings;
@@ -41,6 +43,7 @@ use TechDivision\WebSocketServer\HandlerManager;
 use TechDivision\WebSocketServer\HandlerLocator;
 use TechDivision\ApplicationServer\AbstractDeployment;
 use TechDivision\ApplicationServer\Interfaces\ContainerInterface;
+use TechDivision\ApplicationServer\Utilities\DirectoryKeys;
 
 /**
  * Specific deployment implementation for web applications.
@@ -78,14 +81,15 @@ class GenericDeployment extends AbstractDeployment
                 // initialize the application instance
                 $application = new Application();
 
+                // add the default class loaders
+                $application->addClassLoader($this->getInitialContext()->getClassLoader());
+                $application->addClassLoader($this->getDefaultClassLoader($folder));
+
                 // initialize the generic instances and information
                 $application->injectInitialContext($this->getInitialContext());
                 $application->injectAppBase($container->getAppBase());
                 $application->injectBaseDirectory($container->getBaseDirectory());
                 $application->injectName($folder->getBasename());
-
-                // add the default class loader
-                $application->addClassLoader($this->getInitialContext()->getClassLoader());
 
                 // if we found a WEB-INF directory, we've to initialize the web container specific managers
                 if ($webInf->isDir()) {
@@ -112,6 +116,90 @@ class GenericDeployment extends AbstractDeployment
                 $container->addApplication($application);
             }
         }
+    }
+
+    /**
+     * Loads the default auto loader instance.
+     *
+     * @param \SplFileInfo $folder The folder with the web application
+     *
+     * @return \TechDivision\PBC\AutoLoader The auto loader instance
+     */
+    protected function getDefaultClassLoader(\SplFileInfo $folder)
+    {
+
+        // load the base folders
+        $baseFolders = array(DIRECTORY_SEPARATOR . 'WEB-INF', DIRECTORY_SEPARATOR . 'META-INF');
+
+        // specify the possible folders
+        $possibleFolders = array(DIRECTORY_SEPARATOR . 'lib', DIRECTORY_SEPARATOR . 'classes');
+
+        // initialize the class path and the enforcement directories
+        $classPath = array($folder->getPathname());
+        $enforcementDirs = array();
+
+        // add the global application vendor directory if available
+        if (is_dir($folder->getPathname() . DIRECTORY_SEPARATOR . 'vendor')) {
+            array_push($classPath, $folder->getPathname() . DIRECTORY_SEPARATOR . 'vendor');
+        }
+
+        // add the possible class path if folder is available
+        foreach ($baseFolders as $baseFolder) {
+            foreach ($possibleFolders as $possibleFolder) {
+                if (is_dir($folder->getPathname() . $baseFolder . $possibleFolder)) {
+                    array_push($classPath, $folder->getPathname() . $baseFolder . $possibleFolder);
+                    array_push($enforcementDirs, $folder->getPathname() . $baseFolder . $possibleFolder);
+                }
+            }
+        }
+
+        // initialize the class loader configuration
+        $config = Config::getInstance();
+
+        // set the environment mode we want to use
+        $config->setValue('environment', 'development');
+
+        // set the cache directory
+        $config->setValue('cache/dir', $cacheDir = $this->getCacheDir($folder));
+
+        // set the default autoloader values
+        $config->setValue('autoloader/dirs', $classPath);
+        $config->setValue('autoloader/omit', array('PHPUnit', 'Psr\\Log', 'PHP'));
+
+        // set the default enforcement configuration values
+        $config->setValue('enforcement/dirs', array());
+        $config->setValue('enforcement/enforce-default-type-safety', true);
+        $config->setValue('enforcement/processing', 'exception');
+        $config->setValue('enforcement/level', 7);
+        $config->setValue('enforcement/max-nesting', 15);
+
+        // create the autoloader instance and fill the structure map
+        $autoLoader = new AutoLoader($config);
+        $autoLoader->getStructureMap()->fill();
+
+        // return the autoloader instance
+        return $autoLoader;
+    }
+
+    /**
+     * Returns the application specific cache directory.
+     *
+     * @param \SplFileInfo $folder The folder with the web application
+     *
+     * @return string The application specific cache directory
+     */
+    protected function getCacheDir(\SplFileInfo $folder)
+    {
+
+        // load the deployment service
+        $deploymentService = $this->getDeploymentService();
+
+        // create the application specific cache directory
+        $cacheDir = $deploymentService->realpath(sprintf('%s/%s', DirectoryKeys::TMP, $folder->getBasename()));
+        $deploymentService->createDirectory(new \SplFileInfo($cacheDir));
+
+        // returns the cache directory
+        return $cacheDir;
     }
 
     /**

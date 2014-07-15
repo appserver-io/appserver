@@ -39,6 +39,13 @@ abstract class AbstractDeployment implements DeploymentInterface
     protected $initialContext;
 
     /**
+     * The deployment service instance.
+     *
+     * @var \TechDivision\ApplicationServer\Api\DeploymentService
+     */
+    protected $deploymentService;
+
+    /**
      * Initializes the deployment with the container thread.
      *
      * @param \TechDivision\ApplicationServer\InitialContext $initialContext The initial context instance
@@ -47,7 +54,12 @@ abstract class AbstractDeployment implements DeploymentInterface
      */
     public function __construct(InitialContext $initialContext)
     {
+
+        // set the initial context instance
         $this->initialContext = $initialContext;
+
+        // create a deployment service instance
+        $this->deploymentService = $this->newService('TechDivision\ApplicationServer\Api\DeploymentService');
     }
 
     /**
@@ -58,6 +70,16 @@ abstract class AbstractDeployment implements DeploymentInterface
     public function getInitialContext()
     {
         return $this->initialContext;
+    }
+
+    /**
+     * Returns the deployment service instance.
+     *
+     * @return \TechDivision\ApplicationServer\Api\DeploymentService The deployment service instance
+     */
+    public function getDeploymentService()
+    {
+        return $this->deploymentService;
     }
 
     /**
@@ -72,5 +94,17 @@ abstract class AbstractDeployment implements DeploymentInterface
     public function newInstance($className, array $args = array())
     {
         return $this->getInitialContext()->newInstance($className, $args);
+    }
+
+    /**
+     * Returns a new instance of the passed API service.
+     *
+     * @param string $className The API service class name to return the instance for
+     *
+     * @return \TechDivision\ApplicationServer\Api\ServiceInterface The service instance
+     */
+    public function newService($className)
+    {
+        return $this->getInitialContext()->newService($className);
     }
 }
