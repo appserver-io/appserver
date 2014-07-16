@@ -154,7 +154,7 @@ class GenericDeployment extends AbstractDeployment
         }
 
         // initialize the class loader configuration
-        $config = Config::getInstance();
+        $config = new Config();
 
         // set the environment mode we want to use
         $config->setValue('environment', 'development');
