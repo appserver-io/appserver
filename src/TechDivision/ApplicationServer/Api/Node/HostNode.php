@@ -29,6 +29,10 @@ namespace TechDivision\ApplicationServer\Api\Node;
 class HostNode extends AbstractNode
 {
 
+    // We use several traits which give us the possibility to have collections of the child nodes mentioned in the
+    // corresponding trait name
+    use ContextsNodeTrait;
+
     /**
      * The host name.
      *
@@ -54,20 +58,12 @@ class HostNode extends AbstractNode
     protected $serverAdmin;
 
     /**
-     * The server's software signature.
+     * The servers software signature.
      *
      * @var string
      * @AS\Mapping(nodeType="string")
      */
     protected $serverSoftware;
-
-    /**
-     * The server's vhosts configuration.
-     *
-     * @var array
-     * @AS\Mapping(nodeName="vhosts/vhost", nodeType="array", elementType="TechDivision\ApplicationServer\Api\Node\VhostNode")
-     */
-    protected $vhosts = array();
 
     /**
      * Returns the host name.
@@ -107,15 +103,5 @@ class HostNode extends AbstractNode
     public function getServerSoftware()
     {
         return $this->serverSoftware;
-    }
-
-    /**
-     * Returns the server's vhosts configuration.
-     *
-     * @return array The server's vhosts configuration
-     */
-    public function getVhosts()
-    {
-        return $this->vhosts;
     }
 }

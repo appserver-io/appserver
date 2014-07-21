@@ -71,7 +71,6 @@ class DirectoryKeys
      */
     private function __construct()
     {
-
     }
 
     /**
@@ -81,7 +80,6 @@ class DirectoryKeys
      */
     private function __clone()
     {
-
     }
 
     /**
@@ -100,5 +98,17 @@ class DirectoryKeys
             DirectoryKeys::LOG,
             DirectoryKeys::RUN
         );
+    }
+
+    /**
+     * Returns to the passed directory with OS specific directory separators.
+     *
+     * @param string $directory The directory to prepare
+     *
+     * @return string The OS specific path of the passed directory
+     */
+    public static function realpath($directory)
+    {
+        return str_replace('/', DIRECTORY_SEPARATOR, $directory);
     }
 }

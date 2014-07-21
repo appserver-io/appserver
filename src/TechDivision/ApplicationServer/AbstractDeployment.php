@@ -107,4 +107,27 @@ abstract class AbstractDeployment implements DeploymentInterface
     {
         return $this->getInitialContext()->newService($className);
     }
+
+    /**
+     * Creates the temporary directory for the webapp.
+     *
+     * @param \TechDivision\Application\Interfaces\ApplicationInterface The application to create the temporary directories for
+     *
+     * @return void
+     */
+    protected function createTmpFolders(ApplicationInterface $application)
+    {
+
+        // create the directory we want to store the sessions in
+        $tmpFolders = array(
+            new \SplFileInfo($application->getTmpDir()),
+            new \SplFileInfo($application->getCacheDir()),
+            new \SplFileInfo($application->getSessionDir())
+        );
+
+        // create the applications temporary directories
+        foreach ($tmpFolders as $tmpFolder) {
+            $this->getDeploymentService()->createDirectory($tmpFolder);
+        }
+    }
 }

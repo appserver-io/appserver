@@ -55,6 +55,18 @@ trait ParamsNodeTrait
     }
 
     /**
+     * Array with the handler params to use.
+     *
+     * @param array $params The handler params
+     *
+     * @return void
+     */
+    public function setParams(array $params)
+    {
+        $this->params = $params;
+    }
+
+    /**
      * Returns the param with the passed name casted to
      * the specified type.
      *

@@ -81,7 +81,37 @@ class AppserverNode extends AbstractNode
     protected $datasources = array();
 
     /**
-     * Set's the passed base directory node.
+     * Returns the username configured in the system configuration.
+     *
+     * @return string The username
+     */
+    public function getUser()
+    {
+        $this->getParam('user');
+    }
+
+    /**
+     * Returns the groupname configured in the system configuration.
+     *
+     * @return string The groupname
+     */
+    public function getGroup()
+    {
+        $this->getParam('group');
+    }
+
+    /**
+     * Returns the umask configured in the system configuration.
+     *
+     * @return string The umask
+     */
+    public function getUmask()
+    {
+        $this->getParam('umask');
+    }
+
+    /**
+     * Sets the passed base directory node.
      *
      * @param \TechDivision\ApplicationServer\Api\Node\BaseDirectoryNode $baseDirectory The base directory node to set
      *
