@@ -96,7 +96,7 @@ class ContextNode extends AbstractNode
     {
 
         // load the managers defined of this context
-        $localManagers = $this->getDirectories();
+        $localManagers = $this->getManagers();
 
         // merge them with the passed ones
         foreach ($contextNode->getManagers() as $managerToMerge) {
@@ -121,7 +121,7 @@ class ContextNode extends AbstractNode
         // merge them with the passed ones
         foreach ($contextNode->getClassLoaders() as $classLoaderToMerge) {
             $isMerged = false;
-            foreach ($localDirectories as $key => $classLoader) {
+            foreach ($localClassLoaders as $key => $classLoader) {
                 if ($classLoader->getName() === $classLoaderToMerge->getName()) {
                     $localClassLoaders[$key] = $classLoaderToMerge;
                     $isMerged = true;
