@@ -49,8 +49,6 @@ abstract class AbstractDeployment implements DeploymentInterface
      * Initializes the deployment with the container thread.
      *
      * @param \TechDivision\ApplicationServer\InitialContext $initialContext The initial context instance
-     *
-     * @return void
      */
     public function __construct(InitialContext $initialContext)
     {

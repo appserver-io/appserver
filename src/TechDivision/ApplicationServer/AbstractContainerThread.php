@@ -63,8 +63,6 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
      *
      * @param \TechDivision\ApplicationServer\InitialContext         $initialContext The initial context
      * @param \TechDivision\ApplicationServer\Api\Node\ContainerNode $containerNode  The container node
-     *
-     * @return void
      */
     public function __construct($initialContext, $containerNode)
     {

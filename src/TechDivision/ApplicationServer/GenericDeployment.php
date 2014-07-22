@@ -22,7 +22,7 @@
 namespace TechDivision\ApplicationServer;
 
 use TechDivision\PBC\Config;
-use TechDivision\PBC\AutoLoader;
+use TechDivision\PBC\Autoloader;
 use TechDivision\Storage\StackableStorage;
 use TechDivision\Application\Application;
 use TechDivision\ServletEngine\DefaultSessionSettings;
@@ -164,17 +164,15 @@ class GenericDeployment extends AbstractDeployment
 
         // set the default autoloader values
         $config->setValue('autoloader/dirs', $classPath);
-        $config->setValue('autoloader/omit', array('PHPUnit', 'Psr\\Log', 'PHP'));
 
         // set the default enforcement configuration values
-        $config->setValue('enforcement/dirs', array());
-        $config->setValue('enforcement/enforce-default-type-safety', true);
-        $config->setValue('enforcement/processing', 'exception');
+        $config->setValue('enforcement/dirs', $enforcementDirs);
+        $config->setValue('enforcement/processing', 'logging');
+        $config->setValue('enforcement/logger', $this->getInitialContext()->getSystemLogger());
         $config->setValue('enforcement/level', 7);
-        $config->setValue('enforcement/max-nesting', 15);
 
         // create the autoloader instance and fill the structure map
-        $autoLoader = new AutoLoader($config);
+        $autoLoader = new PbcAutoLoader($config);
         $autoLoader->getStructureMap()->fill();
 
         // return the autoloader instance
