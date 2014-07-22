@@ -142,7 +142,7 @@ class ComposerClassLoader extends ClassLoader implements ClassLoaderInterface
             if (file_exists($directory . '/composer/autoload_files.php')) {
                 $includeFiles = require $directory . '/composer/autoload_files.php';
                 foreach ($includeFiles as $file) {
-                    require $file;
+                    require_once $file;
                 }
             }
         }
