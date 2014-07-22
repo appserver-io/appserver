@@ -22,7 +22,7 @@
 namespace TechDivision\ApplicationServer;
 
 use TechDivision\PBC\Config;
-use TechDivision\PBC\AutoLoader;
+use TechDivision\PBC\Autoloader;
 use TechDivision\Storage\StackableStorage;
 use TechDivision\Application\Application;
 use TechDivision\Application\Interfaces\ContextInterface;
@@ -71,7 +71,6 @@ class GenericDeployment extends AbstractDeployment
      */
     public function __construct(ContextInterface $initialContext)
     {
-
         // invoke the parent constructor
         parent::__construct($initialContext);
 
@@ -89,7 +88,6 @@ class GenericDeployment extends AbstractDeployment
      */
     public function deploy(ContainerInterface $container)
     {
-
         // initialize the iterator for the web applications
         $iterator = new \FilesystemIterator($container->getAppBase());
 

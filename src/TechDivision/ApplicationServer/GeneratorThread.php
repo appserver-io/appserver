@@ -24,7 +24,7 @@ use TechDivision\PBC\Generator;
 /**
  * TechDivision\ApplicationServer\GeneratorThread
  *
- * <TODO CLASS DESCRIPTION>
+ * Simple thread for parallel creation of contract-enabled structure definitions
  *
  * @category   Appserver
  * @package    TechDivision
@@ -37,23 +37,26 @@ use TechDivision\PBC\Generator;
 class GeneratorThread extends \Thread
 {
     /**
-     * @var  $generator <TODO FIELD COMMENT>
+     * Generator instance to use for creation
+     *
+     * @var \TechDivision\PBC\Generator $generator
      */
     protected $generator;
 
     /**
-     * @var  $structures <TODO FIELD COMMENT>
+     * Array of structures we will be creating
+     *
+     * @var array<\TechDivision\PBC\Entities\Definitions\Structure> $structures
      */
     protected $structures;
 
     /**
      * Default constructor
      *
-     * @param \TechDivision\PBC\Generator                    $generator      Our PBC generator instance
-     * @param array                                          $structures     List of structures to generate
-     * @param \TechDivision\ApplicationServer\InitialContext $initialContext Will give us the needed initial context
+     * @param \TechDivision\PBC\Generator $generator  Our PBC generator instance
+     * @param array                       $structures List of structures to generate
      */
-    public function __construct(Generator $generator, array $structures, $initialContext)
+    public function __construct(Generator $generator, array $structures)
     {
         $this->generator = $generator;
         $this->structures = $structures;
@@ -66,7 +69,15 @@ class GeneratorThread extends \Thread
      */
     public function run()
     {
-        require '/opt/appserver/app/code/vendor/autoload.php';
+        // Require the composer autoloader
+        require realpath(
+            __DIR__ . DIRECTORY_SEPARATOR . '..' .
+            DIRECTORY_SEPARATOR . '..'.
+            DIRECTORY_SEPARATOR . '..'.
+            DIRECTORY_SEPARATOR . '..'.
+            DIRECTORY_SEPARATOR . '..' .
+            DIRECTORY_SEPARATOR . 'autoload.php'
+        );
 
         // Iterate over all structures and generate them
         foreach ($this->structures as $structure) {

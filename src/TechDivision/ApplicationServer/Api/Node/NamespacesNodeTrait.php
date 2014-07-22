@@ -14,7 +14,7 @@
  * @category   Appserver
  * @package    TechDivision_ApplicationServer
  * @subpackage Api
- * @author     Tim Wagner <tw@techdivision.com>
+ * @author     Bernhard Wick <b.wick@techdivision.com>
  * @copyright  2014 TechDivision GmbH - <info@techdivision.com>
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       http://www.techdivision.com/
@@ -23,46 +23,46 @@
 namespace TechDivision\ApplicationServer\Api\Node;
 
 /**
- * Abstract node that serves nodes having a directories/directory child.
+ * Abstract node that serves nodes having a namespaces/namespace child.
  *
  * @category   Appserver
  * @package    TechDivision_ApplicationServer
  * @subpackage Api
- * @author     Tim Wagner <tw@techdivision.com>
+ * @author     Bernhard Wick <b.wick@techdivision.com>
  * @copyright  2014 TechDivision GmbH - <info@techdivision.com>
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       http://www.techdivision.com/
  */
-trait DirectoriesNodeTrait
+trait NamespacesNodeTrait
 {
 
     /**
-     * The directories.
+     * The namespaces.
      *
      * @var array
-     * @AS\Mapping(nodeName="directories/directory", nodeType="array", elementType="TechDivision\ApplicationServer\Api\Node\DirectoryNode")
+     * @AS\Mapping(nodeName="namespaces/namespace", nodeType="array", elementType="TechDivision\ApplicationServer\Api\Node\NamespaceNode")
      */
-    protected $directories = array();
+    protected $namespaces = array();
 
     /**
-     * Array with the directories.
+     * Array with the namespaces.
      *
-     * @param array $directories The directories
+     * @param array $namespaces The namespaces
      *
      * @return void
      */
-    public function setDirectories(array $directories)
+    public function setNamespaces(array $namespaces)
     {
-        $this->directories = $directories;
+        $this->namespaces = $namespaces;
     }
 
     /**
-     * Array with the directories.
+     * Array with the namespaces.
      *
      * @return array
      */
-    public function getDirectories()
+    public function getNamespaces()
     {
-        return $this->directories;
+        return $this->namespaces;
     }
 }
