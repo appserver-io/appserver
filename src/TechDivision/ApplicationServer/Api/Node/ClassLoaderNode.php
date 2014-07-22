@@ -35,6 +35,7 @@ class ClassLoaderNode extends AbstractNode implements ClassLoaderNodeInterface
     // corresponding trait name
     use ParamsNodeTrait;
     use DirectoriesNodeTrait;
+    use NamespacesNodeTrait;
 
     /**
      * The unique application name.
@@ -122,5 +123,15 @@ class ClassLoaderNode extends AbstractNode implements ClassLoaderNodeInterface
     public function getEnforcementLevel()
     {
         return $this->getParam(ClassLoaderKeys::ENFORCEMENT_LEVEL);
+    }
+
+    /**
+     * The namespaces which are omitted form PBC enforcement.
+     *
+     * @return array The array of enforcement omitted namespaces
+     */
+    public function getEnforcementOmit()
+    {
+
     }
 }
