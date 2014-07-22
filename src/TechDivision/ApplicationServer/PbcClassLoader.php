@@ -14,16 +14,18 @@
 
 namespace TechDivision\ApplicationServer;
 
-use TechDivision\ApplicationServer\Interfaces\AutoLoaderInterface;
+use TechDivision\ApplicationServer\Interfaces\ClassLoaderInterface;
 use TechDivision\PBC\CacheMap;
 use TechDivision\PBC\Generator;
 use TechDivision\PBC\StructureMap;
 use TechDivision\PBC\Config;
 use TechDivision\PBC\AutoLoader;
 use TechDivision\ApplicationServer\InitialContext;
+use TechDivision\Application\Interfaces\ApplicationInterface;
+use TechDivision\ApplicationServer\Api\Node\ClassLoaderNodeInterface;
 
 // We should get the composer autoloader as a fallback
-require '/opt/appserver/app/code/vendor/autoload.php';
+//require '/opt/appserver/app/code/vendor/autoload.php';
 
 /**
  * This class is used to delegate to php-by-contract's autoloader.
@@ -37,20 +39,33 @@ require '/opt/appserver/app/code/vendor/autoload.php';
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      http://www.appserver.io
  */
-class PbcAutoLoader extends AutoLoader implements AutoLoaderInterface
+class PbcClassLoader extends AutoLoader implements ClassLoaderInterface
 {
     /**
-     * @const string OUR_LOADER The name of our autoload method
+     * The unique class loader identifier.
+     *
+     * @var string
+     */
+    const IDENTIFIER = 'pbc';
+
+    /**
+     * The name of our autoload method
+     *
+     * @const string OUR_LOADER
      */
     const OUR_LOADER = 'loadClass';
 
     /**
-     * @const string CONFIG_FILE Our default configuration file
+     * Our default configuration file
+     *
+     * @const string CONFIG_FILE
      */
     const CONFIG_FILE = '/opt/appserver/etc/pbc.conf.json';
 
     /**
-     * @const int GENERATOR_STACK_COUNT The amount of structures we will generate per thread
+     * The amount of structures we will generate per thread
+     *
+     * @const int GENERATOR_STACK_COUNT
      */
     const GENERATOR_STACK_COUNT = 5;
 
@@ -94,38 +109,6 @@ class PbcAutoLoader extends AutoLoader implements AutoLoaderInterface
 
             }
         }
-    }
-
-    /**
-     * Will initiate the creation of a structure map and the parsing process of all found structures
-     *
-     * @return bool
-     */
-    protected function fillCache()
-    {
-        // Lets create the definitions
-        return $this->createDefinitions();
-    }
-
-    /**
-     * We will refill the cache dir by emptying it and filling it again
-     *
-     * @return bool
-     */
-    protected function refillCache()
-    {
-        // Lets clear the cache so we can fill it anew
-        foreach (new \DirectoryIterator($this->config->getValue('cache/dir')) as $fileInfo) {
-
-            if (!$fileInfo->isDot()) {
-
-                // Unlink the file
-                unlink($fileInfo->getPathname());
-            }
-        }
-
-        // Lets create the definitions anew
-        return $this->createDefinitions();
     }
 
     /**
@@ -199,6 +182,71 @@ class PbcAutoLoader extends AutoLoader implements AutoLoaderInterface
     }
 
     /**
+     * Will initiate the creation of a structure map and the parsing process of all found structures
+     *
+     * @return bool
+     */
+    protected function fillCache()
+    {
+        // Lets create the definitions
+        return $this->createDefinitions();
+    }
+
+    /**
+     * Factory method that adds a initialized class loader to the passed application.
+     *
+     * @param \TechDivision\Application\Interfaces\ApplicationInterface         $application   The application instance
+     * @param \TechDivision\ApplicationServer\Api\Node\ClassLoaderNodeInterface $configuration The class loader configuration node
+     *
+     * @return void
+     */
+    public static function get(ApplicationInterface $application, ClassLoaderNodeInterface $configuration = null)
+    {
+
+        // load the web application path we want to register the class loader for
+        $webappPath = $application->getWebappPath();
+
+        // initialize the class path and the enforcement directories
+        $classPath = array();
+        $enforcementDirs = array();
+
+        // add the possible class path if folder is available
+        foreach ($configuration->getDirectories() as $directory) {
+            if (is_dir($webappPath . $directory->getNodeValue())) {
+                array_push($classPath, $webappPath . $directory->getNodeValue());
+                if ($directory->isEnforced()) {
+                    array_push($enforcementDirs, $webappPath . $directory->getNodeValue());
+                }
+            }
+        }
+
+        // initialize the class loader configuration
+        $config = new Config();
+
+        // set the environment mode we want to use
+        $config->setValue('environment', $configuration->getEnvironment());
+
+        // set the cache directory
+        $config->setValue('cache/dir', $application->getCacheDir());
+
+        // set the default autoloader values
+        $config->setValue('autoloader/dirs', $classPath);
+
+        // set the default enforcement configuration values
+        $config->setValue('enforcement/dirs', $enforcementDirs);
+        $config->setValue('enforcement/enforce-default-type-safety', $configuration->getTypeSafety());
+        $config->setValue('enforcement/processing', $configuration->getProcessing());
+        $config->setValue('enforcement/level', $configuration->getEnforcementLevel());
+        $config->setValue('enforcement/logger', $application->getInitialContext()->getSystemLogger());
+
+        // create the autoloader instance and fill the structure map
+        $autoLoader = new self($config);
+
+        // add the class loader instance to the application
+        $application->addClassLoader($autoLoader);
+    }
+
+    /**
      * Our class loading method.
      *
      * This method will delegate to the php-by-contract's AutoLoader class.
@@ -227,5 +275,26 @@ class PbcAutoLoader extends AutoLoader implements AutoLoaderInterface
 
         // Still here? That sounds horrible
         return false;
+    }
+
+    /**
+     * We will refill the cache dir by emptying it and filling it again
+     *
+     * @return bool
+     */
+    protected function refillCache()
+    {
+        // Lets clear the cache so we can fill it anew
+        foreach (new \DirectoryIterator($this->config->getValue('cache/dir')) as $fileInfo) {
+
+            if (!$fileInfo->isDot()) {
+
+                // Unlink the file
+                unlink($fileInfo->getPathname());
+            }
+        }
+
+        // Lets create the definitions anew
+        return $this->createDefinitions();
     }
 }

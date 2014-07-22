@@ -83,42 +83,48 @@ class CreateDatabaseStep extends AbstractStep
     public function execute()
     {
 
-        // check if we have a valid datasource node
-        if ($this->getDatasourceNode() == null) {
-            return;
-        }
+        try {
 
-        // prepare the path to the entities
-        $absolutePaths = array();
-        if ($relativePaths = $this->getStepNode()->getParam(CreateDatabaseStep::PARAM_PATH_TO_ENTITIES)) {
-            foreach (explode(PATH_SEPARATOR, $relativePaths) as $relativePath) {
-                $absolutePaths[] = $this->getWebappPath() . DIRECTORY_SEPARATOR . $relativePath;
+            // check if we have a valid datasource node
+            if ($this->getDatasourceNode() == null) {
+                return;
             }
-        }
 
-        // load the database connection parameters
-        $connectionParameters = $this->getConnectionParameters();
+            // prepare the path to the entities
+            $absolutePaths = array();
+            if ($relativePaths = $this->getStepNode()->getParam(CreateDatabaseStep::PARAM_PATH_TO_ENTITIES)) {
+                foreach (explode(PATH_SEPARATOR, $relativePaths) as $relativePath) {
+                    $absolutePaths[] = $this->getWebappPath() . DIRECTORY_SEPARATOR . $relativePath;
+                }
+            }
 
-        // register the class loader
-        $this->getInitialContext()->getClassLoader()->register(true, true);
+            // load the database connection parameters
+            $connectionParameters = $this->getConnectionParameters();
 
-        // initialize and load the entity manager and the schema tool
-        $metadataConfiguration = Setup::createAnnotationMetadataConfiguration($absolutePaths, true);
-        $entityManager = EntityManager::create($connectionParameters, $metadataConfiguration);
-        $schemaTool = new SchemaTool($entityManager);
+            // register the class loader
+            $this->getInitialContext()->getClassLoader()->register(true, true);
 
-        // load the class definitions
-        $classes = $entityManager->getMetadataFactory()->getAllMetadata();
+            // initialize and load the entity manager and the schema tool
+            $metadataConfiguration = Setup::createAnnotationMetadataConfiguration($absolutePaths, true);
+            $entityManager = EntityManager::create($connectionParameters, $metadataConfiguration);
+            $schemaTool = new SchemaTool($entityManager);
 
-        // drop the schema if it already exists and create it new
-        $schemaTool->dropSchema($classes);
-        $schemaTool->createSchema($classes);
+            // load the class definitions
+            $classes = $entityManager->getMetadataFactory()->getAllMetadata();
 
-        // set the user rights for the database we've created
-        if (isset($connectionParameters[CreateDatabaseStep::CONNECTION_PARAM_PATH])) {
-            $this->getService()->setUserRight(
-                new \SplFileInfo($connectionParameters[CreateDatabaseStep::CONNECTION_PARAM_PATH])
-            );
+            // drop the schema if it already exists and create it new
+            $schemaTool->dropSchema($classes);
+            $schemaTool->createSchema($classes);
+
+            // set the user rights for the database we've created
+            if (isset($connectionParameters[CreateDatabaseStep::CONNECTION_PARAM_PATH])) {
+                $this->getService()->setUserRight(
+                    new \SplFileInfo($connectionParameters[CreateDatabaseStep::CONNECTION_PARAM_PATH])
+                );
+            }
+
+        } catch (\Exception $e) {
+            error_log($e->__toString());
         }
     }
 

@@ -1,5 +1,8 @@
 <?php
+
 /**
+ * TechDivision\ApplicationServer\Api\Node\ParamsNodeTrait
+ *
  * NOTICE OF LICENSE
  *
  * This source file is subject to the Open Software License (OSL 3.0)
@@ -10,53 +13,57 @@
  *
  * @category   Appserver
  * @package    TechDivision_ApplicationServer
- * @subpackage Interfaces
+ * @subpackage Api
+ * @author     Tim Wagner <tw@techdivision.com>
  * @author     Bernhard Wick <b.wick@techdivision.com>
  * @copyright  2014 TechDivision GmbH - <info@techdivision.com>
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       http://www.techdivision.com/
  */
 
-namespace TechDivision\ApplicationServer\Interfaces;
+namespace TechDivision\ApplicationServer\Api\Node;
 
 /**
- * TechDivision\ApplicationServer\Interfaces\AutoLoaderInterface
- *
- * Interface which all autoLoaders have to implement if they want to be used within the appserver environment
+ * Abstract node that serves nodes having a directories/directory child.
  *
  * @category   Appserver
  * @package    TechDivision_ApplicationServer
- * @subpackage Interfaces
- * @author     Bernhard Wick <b.wick@techdivision.com>
+ * @subpackage Api
+ * @author     Tim Wagner <tw@techdivision.com>
  * @copyright  2014 TechDivision GmbH - <info@techdivision.com>
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       http://www.techdivision.com/
  */
-interface AutoLoaderInterface
+trait DirectoriesNodeTrait
 {
-    /**
-     * Installs this class loader on the SPL autoload stack.
-     *
-     * @param bool $throw   If register should throw an exception or not
-     * @param bool $prepend If register should prepend
-     *
-     * @return void
-     */
-    public function register($throw, $prepend);
 
     /**
-     * Uninstalls this class loader from the SPL autoloader stack.
+     * The directories.
      *
-     * @return void
+     * @var array
+     * @AS\Mapping(nodeName="directories/directory", nodeType="array", elementType="TechDivision\ApplicationServer\Api\Node\DirectoryNode")
      */
-    public function unregister();
+    protected $directories = array();
 
     /**
-     * Loads the given class or interface.
+     * Array with the directories.
      *
-     * @param string $className The name of the class to load.
+     * @param array $directories The directories
      *
      * @return void
      */
-    public function loadClass($className);
+    public function setDirectories(array $directories)
+    {
+        $this->directories = $directories;
+    }
+
+    /**
+     * Array with the directories.
+     *
+     * @return array
+     */
+    public function getDirectories()
+    {
+        return $this->directories;
+    }
 }
