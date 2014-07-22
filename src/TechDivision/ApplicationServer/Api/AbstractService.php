@@ -167,13 +167,15 @@ abstract class AbstractService implements ServiceInterface
     }
 
     /**
-     * Returns the servers tmp directory
+     * Returns the servers tmp directory, append with the passed directory.
+     *
+     * @param string|null $directoryToAppend The directory to append
      *
      * @return string
      */
-    public function getTmpDir()
+    public function getTmpDir($directoryToAppend = null)
     {
-        return $this->realpath(DirectoryKeys::TMP);
+        return $this->realpath(DirectoryKeys::TMP . $directoryToAppend);
     }
 
     /**
@@ -216,7 +218,7 @@ abstract class AbstractService implements ServiceInterface
      */
     public function realpath($relativeDirectory)
     {
-        return $this->getBaseDirectory(DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $relativeDirectory));
+        return $this->getBaseDirectory(DIRECTORY_SEPARATOR . ltrim(DirectoryKeys::realpath($relativeDirectory), DIRECTORY_SEPARATOR));
     }
 
     /**
@@ -328,7 +330,7 @@ abstract class AbstractService implements ServiceInterface
      * @return void
      * @throws \Exception Is thrown if the umask can not be set
      */
-    protected function initUmask()
+    public function initUmask()
     {
 
         // don't do anything under Windows
@@ -356,11 +358,6 @@ abstract class AbstractService implements ServiceInterface
      */
     public function createDirectory(\SplFileInfo $directoryToCreate)
     {
-
-        // we don't do anything under Windows
-        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-            return;
-        }
 
         // set the umask that is necessary to create the directory
         $this->initUmask();

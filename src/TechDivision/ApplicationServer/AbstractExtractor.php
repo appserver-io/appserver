@@ -15,8 +15,8 @@
 
 namespace TechDivision\ApplicationServer;
 
-use TechDivision\ApplicationServer\Interfaces\ExtractorInterface;
 use TechDivision\ApplicationServer\Utilities\DirectoryKeys;
+use TechDivision\ApplicationServer\Interfaces\ExtractorInterface;
 
 /**
  * Abstract extractor functionality

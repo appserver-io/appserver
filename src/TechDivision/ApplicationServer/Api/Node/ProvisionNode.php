@@ -28,7 +28,7 @@ namespace TechDivision\ApplicationServer\Api\Node;
  */
 class ProvisionNode extends AbstractNode
 {
-    
+
     /**
      * The node containing datasource information.
      *
@@ -56,7 +56,7 @@ class ProvisionNode extends AbstractNode
     {
         $this->datasource = $datasource;
     }
-    
+
     /**
      * Returns the node containing datasource information.
      *
@@ -76,7 +76,7 @@ class ProvisionNode extends AbstractNode
     {
         return $this->installation;
     }
-    
+
     /**
      * This method reprovisions the provision node with the data from the file passed as parameter.
      *
@@ -90,8 +90,51 @@ class ProvisionNode extends AbstractNode
      */
     public function reprovision($provisionFile)
     {
+
+        // copy the datasource node temporarily
+        $tmpDatasource = $this->datasource;
+
+        // replace the variables
         ob_start();
         require $provisionFile;
         $this->initFromString($content = ob_get_clean());
+
+        // re-attach the database node
+        $this->datasource = $tmpDatasource;
+    }
+
+    /**
+     * This method merges the installation steps of the passed provisioning node into the steps of
+     * this instance. If a installation node with the same type already exists, the one of this
+     * instance will be overwritten.
+     *
+     * @param \TechDivision\ApplicationServer\Api\Node\ProvisionNode $provisionNode The node with the installation steps we want to merge
+     *
+     * @return void
+     */
+    public function merge(ProvisionNode $provisionNode)
+    {
+
+        // inject the datasource node if available
+        if ($datasource = $provisionNode->getDatasource()) {
+            $this->injectDatasource($datasource);
+        }
+
+        // load the steps of this instance
+        $localSteps = $this->getInstallation()->getSteps();
+
+        // merge it with the ones found in the passed provisioning node
+        foreach ($provisionNode->getInstallation()->getSteps() as $stepToMerge) {
+            foreach ($localSteps as $key => $step) {
+                if ($step->getType() === $stepToMerge->getType()) {
+                    $localSteps[$key] = $stepToMerge;
+                } else {
+                    $localSteps[$stepToMerge->getUuid()] = $stepToMerge;
+                }
+            }
+        }
+
+        // set the installation steps
+        $this->getInstallation()->setSteps($localSteps);
     }
 }

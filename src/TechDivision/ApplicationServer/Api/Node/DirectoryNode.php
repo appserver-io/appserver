@@ -1,7 +1,6 @@
 <?php
-
 /**
- * TechDivision\ApplicationServer\Api\Node\InstallationNode
+ * TechDivision\ApplicationServer\Api\Node\DirectoryNode
  *
  * PHP version 5
  *
@@ -17,7 +16,7 @@
 namespace TechDivision\ApplicationServer\Api\Node;
 
 /**
- * DTO to transfer a the installation information.
+ * DTO to transfer the directory information.
  *
  * @category   Appserver
  * @package    TechDivision_ApplicationServer
@@ -27,36 +26,24 @@ namespace TechDivision\ApplicationServer\Api\Node;
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       http://www.appserver.io
  */
-class InstallationNode extends AbstractNode
+class DirectoryNode extends AbstractValueNode
 {
 
     /**
-     * The installation steps.
+     * The flag to enforce design-by-contract type checking on classes of this directory.
      *
-     * @var array
-     * @AS\Mapping(nodeName="steps/step", nodeType="array", elementType="TechDivision\ApplicationServer\Api\Node\StepNode")
+     * @var string
+     * @AS\Mapping(nodeType="boolean")
      */
-    protected $steps;
+    protected $enforced;
 
     /**
-     * Sets the installation steps.
+     * Returns the enforcement flag.
      *
-     * @param array $steps The installation steps
-     *
-     * @return void
+     * @return boolean The enforcement flag
      */
-    public function setSteps(array $steps)
+    public function isEnforced()
     {
-        $this->steps = $steps;
-    }
-
-    /**
-     * Returns the installation step.
-     *
-     * @return array
-     */
-    public function getSteps()
-    {
-        return $this->steps;
+        return $this->enforced;
     }
 }

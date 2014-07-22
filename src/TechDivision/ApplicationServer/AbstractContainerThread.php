@@ -19,6 +19,7 @@ namespace TechDivision\ApplicationServer;
 
 use TechDivision\Application\Interfaces\ApplicationInterface;
 use TechDivision\ApplicationServer\Interfaces\ContainerInterface;
+use TechDivision\ApplicationServer\Utilities\DirectoryKeys;
 
 /**
  * Class AbstractContainerThread
@@ -315,6 +316,18 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
     public function getAppBase()
     {
         return $this->getBaseDirectory($this->getContainerNode()->getHost()->getAppBase());
+    }
+
+    /**
+     * Returns the servers tmp directory, append with the passed directory.
+     *
+     * @param string|null $directoryToAppend The directory to append
+     *
+     * @return string
+     */
+    public function getTmpDir($directoryToAppend)
+    {
+        return $this->getService()->getTmpDir($directoryToAppend);
     }
 
     /**
