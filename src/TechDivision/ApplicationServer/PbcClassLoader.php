@@ -24,9 +24,6 @@ use TechDivision\ApplicationServer\InitialContext;
 use TechDivision\Application\Interfaces\ApplicationInterface;
 use TechDivision\ApplicationServer\Api\Node\ClassLoaderNodeInterface;
 
-// We should get the composer autoloader as a fallback
-//require '/opt/appserver/app/code/vendor/autoload.php';
-
 /**
  * This class is used to delegate to php-by-contract's autoloader.
  * This is needed as our multi-threaded environment would not allow any out-of-the-box code generation
@@ -42,20 +39,6 @@ use TechDivision\ApplicationServer\Api\Node\ClassLoaderNodeInterface;
 class PbcClassLoader extends AutoLoader implements ClassLoaderInterface
 {
     /**
-     * The unique class loader identifier.
-     *
-     * @var string
-     */
-    const IDENTIFIER = 'pbc';
-
-    /**
-     * The name of our autoload method
-     *
-     * @const string OUR_LOADER
-     */
-    const OUR_LOADER = 'loadClass';
-
-    /**
      * Our default configuration file
      *
      * @const string CONFIG_FILE
@@ -68,6 +51,20 @@ class PbcClassLoader extends AutoLoader implements ClassLoaderInterface
      * @const int GENERATOR_STACK_COUNT
      */
     const GENERATOR_STACK_COUNT = 5;
+
+    /**
+     * The unique class loader identifier.
+     *
+     * @var string
+     */
+    const IDENTIFIER = 'pbc';
+
+    /**
+     * The name of our autoload method
+     *
+     * @const string OUR_LOADER
+     */
+    const OUR_LOADER = 'loadClass';
 
     /**
      * Default constructor
@@ -94,7 +91,7 @@ class PbcClassLoader extends AutoLoader implements ClassLoaderInterface
         $this->getStructureMap()->fill();
 
         // Check if there are files in the cache.
-        // If not we will fill the cache, if there are we will check if there have been any changes to the project dirs
+        // If not we will fill the cache, if there are we will check if there have been any changes to the enforced dirs
         $fileIterator = new \FilesystemIterator($this->config->getValue('cache/dir'), \FilesystemIterator::SKIP_DOTS);
         if (iterator_count($fileIterator) <= 1 || $this->config->getValue('environment') === 'development') {
 
@@ -105,7 +102,7 @@ class PbcClassLoader extends AutoLoader implements ClassLoaderInterface
 
             if (!$this->structureMap->isRecent()) {
 
-                $this->refillCache($this->config->getConfig('cache'));
+                $this->refillCache();
 
             }
         }
@@ -119,7 +116,7 @@ class PbcClassLoader extends AutoLoader implements ClassLoaderInterface
     protected function createDefinitions()
     {
         // Get all the structures we found
-        $structures = $this->structureMap->getEntries(true);
+        $structures = $this->structureMap->getEntries(true, true);
 
         // We will need a CacheMap instance which we can pass to the generator
         // We need the caching configuration
@@ -202,7 +199,6 @@ class PbcClassLoader extends AutoLoader implements ClassLoaderInterface
      */
     public static function get(ApplicationInterface $application, ClassLoaderNodeInterface $configuration = null)
     {
-
         // load the web application path we want to register the class loader for
         $webappPath = $application->getWebappPath();
 
@@ -220,6 +216,26 @@ class PbcClassLoader extends AutoLoader implements ClassLoaderInterface
             }
         }
 
+        // initialize the arrays of different omit possibilities
+        $omittedEnforcement = array();
+        $omittedAutoLoading = array();
+
+        // iterate over all namespaces and check if they are omitted in one or the other way
+        foreach ($configuration->getNamespaces() as $namespace) {
+
+            // is the enforcement omitted for this namespace?
+            if ($namespace->omitEnforcement()) {
+
+                $omittedEnforcement[] = $namespace->getNodeValue()->__toString();
+            }
+
+            // is the autoloading omitted for this namespace?
+            if ($namespace->omitAutoLoading()) {
+
+                $omittedAutoLoading[] = $namespace->getNodeValue()->__toString();
+            }
+        }
+
         // initialize the class loader configuration
         $config = new Config();
 
@@ -231,6 +247,10 @@ class PbcClassLoader extends AutoLoader implements ClassLoaderInterface
 
         // set the default autoloader values
         $config->setValue('autoloader/dirs', $classPath);
+
+        // collect the omitted namespaces (if any)
+        $config->setValue('autoloader/omit', $omittedAutoLoading);
+        $config->setValue('enforcement/omit', $omittedEnforcement);
 
         // set the default enforcement configuration values
         $config->setValue('enforcement/dirs', $enforcementDirs);
@@ -244,37 +264,6 @@ class PbcClassLoader extends AutoLoader implements ClassLoaderInterface
 
         // add the class loader instance to the application
         $application->addClassLoader($autoLoader);
-    }
-
-    /**
-     * Our class loading method.
-     *
-     * This method will delegate to the php-by-contract's AutoLoader class.
-     *
-     * @param string $className Name of the structure to load
-     *
-     * @return  bool
-     */
-    public function loadClass($className)
-    {
-        if ($this->structureMap->entryExists($className)) {
-
-            // Get the file from the map
-            $file = $this->structureMap->getEntry($className);
-
-            // Did we get something? If not return false.
-            if ($file === false) {
-
-                return false;
-            }
-
-            require $file->getPath();
-
-            return true;
-        }
-
-        // Still here? That sounds horrible
-        return false;
     }
 
     /**

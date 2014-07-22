@@ -76,7 +76,8 @@ class GeneratorThread extends \Thread
             DIRECTORY_SEPARATOR . '..'.
             DIRECTORY_SEPARATOR . '..'.
             DIRECTORY_SEPARATOR . '..' .
-            DIRECTORY_SEPARATOR . 'autoload.php');
+            DIRECTORY_SEPARATOR . 'autoload.php'
+        );
 
         // Iterate over all structures and generate them
         foreach ($this->structures as $structure) {
