@@ -15,7 +15,9 @@
 
 namespace TechDivision\ApplicationServer;
 
-use \TechDivision\ApplicationServer\InitialContext;
+use TechDivision\Application\Interfaces\ContextInterface;
+use TechDivision\Application\Interfaces\ApplicationInterface;
+use TechDivision\ApplicationServer\Api\Node\ClassLoaderNodeInterface;
 
 /**
  * SplClassLoader implementation that implements the technical interoperability
@@ -42,38 +44,64 @@ use \TechDivision\ApplicationServer\InitialContext;
  */
 class SplClassLoader extends \Stackable
 {
-    
+
+    /**
+     * The unique class loader identifier.
+     *
+     * @var string
+     */
+    const IDENTIFIER = 'spl';
+
     /**
      * The unique key to store the class map in the initial context.
      *
      * @var string
      */
     const CLASS_MAP = 'SplClassLoader.classMap';
-    
-    protected $fileExtension;
-    protected $namespace;
-    protected $includePath;
-    protected $namespaceSeparator;
-    
+
     /**
-     * The initial context instance.
+     * Factory method that adds a initialized class loader to the passed application.
      *
-     * @var \TechDivision\ApplicationServer\InitialContext
+     * @param \TechDivision\Application\Interfaces\ApplicationInterface         $application   The application instance
+     * @param \TechDivision\ApplicationServer\Api\Node\ClassLoaderNodeInterface $configuration The class loader configuration node
+     *
+     * @return void
      */
-    protected $initialContext;
-    
+    public static function get(ApplicationInterface $application, ClassLoaderNodeInterface $configuration = null)
+    {
+
+        // load the web application path we want to register the class loader for
+        $webappPath = $application->getWebappPath();
+
+        // initialize the array with the applications additional include paths
+        $includePath = array();
+
+        // add the possible class path if folder is available
+        foreach ($configuration->getDirectories() as $directory) {
+            if (is_dir($webappPath . $directory->getNodeValue())) {
+                array_push($includePath, $webappPath . $directory->getNodeValue());
+            }
+        }
+
+        // initialize the SPL class loader instance
+        $classLoader = new SplClassLoader($application->getInitialContext(), null, $includePath);
+
+        // add the class loader instance
+        $application->addClassLoader($classLoader);
+    }
+
     /**
      * Creates a new <tt>SplClassLoader</tt> that loads classes of the specified
      * namespace and searches for the class files in the include paths passed as
      * array.
      *
-     * @param \TechDivision\ApplicationServer\InitialContext $initialContext     The initial context instance
-     * @param string                                         $namespace          The namespace to use
-     * @param array                                          $includePath        The include path to use
-     * @param string                                         $namespaceSeparator The namespace separator
-     * @param string                                         $fileExtension      The filename extension
+     * @param \TechDivision\Application\Interfaces\ContextInterface $initialContext     The initial context instance
+     * @param string                                                $namespace          The namespace to use
+     * @param array                                                 $includePath        The include path to use
+     * @param string                                                $namespaceSeparator The namespace separator
+     * @param string                                                $fileExtension      The filename extension
      */
-    public function __construct(InitialContext $initialContext, $namespace = null, array $includePath = null, $namespaceSeparator = '\\', $fileExtension = '.php')
+    public function __construct(ContextInterface $initialContext, $namespace = null, array $includePath = null, $namespaceSeparator = '\\', $fileExtension = '.php')
     {
         // set the initial context and initialize the class map
         $this->initialContext = $initialContext;
@@ -85,21 +113,21 @@ class SplClassLoader extends \Stackable
 
         // set namespace and initialize include path
         $this->namespace = $namespace;
-        $this->includePath = $this->getIncludePath();
-        if ($includePath != null) {
-            $this->includePath = array_merge($this->includePath, $includePath);
+
+        // initialize the include path with the defined include path
+        $this->includePath = new GenericStackable();
+        foreach (explode(PATH_SEPARATOR, get_include_path()) as $val) {
+            if (!empty($val)) {
+                $this->includePath[] = $val;
+            }
         }
-    }
 
-    /**
-     * (non-PHPdoc)
-     *
-     * @return void
-     * @see \Stackable::run()
-     */
-    public function run()
-    {
-
+        // add the directories passed as parameter
+        if ($includePath != null) {
+            foreach ($includePath as $val) {
+                $this->includePath[] = $val;
+            }
+        }
     }
 
     /**
@@ -119,15 +147,9 @@ class SplClassLoader extends \Stackable
      */
     public function getIncludePath()
     {
-        $includePath = explode(PATH_SEPARATOR, get_include_path());
-        foreach ($includePath as $key => $val) {
-            if ($val === '') {
-                unset($includePath[$key]);
-            }
-        }
-        return $includePath;
+        return $this->includePath;
     }
-    
+
     /**
      * Returns the initial context instance.
      *
@@ -181,25 +203,24 @@ class SplClassLoader extends \Stackable
      */
     public function loadClass($className)
     {
-        
+
         // backup the requested class name
         $requestedClassName = $className;
-        
+
         // try to load the class map from the inital context
         $classMap = $this->getInitialContext()->getAttribute(self::CLASS_MAP);
-        
+
         // check if the requested class name has already been loaded
         if (isset($classMap[$requestedClassName]) !== false) {
             require $classMap[$requestedClassName];
             return true;
         }
-        
+
         // concatenate namespace and separator
         $namespaceAndSeparator = $this->namespace . $this->namespaceSeparator;
 
         // if a namespace is available OR the classname contains a namespace
-        if ($namespaceAndSeparator === substr($className, 0, strlen($namespaceAndSeparator)) ||
-            $this->namespace === null) {
+        if ($namespaceAndSeparator === substr($className, 0, strlen($namespaceAndSeparator)) || $this->namespace === null) {
 
             // initialize filename, classname and namespace
             $fileName = '';
@@ -212,7 +233,7 @@ class SplClassLoader extends \Stackable
 
             // prepare filename
             $fileName .= $className . $this->fileExtension;
-            
+
             // try to load the requested class
             foreach ($this->getIncludePath() as $includePath) {
                 $toRequire = $includePath . DIRECTORY_SEPARATOR . $fileName;
@@ -226,7 +247,7 @@ class SplClassLoader extends \Stackable
                 }
             }
         }
-        
+
         // return FALSE, because the class loader can't require the requested class name
         return false;
     }

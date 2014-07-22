@@ -41,6 +41,23 @@ class ComposerClassLoader extends ClassLoader implements ClassLoaderInterface
     const IDENTIFIER = 'composer';
 
     /**
+     * The array with the configured directories.
+     *
+     * @param array
+     */
+    protected $directories;
+
+    /**
+     * Initialize the class loader with the configured directories.
+     *
+     * @param array $directories The array with the configured directories
+     */
+    public function __construct(array $directories = array())
+    {
+        $this->directories = $directories;
+    }
+
+    /**
      * Factory method that adds a initialized class loader to the passed application.
      *
      * @param \TechDivision\Application\Interfaces\ApplicationInterface         $application   The application instance
@@ -54,14 +71,20 @@ class ComposerClassLoader extends ClassLoader implements ClassLoaderInterface
         // load the application directory
         $webappPath = $application->getWebappPath();
 
+        // initialize the array with the configured directories
+        $directories = array();
+
         // load the composer class loader for the configured directories
         foreach ($configuration->getDirectories() as $directory) {
+
+            // we prepare the directories to include scripts AFTER registering (in application context)
+            $directories[] = $webappPath . $directory->getNodeValue();
 
             // check if an autoload.php is available
             if (file_exists($autoloader = $webappPath . $directory->getNodeValue() . DIRECTORY_SEPARATOR . 'autoload.php')) {
 
                 // if yes, we try to instanciate a new class loader instance
-                $classLoader = new ComposerClassLoader();
+                $classLoader = new ComposerClassLoader($directories);
 
                 // set the composer include paths
                 if (file_exists($webappPath . $directory->getNodeValue() . '/composer/include_paths.php')) {
@@ -110,6 +133,18 @@ class ComposerClassLoader extends ClassLoader implements ClassLoaderInterface
      */
     public function register($throw = true, $prepend = false)
     {
+
+        // register the class loader instance
         parent::register($prepend);
+
+        // require the files registered with composer (e. g. Swift Mailer)
+        foreach ($this->directories as $directory) {
+            if (file_exists($directory . '/composer/autoload_files.php')) {
+                $includeFiles = require $directory . '/composer/autoload_files.php';
+                foreach ($includeFiles as $file) {
+                    require $file;
+                }
+            }
+        }
     }
 }
