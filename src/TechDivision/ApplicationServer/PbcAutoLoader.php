@@ -1,6 +1,6 @@
 <?php
 /**
- * TechDivision\ApplicationServer\DbcClassLoader
+ * TechDivision\ApplicationServer\PbcAutoLoader
  *
  * PHP version 5
  *
@@ -14,6 +14,7 @@
 
 namespace TechDivision\ApplicationServer;
 
+use TechDivision\ApplicationServer\Interfaces\AutoLoaderInterface;
 use TechDivision\PBC\CacheMap;
 use TechDivision\PBC\Generator;
 use TechDivision\PBC\StructureMap;
@@ -36,28 +37,8 @@ require '/opt/appserver/app/code/vendor/autoload.php';
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      http://www.appserver.io
  */
-class PbcClassLoader extends SplClassLoader
+class PbcAutoLoader extends AutoLoader implements AutoLoaderInterface
 {
-
-    /**
-     * @var \TechDivision\PBC\AutoLoader  The original PBC Autoloader we will delegate to
-     */
-    protected $autoloader;
-
-    /**
-     * @var \TechDivision\PBC\Config  Will hold the PBC configuration
-     */
-    protected $config;
-
-    /**
-     * @var \TechDivision\ApplicationServer\InitialContext  Will hold the initial context instance
-     */
-    protected $initialContext;
-
-    protected $structureMap;
-
-    protected $map;
-
     /**
      * @const string OUR_LOADER The name of our autoload method
      */
@@ -71,7 +52,7 @@ class PbcClassLoader extends SplClassLoader
     /**
      * @const int GENERATOR_STACK_COUNT The amount of structures we will generate per thread
      */
-    const GENERATOR_STACK_COUNT = 25;
+    const GENERATOR_STACK_COUNT = 5;
 
     /**
      * Default constructor
@@ -80,34 +61,27 @@ class PbcClassLoader extends SplClassLoader
      * Will check if there is content in the cache directory.
      * If not we will parse anew.
      *
-     * @param \TechDivision\ApplicationServer\InitialContext $initialContext Will give us the needed initial context
+     * @param \TechDivision\PBC\Config|null $config An already existing config instance
      */
-    public function __construct($initialContext)
+    public function __construct(Config $config = null)
     {
-        $this->initialContext = $initialContext;
+        // If we got a config we can use it, if not we will get a context less config instance
+        if (is_null($config)) {
 
-        // Get our Config instance and load our configuration
-        $this->config = Config::getInstance();
-        $this->config = $this->config->load(self::CONFIG_FILE);
-
-        // We need the cacheing configuration
-        $cacheConfig = $this->config->getConfig('cache');
-
-        // We need a standalone structure map to check for its version
-        $this->structureMap = new StructureMapWrapper($this->config->getConfig(
-            'autoloader'
-        )['dirs'], $this->config->getConfig('enforcement')['dirs'], $this->config, $initialContext);
-
-        if (empty($this->autoloader)) {
-
-            // We need our autoloader to delegate to.
-            $this->autoloader = new AutoLoader($this->structureMap);
+            $config = new Config();
+            $config->load(self::CONFIG_FILE);
         }
+
+        // Construct the parent from the config we got
+        parent::__construct($config);
+
+        // We now have a structure map instance, so fill it initially
+        $this->getStructureMap()->fill();
 
         // Check if there are files in the cache.
         // If not we will fill the cache, if there are we will check if there have been any changes to the project dirs
-        $fileIterator = new \FilesystemIterator($cacheConfig['dir'], \FilesystemIterator::SKIP_DOTS);
-        if (iterator_count($fileIterator) <= 1 || $this->config->getConfig('environment') === 'development') {
+        $fileIterator = new \FilesystemIterator($this->config->getValue('cache/dir'), \FilesystemIterator::SKIP_DOTS);
+        if (iterator_count($fileIterator) <= 1 || $this->config->getValue('environment') === 'development') {
 
             // Fill the cache
             $this->fillCache();
@@ -116,7 +90,7 @@ class PbcClassLoader extends SplClassLoader
 
             if (!$this->structureMap->isRecent()) {
 
-                $this->refillCache($cacheConfig);
+                $this->refillCache($this->config->getConfig('cache'));
 
             }
         }
@@ -136,14 +110,12 @@ class PbcClassLoader extends SplClassLoader
     /**
      * We will refill the cache dir by emptying it and filling it again
      *
-     * @param array $cacheConfig The cache config as array
-     *
      * @return bool
      */
-    protected function refillCache(array $cacheConfig)
+    protected function refillCache()
     {
         // Lets clear the cache so we can fill it anew
-        foreach (new \DirectoryIterator($cacheConfig['dir']) as $fileInfo) {
+        foreach (new \DirectoryIterator($this->config->getValue('cache/dir')) as $fileInfo) {
 
             if (!$fileInfo->isDot()) {
 
@@ -153,7 +125,7 @@ class PbcClassLoader extends SplClassLoader
         }
 
         // Lets create the definitions anew
-        return $this->createDefinitions($this->structureMap);
+        return $this->createDefinitions();
     }
 
     /**
@@ -168,19 +140,17 @@ class PbcClassLoader extends SplClassLoader
 
         // We will need a CacheMap instance which we can pass to the generator
         // We need the caching configuration
-        $cacheConfig = $this->config->getConfig('cache');
-        $cacheMap = new CacheMap($cacheConfig['dir'], array());
+        $cacheMap = new CacheMap($this->config->getValue('cache/dir'), array(), $this->config);
 
         // We need a generator so we can create our proxies initially
-        $generator = new Generator($this->structureMap, $cacheMap);
+        $generator = new Generator($this->structureMap, $cacheMap, $this->config);
 
         // Iterate over all found structures and generate their proxies, but ignore the ones with omitted
         // namespaces
-        $autoLoaderConfig = $this->config->getConfig('autoloader');
         $omittedNamespaces = array();
-        if (isset($autoLoaderConfig['omit'])) {
+        if ($this->config->hasValue('autoloader/omit')) {
 
-            $omittedNamespaces = $autoLoaderConfig['omit'];
+            $omittedNamespaces = $this->config->getValue('autoloader/omit');
         }
 
         // Now check which structures we have to create and split them up for multi-threaded creation
@@ -214,7 +184,7 @@ class PbcClassLoader extends SplClassLoader
         $generatorThreads = array();
         foreach ($generatorStack as $key => $generatorStackChunk) {
 
-            $generatorThreads[$key] = new GeneratorThread($generator, $generatorStackChunk, $this->getInitialContext());
+            $generatorThreads[$key] = new GeneratorThread($generator, $generatorStackChunk);
             $generatorThreads[$key]->start();
         }
 
@@ -239,37 +209,23 @@ class PbcClassLoader extends SplClassLoader
      */
     public function loadClass($className)
     {
-        // Try our loader first
-        $tmp = $this->autoloader->loadClass($className);
+        if ($this->structureMap->entryExists($className)) {
 
-        // Did we succeed?
-        if ($tmp === true) {
+            // Get the file from the map
+            $file = $this->structureMap->getEntry($className);
 
-            return $tmp;
+            // Did we get something? If not return false.
+            if ($file === false) {
 
-        } else {
+                return false;
+            }
 
-            // Call the parent constructor so we can build up the environment
-            parent::__construct($this->initialContext);
+            require $file->getPath();
 
-            // Delegate to the parent class loader
-            return parent::loadClass($className);
+            return true;
         }
-    }
 
-    /**
-     * Will register this autoloader as first one on the stack.
-     * We already register the composer loader as a fallback.
-     *
-     * @param bool $throws   SplAutoload compatible
-     * @param bool $prepends SplAutoload compatible but will be ignored
-     *
-     * @return void
-     */
-    public function register($throws = true, $prepends = true)
-    {
-        // We want to let our autoloader be the first in line so we can react on loads and create/return our proxies.
-        // So lets use the prepend parameter here.
-        spl_autoload_register(array($this, self::OUR_LOADER), $throws, true);
+        // Still here? That sounds horrible
+        return false;
     }
 }
