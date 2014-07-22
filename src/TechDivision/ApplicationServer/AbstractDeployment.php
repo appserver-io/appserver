@@ -111,7 +111,7 @@ abstract class AbstractDeployment implements DeploymentInterface
     /**
      * Creates the temporary directory for the webapp.
      *
-     * @param \TechDivision\Application\Interfaces\ApplicationInterface The application to create the temporary directories for
+     * @param \TechDivision\Application\Interfaces\ApplicationInterface $application The application to create the temporary directories for
      *
      * @return void
      */

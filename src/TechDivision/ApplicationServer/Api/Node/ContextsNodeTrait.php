@@ -24,6 +24,7 @@
 namespace TechDivision\ApplicationServer\Api\Node;
 
 use TechDivision\ApplicationServer\GenericClassLoader;
+
 /**
  *
  * Abstract node that serves a hosts context nodes.
@@ -59,6 +60,8 @@ trait ContextsNodeTrait
 
     /**
      * Returns the context with the passed name.
+     *
+     * @param string $name The name of the requested context
      *
      * @return \TechDivision\ApplicationServer\Api\Node\ContextNode|null The requested context node
      */

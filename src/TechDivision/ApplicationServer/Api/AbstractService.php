@@ -169,7 +169,7 @@ abstract class AbstractService implements ServiceInterface
     /**
      * Returns the servers tmp directory, append with the passed directory.
      *
-     * @param string|null The directory to append
+     * @param string|null $directoryToAppend The directory to append
      *
      * @return string
      */
