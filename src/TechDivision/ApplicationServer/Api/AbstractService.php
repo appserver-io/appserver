@@ -167,58 +167,102 @@ abstract class AbstractService implements ServiceInterface
     }
 
     /**
+     * Makes the path an absolute path or returns null if passed path is empty.
+     *
+     * @param string $path A path to absolute
+     *
+     * @return string The absolute path
+     */
+    protected function makePathAbsolute($path = '')
+    {
+        if (empty($path) === false) {
+            return DIRECTORY_SEPARATOR . trim(DirectoryKeys::realpath($path), DIRECTORY_SEPARATOR);
+        }
+    }
+
+    /**
      * Returns the servers tmp directory, append with the passed directory.
      *
-     * @param string|null $directoryToAppend The directory to append
+     * @param string $relativePathToAppend A relative path to append
      *
      * @return string
      */
-    public function getTmpDir($directoryToAppend = null)
+    public function getTmpDir($relativePathToAppend = '')
     {
-        return $this->realpath(DirectoryKeys::TMP . $directoryToAppend);
+        return $this->realpath($this->makePathAbsolute(DirectoryKeys::TMP . $this->makePathAbsolute($relativePathToAppend)));
     }
 
     /**
-     * Returns the servers deploy directory
+     * Returns the servers deploy directory.
+     *
+     * @param string $relativePathToAppend A relative path to append
      *
      * @return string
      */
-    public function getDeployDir()
+    public function getDeployDir($relativePathToAppend = '')
     {
-        return $this->realpath(DirectoryKeys::DEPLOY);
+        return $this->realpath($this->makePathAbsolute(DirectoryKeys::DEPLOY . $this->makePathAbsolute($relativePathToAppend)));
     }
 
     /**
-     * Returns the servers webapps directory
+     * Returns the servers webapps directory.
+     *
+     * @param string $relativePathToAppend A relative path to append
      *
      * @return string
      */
-    public function getWebappsDir()
+    public function getWebappsDir($relativePathToAppend = '')
     {
-        return $this->realpath(DirectoryKeys::WEBAPPS);
+        return $this->realpath($this->makePathAbsolute(DirectoryKeys::WEBAPPS . $this->makePathAbsolute($relativePathToAppend)));
     }
 
     /**
-     * Returns the servers log directory
+     * Returns the servers log directory.
+     *
+     * @param string $relativePathToAppend A relative path to append
      *
      * @return string
      */
-    public function getLogDir()
+    public function getLogDir($relativePathToAppend = '')
     {
-        return $this->realpath(DirectoryKeys::LOG);
+        return $this->realpath($this->makePathAbsolute(DirectoryKeys::LOG . $this->makePathAbsolute($relativePathToAppend)));
+    }
+
+    /**
+     * Returns the servers main configuration directory.
+     *
+     * @param string $relativePathToAppend A relative path to append
+     *
+     * @return string
+     */
+    public function getConfDir($relativePathToAppend = '')
+    {
+        return $this->realpath($this->makePathAbsolute(DirectoryKeys::CONF . $this->makePathAbsolute($relativePathToAppend)));
+    }
+
+    /**
+     * Returns the servers configuration subdirectory.
+     *
+     * @param string $relativePathToAppend A relative path to append
+     *
+     * @return string
+     */
+    public function getConfdDir($relativePathToAppend = '')
+    {
+        return $this->realpath($this->makePathAbsolute(DirectoryKeys::CONFD . $this->makePathAbsolute($relativePathToAppend)));
     }
 
     /**
      * Returns the absolute path to the passed directory, also
      * working on Windows.
      *
-     * @param string $relativeDirectory The relativ path of the directory to return the absolute path for
+     * @param string $relativePathToAppend The relativ path to return the absolute path for
      *
      * @return string The absolute path of the passed directory
      */
-    public function realpath($relativeDirectory)
+    public function realpath($relativePathToAppend)
     {
-        return $this->getBaseDirectory(DIRECTORY_SEPARATOR . ltrim(DirectoryKeys::realpath($relativeDirectory), DIRECTORY_SEPARATOR));
+        return $this->getBaseDirectory($this->makePathAbsolute($relativePathToAppend));
     }
 
     /**

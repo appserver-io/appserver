@@ -66,6 +66,20 @@ class DirectoryKeys
     const DEPLOY = 'deploy';
 
     /**
+     * Path the to main configuration directory.
+     *
+     * @var string
+     */
+    const CONF = 'etc/appserver';
+
+    /**
+     * Path the to the configurations subdirectory.
+     *
+     * @var string
+     */
+    const CONFD = 'etc/appserver/conf.d';
+
+    /**
      * This is a utility class, so protect it against direct
      * instantiation.
      */
@@ -96,7 +110,9 @@ class DirectoryKeys
             DirectoryKeys::TMP,
             DirectoryKeys::DEPLOY,
             DirectoryKeys::LOG,
-            DirectoryKeys::RUN
+            DirectoryKeys::RUN,
+            DirectoryKeys::CONF,
+            DirectoryKeys::CONFD
         );
     }
 
