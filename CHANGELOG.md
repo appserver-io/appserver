@@ -1,3 +1,16 @@
+# Version 0.9.0
+
+## Bugfixes
+
+* Add missing %s placeholder for successfully deployed application log message
+
+## Features
+
+* [Issue #178](https://github.com/techdivision/TechDivision_ApplicationServer/issues/178) App-based context configuration
+* Add directory keys for configuration folders etc/appserver + etc/appserver/conf.d to DirectoryKeys
+* Add path to be appended as parameter for methods to return directories in AbstractService
+* Move method to create temporary directories for applications from AbstractDeployment to DeploymentService
+
 # Version 0.8.2
 
 ## Bugfixes

@@ -51,35 +51,6 @@ class GenericDeployment extends AbstractDeployment
 {
 
     /**
-     * Path the to default provisioning configuration.
-     *
-     * @var string
-     */
-    const DEFAULT_CONFIGURATION = '/etc/appserver.d/context.xml';
-
-    /**
-     * The default context configuration.
-     *
-     * @var \TechDivision\ApplicationServer\Api\Node\ContextNode
-     */
-    protected $context;
-
-    /**
-     * Initialize.
-     *
-     * @param \TechDivision\ApplicationServer\Interfaces\ContextInterface $initialContext The initial context instance
-     */
-    public function __construct(ContextInterface $initialContext)
-    {
-        // invoke the parent constructor
-        parent::__construct($initialContext);
-
-        // load the default context configuration
-        $this->context = new ContextNode();
-        $this->context->initFromFile($this->getDeploymentService()->realpath(GenericDeployment::DEFAULT_CONFIGURATION));
-    }
-
-    /**
      * Initializes the available applications and adds them to the deployment instance.
      *
      * @param \TechDivision\ApplicationServer\Interfaces\ContainerInterface $container The container we want to add the applications to
@@ -88,24 +59,17 @@ class GenericDeployment extends AbstractDeployment
      */
     public function deploy(ContainerInterface $container)
     {
-        // initialize the iterator for the web applications
-        $iterator = new \FilesystemIterator($container->getAppBase());
+
+        // load the context instances for this container
+        $contextInstances = $this->getDeploymentService()->loadContextInstancesByContainer($container);
 
         // gather all the deployed web applications
-        foreach ($iterator as $folder) {
+        foreach (new \FilesystemIterator($container->getAppBase()) as $folder) {
 
             if ($folder->isDir()) { // check if we've a directory (possible application)
 
-                // load the specific application context or the default one
-                $context = clone $this->context;
-
-                // prepare the context path
-                $contextPath = '/'. $folder->getBasename();
-
                 // try to load a context configuration for the context path
-                if ($contextToMerge = $container->getContainerNode()->getHost()->getContext($contextPath)) {
-                    $context->merge($contextToMerge);
-                }
+                $context = $contextInstances[$contextPath = '/'. $folder->getBasename()];
 
                 // create a new application instance
                 $application = $this->newInstance($context->getType());
@@ -118,7 +82,7 @@ class GenericDeployment extends AbstractDeployment
                 $application->injectAppBase($container->getAppBase());
 
                 // create the applications temporary folders
-                $this->createTmpFolders($application);
+                $this->getDeploymentService()->createTmpFolders($application);
 
                 // add the default class loaders
                 $application->addClassLoader($this->getInitialContext()->getClassLoader());

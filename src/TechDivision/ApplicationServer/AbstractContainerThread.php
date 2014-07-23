@@ -369,7 +369,7 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
 
         // log a message that the app has been started
         $this->getInitialContext()->getSystemLogger()->debug(
-            sprintf('Successfully initialized and deployed app', $application->getName())
+            sprintf('Successfully initialized and deployed app %s', $application->getName())
         );
     }
 }

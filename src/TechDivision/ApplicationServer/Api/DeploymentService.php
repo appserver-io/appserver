@@ -16,8 +16,11 @@
 namespace TechDivision\ApplicationServer\Api;
 
 use TechDivision\ApplicationServer\Api\AbstractService;
+use TechDivision\ApplicationServer\Api\Node\ContextNode;
 use TechDivision\ApplicationServer\Api\Node\DeploymentNode;
 use TechDivision\ApplicationServer\Api\ServiceInterface;
+use TechDivision\ApplicationServer\Interfaces\ContainerInterface;
+use TechDivision\Application\Interfaces\ApplicationInterface;
 
 /**
  * A service that handles deployment configuration data.
@@ -63,5 +66,84 @@ class DeploymentService extends AbstractService
         if (array_key_exists($uuid, $deploymentNodes)) {
             return $deploymentNodes[$uuid];
         }
+    }
+
+    /**
+     * Creates the temporary directory for the webapp.
+     *
+     * @param \TechDivision\Application\Interfaces\ApplicationInterface $application The application to create the temporary directories for
+     *
+     * @return void
+     */
+    public function createTmpFolders(ApplicationInterface $application)
+    {
+
+        // create the directory we want to store the sessions in
+        $tmpFolders = array(
+            new \SplFileInfo($application->getTmpDir()),
+            new \SplFileInfo($application->getCacheDir()),
+            new \SplFileInfo($application->getSessionDir())
+        );
+
+        // create the applications temporary directories
+        foreach ($tmpFolders as $tmpFolder) {
+            $this->createDirectory($tmpFolder);
+        }
+    }
+
+    /**
+     * Initializes the available application contexts and returns them.
+     *
+     * @param \TechDivision\ApplicationServer\Interfaces\ContainerInterface $container The container we want to add the applications to
+     *
+     * @return array The array with the application contexts
+     */
+    public function loadContextInstancesByContainer(ContainerInterface $container)
+    {
+
+        // initialize the array for the context instances
+        $contextInstances = array();
+
+        // iterate over all applications and create the context configuration
+        foreach (new \DirectoryIterator($container->getAppBase()) as $webappPath) {
+
+            // check if we found an application directory
+            if ($webappPath->isDir() === false || $webappPath->isDot()) {
+                continue;
+            }
+
+            // prepare the context path
+            $contextPath = '/' . $webappPath->getBasename();
+
+            // load the default context configuration
+            $context = new ContextNode();
+            $context->initFromFile($this->getConfdDir('context.xml'));
+
+            // try to load a context configuration (from appserver.xml) for the context path
+            if ($contextToMerge = $container->getContainerNode()->getHost()->getContext($contextPath)) {
+                $context->merge($contextToMerge);
+            }
+
+            // prepare the recursive directory iterator
+            $directory = new \RecursiveDirectoryIterator($webappPath->getPathname());
+            $iterator = new \RecursiveIteratorIterator($directory);
+
+            // iterate through all context configurations (context.xml) and merge them
+            foreach (new \RegexIterator($iterator, '/^.*\/(META-INF)\/context.xml$/') as $contextFile) {
+
+                // create a new context node instance
+                $contextInstance = new ContextNode();
+                $contextInstance->initFromFile($contextFile->getPathname());
+
+                // merge it into the default configuration
+                $context->merge($contextInstance);
+            }
+
+            // attach the context to the context instance
+            $contextInstances[$contextPath] = $context;
+        }
+
+        // return the array with the context instances
+        return $contextInstances;
     }
 }
