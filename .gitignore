@@ -1,10 +1,13 @@
-/target
 /.idea
-/instance-src
+/.settings
 /.buildpath
 /.project
-/.settings
+/.DS_Store
+/target
+/instance-src
+/vendor
 /build.properties
-/doc/build
-# the apple directory description
-.DS_Store
+/composer.lock
+/composer.phar
+/*.iml
+.appserver-last-successfull-deployment

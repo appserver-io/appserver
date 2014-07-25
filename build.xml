@@ -1,167 +1,60 @@
 <?xml version="1.0"?>
-<project name="TechDivision_ApplicationServer" default="deploy" basedir=".">
-	
-	<property file="${basedir}/build.properties"/>
-	<property file="${basedir}/build.default.properties"/>
+<!DOCTYPE project>
+<project name="techdivision/appserver" default="composer-init" basedir=".">
+    
+    <!-- initialize ENV variable -->
+    <property environment="env" />
+    
+    <!-- initialize file based properties -->
+    <property file="${basedir}/build.properties"/>
+    <property file="${basedir}/build.default.properties"/>
     <property file="${basedir}/build.${os.family}.properties"/>
-	
-	<property environment="env" />
-	
-	<property name="namespace" value="techdivision" />
-	<property name="module" value="appserver"/>
-	<property name="codepool" value="vendor"/>
-	<property name="unique.name" value="${codepool}/${namespace}/${module}" />
-	<property name="php-src.dir" value="${basedir}/src" />
-	<property name="php-test.dir" value="${basedir}/tests" />
-	<property name="php-target.dir" value="${basedir}/target"/>
+    
+    <!-- initialize the library specific properties -->
+    <property name="codepool" value="vendor"/>
+    
+    <!-- initialize the directory where we can find the real build files -->
+    <property name="vendor.dir" value ="${basedir}/${codepool}" />
+    <property name="build.dir" value="${vendor.dir}/appserver-io/build" />
+    
+    <!-- ==================================================================== -->
+    <!-- Import the common build configuration file                           -->
+    <!-- ==================================================================== -->
+    <import file="${build.dir}/common.xml" optional="true"/>
 
-	<!-- ==================================================================== -->
-	<!-- Cleans the directories with the generated source files				  -->
-	<!-- ==================================================================== -->
-	<target name="clean" description="Cleans almost everything, so use carefully.">
-		<delete dir="${php-target.dir}" includeemptydirs="true" quiet="false" verbose="true" failonerror="true"/>
-	</target>
-	
-	<!-- ==================================================================== -->
-	<!-- Prepares all the required directories								  -->
-	<!-- ==================================================================== -->
-	<target name="prepare" depends="clean" description="Prepares all the required directories.">
-		<mkdir dir="${php-target.dir}" />
-        <mkdir dir="${php-target.dir}/reports/unit/coverage" />
-	</target>
-	
     <!-- ==================================================================== -->
-    <!-- Copies the sources to the target directory                           -->
+    <!-- Checks if composer has installed it's dependencies                   -->
     <!-- ==================================================================== -->
-    <target name="copy" depends="prepare" description="Copies the sources to the target directory.">
-        <copy todir="${php-target.dir}/${unique.name}/src" preservelastmodified="true" overwrite="true">
-            <fileset dir="${php-src.dir}">
-                <include name="**/*" />
-            </fileset>
-        </copy>
+    <target name="is-composer-installed">
+        <condition property="composer.present">
+            <available file="${build.dir}" type="dir"/>
+        </condition>
     </target>
-	
-	<!-- ==================================================================== -->
-	<!-- Copies the sources to the deploy directory     					  -->
-	<!-- ==================================================================== -->
-	<target name="deploy" description="Copies the sources to the deploy directory.">				
-		<antcall target="prepare"/>
-		<antcall target="copy"/>
-		<copy todir="${instance.base.dir}/app/code" preservelastmodified="true" overwrite="true">
-			<fileset dir="${php-target.dir}">
-				<include name="**/*"/>
-			</fileset>
-		</copy>
-	</target>
-	
+    
     <!-- ==================================================================== -->
-    <!-- Generates the API documentation                                      -->
-    <!-- ==================================================================== -->   
-    <target name="apidoc" description="Generates the API documentation.">
-         <exec executable="phpdoc">
-            <arg line="-t ${php-target.dir}/docs -d ${php-src.dir}"/>
-         </exec>
-    </target>
-	
+    <!-- Installs all dependencies defined in composer.json                   -->
     <!-- ==================================================================== -->
-    <!-- Runs the code sniffer and generates a report                         -->
-    <!-- ==================================================================== -->
-    <target name="phpcs" description="Runs the code sniffer and generates a report.">
-        <exec executable="phpcs" failonerror="true">
-            <!-- call phpcs without report-file to get error message on build console -->
-            <arg line="-n --extensions=php --standard=phpcs.xml ."/>
-        </exec>
-    </target>
-	
-    <!-- ==================================================================== -->
-    <!-- Runs the copy and paste detection                                    -->
-    <!-- ==================================================================== -->
-    <target name="phpcpd" description="Runs the copy and paste detection.">
-        <exec executable="phpcpd">
-            <arg line="--log-pmd ${php-target.dir}/reports/pmd-cpd.xml ${php-src.dir}"/>
-        </exec>
-    </target>
-	
-    <!-- ==================================================================== -->
-    <!-- Generate phploc.csv                                                  -->
-    <!-- ==================================================================== -->
-    <target name="phploc" description="Generate phploc.csv">
-        <exec executable="phploc">
-            <arg line="--log-xml ${php-target.dir}/reports/phploc.xml ${php-src.dir}"/>
-        </exec>
-    </target>
-	
-    <!-- ==================================================================== -->
-    <!-- Runs the PHPDepend tool and generats a graphs                        -->
-    <!-- ==================================================================== -->
-    <target name="pdepend" description="Runs the PHPDepend tool and generats a graphs.">
-        <exec executable="pdepend">
-            <arg line="--summary-xml=${php-target.dir}/reports/pdepend.xml --jdepend-xml=${php-target.dir}/reports/jdepend.xml --jdepend-chart=${php-target.dir}/reports/jdepend.svg --overview-pyramid=${php-target.dir}/reports/pdepend-pyramid.svg ${php-src.dir}" />
-        </exec>
-    </target>
-	
-    <!-- ==================================================================== -->
-    <!-- Runs the PHP mess detector tool                                      -->
-    <!-- ==================================================================== -->
-    <target name="phpmd" description="Runs the PHP Mess detector tool.">
-        <exec executable="phpmd">
-            <arg line="${php-src.dir} xml codesize,unusedcode --reportfile ${php-target.dir}/reports/pmd.xml" />
+    <target name="composer-install" depends="is-composer-installed" unless="composer.present" description="Installs all dependencies defined in composer.json">
+        <exec dir="${basedir}" executable="composer">
+            <arg line="--no-interaction --dev install"/>
         </exec>
     </target>
 
     <!-- ==================================================================== -->
-    <!-- Copies the test sources to the target directory					  -->
+    <!-- Updates composer dependencies defined in composer.json               -->
     <!-- ==================================================================== -->
-    <target name="copy-tests" depends="copy" description="Copies the test sources to the target directory.">
-    	<!-- copy the test classes to the target directory -->
-        <copy todir="${php-target.dir}/${unique.name}/src">
-            <fileset dir="${php-test.dir}">
-                <include name="**/*" />
-            </fileset>
-            <filterchain>
-                <expandproperties/>
-            </filterchain>
-        </copy>
-    	<!-- copy the composer configuration file to the target directory -->
-    	<copy file="${basedir}/composer.json" todir="${php-target.dir}" />
-        <!-- install composer packages -->
-        <exec dir="${php-target.dir}" executable="composer">
-            <env key="PATH" value="${instance.base.dir}/bin:${env.PATH}"/>
-            <arg line="--no-interaction update"/>
+    <target name="composer-update" depends="is-composer-installed" if="composer.present" description="Updates composer dependencies defined in composer.json">
+        <exec dir="${basedir}" executable="composer">
+            <arg line="--no-interaction --dev update"/>
         </exec>
     </target>
 
-    <!-- ==================================================================== -->
-    <!-- Runs the PHPUnit tests on Travis-CI and generates a report           -->
-    <!-- ==================================================================== -->
-    <target name="run-tests" depends="copy-tests" description="Runs the PHPUnit tests on Travis-CI and generates a report.">
-        <exec executable="phpunit" dir="${php-target.dir}/${unique.name}/src" failonerror="true">
-        	<arg line="--configuration phpunit.xml.dist" />
-        </exec>
-    </target>
-
-    <!-- ==================================================================== -->
-    <!-- Runs the PHPUnit tests and generates a report                        -->
-    <!-- ==================================================================== -->
-    <target name="run-tests-in-runtime" depends="copy-tests" description="Runs the PHPUnit tests and generates a report.">
-        <exec executable="${instance.base.dir}/bin/php" dir="${php-target.dir}/${unique.name}/src" failonerror="true">
-        	<arg line="-d zend_extension=xdebug.so ${instance.base.dir}/app/code/vendor/bin/phpunit --configuration phpunit.xml.dist" />
-        </exec>
-    </target>
-
-    <!-- ==================================================================== -->
-    <!-- Runs the PHPUnit tests and generates the code metrics				  -->
-    <!-- ==================================================================== -->
-    <target name="build" description="Runs the PHPUnit tests and generates the code metrics.">
-        <antcall target="phpcs"/>
-        <antcall target="run-tests"/>
-        <!--
-    	<antcall target="apidoc"/>
-    	<antcall target="phpcpd"/>
-    	<antcall target="phploc"/>
-    	<antcall target="pdepend"/>
-    	<antcall target="phpmd"/>
-    	-->
+    <!-- ===================================================================== -->
+    <!-- Checks if the build- and deployment stub has already been initialized -->
+    <!-- ===================================================================== -->
+    <target name="composer-init">
+        <antcall target="composer-install"/>
+        <antcall target="composer-update"/>
     </target>
 
     <!-- ==================================================================== -->
