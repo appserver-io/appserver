@@ -13,7 +13,6 @@ namespace TechDivision\ApplicationServer;
 
 use TechDivision\Configuration\Configuration;
 use TechDivision\ApplicationServer\Mock\MockApplication;
-use TechDivision\ApplicationServer\Mock\MockContainer;
 use TechDivision\ApplicationServer\Api\Node\AppserverNode;
 use TechDivision\ApplicationServer\Api\Node\ContainerNode;
 use TechDivision\ApplicationServer\Api\Node\DeploymentNode;
@@ -27,7 +26,7 @@ use TechDivision\ApplicationServer\Mock\MockInitialContext;
  *          Open Software License (OSL 3.0)
  * @author Tim Wagner <tw@techdivision.com>
  */
-class AbstractTest extends \PHPUnit_Framework_TestCase
+abstract class AbstractTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
@@ -38,7 +37,7 @@ class AbstractTest extends \PHPUnit_Framework_TestCase
     public function getAppserverConfiguration()
     {
         $configuration = new Configuration();
-        $configuration->initFromFile('_files/appserver.xml');
+        $configuration->initFromFile(__DIR__ . '/../../_files/appserver.xml');
         return $configuration;
     }
 
@@ -50,7 +49,7 @@ class AbstractTest extends \PHPUnit_Framework_TestCase
     public function getContainerConfiguration()
     {
         $configuration = new Configuration();
-        $configuration->initFromFile('_files/appserver_container.xml');
+        $configuration->initFromFile(__DIR__ . '/../../_files/appserver_container.xml');
         return $configuration;
     }
 
@@ -62,7 +61,7 @@ class AbstractTest extends \PHPUnit_Framework_TestCase
     public function getDeploymentConfiguration()
     {
         $configuration = new Configuration();
-        $configuration->initFromFile('_files/appserver_container_deployment.xml');
+        $configuration->initFromFile(__DIR__ . '/../../_files/appserver_container_deployment.xml');
         return $configuration;
     }
 
@@ -100,16 +99,6 @@ class AbstractTest extends \PHPUnit_Framework_TestCase
         $deploymentNode = new DeploymentNode();
         $deploymentNode->initFromConfiguration($this->getDeploymentConfiguration());
         return $deploymentNode;
-    }
-
-    /**
-     * Returns a mock container.
-     *
-     * @return \TechDivision\ApplicationServer\Mock\MockContainer The mock container
-     */
-    public function getMockContainer()
-    {
-        return new MockContainer($this->getMockInitialContext(), $this->getContainerNode(), $this->getMockApplications());
     }
 
     /**

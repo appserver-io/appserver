@@ -66,16 +66,4 @@ class ContainerThreadTest extends AbstractTest
         $className = 'TechDivision\Configuration\Configuration';
         $this->assertInstanceOf($className, $this->containerThread->newInstance($className));
     }
-
-    /**
-     * Test's the container thread's start method.
-     *
-     * @return void
-     */
-    public function testStart()
-    {
-        $this->markTestSkipped('Seems to be a pthread error.');
-        $this->containerThread->start();
-        $this->containerThread->join();
-    }
 }
