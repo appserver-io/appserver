@@ -12,9 +12,10 @@ So with your help we hopefully establish a solution as the standard for enterpri
 
 # External Links
 
-* appserver.io [combined documentation](http://docs.appserver.io)
+* Documentation at [appserver.io](http://docs.appserver.io)
+* Documentation on [GitHub](https://github.com/techdivision/TechDivision_AppserverDocumentation)
 * [Getting started](https://github.com/techdivision/TechDivision_AppserverDocumentation/tree/master/docs/getting-started)
-* Documentation found on [GitHub](https://github.com/techdivision/TechDivision_AppserverDocumentation)
+* [Appserver basics](https://github.com/techdivision/TechDivision_AppserverDocumentation/tree/master/docs/basics/appserver-basics)
 
 # Roadmap
 
