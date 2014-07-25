@@ -10,3 +10,4 @@
 /composer.lock
 /composer.phar
 /*.iml
+.appserver-last-successfull-deployment
