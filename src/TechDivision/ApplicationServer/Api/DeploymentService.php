@@ -107,7 +107,7 @@ class DeploymentService extends AbstractService
 
         // create the applications temporary directories
         foreach ($cleanUpFolders as $cleanUpFolder) {
-            $this->cleanUpDir($cleanUpFolder, true);
+            $this->cleanUpDir($cleanUpFolder);
         }
     }
 
