@@ -422,8 +422,8 @@ abstract class AbstractService implements ServiceInterface
     /**
      * Deletes all files and subdirectories from the passed directory.
      *
-     * @param \SplFileInfo  $dir             The directory to remove
-     * @param bool          $alsoRemoveFiles The flag for removing files also
+     * @param \SplFileInfo $dir             The directory to remove
+     * @param bool         $alsoRemoveFiles The flag for removing files also
      *
      * @return void
      */
