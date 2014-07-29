@@ -418,4 +418,40 @@ abstract class AbstractService implements ServiceInterface
         // load the deployment service
         $this->setUserRights($directoryToCreate);
     }
+
+    /**
+     * Deletes all files and subdirectories from the passed directory.
+     *
+     * @param \SplFileInfo  $dir             The directory to remove
+     * @param bool          $alsoRemoveFiles The flag for removing files also
+     *
+     * @return void
+     */
+    public function cleanUpDir(\SplFileInfo $dir, $alsoRemoveFiles = true)
+    {
+
+        // first check if the directory exists, if not return immediately
+        if ($dir->isDir() === false) {
+            return;
+        }
+
+        // remove old archive from webapps folder recursively
+        $files = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($dir->getPathname()),
+            \RecursiveIteratorIterator::CHILD_FIRST
+        );
+        foreach ($files as $file) {
+            // skip . and .. dirs
+            if ($file->getFilename() === '.' || $file->getFilename() === '..') {
+                continue;
+            }
+            if ($file->isDir()) {
+                @rmdir($file->getRealPath());
+            } elseif ($file->isFile() && $alsoRemoveFiles) {
+                unlink($file->getRealPath());
+            } else {
+                // do nothing, because file should NOT be deleted obviously
+            }
+        }
+    }
 }

@@ -122,9 +122,8 @@ class DeploymentScanner extends AbstractScanner
     }
 
     /**
-     * This method returns 0 to signal that the no
-     * successful deployment has been processed so far, e. g. the server has
-     * been installed and not been started yet.
+     * This method returns 0 to signal that the no successful deployment has been processed
+     * so far, e. g. the server has been installed and not been started yet.
      *
      * @param \SplFileInfo $file The deployment directory
      *
