@@ -81,8 +81,9 @@ class GenericDeployment extends AbstractDeployment
                 $application->injectTmpDir($container->getTmpDir($contextPath));
                 $application->injectAppBase($container->getAppBase());
 
-                // create the applications temporary folders
+                // create the applications temporary folders and cleans the folders up
                 $this->getDeploymentService()->createTmpFolders($application);
+                $this->getDeploymentService()->cleanUpFolders($application);
 
                 // add the default class loaders
                 $application->addClassLoader($this->getInitialContext()->getClassLoader());

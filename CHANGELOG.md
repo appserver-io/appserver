@@ -1,3 +1,14 @@
+# Version 0.9.2
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Clean applications cache directory when application server restarts
+* Add DeploymentService::cleanUpFolders() method to clean up directories
+
 # Version 0.9.1
 
 ## Bugfixes

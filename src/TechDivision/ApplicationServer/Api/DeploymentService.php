@@ -92,6 +92,26 @@ class DeploymentService extends AbstractService
     }
 
     /**
+     * Clean up the the directories for the webapp, e. g. to delete cached stuff
+     * that has to be recreated after a restart.
+     *
+     * @param \TechDivision\Application\Interfaces\ApplicationInterface $application The application to clean up the directories for
+     *
+     * @return void
+     */
+    public function cleanUpFolders($application)
+    {
+
+        // create the directory we want to store the sessions in
+        $cleanUpFolders = array(new \SplFileInfo($application->getCacheDir()));
+
+        // create the applications temporary directories
+        foreach ($cleanUpFolders as $cleanUpFolder) {
+            $this->cleanUpDir($cleanUpFolder);
+        }
+    }
+
+    /**
      * Initializes the available application contexts and returns them.
      *
      * @param \TechDivision\ApplicationServer\Interfaces\ContainerInterface $container The container we want to add the applications to
