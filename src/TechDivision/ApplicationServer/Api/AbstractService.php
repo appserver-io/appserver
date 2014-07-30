@@ -454,4 +454,87 @@ abstract class AbstractService implements ServiceInterface
             }
         }
     }
+
+    /**
+     * Creates the SSL file passed as parameter or nothing if the file already exists.
+     *
+     * @param \SplFileInfo $certificate The file info about the SSL file to generate
+     *
+     * @return void
+     */
+    public function createSslCertificate(\SplFileInfo $certificate)
+    {
+
+        // first we've to check if OpenSSL is available
+        if (!extension_loaded('openssl')) {
+            return;
+        }
+
+        // do nothing if the file is already available
+        if ($certificate->isFile()) {
+            return;
+        }
+
+        // prepare the certificate data from our configuration
+        $dn = array(
+            "countryName" => "DE",
+            "stateOrProvinceName" => "Bavaria",
+            "localityName" => "Kolbermoor",
+            "organizationName" => "appserver.io",
+            "organizationalUnitName" => "Development",
+            "commonName" => gethostname(),
+            "emailAddress" => "info@appserver.io"
+        );
+
+        // check the operating system
+        switch (strtoupper(PHP_OS)) {
+
+            case 'DARWIN': // on Mac OS X use the system configuration
+
+                $configargs = array('config' => '/System/Library/OpenSSL/openssl.cnf');
+                break;
+
+            default: // on all other use a standard configuration
+
+                $configargs = array(
+                    'digest_alg' => 'md5',
+                    'x509_extensions' => 'v3_ca',
+                    'req_extensions'   => 'v3_req',
+                    'private_key_bits' => 666,
+                    'private_key_type' => OPENSSL_KEYTYPE_RSA,
+                    'encrypt_key' => false
+                );
+        }
+
+        // generate a new private (and public) key pair
+        $privkey = openssl_pkey_new();
+
+        // Generate a certificate signing request
+        $csr = openssl_csr_new($dn, $privkey, $configargs);
+
+        // create a self-signed cert that is valid for 365 days
+        $sscert = openssl_csr_sign($csr, null, $privkey, 365);
+
+        // export the cert + pk files
+        $certout = '';
+        $pkeyout = '';
+        openssl_x509_export($sscert, $certout);
+        openssl_pkey_export($privkey, $pkeyout);
+
+        // write the SSL certificate data to the target
+        $file = $certificate->openFile('w');
+        if (($written = $file->fwrite($certout . $pkeyout)) === false) {
+            throw new \Exception(sprintf('Can\'t create SSL certificate %s', $certificate->getPathname()));
+        }
+
+        // log a message that the file has been written successfully
+        $this->getInitialContext()->getSystemLogger()->info(
+            sprintf('Successfully created %s with %d bytes', $certificate->getPathname(), $written)
+        );
+
+        // log any errors that occurred here
+        while (($e = openssl_error_string()) !== false) {
+            $this->getInitialContext()->getSystemLogger()->debug($e);
+        }
+    }
 }

@@ -109,6 +109,8 @@ class Server
         $this->initFileSystem();
         // init main system logger
         $this->initLoggers();
+        // init the SSL certificate
+        $this->initSslCertificate();
     }
 
     /**
@@ -171,6 +173,18 @@ class Server
                 mkdir($toBeCreated, 0755, true);
             }
         }
+    }
+
+    /**
+     * Creates a new SSL certificate on first system start.
+     *
+     * @return void
+     */
+    protected function initSslCertificate()
+    {
+        // load the service instance and create the SSL file if not available
+        $service = $this->newService('TechDivision\ApplicationServer\Api\ContainerService');
+        $service->createSslCertificate(new \SplFileInfo($service->getConfDir('/server.pem')));
     }
 
     /**
@@ -401,6 +415,7 @@ class Server
      */
     public function start()
     {
+
         // init the extractor
         $this->initExtractor();
 
