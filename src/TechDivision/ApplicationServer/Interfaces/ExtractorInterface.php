@@ -122,4 +122,11 @@ interface ExtractorInterface
      * @return string the archive extension suffix
      */
     public function getExtensionSuffix();
+
+    /**
+     * Returns the extractor node configuration data.
+     *
+     * @return \TechDivision\ApplicationServer\Api\Node\ExtractorNodeInterface The extractor node configuration data
+     */
+    public function getExtractorNode();
 }

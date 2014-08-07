@@ -7,59 +7,29 @@
  *
  * @category  Appserver
  * @package   TechDivision_ApplicationServer
- * @author    Johann Zelger <j.zelger@techdivision.com>
- * @copyright 2013 TechDivision GmbH <info@techdivision.com>
+ * @author    Tim Wagner <t.wagner@techdivision.com>
+ * @copyright 2014 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      http://www.appserver.io
  */
 
 namespace TechDivision\ApplicationServer;
 
-use TechDivision\ApplicationServer\Api\Node\ProvisionNode;
-use TechDivision\ApplicationServer\Interfaces\ProvisionerInterface;
-
 /**
  * Standard provisioning functionality.
  *
  * @category  Appserver
  * @package   TechDivision_ApplicationServer
- * @author    Johann Zelger <j.zelger@techdivision.com>
- * @copyright 2013 TechDivision GmbH <info@techdivision.com>
+ * @author    Tim Wagner <t.wagner@techdivision.com>
+ * @copyright 2014 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      http://www.appserver.io
  */
-class DatasourceProvisioner implements ProvisionerInterface
+class DatasourceProvisioner extends AbstractProvisioner
 {
 
     /**
-     * The containers base directory.
-     *
-     * @var string
-     */
-    protected $service;
-
-    /**
-     * The initial context instance.
-     *
-     * @var \TechDivision\ApplicationServer\InitialContext
-     */
-    protected $initialContext;
-
-    /**
-     * Contructor
-     *
-     * @param \TechDivision\ApplicationServer\InitialContext $initialContext The initial context instance
-     */
-    public function __construct($initialContext)
-    {
-        // add initialContext
-        $this->initialContext = $initialContext;
-        // init API service to use
-        $this->service = $this->newService('TechDivision\ApplicationServer\Api\DatasourceService');
-    }
-
-    /**
-     * Provisions all web applications.
+     * Provision all datasources recursively found in the web application directory.
      *
      * @return void
      */
@@ -85,48 +55,5 @@ class DatasourceProvisioner implements ProvisionerInterface
                 }
             }
         }
-    }
-
-    /**
-     * Returns the servers deploy directory
-     *
-     * @return string
-     */
-    public function getWebappsDir()
-    {
-        return $this->getService()->getWebappsDir();
-    }
-
-    /**
-     * (non-PHPdoc)
-     *
-     * @param string $className The API service class name to return the instance for
-     *
-     * @return \TechDivision\ApplicationServer\Api\ServiceInterface The service instance
-     * @see \TechDivision\ApplicationServer\InitialContext::newService()
-     */
-    public function newService($className)
-    {
-        return $this->getInitialContext()->newService($className);
-    }
-
-    /**
-     * Returns the inital context instance.
-     *
-     * @return \TechDivision\ApplicationServer\InitialContext The initial context instance
-     */
-    public function getInitialContext()
-    {
-        return $this->initialContext;
-    }
-
-    /**
-     * Returns the service instance to use.
-     *
-     * @return \TechDivision\ApplicationServer\Api\ServiceInterface $service The service to use
-     */
-    public function getService()
-    {
-        return $this->service;
     }
 }

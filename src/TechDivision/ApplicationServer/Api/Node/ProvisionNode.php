@@ -97,7 +97,7 @@ class ProvisionNode extends AbstractNode
         // replace the variables
         ob_start();
         require $provisionFile;
-        $this->initFromString($content = ob_get_clean());
+        $this->initFromString(ob_get_clean());
 
         // re-attach the database node
         $this->datasource = $tmpDatasource;

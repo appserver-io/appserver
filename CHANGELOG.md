@@ -1,3 +1,15 @@
+# Version 0.10.0
+
+## Bugfixes
+
+* Add missing variable type cast when initializing API node types from configuration
+
+## Features
+
+* Issue #191 - initially add functionality to create certificate on system startup
+* Make extractors + provisioners configurable in appserver.xml
+* Add composer dependency to techdivision/lang package >= 0.1
+
 # Version 0.9.2
 
 ## Bugfixes

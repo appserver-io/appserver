@@ -15,8 +15,10 @@
 
 namespace TechDivision\ApplicationServer;
 
+use TechDivision\Application\Interfaces\ContextInterface;
 use TechDivision\ApplicationServer\Utilities\DirectoryKeys;
 use TechDivision\ApplicationServer\Interfaces\ExtractorInterface;
+use TechDivision\ApplicationServer\Api\Node\ExtractorNodeInterface;
 
 /**
  * Abstract extractor functionality
@@ -41,25 +43,35 @@ abstract class AbstractExtractor implements ExtractorInterface
     /**
      * The initial context instance.
      *
-     * @var \TechDivision\ApplicationServer\InitialContext
+     * @var \TechDivision\Application\Interfaces\ContextInterface
      */
     protected $initialContext;
 
     /**
-     * Contructor
+     * The extractor node configuration data.
      *
-     * @param \TechDivision\ApplicationServer\InitialContext $initialContext The initial context instance
+     * @var \TechDivision\ApplicationServer\Api\Node\ExtractorNodeInterface
      */
-    public function __construct($initialContext)
+    protected $extractorNode;
+
+    /**
+     * Contructor to initialize the extractor instance with the initial context
+     * and the extractor node configuration data.
+     *
+     * @param \TechDivision\Application\Interfaces\ContextInterface           $initialContext The initial context instance
+     * @param \TechDivision\ApplicationServer\Api\Node\ExtractorNodeInterface $extractorNode  The extractor node configuration data
+     */
+    public function __construct(ContextInterface $initialContext, ExtractorNodeInterface $extractorNode)
     {
-        // add initialContext
+        // add initial context and extractor node configuration data
         $this->initialContext = $initialContext;
+        $this->extractorNode = $extractorNode;
         // init API service to use
         $this->service = $this->newService('TechDivision\ApplicationServer\Api\ContainerService');
     }
 
     /**
-     * Returns the servers tmp directory
+     * Returns the servers tmp directory.
      *
      * @return string
      */
@@ -69,7 +81,7 @@ abstract class AbstractExtractor implements ExtractorInterface
     }
 
     /**
-     * Returns the servers deploy directory
+     * Returns the servers deploy directory.
      *
      * @return string
      */
@@ -79,9 +91,9 @@ abstract class AbstractExtractor implements ExtractorInterface
     }
 
     /**
-     * Returns the servers webapps directory
+     * Returns the servers webapps directory.
      *
-     * @return string
+     * @return string The web application directory
      */
     public function getWebappsDir()
     {
@@ -89,7 +101,7 @@ abstract class AbstractExtractor implements ExtractorInterface
     }
 
     /**
-     * Returns all flags in array
+     * Returns all flags in array.
      *
      * @return array
      */
@@ -291,6 +303,12 @@ abstract class AbstractExtractor implements ExtractorInterface
      */
     public function restoreBackup(\SplFileInfo $archive)
     {
+
+        // if we don't want create backups we can't restore them, so do nothing
+        if ($this->getExtractorNode()->isCreateBackups() === false || $this->getExtractorNode()->isRestoreBackups() === false) {
+            return;
+        }
+
         // create tmp & webapp folder name based on the archive's basename
         $webappFolderName = $this->getWebappsDir() . DIRECTORY_SEPARATOR
             . basename($archive->getFilename(), $this->getExtensionSuffix());
@@ -385,11 +403,21 @@ abstract class AbstractExtractor implements ExtractorInterface
     /**
      * Returns the inital context instance.
      *
-     * @return \TechDivision\ApplicationServer\InitialContext The initial context instance
+     * @return \TechDivision\Application\Interfaces\ContextInterface The initial context instance
      */
     public function getInitialContext()
     {
         return $this->initialContext;
+    }
+
+    /**
+     * Returns the extractor node configuration data.
+     *
+     * @return \TechDivision\ApplicationServer\Api\Node\ExtractorNodeInterface The extractor node configuration data
+     */
+    public function getExtractorNode()
+    {
+        return $this->extractorNode;
     }
 
     /**

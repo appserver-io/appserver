@@ -18,7 +18,6 @@ namespace TechDivision\ApplicationServer\Api;
 use TechDivision\Configuration\Interfaces\NodeInterface;
 use TechDivision\ApplicationServer\InitialContext;
 use TechDivision\ApplicationServer\Utilities\DirectoryKeys;
-use TechDivision\PersistenceContainer\Application;
 
 /**
  * Abstract service implementation.

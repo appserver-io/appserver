@@ -60,6 +60,20 @@ class AppserverNode extends AbstractNode
     protected $loggers = array();
 
     /**
+     * Array with nodes for the registered extractors.
+     *
+     * @var array @AS\Mapping(nodeName="extractors/extractor", nodeType="array", elementType="TechDivision\ApplicationServer\Api\Node\ExtractorNode")
+     */
+    protected $extractors = array();
+
+    /**
+     * Array with nodes for the registered provisioners.
+     *
+     * @var array @AS\Mapping(nodeName="provisioners/provisioner", nodeType="array", elementType="TechDivision\ApplicationServer\Api\Node\ProvisionerNode")
+     */
+    protected $provisioners = array();
+
+    /**
      * Array with nodes for the registered containers.
      *
      * @var array @AS\Mapping(nodeName="containers/container", nodeType="array", elementType="TechDivision\ApplicationServer\Api\Node\ContainerNode")
@@ -150,6 +164,26 @@ class AppserverNode extends AbstractNode
     public function getLoggers()
     {
         return $this->loggers;
+    }
+
+    /**
+     * Returns the array with registered extractors.
+     *
+     * @return array The registered extractors
+     */
+    public function getExtractors()
+    {
+        return $this->extractors;
+    }
+
+    /**
+     * Returns the array with registered provisioners.
+     *
+     * @return array The registered provisioners
+     */
+    public function getProvisioners()
+    {
+        return $this->provisioners;
     }
 
     /**

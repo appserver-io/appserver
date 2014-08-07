@@ -1,45 +1,48 @@
 <?php
+
 /**
- * TechDivision\ApplicationServer\Interfaces\ProvisionerInterface
+ * TechDivision\ApplicationServer\Api\Node\ProvisionerNodeInterface
  *
  * PHP version 5
  *
  * @category   Appserver
  * @package    TechDivision_ApplicationServer
- * @subpackage Interfaces
+ * @subpackage Api
  * @author     Tim Wagner <tw@techdivision.com>
  * @copyright  2013 TechDivision GmbH <info@techdivision.com>
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       http://www.appserver.io
  */
 
-namespace TechDivision\ApplicationServer\Interfaces;
+namespace TechDivision\ApplicationServer\Api\Node;
+
+use TechDivision\Configuration\Interfaces\NodeInterface;
 
 /**
- * An provisioner interface
+ * Interface for the provisioner node information.
  *
  * @category   Appserver
  * @package    TechDivision_ApplicationServer
- * @subpackage Interfaces
+ * @subpackage Api
  * @author     Tim Wagner <tw@techdivision.com>
  * @copyright  2013 TechDivision GmbH <info@techdivision.com>
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       http://www.appserver.io
  */
-interface ProvisionerInterface
+interface ProvisionerNodeInterface extends NodeInterface
 {
 
     /**
-     * Provisions all web applications.
+     * Returns the provisioner type.
      *
-     * @return void
+     * @return string The provisioner type
      */
-    public function provision();
+    public function getType();
 
     /**
-     * Returns the provisioner node configuration data.
+     * Returns the provisioner name.
      *
-     * @return \TechDivision\ApplicationServer\Api\Node\ProvisionerNodeInterface The provisioner node configuration data
+     * @return string The provisioner name
      */
-    public function getProvisionerNode();
+    public function getName();
 }
