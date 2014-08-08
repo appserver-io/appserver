@@ -47,6 +47,23 @@ class ProvisionerNode extends AbstractNode implements ProvisionerNodeInterface
     protected $type;
 
     /**
+     * Initializes the provisioner node with the necessary data.
+     *
+     * @param string $name The provisioner name
+     * @param string $type The provisioner type
+     */
+    public function __construct($name = '', $type = '')
+    {
+
+        // initialize the UUID
+        $this->setUuid($this->newUuid());
+
+        // set the data
+        $this->name = $name;
+        $this->type = $type;
+    }
+
+    /**
      * Returns the provisioner type.
      *
      * @return string The provisioner type

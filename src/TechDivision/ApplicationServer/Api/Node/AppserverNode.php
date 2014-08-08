@@ -99,6 +99,29 @@ class AppserverNode extends AbstractNode
      *
      * @return string The username
      */
+    public function __construct()
+    {
+
+        // initialize the extractor
+        $pharExtractor = new ExtractorNode('phar', 'TechDivision\ApplicationServer\Extractors\PharExtractor');
+
+        // add extractor to the appserver node
+        $this->extractors[$pharExtractor->getPrimaryKey()] = $pharExtractor;
+
+        // initialize the provisioners
+        $datasourceProvisioner = new ProvisionerNode('datasource', 'TechDivision\ApplicationServer\DatasourceProvisioner');
+        $standardProvisioner = new ProvisionerNode('standard', 'TechDivision\ApplicationServer\StandardProvisioner');
+
+        // add the provisioners to the appserver node
+        $this->provisioners[$datasourceProvisioner->getPrimaryKey()] = $datasourceProvisioner;
+        $this->provisioners[$standardProvisioner->getPrimaryKey()] = $standardProvisioner;
+    }
+
+    /**
+     * Returns the username configured in the system configuration.
+     *
+     * @return string The username
+     */
     public function getUser()
     {
         $this->getParam('user');
