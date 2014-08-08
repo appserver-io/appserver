@@ -63,14 +63,14 @@ class Server
     protected $initialContext;
 
     /**
-     * The servers webapp extractor
+     * The registred extractors.
      *
-     * @var \TechDivision\ApplicationServer\Interfaces\ExtractorInterface
+     * @var array
      */
-    protected $extractor;
+    protected $extractors = array();
 
     /**
-     * The servers provisioners.
+     * The registered provisioners.
      *
      * @var array
      */
@@ -109,6 +109,8 @@ class Server
         $this->initFileSystem();
         // init main system logger
         $this->initLoggers();
+        // init the SSL certificate
+        $this->initSslCertificate();
     }
 
     /**
@@ -174,6 +176,18 @@ class Server
     }
 
     /**
+     * Creates a new SSL certificate on first system start.
+     *
+     * @return void
+     */
+    protected function initSslCertificate()
+    {
+        // load the service instance and create the SSL file if not available
+        $service = $this->newService('TechDivision\ApplicationServer\Api\ContainerService');
+        $service->createSslCertificate(new \SplFileInfo($service->getConfDir('/server.pem')));
+    }
+
+    /**
      * Initialize all loggers.
      *
      * @return void
@@ -216,30 +230,50 @@ class Server
     }
 
     /**
-     * Initializes the extractor.
+     * Initializes the extractor and extracts the web application
+     * archives to their target folders.
      *
      * @return void
      */
-    protected function initExtractor()
+    protected function initExtractors()
     {
-        // @TODO: Read extractor type from configuration
-        $this->setExtractor(new PharExtractor($this->getInitialContext()));
-        // extract all webapps
-        $this->getExtractor()->deployWebapps();
+
+        // add the configured extractors to the internal array
+        foreach ($this->getSystemConfiguration()->getExtractors() as $extractorNode) {
+
+            // initialize parameters for the constructor
+            $params = array($this->getInitialContext(), $extractorNode);
+
+            // create a new instance and add it to the internal array
+            $this->addExtractor($this->newInstance($extractorNode->getType(), $params));
+        }
+
+        // let the extractor extract the web applications
+        foreach ($this->getExtractors() as $extractor) {
+            $extractor->deployWebapps();
+        }
     }
 
     /**
-     * Initializes the provisioners.
+     * Initializes the provisioners and provides the provisioning steps
+     * defined for the applciation.
      *
      * @return void
      */
     protected function initProvisioners()
     {
-        // @TODO: Read provisioner type from configuration
-        $this->addProvisioner(new DatasourceProvisioner($this->getInitialContext()));
-        $this->addProvisioner(new StandardProvisioner($this->getInitialContext()));
 
-        // invoke the provisioners
+        // add the configured extractors to the internal array
+        foreach ($this->getSystemConfiguration()->getProvisioners() as $provisionerNode) {
+
+            // initialize parameters for the constructor
+            $params = array($this->getInitialContext(), $provisionerNode);
+
+            // create a new instance and add it to the internal array
+            $this->addProvisioner($this->newInstance($provisionerNode->getType(), $params));
+        }
+
+        // invoke the provisioners and provision the web applications
         foreach ($this->getProvisioners() as $provisioner) {
             $provisioner->provision();
         }
@@ -332,41 +366,41 @@ class Server
     }
 
     /**
-     * Sets the extractor
+     * Adds the passed extractor to the server.
      *
-     * @param \TechDivision\ApplicationServer\Interfaces\ExtractorInterface $extractor The initial context instance
+     * @param \TechDivision\ApplicationServer\Interfaces\ExtractorInterface $extractor The extractor instance to add
      *
      * @return void
      */
-    public function setExtractor(ExtractorInterface $extractor)
+    public function addExtractor(ExtractorInterface $extractor)
     {
-        return $this->extractor = $extractor;
+        return $this->extractors[$extractor->getExtractorNode()->getName()] = $extractor;
     }
 
     /**
-     * Returns the extractor
+     * Returns all registered extractors.
      *
-     * @return \TechDivision\ApplicationServer\Interfaces\ExtractorInterface The extractor instance
+     * @return array The array with the extractors
      */
-    public function getExtractor()
+    public function getExtractors()
     {
-        return $this->extractor;
+        return $this->extractors;
     }
 
     /**
-     * Sets the provisioner.
+     * Adds the passed provisioner to the server.
      *
-     * @param \TechDivision\ApplicationServer\Interfaces\ProvisionerInterface $provisioner The initial context instance
+     * @param \TechDivision\ApplicationServer\Interfaces\ProvisionerInterface $provisioner The provisioner instance to add
      *
      * @return array
      */
     public function addProvisioner(ProvisionerInterface $provisioner)
     {
-        return $this->provisioners[] = $provisioner;
+        return $this->provisioners[$provisioner->getProvisionerNode()->getName()] = $provisioner;
     }
 
     /**
-     * Returns the provisioners.
+     * Returns all registered provisioners.
      *
      * @return array The provisioners
      */
@@ -401,8 +435,9 @@ class Server
      */
     public function start()
     {
+
         // init the extractor
-        $this->initExtractor();
+        $this->initExtractors();
 
         // init the containers
         $this->initContainers();
@@ -606,65 +641,6 @@ class Server
                 "Changing process group and user to %s:%s",
                 $user,
                 $group
-            )
-        );
-    }
-
-    /**
-     * Stops the appserver by setting the appropriate flag in the
-     * initial context.
-     *
-     * @return void
-     */
-    public function stopContainers()
-    {
-
-        // calculate the start time
-        $start = microtime(true);
-
-        // set the flag that the application has to be stopped
-        $this->getInitialContext()->setAttribute(StateKeys::KEY, StateKeys::get(StateKeys::STOPPING));
-
-        // log a message with the time needed for restart
-        $this->getSystemLogger()->info(
-            sprintf(
-                "Successfully stopped appserver (in %d sec)",
-                microtime(true) - $start
-            )
-        );
-    }
-
-    /**
-     * Redeploys the apps and restarts the appserver.
-     *
-     * @return void
-     */
-    public function restartContainers()
-    {
-
-        // log a message that the appserver will be restarted now
-        $this->getSystemLogger()->info('Now restarting appserver');
-
-        // calculate the start time
-        $start = microtime(true);
-
-        // stop the container threads
-        $this->stopContainers();
-
-        // check if apps has to be redeployed
-        $this->getExtractor()->deployWebapps();
-
-        // reinitialize the container threads
-        $this->initContainers();
-
-        // start the container threads
-        $this->startContainers();
-
-        // log a message with the time needed for restart
-        $this->getSystemLogger()->info(
-            sprintf(
-                "Successfully restarted appserver (in %d sec)",
-                microtime(true) - $start
             )
         );
     }

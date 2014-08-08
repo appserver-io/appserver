@@ -41,7 +41,7 @@ class ServerNode extends AbstractNode
     use AuthenticationsNodeTrait;
 
     /**
-     * The server's type
+     * The servers type.
      *
      * @var string
      * @AS\Mapping(nodeType="string")
@@ -49,7 +49,7 @@ class ServerNode extends AbstractNode
     protected $type;
 
     /**
-     * The server's name
+     * The servers name.
      *
      * @var string
      * @AS\Mapping(nodeType="string")
@@ -57,7 +57,7 @@ class ServerNode extends AbstractNode
     protected $name;
 
     /**
-     * The worker to use
+     * The worker to use.
      *
      * @var string
      * @AS\Mapping(nodeType="string")
@@ -65,7 +65,7 @@ class ServerNode extends AbstractNode
     protected $worker;
 
     /**
-     * The socket to use
+     * The socket to use.
      *
      * @var string
      * @AS\Mapping(nodeType="string")
@@ -73,7 +73,7 @@ class ServerNode extends AbstractNode
     protected $socket;
 
     /**
-     * The logger'name to use
+     * The loggers name to use.
      *
      * @var string
      * @AS\Mapping(nodeType="string")
@@ -81,7 +81,7 @@ class ServerNode extends AbstractNode
     protected $loggerName;
 
     /**
-     * The server context to use
+     * The server context to use.
      *
      * @var string
      * @AS\Mapping(nodeType="string")
@@ -89,7 +89,7 @@ class ServerNode extends AbstractNode
     protected $serverContext;
 
     /**
-     * The request context to use
+     * The request context to use.
      *
      * @var string
      * @AS\Mapping(nodeType="string")
@@ -97,7 +97,7 @@ class ServerNode extends AbstractNode
     protected $requestContext;
 
     /**
-     * The virtual hosts
+     * The virtual hosts.
      *
      * @var array
      * @AS\Mapping(nodeName="virtualHosts/virtualHost", nodeType="array", elementType="TechDivision\ApplicationServer\Api\Node\VirtualHostNode")
@@ -105,7 +105,7 @@ class ServerNode extends AbstractNode
     protected $virtualHosts;
 
     /**
-     * The connection handlers
+     * The connection handlers.
      *
      * @var array
      * @AS\Mapping(nodeName="connectionHandlers/connectionHandler", nodeType="array", elementType="TechDivision\ApplicationServer\Api\Node\ConnectionHandlerNode")
@@ -113,7 +113,7 @@ class ServerNode extends AbstractNode
     protected $connectionHandlers;
 
     /**
-     * The modules
+     * The modules.
      *
      * @var array
      * @AS\Mapping(nodeName="modules/module", nodeType="array", elementType="TechDivision\ApplicationServer\Api\Node\ModuleNode")
@@ -121,7 +121,7 @@ class ServerNode extends AbstractNode
     protected $modules;
 
     /**
-     * The file handlers
+     * The file handlers.
      *
      * @var array
      * @AS\Mapping(nodeName="fileHandlers/fileHandler", nodeType="array", elementType="TechDivision\ApplicationServer\Api\Node\FileHandlerNode")
@@ -129,9 +129,9 @@ class ServerNode extends AbstractNode
     protected $fileHandlers;
 
     /**
-     * Returns the sserver's type
+     * Returns the servers type.
      *
-     * @return string The server's type
+     * @return string The servers type
      */
     public function getType()
     {
@@ -139,7 +139,7 @@ class ServerNode extends AbstractNode
     }
 
     /**
-     * Return's the server name
+     * Returns the server name.
      *
      * @return mixed
      */
@@ -149,7 +149,7 @@ class ServerNode extends AbstractNode
     }
 
     /**
-     * Returns the worker to use for server
+     * Returns the worker to use for server.
      *
      * @return string The worker type to use for server
      */
@@ -159,7 +159,7 @@ class ServerNode extends AbstractNode
     }
 
     /**
-     * Return's the socket to use
+     * Returns the socket to use.
      *
      * @return string The socket type
      */
@@ -169,9 +169,9 @@ class ServerNode extends AbstractNode
     }
 
     /**
-     * Return's the logger's name to use
+     * Returns the loggers name to use.
      *
-     * @return string The logger's name
+     * @return string The loggers name
      */
     public function getLoggerName()
     {
@@ -179,7 +179,7 @@ class ServerNode extends AbstractNode
     }
 
     /**
-     * Return's the server context to use
+     * Returns the server context to use.
      *
      * @return string The server context type
      */
@@ -189,7 +189,7 @@ class ServerNode extends AbstractNode
     }
 
     /**
-     * Return's the request context to use
+     * Returns the request context to use.
      *
      * @return string The request context type
      */
@@ -199,7 +199,7 @@ class ServerNode extends AbstractNode
     }
 
     /**
-     * Return's the virtual hosts
+     * Returns the virtual hosts.
      *
      * @return array
      */
@@ -209,7 +209,7 @@ class ServerNode extends AbstractNode
     }
 
     /**
-     * Return's the connection handler nodes
+     * Returns the connection handler nodes.
      *
      * @return array
      */
@@ -219,7 +219,7 @@ class ServerNode extends AbstractNode
     }
 
     /**
-     * Return's the file handler nodes
+     * Returns the file handler nodes.
      *
      * @return array
      */
@@ -229,7 +229,7 @@ class ServerNode extends AbstractNode
     }
 
     /**
-     * Return's the module nodes
+     * Returns the module nodes.
      *
      * @return array
      */

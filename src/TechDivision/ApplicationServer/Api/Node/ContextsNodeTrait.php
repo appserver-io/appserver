@@ -23,8 +23,6 @@
 
 namespace TechDivision\ApplicationServer\Api\Node;
 
-use TechDivision\ApplicationServer\GenericClassLoader;
-
 /**
  *
  * Abstract node that serves a hosts context nodes.

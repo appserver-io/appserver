@@ -137,6 +137,11 @@ class PharExtractor extends AbstractExtractor
     public function backupArchive(\SplFileInfo $archive)
     {
 
+        // if we don't want to create backups, to nothing
+        if ($this->getExtractorNode()->isCreateBackups() === false) {
+            return;
+        }
+
         // load the PHAR archive's pathname
         $pharPathname = $archive->getPathname();
 

@@ -49,7 +49,7 @@ abstract class AbstractArgsNode extends AbstractNode
     {
         $this->args[] = $arg;
     }
-    
+
     /**
      * Array with the args to use.
      *
@@ -71,7 +71,7 @@ abstract class AbstractArgsNode extends AbstractNode
     public function getArg($name)
     {
         $args = $this->getArgsAsArray();
-        if (array_key_exists($name, $params)) {
+        if (array_key_exists($name, $args)) {
             return $args[$name];
         }
     }
@@ -88,6 +88,6 @@ abstract class AbstractArgsNode extends AbstractNode
         foreach ($this->getArgs() as $arg) {
             $args[$arg->getName()] = $arg->castToType();
         }
-        return $arg;
+        return $args;
     }
 }

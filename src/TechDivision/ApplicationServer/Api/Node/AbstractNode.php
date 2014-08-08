@@ -16,13 +16,16 @@
 namespace TechDivision\ApplicationServer\Api\Node;
 
 use Rhumsaa\Uuid\Uuid;
-use TheSeer\Autoload\Config;
 use Herrera\Annotations\Tokens;
 use Herrera\Annotations\Tokenizer;
 use Herrera\Annotations\Convert\ToArray;
 use TechDivision\Configuration\Configuration;
 use TechDivision\Configuration\Interfaces\NodeInterface;
 use TechDivision\Configuration\Interfaces\ConfigurationInterface;
+use TechDivision\Lang\String;
+use TechDivision\Lang\Boolean;
+use TechDivision\Lang\Integer;
+use TechDivision\Lang\Float;
 
 /**
  * DTO to transfer aliases.
@@ -255,16 +258,12 @@ abstract class AbstractNode implements NodeInterface
 
         if (class_exists($nodeType) && $this->isValueClass($nodeType)) {
 
-            // return new $nodeType($configuration, $this->getUuid());
-
             $newNode = new $nodeType();
             $newNode->initFromConfiguration($configuration);
 
             return $this->{$reflectionProperty->getName()} = $newNode;
 
         } elseif (class_exists($nodeType)) {
-
-            // return new $nodeType($configuration->getChild($configurationNodeName), $this->getUuid());
 
             $newNode = new $nodeType();
 
@@ -278,38 +277,63 @@ abstract class AbstractNode implements NodeInterface
 
         }
 
-        if (in_array($nodeType, array('integer', 'string', 'double', 'float', 'boolean'))) {
-            return $this->{$reflectionProperty->getName()} = $configuration->getData($reflectionProperty->getName());
+        // check the node type specified in the annotation
+        switch ($nodeType) {
+
+            case 'string': // simple string, we don't have to do anything
+
+                return $this->{$reflectionProperty->getName()} = $configuration->getData($reflectionProperty->getName());
+
+            case 'integer': // integer => validate and transform the value
+
+                $integer = Integer::valueOf(new String($configuration->getData($reflectionProperty->getName())));
+                return $this->{$reflectionProperty->getName()} = $integer->intValue();
+
+            case 'float': // float => validate and transform the value
+
+                $float = Float::valueOf(new String($configuration->getData($reflectionProperty->getName())));
+                return $this->{$reflectionProperty->getName()} = $float->floatValue();
+
+            case 'double': // double => validate and transform the value
+
+                $float = Float::valueOf(new String($configuration->getData($reflectionProperty->getName())));
+                return $this->{$reflectionProperty->getName()} = $float->doubleValue();
+
+            case 'boolean': // boolean => validate and transform the value
+
+                $boolean = Boolean::valueOf(new String($configuration->getData($reflectionProperty->getName())));
+                return $this->{$reflectionProperty->getName()} = $boolean->booleanValue();
+
+            case 'array':  // array => create the configured nodes and add them
+
+                // prepare the array for the result
+                $result = array();
+
+                // iterate over all elements and create the node
+                foreach ($configuration->getChilds($configurationNodeName) as $child) {
+
+                    // initialize the node and load the data from the configuration
+                    $elementType = $mapping->getElementType();
+                    $newNode = new $elementType();
+                    $newNode->initFromConfiguration($child);
+                    $newNode->setParentUuid($this->getUuid());
+
+                    // add the value to the node
+                    $this->{$reflectionProperty->getName()}[$newNode->getPrimaryKey()] = $newNode;
+                }
+
+                // return the array
+                return $result;
+
+            default: // we don't support other node types
+
+                throw new \Exception(sprintf("Found invalid property type %s in node %s", $nodeType, get_class($this)));
+
         }
-
-        if ($nodeType == 'array') {
-
-            $result = array();
-
-            foreach ($configuration->getChilds($configurationNodeName) as $child) {
-
-                $elementType = $mapping->getElementType();
-                $newNode = new $elementType();
-                $newNode->initFromConfiguration($child);
-                $newNode->setParentUuid($this->getUuid());
-
-                $this->{$reflectionProperty->getName()}[$newNode->getPrimaryKey()] = $newNode;
-
-                /*
-                $elementType = $mapping->getElementType();
-                $element = new $elementType($child, $this->getUuid());
-                $result[$element->getUuid()] = $element;
-                */
-            }
-
-            return $result;
-        }
-
-        throw new \Exception(sprintf("Found invalid property type %s in node %s", $nodeType, get_class($this)));
     }
 
     /**
-     * Exports to the configuration
+     * Exports to the configuration.
      *
      * @return \TechDivision\Configuration\Interfaces\ConfigurationInterface The configuraton instance
      */
@@ -333,7 +357,7 @@ abstract class AbstractNode implements NodeInterface
     }
 
     /**
-     * Set's the configuration by reflected property
+     * Sets the configuration by reflected property.
      *
      * @param \ReflectionProperty                                           $reflectionProperty The reflection property to set
      * @param \TechDivision\Configuration\Interfaces\ConfigurationInterface $configuration      The configuration instance
@@ -344,6 +368,7 @@ abstract class AbstractNode implements NodeInterface
         \ReflectionProperty $reflectionProperty,
         ConfigurationInterface $configuration
     ) {
+
         $mapping = $this->getPropertyTypeFromDocComment($reflectionProperty);
 
         if ($mapping == null) {
@@ -368,7 +393,7 @@ abstract class AbstractNode implements NodeInterface
     }
 
     /**
-     * Appends the configuration on a given path with a given child
+     * Appends the configuration on a given path with a given child.
      *
      * @param \ReflectionProperty                                           $reflectionProperty The reflection property
      * @param \TechDivision\Configuration\Interfaces\ConfigurationInterface $configuration      The configuration instance
