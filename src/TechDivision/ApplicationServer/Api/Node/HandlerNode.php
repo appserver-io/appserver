@@ -28,8 +28,11 @@ namespace TechDivision\ApplicationServer\Api\Node;
  */
 class HandlerNode extends AbstractNode
 {
-    // We use several traits which give us the possibility to have collections of the child nodes mentioned in the
-    // corresponding trait name
+    /**
+     * A params node trait.
+     *
+     * @var \TraitInterface
+     */
     use ParamsNodeTrait;
 
     /**
@@ -47,6 +50,36 @@ class HandlerNode extends AbstractNode
      * @AS\Mapping(nodeName="formatter", nodeType="TechDivision\ApplicationServer\Api\Node\FormatterNode")
      */
     protected $formatter;
+
+    /**
+     * Initializes the provisioner node with the necessary data.
+     *
+     * @param string                                                 $type      The provisioner type
+     * @param \TechDivision\ApplicationServer\Api\Node\FormatterNode $formatter The formatter node
+     * @param array                                                  $params    The handler params
+     */
+    public function __construct($type = '', FormatterNode $formatter = null, array $params = array())
+    {
+
+        // initialize the UUID
+        $this->setUuid($this->newUuid());
+
+        // set the data
+        $this->type = $type;
+        $this->formatter = $formatter;
+        $this->params = $params;
+    }
+
+    /**
+     * Returns the nodes primary key, the name by default.
+     *
+     * @return string The nodes primary key
+     * @see \TechDivision\ApplicationServer\Api\Node\AbstractNode::getPrimaryKey()
+     */
+    public function getPrimaryKey()
+    {
+        return $this->getType();
+    }
 
     /**
      * Returns information about the handler's class name.

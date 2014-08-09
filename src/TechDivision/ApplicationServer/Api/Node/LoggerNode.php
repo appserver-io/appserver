@@ -30,15 +30,7 @@ class LoggerNode extends AbstractNode
 {
 
     /**
-     * The system logger's class name.
-     *
-     * @var string
-     * @AS\Mapping(nodeType="string")
-     */
-    protected $type;
-
-    /**
-     * the logger's name
+     * The loggers name.
      *
      * @var string
      * @AS\Mapping(nodeType="string")
@@ -46,7 +38,15 @@ class LoggerNode extends AbstractNode
     protected $name;
 
     /**
-     * The system logger's channel name.
+     * The loggers class name.
+     *
+     * @var string
+     * @AS\Mapping(nodeType="string")
+     */
+    protected $type;
+
+    /**
+     * The loggers channel name.
      *
      * @var string
      * @AS\Mapping(nodeType="string")
@@ -70,9 +70,43 @@ class LoggerNode extends AbstractNode
     protected $handlers = array();
 
     /**
-     * Returns information about the system logger's class name.
+     * Initializes the node with default values.
      *
-     * @return string The system logger's class name
+     * @param string $name        The loggers name
+     * @param string $type        The loggers class name
+     * @param string $channelName The loggers channel name
+     * @param array  $processors  The array with nodes for the registered processors
+     * @param array  $handlers    The array with nodes for the registered handlers
+     */
+    public function __construct($name = '', $type = '', $channelName = '', array $processors = array(), array $handlers = array())
+    {
+
+        // initialize the UUID
+        $this->setUuid($this->newUuid());
+
+        // set the data
+        $this->name = $name;
+        $this->type = $type;
+        $this->channelName = $channelName;
+        $this->processors = $processors;
+        $this->handlers = $handlers;
+    }
+
+    /**
+     * Returns the nodes primary key, the name by default.
+     *
+     * @return string The nodes primary key
+     * @see \TechDivision\ApplicationServer\Api\Node\AbstractNode::getPrimaryKey()
+     */
+    public function getPrimaryKey()
+    {
+        return $this->getName();
+    }
+
+    /**
+     * Returns information about the system loggers class name.
+     *
+     * @return string The system loggers class name
      */
     public function getType()
     {
@@ -80,9 +114,9 @@ class LoggerNode extends AbstractNode
     }
 
     /**
-     * Returns logger's name
+     * Returns loggers name
      *
-     * @return string The logger's name
+     * @return string The loggers name
      */
     public function getName()
     {
@@ -90,9 +124,9 @@ class LoggerNode extends AbstractNode
     }
 
     /**
-     * Returns information about the system logger's channel name.
+     * Returns information about the system loggers channel name.
      *
-     * @return string The system logger's channel name
+     * @return string The system loggers channel name
      */
     public function getChannelName()
     {

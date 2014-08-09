@@ -28,8 +28,12 @@ namespace TechDivision\ApplicationServer\Api\Node;
  */
 class ProcessorNode extends AbstractNode
 {
-    // We use several traits which give us the possibility to have collections of the child nodes mentioned in the
-    // corresponding trait name
+
+    /**
+     * A params node trait.
+     *
+     * @var \TraitInterface
+     */
     use ParamsNodeTrait;
 
     /**
@@ -39,6 +43,34 @@ class ProcessorNode extends AbstractNode
      * @AS\Mapping(nodeType="string")
      */
     protected $type;
+
+    /**
+     * Initializes the processor node with the necessary data.
+     *
+     * @param string $type   The provisioner type
+     * @param array  $params The handler params
+     */
+    public function __construct($type = '', array $params = array())
+    {
+
+        // initialize the UUID
+        $this->setUuid($this->newUuid());
+
+        // set the data
+        $this->type = $type;
+        $this->params = $params;
+    }
+
+    /**
+     * Returns the nodes primary key, the name by default.
+     *
+     * @return string The nodes primary key
+     * @see \TechDivision\ApplicationServer\Api\Node\AbstractNode::getPrimaryKey()
+     */
+    public function getPrimaryKey()
+    {
+        return $this->getType();
+    }
 
     /**
      * Returns the class name.

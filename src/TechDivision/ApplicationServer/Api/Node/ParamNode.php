@@ -15,6 +15,8 @@
 
 namespace TechDivision\ApplicationServer\Api\Node;
 
+use TechDivision\Configuration\Interfaces\ValueInterface;
+
 /**
  * DTO to transfer a param.
  *
@@ -30,7 +32,7 @@ class ParamNode extends AbstractValueNode
 {
 
     /**
-     * The params's name.
+     * The paramss name.
      *
      * @var string
      * @AS\Mapping(nodeType="string")
@@ -38,12 +40,42 @@ class ParamNode extends AbstractValueNode
     protected $name;
 
     /**
-     * The param's class name.
+     * The params data type.
      *
      * @var string
      * @AS\Mapping(nodeType="string")
      */
     protected $type;
+
+    /**
+     * Initializes the param node with the necessary data.
+     *
+     * @param string                                                $name      The params name
+     * @param string                                                $type      The params data type
+     * @param \TechDivision\Configuration\Interfaces\ValueInterface $nodeValue The params initial value
+     */
+    public function __construct($name = '', $type = '', ValueInterface $nodeValue = null)
+    {
+
+        // initialize the UUID
+        $this->setUuid($this->newUuid());
+
+        // set the data
+        $this->name = $name;
+        $this->type = $type;
+        $this->nodeValue = $nodeValue;
+    }
+
+    /**
+     * Returns the nodes primary key, the name by default.
+     *
+     * @return string The nodes primary key
+     * @see \TechDivision\ApplicationServer\Api\Node\AbstractNode::getPrimaryKey()
+     */
+    public function getPrimaryKey()
+    {
+        return $this->getName();
+    }
 
     /**
      * Returns the param name.
@@ -66,7 +98,7 @@ class ParamNode extends AbstractValueNode
     }
 
     /**
-     * Casts the param's value to the defined type and returns it.
+     * Casts the params value to the defined type and returns it.
      *
      * @return mixed The casted value
      */

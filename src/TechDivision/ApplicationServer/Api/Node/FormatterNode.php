@@ -28,12 +28,16 @@ namespace TechDivision\ApplicationServer\Api\Node;
  */
 class FormatterNode extends AbstractNode
 {
-    // We use several traits which give us the possibility to have collections of the child nodes mentioned in the
-    // corresponding trait name
+
+    /**
+     * A params node trait.
+     *
+     * @var \TraitInterface
+     */
     use ParamsNodeTrait;
 
     /**
-     * The formatter's class name.
+     * The formatters class name.
      *
      * @var string
      * @AS\Mapping(nodeType="string")
@@ -41,9 +45,37 @@ class FormatterNode extends AbstractNode
     protected $type;
 
     /**
-     * Returns information about the formatter's class name.
+     * Initializes the formatter node with the necessary data.
      *
-     * @return string The formatter's class name
+     * @param string $type   The formatters class name
+     * @param array  $params The formatter params
+     */
+    public function __construct($type = '', array $params = array())
+    {
+
+        // initialize the UUID
+        $this->setUuid($this->newUuid());
+
+        // set the data
+        $this->type = $type;
+        $this->params = $params;
+    }
+
+    /**
+     * Returns the nodes primary key, the name by default.
+     *
+     * @return string The nodes primary key
+     * @see \TechDivision\ApplicationServer\Api\Node\AbstractNode::getPrimaryKey()
+     */
+    public function getPrimaryKey()
+    {
+        return $this->getType();
+    }
+
+    /**
+     * Returns information about the formatters class name.
+     *
+     * @return string The formatters class name
      */
     public function getType()
     {

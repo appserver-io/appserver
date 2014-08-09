@@ -46,6 +46,34 @@ class StorageNode extends AbstractNode
     protected $storageServers = array();
 
     /**
+     * Initializes the storage configuration with the passed values.
+     *
+     * @param string $type           The manager class name
+     * @param array  $storageServers The array with the storage servers
+     */
+    public function __construct($type = '', array $storageServers = array())
+    {
+
+        // initialize the UUID
+        $this->setUuid($this->newUuid());
+
+        // set the data
+        $this->type = $type;
+        $this->storageServers = $storageServers;
+    }
+
+    /**
+     * Returns the nodes primary key, the name by default.
+     *
+     * @return string The nodes primary key
+     * @see \TechDivision\ApplicationServer\Api\Node\AbstractNode::getPrimaryKey()
+     */
+    public function getPrimaryKey()
+    {
+        return $this->getType();
+    }
+
+    /**
      * Returns the class name.
      *
      * @return string The class name

@@ -64,6 +64,17 @@ class ProvisionerNode extends AbstractNode implements ProvisionerNodeInterface
     }
 
     /**
+     * Returns the nodes primary key, the name by default.
+     *
+     * @return string The nodes primary key
+     * @see \TechDivision\ApplicationServer\Api\Node\AbstractNode::getPrimaryKey()
+     */
+    public function getPrimaryKey()
+    {
+        return $this->getName();
+    }
+
+    /**
      * Returns the provisioner type.
      *
      * @return string The provisioner type

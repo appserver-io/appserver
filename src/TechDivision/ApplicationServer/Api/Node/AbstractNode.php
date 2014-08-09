@@ -99,6 +99,7 @@ abstract class AbstractNode implements NodeInterface
      */
     public function initFromConfiguration(ConfigurationInterface $configuration)
     {
+
         // create a UUID and set the UUID of the parent node
         if ($configuration->getData('uuid') == null) {
             $this->setUuid($this->newUuid());
@@ -106,6 +107,7 @@ abstract class AbstractNode implements NodeInterface
             $this->setUuid($configuration->getData('uuid'));
         }
 
+        // set the node name from the configuration
         $this->setNodeName($configuration->getNodeName());
 
         // iterate over the PROTECTED properties and initialize them with the configuration data
@@ -247,34 +249,44 @@ abstract class AbstractNode implements NodeInterface
      */
     public function getValueForReflectionProperty(\ReflectionProperty $reflectionProperty, ConfigurationInterface $configuration)
     {
+
+        // load the mapping from the annotation
         $mapping = $this->getPropertyTypeFromDocComment($reflectionProperty);
 
+        // if we don't have a mapping do nothing
         if ($mapping == null) {
             return;
         }
 
+        // load node type and configuration node name
         $nodeType = $mapping->getNodeType();
         $configurationNodeName = $this->getConfigurationNodeName($configuration, $mapping);
 
-        if (class_exists($nodeType) && $this->isValueClass($nodeType)) {
+        if (class_exists($nodeType) && $this->isValueClass($nodeType)) { // initialize a new value configuration node
 
+            // initialize the new node type
             $newNode = new $nodeType();
             $newNode->initFromConfiguration($configuration);
 
+            // set the instance
             return $this->{$reflectionProperty->getName()} = $newNode;
 
-        } elseif (class_exists($nodeType)) {
+        } elseif (class_exists($nodeType)) { // initialize a new configuration node from the found child data
 
-            $newNode = new $nodeType();
-
+            // first we've to check if the child has data
             if ($child = $configuration->getChild($configurationNodeName)) {
+
+                // initialize the new node type
+                $newNode = new $nodeType();
                 $newNode->initFromConfiguration($child);
+                $newNode->setParentUuid($this->getUuid());
+
+                // set the instance
+                $this->{$reflectionProperty->getName()} = $newNode;
             }
 
-            $newNode->setParentUuid($this->getUuid());
-
-            return $this->{$reflectionProperty->getName()} = $newNode;
-
+            // return anyway
+            return;
         }
 
         // array => create the configured nodes and add them
@@ -358,19 +370,21 @@ abstract class AbstractNode implements NodeInterface
     public function exportToConfiguration()
     {
 
+        // create a new configuration instance
         $configuration = new Configuration();
         $configuration->setNodeName($this->getNodeName());
-
         $configuration->setData('uuid', $this->getUuid());
 
         // iterate over the PROTECTED properties and initialize them with the configuration data
         $reflectionObject = new \ReflectionObject($this);
 
+        // iterate over all members and add their values to the configuration
         foreach ($reflectionObject->getProperties(\ReflectionProperty::IS_PROTECTED) as $reflectionProperty) {
             // ONLY use PROTECTED properties, NOT PRIVATE, else UUID's will be overwritten!!
             $this->setConfigurationByReflectionProperty($reflectionProperty, $configuration);
         }
 
+        // return the configuration instance
         return $configuration;
     }
 
@@ -387,31 +401,38 @@ abstract class AbstractNode implements NodeInterface
         ConfigurationInterface $configuration
     ) {
 
+        // load the mapping from the annotation
         $mapping = $this->getPropertyTypeFromDocComment($reflectionProperty);
 
-        if ($mapping == null) {
+        // if the mapping OR the property itself is NULL, do nothing
+        if ($mapping == null || $this->{$reflectionProperty->getName()} == null) {
             return;
         }
 
+        // load the mappings node type
         $nodeType = $mapping->getNodeType();
 
+        // if we have a node or a node value, export the data
         if (class_exists($nodeType) && $this->isValueClass($nodeType)) {
             return $configuration->setValue($this->{$reflectionProperty->getName()}->getValue());
         } elseif (class_exists($nodeType)) {
             return $configuration->addChild($this->{$reflectionProperty->getName()}->exportToConfiguration());
         }
 
+        // if we have simple data type, export the value
         if (in_array($nodeType, array('integer', 'string', 'double', 'float', 'boolean'))) {
             return $configuration->setData($reflectionProperty->getName(), $this->{$reflectionProperty->getName()});
         }
 
+        // if we have an array, export the array data
         if ($nodeType == 'array' && sizeof($this->{$reflectionProperty->getName()}) > 0) {
             return $this->appendConfigurationChild($reflectionProperty, $configuration, $mapping->getNodeName());
         }
     }
 
     /**
-     * Appends the configuration on a given path with a given child.
+     * Appends the value of the passed reflection property to the
+     * configuration under the also passed path.
      *
      * @param \ReflectionProperty                                           $reflectionProperty The reflection property
      * @param \TechDivision\Configuration\Interfaces\ConfigurationInterface $configuration      The configuration instance
@@ -426,27 +447,32 @@ abstract class AbstractNode implements NodeInterface
         $path
     ) {
 
+        // tokenize the we want to append the configuration
         $token = strtok($path, '/');
-
         $next = substr($path, strlen('/' . $token));
 
+        // if we can't find the specified path in that instance
         if (!empty($token) && !empty($next)) {
 
+            // initialize the configuration value
             $child = new Configuration();
             $child->setNodeName($token);
 
+            // add it to this instance
             $this->appendConfigurationChild($reflectionProperty, $child, $next);
 
+            // and also add it to the passed configuration
             $configuration->addChild($child);
 
-        } elseif (!empty($token) && empty($next)) {
+        } elseif (!empty($token) && empty($next)) { // if we can find it
 
+            // only add it the the passed configuration
             foreach ($this->{$reflectionProperty->getName()} as $node) {
                 $configuration->addChild($node->exportToConfiguration());
             }
 
-        } else {
-            throw new \Exception(sprintf("Found invalid path %s", $path));
+        } else { // or throw an exception if the passed path is not valid
+            throw new \Exception(sprintf('Found invalid path %s', $path));
         }
     }
 

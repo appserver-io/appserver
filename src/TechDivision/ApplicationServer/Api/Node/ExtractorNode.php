@@ -84,6 +84,17 @@ class ExtractorNode extends AbstractNode implements ExtractorNodeInterface
     }
 
     /**
+     * Returns the nodes primary key, the name by default.
+     *
+     * @return string The nodes primary key
+     * @see \TechDivision\ApplicationServer\Api\Node\AbstractNode::getPrimaryKey()
+     */
+    public function getPrimaryKey()
+    {
+        return $this->getName();
+    }
+
+    /**
      * Returns the extractor type.
      *
      * @return string The extractor type

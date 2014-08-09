@@ -31,10 +31,25 @@ use TechDivision\ApplicationServer\Utilities\ClassLoaderKeys;
 class ClassLoaderNode extends AbstractNode implements ClassLoaderNodeInterface
 {
 
-    // We use several traits which give us the possibility to have collections of the child nodes mentioned in the
-    // corresponding trait name
+    /**
+     * A params node trait.
+     *
+     * @var \TraitInterface
+     */
     use ParamsNodeTrait;
+
+    /**
+     * A directories node trait.
+     *
+     * @var \TraitInterface
+     */
     use DirectoriesNodeTrait;
+
+    /**
+     * A namespaces node trait.
+     *
+     * @var \TraitInterface
+     */
     use NamespacesNodeTrait;
 
     /**
@@ -56,13 +71,35 @@ class ClassLoaderNode extends AbstractNode implements ClassLoaderNodeInterface
     /**
      * Initializes the class loader configuration with the passed values.
      *
-     * @param string $name The unique manager name
-     * @param string $type The manager class name
+     * @param string $name        The unique manager name
+     * @param string $type        The manager class name
+     * @param array  $params      The class loaders params
+     * @param array  $directories The class loaders directory to load classes from
+     * @param array  $namespaces  The class loaders namespaces for classes to be handled
      */
-    public function __construct($name = '', $type = '')
+    public function __construct($name = '', $type = '', array $params = array(), array $directories = array(), array $namespaces = array())
     {
+
+        // initialize the UUID
+        $this->setUuid($this->newUuid());
+
+        // set the data
         $this->name = $name;
         $this->type = $type;
+        $this->params = $params;
+        $this->directories = $directories;
+        $this->namespaces = $namespaces;
+    }
+
+    /**
+     * Returns the nodes primary key, the name by default.
+     *
+     * @return string The nodes primary key
+     * @see \TechDivision\ApplicationServer\Api\Node\AbstractNode::getPrimaryKey()
+     */
+    public function getPrimaryKey()
+    {
+        return $this->getName();
     }
 
     /**
@@ -123,15 +160,5 @@ class ClassLoaderNode extends AbstractNode implements ClassLoaderNodeInterface
     public function getEnforcementLevel()
     {
         return $this->getParam(ClassLoaderKeys::ENFORCEMENT_LEVEL);
-    }
-
-    /**
-     * The namespaces which are omitted form PBC enforcement.
-     *
-     * @return array The array of enforcement omitted namespaces
-     */
-    public function getEnforcementOmit()
-    {
-
     }
 }

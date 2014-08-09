@@ -81,7 +81,7 @@ class ComposerClassLoader extends ClassLoader implements ClassLoaderInterface
             $directories[] = $webappPath . $directory->getNodeValue();
 
             // check if an autoload.php is available
-            if (file_exists($autoloader = $webappPath . $directory->getNodeValue() . DIRECTORY_SEPARATOR . 'autoload.php')) {
+            if (file_exists($webappPath . $directory->getNodeValue() . DIRECTORY_SEPARATOR . 'autoload.php')) {
 
                 // if yes, we try to instanciate a new class loader instance
                 $classLoader = new ComposerClassLoader($directories);

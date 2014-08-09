@@ -80,11 +80,4 @@ interface ClassLoaderNodeInterface extends NodeInterface
      * @return integer The enforcement level
      */
     public function getEnforcementLevel();
-
-    /**
-     * The namespaces which are omitted form PBC enforcement.
-     *
-     * @return array The array of enforcement omitted namespaces
-     */
-    public function getEnforcementOmit();
 }
