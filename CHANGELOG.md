@@ -3,6 +3,7 @@
 ## Bugfixes
 
 * Add missing variable type cast when initializing API node types from configuration in AbstractNode::getValueForReflectionProperty() method
+* Do not overwrite preinitialized API node configuration variables with empty values in AbstractNode::getValueForReflectionProperty()
 * Bugfix invalid argument initialization in AbstractArgsNode:getArg() method
 
 ## Features

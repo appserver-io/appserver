@@ -63,6 +63,27 @@ class ExtractorNode extends AbstractNode implements ExtractorNodeInterface
     protected $restoreBackups;
 
     /**
+     * Initializes the extractor node with the necessary data.
+     *
+     * @param string  $name           The extractor name
+     * @param string  $type           The extractor type
+     * @param boolean $createBackups  The flag to create backups
+     * @param boolean $restoreBackups The flag to restore backups
+     */
+    public function __construct($name = '', $type = '', $createBackups = false, $restoreBackups = false)
+    {
+
+        // initialize the UUID
+        $this->setUuid($this->newUuid());
+
+        // set the data
+        $this->name = $name;
+        $this->type = $type;
+        $this->createBackups = $createBackups;
+        $this->restoreBackups = $restoreBackups;
+    }
+
+    /**
      * Returns the extractor type.
      *
      * @return string The extractor type
