@@ -36,6 +36,7 @@ namespace TechDivision\ApplicationServer\Api\Node;
  */
 trait ParamsNodeTrait
 {
+
     /**
      * The handler params to use.
      *

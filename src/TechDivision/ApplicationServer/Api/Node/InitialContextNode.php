@@ -62,6 +62,38 @@ class InitialContextNode extends AbstractNode
     protected $storage;
 
     /**
+     * Initializes the initial context node with the necessary data.
+     *
+     * @param string                                                  $type        The initial context type
+     * @param TechDivision\ApplicationServer\Api\Node\DescriptionNode $description A short description
+     * @param TechDivision\ApplicationServer\Api\Node\ClassLoaderNode $classLoader The default class loader configuration
+     * @param TechDivision\ApplicationServer\Api\Node\StorageNode     $storage     The default storage configuration
+     */
+    public function __construct($type = '', DescriptionNode $description = null, ClassLoaderNode $classLoader = null, StorageNode $storage = null)
+    {
+
+        // initialize the UUID
+        $this->setUuid($this->newUuid());
+
+        // set the data
+        $this->type = $type;
+        $this->description = $description;
+        $this->classLoader = $classLoader;
+        $this->storage = $storage;
+    }
+
+    /**
+     * Returns the nodes primary key, the name by default.
+     *
+     * @return string The nodes primary key
+     * @see \TechDivision\ApplicationServer\Api\Node\AbstractNode::getPrimaryKey()
+     */
+    public function getPrimaryKey()
+    {
+        return $this->getType();
+    }
+
+    /**
      * Returns information about the initial context's class name.
      *
      * @return string The initial context's class name

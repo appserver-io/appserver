@@ -249,8 +249,13 @@ class Server
         }
 
         // let the extractor extract the web applications
-        foreach ($this->getExtractors() as $extractor) {
+        foreach ($this->getExtractors() as $name => $extractor) {
+
+            // deploy the found archives
             $extractor->deployWebapps();
+
+            // log that the extractor has successfully been initialized and executed
+            $this->getSystemLogger()->debug(sprintf('Extractor %s successfully initialized and executed', $name));
         }
     }
 
@@ -274,8 +279,13 @@ class Server
         }
 
         // invoke the provisioners and provision the web applications
-        foreach ($this->getProvisioners() as $provisioner) {
+        foreach ($this->getProvisioners() as $name => $provisioner) {
+
+            // execute the provisioning steps
             $provisioner->provision();
+
+            // log that the provisioner has successfully been initialized and executed
+            $this->getSystemLogger()->debug(sprintf('Provisioner %s successfully initialized and executed', $name));
         }
     }
 

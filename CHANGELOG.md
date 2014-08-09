@@ -1,4 +1,4 @@
-# Version 0.10.0
+# Version 0.9.3
 
 ## Bugfixes
 
@@ -9,6 +9,7 @@
 ## Features
 
 * Issue #191 - initially add functionality to create certificate on system startup
+* Add a programmatical default configuration for initial context, loggers, extractors + provisioners (makes configuration in appserver.xml optionally)
 * Make extractors + provisioners configurable in appserver.xml
 * Add composer dependency to techdivision/lang package >= 0.1
 

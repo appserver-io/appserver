@@ -15,6 +15,8 @@
 
 namespace TechDivision\ApplicationServer\Api\Node;
 
+use TechDivision\Configuration\Interfaces\ValueInterface;
+
 /**
  * DTO to transfer a simple description node.
  *
@@ -28,4 +30,19 @@ namespace TechDivision\ApplicationServer\Api\Node;
  */
 class DescriptionNode extends AbstractValueNode
 {
+
+    /**
+     * Initializes the param node with the necessary data.
+     *
+     * @param \TechDivision\Configuration\Interfaces\ValueInterface $nodeValue The params initial value
+     */
+    public function __construct(ValueInterface $nodeValue = null)
+    {
+
+        // initialize the UUID
+        $this->setUuid($this->newUuid());
+
+        // set the data
+        $this->nodeValue = $nodeValue;
+    }
 }

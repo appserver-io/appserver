@@ -28,7 +28,12 @@ namespace TechDivision\ApplicationServer\Api\Node;
  */
 class AppserverNode extends AbstractNode
 {
-    // The appserver itself can (but does not have to) have param elements as children
+
+    /**
+     * A params node trait.
+     *
+     * @var \TraitInterface
+     */
     use ParamsNodeTrait;
 
     /**
@@ -44,14 +49,6 @@ class AppserverNode extends AbstractNode
      * @var \TechDivision\ApplicationServer\Api\Node\InitialContextNode @AS\Mapping(nodeName="initialContext", nodeType="TechDivision\ApplicationServer\Api\Node\InitialContextNode")
      */
     protected $initialContext;
-
-    /**
-     * The node containing information about the system logger.
-     *
-     * @var \TechDivision\ApplicationServer\Api\Node\SystemLoggerNode @AS\Mapping(nodeName="systemLogger", nodeType="TechDivision\ApplicationServer\Api\Node\SystemLoggerNode")
-     */
-    protected $systemLogger;
-
     /**
      * Array with nodes for the registered loggers.
      *
@@ -95,11 +92,40 @@ class AppserverNode extends AbstractNode
     protected $datasources = array();
 
     /**
-     * Returns the username configured in the system configuration.
-     *
-     * @return string The username
+     * Initializes the node with default values.
      */
     public function __construct()
+    {
+        // initialize the default configuration
+        $this->initDefaultLoggers();
+        $this->initDefaultExtractors();
+        $this->initDefaultProvisioners();
+        $this->initDefaultInitialContext();
+    }
+
+    /**
+     * Initializes the default initial context configuration.
+     *
+     * @return void
+     */
+    public function initDefaultInitialContext()
+    {
+
+        // initialize the configuration values for the initial context
+        $description = new DescriptionNode(new NodeValue('The initial context configuration.'));
+        $classLoader = new ClassLoaderNode('default', 'TechDivision\ApplicationServer\SplClassLoader');
+        $storage = new StorageNode('TechDivision\Storage\StackableStorage');
+
+        // set the default initial context configuration
+        $this->initialContext = new InitialContextNode('TechDivision\ApplicationServer\InitialContext', $description, $classLoader, $storage);
+    }
+
+    /**
+     * Initializes the default extractors for archive based deployment.
+     *
+     * @return void
+     */
+    protected function initDefaultExtractors()
     {
 
         // initialize the extractor
@@ -107,6 +133,16 @@ class AppserverNode extends AbstractNode
 
         // add extractor to the appserver node
         $this->extractors[$pharExtractor->getPrimaryKey()] = $pharExtractor;
+    }
+
+    /**
+     * Initializes the default provisioners for database and
+     * application database relation.
+     *
+     * @return void
+     */
+    protected function initDefaultProvisioners()
+    {
 
         // initialize the provisioners
         $datasourceProvisioner = new ProvisionerNode('datasource', 'TechDivision\ApplicationServer\DatasourceProvisioner');
@@ -115,6 +151,69 @@ class AppserverNode extends AbstractNode
         // add the provisioners to the appserver node
         $this->provisioners[$datasourceProvisioner->getPrimaryKey()] = $datasourceProvisioner;
         $this->provisioners[$standardProvisioner->getPrimaryKey()] = $standardProvisioner;
+    }
+
+    /**
+     * Initializes the default logger configuration.
+     *
+     * @return void
+     */
+    protected function initDefaultLoggers()
+    {
+
+        $processors = array();
+        $processor = new ProcessorNode('\Monolog\Processor\IntrospectionProcessor');
+        $processors[$processor->getPrimaryKey()] = $processor;
+
+        $formatter = new FormatterNode('\Monolog\Formatter\LineFormatter');
+
+        $handlerParams = array();
+
+        $streamParam = new ParamNode('stream', 'string', new NodeValue('var/log/appserver-errors.log'));
+        $levelParam = new ParamNode('level', 'integer', new NodeValue(200));
+        $bubbleParam = new ParamNode('bubble', 'boolean', new NodeValue(false));
+
+        $handlerParams[$streamParam->getPrimaryKey()] = $streamParam;
+        $handlerParams[$levelParam->getPrimaryKey()] = $levelParam;
+        $handlerParams[$bubbleParam->getPrimaryKey()] = $bubbleParam;
+
+        $handlers = array();
+        $handler = new HandlerNode('\Monolog\Handler\StreamHandler', $formatter, $handlerParams);
+        $handlers[$handler->getPrimaryKey()] = $handler;
+
+        $systemLogger = new LoggerNode('System', '\Monolog\Logger', 'system', $processors, $handlers);
+
+        $this->loggers[$systemLogger->getPrimaryKey()] = $systemLogger;
+
+        $formatterParams = array();
+
+        $formatParam = new ParamNode('format', 'string', new NodeValue('%message%'));
+        $dateFormatParam = new ParamNode('dateFormat', 'string', new NodeValue('Y-m-d H:i:s'));
+        $allowInlineLineBreaksParam = new ParamNode('allowInlineLineBreaks', 'boolean', new NodeValue(true));
+
+        $formatterParams[$formatParam->getPrimaryKey()] = $formatParam;
+        $formatterParams[$dateFormatParam->getPrimaryKey()] = $dateFormatParam;
+        $formatterParams[$allowInlineLineBreaksParam->getPrimaryKey()] = $allowInlineLineBreaksParam;
+
+        $formatter = new FormatterNode('\Monolog\Formatter\LineFormatter', $formatterParams);
+
+        $handlerParams = array();
+
+        $streamParam = new ParamNode('stream', 'string', new NodeValue('var/log/appserver-access.log'));
+        $levelParam = new ParamNode('level', 'integer', new NodeValue(100));
+        $bubbleParam = new ParamNode('bubble', 'boolean', new NodeValue(true));
+
+        $handlerParams[$streamParam->getPrimaryKey()] = $streamParam;
+        $handlerParams[$levelParam->getPrimaryKey()] = $levelParam;
+        $handlerParams[$bubbleParam->getPrimaryKey()] = $bubbleParam;
+
+        $handlers = array();
+        $handler = new HandlerNode('\Monolog\Handler\StreamHandler', $formatter, $handlerParams);
+        $handlers[$handler->getPrimaryKey()] = $handler;
+
+        $accessLogger = new LoggerNode('Access', '\Monolog\Logger', 'access', $processors, $handlers);
+
+        $this->loggers[$accessLogger->getPrimaryKey()] = $accessLogger;
     }
 
     /**
