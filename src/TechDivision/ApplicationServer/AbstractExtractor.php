@@ -71,36 +71,6 @@ abstract class AbstractExtractor implements ExtractorInterface
     }
 
     /**
-     * Returns the servers tmp directory.
-     *
-     * @return string
-     */
-    public function getTmpDir()
-    {
-        return $this->getService()->getTmpDir();
-    }
-
-    /**
-     * Returns the servers deploy directory.
-     *
-     * @return string
-     */
-    public function getDeployDir()
-    {
-        return $this->getService()->getDeployDir();
-    }
-
-    /**
-     * Returns the servers webapps directory.
-     *
-     * @return string The web application directory
-     */
-    public function getWebappsDir()
-    {
-        return $this->getService()->getWebappsDir();
-    }
-
-    /**
      * Returns all flags in array.
      *
      * @return array
@@ -330,61 +300,16 @@ abstract class AbstractExtractor implements ExtractorInterface
     protected function removeDir($dir, $alsoRemoveFiles = true)
     {
 
-        // first check if the directory exists, if not return immediately
-        if (is_dir($dir) === false) {
+        // clean up the directory
+        $this->getService()->cleanUpDir($dir, $alsoRemoveFiles);
+
+        // check if the directory exists, if not return immediately
+        if ($dir->isDir() === false) {
             return;
         }
 
-        // remove old archive from webapps folder recursively
-        $files = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator($dir),
-            \RecursiveIteratorIterator::CHILD_FIRST
-        );
-        foreach ($files as $file) {
-            // skip . and .. dirs
-            if ($file->getFilename() === '.' || $file->getFilename() === '..') {
-                continue;
-            }
-            if ($file->isDir()) {
-                @rmdir($file->getRealPath());
-            } elseif ($file->isFile() && $alsoRemoveFiles) {
-                unlink($file->getRealPath());
-            } else {
-                // do nothing, because file should NOT be deleted obviously
-            }
-        }
         // delete the directory itself if empty
         @rmdir($dir);
-    }
-
-    /**
-     * Copies a directory recursively.
-     *
-     * @param string $src The source directory to copy
-     * @param string $dst The target directory
-     *
-     * @return void
-     */
-    public function copyDir($src, $dst)
-    {
-        if (is_link($src)) {
-            symlink(readlink($src), $dst);
-        } elseif (is_dir($src)) {
-            if (is_dir($dst) === false) {
-                mkdir($dst, 0775, true);
-            }
-            // copy files recursive
-            foreach (scandir($src) as $file) {
-                if ($file != '.' && $file != '..') {
-                    $this->copyDir("$src/$file", "$dst/$file");
-                }
-            }
-
-        } elseif (is_file($src)) {
-            copy($src, $dst);
-        } else {
-            // do nothing, we didn't have a directory to copy
-        }
     }
 
     /**
@@ -431,6 +356,36 @@ abstract class AbstractExtractor implements ExtractorInterface
     }
 
     /**
+     * Returns the servers tmp directory.
+     *
+     * @return string
+     */
+    public function getTmpDir()
+    {
+        return $this->getService()->getTmpDir();
+    }
+
+    /**
+     * Returns the servers deploy directory.
+     *
+     * @return string
+     */
+    public function getDeployDir()
+    {
+        return $this->getService()->getDeployDir();
+    }
+
+    /**
+     * Returns the servers webapps directory.
+     *
+     * @return string The web application directory
+     */
+    public function getWebappsDir()
+    {
+        return $this->getService()->getWebappsDir();
+    }
+
+    /**
      * Sets the configured user/group settings on the passed file.
      *
      * @param \SplFileInfo $fileInfo The file to set user/group for
@@ -452,5 +407,19 @@ abstract class AbstractExtractor implements ExtractorInterface
     protected function setUserRights(\SplFileInfo $targetDir)
     {
         $this->getService()->setUserRights($targetDir);
+    }
+
+    /**
+     * Copies a directory recursively.
+     *
+     * @param string $src The source directory to copy
+     * @param string $dst The target directory
+     *
+     * @return void
+     * @see \TechDivision\ApplicationServer\Api\AbstractService::copyDir()
+     */
+    public function copyDir($src, $dst)
+    {
+        $this->getService()->copyDir($src, $dst);
     }
 }
