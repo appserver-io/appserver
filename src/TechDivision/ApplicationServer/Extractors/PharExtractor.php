@@ -75,8 +75,8 @@ class PharExtractor extends AbstractExtractor
         try {
 
             // create folder names based on the archive's basename
-            $tmpFolderName = $this->getTmpDir() . DIRECTORY_SEPARATOR . $archive->getFilename();
-            $webappFolderName = $this->getWebappsDir() . DIRECTORY_SEPARATOR . basename($archive->getFilename(), $this->getExtensionSuffix());
+            $tmpFolderName = new \SplFileInfo($this->getTmpDir() . DIRECTORY_SEPARATOR . $archive->getFilename());
+            $webappFolderName = new \SplFileInfo($this->getWebappsDir() . DIRECTORY_SEPARATOR . basename($archive->getFilename(), $this->getExtensionSuffix()));
 
             // check if archive has not been deployed yet or failed sometime
             if ($this->isDeployable($archive)) {
@@ -85,7 +85,7 @@ class PharExtractor extends AbstractExtractor
                 $this->flagArchive($archive, ExtractorInterface::FLAG_DEPLOYING);
 
                 // backup actual webapp folder, if available
-                if (is_dir($webappFolderName)) {
+                if ($webappFolderName->isDir()) {
 
                     // backup files that are NOT part of the archive
                     $this->backupArchive($archive);
@@ -102,13 +102,13 @@ class PharExtractor extends AbstractExtractor
                 $p->extractTo($tmpFolderName);
 
                 // move extracted content to webapps folder
-                rename($tmpFolderName, $webappFolderName);
+                rename($tmpFolderName->getPathname(), $webappFolderName->getPathname());
 
                 // restore backup if available
                 $this->restoreBackup($archive);
 
                 // We have to set the user rights to the user:group configured within the system configuration
-                $this->setUserRights(new \SplFileInfo($webappFolderName));
+                $this->setUserRights($webappFolderName);
 
                 // flag webapp as deployed
                 $this->flagArchive($archive, ExtractorInterface::FLAG_DEPLOYED);

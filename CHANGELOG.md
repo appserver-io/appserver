@@ -1,3 +1,13 @@
+# Version 0.9.5
+
+## Bugfixes
+
+* Bugfix invalid parameter dir when calling AbstractService::cleanUpDir() method from AbstractExtractor::removeDir() method
+
+## Features
+
+* None
+
 # Version 0.9.4
 
 ## Bugfixes
