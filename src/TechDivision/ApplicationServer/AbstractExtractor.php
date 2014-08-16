@@ -235,11 +235,12 @@ abstract class AbstractExtractor implements ExtractorInterface
         try {
 
             // create webapp folder name based on the archive's basename
-            $webappFolderName = $this->getWebappsDir() . DIRECTORY_SEPARATOR
-                . basename($archive->getFilename(), $this->getExtensionSuffix());
+            $webappFolderName = new \SplFileInfo(
+                $this->getWebappsDir() . DIRECTORY_SEPARATOR . basename($archive->getFilename(), $this->getExtensionSuffix())
+            );
 
             // check if app has to be undeployed
-            if ($this->isUndeployable($archive) && is_dir($webappFolderName)) {
+            if ($this->isUndeployable($archive) && $webappFolderName->isDir()) {
 
                 // flag webapp as undeploing
                 $this->flagArchive($archive, ExtractorInterface::FLAG_UNDEPLOYING);
@@ -292,12 +293,12 @@ abstract class AbstractExtractor implements ExtractorInterface
     /**
      * Removes a directory recursively.
      *
-     * @param string $dir             The directory to remove
-     * @param bool   $alsoRemoveFiles The flag for removing files also
+     * @param \SplFileInfo $dir             The directory to remove
+     * @param bool         $alsoRemoveFiles The flag for removing files also
      *
      * @return void
      */
-    protected function removeDir($dir, $alsoRemoveFiles = true)
+    protected function removeDir(\SplFileInfo $dir, $alsoRemoveFiles = true)
     {
 
         // clean up the directory
@@ -309,7 +310,7 @@ abstract class AbstractExtractor implements ExtractorInterface
         }
 
         // delete the directory itself if empty
-        @rmdir($dir);
+        @rmdir($dir->getPathname());
     }
 
     /**
