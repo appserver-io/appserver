@@ -143,15 +143,19 @@ abstract class AbstractService implements ServiceInterface
      */
     public function getBaseDirectory($directoryToAppend = null)
     {
+
+        // load the base directory from the system configuration
         $baseDirectory = $this->getSystemConfiguration()
             ->getBaseDirectory()
             ->getNodeValue()
             ->__toString();
 
+        // if a directory has been passed, make it absolute and append it
         if ($directoryToAppend != null) {
-            $baseDirectory .= $directoryToAppend;
+            $baseDirectory .= $this->makePathAbsolute($directoryToAppend);
         }
 
+        // return the base directory, with the passed path appended
         return $baseDirectory;
     }
 
