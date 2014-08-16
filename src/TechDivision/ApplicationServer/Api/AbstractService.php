@@ -459,6 +459,36 @@ abstract class AbstractService implements ServiceInterface
     }
 
     /**
+     * Copies a directory recursively.
+     *
+     * @param string $src The source directory to copy
+     * @param string $dst The target directory
+     *
+     * @return void
+     */
+    public function copyDir($src, $dst)
+    {
+        if (is_link($src)) {
+            symlink(readlink($src), $dst);
+        } elseif (is_dir($src)) {
+            if (is_dir($dst) === false) {
+                mkdir($dst, 0775, true);
+            }
+            // copy files recursive
+            foreach (scandir($src) as $file) {
+                if ($file != '.' && $file != '..') {
+                    $this->copyDir("$src/$file", "$dst/$file");
+                }
+            }
+
+        } elseif (is_file($src)) {
+            copy($src, $dst);
+        } else {
+            // do nothing, we didn't have a directory to copy
+        }
+    }
+
+    /**
      * Creates the SSL file passed as parameter or nothing if the file already exists.
      *
      * @param \SplFileInfo $certificate The file info about the SSL file to generate
