@@ -143,15 +143,19 @@ abstract class AbstractService implements ServiceInterface
      */
     public function getBaseDirectory($directoryToAppend = null)
     {
+
+        // load the base directory from the system configuration
         $baseDirectory = $this->getSystemConfiguration()
             ->getBaseDirectory()
             ->getNodeValue()
             ->__toString();
 
+        // if a directory has been passed, make it absolute and append it
         if ($directoryToAppend != null) {
-            $baseDirectory .= $directoryToAppend;
+            $baseDirectory .= $this->makePathAbsolute($directoryToAppend);
         }
 
+        // return the base directory, with the passed path appended
         return $baseDirectory;
     }
 
@@ -451,6 +455,36 @@ abstract class AbstractService implements ServiceInterface
             } else {
                 // do nothing, because file should NOT be deleted obviously
             }
+        }
+    }
+
+    /**
+     * Copies a directory recursively.
+     *
+     * @param string $src The source directory to copy
+     * @param string $dst The target directory
+     *
+     * @return void
+     */
+    public function copyDir($src, $dst)
+    {
+        if (is_link($src)) {
+            symlink(readlink($src), $dst);
+        } elseif (is_dir($src)) {
+            if (is_dir($dst) === false) {
+                mkdir($dst, 0775, true);
+            }
+            // copy files recursive
+            foreach (scandir($src) as $file) {
+                if ($file != '.' && $file != '..') {
+                    $this->copyDir("$src/$file", "$dst/$file");
+                }
+            }
+
+        } elseif (is_file($src)) {
+            copy($src, $dst);
+        } else {
+            // do nothing, we didn't have a directory to copy
         }
     }
 

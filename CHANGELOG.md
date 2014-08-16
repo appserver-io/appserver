@@ -1,3 +1,15 @@
+# Version 0.9.4
+
+## Bugfixes
+
+* Bugfix invalid path concatenation in AbstractService::getBaseDirectory() when directory with OS specific directory separator has been passed
+* Move copyDir() method from AbstractExctractor to AbstractService class
+* Use AbstractService::cleanUpDir() method in AbstractExtractor when delete a directory with removeDir()
+
+## Features
+
+* None
+
 # Version 0.9.3
 
 ## Bugfixes
