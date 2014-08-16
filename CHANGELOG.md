@@ -1,3 +1,13 @@
+# Version 0.9.4
+
+## Bugfixes
+
+* Bugfix invalid path concatenation in AbstractService::getBaseDirectory() when directory with OS specific directory separator has been passed
+
+## Features
+
+* None
+
 # Version 0.9.3
 
 ## Bugfixes
