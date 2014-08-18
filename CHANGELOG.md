@@ -1,3 +1,13 @@
+# Version 0.9.6
+
+## Bugfixes
+
+* Refactor container startup process to make sure all server sockets has been established before init user permissions and proceed with provision
+
+## Features
+
+* None
+
 # Version 0.9.5
 
 ## Bugfixes

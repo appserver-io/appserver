@@ -23,8 +23,8 @@ use TechDivision\ApplicationServer\Interfaces\ExtractorInterface;
 use TechDivision\ApplicationServer\InitialContext;
 use TechDivision\ApplicationServer\Api\Node\AppserverNode;
 use TechDivision\ApplicationServer\Scanner\HeartbeatScanner;
-use TechDivision\ApplicationServer\Utilities\StateKeys;
 use TechDivision\ApplicationServer\Utilities\DirectoryKeys;
+use TechDivision\ApplicationServer\Utilities\ContainerStateKeys;
 
 /**
  * This is the main server class that starts the application server
@@ -536,26 +536,22 @@ class Server
      */
     public function startContainers()
     {
-        // set the flag that the application will be started
-        $this->getInitialContext()->setAttribute(StateKeys::KEY, StateKeys::get(StateKeys::STARTING));
 
         // start the container threads
         foreach ($this->getContainers() as $container) {
 
-            // start the thread
+            // start the container
             $container->start();
 
-            // synchronize container threads to avoid registering apps several times
-            $container->synchronized(
-                function ($self) {
-                    $self->wait();
-                },
-                $container
-            );
+            // wait for the container to be started
+            $waitForContainer = true;
+            while ($waitForContainer) {
+                sleep(1);
+                if ($container->containerState->greaterOrEqualThan(ContainerStateKeys::get(ContainerStateKeys::SERVERS_STARTED_SUCCESSFUL))) {
+                    $waitForContainer = false;
+                }
+            }
         }
-
-        // set the flag that the application has been started
-        $this->getInitialContext()->setAttribute(StateKeys::KEY, StateKeys::get(StateKeys::RUNNING));
     }
 
     /**

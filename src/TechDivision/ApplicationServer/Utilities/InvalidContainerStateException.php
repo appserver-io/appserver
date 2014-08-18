@@ -1,6 +1,6 @@
 <?php
 /**
- * TechDivision\ApplicationServer\Utilities\InvalidStateException
+ * TechDivision\ApplicationServer\Utilities\InvalidContainerStateException
  *
  * PHP version 5
  *
@@ -16,7 +16,7 @@
 namespace TechDivision\ApplicationServer\Utilities;
 
 /**
- * Exception that will be thrown if the state is not available or invalid.
+ * Exception that will be thrown if the container state is not available or invalid.
  *
  * @category   Appserver
  * @package    TechDivision_ApplicationServer
@@ -26,6 +26,6 @@ namespace TechDivision\ApplicationServer\Utilities;
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       http://www.appserver.io
  */
-class InvalidStateException extends \Exception
+class InvalidContainerStateException extends \Exception
 {
 }
