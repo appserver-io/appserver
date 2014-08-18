@@ -14,8 +14,6 @@
 
 namespace TechDivision\ApplicationServer;
 
-use TechDivision\ApplicationServer\Utilities\StateKeys;
-
 /**
  * An abstraction context layer for Threads.
  * It will automatically register the intitialContext object.
@@ -38,13 +36,6 @@ abstract class AbstractContextThread extends AbstractThread
     protected $initialContext;
 
     /**
-     * The server's stop state.
-     *
-     * @var \TechDivision\ApplicationServer\Utilities\StateKeys
-     */
-    protected $stopState;
-
-    /**
      * Constructor sets initialContext object per default and calls
      * init function to pass other args.
      *
@@ -52,8 +43,6 @@ abstract class AbstractContextThread extends AbstractThread
      */
     public function __construct($initialContext)
     {
-        // initialize the server's stop state
-        $this->stopState = StateKeys::get(StateKeys::STOPPING);
         // get function args
         $functionArgs = func_get_args();
         // shift first arg to initialContext which should be a stackable implementation.
@@ -99,27 +88,5 @@ abstract class AbstractContextThread extends AbstractThread
     public function newInstance($className, array $args = array())
     {
         return $this->getInitialContext()->newInstance($className, $args);
-    }
-
-    /**
-     * Returns the server's stop state.
-     *
-     * @return \TechDivision\ApplicationServer\Utilities\StateKeys The stop state
-     */
-    public function getStopState()
-    {
-        return $this->stopState;
-    }
-
-    /**
-     * Returns TRUE if the appserver sends the shudown flag else FALSE.
-     *
-     * @return boolean TRUE if the server has to be shutdown, else FALSE
-     */
-    public function shutdown()
-    {
-        return $this->getStopState()->equals(
-            $this->getInitialContext()->getAttribute(StateKeys::KEY)
-        );
     }
 }
