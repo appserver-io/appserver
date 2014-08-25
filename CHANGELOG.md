@@ -1,3 +1,13 @@
+# Version 0.9.7
+
+## Bugfixes
+
+* Bugfix for missing parameters when generating server.pem on Windows in AbstractService::createSslCertificate on system startup
+
+## Features
+
+* None
+
 # Version 0.9.6
 
 ## Bugfixes

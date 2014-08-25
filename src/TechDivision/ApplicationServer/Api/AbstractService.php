@@ -522,9 +522,14 @@ abstract class AbstractService implements ServiceInterface
         // check the operating system
         switch (strtoupper(PHP_OS)) {
 
-            case 'DARWIN': // on Mac OS X use the system configuration
+            case 'DARWIN': // on Mac OS X use the system default configuration
 
                 $configargs = array('config' => '/System/Library/OpenSSL/openssl.cnf');
+                break;
+
+            case 'WINNT': // on Windows use the system configuration we deliver
+
+                $configargs = array('config' => $this->getBaseDirectory('/php/extras/ssl/openssl.cnf'));
                 break;
 
             default: // on all other use a standard configuration
@@ -540,19 +545,19 @@ abstract class AbstractService implements ServiceInterface
         }
 
         // generate a new private (and public) key pair
-        $privkey = openssl_pkey_new();
+        $privkey = openssl_pkey_new($configargs);
 
         // Generate a certificate signing request
         $csr = openssl_csr_new($dn, $privkey, $configargs);
 
         // create a self-signed cert that is valid for 365 days
-        $sscert = openssl_csr_sign($csr, null, $privkey, 365);
+        $sscert = openssl_csr_sign($csr, null, $privkey, 365, $configargs);
 
         // export the cert + pk files
         $certout = '';
         $pkeyout = '';
         openssl_x509_export($sscert, $certout);
-        openssl_pkey_export($privkey, $pkeyout);
+        openssl_pkey_export($privkey, $pkeyout, null, $configargs);
 
         // write the SSL certificate data to the target
         $file = $certificate->openFile('w');
