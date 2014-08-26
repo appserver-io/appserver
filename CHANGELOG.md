@@ -1,3 +1,13 @@
+# Version 0.9.8
+
+## Bugfixes
+
+* Set encryption key length when generating a SSL certificate to 2048 on Unix based operating systems
+
+## Features
+
+* None
+
 # Version 0.9.7
 
 ## Bugfixes
