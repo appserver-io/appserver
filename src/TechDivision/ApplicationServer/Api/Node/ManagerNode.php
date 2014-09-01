@@ -15,6 +15,8 @@
 
 namespace TechDivision\ApplicationServer\Api\Node;
 
+use TechDivision\Application\Interfaces\ManagerConfigurationInterface;
+
 /**
  * DTO to transfer a manager.
  *
@@ -26,8 +28,14 @@ namespace TechDivision\ApplicationServer\Api\Node;
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       http://www.appserver.io
  */
-class ManagerNode extends AbstractNode
+class ManagerNode extends AbstractNode implements ManagerConfigurationInterface
 {
+    /**
+     * The params trait.
+     *
+     * @var \Trait
+     */
+    use ParamsNodeTrait;
 
     /**
      * The unique manager name.

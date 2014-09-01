@@ -58,14 +58,14 @@ class ComposerClassLoader extends ClassLoader implements ClassLoaderInterface
     }
 
     /**
-     * Factory method that adds a initialized class loader to the passed application.
+     * Visitor method that adds a initialized class loader to the passed application.
      *
      * @param \TechDivision\Application\Interfaces\ApplicationInterface         $application   The application instance
      * @param \TechDivision\ApplicationServer\Api\Node\ClassLoaderNodeInterface $configuration The class loader configuration node
      *
      * @return void
      */
-    public static function get(ApplicationInterface $application, ClassLoaderNodeInterface $configuration = null)
+    public static function visit(ApplicationInterface $application, ClassLoaderNodeInterface $configuration = null)
     {
 
         // load the application directory
