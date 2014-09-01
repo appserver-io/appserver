@@ -92,8 +92,10 @@ trait ParamsNodeTrait
     public function getParamsAsArray()
     {
         $params = array();
-        foreach ($this->getParams() as $param) {
-            $params[$param->getName()] = $param->castToType();
+        if (is_array($this->getParams())) {
+            foreach ($this->getParams() as $param) {
+                $params[$param->getName()] = $param->castToType();
+            }
         }
         return $params;
     }

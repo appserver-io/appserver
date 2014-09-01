@@ -1,3 +1,14 @@
+# Version 0.9.9
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Switch to new ClassLoader + ManagerInterface
+* Add configuration parameters to manager configuration
+
 # Version 0.9.8
 
 ## Bugfixes

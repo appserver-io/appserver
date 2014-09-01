@@ -22,16 +22,9 @@
 namespace TechDivision\ApplicationServer;
 
 use TechDivision\PBC\Config;
-use TechDivision\PBC\Autoloader;
 use TechDivision\Storage\StackableStorage;
 use TechDivision\Application\Application;
 use TechDivision\Application\Interfaces\ContextInterface;
-use TechDivision\ServletEngine\StandardSessionManager;
-use TechDivision\ServletEngine\Authentication\StandardAuthenticationManager;
-use TechDivision\ServletEngine\ServletManager;
-use TechDivision\MessageQueue\QueueManager;
-use TechDivision\PersistenceContainer\BeanManager;
-use TechDivision\WebSocketServer\HandlerManager;
 use TechDivision\ApplicationServer\AbstractDeployment;
 use TechDivision\ApplicationServer\Interfaces\ContainerInterface;
 use TechDivision\ApplicationServer\Utilities\DirectoryKeys;
@@ -91,13 +84,13 @@ class GenericDeployment extends AbstractDeployment
                 // add the configured class loaders
                 foreach ($context->getClassLoaders() as $classLoader) {
                     $classLoaderType = $classLoader->getType();
-                    $classLoaderType::get($application, $classLoader);
+                    $classLoaderType::visit($application, $classLoader);
                 }
 
                 // add the configured managers
                 foreach ($context->getManagers() as $manager) {
                     $managerType = $manager->getType();
-                    $managerType::get($application);
+                    $managerType::visit($application, $manager);
                 }
 
                 // add the application to the container
