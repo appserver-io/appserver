@@ -68,8 +68,8 @@ need advanced features like cluster functionality.
 ### Version 0.8 - [Persistence Container](https://github.com/techdivision/TechDivision_PersistenceContainer)
 - [x] Application based context [Issue #178](https://github.com/techdivision/TechDivision_ApplicationServer/issues/178)
 - [x] [Design by Contract](https://github.com/wick-ed/php-by-contract) default integration
-- [ ] Stateful + Singleton session bean functionality
-- [ ] Message bean functionality
+- [x] Stateful + Singleton session bean functionality
+- [x] Message bean functionality
 
 ### Version 0.9 - Timer Service
 - [ ] Timer Service
