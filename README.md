@@ -72,7 +72,7 @@ need advanced features like cluster functionality.
 - [x] Message bean functionality
 
 ### Version 0.9 - Timer Service
-- [ ] Timer Service
+- [x] Timer Service
 
 ### Version 1.0 - Timer Service
 - [ ] AOP
