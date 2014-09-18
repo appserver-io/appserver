@@ -40,7 +40,7 @@ class RotatingMonologHandlerTest extends AbstractTest
      *
      * @var string TMP_DIR
      */
-    const TMP_DIR = '/var/tmp/';
+    const TMP_DIR = '/_files/var/tmp/';
 
     /**
      * A temporary file for testing purposes
@@ -114,8 +114,7 @@ class RotatingMonologHandlerTest extends AbstractTest
      * @return void
      */
     public function testGetCurrentSizeIterationNotOver()
-    {error_log(var_export(__DIR__,true));
-        echo __DIR__;
+    {
         // get a new handler with a very low file size
         $this->handler = new RotatingMonologHandler(__DIR__ . self::TMP_DIR . self::TMP_FILE, 0, Logger::DEBUG, true,  null, 20);
 

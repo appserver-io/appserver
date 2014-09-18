@@ -13,7 +13,6 @@ before_install:
 
 script:
   - ant composer-init
-  - chmod -R 777 $TRAVIS_BUILD_DIR/tests/TechDivision/ApplicationServer/var/tmp
   - ant build
   - php ocular.phar code-coverage:upload --format=php-clover $TRAVIS_BUILD_DIR/target/reports/unit/clover.xml
 
