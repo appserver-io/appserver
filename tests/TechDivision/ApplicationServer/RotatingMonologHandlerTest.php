@@ -114,7 +114,8 @@ class RotatingMonologHandlerTest extends AbstractTest
      * @return void
      */
     public function testGetCurrentSizeIterationNotOver()
-    {
+    {error_log(var_export(__DIR__,true));
+        echo __DIR__;
         // get a new handler with a very low file size
         $this->handler = new RotatingMonologHandler(__DIR__ . self::TMP_DIR . self::TMP_FILE, 0, Logger::DEBUG, true,  null, 20);
 
