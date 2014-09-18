@@ -173,9 +173,11 @@ class AppserverNode extends AbstractNode
         $handlerParams = array();
         $streamParam = new ParamNode('stream', 'string', new NodeValue('var/log/appserver-errors.log'));
         $levelParam = new ParamNode('level', 'integer', new NodeValue(200));
+        $maxFilesParam = new ParamNode('maxFiles', 'integer', new NodeValue(30));
         $bubbleParam = new ParamNode('bubble', 'boolean', new NodeValue(false));
         $handlerParams[$streamParam->getPrimaryKey()] = $streamParam;
         $handlerParams[$levelParam->getPrimaryKey()] = $levelParam;
+        $handlerParams[$maxFilesParam->getPrimaryKey()] = $maxFilesParam;
         $handlerParams[$bubbleParam->getPrimaryKey()] = $bubbleParam;
 
         // initialize the handler
@@ -202,9 +204,11 @@ class AppserverNode extends AbstractNode
         $handlerParams = array();
         $streamParam = new ParamNode('stream', 'string', new NodeValue('var/log/appserver-access.log'));
         $levelParam = new ParamNode('level', 'integer', new NodeValue(100));
+        $maxFilesParam = new ParamNode('maxFiles', 'integer', new NodeValue(30));
         $bubbleParam = new ParamNode('bubble', 'boolean', new NodeValue(true));
         $handlerParams[$streamParam->getPrimaryKey()] = $streamParam;
         $handlerParams[$levelParam->getPrimaryKey()] = $levelParam;
+        $handlerParams[$maxFilesParam->getPrimaryKey()] = $maxFilesParam;
         $handlerParams[$bubbleParam->getPrimaryKey()] = $bubbleParam;
 
         // initialize the handler for the access logger

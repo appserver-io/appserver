@@ -137,6 +137,13 @@ class RotatingMonologHandler extends StreamHandler
     protected $nextRotationDate;
 
     /**
+     * The original name of the file to rotate
+     *
+     * @var string $originalFilename
+     */
+    protected $originalFilename;
+
+    /**
      * Default constructor
      *
      * @param string       $filename       Log file base name
@@ -149,6 +156,7 @@ class RotatingMonologHandler extends StreamHandler
     public function __construct($filename, $maxFiles = 0, $level = Logger::DEBUG, $bubble = true, $filePermission = null, $maxSize = null)
     {
         $this->filename = $filename;
+        $this->originalFilename = $filename;
         $this->maxFiles = (int)$maxFiles;
         $this->dateFormat = 'Y-m-d';
         $this->currentSizeIteration = $this->getCurrentSizeIteration();
@@ -196,10 +204,23 @@ class RotatingMonologHandler extends StreamHandler
             }
         );
 
-        // $this-maxFiles - 1 as upcoming file does not get counted
-        foreach (array_slice($logFiles, $this->maxFiles) as $file) {
-            if (is_writable($file)) {
-                unlink($file);
+        // collect the files we have to archive and clean and prepare the archive's internal mapping
+        $oldFiles = array();
+        foreach (array_slice($logFiles, $this->maxFiles) as $oldFile) {
+
+            $oldFiles[basename($oldFile)] = $oldFile;
+        }
+
+        // create an archive from the old files
+        $dateTime = new \DateTime();
+        $currentTime = $dateTime->format($this->getDateFormat());
+        $phar = new \PharData($this->originalFilename . $currentTime .  '.tar');
+        $phar->buildFromIterator(new \ArrayIterator($oldFiles));
+
+        // finally delete them as we got them in the archive
+        foreach ($oldFiles as $oldFile) {
+            if (is_writable($oldFile)) {
+                unlink($oldFile);
             }
         }
     }
