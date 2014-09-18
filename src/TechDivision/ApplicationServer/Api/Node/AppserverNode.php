@@ -180,7 +180,7 @@ class AppserverNode extends AbstractNode
 
         // initialize the handler
         $handlers = array();
-        $handler = new HandlerNode('\Monolog\Handler\StreamHandler', $formatter, $handlerParams);
+        $handler = new HandlerNode('\TechDivision\ApplicationServer\RotatingMonologHandler', $formatter, $handlerParams);
         $handlers[$handler->getPrimaryKey()] = $handler;
 
         // initialize the system logger with the processor and the handlers
@@ -209,7 +209,7 @@ class AppserverNode extends AbstractNode
 
         // initialize the handler for the access logger
         $handlers = array();
-        $handler = new HandlerNode('\Monolog\Handler\StreamHandler', $formatter, $handlerParams);
+        $handler = new HandlerNode('\TechDivision\ApplicationServer\RotatingMonologHandler', $formatter, $handlerParams);
         $handlers[$handler->getPrimaryKey()] = $handler;
 
         // initialize the access logger

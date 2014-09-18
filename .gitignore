@@ -12,3 +12,4 @@
 /*.iml
 .appserver-last-successfull-deployment
 /tests/TechDivision/ApplicationServer/etc
+/tests/TechDivision/ApplicationServer/var
