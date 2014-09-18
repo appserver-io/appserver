@@ -31,18 +31,18 @@ class StandardProvisioner extends AbstractProvisioner
 {
 
     /**
-     * Path the to appservers PHP executable.
+     * Path the to appservers PHP executable on UNIX systems.
      *
      * @var string
      */
-    const PHP_EXECUTABLE = '/bin/php';
+    const PHP_EXECUTABLE_UNIX = '/bin/php';
 
     /**
-     * Path the to default provisioning configuration.
+     * Path the to appservers PHP executable on Windows systems.
      *
      * @var string
      */
-    const DEFAULT_CONFIGURATION = '/etc/appserver.d/provision.xml';
+    const PHP_EXECUTABLE_WIN = '/php/php.exe';
 
     /**
      * Provisions all web applications.
@@ -69,8 +69,15 @@ class StandardProvisioner extends AbstractProvisioner
                 $directory = new \RecursiveDirectoryIterator($webappPath->getPathname());
                 $iterator = new \RecursiveIteratorIterator($directory);
 
+                // we need to use another regex on Windows here
+                if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+                    $regex = sprintf('/^.*\\\(META-INF|WEB-INF)\\\provision.xml$/');
+                } else {
+                    $regex = sprintf('/^.*\/(META-INF|WEB-INF)\/provision.xml$/');
+                }
+
                 // Iterate through all provisioning files (provision.xml) and attach them to the configuration
-                foreach (new \RegexIterator($iterator, '/^.*\/(META-INF|WEB-INF)\/provision.xml$/') as $provisionFile) {
+                foreach (new \RegexIterator($iterator, $regex) as $provisionFile) {
 
                     // load the provisioning configuration
                     $provisionNode = new ProvisionNode();
@@ -154,6 +161,10 @@ class StandardProvisioner extends AbstractProvisioner
      */
     public function getAbsolutPathToPhpExecutable()
     {
-        return $this->getService()->realpath(StandardProvisioner::PHP_EXECUTABLE);
+        $executable = StandardProvisioner::PHP_EXECUTABLE_UNIX;
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') { // we have a different executable on Windows systems
+            $executable = StandardProvisioner::PHP_EXECUTABLE_WIN;
+        }
+        return $this->getService()->realpath($executable);
     }
 }

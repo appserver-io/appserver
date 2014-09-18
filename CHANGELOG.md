@@ -1,3 +1,14 @@
+# Version 0.9.10
+
+## Bugfixes
+
+* Bugfix in StandardProvisioner for regex to parse WEB-INF/META-INF directory for provision.xml files to make that work on Windows systems
+* Bugfix in StandardProvisionerget::AbsolutPathToPhpExecutable() to also return correct absolute path to php.exe on Windows systems
+
+## Features
+
+* None
+
 # Version 0.9.9
 
 ## Bugfixes
