@@ -1,3 +1,13 @@
+# Version 0.9.11
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Added the RotatingMonologHandler class, which allows for date and filesize based log rotation
+
 # Version 0.9.10
 
 ## Bugfixes
