@@ -6,7 +6,7 @@
 
 ## Features
 
-* Refactoring to work with new directory structure
+* Refactoring to work with new directory structure provided with appserver-io/meta package installation
 
 # Version 0.9.11
 
