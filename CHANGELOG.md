@@ -1,3 +1,13 @@
+# Version 0.9.12
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Refactoring to work with new directory structure
+
 # Version 0.9.11
 
 ## Bugfixes

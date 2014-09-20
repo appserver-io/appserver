@@ -109,11 +109,16 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
             $this->getInitialContext()->getSystemConfiguration()->getBaseDirectory()->getNodeValue()->__toString()
             . DIRECTORY_SEPARATOR
         );
-        define(
-            'SERVER_AUTOLOADER',
-            SERVER_BASEDIR .
-            'app' . DIRECTORY_SEPARATOR . 'code' . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php'
-        );
+
+        // check if we've the old or the new directory structure
+        if (file_exists(SERVER_BASEDIR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php')) {
+            $autoloaderFile = SERVER_BASEDIR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
+        } else { // this is the old directory structure
+            $autoloaderFile = SERVER_BASEDIR . 'app' . DIRECTORY_SEPARATOR . 'code' . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
+        }
+
+        // define the autoloader file
+        define('SERVER_AUTOLOADER', $autoloaderFile);
 
         // deploy and initialize the applications for this container
         $this->getDeployment()->deploy($this);
