@@ -71,7 +71,7 @@ need advanced features like cluster functionality.
 - [x] Stateful, Stateless + Singleton session bean functionality
 - [x] Message bean functionality
 
-### Version 0.9 - [Timer Service](https://github.com/techdivision/TechDivision_PersistenceContainer)
+### Version 0.9 - [Persistence-Container](https://github.com/techdivision/TechDivision_PersistenceContainer)
 - [x] Timer Service [Issue #185](https://github.com/techdivision/TechDivision_ApplicationServer/issues/185)
 
 ### Version 1.0 - [Persistence-Container](https://github.com/techdivision/TechDivision_PersistenceContainer) + [Servlet-Engine](https://github.com/techdivision/TechDivision_Engine)
