@@ -41,7 +41,7 @@ need advanced features like cluster functionality.
 - [x] WebSocket integration
 - [x] Running Magento CE 1.7.x + 1.8.x demo applications
 
-### Version 0.5.9 - [ServletContainer](https://github.com/techdivision/TechDivision_ServletContainer)
+### Version 0.5.9 - [Servlet-Eninge](https://github.com/techdivision/TechDivision_ServletEngine)
 - [x] Windows installer
 - [x] PHAR based deployment
 - [x] SSL Encryption for TechDivision_ServletContainer project
@@ -65,24 +65,26 @@ need advanced features like cluster functionality.
 ### Version 0.7 -[Application Server](https://github.com/techdivision/TechDivision_ApplicationServer)
 - [x] Integration of [TechDivision_Server](https://github.com/techdivision/TechDivision_Server) as single point of entry
 
-### Version 0.8 - [Persistence Container](https://github.com/techdivision/TechDivision_PersistenceContainer)
+### Version 0.8 - [Persistence-Container](https://github.com/techdivision/TechDivision_PersistenceContainer)
 - [x] Application based context [Issue #178](https://github.com/techdivision/TechDivision_ApplicationServer/issues/178)
 - [x] [Design by Contract](https://github.com/wick-ed/php-by-contract) default integration
-- [x] Stateful + Singleton session bean functionality
+- [x] Stateful, Stateless + Singleton session bean functionality
 - [x] Message bean functionality
 
-### Version 0.9 - Timer Service
-- [x] Timer Service
+### Version 0.9 - [Timer Service](https://github.com/techdivision/TechDivision_PersistenceContainer)
+- [x] Timer Service [Issue #185](https://github.com/techdivision/TechDivision_ApplicationServer/issues/185)
 
-### Version 1.0 - Timer Service
-- [ ] AOP
-- [ ] DI
-- [ ] RPM repository
-- [ ] Separate configuration files for server, container and application
+### Version 1.0 - [Persistence-Container](https://github.com/techdivision/TechDivision_PersistenceContainer) + [Servlet-Engine(https://github.com/techdivision/TechDivision_Engine)
+- [ ] AOP on all methods in Stateful, Stateless + Singleton Session Beans, Message Beans and Servlets [Issue #3](https://github.com/techdivision/TechDivision_ApplicationServer/issues/3)
+- [ ] DI for Stateful, Stateless + Singleton Session Beans, Message Beans and Servlets [Issue #4](https://github.com/techdivision/TechDivision_ApplicationServer/issues/4)
+- [ ] Separate configuration files for server, container and application [Issue #192](https://github.com/techdivision/TechDivision_ApplicationServer/issues/192)
+- [ ] Documentation + Tutorials
 - [ ] 100 % Coverage for PHPUnit test suite for TechDivision_MessageQueue project
 - [ ] 100 % Coverage for PHPUnit test suite for TechDivision_PersistenceContainer project
 - [ ] 100 % Coverage for PHPUnit test suite for TechDivision_ApplicationServer project
-- [ ] 100 % Coverage for PHPUnit test suite for TechDivision_TimerService project
+
+## Other Stuff
+- [ ] RPM repository, http://rpm.appserver.io
 
 ## Enterprise Edition
 
