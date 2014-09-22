@@ -116,7 +116,7 @@ class RotatingMonologHandlerTest extends AbstractTest
     public function testGetCurrentSizeIterationNotOver()
     {
         // get a new handler with a very low file size
-        $this->handler = new RotatingMonologHandler(__DIR__ . self::TMP_DIR . self::TMP_FILE, 0, Logger::DEBUG, true,  null, 20);
+        $this->handler = new RotatingMonologHandler(__DIR__ . self::TMP_DIR . self::TMP_FILE, 0, Logger::DEBUG, true,  null, 10);
 
         // write two times
         $record = $this->getRecordByDate(new \DateTime());
@@ -169,7 +169,7 @@ class RotatingMonologHandlerTest extends AbstractTest
     public function testRotateByMaxFiles()
     {
         // get a new handler with a very low number of maximum files and a low maximal file size
-        $this->handler = new RotatingMonologHandler(__DIR__ . self::TMP_DIR . self::TMP_FILE, 2, Logger::DEBUG, true,  null, 20);
+        $this->handler = new RotatingMonologHandler(__DIR__ . self::TMP_DIR . self::TMP_FILE, 2, Logger::DEBUG, true,  null, 10);
 
         // get the glob pattern and check how the amount of files changes for each write
         $globPattern = $this->handler->getGlobPattern(date($this->handler->getDateFormat()));
@@ -183,7 +183,7 @@ class RotatingMonologHandlerTest extends AbstractTest
         $this->assertEquals(2, count(glob($globPattern)));
 
         // get a new handler with a very low number of maximum files and a low maximal file size
-        $this->handler = new RotatingMonologHandler(__DIR__ . self::TMP_DIR . self::TMP_FILE, 1, Logger::DEBUG, true,  null, 20);
+        $this->handler = new RotatingMonologHandler(__DIR__ . self::TMP_DIR . self::TMP_FILE, 1, Logger::DEBUG, true,  null, 10);
 
         // write three times
         for ($i = 0; $i < 3; $i++) {
@@ -226,7 +226,7 @@ class RotatingMonologHandlerTest extends AbstractTest
     public function testSizeRotation()
     {
         // get a new handler with a very low file size
-        $this->handler = new RotatingMonologHandler(__DIR__ . self::TMP_DIR . self::TMP_FILE, 0, Logger::DEBUG, true,  null, 20);
+        $this->handler = new RotatingMonologHandler(__DIR__ . self::TMP_DIR . self::TMP_FILE, 0, Logger::DEBUG, true,  null, 10);
 
         // get the glob pattern and check how the amount of files changes for each write
         $globPattern = $this->handler->getGlobPattern(date($this->handler->getDateFormat()));
