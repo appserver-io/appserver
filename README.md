@@ -62,7 +62,7 @@ need advanced features like cluster functionality.
 - [x] Running TYPO3 6.x demo application over FastCGI
 - [x] Running all type of PHP applications over FastCGI
 
-### Version 0.7 -[Application Server](https://github.com/techdivision/TechDivision_ApplicationServer)
+### Version 0.7 - [Application Server](https://github.com/techdivision/TechDivision_ApplicationServer)
 - [x] Integration of [TechDivision_Server](https://github.com/techdivision/TechDivision_Server) as single point of entry
 
 ### Version 0.8 - [Persistence-Container](https://github.com/techdivision/TechDivision_PersistenceContainer)
@@ -74,7 +74,7 @@ need advanced features like cluster functionality.
 ### Version 0.9 - [Timer Service](https://github.com/techdivision/TechDivision_PersistenceContainer)
 - [x] Timer Service [Issue #185](https://github.com/techdivision/TechDivision_ApplicationServer/issues/185)
 
-### Version 1.0 - [Persistence-Container](https://github.com/techdivision/TechDivision_PersistenceContainer) + [Servlet-Engine(https://github.com/techdivision/TechDivision_Engine)
+### Version 1.0 - [Persistence-Container](https://github.com/techdivision/TechDivision_PersistenceContainer) + [Servlet-Engine](https://github.com/techdivision/TechDivision_Engine)
 - [ ] AOP on all methods in Stateful, Stateless + Singleton Session Beans, Message Beans and Servlets [Issue #3](https://github.com/techdivision/TechDivision_ApplicationServer/issues/3)
 - [ ] DI for Stateful, Stateless + Singleton Session Beans, Message Beans and Servlets [Issue #4](https://github.com/techdivision/TechDivision_ApplicationServer/issues/4)
 - [ ] Separate configuration files for server, container and application [Issue #192](https://github.com/techdivision/TechDivision_ApplicationServer/issues/192)
