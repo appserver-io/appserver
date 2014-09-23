@@ -350,7 +350,7 @@ class RotatingMonologHandler extends StreamHandler
      * @return void
      */
     protected function rotate()
-    {
+    {error_log('rotating to ' . $this->getRotatedFilename());
         // update filename
         rename($this->url, $this->getRotatedFilename());
 
@@ -410,7 +410,7 @@ class RotatingMonologHandler extends StreamHandler
             $this->close();
             $this->currentSizeIteration ++;
         }
-
+        error_log('writing to ' . $this->url);
         // do the actual writing
         parent::write($record);
 

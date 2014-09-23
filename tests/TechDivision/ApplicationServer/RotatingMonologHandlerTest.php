@@ -117,7 +117,7 @@ class RotatingMonologHandlerTest extends AbstractTest
     {
         // get a new handler with a very low file size
         $this->handler = new RotatingMonologHandler(__DIR__ . self::TMP_DIR . self::TMP_FILE, 0, Logger::DEBUG, true,  null, 10);
-
+        error_log('testing');
         // write two times
         $record = $this->getRecordByDate(new \DateTime());
         for ($i = 0; $i < 2; $i++) {
