@@ -173,17 +173,16 @@ class AppserverNode extends AbstractNode
         $handlerParams = array();
         $streamParam = new ParamNode('stream', 'string', new NodeValue('var/log/appserver-errors.log'));
         $levelParam = new ParamNode('level', 'integer', new NodeValue(200));
-        // $maxFilesParam = new ParamNode('maxFiles', 'integer', new NodeValue(30));
+        $maxFilesParam = new ParamNode('maxFiles', 'integer', new NodeValue(30));
         $bubbleParam = new ParamNode('bubble', 'boolean', new NodeValue(false));
         $handlerParams[$streamParam->getPrimaryKey()] = $streamParam;
         $handlerParams[$levelParam->getPrimaryKey()] = $levelParam;
-        // $handlerParams[$maxFilesParam->getPrimaryKey()] = $maxFilesParam;
+        $handlerParams[$maxFilesParam->getPrimaryKey()] = $maxFilesParam;
         $handlerParams[$bubbleParam->getPrimaryKey()] = $bubbleParam;
 
         // initialize the handler
         $handlers = array();
-        // $handler = new HandlerNode('\TechDivision\ApplicationServer\RotatingMonologHandler', $formatter, $handlerParams);
-        $handler = new HandlerNode('\Monolog\Handler\StreamHandler', $formatter, $handlerParams);
+        $handler = new HandlerNode('\TechDivision\ApplicationServer\RotatingMonologHandler', $formatter, $handlerParams);
         $handlers[$handler->getPrimaryKey()] = $handler;
 
         // initialize the system logger with the processor and the handlers
@@ -205,17 +204,16 @@ class AppserverNode extends AbstractNode
         $handlerParams = array();
         $streamParam = new ParamNode('stream', 'string', new NodeValue('var/log/appserver-access.log'));
         $levelParam = new ParamNode('level', 'integer', new NodeValue(100));
-        // $maxFilesParam = new ParamNode('maxFiles', 'integer', new NodeValue(30));
+        $maxFilesParam = new ParamNode('maxFiles', 'integer', new NodeValue(30));
         $bubbleParam = new ParamNode('bubble', 'boolean', new NodeValue(true));
         $handlerParams[$streamParam->getPrimaryKey()] = $streamParam;
         $handlerParams[$levelParam->getPrimaryKey()] = $levelParam;
-        // $handlerParams[$maxFilesParam->getPrimaryKey()] = $maxFilesParam;
+        $handlerParams[$maxFilesParam->getPrimaryKey()] = $maxFilesParam;
         $handlerParams[$bubbleParam->getPrimaryKey()] = $bubbleParam;
 
         // initialize the handler for the access logger
         $handlers = array();
-        // $handler = new HandlerNode('\TechDivision\ApplicationServer\RotatingMonologHandler', $formatter, $handlerParams);
-        $handler = new HandlerNode('\Monolog\Handler\StreamHandler', $formatter, $handlerParams);
+        $handler = new HandlerNode('\TechDivision\ApplicationServer\RotatingMonologHandler', $formatter, $handlerParams);
         $handlers[$handler->getPrimaryKey()] = $handler;
 
         // initialize the access logger

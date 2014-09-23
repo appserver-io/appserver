@@ -155,11 +155,16 @@ class RotatingMonologHandler extends StreamHandler
      */
     public function __construct($filename, $maxFiles = 0, $level = Logger::DEBUG, $bubble = true, $filePermission = null, $maxSize = null)
     {
+        // get the values passed via constructor
         $this->filename = $filename;
         $this->originalFilename = $filename;
         $this->maxFiles = (int)$maxFiles;
+
+        // set some default values
         $this->dateFormat = 'Y-m-d';
         $this->currentSizeIteration = $this->getCurrentSizeIteration();
+        $this->mustRotate = false;
+        $this->nextRotationDate = new \DateTime('tomorrow');
 
         // also set the maximal size, but make sure we do not exceed the boundary
         if ($maxSize > RotatingMonologHandler::MAX_FILE_SIZE || is_null($maxSize)) {
@@ -174,7 +179,7 @@ class RotatingMonologHandler extends StreamHandler
             self::SIZE_FORMAT_PLACEHOLDER;
 
         // also construct the parent
-        parent::__construct($this->getCurrentFilename(), $level, $bubble, $filePermission);
+        parent::__construct($filename, $level, $bubble, $filePermission);
     }
 
     /**
@@ -184,7 +189,6 @@ class RotatingMonologHandler extends StreamHandler
      */
     protected function cleanupFiles()
     {
-
         // skip GC of old logs if files are unlimited
         if (0 === $this->maxFiles) {
             return;
@@ -241,11 +245,11 @@ class RotatingMonologHandler extends StreamHandler
     }
 
     /**
-     * Will return the currently used filename for the log file
+     * Will return the name of the file the next rotation will produce
      *
      * @return string
      */
-    public function getCurrentFilename()
+    public function getRotatedFilename()
     {
         $fileInfo = pathinfo($this->filename);
         $currentFilename = str_replace(
@@ -348,12 +352,14 @@ class RotatingMonologHandler extends StreamHandler
     protected function rotate()
     {
         // update filename
-        $this->url = $this->getCurrentFilename();
+        rename($this->url, $this->getRotatedFilename());
+
         $this->nextRotationDate = new \DateTime('tomorrow');
+        $this->mustRotate = false;
     }
 
     /**
-     * Setter for the date format which updates the file URL accordingly
+     * Setter for the date format
      *
      * @param string $dateFormat Form that date will be shown in
      *
@@ -362,12 +368,11 @@ class RotatingMonologHandler extends StreamHandler
     public function setDateFormat($dateFormat)
     {
         $this->dateFormat = $dateFormat;
-        $this->url = $this->getCurrentFilename();
         $this->close();
     }
 
     /**
-     * Setter for the file format which updates the file URL accordingly
+     * Setter for the file format
      * If setting this please make use of the defined format placeholder constants
      *
      * @param string $filenameFormat New format to be used
@@ -377,7 +382,6 @@ class RotatingMonologHandler extends StreamHandler
     public function setFilenameFormat($filenameFormat)
     {
         $this->filenameFormat = $filenameFormat;
-        $this->url = $this->getCurrentFilename();
         $this->close();
     }
 
@@ -393,11 +397,6 @@ class RotatingMonologHandler extends StreamHandler
      */
     public function write(array $record)
     {
-        // on the first record written, if the log is new, we should rotate (once per day)
-        if (null === $this->mustRotate) {
-            $this->mustRotate = !file_exists($this->url);
-        }
-
         // do we have to rotate based on the current date or the file's size?
         if ($this->nextRotationDate < $record['datetime']) {
 
@@ -408,8 +407,8 @@ class RotatingMonologHandler extends StreamHandler
         } elseif (file_exists($this->url) && filesize($this->url) >= $this->maxSize) {
 
             $this->mustRotate = true;
-            $this->currentSizeIteration ++;
             $this->close();
+            $this->currentSizeIteration ++;
         }
 
         // do the actual writing
@@ -417,8 +416,5 @@ class RotatingMonologHandler extends StreamHandler
 
         // cleanup the files we might not want
         $this->cleanupFiles();
-
-        // update the next rotation time here, as we might be stateful over days
-        $this->nextRotationDate = new \DateTime('tomorrow');
     }
 }

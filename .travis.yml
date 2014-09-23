@@ -13,7 +13,7 @@ before_install:
 
 script:
   - ant composer-init
-  - ant build
+  - ant run-tests
   - php ocular.phar code-coverage:upload --format=php-clover $TRAVIS_BUILD_DIR/target/reports/unit/clover.xml
 
 notifications:
