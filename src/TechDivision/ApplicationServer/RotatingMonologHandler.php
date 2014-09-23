@@ -81,7 +81,7 @@ class RotatingMonologHandler extends StreamHandler
     /**
      * Keeps track of the current size dependent iteration of log files
      *
-     * @var string $currentSizeIteration
+     * @var integer $currentSizeIteration
      */
     protected $currentSizeIteration;
 
