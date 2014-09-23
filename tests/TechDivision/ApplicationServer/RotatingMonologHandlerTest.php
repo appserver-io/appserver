@@ -122,6 +122,7 @@ class RotatingMonologHandlerTest extends AbstractTest
         $record = $this->getRecordByDate(new \DateTime());
         for ($i = 0; $i < 2; $i++) {
 
+            clearstatcache();
             $this->handler->write($record);
         }
         error_log(var_export('thats what we should get ' . $this->handler->getRotatedFilename(), true));
