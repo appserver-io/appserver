@@ -124,7 +124,7 @@ class RotatingMonologHandlerTest extends AbstractTest
 
             $this->handler->write($record);
         }
-
+        error_log(var_export('thats what we should get ' . $this->handler->getRotatedFilename(), true));
         $comingSizeIterator = (int) substr(strrchr($this->handler->getRotatedFilename(), "_"), 1, 1);
         $this->assertEquals(3, $comingSizeIterator);
     }

@@ -410,7 +410,7 @@ class RotatingMonologHandler extends StreamHandler
             $this->close();
             $this->currentSizeIteration ++;
         }
-        error_log('writing to ' . $this->url);
+
         // do the actual writing
         parent::write($record);
 
