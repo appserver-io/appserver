@@ -1,3 +1,13 @@
+# Version 0.9.14
+
+## Bugfixes
+
+* Wrong order of log handler parameter used for default setup
+
+## Features
+
+* None
+
 # Version 0.9.13
 
 ## Bugfixes
