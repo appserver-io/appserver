@@ -91,7 +91,11 @@ class RotatingMonologHandlerTest extends AbstractTest
      */
     public function setUp()
     {
+        // we need a handler
         $this->handler = new RotatingMonologHandler(__DIR__ . self::TMP_DIR . self::TMP_FILE);
+
+        // we assume the log file already exists
+        touch(__DIR__ . self::TMP_DIR . self::TMP_FILE);
     }
 
     /**
@@ -122,7 +126,6 @@ class RotatingMonologHandlerTest extends AbstractTest
         $record = $this->getRecordByDate(new \DateTime());
         for ($i = 0; $i < 2; $i++) {
 
-            clearstatcache();
             $this->handler->write($record);
         }
         error_log(var_export('thats what we should get ' . $this->handler->getRotatedFilename(), true));
