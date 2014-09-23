@@ -350,7 +350,7 @@ class RotatingMonologHandler extends StreamHandler
      * @return void
      */
     protected function rotate()
-    {error_log('rotating to ' . $this->getRotatedFilename());
+    {
         // update filename
         rename($this->url, $this->getRotatedFilename());
 

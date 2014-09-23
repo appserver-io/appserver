@@ -96,6 +96,7 @@ class RotatingMonologHandlerTest extends AbstractTest
 
         // we assume the log file already exists
         touch(__DIR__ . self::TMP_DIR . self::TMP_FILE);
+        clearstatcache();
     }
 
     /**
@@ -105,11 +106,15 @@ class RotatingMonologHandlerTest extends AbstractTest
      */
     public function tearDown()
     {
-        $globPattern = $this->handler->getGlobPattern();
-        foreach (glob($globPattern) as $file) {
+        $files = scandir(__DIR__ . self::TMP_DIR);
+        foreach ($files as $file) {
 
-            unlink($file);
+            if ($file !== '.' && $file !== '..' && $file !== '.gitignore') {
+
+                unlink(__DIR__ . self::TMP_DIR . $file);
+            }
         }
+        clearstatcache();
     }
 
     /**
@@ -121,16 +126,17 @@ class RotatingMonologHandlerTest extends AbstractTest
     {
         // get a new handler with a very low file size
         $this->handler = new RotatingMonologHandler(__DIR__ . self::TMP_DIR . self::TMP_FILE, 0, Logger::DEBUG, true,  null, 10);
-        error_log('testing');
+
         // write two times
         $record = $this->getRecordByDate(new \DateTime());
         for ($i = 0; $i < 2; $i++) {
 
             $this->handler->write($record);
+            clearstatcache();
         }
-        error_log(var_export('thats what we should get ' . $this->handler->getRotatedFilename(), true));
+
         $comingSizeIterator = (int) substr(strrchr($this->handler->getRotatedFilename(), "_"), 1, 1);
-        $this->assertEquals(3, $comingSizeIterator);
+        $this->assertEquals(2, $comingSizeIterator);
     }
 
     /**
@@ -146,11 +152,13 @@ class RotatingMonologHandlerTest extends AbstractTest
         // write once for today
         $record = $this->getRecordByDate(new \DateTime());
         $this->handler->write($record);
+        clearstatcache();
         $this->assertEquals(0, count(glob($globPattern)));
 
         // write once for the future
         $record = $this->getRecordByDate(new \DateTime('Wednesday next week'));
         $this->handler->write($record);
+        clearstatcache();
         $rotatedFiles = glob($globPattern);
         $this->assertEquals(1, count($rotatedFiles));
         $this->assertTrue(file_exists(__DIR__ . self::TMP_DIR . self::TMP_FILE));
@@ -183,6 +191,7 @@ class RotatingMonologHandlerTest extends AbstractTest
         for ($i = 0; $i < 4; $i++) {
 
             $this->handler->write($record);
+            clearstatcache();
         }
         $this->assertEquals(2, count(glob($globPattern)));
 
@@ -193,9 +202,10 @@ class RotatingMonologHandlerTest extends AbstractTest
         for ($i = 0; $i < 3; $i++) {
 
             $this->handler->write($record);
+            clearstatcache();
         }
-        $this->assertEquals(1, count(glob($globPattern)));
-        $this->assertTrue(file_exists(__DIR__ . self::TMP_DIR . self::TMP_FILE));
+       $this->assertEquals(1, count(glob($globPattern)));
+       $this->assertTrue(file_exists(__DIR__ . self::TMP_DIR . self::TMP_FILE));
     }
 
     /**
@@ -234,7 +244,6 @@ class RotatingMonologHandlerTest extends AbstractTest
 
         // get the glob pattern and check how the amount of files changes for each write
         $globPattern = $this->handler->getGlobPattern(date($this->handler->getDateFormat()));
-        $initialFileCount = count(glob($globPattern));
 
         // create a new record with current date
         $record = $this->getRecordByDate(new \DateTime());
@@ -243,8 +252,9 @@ class RotatingMonologHandlerTest extends AbstractTest
         for ($i = 0; $i < 3; $i++) {
 
             $this->handler->write($record);
+            clearstatcache();
         }
-        $this->assertEquals($initialFileCount + 3, count(glob($globPattern)));
+        $this->assertEquals(2, count(glob($globPattern)));
     }
 
     /**
@@ -278,6 +288,7 @@ class RotatingMonologHandlerTest extends AbstractTest
         for ($i = 0; $i < 3; $i++) {
 
             $this->handler->write($record);
+            clearstatcache();
         }
         $this->assertEquals($initialFileCount, count(glob($globPattern)));
         $this->assertTrue(file_exists(__DIR__ . self::TMP_DIR . self::TMP_FILE));
