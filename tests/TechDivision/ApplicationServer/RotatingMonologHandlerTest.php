@@ -125,8 +125,40 @@ class RotatingMonologHandlerTest extends AbstractTest
             $this->handler->write($record);
         }
 
-        $currentSizeIterator = (int) substr(strrchr($this->handler->getCurrentFilename(), "_"), 1, 1);
-        $this->assertEquals(2, $currentSizeIterator);
+        $comingSizeIterator = (int) substr(strrchr($this->handler->getRotatedFilename(), "_"), 1, 1);
+        $this->assertEquals(3, $comingSizeIterator);
+    }
+
+    /**
+     * Test for the classes "rotate" method based on a record from the future
+     *
+     * @return void
+     */
+    public function testRotateByDate()
+    {
+        // get the glob pattern and check how the amount of files changes for each write
+        $globPattern = $this->handler->getGlobPattern(date($this->handler->getDateFormat()));
+
+        // write once for today
+        $record = $this->getRecordByDate(new \DateTime());
+        $this->handler->write($record);
+        $this->assertEquals(0, count(glob($globPattern)));
+
+        // write once for the future
+        $record = $this->getRecordByDate(new \DateTime('Wednesday next week'));
+        $this->handler->write($record);
+        $rotatedFiles = glob($globPattern);
+        $this->assertEquals(1, count($rotatedFiles));
+        $this->assertTrue(file_exists(__DIR__ . self::TMP_DIR . self::TMP_FILE));
+
+        // remove the current file and write again to check if we always write to the current file
+        foreach ($rotatedFiles as $rotatedFile) {
+
+            unlink($rotatedFile);
+        }
+        $record = $this->getRecordByDate(new \DateTime());
+        $this->handler->write($record);
+        $this->assertEquals(0, count(glob($globPattern)));
     }
 
     /**
@@ -134,7 +166,7 @@ class RotatingMonologHandlerTest extends AbstractTest
      *
      * @return void
      */
-    public function testRotateMaxFiles()
+    public function testRotateByMaxFiles()
     {
         // get a new handler with a very low number of maximum files and a low maximal file size
         $this->handler = new RotatingMonologHandler(__DIR__ . self::TMP_DIR . self::TMP_FILE, 2, Logger::DEBUG, true,  null, 20);
@@ -159,6 +191,7 @@ class RotatingMonologHandlerTest extends AbstractTest
             $this->handler->write($record);
         }
         $this->assertEquals(1, count(glob($globPattern)));
+        $this->assertTrue(file_exists(__DIR__ . self::TMP_DIR . self::TMP_FILE));
     }
 
     /**
@@ -220,6 +253,29 @@ class RotatingMonologHandlerTest extends AbstractTest
         // create a new record with current date and write it
         $record = $this->getRecordByDate(new \DateTime());
         $this->handler->write($record);
-        $this->assertTrue(file_exists($this->handler->getCurrentFilename()));
+        $this->assertTrue(file_exists(__DIR__ . self::TMP_DIR . self::TMP_FILE));
+    }
+
+    /**
+     * Test for the classes "write" method
+     *
+     * @return void
+     */
+    public function testWriteWithoutRotating()
+    {
+        // get the glob pattern and check how the amount of files changes for each write
+        $globPattern = $this->handler->getGlobPattern(date($this->handler->getDateFormat()));
+        $initialFileCount = count(glob($globPattern));
+
+        // create a new record with current date
+        $record = $this->getRecordByDate(new \DateTime());
+
+        // write three times
+        for ($i = 0; $i < 3; $i++) {
+
+            $this->handler->write($record);
+        }
+        $this->assertEquals($initialFileCount, count(glob($globPattern)));
+        $this->assertTrue(file_exists(__DIR__ . self::TMP_DIR . self::TMP_FILE));
     }
 }

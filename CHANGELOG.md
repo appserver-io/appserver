@@ -1,3 +1,13 @@
+# Version 0.9.13
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Changed log rotation behaviour to keep updating a file without date and file size suffix
+
 # Version 0.9.12
 
 ## Bugfixes
