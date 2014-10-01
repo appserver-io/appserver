@@ -165,7 +165,6 @@ class RotatingMonologHandler extends StreamHandler
         $this->currentSizeIteration = $this->getCurrentSizeIteration();
         $this->mustRotate = false;
         $this->nextRotationDate = new \DateTime('tomorrow');
-        $this->lastDateRotation = date($this->dateFormat);
 
         // also set the maximal size, but make sure we do not exceed the boundary
         if ($maxSize > RotatingMonologHandler::MAX_FILE_SIZE || is_null($maxSize)) {
