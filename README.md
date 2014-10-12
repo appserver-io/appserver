@@ -41,7 +41,7 @@ need advanced features like cluster functionality.
 - [x] WebSocket integration
 - [x] Running Magento CE 1.7.x + 1.8.x demo applications
 
-### Version 0.5.9 - [Servlet-Eninge](https://github.com/techdivision/TechDivision_ServletEngine)
+### Version 0.5.9 - [Servlet-Engine](https://github.com/techdivision/TechDivision_ServletEngine)
 - [x] Windows installer
 - [x] PHAR based deployment
 - [x] SSL Encryption for TechDivision_ServletContainer project
