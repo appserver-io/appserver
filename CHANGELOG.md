@@ -1,3 +1,13 @@
+# Version 0.9.15
+
+## Bugfixes
+
+* Replace unnecessary GenericStackable => TechDivision\Storage\GenericStackable
+
+## Features
+
+* None
+
 # Version 0.9.14
 
 ## Bugfixes
