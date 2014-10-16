@@ -17,6 +17,7 @@
 
 namespace TechDivision\ApplicationServer;
 
+use TechDivision\Storage\GenericStackable;
 use TechDivision\Application\Interfaces\ApplicationInterface;
 use TechDivision\ApplicationServer\Interfaces\ContainerInterface;
 use TechDivision\ApplicationServer\Utilities\DirectoryKeys;

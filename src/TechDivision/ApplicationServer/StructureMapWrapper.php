@@ -19,8 +19,9 @@
 
 namespace TechDivision\ApplicationServer;
 
-use TechDivision\PBC\StructureMap;
 use TechDivision\PBC\Config;
+use TechDivision\PBC\StructureMap;
+use TechDivision\Storage\GenericStackable;
 
 /**
  * TechDivision\ApplicationServer\StructureMap
