@@ -84,7 +84,7 @@ need advanced features like cluster functionality.
 - [ ] 100 % Coverage for PHPUnit test suite for TechDivision_PersistenceContainer project
 - [ ] 100 % Coverage for PHPUnit test suite for TechDivision_ApplicationServer project
 
-### Version 1.0.1 [Persistence-Container](https://github.com/techdivision/TechDivision_PersistenceContainer)
+### Version 1.0.1 - [Persistence-Container](https://github.com/techdivision/TechDivision_PersistenceContainer)
 - [ ] Expose Stateless Session Beans as SOAP Web Service endpoint
 
 ## Other Stuff
