@@ -19,6 +19,7 @@ use TechDivision\Storage\GenericStackable;
 use TechDivision\Application\Interfaces\ContextInterface;
 use TechDivision\Application\Interfaces\ApplicationInterface;
 use TechDivision\ApplicationServer\Api\Node\ClassLoaderNodeInterface;
+use TechDivision\Storage\StorageInterface;
 
 /**
  * SplClassLoader implementation that implements the technical interoperability
@@ -59,6 +60,13 @@ class SplClassLoader extends GenericStackable
      * @var string
      */
     const CLASS_MAP = 'SplClassLoader.classMap';
+
+    /**
+     * The unique key to store the include path in the initial context.
+     *
+     * @var string
+     */
+    const INCLUDE_PATH = 'SplClassLoader.includePath';
 
     /**
      * Visitor method that adds a initialized class loader to the passed application.
@@ -104,22 +112,15 @@ class SplClassLoader extends GenericStackable
      */
     public function __construct(ContextInterface $initialContext, $namespace = null, array $includePath = null, $namespaceSeparator = '\\', $fileExtension = '.php')
     {
-        // set the initial context and initialize the class map
+
+        // set the initial context and include path
         $this->initialContext = $initialContext;
-        $this->getInitialContext()->setAttribute(self::CLASS_MAP, array());
 
-        // ATTENTION: Don't delete this, it's necessary because this IS a \Stackable
-        $this->fileExtension = $fileExtension;
-        $this->namespaceSeparator = $namespaceSeparator;
-
-        // set namespace and initialize include path
-        $this->namespace = $namespace;
-
-        // initialize the include path with the defined include path
-        $this->includePath = new GenericStackable();
+        // initialize the default include path
+        $includePath = array();
         foreach (explode(PATH_SEPARATOR, get_include_path()) as $val) {
-            if (!empty($val)) {
-                $this->includePath[] = $val;
+            if (empty($val) === false) {
+                $includePath[] = $val;
             }
         }
 
@@ -129,6 +130,17 @@ class SplClassLoader extends GenericStackable
                 $this->includePath[] = $val;
             }
         }
+
+        // initialize the class map and include path
+        $this->getInitialContext()->setAttribute(SplClassLoader::CLASS_MAP, array());
+        $this->getInitialContext()->setAttribute(SplClassLoader::INCLUDE_PATH, $includePath);
+
+        // ATTENTION: Don't delete this, it's necessary because this IS a \Stackable
+        $this->fileExtension = $fileExtension;
+        $this->namespaceSeparator = $namespaceSeparator;
+
+        // set namespace and initialize include path
+        $this->namespace = $namespace;
     }
 
     /**
@@ -144,11 +156,11 @@ class SplClassLoader extends GenericStackable
     /**
      * Gets the base include path for all class files in the namespace of this class loader.
      *
-     * @return array $includePath
+     * @return \TechDivision\Storage\GenericStackable $includePath The include path
      */
     public function getIncludePath()
     {
-        return $this->includePath;
+        return $this->getInitialContext()->getAttribute(SplClassLoader::INCLUDE_PATH);
     }
 
     /**
@@ -209,7 +221,7 @@ class SplClassLoader extends GenericStackable
         $requestedClassName = $className;
 
         // try to load the class map from the inital context
-        $classMap = $this->getInitialContext()->getAttribute(self::CLASS_MAP);
+        $classMap = $this->getInitialContext()->getAttribute(SplClassLoader::CLASS_MAP);
 
         // check if the requested class name has already been loaded
         if (isset($classMap[$requestedClassName]) !== false) {
@@ -241,7 +253,7 @@ class SplClassLoader extends GenericStackable
                 if (file_exists($toRequire)) {
                     // add the found file to the class map
                     $classMap[$requestedClassName] = $toRequire;
-                    $this->getInitialContext()->setAttribute(self::CLASS_MAP, $classMap);
+                    $this->getInitialContext()->setAttribute(SplClassLoader::CLASS_MAP, $classMap);
                     // require the file and return TRUE
                     require $toRequire;
                     return true;

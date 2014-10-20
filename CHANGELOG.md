@@ -1,3 +1,15 @@
+# Version 0.9.16
+
+## Bugfixes
+
+* Refactoring SplClassLoader include path handling
+* Remove GenericStackable => use techdivision/storage version
+* Inject all Stackable instances instead of initialize them in __construct => pthreads 2.x compatibility
+
+## Features
+
+* None
+
 # Version 0.9.15
 
 ## Bugfixes

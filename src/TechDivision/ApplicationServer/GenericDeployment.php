@@ -29,6 +29,7 @@ use TechDivision\ApplicationServer\AbstractDeployment;
 use TechDivision\ApplicationServer\Interfaces\ContainerInterface;
 use TechDivision\ApplicationServer\Utilities\DirectoryKeys;
 use TechDivision\ApplicationServer\Api\Node\ContextNode;
+use TechDivision\Storage\GenericStackable;
 
 /**
  * Specific deployment implementation for web applications.
@@ -67,7 +68,15 @@ class GenericDeployment extends AbstractDeployment
                 // create a new application instance
                 $application = $this->newInstance($context->getType());
 
+                // initialize the storage for managers, virtual hosts an class loaders
+                $managers = new GenericStackable();
+                $virtualHosts = new GenericStackable();
+                $classLoaders = new GenericStackable();
+
                 // initialize the generic instances and information
+                $application->injectManagers($managers);
+                $application->injectVirtualHosts($virtualHosts);
+                $application->injectClassLoaders($classLoaders);
                 $application->injectName($folder->getBasename());
                 $application->injectInitialContext($this->getInitialContext());
                 $application->injectBaseDirectory($container->getBaseDirectory());

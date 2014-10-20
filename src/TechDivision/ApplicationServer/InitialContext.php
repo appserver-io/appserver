@@ -14,6 +14,7 @@
 
 namespace TechDivision\ApplicationServer;
 
+use TechDivision\Storage\GenericStackable;
 use TechDivision\Storage\StorageInterface;
 use TechDivision\ApplicationServer\InitialContext\ContextKeys;
 use TechDivision\Configuration\Interfaces\NodeInterface;
