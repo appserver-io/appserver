@@ -12,9 +12,9 @@
 		"techdivision/context" : "0.5.*",
 		"techdivision/storage" : "0.5.*",
 		"techdivision/configuration" : "0.1.*",
-		"techdivision/application" : "0.2.*",
+		"techdivision/application" : "0.3.*",
 		"techdivision/php-by-contract" : "0.3.*",
-		"techdivision/lang" : ">=0.1"
+		"techdivision/lang" : "0.1.*"
 	},
 	"require-dev" : {
 		"phpunit/phpunit" : "3.7.*",

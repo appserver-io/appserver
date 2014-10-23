@@ -38,6 +38,28 @@ use TechDivision\ApplicationServer\Api\Node\ClassLoaderNodeInterface;
  */
 class PbcClassLoader extends AutoLoader implements ClassLoaderInterface
 {
+
+    /**
+     * The configuration we base our actions on.
+     *
+     * @var \TechDivision\PBC\Config
+     */
+    public $config;
+
+    /**
+     * Cache map to keep track of already processed files.
+     *
+     * @var \TechDivision\PBC\CacheMap
+     */
+    public $cache;
+
+    /**
+     * In some cases the autoloader instance is not thrown away, saving the structure map might be a benefit here.
+     *
+     * @var \TechDivision\PBC\StructureMap $structureMap
+     */
+    public $structureMap;
+
     /**
      * Our default configuration file
      *
@@ -187,83 +209,6 @@ class PbcClassLoader extends AutoLoader implements ClassLoaderInterface
     {
         // Lets create the definitions
         return $this->createDefinitions();
-    }
-
-    /**
-     * Visitor method that adds a initialized class loader to the passed application.
-     *
-     * @param \TechDivision\Application\Interfaces\ApplicationInterface         $application   The application instance
-     * @param \TechDivision\ApplicationServer\Api\Node\ClassLoaderNodeInterface $configuration The class loader configuration node
-     *
-     * @return void
-     */
-    public static function visit(ApplicationInterface $application, ClassLoaderNodeInterface $configuration = null)
-    {
-        // load the web application path we want to register the class loader for
-        $webappPath = $application->getWebappPath();
-
-        // initialize the class path and the enforcement directories
-        $classPath = array();
-        $enforcementDirs = array();
-
-        // add the possible class path if folder is available
-        foreach ($configuration->getDirectories() as $directory) {
-            if (is_dir($webappPath . $directory->getNodeValue())) {
-                array_push($classPath, $webappPath . $directory->getNodeValue());
-                if ($directory->isEnforced()) {
-                    array_push($enforcementDirs, $webappPath . $directory->getNodeValue());
-                }
-            }
-        }
-
-        // initialize the arrays of different omit possibilities
-        $omittedEnforcement = array();
-        $omittedAutoLoading = array();
-
-        // iterate over all namespaces and check if they are omitted in one or the other way
-        foreach ($configuration->getNamespaces() as $namespace) {
-
-            // is the enforcement omitted for this namespace?
-            if ($namespace->omitEnforcement()) {
-
-                $omittedEnforcement[] = $namespace->getNodeValue()->__toString();
-            }
-
-            // is the autoloading omitted for this namespace?
-            if ($namespace->omitAutoLoading()) {
-
-                $omittedAutoLoading[] = $namespace->getNodeValue()->__toString();
-            }
-        }
-
-        // initialize the class loader configuration
-        $config = new Config();
-
-        // set the environment mode we want to use
-        $config->setValue('environment', $configuration->getEnvironment());
-
-        // set the cache directory
-        $config->setValue('cache/dir', $application->getCacheDir());
-
-        // set the default autoloader values
-        $config->setValue('autoloader/dirs', $classPath);
-
-        // collect the omitted namespaces (if any)
-        $config->setValue('autoloader/omit', $omittedAutoLoading);
-        $config->setValue('enforcement/omit', $omittedEnforcement);
-
-        // set the default enforcement configuration values
-        $config->setValue('enforcement/dirs', $enforcementDirs);
-        $config->setValue('enforcement/enforce-default-type-safety', $configuration->getTypeSafety());
-        $config->setValue('enforcement/processing', $configuration->getProcessing());
-        $config->setValue('enforcement/level', $configuration->getEnforcementLevel());
-        $config->setValue('enforcement/logger', $application->getInitialContext()->getSystemLogger());
-
-        // create the autoloader instance and fill the structure map
-        $autoLoader = new self($config);
-
-        // add the class loader instance to the application
-        $application->addClassLoader($autoLoader);
     }
 
     /**
