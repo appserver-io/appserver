@@ -122,7 +122,8 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
         define('SERVER_AUTOLOADER', $autoloaderFile);
 
         // deploy and initialize the applications for this container
-        $this->getDeployment()->deploy($this);
+        $deployment = $this->getDeployment();
+        $deployment->deploy($this);
 
         // deployment has been successful
         $this->containerState = ContainerStateKeys::get(ContainerStateKeys::DEPLOYMENT_SUCCESSFUL);
