@@ -16,6 +16,8 @@
 namespace TechDivision\ApplicationServer;
 
 use TechDivision\Storage\StackableStorage;
+use TechDivision\Application\Interfaces\ApplicationInterface;
+use TechDivision\ApplicationServer\Api\Node\ClassLoaderNodeInterface;
 
 /**
  * A factory for the composer class loader instances.
@@ -27,88 +29,72 @@ use TechDivision\Storage\StackableStorage;
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      http://www.appserver.io
  */
-class ComposerClassLoaderFactory extends AbstractClassLoaderFactory
+class ComposerClassLoaderFactory
 {
 
     /**
-     * The main method that creates new instances in a separate context.
+     * Visitor method that registers the class loaders in the application.
+     *
+     * @param \TechDivision\Application\Interfaces\ApplicationInterface                   $application   The application instance to register the class loader with
+     * @param \TechDivision\ApplicationServer\Interfaces\Api\NodeClassLoaderNodeInterface $configuration The class loader configuration
      *
      * @return void
      */
-    public function run()
+    public static function visit(ApplicationInterface $application, ClassLoaderNodeInterface $configuration)
     {
 
-        while (true) { // we never stop
+        // load the application directory
+        $webappPath = $application->getWebappPath();
 
-            $this->synchronized(function ($self) {
+        // initialize the array with the configured directories
+        $directories = array();
 
-                // make instances local available
-                $instances = $self->instances;
-                $application = $self->application;
-                $configuration = $self->configuration;
-                $initialContext = $self->initialContext;
+        // load the composer class loader for the configured directories
+        foreach ($configuration->getDirectories() as $directory) {
 
-                // register the default class loader
-                $initialContext->getClassLoader()->register(true, true);
+            // we prepare the directories to include scripts AFTER registering (in application context)
+            $directories[] = $webappPath . $directory->getNodeValue();
 
-                // load the application directory
-                $webappPath = $application->getWebappPath();
+            // check if an autoload.php is available
+            if (file_exists($webappPath . $directory->getNodeValue() . DIRECTORY_SEPARATOR . 'autoload.php')) {
 
-                // initialize the array with the configured directories
-                $directories = array();
+                // if yes, we try to instanciate a new class loader instance
+                $classLoader = new ComposerClassLoader($directories);
 
-                // load the composer class loader for the configured directories
-                foreach ($configuration->getDirectories() as $directory) {
+                // set the composer include paths
+                if (file_exists($webappPath . $directory->getNodeValue() . '/composer/include_paths.php')) {
+                    $includePaths = require $webappPath . $directory->getNodeValue() . '/composer/include_paths.php';
+                    array_push($includePaths, get_include_path());
+                    set_include_path(join(PATH_SEPARATOR, $includePaths));
+                }
 
-                    // we prepare the directories to include scripts AFTER registering (in application context)
-                    $directories[] = $webappPath . $directory->getNodeValue();
-
-                    // check if an autoload.php is available
-                    if (file_exists($webappPath . $directory->getNodeValue() . DIRECTORY_SEPARATOR . 'autoload.php')) {
-
-                        // if yes, we try to instanciate a new class loader instance
-                        $classLoader = new ComposerClassLoader($directories);
-
-                        // set the composer include paths
-                        if (file_exists($webappPath . $directory->getNodeValue() . '/composer/include_paths.php')) {
-                            $includePaths = require $webappPath . $directory->getNodeValue() . '/composer/include_paths.php';
-                            array_push($includePaths, get_include_path());
-                            set_include_path(join(PATH_SEPARATOR, $includePaths));
-                        }
-
-                        // add the composer namespace declarations
-                        if (file_exists($webappPath . $directory->getNodeValue() . '/composer/autoload_namespaces.php')) {
-                            $map = require $webappPath . $directory->getNodeValue() . '/composer/autoload_namespaces.php';
-                            foreach ($map as $namespace => $path) {
-                                $classLoader->set($namespace, $path);
-                            }
-                        }
-
-                        // add the composer PSR-4 compatible namespace declarations
-                        if (file_exists($webappPath . $directory->getNodeValue() . '/composer/autoload_psr4.php')) {
-                            $map = require $webappPath . $directory->getNodeValue() . '/composer/autoload_psr4.php';
-                            foreach ($map as $namespace => $path) {
-                                $classLoader->setPsr4($namespace, $path);
-                            }
-                        }
-
-                        // add the composer class map
-                        if (file_exists($webappPath . $directory->getNodeValue() . '/composer/autoload_classmap.php')) {
-                            $classMap = require $webappPath . $directory->getNodeValue() . '/composer/autoload_classmap.php';
-                            if ($classMap) {
-                                $classLoader->addClassMap($classMap);
-                            }
-                        }
-
-                        // attach the class loader instance
-                        $instances[] = $classLoader;
+                // add the composer namespace declarations
+                if (file_exists($webappPath . $directory->getNodeValue() . '/composer/autoload_namespaces.php')) {
+                    $map = require $webappPath . $directory->getNodeValue() . '/composer/autoload_namespaces.php';
+                    foreach ($map as $namespace => $path) {
+                        $classLoader->set($namespace, $path);
                     }
                 }
 
-                // wait for the next instance to be created
-                $self->wait();
+                // add the composer PSR-4 compatible namespace declarations
+                if (file_exists($webappPath . $directory->getNodeValue() . '/composer/autoload_psr4.php')) {
+                    $map = require $webappPath . $directory->getNodeValue() . '/composer/autoload_psr4.php';
+                    foreach ($map as $namespace => $path) {
+                        $classLoader->setPsr4($namespace, $path);
+                    }
+                }
 
-            }, $this);
+                // add the composer class map
+                if (file_exists($webappPath . $directory->getNodeValue() . '/composer/autoload_classmap.php')) {
+                    $classMap = require $webappPath . $directory->getNodeValue() . '/composer/autoload_classmap.php';
+                    if ($classMap) {
+                        $classLoader->addClassMap($classMap);
+                    }
+                }
+
+                // attach the class loader instance
+                $application->addClassLoader($classLoader);
+            }
         }
     }
 }

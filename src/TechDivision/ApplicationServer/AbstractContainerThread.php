@@ -17,6 +17,7 @@
 
 namespace TechDivision\ApplicationServer;
 
+use AppserverIo\Logger\LoggerUtils;
 use TechDivision\Storage\GenericStackable;
 use TechDivision\Application\Interfaces\ApplicationInterface;
 use TechDivision\ApplicationServer\Interfaces\ContainerInterface;
@@ -69,21 +70,9 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
     public function __construct($initialContext, $containerNode)
     {
 
-        // initialize the container state
-        $this->containerState = ContainerStateKeys::get(ContainerStateKeys::WAITING_FOR_INITIALIZATION);
-
         // initialize the initial context + the container node
         $this->initialContext = $initialContext;
         $this->containerNode = $containerNode;
-
-        // initialize instance that contains the applications
-        $this->applications = new GenericStackable();
-
-        // create a new API app service instance
-        $this->service = $this->newService('TechDivision\ApplicationServer\Api\AppService');
-
-        // initialization has been successful
-        $this->containerState = ContainerStateKeys::get(ContainerStateKeys::INITIALIZATION_SUCCESSFUL);
     }
 
     /**
@@ -103,6 +92,18 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
      */
     public function main()
     {
+
+        // initialize the container state
+        $this->containerState = ContainerStateKeys::get(ContainerStateKeys::WAITING_FOR_INITIALIZATION);
+
+        // create a new API app service instance
+        $this->service = $this->newService('TechDivision\ApplicationServer\Api\AppService');
+
+        // initialize instance that contains the applications
+        $this->applications = new GenericStackable();
+
+        // initialize the container state
+        $this->containerState = ContainerStateKeys::get(ContainerStateKeys::INITIALIZATION_SUCCESSFUL);
 
         // define webservers base dir
         define(
@@ -124,6 +125,11 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
         // deploy and initialize the applications for this container
         $deployment = $this->getDeployment();
         $deployment->deploy($this);
+
+        // initialize the profile logger and the thread context
+        if ($profileLogger = $this->getInitialContext()->getLogger(LoggerUtils::PROFILE)) {
+            $profileLogger->appendThreadContext($this->getContainerNode()->getName());
+        }
 
         // deployment has been successful
         $this->containerState = ContainerStateKeys::get(ContainerStateKeys::DEPLOYMENT_SUCCESSFUL);
@@ -181,6 +187,13 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
 
         // wait for shutdown signal
         while ($this->containerState->equals(ContainerStateKeys::get(ContainerStateKeys::SERVERS_STARTED_SUCCESSFUL))) {
+
+            // profile the worker shutdown beeing processed
+            if ($profileLogger) {
+                $profileLogger->debug(sprintf('Container %s still waiting for shutdown', $this->getContainerNode()->getName()));
+            }
+
+            // wait a second
             sleep(1);
         }
 
@@ -316,7 +329,7 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
      *
      * @return void
      */
-    protected function addApplicationToSystemConfiguration(ApplicationInterface $application)
+    public function addApplicationToSystemConfiguration(ApplicationInterface $application)
     {
 
         // try to load the API app service instance
@@ -339,7 +352,7 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
      *
      * @return void
      */
-    protected function addApplication(ApplicationInterface $application)
+    public function addApplication(ApplicationInterface $application)
     {
 
         // adds the application to the system configuration

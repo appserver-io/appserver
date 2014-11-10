@@ -5,16 +5,17 @@
 	"license" : "OSL-3.0",
 	"require" : {
 		"php" : ">=5.4.0",
-		"psr/log" : "*",
 		"rhumsaa/uuid" : "~2.4",
-		"monolog/monolog" : "1.10.*",
+		"appserver-io/logger" : "0.1.*",
 		"herrera-io/annotations" : "1.0.*",
+        "techdivision/lang" : "0.1.*",
 		"techdivision/context" : "0.5.*",
 		"techdivision/storage" : "0.5.*",
 		"techdivision/configuration" : "0.1.*",
 		"techdivision/application" : "0.3.*",
 		"techdivision/php-by-contract" : "0.3.*",
-		"techdivision/lang" : "0.1.*"
+        "techdivision/server" : "0.1.*",
+        "techdivision/connection" : "0.1.*"
 	},
 	"require-dev" : {
 		"phpunit/phpunit" : "3.7.*",

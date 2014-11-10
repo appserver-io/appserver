@@ -46,13 +46,6 @@ class GenericDeployment extends AbstractDeployment
 {
 
     /**
-     * Holds references to the class loader/manager factory instances.
-     *
-     * @var array
-     */
-    protected $factoryInstances = array();
-
-    /**
      * Initializes the available applications and adds them to the deployment instance.
      *
      * @param \TechDivision\ApplicationServer\Interfaces\ContainerInterface $container The container we want to add the applications to
@@ -100,52 +93,14 @@ class GenericDeployment extends AbstractDeployment
 
                 // add the configured class loaders
                 foreach ($context->getClassLoaders() as $classLoader) {
-
-                    // create a UUID to register the class loader with
-                    $uuid = Uuid::uuid4()->__toString();
-
-                    // create an instance
-                    $instances = new GenericStackable();
-
-                    // load the class loader factory type
                     $classLoaderType = $classLoader->getType();
-
-                    // create the factory
-                    $this->factoryInstances[$uuid] = new $classLoaderType();
-                    $this->factoryInstances[$uuid]->injectInstances($instances);
-                    $this->factoryInstances[$uuid]->injectApplication($application);
-                    $this->factoryInstances[$uuid]->injectClassLoaderConfiguration($classLoader);
-                    $this->factoryInstances[$uuid]->injectInitialContext($this->getInitialContext());
-                    $this->factoryInstances[$uuid]->start();
-
-                    // add the manager instance
-                    if ($instance = $this->factoryInstances[$uuid]->newInstance()) {
-                        $application->addClassLoader($instance);
-                    }
+                    $classLoaderType::visit($application, $classLoader);
                 }
 
                 // add the configured managers
                 foreach ($context->getManagers() as $manager) {
-
-                    // create a UUID to register the manager with
-                    $uuid = Uuid::uuid4()->__toString();
-
-                    // create an instance
-                    $instances = new GenericStackable();
-
-                    // load the manager factory type
                     $managerType = $manager->getType();
-
-                    // create the factory
-                    $this->factoryInstances[$uuid] = new $managerType();
-                    $this->factoryInstances[$uuid]->injectInstances($instances);
-                    $this->factoryInstances[$uuid]->injectApplication($application);
-                    $this->factoryInstances[$uuid]->injectManagerConfiguration($manager);
-                    $this->factoryInstances[$uuid]->injectInitialContext($this->getInitialContext());
-                    $this->factoryInstances[$uuid]->start();
-
-                    // add the manager instance
-                    $application->addManager($this->factoryInstances[$uuid]->newInstance());
+                    $managerType::visit($application, $manager);
                 }
 
                 // add the application to the container

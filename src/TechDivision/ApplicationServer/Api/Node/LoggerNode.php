@@ -30,6 +30,13 @@ class LoggerNode extends AbstractNode
 {
 
     /**
+     * A params node trait.
+     *
+     * @var \TraitInterface
+     */
+    use ParamsNodeTrait;
+
+    /**
      * The loggers name.
      *
      * @var string
@@ -77,8 +84,9 @@ class LoggerNode extends AbstractNode
      * @param string $channelName The loggers channel name
      * @param array  $processors  The array with nodes for the registered processors
      * @param array  $handlers    The array with nodes for the registered handlers
+     * @param array  $params      The handler params
      */
-    public function __construct($name = '', $type = '', $channelName = '', array $processors = array(), array $handlers = array())
+    public function __construct($name = '', $type = '', $channelName = '', array $processors = array(), array $handlers = array(), array $params = array())
     {
 
         // initialize the UUID
@@ -90,6 +98,7 @@ class LoggerNode extends AbstractNode
         $this->channelName = $channelName;
         $this->processors = $processors;
         $this->handlers = $handlers;
+        $this->params = $params;
     }
 
     /**
