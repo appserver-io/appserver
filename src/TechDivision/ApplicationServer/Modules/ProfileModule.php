@@ -97,7 +97,7 @@ class ProfileModule implements ModuleInterface
 
         // profile this request if we've a logger instance
         if (ModuleHooks::RESPONSE_POST === $hook && $this->profileLogger) {
-            $this->profileLogger->info($request->getUri());
+            $this->profileLogger->debug($request->getUri());
         }
     }
 
