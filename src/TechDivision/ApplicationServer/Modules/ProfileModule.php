@@ -76,6 +76,7 @@ class ProfileModule implements ModuleInterface
         $this->serverContext = $serverContext;
 
         // initialize the profile logger
+        $profileLogger = null;
         if ($profileLogger = $serverContext->getLogger(LoggerUtils::PROFILE)) {
             $this->profileLogger = $profileLogger;
         }
@@ -97,7 +98,7 @@ class ProfileModule implements ModuleInterface
 
         // profile this request if we've a logger instance
         if (ModuleHooks::RESPONSE_POST === $hook && $this->profileLogger) {
-            $this->profileLogger->info($request->getUri());
+            $this->profileLogger->debug($request->getUri());
         }
     }
 
