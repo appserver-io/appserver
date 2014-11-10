@@ -272,14 +272,13 @@ class InitialContext implements ContextInterface
      *
      * @param string $loggerName the loggers name
      *
-     * @return \Psr\Log\LoggerInterface
+     * @return \Psr\Log\LoggerInterface|null The logger instance
      */
     public function getLogger($loggerName)
     {
-        if (isset($this->logger[$loggerName])) {
-            return $this->logger[$loggerName];
+        if (isset($this->loggers[$loggerName])) {
+            return $this->loggers[$loggerName];
         }
-        throw new \Exception(sprintf("Logger not found '%s'", $loggerName));
     }
 
     /**

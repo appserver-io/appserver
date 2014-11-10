@@ -15,6 +15,9 @@
 
 namespace TechDivision\ApplicationServer\Api\Node;
 
+use Psr\Log\LogLevel;
+use AppserverIo\Logger\LoggerUtils;
+
 /**
  * DTO to transfer the application server's complete configuration.
  *
@@ -161,63 +164,53 @@ class AppserverNode extends AbstractNode
     protected function initDefaultLoggers()
     {
 
-        // we need an introspection processor
+        // we dont need any processors
         $processors = array();
-        $processor = new ProcessorNode('\Monolog\Processor\IntrospectionProcessor');
-        $processors[$processor->getPrimaryKey()] = $processor;
-
-        // and a line formatter
-        $formatter = new FormatterNode('\Monolog\Formatter\LineFormatter');
 
         // initialize the params for the system logger handler
         $handlerParams = array();
-        $streamParam = new ParamNode('stream', 'string', new NodeValue('var/log/appserver-errors.log'));
+        $logLevelParam = new ParamNode('logLevel', 'string', new NodeValue(LogLevel::INFO));
+        $logFileParam = new ParamNode('logFile', 'string', new NodeValue('var/log/appserver-errors.log'));
         $maxFilesParam = new ParamNode('maxFiles', 'integer', new NodeValue(30));
-        $levelParam = new ParamNode('level', 'integer', new NodeValue(200));
-        $bubbleParam = new ParamNode('bubble', 'boolean', new NodeValue(false));
-        $handlerParams[$streamParam->getPrimaryKey()] = $streamParam;
+        $handlerParams[$logFileParam->getPrimaryKey()] = $logFileParam;
+        $handlerParams[$logLevelParam->getPrimaryKey()] = $logLevelParam;
         $handlerParams[$maxFilesParam->getPrimaryKey()] = $maxFilesParam;
-        $handlerParams[$levelParam->getPrimaryKey()] = $levelParam;
-        $handlerParams[$bubbleParam->getPrimaryKey()] = $bubbleParam;
 
         // initialize the handler
         $handlers = array();
-        $handler = new HandlerNode('\TechDivision\ApplicationServer\RotatingMonologHandler', $formatter, $handlerParams);
+        $handler = new HandlerNode('\AppserverIo\Logger\Handlers\RotatingFileHandler', null, $handlerParams);
         $handlers[$handler->getPrimaryKey()] = $handler;
 
         // initialize the system logger with the processor and the handlers
-        $systemLogger = new LoggerNode('System', '\Monolog\Logger', 'system', $processors, $handlers);
+        $systemLogger = new LoggerNode(LoggerUtils::SYSTEM, '\AppserverIo\Logger\Logger', 'system', $processors, $handlers);
+
+        // we dont need any processors
+        $processors = array();
 
         // initialize the params for the access logger formatter
         $formatterParams = array();
-        $formatParam = new ParamNode('format', 'string', new NodeValue('%message%'));
-        $dateFormatParam = new ParamNode('dateFormat', 'string', new NodeValue('Y-m-d H:i:s'));
-        $allowInlineLineBreaksParam = new ParamNode('allowInlineLineBreaks', 'boolean', new NodeValue(true));
-        $formatterParams[$formatParam->getPrimaryKey()] = $formatParam;
-        $formatterParams[$dateFormatParam->getPrimaryKey()] = $dateFormatParam;
-        $formatterParams[$allowInlineLineBreaksParam->getPrimaryKey()] = $allowInlineLineBreaksParam;
+        $messageFormatParam = new ParamNode('format', 'string', new NodeValue('%4$s'));
+        $formatterParams[$messageFormatParam->getPrimaryKey()] = $messageFormatParam;
 
         // initialize the formatter for the access logger
-        $formatter = new FormatterNode('\Monolog\Formatter\LineFormatter', $formatterParams);
+        $formatter = new FormatterNode('\AppserverIo\Logger\Formatters\StandardFormatter', $formatterParams);
 
-        // initialize the params for the access logger handler
+        // initialize the params for the system logger handler
         $handlerParams = array();
-        $streamParam = new ParamNode('stream', 'string', new NodeValue('var/log/appserver-access.log'));
+        $logLevelParam = new ParamNode('logLevel', 'string', new NodeValue(LogLevel::DEBUG));
+        $logFileParam = new ParamNode('logFile', 'string', new NodeValue('var/log/appserver-access.log'));
         $maxFilesParam = new ParamNode('maxFiles', 'integer', new NodeValue(30));
-        $levelParam = new ParamNode('level', 'integer', new NodeValue(100));
-        $bubbleParam = new ParamNode('bubble', 'boolean', new NodeValue(true));
-        $handlerParams[$streamParam->getPrimaryKey()] = $streamParam;
+        $handlerParams[$logFileParam->getPrimaryKey()] = $logFileParam;
+        $handlerParams[$logLevelParam->getPrimaryKey()] = $logLevelParam;
         $handlerParams[$maxFilesParam->getPrimaryKey()] = $maxFilesParam;
-        $handlerParams[$levelParam->getPrimaryKey()] = $levelParam;
-        $handlerParams[$bubbleParam->getPrimaryKey()] = $bubbleParam;
 
-        // initialize the handler for the access logger
+        // initialize the handler
         $handlers = array();
-        $handler = new HandlerNode('\TechDivision\ApplicationServer\RotatingMonologHandler', $formatter, $handlerParams);
+        $handler = new HandlerNode('\AppserverIo\Logger\Handlers\RotatingFileHandler', $formatter, $handlerParams);
         $handlers[$handler->getPrimaryKey()] = $handler;
 
-        // initialize the access logger
-        $accessLogger = new LoggerNode('Access', '\Monolog\Logger', 'access', $processors, $handlers);
+        // initialize the system logger with the processor and the handlers
+        $accessLogger = new LoggerNode(LoggerUtils::ACCESS, '\AppserverIo\Logger\Logger', 'access', $processors, $handlers);
 
         // add the loggers to the default logger configuration
         $this->loggers[$systemLogger->getPrimaryKey()] = $systemLogger;

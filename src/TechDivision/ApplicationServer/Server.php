@@ -14,7 +14,7 @@
 
 namespace TechDivision\ApplicationServer;
 
-use \Psr\Log\LoggerInterface;
+use AppserverIo\Logger\LoggerUtils;
 use TechDivision\Configuration\Interfaces\NodeInterface;
 use TechDivision\Configuration\Interfaces\ConfigurationInterface;
 use TechDivision\ApplicationServer\Extractors\PharExtractor;
@@ -194,35 +194,13 @@ class Server
      */
     protected function initLoggers()
     {
+
+        // initialize the loggers
         $loggers = array();
         foreach ($this->getSystemConfiguration()->getLoggers() as $loggerNode) {
-            // initialize the processors
-            $processors = array();
-            foreach ($loggerNode->getProcessors() as $processorNode) {
-                $processors[] = $this->newInstance($processorNode->getType(), $processorNode->getParamsAsArray());
-            }
-
-            // initialize the handlers
-            $handlers = array();
-            foreach ($loggerNode->getHandlers() as $handlerNode) {
-                $handler = $this->newInstance($handlerNode->getType(), $handlerNode->getParamsAsArray());
-                $formatterNode = $handlerNode->getFormatter();
-                $handler->setFormatter(
-                    $this->newInstance($formatterNode->getType(), $formatterNode->getParamsAsArray())
-                );
-                $handlers[] = $handler;
-            }
-
-            // initialize the logger instance itself
-            $loggers[$loggerNode->getName()] = $this->newInstance(
-                $loggerNode->getType(),
-                array(
-                    $loggerNode->getChannelName(),
-                    $handlers,
-                    $processors
-                )
-            );
+            $loggers[$loggerNode->getName()] = LoggerFactory::factory($loggerNode);
         }
+
         // set the initialized loggers finally
         $this->getInitialContext()->setLoggers($loggers);
         // @deprecated todo: refactor hard coded SystemLogger getter
@@ -474,6 +452,21 @@ class Server
     }
 
     /**
+     * Profiles the server instance for memory usage and system load
+     *
+     * @return void
+     */
+    public function profile()
+    {
+        while (true) { // profile the server context
+            if ($profileLogger = $this->getInitialContext()->getLogger(LoggerUtils::PROFILE)) {
+                $profileLogger->debug('Successfully processed incoming connection');
+            }
+            sleep(2);
+        }
+    }
+
+    /**
      * Starts giving the heartbeat to tell everyone we are alive.
      * This will keep your server in an endless loop, so be wary!
      *
@@ -524,7 +517,6 @@ class Server
 
         // Start all monitors
         foreach ($monitors as $monitor) {
-
             $monitor->start();
         }
     }

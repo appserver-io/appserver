@@ -1,6 +1,7 @@
 <?php
+
 /**
- * TechDivision\ApplicationServer\AbstractContainer
+ * TechDivision\ApplicationServer\AbstractThread
  *
  * PHP version 5
  *

@@ -1,3 +1,16 @@
+# Version 0.10.1
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add dependency to new appserver-io/logger library
+* Integration of monitoring/profiling functionality
+* Move RotatingMonologHandler implemenatation => use appserver-io/logger version instead
+* Move back to POPO manager/class loader factory implementations
+
 # Version 0.10.0
 
 ## Bugfixes

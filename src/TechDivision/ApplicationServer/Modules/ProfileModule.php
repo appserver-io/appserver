@@ -16,6 +16,8 @@
 
 namespace TechDivision\ApplicationServer\Modules;
 
+use AppserverIo\Logger\LoggerUtils;
+use AppserverIo\Logger\ThreadSafeLoggerInterface;
 use TechDivision\Connection\ConnectionRequestInterface;
 use TechDivision\Connection\ConnectionResponseInterface;
 use TechDivision\Server\Dictionaries\ModuleHooks;
@@ -46,41 +48,18 @@ class ProfileModule implements ModuleInterface
     const MODULE_NAME = 'profile';
 
     /**
-     * Hold's the server context instance
+     * The server context instance.
      *
      * @var \TechDivision\Server\Interfaces\ServerContextInterface
      */
     protected $serverContext;
 
     /**
-     * Return's the request instance
+     * Holds the profile logger instance, if registered.
      *
-     * @return \TechDivision\Http\HttpRequestInterface The request instance
+     * @var \AppserverIo\Logger\ThreadSafeLoggerInterface
      */
-    public function getRequest()
-    {
-        return $this->request;
-    }
-
-    /**
-     * Returns the response instance
-     *
-     * @return \TechDivision\Http\HttpResponseInterface The response instance;
-     */
-    public function getResponse()
-    {
-        return $this->response;
-    }
-
-    /**
-     * Return's the server context instance
-     *
-     * @return \TechDivision\Server\Interfaces\ServerContextInterface
-     */
-    public function getServerContext()
-    {
-        return $this->serverContext;
-    }
+    protected $profileLogger;
 
     /**
      * Initiates the module
@@ -92,7 +71,14 @@ class ProfileModule implements ModuleInterface
      */
     public function init(ServerContextInterface $serverContext)
     {
+
+        // initialize the server context
         $this->serverContext = $serverContext;
+
+        // initialize the profile logger
+        if ($profileLogger = $serverContext->getLogger(LoggerUtils::PROFILE)) {
+            $this->profileLogger = $profileLogger;
+        }
     }
 
     /**
@@ -106,25 +92,13 @@ class ProfileModule implements ModuleInterface
      * @return bool
      * @throws \TechDivision\Server\Exceptions\ModuleException
      */
-    public function process(
-        ConnectionRequestInterface $request,
-        ConnectionResponseInterface $response,
-        RequestContextInterface $requestContext,
-        $hook
-    ) {
-        // In php an interface is, by definition, a fixed contract. It is immutable.
-        // So we have to declair the right ones afterwards...
-        /** @var $request \TechDivision\Http\HttpRequestInterface */
-        /** @var $request \TechDivision\Http\HttpResponseInterface */
+    public function process(ConnectionRequestInterface $request, ConnectionResponseInterface $response, RequestContextInterface $requestContext, $hook)
+    {
 
-        // if false hook is comming do nothing
-        if (ModuleHooks::RESPONSE_POST !== $hook) {
-            return;
+        // profile this request if we've a logger instance
+        if (ModuleHooks::RESPONSE_POST === $hook && $this->profileLogger) {
+            $this->profileLogger->info($request->getUri());
         }
-
-        // set req and res object internally
-        $this->request = $request;
-        $this->response = $response;
     }
 
     /**
@@ -155,6 +129,8 @@ class ProfileModule implements ModuleInterface
      */
     public function prepare()
     {
-        // nothing to prepare for this module
+        if ($this->profileLogger) { // set the thread-worker context in the profile logger
+            $this->profileLogger->appendThreadContext('thread-worker');
+        }
     }
 }
