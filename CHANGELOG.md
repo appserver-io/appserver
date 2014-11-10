@@ -10,6 +10,7 @@
 * Integration of monitoring/profiling functionality
 * Move RotatingMonologHandler implemenatation => use appserver-io/logger version instead
 * Move back to POPO manager/class loader factory implementations
+* Remove AbstractManagerFactory implementation
 
 # Version 0.10.0
 
