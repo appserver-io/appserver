@@ -23,6 +23,7 @@ namespace TechDivision\ApplicationServer;
 
 use Rhumsaa\Uuid\Uuid;
 use TechDivision\PBC\Config;
+use TechDivision\Naming\InitialContext;
 use TechDivision\Storage\GenericStackable;
 use TechDivision\Storage\StackableStorage;
 use TechDivision\Application\Application;
@@ -63,8 +64,11 @@ class GenericDeployment extends AbstractDeployment
 
             if ($folder->isDir()) { // check if we've a directory (possible application)
 
+                // this IS the unique application name
+                $applicationName = $folder->getBasename();
+
                 // try to load a context configuration for the context path
-                $context = $contextInstances[$contextPath = '/'. $folder->getBasename()];
+                $context = $contextInstances['/'. $applicationName];
 
                 // create a new application instance
                 $application = $this->newInstance($context->getType());
@@ -74,15 +78,20 @@ class GenericDeployment extends AbstractDeployment
                 $virtualHosts = new GenericStackable();
                 $classLoaders = new GenericStackable();
 
+                // bind the application specific temporary directory to the naming directory
+                $namingDirectory = $container->getNamingDirectory();
+
+                // register the applications temporary directory in the naming directory
+                $tmpDirectory = sprintf('%s/%s', $namingDirectory->search('php:env/tmpDirectory'), $applicationName);
+                $namingDirectory->bind(sprintf('php:env/%s/tmpDirectory', $applicationName), $tmpDirectory);
+
                 // initialize the generic instances and information
                 $application->injectManagers($managers);
+                $application->injectName($applicationName);
                 $application->injectVirtualHosts($virtualHosts);
                 $application->injectClassLoaders($classLoaders);
-                $application->injectName($folder->getBasename());
+                $application->injectNamingDirectory($namingDirectory);
                 $application->injectInitialContext($this->getInitialContext());
-                $application->injectBaseDirectory($container->getBaseDirectory());
-                $application->injectTmpDir($container->getTmpDir($contextPath));
-                $application->injectAppBase($container->getAppBase());
 
                 // create the applications temporary folders and cleans the folders up
                 $this->getDeploymentService()->createTmpFolders($application);

@@ -1,3 +1,14 @@
+# Version 0.10.2
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add DependencyInjectionContainer as manager implementation
+* Refactoring application deployment
+
 # Version 0.10.1
 
 ## Bugfixes
