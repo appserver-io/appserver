@@ -23,6 +23,7 @@ use TechDivision\Application\Interfaces\ApplicationInterface;
 use TechDivision\ApplicationServer\Interfaces\ContainerInterface;
 use TechDivision\ApplicationServer\Utilities\DirectoryKeys;
 use TechDivision\ApplicationServer\Utilities\ContainerStateKeys;
+use TechDivision\Naming\NamingDirectory;
 
 /**
  * Class AbstractContainerThread
@@ -49,7 +50,7 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
     /**
      * The initialized applications.
      *
-     * @var \ArrayAccess $applications
+     * @var \TechDivision\Storage\GenericStackable
      */
     protected $applications;
 
@@ -98,6 +99,15 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
 
         // create a new API app service instance
         $this->service = $this->newService('TechDivision\ApplicationServer\Api\AppService');
+
+        // create and initialize the naming directory
+        $this->namingDirectory = new NamingDirectory();
+        $this->namingDirectory->bind('php:env/appBase', $this->getAppBase());
+        $this->namingDirectory->bind('php:env/tmpDirectory', $this->getTmpDir());
+        $this->namingDirectory->bind('php:env/baseDirectory', $this->getBaseDirectory());
+        $this->namingDirectory->bind('php:env/umask', $this->getInitialContext()->getSystemConfiguration()->getUmask());
+        $this->namingDirectory->bind('php:env/user', $this->getInitialContext()->getSystemConfiguration()->getUser());
+        $this->namingDirectory->bind('php:env/group', $this->getInitialContext()->getSystemConfiguration()->getGroup());
 
         // initialize instance that contains the applications
         $this->applications = new GenericStackable();
@@ -204,13 +214,47 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
     }
 
     /**
-     * Returns an array with the deployed applications.
+     * Returns the containers naming directory.
      *
-     * @return array The array with applications
+     * @return \TechDivision\Naming\NamingDirectoryInterface The containers naming directory
+     */
+    public function getNamingDirectory()
+    {
+        return $this->namingDirectory;
+    }
+
+    /**
+     * Returns the dependency injection container.
+     *
+     * @return \TechDivision\Application\Interfaces\DependencyInjectionContainerInterface The dependency injection container
+     */
+    public function getDependencyInjectionContainer()
+    {
+        return $this->dependencyInjectionContainer;
+    }
+
+    /**
+     * Returns the deployed applications.
+     *
+     * @return \TechDivision\Storage\GenericStackable The with applications
      */
     public function getApplications()
     {
         return $this->applications;
+    }
+
+    /**
+     * Returns the application instance with the passed name.
+     *
+     * @param string $name The name of the application to return
+     *
+     * @return \TechDivision\Application\Interfaces\ApplicationInterface The application instance
+     */
+    public function getApplication($name)
+    {
+        if (isset($this->applications[$name])) {
+            return $this->applications[$name];
+        }
     }
 
     /**
@@ -317,7 +361,7 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
      *
      * @return string
      */
-    public function getTmpDir($directoryToAppend)
+    public function getTmpDir($directoryToAppend = null)
     {
         return $this->getService()->getTmpDir($directoryToAppend);
     }
@@ -355,11 +399,14 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
     public function addApplication(ApplicationInterface $application)
     {
 
-        // adds the application to the system configuration
-        $this->addApplicationToSystemConfiguration($application);
-
         // register the application in this instance
         $this->applications[$application->getName()] = $application;
+
+        // register the application and temporary directory in the naming directory
+        $this->getNamingDirectory()->bind(sprintf('php:global/%s', $application->getName()), array(&$this, 'getApplication'), array($application->getName()));
+
+        // adds the application to the system configuration
+        $this->addApplicationToSystemConfiguration($application);
 
         // log a message that the app has been started
         $this->getInitialContext()->getSystemLogger()->debug(
