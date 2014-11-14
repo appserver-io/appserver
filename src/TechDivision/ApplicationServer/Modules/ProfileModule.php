@@ -76,9 +76,8 @@ class ProfileModule implements ModuleInterface
         $this->serverContext = $serverContext;
 
         // initialize the profile logger
-        $profileLogger = null;
-        if ($profileLogger = $serverContext->hasLogger(LoggerUtils::PROFILE)) {
-            $this->profileLogger = $profileLogger;
+        if ($serverContext->hasLogger(LoggerUtils::PROFILE)) {
+            $this->profileLogger = $serverContext->getLogger(LoggerUtils::PROFILE);
         }
     }
 
@@ -97,7 +96,7 @@ class ProfileModule implements ModuleInterface
     {
 
         // profile this request if we've a logger instance
-        if (ModuleHooks::RESPONSE_POST === $hook && $this->profileLogger) {
+        if (ModuleHooks::RESPONSE_POST === $hook && $this->profileLogger instanceof ThreadSafeLoggerInterface) {
             $this->profileLogger->debug($request->getUri());
         }
     }
@@ -130,7 +129,7 @@ class ProfileModule implements ModuleInterface
      */
     public function prepare()
     {
-        if ($this->profileLogger) { // set the thread-worker context in the profile logger
+        if ($this->profileLogger instanceof ThreadSafeLoggerInterface) { // set the thread-worker context in the profile logger
             $this->profileLogger->appendThreadContext('thread-worker');
         }
     }

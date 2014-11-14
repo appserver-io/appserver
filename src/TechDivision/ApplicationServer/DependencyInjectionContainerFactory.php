@@ -18,7 +18,9 @@ namespace TechDivision\ApplicationServer;
 use TechDivision\Storage\GenericStackable;
 use TechDivision\Application\Interfaces\ApplicationInterface;
 use TechDivision\Application\Interfaces\ManagerConfigurationInterface;
-use TechDivision\Naming\InitialContext as NamingContext; // ATTENTION: this is necessary for Windows
+
+// ATTENTION: this is necessary for Windows
+use TechDivision\Naming\InitialContext as NamingContext;
 
 /**
  * The factory for the dependency injection container.

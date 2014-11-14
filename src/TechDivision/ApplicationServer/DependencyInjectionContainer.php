@@ -17,6 +17,7 @@ namespace TechDivision\ApplicationServer;
 
 use TechDivision\Naming\NamingDirectoryInterface;
 use TechDivision\Storage\GenericStackable;
+use TechDivision\Lang\Reflection\ClassInterface;
 use TechDivision\Lang\Reflection\ReflectionClass;
 use TechDivision\Lang\Reflection\ReflectionMethod;
 use TechDivision\Lang\Reflection\ReflectionAnnotation;
@@ -35,7 +36,9 @@ use TechDivision\EnterpriseBeans\Annotations\EnterpriseBean;
 use TechDivision\EnterpriseBeans\Annotations\Resource;
 use TechDivision\Application\Interfaces\ApplicationInterface;
 use TechDivision\Application\Interfaces\DependencyInjectionContainerInterface;
-use TechDivision\Naming\InitialContext as NamingContext; // ATTENTION: this is necessary for Windows
+
+// ATTENTION: this is necessary for Windows
+use TechDivision\Naming\InitialContext as NamingContext;
 
 /**
  * A basic dependency injection container implementation.
@@ -230,24 +233,20 @@ class DependencyInjectionContainer extends GenericStackable implements Dependenc
     }
 
     /**
-     * Returns a new instance of the passed class name.
+     * Injects the dependencies of the passed instance.
      *
-     * @param string $className The fully qualified class name to return the instance for
-     * @param array  $args      Arguments to pass to the constructor of the instance
+     * @param object                                            $instance        The instance to inject the dependencies for
+     * @param \TechDivision\Lang\Reflection\ClassInterface|null $reflectionClass The reflection class for the passed instance
+     * @param string|null                                       $sessionId       The session-ID, necessary to inject stateful session beans (SFBs)
      *
-     * @return object The instance itself
+     * @return void
      */
-    public function newInstance($className, array $args = array())
+    public function injectDependencies($instance, ClassInterface $reflectionClass = null, $sessionId = null)
     {
 
-        // create and return a new instance
-        $reflectionClass = $this->newReflectionClass($className);
-
-        // check if we've a constructor
-        if ($reflectionClass->hasMethod('__construct')) {
-            $instance = $reflectionClass->newInstanceArgs($args);
-        } else {
-            $instance = $reflectionClass->newInstance();
+        // check if a reflection class instance has been passed
+        if ($reflectionClass == null) {
+            $reflectionClass = $this->newReflectionClass($instance);
         }
 
         // we've to check for DI property annotations
@@ -263,7 +262,7 @@ class DependencyInjectionContainer extends GenericStackable implements Dependenc
                 // load the PHP ReflectionProperty instance to inject the bean instance
                 $phpReflectionProperty = $reflectionProperty->toPhpReflectionProperty();
                 $phpReflectionProperty->setAccessible(true);
-                $phpReflectionProperty->setValue($instance, $this->getInitialContext()->lookup($lookupName));
+                $phpReflectionProperty->setValue($instance, $this->getInitialContext()->lookup($lookupName, $sessionId));
             }
 
             // if we found a @Resource annotation, inject the instance by invoke the setter/inject method
@@ -291,7 +290,7 @@ class DependencyInjectionContainer extends GenericStackable implements Dependenc
                 $lookupName = $this->getLookupName($annotation);
 
                 // inject the bean instance
-                $reflectionMethod->invoke($instance, $this->getInitialContext()->lookup($lookupName));
+                $reflectionMethod->invoke($instance, $this->getInitialContext()->lookup($lookupName, $sessionId));
             }
 
             // if we found a @Resource annotation, inject the instance by invoke the setter/inject method
@@ -305,15 +304,32 @@ class DependencyInjectionContainer extends GenericStackable implements Dependenc
                 $reflectionMethod->invoke($instance, $this->getNamingDirectory()->search($lookupName));
             }
         }
+    }
 
-        // we've to check for @PostConstruct method annotations
-        foreach ($reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $reflectionMethod) {
+    /**
+     * Returns a new instance of the passed class name.
+     *
+     * @param string      $className The fully qualified class name to return the instance for
+     * @param string|null $sessionId The session-ID, necessary to inject stateful session beans (SFBs)
+     * @param array       $args      Arguments to pass to the constructor of the instance
+     *
+     * @return object The instance itself
+     */
+    public function newInstance($className, $sessionId = null, array $args = array())
+    {
 
-            // if we found a @PostConstruct annotation, invoke the method
-            if ($reflectionMethod->hasAnnotation(PostConstruct::ANNOTATION)) {
-                $reflectionMethod->invoke($instance); // method MUST has no parameters
-            }
+        // create and return a new instance
+        $reflectionClass = $this->newReflectionClass($className);
+
+        // check if we've a constructor
+        if ($reflectionClass->hasMethod('__construct')) {
+            $instance = $reflectionClass->newInstanceArgs($args);
+        } else {
+            $instance = $reflectionClass->newInstance();
         }
+
+        // inject the dependencies
+        $this->injectDependencies($instance, $reflectionClass, $sessionId);
 
         // return the instance here
         return $instance;
