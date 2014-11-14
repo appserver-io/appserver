@@ -1,3 +1,13 @@
+# Version 0.10.3
+
+## Bugfixes
+
+* Replace for invalid $serverContext->getLogger() invokation with $serverContext->hasLogger()
+
+## Features
+
+* None
+
 # Version 0.10.2
 
 ## Bugfixes

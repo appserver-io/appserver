@@ -77,7 +77,7 @@ class ProfileModule implements ModuleInterface
 
         // initialize the profile logger
         $profileLogger = null;
-        if ($profileLogger = $serverContext->getLogger(LoggerUtils::PROFILE)) {
+        if ($profileLogger = $serverContext->hasLogger(LoggerUtils::PROFILE)) {
             $this->profileLogger = $profileLogger;
         }
     }
