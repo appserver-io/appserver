@@ -1,3 +1,13 @@
+# Version 0.10.4
+
+## Bugfixes
+
+* Add namespace alias NamingContext for TechDivision\Naming\InitialContext to solve Windows bugs
+
+## Features
+
+* None
+
 # Version 0.10.3
 
 ## Bugfixes
