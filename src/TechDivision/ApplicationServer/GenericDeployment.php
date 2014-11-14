@@ -23,7 +23,6 @@ namespace TechDivision\ApplicationServer;
 
 use Rhumsaa\Uuid\Uuid;
 use TechDivision\PBC\Config;
-use TechDivision\Naming\InitialContext;
 use TechDivision\Storage\GenericStackable;
 use TechDivision\Storage\StackableStorage;
 use TechDivision\Application\Application;

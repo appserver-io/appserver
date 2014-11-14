@@ -15,10 +15,10 @@
 
 namespace TechDivision\ApplicationServer;
 
-use TechDivision\Naming\InitialContext;
 use TechDivision\Storage\GenericStackable;
 use TechDivision\Application\Interfaces\ApplicationInterface;
 use TechDivision\Application\Interfaces\ManagerConfigurationInterface;
+use TechDivision\Naming\InitialContext as NamingContext; // ATTENTION: this is necessary for Windows
 
 /**
  * The factory for the dependency injection container.
@@ -48,7 +48,7 @@ class DependencyInjectionContainerFactory
         $namingDirectory = $application->getNamingDirectory();
 
         // create the initial context instance
-        $initialContext = new InitialContext();
+        $initialContext = new NamingContext();
         $initialContext->injectApplication($application);
 
         // create the application specific aliases

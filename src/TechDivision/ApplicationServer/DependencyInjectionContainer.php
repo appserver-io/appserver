@@ -15,7 +15,6 @@
 
 namespace TechDivision\ApplicationServer;
 
-use TechDivision\Naming\InitialContext;
 use TechDivision\Naming\NamingDirectoryInterface;
 use TechDivision\Storage\GenericStackable;
 use TechDivision\Lang\Reflection\ReflectionClass;
@@ -36,6 +35,7 @@ use TechDivision\EnterpriseBeans\Annotations\EnterpriseBean;
 use TechDivision\EnterpriseBeans\Annotations\Resource;
 use TechDivision\Application\Interfaces\ApplicationInterface;
 use TechDivision\Application\Interfaces\DependencyInjectionContainerInterface;
+use TechDivision\Naming\InitialContext as NamingContext; // ATTENTION: this is necessary for Windows
 
 /**
  * A basic dependency injection container implementation.
@@ -95,7 +95,7 @@ class DependencyInjectionContainer extends GenericStackable implements Dependenc
      *
      * @return void
      */
-    public function injectInitialContext($initialContext)
+    public function injectInitialContext(NamingContext $initialContext)
     {
         $this->initialContext = $initialContext;
     }
