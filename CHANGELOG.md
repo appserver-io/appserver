@@ -1,3 +1,13 @@
+# Version 0.10.5
+
+## Bugfixes
+
+* Bugfix invalid check for registered profile logger in ProfileModule::init()
+
+## Features
+
+* Add DependencyInjectionContainer::injectDependencies() method to allow DI on existing instances
+
 # Version 0.10.4
 
 ## Bugfixes
