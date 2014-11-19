@@ -31,6 +31,7 @@ use TechDivision\ApplicationServer\AbstractDeployment;
 use TechDivision\ApplicationServer\Interfaces\ContainerInterface;
 use TechDivision\ApplicationServer\Utilities\DirectoryKeys;
 use TechDivision\ApplicationServer\Api\Node\ContextNode;
+use TechDivision\Naming\NamingDirectory;
 
 /**
  * Generic deployment implementation for web applications.
@@ -73,6 +74,7 @@ class GenericDeployment extends AbstractDeployment
                 $application = $this->newInstance($context->getType());
 
                 // initialize the storage for managers, virtual hosts an class loaders
+                $data = new StackableStorage();
                 $managers = new GenericStackable();
                 $virtualHosts = new GenericStackable();
                 $classLoaders = new GenericStackable();
@@ -80,17 +82,24 @@ class GenericDeployment extends AbstractDeployment
                 // bind the application specific temporary directory to the naming directory
                 $namingDirectory = $container->getNamingDirectory();
 
-                // register the applications temporary directory in the naming directory
-                $tmpDirectory = sprintf('%s/%s', $namingDirectory->search('php:env/tmpDirectory'), $applicationName);
-                $namingDirectory->bind(sprintf('php:env/%s/tmpDirectory', $applicationName), $tmpDirectory);
-
                 // initialize the generic instances and information
+                $application->injectData($data);
                 $application->injectManagers($managers);
                 $application->injectName($applicationName);
                 $application->injectVirtualHosts($virtualHosts);
                 $application->injectClassLoaders($classLoaders);
                 $application->injectNamingDirectory($namingDirectory);
                 $application->injectInitialContext($this->getInitialContext());
+
+                // bind the application (which is also a naming directory)
+                $globalDir = $namingDirectory->search('php:global');
+                $globalDir->bind($applicationName, $application);
+
+                // register the applications temporary directory in the naming directory
+                $tmpDirectory = sprintf('%s/%s', $namingDirectory->search('env/tmpDirectory'), $applicationName);
+                list ($envDir, ) = $namingDirectory->getAttribute('env');
+                $envAppDir = $envDir->createSubdirectory($applicationName);
+                $envAppDir->bind('tmpDirectory', $tmpDirectory);
 
                 // create the applications temporary folders and cleans the folders up
                 $this->getDeploymentService()->createTmpFolders($application);
@@ -101,14 +110,22 @@ class GenericDeployment extends AbstractDeployment
 
                 // add the configured class loaders
                 foreach ($context->getClassLoaders() as $classLoader) {
-                    $classLoaderType = $classLoader->getType();
-                    $classLoaderType::visit($application, $classLoader);
+                    if ($classLoaderFactory = $classLoader->getFactory()) { // use the factory if available
+                        $classLoaderFactory::visit($application, $classLoader);
+                    } else { // if not, try to instanciate the class loader directly
+                        $classLoaderType = $classLoader->getType();
+                        $application->addClassLoader(new $classLoaderType($classLoader), $classLoader);
+                    }
                 }
 
                 // add the configured managers
                 foreach ($context->getManagers() as $manager) {
-                    $managerType = $manager->getType();
-                    $managerType::visit($application, $manager);
+                    if ($managerFactory = $manager->getFactory()) { // use the factory if available
+                        $managerFactory::visit($application, $manager);
+                    } else { // if not, try to instanciate the manager directly
+                        $managerType = $manager->getType();
+                        $application->addManager(new $managerType($manager), $manager);
+                    }
                 }
 
                 // add the application to the container

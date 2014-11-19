@@ -61,7 +61,7 @@ class ClassLoaderNode extends AbstractNode implements ClassLoaderNodeInterface
     protected $name;
 
     /**
-     * The class loader class name.
+     * The class loaders class name.
      *
      * @var string
      * @AS\Mapping(nodeType="string")
@@ -69,15 +69,24 @@ class ClassLoaderNode extends AbstractNode implements ClassLoaderNodeInterface
     protected $type;
 
     /**
+     * The class loaders factory class name.
+     *
+     * @var string
+     * @AS\Mapping(nodeType="string")
+     */
+    protected $factory;
+
+    /**
      * Initializes the class loader configuration with the passed values.
      *
-     * @param string $name        The unique manager name
-     * @param string $type        The manager class name
+     * @param string $name        The unique class loader name
+     * @param string $type        The class loaders class name
+     * @param string $factory     The class loaders factory class name
      * @param array  $params      The class loaders params
      * @param array  $directories The class loaders directory to load classes from
      * @param array  $namespaces  The class loaders namespaces for classes to be handled
      */
-    public function __construct($name = '', $type = '', array $params = array(), array $directories = array(), array $namespaces = array())
+    public function __construct($name = '', $type = '', $factory = '', array $params = array(), array $directories = array(), array $namespaces = array())
     {
 
         // initialize the UUID
@@ -86,6 +95,7 @@ class ClassLoaderNode extends AbstractNode implements ClassLoaderNodeInterface
         // set the data
         $this->name = $name;
         $this->type = $type;
+        $this->factory = $factory;
         $this->params = $params;
         $this->directories = $directories;
         $this->namespaces = $namespaces;
@@ -120,6 +130,16 @@ class ClassLoaderNode extends AbstractNode implements ClassLoaderNodeInterface
     public function getType()
     {
         return $this->type;
+    }
+
+    /**
+     * Returns the factory class name.
+     *
+     * @return string The factory class name
+     */
+    public function getFactory()
+    {
+        return $this->factory;
     }
 
     /**

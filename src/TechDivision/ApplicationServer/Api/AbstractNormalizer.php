@@ -1,6 +1,6 @@
 <?php
 /**
- * TechDivision\ApplicationServer\AbstractApplication
+ * TechDivision\ApplicationServer\AbstractNormalizer
  *
  * PHP version 5
  *
