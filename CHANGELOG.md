@@ -9,6 +9,7 @@
 * Remove DI container => now in techdivision/dependencyinjectioncontainer
 * Switch to new techdivision/naming version that allows to register application instance as naming directory also
 * Extend ManagerNode + ClassLoaderNode with additional properties from system configuration
+* Remove AbstractApplication + AbstractApplicationTest
 
 # Version 0.10.5
 
