@@ -181,4 +181,13 @@ class MockApplication extends AbstractApplication
     public function createSubdirectory($name, array $filter = array())
     {
     }
+
+    /**
+     * Returns the applications naming directory.
+     *
+     * @return \TechDivision\Naming\NamingDirectoryInterface The applications naming directory interface
+     */
+    public function getNamingDirectory()
+    {
+    }
 }
