@@ -102,6 +102,13 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
 
         // create and initialize the naming directory
         $this->namingDirectory = new NamingDirectory();
+        $this->namingDirectory->setScheme('php');
+
+        // create global/env naming directories
+        $globalDir = $this->namingDirectory->createSubdirectory('global');
+        $envDir = $this->namingDirectory->createSubdirectory('env');
+
+        // initialize the naming directory with the environment data
         $this->namingDirectory->bind('php:env/appBase', $this->getAppBase());
         $this->namingDirectory->bind('php:env/tmpDirectory', $this->getTmpDir());
         $this->namingDirectory->bind('php:env/baseDirectory', $this->getBaseDirectory());
@@ -401,9 +408,6 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
 
         // register the application in this instance
         $this->applications[$application->getName()] = $application;
-
-        // register the application and temporary directory in the naming directory
-        $this->getNamingDirectory()->bind(sprintf('php:global/%s', $application->getName()), array(&$this, 'getApplication'), array($application->getName()));
 
         // adds the application to the system configuration
         $this->addApplicationToSystemConfiguration($application);

@@ -1,3 +1,15 @@
+# Version 0.10.6
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Remove DI container => now in techdivision/dependencyinjectioncontainer
+* Switch to new techdivision/naming version that allows to register application instance as naming directory also
+* Extend ManagerNode + ClassLoaderNode with additional properties from system configuration
+
 # Version 0.10.5
 
 ## Bugfixes
