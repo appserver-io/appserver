@@ -17,11 +17,12 @@
 		"techdivision/server" : "0.1.*",
 		"techdivision/connection" : "0.1.*",
 		"techdivision/naming" : "0.1.*",
-		"techdivision/enterprisebeans" : "0.1.*"
+		"techdivision/enterprisebeans" : "0.1.*",
+        "techdivision/dependencyinjectioncontainer" : "0.1.*"
 	},
 	"require-dev" : {
 		"phpunit/phpunit" : "3.7.*",
-        "nikic/phlexy" : "dev-master",
+		"nikic/phlexy" : "dev-master",
 		"appserver-io/build" : "0.1.*"
 	},
 	"autoload" : {

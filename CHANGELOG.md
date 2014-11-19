@@ -1,3 +1,13 @@
+# Version 0.10.7
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add missing composer dependency to DI container techdivision/dependencyinjectioncontainer
+
 # Version 0.10.6
 
 ## Bugfixes
