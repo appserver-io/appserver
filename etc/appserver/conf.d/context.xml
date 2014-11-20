@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<context type="AppserverIo\Appserver\Application\Application">
+    
+    <classLoaders>
+        <classLoader
+            name="composer"
+            type="AppserverIo\Appserver\Core\ComposerClassLoader"
+            factory="AppserverIo\Appserver\Core\ComposerClassLoaderFactory">
+            <directories>
+                <directory>/vendor</directory>
+            </directories>
+        </classLoader>
+        <classLoader
+            name="pbc"
+            type="AppserverIo\Appserver\Core\PbcClassLoader"
+            factory="AppserverIo\Appserver\Core\PbcClassLoaderFactory">
+            <params>
+                <param name="environment" type="string">production</param>
+                <param name="enforcementLevel" type="integer">7</param>
+                <param name="typeSafety" type="boolean">1</param>
+                <param name="processing" type="string">logging</param>
+            </params>
+            <directories>
+                <directory enforced="true">/WEB-INF/classes</directory>
+                <directory enforced="true">/META-INF/classes</directory>
+            </directories>
+        </classLoader>
+    </classLoaders>
+
+    <managers>
+        <manager name="Provider" beanInterface="ProviderInterface" type="AppserverIo\Appserver\DependencyInjectionContainer\Provider" factory="AppserverIo\Appserver\DependencyInjectionContainer\ProviderFactory"/>
+        <manager name="HandlerManager" beanInterface="HandlerContext" type="TAppserverIo\Appserver\WebSocketServer\HandlerManager" factory="AppserverIo\Appserver\WebSocketServer\HandlerManagerFactory"/>
+        <manager name="BeanManager" beanInterface="BeanContext" type="AppserverIo\Appserver\PersistenceContainer\BeanManager" factory="AppserverIo\Appserver\PersistenceContainer\BeanManagerFactory">
+            <!-- params>
+                <param name="lifetime" type="integer">1440</param>
+                <param name="garbageCollectionProbability" type="float">0.1</param>
+            </params -->
+        </manager>
+        <manager name="QueueManager" beanInterface="QueueContext" type="AppserverIo\Appserver\MessageQueue\QueueManager" factory="AppserverIo\Appserver\MessageQueue\QueueManagerFactory"/>
+        <manager name="ServletManager" beanInterface="ServletContext" type="AppserverIo\Appserver\ServletEngine\ServletManager" factory="AppserverIo\Appserver\ServletEngine\ServletManagerFactory"/>
+        <manager name="StandardSessionManager" beanInterface="SessionManager" type="AppserverIo\Appserver\ServletEngine\StandardSessionManager" factory="AppserverIo\Appserver\ServletEngine\StandardSessionManagerFactory"/>
+        <manager name="TimerServiceRegistry" beanInterface="TimerServiceContext" type="AppserverIo\Appserver\PersistenceContainer\TimerServiceRegistry" factory="AppserverIo\Appserver\PersistenceContainer\TimerServiceRegistryFactory"/>
+        <manager name="StandardAuthenticationManager" beanInterface="AuthenticationManager" type="AppserverIo\Appserver\ServletEngine\Authentication\StandardAuthenticationManager" factory="AppserverIo\Appserver\ServletEngine\Authentication\StandardAuthenticationManagerFactory"/>
+    </managers>
+
+</context>

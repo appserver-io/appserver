@@ -1,1 +1,1 @@
-<deployment type="TechDivision\ApplicationServer\Mock\MockDeployment"/>
+<deployment type="AppserverIo\Appserver\Core\Mock\MockDeployment"/>

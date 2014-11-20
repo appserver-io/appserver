@@ -1,33 +1,39 @@
 {
-	"name" : "techdivision/appserver",
-	"description" : "Thread based PHP daemon to implement stuff like message queues.",
-	"homepage" : "https://github.com/techdivision/TechDivision_ApplicationServer",
+	"name" : "appserver-io/appserver",
+	"description" : "Thread based PHP application server",
+	"homepage" : "https://github.com/appserver-io/appserver",
 	"license" : "OSL-3.0",
 	"require" : {
 		"php" : ">=5.4.0",
 		"rhumsaa/uuid" : "~2.4",
-		"appserver-io/logger" : "0.1.*",
-		"herrera-io/annotations" : "1.0.*",
-		"techdivision/lang" : "0.1.*",
+		"doctrine/orm" : "2.4.*",
+		"react/socket" : "0.4.*",
+		"cboden/ratchet" : "0.3.*",
+		"react/event-loop" : "0.4.*",
+		"nikic/phlexy" : "dev-master",
+		"mtdowling/cron-expression" : "1.0.*",
+		"appserver-io-psr/epb" : "0.1.*",
+		"appserver-io-psr/servlet" : "0.6.*",
+		"appserver-io/http" : "0.1.*",
+		"appserver-io/persistencecontainerclient" : "0.7.*",
+		"techdivision/server" : "0.1.*",
 		"techdivision/context" : "0.5.*",
 		"techdivision/storage" : "0.5.*",
-		"techdivision/configuration" : "0.1.*",
-		"techdivision/application" : "0.3.*",
-		"techdivision/php-by-contract" : "0.3.*",
-		"techdivision/server" : "0.1.*",
 		"techdivision/connection" : "0.1.*",
-		"techdivision/naming" : "0.1.*",
-		"techdivision/enterprisebeans" : "0.1.*",
-        "techdivision/dependencyinjectioncontainer" : "0.1.*"
+		"techdivision/properties" : "0.1.*",
+		"techdivision/configuration" : "0.1.*",
+		"techdivision/php-by-contract" : "0.3.*",
+		"techdivision/memcacheprotocol" : "0.1.*",
+		"techdivision/websocketprotocol" : "0.2.*",
+		"techdivision/messagequeueprotocol" : "0.2.*"
 	},
 	"require-dev" : {
 		"phpunit/phpunit" : "3.7.*",
-		"nikic/phlexy" : "dev-master",
 		"appserver-io/build" : "0.1.*"
 	},
 	"autoload" : {
 		"psr-0" : {
-			"TechDivision\\ApplicationServer" : [
+			"AppserverIo\\Appserver" : [
 				"src/",
 				"tests/"
 			]
@@ -40,27 +46,32 @@
 	},
 	"authors" : [{
 			"name" : "Tim Wagner",
-			"email" : "t.wagner@techdivision.com",
+			"email" : "tw@appserver.io",
 			"homepage" : "https://github.com/wagnert",
 			"role" : "Developer"
 		}, {
 			"name" : "Johann Zelger",
-			"email" : "j.zelger@techdivision.com",
+			"email" : "jz@appserver.io",
 			"homepage" : "https://github.com/zelgerj",
 			"role" : "Developer"
 		}, {
 			"name" : "Bernhard Wick",
-			"email" : "b.wick@techdivision.com",
+			"email" : "bw@appserver.io",
 			"homepage" : "https://github.com/wick-ed",
 			"role" : "Developer"
 		}
 	],
 	"support" : {
 		"email" : "t.wagner@techdivision.com",
-		"issues" : "https://github.com/techdivision/TechDivision_ApplicationServer/issues",
-		"source" : "https://github.com/techdivision/TechDivision_ApplicationServer"
+		"issues" : "https://github.com/appserver-io/appserver/issues",
+		"source" : "https://github.com/appserver-io/appserver"
 	},
 	"keywords" : [
 		"php application server"
-	]
+	],
+	"scripts" : {
+		"post-install-cmd" : [
+			"AppserverIo\\Meta\\Composer\\Script\\Setup::postInstall"
+		]
+	}
 }

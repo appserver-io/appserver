@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!DOCTYPE project>
-<project name="techdivision/appserver" default="composer-init" basedir=".">
+<project name="appserver-io/appserver" default="composer-init" basedir=".">
     
     <!-- initialize ENV variable -->
     <property environment="env" />

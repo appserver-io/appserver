@@ -3,11 +3,11 @@
 
 	<baseDirectory>/opt/appserver</baseDirectory>
 
-	<initialContext type="TechDivision\ApplicationServer\InitialContext">
+	<initialContext type="AppserverIo\Appserver\Core\InitialContext">
 		<description><![CDATA[The initial context configuration.]]></description>
-		<classLoader type="TechDivision\ApplicationServer\SplClassLoader" />
+		<classLoader type="AppserverIo\Appserver\Core\SplClassLoader" />
 		<storage
-			type="TechDivision\ApplicationServer\Mock\InitialContext\MockStorage" />
+			type="AppserverIo\Appserver\Core\Mock\InitialContext\MockStorage" />
 	</initialContext>
 
     <loggers>
@@ -62,18 +62,18 @@
 	<containers>
 
 		<container name="persistence"
-			type="TechDivision\ApplicationServer\Mock\MockAbstractContainerThread">
+			type="AppserverIo\Appserver\Core\Mock\MockAbstractContainerThread">
 			<description><![CDATA[This is an example of a container that uses a socket for sending and receiving messages. This solution can be used for clients connecting over a network.]]></description>
-			<receiver type="TechDivision\ApplicationServer\Mock\MockReceiver">
-				<worker type="TechDivision\ApplicationServer\Mock\Socket\MockWorker" />
-				<thread type="TechDivision\ApplicationServer\Mock\Socket\MockRequest" />
+			<receiver type="AppserverIo\Appserver\Core\Mock\MockReceiver">
+				<worker type="AppserverIo\Appserver\Core\Mock\Socket\MockWorker" />
+				<thread type="AppserverIo\Appserver\Core\Mock\Socket\MockRequest" />
 				<params>
 					<param name="workerNumber" type="integer">16</param>
 					<param name="address" type="string">0.0.0.0</param>
 					<param name="port" type="integer">8585</param>
 				</params>
 			</receiver>
-			<deployment type="TechDivision\ApplicationServer\Mock\MockDeployment" />
+			<deployment type="AppserverIo\Appserver\Core\Mock\MockDeployment" />
 			<host name="localhost" appBase="/webapps" serverAdmin="${appserver.admin.email}"
 				serverSoftware="appserver/${appserver.version} (${os.family}) PHP/${appserver.php.version}" />
 

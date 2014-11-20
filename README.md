@@ -1,9 +1,9 @@
-# TechDivision_ApplicationServer
-[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/techdivision/TechDivision_ApplicationServer?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+# appserver.io, a PHP application server
+[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/appserver-io/appserver?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Main repository for the [appserver.io](http://www.appserver.io/) project.
 
-[![Latest Stable Version](https://poser.pugx.org/techdivision/appserver/v/stable.png)](https://packagist.org/packages/techdivision/appserver) [![Total Downloads](https://poser.pugx.org/techdivision/appserver/downloads.png)](https://packagist.org/packages/techdivision/appserver) [![Dependencies Status](https://depending.in/techdivision/TechDivision_ApplicationServer.png)](http://depending.in/techdivision/TechDivision_ApplicationServer) [![License](https://poser.pugx.org/techdivision/appserver/license.png)](https://packagist.org/packages/techdivision/appserver) [![Build Status](https://travis-ci.org/techdivision/TechDivision_ApplicationServer.png)](https://travis-ci.org/techdivision/TechDivision_ApplicationServer) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/techdivision/TechDivision_ApplicationServer/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/techdivision/TechDivision_ApplicationServer/?branch=master) [![Code Coverage](https://scrutinizer-ci.com/g/techdivision/TechDivision_ApplicationServer/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/techdivision/TechDivision_ApplicationServer/?branch=master)
+[![Latest Stable Version](https://poser.pugx.org/appserver-io/appserver/v/stable.png)](https://packagist.org/packages/appserver-io/appserver) [![Total Downloads](https://poser.pugx.org/appserver-io/appserver/downloads.png)](https://packagist.org/packages/appserver-io/appserver) [![Dependencies Status](https://depending.in/appserver-io/appserver.png)](http://depending.in/appserver-io/appserver) [![License](https://poser.pugx.org/appserver-io/appserver/license.png)](https://packagist.org/packages/appserver-io/appserver) [![Build Status](https://travis-ci.org/appserver-io/appserver.png)](https://travis-ci.org/appserver-io/appserver) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/appserver-io/appserver/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/appserver-io/appserver/?branch=master) [![Code Coverage](https://scrutinizer-ci.com/g/appserver-io/appserver/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/appserver-io/appserver/?branch=master)
 
 # Introduction
 
@@ -30,7 +30,7 @@ need advanced features like cluster functionality.
 
 ## Community Edition
 
-### Version 0.5.8 - Application Server + [WebSocketContainer](https://github.com/techdivision/TechDivision_WebSocketContainer)
+### Version 0.5.8 - Application Server + WebSocketServer
 - [x] Logging with [monolog](https://github.com/Seldaek/monolog>)
 - [x] Generic management API
 - [x] HTTP basic + digest authentication for Servlet Container
@@ -42,10 +42,10 @@ need advanced features like cluster functionality.
 - [x] WebSocket integration
 - [x] Running Magento CE 1.7.x + 1.8.x demo applications
 
-### Version 0.5.9 - [Servlet-Engine](https://github.com/techdivision/TechDivision_ServletEngine)
+### Version 0.5.9 - Servlet-Engine
 - [x] Windows installer
 - [x] PHAR based deployment
-- [x] SSL Encryption for TechDivision_ServletContainer project
+- [x] SSL Encryption for servlet engine project
 - [x] RPM packages
 
 ### Version 0.6.0 - [WebServer](https://github.com/techdivision/TechDivision_WebServer)
@@ -63,28 +63,26 @@ need advanced features like cluster functionality.
 - [x] Running TYPO3 6.x demo application over FastCGI
 - [x] Running all type of PHP applications over FastCGI
 
-### Version 0.7 - [Application Server](https://github.com/techdivision/TechDivision_ApplicationServer)
+### Version 0.7 - Application Server
 - [x] Integration of [TechDivision_Server](https://github.com/techdivision/TechDivision_Server) as single point of entry
 
-### Version 0.8 - [Persistence-Container](https://github.com/techdivision/TechDivision_PersistenceContainer)
-- [x] Application based context [Issue #178](https://github.com/techdivision/TechDivision_ApplicationServer/issues/178)
+### Version 0.8 - Persistence-Container
+- [x] Application based context [Issue #178](https://github.com/appserver-io/appserver/issues/178)
 - [x] [Design by Contract](https://github.com/wick-ed/php-by-contract) default integration
 - [x] Stateful, Stateless + Singleton session bean functionality
 - [x] Message bean functionality
 
-### Version 0.9 - [Persistence-Container](https://github.com/techdivision/TechDivision_PersistenceContainer)
-- [x] Timer Service [Issue #185](https://github.com/techdivision/TechDivision_ApplicationServer/issues/185)
+### Version 0.9 - Persistence-Container
+- [x] Timer Service [Issue #185](https://github.com/appserver-io/appserver/issues/185)
 
-### Version 1.0 - [Persistence-Container](https://github.com/techdivision/TechDivision_PersistenceContainer) + [Servlet-Engine](https://github.com/techdivision/TechDivision_Engine)
-- [ ] AOP on all methods in Stateful, Stateless + Singleton Session Beans, Message Beans and Servlets [Issue #3](https://github.com/techdivision/TechDivision_ApplicationServer/issues/3)
-- [ ] DI for Stateful, Stateless + Singleton Session Beans, Message Beans and Servlets [Issue #4](https://github.com/techdivision/TechDivision_ApplicationServer/issues/4)
-- [ ] Separate configuration files for server, container and application [Issue #192](https://github.com/techdivision/TechDivision_ApplicationServer/issues/192)
+### Version 1.0 - Persistence-Container + Servlet-Engine
+- [ ] AOP on all methods in Stateful, Stateless + Singleton Session Beans, Message Beans and Servlets [Issue #3](https://github.com/appserver-io/appserver/issues/3)
+- [ ] DI for Stateful, Stateless + Singleton Session Beans, Message Beans and Servlets [Issue #4](https://github.com/appserver-io/appserver/issues/4)
+- [ ] Separate configuration files for server, container and application [Issue #192](https://github.com/appserver-io/appserver/issues/192)
 - [ ] Documentation + Tutorials
-- [ ] 100 % Coverage for PHPUnit test suite for TechDivision_MessageQueue project
-- [ ] 100 % Coverage for PHPUnit test suite for TechDivision_PersistenceContainer project
-- [ ] 100 % Coverage for PHPUnit test suite for TechDivision_ApplicationServer project
+- [ ] 100 % Coverage for PHPUnit test suite for appserver project
 
-### Version 1.0.1 - [Persistence-Container](https://github.com/techdivision/TechDivision_PersistenceContainer)
+### Version 1.0.1 - Persistence-Container
 - [ ] Expose Stateless Session Beans as SOAP Web Service endpoint
 
 ## Other Stuff

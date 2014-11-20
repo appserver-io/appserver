@@ -1,0 +1,118 @@
+<?php
+
+/**
+ * resources/templates/os-specific/darwin/sbin/appserverctl.phtml
+ *
+ * PHP version 5
+ *
+ * @category   Server
+ * @package    Appserver
+ * @subpackage Meta
+ * @author     Tim Wagner <tw@appserver.io>
+ * @copyright  2014 TechDivision GmbH <info@appserver.io>
+ * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link       http://www.appserver.io
+ */
+
+use AppserverIo\Appserver\Meta\Composer\Script\Setup;
+use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
+
+?>
+#!/bin/sh
+#
+#
+# NOTICE OF LICENSE
+#
+# This source file is subject to the Open Software License (OSL 3.0)
+# that is available through the world-wide-web at this URL:
+# http://opensource.org/licenses/osl-3.0.php
+#
+#
+# The appserver control script designed to allow an easy command line interface
+# to controlling the appserver.  Written by Tim Wagner, 2013/07/24
+#
+# The exit codes returned are:
+#   XXX this doc is no longer correct now that the interesting
+#   XXX functions are handled by appserver
+#	0 - operation completed successfully
+#	1 -
+#	2 - usage error
+#	3 - appserver could not be started
+#	4 - appserver could not be stopped
+#	5 - appserver could not be started during a restart
+#	6 - appserver could not be restarted during a restart
+#	7 - appserver could not be restarted during a graceful restart
+#	8 - configuration syntax error
+#
+# When multiple arguments are given, only the error from the _last_
+# one is reported.  Run "appserverctl help" for usage info
+#
+ARGV="$@"
+#
+# |||||||||||||||||||| START CONFIGURATION SECTION  ||||||||||||||||||||
+# --------------------                              --------------------
+#
+# pick up any necessary environment variables
+if test -f /usr/sbin/envvars; then
+  . /usr/sbin/envvars
+fi
+#
+# Set this variable to a command that increases the maximum
+# number of file descriptors allowed per child process. This is
+# critical for configurations that use many file descriptors,
+# such as mass vhosting, or a multithreaded server.
+ULIMIT_MAX_FILES=""
+# --------------------                              --------------------
+# ||||||||||||||||||||   END CONFIGURATION SECTION  ||||||||||||||||||||
+
+
+LAUNCHCTL="/bin/launchctl"
+JOB_LABEL="io.appserver.appserver"
+LAUNCHD_JOB="<?php echo Setup::getValue(SetupKeys::INSTALL_DIR) ?>/sbin/plist/$JOB_LABEL.plist"
+
+
+run_launchctl() {
+    if [ $UID != 0 ]; then
+        echo This operation requires root.
+        exit 1
+    fi
+    $LAUNCHCTL $@
+}
+
+# Set the maximum number of file descriptors allowed per child process.
+if [ "x$ULIMIT_MAX_FILES" != "x" ] ; then
+    $ULIMIT_MAX_FILES
+fi
+
+display_help() {
+    echo "usage $0 [start|restart|graceful|stop|status|graceful-stop]
+    (see code for more info)"
+}
+
+ERROR=0
+
+case $ARGV in
+start)
+    run_launchctl load -w $LAUNCHD_JOB
+    ERROR=$?
+    ;;
+stop|graceful-stop)
+    run_launchctl unload -w $LAUNCHD_JOB
+    ERROR=$?
+    ;;
+status)
+    run_launchctl list $JOB_LABEL
+    ERROR=$?
+    ;;
+restart|graceful)
+    run_launchctl unload -w $LAUNCHD_JOB 2> /dev/null
+    run_launchctl load -w $LAUNCHD_JOB
+    ERROR=$?
+    ;;
+help|-h|--help|*)
+    display_help
+    ERROR=1
+    ;;
+esac
+
+exit $ERROR

@@ -1,0 +1,513 @@
+<?php
+
+/**
+ * resources/templates/etc/appserver/appserver.xml.phtml
+ *
+ * PHP version 5
+ *
+ * @category   Server
+ * @package    Appserver
+ * @subpackage Meta
+ * @author     Tim Wagner <tw@appserver.io>
+ * @copyright  2014 TechDivision GmbH <info@appserver.io>
+ * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link       http://www.appserver.io
+ */
+
+use AppserverIo\Appserver\Meta\Composer\Script\Setup;
+use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
+
+?>
+<?php echo '<?xml version="1.0" encoding="UTF-8"?>' . PHP_EOL ?>
+<appserver xmlns="http://www.appserver.io/appserver">
+
+    <params>
+        <param name="user" type="string"><?php echo Setup::getValue(SetupKeys::USER) ?></param>
+        <param name="group" type="string"><?php echo Setup::getValue(SetupKeys::GROUP) ?></param>
+        <param name="umask" type="string"><?php echo Setup::getValue(SetupKeys::UMASK) ?></param>
+    </params>
+
+    <!--
+    <initialContext type="AppserverIo\Appserver\CoreInitialContext">
+        <description><![CDATA[The initial context configuration.]]></description>
+        <classLoader name="default" type="AppserverIo\Appserver\CoreSplClassLoader" />
+        <storage type="TechDivision\Storage\StackableStorage" />
+    </initialContext>
+
+    <extractors>
+        <extractor name="phar" type="AppserverIo\Appserver\CoreExtractors\PharExtractor" createBackups="false" restoreBackups="false" />
+    </extractors>
+
+    <provisioners>
+        <provisioner name="datasource" type="AppserverIo\Appserver\CoreDatasourceProvisioner" />
+        <provisioner name="standard" type="AppserverIo\Appserver\CoreStandardProvisioner" />
+    </provisioners>
+
+    <loggers>
+        <logger channelName="system" name="System" type="\AppserverIo\Logger\Logger">
+            <handlers>
+                <handler type="\AppserverIo\Logger\Handlers\CustomFileHandler">
+                    <formatter type="\AppserverIo\Logger\Formatters\StandardFormatter"/>
+                    <params>
+                        <param name="logFile" type="string">var/log/appserver-errors.log</param>
+                        <param name="logLevel" type="string">info</param>
+                    </params>
+                </handler>
+            </handlers>
+        </logger>
+        <logger channelName="access" name="Access" type="\AppserverIo\Logger\Logger">
+            <handlers>
+                <handler type="\AppserverIo\Logger\Handlers\CustomFileHandler">
+                    <formatter type="\AppserverIo\Logger\Formatters\StandardFormatter">
+                        <params>
+                            <param name="format" type="string">%4$s</param>
+                        </params>
+                    </formatter>
+                    <params>
+                        <param name="logFile" type="string">var/log/appserver-access.log</param>
+                        <param name="logLevel" type="string">info</param>
+                    </params>
+                </handler>
+            </handlers>
+        </logger>
+        <logger channelName="profile" name="Profile" type="\AppserverIo\Logger\Logger">
+            <processors>
+                <processor type="\AppserverIo\Logger\Processors\MemoryProcessor"/>
+                <processor type="\AppserverIo\Logger\Processors\SysloadProcessor"/>
+                <processor type="\AppserverIo\Logger\Processors\ThreadContextProcessor"/>
+            </processors>
+            <handlers>
+                <handler type="\AppserverIo\Logger\Handlers\LogstashHandler">
+                    <params>
+                        <param name="host" type="string">127.0.0.1</param>
+                        <param name="port" type="integer">9514</param>
+                        <param name="logLevel" type="string">debug</param>
+                    </params>
+                </handler>
+                <handler type="\AppserverIo\Logger\Handlers\CustomFileHandler">
+                    <params>
+                        <param name="logFile" type="string">var/log/appserver-profile.log</param>
+                        <param name="logLevel" type="string">debug</param>
+                    </params>
+                </handler>
+            </handlers>
+        </logger>
+    </loggers>
+    -->
+
+    <containers>
+
+        <container
+                name="combined-appserver"
+                type="AppserverIo\Appserver\CoreGenericContainer">
+
+            <description>
+                <![CDATA[This is an example of a webserver container that handles http requests in common way]]>
+            </description>
+
+            <deployment type="AppserverIo\Appserver\CoreGenericDeployment" />
+
+            <host
+                    name="localhost"
+                    appBase="/webapps"
+                    serverAdmin="info@appserver.io"
+                    serverSoftware="<?php echo Setup::getValue(SetupKeys::SOFTWARE_IDENTIFIER) ?>" />
+
+            <servers>
+
+                <server
+                        name="persistence-container"
+                        type="\TechDivision\Server\Servers\MultiThreadedServer"
+                        worker="\TechDivision\Server\Workers\ThreadWorker"
+                        socket="\TechDivision\Server\Sockets\StreamSocket"
+                        requestContext="\TechDivision\Server\Contexts\RequestContext"
+                        serverContext="\TechDivision\Server\Contexts\ServerContext"
+                        loggerName="System">
+
+                    <params>
+                        <param name="admin" type="string"><?php echo Setup::getValue(SetupKeys::ADMIN_EMAIL) ?></param>
+                        <param name="software" type="string"><?php echo Setup::getValue(SetupKeys::SOFTWARE_IDENTIFIER) ?></param>
+                        <param name="transport" type="string">tcp</param>
+                        <param name="address" type="string"><?php echo Setup::getValue(SetupKeys::CONTAINER_PERSISTENCE_CONTAINER_HOST) ?></param>
+                        <param name="port" type="integer"><?php echo Setup::getValue(SetupKeys::CONTAINER_PERSISTENCE_CONTAINER_PORT) ?></param>
+                        <param name="workerNumber" type="integer"><?php echo Setup::getValue(SetupKeys::CONTAINER_PERSISTENCE_CONTAINER_WORKER_NUMBER) ?></param>
+                        <param name="workerAcceptMin" type="integer"><?php echo Setup::getValue(SetupKeys::CONTAINER_SERVER_WORKER_ACCEPT_MIN) ?></param>
+                        <param name="workerAcceptMax" type="integer"><?php echo Setup::getValue(SetupKeys::CONTAINER_SERVER_WORKER_ACCEPT_MAX) ?></param>
+                        <param name="directoryIndex" type="string">index.pc</param>
+                        <param name="keepAliveMax" type="integer">64</param>
+                        <param name="keepAliveTimeout" type="integer">5</param>
+                        <param name="errorsPageTemplatePath" type="string">var/www/errors/error.phtml</param>
+                    </params>
+
+                    <environmentVariables>
+                        <environmentVariable condition="" definition="LOGGER_ACCESS=Access" />
+                    </environmentVariables>
+
+                    <connectionHandlers>
+                        <connectionHandler type="\TechDivision\WebServer\ConnectionHandlers\HttpConnectionHandler" />
+                    </connectionHandlers>
+
+                    <accesses>
+                        <!-- per default allow everything -->
+                        <access type="allow">
+                            <params>
+                                <param name="X_REQUEST_URI" type="string">.*</param>
+                            </params>
+                        </access>
+                    </accesses>
+
+                    <modules>
+                        <!-- REQUEST_POST hook -->
+                        <module type="\TechDivision\WebServer\Modules\AuthenticationModule"/>
+                        <module type="\TechDivision\WebServer\Modules\VirtualHostModule"/>
+                        <module type="\TechDivision\WebServer\Modules\EnvironmentVariableModule" />
+                        <module type="\TechDivision\RewriteModule\RewriteModule"/>
+                        <module type="\TechDivision\WebServer\Modules\DirectoryModule"/>
+                        <module type="\TechDivision\WebServer\Modules\AccessModule"/>
+                        <module type="\TechDivision\WebServer\Modules\CoreModule"/>
+                        <module type="\TechDivision\PersistenceContainer\PersistenceContainerModule" />
+                        <!-- RESPONSE_PRE hook -->
+                        <module type="\TechDivision\WebServer\Modules\DeflateModule"/>
+                        <!-- RESPONSE_POST hook -->
+                        <module type="\AppserverIo\Appserver\CoreModules\ProfileModule"/>
+                    </modules>
+
+                    <fileHandlers>
+                        <fileHandler name="persistence-container" extension=".pc" />
+                    </fileHandlers>
+
+                </server>
+
+                <server
+                        name="message-queue"
+                        type="\TechDivision\Server\Servers\MultiThreadedServer"
+                        worker="\TechDivision\Server\Workers\ThreadWorker"
+                        socket="\TechDivision\Server\Sockets\StreamSocket"
+                        requestContext="\TechDivision\Server\Contexts\RequestContext"
+                        serverContext="\TechDivision\Server\Contexts\ServerContext"
+                        loggerName="System">
+
+                    <params>
+                        <param name="admin" type="string"><?php echo Setup::getValue(SetupKeys::ADMIN_EMAIL) ?></param>
+                        <param name="software" type="string"><?php echo Setup::getValue(SetupKeys::SOFTWARE_IDENTIFIER) ?></param>
+                        <param name="transport" type="string">tcp</param>
+                        <param name="address" type="string"><?php echo Setup::getValue(SetupKeys::CONTAINER_MESSAGE_QUEUE_HOST) ?></param>
+                        <param name="port" type="integer"><?php echo Setup::getValue(SetupKeys::CONTAINER_MESSAGE_QUEUE_PORT) ?></param>
+                        <param name="workerNumber" type="integer"><?php echo Setup::getValue(SetupKeys::CONTAINER_MESSAGE_QUEUE_WORKER_NUMBER) ?></param>
+                        <param name="workerAcceptMin" type="integer"><?php echo Setup::getValue(SetupKeys::CONTAINER_SERVER_WORKER_ACCEPT_MIN) ?></param>
+                        <param name="workerAcceptMax" type="integer"><?php echo Setup::getValue(SetupKeys::CONTAINER_SERVER_WORKER_ACCEPT_MAX) ?></param>
+                        <param name="directoryIndex" type="string">index.mq</param>
+                        <param name="keepAliveMax" type="integer">64</param>
+                        <param name="keepAliveTimeout" type="integer">5</param>
+                        <param name="errorsPageTemplatePath" type="string">var/www/errors/error.phtml</param>
+                    </params>
+
+                    <environmentVariables>
+                        <environmentVariable condition="" definition="LOGGER_ACCESS=Access" />
+                    </environmentVariables>
+
+                    <connectionHandlers>
+                        <connectionHandler type="\TechDivision\WebServer\ConnectionHandlers\HttpConnectionHandler" />
+                    </connectionHandlers>
+
+                    <accesses>
+                        <!-- per default allow everything -->
+                        <access type="allow">
+                            <params>
+                                <param name="X_REQUEST_URI" type="string">.*</param>
+                            </params>
+                        </access>
+                    </accesses>
+
+                    <modules>
+                        <!-- REQUEST_POST hook -->
+                        <module type="\TechDivision\WebServer\Modules\AuthenticationModule"/>
+                        <module type="\TechDivision\WebServer\Modules\VirtualHostModule"/>
+                        <module type="\TechDivision\WebServer\Modules\EnvironmentVariableModule" />
+                        <module type="\TechDivision\RewriteModule\RewriteModule"/>
+                        <module type="\TechDivision\WebServer\Modules\DirectoryModule"/>
+                        <module type="\TechDivision\WebServer\Modules\AccessModule"/>
+                        <module type="\TechDivision\WebServer\Modules\CoreModule"/>
+                        <module type="\TechDivision\MessageQueue\MessageQueueModule" />
+                        <!-- RESPONSE_PRE hook -->
+                        <module type="\TechDivision\WebServer\Modules\DeflateModule"/>
+                        <!-- RESPONSE_POST hook -->
+                        <module type="\AppserverIo\Appserver\CoreModules\ProfileModule"/>
+                    </modules>
+
+                    <fileHandlers>
+                        <fileHandler name="message-queue" extension=".mq" />
+                    </fileHandlers>
+
+                </server>
+
+                <server
+                        name="http"
+                        type="\TechDivision\Server\Servers\MultiThreadedServer"
+                        worker="\TechDivision\Server\Workers\ThreadWorker"
+                        socket="\TechDivision\Server\Sockets\StreamSocket"
+                        serverContext="\TechDivision\Server\Contexts\ServerContext"
+                        requestContext="\TechDivision\Server\Contexts\RequestContext"
+                        loggerName="System">
+                    <params>
+                        <param name="admin" type="string"><?php echo Setup::getValue(SetupKeys::ADMIN_EMAIL) ?></param>
+                        <param name="software" type="string"><?php echo Setup::getValue(SetupKeys::SOFTWARE_IDENTIFIER) ?></param>
+                        <param name="transport" type="string">tcp</param>
+                        <param name="address" type="string"><?php echo Setup::getValue(SetupKeys::CONTAINER_HTTP_HOST) ?></param>
+                        <param name="port" type="integer"><?php echo Setup::getValue(SetupKeys::CONTAINER_HTTP_PORT) ?></param>
+                        <param name="workerNumber" type="integer"><?php echo Setup::getValue(SetupKeys::CONTAINER_HTTP_WORKER_NUMBER) ?></param>
+                        <param name="workerAcceptMin" type="integer"><?php echo Setup::getValue(SetupKeys::CONTAINER_SERVER_WORKER_ACCEPT_MIN) ?></param>
+                        <param name="workerAcceptMax" type="integer"><?php echo Setup::getValue(SetupKeys::CONTAINER_SERVER_WORKER_ACCEPT_MAX) ?></param>
+                        <param name="documentRoot" type="string">webapps</param>
+                        <param name="directoryIndex" type="string">index.do index.php index.html index.htm</param>
+                        <param name="keepAliveMax" type="integer">64</param>
+                        <param name="keepAliveTimeout" type="integer">5</param>
+                        <param name="errorsPageTemplatePath" type="string">var/www/errors/error.phtml</param>
+                    </params>
+
+                    <environmentVariables>
+                        <environmentVariable condition="" definition="LOGGER_ACCESS=Access" />
+                    </environmentVariables>
+
+                    <connectionHandlers>
+                        <connectionHandler type="\TechDivision\WebServer\ConnectionHandlers\HttpConnectionHandler" />
+                    </connectionHandlers>
+
+                    <authentications>
+                        <authentication uri="^\/admin.*">
+                            <params>
+                                <param name="type" type="string">
+                                    \TechDivision\WebServer\Authentication\BasicAuthentication
+                                </param>
+                                <param name="realm" type="string">appserver.io Basic Authentication System</param>
+                                <param name="hash" type="string">YXBwc2VydmVyOmFwcHNlcnZlci5pMA==</param>
+                                <!-- <param name="file" type="string">var/www/auth/basic/appserver</param> -->
+                                <!-- <param name="username" type="string">appserver</param> -->
+                                <!-- <param name="password" type="string">wURpZpgIT.w1I</param> -->
+                            </params>
+                        </authentication>
+                    </authentications>
+
+                    <accesses>
+                        <!-- per default allow everything -->
+                        <access type="allow">
+                            <params>
+                                <param name="X_REQUEST_URI" type="string">.*</param>
+                            </params>
+                        </access>
+                    </accesses>
+
+                    <!--
+                     ! Some examples to configuration your virtual host can be found at:
+                     !
+                     ! https://github.com/techdivision/TechDivision_AppserverDocumentation/blob/master/docs/components/servers/webserver/modules/vhostmodule.md
+                     -->
+
+                    <modules>
+                        <!-- REQUEST_POST hook -->
+                        <module type="\TechDivision\WebServer\Modules\VirtualHostModule"/>
+                        <module type="\TechDivision\WebServer\Modules\AuthenticationModule"/>
+                        <module type="\TechDivision\WebServer\Modules\EnvironmentVariableModule" />
+                        <module type="\TechDivision\RewriteModule\RewriteModule"/>
+                        <module type="\TechDivision\WebServer\Modules\DirectoryModule"/>
+                        <module type="\TechDivision\WebServer\Modules\AccessModule"/>
+                        <module type="\TechDivision\WebServer\Modules\CoreModule"/>
+                        <module type="\TechDivision\PhpModule\PhpModule"/>
+                        <module type="\TechDivision\FastCgiModule\FastCgiModule"/>
+                        <module type="\TechDivision\ServletEngine\ServletEngine" />
+                        <!-- RESPONSE_PRE hook -->
+                        <module type="\TechDivision\WebServer\Modules\DeflateModule"/>
+                        <!-- RESPONSE_POST hook -->
+                        <module type="\AppserverIo\Appserver\CoreModules\ProfileModule"/>
+                    </modules>
+
+                    <fileHandlers>
+                        <fileHandler name="fastcgi" extension=".php">
+                            <params>
+                                <param name="host" type="string"><?php echo Setup::getValue(SetupKeys::PHP_FPM_HOST) ?></param>
+                                <param name="port" type="integer"><?php echo Setup::getValue(SetupKeys::PHP_FPM_PORT) ?></param>
+                            </params>
+                        </fileHandler>
+                        <fileHandler name="fastcgi" extension=".phtml">
+                            <params>
+                                <param name="host" type="string"><?php echo Setup::getValue(SetupKeys::PHP_FPM_HOST) ?></param>
+                                <param name="port" type="integer"><?php echo Setup::getValue(SetupKeys::PHP_FPM_PORT) ?></param>
+                            </params>
+                        </fileHandler>
+                        <fileHandler name="servlet" extension=".do" />
+                    </fileHandlers>
+
+                </server>
+
+                <server
+                        name="https"
+                        type="\TechDivision\Server\Servers\MultiThreadedServer"
+                        worker="\TechDivision\Server\Workers\ThreadWorker"
+                        socket="\TechDivision\Server\Sockets\StreamSocket"
+                        serverContext="\TechDivision\Server\Contexts\ServerContext"
+                        requestContext="\TechDivision\Server\Contexts\RequestContext"
+                        loggerName="System">
+                    <params>
+                        <param name="admin" type="string"><?php echo Setup::getValue(SetupKeys::ADMIN_EMAIL) ?></param>
+                        <param name="software" type="string"><?php echo Setup::getValue(SetupKeys::SOFTWARE_IDENTIFIER) ?></param>
+                        <param name="workerNumber" type="integer"><?php echo Setup::getValue(SetupKeys::CONTAINER_HTTPS_WORKER_NUMBER) ?></param>
+                        <param name="workerAcceptMin" type="integer"><?php echo Setup::getValue(SetupKeys::CONTAINER_SERVER_WORKER_ACCEPT_MIN) ?></param>
+                        <param name="workerAcceptMax" type="integer"><?php echo Setup::getValue(SetupKeys::CONTAINER_SERVER_WORKER_ACCEPT_MAX) ?></param>
+                        <param name="transport" type="string">ssl</param>
+                        <param name="address" type="string"><?php echo Setup::getValue(SetupKeys::CONTAINER_HTTPS_HOST) ?></param>
+                        <param name="port" type="integer"><?php echo Setup::getValue(SetupKeys::CONTAINER_HTTPS_PORT) ?></param>
+                        <param name="certPath" type="string">etc/appserver/server.pem</param>
+                        <param name="passphrase" type="string"></param>
+                        <param name="documentRoot" type="string">webapps</param>
+                        <param name="directoryIndex" type="string">index.do index.php index.html index.htm</param>
+                        <param name="keepAliveMax" type="integer">64</param>
+                        <param name="keepAliveTimeout" type="integer">5</param>
+                        <param name="errorsPageTemplatePath" type="string">var/www/errors/error.phtml</param>
+                    </params>
+
+                    <environmentVariables>
+                        <environmentVariable condition="" definition="LOGGER_ACCESS=Access" />
+                    </environmentVariables>
+
+                    <connectionHandlers>
+                        <connectionHandler type="\TechDivision\WebServer\ConnectionHandlers\HttpConnectionHandler" />
+                    </connectionHandlers>
+
+                    <authentications>
+                        <authentication uri="^\/admin.*">
+                            <params>
+                                <param name="type" type="string">
+                                    \TechDivision\WebServer\Authentication\BasicAuthentication
+                                </param>
+                                <param name="realm" type="string">appserver.io Basic Authentication System</param>
+                                <param name="hash" type="string">YXBwc2VydmVyOmFwcHNlcnZlci5pMA==</param>
+                                <!-- <param name="file" type="string">var/www/auth/basic/appserver</param> -->
+                                <!-- <param name="username" type="string">appserver</param> -->
+                                <!-- <param name="password" type="string">wURpZpgIT.w1I</param> -->
+                            </params>
+                        </authentication>
+                    </authentications>
+
+                    <accesses>
+                        <!-- per default allow everything -->
+                        <access type="allow">
+                            <params>
+                                <param name="X_REQUEST_URI" type="string">.*</param>
+                            </params>
+                        </access>
+                    </accesses>
+
+                    <!--
+                     ! Some examples to configuration your virtual host can be found at:
+                     !
+                     ! https://github.com/techdivision/TechDivision_AppserverDocumentation/blob/master/docs/components/servers/webserver/modules/vhostmodule.md
+                     -->
+
+                    <modules>
+                        <!-- REQUEST_POST hook -->
+                        <module type="\TechDivision\WebServer\Modules\VirtualHostModule"/>
+                        <module type="\TechDivision\WebServer\Modules\AuthenticationModule"/>
+                        <module type="\TechDivision\WebServer\Modules\EnvironmentVariableModule" />
+                        <module type="\TechDivision\RewriteModule\RewriteModule"/>
+                        <module type="\TechDivision\WebServer\Modules\DirectoryModule"/>
+                        <module type="\TechDivision\WebServer\Modules\AccessModule"/>
+                        <module type="\TechDivision\WebServer\Modules\CoreModule"/>
+                        <module type="\TechDivision\PhpModule\PhpModule"/>
+                        <module type="\TechDivision\FastCgiModule\FastCgiModule"/>
+                        <module type="\TechDivision\ServletEngine\ServletEngine" />
+                        <!-- RESPONSE_PRE hook -->
+                        <module type="\TechDivision\WebServer\Modules\DeflateModule"/>
+                        <!-- RESPONSE_POST hook -->
+                        <module type="\AppserverIo\Appserver\CoreModules\ProfileModule"/>
+                    </modules>
+
+                    <fileHandlers>
+                        <fileHandler name="fastcgi" extension=".php">
+                            <params>
+                                <param name="host" type="string"><?php echo Setup::getValue(SetupKeys::PHP_FPM_HOST) ?></param>
+                                <param name="port" type="integer"><?php echo Setup::getValue(SetupKeys::PHP_FPM_PORT) ?></param>
+                            </params>
+                        </fileHandler>
+                        <fileHandler name="fastcgi" extension=".phtml">
+                            <params>
+                                <param name="host" type="string"><?php echo Setup::getValue(SetupKeys::PHP_FPM_HOST) ?></param>
+                                <param name="port" type="integer"><?php echo Setup::getValue(SetupKeys::PHP_FPM_PORT) ?></param>
+                            </params>
+                        </fileHandler>
+                        <fileHandler name="servlet" extension=".do" />
+                    </fileHandlers>
+
+                </server>
+
+                <!--
+                 ! The following servers are in a development state and are not production ready,
+                 ! uncomment them on your own risk.
+                 -->
+
+                <!--
+                <server
+                        name="web-socket"
+                        type="\TechDivision\WebSocketServer\Servers\AsyncServer"
+                        socket="\TechDivision\WebSocketServer\Sockets\AsyncSocket"
+                        serverContext="\TechDivision\Server\Contexts\ServerContext"
+                        requestContext="\TechDivision\Server\Contexts\RequestContext"
+                        loggerName="System">
+                    <params>
+                        <param name="admin" type="string"><?php echo Setup::getValue(SetupKeys::ADMIN_EMAIL) ?></param>
+                        <param name="software" type="string"><?php echo Setup::getValue(SetupKeys::SOFTWARE_IDENTIFIER) ?></param>
+                        <param name="transport" type="string">tcp</param>
+                        <param name="address" type="string"><?php echo Setup::getValue(SetupKeys::CONTAINER_WEB_SOCKET_HOST) ?></param>
+                        <param name="port" type="integer"><?php echo Setup::getValue(SetupKeys::CONTAINER_WEB_SOCKET_PORT) ?></param>
+                        <param name="documentRoot" type="string">webapps</param>
+                        <param name="errorsPageTemplatePath" type="string">var/www/errors/error.phtml</param>
+                    </params>
+
+                    <environmentVariables>
+                        <environmentVariable condition="" definition="LOGGER_ACCESS=Access" />
+                    </environmentVariables>
+
+                    <connectionHandlers>
+                        <connectionHandler type="\TechDivision\WebSocketProtocol\WebSocketConnectionHandler" />
+                    </connectionHandlers>
+
+                </server>
+
+                <server
+                        name="memcached"
+                        type="\TechDivision\Server\Servers\MultiThreadedServer"
+                        worker="\TechDivision\Server\Workers\ThreadWorker"
+                        socket="\TechDivision\Server\Sockets\StreamSocket"
+                        serverContext="\TechDivision\Server\Contexts\ServerContext"
+                        requestContext="\TechDivision\Server\Contexts\RequestContext"
+                        loggerName="System">
+
+                    <params>
+                        <param name="admin" type="string"><?php echo Setup::getValue(SetupKeys::ADMIN_EMAIL) ?></param>
+                        <param name="software" type="string"><?php echo Setup::getValue(SetupKeys::SOFTWARE_IDENTIFIER) ?></param>
+                        <param name="transport" type="string">tcp</param>
+                        <param name="address" type="string"><?php echo Setup::getValue(SetupKeys::CONTAINER_MEMCACHED_HOST) ?></param>
+                        <param name="port" type="integer"><?php echo Setup::getValue(SetupKeys::CONTAINER_MEMCACHED_PORT) ?></param>
+                        <param name="workerNumber" type="integer"><?php echo Setup::getValue(SetupKeys::CONTAINER_MEMCACHED_WORKER_NUMBER) ?></param>
+                        <param name="workerAcceptMin" type="integer"><?php echo Setup::getValue(SetupKeys::CONTAINER_SERVER_WORKER_ACCEPT_MIN) ?></param>
+                        <param name="workerAcceptMax" type="integer"><?php echo Setup::getValue(SetupKeys::CONTAINER_SERVER_WORKER_ACCEPT_MAX) ?></param>
+                        <param name="keepAliveMax" type="integer">64</param>
+                        <param name="keepAliveTimeout" type="integer">16</param>
+                    </params>
+
+                    <environmentVariables>
+                        <environmentVariable condition="" definition="LOGGER_ACCESS=Access" />
+                    </environmentVariables>
+
+                    <connectionHandlers>
+                        <connectionHandler type="\TechDivision\MemcacheProtocol\MemcacheConnectionHandler" />
+                    </connectionHandlers>
+
+                </server>
+                -->
+
+            </servers>
+        </container>
+
+    </containers>
+
+</appserver>

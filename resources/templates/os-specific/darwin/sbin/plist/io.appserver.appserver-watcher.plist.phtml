@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?php
+
+/**
+ * resources/templates/os-specific/darwin/sbin/plist/io.appserver.appserver-watcher.plist.phtml
+ *
+ * PHP version 5
+ *
+ * @category   Server
+ * @package    Appserver
+ * @subpackage Meta
+ * @author     Tim Wagner <tw@appserver.io>
+ * @copyright  2014 TechDivision GmbH <info@appserver.io>
+ * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link       http://www.appserver.io
+ */
+
+use AppserverIo\Appserver\Meta\Composer\Script\Setup;
+use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
+
+?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Disabled</key>
+	<true/>
+	<key>Label</key>
+	<string>io.appserver.appserver-watcher</string>
+	<key>EnvironmentVariables</key>
+	<dict>
+		<key>XPC_SERVICES_UNAVAILABLE</key>
+		<string>1</string>
+	</dict>
+	<key>ProgramArguments</key>
+	<array>
+		<string><?php echo Setup::getValue(SetupKeys::INSTALL_DIR) ?>/bin/appserver-watcher</string>
+		<string>-D</string>
+		<string>FOREGROUND</string>
+	</array>
+	<key>OnDemand</key>
+	<false/>
+	<key>SHAuthorizationRight</key>
+	<string>system.preferences</string>
+</dict>
+</plist>

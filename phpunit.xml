@@ -1,6 +1,6 @@
 <phpunit>
     <testsuites>
-	    <testsuite name="techdivision/appserver PHPUnit testsuite">
+	    <testsuite name="appserver-io/appserver PHPUnit testsuite">
 	        <directory suffix="Test.php">tests</directory>
 	    </testsuite>
 	</testsuites>
@@ -9,7 +9,6 @@
             <directory suffix=".php">src</directory>
 		    <exclude>
 		        <directory prefix="Mock">src</directory>
-		        <directory suffix="RotatingMonologHandlerTest.php">src</directory>
 		    </exclude>
         </whitelist>
     </filter>
