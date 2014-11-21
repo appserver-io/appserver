@@ -24,7 +24,7 @@
 namespace AppserverIo\Appserver\PersistenceContainer;
 
 use AppserverIo\Logger\LoggerUtils;
-use TechDivision\Storage\StorageInterface;
+use AppserverIo\Storage\StorageInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Psr\EnterpriseBeans\TimerInterface;
 
@@ -53,7 +53,7 @@ class TimerServiceExecutor extends \Thread
     /**
      * Contains the scheduled timer tasks.
      *
-     * @var \TechDivision\Storage\GenericStackable
+     * @var \AppserverIo\Storage\GenericStackable
      */
     protected $scheduledTimerTasks;
 
@@ -72,7 +72,7 @@ class TimerServiceExecutor extends \Thread
     /**
      * Injects the storage for the scheduled timer tasks.
      *
-     * @param \TechDivision\Storage\StorageInterface $scheduledTimerTasks The storage for the scheduled timer tasks
+     * @param \AppserverIo\Storage\StorageInterface $scheduledTimerTasks The storage for the scheduled timer tasks
      *
      * @return void
      */
@@ -94,7 +94,7 @@ class TimerServiceExecutor extends \Thread
     /**
      * Returns the scheduled timer tasks.
      *
-     * @return \TechDivision\Storage\StorageInterface A collection of scheduled timer tasks
+     * @return \AppserverIo\Storage\StorageInterface A collection of scheduled timer tasks
      **/
     public function getScheduledTimerTasks()
     {

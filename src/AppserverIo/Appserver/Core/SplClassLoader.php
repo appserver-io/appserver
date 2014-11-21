@@ -16,11 +16,11 @@
 
 namespace AppserverIo\Appserver\Core;
 
-use TechDivision\Storage\GenericStackable;
+use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Appserver\Application\Interfaces\ContextInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\Core\Api\Node\ClassLoaderNodeInterface;
-use TechDivision\Storage\StorageInterface;
+use AppserverIo\Storage\StorageInterface;
 
 /**
  * SplClassLoader implementation that implements the technical interoperability
@@ -158,7 +158,7 @@ class SplClassLoader extends GenericStackable
     /**
      * Gets the base include path for all class files in the namespace of this class loader.
      *
-     * @return \TechDivision\Storage\GenericStackable $includePath The include path
+     * @return \AppserverIo\Storage\GenericStackable $includePath The include path
      */
     public function getIncludePath()
     {

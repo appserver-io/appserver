@@ -23,8 +23,8 @@ namespace AppserverIo\Appserver\ServletEngine;
 
 use AppserverIo\Logger\LoggerUtils;
 use AppserverIo\Psr\Servlet\ServletSession;
-use \TechDivision\Storage\StorageInterface;
-use \TechDivision\Storage\StackableStorage;
+use \AppserverIo\Storage\StorageInterface;
+use \AppserverIo\Storage\StackableStorage;
 use AppserverIo\Appserver\ServletEngine\SessionFilter;
 
 /**
@@ -84,7 +84,7 @@ class FilesystemPersistenceManager extends \Thread implements PersistenceManager
     /**
      * Injects the sessions.
      *
-     * @param \TechDivision\Storage\StorageInterface $sessions The sessions
+     * @param \AppserverIo\Storage\StorageInterface $sessions The sessions
      *
      * @return void
      */
@@ -96,7 +96,7 @@ class FilesystemPersistenceManager extends \Thread implements PersistenceManager
     /**
      * Injects the cecksums.
      *
-     * @param \TechDivision\Storage\StorageInterface $checksums The checksums
+     * @param \AppserverIo\Storage\StorageInterface $checksums The checksums
      *
      * @return void
      */
@@ -180,7 +180,7 @@ class FilesystemPersistenceManager extends \Thread implements PersistenceManager
     /**
      * Returns the session checksum storage to watch changed sessions.
      *
-     * @return \TechDivision\Storage\StorageInterface The session checksum storage
+     * @return \AppserverIo\Storage\StorageInterface The session checksum storage
      */
     public function getChecksums()
     {
@@ -190,7 +190,7 @@ class FilesystemPersistenceManager extends \Thread implements PersistenceManager
     /**
      * Returns all sessions actually attached to the session manager.
      *
-     * @return \TechDivision\Storage\StorageInterface The container with sessions
+     * @return \AppserverIo\Storage\StorageInterface The container with sessions
      */
     public function getSessions()
     {

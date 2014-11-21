@@ -23,9 +23,9 @@
 
 namespace AppserverIo\Appserver\MessageQueue\Receiver;
 
-use TechDivision\MessageQueueProtocol\Message;
-use TechDivision\MessageQueueProtocol\Receiver;
-use TechDivision\MessageQueueProtocol\QueueContext;
+use AppserverIo\Psr\MessageQueueProtocol\Message;
+use AppserverIo\Psr\MessageQueueProtocol\Receiver;
+use AppserverIo\Psr\MessageQueueProtocol\QueueContext;
 use AppserverIo\Psr\Application\ApplicationInterface;
 
 /**
@@ -77,7 +77,7 @@ abstract class AbstractReceiver implements Receiver
     /**
      * Updates the message monitor over the applications queue manager method.
      *
-     * @param \TechDivision\MessageQueueProtocol\Message $message The message to update the monitor for
+     * @param \AppserverIo\Psr\MessageQueueProtocol\Message $message The message to update the monitor for
      *
      * @return void
      * @throws \Exception Is thrown if no queue manager is registered in the application

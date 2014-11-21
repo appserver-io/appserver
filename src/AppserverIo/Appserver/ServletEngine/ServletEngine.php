@@ -21,7 +21,7 @@ use AppserverIo\Http\HttpProtocol;
 use AppserverIo\Http\HttpRequestInterface;
 use AppserverIo\Http\HttpResponseInterface;
 use AppserverIo\Http\HttpResponseStates;
-use TechDivision\Storage\GenericStackable;
+use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Appserver\Application\VirtualHost;
 use AppserverIo\Appserver\Application\Interfaces\ContextInterface;
 use AppserverIo\Psr\Servlet\ServletRequest;
@@ -93,7 +93,7 @@ class ServletEngine extends GenericStackable implements ModuleInterface
     /**
      * Returns an array of module names which should be executed first.
      *
-     * @return \TechDivision\Storage\GenericStackable The module names this module depends on
+     * @return \AppserverIo\Storage\GenericStackable The module names this module depends on
      */
     public function getDependencies()
     {
@@ -450,7 +450,7 @@ class ServletEngine extends GenericStackable implements ModuleInterface
     /**
      * Returns the initialized applications.
      *
-     * @return \TechDivision\Storage\GenericStackable The initialized application instances
+     * @return \AppserverIo\Storage\GenericStackable The initialized application instances
      */
     public function getApplications()
     {
@@ -460,7 +460,7 @@ class ServletEngine extends GenericStackable implements ModuleInterface
     /**
      * Returns the initialized valves.
      *
-     * @return \TechDivision\Storage\GenericStackable The initialized valves
+     * @return \AppserverIo\Storage\GenericStackable The initialized valves
      */
     public function getValves()
     {
@@ -470,7 +470,7 @@ class ServletEngine extends GenericStackable implements ModuleInterface
     /**
      * Returns the initialized web server handlers.
      *
-     * @return \TechDivision\Storage\GenericStackable The initialized web server handlers
+     * @return \AppserverIo\Storage\GenericStackable The initialized web server handlers
      */
     public function getHandlers()
     {

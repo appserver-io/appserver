@@ -11,7 +11,7 @@
  */
 namespace AppserverIo\Appserver\Core\Mock\InitialContext;
 
-use TechDivision\Storage\AbstractStorage;
+use AppserverIo\Storage\AbstractStorage;
 
 /**
  *

@@ -23,7 +23,7 @@
 
 namespace AppserverIo\Appserver\DependencyInjectionContainer;
 
-use TechDivision\Storage\GenericStackable;
+use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\Application\Interfaces\ManagerConfigurationInterface;
 

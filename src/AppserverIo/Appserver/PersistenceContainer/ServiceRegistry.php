@@ -23,9 +23,9 @@
 
 namespace AppserverIo\Appserver\PersistenceContainer;
 
-use TechDivision\Storage\StorageInterface;
-use TechDivision\Storage\GenericStackable;
-use TechDivision\Storage\StackableStorage;
+use AppserverIo\Storage\StorageInterface;
+use AppserverIo\Storage\GenericStackable;
+use AppserverIo\Storage\StackableStorage;
 
 /**
  * The abstract service registry as base for implementations that handles applications services.
@@ -45,7 +45,7 @@ abstract class ServiceRegistry extends GenericStackable implements ServiceContex
     /**
      * Inject the data storage.
      *
-     * @param \TechDivision\Storage\StackableStorage $data The data storage to use
+     * @param \AppserverIo\Storage\StackableStorage $data The data storage to use
      *
      * @return void
      */
@@ -81,7 +81,7 @@ abstract class ServiceRegistry extends GenericStackable implements ServiceContex
     /**
      * Injects the storage for the services.
      *
-     * @param \TechDivision\Storage\StorageInterface $services The storage for the services
+     * @param \AppserverIo\Storage\StorageInterface $services The storage for the services
      *
      * @return void
      */
@@ -113,7 +113,7 @@ abstract class ServiceRegistry extends GenericStackable implements ServiceContex
     /**
      * Return the storage with the services.
      *
-     * @return \TechDivision\Storage\StorageInterface The storage with the services
+     * @return \AppserverIo\Storage\StorageInterface The storage with the services
      */
     public function getServices()
     {

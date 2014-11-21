@@ -15,8 +15,8 @@
 
 namespace AppserverIo\Appserver\Core;
 
-use TechDivision\Storage\GenericStackable;
-use TechDivision\Storage\StorageInterface;
+use AppserverIo\Storage\GenericStackable;
+use AppserverIo\Storage\StorageInterface;
 use AppserverIo\Appserver\Core\InitialContext\ContextKeys;
 use TechDivision\Configuration\Interfaces\NodeInterface;
 use AppserverIo\Appserver\Core\SplClassLoader;
@@ -39,7 +39,7 @@ class InitialContext implements ContextInterface
     /**
      * The storage instance
      *
-     * @var \TechDivision\Storage\StorageInterface
+     * @var \AppserverIo\Storage\StorageInterface
      */
     protected $storage;
 
@@ -93,9 +93,9 @@ class InitialContext implements ContextInterface
     /**
      * Returns the storage instance.
      *
-     * @param \TechDivision\Storage\StorageInterface $storage A storage instance
+     * @param \AppserverIo\Storage\StorageInterface $storage A storage instance
      *
-     * @return \TechDivision\Storage\StorageInterface The storage instance
+     * @return \AppserverIo\Storage\StorageInterface The storage instance
      */
     public function setStorage(StorageInterface $storage)
     {
@@ -105,7 +105,7 @@ class InitialContext implements ContextInterface
     /**
      * Returns the storage instance.
      *
-     * @return \TechDivision\Storage\StorageInterface The storage instance
+     * @return \AppserverIo\Storage\StorageInterface The storage instance
      */
     public function getStorage()
     {

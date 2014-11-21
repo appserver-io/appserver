@@ -23,7 +23,7 @@
 
 namespace AppserverIo\Appserver\Application\Interfaces;
 
-use TechDivision\Context\Context;
+use AppserverIo\Psr\Context\Context;
 
 /**
  * Interface for a context.

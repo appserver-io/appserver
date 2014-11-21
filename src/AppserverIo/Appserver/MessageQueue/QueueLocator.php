@@ -24,7 +24,7 @@
 
 namespace AppserverIo\Appserver\MessageQueue;
 
-use TechDivision\MessageQueueProtocol\Queue;
+use AppserverIo\Psr\MessageQueueProtocol\Queue;
 use AppserverIo\Appserver\MessageQueue\QueueManager;
 
 /**
@@ -48,9 +48,9 @@ class QueueLocator implements ResourceLocator
      * if one can be found.
      *
      * @param \AppserverIo\Appserver\MessageQueue\QueueManager  $queueManager The queue manager instance
-     * @param \TechDivision\MessageQueueProtocol\Queue $queue        The queue request
+     * @param \AppserverIo\Psr\MessageQueueProtocol\Queue $queue        The queue request
      *
-     * @return \TechDivision\MessageQueueProtocol\Queue The requested queue instance
+     * @return \AppserverIo\Psr\MessageQueueProtocol\Queue The requested queue instance
      * @see \AppserverIo\Appserver\MessageQueue\ResourceLocator::locate()
      */
     public function locate(QueueManager $queueManager, Queue $queue)

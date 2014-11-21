@@ -23,7 +23,7 @@
 
 namespace AppserverIo\Appserver\PersistenceContainer;
 
-use TechDivision\Storage\StackableStorage;
+use AppserverIo\Storage\StackableStorage;
 use AppserverIo\Psr\PersistenceContainerProtocol\BeanContext;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Stateless;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Singleton;

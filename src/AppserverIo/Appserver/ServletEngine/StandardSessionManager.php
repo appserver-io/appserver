@@ -27,9 +27,9 @@ use AppserverIo\Psr\Servlet\Http\HttpSession;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequest;
 use AppserverIo\Appserver\ServletEngine\Http\Session;
 use AppserverIo\Appserver\ServletEngine\SessionSettings;
-use TechDivision\Storage\StorageInterface;
-use TechDivision\Storage\StackableStorage;
-use TechDivision\Storage\GenericStackable;
+use AppserverIo\Storage\StorageInterface;
+use AppserverIo\Storage\StackableStorage;
+use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Psr\Application\ApplicationInterface;
 
 /**
@@ -50,7 +50,7 @@ class StandardSessionManager extends GenericStackable implements SessionManager
     /**
      * Injects the sessions.
      *
-     * @param \TechDivision\Storage\StorageInterface $sessions The sessions
+     * @param \AppserverIo\Storage\StorageInterface $sessions The sessions
      *
      * @return void
      */
@@ -140,7 +140,7 @@ class StandardSessionManager extends GenericStackable implements SessionManager
     /**
      * Returns all sessions actually attached to the session manager.
      *
-     * @return \TechDivision\Storage\StorageInterface The container with sessions
+     * @return \AppserverIo\Storage\StorageInterface The container with sessions
      */
     public function getSessions()
     {
@@ -170,7 +170,7 @@ class StandardSessionManager extends GenericStackable implements SessionManager
     /**
      * Returns the session pool instance.
      *
-     * @return \TechDivision\Storage\StorageInterface The session pool
+     * @return \AppserverIo\Storage\StorageInterface The session pool
      */
     public function getSessionPool()
     {

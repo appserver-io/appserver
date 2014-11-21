@@ -27,9 +27,9 @@ namespace AppserverIo\Appserver\PersistenceContainer;
 use AppserverIo\Appserver\Naming\InitialContext;
 use AppserverIo\Collections\ArrayList;
 use AppserverIo\Collections\HashMap;
-use TechDivision\Storage\StorageInterface;
-use TechDivision\Storage\GenericStackable;
-use TechDivision\Storage\StackableStorage;
+use AppserverIo\Storage\StorageInterface;
+use AppserverIo\Storage\GenericStackable;
+use AppserverIo\Storage\StackableStorage;
 use AppserverIo\Psr\PersistenceContainerProtocol\BeanContext;
 use AppserverIo\Psr\PersistenceContainerProtocol\RemoteMethod;
 use AppserverIo\Psr\Application\ManagerInterface;
@@ -69,7 +69,7 @@ class BeanManager extends GenericStackable implements BeanContext, ManagerInterf
     /**
      * Inject the data storage.
      *
-     * @param \TechDivision\Storage\StackableStorage $data The data storage to use
+     * @param \AppserverIo\Storage\StackableStorage $data The data storage to use
      *
      * @return void
      */
@@ -117,7 +117,7 @@ class BeanManager extends GenericStackable implements BeanContext, ManagerInterf
     /**
      * Injects the storage for the stateful session beans.
      *
-     * @param \TechDivision\Storage\StorageInterface $statefulSessionBeans The storage for the stateful session beans
+     * @param \AppserverIo\Storage\StorageInterface $statefulSessionBeans The storage for the stateful session beans
      *
      * @return void
      */
@@ -129,7 +129,7 @@ class BeanManager extends GenericStackable implements BeanContext, ManagerInterf
     /**
      * Injects the storage for the singleton session beans.
      *
-     * @param \TechDivision\Storage\StorageInterface $singletonSessionBeans The storage for the singleton session beans
+     * @param \AppserverIo\Storage\StorageInterface $singletonSessionBeans The storage for the singleton session beans
      *
      * @return void
      */
@@ -346,7 +346,7 @@ class BeanManager extends GenericStackable implements BeanContext, ManagerInterf
     /**
      * Return the storage with the naming directory.
      *
-     * @return \TechDivision\Storage\StorageInterface The storage with the naming directory
+     * @return \AppserverIo\Storage\StorageInterface The storage with the naming directory
      */
     public function getNamingDirectory()
     {
@@ -356,7 +356,7 @@ class BeanManager extends GenericStackable implements BeanContext, ManagerInterf
     /**
      * Return the storage with the singleton session beans.
      *
-     * @return \TechDivision\Storage\StorageInterface The storage with the singleton session beans
+     * @return \AppserverIo\Storage\StorageInterface The storage with the singleton session beans
      */
     public function getSingletonSessionBeans()
     {
@@ -366,7 +366,7 @@ class BeanManager extends GenericStackable implements BeanContext, ManagerInterf
     /**
      * Return the storage with the stateful session beans.
      *
-     * @return \TechDivision\Storage\StorageInterface The storage with the stateful session beans
+     * @return \AppserverIo\Storage\StorageInterface The storage with the stateful session beans
      */
     public function getStatefulSessionBeans()
     {

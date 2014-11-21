@@ -72,7 +72,7 @@ class DynamicRequestHandler extends \Thread
     /**
      * The valves we're processing each request with.
      *
-     * @return \TechDivision\Storage\GenericStackable
+     * @return \AppserverIo\Storage\GenericStackable
      */
     protected $valves;
 
@@ -109,7 +109,7 @@ class DynamicRequestHandler extends \Thread
      * valves to be processed
      *
      * @param \AppserverIo\Appserver\Core\Interfaces\ApplicationInterface $application The application instance
-     * @param \TechDivision\Storage\GenericStackable                          $valves      The valves to process
+     * @param \AppserverIo\Storage\GenericStackable                          $valves      The valves to process
      */
     public function __construct(ApplicationInterface $application, $valves)
     {
@@ -128,7 +128,7 @@ class DynamicRequestHandler extends \Thread
     /**
      * Returns the valves we're processing each request with.
      *
-     * @return \TechDivision\Storage\GenericStackable The valves
+     * @return \AppserverIo\Storage\GenericStackable The valves
      */
     protected function getValves()
     {

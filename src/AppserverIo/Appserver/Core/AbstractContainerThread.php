@@ -19,7 +19,7 @@
 namespace AppserverIo\Appserver\Core;
 
 use AppserverIo\Logger\LoggerUtils;
-use TechDivision\Storage\GenericStackable;
+use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\Core\Interfaces\ContainerInterface;
 use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
@@ -52,7 +52,7 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
     /**
      * The initialized applications.
      *
-     * @var \TechDivision\Storage\GenericStackable
+     * @var \AppserverIo\Storage\GenericStackable
      */
     protected $applications;
 
@@ -245,7 +245,7 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
     /**
      * Returns the deployed applications.
      *
-     * @return \TechDivision\Storage\GenericStackable The with applications
+     * @return \AppserverIo\Storage\GenericStackable The with applications
      */
     public function getApplications()
     {

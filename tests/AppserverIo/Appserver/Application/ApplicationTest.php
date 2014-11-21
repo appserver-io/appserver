@@ -24,8 +24,8 @@
 namespace AppserverIo\Appserver\Application;
 
 use AppserverIo\Appserver\Naming\NamingDirectory;
-use TechDivision\Storage\GenericStackable;
-use TechDivision\Storage\StackableStorage;
+use AppserverIo\Storage\GenericStackable;
+use AppserverIo\Storage\StackableStorage;
 use AppserverIo\Appserver\Application\Mock\MockManager;
 use AppserverIo\Appserver\Application\Mock\MockClassLoader;
 use AppserverIo\Appserver\Application\Mock\MockSystemConfiguration;
@@ -120,28 +120,28 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
     /**
      * The storage for the managers.
      *
-     * @var \TechDivision\Storage\GenericStackable
+     * @var \AppserverIo\Storage\GenericStackable
      */
     protected $managers;
 
     /**
      * The storage for the virtual hosts.
      *
-     * @var \TechDivision\Storage\GenericStackable
+     * @var \AppserverIo\Storage\GenericStackable
      */
     protected $virtualHosts;
 
     /**
      * The storage for the class loaders.
      *
-     * @var \TechDivision\Storage\GenericStackable
+     * @var \AppserverIo\Storage\GenericStackable
      */
     protected $classLoaders;
 
     /**
      * The storage for the naming directory data.
      *
-     * @var \TechDivision\Storage\StackableStorage
+     * @var \AppserverIo\Storage\StackableStorage
      */
     protected $data;
 

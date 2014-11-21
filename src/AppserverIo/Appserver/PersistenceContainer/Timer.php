@@ -22,7 +22,7 @@
 
 namespace AppserverIo\Appserver\PersistenceContainer;
 
-use TechDivision\Storage\GenericStackable;
+use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Lang\NumberFormatException;
 use AppserverIo\Lang\IllegalStateException;
 use AppserverIo\Psr\EnterpriseBeans\TimerInterface;

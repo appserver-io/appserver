@@ -21,7 +21,7 @@ namespace AppserverIo\Appserver\Core;
 
 use TechDivision\PBC\Config;
 use TechDivision\PBC\StructureMap;
-use TechDivision\Storage\GenericStackable;
+use AppserverIo\Storage\GenericStackable;
 
 /**
  * AppserverIo\Appserver\Core\StructureMap

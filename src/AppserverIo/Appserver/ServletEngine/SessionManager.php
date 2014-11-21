@@ -110,7 +110,7 @@ interface SessionManager extends ManagerInterface
     /**
      * Returns the session pool instance.
      *
-     * @return \TechDivision\Storage\StorageInterface The session pool
+     * @return \AppserverIo\Storage\StorageInterface The session pool
      */
     public function getSessionPool();
 

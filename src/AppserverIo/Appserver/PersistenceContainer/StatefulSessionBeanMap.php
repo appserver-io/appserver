@@ -23,7 +23,7 @@
 namespace AppserverIo\Appserver\PersistenceContainer;
 
 use AppserverIo\Collections\Map;
-use TechDivision\Storage\GenericStackable;
+use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Lang\NullPointerException;
 use AppserverIo\Collections\AbstractMap;
 use AppserverIo\Collections\InvalidKeyException;
@@ -46,14 +46,14 @@ class StatefulSessionBeanMap extends GenericStackable implements Map
     /**
      * Array containing the lifetime of the items.
      *
-     * @var \TechDivision\Storage\GenericStackable
+     * @var \AppserverIo\Storage\GenericStackable
      */
     protected $lifetime;
 
     /**
      * The items the map contains.
      *
-     * @var \TechDivision\Storage\GenericStackable
+     * @var \AppserverIo\Storage\GenericStackable
      */
     protected $items;
 

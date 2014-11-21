@@ -77,7 +77,7 @@ interface ServiceContext extends ManagerInterface
     /**
      * Return the storage with the services.
      *
-     * @return \TechDivision\Storage\StorageInterface The storage with the services
+     * @return \AppserverIo\Storage\StorageInterface The storage with the services
      */
     public function getServices();
 }

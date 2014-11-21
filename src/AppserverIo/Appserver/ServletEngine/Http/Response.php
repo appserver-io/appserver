@@ -22,7 +22,7 @@
 
 namespace AppserverIo\Appserver\ServletEngine\Http;
 
-use TechDivision\Storage\GenericStackable;
+use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Http\HttpProtocol;
 use AppserverIo\Http\HttpException;
 use AppserverIo\Http\HttpResponseStates;

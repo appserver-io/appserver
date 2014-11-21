@@ -24,8 +24,8 @@
 namespace AppserverIo\Appserver\WebSocketServer;
 
 use Ratchet\MessageComponentInterface;
-use TechDivision\Storage\GenericStackable;
-use TechDivision\Storage\StackableStorage;
+use AppserverIo\Storage\GenericStackable;
+use AppserverIo\Storage\StackableStorage;
 use TechDivision\WebSocketProtocol\Request;
 use TechDivision\WebSocketProtocol\Handler;
 use TechDivision\WebSocketProtocol\HandlerContext;
@@ -90,7 +90,7 @@ class HandlerManager extends GenericStackable implements HandlerContext
     /**
      * Injects the registered web socket handlers.
      *
-     * @param \TechDivision\Storage\GenericStackable $handlers An storage for the web socket handlers
+     * @param \AppserverIo\Storage\GenericStackable $handlers An storage for the web socket handlers
      *
      * @return void
      */
@@ -102,7 +102,7 @@ class HandlerManager extends GenericStackable implements HandlerContext
     /**
      * Injects the handler mappings.
      *
-     * @param \TechDivision\Storage\GenericStackable $handlerMappings An storage for the handler mappings
+     * @param \AppserverIo\Storage\GenericStackable $handlerMappings An storage for the handler mappings
      *
      * @return void
      */
@@ -114,7 +114,7 @@ class HandlerManager extends GenericStackable implements HandlerContext
     /**
      * Injects the initialization parameters.
      *
-     * @param \TechDivision\Storage\GenericStackable $initParameters An storage for the initialization parameters
+     * @param \AppserverIo\Storage\GenericStackable $initParameters An storage for the initialization parameters
      *
      * @return void
      */
@@ -223,7 +223,7 @@ class HandlerManager extends GenericStackable implements HandlerContext
     /**
      * Returns the registered handlers.
      *
-     * @return \TechDivision\Storage\GenericStackable The initialized web socket handlers
+     * @return \AppserverIo\Storage\GenericStackable The initialized web socket handlers
      */
     public function getHandlers()
     {

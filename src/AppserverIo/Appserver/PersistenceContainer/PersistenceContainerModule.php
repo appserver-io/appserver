@@ -16,7 +16,7 @@
 
 namespace AppserverIo\Appserver\PersistenceContainer;
 
-use TechDivision\Storage\GenericStackable;
+use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Appserver\ServletEngine\ServletEngine;
 use TechDivision\Server\Interfaces\ServerContextInterface;
 use AppserverIo\Appserver\PersistenceContainer\PersistenceContainerValve;

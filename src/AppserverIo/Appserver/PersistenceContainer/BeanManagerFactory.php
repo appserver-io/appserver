@@ -24,7 +24,7 @@
 
 namespace AppserverIo\Appserver\PersistenceContainer;
 
-use TechDivision\Storage\StackableStorage;
+use AppserverIo\Storage\StackableStorage;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\Application\Interfaces\ManagerConfigurationInterface;
 

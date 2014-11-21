@@ -27,8 +27,8 @@ use AppserverIo\Logger\LoggerUtils;
 use AppserverIo\Appserver\Naming\NamingDirectory;
 use AppserverIo\Psr\Naming\NamingException;
 use AppserverIo\Psr\Naming\NamingDirectoryInterface;
-use TechDivision\Storage\GenericStackable;
-use TechDivision\Storage\StorageInterface;
+use AppserverIo\Storage\GenericStackable;
+use AppserverIo\Storage\StorageInterface;
 use AppserverIo\Lang\Reflection\ReflectionObject;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\EnterpriseBean;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\AnnotationKeys;
@@ -120,7 +120,7 @@ class Application extends \Thread implements ApplicationInterface
     /**
      * Injects the storage for the naming directory data.
      *
-     * @param \TechDivision\Storage\StorageInterface $data The naming directory data
+     * @param \AppserverIo\Storage\StorageInterface $data The naming directory data
      *
      * @return void
      */
@@ -144,7 +144,7 @@ class Application extends \Thread implements ApplicationInterface
     /**
      * Injects the storage for the managers.
      *
-     * @param \TechDivision\Storage\GenericStackable $managers The storage for the managers
+     * @param \AppserverIo\Storage\GenericStackable $managers The storage for the managers
      *
      * @return void
      */
@@ -156,7 +156,7 @@ class Application extends \Thread implements ApplicationInterface
     /**
      * Injects the storage for the virtual hosts.
      *
-     * @param \TechDivision\Storage\GenericStackable $virtualHosts The storage for the virtual hosts
+     * @param \AppserverIo\Storage\GenericStackable $virtualHosts The storage for the virtual hosts
      *
      * @return void
      */
@@ -168,7 +168,7 @@ class Application extends \Thread implements ApplicationInterface
     /**
      * Injects the storage for the class loaders.
      *
-     * @param \TechDivision\Storage\GenericStackable $classLoaders The storage for the class loaders
+     * @param \AppserverIo\Storage\GenericStackable $classLoaders The storage for the class loaders
      *
      * @return void
      */
@@ -376,7 +376,7 @@ class Application extends \Thread implements ApplicationInterface
      * recursive from the scheme and the root directory.
      *
      * @return string The unique identifier
-     * @see \TechDivision\Storage\StorageInterface::getIdentifier()
+     * @see \AppserverIo\Storage\StorageInterface::getIdentifier()
      */
     public function getIdentifier()
     {
@@ -555,7 +555,7 @@ class Application extends \Thread implements ApplicationInterface
     /**
      * Returns the applications available virtual host configurations.
      *
-     * @return \TechDivision\Storage\GenericStackable The available virtual host configurations
+     * @return \AppserverIo\Storage\GenericStackable The available virtual host configurations
      */
     public function getVirtualHosts()
     {
@@ -565,7 +565,7 @@ class Application extends \Thread implements ApplicationInterface
     /**
      * Return the class loaders.
      *
-     * @return \TechDivision\Storage\GenericStackable The class loader instances
+     * @return \AppserverIo\Storage\GenericStackable The class loader instances
      */
     public function getClassLoaders()
     {
@@ -575,7 +575,7 @@ class Application extends \Thread implements ApplicationInterface
     /**
      * Returns the manager instances.
      *
-     * @return \TechDivision\Storage\GenericStackable The manager instances
+     * @return \AppserverIo\Storage\GenericStackable The manager instances
      */
     public function getManagers()
     {

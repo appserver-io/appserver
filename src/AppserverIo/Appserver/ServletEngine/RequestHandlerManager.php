@@ -16,7 +16,7 @@
 
 namespace AppserverIo\Appserver\ServletEngine;
 
-use TechDivision\Storage\GenericStackable;
+use AppserverIo\Storage\GenericStackable;
 
 /**
  * Manager that handles the creation of request handlers.
@@ -63,21 +63,21 @@ class RequestHandlerManager extends \Thread
     /**
      * The request handlers we have to manage.
      *
-     * @var \TechDivision\Storage\GenericStackable
+     * @var \AppserverIo\Storage\GenericStackable
      */
     protected $requestHandlers;
 
     /**
      * The valves the request handler has to process for each request.
      *
-     * @var \TechDivision\Storage\GenericStackable
+     * @var \AppserverIo\Storage\GenericStackable
      */
     protected $valves;
 
     /**
      * The applications that has to be bound to a request handler.
      *
-     * @var \TechDivision\Storage\GenericStackable
+     * @var \AppserverIo\Storage\GenericStackable
      */
     protected $applications;
 
@@ -85,9 +85,9 @@ class RequestHandlerManager extends \Thread
      * Initializes the request handler manager instance.
      *
      * @param \Psr\Log\LoggerInterface               $systemLogger    The system logger instance
-     * @param \TechDivision\Storage\GenericStackable $requestHandlers The request handlers we have to manage
-     * @param \TechDivision\Storage\GenericStackable $applications    The valves the request handler has to process for each request
-     * @param \TechDivision\Storage\GenericStackable $valves          The applications that has to be bound to a request handler
+     * @param \AppserverIo\Storage\GenericStackable $requestHandlers The request handlers we have to manage
+     * @param \AppserverIo\Storage\GenericStackable $applications    The valves the request handler has to process for each request
+     * @param \AppserverIo\Storage\GenericStackable $valves          The applications that has to be bound to a request handler
      */
     public function __construct($systemLogger, $requestHandlers, $applications, $valves)
     {
