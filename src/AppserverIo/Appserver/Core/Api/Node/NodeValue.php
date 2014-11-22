@@ -15,8 +15,8 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
-use TechDivision\Configuration\Interfaces\ValueInterface;
-use TechDivision\Configuration\Interfaces\ConfigurationInterface;
+use AppserverIo\Configuration\Interfaces\ValueInterface;
+use AppserverIo\Configuration\Interfaces\ConfigurationInterface;
 
 /**
  * Represents a node's value.
@@ -42,7 +42,7 @@ class NodeValue implements ValueInterface
     /**
      * Initializes the node with the value.
      *
-     * @param \TechDivision\Configuration\Interfaces\ConfigurationInterface $configuration The configuration instance
+     * @param \AppserverIo\Configuration\Interfaces\ConfigurationInterface $configuration The configuration instance
      *
      * @return void
      */

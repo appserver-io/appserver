@@ -16,11 +16,11 @@
 namespace AppserverIo\Appserver\Core;
 
 use AppserverIo\Appserver\Core\Interfaces\ClassLoaderInterface;
-use TechDivision\PBC\CacheMap;
-use TechDivision\PBC\Generator;
-use TechDivision\PBC\StructureMap;
-use TechDivision\PBC\Config;
-use TechDivision\PBC\AutoLoader;
+use AppserverIo\PBC\CacheMap;
+use AppserverIo\PBC\Generator;
+use AppserverIo\PBC\StructureMap;
+use AppserverIo\PBC\Config;
+use AppserverIo\PBC\AutoLoader;
 use AppserverIo\Appserver\Core\InitialContext;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\Core\Api\Node\ClassLoaderNodeInterface;
@@ -44,21 +44,21 @@ class PbcClassLoader extends AutoLoader implements ClassLoaderInterface
     /**
      * The configuration we base our actions on.
      *
-     * @var \TechDivision\PBC\Config
+     * @var \AppserverIo\PBC\Config
      */
     public $config;
 
     /**
      * Cache map to keep track of already processed files.
      *
-     * @var \TechDivision\PBC\CacheMap
+     * @var \AppserverIo\PBC\CacheMap
      */
     public $cache;
 
     /**
      * In some cases the autoloader instance is not thrown away, saving the structure map might be a benefit here.
      *
-     * @var \TechDivision\PBC\StructureMap $structureMap
+     * @var \AppserverIo\PBC\StructureMap $structureMap
      */
     public $structureMap;
 
@@ -97,7 +97,7 @@ class PbcClassLoader extends AutoLoader implements ClassLoaderInterface
      * Will check if there is content in the cache directory.
      * If not we will parse anew.
      *
-     * @param \TechDivision\PBC\Config|null $config An already existing config instance
+     * @param \AppserverIo\PBC\Config|null $config An already existing config instance
      */
     public function __construct(Config $config = null)
     {
@@ -162,7 +162,7 @@ class PbcClassLoader extends AutoLoader implements ClassLoaderInterface
         foreach ($structures as $identifier => $structure) {
 
             // Working on our own files has very weird side effects, so don't do it
-            if (strpos($structure->getIdentifier(), 'TechDivision\PBC') !== false || !$structure->isEnforced()) {
+            if (strpos($structure->getIdentifier(), 'AppserverIo\PBC') !== false || !$structure->isEnforced()) {
 
                 continue;
             }

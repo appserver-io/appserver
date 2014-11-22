@@ -11,7 +11,7 @@
  */
 namespace AppserverIo\Appserver\Core;
 
-use TechDivision\Configuration\Configuration;
+use AppserverIo\Configuration\Configuration;
 use AppserverIo\Appserver\Core\InitialContext;
 use AppserverIo\Appserver\Core\Mock\MockContextThread;
 
@@ -61,7 +61,7 @@ class AbstractContextThreadTest extends AbstractTest
      */
     public function testNewInstance()
     {
-        $className = 'TechDivision\Configuration\Configuration';
+        $className = 'AppserverIo\Configuration\Configuration';
         $this->assertInstanceOf($className, $this->contextThread->newInstance($className));
     }
 }

@@ -19,9 +19,9 @@ use Rhumsaa\Uuid\Uuid;
 use Herrera\Annotations\Tokens;
 use Herrera\Annotations\Tokenizer;
 use Herrera\Annotations\Convert\ToArray;
-use TechDivision\Configuration\Configuration;
-use TechDivision\Configuration\Interfaces\NodeInterface;
-use TechDivision\Configuration\Interfaces\ConfigurationInterface;
+use AppserverIo\Configuration\Configuration;
+use AppserverIo\Configuration\Interfaces\NodeInterface;
+use AppserverIo\Configuration\Interfaces\ConfigurationInterface;
 use AppserverIo\Lang\String;
 use AppserverIo\Lang\Boolean;
 use AppserverIo\Lang\Integer;
@@ -93,7 +93,7 @@ abstract class AbstractNode implements NodeInterface
     /**
      * Initialise from configuration instance
      *
-     * @param \TechDivision\Configuration\Interfaces\ConfigurationInterface $configuration The configuration instance
+     * @param \AppserverIo\Configuration\Interfaces\ConfigurationInterface $configuration The configuration instance
      *
      * @return void
      */
@@ -208,7 +208,7 @@ abstract class AbstractNode implements NodeInterface
     /**
      * Return's the configuration node name by given mapping and configuration
      *
-     * @param \TechDivision\Configuration\ConfigurationInterface $configuration The configuration instance
+     * @param \AppserverIo\Configuration\ConfigurationInterface $configuration The configuration instance
      * @param \AppserverIo\Appserver\Core\Api\Node\Mapping   $mapping       The mapping instance
      *
      * @return string
@@ -235,14 +235,14 @@ abstract class AbstractNode implements NodeInterface
     public function isValueClass($className)
     {
         $reflectionClass = new \ReflectionClass($className);
-        return $reflectionClass->implementsInterface('TechDivision\Configuration\Interfaces\ValueInterface');
+        return $reflectionClass->implementsInterface('AppserverIo\Configuration\Interfaces\ValueInterface');
     }
 
     /**
      * Return's the value for a given reflection property and configuration
      *
      * @param \ReflectionProperty                                           $reflectionProperty The reflection property
-     * @param \TechDivision\Configuration\Interfaces\ConfigurationInterface $configuration      The configuration instance
+     * @param \AppserverIo\Configuration\Interfaces\ConfigurationInterface $configuration      The configuration instance
      *
      * @return array An array with all values from given reflection property
      * @throws \Exception
@@ -365,7 +365,7 @@ abstract class AbstractNode implements NodeInterface
     /**
      * Exports to the configuration.
      *
-     * @return \TechDivision\Configuration\Interfaces\ConfigurationInterface The configuraton instance
+     * @return \AppserverIo\Configuration\Interfaces\ConfigurationInterface The configuraton instance
      */
     public function exportToConfiguration()
     {
@@ -392,9 +392,9 @@ abstract class AbstractNode implements NodeInterface
      * Sets the configuration by reflected property.
      *
      * @param \ReflectionProperty                                           $reflectionProperty The reflection property to set
-     * @param \TechDivision\Configuration\Interfaces\ConfigurationInterface $configuration      The configuration instance
+     * @param \AppserverIo\Configuration\Interfaces\ConfigurationInterface $configuration      The configuration instance
      *
-     * @return \TechDivision\Configuration\Interfaces\ConfigurationInterface|void The configuration or nothing
+     * @return \AppserverIo\Configuration\Interfaces\ConfigurationInterface|void The configuration or nothing
      */
     public function setConfigurationByReflectionProperty(
         \ReflectionProperty $reflectionProperty,
@@ -435,7 +435,7 @@ abstract class AbstractNode implements NodeInterface
      * configuration under the also passed path.
      *
      * @param \ReflectionProperty                                           $reflectionProperty The reflection property
-     * @param \TechDivision\Configuration\Interfaces\ConfigurationInterface $configuration      The configuration instance
+     * @param \AppserverIo\Configuration\Interfaces\ConfigurationInterface $configuration      The configuration instance
      * @param string                                                        $path               A path were to append to
      *
      * @return void

@@ -15,7 +15,7 @@
 
 namespace AppserverIo\Appserver\Core\Api;
 
-use TechDivision\Configuration\Interfaces\ConfigurationInterface;
+use AppserverIo\Configuration\Interfaces\ConfigurationInterface;
 use AppserverIo\Appserver\Core\Api\NormalizerInterface;
 
 /**
@@ -35,7 +35,7 @@ class DtoNormalizer extends AbstractNormalizer
     /**
      * (non-PHPdoc)
      *
-     * @param \TechDivision\Configuration\Interfaces\ConfigurationInterface $configuration The configuration node to normalize
+     * @param \AppserverIo\Configuration\Interfaces\ConfigurationInterface $configuration The configuration node to normalize
      *
      * @return \stdClass The normalized configuration node
      * @see \AppserverIo\Appserver\Core\Api\NormalizerInterface::normalize()

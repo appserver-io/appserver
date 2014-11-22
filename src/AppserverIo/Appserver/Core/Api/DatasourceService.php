@@ -15,7 +15,7 @@
 
 namespace AppserverIo\Appserver\Core\Api;
 
-use TechDivision\Configuration\Configuration;
+use AppserverIo\Configuration\Configuration;
 use AppserverIo\Appserver\Core\Api\AbstractService;
 use AppserverIo\Appserver\Core\Api\Node\DatasourceNode;
 

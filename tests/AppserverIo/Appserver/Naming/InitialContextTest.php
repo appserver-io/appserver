@@ -22,7 +22,7 @@
 
 namespace AppserverIo\Appserver\Naming;
 
-use TechDivision\Properties\Properties;
+use AppserverIo\Properties\Properties;
 
 /**
  * This is the test for the InitialContext class.

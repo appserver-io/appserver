@@ -60,7 +60,7 @@ class AppserverNodeTest extends AbstractTest
     public function testExportToConfiguration()
     {
         $configuration = $this->appserverNode->exportToConfiguration();
-        $this->assertInstanceOf('TechDivision\Configuration\Configuration', $configuration);
+        $this->assertInstanceOf('AppserverIo\Configuration\Configuration', $configuration);
     }
 
     /**

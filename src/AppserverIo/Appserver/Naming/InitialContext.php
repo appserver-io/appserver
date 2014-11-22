@@ -28,8 +28,8 @@ use Phlexy\LexerDataGenerator;
 use Phlexy\LexerFactory\Stateless\UsingPregReplace;
 use AppserverIo\Psr\Servlet\ServletRequest;
 use AppserverIo\Psr\Naming\NamingException;
-use TechDivision\Properties\Properties;
-use TechDivision\Properties\PropertiesInterface;
+use AppserverIo\Properties\Properties;
+use AppserverIo\Properties\PropertiesInterface;
 use AppserverIo\Psr\PersistenceContainerProtocol\Session;
 use AppserverIo\Psr\PersistenceContainerProtocol\BeanContext;
 use AppserverIo\Psr\Application\ApplicationInterface;
@@ -67,7 +67,7 @@ class InitialContext
     /**
      * The configuration properties for this context.
      *
-     * @var \TechDivision\Properties\PropertiesInterface
+     * @var \AppserverIo\Properties\PropertiesInterface
      */
     protected $properties;
 
@@ -112,7 +112,7 @@ class InitialContext
     /**
      * Initialize the initial context with the values of the passed properties.
      *
-     * @param \TechDivision\Properties\PropertiesInterface $properties The configuration properties
+     * @param \AppserverIo\Properties\PropertiesInterface $properties The configuration properties
      */
     public function __construct(PropertiesInterface $properties = null)
     {
@@ -152,7 +152,7 @@ class InitialContext
     /**
      * The configuration properties for this context.
      *
-     * @param \TechDivision\Properties\PropertiesInterface $properties The configuration properties
+     * @param \AppserverIo\Properties\PropertiesInterface $properties The configuration properties
      *
      * @return void
      */
@@ -200,7 +200,7 @@ class InitialContext
     /**
      * Returns the initial context configuration properties.
      *
-     * @return \TechDivision\Properties\PropertiesInterface The configuration properties
+     * @return \AppserverIo\Properties\PropertiesInterface The configuration properties
      */
     public function getProperties()
     {

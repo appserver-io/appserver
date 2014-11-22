@@ -11,7 +11,7 @@
  */
 namespace AppserverIo\Appserver\Core;
 
-use TechDivision\Configuration\Configuration;
+use AppserverIo\Configuration\Configuration;
 use AppserverIo\Appserver\Core\Api\Node\AppserverNode;
 use AppserverIo\Appserver\Core\Api\Node\ContainerNode;
 use AppserverIo\Appserver\Core\Api\Node\DeploymentNode;
@@ -31,7 +31,7 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
     /**
      * Returns the system configuration.
      *
-     * @return \TechDivision\Configuration\Configuration The system configuration
+     * @return \AppserverIo\Configuration\Configuration The system configuration
      */
     public function getAppserverConfiguration()
     {
@@ -55,7 +55,7 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
     /**
      * Returns a dummy deployment configuration.
      *
-     * @return \TechDivision\Configuration\Configuration A dummy deployment configuration
+     * @return \AppserverIo\Configuration\Configuration A dummy deployment configuration
      */
     public function getDeploymentConfiguration()
     {

@@ -19,8 +19,8 @@
 
 namespace AppserverIo\Appserver\Core;
 
-use TechDivision\PBC\Config;
-use TechDivision\PBC\StructureMap;
+use AppserverIo\PBC\Config;
+use AppserverIo\PBC\StructureMap;
 use AppserverIo\Storage\GenericStackable;
 
 /**
@@ -61,7 +61,7 @@ class StructureMapWrapper extends StructureMap
      *
      * @param array                                          $autoloaderPaths  Which paths do we include in our map?
      * @param array                                          $enforcementPaths Which paths do we have to enforce
-     * @param \TechDivision\PBC\Config                       $config           Configuration
+     * @param \AppserverIo\PBC\Config                       $config           Configuration
      * @param \AppserverIo\Appserver\Core\InitialContext $initialContext   Our initial context
      */
     public function __construct($autoloaderPaths, $enforcementPaths, Config $config, $initialContext)

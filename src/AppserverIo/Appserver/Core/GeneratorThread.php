@@ -19,7 +19,7 @@
 
 namespace AppserverIo\Appserver\Core;
 
-use TechDivision\PBC\Generator;
+use AppserverIo\PBC\Generator;
 
 /**
  * AppserverIo\Appserver\Core\GeneratorThread
@@ -39,21 +39,21 @@ class GeneratorThread extends \Thread
     /**
      * Generator instance to use for creation
      *
-     * @var \TechDivision\PBC\Generator $generator
+     * @var \AppserverIo\PBC\Generator $generator
      */
     protected $generator;
 
     /**
      * Array of structures we will be creating
      *
-     * @var array<\TechDivision\PBC\Entities\Definitions\Structure> $structures
+     * @var array<\AppserverIo\PBC\Entities\Definitions\Structure> $structures
      */
     protected $structures;
 
     /**
      * Default constructor
      *
-     * @param \TechDivision\PBC\Generator $generator  Our PBC generator instance
+     * @param \AppserverIo\PBC\Generator $generator  Our PBC generator instance
      * @param array                       $structures List of structures to generate
      */
     public function __construct(Generator $generator, array $structures)

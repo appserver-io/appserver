@@ -15,7 +15,7 @@
 
 namespace AppserverIo\Appserver\Core\Api;
 
-use TechDivision\Configuration\Interfaces\NodeInterface;
+use AppserverIo\Configuration\Interfaces\NodeInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\Core\Api\Node\AppNode;
 use AppserverIo\Appserver\Core\Interfaces\ExtractorInterface;
@@ -139,7 +139,7 @@ class AppService extends AbstractService
     /**
      * Persists the system configuration.
      *
-     * @param \TechDivision\Configuration\Interfaces\NodeInterface $appNode The application node object
+     * @param \AppserverIo\Configuration\Interfaces\NodeInterface $appNode The application node object
      *
      * @return void
      */
@@ -168,7 +168,7 @@ class AppService extends AbstractService
      * Adds the .dodeploy flag file in the deploy folder, therefore the
      * app will be deployed with the next restart.
      *
-     * @param \TechDivision\Configuration\Interfaces\NodeInterface $appNode The application node object
+     * @param \AppserverIo\Configuration\Interfaces\NodeInterface $appNode The application node object
      *
      * @return void
      */

@@ -18,7 +18,7 @@ namespace AppserverIo\Appserver\Core;
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Storage\StorageInterface;
 use AppserverIo\Appserver\Core\InitialContext\ContextKeys;
-use TechDivision\Configuration\Interfaces\NodeInterface;
+use AppserverIo\Configuration\Interfaces\NodeInterface;
 use AppserverIo\Appserver\Core\SplClassLoader;
 use AppserverIo\Appserver\Application\Interfaces\ContextInterface;
 
@@ -60,7 +60,7 @@ class InitialContext implements ContextInterface
     /**
      * Initializes the context with the connection to the storage backend.
      *
-     * @param \TechDivision\Configuration\Interfaces\NodeInterface $systemConfiguration The system configuration
+     * @param \AppserverIo\Configuration\Interfaces\NodeInterface $systemConfiguration The system configuration
      */
     public function __construct(NodeInterface $systemConfiguration)
     {
@@ -149,7 +149,7 @@ class InitialContext implements ContextInterface
     /**
      * Returns the system configuration.
      *
-     * @return \TechDivision\Configuration\Interfaces\ConfigurationInterface The system configuration
+     * @return \AppserverIo\Configuration\Interfaces\ConfigurationInterface The system configuration
      */
     public function getSystemConfiguration()
     {

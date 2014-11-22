@@ -15,7 +15,7 @@
 
 namespace AppserverIo\Appserver\Core\Api;
 
-use TechDivision\Configuration\Interfaces\ConfigurationInterface;
+use AppserverIo\Configuration\Interfaces\ConfigurationInterface;
 
 /**
  * Normalizes configuration nodes recursive to \stdClass instances.
@@ -35,7 +35,7 @@ class RecursiveNormalizer extends Normalizer
      * Normalizes the passed configuration node recursive and returns
      * a \stdClass representation of it.
      *
-     * @param \TechDivision\Configuration\Interfaces\ConfigurationInterface $configuration The configuration node to normalize recursive
+     * @param \AppserverIo\Configuration\Interfaces\ConfigurationInterface $configuration The configuration node to normalize recursive
      *
      * @return \stdClass The normalized configuration node
      */
