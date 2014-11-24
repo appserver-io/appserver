@@ -15,7 +15,7 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
-use TechDivision\Configuration\Interfaces\ValueInterface;
+use AppserverIo\Configuration\Interfaces\ValueInterface;
 
 /**
  * DTO to transfer a simple description node.
@@ -34,7 +34,7 @@ class DescriptionNode extends AbstractValueNode
     /**
      * Initializes the param node with the necessary data.
      *
-     * @param \TechDivision\Configuration\Interfaces\ValueInterface $nodeValue The params initial value
+     * @param \AppserverIo\Configuration\Interfaces\ValueInterface $nodeValue The params initial value
      */
     public function __construct(ValueInterface $nodeValue = null)
     {

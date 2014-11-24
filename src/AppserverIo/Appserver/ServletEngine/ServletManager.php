@@ -24,8 +24,8 @@ namespace AppserverIo\Appserver\ServletEngine;
 
 use AppserverIo\Psr\Servlet\Servlet;
 use AppserverIo\Psr\Servlet\ServletContext;
-use TechDivision\Storage\StorageInterface;
-use TechDivision\Storage\StackableStorage;
+use AppserverIo\Storage\StorageInterface;
+use AppserverIo\Storage\StackableStorage;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequest;
 use AppserverIo\Appserver\ServletEngine\ServletConfiguration;
 use AppserverIo\Appserver\ServletEngine\InvalidServletMappingException;
@@ -95,7 +95,7 @@ class ServletManager extends \Stackable implements ServletContext, ManagerInterf
     /**
      * Injects the container for the servlets.
      *
-     * @param \TechDivision\Storage\StorageInterface $servlets The container for the servlets
+     * @param \AppserverIo\Storage\StorageInterface $servlets The container for the servlets
      *
      * @return void
      */
@@ -107,7 +107,7 @@ class ServletManager extends \Stackable implements ServletContext, ManagerInterf
     /**
      * Injects the container for the servlet mappings.
      *
-     * @param \TechDivision\Storage\StorageInterface $servletMappings The container for the servlet mappings
+     * @param \AppserverIo\Storage\StorageInterface $servletMappings The container for the servlet mappings
      *
      * @return void
      */
@@ -119,7 +119,7 @@ class ServletManager extends \Stackable implements ServletContext, ManagerInterf
     /**
      * Injects the container for the init parameters.
      *
-     * @param \TechDivision\Storage\StorageInterface $initParameters The container for the init parameters
+     * @param \AppserverIo\Storage\StorageInterface $initParameters The container for the init parameters
      *
      * @return void
      */
@@ -131,7 +131,7 @@ class ServletManager extends \Stackable implements ServletContext, ManagerInterf
     /**
      * Injects the container for the secured URL configurations.
      *
-     * @param \TechDivision\Storage\StorageInterface $securedUrlConfigs The container for the secured URL configurations
+     * @param \AppserverIo\Storage\StorageInterface $securedUrlConfigs The container for the secured URL configurations
      *
      * @return void
      */
@@ -143,7 +143,7 @@ class ServletManager extends \Stackable implements ServletContext, ManagerInterf
     /**
      * Injects the container for the session parameters.
      *
-     * @param \TechDivision\Storage\StorageInterface $sessionParameters The container for the session parameters
+     * @param \AppserverIo\Storage\StorageInterface $sessionParameters The container for the session parameters
      *
      * @return void
      */

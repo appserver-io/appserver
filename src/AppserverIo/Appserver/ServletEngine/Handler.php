@@ -22,7 +22,7 @@
 
 namespace AppserverIo\Appserver\ServletEngine;
 
-use TechDivision\Storage\GenericStackable;
+use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Psr\Application\ApplicationInterface;
 
 /**

@@ -48,7 +48,7 @@ class AbstractDeploymentTest extends AbstractTest
      */
     public function testNewInstance()
     {
-        $className = 'TechDivision\Configuration\Configuration';
+        $className = 'AppserverIo\Configuration\Configuration';
         $this->assertInstanceOf($className, $this->deployment->newInstance($className));
     }
 }

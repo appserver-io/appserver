@@ -64,7 +64,7 @@ class StatefulSessionBeanMapFactory extends \Thread
     /**
      * Initializes the session factory instance.
      *
-     * @param \TechDivision\Storage\GenericStackable $sessionPool The session pool
+     * @param \AppserverIo\Storage\GenericStackable $sessionPool The session pool
      */
     public function __construct($sessionPool)
     {
@@ -108,7 +108,7 @@ class StatefulSessionBeanMapFactory extends \Thread
     /**
      * public function return the session pool.
      *
-     * @return \TechDivision\Storage\StackableStorage The session pool instance
+     * @return \AppserverIo\Storage\StackableStorage The session pool instance
      */
     public function getSessionPool()
     {

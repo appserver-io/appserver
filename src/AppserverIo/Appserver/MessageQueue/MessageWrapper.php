@@ -24,16 +24,16 @@
 
 namespace AppserverIo\Appserver\MessageQueue;
 
-use TechDivision\Storage\GenericStackable;
-use TechDivision\MessageQueueProtocol\Queue;
-use TechDivision\MessageQueueProtocol\Message;
-use TechDivision\MessageQueueProtocol\Monitor;
-use TechDivision\MessageQueueProtocol\Utils\PriorityKeys;
-use TechDivision\MessageQueueProtocol\Utils\PriorityKey;
-use TechDivision\MessageQueueProtocol\Utils\PriorityLow;
-use TechDivision\MessageQueueProtocol\Utils\MQStateKeys;
-use TechDivision\MessageQueueProtocol\Utils\MQStateKey;
-use TechDivision\MessageQueueProtocol\Utils\MQStateActive;
+use AppserverIo\Storage\GenericStackable;
+use AppserverIo\Psr\MessageQueueProtocol\Queue;
+use AppserverIo\Psr\MessageQueueProtocol\Message;
+use AppserverIo\Psr\MessageQueueProtocol\Monitor;
+use AppserverIo\Psr\MessageQueueProtocol\Utils\PriorityKeys;
+use AppserverIo\Psr\MessageQueueProtocol\Utils\PriorityKey;
+use AppserverIo\Psr\MessageQueueProtocol\Utils\PriorityLow;
+use AppserverIo\Psr\MessageQueueProtocol\Utils\MQStateKeys;
+use AppserverIo\Psr\MessageQueueProtocol\Utils\MQStateKey;
+use AppserverIo\Psr\MessageQueueProtocol\Utils\MQStateActive;
 
 /**
  * This is a simple stackable wrapper for a message.
@@ -71,7 +71,7 @@ class MessageWrapper extends GenericStackable implements Message
     /**
      * Creates a new and empty wrapper instance.
      *
-     * @return \TechDivision\MessageQueueProtocol\Message The empty message wrapper instance
+     * @return \AppserverIo\Psr\MessageQueueProtocol\Message The empty message wrapper instance
      */
     public static function emptyInstance()
     {
@@ -81,7 +81,7 @@ class MessageWrapper extends GenericStackable implements Message
     /**
      * Initializes the wrapper with the real message
      *
-     * @param \TechDivision\MessageQueueProtocol\Message $message The message we want to wrap
+     * @param \AppserverIo\Psr\MessageQueueProtocol\Message $message The message we want to wrap
      *
      * @return void
      */
@@ -152,7 +152,7 @@ class MessageWrapper extends GenericStackable implements Message
     /**
      * Sets the destination Queue.
      *
-     * @param \TechDivision\MessageQueueProtocol\Queue $destination The destination
+     * @param \AppserverIo\Psr\MessageQueueProtocol\Queue $destination The destination
      *
      * @return void
      */
@@ -164,7 +164,7 @@ class MessageWrapper extends GenericStackable implements Message
     /**
      * Returns the destination Queue.
      *
-     * @return \TechDivision\MessageQueueProtocol\Queue The destination Queue
+     * @return \AppserverIo\Psr\MessageQueueProtocol\Queue The destination Queue
      */
     public function getDestination()
     {
@@ -174,7 +174,7 @@ class MessageWrapper extends GenericStackable implements Message
     /**
      * Sets the priority of the message.
      *
-     * @param \TechDivision\MessageQueueProtocol\Utils\PriorityKey $priority The priority to set the message to
+     * @param \AppserverIo\Psr\MessageQueueProtocol\Utils\PriorityKey $priority The priority to set the message to
      *
      * @return void
      */
@@ -186,7 +186,7 @@ class MessageWrapper extends GenericStackable implements Message
     /**
      * Returns the priority of the message.
      *
-     * @return \TechDivision\MessageQueueProtocol\Utils\PriorityKey The priority of the message
+     * @return \AppserverIo\Psr\MessageQueueProtocol\Utils\PriorityKey The priority of the message
      */
     public function getPriority()
     {
@@ -196,7 +196,7 @@ class MessageWrapper extends GenericStackable implements Message
     /**
      * Sets the state of the message.
      *
-     * @param \TechDivision\MessageQueueProtocol\Utils\MQStateKey $state The new state
+     * @param \AppserverIo\Psr\MessageQueueProtocol\Utils\MQStateKey $state The new state
      *
      * @return void
      */
@@ -208,7 +208,7 @@ class MessageWrapper extends GenericStackable implements Message
     /**
      * Returns the state of the message.
      *
-     * @return \TechDivision\MessageQueueProtocol\Utils\MQStateKey The message state
+     * @return \AppserverIo\Psr\MessageQueueProtocol\Utils\MQStateKey The message state
      */
     public function getState()
     {
@@ -218,7 +218,7 @@ class MessageWrapper extends GenericStackable implements Message
     /**
      * Sets the parent message.
      *
-     * @param \TechDivision\MessageQueueProtocol\Message $parentMessage The parent message
+     * @param \AppserverIo\Psr\MessageQueueProtocol\Message $parentMessage The parent message
      *
      * @return void
      */
@@ -230,9 +230,9 @@ class MessageWrapper extends GenericStackable implements Message
     /**
      * Returns the parent message.
      *
-     * @return \TechDivision\MessageQueueProtocol\Message The parent message
+     * @return \AppserverIo\Psr\MessageQueueProtocol\Message The parent message
      *
-     * @see \TechDivision\MessageQueueProtocol\Message::getParentMessage()
+     * @see \AppserverIo\Psr\MessageQueueProtocol\Message::getParentMessage()
      */
     public function getParentMessage()
     {
@@ -242,7 +242,7 @@ class MessageWrapper extends GenericStackable implements Message
     /**
      * Sets the monitor for monitoring the message itself.
      *
-     * @param \TechDivision\MessageQueueProtocol\Monitor $messageMonitor The monitor
+     * @param \AppserverIo\Psr\MessageQueueProtocol\Monitor $messageMonitor The monitor
      *
      * @return void
      */
@@ -254,7 +254,7 @@ class MessageWrapper extends GenericStackable implements Message
     /**
      * Returns the message monitor.
      *
-     * @return \TechDivision\MessageQueueProtocol\Monitor The monitor
+     * @return \AppserverIo\Psr\MessageQueueProtocol\Monitor The monitor
      *
      * @see \AppserverIo\Appserver\MessageQueueProtocol::getMessageMonitor()
      */

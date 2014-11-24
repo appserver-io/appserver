@@ -11,7 +11,7 @@
  */
 namespace AppserverIo\Appserver\Core;
 
-use TechDivision\Configuration\Configuration;
+use AppserverIo\Configuration\Configuration;
 use AppserverIo\Appserver\Core\Mock\MockThread;
 use AppserverIo\Appserver\Core\InitialContext;
 

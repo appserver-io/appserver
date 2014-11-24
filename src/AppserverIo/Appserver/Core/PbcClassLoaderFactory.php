@@ -16,7 +16,7 @@
 
 namespace AppserverIo\Appserver\Core;
 
-use TechDivision\PBC\Config;
+use AppserverIo\PBC\Config;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\Core\Api\Node\ClassLoaderNodeInterface;
 

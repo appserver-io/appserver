@@ -15,7 +15,7 @@
 
 namespace AppserverIo\Appserver\Core\Api;
 
-use TechDivision\Configuration\Interfaces\NodeInterface;
+use AppserverIo\Configuration\Interfaces\NodeInterface;
 use AppserverIo\Appserver\Core\InitialContext;
 
 /**
@@ -43,7 +43,7 @@ interface ServiceInterface
     /**
      * Returns the system configuration.
      *
-     * @param \TechDivision\Configuration\Interfaces\NodeInterface $systemConfiguration The system configuration
+     * @param \AppserverIo\Configuration\Interfaces\NodeInterface $systemConfiguration The system configuration
      *
      * @return ServiceInterface
      */
@@ -52,7 +52,7 @@ interface ServiceInterface
     /**
      * Returns the system configuration.
      *
-     * @return \TechDivision\Configuration\Interfaces\NodeInterface The system configuration
+     * @return \AppserverIo\Configuration\Interfaces\NodeInterface The system configuration
      */
     public function getSystemConfiguration();
 
@@ -68,7 +68,7 @@ interface ServiceInterface
      *
      * @param integer $uuid UUID of the node to return
      *
-     * @return \TechDivision\Configuration\Interfaces\NodeInterface The node with the UUID passed as parameter
+     * @return \AppserverIo\Configuration\Interfaces\NodeInterface The node with the UUID passed as parameter
      */
     public function load($uuid);
 }

@@ -16,7 +16,7 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
-use TechDivision\Configuration\Interfaces\NodeInterface;
+use AppserverIo\Configuration\Interfaces\NodeInterface;
 
 /**
  * Interface for the provisioner node information.

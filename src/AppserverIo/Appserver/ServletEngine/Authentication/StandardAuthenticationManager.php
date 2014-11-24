@@ -22,7 +22,7 @@
 
 namespace AppserverIo\Appserver\ServletEngine\Authentication;
 
-use TechDivision\Storage\GenericStackable;
+use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Psr\Servlet\ServletContext;
 use AppserverIo\Psr\Servlet\ServletRequest;
 use AppserverIo\Psr\Servlet\ServletResponse;

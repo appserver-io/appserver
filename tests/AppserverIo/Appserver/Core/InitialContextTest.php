@@ -46,7 +46,7 @@ class InitialContextTest extends AbstractTest
      */
     public function testGetStorage()
     {
-        $this->assertInstanceOf('TechDivision\Storage\StorageInterface', $this->initialContext->getStorage());
+        $this->assertInstanceOf('AppserverIo\Storage\StorageInterface', $this->initialContext->getStorage());
     }
 
     /**
@@ -105,10 +105,10 @@ class InitialContextTest extends AbstractTest
      */
     public function testNewInstanceWithArgument()
     {
-        $configuration = $this->initialContext->newInstance('TechDivision\Configuration\Configuration', array(
+        $configuration = $this->initialContext->newInstance('AppserverIo\Configuration\Configuration', array(
             $nodeName = 'test'
         ));
-        $this->assertInstanceOf('TechDivision\Configuration\Configuration', $configuration);
+        $this->assertInstanceOf('AppserverIo\Configuration\Configuration', $configuration);
         $this->assertEquals($nodeName, $configuration->getNodeName());
     }
 
@@ -119,7 +119,7 @@ class InitialContextTest extends AbstractTest
      */
     public function testNewReflectionClass()
     {
-        $reflectionClass = $this->initialContext->newReflectionClass('TechDivision\Configuration\Configuration');
+        $reflectionClass = $this->initialContext->newReflectionClass('AppserverIo\Configuration\Configuration');
         $this->assertInstanceOf('\ReflectionClass', $reflectionClass);
     }
 }

@@ -15,10 +15,10 @@
 
 namespace AppserverIo\Appserver\Core;
 
-use TechDivision\Storage\GenericStackable;
-use TechDivision\Storage\StorageInterface;
+use AppserverIo\Storage\GenericStackable;
+use AppserverIo\Storage\StorageInterface;
 use AppserverIo\Appserver\Core\InitialContext\ContextKeys;
-use TechDivision\Configuration\Interfaces\NodeInterface;
+use AppserverIo\Configuration\Interfaces\NodeInterface;
 use AppserverIo\Appserver\Core\SplClassLoader;
 use AppserverIo\Appserver\Application\Interfaces\ContextInterface;
 
@@ -39,7 +39,7 @@ class InitialContext implements ContextInterface
     /**
      * The storage instance
      *
-     * @var \TechDivision\Storage\StorageInterface
+     * @var \AppserverIo\Storage\StorageInterface
      */
     protected $storage;
 
@@ -60,7 +60,7 @@ class InitialContext implements ContextInterface
     /**
      * Initializes the context with the connection to the storage backend.
      *
-     * @param \TechDivision\Configuration\Interfaces\NodeInterface $systemConfiguration The system configuration
+     * @param \AppserverIo\Configuration\Interfaces\NodeInterface $systemConfiguration The system configuration
      */
     public function __construct(NodeInterface $systemConfiguration)
     {
@@ -93,9 +93,9 @@ class InitialContext implements ContextInterface
     /**
      * Returns the storage instance.
      *
-     * @param \TechDivision\Storage\StorageInterface $storage A storage instance
+     * @param \AppserverIo\Storage\StorageInterface $storage A storage instance
      *
-     * @return \TechDivision\Storage\StorageInterface The storage instance
+     * @return \AppserverIo\Storage\StorageInterface The storage instance
      */
     public function setStorage(StorageInterface $storage)
     {
@@ -105,7 +105,7 @@ class InitialContext implements ContextInterface
     /**
      * Returns the storage instance.
      *
-     * @return \TechDivision\Storage\StorageInterface The storage instance
+     * @return \AppserverIo\Storage\StorageInterface The storage instance
      */
     public function getStorage()
     {
@@ -149,7 +149,7 @@ class InitialContext implements ContextInterface
     /**
      * Returns the system configuration.
      *
-     * @return \TechDivision\Configuration\Interfaces\ConfigurationInterface The system configuration
+     * @return \AppserverIo\Configuration\Interfaces\ConfigurationInterface The system configuration
      */
     public function getSystemConfiguration()
     {

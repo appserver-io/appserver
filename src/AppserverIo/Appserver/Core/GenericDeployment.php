@@ -23,9 +23,9 @@
 namespace AppserverIo\Appserver\Core;
 
 use Rhumsaa\Uuid\Uuid;
-use TechDivision\PBC\Config;
-use TechDivision\Storage\GenericStackable;
-use TechDivision\Storage\StackableStorage;
+use AppserverIo\PBC\Config;
+use AppserverIo\Storage\GenericStackable;
+use AppserverIo\Storage\StackableStorage;
 use AppserverIo\Appserver\Application\Application;
 use AppserverIo\Appserver\Application\Interfaces\ContextInterface;
 use AppserverIo\Appserver\Core\AbstractDeployment;

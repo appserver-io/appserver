@@ -23,7 +23,7 @@
 namespace AppserverIo\Appserver\ServletEngine\Http;
 
 use TechDivision\Context\Context;
-use TechDivision\Storage\GenericStackable;
+use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Http\HttpCookieInterface;
 use AppserverIo\Http\HttpRequestInterface;
 use AppserverIo\Psr\Servlet\SessionUtils;
@@ -115,7 +115,7 @@ class Request extends GenericStackable implements HttpServletRequest
     /**
      * Injects the server variables.
      *
-     * @param \TechDivision\Storage\GenericStackable $serverVars The server variables
+     * @param \AppserverIo\Storage\GenericStackable $serverVars The server variables
      *
      * @return void
      */
@@ -693,7 +693,7 @@ class Request extends GenericStackable implements HttpServletRequest
     /**
      * Returns the array with the server variables.
      *
-     * @return \TechDivision\Storage\GenericStackable The array with the server variables
+     * @return \AppserverIo\Storage\GenericStackable The array with the server variables
      */
     public function getServerVars()
     {

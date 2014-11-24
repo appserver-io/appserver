@@ -22,7 +22,7 @@
 
 namespace AppserverIo\Appserver\Naming;
 
-use TechDivision\Properties\PropertiesInterface;
+use AppserverIo\Properties\PropertiesInterface;
 
 /**
  * This is a resource identifier implementation that supports a JNDI like
@@ -244,7 +244,7 @@ class EnterpriseBeanResourceIdentifier extends ResourceIdentifier
     /**
      * create a new resource identifier with the URL parts from the passed properties.
      *
-     * @param \TechDivision\Properties\PropertiesInterface $properties The configuration properties
+     * @param \AppserverIo\Properties\PropertiesInterface $properties The configuration properties
      *
      * @return \AppserverIo\Appserver\Naming\EnterpriseBeanResourceIdentifier The initialized instance
      */

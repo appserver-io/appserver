@@ -11,7 +11,7 @@
  */
 namespace AppserverIo\Appserver\Core\Api\Node;
 
-use TechDivision\Configuration\Configuration;
+use AppserverIo\Configuration\Configuration;
 use AppserverIo\Appserver\Core\AbstractTest;
 use AppserverIo\Appserver\Core\Api\Node\Mock\MockAbstractParamsNode;
 

@@ -19,20 +19,20 @@ namespace AppserverIo\Appserver\MessageQueue;
 
 use AppserverIo\Logger\LoggerUtils;
 use AppserverIo\Appserver\Naming\InitialContext;
-use TechDivision\Storage\GenericStackable;
-use TechDivision\MessageQueueProtocol\Message;
-use TechDivision\MessageQueueProtocol\QueueContext;
-use TechDivision\MessageQueueProtocol\Utils\PriorityKey;
-use TechDivision\MessageQueueProtocol\Utils\MQStateActive;
-use TechDivision\MessageQueueProtocol\Utils\MQStateFailed;
-use TechDivision\MessageQueueProtocol\Utils\MQStateInProgress;
-use TechDivision\MessageQueueProtocol\Utils\MQStatePaused;
-use TechDivision\MessageQueueProtocol\Utils\MQStateProcessed;
-use TechDivision\MessageQueueProtocol\Utils\MQStateToProcess;
-use TechDivision\MessageQueueProtocol\Utils\MQStateUnknown;
+use AppserverIo\Storage\GenericStackable;
+use AppserverIo\Psr\MessageQueueProtocol\Message;
+use AppserverIo\Psr\MessageQueueProtocol\QueueContext;
+use AppserverIo\Psr\MessageQueueProtocol\Utils\PriorityKey;
+use AppserverIo\Psr\MessageQueueProtocol\Utils\MQStateActive;
+use AppserverIo\Psr\MessageQueueProtocol\Utils\MQStateFailed;
+use AppserverIo\Psr\MessageQueueProtocol\Utils\MQStateInProgress;
+use AppserverIo\Psr\MessageQueueProtocol\Utils\MQStatePaused;
+use AppserverIo\Psr\MessageQueueProtocol\Utils\MQStateProcessed;
+use AppserverIo\Psr\MessageQueueProtocol\Utils\MQStateToProcess;
+use AppserverIo\Psr\MessageQueueProtocol\Utils\MQStateUnknown;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Psr\PersistenceContainerProtocol\BeanContext;
-use TechDivision\MessageQueueProtocol\Utils\PriorityMedium;
+use AppserverIo\Psr\MessageQueueProtocol\Utils\PriorityMedium;
 
 /**
  * A message queue worker implementation listening to a queue, defined in the passed application.
@@ -52,7 +52,7 @@ class QueueWorker extends \Thread
     /**
      * Initializes the queue worker with the application and the storage it should work on.
      *
-     * @param \TechDivision\MessageQueueProtocol\Utils\PriorityKey            $priorityKey The priority of this queue worker
+     * @param \AppserverIo\Psr\MessageQueueProtocol\Utils\PriorityKey            $priorityKey The priority of this queue worker
      * @param \AppserverIo\Appserver\Core\Interfaces\ApplicationInterface $application The application instance with the queue manager/locator
      *
      * @return void
@@ -74,7 +74,7 @@ class QueueWorker extends \Thread
     /**
      * Attach a new message to the queue.
      *
-     * @param \TechDivision\MessageQueueProtocol\Message $message the message to be attached to the queue
+     * @param \AppserverIo\Psr\MessageQueueProtocol\Message $message the message to be attached to the queue
      *
      * @return void
      */
@@ -88,7 +88,7 @@ class QueueWorker extends \Thread
     /**
      * Removes the message from the queue.
      *
-     * @param \TechDivision\MessageQueueProtocol\Message $message The message to be removed from the queue
+     * @param \AppserverIo\Psr\MessageQueueProtocol\Message $message The message to be removed from the queue
      *
      * @return void
      */

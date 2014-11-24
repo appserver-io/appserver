@@ -19,7 +19,7 @@ namespace AppserverIo\Appserver\ServletEngine;
 use AppserverIo\Http\HttpCookie;
 use AppserverIo\Psr\Servlet\ServletSession;
 use AppserverIo\Psr\Servlet\ServletContext;
-use TechDivision\Storage\GenericStackable;
+use AppserverIo\Storage\GenericStackable;
 
 /**
  * Interface for all session storage implementation.

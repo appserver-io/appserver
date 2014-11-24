@@ -15,7 +15,7 @@
 
 namespace AppserverIo\Appserver\Core\Api;
 
-use TechDivision\Configuration\Interfaces\NodeInterface;
+use AppserverIo\Configuration\Interfaces\NodeInterface;
 use AppserverIo\Appserver\Core\InitialContext;
 use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
 
@@ -57,7 +57,7 @@ abstract class AbstractService implements ServiceInterface
     /**
      * The initialized base directory node.
      *
-     * @var \TechDivision\Configuration\Interfaces\NodeInterface;
+     * @var \AppserverIo\Configuration\Interfaces\NodeInterface;
      */
     protected $node;
 
@@ -86,7 +86,7 @@ abstract class AbstractService implements ServiceInterface
     /**
      * (non-PHPdoc)
      *
-     * @return \TechDivision\Configuration\Interfaces\NodeInterface The system configuration
+     * @return \AppserverIo\Configuration\Interfaces\NodeInterface The system configuration
      * @see \AppserverIo\Appserver\Core\Api\ServiceInterface::getSystemConfiguration()
      */
     public function getSystemConfiguration()
@@ -97,7 +97,7 @@ abstract class AbstractService implements ServiceInterface
     /**
      * (non-PHPdoc)
      *
-     * @param \TechDivision\Configuration\Interfaces\NodeInterface $systemConfiguration The system configuration
+     * @param \AppserverIo\Configuration\Interfaces\NodeInterface $systemConfiguration The system configuration
      *
      * @return \AppserverIo\Appserver\Core\Api\ServiceInterface
      * @see \AppserverIo\Appserver\Core\Api\ServiceInterface::setSystemConfiguration()
@@ -271,7 +271,7 @@ abstract class AbstractService implements ServiceInterface
     /**
      * Persists the system configuration.
      *
-     * @param \TechDivision\Configuration\Interfaces\NodeInterface $node A node to persist
+     * @param \AppserverIo\Configuration\Interfaces\NodeInterface $node A node to persist
      *
      * @return void
      */

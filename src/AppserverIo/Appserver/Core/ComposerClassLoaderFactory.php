@@ -16,7 +16,7 @@
 
 namespace AppserverIo\Appserver\Core;
 
-use TechDivision\Storage\StackableStorage;
+use AppserverIo\Storage\StackableStorage;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\Core\Api\Node\ClassLoaderNodeInterface;
 

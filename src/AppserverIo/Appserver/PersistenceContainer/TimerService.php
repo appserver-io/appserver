@@ -24,8 +24,8 @@
 namespace AppserverIo\Appserver\PersistenceContainer;
 
 use Rhumsaa\Uuid\Uuid;
-use TechDivision\Storage\StorageInterface;
-use TechDivision\Storage\GenericStackable;
+use AppserverIo\Storage\StorageInterface;
+use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Lang\Reflection\MethodInterface;
 use AppserverIo\Psr\EnterpriseBeans\TimerConfig;
 use AppserverIo\Psr\EnterpriseBeans\TimerInterface;
@@ -86,7 +86,7 @@ class TimerService extends GenericStackable implements TimerServiceInterface, Se
     /**
      * Injects the storage for the timers.
      *
-     * @param \TechDivision\Storage\StorageInterface $timers The storage for the timers
+     * @param \AppserverIo\Storage\StorageInterface $timers The storage for the timers
      *
      * @return void
      */
@@ -98,7 +98,7 @@ class TimerService extends GenericStackable implements TimerServiceInterface, Se
     /**
      * Injects the storage for the scheduled timer tasks.
      *
-     * @param \TechDivision\Storage\StorageInterface $scheduledTimerTasks The storage for the scheduled timer tasks
+     * @param \AppserverIo\Storage\StorageInterface $scheduledTimerTasks The storage for the scheduled timer tasks
      *
      * @return void
      */
@@ -366,7 +366,7 @@ class TimerService extends GenericStackable implements TimerServiceInterface, Se
     /**
      * Get all the active timers associated with this bean.
      *
-     * @return \TechDivision\Storage\StorageInterface A collection of Timer objects.
+     * @return \AppserverIo\Storage\StorageInterface A collection of Timer objects.
      *
      * @throws \AppserverIo\Psr\EnterpriseBeans\EnterpriseBeansException If this method could not complete due to a system-level failure.
      **/
@@ -391,7 +391,7 @@ class TimerService extends GenericStackable implements TimerServiceInterface, Se
     /**
      * Returns the scheduled timer tasks.
      *
-     * @return \TechDivision\Storage\StorageInterface A collection of scheduled timer tasks
+     * @return \AppserverIo\Storage\StorageInterface A collection of scheduled timer tasks
      **/
     public function getScheduledTimerTasks()
     {

@@ -21,7 +21,7 @@ use AppserverIo\Http\HttpProtocol;
 use AppserverIo\Http\HttpRequestInterface;
 use AppserverIo\Http\HttpResponseInterface;
 use AppserverIo\Http\HttpResponseStates;
-use TechDivision\Storage\GenericStackable;
+use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Appserver\Application\VirtualHost;
 use AppserverIo\Appserver\Application\Interfaces\ContextInterface;
 use AppserverIo\Psr\Servlet\ServletRequest;
@@ -83,56 +83,56 @@ class DynamicServletEngine extends GenericStackable implements ModuleInterface
         /**
          * Storage for the servlet engines valves that handles the request.
          *
-         * @var \TechDivision\Storage\GenericStackable
+         * @var \AppserverIo\Storage\GenericStackable
          */
         $this->valves = new GenericStackable();
 
         /**
          * Storage handlers registered in the web server.
          *
-         * @var \TechDivision\Storage\GenericStackable
+         * @var \AppserverIo\Storage\GenericStackable
          */
         $this->handlers = new GenericStackable();
 
         /**
          * Storage with the available applications.
          *
-         * @var \TechDivision\Storage\GenericStackable
+         * @var \AppserverIo\Storage\GenericStackable
          */
         $this->applications = new GenericStackable();
 
         /**
          * Storage with the available applications.
          *
-         * @var \TechDivision\Storage\GenericStackable
+         * @var \AppserverIo\Storage\GenericStackable
          */
         $this->dependencies = new GenericStackable();
 
         /**
          * Storage with the registered virtual hosts.
          *
-         * @var \TechDivision\Storage\GenericStackable
+         * @var \AppserverIo\Storage\GenericStackable
          */
         $this->virtualHosts = new GenericStackable();
 
         /**
          * Storage with the registered request handlers.
          *
-         * @var \TechDivision\Storage\GenericStackable
+         * @var \AppserverIo\Storage\GenericStackable
          */
         $this->requestHandlers = new GenericStackable();
 
         /**
          * Storage with the thread ID's of the request handlers actually handling a request.
          *
-         * @var \TechDivision\Storage\GenericStackable
+         * @var \AppserverIo\Storage\GenericStackable
          */
         $this->workingRequestHandlers = new GenericStackable();
 
         /**
          * Storage with URL => application mappings.
          *
-         * @var \TechDivision\Storage\GenericStackable
+         * @var \AppserverIo\Storage\GenericStackable
          */
         $this->urlMappings = new GenericStackable();
     }
@@ -140,7 +140,7 @@ class DynamicServletEngine extends GenericStackable implements ModuleInterface
     /**
      * Returns an array of module names which should be executed first.
      *
-     * @return \TechDivision\Storage\GenericStackable The module names this module depends on
+     * @return \AppserverIo\Storage\GenericStackable The module names this module depends on
      */
     public function getDependencies()
     {
@@ -591,7 +591,7 @@ class DynamicServletEngine extends GenericStackable implements ModuleInterface
     /**
      * Returns the initialized applications.
      *
-     * @return \TechDivision\Storage\GenericStackable The initialized application instances
+     * @return \AppserverIo\Storage\GenericStackable The initialized application instances
      */
     public function getApplications()
     {
@@ -601,7 +601,7 @@ class DynamicServletEngine extends GenericStackable implements ModuleInterface
     /**
      * Returns the initialized valves.
      *
-     * @return \TechDivision\Storage\GenericStackable The initialized valves
+     * @return \AppserverIo\Storage\GenericStackable The initialized valves
      */
     public function getValves()
     {
@@ -611,7 +611,7 @@ class DynamicServletEngine extends GenericStackable implements ModuleInterface
     /**
      * Returns the initialized web server handlers.
      *
-     * @return \TechDivision\Storage\GenericStackable The initialized web server handlers
+     * @return \AppserverIo\Storage\GenericStackable The initialized web server handlers
      */
     public function getHandlers()
     {

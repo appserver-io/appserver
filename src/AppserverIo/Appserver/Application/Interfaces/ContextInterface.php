@@ -23,7 +23,7 @@
 
 namespace AppserverIo\Appserver\Application\Interfaces;
 
-use TechDivision\Context\Context;
+use AppserverIo\Psr\Context\Context;
 
 /**
  * Interface for a context.
@@ -69,7 +69,7 @@ interface ContextInterface extends Context
     /**
      * Returns the system configuration.
      *
-     * @return \TechDivision\Configuration\Interfaces\ConfigurationInterface The system configuration
+     * @return \AppserverIo\Configuration\Interfaces\ConfigurationInterface The system configuration
      */
     public function getSystemConfiguration();
 }

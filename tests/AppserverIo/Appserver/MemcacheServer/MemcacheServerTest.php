@@ -55,7 +55,7 @@ class MemcacheServerTest extends \PHPUnit_Framework_TestCase
         $memcacheServer = new MemcacheServer($stackable);
 
         // initialize the request
-        $memcacheRequest = $this->getMock('TechDivision\MemcacheProtocol\MemcacheRequest');
+        $memcacheRequest = $this->getMock('AppserverIo\Appserver\MemcacheProtocol\MemcacheRequest');
         $memcacheRequest->expects($this->once())
             ->method('getRequestAction')
             ->will($this->returnValue($requestAction = 'increment'));
@@ -86,7 +86,7 @@ class MemcacheServerTest extends \PHPUnit_Framework_TestCase
         $memcacheServer = new MemcacheServer($stackable);
 
         // initialize the request
-        $memcacheRequest = $this->getMock('TechDivision\MemcacheProtocol\MemcacheRequest');
+        $memcacheRequest = $this->getMock('AppserverIo\Appserver\MemcacheProtocol\MemcacheRequest');
         $memcacheRequest->expects($this->once())
             ->method('getRequestAction')
             ->will($this->returnValue($requestAction = 'increment'));
@@ -120,7 +120,7 @@ class MemcacheServerTest extends \PHPUnit_Framework_TestCase
         $memcacheServer = new MemcacheServer($stackable);
 
         // initialize the request
-        $memcacheRequest = $this->getMock('TechDivision\MemcacheProtocol\MemcacheRequest');
+        $memcacheRequest = $this->getMock('AppserverIo\Appserver\MemcacheProtocol\MemcacheRequest');
         $memcacheRequest->expects($this->once())
             ->method('getRequestAction')
             ->will($this->returnValue($requestAction = 'increment'));

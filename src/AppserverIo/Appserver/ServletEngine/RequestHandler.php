@@ -23,7 +23,7 @@
 namespace AppserverIo\Appserver\ServletEngine;
 
 use AppserverIo\Logger\LoggerUtils;
-use TechDivision\Storage\GenericStackable;
+use AppserverIo\Storage\GenericStackable;
 use TechDivision\Server\Dictionaries\ServerVars;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequest;
 use AppserverIo\Psr\Servlet\Http\HttpServletResponse;
@@ -47,7 +47,7 @@ class RequestHandler extends \Thread
     /**
      * Injects the valves to be processed.
      *
-     * @param \TechDivision\Storage\GenericStackable $valves The valves to process
+     * @param \AppserverIo\Storage\GenericStackable $valves The valves to process
      *
      * @return void
      */

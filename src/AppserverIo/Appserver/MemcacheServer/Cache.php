@@ -24,7 +24,7 @@
 
 namespace AppserverIo\Appserver\MemcacheServer;
 
-use TechDivision\MemcacheProtocol\CacheRequest;
+use AppserverIo\Appserver\MemcacheProtocol\CacheRequest;
 
 /**
  * Interface for all cache server implementations.

@@ -15,7 +15,7 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
-use TechDivision\Configuration\Interfaces\ValueInterface;
+use AppserverIo\Configuration\Interfaces\ValueInterface;
 
 /**
  * DTO to transfer a param.
@@ -52,7 +52,7 @@ class ParamNode extends AbstractValueNode
      *
      * @param string                                                $name      The params name
      * @param string                                                $type      The params data type
-     * @param \TechDivision\Configuration\Interfaces\ValueInterface $nodeValue The params initial value
+     * @param \AppserverIo\Configuration\Interfaces\ValueInterface $nodeValue The params initial value
      */
     public function __construct($name = '', $type = '', ValueInterface $nodeValue = null)
     {

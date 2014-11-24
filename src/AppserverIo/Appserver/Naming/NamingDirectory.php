@@ -22,8 +22,8 @@
 
 namespace AppserverIo\Appserver\Naming;
 
-use TechDivision\Storage\GenericStackable;
-use TechDivision\Storage\StackableStorage;
+use AppserverIo\Storage\GenericStackable;
+use AppserverIo\Storage\StackableStorage;
 use AppserverIo\Psr\Naming\NamingException;
 use AppserverIo\Psr\Naming\NamingDirectoryInterface;
 
@@ -112,7 +112,7 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
      * recursive from the scheme and the root directory.
      *
      * @return string The unique identifier
-     * @see \TechDivision\Storage\StorageInterface::getIdentifier()
+     * @see \AppserverIo\Storage\StorageInterface::getIdentifier()
      */
     public function getIdentifier()
     {

@@ -22,8 +22,8 @@
 
 namespace AppserverIo\Appserver\ServletEngine\Http;
 
-use TechDivision\Storage\StackableStorage;
-use TechDivision\Storage\GenericStackable;
+use AppserverIo\Storage\StackableStorage;
+use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Psr\Servlet\ServletSession;
 use AppserverIo\Psr\Servlet\Http\HttpSession;
 use AppserverIo\Psr\Servlet\Http\HttpServletResponse;

@@ -22,7 +22,7 @@
 
 namespace AppserverIo\Appserver\Core;
 
-use TechDivision\Configuration\Interfaces\NodeInterface;
+use AppserverIo\Configuration\Interfaces\NodeInterface;
 use TechDivision\Server\Interfaces\ServerConfigurationInterface;
 
 /**
@@ -42,7 +42,7 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     /**
      * Hold's node instance
      *
-     * @var \TechDivision\Configuration\Interfaces\NodeInterface
+     * @var \AppserverIo\Configuration\Interfaces\NodeInterface
      */
     protected $node;
 
@@ -112,7 +112,7 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     /**
      * Constructs config
      *
-     * @param \TechDivision\Configuration\Interfaces\NodeInterface $node The node instance
+     * @param \AppserverIo\Configuration\Interfaces\NodeInterface $node The node instance
      */
     public function __construct($node)
     {
@@ -460,7 +460,7 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     /**
      * Prepares the modules array based on a node implementing NodeInterface
      *
-     * @param \TechDivision\Configuration\Interfaces\NodeInterface $node The node instance
+     * @param \AppserverIo\Configuration\Interfaces\NodeInterface $node The node instance
      *
      * @return array
      */
@@ -478,7 +478,7 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     /**
      * Prepares the connectionHandlers array based on a node implementing NodeInterface
      *
-     * @param \TechDivision\Configuration\Interfaces\NodeInterface $node The node instance
+     * @param \AppserverIo\Configuration\Interfaces\NodeInterface $node The node instance
      *
      * @return array
      */
@@ -496,7 +496,7 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     /**
      * Prepares the handlers array based on a node implementing NodeInterface
      *
-     * @param \TechDivision\Configuration\Interfaces\NodeInterface $node The node instance
+     * @param \AppserverIo\Configuration\Interfaces\NodeInterface $node The node instance
      *
      * @return array
      */
@@ -517,7 +517,7 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     /**
      * Prepares the virtual hosts array based on a node implementing NodeInterface
      *
-     * @param \TechDivision\Configuration\Interfaces\NodeInterface $node The node instance
+     * @param \AppserverIo\Configuration\Interfaces\NodeInterface $node The node instance
      *
      * @return array
      */
@@ -556,7 +556,7 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     /**
      * Prepares the rewrites array based on a node implementing NodeInterface
      *
-     * @param \TechDivision\Configuration\Interfaces\NodeInterface $node The node instance
+     * @param \AppserverIo\Configuration\Interfaces\NodeInterface $node The node instance
      *
      * @return array
      */
@@ -592,7 +592,7 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     /**
      * Prepares the locations array based on a node implementing NodeInterface
      *
-     * @param \TechDivision\Configuration\Interfaces\NodeInterface $node The node instance
+     * @param \AppserverIo\Configuration\Interfaces\NodeInterface $node The node instance
      *
      * @return array
      */
@@ -615,7 +615,7 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     /**
      * Prepares the environmentVariables array based on a node implementing NodeInterface
      *
-     * @param \TechDivision\Configuration\Interfaces\NodeInterface $node The node instance
+     * @param \AppserverIo\Configuration\Interfaces\NodeInterface $node The node instance
      *
      * @return array
      */
@@ -646,7 +646,7 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     /**
      * Prepares the authentications array based on a node implementing NodeInterface
      *
-     * @param \TechDivision\Configuration\Interfaces\NodeInterface $node The node instance
+     * @param \AppserverIo\Configuration\Interfaces\NodeInterface $node The node instance
      *
      * @return array
      */
@@ -665,7 +665,7 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     /**
      * Prepares the access array based on a node implementing NodeInterface
      *
-     * @param \TechDivision\Configuration\Interfaces\NodeInterface $node The node instance
+     * @param \AppserverIo\Configuration\Interfaces\NodeInterface $node The node instance
      *
      * @return array
      */
@@ -685,7 +685,7 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     /**
      * Prepares the rewrite maps array based on a node implementing NodeInterface
      *
-     * @param \TechDivision\Configuration\Interfaces\NodeInterface $node The node instance
+     * @param \AppserverIo\Configuration\Interfaces\NodeInterface $node The node instance
      *
      * @return array
      */

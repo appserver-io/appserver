@@ -70,7 +70,7 @@ class StandardGarbageCollector extends \Thread implements GarbageCollector
     /**
      * Injects the sessions.
      *
-     * @param \TechDivision\Storage\StorageInterface $sessions The sessions
+     * @param \AppserverIo\Storage\StorageInterface $sessions The sessions
      *
      * @return void
      */
@@ -106,7 +106,7 @@ class StandardGarbageCollector extends \Thread implements GarbageCollector
     /**
      * Returns all sessions actually attached to the session manager.
      *
-     * @return \TechDivision\Storage\StorageInterface The container with sessions
+     * @return \AppserverIo\Storage\StorageInterface The container with sessions
      */
     public function getSessions()
     {

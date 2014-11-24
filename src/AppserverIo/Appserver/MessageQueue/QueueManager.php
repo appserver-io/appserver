@@ -24,10 +24,11 @@
 
 namespace AppserverIo\Appserver\MessageQueue;
 
-use TechDivision\Storage\GenericStackable;
-use TechDivision\MessageQueueProtocol\Queue;
-use TechDivision\MessageQueueProtocol\Message;
-use TechDivision\MessageQueueProtocol\QueueContext;
+use AppserverIo\Storage\GenericStackable;
+use AppserverIo\Psr\MessageQueueProtocol\Queue;
+use AppserverIo\Psr\MessageQueueProtocol\Message;
+use AppserverIo\Psr\MessageQueueProtocol\QueueContext;
+use AppserverIo\Psr\Application\ManagerInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
 
 /**
@@ -43,7 +44,7 @@ use AppserverIo\Psr\Application\ApplicationInterface;
  * @link       https://github.com/appserver-io/appserver
  * @link       http://www.appserver.io
  */
-class QueueManager extends GenericStackable implements QueueContext
+class QueueManager extends GenericStackable implements QueueContext, ManagerInterface
 {
 
     /**
@@ -59,7 +60,7 @@ class QueueManager extends GenericStackable implements QueueContext
     /**
      * Injects the storage for the queues.
      *
-     * @param \TechDivision\Storage\GenericStackable $queues An storage for the queues
+     * @param \AppserverIo\Storage\GenericStackable $queues An storage for the queues
      *
      * @return void
      */
@@ -184,7 +185,7 @@ class QueueManager extends GenericStackable implements QueueContext
      * Returns TRUE if the application is related with the
      * passed queue instance.
      *
-     * @param \TechDivision\MessageQueueProtocol\Queue $queue The queue the application has to be related to
+     * @param \AppserverIo\Psr\MessageQueueProtocol\Queue $queue The queue the application has to be related to
      *
      * @return boolean TRUE if the application is related, else FALSE
      */
@@ -197,9 +198,9 @@ class QueueManager extends GenericStackable implements QueueContext
      * Tries to locate the queue that handles the request and returns the instance
      * if one can be found.
      *
-     * @param \TechDivision\MessageQueueProtocol\Queue $queue The queue request
+     * @param \AppserverIo\Psr\MessageQueueProtocol\Queue $queue The queue request
      *
-     * @return \TechDivision\MessageQueueProtocol\Queue The requested queue instance
+     * @return \AppserverIo\Psr\MessageQueueProtocol\Queue The requested queue instance
      */
     public function locate(Queue $queue)
     {
@@ -209,7 +210,7 @@ class QueueManager extends GenericStackable implements QueueContext
     /**
      * Updates the message monitor.
      *
-     * @param \TechDivision\MessageQueueProtocol\Message $message The message to update the monitor for
+     * @param \AppserverIo\Psr\MessageQueueProtocol\Message $message The message to update the monitor for
      *
      * @return void
      */

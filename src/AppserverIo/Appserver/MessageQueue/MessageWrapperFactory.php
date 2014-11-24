@@ -42,7 +42,7 @@ class MessageWrapperFactory extends \Thread
     /**
      * The message wrapper instance we want to return.
      *
-     * @return \TechDivision\MessageQueueProtocol\Message
+     * @return \AppserverIo\Psr\MessageQueueProtocol\Message
      */
     protected $instance;
 
@@ -60,7 +60,7 @@ class MessageWrapperFactory extends \Thread
     /**
      * Creates and returns a new empty message wrapper instance.
      *
-     * @return \TechDivision\MessageQueueProtocol\Message $message The empty message wrapper instance
+     * @return \AppserverIo\Psr\MessageQueueProtocol\Message $message The empty message wrapper instance
      */
     protected function emptyInstance()
     {

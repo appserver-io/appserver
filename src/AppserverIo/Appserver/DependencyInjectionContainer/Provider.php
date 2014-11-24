@@ -24,7 +24,7 @@
 namespace AppserverIo\Appserver\DependencyInjectionContainer;
 
 use AppserverIo\Psr\Naming\NamingDirectoryInterface;
-use TechDivision\Storage\GenericStackable;
+use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Lang\Reflection\ClassInterface;
 use AppserverIo\Lang\Reflection\ReflectionClass;
 use AppserverIo\Lang\Reflection\ReflectionMethod;
@@ -116,7 +116,7 @@ class Provider extends GenericStackable implements ProviderInterface
     /**
      * Injects the naming directory aliases.
      *
-     * @param \TechDivision\Storage\GenericStackable $namingDirectoryAliases The naming directory aliases
+     * @param \AppserverIo\Storage\GenericStackable $namingDirectoryAliases The naming directory aliases
      *
      * @return void
      */

@@ -16,8 +16,8 @@
 namespace AppserverIo\Appserver\Core;
 
 use AppserverIo\Logger\LoggerUtils;
-use TechDivision\Configuration\Interfaces\NodeInterface;
-use TechDivision\Configuration\Interfaces\ConfigurationInterface;
+use AppserverIo\Configuration\Interfaces\NodeInterface;
+use AppserverIo\Configuration\Interfaces\ConfigurationInterface;
 use AppserverIo\Appserver\Core\Extractors\PharExtractor;
 use AppserverIo\Appserver\Core\Interfaces\ProvisionerInterface;
 use AppserverIo\Appserver\Core\Interfaces\ExtractorInterface;
@@ -53,7 +53,7 @@ class Server
     /**
      * The system configuration.
      *
-     * @var \TechDivision\Configuration\Interfaces\NodeInterface
+     * @var \AppserverIo\Configuration\Interfaces\NodeInterface
      */
     protected $systemConfiguration;
 
@@ -81,7 +81,7 @@ class Server
     /**
      * Initializes the the server with the parsed configuration file.
      *
-     * @param \TechDivision\Configuration\Interfaces\ConfigurationInterface $configuration The parsed configuration file
+     * @param \AppserverIo\Configuration\Interfaces\ConfigurationInterface $configuration The parsed configuration file
      */
     public function __construct(ConfigurationInterface $configuration)
     {
@@ -304,9 +304,9 @@ class Server
     /**
      * Set's the system configuration.
      *
-     * @param \TechDivision\Configuration\Interfaces\NodeInterface $systemConfiguration The system configuration object
+     * @param \AppserverIo\Configuration\Interfaces\NodeInterface $systemConfiguration The system configuration object
      *
-     * @return \TechDivision\Configuration\Interfaces\NodeInterface The system configuration
+     * @return \AppserverIo\Configuration\Interfaces\NodeInterface The system configuration
      */
     public function setSystemConfiguration(NodeInterface $systemConfiguration)
     {
@@ -316,7 +316,7 @@ class Server
     /**
      * Returns the system configuration.
      *
-     * @return \TechDivision\Configuration\Interfaces\NodeInterface The system configuration
+     * @return \AppserverIo\Configuration\Interfaces\NodeInterface The system configuration
      */
     public function getSystemConfiguration()
     {

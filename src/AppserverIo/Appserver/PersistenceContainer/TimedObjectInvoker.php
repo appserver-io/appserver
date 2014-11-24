@@ -23,8 +23,8 @@
 namespace AppserverIo\Appserver\PersistenceContainer;
 
 use AppserverIo\Appserver\Naming\InitialContext;
-use TechDivision\Storage\StorageInterface;
-use TechDivision\Storage\GenericStackable;
+use AppserverIo\Storage\StorageInterface;
+use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Lang\Reflection\ClassInterface;
 use AppserverIo\Lang\Reflection\MethodInterface;
 use AppserverIo\Psr\EnterpriseBeans\TimerInterface;
@@ -65,7 +65,7 @@ class TimedObjectInvoker extends GenericStackable implements TimedObjectInvokerI
     /**
      * Injects the storage for the timeout methods.
      *
-     * @param \TechDivision\Storage\StorageInterface $timeoutMethods The storage for the timeout methods
+     * @param \AppserverIo\Storage\StorageInterface $timeoutMethods The storage for the timeout methods
      *
      * @return void
      */
@@ -99,7 +99,7 @@ class TimedObjectInvoker extends GenericStackable implements TimedObjectInvokerI
     /**
      * Returns the timeout methods.
      *
-     * @return \TechDivision\Storage\StorageInterface A collection of timeout methods
+     * @return \AppserverIo\Storage\StorageInterface A collection of timeout methods
      **/
     public function getTimeoutMethods()
     {

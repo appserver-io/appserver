@@ -16,7 +16,7 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
-use TechDivision\Configuration\Interfaces\NodeInterface;
+use AppserverIo\Configuration\Interfaces\NodeInterface;
 
 /**
  * The interface for the class loader configuration.
