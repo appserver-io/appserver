@@ -24,7 +24,7 @@ namespace AppserverIo\Appserver\ServletEngine;
 
 use AppserverIo\Http\HttpResponseStates;
 use AppserverIo\Psr\Application\ApplicationInterface;
-use TechDivision\Server\Dictionaries\ServerVars;
+use AppserverIo\Server\Dictionaries\ServerVars;
 
 /**
  * This is a request handler that is necessary to process each request of an

@@ -17,17 +17,15 @@
 
 namespace AppserverIo\Appserver\MessageQueue;
 
+use AppserverIo\Psr\HttpMessage\RequestInterface;
+use AppserverIo\Psr\HttpMessage\ResponseInterface;
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Http\HttpResponseStates;
-use AppserverIo\Http\HttpRequestInterface;
-use AppserverIo\Http\HttpResponseInterface;
-use TechDivision\Server\Dictionaries\ServerVars;
-use TechDivision\Server\Dictionaries\ModuleHooks;
-use TechDivision\Server\Interfaces\RequestContextInterface;
-use TechDivision\Server\Interfaces\ServerContextInterface;
-use TechDivision\Server\Exceptions\ModuleException;
-use TechDivision\Connection\ConnectionRequestInterface;
-use TechDivision\Connection\ConnectionResponseInterface;
+use AppserverIo\Server\Dictionaries\ServerVars;
+use AppserverIo\Server\Dictionaries\ModuleHooks;
+use AppserverIo\Server\Interfaces\RequestContextInterface;
+use AppserverIo\Server\Interfaces\ServerContextInterface;
+use AppserverIo\Server\Exceptions\ModuleException;
 use AppserverIo\Psr\MessageQueueProtocol\QueueContext;
 use AppserverIo\Psr\MessageQueueProtocol\Utils\PriorityKeys;
 use AppserverIo\Psr\MessageQueueProtocol\MessageQueueProtocol;
@@ -81,7 +79,7 @@ class MessageQueueModule extends GenericStackable
      * Prepares the module for upcoming request in specific context
      *
      * @return bool
-     * @throws \TechDivision\Server\Exceptions\ModuleException
+     * @throws \AppserverIo\Server\Exceptions\ModuleException
      */
     public function prepare()
     {
@@ -90,10 +88,10 @@ class MessageQueueModule extends GenericStackable
     /**
      * Initializes the module.
      *
-     * @param \TechDivision\Server\Interfaces\ServerContextInterface $serverContext The servers context instance
+     * @param \AppserverIo\Server\Interfaces\ServerContextInterface $serverContext The servers context instance
      *
      * @return void
-     * @throws \TechDivision\Server\Exceptions\ModuleException
+     * @throws \AppserverIo\Server\Exceptions\ModuleException
      */
     public function init(ServerContextInterface $serverContext)
     {
@@ -127,23 +125,22 @@ class MessageQueueModule extends GenericStackable
     /**
      * Process servlet request.
      *
-     * @param \TechDivision\Connection\ConnectionRequestInterface     $request        A request object
-     * @param \TechDivision\Connection\ConnectionResponseInterface    $response       A response object
-     * @param \TechDivision\Server\Interfaces\RequestContextInterface $requestContext A requests context instance
-     * @param int                                                     $hook           The current hook to process logic for
+     * @param \AppserverIo\Psr\HttpMessage\RequestInterface          $request        A request object
+     * @param \AppserverIo\Psr\HttpMessage\ResponseInterface         $response       A response object
+     * @param \AppserverIo\Server\Interfaces\RequestContextInterface $requestContext A requests context instance
+     * @param int                                                    $hook           The current hook to process logic for
      *
      * @return bool
-     * @throws \TechDivision\Server\Exceptions\ModuleException
+     * @throws \AppserverIo\Server\Exceptions\ModuleException
      */
-    public function process(ConnectionRequestInterface $request, ConnectionResponseInterface $response, RequestContextInterface $requestContext, $hook)
-    {
+    public function process(
+        RequestInterface $request,
+        ResponseInterface $response,
+        RequestContextInterface $requestContext,
+        $hook
+    ) {
 
         try {
-
-            // In php an interface is, by definition, a fixed contract. It is immutable.
-            // So we have to declair the right ones afterwards...
-            /** @var $request \AppserverIo\Http\HttpRequestInterface */
-            /** @var $request \AppserverIo\Http\HttpResponseInterface */
 
             // if false hook is comming do nothing
             if (ModuleHooks::REQUEST_POST !== $hook) {

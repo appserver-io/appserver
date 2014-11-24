@@ -36,7 +36,7 @@ use Ratchet\WebSocket\Version\HyBi10;
 use Ratchet\WebSocket\Version\Hixie76;
 use Guzzle\Http\Message\Response;
 use Guzzle\Http\Message\RequestInterface;
-use TechDivision\Server\Interfaces\ServerContextInterface;
+use AppserverIo\Server\Interfaces\ServerContextInterface;
 
 /**
  * The adapter to handle WebSocket requests/responses.
@@ -109,7 +109,7 @@ class WebSocketConnectionHandler implements MessageComponentInterface
     /**
      * The server context instance.
      *
-     * @var \TechDivision\Server\Interfaces\ServerContextInterface
+     * @var \AppserverIo\Server\Interfaces\ServerContextInterface
      */
     protected $serverContext;
 
@@ -145,8 +145,8 @@ class WebSocketConnectionHandler implements MessageComponentInterface
     /**
      * Inits the connection handler by given context and params
      *
-     * @param \TechDivision\Server\Interfaces\ServerContextInterface $serverContext The servers context
-     * @param array                                                  $params        The params for connection handler
+     * @param \AppserverIo\Server\Interfaces\ServerContextInterface $serverContext The servers context
+     * @param array                                                 $params        The params for connection handler
      *
      * @return void
      */
@@ -198,7 +198,7 @@ class WebSocketConnectionHandler implements MessageComponentInterface
     /**
      * Returns the worker instance which starte this worker thread
      *
-     * @return \TechDivision\Server\Interfaces\WorkerInterface
+     * @return \AppserverIo\Server\Interfaces\WorkerInterface
      */
     protected function getWorker()
     {
@@ -318,7 +318,7 @@ class WebSocketConnectionHandler implements MessageComponentInterface
      * @return \AppserverIo\Psr\Application\ApplicationInterface The application instance
      * @throws \AppserverIo\Appserver\WebSocketProtocol\BadRequestException Is thrown if no application can be found for the passed application name
      */
-    public function findApplication(Request $request)
+    public function findApplication(RequestInterface $request)
     {
 
         // load the path information and the server name
@@ -494,7 +494,7 @@ class WebSocketConnectionHandler implements MessageComponentInterface
     {
         $response = new Response($code, array(
             'Sec-WebSocket-Version' => $this->versioner->getSupportedVersionString(),
-            'X-Powered-By' => Ratchet\VERSION
+            'X-Powered-By' => "Ratchet/" . $this->versioner->getSupportedVersionString()
         ));
         $conn->send((string) $response);
         $conn->close();

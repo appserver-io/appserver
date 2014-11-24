@@ -24,11 +24,11 @@
 
 namespace AppserverIo\Appserver\MemcacheProtocol;
 
-use TechDivision\Server\Interfaces\ConnectionHandlerInterface;
-use TechDivision\Server\Interfaces\ServerContextInterface;
-use TechDivision\Server\Interfaces\RequestContextInterface;
-use TechDivision\Server\Interfaces\WorkerInterface;
-use TechDivision\Server\Sockets\SocketInterface;
+use AppserverIo\Server\Interfaces\ConnectionHandlerInterface;
+use AppserverIo\Server\Interfaces\ServerContextInterface;
+use AppserverIo\Server\Interfaces\RequestContextInterface;
+use AppserverIo\Server\Interfaces\WorkerInterface;
+use AppserverIo\Psr\Socket\SocketInterface;
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Appserver\MemcacheServer\MemcacheServer;
 use AppserverIo\Appserver\MemcacheServer\GarbageCollector;
@@ -52,28 +52,28 @@ class MemcacheConnectionHandler implements ConnectionHandlerInterface
     /**
      * The server context instance
      *
-     * @var \TechDivision\Server\Interfaces\ServerContextInterface
+     * @var \AppserverIo\Server\Interfaces\ServerContextInterface
      */
     protected $serverContext;
 
     /**
      * Hold's the request's context instance
      *
-     * @var \TechDivision\Server\Interfaces\RequestContextInterface
+     * @var \AppserverIo\Server\Interfaces\RequestContextInterface
      */
     protected $requestContext;
 
     /**
      * The connection instance
      *
-     * @var \TechDivision\Server\Sockets\SocketInterface
+     * @var \AppserverIo\Server\Sockets\SocketInterface
      */
     protected $connection;
 
     /**
      * The worker instance
      *
-     * @var \TechDivision\Server\Interfaces\WorkerInterface
+     * @var \AppserverIo\Server\Interfaces\WorkerInterface
      */
     protected $worker;
 
@@ -101,7 +101,7 @@ class MemcacheConnectionHandler implements ConnectionHandlerInterface
     /**
      * Inits the connection handler by given context and params
      *
-     * @param \TechDivision\Server\Interfaces\ServerContextInterface $serverContext The servers context
+     * @param \AppserverIo\Server\Interfaces\ServerContextInterface $serverContext The servers context
      * @param array                                                  $params        The params for connection handler
      *
      * @return void
@@ -135,7 +135,7 @@ class MemcacheConnectionHandler implements ConnectionHandlerInterface
     /**
      * Injects the request context
      *
-     * @param \TechDivision\Server\Interfaces\RequestContextInterface $requestContext The request's context instance
+     * @param \AppserverIo\Server\Interfaces\RequestContextInterface $requestContext The request's context instance
      *
      * @return void
      */
@@ -167,7 +167,7 @@ class MemcacheConnectionHandler implements ConnectionHandlerInterface
     /**
      * Returns the server context instance
      *
-     * @return \TechDivision\Server\Interfaces\ServerContextInterface
+     * @return \AppserverIo\Server\Interfaces\ServerContextInterface
      */
     public function getServerContext()
     {
@@ -177,7 +177,7 @@ class MemcacheConnectionHandler implements ConnectionHandlerInterface
     /**
      * Return's the request's context instance
      *
-     * @return \TechDivision\Server\Interfaces\RequestContextInterface
+     * @return \AppserverIo\Server\Interfaces\RequestContextInterface
      */
     public function getRequestContext()
     {
@@ -187,7 +187,7 @@ class MemcacheConnectionHandler implements ConnectionHandlerInterface
     /**
      * Returns the servers configuration
      *
-     * @return \TechDivision\Server\Interfaces\ServerConfigurationInterface
+     * @return \AppserverIo\Server\Interfaces\ServerConfigurationInterface
      */
     public function getServerConfig()
     {
@@ -197,7 +197,7 @@ class MemcacheConnectionHandler implements ConnectionHandlerInterface
     /**
      * Returns the connection used to handle with
      *
-     * @return \TechDivision\Server\Sockets\SocketInterface
+     * @return \AppserverIo\Psr\Socket\SocketInterface
      */
     protected function getConnection()
     {
@@ -207,7 +207,7 @@ class MemcacheConnectionHandler implements ConnectionHandlerInterface
     /**
      * Returns the worker instance which starte this worker thread
      *
-     * @return \TechDivision\Server\Interfaces\WorkerInterface
+     * @return \AppserverIo\Server\Interfaces\WorkerInterface
      */
     protected function getWorker()
     {
@@ -218,8 +218,8 @@ class MemcacheConnectionHandler implements ConnectionHandlerInterface
      * Handles the connection with the connected client in a proper way the given
      * protocol type and version expects for example.
      *
-     * @param \TechDivision\Server\Sockets\SocketInterface    $connection The connection to handle
-     * @param \TechDivision\Server\Interfaces\WorkerInterface $worker     The worker how started this handle
+     * @param \AppserverIo\Psr\Socket\SocketInterface        $connection The connection to handle
+     * @param \AppserverIo\Server\Interfaces\WorkerInterface $worker     The worker how started this handle
      *
      * @return bool Weather it was responsible to handle the firstLine or not.
      */

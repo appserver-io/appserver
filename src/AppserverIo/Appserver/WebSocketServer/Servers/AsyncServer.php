@@ -22,14 +22,14 @@
 
 namespace AppserverIo\Appserver\WebSocketServer\Servers;
 
-use TechDivision\Server\Dictionaries\ModuleVars;
-use TechDivision\Server\Dictionaries\ServerVars;
-use TechDivision\Server\Dictionaries\ServerStateKeys;
-use TechDivision\Server\Interfaces\ServerConfigurationInterface;
-use TechDivision\Server\Interfaces\ServerContextInterface;
-use TechDivision\Server\Interfaces\ServerInterface;
-use TechDivision\Server\Exceptions\ModuleNotFoundException;
-use TechDivision\Server\Exceptions\ConnectionHandlerNotFoundException;
+use AppserverIo\Server\Dictionaries\ModuleVars;
+use AppserverIo\Server\Dictionaries\ServerVars;
+use AppserverIo\Server\Dictionaries\ServerStateKeys;
+use AppserverIo\Server\Interfaces\ServerConfigurationInterface;
+use AppserverIo\Server\Interfaces\ServerContextInterface;
+use AppserverIo\Server\Interfaces\ServerInterface;
+use AppserverIo\Server\Exceptions\ModuleNotFoundException;
+use AppserverIo\Server\Exceptions\ConnectionHandlerNotFoundException;
 
 /**
  * A asynchronous server implementation based on Ratchet.
@@ -48,21 +48,21 @@ class AsyncServer extends \Thread implements ServerInterface
     /**
      * Hold's the server context instance
      *
-     * @var \TechDivision\Server\Interfaces\ServerContextInterface The server context instance
+     * @var \AppserverIo\Server\Interfaces\ServerContextInterface The server context instance
      */
     protected $serverContext;
 
     /**
      * TRUE if the server has been started successfully, else FALSE.
      *
-     * @var \TechDivision\Server\Dictionaries\ServerStateKeys
+     * @var \AppserverIo\Server\Dictionaries\ServerStateKeys
      */
     protected $serverState;
 
     /**
      * Constructs the server instance
      *
-     * @param \TechDivision\Server\Interfaces\ServerContextInterface $serverContext The server context instance
+     * @param \AppserverIo\Server\Interfaces\ServerContextInterface $serverContext The server context instance
      */
     public function __construct(ServerContextInterface $serverContext)
     {
@@ -77,7 +77,7 @@ class AsyncServer extends \Thread implements ServerInterface
     /**
      * Return's the config instance
      *
-     * @return \TechDivision\Server\Interfaces\ServerContextInterface
+     * @return \AppserverIo\Server\Interfaces\ServerContextInterface
      */
     public function getServerContext()
     {
@@ -89,8 +89,8 @@ class AsyncServer extends \Thread implements ServerInterface
      *
      * @return void
      *
-     * @throws \TechDivision\Server\Exceptions\ModuleNotFoundException
-     * @throws \TechDivision\Server\Exceptions\ConnectionHandlerNotFoundException
+     * @throws \AppserverIo\Server\Exceptions\ModuleNotFoundException
+     * @throws \AppserverIo\Server\Exceptions\ConnectionHandlerNotFoundException
      */
     public function run()
     {

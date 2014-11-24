@@ -18,12 +18,12 @@ namespace AppserverIo\Appserver\Core\Modules;
 
 use AppserverIo\Logger\LoggerUtils;
 use AppserverIo\Logger\ThreadSafeLoggerInterface;
-use TechDivision\Connection\ConnectionRequestInterface;
-use TechDivision\Connection\ConnectionResponseInterface;
-use TechDivision\Server\Dictionaries\ModuleHooks;
-use TechDivision\Server\Interfaces\ModuleInterface;
-use TechDivision\Server\Interfaces\RequestContextInterface;
-use TechDivision\Server\Interfaces\ServerContextInterface;
+use AppserverIo\Psr\HttpMessage\RequestInterface;
+use AppserverIo\Psr\HttpMessage\ResponseInterface;
+use AppserverIo\Server\Dictionaries\ModuleHooks;
+use AppserverIo\WebServer\Interfaces\HttpModuleInterface;
+use AppserverIo\Server\Interfaces\RequestContextInterface;
+use AppserverIo\Server\Interfaces\ServerContextInterface;
 
 /**
  * Profile module that allows to send profile log messages
@@ -37,7 +37,7 @@ use TechDivision\Server\Interfaces\ServerContextInterface;
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       http://www.appserver.io
  */
-class ProfileModule implements ModuleInterface
+class ProfileModule implements HttpModuleInterface
 {
 
     /**
@@ -50,7 +50,7 @@ class ProfileModule implements ModuleInterface
     /**
      * The server context instance.
      *
-     * @var \TechDivision\Server\Interfaces\ServerContextInterface
+     * @var \AppserverIo\Server\Interfaces\ServerContextInterface
      */
     protected $serverContext;
 
@@ -64,10 +64,10 @@ class ProfileModule implements ModuleInterface
     /**
      * Initiates the module
      *
-     * @param \TechDivision\Server\Interfaces\ServerContextInterface $serverContext The server's context instance
+     * @param \AppserverIo\Server\Interfaces\ServerContextInterface $serverContext The server's context instance
      *
      * @return bool
-     * @throws \TechDivision\Server\Exceptions\ModuleException
+     * @throws \AppserverIo\Server\Exceptions\ModuleException
      */
     public function init(ServerContextInterface $serverContext)
     {
@@ -82,18 +82,22 @@ class ProfileModule implements ModuleInterface
     }
 
     /**
-     * Implements module logic for given hook.
+     * Implement's module logic for given hook
      *
-     * @param \TechDivision\Connection\ConnectionRequestInterface     $request        A request object
-     * @param \TechDivision\Connection\ConnectionResponseInterface    $response       A response object
-     * @param \TechDivision\Server\Interfaces\RequestContextInterface $requestContext A requests context instance
-     * @param int                                                     $hook           The current hook to process logic for
+     * @param \AppserverIo\Psr\HttpMessage\RequestInterface          $request        A request object
+     * @param \AppserverIo\Psr\HttpMessage\ResponseInterface         $response       A response object
+     * @param \AppserverIo\Server\Interfaces\RequestContextInterface $requestContext A requests context instance
+     * @param int                                                    $hook           The current hook to process logic for
      *
      * @return bool
-     * @throws \TechDivision\Server\Exceptions\ModuleException
+     * @throws \AppserverIo\Server\Exceptions\ModuleException
      */
-    public function process(ConnectionRequestInterface $request, ConnectionResponseInterface $response, RequestContextInterface $requestContext, $hook)
-    {
+    public function process(
+        RequestInterface $request,
+        ResponseInterface $response,
+        RequestContextInterface $requestContext,
+        $hook
+    ) {
 
         // profile this request if we've a logger instance
         if (ModuleHooks::RESPONSE_POST === $hook && $this->profileLogger instanceof ThreadSafeLoggerInterface) {
@@ -125,7 +129,7 @@ class ProfileModule implements ModuleInterface
      * Prepares the module for upcoming request in specific context
      *
      * @return bool
-     * @throws \TechDivision\Server\Exceptions\ModuleException
+     * @throws \AppserverIo\Server\Exceptions\ModuleException
      */
     public function prepare()
     {

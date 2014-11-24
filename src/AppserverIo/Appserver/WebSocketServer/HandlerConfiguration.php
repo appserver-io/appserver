@@ -23,7 +23,7 @@
 
 namespace AppserverIo\Appserver\WebSocketServer;
 
-use TechDivision\WebSocketProtocol\HandlerConfig;
+use AppserverIo\Appserver\WebSocketProtocol\HandlerConfig;
 
 /**
  * Handler configuration.
@@ -50,7 +50,7 @@ class HandlerConfiguration implements HandlerConfig
     /**
      * The handler context instance.
      *
-     * @var \TechDivision\WebSocketProtocol\HandlerContext
+     * @var \AppserverIo\Appserver\WebSocketProtocol\HandlerContext
      */
     protected $handlerContext;
 
@@ -71,7 +71,7 @@ class HandlerConfiguration implements HandlerConfig
     /**
      * Injects the handler context instance.
      *
-     * @param \TechDivision\WebSocketProtocol\HandlerContext $handlerContext The handler context instance
+     * @param \AppserverIo\Appserver\WebSocketProtocol\HandlerContext $handlerContext The handler context instance
      *
      * @return void
      */
@@ -107,7 +107,7 @@ class HandlerConfiguration implements HandlerConfig
     /**
      * Returns the handler context instance.
      *
-     * @return \TechDivision\WebSocketProtocol\HandlerContext The handler context instance
+     * @return \AppserverIo\Appserver\WebSocketProtocol\HandlerContext The handler context instance
      */
     public function getHandlerContext()
     {
