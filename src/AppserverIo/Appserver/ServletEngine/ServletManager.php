@@ -354,7 +354,7 @@ class ServletManager extends \Stackable implements ServletContext, ManagerInterf
     /**
      * Registers a servlet under the passed key.
      *
-     * @param string                        $key     The servlet to key to register with
+     * @param string                           $key     The servlet to key to register with
      * @param \AppserverIo\Psr\Servlet\Servlet $servlet The servlet to be registered
      *
      * @return void
@@ -472,7 +472,7 @@ class ServletManager extends \Stackable implements ServletContext, ManagerInterf
      * Tries to locate the resource related with the request.
      *
      * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest $servletRequest The request instance to return the servlet for
-     * @param array                                         $args           The arguments passed to the servlet constructor
+     * @param array                                            $args           The arguments passed to the servlet constructor
      *
      * @return \AppserverIo\Psr\Servlet\Servlet The requested servlet
      * @see \AppserverIo\Appserver\ServletEngine\ResourceLocator::locate()

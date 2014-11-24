@@ -312,7 +312,7 @@ class Request extends GenericStackable implements HttpServletRequest
      * Adds a part to the parts collection.
      *
      * @param \AppserverIo\Appserver\ServletEngine\Http\Part $part A form part object
-     * @param string                                $name A manually defined name
+     * @param string                                         $name A manually defined name
      *
      * @return void
      */

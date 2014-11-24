@@ -52,8 +52,8 @@ class QueueWorker extends \Thread
     /**
      * Initializes the queue worker with the application and the storage it should work on.
      *
-     * @param \AppserverIo\Psr\MessageQueueProtocol\Utils\PriorityKey            $priorityKey The priority of this queue worker
-     * @param \AppserverIo\Appserver\Core\Interfaces\ApplicationInterface $application The application instance with the queue manager/locator
+     * @param \AppserverIo\Psr\MessageQueueProtocol\Utils\PriorityKey $priorityKey The priority of this queue worker
+     * @param \AppserverIo\Psr\Application\ApplicationInterface       $application The application instance with the queue manager/locator
      *
      * @return void
      */

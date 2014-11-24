@@ -6,9 +6,8 @@
  * PHP version 5
  *
  * @category   Server
- * @subpackage Composer
  * @package    Appserver
- * @subpackage Application
+ * @subpackage Composer
  * @author     Tim Wagner <tw@appserver.io>
  * @copyright  2014 TechDivision GmbH <info@appserver.io>
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
@@ -22,9 +21,8 @@ namespace AppserverIo\Meta\Composer\Script;
  * Constants used for Composer setup script.
  *
  * @category   Server
- * @subpackage Composer
  * @package    Appserver
- * @subpackage Application
+ * @subpackage Composer
  * @author     Tim Wagner <tw@appserver.io>
  * @copyright  2014 TechDivision GmbH <info@appserver.io>
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)

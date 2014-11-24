@@ -108,8 +108,8 @@ class DynamicRequestHandler extends \Thread
      * Initializes the request handler with the application and the
      * valves to be processed
      *
-     * @param \AppserverIo\Appserver\Core\Interfaces\ApplicationInterface $application The application instance
-     * @param \AppserverIo\Storage\GenericStackable                          $valves      The valves to process
+     * @param \AppserverIo\Psr\Application\ApplicationInterface $application The application instance
+     * @param \AppserverIo\Storage\GenericStackable             $valves      The valves to process
      */
     public function __construct(ApplicationInterface $application, $valves)
     {

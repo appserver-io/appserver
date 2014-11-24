@@ -233,7 +233,7 @@ class HandlerManager extends GenericStackable implements HandlerContext
     /**
      * Registers a handler under the passed key.
      *
-     * @param string                                  $key     The key to register with the handler with
+     * @param string                                           $key     The key to register with the handler with
      * @param \AppserverIo\Appserver\WebSocketProtocol\Handler $handler The handler to be registered
      *
      * @return void

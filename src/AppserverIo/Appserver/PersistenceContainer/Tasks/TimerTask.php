@@ -67,7 +67,7 @@ class TimerTask extends \Thread
     /**
      * Initializes the queue worker with the application and the storage it should work on.
      *
-     * @param \AppserverIo\Psr\EnterpriseBeans\TimerInterface              $timer       The timer we have to handle
+     * @param \AppserverIo\Psr\EnterpriseBeans\TimerInterface   $timer       The timer we have to handle
      * @param \AppserverIo\Psr\Application\ApplicationInterface $application The application instance
      */
     public function __construct(TimerInterface $timer, ApplicationInterface $application)

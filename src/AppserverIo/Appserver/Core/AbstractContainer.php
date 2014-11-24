@@ -85,8 +85,8 @@ abstract class AbstractContainer extends \Stackable implements ContainerInterfac
      * Initializes the container with the initial context, the unique container ID
      * and the deployed applications.
      *
-     * @param \AppserverIo\Appserver\Core\InitialContext                   $initialContext The initial context
-     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerNode           $containerNode  The container's UUID
+     * @param \AppserverIo\Appserver\Core\InitialContext               $initialContext The initial context
+     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerNode       $containerNode  The container's UUID
      * @param array<\AppserverIo\Psr\Application\ApplicationInterface> $applications   The application instance
      *
      * @todo Application deployment only works this way because of Thread compatibilty

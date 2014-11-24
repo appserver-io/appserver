@@ -54,9 +54,9 @@ class HandlerNode extends AbstractNode
     /**
      * Initializes the provisioner node with the necessary data.
      *
-     * @param string                                                 $type      The provisioner type
+     * @param string                                             $type      The provisioner type
      * @param \AppserverIo\Appserver\Core\Api\Node\FormatterNode $formatter The formatter node
-     * @param array                                                  $params    The handler params
+     * @param array                                              $params    The handler params
      */
     public function __construct($type = '', FormatterNode $formatter = null, array $params = array())
     {

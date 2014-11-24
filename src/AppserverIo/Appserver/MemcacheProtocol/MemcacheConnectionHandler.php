@@ -102,7 +102,7 @@ class MemcacheConnectionHandler implements ConnectionHandlerInterface
      * Inits the connection handler by given context and params
      *
      * @param \AppserverIo\Server\Interfaces\ServerContextInterface $serverContext The servers context
-     * @param array                                                  $params        The params for connection handler
+     * @param array                                                 $params        The params for connection handler
      *
      * @return void
      */

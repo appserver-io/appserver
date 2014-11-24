@@ -54,7 +54,7 @@ class GeneratorThread extends \Thread
      * Default constructor
      *
      * @param \AppserverIo\PBC\Generator $generator  Our PBC generator instance
-     * @param array                       $structures List of structures to generate
+     * @param array                      $structures List of structures to generate
      */
     public function __construct(Generator $generator, array $structures)
     {

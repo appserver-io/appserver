@@ -330,7 +330,7 @@ class InitialContext
      * Makes a remote lookup for the URL containing the information of the requested bean.
      *
      * @param \AppserverIo\Appserver\Naming\ResourceIdentifier $resourceIdentifier The resource identifier with the requested bean information
-     * @param string                                  $sessionId          The session-ID, necessary for lookup stateful session beans
+     * @param string                                           $sessionId          The session-ID, necessary for lookup stateful session beans
      *
      * @return object The been proxy instance
      */
@@ -352,7 +352,7 @@ class InitialContext
      * Makes a local lookup for the bean with the passed class name.
      *
      * @param \AppserverIo\Appserver\Naming\ResourceIdentifier $resourceIdentifier The resource identifier with the requested bean information
-     * @param string                                  $sessionId          The session-ID, necessary for lookup stateful session beans
+     * @param string                                           $sessionId          The session-ID, necessary for lookup stateful session beans
      *
      * @return object The bean proxy instance
      */
@@ -378,9 +378,9 @@ class InitialContext
      * Finally this method does the lookup for the passed resource identifier
      * using the also passed connection.
      *
-     * @param \AppserverIo\Appserver\Naming\ResourceIdentifier             $resourceIdentifier The identifier for the requested bean
+     * @param \AppserverIo\Appserver\Naming\ResourceIdentifier   $resourceIdentifier The identifier for the requested bean
      * @param \AppserverIo\PersistenceContainerClient\Connection $connection         The connection we use for loading the bean
-     * @param string                                              $sessionId          The session-ID, necessary for lookup stateful session beans
+     * @param string                                             $sessionId          The session-ID, necessary for lookup stateful session beans
      *
      * @return object The been proxy instance
      */
