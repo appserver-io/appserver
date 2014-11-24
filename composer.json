@@ -16,13 +16,13 @@
 		"appserver-io-psr/servlet" : "0.6.*",
 		"appserver-io-psr/messagequeueprotocol" : "0.2.*",
 		"appserver-io/pbc" : "0.3.*",
-		"appserver-io/http" : "0.1.*",
+		"appserver-io/http" : "0.2.*",
 		"appserver-io/storage" : "0.5.*",
 		"appserver-io/properties" : "0.1.*",
 		"appserver-io/configuration" : "0.1.*",
 		"appserver-io/persistencecontainerclient" : "0.7.*",
-		"techdivision/server" : "0.1.*",
-		"techdivision/connection" : "0.1.*"
+		"appserver-io/server" : "0.2.*",
+		"appserver-io/webserver" : "0.3.*"
 	},
 	"require-dev" : {
 		"phpunit/phpunit" : "3.7.*",
