@@ -48,7 +48,7 @@ class WebSocketRequest implements Request
     /**
      * The application context instance.
      *
-     * @var \TechDivision\ApplicationServer\Interfaces\ApplicationInterface
+     * @var \AppserverIo\Psr\Application\ApplicationInterface
      */
     protected $context;
 

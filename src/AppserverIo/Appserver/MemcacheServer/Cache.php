@@ -45,7 +45,7 @@ interface Cache
     /**
      * Handle the the passed request instance.
      *
-     * @param \TechDivision\MemacheProtocol\CacheRequest $cacheRequest The request instance with the data to handle
+     * @param \AppserverIo\Appserver\MemacheProtocol\CacheRequest $cacheRequest The request instance with the data to handle
      *
      * @return void
      */

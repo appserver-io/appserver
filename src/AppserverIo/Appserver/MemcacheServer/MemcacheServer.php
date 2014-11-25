@@ -47,7 +47,7 @@ class MemcacheServer implements Cache
     /**
      * Holds the request instance.
      *
-     * @var \TechDivision\MemacheProtocol\CacheRequest
+     * @var \AppserverIo\Appserver\MemacheProtocol\CacheRequest
      */
     protected $vo = null;
 
@@ -159,7 +159,7 @@ class MemcacheServer implements Cache
     /**
      * Handle the the passed request VO.
      *
-     * @param \TechDivision\MemacheProtocol\CacheRequest $vo The VO with the data to handle
+     * @param \AppserverIo\Appserver\MemacheProtocol\CacheRequest $vo The VO with the data to handle
      *
      * @return void
      */
@@ -496,7 +496,7 @@ class MemcacheServer implements Cache
     /**
      * Returns the value object instance.
      *
-     * @return \TechDivision\CacheServer\CacheRequest
+     * @return \AppserverIo\Appserver\MemcacheProtocol\CacheRequest
      */
     protected function getVO()
     {

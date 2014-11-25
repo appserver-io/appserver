@@ -67,7 +67,7 @@ if ($configurationFile->schemaValidate($schemaFileName) === false) {
 }
 
 // initialize the SimpleXMLElement with the content XML configuration file
-$configuration = new \TechDivision\Configuration\Configuration();
+$configuration = new \AppserverIo\Configuration\Configuration();
 $configuration->initFromFile($configurationFileName);
 $configuration->addChildWithNameAndValue('baseDirectory', APPSERVER_BP);
 

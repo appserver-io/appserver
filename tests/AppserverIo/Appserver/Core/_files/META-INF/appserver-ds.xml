@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <datasources>
-	<datasource name="TechDivision\Example">
+	<datasource name="AppserverIo\Apps\Example">
 		<database>
 			<driver>pdo_mysql</driver>
 			<user>appserver</user>
