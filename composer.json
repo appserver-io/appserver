@@ -17,9 +17,9 @@
 		"appserver-io-psr/messagequeueprotocol" : "0.2.*",
 		"appserver-io/pbc" : "0.3.*",
 		"appserver-io/http" : "0.2.*",
-        "appserver-io/server" : "0.2.*",
+		"appserver-io/server" : "0.2.*",
 		"appserver-io/storage" : "0.5.*",
-        "appserver-io/webserver" : "0.3.*",
+		"appserver-io/webserver" : "0.3.*",
 		"appserver-io/properties" : "0.1.*",
 		"appserver-io/configuration" : "0.1.*",
 		"appserver-io/persistencecontainerclient" : "0.7.*"

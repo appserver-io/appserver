@@ -28,19 +28,19 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
     </params>
 
     <!--
-    <initialContext type="AppserverIo\Appserver\CoreInitialContext">
+    <initialContext type="AppserverIo\Appserver\Core\InitialContext">
         <description><![CDATA[The initial context configuration.]]></description>
-        <classLoader name="default" type="AppserverIo\Appserver\CoreSplClassLoader" />
+        <classLoader name="default" type="AppserverIo\Appserver\Core\SplClassLoader" />
         <storage type="AppserverIo\Storage\StackableStorage" />
     </initialContext>
 
     <extractors>
-        <extractor name="phar" type="AppserverIo\Appserver\CoreExtractors\PharExtractor" createBackups="false" restoreBackups="false" />
+        <extractor name="phar" type="AppserverIo\Appserver\Core\Extractors\PharExtractor" createBackups="false" restoreBackups="false" />
     </extractors>
 
     <provisioners>
-        <provisioner name="datasource" type="AppserverIo\Appserver\CoreDatasourceProvisioner" />
-        <provisioner name="standard" type="AppserverIo\Appserver\CoreStandardProvisioner" />
+        <provisioner name="datasource" type="AppserverIo\Appserver\Core\DatasourceProvisioner" />
+        <provisioner name="standard" type="AppserverIo\Appserver\Core\StandardProvisioner" />
     </provisioners>
 
     <loggers>
@@ -99,13 +99,13 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
 
         <container
                 name="combined-appserver"
-                type="AppserverIo\Appserver\CoreGenericContainer">
+                type="AppserverIo\Appserver\Core\GenericContainer">
 
             <description>
                 <![CDATA[This is an example of a webserver container that handles http requests in common way]]>
             </description>
 
-            <deployment type="AppserverIo\Appserver\CoreGenericDeployment" />
+            <deployment type="AppserverIo\Appserver\Core\GenericDeployment" />
 
             <host
                     name="localhost"
@@ -169,7 +169,7 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
                         <!-- RESPONSE_PRE hook -->
                         <module type="\AppserverIo\WebServer\Modules\DeflateModule"/>
                         <!-- RESPONSE_POST hook -->
-                        <module type="\AppserverIo\Appserver\CoreModules\ProfileModule"/>
+                        <module type="\AppserverIo\Appserver\Core\Modules\ProfileModule"/>
                     </modules>
 
                     <fileHandlers>
@@ -232,7 +232,7 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
                         <!-- RESPONSE_PRE hook -->
                         <module type="\AppserverIo\WebServer\Modules\DeflateModule"/>
                         <!-- RESPONSE_POST hook -->
-                        <module type="\AppserverIo\Appserver\CoreModules\ProfileModule"/>
+                        <module type="\AppserverIo\Appserver\Core\Modules\ProfileModule"/>
                     </modules>
 
                     <fileHandlers>
@@ -318,7 +318,7 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
                         <!-- RESPONSE_PRE hook -->
                         <module type="\AppserverIo\WebServer\Modules\DeflateModule"/>
                         <!-- RESPONSE_POST hook -->
-                        <module type="\AppserverIo\Appserver\CoreModules\ProfileModule"/>
+                        <module type="\AppserverIo\Appserver\Core\Modules\ProfileModule"/>
                     </modules>
 
                     <fileHandlers>
@@ -418,7 +418,7 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
                         <!-- RESPONSE_PRE hook -->
                         <module type="\AppserverIo\WebServer\Modules\DeflateModule"/>
                         <!-- RESPONSE_POST hook -->
-                        <module type="\AppserverIo\Appserver\CoreModules\ProfileModule"/>
+                        <module type="\AppserverIo\Appserver\Core\Modules\ProfileModule"/>
                     </modules>
 
                     <fileHandlers>
