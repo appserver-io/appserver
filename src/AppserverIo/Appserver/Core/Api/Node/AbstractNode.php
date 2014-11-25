@@ -208,8 +208,8 @@ abstract class AbstractNode implements NodeInterface
     /**
      * Return's the configuration node name by given mapping and configuration
      *
-     * @param \AppserverIo\Configuration\ConfigurationInterface $configuration The configuration instance
-     * @param \AppserverIo\Appserver\Core\Api\Node\Mapping   $mapping       The mapping instance
+     * @param \AppserverIo\Configuration\Interfaces\ConfigurationInterface $configuration The configuration instance
+     * @param \AppserverIo\Appserver\Core\Api\Node\Mapping                 $mapping       The mapping instance
      *
      * @return string
      */
@@ -241,7 +241,7 @@ abstract class AbstractNode implements NodeInterface
     /**
      * Return's the value for a given reflection property and configuration
      *
-     * @param \ReflectionProperty                                           $reflectionProperty The reflection property
+     * @param \ReflectionProperty                                          $reflectionProperty The reflection property
      * @param \AppserverIo\Configuration\Interfaces\ConfigurationInterface $configuration      The configuration instance
      *
      * @return array An array with all values from given reflection property
@@ -391,7 +391,7 @@ abstract class AbstractNode implements NodeInterface
     /**
      * Sets the configuration by reflected property.
      *
-     * @param \ReflectionProperty                                           $reflectionProperty The reflection property to set
+     * @param \ReflectionProperty                                          $reflectionProperty The reflection property to set
      * @param \AppserverIo\Configuration\Interfaces\ConfigurationInterface $configuration      The configuration instance
      *
      * @return \AppserverIo\Configuration\Interfaces\ConfigurationInterface|void The configuration or nothing
@@ -434,9 +434,9 @@ abstract class AbstractNode implements NodeInterface
      * Appends the value of the passed reflection property to the
      * configuration under the also passed path.
      *
-     * @param \ReflectionProperty                                           $reflectionProperty The reflection property
+     * @param \ReflectionProperty                                          $reflectionProperty The reflection property
      * @param \AppserverIo\Configuration\Interfaces\ConfigurationInterface $configuration      The configuration instance
-     * @param string                                                        $path               A path were to append to
+     * @param string                                                       $path               A path were to append to
      *
      * @return void
      * @throws \Exception

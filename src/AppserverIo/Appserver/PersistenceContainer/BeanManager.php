@@ -398,7 +398,7 @@ class BeanManager extends GenericStackable implements BeanContext, ManagerInterf
      * if one can be found.
      *
      * @param \AppserverIo\Psr\PersistenceContainerProtocol\RemoteMethod $remoteMethod The remote method call
-     * @param array                                                   $args         The arguments passed to the session beans constructor
+     * @param array                                                      $args         The arguments passed to the session beans constructor
      *
      * @return object The requested bean instance
      */

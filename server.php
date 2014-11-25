@@ -11,13 +11,13 @@
  *
  * PHP version 5
  *
- * @category   Server
- * @package    Appserver
- * @author     Tim Wagner <tw@appserver.io>
- * @copyright  2014 TechDivision GmbH <info@appserver.io>
- * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link       http://github.com/appserver-io/appserver
- * @link       http://www.appserver.io
+ * @category  Server
+ * @package   Appserver
+ * @author    Tim Wagner <tw@appserver.io>
+ * @copyright 2014 TechDivision GmbH <info@appserver.io>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      http://github.com/appserver-io/appserver
+ * @link      http://www.appserver.io
  */
 
 namespace AppserverIo\Appserver\Core;
@@ -27,7 +27,7 @@ use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
 declare (ticks = 1);
 
 error_reporting(~E_NOTICE);
-set_time_limit (0);
+set_time_limit(0);
 
 // set the session timeout to unlimited
 ini_set('session.gc_maxlifetime', 0);

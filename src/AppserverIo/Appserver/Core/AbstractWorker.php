@@ -57,8 +57,8 @@ abstract class AbstractWorker extends AbstractContextThread
      * and thread type class.
      *
      * @param \AppserverIo\Appserver\Core\Interfaces\ContainerInterface $container  A container implementation
-     * @param resource                                                      $resource   The client socket instance
-     * @param string                                                        $threadType The thread type class to init
+     * @param resource                                                  $resource   The client socket instance
+     * @param string                                                    $threadType The thread type class to init
      *
      * @return void
      */

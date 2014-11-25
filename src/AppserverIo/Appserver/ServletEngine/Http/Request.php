@@ -22,16 +22,16 @@
 
 namespace AppserverIo\Appserver\ServletEngine\Http;
 
-use TechDivision\Context\Context;
+use AppserverIo\Psr\Context\Context;
 use AppserverIo\Storage\GenericStackable;
-use AppserverIo\Http\HttpCookieInterface;
-use AppserverIo\Http\HttpRequestInterface;
+use AppserverIo\Psr\HttpMessage\CookieInterface;
+use AppserverIo\Psr\HttpMessage\RequestInterface;
 use AppserverIo\Psr\Servlet\SessionUtils;
 use AppserverIo\Psr\Servlet\Http\HttpSession;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequest;
 use AppserverIo\Psr\Servlet\Http\HttpServletResponse;
 use AppserverIo\Appserver\ServletEngine\SessionManager;
-use TechDivision\Server\Dictionaries\ServerVars;
+use AppserverIo\Server\Dictionaries\ServerVars;
 use AppserverIo\Psr\Application\ApplicationInterface;
 
 /**
@@ -103,7 +103,7 @@ class Request extends GenericStackable implements HttpServletRequest
      * Injects the context that allows access to session and
      * server information.
      *
-     * @param \TechDivision\Context\Context $context The request context instance
+     * @param \AppserverIo\Psr\Context\Context $context The request context instance
      *
      * @return void
      */
@@ -127,11 +127,11 @@ class Request extends GenericStackable implements HttpServletRequest
     /**
      * Injects the Http request instance.
      *
-     * @param \AppserverIo\Http\HttpRequestInterface $httpRequest The Http request instance
+     * @param \AppserverIo\Psr\HttpMessage\RequestInterface $httpRequest The Http request instance
      *
      * @return void
      */
-    public function injectHttpRequest(HttpRequestInterface $httpRequest)
+    public function injectHttpRequest(RequestInterface $httpRequest)
     {
         $this->httpRequest = $httpRequest;
     }
@@ -139,7 +139,7 @@ class Request extends GenericStackable implements HttpServletRequest
     /**
      * Returns the Http request instance.
      *
-     * @return \AppserverIo\Http\HttpRequestInterface The Http request instance
+     * @return \AppserverIo\Psr\HttpMessage\RequestInterface The Http request instance
      */
     public function getHttpRequest()
     {
@@ -150,7 +150,7 @@ class Request extends GenericStackable implements HttpServletRequest
      * Returns the context that allows access to session and
      * server information.
      *
-     * @return \TechDivision\Context\Context The request context
+     * @return \AppserverIo\Psr\Context\Context The request context
      */
     public function getContext()
     {
@@ -312,7 +312,7 @@ class Request extends GenericStackable implements HttpServletRequest
      * Adds a part to the parts collection.
      *
      * @param \AppserverIo\Appserver\ServletEngine\Http\Part $part A form part object
-     * @param string                                $name A manually defined name
+     * @param string                                         $name A manually defined name
      *
      * @return void
      */
@@ -461,11 +461,11 @@ class Request extends GenericStackable implements HttpServletRequest
     /**
      * Adds the passed cookie to this request.
      *
-     * @param \AppserverIo\Http\HttpCookieInterface $cookie The cookie to add
+     * @param \AppserverIo\Psr\HttpMessage\CookieInterface $cookie The cookie to add
      *
      * @return void
      */
-    public function addCookie(HttpCookieInterface $cookie)
+    public function addCookie(CookieInterface $cookie)
     {
         $this->getHttpRequest()->addCookie($cookie);
     }
@@ -488,7 +488,7 @@ class Request extends GenericStackable implements HttpServletRequest
      *
      * @param string $cookieName The name of the cookie to return
      *
-     * @return \AppserverIo\Http\HttpCookieInterface The cookie instance
+     * @return \AppserverIo\Psr\HttpMessage\CookieInterface The cookie instance
      */
     public function getCookie($cookieName)
     {

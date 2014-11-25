@@ -8,7 +8,7 @@
  * @category   Server
  * @package    Appserver
  * @subpackage Application
- * @author     Tim Wagner <tw@appserver.io
+ * @author     Tim Wagner <tw@appserver.io>
  * @copyright  2014 TechDivision GmbH <info@appserver.io>
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       http://www.appserver.io
@@ -26,7 +26,7 @@ use AppserverIo\Appserver\Core\Api\Node\ProvisionerNodeInterface;
  * @category   Server
  * @package    Appserver
  * @subpackage Application
- * @author     Tim Wagner <tw@appserver.io
+ * @author     Tim Wagner <tw@appserver.io>
  * @copyright  2014 TechDivision GmbH <info@appserver.io>
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       http://www.appserver.io
@@ -59,8 +59,8 @@ abstract class AbstractProvisioner implements ProvisionerInterface
      * Contructor to initialize the provisioner instance with the initial context
      * and the provision node configuration data.
      *
-     * @param \AppserverIo\Appserver\Application\Interfaces\ContextInterface           $initialContext  The initial context instance
-     * @param \AppserverIo\Appserver\Core\Api\Node\ExtractorNodeInterface $provisionerNode The provisioner node configuration data
+     * @param \AppserverIo\Appserver\Application\Interfaces\ContextInterface $initialContext  The initial context instance
+     * @param \AppserverIo\Appserver\Core\Api\Node\ExtractorNodeInterface    $provisionerNode The provisioner node configuration data
      */
     public function __construct(ContextInterface $initialContext, ProvisionerNodeInterface $provisionerNode)
     {

@@ -44,8 +44,8 @@ interface ServiceResourceLocator
      * Tries to locate the service with the passed identifier
      *
      * @param \AppserverIo\Appserver\PersistenceContainer\ServiceContext $serviceContext    The service context instance
-     * @param string                                            $serviceIdentifier The identifier of the service to be located
-     * @param array                                             $args              The arguments passed to the service providers constructor
+     * @param string                                                     $serviceIdentifier The identifier of the service to be located
+     * @param array                                                      $args              The arguments passed to the service providers constructor
      *
      * @return \AppserverIo\Appserver\PersistenceContainer\ServiceProvider The requested service provider instance
      * @see \AppserverIo\Appserver\PersistenceContainer\ServiceResourceLocator::locate()

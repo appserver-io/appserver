@@ -48,7 +48,7 @@ class ProviderFactory
     /**
      * The main method that creates new instances in a separate context.
      *
-     * @param \AppserverIo\Psr\Application\ApplicationInterface          $application          The application instance to register the class loader with
+     * @param \AppserverIo\Psr\Application\ApplicationInterface                           $application          The application instance to register the class loader with
      * @param \AppserverIo\Appserver\Application\Interfaces\ManagerConfigurationInterface $managerConfiguration The manager configuration
      *
      * @return void

@@ -18,7 +18,7 @@ namespace AppserverIo\Appserver\PersistenceContainer;
 
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Appserver\ServletEngine\ServletEngine;
-use TechDivision\Server\Interfaces\ServerContextInterface;
+use AppserverIo\Server\Interfaces\ServerContextInterface;
 use AppserverIo\Appserver\PersistenceContainer\PersistenceContainerValve;
 
 /**
@@ -79,10 +79,10 @@ class PersistenceContainerModule extends ServletEngine
     /**
      * Initializes the module.
      *
-     * @param \TechDivision\Server\Interfaces\ServerContextInterface $serverContext The servers context instance
+     * @param \AppserverIo\Server\Interfaces\ServerContextInterface $serverContext The servers context instance
      *
      * @return void
-     * @throws \TechDivision\Server\Exceptions\ModuleException
+     * @throws \AppserverIo\Server\Exceptions\ModuleException
      */
     public function init(ServerContextInterface $serverContext)
     {

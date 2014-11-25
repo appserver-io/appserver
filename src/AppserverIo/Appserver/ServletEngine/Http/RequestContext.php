@@ -22,7 +22,7 @@
 
 namespace AppserverIo\Appserver\ServletEngine\Http;
 
-use TechDivision\Context\Context;
+use \AppserverIo\Psr\Context\Context;
 
 /**
  * A Http servlet request interface.
@@ -48,7 +48,7 @@ interface RequestContext extends Context
     /**
      * Returns the authentication manager instance associated with this request.
      *
-     * @return \AppserverIo\Appserver\ServletEngine\AuthenticationManager The authentication manager instance
+     * @return \AppserverIo\Appserver\ServletEngine\Authentication\AuthenticationManager The authentication manager instance
      */
     public function getAuthenticationManager();
 }

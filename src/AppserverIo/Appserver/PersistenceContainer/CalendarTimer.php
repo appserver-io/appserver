@@ -71,7 +71,7 @@ class CalendarTimer extends Timer
      * Initializes the timer with the necessary data.
      *
      * @param \AppserverIo\Appserver\PersistenceContainer\CalendarTimerBuilder $builder      The builder with the data to create the timer from
-     * @param \AppserverIo\Psr\EnterpriseBeans\TimerServiceInterface     $timerService The timer service instance
+     * @param \AppserverIo\Psr\EnterpriseBeans\TimerServiceInterface           $timerService The timer service instance
      */
     public function __construct(CalendarTimerBuilder $builder, TimerServiceInterface $timerService)
     {

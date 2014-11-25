@@ -13,7 +13,7 @@
  * @category   Server
  * @package    Appserver
  * @subpackage Application
- * @author     Tim Wagner <tw@appserver.io
+ * @author     Tim Wagner <tw@appserver.io>
  * @copyright  2014 TechDivision GmbH <info@appserver.io>
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       https://github.com/appserver-io/appserver
@@ -32,7 +32,7 @@ use AppserverIo\Psr\EnterpriseBeans\ScheduleExpression;
  * @category   Server
  * @package    Appserver
  * @subpackage Application
- * @author     Tim Wagner <tw@appserver.io
+ * @author     Tim Wagner <tw@appserver.io>
  * @copyright  2014 TechDivision GmbH <info@appserver.io>
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       https://github.com/appserver-io/appserver
@@ -51,9 +51,9 @@ class CalendarBasedTimeout extends CronExpression
     /**
      * Parse a CRON expression
      *
-     * @param string                                           $expression         CRON expression (e.g. '8 * * * *')
+     * @param string                                              $expression         CRON expression (e.g. '8 * * * *')
      * @param \AppserverIo\Psr\EnterpriseBeans\ScheduleExpression $scheduleExpression The schedule expression with the data to create the instance with
-     * @param \Cron\FieldFactory                               $fieldFactory       Factory to create cron fields
+     * @param \Cron\FieldFactory                                  $fieldFactory       Factory to create cron fields
      */
     public function __construct($expression, ScheduleExpression $scheduleExpression, FieldFactory $fieldFactory = null)
     {
