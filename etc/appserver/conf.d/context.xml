@@ -21,6 +21,7 @@
                 <param name="processing" type="string">logging</param>
             </params>
             <directories>
+                <directory enforced="true">/common/classes</directory>
                 <directory enforced="true">/WEB-INF/classes</directory>
                 <directory enforced="true">/META-INF/classes</directory>
             </directories>
