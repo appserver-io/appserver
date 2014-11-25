@@ -37,8 +37,8 @@ class ComposerClassLoaderFactory
     /**
      * Visitor method that registers the class loaders in the application.
      *
-     * @param \AppserverIo\Psr\Application\ApplicationInterface                   $application   The application instance to register the class loader with
-     * @param \AppserverIo\Appserver\Core\Interfaces\Api\NodeClassLoaderNodeInterface $configuration The class loader configuration
+     * @param \AppserverIo\Psr\Application\ApplicationInterface             $application   The application instance to register the class loader with
+     * @param \AppserverIo\Appserver\Core\Api\Node\ClassLoaderNodeInterface $configuration The class loader configuration
      *
      * @return void
      */

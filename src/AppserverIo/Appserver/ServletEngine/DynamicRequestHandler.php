@@ -24,7 +24,7 @@ namespace AppserverIo\Appserver\ServletEngine;
 
 use AppserverIo\Http\HttpResponseStates;
 use AppserverIo\Psr\Application\ApplicationInterface;
-use TechDivision\Server\Dictionaries\ServerVars;
+use AppserverIo\Server\Dictionaries\ServerVars;
 
 /**
  * This is a request handler that is necessary to process each request of an
@@ -108,8 +108,8 @@ class DynamicRequestHandler extends \Thread
      * Initializes the request handler with the application and the
      * valves to be processed
      *
-     * @param \AppserverIo\Appserver\Core\Interfaces\ApplicationInterface $application The application instance
-     * @param \AppserverIo\Storage\GenericStackable                          $valves      The valves to process
+     * @param \AppserverIo\Psr\Application\ApplicationInterface $application The application instance
+     * @param \AppserverIo\Storage\GenericStackable             $valves      The valves to process
      */
     public function __construct(ApplicationInterface $application, $valves)
     {

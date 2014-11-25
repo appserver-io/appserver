@@ -44,7 +44,7 @@ class ServletLocator implements ResourceLocator
      * Tries to locate the resource related with the request.
      *
      * @param \AppserverIo\Psr\Servlet\ServletContext $servletContext The servlet context that handles the servlets
-     * @param string                               $servletPath    The servlet path to return the servlet for
+     * @param string                                  $servletPath    The servlet path to return the servlet for
      *
      * @return \AppserverIo\Psr\Servlet\Servlet The requested servlet
      * @see \AppserverIo\Appserver\ServletEngine\ResourceLocator::locate()

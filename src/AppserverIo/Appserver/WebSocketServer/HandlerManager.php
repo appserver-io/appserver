@@ -26,9 +26,9 @@ namespace AppserverIo\Appserver\WebSocketServer;
 use Ratchet\MessageComponentInterface;
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Storage\StackableStorage;
-use TechDivision\WebSocketProtocol\Request;
-use TechDivision\WebSocketProtocol\Handler;
-use TechDivision\WebSocketProtocol\HandlerContext;
+use AppserverIo\Appserver\WebSocketProtocol\Request;
+use AppserverIo\Appserver\WebSocketProtocol\Handler;
+use AppserverIo\Appserver\WebSocketProtocol\HandlerContext;
 use AppserverIo\Psr\Application\ApplicationInterface;
 
 /**
@@ -233,8 +233,8 @@ class HandlerManager extends GenericStackable implements HandlerContext
     /**
      * Registers a handler under the passed key.
      *
-     * @param string                                  $key     The key to register with the handler with
-     * @param \TechDivision\WebSocketProtocol\Handler $handler The handler to be registered
+     * @param string                                           $key     The key to register with the handler with
+     * @param \AppserverIo\Appserver\WebSocketProtocol\Handler $handler The handler to be registered
      *
      * @return void
      */
@@ -259,7 +259,7 @@ class HandlerManager extends GenericStackable implements HandlerContext
      *
      * @param string $key The name of the handler to return
      *
-     * @return \TechDivision\WebSocktContainer\Handlers\Handler The handler instance
+     * @return \AppserverIo\Appserver\WebSocketProtocol\Handler The handler instance
      */
     public function getHandler($key)
     {
@@ -318,7 +318,7 @@ class HandlerManager extends GenericStackable implements HandlerContext
     /**
      * Tries to locate the handler that handles the request and returns the instance if one can be found.
      *
-     * @param \TechDivision\WebSocketProtocol\Request $request The request instance
+     * @param \AppserverIo\Appserver\\WebSocketProtocol\Request $request The request instance
      *
      * @return \Ratchet\MessageComponentInterface The handler that maps the request instance
      * @see \AppserverIo\Appserver\WebSocketServer\Service\Locator\ResourceLocatorInterface::locate()
@@ -331,7 +331,7 @@ class HandlerManager extends GenericStackable implements HandlerContext
     /**
      * Initializes the manager instance.
      *
-     * @return void
+     * @return string
      * @see \AppserverIo\Psr\Application\ManagerInterface::initialize()
      */
     public function getIdentifier()

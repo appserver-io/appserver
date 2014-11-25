@@ -645,7 +645,7 @@ class Application extends \Thread implements ApplicationInterface
     /**
      * Injects manager instance and the configuration.
      *
-     * @param \AppserverIo\Psr\Application\ManagerInterface              $manager       A manager instance
+     * @param \AppserverIo\Psr\Application\ManagerInterface                               $manager       A manager instance
      * @param \AppserverIo\Appserver\Application\Interfaces\ManagerConfigurationInterface $configuration The managers configuration
      *
      * @return void

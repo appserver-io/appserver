@@ -13,7 +13,7 @@
  * @category   Server
  * @package    Appserver
  * @subpackage Application
- * @author     Tim Wagner <tw@appserver.io
+ * @author     Tim Wagner <tw@appserver.io>
  * @copyright  2014 TechDivision GmbH <info@appserver.io>
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       https://github.com/appserver-io/appserver
@@ -31,7 +31,7 @@ use AppserverIo\Psr\EnterpriseBeans\TimerServiceInterface;
  * @category   Server
  * @package    Appserver
  * @subpackage Application
- * @author     Tim Wagner <tw@appserver.io
+ * @author     Tim Wagner <tw@appserver.io>
  * @copyright  2014 TechDivision GmbH <info@appserver.io>
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       https://github.com/appserver-io/appserver

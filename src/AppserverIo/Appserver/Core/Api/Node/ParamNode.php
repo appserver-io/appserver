@@ -50,8 +50,8 @@ class ParamNode extends AbstractValueNode
     /**
      * Initializes the param node with the necessary data.
      *
-     * @param string                                                $name      The params name
-     * @param string                                                $type      The params data type
+     * @param string                                               $name      The params name
+     * @param string                                               $type      The params data type
      * @param \AppserverIo\Configuration\Interfaces\ValueInterface $nodeValue The params initial value
      */
     public function __construct($name = '', $type = '', ValueInterface $nodeValue = null)

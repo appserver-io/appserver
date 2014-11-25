@@ -45,8 +45,8 @@ interface ResourceLocator
      * Tries to locate the bean that handles the request and returns the instance
      * if one can be found.
      *
-     * @param \AppserverIo\Appserver\PersistenceContainer\BeanManager           $beanManager  The bean manager instance
-     * @param \AppserverIo\Appserver\PersistenceContainer\Protocol\RemoteMethod $remoteMethod The remote method call
+     * @param \AppserverIo\Appserver\PersistenceContainer\BeanManager    $beanManager  The bean manager instance
+     * @param \AppserverIo\Psr\PersistenceContainerProtocol\RemoteMethod $remoteMethod The remote method call
      *
      * @return object The requested bean instance
      */
@@ -60,9 +60,9 @@ interface ResourceLocator
      * will be returned.
      *
      * @param \AppserverIo\Appserver\PersistenceContainer\BeanManager $beanManager The bean manager instance
-     * @param string                                         $className   The name of the session bean's class
-     * @param string                                         $sessionId   The session ID
-     * @param array                                          $args        The arguments passed to the session beans constructor
+     * @param string                                                  $className   The name of the session bean's class
+     * @param string                                                  $sessionId   The session ID
+     * @param array                                                   $args        The arguments passed to the session beans constructor
      *
      * @return object The requested session bean
      * @throws \Exception Is thrown if passed class name is no session bean or is a entity bean (not implmented yet)

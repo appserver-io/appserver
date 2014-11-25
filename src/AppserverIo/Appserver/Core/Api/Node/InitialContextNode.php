@@ -64,10 +64,10 @@ class InitialContextNode extends AbstractNode
     /**
      * Initializes the initial context node with the necessary data.
      *
-     * @param string                                                  $type        The initial context type
-     * @param AppserverIo\Appserver\Core\Api\Node\DescriptionNode $description A short description
-     * @param AppserverIo\Appserver\Core\Api\Node\ClassLoaderNode $classLoader The default class loader configuration
-     * @param AppserverIo\Appserver\Core\Api\Node\StorageNode     $storage     The default storage configuration
+     * @param string                                               $type        The initial context type
+     * @param \AppserverIo\Appserver\Core\Api\Node\DescriptionNode $description A short description
+     * @param \AppserverIo\Appserver\Core\Api\Node\ClassLoaderNode $classLoader The default class loader configuration
+     * @param \AppserverIo\Appserver\Core\Api\Node\StorageNode     $storage     The default storage configuration
      */
     public function __construct($type = '', DescriptionNode $description = null, ClassLoaderNode $classLoader = null, StorageNode $storage = null)
     {

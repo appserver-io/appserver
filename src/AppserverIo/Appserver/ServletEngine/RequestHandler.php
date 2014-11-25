@@ -24,7 +24,7 @@ namespace AppserverIo\Appserver\ServletEngine;
 
 use AppserverIo\Logger\LoggerUtils;
 use AppserverIo\Storage\GenericStackable;
-use TechDivision\Server\Dictionaries\ServerVars;
+use AppserverIo\Server\Dictionaries\ServerVars;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequest;
 use AppserverIo\Psr\Servlet\Http\HttpServletResponse;
 use AppserverIo\Psr\Application\ApplicationInterface;
@@ -59,7 +59,7 @@ class RequestHandler extends \Thread
     /**
      * Injects the application of the request to be handled
      *
-     * @param \AppserverIo\Appserver\Core\Interfaces\ApplicationInterface $application The application instance
+     * @param \AppserverIo\Psr\Application\ApplicationInterface $application The application instance
      *
      * @return void
      */
@@ -71,7 +71,7 @@ class RequestHandler extends \Thread
     /**
      * Inject the actual servlet request.
      *
-     * @param \TechDivision\Serlvet\Http\HttpServletRequest $servletRequest The actual request instance
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest $servletRequest The actual request instance
      *
      * @return void
      */
@@ -83,7 +83,7 @@ class RequestHandler extends \Thread
     /**
      * Inject the actual servlet response.
      *
-     * @param \TechDivision\Serlvet\Http\HttpServletResponse $servletResponse The actual response instance
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponse $servletResponse The actual response instance
      *
      * @return void
      */

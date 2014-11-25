@@ -183,9 +183,9 @@ class TimerService extends GenericStackable implements TimerServiceInterface, Se
      * Create a calendar-based timer based on the input schedule expression.
      *
      * @param \AppserverIo\Psr\EnterpriseBeans\ScheduleExpression $schedule      A schedule expression describing the timeouts for this timer
-     * @param \Serializable                                    $info          Serializable info that will be made available through the newly created timers Timer::getInfo() method
-     * @param boolean                                          $persistent    TRUE if the newly created timer has to be persistent
-     * @param \AppserverIo\Lang\Reflection\MethodInterface    $timeoutMethod The timeout method to be invoked
+     * @param \Serializable                                       $info          Serializable info that will be made available through the newly created timers Timer::getInfo() method
+     * @param boolean                                             $persistent    TRUE if the newly created timer has to be persistent
+     * @param \AppserverIo\Lang\Reflection\MethodInterface        $timeoutMethod The timeout method to be invoked
      *
      * @return \AppserverIo\Psr\EnterpriseBeans\TimerInterface The newly created Timer.
      * @throws \AppserverIo\Psr\EnterpriseBeans\EnterpriseBeansException If this method could not complete due to a system-level failure.
@@ -232,7 +232,7 @@ class TimerService extends GenericStackable implements TimerServiceInterface, Se
      * then this method acts as a no-op.
      *
      * @param \AppserverIo\Psr\EnterpriseBeans\TimerInterface $timer    The timer we want to persist
-     * @param boolean                                      $newTimer TRUE if this is a new timer being scheduled, and not a re-schedule due to a timeout
+     * @param boolean                                         $newTimer TRUE if this is a new timer being scheduled, and not a re-schedule due to a timeout
      *
      * @return void
      */
@@ -310,7 +310,7 @@ class TimerService extends GenericStackable implements TimerServiceInterface, Se
      * Creates and schedules a timer task for the next timeout of the passed timer.
      *
      * @param \AppserverIo\Psr\EnterpriseBeans\TimerInterface $timer    The timer we want to schedule a task for
-     * @param boolean                                      $newTimer TRUE if this is a new timer being scheduled, and not a re-schedule due to a timeout
+     * @param boolean                                         $newTimer TRUE if this is a new timer being scheduled, and not a re-schedule due to a timeout
      *
      * @return void
      */

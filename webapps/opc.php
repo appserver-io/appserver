@@ -1,6 +1,17 @@
 <?php
-/*
-OCP - Opcache Control Panel   (aka Zend Optimizer+ Control Panel for PHP)
+
+/**
+ * OCP - Opcache Control Panel   (aka Zend Optimizer+ Control Panel for PHP)
+ *
+ * @category  Appserver
+ * @package   Webapps
+ * @author    Tim Wagner <tw@techdivision.com>
+ * @copyright 2014 TechDivision GmbH <info@techdivision.com>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      http://www.appserver.io
+ */
+
+/* OCP - Opcache Control Panel   (aka Zend Optimizer+ Control Panel for PHP)
 Author: _ck_   (with contributions by GK, stasilok)
 Version: 0.1.6
 Free for any kind of use or modification, I am not responsible for anything, please share your improvements
@@ -32,6 +43,9 @@ File list filter
 
 // ini_set('display_errors',1); error_reporting(-1);
 // if ( count(get_included_files())>1 || php_sapi_name()=='cli' || empty($_SERVER['REMOTE_ADDR']) ) { die; }  // weak block against indirect access
+
+
+// @codingStandardsIgnoreStart
 
 $time=time();
 define('CACHEPREFIX',function_exists('opcache_reset')?'opcache_':(function_exists('accelerator_reset')?'accelerator_':''));
@@ -388,3 +402,5 @@ function meta_display() {
 </div>
 <?php
 }
+
+// @codingStandardsIgnoreEnd

@@ -15,7 +15,7 @@
  * @package    Appserver
  * @subpackage Application
  * @author     Tim Wagner <tw@appserver.io>
- * @author    Markus Stockbauer <ms@techdivision.com>
+ * @author     Markus Stockbauer <ms@techdivision.com>
  * @copyright  2014 TechDivision GmbH <info@appserver.io>
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       https://github.com/appserver-io/appserver
@@ -34,7 +34,7 @@ use AppserverIo\Appserver\MessageQueue\QueueManager;
  * @package    Appserver
  * @subpackage Application
  * @author     Tim Wagner <tw@appserver.io>
- * @author    Markus Stockbauer <ms@techdivision.com>
+ * @author     Markus Stockbauer <ms@techdivision.com>
  * @copyright  2014 TechDivision GmbH <info@appserver.io>
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       https://github.com/appserver-io/appserver
@@ -47,8 +47,8 @@ interface ResourceLocator
      * Tries to locate the queue that handles the request and returns the instance
      * if one can be found.
      *
-     * @param \AppserverIo\Appserver\MessageQueue\QueueManager  $queueManager The queue manager instance
-     * @param \AppserverIo\Psr\MessageQueueProtocol\Queue $queue        The queue request
+     * @param \AppserverIo\Appserver\MessageQueue\QueueManager $queueManager The queue manager instance
+     * @param \AppserverIo\Psr\MessageQueueProtocol\Queue      $queue        The queue request
      *
      * @return \AppserverIo\Psr\MessageQueueProtocol\Queue The requested queue instance
      */
