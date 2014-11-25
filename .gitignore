@@ -13,3 +13,7 @@
 .appserver-last-successfull-deployment
 /tests/TechDivision/ApplicationServer/etc
 /docs/site
+/bin
+/sbin
+/etc/appserver/appserver.xml
+/var/tmp/opcache-blacklist.txt
