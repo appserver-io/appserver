@@ -42,7 +42,7 @@ class HtpasswdAdapter extends AuthenticationAdapter
     /**
      * The content of the htpasswd file.
      *
-     * @var string
+     * @var array
      */
     protected $htpasswd;
 
@@ -56,7 +56,7 @@ class HtpasswdAdapter extends AuthenticationAdapter
 
         // get content of htpasswd file.
         $htpasswdData = file($this->getFilename());
-        
+
         // prepare htpasswd entries
         $this->htpasswd = array();
         foreach ($htpasswdData as $entry) {
@@ -163,16 +163,6 @@ class HtpasswdAdapter extends AuthenticationAdapter
             return true;
         }
         return false;
-    }
-
-    /**
-     * Returns the servlet instance.
-     *
-     * @return \AppserverIo\Psr\Servlet\Servlet The servlet instance
-     */
-    public function getServlet()
-    {
-        return $this->servlet;
     }
 
     /**
