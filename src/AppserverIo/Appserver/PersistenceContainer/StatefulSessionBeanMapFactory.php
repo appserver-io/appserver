@@ -143,7 +143,7 @@ class StatefulSessionBeanMapFactory extends \Thread
      *
      * @param string $sessionId The session-ID we want to create a new map for
      *
-     * @return \TechDivision\Session\ServletSession The session instance
+     * @return \AppserverIo\Appserver\PersistenceContainer\StatefulSessionBeanMap The SFB map instance
      */
     protected function newInstance($sessionId)
     {

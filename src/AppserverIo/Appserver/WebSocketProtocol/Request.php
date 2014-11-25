@@ -51,7 +51,7 @@ interface Request
     /**
      * Injects the request context that is the web application almost.
      *
-     * @param \TechDivision\ApplicationServer\Interfaces\ApplicationInterface $context The request context
+     * @param \AppserverIo\Psr\Application\ApplicationInterface $context The request context
      *
      * @return void
      */
@@ -67,7 +67,7 @@ interface Request
     /**
      * Returns the request context that is the web application almost.
      *
-     * @return \TechDivision\ApplicationServer\Interfaces\ApplicationInterface The request context
+     * @return \AppserverIo\Psr\Application\ApplicationInterface The request context
      */
     public function getContext();
 

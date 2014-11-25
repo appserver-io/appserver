@@ -20,7 +20,7 @@
  * @link       http://www.appserver.io
  */
 
-namespace TechDivision\WebSocketServer\Handlers;
+namespace AppserverIo\Appserver\WebSocketProtocol;
 
 /**
  * Is thrown if a servlet can't be initialized.

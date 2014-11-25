@@ -74,7 +74,7 @@ class TimerService extends GenericStackable implements TimerServiceInterface, Se
     /**
      * Injects the timer service executor.
      *
-     * @param \TechDivision\PersistencContainer\TimerServiceExecutor $timerServiceExecutor The timer service executor instance
+     * @param \AppserverIo\Appserver\PersistencContainer\TimerServiceExecutor $timerServiceExecutor The timer service executor instance
      *
      * @return void
      */

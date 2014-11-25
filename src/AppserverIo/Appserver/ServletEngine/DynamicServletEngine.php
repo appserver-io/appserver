@@ -580,7 +580,7 @@ class DynamicServletEngine extends GenericStackable implements HttpModuleInterfa
     /**
      * Returns the server context instance.
      *
-     * @return \TechDivision\Server\ServerContext The actual server context instance
+     * @return \AppserverIo\Server\Interfaces\ServerContextInterface The actual server context instance
      */
     public function getServerContext()
     {

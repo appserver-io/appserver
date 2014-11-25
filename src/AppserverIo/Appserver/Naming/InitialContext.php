@@ -248,7 +248,7 @@ class InitialContext
      * @param string $sessionId The session-ID, necessary for lookup stateful session beans
      *
      * @return object The requested enterprise bean instance
-     * @throws \TechDivision\Example\Naming\NamingException Is thrown if we can't lookup the enterprise bean with the passed identifier
+     * @throws \AppserverIo\Psr\Naming\NamingException Is thrown if we can't lookup the enterprise bean with the passed identifier
      */
     public function lookup($name, $sessionId = null)
     {
@@ -287,8 +287,8 @@ class InitialContext
      *
      * @param string $resourceName The URL with the resource information
      *
-     * @return \TechDivision\Example\Naming\ResourceIdentifier The initialized resource identifier
-     * @throws \TechDivision\Example\Naming\NamingException Is thrown if we can't find the necessary application context
+     * @return \AppserverIo\Appserver\Naming\ResourceIdentifier The initialized resource identifier
+     * @throws \AppserverIo\Psr\Naming\NamingException Is thrown if we can't find the necessary application context
      */
     public function prepareResourceIdentifier($resourceName)
     {

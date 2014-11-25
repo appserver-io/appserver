@@ -122,7 +122,7 @@ class SessionFactory extends \Thread
     /**
      * Load the next initialized session instance from the session pool.
      *
-     * @return \TechDivision\Session\ServletSession The session instance
+     * @return \AppserverIo\Psr\Servlet\ServletSession The session instance
      */
     protected function nextFromPool()
     {
