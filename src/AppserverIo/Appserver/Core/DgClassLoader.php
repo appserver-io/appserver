@@ -1,6 +1,6 @@
 <?php
 /**
- * AppserverIo\Appserver\Core\PbcAutoLoader
+ * AppserverIo\Appserver\Core\DgcAutoLoader
  *
  * PHP version 5
  *
@@ -16,17 +16,17 @@
 namespace AppserverIo\Appserver\Core;
 
 use AppserverIo\Appserver\Core\Interfaces\ClassLoaderInterface;
-use AppserverIo\PBC\CacheMap;
-use AppserverIo\PBC\Generator;
-use AppserverIo\PBC\StructureMap;
-use AppserverIo\PBC\Config;
-use AppserverIo\PBC\AutoLoader;
+use AppserverIo\Doppelgaenger\AspectRegister;
+use AppserverIo\Doppelgaenger\CacheMap;
+use AppserverIo\Doppelgaenger\Generator;
+use AppserverIo\Doppelgaenger\StructureMap;
+use AppserverIo\Doppelgaenger\Config;
+use AppserverIo\Doppelgaenger\AutoLoader;
 use AppserverIo\Appserver\Core\InitialContext;
 use AppserverIo\Psr\Application\ApplicationInterface;
-use AppserverIo\Appserver\Core\Api\Node\ClassLoaderNodeInterface;
 
 /**
- * This class is used to delegate to php-by-contract's autoloader.
+ * This class is used to delegate to doppelgaenger's autoloader.
  * This is needed as our multi-threaded environment would not allow any out-of-the-box code generation
  * in an on-the-fly manner.
  *
@@ -38,27 +38,27 @@ use AppserverIo\Appserver\Core\Api\Node\ClassLoaderNodeInterface;
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       http://www.appserver.io
  */
-class PbcClassLoader extends AutoLoader implements ClassLoaderInterface
+class DgClassLoader extends AutoLoader implements ClassLoaderInterface
 {
 
     /**
      * The configuration we base our actions on.
      *
-     * @var \AppserverIo\PBC\Config
+     * @var \AppserverIo\Doppelgaenger\Config
      */
     public $config;
 
     /**
      * Cache map to keep track of already processed files.
      *
-     * @var \AppserverIo\PBC\CacheMap
+     * @var \AppserverIo\Doppelgaenger\CacheMap
      */
     public $cache;
 
     /**
      * In some cases the autoloader instance is not thrown away, saving the structure map might be a benefit here.
      *
-     * @var \AppserverIo\PBC\StructureMap $structureMap
+     * @var \AppserverIo\Doppelgaenger\StructureMap $structureMap
      */
     public $structureMap;
 
@@ -67,7 +67,7 @@ class PbcClassLoader extends AutoLoader implements ClassLoaderInterface
      *
      * @const string CONFIG_FILE
      */
-    const CONFIG_FILE = '/opt/appserver/etc/pbc.conf.json';
+    const CONFIG_FILE = 'pbc.conf.json';
 
     /**
      * The amount of structures we will generate per thread
@@ -81,7 +81,7 @@ class PbcClassLoader extends AutoLoader implements ClassLoaderInterface
      *
      * @var string
      */
-    const IDENTIFIER = 'pbc';
+    const IDENTIFIER = 'doppelgaenger';
 
     /**
      * The name of our autoload method
@@ -97,7 +97,7 @@ class PbcClassLoader extends AutoLoader implements ClassLoaderInterface
      * Will check if there is content in the cache directory.
      * If not we will parse anew.
      *
-     * @param \AppserverIo\PBC\Config|null $config An already existing config instance
+     * @param \AppserverIo\Doppelgaenger\Config|null $config An already existing config instance
      */
     public function __construct(Config $config = null)
     {
@@ -105,7 +105,7 @@ class PbcClassLoader extends AutoLoader implements ClassLoaderInterface
         if (is_null($config)) {
 
             $config = new Config();
-            $config->load(self::CONFIG_FILE);
+            $config->load(APPSERVER_BP . DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . self::CONFIG_FILE);
         }
 
         // Construct the parent from the config we got
@@ -147,7 +147,7 @@ class PbcClassLoader extends AutoLoader implements ClassLoaderInterface
         $cacheMap = new CacheMap($this->config->getValue('cache/dir'), array(), $this->config);
 
         // We need a generator so we can create our proxies initially
-        $generator = new Generator($this->structureMap, $cacheMap, $this->config);
+        $generator = new Generator($this->structureMap, $cacheMap, $this->config, new AspectRegister());
 
         // Iterate over all found structures and generate their proxies, but ignore the ones with omitted
         // namespaces
@@ -162,7 +162,7 @@ class PbcClassLoader extends AutoLoader implements ClassLoaderInterface
         foreach ($structures as $identifier => $structure) {
 
             // Working on our own files has very weird side effects, so don't do it
-            if (strpos($structure->getIdentifier(), 'AppserverIo\PBC') !== false || !$structure->isEnforced()) {
+            if (strpos($structure->getIdentifier(), 'AppserverIo\Doppelgaenger') !== false || !$structure->isEnforced()) {
 
                 continue;
             }

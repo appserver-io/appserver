@@ -252,12 +252,22 @@ class SplClassLoader extends GenericStackable
             // try to load the requested class
             foreach ($this->getIncludePath() as $includePath) {
                 $toRequire = $includePath . DIRECTORY_SEPARATOR . $fileName;
+                $psr4FileName = $includePath . DIRECTORY_SEPARATOR . ltrim(strstr(ltrim(strstr($fileName, DIRECTORY_SEPARATOR), DIRECTORY_SEPARATOR), DIRECTORY_SEPARATOR), DIRECTORY_SEPARATOR);
+
                 if (file_exists($toRequire)) {
                     // add the found file to the class map
                     $classMap[$requestedClassName] = $toRequire;
                     $this->getInitialContext()->setAttribute(SplClassLoader::CLASS_MAP, $classMap);
                     // require the file and return TRUE
                     require $toRequire;
+                    return true;
+
+                } elseif (file_exists($psr4FileName) && !is_dir($psr4FileName)) {
+                    // add the found file to the class map
+                    $classMap[$requestedClassName] = $psr4FileName;
+                    $this->getInitialContext()->setAttribute(SplClassLoader::CLASS_MAP, $classMap);
+                    // require the file and return TRUE
+                    require $psr4FileName;
                     return true;
                 }
             }

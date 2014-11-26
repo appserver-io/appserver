@@ -11,9 +11,9 @@
             </directories>
         </classLoader>
         <classLoader
-            name="pbc"
-            type="AppserverIo\Appserver\Core\PbcClassLoader"
-            factory="AppserverIo\Appserver\Core\PbcClassLoaderFactory">
+            name="doppelgaenger"
+            type="AppserverIo\Appserver\Core\DgClassLoader"
+            factory="AppserverIo\Appserver\Core\DgClassLoaderFactory">
             <params>
                 <param name="environment" type="string">production</param>
                 <param name="enforcementLevel" type="integer">7</param>
@@ -41,6 +41,7 @@
         <manager name="StandardSessionManager" beanInterface="SessionManager" type="AppserverIo\Appserver\ServletEngine\StandardSessionManager" factory="AppserverIo\Appserver\ServletEngine\StandardSessionManagerFactory"/>
         <manager name="TimerServiceRegistry" beanInterface="TimerServiceContext" type="AppserverIo\Appserver\PersistenceContainer\TimerServiceRegistry" factory="AppserverIo\Appserver\PersistenceContainer\TimerServiceRegistryFactory"/>
         <manager name="StandardAuthenticationManager" beanInterface="AuthenticationManager" type="AppserverIo\Appserver\ServletEngine\Authentication\StandardAuthenticationManager" factory="AppserverIo\Appserver\ServletEngine\Authentication\StandardAuthenticationManagerFactory"/>
+        <manager name="AspectManager" beanInterface="AspectManagerInterface" type="AppserverIo\Appserver\Application\AspectManager" factory="AppserverIo\Appserver\Application\AspectManagerFactory"/>
     </managers>
 
 </context>
