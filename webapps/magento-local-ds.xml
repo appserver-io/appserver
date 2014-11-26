@@ -1,5 +1,5 @@
 <datasources>
-    <datasource name="magento-1.8.1.0" type="TechDivision\WebContainer\WebApplication">
+    <datasource name="magento-1.8.1.0" type="AppserverIo\Appserver\Application\Application">
         <database>
             <driver>pdo_sqlite</driver>
             <user>magento</user>

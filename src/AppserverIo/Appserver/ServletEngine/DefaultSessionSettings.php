@@ -31,8 +31,8 @@ use AppserverIo\Storage\GenericStackable;
  * @copyright  2014 TechDivision GmbH <info@appserver.io>
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       http://www.appserver.io
- * @link      http://php.net/session
- * @link      http://php.net/setcookie
+ * @link       http://php.net/session
+ * @link       http://php.net/setcookie
  */
 class DefaultSessionSettings extends GenericStackable implements SessionSettings
 {

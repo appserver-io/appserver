@@ -54,7 +54,7 @@ class GeneratorThread extends \Thread
      * Default constructor
      *
      * @param \AppserverIo\PBC\Generator $generator  Our PBC generator instance
-     * @param array                       $structures List of structures to generate
+     * @param array                      $structures List of structures to generate
      */
     public function __construct(Generator $generator, array $structures)
     {
@@ -69,19 +69,12 @@ class GeneratorThread extends \Thread
      */
     public function run()
     {
-        // Require the composer autoloader
-        require realpath(
-            __DIR__ . DIRECTORY_SEPARATOR . '..' .
-            DIRECTORY_SEPARATOR . '..'.
-            DIRECTORY_SEPARATOR . '..'.
-            DIRECTORY_SEPARATOR . '..'.
-            DIRECTORY_SEPARATOR . '..' .
-            DIRECTORY_SEPARATOR . 'autoload.php'
-        );
 
-        // Iterate over all structures and generate them
+        // require the composer autoloader
+        require APPSERVER_BP . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
+
+        // iterate over all structures and generate them
         foreach ($this->structures as $structure) {
-
             $this->generator->create($structure);
         }
     }

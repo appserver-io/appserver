@@ -21,6 +21,7 @@
                 <param name="processing" type="string">logging</param>
             </params>
             <directories>
+                <directory enforced="true">/common/classes</directory>
                 <directory enforced="true">/WEB-INF/classes</directory>
                 <directory enforced="true">/META-INF/classes</directory>
             </directories>
@@ -29,7 +30,7 @@
 
     <managers>
         <manager name="Provider" beanInterface="ProviderInterface" type="AppserverIo\Appserver\DependencyInjectionContainer\Provider" factory="AppserverIo\Appserver\DependencyInjectionContainer\ProviderFactory"/>
-        <manager name="HandlerManager" beanInterface="HandlerContext" type="TAppserverIo\Appserver\WebSocketServer\HandlerManager" factory="AppserverIo\Appserver\WebSocketServer\HandlerManagerFactory"/>
+        <manager name="HandlerManager" beanInterface="HandlerContext" type="AppserverIo\Appserver\WebSocketServer\HandlerManager" factory="AppserverIo\Appserver\WebSocketServer\HandlerManagerFactory"/>
         <manager name="BeanManager" beanInterface="BeanContext" type="AppserverIo\Appserver\PersistenceContainer\BeanManager" factory="AppserverIo\Appserver\PersistenceContainer\BeanManagerFactory">
             <!-- params>
                 <param name="lifetime" type="integer">1440</param>

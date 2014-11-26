@@ -8,7 +8,7 @@
  * @category   Server
  * @package    Appserver
  * @subpackage Application
- * @author     Tim Wagner <tw@appserver.io
+ * @author     Tim Wagner <tw@appserver.io>
  * @copyright  2014 TechDivision GmbH <info@appserver.io>
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       http://www.appserver.io
@@ -24,7 +24,7 @@ use AppserverIo\Appserver\Core\Api\Node\ProvisionNode;
  * @category   Server
  * @package    Appserver
  * @subpackage Application
- * @author     Tim Wagner <tw@appserver.io
+ * @author     Tim Wagner <tw@appserver.io>
  * @copyright  2014 TechDivision GmbH <info@appserver.io>
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       http://www.appserver.io
@@ -115,7 +115,7 @@ class StandardProvisioner extends AbstractProvisioner
      * Executes the passed applications provisioning workflow.
      *
      * @param \AppserverIo\Appserver\Core\Api\Node\ProvisionNode $provisionNode The file with the provisioning information
-     * @param \SplFileInfo                                           $webappPath    The path to the webapp folder
+     * @param \SplFileInfo                                       $webappPath    The path to the webapp folder
      *
      * @return void
      */

@@ -84,7 +84,7 @@ class RequestHandlerManager extends \Thread
     /**
      * Initializes the request handler manager instance.
      *
-     * @param \Psr\Log\LoggerInterface               $systemLogger    The system logger instance
+     * @param \Psr\Log\LoggerInterface              $systemLogger    The system logger instance
      * @param \AppserverIo\Storage\GenericStackable $requestHandlers The request handlers we have to manage
      * @param \AppserverIo\Storage\GenericStackable $applications    The valves the request handler has to process for each request
      * @param \AppserverIo\Storage\GenericStackable $valves          The applications that has to be bound to a request handler

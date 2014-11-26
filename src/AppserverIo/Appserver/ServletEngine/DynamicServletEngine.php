@@ -18,9 +18,9 @@ namespace AppserverIo\Appserver\ServletEngine;
 
 use AppserverIo\Http\HttpCookie;
 use AppserverIo\Http\HttpProtocol;
-use AppserverIo\Http\HttpRequestInterface;
-use AppserverIo\Http\HttpResponseInterface;
 use AppserverIo\Http\HttpResponseStates;
+use AppserverIo\Psr\HttpMessage\RequestInterface;
+use AppserverIo\Psr\HttpMessage\ResponseInterface;
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Appserver\Application\VirtualHost;
 use AppserverIo\Appserver\Application\Interfaces\ContextInterface;
@@ -28,12 +28,12 @@ use AppserverIo\Psr\Servlet\ServletRequest;
 use AppserverIo\Psr\Servlet\ServletResponse;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequest;
 use AppserverIo\Psr\Servlet\Http\HttpServletResponse;
-use TechDivision\Server\Dictionaries\ModuleHooks;
-use TechDivision\Server\Dictionaries\ServerVars;
-use TechDivision\Server\Interfaces\ModuleInterface;
-use TechDivision\Server\Interfaces\RequestContextInterface;
-use TechDivision\Server\Interfaces\ServerContextInterface;
-use TechDivision\Server\Exceptions\ModuleException;
+use AppserverIo\Server\Dictionaries\ModuleHooks;
+use AppserverIo\Server\Dictionaries\ServerVars;
+use AppserverIo\WebServer\Interfaces\HttpModuleInterface;
+use AppserverIo\Server\Interfaces\RequestContextInterface;
+use AppserverIo\Server\Interfaces\ServerContextInterface;
+use AppserverIo\Server\Exceptions\ModuleException;
 use AppserverIo\Appserver\ServletEngine\Http\Session;
 use AppserverIo\Appserver\ServletEngine\Http\Request;
 use AppserverIo\Appserver\ServletEngine\Http\Response;
@@ -41,8 +41,6 @@ use AppserverIo\Appserver\ServletEngine\Http\Part;
 use AppserverIo\Appserver\ServletEngine\BadRequestException;
 use AppserverIo\Appserver\ServletEngine\Authentication\AuthenticationValve;
 use AppserverIo\Appserver\Core\Interfaces\ContainerInterface;
-use TechDivision\Connection\ConnectionRequestInterface;
-use TechDivision\Connection\ConnectionResponseInterface;
 
 /**
  * A servlet engine implementation.
@@ -55,7 +53,7 @@ use TechDivision\Connection\ConnectionResponseInterface;
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       http://www.appserver.io
  */
-class DynamicServletEngine extends GenericStackable implements ModuleInterface
+class DynamicServletEngine extends GenericStackable implements HttpModuleInterface
 {
 
     /**
@@ -160,10 +158,10 @@ class DynamicServletEngine extends GenericStackable implements ModuleInterface
     /**
      * Initializes the module.
      *
-     * @param \TechDivision\Server\Interfaces\ServerContextInterface $serverContext The servers context instance
+     * @param \AppserverIo\Server\Interfaces\ServerContextInterface $serverContext The servers context instance
      *
      * @return void
-     * @throws \TechDivision\Server\Exceptions\ModuleException
+     * @throws \AppserverIo\Server\Exceptions\ModuleException
      */
     public function init(ServerContextInterface $serverContext)
     {
@@ -312,7 +310,7 @@ class DynamicServletEngine extends GenericStackable implements ModuleInterface
      * Prepares the module for upcoming request in specific context
      *
      * @return bool
-     * @throws \TechDivision\Server\Exceptions\ModuleException
+     * @throws \AppserverIo\Server\Exceptions\ModuleException
      */
     public function prepare()
     {
@@ -321,23 +319,22 @@ class DynamicServletEngine extends GenericStackable implements ModuleInterface
     /**
      * Process servlet request.
      *
-     * @param \TechDivision\Connection\ConnectionRequestInterface     $request        A request object
-     * @param \TechDivision\Connection\ConnectionResponseInterface    $response       A response object
-     * @param \TechDivision\Server\Interfaces\RequestContextInterface $requestContext A requests context instance
-     * @param int                                                     $hook           The current hook to process logic for
+     * @param \AppserverIo\Psr\HttpMessage\RequestInterface          $request        A request object
+     * @param \AppserverIo\Psr\HttpMessage\ResponseInterface         $response       A response object
+     * @param \AppserverIo\Server\Interfaces\RequestContextInterface $requestContext A requests context instance
+     * @param int                                                    $hook           The current hook to process logic for
      *
      * @return bool
-     * @throws \TechDivision\Server\Exceptions\ModuleException
+     * @throws \AppserverIo\Server\Exceptions\ModuleException
      */
-    public function process(ConnectionRequestInterface $request, ConnectionResponseInterface $response, RequestContextInterface $requestContext, $hook)
-    {
+    public function process(
+        RequestInterface $request,
+        ResponseInterface $response,
+        RequestContextInterface $requestContext,
+        $hook
+    ) {
 
         try {
-
-            // In php an interface is, by definition, a fixed contract. It is immutable.
-            // So we have to declair the right ones afterwards...
-            /** @var $request \AppserverIo\Http\HttpRequestInterface */
-            /** @var $request \AppserverIo\Http\HttpResponseInterface */
 
             // if false hook is comming do nothing
             if (ModuleHooks::REQUEST_POST !== $hook) {
@@ -446,6 +443,8 @@ class DynamicServletEngine extends GenericStackable implements ModuleInterface
      * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest $servletRequest The servlet request we need a request handler to handle for
      *
      * @return \AppserverIo\Appserver\ServletEngine\RequestHandler The request handler
+     * @throws \AppserverIo\Appserver\ServletEngine\BadRequestException
+     * @throws \AppserverIo\Appserver\ServletEngine\RequestHandlerTimeoutException
      */
     protected function requestHandlerFromPool(HttpServletRequest $servletRequest)
     {
@@ -581,7 +580,7 @@ class DynamicServletEngine extends GenericStackable implements ModuleInterface
     /**
      * Returns the server context instance.
      *
-     * @return \TechDivision\Server\ServerContext The actual server context instance
+     * @return \AppserverIo\Server\Interfaces\ServerContextInterface The actual server context instance
      */
     public function getServerContext()
     {

@@ -59,9 +59,9 @@ class StructureMapWrapper extends StructureMap
     /**
      * Default constructor
      *
-     * @param array                                          $autoloaderPaths  Which paths do we include in our map?
-     * @param array                                          $enforcementPaths Which paths do we have to enforce
-     * @param \AppserverIo\PBC\Config                       $config           Configuration
+     * @param array                                      $autoloaderPaths  Which paths do we include in our map?
+     * @param array                                      $enforcementPaths Which paths do we have to enforce
+     * @param \AppserverIo\PBC\Config                    $config           Configuration
      * @param \AppserverIo\Appserver\Core\InitialContext $initialContext   Our initial context
      */
     public function __construct($autoloaderPaths, $enforcementPaths, Config $config, $initialContext)

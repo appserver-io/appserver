@@ -23,9 +23,9 @@
 
 namespace AppserverIo\Appserver\WebSocketServer\Handlers;
 
-use TechDivision\WebSocketProtocol\Request;
-use TechDivision\WebSocketProtocol\Handler;
-use TechDivision\WebSocketProtocol\HandlerConfig;
+use AppserverIo\Appserver\WebSocketProtocol\Request;
+use AppserverIo\Appserver\WebSocketProtocol\Handler;
+use AppserverIo\Appserver\WebSocketProtocol\HandlerConfig;
 
 /**
  * Abstract base class for all handlers.
@@ -45,24 +45,24 @@ abstract class AbstractHandler implements Handler
     /**
      * The handler configuration instance.
      *
-     * @var \TechDivision\WebSocketProtocol\HandlerConfig
+     * @var \AppserverIo\Appserver\WebSocketProtocol\HandlerConfig
      */
     protected $config;
 
     /**
      * Current request on a handled connection
      *
-     * @var \TechDivision\WebSocketProtocol\Request $request
+     * @var \AppserverIo\Appserver\WebSocketProtocol\Request $request
      */
     protected $request;
 
     /**
      * Initializes the handler with the passed configuration.
      *
-     * @param \TechDivision\WebSocketProtocol\HandlerConfig $config The configuration to initialize the handler with
+     * @param \AppserverIo\Appserver\WebSocketProtocol\HandlerConfig $config The configuration to initialize the handler with
      *
      * @return void
-     * @throws \TechDivision\WebSocketProtocol\HandlerException Is thrown if the configuration has errors
+     * @throws \AppserverIo\Appserver\WebSocketProtocol\HandlerException Is thrown if the configuration has errors
      */
     public function init(HandlerConfig $config)
     {
@@ -72,7 +72,7 @@ abstract class AbstractHandler implements Handler
     /**
      * Injects the request instance when the connection has been created.
      *
-     * @param \TechDivision\WebSocketProtocol\Request $request The request instance
+     * @param \AppserverIo\Appserver\WebSocketProtocol\Request $request The request instance
      *
      * @return void
      */
@@ -84,7 +84,7 @@ abstract class AbstractHandler implements Handler
     /**
      * Return's the servlet's configuration.
      *
-     * @return \TechDivision\WebSocketProtocol\HandlerConfig The handler's configuration
+     * @return \AppserverIo\Appserver\WebSocketProtocol\HandlerConfig The handler's configuration
      */
     public function getHandlerConfig()
     {
@@ -94,7 +94,7 @@ abstract class AbstractHandler implements Handler
     /**
      * Returns the handler context instance
      *
-     * @return \TechDivision\WebSocketProtocol\HandlerContext The handler context instance
+     * @return \AppserverIo\Appserver\WebSocketProtocol\HandlerContext The handler context instance
      */
     public function getHandlerContext()
     {
@@ -104,7 +104,7 @@ abstract class AbstractHandler implements Handler
     /**
      * Returns the request instance.
      *
-     * @return \TechDivision\WebSocketProtocol\Request The request instance
+     * @return \AppserverIo\Appserver\WebSocketProtocol\Request The request instance
      */
     public function getRequest()
     {

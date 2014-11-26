@@ -245,9 +245,9 @@ class Provider extends GenericStackable implements ProviderInterface
     /**
      * Injects the dependencies of the passed instance.
      *
-     * @param object                                            $instance        The instance to inject the dependencies for
+     * @param object                                           $instance        The instance to inject the dependencies for
      * @param \AppserverIo\Lang\Reflection\ClassInterface|null $reflectionClass The reflection class for the passed instance
-     * @param string|null                                       $sessionId       The session-ID, necessary to inject stateful session beans (SFBs)
+     * @param string|null                                      $sessionId       The session-ID, necessary to inject stateful session beans (SFBs)
      *
      * @return void
      */

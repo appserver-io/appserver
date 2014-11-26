@@ -1,18 +1,23 @@
 <?php
 
 /**
- * AppserverIo\Meta\Composer\Script\Setup
+ * AppserverIo\Appserver\Meta\Composer\Script\Setup
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Open Software License (OSL 3.0)
+ * that is available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/osl-3.0.php
  *
  * PHP version 5
  *
  * @category   Server
- * @subpackage Composer
  * @package    Appserver
- * @subpackage Application
+ * @subpackage Meta
  * @author     Tim Wagner <tw@appserver.io>
  * @copyright  2014 TechDivision GmbH <info@appserver.io>
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link       http://github.com/appserver-io/routlt
+ * @link       https://github.com/appserver-io/appserver
  * @link       http://www.appserver.io
  */
 
@@ -25,13 +30,12 @@ use Composer\Script\Event;
  * after installation or update of the application server.
  *
  * @category   Server
- * @subpackage Composer
  * @package    Appserver
- * @subpackage Application
+ * @subpackage Meta
  * @author     Tim Wagner <tw@appserver.io>
  * @copyright  2014 TechDivision GmbH <info@appserver.io>
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link       http://github.com/appserver-io/routlt
+ * @link       https://github.com/appserver-io/appserver
  * @link       http://www.appserver.io
  */
 class Setup
@@ -158,7 +162,8 @@ class Setup
     /**
      * Merge the properties based on the passed OS.
      *
-     * @param string $os The OS we want to merge the properties for
+     * @param string $os                The OS we want to merge the properties for
+     * @param array  $contextProperties The properties to merge
      *
      * @return void
      */
@@ -288,6 +293,8 @@ class Setup
     /**
      * Returns the configuration value with the passed key.
      *
+     * @param string $key The key to get value for
+     *
      * @return mixed|null The configuration value
      */
     public static function getValue($key)
@@ -353,8 +360,8 @@ class Setup
     /**
      * Processes the template and replace the properties with the OS specific values.
      *
-     * @param string $template The path to the template
-     * @param integer $mode    The mode of the target file
+     * @param string  $template The path to the template
+     * @param integer $mode     The mode of the target file
      *
      * @return void
      */

@@ -23,7 +23,7 @@
 namespace AppserverIo\Appserver\Core;
 
 use AppserverIo\Configuration\Interfaces\NodeInterface;
-use TechDivision\Server\Interfaces\ServerConfigurationInterface;
+use AppserverIo\Server\Interfaces\ServerConfigurationInterface;
 
 /**
  * Class ServerNodeConfiguration

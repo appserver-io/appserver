@@ -60,8 +60,8 @@ abstract class AbstractExtractor implements ExtractorInterface
      * Contructor to initialize the extractor instance with the initial context
      * and the extractor node configuration data.
      *
-     * @param \AppserverIo\Appserver\Application\Interfaces\ContextInterface           $initialContext The initial context instance
-     * @param \AppserverIo\Appserver\Core\Api\Node\ExtractorNodeInterface $extractorNode  The extractor node configuration data
+     * @param \AppserverIo\Appserver\Application\Interfaces\ContextInterface $initialContext The initial context instance
+     * @param \AppserverIo\Appserver\Core\Api\Node\ExtractorNodeInterface    $extractorNode  The extractor node configuration data
      */
     public function __construct(ContextInterface $initialContext, ExtractorNodeInterface $extractorNode)
     {

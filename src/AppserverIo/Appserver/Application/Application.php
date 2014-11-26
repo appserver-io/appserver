@@ -75,7 +75,7 @@ class Application extends \Thread implements ApplicationInterface
      * @param string $key The key of the value to return from the context.
      *
      * @return mixed The requested attribute
-     * @see \TechDivision\Context\Context::getAttribute()
+     * @see \AppserverIo\Psr\Context\Context::getAttribute()
      */
     public function getAttribute($key)
     {
@@ -202,7 +202,7 @@ class Application extends \Thread implements ApplicationInterface
     }
 
     /**
-     * Returns the application name (that has to be the class namespace, e.g. TechDivision\Example)
+     * Returns the application name (that has to be the class namespace, e.g. example)
      *
      * @return string The application name
      */
@@ -645,7 +645,7 @@ class Application extends \Thread implements ApplicationInterface
     /**
      * Injects manager instance and the configuration.
      *
-     * @param \AppserverIo\Psr\Application\ManagerInterface              $manager       A manager instance
+     * @param \AppserverIo\Psr\Application\ManagerInterface                               $manager       A manager instance
      * @param \AppserverIo\Appserver\Application\Interfaces\ManagerConfigurationInterface $configuration The managers configuration
      *
      * @return void

@@ -80,8 +80,8 @@ class StandardSessionMarshaller implements SessionMarshaller
      * data contains objects, they will be unserialized before reattached to the
      * session instance.
      *
-     * @param \TechDivision\Session\ServletSession $servletSession The empty session instance we want the unmarshalled data be added to
-     * @param string                               $marshalled     The marshalled session representation
+     * @param \AppserverIo\Psr\Servlet\ServletSession $servletSession The empty session instance we want the unmarshalled data be added to
+     * @param string                                  $marshalled     The marshalled session representation
      *
      * @return \AppserverIo\Psr\Servlet\ServletSession The decoded session instance
      * @see \AppserverIo\Appserver\ServletEngine\SessionMarshaller::unmarshall()

@@ -28,19 +28,19 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
     </params>
 
     <!--
-    <initialContext type="AppserverIo\Appserver\CoreInitialContext">
+    <initialContext type="AppserverIo\Appserver\Core\InitialContext">
         <description><![CDATA[The initial context configuration.]]></description>
-        <classLoader name="default" type="AppserverIo\Appserver\CoreSplClassLoader" />
-        <storage type="TechDivision\Storage\StackableStorage" />
+        <classLoader name="default" type="AppserverIo\Appserver\Core\SplClassLoader" />
+        <storage type="AppserverIo\Storage\StackableStorage" />
     </initialContext>
 
     <extractors>
-        <extractor name="phar" type="AppserverIo\Appserver\CoreExtractors\PharExtractor" createBackups="false" restoreBackups="false" />
+        <extractor name="phar" type="AppserverIo\Appserver\Core\Extractors\PharExtractor" createBackups="false" restoreBackups="false" />
     </extractors>
 
     <provisioners>
-        <provisioner name="datasource" type="AppserverIo\Appserver\CoreDatasourceProvisioner" />
-        <provisioner name="standard" type="AppserverIo\Appserver\CoreStandardProvisioner" />
+        <provisioner name="datasource" type="AppserverIo\Appserver\Core\DatasourceProvisioner" />
+        <provisioner name="standard" type="AppserverIo\Appserver\Core\StandardProvisioner" />
     </provisioners>
 
     <loggers>
@@ -99,13 +99,13 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
 
         <container
                 name="combined-appserver"
-                type="AppserverIo\Appserver\CoreGenericContainer">
+                type="AppserverIo\Appserver\Core\GenericContainer">
 
             <description>
                 <![CDATA[This is an example of a webserver container that handles http requests in common way]]>
             </description>
 
-            <deployment type="AppserverIo\Appserver\CoreGenericDeployment" />
+            <deployment type="AppserverIo\Appserver\Core\GenericDeployment" />
 
             <host
                     name="localhost"
@@ -117,11 +117,11 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
 
                 <server
                         name="persistence-container"
-                        type="\TechDivision\Server\Servers\MultiThreadedServer"
-                        worker="\TechDivision\Server\Workers\ThreadWorker"
-                        socket="\TechDivision\Server\Sockets\StreamSocket"
-                        requestContext="\TechDivision\Server\Contexts\RequestContext"
-                        serverContext="\TechDivision\Server\Contexts\ServerContext"
+                        type="\AppserverIo\Server\Servers\MultiThreadedServer"
+                        worker="\AppserverIo\Server\Workers\ThreadWorker"
+                        socket="\AppserverIo\Server\Sockets\StreamSocket"
+                        requestContext="\AppserverIo\Server\Contexts\RequestContext"
+                        serverContext="\AppserverIo\Server\Contexts\ServerContext"
                         loggerName="System">
 
                     <params>
@@ -144,7 +144,7 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
                     </environmentVariables>
 
                     <connectionHandlers>
-                        <connectionHandler type="\TechDivision\WebServer\ConnectionHandlers\HttpConnectionHandler" />
+                        <connectionHandler type="\AppserverIo\WebServer\ConnectionHandlers\HttpConnectionHandler" />
                     </connectionHandlers>
 
                     <accesses>
@@ -158,18 +158,18 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
 
                     <modules>
                         <!-- REQUEST_POST hook -->
-                        <module type="\TechDivision\WebServer\Modules\AuthenticationModule"/>
-                        <module type="\TechDivision\WebServer\Modules\VirtualHostModule"/>
-                        <module type="\TechDivision\WebServer\Modules\EnvironmentVariableModule" />
-                        <module type="\TechDivision\RewriteModule\RewriteModule"/>
-                        <module type="\TechDivision\WebServer\Modules\DirectoryModule"/>
-                        <module type="\TechDivision\WebServer\Modules\AccessModule"/>
-                        <module type="\TechDivision\WebServer\Modules\CoreModule"/>
-                        <module type="\TechDivision\PersistenceContainer\PersistenceContainerModule" />
+                        <module type="\AppserverIo\WebServer\Modules\AuthenticationModule"/>
+                        <module type="\AppserverIo\WebServer\Modules\VirtualHostModule"/>
+                        <module type="\AppserverIo\WebServer\Modules\EnvironmentVariableModule" />
+                        <module type="\AppserverIo\WebServer\Modules\RewriteModule"/>
+                        <module type="\AppserverIo\WebServer\Modules\DirectoryModule"/>
+                        <module type="\AppserverIo\WebServer\Modules\AccessModule"/>
+                        <module type="\AppserverIo\WebServer\Modules\CoreModule"/>
+                        <module type="\AppserverIo\Appserver\PersistenceContainer\PersistenceContainerModule" />
                         <!-- RESPONSE_PRE hook -->
-                        <module type="\TechDivision\WebServer\Modules\DeflateModule"/>
+                        <module type="\AppserverIo\WebServer\Modules\DeflateModule"/>
                         <!-- RESPONSE_POST hook -->
-                        <module type="\AppserverIo\Appserver\CoreModules\ProfileModule"/>
+                        <module type="\AppserverIo\Appserver\Core\Modules\ProfileModule"/>
                     </modules>
 
                     <fileHandlers>
@@ -180,11 +180,11 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
 
                 <server
                         name="message-queue"
-                        type="\TechDivision\Server\Servers\MultiThreadedServer"
-                        worker="\TechDivision\Server\Workers\ThreadWorker"
-                        socket="\TechDivision\Server\Sockets\StreamSocket"
-                        requestContext="\TechDivision\Server\Contexts\RequestContext"
-                        serverContext="\TechDivision\Server\Contexts\ServerContext"
+                        type="\AppserverIo\Server\Servers\MultiThreadedServer"
+                        worker="\AppserverIo\Server\Workers\ThreadWorker"
+                        socket="\AppserverIo\Server\Sockets\StreamSocket"
+                        requestContext="\AppserverIo\Server\Contexts\RequestContext"
+                        serverContext="\AppserverIo\Server\Contexts\ServerContext"
                         loggerName="System">
 
                     <params>
@@ -207,7 +207,7 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
                     </environmentVariables>
 
                     <connectionHandlers>
-                        <connectionHandler type="\TechDivision\WebServer\ConnectionHandlers\HttpConnectionHandler" />
+                        <connectionHandler type="\AppserverIo\WebServer\ConnectionHandlers\HttpConnectionHandler" />
                     </connectionHandlers>
 
                     <accesses>
@@ -221,18 +221,18 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
 
                     <modules>
                         <!-- REQUEST_POST hook -->
-                        <module type="\TechDivision\WebServer\Modules\AuthenticationModule"/>
-                        <module type="\TechDivision\WebServer\Modules\VirtualHostModule"/>
-                        <module type="\TechDivision\WebServer\Modules\EnvironmentVariableModule" />
-                        <module type="\TechDivision\RewriteModule\RewriteModule"/>
-                        <module type="\TechDivision\WebServer\Modules\DirectoryModule"/>
-                        <module type="\TechDivision\WebServer\Modules\AccessModule"/>
-                        <module type="\TechDivision\WebServer\Modules\CoreModule"/>
-                        <module type="\TechDivision\MessageQueue\MessageQueueModule" />
+                        <module type="\AppserverIo\WebServer\Modules\AuthenticationModule"/>
+                        <module type="\AppserverIo\WebServer\Modules\VirtualHostModule"/>
+                        <module type="\AppserverIo\WebServer\Modules\EnvironmentVariableModule" />
+                        <module type="\AppserverIo\WebServer\Modules\RewriteModule"/>
+                        <module type="\AppserverIo\WebServer\Modules\DirectoryModule"/>
+                        <module type="\AppserverIo\WebServer\Modules\AccessModule"/>
+                        <module type="\AppserverIo\WebServer\Modules\CoreModule"/>
+                        <module type="\AppserverIo\Appserver\MessageQueue\MessageQueueModule" />
                         <!-- RESPONSE_PRE hook -->
-                        <module type="\TechDivision\WebServer\Modules\DeflateModule"/>
+                        <module type="\AppserverIo\WebServer\Modules\DeflateModule"/>
                         <!-- RESPONSE_POST hook -->
-                        <module type="\AppserverIo\Appserver\CoreModules\ProfileModule"/>
+                        <module type="\AppserverIo\Appserver\Core\Modules\ProfileModule"/>
                     </modules>
 
                     <fileHandlers>
@@ -243,11 +243,11 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
 
                 <server
                         name="http"
-                        type="\TechDivision\Server\Servers\MultiThreadedServer"
-                        worker="\TechDivision\Server\Workers\ThreadWorker"
-                        socket="\TechDivision\Server\Sockets\StreamSocket"
-                        serverContext="\TechDivision\Server\Contexts\ServerContext"
-                        requestContext="\TechDivision\Server\Contexts\RequestContext"
+                        type="\AppserverIo\Server\Servers\MultiThreadedServer"
+                        worker="\AppserverIo\Server\Workers\ThreadWorker"
+                        socket="\AppserverIo\Server\Sockets\StreamSocket"
+                        serverContext="\AppserverIo\Server\Contexts\ServerContext"
+                        requestContext="\AppserverIo\Server\Contexts\RequestContext"
                         loggerName="System">
                     <params>
                         <param name="admin" type="string"><?php echo Setup::getValue(SetupKeys::ADMIN_EMAIL) ?></param>
@@ -270,14 +270,14 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
                     </environmentVariables>
 
                     <connectionHandlers>
-                        <connectionHandler type="\TechDivision\WebServer\ConnectionHandlers\HttpConnectionHandler" />
+                        <connectionHandler type="\AppserverIo\WebServer\ConnectionHandlers\HttpConnectionHandler" />
                     </connectionHandlers>
 
                     <authentications>
                         <authentication uri="^\/admin.*">
                             <params>
                                 <param name="type" type="string">
-                                    \TechDivision\WebServer\Authentication\BasicAuthentication
+                                    \AppserverIo\WebServer\Authentication\BasicAuthentication
                                 </param>
                                 <param name="realm" type="string">appserver.io Basic Authentication System</param>
                                 <param name="hash" type="string">YXBwc2VydmVyOmFwcHNlcnZlci5pMA==</param>
@@ -305,20 +305,20 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
 
                     <modules>
                         <!-- REQUEST_POST hook -->
-                        <module type="\TechDivision\WebServer\Modules\VirtualHostModule"/>
-                        <module type="\TechDivision\WebServer\Modules\AuthenticationModule"/>
-                        <module type="\TechDivision\WebServer\Modules\EnvironmentVariableModule" />
-                        <module type="\TechDivision\RewriteModule\RewriteModule"/>
-                        <module type="\TechDivision\WebServer\Modules\DirectoryModule"/>
-                        <module type="\TechDivision\WebServer\Modules\AccessModule"/>
-                        <module type="\TechDivision\WebServer\Modules\CoreModule"/>
-                        <module type="\TechDivision\PhpModule\PhpModule"/>
-                        <module type="\TechDivision\FastCgiModule\FastCgiModule"/>
-                        <module type="\TechDivision\ServletEngine\ServletEngine" />
+                        <module type="\AppserverIo\WebServer\Modules\VirtualHostModule"/>
+                        <module type="\AppserverIo\WebServer\Modules\AuthenticationModule"/>
+                        <module type="\AppserverIo\WebServer\Modules\EnvironmentVariableModule" />
+                        <module type="\AppserverIo\WebServer\Modules\RewriteModule"/>
+                        <module type="\AppserverIo\WebServer\Modules\DirectoryModule"/>
+                        <module type="\AppserverIo\WebServer\Modules\AccessModule"/>
+                        <module type="\AppserverIo\WebServer\Modules\CoreModule"/>
+                        <module type="\AppserverIo\WebServer\Modules\PhpModule"/>
+                        <module type="\AppserverIo\WebServer\Modules\FastCgiModule"/>
+                        <module type="\AppserverIo\Appserver\ServletEngine\ServletEngine" />
                         <!-- RESPONSE_PRE hook -->
-                        <module type="\TechDivision\WebServer\Modules\DeflateModule"/>
+                        <module type="\AppserverIo\WebServer\Modules\DeflateModule"/>
                         <!-- RESPONSE_POST hook -->
-                        <module type="\AppserverIo\Appserver\CoreModules\ProfileModule"/>
+                        <module type="\AppserverIo\Appserver\Core\Modules\ProfileModule"/>
                     </modules>
 
                     <fileHandlers>
@@ -341,11 +341,11 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
 
                 <server
                         name="https"
-                        type="\TechDivision\Server\Servers\MultiThreadedServer"
-                        worker="\TechDivision\Server\Workers\ThreadWorker"
-                        socket="\TechDivision\Server\Sockets\StreamSocket"
-                        serverContext="\TechDivision\Server\Contexts\ServerContext"
-                        requestContext="\TechDivision\Server\Contexts\RequestContext"
+                        type="\AppserverIo\Server\Servers\MultiThreadedServer"
+                        worker="\AppserverIo\Server\Workers\ThreadWorker"
+                        socket="\AppserverIo\Server\Sockets\StreamSocket"
+                        serverContext="\AppserverIo\Server\Contexts\ServerContext"
+                        requestContext="\AppserverIo\Server\Contexts\RequestContext"
                         loggerName="System">
                     <params>
                         <param name="admin" type="string"><?php echo Setup::getValue(SetupKeys::ADMIN_EMAIL) ?></param>
@@ -370,14 +370,14 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
                     </environmentVariables>
 
                     <connectionHandlers>
-                        <connectionHandler type="\TechDivision\WebServer\ConnectionHandlers\HttpConnectionHandler" />
+                        <connectionHandler type="\AppserverIo\WebServer\ConnectionHandlers\HttpConnectionHandler" />
                     </connectionHandlers>
 
                     <authentications>
                         <authentication uri="^\/admin.*">
                             <params>
                                 <param name="type" type="string">
-                                    \TechDivision\WebServer\Authentication\BasicAuthentication
+                                    \AppserverIo\WebServer\Authentication\BasicAuthentication
                                 </param>
                                 <param name="realm" type="string">appserver.io Basic Authentication System</param>
                                 <param name="hash" type="string">YXBwc2VydmVyOmFwcHNlcnZlci5pMA==</param>
@@ -405,20 +405,20 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
 
                     <modules>
                         <!-- REQUEST_POST hook -->
-                        <module type="\TechDivision\WebServer\Modules\VirtualHostModule"/>
-                        <module type="\TechDivision\WebServer\Modules\AuthenticationModule"/>
-                        <module type="\TechDivision\WebServer\Modules\EnvironmentVariableModule" />
-                        <module type="\TechDivision\RewriteModule\RewriteModule"/>
-                        <module type="\TechDivision\WebServer\Modules\DirectoryModule"/>
-                        <module type="\TechDivision\WebServer\Modules\AccessModule"/>
-                        <module type="\TechDivision\WebServer\Modules\CoreModule"/>
-                        <module type="\TechDivision\PhpModule\PhpModule"/>
-                        <module type="\TechDivision\FastCgiModule\FastCgiModule"/>
-                        <module type="\TechDivision\ServletEngine\ServletEngine" />
+                        <module type="\AppserverIo\WebServer\Modules\VirtualHostModule"/>
+                        <module type="\AppserverIo\WebServer\Modules\AuthenticationModule"/>
+                        <module type="\AppserverIo\WebServer\Modules\EnvironmentVariableModule" />
+                        <module type="\AppserverIo\WebServer\Modules\RewriteModule"/>
+                        <module type="\AppserverIo\WebServer\Modules\DirectoryModule"/>
+                        <module type="\AppserverIo\WebServer\Modules\AccessModule"/>
+                        <module type="\AppserverIo\WebServer\Modules\CoreModule"/>
+                        <module type="\AppserverIo\WebServer\Modules\PhpModule"/>
+                        <module type="\AppserverIo\WebServer\Modules\FastCgiModule"/>
+                        <module type="\AppserverIo\Appserver\ServletEngine\ServletEngine" />
                         <!-- RESPONSE_PRE hook -->
-                        <module type="\TechDivision\WebServer\Modules\DeflateModule"/>
+                        <module type="\AppserverIo\WebServer\Modules\DeflateModule"/>
                         <!-- RESPONSE_POST hook -->
-                        <module type="\AppserverIo\Appserver\CoreModules\ProfileModule"/>
+                        <module type="\AppserverIo\Appserver\Core\Modules\ProfileModule"/>
                     </modules>
 
                     <fileHandlers>
@@ -447,10 +447,10 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
                 <!--
                 <server
                         name="web-socket"
-                        type="\TechDivision\WebSocketServer\Servers\AsyncServer"
-                        socket="\TechDivision\WebSocketServer\Sockets\AsyncSocket"
-                        serverContext="\TechDivision\Server\Contexts\ServerContext"
-                        requestContext="\TechDivision\Server\Contexts\RequestContext"
+                        type="\AppserverIo\Appserver\WebSocketServer\Servers\AsyncServer"
+                        socket="\AppserverIo\Appserver\WebSocketServer\Sockets\AsyncSocket"
+                        serverContext="\AppserverIo\Server\Contexts\ServerContext"
+                        requestContext="\AppserverIo\Server\Contexts\RequestContext"
                         loggerName="System">
                     <params>
                         <param name="admin" type="string"><?php echo Setup::getValue(SetupKeys::ADMIN_EMAIL) ?></param>
@@ -467,18 +467,18 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
                     </environmentVariables>
 
                     <connectionHandlers>
-                        <connectionHandler type="\TechDivision\WebSocketProtocol\WebSocketConnectionHandler" />
+                        <connectionHandler type="\AppserverIo\Appserver\WebSocketProtocol\WebSocketConnectionHandler" />
                     </connectionHandlers>
 
                 </server>
 
                 <server
                         name="memcached"
-                        type="\TechDivision\Server\Servers\MultiThreadedServer"
-                        worker="\TechDivision\Server\Workers\ThreadWorker"
-                        socket="\TechDivision\Server\Sockets\StreamSocket"
-                        serverContext="\TechDivision\Server\Contexts\ServerContext"
-                        requestContext="\TechDivision\Server\Contexts\RequestContext"
+                        type="\AppserverIo\Server\Servers\MultiThreadedServer"
+                        worker="\AppserverIo\Server\Workers\ThreadWorker"
+                        socket="\AppserverIo\Server\Sockets\StreamSocket"
+                        serverContext="\AppserverIo\Server\Contexts\ServerContext"
+                        requestContext="\AppserverIo\Server\Contexts\RequestContext"
                         loggerName="System">
 
                     <params>
@@ -499,7 +499,7 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
                     </environmentVariables>
 
                     <connectionHandlers>
-                        <connectionHandler type="\TechDivision\MemcacheProtocol\MemcacheConnectionHandler" />
+                        <connectionHandler type="\AppserverIo\Appserver\MemcacheProtocol\MemcacheConnectionHandler" />
                     </connectionHandlers>
 
                 </server>

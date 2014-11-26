@@ -26,8 +26,8 @@ use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Http\HttpProtocol;
 use AppserverIo\Http\HttpException;
 use AppserverIo\Http\HttpResponseStates;
-use AppserverIo\Http\HttpCookieInterface;
-use AppserverIo\Http\HttpResponseInterface;
+use AppserverIo\Psr\HttpMessage\CookieInterface;
+use AppserverIo\Psr\HttpMessage\ResponseInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletResponse;
 
 /**
@@ -103,7 +103,7 @@ class Response extends GenericStackable implements HttpServletResponse
      *
      * @return void
      */
-    public function addCookie(HttpCookieInterface $cookie)
+    public function addCookie(CookieInterface $cookie)
     {
         $this->cookies[$cookie->getName()] = serialize($cookie);
     }

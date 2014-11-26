@@ -17,12 +17,12 @@
 		"appserver-io-psr/messagequeueprotocol" : "0.2.*",
 		"appserver-io/doppelgaenger" : "0.2.*",
 		"appserver-io/http" : "0.2.*",
+		"appserver-io/server" : "0.2.*",
 		"appserver-io/storage" : "0.5.*",
+		"appserver-io/webserver" : "0.3.*",
 		"appserver-io/properties" : "0.1.*",
 		"appserver-io/configuration" : "0.1.*",
-		"appserver-io/persistencecontainerclient" : "0.7.*",
-		"appserver-io/server" : "0.2.*",
-		"appserver-io/webserver" : "0.3.*"
+		"appserver-io/persistencecontainerclient" : "0.7.*"
 	},
 	"require-dev" : {
 		"phpunit/phpunit" : "3.7.*",
@@ -68,7 +68,7 @@
 	],
 	"scripts" : {
 		"post-install-cmd" : [
-			"AppserverIo\\Meta\\Composer\\Script\\Setup::postInstall"
+			"AppserverIo\\Appserver\\Meta\\Composer\\Script\\Setup::postInstall"
 		]
 	}
 }

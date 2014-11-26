@@ -170,7 +170,7 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
             $serverContextType = $serverConfig->getServerContextType();
 
             // create a new instance server context
-            /* @var \TechDivision\WebServer\Interfaces\ServerContextInterface $serverContext */
+            /* @var \AppserverIo\Server\Interfaces\ServerContextInterface $serverContext */
             $serverContext = new $serverContextType();
 
             // inject container to be available in specific mods etc. and initialize the module

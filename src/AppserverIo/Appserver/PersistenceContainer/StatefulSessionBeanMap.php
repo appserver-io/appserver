@@ -22,9 +22,13 @@
 
 namespace AppserverIo\Appserver\PersistenceContainer;
 
-use AppserverIo\Collections\Map;
 use AppserverIo\Storage\GenericStackable;
+use AppserverIo\Lang\String;
+use AppserverIo\Lang\Float;
+use AppserverIo\Lang\Integer;
+use AppserverIo\Lang\Boolean;
 use AppserverIo\Lang\NullPointerException;
+use AppserverIo\Collections\Map;
 use AppserverIo\Collections\AbstractMap;
 use AppserverIo\Collections\InvalidKeyException;
 use AppserverIo\Collections\IndexOutOfBoundsException;

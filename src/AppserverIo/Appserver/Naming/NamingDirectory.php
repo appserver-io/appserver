@@ -44,7 +44,7 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
     /**
      * Initialize the diretory with a name and the parent one.
      *
-     * @param string                                        $name   The directory name
+     * @param string                                           $name   The directory name
      * @param \AppserverIo\Psr\Naming\NamingDirectoryInterface $parent The parent directory
      */
     public function __construct($name = null, NamingDirectoryInterface $parent = null)
@@ -264,7 +264,7 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
      * @param string $key The key of the value to return from the context.
      *
      * @return mixed The requested attribute
-     * @see \TechDivision\Context\Context::getAttribute()
+     * @see \AppserverIo\Psr\Context\Context::getAttribute()
      */
     public function getAttribute($key)
     {

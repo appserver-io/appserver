@@ -36,11 +36,11 @@ use AppserverIo\Storage\StorageInterface;
  * @category   Server
  * @package    Appserver
  * @subpackage Application
- * @author    Jonathan H. Wage <jonwage@gmail.com>
- * @author    Roman S. Borschel <roman@code-factory.org>
- * @author    Matthew Weier O'Phinney <matthew@zend.com>
- * @author    Kris Wallsmith <kris.wallsmith@gmail.com>
- * @author    Fabien Potencie <fabien.potencier@symfony-project.org>
+ * @author     Jonathan H. Wage <jonwage@gmail.com>
+ * @author     Roman S. Borschel <roman@code-factory.org>
+ * @author     Matthew Weier O'Phinney <matthew@zend.com>
+ * @author     Kris Wallsmith <kris.wallsmith@gmail.com>
+ * @author     Fabien Potencie <fabien.potencier@symfony-project.org>
  * @author     Tim Wagner <tw@appserver.io>
  * @copyright  2014 TechDivision GmbH <info@appserver.io>
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
@@ -73,7 +73,7 @@ class SplClassLoader extends GenericStackable
     /**
      * Visitor method that adds a initialized class loader to the passed application.
      *
-     * @param \AppserverIo\Psr\Application\ApplicationInterface         $application   The application instance
+     * @param \AppserverIo\Psr\Application\ApplicationInterface             $application   The application instance
      * @param \AppserverIo\Appserver\Core\Api\Node\ClassLoaderNodeInterface $configuration The class loader configuration node
      *
      * @return void
@@ -107,10 +107,10 @@ class SplClassLoader extends GenericStackable
      * array.
      *
      * @param \AppserverIo\Appserver\Application\Interfaces\ContextInterface $initialContext     The initial context instance
-     * @param string                                                $namespace          The namespace to use
-     * @param array                                                 $includePath        The include path to use
-     * @param string                                                $namespaceSeparator The namespace separator
-     * @param string                                                $fileExtension      The filename extension
+     * @param string                                                         $namespace          The namespace to use
+     * @param array                                                          $includePath        The include path to use
+     * @param string                                                         $namespaceSeparator The namespace separator
+     * @param string                                                         $fileExtension      The filename extension
      */
     public function __construct(ContextInterface $initialContext, $namespace = null, array $includePath = null, $namespaceSeparator = '\\', $fileExtension = '.php')
     {
