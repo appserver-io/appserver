@@ -44,7 +44,7 @@
         <manager name="StandardSessionManager" beanInterface="SessionManager" type="AppserverIo\Appserver\ServletEngine\StandardSessionManager" factory="AppserverIo\Appserver\ServletEngine\StandardSessionManagerFactory"/>
         <manager name="TimerServiceRegistry" beanInterface="TimerServiceContext" type="AppserverIo\Appserver\PersistenceContainer\TimerServiceRegistry" factory="AppserverIo\Appserver\PersistenceContainer\TimerServiceRegistryFactory"/>
         <manager name="StandardAuthenticationManager" beanInterface="AuthenticationManager" type="AppserverIo\Appserver\ServletEngine\Authentication\StandardAuthenticationManager" factory="AppserverIo\Appserver\ServletEngine\Authentication\StandardAuthenticationManagerFactory"/>
-        <manager name="AspectManager" beanInterface="AspectManagerInterface" type="AppserverIo\Appserver\Application\AspectManager" factory="AppserverIo\Appserver\Application\AspectManagerFactory"/>
+        <manager name="AspectManager" beanInterface="AspectManagerInterface" type="AppserverIo\Appserver\AspectContainer\AspectManager" factory="AppserverIo\Appserver\AspectContainer\AspectManagerFactory"/>
     </managers>
 
 </context>
