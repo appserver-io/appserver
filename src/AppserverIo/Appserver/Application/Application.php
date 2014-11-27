@@ -53,6 +53,14 @@ use AppserverIo\Appserver\Application\Interfaces\ManagerConfigurationInterface;
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       https://github.com/appserver-io/appserver
  * @link       http://www.appserver.io
+ *
+ * @property \AppserverIo\Storage\StorageInterface                          $data            Application's data storage
+ * @property \AppserverIo\Storage\GenericStackable                          $classLoaders    Stackable holding all class loaders this application has registered
+ * @property \AppserverIo\Appserver\Application\Interfaces\ContextInterface $initialContext  The initial context instance
+ * @property \AppserverIo\Storage\GenericStackable                          $managers        Stackable of managers for this application
+ * @property string                                                         $name            Name of the application
+ * @property \AppserverIo\Psr\Naming\NamingDirectoryInterface               $namingDirectory The naming directory instance
+ * @property \AppserverIo\Storage\GenericStackable                          $virtualHosts    Stackable containing all virtual hosts used for this application
  */
 class Application extends \Thread implements ApplicationInterface
 {
@@ -68,55 +76,6 @@ class Application extends \Thread implements ApplicationInterface
      * @var integer
      */
     const TIME_TO_LIVE = 1;
-
-    /**
-     * Application's data storage
-     *
-     * @var \AppserverIo\Storage\StorageInterface $data
-     */
-    protected $data;
-
-    /**
-     * Stackable holding all class loaders this application has registered
-     *
-     * @var \AppserverIo\Storage\GenericStackable $classLoaders
-     */
-    protected $classLoaders;
-
-    /**
-     * The initial context instance
-     *
-     * @var \AppserverIo\Appserver\Application\Interfaces\ContextInterface $initialContext
-     */
-    protected $initialContext;
-
-    /**
-     * Stackable of managers for this application
-     *
-     * @var \AppserverIo\Storage\GenericStackable $managers
-     */
-    protected $managers;
-
-    /**
-     * Name of the application
-     *
-     * @var string $name
-     */
-    protected $name;
-
-    /**
-     * The naming directory instance
-     *
-     * @var \AppserverIo\Psr\Naming\NamingDirectoryInterface $namingDirectory
-     */
-    protected $namingDirectory;
-
-    /**
-     * Stackable containing all virtual hosts used for this application
-     *
-     * @var \AppserverIo\Storage\GenericStackable $virtualHosts
-     */
-    protected $virtualHosts;
 
     /**
      * Initializes the application context.
