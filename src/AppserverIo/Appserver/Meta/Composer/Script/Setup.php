@@ -102,7 +102,7 @@ class Setup
      * @var array
      */
     protected static $osProperties = array(
-        SetupKeys::OS_DARWIN  => array(SetupKeys::OS_FAMILY => SetupKeys::OS_FAMILY_DARWIN, SetupKeys::GROUP => 'staff'),
+        SetupKeys::OS_DARWIN  => array(SetupKeys::OS_FAMILY => SetupKeys::OS_FAMILY_DARWIN, SetupKeys::GROUP => 'staff', SetupKeys::USER => '_www'),
         SetupKeys::OS_DEBIAN  => array(SetupKeys::OS_FAMILY => SetupKeys::OS_FAMILY_LINUX,  SetupKeys::GROUP => 'www-data', SetupKeys::USER => 'www-data'),
         SetupKeys::OS_UBUNTU  => array(SetupKeys::OS_FAMILY => SetupKeys::OS_FAMILY_LINUX,  SetupKeys::GROUP => 'www-data', SetupKeys::USER => 'www-data'),
         SetupKeys::OS_FEDORA  => array(SetupKeys::OS_FAMILY => SetupKeys::OS_FAMILY_LINUX),
