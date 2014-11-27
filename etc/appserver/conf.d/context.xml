@@ -4,6 +4,7 @@
     <classLoaders>
         <classLoader
             name="composer"
+            interface="ClassLoaderInterface"
             type="AppserverIo\Appserver\Core\ComposerClassLoader"
             factory="AppserverIo\Appserver\Core\ComposerClassLoaderFactory">
             <directories>
@@ -12,6 +13,7 @@
         </classLoader>
         <classLoader
             name="doppelgaenger"
+            interface="ClassLoaderInterface"
             type="AppserverIo\Appserver\Core\DgClassLoader"
             factory="AppserverIo\Appserver\Core\DgClassLoaderFactory">
             <params>

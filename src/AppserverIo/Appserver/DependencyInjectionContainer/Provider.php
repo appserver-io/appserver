@@ -201,7 +201,7 @@ class Provider extends GenericStackable implements ProviderInterface
     }
 
     /**
-     * Returns a reflection class intance for the passed class name.
+     * Returns a reflection class instance for the passed class name.
      *
      * @param string $className The class name to return the reflection instance for
      *

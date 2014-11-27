@@ -1,8 +1,6 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Application\Application
- *
  * NOTICE OF LICENSE
  *
  * This source file is subject to the Open Software License (OSL 3.0)
@@ -23,6 +21,8 @@
 
 namespace AppserverIo\Appserver\Application;
 
+use AppserverIo\Appserver\Core\Api\Node\ClassLoaderNodeInterface;
+use AppserverIo\Appserver\Core\Interfaces\ClassLoaderInterface;
 use AppserverIo\Logger\LoggerUtils;
 use AppserverIo\Appserver\Naming\NamingDirectory;
 use AppserverIo\Psr\Naming\NamingException;
@@ -39,6 +39,8 @@ use AppserverIo\Appserver\Application\Interfaces\VirtualHostInterface;
 use AppserverIo\Appserver\Application\Interfaces\ManagerConfigurationInterface;
 
 /**
+ * AppserverIo\Appserver\Application\Application
+ *
  * The application instance holds all information about the deployed application
  * and provides a reference to the servlet manager and the initial context.
  *
@@ -60,6 +62,55 @@ class Application extends \Thread implements ApplicationInterface
      * @var integer
      */
     const TIME_TO_LIVE = 1;
+
+    /**
+     * Application's data storage
+     *
+     * @var \AppserverIo\Storage\StorageInterface $data
+     */
+    protected $data;
+
+    /**
+     * Stackable holding all class loaders this application has registered
+     *
+     * @var \AppserverIo\Storage\GenericStackable $classLoaders
+     */
+    protected $classLoaders;
+
+    /**
+     * The initial context instance
+     *
+     * @var \AppserverIo\Appserver\Application\Interfaces\ContextInterface $initialContext
+     */
+    protected $initialContext;
+
+    /**
+     * Stackable of managers for this application
+     *
+     * @var \AppserverIo\Storage\GenericStackable $managers
+     */
+    protected $managers;
+
+    /**
+     * Name of the application
+     *
+     * @var string $name
+     */
+    protected $name;
+
+    /**
+     * The naming directory instance
+     *
+     * @var \AppserverIo\Psr\Naming\NamingDirectoryInterface $namingDirectory
+     */
+    protected $namingDirectory;
+
+    /**
+     * Stackable containing all virtual hosts used for this application
+     *
+     * @var \AppserverIo\Storage\GenericStackable $virtualHosts
+     */
+    protected $virtualHosts;
 
     /**
      * Initializes the application context.
@@ -213,7 +264,7 @@ class Application extends \Thread implements ApplicationInterface
 
     /**
      * Queries the naming directory for the requested name and returns the value
-     * or invokes the binded callback.
+     * or invokes the bound callback.
      *
      * @param string $name The name of the requested value
      * @param array  $args The arguments to pass to the callback
@@ -563,6 +614,20 @@ class Application extends \Thread implements ApplicationInterface
     }
 
     /**
+     * Return the requested class loader instance
+     *
+     * @param string $identifier The unique identifier of the requested class loader
+     *
+     * @return \AppserverIo\Appserver\Core\Interfaces\ClassLoaderInterface The class loader instance
+     */
+    public function getClassLoader($identifier)
+    {
+        if (isset($this->classLoaders[$identifier])) {
+            return $this->classLoaders[$identifier];
+        }
+    }
+
+    /**
      * Return the class loaders.
      *
      * @return \AppserverIo\Storage\GenericStackable The class loader instances
@@ -633,13 +698,37 @@ class Application extends \Thread implements ApplicationInterface
     /**
      * Injects an additional class loader.
      *
-     * @param object $classLoader A class loader to put on the class loader stack
+     * @param \AppserverIo\Appserver\Core\Interfaces\ClassLoaderInterface   $classLoader   A class loader to put on the class loader stack
+     * @param \AppserverIo\Appserver\Core\Api\Node\ClassLoaderNodeInterface $configuration The class loader's configuration
      *
      * @return void
      */
-    public function addClassLoader($classLoader)
+    public function addClassLoader(ClassLoaderInterface $classLoader, ClassLoaderNodeInterface $configuration = null)
     {
-        $this->classLoaders[] = $classLoader;
+        if (!is_null($configuration)) {
+
+            // load the lookup names from the configuration
+            $lookupNames = $configuration->toLookupNames();
+
+            // register the class loader with the default name (short class name OR @Annotation(name=****))
+            $identifier = $lookupNames[AnnotationKeys::NAME];
+            $this->bind($identifier, array(&$this, 'getClassLoader'), array($identifier));
+
+            // register the bean with the name defined as @Annotation(beanInterface=****)
+            if ($beanInterfaceAttribute = $lookupNames[AnnotationKeys::BEAN_INTERFACE]) {
+                $this->bind($beanInterfaceAttribute, array(&$this, 'getClassLoader'), array($identifier));
+            }
+
+        } else {
+
+            // our identifier will be the unqualified/short class name
+            $reflectionClass = new \ReflectionClass($classLoader);
+            $identifier = $reflectionClass->getShortName();
+            $this->bind($identifier, array(&$this, 'getClassLoader'), array($identifier));
+        }
+
+        // register the manager instance itself
+        $this->classLoaders[$identifier] = $classLoader;
     }
 
     /**

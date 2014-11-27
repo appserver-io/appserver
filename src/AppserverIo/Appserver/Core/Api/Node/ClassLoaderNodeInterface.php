@@ -61,9 +61,9 @@ interface ClassLoaderNodeInterface extends NodeInterface
     public function getEnvironment();
 
     /**
-     * Flag that shows PBC type safety is activated.
+     * Flag that shows Doppelgaenger type safety is activated.
      *
-     * @return boolean TRUE if PBC type safety is enabled, else FALSE
+     * @return boolean TRUE if Doppelgaenger type safety is enabled, else FALSE
      */
     public function getTypeSafety();
 
@@ -75,9 +75,17 @@ interface ClassLoaderNodeInterface extends NodeInterface
     public function getProcessing();
 
     /**
-     * The PBC enforcement level to use.
+     * The Doppelgaenger enforcement level to use.
      *
      * @return integer The enforcement level
      */
     public function getEnforcementLevel();
+
+    /**
+     * Returns the class loader's lookup names found in the configuration, merge with the annotation
+     * values, whereas the configuration values will override the annotation values.
+     *
+     * @return array The array with the managers lookup names
+     */
+    public function toLookupNames();
 }

@@ -19,7 +19,7 @@
 
 namespace AppserverIo\Appserver\Core;
 
-use AppserverIo\PBC\Generator;
+use AppserverIo\Doppelgaenger\Generator;
 
 /**
  * AppserverIo\Appserver\Core\GeneratorThread
@@ -39,22 +39,22 @@ class GeneratorThread extends \Thread
     /**
      * Generator instance to use for creation
      *
-     * @var \AppserverIo\PBC\Generator $generator
+     * @var \AppserverIo\Doppelgaenger\Generator $generator
      */
     protected $generator;
 
     /**
      * Array of structures we will be creating
      *
-     * @var array<\AppserverIo\PBC\Entities\Definitions\Structure> $structures
+     * @var array<\AppserverIo\Doppelgaenger\Entities\Definitions\Structure> $structures
      */
     protected $structures;
 
     /**
      * Default constructor
      *
-     * @param \AppserverIo\PBC\Generator $generator  Our PBC generator instance
-     * @param array                      $structures List of structures to generate
+     * @param \AppserverIo\Doppelgaenger\Generator $generator  Our Doppelgaenger generator instance
+     * @param array                                $structures List of structures to generate
      */
     public function __construct(Generator $generator, array $structures)
     {

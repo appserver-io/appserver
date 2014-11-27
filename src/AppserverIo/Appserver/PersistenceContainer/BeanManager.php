@@ -69,7 +69,7 @@ class BeanManager extends GenericStackable implements BeanContext, ManagerInterf
     /**
      * Inject the data storage.
      *
-     * @param \AppserverIo\Storage\StackableStorage $data The data storage to use
+     * @param \AppserverIo\Storage\StorageInterface $data The data storage to use
      *
      * @return void
      */
@@ -316,7 +316,7 @@ class BeanManager extends GenericStackable implements BeanContext, ManagerInterf
     /**
      * Returns the application instance.
      *
-     * @return string The application instance
+     * @return \AppserverIo\Psr\Application\ApplicationInterface The application instance
      */
     public function getApplication()
     {

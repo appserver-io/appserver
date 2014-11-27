@@ -54,7 +54,7 @@ use AppserverIo\Server\Dictionaries\EnvVars;
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       http://www.appserver.io
  */
-class ServletEngine extends GenericStackable implements HttpModuleInterface
+class ServletEngine extends AbstractServletEngine
 {
 
     /**
@@ -70,23 +70,6 @@ class ServletEngine extends GenericStackable implements HttpModuleInterface
      * @var integer
      */
     const REQUEST_HANDLER_WAIT_TIMEOUT = 1000000;
-
-    /**
-     * Initialize the module.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-
-        // initialize the members
-        $this->valves = new GenericStackable();
-        $this->handlers = new GenericStackable();
-        $this->applications = new GenericStackable();
-        $this->dependencies = new GenericStackable();
-        $this->virtualHosts = new GenericStackable();
-        $this->urlMappings = new GenericStackable();
-    }
 
     /**
      * Returns an array of module names which should be executed first.
@@ -133,107 +116,6 @@ class ServletEngine extends GenericStackable implements HttpModuleInterface
         } catch (\Exception $e) {
             throw new ModuleException($e);
         }
-    }
-
-    /**
-     * Initialize the valves that handles the requests.
-     *
-     * @return void
-     */
-    public function initValves()
-    {
-        $this->valves[] = new AuthenticationValve();
-        $this->valves[] = new ServletValve();
-    }
-
-    /**
-     * Initialize the web server handlers.
-     *
-     * @return void
-     */
-    public function initHandlers()
-    {
-        foreach ($this->getServerContext()->getServerConfig()->getHandlers() as $extension => $handler) {
-            $this->handlers[$extension] = new Handler($handler['name']);
-        }
-    }
-
-    /**
-     * Initialize the configured virtual hosts.
-     *
-     * @return void
-     */
-    public function initVirtualHosts()
-    {
-        // load the document root and the web servers virtual host configuration
-        $documentRoot = $this->getServerContext()->getServerConfig()->getDocumentRoot();
-
-        // prepare the virtual host configurations
-        foreach ($this->getServerContext()->getServerConfig()->getVirtualHosts() as $domain => $virtualHost) {
-
-            // prepare the applications base directory
-            $appBase = str_replace($documentRoot, '', $virtualHost['params']['documentRoot']);
-
-            // append the virtual host to the array
-            $this->virtualHosts[] = new VirtualHost($domain, $appBase);
-        }
-    }
-
-    /**
-     * Initialize the applications.
-     *
-     * @return void
-     */
-    public function initApplications()
-    {
-
-        // iterate over a applications vhost/alias configuration
-        foreach ($this->getServerContext()->getContainer()->getApplications() as $applicationName => $application) {
-
-            // iterate over the virtual hosts
-            foreach ($this->virtualHosts as $virtualHost) {
-                if ($virtualHost->match($application)) {
-                    $application->addVirtualHost($virtualHost);
-                }
-            }
-
-            // finally APPEND a wildcard pattern for each application to the patterns array
-            $this->applications[$applicationName] = $application;
-        }
-    }
-
-    /**
-     * Initialize the URL mappings.
-     *
-     * @return void
-     */
-    public function initUrlMappings()
-    {
-
-        // iterate over a applications vhost/alias configuration
-        foreach ($this->getApplications() as $application) {
-
-            // initialize the application name
-            $applicationName = $application->getName();
-
-            // iterate over the virtual hosts and add a mapping for each
-            foreach ($application->getVirtualHosts() as $virtualHost) {
-                $this->urlMappings['/^' . $virtualHost->getName() . '\/(([a-z0-9+\$_-]\.?)+)*\/?/'] = $applicationName;
-            }
-
-            // finally APPEND a wildcard pattern for each application to the patterns array
-            $this->urlMappings['/^[a-z0-9-.]*\/' . $applicationName . '\/(([a-z0-9+\$_-]\.?)+)*\/?/'] = $applicationName;
-        }
-    }
-
-    /**
-     * Prepares the module for upcoming request in specific context
-     *
-     * @return bool
-     * @throws \AppserverIo\Server\Exceptions\ModuleException
-     */
-    public function prepare()
-    {
     }
 
     /**

@@ -1,6 +1,11 @@
 <?php
+
 /**
- * AppserverIo\Appserver\Core\DgcAutoLoader
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Open Software License (OSL 3.0)
+ * that is available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/osl-3.0.php
  *
  * PHP version 5
  *
@@ -8,9 +13,9 @@
  * @package    Appserver
  * @subpackage Application
  * @author     Bernhard Wick <bw@appserver.io>
- * @copyright  2014 TechDivision GmbH <info@appserver.io>
+ * @copyright  2014 TechDivision GmbH - <info@appserver.io>
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link       http://www.appserver.io
+ * @link       http://www.appserver.io/
  */
 
 namespace AppserverIo\Appserver\Core;
@@ -18,6 +23,8 @@ namespace AppserverIo\Appserver\Core;
 use AppserverIo\Appserver\Core\Interfaces\ClassLoaderInterface;
 use AppserverIo\Doppelgaenger\AspectRegister;
 use AppserverIo\Doppelgaenger\CacheMap;
+use AppserverIo\Doppelgaenger\Dictionaries\Placeholders;
+use AppserverIo\Doppelgaenger\Entities\Definitions\Structure;
 use AppserverIo\Doppelgaenger\Generator;
 use AppserverIo\Doppelgaenger\StructureMap;
 use AppserverIo\Doppelgaenger\Config;
@@ -38,29 +45,8 @@ use AppserverIo\Psr\Application\ApplicationInterface;
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       http://www.appserver.io
  */
-class DgClassLoader extends AutoLoader implements ClassLoaderInterface
+class DgClassLoader extends \Stackable implements ClassLoaderInterface
 {
-
-    /**
-     * The configuration we base our actions on.
-     *
-     * @var \AppserverIo\Doppelgaenger\Config
-     */
-    public $config;
-
-    /**
-     * Cache map to keep track of already processed files.
-     *
-     * @var \AppserverIo\Doppelgaenger\CacheMap
-     */
-    public $cache;
-
-    /**
-     * In some cases the autoloader instance is not thrown away, saving the structure map might be a benefit here.
-     *
-     * @var \AppserverIo\Doppelgaenger\StructureMap $structureMap
-     */
-    public $structureMap;
 
     /**
      * Our default configuration file
@@ -106,14 +92,33 @@ class DgClassLoader extends AutoLoader implements ClassLoaderInterface
 
             $config = new Config();
             $config->load(APPSERVER_BP . DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . self::CONFIG_FILE);
+
+        } else {
+
+            $this->config = $config;
         }
 
-        // Construct the parent from the config we got
-        parent::__construct($config);
+        // Now that we got the config we can create a structure map to load from
+        $this->structureMap = new StackableStructureMap(
+            $this->config->getValue('autoloader/dirs'),
+            $this->config->getValue('enforcement/dirs'),
+            $this->config
+        );
+
+        $this->cache = null;
+        $this->aspectRegister = new AspectRegister();
 
         // We now have a structure map instance, so fill it initially
         $this->getStructureMap()->fill();
+    }
 
+    /**
+     * Will start the generation of the cache based on the known structures
+     *
+     * @return null
+     */
+    public function createCache()
+    {
         // Check if there are files in the cache.
         // If not we will fill the cache, if there are we will check if there have been any changes to the enforced dirs
         $fileIterator = new \FilesystemIterator($this->config->getValue('cache/dir'), \FilesystemIterator::SKIP_DOTS);
@@ -147,7 +152,7 @@ class DgClassLoader extends AutoLoader implements ClassLoaderInterface
         $cacheMap = new CacheMap($this->config->getValue('cache/dir'), array(), $this->config);
 
         // We need a generator so we can create our proxies initially
-        $generator = new Generator($this->structureMap, $cacheMap, $this->config, new AspectRegister());
+        $generator = new Generator($this->structureMap, $cacheMap, $this->config, $this->getAspectRegister());
 
         // Iterate over all found structures and generate their proxies, but ignore the ones with omitted
         // namespaces
@@ -214,6 +219,129 @@ class DgClassLoader extends AutoLoader implements ClassLoaderInterface
     }
 
     /**
+     * Getter for the $aspectRegister property
+     *
+     * @return \AppserverIo\Doppelgaenger\AspectRegister
+     */
+    public function getAspectRegister()
+    {
+        return $this->aspectRegister;
+    }
+
+    /**
+     * Getter for the config member
+     *
+     * @return \AppserverIo\Doppelgaenger\Config
+     */
+    public function getConfig()
+    {
+        return $this->config;
+    }
+
+    /**
+     * Getter for the structureMap member
+     *
+     * @return \AppserverIo\Doppelgaenger\StructureMap
+     */
+    public function getStructureMap()
+    {
+        return $this->structureMap;
+    }
+
+    /**
+     * Will inject an AspectRegister instance into the generator
+     *
+     * @param \AppserverIo\Doppelgaenger\AspectRegister $aspectRegister The AspectRegister instance to inject
+     *
+     * @return null
+     */
+    public function injectAspectRegister(AspectRegister $aspectRegister)
+    {
+        $this->aspectRegister = $aspectRegister;
+    }
+
+    /**
+     * Will load any given structure based on it's availability in our structure map which depends on the configured
+     * project directories.
+     * If the structure cannot be found we will redirect to the composer autoloader which we registered as a fallback
+     *
+     * @param string $className The name of the structure we will try to load
+     *
+     * @return boolean
+     */
+    public function loadClass($className)
+    {
+        // There was no file in our cache dir, so lets hope we know the original path of the file.
+        $autoLoaderConfig = $this->config->getConfig('autoloader');
+
+        // Might the class be a omitted one? If so we can require the original.
+        if (isset($autoLoaderConfig['omit'])) {
+
+            foreach ($autoLoaderConfig['omit'] as $omitted) {
+
+                // If our class name begins with the omitted part e.g. it's namespace
+                if (strpos($className, str_replace('\\\\', '\\', $omitted)) === 0) {
+
+                    return false;
+                }
+            }
+        }
+
+        // Do we have the file in our cache dir? If we are in development mode we have to ignore this.
+        $cacheConfig = $this->config->getConfig('cache');
+        if ($this->config->getConfig('environment') !== 'development') {
+
+            $cachePath = $cacheConfig['dir'] . DIRECTORY_SEPARATOR . str_replace('\\', '_', $className) . '.php';
+
+            if (is_readable($cachePath)) {
+
+                $res = fopen($cachePath, 'r');
+                $str = fread($res, 384);
+
+                $success = preg_match(
+                    '/' . Placeholders::ORIGINAL_PATH_HINT . '(.+)' .
+                    Placeholders::ORIGINAL_PATH_HINT . '/',
+                    $str,
+                    $tmp
+                );
+
+                if ($success > 0) {
+
+                    $tmp = explode('#', $tmp[1]);
+
+                    $path = $tmp[0];
+                    $mTime = $tmp[1];
+
+                    if (filemtime($path) == $mTime) {
+
+                        require $cachePath;
+                        return true;
+                    }
+                }
+            }
+        }
+
+        // If we are loading something of our own library we can skip to composer
+        if (strpos($className, 'AppserverIo\Doppelgaenger') === 0 || strpos($className, 'PHP') === 0) {
+
+            return false;
+        }
+
+        // Get the file from the map
+        $file = $this->structureMap->getEntry($className);
+
+        // Did we get something? If so we have to load it
+        if ($file instanceof Structure) {
+
+            require $file->getPath();
+            return true;
+        }
+
+        // Still here? That sounds like bad news!
+        return false;
+    }
+
+    /**
      * We will refill the cache dir by emptying it and filling it again
      *
      * @return bool
@@ -232,5 +360,34 @@ class DgClassLoader extends AutoLoader implements ClassLoaderInterface
 
         // Lets create the definitions anew
         return $this->createDefinitions();
+    }
+
+    /**
+     * Will register our autoloading method at the beginning of the spl autoloader stack
+     *
+     * @param boolean $throw   Should we throw an exception on error?
+     * @param boolean $prepend If you want to NOT prepend you might, but you should not
+     *
+     * @return null
+     */
+    public function register($throw = true, $prepend = true)
+    {
+        // Now we have a config no matter what, we can store any instance we might need
+        $this->config->storeInstances();
+
+        // We want to let our autoloader be the first in line so we can react on loads
+        // and create/return our contracted definitions.
+        // So lets use the prepend parameter here.
+        spl_autoload_register(array($this, self::OUR_LOADER), $throw, $prepend);
+    }
+
+    /**
+     * Uninstalls this class loader from the SPL autoloader stack.
+     *
+     * @return void
+     */
+    public function unregister()
+    {
+        spl_autoload_unregister(array($this, self::OUR_LOADER));
     }
 }

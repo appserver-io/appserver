@@ -43,7 +43,7 @@ class AspectManagerFactory
     /**
      * The main method that creates new instances in a separate context.
      *
-     * @param \AppserverIo\Psr\Application\ApplicationInterface          $application          The application instance to register the class loader with
+     * @param \AppserverIo\Psr\Application\ApplicationInterface                           $application          The application instance to register the class loader with
      * @param \AppserverIo\Appserver\Application\Interfaces\ManagerConfigurationInterface $managerConfiguration The manager configuration
      *
      * @return void
@@ -53,16 +53,14 @@ class AspectManagerFactory
 
         // check if the correct autoloader has been registered, if so we have to get its aspect register.
         // if not we have to fail here
-        $classLoader = $application->getInitialContext()->getClassLoader();
-        $aspectRegister = new AspectRegister();
-        if ($classLoader instanceof DgClassLoader) {
-
-            $aspectRegister = $classLoader->getAspectRegister();
-        }
+        $classLoader = $application->search('DgClassLoader');
+        $aspectRegister = $classLoader->getAspectRegister();
 
         // initialize the aspect manager
         $aspectManager = new AspectManager();
+        $aspectManager->injectApplication($application);
         $aspectManager->injectAspectRegister($aspectRegister);
+        $aspectManager->injectWebappPath($application->getWebappPath());
 
         // attach the instance
         $application->addManager($aspectManager, $managerConfiguration);

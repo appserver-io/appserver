@@ -22,8 +22,6 @@
 
 namespace AppserverIo\Appserver\Core;
 
-use Rhumsaa\Uuid\Uuid;
-use AppserverIo\PBC\Config;
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Storage\StackableStorage;
 use AppserverIo\Appserver\Application\Application;
@@ -108,7 +106,10 @@ class GenericDeployment extends AbstractDeployment
                 $this->getDeploymentService()->cleanUpFolders($application);
 
                 // add the default class loader
-                $application->addClassLoader($this->getInitialContext()->getClassLoader());
+                $application->addClassLoader(
+                    $this->getInitialContext()->getClassLoader(),
+                    $this->getInitialContext()->getSystemConfiguration()->getInitialContext()->getClassLoader()
+                );
 
                 // add the configured class loaders
                 foreach ($context->getClassLoaders() as $classLoader) {

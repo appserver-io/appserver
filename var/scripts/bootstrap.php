@@ -14,6 +14,7 @@
  * @category  Server
  * @package   Appserver
  * @author    Tim Wagner <tw@appserver.io>
+ * @author    Bernhard Wick <bw@appserver.io>
  * @copyright 2014 TechDivision GmbH <info@appserver.io>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      http://github.com/appserver-io/appserver
@@ -23,6 +24,7 @@
 // load composer namespaces and add them to the include path
 $paths = array();
 $namespaces = require APPSERVER_BP . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'composer' . DIRECTORY_SEPARATOR . 'autoload_namespaces.php';
+$namespaces = array_merge($namespaces, require APPSERVER_BP . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'composer' . DIRECTORY_SEPARATOR . 'autoload_psr4.php');
 foreach ($namespaces as $namespace) {
     $paths = array_merge($paths, $namespace);
 }

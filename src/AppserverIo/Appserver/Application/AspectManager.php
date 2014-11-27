@@ -20,13 +20,14 @@
 
 namespace AppserverIo\Appserver\Application;
 
-use AppserverIo\Appserver\Application\Interfaces\AspectInterface;
+use AppserverIo\Appserver\Application\Interfaces\AspectManagerInterface;
 use AppserverIo\Doppelgaenger\AspectRegister;
 use AppserverIo\Doppelgaenger\Config;
 use AppserverIo\Doppelgaenger\Entities\Annotations\Aspect;
-use AppserverIo\Doppelgaenger\Parser\ClassParser;
+use AppserverIo\Doppelgaenger\Parser\AspectParser;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Psr\Application\ManagerInterface;
+use AppserverIo\Lang\Reflection\ReflectionClass;
 
 /**
  * AppserverIo\Appserver\Application\AspectManager
@@ -41,7 +42,7 @@ use AppserverIo\Psr\Application\ManagerInterface;
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       http://www.appserver.io/
  */
-class AspectManager implements AspectInterface, ManagerInterface
+class AspectManager implements AspectManagerInterface, ManagerInterface
 {
 
     /**
@@ -52,11 +53,35 @@ class AspectManager implements AspectInterface, ManagerInterface
     const IDENTIFIER = 'AspectManager';
 
     /**
+     * The application instance
+     *
+     * @var \AppserverIo\Psr\Application\ApplicationInterface $application
+     */
+    protected $application;
+
+    /**
      * The aspect register used for registering the found aspects of this application
      *
      * @var \AppserverIo\Doppelgaenger\AspectRegister $aspectRegister
      */
     protected $aspectRegister;
+
+    /**
+     * Path of the directory the webapps lie in
+     *
+     * @var string $webappPath
+     */
+    protected $webappPath;
+
+    /**
+     * Returns the application instance.
+     *
+     * @return string The application instance
+     */
+    public function getApplication()
+    {
+        return $this->application;
+    }
 
     /**
      * Getter for the $aspectRegister property
@@ -91,6 +116,16 @@ class AspectManager implements AspectInterface, ManagerInterface
     }
 
     /**
+     * Returns the absolute path to the web application.
+     *
+     * @return string The absolute path
+     */
+    public function getWebappPath()
+    {
+        return $this->webappPath;
+    }
+
+    /**
      * Has been automatically invoked by the container after the application
      * instance has been created.
      *
@@ -100,20 +135,78 @@ class AspectManager implements AspectInterface, ManagerInterface
      */
     public function initialize(ApplicationInterface $application)
     {
-        $this->aspectRegister = new AspectRegister();
+        // register the aspects and tell the class loader it can fill the cache
         $this->registerAspects($application);
+        $dgClassLoader = $application->search('DgClassLoader');
+        $dgClassLoader->injectAspectRegister($this->getAspectRegister());
+        $dgClassLoader->createCache();
+    }
+
+    /**
+     * Inject the application instance.
+     *
+     * @param \AppserverIo\Psr\Application\ApplicationInterface $application The application instance
+     *
+     * @return void
+     */
+    public function injectApplication(ApplicationInterface $application)
+    {
+        $this->application = $application;
     }
 
     /**
      * Inject the aspect register
      *
-     * @param \AppserverIo\Doppelgaenger\AspectRegister $aspectRegister
+     * @param \AppserverIo\Doppelgaenger\AspectRegister $aspectRegister The aspect register instance
      *
      * @return null
      */
     public function injectAspectRegister(AspectRegister $aspectRegister)
     {
         $this->aspectRegister = $aspectRegister;
+    }
+
+    /**
+     * Injects the absolute path to the web application.
+     *
+     * @param string $webappPath The absolute path to this web application
+     *
+     * @return void
+     */
+    public function injectWebappPath($webappPath)
+    {
+        $this->webappPath = $webappPath;
+    }
+
+    /**
+     * Returns a reflection class instance for the passed class name.
+     *
+     * @param string $className The class name to return the reflection instance for
+     *
+     * @return \AppserverIo\Lang\Reflection\ReflectionClass The reflection instance
+     */
+    public function newReflectionClass($className)
+    {
+        // initialize the array with the annotations we want to ignore
+        $annotationsToIgnore = array(
+            'author',
+            'package',
+            'license',
+            'copyright',
+            'param',
+            'return',
+            'throws',
+            'see',
+            'link'
+        );
+
+        // initialize the array with the aliases for the aspect annotation
+        $annotationAliases = array(
+            Aspect::ANNOTATION => Aspect::__getClass()
+        );
+
+        // return the reflection class instance
+        return new ReflectionClass($className, $annotationsToIgnore, $annotationAliases);
     }
 
     /**
@@ -154,10 +247,9 @@ class AspectManager implements AspectInterface, ManagerInterface
                 $reflectionClass = $this->newReflectionClass($className);
 
                 // if we found an aspect we have to register it using our aspect register class
-                if ($reflectionClass->hasAnnotation(Aspect::ANNOTATION)) { // instanciate the bean
-                    $this->getApplication()->search($reflectionClass->getShortName(), array(null, array($application)));
+                if ($reflectionClass->hasAnnotation(Aspect::ANNOTATION)) {
 
-                    $parser = new ClassParser($phpFile, new Config());
+                    $parser = new AspectParser($phpFile, new Config());
                     $this->aspectRegister->register($parser->getDefinition($reflectionClass->getShortName(), false));
                 }
 

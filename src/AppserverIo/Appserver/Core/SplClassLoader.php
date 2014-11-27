@@ -16,6 +16,7 @@
 
 namespace AppserverIo\Appserver\Core;
 
+use AppserverIo\Appserver\Core\Interfaces\ClassLoaderInterface;
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Appserver\Application\Interfaces\ContextInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
@@ -46,7 +47,7 @@ use AppserverIo\Storage\StorageInterface;
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       http://www.appserver.io
  */
-class SplClassLoader extends GenericStackable
+class SplClassLoader extends GenericStackable implements ClassLoaderInterface
 {
 
     /**
