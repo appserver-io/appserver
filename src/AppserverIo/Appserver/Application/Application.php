@@ -1,8 +1,6 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Application\Application
- *
  * NOTICE OF LICENSE
  *
  * This source file is subject to the Open Software License (OSL 3.0)
@@ -23,6 +21,9 @@
 
 namespace AppserverIo\Appserver\Application;
 
+use AppserverIo\Appserver\Core\Api\Node\ClassLoaderNodeInterface;
+use AppserverIo\Appserver\Core\Interfaces\ClassLoaderInterface;
+use AppserverIo\Appserver\Naming\BindingTrait;
 use AppserverIo\Logger\LoggerUtils;
 use AppserverIo\Appserver\Naming\NamingDirectory;
 use AppserverIo\Psr\Naming\NamingException;
@@ -39,6 +40,8 @@ use AppserverIo\Appserver\Application\Interfaces\VirtualHostInterface;
 use AppserverIo\Appserver\Application\Interfaces\ManagerConfigurationInterface;
 
 /**
+ * AppserverIo\Appserver\Application\Application
+ *
  * The application instance holds all information about the deployed application
  * and provides a reference to the servlet manager and the initial context.
  *
@@ -50,9 +53,22 @@ use AppserverIo\Appserver\Application\Interfaces\ManagerConfigurationInterface;
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       https://github.com/appserver-io/appserver
  * @link       http://www.appserver.io
+ *
+ * @property \AppserverIo\Storage\StorageInterface                          $data            Application's data storage
+ * @property \AppserverIo\Storage\GenericStackable                          $classLoaders    Stackable holding all class loaders this application has registered
+ * @property \AppserverIo\Appserver\Application\Interfaces\ContextInterface $initialContext  The initial context instance
+ * @property \AppserverIo\Storage\GenericStackable                          $managers        Stackable of managers for this application
+ * @property string                                                         $name            Name of the application
+ * @property \AppserverIo\Psr\Naming\NamingDirectoryInterface               $namingDirectory The naming directory instance
+ * @property \AppserverIo\Storage\GenericStackable                          $virtualHosts    Stackable containing all virtual hosts used for this application
  */
 class Application extends \Thread implements ApplicationInterface
 {
+
+    /**
+     * Trait which allows to bind instances and callbacks to the application
+     */
+    use BindingTrait;
 
     /**
      * The time we wait after each loop.
@@ -209,133 +225,6 @@ class Application extends \Thread implements ApplicationInterface
     public function getName()
     {
         return $this->name;
-    }
-
-    /**
-     * Queries the naming directory for the requested name and returns the value
-     * or invokes the binded callback.
-     *
-     * @param string $name The name of the requested value
-     * @param array  $args The arguments to pass to the callback
-     *
-     * @return mixed The requested value
-     * @throws \AppserverIo\Psr\Naming\NamingException Is thrown if the requested name can't be resolved in the directory
-     */
-    public function search($name, array $args = array())
-    {
-
-        // strip off the schema
-        $name = str_replace(sprintf('%s:', $this->getScheme()), '', $name);
-
-        // tokenize the name
-        $token = strtok($name, '/');
-
-        // while we've tokens, try to find a value bound to the token
-        while ($token !== false) {
-
-            // check if we can find something
-            if ($this->hasAttribute($token)) {
-
-                // load the value
-                $found = $this->getAttribute($token);
-
-                // load the binded value/args
-                list ($value, $bindArgs) = $found;
-
-                // check if we've a callback method
-                if (is_callable($value)) { // if yes, merge the params and invoke the callback
-                    return call_user_func_array($value, array_merge($bindArgs, $args));
-                }
-
-                // search recursive
-                if ($value instanceof NamingDirectoryInterface) {
-
-                    if ($value->getName() !== $name) { // if $value is NOT what we're searching for
-                        return $value->search(str_replace($token . '/', '', $name), $args);
-                    }
-                }
-
-                // if not, simply return the value/object
-                return $value;
-            }
-
-            // load the next token
-            $token = strtok('/');
-        }
-
-        // delegate the search request to the parent directory
-        if ($parent = $this->getParent()) {
-            return $parent->search($name, $args);
-        }
-
-        // throw an exception if we can't resolve the name
-        throw new NamingException(sprintf('Cant\'t resolve %s in naming directory %s', $token, $this->getIdentifier()));
-    }
-
-    /**
-     * Binds the passed instance with the name to the naming directory.
-     *
-     * @param string $name  The name to bind the value with
-     * @param mixed  $value The object instance to bind
-     * @param array  $args  The array with the arguments
-     *
-     * @return void
-     * @throws \AppserverIo\Psr\Naming\NamingException Is thrown if the value can't be bound ot the directory
-     */
-    public function bind($name, $value, array $args = array())
-    {
-
-        // strip off the schema
-        $name = str_replace(sprintf('%s:', $this->getScheme()), '', $name);
-
-        // tokenize the name
-        $token = strtok($name, '/');
-
-        // while we've tokens, try to find the apropriate subdirectory
-        while ($token !== false) {
-
-            // check if we can find something
-            if ($this->hasAttribute($token)) {
-
-                // load the data bound to the token
-                $data = $this->getAttribute($token);
-
-                // load the binded value/args
-                list ($valueFound, ) = $data;
-
-                // try to bind it to the subdirectory
-                if ($valueFound instanceof NamingDirectoryInterface) {
-                    return $valueFound->bind(str_replace($token . '/', '', $name), $value, $args);
-                }
-
-                // throw an exception if we can't resolve the name
-                throw new NamingException(sprintf('Cant\'t bind %s to value of naming directory %s', $token, $this->getIdentifier()));
-
-            } else { // bind the value
-                return $this->setAttribute($token, array($value, $args));
-            }
-
-            // load the next token
-            $token = strtok('/');
-        }
-
-        // throw an exception if we can't resolve the name
-        throw new NamingException(sprintf('Cant\'t bind %s to naming directory %s', $token, $this->getIdentifier()));
-    }
-
-    /**
-     * Binds the passed callback with the name to the naming directory.
-     *
-     * @param string   $name     The name to bind the callback with
-     * @param callable $callback The callback to be invoked when searching for
-     * @param array    $args     The array with the arguments passed to the callback when executed
-     *
-     * @return void
-     * @see \AppserverIo\Psr\Naming\NamingDirectoryInterface::bind()
-     */
-    public function bindCallback($name, callable $callback, array $args = array())
-    {
-        $this->bind($name, $callback, $args);
     }
 
     /**
@@ -563,6 +452,20 @@ class Application extends \Thread implements ApplicationInterface
     }
 
     /**
+     * Return the requested class loader instance
+     *
+     * @param string $identifier The unique identifier of the requested class loader
+     *
+     * @return \AppserverIo\Appserver\Core\Interfaces\ClassLoaderInterface The class loader instance
+     */
+    public function getClassLoader($identifier)
+    {
+        if (isset($this->classLoaders[$identifier])) {
+            return $this->classLoaders[$identifier];
+        }
+    }
+
+    /**
      * Return the class loaders.
      *
      * @return \AppserverIo\Storage\GenericStackable The class loader instances
@@ -633,13 +536,37 @@ class Application extends \Thread implements ApplicationInterface
     /**
      * Injects an additional class loader.
      *
-     * @param object $classLoader A class loader to put on the class loader stack
+     * @param \AppserverIo\Appserver\Core\Interfaces\ClassLoaderInterface   $classLoader   A class loader to put on the class loader stack
+     * @param \AppserverIo\Appserver\Core\Api\Node\ClassLoaderNodeInterface $configuration The class loader's configuration
      *
      * @return void
      */
-    public function addClassLoader($classLoader)
+    public function addClassLoader(ClassLoaderInterface $classLoader, ClassLoaderNodeInterface $configuration = null)
     {
-        $this->classLoaders[] = $classLoader;
+        if (!is_null($configuration)) {
+
+            // load the lookup names from the configuration
+            $lookupNames = $configuration->toLookupNames();
+
+            // register the class loader with the default name (short class name OR @Annotation(name=****))
+            $identifier = $lookupNames[AnnotationKeys::NAME];
+            $this->bind($identifier, array(&$this, 'getClassLoader'), array($identifier));
+
+            // register the bean with the name defined as @Annotation(beanInterface=****)
+            if ($beanInterfaceAttribute = $lookupNames[AnnotationKeys::BEAN_INTERFACE]) {
+                $this->bind($beanInterfaceAttribute, array(&$this, 'getClassLoader'), array($identifier));
+            }
+
+        } else {
+
+            // our identifier will be the unqualified/short class name
+            $reflectionClass = new \ReflectionClass($classLoader);
+            $identifier = $reflectionClass->getShortName();
+            $this->bind($identifier, array(&$this, 'getClassLoader'), array($identifier));
+        }
+
+        // register the manager instance itself
+        $this->classLoaders[$identifier] = $classLoader;
     }
 
     /**

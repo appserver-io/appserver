@@ -16,6 +16,7 @@
 
 namespace AppserverIo\Appserver\Core;
 
+use AppserverIo\Appserver\Core\Interfaces\ClassLoaderInterface;
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Appserver\Application\Interfaces\ContextInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
@@ -46,7 +47,7 @@ use AppserverIo\Storage\StorageInterface;
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       http://www.appserver.io
  */
-class SplClassLoader extends GenericStackable
+class SplClassLoader extends GenericStackable implements ClassLoaderInterface
 {
 
     /**
@@ -252,12 +253,22 @@ class SplClassLoader extends GenericStackable
             // try to load the requested class
             foreach ($this->getIncludePath() as $includePath) {
                 $toRequire = $includePath . DIRECTORY_SEPARATOR . $fileName;
+                $psr4FileName = $includePath . DIRECTORY_SEPARATOR . ltrim(strstr(ltrim(strstr($fileName, DIRECTORY_SEPARATOR), DIRECTORY_SEPARATOR), DIRECTORY_SEPARATOR), DIRECTORY_SEPARATOR);
+
                 if (file_exists($toRequire)) {
                     // add the found file to the class map
                     $classMap[$requestedClassName] = $toRequire;
                     $this->getInitialContext()->setAttribute(SplClassLoader::CLASS_MAP, $classMap);
                     // require the file and return TRUE
                     require $toRequire;
+                    return true;
+
+                } elseif (file_exists($psr4FileName) && !is_dir($psr4FileName)) {
+                    // add the found file to the class map
+                    $classMap[$requestedClassName] = $psr4FileName;
+                    $this->getInitialContext()->setAttribute(SplClassLoader::CLASS_MAP, $classMap);
+                    // require the file and return TRUE
+                    require $psr4FileName;
                     return true;
                 }
             }

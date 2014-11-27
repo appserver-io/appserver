@@ -16,6 +16,8 @@
 namespace AppserverIo\Appserver\Core\Api\Node;
 
 use AppserverIo\Appserver\Core\Utilities\ClassLoaderKeys;
+use AppserverIo\Lang\Reflection\ReflectionClass;
+use AppserverIo\Psr\EnterpriseBeans\Annotations\AnnotationKeys;
 
 /**
  * DTO to transfer a app.
@@ -53,7 +55,15 @@ class ClassLoaderNode extends AbstractNode implements ClassLoaderNodeInterface
     use NamespacesNodeTrait;
 
     /**
-     * The unique application name.
+     * The interface name the class loader has.
+     *
+     * @var string
+     * @AS\Mapping(nodeType="string")
+     */
+    protected $interface;
+
+    /**
+     * The unique class loader name.
      *
      * @var string
      * @AS\Mapping(nodeType="string")
@@ -80,13 +90,14 @@ class ClassLoaderNode extends AbstractNode implements ClassLoaderNodeInterface
      * Initializes the class loader configuration with the passed values.
      *
      * @param string $name        The unique class loader name
+     * @param string $interface   The interface name the class loader has
      * @param string $type        The class loaders class name
      * @param string $factory     The class loaders factory class name
      * @param array  $params      The class loaders params
      * @param array  $directories The class loaders directory to load classes from
      * @param array  $namespaces  The class loaders namespaces for classes to be handled
      */
-    public function __construct($name = '', $type = '', $factory = '', array $params = array(), array $directories = array(), array $namespaces = array())
+    public function __construct($name = '', $interface = '', $type = '', $factory = '', array $params = array(), array $directories = array(), array $namespaces = array())
     {
 
         // initialize the UUID
@@ -94,6 +105,7 @@ class ClassLoaderNode extends AbstractNode implements ClassLoaderNodeInterface
 
         // set the data
         $this->name = $name;
+        $this->interface = $interface;
         $this->type = $type;
         $this->factory = $factory;
         $this->params = $params;
@@ -115,7 +127,7 @@ class ClassLoaderNode extends AbstractNode implements ClassLoaderNodeInterface
     /**
      * Returns the class loader name.
      *
-     * @return string The unique application name
+     * @return string The unique class loader name
      */
     public function getName()
     {
@@ -143,6 +155,16 @@ class ClassLoaderNode extends AbstractNode implements ClassLoaderNodeInterface
     }
 
     /**
+     * Returns interface name the class loader has.
+     *
+     * @return string The interface name the class loader has
+     */
+    public function getInterface()
+    {
+        return $this->interface;
+    }
+
+    /**
      * The environment to use, can be one of 'development' or 'production'.
      *
      * @return string The configured environment
@@ -153,9 +175,9 @@ class ClassLoaderNode extends AbstractNode implements ClassLoaderNodeInterface
     }
 
     /**
-     * Flag that shows PBC type safety is activated.
+     * Flag that shows Doppelgaenger type safety is activated.
      *
-     * @return boolean TRUE if PBC type safety is enabled, else FALSE
+     * @return boolean TRUE if Doppelgaenger type safety is enabled, else FALSE
      */
     public function getTypeSafety()
     {
@@ -173,12 +195,42 @@ class ClassLoaderNode extends AbstractNode implements ClassLoaderNodeInterface
     }
 
     /**
-     * The PBC enforcement level to use.
+     * The Doppelgaenger enforcement level to use.
      *
      * @return integer The enforcement level
      */
     public function getEnforcementLevel()
     {
         return $this->getParam(ClassLoaderKeys::ENFORCEMENT_LEVEL);
+    }
+
+    /**
+     * Returns the class loader's lookup names found in the configuration, merge with the annotation
+     * values, whereas the configuration values will override the annotation values.
+     *
+     * @return array The array with the managers lookup names
+     */
+    public function toLookupNames()
+    {
+
+        // create a new reflection object of the manager instance
+        $reflectionClass = new ReflectionClass($this->getType());
+
+        // initialize the lookup names and the name attribute with the short class name
+        $lookupNames = array();
+        $lookupNames[AnnotationKeys::NAME] = $reflectionClass->getShortName();
+
+        // overwrite the name attribute from the configuration, if given
+        if ($name = $this->getName()) {
+            $lookupNames[AnnotationKeys::NAME] = $name;
+        }
+
+        // overwrite the beanInterface attribute from the configuration, if given
+        if ($beanInterface = $this->getInterface()) {
+            $lookupNames[AnnotationKeys::BEAN_INTERFACE] = $beanInterface;
+        }
+
+        // return the lookup names
+        return $lookupNames;
     }
 }

@@ -1,7 +1,11 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\PbcClassLoaderFactory
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Open Software License (OSL 3.0)
+ * that is available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/osl-3.0.php
  *
  * PHP version 5
  *
@@ -9,19 +13,19 @@
  * @package    Appserver
  * @subpackage Application
  * @author     Bernhard Wick <bw@appserver.io>
- * @copyright  2014 TechDivision GmbH <info@appserver.io>
+ * @copyright  2014 TechDivision GmbH - <info@appserver.io>
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link       http://www.appserver.io
+ * @link       http://www.appserver.io/
  */
 
 namespace AppserverIo\Appserver\Core;
 
-use AppserverIo\PBC\Config;
+use AppserverIo\Doppelgaenger\Config;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\Core\Api\Node\ClassLoaderNodeInterface;
 
 /**
- * A factory for the PBC class loader instances.
+ * A factory for the Doppelgaenger class loader instances.
  *
  * @category   Server
  * @package    Appserver
@@ -31,7 +35,7 @@ use AppserverIo\Appserver\Core\Api\Node\ClassLoaderNodeInterface;
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       http://www.appserver.io
  */
-class PbcClassLoaderFactory
+class DgClassLoaderFactory
 {
 
     /**
@@ -106,6 +110,6 @@ class PbcClassLoaderFactory
         $config->setValue('enforcement/logger', $application->getInitialContext()->getSystemLogger());
 
         // create the autoloader instance and fill the structure map
-        $application->addClassLoader(new PbcClassLoader($config));
+        $application->addClassLoader(new DgClassLoader($config));
     }
 }

@@ -23,6 +23,8 @@
 
 namespace AppserverIo\Appserver\Application\Mock;
 
+use AppserverIo\Appserver\Core\Interfaces\ClassLoaderInterface;
+
 /**
  * Test implementation for the class loader.
  *
@@ -35,7 +37,7 @@ namespace AppserverIo\Appserver\Application\Mock;
  * @link       https://github.com/appserver-io/appserver
  * @link       http://www.appserver.io
  */
-class MockClassLoader extends \Stackable
+class MockClassLoader extends \Stackable implements ClassLoaderInterface
 {
 
     /**

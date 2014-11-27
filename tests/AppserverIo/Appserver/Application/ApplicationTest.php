@@ -217,6 +217,20 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test if the getter for a certain class loader works.
+     *
+     * @return void
+     *
+     * @depends testAddClassLoader
+     */
+    public function testGetClassLoader()
+    {
+        $this->application->addClassLoader($mockLoader = $this->getMock('\AppserverIo\Appserver\Core\Interfaces\ClassLoaderInterface'));
+        $reflectionClass = new \ReflectionClass($mockLoader);
+        $this->assertEquals($mockLoader, $this->application->getClassLoader($reflectionClass->getShortName()));
+    }
+
+    /**
      * Test if the getter for the session dir works.
      *
      * @return void
@@ -414,9 +428,9 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
      */
     public function testAddClassLoader()
     {
-        $this->application->addClassLoader($classLoader = new \stdClass());
+        $this->application->addClassLoader($mockLoader = $this->getMock('\AppserverIo\Appserver\Core\Interfaces\ClassLoaderInterface'));
         foreach ($this->application->getClassLoaders() as $cls) {
-            $this->assertEquals($cls, $classLoader);
+            $this->assertEquals($cls, $mockLoader);
         }
     }
 

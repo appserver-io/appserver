@@ -15,7 +15,7 @@
 		"appserver-io-psr/epb" : "0.1.*",
 		"appserver-io-psr/servlet" : "0.6.*",
 		"appserver-io-psr/messagequeueprotocol" : "0.2.*",
-		"appserver-io/pbc" : "0.3.*",
+		"appserver-io/doppelgaenger" : "0.3.*",
 		"appserver-io/http" : "0.2.*",
 		"appserver-io/server" : "0.2.*",
 		"appserver-io/storage" : "0.5.*",
@@ -59,7 +59,7 @@
 		}
 	],
 	"support" : {
-		"email" : "t.wagner@techdivision.com",
+		"email" : "tw@appserver.io",
 		"issues" : "https://github.com/appserver-io/appserver/issues",
 		"source" : "https://github.com/appserver-io/appserver"
 	},
