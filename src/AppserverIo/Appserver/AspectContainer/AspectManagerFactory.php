@@ -18,15 +18,13 @@
  * @link       http://www.appserver.io/
  */
 
-namespace AppserverIo\Appserver\Application;
+namespace AppserverIo\Appserver\AspectContainer;
 
 use AppserverIo\Appserver\Application\Interfaces\ManagerConfigurationInterface;
-use AppserverIo\Appserver\Core\DgClassLoader;
-use AppserverIo\Doppelgaenger\AspectRegister;
 use AppserverIo\Psr\Application\ApplicationInterface;
 
 /**
- * AppserverIo\Appserver\Application\AspectManagerFactory
+ * AppserverIo\Appserver\AspectContainer\AspectManagerFactory
  *
  * Factory which allows for the injection of an aspect manager into an application based on the visitor pattern
  *

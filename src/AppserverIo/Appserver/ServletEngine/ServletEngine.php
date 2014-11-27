@@ -72,16 +72,6 @@ class ServletEngine extends AbstractServletEngine
     const REQUEST_HANDLER_WAIT_TIMEOUT = 1000000;
 
     /**
-     * Returns an array of module names which should be executed first.
-     *
-     * @return \AppserverIo\Storage\GenericStackable The module names this module depends on
-     */
-    public function getDependencies()
-    {
-        return $this->dependencies;
-    }
-
-    /**
      * Returns the module name.
      *
      * @return string The module name
@@ -263,96 +253,5 @@ class ServletEngine extends AbstractServletEngine
     protected function requestHandlerToPool($requestHandler)
     {
         // nothing to do here
-    }
-
-    /**
-     * Tries to find an application that matches the passed request.
-     *
-     * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest $servletRequest The request instance to locate the application for
-     *
-     * @return array The application info that matches the request
-     * @throws \AppserverIo\Appserver\ServletEngine\BadRequestException Is thrown if no application matches the request
-     */
-    protected function prepareServletRequest(HttpServletRequest $servletRequest)
-    {
-        // load the request URI and query string
-        $uri = $servletRequest->getUri();
-        $queryString = $servletRequest->getQueryString();
-
-        // get uri without querystring
-        $uriWithoutQueryString = str_replace('?' . $queryString, '', $uri);
-
-        // initialize the path information and the directory to start with
-        list ($dirname, $basename, $extension) = array_values(pathinfo($uriWithoutQueryString));
-
-        // make the registered handlers local
-        $handlers = $this->getHandlers();
-
-        do { // descent the directory structure down to find the (almost virtual) servlet file
-
-            // bingo we found a (again: almost virtual) servlet file
-            if (array_key_exists(".$extension", $handlers) && $handlers[".$extension"]->getName() === $this->getModuleName()) {
-
-                // prepare the servlet path
-                if ($dirname === '/') {
-                    $servletPath = '/' . $basename;
-                } else {
-                    $servletPath = $dirname . '/' . $basename;
-                }
-
-                // we set the basename, because this is the servlet path
-                $servletRequest->setServletPath($servletPath);
-
-                // we set the path info, what is the request URI with stripped dir- and basename
-                $servletRequest->setPathInfo(str_replace($servletPath, '', $uriWithoutQueryString));
-
-                // we've found what we were looking for, so break here
-                break;
-            }
-
-            // descendent down the directory tree
-            list ($dirname, $basename, $extension) = array_values(pathinfo($dirname));
-
-        } while ($dirname !== false); // stop until we reached the root of the URI
-    }
-
-    /**
-     * Returns the server context instance.
-     *
-     * @return \AppserverIo\Server\ServerContext The actual server context instance
-     */
-    public function getServerContext()
-    {
-        return $this->serverContext;
-    }
-
-    /**
-     * Returns the initialized applications.
-     *
-     * @return \AppserverIo\Storage\GenericStackable The initialized application instances
-     */
-    public function getApplications()
-    {
-        return $this->applications;
-    }
-
-    /**
-     * Returns the initialized valves.
-     *
-     * @return \AppserverIo\Storage\GenericStackable The initialized valves
-     */
-    public function getValves()
-    {
-        return $this->valves;
-    }
-
-    /**
-     * Returns the initialized web server handlers.
-     *
-     * @return \AppserverIo\Storage\GenericStackable The initialized web server handlers
-     */
-    public function getHandlers()
-    {
-        return $this->handlers;
     }
 }

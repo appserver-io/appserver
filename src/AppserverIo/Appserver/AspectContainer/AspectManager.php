@@ -18,9 +18,9 @@
  * @link       http://www.appserver.io/
  */
 
-namespace AppserverIo\Appserver\Application;
+namespace AppserverIo\Appserver\AspectContainer;
 
-use AppserverIo\Appserver\Application\Interfaces\AspectManagerInterface;
+use AppserverIo\Appserver\AspectContainer\Interfaces\AspectManagerInterface;
 use AppserverIo\Doppelgaenger\AspectRegister;
 use AppserverIo\Doppelgaenger\Config;
 use AppserverIo\Doppelgaenger\Entities\Annotations\Aspect;
@@ -30,7 +30,7 @@ use AppserverIo\Psr\Application\ManagerInterface;
 use AppserverIo\Lang\Reflection\ReflectionClass;
 
 /**
- * AppserverIo\Appserver\Application\AspectManager
+ * AppserverIo\Appserver\AspectContainer\AspectManager
  *
  * Manager which enables the registration of aspects within a certain application context
  *

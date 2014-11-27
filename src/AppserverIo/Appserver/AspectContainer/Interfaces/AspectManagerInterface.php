@@ -18,10 +18,10 @@
  * @link       http://www.appserver.io/
  */
 
-namespace AppserverIo\Appserver\Application\Interfaces;
+namespace AppserverIo\Appserver\AspectContainer\Interfaces;
 
 /**
- * AppserverIo\Appserver\Application\Interfaces\AspectManagerInterface
+ * AppserverIo\Appserver\AspectContainer\Interfaces\AspectManagerInterface
  *
  * Interface which all manager classes supervising aspects should implement
  *

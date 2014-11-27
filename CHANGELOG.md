@@ -1,3 +1,13 @@
+# Version 0.11.0
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Added support for AOP using appserver-io/doppelgaenger
+
 # Version 0.10.7
 
 ## Bugfixes
