@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\TestRequestHandler
+ * AppserverIo\Appserver\PersistentServletEngine\RequestHandler
  *
  * NOTICE OF LICENSE
  *
@@ -11,15 +11,17 @@
  *
  * PHP version 5
  *
- * @category  Appserver
- * @package   TechDivision_ServletModule
- * @author    Tim Wagner <tw@techdivision.com>
- * @copyright 2014 TechDivision GmbH <info@techdivision.com>
- * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link      http://www.appserver.io
+ * @category   Server
+ * @package    Appserver
+ * @subpackage PersistentServletEngine
+ * @author     Bernhard Wick <bw@appserver.io>
+ * @author     Tim Wagner <tw@appserver.io>
+ * @copyright  2014 TechDivision GmbH - <info@appserver.io>
+ * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link       http://www.appserver.io/
  */
 
-namespace AppserverIo\Appserver\ServletEngine;
+namespace AppserverIo\Appserver\PersistentServletEngine;
 
 use AppserverIo\Logger\LoggerUtils;
 use AppserverIo\Storage\GenericStackable;
@@ -32,14 +34,16 @@ use AppserverIo\Psr\Application\ApplicationInterface;
  * This is a request handler that is necessary to process each request of an
  * application in a separate context.
  *
- * @category  Appserver
- * @package   TechDivision_ServletModule
- * @author    Tim Wagner <tw@techdivision.com>
- * @copyright 2014 TechDivision GmbH <info@techdivision.com>
- * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link      http://www.appserver.io
+ * @category   Server
+ * @package    Appserver
+ * @subpackage PersistentServletEngine
+ * @author     Bernhard Wick <bw@appserver.io>
+ * @author     Tim Wagner <tw@appserver.io>
+ * @copyright  2014 TechDivision GmbH - <info@appserver.io>
+ * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link       http://www.appserver.io/
  */
-class TestRequestHandler extends \Thread
+class RequestHandler extends \Thread
 {
 
     /**

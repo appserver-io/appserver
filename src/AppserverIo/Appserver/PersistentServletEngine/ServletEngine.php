@@ -1,20 +1,27 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\TestServletEngine
+ * AppserverIo\Appserver\PersistentServletEngine\ServletEngine
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Open Software License (OSL 3.0)
+ * that is available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/osl-3.0.php
  *
  * PHP version 5
  *
  * @category   Server
  * @package    Appserver
- * @subpackage Application
+ * @subpackage PersistentServletEngine
+ * @author     Bernhard Wick <bw@appserver.io>
  * @author     Tim Wagner <tw@appserver.io>
- * @copyright  2014 TechDivision GmbH <info@appserver.io>
+ * @copyright  2014 TechDivision GmbH - <info@appserver.io>
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link       http://www.appserver.io
+ * @link       http://www.appserver.io/
  */
 
-namespace AppserverIo\Appserver\ServletEngine;
+namespace AppserverIo\Appserver\PersistentServletEngine;
 
 use AppserverIo\Http\HttpCookie;
 use AppserverIo\Http\HttpProtocol;
@@ -48,13 +55,14 @@ use AppserverIo\Server\Dictionaries\EnvVars;
  *
  * @category   Server
  * @package    Appserver
- * @subpackage Application
+ * @subpackage PersistentServletEngine
+ * @author     Bernhard Wick <bw@appserver.io>
  * @author     Tim Wagner <tw@appserver.io>
- * @copyright  2014 TechDivision GmbH <info@appserver.io>
+ * @copyright  2014 TechDivision GmbH - <info@appserver.io>
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link       http://www.appserver.io
+ * @link       http://www.appserver.io/
  */
-class TestServletEngine extends AbstractServletEngine
+class ServletEngine extends AbstractServletEngine
 {
 
     /**
@@ -78,7 +86,7 @@ class TestServletEngine extends AbstractServletEngine
      */
     public function getModuleName()
     {
-        return TestServletEngine::MODULE_NAME;
+        return ServletEngine::MODULE_NAME;
     }
 
     /**
@@ -116,7 +124,7 @@ class TestServletEngine extends AbstractServletEngine
                     $mutex = \Mutex::create();
 
                     // initialize the request handler
-                    $requestHandler = new TestRequestHandler($mutex);
+                    $requestHandler = new RequestHandler($mutex);
                     $requestHandler->injectValves($this->valves);
                     $requestHandler->injectApplication($application);
                     $requestHandler->start();
