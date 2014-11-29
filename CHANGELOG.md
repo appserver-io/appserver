@@ -1,3 +1,13 @@
+# Version 0.11.1
+
+## Bugfixes
+
+* Bugfix invalid interface reference in Part class
+
+## Features
+
+* Add servlet engine implementation that uses pre-initialized request handler threads to improve performance
+
 # Version 0.11.0
 
 ## Bugfixes

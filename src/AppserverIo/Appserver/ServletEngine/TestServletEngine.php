@@ -54,7 +54,7 @@ use AppserverIo\Server\Dictionaries\EnvVars;
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       http://www.appserver.io
  */
-class TestServletEngine extends AbstractServletEngine implements ModuleInterface
+class TestServletEngine extends AbstractServletEngine
 {
 
     /**
