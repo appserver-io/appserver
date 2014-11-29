@@ -42,6 +42,14 @@ use AppserverIo\Psr\Application\ApplicationInterface;
 class TestRequestHandler extends \Thread
 {
 
+    /**
+     * Injects the mutex necessary to lock/unlock request handler during
+     * request processing.
+     *
+     * @param integer $mutex The mutex for lock/unlock request handler
+     *
+     * @return void
+     */
     public function injectMutex($mutex)
     {
         $this->mutex = $mutex;
@@ -74,7 +82,7 @@ class TestRequestHandler extends \Thread
     /**
      * Handles the request processing.
      *
-     * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest $servletRequest The actual request instance
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest  $servletRequest  The actual request instance
      * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponse $servletResponse The actual response instance
      *
      * @return void
