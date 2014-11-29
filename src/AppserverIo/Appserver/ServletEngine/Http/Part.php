@@ -23,7 +23,7 @@
 namespace AppserverIo\Appserver\ServletEngine\Http;
 
 use AppserverIo\Http\HttpProtocol;
-use AppserverIo\Http\HttpPartInterface;
+use AppserverIo\Psr\HttpMessage\PartInterface;
 
 /**
  * A http part implementation.
@@ -36,7 +36,7 @@ use AppserverIo\Http\HttpPartInterface;
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       http://www.appserver.io
  */
-class Part implements HttpPartInterface
+class Part implements PartInterface
 {
 
     /**
@@ -84,11 +84,11 @@ class Part implements HttpPartInterface
     /**
      * Creates a new servlet part instance with the data from the HTTP part.
      *
-     * @param \AppserverIo\Http\HttpPartInterface $httpPart The HTTP part we want to copy
+     * @param AppserverIo\Psr\HttpMessage\PartInterface $httpPart The HTTP part we want to copy
      *
      * @return \AppserverIo\Appserver\ServletEngine\Http\Part The initialized servlet part
      */
-    public static function fromHttpRequest(HttpPartInterface $httpPart)
+    public static function fromHttpRequest(PartInterface $httpPart)
     {
 
         // create a temporary filename
