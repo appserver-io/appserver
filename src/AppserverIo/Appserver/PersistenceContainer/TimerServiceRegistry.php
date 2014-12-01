@@ -55,7 +55,7 @@ class TimerServiceRegistry extends ServiceRegistry implements TimerServiceContex
     /**
      * Injects the service executor for the timer service registry.
      * 
-     * @param \AppserverIo\Appserver\PersistenceContainer\ServiceExecutor $timerServiceExecutor
+     * @param \AppserverIo\Appserver\PersistenceContainer\ServiceExecutor $timerServiceExecutor The service executor
      * 
      * @return void
      */
