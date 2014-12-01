@@ -172,7 +172,6 @@ class TimerServiceExecutor extends \Thread implements ServiceExecutor
                 if ($executingTimerTask->isFinished()) { // remove the task and wrapper from the list
                     unset ($timerTasksExecuting[$key]);
                     unset ($scheduledTimerTasks[$key]);
-                    error_log("SUCCESSFULLY REMOVED scheduled timer task $key");
                 }
             }
 
