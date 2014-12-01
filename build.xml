@@ -81,10 +81,10 @@
     <!-- Copies the sources to the temporary directory                        -->
     <!-- ==================================================================== -->
     <target name="copy" description="Copies the sources to the temporary directory.">
-    	
-    	<antcall target="prepare" />
-    	
-        <copy todir="${php-target.dir}${deploy.dir}" preservelastmodified="true" overwrite="true">
+        <!-- prepare the build environment -->
+        <antcall target="prepare" />
+        <!-- copy all files to the target directory -->
+        <copy todir="${php-target.dir}/appserver" preservelastmodified="true" overwrite="true">
             <fileset dir="${basedir}">
                 <include name="src/**/*" />
                 <include name="var/**/*" />
@@ -95,25 +95,22 @@
                 <include name="etc/appserver/conf.d/context.xml" />
             </fileset>
         </copy>
-    	
     </target>
     
     <!-- ==================================================================== -->
     <!-- Copies the sources to the deploy directory                           -->
     <!-- ==================================================================== -->
     <target name="deploy" depends="copy" description="Copies the sources to the deploy directory.">
-        
-    	<copy todir="${deploy.dir}" preservelastmodified="true" overwrite="true">
-            <fileset dir="${php-target.dir}${deploy.dir}">
+        <!-- copy all files to the deploy.directory -->
+        <copy todir="${deploy.dir}" preservelastmodified="true" overwrite="true">
+            <fileset dir="${php-target.dir}/appserver">
                 <include name="**/*"/>
             </fileset>
         </copy>
-    	
-    	<!--
-    	<exec dir="${deploy.dir}" executable="${deploy.dir}/bin/php">
-    	    <arg line="${deploy.dir}/bin/composer run-script post-install-cmd"/>
-    	</exec>
-    	-->
+        <!-- execute the composer post install script -->
+        <exec dir="${deploy.dir}" executable="${appserver.bin.dir}/php">
+            <arg line="${appserver.bin.dir}/composer run-script post-install-cmd"/>
+        </exec>
     </target>
 
 </project>
