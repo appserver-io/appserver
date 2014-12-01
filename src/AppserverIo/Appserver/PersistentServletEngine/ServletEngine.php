@@ -117,10 +117,10 @@ class ServletEngine extends AbstractServletEngine
             throw new ModuleException($e);
         }
     }
-    
+
     /**
      * Initialize the pool of persistant request handlers per application.
-     * 
+     *
      * @return void
      */
     public function initRequestHandlers()
@@ -128,29 +128,30 @@ class ServletEngine extends AbstractServletEngine
 
         // initialize the storage for the request handlers
         $this->requestHandlers = new GenericStackable();
-        
+
         // iterate over the applications and initialize a pool of request handlers for each
         foreach ($this->applications as $application) {
-        
+
             // initialize the pool
             $pool = new GenericStackable();
-        
+
             // initialize 10 request handlers per for each application
             for ($i = 0; $i < 10; $i++) {
-        
+
                 // create a mutex
                 $mutex = \Mutex::create();
-        
+
                 // initialize the request handler
-                $requestHandler = new RequestHandler($mutex);
+                $requestHandler = new RequestHandler();
+                $requestHandler->injectMutex($mutex);
                 $requestHandler->injectValves($this->valves);
                 $requestHandler->injectApplication($application);
                 $requestHandler->start();
-        
+
                 // add it to the pool
                 $pool[] = $requestHandler;
             }
-        
+
             // add the pool to the pool of request handlers
             $this->requestHandlers[$application->getName()] = $pool;
         }
