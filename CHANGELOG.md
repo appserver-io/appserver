@@ -2,7 +2,7 @@
 
 ## Bugfixes
 
-* None
+* Move TimerServiceExecutor initialization to TimerServiceRegistryFactory::visit() method
 
 ## Features
 

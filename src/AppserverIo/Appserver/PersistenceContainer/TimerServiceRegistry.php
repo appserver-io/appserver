@@ -46,6 +46,35 @@ class TimerServiceRegistry extends ServiceRegistry implements TimerServiceContex
 {
 
     /**
+     * The timer service executor.
+     * 
+     * @var \AppserverIo\Appserver\PersistenceContainer\ServiceExecutor
+     */
+    protected $timerServiceExecutor;
+    
+    /**
+     * Injects the service executor for the timer service registry.
+     * 
+     * @param \AppserverIo\Appserver\PersistenceContainer\ServiceExecutor $timerServiceExecutor The service executor
+     * 
+     * @return void
+     */
+    public function injectTimerServiceExecutor(ServiceExecutor $timerServiceExecutor)
+    {
+        $this->timerServiceExecutor = $timerServiceExecutor;
+    }
+    
+    /**
+     * Returns the service executor for the timer service registry.
+     * 
+     * @return \AppserverIo\Appserver\PersistenceContainer\ServiceExecutor The timer service executor instance
+     */
+    public function getTimerServiceExecutor()
+    {
+        return $this->timerServiceExecutor;
+    }
+    
+    /**
      * Has been automatically invoked by the container after the application
      * instance has been created.
      *
@@ -67,6 +96,9 @@ class TimerServiceRegistry extends ServiceRegistry implements TimerServiceContex
         if (is_dir($metaInfDir) === false) {
             return;
         }
+        
+        // load the timer service executor
+        $timerServiceExecutor = $this->getTimerServiceExecutor();
 
         // check meta-inf classes or any other sub folder to pre init beans
         $recursiveIterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($metaInfDir));
@@ -107,15 +139,6 @@ class TimerServiceRegistry extends ServiceRegistry implements TimerServiceContex
                 $timedObjectInvoker->injectTimedObject($timedObject);
                 $timedObjectInvoker->injectTimeoutMethods($timeoutMethods);
                 $timedObjectInvoker->start();
-
-                // initialize the stackable for the scheduled timer tasks
-                $scheduledTimerTasks = new StackableStorage();
-
-                // initialize the executor for the scheduled timer tasks
-                $timerServiceExecutor = new TimerServiceExecutor();
-                $timerServiceExecutor->injectApplication($application);
-                $timerServiceExecutor->injectScheduledTimerTasks($scheduledTimerTasks);
-                $timerServiceExecutor->start();
 
                 // initialize the stackable for the timers
                 $timers = new StackableStorage();
