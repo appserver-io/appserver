@@ -1,3 +1,13 @@
+# Version 1.0.0-beta
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Switch to 1.0.0-beta status
+
 # Version 0.11.1
 
 ## Bugfixes
