@@ -40,7 +40,7 @@ use AppserverIo\Psr\EnterpriseBeans\TimerInterface;
  * @link       https://github.com/appserver-io/appserver
  * @link       http://www.appserver.io
  */
-class TimerServiceExecutor extends \Thread
+class TimerServiceExecutor extends \Thread implements ServiceExecutor
 {
 
     /**

@@ -56,16 +56,24 @@ class TimerServiceRegistryFactory
         // initialize the service locator
         $serviceLocator = new ServiceLocator();
 
-        // initialize the stackable for the data and the services
+        // initialize the stackable for the data, the services and the scheduled timer tasks
         $data = new StackableStorage();
         $services = new StackableStorage();
-
+        $scheduledTimerTasks = new StackableStorage();
+        
+        // initialize the executor for the scheduled timer tasks
+        $timerServiceExecutor = new TimerServiceExecutor();
+        $timerServiceExecutor->injectApplication($application);
+        $timerServiceExecutor->injectScheduledTimerTasks($scheduledTimerTasks);
+        $timerServiceExecutor->start();
+        
         // initialize the service registry
         $serviceRegistry = new TimerServiceRegistry();
         $serviceRegistry->injectData($data);
         $serviceRegistry->injectServices($services);
         $serviceRegistry->injectServiceLocator($serviceLocator);
         $serviceRegistry->injectWebappPath($application->getWebappPath());
+        $serviceRegistry->injectTimerServiceExecutor($timerServiceExecutor);
 
         // attach the instance
         $application->addManager($serviceRegistry, $managerConfiguration);
