@@ -3,6 +3,7 @@
 ## Bugfixes
 
 * Move TimerServiceExecutor initialization to TimerServiceRegistryFactory::visit() method
+* Call composer post install script after invoking deploy target
 
 ## Features
 
