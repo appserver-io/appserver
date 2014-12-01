@@ -161,19 +161,17 @@ class TimerServiceExecutor extends \Thread implements ServiceExecutor
                 if ($timerTaskWrapper instanceof \stdClass) { // make sure we've a wrapper found
 
                     // check if the task has to be executed now
-                    if ($timerTaskWrapper->executeAt < microtime(true)) {
-                        // if yes, create the timer task and execute it
+                    if ($timerTaskWrapper->executeAt < microtime(true)) { // if yes, create the timer task and execute it
                         $timerTasksExecuting[] = $timerTaskWrapper->timer->getTimerTask($application);
-                        // remove the task wrapper from the list
-                        unset ($scheduledTimerTasks[$key]);
                     }
                 }
             }
 
             // remove the finished timer tasks
             foreach ($timerTasksExecuting as $key => $executingTimerTask) {
-                if ($executingTimerTask->isFinished()) {
+                if ($executingTimerTask->isFinished()) { // remove the task and wrapper from the list
                     unset ($timerTasksExecuting[$key]);
+                    unset ($scheduledTimerTasks[$key]);
                 }
             }
 
