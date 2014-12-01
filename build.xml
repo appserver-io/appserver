@@ -108,8 +108,8 @@
             </fileset>
         </copy>
         <!-- execute the composer post install script -->
-        <exec dir="${deploy.dir}" executable="${deploy.dir}/bin/php">
-            <arg line="${deploy.dir}/bin/composer run-script post-install-cmd"/>
+        <exec dir="${deploy.dir}" executable="${appserver.bin.dir}/php">
+            <arg line="${appserver.bin.dir}/composer run-script post-install-cmd"/>
         </exec>
     </target>
 
