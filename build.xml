@@ -84,7 +84,7 @@
         <!-- prepare the build environment -->
         <antcall target="prepare" />
         <!-- copy all files to the target directory -->
-        <copy todir="${php-target.dir}${deploy.dir}" preservelastmodified="true" overwrite="true">
+        <copy todir="${php-target.dir}/appserver" preservelastmodified="true" overwrite="true">
             <fileset dir="${basedir}">
                 <include name="src/**/*" />
                 <include name="var/**/*" />
@@ -103,7 +103,7 @@
     <target name="deploy" depends="copy" description="Copies the sources to the deploy directory.">
         <!-- copy all files to the deploy.directory -->
         <copy todir="${deploy.dir}" preservelastmodified="true" overwrite="true">
-            <fileset dir="${php-target.dir}${deploy.dir}">
+            <fileset dir="${php-target.dir}/appserver">
                 <include name="**/*"/>
             </fileset>
         </copy>
