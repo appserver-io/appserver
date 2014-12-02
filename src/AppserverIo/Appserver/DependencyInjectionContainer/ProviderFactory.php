@@ -60,13 +60,15 @@ class ProviderFactory
         $initialContext = new NamingContext();
         $initialContext->injectApplication($application);
 
-        // create the application specific aliases
+        // create the storage for the reflection classes and the application specific aliases
+        $reflectionClasses = new GenericStackable();
         $namingDirectoryAliases = new GenericStackable();
 
         // create and initialize the DI provider instance
         $provider = new Provider();
-        $provider->injectInitialContext($initialContext);
         $provider->injectNamingDirectory($application);
+        $provider->injectInitialContext($initialContext);
+        $provider->injectReflectionClasses($reflectionClasses);
         $provider->injectNamingDirectoryAliases($namingDirectoryAliases);
 
         // attach the instance
