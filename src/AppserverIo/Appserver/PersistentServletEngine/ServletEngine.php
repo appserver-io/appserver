@@ -261,7 +261,7 @@ class ServletEngine extends AbstractServletEngine
 
             // copy the servlet response cookies back to the HTTP response
             foreach ($servletResponse->getCookies() as $cookie) {
-                $response->addCookie($cookie);
+                $response->addCookie(unserialize($cookie));
             }
 
             // set response state to be dispatched after this without calling other modules process
