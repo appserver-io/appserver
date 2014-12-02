@@ -2,6 +2,7 @@
 
 ## Bugfixes
 
+* Use CustomFileHandler as default handler for access/error log
 * Move TimerServiceExecutor initialization to TimerServiceRegistryFactory::visit() method
 * Call composer post install script after invoking deploy target
 * Bugfix for invalid directory structure in copy/deploy targets
