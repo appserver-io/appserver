@@ -46,6 +46,7 @@ use AppserverIo\Appserver\ServletEngine\Http\Request;
 use AppserverIo\Appserver\ServletEngine\Http\Response;
 use AppserverIo\Appserver\ServletEngine\Http\Part;
 use AppserverIo\Appserver\ServletEngine\BadRequestException;
+use AppserverIo\Appserver\ServletEngine\AbstractServletEngine;
 use AppserverIo\Appserver\ServletEngine\Authentication\AuthenticationValve;
 use AppserverIo\Appserver\Core\Interfaces\ContainerInterface;
 use AppserverIo\Server\Dictionaries\EnvVars;
@@ -110,35 +111,49 @@ class ServletEngine extends AbstractServletEngine
             $this->initVirtualHosts();
             $this->initApplications();
             $this->initUrlMappings();
-
-            // iterate over the applications and initialize a pool of request handlers for each
-            foreach ($this->applications as $application) {
-
-                // initialize the pool
-                $pool = new GenericStackable();
-
-                // initialize 10 request handlers per for each application
-                for ($i = 0; $i < 10; $i++) {
-
-                    // create a mutex
-                    $mutex = \Mutex::create();
-
-                    // initialize the request handler
-                    $requestHandler = new RequestHandler($mutex);
-                    $requestHandler->injectValves($this->valves);
-                    $requestHandler->injectApplication($application);
-                    $requestHandler->start();
-
-                    // add it to the pool
-                    $pool[] = $requestHandler;
-                }
-
-                // add the pool to the pool of request handlers
-                $this->requestHandlers[$application->getName()] = $pool;
-            }
+            $this->initRequestHandlers();
 
         } catch (\Exception $e) {
             throw new ModuleException($e);
+        }
+    }
+
+    /**
+     * Initialize the pool of persistant request handlers per application.
+     *
+     * @return void
+     */
+    public function initRequestHandlers()
+    {
+
+        // initialize the storage for the request handlers
+        $this->requestHandlers = new GenericStackable();
+
+        // iterate over the applications and initialize a pool of request handlers for each
+        foreach ($this->applications as $application) {
+
+            // initialize the pool
+            $pool = new GenericStackable();
+
+            // initialize 10 request handlers per for each application
+            for ($i = 0; $i < 10; $i++) {
+
+                // create a mutex
+                $mutex = \Mutex::create();
+
+                // initialize the request handler
+                $requestHandler = new RequestHandler();
+                $requestHandler->injectMutex($mutex);
+                $requestHandler->injectValves($this->valves);
+                $requestHandler->injectApplication($application);
+                $requestHandler->start();
+
+                // add it to the pool
+                $pool[] = $requestHandler;
+            }
+
+            // add the pool to the pool of request handlers
+            $this->requestHandlers[$application->getName()] = $pool;
         }
     }
 
@@ -195,7 +210,6 @@ class ServletEngine extends AbstractServletEngine
             $servletRequest->injectResponse($servletResponse);
 
             // load a NOT working request handler from the pool
-            $valves = $this->valves;
             $urlMappings = $this->urlMappings;
             $applications = $this->applications;
 
@@ -247,7 +261,7 @@ class ServletEngine extends AbstractServletEngine
 
             // copy the servlet response cookies back to the HTTP response
             foreach ($servletResponse->getCookies() as $cookie) {
-                $response->addCookie($cookie);
+                $response->addCookie(unserialize($cookie));
             }
 
             // set response state to be dispatched after this without calling other modules process
