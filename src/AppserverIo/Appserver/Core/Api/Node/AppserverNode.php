@@ -171,14 +171,12 @@ class AppserverNode extends AbstractNode
         $handlerParams = array();
         $logLevelParam = new ParamNode('logLevel', 'string', new NodeValue(LogLevel::INFO));
         $logFileParam = new ParamNode('logFile', 'string', new NodeValue('var/log/appserver-errors.log'));
-        $maxFilesParam = new ParamNode('maxFiles', 'integer', new NodeValue(30));
         $handlerParams[$logFileParam->getPrimaryKey()] = $logFileParam;
         $handlerParams[$logLevelParam->getPrimaryKey()] = $logLevelParam;
-        $handlerParams[$maxFilesParam->getPrimaryKey()] = $maxFilesParam;
 
         // initialize the handler
         $handlers = array();
-        $handler = new HandlerNode('\AppserverIo\Logger\Handlers\RotatingFileHandler', null, $handlerParams);
+        $handler = new HandlerNode('\AppserverIo\Logger\Handlers\CustomFileHandler', null, $handlerParams);
         $handlers[$handler->getPrimaryKey()] = $handler;
 
         // initialize the system logger with the processor and the handlers
@@ -199,14 +197,12 @@ class AppserverNode extends AbstractNode
         $handlerParams = array();
         $logLevelParam = new ParamNode('logLevel', 'string', new NodeValue(LogLevel::DEBUG));
         $logFileParam = new ParamNode('logFile', 'string', new NodeValue('var/log/appserver-access.log'));
-        $maxFilesParam = new ParamNode('maxFiles', 'integer', new NodeValue(30));
         $handlerParams[$logFileParam->getPrimaryKey()] = $logFileParam;
         $handlerParams[$logLevelParam->getPrimaryKey()] = $logLevelParam;
-        $handlerParams[$maxFilesParam->getPrimaryKey()] = $maxFilesParam;
 
         // initialize the handler
         $handlers = array();
-        $handler = new HandlerNode('\AppserverIo\Logger\Handlers\RotatingFileHandler', $formatter, $handlerParams);
+        $handler = new HandlerNode('\AppserverIo\Logger\Handlers\CustomFileHandler', $formatter, $handlerParams);
         $handlers[$handler->getPrimaryKey()] = $handler;
 
         // initialize the system logger with the processor and the handlers
