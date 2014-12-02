@@ -102,6 +102,18 @@ class Provider extends GenericStackable implements ProviderInterface
     }
 
     /**
+     * Injects the storage for the loaded reflection classes.
+     *
+     * @param \AppserverIo\Storage\GenericStackable $reflectionClasses The storage for the reflection classes
+     *
+     * @return void
+     */
+    public function injectReflectionClasses($reflectionClasses)
+    {
+        $this->reflectionClasses = $reflectionClasses;
+    }
+
+    /**
      * Injects the naming context.
      *
      * @param \AppserverIo\Appserver\Naming\InitialContext $initialContext The naming context
@@ -254,8 +266,13 @@ class Provider extends GenericStackable implements ProviderInterface
     public function injectDependencies($instance, ClassInterface $reflectionClass = null, $sessionId = null)
     {
 
-        // check if a reflection class instance has been passed
-        if ($reflectionClass == null) {
+        // the class name we want to inject the dependencies
+        $className = get_class($instance);
+
+        // check if a reflection class instance has been passed or is already available
+        if (isset($this->reflectionClasses[$className])) {
+            $reflectionClass = $this->reflectionClasses[$className];
+        } elseif (isset($this->reflectionClasses[$className]) === false && $reflectionClass == null) {
             $reflectionClass = $this->newReflectionClass($instance);
         }
 
@@ -313,6 +330,11 @@ class Provider extends GenericStackable implements ProviderInterface
                 // inject the resource instance
                 $reflectionMethod->invoke($instance, $this->getNamingDirectory()->search($lookupName));
             }
+        }
+
+        // add the reflection class name to the array
+        if (isset($this->reflectionClasses[$className]) === false) {
+            $this->reflectionClasses[$className] = $reflectionClass;
         }
     }
 
