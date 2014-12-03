@@ -211,7 +211,7 @@ class BeanManager extends GenericStackable implements BeanContext, ManagerInterf
                 $className = substr($pregResult, 0, -4);
 
                 // we need a reflection class to read the annotations
-                $reflectionClass = $this->newReflectionClass($className);
+                $reflectionClass = $this->getReflectionClass($className);
 
                 // register the bean instance
                 $this->registerBean($reflectionClass);
@@ -512,7 +512,7 @@ class BeanManager extends GenericStackable implements BeanContext, ManagerInterf
     {
 
         // we need a reflection object
-        $reflectionObject = new ReflectionObject($instance);
+        $reflectionObject = $this->getReflectionClassForObject($instance);
 
         // we've to check for a @PreDestroy annotation
         foreach ($reflectionObject->getMethods(\ReflectionMethod::IS_PUBLIC) as $reflectionMethod) {
@@ -537,7 +537,7 @@ class BeanManager extends GenericStackable implements BeanContext, ManagerInterf
     {
 
         // we need a reflection object to read the annotations
-        $reflectionObject = new ReflectionObject($instance);
+        $reflectionObject = $this->getReflectionClassForObject($instance);
 
         // @Singleton
         if ($reflectionObject->hasAnnotation(Singleton::ANNOTATION)) {
@@ -614,15 +614,42 @@ class BeanManager extends GenericStackable implements BeanContext, ManagerInterf
     }
 
     /**
-     * Returns a reflection class intance for the passed class name.
+     * Returns a new reflection class intance for the passed class name.
      *
-     * @param string $className The class name to return the reflection instance for
+     * @param string $className The class name to return the reflection class instance for
      *
      * @return \AppserverIo\Lang\Reflection\ReflectionClass The reflection instance
      */
     public function newReflectionClass($className)
     {
         return $this->getApplication()->search('ProviderInterface')->newReflectionClass($className);
+    }
+
+    /**
+     * Returns a reflection class intance for the passed class name.
+     *
+     * @param string $className The class name to return the reflection class instance for
+     *
+     * @return \AppserverIo\Lang\Reflection\ReflectionClass The reflection instance
+     * @see \DependencyInjectionContainer\Interfaces\ProviderInterface::getReflectionClass()
+     */
+    public function getReflectionClass($className)
+    {
+        return $this->getApplication()->search('ProviderInterface')->getReflectionClass($className);
+    }
+
+    /**
+     * Returns a reflection class intance for the passed class name.
+     *
+     * @param object $instance The instance to return the reflection class instance for
+     *
+     * @return \AppserverIo\Lang\Reflection\ReflectionClass The reflection instance
+     * @see \DependencyInjectionContainer\Interfaces\ProviderInterface::newReflectionClass()
+     * @see \DependencyInjectionContainer\Interfaces\ProviderInterface::getReflectionClass()
+     */
+    public function getReflectionClassForObject($instance)
+    {
+        return $this->getApplication()->search('ProviderInterface')->getReflectionClassForObject($instance);
     }
 
     /**
