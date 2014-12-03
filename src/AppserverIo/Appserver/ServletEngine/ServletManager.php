@@ -516,7 +516,7 @@ class ServletManager extends \Stackable implements ServletContext, ManagerInterf
 
         // inject the dependencies
         $dependencyInjectionContainer = $this->getApplication()->search('ProviderInterface');
-        $dependencyInjectionContainer->injectDependencies($instance, null, $sessionId);
+        $dependencyInjectionContainer->injectDependencies($instance, $sessionId);
 
         // return the instance
         return $instance;

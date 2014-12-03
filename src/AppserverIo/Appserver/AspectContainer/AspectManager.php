@@ -185,28 +185,9 @@ class AspectManager implements AspectManagerInterface, ManagerInterface
      *
      * @return \AppserverIo\Lang\Reflection\ReflectionClass The reflection instance
      */
-    public function newReflectionClass($className)
+    public function getReflectionClass($className)
     {
-        // initialize the array with the annotations we want to ignore
-        $annotationsToIgnore = array(
-            'author',
-            'package',
-            'license',
-            'copyright',
-            'param',
-            'return',
-            'throws',
-            'see',
-            'link'
-        );
-
-        // initialize the array with the aliases for the aspect annotation
-        $annotationAliases = array(
-            Aspect::ANNOTATION => Aspect::__getClass()
-        );
-
-        // return the reflection class instance
-        return new ReflectionClass($className, $annotationsToIgnore, $annotationAliases);
+        return $this->getApplication()->search('ProviderInterface')->getReflectionClass($className);
     }
 
     /**
@@ -244,7 +225,7 @@ class AspectManager implements AspectManagerInterface, ManagerInterface
                 $className = substr($pregResult, 0, -4);
 
                 // we need a reflection class to read the annotations
-                $reflectionClass = $this->newReflectionClass($className);
+                $reflectionClass = $this->getReflectionClass($className);
 
                 // if we found an aspect we have to register it using our aspect register class
                 if ($reflectionClass->hasAnnotation(Aspect::ANNOTATION)) {

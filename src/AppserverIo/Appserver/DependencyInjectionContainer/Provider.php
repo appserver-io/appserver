@@ -255,26 +255,63 @@ class Provider extends GenericStackable implements ProviderInterface
     }
 
     /**
-     * Injects the dependencies of the passed instance.
+     * Returns a new reflection class intance for the passed class name.
      *
-     * @param object                                           $instance        The instance to inject the dependencies for
-     * @param \AppserverIo\Lang\Reflection\ClassInterface|null $reflectionClass The reflection class for the passed instance
-     * @param string|null                                      $sessionId       The session-ID, necessary to inject stateful session beans (SFBs)
+     * @param string $className The class name to return the reflection class instance for
+     *
+     * @return \AppserverIo\Lang\Reflection\ReflectionClass The reflection instance
+     */
+    public function getReflectionClass($className)
+    {
+
+        // check if we've already initialized the reflection class
+        if (isset($this->reflectionClasses[$className]) === false) {
+            $this->reflectionClasses[$className] = $this->newReflectionClass($className);
+        }
+
+        // return the reflection class instance
+        return $this->reflectionClasses[$className];
+    }
+
+    /**
+     * Returns a reflection class intance for the passed class name.
+     *
+     * @param object $instance The instance to return the reflection class instance for
+     *
+     * @return \AppserverIo\Lang\Reflection\ReflectionClass The reflection instance
+     * @see \DependencyInjectionContainer\Interfaces\ProviderInterface::newReflectionClass()
+     * @see \DependencyInjectionContainer\Interfaces\ProviderInterface::getReflectionClass()
+     */
+    public function getReflectionClassForObject($instance)
+    {
+        return $this->getReflectionClass(get_class($instance));
+    }
+
+    /**
+     * Adds the passe reflection class instance to the DI provider.
+     *
+     * @param \AppserverIo\Lang\Reflection\ClassInterface $reflectionClass The reflection class instance to add
      *
      * @return void
      */
-    public function injectDependencies($instance, ClassInterface $reflectionClass = null, $sessionId = null)
+    public function setReflectionClass(ClassInterface $reflectionClass)
+    {
+        $this->reflectionClasses[$reflectionClass->getName()] = $reflectionClass;
+    }
+
+    /**
+     * Injects the dependencies of the passed instance.
+     *
+     * @param object      $instance  The instance to inject the dependencies for
+     * @param string|null $sessionId The session-ID, necessary to inject stateful session beans (SFBs)
+     *
+     * @return void
+     */
+    public function injectDependencies($instance, $sessionId = null)
     {
 
-        // the class name we want to inject the dependencies
-        $className = get_class($instance);
-
         // check if a reflection class instance has been passed or is already available
-        if (isset($this->reflectionClasses[$className])) {
-            $reflectionClass = $this->reflectionClasses[$className];
-        } elseif (isset($this->reflectionClasses[$className]) === false && $reflectionClass == null) {
-            $reflectionClass = $this->newReflectionClass($instance);
-        }
+        $reflectionClass = $this->getReflectionClassForObject($instance);
 
         // we've to check for DI property annotations
         foreach ($reflectionClass->getProperties() as $reflectionProperty) {
@@ -332,10 +369,8 @@ class Provider extends GenericStackable implements ProviderInterface
             }
         }
 
-        // add the reflection class name to the array
-        if (isset($this->reflectionClasses[$className]) === false) {
-            $this->reflectionClasses[$className] = $reflectionClass;
-        }
+        // add the reflection class name to the array (because it could have been updated)
+        $this->setReflectionClass($reflectionClass);
     }
 
     /**
@@ -350,8 +385,8 @@ class Provider extends GenericStackable implements ProviderInterface
     public function newInstance($className, $sessionId = null, array $args = array())
     {
 
-        // create and return a new instance
-        $reflectionClass = $this->newReflectionClass($className);
+        // load/create and return a new instance
+        $reflectionClass = $this->getReflectionClass($className);
 
         // check if we've a constructor
         if ($reflectionClass->hasMethod('__construct')) {
@@ -361,7 +396,7 @@ class Provider extends GenericStackable implements ProviderInterface
         }
 
         // inject the dependencies
-        $this->injectDependencies($instance, $reflectionClass, $sessionId);
+        $this->injectDependencies($instance, $sessionId);
 
         // return the instance here
         return $instance;
