@@ -1,3 +1,13 @@
+# Version 1.0.0-beta1
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Optimize class loaders for performance
+
 # Version 1.0.0-beta
 
 ## Bugfixes
