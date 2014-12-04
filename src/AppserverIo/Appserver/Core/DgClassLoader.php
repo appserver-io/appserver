@@ -386,8 +386,8 @@ class DgClassLoader extends \Stackable implements ClassLoaderInterface
         // Now we have a config no matter what, we can store any instance we might need
         $this->getConfig()->storeInstances();
 
-        // Query whether we have directories to omitted
-        if ($this->autoloaderOmit) { // If yes, load the apropriate autoloader method
+        // Query whether we have directories to omitted or not in production mode
+        if ($this->autoloaderOmit || $this->environment !== 'production') { // If yes, load the apropriate autoloader method
             spl_autoload_register(array($this, self::OUR_LOADER), $throw, $prepend);
             return;
         }
@@ -404,8 +404,8 @@ class DgClassLoader extends \Stackable implements ClassLoaderInterface
     public function unregister()
     {
 
-        // Query whether we have directories to omitted
-        if ($this->autoloaderOmit) { // If yes, unload the apropriate autoloader method
+        // Query whether we have directories to omitted or not in production mode
+        if ($this->autoloaderOmit || $this->environment !== 'production') { // If yes, unload the apropriate autoloader method
             spl_autoload_unregister(array($this, self::OUR_LOADER));
             return;
         }
