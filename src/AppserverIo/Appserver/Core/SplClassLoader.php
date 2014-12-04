@@ -63,7 +63,7 @@ class SplClassLoader extends GenericStackable implements ClassLoaderInterface
 
     /**
      * Simple factory method to create a new instance of the SplClassLoader.
-
+     *
      * @return \AppserverIo\Appserver\Core\SplClassLoader The class loader instance
      */
     public static function factory()
