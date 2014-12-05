@@ -468,9 +468,26 @@ When the application server starts, it parses the `META-INF/classes` and `WEB-IN
 
 ## How to inject an instance
 
-Basically DI can be a manual process where you `ìnject` an instance, needed by another class by passing it to the constructor. Inside the application server, the injection is an process you can't see, it's more a kind of magic that happens behind the secenes. So instead of manually pass the necessary instances to a classes constructor, the DI container will do that for you. You simple has to tell the DI container what you need.
+Basically DI can be a manual process where you `ìnject` an instance, needed by another class by passing it to the constructor. Inside the application server, the injection is an process you can't see, it's more a kind of magic which happens behind the secenes. So instead of manually pass the necessary instances to a classes constructor, the DI container will do that for you. You simple has to tell the DI container what you need, look
 
+```php
 
+namespace Namespace\Modulename
+
+use AppserverIo\Psr\Servlet\Http\HttpServlet;
+
+class MyServlet extends HttpServlet
+{
+
+  /**
+   * @var \Namespace\Modulename\MySessionBean
+   * @Enterprise(name="MySessionBean")
+   */
+  protected $mySessionBean;
+}
+```
+
+With the `name` attribute of the `@Enterprise`annotation you have the possibility to specify the name of the bean, you registered before with the `@Stateless` annotation. A more detailed description about the available annotations follows below.
 
 # Persistence-Container
 
