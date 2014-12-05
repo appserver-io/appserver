@@ -326,10 +326,7 @@ the Servlet Engine starts up.
 
 ## What is a Servlet
 
-A Servlet is a simple class, that has to extend from `AppserverIo\Psr\Servlet\Http\HttpServlet`
-to make it simple. Your application logic can then be implemented by overwriting the `service()`
-method or better by overwriting the request specific methods like `doGet()` if you want to handle
-a GET request.
+A Servlet is a simple class, that has to extend from `AppserverIo\Psr\Servlet\Http\HttpServlet`. Your application logic can then be implemented by overwriting the `service()` method or better by overwriting the request specific methods like `doGet()` if you want to handle a GET request.
 
 ## Create a simple Servlet
 
