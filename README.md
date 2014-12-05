@@ -468,7 +468,13 @@ When the application server starts, it parses the `META-INF/classes` and `WEB-IN
 
 ## How to inject an instance
 
-Basically DI can be a manual process where you `ìnject` an instance, needed by another class by passing it to the constructor. Inside the application server, the injection is an process you can't see, it's more a kind of magic which happens behind the secenes. So instead of manually pass the necessary instances to a classes constructor, the DI container will do that for you. You simple has to tell the DI container what you need, look
+Basically DI can be a manual process where you `ìnject` an instance, needed by another class by passing it to the constructor. Inside the application server, the injection is an process you can't see, it's more a kind of magic which happens behind the secenes. So instead of manually pass the necessary instances to a classes constructor, the DI container will do that for you. 
+
+You simple has to tell the DI container what you need, let's have a look at the details.
+
+### Property Injection
+
+The first possibility we have is to annotate a class property
 
 ```php
 
@@ -488,6 +494,39 @@ class MyServlet extends HttpServlet
 ```
 
 With the `name` attribute of the `@Enterprise`annotation you have the possibility to specify the name of the bean, you registered before with the `@Stateless` annotation. A more detailed description about the available annotations follows below.
+
+### Setter Injection
+
+The second possiblity to inject an instance is setter injection.
+
+```php
+
+namespace Namespace\Modulename
+
+use AppserverIo\Psr\Servlet\Http\HttpServlet;
+
+class MyServlet extends HttpServlet
+{
+
+  /**
+   * @var \Namespace\Modulename\MySessionBean
+   */
+  protected $mySessionBean;
+  
+  /**
+   * Injects the session bean by its setter method.
+   *
+   * @param \Namespace\Modulename\MySessionBean $mySessionBean The instance to inject
+   * @Enterprise(name="MySessionBean")
+   */
+  public function setMySessionBean(MySessionBean $mySessionBean)
+  {
+    $this->mySessionBean = $mySessionBean;
+  }
+}
+```
+
+> This method is the preferred one, because it'll be refactored not to use reflection in further versions.
 
 # Persistence-Container
 
