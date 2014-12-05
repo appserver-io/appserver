@@ -579,6 +579,52 @@ C:\Program Files\appserver&gt;server.bat
  <li>Values will be treated as strings</li> 
 </ul> 
 <h1> <a id="user-content-annotations" class="anchor" href="#annotations" aria-hidden="true"><span class="octicon octicon-link"></span></a>Annotations</h1> 
+<p>As one of our main targets is to make configuration as simple as possible we decided to use annotations wherever possible. As annotations are not supported natively by PHP, we provide annotation support over our <a href="https://github.com/appserver-io/lang">lang</a> package.</p> 
+<p>Beside the usage in our application server components, it'll also possible to extend your application with annotations by using the functionality we deliver out-of-the-box.</p> 
+<p>If you, for example, think about extending the actions of the controller component in your MVC framework with a @Route annotation, you can do that in the following way</p> 
+<div class="highlight highlight-php">
+ <pre><span class="pl-s2"></span>
+<span class="pl-s2"><span class="pl-k">namespace</span> <span class="pl-en">Namespace\Module</span>;</span>
+<span class="pl-s2"></span>
+<span class="pl-s2"><span class="pl-k">use</span> <span class="pl-s3">AppserverIo\Appserver\Lang\Reflection\ReflectionClass</span>;</span>
+<span class="pl-s2"><span class="pl-k">use</span> <span class="pl-s3">AppserverIo\Appserver\Lang\Reflection\ReflectionAnnotation</span>;</span>
+<span class="pl-s2"></span>
+<span class="pl-s2"><span class="pl-st">class</span> <span class="pl-en">Route</span> <span class="pl-s">extends</span> <span class="pl-e">ReflectionAnnotation</span></span>
+<span class="pl-s2">{</span>
+<span class="pl-s2"></span>
+<span class="pl-s2">  <span class="pl-c">/**</span></span>
+<span class="pl-s2"><span class="pl-c"> * Returns the value of the name attribute.</span></span>
+<span class="pl-s2"><span class="pl-c"> *</span></span>
+<span class="pl-s2"><span class="pl-c"> * <span class="pl-k">@return</span> string The annotations name attribute</span></span>
+<span class="pl-s2"><span class="pl-c"> */</span></span>
+<span class="pl-s2">  <span class="pl-s">public</span> <span class="pl-st">function</span> <span class="pl-en">getPattern</span>()</span>
+<span class="pl-s2">  {</span>
+<span class="pl-s2">    <span class="pl-k">return</span> <span class="pl-vo">$this</span><span class="pl-k">-&gt;</span><span class="pl-vo">values</span>[<span class="pl-s1"><span class="pl-pds">'</span>pattern<span class="pl-pds">'</span></span>];</span>
+<span class="pl-s2">  }</span>
+<span class="pl-s2">}</span>
+<span class="pl-s2"></span>
+<span class="pl-s2"><span class="pl-st">class</span> <span class="pl-en">IndexController</span></span>
+<span class="pl-s2">{</span>
+<span class="pl-s2"></span>
+<span class="pl-s2">  <span class="pl-c">/**</span></span>
+<span class="pl-s2"><span class="pl-c"> * Default action implementation.</span></span>
+<span class="pl-s2"><span class="pl-c"> * </span></span>
+<span class="pl-s2"><span class="pl-c"> * <span class="pl-k">@return</span> void</span></span>
+<span class="pl-s2"><span class="pl-c"> * @Route(pattern=&quot;/index/index&quot;)</span></span>
+<span class="pl-s2"><span class="pl-c"> */</span></span>
+<span class="pl-s2">  <span class="pl-s">public</span> <span class="pl-st">function</span> <span class="pl-en">indexAction</span>()</span>
+<span class="pl-s2">  {</span>
+<span class="pl-s2">    <span class="pl-c">// do something here</span></span>
+<span class="pl-s2">  }</span>
+<span class="pl-s2">}</span>
+<span class="pl-s2"></span>
+<span class="pl-s2"><span class="pl-c">// create a reflection class to load the methods annotation </span></span>
+<span class="pl-s2"><span class="pl-vo">$reflectionClass</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-s3">ReflectionClass</span>(<span class="pl-s1"><span class="pl-pds">'</span>IndexController<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s2"><span class="pl-vo">$reflectionMethod</span> <span class="pl-k">=</span> <span class="pl-vo">$reflectionClass</span><span class="pl-k">-&gt;</span>getMethod(<span class="pl-s1"><span class="pl-pds">'</span>indexAction<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s2"><span class="pl-vo">$reflectionAnnotation</span> <span class="pl-k">=</span> <span class="pl-vo">$reflectionMethod</span><span class="pl-k">-&gt;</span>getAnnotation(<span class="pl-s1"><span class="pl-pds">'</span>Route<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s2"><span class="pl-vo">$pattern</span> <span class="pl-k">=</span> <span class="pl-vo">$reflectionAnnotation</span><span class="pl-k">-&gt;</span>newInstance()<span class="pl-k">-&gt;</span>getPattern();</span></pre>
+</div> 
+<p>Most of the annotation implementations provided by our <a href="https://github.com/appserver-io-psr/epb">Enterprise Beans</a> PSR and used for <a href="#dependency-injection">Dependency Injection</a>, which will be described below, are based on that annotation implementation.</p> 
 <h1> <a id="user-content-dependency-injection" class="anchor" href="#dependency-injection" aria-hidden="true"><span class="octicon octicon-link"></span></a>Dependency Injection</h1> 
 <h1> <a id="user-content-servlet-engine" class="anchor" href="#servlet-engine" aria-hidden="true"><span class="octicon octicon-link"></span></a>Servlet-Engine</h1> 
 <p>Originally Servlets are the Java counterpart to other dynamic web technologies like PHP or the Microsoft .NET plattform. In contrast to PHP, a Servlet written in Java is not a script that'll be interpreted per request, instead it is a class instanciated when the Servlet Engine starts up process requests be invoking one of its methods.</p> 
@@ -928,7 +974,7 @@ C:\Program Files\appserver&gt;server.bat
  <li>Cache : Will allow us to omit Parser and Generator for future calls, to speed up usage significantly.</li> 
 </ul> 
 <h2> <a id="user-content-usage-1" class="anchor" href="#usage-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h2> 
-<p>Supposed, we want to make sure, that the counter in our @Stateful SessionBean is a integer, we can define a simple contract</p> 
+<p>Supposed, we want to make sure, that the counter in our stateful SessionBean will always be an integer, we can define a simple contract therefor</p> 
 <div class="highlight highlight-php">
  <pre><span class="pl-s2"></span>
 <span class="pl-s2"><span class="pl-k">namespace</span> <span class="pl-en">Namespace\Module</span>;</span>
