@@ -388,145 +388,155 @@ architecture is driven by configuration.
 <?xml version="1.0" encoding="UTF-8"?>
 <appserver xmlns="http://www.appserver.io/appserver">
 
-    <params>
-        <param name="user" type="string">_www</param>
-        <param name="group" type="string">staff</param>
-        <param name="umask" type="string">0002</param>
-    </params>
-    
-    <containers>
-    
-        <container name="combined-appserver" type="AppserverIo\Core\GenericContainer">
-            <description>
-                <![CDATA[This is an example of a webserver container that handles http requests in common way]]>
-            </description>
-            <deployment type="AppserverIo\Appserver\Core\GenericDeployment" />
-            <host
-                name="localhost"
-                appBase="/webapps"
-                serverAdmin="info@appserver.io"
-                serverSoftware="appserver/1.0.0-beta (mac) PHP/5.5.16" />
-                
-            <servers>
+  <params>
+    <param name="user" type="string">_www</param>
+    <param name="group" type="string">staff</param>
+    <param name="umask" type="string">0002</param>
+  </params>
+
+<containers>
+
+  <container name="combined-appserver" type="AppserverIo\Core\GenericContainer">
+      <description>
+        <![CDATA[
+          This is an example of a webserver container 
+          that handles http requests in common way
+        ]]>
+      </description>
+      <deployment type="AppserverIo\Appserver\Core\GenericDeployment" />
+      <host
+        name="localhost"
+        appBase="/webapps"
+        serverAdmin="info@appserver.io"
+        serverSoftware="appserver/1.0.0-beta (mac) PHP/5.5.16" />
             
-                <server
-                        name="http"
-                        type="\AppserverIo\Server\Servers\MultiThreadedServer"
-                        worker="\AppserverIo\Server\Workers\ThreadWorker"
-                        socket="\AppserverIo\Server\Sockets\StreamSocket"
-                        serverContext="\AppserverIo\Server\Contexts\ServerContext"
-                        requestContext="\AppserverIo\Server\Contexts\RequestContext"
-                        loggerName="System">
-                    <params>
-                        <param name="admin" type="string">info@appserver.io</param>
-                        <param name="software" type="string">
-                            appserver/1.0.0.0 (darwin) PHP/5.5.16
-                        </param>
-                        <param name="transport" type="string">tcp</param>
-                        <param name="address" type="string">127.0.0.1</param>
-                        <param name="port" type="integer">9080</param>
-                        <param name="workerNumber" type="integer">64</param>
-                        <param name="workerAcceptMin" type="integer">3</param>
-                        <param name="workerAcceptMax" type="integer">8</param>
-                        <param name="documentRoot" type="string">webapps</param>
-                        <param name="directoryIndex" type="string">
-                            index.do index.php index.html index.htm
-                        </param>
-                        <param name="keepAliveMax" type="integer">64</param>
-                        <param name="keepAliveTimeout" type="integer">5</param>
-                        <param name="errorsPageTemplatePath" type="string">
-                            var/www/errors/error.phtml
-                        </param>
-                    </params>
-
-                    <environmentVariables>
-                        <environmentVariable 
-                            condition="" definition="LOGGER_ACCESS=Access" />
-                    </environmentVariables>
-
-                    <connectionHandlers>
-                        <connectionHandler 
-                            type="\AppserverIo\WebServer\ConnectionHandlers\HttpConnectionHandler" />
-                    </connectionHandlers>
-
-                    <authentications>
-                        <authentication uri="^\/admin.*">
-                            <params>
-                                <param name="type" type="string">
-                                    \AppserverIo\WebServer\Authentication\BasicAuthentication
-                                </param>
-                                <param name="realm" type="string">
-                                    appserver.io Basic Authentication System
-                                </param>
-                                <param name="hash" type="string">
-                                    YXBwc2VydmVyOmFwcHNlcnZlci5pMA==
-                                </param>
-                            </params>
-                        </authentication>
-                    </authentications>
-
-                    <accesses>
-                        <access type="allow">
-                            <params>
-                                <param name="X_REQUEST_URI" type="string">.*</param>
-                            </params>
-                        </access>
-                    </accesses>
-
-                    <virtualHosts>
-                        <virtualHost name="example.local">
-                            <params>
-                                <param name="admin" type="string">
-                                    admin@appserver.io
-                                </param>
-                                <param name="documentRoot" type="string">
-                                    /opt/appserver/webapps/example
-                                </param>
-                            </params>
-                        </virtualHost>
-                    </virtualHosts>
-                    
-                    <modules>
-                        <!-- REQUEST_POST hook -->
-                        <module type="\AppserverIo\WebServer\Modules\VirtualHostModule"/>
-                        <module type="\AppserverIo\WebServer\Modules\AuthenticationModule"/>
-                        <module type="\AppserverIo\WebServer\Modules\EnvironmentVariableModule" />
-                        <module type="\AppserverIo\WebServer\Modules\RewriteModule"/>
-                        <module type="\AppserverIo\WebServer\Modules\DirectoryModule"/>
-                        <module type="\AppserverIo\WebServer\Modules\AccessModule"/>
-                        <module type="\AppserverIo\WebServer\Modules\CoreModule"/>
-                        <module type="\AppserverIo\WebServer\Modules\PhpModule"/>
-                        <module type="\AppserverIo\WebServer\Modules\FastCgiModule"/>
-                        <module type="\AppserverIo\Appserver\ServletEngine\ServletEngine" />
-                        <!-- RESPONSE_PRE hook -->
-                        <module type="\AppserverIo\WebServer\Modules\DeflateModule"/>
-                        <!-- RESPONSE_POST hook -->
-                        <module type="\AppserverIo\Appserver\Core\Modules\ProfileModule"/>
-                    </modules>
-
-                    <fileHandlers>
-                        <fileHandler name="fastcgi" extension=".php">
-                            <params>
-                                <param name="host" type="string">127.0.0.1</param>
-                                <param name="port" type="integer">9010</param>
-                            </params>
-                        </fileHandler>
-                        <fileHandler name="fastcgi" extension=".phtml">
-                            <params>
-                                <param name="host" type="string">127.0.0.1</param>
-                                <param name="port" type="integer">9010</param>
-                            </params>
-                        </fileHandler>
-                        <fileHandler name="servlet" extension=".do" />
-                    </fileHandlers>
-
-                </server>
+        <servers>
         
-                <!-- Here, additional servers might be added -->
+          <server
+            name="http"
+            type="\AppserverIo\Server\Servers\MultiThreadedServer"
+            worker="\AppserverIo\Server\Workers\ThreadWorker"
+            socket="\AppserverIo\Server\Sockets\StreamSocket"
+            serverContext="\AppserverIo\Server\Contexts\ServerContext"
+            requestContext="\AppserverIo\Server\Contexts\RequestContext"
+            loggerName="System">
+
+            <params>
+              <param name="admin" type="string">info@appserver.io</param>
+              <param name="software" type="string">
+                appserver/1.0.0.0 (darwin) PHP/5.5.16
+              </param>
+                <param name="transport" type="string">tcp</param>
+                <param name="address" type="string">127.0.0.1</param>
+                <param name="port" type="integer">9080</param>
+                <param name="workerNumber" type="integer">64</param>
+                <param name="workerAcceptMin" type="integer">3</param>
+                <param name="workerAcceptMax" type="integer">8</param>
+                <param name="documentRoot" type="string">webapps</param>
+                <param name="directoryIndex" type="string">
+                    index.do index.php index.html index.htm
+                </param>
+                <param name="keepAliveMax" type="integer">64</param>
+                <param name="keepAliveTimeout" type="integer">5</param>
+                <param name="errorsPageTemplatePath" type="string">
+                    var/www/errors/error.phtml
+                </param>
+            </params>
+
+            <environmentVariables>
+              <environmentVariable 
+                condition="" definition="LOGGER_ACCESS=Access" />
+            </environmentVariables>
+
+            <connectionHandlers>
+              <connectionHandler 
+                type="\AppserverIo\WebServer\ConnectionHandlers\HttpConnectionHandler" />
+            </connectionHandlers>
+
+            <authentications>
+              <authentication uri="^\/admin.*">
+                <params>
+                  <param name="type" type="string">
+                    \AppserverIo\WebServer\Authentication\BasicAuthentication
+                  </param>
+                  <param name="realm" type="string">
+                    appserver.io Basic Authentication System
+                  </param>
+                  <param name="hash" type="string">
+                    YXBwc2VydmVyOmFwcHNlcnZlci5pMA==
+                  </param>
+                </params>
+              </authentication>
+            </authentications>
+
+            <accesses>
+              <access type="allow">
+                <params>
+                  <param name="X_REQUEST_URI" type="string">.*</param>
+                </params>
+              </access>
+            </accesses>
+
+            <virtualHosts>
+              <virtualHost name="example.local">
+                <params>
+                  <param name="admin" type="string">
+                    admin@appserver.io
+                  </param>
+                  <param name="documentRoot" type="string">
+                    /opt/appserver/webapps/example
+                  </param>
+                </params>
+              </virtualHost>
+            </virtualHosts>
             
-            </servers>
-        </container>
-    </containers>
+            <modules>
+              <!-- REQUEST_POST hook -->
+              <module 
+                type="\AppserverIo\WebServer\Modules\VirtualHostModule"/>
+              <module 
+                type="\AppserverIo\WebServer\Modules\AuthenticationModule"/>
+              <module 
+                type="\AppserverIo\WebServer\Modules\EnvironmentVariableModule" />
+              <module 
+                type="\AppserverIo\WebServer\Modules\RewriteModule"/>
+              <module 
+                type="\AppserverIo\WebServer\Modules\DirectoryModule"/>
+              <module 
+                type="\AppserverIo\WebServer\Modules\AccessModule"/>
+              <module 
+                type="\AppserverIo\WebServer\Modules\CoreModule"/>
+              <module 
+                type="\AppserverIo\WebServer\Modules\PhpModule"/>
+              <module 
+                type="\AppserverIo\WebServer\Modules\FastCgiModule"/>
+              <module 
+                type="\AppserverIo\Appserver\ServletEngine\ServletEngine" />
+              <!-- RESPONSE_PRE hook -->
+              <module 
+                type="\AppserverIo\WebServer\Modules\DeflateModule"/>
+              <!-- RESPONSE_POST hook -->
+              <module 
+                type="\AppserverIo\Appserver\Core\Modules\ProfileModule"/>
+            </modules>
+
+            <fileHandlers>
+              <fileHandler name="servlet" extension=".do" />
+              <fileHandler name="fastcgi" extension=".php">
+                <params>
+                  <param name="host" type="string">127.0.0.1</param>
+                  <param name="port" type="integer">9010</param>
+                </params>
+              </fileHandler>
+            </fileHandlers>
+
+        </server>
+
+        <!-- Here, additional servers might be added -->
+
+      </servers>
+    </container>
+  </containers>
 </appserver>
 ``` 
 
