@@ -10,18 +10,18 @@ in PHP. Yes, pure PHP! You think we aren't serious? Maybe! But we think, in orde
 many developers in our great community, this will be the one and only way. So with your help we 
 hopefully establish a solution as the standard for enterprise applications in PHP environments.
 
-# Table of Contents
+#### Table of Contents
 
-**[Installation](#installation)**
-**[Uninstall](#uninstall)**
-**[Basic Usage](#basic-usage)**
-**[HTTP Server](#webserver)**
-**[Servlet-Engine](#servlet-engine)**
-**[Persistence-Container](#persistence-container)**
-**[Message-Queue](#message-queue)**
-**[Runtime Environment](#runtime-environment)**
-**[Configuration](#configuration)**
-**[Deployment](#deployment)**
+[Installation](#installation)  
+[Uninstall](#uninstall)  
+[Basic Usage](#basic-usage)  
+[HTTP Server](#webserver)  
+[Servlet-Engine](#servlet-engine)  
+[Persistence-Container](#persistence-container)  
+[Message-Queue](#message-queue)  
+[Runtime Environment](#runtime-environment)  
+[Configuration](#configuration)  
+[Deployment](#deployment)  
 
 # Installation
 
@@ -182,8 +182,12 @@ the example for a XML based configuration below:
 ```xml
 <virtualHost name="example.local">
     <params>
-        <param name="admin" type="string">admin@appserver.io</param>
-        <param name="documentRoot" type="string">/opt/appserver/webapps/example</param>
+        <param name="admin" type="string">
+            admin@appserver.io
+        </param>
+        <param name="documentRoot" type="string">
+            /opt/appserver/webapps/example
+        </param>
     </params>
 </virtualHost>
 ```
@@ -201,8 +205,12 @@ The example below shows a basic usage of environment variables in XML format.
 
 ```xml
 <environmentVariables>
-    <environmentVariable condition="" definition="EXAMPLE_VAR=example" />
-    <environmentVariable condition="Apple@$HTTP_USER_AGENT" definition="USER_HAS_APPLE=true" />
+    <environmentVariable 
+        condition="" 
+        definition="EXAMPLE_VAR=example" />
+    <environmentVariable 
+        condition="Apple@$HTTP_USER_AGENT" 
+        definition="USER_HAS_APPLE=true" />
 </environmentVariables>
 ```
 
@@ -411,7 +419,9 @@ architecture is driven by configuration.
                         loggerName="System">
                     <params>
                         <param name="admin" type="string">info@appserver.io</param>
-                        <param name="software" type="string">appserver/1.0.0.0 (darwin) PHP/5.5.16</param>
+                        <param name="software" type="string">
+                            appserver/1.0.0.0 (darwin) PHP/5.5.16
+                        </param>
                         <param name="transport" type="string">tcp</param>
                         <param name="address" type="string">127.0.0.1</param>
                         <param name="port" type="integer">9080</param>
@@ -419,18 +429,24 @@ architecture is driven by configuration.
                         <param name="workerAcceptMin" type="integer">3</param>
                         <param name="workerAcceptMax" type="integer">8</param>
                         <param name="documentRoot" type="string">webapps</param>
-                        <param name="directoryIndex" type="string">index.do index.php index.html index.htm</param>
+                        <param name="directoryIndex" type="string">
+                            index.do index.php index.html index.htm
+                        </param>
                         <param name="keepAliveMax" type="integer">64</param>
                         <param name="keepAliveTimeout" type="integer">5</param>
-                        <param name="errorsPageTemplatePath" type="string">var/www/errors/error.phtml</param>
+                        <param name="errorsPageTemplatePath" type="string">
+                            var/www/errors/error.phtml
+                        </param>
                     </params>
 
                     <environmentVariables>
-                        <environmentVariable condition="" definition="LOGGER_ACCESS=Access" />
+                        <environmentVariable 
+                            condition="" definition="LOGGER_ACCESS=Access" />
                     </environmentVariables>
 
                     <connectionHandlers>
-                        <connectionHandler type="\AppserverIo\WebServer\ConnectionHandlers\HttpConnectionHandler" />
+                        <connectionHandler 
+                            type="\AppserverIo\WebServer\ConnectionHandlers\HttpConnectionHandler" />
                     </connectionHandlers>
 
                     <authentications>
@@ -439,8 +455,12 @@ architecture is driven by configuration.
                                 <param name="type" type="string">
                                     \AppserverIo\WebServer\Authentication\BasicAuthentication
                                 </param>
-                                <param name="realm" type="string">appserver.io Basic Authentication System</param>
-                                <param name="hash" type="string">YXBwc2VydmVyOmFwcHNlcnZlci5pMA==</param>
+                                <param name="realm" type="string">
+                                    appserver.io Basic Authentication System
+                                </param>
+                                <param name="hash" type="string">
+                                    YXBwc2VydmVyOmFwcHNlcnZlci5pMA==
+                                </param>
                             </params>
                         </authentication>
                     </authentications>
@@ -456,8 +476,12 @@ architecture is driven by configuration.
                     <virtualHosts>
                         <virtualHost name="example.local">
                             <params>
-                                <param name="admin" type="string">admin@appserver.io</param>
-                                <param name="documentRoot" type="string">/opt/appserver/webapps/example</param>
+                                <param name="admin" type="string">
+                                    admin@appserver.io
+                                </param>
+                                <param name="documentRoot" type="string">
+                                    /opt/appserver/webapps/example
+                                </param>
                             </params>
                         </virtualHost>
                     </virtualHosts>

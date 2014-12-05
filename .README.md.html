@@ -462,8 +462,8 @@ function setDocumentScrollTop(ypos)
 <p><a href="https://gitter.im/appserver-io/appserver?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Gitter" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;" /></a> <a href="https://travis-ci.org/appserver-io/appserver"><img src="https://camo.githubusercontent.com/9c0b14449bd9051be6c904e1b0fa9c7db0bb0152/68747470733a2f2f7472617669732d63692e6f72672f6170707365727665722d696f2f6170707365727665722e706e67" alt="Build Status" data-canonical-src="https://travis-ci.org/appserver-io/appserver.png" style="max-width:100%;" /></a> <a href="https://scrutinizer-ci.com/g/appserver-io/appserver/?branch=master"><img src="https://camo.githubusercontent.com/e1ca68668ca93dd8b4c277df901042da007a7259/68747470733a2f2f7363727574696e697a65722d63692e636f6d2f672f6170707365727665722d696f2f6170707365727665722f6261646765732f7175616c6974792d73636f72652e706e673f623d6d6173746572" alt="Scrutinizer Code Quality" data-canonical-src="https://scrutinizer-ci.com/g/appserver-io/appserver/badges/quality-score.png?b=master" style="max-width:100%;" /></a> <a href="https://scrutinizer-ci.com/g/appserver-io/appserver/?branch=master"><img src="https://camo.githubusercontent.com/f5ba473eef0d5ddcc8d84dd4514217123f05dd13/68747470733a2f2f7363727574696e697a65722d63692e636f6d2f672f6170707365727665722d696f2f6170707365727665722f6261646765732f636f7665726167652e706e673f623d6d6173746572" alt="Code Coverage" data-canonical-src="https://scrutinizer-ci.com/g/appserver-io/appserver/badges/coverage.png?b=master" style="max-width:100%;" /></a></p> 
 <p>This is the main repository for the <a href="http://www.appserver.io/">appserver.io</a> project.</p> 
 <p>The objective of the project is to develop a multi-threaded application server for PHP, written in PHP. Yes, pure PHP! You think we aren't serious? Maybe! But we think, in order to enable as many developers in our great community, this will be the one and only way. So with your help we hopefully establish a solution as the standard for enterprise applications in PHP environments.</p> 
-<h1> <a id="user-content-table-of-contents" class="anchor" href="#table-of-contents" aria-hidden="true"><span class="octicon octicon-link"></span></a>Table of Contents</h1> 
-<p><strong><a href="#installation">Installation</a></strong> <strong><a href="#uninstall">Uninstall</a></strong> <strong><a href="#basic-usage">Basic Usage</a></strong> <strong><a href="#webserver">HTTP Server</a></strong> <strong><a href="#servlet-engine">Servlet-Engine</a></strong> <strong><a href="#persistence-container">Persistence-Container</a></strong> <strong><a href="#message-queue">Message-Queue</a></strong> <strong><a href="#runtime-environment">Runtime Environment</a></strong> <strong><a href="#configuration">Configuration</a></strong> <strong><a href="#deployment">Deployment</a></strong></p> 
+<h4> <a id="user-content-table-of-contents" class="anchor" href="#table-of-contents" aria-hidden="true"><span class="octicon octicon-link"></span></a>Table of Contents</h4> 
+<p><a href="#installation">Installation</a><br /> <a href="#uninstall">Uninstall</a><br /> <a href="#basic-usage">Basic Usage</a><br /> <a href="#webserver">HTTP Server</a><br /> <a href="#servlet-engine">Servlet-Engine</a><br /> <a href="#persistence-container">Persistence-Container</a><br /> <a href="#message-queue">Message-Queue</a><br /> <a href="#runtime-environment">Runtime Environment</a><br /> <a href="#configuration">Configuration</a><br /> <a href="#deployment">Deployment</a> </p> 
 <h1> <a id="user-content-installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h1> 
 <p>Besides supporting several operating systems and their specific ways of installing software, we also support several ways of getting this software. So to get your appserver.io package you might do any of the following:</p> 
 <ul> 
@@ -546,8 +546,12 @@ C:\Program Files\appserver&gt;server.bat
 <div class="highlight highlight-xml">
  <pre>&lt;<span class="pl-ent">virtualHost</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>example.local<span class="pl-pds">&quot;</span></span>&gt;
     &lt;<span class="pl-ent">params</span>&gt;
-        &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>admin<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>string<span class="pl-pds">&quot;</span></span>&gt;admin@appserver.io&lt;/<span class="pl-ent">param</span>&gt;
-        &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>documentRoot<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>string<span class="pl-pds">&quot;</span></span>&gt;/opt/appserver/webapps/example&lt;/<span class="pl-ent">param</span>&gt;
+        &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>admin<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>string<span class="pl-pds">&quot;</span></span>&gt;
+            admin@appserver.io
+        &lt;/<span class="pl-ent">param</span>&gt;
+        &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>documentRoot<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>string<span class="pl-pds">&quot;</span></span>&gt;
+            /opt/appserver/webapps/example
+        &lt;/<span class="pl-ent">param</span>&gt;
     &lt;/<span class="pl-ent">params</span>&gt;
 &lt;/<span class="pl-ent">virtualHost</span>&gt;</pre>
 </div> 
@@ -557,8 +561,12 @@ C:\Program Files\appserver&gt;server.bat
 <p>You can set environment variables using either the global or the virtual host based configuration. The example below shows a basic usage of environment variables in XML format.</p> 
 <div class="highlight highlight-xml">
  <pre>&lt;<span class="pl-ent">environmentVariables</span>&gt;
-    &lt;<span class="pl-ent">environmentVariable</span> <span class="pl-e">condition</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span><span class="pl-pds">&quot;</span></span> <span class="pl-e">definition</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>EXAMPLE_VAR=example<span class="pl-pds">&quot;</span></span> /&gt;
-    &lt;<span class="pl-ent">environmentVariable</span> <span class="pl-e">condition</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>Apple@$HTTP_USER_AGENT<span class="pl-pds">&quot;</span></span> <span class="pl-e">definition</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>USER_HAS_APPLE=true<span class="pl-pds">&quot;</span></span> /&gt;
+    &lt;<span class="pl-ent">environmentVariable</span> 
+        <span class="pl-e">condition</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span><span class="pl-pds">&quot;</span></span> 
+        <span class="pl-e">definition</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>EXAMPLE_VAR=example<span class="pl-pds">&quot;</span></span> /&gt;
+    &lt;<span class="pl-ent">environmentVariable</span> 
+        <span class="pl-e">condition</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>Apple@$HTTP_USER_AGENT<span class="pl-pds">&quot;</span></span> 
+        <span class="pl-e">definition</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>USER_HAS_APPLE=true<span class="pl-pds">&quot;</span></span> /&gt;
 &lt;/<span class="pl-ent">environmentVariables</span>&gt;</pre>
 </div> 
 <p>There are several ways in which this feature is used. You can get a rough idea when having a look at Apache modules <a href="http://httpd.apache.org/docs/2.2/mod/mod_env.html">mod_env</a> and <a href="http://httpd.apache.org/docs/2.2/mod/mod_setenvif.html">mod_setenvif</a> which we adopted.</p> 
@@ -694,7 +702,9 @@ C:\Program Files\appserver&gt;server.bat
                         <span class="pl-e">loggerName</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>System<span class="pl-pds">&quot;</span></span>&gt;
                     &lt;<span class="pl-ent">params</span>&gt;
                         &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>admin<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>string<span class="pl-pds">&quot;</span></span>&gt;info@appserver.io&lt;/<span class="pl-ent">param</span>&gt;
-                        &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>software<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>string<span class="pl-pds">&quot;</span></span>&gt;appserver/1.0.0.0 (darwin) PHP/5.5.16&lt;/<span class="pl-ent">param</span>&gt;
+                        &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>software<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>string<span class="pl-pds">&quot;</span></span>&gt;
+                            appserver/1.0.0.0 (darwin) PHP/5.5.16
+                        &lt;/<span class="pl-ent">param</span>&gt;
                         &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>transport<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>string<span class="pl-pds">&quot;</span></span>&gt;tcp&lt;/<span class="pl-ent">param</span>&gt;
                         &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>address<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>string<span class="pl-pds">&quot;</span></span>&gt;127.0.0.1&lt;/<span class="pl-ent">param</span>&gt;
                         &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>port<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>integer<span class="pl-pds">&quot;</span></span>&gt;9080&lt;/<span class="pl-ent">param</span>&gt;
@@ -702,18 +712,24 @@ C:\Program Files\appserver&gt;server.bat
                         &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>workerAcceptMin<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>integer<span class="pl-pds">&quot;</span></span>&gt;3&lt;/<span class="pl-ent">param</span>&gt;
                         &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>workerAcceptMax<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>integer<span class="pl-pds">&quot;</span></span>&gt;8&lt;/<span class="pl-ent">param</span>&gt;
                         &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>documentRoot<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>string<span class="pl-pds">&quot;</span></span>&gt;webapps&lt;/<span class="pl-ent">param</span>&gt;
-                        &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>directoryIndex<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>string<span class="pl-pds">&quot;</span></span>&gt;index.do index.php index.html index.htm&lt;/<span class="pl-ent">param</span>&gt;
+                        &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>directoryIndex<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>string<span class="pl-pds">&quot;</span></span>&gt;
+                            index.do index.php index.html index.htm
+                        &lt;/<span class="pl-ent">param</span>&gt;
                         &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>keepAliveMax<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>integer<span class="pl-pds">&quot;</span></span>&gt;64&lt;/<span class="pl-ent">param</span>&gt;
                         &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>keepAliveTimeout<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>integer<span class="pl-pds">&quot;</span></span>&gt;5&lt;/<span class="pl-ent">param</span>&gt;
-                        &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>errorsPageTemplatePath<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>string<span class="pl-pds">&quot;</span></span>&gt;var/www/errors/error.phtml&lt;/<span class="pl-ent">param</span>&gt;
+                        &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>errorsPageTemplatePath<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>string<span class="pl-pds">&quot;</span></span>&gt;
+                            var/www/errors/error.phtml
+                        &lt;/<span class="pl-ent">param</span>&gt;
                     &lt;/<span class="pl-ent">params</span>&gt;
 
                     &lt;<span class="pl-ent">environmentVariables</span>&gt;
-                        &lt;<span class="pl-ent">environmentVariable</span> <span class="pl-e">condition</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span><span class="pl-pds">&quot;</span></span> <span class="pl-e">definition</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>LOGGER_ACCESS=Access<span class="pl-pds">&quot;</span></span> /&gt;
+                        &lt;<span class="pl-ent">environmentVariable</span> 
+                            <span class="pl-e">condition</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span><span class="pl-pds">&quot;</span></span> <span class="pl-e">definition</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>LOGGER_ACCESS=Access<span class="pl-pds">&quot;</span></span> /&gt;
                     &lt;/<span class="pl-ent">environmentVariables</span>&gt;
 
                     &lt;<span class="pl-ent">connectionHandlers</span>&gt;
-                        &lt;<span class="pl-ent">connectionHandler</span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>\AppserverIo\WebServer\ConnectionHandlers\HttpConnectionHandler<span class="pl-pds">&quot;</span></span> /&gt;
+                        &lt;<span class="pl-ent">connectionHandler</span> 
+                            <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>\AppserverIo\WebServer\ConnectionHandlers\HttpConnectionHandler<span class="pl-pds">&quot;</span></span> /&gt;
                     &lt;/<span class="pl-ent">connectionHandlers</span>&gt;
 
                     &lt;<span class="pl-ent">authentications</span>&gt;
@@ -722,8 +738,12 @@ C:\Program Files\appserver&gt;server.bat
                                 &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>type<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>string<span class="pl-pds">&quot;</span></span>&gt;
                                     \AppserverIo\WebServer\Authentication\BasicAuthentication
                                 &lt;/<span class="pl-ent">param</span>&gt;
-                                &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>realm<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>string<span class="pl-pds">&quot;</span></span>&gt;appserver.io Basic Authentication System&lt;/<span class="pl-ent">param</span>&gt;
-                                &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>hash<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>string<span class="pl-pds">&quot;</span></span>&gt;YXBwc2VydmVyOmFwcHNlcnZlci5pMA==&lt;/<span class="pl-ent">param</span>&gt;
+                                &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>realm<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>string<span class="pl-pds">&quot;</span></span>&gt;
+                                    appserver.io Basic Authentication System
+                                &lt;/<span class="pl-ent">param</span>&gt;
+                                &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>hash<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>string<span class="pl-pds">&quot;</span></span>&gt;
+                                    YXBwc2VydmVyOmFwcHNlcnZlci5pMA==
+                                &lt;/<span class="pl-ent">param</span>&gt;
                             &lt;/<span class="pl-ent">params</span>&gt;
                         &lt;/<span class="pl-ent">authentication</span>&gt;
                     &lt;/<span class="pl-ent">authentications</span>&gt;
@@ -739,8 +759,12 @@ C:\Program Files\appserver&gt;server.bat
                     &lt;<span class="pl-ent">virtualHosts</span>&gt;
                         &lt;<span class="pl-ent">virtualHost</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>example.local<span class="pl-pds">&quot;</span></span>&gt;
                             &lt;<span class="pl-ent">params</span>&gt;
-                                &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>admin<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>string<span class="pl-pds">&quot;</span></span>&gt;admin@appserver.io&lt;/<span class="pl-ent">param</span>&gt;
-                                &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>documentRoot<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>string<span class="pl-pds">&quot;</span></span>&gt;/opt/appserver/webapps/example&lt;/<span class="pl-ent">param</span>&gt;
+                                &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>admin<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>string<span class="pl-pds">&quot;</span></span>&gt;
+                                    admin@appserver.io
+                                &lt;/<span class="pl-ent">param</span>&gt;
+                                &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>documentRoot<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>string<span class="pl-pds">&quot;</span></span>&gt;
+                                    /opt/appserver/webapps/example
+                                &lt;/<span class="pl-ent">param</span>&gt;
                             &lt;/<span class="pl-ent">params</span>&gt;
                         &lt;/<span class="pl-ent">virtualHost</span>&gt;
                     &lt;/<span class="pl-ent">virtualHosts</span>&gt;
