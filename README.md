@@ -1,7 +1,7 @@
 # appserver.io, a PHP application server
 
 [![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/appserver-io/appserver?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![Latest Stable Version](https://poser.pugx.org/appserver-io/appserver/v/stable.png)](https://packagist.org/packages/appserver-io/appserver) [![Total Downloads](https://poser.pugx.org/appserver-io/appserver/downloads.png)](https://packagist.org/packages/appserver-io/appserver) [![License](https://poser.pugx.org/appserver-io/appserver/license.png)](https://packagist.org/packages/appserver-io/appserver) [![Build Status](https://travis-ci.org/appserver-io/appserver.png)](https://travis-ci.org/appserver-io/appserver) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/appserver-io/appserver/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/appserver-io/appserver/?branch=master) [![Code Coverage](https://scrutinizer-ci.com/g/appserver-io/appserver/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/appserver-io/appserver/?branch=master)
+[![Build Status](https://travis-ci.org/appserver-io/appserver.png)](https://travis-ci.org/appserver-io/appserver) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/appserver-io/appserver/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/appserver-io/appserver/?branch=master) [![Code Coverage](https://scrutinizer-ci.com/g/appserver-io/appserver/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/appserver-io/appserver/?branch=master)
 
 This is the main repository for the [appserver.io](http://www.appserver.io/) project.
 
@@ -13,15 +13,15 @@ hopefully establish a solution as the standard for enterprise applications in PH
 # Table of Contents
 
 **[Runtime Environment](#runtime-environment)**
-**[Installation](#installation)**
-**[Uninstall](#uninstall)**
-**[Configuration](#configuration)**
-**[Basic Usage](#basic-usage)**
-**[HTTP Server](#webserver)**
-**[Servlet-Engine](#servlet-engine)**
-**[Persistence-Container](#persistence-container)**
-**[Message-Queue](#message-queue)**
-**[Deployment](#deployment)**
+**[Installation](#installation)** 
+**[Uninstall](#uninstall)** 
+**[Configuration](#configuration)** 
+**[Basic Usage](#basic-usage)** 
+**[HTTP Server](#webserver)** 
+**[Servlet-Engine](#servlet-engine)** 
+**[Persistence-Container](#persistence-container)** 
+**[Message-Queue](#message-queue)** 
+**[Deployment](#deployment)** 
 
 # Runtime Environment
 
@@ -325,12 +325,12 @@ C:\Windows\system32>cd "C:\Program Files\appserver"
 C:\Program Files\appserver>server.bat
 ```
 
-# WebServer
+# HTTP Server
 
 The configuration itself is highly self-explanatory so just have a look to the preferred config
 file and try to change settings. A detailed overview of all configuration settings will follow ...
 
-## VirtualHostModule Configuration
+## Configure a Virtual Host
 
 Using virtual hosts you can extend the default server configuration and produce a host specific
 environment for your app to run.
@@ -353,7 +353,7 @@ which has a different document root than the global configuration has. The virtu
 The `virtualHost` element can hold params, rewrite rules or environment variables which are only 
 available for the host specifically.
 
-## EnvironmentVariableModule Configuration
+## Configure Environment Variables
 
 You can set environment variables using either the global or the virtual host based configuration.
 The example below shows a basic usage of environment variables in XML format.
@@ -386,65 +386,17 @@ specialities too:
 
 ## Modules
 
-The request processing workflow is module based within the php web server. Modules can be implemented 
-according to the `\TechDivision\WebServer\Interfaces\ModuleInterface` interface. It needs an initial
-call of the `init` method and will process any request offered to the `process` method. Just have a 
-look to the core modules `TechDivision/WebServer/Modules/*Modules.php`
+The web server comes with a package of default modules. The functionality that allows us to configure
+a virtual host or environment variables, for example, is also provided by two, maybe the most important,
+modules.
 
-Every module can use various points of executing it's logic by checking the current hook which comes
-to every process call
-
-```php
-public function process(HttpRequestInterface $request, HttpResponseInterface $response, $hook)
-{
-    // if false hook is comming do nothing
-    if (ModuleHooks::REQUEST_POST !== $hook) {
-        return;
-    }
-
-    // do modules logic
-}
-```
-
-### Module Hooks
-
-#### ModuleHooks::REQUEST_PRE
-
-The request pre hook should be used to do something before the request will be parsed.
-So if there is a keep-alive loop going on this will be triggered every request loop.
-
-#### ModuleHooks::REQUEST_POST
-
-The request post hook should be used to do something after the request has been parsed.
-Most modules such as CoreModule will use this hook to do their job.
-
-#### ModuleHooks::RESPONSE_PRE
-
-The response pre hook will be triggered at the point before the response will be prepared.
-For sending it to the to the connection endpoint.
-
-#### ModuleHooks::RESPONSE_POST
-
-The response post hook is the last hook triggered within a keep-alive loop and will execute
-the modules logic when the response is well prepared and ready to dispatch
-
-Have a look at some of the core modules and their configuration here:
-
-* [`TechDivision_VirtualHostModule`](<modules/vhostmodule.md>)
-* [`TechDivision_EnvironmentVariableModule`](modules/environmentvariablemodule.md)
-
-We offer additional modules which are based on external packages. Have a look at them here:
-
-* [`TechDivision_RewriteModule`](<modules/rewritemodule.md>)
-* [`TechDivision_FastCgiModule`](<modules/fastcgimodule.md>)
-
-### RewriteModule
+### Rewrite Module
 
 #### Usage
 
-The module can be used according to the `\TechDivision\WebServer\Interfaces\ModuleInterface` interface.
+The module can be used according to the `\AppserverIo\WebServer\Interfaces\HttpModuleInterface` interface.
 It needs an initial call of the `init` method and will process any request offered to the `process` method.
-The module is best used within the [`TechDivision_WebServer`](<https://github.com/techdivision/TechDivision_WebServer>)
+The module is best used within the [`webserver`](<https://github.com/appserver-io/webserver>)
 project as it offers all needed infrastructure.
 
 #### Rules
@@ -453,7 +405,7 @@ Most important part of the module is the way in which it can perform rewrites. A
 based on rewrite rules which consist of three important parts:
 
 - *condition string* : Conditions which have to be met in order for the rule to take effect. 
-  See more [down here](<#condition-syntax>)
+  See more [down here](#condition-syntax)
 
 - *target string* : The target to rewrite the requested URI to. Within this string you can use 
   backreferences similar
@@ -467,7 +419,7 @@ based on rewrite rules which consist of three important parts:
   therefore result in a rewrite to `/index/welcome.html`
 
 - *flag string* : You can use flags similar to mod_rewrite which are used to make rules react in a 
-  certain way or influence further processing. See more [down here](<#flags>)
+  certain way or influence further processing. See more [down here](#flags)
 
 #### Condition Syntax
 
@@ -533,13 +485,13 @@ flags are:
   the map's index has to match. This matching is done **only** if the rewrite condition matches and will 
   behave as another condition
 
-### VirtualHostModule
+### Virtual-Host Module
 
 #### Usage
 
-The module can be used according to the `\TechDivision\WebServer\Interfaces\ModuleInterface` interface.
-It needs an initial call of the `init` method and will process any request offered to the `process` 
-method. The module is best used within the [`TechDivision_WebServer`](<https://github.com/techdivision/TechDivision_WebServer>)
+The module can be used according to the `\AppserverIo\WebServer\Interfaces\HttpModuleInterface`
+interface. It needs an initial call of the `init` method and will process any request offered to 
+the `process` method. The module is best used within the [webserver](<https://github.com/appserver-io/webserver>)
 project as it offers all needed infrastructure.
 
 #### Examples
@@ -652,7 +604,7 @@ First thing you've to do is to create your SessionBean. What is a SessionBean? I
 to describe it in only a few words, but i'll try. A SessionBean basically is plain PHP class.
 You MUST not instanciate it directly, because the application server takes care of its complete
 lifecycle. Therefore, if you need an instance of a SessionBean, you'll ask the application server 
-to give you a instance. This can be done by the (persistence container client)[https://github.com/techdivision/TechDivision_PersistenceContainerClient].
+to give you a instance. This can be done by a [client](<https://github.com/techdivision/persistencecontainerclient>).
 
 The persistence container client will give you a proxy to the session bean that allows you to
 invoke all methods the SessionBean provides as you can do if you would have real instance. But
