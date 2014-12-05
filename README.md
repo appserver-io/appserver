@@ -297,10 +297,6 @@ Most of the annotation implementations provided by our [Enterprise Beans](https:
 PSR and used for [Dependency Injection](#dependency-injection), which will be described below,
 are based on that annotation implementation.
 
-# Dependency Injection
-
-
-
 # Servlet-Engine
 
 Originally Servlets are the Java counterpart to other dynamic web technologies like PHP or the 
@@ -447,6 +443,34 @@ browser, and ... vóila :)
 > allows you to configure your Servlet without the need to create a XML configuration. In 
 > future, the XML configuration will always overwrite annotations in future versions, keep that
 > in mind!
+
+# Dependency Injection
+
+Dependency Injection, we'll further use DI to make it simple, enables developers to write cleaner, reusable and maintainable code with less coupling by injecting necessary instances at runtime instead of instanciating them in the class itself. Within the application server, each application has it's own scope and therefore a own dependency injection container. This prevents your application from fatal errors like `Cannot redeclare class ...`.
+
+## What can be injected
+
+Generally everything! The application server itself doesn't use DI, instead it provides DI as a service for the applications running within. But, before you can let the DI container inject an instance to your class, you have to register it. Registering a class for DI is pretty simple. To register a class in the DI container the most common way is to use annotations.
+
+```php
+
+namespace Namespace\Modulename
+
+/**
+ * @Stateless(name="MySessionBean")
+ */
+class MySessionBean
+{
+}
+```
+
+When the application server starts, it parses the `META-INF/classes` and `WEB-INF/classes` folder classes with supported annotations. If a class is found, the class will be registered in the application servers naming directory under the name you specify in the annotations `name` Attribute, in this example `MySessionBean`. 
+
+## How to inject an instance
+
+Basically DI can be a manual process where you `ìnject` an instance, needed by another class by passing it to the constructor. Inside the application server, the injection is an process you can't see, it's more a kind of magic that happens behind the secenes. So instead of manually pass the necessary instances to a classes constructor, the DI container will do that for you. You simple has to tell the DI container what you need.
+
+
 
 # Persistence-Container
 
