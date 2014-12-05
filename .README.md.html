@@ -1,0 +1,1026 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Strict//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>/Users/wagnert/Workspace/appserver.io/appserver/.README.md.html</title>
+
+
+<style type="text/css">
+body {
+	color: #333;
+	font: 13px/1.4 Helvetica,arial,freesans,clean,sans-serif;
+	font-family: sans-serif;
+}
+
+.markdown-body {
+    border: 1px solid #CACACA;
+    padding: 30px;
+    font-size: 15px;
+    line-height: 1.7;
+    word-wrap: break-word;
+}
+.markdown-body > *:first-child {
+    margin-top: 0 !important;
+}
+.markdown-body > *:last-child {
+    margin-bottom: 0 !important;
+}
+.markdown-body a.absent {
+    color: #C00;
+}
+.markdown-body a.anchor {
+    bottom: 0;
+    cursor: pointer;
+    display: block;
+    left: 0;
+    margin-left: -30px;
+    padding-left: 30px;
+    padding-right: 6px;
+    position: absolute;
+    top: 0;
+}
+.markdown-body a.anchor:focus {
+    outline: medium none;
+}
+.markdown-body h1, .markdown-body h2, .markdown-body h3, .markdown-body h4, .markdown-body h5, .markdown-body h6 {
+    cursor: text;
+    font-weight: bold;
+    line-height: 1.7;
+    margin: 1em 0 15px;
+    padding: 0;
+    position: relative;
+}
+
+.markdown-body h1 .octicon-link, .markdown-body h2 .octicon-link, .markdown-body h3 .octicon-link, .markdown-body h4 .octicon-link, .markdown-body h5 .octicon-link, .markdown-body h6 .octicon-link {
+    color: #000;
+    display: none;
+}
+.markdown-body h1:hover a.anchor, .markdown-body h2:hover a.anchor, .markdown-body h3:hover a.anchor, .markdown-body h4:hover a.anchor, .markdown-body h5:hover a.anchor, .markdown-body h6:hover a.anchor {
+    line-height: 1;
+    margin-left: -22px;
+    padding-left: 0;
+    text-decoration: none;
+    top: 15%;
+}
+.markdown-body h1:hover a.anchor .octicon-link, .markdown-body h2:hover a.anchor .octicon-link, .markdown-body h3:hover a.anchor .octicon-link, .markdown-body h4:hover a.anchor .octicon-link, .markdown-body h5:hover a.anchor .octicon-link, .markdown-body h6:hover a.anchor .octicon-link {
+    display: inline-block;
+}
+.markdown-body h1 tt, .markdown-body h1 code, .markdown-body h2 tt, .markdown-body h2 code, .markdown-body h3 tt, .markdown-body h3 code, .markdown-body h4 tt, .markdown-body h4 code, .markdown-body h5 tt, .markdown-body h5 code, .markdown-body h6 tt, .markdown-body h6 code {
+    font-size: inherit;
+}
+.markdown-body h1 {
+    border-bottom: 1px solid #DDD;
+    font-size: 2.5em;
+}
+.markdown-body h2 {
+    border-bottom: 1px solid #EEE;
+    font-size: 2em;
+}
+.markdown-body h3 {
+    font-size: 1.5em;
+}
+.markdown-body h4 {
+    font-size: 1.2em;
+}
+.markdown-body h5 {
+    font-size: 1em;
+}
+.markdown-body h6 {
+    color: #777;
+    font-size: 1em;
+}
+.markdown-body p, .markdown-body blockquote, .markdown-body ul, .markdown-body ol, .markdown-body dl, .markdown-body table, .markdown-body pre {
+    margin: 15px 0;
+}
+.markdown-body hr {
+    background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAYAAAAECAYAAACtBE5DAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNSBNYWNpbnRvc2giIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6OENDRjNBN0E2NTZBMTFFMEI3QjRBODM4NzJDMjlGNDgiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6OENDRjNBN0I2NTZBMTFFMEI3QjRBODM4NzJDMjlGNDgiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo4Q0NGM0E3ODY1NkExMUUwQjdCNEE4Mzg3MkMyOUY0OCIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo4Q0NGM0E3OTY1NkExMUUwQjdCNEE4Mzg3MkMyOUY0OCIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PqqezsUAAAAfSURBVHjaYmRABcYwBiM2QSA4y4hNEKYDQxAEAAIMAHNGAzhkPOlYAAAAAElFTkSuQmCC") repeat-x;
+    border: 0;
+    color: #CCC;
+    height: 4px;
+    margin: 15px 0;
+    padding: 0;
+}
+.markdown-body ul, .markdown-body ol {
+    padding-left: 30px;
+}
+.markdown-body ul.no-list, .markdown-body ol.no-list {
+    list-style-type: none;
+    padding: 0;
+}
+.markdown-body ul ul, .markdown-body ul ol, .markdown-body ol ol, .markdown-body ol ul {
+    margin-bottom: 0;
+    margin-top: 0;
+}
+.markdown-body dl {
+    padding: 0;
+}
+.markdown-body dl dt {
+    font-size: 14px;
+    font-style: italic;
+    font-weight: bold;
+    margin-top: 15px;
+    padding: 0;
+}
+.markdown-body dl dd {
+    margin-bottom: 15px;
+    padding: 0 15px;
+}
+.markdown-body blockquote {
+    border-left: 4px solid #DDD;
+    color: #777;
+    padding: 0 15px;
+}
+.markdown-body blockquote > *:first-child {
+    margin-top: 0;
+}
+.markdown-body blockquote > *:last-child {
+    margin-bottom: 0;
+}
+.markdown-body table {
+    display: block;
+    overflow: auto;
+    width: 100%;
+    border-collapse: collapse;
+}
+.markdown-body table th {
+    font-weight: bold;
+}
+.markdown-body table th, .markdown-body table td {
+    border: 1px solid #DDD;
+    padding: 6px 13px;
+}
+.markdown-body table tr {
+    background-color: #FFF;
+    border-top: 1px solid #CCC;
+}
+.markdown-body table tr:nth-child(2n) {
+    background-color: #F8F8F8;
+}
+.markdown-body img {
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -o-box-sizing: border-box;
+    box-sizing: border-box;
+    max-width: 100%;
+    border: 0px;
+}
+.markdown-body span.frame {
+    display: block;
+    overflow: hidden;
+}
+.markdown-body span.frame > span {
+    border: 1px solid #DDD;
+    display: block;
+    float: left;
+    margin: 13px 0 0;
+    overflow: hidden;
+    padding: 7px;
+    width: auto;
+}
+.markdown-body span.frame span img {
+    display: block;
+    float: left;
+}
+.markdown-body span.frame span span {
+    clear: both;
+    color: #333;
+    display: block;
+    padding: 5px 0 0;
+}
+.markdown-body span.align-center {
+    clear: both;
+    display: block;
+    overflow: hidden;
+}
+.markdown-body span.align-center > span {
+    display: block;
+    margin: 13px auto 0;
+    overflow: hidden;
+    text-align: center;
+}
+.markdown-body span.align-center span img {
+    margin: 0 auto;
+    text-align: center;
+}
+.markdown-body span.align-right {
+    clear: both;
+    display: block;
+    overflow: hidden;
+}
+.markdown-body span.align-right > span {
+    display: block;
+    margin: 13px 0 0;
+    overflow: hidden;
+    text-align: right;
+}
+.markdown-body span.align-right span img {
+    margin: 0;
+    text-align: right;
+}
+.markdown-body span.float-left {
+    display: block;
+    float: left;
+    margin-right: 13px;
+    overflow: hidden;
+}
+.markdown-body span.float-left span {
+    margin: 13px 0 0;
+}
+.markdown-body span.float-right {
+    display: block;
+    float: right;
+    margin-left: 13px;
+    overflow: hidden;
+}
+.markdown-body span.float-right > span {
+    display: block;
+    margin: 13px auto 0;
+    overflow: hidden;
+    text-align: right;
+}
+.markdown-body code, .markdown-body tt {
+    background-color: #F8F8F8;
+    border: 1px solid #DDD;
+    border-radius: 3px;
+    margin: 0 2px;
+    padding: 0 5px;
+}
+.markdown-body code {
+    white-space: nowrap;
+}
+.markdown-body pre > code {
+    border: medium none;
+    margin: 0;
+    padding: 0;
+    white-space: pre;
+}
+.markdown-body .highlight pre, .markdown-body pre {
+    background-color: #F8F8F8;
+    border: 1px solid #DDD;
+    border-radius: 3px;
+    font-size: 13px;
+    line-height: 19px;
+    overflow: auto;
+    padding: 6px 10px;
+}
+.markdown-body pre code, .markdown-body pre tt {
+    border: medium none;
+    margin: 0;
+    padding: 0;
+    word-wrap: normal;
+}
+
+pre, code, tt {
+    font-family: Consolas,"Liberation Mono",Courier,monospace;
+    font-size: 12px;
+}
+
+.highlight {
+    background: #FFF;
+}
+.highlight .k,
+.highlight .o,
+.highlight .cp,
+.highlight .cs,
+.highlight .gs,
+.highlight .gu,
+.highlight .kc,
+.highlight .kd,
+.highlight .kn,
+.highlight .kp,
+.highlight .kr,
+.highlight .kt,
+.highlight .nc,
+.highlight .ne,
+.highlight .nf,
+.highlight .ow {
+    font-weight: bold;
+}
+.highlight .gd,
+.highlight .gd .x,
+.highlight .gi,
+.highlight .gi .x,
+.type-csharp .highlight .nf,
+.type-csharp .highlight .nn {
+    color: #000;
+}
+.highlight .c,
+.highlight .cm,
+.highlight .c1 {
+    color: #998;
+    font-style: italic;
+}
+.highlight .err {
+    background-color: #E3D2D2;
+    color: #A61717;
+}
+.highlight .cp,
+.highlight .cs {
+    color: #999;
+}
+.highlight .cs,
+.highlight .ge {
+    font-style: italic;
+}
+.highlight .gd {
+    background-color: #FDD;
+}
+.highlight .gd .x {
+    background-color: #FAA;
+}
+.highlight .gr,
+.highlight .gt {
+    color: #A00;
+}
+.highlight .gh {
+    color: #999;
+}
+.highlight .gi {
+    background-color: #DFD;
+}
+.highlight .gi .x {
+    background-color: #AFA;
+}
+.highlight .go {
+    color: #888;
+}
+.highlight .gp,
+.highlight .nn {
+    color: #555;
+}
+.highlight .gu,
+.highlight .ni {
+    color: #800080;
+}
+.highlight .kt {
+    color: #458;
+}
+.highlight .m {
+    color: #099;
+}
+.highlight .s {
+    color: #D14;
+}
+.highlight .n {
+    color: #333;
+}
+.highlight .na,
+.highlight .no,
+.highlight .nv,
+.highlight .vc,
+.highlight .vg,
+.highlight .vi {
+    color: #008080;
+}
+.highlight .nb {
+    color: #0086B3;
+}
+.highlight .nc {
+    color: #458;
+}
+.highlight .ne,
+.highlight .nf {
+    color: #900;
+}
+.highlight .nt {
+    color: #000080;
+}
+.highlight .w {
+    color: #BBB;
+}
+.highlight .mf,
+.highlight .mh,
+.highlight .mi,
+.highlight .mo {
+    color: #099;
+}
+.highlight .sb,
+.highlight .sc,
+.highlight .sd,
+.highlight .s2,
+.highlight .se,
+.highlight .sh,
+.highlight .si,
+.highlight .sx,
+.highlight .s1 {
+    color: #D14;
+}
+.highlight .sr {
+    color: #009926;
+}
+.highlight .ss {
+    color: #990073;
+}
+.highlight .bp {
+    color: #999;
+}
+.highlight .il {
+    color: #099;
+}
+.highlight .gc {
+    background-color: #EAF2F5;
+    color: #999;
+}
+.type-csharp .highlight .k,
+.type-csharp .highlight .kt {
+    color: #00F;
+}
+.type-csharp .highlight .nf {
+    font-weight: normal;
+}
+.type-csharp .highlight .nc {
+    color: #2B91AF;
+}
+.type-csharp .highlight .s,
+.type-csharp .highlight .sc {
+    color: #A31515;
+}
+
+</style>
+
+
+<script type="text/javascript">
+
+function getDocumentScrollTop() 
+{
+   var res = document.body.scrollTop || document.documentElement.scrollTop || window.pageYOffset || 0;
+   // alert(res);
+   return res;
+}
+
+function setDocumentScrollTop(ypos) 
+{
+	window.scrollTo(0, ypos);
+}
+
+</script>
+
+
+</head>
+<body class="markdown-body">
+<h1> <a id="user-content-appserverio-a-php-application-server" class="anchor" href="#appserverio-a-php-application-server" aria-hidden="true"><span class="octicon octicon-link"></span></a>appserver.io, a PHP application server</h1> 
+<p><a href="https://gitter.im/appserver-io/appserver?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Gitter" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;" /></a> <a href="https://packagist.org/packages/appserver-io/appserver"><img src="https://camo.githubusercontent.com/4d826850683bd193d6127f52e47de27acf62f233/68747470733a2f2f706f7365722e707567782e6f72672f6170707365727665722d696f2f6170707365727665722f762f737461626c652e706e67" alt="Latest Stable Version" data-canonical-src="https://poser.pugx.org/appserver-io/appserver/v/stable.png" style="max-width:100%;" /></a> <a href="https://packagist.org/packages/appserver-io/appserver"><img src="https://camo.githubusercontent.com/523c40114af332296e7ef3bceb0e694468d0f0e4/68747470733a2f2f706f7365722e707567782e6f72672f6170707365727665722d696f2f6170707365727665722f646f776e6c6f6164732e706e67" alt="Total Downloads" data-canonical-src="https://poser.pugx.org/appserver-io/appserver/downloads.png" style="max-width:100%;" /></a> <a href="https://packagist.org/packages/appserver-io/appserver"><img src="https://camo.githubusercontent.com/ae6017739e7c2ee6d7c9dc573dd1f554b2c65bfd/68747470733a2f2f706f7365722e707567782e6f72672f6170707365727665722d696f2f6170707365727665722f6c6963656e73652e706e67" alt="License" data-canonical-src="https://poser.pugx.org/appserver-io/appserver/license.png" style="max-width:100%;" /></a> <a href="https://travis-ci.org/appserver-io/appserver"><img src="https://camo.githubusercontent.com/9c0b14449bd9051be6c904e1b0fa9c7db0bb0152/68747470733a2f2f7472617669732d63692e6f72672f6170707365727665722d696f2f6170707365727665722e706e67" alt="Build Status" data-canonical-src="https://travis-ci.org/appserver-io/appserver.png" style="max-width:100%;" /></a> <a href="https://scrutinizer-ci.com/g/appserver-io/appserver/?branch=master"><img src="https://camo.githubusercontent.com/e1ca68668ca93dd8b4c277df901042da007a7259/68747470733a2f2f7363727574696e697a65722d63692e636f6d2f672f6170707365727665722d696f2f6170707365727665722f6261646765732f7175616c6974792d73636f72652e706e673f623d6d6173746572" alt="Scrutinizer Code Quality" data-canonical-src="https://scrutinizer-ci.com/g/appserver-io/appserver/badges/quality-score.png?b=master" style="max-width:100%;" /></a> <a href="https://scrutinizer-ci.com/g/appserver-io/appserver/?branch=master"><img src="https://camo.githubusercontent.com/f5ba473eef0d5ddcc8d84dd4514217123f05dd13/68747470733a2f2f7363727574696e697a65722d63692e636f6d2f672f6170707365727665722d696f2f6170707365727665722f6261646765732f636f7665726167652e706e673f623d6d6173746572" alt="Code Coverage" data-canonical-src="https://scrutinizer-ci.com/g/appserver-io/appserver/badges/coverage.png?b=master" style="max-width:100%;" /></a></p> 
+<p>This is the main repository for the <a href="http://www.appserver.io/">appserver.io</a> project.</p> 
+<p>The objective of the project is to develop a multi-threaded application server for PHP, written in PHP. Yes, pure PHP! You think we aren't serious? Maybe! But we think, in order to enable as many developers in our great community, this will be the one and only way. So with your help we hopefully establish a solution as the standard for enterprise applications in PHP environments.</p> 
+<h1> <a id="user-content-table-of-contents" class="anchor" href="#table-of-contents" aria-hidden="true"><span class="octicon octicon-link"></span></a>Table of Contents</h1> 
+<p><strong><a href="#runtime-environment">Runtime Environment</a></strong> <strong><a href="#installation">Installation</a></strong> <strong><a href="#uninstall">Uninstall</a></strong> <strong><a href="#configuration">Configuration</a></strong> <strong><a href="#basic-usage">Basic Usage</a></strong> <strong><a href="#webserver">HTTP Server</a></strong> <strong><a href="#servlet-engine">Servlet-Engine</a></strong> <strong><a href="#persistence-container">Persistence-Container</a></strong> <strong><a href="#message-queue">Message-Queue</a></strong> <strong><a href="#deployment">Deployment</a></strong></p> 
+<h1> <a id="user-content-runtime-environment" class="anchor" href="#runtime-environment" aria-hidden="true"><span class="octicon octicon-link"></span></a>Runtime Environment</h1> 
+<p>The runtime environment appserver.io is using is delivered by the package <a href="https://github.com/appserver-io-php/runtime">runtime</a>. This package provides the appserver runtime which is system independent and encloses a thread-safe compiled PHP environment. Besides the most recent PHP 5.5.x version the package came with installed extensions:</p> 
+<ul> 
+ <li><a href="http://github.com/appserver-io-php/pthreads">pthreads</a></li> 
+ <li> <a href="https://github.com/appserver-io/php-ext-appserver">appserver</a> (contains some replacement functions which behave badly in a multithreaded environment)</li> 
+</ul> 
+<p>Additionally the PECL extensions <a href="http://pecl.php.net/package/xdebug">XDebug</a> and <a href="http://pecl.php.net/package/ev">ev</a> are compiled as a shared modules. XDebug is necessary to render detailed code coverage reports when running unit and integration tests. ev will be used to integrate a timer service in one of the future versions.</p> 
+<h1> <a id="user-content-installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h1> 
+<p>Besides supporting several operating systems and their specific ways of installing software, we also support several ways of getting this software. So to get your appserver.io package you might do any of the following:</p> 
+<ul> 
+ <li><p>Download one of our <a href="https://github.com/appserver-io/appserver/releases"><strong>releases</strong></a> right from this repository which provide tested install packages</p></li> 
+ <li><p>Grab any of our <a href="http://builds.appserver.io/"><strong>nightlies</strong></a> from our project page to get bleeding edge install packages which still might have some bugs</p></li> 
+ <li><p>Build your own package using <a href="http://ant.apache.org/">ant</a>! To do so clone the <a href="https://github.com/appserver-io-php/runtime">runtime</a> first. Then update at least the <code>os.family</code> and <code>os.distribution</code> build properties according to your environment and build the appserver with the ant target appropriate for your installer (e.g. <code>create-pkg</code> for Mac or <code>create-deb</code> for Debian based systems).</p></li> 
+</ul> 
+<p>The package will install with these basic default characteristics:</p> 
+<ul> 
+ <li>Install dir: <code>/opt/appserver</code> </li> 
+ <li>Autostart after installation, no autostart on reboot</li> 
+ <li>Reachable under pre-configured ports as described <a href="#basic-usage">here</a> </li> 
+</ul> 
+<p>For OS specific steps and characteristics see below for tested environments.</p> 
+<h2> <a id="user-content-mac-os-x" class="anchor" href="#mac-os-x" aria-hidden="true"><span class="octicon octicon-link"></span></a>Mac OS X</h2> 
+<ul> 
+ <li>Tested versions: 10.8.x +</li> 
+ <li>Ant build: 
+  <ul> 
+   <li> <code>os.family</code> = mac </li> 
+   <li>target <code>create-pkg</code> </li> 
+  </ul> </li> 
+</ul> 
+<h2> <a id="user-content-windows" class="anchor" href="#windows" aria-hidden="true"><span class="octicon octicon-link"></span></a>Windows</h2> 
+<ul> 
+ <li>Tested versions: 7 +</li> 
+ <li>Ant build: 
+  <ul> 
+   <li> <code>os.family</code> = win</li> 
+   <li>target <code>WIN-create-jar</code> </li> 
+  </ul> </li> 
+</ul> 
+<p>As we deliver the Windows appserver as a .jar file, a installed Java Runtime Environment (or JDK that is) is a vital requirement for using it. If the JRE/JDK is not installed you have to do so first. You might get it from <a href="http://www.oracle.com/technetwork/java/javase/downloads/jre7-downloads-1880261.html">Oracle's download page</a>. If this requirement is met you can start the installation by simply double-clicking the .jar archive.</p> 
+<h2> <a id="user-content-debian" class="anchor" href="#debian" aria-hidden="true"><span class="octicon octicon-link"></span></a>Debian</h2> 
+<ul> 
+ <li>Tested versions: Squeeze +</li> 
+ <li>Ant build: 
+  <ul> 
+   <li> <code>os.family</code> = linux</li> 
+   <li> <code>os.distribution</code> = debian </li> 
+   <li>target <code>create-deb</code> </li> 
+  </ul> </li> 
+</ul> 
+<p>If you're on a Debian system you might also try our .deb repository:</p> 
+<pre><code>root@debian:~# echo &quot;deb http://deb.appserver.io/ wheezy main&quot; &gt; /etc/apt/sources.list.d/appserver.list
+root@debian:~# wget http://deb.appserver.io/appserver.gpg -O - | apt-key add -
+root@debian:~# aptitude update
+root@debian:~# aptitude install appserver
+</code></pre> 
+<h2> <a id="user-content-fedora" class="anchor" href="#fedora" aria-hidden="true"><span class="octicon octicon-link"></span></a>Fedora</h2> 
+<ul> 
+ <li>Tested versions: 20</li> 
+ <li>Ant build: 
+  <ul> 
+   <li> <code>os.family</code> = linux</li> 
+   <li> <code>os.distribution</code> = fedora </li> 
+   <li>target <code>create-rpm</code> </li> 
+  </ul> </li> 
+</ul> 
+<h2> <a id="user-content-centos" class="anchor" href="#centos" aria-hidden="true"><span class="octicon octicon-link"></span></a>CentOS</h2> 
+<ul> 
+ <li>Tested versions: 6.5</li> 
+ <li>Ant build: 
+  <ul> 
+   <li> <code>os.family</code> = linux</li> 
+   <li> <code>os.distribution</code> = centos </li> 
+   <li>target <code>create-rpm</code> </li> 
+  </ul> </li> 
+</ul> 
+<p>Installation and basic usage is the same as on Fedora <strong>but</strong> CentOS requires additional repositories like <a href="http://rpms.famillecollet.com/">remi</a> or <a href="http://fedoraproject.org/wiki/EPEL">EPEL</a> to satisfy additional dependencies.</p> 
+<h2> <a id="user-content-raspbian" class="anchor" href="#raspbian" aria-hidden="true"><span class="octicon octicon-link"></span></a>Raspbian</h2> 
+<p>As an experiment we offer Raspbian and brought the appserver to an ARM environment. What should we say, it worked! :D With <code>os.distribution</code> = raspbian you might give it a try to build it yourself (plan at least 5 hours) as we currently do not offer prepared install packages.</p> 
+<h1> <a id="user-content-uninstall" class="anchor" href="#uninstall" aria-hidden="true"><span class="octicon octicon-link"></span></a>Uninstall</h1> 
+<p>Before uninstalling you should stop all services which are still running, otherwise there might be problems with existing pid-files on Linux and Mac for the next time you install it. You can have a look how to do so <a href="#start-and-stop-scripts">here</a>.</p> 
+<p>To uninstall the appserver on Linux you might rely on your package management system. On Windows you can use the normal uninstall process provided by the operating system.</p> 
+<p>Under Mac OS X you can simply delete the <code>/opt/appserver</code> folder and delete the configuration files for the launch daemons. These are files are located in folder <code>/Library/LaunchDaemons</code> and named <code>io.appserver.&lt;DAEMON&gt;.plist</code>.</p> 
+<h1> <a id="user-content-configuration" class="anchor" href="#configuration" aria-hidden="true"><span class="octicon octicon-link"></span></a>Configuration</h1> 
+<p>We believe that the appserver should be highly configurable, so anyone interested can fiddle around with it. Therefor we provide a central configuration file located at <code>/opt/appserver/etc/appserver.xml</code>.</p> 
+<p>This file contains the complete <a href="#the-architecture">architecture</a> as an XML structure.</p> 
+<p>So if you want to change used components, introduce new services or scale the system by adding additional servers you can do so with some lines of XML.You might have a look at a basic <code>appserver.xml</code>.</p> 
+<h2> <a id="user-content-the-architecture" class="anchor" href="#the-architecture" aria-hidden="true"><span class="octicon octicon-link"></span></a>The Architecture</h2> 
+<p>In this example we have a shortened piece of the <code>apserver.xml</code> file to understand how the architecture is driven by configuration.</p> 
+<div class="highlight highlight-xml">
+ <pre>&lt;<span class="pl-ent">container</span>
+    <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>webserver<span class="pl-pds">&quot;</span></span>
+    <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>TechDivision\WebContainer\Container<span class="pl-pds">&quot;</span></span>&gt;
+    &lt;<span class="pl-ent">description</span>&gt;
+        <span class="pl-s1"><span class="pl-pds">&lt;![CDATA[</span>This is an example of a webserver container that handles http requests in common way<span class="pl-pds">]]&gt;</span></span>
+    &lt;/<span class="pl-ent">description</span>&gt;
+    &lt;<span class="pl-ent">deployment</span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>TechDivision\WebContainer\WebContainerDeployment<span class="pl-pds">&quot;</span></span> /&gt;
+    &lt;<span class="pl-ent">host</span>
+        <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>localhost<span class="pl-pds">&quot;</span></span>
+        <span class="pl-e">appBase</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>/webapps<span class="pl-pds">&quot;</span></span>
+        <span class="pl-e">serverAdmin</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>info@appserver.io<span class="pl-pds">&quot;</span></span>
+        <span class="pl-e">serverSoftware</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>appserver/${appserver.version} (${os.family}) PHP/${appserver.php.version}<span class="pl-pds">&quot;</span></span> /&gt;
+    &lt;<span class="pl-ent">servers</span>&gt;
+        &lt;<span class="pl-ent">server</span>
+            <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>\TechDivision\WebSocketServer\Servers\AsyncServer<span class="pl-pds">&quot;</span></span>
+            <span class="pl-e">socket</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>\TechDivision\WebSocketServer\Sockets\AsyncSocket<span class="pl-pds">&quot;</span></span>
+            <span class="pl-e">serverContext</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>\TechDivision\Server\ServerContext<span class="pl-pds">&quot;</span></span>
+            <span class="pl-e">loggerName</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>System<span class="pl-pds">&quot;</span></span>&gt;
+            &lt;<span class="pl-ent">params</span>&gt;
+                &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>transport<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>string<span class="pl-pds">&quot;</span></span>&gt;tcp&lt;/<span class="pl-ent">param</span>&gt;
+                &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>address<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>string<span class="pl-pds">&quot;</span></span>&gt;0.0.0.0&lt;/<span class="pl-ent">param</span>&gt;
+                &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>port<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>integer<span class="pl-pds">&quot;</span></span>&gt;8589&lt;/<span class="pl-ent">param</span>&gt;
+                &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>workerNumber<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>integer<span class="pl-pds">&quot;</span></span>&gt;64&lt;/<span class="pl-ent">param</span>&gt;
+
+                <span class="pl-c">&lt;!-- configure the server as you would like --&gt;</span>
+
+            &lt;/<span class="pl-ent">params</span>&gt;
+
+            &lt;<span class="pl-ent">connectionHandlers</span>&gt;
+                &lt;<span class="pl-ent">connectionHandler</span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>\TechDivision\WebSocketProtocol\WebSocketConnectionHandler<span class="pl-pds">&quot;</span></span> /&gt;
+            &lt;/<span class="pl-ent">connectionHandlers</span>&gt;
+        &lt;/<span class="pl-ent">server</span>&gt;
+
+        <span class="pl-c">&lt;!-- Here, additional servers might be added --&gt;</span>
+
+    &lt;/<span class="pl-ent">servers</span>&gt;
+&lt;/<span class="pl-ent">container</span>&gt;</pre>
+</div> 
+<p>In the above example you can see three important components of the appserver architecture being used. The <a href=".architecture.md.html#container"><em>container</em></a>, <a href=".architecture.md.html#server"><em>server</em></a> and a <a href=".architecture.md.html#protocol"><em>protocol</em></a> (if you did not read about our basic <a href=".architecture.md.html">architecture</a> you should now). We are basically building up a container which holds a server using the websocket protocol to handle incomming requests.</p> 
+<h3> <a id="user-content-container-configuration" class="anchor" href="#container-configuration" aria-hidden="true"><span class="octicon octicon-link"></span></a>Container configuration</h3> 
+<p>A <em>container</em> is created by using the <code>container</code> element within the <code>containers</code> collection of the <code>appserver</code> document element. Two things make this element in a specific container being built up by the system on startup:</p> 
+<ul> 
+ <li><p>The <code>type</code> attribute states a class extending our <code>AbstractContainerThread</code> which makes a container into a certain kind of container.</p></li> 
+ <li><p>The <code>deployment</code> element states a class containing preparations for starting up the container. It can be considered a hook which will be invoked before the container will be available.</p></li> 
+</ul> 
+<p>That is basically everything there is to do to create a new container. To make use of it, it has to contain at least one <em>server</em> within its <code>servers</code> collection.</p> 
+<h3> <a id="user-content-server-configuration" class="anchor" href="#server-configuration" aria-hidden="true"><span class="octicon octicon-link"></span></a>Server configuration</h3> 
+<p>The <em>servers</em> contained by our <em>container</em> can also be losely drafted by the XML configuration and will be instantiated on container bootup. To enable a <em>server</em> you have to mention three basic attributes of the element:</p> 
+<ul> 
+ <li><p>The <code>type</code> specifies a class implementing the <code>ServerInterface</code> which implements the basic behaviour of the server on receiving a connection and how it will handle it.</p></li> 
+ <li><p>The <code>socket</code> attribute specifies the type of socket the server should open. E.g. a stream or asynchonious socket</p></li> 
+ <li>The <code>serverContext</code> specifies the server's soure of configuration and container for runtime information e.g. ServerVariables like <code>DOCUMENT_ROOT</code> </li> 
+</ul> 
+<p>So we have our specific server which will open a certain port and operate in a defined context. But to make the server handle a certain type of requests it needs to know which <em>protocol</em> to speak.</p> 
+<p>This can be done using the <code>connectionHandler</code> element. Certain server wrappers can handle certain protocols. Therefor we can use the protocols which a server wrapper, e.g. <code>WebServer</code> supports in form of connection handlers. <a href="https://github.com/techdivision/TechDivision_WebServer">WebServer</a> offers a <code>HttpConnectionHandler</code> class. By using it, the server is able to understand the HTTP protocol. </p> 
+<h1> <a id="user-content-basic-usage" class="anchor" href="#basic-usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Basic Usage</h1> 
+<p>The appserver will automatically start after your installation wizard (or package manager) finishes the setup. You can use it without limitations from now on.</p> 
+<p>Below you can find basic instructions on how to make use of the appserver. After the installation you might want to have a look and some of the bundled apps. Two of are interesting in particular:</p> 
+<ul> 
+ <li><p><strong>Example</strong> shows basic usage of services. You can reach it at <code>http://127.0.0.1:9080/example</code></p></li> 
+ <li><p><strong>Admin</strong> appserver and app management <code>http://127.0.0.1:9080/admin</code></p></li> 
+</ul> 
+<p>Start your favorite browser and have a look at what we can do. :) To pass the password barriers use the default login <code>appserver/appserver.i0</code>.</p> 
+<p>You will see that we provide basic frontend implementations of services the appserver runtime provides. If you want to use these services yourself you should have a look into the code of our apps and read about <a href="../basics/webapp-basics/.app-deployment.md.html">app development</a>.</p> 
+<p>You might be curious about the different port we use. Per default the appserver will open several ports at which it's services are available. As we do not want to block (or be blocked by) other services we use ports of a higher range.</p> 
+<p>As a default we use the following ports:</p> 
+<ul> 
+ <li> <p>WebContainer</p> 
+  <ul> 
+   <li>Http-Server: <code>9080</code> </li> 
+   <li>Https-Server: <code>9443</code> </li> 
+   <li>WebSocketServer: <code>8589</code><br /> </li> 
+  </ul> </li> 
+ <li> <p>Persistence-MQ-Container</p> 
+  <ul> 
+   <li>PersistenceServer: <code>8585</code> </li> 
+   <li>PersistenceServer: <code>8587</code> </li> 
+  </ul> </li> 
+</ul> 
+<p>You can change this default port mapping by using the <a href="../basics/appserver-basics/.the-appserver_xml-configuration-file.md.html">configuration file</a>. If you are interested in our naming, you can see our container-&gt;server pattern, you might want to have a deeper look into our <a href="../basics/appserver-basics/.architecture.md.html">architecture</a></p> 
+<h2> <a id="user-content-start-and-stop-scripts" class="anchor" href="#start-and-stop-scripts" aria-hidden="true"><span class="octicon octicon-link"></span></a>Start and Stop Scripts</h2> 
+<p>Together with the appserver we deliver several standalone processes which we need for proper functioning of different features.</p> 
+<p>For these processes we provide start and stop scripts for all *nix like operating systems. These work the way they normally would on the regarding system. They are:</p> 
+<ul> 
+ <li><p><code>appserver</code>: The main process which will start the appserver itself</p></li> 
+ <li><p><code>appserver-php5-fpm</code>: php-fpm + appserver configuration. Our default FastCGI backend. Others might be added the same way</p></li> 
+ <li><p><code>appserver-watcher</code>: A watchdog which monitors filesystem changes and manages appserver restarts</p></li> 
+</ul> 
+<p>On a normal system all three of these processes should run to enable the full feature set. To ultimately run the appserver only the appserver process is needed but you will miss simple on-the-fly deployment (<code>appserver-watcher</code>) and might have problems with legacy applications.</p> 
+<p>Depending on the FastCGI Backend you want to use you might ditch <code>appserver-php5-fpm</code> for other processes e.g. supplying you with a hhvm backend.</p> 
+<p>Currently we support three different types of init scripts which support the commands <code>start</code>, <code>stop</code>, <code>status</code> and <code>restart</code> (additional commands migth be available on other systems).</p> 
+<p><strong>Mac OS X (LAUNCHD)</strong> The LAUNCHD launch daemons are located within the appserver installation at <code>/opt/appserver/sbin</code>. They can be used with the schema <code>/opt/appserver/sbin/&lt;DAEMON&gt; &lt;COMMAND&gt;</code></p> 
+<p><strong>Debian, Raspbian, CentOS, ...(SystemV)</strong> Commonly known and located in <code>/etc/init.d/</code> they too support the commands mentioned above provided in the form <code>/etc/init.d/&lt;DAEMON&gt; &lt;COMMAND&gt;</code>.</p> 
+<p><strong>Fedora, ... (systemd)</strong> systemd init scripts can be used using the <code>systemctl</code> command with the syntax <code>systemctl &lt;COMMAND&gt; &lt;DAEMON&gt;</code>.</p> 
+<p><strong>Windows</strong></p> 
+<p>On Windows we sadly do not offer any of these scripts. After the installation you can start the Application Server with the <code>server.bat</code> file located within the root directory of your installation. Best thing to do would be starting a command prompt as an administrator snd run the following commands (assuming default installation path):</p> 
+<pre><code>C:\Windows\system32&gt;cd &quot;C:\Program Files\appserver&quot;
+C:\Program Files\appserver&gt;server.bat
+</code></pre> 
+<h1> <a id="user-content-webserver" class="anchor" href="#webserver" aria-hidden="true"><span class="octicon octicon-link"></span></a>WebServer</h1> 
+<p>The configuration itself is highly self-explanatory so just have a look to the preferred config file and try to change settings. A detailed overview of all configuration settings will follow ...</p> 
+<h2> <a id="user-content-virtualhostmodule-configuration" class="anchor" href="#virtualhostmodule-configuration" aria-hidden="true"><span class="octicon octicon-link"></span></a>VirtualHostModule Configuration</h2> 
+<p>Using virtual hosts you can extend the default server configuration and produce a host specific environment for your app to run.</p> 
+<p>You can do so by adding a virtual host configuration to your global server configuration file. See the example for a XML based configuration below:</p> 
+<div class="highlight highlight-xml">
+ <pre>&lt;<span class="pl-ent">virtualHost</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>example.local<span class="pl-pds">&quot;</span></span>&gt;
+    &lt;<span class="pl-ent">params</span>&gt;
+        &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>admin<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>string<span class="pl-pds">&quot;</span></span>&gt;admin@appserver.io&lt;/<span class="pl-ent">param</span>&gt;
+        &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>documentRoot<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>string<span class="pl-pds">&quot;</span></span>&gt;/opt/appserver/webapps/example&lt;/<span class="pl-ent">param</span>&gt;
+    &lt;/<span class="pl-ent">params</span>&gt;
+&lt;/<span class="pl-ent">virtualHost</span>&gt;</pre>
+</div> 
+<p>The above configuration sits within the server element and opens up the virtual host <code>example.local</code> which has a different document root than the global configuration has. The virtual host is born. :-)</p> 
+<p>The <code>virtualHost</code> element can hold params, rewrite rules or environment variables which are only available for the host specifically.</p> 
+<h2> <a id="user-content-environmentvariablemodule-configuration" class="anchor" href="#environmentvariablemodule-configuration" aria-hidden="true"><span class="octicon octicon-link"></span></a>EnvironmentVariableModule Configuration</h2> 
+<p>You can set environment variables using either the global or the virtual host based configuration. The example below shows a basic usage of environment variables in XML format.</p> 
+<div class="highlight highlight-xml">
+ <pre>&lt;<span class="pl-ent">environmentVariables</span>&gt;
+    &lt;<span class="pl-ent">environmentVariable</span> <span class="pl-e">condition</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span><span class="pl-pds">&quot;</span></span> <span class="pl-e">definition</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>EXAMPLE_VAR=example<span class="pl-pds">&quot;</span></span> /&gt;
+    &lt;<span class="pl-ent">environmentVariable</span> <span class="pl-e">condition</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>Apple@$HTTP_USER_AGENT<span class="pl-pds">&quot;</span></span> <span class="pl-e">definition</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>USER_HAS_APPLE=true<span class="pl-pds">&quot;</span></span> /&gt;
+&lt;/<span class="pl-ent">environmentVariables</span>&gt;</pre>
+</div> 
+<p>There are several ways in which this feature is used. You can get a rough idea when having a look at Apache modules <a href="http://httpd.apache.org/docs/2.2/mod/mod_env.html">mod_env</a> and <a href="http://httpd.apache.org/docs/2.2/mod/mod_setenvif.html">mod_setenvif</a> which we adopted.</p> 
+<p>You can make definitions of environment variables dependent on REGEX based conditions which will be performed on so called backreferences. These backreferences are request related server variables like <code>HTTP_USER_AGENT</code>.</p> 
+<p>A condition has the format <code>&lt;REGEX_CONDITION&gt;@$&lt;BACKREFERENCE&gt;</code>. If the condition is empty the environment variable will be set every time.</p> 
+<p>The definition you can use has the form <code>&lt;NAME_OF_VAR&gt;=&lt;THE_VALUE_TO_SET&gt;</code>. The definition has some specialities too:</p> 
+<ul> 
+ <li>Setting a var to <code>null</code> will unset the variable if it existed before</li> 
+ <li>You can use backreferences for the value you want to set as well. But those are limited to environment variables of the PHP process</li> 
+ <li>Values will be treated as strings</li> 
+</ul> 
+<h2> <a id="user-content-modules" class="anchor" href="#modules" aria-hidden="true"><span class="octicon octicon-link"></span></a>Modules</h2> 
+<p>The request processing workflow is module based within the php web server. Modules can be implemented according to the <code>\TechDivision\WebServer\Interfaces\ModuleInterface</code> interface. It needs an initial call of the <code>init</code> method and will process any request offered to the <code>process</code> method. Just have a look to the core modules <code>TechDivision/WebServer/Modules/*Modules.php</code></p> 
+<p>Every module can use various points of executing it's logic by checking the current hook which comes to every process call</p> 
+<div class="highlight highlight-php">
+ <pre><span class="pl-s2"><span class="pl-s">public</span> <span class="pl-st">function</span> <span class="pl-en">process</span>(<span class="pl-s3">HttpRequestInterface</span> <span class="pl-vo">$request</span>, <span class="pl-s3">HttpResponseInterface</span> <span class="pl-vo">$response</span>, <span class="pl-vo">$hook</span>)</span>
+<span class="pl-s2">{</span>
+<span class="pl-s2">    <span class="pl-c">// if false hook is comming do nothing</span></span>
+<span class="pl-s2">    <span class="pl-k">if</span> (<span class="pl-s3">ModuleHooks</span><span class="pl-k">::</span><span class="pl-c1">REQUEST_POST</span> <span class="pl-k">!</span><span class="pl-k">==</span> <span class="pl-vo">$hook</span>) {</span>
+<span class="pl-s2">        <span class="pl-k">return</span>;</span>
+<span class="pl-s2">    }</span>
+<span class="pl-s2"></span>
+<span class="pl-s2">    <span class="pl-c">// do modules logic</span></span>
+<span class="pl-s2">}</span></pre>
+</div> 
+<h3> <a id="user-content-module-hooks" class="anchor" href="#module-hooks" aria-hidden="true"><span class="octicon octicon-link"></span></a>Module Hooks</h3> 
+<h4> <a id="user-content-modulehooksrequest_pre" class="anchor" href="#modulehooksrequest_pre" aria-hidden="true"><span class="octicon octicon-link"></span></a>ModuleHooks::REQUEST_PRE</h4> 
+<p>The request pre hook should be used to do something before the request will be parsed. So if there is a keep-alive loop going on this will be triggered every request loop.</p> 
+<h4> <a id="user-content-modulehooksrequest_post" class="anchor" href="#modulehooksrequest_post" aria-hidden="true"><span class="octicon octicon-link"></span></a>ModuleHooks::REQUEST_POST</h4> 
+<p>The request post hook should be used to do something after the request has been parsed. Most modules such as CoreModule will use this hook to do their job.</p> 
+<h4> <a id="user-content-modulehooksresponse_pre" class="anchor" href="#modulehooksresponse_pre" aria-hidden="true"><span class="octicon octicon-link"></span></a>ModuleHooks::RESPONSE_PRE</h4> 
+<p>The response pre hook will be triggered at the point before the response will be prepared. For sending it to the to the connection endpoint.</p> 
+<h4> <a id="user-content-modulehooksresponse_post" class="anchor" href="#modulehooksresponse_post" aria-hidden="true"><span class="octicon octicon-link"></span></a>ModuleHooks::RESPONSE_POST</h4> 
+<p>The response post hook is the last hook triggered within a keep-alive loop and will execute the modules logic when the response is well prepared and ready to dispatch</p> 
+<p>Have a look at some of the core modules and their configuration here:</p> 
+<ul> 
+ <li><a href="modules/.vhostmodule.md.html"><code>TechDivision_VirtualHostModule</code></a></li> 
+ <li><a href="modules/.environmentvariablemodule.md.html"><code>TechDivision_EnvironmentVariableModule</code></a></li> 
+</ul> 
+<p>We offer additional modules which are based on external packages. Have a look at them here:</p> 
+<ul> 
+ <li><a href="modules/.rewritemodule.md.html"><code>TechDivision_RewriteModule</code></a></li> 
+ <li><a href="modules/.fastcgimodule.md.html"><code>TechDivision_FastCgiModule</code></a></li> 
+</ul> 
+<h3> <a id="user-content-rewritemodule" class="anchor" href="#rewritemodule" aria-hidden="true"><span class="octicon octicon-link"></span></a>RewriteModule</h3> 
+<h4> <a id="user-content-usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h4> 
+<p>The module can be used according to the <code>\TechDivision\WebServer\Interfaces\ModuleInterface</code> interface. It needs an initial call of the <code>init</code> method and will process any request offered to the <code>process</code> method. The module is best used within the <a href="https://github.com/techdivision/TechDivision_WebServer"><code>TechDivision_WebServer</code></a> project as it offers all needed infrastructure.</p> 
+<h4> <a id="user-content-rules" class="anchor" href="#rules" aria-hidden="true"><span class="octicon octicon-link"></span></a>Rules</h4> 
+<p>Most important part of the module is the way in which it can perform rewrites. All rewrites are based on rewrite rules which consist of three important parts:</p> 
+<ul> 
+ <li><p><em>condition string</em> : Conditions which have to be met in order for the rule to take effect. See more <a href="#condition-syntax">down here</a></p></li> 
+ <li> <p><em>target string</em> : The target to rewrite the requested URI to. Within this string you can use backreferences similar to the Apache mod_rewrite module with the difference that you have to use the <code>$ syntax</code> (instead of the <code>$/%/%{} syntax</code> of Apache).</p> <p>Backreferences are parts of the matching rule conditions which you specifically pick out via regex.</p> <p><em>Simple example</em> : A condition like <code>(.+)@$X_REQUEST_URI</code> would produce a back reference <code>$1</code> with the value <code>/index</code> for a requested URI <code>/index</code>. The target string <code>$1/welcome.html</code> would therefore result in a rewrite to <code>/index/welcome.html</code></p> </li> 
+ <li><p><em>flag string</em> : You can use flags similar to mod_rewrite which are used to make rules react in a certain way or influence further processing. See more <a href="#flags">down here</a></p></li> 
+</ul> 
+<h4> <a id="user-content-condition-syntax" class="anchor" href="#condition-syntax" aria-hidden="true"><span class="octicon octicon-link"></span></a>Condition Syntax</h4> 
+<p>The Syntax of possible conditions is roughly based on the possibilities of Apache's RewriteCondition and RewriteRule combined.</p> 
+<p>To make use of such a combination you can chain conditions together using the <code>{OR}</code> symbol for OR-combined, and the <code>{AND}</code> symbol for AND-combined conditions.</p> 
+<p>Please be aware that AND takes precedence over OR! Conditions can either be PCRE regex or certain fixed expressions. So a condition string of <code>([A-Z]+\.txt){OR}^/([0-9]+){AND}-f</code> would match only real files (through <code>-f</code>) which either begin with numbers or end with capital letters and the extension .txt.</p> 
+<p>As you might have noticed: Backslashes do <strong>not have to be escaped</strong>.</p> 
+<p>You might also be curious of the <code>-f</code> condition. This is a direct copy of Apaches -f RewriteCondition. We also support several other expressions to regex based conditions which are:</p> 
+<ul> 
+ <li> <em>&lt;</em> : Is the operand lexically preceding <code>&lt;COMPARE_STRING&gt;</code>?</li> 
+ <li> <em>&gt;</em> : Is the operand lexically following <code>&lt;COMPARE_STRING&gt;</code>?</li> 
+ <li> <em>=</em> : Is the operand lexically equal to <code>&lt;COMPARE_STRING&gt;</code>?</li> 
+ <li> <em>-d</em> : Is the operand a directory?</li> 
+ <li> <em>-f</em> : Is the operand a real file?</li> 
+ <li> <em>-s</em> : Is the operand a real file of a size greater than 0?</li> 
+ <li> <em>-l</em> : Is the operand a symbolic link?</li> 
+ <li> <em>-x</em> : Is the operand an executable file?</li> 
+</ul> 
+<p>If you are wondering what the <code>operand</code> might be: it is <strong>whatever you want it to be</strong>! You can specify any operand you like using the <code>@</code> symbol. All conditions within a rule will use the next operand to their right and if none is given the requested URI. For example:</p> 
+<ul> 
+ <li> <em><code>([A-Z]+\.txt){OR}^/([0-9]+)</code></em> Will take the requested URI for both conditions (note the <code>{OR}</code> symbol)</li> 
+ <li> <em><code>([A-Z]+\.txt){OR}^/([0-9]+)@$DOCUMENT_ROOT</code></em> Will test both conditions against the document root</li> 
+ <li> <em><code>([A-Z]+\.txt)@$DOCUMENT_ROOT{OR}^/([0-9]+)</code></em> Will only test the first one against the document root and the second against the requested URI</li> 
+</ul> 
+<p>You might have noted the <code>$</code> symbol before <code>DOCUMENT_ROOT</code> and remembered it from the backreference syntax. That's because all Apache common server vars can be explicitly used as backreferences too!</p> 
+<p>That does not work for you? Need the exact opposite? No problem!</p> 
+<p>All conditions, weather regex or expression based can be negated using the <code>!</code> symbol in front of them! So <code>!^([0-9]+)</code> would match all strings which do NOT begin with a number and <code>!-d</code> would match all non-directories.</p> 
+<h4> <a id="user-content-flags" class="anchor" href="#flags" aria-hidden="true"><span class="octicon octicon-link"></span></a>Flags</h4> 
+<p>Flags are used to further influence processing. You can specify as many flags per rewrite as you like, but be aware of their impact! Syntax for several flags is simple: just separate them with a <code>,</code> symbol. Flags which might accept a parameter can be assigned one by using the <code>=</code> symbol. Currently supported flags are:</p> 
+<ul> 
+ <li><p><em>L</em> : As rules are normally processed one after the other, the <code>L</code> flag will make the flagged rule the last one processed if matched.</p></li> 
+ <li><p><em>R</em> : If this flag is set we will redirect the client to the URL specified in the <code>target string</code>. If this is just an URI we will redirect to the same host. You might also specify a custom status code between 300 and 399 to indicate the reason for/kind of the redirect. Default is <code>301</code> aka <code>permanent</code></p></li> 
+ <li><p><em>M</em> : Stands for map. Using this flag you can specify an external source (have a look at the Injector classes of the WebServer project) of a target map. With <code>M=&lt;MY_BACKREFERENCE&gt;</code> you can specify what the map's index has to match. This matching is done <strong>only</strong> if the rewrite condition matches and will behave as another condition</p></li> 
+</ul> 
+<h3> <a id="user-content-virtualhostmodule" class="anchor" href="#virtualhostmodule" aria-hidden="true"><span class="octicon octicon-link"></span></a>VirtualHostModule</h3> 
+<h4> <a id="user-content-usage-1" class="anchor" href="#usage-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h4> 
+<p>The module can be used according to the <code>\TechDivision\WebServer\Interfaces\ModuleInterface</code> interface. It needs an initial call of the <code>init</code> method and will process any request offered to the <code>process</code> method. The module is best used within the <a href="https://github.com/techdivision/TechDivision_WebServer"><code>TechDivision_WebServer</code></a> project as it offers all needed infrastructure.</p> 
+<h4> <a id="user-content-examples" class="anchor" href="#examples" aria-hidden="true"><span class="octicon octicon-link"></span></a>Examples</h4> 
+<p>The following examples should help you to configure your application with default settings usually provided with the applications .htaccess files.</p> 
+<p>If you want to configure virtual hosts a virtual hosts node is mandatory and should look like the following.</p> 
+<div class="highlight highlight-xml">
+ <pre>&lt;<span class="pl-ent">virtualHosts</span>&gt;
+    &lt;<span class="pl-ent">virtualHost</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>name.local<span class="pl-pds">&quot;</span></span>&gt;
+        Please put in your Hosts configuration here. For Examples see below 
+    &lt;/<span class="pl-ent">virtualHost</span>&gt;
+&lt;/<span class="pl-ent">virtualHosts</span>&gt;</pre>
+</div> 
+<h5> <a id="user-content-magento" class="anchor" href="#magento" aria-hidden="true"><span class="octicon octicon-link"></span></a>Magento:</h5> 
+<div class="highlight highlight-xml">
+ <pre>&lt;<span class="pl-ent">virtualHost</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>magento-real-vhost.dev magento-real-vhost.local<span class="pl-pds">&quot;</span></span>&gt;
+    &lt;<span class="pl-ent">params</span>&gt;
+        &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>admin<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>string<span class="pl-pds">&quot;</span></span>&gt;info@appserver.io&lt;/<span class="pl-ent">param</span>&gt;
+        &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>documentRoot<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>string<span class="pl-pds">&quot;</span></span>&gt;webapps&lt;/<span class="pl-ent">param</span>&gt;
+    &lt;/<span class="pl-ent">params</span>&gt;
+    &lt;<span class="pl-ent">rewrites</span>&gt;
+        &lt;<span class="pl-ent">rewrite</span> <span class="pl-e">condition</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>-d{OR}-f{OR}-l<span class="pl-pds">&quot;</span></span> <span class="pl-e">target</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span><span class="pl-pds">&quot;</span></span> <span class="pl-e">flag</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>L<span class="pl-pds">&quot;</span></span> /&gt;
+        &lt;<span class="pl-ent">rewrite</span> <span class="pl-e">condition</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>(.*)<span class="pl-pds">&quot;</span></span> <span class="pl-e">target</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>index.php/$1<span class="pl-pds">&quot;</span></span> <span class="pl-e">flag</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>L<span class="pl-pds">&quot;</span></span> /&gt;
+    &lt;/<span class="pl-ent">rewrites</span>&gt;
+    &lt;<span class="pl-ent">accesses</span>&gt;
+        &lt;<span class="pl-ent">access</span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>allow<span class="pl-pds">&quot;</span></span>&gt;
+            &lt;<span class="pl-ent">params</span>&gt;
+                &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>X_REQUEST_URI<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>string<span class="pl-pds">&quot;</span></span>&gt;^\/([^\/]+\/)?(media|skin|js|index\.php).*
+                &lt;/<span class="pl-ent">param</span>&gt;
+            &lt;/<span class="pl-ent">params</span>&gt;
+        &lt;/<span class="pl-ent">access</span>&gt;
+    &lt;/<span class="pl-ent">accesses</span>&gt;
+&lt;/<span class="pl-ent">virtualHost</span>&gt;</pre>
+</div> 
+<h5> <a id="user-content-typo3-neos" class="anchor" href="#typo3-neos" aria-hidden="true"><span class="octicon octicon-link"></span></a>TYPO3 Neos</h5> 
+<div class="highlight highlight-xml">
+ <pre>&lt;<span class="pl-ent">virtualHost</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>neos.local<span class="pl-pds">&quot;</span></span>&gt;
+    &lt;<span class="pl-ent">params</span>&gt;
+        &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>admin<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>string<span class="pl-pds">&quot;</span></span>&gt;info@appserver.io&lt;/<span class="pl-ent">param</span>&gt;
+        &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>documentRoot<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>string<span class="pl-pds">&quot;</span></span>&gt;webapps/neos-1.0.2/Web
+        &lt;/<span class="pl-ent">param</span>&gt;
+    &lt;/<span class="pl-ent">params</span>&gt;
+    &lt;<span class="pl-ent">rewrites</span>&gt;
+        &lt;<span class="pl-ent">rewrite</span>
+            <span class="pl-e">condition</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>^/(_Resources/Packages/|robots\.txt|favicon\.ico){OR}-d{OR}-f{OR}-l<span class="pl-pds">&quot;</span></span>
+            <span class="pl-e">target</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span><span class="pl-pds">&quot;</span></span> <span class="pl-e">flag</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>L<span class="pl-pds">&quot;</span></span> /&gt;
+        &lt;<span class="pl-ent">rewrite</span>
+            <span class="pl-e">condition</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>^/(_Resources/Persistent/[a-z0-9]+/(.+/)?[a-f0-9]{40})/.+(\..+)<span class="pl-pds">&quot;</span></span>
+            <span class="pl-e">target</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>$1$3<span class="pl-pds">&quot;</span></span> <span class="pl-e">flag</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>L<span class="pl-pds">&quot;</span></span> /&gt;
+        &lt;<span class="pl-ent">rewrite</span> <span class="pl-e">condition</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>^/(_Resources/Persistent/.{40})/.+(\..+)<span class="pl-pds">&quot;</span></span>
+            <span class="pl-e">target</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>$1$2<span class="pl-pds">&quot;</span></span> <span class="pl-e">flag</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>L<span class="pl-pds">&quot;</span></span> /&gt;
+        &lt;<span class="pl-ent">rewrite</span> <span class="pl-e">condition</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>^/_Resources/.*<span class="pl-pds">&quot;</span></span> <span class="pl-e">target</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span><span class="pl-pds">&quot;</span></span> <span class="pl-e">flag</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>L<span class="pl-pds">&quot;</span></span> /&gt;
+        &lt;<span class="pl-ent">rewrite</span> <span class="pl-e">condition</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>(.*)<span class="pl-pds">&quot;</span></span> <span class="pl-e">target</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>index.php<span class="pl-pds">&quot;</span></span> <span class="pl-e">flag</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>L<span class="pl-pds">&quot;</span></span> /&gt;
+    &lt;/<span class="pl-ent">rewrites</span>&gt;
+    &lt;<span class="pl-ent">environmentVariables</span>&gt;
+        &lt;<span class="pl-ent">environmentVariable</span> <span class="pl-e">condition</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span><span class="pl-pds">&quot;</span></span>
+            <span class="pl-e">definition</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>FLOW_REWRITEURLS=1<span class="pl-pds">&quot;</span></span> /&gt;
+        &lt;<span class="pl-ent">environmentVariable</span> <span class="pl-e">condition</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span><span class="pl-pds">&quot;</span></span>
+            <span class="pl-e">definition</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>FLOW_CONTEXT=Production<span class="pl-pds">&quot;</span></span> /&gt;
+        &lt;<span class="pl-ent">environmentVariable</span> <span class="pl-e">condition</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>Basic ([a-zA-Z0-9\+/=]+)@$Authorization<span class="pl-pds">&quot;</span></span>
+            <span class="pl-e">definition</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>REMOTE_AUTHORIZATION=$1<span class="pl-pds">&quot;</span></span> /&gt;
+    &lt;/<span class="pl-ent">environmentVariables</span>&gt;
+&lt;/<span class="pl-ent">virtualHost</span>&gt;</pre>
+</div> 
+<h5> <a id="user-content-oro-crm" class="anchor" href="#oro-crm" aria-hidden="true"><span class="octicon octicon-link"></span></a>ORO CRM</h5> 
+<div class="highlight highlight-xml">
+ <pre>&lt;<span class="pl-ent">virtualHost</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>oro-crm.local<span class="pl-pds">&quot;</span></span>&gt;
+    &lt;<span class="pl-ent">params</span>&gt;
+        &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>admin<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>string<span class="pl-pds">&quot;</span></span>&gt;info@appserver.io&lt;/<span class="pl-ent">param</span>&gt;
+        &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>documentRoot<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>string<span class="pl-pds">&quot;</span></span>&gt;webapps/crm-application/web
+        &lt;/<span class="pl-ent">param</span>&gt;
+    &lt;/<span class="pl-ent">params</span>&gt;
+    &lt;<span class="pl-ent">rewrites</span>&gt;
+        &lt;<span class="pl-ent">rewrite</span> <span class="pl-e">condition</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>-f<span class="pl-pds">&quot;</span></span> <span class="pl-e">target</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span><span class="pl-pds">&quot;</span></span> <span class="pl-e">flag</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>L<span class="pl-pds">&quot;</span></span> /&gt;
+        &lt;<span class="pl-ent">rewrite</span> <span class="pl-e">condition</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>^/(.*)$<span class="pl-pds">&quot;</span></span> <span class="pl-e">target</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>app.php<span class="pl-pds">&quot;</span></span> <span class="pl-e">flag</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>L<span class="pl-pds">&quot;</span></span> /&gt;
+    &lt;/<span class="pl-ent">rewrites</span>&gt;
+&lt;/<span class="pl-ent">virtualHost</span>&gt;</pre>
+</div> 
+<h5> <a id="user-content-wordpress" class="anchor" href="#wordpress" aria-hidden="true"><span class="octicon octicon-link"></span></a>Wordpress</h5> 
+<div class="highlight highlight-xml">
+ <pre>&lt;<span class="pl-ent">virtualHost</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>wordpress.local<span class="pl-pds">&quot;</span></span>&gt;
+    &lt;<span class="pl-ent">params</span>&gt;
+        &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>admin<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>string<span class="pl-pds">&quot;</span></span>&gt;info@appserver.io&lt;/<span class="pl-ent">param</span>&gt;
+        &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>documentRoot<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>string<span class="pl-pds">&quot;</span></span>&gt;webapps/wordpress&lt;/<span class="pl-ent">param</span>&gt;
+    &lt;/<span class="pl-ent">params</span>&gt;
+&lt;/<span class="pl-ent">virtualHost</span>&gt;</pre>
+</div> 
+<h1> <a id="user-content-servlet-engine" class="anchor" href="#servlet-engine" aria-hidden="true"><span class="octicon octicon-link"></span></a>Servlet-Engine</h1> 
+<h1> <a id="user-content-persistence-container" class="anchor" href="#persistence-container" aria-hidden="true"><span class="octicon octicon-link"></span></a>Persistence-Container</h1> 
+<p>As described in the introduction the application is designed inside a runtime environment like an application server as appserver.io is. The following example gives you a short introdction how you can create a stateful session bean and the way you can invoke it's method on client side.</p> 
+<p>First thing you've to do is to create your SessionBean. What is a SessionBean? It's not simple to describe it in only a few words, but i'll try. A SessionBean basically is plain PHP class. You MUST not instanciate it directly, because the application server takes care of its complete lifecycle. Therefore, if you need an instance of a SessionBean, you'll ask the application server to give you a instance. This can be done by the (persistence container client)[<a href="https://github.com/techdivision/TechDivision_PersistenceContainerClient">https://github.com/techdivision/TechDivision_PersistenceContainerClient</a>].</p> 
+<p>The persistence container client will give you a proxy to the session bean that allows you to invoke all methods the SessionBean provides as you can do if you would have real instance. But the proxy also allows you to call this method over a network as remote method call. Using the persistence container client makes it obvious for you if your SessionBean is on the same application server instance or on another one in your network. This gives you the possibilty to distribute the components of your application over your network what includes a great and seemless scalabilty.</p> 
+<p>You have to tell the persistence container of the type the SessionBean should have. This MUST be done by simply add an annotation to the class doc block. The possible annotations therefore are</p> 
+<ul> 
+ <li>@Singleton</li> 
+ <li>@Stateless</li> 
+ <li>@Stateful</li> 
+</ul> 
+<p>The SessionBean types are self explained i think.</p> 
+<h2> <a id="user-content-singleton-sessionbean" class="anchor" href="#singleton-sessionbean" aria-hidden="true"><span class="octicon octicon-link"></span></a>@Singleton SessionBean</h2> 
+<p>A SessionBean with a @Singleton annotation will be created only one time for each application. This means, whenever you'll request an instance, you'll receive the same one. If you set a variable in the SessionBean, it'll be available until you'll overwrite it, or the application server has been restarted.</p> 
+<h2> <a id="user-content-stateless-sessionbean" class="anchor" href="#stateless-sessionbean" aria-hidden="true"><span class="octicon octicon-link"></span></a>@Stateless SessionBean</h2> 
+<p>In opposite to a singleton session bean, a SessionBean with a @Stateless annotation will always be instanciated when you request it. It has NO state, only for the time you invoke a method on it.</p> 
+<h2> <a id="user-content-stateful-sessionbean" class="anchor" href="#stateful-sessionbean" aria-hidden="true"><span class="octicon octicon-link"></span></a>@Stateful SessionBean</h2> 
+<p>The @Stateful SessionBean is something between the other types. It is stateful for the session with the ID you pass to the client when you request the instance. A stateful SessionBean is useful if you want to implement something like a shopping cart. If you declare the shopping cart instance a class member of your SessionBean makes it persistent for your session lifetime.</p> 
+<h2> <a id="user-content-example" class="anchor" href="#example" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example</h2> 
+<p>The following example shows you a really simple implementation of a stateful SessionBean providing a counter that'll be raised whenever you call the raiseMe() method.</p> 
+<div class="highlight highlight-php">
+ <pre><span class="pl-s2"></span>
+<span class="pl-s2"><span class="pl-k">namespace</span> <span class="pl-en">Namespace\Module</span>;</span>
+<span class="pl-s2"></span>
+<span class="pl-s2"><span class="pl-c">/**</span></span>
+<span class="pl-s2"><span class="pl-c"> * This is demo implementation of stateful session bean.</span></span>
+<span class="pl-s2"><span class="pl-c"> *</span></span>
+<span class="pl-s2"><span class="pl-c"> * @Stateful</span></span>
+<span class="pl-s2"><span class="pl-c"> */</span></span>
+<span class="pl-s2"><span class="pl-st">class</span> <span class="pl-en">MyStatefulSessionBean</span></span>
+<span class="pl-s2">{</span>
+<span class="pl-s2"></span>
+<span class="pl-s2">    <span class="pl-c">/**</span></span>
+<span class="pl-s2"><span class="pl-c"> * Stateful counter that exists as long as your session exists.</span></span>
+<span class="pl-s2"><span class="pl-c"> *</span></span>
+<span class="pl-s2"><span class="pl-c"> * <span class="pl-k">@var</span> integer</span></span>
+<span class="pl-s2"><span class="pl-c"> */</span></span>
+<span class="pl-s2">    <span class="pl-s">protected</span> <span class="pl-vo">$counter</span> <span class="pl-k">=</span> <span class="pl-c1">0</span>;</span>
+<span class="pl-s2"></span>
+<span class="pl-s2">    <span class="pl-c">/**</span></span>
+<span class="pl-s2"><span class="pl-c"> * Passes a reference to the application context to our session bean.</span></span>
+<span class="pl-s2"><span class="pl-c"> *</span></span>
+<span class="pl-s2"><span class="pl-c"> * <span class="pl-k">@param</span> \TechDivision\Application\Interface\ApplicationInterface $application The application instance</span></span>
+<span class="pl-s2"><span class="pl-c"> */</span></span>
+<span class="pl-s2">    <span class="pl-s">public</span> <span class="pl-st">function</span> <span class="pl-s3">__construct</span>(<span class="pl-s3">ApplicationInterface</span> <span class="pl-vo">$application</span>)</span>
+<span class="pl-s2">    {</span>
+<span class="pl-s2">        <span class="pl-vo">$this</span><span class="pl-k">-&gt;</span><span class="pl-vo">application</span> <span class="pl-k">=</span> <span class="pl-vo">$application</span>;</span>
+<span class="pl-s2">    }</span>
+<span class="pl-s2"></span>
+<span class="pl-s2">    <span class="pl-c">/**</span></span>
+<span class="pl-s2"><span class="pl-c"> * Example method that raises the counter by one each time you'll invoke it.</span></span>
+<span class="pl-s2"><span class="pl-c"> *</span></span>
+<span class="pl-s2"><span class="pl-c"> * <span class="pl-k">@return</span> void</span></span>
+<span class="pl-s2"><span class="pl-c"> */</span></span>
+<span class="pl-s2">    <span class="pl-s">public</span> <span class="pl-st">function</span> <span class="pl-en">raiseMe</span>()</span>
+<span class="pl-s2">    {</span>
+<span class="pl-s2">        <span class="pl-vo">$this</span><span class="pl-k">-&gt;</span><span class="pl-vo">counter</span><span class="pl-k">++</span>;</span>
+<span class="pl-s2">    }</span>
+<span class="pl-s2">}</span></pre>
+</div> 
+<p>As described above, you MUST not instanciate it directly. The request an instance of the SessionBean you MUST use the persistence container client. With the lookup() method you'll receive a proxy to your SessionBean, on that you can invoke the methods as you can do with a real instance.</p> 
+<div class="highlight highlight-php">
+ <pre><span class="pl-s2"></span>
+<span class="pl-s2"><span class="pl-c">// initialize the connection and the session</span></span>
+<span class="pl-s2"><span class="pl-vo">$connection</span> <span class="pl-k">=</span> <span class="pl-s3">ConnectionFactory</span><span class="pl-k">::</span>createContextConnection(<span class="pl-s1"><span class="pl-pds">'</span>your-application-name<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s2"><span class="pl-vo">$contextSession</span> <span class="pl-k">=</span> <span class="pl-vo">$connection</span><span class="pl-k">-&gt;</span>createContextSession();</span>
+<span class="pl-s2"></span>
+<span class="pl-s2"><span class="pl-c">// set the session ID of the actual request (necessary for SessionBeans declared as @Stateful)</span></span>
+<span class="pl-s2"><span class="pl-vo">$contextSession</span><span class="pl-k">-&gt;</span>setSessionId(<span class="pl-s1"><span class="pl-pds">'</span>your-session-id<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s2"></span>
+<span class="pl-s2"><span class="pl-c">// create an return the proxy instance and call a method, raiseMe() in this example</span></span>
+<span class="pl-s2"><span class="pl-vo">$proxyInstance</span> <span class="pl-k">=</span> <span class="pl-vo">$contextSession</span><span class="pl-k">-&gt;</span>createInitialContext()<span class="pl-k">-&gt;</span>lookup(<span class="pl-s1"><span class="pl-pds">'</span>Namespace\Module\MyStatefulSessionBean<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s2"><span class="pl-vo">$proxyIntance</span><span class="pl-k">-&gt;</span>raiseMe();</span>
+<span class="pl-s2"></span></pre>
+</div> 
+<h1> <a id="user-content-message-queue" class="anchor" href="#message-queue" aria-hidden="true"><span class="octicon octicon-link"></span></a>Message-Queue</h1> 
+<h1> <a id="user-content-deployment" class="anchor" href="#deployment" aria-hidden="true"><span class="octicon octicon-link"></span></a>Deployment</h1> 
+<p>The deploy directory in the appserver.io Application Server distribution is the location end users can place their deployment content (e. g. phar files) to have it deployed into the server runtime.</p> 
+<p>Users, particularly those running production systems, are encouraged to use the appserver.io AS management APIs to upload and deploy deployment content.</p> 
+<h2> <a id="user-content-deployment-modes" class="anchor" href="#deployment-modes" aria-hidden="true"><span class="octicon octicon-link"></span></a>Deployment Modes</h2> 
+<p>The scanner actually only suports manual deployment mode which means that you have to restart the server to process deployment of your content. In this mode, the scanner will not attempt to directly monitor the deployment content and decide if or when the end user wishes the content to be deployed or undeployed. Instead, the scanner relies on a system of marker files, with the user's addition or removal of a marker file serving as a sort of command telling the scanner to deploy, undeploy or redeploy content.</p> 
+<p>It is also possible to copy your unzipped content directly into the webapps folder. After restarting the webserver your content will then be deployed without having any impact on the deployment scanner, because only zipped (.phar) content will be recognized.</p> 
+<h2> <a id="user-content-marker-files" class="anchor" href="#marker-files" aria-hidden="true"><span class="octicon octicon-link"></span></a>Marker Files</h2> 
+<p>The marker files always have the same name as the deployment content to which they relate, but with an additional file suffix appended. For example, the marker file to indicate the example.phar file should be deployed is named example.phar.dodeploy. Different marker file suffixes have different meanings.</p> 
+<p>The relevant marker file types are:</p> 
+<table> 
+ <thead> 
+  <tr> 
+   <th align="left">Marker</th> 
+   <th align="left">Description</th> 
+  </tr> 
+ </thead> 
+ <tbody> 
+  <tr> 
+   <td align="left">.dodeploy</td> 
+   <td align="left">Placed by the user to indicate that the given content should be deployed or redeployed into the runtime.</td> 
+  </tr> 
+  <tr> 
+   <td align="left">.deploying</td> 
+   <td align="left">Placed by the deployment scanner service to indicate that it has noticed a .dodeploy file and is in the process of deploying the content. This marker file will be deleted when the deployment process completes.</td> 
+  </tr> 
+  <tr> 
+   <td align="left">.deployed</td> 
+   <td align="left">Placed by the deployment scanner service to indicate that the given content has been deployed into the runtime. If an end user deletes this file and no other marker is available, the content will be undeployed.</td> 
+  </tr> 
+  <tr> 
+   <td align="left">.failed</td> 
+   <td align="left">Placed by the deployment scanner service to indicate that the given content failed to deploy into the runtime. The content of the file will include some information about the cause of the failure. Note that, removing this file will make the deployment eligible for deployment again.</td> 
+  </tr> 
+  <tr> 
+   <td align="left">.undeploying</td> 
+   <td align="left">Placed by the deployment scanner service to indicate that it has noticed a .deployed file has been deleted and the content is being undeployed. This marker file will be deleted when the undeployment process completes.</td> 
+  </tr> 
+  <tr> 
+   <td align="left">.undeployed</td> 
+   <td align="left">Placed by the deployment scanner service to indicate that the given content has been undeployed from the runtime. If an end content is being undeployed. This marker file will be deleted user deletes this file, it has no impact.</td> 
+  </tr> 
+ </tbody> 
+</table> 
+<h2> <a id="user-content-basic-workflows" class="anchor" href="#basic-workflows" aria-hidden="true"><span class="octicon octicon-link"></span></a>Basic workflows</h2> 
+<p>All examples assume variable $AS points to the root of the appserver.io AS distribution.</p> 
+<p>Windows users: the examples below use UNIX shell commands; see the <a href="#windows-notes">Windows Notes</a> below.</p> 
+<ol> 
+ <li>Add new zipped (.phar) content and deploy it:</li> 
+</ol> 
+<pre><code>$ cp target/example.phar $AS/deploy
+$ touch $AS/deploy/example.phar.dodeploy
+</code></pre> 
+<ol> 
+ <li>Undeploy currently deployed zipped (.phar) content:</li> 
+</ol> 
+<pre><code>$ rm $AS/deploy/example.phar.deployed
+</code></pre> 
+<ol> 
+ <li>Replace currently deployed zipped (.phar) content with a new version and redeploy it:</li> 
+</ol> 
+<pre><code>$ cp target/example.phar $AS/deploy
+$ mv $AS/deploy/example.phar.deployed $AS/deploy/example.phar.dodeploy
+</code></pre> 
+<h2> <a id="user-content-windows-notes" class="anchor" href="#windows-notes" aria-hidden="true"><span class="octicon octicon-link"></span></a>Windows Notes</h2> 
+<p>The above examples use UNIX shell commands. Windows equivalents are:</p> 
+<table> 
+ <thead> 
+  <tr> 
+   <th align="left">UNIX</th> 
+   <th align="left">Windows</th> 
+  </tr> 
+ </thead> 
+ <tbody> 
+  <tr> 
+   <td align="left">cp src dest</td> 
+   <td align="left">xcopy /y src dest</td> 
+  </tr> 
+  <tr> 
+   <td align="left">cp -r src dest</td> 
+   <td align="left">xcopy /e /s /y src dest</td> 
+  </tr> 
+  <tr> 
+   <td align="left">rm afile</td> 
+   <td align="left">del afile</td> 
+  </tr> 
+  <tr> 
+   <td align="left">touch afile</td> 
+   <td align="left">echo &gt;&gt; afile</td> 
+  </tr> 
+ </tbody> 
+</table> 
+<p>Note that the behavior of <code>touch</code> and <code>echo</code> are different but thedifferences are not relevant to the usages </p> 
+<h1> <a id="user-content-external-links" class="anchor" href="#external-links" aria-hidden="true"><span class="octicon octicon-link"></span></a>External Links</h1> 
+<ul> 
+ <li>Documentation at <a href="http://docs.appserver.io">appserver.io</a> </li> 
+ <li>Documentation on <a href="https://github.com/techdivision/TechDivision_AppserverDocumentation">GitHub</a> </li> 
+ <li><a href="https://github.com/techdivision/TechDivision_AppserverDocumentation/tree/master/docs/getting-started">Getting started</a></li> 
+ <li><a href="https://github.com/techdivision/TechDivision_AppserverDocumentation/tree/master/docs/basics/appserver-basics">Appserver basics</a></li> 
+</ul>
+</body>
+</html>
