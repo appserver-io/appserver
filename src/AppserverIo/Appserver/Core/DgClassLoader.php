@@ -70,11 +70,18 @@ class DgClassLoader extends \Stackable implements ClassLoaderInterface
     const IDENTIFIER = 'doppelgaenger';
 
     /**
-     * The name of our autoload method
+     * The name of our autoload method.
      *
      * @const string OUR_LOADER
      */
     const OUR_LOADER = 'loadClass';
+
+    /**
+     * The name of our simple/quick autoload method.
+     *
+     * @const string OUR_LOADER_PROD_NO_OMIT
+     */
+    const OUR_LOADER_PROD_NO_OMIT = 'loadClassProductionNoOmit';
 
     /**
      * Default constructor
@@ -97,6 +104,11 @@ class DgClassLoader extends \Stackable implements ClassLoaderInterface
 
             $this->config = $config;
         }
+
+        // pre-load the configuration values
+        $this->cacheDir =  $this->config->getValue('cache/dir');
+        $this->environment = $this->config->getValue('environment');
+        $this->autoloaderOmit = $this->config->hasValue('autoloader/omit');
 
         // Now that we got the config we can create a structure map to load from
         $this->structureMap = new StackableStructureMap(
@@ -263,6 +275,34 @@ class DgClassLoader extends \Stackable implements ClassLoaderInterface
     /**
      * Will load any given structure based on it's availability in our structure map which depends on the configured
      * project directories.
+     *
+     * If the structure cannot be found we will redirect to the composer autoloader which we registered as a fallback
+     *
+     * @param string $className The name of the structure we will try to load
+     *
+     * @return boolean
+     */
+    public function loadClassProductionNoOmit($className)
+    {
+
+        // prepare the cache path
+        $cachePath = $this->cacheDir . DIRECTORY_SEPARATOR . str_replace('\\', '_', $className) . '.php';
+
+        // check if the file is readable
+        if (is_readable($cachePath)) {
+
+            require $cachePath;
+            return true;
+        }
+
+        // Still here? That sounds like bad news!
+        return false;
+    }
+
+    /**
+     * Will load any given structure based on it's availability in our structure map which depends on the configured
+     * project directories.
+     *
      * If the structure cannot be found we will redirect to the composer autoloader which we registered as a fallback
      *
      * @param string $className The name of the structure we will try to load
@@ -273,34 +313,27 @@ class DgClassLoader extends \Stackable implements ClassLoaderInterface
     {
 
         // Might the class be a omitted one? If so we can require the original.
-        if ($this->config->hasValue('autoloader/omit')) {
+        if ($this->autoloaderOmit) {
 
             $omittedNamespaces = $this->config->getValue('autoloader/omit');
             foreach ($omittedNamespaces as $omitted) {
 
                 // If our class name begins with the omitted part e.g. it's namespace
                 if (strpos($className, str_replace('\\\\', '\\', $omitted)) === 0) {
-
                     return false;
                 }
             }
         }
 
         // Do we have the file in our cache dir? If we are in development mode we have to ignore this.
-        if ($this->config->getValue('environment') !== 'development') {
-
-            $cachePath = $this->config->getValue('cache/dir') . DIRECTORY_SEPARATOR . str_replace('\\', '_', $className) . '.php';
-
-            if (is_readable($cachePath)) {
-
-                require $cachePath;
+        if ($this->environment !== 'development') {
+            if ($this->loadClassProductionNoOmit($className) === true) {
                 return true;
             }
         }
 
         // If we are loading something of our own library we can skip to composer
         if (strpos($className, 'AppserverIo\Doppelgaenger') === 0 || strpos($className, 'PHP') === 0) {
-
             return false;
         }
 
@@ -309,7 +342,6 @@ class DgClassLoader extends \Stackable implements ClassLoaderInterface
 
         // Did we get something? If so we have to load it
         if ($file instanceof Structure) {
-
             require $file->getPath();
             return true;
         }
@@ -325,6 +357,7 @@ class DgClassLoader extends \Stackable implements ClassLoaderInterface
      */
     protected function refillCache()
     {
+
         // Lets clear the cache so we can fill it anew
         foreach (new \DirectoryIterator($this->getConfig()->getValue('cache/dir')) as $fileInfo) {
 
@@ -349,13 +382,18 @@ class DgClassLoader extends \Stackable implements ClassLoaderInterface
      */
     public function register($throw = true, $prepend = true)
     {
+
         // Now we have a config no matter what, we can store any instance we might need
         $this->getConfig()->storeInstances();
 
-        // We want to let our autoloader be the first in line so we can react on loads
-        // and create/return our contracted definitions.
-        // So lets use the prepend parameter here.
-        spl_autoload_register(array($this, self::OUR_LOADER), $throw, $prepend);
+        // Query whether we have directories to omitted or not in production mode
+        if ($this->autoloaderOmit || $this->environment !== 'production') { // If yes, load the apropriate autoloader method
+            spl_autoload_register(array($this, self::OUR_LOADER), $throw, $prepend);
+            return;
+        }
+
+        // We don't have directories to omit register the simple class loader
+        spl_autoload_register(array($this, self::OUR_LOADER_PROD_NO_OMIT), $throw, $prepend);
     }
 
     /**
@@ -365,6 +403,14 @@ class DgClassLoader extends \Stackable implements ClassLoaderInterface
      */
     public function unregister()
     {
-        spl_autoload_unregister(array($this, self::OUR_LOADER));
+
+        // Query whether we have directories to omitted or not in production mode
+        if ($this->autoloaderOmit || $this->environment !== 'production') { // If yes, unload the apropriate autoloader method
+            spl_autoload_unregister(array($this, self::OUR_LOADER));
+            return;
+        }
+
+        // We don't have directories to omit unregister the simple class loader
+        spl_autoload_unregister(array($this, self::OUR_LOADER_PROD_NO_OMIT), $throw, $prepend);
     }
 }

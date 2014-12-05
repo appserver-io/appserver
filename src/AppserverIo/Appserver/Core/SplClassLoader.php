@@ -16,23 +16,14 @@
 
 namespace AppserverIo\Appserver\Core;
 
-use AppserverIo\Appserver\Core\Interfaces\ClassLoaderInterface;
 use AppserverIo\Storage\GenericStackable;
-use AppserverIo\Appserver\Application\Interfaces\ContextInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
+use AppserverIo\Appserver\Core\Interfaces\ClassLoaderInterface;
 use AppserverIo\Appserver\Core\Api\Node\ClassLoaderNodeInterface;
-use AppserverIo\Storage\StorageInterface;
 
 /**
  * SplClassLoader implementation that implements the technical interoperability
  * standards for PHP 5.3 namespaces and class names.
- *
- * http://groups.google.com/group/php-standards/web/final-proposal
- *
- *     // Example which loads classes for the Doctrine Common package in the
- *     // Doctrine\Common namespace.
- *     $classLoader = new SplClassLoader('Doctrine\Common', '/path/to/doctrine');
- *     $classLoader->register();
  *
  * @category   Server
  * @package    Appserver
@@ -58,20 +49,6 @@ class SplClassLoader extends GenericStackable implements ClassLoaderInterface
     const IDENTIFIER = 'spl';
 
     /**
-     * The unique key to store the class map in the initial context.
-     *
-     * @var string
-     */
-    const CLASS_MAP = 'SplClassLoader.classMap';
-
-    /**
-     * The unique key to store the include path in the initial context.
-     *
-     * @var string
-     */
-    const INCLUDE_PATH = 'SplClassLoader.includePath';
-
-    /**
      * Visitor method that adds a initialized class loader to the passed application.
      *
      * @param \AppserverIo\Psr\Application\ApplicationInterface             $application   The application instance
@@ -81,109 +58,53 @@ class SplClassLoader extends GenericStackable implements ClassLoaderInterface
      */
     public static function visit(ApplicationInterface $application, ClassLoaderNodeInterface $configuration = null)
     {
-
-        // load the web application path we want to register the class loader for
-        $webappPath = $application->getWebappPath();
-
-        // initialize the array with the applications additional include paths
-        $includePath = array();
-
-        // add the possible class path if folder is available
-        foreach ($configuration->getDirectories() as $directory) {
-            if (is_dir($webappPath . $directory->getNodeValue())) {
-                array_push($includePath, $webappPath . $directory->getNodeValue());
-            }
-        }
-
-        // initialize the SPL class loader instance
-        $classLoader = new SplClassLoader($application->getInitialContext(), null, $includePath);
-
-        // add the class loader instance
-        $application->addClassLoader($classLoader);
+        $application->addClassLoader(SplClassLoader::factory());
     }
+
+    /**
+     * Simple factory method to create a new instance of the SplClassLoader.
+     *
+     * @return \AppserverIo\Appserver\Core\SplClassLoader The class loader instance
+     */
+    public static function factory()
+    {
+
+        // initialize the storage for the class map and the include path
+        $classMap = new GenericStackable();
+        $includePath = new GenericStackable();
+
+        // initialize and return the SPL class loader instance
+        return new SplClassLoader($classMap, $includePath);
+    }
+
 
     /**
      * Creates a new <tt>SplClassLoader</tt> that loads classes of the specified
      * namespace and searches for the class files in the include paths passed as
      * array.
      *
-     * @param \AppserverIo\Appserver\Application\Interfaces\ContextInterface $initialContext     The initial context instance
-     * @param string                                                         $namespace          The namespace to use
-     * @param array                                                          $includePath        The include path to use
-     * @param string                                                         $namespaceSeparator The namespace separator
-     * @param string                                                         $fileExtension      The filename extension
+     * @param \AppserverIo\Storage\GenericStackable $classMap           The storage for the class map
+     * @param \AppserverIo\Storage\GenericStackable $includePath        The storage for the include path
+     * @param string                                $namespace          The namespace to use
+     * @param string                                $namespaceSeparator The namespace separator
+     * @param string                                $fileExtension      The filename extension
      */
-    public function __construct(ContextInterface $initialContext, $namespace = null, array $includePath = null, $namespaceSeparator = '\\', $fileExtension = '.php')
+    public function __construct(GenericStackable $classMap, GenericStackable $includePath, $namespace = null, $namespaceSeparator = '\\', $fileExtension = '.php')
     {
 
-        // set the initial context and include path
-        $this->initialContext = $initialContext;
-
-        // initialize the default include path
-        $includePath = array();
-        foreach (explode(PATH_SEPARATOR, get_include_path()) as $val) {
-            if (empty($val) === false) {
-                $includePath[] = $val;
-            }
-        }
-
-        // add the directories passed as parameter
-        if ($includePath != null) {
-            foreach ($includePath as $val) {
-                $this->includePath[] = $val;
-            }
-        }
-
-        // initialize the class map and include path
-        $this->getInitialContext()->setAttribute(SplClassLoader::CLASS_MAP, array());
-        $this->getInitialContext()->setAttribute(SplClassLoader::INCLUDE_PATH, $includePath);
-
-        // ATTENTION: Don't delete this, it's necessary because this IS a \Stackable
+        // initialize the member variables
+        $this->classMap = $classMap;
+        $this->namespace = $namespace;
+        $this->includePath = $includePath;
         $this->fileExtension = $fileExtension;
         $this->namespaceSeparator = $namespaceSeparator;
 
-        // set namespace and initialize include path
-        $this->namespace = $namespace;
-    }
-
-    /**
-     * Gets the namespace seperator used by classes in the namespace of this class loader.
-     *
-     * @return void
-     */
-    public function getNamespaceSeparator()
-    {
-        return $this->namespaceSeparator;
-    }
-
-    /**
-     * Gets the base include path for all class files in the namespace of this class loader.
-     *
-     * @return \AppserverIo\Storage\GenericStackable $includePath The include path
-     */
-    public function getIncludePath()
-    {
-        return $this->getInitialContext()->getAttribute(SplClassLoader::INCLUDE_PATH);
-    }
-
-    /**
-     * Returns the initial context instance.
-     *
-     * @return \AppserverIo\Appserver\Core\InitialContext The initial context instance
-     */
-    public function getInitialContext()
-    {
-        return $this->initialContext;
-    }
-
-    /**
-     * Gets the file extension of class files in the namespace of this class loader.
-     *
-     * @return string $fileExtension
-     */
-    public function getFileExtension()
-    {
-        return $this->fileExtension;
+        // initialize the default include path
+        foreach (explode(PATH_SEPARATOR, get_include_path()) as $val) {
+            if (empty($val) === false) {
+                $this->includePath[] = $val;
+            }
+        }
     }
 
     /**
@@ -223,12 +144,9 @@ class SplClassLoader extends GenericStackable implements ClassLoaderInterface
         // backup the requested class name
         $requestedClassName = $className;
 
-        // try to load the class map from the inital context
-        $classMap = $this->getInitialContext()->getAttribute(SplClassLoader::CLASS_MAP);
-
         // check if the requested class name has already been loaded
-        if (isset($classMap[$requestedClassName]) !== false) {
-            require $classMap[$requestedClassName];
+        if (isset($this->classMap[$requestedClassName]) !== false) {
+            require $this->classMap[$requestedClassName];
             return true;
         }
 
@@ -251,22 +169,20 @@ class SplClassLoader extends GenericStackable implements ClassLoaderInterface
             $fileName .= $className . $this->fileExtension;
 
             // try to load the requested class
-            foreach ($this->getIncludePath() as $includePath) {
+            foreach ($this->includePath as $includePath) {
                 $toRequire = $includePath . DIRECTORY_SEPARATOR . $fileName;
                 $psr4FileName = $includePath . DIRECTORY_SEPARATOR . ltrim(strstr(ltrim(strstr($fileName, DIRECTORY_SEPARATOR), DIRECTORY_SEPARATOR), DIRECTORY_SEPARATOR), DIRECTORY_SEPARATOR);
 
                 if (file_exists($toRequire)) {
                     // add the found file to the class map
-                    $classMap[$requestedClassName] = $toRequire;
-                    $this->getInitialContext()->setAttribute(SplClassLoader::CLASS_MAP, $classMap);
+                    $this->classMap[$requestedClassName] = $toRequire;
                     // require the file and return TRUE
                     require $toRequire;
                     return true;
 
                 } elseif (file_exists($psr4FileName) && !is_dir($psr4FileName)) {
                     // add the found file to the class map
-                    $classMap[$requestedClassName] = $psr4FileName;
-                    $this->getInitialContext()->setAttribute(SplClassLoader::CLASS_MAP, $classMap);
+                    $this->classMap[$requestedClassName] = $psr4FileName;
                     // require the file and return TRUE
                     require $psr4FileName;
                     return true;
