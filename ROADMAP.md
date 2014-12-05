@@ -99,6 +99,12 @@ public and maintained with the same enthusiasm as the Enterprise will.
 
 - [ ] Snapshot functionality for webapps
 
+#### Servers
+
+- [ ] SSH Server
+- [ ] Search Engine
+- [ ] Data-Grid, fast key-value store
+
 #### Security
 
 - [ ] Web Application Firewall (WAF)
