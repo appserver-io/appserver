@@ -737,7 +737,8 @@ class LoggerAspect
   /**
    * Advice used to log the call to any advised method.
    *
-   * @param \AppserverIo\Doppelgaenger\Entities\MethodInvocation $methodInvocation Initially invoked method
+   * @param \AppserverIo\Doppelgaenger\Entities\MethodInvocation $methodInvocation 
+   *   Initially invoked method
    *
    * @return null
    *
@@ -1222,7 +1223,8 @@ following example, that would enable a Magento installation under `http://magent
     <accesses>
         <access type="allow">
             <params>
-                <param name="X_REQUEST_URI" type="string">^\/([^\/]+\/)?(media|skin|js|index\.php).*
+                <param name="X_REQUEST_URI" type="string">
+                  ^\/([^\/]+\/)?(media|skin|js|index\.php).*
                 </param>
             </params>
         </access>
