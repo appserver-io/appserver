@@ -446,7 +446,7 @@ are based on that annotation implementation.
 
 # Dependency Injection
 
-Dependency Injection, we'll further use DI to make it simple, enables developers to write cleaner, reusable and maintainable code with less coupling by injecting necessary instances at runtime instead of instanciating them in the class itself. Within the application server, each application has it's own scope and therefore a own dependency injection container. This prevents your application from fatal errors like `Cannot redeclare class ...`.
+Dependency Injection, furthermore DI, enables developers to write cleaner, reusable and maintainable code with less coupling by injecting necessary instances at runtime instead of instanciating them in the class itself. Within the application server, each application has it's own scope and therefore a own dependency injection container. This prevents your application from fatal errors like `Cannot redeclare class ...`.
 
 ## What can be injected
 
@@ -646,11 +646,15 @@ class HelloWorldServlet extends HttpServlet
     HttpServletResponse $servletResponse)
   {
 
-    // start a session, because our @Stateful SessionBean needs the session-ID to bound to
+    // start a session, because our @Stateful SessionBean
+    // needs thesession-ID to bound to
     $servletRequest->getSession()->start(true);
 
-    // render 'Hello World! (has been invoked 1 times)' for example - after the first request
-    $servletResponse->appendBodyStream(sprintf($this->helloWorld, $this->sessionBean->raiseMe()));
+    // render 'Hello World! (has been invoked 1 times)' 
+    // for example - after the first request
+    $servletResponse->appendBodyStream(
+      sprintf($this->helloWorld, $this->sessionBean->raiseMe())
+    );
   }
 
   /**
