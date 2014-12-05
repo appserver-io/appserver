@@ -12,32 +12,16 @@ hopefully establish a solution as the standard for enterprise applications in PH
 
 # Table of Contents
 
+**[Installation](#installation)**
+**[Uninstall](#uninstall)**
+**[Basic Usage](#basic-usage)**
+**[HTTP Server](#webserver)**
+**[Servlet-Engine](#servlet-engine)**
+**[Persistence-Container](#persistence-container)**
+**[Message-Queue](#message-queue)**
 **[Runtime Environment](#runtime-environment)**
-**[Installation](#installation)** 
-**[Uninstall](#uninstall)** 
-**[Configuration](#configuration)** 
-**[Basic Usage](#basic-usage)** 
-**[HTTP Server](#webserver)** 
-**[Servlet-Engine](#servlet-engine)** 
-**[Persistence-Container](#persistence-container)** 
-**[Message-Queue](#message-queue)** 
-**[Deployment](#deployment)** 
-
-# Runtime Environment
-
-The runtime environment appserver.io is using is delivered by the package [runtime](<https://github.com/appserver-io-php/runtime>).
-This package  provides the appserver runtime which is system independent and encloses a thread-safe
-compiled PHP environment. Besides the most recent PHP 5.5.x version the package came with installed
-extensions:
-
-* [pthreads](http://github.com/appserver-io-php/pthreads)
-* [appserver](https://github.com/appserver-io/php-ext-appserver) (contains some replacement functions
-  which behave badly in a multithreaded environment)
-
-Additionally the PECL extensions [XDebug](http://pecl.php.net/package/xdebug) and [ev](http://pecl.php.net/package/ev) 
-are compiled as a shared modules. XDebug is necessary to render detailed code coverage reports when 
-running unit and integration tests. ev will be used to integrate a timer service in one of the future
-versions.
+**[Configuration](#configuration)**
+**[Deployment](#deployment)**
 
 # Installation
 
@@ -67,16 +51,10 @@ For OS specific steps and characteristics see below for tested environments.
 ## Mac OS X
 
 * Tested versions: 10.8.x +
-* Ant build: 
-    - `os.family` = mac 
-    - target `create-pkg`
 
 ## Windows
 
 * Tested versions: 7 +
-* Ant build: 
-    - `os.family` = win
-    - target `WIN-create-jar`
 
 As we deliver the Windows appserver as a .jar file, a installed Java Runtime Environment (or JDK 
 that is) is a vital requirement for using it. If the JRE/JDK is not installed you have to do so 
@@ -86,10 +64,6 @@ If this requirement is met you can start the installation by simply double-click
 ## Debian
 
 * Tested versions: Squeeze +
-* Ant build: 
-    - `os.family` = linux
-    - `os.distribution` = debian 
-    - target `create-deb`
 
 If you're on a Debian system you might also try our .deb repository:
 
@@ -103,25 +77,17 @@ root@debian:~# aptitude install appserver
 ## Fedora
 
 * Tested versions: 20
-* Ant build: 
-    - `os.family` = linux
-    - `os.distribution` = fedora 
-    - target `create-rpm`
-    
 
 ## CentOS
 
 * Tested versions: 6.5
-* Ant build: 
-    - `os.family` = linux
-    - `os.distribution` = centos 
-    - target `create-rpm`
 
 Installation and basic usage is the same as on Fedora **but** CentOS requires additional repositories
 like [remi](<http://rpms.famillecollet.com/>) or [EPEL](<http://fedoraproject.org/wiki/EPEL>) to 
 satisfy additional dependencies.
 
 ## Raspbian
+
 As an experiment we offer Raspbian and brought the appserver to an ARM environment. What should 
 we say, it worked! :D With `os.distribution` = raspbian you might give it a try to build it 
 yourself (plan at least 5 hours) as we currently do not offer prepared install packages.
@@ -139,106 +105,6 @@ Under Mac OS X you can simply delete the `/opt/appserver` folder and delete the 
 files for the launch daemons. These are files are located in folder `/Library/LaunchDaemons` and 
 named `io.appserver.<DAEMON>.plist`.
 
-# Configuration
-
-We believe that the appserver should be highly configurable, so anyone interested can fiddle 
-around with it. Therefor we provide a central configuration file located at `/opt/appserver/etc/appserver.xml`.
-
-This file contains the complete [architecture](#the-architecture) as an XML structure.
-
-So if you want to change used components, introduce new services or scale the system by adding
-additional servers you can do so with some lines of XML.You might have a look at a basic 
-`appserver.xml`.
-
-## The Architecture
-
-In this example we have a shortened piece of the `apserver.xml` file to understand how the 
-architecture is driven by configuration.
-
-```xml
-<container
-    name="webserver"
-    type="TechDivision\WebContainer\Container">
-    <description>
-        <![CDATA[This is an example of a webserver container that handles http requests in common way]]>
-    </description>
-    <deployment type="TechDivision\WebContainer\WebContainerDeployment" />
-    <host
-        name="localhost"
-        appBase="/webapps"
-        serverAdmin="info@appserver.io"
-        serverSoftware="appserver/${appserver.version} (${os.family}) PHP/${appserver.php.version}" />
-    <servers>
-        <server
-            type="\TechDivision\WebSocketServer\Servers\AsyncServer"
-            socket="\TechDivision\WebSocketServer\Sockets\AsyncSocket"
-            serverContext="\TechDivision\Server\ServerContext"
-            loggerName="System">
-            <params>
-                <param name="transport" type="string">tcp</param>
-                <param name="address" type="string">0.0.0.0</param>
-                <param name="port" type="integer">8589</param>
-                <param name="workerNumber" type="integer">64</param>
-                        
-                <!-- configure the server as you would like -->
-                        
-            </params>
-
-            <connectionHandlers>
-                <connectionHandler type="\TechDivision\WebSocketProtocol\WebSocketConnectionHandler" />
-            </connectionHandlers>
-        </server>
-
-        <!-- Here, additional servers might be added -->
-    
-    </servers>
-</container>
-``` 
-
-In the above example you can see three important components of the appserver architecture being 
-used. The [*container*](<architecture.md#container>), [*server*](<architecture.md#server>) and a 
-[*protocol*](<architecture.md#protocol>) (if you did not read about our basic [architecture](<architecture.md>) 
-you should now). We are basically building up a container which holds a server using the websocket 
-protocol to handle incomming requests.
-
-### Container configuration
-
-A *container* is created by using the `container` element within the `containers` collection 
-of the `appserver` document element. Two things make this element in a specific container 
-being built up by the system on startup:
-
-* The `type` attribute states a class extending our `AbstractContainerThread` which makes a 
-  container into a certain kind of container.
-
-* The `deployment` element states a class containing preparations for starting up the container. 
-  It can be considered a hook which will be invoked before the container will be available.
-
-That is basically everything there is to do to create a new container. To make use of it, it has 
-to contain at least one *server* within its `servers` collection.
-
-### Server configuration
-
-The *servers* contained by our *container* can also be losely drafted by the XML configuration and 
-will be instantiated on container bootup. To enable a *server* you have to mention three basic 
-attributes of the element:
-
-* The `type` specifies a class implementing the `ServerInterface` which implements the basic 
-  behaviour of the server on receiving a connection and how it will handle it.
-
-* The `socket` attribute specifies the type of socket the server should open. E.g. a stream or 
-  asynchonious socket
-* The `serverContext` specifies the server's soure of configuration and container for runtime 
-  information e.g. ServerVariables like `DOCUMENT_ROOT`
-
-So we have our specific server which will open a certain port and operate in a defined context. But
-to make the server handle a certain type of requests it needs to know which *protocol* to speak.
-
-This can be done using the `connectionHandler` element. Certain server wrappers can handle certain
-protocols. Therefor we can use the protocols which a server wrapper, e.g. `WebServer` supports in 
-form of connection handlers. [WebServer](<https://github.com/techdivision/TechDivision_WebServer>)
-offers a `HttpConnectionHandler` class. By using it, the server is able to understand the HTTP 
-protocol. 
-
 # Basic Usage
 
 The appserver will automatically start after your installation wizard (or package manager) finishes
@@ -249,33 +115,8 @@ you might want to have a look and some of the bundled apps. Two of are interesti
 
 * **Example** shows basic usage of services. You can reach it at `http://127.0.0.1:9080/example`
 
-* **Admin** appserver and app management `http://127.0.0.1:9080/admin`
-
 Start your favorite browser and have a look at what we can do. :) To pass the password barriers use
 the default login `appserver/appserver.i0`.
-
-You will see that we provide basic frontend implementations of services the appserver runtime
-provides. If you want to use these services yourself you should have a look into the code of our 
-apps and read about [app development](<../basics/webapp-basics/app-deployment.md>).
-
-You might be curious about the different port we use. Per default the appserver will open several 
-ports at which it's services are available. As we do not want to block (or be blocked by) other 
-services we use ports of a higher range.
-
-As a default we use the following ports:
-
-* WebContainer
-    - Http-Server: `9080`
-    - Https-Server: `9443`
-    - WebSocketServer: `8589`  
-    
-* Persistence-MQ-Container
-    - PersistenceServer: `8585`
-    - PersistenceServer: `8587`
-
-You can change this default port mapping by using the [configuration file](<../basics/appserver-basics/the-appserver_xml-configuration-file.md>).
-If you are interested in our naming, you can see our container->server pattern, you might want to 
-have a deeper look into our [architecture](<../basics/appserver-basics/architecture.md>)
 
 ## Start and Stop Scripts
 
@@ -353,7 +194,7 @@ which has a different document root than the global configuration has. The virtu
 The `virtualHost` element can hold params, rewrite rules or environment variables which are only 
 available for the host specifically.
 
-## Configure Environment Variables
+## Configure your Environment Variables
 
 You can set environment variables using either the global or the virtual host based configuration.
 The example below shows a basic usage of environment variables in XML format.
@@ -383,214 +224,6 @@ specialities too:
 - You can use backreferences for the value you want to set as well. But those are limited to environment 
   variables of the PHP process
 - Values will be treated as strings
-
-## Modules
-
-The web server comes with a package of default modules. The functionality that allows us to configure
-a virtual host or environment variables, for example, is also provided by two, maybe the most important,
-modules.
-
-### Rewrite Module
-
-#### Usage
-
-The module can be used according to the `\AppserverIo\WebServer\Interfaces\HttpModuleInterface` interface.
-It needs an initial call of the `init` method and will process any request offered to the `process` method.
-The module is best used within the [`webserver`](<https://github.com/appserver-io/webserver>)
-project as it offers all needed infrastructure.
-
-#### Rules
-
-Most important part of the module is the way in which it can perform rewrites. All rewrites are 
-based on rewrite rules which consist of three important parts:
-
-- *condition string* : Conditions which have to be met in order for the rule to take effect. 
-  See more [down here](#condition-syntax)
-
-- *target string* : The target to rewrite the requested URI to. Within this string you can use 
-  backreferences similar
-  to the Apache mod_rewrite module with the difference that you have to use the `$ syntax`
-  (instead of the `$/%/%{} syntax` of Apache).
-  
-  Backreferences are parts of the matching rule conditions which you specifically pick out via regex.
-
-  *Simple example* : A condition like `(.+)@$X_REQUEST_URI` would produce a back reference `$1` 
-  with the value `/index` for a requested URI `/index`. The target string `$1/welcome.html` would
-  therefore result in a rewrite to `/index/welcome.html`
-
-- *flag string* : You can use flags similar to mod_rewrite which are used to make rules react in a 
-  certain way or influence further processing. See more [down here](#flags)
-
-#### Condition Syntax
-
-The Syntax of possible conditions is roughly based on the possibilities of Apache's RewriteCondition 
-and RewriteRule combined.
-
-To make use of such a combination you can chain conditions together using the `{OR}` symbol for 
-OR-combined, and the `{AND}` symbol for AND-combined conditions.
-
-Please be aware that AND takes precedence over OR! Conditions can either be PCRE regex or certain fixed 
-expressions. So a condition string of `([A-Z]+\.txt){OR}^/([0-9]+){AND}-f` would match only real files 
-(through `-f`) which either begin with numbers or end with capital letters and the extension .txt.
-
-As you might have noticed: Backslashes do **not have to be escaped**.
-
-You might also be curious of the `-f` condition. This is a direct copy of Apaches -f RewriteCondition.
-We also support several other expressions to regex based conditions which are:
-
- - *<<COMPARE_STRING>* : Is the operand lexically preceding `<COMPARE_STRING>`?
- - *><COMPARE_STRING>* : Is the operand lexically following `<COMPARE_STRING>`?
- - *=<COMPARE_STRING>* : Is the operand lexically equal to `<COMPARE_STRING>`?
- - *-d* : Is the operand a directory?
- - *-f* : Is the operand a real file?
- - *-s* : Is the operand a real file of a size greater than 0?
- - *-l* : Is the operand a symbolic link?
- - *-x* : Is the operand an executable file?
-
-If you are wondering what the `operand` might be: it is **whatever you want it to be**! You can specify
-any operand you like using the `@` symbol. All conditions within a rule will use the next operand to 
-their right and if none is given the requested URI. For example:
-
-- *`([A-Z]+\.txt){OR}^/([0-9]+)`* Will take the requested URI for both conditions (note the `{OR}` symbol)
-- *`([A-Z]+\.txt){OR}^/([0-9]+)@$DOCUMENT_ROOT`* Will test both conditions against the document root
-- *`([A-Z]+\.txt)@$DOCUMENT_ROOT{OR}^/([0-9]+)`* Will only test the first one against the document root 
-  and the second against the requested URI
-
-You might have noted the `$` symbol before `DOCUMENT_ROOT` and remembered it from the backreference 
-syntax. That's because all Apache common server vars can be explicitly used as backreferences too!
-
-That does not work for you? Need the exact opposite? No problem!
-
-All conditions, weather regex or expression based can be negated using the `!` symbol in front of 
-them! So `!^([0-9]+)` would match all strings which do NOT begin with a number and `!-d` would match
-all non-directories.
-
-#### Flags
-
-Flags are used to further influence processing. You can specify as many flags per rewrite as you like,
-but be aware of their impact! Syntax for several flags is simple: just separate them with a `,` symbol.
-Flags which might accept a parameter can be assigned one by using the `=` symbol. Currently supported
-flags are:
-
-- *L* : As rules are normally processed one after the other, the `L` flag will make the flagged rule 
-  the last one processed if matched.
-
-- *R* : If this flag is set we will redirect the client to the URL specified in the `target string`. 
-   If this is just an URI we will redirect to the same host. You might also specify a custom status 
-   code between 300 and 399 to indicate the reason for/kind of the redirect. Default is `301` aka 
-   `permanent`
-
-- *M* : Stands for map. Using this flag you can specify an external source (have a look at the Injector
-  classes of the WebServer project) of a target map. With `M=<MY_BACKREFERENCE>` you can specify what 
-  the map's index has to match. This matching is done **only** if the rewrite condition matches and will 
-  behave as another condition
-
-### Virtual-Host Module
-
-#### Usage
-
-The module can be used according to the `\AppserverIo\WebServer\Interfaces\HttpModuleInterface`
-interface. It needs an initial call of the `init` method and will process any request offered to 
-the `process` method. The module is best used within the [webserver](<https://github.com/appserver-io/webserver>)
-project as it offers all needed infrastructure.
-
-#### Examples
-
-The following examples should help you to configure your application with default settings usually
-provided with the applications .htaccess files.
-
-If you want to configure virtual hosts a virtual hosts node is mandatory and should look like the 
-following.
-
-```xml
-<virtualHosts>
-    <virtualHost name="name.local">
-        Please put in your Hosts configuration here. For Examples see below 
-    </virtualHost>
-</virtualHosts>
-```
-
-##### Magento:
-
-```xml
-<virtualHost name="magento-real-vhost.dev magento-real-vhost.local">
-    <params>
-        <param name="admin" type="string">info@appserver.io</param>
-        <param name="documentRoot" type="string">webapps</param>
-    </params>
-    <rewrites>
-        <rewrite condition="-d{OR}-f{OR}-l" target="" flag="L" />
-        <rewrite condition="(.*)" target="index.php/$1" flag="L" />
-    </rewrites>
-    <accesses>
-        <access type="allow">
-            <params>
-                <param name="X_REQUEST_URI" type="string">^\/([^\/]+\/)?(media|skin|js|index\.php).*
-                </param>
-            </params>
-        </access>
-    </accesses>
-</virtualHost>
-```
-
-##### TYPO3 Neos
-
-```xml
-<virtualHost name="neos.local">
-    <params>
-        <param name="admin" type="string">info@appserver.io</param>
-        <param name="documentRoot" type="string">webapps/neos-1.0.2/Web
-        </param>
-    </params>
-    <rewrites>
-        <rewrite
-            condition="^/(_Resources/Packages/|robots\.txt|favicon\.ico){OR}-d{OR}-f{OR}-l"
-            target="" flag="L" />
-        <rewrite
-            condition="^/(_Resources/Persistent/[a-z0-9]+/(.+/)?[a-f0-9]{40})/.+(\..+)"
-            target="$1$3" flag="L" />
-        <rewrite condition="^/(_Resources/Persistent/.{40})/.+(\..+)"
-            target="$1$2" flag="L" />
-        <rewrite condition="^/_Resources/.*" target="" flag="L" />
-        <rewrite condition="(.*)" target="index.php" flag="L" />
-    </rewrites>
-    <environmentVariables>
-        <environmentVariable condition=""
-            definition="FLOW_REWRITEURLS=1" />
-        <environmentVariable condition=""
-            definition="FLOW_CONTEXT=Production" />
-        <environmentVariable condition="Basic ([a-zA-Z0-9\+/=]+)@$Authorization"
-            definition="REMOTE_AUTHORIZATION=$1" />
-    </environmentVariables>
-</virtualHost>
-```
-
-##### ORO CRM
-
-```xml
-<virtualHost name="oro-crm.local">
-    <params>
-        <param name="admin" type="string">info@appserver.io</param>
-        <param name="documentRoot" type="string">webapps/crm-application/web
-        </param>
-    </params>
-    <rewrites>
-        <rewrite condition="-f" target="" flag="L" />
-        <rewrite condition="^/(.*)$" target="app.php" flag="L" />
-    </rewrites>
-</virtualHost>
-```
-
-##### Wordpress
-
-```xml
-<virtualHost name="wordpress.local">
-    <params>
-        <param name="admin" type="string">info@appserver.io</param>
-        <param name="documentRoot" type="string">webapps/wordpress</param>
-    </params>
-</virtualHost>
-```
 
 # Servlet-Engine
 
@@ -711,6 +344,372 @@ $proxyIntance->raiseMe();
 
 # Message-Queue
 
+# Runtime Environment
+
+The runtime environment appserver.io is using is delivered by the package [runtime](<https://github.com/appserver-io-php/runtime>).
+This package  provides the appserver runtime which is system independent and encloses a thread-safe
+compiled PHP environment. Besides the most recent PHP 5.5.x version the package came with installed
+extensions:
+
+* [pthreads](http://github.com/appserver-io-php/pthreads)
+* [appserver](https://github.com/appserver-io/php-ext-appserver) (contains some replacement functions
+  which behave badly in a multithreaded environment)
+
+Additionally the PECL extensions [XDebug](http://pecl.php.net/package/xdebug) and [ev](http://pecl.php.net/package/ev) 
+are compiled as a shared modules. XDebug is necessary to render detailed code coverage reports when 
+running unit and integration tests. ev will be used to integrate a timer service in one of the future
+versions.
+
+# Configuration
+
+We believe that the appserver should be highly configurable, so anyone interested can fiddle 
+around with it. Therefor we provide a central configuration file located at `/opt/appserver/etc/appserver.xml`.
+
+This file contains the complete [architecture](#the-architecture) as an XML structure.
+
+So if you want to change used components, introduce new services or scale the system by adding
+additional servers you can do so with some lines of XML.You might have a look at a basic 
+`appserver.xml`.
+
+## The Architecture
+
+In this example we have a shortened piece of the `apserver.xml` file to understand how the 
+architecture is driven by configuration.
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<appserver xmlns="http://www.appserver.io/appserver">
+
+    <params>
+        <param name="user" type="string">_www</param>
+        <param name="group" type="string">staff</param>
+        <param name="umask" type="string">0002</param>
+    </params>
+    
+    <containers>
+    
+        <container name="combined-appserver" type="AppserverIo\Core\GenericContainer">
+            <description>
+                <![CDATA[This is an example of a webserver container that handles http requests in common way]]>
+            </description>
+            <deployment type="AppserverIo\Appserver\Core\GenericDeployment" />
+            <host
+                name="localhost"
+                appBase="/webapps"
+                serverAdmin="info@appserver.io"
+                serverSoftware="appserver/1.0.0-beta (mac) PHP/5.5.16" />
+                
+            <servers>
+            
+                <server
+                        name="http"
+                        type="\AppserverIo\Server\Servers\MultiThreadedServer"
+                        worker="\AppserverIo\Server\Workers\ThreadWorker"
+                        socket="\AppserverIo\Server\Sockets\StreamSocket"
+                        serverContext="\AppserverIo\Server\Contexts\ServerContext"
+                        requestContext="\AppserverIo\Server\Contexts\RequestContext"
+                        loggerName="System">
+                    <params>
+                        <param name="admin" type="string">info@appserver.io</param>
+                        <param name="software" type="string">appserver/1.0.0.0 (darwin) PHP/5.5.16</param>
+                        <param name="transport" type="string">tcp</param>
+                        <param name="address" type="string">127.0.0.1</param>
+                        <param name="port" type="integer">9080</param>
+                        <param name="workerNumber" type="integer">64</param>
+                        <param name="workerAcceptMin" type="integer">3</param>
+                        <param name="workerAcceptMax" type="integer">8</param>
+                        <param name="documentRoot" type="string">webapps</param>
+                        <param name="directoryIndex" type="string">index.do index.php index.html index.htm</param>
+                        <param name="keepAliveMax" type="integer">64</param>
+                        <param name="keepAliveTimeout" type="integer">5</param>
+                        <param name="errorsPageTemplatePath" type="string">var/www/errors/error.phtml</param>
+                    </params>
+
+                    <environmentVariables>
+                        <environmentVariable condition="" definition="LOGGER_ACCESS=Access" />
+                    </environmentVariables>
+
+                    <connectionHandlers>
+                        <connectionHandler type="\AppserverIo\WebServer\ConnectionHandlers\HttpConnectionHandler" />
+                    </connectionHandlers>
+
+                    <authentications>
+                        <authentication uri="^\/admin.*">
+                            <params>
+                                <param name="type" type="string">
+                                    \AppserverIo\WebServer\Authentication\BasicAuthentication
+                                </param>
+                                <param name="realm" type="string">appserver.io Basic Authentication System</param>
+                                <param name="hash" type="string">YXBwc2VydmVyOmFwcHNlcnZlci5pMA==</param>
+                            </params>
+                        </authentication>
+                    </authentications>
+
+                    <accesses>
+                        <access type="allow">
+                            <params>
+                                <param name="X_REQUEST_URI" type="string">.*</param>
+                            </params>
+                        </access>
+                    </accesses>
+
+                    <virtualHosts>
+                        <virtualHost name="example.local">
+                            <params>
+                                <param name="admin" type="string">admin@appserver.io</param>
+                                <param name="documentRoot" type="string">/opt/appserver/webapps/example</param>
+                            </params>
+                        </virtualHost>
+                    </virtualHosts>
+                    
+                    <modules>
+                        <!-- REQUEST_POST hook -->
+                        <module type="\AppserverIo\WebServer\Modules\VirtualHostModule"/>
+                        <module type="\AppserverIo\WebServer\Modules\AuthenticationModule"/>
+                        <module type="\AppserverIo\WebServer\Modules\EnvironmentVariableModule" />
+                        <module type="\AppserverIo\WebServer\Modules\RewriteModule"/>
+                        <module type="\AppserverIo\WebServer\Modules\DirectoryModule"/>
+                        <module type="\AppserverIo\WebServer\Modules\AccessModule"/>
+                        <module type="\AppserverIo\WebServer\Modules\CoreModule"/>
+                        <module type="\AppserverIo\WebServer\Modules\PhpModule"/>
+                        <module type="\AppserverIo\WebServer\Modules\FastCgiModule"/>
+                        <module type="\AppserverIo\Appserver\ServletEngine\ServletEngine" />
+                        <!-- RESPONSE_PRE hook -->
+                        <module type="\AppserverIo\WebServer\Modules\DeflateModule"/>
+                        <!-- RESPONSE_POST hook -->
+                        <module type="\AppserverIo\Appserver\Core\Modules\ProfileModule"/>
+                    </modules>
+
+                    <fileHandlers>
+                        <fileHandler name="fastcgi" extension=".php">
+                            <params>
+                                <param name="host" type="string">127.0.0.1</param>
+                                <param name="port" type="integer">9010</param>
+                            </params>
+                        </fileHandler>
+                        <fileHandler name="fastcgi" extension=".phtml">
+                            <params>
+                                <param name="host" type="string">127.0.0.1</param>
+                                <param name="port" type="integer">9010</param>
+                            </params>
+                        </fileHandler>
+                        <fileHandler name="servlet" extension=".do" />
+                    </fileHandlers>
+
+                </server>
+        
+                <!-- Here, additional servers might be added -->
+            
+            </servers>
+        </container>
+    </containers>
+</appserver>
+``` 
+
+In the above example you can see three important components of the appserver architecture being 
+used. The [*container*](docs/docs/architecture.md#container>), [*server*](docs/docs/architecture.md#server) and a 
+[*protocol*](docs/docs/architecture.md#protocol>) (if you did not read about our basic [architecture](docs/docs/architecture.md) 
+you should now). We are basically building up a container which holds a server using the websocket 
+protocol to handle incomming requests.
+
+### Container configuration
+
+A *container* is created by using the `container` element within the `containers` collection 
+of the `appserver` document element. Two things make this element in a specific container 
+being built up by the system on startup:
+
+* The `type` attribute states a class extending our `AbstractContainerThread` which makes a 
+  container into a certain kind of container.
+
+* The `deployment` element states a class containing preparations for starting up the container. 
+  It can be considered a hook which will be invoked before the container will be available.
+
+That is basically everything there is to do to create a new container. To make use of it, it has 
+to contain at least one *server* within its `servers` collection.
+
+### Server configuration
+
+The *servers* contained by our *container* can also be losely drafted by the XML configuration and 
+will be instantiated on container bootup. To enable a *server* you have to mention three basic 
+attributes of the element:
+
+* The `type` specifies a class implementing the `ServerInterface` which implements the basic 
+  behaviour of the server on receiving a connection and how it will handle it.
+
+* The `socket` attribute specifies the type of socket the server should open. E.g. a stream or 
+  asynchonious socket
+* The `serverContext` specifies the server's soure of configuration and container for runtime 
+  information e.g. ServerVariables like `DOCUMENT_ROOT`
+
+So we have our specific server which will open a certain port and operate in a defined context. But
+to make the server handle a certain type of requests it needs to know which *protocol* to speak.
+
+This can be done using the `connectionHandler` element. Certain server wrappers can handle certain
+protocols. Therefor we can use the protocols which a server wrapper, e.g. `WebServer` supports in 
+form of connection handlers. [WebServer](<https://github.com/appserver.io/webserver>)
+offers a `HttpConnectionHandler` class. By using it, the server is able to understand the HTTP 
+protocol.
+
+### Module Configuration
+
+The web server comes with a package of default modules. The functionality that allows us to configure
+a virtual host or environment variables, for example, is also provided by two, maybe the most important,
+modules.
+
+#### Rewrite Module
+
+##### Usage
+
+The module can be used according to the `\AppserverIo\WebServer\Interfaces\HttpModuleInterface` interface.
+It needs an initial call of the `init` method and will process any request offered to the `process` method.
+The module is best used within the [`webserver`](<https://github.com/appserver-io/webserver>)
+project as it offers all needed infrastructure.
+
+##### Rules
+
+Most important part of the module is the way in which it can perform rewrites. All rewrites are 
+based on rewrite rules which consist of three important parts:
+
+- *condition string* : Conditions which have to be met in order for the rule to take effect. 
+  See more [down here](#condition-syntax)
+
+- *target string* : The target to rewrite the requested URI to. Within this string you can use 
+  backreferences similar
+  to the Apache mod_rewrite module with the difference that you have to use the `$ syntax`
+  (instead of the `$/%/%{} syntax` of Apache).
+  
+  Backreferences are parts of the matching rule conditions which you specifically pick out via regex.
+
+  *Simple example* : A condition like `(.+)@$X_REQUEST_URI` would produce a back reference `$1` 
+  with the value `/index` for a requested URI `/index`. The target string `$1/welcome.html` would
+  therefore result in a rewrite to `/index/welcome.html`
+
+- *flag string* : You can use flags similar to mod_rewrite which are used to make rules react in a 
+  certain way or influence further processing. See more [down here](#flags)
+
+##### Condition Syntax
+
+The Syntax of possible conditions is roughly based on the possibilities of Apache's RewriteCondition 
+and RewriteRule combined.
+
+To make use of such a combination you can chain conditions together using the `{OR}` symbol for 
+OR-combined, and the `{AND}` symbol for AND-combined conditions.
+
+Please be aware that AND takes precedence over OR! Conditions can either be PCRE regex or certain fixed 
+expressions. So a condition string of `([A-Z]+\.txt){OR}^/([0-9]+){AND}-f` would match only real files 
+(through `-f`) which either begin with numbers or end with capital letters and the extension .txt.
+
+As you might have noticed: Backslashes do **not have to be escaped**.
+
+You might also be curious of the `-f` condition. This is a direct copy of Apaches -f RewriteCondition.
+We also support several other expressions to regex based conditions which are:
+
+ - *<<COMPARE_STRING>* : Is the operand lexically preceding `<COMPARE_STRING>`?
+ - *><COMPARE_STRING>* : Is the operand lexically following `<COMPARE_STRING>`?
+ - *=<COMPARE_STRING>* : Is the operand lexically equal to `<COMPARE_STRING>`?
+ - *-d* : Is the operand a directory?
+ - *-f* : Is the operand a real file?
+ - *-s* : Is the operand a real file of a size greater than 0?
+ - *-l* : Is the operand a symbolic link?
+ - *-x* : Is the operand an executable file?
+
+If you are wondering what the `operand` might be: it is **whatever you want it to be**! You can specify
+any operand you like using the `@` symbol. All conditions within a rule will use the next operand to 
+their right and if none is given the requested URI. For example:
+
+- *`([A-Z]+\.txt){OR}^/([0-9]+)`* Will take the requested URI for both conditions (note the `{OR}` symbol)
+- *`([A-Z]+\.txt){OR}^/([0-9]+)@$DOCUMENT_ROOT`* Will test both conditions against the document root
+- *`([A-Z]+\.txt)@$DOCUMENT_ROOT{OR}^/([0-9]+)`* Will only test the first one against the document root 
+  and the second against the requested URI
+
+You might have noted the `$` symbol before `DOCUMENT_ROOT` and remembered it from the backreference 
+syntax. That's because all Apache common server vars can be explicitly used as backreferences too!
+
+That does not work for you? Need the exact opposite? No problem!
+
+All conditions, weather regex or expression based can be negated using the `!` symbol in front of 
+them! So `!^([0-9]+)` would match all strings which do NOT begin with a number and `!-d` would match
+all non-directories.
+
+##### Flags
+
+Flags are used to further influence processing. You can specify as many flags per rewrite as you like,
+but be aware of their impact! Syntax for several flags is simple: just separate them with a `,` symbol.
+Flags which might accept a parameter can be assigned one by using the `=` symbol. Currently supported
+flags are:
+
+- *L* : As rules are normally processed one after the other, the `L` flag will make the flagged rule 
+  the last one processed if matched.
+
+- *R* : If this flag is set we will redirect the client to the URL specified in the `target string`. 
+   If this is just an URI we will redirect to the same host. You might also specify a custom status 
+   code between 300 and 399 to indicate the reason for/kind of the redirect. Default is `301` aka 
+   `permanent`
+
+- *M* : Stands for map. Using this flag you can specify an external source (have a look at the Injector
+  classes of the WebServer project) of a target map. With `M=<MY_BACKREFERENCE>` you can specify what 
+  the map's index has to match. This matching is done **only** if the rewrite condition matches and will 
+  behave as another condition
+
+#### Virtual-Host Module
+
+##### Usage
+
+The module can be used according to the `\AppserverIo\WebServer\Interfaces\HttpModuleInterface`
+interface. It needs an initial call of the `init` method and will process any request offered to 
+the `process` method. The module is best used within the [webserver](<https://github.com/appserver-io/webserver>)
+project as it offers all needed infrastructure.
+
+If you need to configure a virtual host a virtual hosts node is mandatory and should look like the 
+following example, that would enable a Magento installation under `http://magento.dev:9080`.
+
+```xml
+<virtualHost name="magento.dev">
+    <params>
+        <param name="admin" type="string">info@appserver.io</param>
+        <param name="documentRoot" type="string">webapps/magento</param>
+    </params>
+    <rewrites>
+        <rewrite condition="-d{OR}-f{OR}-l" target="" flag="L" />
+        <rewrite condition="(.*)" target="index.php/$1" flag="L" />
+    </rewrites>
+    <accesses>
+        <access type="allow">
+            <params>
+                <param name="X_REQUEST_URI" type="string">^\/([^\/]+\/)?(media|skin|js|index\.php).*
+                </param>
+            </params>
+        </access>
+    </accesses>
+</virtualHost>
+```
+
+## Configuration Defaults
+
+You will see that we provide basic frontend implementations of services the appserver runtime
+provides. If you want to use these services yourself you should have a look into the code of our 
+apps and read about [app development](#deployment).
+
+You might be curious about the different port we use. Per default the appserver will open several 
+ports at which it's services are available. As we do not want to block (or be blocked by) other 
+services we use ports of a higher range.
+
+As a default we use the following ports:
+
+* WebContainer
+
+    - HTTP Server: `9080`
+    - HTTPS Server: `9443`
+    
+* Persistence-MQ-Container
+
+    - Persistence-Container: `8585`
+    - Message-Queue: `8587`
+
+You can change this default port mapping by using the [configuration file](#the-architecture).
+If you are interested in our naming, you can see our container->server pattern, you might want to 
+have a deeper look into our [architecture](docs/docs/architecture.md)
+
 # Deployment
 
 The deploy directory in the appserver.io Application Server distribution is the location end users can place their 
@@ -789,7 +788,4 @@ Note that the behavior of ```touch``` and ```echo``` are different but thediffer
 
 # External Links
 
-* Documentation at [appserver.io](http://docs.appserver.io)
-* Documentation on [GitHub](https://github.com/techdivision/TechDivision_AppserverDocumentation)
-* [Getting started](https://github.com/techdivision/TechDivision_AppserverDocumentation/tree/master/docs/getting-started)
-* [Appserver basics](https://github.com/techdivision/TechDivision_AppserverDocumentation/tree/master/docs/basics/appserver-basics)
+* All about appserver.io at [appserver.io](http://www.appserver.io)
