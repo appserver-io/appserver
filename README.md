@@ -214,9 +214,9 @@ The example below shows a basic usage of environment variables in XML format.
 </environmentVariables>
 ```
 
-There are several ways in which this feature is used. You can get a rough idea when having a look 
-at Apache modules [mod_env](<http://httpd.apache.org/docs/2.2/mod/mod_env.html>) and [mod_setenvif](<http://httpd.apache.org/docs/2.2/mod/mod_setenvif.html>)
-which we adopted.
+There are several ways in which this feature is used. You can get a rough idea when having a 
+look at Apache modules [mod_env](<http://httpd.apache.org/docs/2.2/mod/mod_env.html>) and 
+[mod_setenvif](<http://httpd.apache.org/docs/2.2/mod/mod_setenvif.html>) which we adopted.
 
 You can make definitions of environment variables dependent on REGEX based conditions which will
 be performed on so called backreferences. These backreferences are request related server variables
@@ -225,15 +225,151 @@ like `HTTP_USER_AGENT`.
 A condition has the format `<REGEX_CONDITION>@$<BACKREFERENCE>`. If the condition is empty the 
 environment variable will be set every time.
 
-The definition you can use has the form `<NAME_OF_VAR>=<THE_VALUE_TO_SET>`. The definition has some
-specialities too:
+The definition you can use has the form `<NAME_OF_VAR>=<THE_VALUE_TO_SET>`. The definition has 
+some specialities too:
 
 - Setting a var to `null` will unset the variable if it existed before
-- You can use backreferences for the value you want to set as well. But those are limited to environment 
+- You can use backreferences for the value you want to set as well. But those are limited to 
+  environment 
   variables of the PHP process
 - Values will be treated as strings
 
 # Servlet-Engine
+
+Originally Servlets are the Java counterpart to other dynamic web technologies like PHP or the 
+Microsoft .NET plattform. In contrast to PHP, a Servlet written in Java is not a script that'll
+be interpreted per request, instead it is a class instanciated when the Servlet Engine starts up
+process requests be invoking one of its methods.
+
+> In most cases, this is a major advantage against the common PHP way to load the script on each
+> request again. Sinces PHP applications, mostly based on frameworks like Yii or Symfony growed
+> immensly during the last years, reload all the script filest, required by the application again
+> and again slows down performance in a critical manner. This is one of the reasons, why caching 
+> is meanwhile a major part of nearly all frameworks. On the one hand, caching takes care, that 
+> the application responds to the request in an acceptable time, on the other hand it is the 
+> origin of many problems, such as how to invalidate parts of the cache during a applications
+> runtime.
+
+Using a Servlet Engine and, as a consequence of that, Servlets enables you to implement your
+application logic as you are used to, without the need to take care about the expensive 
+bootstrapping process that came together with common legacy frameworks. A Servlet is a super
+fast and simple way to implement an entry point to handle HTTP requests that allows you to
+execute all performance critical tasks, like bootstrapping, in a method called `ìnit()`, when
+the Servlet Engine starts up.
+
+## What is a Servlet
+
+A Servlet is a simple class, that has to extend from `AppserverIo\Psr\Servlet\Http\HttpServlet`
+to make it simple. Your application logic can then be implemented by overwriting the `service()`
+method or better by overwriting the request specific methods like `doGet()` if you want to handle
+a GET request.
+
+## Create a simple Servlet
+
+Let's write a simple example and start with a famous `Hello World` servlet
+
+```php
+
+namespace Namespace\Module;
+
+/**
+ * This is the famous 'Hello World' as servlet implementation.
+ */
+class HelloWorldServlet extends HttpServlet
+{
+
+
+    /**
+     * The text to be rendered.
+     *
+     * @var string
+     */
+    protected $helloWorld = '';
+
+    /**
+     * Initializes the servlet with the passed configuration.
+     *
+     * @param \AppserverIo\Psr\Servlet\ServletConfig $config The configuration to initialize the servlet with
+     *
+     * @return void
+     */
+    public function init(ServletConfig $config)
+    {
+
+        // call parent method
+        parent::init($config);
+
+        // prepare the text here
+        $this->helloWorld = 'Hello World!';
+        
+        // @todo Do all the bootstrapping here, because this method will
+        //       be invoked only once when the Servlet Engines starts up
+    }
+
+    /**
+     * Handles a HTTP GET request.
+     *
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest  $servletRequest  The request instance
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponse $servletResponse The response instance
+     *
+     * @return void
+     * @see \AppserverIo\Psr\Servlet\Http\HttpServlet::doGet()
+     */
+    public function doGet(HttpServletRequest $servletRequest, HttpServletResponse $servletResponse)
+    {
+        $servletResponse->appendBodyStream($this->helloWorld);
+    }
+
+    /**
+     * Handles a HTTP POST request.
+     *
+     * @param \AppserverIo\Psr\Servlet\Http\ServletRequest  $servletRequest  The request instance
+     * @param \AppserverIo\Psr\Servlet\Http\ServletResponse $servletResponse The response instance
+     *
+     * @return void
+     * @see \AppserverIo\Psr\Servlet\Http\HttpServlet::doPost()
+     * @throws \AppserverIo\Psr\Servlet\ServletException Is thrown because the request method is not implemented yet
+     */
+    public function doPost(HttpServletRequest $servletRequest, HttpServletResponse $servletResponse)
+    {
+        throw new ServletException('HTTP POST requests not implemented yet!');
+    }
+}
+```
+
+and save it as `/opt/appserver/webapps/myapp/WEB-INF/classes/Namespace/Module/HelloWorldServlet.php`.
+
+Is that all? Actually unfortunately not. To make your servlet run, you've to register it with a 
+simple XML file
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="1.0">
+
+    <display-name>appserver.io example application</display-name>
+    <description>This is the example application for the appserver.io servlet engine.</description>
+
+    <servlet>
+        <description>The hello world as servlet implementation.</description>
+        <display-name>The famous 'Hello World' example</display-name>
+        <servlet-name>helloWorld</servlet-name>
+        <servlet-class>\Namespace\Module\HelloWorldServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>helloWorld</servlet-name>
+        <url-pattern>/helloWorld.do</url-pattern>
+    </servlet-mapping>
+
+</web-app>
+```
+
+Save the file as `/opt/appserver/webapps/myapp/WEB-INF/web.xml` and [restart](#start-and-stop-scripts) the 
+application server and open `http://127.0.0.1:9080/myapp/helloWorld.do` in your favorite browser, and ... vóila :)
+
+> Seems to be very simple we think! Till the stable 1.0.0 we'll provide annotations that allows
+> you to configure your Servlet without the need to create a XML configuration. In future, the 
+> XML configuration will always overwrite annotations in future versions, keep that in mind!
 
 # Persistence-Container
 
@@ -288,7 +424,7 @@ instance a class member of your SessionBean makes it persistent for your session
 ## Example
 
 The following example shows you a really simple implementation of a stateful SessionBean providing
-a counter that'll be raised whenever you call the raiseMe() method.
+a counter that'll be raised whenever you call the `raiseMe()` method.
 
 ```php
 
