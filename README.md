@@ -166,7 +166,7 @@ C:\Windows\system32>cd "C:\Program Files\appserver"
 C:\Program Files\appserver>server.bat
 ```
 
-# HTTP Server
+# HTTP(S) Server
 
 The configuration itself is highly self-explanatory so just have a look to the preferred config
 file and try to change settings. A detailed overview of all configuration settings will follow ...
@@ -181,14 +181,14 @@ the example for a XML based configuration below:
 
 ```xml
 <virtualHost name="example.local">
-    <params>
-        <param name="admin" type="string">
-            admin@appserver.io
-        </param>
-        <param name="documentRoot" type="string">
-            /opt/appserver/webapps/example
-        </param>
-    </params>
+  <params>
+    <param name="admin" type="string">
+      admin@appserver.io
+    </param>
+    <param name="documentRoot" type="string">
+      /opt/appserver/webapps/example
+    </param>
+  </params>
 </virtualHost>
 ```
 
@@ -205,12 +205,12 @@ The example below shows a basic usage of environment variables in XML format.
 
 ```xml
 <environmentVariables>
-    <environmentVariable 
-        condition="" 
-        definition="EXAMPLE_VAR=example" />
-    <environmentVariable 
-        condition="Apple@$HTTP_USER_AGENT" 
-        definition="USER_HAS_APPLE=true" />
+  <environmentVariable 
+    condition="" 
+    definition="EXAMPLE_VAR=example" />
+  <environmentVariable 
+    condition="Apple@$HTTP_USER_AGENT" 
+    definition="USER_HAS_APPLE=true" />
 </environmentVariables>
 ```
 
@@ -233,6 +233,12 @@ some specialities too:
   environment 
   variables of the PHP process
 - Values will be treated as strings
+
+# AOP
+
+# Dependency Injection
+
+# Design-by-Contract
 
 # Servlet-Engine
 
@@ -278,62 +284,71 @@ namespace Namespace\Module;
 class HelloWorldServlet extends HttpServlet
 {
 
+  /**
+   * The text to be rendered.
+   *
+   * @var string
+   */
+  protected $helloWorld = '';
 
-    /**
-     * The text to be rendered.
-     *
-     * @var string
-     */
-    protected $helloWorld = '';
+  /**
+   * Initializes the servlet with the passed configuration.
+   *
+   * @param \AppserverIo\Psr\Servlet\ServletConfig $config 
+   *   The configuration to initialize the servlet with
+   *
+   * @return void
+   */
+  public function init(ServletConfig $config)
+  {
 
-    /**
-     * Initializes the servlet with the passed configuration.
-     *
-     * @param \AppserverIo\Psr\Servlet\ServletConfig $config The configuration to initialize the servlet with
-     *
-     * @return void
-     */
-    public function init(ServletConfig $config)
-    {
+    // call parent method
+    parent::init($config);
 
-        // call parent method
-        parent::init($config);
+    // prepare the text here
+    $this->helloWorld = 'Hello World!';
 
-        // prepare the text here
-        $this->helloWorld = 'Hello World!';
-        
-        // @todo Do all the bootstrapping here, because this method will
-        //       be invoked only once when the Servlet Engines starts up
-    }
+    // @todo Do all the bootstrapping here, because this method will
+    //       be invoked only once when the Servlet Engines starts up
+  }
 
-    /**
-     * Handles a HTTP GET request.
-     *
-     * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest  $servletRequest  The request instance
-     * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponse $servletResponse The response instance
-     *
-     * @return void
-     * @see \AppserverIo\Psr\Servlet\Http\HttpServlet::doGet()
-     */
-    public function doGet(HttpServletRequest $servletRequest, HttpServletResponse $servletResponse)
-    {
-        $servletResponse->appendBodyStream($this->helloWorld);
-    }
+  /**
+   * Handles a HTTP GET request.
+   *
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest  $servletRequest  
+   *   The request instance
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponse $servletResponse 
+   *   The response instance
+   *
+   * @return void
+   * @see \AppserverIo\Psr\Servlet\Http\HttpServlet::doGet()
+   */
+  public function doGet(
+    HttpServletRequest $servletRequest,
+    HttpServletResponse $servletResponse)
+  {
+    $servletResponse->appendBodyStream($this->helloWorld);
+  }
 
-    /**
-     * Handles a HTTP POST request.
-     *
-     * @param \AppserverIo\Psr\Servlet\Http\ServletRequest  $servletRequest  The request instance
-     * @param \AppserverIo\Psr\Servlet\Http\ServletResponse $servletResponse The response instance
-     *
-     * @return void
-     * @see \AppserverIo\Psr\Servlet\Http\HttpServlet::doPost()
-     * @throws \AppserverIo\Psr\Servlet\ServletException Is thrown because the request method is not implemented yet
-     */
-    public function doPost(HttpServletRequest $servletRequest, HttpServletResponse $servletResponse)
-    {
-        throw new ServletException('HTTP POST requests not implemented yet!');
-    }
+  /**
+   * Handles a HTTP POST request.
+   *
+   * @param \AppserverIo\Psr\Servlet\Http\ServletRequest  $servletRequest
+   *   The request instance
+   * @param \AppserverIo\Psr\Servlet\Http\ServletResponse $servletResponse
+   *   The response instance
+   *
+   * @return void
+   * @see \AppserverIo\Psr\Servlet\Http\HttpServlet::doPost()
+   * @throws \AppserverIo\Psr\Servlet\ServletException 
+   *   Is thrown because the request method is not implemented yet
+   */
+  public function doPost(
+    HttpServletRequest $servletRequest,
+    HttpServletResponse $servletResponse)
+  {
+    throw new ServletException('HTTP POST requests not implemented yet!');
+  }
 }
 ```
 
@@ -346,30 +361,34 @@ simple XML file
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="1.0">
 
-    <display-name>appserver.io example application</display-name>
-    <description>This is the example application for the appserver.io servlet engine.</description>
+  <display-name>appserver.io example application</display-name>
+  <description>
+    This is the example application for the appserver.io servlet engine.
+  </description>
 
-    <servlet>
-        <description>The hello world as servlet implementation.</description>
-        <display-name>The famous 'Hello World' example</display-name>
-        <servlet-name>helloWorld</servlet-name>
-        <servlet-class>\Namespace\Module\HelloWorldServlet</servlet-class>
-    </servlet>
+  <servlet>
+    <description>The hello world as servlet implementation.</description>
+    <display-name>The famous 'Hello World' example</display-name>
+    <servlet-name>helloWorld</servlet-name>
+    <servlet-class>\Namespace\Module\HelloWorldServlet</servlet-class>
+  </servlet>
 
-    <servlet-mapping>
-        <servlet-name>helloWorld</servlet-name>
-        <url-pattern>/helloWorld.do</url-pattern>
-    </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>helloWorld</servlet-name>
+    <url-pattern>/helloWorld.do</url-pattern>
+  </servlet-mapping>
 
 </web-app>
 ```
 
-Save the file as `/opt/appserver/webapps/myapp/WEB-INF/web.xml` and [restart](#start-and-stop-scripts) the 
-application server and open `http://127.0.0.1:9080/myapp/helloWorld.do` in your favorite browser, and ... vóila :)
+Save the file as `/opt/appserver/webapps/myapp/WEB-INF/web.xml` and [restart](#start-and-stop-scripts)
+the application server and open `http://127.0.0.1:9080/myapp/helloWorld.do` in your favorite 
+browser, and ... vóila :)
 
-> Seems to be very simple we think! Till the stable 1.0.0 we'll provide annotations that allows
-> you to configure your Servlet without the need to create a XML configuration. In future, the 
-> XML configuration will always overwrite annotations in future versions, keep that in mind!
+> Seems to be very simple we think! Till the stable 1.0.0 we'll also provide annotations that
+> allows you to configure your Servlet without the need to create a XML configuration. In 
+> future, the XML configuration will always overwrite annotations in future versions, keep that
+> in mind!
 
 # Persistence-Container
 
@@ -438,55 +457,135 @@ namespace Namespace\Module;
 class MyStatefulSessionBean
 {
 
-    /**
-     * Stateful counter that exists as long as your session exists.
-     *
-     * @var integer
-     */
-    protected $counter = 0;
+  /**
+   * Stateful counter that exists as long as your session exists.
+   *
+   * @var integer
+   */
+  protected $counter = 0;
 
-    /**
-     * Passes a reference to the application context to our session bean.
-     *
-     * @param \TechDivision\Application\Interface\ApplicationInterface $application The application instance
-     */
-    public function __construct(ApplicationInterface $application)
-    {
-        $this->application = $application;
-    }
-
-    /**
-     * Example method that raises the counter by one each time you'll invoke it.
-     *
-     * @return void
-     */
-    public function raiseMe()
-    {
-        $this->counter++;
-    }
+  /**
+   * Example method that raises the counter by one each time you'll invoke it.
+   *
+   * @return integer The raised counter
+   */
+  public function raiseMe()
+  {
+    return $this->counter++;
+  }
 }
 ```
 
+Save the SessionBean in `/opt/appserver/myapp/META-INF/classes/Namespace/Module/MyStatefulSessionBean`.
+
 As described above, you MUST not instanciate it directly. The request an instance of the SessionBean
-you MUST use the persistence container client. With the lookup() method you'll receive a proxy to
+you MUST use the persistence container client. With the `lookup()` method you'll receive a proxy to
 your SessionBean, on that you can invoke the methods as you can do with a real instance.
+
+To develop our HelloWorldServlet further, let's raise the counter with each request to the servlet. To
+do this, we've to refactor the `doGet()` method 
 
 ```php
 
-// initialize the connection and the session
-$connection = ConnectionFactory::createContextConnection('your-application-name');
-$contextSession = $connection->createContextSession();
+namespace Namespace\Module;
 
-// set the session ID of the actual request (necessary for SessionBeans declared as @Stateful)
-$contextSession->setSessionId('your-session-id');
+/**
+ * This is the famous 'Hello World' as servlet implementation.
+ */
+class HelloWorldServlet extends HttpServlet
+{
 
-// create an return the proxy instance and call a method, raiseMe() in this example
-$proxyInstance = $contextSession->createInitialContext()->lookup('Namespace\Module\MyStatefulSessionBean');
-$proxyIntance->raiseMe();
+  /**
+   * The text to be rendered.
+   *
+   * @var string
+   */
+  protected $helloWorld = '';
 
+  /**
+   * We want to have an instance of our stateful session bean injected.
+   *
+   * @var \Namespace\Module\MyStatefulSessionBean
+   * @EnterpriseBean(name="MyStatefulSessionBean")
+   */
+   protected $sessionBean;
+
+  /**
+   * Initializes the servlet with the passed configuration.
+   *
+   * @param \AppserverIo\Psr\Servlet\ServletConfig $config 
+   *   The configuration to initialize the servlet with
+   *
+   * @return void
+   */
+  public function init(ServletConfig $config)
+  {
+
+    // call parent method
+    parent::init($config);
+
+    // prepare the text here
+    $this->helloWorld = 'Hello World! (has been invoked %d times)';
+
+    // @todo Do all the bootstrapping here, because this method will
+    //       be invoked only once when the Servlet Engines starts up
+  }
+
+  /**
+   * Handles a HTTP GET request.
+   *
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest  $servletRequest  
+   *   The request instance
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponse $servletResponse 
+   *   The response instance
+   *
+   * @return void
+   * @see \AppserverIo\Psr\Servlet\Http\HttpServlet::doGet()
+   */
+  public function doGet(
+    HttpServletRequest $servletRequest,
+    HttpServletResponse $servletResponse)
+  {
+
+    // start a session, because our @Stateful SessionBean needs the session-ID to bound to
+    $servletRequest->getSession()->start(true);
+
+    // render 'Hello World! (has been invoked 1 times)' for example - after the first request
+    $servletResponse->appendBodyStream(sprintf($this->helloWorld, $this->sessionBean->raiseMe()));
+  }
+
+  /**
+   * Handles a HTTP POST request.
+   *
+   * @param \AppserverIo\Psr\Servlet\Http\ServletRequest  $servletRequest
+   *   The request instance
+   * @param \AppserverIo\Psr\Servlet\Http\ServletResponse $servletResponse
+   *   The response instance
+   *
+   * @return void
+   * @see \AppserverIo\Psr\Servlet\Http\HttpServlet::doPost()
+   * @throws \AppserverIo\Psr\Servlet\ServletException 
+   *   Is thrown because the request method is not implemented yet
+   */
+  public function doPost(
+    HttpServletRequest $servletRequest,
+    HttpServletResponse $servletResponse)
+  {
+    throw new ServletException('HTTP POST requests not implemented yet!');
+  }
+}
 ```
 
+That's it!
+
+> As we use a @Stateful SessionBean in this example, we MUST start a session where the container
+> can bind it to. If you would use a @Singleton SessionBean, the effect would be the same, but
+> it will not be necessary to start the session. In consequence, each Servlet that invokes the
+> `raiseMe()` method on the SessionBean would raise the counter.
+
 # Message-Queue
+
+# Timer Service
 
 # Runtime Environment
 

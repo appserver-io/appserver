@@ -458,6 +458,758 @@ function setDocumentScrollTop(ypos)
 
 </head>
 <body class="markdown-body">
+<h1> <a id="user-content-appserverio-a-php-application-server" class="anchor" href="#appserverio-a-php-application-server" aria-hidden="true"><span class="octicon octicon-link"></span></a>appserver.io, a PHP application server</h1> 
+<p><a href="https://gitter.im/appserver-io/appserver?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Gitter" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;" /></a> <a href="https://travis-ci.org/appserver-io/appserver"><img src="https://camo.githubusercontent.com/9c0b14449bd9051be6c904e1b0fa9c7db0bb0152/68747470733a2f2f7472617669732d63692e6f72672f6170707365727665722d696f2f6170707365727665722e706e67" alt="Build Status" data-canonical-src="https://travis-ci.org/appserver-io/appserver.png" style="max-width:100%;" /></a> <a href="https://scrutinizer-ci.com/g/appserver-io/appserver/?branch=master"><img src="https://camo.githubusercontent.com/e1ca68668ca93dd8b4c277df901042da007a7259/68747470733a2f2f7363727574696e697a65722d63692e636f6d2f672f6170707365727665722d696f2f6170707365727665722f6261646765732f7175616c6974792d73636f72652e706e673f623d6d6173746572" alt="Scrutinizer Code Quality" data-canonical-src="https://scrutinizer-ci.com/g/appserver-io/appserver/badges/quality-score.png?b=master" style="max-width:100%;" /></a> <a href="https://scrutinizer-ci.com/g/appserver-io/appserver/?branch=master"><img src="https://camo.githubusercontent.com/f5ba473eef0d5ddcc8d84dd4514217123f05dd13/68747470733a2f2f7363727574696e697a65722d63692e636f6d2f672f6170707365727665722d696f2f6170707365727665722f6261646765732f636f7665726167652e706e673f623d6d6173746572" alt="Code Coverage" data-canonical-src="https://scrutinizer-ci.com/g/appserver-io/appserver/badges/coverage.png?b=master" style="max-width:100%;" /></a></p> 
+<p>This is the main repository for the <a href="http://www.appserver.io/">appserver.io</a> project.</p> 
+<p>The objective of the project is to develop a multi-threaded application server for PHP, written in PHP. Yes, pure PHP! You think we aren't serious? Maybe! But we think, in order to enable as many developers in our great community, this will be the one and only way. So with your help we hopefully establish a solution as the standard for enterprise applications in PHP environments.</p> 
+<h4> <a id="user-content-table-of-contents" class="anchor" href="#table-of-contents" aria-hidden="true"><span class="octicon octicon-link"></span></a>Table of Contents</h4> 
+<p><a href="#installation">Installation</a><br /> <a href="#uninstall">Uninstall</a><br /> <a href="#basic-usage">Basic Usage</a><br /> <a href="#webserver">HTTP Server</a><br /> <a href="#servlet-engine">Servlet-Engine</a><br /> <a href="#persistence-container">Persistence-Container</a><br /> <a href="#message-queue">Message-Queue</a><br /> <a href="#runtime-environment">Runtime Environment</a><br /> <a href="#configuration">Configuration</a><br /> <a href="#deployment">Deployment</a> </p> 
+<h1> <a id="user-content-installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h1> 
+<p>Besides supporting several operating systems and their specific ways of installing software, we also support several ways of getting this software. So to get your appserver.io package you might do any of the following:</p> 
+<ul> 
+ <li><p>Download one of our <a href="https://github.com/appserver-io/appserver/releases"><strong>releases</strong></a> right from this repository which provide tested install packages</p></li> 
+ <li><p>Grab any of our <a href="http://builds.appserver.io/"><strong>nightlies</strong></a> from our project page to get bleeding edge install packages which still might have some bugs</p></li> 
+ <li><p>Build your own package using <a href="http://ant.apache.org/">ant</a>! To do so clone the <a href="https://github.com/appserver-io-php/runtime">runtime</a> first. Then update at least the <code>os.family</code> and <code>os.distribution</code> build properties according to your environment and build the appserver with the ant target appropriate for your installer (e.g. <code>create-pkg</code> for Mac or <code>create-deb</code> for Debian based systems).</p></li> 
+</ul> 
+<p>The package will install with these basic default characteristics:</p> 
+<ul> 
+ <li>Install dir: <code>/opt/appserver</code> </li> 
+ <li>Autostart after installation, no autostart on reboot</li> 
+ <li>Reachable under pre-configured ports as described <a href="#basic-usage">here</a> </li> 
+</ul> 
+<p>For OS specific steps and characteristics see below for tested environments.</p> 
+<h2> <a id="user-content-mac-os-x" class="anchor" href="#mac-os-x" aria-hidden="true"><span class="octicon octicon-link"></span></a>Mac OS X</h2> 
+<ul> 
+ <li>Tested versions: 10.8.x +</li> 
+</ul> 
+<h2> <a id="user-content-windows" class="anchor" href="#windows" aria-hidden="true"><span class="octicon octicon-link"></span></a>Windows</h2> 
+<ul> 
+ <li>Tested versions: 7 +</li> 
+</ul> 
+<p>As we deliver the Windows appserver as a .jar file, a installed Java Runtime Environment (or JDK that is) is a vital requirement for using it. If the JRE/JDK is not installed you have to do so first. You might get it from <a href="http://www.oracle.com/technetwork/java/javase/downloads/jre7-downloads-1880261.html">Oracle's download page</a>. If this requirement is met you can start the installation by simply double-clicking the .jar archive.</p> 
+<h2> <a id="user-content-debian" class="anchor" href="#debian" aria-hidden="true"><span class="octicon octicon-link"></span></a>Debian</h2> 
+<ul> 
+ <li>Tested versions: Squeeze +</li> 
+</ul> 
+<p>If you're on a Debian system you might also try our .deb repository:</p> 
+<pre><code>root@debian:~# echo &quot;deb http://deb.appserver.io/ wheezy main&quot; &gt; /etc/apt/sources.list.d/appserver.list
+root@debian:~# wget http://deb.appserver.io/appserver.gpg -O - | apt-key add -
+root@debian:~# aptitude update
+root@debian:~# aptitude install appserver
+</code></pre> 
+<h2> <a id="user-content-fedora" class="anchor" href="#fedora" aria-hidden="true"><span class="octicon octicon-link"></span></a>Fedora</h2> 
+<ul> 
+ <li>Tested versions: 20</li> 
+</ul> 
+<h2> <a id="user-content-centos" class="anchor" href="#centos" aria-hidden="true"><span class="octicon octicon-link"></span></a>CentOS</h2> 
+<ul> 
+ <li>Tested versions: 6.5</li> 
+</ul> 
+<p>Installation and basic usage is the same as on Fedora <strong>but</strong> CentOS requires additional repositories like <a href="http://rpms.famillecollet.com/">remi</a> or <a href="http://fedoraproject.org/wiki/EPEL">EPEL</a> to satisfy additional dependencies.</p> 
+<h2> <a id="user-content-raspbian" class="anchor" href="#raspbian" aria-hidden="true"><span class="octicon octicon-link"></span></a>Raspbian</h2> 
+<p>As an experiment we offer Raspbian and brought the appserver to an ARM environment. What should we say, it worked! :D With <code>os.distribution</code> = raspbian you might give it a try to build it yourself (plan at least 5 hours) as we currently do not offer prepared install packages.</p> 
+<h1> <a id="user-content-uninstall" class="anchor" href="#uninstall" aria-hidden="true"><span class="octicon octicon-link"></span></a>Uninstall</h1> 
+<p>Before uninstalling you should stop all services which are still running, otherwise there might be problems with existing pid-files on Linux and Mac for the next time you install it. You can have a look how to do so <a href="#start-and-stop-scripts">here</a>.</p> 
+<p>To uninstall the appserver on Linux you might rely on your package management system. On Windows you can use the normal uninstall process provided by the operating system.</p> 
+<p>Under Mac OS X you can simply delete the <code>/opt/appserver</code> folder and delete the configuration files for the launch daemons. These are files are located in folder <code>/Library/LaunchDaemons</code> and named <code>io.appserver.&lt;DAEMON&gt;.plist</code>.</p> 
+<h1> <a id="user-content-basic-usage" class="anchor" href="#basic-usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Basic Usage</h1> 
+<p>The appserver will automatically start after your installation wizard (or package manager) finishes the setup. You can use it without limitations from now on.</p> 
+<p>Below you can find basic instructions on how to make use of the appserver. After the installation you might want to have a look and some of the bundled apps. Two of are interesting in particular:</p> 
+<ul> 
+ <li> <strong>Example</strong> shows basic usage of services. You can reach it at <code>http://127.0.0.1:9080/example</code> </li> 
+</ul> 
+<p>Start your favorite browser and have a look at what we can do. :) To pass the password barriers use the default login <code>appserver/appserver.i0</code>.</p> 
+<h2> <a id="user-content-start-and-stop-scripts" class="anchor" href="#start-and-stop-scripts" aria-hidden="true"><span class="octicon octicon-link"></span></a>Start and Stop Scripts</h2> 
+<p>Together with the appserver we deliver several standalone processes which we need for proper functioning of different features.</p> 
+<p>For these processes we provide start and stop scripts for all *nix like operating systems. These work the way they normally would on the regarding system. They are:</p> 
+<ul> 
+ <li><p><code>appserver</code>: The main process which will start the appserver itself</p></li> 
+ <li><p><code>appserver-php5-fpm</code>: php-fpm + appserver configuration. Our default FastCGI backend. Others might be added the same way</p></li> 
+ <li><p><code>appserver-watcher</code>: A watchdog which monitors filesystem changes and manages appserver restarts</p></li> 
+</ul> 
+<p>On a normal system all three of these processes should run to enable the full feature set. To ultimately run the appserver only the appserver process is needed but you will miss simple on-the-fly deployment (<code>appserver-watcher</code>) and might have problems with legacy applications.</p> 
+<p>Depending on the FastCGI Backend you want to use you might ditch <code>appserver-php5-fpm</code> for other processes e.g. supplying you with a hhvm backend.</p> 
+<p>Currently we support three different types of init scripts which support the commands <code>start</code>, <code>stop</code>, <code>status</code> and <code>restart</code> (additional commands migth be available on other systems).</p> 
+<p><strong>Mac OS X (LAUNCHD)</strong> The LAUNCHD launch daemons are located within the appserver installation at <code>/opt/appserver/sbin</code>. They can be used with the schema <code>/opt/appserver/sbin/&lt;DAEMON&gt; &lt;COMMAND&gt;</code></p> 
+<p><strong>Debian, Raspbian, CentOS, ...(SystemV)</strong> Commonly known and located in <code>/etc/init.d/</code> they too support the commands mentioned above provided in the form <code>/etc/init.d/&lt;DAEMON&gt; &lt;COMMAND&gt;</code>.</p> 
+<p><strong>Fedora, ... (systemd)</strong> systemd init scripts can be used using the <code>systemctl</code> command with the syntax <code>systemctl &lt;COMMAND&gt; &lt;DAEMON&gt;</code>.</p> 
+<p><strong>Windows</strong></p> 
+<p>On Windows we sadly do not offer any of these scripts. After the installation you can start the Application Server with the <code>server.bat</code> file located within the root directory of your installation. Best thing to do would be starting a command prompt as an administrator snd run the following commands (assuming default installation path):</p> 
+<pre><code>C:\Windows\system32&gt;cd &quot;C:\Program Files\appserver&quot;
+C:\Program Files\appserver&gt;server.bat
+</code></pre> 
+<h1> <a id="user-content-https-server" class="anchor" href="#https-server" aria-hidden="true"><span class="octicon octicon-link"></span></a>HTTP(S) Server</h1> 
+<p>The configuration itself is highly self-explanatory so just have a look to the preferred config file and try to change settings. A detailed overview of all configuration settings will follow ...</p> 
+<h2> <a id="user-content-configure-a-virtual-host" class="anchor" href="#configure-a-virtual-host" aria-hidden="true"><span class="octicon octicon-link"></span></a>Configure a Virtual Host</h2> 
+<p>Using virtual hosts you can extend the default server configuration and produce a host specific environment for your app to run.</p> 
+<p>You can do so by adding a virtual host configuration to your global server configuration file. See the example for a XML based configuration below:</p> 
+<div class="highlight highlight-xml">
+ <pre>&lt;<span class="pl-ent">virtualHost</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>example.local<span class="pl-pds">&quot;</span></span>&gt;
+  &lt;<span class="pl-ent">params</span>&gt;
+    &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>admin<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>string<span class="pl-pds">&quot;</span></span>&gt;
+      admin@appserver.io
+    &lt;/<span class="pl-ent">param</span>&gt;
+    &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>documentRoot<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>string<span class="pl-pds">&quot;</span></span>&gt;
+      /opt/appserver/webapps/example
+    &lt;/<span class="pl-ent">param</span>&gt;
+  &lt;/<span class="pl-ent">params</span>&gt;
+&lt;/<span class="pl-ent">virtualHost</span>&gt;</pre>
+</div> 
+<p>The above configuration sits within the server element and opens up the virtual host <code>example.local</code> which has a different document root than the global configuration has. The virtual host is born. :-)</p> 
+<p>The <code>virtualHost</code> element can hold params, rewrite rules or environment variables which are only available for the host specifically.</p> 
+<h2> <a id="user-content-configure-your-environment-variables" class="anchor" href="#configure-your-environment-variables" aria-hidden="true"><span class="octicon octicon-link"></span></a>Configure your Environment Variables</h2> 
+<p>You can set environment variables using either the global or the virtual host based configuration. The example below shows a basic usage of environment variables in XML format.</p> 
+<div class="highlight highlight-xml">
+ <pre>&lt;<span class="pl-ent">environmentVariables</span>&gt;
+  &lt;<span class="pl-ent">environmentVariable</span> 
+    <span class="pl-e">condition</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span><span class="pl-pds">&quot;</span></span> 
+    <span class="pl-e">definition</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>EXAMPLE_VAR=example<span class="pl-pds">&quot;</span></span> /&gt;
+  &lt;<span class="pl-ent">environmentVariable</span> 
+    <span class="pl-e">condition</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>Apple@$HTTP_USER_AGENT<span class="pl-pds">&quot;</span></span> 
+    <span class="pl-e">definition</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>USER_HAS_APPLE=true<span class="pl-pds">&quot;</span></span> /&gt;
+&lt;/<span class="pl-ent">environmentVariables</span>&gt;</pre>
+</div> 
+<p>There are several ways in which this feature is used. You can get a rough idea when having a look at Apache modules <a href="http://httpd.apache.org/docs/2.2/mod/mod_env.html">mod_env</a> and <a href="http://httpd.apache.org/docs/2.2/mod/mod_setenvif.html">mod_setenvif</a> which we adopted.</p> 
+<p>You can make definitions of environment variables dependent on REGEX based conditions which will be performed on so called backreferences. These backreferences are request related server variables like <code>HTTP_USER_AGENT</code>.</p> 
+<p>A condition has the format <code>&lt;REGEX_CONDITION&gt;@$&lt;BACKREFERENCE&gt;</code>. If the condition is empty the environment variable will be set every time.</p> 
+<p>The definition you can use has the form <code>&lt;NAME_OF_VAR&gt;=&lt;THE_VALUE_TO_SET&gt;</code>. The definition has some specialities too:</p> 
+<ul> 
+ <li>Setting a var to <code>null</code> will unset the variable if it existed before</li> 
+ <li>You can use backreferences for the value you want to set as well. But those are limited to environment variables of the PHP process</li> 
+ <li>Values will be treated as strings</li> 
+</ul> 
+<h1> <a id="user-content-aop" class="anchor" href="#aop" aria-hidden="true"><span class="octicon octicon-link"></span></a>AOP</h1> 
+<h1> <a id="user-content-dependency-injection" class="anchor" href="#dependency-injection" aria-hidden="true"><span class="octicon octicon-link"></span></a>Dependency Injection</h1> 
+<h1> <a id="user-content-design-by-contract" class="anchor" href="#design-by-contract" aria-hidden="true"><span class="octicon octicon-link"></span></a>Design-by-Contract</h1> 
+<h1> <a id="user-content-servlet-engine" class="anchor" href="#servlet-engine" aria-hidden="true"><span class="octicon octicon-link"></span></a>Servlet-Engine</h1> 
+<p>Originally Servlets are the Java counterpart to other dynamic web technologies like PHP or the Microsoft .NET plattform. In contrast to PHP, a Servlet written in Java is not a script that'll be interpreted per request, instead it is a class instanciated when the Servlet Engine starts up process requests be invoking one of its methods.</p> 
+<blockquote> 
+ <p>In most cases, this is a major advantage against the common PHP way to load the script on each request again. Sinces PHP applications, mostly based on frameworks like Yii or Symfony growed immensly during the last years, reload all the script filest, required by the application again and again slows down performance in a critical manner. This is one of the reasons, why caching is meanwhile a major part of nearly all frameworks. On the one hand, caching takes care, that the application responds to the request in an acceptable time, on the other hand it is the origin of many problems, such as how to invalidate parts of the cache during a applications runtime.</p> 
+</blockquote> 
+<p>Using a Servlet Engine and, as a consequence of that, Servlets enables you to implement your application logic as you are used to, without the need to take care about the expensive bootstrapping process that came together with common legacy frameworks. A Servlet is a super fast and simple way to implement an entry point to handle HTTP requests that allows you to execute all performance critical tasks, like bootstrapping, in a method called <code>&igrave;nit()</code>, when the Servlet Engine starts up.</p> 
+<h2> <a id="user-content-what-is-a-servlet" class="anchor" href="#what-is-a-servlet" aria-hidden="true"><span class="octicon octicon-link"></span></a>What is a Servlet</h2> 
+<p>A Servlet is a simple class, that has to extend from <code>AppserverIo\Psr\Servlet\Http\HttpServlet</code> to make it simple. Your application logic can then be implemented by overwriting the <code>service()</code> method or better by overwriting the request specific methods like <code>doGet()</code> if you want to handle a GET request.</p> 
+<h2> <a id="user-content-create-a-simple-servlet" class="anchor" href="#create-a-simple-servlet" aria-hidden="true"><span class="octicon octicon-link"></span></a>Create a simple Servlet</h2> 
+<p>Let's write a simple example and start with a famous <code>Hello World</code> servlet</p> 
+<div class="highlight highlight-php">
+ <pre><span class="pl-s2"></span>
+<span class="pl-s2"><span class="pl-k">namespace</span> <span class="pl-en">Namespace\Module</span>;</span>
+<span class="pl-s2"></span>
+<span class="pl-s2"><span class="pl-c">/**</span></span>
+<span class="pl-s2"><span class="pl-c"> * This is the famous 'Hello World' as servlet implementation.</span></span>
+<span class="pl-s2"><span class="pl-c"> */</span></span>
+<span class="pl-s2"><span class="pl-st">class</span> <span class="pl-en">HelloWorldServlet</span> <span class="pl-s">extends</span> <span class="pl-e">HttpServlet</span></span>
+<span class="pl-s2">{</span>
+<span class="pl-s2"></span>
+<span class="pl-s2">  <span class="pl-c">/**</span></span>
+<span class="pl-s2"><span class="pl-c"> * The text to be rendered.</span></span>
+<span class="pl-s2"><span class="pl-c"> *</span></span>
+<span class="pl-s2"><span class="pl-c"> * <span class="pl-k">@var</span> string</span></span>
+<span class="pl-s2"><span class="pl-c"> */</span></span>
+<span class="pl-s2">  <span class="pl-s">protected</span> <span class="pl-vo">$helloWorld</span> <span class="pl-k">=</span> <span class="pl-s1"><span class="pl-pds">'</span><span class="pl-pds">'</span></span>;</span>
+<span class="pl-s2"></span>
+<span class="pl-s2">  <span class="pl-c">/**</span></span>
+<span class="pl-s2"><span class="pl-c"> * Initializes the servlet with the passed configuration.</span></span>
+<span class="pl-s2"><span class="pl-c"> *</span></span>
+<span class="pl-s2"><span class="pl-c"> * <span class="pl-k">@param</span> \AppserverIo\Psr\Servlet\ServletConfig $config </span></span>
+<span class="pl-s2"><span class="pl-c"> * The configuration to initialize the servlet with</span></span>
+<span class="pl-s2"><span class="pl-c"> *</span></span>
+<span class="pl-s2"><span class="pl-c"> * <span class="pl-k">@return</span> void</span></span>
+<span class="pl-s2"><span class="pl-c"> */</span></span>
+<span class="pl-s2">  <span class="pl-s">public</span> <span class="pl-st">function</span> <span class="pl-en">init</span>(<span class="pl-s3">ServletConfig</span> <span class="pl-vo">$config</span>)</span>
+<span class="pl-s2">  {</span>
+<span class="pl-s2"></span>
+<span class="pl-s2">    <span class="pl-c">// call parent method</span></span>
+<span class="pl-s2">    <span class="pl-st">parent</span><span class="pl-k">::</span>init(<span class="pl-vo">$config</span>);</span>
+<span class="pl-s2"></span>
+<span class="pl-s2">    <span class="pl-c">// prepare the text here</span></span>
+<span class="pl-s2">    <span class="pl-vo">$this</span><span class="pl-k">-&gt;</span><span class="pl-vo">helloWorld</span> <span class="pl-k">=</span> <span class="pl-s1"><span class="pl-pds">'</span>Hello World!<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s2"></span>
+<span class="pl-s2">    <span class="pl-c">// @todo Do all the bootstrapping here, because this method will</span></span>
+<span class="pl-s2">    <span class="pl-c">// be invoked only once when the Servlet Engines starts up</span></span>
+<span class="pl-s2">  }</span>
+<span class="pl-s2"></span>
+<span class="pl-s2">  <span class="pl-c">/**</span></span>
+<span class="pl-s2"><span class="pl-c"> * Handles a HTTP GET request.</span></span>
+<span class="pl-s2"><span class="pl-c"> *</span></span>
+<span class="pl-s2"><span class="pl-c"> * <span class="pl-k">@param</span> \AppserverIo\Psr\Servlet\Http\HttpServletRequest $servletRequest </span></span>
+<span class="pl-s2"><span class="pl-c"> * The request instance</span></span>
+<span class="pl-s2"><span class="pl-c"> * <span class="pl-k">@param</span> \AppserverIo\Psr\Servlet\Http\HttpServletResponse $servletResponse </span></span>
+<span class="pl-s2"><span class="pl-c"> * The response instance</span></span>
+<span class="pl-s2"><span class="pl-c"> *</span></span>
+<span class="pl-s2"><span class="pl-c"> * <span class="pl-k">@return</span> void</span></span>
+<span class="pl-s2"><span class="pl-c"> * <span class="pl-k">@see</span> \AppserverIo\Psr\Servlet\Http\HttpServlet::doGet()</span></span>
+<span class="pl-s2"><span class="pl-c"> */</span></span>
+<span class="pl-s2">  <span class="pl-s">public</span> <span class="pl-st">function</span> <span class="pl-en">doGet</span>(</span>
+<span class="pl-s2">    <span class="pl-s3">HttpServletRequest</span> <span class="pl-vo">$servletRequest</span>,</span>
+<span class="pl-s2">    <span class="pl-s3">HttpServletResponse</span> <span class="pl-vo">$servletResponse</span>)</span>
+<span class="pl-s2">  {</span>
+<span class="pl-s2">    <span class="pl-vo">$servletResponse</span><span class="pl-k">-&gt;</span>appendBodyStream(<span class="pl-vo">$this</span><span class="pl-k">-&gt;</span><span class="pl-vo">helloWorld</span>);</span>
+<span class="pl-s2">  }</span>
+<span class="pl-s2"></span>
+<span class="pl-s2">  <span class="pl-c">/**</span></span>
+<span class="pl-s2"><span class="pl-c"> * Handles a HTTP POST request.</span></span>
+<span class="pl-s2"><span class="pl-c"> *</span></span>
+<span class="pl-s2"><span class="pl-c"> * <span class="pl-k">@param</span> \AppserverIo\Psr\Servlet\Http\ServletRequest $servletRequest</span></span>
+<span class="pl-s2"><span class="pl-c"> * The request instance</span></span>
+<span class="pl-s2"><span class="pl-c"> * <span class="pl-k">@param</span> \AppserverIo\Psr\Servlet\Http\ServletResponse $servletResponse</span></span>
+<span class="pl-s2"><span class="pl-c"> * The response instance</span></span>
+<span class="pl-s2"><span class="pl-c"> *</span></span>
+<span class="pl-s2"><span class="pl-c"> * <span class="pl-k">@return</span> void</span></span>
+<span class="pl-s2"><span class="pl-c"> * <span class="pl-k">@see</span> \AppserverIo\Psr\Servlet\Http\HttpServlet::doPost()</span></span>
+<span class="pl-s2"><span class="pl-c"> * <span class="pl-k">@throws</span> \AppserverIo\Psr\Servlet\ServletException </span></span>
+<span class="pl-s2"><span class="pl-c"> * Is thrown because the request method is not implemented yet</span></span>
+<span class="pl-s2"><span class="pl-c"> */</span></span>
+<span class="pl-s2">  <span class="pl-s">public</span> <span class="pl-st">function</span> <span class="pl-en">doPost</span>(</span>
+<span class="pl-s2">    <span class="pl-s3">HttpServletRequest</span> <span class="pl-vo">$servletRequest</span>,</span>
+<span class="pl-s2">    <span class="pl-s3">HttpServletResponse</span> <span class="pl-vo">$servletResponse</span>)</span>
+<span class="pl-s2">  {</span>
+<span class="pl-s2">    <span class="pl-k">throw</span> <span class="pl-k">new</span> <span class="pl-s3">ServletException</span>(<span class="pl-s1"><span class="pl-pds">'</span>HTTP POST requests not implemented yet!<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s2">  }</span>
+<span class="pl-s2">}</span></pre>
+</div> 
+<p>and save it as <code>/opt/appserver/webapps/myapp/WEB-INF/classes/Namespace/Module/HelloWorldServlet.php</code>.</p> 
+<p>Is that all? Actually unfortunately not. To make your servlet run, you've to register it with a simple XML file</p> 
+<div class="highlight highlight-xml">
+ <pre>&lt;?<span class="pl-ent">xml</span><span class="pl-e"> version</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>1.0<span class="pl-pds">&quot;</span></span><span class="pl-e"> encoding</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>UTF-8<span class="pl-pds">&quot;</span></span>?&gt;
+&lt;<span class="pl-ent">web-app</span> <span class="pl-e">version</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>1.0<span class="pl-pds">&quot;</span></span>&gt;
 
+  &lt;<span class="pl-ent">display-name</span>&gt;appserver.io example application&lt;/<span class="pl-ent">display-name</span>&gt;
+  &lt;<span class="pl-ent">description</span>&gt;
+    This is the example application for the appserver.io servlet engine.
+  &lt;/<span class="pl-ent">description</span>&gt;
+
+  &lt;<span class="pl-ent">servlet</span>&gt;
+    &lt;<span class="pl-ent">description</span>&gt;The hello world as servlet implementation.&lt;/<span class="pl-ent">description</span>&gt;
+    &lt;<span class="pl-ent">display-name</span>&gt;The famous 'Hello World' example&lt;/<span class="pl-ent">display-name</span>&gt;
+    &lt;<span class="pl-ent">servlet-name</span>&gt;helloWorld&lt;/<span class="pl-ent">servlet-name</span>&gt;
+    &lt;<span class="pl-ent">servlet-class</span>&gt;\Namespace\Module\HelloWorldServlet&lt;/<span class="pl-ent">servlet-class</span>&gt;
+  &lt;/<span class="pl-ent">servlet</span>&gt;
+
+  &lt;<span class="pl-ent">servlet-mapping</span>&gt;
+    &lt;<span class="pl-ent">servlet-name</span>&gt;helloWorld&lt;/<span class="pl-ent">servlet-name</span>&gt;
+    &lt;<span class="pl-ent">url-pattern</span>&gt;/helloWorld.do&lt;/<span class="pl-ent">url-pattern</span>&gt;
+  &lt;/<span class="pl-ent">servlet-mapping</span>&gt;
+
+&lt;/<span class="pl-ent">web-app</span>&gt;</pre>
+</div> 
+<p>Save the file as <code>/opt/appserver/webapps/myapp/WEB-INF/web.xml</code> and <a href="#start-and-stop-scripts">restart</a> the application server and open <code>http://127.0.0.1:9080/myapp/helloWorld.do</code> in your favorite browser, and ... v&oacute;ila :)</p> 
+<blockquote> 
+ <p>Seems to be very simple we think! Till the stable 1.0.0 we'll also provide annotations that allows you to configure your Servlet without the need to create a XML configuration. In future, the XML configuration will always overwrite annotations in future versions, keep that in mind!</p> 
+</blockquote> 
+<h1> <a id="user-content-persistence-container" class="anchor" href="#persistence-container" aria-hidden="true"><span class="octicon octicon-link"></span></a>Persistence-Container</h1> 
+<p>As described in the introduction the application is designed inside a runtime environment like an application server as appserver.io is. The following example gives you a short introdction how you can create a stateful session bean and the way you can invoke it's method on client side.</p> 
+<p>First thing you've to do is to create your SessionBean. What is a SessionBean? It's not simple to describe it in only a few words, but i'll try. A SessionBean basically is plain PHP class. You MUST not instanciate it directly, because the application server takes care of its complete lifecycle. Therefore, if you need an instance of a SessionBean, you'll ask the application server to give you a instance. This can be done by a <a href="https://github.com/techdivision/persistencecontainerclient">client</a>.</p> 
+<p>The persistence container client will give you a proxy to the session bean that allows you to invoke all methods the SessionBean provides as you can do if you would have real instance. But the proxy also allows you to call this method over a network as remote method call. Using the persistence container client makes it obvious for you if your SessionBean is on the same application server instance or on another one in your network. This gives you the possibilty to distribute the components of your application over your network what includes a great and seemless scalabilty.</p> 
+<p>You have to tell the persistence container of the type the SessionBean should have. This MUST be done by simply add an annotation to the class doc block. The possible annotations therefore are</p> 
+<ul> 
+ <li>@Singleton</li> 
+ <li>@Stateless</li> 
+ <li>@Stateful</li> 
+</ul> 
+<p>The SessionBean types are self explained i think.</p> 
+<h2> <a id="user-content-singleton-sessionbean" class="anchor" href="#singleton-sessionbean" aria-hidden="true"><span class="octicon octicon-link"></span></a>@Singleton SessionBean</h2> 
+<p>A SessionBean with a @Singleton annotation will be created only one time for each application. This means, whenever you'll request an instance, you'll receive the same one. If you set a variable in the SessionBean, it'll be available until you'll overwrite it, or the application server has been restarted.</p> 
+<h2> <a id="user-content-stateless-sessionbean" class="anchor" href="#stateless-sessionbean" aria-hidden="true"><span class="octicon octicon-link"></span></a>@Stateless SessionBean</h2> 
+<p>In opposite to a singleton session bean, a SessionBean with a @Stateless annotation will always be instanciated when you request it. It has NO state, only for the time you invoke a method on it.</p> 
+<h2> <a id="user-content-stateful-sessionbean" class="anchor" href="#stateful-sessionbean" aria-hidden="true"><span class="octicon octicon-link"></span></a>@Stateful SessionBean</h2> 
+<p>The @Stateful SessionBean is something between the other types. It is stateful for the session with the ID you pass to the client when you request the instance. A stateful SessionBean is useful if you want to implement something like a shopping cart. If you declare the shopping cart instance a class member of your SessionBean makes it persistent for your session lifetime.</p> 
+<h2> <a id="user-content-example" class="anchor" href="#example" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example</h2> 
+<p>The following example shows you a really simple implementation of a stateful SessionBean providing a counter that'll be raised whenever you call the <code>raiseMe()</code> method.</p> 
+<div class="highlight highlight-php">
+ <pre><span class="pl-s2"></span>
+<span class="pl-s2"><span class="pl-k">namespace</span> <span class="pl-en">Namespace\Module</span>;</span>
+<span class="pl-s2"></span>
+<span class="pl-s2"><span class="pl-c">/**</span></span>
+<span class="pl-s2"><span class="pl-c"> * This is demo implementation of stateful session bean.</span></span>
+<span class="pl-s2"><span class="pl-c"> *</span></span>
+<span class="pl-s2"><span class="pl-c"> * @Stateful</span></span>
+<span class="pl-s2"><span class="pl-c"> */</span></span>
+<span class="pl-s2"><span class="pl-st">class</span> <span class="pl-en">MyStatefulSessionBean</span></span>
+<span class="pl-s2">{</span>
+<span class="pl-s2"></span>
+<span class="pl-s2">  <span class="pl-c">/**</span></span>
+<span class="pl-s2"><span class="pl-c"> * Stateful counter that exists as long as your session exists.</span></span>
+<span class="pl-s2"><span class="pl-c"> *</span></span>
+<span class="pl-s2"><span class="pl-c"> * <span class="pl-k">@var</span> integer</span></span>
+<span class="pl-s2"><span class="pl-c"> */</span></span>
+<span class="pl-s2">  <span class="pl-s">protected</span> <span class="pl-vo">$counter</span> <span class="pl-k">=</span> <span class="pl-c1">0</span>;</span>
+<span class="pl-s2"></span>
+<span class="pl-s2">  <span class="pl-c">/**</span></span>
+<span class="pl-s2"><span class="pl-c"> * Example method that raises the counter by one each time you'll invoke it.</span></span>
+<span class="pl-s2"><span class="pl-c"> *</span></span>
+<span class="pl-s2"><span class="pl-c"> * <span class="pl-k">@return</span> integer The raised counter</span></span>
+<span class="pl-s2"><span class="pl-c"> */</span></span>
+<span class="pl-s2">  <span class="pl-s">public</span> <span class="pl-st">function</span> <span class="pl-en">raiseMe</span>()</span>
+<span class="pl-s2">  {</span>
+<span class="pl-s2">    <span class="pl-k">return</span> <span class="pl-vo">$this</span><span class="pl-k">-&gt;</span><span class="pl-vo">counter</span><span class="pl-k">++</span>;</span>
+<span class="pl-s2">  }</span>
+<span class="pl-s2">}</span></pre>
+</div> 
+<p>Save the SessionBean in <code>/opt/appserver/myapp/META-INF/classes/Namespace/Module/MyStatefulSessionBean</code>.</p> 
+<p>As described above, you MUST not instanciate it directly. The request an instance of the SessionBean you MUST use the persistence container client. With the <code>lookup()</code> method you'll receive a proxy to your SessionBean, on that you can invoke the methods as you can do with a real instance.</p> 
+<p>To develop our HelloWorldServlet further, let's raise the counter with each request to the servlet. To do this, we've to refactor the <code>doGet()</code> method </p> 
+<div class="highlight highlight-php">
+ <pre><span class="pl-s2"></span>
+<span class="pl-s2"><span class="pl-k">namespace</span> <span class="pl-en">Namespace\Module</span>;</span>
+<span class="pl-s2"></span>
+<span class="pl-s2"><span class="pl-c">/**</span></span>
+<span class="pl-s2"><span class="pl-c"> * This is the famous 'Hello World' as servlet implementation.</span></span>
+<span class="pl-s2"><span class="pl-c"> */</span></span>
+<span class="pl-s2"><span class="pl-st">class</span> <span class="pl-en">HelloWorldServlet</span> <span class="pl-s">extends</span> <span class="pl-e">HttpServlet</span></span>
+<span class="pl-s2">{</span>
+<span class="pl-s2"></span>
+<span class="pl-s2">  <span class="pl-c">/**</span></span>
+<span class="pl-s2"><span class="pl-c"> * The text to be rendered.</span></span>
+<span class="pl-s2"><span class="pl-c"> *</span></span>
+<span class="pl-s2"><span class="pl-c"> * <span class="pl-k">@var</span> string</span></span>
+<span class="pl-s2"><span class="pl-c"> */</span></span>
+<span class="pl-s2">  <span class="pl-s">protected</span> <span class="pl-vo">$helloWorld</span> <span class="pl-k">=</span> <span class="pl-s1"><span class="pl-pds">'</span><span class="pl-pds">'</span></span>;</span>
+<span class="pl-s2"></span>
+<span class="pl-s2">  <span class="pl-c">/**</span></span>
+<span class="pl-s2"><span class="pl-c"> * We want to have an instance of our stateful session bean injected.</span></span>
+<span class="pl-s2"><span class="pl-c"> *</span></span>
+<span class="pl-s2"><span class="pl-c"> * <span class="pl-k">@var</span> \Namespace\Module\MyStatefulSessionBean</span></span>
+<span class="pl-s2"><span class="pl-c"> * @EnterpriseBean(name=&quot;MyStatefulSessionBean&quot;)</span></span>
+<span class="pl-s2"><span class="pl-c"> */</span></span>
+<span class="pl-s2">   <span class="pl-s">protected</span> <span class="pl-vo">$sessionBean</span>;</span>
+<span class="pl-s2"></span>
+<span class="pl-s2">  <span class="pl-c">/**</span></span>
+<span class="pl-s2"><span class="pl-c"> * Initializes the servlet with the passed configuration.</span></span>
+<span class="pl-s2"><span class="pl-c"> *</span></span>
+<span class="pl-s2"><span class="pl-c"> * <span class="pl-k">@param</span> \AppserverIo\Psr\Servlet\ServletConfig $config </span></span>
+<span class="pl-s2"><span class="pl-c"> * The configuration to initialize the servlet with</span></span>
+<span class="pl-s2"><span class="pl-c"> *</span></span>
+<span class="pl-s2"><span class="pl-c"> * <span class="pl-k">@return</span> void</span></span>
+<span class="pl-s2"><span class="pl-c"> */</span></span>
+<span class="pl-s2">  <span class="pl-s">public</span> <span class="pl-st">function</span> <span class="pl-en">init</span>(<span class="pl-s3">ServletConfig</span> <span class="pl-vo">$config</span>)</span>
+<span class="pl-s2">  {</span>
+<span class="pl-s2"></span>
+<span class="pl-s2">    <span class="pl-c">// call parent method</span></span>
+<span class="pl-s2">    <span class="pl-st">parent</span><span class="pl-k">::</span>init(<span class="pl-vo">$config</span>);</span>
+<span class="pl-s2"></span>
+<span class="pl-s2">    <span class="pl-c">// prepare the text here</span></span>
+<span class="pl-s2">    <span class="pl-vo">$this</span><span class="pl-k">-&gt;</span><span class="pl-vo">helloWorld</span> <span class="pl-k">=</span> <span class="pl-s1"><span class="pl-pds">'</span>Hello World! (has been invoked %d times)<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s2"></span>
+<span class="pl-s2">    <span class="pl-c">// @todo Do all the bootstrapping here, because this method will</span></span>
+<span class="pl-s2">    <span class="pl-c">// be invoked only once when the Servlet Engines starts up</span></span>
+<span class="pl-s2">  }</span>
+<span class="pl-s2"></span>
+<span class="pl-s2">  <span class="pl-c">/**</span></span>
+<span class="pl-s2"><span class="pl-c"> * Handles a HTTP GET request.</span></span>
+<span class="pl-s2"><span class="pl-c"> *</span></span>
+<span class="pl-s2"><span class="pl-c"> * <span class="pl-k">@param</span> \AppserverIo\Psr\Servlet\Http\HttpServletRequest $servletRequest </span></span>
+<span class="pl-s2"><span class="pl-c"> * The request instance</span></span>
+<span class="pl-s2"><span class="pl-c"> * <span class="pl-k">@param</span> \AppserverIo\Psr\Servlet\Http\HttpServletResponse $servletResponse </span></span>
+<span class="pl-s2"><span class="pl-c"> * The response instance</span></span>
+<span class="pl-s2"><span class="pl-c"> *</span></span>
+<span class="pl-s2"><span class="pl-c"> * <span class="pl-k">@return</span> void</span></span>
+<span class="pl-s2"><span class="pl-c"> * <span class="pl-k">@see</span> \AppserverIo\Psr\Servlet\Http\HttpServlet::doGet()</span></span>
+<span class="pl-s2"><span class="pl-c"> */</span></span>
+<span class="pl-s2">  <span class="pl-s">public</span> <span class="pl-st">function</span> <span class="pl-en">doGet</span>(</span>
+<span class="pl-s2">    <span class="pl-s3">HttpServletRequest</span> <span class="pl-vo">$servletRequest</span>,</span>
+<span class="pl-s2">    <span class="pl-s3">HttpServletResponse</span> <span class="pl-vo">$servletResponse</span>)</span>
+<span class="pl-s2">  {</span>
+<span class="pl-s2"></span>
+<span class="pl-s2">    <span class="pl-c">// start a session, because our @Stateful SessionBean needs the session-ID to bound to</span></span>
+<span class="pl-s2">    <span class="pl-vo">$servletRequest</span><span class="pl-k">-&gt;</span>getSession()<span class="pl-k">-&gt;</span>start(<span class="pl-c1">true</span>);</span>
+<span class="pl-s2"></span>
+<span class="pl-s2">    <span class="pl-c">// render 'Hello World! (has been invoked 1 times)' for example - after the first request</span></span>
+<span class="pl-s2">    <span class="pl-vo">$servletResponse</span><span class="pl-k">-&gt;</span>appendBodyStream(<span class="pl-s3">sprintf</span>(<span class="pl-vo">$this</span><span class="pl-k">-&gt;</span><span class="pl-vo">helloWorld</span>, <span class="pl-vo">$this</span><span class="pl-k">-&gt;</span><span class="pl-vo">sessionBean</span><span class="pl-k">-&gt;</span>raiseMe()));</span>
+<span class="pl-s2">  }</span>
+<span class="pl-s2"></span>
+<span class="pl-s2">  <span class="pl-c">/**</span></span>
+<span class="pl-s2"><span class="pl-c"> * Handles a HTTP POST request.</span></span>
+<span class="pl-s2"><span class="pl-c"> *</span></span>
+<span class="pl-s2"><span class="pl-c"> * <span class="pl-k">@param</span> \AppserverIo\Psr\Servlet\Http\ServletRequest $servletRequest</span></span>
+<span class="pl-s2"><span class="pl-c"> * The request instance</span></span>
+<span class="pl-s2"><span class="pl-c"> * <span class="pl-k">@param</span> \AppserverIo\Psr\Servlet\Http\ServletResponse $servletResponse</span></span>
+<span class="pl-s2"><span class="pl-c"> * The response instance</span></span>
+<span class="pl-s2"><span class="pl-c"> *</span></span>
+<span class="pl-s2"><span class="pl-c"> * <span class="pl-k">@return</span> void</span></span>
+<span class="pl-s2"><span class="pl-c"> * <span class="pl-k">@see</span> \AppserverIo\Psr\Servlet\Http\HttpServlet::doPost()</span></span>
+<span class="pl-s2"><span class="pl-c"> * <span class="pl-k">@throws</span> \AppserverIo\Psr\Servlet\ServletException </span></span>
+<span class="pl-s2"><span class="pl-c"> * Is thrown because the request method is not implemented yet</span></span>
+<span class="pl-s2"><span class="pl-c"> */</span></span>
+<span class="pl-s2">  <span class="pl-s">public</span> <span class="pl-st">function</span> <span class="pl-en">doPost</span>(</span>
+<span class="pl-s2">    <span class="pl-s3">HttpServletRequest</span> <span class="pl-vo">$servletRequest</span>,</span>
+<span class="pl-s2">    <span class="pl-s3">HttpServletResponse</span> <span class="pl-vo">$servletResponse</span>)</span>
+<span class="pl-s2">  {</span>
+<span class="pl-s2">    <span class="pl-k">throw</span> <span class="pl-k">new</span> <span class="pl-s3">ServletException</span>(<span class="pl-s1"><span class="pl-pds">'</span>HTTP POST requests not implemented yet!<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s2">  }</span>
+<span class="pl-s2">}</span></pre>
+</div> 
+<p>That's it!</p> 
+<blockquote> 
+ <p>As we use a @Stateful SessionBean in this example, we MUST start a session where the container can bind it to. If you would use a @Singleton SessionBean, the effect would be the same, but it will not be necessary to start the session. In consequence, each Servlet that invokes the <code>raiseMe()</code> method on the SessionBean would raise the counter.</p> 
+</blockquote> 
+<h1> <a id="user-content-message-queue" class="anchor" href="#message-queue" aria-hidden="true"><span class="octicon octicon-link"></span></a>Message-Queue</h1> 
+<h1> <a id="user-content-timer-service" class="anchor" href="#timer-service" aria-hidden="true"><span class="octicon octicon-link"></span></a>Timer Service</h1> 
+<h1> <a id="user-content-runtime-environment" class="anchor" href="#runtime-environment" aria-hidden="true"><span class="octicon octicon-link"></span></a>Runtime Environment</h1> 
+<p>The runtime environment appserver.io is using is delivered by the package <a href="https://github.com/appserver-io-php/runtime">runtime</a>. This package provides the appserver runtime which is system independent and encloses a thread-safe compiled PHP environment. Besides the most recent PHP 5.5.x version the package came with installed extensions:</p> 
+<ul> 
+ <li><a href="http://github.com/appserver-io-php/pthreads">pthreads</a></li> 
+ <li> <a href="https://github.com/appserver-io/php-ext-appserver">appserver</a> (contains some replacement functions which behave badly in a multithreaded environment)</li> 
+</ul> 
+<p>Additionally the PECL extensions <a href="http://pecl.php.net/package/xdebug">XDebug</a> and <a href="http://pecl.php.net/package/ev">ev</a> are compiled as a shared modules. XDebug is necessary to render detailed code coverage reports when running unit and integration tests. ev will be used to integrate a timer service in one of the future versions.</p> 
+<h1> <a id="user-content-configuration" class="anchor" href="#configuration" aria-hidden="true"><span class="octicon octicon-link"></span></a>Configuration</h1> 
+<p>We believe that the appserver should be highly configurable, so anyone interested can fiddle around with it. Therefor we provide a central configuration file located at <code>/opt/appserver/etc/appserver.xml</code>.</p> 
+<p>This file contains the complete <a href="#the-architecture">architecture</a> as an XML structure.</p> 
+<p>So if you want to change used components, introduce new services or scale the system by adding additional servers you can do so with some lines of XML.You might have a look at a basic <code>appserver.xml</code>.</p> 
+<h2> <a id="user-content-the-architecture" class="anchor" href="#the-architecture" aria-hidden="true"><span class="octicon octicon-link"></span></a>The Architecture</h2> 
+<p>In this example we have a shortened piece of the <code>apserver.xml</code> file to understand how the architecture is driven by configuration.</p> 
+<div class="highlight highlight-xml">
+ <pre>&lt;?<span class="pl-ent">xml</span><span class="pl-e"> version</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>1.0<span class="pl-pds">&quot;</span></span><span class="pl-e"> encoding</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>UTF-8<span class="pl-pds">&quot;</span></span>?&gt;
+&lt;<span class="pl-ent">appserver</span> <span class="pl-e">xmlns</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>http://www.appserver.io/appserver<span class="pl-pds">&quot;</span></span>&gt;
+
+  &lt;<span class="pl-ent">params</span>&gt;
+    &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>user<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>string<span class="pl-pds">&quot;</span></span>&gt;_www&lt;/<span class="pl-ent">param</span>&gt;
+    &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>group<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>string<span class="pl-pds">&quot;</span></span>&gt;staff&lt;/<span class="pl-ent">param</span>&gt;
+    &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>umask<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>string<span class="pl-pds">&quot;</span></span>&gt;0002&lt;/<span class="pl-ent">param</span>&gt;
+  &lt;/<span class="pl-ent">params</span>&gt;
+
+&lt;<span class="pl-ent">containers</span>&gt;
+
+  &lt;<span class="pl-ent">container</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>combined-appserver<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>AppserverIo\Core\GenericContainer<span class="pl-pds">&quot;</span></span>&gt;
+      &lt;<span class="pl-ent">description</span>&gt;
+        <span class="pl-s1"><span class="pl-pds">&lt;![CDATA[</span></span>
+<span class="pl-s1">          This is an example of a webserver container </span>
+<span class="pl-s1">          that handles http requests in common way</span>
+<span class="pl-s1">        <span class="pl-pds">]]&gt;</span></span>
+      &lt;/<span class="pl-ent">description</span>&gt;
+      &lt;<span class="pl-ent">deployment</span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>AppserverIo\Appserver\Core\GenericDeployment<span class="pl-pds">&quot;</span></span> /&gt;
+      &lt;<span class="pl-ent">host</span>
+        <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>localhost<span class="pl-pds">&quot;</span></span>
+        <span class="pl-e">appBase</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>/webapps<span class="pl-pds">&quot;</span></span>
+        <span class="pl-e">serverAdmin</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>info@appserver.io<span class="pl-pds">&quot;</span></span>
+        <span class="pl-e">serverSoftware</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>appserver/1.0.0-beta (mac) PHP/5.5.16<span class="pl-pds">&quot;</span></span> /&gt;
+
+        &lt;<span class="pl-ent">servers</span>&gt;
+
+          &lt;<span class="pl-ent">server</span>
+            <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>http<span class="pl-pds">&quot;</span></span>
+            <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>\AppserverIo\Server\Servers\MultiThreadedServer<span class="pl-pds">&quot;</span></span>
+            <span class="pl-e">worker</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>\AppserverIo\Server\Workers\ThreadWorker<span class="pl-pds">&quot;</span></span>
+            <span class="pl-e">socket</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>\AppserverIo\Server\Sockets\StreamSocket<span class="pl-pds">&quot;</span></span>
+            <span class="pl-e">serverContext</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>\AppserverIo\Server\Contexts\ServerContext<span class="pl-pds">&quot;</span></span>
+            <span class="pl-e">requestContext</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>\AppserverIo\Server\Contexts\RequestContext<span class="pl-pds">&quot;</span></span>
+            <span class="pl-e">loggerName</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>System<span class="pl-pds">&quot;</span></span>&gt;
+
+            &lt;<span class="pl-ent">params</span>&gt;
+              &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>admin<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>string<span class="pl-pds">&quot;</span></span>&gt;info@appserver.io&lt;/<span class="pl-ent">param</span>&gt;
+              &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>software<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>string<span class="pl-pds">&quot;</span></span>&gt;
+                appserver/1.0.0.0 (darwin) PHP/5.5.16
+              &lt;/<span class="pl-ent">param</span>&gt;
+                &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>transport<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>string<span class="pl-pds">&quot;</span></span>&gt;tcp&lt;/<span class="pl-ent">param</span>&gt;
+                &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>address<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>string<span class="pl-pds">&quot;</span></span>&gt;127.0.0.1&lt;/<span class="pl-ent">param</span>&gt;
+                &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>port<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>integer<span class="pl-pds">&quot;</span></span>&gt;9080&lt;/<span class="pl-ent">param</span>&gt;
+                &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>workerNumber<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>integer<span class="pl-pds">&quot;</span></span>&gt;64&lt;/<span class="pl-ent">param</span>&gt;
+                &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>workerAcceptMin<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>integer<span class="pl-pds">&quot;</span></span>&gt;3&lt;/<span class="pl-ent">param</span>&gt;
+                &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>workerAcceptMax<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>integer<span class="pl-pds">&quot;</span></span>&gt;8&lt;/<span class="pl-ent">param</span>&gt;
+                &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>documentRoot<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>string<span class="pl-pds">&quot;</span></span>&gt;webapps&lt;/<span class="pl-ent">param</span>&gt;
+                &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>directoryIndex<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>string<span class="pl-pds">&quot;</span></span>&gt;
+                    index.do index.php index.html index.htm
+                &lt;/<span class="pl-ent">param</span>&gt;
+                &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>keepAliveMax<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>integer<span class="pl-pds">&quot;</span></span>&gt;64&lt;/<span class="pl-ent">param</span>&gt;
+                &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>keepAliveTimeout<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>integer<span class="pl-pds">&quot;</span></span>&gt;5&lt;/<span class="pl-ent">param</span>&gt;
+                &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>errorsPageTemplatePath<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>string<span class="pl-pds">&quot;</span></span>&gt;
+                    var/www/errors/error.phtml
+                &lt;/<span class="pl-ent">param</span>&gt;
+            &lt;/<span class="pl-ent">params</span>&gt;
+
+            &lt;<span class="pl-ent">environmentVariables</span>&gt;
+              &lt;<span class="pl-ent">environmentVariable</span> 
+                <span class="pl-e">condition</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span><span class="pl-pds">&quot;</span></span> <span class="pl-e">definition</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>LOGGER_ACCESS=Access<span class="pl-pds">&quot;</span></span> /&gt;
+            &lt;/<span class="pl-ent">environmentVariables</span>&gt;
+
+            &lt;<span class="pl-ent">connectionHandlers</span>&gt;
+              &lt;<span class="pl-ent">connectionHandler</span> 
+                <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>\AppserverIo\WebServer\ConnectionHandlers\HttpConnectionHandler<span class="pl-pds">&quot;</span></span> /&gt;
+            &lt;/<span class="pl-ent">connectionHandlers</span>&gt;
+
+            &lt;<span class="pl-ent">authentications</span>&gt;
+              &lt;<span class="pl-ent">authentication</span> <span class="pl-e">uri</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>^\/admin.*<span class="pl-pds">&quot;</span></span>&gt;
+                &lt;<span class="pl-ent">params</span>&gt;
+                  &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>type<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>string<span class="pl-pds">&quot;</span></span>&gt;
+                    \AppserverIo\WebServer\Authentication\BasicAuthentication
+                  &lt;/<span class="pl-ent">param</span>&gt;
+                  &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>realm<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>string<span class="pl-pds">&quot;</span></span>&gt;
+                    appserver.io Basic Authentication System
+                  &lt;/<span class="pl-ent">param</span>&gt;
+                  &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>hash<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>string<span class="pl-pds">&quot;</span></span>&gt;
+                    YXBwc2VydmVyOmFwcHNlcnZlci5pMA==
+                  &lt;/<span class="pl-ent">param</span>&gt;
+                &lt;/<span class="pl-ent">params</span>&gt;
+              &lt;/<span class="pl-ent">authentication</span>&gt;
+            &lt;/<span class="pl-ent">authentications</span>&gt;
+
+            &lt;<span class="pl-ent">accesses</span>&gt;
+              &lt;<span class="pl-ent">access</span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>allow<span class="pl-pds">&quot;</span></span>&gt;
+                &lt;<span class="pl-ent">params</span>&gt;
+                  &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>X_REQUEST_URI<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>string<span class="pl-pds">&quot;</span></span>&gt;.*&lt;/<span class="pl-ent">param</span>&gt;
+                &lt;/<span class="pl-ent">params</span>&gt;
+              &lt;/<span class="pl-ent">access</span>&gt;
+            &lt;/<span class="pl-ent">accesses</span>&gt;
+
+            &lt;<span class="pl-ent">virtualHosts</span>&gt;
+              &lt;<span class="pl-ent">virtualHost</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>example.local<span class="pl-pds">&quot;</span></span>&gt;
+                &lt;<span class="pl-ent">params</span>&gt;
+                  &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>admin<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>string<span class="pl-pds">&quot;</span></span>&gt;
+                    admin@appserver.io
+                  &lt;/<span class="pl-ent">param</span>&gt;
+                  &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>documentRoot<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>string<span class="pl-pds">&quot;</span></span>&gt;
+                    /opt/appserver/webapps/example
+                  &lt;/<span class="pl-ent">param</span>&gt;
+                &lt;/<span class="pl-ent">params</span>&gt;
+              &lt;/<span class="pl-ent">virtualHost</span>&gt;
+            &lt;/<span class="pl-ent">virtualHosts</span>&gt;
+
+            &lt;<span class="pl-ent">modules</span>&gt;
+              <span class="pl-c">&lt;!-- REQUEST_POST hook --&gt;</span>
+              &lt;<span class="pl-ent">module</span> 
+                <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>\AppserverIo\WebServer\Modules\VirtualHostModule<span class="pl-pds">&quot;</span></span>/&gt;
+              &lt;<span class="pl-ent">module</span> 
+                <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>\AppserverIo\WebServer\Modules\AuthenticationModule<span class="pl-pds">&quot;</span></span>/&gt;
+              &lt;<span class="pl-ent">module</span> 
+                <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>\AppserverIo\WebServer\Modules\EnvironmentVariableModule<span class="pl-pds">&quot;</span></span> /&gt;
+              &lt;<span class="pl-ent">module</span> 
+                <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>\AppserverIo\WebServer\Modules\RewriteModule<span class="pl-pds">&quot;</span></span>/&gt;
+              &lt;<span class="pl-ent">module</span> 
+                <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>\AppserverIo\WebServer\Modules\DirectoryModule<span class="pl-pds">&quot;</span></span>/&gt;
+              &lt;<span class="pl-ent">module</span> 
+                <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>\AppserverIo\WebServer\Modules\AccessModule<span class="pl-pds">&quot;</span></span>/&gt;
+              &lt;<span class="pl-ent">module</span> 
+                <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>\AppserverIo\WebServer\Modules\CoreModule<span class="pl-pds">&quot;</span></span>/&gt;
+              &lt;<span class="pl-ent">module</span> 
+                <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>\AppserverIo\WebServer\Modules\PhpModule<span class="pl-pds">&quot;</span></span>/&gt;
+              &lt;<span class="pl-ent">module</span> 
+                <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>\AppserverIo\WebServer\Modules\FastCgiModule<span class="pl-pds">&quot;</span></span>/&gt;
+              &lt;<span class="pl-ent">module</span> 
+                <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>\AppserverIo\Appserver\ServletEngine\ServletEngine<span class="pl-pds">&quot;</span></span> /&gt;
+              <span class="pl-c">&lt;!-- RESPONSE_PRE hook --&gt;</span>
+              &lt;<span class="pl-ent">module</span> 
+                <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>\AppserverIo\WebServer\Modules\DeflateModule<span class="pl-pds">&quot;</span></span>/&gt;
+              <span class="pl-c">&lt;!-- RESPONSE_POST hook --&gt;</span>
+              &lt;<span class="pl-ent">module</span> 
+                <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>\AppserverIo\Appserver\Core\Modules\ProfileModule<span class="pl-pds">&quot;</span></span>/&gt;
+            &lt;/<span class="pl-ent">modules</span>&gt;
+
+            &lt;<span class="pl-ent">fileHandlers</span>&gt;
+              &lt;<span class="pl-ent">fileHandler</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>servlet<span class="pl-pds">&quot;</span></span> <span class="pl-e">extension</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>.do<span class="pl-pds">&quot;</span></span> /&gt;
+              &lt;<span class="pl-ent">fileHandler</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>fastcgi<span class="pl-pds">&quot;</span></span> <span class="pl-e">extension</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>.php<span class="pl-pds">&quot;</span></span>&gt;
+                &lt;<span class="pl-ent">params</span>&gt;
+                  &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>host<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>string<span class="pl-pds">&quot;</span></span>&gt;127.0.0.1&lt;/<span class="pl-ent">param</span>&gt;
+                  &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>port<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>integer<span class="pl-pds">&quot;</span></span>&gt;9010&lt;/<span class="pl-ent">param</span>&gt;
+                &lt;/<span class="pl-ent">params</span>&gt;
+              &lt;/<span class="pl-ent">fileHandler</span>&gt;
+            &lt;/<span class="pl-ent">fileHandlers</span>&gt;
+
+        &lt;/<span class="pl-ent">server</span>&gt;
+
+        <span class="pl-c">&lt;!-- Here, additional servers might be added --&gt;</span>
+
+      &lt;/<span class="pl-ent">servers</span>&gt;
+    &lt;/<span class="pl-ent">container</span>&gt;
+  &lt;/<span class="pl-ent">containers</span>&gt;
+&lt;/<span class="pl-ent">appserver</span>&gt;</pre>
+</div> 
+<p>In the above example you can see three important components of the appserver architecture being used. The <a href="docs/docs/.architecture.md.html#container"><em>container</em></a>, <a href="docs/docs/.architecture.md.html#server"><em>server</em></a> and a <a href="docs/docs/.architecture.md.html#protocol"><em>protocol</em></a> (if you did not read about our basic <a href="docs/docs/.architecture.md.html">architecture</a> you should now). We are basically building up a container which holds a server using the websocket protocol to handle incomming requests.</p> 
+<h3> <a id="user-content-container-configuration" class="anchor" href="#container-configuration" aria-hidden="true"><span class="octicon octicon-link"></span></a>Container configuration</h3> 
+<p>A <em>container</em> is created by using the <code>container</code> element within the <code>containers</code> collection of the <code>appserver</code> document element. Two things make this element in a specific container being built up by the system on startup:</p> 
+<ul> 
+ <li><p>The <code>type</code> attribute states a class extending our <code>AbstractContainerThread</code> which makes a container into a certain kind of container.</p></li> 
+ <li><p>The <code>deployment</code> element states a class containing preparations for starting up the container. It can be considered a hook which will be invoked before the container will be available.</p></li> 
+</ul> 
+<p>That is basically everything there is to do to create a new container. To make use of it, it has to contain at least one <em>server</em> within its <code>servers</code> collection.</p> 
+<h3> <a id="user-content-server-configuration" class="anchor" href="#server-configuration" aria-hidden="true"><span class="octicon octicon-link"></span></a>Server configuration</h3> 
+<p>The <em>servers</em> contained by our <em>container</em> can also be losely drafted by the XML configuration and will be instantiated on container bootup. To enable a <em>server</em> you have to mention three basic attributes of the element:</p> 
+<ul> 
+ <li><p>The <code>type</code> specifies a class implementing the <code>ServerInterface</code> which implements the basic behaviour of the server on receiving a connection and how it will handle it.</p></li> 
+ <li><p>The <code>socket</code> attribute specifies the type of socket the server should open. E.g. a stream or asynchonious socket</p></li> 
+ <li>The <code>serverContext</code> specifies the server's soure of configuration and container for runtime information e.g. ServerVariables like <code>DOCUMENT_ROOT</code> </li> 
+</ul> 
+<p>So we have our specific server which will open a certain port and operate in a defined context. But to make the server handle a certain type of requests it needs to know which <em>protocol</em> to speak.</p> 
+<p>This can be done using the <code>connectionHandler</code> element. Certain server wrappers can handle certain protocols. Therefor we can use the protocols which a server wrapper, e.g. <code>WebServer</code> supports in form of connection handlers. <a href="https://github.com/appserver.io/webserver">WebServer</a> offers a <code>HttpConnectionHandler</code> class. By using it, the server is able to understand the HTTP protocol.</p> 
+<h3> <a id="user-content-module-configuration" class="anchor" href="#module-configuration" aria-hidden="true"><span class="octicon octicon-link"></span></a>Module Configuration</h3> 
+<p>The web server comes with a package of default modules. The functionality that allows us to configure a virtual host or environment variables, for example, is also provided by two, maybe the most important, modules.</p> 
+<h4> <a id="user-content-rewrite-module" class="anchor" href="#rewrite-module" aria-hidden="true"><span class="octicon octicon-link"></span></a>Rewrite Module</h4> 
+<h5> <a id="user-content-usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h5> 
+<p>The module can be used according to the <code>\AppserverIo\WebServer\Interfaces\HttpModuleInterface</code> interface. It needs an initial call of the <code>init</code> method and will process any request offered to the <code>process</code> method. The module is best used within the <a href="https://github.com/appserver-io/webserver"><code>webserver</code></a> project as it offers all needed infrastructure.</p> 
+<h5> <a id="user-content-rules" class="anchor" href="#rules" aria-hidden="true"><span class="octicon octicon-link"></span></a>Rules</h5> 
+<p>Most important part of the module is the way in which it can perform rewrites. All rewrites are based on rewrite rules which consist of three important parts:</p> 
+<ul> 
+ <li><p><em>condition string</em> : Conditions which have to be met in order for the rule to take effect. See more <a href="#condition-syntax">down here</a></p></li> 
+ <li> <p><em>target string</em> : The target to rewrite the requested URI to. Within this string you can use backreferences similar to the Apache mod_rewrite module with the difference that you have to use the <code>$ syntax</code> (instead of the <code>$/%/%{} syntax</code> of Apache).</p> <p>Backreferences are parts of the matching rule conditions which you specifically pick out via regex.</p> <p><em>Simple example</em> : A condition like <code>(.+)@$X_REQUEST_URI</code> would produce a back reference <code>$1</code> with the value <code>/index</code> for a requested URI <code>/index</code>. The target string <code>$1/welcome.html</code> would therefore result in a rewrite to <code>/index/welcome.html</code></p> </li> 
+ <li><p><em>flag string</em> : You can use flags similar to mod_rewrite which are used to make rules react in a certain way or influence further processing. See more <a href="#flags">down here</a></p></li> 
+</ul> 
+<h5> <a id="user-content-condition-syntax" class="anchor" href="#condition-syntax" aria-hidden="true"><span class="octicon octicon-link"></span></a>Condition Syntax</h5> 
+<p>The Syntax of possible conditions is roughly based on the possibilities of Apache's RewriteCondition and RewriteRule combined.</p> 
+<p>To make use of such a combination you can chain conditions together using the <code>{OR}</code> symbol for OR-combined, and the <code>{AND}</code> symbol for AND-combined conditions.</p> 
+<p>Please be aware that AND takes precedence over OR! Conditions can either be PCRE regex or certain fixed expressions. So a condition string of <code>([A-Z]+\.txt){OR}^/([0-9]+){AND}-f</code> would match only real files (through <code>-f</code>) which either begin with numbers or end with capital letters and the extension .txt.</p> 
+<p>As you might have noticed: Backslashes do <strong>not have to be escaped</strong>.</p> 
+<p>You might also be curious of the <code>-f</code> condition. This is a direct copy of Apaches -f RewriteCondition. We also support several other expressions to regex based conditions which are:</p> 
+<ul> 
+ <li> <em>&lt;</em> : Is the operand lexically preceding <code>&lt;COMPARE_STRING&gt;</code>?</li> 
+ <li> <em>&gt;</em> : Is the operand lexically following <code>&lt;COMPARE_STRING&gt;</code>?</li> 
+ <li> <em>=</em> : Is the operand lexically equal to <code>&lt;COMPARE_STRING&gt;</code>?</li> 
+ <li> <em>-d</em> : Is the operand a directory?</li> 
+ <li> <em>-f</em> : Is the operand a real file?</li> 
+ <li> <em>-s</em> : Is the operand a real file of a size greater than 0?</li> 
+ <li> <em>-l</em> : Is the operand a symbolic link?</li> 
+ <li> <em>-x</em> : Is the operand an executable file?</li> 
+</ul> 
+<p>If you are wondering what the <code>operand</code> might be: it is <strong>whatever you want it to be</strong>! You can specify any operand you like using the <code>@</code> symbol. All conditions within a rule will use the next operand to their right and if none is given the requested URI. For example:</p> 
+<ul> 
+ <li> <em><code>([A-Z]+\.txt){OR}^/([0-9]+)</code></em> Will take the requested URI for both conditions (note the <code>{OR}</code> symbol)</li> 
+ <li> <em><code>([A-Z]+\.txt){OR}^/([0-9]+)@$DOCUMENT_ROOT</code></em> Will test both conditions against the document root</li> 
+ <li> <em><code>([A-Z]+\.txt)@$DOCUMENT_ROOT{OR}^/([0-9]+)</code></em> Will only test the first one against the document root and the second against the requested URI</li> 
+</ul> 
+<p>You might have noted the <code>$</code> symbol before <code>DOCUMENT_ROOT</code> and remembered it from the backreference syntax. That's because all Apache common server vars can be explicitly used as backreferences too!</p> 
+<p>That does not work for you? Need the exact opposite? No problem!</p> 
+<p>All conditions, weather regex or expression based can be negated using the <code>!</code> symbol in front of them! So <code>!^([0-9]+)</code> would match all strings which do NOT begin with a number and <code>!-d</code> would match all non-directories.</p> 
+<h5> <a id="user-content-flags" class="anchor" href="#flags" aria-hidden="true"><span class="octicon octicon-link"></span></a>Flags</h5> 
+<p>Flags are used to further influence processing. You can specify as many flags per rewrite as you like, but be aware of their impact! Syntax for several flags is simple: just separate them with a <code>,</code> symbol. Flags which might accept a parameter can be assigned one by using the <code>=</code> symbol. Currently supported flags are:</p> 
+<ul> 
+ <li><p><em>L</em> : As rules are normally processed one after the other, the <code>L</code> flag will make the flagged rule the last one processed if matched.</p></li> 
+ <li><p><em>R</em> : If this flag is set we will redirect the client to the URL specified in the <code>target string</code>. If this is just an URI we will redirect to the same host. You might also specify a custom status code between 300 and 399 to indicate the reason for/kind of the redirect. Default is <code>301</code> aka <code>permanent</code></p></li> 
+ <li><p><em>M</em> : Stands for map. Using this flag you can specify an external source (have a look at the Injector classes of the WebServer project) of a target map. With <code>M=&lt;MY_BACKREFERENCE&gt;</code> you can specify what the map's index has to match. This matching is done <strong>only</strong> if the rewrite condition matches and will behave as another condition</p></li> 
+</ul> 
+<h4> <a id="user-content-virtual-host-module" class="anchor" href="#virtual-host-module" aria-hidden="true"><span class="octicon octicon-link"></span></a>Virtual-Host Module</h4> 
+<h5> <a id="user-content-usage-1" class="anchor" href="#usage-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h5> 
+<p>The module can be used according to the <code>\AppserverIo\WebServer\Interfaces\HttpModuleInterface</code> interface. It needs an initial call of the <code>init</code> method and will process any request offered to the <code>process</code> method. The module is best used within the <a href="https://github.com/appserver-io/webserver">webserver</a> project as it offers all needed infrastructure.</p> 
+<p>If you need to configure a virtual host a virtual hosts node is mandatory and should look like the following example, that would enable a Magento installation under <code>http://magento.dev:9080</code>.</p> 
+<div class="highlight highlight-xml">
+ <pre>&lt;<span class="pl-ent">virtualHost</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>magento.dev<span class="pl-pds">&quot;</span></span>&gt;
+    &lt;<span class="pl-ent">params</span>&gt;
+        &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>admin<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>string<span class="pl-pds">&quot;</span></span>&gt;info@appserver.io&lt;/<span class="pl-ent">param</span>&gt;
+        &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>documentRoot<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>string<span class="pl-pds">&quot;</span></span>&gt;webapps/magento&lt;/<span class="pl-ent">param</span>&gt;
+    &lt;/<span class="pl-ent">params</span>&gt;
+    &lt;<span class="pl-ent">rewrites</span>&gt;
+        &lt;<span class="pl-ent">rewrite</span> <span class="pl-e">condition</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>-d{OR}-f{OR}-l<span class="pl-pds">&quot;</span></span> <span class="pl-e">target</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span><span class="pl-pds">&quot;</span></span> <span class="pl-e">flag</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>L<span class="pl-pds">&quot;</span></span> /&gt;
+        &lt;<span class="pl-ent">rewrite</span> <span class="pl-e">condition</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>(.*)<span class="pl-pds">&quot;</span></span> <span class="pl-e">target</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>index.php/$1<span class="pl-pds">&quot;</span></span> <span class="pl-e">flag</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>L<span class="pl-pds">&quot;</span></span> /&gt;
+    &lt;/<span class="pl-ent">rewrites</span>&gt;
+    &lt;<span class="pl-ent">accesses</span>&gt;
+        &lt;<span class="pl-ent">access</span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>allow<span class="pl-pds">&quot;</span></span>&gt;
+            &lt;<span class="pl-ent">params</span>&gt;
+                &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>X_REQUEST_URI<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>string<span class="pl-pds">&quot;</span></span>&gt;^\/([^\/]+\/)?(media|skin|js|index\.php).*
+                &lt;/<span class="pl-ent">param</span>&gt;
+            &lt;/<span class="pl-ent">params</span>&gt;
+        &lt;/<span class="pl-ent">access</span>&gt;
+    &lt;/<span class="pl-ent">accesses</span>&gt;
+&lt;/<span class="pl-ent">virtualHost</span>&gt;</pre>
+</div> 
+<h2> <a id="user-content-configuration-defaults" class="anchor" href="#configuration-defaults" aria-hidden="true"><span class="octicon octicon-link"></span></a>Configuration Defaults</h2> 
+<p>You will see that we provide basic frontend implementations of services the appserver runtime provides. If you want to use these services yourself you should have a look into the code of our apps and read about <a href="#deployment">app development</a>.</p> 
+<p>You might be curious about the different port we use. Per default the appserver will open several ports at which it's services are available. As we do not want to block (or be blocked by) other services we use ports of a higher range.</p> 
+<p>As a default we use the following ports:</p> 
+<ul> 
+ <li> <p>WebContainer</p> 
+  <ul> 
+   <li>HTTP Server: <code>9080</code> </li> 
+   <li>HTTPS Server: <code>9443</code> </li> 
+  </ul> </li> 
+ <li> <p>Persistence-MQ-Container</p> 
+  <ul> 
+   <li>Persistence-Container: <code>8585</code> </li> 
+   <li>Message-Queue: <code>8587</code> </li> 
+  </ul> </li> 
+</ul> 
+<p>You can change this default port mapping by using the <a href="#the-architecture">configuration file</a>. If you are interested in our naming, you can see our container-&gt;server pattern, you might want to have a deeper look into our <a href="docs/docs/.architecture.md.html">architecture</a></p> 
+<h1> <a id="user-content-deployment" class="anchor" href="#deployment" aria-hidden="true"><span class="octicon octicon-link"></span></a>Deployment</h1> 
+<p>The deploy directory in the appserver.io Application Server distribution is the location end users can place their deployment content (e. g. phar files) to have it deployed into the server runtime.</p> 
+<p>Users, particularly those running production systems, are encouraged to use the appserver.io AS management APIs to upload and deploy deployment content.</p> 
+<h2> <a id="user-content-deployment-modes" class="anchor" href="#deployment-modes" aria-hidden="true"><span class="octicon octicon-link"></span></a>Deployment Modes</h2> 
+<p>The scanner actually only suports manual deployment mode which means that you have to restart the server to process deployment of your content. In this mode, the scanner will not attempt to directly monitor the deployment content and decide if or when the end user wishes the content to be deployed or undeployed. Instead, the scanner relies on a system of marker files, with the user's addition or removal of a marker file serving as a sort of command telling the scanner to deploy, undeploy or redeploy content.</p> 
+<p>It is also possible to copy your unzipped content directly into the webapps folder. After restarting the webserver your content will then be deployed without having any impact on the deployment scanner, because only zipped (.phar) content will be recognized.</p> 
+<h2> <a id="user-content-marker-files" class="anchor" href="#marker-files" aria-hidden="true"><span class="octicon octicon-link"></span></a>Marker Files</h2> 
+<p>The marker files always have the same name as the deployment content to which they relate, but with an additional file suffix appended. For example, the marker file to indicate the example.phar file should be deployed is named example.phar.dodeploy. Different marker file suffixes have different meanings.</p> 
+<p>The relevant marker file types are:</p> 
+<table> 
+ <thead> 
+  <tr> 
+   <th align="left">Marker</th> 
+   <th align="left">Description</th> 
+  </tr> 
+ </thead> 
+ <tbody> 
+  <tr> 
+   <td align="left">.dodeploy</td> 
+   <td align="left">Placed by the user to indicate that the given content should be deployed or redeployed into the runtime.</td> 
+  </tr> 
+  <tr> 
+   <td align="left">.deploying</td> 
+   <td align="left">Placed by the deployment scanner service to indicate that it has noticed a .dodeploy file and is in the process of deploying the content. This marker file will be deleted when the deployment process completes.</td> 
+  </tr> 
+  <tr> 
+   <td align="left">.deployed</td> 
+   <td align="left">Placed by the deployment scanner service to indicate that the given content has been deployed into the runtime. If an end user deletes this file and no other marker is available, the content will be undeployed.</td> 
+  </tr> 
+  <tr> 
+   <td align="left">.failed</td> 
+   <td align="left">Placed by the deployment scanner service to indicate that the given content failed to deploy into the runtime. The content of the file will include some information about the cause of the failure. Note that, removing this file will make the deployment eligible for deployment again.</td> 
+  </tr> 
+  <tr> 
+   <td align="left">.undeploying</td> 
+   <td align="left">Placed by the deployment scanner service to indicate that it has noticed a .deployed file has been deleted and the content is being undeployed. This marker file will be deleted when the undeployment process completes.</td> 
+  </tr> 
+  <tr> 
+   <td align="left">.undeployed</td> 
+   <td align="left">Placed by the deployment scanner service to indicate that the given content has been undeployed from the runtime. If an end content is being undeployed. This marker file will be deleted user deletes this file, it has no impact.</td> 
+  </tr> 
+ </tbody> 
+</table> 
+<h2> <a id="user-content-basic-workflows" class="anchor" href="#basic-workflows" aria-hidden="true"><span class="octicon octicon-link"></span></a>Basic workflows</h2> 
+<p>All examples assume variable $AS points to the root of the appserver.io AS distribution.</p> 
+<p>Windows users: the examples below use UNIX shell commands; see the <a href="#windows-notes">Windows Notes</a> below.</p> 
+<ol> 
+ <li>Add new zipped (.phar) content and deploy it:</li> 
+</ol> 
+<pre><code>$ cp target/example.phar $AS/deploy
+$ touch $AS/deploy/example.phar.dodeploy
+</code></pre> 
+<ol> 
+ <li>Undeploy currently deployed zipped (.phar) content:</li> 
+</ol> 
+<pre><code>$ rm $AS/deploy/example.phar.deployed
+</code></pre> 
+<ol> 
+ <li>Replace currently deployed zipped (.phar) content with a new version and redeploy it:</li> 
+</ol> 
+<pre><code>$ cp target/example.phar $AS/deploy
+$ mv $AS/deploy/example.phar.deployed $AS/deploy/example.phar.dodeploy
+</code></pre> 
+<h2> <a id="user-content-windows-notes" class="anchor" href="#windows-notes" aria-hidden="true"><span class="octicon octicon-link"></span></a>Windows Notes</h2> 
+<p>The above examples use UNIX shell commands. Windows equivalents are:</p> 
+<table> 
+ <thead> 
+  <tr> 
+   <th align="left">UNIX</th> 
+   <th align="left">Windows</th> 
+  </tr> 
+ </thead> 
+ <tbody> 
+  <tr> 
+   <td align="left">cp src dest</td> 
+   <td align="left">xcopy /y src dest</td> 
+  </tr> 
+  <tr> 
+   <td align="left">cp -r src dest</td> 
+   <td align="left">xcopy /e /s /y src dest</td> 
+  </tr> 
+  <tr> 
+   <td align="left">rm afile</td> 
+   <td align="left">del afile</td> 
+  </tr> 
+  <tr> 
+   <td align="left">touch afile</td> 
+   <td align="left">echo &gt;&gt; afile</td> 
+  </tr> 
+ </tbody> 
+</table> 
+<p>Note that the behavior of <code>touch</code> and <code>echo</code> are different but thedifferences are not relevant to the usages </p> 
+<h1> <a id="user-content-external-links" class="anchor" href="#external-links" aria-hidden="true"><span class="octicon octicon-link"></span></a>External Links</h1> 
+<ul> 
+ <li>All about appserver.io at <a href="http://www.appserver.io">appserver.io</a> </li> 
+</ul>
 </body>
 </html>
