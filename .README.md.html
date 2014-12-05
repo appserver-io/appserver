@@ -463,7 +463,7 @@ function setDocumentScrollTop(ypos)
 <p>This is the main repository for the <a href="http://www.appserver.io/">appserver.io</a> project.</p> 
 <p>The objective of the project is to develop a multi-threaded application server for PHP, written in PHP. Yes, pure PHP! You think we aren't serious? Maybe! But we think, in order to enable as many developers in our great community, this will be the one and only way. So with your help we hopefully establish a solution as the standard for enterprise applications in PHP environments.</p> 
 <h4> <a id="user-content-table-of-contents" class="anchor" href="#table-of-contents" aria-hidden="true"><span class="octicon octicon-link"></span></a>Table of Contents</h4> 
-<p><a href="#installation">Installation</a><br /> <a href="#uninstall">Uninstall</a><br /> <a href="#basic-usage">Basic Usage</a><br /> <a href="#webserver">HTTP Server</a><br /> <a href="#servlet-engine">Servlet-Engine</a><br /> <a href="#persistence-container">Persistence-Container</a><br /> <a href="#message-queue">Message-Queue</a><br /> <a href="#runtime-environment">Runtime Environment</a><br /> <a href="#configuration">Configuration</a><br /> <a href="#deployment">Deployment</a> </p> 
+<p><a href="#installation">Installation</a><br /> <a href="#uninstall">Uninstall</a><br /> <a href="#basic-usage">Basic Usage</a><br /> <a href="#webserver">HTTP Server</a><br /> <a href="#annotations">Annotations</a><br /> <a href="#dependency-injection">Dependency Injection</a><br /> <a href="#servlet-engine">Servlet-Engine</a><br /> <a href="#persistence-container">Persistence-Container</a><br /> <a href="#message-queue">Message-Queue</a><br /> <a href="#timer-service">Timer-Service</a><br /> <a href="#aop">AOP</a><br /> <a href="#design-by-contract">Design-by-Contract</a><br /> <a href="#runtime-environment">Runtime Environment</a><br /> <a href="#configuration">Configuration</a><br /> <a href="#deployment">Deployment</a> </p> 
 <h1> <a id="user-content-installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h1> 
 <p>Besides supporting several operating systems and their specific ways of installing software, we also support several ways of getting this software. So to get your appserver.io package you might do any of the following:</p> 
 <ul> 
@@ -578,9 +578,8 @@ C:\Program Files\appserver&gt;server.bat
  <li>You can use backreferences for the value you want to set as well. But those are limited to environment variables of the PHP process</li> 
  <li>Values will be treated as strings</li> 
 </ul> 
-<h1> <a id="user-content-aop" class="anchor" href="#aop" aria-hidden="true"><span class="octicon octicon-link"></span></a>AOP</h1> 
+<h1> <a id="user-content-annotations" class="anchor" href="#annotations" aria-hidden="true"><span class="octicon octicon-link"></span></a>Annotations</h1> 
 <h1> <a id="user-content-dependency-injection" class="anchor" href="#dependency-injection" aria-hidden="true"><span class="octicon octicon-link"></span></a>Dependency Injection</h1> 
-<h1> <a id="user-content-design-by-contract" class="anchor" href="#design-by-contract" aria-hidden="true"><span class="octicon octicon-link"></span></a>Design-by-Contract</h1> 
 <h1> <a id="user-content-servlet-engine" class="anchor" href="#servlet-engine" aria-hidden="true"><span class="octicon octicon-link"></span></a>Servlet-Engine</h1> 
 <p>Originally Servlets are the Java counterpart to other dynamic web technologies like PHP or the Microsoft .NET plattform. In contrast to PHP, a Servlet written in Java is not a script that'll be interpreted per request, instead it is a class instanciated when the Servlet Engine starts up process requests be invoking one of its methods.</p> 
 <blockquote> 
@@ -845,8 +844,125 @@ C:\Program Files\appserver&gt;server.bat
 </blockquote> 
 <h1> <a id="user-content-message-queue" class="anchor" href="#message-queue" aria-hidden="true"><span class="octicon octicon-link"></span></a>Message-Queue</h1> 
 <h1> <a id="user-content-timer-service" class="anchor" href="#timer-service" aria-hidden="true"><span class="octicon octicon-link"></span></a>Timer Service</h1> 
+<h1> <a id="user-content-aop" class="anchor" href="#aop" aria-hidden="true"><span class="octicon octicon-link"></span></a>AOP</h1> 
+<p>Meanwhile, AOP is more than a buzzword. Many of the PHP frameworks out there support AOP since some years, in other languages like Java it's available for a long time. As there is actually no stable PECL extension nor AOP is part of the PHP core, a big problem is the performance, because of its nature, AOP needs to be deeply weaved into your code. Most of the solutions available for PHP solves that by generate so called proxy classes that wraps the original methods and allows to weave the advices before, after or around the original implementation.</p> 
+<p>As we're in a multithreaded environment, and performance is one of our main goals, we were not able to use on of the available solutions. As we also need to generate proxy classes, we decided to do that in the autoloader. As the autoloader is part of the appserver.io distribution, you don't have to configure anything to use AOP in your code.</p> 
+<h2> <a id="user-content-usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h2> 
+<p>Integrating AOP in your can be done in two ways. The first one is to define the pointcuts and the advices in the same class, the second one is to separate them. Here we want to describe the second approach.</p> 
+<p>Let's say we simple want to log all GET requests on our HelloWorldServlet without adding any code to the servlet itself. To do this, we first have to create an Aspect class like</p> 
+<div class="highlight highlight-php">
+ <pre><span class="pl-s2"></span>
+<span class="pl-s2"><span class="pl-k">namespace</span> <span class="pl-en">Namespace\Module</span>;</span>
+<span class="pl-s2"></span>
+<span class="pl-s2"><span class="pl-c">/**</span></span>
+<span class="pl-s2"><span class="pl-c"> * @Aspect</span></span>
+<span class="pl-s2"><span class="pl-c"> */</span></span>
+<span class="pl-s2"><span class="pl-st">class</span> <span class="pl-en">LoggerAspect</span></span>
+<span class="pl-s2">{</span>
+<span class="pl-s2"></span>
+<span class="pl-s2">  <span class="pl-c">/**</span></span>
+<span class="pl-s2"><span class="pl-c"> * Pointcut which targets all index actions for all action classes.</span></span>
+<span class="pl-s2"><span class="pl-c"> *</span></span>
+<span class="pl-s2"><span class="pl-c"> * <span class="pl-k">@return</span> void</span></span>
+<span class="pl-s2"><span class="pl-c"> *</span></span>
+<span class="pl-s2"><span class="pl-c"> * @Pointcut(&quot;call(\Namespace\Module\*-&gt;doGet())&quot;)</span></span>
+<span class="pl-s2"><span class="pl-c"> */</span></span>
+<span class="pl-s2">  <span class="pl-s">public</span> <span class="pl-st">function</span> <span class="pl-en">allDoGet</span>()</span>
+<span class="pl-s2">  {</span>
+<span class="pl-s2">  }</span>
+<span class="pl-s2"></span>
+<span class="pl-s2">  <span class="pl-c">/**</span></span>
+<span class="pl-s2"><span class="pl-c"> * Advice used to log the call to any advised method.</span></span>
+<span class="pl-s2"><span class="pl-c"> *</span></span>
+<span class="pl-s2"><span class="pl-c"> * <span class="pl-k">@param</span> \AppserverIo\Doppelgaenger\Entities\MethodInvocation $methodInvocation Initially invoked method</span></span>
+<span class="pl-s2"><span class="pl-c"> *</span></span>
+<span class="pl-s2"><span class="pl-c"> * <span class="pl-k">@return</span> null</span></span>
+<span class="pl-s2"><span class="pl-c"> *</span></span>
+<span class="pl-s2"><span class="pl-c"> * @Before(&quot;pointcut(allIndexActions())&quot;)</span></span>
+<span class="pl-s2"><span class="pl-c"> */</span></span>
+<span class="pl-s2">  <span class="pl-s">public</span> <span class="pl-st">function</span> <span class="pl-en">logInfoAdvice</span>(<span class="pl-s3">MethodInvocation</span> <span class="pl-vo">$methodInvocation</span>)</span>
+<span class="pl-s2">  {</span>
+<span class="pl-s2"></span>
+<span class="pl-s2">    <span class="pl-c">// load class and method name</span></span>
+<span class="pl-s2">    <span class="pl-vo">$className</span> <span class="pl-k">=</span> <span class="pl-vo">$methodInvocation</span><span class="pl-k">-&gt;</span>getStructureName();</span>
+<span class="pl-s2">    <span class="pl-vo">$methodName</span> <span class="pl-k">=</span> <span class="pl-vo">$methodInvocation</span><span class="pl-k">-&gt;</span>getName()</span>
+<span class="pl-s2"></span>
+<span class="pl-s2">    <span class="pl-c">// log the method invokation</span></span>
+<span class="pl-s2">    <span class="pl-vo">$methodInvocation</span><span class="pl-k">-&gt;</span>getContext()</span>
+<span class="pl-s2">      <span class="pl-k">-&gt;</span>getServletRequest()</span>
+<span class="pl-s2">      <span class="pl-k">-&gt;</span>getContext()</span>
+<span class="pl-s2">      <span class="pl-k">-&gt;</span>getInitialContext()</span>
+<span class="pl-s2">      <span class="pl-k">-&gt;</span>getSystemLogger()</span>
+<span class="pl-s2">      <span class="pl-k">-&gt;</span>info(<span class="pl-s3">sprintf</span>(<span class="pl-s1"><span class="pl-pds">'</span>The method %s::%s is about to be called<span class="pl-pds">'</span></span>, <span class="pl-c1">className</span>, <span class="pl-c1">methodName</span>));</span>
+<span class="pl-s2">  }</span>
+<span class="pl-s2">}</span></pre>
+</div> 
+<p>Store the class in <code>/opt/appserver/myapp/WEB-INF/classes/Namespace/Module/LoggerAspect</code> and <a href="#start-and-stop-scripts">restart</a> the application server.</p> 
+<p>To see the the log message, open the console (Linux/Mac OS X) and enter</p> 
+<div class="highlight highlight-bash">
+ <pre>$ tail -f /opt/appserver/var/log/appserver-errors.log</pre>
+</div> 
+<p>Then open <code>http://127.0.0.1:9080/myapp/helloWorld.do</code> in your favorite browser, and have a look at the console.</p> 
+<blockquote> 
+ <p>AOP is a very powerful instrument to enrich your application with functionality with coupling. But as in most cases, great power comes together with great responsibility. So it is really necessary to keep in mind, where your Aspect classes are and what they do. If not, someone will wonder what happens and maybe need a long time to figure out problems. To avoid this, we'll provide a XML based advice declaration in future versions.</p> 
+</blockquote> 
+<h1> <a id="user-content-design-by-contract" class="anchor" href="#design-by-contract" aria-hidden="true"><span class="octicon octicon-link"></span></a>Design-by-Contract</h1> 
+<p>Beside AOP <a href="http://en.wikipedia.org/wiki/Design_by_contract">Design-by-Contract</a> is another interesting approach we support out-of-the-box when you think about the architecture of your software.</p> 
+<p>First introduced by Bertram Meyer in connection with his design of the Eiffel programming language Design-by-Contract allows you to define formal, precise and verifiable interface specifications of software components.</p> 
+<p>Design-by-Contract extends the ordinary definition of classes, abstract classes and interfaces by adding pre-/postconditions and invariants referred to as <code>contracts</code>. As Design-by-Contract is, as AOP, is not part of the PHP core, we also use annotations to specify these contracts.</p> 
+<h2> <a id="user-content-what-can-be-done" class="anchor" href="#what-can-be-done" aria-hidden="true"><span class="octicon octicon-link"></span></a>What can be done?</h2> 
+<p>As stated above this library aims to bring you the power of Design by Contract, an approach to make your applications more robust and easier to debug. This contains basic features as:</p> 
+<ul> 
+ <li>Use your basic <code>DocBlock</code> annotations <code>@param</code> and <code>@return</code> as type hints (scalar and class/interface based), including special features like <code>typed arrays</code> using e. g. <code>array&lt;int&gt;</code> (collections for complex types only yet)</li> 
+ <li>Specify complex method contracts in PHP syntax using <code>@requires</code> as precondition and <code>@ensures</code> as postcondition</li> 
+ <li>Specify a state of validity for your classes (e.g. <code>$this-&gt;attribute !== null</code>) which will be true all times using <code>@invariant</code> </li> 
+ <li>The above (not including type safety) will be inherited by every child structure, strengthening your object hierarchies</li> 
+ <li>The library will warn you (exception or log message) on violation of these contracts</li> 
+</ul> 
+<h2> <a id="user-content-how-does-it-work" class="anchor" href="#how-does-it-work" aria-hidden="true"><span class="octicon octicon-link"></span></a>How does it work?</h2> 
+<p>We use a system of autoloading and code creation to ensure our annotations will get enforced. This features a 4 step process:</p> 
+<ul> 
+ <li>Autoloader : Handles autoloading and will know if contract enforcement is needed for a certain file. If so (and the cache is empty) the call will be directed to the Generator/Parser Combo</li> 
+ <li>Parser : Will parse the needed file using <a href="http://www.php.net/manual/en/book.tokenizer.php"><code>Tokenizer</code></a> and provide information for further handling.</li> 
+ <li>Generator : Will use stream filters to create a new file structure definition containing configured enforcement</li> 
+ <li>Cache : Will allow us to omit Parser and Generator for future calls, to speed up usage significantly.</li> 
+</ul> 
+<h2> <a id="user-content-usage-1" class="anchor" href="#usage-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h2> 
+<p>Supposed, we want to make sure, that the counter in our @Stateful SessionBean is a integer, we can define a simple contract</p> 
+<div class="highlight highlight-php">
+ <pre><span class="pl-s2"></span>
+<span class="pl-s2"><span class="pl-k">namespace</span> <span class="pl-en">Namespace\Module</span>;</span>
+<span class="pl-s2"></span>
+<span class="pl-s2"><span class="pl-c">/**</span></span>
+<span class="pl-s2"><span class="pl-c"> * This is demo implementation of stateful session bean.</span></span>
+<span class="pl-s2"><span class="pl-c"> *</span></span>
+<span class="pl-s2"><span class="pl-c"> * @Stateful</span></span>
+<span class="pl-s2"><span class="pl-c"> * @invariant is_integer($this-&gt;counter)</span></span>
+<span class="pl-s2"><span class="pl-c"> */</span></span>
+<span class="pl-s2"><span class="pl-st">class</span> <span class="pl-en">MyStatefulSessionBean</span></span>
+<span class="pl-s2">{</span>
+<span class="pl-s2"></span>
+<span class="pl-s2">  <span class="pl-c">/**</span></span>
+<span class="pl-s2"><span class="pl-c"> * Stateful counter that exists as long as your session exists.</span></span>
+<span class="pl-s2"><span class="pl-c"> *</span></span>
+<span class="pl-s2"><span class="pl-c"> * <span class="pl-k">@var</span> integer</span></span>
+<span class="pl-s2"><span class="pl-c"> */</span></span>
+<span class="pl-s2">  <span class="pl-s">protected</span> <span class="pl-vo">$counter</span> <span class="pl-k">=</span> <span class="pl-c1">0</span>;</span>
+<span class="pl-s2"></span>
+<span class="pl-s2">  <span class="pl-c">/**</span></span>
+<span class="pl-s2"><span class="pl-c"> * Example method that raises the counter by one each time you'll invoke it.</span></span>
+<span class="pl-s2"><span class="pl-c"> *</span></span>
+<span class="pl-s2"><span class="pl-c"> * <span class="pl-k">@return</span> integer The raised counter</span></span>
+<span class="pl-s2"><span class="pl-c"> */</span></span>
+<span class="pl-s2">  <span class="pl-s">public</span> <span class="pl-st">function</span> <span class="pl-en">raiseMe</span>()</span>
+<span class="pl-s2">  {</span>
+<span class="pl-s2">    <span class="pl-k">return</span> <span class="pl-vo">$this</span><span class="pl-k">-&gt;</span><span class="pl-vo">counter</span><span class="pl-k">++</span>;</span>
+<span class="pl-s2">  }</span>
+<span class="pl-s2">}</span></pre>
+</div> 
+<p>Depending on your configuration, if a method would try to set a string on the counter variable, the Design-by-Contract implementation would either throw an exception or write an error message to our log file under <code>/opt/appserver/var/log/appserver-errors.log</code>.</p> 
 <h1> <a id="user-content-runtime-environment" class="anchor" href="#runtime-environment" aria-hidden="true"><span class="octicon octicon-link"></span></a>Runtime Environment</h1> 
-<p>The runtime environment appserver.io is using is delivered by the package <a href="https://github.com/appserver-io-php/runtime">runtime</a>. This package provides the appserver runtime which is system independent and encloses a thread-safe compiled PHP environment. Besides the most recent PHP 5.5.x version the package came with installed extensions:</p> 
+<p>The appserver.io runtime environment is using is delivered by the package <a href="https://github.com/appserver-io-php/runtime">runtime</a>. This package provides the appserver runtime which is system independent and encloses a thread-safe compiled PHP environment. Besides the most recent PHP 5.5.x version the package came with installed extensions:</p> 
 <ul> 
  <li><a href="http://github.com/appserver-io-php/pthreads">pthreads</a></li> 
  <li> <a href="https://github.com/appserver-io/php-ext-appserver">appserver</a> (contains some replacement functions which behave badly in a multithreaded environment)</li> 
@@ -868,9 +984,9 @@ C:\Program Files\appserver&gt;server.bat
     &lt;<span class="pl-ent">param</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>umask<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>string<span class="pl-pds">&quot;</span></span>&gt;0002&lt;/<span class="pl-ent">param</span>&gt;
   &lt;/<span class="pl-ent">params</span>&gt;
 
-&lt;<span class="pl-ent">containers</span>&gt;
+  &lt;<span class="pl-ent">containers</span>&gt;
 
-  &lt;<span class="pl-ent">container</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>combined-appserver<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>AppserverIo\Core\GenericContainer<span class="pl-pds">&quot;</span></span>&gt;
+    &lt;<span class="pl-ent">container</span> <span class="pl-e">name</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>combined-appserver<span class="pl-pds">&quot;</span></span> <span class="pl-e">type</span>=<span class="pl-s1"><span class="pl-pds">&quot;</span>AppserverIo\Core\GenericContainer<span class="pl-pds">&quot;</span></span>&gt;
       &lt;<span class="pl-ent">description</span>&gt;
         <span class="pl-s1"><span class="pl-pds">&lt;![CDATA[</span></span>
 <span class="pl-s1">          This is an example of a webserver container </span>
@@ -1014,14 +1130,14 @@ C:\Program Files\appserver&gt;server.bat
 &lt;/<span class="pl-ent">appserver</span>&gt;</pre>
 </div> 
 <p>In the above example you can see three important components of the appserver architecture being used. The <a href="docs/docs/.architecture.md.html#container"><em>container</em></a>, <a href="docs/docs/.architecture.md.html#server"><em>server</em></a> and a <a href="docs/docs/.architecture.md.html#protocol"><em>protocol</em></a> (if you did not read about our basic <a href="docs/docs/.architecture.md.html">architecture</a> you should now). We are basically building up a container which holds a server using the websocket protocol to handle incomming requests.</p> 
-<h3> <a id="user-content-container-configuration" class="anchor" href="#container-configuration" aria-hidden="true"><span class="octicon octicon-link"></span></a>Container configuration</h3> 
+<h3> <a id="user-content-container-configuration" class="anchor" href="#container-configuration" aria-hidden="true"><span class="octicon octicon-link"></span></a>Container Configuration</h3> 
 <p>A <em>container</em> is created by using the <code>container</code> element within the <code>containers</code> collection of the <code>appserver</code> document element. Two things make this element in a specific container being built up by the system on startup:</p> 
 <ul> 
  <li><p>The <code>type</code> attribute states a class extending our <code>AbstractContainerThread</code> which makes a container into a certain kind of container.</p></li> 
  <li><p>The <code>deployment</code> element states a class containing preparations for starting up the container. It can be considered a hook which will be invoked before the container will be available.</p></li> 
 </ul> 
 <p>That is basically everything there is to do to create a new container. To make use of it, it has to contain at least one <em>server</em> within its <code>servers</code> collection.</p> 
-<h3> <a id="user-content-server-configuration" class="anchor" href="#server-configuration" aria-hidden="true"><span class="octicon octicon-link"></span></a>Server configuration</h3> 
+<h3> <a id="user-content-server-configuration" class="anchor" href="#server-configuration" aria-hidden="true"><span class="octicon octicon-link"></span></a>Server Configuration</h3> 
 <p>The <em>servers</em> contained by our <em>container</em> can also be losely drafted by the XML configuration and will be instantiated on container bootup. To enable a <em>server</em> you have to mention three basic attributes of the element:</p> 
 <ul> 
  <li><p>The <code>type</code> specifies a class implementing the <code>ServerInterface</code> which implements the basic behaviour of the server on receiving a connection and how it will handle it.</p></li> 
@@ -1030,10 +1146,11 @@ C:\Program Files\appserver&gt;server.bat
 </ul> 
 <p>So we have our specific server which will open a certain port and operate in a defined context. But to make the server handle a certain type of requests it needs to know which <em>protocol</em> to speak.</p> 
 <p>This can be done using the <code>connectionHandler</code> element. Certain server wrappers can handle certain protocols. Therefor we can use the protocols which a server wrapper, e.g. <code>WebServer</code> supports in form of connection handlers. <a href="https://github.com/appserver.io/webserver">WebServer</a> offers a <code>HttpConnectionHandler</code> class. By using it, the server is able to understand the HTTP protocol.</p> 
+<h3> <a id="user-content-application-configuration" class="anchor" href="#application-configuration" aria-hidden="true"><span class="octicon octicon-link"></span></a>Application Configuration</h3> 
 <h3> <a id="user-content-module-configuration" class="anchor" href="#module-configuration" aria-hidden="true"><span class="octicon octicon-link"></span></a>Module Configuration</h3> 
 <p>The web server comes with a package of default modules. The functionality that allows us to configure a virtual host or environment variables, for example, is also provided by two, maybe the most important, modules.</p> 
 <h4> <a id="user-content-rewrite-module" class="anchor" href="#rewrite-module" aria-hidden="true"><span class="octicon octicon-link"></span></a>Rewrite Module</h4> 
-<h5> <a id="user-content-usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h5> 
+<h5> <a id="user-content-usage-2" class="anchor" href="#usage-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h5> 
 <p>The module can be used according to the <code>\AppserverIo\WebServer\Interfaces\HttpModuleInterface</code> interface. It needs an initial call of the <code>init</code> method and will process any request offered to the <code>process</code> method. The module is best used within the <a href="https://github.com/appserver-io/webserver"><code>webserver</code></a> project as it offers all needed infrastructure.</p> 
 <h5> <a id="user-content-rules" class="anchor" href="#rules" aria-hidden="true"><span class="octicon octicon-link"></span></a>Rules</h5> 
 <p>Most important part of the module is the way in which it can perform rewrites. All rewrites are based on rewrite rules which consist of three important parts:</p> 
@@ -1075,7 +1192,7 @@ C:\Program Files\appserver&gt;server.bat
  <li><p><em>M</em> : Stands for map. Using this flag you can specify an external source (have a look at the Injector classes of the WebServer project) of a target map. With <code>M=&lt;MY_BACKREFERENCE&gt;</code> you can specify what the map's index has to match. This matching is done <strong>only</strong> if the rewrite condition matches and will behave as another condition</p></li> 
 </ul> 
 <h4> <a id="user-content-virtual-host-module" class="anchor" href="#virtual-host-module" aria-hidden="true"><span class="octicon octicon-link"></span></a>Virtual-Host Module</h4> 
-<h5> <a id="user-content-usage-1" class="anchor" href="#usage-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h5> 
+<h5> <a id="user-content-usage-3" class="anchor" href="#usage-3" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h5> 
 <p>The module can be used according to the <code>\AppserverIo\WebServer\Interfaces\HttpModuleInterface</code> interface. It needs an initial call of the <code>init</code> method and will process any request offered to the <code>process</code> method. The module is best used within the <a href="https://github.com/appserver-io/webserver">webserver</a> project as it offers all needed infrastructure.</p> 
 <p>If you need to configure a virtual host a virtual hosts node is mandatory and should look like the following example, that would enable a Magento installation under <code>http://magento.dev:9080</code>.</p> 
 <div class="highlight highlight-xml">

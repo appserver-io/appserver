@@ -16,9 +16,14 @@ hopefully establish a solution as the standard for enterprise applications in PH
 [Uninstall](#uninstall)  
 [Basic Usage](#basic-usage)  
 [HTTP Server](#webserver)  
+[Annotations](#annotations)  
+[Dependency Injection](#dependency-injection)  
 [Servlet-Engine](#servlet-engine)  
 [Persistence-Container](#persistence-container)  
 [Message-Queue](#message-queue)  
+[Timer-Service](#timer-service)  
+[AOP](#aop)  
+[Design-by-Contract](#design-by-contract)  
 [Runtime Environment](#runtime-environment)  
 [Configuration](#configuration)  
 [Deployment](#deployment)  
@@ -234,11 +239,9 @@ some specialities too:
   variables of the PHP process
 - Values will be treated as strings
 
-# AOP
+# Annotations
 
 # Dependency Injection
-
-# Design-by-Contract
 
 # Servlet-Engine
 
@@ -587,9 +590,181 @@ That's it!
 
 # Timer Service
 
+# AOP
+
+Meanwhile, AOP is more than a buzzword. Many of the PHP frameworks out there support AOP since
+some years, in other languages like Java it's available for a long time. As there is actually
+no stable PECL extension nor AOP is part of the PHP core, a big problem is the performance,
+because of its nature, AOP needs to be deeply weaved into your code. Most of the solutions
+available for PHP solves that by generate so called proxy classes that wraps the original
+methods and allows to weave the advices before, after or around the original implementation.
+
+As we're in a multithreaded environment, and performance is one of our main goals, we were not 
+able to use on of the available solutions. As we also need to generate proxy classes, we decided
+to do that in the autoloader. As the autoloader is part of the appserver.io distribution, you
+don't have to configure anything to use AOP in your code.
+
+## Usage
+
+Integrating AOP in your can be done in two ways. The first one is to define the pointcuts and
+the advices in the same class, the second one is to separate them. Here we want to describe 
+the second approach.
+
+Let's say we simple want to log all GET requests on our HelloWorldServlet without adding any
+code to the servlet itself. To do this, we first have to create an Aspect class like
+
+```php
+
+namespace Namespace\Module;
+
+/**
+ * @Aspect
+ */
+class LoggerAspect
+{
+
+  /**
+   * Pointcut which targets all index actions for all action classes.
+   *
+   * @return void
+   *
+   * @Pointcut("call(\Namespace\Module\*->doGet())")
+   */
+  public function allDoGet()
+  {
+  }
+
+  /**
+   * Advice used to log the call to any advised method.
+   *
+   * @param \AppserverIo\Doppelgaenger\Entities\MethodInvocation $methodInvocation Initially invoked method
+   *
+   * @return null
+   *
+   * @Before("pointcut(allIndexActions())")
+   */
+  public function logInfoAdvice(MethodInvocation $methodInvocation)
+  {
+
+    // load class and method name
+    $className = $methodInvocation->getStructureName();
+    $methodName = $methodInvocation->getName()
+
+    // log the method invokation
+    $methodInvocation->getContext()
+      ->getServletRequest()
+      ->getContext()
+      ->getInitialContext()
+      ->getSystemLogger()
+      ->info(sprintf('The method %s::%s is about to be called', className, methodName));
+  }
+}
+```
+
+Store the class in `/opt/appserver/myapp/WEB-INF/classes/Namespace/Module/LoggerAspect` and
+[restart](#start-and-stop-scripts) the application server.
+
+To see the the log message, open the console (Linux/Mac OS X) and enter
+
+```bash
+$ tail -f /opt/appserver/var/log/appserver-errors.log
+```
+
+Then open `http://127.0.0.1:9080/myapp/helloWorld.do` in your favorite browser, and have a look
+at the console.
+
+> AOP is a very powerful instrument to enrich your application with functionality with coupling.
+> But as in most cases, great power comes together with great responsibility. So it is really 
+> necessary to keep in mind, where your Aspect classes are and what they do. If not, someone
+> will wonder what happens and maybe need a long time to figure out problems. To avoid this, we'll
+> provide a XML based advice declaration in future versions.
+
+# Design-by-Contract
+
+Beside AOP [Design-by-Contract](http://en.wikipedia.org/wiki/Design_by_contract) is another
+interesting approach we support out-of-the-box when you think about the architecture of your
+software.
+
+First introduced by Bertram Meyer in connection with his design of the Eiffel programming language
+Design-by-Contract allows you to define formal, precise and verifiable interface specifications of
+software components.
+
+Design-by-Contract extends the ordinary definition of classes, abstract classes and interfaces by
+adding pre-/postconditions and invariants referred to as `contracts`. As Design-by-Contract is, as
+AOP, is not part of the PHP core, we also use annotations to specify these contracts.
+
+## What can be done?
+
+As stated above this library aims to bring you the power of Design by Contract, an approach to make
+your applications more robust and easier to debug. This contains basic features as:
+
+- Use your basic `DocBlock` annotations `@param` and `@return` as type hints (scalar and class/interface
+  based), including special features like `typed arrays` using e. g. `array<int>` (collections for
+  complex types only yet)
+- Specify complex method contracts in PHP syntax using `@requires` as precondition and `@ensures` as 
+  postcondition
+- Specify a state of validity for your classes (e.g. `$this->attribute !== null`) which will be true
+  all times using `@invariant`
+- The above (not including type safety) will be inherited by every child structure, strengthening your
+  object hierarchies
+- The library will warn you (exception or log message) on violation of these contracts
+
+## How does it work?
+
+We use a system of autoloading and code creation to ensure our annotations will get enforced.
+This features a 4 step process:
+
+- Autoloader : Handles autoloading and will know if contract enforcement is needed for a certain file.
+  If so (and the cache is empty) the call will be directed to the Generator/Parser Combo
+- Parser : Will parse the needed file using [`Tokenizer`](<http://www.php.net/manual/en/book.tokenizer.php>)
+  and provide information for further handling.
+- Generator : Will use stream filters to create a new file structure definition containing configured enforcement
+- Cache : Will allow us to omit Parser and Generator for future calls, to speed up usage significantly.
+
+## Usage
+
+Supposed, we want to make sure, that the counter in our @Stateful SessionBean is a integer, we can define a
+simple contract
+
+```php
+
+namespace Namespace\Module;
+
+/**
+ * This is demo implementation of stateful session bean.
+ *
+ * @Stateful
+ * @invariant is_integer($this->counter)
+ */
+class MyStatefulSessionBean
+{
+
+  /**
+   * Stateful counter that exists as long as your session exists.
+   *
+   * @var integer
+   */
+  protected $counter = 0;
+
+  /**
+   * Example method that raises the counter by one each time you'll invoke it.
+   *
+   * @return integer The raised counter
+   */
+  public function raiseMe()
+  {
+    return $this->counter++;
+  }
+}
+```
+
+Depending on your configuration, if a method would try to set a string on the counter variable, the
+Design-by-Contract implementation would either throw an exception or write an error message to our 
+log file under `/opt/appserver/var/log/appserver-errors.log`.
+
 # Runtime Environment
 
-The runtime environment appserver.io is using is delivered by the package [runtime](<https://github.com/appserver-io-php/runtime>).
+The appserver.io runtime environment is using is delivered by the package [runtime](<https://github.com/appserver-io-php/runtime>).
 This package  provides the appserver runtime which is system independent and encloses a thread-safe
 compiled PHP environment. Besides the most recent PHP 5.5.x version the package came with installed
 extensions:
@@ -629,9 +804,9 @@ architecture is driven by configuration.
     <param name="umask" type="string">0002</param>
   </params>
 
-<containers>
+  <containers>
 
-  <container name="combined-appserver" type="AppserverIo\Core\GenericContainer">
+    <container name="combined-appserver" type="AppserverIo\Core\GenericContainer">
       <description>
         <![CDATA[
           This is an example of a webserver container 
@@ -644,7 +819,7 @@ architecture is driven by configuration.
         appBase="/webapps"
         serverAdmin="info@appserver.io"
         serverSoftware="appserver/1.0.0-beta (mac) PHP/5.5.16" />
-            
+
         <servers>
         
           <server
@@ -655,7 +830,7 @@ architecture is driven by configuration.
             serverContext="\AppserverIo\Server\Contexts\ServerContext"
             requestContext="\AppserverIo\Server\Contexts\RequestContext"
             loggerName="System">
-
+    
             <params>
               <param name="admin" type="string">info@appserver.io</param>
               <param name="software" type="string">
@@ -677,17 +852,17 @@ architecture is driven by configuration.
                     var/www/errors/error.phtml
                 </param>
             </params>
-
+    
             <environmentVariables>
               <environmentVariable 
                 condition="" definition="LOGGER_ACCESS=Access" />
             </environmentVariables>
-
+    
             <connectionHandlers>
               <connectionHandler 
                 type="\AppserverIo\WebServer\ConnectionHandlers\HttpConnectionHandler" />
             </connectionHandlers>
-
+    
             <authentications>
               <authentication uri="^\/admin.*">
                 <params>
@@ -703,7 +878,7 @@ architecture is driven by configuration.
                 </params>
               </authentication>
             </authentications>
-
+    
             <accesses>
               <access type="allow">
                 <params>
@@ -711,7 +886,7 @@ architecture is driven by configuration.
                 </params>
               </access>
             </accesses>
-
+    
             <virtualHosts>
               <virtualHost name="example.local">
                 <params>
@@ -754,7 +929,7 @@ architecture is driven by configuration.
               <module 
                 type="\AppserverIo\Appserver\Core\Modules\ProfileModule"/>
             </modules>
-
+    
             <fileHandlers>
               <fileHandler name="servlet" extension=".do" />
               <fileHandler name="fastcgi" extension=".php">
@@ -764,11 +939,11 @@ architecture is driven by configuration.
                 </params>
               </fileHandler>
             </fileHandlers>
-
+    
         </server>
-
+    
         <!-- Here, additional servers might be added -->
-
+    
       </servers>
     </container>
   </containers>
@@ -781,7 +956,7 @@ used. The [*container*](docs/docs/architecture.md#container>), [*server*](docs/d
 you should now). We are basically building up a container which holds a server using the websocket 
 protocol to handle incomming requests.
 
-### Container configuration
+### Container Configuration
 
 A *container* is created by using the `container` element within the `containers` collection 
 of the `appserver` document element. Two things make this element in a specific container 
@@ -796,7 +971,7 @@ being built up by the system on startup:
 That is basically everything there is to do to create a new container. To make use of it, it has 
 to contain at least one *server* within its `servers` collection.
 
-### Server configuration
+### Server Configuration
 
 The *servers* contained by our *container* can also be losely drafted by the XML configuration and 
 will be instantiated on container bootup. To enable a *server* you have to mention three basic 
@@ -818,6 +993,8 @@ protocols. Therefor we can use the protocols which a server wrapper, e.g. `WebSe
 form of connection handlers. [WebServer](<https://github.com/appserver.io/webserver>)
 offers a `HttpConnectionHandler` class. By using it, the server is able to understand the HTTP 
 protocol.
+
+### Application Configuration
 
 ### Module Configuration
 
