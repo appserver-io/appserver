@@ -6,6 +6,7 @@
 
 ## Features
 
+* Remove unnecessary handler manager because WebSocketServer is not activated by default any longer
 * Optimize class loaders for performance
 
 # Version 1.0.0-beta
