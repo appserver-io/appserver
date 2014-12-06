@@ -851,7 +851,7 @@ That's it!
 # Message-Queue
 
 A Message-Queue provides the possiblity to process long running tasks in a encapsulated context.
-For example if you want to import a hole lot of products in your online shop, you can send a
+For example if you want to import a lot of products in your online shop, you can send a
 message to the Message-Queue which then will start the import process in background without
 preventing the calling process to continue.
 
