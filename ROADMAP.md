@@ -100,6 +100,8 @@ This category covers functional add-on's that enables developers to implement bu
 
 #### Snapshots/Backup
 
+Backup tools.
+
 * Snapshot functionality for webapps
 
 #### Servers
