@@ -199,16 +199,18 @@ You can do so by adding a virtual host configuration to your global server confi
 the example for a XML based configuration below:
 
 ```xml
-<virtualHost name="example.local">
-  <params>
-    <param name="admin" type="string">
-      admin@appserver.io
-    </param>
-    <param name="documentRoot" type="string">
-      /opt/appserver/webapps/example
-    </param>
-  </params>
-</virtualHost>
+<virtualHosts>
+  <virtualHost name="example.local">
+    <params>
+      <param name="admin" type="string">
+        admin@appserver.io
+      </param>
+      <param name="documentRoot" type="string">
+        /opt/appserver/webapps/example
+      </param>
+    </params>
+  </virtualHost>
+</virtualHosts>
 ```
 
 The above configuration sits within the server element and opens up the virtual host `example.local`
