@@ -446,11 +446,17 @@ are based on that annotation implementation.
 
 # Dependency Injection
 
-Dependency Injection, furthermore DI, enables developers to write cleaner, reusable and maintainable code with less coupling by injecting necessary instances at runtime instead of instanciating them in the class itself. Within the application server, each application has it's own scope and therefore a own dependency injection container. This prevents your application from fatal errors like `Cannot redeclare class ...`.
+Dependency Injection, furthermore DI, enables developers to write cleaner, reusable and maintainable
+code with less coupling by injecting necessary instances at runtime instead of instanciating them in
+the class itself. Within the application server, each application has it's own scope and therefore a 
+own dependency injection container. This prevents your application from fatal errors like `Cannot redeclare class ...`.
 
 ## What can be injected
 
-Generally everything! The application server itself doesn't use DI, instead it provides DI as a service for the applications running within. But, before you can let the DI container inject an instance to your class, you have to register it. Registering a class for DI is pretty simple. To register a class in the DI container the most common way is to use annotations.
+Generally everything! The application server itself doesn't use DI, instead it provides DI as a
+service for the applications running within. But, before you can let the DI container inject an
+instance to your class, you have to register it. Registering a class for DI is pretty simple. To
+register a class in the DI container the most common way is to use annotations.
 
 ```php
 
@@ -464,11 +470,17 @@ class MySessionBean
 }
 ```
 
-When the application server starts, it parses the `META-INF/classes` and `WEB-INF/classes` folder classes with supported annotations. If a class is found, the class will be registered in the application servers naming directory under the name you specify in the annotations `name` Attribute, in this example `MySessionBean`. 
+When the application server starts, it parses the `META-INF/classes` and `WEB-INF/classes` folder
+classes with supported annotations. If a class is found, the class will be registered in the 
+application servers naming directory under the name you specify in the annotations `name` Attribute,
+in this example `MySessionBean`. 
 
 ## How to inject an instance
 
-Basically DI can be a manual process where you `ìnject` an instance, needed by another class by passing it to the constructor. Inside the application server, the injection is an process you can't see, it's more a kind of magic which happens behind the secenes. So instead of manually pass the necessary instances to a classes constructor, the DI container will do that for you. 
+Basically DI can be a manual process where you `ìnject` an instance, needed by another class by 
+passing it to the constructor. Inside the application server, the injection is an process you can't
+see, it's more a kind of magic which happens behind the secenes. So instead of manually pass the
+necessary instances to a classes constructor, the DI container will do that for you. 
 
 You simple has to tell the DI container what you need, let's have a look at the details.
 
@@ -487,13 +499,15 @@ class MyServlet extends HttpServlet
 
   /**
    * @var \Namespace\Modulename\MySessionBean
-   * @Enterprise(name="MySessionBean")
+   * @EnterpriseBean(name="MySessionBean")
    */
   protected $mySessionBean;
 }
 ```
 
-With the `name` attribute of the `@Enterprise`annotation you have the possibility to specify the name of the bean, you registered before with the `@Stateless` annotation. A more detailed description about the available annotations follows below.
+With the `name` attribute of the `@EnterpriseBean`annotation you have the possibility to specify the name
+of the bean, you registered before with the `@Stateless` annotation. A more detailed description about
+the available annotations follows below.
 
 ### Setter Injection
 
@@ -517,7 +531,7 @@ class MyServlet extends HttpServlet
    * Injects the session bean by its setter method.
    *
    * @param \Namespace\Modulename\MySessionBean $mySessionBean The instance to inject
-   * @Enterprise(name="MySessionBean")
+   * @EnterpriseBean(name="MySessionBean")
    */
   public function setMySessionBean(MySessionBean $mySessionBean)
   {
@@ -526,7 +540,8 @@ class MyServlet extends HttpServlet
 }
 ```
 
-> This method is the preferred one, because it'll be refactored not to use reflection in further versions.
+> This method is the preferred one, because it'll be refactored not to use reflection in further
+> versions.
 
 # Persistence-Container
 
@@ -720,14 +735,155 @@ class HelloWorldServlet extends HttpServlet
 
 That's it!
 
-> As we use a @Stateful SessionBean in this example, we MUST start a session where the container
-> can bind it to. If you would use a @Singleton SessionBean, the effect would be the same, but
-> it will not be necessary to start the session. In consequence, each Servlet that invokes the
-> `raiseMe()` method on the SessionBean would raise the counter.
+> As we use a @Stateful SessionBean in this example, we MUST start a session the container can
+> bind the SessionBean to. If you would use a @Singleton SessionBean, the effect would be the
+> same, but it will not be necessary to start the session. In consequence, each Servlet that 
+> invokes the `raiseMe()` method on the SessionBean would raise the counter.
 
 # Message-Queue
 
+A Message-Queue provides the possiblity to process long running tasks in a encapsulated context.
+For example if you want to import a hole lot of products in your online shop, you can send a
+message to the Message-Queue which then will start the import process in background without
+preventing the calling process to continue.
+
+> Using a Message-Queue gives you the power to use threads without taking care of the pitfalls!
+
+## Got mail!
+
+Before we can send a message, we have to specify what should happen, wenn we received one! The
+Message-Queue allows you to specify so called `Queues`. Each `Queue` can have a receiver, that
+has to be a so called `MessageBean`. A `MessageBean` is very similar to a [@Stateless SessionBean](#@stateless-session-bean)
+but has only one single point of entry, the `onMessage()` message method. Whenever a message
+will be send to the queue, the Message-Queue simple pushes it on the stack. In background a
+`QueueWorker` is running in another context and queries the stack for new messages. If a new
+message is available, it'll pulled from the stack, a new instance of the receiver, the `Queue`
+is bound to, will be instanciated to pass the message to, for being processed.
+
+So let us create a simple `Queue` with
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<message-queues>
+  <message-queue type="ImportReceiver">
+    <destination>queue/import</destination>
+  </message-queue>
+</message-queues>
+```
+
+and save this in a file called `/opt/appserver/myapp/META-INF/message-queues.xml`. The next thing
+we need is the `MessageBean` that allows us to receive and process a message in a separate thread.
+
+```php
+
+namespace Namespace\Modulename;
+
+use AppserverIo\Appserver\MessageQueue\Receiver\AbstractReceiver;
+
+/**
+ * @MessageDriven
+ */
+class ImportReceiver extends AbstractReceiver
+{
+
+  /**
+   * Will be invoked when a new message for this message bean will be available.
+   *
+   * @param \AppserverIo\Psr\MessageQueueProtocol\Message $message   A message this message bean is listen for
+   * @param string                                        $sessionId The session ID
+   *
+   * @return void
+   * @see \AppserverIo\Psr\MessageQueueProtocol\Receiver::onMessage()
+   */
+  public function onMessage(Message $message, $sessionId)
+  {
+    foreach (array_map('str_getcsv', file($message->getMessage()->__toString())) as $row) {
+      // write the data to the database here
+    }
+  }
+}
+```
+
+> The important stuff here, beside the functionality you have to implement in the `onMessage()` 
+> message is the annotation `@MessageBean`. You MUST annotate the MessageBean, for the container
+> to know about and register it on startup.
+
+Pretty simple for running your import in a separate thread? But what about sending a message to
+this `Queue`?
+
+## Send a message
+
+Messages are POPO that can be sent over the network. So if you want to send a message you have
+to initialize the Message-Queue Client and specify which `Queue` you want to send the message to
+
+```php
+
+use AppserverIo\MessageQueueClient\MessageQueue;
+use AppserverIo\MessageQueueClient\QueueConnectionFactory;
+use AppserverIo\Psr\MessageQueueProtocol\Utils\PriorityMedium;
+use AppserverIo\Psr\MessageQueueProtocol\Messages\StringMessage;
+
+// load the application name
+$applicationName = $this->getApplication()->getName();
+
+// initialize the connection and the session
+$queue = MessageQueue::createQueue('queue/import');
+$connection = QueueConnectionFactory::createQueueConnection($applicationName);
+$session = $connection->createQueueSession();
+$sender = $session->createSender($queue);
+
+// send the data to message queue
+$sender->send(new StringMessage('/opt/appserver/var/tmp/fileToImport.csv'), false);
+```
+
+> Actually the Client initialization is a bit complicated, but we'll try to optimize it, similar
+> to use a SessionBean and to a support DI (see Issue #299).
+
 # Timer Service
+
+In most of your projects you have the need to schedule things to be processed in regular intervals
+or at a given date in future. As PHP itself is a scripting language it lacks of such functionality
+and developers use utilities like CRON when working on Mac OS X or a Linux distribution. So if you
+are working on Windows, it's a bit more complicated as there is also a Tool called Scheduler, but
+that is not as simple to use as CRON is. This is the point where a Timer Service comes into the game
+and will be very good and simple to use option.
+
+As CRON does, the Timer Service allows you to schedule processing your functionality at a given
+date or in regular intervals. In contrast to CRON it allows you to schedule processing the methods
+of your Beans in such a way. How can this be done? I'm sure you know the answer: Simple add an
+annotation to your method
+
+```php
+
+namespace Namespace\Modulename;
+
+/**
+ * @Singleton(name="ASingletonProcessor")
+ */
+class ASingletonProcessor extends \Stackable
+{
+
+  /**
+   * A dummy method invoked by the container upon timer schedule.
+   *
+   * @param TimerInterface $timer The timer instance
+   *
+   * @return void
+   * @Schedule(dayOfMonth = EVERY, month = EVERY, year = EVERY, second = ZERO, minute = EVERY, hour = EVERY)
+   */
+  public function invokedByTimer(TimerInterface $timer)
+  {
+    // do something here every minute
+  }
+}
+```
+
+The `@Schedule` annotation on the `ìnvokedByTimer()` method schedules the invokation of this
+method every minute without the need to have an CRON configured or running. Such `Timers` can
+also be created programatically, if you want to know more about that, have a look at our [example](https://github.com/appserver-io-apps/example).
+
+> Actually we don't support seconds as period, so if you would change `second = EVERY` this would
+> be ignored for now (see Issue #300).
 
 # AOP
 
@@ -743,7 +899,7 @@ able to use on of the available solutions. As we also need to generate proxy cla
 to do that in the autoloader. As the autoloader is part of the appserver.io distribution, you
 don't have to configure anything to use AOP in your code.
 
-## Usage
+## How to add an Advice
 
 Integrating AOP in your can be done in two ways. The first one is to define the pointcuts and
 the advices in the same class, the second one is to separate them. Here we want to describe 
