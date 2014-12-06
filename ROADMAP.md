@@ -85,6 +85,7 @@ Below we've defined a list with features we plan to integrate in the EE. Before 
 
 This category defines features that will be part of a cluster functionality. The cluster functionality targets systems with HA needs, e. g. ecommerce systems with really high number of transactions.
 
+* HA Load-Balancing Container
 * Nodes get known each other in same network automatically
 * Webapps running on nodes in same network can be executed via all appserver nodes
 * Webapps can be synchronized between appserver nodes to be executed locally
@@ -97,20 +98,20 @@ This category covers functional add-on's that enables developers to implement bu
 
 * Container-Managed Transactions
 
-#### HA
-
-* HA Load-Balancing Container
-
 #### Snapshots/Backup
 
 * Snapshot functionality for webapps
 
 #### Servers
 
+Category that provides additional services.
+
 * SSH Server
 * Search Engine
 * Data-Grid, fast key-value store
 
 #### Security
+
+Security relevant tools and services.
 
 * Web Application Firewall (WAF)
