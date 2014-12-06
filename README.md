@@ -274,7 +274,7 @@ Using a Servlet Engine and, as a consequence of that, Servlets enables you to im
 application logic as you are used to, without the need to take care about the expensive 
 bootstrapping process that came together with common legacy frameworks. A Servlet is a super
 fast and simple way to implement an entry point to handle HTTP requests that allows you to
-execute all performance critical tasks, like bootstrapping, in a method called `ìnit()`, when
+execute all performance critical tasks, like bootstrapping, in a method called `init()`, when
 the Servlet Engine starts up.
 
 ## What is a Servlet
