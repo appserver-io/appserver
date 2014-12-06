@@ -15,7 +15,7 @@ hopefully establish a solution as the standard for enterprise applications in PH
 [Installation](#installation)  
 [Uninstall](#uninstall)  
 [Basic Usage](#basic-usage)  
-[HTTP Server](#webserver)  
+[HTTP Server](#https-server)  
 [Servlet-Engine](#servlet-engine)  
 [Annotations](#annotations)  
 [Dependency Injection](#dependency-injection)  
@@ -40,10 +40,9 @@ do any of the following:
 * Grab any of our [**nightlies**](<http://builds.appserver.io/>) from our project page to get 
   bleeding edge install packages which still might have some bugs
 
-* Build your own package using [ant](<http://ant.apache.org/>)! To do so clone the [runtime](<https://github.com/appserver-io-php/runtime>) 
+* Build your own package using [ANT](<http://ant.apache.org/>)! To do so clone the [runtime](<https://github.com/appserver-io-php/runtime>) 
   first. Then update at least the `os.family` and `os.distribution` build properties according to 
-  your environment and build the appserver with the ant target appropriate for your installer 
-  (e.g. `create-pkg` for Mac or `create-deb` for Debian based systems).
+  your environment and build the appserver with the ANT `build` and `create-package` target
 
 The package will install with these basic default characteristics:
 
@@ -55,22 +54,24 @@ For OS specific steps and characteristics see below for tested environments.
 
 ## Mac OS X
 
-* Tested versions: 10.8.x +
+> Runs and tested on Mac OS X 10.8.x and higher!
+
+For Mac OS X > 10.8.x we provide a `.mpkg` file for [download](https://github.com/appserver-io/appserver/releases/download/1.0.0-beta/appserver-dist-1.0.0-beta.8.mac.x86_64.pkg) that contains the runtime and the distribution. Double-clicking on the `.mpkg` starts and guides you through the installation process.
 
 ## Windows
 
-* Tested versions: 7 +
+> Runs and tested on Windows 7 (32-bit) and higher!
 
-As we deliver the Windows appserver as a .jar file, a installed Java Runtime Environment (or JDK 
+As we deliver the Windows appserver as a .jar file you can [download](https://github.com/appserver-io/appserver/releases/download/1.0.0-beta/appserver-dist-1.0.0-beta.12.win.x86.jar), a installed Java Runtime Environment (or JDK 
 that is) is a vital requirement for using it. If the JRE/JDK is not installed you have to do so 
 first. You might get it from [Oracle's download page](<http://www.oracle.com/technetwork/java/javase/downloads/jre7-downloads-1880261.html>).
 If this requirement is met you can start the installation by simply double-clicking the .jar archive.
 
 ## Debian
 
-* Tested versions: Squeeze +
+> Runs and tested on Debian Squeeze (64-bit) and higer!
 
-If you're on a Debian system you might also try our .deb repository:
+If you're on a Debian system you might also try our `.deb` repository:
 
 ```
 root@debian:~# echo "deb http://deb.appserver.io/ wheezy main" > /etc/apt/sources.list.d/appserver.list
@@ -79,15 +80,19 @@ root@debian:~# aptitude update
 root@debian:~# aptitude install appserver
 ```
 
+Optionally you can download the `.deb` files for the [runtime](https://github.com/appserver-io/appserver/releases/download/1.0.0-beta/appserver-runtime-1.0.0-alpha.10.linux.debian.x86_64.deb) and the [distribution](https://github.com/appserver-io/appserver/releases/download/1.0.0-beta/appserver-dist-1.0.0-beta.7.linux.debian.x86_64.deb) and install them by double-clicking on them. This will invoke the system default package manager and guides you through the installation process. Please install the runtime first, as this is a dependency for the distribution.
+
 ## Fedora
 
-* Tested versions: 20
+> Runs and tested on versions Fedora 20 (64-bit) and higher!
+
+Actually we provide `.rpm` files for, one for [runtime](https://github.com/appserver-io/appserver/releases/download/1.0.0-beta/appserver-runtime-1.0.0-alpha.16.linux.fedora.x86_64.rpm) and [distribution](https://github.com/appserver-io/appserver/releases/download/1.0.0-beta/appserver-dist-1.0.0-beta.29.linux.fedora.x86_64.rpm), that you can download and start the installation process by double-clicking on it. This will start the systems default package manager and guides you through the installation process.
 
 ## CentOS
 
-* Tested versions: 6.5
+> Runs and tested on CentOS 6.5 (64-bit) and higher!
 
-Installation and basic usage is the same as on Fedora **but** CentOS requires additional repositories
+Installation and basic usage is the same as on Fedora **but** we provide different packages for [runtime](https://github.com/appserver-io/appserver/releases/download/1.0.0-beta/appserver-runtime-1.0.0-alpha.19.linux.centos.x86_64.rpm) and [distribution](https://github.com/appserver-io/appserver/releases/download/1.0.0-beta/appserver-dist-1.0.0-beta.16.linux.centos.x86_64.rpm). CentOS requires additional repositories
 like [remi](<http://rpms.famillecollet.com/>) or [EPEL](<http://fedoraproject.org/wiki/EPEL>) to 
 satisfy additional dependencies.
 
@@ -106,9 +111,7 @@ have a look how to do so [here](#start-and-stop-scripts).
 To uninstall the appserver on Linux you might rely on your package management system. 
 On Windows you can use the normal uninstall process provided by the operating system.
 
-Under Mac OS X you can simply delete the `/opt/appserver` folder and delete the configuration
-files for the launch daemons. These are files are located in folder `/Library/LaunchDaemons` and 
-named `io.appserver.<DAEMON>.plist`.
+Under Mac OS X you can simply delete the `/opt/appserver` folder that containers all installed files.
 
 # Basic Usage
 
@@ -725,7 +728,7 @@ class MyStatefulSessionBean
 }
 ```
 
-Save the SessionBean in `/opt/appserver/myapp/META-INF/classes/Namespace/Module/MyStatefulSessionBean`.
+Save the SessionBean in `/opt/appserver/myapp/META-INF/classes/Namespace/Module/MyStatefulSessionBean.php`.
 
 As described above, you MUST not instanciate it directly. The request an instance of the SessionBean
 you MUST use the persistence container client. With the `lookup()` method you'll receive a proxy to
