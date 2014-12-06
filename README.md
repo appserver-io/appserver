@@ -658,7 +658,7 @@ class HelloWorldServlet extends HttpServlet
 # Persistence-Container
 
 As described in the introduction the application is designed inside a runtime environment like
-an application server as appserver.io is. The following example gives you a short introdction 
+an application server as appserver.io is. The following example gives you a short introduction 
 how you can create a stateful session bean and the way you can invoke it's method on client side.
 
 First thing you've to do is to create your SessionBean. What is a SessionBean? It's not simple
