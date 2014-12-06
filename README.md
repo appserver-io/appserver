@@ -56,13 +56,13 @@ For OS specific steps and characteristics see below for tested environments.
 
 > Runs and tested on Mac OS X 10.8.x and higher!
 
-For Mac OS X > 10.8.x we provide a `.mpkg` file that contains the runtime and the distribution. Double-clicking on the `.mpkg` starts and guides you through the installation process.
+For Mac OS X > 10.8.x we provide a `.mpkg` file for [download](https://github.com/appserver-io/appserver/releases/download/1.0.0-beta/appserver-dist-1.0.0-beta.8.mac.x86_64.pkg) that contains the runtime and the distribution. Double-clicking on the `.mpkg` starts and guides you through the installation process.
 
 ## Windows
 
 > Runs and tested on Windows 7 (32-bit) and higher!
 
-As we deliver the Windows appserver as a .jar file, a installed Java Runtime Environment (or JDK 
+As we deliver the Windows appserver as a .jar file you can [download](https://github.com/appserver-io/appserver/releases/download/1.0.0-beta/appserver-dist-1.0.0-beta.12.win.x86.jar), a installed Java Runtime Environment (or JDK 
 that is) is a vital requirement for using it. If the JRE/JDK is not installed you have to do so 
 first. You might get it from [Oracle's download page](<http://www.oracle.com/technetwork/java/javase/downloads/jre7-downloads-1880261.html>).
 If this requirement is met you can start the installation by simply double-clicking the .jar archive.
@@ -80,19 +80,19 @@ root@debian:~# aptitude update
 root@debian:~# aptitude install appserver
 ```
 
-Optionally you can download the `.deb` files for the runtime and the distribution and install them by double-clicking on them. This will invoke the system default package manager and guides you through the installation process. Please install the runtime first, as this is a dependency for the distribution.
+Optionally you can download the `.deb` files for the [runtime](https://github.com/appserver-io/appserver/releases/download/1.0.0-beta/appserver-runtime-1.0.0-alpha.10.linux.debian.x86_64.deb) and the [distribution](https://github.com/appserver-io/appserver/releases/download/1.0.0-beta/appserver-dist-1.0.0-beta.7.linux.debian.x86_64.deb) and install them by double-clicking on them. This will invoke the system default package manager and guides you through the installation process. Please install the runtime first, as this is a dependency for the distribution.
 
 ## Fedora
 
 > Runs and tested on versions Fedora 20 (64-bit) and higher!
 
-Actually we provide `.rpm` files for, one for runtime and distribution, that you can download and start the installation process by double-clicking on it. This will start the systems default package manager and guides you through the installation process.
+Actually we provide `.rpm` files for, one for [runtime](https://github.com/appserver-io/appserver/releases/download/1.0.0-beta/appserver-runtime-1.0.0-alpha.16.linux.fedora.x86_64.rpm) and [distribution](https://github.com/appserver-io/appserver/releases/download/1.0.0-beta/appserver-dist-1.0.0-beta.29.linux.fedora.x86_64.rpm), that you can download and start the installation process by double-clicking on it. This will start the systems default package manager and guides you through the installation process.
 
 ## CentOS
 
 > Runs and tested on CentOS 6.5 (64-bit) and higher!
 
-Installation and basic usage is the same as on Fedora **but** CentOS requires additional repositories
+Installation and basic usage is the same as on Fedora **but** we provide different packages for [runtime](https://github.com/appserver-io/appserver/releases/download/1.0.0-beta/appserver-runtime-1.0.0-alpha.19.linux.centos.x86_64.rpm) and [distribution](https://github.com/appserver-io/appserver/releases/download/1.0.0-beta/appserver-dist-1.0.0-beta.16.linux.centos.x86_64.rpm). CentOS requires additional repositories
 like [remi](<http://rpms.famillecollet.com/>) or [EPEL](<http://fedoraproject.org/wiki/EPEL>) to 
 satisfy additional dependencies.
 
