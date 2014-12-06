@@ -79,32 +79,38 @@ public and maintained with the same enthusiasm as the Enterprise will.
 
 ### Requested Features
 
+Below we've defined a list with features we plan to integrate in the EE. Before development will start, we'll priorize this features by community, partners and customers business value.
+
 #### Cluster
 
-- [ ] Nodes get known each other in same network automatically
-- [ ] Webapps running on nodes in same network can be executed via all appserver nodes
-- [ ] Webapps can be synchronized between appserver nodes to be executed locally
-- [ ] Farming-Deployment, an application deployed on one node will deployed automatically on all nodes within the cluster
-- [ ] Hot-Deployment, deploy an application among the cluster without restarting any of the cluster nodes
+This category defines features that will be part of a cluster functionality. The cluster functionality targets systems with HA needs, e. g. ecommerce systems with really high number of transactions.
+
+* Nodes get known each other in same network automatically
+* Webapps running on nodes in same network can be executed via all appserver nodes
+* Webapps can be synchronized between appserver nodes to be executed locally
+* Farming-Deployment, an application deployed on one node will deployed automatically on all nodes within the cluster
+* Hot-Deployment, deploy an application among the cluster without restarting any of the cluster nodes
 
 #### Functional
 
-- [ ] Container-Managed Transactions
+This category covers functional add-on's that enables developers to implement business logic in faster, more reusable und maintanable way. 
+
+* Container-Managed Transactions
 
 #### HA
 
-- [ ] HA Load-Balancing Container
+* HA Load-Balancing Container
 
 #### Snapshots/Backup
 
-- [ ] Snapshot functionality for webapps
+* Snapshot functionality for webapps
 
 #### Servers
 
-- [ ] SSH Server
-- [ ] Search Engine
-- [ ] Data-Grid, fast key-value store
+* SSH Server
+* Search Engine
+* Data-Grid, fast key-value store
 
 #### Security
 
-- [ ] Web Application Firewall (WAF)
+* Web Application Firewall (WAF)
