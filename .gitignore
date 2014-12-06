@@ -17,3 +17,6 @@
 /sbin
 /etc/appserver/appserver.xml
 /var/tmp/opcache-blacklist.txt
+.README.md.html
+.ROADMAP.md.html
+.CHANGELOG.md.html
