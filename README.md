@@ -54,13 +54,13 @@ For OS specific steps and characteristics see below for tested environments.
 
 ## Mac OS X
 
-* Tested versions: 10.8.x +
+> Runs and tested on Mac OS X 10.8.x and higher!
 
 For Mac OS X > 10.8.x we provide a `.mpkg` file that contains the runtime and the distribution. Double-clicking on the `.mpkg` starts and guides you through the installation process.
 
 ## Windows
 
-* Tested versions: 7 +
+> Runs and tested on Windows 7 (32-bit) and higher!
 
 As we deliver the Windows appserver as a .jar file, a installed Java Runtime Environment (or JDK 
 that is) is a vital requirement for using it. If the JRE/JDK is not installed you have to do so 
@@ -69,7 +69,7 @@ If this requirement is met you can start the installation by simply double-click
 
 ## Debian
 
-* Tested versions: Squeeze +
+> Runs and tested on Debian Squeeze (64-bit) and higer!
 
 If you're on a Debian system you might also try our `.deb` repository:
 
@@ -84,13 +84,13 @@ Optionally you can download the `.deb` files for the runtime and the distributio
 
 ## Fedora
 
-* Tested versions: 20
+> Runs and tested on versions Fedora 20 (64-bit) and higher!
 
 Actually we provide `.rpm` files for, one for runtime and distribution, that you can download and start the installation process by double-clicking on it. This will start the systems default package manager and guides you through the installation process.
 
 ## CentOS
 
-* Tested versions: 6.5
+> Runs and tested on CentOS 6.5 (64-bit) and higher!
 
 Installation and basic usage is the same as on Fedora **but** CentOS requires additional repositories
 like [remi](<http://rpms.famillecollet.com/>) or [EPEL](<http://fedoraproject.org/wiki/EPEL>) to 
