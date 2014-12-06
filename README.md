@@ -728,7 +728,7 @@ class MyStatefulSessionBean
 }
 ```
 
-Save the SessionBean in `/opt/appserver/myapp/META-INF/classes/Namespace/Module/MyStatefulSessionBean`.
+Save the SessionBean in `/opt/appserver/myapp/META-INF/classes/Namespace/Module/MyStatefulSessionBean.php`.
 
 As described above, you MUST not instanciate it directly. The request an instance of the SessionBean
 you MUST use the persistence container client. With the `lookup()` method you'll receive a proxy to
