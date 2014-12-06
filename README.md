@@ -761,7 +761,7 @@ class HelloWorldServlet extends HttpServlet
    *
    * @var \Namespace\Module\MyStatefulSessionBean
    */
-   protected $sessionBean;
+   protected $myStatefulSessionBean;
 
   /**
    * Initializes the servlet with the passed configuration.
@@ -807,7 +807,7 @@ class HelloWorldServlet extends HttpServlet
     // render 'Hello World! (has been invoked 1 times)' 
     // for example - after the first request
     $servletResponse->appendBodyStream(
-      sprintf($this->helloWorld, $this->sessionBean->raiseMe())
+      sprintf($this->helloWorld, $this->myStatefulSessionBean->raiseMe())
     );
   }
 
@@ -950,7 +950,7 @@ class HelloWorldServlet extends HttpServlet
    *
    * @var \Namespace\Module\MyStatefulSessionBean
    */
-   protected $sessionBean;
+   protected $myStatefulSessionBean;
 
   /**
    * The application instance.
@@ -1003,7 +1003,7 @@ class HelloWorldServlet extends HttpServlet
     // render 'Hello World! (has been invoked 1 times)' 
     // for example - after the first request
     $servletResponse->appendBodyStream(
-      sprintf($this->helloWorld, $this->sessionBean->raiseMe())
+      sprintf($this->helloWorld, $this->myStatefulSessionBean->raiseMe())
     );
   }
 
@@ -1075,7 +1075,7 @@ class HelloWorldServlet extends HttpServlet
 ```
 
 > Actually the Client initialization seems to be a bit complicated, but we'll try to optimize it,
-> similar to use a SessionBean and to a support DI (see Issue #299).
+> similar to use a SessionBean and to a support DI (see Issue [#299](#299)).
 
 # Timer Service
 
@@ -1120,7 +1120,7 @@ The `@Schedule` annotation on the `ìnvokedByTimer()` method schedules the invok
 method every minute without the need to have an CRON configured or running. Such `Timers` can
 also be created programatically, if you want to know more about that, have a look at our [example](https://github.com/appserver-io-apps/example).
 
-> Actually we don't support seconds as period you can schedule (see Issue #300).
+> Actually we don't support seconds as period you can schedule (see Issue [#300](#300)).
 
 # AOP
 
@@ -1159,7 +1159,6 @@ class LoggerAspect
    * Pointcut which targets all index actions for all action classes.
    *
    * @return void
-   *
    * @Pointcut("call(\Namespace\Module\*->doGet())")
    */
   public function allDoGet()
@@ -1173,7 +1172,6 @@ class LoggerAspect
    *   Initially invoked method
    *
    * @return null
-   *
    * @Before("pointcut(allIndexActions())")
    */
   public function logInfoAdvice(MethodInvocation $methodInvocation)
@@ -1189,7 +1187,9 @@ class LoggerAspect
       ->getContext()
       ->getInitialContext()
       ->getSystemLogger()
-      ->info(sprintf('The method %s::%s is about to be called', className, methodName));
+      ->info(
+        sprintf('The method %s::%s is about to be called', className, methodName)
+      );
   }
 }
 ```
@@ -1331,6 +1331,7 @@ architecture is driven by configuration.
 <?xml version="1.0" encoding="UTF-8"?>
 <appserver xmlns="http://www.appserver.io/appserver">
 
+  <!-- define user, group and default umask applied when creating directories and files -->
   <params>
     <param name="user" type="string">_www</param>
     <param name="group" type="string">staff</param>
@@ -1339,6 +1340,7 @@ architecture is driven by configuration.
 
   <containers>
 
+    <!-- by default we combine all servers in one container -->
     <container name="combined-appserver" type="AppserverIo\Core\GenericContainer">
       <description>
         <![CDATA[
@@ -1355,6 +1357,7 @@ architecture is driven by configuration.
 
         <servers>
         
+          <!-- this is the default configuration for the HTTP server -->
           <server
             name="http"
             type="\AppserverIo\Server\Servers\MultiThreadedServer"
@@ -1363,7 +1366,8 @@ architecture is driven by configuration.
             serverContext="\AppserverIo\Server\Contexts\ServerContext"
             requestContext="\AppserverIo\Server\Contexts\RequestContext"
             loggerName="System">
-    
+
+            <!-- define the parameters to configure the server instance -->
             <params>
               <param name="admin" type="string">info@appserver.io</param>
               <param name="software" type="string">
@@ -1385,17 +1389,20 @@ architecture is driven by configuration.
                     var/www/errors/error.phtml
                 </param>
             </params>
-    
+
+            <!-- define the environment variables -->
             <environmentVariables>
               <environmentVariable 
                 condition="" definition="LOGGER_ACCESS=Access" />
             </environmentVariables>
-    
+
+            <!-- define the connection handler(s) -->
             <connectionHandlers>
               <connectionHandler 
                 type="\AppserverIo\WebServer\ConnectionHandlers\HttpConnectionHandler" />
             </connectionHandlers>
-    
+
+            <!-- define authentication basic/digest -->
             <authentications>
               <authentication uri="^\/admin.*">
                 <params>
@@ -1411,7 +1418,8 @@ architecture is driven by configuration.
                 </params>
               </authentication>
             </authentications>
-    
+
+            <!-- allow access to everything -->
             <accesses>
               <access type="allow">
                 <params>
@@ -1419,7 +1427,8 @@ architecture is driven by configuration.
                 </params>
               </access>
             </accesses>
-    
+
+            <!-- define a virtual host -->
             <virtualHosts>
               <virtualHost name="example.local">
                 <params>
@@ -1433,6 +1442,7 @@ architecture is driven by configuration.
               </virtualHost>
             </virtualHosts>
             
+            <!-- the webserver modules we want to load -->
             <modules>
               <!-- REQUEST_POST hook -->
               <module 
@@ -1462,7 +1472,8 @@ architecture is driven by configuration.
               <module 
                 type="\AppserverIo\Appserver\Core\Modules\ProfileModule"/>
             </modules>
-    
+
+            <!-- bound the file extensions to the responsible module -->
             <fileHandlers>
               <fileHandler name="servlet" extension=".do" />
               <fileHandler name="fastcgi" extension=".php">
@@ -1529,6 +1540,110 @@ protocol.
 
 ### Application Configuration
 
+Beside Container and Server it is also possible to configuration the Application. Each Application
+can have it's own autoloaders and managers. By default, each Application found in the application
+servers webapp directory `/opt/appserver/webapps` will be initialized with the defaults, defined
+in `/opt/appserver/etc/appserver/conf.d/context.xml`
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<context 
+  type="AppserverIo\Appserver\Application\Application">
+
+  <classLoaders>
+    <classLoader
+      name="composer"
+      interface="ClassLoaderInterface"
+      type="AppserverIo\Appserver\Core\ComposerClassLoader"
+      factory="AppserverIo\Appserver\Core\ComposerClassLoaderFactory">
+      <directories>
+        <directory>/vendor</directory>
+      </directories>
+    </classLoader>
+    <classLoader
+      name="doppelgaenger"
+      interface="ClassLoaderInterface"
+      type="AppserverIo\Appserver\Core\DgClassLoader"
+      factory="AppserverIo\Appserver\Core\DgClassLoaderFactory">
+      <params>
+        <param name="environment" type="string">production</param>
+        <param name="enforcementLevel" type="integer">7</param>
+        <param name="typeSafety" type="boolean">1</param>
+        <param name="processing" type="string">logging</param>
+      </params>
+      <directories>
+        <directory enforced="true">/common/classes</directory>
+        <directory enforced="true">/WEB-INF/classes</directory>
+        <directory enforced="true">/META-INF/classes</directory>
+      </directories>
+    </classLoader>
+  </classLoaders>
+
+  <managers>
+    <manager 
+      name="Provider" 
+      beanInterface="ProviderInterface" 
+      type="AppserverIo\Appserver\DependencyInjectionContainer\Provider" 
+      factory="AppserverIo\Appserver\DependencyInjectionContainer\ProviderFactory"/>
+    <manager 
+      name="HandlerManager"
+      beanInterface="HandlerContext"
+      type="AppserverIo\Appserver\WebSocketServer\HandlerManager"
+      factory="AppserverIo\Appserver\WebSocketServer\HandlerManagerFactory"/>
+    <manager 
+      name="BeanManager"
+      beanInterface="BeanContext"
+      type="AppserverIo\Appserver\PersistenceContainer\BeanManager"
+      factory="AppserverIo\Appserver\PersistenceContainer\BeanManagerFactory">
+      <!-- params>
+        <param name="lifetime" type="integer">1440</param>
+        <param name="garbageCollectionProbability" type="float">0.1</param>
+      </params -->
+    </manager>
+    <manager
+      name="QueueManager"
+      beanInterface="QueueContext"
+      type="AppserverIo\Appserver\MessageQueue\QueueManager"
+      factory="AppserverIo\Appserver\MessageQueue\QueueManagerFactory"/>
+    <manager 
+      name="ServletManager"
+      beanInterface="ServletContext"
+      type="AppserverIo\Appserver\ServletEngine\ServletManager"
+      factory="AppserverIo\Appserver\ServletEngine\ServletManagerFactory"/>
+    <manager 
+      name="StandardSessionManager"
+      beanInterface="SessionManager"
+      type="AppserverIo\Appserver\ServletEngine\StandardSessionManager"
+      factory="AppserverIo\Appserver\ServletEngine\StandardSessionManagerFactory"/>
+    <manager 
+      name="TimerServiceRegistry"
+      beanInterface="TimerServiceContext"
+      type="AppserverIo\Appserver\PersistenceContainer\TimerServiceRegistry"
+      factory="AppserverIo\Appserver\PersistenceContainer\TimerServiceRegistryFactory"/>
+    <manager 
+      name="StandardAuthenticationManager"
+      beanInterface="AuthenticationManager"
+      type="AppserverIo\Appserver\ServletEngine\Authentication\StandardAuthenticationManager"
+      factory="AppserverIo\Appserver\ServletEngine\Authentication\StandardAuthenticationManagerFactory"/>
+    <manager
+      name="AspectManager"
+      beanInterface="AspectManagerInterface"
+      type="AppserverIo\Appserver\AspectContainer\AspectManager"
+      factory="AppserverIo\Appserver\AspectContainer\AspectManagerFactory"/>
+  </managers>
+
+</context>
+```
+
+If your application doesn't use any of the defined class loaders or managers or you want to implement
+your own managers, you can define them in a `context.xml` file you have to deliver with your
+application. Your own, customized file has to be stored in `META-INF/context.xml`. When the application
+server starts this file will be parsed and your application initialized with the class loaders and
+managers you have defined.
+
+> Please be aware, that the default class loaders and managers provide most of the functionality
+> described above. So if you remove them from the `context.xml` you have to expect unwanted behaviour.
+
 ### Module Configuration
 
 The web server comes with a package of default modules. The functionality that allows us to configure
@@ -1536,8 +1651,6 @@ a virtual host or environment variables, for example, is also provided by two, m
 modules.
 
 #### Rewrite Module
-
-##### Usage
 
 The module can be used according to the `\AppserverIo\WebServer\Interfaces\HttpModuleInterface` interface.
 It needs an initial call of the `init` method and will process any request offered to the `process` method.
@@ -1631,8 +1744,6 @@ flags are:
   behave as another condition
 
 #### Virtual-Host Module
-
-##### Usage
 
 The module can be used according to the `\AppserverIo\WebServer\Interfaces\HttpModuleInterface`
 interface. It needs an initial call of the `init` method and will process any request offered to 
