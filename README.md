@@ -1783,11 +1783,12 @@ interface. It needs an initial call of the `init` method and will process any re
 the `process` method. The module is best used within the [webserver](<https://github.com/appserver-io/webserver>)
 project as it offers all needed infrastructure.
 
-If you need to configure a virtual host a virtual hosts node is mandatory and should look like the 
+If you need to configure a virtual host, it should look like the 
 following example, that would enable a Magento installation under `http://magento.dev:9080`.
 
 ```xml
-<virtualHost name="magento.dev">
+<virtualHosts>
+  <virtualHost name="magento.dev">
     <params>
         <param name="admin" type="string">info@appserver.io</param>
         <param name="documentRoot" type="string">webapps/magento</param>
@@ -1805,7 +1806,8 @@ following example, that would enable a Magento installation under `http://magent
             </params>
         </access>
     </accesses>
-</virtualHost>
+  </virtualHost>
+</virtualHosts>
 ```
 
 ## Configuration Defaults
