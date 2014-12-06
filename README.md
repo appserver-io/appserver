@@ -263,7 +263,9 @@ the Servlet Engine starts up.
 
 ## What is a Servlet
 
-A Servlet is a simple class, that has to extend from `AppserverIo\Psr\Servlet\Http\HttpServlet`. Your application logic can then be implemented by overwriting the `service()` method or better by overwriting the request specific methods like `doGet()` if you want to handle a GET request.
+A Servlet is a simple class, that has to extend from `AppserverIo\Psr\Servlet\Http\HttpServlet`.
+Your application logic can then be implemented by overwriting the `service()` method or better
+by overwriting the request specific methods like `doGet()` if you want to handle a GET request.
 
 ## Create a simple Servlet
 
@@ -272,6 +274,11 @@ Let's write a simple example and start with a famous `Hello World` servlet
 ```php
 
 namespace Namespace\Module;
+
+use AppserverIo\Psr\Servlet\ServletConfig;
+use AppserverIo\Psr\Servlet\Http\HttpServlet;
+use AppserverIo\Psr\Servlet\Http\HttpServletRequest;
+use AppserverIo\Psr\Servlet\Http\HttpServletResponse;
 
 /**
  * This is the famous 'Hello World' as servlet implementation.
@@ -323,26 +330,6 @@ class HelloWorldServlet extends HttpServlet
     HttpServletResponse $servletResponse)
   {
     $servletResponse->appendBodyStream($this->helloWorld);
-  }
-
-  /**
-   * Handles a HTTP POST request.
-   *
-   * @param \AppserverIo\Psr\Servlet\Http\ServletRequest  $servletRequest
-   *   The request instance
-   * @param \AppserverIo\Psr\Servlet\Http\ServletResponse $servletResponse
-   *   The response instance
-   *
-   * @return void
-   * @see \AppserverIo\Psr\Servlet\Http\HttpServlet::doPost()
-   * @throws \AppserverIo\Psr\Servlet\ServletException 
-   *   Is thrown because the request method is not implemented yet
-   */
-  public function doPost(
-    HttpServletRequest $servletRequest,
-    HttpServletResponse $servletResponse)
-  {
-    throw new ServletException('HTTP POST requests not implemented yet!');
   }
 }
 ```
@@ -463,9 +450,9 @@ register a class in the DI container the most common way is to use annotations.
 namespace Namespace\Modulename
 
 /**
- * @Stateless(name="MySessionBean")
+ * @Stateless(name="MyStatefulSessionBean")
  */
-class MySessionBean
+class MyStatefulSessionBean
 {
 }
 ```
@@ -473,7 +460,7 @@ class MySessionBean
 When the application server starts, it parses the `META-INF/classes` and `WEB-INF/classes` folder
 classes with supported annotations. If a class is found, the class will be registered in the 
 application servers naming directory under the name you specify in the annotations `name` Attribute,
-in this example `MySessionBean`. 
+in this example `MyStatefulSessionBean`. 
 
 ## How to inject an instance
 
@@ -490,24 +477,78 @@ The first possibility we have is to annotate a class property
 
 ```php
 
-namespace Namespace\Modulename
+namespace Namespace\Module;
 
+use AppserverIo\Psr\Servlet\ServletConfig;
 use AppserverIo\Psr\Servlet\Http\HttpServlet;
+use AppserverIo\Psr\Servlet\Http\HttpServletRequest;
+use AppserverIo\Psr\Servlet\Http\HttpServletResponse;
 
-class MyServlet extends HttpServlet
+/**
+ * This is the famous 'Hello World' as servlet implementation.
+ */
+class HelloWorldServlet extends HttpServlet
 {
 
   /**
-   * @var \Namespace\Modulename\MySessionBean
-   * @EnterpriseBean(name="MySessionBean")
+   * The SessionBean instance we want to have injected.
+   *
+   * @var \Namespace\Modulename\MyStatefulSessionBean
+   * @EnterpriseBean(name="MyStatefulSessionBean")
    */
-  protected $mySessionBean;
+  protected $myStatefulSessionBean;
+  
+  /**
+   * The text to be rendered.
+   *
+   * @var string
+   */
+  protected $helloWorld = '';
+
+  /**
+   * Initializes the servlet with the passed configuration.
+   *
+   * @param \AppserverIo\Psr\Servlet\ServletConfig $config 
+   *   The configuration to initialize the servlet with
+   *
+   * @return void
+   */
+  public function init(ServletConfig $config)
+  {
+
+    // call parent method
+    parent::init($config);
+
+    // prepare the text here
+    $this->helloWorld = 'Hello World!';
+
+    // @todo Do all the bootstrapping here, because this method will
+    //       be invoked only once when the Servlet Engines starts up
+  }
+
+  /**
+   * Handles a HTTP GET request.
+   *
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest  $servletRequest  
+   *   The request instance
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponse $servletResponse 
+   *   The response instance
+   *
+   * @return void
+   * @see \AppserverIo\Psr\Servlet\Http\HttpServlet::doGet()
+   */
+  public function doGet(
+    HttpServletRequest $servletRequest,
+    HttpServletResponse $servletResponse)
+  {
+    $servletResponse->appendBodyStream($this->helloWorld);
+  }
 }
 ```
 
-With the `name` attribute of the `@EnterpriseBean`annotation you have the possibility to specify the name
-of the bean, you registered before with the `@Stateless` annotation. A more detailed description about
-the available annotations follows below.
+With the `name` attribute of the `@EnterpriseBean`annotation you have the possibility to specify the
+name of the bean, you registered before by annotate it. A more detailed description about the 
+available annotations will be part of the [Persistence-Container](#persistence-container).
 
 ### Setter Injection
 
@@ -515,27 +556,82 @@ The second possiblity to inject an instance is setter injection.
 
 ```php
 
-namespace Namespace\Modulename
+namespace Namespace\Module;
 
+use AppserverIo\Psr\Servlet\ServletConfig;
 use AppserverIo\Psr\Servlet\Http\HttpServlet;
+use AppserverIo\Psr\Servlet\Http\HttpServletRequest;
+use AppserverIo\Psr\Servlet\Http\HttpServletResponse;
 
-class MyServlet extends HttpServlet
+/**
+ * This is the famous 'Hello World' as servlet implementation.
+ */
+class HelloWorldServlet extends HttpServlet
 {
 
   /**
-   * @var \Namespace\Modulename\MySessionBean
+   * The SessionBean instance we want to have injected.
+   *
+   * @var \Namespace\Modulename\MyStatefulSessionBean
    */
-  protected $mySessionBean;
+  protected $myStatefulSessionBean;
+  
+  /**
+   * The text to be rendered.
+   *
+   * @var string
+   */
+  protected $helloWorld = '';
+
+  /**
+   * Initializes the servlet with the passed configuration.
+   *
+   * @param \AppserverIo\Psr\Servlet\ServletConfig $config 
+   *   The configuration to initialize the servlet with
+   *
+   * @return void
+   */
+  public function init(ServletConfig $config)
+  {
+
+    // call parent method
+    parent::init($config);
+
+    // prepare the text here
+    $this->helloWorld = 'Hello World!';
+
+    // @todo Do all the bootstrapping here, because this method will
+    //       be invoked only once when the Servlet Engines starts up
+  }
+
+  /**
+   * Handles a HTTP GET request.
+   *
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest  $servletRequest  
+   *   The request instance
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponse $servletResponse 
+   *   The response instance
+   *
+   * @return void
+   * @see \AppserverIo\Psr\Servlet\Http\HttpServlet::doGet()
+   */
+  public function doGet(
+    HttpServletRequest $servletRequest,
+    HttpServletResponse $servletResponse)
+  {
+    $servletResponse->appendBodyStream($this->helloWorld);
+  }
   
   /**
    * Injects the session bean by its setter method.
    *
-   * @param \Namespace\Modulename\MySessionBean $mySessionBean The instance to inject
-   * @EnterpriseBean(name="MySessionBean")
+   * @param \Namespace\Modulename\MyStatefulSessionBean $myStatefulSessionBean 
+   *   The instance to inject
+   * @EnterpriseBean(name="MyStatefulSessionBean")
    */
-  public function setMySessionBean(MySessionBean $mySessionBean)
+  public function setMySessionBean(MyStatefulSessionBean $myStatefulSessionBean)
   {
-    $this->mySessionBean = $mySessionBean;
+    $this->myStatefulSessionBean = $myStatefulSessionBean;
   }
 }
 ```
@@ -642,6 +738,11 @@ do this, we've to refactor the `doGet()` method
 
 namespace Namespace\Module;
 
+use AppserverIo\Psr\Servlet\ServletConfig;
+use AppserverIo\Psr\Servlet\Http\HttpServlet;
+use AppserverIo\Psr\Servlet\Http\HttpServletRequest;
+use AppserverIo\Psr\Servlet\Http\HttpServletResponse;
+
 /**
  * This is the famous 'Hello World' as servlet implementation.
  */
@@ -659,7 +760,6 @@ class HelloWorldServlet extends HttpServlet
    * We want to have an instance of our stateful session bean injected.
    *
    * @var \Namespace\Module\MyStatefulSessionBean
-   * @EnterpriseBean(name="MyStatefulSessionBean")
    */
    protected $sessionBean;
 
@@ -712,23 +812,15 @@ class HelloWorldServlet extends HttpServlet
   }
 
   /**
-   * Handles a HTTP POST request.
+   * Injects the session bean by its setter method.
    *
-   * @param \AppserverIo\Psr\Servlet\Http\ServletRequest  $servletRequest
-   *   The request instance
-   * @param \AppserverIo\Psr\Servlet\Http\ServletResponse $servletResponse
-   *   The response instance
-   *
-   * @return void
-   * @see \AppserverIo\Psr\Servlet\Http\HttpServlet::doPost()
-   * @throws \AppserverIo\Psr\Servlet\ServletException 
-   *   Is thrown because the request method is not implemented yet
+   * @param \Namespace\Modulename\MyStatefulSessionBean $myStatefulSessionBean 
+   *   The instance to inject
+   * @EnterpriseBean(name="MyStatefulSessionBean")
    */
-  public function doPost(
-    HttpServletRequest $servletRequest,
-    HttpServletResponse $servletResponse)
+  public function setMySessionBean(MyStatefulSessionBean $myStatefulSessionBean)
   {
-    throw new ServletException('HTTP POST requests not implemented yet!');
+    $this->myStatefulSessionBean = $myStatefulSessionBean;
   }
 }
 ```
@@ -797,7 +889,8 @@ class ImportReceiver extends AbstractReceiver
    */
   public function onMessage(Message $message, $sessionId)
   {
-    foreach (array_map('str_getcsv', file($message->getMessage()->__toString())) as $row) {
+    $data = array_map('str_getcsv', file($message->getMessage()->__toString()));
+    foreach ($data as $row) {
       // write the data to the database here
     }
   }
@@ -814,30 +907,175 @@ this `Queue`?
 ## Send a message
 
 Messages are POPO that can be sent over the network. So if you want to send a message you have
-to initialize the Message-Queue Client and specify which `Queue` you want to send the message to
+to initialize the Message-Queue Client and specify which `Queue` you want to send the message to.
+
+Again, we will extend our `Servlet` to start an import process on a POST request 
 
 ```php
 
+namespace Namespace\Module;
+
+use AppserverIo\Psr\Servlet\ServletConfig;
+use AppserverIo\Psr\Servlet\Http\HttpServlet;
+use AppserverIo\Psr\Servlet\Http\HttpServletRequest;
+use AppserverIo\Psr\Servlet\Http\HttpServletResponse;
 use AppserverIo\MessageQueueClient\MessageQueue;
 use AppserverIo\MessageQueueClient\QueueConnectionFactory;
 use AppserverIo\Psr\MessageQueueProtocol\Utils\PriorityMedium;
 use AppserverIo\Psr\MessageQueueProtocol\Messages\StringMessage;
 
-// load the application name
-$applicationName = $this->getApplication()->getName();
+/**
+ * This is the famous 'Hello World' as servlet implementation.
+ */
+class HelloWorldServlet extends HttpServlet
+{
 
-// initialize the connection and the session
-$queue = MessageQueue::createQueue('queue/import');
-$connection = QueueConnectionFactory::createQueueConnection($applicationName);
-$session = $connection->createQueueSession();
-$sender = $session->createSender($queue);
+  /**
+   * The name of the request parameter with the name of the CSV 
+   * file containing the data to be imported.
+   *
+   * @var string
+   */
+  const PARAMETER_FILENAME = 'filename';
 
-// send the data to message queue
-$sender->send(new StringMessage('/opt/appserver/var/tmp/fileToImport.csv'), false);
+  /**
+   * The text to be rendered.
+   *
+   * @var string
+   */
+  protected $helloWorld = '';
+
+  /**
+   * We want to have an instance of our stateful session bean injected.
+   *
+   * @var \Namespace\Module\MyStatefulSessionBean
+   */
+   protected $sessionBean;
+
+  /**
+   * The application instance.
+   *
+   * @var \AppserverIo\Psr\Application\ApplicationInterface
+   */
+  protected $application;
+
+  /**
+   * Initializes the servlet with the passed configuration.
+   *
+   * @param \AppserverIo\Psr\Servlet\ServletConfig $config 
+   *   The configuration to initialize the servlet with
+   *
+   * @return void
+   */
+  public function init(ServletConfig $config)
+  {
+
+    // call parent method
+    parent::init($config);
+
+    // prepare the text here
+    $this->helloWorld = 'Hello World! (has been invoked %d times)';
+
+    // @todo Do all the bootstrapping here, because this method will
+    //       be invoked only once when the Servlet Engines starts up
+  }
+
+  /**
+   * Handles a HTTP GET request.
+   *
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest  $servletRequest  
+   *   The request instance
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponse $servletResponse 
+   *   The response instance
+   *
+   * @return void
+   * @see \AppserverIo\Psr\Servlet\Http\HttpServlet::doGet()
+   */
+  public function doGet(
+    HttpServletRequest $servletRequest,
+    HttpServletResponse $servletResponse)
+  {
+
+    // start a session, because our @Stateful SessionBean
+    // needs thesession-ID to bound to
+    $servletRequest->getSession()->start(true);
+
+    // render 'Hello World! (has been invoked 1 times)' 
+    // for example - after the first request
+    $servletResponse->appendBodyStream(
+      sprintf($this->helloWorld, $this->sessionBean->raiseMe())
+    );
+  }
+
+  /**
+   * Handles a HTTP POST request.
+   *
+   * Loads the filename containing the CSV data we want to import as request
+   * parameter and sends it, wrapped as message, to the queue.
+   *
+   * @param \AppserverIo\Psr\Servlet\Http\ServletRequest  $servletRequest
+   *   The request instance
+   * @param \AppserverIo\Psr\Servlet\Http\ServletResponse $servletResponse
+   *   The response instance
+   *
+   * @return void
+   * @see \AppserverIo\Psr\Servlet\Http\HttpServlet::doPost()
+   * @throws \AppserverIo\Psr\Servlet\ServletException 
+   *   Is thrown because the request method is not implemented yet
+   */
+  public function doPost(
+    HttpServletRequest $servletRequest,
+    HttpServletResponse $servletResponse)
+  {
+
+    // load the filename we have to import
+    $filename = $servletRequest->getParameter(
+      HelloWorldServlet::PARAMETER_FILENAME
+    );
+
+    // load the application name
+    $applicationName = $this->application->getName();
+
+    // initialize the connection and the session
+    $queue = MessageQueue::createQueue('queue/import');
+    $connection = QueueConnectionFactory::createQueueConnection(
+      $applicationName
+    );
+    $session = $connection->createQueueSession();
+    $sender = $session->createSender($queue);
+
+    // send the data to message queue
+    $sender->send(new StringMessage($filename), false);
+  }
+
+  /**
+   * Injects the session bean by its setter method.
+   *
+   * @param \Namespace\Modulename\MyStatefulSessionBean $myStatefulSessionBean 
+   *   The instance to inject
+   * @EnterpriseBean(name="MyStatefulSessionBean")
+   */
+  public function setMySessionBean(MyStatefulSessionBean $myStatefulSessionBean)
+  {
+    $this->myStatefulSessionBean = $myStatefulSessionBean;
+  }
+
+  /**
+   * Injects the application instance by its setter method.
+   *
+   * @param \AppserverIo\Psr\Application\ApplicationInterface $application
+   *   The application instance to inject
+   * @Resource(name="ApplicationInterface")
+   */
+  public function setApplication(ApplicationInterface $application)
+  {
+    $this->application = $application;
+  }
+}
 ```
 
-> Actually the Client initialization is a bit complicated, but we'll try to optimize it, similar
-> to use a SessionBean and to a support DI (see Issue #299).
+> Actually the Client initialization seems to be a bit complicated, but we'll try to optimize it,
+> similar to use a SessionBean and to a support DI (see Issue #299).
 
 # Timer Service
 
@@ -869,7 +1107,7 @@ class ASingletonProcessor extends \Stackable
    * @param TimerInterface $timer The timer instance
    *
    * @return void
-   * @Schedule(dayOfMonth = EVERY, month = EVERY, year = EVERY, second = ZERO, minute = EVERY, hour = EVERY)
+   * @Schedule(dayOfMonth=EVERY, month=EVERY, year=EVERY, minute=EVERY, hour=EVERY)
    */
   public function invokedByTimer(TimerInterface $timer)
   {
@@ -882,8 +1120,7 @@ The `@Schedule` annotation on the `ìnvokedByTimer()` method schedules the invok
 method every minute without the need to have an CRON configured or running. Such `Timers` can
 also be created programatically, if you want to know more about that, have a look at our [example](https://github.com/appserver-io-apps/example).
 
-> Actually we don't support seconds as period, so if you would change `second = EVERY` this would
-> be ignored for now (see Issue #300).
+> Actually we don't support seconds as period you can schedule (see Issue #300).
 
 # AOP
 
