@@ -5,10 +5,21 @@
 
 This is the main repository for the [appserver.io](http://www.appserver.io/) project.
 
-The objective of the project is to develop a multi-threaded application server for PHP, written 
+The objective of the project is to develop a multithreaded application server for PHP, written 
 in PHP. Yes, pure PHP! You think we aren't serious? Maybe! But we think, in order to enable as 
 many developers in our great community, this will be the one and only way. So with your help we 
 hopefully establish a solution as the standard for enterprise applications in PHP environments.
+
+> Beside a blazing fast and rock solid infrastructure, we also provide functionality that you can
+> find in nearly all of the well known frameworks out there. The application server intends NOT to
+> be a framework, but it enables you to write a software without the need to use one of these 
+> frameworks. If you start developing your first software you'll recognize, because PHP lacks of
+> the needed functionality, they provide stuff they should not responsible for. Best example therefor
+> is, that nearly all of them are shipped with a own HTTP foundation library, but it would make
+> much more sense if the infrastructure will provide it and all framweworks can be immplemented
+> against it, imagine reusability frameworks and libraries will gain from that approach!
+
+Give it a try, and wonder ;)
 
 #### Table of Contents
 
@@ -1554,6 +1565,8 @@ in `/opt/appserver/etc/appserver/conf.d/context.xml`
   type="AppserverIo\Appserver\Application\Application">
 
   <classLoaders>
+
+    <!-- necessary to load files from the vendor directory of your application -->
     <classLoader
       name="composer"
       interface="ClassLoaderInterface"
@@ -1563,6 +1576,9 @@ in `/opt/appserver/etc/appserver/conf.d/context.xml`
         <directory>/vendor</directory>
       </directories>
     </classLoader>
+
+    <!-- necessary to load files from WEB-INF/classes and META-INF/classes, also -->
+    <!-- provides the functionality for Design-by-Contract and AOP               -->
     <classLoader
       name="doppelgaenger"
       interface="ClassLoaderInterface"
@@ -1583,16 +1599,15 @@ in `/opt/appserver/etc/appserver/conf.d/context.xml`
   </classLoaders>
 
   <managers>
+
+    <!-- provides services necessary for DI -->
     <manager 
       name="Provider" 
       beanInterface="ProviderInterface" 
       type="AppserverIo\Appserver\DependencyInjectionContainer\Provider" 
       factory="AppserverIo\Appserver\DependencyInjectionContainer\ProviderFactory"/>
-    <manager 
-      name="HandlerManager"
-      beanInterface="HandlerContext"
-      type="AppserverIo\Appserver\WebSocketServer\HandlerManager"
-      factory="AppserverIo\Appserver\WebSocketServer\HandlerManagerFactory"/>
+
+    <!-- provides the services necessary to handle Session- and MessageBeans -->
     <manager 
       name="BeanManager"
       beanInterface="BeanContext"
@@ -1603,49 +1618,62 @@ in `/opt/appserver/etc/appserver/conf.d/context.xml`
         <param name="garbageCollectionProbability" type="float">0.1</param>
       </params -->
     </manager>
+
+    <!-- provides the functionality to define and run a Queue -->
     <manager
       name="QueueManager"
       beanInterface="QueueContext"
       type="AppserverIo\Appserver\MessageQueue\QueueManager"
       factory="AppserverIo\Appserver\MessageQueue\QueueManagerFactory"/>
+
+    <!-- provides the functionality to define Servlets handling HTTP request -->
     <manager 
       name="ServletManager"
       beanInterface="ServletContext"
       type="AppserverIo\Appserver\ServletEngine\ServletManager"
       factory="AppserverIo\Appserver\ServletEngine\ServletManagerFactory"/>
+
+    <!-- provides functionality to handle HTTP sessions -->
     <manager 
       name="StandardSessionManager"
       beanInterface="SessionManager"
       type="AppserverIo\Appserver\ServletEngine\StandardSessionManager"
       factory="AppserverIo\Appserver\ServletEngine\StandardSessionManagerFactory"/>
+
+    <!-- provides functionality to handle Timers -->
     <manager 
       name="TimerServiceRegistry"
       beanInterface="TimerServiceContext"
       type="AppserverIo\Appserver\PersistenceContainer\TimerServiceRegistry"
       factory="AppserverIo\Appserver\PersistenceContainer\TimerServiceRegistryFactory"/>
+
+    <!-- provides functionality to handle HTTP basic/digest authentication -->
     <manager 
       name="StandardAuthenticationManager"
       beanInterface="AuthenticationManager"
       type="AppserverIo\Appserver\ServletEngine\Authentication\StandardAuthenticationManager"
       factory="AppserverIo\Appserver\ServletEngine\Authentication\StandardAuthenticationManagerFactory"/>
+
+    <!-- provides functionality to preload Advices found in WEB-INF/classes or META-INF/classes -->
     <manager
       name="AspectManager"
       beanInterface="AspectManagerInterface"
       type="AppserverIo\Appserver\AspectContainer\AspectManager"
       factory="AppserverIo\Appserver\AspectContainer\AspectManagerFactory"/>
+
   </managers>
 
 </context>
 ```
 
 If your application doesn't use any of the defined class loaders or managers or you want to implement
-your own managers, you can define them in a `context.xml` file you have to deliver with your
-application. Your own, customized file has to be stored in `META-INF/context.xml`. When the application
-server starts this file will be parsed and your application initialized with the class loaders and
-managers you have defined.
+your own managers, you can define them in a `context.xml` file, you have to deliver with your
+application. Your own, customized file, has to be stored in `META-INF/context.xml`. When the application
+server starts, this file will be parsed and your application will be initialized with the class loaders
+and managers you have defined there.
 
 > Please be aware, that the default class loaders and managers provide most of the functionality
-> described above. So if you remove them from the `context.xml` you have to expect unwanted behaviour.
+> described above. So if you remove them from the `context.xml` you have to expect unexpected behaviour.
 
 ### Module Configuration
 
