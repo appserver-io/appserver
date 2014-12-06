@@ -88,7 +88,7 @@ If you're on a Debian system you might also try our `.deb` repository:
 root@debian:~# echo "deb http://deb.appserver.io/ wheezy main" > /etc/apt/sources.list.d/appserver.list
 root@debian:~# wget http://deb.appserver.io/appserver.gpg -O - | apt-key add -
 root@debian:~# aptitude update
-root@debian:~# aptitude install appserver
+root@debian:~# aptitude install appserver-dist
 ```
 
 Optionally you can download the `.deb` files for the [runtime](https://github.com/appserver-io/appserver/releases/download/1.0.0-beta/appserver-runtime-1.0.0-alpha.10.linux.debian.x86_64.deb) and the [distribution](https://github.com/appserver-io/appserver/releases/download/1.0.0-beta/appserver-dist-1.0.0-beta.7.linux.debian.x86_64.deb) and install them by double-clicking on them. This will invoke the system default package manager and guides you through the installation process. Please install the runtime first, as this is a dependency for the distribution.
