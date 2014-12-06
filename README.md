@@ -480,7 +480,7 @@ in this example `MyStatefulSessionBean`.
 
 ## How to inject an instance
 
-Basically DI can be a manual process where you `ìnject` an instance, needed by another class by 
+Basically DI can be a manual process where you `inject` an instance, needed by another class by 
 passing it to the constructor. Inside the application server, the injection is an process you can't
 see, it's more a kind of magic which happens behind the secenes. So instead of manually pass the
 necessary instances to a classes constructor, the DI container will do that for you. 
@@ -1132,7 +1132,7 @@ class ASingletonProcessor extends \Stackable
 }
 ```
 
-The `@Schedule` annotation on the `ìnvokedByTimer()` method schedules the invokation of this
+The `@Schedule` annotation on the `invokedByTimer()` method schedules the invokation of this
 method every minute without the need to have an CRON configured or running. Such `Timers` can
 also be created programatically, if you want to know more about that, have a look at our [example](https://github.com/appserver-io-apps/example).
 
