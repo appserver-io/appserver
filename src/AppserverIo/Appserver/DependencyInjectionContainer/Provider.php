@@ -44,6 +44,7 @@ use AppserverIo\Psr\EnterpriseBeans\Annotations\EnterpriseBean;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Resource;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\ProviderInterface;
+use AppserverIo\Psr\Servlet\Annotations\Route;
 
 // ATTENTION: this is necessary for Windows
 use AppserverIo\Appserver\Naming\InitialContext as NamingContext;
@@ -247,7 +248,8 @@ class Provider extends GenericStackable implements ProviderInterface
             Stateful::ANNOTATION       => Stateful::__getClass(),
             Stateless::ANNOTATION      => Stateless::__getClass(),
             Timeout::ANNOTATION        => Timeout::__getClass(),
-            Resource::ANNOTATION       => Resource::__getClass()
+            Resource::ANNOTATION       => Resource::__getClass(),
+            Route::ANNOTATION          => Route::__getClass()
         );
 
         // return the reflection class instance

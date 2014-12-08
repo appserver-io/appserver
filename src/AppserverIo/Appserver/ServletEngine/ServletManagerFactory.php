@@ -65,12 +65,13 @@ class ServletManagerFactory
         $servletManager = new ServletManager();
         $servletManager->injectServlets($servlets);
         $servletManager->injectApplication($application);
-        $servletManager->injectServletMappings($servletMappings);
         $servletManager->injectInitParameters($initParameters);
+        $servletManager->injectResourceLocator($servletLocator);
+        $servletManager->injectServletMappings($servletMappings);
         $servletManager->injectSecuredUrlConfigs($securedUrlConfigs);
         $servletManager->injectSessionParameters($sessionParameters);
         $servletManager->injectWebappPath($application->getWebappPath());
-        $servletManager->injectResourceLocator($servletLocator);
+        $servletManager->injectDirectories($managerConfiguration->getDirectories());
 
         // attach the instance
         $application->addManager($servletManager, $managerConfiguration);
