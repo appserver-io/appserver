@@ -6,6 +6,7 @@
 
 ## Features
 
+* Move var/tmp/opcache-blacklist.txt to runtime build
 * Remove unnecessary handler manager because WebSocketServer is not activated by default any longer
 * Optimize class loaders for performance
 
