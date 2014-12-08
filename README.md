@@ -80,7 +80,7 @@ If this requirement is met you can start the installation by simply double-click
 
 ## Debian
 
-> Runs and tested on Debian Squeeze (64-bit) and higer!
+> Runs and tested on Debian Squeeze (64-bit) and higher!
 
 If you're on a Debian system you might also try our `.deb` repository:
 
@@ -97,13 +97,13 @@ Optionally you can download the `.deb` files for the [runtime](https://github.co
 
 > Runs and tested on versions Fedora 20 (64-bit) and higher!
 
-Actually we provide `.rpm` files for, one for [runtime](https://github.com/appserver-io/appserver/releases/download/1.0.0-beta/appserver-runtime-1.0.0-alpha.16.linux.fedora.x86_64.rpm) and [distribution](https://github.com/appserver-io/appserver/releases/download/1.0.0-beta/appserver-dist-1.0.0-beta.29.linux.fedora.x86_64.rpm), that you can download and start the installation process by double-clicking on it. This will start the systems default package manager and guides you through the installation process.
+We  also provide `.rpm` files for Fedora, one for [runtime](https://github.com/appserver-io/appserver/releases/download/1.0.0-beta/appserver-runtime-1.0.0-alpha.16.linux.fedora.x86_64.rpm) and [distribution](https://github.com/appserver-io/appserver/releases/download/1.0.0-beta/appserver-dist-1.0.0-beta.29.linux.fedora.x86_64.rpm), that you can download and start the installation process by double-clicking on it. This will start the systems default package manager and guides you through the installation process.
 
 ## CentOS
 
 > Runs and tested on CentOS 6.5 (64-bit) and higher!
 
-Installation and basic usage is the same as on Fedora **but** we provide different packages for [runtime](https://github.com/appserver-io/appserver/releases/download/1.0.0-beta/appserver-runtime-1.0.0-alpha.19.linux.centos.x86_64.rpm) and [distribution](https://github.com/appserver-io/appserver/releases/download/1.0.0-beta/appserver-dist-1.0.0-beta.16.linux.centos.x86_64.rpm). CentOS requires additional repositories
+Installation and basic usage is the same as on Fedora but we provide different packages for [runtime](https://github.com/appserver-io/appserver/releases/download/1.0.0-beta/appserver-runtime-1.0.0-alpha.19.linux.centos.x86_64.rpm) and [distribution](https://github.com/appserver-io/appserver/releases/download/1.0.0-beta/appserver-dist-1.0.0-beta.16.linux.centos.x86_64.rpm). CentOS requires additional repositories
 like [remi](<http://rpms.famillecollet.com/>) or [EPEL](<http://fedoraproject.org/wiki/EPEL>) to 
 satisfy additional dependencies.
 
@@ -115,7 +115,7 @@ yourself (plan at least 5 hours) as we currently do not offer prepared install p
 
 # Uninstall
 
-Before uninstalling you should stop all services which are still running, otherwise there might
+Before uninstalling you should stop all services which are still running (rpm-based packages will see to that themselves), otherwise there might
 be problems with existing pid-files on Linux and Mac for the next time you install it. You can 
 have a look how to do so [here](#start-and-stop-scripts).
 
@@ -130,9 +130,8 @@ The appserver will automatically start after your installation wizard (or packag
 the setup. You can use it without limitations from now on.
 
 Below you can find basic instructions on how to make use of the appserver. After the installation
-you might want to have a look and some of the bundled apps. Two of are interesting in particular:
-
-* **Example** shows basic usage of services. You can reach it at `http://127.0.0.1:9080/example`
+you might want to have a look and some apps. We got a showcase example bundled with the installation
+which you can reach at `http://127.0.0.1:9080/example`
 
 Start your favorite browser and have a look at what we can do. :) To pass the password barriers use
 the default login `appserver/appserver.i0`.
@@ -157,17 +156,17 @@ ultimately run the appserver only the appserver process is needed but you will m
 deployment (`appserver-watcher`) and might have problems with legacy applications.
 
 Depending on the FastCGI Backend you want to use you might ditch `appserver-php5-fpm` for other 
-processes e.g. supplying you with a hhvm backend.
+processes e.g. supplying you with a [hhvm](http://hhvm.com/) backend.
 
 Currently we support three different types of init scripts which support the commands `start`, `stop`,
-`status` and `restart` (additional commands migth be available on other systems).
+`status` and `restart` (additional commands might be available on other systems).
 
 **Mac OS X (LAUNCHD)**
 The LAUNCHD launch daemons are located within the appserver installation at `/opt/appserver/sbin`.
 They can be used with the schema `/opt/appserver/sbin/<DAEMON> <COMMAND>`
 
 **Debian, Raspbian, CentOS, ...(SystemV)**
-Commonly known and located in `/etc/init.d/` they too support the commands mentioned above  provided 
+Commonly known and located in `/etc/init.d/` they too support the commands mentioned above provided 
 in the form `/etc/init.d/<DAEMON> <COMMAND>`.
 
 **Fedora, ... (systemd)**
@@ -177,7 +176,7 @@ systemd init scripts can be used using the `systemctl` command with the syntax `
 
 On Windows we sadly do not offer any of these scripts. After the installation you can start the 
 Application Server with the ``server.bat`` file located within the root directory of your installation.
-Best thing to do would be starting a command prompt as an administrator snd run the following commands
+Best thing to do would be starting a command prompt as an administrator and run the following commands
 (assuming default installation path):
 
 ```
@@ -187,8 +186,10 @@ C:\Program Files\appserver>server.bat
 
 # HTTP(S) Server
 
-The configuration itself is highly self-explanatory so just have a look to the preferred config
-file and try to change settings. A detailed overview of all configuration settings will follow ...
+The configuration itself is mostly self-explanatory so just have a look to the preferred config
+file and try to change settings. 
+Please make sure you restart the appserver after making changes. :)
+A detailed overview of all configuration settings will follow ...
 
 ## Configure a Virtual Host
 
@@ -258,7 +259,7 @@ some specialities too:
 
 Originally Servlets are the Java counterpart to other dynamic web technologies like PHP or the 
 Microsoft .NET plattform. In contrast to PHP, a Servlet written in Java is not a script that'll
-be interpreted per request, instead it is a class instanciated when the Servlet Engine starts up
+be interpreted per request, instead it is a class instantiated when the Servlet Engine starts up
 process requests be invoking one of its methods.
 
 > In most cases, this is a major advantage against the common PHP way to load the script on each
@@ -450,7 +451,7 @@ are based on that annotation implementation.
 # Dependency Injection
 
 Dependency Injection, furthermore DI, enables developers to write cleaner, reusable and maintainable
-code with less coupling by injecting necessary instances at runtime instead of instanciating them in
+code with less coupling by injecting necessary instances at runtime instead of instantiating them in
 the class itself. Within the application server, each application has it's own scope and therefore a 
 own dependency injection container. This prevents your application from fatal errors like `Cannot redeclare class ...`.
 
@@ -482,7 +483,7 @@ in this example `MyStatefulSessionBean`.
 
 Basically DI can be a manual process where you `inject` an instance, needed by another class by 
 passing it to the constructor. Inside the application server, the injection is an process you can't
-see, it's more a kind of magic which happens behind the secenes. So instead of manually pass the
+see, it's more a kind of magic which happens behind the scenes. So instead of manually pass the
 necessary instances to a classes constructor, the DI container will do that for you. 
 
 You simple has to tell the DI container what you need, let's have a look at the details.
@@ -563,12 +564,12 @@ class HelloWorldServlet extends HttpServlet
 ```
 
 With the `name` attribute of the `@EnterpriseBean`annotation you have the possibility to specify the
-name of the bean, you registered before by annotate it. A more detailed description about the 
+name of the bean, you registered before by annotating it. A more detailed description about the 
 available annotations will be part of the [Persistence-Container](#persistence-container).
 
 ### Setter Injection
 
-The second possiblity to inject an instance is setter injection.
+The second possibility to inject an instance is setter injection.
 
 ```php
 
@@ -662,18 +663,18 @@ an application server as appserver.io is. The following example gives you a shor
 how you can create a stateful session bean and the way you can invoke it's method on client side.
 
 First thing you've to do is to create your SessionBean. What is a SessionBean? It's not simple
-to describe it in only a few words, but i'll try. A SessionBean basically is plain PHP class.
-You MUST not instanciate it directly, because the application server takes care of its complete
+to describe it in only a few words, but I'll try. A SessionBean basically is a plain PHP class.
+You MUST not instantiate it directly, because the application server takes care of its complete
 lifecycle. Therefore, if you need an instance of a SessionBean, you'll ask the application server 
 to give you an instance. This can be done by a [client](<https://github.com/techdivision/persistencecontainerclient>).
 
 The persistence container client will give you a proxy to the session bean that allows you to
-invoke all methods the SessionBean provides as you can do if you would have real instance. But
+invoke all methods the SessionBean provides as you can do if you would have a real instance. But
 the proxy also allows you to call this method over a network as remote method call. Using the 
 persistence container client makes it obvious for you if your SessionBean is on the same 
-application server instance or on another one in your network. This gives you the possibilty
+application server instance or on another one in your network. This gives you the possibility
 to distribute the components of your application over your network what includes a great and
-seemless scalabilty.
+seamless scalability.
 
 You have to tell the persistence container of the type the SessionBean should have. This MUST 
 be done by simply add an annotation to the class doc block. The possible annotations therefore 
@@ -683,7 +684,7 @@ are
 * @Stateless
 * @Stateful
 
-The SessionBean types are self explained i think.
+The SessionBean types are self explanatory I think.
 
 ## @Singleton SessionBean
 
@@ -695,7 +696,7 @@ server has been restarted.
 ## @Stateless SessionBean
 
 In opposite to a singleton session bean, a SessionBean with a @Stateless annotation will always
-be instanciated when you request it. It has NO state, only for the time you invoke a method on
+be instantiated when you request it. It has NO state, only for the time you invoke a method on
 it.
 
 ## @Stateful SessionBean
@@ -743,7 +744,7 @@ class MyStatefulSessionBean
 
 Save the SessionBean in `/opt/appserver/myapp/META-INF/classes/Namespace/Module/MyStatefulSessionBean.php`.
 
-As described above, you MUST not instanciate it directly. To request an instance of the SessionBean
+As described above, you MUST not instantiate it directly. To request an instance of the SessionBean
 you MUST use the persistence container client. With the `lookup()` method you'll receive a proxy to
 your SessionBean, on that you can invoke the methods as you can do with a real instance.
 
@@ -850,7 +851,7 @@ That's it!
 
 # Message-Queue
 
-A Message-Queue provides the possiblity to process long running tasks in a encapsulated context.
+A Message-Queue provides the possibility to process long running tasks in a encapsulated context.
 For example if you want to import a lot of products in your online shop, you can send a
 message to the Message-Queue which then will start the import process in background without
 preventing the calling process to continue.
@@ -866,7 +867,7 @@ but has only one single point of entry, the `onMessage()` message method. Whenev
 will be send to the queue, the Message-Queue simple pushes it on the stack. In background a
 `QueueWorker` is running in another context and queries the stack for new messages. If a new
 message is available, it'll pulled from the stack, a new instance of the receiver, the `Queue`
-is bound to, will be instanciated to pass the message to, for being processed.
+is bound to, will be instantiated to pass the message to, for being processed.
 
 So let us create a simple `Queue` with
 
@@ -922,7 +923,7 @@ this `Queue`?
 
 ## Send a message
 
-Messages are POPO that can be sent over the network. So if you want to send a message you have
+Messages are POPOs that can be sent over the network. So if you want to send a message you have
 to initialize the Message-Queue Client and specify which `Queue` you want to send the message to.
 
 Again, we will extend our `Servlet` to start an import process on a POST request 
@@ -1132,7 +1133,7 @@ class ASingletonProcessor extends \Stackable
 }
 ```
 
-The `@Schedule` annotation on the `invokedByTimer()` method schedules the invokation of this
+The `@Schedule` annotation on the `invokedByTimer()` method schedules the invocation of this
 method every minute without the need to have an CRON configured or running. Such `Timers` can
 also be created programatically, if you want to know more about that, have a look at our [example](https://github.com/appserver-io-apps/example).
 
@@ -1140,25 +1141,25 @@ also be created programatically, if you want to know more about that, have a loo
 
 # AOP
 
-Meanwhile, AOP is more than a buzzword. Many of the PHP frameworks out there support AOP since
+Meanwhile, AOP is more than a buzzword. Many of the PHP frameworks out there are supporting AOP for
 some years, in other languages like Java it's available for a long time. As there is actually
-no stable PECL extension nor AOP is part of the PHP core, a big problem is the performance,
+no stable PECL extension nor is AOP part of the PHP core, performance is a big problem,
 because of its nature, AOP needs to be deeply weaved into your code. Most of the solutions
-available for PHP solves that by generate so called proxy classes that wraps the original
-methods and allows to weave the advices before, after or around the original implementation.
+available for PHP solve that by generating so called `proxy classes` that wrap the original
+methods and allow to weave the advices before, after or around the original implementation.
 
 As we're in a multithreaded environment, and performance is one of our main goals, we were not 
 able to use on of the available solutions. As we also need to generate proxy classes, we decided
-to do that in the autoloader. As the autoloader is part of the appserver.io distribution, you
+to do that triggered by the autoloader. As the autoloader is part of the appserver.io distribution, you
 don't have to configure anything to use AOP in your code.
 
 ## How to add an Advice
 
-Integrating AOP in your can be done in two ways. The first one is to define the pointcuts and
-the advices in the same class, the second one is to separate them. Here we want to describe 
+Integrating AOP in your app can be done in two ways. The first one is to define the pointcuts (and also
+advices if you like) in the same class they will get woven into, the second one is to separate them. Here we want to describe 
 the second approach.
 
-Let's say we simple want to log all GET requests on our HelloWorldServlet without adding any
+Let's say we simply want to log all GET requests on our HelloWorldServlet without adding any
 code to the servlet itself. To do this, we first have to create an Aspect class like
 
 ```php
@@ -1172,7 +1173,7 @@ class LoggerAspect
 {
 
   /**
-   * Pointcut which targets all index actions for all action classes.
+   * Pointcut which targets all GET requests for all servlets
    *
    * @return void
    * @Pointcut("call(\Namespace\Module\*->doGet())")
@@ -1197,7 +1198,7 @@ class LoggerAspect
     $className = $methodInvocation->getStructureName();
     $methodName = $methodInvocation->getName()
 
-    // log the method invokation
+    // log the method invocation
     $methodInvocation->getContext()
       ->getServletRequest()
       ->getContext()
@@ -1210,7 +1211,7 @@ class LoggerAspect
 }
 ```
 
-Store the class in `/opt/appserver/myapp/WEB-INF/classes/Namespace/Module/LoggerAspect` and
+Store the class in `/opt/appserver/myapp/META-INF/classes/Namespace/Module/LoggerAspect` and
 [restart](#start-and-stop-scripts) the application server.
 
 To see the the log message, open the console (Linux/Mac OS X) and enter
@@ -1230,7 +1231,7 @@ at the console.
 
 # Design-by-Contract
 
-Beside AOP [Design-by-Contract](http://en.wikipedia.org/wiki/Design_by_contract) is another
+Beside AOP, [Design-by-Contract](http://en.wikipedia.org/wiki/Design_by_contract) is another
 interesting approach we support out-of-the-box when you think about the architecture of your
 software.
 
@@ -1313,9 +1314,9 @@ log file under `/opt/appserver/var/log/appserver-errors.log`.
 
 # Runtime Environment
 
-The appserver.io runtime environment is using is delivered by the package [runtime](<https://github.com/appserver-io-php/runtime>).
-This package  provides the appserver runtime which is system independent and encloses a thread-safe
-compiled PHP environment. Besides the most recent PHP 5.5.x version the package came with installed
+The appserver.io runtime environment is delivered by the package [runtime](<https://github.com/appserver-io-php/runtime>).
+This package  provides a runtime which is system independent and encloses a thread-safe
+compiled PHP environment. Besides the most recent PHP 5.5.x version the package comes with following installed
 extensions:
 
 * [pthreads](http://github.com/appserver-io-php/pthreads)
@@ -1323,8 +1324,8 @@ extensions:
   which behave badly in a multithreaded environment)
 
 Additionally the PECL extensions [XDebug](http://pecl.php.net/package/xdebug) and [ev](http://pecl.php.net/package/ev) 
-are compiled as a shared modules. XDebug is necessary to render detailed code coverage reports when 
-running unit and integration tests. ev will be used to integrate a timer service in one of the future
+are compiled as shared modules. `XDebug` is necessary to render detailed code coverage reports when 
+running unit and integration tests. `ev` will be used to integrate a timer service in one of the future
 versions.
 
 # Configuration
@@ -1514,7 +1515,7 @@ In the above example you can see three important components of the appserver arc
 used. The [*container*](docs/docs/architecture.md#container>), [*server*](docs/docs/architecture.md#server) and a 
 [*protocol*](docs/docs/architecture.md#protocol>) (if you did not read about our basic [architecture](docs/docs/architecture.md) 
 you should now). We are basically building up a container which holds a server using the websocket 
-protocol to handle incomming requests.
+protocol to handle incoming requests.
 
 ### Container Configuration
 
@@ -1533,7 +1534,7 @@ to contain at least one *server* within its `servers` collection.
 
 ### Server Configuration
 
-The *servers* contained by our *container* can also be losely drafted by the XML configuration and 
+The *servers* contained by our *container* can also be loosely drafted by the XML configuration and 
 will be instantiated on container bootup. To enable a *server* you have to mention three basic 
 attributes of the element:
 
@@ -1541,8 +1542,8 @@ attributes of the element:
   behaviour of the server on receiving a connection and how it will handle it.
 
 * The `socket` attribute specifies the type of socket the server should open. E.g. a stream or 
-  asynchonious socket
-* The `serverContext` specifies the server's soure of configuration and container for runtime 
+  asynchronious socket
+* The `serverContext` specifies the server's source of configuration and container for runtime 
   information e.g. ServerVariables like `DOCUMENT_ROOT`
 
 So we have our specific server which will open a certain port and operate in a defined context. But
@@ -1703,7 +1704,8 @@ based on rewrite rules which consist of three important parts:
   to the Apache mod_rewrite module with the difference that you have to use the `$ syntax`
   (instead of the `$/%/%{} syntax` of Apache).
   
-  Backreferences are parts of the matching rule conditions which you specifically pick out via regex.
+  Matching rule conditions which you specifically pick out via regex are also part of available backreferences
+  as well as server and environment variables.
 
   *Simple example* : A condition like `(.+)@$X_REQUEST_URI` would produce a back reference `$1` 
   with the value `/index` for a requested URI `/index`. The target string `$1/welcome.html` would
@@ -1816,7 +1818,7 @@ You will see that we provide basic frontend implementations of services the apps
 provides. If you want to use these services yourself you should have a look into the code of our 
 apps and read about [app development](#deployment).
 
-You might be curious about the different port we use. Per default the appserver will open several 
+You might be curious about the different ports we use. Per default the appserver will open several 
 ports at which it's services are available. As we do not want to block (or be blocked by) other 
 services we use ports of a higher range.
 
