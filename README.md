@@ -19,7 +19,7 @@ hopefully establish a solution as the standard for enterprise applications in PH
 > much more sense if the infrastructure will provide it and all framweworks can be immplemented
 > against it, imagine reusability frameworks and libraries will gain from that approach!
 
-Give it a try, and wonder ;)
+Give it a try!
 
 #### Table of Contents
 
@@ -912,7 +912,7 @@ class ImportReceiver extends AbstractReceiver
 ```
 
 > The important stuff here, beside the functionality you have to implement in the `onMessage()` 
-> message is the annotation `@MessageBean`. You MUST annotate the MessageBean, for the container
+> message is the annotation `@MessageDriven`. You MUST annotate the MessageBean, for the container
 > to know about and register it on startup.
 
 Pretty simple for running your import in a separate thread? But what about sending a message to
