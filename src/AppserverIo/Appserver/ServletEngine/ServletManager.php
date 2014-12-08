@@ -31,6 +31,7 @@ use AppserverIo\Appserver\ServletEngine\ServletConfiguration;
 use AppserverIo\Appserver\ServletEngine\InvalidServletMappingException;
 use AppserverIo\Psr\Application\ManagerInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
+use AppserverIo\Psr\Servlet\Annotations\Route;
 
 /**
  * The servlet manager handles the servlets registered for the application.
@@ -54,6 +55,18 @@ class ServletManager extends \Stackable implements ServletContext, ManagerInterf
     public function __construct()
     {
         $this->webappPath = '';
+    }
+
+    /**
+     * Injects the additional directories to be parsed when looking for servlets.
+     *
+     * @param array $directories The additional directories to be parsed
+     *
+     * @return void
+     */
+    public function injectDirectories(array $directories)
+    {
+        $this->directories = $directories;
     }
 
     /**
@@ -167,6 +180,19 @@ class ServletManager extends \Stackable implements ServletContext, ManagerInterf
     }
 
     /**
+     * Returns a reflection class intance for the passed class name.
+     *
+     * @param string $className The class name to return the reflection class instance for
+     *
+     * @return \AppserverIo\Lang\Reflection\ReflectionClass The reflection instance
+     * @see \DependencyInjectionContainer\Interfaces\ProviderInterface::getReflectionClass()
+     */
+    public function getReflectionClass($className)
+    {
+        return $this->getApplication()->search('ProviderInterface')->getReflectionClass($className);
+    }
+
+    /**
      * Returns a new instance of the passed class name.
      *
      * @param string      $className The fully qualified class name to return the instance for
@@ -187,6 +213,88 @@ class ServletManager extends \Stackable implements ServletContext, ManagerInterf
      */
     protected function registerServlets()
     {
+
+
+        // load the directories to be parsed
+        $directories = array();
+
+        // append the directory found in the servlet managers configuration
+        foreach ($this->getDirectories() as $directoryNode) {
+
+            // prepare the custom directory defined in the servlet managers configuration
+            $customDir = $folder . DIRECTORY_SEPARATOR . ltrim($directoryNode->getNodeValue()->getValue(), DIRECTORY_SEPARATOR);
+
+            // check if the directory exists
+            if (is_dir($customDir)) {
+                $directories[] = $customDir;
+            }
+        }
+
+        // parse the directories for servlets
+        foreach ($directories as $directory) {
+
+            // check WEB-INF classes or any other sub folder to pre init servlets
+            $recursiveIterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($directory));
+            $phpFiles = new \RegexIterator($recursiveIterator, '/^(.+)\.php$/i');
+
+            // iterate all php files
+            foreach ($phpFiles as $phpFile) {
+
+                try {
+
+                    // cut off the META-INF directory and replace OS specific directory separators
+                    $relativePathToPhpFile = str_replace(DIRECTORY_SEPARATOR, '\\', str_replace($directory, '', $phpFile));
+
+                    // now cut off the first directory, that'll be '/classes' by default
+                    // $pregResult = preg_replace('%^(\\\\*)[^\\\\]+%', '', $relativePathToPhpFile);
+                    $className = substr($relativePathToPhpFile, 0, -4);
+
+                    // we need a reflection class to read the annotations
+                    $reflectionClass = $this->getReflectionClass($className);
+
+                    if ($reflectionClass->implementsInterface('AppserverIo\Psr\Servlet\Servlet') &&
+                        $reflectionClass->hasAnnotation(Route::ANNOTATION)) { // instanciate the servlet
+
+                        // load the reflection class instance
+                        $reflectionAnnotation = $reflectionClass->getAnnotation(Route::ANNOTATION);
+                        $routeAnnotation = $reflectionAnnotation->newInstance($reflectionAnnotation->getAnnotationName(), $reflectionAnnotation->getValues());
+
+                        // instanciate the servlet
+                        $instance = $reflectionClass->newInstance();
+
+                        // initialize the servlet configuration
+                        $servletConfig = new ServletConfiguration();
+                        $servletConfig->injectServletContext($this);
+                        $servletConfig->injectServletName($servletName = $routeAnnotation->getName());
+
+                        // append the init params to the servlet configuration
+                        foreach ($routeAnnotation->getInitParams() as $initParam) {
+                            list ($paramName, $paramValue) = each($initParam);
+                            $servletConfig->addInitParameter($paramName, $paramValue);
+                        }
+
+                        // initialize the servlet
+                        $instance->init($servletConfig);
+
+                        // the servlet is added to the dictionary using the complete request path as the key
+                        $this->addServlet($servletName, $instance);
+
+                        // prepend the url-pattern - servlet mapping to the servlet mappings
+                        foreach ($routeAnnotation->getUrlPattern() as $urlPattern) {
+                            $this->servletMappings[$urlPattern] = $servletName;
+                        }
+                    }
+
+                } catch (\Exception $e) { // if class can not be reflected continue with next class
+
+                    // log an error message
+                    $this->getApplication()->getInitialContext()->getSystemLogger()->error($e->__toString());
+
+                    // proceed with the nexet bean
+                    continue;
+                }
+            }
+        }
 
         // the phar files have been deployed into folders
         if (is_dir($folder = $this->getWebappPath())) {
@@ -290,6 +398,16 @@ class ServletManager extends \Stackable implements ServletContext, ManagerInterf
     public function getApplication()
     {
         return $this->application;
+    }
+
+    /**
+     * Returns all the additional directories to be parsed for servlets.
+     *
+     * @return array The additional directories
+     */
+    public function getDirectories()
+    {
+        return $this->directories;
     }
 
     /**
