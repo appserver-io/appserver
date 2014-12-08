@@ -6,6 +6,7 @@
 
 ## Features
 
+* Closed #298 - Invoke destroy() method on Servlets after handling a request
 * Move var/tmp/opcache-blacklist.txt to runtime build
 * Remove unnecessary handler manager because WebSocketServer is not activated by default any longer
 * Optimize class loaders for performance
