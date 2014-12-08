@@ -200,47 +200,64 @@ class AspectManager implements AspectManagerInterface, ManagerInterface
     protected function registerAspects(ApplicationInterface $application)
     {
 
-        // build up META-INF directory var
-        $metaInfDir = $this->getWebappPath() . DIRECTORY_SEPARATOR .'META-INF';
+        // build up our directory vars
+        $webappPath = $this->getWebappPath() . DIRECTORY_SEPARATOR;
+        $aspectDirectories = array(
+            $webappPath . 'META-INF',
+            $webappPath . 'WEB-INF',
+            $webappPath . 'common'
+        );
 
-        // check if we've found a valid directory
-        if (is_dir($metaInfDir) === false) {
-            return;
+        // check if we've found a valid directories and get us some iterators
+        $iterators = array();
+        foreach ($aspectDirectories as $aspectDirectory) {
+
+            if (is_dir($aspectDirectory) === true) {
+
+                $iterators[] = new \RegexIterator(
+                    new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($aspectDirectory)),
+                    '/^(.+)\.php$/i'
+                );
+            }
         }
 
-        // check meta-inf classes or any other sub folder to pre init aspects
-        $recursiveIterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($metaInfDir));
-        $phpFiles = new \RegexIterator($recursiveIterator, '/^(.+)\.php$/i');
-
         // iterate all php files
-        foreach ($phpFiles as $phpFile) {
+        foreach ($iterators as $phpFiles) {
+            foreach ($phpFiles as $phpFile) {
 
-            try {
+                try {
 
-                // cut off the META-INF directory and replace OS specific directory separators
-                $relativePathToPhpFile = str_replace(DIRECTORY_SEPARATOR, '\\', str_replace($metaInfDir, '', $phpFile));
+                    // cut off the META-INF directory and replace OS specific directory separators
+                    $relativePathToPhpFile = str_replace(
+                        DIRECTORY_SEPARATOR,
+                        '\\',
+                        str_replace($webappPath, '', $phpFile)
+                    );
 
-                // now cut off the first directory, that'll be '/classes' by default
-                $pregResult = preg_replace('%^(\\\\*)[^\\\\]+%', '', $relativePathToPhpFile);
-                $className = substr($pregResult, 0, -4);
+                    // now cut off the first two directory segments
+                    $pregResult = preg_replace('%^\\\\.+?\\\\.+?\\\\%', '', '\\' . $relativePathToPhpFile);
+                    $className = substr($pregResult, 0, -4);
 
-                // we need a reflection class to read the annotations
-                $reflectionClass = $this->getReflectionClass($className);
+                    // we need a reflection class to read the annotations
+                    $reflectionClass = $this->getReflectionClass($className);
 
-                // if we found an aspect we have to register it using our aspect register class
-                if ($reflectionClass->hasAnnotation(Aspect::ANNOTATION)) {
+                    // if we found an aspect we have to register it using our aspect register class
+                    if ($reflectionClass->hasAnnotation(Aspect::ANNOTATION)) {
 
-                    $parser = new AspectParser($phpFile, new Config());
-                    $this->aspectRegister->register($parser->getDefinition($reflectionClass->getShortName(), false));
+                        $parser = new AspectParser($phpFile, new Config());
+                        $this->aspectRegister->register(
+                            $parser->getDefinition($reflectionClass->getShortName(), false)
+                        );
+                    }
+
+                } catch (\Exception $e) { // if class can not be reflected continue with next class
+
+                    // log an error message
+                    $application->getInitialContext()->getSystemLogger()->error($e->__toString());
+
+                    // proceed with the next class
+                    continue;
                 }
-
-            } catch (\Exception $e) { // if class can not be reflected continue with next class
-
-                // log an error message
-                $application->getInitialContext()->getSystemLogger()->error($e->__toString());
-
-                // proceed with the next class
-                continue;
             }
         }
     }
