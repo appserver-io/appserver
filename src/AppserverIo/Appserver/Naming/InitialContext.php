@@ -22,10 +22,10 @@
 
 namespace AppserverIo\Appserver\Naming;
 
-use Rhumsaa\Uuid\Uuid;
 use Phlexy\Lexer;
 use Phlexy\LexerDataGenerator;
 use Phlexy\LexerFactory\Stateless\UsingPregReplace;
+use AppserverIo\Psr\Servlet\SessionUtils;
 use AppserverIo\Psr\Servlet\ServletRequest;
 use AppserverIo\Psr\Naming\NamingException;
 use AppserverIo\Properties\Properties;
@@ -394,7 +394,7 @@ class InitialContext
         if ($sessionId == null && $this->getServletRequest() && $servletSession = $this->getServletRequest()->getSession()) {
             $sessionId = $servletSession->getId(); // if yes, use it for connecting to the stateful session bean
         } elseif ($sessionId == null) {
-            $sessionId = Uuid::uuid4()->__toString(); // simulate a unique session-ID
+            $sessionId = SessionUtils::generateRandomString(); // simulate a unique session-ID
         } else {
             // do nothing, because a session-ID has been passed
         }

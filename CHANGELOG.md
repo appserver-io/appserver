@@ -6,6 +6,8 @@
 
 ## Features
 
+* Closed #294 - Session-ID structure
+* Closed #288 - Session-ID will be reused
 * Closed #292 - Annotation based configuration for servlets
 * Closed #298 - Invoke destroy() method on Servlets after handling a request
 * Move var/tmp/opcache-blacklist.txt to runtime build
