@@ -5,6 +5,13 @@
     <!-- initialize ENV variable -->
     <property environment="env" />
     
+    <!-- ==================================================================== -->
+    <!-- Generate a time stamp for further use in build targets               -->
+    <!-- ==================================================================== --> 
+    <tstamp>
+        <format property="time.stamp" pattern="yyyy-MM-dd_HHmmss"/>
+    </tstamp>
+    
     <!-- initialize file based properties -->
     <property file="${basedir}/build.properties"/>
     <property file="${basedir}/build.default.properties"/>
