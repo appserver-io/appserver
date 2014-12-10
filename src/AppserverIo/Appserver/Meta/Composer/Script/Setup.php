@@ -197,8 +197,21 @@ class Setup
     public static function postInstall(Event $event)
     {
 
-        // load the version of this package => the appserver version
-        $version = $event->getComposer()->getPackage()->getVersion();
+        // check if we've commandline arguments
+        if ($args = $event->getArguments() && is_array($args)) {
+
+            // parse the arguments for a version number (-v 1.0.0 or --version=1.0.0)
+            foreach ($args as $key => $arg) {
+                if ($arg === '-v') {
+                    $version = $args[$key + 1];
+                } elseif (strpos($arg, '--ver=') !== false) {
+                    list ($argName, $version) = explode('=', $arg);
+                }
+            }
+
+        } else { // load the version (GIT) of this package
+            $version = $event->getComposer()->getPackage()->getPrettyVersion();
+        }
 
         // prepare the context properties
         $contextProperties = array(

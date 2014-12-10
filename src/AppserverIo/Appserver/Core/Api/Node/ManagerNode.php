@@ -41,6 +41,13 @@ class ManagerNode extends AbstractNode implements ManagerConfigurationInterface
     use ParamsNodeTrait;
 
     /**
+     * A directories node trait.
+     *
+     * @var \TraitInterface
+     */
+    use DirectoriesNodeTrait;
+
+    /**
      * The unique manager name.
      *
      * @var string

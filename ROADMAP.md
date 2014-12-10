@@ -109,6 +109,8 @@ Backup tools.
 Category that provides additional services.
 
 * SSH Server
+* DNS Server
+* LDAP Server
 * Search Engine
 * Data-Grid, fast key-value store
 

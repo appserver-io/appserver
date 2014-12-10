@@ -396,10 +396,25 @@ class Request extends GenericStackable implements HttpServletRequest
         $id = $this->getRequestedSessionId();
 
         // try to load session ID from session cookie of request/response
-        if ($id == null && ($cookie = $this->getResponse()->getCookie($sessionName)) != null) {
-            $this->setRequestedSessionId($cookie->getValue());
-        } elseif ($id == null && ($cookie = $this->getCookie($sessionName)) != null) {
-            $this->setRequestedSessionId($cookie->getValue());
+        if ($id == null && $this->getResponse()->hasCookie($sessionName)) {
+            $cookieFound = $this->getResponse()->getCookie($sessionName);
+        } elseif ($id == null && $this->hasCookie($sessionName)) {
+            $cookieFound = $this->getCookie($sessionName);
+        }
+
+        // check if we can find a cookie
+        if (is_array($cookieFound)) {
+
+            // iterate over the cookies and try to find one that is not expired
+            foreach ($cookieFound as $cookie) {
+                if ($cookie instanceof CookieInterface && $cookie->isExpired() === false) {
+                    $this->setRequestedSessionId($cookie->getValue());
+                }
+            }
+
+        // if we found a single cookie instance
+        } elseif ($cookieFound instanceof CookieInterface && $cookieFound->isExpired() === false) {
+            $this->setRequestedSessionId($cookieFound->getValue());
         }
 
         // find or create a new session (if flag has been set)

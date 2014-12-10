@@ -42,6 +42,7 @@ use AppserverIo\Appserver\ServletEngine\BadRequestException;
 use AppserverIo\Appserver\ServletEngine\Authentication\AuthenticationValve;
 use AppserverIo\Appserver\Core\Interfaces\ContainerInterface;
 use AppserverIo\Server\Dictionaries\EnvVars;
+use AppserverIo\Psr\HttpMessage\CookieInterface;
 
 /**
  * A servlet engine implementation.
@@ -214,8 +215,18 @@ class ServletEngine extends AbstractServletEngine
             $response->setHeaders($headers);
 
             // copy the servlet response cookies back to the HTTP response
-            foreach ($servletResponse->getCookies() as $cookie) {
-                $response->addCookie(unserialize($cookie));
+            foreach ($servletResponse->getCookies() as $cookieName => $cookieValue) {
+
+                // load the cookie and check if we've an array or a single cookie instance
+                if (is_array($cookie = $servletResponse->getCookie($cookieName))) {
+
+                    foreach ($cookie as $c) { // add all the cookies
+                        $response->addCookie($c);
+                    }
+
+                } else { // add the cookie instance directly
+                    $response->addCookie($cookie);
+                }
             }
 
             // set response state to be dispatched after this without calling other modules process

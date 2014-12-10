@@ -569,6 +569,7 @@
         <xs:complexType>
             <xs:choice minOccurs="0" maxOccurs="unbounded">
                 <xs:element ref="appserver:params" />
+                <xs:element ref="appserver:directories" />
             </xs:choice>
             <xs:attribute name="name" type="xs:string" />
             <xs:attribute name="beanName" type="xs:string" use="optional"/>

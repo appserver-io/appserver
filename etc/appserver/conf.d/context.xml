@@ -39,7 +39,12 @@
             </params -->
         </manager>
         <manager name="QueueManager" beanInterface="QueueContext" type="AppserverIo\Appserver\MessageQueue\QueueManager" factory="AppserverIo\Appserver\MessageQueue\QueueManagerFactory"/>
-        <manager name="ServletManager" beanInterface="ServletContext" type="AppserverIo\Appserver\ServletEngine\ServletManager" factory="AppserverIo\Appserver\ServletEngine\ServletManagerFactory"/>
+        <manager name="ServletManager" beanInterface="ServletContext" type="AppserverIo\Appserver\ServletEngine\ServletManager" factory="AppserverIo\Appserver\ServletEngine\ServletManagerFactory">
+            <directories>
+                <directory enforced="true">/WEB-INF/classes</directory>
+                <directory enforced="true">/vendor/appserver-io/routlt/src</directory>
+            </directories>
+        </manager>
         <manager name="StandardSessionManager" beanInterface="SessionManager" type="AppserverIo\Appserver\ServletEngine\StandardSessionManager" factory="AppserverIo\Appserver\ServletEngine\StandardSessionManagerFactory"/>
         <manager name="TimerServiceRegistry" beanInterface="TimerServiceContext" type="AppserverIo\Appserver\PersistenceContainer\TimerServiceRegistry" factory="AppserverIo\Appserver\PersistenceContainer\TimerServiceRegistryFactory"/>
         <manager name="StandardAuthenticationManager" beanInterface="AuthenticationManager" type="AppserverIo\Appserver\ServletEngine\Authentication\StandardAuthenticationManager" factory="AppserverIo\Appserver\ServletEngine\Authentication\StandardAuthenticationManagerFactory"/>

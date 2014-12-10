@@ -6,6 +6,12 @@
 
 ## Features
 
+* Bugfix for Issue #286 - Version number in server software signature
+* Closed #294 - Session-ID structure
+* Closed #288 - Session-ID will be reused
+* Closed #292 - Annotation based configuration for servlets
+* Closed #298 - Invoke destroy() method on Servlets after handling a request
+* Move var/tmp/opcache-blacklist.txt to runtime build
 * Remove unnecessary handler manager because WebSocketServer is not activated by default any longer
 * Optimize class loaders for performance
 
