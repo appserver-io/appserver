@@ -206,13 +206,9 @@ class ServletEngine extends AbstractServletEngine
             $response->appendBodyStream($servletResponse->getBodyStream());
 
             // transform the servlet headers back into HTTP headers
-            $headers = array();
             foreach ($servletResponse->getHeaders() as $name => $header) {
-                $headers[$name] = $header;
+                $response->addHeader($name, $header);
             }
-
-            // set the headers as array (because we don't know if we have to use the append flag)
-            $response->setHeaders($headers);
 
             // copy the servlet response cookies back to the HTTP response
             foreach ($servletResponse->getCookies() as $cookieName => $cookieValue) {
