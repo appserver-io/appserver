@@ -197,19 +197,10 @@ class Setup
     public static function postInstall(Event $event)
     {
 
-        // check if we've commandline arguments
-        if ($args = $event->getArguments() && is_array($args)) {
-
-            // parse the arguments for a version number (-v 1.0.0 or --version=1.0.0)
-            foreach ($args as $key => $arg) {
-                if ($arg === '-v') {
-                    $version = $args[$key + 1];
-                } elseif (strpos($arg, '--ver=') !== false) {
-                    list ($argName, $version) = explode('=', $arg);
-                }
-            }
-
-        } else { // load the version (GIT) of this package
+        // check if we've a file with the actual version number
+        if (file_exists($filename = getcwd() .'/etc/appserver/.release-version')) {
+            $version = file_get_contents($filename);
+        } else { // load the version (GIT) of this package as fallback
             $version = $event->getComposer()->getPackage()->getPrettyVersion();
         }
 

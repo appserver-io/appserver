@@ -1,6 +1,6 @@
 <?php
 /**
- * AppserverIo\Appserver\Core\Api\Node\ServerNode
+ * AppserverIo\Appserver\Core\Api\Node\StorageServerNode
  *
  * PHP version 5
  *
@@ -26,7 +26,7 @@ namespace AppserverIo\Appserver\Core\Api\Node;
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       http://www.appserver.io
  */
-class ServerNode extends AbstractNode
+class StorageServerNode extends AbstractNode
 {
 
     /**

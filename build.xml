@@ -95,6 +95,8 @@
                 <include name="etc/appserver/conf.d/context.xml" />
             </fileset>
         </copy>
+        <!-- create the file with the version number -->
+        <echo file="${php-target.dir}/appserver/etc/appserver/.release-version" message="dev-master.${build.number}" />
     </target>
     
     <!-- ==================================================================== -->
