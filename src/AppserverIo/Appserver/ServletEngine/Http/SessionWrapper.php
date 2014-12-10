@@ -148,6 +148,9 @@ class SessionWrapper extends HttpSessionWrapper
             $this->getResponse()->addCookie($cookie);
         }
 
+        // reset the requested session ID in the request
+        $this->getRequest()->setRequestedSessionId(null);
+
         // destroy the sessions data
         parent::destroy($reason);
     }

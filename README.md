@@ -1341,7 +1341,7 @@ additional servers you can do so with some lines of XML.You might have a look at
 
 ## The Architecture
 
-In this example we have a shortened piece of the `apserver.xml` file to understand how the 
+In this example we have a shortened piece of the `appserver.xml` file to understand how the 
 architecture is driven by configuration.
 
 ```xml

@@ -197,8 +197,12 @@ class Setup
     public static function postInstall(Event $event)
     {
 
-        // load the version of this package => the appserver version
-        $version = $event->getComposer()->getPackage()->getVersion();
+        // check if we've a file with the actual version number
+        if (file_exists($filename = getcwd() .'/etc/appserver/.release-version')) {
+            $version = file_get_contents($filename);
+        } else { // load the version (GIT) of this package as fallback
+            $version = $event->getComposer()->getPackage()->getPrettyVersion();
+        }
 
         // prepare the context properties
         $contextProperties = array(
@@ -278,7 +282,6 @@ class Setup
         }
 
         // process and move the configuration files their target directory
-        Setup::processTemplate('var/tmp/opcache-blacklist.txt');
         Setup::processTemplate('etc/appserver/appserver.xml');
 
         // write a message to the console
