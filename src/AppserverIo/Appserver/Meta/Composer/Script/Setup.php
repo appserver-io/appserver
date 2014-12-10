@@ -282,7 +282,6 @@ class Setup
         }
 
         // process and move the configuration files their target directory
-        Setup::processTemplate('var/tmp/opcache-blacklist.txt');
         Setup::processTemplate('etc/appserver/appserver.xml');
 
         // write a message to the console
