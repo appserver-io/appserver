@@ -299,6 +299,11 @@ use AppserverIo\Psr\Servlet\Http\HttpServletResponse;
 
 /**
  * This is the famous 'Hello World' as servlet implementation.
+ *
+ * @Route(name="helloWorld",
+ *        displayName="I'm the 'Hello World!' servlet",
+ *        description="A annotated 'Hello World!' servlet implementation.",
+ *        urlPattern={"/helloWorld.do", "/helloWorld.do*"})
  */
 class HelloWorldServlet extends HttpServlet
 {
@@ -353,41 +358,12 @@ class HelloWorldServlet extends HttpServlet
 
 and save it as `/opt/appserver/webapps/myapp/WEB-INF/classes/Namespace/Module/HelloWorldServlet.php`.
 
-Is that all? Actually unfortunately not. To make your servlet run, you've to register it with a 
-simple XML file
+Is that all? Yes! [Restart](#start-and-stop-scripts) the application server and open 
+`http://127.0.0.1:9080/myapp/helloWorld.do` in your favorite browser, and ... vóila :)
 
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<web-app version="1.0">
-
-  <display-name>appserver.io example application</display-name>
-  <description>
-    This is the example application for the appserver.io servlet engine.
-  </description>
-
-  <servlet>
-    <description>The hello world as servlet implementation.</description>
-    <display-name>The famous 'Hello World' example</display-name>
-    <servlet-name>helloWorld</servlet-name>
-    <servlet-class>\Namespace\Module\HelloWorldServlet</servlet-class>
-  </servlet>
-
-  <servlet-mapping>
-    <servlet-name>helloWorld</servlet-name>
-    <url-pattern>/helloWorld.do</url-pattern>
-  </servlet-mapping>
-
-</web-app>
-```
-
-Save the file as `/opt/appserver/webapps/myapp/WEB-INF/web.xml` and [restart](#start-and-stop-scripts)
-the application server and open `http://127.0.0.1:9080/myapp/helloWorld.do` in your favorite 
-browser, and ... vóila :)
-
-> Seems to be very simple we think! Till the stable 1.0.0 we'll also provide annotations that
-> allows you to configure your Servlet without the need to create a XML configuration. In 
-> future, the XML configuration will always overwrite annotations in future versions, keep that
-> in mind!
+> A restart is always required since you changed code in your Servlet, because the Servlet
+> will be loaded and initialized when the the application server starts. Without a restart
+> the application server doesn't know anything about your changes.
 
 # Annotations
 
