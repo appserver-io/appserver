@@ -446,11 +446,11 @@ class Server
         // start the container threads
         $this->startContainers();
 
-        // init the provisioner
-        $this->initProvisioners();
-
         // Switch to the configured user (if any)
         $this->initProcessUser();
+
+        // init the provisioner
+        $this->initProvisioners();
     }
 
     /**
