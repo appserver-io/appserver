@@ -116,13 +116,6 @@ class CreateDatabaseStep extends AbstractStep
             $schemaTool->dropSchema($classes);
             $schemaTool->createSchema($classes);
 
-            // set the user rights for the database we've created
-            if (isset($connectionParameters[CreateDatabaseStep::CONNECTION_PARAM_PATH])) {
-                $this->getService()->setUserRight(
-                    new \SplFileInfo($connectionParameters[CreateDatabaseStep::CONNECTION_PARAM_PATH])
-                );
-            }
-
         } catch (\Exception $e) {
             error_log($e->__toString());
         }
