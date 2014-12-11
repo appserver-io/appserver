@@ -1,3 +1,13 @@
+# Version 1.0.0-beta2
+
+# Bugfixes
+
+* Bugfixing for invalid folder check when try to parse folders defined in context.xml for servlets
+
+# Features
+
+* None
+
 # Version 1.0.0-beta1
 
 ## Bugfixes
