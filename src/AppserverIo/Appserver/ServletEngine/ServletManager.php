@@ -263,10 +263,12 @@ class ServletManager extends \Stackable implements ServletContext, ManagerInterf
                                 $reflectionAnnotation->getValues()
                             );
 
+                            error_log(print_r($reflectionAnnotation->getValues(), true));
+
                             // instanciate the servlet
                             $instance = $reflectionClass->newInstance();
 
-                            // load the servlet name
+                            // try to load the servlet name from the @Route annotation
                             $servletName = $routeAnnotation->getName();
                             if ($servletName == null) { // check if a servlet name is specified
                                 $servletName = lcfirst($reflectionClass->getShortName());
@@ -278,11 +280,9 @@ class ServletManager extends \Stackable implements ServletContext, ManagerInterf
                             $servletConfig->injectServletName($servletName);
 
                             // append the init params to the servlet configuration
-                            if ($initParams = $routeAnnotation->getInitParams()) {
-                                foreach ($initParams as $initParam) {
-                                    list ($paramName, $paramValue) = each($initParam);
-                                    $servletConfig->addInitParameter($paramName, $paramValue);
-                                }
+                            foreach ($routeAnnotation->getInitParams() as $initParam) {
+                                list ($paramName, $paramValue) = each($initParam);
+                                $servletConfig->addInitParameter($paramName, $paramValue);
                             }
 
                             // initialize the servlet
@@ -292,10 +292,8 @@ class ServletManager extends \Stackable implements ServletContext, ManagerInterf
                             $this->addServlet($servletName, $instance);
 
                             // prepend the url-pattern - servlet mapping to the servlet mappings
-                            if ($urlPattern = $routeAnnotation->getUrlPattern()) {
-                                foreach ($urlPattern as $pattern) {
-                                    $this->servletMappings[$pattern] = $servletName;
-                                }
+                            foreach ($routeAnnotation->getUrlPattern() as $pattern) {
+                                $this->servletMappings[$pattern] = $servletName;
                             }
                         }
 
