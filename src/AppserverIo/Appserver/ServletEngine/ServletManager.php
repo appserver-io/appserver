@@ -263,8 +263,6 @@ class ServletManager extends \Stackable implements ServletContext, ManagerInterf
                                 $reflectionAnnotation->getValues()
                             );
 
-                            error_log(print_r($reflectionAnnotation->getValues(), true));
-
                             // instanciate the servlet
                             $instance = $reflectionClass->newInstance();
 
@@ -309,7 +307,7 @@ class ServletManager extends \Stackable implements ServletContext, ManagerInterf
             }
 
             // it's no valid application without at least the web.xml file
-            if (!file_exists($web = $folder . DIRECTORY_SEPARATOR . 'WEB-INF' . DIRECTORY_SEPARATOR . 'web.xml')) {
+            if (file_exists($web = $folder . DIRECTORY_SEPARATOR . 'WEB-INF' . DIRECTORY_SEPARATOR . 'web.xml') === false) {
                 return;
             }
 
