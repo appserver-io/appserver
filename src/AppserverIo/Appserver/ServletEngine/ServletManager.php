@@ -247,8 +247,7 @@ class ServletManager extends \Stackable implements ServletContext, ManagerInterf
                         // cut off the META-INF directory and replace OS specific directory separators
                         $relativePathToPhpFile = str_replace(DIRECTORY_SEPARATOR, '\\', str_replace($directory, '', $phpFile));
 
-                        // now cut off the first directory, that'll be '/classes' by default
-                        // $pregResult = preg_replace('%^(\\\\*)[^\\\\]+%', '', $relativePathToPhpFile);
+                        // now cut off the file .php extension
                         $className = substr($relativePathToPhpFile, 0, -4);
 
                         // we need a reflection class to read the annotations
@@ -259,15 +258,26 @@ class ServletManager extends \Stackable implements ServletContext, ManagerInterf
 
                             // load the reflection class instance
                             $reflectionAnnotation = $reflectionClass->getAnnotation(Route::ANNOTATION);
-                            $routeAnnotation = $reflectionAnnotation->newInstance($reflectionAnnotation->getAnnotationName(), $reflectionAnnotation->getValues());
+                            $routeAnnotation = $reflectionAnnotation->newInstance(
+                                $reflectionAnnotation->getAnnotationName(),
+                                $reflectionAnnotation->getValues()
+                            );
+
+                            error_log(print_r($reflectionAnnotation->getValues(), true));
 
                             // instanciate the servlet
                             $instance = $reflectionClass->newInstance();
 
+                            // try to load the servlet name from the @Route annotation
+                            $servletName = $routeAnnotation->getName();
+                            if ($servletName == null) { // check if a servlet name is specified
+                                $servletName = lcfirst($reflectionClass->getShortName());
+                            }
+
                             // initialize the servlet configuration
                             $servletConfig = new ServletConfiguration();
                             $servletConfig->injectServletContext($this);
-                            $servletConfig->injectServletName($servletName = $routeAnnotation->getName());
+                            $servletConfig->injectServletName($servletName);
 
                             // append the init params to the servlet configuration
                             foreach ($routeAnnotation->getInitParams() as $initParam) {
@@ -282,8 +292,8 @@ class ServletManager extends \Stackable implements ServletContext, ManagerInterf
                             $this->addServlet($servletName, $instance);
 
                             // prepend the url-pattern - servlet mapping to the servlet mappings
-                            foreach ($routeAnnotation->getUrlPattern() as $urlPattern) {
-                                $this->servletMappings[$urlPattern] = $servletName;
+                            foreach ($routeAnnotation->getUrlPattern() as $pattern) {
+                                $this->servletMappings[$pattern] = $servletName;
                             }
                         }
 
