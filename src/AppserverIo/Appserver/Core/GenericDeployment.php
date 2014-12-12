@@ -56,6 +56,9 @@ class GenericDeployment extends AbstractDeployment
     public function deploy(ContainerInterface $container)
     {
 
+        // create a Mutex instance
+        $mutex = \Mutex::create();
+
         // load the context instances for this container
         $contextInstances = $this->getDeploymentService()->loadContextInstancesByContainer($container);
 
@@ -121,6 +124,9 @@ class GenericDeployment extends AbstractDeployment
                     }
                 }
 
+                // lock the mutex for the manager initialization
+                \Mutex::lock($mutex);
+
                 // add the configured managers
                 foreach ($context->getManagers() as $manager) {
                     if ($managerFactory = $manager->getFactory()) { // use the factory if available
@@ -130,6 +136,9 @@ class GenericDeployment extends AbstractDeployment
                         $application->addManager(new $managerType($manager), $manager);
                     }
                 }
+
+                // unlock the mutex after the manager initialization
+                \Mutex::unlock($mutex);
 
                 // add the application to the container
                 $container->addApplication($application);
