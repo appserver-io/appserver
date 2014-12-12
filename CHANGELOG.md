@@ -3,7 +3,7 @@
 ## Bugfixes
 
 * Set correct class name for Core\Api\Node\StorageServerNode to avoid warning if use Composer --optimizer-autoloader
-* Changed order of provisioning and process user switch to avoid problems of file system related provisioning steps
+* Changed behaviour of DB creation provisioning step so it does not need root permissions
 
 ## Features
 
