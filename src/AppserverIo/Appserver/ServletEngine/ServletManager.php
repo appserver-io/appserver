@@ -263,8 +263,6 @@ class ServletManager extends \Stackable implements ServletContext, ManagerInterf
                                 $reflectionAnnotation->getValues()
                             );
 
-                            error_log(print_r($reflectionAnnotation->getValues(), true));
-
                             // instanciate the servlet
                             $instance = $reflectionClass->newInstance();
 
