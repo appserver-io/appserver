@@ -279,7 +279,7 @@ class ServletManager extends \Stackable implements ServletContext, ManagerInterf
 
                             // append the init params to the servlet configuration
                             foreach ($routeAnnotation->getInitParams() as $initParam) {
-                                list ($paramName, $paramValue) = each($initParam);
+                                list ($paramName, $paramValue) = $initParam;
                                 $servletConfig->addInitParameter($paramName, $paramValue);
                             }
 

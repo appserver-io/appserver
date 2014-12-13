@@ -25,12 +25,12 @@
 namespace AppserverIo\Appserver\MessageQueue;
 
 use AppserverIo\Storage\GenericStackable;
+use AppserverIo\Psr\Naming\NamingException;
 use AppserverIo\Psr\MessageQueueProtocol\Queue;
 use AppserverIo\Psr\MessageQueueProtocol\Message;
 use AppserverIo\Psr\MessageQueueProtocol\QueueContext;
 use AppserverIo\Psr\Application\ManagerInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
-
 /**
  * The queue manager handles the queues and message beans registered for the application.
  *
@@ -94,6 +94,18 @@ class QueueManager extends GenericStackable implements QueueContext, ManagerInte
     }
 
     /**
+     * Inject the application instance.
+     *
+     * @param \AppserverIo\Psr\Application\ApplicationInterface $application The application instance
+     *
+     * @return void
+     */
+    public function injectApplication(ApplicationInterface $application)
+    {
+        $this->application = $application;
+    }
+
+    /**
      * Has been automatically invoked by the container after the application
      * instance has been created.
      *
@@ -133,6 +145,10 @@ class QueueManager extends GenericStackable implements QueueContext, ManagerInte
                         continue;
                     }
 
+                    // load the global naming directory
+                    $this->directories = new GenericStackable();
+                    $this->directories[] = $this->getApplication()->getParent();
+
                     // iterate over all found queues and initialize them
                     foreach ($nodes as $node) {
 
@@ -140,10 +156,32 @@ class QueueManager extends GenericStackable implements QueueContext, ManagerInte
                         $attributes = $node->attributes();
 
                         // create a new queue instance
-                        $instance = MessageQueue::createQueue((string)$node->destination, (string)$attributes['type']);
+                        $instance = MessageQueue::createQueue((string) $node->destination, (string) $attributes['type']);
 
                         // register destination and receiver type
                         $this->queues[$instance->getName()] = $instance;
+
+                        /*
+                        // prepare the sender lookup name => necessary for the DI provider
+                        $lookupName = 'pms/' . $this->getApplication()->getName() . '/' . $node->destination;
+
+                        // prepare the naming diretory to bind the callbak to
+                        $path = explode('/', $lookupName);
+                        for ($i = 0; $i < sizeof($path) - 1; $i++) {
+                            try {
+                                $this->directories[$i]->search($path[$i]);
+                            } catch (NamingException $ne) {
+                                $this->directories[$i + 1] = $this->directories[$i]->createSubdirectory($path[$i]);
+                            }
+                        }
+
+                        // bind the call for creating a new sender instance to the naming directory => necessary for DI provider
+                        $this->getApplication()->getParent()->bindCallback(
+                            sprintf('php:%s', $lookupName),
+                            array(&$this, 'createSenderForQueue'),
+                            array((string) $node->destination)
+                        );
+                        */
                     }
                 }
             }
@@ -182,6 +220,16 @@ class QueueManager extends GenericStackable implements QueueContext, ManagerInte
     }
 
     /**
+     * Returns the application instance.
+     *
+     * @return string The application instance
+     */
+    public function getApplication()
+    {
+        return $this->application;
+    }
+
+    /**
      * Returns TRUE if the application is related with the
      * passed queue instance.
      *
@@ -205,6 +253,43 @@ class QueueManager extends GenericStackable implements QueueContext, ManagerInte
     public function locate(Queue $queue)
     {
         return $this->getResourceLocator()->locate($this, $queue);
+    }
+
+    /**
+     * Runs a lookup for the message queue with the passed class name and
+     * session ID.
+     *
+     * @param string $lookupName The servlet path
+     * @param string $sessionId  The session ID
+     * @param array  $args       The arguments passed to the queue
+     *
+     * @return \AppserverIo\Psr\Servlet\GenericServlet The requested servlet
+     * @todo Still to implement
+     */
+    public function lookup($lookupName, $sessionId = null, array $args = array())
+    {
+        // still to implement
+    }
+
+    /**
+     * Return a new sender for the message queue with the passed lookup name.
+     *
+     * @param string $lookupName The lookup name of the queue to return a sender for
+     * @param string $sessionId  The session-ID to be passed to the queue session
+     *
+     * @return \AppserverIo\MessageQueueClient\QueueSender The sender instance
+     */
+    public function createSenderForQueue($lookupName, $sessionId = null)
+    {
+
+        // load the application name
+        $applicationName = $this->getApplication()->getName();
+
+        // initialize and return the sender
+        $queue = \AppserverIo\MessageQueueClient\MessageQueue::createQueue($lookupName);
+        $connection = \AppserverIo\MessageQueueClient\QueueConnectionFactory::createQueueConnection($applicationName);
+        $session = $connection->createQueueSession();
+        return $session->createSender($queue);
     }
 
     /**

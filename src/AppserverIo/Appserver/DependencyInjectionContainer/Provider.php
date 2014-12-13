@@ -341,7 +341,7 @@ class Provider extends GenericStackable implements ProviderInterface
                 // load the PHP ReflectionProperty instance to inject the resource instance
                 $phpReflectionProperty = $reflectionProperty->toPhpReflectionProperty();
                 $phpReflectionProperty->setAccessible(true);
-                $phpReflectionProperty->setValue($instance, $this->getNamingDirectory()->search($lookupName));
+                $phpReflectionProperty->setValue($instance, $this->getNamingDirectory()->search($lookupName, array($sessionId)));
             }
         }
 
@@ -367,7 +367,7 @@ class Provider extends GenericStackable implements ProviderInterface
                 $lookupName = $this->getLookupName($annotation);
 
                 // inject the resource instance
-                $reflectionMethod->invoke($instance, $this->getNamingDirectory()->search($lookupName));
+                $reflectionMethod->invoke($instance, $this->getNamingDirectory()->search($lookupName, array($sessionId)));
             }
         }
 

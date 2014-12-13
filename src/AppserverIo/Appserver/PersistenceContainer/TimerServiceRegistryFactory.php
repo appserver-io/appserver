@@ -26,6 +26,7 @@ namespace AppserverIo\Appserver\PersistenceContainer;
 use AppserverIo\Storage\StackableStorage;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\Application\Interfaces\ManagerConfigurationInterface;
+use AppserverIo\Storage\GenericStackable;
 
 /**
  * A factory for the timer service registry instances.
@@ -59,14 +60,16 @@ class TimerServiceRegistryFactory
         // initialize the stackable for the data, the services and the scheduled timer tasks
         $data = new StackableStorage();
         $services = new StackableStorage();
-        $scheduledTimerTasks = new StackableStorage();
-        
+        $tasksToExecute = new GenericStackable();
+        $scheduledTimers = new GenericStackable();
+
         // initialize the executor for the scheduled timer tasks
         $timerServiceExecutor = new TimerServiceExecutor();
         $timerServiceExecutor->injectApplication($application);
-        $timerServiceExecutor->injectScheduledTimerTasks($scheduledTimerTasks);
+        $timerServiceExecutor->injectTasksToExecute($tasksToExecute);
+        $timerServiceExecutor->injectScheduledTimers($scheduledTimers);
         $timerServiceExecutor->start();
-        
+
         // initialize the service registry
         $serviceRegistry = new TimerServiceRegistry();
         $serviceRegistry->injectData($data);
