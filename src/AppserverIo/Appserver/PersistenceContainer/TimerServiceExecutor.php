@@ -143,13 +143,8 @@ class TimerServiceExecutor extends \Thread implements ServiceExecutor
         // force handling the timer tasks now
         $this->synchronized(function ($self, $t) {
 
-            // we need the timer-ID
-            $timerId = $t->getId();
-
-            // check if we already have this timer registered
-            if (array_key_exists($timerId, $self->scheduledTimers) === false) { // if not, register it
-                $self->scheduledTimers[$timerId] = $t;
-            }
+            // store the timer-ID and the PK of the timer service => necessary to load the timer later
+            $self->scheduledTimers[$timerId = $t->getId()] = $t->getTimerService()->getPrimaryKey();
 
             // create a wrapper instance for the timer task that we want to schedule
             $timerTaskWrapper = new \stdClass();
@@ -215,12 +210,18 @@ class TimerServiceExecutor extends \Thread implements ServiceExecutor
                     if ($timerTaskWrapper->executeAt < microtime(true)) {
 
                         // load the timer task wrapper we want to execute
-                        if ($timer = $this->scheduledTimers[$timerTaskWrapper->timerId]) {
+                        if ($pk = $this->scheduledTimers[$timerId = $timerTaskWrapper->timerId]) {
 
-                            // if yes, create the timer task and execute it
+                            // load the timer service registry
+                            $timerServiceRegistry = $this->getApplication()->search('TimerServiceContext');
+
+                            // load the timer from the timer service
+                            $timer = $timerServiceRegistry->locate($pk)->getTimers()->get($timerId);
+
+                            // create the timer task to be executed
                             $timerTasksExecuting[$taskId] = $timer->getTimerTask($application);
 
-                            // remove the key from the list ot tasks to be exectued
+                            // remove the key from the list ot tasks to be executed
                             unset($this->tasksToExecute[$taskId]);
 
                         } else {
@@ -239,14 +240,8 @@ class TimerServiceExecutor extends \Thread implements ServiceExecutor
                     // query, whether the timer has finished
                     if ($executingTimerTask->isFinished()) {
 
-                        // check if the timer is still active and has a next expiration
-                        if ($executingTimerTask->getTimer()->isActive() === false) {
-
-                            // @todo: Clean up here but be aware of segfaults when the Timer
-                            //        instance will be unset!
-                            // unset($timerTasksExecuting[$taskId]);
-                            // unset($this->scheduledTimers[$processId]);
-                        }
+                        // remove the finished timer task from the list
+                        unset($timerTasksExecuting[$taskId]);
                     }
                 }
 
