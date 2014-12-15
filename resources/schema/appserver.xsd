@@ -120,6 +120,7 @@
                 <xs:element ref="appserver:modules" />
                 <xs:element ref="appserver:fileHandlers" />
                 <xs:element ref="appserver:locations" />
+                <xs:element ref="appserver:analytics" />
             </xs:choice>
             <xs:attribute name="name" type="xs:string" />
             <xs:attribute name="type" type="xs:string" />
@@ -165,6 +166,41 @@
             <xs:attribute name="uuid" type="xs:string" />
         </xs:complexType>
     </xs:element>
+    <xs:element name="analytics">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="appserver:analytic" />
+            </xs:choice>
+            <xs:attribute name="uuid" type="xs:string" />
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="analytic">
+        <xs:complexType>
+            <xs:choice minOccurs="1" maxOccurs="1">
+                <xs:element ref="appserver:connectors" />
+            </xs:choice>
+            <xs:attribute name="uri" type="xs:string" />
+            <xs:attribute name="uuid" type="xs:string" />
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="connectors">
+        <xs:complexType>
+            <xs:choice minOccurs="1" maxOccurs="unbounded">
+                <xs:element ref="appserver:connector" />
+            </xs:choice>
+            <xs:attribute name="uuid" type="xs:string" />
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="connector">
+        <xs:complexType>
+            <xs:choice minOccurs="0" maxOccurs="1">
+                <xs:element ref="appserver:params" />
+            </xs:choice>
+            <xs:attribute name="name" type="xs:string" />
+            <xs:attribute name="type" type="xs:string" />
+            <xs:attribute name="uuid" type="xs:string" />
+        </xs:complexType>
+    </xs:element>
     <xs:element name="rewriteMaps">
         <xs:complexType>
             <xs:choice maxOccurs="unbounded">
@@ -193,6 +229,7 @@
     <xs:element name="virtualHost">
         <xs:complexType>
             <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element ref="appserver:analytics" />
                 <xs:element ref="appserver:params" />
                 <xs:element ref="appserver:rewrites" />
                 <xs:element ref="appserver:authentications" />
