@@ -86,18 +86,6 @@ class Application extends \Thread implements ApplicationInterface
     }
 
     /**
-     * The mutex to lock/unlock resources during application deployment.
-     *
-     * @param integer $mutex The mutex to lock/unlock resources during application deployment
-     *
-     * @param void
-     */
-    public function injectMutex($mutex)
-    {
-        $this->mutex = $mutex;
-    }
-
-    /**
      * Returns the value with the passed name from the context.
      *
      * @param string $key The key of the value to return from the context.
@@ -215,6 +203,18 @@ class Application extends \Thread implements ApplicationInterface
     public function injectInitialContext(ContextInterface $initialContext)
     {
         $this->initialContext = $initialContext;
+    }
+
+    /**
+     * The mutex to lock/unlock resources during application deployment.
+     *
+     * @param integer $mutex The mutex to lock/unlock resources during application deployment
+     *
+     * @return void
+     */
+    public function injectMutex($mutex)
+    {
+        $this->mutex = $mutex;
     }
 
     /**

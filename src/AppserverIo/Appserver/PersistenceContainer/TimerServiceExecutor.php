@@ -79,7 +79,7 @@ class TimerServiceExecutor extends \Thread implements ServiceExecutor
     /**
      * Injects the storage for the scheduled timers.
      *
-     * @param \AppserverIo\Storage\GenericStackable $scheduledTimerTasks The storage for the scheduled timers
+     * @param \AppserverIo\Storage\GenericStackable $scheduledTimers The storage for the scheduled timers
      *
      * @return void
      */
@@ -91,7 +91,7 @@ class TimerServiceExecutor extends \Thread implements ServiceExecutor
     /**
      * Injects the storage for the ID's of the tasks to be executed.
      *
-     * @param \AppserverIo\Storage\GenericStackable $scheduledTimerTasks The storage for the ID's of the tasks to be executed
+     * @param \AppserverIo\Storage\GenericStackable $tasksToExecute The storage for the ID's of the tasks to be executed
      *
      * @return void
      */

@@ -190,7 +190,7 @@ class QueueManager extends GenericStackable implements QueueContext, ManagerInte
                     $application->bindCallback($destination, array(&$this, 'createSenderForQueue'), array($destination));
                 }
 
-            } catch(\Exception $e) { // if class can not be reflected continue with next class
+            } catch (\Exception $e) { // if class can not be reflected continue with next class
 
                 // log an error message
                 $application->getInitialContext()->getSystemLogger()->error($e->__toString());
