@@ -25,6 +25,7 @@
 namespace AppserverIo\Appserver\MessageQueue;
 
 use AppserverIo\Storage\GenericStackable;
+use AppserverIo\Psr\Naming\NamingException;
 use AppserverIo\Psr\MessageQueueProtocol\Queue;
 use AppserverIo\Psr\MessageQueueProtocol\Message;
 use AppserverIo\Psr\MessageQueueProtocol\QueueContext;
@@ -94,6 +95,18 @@ class QueueManager extends GenericStackable implements QueueContext, ManagerInte
     }
 
     /**
+     * Inject the application instance.
+     *
+     * @param \AppserverIo\Psr\Application\ApplicationInterface $application The application instance
+     *
+     * @return void
+     */
+    public function injectApplication(ApplicationInterface $application)
+    {
+        $this->application = $application;
+    }
+
+    /**
      * Has been automatically invoked by the container after the application
      * instance has been created.
      *
@@ -104,48 +117,86 @@ class QueueManager extends GenericStackable implements QueueContext, ManagerInte
      */
     public function initialize(ApplicationInterface $application)
     {
-        $this->registerMessageQueues();
+        $this->registerMessageQueues($application);
     }
 
     /**
      * Deploys the message queues.
      *
+     * @param \AppserverIo\Psr\Application\ApplicationInterface $application The application instance
+     *
      * @return void
      */
-    protected function registerMessageQueues()
+    protected function registerMessageQueues(ApplicationInterface $application)
     {
 
-        if (is_dir($basePath = $this->getWebappPath() . DIRECTORY_SEPARATOR . 'META-INF')) {
+        // build up META-INF directory var
+        $metaInfDir = $this->getWebappPath() . DIRECTORY_SEPARATOR .'META-INF';
 
-            $iterator = new \FilesystemIterator($basePath);
+        // check if we've found a valid directory
+        if (is_dir($metaInfDir) === false) {
+            return;
+        }
 
-            // gather all the deployed web applications
-            foreach (new \RegexIterator($iterator, '/^.*\.xml$/') as $file) {
+        // check META-INF + subdirectories for XML files with MQ definitions
+        $service = $application->newService('AppserverIo\Appserver\Core\Api\DeploymentService');
+        $xmlFiles = $service->globDir($metaInfDir . DIRECTORY_SEPARATOR . '*.xml');
 
-                // check if file or sub directory has been found
-                if ($file->isDir() === false) {
+        // initialize the array for the creating the subdirectories
+        $this->directories = new GenericStackable();
+        $this->directories[] = $application;
 
-                    // try to initialize a SimpleXMLElement
-                    $sxe = new \SimpleXMLElement($file, null, true);
+        // gather all the deployed web applications
+        foreach ($xmlFiles as $file) {
 
-                    // lookup the MessageQueue's defined in the passed XML node
-                    if (($nodes = $sxe->xpath("/message-queues/message-queue")) === false) {
-                        continue;
-                    }
+            try {
 
-                    // iterate over all found queues and initialize them
-                    foreach ($nodes as $node) {
+                // try to initialize a SimpleXMLElement
+                $sxe = new \SimpleXMLElement($file, null, true);
 
-                        // load the nodes attributes
-                        $attributes = $node->attributes();
-
-                        // create a new queue instance
-                        $instance = MessageQueue::createQueue((string)$node->destination, (string)$attributes['type']);
-
-                        // register destination and receiver type
-                        $this->queues[$instance->getName()] = $instance;
-                    }
+                // lookup the MessageQueue's defined in the passed XML node
+                if (($nodes = $sxe->xpath('/message-queues/message-queue')) === false) {
+                    continue;
                 }
+
+                // iterate over all found queues and initialize them
+                foreach ($nodes as $node) {
+
+                    // load the nodes attributes
+                    $attributes = $node->attributes();
+
+                    // load destination queue and receiver type
+                    $destination = (string) $node->destination;
+                    $type = (string) $attributes['type'];
+
+                    // create a new queue instance
+                    $instance = MessageQueue::createQueue($destination, $type);
+
+                    // register destination and receiver type
+                    $this->queues[$instance->getName()] = $instance;
+
+                    // prepare the naming diretory to bind the callbak to
+                    $path = explode('/', $destination);
+
+                    for ($i = 0; $i < sizeof($path) - 1; $i++) {
+                        try {
+                            $this->directories[$i]->search($path[$i]);
+                        } catch (NamingException $ne) {
+                            $this->directories[$i + 1] = $this->directories[$i]->createSubdirectory($path[$i]);
+                        }
+                    }
+
+                    // bind the callback for creating a new MQ sender instance to the naming directory => necessary for DI provider
+                    $application->bindCallback($destination, array(&$this, 'createSenderForQueue'), array($destination));
+                }
+
+            } catch (\Exception $e) { // if class can not be reflected continue with next class
+
+                // log an error message
+                $application->getInitialContext()->getSystemLogger()->error($e->__toString());
+
+                // proceed with the nexet bean
+                continue;
             }
         }
     }
@@ -182,6 +233,16 @@ class QueueManager extends GenericStackable implements QueueContext, ManagerInte
     }
 
     /**
+     * Returns the application instance.
+     *
+     * @return string The application instance
+     */
+    public function getApplication()
+    {
+        return $this->application;
+    }
+
+    /**
      * Returns TRUE if the application is related with the
      * passed queue instance.
      *
@@ -205,6 +266,43 @@ class QueueManager extends GenericStackable implements QueueContext, ManagerInte
     public function locate(Queue $queue)
     {
         return $this->getResourceLocator()->locate($this, $queue);
+    }
+
+    /**
+     * Runs a lookup for the message queue with the passed class name and
+     * session ID.
+     *
+     * @param string $lookupName The servlet path
+     * @param string $sessionId  The session ID
+     * @param array  $args       The arguments passed to the queue
+     *
+     * @return \AppserverIo\Psr\Servlet\GenericServlet The requested servlet
+     * @todo Still to implement
+     */
+    public function lookup($lookupName, $sessionId = null, array $args = array())
+    {
+        // still to implement
+    }
+
+    /**
+     * Return a new sender for the message queue with the passed lookup name.
+     *
+     * @param string $lookupName The lookup name of the queue to return a sender for
+     * @param string $sessionId  The session-ID to be passed to the queue session
+     *
+     * @return \AppserverIo\MessageQueueClient\QueueSender The sender instance
+     */
+    public function createSenderForQueue($lookupName, $sessionId = null)
+    {
+
+        // load the application name
+        $applicationName = $this->getApplication()->getName();
+
+        // initialize and return the sender
+        $queue = \AppserverIo\MessageQueueClient\MessageQueue::createQueue($lookupName);
+        $connection = \AppserverIo\MessageQueueClient\QueueConnectionFactory::createQueueConnection($applicationName);
+        $session = $connection->createQueueSession();
+        return $session->createSender($queue);
     }
 
     /**

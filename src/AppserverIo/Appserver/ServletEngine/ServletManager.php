@@ -176,7 +176,7 @@ class ServletManager extends \Stackable implements ServletContext, ManagerInterf
      */
     public function initialize(ApplicationInterface $application)
     {
-        $this->registerServlets();
+        $this->registerServlets($application);
     }
 
     /**
@@ -209,9 +209,11 @@ class ServletManager extends \Stackable implements ServletContext, ManagerInterf
     /**
      * Finds all servlets which are provided by the webapps and initializes them.
      *
+     * @param \AppserverIo\Psr\Application\ApplicationInterface $application The application instance
+     *
      * @return void
      */
-    protected function registerServlets()
+    protected function registerServlets(ApplicationInterface $application)
     {
 
         // the phar files have been deployed into folders
@@ -236,8 +238,8 @@ class ServletManager extends \Stackable implements ServletContext, ManagerInterf
             foreach ($directories as $directory) {
 
                 // check WEB-INF classes or any other sub folder to pre init servlets
-                $recursiveIterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($directory));
-                $phpFiles = new \RegexIterator($recursiveIterator, '/^(.+)\.php$/i');
+                $service = $application->newService('AppserverIo\Appserver\Core\Api\DeploymentService');
+                $phpFiles = $service->globDir($directory . DIRECTORY_SEPARATOR . '*.php');
 
                 // iterate all php files
                 foreach ($phpFiles as $phpFile) {
@@ -279,7 +281,7 @@ class ServletManager extends \Stackable implements ServletContext, ManagerInterf
 
                             // append the init params to the servlet configuration
                             foreach ($routeAnnotation->getInitParams() as $initParam) {
-                                list ($paramName, $paramValue) = each($initParam);
+                                list ($paramName, $paramValue) = $initParam;
                                 $servletConfig->addInitParameter($paramName, $paramValue);
                             }
 

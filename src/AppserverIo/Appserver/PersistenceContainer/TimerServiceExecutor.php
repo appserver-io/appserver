@@ -24,7 +24,7 @@
 namespace AppserverIo\Appserver\PersistenceContainer;
 
 use AppserverIo\Logger\LoggerUtils;
-use AppserverIo\Storage\StorageInterface;
+use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Psr\EnterpriseBeans\TimerInterface;
 
@@ -51,11 +51,18 @@ class TimerServiceExecutor extends \Thread implements ServiceExecutor
     protected $application;
 
     /**
-     * Contains the scheduled timer tasks.
+     * Contains the scheduled timers.
      *
      * @var \AppserverIo\Storage\GenericStackable
      */
-    protected $scheduledTimerTasks;
+    protected $scheduledTimers;
+
+    /**
+     * Contains the ID's of the tasks to be executed.
+     *
+     * @var \AppserverIo\Storage\GenericStackable
+     */
+    protected $tasksToExecute;
 
     /**
      * Injects the application instance.
@@ -70,15 +77,27 @@ class TimerServiceExecutor extends \Thread implements ServiceExecutor
     }
 
     /**
-     * Injects the storage for the scheduled timer tasks.
+     * Injects the storage for the scheduled timers.
      *
-     * @param \AppserverIo\Storage\StorageInterface $scheduledTimerTasks The storage for the scheduled timer tasks
+     * @param \AppserverIo\Storage\GenericStackable $scheduledTimers The storage for the scheduled timers
      *
      * @return void
      */
-    public function injectScheduledTimerTasks(StorageInterface $scheduledTimerTasks)
+    public function injectScheduledTimers(GenericStackable $scheduledTimers)
     {
-        $this->scheduledTimerTasks = $scheduledTimerTasks;
+        $this->scheduledTimers = $scheduledTimers;
+    }
+
+    /**
+     * Injects the storage for the ID's of the tasks to be executed.
+     *
+     * @param \AppserverIo\Storage\GenericStackable $tasksToExecute The storage for the ID's of the tasks to be executed
+     *
+     * @return void
+     */
+    public function injectTasksToExecute(GenericStackable $tasksToExecute)
+    {
+        $this->tasksToExecute = $tasksToExecute;
     }
 
     /**
@@ -92,13 +111,23 @@ class TimerServiceExecutor extends \Thread implements ServiceExecutor
     }
 
     /**
-     * Returns the scheduled timer tasks.
+     * Returns the scheduled timers.
      *
-     * @return \AppserverIo\Storage\StorageInterface A collection of scheduled timer tasks
+     * @return \AppserverIo\Storage\GenericStackable A collection of scheduled timers
      **/
-    public function getScheduledTimerTasks()
+    public function getScheduledTimers()
     {
-        return $this->scheduledTimerTasks;
+        return $this->scheduledTimers;
+    }
+
+    /**
+     * Returns the storage of the ID's of the tasks to be executed.
+     *
+     * @return \AppserverIo\Storage\GenericStackable The storage for the ID's of the tasks to be executed
+     **/
+    public function getTasksToExecute()
+    {
+        return $this->tasksToExecute;
     }
 
     /**
@@ -108,21 +137,28 @@ class TimerServiceExecutor extends \Thread implements ServiceExecutor
      *
      * @return void
      */
-    protected function schedule(TimerInterface $timer)
+    public function schedule(TimerInterface $timer)
     {
 
-        // create a wrapper instance for the timer task that we want to schedule
-        $timerTaskWrapper = new \stdClass();
-        $timerTaskWrapper->executeAt = microtime(true) + ($timer->getTimeRemaining() / 1000000);
-        $timerTaskWrapper->timer = $timer;
-
-        // schedule the timer tasks as wrapper
-        $this->scheduledTimerTasks[] = $timerTaskWrapper;
-
         // force handling the timer tasks now
-        $this->synchronized(function ($self) {
+        $this->synchronized(function ($self, $t) {
+
+            // store the timer-ID and the PK of the timer service => necessary to load the timer later
+            $self->scheduledTimers[$timerId = $t->getId()] = $t->getTimerService()->getPrimaryKey();
+
+            // create a wrapper instance for the timer task that we want to schedule
+            $timerTaskWrapper = new \stdClass();
+            $timerTaskWrapper->executeAt = microtime(true) + ($t->getTimeRemaining() / 1000000);
+            $timerTaskWrapper->taskId = uniqid();
+            $timerTaskWrapper->timerId = $timerId;
+
+            // schedule the timer tasks as wrapper
+            $self->tasksToExecute[$timerTaskWrapper->taskId] = $timerTaskWrapper;
+
+            // notify the thread to execute the timers
             $self->notify();
-        }, $this);
+
+        }, $this, $timer);
     }
 
     /**
@@ -133,11 +169,11 @@ class TimerServiceExecutor extends \Thread implements ServiceExecutor
     public function run()
     {
 
-        // array with the timer tasks that are actually running
-        $timerTasksExecuting = array();
+        // register a shutdown function
+        register_shutdown_function(array($this, 'shutdown'));
 
-        // make the list with the scheduled timer task wrappers available
-        $scheduledTimerTasks = $this->getScheduledTimerTasks();
+        // the array with the timer tasks that'll be executed actually
+        $timerTasksExecuting = array();
 
         // make the application available and register the class loaders
         $application = $this->getApplication();
@@ -155,31 +191,85 @@ class TimerServiceExecutor extends \Thread implements ServiceExecutor
                 $self->wait(1000000);
             }, $this);
 
-            // iterate over the scheduled timer tasks
-            foreach ($scheduledTimerTasks as $key => $timerTaskWrapper) {
+            try {
 
-                if ($timerTaskWrapper instanceof \stdClass) { // make sure we've a wrapper found
+                // iterate over the timer tasks that has to be executed
+                foreach ($this->tasksToExecute as $taskId => $timerTaskWrapper) {
 
-                    // check if the task has to be executed now
-                    if ($timerTaskWrapper->executeAt < microtime(true)) { // if yes, create the timer task and execute it
-                        $timerTasksExecuting[] = $timerTaskWrapper->timer->getTimerTask($application);
+                    if (!$timerTaskWrapper instanceof \stdClass) { // this should never happpen
+
+                        // log an error message because we task wrapper has wrong type
+                        $this->getApplication()->getInitialContext()->getSystemLogger()->error(
+                            sprintf('Timer-Task-Wrapper %s has wrong type %s', $taskId, get_class($timerTaskWrapper))
+                        );
+
+                        continue;
+                    }
+
+                    // query if the task has to be executed now
+                    if ($timerTaskWrapper->executeAt < microtime(true)) {
+
+                        // load the timer task wrapper we want to execute
+                        if ($pk = $this->scheduledTimers[$timerId = $timerTaskWrapper->timerId]) {
+
+                            // load the timer service registry
+                            $timerServiceRegistry = $this->getApplication()->search('TimerServiceContext');
+
+                            // load the timer from the timer service
+                            $timer = $timerServiceRegistry->locate($pk)->getTimers()->get($timerId);
+
+                            // create the timer task to be executed
+                            $timerTasksExecuting[$taskId] = $timer->getTimerTask($application);
+
+                            // remove the key from the list ot tasks to be executed
+                            unset($this->tasksToExecute[$taskId]);
+
+                        } else {
+
+                            // log an error message because we can't find the timer instance
+                            $this->getApplication()->getInitialContext()->getSystemLogger()->error(
+                                sprintf('Can\'t find timer %s to create timer task %s', $timerTaskWrapper->timerId, $taskId)
+                            );
+                        }
                     }
                 }
-            }
 
-            // remove the finished timer tasks
-            foreach ($timerTasksExecuting as $key => $executingTimerTask) {
-                if ($executingTimerTask->isFinished()) { // remove the task and wrapper from the list
-                    unset ($timerTasksExecuting[$key]);
-                    unset ($scheduledTimerTasks[$key]);
+                // remove the finished timer tasks
+                foreach ($timerTasksExecuting as $taskId => $executingTimerTask) {
+
+                    // query, whether the timer has finished
+                    if ($executingTimerTask->isFinished()) {
+
+                        // remove the finished timer task from the list
+                        unset($timerTasksExecuting[$taskId]);
+                    }
                 }
-            }
 
-            if ($profileLogger) { // profile the size of the timer tasks to be executed
-                $profileLogger->debug(
-                    sprintf('Processed timer service executor, executing %d timer tasks', sizeof($timerTasksExecuting))
-                );
+                // profile the size of the timer tasks to be executed
+                if ($profileLogger) {
+                    $profileLogger->debug(
+                        sprintf('Processed timer service executor, executing %d timer tasks', sizeof($timerTasksExecuting))
+                    );
+                }
+
+            } catch (\Exception $e) {
+
+                // log a critical error message
+                $this->getApplication()->getInitialContext()->getSystemLogger()->critical($e->__toString());
             }
         }
+    }
+
+    /**
+     * Shutdown method that will be invoked when the timer service executor
+     * stopped unexpected, by a fatal error or a exception for example.
+     *
+     * @return void
+     */
+    public function shutdown()
+    {
+        $this->getApplication()->getInitialContext()->getSystemLogger()->critical(
+            'Timer-Service-Executor stopped unexpected, please contact system administrator immediately!'
+        );
     }
 }

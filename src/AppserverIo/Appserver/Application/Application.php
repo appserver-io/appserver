@@ -206,6 +206,18 @@ class Application extends \Thread implements ApplicationInterface
     }
 
     /**
+     * The mutex to lock/unlock resources during application deployment.
+     *
+     * @param integer $mutex The mutex to lock/unlock resources during application deployment
+     *
+     * @return void
+     */
+    public function injectMutex($mutex)
+    {
+        $this->mutex = $mutex;
+    }
+
+    /**
      * Injects the application name.
      *
      * @param string $name The application name
@@ -617,24 +629,23 @@ class Application extends \Thread implements ApplicationInterface
     public function connect()
     {
 
+        // log a message that we now start to connect the application
+        $this->getInitialContext()->getSystemLogger()->debug(sprintf('%s wait to be connected', $this->getName()));
+
         // synchronize the application startup
         $this->synchronized(function ($self) {
-
-            // log a message that we now start to connect the application
-            $self->getInitialContext()->getSystemLogger()->debug(sprintf('%s wait to be connected', $this->getName()));
 
             // start the application
             $self->start();
 
-            // wait until we've been connected (classloaders and managers has been initialized)
-            while ($self->connected === false) {
+            while ($self->connected === false) { // wait until we've been connected (classloaders and managers has been initialized)
                 $self->wait(1000000 * Application::TIME_TO_LIVE);
             }
 
-            // log a message that we has successfully been connected now
-            $self->getInitialContext()->getSystemLogger()->debug(sprintf('%s has successufully been connected', $this->getName()));
-
         }, $this);
+
+        // log a message that we has successfully been connected now
+        $this->getInitialContext()->getSystemLogger()->debug(sprintf('%s has successufully been connected', $this->getName()));
     }
 
     /**
@@ -658,7 +669,16 @@ class Application extends \Thread implements ApplicationInterface
     public function initializeManagers()
     {
         foreach ($this->getManagers() as $manager) {
+
+            // lock the mutex for manager initialization, because SPL usage
+            // and IO read/write operations can propably cause segfaults!
+            \Mutex::lock($this->mutex);
+
+            // initialize the manager instance
             $manager->initialize($this);
+
+            // unlock the mutex
+            \Mutex::unlock($this->mutex);
         }
     }
 
