@@ -6,7 +6,7 @@
 
 # Features
 
-* None
+* Added support for the webserver's analytics module configuration
 
 # Version 1.0.0-beta1
 

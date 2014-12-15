@@ -47,6 +47,13 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     protected $node;
 
     /**
+     * Hold's the analytics array
+     *
+     * @var array
+     */
+    protected $analytics;
+
+    /**
      * Hold's the handlers array
      *
      * @var array
@@ -117,6 +124,20 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     public function __construct($node)
     {
         $this->node = $node;
+    }
+
+    /**
+     * Return's analytics
+     *
+     * @return string
+     */
+    public function getAnalytics()
+    {
+        if (!$this->analytics) {
+            $this->analytics = $this->prepareAnalytics($this->node);
+        }
+
+        return $this->analytics;
     }
 
     /**
@@ -680,6 +701,23 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
             }
         }
         return $accesses;
+    }
+
+    /**
+     * Prepares the analytics array based on a node implementing NodeInterface
+     *
+     * @param \AppserverIo\Configuration\Interfaces\NodeInterface $node The node instance
+     *
+     * @return array
+     */
+    public function prepareAnalytics(NodeInterface $node)
+    {
+        $analytics = array();
+        if (is_array($node->getAnalytics())) {
+
+            $analytics = $node->getAnalyticsAsArray();
+        }
+        return $analytics;
     }
 
     /**
