@@ -39,6 +39,7 @@ class ServerNode extends AbstractNode
     use AccessesNodeTrait;
     use LocationsNodeTrait;
     use AuthenticationsNodeTrait;
+    use AnalyticsNodeTrait;
 
     /**
      * The servers type.

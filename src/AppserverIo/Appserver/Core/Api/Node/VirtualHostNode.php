@@ -42,6 +42,7 @@ class VirtualHostNode extends AbstractNode
     use LocationsNodeTrait;
     use ExtensionInjectorParameterTrait;
     use AuthenticationsNodeTrait;
+    use AnalyticsNodeTrait;
 
     /**
      * The virtual host name
