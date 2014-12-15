@@ -130,6 +130,20 @@ class SetupKeys
     const OS_FAMILY = 'appserver.os.family';
 
     /**
+     * OS signature for 'appserver.os.distribution'.
+     *
+     * @var string
+     */
+    const OS_IDENTIFIER = 'appserver.os.identifier';
+
+    /**
+     * OS signature for 'appserver.os.architecture'.
+     *
+     * @var string
+     */
+    const OS_ARCHITECTURE = 'appserver.os.architecture';
+
+    /**
      * Configuration key for 'appserver.install.dir'.
      *
      * @var string
@@ -156,6 +170,13 @@ class SetupKeys
      * @var string
      */
     const VERSION = 'appserver.version';
+
+    /**
+     * Configuration key for 'appserver.release.name'.
+     *
+     * @var string
+     */
+    const RELEASE_NAME = 'appserver.release.name';
 
     /**
      * Configuration key for 'appserver.admin.email'.

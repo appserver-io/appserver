@@ -93,13 +93,14 @@
         <!-- copy all files to the target directory -->
         <copy todir="${php-target.dir}/appserver" preservelastmodified="true" overwrite="true">
             <fileset dir="${basedir}">
+                <include name="etc/**/*" />
                 <include name="src/**/*" />
                 <include name="var/**/*" />
                 <include name="tests/**/*" />
+                <include name="webapps/**/*" />
                 <include name="resources/**/*" />
                 <include name="server.php" />
                 <include name="composer.json" />
-                <include name="etc/appserver/conf.d/context.xml" />
             </fileset>
         </copy>
         <!-- create the file with the version number -->

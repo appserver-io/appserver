@@ -411,6 +411,6 @@ class DgClassLoader extends \Stackable implements ClassLoaderInterface
         }
 
         // We don't have directories to omit unregister the simple class loader
-        spl_autoload_unregister(array($this, self::OUR_LOADER_PROD_NO_OMIT), $throw, $prepend);
+        spl_autoload_unregister(array($this, self::OUR_LOADER_PROD_NO_OMIT));
     }
 }
