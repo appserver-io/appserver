@@ -64,6 +64,13 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
     protected $containerState;
 
     /**
+     * The mutex to lock/unlock resources during application deployment.
+     *
+     * @var integer
+     */
+    protected $mutex;
+
+    /**
      * Initializes the container with the initial context, the unique container ID
      * and the deployed applications.
      *
@@ -76,6 +83,9 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
         // initialize the initial context + the container node
         $this->initialContext = $initialContext;
         $this->containerNode = $containerNode;
+
+        // initialize the containers mutex
+        $this->mutex = \Mutex::create();
     }
 
     /**
@@ -86,6 +96,16 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
     public function getReceiver()
     {
         // nothing
+    }
+
+    /**
+     * Returns the mutex to lock/unlock resources during application deployment.
+     *
+     * @return integer The mutex
+     */
+    public function getMutex()
+    {
+        return $this->mutex;
     }
 
     /**
@@ -394,7 +414,7 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
         }
 
         // connect the application to the container
-        $application->connect();
+        $application->connect($this->mutex);
     }
 
     /**

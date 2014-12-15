@@ -194,9 +194,9 @@ class BeanManager extends GenericStackable implements BeanContext, ManagerInterf
             return;
         }
 
-        // check meta-inf classes or any other sub folder to pre init beans
-        $recursiveIterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($metaInfDir));
-        $phpFiles = new \RegexIterator($recursiveIterator, '/^(.+)\.php$/i');
+        // check META-INF + subdirectories for classes with beans to be pre-initialized
+        $service = $application->newService('AppserverIo\Appserver\Core\Api\DeploymentService');
+        $phpFiles = $service->globDir($metaInfDir . DIRECTORY_SEPARATOR . '*.php');
 
         // iterate all php files
         foreach ($phpFiles as $phpFile) {
