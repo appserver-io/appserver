@@ -1,3 +1,23 @@
+<?php
+
+/**
+ * resources/templates/webapps/index.html.phtml
+ *
+ * PHP version 5
+ *
+ * @category   Server
+ * @package    Appserver
+ * @subpackage Meta
+ * @author     Tim Wagner <tw@appserver.io>
+ * @copyright  2014 TechDivision GmbH <info@appserver.io>
+ * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link       http://www.appserver.io
+ */
+
+use AppserverIo\Appserver\Meta\Composer\Script\Setup;
+use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,11 +30,10 @@
 <body>
 <div class="jumbotron masthead">
     <div class="container">
-        <img src="http://cdn.appserver.io/welcome-page/logo_${appserver.src.version}_${analytics.app.id}_${analytics.app.installer}.png">
+        <img src="http://cdn.appserver.io/welcome-page/logo_<?php echo Setup::getValue(SetupKeys::OS_IDENTIFIER) ?>.png">
         <br><p class="lead">Congratulations</p>
     </div>
 </div>
-
 <div class="container main">
     <div class="row-fluid ">
         <pre>Your system is ready to rock!</pre>
