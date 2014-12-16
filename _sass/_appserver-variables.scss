@@ -1,0 +1,26 @@
+//
+// appserver.io variables for custom colors and more
+// --------------------------------------------------
+$link-color: #31b0d5;
+
+$font-family-base: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif !default;
+$font-size-base: 15px !default;
+
+$navbar-inverse-bg: #222222;
+$navbar-inverse-link-color: #fafafa;
+$navbar-inverse-link-active-color: $link-color;;
+$navbar-inverse-link-active-bg: $navbar-inverse-bg;
+$navbar-inverse-link-hover-color: #aaa;
+$navbar-inverse-link-hover-bg: $navbar-inverse-bg;
+
+$dropdown-bg: $navbar-inverse-bg;
+$dropdown-divider-bg: $dropdown-bg;
+$dropdown-border: none;
+$dropdown-fallback-border: none;
+$dropdown-link-color: $navbar-inverse-link-color;
+$dropdown-link-hover-color: $navbar-inverse-link-hover-color;
+$dropdown-link-hover-bg: $dropdown-bg;
+$dropdown-link-active-color: $navbar-inverse-link-color;
+$dropdown-link-active-bg: $link-color;
+
+$nav-tabs-active-link-hover-color: $navbar-inverse-bg;

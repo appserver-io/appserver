@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>appserver.io</title>
+    <description>application server for PHP, written in PHP. Yes, pure PHP! You think we aren't serious? Maybe! But we think, in order to enable as many developers in our great community, this will be the one and only way. So with your help we hopefully establish a solution as the standard for enterprise applications in PHP environments.
+</description>
+    <link>http://appserver.io/</link>
+    <atom:link href="http://appserver.io/feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Tue, 16 Dec 2014 18:35:07 +0100</pubDate>
+    <lastBuildDate>Tue, 16 Dec 2014 18:35:07 +0100</lastBuildDate>
+    <generator>Jekyll v2.5.2</generator>
+    
+      <item>
+        <title>Welcome to appserver-io!</title>
+        <description>&lt;p&gt;You’ll find this post in your &lt;code&gt;_posts&lt;/code&gt; directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run &lt;code&gt;jekyll serve&lt;/code&gt;, which launches a web server and auto-regenerates your site when a file is updated.&lt;/p&gt;
+
+&lt;p&gt;To add new posts, simply add a file in the &lt;code&gt;_posts&lt;/code&gt; directory that follows the convention &lt;code&gt;YYYY-MM-DD-name-of-post.ext&lt;/code&gt; and includes the necessary front matter. Take a look at the source for this post to get an idea about how it works.&lt;/p&gt;
+
+&lt;p&gt;Jekyll also offers powerful support for code snippets:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;print_hi&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;Hi, &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;print_hi&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;Tom&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#=&amp;gt; prints &amp;#39;Hi, Tom&amp;#39; to STDOUT.&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Check out the &lt;a href=&quot;http://jekyllrb.com&quot;&gt;Jekyll docs&lt;/a&gt; for more info on how to get the most out of Jekyll. File all bugs/feature requests at &lt;a href=&quot;https://github.com/jekyll/jekyll&quot;&gt;Jekyll’s GitHub repo&lt;/a&gt;. If you have questions, you can ask them on &lt;a href=&quot;https://github.com/jekyll/jekyll-help&quot;&gt;Jekyll’s dedicated Help repository&lt;/a&gt;.&lt;/p&gt;
+</description>
+        <pubDate>Tue, 16 Dec 2014 19:30:00 +0100</pubDate>
+        <link>http://appserver.io/appserver/website/relaunch/2014/12/16/welcome-to-jekyll.html</link>
+        <guid isPermaLink="true">http://appserver.io/appserver/website/relaunch/2014/12/16/welcome-to-jekyll.html</guid>
+        
+        
+        <category>appserver</category>
+        
+        <category>website</category>
+        
+        <category>relaunch</category>
+        
+      </item>
+    
+      <item>
+        <title>Hallo</title>
+        <description>&lt;h1 id=&quot;this-is-the-headline&quot;&gt;This is the headline&lt;/h1&gt;
+
+&lt;h2 id=&quot;second&quot;&gt;second&lt;/h2&gt;
+
+&lt;p&gt;asdfasdf&lt;/p&gt;
+</description>
+        <pubDate>Tue, 16 Dec 2014 11:46:48 +0100</pubDate>
+        <link>http://appserver.io/appserver/community/2014/12/16/hallo.html</link>
+        <guid isPermaLink="true">http://appserver.io/appserver/community/2014/12/16/hallo.html</guid>
+        
+        
+        <category>appserver</category>
+        
+        <category>community</category>
+        
+      </item>
+    
+      <item>
+        <title>appserver version 1.0.0beta released!</title>
+        <description>&lt;p&gt;NEW release and so on&lt;/p&gt;
+
+&lt;p&gt;Check out the &lt;a href=&quot;http://appserver.io&quot;&gt;appserver-io docs&lt;/a&gt;&lt;/p&gt;
+</description>
+        <pubDate>Mon, 15 Dec 2014 17:46:48 +0100</pubDate>
+        <link>http://appserver.io/release/2014/12/15/new-appserver-release.html</link>
+        <guid isPermaLink="true">http://appserver.io/release/2014/12/15/new-appserver-release.html</guid>
+        
+        
+        <category>release</category>
+        
+      </item>
+    
+      <item>
+        <title>appserver version 0.9.12beta released!</title>
+        <description>&lt;p&gt;NEW release and so on&lt;/p&gt;
+
+&lt;p&gt;Check out the &lt;a href=&quot;http://appserver.io&quot;&gt;appserver-io docs&lt;/a&gt;&lt;/p&gt;
+</description>
+        <pubDate>Sun, 14 Dec 2014 17:46:48 +0100</pubDate>
+        <link>http://appserver.io/release/2014/12/14/new-appserver-release.html</link>
+        <guid isPermaLink="true">http://appserver.io/release/2014/12/14/new-appserver-release.html</guid>
+        
+        
+        <category>release</category>
+        
+      </item>
+    
+      <item>
+        <title>appserver version 0.9.11beta released!</title>
+        <description>&lt;p&gt;NEW release and so on&lt;/p&gt;
+
+&lt;p&gt;Check out the &lt;a href=&quot;http://appserver.io&quot;&gt;appserver-io docs&lt;/a&gt;&lt;/p&gt;
+</description>
+        <pubDate>Sat, 13 Dec 2014 17:46:48 +0100</pubDate>
+        <link>http://appserver.io/release/2014/12/13/new-appserver-release.html</link>
+        <guid isPermaLink="true">http://appserver.io/release/2014/12/13/new-appserver-release.html</guid>
+        
+        
+        <category>release</category>
+        
+      </item>
+    
+      <item>
+        <title>appserver version 0.9.5beta released!</title>
+        <description>&lt;p&gt;NEW release and so on&lt;/p&gt;
+
+&lt;p&gt;Check out the &lt;a href=&quot;http://appserver.io&quot;&gt;appserver-io docs&lt;/a&gt;&lt;/p&gt;
+</description>
+        <pubDate>Fri, 12 Dec 2014 17:46:48 +0100</pubDate>
+        <link>http://appserver.io/release/2014/12/12/new-appserver-release.html</link>
+        <guid isPermaLink="true">http://appserver.io/release/2014/12/12/new-appserver-release.html</guid>
+        
+        
+        <category>release</category>
+        
+      </item>
+    
+  </channel>
+</rss>

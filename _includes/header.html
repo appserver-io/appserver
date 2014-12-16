@@ -1,0 +1,50 @@
+<!-- Navigation -->
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+  <div class="container">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="{{ "/" | prepend: site.baseurl }}"><img src="{{ "/assets/img/appserver-logo.png" | prepend: site.baseurl }}"></a>
+    </div>
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav navbar-right">
+            {% assign sorted_pages = (site.pages | sort: 'position') %}
+            {% for lpage in sorted_pages %}
+            {% if lpage.title and lpage.group == null and lpage.position != null %}
+
+                {% assign sorted_subpages = (site.pages | where:'group',lpage.title | sort: 'position') %}
+
+                {% if sorted_subpages.size > 0 %}
+                    <li class="{% if lpage.title == page.title or lpage.title == page.group %}active {% endif %}dropdown">
+                      <a href="{{ lpage.url | prepend: site.baseurl }}" class="dropdown-toggle">{{ lpage.title }} <b class="caret"></b></a>
+                      <ul class="dropdown-menu">
+                          {% for spage in sorted_subpages %}
+                          <li class="{% if spage.title == page.title %}active{% endif %}">
+                              <a href="{{ spage.url | prepend: site.baseurl }}">{{ spage.title }}</a>
+                          </li>
+                          {% endfor %}
+                      </ul>
+                    </li>
+                {% else %}
+                    <li class="{% if lpage.title == page.title %}active{% endif %}">
+                        <a href="{{ lpage.url | prepend: site.baseurl }}">{{ lpage.title }}</a>
+                    </li>
+                {% endif %}
+
+            {% endif %}
+            {% endfor %}
+
+      </ul>
+    </div>
+    <!-- /.navbar-collapse -->
+  </div>
+  <!-- /.container -->
+</nav>
+
+{% include widgets/slider.html %}

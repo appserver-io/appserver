@@ -1,0 +1,26 @@
+# Site settings
+title: appserver.io
+email: info@appserver.io
+description: > # The objective of the project is to develop a multithreaded
+  application server for PHP, written in PHP. Yes, pure PHP! You think we
+  aren't serious? Maybe! But we think, in order to enable as many developers
+  in our great community, this will be the one and only way. So with your
+  help we hopefully establish a solution as the standard for enterprise
+  applications in PHP environments.
+
+port: 4000
+host: 0.0.0.0
+baseurl: ""
+url: "http://appserver.io"
+
+twitter_username: php_appserver
+
+github_username:  appserver-io
+github_repository: https://github.com/appserver.io/appserver
+
+google_analytics_id: UA-xxxxxxxx-x
+google_analytics_site: appserver.io
+
+markdown: redcarpet
+redcarpet:
+  extensions: ["no_intra_emphasis", "fenced_code_blocks", "autolink", "tables", "with_toc_data"]
