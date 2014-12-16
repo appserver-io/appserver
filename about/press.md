@@ -23,4 +23,4 @@ Check out some stuff about appserver.io and the appserver.io team in the press!
 ### PHP-Magazin 01/2014
 Asynchronous I/O in PHP, oder doch lieber Threads? (Tim Wagner)
 
-<a href="https://phpmagazin.de/PHP-Magazin/PHP-Magazin-62013-167091"><img class="img-thumbnail unstyled" width="339" height="479" src="/assets/img/pm6-13-cover.jpg"></a>
+<a href="https://phpmagazin.de/PHP-Magazin/PHP-Magazin-62013-167091"><img class="img-thumbnail unstyled" width="339" height="479" src="{{ "/assets/img/pm6-13-cover.jpg" | prepend: site.baseurl }}"></a>
