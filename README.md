@@ -851,7 +851,7 @@ So let us create a simple `Queue` with
 <?xml version="1.0" encoding="UTF-8"?>
 <message-queues>
   <message-queue type="ImportReceiver">
-    <destination>queue/import</destination>
+    <destination>pms/import</destination>
   </message-queue>
 </message-queues>
 ```
@@ -953,6 +953,14 @@ class HelloWorldServlet extends HttpServlet
   protected $application;
 
   /**
+   * The queue session to send a message with.
+   *
+   * @var \AppserverIo\MessageQueueClient\QueueSession
+   * @Resource(name="pms/import")
+   */
+  protected $queueSender;
+
+  /**
    * Initializes the servlet with the passed configuration.
    *
    * @param \AppserverIo\Psr\Servlet\ServletConfig $config 
@@ -1026,19 +1034,8 @@ class HelloWorldServlet extends HttpServlet
       HelloWorldServlet::PARAMETER_FILENAME
     );
 
-    // load the application name
-    $applicationName = $this->application->getName();
-
-    // initialize the connection and the session
-    $queue = MessageQueue::createQueue('queue/import');
-    $connection = QueueConnectionFactory::createQueueConnection(
-      $applicationName
-    );
-    $session = $connection->createQueueSession();
-    $sender = $session->createSender($queue);
-
-    // send the data to message queue
-    $sender->send(new StringMessage($filename), false);
+    // send the name of the file to import to the message queue
+    $this->queueSender->send(new StringMessage($filename), false);
   }
 
   /**
@@ -1067,8 +1064,8 @@ class HelloWorldServlet extends HttpServlet
 }
 ```
 
-> Actually the Client initialization seems to be a bit complicated, but we'll try to optimize it,
-> similar to use a SessionBean and to a support DI (see Issue [#299](#299)).
+> To make it easy, we can use the `@Resource` annotation to let the container inject a sender
+> instance we can use to send the name of the file containing the data to the `Queue`.
 
 # Timer Service
 
