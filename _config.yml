@@ -10,7 +10,7 @@ description: > # The objective of the project is to develop a multithreaded
 
 port: 4000
 host: 0.0.0.0
-baseurl: ""
+baseurl: "/appserver/"
 url: "http://appserver.io"
 
 twitter_username: php_appserver
