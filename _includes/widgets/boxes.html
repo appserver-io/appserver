@@ -8,7 +8,7 @@
             </div>
             <div class="panel-body">
                 <p>{{ box.text }}</p>
-                <a href="{{ box.link-href }}" class="btn btn-info">{{ box.link-label }}</a>
+                <a href="{{ box.link-href | prepend: site.baseurl }}" class="btn btn-info">{{ box.link-label }}</a>
             </div>
         </div>
     </div>
