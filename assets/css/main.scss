@@ -1,0 +1,230 @@
+---
+# Only the main Sass file needs front matter (the dashes are enough)
+---
+@charset "utf-8";
+
+// import partials from `sass_dir` (defaults to `_sass`)
+@import "appserver-variables";
+@import "bootstrap";
+@import "syntax/github";
+
+// import font
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,400,600);
+
+// global styles
+html, body { height: 100%; }
+body { padding-top: 50px; }
+
+// element styles
+div.content {
+  padding-top: 40px;
+
+  ul {
+    padding-left:20px;
+    list-style:none;
+
+    li {
+      margin-bottom:10px;
+    }
+    li:before {
+      font-family: 'FontAwesome';
+      content: '\f00c';
+      color: #31b0d5;
+      margin:0 5px 0 -15px;
+    }
+  }
+
+  .list-unstyled {
+    padding-left: 0;
+  }
+  .list-unstyled li:before {
+    font-family: $font-family-base;
+    content: none;
+    margin: 0;
+  }
+  .list-side-news li:before {
+    content: '\f0da';
+  }
+
+  img {
+    height: 100%;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  img.avatar {
+    width: 128px;
+    height: 128px;
+    max-width: 128px;
+  }
+
+  img.unstyled {
+    width: auto;
+    height: auto;
+  }
+
+  .post-author {
+    img {
+      height: 24px;
+      width: auto;
+    }
+  }
+}
+
+.img-portfolio { margin-bottom: 30px; }
+.img-hover:hover { opacity: 0.8; }
+
+div.carousel {
+  min-height: 320px;
+  height: 32%;
+  background: linear-gradient(45deg,#a4f0ff 0,#119fbc 100%);
+  -webkit-box-shadow: 0 2px 2px rgba(0,0,0,0.03);
+  -moz-box-shadow: 0 2px 2px rgba(0,0,0,0.03);
+  box-shadow: 0 2px 2px rgba(0,0,0,0.03);
+}
+
+div.carousel .fill {
+  width: 100%;
+  height: 100%;
+  background-position: center;
+  background-size: cover;
+}
+
+div.carousel .item,
+div.carousel .item.active,
+div.carousel .carousel-inner {
+  height: 100%;
+}
+
+.carousel-caption {
+  bottom: 15%;
+  text-shadow: 0 2px 1px rgba(0, 0, 0, 0.1);
+  h1 {
+    font-size: 4vw;
+    font-weight: bold;
+  }
+}
+
+.carousel-control.left,
+.carousel-control.right {
+  background: none;
+}
+
+.carousel-control   {
+  .fill {
+    width: 100%;
+    height: 100%;
+    background-position: center;
+    background-size: cover;
+  }
+}
+
+nav.navbar {
+  min-height: 65px;
+  -webkit-box-shadow: 0 2px 2px rgba(0,0,0,0.25);
+  -moz-box-shadow: 0 2px 2px rgba(0,0,0,0.25);
+  box-shadow: 0 2px 2px rgba(0,0,0,0.25);
+}
+
+nav {
+  .navbar-brand { height: auto; }
+  img { height: 34px; }
+}
+
+ul.nav li.dropdown:hover ul.dropdown-menu{
+  display: block;
+  margin-top:0px
+}
+
+.navbar-nav>li>a {
+  padding: 22px 15px;
+}
+
+.navbar-inverse {
+  background-color: #222222;
+  border: none;
+}
+
+.navbar-toggle {
+  padding: 16px 10px;
+}
+
+.error-404 { font-size: 100px; }
+
+.well {
+  padding: 20px;
+  margin-bottom: 20px;
+  background-color: #fafafa;
+  border: none;
+  border-radius: 4px;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+
+.price {
+  display: block;
+  font-size: 50px;
+  line-height: 50px;
+}
+
+.price sup {
+  top: -20px;
+  left: 2px;
+  font-size: 20px;
+}
+
+.period {
+  display: block;
+  font-style: italic;
+}
+
+footer {
+  background-color: #222222;
+  color: #dedede;
+  margin: 50px 0 0 0;
+  padding: 30px 0 50px;
+
+  -webkit-box-shadow: 2px 0 2px rgba(0,0,0,0.40);
+  -moz-box-shadow: 2px 0 2px rgba(0,0,0,0.40);
+  box-shadow: 2px 0 2px rgba(0,0,0,0.40);
+}
+
+footer a {
+  color: #888888;
+}
+
+footer .signup-form {
+  padding: 0;
+}
+
+@media(max-width:991px) {
+  .customer-img,
+  .img-related {
+    margin-bottom: 30px;
+  }
+}
+
+@media(max-width:767px) {
+  .img-portfolio {
+    margin-bottom: 15px;
+  }
+
+  header.carousel .carousel {
+    height: 50%;
+  }
+}
+
+.btn-slider {
+  color: #fff;
+  background: none;
+  border-color: #fff;
+}
+
+.btn-slider:hover,
+.btn-slider:focus,
+.btn-slider:active,
+.btn-slider.active,
+.open .dropdown-toggle.btn-slider {
+  color: #119fbc;
+  background-color: #ffffff;
+}
