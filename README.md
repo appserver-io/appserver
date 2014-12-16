@@ -912,9 +912,6 @@ use AppserverIo\Psr\Servlet\ServletConfig;
 use AppserverIo\Psr\Servlet\Http\HttpServlet;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequest;
 use AppserverIo\Psr\Servlet\Http\HttpServletResponse;
-use AppserverIo\MessageQueueClient\MessageQueue;
-use AppserverIo\MessageQueueClient\QueueConnectionFactory;
-use AppserverIo\Psr\MessageQueueProtocol\Utils\PriorityMedium;
 use AppserverIo\Psr\MessageQueueProtocol\Messages\StringMessage;
 
 /**
@@ -1067,7 +1064,7 @@ class HelloWorldServlet extends HttpServlet
 > To make it easy, we can use the `@Resource` annotation to let the container inject a sender
 > instance we can use to send the name of the file containing the data to the `Queue`.
 
-# Timer Service
+# Timer-Service
 
 In most of your projects you have the need to schedule things to be processed in regular intervals
 or at a given date in future. As PHP itself is a scripting language it lacks of such functionality
@@ -1607,7 +1604,12 @@ in `/opt/appserver/etc/appserver/conf.d/context.xml`
       name="ServletManager"
       beanInterface="ServletContext"
       type="AppserverIo\Appserver\ServletEngine\ServletManager"
-      factory="AppserverIo\Appserver\ServletEngine\ServletManagerFactory"/>
+      factory="AppserverIo\Appserver\ServletEngine\ServletManagerFactory">
+      <directories>
+        <directory enforced="true">/WEB-INF/classes</directory>
+        <directory enforced="true">/vendor/appserver-io/routlt/src</directory>
+      </directories>
+    </manager>
 
     <!-- provides functionality to handle HTTP sessions -->
     <manager 

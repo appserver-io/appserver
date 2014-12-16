@@ -2,6 +2,7 @@
 
 # Bugfixes
 
+* Query directories under webapps for WEB-INF or META-INF to make sure we have a valid application
 * Bugfixing invalid servlet init parameter initialization when using @Route annotation on servlets
 * Bugfixing for invalid folder check when try to parse folders defined in context.xml for servlets
 

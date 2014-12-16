@@ -182,7 +182,7 @@ class Setup
         Setup::$mergedProperties[SetupKeys::OS_IDENTIFIER] = sprintf(
             '%s_%s_%s',
             str_replace(' ', '-', strtolower(Setup::$mergedProperties[SetupKeys::RELEASE_NAME])),
-            Setup::$mergedProperties[SetupKeys::OS_FAMILY],
+            $os,
             Setup::$mergedProperties[SetupKeys::OS_ARCHITECTURE]
         );
 
