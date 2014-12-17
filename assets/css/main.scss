@@ -1,9 +1,8 @@
 ---
-# Only the main Sass file needs front matter (the dashes are enough)
+# main styles sass
 ---
 @charset "utf-8";
 
-// import partials from `sass_dir` (defaults to `_sass`)
 @import "appserver-variables";
 @import "bootstrap";
 @import "syntax/github";
@@ -14,6 +13,18 @@
 // global styles
 html, body { height: 100%; }
 body { padding-top: 50px; }
+
+.container-page {
+  background-color: $body-bg;
+  position: relative;
+  margin-bottom: 240px;
+  padding-bottom: 50px;
+  z-index: 200;
+}
+
+.container-full {
+  width: 100%;
+}
 
 // element styles
 div.content {
@@ -37,11 +48,13 @@ div.content {
   .list-unstyled {
     padding-left: 0;
   }
+
   .list-unstyled li:before {
     font-family: $font-family-base;
     content: none;
     margin: 0;
   }
+
   .list-side-news li:before {
     content: '\f0da';
   }
@@ -180,21 +193,39 @@ ul.nav li.dropdown:hover ul.dropdown-menu{
 
 footer {
   background-color: #222222;
-  color: #dedede;
+  color: #fafafa;
   margin: 50px 0 0 0;
   padding: 30px 0 50px;
+  height: 240px;
+  bottom: 0;
+  position: fixed;
+  z-index: 100;
+  -webkit-transform: translateZ(0);
+  -webkit-box-shadow: inset 0px 2px 0px 0px rgba(255,255,255,0.7);
+  -moz-box-shadow: inset 0px 2px 0px 0px rgba(255,255,255,0.7);
+  box-shadow: inset 0px 2px 0px 0px rgba(255,255,255,0.7);
 
-  -webkit-box-shadow: 2px 0 2px rgba(0,0,0,0.40);
-  -moz-box-shadow: 2px 0 2px rgba(0,0,0,0.40);
-  box-shadow: 2px 0 2px rgba(0,0,0,0.40);
-}
+  a {
+    color: $navbar-inverse-link-color;
+  }
 
-footer a {
-  color: #888888;
-}
+  a:hover {
+    color: $navbar-inverse-link-hover-color;
+    text-decoration: none;
+  }
 
-footer .signup-form {
-  padding: 0;
+  .navbar-form {
+    margin-left: 0;
+    margin-right: 0;
+    padding: 0;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+  }
+
+  .title {
+    margin-top: 0;
+  }
 }
 
 @media(max-width:991px) {
