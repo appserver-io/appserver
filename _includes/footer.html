@@ -1,59 +1,37 @@
-<footer class="footer">
-  <div class="footer-content">
-    <div class="container">
-      <div class="row">
+<footer class="footer container-full hidden-print">
+  <div class="container">
+    <div class="row">
 
-        <div class="footer-col links col-md-2 col-sm-4 col-xs-12">
-          <div class="footer-col-inner">
-            <h4 class="title">Copyrights</h4>
-            <ul class="list-unstyled">
-              <li><a href="{{ "/imprint.html" | prepend: site.baseurl }}">Imprint</a></li>
-              <li><a href="{{ "/terms.html" | prepend: site.baseurl }}">Terms</a></li>
-              <li><a href="{{ "/privacy.html" | prepend: site.baseurl }}">Privacy</a></li>
-              <li><a href="{{ "/contact.html" | prepend: site.baseurl }}">Contact</a></li>
-              <li><a href="{{ "/about.html" | prepend: site.baseurl }}">About</a></li>
-            </ul>
-          </div><!--//footer-col-inner-->
-        </div><!--//foooter-col-->
+      <div class="footer-col col-xs-4">
+        <h4 class="title">Copyrights</h4>
+        <ul class="list-unstyled">
+          <li><a href="{{ "/imprint.html" | prepend: site.baseurl }}">Imprint</a></li>
+          <li><a href="{{ "/terms.html" | prepend: site.baseurl }}">Terms</a></li>
+          <li><a href="{{ "/privacy.html" | prepend: site.baseurl }}">Privacy</a></li>
+          <li><a href="{{ "/contact.html" | prepend: site.baseurl }}">Contact</a></li>
+          <li><a href="{{ "/about.html" | prepend: site.baseurl }}">About</a></li>
+        </ul>
+      </div><!--//foooter-col-->
 
-        <div class="footer-col links col-md-6 col-sm-12 col-xs-12">
-          <div class="footer-col-inner">
+      <div class="footer-col col-xs-8 text-right">
+        <p class="intro">Get the Latest news</p>
+        {% include mailing_list.html %}
+        <ul class="social list-inline">
+          <li><a href="https://twitter.com/php_appserver" target="_blank"><i class="fa fa-twitter"></i></a></li>
+          <li><a href="https://www.facebook.com/appserver.io"><i class="fa fa-facebook"></i></a></li>
+          <li class="row-end"><a href="{{ "/feed.xml" | prepend: site.baseurl }}"><i class="fa fa-rss"></i></a></li>
+        </ul>
+        <br>
+        <p class="text-right">
+          <small class="copyright">
+            &copy; 2014 All Rights Reserved - <a href="http://www.techdivision.com/" target="_blank">TechDivision GmbH</a>
+          </small>
+        </p>
+      </div><!--//foooter-col-->
 
-            <!-- insert twitter or something later on -->
-
-          </div><!--//footer-col-inner-->
-        </div><!--//foooter-col-->
-
-        <div class="footer-col connect col-md-4 col-sm-12 col-xs-12 text-right">
-          <div class="footer-col-inner">
-            <div class="form-container">
-              <p class="intro">Get the Latest news</p>
-
-              {% include mailing_list.html %}
-
-            </div><!--//subscription-form-->
-            <ul class="social list-inline">
-              <li><a href="https://twitter.com/php_appserver" target="_blank"><i class="fa fa-twitter"></i></a></li>
-              <li><a href="https://www.facebook.com/appserver.io"><i class="fa fa-facebook"></i></a></li>
-              <!--
-              <li><a href="#"><i class="fa fa-google-plus"></i></a></li>
-              <li><a href="#"><i class="fa fa-instagram"></i></a></li>
-              -->
-              <li class="row-end"><a href="{{ "/feed.xml" | prepend: site.baseurl }}"><i class="fa fa-rss"></i></a></li>
-            </ul>
-          </div><!--//footer-col-inner-->
-        </div><!--//foooter-col-->
-        <div class="clearfix"></div>
-      </div><!--//row-->
-    </div><!--//container-->
-  </div><!--//footer-content-->
-  <div class="bottom-bar">
-    <div class="container text-right">
-      <small class="copyright">
-        &copy; 2014 All Rights Reserved - <a href="http://www.techdivision.com/" target="_blank">TechDivision GmbH</a>
-      </small>
-    </div><!--//container-->
-  </div><!--//bottom-bar-->
+      <div class="clearfix"></div>
+    </div><!--//row-->
+  </div><!--//container-->
 </footer>
 
 <!-- Javascript libraries -->

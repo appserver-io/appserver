@@ -8,74 +8,75 @@
     {% include header.html %}
 
     <!-- Page Content -->
-    <div class="container content">
+    <div class="container-page">
+        <div class="container content">
 
-        <div class="row">
+            <div class="row">
 
-            <!-- Blog Entries Column -->
-            <div class="col-md-9">
+                <!-- Blog Entries Column -->
+                <div class="col-md-9">
 
-                {{ content }}
+                    {{ content }}
 
-                <!-- Pager
-                <ul class="pager">
-                    <li class="previous">
-                        <a href="#">&larr; Older</a>
-                    </li>
-                    <li class="next">
-                        <a href="#">Newer &rarr;</a>
-                    </li>
-                </ul>
-                 -->
+                    <!-- Pager
+                    <ul class="pager">
+                        <li class="previous">
+                            <a href="#">&larr; Older</a>
+                        </li>
+                        <li class="next">
+                            <a href="#">Newer &rarr;</a>
+                        </li>
+                    </ul>
+                     -->
+                </div>
+
+                <!-- Blog Sidebar Widgets Column -->
+                <div class="col-md-3">
+
+                    <!-- Blog Categories Well -->
+                    <div class="well">
+                        <ul class="list-side-news">
+                            <li class="{% if page.title == 'News' %}active{% endif %}">
+                                <a href="{{ "/news.html" | prepend: site.baseurl }}">All News</a>
+                            </li>
+                            <li class="{% if page.title == 'Releases' %}active{% endif %}">
+                                <a href="{{ "/news/releases.html" | prepend: site.baseurl }}">appserver Releases</a>
+                            </li>
+                        </ul>
+                        <i class="fa fa-rss"></i> subscribe <a href="{{ "/feed.xml" | prepend: site.baseurl }}">via RSS</a>
+                    </div>
+
+                    <!-- Blog Recent Releases Well -->
+                    <div class="well">
+                        <h4>Recent Releases</h4>
+                        <ul class="list-side-news">
+                            {% for post in site.categories.release limit:5 %}
+                            <li class="{% if page.title == post.title %}current{% endif %}">
+                                <a href="{{ post.url | prepend: site.baseurl }}">Version {{ post.version }}</a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+                    <!-- Blog Other News Well -->
+                    <div class="well">
+                        <h4>Other News</h4>
+                        <ul class="list-side-news">
+                            {% for post in site.posts %}
+                            {% unless post.categories contains 'release' %}
+                            <li class="{% if page.title == post.title %}current{% endif %}">
+                                <a href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
+                            </li>
+                            {% endunless %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+                </div>
+
             </div>
-
-            <!-- Blog Sidebar Widgets Column -->
-            <div class="col-md-3">
-
-                <!-- Blog Categories Well -->
-                <div class="well">
-                    <ul class="list-side-news">
-                        <li class="{% if page.title == 'News' %}active{% endif %}">
-                            <a href="{{ "/news.html" | prepend: site.baseurl }}">All News</a>
-                        </li>
-                        <li class="{% if page.title == 'Releases' %}active{% endif %}">
-                            <a href="{{ "/news/releases.html" | prepend: site.baseurl }}">appserver Releases</a>
-                        </li>
-                    </ul>
-                    <i class="fa fa-rss"></i> subscribe <a href="{{ "/feed.xml" | prepend: site.baseurl }}">via RSS</a>
-                </div>
-
-                <!-- Blog Recent Releases Well -->
-                <div class="well">
-                    <h4>Recent Releases</h4>
-                    <ul class="list-side-news">
-                        {% for post in site.categories.release limit:5 %}
-                        <li class="{% if page.title == post.title %}current{% endif %}">
-                            <a href="{{ post.url | prepend: site.baseurl }}">Version {{ post.version }}</a>
-                        </li>
-                        {% endfor %}
-                    </ul>
-                </div>
-
-                <!-- Blog Other News Well -->
-                <div class="well">
-                    <h4>Other News</h4>
-                    <ul class="list-side-news">
-                        {% for post in site.posts %}
-                        {% unless post.categories contains 'release' %}
-                        <li class="{% if page.title == post.title %}current{% endif %}">
-                            <a href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
-                        </li>
-                        {% endunless %}
-                        {% endfor %}
-                    </ul>
-                </div>
-
-            </div>
-
+            <!-- /.row -->
         </div>
-        <!-- /.row -->
-
     </div>
     <!-- /.container -->
 
