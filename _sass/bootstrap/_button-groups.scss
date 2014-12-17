@@ -18,6 +18,10 @@
     &.active {
       z-index: 2;
     }
+    &:focus {
+      // Remove focus outline when dropdown JS adds it after closing the menu
+      outline: 0;
+    }
   }
 }
 
@@ -34,7 +38,7 @@
 // Optional: Group multiple button groups together for a toolbar
 .btn-toolbar {
   margin-left: -5px; // Offset the first child's margin
-  @include clearfix;
+  @include clearfix();
 
   .btn-group,
   .input-group {
@@ -152,7 +156,7 @@
 
   // Clear floats so dropdown menus can be properly placed
   > .btn-group {
-    @include clearfix;
+    @include clearfix();
     > .btn {
       float: none;
     }
@@ -194,6 +198,7 @@
 }
 
 
+
 // Justified button groups
 // ----------------------
 
@@ -221,23 +226,15 @@
 // Checkbox and radio options
 //
 // In order to support the browser's form validation feedback, powered by the
-// `required` attribute, we have to "hide" the inputs via `clip`. We cannot use
-// `display: none;` or `visibility: hidden;` as that also hides the popover.
-// Simply visually hiding the inputs via `opacity` would leave them clickable in
-// certain cases which is prevented by using `clip` and `pointer-events`.
+// `required` attribute, we have to "hide" the inputs via `opacity`. We cannot
+// use `display: none;` or `visibility: hidden;` as that also hides the popover.
 // This way, we ensure a DOM element is visible to position the popover from.
 //
-// See https://github.com/twbs/bootstrap/pull/12794 and
-// https://github.com/twbs/bootstrap/pull/14559 for more information.
+// See https://github.com/twbs/bootstrap/pull/12794 for more.
 
-[data-toggle="buttons"] {
-  > .btn,
-  > .btn-group > .btn {
-    input[type="radio"],
-    input[type="checkbox"] {
-      position: absolute;
-      clip: rect(0,0,0,0);
-      pointer-events: none;
-    }
-  }
+[data-toggle="buttons"] > .btn > input[type="radio"],
+[data-toggle="buttons"] > .btn > input[type="checkbox"] {
+  position: absolute;
+  z-index: -1;
+  @include opacity(0);
 }

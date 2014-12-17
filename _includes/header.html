@@ -21,8 +21,8 @@
                 {% assign sorted_subpages = (site.pages | where:'group',lpage.title | sort: 'position') %}
 
                 {% if sorted_subpages.size > 0 %}
-                    <li class="{% if lpage.title == page.title or lpage.title == page.group %}active {% endif %}dropdown">
-                      <a href="{{ lpage.url | prepend: site.baseurl }}" class="dropdown-toggle">{{ lpage.title }} <b class="caret"></b></a>
+                    <li id="nav-{{ lpage.title | downcase | replace: ' ', '-' | replace: '.', '-' }}" class="{% if lpage.title == page.title or lpage.title == page.group %}active {% endif %}dropdown">
+                      <a href="{{ lpage.url | prepend: site.baseurl }}" class="dropdown-toggle"><span>{{ lpage.title }}</span> <b class="caret"></b></a>
                       <ul class="dropdown-menu">
                           {% for spage in sorted_subpages %}
                           <li class="{% if spage.title == page.title %}active{% endif %}">
@@ -32,8 +32,8 @@
                       </ul>
                     </li>
                 {% else %}
-                    <li class="{% if lpage.title == page.title %}active{% endif %}">
-                        <a href="{{ lpage.url | prepend: site.baseurl }}">{{ lpage.title }}</a>
+                    <li id="nav-{{ lpage.title | downcase | replace: ' ', '-' | replace: '.', '-' }}" class="{% if lpage.title == page.title %}active{% endif %}">
+                        <a href="{{ lpage.url | prepend: site.baseurl }}"><span>{{ lpage.title }}</span></a>
                     </li>
                 {% endif %}
 

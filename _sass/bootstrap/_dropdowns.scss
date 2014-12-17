@@ -103,15 +103,16 @@
   &:focus {
     color: $dropdown-link-disabled-color;
   }
-
-  // Nuke hover/focus effects
+}
+// Nuke hover/focus effects
+.dropdown-menu > .disabled > a {
   &:hover,
   &:focus {
     text-decoration: none;
     background-color: transparent;
     background-image: none; // Remove CSS gradient
-    @include reset-filter;
-    cursor: $cursor-disabled;
+    @include reset-filter();
+    cursor: not-allowed;
   }
 }
 
@@ -211,3 +212,4 @@
     }
   }
 }
+

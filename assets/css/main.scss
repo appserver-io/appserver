@@ -11,8 +11,10 @@
 @import url(http://fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,400,600);
 
 // global styles
-html, body { height: 100%; }
-body { padding-top: 50px; }
+body {
+  padding-top: 65px;
+  -webkit-font-smoothing: antialiased;
+}
 
 .container-page {
   background-color: $body-bg;
@@ -28,6 +30,7 @@ body { padding-top: 50px; }
 
 // element styles
 div.content {
+  overflow:auto;
   padding-top: 40px;
 
   ul {
@@ -88,8 +91,8 @@ div.content {
 .img-hover:hover { opacity: 0.8; }
 
 div.carousel {
-  min-height: 320px;
-  height: 32%;
+  height: 400px;
+  z-index: 300;
   background: linear-gradient(45deg,#a4f0ff 0,#119fbc 100%);
   -webkit-box-shadow: 0 2px 2px rgba(0,0,0,0.03);
   -moz-box-shadow: 0 2px 2px rgba(0,0,0,0.03);
@@ -121,6 +124,7 @@ div.carousel .carousel-inner {
 .carousel-control.left,
 .carousel-control.right {
   background: none;
+  z-index: 305;
 }
 
 .carousel-control   {
@@ -233,14 +237,28 @@ footer {
   .img-related {
     margin-bottom: 30px;
   }
+
+  // remove home nav entry
+  #nav-home {
+    display: none;
+  }
+
+  // rename what is appserver to info
+  #nav-what-is-appserver-io a.dropdown-toggle span {
+    display: none;
+  }
+  #nav-what-is-appserver-io a.dropdown-toggle:before {
+    content: "Info";
+  }
 }
 
 @media(max-width:767px) {
+
   .img-portfolio {
     margin-bottom: 15px;
   }
 
-  header.carousel .carousel {
+  .carousel {
     height: 50%;
   }
 }
