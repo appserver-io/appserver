@@ -1,3 +1,13 @@
+# Version 1.0.0-beta3
+
+# Bugfixes
+
+* Analytics module configuration within virtual hosts was ignored
+
+# Features
+
+* None
+
 # Version 1.0.0-beta2
 
 # Bugfixes
