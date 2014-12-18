@@ -13,8 +13,7 @@ We chose that name, because it implicates a very important meaning. *Iron* on th
 rock solid infrastructure solution we want to provide and *Horse* on the other. *Horse* stands for the hard 
 working animal mankind can always rely on since hundreds of years.
 
-> #### Both are a synonym for an infrastructure solution you can build your 
-> #### business critical application on!
+> ###### Both are a synonym for an infrastructure solution you can build your business critical application on!
 
 Many guys out there, we talked to during the last years, told us: It's not possible to build an infrastructure
 solution completely based on PHP: Too slow, too many segfaults and too risky are only some of things we've 
