@@ -6,6 +6,6 @@ permalink: /documentation.html
 ---
 
 ## Documentation
-<hr>
+***
 
-Our documentation moved. It can be found in our <a href="https://github.com/appserver-io/appserver/wiki">appserver github wiki</a> now!
+Our documentation moved. It can be found in our [appserver github wiki](https://github.com/appserver-io/appserver/wiki) now!

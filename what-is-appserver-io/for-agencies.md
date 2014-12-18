@@ -8,7 +8,7 @@ author: all
 ---
 
 ## appserver.io for agencies
-<hr>
+***
 
 Provide your customers with the next generation of PHP infrastructure - unbelievable performance, scalability and
 security together with real multi-threading support leading to a tremendous boost in import processes.

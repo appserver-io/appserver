@@ -6,7 +6,7 @@ permalink: /downloads.html
 ---
 
 ## Downloads
-<hr>
+***
 
 Get the latest Version of appserver.io free and enjoy the most powerful PHP infrastructure in the world with only one click!
 <p><br/></p>

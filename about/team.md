@@ -7,7 +7,7 @@ permalink: /about/team.html
 ---
 
 ## Team
-<hr>
+***
 
 We´re young (not all ;-), wild and believe that we can change the world by providing you with the Next-Generation PHP Infrastructure:
 <p><br/></p>

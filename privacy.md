@@ -5,7 +5,7 @@ permalink: /privacy.html
 ---
 
 ## appserver.io Privacy Policy
-<hr>
+***
 
 _This Privacy Policy was last modified on May 11, 2014._
 

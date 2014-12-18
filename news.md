@@ -7,7 +7,7 @@ author: all
 ---
 
 ## All News
-<hr>
+***
 
 {% for post in site.posts %}
   {% include news_item.html %}

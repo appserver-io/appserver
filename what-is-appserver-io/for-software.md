@@ -8,7 +8,7 @@ author: all
 ---
 
 ## appserver.io for software companies
-<hr>
+***
 
  * The best possible performance, scalability and security of applications
  * Simple and rapid dissemination of applications by an easy installation using drag and drop
@@ -20,7 +20,7 @@ author: all
 <p><br/></p>
 
 ### Become part of the appserver.io application store
-<hr>
+***
 
 We will start the appserver.io application store in summer 2014 with different kinds of standard applications.
 Be part of it and enable interested users to install your application within appserver.io just with a simple

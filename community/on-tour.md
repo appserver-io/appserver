@@ -7,7 +7,7 @@ permalink: /community/talks.html
 ---
 
 ## appserver.io on Tour
-<hr>
+***
 
 Meet us on tour and discuss with us the future of PHP infrastructure. Let us know your thoughts, doubts, wishes etc... We´re very happy to talk with you guys!
 

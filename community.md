@@ -6,7 +6,7 @@ permalink: /community/mailing-list.html
 ---
 
 ## Subscribe to our mailinglist
-<hr>
+***
 
 Get interesting informations and the latest news about appserver.io automatically.
 By becoming an appserver.io subscriber, you will receive periodic e-mails, letting you know about the latest
