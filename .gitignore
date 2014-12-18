@@ -2,4 +2,6 @@
 /.idea
 /_site
 /target
-CNAME
+/.buildpath
+/.project
+/.settings
