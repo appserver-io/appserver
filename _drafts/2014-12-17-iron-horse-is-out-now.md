@@ -13,7 +13,7 @@ We chose that name, because it implicates a very important meaning. *Iron* on th
 rock solid infrastructure solution we want to provide and *Horse* on the other. *Horse* stands for the hard 
 working animal mankind can always rely on since hundreds of years.
 
-###### Both are a synonym for an infrastructure solution you can build your business critical application on!
+Both are a synonym for an infrastructure solution you can build your business critical application on!
 
 Many guys out there, we talked to during the last years, told us: It's not possible to build an infrastructure
 solution completely based on PHP: Too slow, too many segfaults and too risky are only some of things we've 
@@ -23,6 +23,7 @@ As developers who love using PHP and who saw the strong need for an application 
 we decided to give it a try.
 
 ### What is an Application Server
+*** 
 
 The common definition of what an application server is and what it has to provide is very loose. Therefore it
 is worthwile to specify the term closer. For us it will be a server that delivers web pages in most cases.
@@ -49,6 +50,7 @@ applications. If you want a more detailed description of a service or a function
 have a look at our project [WIKI](https://github.com/appserver-io/appserver/wiki).
 
 ### Why should i use an application server?
+***
 
 This is a good question and i'll try to explain the most important reasons from our point of view. Actually
 there are many good PHP applications out there on their way to conquer the world, that's good and we like
