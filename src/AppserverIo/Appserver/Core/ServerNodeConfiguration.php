@@ -567,6 +567,7 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
                         'accesses' => $this->prepareAccesses($virtualHost),
                         'locations' => $this->prepareLocations($virtualHost),
                         'authentications' => $this->prepareAuthentications($virtualHost),
+                        'analytics' => $this->prepareAnalytics($virtualHost),
                     );
                 }
             }

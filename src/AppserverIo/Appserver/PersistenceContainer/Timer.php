@@ -317,7 +317,7 @@ class Timer extends GenericStackable implements TimerInterface
         $nextTimeoutInSeconds = $this->getNextTimeout()->getTimestamp();
         $currentTimeInSeconds = time();
 
-        // return the time remaining in MICROSECONS
+        // return the time remaining in MICROSECONDS
         return ($nextTimeoutInSeconds - $currentTimeInSeconds)  * 1000000;
     }
 
