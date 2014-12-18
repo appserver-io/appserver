@@ -45,10 +45,8 @@ comes with
 * [Design-by-Contract (DbC)](https://github.com/appserver-io/appserver/wiki/12.-Design-by-Contract)
 
 The services, the client libraries plus these functionality enables you to write fast, scalable and secure
-applications.
-
-If you want a more detailed description of a service or a functionality click on the item and have a look
-at our project [WIKI](https://github.com/appserver-io/appserver/wiki).
+applications. If you want a more detailed description of a service or a functionality click on the item and
+have a look at our project [WIKI](https://github.com/appserver-io/appserver/wiki).
 
 ### Why should i use an Application Server?
 
