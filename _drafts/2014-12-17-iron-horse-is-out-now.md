@@ -75,6 +75,7 @@ started pthreads this is not longer a restriction and PHP gives you the power to
 see a growing number of PHP developers that give multithreading a try and help to bring PHP into the next level.
 
 ### What is comming next?
+***
 
 As we've reached beta state now, we're looking forward to find and fix bugs, implement the last enhancements 
 refactor code and write tests. To see what's going on, have a look at our [issues](https://github.com/appserver-io/appserver/milestones/Release%201.0.0.0%20%22Iron%20Horse%22). It'll
