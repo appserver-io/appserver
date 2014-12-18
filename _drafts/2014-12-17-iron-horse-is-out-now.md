@@ -30,22 +30,25 @@ To do this, we need some kind of web server functionality like Apache or nginx h
 the main purpose an application server should have. Beside the functionality of acting as a web server, it
 comes with the following services, we'll focus on in our next blog posts
 
-* Servlet-Engine
-* Persistence-Container
-* Message-Queue
-* Timer-Service
+* [Servlet-Engine](https://github.com/appserver-io/appserver/wiki/05.-Servlet-Engine)
+* [Persistence-Container](https://github.com/appserver-io/appserver/wiki/08.-Persistence-Container)
+* [Message-Queue](https://github.com/appserver-io/appserver/wiki/09.-Message-Queue)
+* [Timer-Service](https://github.com/appserver-io/appserver/wiki/10.-Timer-Service)
 
 On top of these services, it provides client libraries that enables you to use those and extends them with 
 functionality, that you know from some of the well known frameworks. To make it short, the application server
 comes with
 
-* Dependendcy Injection (DI)
-* Aspect Oriented Programming (AOP)
-* Design-by-Contract (DbC)
-* Annotations
+* [Annotations](https://github.com/appserver-io/appserver/wiki/06.-Annotations)
+* [Dependendcy Injection (DI)](https://github.com/appserver-io/appserver/wiki/07.-Dependency-Injection)
+* [Aspect Oriented Programming (AOP)](https://github.com/appserver-io/appserver/wiki/11.-AOP)
+* [Design-by-Contract (DbC)](https://github.com/appserver-io/appserver/wiki/12.-Design-by-Contract)
 
 The services, the client libraries plus these functionality enables you to write fast, scalable and secure
 applications.
+
+If you want a more detailed description of a service or a functionality click on the item and have a look
+at our project WIKI.
 
 ### Why should i use an Application Server?
 
@@ -71,7 +74,7 @@ multithreading and in consequence of that, data can not be shared between proces
 started pthreads this is not longer a restriction and PHP gives you the power to do that. Meanwhile you can
 see a growing number of PHP developers that give multithreading a try and help to bring PHP into the next level.
 
-What is comming next?
+### What is comming next?
 
 As we've reached beta state now, we're looking forward to find and fix bugs, implement the last enhancements 
 refactor code and write tests. To see what's going on, have a look at our [issues](https://github.com/appserver-io/appserver/milestones/Release%201.0.0.0%20%22Iron%20Horse%22). It'll
