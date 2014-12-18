@@ -48,7 +48,7 @@ The services, the client libraries plus these functionality enables you to write
 applications.
 
 If you want a more detailed description of a service or a functionality click on the item and have a look
-at our project WIKI.
+at our project [WIKI](https://github.com/appserver-io/appserver/wiki).
 
 ### Why should i use an Application Server?
 
@@ -81,4 +81,4 @@ refactor code and write tests. To see what's going on, have a look at our [issue
 help a lot, if you'll give us feedback about your first tries and what you think about appserver.io. If you
 have questions, feel free to contact us in our public HipChat channel.
 
-We'll try to finished the first stable 1.0.0 aka "Iron Horse" in early january!
+> We'll try to finished the first stable 1.0.0 aka "Iron Horse" in early january!
