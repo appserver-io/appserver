@@ -54,7 +54,7 @@ This is a good question and i'll try to explain the most important reasons from 
 there are many good PHP applications out there on their way to conquer the world, that's good and we like
 that. Many of those applications are using the LAMP stack and they run well on it.
 
-So if that is true, where is the need for an application server? Let's have an look at the market PHP 
+So if that is true, where is the need for an application server? Let's have a look at the market PHP 
 applications are very popular in. Actually we see a lot of small and midrange content management and shop 
 systems, bug trackers and other useful tools. But when we look at the financial market, hightech industries
 enterprise content management and shop systems, we can't find any noteable PHP applications. One reason is,
