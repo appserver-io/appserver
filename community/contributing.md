@@ -35,9 +35,7 @@ with that tag. Please check to see if your question has already been answered be
 In the near future we will start a discussion forum on our webpage where you can participate in and which
 is a great venue for discussing features, architecture and best practices. Stay tuned!
 
-You can also check out our [IRC channel at #appserver.io](http://webchat.freenode.net/?channels=appserver.io)
-on freenode.net.
+## Live-Chat on our public hipchat channel.
+***
 
-
-
-[github-repo]: https://github.com/appserver-io/appserver
+{% include hipchat.html %}

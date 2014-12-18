@@ -8,11 +8,4 @@ permalink: /documentation.html
 ## Documentation
 ***
 
-{% for section in site.data.docs %}
-<h4>{{ section.title }}</h4>
-<p>
-  {% capture doc %}{% include docs/{{section.doc}} %}{% endcapture %}
-  {{ doc | markdownify }}
-</p>
-{% endfor %}
-
+Our documentation moved. It can be found in our [appserver github wiki](https://github.com/appserver-io/appserver/wiki) now!
