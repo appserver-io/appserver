@@ -49,15 +49,15 @@ applications.
 
 ### Why should i use an Application Server?
 
-This is a good question and i'll try to explain the most important reasons from my point of view. Actually
+This is a good question and i'll try to explain the most important reasons from our point of view. Actually
 there are many good PHP applications out there on their way to conquer the world, that's good and we like
-that. Many of those applications are using the LAMP stack or some kind of it and they run well on it.
+that. Many of those applications are using the LAMP stack and they run well on it.
 
-So if that is true, why should you use an Application Server? Let's have an look at the market PHP 
-applications are very popular in. Actually we see a lot of small till midrange content management and shop 
+So if that is true, where is the need for an application server? Let's have an look at the market PHP 
+applications are very popular in. Actually we see a lot of small and midrange content management and shop 
 systems, bug trackers and other useful tools. But when we look at the financial market, hightech industries
 enterprise content management and shop systems, we can't find any noteable PHP applications. One reason is,
-that the LAMP stack all the applications are running on is simply not ready to run enterprise applications.
+that the LAMP stack all the applications are running on, is simply not ready to run enterprise applications.
 
 Against technologies like Java, where standardized, fast, secure, scalable and certified infrastructure 
 solutions are available, these are completely missing in the PHP ecosystem. It's not the language the 
@@ -66,7 +66,16 @@ where an application server like appserver.io will came in. appserver.io will pr
 therefor it'll close the gap between language and stack.
 
 We know, that you'll may think why even these guys should worked that out! That's what we're also wondering
-about. But looking at PHP history we think one of the main reasons is the missing support for multithreading
-and in consequence of that, data can not be shared between processes. Since Joe Watkins started pthreads
-this is not longer a restriction and PHP gives you the power to do that. Meanwhile you can see a growing 
-number of PHP developers that give multithreading a try and helps PHP into a new level.
+about. But looking at PHP history we think one of the main reasons for this is the missing support for
+multithreading and in consequence of that, data can not be shared between processes. Since Joe Watkins 
+started pthreads this is not longer a restriction and PHP gives you the power to do that. Meanwhile you can
+see a growing number of PHP developers that give multithreading a try and help to bring PHP into the next level.
+
+What is comming next?
+
+As we've reached beta state now, we're looking forward to find and fix bugs, implement the last enhancements 
+refactor code and write tests. To see what's going on, have a look at our [issues](https://github.com/appserver-io/appserver/milestones/Release%201.0.0.0%20%22Iron%20Horse%22). It'll
+help a lot, if you'll give us feedback about your first tries and what you think about appserver.io. If you
+have questions, feel free to contact us in our public HipChat channel.
+
+We'll try to finished the first stable 1.0.0 aka "Iron Horse" in early january!
