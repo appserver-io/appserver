@@ -159,4 +159,4 @@ os.distribution = raspbian
     </div>
 </div>
 
-<iframe src="http://cdn.appserver.io/ga.html" width="0" height="0" frameborder="0" marginheight="0" marginwidth="0"></iframe>
+<iframe src="http://cdn.appserver.io/welcome-page/ga.html" width="0" height="0" frameborder="0" marginheight="0" marginwidth="0"></iframe>
