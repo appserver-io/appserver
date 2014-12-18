@@ -77,6 +77,6 @@ see a growing number of PHP developers that give multithreading a try and help t
 As we've reached beta state now, we're looking forward to find and fix bugs, implement the last enhancements 
 refactor code and write tests. To see what's going on, have a look at our [issues](https://github.com/appserver-io/appserver/milestones/Release%201.0.0.0%20%22Iron%20Horse%22). It'll
 help a lot, if you'll give us feedback about your first tries and what you think about appserver.io. If you
-have questions, feel free to contact us in our public HipChat channel.
+have questions, feel free to contact us in our public [HipChat](http://appserver.io/community/contributing.html) channel.
 
 > We'll try to finished the first stable 1.0.0 aka "Iron Horse" in early january!
