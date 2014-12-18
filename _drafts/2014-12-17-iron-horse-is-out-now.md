@@ -48,7 +48,7 @@ The services, the client libraries plus these functionality enables you to write
 applications. If you want a more detailed description of a service or a functionality click on the item and
 have a look at our project [WIKI](https://github.com/appserver-io/appserver/wiki).
 
-### Why should i use an Application Server?
+### Why should i use an application server?
 
 This is a good question and i'll try to explain the most important reasons from our point of view. Actually
 there are many good PHP applications out there on their way to conquer the world, that's good and we like
