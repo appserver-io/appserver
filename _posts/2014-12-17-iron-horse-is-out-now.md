@@ -25,9 +25,11 @@ we decided to give it a try.
 ### Download and install it
 ***
 
-You can download the last 1.0.0-beta2 release directly from our [releases](https://github.com/appserver-io/appserver/releases) page. For detailed installation instructions, have a look at our [installation](https://github.com/appserver-io/appserver/wiki/01.-Installation) WIKI. After installation open `http://127.0.0.1:9080` with your browser, you should see something like this
+You can download the last 1.0.0-beta2 release directly from our [releases](https://github.com/appserver-io/appserver/releases) page. For detailed installation instructions, have a look at our [installation](https://github.com/appserver-io/appserver/wiki/01.-Installation) WIKI. After installation open `http://127.0.0.1:9080` with your favorite browser, you should see something like this
 
 ![You successfully installed Iron Horse]({{ "/assets/img/ironhorse-installed.png" | prepend: site.baseurl }} "You successfully installed Iron Horse")
+
+Congratulations, you've installed the PHP application server!
 
 ### What is an Application Server
 *** 
