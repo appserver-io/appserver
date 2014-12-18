@@ -5,7 +5,7 @@ permalink: /contact.html
 ---
 
 ## Contact
-<hr>
+***
 
 Do not hesitate to send us a message if you have any question or request about our project!
 

@@ -5,7 +5,7 @@ permalink: /terms.html
 ---
 
 ## appserver.io Terms
-<hr>
+***
 
 Welcome to www.appserver.io (together with its sub-domains, Content, Marks and services, the “site”).
 Please read the following Terms of Use (“terms”) carefully before using this Site so that you are aware of your legal rights and obligations with respect to TechDivision GmbH and our affiliated companies (collectively, “TechDivision”, „appserver.io“, “we”, “our” or “us”).

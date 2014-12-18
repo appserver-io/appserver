@@ -6,6 +6,13 @@ permalink: /documentation.html
 ---
 
 ## Documentation
-<hr>
+***
 
-Our documentation moved. It can be found in our <a href="https://github.com/appserver-io/appserver/wiki">appserver github wiki</a> now!
+{% for section in site.data.docs %}
+<h4>{{ section.title }}</h4>
+<p>
+  {% capture doc %}{% include docs/{{section.doc}} %}{% endcapture %}
+  {{ doc | markdownify }}
+</p>
+{% endfor %}
+

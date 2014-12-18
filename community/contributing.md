@@ -7,7 +7,7 @@ permalink: /community/contributing.html
 ---
 
 ## Contribute to the project
-<hr>
+***
 The appserver.io source is hosted on [Github][github-repo]. To contribute patches, create a fork of the project on
 [Github][github-repo] and submit a pull request. Please be sure to include unit tests and documentation
 for any new features you add. In order to avoid any misunderstandings or dissatisfaction,
@@ -16,7 +16,7 @@ We want to provide the best open source quality you can get, therefore we can on
 with these guidelines in mind.
 
 ## Report it to the team
-<hr>
+***
 If you've found a bug or issue in appserver.io, please drop us a note. To file a bug, go to our
 [issue tracker on Github](https://github.com/appserver-io/appserver/issues) and create a new issue.
 Please make sure, that your bug report include a clear description of what is not
@@ -28,7 +28,7 @@ For this case, we have implemented the appserver.io security policy.
 You can find more details for the procedure for disclosing security issues here.
 
 ## Get help from the community
-<hr>
+***
 We prefer StackOverflow to track questions. Just tag your question with appserver.io or search for questions
 with that tag. Please check to see if your question has already been answered before asking a new one.
 

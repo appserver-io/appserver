@@ -5,7 +5,7 @@ permalink: /imprint.html
 ---
 
 ## appserver.io Imprint
-<hr>
+***
 
 ### appserver.io is a product of:
 

@@ -2,7 +2,7 @@
   <div class="container">
     <div class="row">
 
-      <div class="footer-col col-xs-4">
+      <div class="links col-md-3 col-xs-2">
         <h4 class="title">Copyrights</h4>
         <ul class="list-unstyled">
           <li><a href="{{ "/imprint.html" | prepend: site.baseurl }}">Imprint</a></li>
@@ -13,25 +13,41 @@
         </ul>
       </div><!--//foooter-col-->
 
-      <div class="footer-col col-xs-8 text-right">
-        <p class="intro">Get the Latest news</p>
-        {% include mailing_list.html %}
-        <ul class="social list-inline">
-          <li><a href="https://twitter.com/php_appserver" target="_blank"><i class="fa fa-twitter"></i></a></li>
-          <li><a href="https://www.facebook.com/appserver.io"><i class="fa fa-facebook"></i></a></li>
-          <li class="row-end"><a href="{{ "/feed.xml" | prepend: site.baseurl }}"><i class="fa fa-rss"></i></a></li>
+      <div class="contact col-md-3 col-xs-3">
+          <h4 class="title">Contact Details</h4>
+          <p>
+            TechDivision GmbH<br />
+            Spinnereiinsel 3a<br />
+            83059 Kolbermoor<br />
+          </p>
+          <p><i class="fa fa-phone"></i>
+            <abbr title="Phone">P</abbr>: +49 8031 / 221055-0</p>
+      </div>
+
+      <div class="social col-md-6 col-xs-7 text-right">
+        <ul class="list-inline">
+          <li><a href="https://twitter.com/php_appserver" target="_blank"><i class="fa fa-twitter-square fa-2x"></i></a></li>
+          <li><a href="https://www.facebook.com/appserver.io"><i class="fa fa-facebook-square fa-2x"></i></a></li>
+          <li class="row-end"><a href="{{ "/feed.xml" | prepend: site.baseurl }}"><i class="fa fa-rss-square fa-2x"></i></a></li>
         </ul>
         <br>
-        <p class="text-right">
-          <small class="copyright">
-            &copy; 2014 All Rights Reserved - <a href="http://www.techdivision.com/" target="_blank">TechDivision GmbH</a>
-          </small>
-        </p>
+        <p class="intro">Subscribe and get the Latest news!</p>
+        {% include mailing_list.html %}
+        <br>
       </div><!--//foooter-col-->
 
       <div class="clearfix"></div>
     </div><!--//row-->
   </div><!--//container-->
+  <div class="container-full copyright">
+    <div class="container">
+      <p class="text-right">
+        <small>
+          &copy; 2014 All Rights Reserved - <a href="http://www.techdivision.com/" target="_blank">TechDivision GmbH</a>
+        </small>
+      </p>
+    </div>
+  </div>
 </footer>
 
 <!-- Javascript libraries -->

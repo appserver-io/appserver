@@ -8,7 +8,7 @@ author: all
 ---
 
 ## appserver releases
-<hr>
+***
 
 {% for post in site.categories.release %}
   {% include news_item.html %}

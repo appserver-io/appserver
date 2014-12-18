@@ -8,7 +8,7 @@ author: all
 ---
 
 ## Features
-<hr>
+***
 
 appserver.io comes with its own runtime environment, containing PHP in version 5.5 extended with several third party
 libraries, PHP extensions and service daemons. This idea of a self-containing environment makes appserver.io an

@@ -8,7 +8,7 @@ author: all
 ---
 
 ## appserver.io for merchants
-<hr>
+***
 
 appserver.io is the next-generation of PHP infrastructure consisting of a lightning fast webserver completely
 written in PHP including different additional services often needed in modern web applications.
@@ -22,3 +22,20 @@ written in PHP including different additional services often needed in modern we
  * Reliable support and continuous development
  * No vendor lock – completely open source
 
+<p><br></p>
+
+<div class="well">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="embed-responsive embed-responsive-16by9">
+                <iframe src="//www.youtube.com/embed/np8SQpqBDRk" allowfullscreen></iframe>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <p>
+                Juweliere.de uses appserver.io as the basic infrastructure with tremendous advantages in performance (> 50% improvements) together with a significant reduction in maintenance costs
+                (> 25% cost reduction).
+            </p>
+        </div>
+    </div>
+</div>

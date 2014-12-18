@@ -8,7 +8,7 @@ author: all
 ---
 
 ## appserver.io in action
-<hr>
+***
 
 Some of you might be interested in some real use cases for appserver.io - and there is a lot you can do with the
 most powerful PHP infrastructure in the world. appserver.io provides you with a lightning fast webserver, completely
@@ -18,8 +18,7 @@ a message queue and some more...
 Here are some of the first real projects using appserver.io as infrastructure:
 
 ### EmberChat
-<hr>
-
+***
 <div class="row">
     <div class="col-md-2">
         <img src="{{ "/assets/img/ember_chat.png" | prepend: site.baseurl }}" alt="">
@@ -39,7 +38,7 @@ Here are some of the first real projects using appserver.io as infrastructure:
 <p><br/></p>
 
 ### juweliere.de
-<hr>
+***
 
 <div class="row">
     <div class="col-xs-2">

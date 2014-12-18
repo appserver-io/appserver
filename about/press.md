@@ -7,7 +7,7 @@ permalink: /about/press.html
 ---
 
 ## Press
-<hr>
+***
 
 Check out some stuff about appserver.io and the appserver.io team in the press!
 
