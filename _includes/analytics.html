@@ -9,5 +9,25 @@
     ga('create', '{{ site.google_analytics_id }}', 'auto');
     ga('send', 'pageview');
 
+    $('#btn-download-osx').on('click', function() {
+      ga('send', 'event', 'button', 'click', 'download', 'osx');
+    });
+
+    $('#btn-download-win').on('click', function() {
+      ga('send', 'event', 'button', 'click', 'download', 'win');
+    });
+
+    $('#btn-download-debian').on('click', function() {
+      ga('send', 'event', 'button', 'click', 'download', 'debian');
+    });
+
+    $('#btn-download-fedora').on('click', function() {
+      ga('send', 'event', 'button', 'click', 'download', 'fedora');
+    });
+
+    $('#btn-download-centos').on('click', function() {
+      ga('send', 'event', 'button', 'click', 'download', 'centos');
+    });
+
   </script>
 {% endif %}

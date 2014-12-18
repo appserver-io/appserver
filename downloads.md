@@ -39,8 +39,10 @@ Get the latest Version of appserver.io free and enjoy the most powerful PHP infr
                 For Mac OS X > 10.8.x we provide a .mpkg file for download that contains the runtime and
                 the distribution. Double-clicking on the `.mpkg` starts and guides you through the installation process.
             </p>
-            <a href="https://github.com/appserver-io/appserver/releases/download/1.0.0-beta1/appserver-dist-1.0.0-beta1.12.mac.x86_64.pkg" class="btn btn-info btn-lg">
-                <i class="fa fa-download"></i>&nbsp;&nbsp;appserver-dist-1.0.0-beta1.12.mac.x86_64.pkg
+            <a id="btn-download-osx"
+               class="btn btn-info btn-lg"
+               href="https://github.com/appserver-io/appserver/releases/download/1.0.0-beta2/appserver-dist-1.0.0-beta2.18.mac.x86_64.pkg">
+                <i class="fa fa-download"></i>&nbsp;&nbsp;1.0.0-beta2/appserver-dist-1.0.0-beta2.18.mac.x86_64.pkg
             </a>
         </div>
 
@@ -57,8 +59,10 @@ Get the latest Version of appserver.io free and enjoy the most powerful PHP infr
                 </a>. If this requirement is met you can start the installation by simply double-clicking
                 the .jar archive.
             </p>
-            <a href="https://github.com/appserver-io/appserver/releases/download/1.0.0-beta1/appserver-dist-1.0.0-beta1.25.win.x86.jar" class="btn btn-info btn-lg">
-                <i class="fa fa-download"></i>&nbsp;&nbsp;appserver-dist-1.0.0-beta1.25.win.x86.jar
+            <a id="btn-download-win"
+               class="btn btn-info btn-lg"
+               href="https://github.com/appserver-io/appserver/releases/download/1.0.0-beta2/appserver-dist-1.0.0-beta2.30.win.x86.jar">
+                <i class="fa fa-download"></i>&nbsp;&nbsp;appserver-dist-1.0.0-beta2.30.win.x86.jar
             </a>
         </div>
 
@@ -81,12 +85,16 @@ aptitude install appserver-dist
                 you through the installation process. Please install the runtime first,
                 as this is a dependency for the distribution.
             </p>
-            <a href="https://github.com/appserver-io/appserver/releases/download/1.0.0-beta1/appserver-runtime-1.0.0-beta.12.linux.debian.x86_64.deb" class="btn btn-info btn-lg">
-                <i class="fa fa-download"></i>&nbsp;&nbsp;appserver-runtime-1.0.0-beta.12.linux.debian.x86_64.deb
+            <a
+               class="btn btn-info btn-lg"
+               href="https://github.com/appserver-io/appserver/releases/download/1.0.0-beta2/appserver-runtime-1.0.0-beta1.13.linux.debian.x86_64.deb">
+                <i class="fa fa-download"></i>&nbsp;&nbsp;appserver-runtime-1.0.0-beta1.13.linux.debian.x86_64.deb
             </a>
             <p></p>
-            <a href="https://github.com/appserver-io/appserver/releases/download/1.0.0-beta1/appserver-dist-1.0.0-beta1.11.linux.debian.x86_64.deb" class="btn btn-info btn-lg">
-                <i class="fa fa-download"></i>&nbsp;&nbsp;appserver-dist-1.0.0-beta1.11.linux.debian.x86_64.deb
+            <a id="btn-download-debian"
+               class="btn btn-info btn-lg"
+               href="https://github.com/appserver-io/appserver/releases/download/1.0.0-beta2/appserver-dist-1.0.0-beta2.16.linux.debian.x86_64.deb">
+                <i class="fa fa-download"></i>&nbsp;&nbsp;appserver-dist-1.0.0-beta2.16.linux.debian.x86_64.deb
             </a>
         </div>
 
@@ -99,11 +107,15 @@ aptitude install appserver-dist
                 that you can download and start the installation process by double-clicking on it.
                 This will start the systems default package manager and guides you through the installation process.
             </p>
-            <a href="https://github.com/appserver-io/appserver/releases/download/1.0.0-beta1/appserver-runtime-1.0.0-beta.18.linux.fedora.x86_64.rpm" class="btn btn-info btn-lg">
+            <a
+               class="btn btn-info btn-lg"
+               href="https://github.com/appserver-io/appserver/releases/download/1.0.0-beta1/appserver-runtime-1.0.0-beta.18.linux.fedora.x86_64.rpm">
                 <i class="fa fa-download"></i>&nbsp;&nbsp;appserver-runtime-1.0.0-beta.18.linux.fedora.x86_64.rpm
             </a>
             <p></p>
-            <a href="https://github.com/appserver-io/appserver/releases/download/1.0.0-beta1/appserver-dist-1.0.0-beta1.33.linux.fedora.x86_64.rpm" class="btn btn-info btn-lg">
+            <a id="btn-download-fedora"
+               class="btn btn-info btn-lg"
+               href="https://github.com/appserver-io/appserver/releases/download/1.0.0-beta1/appserver-dist-1.0.0-beta1.33.linux.fedora.x86_64.rpm">
                 <i class="fa fa-download"></i>&nbsp;&nbsp;appserver-dist-1.0.0-beta1.33.linux.fedora.x86_64.rpm
             </a>
         </div>
@@ -119,11 +131,15 @@ aptitude install appserver-dist
                 <a href="http://fedoraproject.org/wiki/EPEL" target="_blank">EPEL</a> to satisfy
                 additional dependencies.
             </p>
-            <a href="https://github.com/appserver-io/appserver/releases/download/1.0.0-beta1/appserver-runtime-1.0.0-beta.21.linux.centos.x86_64.rpm" class="btn btn-info btn-lg">
+            <a id=""
+               class="btn btn-info btn-lg"
+               href="https://github.com/appserver-io/appserver/releases/download/1.0.0-beta1/appserver-runtime-1.0.0-beta.21.linux.centos.x86_64.rpm">
                 <i class="fa fa-download"></i>&nbsp;&nbsp;appserver-runtime-1.0.0-beta.21.linux.centos.x86_64.rpm
             </a>
             <p></p>
-            <a href="https://github.com/appserver-io/appserver/releases/download/1.0.0-beta1/appserver-dist-1.0.0-beta1.20.linux.centos.x86_64.rpm" class="btn btn-info btn-lg">
+            <a id="btn-download-centos"
+               class="btn btn-info btn-lg"
+               href="https://github.com/appserver-io/appserver/releases/download/1.0.0-beta1/appserver-dist-1.0.0-beta1.20.linux.centos.x86_64.rpm">
                 <i class="fa fa-download"></i>&nbsp;&nbsp;appserver-dist-1.0.0-beta1.20.linux.centos.x86_64.rpm
             </a>
         </div>
