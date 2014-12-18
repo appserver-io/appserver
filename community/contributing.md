@@ -39,3 +39,5 @@ is a great venue for discussing features, architecture and best practices. Stay 
 ***
 
 {% include hipchat.html %}
+
+[github-repo]: https://github.com/appserver-io/appserver
