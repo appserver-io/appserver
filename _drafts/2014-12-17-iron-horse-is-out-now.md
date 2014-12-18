@@ -60,11 +60,11 @@ systems, bug trackers and other useful tools. But when we look at the financial 
 enterprise content management and shop systems, we can't find any noteable PHP applications. One reason is,
 that the LAMP stack all the applications are running on, is simply not ready to run enterprise applications.
 
-Against technologies like Java, where standardized, fast, secure, scalable and certified infrastructure 
-solutions are available, these are completely missing in the PHP ecosystem. It's not the language the 
-frameworks or the tools that lacks for enterprise, it's more the stack the language is running on. That is,
-where an application server like appserver.io will came in. appserver.io will provide exactly this and
-therefor it'll close the gap between language and stack.
+> Against technologies like Java, where standardized, fast, secure, scalable and certified infrastructure 
+> solutions are available, these are completely missing in the PHP ecosystem. It's not the language the 
+> frameworks or the tools that lacks for enterprise, it's more the stack the language is running on. That is,
+> where an application server like appserver.io will came in. appserver.io will provide exactly this and
+> therefor it'll close the gap between language and stack.
 
 We know, that you'll may think why even these guys should worked that out! That's what we're also wondering
 about. But looking at PHP history we think one of the main reasons for this is the missing support for
@@ -79,4 +79,4 @@ refactor code and write tests. To see what's going on, have a look at our [issue
 help a lot, if you'll give us feedback about your first tries and what you think about appserver.io. If you
 have questions, feel free to contact us in our public [HipChat](http://appserver.io/community/contributing.html) channel.
 
-> We'll try to finished the first stable 1.0.0 aka "Iron Horse" in early january!
+We'll try to finished the first stable 1.0.0 aka "Iron Horse" in early january!
