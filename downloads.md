@@ -109,14 +109,14 @@ aptitude install appserver-dist
             </p>
             <a
                class="btn btn-info btn-lg"
-               href="https://github.com/appserver-io/appserver/releases/download/1.0.0-beta2/appserver-dist-1.0.0-beta2.37.linux.fedora.x86_64.rpm">
-                <i class="fa fa-download"></i>&nbsp;&nbsp;appserver-dist-1.0.0-beta2.37.linux.fedora.x86_64.rpm
+               href="https://github.com/appserver-io/appserver/releases/download/1.0.0-beta2/appserver-runtime-1.0.0-beta1.20.linux.fedora.x86_64.rpm">
+                <i class="fa fa-download"></i>&nbsp;&nbsp;appserver-runtime-1.0.0-beta1.20.linux.fedora.x86_64.rpm
             </a>
             <p></p>
             <a id="btn-download-fedora"
                class="btn btn-info btn-lg"
-               href="https://github.com/appserver-io/appserver/releases/download/1.0.0-beta2/appserver-runtime-1.0.0-beta1.20.linux.fedora.x86_64.rpm">
-                <i class="fa fa-download"></i>&nbsp;&nbsp;appserver-runtime-1.0.0-beta1.20.linux.fedora.x86_64.rpm
+               href="https://github.com/appserver-io/appserver/releases/download/1.0.0-beta2/appserver-dist-1.0.0-beta2.37.linux.fedora.x86_64.rpm">
+                <i class="fa fa-download"></i>&nbsp;&nbsp;appserver-dist-1.0.0-beta2.37.linux.fedora.x86_64.rpm
             </a>
         </div>
 
