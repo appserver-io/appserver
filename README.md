@@ -67,13 +67,13 @@ For OS specific steps and characteristics see below for tested environments.
 
 > Runs and tested on Mac OS X 10.8.x and higher!
 
-For Mac OS X > 10.8.x we provide a `.mpkg` file for [download](https://github.com/appserver-io/appserver/releases/download/1.0.0-beta/appserver-dist-1.0.0-beta.8.mac.x86_64.pkg) that contains the runtime and the distribution. Double-clicking on the `.mpkg` starts and guides you through the installation process.
+For Mac OS X > 10.8.x we provide a `.pkg` file for [download](https://github.com/appserver-io/appserver/releases/download/1.0.0-beta2/appserver-dist-1.0.0-beta2.16.linux.debian.x86_64.deb) that contains the runtime and the distribution. Double-clicking on the `.pkg` starts and guides you through the installation process.
 
 ## Windows
 
 > Runs and tested on Windows 7 (32-bit) and higher!
 
-As we deliver the Windows appserver as a .jar file you can [download](https://github.com/appserver-io/appserver/releases/download/1.0.0-beta/appserver-dist-1.0.0-beta.12.win.x86.jar), a installed Java Runtime Environment (or JDK 
+As we deliver the Windows appserver as a .jar file you can [download](https://github.com/appserver-io/appserver/releases/download/1.0.0-beta2/appserver-dist-1.0.0-beta2.30.win.x86.jar), a installed Java Runtime Environment (or JDK 
 that is) is a vital requirement for using it. If the JRE/JDK is not installed you have to do so 
 first. You might get it from [Oracle's download page](<http://www.oracle.com/technetwork/java/javase/downloads/jre7-downloads-1880261.html>).
 If this requirement is met you can start the installation by simply double-clicking the .jar archive.
@@ -91,19 +91,19 @@ root@debian:~# aptitude update
 root@debian:~# aptitude install appserver-dist
 ```
 
-Optionally you can download the `.deb` files for the [runtime](https://github.com/appserver-io/appserver/releases/download/1.0.0-beta/appserver-runtime-1.0.0-alpha.10.linux.debian.x86_64.deb) and the [distribution](https://github.com/appserver-io/appserver/releases/download/1.0.0-beta/appserver-dist-1.0.0-beta.7.linux.debian.x86_64.deb) and install them by double-clicking on them. This will invoke the system default package manager and guides you through the installation process. Please install the runtime first, as this is a dependency for the distribution.
+Optionally you can download the `.deb` files for the [runtime](https://github.com/appserver-io/appserver/releases/download/1.0.0-beta2/appserver-runtime-1.0.0-beta1.13.linux.debian.x86_64.deb) and the [distribution](https://github.com/appserver-io/appserver/releases/download/1.0.0-beta2/appserver-dist-1.0.0-beta2.16.linux.debian.x86_64.deb) and install them by double-clicking on them. This will invoke the system default package manager and guides you through the installation process. Please install the runtime first, as this is a dependency for the distribution.
 
 ## Fedora
 
 > Runs and tested on versions Fedora 20 (64-bit) and higher!
 
-We  also provide `.rpm` files for Fedora, one for [runtime](https://github.com/appserver-io/appserver/releases/download/1.0.0-beta/appserver-runtime-1.0.0-alpha.16.linux.fedora.x86_64.rpm) and [distribution](https://github.com/appserver-io/appserver/releases/download/1.0.0-beta/appserver-dist-1.0.0-beta.29.linux.fedora.x86_64.rpm), that you can download and start the installation process by double-clicking on it. This will start the systems default package manager and guides you through the installation process.
+We  also provide `.rpm` files for Fedora, one for [runtime](https://github.com/appserver-io/appserver/releases/download/1.0.0-beta2/appserver-runtime-1.0.0-beta1.20.linux.fedora.x86_64.rpm) and [distribution](https://github.com/appserver-io/appserver/releases/download/1.0.0-beta2/appserver-dist-1.0.0-beta2.37.linux.fedora.x86_64.rpm), that you can download and start the installation process by double-clicking on it. This will start the systems default package manager and guides you through the installation process.
 
 ## CentOS
 
 > Runs and tested on CentOS 6.5 (64-bit) and higher!
 
-Installation and basic usage is the same as on Fedora but we provide different packages for [runtime](https://github.com/appserver-io/appserver/releases/download/1.0.0-beta/appserver-runtime-1.0.0-alpha.19.linux.centos.x86_64.rpm) and [distribution](https://github.com/appserver-io/appserver/releases/download/1.0.0-beta/appserver-dist-1.0.0-beta.16.linux.centos.x86_64.rpm). CentOS requires additional repositories
+Installation and basic usage is the same as on Fedora but we provide different packages for [runtime](https://github.com/appserver-io/appserver/releases/download/1.0.0-beta2/appserver-runtime-1.0.0-beta1.22.linux.centos.x86_64.rpm) and [distribution](https://github.com/appserver-io/appserver/releases/download/1.0.0-beta2/appserver-dist-1.0.0-beta2.24.linux.centos.x86_64.rpm). CentOS requires additional repositories
 like [remi](<http://rpms.famillecollet.com/>) or [EPEL](<http://fedoraproject.org/wiki/EPEL>) to 
 satisfy additional dependencies.
 
@@ -912,9 +912,6 @@ use AppserverIo\Psr\Servlet\ServletConfig;
 use AppserverIo\Psr\Servlet\Http\HttpServlet;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequest;
 use AppserverIo\Psr\Servlet\Http\HttpServletResponse;
-use AppserverIo\MessageQueueClient\MessageQueue;
-use AppserverIo\MessageQueueClient\QueueConnectionFactory;
-use AppserverIo\Psr\MessageQueueProtocol\Utils\PriorityMedium;
 use AppserverIo\Psr\MessageQueueProtocol\Messages\StringMessage;
 
 /**
@@ -1067,7 +1064,7 @@ class HelloWorldServlet extends HttpServlet
 > To make it easy, we can use the `@Resource` annotation to let the container inject a sender
 > instance we can use to send the name of the file containing the data to the `Queue`.
 
-# Timer Service
+# Timer-Service
 
 In most of your projects you have the need to schedule things to be processed in regular intervals
 or at a given date in future. As PHP itself is a scripting language it lacks of such functionality
@@ -1607,7 +1604,12 @@ in `/opt/appserver/etc/appserver/conf.d/context.xml`
       name="ServletManager"
       beanInterface="ServletContext"
       type="AppserverIo\Appserver\ServletEngine\ServletManager"
-      factory="AppserverIo\Appserver\ServletEngine\ServletManagerFactory"/>
+      factory="AppserverIo\Appserver\ServletEngine\ServletManagerFactory">
+      <directories>
+        <directory enforced="true">/WEB-INF/classes</directory>
+        <directory enforced="true">/vendor/appserver-io/routlt/src</directory>
+      </directories>
+    </manager>
 
     <!-- provides functionality to handle HTTP sessions -->
     <manager 
