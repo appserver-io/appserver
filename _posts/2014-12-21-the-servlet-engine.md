@@ -170,7 +170,7 @@ class HelloWorldServlet extends HttpServlet
     HttpServletRequest $servletRequest,
     HttpServletResponse $servletResponse)
   {
-    $servletResponse->appendBodyStream($this->resources['hello-world.en_US.key]);
+    $servletResponse->appendBodyStream($this->resources['hello-world.en_US.key']);
   }
 }
 ```
@@ -251,7 +251,7 @@ class HelloWorldServlet extends HttpServlet
     HttpServletRequest $servletRequest,
     HttpServletResponse $servletResponse)
   {
-    $servletResponse->appendBodyStream($this->resources['hello-world.en_US.key]);
+    $servletResponse->appendBodyStream($this->resources['hello-world.en_US.key']);
   }
 }
 ```
@@ -342,7 +342,7 @@ class HelloWorldServlet extends HttpServlet
     }
     
     // prepare the hello world string, this should look like 'Hello World %s!'
-    $helloWorld = sprintf($this->resources['hello-world.en_US.key], $username);
+    $helloWorld = sprintf($this->resources['hello-world.en_US.key'], $username);
     
     // append the prepared hello world to the response
     $servletResponse->appendBodyStream($helloWorld);
