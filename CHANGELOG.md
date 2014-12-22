@@ -2,6 +2,7 @@
 
 # Bugfixes
 
+* Fixing problems with FastCGI connection to latest HHVM versions
 * Analytics module configuration within virtual hosts was ignored
 
 # Features
