@@ -416,9 +416,9 @@ HTTP basic or digest authentication.
     <!-- defaults to application specifc temporary directory e. g. /opt/appserver/var/tmp/example/session -->
     <session-save-path></session-save-path>
     <!-- default configuration for session/cookie lifetime and gc -->
-    <garbage-collection-probability>0.1</garbage-collection-probability>
     <session-maximum-age>0</session-maximum-age>
     <session-inactivity-timeout>1440</session-inactivity-timeout>
+    <garbage-collection-probability>0.1</garbage-collection-probability>
     <!-- cookie configuration -->
     <session-cookie-lifetime>86400</session-cookie-lifetime>
     <session-cookie-domain>localhost</session-cookie-domain>
@@ -498,3 +498,30 @@ something like `foo_au1ctio31v10lm9jlhipdlurn1`.
 If you want to change the default folder, the application server stores the session files, you can specify the
 absolute path as value of node `/web-app/session-config/session-save-path`. This will be necessary if you want
 to use a shared folder to store the session files, e. g. on a cluster file system.
+
+The nodes `/web-app/session-config/session-maximum-age`, `/web-app/session-config/session-inactivity-timeout`
+and `/web-app/session-config/garbage-collection-probability` are responsible for specify the maximum age of a
+session, when the session will be persisted and the probability how often the garbage collector will be invoked.
+The maximum age of a session is by default `0` what means, that the session will be never deleted, except it'll
+be destroyed by your application, e. g. when a user logs out and you invoke
+
+```php
+/**
+ * Handles a HTTP POST request, destroys the session and logs the user out.
+ *
+ * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest  $servletRequest  The request instance
+ * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponse $servletResponse The response instance
+ *
+ * @return void
+ */
+public function doPost(HttpServletRequest $servletRequest, HttpServletResponse $servletResponse)
+{
+
+    // destroy the session and reset the cookie
+    if ($session = $servletRequest->getSession()) {
+        $session->destroy('Explicit logout requested ');
+    }
+}
+```
+
+in a `doPost()` of your `Servlet` for example.
