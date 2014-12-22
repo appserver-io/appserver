@@ -85,7 +85,7 @@ class BeanConfiguration implements BeanConfigurationInterface
      *
      * @var string
      */
-    protected $sessionType;
+    protected $sessionType = MessageDriven::ANNOTATION;
 
     /**
      * The beans description.
@@ -100,6 +100,27 @@ class BeanConfiguration implements BeanConfigurationInterface
      * @var boolean
      */
     protected $initOnStartup = false;
+
+    /**
+     * The array with the post construct callback method names.
+     *
+     * @var array
+     */
+    protected $postConstructCallbacks = array();
+
+    /**
+     * The array with the pre destroy callback method names.
+     *
+     * @var array
+     */
+    protected $preDestroyCallbacks = array();
+
+    /**
+     * The array with the EPB references.
+     *
+     * @var array
+     */
+    protected $epbReferences = array();
 
     /**
      * Sets the bean name.
@@ -278,6 +299,108 @@ class BeanConfiguration implements BeanConfigurationInterface
     }
 
     /**
+     * Adds a post construct callback method name.
+     *
+     * @param string $postConstructCallback The post construct callback method name
+     *
+     * @return void
+     */
+    public function addPostConstructCallback($postConstructCallback)
+    {
+        $this->postConstructCallbacks[] = $postConstructCallback;
+    }
+
+    /**
+     * Adds a post construct callback method name.
+     *
+     * @param string $postConstructCallback The post construct callback method name
+     *
+     * @return void
+     */
+    public function addPreDestroyCallback($preDestroyCallback)
+    {
+        $this->preDestroyCallbacks[] = $preDestroyCallback;
+    }
+
+    /**
+     * Adds a EPB reference configuration.
+     *
+     * @param \AppserverIo\Appserver\PersistenceContainer\Utils\EpbReferenceInterface $epbReference The EPB reference configuration
+     *
+     * @return void
+     */
+    public function addEpbReference(EpbReferenceInterface $epbReference)
+    {
+        $this->epbReferences[$epbReference->getRefName()] = $epbReference;
+    }
+
+    /**
+     * Sets the array with the post construct callback method names.
+     *
+     * @param array $postConstructCallbacks The post construct callback method names
+     *
+     * @return void
+     */
+    public function setPostConstructCallbacks(array $postConstructCallbacks)
+    {
+        $this->postConstructCallbacks = $postConstructCallbacks;
+    }
+
+    /**
+     * The array with the post construct callback method names.
+     *
+     * @return array The post construct callback method names
+     */
+    public function getPostConstructCallbacks()
+    {
+        return $this->postConstructCallbacks;
+    }
+
+    /**
+     * Sets the array with the pre destroy callback method names.
+     *
+     * @param array $preDestroyCallbacks The pre destroy callback method names
+     *
+     * @return void
+     */
+    public function setPreDestroyCallbacks(array $preDestroyCallbacks)
+    {
+        $this->preDestroyCallbacks = $preDestroyCallbacks;
+    }
+
+    /**
+     * The array with the pre destroy callback method names.
+     *
+     * @return array The pre destroy callback method names
+     */
+    public function getPreDestroyCallbacks()
+    {
+        return $this->preDestroyCallbacks;
+    }
+
+    /**
+     * Sets the array with the EPB references.
+     *
+     * @param array $epbReferences The EPB references
+     *
+     * @return void
+     */
+    public function setEpbReferences(array $epbReferences)
+    {
+        $this->epbReferences = $epbReferences;
+    }
+
+    /**
+     * The array with the EPB references.
+     *
+     * @return array The EPB references
+     */
+    public function getEpbReferences()
+    {
+        return $this->epbReferences;
+    }
+
+    /**
      * Creates and initializes a bean configuration instance from the passed
      * deployment node.
      *
@@ -322,8 +445,25 @@ class BeanConfiguration implements BeanConfigurationInterface
             return $configuration;
         }
 
+        // we've to check for a @PostConstruct or @PreDestroy annotation
+        foreach ($reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $reflectionMethod) {
+
+            // if we found a @PostConstruct annotation, invoke the method
+            if ($reflectionMethod->hasAnnotation(PostConstruct::ANNOTATION)) {
+                $configuration->addPostConstructCallback($reflectionMethod->getMethodName());
+            }
+
+            // if we found a @PreDestroy annotation, invoke the method
+            if ($reflectionMethod->hasAnnotation(PreDestroy::ANNOTATION)) {
+                $configuration->addPreDestroyCallback($reflectionMethod->getMethodName());
+            }
+        }
+
         // initialize the annotation instance
-        $annotationInstance = $reflectionAnnotation->newInstance($reflectionAnnotation->getAnnotationName(), $reflectionAnnotation->getValues());
+        $annotationInstance = $reflectionAnnotation->newInstance(
+            $reflectionAnnotation->getAnnotationName(),
+            $reflectionAnnotation->getValues()
+        );
 
         // load the default name to register in naming directory
         if ($nameAttribute = $annotationInstance->getName()) {
@@ -411,6 +551,21 @@ class BeanConfiguration implements BeanConfigurationInterface
             $configuration->setInitOnStartup(Boolean::valueOf(new String($initOnStartup))->booleanValue());
         }
 
+        // initialize the post construct callback methods
+        foreach ($node->xpath('post-construct/lifecycle-callback-method') as $postConstructCallback) {
+            $configuration->addPostConstructCallback((string) $postConstructCallback);
+        }
+
+        // initialize the pre destroy callback methods
+        foreach ($node->xpath('pre-destroy/lifecycle-callback-method') as $preDestroyCallback) {
+            $configuration->addPreDestroyCallback((string) $preDestroyCallback);
+        }
+
+        // initialize the enterprise bean references
+        foreach ($node->xpath('epb-ref') as $epbReference) {
+            $configuration->addEpbReference(EpbReference::fromDeploymentDescriptor($epbReference));
+        }
+
         // return the initialized configuration
         return $configuration;
     }
@@ -460,5 +615,26 @@ class BeanConfiguration implements BeanConfigurationInterface
 
         // merge the startup flag
         $this->setInitOnStartup($configuration->isInitOnStartup());
+
+        // merge the post construct callback method names
+        foreach ($configuration->getPostConstructCallbacks() as $postConstructCallback) {
+            if (in_array($postConstructCallback, $this->postConstructCallbacks) === false) {
+                $this->addPostConstructCallback($postConstructCallback);
+            }
+        }
+
+        // merge the pre destroy callback method names
+        foreach ($configuration->getPreDestroyCallbacks() as $preDestroyCallback) {
+            if (in_array($preDestroyCallback, $this->preDestroyCallbacks) === false) {
+                $this->addPreDestroyCallback($preDestroyCallback);
+            }
+        }
+
+        // mrege the EPB references
+        foreach ($configuration->getEpbReferences() as $epbReference) {
+            if (isset($this->epbReferences[$epbReference->getRefName()]) === false) {
+                $this->addEpbReference($epbReference);
+            }
+        }
     }
 }

@@ -93,6 +93,27 @@ interface BeanConfigurationInterface
     public function isInitOnStartup();
 
     /**
+     * The array with the post construct callback method names.
+     *
+     * @return array The post construct callback method names
+     */
+    public function getPostConstructCallbacks();
+
+    /**
+     * The array with the pre destroy callback method names.
+     *
+     * @return array The pre destroy callback method names
+     */
+    public function getPreDestroyCallbacks();
+
+    /**
+     * The array with the EPB references.
+     *
+     * @return array The EPB references
+     */
+    public function getEpbReferences();
+
+    /**
      * Merges the passed configuration into this one. Configuration values
      * of the passed configuration will overwrite the this one.
      *

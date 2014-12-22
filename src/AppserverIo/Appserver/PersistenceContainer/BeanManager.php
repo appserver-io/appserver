@@ -258,20 +258,50 @@ class BeanManager extends GenericStackable implements BeanContext, ManagerInterf
 
                 // query whether we've to merge the configuration found in annotations
                 if ($this->getBeanConfigurations()->has($configuration->getClassName())) { // merge the configuration
-                    $this->getBeanConfigurations()->get($configuration->getClassName())->merge($configuration);
+
+                    // load the existing configuration
+                    $existingConfiguration = $this->getBeanConfigurations()->get($configuration->getClassName());
+
+                    // merge the configurations => XML configuration overrides values from annotation
+                    $existingConfiguration->merge($configuration);
+
+                    // save the merge configuration
+                    $this->getBeanConfigurations()->set($existingConfiguration->getClassName(), $existingConfiguration);
+
                 } else {
+
+                    // save the XML configuration
                     $this->getBeanConfigurations()->set($configuration->getClassName(), $configuration);
                 }
             }
 
             // intialize the message beans by parsing the nodes
             foreach ($config->xpath('/epb/enterprise-beans/message-driven') as $key => $messageDriven) {
+
+                // load the configuration
                 $configuration = BeanConfiguration::fromDeploymentDescriptor($messageDriven);
-                $this->getBeanConfigurations()->set($configuration->getClassName(), $configuration);
+
+                // query whether we've to merge the configuration found in annotations
+                if ($this->getBeanConfigurations()->has($configuration->getClassName())) { // merge the configuration
+
+                    // load the existing configuration
+                    $existingConfiguration = $this->getBeanConfigurations()->get($configuration->getClassName());
+
+                    // merge the configurations => XML configuration overrides values from annotation
+                    $existingConfiguration->merge($configuration);
+
+                    // save the merge configuration
+                    $this->getBeanConfigurations()->set($existingConfiguration->getClassName(), $existingConfiguration);
+
+                } else {
+
+                    // save the XML configuration
+                    $this->getBeanConfigurations()->set($configuration->getClassName(), $configuration);
+                }
             }
         }
 
-        // register the found beans
+        // register the beans located by annotations and the XML configuration
         foreach ($this->getBeanConfigurations() as $className => $configuration) {
 
             // check if we've found a bean configuration
@@ -539,16 +569,12 @@ class BeanManager extends GenericStackable implements BeanContext, ManagerInterf
     public function destroyBeanInstance($instance)
     {
 
-        // we need a reflection object
-        $reflectionObject = $this->getReflectionClassForObject($instance);
+        // load the bean configuration
+        $beanConfiguration = $this->getBeanConfigurations()->get(get_class($instance));
 
-        // we've to check for a @PreDestroy annotation
-        foreach ($reflectionObject->getMethods(\ReflectionMethod::IS_PUBLIC) as $reflectionMethod) {
-
-            // if we found a @PreDestroy annotation, invoke the method
-            if ($reflectionMethod->hasAnnotation(PreDestroy::ANNOTATION)) {
-                $reflectionMethod->invoke($instance); // method MUST have no parameters
-            }
+        // invoke the pre-destory callbacks
+        foreach ($beanConfiguration->getPreDestroyCallbacks() as $preDestroyCallback) {
+            $instance->$preDestroyCallback();
         }
     }
 
@@ -564,54 +590,54 @@ class BeanManager extends GenericStackable implements BeanContext, ManagerInterf
     public function attach($instance, $sessionId = null)
     {
 
-        // we need a reflection object to read the annotations
-        $reflectionObject = $this->getReflectionClassForObject($instance);
+        // load the bean configuration
+        $configuration = $this->getBeanConfigurations()->get(get_class($instance));
 
-        // @Singleton
-        if ($reflectionObject->hasAnnotation(Singleton::ANNOTATION)) {
+        // query the bean type, one of
+        switch ($configuration->getSessionType()) {
 
-            // we don't have to attach singleton session beans, because they extends \Stackable
-            return;
+            case Stateful::ANNOTATION:
+
+                // check if we've a session-ID available
+                if ($sessionId == null) {
+                    throw new \Exception('Can\'t find a session-ID to attach stateful session bean');
+                }
+
+                // load the lifetime from the session bean settings
+                $lifetime = $this->getStatefulSessionBeanSettings()->getLifetime();
+
+                // initialize the map for the stateful session beans
+                if ($this->getStatefulSessionBeans()->has($sessionId) === false) { // create a new session bean map instance
+                    $this->getStatefulSessionBeanMapFactory()->newInstance($sessionId);
+
+                }
+
+                // load the session bean map instance
+                $sessions = $this->getStatefulSessionBeans()->get($sessionId);
+
+                // add the stateful session bean to the map
+                $sessions->add($configuration->getClassName(), $instance, $lifetime);
+
+                break;
+
+            case Stateless::ANNOTATION:
+            case MessageDriven::ANNOTATION:
+
+                // simply destroy the instance
+                $this->destroyBeanInstance($instance);
+
+                break;
+
+            case Singleton::ANNOTATION:
+
+                // do nothing here
+                break;
+
+            default:
+
+                // we've an unknown bean type => throw an exception
+                throw new InvalidBeanTypeException('Try to attach invalid bean type');
         }
-
-        // @Stateful
-        if ($reflectionObject->hasAnnotation(Stateful::ANNOTATION)) {
-
-            // check if we've a session-ID available
-            if ($sessionId == null) {
-                throw new \Exception('Can\'t find a session-ID to attach stateful session bean');
-            }
-
-            // load the lifetime from the session bean settings
-            $lifetime = $this->getStatefulSessionBeanSettings()->getLifetime();
-
-            // initialize the map for the stateful session beans
-            if ($this->getStatefulSessionBeans()->has($sessionId) === false) { // create a new session bean map instance
-                $this->getStatefulSessionBeanMapFactory()->newInstance($sessionId);
-
-            }
-
-            // load the session bean map instance
-            $sessions = $this->getStatefulSessionBeans()->get($sessionId);
-
-            // add the stateful session bean to the map
-            $sessions->add($reflectionObject->getName(), $instance, $lifetime);
-
-            return;
-        }
-
-        // @Stateless or @MessageDriven
-        if ($reflectionObject->hasAnnotation(Stateless::ANNOTATION) ||
-            $reflectionObject->hasAnnotation(MessageDriven::ANNOTATION)) {
-
-            // simply destroy the instance
-            $this->destroyBeanInstance($instance);
-
-            return;
-        }
-
-        // we've an unknown bean type => throw an exception
-        throw new InvalidBeanTypeException('Try to attach bean with missing enterprise annotation');
     }
 
     /**
