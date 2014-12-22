@@ -49,6 +49,8 @@ use AppserverIo\Lang\Reflection\ClassInterface;
 use AppserverIo\Lang\Reflection\ReflectionClass;
 use AppserverIo\Lang\Reflection\ReflectionObject;
 use AppserverIo\Lang\Reflection\AnnotationInterface;
+use AppserverIo\Appserver\PersistenceContainer\Utils\BeanConfiguration;
+use AppserverIo\Appserver\PersistenceContainer\Utils\BeanConfigurationInterface;
 
 /**
  * The bean manager handles the message and session beans registered for the application.
@@ -163,6 +165,18 @@ class BeanManager extends GenericStackable implements BeanContext, ManagerInterf
     }
 
     /**
+     * Injects the storage for the bean configurations.
+     *
+     * @param \AppserverIo\Storage\StorageInterface $beanConfigurations The storage for the bean configurations
+     *
+     * @return void
+     */
+    public function injectBeanConfigurations(StorageInterface $beanConfigurations)
+    {
+        $this->beanConfigurations = $beanConfigurations;
+    }
+
+    /**
      * Has been automatically invoked by the container after the application
      * instance has been created.
      *
@@ -213,13 +227,11 @@ class BeanManager extends GenericStackable implements BeanContext, ManagerInterf
                 // we need a reflection class to read the annotations
                 $reflectionClass = $this->getReflectionClass($className);
 
-                // register the bean instance
-                $this->registerBean($reflectionClass);
+                // load the bean configuration
+                $configuration = BeanConfiguration::fromReflectionClass($reflectionClass);
 
-                // if we found a bean with @Singleton + @Startup annotation
-                if ($reflectionClass->hasAnnotation(Singleton::ANNOTATION) &&
-                    $reflectionClass->hasAnnotation(Startup::ANNOTATION)) { // instanciate the bean
-                    $this->getApplication()->search($reflectionClass->getShortName(), array(null, array($application)));
+                if ($configuration->getName()) { // if we've a name
+                    $this->getBeanConfigurations()->set($configuration->getClassName(), $configuration);
                 }
 
             } catch (\Exception $e) { // if class can not be reflected continue with next class
@@ -231,73 +243,79 @@ class BeanManager extends GenericStackable implements BeanContext, ManagerInterf
                 continue;
             }
         }
+
+        // query whether we found epb.xml deployment descriptor file
+        if (file_exists($deploymentDescriptor = $metaInfDir . DIRECTORY_SEPARATOR . 'epb.xml') === true) {
+
+            // load the application config
+            $config = new \SimpleXMLElement(file_get_contents($deploymentDescriptor));
+
+            // intialize the session beans by parsing the nodes
+            foreach ($config->xpath('/epb/enterprise-beans/session') as $key => $session) {
+
+                // load the configuration
+                $configuration = BeanConfiguration::fromDeploymentDescriptor($session);
+
+                // query whether we've to merge the configuration found in annotations
+                if ($this->getBeanConfigurations()->has($configuration->getClassName())) { // merge the configuration
+                    $this->getBeanConfigurations()->get($configuration->getClassName())->merge($configuration);
+                } else {
+                    $this->getBeanConfigurations()->set($configuration->getClassName(), $configuration);
+                }
+            }
+
+            // intialize the message beans by parsing the nodes
+            foreach ($config->xpath('/epb/enterprise-beans/message-driven') as $key => $messageDriven) {
+                $configuration = BeanConfiguration::fromDeploymentDescriptor($messageDriven);
+                $this->getBeanConfigurations()->set($configuration->getClassName(), $configuration);
+            }
+        }
+
+        // register the found beans
+        foreach ($this->getBeanConfigurations() as $className => $configuration) {
+
+            // check if we've found a bean configuration
+            if ($configuration instanceof BeanConfigurationInterface) {
+
+                // register the bean
+                $this->registerBean($configuration);
+
+                // if we found a bean with @Singleton + @Startup annotation
+                if ($configuration->isInitOnStartup()) {
+                    $this->getApplication()->search($configuration->getName(), array(null, array($application)));
+                }
+            }
+        }
     }
 
     /**
-     * Register the bean, defined by the passed reflection class instance.
+     * Register the bean with the passed configuration.
      *
-     * @param \AppserverIo\Lang\Reflection\ClassInterface $reflectionClass The reflection class instance of the bean we want to register
+     * @param \AppserverIo\Appserver\PersistenceContainer\Utils\BeanConfiguration $configuration The beans configuration
      *
      * @return void
      */
-    public function registerBean(ClassInterface $reflectionClass)
+    protected function registerBean(BeanConfiguration $configuration)
     {
 
-        // declare the local variable for the reflection annotation instance
-        $reflectionAnnotation = null;
+        // load the beans class name
+        $className = $configuration->getClassName();
 
-        // if we found an enterprise bean with either a @Singleton annotation
-        if ($reflectionClass->hasAnnotation(Singleton::ANNOTATION)) {
-            $reflectionAnnotation = $reflectionClass->getAnnotation(Singleton::ANNOTATION);
+        // register the bean with the default name/short class name
+        $this->getApplication()->bind($configuration->getName(), array(&$this, 'lookup'), array($className));
+
+        // register the bean with the interface name
+        if ($beanInterface = $configuration->getBeanInterface()) {
+            $this->getApplication()->bind($beanInterface, array(&$this, 'lookup'), array($className));
+        }
+        // register the bean with the bean name
+        if ($beanName = $configuration->getBeanName()) {
+            $this->getNamingDirectory()->bind($beanName, array(&$this, 'lookup'), array($className));
         }
 
-        // if we found an enterprise bean with either a @Stateless annotation
-        if ($reflectionClass->hasAnnotation(Stateless::ANNOTATION)) {
-            $reflectionAnnotation = $reflectionClass->getAnnotation(Stateless::ANNOTATION);
-        }
-
-        // if we found an enterprise bean with either a @Stateful annotation
-        if ($reflectionClass->hasAnnotation(Stateful::ANNOTATION)) {
-            $reflectionAnnotation = $reflectionClass->getAnnotation(Stateful::ANNOTATION);
-        }
-
-        // if we found an enterprise bean with either a @MessageDriven annotation
-        if ($reflectionClass->hasAnnotation(MessageDriven::ANNOTATION)) {
-            $reflectionAnnotation = $reflectionClass->getAnnotation(MessageDriven::ANNOTATION);
-        }
-
-        // can't register the bean, because of a missing enterprise bean annotation
-        if ($reflectionAnnotation == null) {
-            return;
-        }
-
-        // load class name and short class name
-        $className = $reflectionClass->getName();
-
-        // initialize the annotation instance
-        $annotationInstance = $this->newAnnotationInstance($reflectionAnnotation);
-
-        // load the default name to register in naming directory
-        $nameAttribute = $annotationInstance->getName();
-        if ($nameAttribute == null) { // if @Annotation(name=****) is NOT set, we use the short class name by default
-            $nameAttribute = $reflectionClass->getShortName();
-        }
-
-        // register the bean with the default name (short class name OR @Annotation(name=****))
-        $this->getApplication()->bind($nameAttribute, array(&$this, 'lookup'), array($className));
-
-        // register the bean with the interface defined as @Annotation(beanInterface=****)
-        if ($beanInterfaceAttribute = $annotationInstance->getBeanInterface()) {
-            $this->getApplication()->bind($beanInterfaceAttribute, array(&$this, 'lookup'), array($className));
-        }
-        // register the bean with the name defined as @Annotation(beanName=****)
-        if ($beanNameAttribute = $annotationInstance->getBeanName()) {
-            $this->getNamingDirectory()->bind($beanNameAttribute, array(&$this, 'lookup'), array($className));
-        }
-
-        // register the bean with the name defined as @Annotation(mappedName=****)
-        if ($mappedNameAttribute = $annotationInstance->getMappedName()) {
-            $this->getNamingDirectory()->bind($mappedNameAttribute, array(&$this, 'lookup'), array($className));
+        // register the bean with the mapped name
+        if ($mappedName = $configuration->getMappedName()) {
+            $this->getNamingDirectory()->bind($mappedName, array(&$this, 'lookup'), array($className));
         }
     }
 
@@ -391,6 +409,16 @@ class BeanManager extends GenericStackable implements BeanContext, ManagerInterf
     public function getStatefulSessionBeanMapFactory()
     {
         return $this->statefulSessionBeanMapFactory;
+    }
+
+    /**
+     * Return the storage with the bean configurations.
+     *
+     * @return \AppserverIo\Storage\StorageInterface The storage with the bean configurations
+     */
+    public function getBeanConfigurations()
+    {
+        return $this->beanConfigurations;
     }
 
     /**
