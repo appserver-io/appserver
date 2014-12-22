@@ -411,9 +411,10 @@ HTTP basic or digest authentication.
 
   <!-- default session configuration -->
   <session-config>
-    <session-name>example_login</session-name>
-    <session-file-prefix>example_session_</session-file-prefix>
-    <session-save-path>/tmp</session-save-path>
+    <session-name>PHPSESSID</session-name>
+    <session-file-prefix></session-file-prefix>
+    <!-- defaults to application specifc temporary directory e. g. /opt/appserver/var/tmp/example/session -->
+    <session-save-path></session-save-path>
     <garbage-collection-probability>0.1</garbage-collection-probability>
     <session-save-path>60</session-save-path>
     <session-maximum-age>0</session-maximum-age>
@@ -465,3 +466,34 @@ HTTP basic or digest authentication.
 
 </web-app>
 ```
+
+The XML configuration seems to be a bit complicated for the start, right? So we will go through it, node by node
+and give you a brief introduction what you can configure with it.
+
+#### Meta-Data Configuration
+***
+
+The nodes `/web-app/display-name` and `/web-app/description` actually doesn't have any functionality. Until we've
+refactored our admin UI, you can use them to give your application a name and a short description. With the final
+version of the admin UI, they'll be used to render that information visible to an administrator.
+
+#### Session Configuration
+***
+
+By default, you'll not have to change the session configuration.
+
+In some cases, e. g. if you want to specify a indivdual cookie name for your session, you can do that. To change
+the name of the session cookie, customize the node `/web-app/session-config/session-name` to your choice. Please
+be aware that you can only use chars that are defined in [RFC2616 - Section 2.2](http://tools.ietf.org/html/rfc2616#section-2.2).
+
+As sessions are persisted to the filesystem after the configured inactivity timeout, by default 1.440 seconds,
+you can also specify a prefix for the filename used to store the session data. To specify a custom prefix,
+change the value for node `/web-app/session-config/session-file-prefix`. As for the cookie name, be aware of
+the restrictions for filenames, that'll depend on the OS you run the application server on. Also keep in mind,
+that you can only customize the prefix and the session-ID will always we added as suffix. For example, if you 
+specify `foo_` as value for `/web-app/session-config/session-file-prefix`, the session files will result in
+something like `foo_au1ctio31v10lm9jlhipdlurn1`.
+
+If you want to change the default folder, the application server stores the session files, you can specify the
+absolute path as value of node `/web-app/session-config/session-save-path`. This will be necessary if you want
+to use a shared folder to store the session files, e. g. on a cluster file system.
