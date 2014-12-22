@@ -415,10 +415,11 @@ HTTP basic or digest authentication.
     <session-file-prefix></session-file-prefix>
     <!-- defaults to application specifc temporary directory e. g. /opt/appserver/var/tmp/example/session -->
     <session-save-path></session-save-path>
+    <!-- default configuration for session/cookie lifetime and gc -->
     <garbage-collection-probability>0.1</garbage-collection-probability>
-    <session-save-path>60</session-save-path>
     <session-maximum-age>0</session-maximum-age>
     <session-inactivity-timeout>1440</session-inactivity-timeout>
+    <!-- cookie configuration -->
     <session-cookie-lifetime>86400</session-cookie-lifetime>
     <session-cookie-domain>localhost</session-cookie-domain>
     <session-cookie-path>/</session-cookie-path>
