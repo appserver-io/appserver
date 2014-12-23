@@ -679,13 +679,48 @@ public function init(ServletConfig $config)
 ```
 
 > A good example is the [Routlt](https://github.com/appserver-io/routlt) library. This library provides a simple
-> controller implementation, but is actually missing the possibility to map the actions to the request path info
+> [controller implementation](https://github.com/appserver-io/routlt/blob/master/src/AppserverIo/Routlt/ControllerServlet.php), but is actually missing the possibility to map the actions to the request path info
 > by annotations, we need a configuration file. This configuration file will be parsed by the controller servlet
 > and pre-loads the action classes when the application server starts.
 
 #### Servlet Mappings
+Finally it is necessary to map the `Servlet` we've configured before, to a URL path. As the 
+[Servlet-Engine](https://github.com/appserver-io/appserver/wiki/05.-Servlet-Engine) is a webserver module, by
+default it is bound to the file extension `.do`. You can change this in the `appserver.xml` confguration file
+in directory `etc/appserver/appserver.xml`.
 
 ##### `/web-app/servlet-mapping`
+To stay with our Routlt example, the `ControllerServlet` has to be mapped to the URL patterns `/` and `/*` like
+
+```xml
+<servlet-mapping>
+  <servlet-name>helloWorld</servlet-name>
+  <url-pattern>/helloWorld.do</url-pattern>
+</servlet-mapping>
+<servlet-mapping>
+  <servlet-name>helloWorld</servlet-name>
+  <url-pattern>/helloWorld.do*</url-pattern>
+</servlet-mapping>
+<servlet-mapping>
+  <servlet-name>routlt</servlet-name>
+  <url-pattern>/</url-pattern>
+</servlet-mapping>
+<servlet-mapping>
+  <servlet-name>routlt</servlet-name>
+  <url-pattern>/*</url-pattern>
+</servlet-mapping>
+```
+
+This is necessary, because the Routlt `ControllerServlet::service()` method has to be invoked either when you open
+`http://127.0.0.1:9080` or something like `http://127.0.0.1:9080/index.do?test=test`. You can understand it as a
+catch all `Servlet` that will be invoked if no other matches. In the example before, we've add a URL mapping for
+the `HelloWorld` servlet. So if you enter the URL `http:://127.0.0.1:9080/helloWorld.do` the URL mapping for this
+`Servlet` matches before and the apropriate method will be invoked.
+
+> Keep in mind, if you want to write a servlet, in general you should map it to a path with a `.do` file extension,
+> as long as you not change the default configuration for that. An exception is the default servlet, because this
+> should catch all requests that will not match by any other servlets. To match a `Servlet` on a URL path, we're
+> actually use the PHP [fnmatch](http://php.net/fnmatch) method.
 
 #### HTTP Basic and Digest Authentication
 
