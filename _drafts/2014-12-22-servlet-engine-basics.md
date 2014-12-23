@@ -533,7 +533,9 @@ in a `doPost()` of your `Servlet` for example.
 
 > Actually the session maximum age only depends on the sessions creation time. This means, independent how often
 > a users changes session data, the maximum age of the session will NOT be extended. After the maximum age is
-> reached the session will be destroyed and the user has to create a new one, by re-login for example.
+> reached the session will be destroyed and the user has to create a new one, by re-login for example. If you want
+> to implement something like a sticky login functionality, you MUST set the value for `session-maximum-age` to
+> `0` and the value for the [session-cookie-lifetime](#) to a value that points for in the future.
 
 ##### `/web-app/session-config/session-inactivity-timeout` *integer*
 This node allows you to specify a timeout that marks the session as inactive. This lets the application server
@@ -551,7 +553,8 @@ number ob decimals you extend the range, and therefor the probability that the G
 value for this node is set to `0.1`.
 
 ##### `/web-app/session-config/session-cookie-lifetime`
-Independent from the [session-maximum-age](#) 
+Independent from the [session-maximum-age](#web-appsession-configsession-maximum-age-integer) value, you can
+specify a lifetime for the session cookie that'll be 
 
 ##### `/web-app/session-config/session-cookie-domain`  
 ##### `/web-app/session-config/session-cookie-path`  
