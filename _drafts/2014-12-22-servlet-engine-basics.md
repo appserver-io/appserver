@@ -474,36 +474,41 @@ and give you a brief introduction what you can configure with it.
 #### Meta-Data Configuration
 ***
 
-The nodes `/web-app/display-name` and `/web-app/description` actually doesn't have any functionality. Until we've
-refactored our admin UI, you can use them to give your application a name and a short description. With the final
-version of the admin UI, they'll be used to render that information visible to an administrator.
+##### `/web-app/display-name` *string*
+This node actually doesn't has any functionality. Actually you can use it to giver your application a name. In
+later versions, this name will be displayed in admin UI where all applications are listed. 
+
+##### `/web-app/description` *string*
+As `/web-app/display-name`, this node has also no functionality. You can add a short description about your
+application functionality. In later versions this description will be displayed in application details in
+admin UI.
 
 #### Session Configuration
 ***
 
 By default, you'll not have to change the session configuration.
 
+##### `/web-app/session-config/session-name` *string*
 In some cases, e. g. if you want to specify a indivdual cookie name for your session, you can do that. To change
-the name of the session cookie, customize the node `/web-app/session-config/session-name` to your choice. Please
-be aware that you can only use chars that are defined in [RFC2616 - Section 2.2](http://tools.ietf.org/html/rfc2616#section-2.2).
+the name of the session cookie, customize the value of this node to your choice. Please be aware that you can only
+use chars that are defined in [RFC2616 - Section 2.2](http://tools.ietf.org/html/rfc2616#section-2.2).
 
+##### `/web-app/session-config/session-file-prefix` *string* 
 As sessions are persisted to the filesystem after the configured inactivity timeout, by default 1.440 seconds,
-you can also specify a prefix for the filename used to store the session data. To specify a custom prefix,
-change the value for node `/web-app/session-config/session-file-prefix`. As for the cookie name, be aware of
-the restrictions for filenames, that'll depend on the OS you run the application server on. Also keep in mind,
-that you can only customize the prefix and the session-ID will always we added as suffix. For example, if you 
-specify `foo_` as value for `/web-app/session-config/session-file-prefix`, the session files will result in
-something like `foo_au1ctio31v10lm9jlhipdlurn1`.
+you can also specify a prefix for the filename used to store the session data. To specify a custom prefix, change
+the value for node . As for the cookie name, be aware of the restrictions for filenames, that'll depend on the OS
+you run the application server on. Also keep in mind, that you can only customize the prefix and the session-ID
+will always we added as suffix. For example, if you specify `foo_` as value for `/web-app/session-config/session-file-prefix`, the session files will result in something like `foo_au1ctio31v10lm9jlhipdlurn1`.
 
+##### `/web-app/session-config/session-save-path` *string*
 If you want to change the default folder, the application server stores the session files, you can specify the
-absolute path as value of node `/web-app/session-config/session-save-path`. This will be necessary if you want
-to use a shared folder to store the session files, e. g. on a cluster file system.
+absolute path as value of node . This will be necessary if you want to use a shared folder to store the session
+files, e. g. on a cluster file system.
 
-The nodes `/web-app/session-config/session-maximum-age`, `/web-app/session-config/session-inactivity-timeout`
-and `/web-app/session-config/garbage-collection-probability` are responsible for specify the maximum age of a
-session, when the session will be persisted and the probability how often the garbage collector will be invoked.
-The maximum age of a session is by default `0` what means, that the session will be never deleted, except it'll
-be destroyed by your application, e. g. when a user logs out and you invoke
+##### `/web-app/session-config/session-maximum-age` *integer*
+The value of this node specifies the maximum age of the session. By default this value is `0`, what means that
+the session would never expire, except it'll be destroyed by your application, e. g. when a user logs out and
+you invoke
 
 ```php
 /**
@@ -525,3 +530,17 @@ public function doPost(HttpServletRequest $servletRequest, HttpServletResponse $
 ```
 
 in a `doPost()` of your `Servlet` for example.
+
+##### `/web-app/session-config/session-inactivity-timeout` *integer*
+This node allows you to specify a timeout that marks the session as inactive. This lets the application server
+remove the session from memory and persists it to the configurated persistence layer. By default, we persist
+sessions to the file system.
+
+##### `/web-app/session-config/garbage-collection-probability` *float*
+Allows you to set a value, how often the garbage collector will be invoked.
+
+`/web-app/session-config/session-cookie-lifetime`  
+`/web-app/session-config/session-cookie-domain`  
+`/web-app/session-config/session-cookie-path`  
+`/web-app/session-config/session-cookie-secure`  
+`/web-app/session-config/session-http-only`  
