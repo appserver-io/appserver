@@ -536,11 +536,35 @@ This node allows you to specify a timeout that marks the session as inactive. Th
 remove the session from memory and persists it to the configurated persistence layer. By default, we persist
 sessions to the file system.
 
-##### `/web-app/session-config/garbage-collection-probability` *float*
-Allows you to set a value, how often the garbage collector will be invoked.
+> Actually we only have a filesystem persistence manager as part of our standard session manager. By registering
+> your own session manager, you are able to implement your own persistence manager that allows you to persist
+> sessions in cache systems like Redis for example.
 
-`/web-app/session-config/session-cookie-lifetime`  
-`/web-app/session-config/session-cookie-domain`  
-`/web-app/session-config/session-cookie-path`  
-`/web-app/session-config/session-cookie-secure`  
-`/web-app/session-config/session-http-only`  
+##### `/web-app/session-config/garbage-collection-probability` *float*
+Allows you to set a value, how often the garbage collector will be invoked. You can specify a value between `100`
+and `0`. As higher the value, as higher is the probability that the garbage collector will be invoked. With the
+number ob decimals you extend the range, and therefor the probability that the GC will be invoked.
+
+##### `/web-app/session-config/session-cookie-lifetime`
+
+
+##### `/web-app/session-config/session-cookie-domain`  
+##### `/web-app/session-config/session-cookie-path`  
+##### `/web-app/session-config/session-cookie-secure`  
+##### `/web-app/session-config/session-http-only`  
+
+#### Global Initialization Parameters
+
+##### `/web-app/init-param`
+
+#### Servlet Configurations
+
+##### `/web-app/servlet`
+
+#### Servlet Mappings
+
+##### `/web-app/servlet-mapping`
+
+#### HTTP Basic and Digest Authentication
+
+##### `/web-app/security`
