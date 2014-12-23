@@ -586,7 +586,7 @@ e. g. the path to a application specific configuration file.
 
 ##### `/web-app/context-param`
 You can specify a random number of context parameters that you can load from the servlet context. For example, if
-we want to load the path to the `applicationProperties`, defined as context parameter in our [example](#optional-xml-configuration) XML configuration file like
+we want to load the path to the `applicationProperties`, defined as context parameter in our [example](#optional-xml-configuration) XML configuration file
 
 ```xml
 <context-param>
@@ -595,7 +595,7 @@ we want to load the path to the `applicationProperties`, defined as context para
 </context-param>
 ```
 
-we can do this by the following code, implemented in the `init()` method of one of our servlets
+We can do this, by the following code, implemented in the `init()` method of a `Servlet`
 
 ```php
 /**
