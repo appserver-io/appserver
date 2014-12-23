@@ -458,7 +458,7 @@ HTTP basic or digest authentication.
     <url-pattern>/helloWorld.do*</url-pattern>
     <auth>
       <auth_type>Basic</auth_type>
-      <realm>test</realm>
+      <realm>Basic Authentication Test</realm>
       <adapter_type>htpasswd</adapter_type>
       <options>
         <file>WEB-INF/htpasswd</file>
@@ -690,17 +690,17 @@ default it is bound to the file extension `.do`. You can change this in the `app
 in directory `etc/appserver/appserver.xml`.
 
 ##### `/web-app/servlet-mapping` *string*
-To stay with our Routlt example, the `ControllerServlet` has to be mapped to the URL patterns `/` and `/*` like
+You can specify as many servlet mappings you need. The mapping maps a `servlet-name` to a `url-pattern`. The
+mapping has to be specified by the following subnodes.
+
+##### `/web-app/servlet-mapping/servlet-name` *string*
+This node has to contain the `servlet-name` you have specified in a `/web-app/servlet/servlet-name` node before.
+
+##### `/web-app/servlet-mapping/url-pattern` *string*
+To stay with our Routlt example, the `ControllerServlet` with name `routlt`, has to be mapped to the URL patterns
+`/` and `/*` like
 
 ```xml
-<servlet-mapping>
-  <servlet-name>helloWorld</servlet-name>
-  <url-pattern>/helloWorld.do</url-pattern>
-</servlet-mapping>
-<servlet-mapping>
-  <servlet-name>helloWorld</servlet-name>
-  <url-pattern>/helloWorld.do*</url-pattern>
-</servlet-mapping>
 <servlet-mapping>
   <servlet-name>routlt</servlet-name>
   <url-pattern>/</url-pattern>
@@ -736,7 +736,7 @@ authentication, the following snipped will do the job
   <url-pattern>/helloWorld.do*</url-pattern>
   <auth>
     <auth_type>Basic</auth_type>
-    <realm>test</realm>
+    <realm>Basic Authentication Test</realm>
     <adapter_type>htpasswd</adapter_type>
     <options>
       <file>WEB-INF/htpasswd</file>
@@ -745,9 +745,59 @@ authentication, the following snipped will do the job
 </security>
 ```
 
-This protects access when someone tries to open the URL `http://127.0.0.1:9080/helloWorld.do` by open the
-browsers dialoge and request a username and a password. You can define user credentials with the tool
-`htpasswd` that will be available on all supported OS.
+This protects access when someone tries to open the URL `http://127.0.0.1:9080/example/helloWorld.do` by open the
+browsers dialog and request a username and a password.
+
+![HTTP Basic Authentication Required]({{ "/assets/img/post-screen-basic-auth.png" | prepend: site.baseurl }} "HTTP Basic Authentication Required")
+
+You can define user credentials with the tool [htpasswd](http://httpd.apache.org/docs/2.2/programs/htpasswd.html) that 
+will be available on all supported OS, except Windows. On Windows there are optional tools available, for example you
+can use [.Htaccesstools](http://www.htaccesstools.com/htpasswd-generator-windows/) online to create a file.
+
+To create a file for HTTP digest authentication, you can use the tool [htdigest](http://httpd.apache.org/docs/2.2/programs/htdigest.html).
+Again, there is an online [website](http://jesin.tk/tools/htdigest-generator-tool/) you can generate a file that will
+work on Windows also.
 
 ##### `/web-app/security/url-pattern` *string*
-This 
+The value of this node allows you to specify a URL pattern. If a request has to be handled, the
+[Servlet-Engine](https://github.com/appserver-io/appserver/wiki/05.-Servlet-Engine) again uses the PHP
+[fnmatch](http://php.net/fnmatch) method to match the URL against that pattern.
+
+##### `/web-app/security/auth/auth_type` *string*
+The value of this node defines the authentication type you want to use. `Basic` enables HTTP basic authentication,
+`Digest` the HTTP digest authentication. Depending on value you entered here, you have to add the appropriate options
+described below.
+
+##### `/web-app/security/auth/realm` *string*
+This value defines the text the browser dialogue will render after `The server says:`. So if you can specify a short
+message to the user that helps him to rember his credentials. In our example we specify `Basic Authentication Type`
+here.
+
+##### `/web-app/security/auth/adapter` *string*
+The value for this node defines the adapter used to validiate the credentials the user entered in the browsers dialog.
+Actually we have `htpasswd` for HTTP basic authentication, `htdigest`for HTTP digest authentication. In later releases
+we'll provide other adpaters, e. g. a LDAP implementation you can use for HTTP basic authentication.
+
+##### `/web-app/security/auth/options/file` *string*
+Based on the value for `/web-app/security/auth/auth_type` you've defined, you have to enter the relative path to the
+file containing the `.htpasswd` or `.htdigest` file with the allowed users.
+
+### Summary
+***
+
+We hope, that this blog post give you a basic understanding of what a [Servlet-Engine](https://github.com/appserver-io/appserver/wiki/05.-Servlet-Engine)
+is, what possiblities you have and how you can write your first application that uses servlets.
+
+Some of the basic features like session handling and HTTP basic or digest authentication are very similar configuration
+you know from LAMP stack or PHP configuration. So it should not we too complicated to use that when writing your first
+application running on the application servers [Servlet-Engine](https://github.com/appserver-io/appserver/wiki/05.-Servlet-Engine).
+
+The routing is very simple, but fast and allows you a detailed configuration for the controller part of your application.
+Based on a servlet you're enabled to write your own controller frameworks, use or extend a existing one like
+[Routlt](https://github.com/appserver-io/routlt) or migrate one of the frameworks to benefit from the possiblities an
+application server provide.
+
+> One of the biggest advantages of an application server is the possibility to keep instances in memory, that is what
+> the [Servlet-Engine](https://github.com/appserver-io/appserver/wiki/05.-Servlet-Engine) is doing with the servlets.
+> You may need some time to understand the concepts and idea behind, but when that happens you may wonder how you ever
+> could have implemented applications without that power!
