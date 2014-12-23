@@ -413,7 +413,8 @@ HTTP basic or digest authentication.
   <session-config>
     <session-name>PHPSESSID</session-name>
     <session-file-prefix></session-file-prefix>
-    <!-- defaults to application specifc temporary directory e. g. /opt/appserver/var/tmp/example/session -->
+    <!-- defaults to application specifc temporary directory 
+         e. g. /opt/appserver/var/tmp/example/session -->
     <session-save-path></session-save-path>
     <!-- default configuration for session/cookie lifetime and gc -->
     <session-maximum-age>0</session-maximum-age>
@@ -468,15 +469,15 @@ HTTP basic or digest authentication.
 </web-app>
 ```
 
-The XML configuration seems to be a bit complicated for the start, right? So we will go through it, node by node
-and give you a brief introduction what you can configure with it.
+The XML configuration seems to be a bit complicated for the start, right? So we will go through it, node by 
+node and give you a brief introduction what you can configure with it.
 
 #### Meta-Data Configuration
 ***
 
 ##### `/web-app/display-name` *string*
-This node actually doesn't has any functionality. Actually you can use it to giver your application a name. In
-later versions, this name will be displayed in admin UI where all applications are listed. 
+This node actually doesn't has any functionality. Actually you can use it to giver your application a name.
+In later versions, this name will be displayed in admin UI where all applications are listed. 
 
 ##### `/web-app/description` *string*
 As `/web-app/display-name`, this node has also no functionality. You can add a short description about your
@@ -514,8 +515,10 @@ you invoke
 /**
  * Handles a HTTP POST request, destroys the session and logs the user out.
  *
- * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest  $servletRequest  The request instance
- * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponse $servletResponse The response instance
+ * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest  $servletRequest  
+ *   The request instance
+ * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponse $servletResponse 
+ *   The response instance
  *
  * @return void
  */
@@ -590,9 +593,11 @@ we want to load the path to the `applicationProperties` context parameter we can
 /**
  * Initializes the servlet with the application properties.
  *
- * @param \AppserverIo\Psr\Servlet\ServletConfig $servletConfig The configuration to initialize the servlet with
+ * @param \AppserverIo\Psr\Servlet\ServletConfig $servletConfig 
+ *   The configuration to initialize the servlet with
  *
- * @throws \AppserverIo\Psr\Servlet\ServletException Is thrown if the configuration has errors
+ * @throws \AppserverIo\Psr\Servlet\ServletException
+ *   Is thrown if the configuration has errors
  * @return void
  * @see \AppserverIo\Psr\Servlet\GenericServlet::init()
  */
