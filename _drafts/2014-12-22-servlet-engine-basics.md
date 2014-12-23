@@ -571,7 +571,10 @@ The value for this node specifies whether cookies should only be sent over secur
 set this value to `false`, which means that cookies will always be set.
 
 ##### `/web-app/session-config/session-http-only`
-Marks the cookie as accessible only through the HTTP protocol. This means that the cookie won't be accessible by scripting languages, such as JavaScript. This setting can effectively help to reduce identity theft through XSS attacks (although it is not supported by all browsers).
+These configuration node allows you to mark the cookie as accessible only through the HTTP protocol. Setting this
+value to `true` makes the cookie inaccessible by scripting languages, such as JavaScript. This will effectively
+reduce identity theft through XSS attacks. Keep in mind, that although it is not supported by all browsers. By
+default, this value is set to `false`.
 
 #### Global Initialization Parameters
 
