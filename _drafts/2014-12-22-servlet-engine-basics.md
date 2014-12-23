@@ -535,7 +535,7 @@ in a `doPost()` of your `Servlet` for example.
 > a users changes session data, the maximum age of the session will NOT be extended. After the maximum age is
 > reached the session will be destroyed and the user has to create a new one, by re-login for example. If you want
 > to implement something like a sticky login functionality, you MUST set the value for `session-maximum-age` to
-> `0` and the value for the [session-cookie-lifetime](#) to a value that points for in the future.
+> `0` and the value for the [session-cookie-lifetime](#web-appsession-configsession-cookie-lifetime) to a value that > points far in the future.
 
 ##### `/web-app/session-config/session-inactivity-timeout` *integer*
 This node allows you to specify a timeout that marks the session as inactive. This lets the application server
@@ -554,12 +554,24 @@ value for this node is set to `0.1`.
 
 ##### `/web-app/session-config/session-cookie-lifetime`
 Independent from the [session-maximum-age](#web-appsession-configsession-maximum-age-integer) value, you can
-specify a lifetime for the session cookie that'll be 
+specify a lifetime for the session cookie that'll let the browser cookie expire and invalidates the session
+therefor.
 
-##### `/web-app/session-config/session-cookie-domain`  
-##### `/web-app/session-config/session-cookie-path`  
-##### `/web-app/session-config/session-cookie-secure`  
-##### `/web-app/session-config/session-http-only`  
+##### `/web-app/session-config/session-cookie-domain`
+The value of this node specifies the domain to set in the session cookie. Default is `localhost` which results in
+the host name of the server which generated the cookie according to cookies specification.
+
+##### `/web-app/session-config/session-cookie-path`
+With this value of this node, you specify the path to set in the session cookie, which defaults to `/`. The path
+tells the browser to use the cookie only when requesting pages contains the path you specify. If you use the 
+default value, the cookie will be valid for all paths in your application.
+
+##### `/web-app/session-config/session-cookie-secure`
+The value for this node specifies whether cookies should only be sent over secure connections. By default we've
+set this value to `false`, which means that cookies will always be set.
+
+##### `/web-app/session-config/session-http-only`
+Marks the cookie as accessible only through the HTTP protocol. This means that the cookie won't be accessible by scripting languages, such as JavaScript. This setting can effectively help to reduce identity theft through XSS attacks (although it is not supported by all browsers).
 
 #### Global Initialization Parameters
 
