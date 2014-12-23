@@ -427,11 +427,11 @@ HTTP basic or digest authentication.
     <session-http-only>false</session-http-only>
   </session-config>
   
-  <!-- application wide initialization parameter -->
-  <init-param>
-    <param-name>configurationFile</param-name>
-    <param-value>WEB-INF/routes.json</param-value>
-  </init-param>
+  <!-- application context initialization parameter -->
+  <context-param>
+    <param-name>applicationProperties</param-name>
+    <param-value>WEB-INF/application.properties</param-value>
+  </context-param>
 
   <!-- define the hello world servlet -->
   <servlet>
@@ -582,16 +582,16 @@ Something you actually can not configure with annotations are global initializat
 use global initialization parameters when you want to specify and pass values to your application, you would need
 to bootstrap your servlets, e. g. the path to a application specific configuration file.
 
-> A good example is our [Routlt](https://github.com/appserver-io/routlt) library. This library provides a simple
-> controller implementation, but is actually missing the possibility to map the actions to the request path info
-> by annotations, we need a configuration file. This configuration file will be parsed by the controller servlet
-> and pre-loads the action classes when the application server starts.
-
-##### `/web-app/init-param`
+##### `/web-app/context-param`
 
 #### Servlet Configurations
 
 ##### `/web-app/servlet`
+
+> A good example is our [Routlt](https://github.com/appserver-io/routlt) library. This library provides a simple
+> controller implementation, but is actually missing the possibility to map the actions to the request path info
+> by annotations, we need a configuration file. This configuration file will be parsed by the controller servlet
+> and pre-loads the action classes when the application server starts.
 
 #### Servlet Mappings
 
