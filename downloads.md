@@ -139,7 +139,7 @@ aptitude install appserver-dist
             <p></p>
             <a id="btn-download-centos"
                class="btn btn-info btn-lg"
-               href="https://github.com/appserver-io/appserver/releases/download/1.0.0-beta3/appserver-dist-1.0.0-beta2.24.linux.centos.x86_64.rpm">
+               href="https://github.com/appserver-io/appserver/releases/download/1.0.0-beta3/appserver-dist-1.0.0-beta3.25.linux.centos.x86_64.rpm">
                 <i class="fa fa-download"></i>&nbsp;&nbsp;appserver-dist-1.0.0-beta3.25.linux.centos.x86_64.rpm
             </a>
         </div>
