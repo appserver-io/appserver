@@ -41,8 +41,8 @@ Get the latest Version of appserver.io free and enjoy the most powerful PHP infr
             </p>
             <a id="btn-download-osx"
                class="btn btn-info btn-lg"
-               href="https://github.com/appserver-io/appserver/releases/download/1.0.0-beta2/appserver-dist-1.0.0-beta2.18.mac.x86_64.pkg">
-                <i class="fa fa-download"></i>&nbsp;&nbsp;1.0.0-beta2/appserver-dist-1.0.0-beta2.18.mac.x86_64.pkg
+               href="https://github.com/appserver-io/appserver/releases/download/1.0.0-beta3/appserver-dist-1.0.0-beta3.19.mac.x86_64.pkg">
+                <i class="fa fa-download"></i>&nbsp;&nbsp;1.0.0-beta3/appserver-dist-1.0.0-beta3.19.mac.x86_64.pkg
             </a>
         </div>
 
@@ -61,8 +61,8 @@ Get the latest Version of appserver.io free and enjoy the most powerful PHP infr
             </p>
             <a id="btn-download-win"
                class="btn btn-info btn-lg"
-               href="https://github.com/appserver-io/appserver/releases/download/1.0.0-beta2/appserver-dist-1.0.0-beta2.30.win.x86.jar">
-                <i class="fa fa-download"></i>&nbsp;&nbsp;appserver-dist-1.0.0-beta2.30.win.x86.jar
+               href="https://github.com/appserver-io/appserver/releases/download/1.0.0-beta3/appserver-dist-1.0.0-beta3.31.win.x86.jar">
+                <i class="fa fa-download"></i>&nbsp;&nbsp;appserver-dist-1.0.0-beta3.31.win.x86.jar
             </a>
         </div>
 
@@ -87,14 +87,14 @@ aptitude install appserver-dist
             </p>
             <a
                class="btn btn-info btn-lg"
-               href="https://github.com/appserver-io/appserver/releases/download/1.0.0-beta2/appserver-runtime-1.0.0-beta1.13.linux.debian.x86_64.deb">
+               href="https://github.com/appserver-io/appserver/releases/download/1.0.0-beta3/appserver-runtime-1.0.0-beta1.13.linux.debian.x86_64.deb">
                 <i class="fa fa-download"></i>&nbsp;&nbsp;appserver-runtime-1.0.0-beta1.13.linux.debian.x86_64.deb
             </a>
             <p></p>
             <a id="btn-download-debian"
                class="btn btn-info btn-lg"
-               href="https://github.com/appserver-io/appserver/releases/download/1.0.0-beta2/appserver-dist-1.0.0-beta2.16.linux.debian.x86_64.deb">
-                <i class="fa fa-download"></i>&nbsp;&nbsp;appserver-dist-1.0.0-beta2.16.linux.debian.x86_64.deb
+               href="https://github.com/appserver-io/appserver/releases/download/1.0.0-beta3/appserver-dist-1.0.0-beta3.17.linux.debian.x86_64.deb">
+                <i class="fa fa-download"></i>&nbsp;&nbsp;appserver-dist-1.0.0-beta3.17.linux.debian.x86_64.deb
             </a>
         </div>
 
@@ -109,14 +109,14 @@ aptitude install appserver-dist
             </p>
             <a
                class="btn btn-info btn-lg"
-               href="https://github.com/appserver-io/appserver/releases/download/1.0.0-beta2/appserver-runtime-1.0.0-beta1.20.linux.fedora.x86_64.rpm">
+               href="https://github.com/appserver-io/appserver/releases/download/1.0.0-beta3/appserver-runtime-1.0.0-beta1.20.linux.fedora.x86_64.rpm">
                 <i class="fa fa-download"></i>&nbsp;&nbsp;appserver-runtime-1.0.0-beta1.20.linux.fedora.x86_64.rpm
             </a>
             <p></p>
             <a id="btn-download-fedora"
                class="btn btn-info btn-lg"
-               href="https://github.com/appserver-io/appserver/releases/download/1.0.0-beta2/appserver-dist-1.0.0-beta2.37.linux.fedora.x86_64.rpm">
-                <i class="fa fa-download"></i>&nbsp;&nbsp;appserver-dist-1.0.0-beta2.37.linux.fedora.x86_64.rpm
+               href="https://github.com/appserver-io/appserver/releases/download/1.0.0-beta3/appserver-dist-1.0.0-beta3.38.linux.fedora.x86_64.rpm">
+                <i class="fa fa-download"></i>&nbsp;&nbsp;appserver-dist-1.0.0-beta3.38.linux.fedora.x86_64.rpm
             </a>
         </div>
 
@@ -133,14 +133,14 @@ aptitude install appserver-dist
             </p>
             <a id=""
                class="btn btn-info btn-lg"
-               href="https://github.com/appserver-io/appserver/releases/download/1.0.0-beta2/appserver-runtime-1.0.0-beta1.22.linux.centos.x86_64.rpm">
+               href="https://github.com/appserver-io/appserver/releases/download/1.0.0-beta3/appserver-runtime-1.0.0-beta1.22.linux.centos.x86_64.rpm">
                 <i class="fa fa-download"></i>&nbsp;&nbsp;appserver-runtime-1.0.0-beta1.22.linux.centos.x86_64.rpm"
             </a>
             <p></p>
             <a id="btn-download-centos"
                class="btn btn-info btn-lg"
-               href="https://github.com/appserver-io/appserver/releases/download/1.0.0-beta2/appserver-dist-1.0.0-beta2.24.linux.centos.x86_64.rpm">
-                <i class="fa fa-download"></i>&nbsp;&nbsp;appserver-dist-1.0.0-beta2.24.linux.centos.x86_64.rpm
+               href="https://github.com/appserver-io/appserver/releases/download/1.0.0-beta3/appserver-dist-1.0.0-beta2.24.linux.centos.x86_64.rpm">
+                <i class="fa fa-download"></i>&nbsp;&nbsp;appserver-dist-1.0.0-beta3.25.linux.centos.x86_64.rpm
             </a>
         </div>
 
