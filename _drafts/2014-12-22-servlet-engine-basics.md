@@ -578,11 +578,43 @@ default, this value is set to `false`.
 
 #### Global Initialization Parameters
 
-Something you actually can not configure with annotations are global initialization parameters. You can and should
-use global initialization parameters when you want to specify and pass values to your application, you would need
-to bootstrap your servlets, e. g. the path to a application specific configuration file.
+Something you actually can not configure with annotations are context parameters. You can and should use context 
+parameters when you want to specify and pass values to your application, you would need to bootstrap your servlets,
+e. g. the path to a application specific configuration file.
 
 ##### `/web-app/context-param`
+You can specify a random number of context parameters that you can load from the servlet context, for example if
+we want to load the path to the `applicationProperties` context parameter we can do this with
+
+```php
+/**
+ * Initializes the servlet with the application properties.
+ *
+ * @param \AppserverIo\Psr\Servlet\ServletConfig $servletConfig The configuration to initialize the servlet with
+ *
+ * @throws \AppserverIo\Psr\Servlet\ServletException Is thrown if the configuration has errors
+ * @return void
+ * @see \AppserverIo\Psr\Servlet\GenericServlet::init()
+ */
+public function init(ServletConfig $config)
+{
+
+    // load the servlet context
+    $context = $config->getServletContext();
+
+    // load path to application and to properties  
+    $webappPath = $context->getWebappPath();                 
+    $pathToProperties = $context->getInitParameter('applicationProperties')
+
+    // load and initialize the application properties
+    $this->applicationProperties = new Properties()
+    $this->applicationProperites->load($webappPath . DIRECTORY_SEPARATOR . $pathToProperties);
+}
+```
+
+> Context parameters enables you to load data from configuration files, databases, webservices on application
+> server startup. In the end, this means that this is the best place to bootstrap your servlet or your 
+> application.
 
 #### Servlet Configurations
 
