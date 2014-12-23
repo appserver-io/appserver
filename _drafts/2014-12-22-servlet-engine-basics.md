@@ -723,7 +723,31 @@ the `HelloWorld` servlet. So if you enter the URL `http:://127.0.0.1:9080/helloW
 > actually use the PHP [fnmatch](http://php.net/fnmatch) method.
 
 #### HTTP Basic and Digest Authentication
+Security will be a very important topic when writing applications, especially web applications. You have the 
+possibility secure your servlets either with HTTP basic or digest authentication as described in [RFC2617](http://tools.ietf.org/html/rfc2617).
 
 ##### `/web-app/security` *string*
+Configuration can done by defining a URL pattern you want to secure and, depending on the authentication type, the
+parameters where you want to authenticate against. If we want to secure our `HelloWorld` servlet using basic
+authentication, the following snipped will do the job
 
+```xml
+<security>
+  <url-pattern>/helloWorld.do*</url-pattern>
+  <auth>
+    <auth_type>Basic</auth_type>
+    <realm>test</realm>
+    <adapter_type>htpasswd</adapter_type>
+    <options>
+      <file>WEB-INF/htpasswd</file>
+    </options>
+  </auth>
+</security>
+```
 
+This protects access when someone tries to open the URL `http://127.0.0.1:9080/helloWorld.do` by open the
+browsers dialoge and request a username and a password. You can define user credentials with the tool
+`htpasswd` that will be available on all supported OS.
+
+##### `/web-app/security/url-pattern` *string*
+This 
