@@ -541,8 +541,8 @@ in a `doPost()` of your `Servlet` for example.
 > `0` and the value for the [session-cookie-lifetime](#web-appsession-configsession-cookie-lifetime) to a value that > points far in the future.
 
 ##### `/web-app/session-config/session-inactivity-timeout` *integer*
-This node allows you to specify a timeout that marks the session as inactive. This lets the application server
-remove the session from memory and persists it to the configurated persistence layer. By default, we persist
+This node allows you to specify a timeout in seconds that marks the session as inactive. This lets the application
+server remove the session from memory and persists it to the configurated persistence layer. By default, we persist
 sessions to the file system.
 
 > Actually we only have a filesystem persistence manager as part of our standard session manager. By registering
@@ -555,25 +555,25 @@ and `0`. As higher the value, as higher is the probability that the garbage coll
 number ob decimals you extend the range, and therefor the probability that the GC will be invoked. By default the
 value for this node is set to `0.1`.
 
-##### `/web-app/session-config/session-cookie-lifetime`
+##### `/web-app/session-config/session-cookie-lifetime` *integer*
 Independent from the [session-maximum-age](#web-appsession-configsession-maximum-age-integer) value, you can
-specify a lifetime for the session cookie that'll let the browser cookie expire and invalidates the session
-therefor.
+specify a lifetime for the session cookie in seconds, that'll let the browser cookie expire and invalidates
+the session therefor.
 
-##### `/web-app/session-config/session-cookie-domain`
+##### `/web-app/session-config/session-cookie-domain` *string*
 The value of this node specifies the domain to set in the session cookie. Default is `localhost` which results in
 the host name of the server which generated the cookie according to cookies specification.
 
-##### `/web-app/session-config/session-cookie-path`
+##### `/web-app/session-config/session-cookie-path` *string*
 With this value of this node, you specify the path to set in the session cookie, which defaults to `/`. The path
 tells the browser to use the cookie only when requesting pages contains the path you specify. If you use the 
 default value, the cookie will be valid for all paths in your application.
 
-##### `/web-app/session-config/session-cookie-secure`
+##### `/web-app/session-config/session-cookie-secure` *boolean*
 The value for this node specifies whether cookies should only be sent over secure connections. By default we've
 set this value to `false`, which means that cookies will always be set.
 
-##### `/web-app/session-config/session-http-only`
+##### `/web-app/session-config/session-http-only` *boolean*
 These configuration node allows you to mark the cookie as accessible only through the HTTP protocol. Setting this
 value to `true` makes the cookie inaccessible by scripting languages, such as JavaScript. This will effectively
 reduce identity theft through XSS attacks. Keep in mind, that although it is not supported by all browsers. By
@@ -584,7 +584,7 @@ Something you actually can not configure with annotations are context parameters
 parameters when you want to specify and pass values to your application, you would need to bootstrap your servlets,
 e. g. the path to a application specific configuration file.
 
-##### `/web-app/context-param`
+##### `/web-app/context-param` *string*
 You can specify a random number of context parameters that you can load from the servlet context. For example, if
 we want to load the path to the `applicationProperties`, defined as context parameter in our [example](#optional-xml-configuration) XML configuration file
 
@@ -633,7 +633,7 @@ public function init(ServletConfig $config)
 As this post is all about our [Servlet-Engine](https://github.com/appserver-io/appserver/wiki/05.-Servlet-Engine),
 maybe the most important thing is, how you can define the servlets, or override annotations you defined in the servlets itself, which will be parsed when the application server starts.
 
-##### `/web-app/servlet`
+##### `/web-app/servlet` *string*
 In many cases, it'll be the easiest way to use annotations to define your sevlets and map them to a request URL.
 Sometimes it'll be necessary that you define servlets in the `web.xml` file. As the order, the servlets will be
 loaded, is relevant for matching the URL when the request will be handled by the Servlet-Engine, it could be
@@ -689,7 +689,7 @@ Finally it is necessary to map the `Servlet` we've configured before, to a URL p
 default it is bound to the file extension `.do`. You can change this in the `appserver.xml` confguration file
 in directory `etc/appserver/appserver.xml`.
 
-##### `/web-app/servlet-mapping`
+##### `/web-app/servlet-mapping` *string*
 To stay with our Routlt example, the `ControllerServlet` has to be mapped to the URL patterns `/` and `/*` like
 
 ```xml
@@ -724,4 +724,6 @@ the `HelloWorld` servlet. So if you enter the URL `http:://127.0.0.1:9080/helloW
 
 #### HTTP Basic and Digest Authentication
 
-##### `/web-app/security`
+##### `/web-app/security` *string*
+
+
