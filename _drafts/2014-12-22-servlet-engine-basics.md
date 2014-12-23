@@ -580,14 +580,22 @@ reduce identity theft through XSS attacks. Keep in mind, that although it is not
 default, this value is set to `false`.
 
 #### Global Initialization Parameters
-
 Something you actually can not configure with annotations are context parameters. You can and should use context 
 parameters when you want to specify and pass values to your application, you would need to bootstrap your servlets,
 e. g. the path to a application specific configuration file.
 
 ##### `/web-app/context-param`
-You can specify a random number of context parameters that you can load from the servlet context, for example if
-we want to load the path to the `applicationProperties` context parameter we can do this with
+You can specify a random number of context parameters that you can load from the servlet context. For example, if
+we want to load the path to the `applicationProperties`, defined as context parameter in our [example](#optional-xml-configuration) XML configuration file like
+
+```xml
+<context-param>
+  <param-name>applicationProperties</param-name>
+  <param-value>WEB-INF/application.properties</param-value>
+</context-param>
+```
+
+we can do this by the following code, implemented in the `init()` method of one of our servlets
 
 ```php
 /**
@@ -601,15 +609,15 @@ we want to load the path to the `applicationProperties` context parameter we can
  * @return void
  * @see \AppserverIo\Psr\Servlet\GenericServlet::init()
  */
-public function init(ServletConfig $config)
+public function init(ServletConfig $servletConfig)
 {
 
     // load the servlet context
-    $context = $config->getServletContext();
+    $servletContext = $servletConfig->getServletContext();
 
     // load path to application and to properties  
-    $webappPath = $context->getWebappPath();                 
-    $pathToProperties = $context->getInitParameter('applicationProperties')
+    $webappPath = $servletContext->getWebappPath();                 
+    $pathToProperties = $servletContext->getInitParameter('applicationProperties')
 
     // load and initialize the application properties
     $this->applicationProperties = new Properties()
@@ -622,8 +630,26 @@ public function init(ServletConfig $config)
 > application.
 
 #### Servlet Configurations
+As this post is all about our [Servlet-Engine](https://github.com/appserver-io/appserver/wiki/05.-Servlet-Engine),
+maybe the most important thing is, how you can define the servlets, or override annotations you defined in the servlets itself, which will be parsed when the application server starts.
 
 ##### `/web-app/servlet`
+In many cases, it'll be the easiest way to use annotations to define your sevlets and map them to a request URL.
+Sometimes it'll be necessary that you define servlets in the `web.xml` file. A good reason can be, that servlets
+will be loaded in the order 
+
+```xml
+<servlet>
+  <description>The hello world as servlet implementation.</description>
+  <display-name>Hello World</display-name>
+  <servlet-name>helloWorld</servlet-name>
+  <servlet-class>AppserverIo\Examples\Servlets\HelloWorldServlet</servlet-class>
+  <init-param>
+    <param-name>resourceFile</param-name>
+    <param-value>WEB-INF/resources.ini</param-value>
+  </init-param>
+</servlet>
+```
 
 > A good example is our [Routlt](https://github.com/appserver-io/routlt) library. This library provides a simple
 > controller implementation, but is actually missing the possibility to map the actions to the request path info
