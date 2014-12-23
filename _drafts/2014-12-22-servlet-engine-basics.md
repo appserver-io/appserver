@@ -531,6 +531,10 @@ public function doPost(HttpServletRequest $servletRequest, HttpServletResponse $
 
 in a `doPost()` of your `Servlet` for example.
 
+> Actually the session maximum age only depends on the sessions creation time. This means, independent how often
+> a users changes session data, the maximum age of the session will NOT be extended. After the maximum age is
+> reached the session will be destroyed and the user has to create a new one, by re-login for example.
+
 ##### `/web-app/session-config/session-inactivity-timeout` *integer*
 This node allows you to specify a timeout that marks the session as inactive. This lets the application server
 remove the session from memory and persists it to the configurated persistence layer. By default, we persist
@@ -543,10 +547,11 @@ sessions to the file system.
 ##### `/web-app/session-config/garbage-collection-probability` *float*
 Allows you to set a value, how often the garbage collector will be invoked. You can specify a value between `100`
 and `0`. As higher the value, as higher is the probability that the garbage collector will be invoked. With the
-number ob decimals you extend the range, and therefor the probability that the GC will be invoked.
+number ob decimals you extend the range, and therefor the probability that the GC will be invoked. By default the
+value for this node is set to `0.1`.
 
 ##### `/web-app/session-config/session-cookie-lifetime`
-
+Independent from the [session-maximum-age](#) 
 
 ##### `/web-app/session-config/session-cookie-domain`  
 ##### `/web-app/session-config/session-cookie-path`  
