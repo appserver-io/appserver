@@ -609,15 +609,15 @@ we can do this by the following code, implemented in the `init()` method of one 
  * @return void
  * @see \AppserverIo\Psr\Servlet\GenericServlet::init()
  */
-public function init(ServletConfig $servletConfig)
+public function init(ServletConfig $config)
 {
 
     // load the servlet context
-    $servletContext = $servletConfig->getServletContext();
+    $context = $config->getServletContext();
 
     // load path to application and to properties  
-    $webappPath = $servletContext->getWebappPath();                 
-    $pathToProperties = $servletContext->getInitParameter('applicationProperties')
+    $webappPath = $context->getWebappPath();                 
+    $pathToProperties = $context->getInitParameter('applicationProperties')
 
     // load and initialize the application properties
     $this->applicationProperties = new Properties()
