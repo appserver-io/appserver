@@ -11,15 +11,15 @@ As announced in our last blog post, we want to give you an overview of the servi
 application server will provide. Let's start with the Servlet-Engine, because we think that this will
 be a good start for all developers who never get in contact with an application server before.
 
-Reading this post, you'll get the feeling, that a Servlet-Engine is something like a framework. This is
-not completely wrong. A Servlet-Engine is not a framework, but it is a part in a framework. So you have 
+Reading this post, you'll get the feeling, that a [Servlet-Engine](https://github.com/appserver-io/appserver/wiki/05.-Servlet-Engine) is something like a framework.
+This is not completely wrong. A Servlet-Engine is not a framework, but it is a part in a framework. So you have
 to see it as the controller part of a MVC framework. This is the reason why you'll read stuff about routing,
 request methods and other like that. As the framworks out there are actually not implemented for running in
 an  application server like appserver.io, they provide stuff like a HTTP foundation library by themselves. 
 We hope, that someday all of the frameworks recognize the advantages an application server provide and will
-be ported to run on top of appserver.io by using the infrastructure with all functionality it provides,
-instead of implementing it again and again in each of them. For sure this will be a long way, but i think i'll 
-be worth it.
+be ported to run on top of [appserver.io](http://www.appserver.io) by using the infrastructure with all
+functionality it provides, instead of implementing it again and again in each of them. For sure this will be 
+a long way, but i think i'llbe worth it.
 
 ### Problems without Servlet-Engine
 ***
@@ -577,6 +577,15 @@ reduce identity theft through XSS attacks. Keep in mind, that although it is not
 default, this value is set to `false`.
 
 #### Global Initialization Parameters
+
+Something you actually can not configure with annotations are global initialization parameters. You can and should
+use global initialization parameters when you want to specify and pass values to your application, you would need
+to bootstrap your servlets, e. g. the path to a application specific configuration file.
+
+> A good example is our [Routlt](https://github.com/appserver-io/routlt) library. This library provides a simple
+> controller implementation, but is actually missing the possibility to map the actions to the request path info
+> by annotations, we need a configuration file. This configuration file will be parsed by the controller servlet
+> and pre-loads the action classes when the application server starts.
 
 ##### `/web-app/init-param`
 
