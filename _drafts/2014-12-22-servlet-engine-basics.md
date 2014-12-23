@@ -635,23 +635,50 @@ maybe the most important thing is, how you can define the servlets, or override 
 
 ##### `/web-app/servlet`
 In many cases, it'll be the easiest way to use annotations to define your sevlets and map them to a request URL.
-Sometimes it'll be necessary that you define servlets in the `web.xml` file. A good reason can be, that servlets
-will be loaded in the order 
+Sometimes it'll be necessary that you define servlets in the `web.xml` file. As the order, the servlets will be
+loaded, is relevant for matching the URL when the request will be handled by the Servlet-Engine, it could be
+necessary that you have to manually change it in this file. You can define a servlet by add the following snippet
+to your configuration file
 
 ```xml
 <servlet>
-  <description>The hello world as servlet implementation.</description>
-  <display-name>Hello World</display-name>
-  <servlet-name>helloWorld</servlet-name>
-  <servlet-class>AppserverIo\Examples\Servlets\HelloWorldServlet</servlet-class>
+  <description>The Routlt controller servlet implementation.</description>
+  <display-name>The Routlt controller servlet</display-name>
+  <servlet-name>routlt</servlet-name>
+  <servlet-class>\AppserverIo\Routlt\ControllerServlet</servlet-class>
   <init-param>
-    <param-name>resourceFile</param-name>
-    <param-value>WEB-INF/resources.ini</param-value>
+    <param-name>configurationFile</param-name>
+    <param-value>WEB-INF/routes.json</param-value>
   </init-param>
 </servlet>
 ```
 
-> A good example is our [Routlt](https://github.com/appserver-io/routlt) library. This library provides a simple
+You can access this value by invoking the `$this->getInitParameter()` method like
+
+```php
+/**
+ * Initializes the servlet with the path to the configuration file.
+ *
+ * @param \AppserverIo\Psr\Servlet\ServletConfig $servletConfig 
+ *   The configuration to initialize the servlet with
+ *
+ * @throws \AppserverIo\Psr\Servlet\ServletException
+ *   Is thrown if the configuration has errors
+ * @return void
+ * @see \AppserverIo\Psr\Servlet\GenericServlet::init()
+ */
+public function init(ServletConfig $config)
+{
+
+  // call parent method
+  parent::init($config);
+
+  // load path to the applications configuration file       
+  $this->pathToConfigurationFile = $this->getInitParameter('configurationFile')
+}
+```
+
+> A good example is the [Routlt](https://github.com/appserver-io/routlt) library. This library provides a simple
 > controller implementation, but is actually missing the possibility to map the actions to the request path info
 > by annotations, we need a configuration file. This configuration file will be parsed by the controller servlet
 > and pre-loads the action classes when the application server starts.
