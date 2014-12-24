@@ -50,7 +50,7 @@ our case this will be a servlet. You can write as many servlets as you want, but
 write any configuration therefor. Let's have a look at how you can map an URL path to a servlet
 
 ```php
-namespace AppserverIo\Examples\Servlets;
+namespace AppserverIo\Example\Servlets;
 
 use AppserverIo\Psr\Servlet\Http\HttpServlet;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequest;
@@ -115,7 +115,7 @@ invoked by the application server when the servlet is instanciated and initializ
 our previous example
 
 ```php
-namespace AppserverIo\Examples\Servlets;
+namespace AppserverIo\Example\Servlets;
 
 use AppserverIo\Psr\Servlet\ServletConfig;
 use AppserverIo\Psr\Servlet\Http\HttpServlet;
@@ -192,7 +192,7 @@ values. You can also do this with the `@Route` annotation. So imagine, we want t
 with the resources configurable.
 
 ```php
-namespace AppserverIo\Examples\Servlets;
+namespace AppserverIo\Example\Servlets;
 
 use AppserverIo\Psr\Servlet\ServletConfig;
 use AppserverIo\Psr\Servlet\Http\HttpServlet;
@@ -274,7 +274,7 @@ Starting a session is one of the things you'll need in nearly every application.
 quite simple. So let's see how we can integrate session handling in our application.
 
 ```php
-namespace AppserverIo\Examples\Servlets;
+namespace AppserverIo\Example\Servlets;
 
 use AppserverIo\Psr\Servlet\ServletConfig;
 use AppserverIo\Psr\Servlet\Http\HttpServlet;
@@ -403,7 +403,7 @@ HTTP basic or digest authentication.
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app version="2.4">
+<web-app version="1.0">
 
   <!-- application meta information -->
   <display-name>appserver.io example application</display-name>
@@ -439,11 +439,11 @@ HTTP basic or digest authentication.
     <description>The hello world as servlet implementation.</description>
     <display-name>Hello World</display-name>
     <servlet-name>helloWorld</servlet-name>
-    <servlet-class>AppserverIo\Examples\Servlets\HelloWorldServlet</servlet-class>
+    <servlet-class>AppserverIo\Example\Servlets\HelloWorldServlet</servlet-class>
     <!-- servlet specific application parameter -->
     <init-param>
-      <param-name>resourceFile</param-name>
-      <param-value>WEB-INF/resources.ini</param-value>
+      <param-name>servletProperties</param-name>
+      <param-value>WEB-INF/hello-world.properties</param-value>
     </init-param>
   </servlet>
 
@@ -451,6 +451,10 @@ HTTP basic or digest authentication.
   <servlet-mapping>
     <servlet-name>helloWorld</servlet-name>
     <url-pattern>/helloWorld.do</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>helloWorld</servlet-name>
+    <url-pattern>/helloWorld.do*</url-pattern>
   </servlet-mapping>
 
   <!-- allow access to known users only -->
@@ -476,7 +480,7 @@ node and give you a brief introduction what you can configure with it.
 ***
 
 ##### `/web-app/display-name` *string*
-This node actually doesn't has any functionality. Actually you can use it to giver your application a name.
+This node actually doesn't has any functionality. Actually you can use it to give your application a name.
 In later versions, this name will be displayed in admin UI where all applications are listed. 
 
 ##### `/web-app/description` *string*
@@ -612,16 +616,19 @@ We can do this, by adding the following code, implemented in the `init()` method
 public function init(ServletConfig $config)
 {
 
-    // load the servlet context
-    $context = $config->getServletContext();
+  // call parent method
+  parent::init($config);
 
-    // load path to application and to properties  
-    $webappPath = $context->getWebappPath();                 
-    $pathToProperties = $context->getInitParameter('applicationProperties')
+  // load the servlet context
+  $context = $config->getServletContext();
 
-    // load and initialize the application properties
-    $this->applicationProperties = new Properties()
-    $this->applicationProperites->load($webappPath . DIRECTORY_SEPARATOR . $pathToProperties);
+  // load path to application and to properties  
+  $webappPath = $context->getWebappPath();                 
+  $pathToProperties = $context->getInitParameter('applicationProperties')
+
+  // load and initialize the application properties
+  $this->applicationProperties = new Properties()
+  $this->applicationProperites->load($webappPath . DIRECTORY_SEPARATOR . $pathToProperties);
 }
 ```
 
@@ -629,31 +636,58 @@ public function init(ServletConfig $config)
 > server startup. In the end, this means that this is the best place to bootstrap your servlet or your 
 > application.
 
-#### Servlet Configurations
+#### Servlet Configuration
 As this post is all about our [Servlet-Engine](https://github.com/appserver-io/appserver/wiki/05.-Servlet-Engine),
 maybe the most important thing is, how you can define the servlets, or override annotations you defined in the servlets itself, which will be parsed when the application server starts.
 
 ##### `/web-app/servlet` *string*
 In many cases, it'll be the easiest way to use annotations to define your sevlets and map them to a request URL.
 Sometimes it'll be necessary that you define servlets in the `web.xml` file. As the order, the servlets will be
-loaded, is relevant for matching the URL when the request will be handled by the Servlet-Engine, it could be
-necessary that you have to manually change it in this file. You can define a servlet by add the following snippet
-to your configuration file
+loaded, is relevant for matching the URL when the request will be handled by the [Servlet-Engine](https://github.com/appserver-io/appserver/wiki/05.-Servlet-Engine),
+it could be necessary that you have to manually change it in this file. You can define a servlet by add the
+following snippet to your configuration file
 
 ```xml
 <servlet>
-  <description>The Routlt controller servlet implementation.</description>
-  <display-name>The Routlt controller servlet</display-name>
-  <servlet-name>routlt</servlet-name>
-  <servlet-class>\AppserverIo\Routlt\ControllerServlet</servlet-class>
+  <description>The hello world as servlet implementation.</description>
+  <display-name>Hello World</display-name>
+  <servlet-name>helloWorld</servlet-name>
+  <servlet-class>AppserverIo\Examples\Servlets\HelloWorldServlet</servlet-class>
   <init-param>
-    <param-name>configurationFile</param-name>
-    <param-value>WEB-INF/routes.json</param-value>
+    <param-name>servletProperties</param-name>
+    <param-value>WEB-INF/hello-world.properties</param-value>
   </init-param>
 </servlet>
 ```
 
-You can access this value by invoking the `$this->getInitParameter()` method like
+##### `/web-app/servlet/description` *string*
+You can specify a short description for the servlet here. Actually the description has no usage. In later versions
+this description will be displayed in the servlet details in admin UI.
+
+##### `/web-app/servlet/display-name` *string*
+This node actually doesn't has any functionality. Actually you can use it to give your servlet a name.
+In later versions, this name will be displayed in admin UI where all servlets are listed. 
+
+##### `/web-app/servlet/servlet-name` *string*
+You must specify a name, unique in your application, for the servlet here. This name will be used to
+[map](#servlet-mapping) your servlet to a request URL later.
+
+##### `/web-app/servlet/servlet-class` *string*
+The [Servlet-Engine](https://github.com/appserver-io/appserver/wiki/05.-Servlet-Engine) needs to know, which
+class has to instanciated when initializing the servlet. So you have to specify the fully qualified name of
+your servlet here.
+
+##### `/web-app/servlet/init-param` *string*
+You can specifiy a random number of initialization parameters here. The parameters will be parsed when the
+application starts und you can load them from the servlet configuration.
+
+##### `/web-app/servlet/init-param/param-name` *string*
+This represents the parameters key. You should only use US-ASCII chars (octets 0 - 127) for the key.
+
+##### `/web-app/servlet/init-param/param-value` *string*
+This nodes value is the parameters value. Here you can specify anything that is allowed to specify in a XML file.
+
+You can access a servlets initialization parameters by invoking the `$this->getInitParameter()` method like
 
 ```php
 /**
@@ -672,9 +706,17 @@ public function init(ServletConfig $config)
 
   // call parent method
   parent::init($config);
+  
+  // load the servlet context
+  $context = $config->getServletContext();
 
-  // load path to the applications configuration file       
-  $this->pathToConfigurationFile = $this->getInitParameter('configurationFile')
+  // load path to servlet and to properties  
+  $webappPath = $context->getWebappPath();                 
+  $pathToProperties = $this->getInitParameter('servletProperties')
+
+  // load and initialize the application properties
+  $this->servletProperties = new Properties()
+  $this->servletProperties->load($webappPath . DIRECTORY_SEPARATOR . $pathToProperties);
 }
 ```
 
@@ -683,7 +725,7 @@ public function init(ServletConfig $config)
 > by annotations, we need a configuration file. This configuration file will be parsed by the controller servlet
 > and pre-loads the action classes when the application server starts.
 
-#### Servlet Mappings
+#### Servlet Mapping
 Finally it is necessary to map the servlet we've configured before, to a URL path. As the 
 [Servlet-Engine](https://github.com/appserver-io/appserver/wiki/05.-Servlet-Engine) is a webserver module, by
 default it is bound to the file extension `.do`. You can change this in the `appserver.xml` confguration file
@@ -697,25 +739,23 @@ mapping has to be specified by the following subnodes.
 This node has to contain the `servlet-name` you have specified in a `/web-app/servlet/servlet-name` node before.
 
 ##### `/web-app/servlet-mapping/url-pattern` *string*
-To stay with our Routlt example, the `ControllerServlet` with name `routlt`, has to be mapped to the URL patterns
-`/` and `/*` like
+To stay with our example, the `HelloWorldServlet` with `servlet-name` `helloWorld`, has to be mapped to the URL
+patterns `/helloWorld.do` and `/helloWorld.do*` like
 
 ```xml
 <servlet-mapping>
-  <servlet-name>routlt</servlet-name>
-  <url-pattern>/</url-pattern>
+  <servlet-name>helloWorld</servlet-name>
+  <url-pattern>/helloWorld.do</url-pattern>
 </servlet-mapping>
 <servlet-mapping>
   <servlet-name>routlt</servlet-name>
-  <url-pattern>/*</url-pattern>
+  <url-pattern>/helloWorld.do*</url-pattern>
 </servlet-mapping>
 ```
 
-This is necessary, because the Routlt `ControllerServlet::service()` method has to be invoked either when you open
-`http://127.0.0.1:9080` or something like `http://127.0.0.1:9080/index.do?test=test`. You can understand it as a
-catch all servlet that will be invoked if no other matches. In the example before, we've add a URL mapping for
-the `HelloWorld` servlet. So if you enter the URL `http:://127.0.0.1:9080/helloWorld.do` the URL mapping for this
-servlet matches before and the apropriate method will be invoked.
+This is necessary, because the `HttpServlet::service()` method has to be invoked either when you open
+`http://127.0.0.1:9080/example/helloWorld.do` or anything like `http://127.0.0.1:9080/example/helloWorld.do/my/path/info?test=test`. You can understand the URL mapping, 
+containing the `*` as a catch all.
 
 > Keep in mind, if you want to write a servlet, in general you should map it to a path with a `.do` file extension,
 > as long as you not change the default configuration for that. An exception is the default servlet, because this
@@ -728,7 +768,7 @@ possibility secure your servlets either with HTTP basic or digest authentication
 
 ##### `/web-app/security` *string*
 Configuration can done by defining a URL pattern you want to secure and, depending on the authentication type, the
-parameters where you want to authenticate against. If we want to secure our `HelloWorld` servlet using basic
+parameters where you want to authenticate against. If we want to secure our `helloWorld` servlet using basic
 authentication, the following snipped will do the job
 
 ```xml
