@@ -39,15 +39,15 @@ solution can be caching, but that entails many other problems that you may have 
 ***
 
 One solution can be using a Servlet-Engine, like we integrated in our application server. Imagine a
-`Servlet` as a class that implements the `Servlet` interface, part of our PSR's, that provides some
+servlet as a class that implements the servlet interface, part of our PSR's, that provides some
 kind of MVC pattern controller functionality by implementing some methods that will be invoked when
-a request came in, nothing more, nothing less. So to implement your first `Servlet`, you have to think
-about two things. First, which requests should our `Servlet` dispatch, the second is what functionality
+a request came in, nothing more, nothing less. So to implement your first servlet, you have to think
+about two things. First, which requests should our servlet dispatch, the second is what functionality
 it should provide.
 
 As in many other frameworks do, our Servlet-Engine use a URL path to map a request to a controller, in
-our case this will be a `Servlet`. You can write as many servlets as you want, but you dont't need to
-write any configuration therefor. Let's have a look at how you can map an URL path to a `Servlet`
+our case this will be a servlet. You can write as many servlets as you want, but you dont't need to
+write any configuration therefor. Let's have a look at how you can map an URL path to a servlet
 
 ```php
 namespace AppserverIo\Examples\Servlets;
@@ -84,9 +84,9 @@ class HelloWorldServlet extends HttpServlet
 }
 ```
 
-To map a `Servlet` to a URL, you can simply use the `@Route` annotation. With the `name` attribute you have
+To map a servlet to a URL, you can simply use the `@Route` annotation. With the `name` attribute you have
 specify a name that has to be unique in your application scope, the attribute `urlPattern` allows you to
-specify a list of URL patterns you want to map the `Servlet` to. In our example, we want to map the 
+specify a list of URL patterns you want to map the servlet to. In our example, we want to map the 
 `HelloWorldServlet` to the URL's like `http://127.0.0.1:9080/examples/helloWorld.do`, whatever parameters
 are appended.
 
@@ -99,7 +99,7 @@ server, create a folder `examples/WEB-INF/classes/AppserverIo/Example/Servlets` 
 your installation. In the folder, create a new file named `HelloWorldServlet.php`, copy the code from above and
 save it. After [restarting](https://github.com/appserver-io/appserver/wiki/02.-Basic-Usage#start-and-stop-scripts)
 the application server, open the URL `http://127.0.0.1:9080/examples/helloWorld.do` in your favorite browser.
-You should see the text `Hello World`. Congratulations, you have written your first `Servlet`!
+You should see the text `Hello World`. Congratulations, you have written your first servlet!
 
 > Simplicity is one of our main targets, because we want you to write your applications with a minimum of 
 > configuration, actually NULL. So to start write an application that perfectly works in the application 
@@ -111,7 +111,7 @@ As described before, bootstrapping a framework with every request is a very expe
 again and again. Using an application server with a Servlet-Engine can be a great help here. Beside the fact,
 that parsing configuration like the `@Route` annotation, will be done only once when the application server
 starts, You additionally have the possiblity to do all that expensive stuff in an `ìnit()` method that'll be
-invoked by the application server when the `Servlet` is instanciated and initialized at startup. Let's extend
+invoked by the application server when the servlet is instanciated and initialized at startup. Let's extend
 our previous example
 
 ```php
@@ -180,7 +180,7 @@ server starts. When we handle the request later, we only need to resolve the tra
 the resources by its key.
 
 > You can get major performance improvements, letting the application server do CPU expensive functionality
-> during startup. Keep in mind, that you get a copy of the `Servlet` when the `doGet()` method is invoked.
+> during startup. Keep in mind, that you get a copy of the servlet when the `doGet()` method is invoked.
 > Therefor it doesn't make sense to write data to members there, because it'll be not available in the next
 > request!
 
@@ -392,7 +392,7 @@ has to be stored in you applications `WEB-INF` folder as `web.xml`.
 ### Optional XML Configuration
 ***
 
-As described before, we thought, that it have to be very simple, to write a `Servlet`. Therefore we provide
+As described before, we thought, that it have to be very simple, to write a servlet. Therefore we provide
 annotations that gives you the power to configure the basics. For sure, for many things we deliver a good
 default configuration, but you need the power to overwrite that.
 
@@ -532,7 +532,7 @@ public function doPost(HttpServletRequest $servletRequest, HttpServletResponse $
 }
 ```
 
-in a `doPost()` of your `Servlet` for example.
+on your servlet for example.
 
 > Actually the session maximum age only depends on the sessions creation time. This means, independent how often
 > a users changes session data, the maximum age of the session will NOT be extended. After the maximum age is
@@ -595,7 +595,7 @@ we want to load the path to the `applicationProperties`, defined as context para
 </context-param>
 ```
 
-We can do this, by the following code, implemented in the `init()` method of a `Servlet`
+We can do this, by adding the following code, implemented in the `init()` method to a servlet
 
 ```php
 /**
@@ -684,7 +684,7 @@ public function init(ServletConfig $config)
 > and pre-loads the action classes when the application server starts.
 
 #### Servlet Mappings
-Finally it is necessary to map the `Servlet` we've configured before, to a URL path. As the 
+Finally it is necessary to map the servlet we've configured before, to a URL path. As the 
 [Servlet-Engine](https://github.com/appserver-io/appserver/wiki/05.-Servlet-Engine) is a webserver module, by
 default it is bound to the file extension `.do`. You can change this in the `appserver.xml` confguration file
 in directory `etc/appserver/appserver.xml`.
@@ -713,13 +713,13 @@ To stay with our Routlt example, the `ControllerServlet` with name `routlt`, has
 
 This is necessary, because the Routlt `ControllerServlet::service()` method has to be invoked either when you open
 `http://127.0.0.1:9080` or something like `http://127.0.0.1:9080/index.do?test=test`. You can understand it as a
-catch all `Servlet` that will be invoked if no other matches. In the example before, we've add a URL mapping for
+catch all servlet that will be invoked if no other matches. In the example before, we've add a URL mapping for
 the `HelloWorld` servlet. So if you enter the URL `http:://127.0.0.1:9080/helloWorld.do` the URL mapping for this
-`Servlet` matches before and the apropriate method will be invoked.
+servlet matches before and the apropriate method will be invoked.
 
 > Keep in mind, if you want to write a servlet, in general you should map it to a path with a `.do` file extension,
 > as long as you not change the default configuration for that. An exception is the default servlet, because this
-> should catch all requests that will not match by any other servlets. To match a `Servlet` on a URL path, we're
+> should catch all requests that will not match by any other servlets. To match a servlet on a URL path, we're
 > actually use the PHP [fnmatch](http://php.net/fnmatch) method.
 
 #### HTTP Basic and Digest Authentication
@@ -750,13 +750,14 @@ browsers dialog and request a username and a password.
 
 ![HTTP Basic Authentication Required]({{ "/assets/img/post-screen-basic-auth.png" | prepend: site.baseurl }} "HTTP Basic Authentication Required")
 
-You can define user credentials with the tool [htpasswd](http://httpd.apache.org/docs/2.2/programs/htpasswd.html) that 
-will be available on all supported OS, except Windows. On Windows there are optional tools available, for example you
-can use [.Htaccesstools](http://www.htaccesstools.com/htpasswd-generator-windows/) online to create a file.
+You can define user credentials with the tool [htpasswd](http://httpd.apache.org/docs/2.2/programs/htpasswd.html)
+thatwill be available on all supported OS, except Windows. On Windows there are optional tools available, for
+example you can use [.Htaccesstools](http://www.htaccesstools.com/htpasswd-generator-windows/) online to create a
+file.
 
 To create a file for HTTP digest authentication, you can use the tool [htdigest](http://httpd.apache.org/docs/2.2/programs/htdigest.html).
-Again, there is an online [website](http://jesin.tk/tools/htdigest-generator-tool/) you can generate a file that will
-work on Windows also.
+Again, there is an online [website](http://jesin.tk/tools/htdigest-generator-tool/) you can generate a file 
+that will work on Windows also.
 
 ##### `/web-app/security/url-pattern` *string*
 The value of this node allows you to specify a URL pattern. If a request has to be handled, the
@@ -765,22 +766,21 @@ The value of this node allows you to specify a URL pattern. If a request has to 
 
 ##### `/web-app/security/auth/auth_type` *string*
 The value of this node defines the authentication type you want to use. `Basic` enables HTTP basic authentication,
-`Digest` the HTTP digest authentication. Depending on value you entered here, you have to add the appropriate options
-described below.
+`Digest` the HTTP digest authentication. Depending on value you entered here, you have to add the appropriate
+options described below.
 
 ##### `/web-app/security/auth/realm` *string*
-This value defines the text the browser dialogue will render after `The server says:`. So if you can specify a short
-message to the user that helps him to rember his credentials. In our example we specify `Basic Authentication Type`
-here.
+This value defines the text the browser dialogue will render after `The server says:`. So if you can specify a 
+short message to the user that helps him to rember his credentials. In our example we specify `Basic Authentication Type` here.
 
 ##### `/web-app/security/auth/adapter` *string*
-The value for this node defines the adapter used to validiate the credentials the user entered in the browsers dialog.
-Actually we have `htpasswd` for HTTP basic authentication, `htdigest`for HTTP digest authentication. In later releases
-we'll provide other adpaters, e. g. a LDAP implementation you can use for HTTP basic authentication.
+The value for this node defines the adapter used to validiate the credentials the user entered in the browsers
+dialog. Actually we have `htpasswd` for HTTP basic authentication, `htdigest`for HTTP digest authentication. In
+later releases we'll provide other adpaters, e. g. a LDAP implementation you can use for HTTP basic authentication.
 
 ##### `/web-app/security/auth/options/file` *string*
-Based on the value for `/web-app/security/auth/auth_type` you've defined, you have to enter the relative path to the
-file containing the `.htpasswd` or `.htdigest` file with the allowed users.
+Based on the value for `/web-app/security/auth/auth_type` you've defined, you have to enter the relative path to 
+the file containing the `.htpasswd` or `.htdigest` file with the allowed users.
 
 ### Summary
 ***
@@ -788,16 +788,16 @@ file containing the `.htpasswd` or `.htdigest` file with the allowed users.
 We hope, that this blog post give you a basic understanding of what a [Servlet-Engine](https://github.com/appserver-io/appserver/wiki/05.-Servlet-Engine)
 is, what possiblities you have and how you can write your first application that uses servlets.
 
-Some of the basic features like session handling and HTTP basic or digest authentication are very similar configuration
-you know from LAMP stack or PHP configuration. So it should not we too complicated to use that when writing your first
-application running on the application servers [Servlet-Engine](https://github.com/appserver-io/appserver/wiki/05.-Servlet-Engine).
+Some of the basic features like session handling and HTTP basic or digest authentication are very similar
+configuration you know from LAMP stack or PHP configuration. So it should not we too complicated to use that
+when writing your first application running on the application servers [Servlet-Engine](https://github.com/appserver-io/appserver/wiki/05.-Servlet-Engine).
 
-The routing is very simple, but fast and allows you a detailed configuration for the controller part of your application.
-Based on a servlet you're enabled to write your own controller frameworks, use or extend a existing one like
-[Routlt](https://github.com/appserver-io/routlt) or migrate one of the frameworks to benefit from the possiblities an
-application server provide.
+The routing is very simple, but fast and allows you a detailed configuration for the controller part of your
+application. Based on a servlet you're enabled to write your own controller frameworks, use or extend a 
+existing one like [Routlt](https://github.com/appserver-io/routlt) or migrate one of the frameworks to benefit
+from the possiblities an application server provide.
 
-> One of the biggest advantages of an application server is the possibility to keep instances in memory, that is what
-> the [Servlet-Engine](https://github.com/appserver-io/appserver/wiki/05.-Servlet-Engine) is doing with the servlets.
-> You may need some time to understand the concepts and idea behind, but when that happens you may wonder how you ever
-> could have implemented applications without that power!
+> One of the biggest advantages of an application server is the possibility to keep instances in memory, that
+> is what the [Servlet-Engine](https://github.com/appserver-io/appserver/wiki/05.-Servlet-Engine) is doing
+> with the servlets. You may need some time to understand the concepts and idea behind, but when that happens
+> you may wonder how you ever could have implemented applications without that power!
