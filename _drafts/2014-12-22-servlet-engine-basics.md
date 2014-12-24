@@ -12,7 +12,7 @@ application server will provide. Let's start with the Servlet-Engine, because we
 be a good start for all developers who never get in contact with an application server before.
 
 Reading this post, you'll get the feeling, that a [Servlet-Engine](https://github.com/appserver-io/appserver/wiki/05.-Servlet-Engine) is something like a framework.
-This is not completely wrong. A Servlet-Engine is not a framework, but it is a part in a framework. So you have
+This is not completely wrong. A [Servlet-Engine](https://github.com/appserver-io/appserver/wiki/05.-Servlet-Engine) is **NOT** a framework, but it is a part in a framework. So you have
 to see it as the controller part of a MVC framework. This is the reason why you'll read stuff about routing,
 request methods and other like that. As the framworks out there are actually not implemented for running in
 an  application server like appserver.io, they provide stuff like a HTTP foundation library by themselves. 
