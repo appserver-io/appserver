@@ -837,6 +837,10 @@ application. Based on a servlet you're enabled to write your own controller fram
 existing one like [Routlt](https://github.com/appserver-io/routlt) or migrate one of the frameworks to benefit
 from the possiblities an application server provide.
 
+If you're looking for an example where you can have a deeper look in implementation and configuration of servlets
+running in the [Servlet-Engine](https://github.com/appserver-io/appserver/wiki/05.-Servlet-Engine), clone our
+[example](https://github.com/appserver-io-apps/example) project.
+
 > One of the biggest advantages of an application server is the possibility to keep instances in memory, that
 > is what the [Servlet-Engine](https://github.com/appserver-io/appserver/wiki/05.-Servlet-Engine) is doing
 > with the servlets. You may need some time to understand the concepts and idea behind, but when that happens
