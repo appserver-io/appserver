@@ -12,19 +12,18 @@ application server will provide. Let's start with the Servlet-Engine, because we
 be a good start for all developers who never get in contact with an application server before.
 
 Reading this post, you'll get the feeling, that a [Servlet-Engine](https://github.com/appserver-io/appserver/wiki/05.-Servlet-Engine) is something like a framework.
-This is not completely wrong. A [Servlet-Engine](https://github.com/appserver-io/appserver/wiki/05.-Servlet-Engine) is **NOT** a framework, but it is a part in a framework. So you have
-to see it as the controller part of a MVC framework. This is the reason why you'll read stuff about routing,
-request methods and other like that. As the framworks out there are actually not implemented for running in
-an  application server like appserver.io, they provide stuff like a HTTP foundation library by themselves. 
-We hope, that someday all of the frameworks recognize the advantages an application server provide and will
-be ported to run on top of [appserver.io](http://www.appserver.io) by using the infrastructure with all
-functionality it provides, instead of implementing it again and again in each of them. For sure this will be 
-a long way, but i think i'llbe worth it.
+This is not completely wrong. A [Servlet-Engine](https://github.com/appserver-io/appserver/wiki/05.-Servlet-Engine) is **NOT** a framework, but it is a part in a framework. So you should see it as the controller part of a MVC
+framework. This is the reason why you'll read stuff about routing, request methods and other like that. As the
+framworks out there are actually not implemented for running in an  application server like appserver.io, they
+provide stuff like a HTTP foundation library by themselves.  We hope, that someday all of the frameworks recognize
+the advantages an application server provide and will be ported to run on top of
+[appserver.io](http://www.appserver.io) by using the infrastructure with all functionality it provides, instead of
+implementing it again and again in each of them. For sure this will be  a long way, but i think i'llbe worth it.
 
 ### Problems without Servlet-Engine
 ***
 
-Some of you, who are familiar with a Java Servlet-Engine will wonder: a Servlet-Engine in PHP? Does 
+Some of you, who are familiar with a Java Servlet-Engine will wonder: a [Servlet-Engine](https://github.com/appserver-io/appserver/wiki/05.-Servlet-Engine) in PHP? Does 
 that make sense because of all the great frameworks out there. We think yes, because one of the big
 issues with the frameworks is, that they'll get huge during the last years and bootstrapping became
 a big meaning meanwhile. As PHP is used as a scripting language, the problem of the bootstrapping is,
@@ -38,16 +37,17 @@ solution can be caching, but that entails many other problems that you may have 
 ### How can a Servlet-Engine help
 ***
 
-One solution can be using a Servlet-Engine, like we integrated in our application server. Imagine a
-servlet as a class that implements the servlet interface, part of our PSR's, that provides some
-kind of MVC pattern controller functionality by implementing some methods that will be invoked when
-a request came in, nothing more, nothing less. So to implement your first servlet, you have to think
-about two things. First, which requests should our servlet dispatch, the second is what functionality
+One solution can be using a [Servlet-Engine](https://github.com/appserver-io/appserver/wiki/05.-Servlet-Engine),
+like we integrated in our application server. Imagine a servlet as a class that implements the servlet interface,
+part of our PSR's, that provides some kind of MVC pattern controller functionality by implementing some methods
+that will be invoked when a request came in, nothing more, nothing less. So to implement your first servlet, you
+have to think about two things. First, which requests should our servlet dispatch, the second is what functionality
 it should provide.
 
-As in many other frameworks do, our Servlet-Engine use a URL path to map a request to a controller, in
-our case this will be a servlet. You can write as many servlets as you want, but you dont't need to
-write any configuration therefor. Let's have a look at how you can map an URL path to a servlet
+As in many other frameworks do, our [Servlet-Engine](https://github.com/appserver-io/appserver/wiki/05.-Servlet-Engine) use a URL path to map a
+request to a controller, in our case this will be a servlet. You can write as many servlets as you want, but
+you dont't need to write any configuration therefor. Let's have a look at how you can map an URL path to a 
+servlet
 
 ```php
 namespace AppserverIo\Example\Servlets;
