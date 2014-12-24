@@ -627,7 +627,7 @@ public function init(ServletConfig $config)
   $pathToProperties = $context->getInitParameter('applicationProperties')
 
   // load and initialize the application properties
-  $this->applicationProperties = new Properties()
+  $this->applicationProperties = new AppserverIo\Properties\Properties()
   $this->applicationProperites->load($webappPath . DIRECTORY_SEPARATOR . $pathToProperties);
 }
 ```
@@ -715,7 +715,7 @@ public function init(ServletConfig $config)
   $pathToProperties = $this->getInitParameter('servletProperties')
 
   // load and initialize the application properties
-  $this->servletProperties = new Properties()
+  $this->servletProperties = new AppserverIo\Properties\Properties()
   $this->servletProperties->load($webappPath . DIRECTORY_SEPARATOR . $pathToProperties);
 }
 ```
@@ -828,9 +828,9 @@ the file containing the `.htpasswd` or `.htdigest` file with the allowed users.
 We hope, that this blog post give you a basic understanding of what a [Servlet-Engine](https://github.com/appserver-io/appserver/wiki/05.-Servlet-Engine)
 is, what possiblities you have and how you can write your first application that uses servlets.
 
-Some of the basic features like session handling and HTTP basic or digest authentication are very similar
-configuration you know from LAMP stack or PHP configuration. So it should not we too complicated to use that
-when writing your first application running on the application servers [Servlet-Engine](https://github.com/appserver-io/appserver/wiki/05.-Servlet-Engine).
+Some of the basic features like session handling and HTTP basic or digest authentication are very similar to
+LAMP stack or PHP. So it should not we too complicated to use that when writing your first application running
+on the application servers [Servlet-Engine](https://github.com/appserver-io/appserver/wiki/05.-Servlet-Engine).
 
 The routing is very simple, but fast and allows you a detailed configuration for the controller part of your
 application. Based on a servlet you're enabled to write your own controller frameworks, use or extend a 
@@ -841,3 +841,5 @@ from the possiblities an application server provide.
 > is what the [Servlet-Engine](https://github.com/appserver-io/appserver/wiki/05.-Servlet-Engine) is doing
 > with the servlets. You may need some time to understand the concepts and idea behind, but when that happens
 > you may wonder how you ever could have implemented applications without that power!
+
+Hope you like this post :) Next post will be about our [Persistence-Container](https://github.com/appserver-io/appserver/wiki/08.-Persistence-Container) ... stay tuned
