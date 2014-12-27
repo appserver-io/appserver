@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\InjectionTargetInterface
+ * AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\StatefulSessionBeanDescriptorInterface
  *
  * NOTICE OF LICENSE
  *
@@ -23,7 +23,7 @@
 namespace AppserverIo\Appserver\DependencyInjectionContainer\Interfaces;
 
 /**
- * Inferface for utility classes that stores a beans injection target configuration.
+ * Interface for a stateful session bean descriptor.
  *
  * @category   Server
  * @package    Appserver
@@ -33,30 +33,6 @@ namespace AppserverIo\Appserver\DependencyInjectionContainer\Interfaces;
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       http://www.appserver.io
  */
-interface InjectionTargetParserInterface
+interface StatefulSessionBeanDescriptorInterface extends SessionBeanDescriptorInterface
 {
-
-    /**
-     * Returns the injection target class name.
-     *
-     * @return string The bean name
-     */
-    public function getTargetClass();
-
-    /**
-     * Returns the injection target property name.
-     *
-     * @return string The bean name
-     */
-    public function getTargetName();
-
-    /**
-     * Merges the passed injection target configuration into this one. Configuration
-     * values of the passed configuration will overwrite the this one.
-     *
-     * @param \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\InjectionTargetInterface $injectionTarget The injection target to merge
-     *
-     * @return void
-     */
-    public function merge(InjectionTargetParserInterface $injectionTarget);
 }

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\PersistenceContainer\Utils\InjectionTarget
+ * AppserverIo\Appserver\DependencyInjectionContainer\Description\InjectionTarget
  *
  * NOTICE OF LICENSE
  *
@@ -20,7 +20,9 @@
  * @link       http://www.appserver.io
  */
 
-namespace AppserverIo\Appserver\DependencyInjectionContainer\Parsers;
+namespace AppserverIo\Appserver\DependencyInjectionContainer\Description;
+
+use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\InjectionTargetDescriptorInterface;
 
 /**
  * Utility classe that stores a beans injection target configuration.
@@ -37,23 +39,23 @@ class InjectionTargetParser implements InjectionTargetParserInterface
 {
 
     /**
-     * The configurable bean name.
+     * The target class we want to inject to.
      *
      * @var string
      */
     protected $targetClass;
 
     /**
-     * The bean name.
+     * The target member name we want to inject to.
      *
      * @var string
      */
     protected $targetName;
 
     /**
-     * Sets the bean name.
+     * Sets the target class we want to inject to.
      *
-     * @param string $name The bean name
+     * @param string $targetClass The target class we want to inject to
      *
      * @return void
      */
@@ -63,9 +65,9 @@ class InjectionTargetParser implements InjectionTargetParserInterface
     }
 
     /**
-     * Returns the bean name.
+     * Returns the target class we want to inject to.
      *
-     * @return string The bean name
+     * @return string The target class we want to inject to
      */
     public function getTargetClass()
     {
@@ -73,9 +75,9 @@ class InjectionTargetParser implements InjectionTargetParserInterface
     }
 
     /**
-     * Sets the bean name.
+     * Sets the target member name we want to inject to.
      *
-     * @param string $name The bean name
+     * @param string $targetName The target member name we want to inject to
      *
      * @return void
      */
@@ -85,9 +87,9 @@ class InjectionTargetParser implements InjectionTargetParserInterface
     }
 
     /**
-     * Returns the bean name.
+     * Returns the target member name we want to inject to.
      *
-     * @return string The bean name
+     * @return string The target member name we want to inject to
      */
     public function getTargetName()
     {
@@ -121,12 +123,12 @@ class InjectionTargetParser implements InjectionTargetParserInterface
         // create a new configuration instance
         $injectionTarget = new InjectionTarget();
 
-        // query for the class name and set it
+        // query for the target class name we want to inject to
         if ($targetClass = (string) $node->{'injection-target-class'}) {
             $injectionTarget->setClassName($targetClass);
         }
 
-        // query for the name and set it
+        // query for the target member name we want to inject to
         if ($targetName = (string) $node->{'injection-target-name'}) {
             $injectionTarget->setName($targetName);
         }
@@ -139,20 +141,20 @@ class InjectionTargetParser implements InjectionTargetParserInterface
      * Merges the passed injection target configuration into this one. Configuration
      * values of the passed configuration will overwrite the this one.
      *
-     * @param \AppserverIo\Appserver\PersistenceContainer\Utils\InjectionTargetInterface $injectionTarget The injection target to merge
+     * @param \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\InjectionTargetDescriptorInterface $injectionTargetDescriptor The injection target to merge
      *
      * @return void
      */
-    public function merge(InjectionTarget $injectionTarget)
+    public function merge(InjectionTargetDescriptorInterface $injectionTargetDescriptor)
     {
 
         // merge the injection target name
-        if ($targetName = $injectionTarget->getTargetName()) {
+        if ($targetName = $injectionTargetDescriptor->getTargetName()) {
             $this->setTargetName($targetName);
         }
 
         // merge the injection target class
-        if ($targetClass = $injectionTarget->getTargetClass()) {
+        if ($targetClass = $injectionTargetDescriptor->getTargetClass()) {
             $this->setTargetClass($targetClass);
         }
     }

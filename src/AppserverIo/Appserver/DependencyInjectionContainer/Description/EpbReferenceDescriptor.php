@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\DependencyInjectionContainer\Parsers\EpbReferenceParser
+ * AppserverIo\Appserver\DependencyInjectionContainer\Description\EpbReferenceParser
  *
  * NOTICE OF LICENSE
  *
@@ -20,7 +20,7 @@
  * @link       http://www.appserver.io
  */
 
-namespace AppserverIo\Appserver\DependencyInjectionContainer\Parsers;
+namespace AppserverIo\Appserver\DependencyInjectionContainer\Description;
 
 /**
  * Utility class that stores a beans reference configuration.
@@ -207,30 +207,30 @@ class EpbReferenceParser implements EpbReferenceParserInterface
      * Merges the passed configuration into this one. Configuration values
      * of the passed configuration will overwrite the this one.
      *
-     * @param \AppserverIo\Appserver\PersistenceContainer\EbpReferenceInterface $epbReference The configuration to merge
+     * @param \AppserverIo\Appserver\PersistenceContainer\EbpReferenceDescriptorInterface $epbReferenceDescriptor The configuration to merge
      *
      * @return void
      */
-    public function merge(EpbReferenceInterface $epbReference)
+    public function merge(EpbReferenceDescriptorInterface $epbReferenceDescriptor)
     {
 
         // merge the reference name
-        if ($refName = $epbReference->getRefName()) {
+        if ($refName = $epbReferenceDescriptor->getRefName()) {
             $this->setRefName($refName);
         }
 
         // merge the reference type
-        if ($refType = $epbReference->getRefType()) {
+        if ($refType = $epbReferenceDescriptor->getRefType()) {
             $this->setRefType($refType);
         }
 
         // merge the reference link
-        if ($link = $epbReference->getLink()) {
+        if ($link = $epbReferenceDescriptor->getLink()) {
             $this->setLink($link);
         }
 
         // merge the injection target
-        if ($injectionTarget = $epbReference->getInjectionTarget()) {
+        if ($injectionTarget = $epbReferenceDescriptor->getInjectionTarget()) {
             $this->setInjectionTarget($injectionTarget);
         }
     }

@@ -28,6 +28,7 @@ use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Psr\Application\ManagerInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\ObjectManagerInterface;
+use AppserverIo\Appserver\DependencyInjectionContainer\Parsers\BeanDescriptor;
 
 /**
  * The object manager is necessary to load and provides information about all
@@ -71,6 +72,18 @@ class ObjectManager extends GenericStackable implements ObjectManagerInterface, 
     }
 
     /**
+     * Inject the storage for the object descriptors.
+     *
+     * @param \AppserverIo\Storage\StorageInterface $objectDescriptors The storage for the object descriptors
+     *
+     * @return void
+     */
+    public function injectObjectDescriptors(StorageInterface $objectDescriptors)
+    {
+        $this->objectDescriptors = $objectDescriptors;
+    }
+
+    /**
      * Returns the application instance.
      *
      * @return \AppserverIo\Psr\Application\ApplicationInterface The application instance
@@ -78,6 +91,16 @@ class ObjectManager extends GenericStackable implements ObjectManagerInterface, 
     public function getApplication()
     {
         return $this->application;
+    }
+
+    /**
+     * Returns the storage with the object descriptors.
+     *
+     * @return \AppserverIo\Storage\StorageInterface The storage with the object descriptors
+     */
+    public function getObjectDescriptors()
+    {
+        return $this->objectDescriptors;
     }
 
     /**
@@ -101,21 +124,23 @@ class ObjectManager extends GenericStackable implements ObjectManagerInterface, 
      */
     public function initialize(ApplicationInterface $application)
     {
+
     }
 
     /**
-     * Parses the passed directory for classes and instances that has to be registered
-     * in the object manager.
+     * Parses the passed deployment descriptor file for classes and instances that has
+     * to be registered in the object manager.
      *
-     * @param string $directory The directory to parse
+     * @param string      $deploymentDescriptor The deployment descriptor we want to parse
+     * @param string|null $xpath                The XPath expression used to parse the deployment descriptor
      *
      * @return void
      */
-    public function parseConfiguration($xpath)
+    public function parseConfiguration($deploymentDescriptor, $xpath = null)
     {
 
         // query whether we found epb.xml deployment descriptor file
-        if (file_exists($deploymentDescriptor = $metaInfDir . DIRECTORY_SEPARATOR . 'epb.xml') === false) {
+        if (file_exists($deploymentDescriptor) === false) {
             return;
         }
 
@@ -128,30 +153,37 @@ class ObjectManager extends GenericStackable implements ObjectManagerInterface, 
         }
     }
 
-    public function processNode($node)
+    /**
+     * Process a XML deployment descriptor node for class informations.
+     *
+     * @param \SimpleXMLElement $node The XML deployment descriptor node to parse
+     *
+     * @return void
+     */
+    public function processNode(\SimpleXMLElement $node)
     {
 
         try {
 
-            // load the configuration
-            $configuration = BeanConfiguration::fromDeploymentDescriptor($node);
+            // load the object descriptor
+            $objectDescriptor = DescriptorFactory::fromDeploymentDescriptor($node);
 
             // query whether we've to merge the configuration found in annotations
-            if ($this->getBeanConfigurations()->has($configuration->getClassName())) { // merge the configuration
+            if ($this->getObjectDescriptors()->has($objectDescriptor->getClassName())) { // merge the descriptors
 
-                // load the existing configuration
-                $existingConfiguration = $this->getBeanConfigurations()->get($configuration->getClassName());
+                // load the existing descriptor
+                $existingDescriptor = $this->getObjectDescriptors()->get($objectDescriptor->getClassName());
 
-                // merge the configurations => XML configuration overrides values from annotation
-                $existingConfiguration->merge($configuration);
+                // merge the descriptor => XML configuration overrides values from annotation
+                $existingDescriptor->merge($objectDescriptor);
 
-                // save the merge configuration
-                $this->getBeanConfigurations()->set($existingConfiguration->getClassName(), $existingConfiguration);
+                // save the merged descriptor
+                $this->getObjectDescriptors()->set($existingDescriptor->getClassName(), $existingDescriptor);
 
             } else {
 
-                // save the XML configuration
-                $this->getBeanConfigurations()->set($configuration->getClassName(), $configuration);
+                // save the descriptor
+                $this->getObjectDescriptors()->set($objectDescriptor->getClassName(), $objectDescriptor);
             }
 
         } catch (\Exception $e) { // if class can not be reflected continue with next class
@@ -190,6 +222,14 @@ class ObjectManager extends GenericStackable implements ObjectManagerInterface, 
         }
     }
 
+    /**
+     * Parses the passed PHP file for class information necessary to register it
+     * in the object manager.
+     *
+     * @param string $phpFile The path to the PHP file
+     *
+     * @return void
+     */
     public function processFile($phpFile)
     {
 
@@ -205,11 +245,11 @@ class ObjectManager extends GenericStackable implements ObjectManagerInterface, 
             // we need a reflection class to read the annotations
             $reflectionClass = $this->getReflectionClass($className);
 
-            // load the bean configuration
-            $configuration = BeanConfiguration::fromReflectionClass($reflectionClass);
+            // load the object descriptor
+            $objectDescriptor = DescriptorFactory::fromReflectionClass($reflectionClass);
 
-            if ($configuration->getName()) { // if we've a name
-                $this->getBeanConfigurations()->set($configuration->getClassName(), $configuration);
+            if ($beanDescriptor->getName()) { // if we've a name
+                $this->getObjectDescriptors()->set($objectDescriptor->getClassName(), $objectDescriptor);
             }
 
         } catch (\Exception $e) { // if class can not be reflected continue with next class

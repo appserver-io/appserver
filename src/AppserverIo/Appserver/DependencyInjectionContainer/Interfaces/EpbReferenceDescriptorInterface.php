@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\EpbReference
+ * AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\EpbReferenceDescriptorInterface
  *
  * NOTICE OF LICENSE
  *
@@ -33,7 +33,7 @@ namespace AppserverIo\Appserver\DependencyInjectionContainer\Interfaces;
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       http://www.appserver.io
  */
-interface EpbReferenceParserInterface
+interface EpbReferenceDescriptorInterface
 {
 
     /**
@@ -60,7 +60,7 @@ interface EpbReferenceParserInterface
     /**
      * Returns the injection target specification.
      *
-     * @return \AppserverIo\Appserver\PersistenceContainer\Utils\InjectionTargetInterface The injection target specification
+     * @return \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\InjectionTargetDescriptorInterface The injection target specification
      */
     public function getInjectionTarget();
 
@@ -68,9 +68,9 @@ interface EpbReferenceParserInterface
      * Merges the passed configuration into this one. Configuration values
      * of the passed configuration will overwrite the this one.
      *
-     * @param \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\EbpReferenceInterface $epbReference The configuration to merge
+     * @param \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\EpbReferenceDescriptorInterface $epbReferenceDescriptor The configuration to merge
      *
      * @return void
      */
-    public function merge(EpbReferenceParserInterface $epbReference);
+    public function merge(EpbReferenceDescriptorInterface $epbReferenceDescriptor);
 }
