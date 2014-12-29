@@ -48,12 +48,20 @@ class StatefulSessionBeanDescriptor extends SessionBeanDescriptor implements Sta
     const SESSION_TYPE = 'Stateful';
 
     /**
+     * Initialize the session bean descriptor with the session type.
+     */
+    public function __construct()
+    {
+        $this->setSessionType(StatefulSessionBeanDescriptor::SESSION_TYPE);
+    }
+
+    /**
      * Returns a new descriptor instance.
      *
      * @return \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\StatefulSessionBeanDescriptorInterface
      *     The descriptor instance
      */
-    protected function newDescriptorInstance()
+    public static function newDescriptorInstance()
     {
         return new StatefulSessionBeanDescriptor();
     }
@@ -71,15 +79,13 @@ class StatefulSessionBeanDescriptor extends SessionBeanDescriptor implements Sta
     }
 
     /**
-     * Creates and initializes a bean configuration instance from the passed
-     * deployment node.
+     * Initializes the bean descriptor instance from the passed reflection class instance.
      *
      * @param \AppserverIo\Lang\Reflection\ClassInterface $reflectionClass The reflection class with the bean configuration
      *
-     * @return \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\StatefulSessionBeanDescriptorInterface|null
-     *     The initialized bean configuration
+     * @return \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\StatefulSessionBeanDescriptorInterface|null The initialized descriptor instance
      */
-    public static function fromReflectionClass(ClassInterface $reflectionClass)
+    public function fromReflectionClass(ClassInterface $reflectionClass)
     {
 
         // query if we've an enterprise bean with a @Stateful annotation
@@ -87,20 +93,21 @@ class StatefulSessionBeanDescriptor extends SessionBeanDescriptor implements Sta
             return;
         }
 
-        // create, initialize and return the new descriptor instance
-        return parent::fromReflectionClass($reflectionClass);
+        // initialize the descriptor instance
+        parent::fromReflectionClass($reflectionClass);
+
+        // return the instance
+        return $this;
     }
 
     /**
-     * Creates and initializes a bean configuration instance from the passed
-     * deployment node.
+     * Initializes a bean descriptor instance from the passed deployment descriptor node.
      *
      * @param \SimpleXmlElement $node The deployment node with the bean configuration
      *
-     * @return \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\StatefulSessionBeanDescriptorInterface|null
-     *     The initialized bean configuration
+     * @return \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\StatefulSessionBeanDescriptorInterface|null The initialized descriptor instance
      */
-    public static function fromDeploymentDescriptor(\SimpleXmlElement $node)
+    public function fromDeploymentDescriptor(\SimpleXmlElement $node)
     {
 
         // query if we've a <session> descriptor node
@@ -113,7 +120,10 @@ class StatefulSessionBeanDescriptor extends SessionBeanDescriptor implements Sta
             return;
         }
 
-        // create, initialize and return the new descriptor instance
-        return parent::fromDeploymentDescriptor($node);
+        // initialize the descriptor instance
+        parent::fromDeploymentDescriptor($node);
+
+        // return the instance
+        return $this;
     }
 }

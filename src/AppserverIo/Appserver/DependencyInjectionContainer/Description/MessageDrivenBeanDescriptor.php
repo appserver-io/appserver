@@ -46,7 +46,7 @@ class MessageDrivenBeanDescriptor extends BeanDescriptor implements MessageDrive
      * @return \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\MessageDrivenBeanDescriptorInterface
      *     The descriptor instance
      */
-    protected function newDescriptorInstance()
+    public static function newDescriptorInstance()
     {
         return new MessageDrivenBeanDescriptor();
     }
@@ -64,14 +64,13 @@ class MessageDrivenBeanDescriptor extends BeanDescriptor implements MessageDrive
     }
 
     /**
-     * Creates and initializes a bean descriptor instance from the passed
-     * deployment node.
+     * Initializes the bean descriptor instance from the passed reflection class instance.
      *
      * @param \AppserverIo\Lang\Reflection\ClassInterface $reflectionClass The reflection class with the bean configuration
      *
-     * @return \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\MessageDrivenBeanDescriptorInterface|null The initialized bean configuration
+     * @return \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\MesssageDrivenBeanDescriptorInterface|null The initialized descriptor instance
      */
-    public static function fromReflectionClass(ClassInterface $reflectionClass)
+    public function fromReflectionClass(ClassInterface $reflectionClass)
     {
 
         // query if we've an enterprise bean with a @MessageDriven annotation
@@ -79,20 +78,21 @@ class MessageDrivenBeanDescriptor extends BeanDescriptor implements MessageDrive
             return;
         }
 
-        // create, initialize and return the new descriptor instance
-        return parent::fromReflectionClass($reflectionClass);
+        // initialize the descriptor instance
+        parent::fromReflectionClass($reflectionClass);
+
+        // return the instance
+        return $this;
     }
 
     /**
-     * Creates and initializes a bean descriptor instance from the passed
-     * deployment node.
+     * Initializes a bean descriptor instance from the passed deployment descriptor node.
      *
      * @param \SimpleXmlElement $node The deployment node with the bean configuration
      *
-     * @return \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\MessageDrivenBeanDescriptorInterface|null
-     *     The initialized bean configuration
+     * @return \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\MesssageDrivenBeanDescriptorInterface|null The initialized descriptor instance
      */
-    public static function fromDeploymentDescriptor(\SimpleXmlElement $node)
+    public function fromDeploymentDescriptor(\SimpleXmlElement $node)
     {
 
         // query if we've a <message-driven> descriptor node
@@ -100,7 +100,10 @@ class MessageDrivenBeanDescriptor extends BeanDescriptor implements MessageDrive
             return;
         }
 
-        // create, initialize and return the new descriptor instance
-        return parent::fromDeploymentDescriptor($node);
+        // initialize the descriptor instance
+        parent::fromDeploymentDescriptor($node);
+
+        // return the instance
+        return $this;
     }
 }

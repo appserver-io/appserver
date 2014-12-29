@@ -256,38 +256,29 @@ abstract class BeanDescriptor implements BeanDescriptorInterface
     }
 
     /**
-     * Returns a new descriptor instance.
-     *
-     * @return \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\BeanDescriptorInterface The descriptor instance
-     */
-    abstract protected function newDescriptorInstance();
-
-    /**
      * Returns a new annotation instance for the passed reflection class.
      *
      * @param \AppserverIo\Lang\Reflection\ClassInterface $reflectionClass The reflection class with the bean configuration
      *
      * @return \AppserverIo\Lang\Reflection\AnnotationInterface The reflection annotation
      */
-    abstract protected function newAnnotationInstance(ClassInterface $reflectionClass);
+    protected abstract function newAnnotationInstance(ClassInterface $reflectionClass);
 
     /**
-     * Creates and initializes a bean configuration instance from the passed
-     * deployment node.
+     * Initializes the bean configuration instance from the passed reflection class instance.
      *
      * @param \AppserverIo\Lang\Reflection\ClassInterface $reflectionClass The reflection class with the bean configuration
      *
-     * @return \AppserverIo\Appserver\PersistenceContainer\Utils\BeanConfiguration The initialized bean configuration
+     * @return void
      */
-    public static function fromReflectionClass(ClassInterface $reflectionClass)
+    public function fromReflectionClass(ClassInterface $reflectionClass)
     {
 
-        // create a new descriptor and annotation instance
-        $beanDescriptor = $this->newDescriptorInstance();
+        // create a new annotation instance
         $reflectionAnnotation = $this->newAnnotationInstance($reflectionClass);
 
         // load class name
-        $beanDescriptor->setClassName($reflectionClass->getName());
+        $this->setClassName($reflectionClass->getName());
 
         // initialize the annotation instance
         $annotationInstance = $reflectionAnnotation->newInstance(
@@ -297,81 +288,71 @@ abstract class BeanDescriptor implements BeanDescriptorInterface
 
         // load the default name to register in naming directory
         if ($nameAttribute = $annotationInstance->getName()) {
-            $beanDescriptor->setName($nameAttribute);
+            $this->setName($nameAttribute);
         } else { // if @Annotation(name=****) is NOT set, we use the short class name by default
-            $beanDescriptor->setName($reflectionClass->getShortName());
+            $this->setName($reflectionClass->getShortName());
         }
 
         // register the bean with the interface defined as @Annotation(beanInterface=****)
         if ($beanInterfaceAttribute = $annotationInstance->getBeanInterface()) {
-            $beanDescriptor->setBeanInterface($beanInterfaceAttribute);
+            $this->setBeanInterface($beanInterfaceAttribute);
         }
 
         // register the bean with the name defined as @Annotation(beanName=****)
         if ($beanNameAttribute = $annotationInstance->getBeanName()) {
-            $beanDescriptor->setBeanName($beanNameAttribute);
+            $this->setBeanName($beanNameAttribute);
         }
 
         // register the bean with the name defined as @Annotation(mappedName=****)
         if ($mappedNameAttribute = $annotationInstance->getMappedName()) {
-            $beanDescriptor->setMappedName($mappedNameAttribute);
+            $this->setMappedName($mappedNameAttribute);
         }
-
-        // return the initialized configuration
-        return $beanDescriptor;
     }
 
     /**
-     * Creates and initializes a bean configuration instance from the passed
-     * deployment node.
+     * Initializes a bean configuration instance from the passed deployment descriptor node.
      *
      * @param \SimpleXmlElement $node The deployment node with the bean configuration
      *
-     * @return \AppserverIo\Appserver\PersistenceContainer\Utils\BeanConfiguration The initialized bean configuration
+     * @return void
      */
-    public static function fromDeploymentDescriptor(\SimpleXmlElement $node)
+    public function fromDeploymentDescriptor(\SimpleXmlElement $node)
     {
-
-        // create a new descriptor instance
-        $beanDescriptor = $this->newDescriptorInstance();
 
         // query for the class name and set it
         if ($className = (string) $node->{'epb-class'}) {
-            $beanDescriptor->setClassName($className);
+            $this->setClassName($className);
         }
 
         // query for the name and set it
         if ($name = (string) $node->{'epb-name'}) {
-            $beanDescriptor->setName($name);
+            $this->setName($name);
         }
 
         // query for the bean interface and set it
         if ($beanInterface = (string) $node->{'bean-interface'}) {
-            $beanDescriptor->setBeanInterface($beanInterface);
+            $this->setBeanInterface($beanInterface);
         }
 
         // query for the bean name and set it
         if ($beanName = (string) $node->{'bean-name'}) {
-            $beanDescriptor->setBeanName($beanName);
+            $this->setBeanName($beanName);
         }
 
         // query for the mapped name and set it
         if ($mappedName = (string) $node->{'mapped-name'}) {
-            $beanDescriptor->setMappedName($mappedName);
+            $this->setMappedName($mappedName);
         }
 
         // query for the description and set it
         if ($description = (string) $node->{'description'}) {
-            $beanDescriptor->setDescription($description);
+            $this->setDescription($description);
         }
 
         // initialize the enterprise bean references
         foreach ($node->xpath('epb-ref') as $epbReference) {
-            $beanDescriptor->addEpbReference(EpbReference::fromDeploymentDescriptor($epbReference));
+            $this->addEpbReference(EpbReferenceDescriptor::newDescriptorInstance()->fromDeploymentDescriptor($epbReference));
         }
-
-        // return the initialized configuration
-        return $beanDescriptor;
     }
 
     /**

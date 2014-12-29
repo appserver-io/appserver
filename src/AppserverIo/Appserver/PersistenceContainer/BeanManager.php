@@ -51,6 +51,11 @@ use AppserverIo\Lang\Reflection\ReflectionObject;
 use AppserverIo\Lang\Reflection\AnnotationInterface;
 use AppserverIo\Appserver\PersistenceContainer\Utils\BeanConfiguration;
 use AppserverIo\Appserver\PersistenceContainer\Utils\BeanConfigurationInterface;
+use AppserverIo\Appserver\DependencyInjectionContainer\DirectoryParser;
+use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\BeanDescriptorInterface;
+use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\SessionBeanDescriptorInterface;
+use AppserverIo\Appserver\DependencyInjectionContainer\DeploymentDescriptorParser;
+use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\SingletonSessionBeanDescriptorInterface;
 
 /**
  * The bean manager handles the message and session beans registered for the application.
@@ -165,18 +170,6 @@ class BeanManager extends GenericStackable implements BeanContext, ManagerInterf
     }
 
     /**
-     * Injects the storage for the bean configurations.
-     *
-     * @param \AppserverIo\Storage\StorageInterface $beanConfigurations The storage for the bean configurations
-     *
-     * @return void
-     */
-    public function injectBeanConfigurations(StorageInterface $beanConfigurations)
-    {
-        $this->beanConfigurations = $beanConfigurations;
-    }
-
-    /**
      * Has been automatically invoked by the container after the application
      * instance has been created.
      *
@@ -208,143 +201,64 @@ class BeanManager extends GenericStackable implements BeanContext, ManagerInterf
             return;
         }
 
-        // check META-INF + subdirectories for classes with beans to be pre-initialized
-        $service = $application->newService('AppserverIo\Appserver\Core\Api\DeploymentService');
-        $phpFiles = $service->globDir($metaInfDir . DIRECTORY_SEPARATOR . '*.php');
-
-        // iterate all php files
-        foreach ($phpFiles as $phpFile) {
-
-            try {
-
-                // cut off the META-INF directory and replace OS specific directory separators
-                $relativePathToPhpFile = str_replace(DIRECTORY_SEPARATOR, '\\', str_replace($metaInfDir, '', $phpFile));
-
-                // now cut off the first directory, that'll be '/classes' by default
-                $pregResult = preg_replace('%^(\\\\*)[^\\\\]+%', '', $relativePathToPhpFile);
-                $className = substr($pregResult, 0, -4);
-
-                // we need a reflection class to read the annotations
-                $reflectionClass = $this->getReflectionClass($className);
-
-                // load the bean configuration
-                $configuration = BeanConfiguration::fromReflectionClass($reflectionClass);
-
-                if ($configuration->getName()) { // if we've a name
-                    $this->getBeanConfigurations()->set($configuration->getClassName(), $configuration);
-                }
-
-            } catch (\Exception $e) { // if class can not be reflected continue with next class
-
-                // log an error message
-                $application->getInitialContext()->getSystemLogger()->error($e->__toString());
-
-                // proceed with the nexet bean
-                continue;
-            }
-        }
+        // parse the directory for annotated beans
+        $directoryParser = new DirectoryParser();
+        $directoryParser->injectApplication($application);
+        $directoryParser->parse($metaInfDir);
 
         // query whether we found epb.xml deployment descriptor file
         if (file_exists($deploymentDescriptor = $metaInfDir . DIRECTORY_SEPARATOR . 'epb.xml') === true) {
 
-            // load the application config
-            $config = new \SimpleXMLElement(file_get_contents($deploymentDescriptor));
-
-            // intialize the session beans by parsing the nodes
-            foreach ($config->xpath('/epb/enterprise-beans/session') as $key => $session) {
-
-                // load the configuration
-                $configuration = BeanConfiguration::fromDeploymentDescriptor($session);
-
-                // query whether we've to merge the configuration found in annotations
-                if ($this->getBeanConfigurations()->has($configuration->getClassName())) { // merge the configuration
-
-                    // load the existing configuration
-                    $existingConfiguration = $this->getBeanConfigurations()->get($configuration->getClassName());
-
-                    // merge the configurations => XML configuration overrides values from annotation
-                    $existingConfiguration->merge($configuration);
-
-                    // save the merge configuration
-                    $this->getBeanConfigurations()->set($existingConfiguration->getClassName(), $existingConfiguration);
-
-                } else {
-
-                    // save the XML configuration
-                    $this->getBeanConfigurations()->set($configuration->getClassName(), $configuration);
-                }
-            }
-
-            // intialize the message beans by parsing the nodes
-            foreach ($config->xpath('/epb/enterprise-beans/message-driven') as $key => $messageDriven) {
-
-                // load the configuration
-                $configuration = BeanConfiguration::fromDeploymentDescriptor($messageDriven);
-
-                // query whether we've to merge the configuration found in annotations
-                if ($this->getBeanConfigurations()->has($configuration->getClassName())) { // merge the configuration
-
-                    // load the existing configuration
-                    $existingConfiguration = $this->getBeanConfigurations()->get($configuration->getClassName());
-
-                    // merge the configurations => XML configuration overrides values from annotation
-                    $existingConfiguration->merge($configuration);
-
-                    // save the merge configuration
-                    $this->getBeanConfigurations()->set($existingConfiguration->getClassName(), $existingConfiguration);
-
-                } else {
-
-                    // save the XML configuration
-                    $this->getBeanConfigurations()->set($configuration->getClassName(), $configuration);
-                }
-            }
+            $directoryParser = new DeploymentDescriptorParser();
+            $directoryParser->injectApplication($application);
+            $directoryParser->parse($deploymentDescriptor);
         }
 
+        // load the object manager
+        $objectManager = $this->getApplication()->search('ObjectManagerInterface');
+
         // register the beans located by annotations and the XML configuration
-        foreach ($this->getBeanConfigurations() as $className => $configuration) {
+        foreach ($objectManager->getObjectDescriptors() as $className => $descriptor) {
 
-            // check if we've found a bean configuration
-            if ($configuration instanceof BeanConfigurationInterface) {
+            // check if we've found a bean descriptor
+            if ($descriptor instanceof BeanDescriptorInterface) { // register the bean
+                $this->registerBean($descriptor);
+            }
 
-                // register the bean
-                $this->registerBean($configuration);
-
-                // if we found a bean with @Singleton + @Startup annotation
-                if ($configuration->isInitOnStartup()) {
-                    $this->getApplication()->search($configuration->getName(), array(null, array($application)));
-                }
+            // if we found a bean with @Singleton + @Startup annotation
+            if ($descriptor instanceof SingletonSessionBeanDescriptorInterface && $descriptor->isInitOnStartup()) {
+                $this->getApplication()->search($descriptor->getName(), array(null, array($application)));
             }
         }
     }
 
     /**
-     * Register the bean with the passed configuration.
+     * Register the bean described by the passed descriptor.
      *
-     * @param \AppserverIo\Appserver\PersistenceContainer\Utils\BeanConfiguration $configuration The beans configuration
+     * @param \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\BeanDescriptorInterface $descriptor The bean descriptor
      *
      * @return void
      */
-    protected function registerBean(BeanConfiguration $configuration)
+    protected function registerBean(BeanDescriptorInterface $descriptor)
     {
 
         // load the beans class name
-        $className = $configuration->getClassName();
+        $className = $descriptor->getClassName();
 
         // register the bean with the default name/short class name
-        $this->getApplication()->bind($configuration->getName(), array(&$this, 'lookup'), array($className));
+        $this->getApplication()->bind($descriptor->getName(), array(&$this, 'lookup'), array($className));
 
         // register the bean with the interface name
-        if ($beanInterface = $configuration->getBeanInterface()) {
+        if ($beanInterface = $descriptor->getBeanInterface()) {
             $this->getApplication()->bind($beanInterface, array(&$this, 'lookup'), array($className));
         }
         // register the bean with the bean name
-        if ($beanName = $configuration->getBeanName()) {
+        if ($beanName = $descriptor->getBeanName()) {
             $this->getNamingDirectory()->bind($beanName, array(&$this, 'lookup'), array($className));
         }
 
         // register the bean with the mapped name
-        if ($mappedName = $configuration->getMappedName()) {
+        if ($mappedName = $descriptor->getMappedName()) {
             $this->getNamingDirectory()->bind($mappedName, array(&$this, 'lookup'), array($className));
         }
     }
@@ -439,16 +353,6 @@ class BeanManager extends GenericStackable implements BeanContext, ManagerInterf
     public function getStatefulSessionBeanMapFactory()
     {
         return $this->statefulSessionBeanMapFactory;
-    }
-
-    /**
-     * Return the storage with the bean configurations.
-     *
-     * @return \AppserverIo\Storage\StorageInterface The storage with the bean configurations
-     */
-    public function getBeanConfigurations()
-    {
-        return $this->beanConfigurations;
     }
 
     /**
@@ -569,11 +473,14 @@ class BeanManager extends GenericStackable implements BeanContext, ManagerInterf
     public function destroyBeanInstance($instance)
     {
 
-        // load the bean configuration
-        $beanConfiguration = $this->getBeanConfigurations()->get(get_class($instance));
+        // load the object manager
+        $objectManager = $this->getApplication()->search('ObjectManagerInterface');
+
+        // load the bean descriptor
+        $descriptor = $objectManager->getObjectDescriptors()->get(get_class($instance));
 
         // invoke the pre-destory callbacks
-        foreach ($beanConfiguration->getPreDestroyCallbacks() as $preDestroyCallback) {
+        foreach ($descriptor->getPreDestroyCallbacks() as $preDestroyCallback) {
             $instance->$preDestroyCallback();
         }
     }
@@ -590,11 +497,14 @@ class BeanManager extends GenericStackable implements BeanContext, ManagerInterf
     public function attach($instance, $sessionId = null)
     {
 
-        // load the bean configuration
-        $configuration = $this->getBeanConfigurations()->get(get_class($instance));
+        // load the object manager
+        $objectManager = $this->getApplication()->search('ObjectManagerInterface');
+
+        // load the bean descriptor
+        $descriptor = $objectManager->getObjectDescriptors()->get(get_class($instance));
 
         // query the bean type, one of
-        switch ($configuration->getSessionType()) {
+        switch ($descriptor->getSessionType()) {
 
             case Stateful::ANNOTATION:
 
@@ -616,7 +526,7 @@ class BeanManager extends GenericStackable implements BeanContext, ManagerInterf
                 $sessions = $this->getStatefulSessionBeans()->get($sessionId);
 
                 // add the stateful session bean to the map
-                $sessions->add($configuration->getClassName(), $instance, $lifetime);
+                $sessions->add($descriptor->getClassName(), $instance, $lifetime);
 
                 break;
 

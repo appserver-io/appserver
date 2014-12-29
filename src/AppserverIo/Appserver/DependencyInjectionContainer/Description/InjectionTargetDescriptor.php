@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\DependencyInjectionContainer\Description\InjectionTarget
+ * AppserverIo\Appserver\DependencyInjectionContainer\Description\InjectionTargetDescriptor
  *
  * NOTICE OF LICENSE
  *
@@ -35,7 +35,7 @@ use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\InjectionTarge
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       http://www.appserver.io
  */
-class InjectionTargetParser implements InjectionTargetParserInterface
+class InjectionTargetDescriptor implements InjectionTargetParserInterface
 {
 
     /**
@@ -97,44 +97,51 @@ class InjectionTargetParser implements InjectionTargetParserInterface
     }
 
     /**
-     * Creates and initializes a beans injection target configuration instance from the passed
-     * deployment node.
+     * Returns a new descriptor instance.
      *
-     * @param \AppserverIo\Lang\Reflection\ClassInterface $reflectionClass The reflection class with the beans injection target configuration
-     *
-     * @return \AppserverIo\Appserver\PersistenceContainer\Utils\BeanConfiguration The initialized beans injection target configuration
+     * @return \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\InjectionTargetDescriptorInterface The descriptor instance
      */
-    public static function fromReflectionClass(ClassInterface $reflectionClass)
+    public static function newDescriptorInstance()
     {
-        // still to implement
+        return new InjectionTargetDescriptor();
     }
 
     /**
      * Creates and initializes a beans injection target configuration instance from the passed
      * deployment node.
      *
+     * @param \AppserverIo\Lang\Reflection\ClassInterface $reflectionClass The reflection class with the beans injection target configuration
+     *
+     * @return \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\InjectionTargetDescriptorInterface|null The initialized descriptor instance
+     */
+    public function fromReflectionClass(ClassInterface $reflectionClass)
+    {
+        throw new \Exception(__METHOD__ . ' not implemented yet');
+    }
+
+    /**
+     * Creates and initializes a beans injection target configuration instance from the passed
+     * reflection class instance.
+     *
      * @param \SimpleXmlElement $node The deployment node with the beans injection target configuration
      *
-     * @return \AppserverIo\Appserver\PersistenceContainer\Utils\BeanConfiguration The initialized beans injection target configuration
+     * @return \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\InjectionTargetDescriptorInterface|null The initialized descriptor instance
      */
-    public static function fromDeploymentDescriptor(\SimpleXmlElement $node)
+    public function fromDeploymentDescriptor(\SimpleXmlElement $node)
     {
-
-        // create a new configuration instance
-        $injectionTarget = new InjectionTarget();
 
         // query for the target class name we want to inject to
         if ($targetClass = (string) $node->{'injection-target-class'}) {
-            $injectionTarget->setClassName($targetClass);
+            $this->setClassName($targetClass);
         }
 
         // query for the target member name we want to inject to
         if ($targetName = (string) $node->{'injection-target-name'}) {
-            $injectionTarget->setName($targetName);
+            $this->setName($targetName);
         }
 
-        // return the initialized configuration
-        return $injectionTarget;
+        // return the instance
+        return $this;
     }
 
     /**

@@ -289,7 +289,7 @@ class ServletDescriptor implements ServletDescriptorInterface
      *
      * @return \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\BeanDescriptorInterface The descriptor instance
      */
-    protected function newDescriptorInstance()
+    public static function newDescriptorInstance()
     {
         return new ServletDescriptor();
     }
@@ -307,14 +307,13 @@ class ServletDescriptor implements ServletDescriptorInterface
     }
 
     /**
-     * Creates and initializes a bean configuration instance from the passed
-     * deployment node.
+     * Initializes the servlet descriptor instance from the passed reflection class instance.
      *
-     * @param \AppserverIo\Lang\Reflection\ClassInterface $reflectionClass The reflection class with the bean configuration
+     * @param \AppserverIo\Lang\Reflection\ClassInterface $reflectionClass The reflection class with the servlet description
      *
-     * @return \AppserverIo\Appserver\PersistenceContainer\Utils\BeanConfiguration The initialized servlet descriptor
+     * @return \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\ServletDescriptorInterface|null The initialized descriptor instance
      */
-    public static function fromReflectionClass(ClassInterface $reflectionClass)
+    public function fromReflectionClass(ClassInterface $reflectionClass)
     {
 
         // query if we've an servlet with a @Route annotation
@@ -322,12 +321,11 @@ class ServletDescriptor implements ServletDescriptorInterface
             return;
         }
 
-        // create a new descriptor and annotation instance
-        $beanDescriptor = $this->newDescriptorInstance();
+        // create a new annotation instance
         $reflectionAnnotation = $this->newAnnotationInstance($reflectionClass);
 
         // load class name
-        $servletDescriptor->setClassName($reflectionClass->getName());
+        $this->setClassName($reflectionClass->getName());
 
         // initialize the annotation instance
         $annotationInstance = $reflectionAnnotation->newInstance(
@@ -337,45 +335,44 @@ class ServletDescriptor implements ServletDescriptorInterface
 
         // load the default name to register in naming directory
         if ($nameAttribute = $annotationInstance->getName()) {
-            $servletDescriptor->setName($nameAttribute);
+            $this->setName($nameAttribute);
         } else { // if @Annotation(name=****) is NOT set, we use the short class name by default
-            $servletDescriptor->setName($reflectionClass->getShortName());
+            $this->setName($reflectionClass->getShortName());
         }
 
         // register the servlet description defined as @Route(description=****)
         if ($description = $annotationInstance->getBeanInterface()) {
-            $servletDescriptor->setDescription($description);
+            $this->setDescription($description);
         }
 
         // register the servlet display name defined as @Route(displayName=****)
         if ($displayName = $annotationInstance->getBeanName()) {
-            $servletDescriptor->setDisplayName($displayName);
+            $this->setDisplayName($displayName);
         }
 
         // register the init params defined as @Route(initParams=****)
         foreach ($annotationInstance->getInitParams() as $initParam) {
             list ($paramName, $paramValue) = $initParam;
-            $servletDescriptor->addInitParameter($paramName, $paramValue);
+            $this->addInitParameter($paramName, $paramValue);
         }
 
         // retister the URL pattern defined as @Route(urlPattern=****)
         foreach ($annotationInstance->getUrlPattern() as $urlPattern) {
-            $servletDescriptor->addUrlPattern($urlPattern);
+            $this->addUrlPattern($urlPattern);
         }
 
-        // return the initialized servlet descriptor
-        return $servletDescriptor;
+        // return the instance
+        return $this;
     }
 
     /**
-     * Creates and initializes a bean configuration instance from the passed
-     * deployment node.
+     * Initializes a servlet descriptor instance from the passed deployment descriptor node.
      *
-     * @param \SimpleXmlElement $node The deployment node with the bean configuration
+     * @param \SimpleXmlElement $node The deployment node with the servlet description
      *
-     * @return \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\ServletDescriptorInterface The initialized servlet descriptor
+     * @return \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\ServletDescriptorInterface|null The initialized descriptor instance
      */
-    public static function fromDeploymentDescriptor(\SimpleXmlElement $node)
+    public function fromDeploymentDescriptor(\SimpleXmlElement $node)
     {
 
         // query if we've a <servlet> descriptor node
@@ -413,11 +410,11 @@ class ServletDescriptor implements ServletDescriptorInterface
 
         // initialize the enterprise bean references
         foreach ($node->xpath('epb-ref') as $epbReference) {
-            $servletDescriptor->addEpbReference(EpbReference::fromDeploymentDescriptor($epbReference));
+            $servletDescriptor->addEpbReference(EpbReferenceDescriptor::newDescriptorInstance()->fromDeploymentDescriptor($epbReference));
         }
 
-        // return the initialized servlet descriptor
-        return $servletDescriptor;
+        // return the instance
+        return $this;
     }
 
     /**

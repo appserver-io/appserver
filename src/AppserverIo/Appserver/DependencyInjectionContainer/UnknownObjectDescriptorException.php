@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\SessionBeanDescriptorInterface
+ * AppserverIo\Appserver\DependencyInjectionContainer\UnknownObjectDescriptorException
  *
  * NOTICE OF LICENSE
  *
@@ -17,13 +17,16 @@
  * @author     Tim Wagner <tw@appserver.io>
  * @copyright  2014 TechDivision GmbH <info@appserver.io>
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link       https://github.com/appserver-io/appserver
  * @link       http://www.appserver.io
  */
 
-namespace AppserverIo\Appserver\DependencyInjectionContainer\Interfaces;
+namespace AppserverIo\Appserver\PersistenceContainer;
+
+use AppserverIo\Psr\EnterpriseBeans\EnterpriseBeansException;
 
 /**
- * Interface for a bean descriptor.
+ * This is the exception that is thrown if someone tries to access an unknown object descriptor.
  *
  * @category   Server
  * @package    Appserver
@@ -31,29 +34,9 @@ namespace AppserverIo\Appserver\DependencyInjectionContainer\Interfaces;
  * @author     Tim Wagner <tw@appserver.io>
  * @copyright  2014 TechDivision GmbH <info@appserver.io>
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link       https://github.com/appserver-io/appserver
  * @link       http://www.appserver.io
  */
-interface SessionBeanDescriptorInterface extends BeanDescriptorInterface
+class UnknownObjectDescriptorException extends EnterpriseBeansException
 {
-
-    /**
-     * Returns the beans session type.
-     *
-     * @return string The beans session type
-     */
-    public function getSessionType();
-
-    /**
-     * The array with the post construct callback method names.
-     *
-     * @return array The post construct callback method names
-     */
-    public function getPostConstructCallbacks();
-
-    /**
-     * The array with the pre destroy callback method names.
-     *
-     * @return array The pre destroy callback method names
-     */
-    public function getPreDestroyCallbacks();
 }

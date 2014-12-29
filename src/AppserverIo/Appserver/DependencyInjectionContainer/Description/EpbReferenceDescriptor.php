@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\DependencyInjectionContainer\Description\EpbReferenceParser
+ * AppserverIo\Appserver\DependencyInjectionContainer\Description\EpbReferenceDescriptor
  *
  * NOTICE OF LICENSE
  *
@@ -22,6 +22,8 @@
 
 namespace AppserverIo\Appserver\DependencyInjectionContainer\Description;
 
+use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\EpbReferenceDescriptorInterface;
+
 /**
  * Utility class that stores a beans reference configuration.
  *
@@ -33,7 +35,7 @@ namespace AppserverIo\Appserver\DependencyInjectionContainer\Description;
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       http://www.appserver.io
  */
-class EpbReferenceParser implements EpbReferenceParserInterface
+class EpbReferenceDescriptor implements EpbReferenceDescriptorInterface
 {
 
     /**
@@ -60,7 +62,7 @@ class EpbReferenceParser implements EpbReferenceParserInterface
     /**
      * The injection target specification.
      *
-     * @var \AppserverIo\Appserver\PersistenceContainer\Utils\InjectionTargetInterface
+     * @var \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\InjectionTargetDescriptorInterface
      */
     protected $injectionTarget;
 
@@ -133,11 +135,11 @@ class EpbReferenceParser implements EpbReferenceParserInterface
     /**
      * Sets the injection target specification.
      *
-     * @param \AppserverIo\Appserver\PersistenceContainer\Utils\InjectionTargetInterface $injectionTarget The injection target specification
+     * @param \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\InjectionTargetDescriptorInterface $injectionTarget The injection target specification
      *
      * @return void
      */
-    public function setInjectionTarget(InjectionTargetInterface $injectionTarget)
+    public function setInjectionTarget(InjectionTargetDescriptorInterface $injectionTarget)
     {
         $this->injectionTarget = $injectionTarget;
     }
@@ -145,7 +147,7 @@ class EpbReferenceParser implements EpbReferenceParserInterface
     /**
      * Returns the injection target specification.
      *
-     * @return \AppserverIo\Appserver\PersistenceContainer\Utils\InjectionTargetInterface The injection target specification
+     * @return \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\InjectionTargetDescriptorInterface The injection target specification
      */
     public function getInjectionTarget()
     {
@@ -153,16 +155,26 @@ class EpbReferenceParser implements EpbReferenceParserInterface
     }
 
     /**
+     * Returns a new descriptor instance.
+     *
+     * @return \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\EpbReferenceDescriptorInterface The descriptor instance
+     */
+    public static function newDescriptorInstance()
+    {
+        return new EpbReferenceDescriptor();
+    }
+
+    /**
      * Creates and initializes a beans reference configuration instance from the passed
-     * deployment node.
+     * reflection class instance.
      *
      * @param \AppserverIo\Lang\Reflection\ClassInterface $reflectionClass The reflection class with the beans reference configuration
      *
-     * @return \AppserverIo\Appserver\PersistenceContainer\Utils\EpbReference The initialized beans reference configuration
+     * @return \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\EpbReferenceDescriptorInterface|null The initialized descriptor instance
      */
-    public static function fromReflectionClass(ClassInterface $reflectionClass)
+    public function fromReflectionClass(ClassInterface $reflectionClass)
     {
-        // still to implement
+        throw new \Exception(__METHOD__ . ' not implemented yet');
     }
 
     /**
@@ -171,36 +183,33 @@ class EpbReferenceParser implements EpbReferenceParserInterface
      *
      * @param \SimpleXmlElement $node The deployment node with the beans reference configuration
      *
-     * @return \AppserverIo\Appserver\PersistenceContainer\Utils\BeanConfiguration The initialized beans reference configuration
+     * @return \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\EpbReferenceDescriptorInterface|null The initialized descriptor instance
      */
-    public static function fromDeploymentDescriptor(\SimpleXmlElement $node)
+    public function fromDeploymentDescriptor(\SimpleXmlElement $node)
     {
-
-        // create a new configuration instance
-        $epbReference = new EpbReference();
 
         // query for the reference name
         if ($refName = (string) $node->{'epb-ref-name'}) {
-            $epbReference->setRefName($refName);
+            $this->setRefName($refName);
         }
 
         // query for the reference type
         if ($refType = (string) $node->{'epb-ref-type'}) {
-            $epbReference->setRefType($refType);
+            $this->setRefType($refType);
         }
 
         // query for reference link
         if ($link = (string) $node->{'link'}) {
-            $epbReference->setLink($link);
+            $this->setLink($link);
         }
 
         // query for the injection target
         if ($injectionTarget = (string) $node->{'injection-target'}) {
-            $epbReference->setInjectionTarget(InjectionTarget::fromDeploymentDescriptor($injectionTarget));
+            $this->setInjectionTarget(InjectionTargetDescriptor::newDescriptorInstance()->fromDeploymentDescriptor($injectionTarget));
         }
 
-        // return the initialized configuration
-        return $epbReference;
+        // return the instance
+        return $this;
     }
 
     /**

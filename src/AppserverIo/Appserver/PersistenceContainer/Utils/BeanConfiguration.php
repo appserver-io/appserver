@@ -22,6 +22,7 @@
 
 namespace AppserverIo\Appserver\PersistenceContainer\Utils;
 
+use AppserverIo\Lang\String;
 use AppserverIo\Lang\Boolean;
 use AppserverIo\Lang\Reflection\ClassInterface;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\MessageDriven;
@@ -36,7 +37,6 @@ use AppserverIo\Psr\EnterpriseBeans\Annotations\Timeout;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\EnterpriseBean;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Resource;
 use AppserverIo\Psr\EnterpriseBeans\EnterpriseBeansException;
-use AppserverIo\Lang\String;
 
 /**
  * Utility class with some bean utilities.

@@ -35,4 +35,11 @@ namespace AppserverIo\Appserver\DependencyInjectionContainer\Interfaces;
  */
 interface SingletonSessionBeanDescriptorInterface extends SessionBeanDescriptorInterface
 {
+
+    /**
+     * Queries whether the bean should be initialized on startup or not.
+     *
+     * @return boolean TRUE if the bean should be initialized on startup, else FALSE
+     */
+    public function isInitOnStartup();
 }

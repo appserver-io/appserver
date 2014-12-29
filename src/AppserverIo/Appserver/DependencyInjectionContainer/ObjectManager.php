@@ -27,8 +27,10 @@ use AppserverIo\Storage\StorageInterface;
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Psr\Application\ManagerInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
-use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\ObjectManagerInterface;
 use AppserverIo\Appserver\DependencyInjectionContainer\Parsers\BeanDescriptor;
+use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\DescriptorInterface;
+use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\ObjectManagerInterface;
+use AppserverIo\Collections\IndexOutOfBoundsException;
 
 /**
  * The object manager is necessary to load and provides information about all
@@ -150,153 +152,81 @@ class ObjectManager extends GenericStackable implements ObjectManagerInterface, 
     }
 
     /**
-     * Parses the passed deployment descriptor file for classes and instances that has
-     * to be registered in the object manager.
+     * Adds the passed object descriptor to the object manager. If the merge flag is TRUE, then
+     * we check if already an object descriptor for the class exists before they will be merged.
      *
-     * @param string      $deploymentDescriptor The deployment descriptor we want to parse
-     * @param string|null $xpath                The XPath expression used to parse the deployment descriptor
+     * When we merge object descriptors this means, that the values of the passed descriptor
+     * will override the existing ones.
+     *
+     * @param \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\DescriptorInterface $objectDescriptor The object descriptor to add
+     * @param boolean                                                                            $merge            TRUE if we want to merge with an existing object descriptor
      *
      * @return void
      */
-    public function parseConfiguration($deploymentDescriptor, $xpath = '/')
+    public function addObjectDescriptor(DescriptorInterface $objectDescriptor, $merge = false)
     {
 
-        // query whether we found epb.xml deployment descriptor file
-        if (file_exists($deploymentDescriptor) === false) {
-            return;
-        }
+        // query whether we've to merge the configuration found in annotations
+        if ($override && $this->hasObjectDescriptor($objectDescriptor->getClassName())) {
 
-        // load the application config
-        $config = new \SimpleXMLElement(file_get_contents($deploymentDescriptor));
+            // load the existing descriptor
+            $existingDescriptor = $this->getObjectDescriptor($objectDescriptor->getClassName());
 
-        // intialize the session beans by parsing the nodes
-        foreach ($config->xpath($xpath) as $node) {
-            $this->processNode($node);
+            // merge the descriptor => XML configuration overrides values from annotation
+            $existingDescriptor->merge($objectDescriptor);
+
+            // re-register the merged descriptor
+            $this->setObjectDescriptor($existingDescriptor);
+
+        } else {
+
+            // register the object descriptor
+            $this->setObjectDescriptor($objectDescriptor);
         }
     }
 
     /**
-     * Process a XML deployment descriptor node for class informations.
+     * Registers the passed object descriptor under its class name.
      *
-     * @param \SimpleXMLElement $node The XML deployment descriptor node to parse
+     * @param \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\DescriptorInterface $objectDescriptor The object descriptor to set
      *
      * @return void
      */
-    public function processNode(\SimpleXMLElement $node)
+    public function setObjectDescriptor(DescriptorInterface $objectDescriptor)
     {
-
-        // iterate over all configured descriptors and try to load object description
-        foreach ($this->getConfiguredDescriptors() as $descriptor) {
-
-            try {
-
-                $descriptorClass = $descriptor->getNodeValue()->getValue();
-
-                // load the object descriptor
-                if ($objectDescriptor = $descriptorClass::fromDeploymentDescriptor($node)) {
-
-                    // query whether we've to merge the configuration found in annotations
-                    if ($this->getObjectDescriptors()->has($objectDescriptor->getClassName())) { // merge the descriptors
-
-                        // load the existing descriptor
-                        $existingDescriptor = $this->getObjectDescriptors()->get($objectDescriptor->getClassName());
-
-                        // merge the descriptor => XML configuration overrides values from annotation
-                        $existingDescriptor->merge($objectDescriptor);
-
-                        // save the merged descriptor
-                        $this->getObjectDescriptors()->set($existingDescriptor->getClassName(), $existingDescriptor);
-
-                    } else {
-
-                        // save the descriptor
-                        $this->getObjectDescriptors()->set($objectDescriptor->getClassName(), $objectDescriptor);
-                    }
-                }
-
-            } catch (\Exception $e) { // if class can not be reflected continue with next class
-
-                // log an error message
-                $this->getApplication()->getInitialContext()->getSystemLogger()->error($e->__toString());
-
-                // proceed with the nexet bean
-                continue;
-            }
-        }
+        $this->objectDescriptors->set($objectDescriptor->getClassName(), $objectDescriptor);
     }
 
     /**
-     * Parses the passed directory for classes and instances that has to be registered
-     * in the object manager.
+     * Query if we've an object descriptor for the passed class name.
      *
-     * @param string $directory The directory to parse
+     * @param string $className The class name we query for a object descriptor
      *
-     * @return void
+     * @return boolean TRUE if an object descriptor has been registered, else FALSE
      */
-    public function parseDirectory($directory)
+    public function hasObjectDescriptor($className)
     {
-
-        // check if we've found a valid directory
-        if (is_dir($directory) === false) {
-            return;
-        }
-
-        // check directory for classes we want to register
-        $service = $this->getApplication()->newService('AppserverIo\Appserver\Core\Api\DeploymentService');
-        $phpFiles = $service->globDir($directory . DIRECTORY_SEPARATOR . '*.php');
-
-        // iterate all php files
-        foreach ($phpFiles as $phpFile) {
-            $this->processFile($directory, $phpFile);
-        }
+        return $this->objectDescriptors->has($className);
     }
 
     /**
-     * Parses the passed PHP file for class information necessary to register it
-     * in the object manager.
+     * Returns the object descriptor if we've registered it.
      *
-     * @param string $directory The directory we're parsing
-     * @param string $phpFile   The path to the PHP file
+     * @param string $className The class name we want to return the object descriptor for
      *
-     * @return void
+     * @return \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\DescriptorInterface|null The requested object descriptor instance
+     * @throws \AppserverIo\Appserver\DependencyInjectionContainer\UnknownObjectDescriptorException Is thrown if someone tries to access an unknown object desciptor
      */
-    public function processFile($directory, $phpFile)
+    public function getObjectDescriptor($className)
     {
 
-        // iterate over all configured descriptors and try to load object description
-        foreach ($this->getConfiguredDescriptors() as $descriptor) {
-
-            try {
-
-                // cut off the META-INF directory and replace OS specific directory separators
-                $relativePathToPhpFile = str_replace(DIRECTORY_SEPARATOR, '\\', str_replace($directory, '', $phpFile));
-
-                // now cut off the first directory, that'll be '/classes' by default
-                $pregResult = preg_replace('%^(\\\\*)[^\\\\]+%', '', $relativePathToPhpFile);
-                $className = substr($pregResult, 0, -4);
-
-                // we need a reflection class to read the annotations
-                $reflectionClass = $this->getReflectionClass($className);
-
-                $descriptorClass = $descriptor->getNodeValue()->getValue();
-
-                // load the object descriptor
-                if ($objectDescriptor = $descriptorClass::fromReflectionClass($reflectionClass)) {
-
-                    if ($objectDescriptor->getName()) { // if we've a name
-                        $this->getObjectDescriptors()->set($objectDescriptor->getClassName(), $objectDescriptor);
-                    }
-                }
-
-            } catch (\Exception $e) { // if class can not be reflected continue with next class
-
-                // log an error message
-                $this->getApplication()->getInitialContext()->getSystemLogger()->error($e->__toString());
-
-                // proceed with the nexet bean
-                continue;
-            }
+        // query if we've an object descriptor registered
+        if ($this->hasObjectDescriptor($className) === false) { // return the object descriptor
+            return $this->objectDescriptors->get($className);
         }
+
+        // throw an exception is object descriptor has not been registered
+        throw new UnknownObjectDescriptorException(sprintf('Object Descriptor for class %s has not been registered', $className));
     }
 
     /**

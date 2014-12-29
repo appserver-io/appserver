@@ -63,7 +63,6 @@ class BeanManagerFactory
 
         // initialize the stackable for the data, the stateful + singleton session beans and the naming directory
         $data = new StackableStorage();
-        $beanConfigurations = new StackableStorage();
         $statefulSessionBeans = new StackableStorage();
         $singletonSessionBeans = new StackableStorage();
 
@@ -81,7 +80,6 @@ class BeanManagerFactory
         $beanManager->injectData($data);
         $beanManager->injectApplication($application);
         $beanManager->injectResourceLocator($beanLocator);
-        $beanManager->injectBeanConfigurations($beanConfigurations);
         $beanManager->injectWebappPath($application->getWebappPath());
         $beanManager->injectSingletonSessionBeans($singletonSessionBeans);
         $beanManager->injectStatefulSessionBeans($statefulSessionBeans);

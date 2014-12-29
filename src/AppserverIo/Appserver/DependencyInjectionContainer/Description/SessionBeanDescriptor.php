@@ -23,11 +23,9 @@
 namespace AppserverIo\Appserver\DependencyInjectionContainer\Description;
 
 use AppserverIo\Lang\String;
-use AppserverIo\Lang\Boolean;
 use AppserverIo\Lang\Reflection\ClassInterface;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\PreDestroy;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\PostConstruct;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\Startup;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Singleton;
 use AppserverIo\Psr\EnterpriseBeans\EnterpriseBeansException;
 use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\BeanDescriptorInterface;
@@ -54,13 +52,6 @@ abstract class SessionBeanDescriptor extends BeanDescriptor implements SessionBe
      * @var string
      */
     protected $sessionType;
-
-    /**
-     * Whether the bean should be initialized on server startup.
-     *
-     * @var boolean
-     */
-    protected $initOnStartup = false;
 
     /**
      * The array with the post construct callback method names.
@@ -96,28 +87,6 @@ abstract class SessionBeanDescriptor extends BeanDescriptor implements SessionBe
     public function getSessionType()
     {
         return $this->sessionType;
-    }
-
-    /**
-     * Sets the flag whether the bean should be initialized on startup or not.
-     *
-     * @param boolean $initOnStartup TRUE if the bean should be initialized on startup, else FALSE
-     *
-     * @return void
-     */
-    public function setInitOnStartup($initOnStartup = true)
-    {
-        $this->initOnStartup = $initOnStartup;
-    }
-
-    /**
-     * Queries whether the bean should be initialized on startup or not.
-     *
-     * @return boolean TRUE if the bean should be initialized on startup, else FALSE
-     */
-    public function isInitOnStartup()
-    {
-        return $this->initOnStartup;
     }
 
     /**
@@ -189,79 +158,60 @@ abstract class SessionBeanDescriptor extends BeanDescriptor implements SessionBe
     }
 
     /**
-     * Creates and initializes a bean configuration instance from the passed
-     * deployment node.
+     * Initializes the bean descriptor instance from the passed reflection class instance.
      *
-     * @param \AppserverIo\Lang\Reflection\ClassInterface $reflectionClass The reflection class with the bean configuration
+     * @param \AppserverIo\Lang\Reflection\ClassInterface $reflectionClass The reflection class with the bean description
      *
-     * @return \AppserverIo\Appserver\PersistenceContainer\Utils\BeanConfiguration The initialized bean configuration
+     * @return void
      */
-    public static function fromReflectionClass(ClassInterface $reflectionClass)
+    public function fromReflectionClass(ClassInterface $reflectionClass)
     {
 
         // initialize the bean descriptor
-        $beanDescriptor = parent::fromReflectionClass($reflectionClass);
+        parent::fromReflectionClass($reflectionClass);
 
         // we've to check for a @PostConstruct or @PreDestroy annotation
         foreach ($reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $reflectionMethod) {
 
             // if we found a @PostConstruct annotation, invoke the method
             if ($reflectionMethod->hasAnnotation(PostConstruct::ANNOTATION)) {
-                $beanDescriptor->addPostConstructCallback($reflectionMethod->getMethodName());
+                $this->addPostConstructCallback($reflectionMethod->getMethodName());
             }
 
             // if we found a @PreDestroy annotation, invoke the method
             if ($reflectionMethod->hasAnnotation(PreDestroy::ANNOTATION)) {
-                $beanDescriptor->addPreDestroyCallback($reflectionMethod->getMethodName());
+                $this->addPreDestroyCallback($reflectionMethod->getMethodName());
             }
         }
-
-        // if we found a bean with @Singleton + @Startup annotation
-        if ($reflectionClass->hasAnnotation(Singleton::ANNOTATION) &&
-            $reflectionClass->hasAnnotation(Startup::ANNOTATION)) { // instanciate the bean
-            $beanDescriptor->setInitOnStartup();
-        }
-
-        // return the initialized configuration
-        return $beanDescriptor;
     }
 
     /**
-     * Creates and initializes a bean configuration instance from the passed
-     * deployment node.
+     * Initializes a bean descriptor instance from the passed deployment descriptor node.
      *
-     * @param \SimpleXmlElement $node The deployment node with the bean configuration
+     * @param \SimpleXmlElement $node The deployment node with the bean description
      *
-     * @return \AppserverIo\Appserver\PersistenceContainer\Utils\BeanConfiguration The initialized bean configuration
+     * @return void
      */
-    public static function fromDeploymentDescriptor(\SimpleXmlElement $node)
+    public function fromDeploymentDescriptor(\SimpleXmlElement $node)
     {
 
         // initialize the bean descriptor
-        $beanDesriptor = parent::fromDeploymentDescriptor($node);
+        parent::fromDeploymentDescriptor($node);
 
         // query for the session type and set it
         if ($sessionType = (string) $node->{'session-type'}) {
-            $beanDesriptor->setSessionType($sessionType);
-        }
-
-        // query for the startup flag
-        if ($initOnStartup = (string) $node->{'init-on-startup'}) {
-            $beanDesriptor->setInitOnStartup(Boolean::valueOf(new String($initOnStartup))->booleanValue());
+            $this->setSessionType($sessionType);
         }
 
         // initialize the post construct callback methods
         foreach ($node->xpath('post-construct/lifecycle-callback-method') as $postConstructCallback) {
-            $beanDesriptor->addPostConstructCallback((string) $postConstructCallback);
+            $this->addPostConstructCallback((string) $postConstructCallback);
         }
 
         // initialize the pre destroy callback methods
         foreach ($node->xpath('pre-destroy/lifecycle-callback-method') as $preDestroyCallback) {
-            $beanDesriptor->addPreDestroyCallback((string) $preDestroyCallback);
+            $this->addPreDestroyCallback((string) $preDestroyCallback);
         }
-
-        // return the initialized bean descriptor
-        return $beanDesriptor;
     }
 
     /**

@@ -23,6 +23,7 @@
 namespace AppserverIo\Appserver\DependencyInjectionContainer\Description;
 
 use AppserverIo\Lang\Reflection\ClassInterface;
+use AppserverIo\Psr\EnterpriseBeans\Annotations\Startup;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Singleton;
 use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\SingletonSessionBeanDescriptorInterface;
 
@@ -48,12 +49,49 @@ class SingletonSessionBeanDescriptor extends SessionBeanDescriptor implements Si
     const SESSION_TYPE = 'Singleton';
 
     /**
+     * Whether the bean should be initialized on server startup.
+     *
+     * @var boolean
+     */
+    protected $initOnStartup = false;
+
+    /**
+     * Initialize the session bean descriptor with the session type.
+     */
+    public function __construct()
+    {
+        $this->setSessionType(SingletonSessionBeanDescriptor::SESSION_TYPE);
+    }
+
+    /**
+     * Sets the flag whether the bean should be initialized on startup or not.
+     *
+     * @param boolean $initOnStartup TRUE if the bean should be initialized on startup, else FALSE
+     *
+     * @return void
+     */
+    public function setInitOnStartup($initOnStartup = true)
+    {
+        $this->initOnStartup = $initOnStartup;
+    }
+
+    /**
+     * Queries whether the bean should be initialized on startup or not.
+     *
+     * @return boolean TRUE if the bean should be initialized on startup, else FALSE
+     */
+    public function isInitOnStartup()
+    {
+        return $this->initOnStartup;
+    }
+
+    /**
      * Returns a new descriptor instance.
      *
      * @return \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\SingletonSessionBeanDescriptorInterface
      *     The descriptor instance
      */
-    protected function newDescriptorInstance()
+    public static function newDescriptorInstance()
     {
         return new SingletonSessionBeanDescriptor();
     }
@@ -71,15 +109,13 @@ class SingletonSessionBeanDescriptor extends SessionBeanDescriptor implements Si
     }
 
     /**
-     * Creates and initializes a bean descriptor instance from the passed
-     * deployment node.
+     * Initializes the bean descriptor instance from the passed reflection class instance.
      *
      * @param \AppserverIo\Lang\Reflection\ClassInterface $reflectionClass The reflection class with the bean configuration
      *
-     * @return \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\SingletonSessionBeanDescriptorInterface|null
-     *     The initialized bean configuration
+     * @return \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\SingletonSessionBeanDescriptorInterface|null The initialized descriptor instance
      */
-    public static function fromReflectionClass(ClassInterface $reflectionClass)
+    public function fromReflectionClass(ClassInterface $reflectionClass)
     {
 
         // query if we've an enterprise bean with a @Singleton annotation
@@ -87,20 +123,26 @@ class SingletonSessionBeanDescriptor extends SessionBeanDescriptor implements Si
             return;
         }
 
-        // create, initialize and return the new descriptor instance
-        return parent::fromReflectionClass($reflectionClass);
+        // initialize the descriptor instance
+        parent::fromReflectionClass($reflectionClass);
+
+        // if we found a bean with @Singleton + @Startup annotation
+        if ($reflectionClass->hasAnnotation(Startup::ANNOTATION)) { // instanciate the bean
+            $this->setInitOnStartup();
+        }
+
+        // return the instance
+        return $this;
     }
 
     /**
-     * Creates and initializes a bean desriptor instance from the passed
-     * deployment node.
+     * Initializes a bean descriptor instance from the passed deployment descriptor node.
      *
      * @param \SimpleXmlElement $node The deployment node with the bean configuration
      *
-     * @return \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\SingletonSessionBeanDescriptorInterface|null
-     *     The initialized bean configuration
+     * @return \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\SingletonSessionBeanDescriptorInterface|null The initialized descriptor instance
      */
-    public static function fromDeploymentDescriptor(\SimpleXmlElement $node)
+    public function fromDeploymentDescriptor(\SimpleXmlElement $node)
     {
 
         // query if we've a <session> descriptor node
@@ -113,7 +155,15 @@ class SingletonSessionBeanDescriptor extends SessionBeanDescriptor implements Si
             return;
         }
 
-        // create, initialize and return the new descriptor instance
-        return parent::fromDeploymentDescriptor($node);
+        // initialize the descriptor instance
+        parent::fromDeploymentDescriptor($node);
+
+        // query for the startup flag
+        if ($initOnStartup = (string) $node->{'init-on-startup'}) {
+            $this->setInitOnStartup(Boolean::valueOf(new String($initOnStartup))->booleanValue());
+        }
+
+        // return the instance
+        return $this;
     }
 }

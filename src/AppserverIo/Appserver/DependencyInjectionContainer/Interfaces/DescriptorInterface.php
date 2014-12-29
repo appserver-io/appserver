@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\SessionBeanDescriptorInterface
+ * AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\DescriptorInterface
  *
  * NOTICE OF LICENSE
  *
@@ -22,8 +22,10 @@
 
 namespace AppserverIo\Appserver\DependencyInjectionContainer\Interfaces;
 
+use AppserverIo\Lang\Reflection\ClassInterface;
+
 /**
- * Interface for a bean descriptor.
+ * Basic interface for all descriptors.
  *
  * @category   Server
  * @package    Appserver
@@ -33,27 +35,13 @@ namespace AppserverIo\Appserver\DependencyInjectionContainer\Interfaces;
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       http://www.appserver.io
  */
-interface SessionBeanDescriptorInterface extends BeanDescriptorInterface
+interface DescriptorInterface
 {
 
     /**
-     * Returns the beans session type.
+     * Returns a new descriptor instance.
      *
-     * @return string The beans session type
+     * @return \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\DescriptorInterface The descriptor instance
      */
-    public function getSessionType();
-
-    /**
-     * The array with the post construct callback method names.
-     *
-     * @return array The post construct callback method names
-     */
-    public function getPostConstructCallbacks();
-
-    /**
-     * The array with the pre destroy callback method names.
-     *
-     * @return array The pre destroy callback method names
-     */
-    public function getPreDestroyCallbacks();
+    public static function newDescriptorInstance();
 }
