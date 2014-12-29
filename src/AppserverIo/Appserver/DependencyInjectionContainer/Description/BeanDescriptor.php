@@ -22,6 +22,7 @@
 
 namespace AppserverIo\Appserver\DependencyInjectionContainer\Description;
 
+use AppserverIo\Lang\Reflection\ClassInterface;
 use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\BeanDescriptorInterface;
 use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\EpbReferenceDescriptorInterface;
 

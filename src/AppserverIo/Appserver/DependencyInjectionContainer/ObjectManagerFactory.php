@@ -53,6 +53,9 @@ class ObjectManagerFactory
     public static function visit(ApplicationInterface $application, ManagerConfigurationInterface $managerConfiguration)
     {
 
+        // load the configured descriptors from the configuration
+        $configuredDescriptors = $managerConfiguration->getDescriptors();
+
         // create the storage for the data and the bean descriptors
         $data = new StackableStorage();
         $objectDescriptors = new StackableStorage();
@@ -62,6 +65,7 @@ class ObjectManagerFactory
         $objectManager->injectData($data);
         $objectManager->injectApplication($application);
         $objectManager->injectObjectDescriptors($objectDescriptors);
+        $objectManager->injectConfiguredDescriptors($configuredDescriptors);
 
         // attach the instance
         $application->addManager($objectManager, $managerConfiguration);

@@ -24,6 +24,7 @@ namespace AppserverIo\Appserver\DependencyInjectionContainer\Description;
 
 use AppserverIo\Psr\Servlet\ServletException;
 use AppserverIo\Psr\Servlet\Annotations\Route;
+use AppserverIo\Lang\Reflection\ClassInterface;
 use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\ServletDescriptorInterface;
 use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\EpbReferenceDescriptorInterface;
 
@@ -38,7 +39,7 @@ use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\EpbReferenceDe
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       http://www.appserver.io
  */
-class ServletDescriptor implements BeanDescriptorInterface
+class ServletDescriptor implements ServletDescriptorInterface
 {
 
     /**
@@ -188,7 +189,7 @@ class ServletDescriptor implements BeanDescriptorInterface
      */
     public function addInitParam($key, $value)
     {
-        $this->initParams[$key] = $value
+        $this->initParams[$key] = $value;
     }
 
     /**
@@ -433,7 +434,7 @@ class ServletDescriptor implements BeanDescriptorInterface
 
         // check if the classes are equal
         if ($this->getClassName() !== $servletDescriptor->getClassName()) {
-            throw new ServletException()
+            throw new ServletException(
                 sprintf('You try to merge a servlet descriptor for % with %s', $servletDescriptor->getClassName(), $servletDescriptor->getClassName())
             );
         }

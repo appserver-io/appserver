@@ -79,34 +79,6 @@ interface BeanDescriptorInterface
     public function getMappedName();
 
     /**
-     * Returns the beans session type.
-     *
-     * @return string The beans session type
-     */
-    public function getSessionType();
-
-    /**
-     * Queries whether the bean should be initialized on startup or not.
-     *
-     * @return boolean TRUE if the bean should be initialized on startup, else FALSE
-     */
-    public function isInitOnStartup();
-
-    /**
-     * The array with the post construct callback method names.
-     *
-     * @return array The post construct callback method names
-     */
-    public function getPostConstructCallbacks();
-
-    /**
-     * The array with the pre destroy callback method names.
-     *
-     * @return array The pre destroy callback method names
-     */
-    public function getPreDestroyCallbacks();
-
-    /**
      * The array with the EPB references.
      *
      * @return array The EPB references

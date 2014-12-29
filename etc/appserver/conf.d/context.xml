@@ -33,11 +33,11 @@
     <managers>
         <manager name="ObjectManager" beanInterface="ObjectManagerInterface" type="AppserverIo\Appserver\DependencyInjectionContainer\ObjectManager" factory="AppserverIo\Appserver\DependencyInjectionContainer\ObjectManagerFactory">
             <descriptors>
-                <descriptor type="ServletDescriptor" />
-                <descriptor type="SingletonSessionBeanDescriptor" />
-                <descriptor type="StatefulSessionBeanDescriptor" />
-                <descriptor type="StatelessSessionBeanDescriptor" />
-                <descriptor type="MessageDrivenBeanDescriptor" />
+                <descriptor>AppserverIo\Appserver\DependencyInjectionContainer\Description\ServletDescriptor</descriptor>
+                <descriptor>AppserverIo\Appserver\DependencyInjectionContainer\Description\SingletonSessionBeanDescriptor</descriptor>
+                <descriptor>AppserverIo\Appserver\DependencyInjectionContainer\Description\StatefulSessionBeanDescriptor</descriptor>
+                <descriptor>AppserverIo\Appserver\DependencyInjectionContainer\Description\StatelessSessionBeanDescriptor</descriptor>
+                <descriptor>AppserverIo\Appserver\DependencyInjectionContainer\Description\MessageDrivenBeanDescriptor</descriptor>
             </descriptors>
         </manager>
         <manager name="Provider" beanInterface="ProviderInterface" type="AppserverIo\Appserver\DependencyInjectionContainer\Provider" factory="AppserverIo\Appserver\DependencyInjectionContainer\ProviderFactory"/>

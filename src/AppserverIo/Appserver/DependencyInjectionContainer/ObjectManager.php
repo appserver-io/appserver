@@ -84,6 +84,19 @@ class ObjectManager extends GenericStackable implements ObjectManagerInterface, 
     }
 
     /**
+     * Inject the descriptors used to parse deployment descriptors and annotations
+     * from the managers configuration.
+     *
+     * @param array $configuredDescriptors The descriptors to use
+     *
+     * @return void
+     */
+    public function injectConfiguredDescriptors(array $configuredDescriptors)
+    {
+        $this->configuredDescriptors = $configuredDescriptors;
+    }
+
+    /**
      * Returns the application instance.
      *
      * @return \AppserverIo\Psr\Application\ApplicationInterface The application instance
@@ -101,6 +114,16 @@ class ObjectManager extends GenericStackable implements ObjectManagerInterface, 
     public function getObjectDescriptors()
     {
         return $this->objectDescriptors;
+    }
+
+    /**
+     * Returns the descriptors used to parse deployment descriptors and annotations.
+     *
+     * @return array The descriptors to use
+     */
+    public function getConfiguredDescriptors()
+    {
+        return $this->configuredDescriptors;
     }
 
     /**
@@ -124,7 +147,6 @@ class ObjectManager extends GenericStackable implements ObjectManagerInterface, 
      */
     public function initialize(ApplicationInterface $application)
     {
-
     }
 
     /**
@@ -136,7 +158,7 @@ class ObjectManager extends GenericStackable implements ObjectManagerInterface, 
      *
      * @return void
      */
-    public function parseConfiguration($deploymentDescriptor, $xpath = null)
+    public function parseConfiguration($deploymentDescriptor, $xpath = '/')
     {
 
         // query whether we found epb.xml deployment descriptor file
@@ -163,36 +185,43 @@ class ObjectManager extends GenericStackable implements ObjectManagerInterface, 
     public function processNode(\SimpleXMLElement $node)
     {
 
-        try {
+        // iterate over all configured descriptors and try to load object description
+        foreach ($this->getConfiguredDescriptors() as $descriptor) {
 
-            // load the object descriptor
-            $objectDescriptor = DescriptorFactory::fromDeploymentDescriptor($node);
+            try {
 
-            // query whether we've to merge the configuration found in annotations
-            if ($this->getObjectDescriptors()->has($objectDescriptor->getClassName())) { // merge the descriptors
+                $descriptorClass = $descriptor->getNodeValue()->getValue();
 
-                // load the existing descriptor
-                $existingDescriptor = $this->getObjectDescriptors()->get($objectDescriptor->getClassName());
+                // load the object descriptor
+                if ($objectDescriptor = $descriptorClass::fromDeploymentDescriptor($node)) {
 
-                // merge the descriptor => XML configuration overrides values from annotation
-                $existingDescriptor->merge($objectDescriptor);
+                    // query whether we've to merge the configuration found in annotations
+                    if ($this->getObjectDescriptors()->has($objectDescriptor->getClassName())) { // merge the descriptors
 
-                // save the merged descriptor
-                $this->getObjectDescriptors()->set($existingDescriptor->getClassName(), $existingDescriptor);
+                        // load the existing descriptor
+                        $existingDescriptor = $this->getObjectDescriptors()->get($objectDescriptor->getClassName());
 
-            } else {
+                        // merge the descriptor => XML configuration overrides values from annotation
+                        $existingDescriptor->merge($objectDescriptor);
 
-                // save the descriptor
-                $this->getObjectDescriptors()->set($objectDescriptor->getClassName(), $objectDescriptor);
+                        // save the merged descriptor
+                        $this->getObjectDescriptors()->set($existingDescriptor->getClassName(), $existingDescriptor);
+
+                    } else {
+
+                        // save the descriptor
+                        $this->getObjectDescriptors()->set($objectDescriptor->getClassName(), $objectDescriptor);
+                    }
+                }
+
+            } catch (\Exception $e) { // if class can not be reflected continue with next class
+
+                // log an error message
+                $this->getApplication()->getInitialContext()->getSystemLogger()->error($e->__toString());
+
+                // proceed with the nexet bean
+                continue;
             }
-
-        } catch (\Exception $e) { // if class can not be reflected continue with next class
-
-            // log an error message
-            $application->getInitialContext()->getSystemLogger()->error($e->__toString());
-
-            // proceed with the nexet bean
-            continue;
         }
     }
 
@@ -214,11 +243,11 @@ class ObjectManager extends GenericStackable implements ObjectManagerInterface, 
 
         // check directory for classes we want to register
         $service = $this->getApplication()->newService('AppserverIo\Appserver\Core\Api\DeploymentService');
-        $phpFiles = $service->globDir($metaInfDir . DIRECTORY_SEPARATOR . '*.php');
+        $phpFiles = $service->globDir($directory . DIRECTORY_SEPARATOR . '*.php');
 
         // iterate all php files
         foreach ($phpFiles as $phpFile) {
-            $this->processFile($phpFile);
+            $this->processFile($directory, $phpFile);
         }
     }
 
@@ -226,39 +255,47 @@ class ObjectManager extends GenericStackable implements ObjectManagerInterface, 
      * Parses the passed PHP file for class information necessary to register it
      * in the object manager.
      *
-     * @param string $phpFile The path to the PHP file
+     * @param string $directory The directory we're parsing
+     * @param string $phpFile   The path to the PHP file
      *
      * @return void
      */
-    public function processFile($phpFile)
+    public function processFile($directory, $phpFile)
     {
 
-        try {
+        // iterate over all configured descriptors and try to load object description
+        foreach ($this->getConfiguredDescriptors() as $descriptor) {
 
-            // cut off the META-INF directory and replace OS specific directory separators
-            $relativePathToPhpFile = str_replace(DIRECTORY_SEPARATOR, '\\', str_replace($metaInfDir, '', $phpFile));
+            try {
 
-            // now cut off the first directory, that'll be '/classes' by default
-            $pregResult = preg_replace('%^(\\\\*)[^\\\\]+%', '', $relativePathToPhpFile);
-            $className = substr($pregResult, 0, -4);
+                // cut off the META-INF directory and replace OS specific directory separators
+                $relativePathToPhpFile = str_replace(DIRECTORY_SEPARATOR, '\\', str_replace($directory, '', $phpFile));
 
-            // we need a reflection class to read the annotations
-            $reflectionClass = $this->getReflectionClass($className);
+                // now cut off the first directory, that'll be '/classes' by default
+                $pregResult = preg_replace('%^(\\\\*)[^\\\\]+%', '', $relativePathToPhpFile);
+                $className = substr($pregResult, 0, -4);
 
-            // load the object descriptor
-            $objectDescriptor = DescriptorFactory::fromReflectionClass($reflectionClass);
+                // we need a reflection class to read the annotations
+                $reflectionClass = $this->getReflectionClass($className);
 
-            if ($beanDescriptor->getName()) { // if we've a name
-                $this->getObjectDescriptors()->set($objectDescriptor->getClassName(), $objectDescriptor);
+                $descriptorClass = $descriptor->getNodeValue()->getValue();
+
+                // load the object descriptor
+                if ($objectDescriptor = $descriptorClass::fromReflectionClass($reflectionClass)) {
+
+                    if ($objectDescriptor->getName()) { // if we've a name
+                        $this->getObjectDescriptors()->set($objectDescriptor->getClassName(), $objectDescriptor);
+                    }
+                }
+
+            } catch (\Exception $e) { // if class can not be reflected continue with next class
+
+                // log an error message
+                $this->getApplication()->getInitialContext()->getSystemLogger()->error($e->__toString());
+
+                // proceed with the nexet bean
+                continue;
             }
-
-        } catch (\Exception $e) { // if class can not be reflected continue with next class
-
-            // log an error message
-            $application->getInitialContext()->getSystemLogger()->error($e->__toString());
-
-            // proceed with the nexet bean
-            continue;
         }
     }
 
