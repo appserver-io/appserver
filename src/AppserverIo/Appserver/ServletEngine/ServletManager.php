@@ -24,14 +24,18 @@ namespace AppserverIo\Appserver\ServletEngine;
 
 use AppserverIo\Psr\Servlet\Servlet;
 use AppserverIo\Psr\Servlet\ServletContext;
+use AppserverIo\Psr\Servlet\Annotations\Route;
+use AppserverIo\Psr\Servlet\Http\HttpServletRequest;
 use AppserverIo\Storage\StorageInterface;
 use AppserverIo\Storage\StackableStorage;
-use AppserverIo\Psr\Servlet\Http\HttpServletRequest;
-use AppserverIo\Appserver\ServletEngine\ServletConfiguration;
-use AppserverIo\Appserver\ServletEngine\InvalidServletMappingException;
+use AppserverIo\Lang\Reflection\ReflectionClass;
 use AppserverIo\Psr\Application\ManagerInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
-use AppserverIo\Psr\Servlet\Annotations\Route;
+use AppserverIo\Appserver\ServletEngine\ServletConfiguration;
+use AppserverIo\Appserver\ServletEngine\InvalidServletMappingException;
+use AppserverIo\Appserver\DependencyInjectionContainer\DirectoryParser;
+use AppserverIo\Appserver\DependencyInjectionContainer\DeploymentDescriptorParser;
+use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\ServletDescriptorInterface;
 
 /**
  * The servlet manager handles the servlets registered for the application.
@@ -216,105 +220,75 @@ class ServletManager extends \Stackable implements ServletContext, ManagerInterf
     protected function registerServlets(ApplicationInterface $application)
     {
 
-        // the phar files have been deployed into folders
-        if (is_dir($folder = $this->getWebappPath())) {
+        // query if the web application folder exists
+        if (is_dir($folder = $this->getWebappPath()) === false) { // if not, do nothing
+            return;
+        }
 
-            // load the directories to be parsed
-            $directories = array();
+        // load the object manager
+        $objectManager = $this->getApplication()->search('ObjectManagerInterface');
 
-            // append the directory found in the servlet managers configuration
-            foreach ($this->getDirectories() as $directoryNode) {
+        // load the directories to be parsed
+        $directories = array();
 
-                // prepare the custom directory defined in the servlet managers configuration
-                $customDir = $folder . DIRECTORY_SEPARATOR . ltrim($directoryNode->getNodeValue()->getValue(), DIRECTORY_SEPARATOR);
+        // append the directory found in the servlet managers configuration
+        foreach ($this->getDirectories() as $directoryNode) {
 
-                // check if the directory exists
-                if (is_dir($customDir)) {
-                    $directories[] = $customDir;
-                }
+            // prepare the custom directory defined in the servlet managers configuration
+            $customDir = $folder . DIRECTORY_SEPARATOR . ltrim($directoryNode->getNodeValue()->getValue(), DIRECTORY_SEPARATOR);
+
+            // check if the directory exists
+            if (is_dir($customDir)) {
+                $directories[] = $customDir;
             }
+        }
 
-            // parse the directories for servlets
-            foreach ($directories as $directory) {
+        // initialize the directory parser
+        $directoryParser = new DirectoryParser();
+        $directoryParser->injectApplication($application);
 
-                // check WEB-INF classes or any other sub folder to pre init servlets
-                $service = $application->newService('AppserverIo\Appserver\Core\Api\DeploymentService');
-                $phpFiles = $service->globDir($directory . DIRECTORY_SEPARATOR . '*.php');
+        // parse the directories for annotated servlets
+        foreach ($directories as $directory) {
+            $directoryParser->parse($directory);
+        }
 
-                // iterate all php files
-                foreach ($phpFiles as $phpFile) {
+        // it's no valid application without at least the web.xml file
+        if (file_exists($deploymentDescriptor = $folder . DIRECTORY_SEPARATOR . 'WEB-INF' . DIRECTORY_SEPARATOR . 'web.xml') === false) {
 
-                    try {
+            // parse the deployment descriptor for registered servlets
+            $directoryParser = new DeploymentDescriptorParser();
+            $directoryParser->injectApplication($application);
+            $directoryParser->parse($deploymentDescriptor);
 
-                        // cut off the META-INF directory and replace OS specific directory separators
-                        $relativePathToPhpFile = str_replace(DIRECTORY_SEPARATOR, '\\', str_replace($directory, '', $phpFile));
+            // initialize the servlets by parsing the servlet-mapping nodes
+            foreach ($config->xpath('/web-app/servlet-mapping') as $mapping) {
 
-                        // now cut off the file .php extension
-                        $className = substr($relativePathToPhpFile, 0, -4);
+                // load the url pattern and the servlet name
+                $urlPattern = (string) $mapping->{'url-pattern'};
+                $servletName = (string) $mapping->{'servlet-name'};
 
-                        // we need a reflection class to read the annotations
-                        $reflectionClass = $this->getReflectionClass($className);
+                // the servlet is added to the dictionary using the complete request path as the key
+                if (array_key_exists($servletName, $this->servlets) === false) {
+                    throw new InvalidServletMappingException(
+                        sprintf(
+                            "Can't find servlet %s for url-pattern %s",
+                            $servletName,
+                            $urlPattern
+                        )
+                    );
+                }
 
-                        if ($reflectionClass->implementsInterface('AppserverIo\Psr\Servlet\Servlet') &&
-                            $reflectionClass->hasAnnotation(Route::ANNOTATION)) { // instanciate the servlet
-
-                            // load the reflection class instance
-                            $reflectionAnnotation = $reflectionClass->getAnnotation(Route::ANNOTATION);
-                            $routeAnnotation = $reflectionAnnotation->newInstance(
-                                $reflectionAnnotation->getAnnotationName(),
-                                $reflectionAnnotation->getValues()
-                            );
-
-                            // instanciate the servlet
-                            $instance = $reflectionClass->newInstance();
-
-                            // try to load the servlet name from the @Route annotation
-                            $servletName = $routeAnnotation->getName();
-                            if ($servletName == null) { // check if a servlet name is specified
-                                $servletName = lcfirst($reflectionClass->getShortName());
-                            }
-
-                            // initialize the servlet configuration
-                            $servletConfig = new ServletConfiguration();
-                            $servletConfig->injectServletContext($this);
-                            $servletConfig->injectServletName($servletName);
-
-                            // append the init params to the servlet configuration
-                            foreach ($routeAnnotation->getInitParams() as $initParam) {
-                                list ($paramName, $paramValue) = $initParam;
-                                $servletConfig->addInitParameter($paramName, $paramValue);
-                            }
-
-                            // initialize the servlet
-                            $instance->init($servletConfig);
-
-                            // the servlet is added to the dictionary using the complete request path as the key
-                            $this->addServlet($servletName, $instance);
-
-                            // prepend the url-pattern - servlet mapping to the servlet mappings
-                            foreach ($routeAnnotation->getUrlPattern() as $pattern) {
-                                $this->servletMappings[$pattern] = $servletName;
-                            }
-                        }
-
-                    } catch (\Exception $e) { // if class can not be reflected continue with next class
-
-                        // log an error message
-                        $this->getApplication()->getInitialContext()->getSystemLogger()->error($e->__toString());
-
-                        // proceed with the nexet bean
-                        continue;
+                // try to find the servlet with the configured name
+                foreach ($objectManager->getObjectDescriptors() as $descriptor) {
+                    if ($descriptor instanceof ServletDescriptorInterface &&
+                        $descriptor->getName() === $servletName) { // add the URL pattern
+                        $descriptor->addUrlPattern($urlPattern);
                     }
                 }
             }
 
-            // it's no valid application without at least the web.xml file
-            if (file_exists($web = $folder . DIRECTORY_SEPARATOR . 'WEB-INF' . DIRECTORY_SEPARATOR . 'web.xml') === false) {
-                return;
-            }
-
             // load the application config
-            $config = new \SimpleXMLElement(file_get_contents($web));
+            $config = new \SimpleXMLElement(file_get_contents($deploymentDescriptor));
 
             // intialize the security configuration by parseing the security nodes
             foreach ($config->xpath('/web-app/security') as $key => $securityParam) {
@@ -337,65 +311,53 @@ class ServletManager extends \Stackable implements ServletContext, ManagerInterf
                     $this->addSessionParameter(str_replace(' ', '', ucwords(str_replace('-', ' ', (string) $key))), (string) $value);
                 }
             }
+        }
 
-            // initialize the servlets by parsing the servlet-mapping nodes
-            foreach ($config->xpath('/web-app/servlet') as $servlet) {
+        // register the beans located by annotations and the XML configuration
+        foreach ($objectManager->getObjectDescriptors() as $descriptor) {
 
-                // load the servlet name and check if it already has been initialized
-                $servletName = (string) $servlet->{'servlet-name'};
-                if (array_key_exists($servletName, $this->servlets)) {
-                    continue;
-                }
-
-                // try to resolve the mapped servlet class
-                $className = (string) $servlet->{'servlet-class'};
-                if (!count($className)) {
-                    throw new InvalidApplicationArchiveException(
-                        sprintf('No servlet class defined for servlet %s', $servlet->{'servlet-class'})
-                    );
-                }
-
-                // instantiate the servlet
-                $instance = new $className();
-
-                // initialize the servlet configuration
-                $servletConfig = new ServletConfiguration();
-                $servletConfig->injectServletContext($this);
-                $servletConfig->injectServletName($servletName);
-
-                // append the init params to the servlet configuration
-                foreach ($servlet->{'init-param'} as $initParam) {
-                    $servletConfig->addInitParameter((string) $initParam->{'param-name'}, (string) $initParam->{'param-value'});
-                }
-
-                // initialize the servlet
-                $instance->init($servletConfig);
-
-                // the servlet is added to the dictionary using the complete request path as the key
-                $this->addServlet((string) $servlet->{'servlet-name'}, $instance);
+            // check if we've found a servlet descriptor
+            if ($descriptor instanceof ServletDescriptorInterface) { // register the servlet
+                $this->registerServlet($descriptor);
             }
+        }
+    }
 
-            // initialize the servlets by parsing the servlet-mapping nodes
-            foreach ($config->xpath('/web-app/servlet-mapping') as $mapping) {
+    /**
+     * Register the servlet described by the passed descriptor.
+     *
+     * @param \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\ServletDescriptorInterface $descriptor The servlet descriptor
+     *
+     * @return void
+     */
+    protected function registerServlet(ServletDescriptorInterface $descriptor)
+    {
 
-                // load the url pattern and the servlet name
-                $urlPattern = (string) $mapping->{'url-pattern'};
-                $servletName = (string) $mapping->{'servlet-name'};
+        // create a new reflection class instance
+        $reflectionClass = new ReflectionClass($descriptor->getClassName());
 
-                // the servlet is added to the dictionary using the complete request path as the key
-                if (array_key_exists($servletName, $this->servlets) === false) {
-                    throw new InvalidServletMappingException(
-                        sprintf(
-                            "Can't find servlet %s for url-pattern %s",
-                            $servletName,
-                            $urlPattern
-                        )
-                    );
-                }
+        // instanciate the servlet
+        $instance = $reflectionClass->newInstance();
 
-                // prepend the url-pattern - servlet mapping to the servlet mappings
-                $this->servletMappings[$urlPattern] = $servletName;
-            }
+        // initialize the servlet configuration
+        $servletConfig = new ServletConfiguration();
+        $servletConfig->injectServletContext($this);
+        $servletConfig->injectServletName($descriptor->getName());
+
+        // append the init params to the servlet configuration
+        foreach ($descriptor->getInitParams() as $paramName => $paramValue) {
+            $servletConfig->addInitParameter($paramName, $paramValue);
+        }
+
+        // initialize the servlet
+        $instance->init($servletConfig);
+
+        // the servlet is added to the dictionary using the complete request path as the key
+        $this->addServlet($servletName, $instance);
+
+        // prepend the url-pattern - servlet mapping to the servlet mappings
+        foreach ($descriptor->getUrlPatterns() as $pattern) {
+            $this->servletMappings[$pattern] = $servletName;
         }
     }
 

@@ -316,7 +316,12 @@ class ServletDescriptor implements ServletDescriptorInterface
     public function fromReflectionClass(ClassInterface $reflectionClass)
     {
 
-        // query if we've an servlet with a @Route annotation
+        // query if we've a servlet
+        if ($reflectionClass->implementsInterface('AppserverIo\Psr\Servlet\Servlet') === false) { // if not, do nothing
+            return;
+        }
+
+        // query if we've a servlet with a @Route annotation
         if ($reflectionClass->hasAnnotation(Route::ANNOTATION) === false) { // if not, do nothing
             return;
         }
@@ -341,19 +346,19 @@ class ServletDescriptor implements ServletDescriptorInterface
         }
 
         // register the servlet description defined as @Route(description=****)
-        if ($description = $annotationInstance->getBeanInterface()) {
+        if ($description = $annotationInstance->getDescription()) {
             $this->setDescription($description);
         }
 
         // register the servlet display name defined as @Route(displayName=****)
-        if ($displayName = $annotationInstance->getBeanName()) {
+        if ($displayName = $annotationInstance->getDisplayName()) {
             $this->setDisplayName($displayName);
         }
 
         // register the init params defined as @Route(initParams=****)
         foreach ($annotationInstance->getInitParams() as $initParam) {
             list ($paramName, $paramValue) = $initParam;
-            $this->addInitParameter($paramName, $paramValue);
+            $this->addInitParam($paramName, $paramValue);
         }
 
         // retister the URL pattern defined as @Route(urlPattern=****)

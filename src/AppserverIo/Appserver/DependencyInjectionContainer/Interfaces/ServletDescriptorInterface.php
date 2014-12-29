@@ -72,6 +72,20 @@ interface ServletDescriptorInterface extends DescriptorInterface
     public function getEpbReferences();
 
     /**
+     * The array with the initialization parameters.
+     *
+     * @return array The initialization parameters
+     */
+    public function getInitParams();
+
+    /**
+     * The array with the URL patterns.
+     *
+     * @return array The URL patterns
+     */
+    public function getUrlPatterns();
+
+    /**
      * Merges the passed configuration into this one. Configuration values
      * of the passed configuration will overwrite the this one.
      *

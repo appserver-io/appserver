@@ -209,6 +209,7 @@ class BeanManager extends GenericStackable implements BeanContext, ManagerInterf
         // query whether we found epb.xml deployment descriptor file
         if (file_exists($deploymentDescriptor = $metaInfDir . DIRECTORY_SEPARATOR . 'epb.xml') === true) {
 
+            // parse the deployment descriptor for registered beans
             $directoryParser = new DeploymentDescriptorParser();
             $directoryParser->injectApplication($application);
             $directoryParser->parse($deploymentDescriptor);
