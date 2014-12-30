@@ -97,8 +97,7 @@ class DirectoryParser
                     // cut off the META-INF directory and replace OS specific directory separators
                     $relativePathToPhpFile = str_replace(DIRECTORY_SEPARATOR, '\\', str_replace($directory, '', $phpFile));
 
-                    // now cut off the first directory, that'll be '/classes' by default
-                    // $pregResult = preg_replace('%^(\\\\*)[^\\\\]+%', '', $relativePathToPhpFile);
+                    // now cut off the .php extension
                     $className = substr($relativePathToPhpFile, 0, -4);
 
                     // we need a reflection class to read the annotations
