@@ -38,8 +38,6 @@ use AppserverIo\Lang\Reflection\ClassInterface;
 use AppserverIo\Lang\Reflection\ReflectionClass;
 use AppserverIo\Lang\Reflection\ReflectionObject;
 use AppserverIo\Lang\Reflection\AnnotationInterface;
-use AppserverIo\Appserver\PersistenceContainer\Utils\BeanConfiguration;
-use AppserverIo\Appserver\PersistenceContainer\Utils\BeanConfigurationInterface;
 use AppserverIo\Appserver\DependencyInjectionContainer\DirectoryParser;
 use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\BeanDescriptorInterface;
 use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\SessionBeanDescriptorInterface;
