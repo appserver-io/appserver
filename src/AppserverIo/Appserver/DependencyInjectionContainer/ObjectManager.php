@@ -167,7 +167,7 @@ class ObjectManager extends GenericStackable implements ObjectManagerInterface, 
     {
 
         // query whether we've to merge the configuration found in annotations
-        if ($override && $this->hasObjectDescriptor($objectDescriptor->getClassName())) {
+        if ($this->hasObjectDescriptor($objectDescriptor->getClassName()) && $merge) {
 
             // load the existing descriptor
             $existingDescriptor = $this->getObjectDescriptor($objectDescriptor->getClassName());
@@ -221,7 +221,7 @@ class ObjectManager extends GenericStackable implements ObjectManagerInterface, 
     {
 
         // query if we've an object descriptor registered
-        if ($this->hasObjectDescriptor($className) === false) { // return the object descriptor
+        if ($this->hasObjectDescriptor($className)) { // return the object descriptor
             return $this->objectDescriptors->get($className);
         }
 

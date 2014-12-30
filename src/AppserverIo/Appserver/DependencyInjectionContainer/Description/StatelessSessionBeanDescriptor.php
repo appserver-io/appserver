@@ -116,7 +116,7 @@ class StatelessSessionBeanDescriptor extends SessionBeanDescriptor implements St
         }
 
         // query if the session type matches
-        if ($node->{'session-type'} !== StatelessSessionBeanDescriptor::SESSION_TYPE) { // if not, do nothing
+        if ((string) $node->{'session-type'} !== StatelessSessionBeanDescriptor::SESSION_TYPE) { // if not, do nothing
             return;
         }
 

@@ -256,9 +256,9 @@ class ServletManager extends \Stackable implements ServletContext, ManagerInterf
         if (file_exists($deploymentDescriptor = $folder . DIRECTORY_SEPARATOR . 'WEB-INF' . DIRECTORY_SEPARATOR . 'web.xml')) {
 
             // parse the deployment descriptor for registered servlets
-            $directoryParser = new DeploymentDescriptorParser();
-            $directoryParser->injectApplication($application);
-            $directoryParser->parse($deploymentDescriptor, '/web-app/servlet');
+            $deploymentDescriptorParser = new DeploymentDescriptorParser();
+            $deploymentDescriptorParser->injectApplication($application);
+            $deploymentDescriptorParser->parse($deploymentDescriptor, '/web-app/servlet');
 
             // load the application config
             $config = new \SimpleXMLElement(file_get_contents($deploymentDescriptor));

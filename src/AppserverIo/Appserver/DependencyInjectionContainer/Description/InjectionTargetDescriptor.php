@@ -23,6 +23,8 @@
 namespace AppserverIo\Appserver\DependencyInjectionContainer\Description;
 
 use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\InjectionTargetDescriptorInterface;
+use AppserverIo\Lang\Reflection\MethodInterface;
+use AppserverIo\Lang\Reflection\PropertyInterface;
 
 /**
  * Utility classe that stores a beans injection target configuration.
@@ -35,7 +37,7 @@ use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\InjectionTarge
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       http://www.appserver.io
  */
-class InjectionTargetDescriptor implements InjectionTargetParserInterface
+class InjectionTargetDescriptor implements InjectionTargetDescriptorInterface
 {
 
     /**
@@ -108,7 +110,7 @@ class InjectionTargetDescriptor implements InjectionTargetParserInterface
 
     /**
      * Creates and initializes a beans injection target configuration instance from the passed
-     * deployment node.
+     * reflection class.
      *
      * @param \AppserverIo\Lang\Reflection\ClassInterface $reflectionClass The reflection class with the beans injection target configuration
      *
@@ -117,6 +119,43 @@ class InjectionTargetDescriptor implements InjectionTargetParserInterface
     public function fromReflectionClass(ClassInterface $reflectionClass)
     {
         throw new \Exception(__METHOD__ . ' not implemented yet');
+    }
+
+    /**
+     * Creates and initializes a beans injection target configuration instance from the passed
+     * reflection property instance.
+     *
+     * @param \AppserverIo\Lang\Reflection\PropertyInterface $reflectionProperty The reflection property with the beans injection target configuration
+     *
+     * @return \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\InjectionTargetDescriptorInterface|null The initialized descriptor instance
+     */
+    public function fromReflectionProperty(PropertyInterface $reflectionProperty)
+    {
+        // initialize the injection target from the passed property
+        $this->setTargetClass($reflectionProperty->getClassName());
+        $this->setTargetName($reflectionProperty->getPropertyName());
+
+        // return the instance
+        return $this;
+    }
+
+    /**
+     * Creates and initializes a beans injection target configuration instance from the passed
+     * reflection method instance.
+     *
+     * @param \AppserverIo\Lang\Reflection\MethodInterface $reflectionMethod The reflection method with the beans injection target configuration
+     *
+     * @return \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\InjectionTargetDescriptorInterface|null The initialized descriptor instance
+     */
+    public function fromReflectionMethod(MethodInterface $reflectionMethod)
+    {
+
+        // initialize the injection target from the passed method
+        $this->setTargetClass($reflectionMethod->getClassName());
+        $this->setTargetName($reflectionMethod->getMethodName());
+
+        // return the instance
+        return $this;
     }
 
     /**
@@ -132,12 +171,12 @@ class InjectionTargetDescriptor implements InjectionTargetParserInterface
 
         // query for the target class name we want to inject to
         if ($targetClass = (string) $node->{'injection-target-class'}) {
-            $this->setClassName($targetClass);
+            $this->setTargetClass($targetClass);
         }
 
         // query for the target member name we want to inject to
         if ($targetName = (string) $node->{'injection-target-name'}) {
-            $this->setName($targetName);
+            $this->setTargetName($targetName);
         }
 
         // return the instance

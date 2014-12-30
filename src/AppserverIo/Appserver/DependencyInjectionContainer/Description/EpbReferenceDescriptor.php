@@ -23,6 +23,12 @@
 namespace AppserverIo\Appserver\DependencyInjectionContainer\Description;
 
 use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\EpbReferenceDescriptorInterface;
+use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\InjectionTargetDescriptorInterface;
+use AppserverIo\Lang\Reflection\PropertyInterface;
+use AppserverIo\Lang\Reflection\AnnotationInterface;
+use AppserverIo\Psr\EnterpriseBeans\Annotations\Resource;
+use AppserverIo\Psr\EnterpriseBeans\Annotations\EnterpriseBean;
+use AppserverIo\Lang\Reflection\MethodInterface;
 
 /**
  * Utility class that stores a beans reference configuration.
@@ -85,7 +91,7 @@ class EpbReferenceDescriptor implements EpbReferenceDescriptorInterface
      */
     public function getRefName()
     {
-        return $this->name;
+        return $this->refName;
     }
 
     /**
@@ -179,6 +185,86 @@ class EpbReferenceDescriptor implements EpbReferenceDescriptorInterface
 
     /**
      * Creates and initializes a beans reference configuration instance from the passed
+     * reflection property instance.
+     *
+     * @param \AppserverIo\Lang\Reflection\ClassInterface $reflectionClass The reflection class with the beans reference configuration
+     *
+     * @return \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\EpbReferenceDescriptorInterface|null The initialized descriptor instance
+     */
+    public function fromReflectionProperty(PropertyInterface $reflectionProperty)
+    {
+
+        // if we found a @EnterpriseBean annotation, load the annotation instance
+        if ($reflectionProperty->hasAnnotation(EnterpriseBean::ANNOTATION)) {
+            $annotation = $reflectionProperty->getAnnotation(EnterpriseBean::ANNOTATION);
+        }
+
+        // if we found a @Resource annotation, load the annotation instance
+        if ($reflectionProperty->hasAnnotation(Resource::ANNOTATION)) {
+            $annotation = $reflectionProperty->getAnnotation(Resource::ANNOTATION);
+        }
+
+        // if we found a annotation instance, initialize the instance
+        if ($annotation instanceof AnnotationInterface) {
+
+            // load the annotation instance
+            $annotationInstance = $annotation->newInstance($annotation->getAnnotationName(), $annotation->getValues());
+
+            // load the reference name
+            if ($refName = $annotationInstance->getName()) {
+                $this->setRefName($refName);
+            }
+
+            // load the injection target data
+            $this->setInjectionTarget(InjectionTargetDescriptor::newDescriptorInstance()->fromReflectionProperty($reflectionProperty));
+
+            // return the instance
+            return $this;
+        }
+    }
+
+    /**
+     * Creates and initializes a beans reference configuration instance from the passed
+     * reflection method instance.
+     *
+     * @param \AppserverIo\Lang\Reflection\ClassInterface $reflectionClass The reflection class with the beans reference configuration
+     *
+     * @return \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\EpbReferenceDescriptorInterface|null The initialized descriptor instance
+     */
+    public function fromReflectionMethod(MethodInterface $reflectionMethod)
+    {
+
+        // if we found a @EnterpriseBean annotation, load the annotation instance
+        if ($reflectionMethod->hasAnnotation(EnterpriseBean::ANNOTATION)) {
+            $annotation = $reflectionMethod->getAnnotation(EnterpriseBean::ANNOTATION);
+        }
+
+        // if we found a @Resource annotation, load the annotation instance
+        if ($reflectionMethod->hasAnnotation(Resource::ANNOTATION)) {
+            $annotation = $reflectionMethod->getAnnotation(Resource::ANNOTATION);
+        }
+
+        // if we found a annotation instance, initialize the instance
+        if ($annotation instanceof AnnotationInterface) {
+
+            // load the annotation instance
+            $annotationInstance = $annotation->newInstance($annotation->getAnnotationName(), $annotation->getValues());
+
+            // load the reference name
+            if ($refName = $annotationInstance->getName()) {
+                $this->setRefName($refName);
+            }
+
+            // load the injection target data
+            $this->setInjectionTarget(InjectionTargetDescriptor::newDescriptorInstance()->fromReflectionMethod($reflectionMethod));
+
+            // return the instance
+            return $this;
+        }
+    }
+
+    /**
+     * Creates and initializes a beans reference configuration instance from the passed
      * deployment node.
      *
      * @param \SimpleXmlElement $node The deployment node with the beans reference configuration
@@ -199,12 +285,12 @@ class EpbReferenceDescriptor implements EpbReferenceDescriptorInterface
         }
 
         // query for reference link
-        if ($link = (string) $node->{'link'}) {
+        if ($link = (string) $node->{'epb-link'}) {
             $this->setLink($link);
         }
 
         // query for the injection target
-        if ($injectionTarget = (string) $node->{'injection-target'}) {
+        if ($injectionTarget = $node->{'injection-target'}) {
             $this->setInjectionTarget(InjectionTargetDescriptor::newDescriptorInstance()->fromDeploymentDescriptor($injectionTarget));
         }
 

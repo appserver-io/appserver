@@ -233,9 +233,6 @@ abstract class SessionBeanDescriptor extends BeanDescriptor implements SessionBe
             $this->setSessionType($sessionType);
         }
 
-        // merge the startup flag
-        $this->setInitOnStartup($beanDescriptor->isInitOnStartup());
-
         // merge the post construct callback method names
         foreach ($beanDescriptor->getPostConstructCallbacks() as $postConstructCallback) {
             if (in_array($postConstructCallback, $this->postConstructCallbacks) === false) {

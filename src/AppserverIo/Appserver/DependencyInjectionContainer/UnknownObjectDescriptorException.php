@@ -21,7 +21,7 @@
  * @link       http://www.appserver.io
  */
 
-namespace AppserverIo\Appserver\PersistenceContainer;
+namespace AppserverIo\Appserver\DependencyInjectionContainer;
 
 use AppserverIo\Psr\EnterpriseBeans\EnterpriseBeansException;
 

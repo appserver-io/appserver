@@ -184,7 +184,7 @@ class BeanManager extends GenericStackable implements BeanContext, ManagerInterf
     {
 
         // build up META-INF directory var
-        $metaInfDir = $this->getWebappPath() . DIRECTORY_SEPARATOR .'META-INF';
+        $metaInfDir = $this->getWebappPath() . DIRECTORY_SEPARATOR . 'META-INF';
 
         // check if we've found a valid directory
         if (is_dir($metaInfDir) === false) {
@@ -200,9 +200,10 @@ class BeanManager extends GenericStackable implements BeanContext, ManagerInterf
         if (file_exists($deploymentDescriptor = $metaInfDir . DIRECTORY_SEPARATOR . 'epb.xml') === true) {
 
             // parse the deployment descriptor for registered beans
-            $directoryParser = new DeploymentDescriptorParser();
-            $directoryParser->injectApplication($application);
-            $directoryParser->parse($deploymentDescriptor);
+            $deploymentDescriptorParser = new DeploymentDescriptorParser();
+            $deploymentDescriptorParser->injectApplication($application);
+            $deploymentDescriptorParser->parse($deploymentDescriptor, '/epb/enterprise-beans/session');
+            $deploymentDescriptorParser->parse($deploymentDescriptor, '/epb/enterprise-beans/message-driven');
         }
 
         // load the object manager

@@ -25,6 +25,8 @@ namespace AppserverIo\Appserver\DependencyInjectionContainer\Description;
 use AppserverIo\Lang\Reflection\ClassInterface;
 use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\BeanDescriptorInterface;
 use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\EpbReferenceDescriptorInterface;
+use AppserverIo\Psr\EnterpriseBeans\Annotations\EnterpriseBean;
+use AppserverIo\Psr\EnterpriseBeans\Annotations\Resource;
 
 /**
  * Abstract class for all bean descriptors.
@@ -307,6 +309,20 @@ abstract class BeanDescriptor implements BeanDescriptorInterface
         if ($mappedNameAttribute = $annotationInstance->getMappedName()) {
             $this->setMappedName($mappedNameAttribute);
         }
+
+        // we've to check for property annotations that references EPB or resources
+        foreach ($reflectionClass->getProperties() as $reflectionProperty) {
+            if ($epbReference = EpbReferenceDescriptor::newDescriptorInstance()->fromReflectionProperty($reflectionProperty)) {
+                $this->addEpbReference($epbReference);
+            }
+        }
+
+        // we've to check for method annotations that references EPB or resources
+        foreach ($reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $reflectionMethod) {
+            if ($epbReference = EpbReferenceDescriptor::newDescriptorInstance()->fromReflectionMethod($reflectionMethod)) {
+                $this->addEpbReference($epbReference);
+            }
+        }
     }
 
     /**
@@ -393,11 +409,9 @@ abstract class BeanDescriptor implements BeanDescriptorInterface
             $this->setDescription($description);
         }
 
-        // mrege the EPB references
+        // merge the EPB references
         foreach ($beanDescriptor->getEpbReferences() as $epbReference) {
-            if (isset($this->epbReferences[$epbReference->getRefName()]) === false) {
-                $this->addEpbReference($epbReference);
-            }
+            $this->addEpbReference($epbReference);
         }
     }
 }

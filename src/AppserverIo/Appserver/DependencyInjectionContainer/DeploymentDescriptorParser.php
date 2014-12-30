@@ -102,15 +102,15 @@ class DeploymentDescriptorParser
                         $objectManager->addObjectDescriptor($objectDescriptor, true);
                     }
 
-                    // proceed with the next file
-                    continue 2;
+                    // proceed with the next descriptor
+                    continue;
 
                 } catch (\Exception $e) { // if class can not be reflected continue with next class
 
                     // log an error message
                     $this->getApplication()->getInitialContext()->getSystemLogger()->error($e->__toString());
 
-                    // proceed with the nexet bean
+                    // proceed with the next descriptor
                     continue;
                 }
             }

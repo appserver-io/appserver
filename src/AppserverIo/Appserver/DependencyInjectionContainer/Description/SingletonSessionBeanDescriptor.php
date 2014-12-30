@@ -22,9 +22,12 @@
 
 namespace AppserverIo\Appserver\DependencyInjectionContainer\Description;
 
+use AppserverIo\Lang\String;
+use AppserverIo\Lang\Boolean;
 use AppserverIo\Lang\Reflection\ClassInterface;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Startup;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Singleton;
+use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\BeanDescriptorInterface;
 use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\SingletonSessionBeanDescriptorInterface;
 
 /**
@@ -151,7 +154,7 @@ class SingletonSessionBeanDescriptor extends SessionBeanDescriptor implements Si
         }
 
         // query if the session type matches
-        if ($node->{'session-type'} !== SingletonSessionBeanDescriptor::SESSION_TYPE) { // if not, do nothing
+        if ((string) $node->{'session-type'} !== SingletonSessionBeanDescriptor::SESSION_TYPE) { // if not, do nothing
             return;
         }
 
@@ -165,5 +168,23 @@ class SingletonSessionBeanDescriptor extends SessionBeanDescriptor implements Si
 
         // return the instance
         return $this;
+    }
+
+    /**
+     * Merges the passed configuration into this one. Configuration values
+     * of the passed configuration will overwrite the this one.
+     *
+     * @param \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\BeanDescriptorInterface $beanDescriptor The configuration to merge
+     *
+     * @return void
+     */
+    public function merge(BeanDescriptorInterface $beanDescriptor)
+    {
+
+        // merge the default bean members by invoking the parent method
+        parent::merge($beanDescriptor);
+
+        // merge the startup flag
+        $this->setInitOnStartup($beanDescriptor->isInitOnStartup());
     }
 }
