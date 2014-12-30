@@ -385,37 +385,34 @@ class ServletDescriptor implements ServletDescriptorInterface
             return;
         }
 
-        // create a new descriptor instance
-        $servletDescriptor = $this->newDescriptorInstance();
-
         // query for the class name and set it
         if ($className = (string) $node->{'servlet-class'}) {
-            $servletDescriptor->setClassName($className);
+            $this->setClassName($className);
         }
 
         // query for the name and set it
         if ($name = (string) $node->{'servlet-name'}) {
-            $servletDescriptor->setName($name);
+            $this->setName($name);
         }
 
         // query for the description and set it
         if ($description = (string) $node->{'description'}) {
-            $servletDescriptor->setDescription($description);
+            $this->setDescription($description);
         }
 
         // query for the display name and set it
         if ($displayName = (string) $node->{'display-name'}) {
-            $servletDescriptor->setDescription($displayName);
+            $this->setDescription($displayName);
         }
 
         // append the init params to the servlet configuration
         foreach ($node->{'init-param'} as $initParam) {
-            $servletDescriptor->addInitParameter((string) $initParam->{'param-name'}, (string) $initParam->{'param-value'});
+            $this->addInitParam((string) $initParam->{'param-name'}, (string) $initParam->{'param-value'});
         }
 
         // initialize the enterprise bean references
         foreach ($node->xpath('epb-ref') as $epbReference) {
-            $servletDescriptor->addEpbReference(EpbReferenceDescriptor::newDescriptorInstance()->fromDeploymentDescriptor($epbReference));
+            $this->addEpbReference(EpbReferenceDescriptor::newDescriptorInstance()->fromDeploymentDescriptor($epbReference));
         }
 
         // return the instance

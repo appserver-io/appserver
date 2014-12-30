@@ -253,12 +253,15 @@ class ServletManager extends \Stackable implements ServletContext, ManagerInterf
         }
 
         // it's no valid application without at least the web.xml file
-        if (file_exists($deploymentDescriptor = $folder . DIRECTORY_SEPARATOR . 'WEB-INF' . DIRECTORY_SEPARATOR . 'web.xml') === false) {
+        if (file_exists($deploymentDescriptor = $folder . DIRECTORY_SEPARATOR . 'WEB-INF' . DIRECTORY_SEPARATOR . 'web.xml')) {
 
             // parse the deployment descriptor for registered servlets
             $directoryParser = new DeploymentDescriptorParser();
             $directoryParser->injectApplication($application);
-            $directoryParser->parse($deploymentDescriptor);
+            $directoryParser->parse($deploymentDescriptor, '/web-app/servlet');
+
+            // load the application config
+            $config = new \SimpleXMLElement(file_get_contents($deploymentDescriptor));
 
             // initialize the servlets by parsing the servlet-mapping nodes
             foreach ($config->xpath('/web-app/servlet-mapping') as $mapping) {
@@ -267,24 +270,28 @@ class ServletManager extends \Stackable implements ServletContext, ManagerInterf
                 $urlPattern = (string) $mapping->{'url-pattern'};
                 $servletName = (string) $mapping->{'servlet-name'};
 
-                // the servlet is added to the dictionary using the complete request path as the key
-                if (array_key_exists($servletName, $this->servlets) === false) {
-                    throw new InvalidServletMappingException(
-                        sprintf(
-                            "Can't find servlet %s for url-pattern %s",
-                            $servletName,
-                            $urlPattern
-                        )
-                    );
-                }
-
                 // try to find the servlet with the configured name
                 foreach ($objectManager->getObjectDescriptors() as $descriptor) {
+
+                    // query if we've a servlet and the name matches the mapped servlet name
                     if ($descriptor instanceof ServletDescriptorInterface &&
-                        $descriptor->getName() === $servletName) { // add the URL pattern
+                        $descriptor->getName() === $servletName) {
+
+                        // add the URL pattern
                         $descriptor->addUrlPattern($urlPattern);
+
+                        // override the descriptor with the URL pattern
+                        $objectManager->setObjectDescriptor($descriptor);
+
+                        // proceed the next mapping
+                        continue 2;
                     }
                 }
+
+                // the servlet is added to the dictionary using the complete request path as the key
+                throw new InvalidServletMappingException(
+                    sprintf('Can\'t find servlet %s for url-pattern %s', $servletName, $urlPattern)
+                );
             }
 
             // load the application config
@@ -357,7 +364,7 @@ class ServletManager extends \Stackable implements ServletContext, ManagerInterf
 
         // prepend the url-pattern - servlet mapping to the servlet mappings
         foreach ($descriptor->getUrlPatterns() as $pattern) {
-            $this->servletMappings[$pattern] = $servletName;
+            $this->addServletMapping($pattern, $servletName);
         }
     }
 
@@ -451,6 +458,19 @@ class ServletManager extends \Stackable implements ServletContext, ManagerInterf
     public function addServlet($key, Servlet $servlet)
     {
         $this->servlets->set($key, $servlet);
+    }
+
+    /**
+     * Adds an URL mapping for a servlet.
+     *
+     * @param string $pattern     The URL pattern we want the servlet to map to
+     * @param string $servletName The servlet name to map
+     *
+     * @return void
+     */
+    public function addServletMapping($pattern, $servletName)
+    {
+        $this->servletMappings->set($pattern, $servletName);
     }
 
     /**

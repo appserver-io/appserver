@@ -98,8 +98,8 @@ class DirectoryParser
                     $relativePathToPhpFile = str_replace(DIRECTORY_SEPARATOR, '\\', str_replace($directory, '', $phpFile));
 
                     // now cut off the first directory, that'll be '/classes' by default
-                    $pregResult = preg_replace('%^(\\\\*)[^\\\\]+%', '', $relativePathToPhpFile);
-                    $className = substr($pregResult, 0, -4);
+                    // $pregResult = preg_replace('%^(\\\\*)[^\\\\]+%', '', $relativePathToPhpFile);
+                    $className = substr($relativePathToPhpFile, 0, -4);
 
                     // we need a reflection class to read the annotations
                     $reflectionClass = $objectManager->getReflectionClass($className);

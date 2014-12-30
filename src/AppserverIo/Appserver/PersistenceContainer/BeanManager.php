@@ -34,17 +34,6 @@ use AppserverIo\Psr\PersistenceContainerProtocol\BeanContext;
 use AppserverIo\Psr\PersistenceContainerProtocol\RemoteMethod;
 use AppserverIo\Psr\Application\ManagerInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\MessageDriven;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\PreDestroy;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\PostConstruct;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\Singleton;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\Startup;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\Stateful;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\Stateless;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\Schedule;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\Timeout;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\EnterpriseBean;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\Resource;
 use AppserverIo\Lang\Reflection\ClassInterface;
 use AppserverIo\Lang\Reflection\ReflectionClass;
 use AppserverIo\Lang\Reflection\ReflectionObject;
@@ -56,6 +45,9 @@ use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\BeanDescriptor
 use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\SessionBeanDescriptorInterface;
 use AppserverIo\Appserver\DependencyInjectionContainer\DeploymentDescriptorParser;
 use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\SingletonSessionBeanDescriptorInterface;
+use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\StatefulSessionBeanDescriptorInterface;
+use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\StatelessSessionBeanDescriptorInterface;
+use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\MessageDrivenBeanDescriptorInterface;
 
 /**
  * The bean manager handles the message and session beans registered for the application.
@@ -204,7 +196,7 @@ class BeanManager extends GenericStackable implements BeanContext, ManagerInterf
         // parse the directory for annotated beans
         $directoryParser = new DirectoryParser();
         $directoryParser->injectApplication($application);
-        $directoryParser->parse($metaInfDir);
+        $directoryParser->parse($metaInfDir . DIRECTORY_SEPARATOR . 'classes');
 
         // query whether we found epb.xml deployment descriptor file
         if (file_exists($deploymentDescriptor = $metaInfDir . DIRECTORY_SEPARATOR . 'epb.xml') === true) {
@@ -226,7 +218,7 @@ class BeanManager extends GenericStackable implements BeanContext, ManagerInterf
                 $this->registerBean($descriptor);
             }
 
-            // if we found a bean with @Singleton + @Startup annotation
+            // if we found a singleton session bean with a startup callback
             if ($descriptor instanceof SingletonSessionBeanDescriptorInterface && $descriptor->isInitOnStartup()) {
                 $this->getApplication()->search($descriptor->getName(), array(null, array($application)));
             }
@@ -465,7 +457,7 @@ class BeanManager extends GenericStackable implements BeanContext, ManagerInterf
     }
 
     /**
-     * Invokes the bean method with the @PreDestroy annotation.
+     * Invokes the bean method with a pre-destroy callback.
      *
      * @param object $instance The instance to invoke the method
      *
@@ -480,9 +472,11 @@ class BeanManager extends GenericStackable implements BeanContext, ManagerInterf
         // load the bean descriptor
         $descriptor = $objectManager->getObjectDescriptors()->get(get_class($instance));
 
-        // invoke the pre-destory callbacks
-        foreach ($descriptor->getPreDestroyCallbacks() as $preDestroyCallback) {
-            $instance->$preDestroyCallback();
+        // invoke the pre-destory callbacks if we've a session bean
+        if ($descriptor instanceof SessionBeanDescriptorInterface) {
+            foreach ($descriptor->getPreDestroyCallbacks() as $preDestroyCallback) {
+                $instance->$preDestroyCallback();
+            }
         }
     }
 
@@ -504,51 +498,53 @@ class BeanManager extends GenericStackable implements BeanContext, ManagerInterf
         // load the bean descriptor
         $descriptor = $objectManager->getObjectDescriptors()->get(get_class($instance));
 
-        // query the bean type, one of
-        switch ($descriptor->getSessionType()) {
+        // query if we've stateful session bean
+        if ($descriptor instanceof StatefulSessionBeanDescriptorInterface) {
 
-            case Stateful::ANNOTATION:
+            // check if we've a session-ID available
+            if ($sessionId == null) {
+                throw new \Exception('Can\'t find a session-ID to attach stateful session bean');
+            }
 
-                // check if we've a session-ID available
-                if ($sessionId == null) {
-                    throw new \Exception('Can\'t find a session-ID to attach stateful session bean');
-                }
+            // load the lifetime from the session bean settings
+            $lifetime = $this->getStatefulSessionBeanSettings()->getLifetime();
 
-                // load the lifetime from the session bean settings
-                $lifetime = $this->getStatefulSessionBeanSettings()->getLifetime();
+            // initialize the map for the stateful session beans
+            if ($this->getStatefulSessionBeans()->has($sessionId) === false) { // create a new session bean map instance
+                $this->getStatefulSessionBeanMapFactory()->newInstance($sessionId);
 
-                // initialize the map for the stateful session beans
-                if ($this->getStatefulSessionBeans()->has($sessionId) === false) { // create a new session bean map instance
-                    $this->getStatefulSessionBeanMapFactory()->newInstance($sessionId);
+            }
 
-                }
+            // load the session bean map instance
+            $sessions = $this->getStatefulSessionBeans()->get($sessionId);
 
-                // load the session bean map instance
-                $sessions = $this->getStatefulSessionBeans()->get($sessionId);
+            // add the stateful session bean to the map
+            $sessions->add($descriptor->getClassName(), $instance, $lifetime);
 
-                // add the stateful session bean to the map
-                $sessions->add($descriptor->getClassName(), $instance, $lifetime);
-
-                break;
-
-            case Stateless::ANNOTATION:
-            case MessageDriven::ANNOTATION:
-
-                // simply destroy the instance
-                $this->destroyBeanInstance($instance);
-
-                break;
-
-            case Singleton::ANNOTATION:
-
-                // do nothing here
-                break;
-
-            default:
-
-                // we've an unknown bean type => throw an exception
-                throw new InvalidBeanTypeException('Try to attach invalid bean type');
+            // stop processing here
+            return;
         }
+
+        // query if we've stateless session or message bean
+        if ($descriptor instanceof StatelessSessionBeanDescriptorInterface ||
+            $descriptor instanceof MessageDrivenBeanDescriptorInterface) {
+
+            // simply destroy the instance
+            $this->destroyBeanInstance($instance);
+
+            // stop processing here
+            return;
+        }
+
+        // query if we've singleton session bean
+        if ($descriptor instanceof SingletonSessionBeanDescriptorInterface) {
+
+            // do nothing here
+            return;
+        }
+
+        // we've an unknown bean type => throw an exception
+        throw new InvalidBeanTypeException('Try to attach invalid bean type');
     }
 
     /**
