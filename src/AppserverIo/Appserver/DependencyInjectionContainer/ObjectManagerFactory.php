@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\DependencyInjectionContainer\ProviderFactory
+ * AppserverIo\Appserver\DependencyInjectionContainer\ObjectManagerFactory
  *
  * NOTICE OF LICENSE
  *
@@ -23,15 +23,12 @@
 
 namespace AppserverIo\Appserver\DependencyInjectionContainer;
 
-use AppserverIo\Storage\GenericStackable;
+use AppserverIo\Storage\StackableStorage;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\Application\Interfaces\ManagerConfigurationInterface;
 
-// ATTENTION: this is necessary for Windows
-use AppserverIo\Appserver\Naming\InitialContext as NamingContext;
-
 /**
- * The factory for the dependency injection provider.
+ * The factory for the object manager.
  *
  * @category   Server
  * @package    Appserver
@@ -42,7 +39,7 @@ use AppserverIo\Appserver\Naming\InitialContext as NamingContext;
  * @link       https://github.com/appserver-io/appserver
  * @link       http://www.appserver.io
  */
-class ProviderFactory
+class ObjectManagerFactory
 {
 
     /**
@@ -56,22 +53,21 @@ class ProviderFactory
     public static function visit(ApplicationInterface $application, ManagerConfigurationInterface $managerConfiguration)
     {
 
-        // create the initial context instance
-        $initialContext = new NamingContext();
-        $initialContext->injectApplication($application);
+        // load the configured descriptors from the configuration
+        $configuredDescriptors = $managerConfiguration->getDescriptors();
 
-        // create the storage for the reflection classes and the application specific aliases
-        $reflectionClasses = new GenericStackable();
-        $namingDirectoryAliases = new GenericStackable();
+        // create the storage for the data and the bean descriptors
+        $data = new StackableStorage();
+        $objectDescriptors = new StackableStorage();
 
-        // create and initialize the DI provider instance
-        $provider = new Provider();
-        $provider->injectNamingDirectory($application);
-        $provider->injectInitialContext($initialContext);
-        $provider->injectReflectionClasses($reflectionClasses);
-        $provider->injectNamingDirectoryAliases($namingDirectoryAliases);
+        // create and initialize the object manager instance
+        $objectManager = new ObjectManager();
+        $objectManager->injectData($data);
+        $objectManager->injectApplication($application);
+        $objectManager->injectObjectDescriptors($objectDescriptors);
+        $objectManager->injectConfiguredDescriptors($configuredDescriptors);
 
         // attach the instance
-        $application->addManager($provider, $managerConfiguration);
+        $application->addManager($objectManager, $managerConfiguration);
     }
 }

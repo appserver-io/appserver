@@ -22,6 +22,7 @@
 
 namespace AppserverIo\Appserver\ServletEngine;
 
+use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Storage\StackableStorage;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\Application\Interfaces\ManagerConfigurationInterface;
@@ -51,10 +52,11 @@ class ServletManagerFactory
     public static function visit(ApplicationInterface $application, ManagerConfigurationInterface $managerConfiguration)
     {
 
-        // initialize the stackabls
+        // initialize the stackable storage
+        $data = new StackableStorage();
         $servlets = new StackableStorage();
-        $servletMappings = new StackableStorage();
         $initParameters = new StackableStorage();
+        $servletMappings = new GenericStackable();
         $securedUrlConfigs = new StackableStorage();
         $sessionParameters = new StackableStorage();
 
@@ -63,6 +65,7 @@ class ServletManagerFactory
 
         // initialize the servlet manager
         $servletManager = new ServletManager();
+        $servletManager->injectData($data);
         $servletManager->injectServlets($servlets);
         $servletManager->injectApplication($application);
         $servletManager->injectInitParameters($initParameters);
@@ -70,7 +73,6 @@ class ServletManagerFactory
         $servletManager->injectServletMappings($servletMappings);
         $servletManager->injectSecuredUrlConfigs($securedUrlConfigs);
         $servletManager->injectSessionParameters($sessionParameters);
-        $servletManager->injectWebappPath($application->getWebappPath());
         $servletManager->injectDirectories($managerConfiguration->getDirectories());
 
         // attach the instance
