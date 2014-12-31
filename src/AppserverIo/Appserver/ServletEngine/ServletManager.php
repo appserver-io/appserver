@@ -36,6 +36,7 @@ use AppserverIo\Appserver\ServletEngine\InvalidServletMappingException;
 use AppserverIo\Appserver\DependencyInjectionContainer\DirectoryParser;
 use AppserverIo\Appserver\DependencyInjectionContainer\DeploymentDescriptorParser;
 use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\ServletDescriptorInterface;
+use AppserverIo\Storage\GenericStackable;
 
 /**
  * The servlet manager handles the servlets registered for the application.
@@ -124,11 +125,11 @@ class ServletManager extends \Stackable implements ServletContext, ManagerInterf
     /**
      * Injects the container for the servlet mappings.
      *
-     * @param \AppserverIo\Storage\StorageInterface $servletMappings The container for the servlet mappings
+     * @param \AppserverIo\Storage\GenericStackable $servletMappings The container for the servlet mappings
      *
      * @return void
      */
-    public function injectServletMappings(StorageInterface $servletMappings)
+    public function injectServletMappings(GenericStackable $servletMappings)
     {
         $this->servletMappings = $servletMappings;
     }
@@ -346,10 +347,13 @@ class ServletManager extends \Stackable implements ServletContext, ManagerInterf
         // instanciate the servlet
         $instance = $reflectionClass->newInstance();
 
+        // load servlet name
+        $servletName = $descriptor->getName();
+
         // initialize the servlet configuration
         $servletConfig = new ServletConfiguration();
         $servletConfig->injectServletContext($this);
-        $servletConfig->injectServletName($descriptor->getName());
+        $servletConfig->injectServletName($servletName);
 
         // append the init params to the servlet configuration
         foreach ($descriptor->getInitParams() as $paramName => $paramValue) {
@@ -402,7 +406,7 @@ class ServletManager extends \Stackable implements ServletContext, ManagerInterf
      * Returns the servlet mappings found in the
      * configuration file.
      *
-     * @return array The servlet mappings
+     * @return \AppserverIo\Storage\GenericStackable The servlet mappings
      */
     public function getServletMappings()
     {
@@ -442,8 +446,8 @@ class ServletManager extends \Stackable implements ServletContext, ManagerInterf
      */
     public function getServletByMapping($urlMapping)
     {
-        if ($this->servletMappings->has($urlMapping)) {
-            return $this->getServlet($this->servletMappings->get($urlMapping));
+        if (isset($this->servletMappings[$urlMapping])) {
+            return $this->getServlet($this->servletMappings[$urlMapping]);
         }
     }
 
@@ -470,7 +474,7 @@ class ServletManager extends \Stackable implements ServletContext, ManagerInterf
      */
     public function addServletMapping($pattern, $servletName)
     {
-        $this->servletMappings->set($pattern, $servletName);
+        $this->servletMappings[$pattern] = $servletName;
     }
 
     /**

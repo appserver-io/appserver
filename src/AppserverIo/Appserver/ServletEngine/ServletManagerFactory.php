@@ -22,6 +22,7 @@
 
 namespace AppserverIo\Appserver\ServletEngine;
 
+use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Storage\StackableStorage;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\Application\Interfaces\ManagerConfigurationInterface;
@@ -53,8 +54,8 @@ class ServletManagerFactory
 
         // initialize the stackabls
         $servlets = new StackableStorage();
-        $servletMappings = new StackableStorage();
         $initParameters = new StackableStorage();
+        $servletMappings = new GenericStackable();
         $securedUrlConfigs = new StackableStorage();
         $sessionParameters = new StackableStorage();
 
