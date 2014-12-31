@@ -13,7 +13,7 @@
  *
  * @category   Server
  * @package    Appserver
- * @subpackage Application
+ * @subpackage DependencyInjectionContainer
  * @author     Tim Wagner <tw@appserver.io>
  * @copyright  2014 TechDivision GmbH <info@appserver.io>
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
@@ -35,7 +35,7 @@ use AppserverIo\Lang\Reflection\MethodInterface;
  *
  * @category   Server
  * @package    Appserver
- * @subpackage Application
+ * @subpackage DependencyInjectionContainer
  * @author     Tim Wagner <tw@appserver.io>
  * @copyright  2014 TechDivision GmbH <info@appserver.io>
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
@@ -43,6 +43,20 @@ use AppserverIo\Lang\Reflection\MethodInterface;
  */
 class EpbReferenceDescriptor implements EpbReferenceDescriptorInterface
 {
+
+    /**
+     * Defines the value for the reference type 'Session' in a relation.
+     *
+     * @var string
+     */
+    const REF_TYPE_SESSION = 'Session';
+
+    /**
+     * Defines the value for the reference type 'Resource' in a relation.
+     *
+     * @var string
+     */
+    const REF_TYPE_RESOURCE = 'Resource';
 
     /**
      * The reference name.
@@ -196,12 +210,22 @@ class EpbReferenceDescriptor implements EpbReferenceDescriptorInterface
 
         // if we found a @EnterpriseBean annotation, load the annotation instance
         if ($reflectionProperty->hasAnnotation(EnterpriseBean::ANNOTATION)) {
+
+            // initialize the annotation instance
             $annotation = $reflectionProperty->getAnnotation(EnterpriseBean::ANNOTATION);
+
+            // initialize the reference type
+            $refType = EpbReferenceDescriptor::REF_TYPE_SESSION;
         }
 
         // if we found a @Resource annotation, load the annotation instance
         if ($reflectionProperty->hasAnnotation(Resource::ANNOTATION)) {
+
+            // initialize the annotation instance
             $annotation = $reflectionProperty->getAnnotation(Resource::ANNOTATION);
+
+            // initialize the reference type
+            $refType = EpbReferenceDescriptor::REF_TYPE_RESOURCE;
         }
 
         // if we found a annotation instance, initialize the instance
@@ -214,6 +238,9 @@ class EpbReferenceDescriptor implements EpbReferenceDescriptorInterface
             if ($refName = $annotationInstance->getName()) {
                 $this->setRefName($refName);
             }
+
+            // set the ref type
+            $this->setRefType($refType);
 
             // load the injection target data
             $this->setInjectionTarget(InjectionTargetDescriptor::newDescriptorInstance()->fromReflectionProperty($reflectionProperty));
@@ -236,12 +263,22 @@ class EpbReferenceDescriptor implements EpbReferenceDescriptorInterface
 
         // if we found a @EnterpriseBean annotation, load the annotation instance
         if ($reflectionMethod->hasAnnotation(EnterpriseBean::ANNOTATION)) {
+
+            // initialize the annotation instance
             $annotation = $reflectionMethod->getAnnotation(EnterpriseBean::ANNOTATION);
+
+            // initialize the reference type
+            $refType = EpbReferenceDescriptor::REF_TYPE_SESSION;
         }
 
         // if we found a @Resource annotation, load the annotation instance
         if ($reflectionMethod->hasAnnotation(Resource::ANNOTATION)) {
+
+            // initialize the annotation instance
             $annotation = $reflectionMethod->getAnnotation(Resource::ANNOTATION);
+
+            // initialize the reference type
+            $refType = EpbReferenceDescriptor::REF_TYPE_RESOURCE;
         }
 
         // if we found a annotation instance, initialize the instance
@@ -254,6 +291,9 @@ class EpbReferenceDescriptor implements EpbReferenceDescriptorInterface
             if ($refName = $annotationInstance->getName()) {
                 $this->setRefName($refName);
             }
+
+            // set the ref type
+            $this->setRefType($refType);
 
             // load the injection target data
             $this->setInjectionTarget(InjectionTargetDescriptor::newDescriptorInstance()->fromReflectionMethod($reflectionMethod));

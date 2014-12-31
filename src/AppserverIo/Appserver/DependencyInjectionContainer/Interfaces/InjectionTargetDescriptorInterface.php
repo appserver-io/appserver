@@ -13,7 +13,7 @@
  *
  * @category   Server
  * @package    Appserver
- * @subpackage Application
+ * @subpackage DependencyInjectionContainer
  * @author     Tim Wagner <tw@appserver.io>
  * @copyright  2014 TechDivision GmbH <info@appserver.io>
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
@@ -27,7 +27,7 @@ namespace AppserverIo\Appserver\DependencyInjectionContainer\Interfaces;
  *
  * @category   Server
  * @package    Appserver
- * @subpackage Application
+ * @subpackage DependencyInjectionContainer
  * @author     Tim Wagner <tw@appserver.io>
  * @copyright  2014 TechDivision GmbH <info@appserver.io>
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
@@ -44,11 +44,18 @@ interface InjectionTargetDescriptorInterface extends DescriptorInterface
     public function getTargetClass();
 
     /**
-     * Returns the injection target property name.
+     * Returns the target property name we want to inject to.
      *
-     * @return string The bean name
+     * @return string The target property name we want to inject to
      */
-    public function getTargetName();
+    public function getTargetProperty();
+
+    /**
+     * Returns the target method we want use for injection.
+     *
+     * @return string The target method used for injection
+     */
+    public function getTargetMethod();
 
     /**
      * Merges the passed injection target configuration into this one. Configuration

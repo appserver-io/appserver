@@ -49,6 +49,7 @@ use AppserverIo\Psr\Servlet\Annotations\Route;
 // ATTENTION: this is necessary for Windows
 use AppserverIo\Appserver\Naming\InitialContext as NamingContext;
 use AppserverIo\Psr\EnterpriseBeans\EnterpriseBeansException;
+use AppserverIo\Appserver\DependencyInjectionContainer\Description\EpbReferenceDescriptor;
 
 /**
  * A basic dependency injection provider implementation.
@@ -316,14 +317,14 @@ class Provider extends GenericStackable implements ProviderInterface
         // load the object manager instance
         $objectManager = $this->getNamingDirectory()->search('ObjectManagerInterface');
 
-        // check if a reflection class instance has been passed or is already available
-        $reflectionClass = $this->getReflectionClassForObject($instance);
-
         // load the object descriptor for the instance from the the object manager
-        if ($objectManager->hasObjectDescriptor($className = $reflectionClass->getName())) {
+        if ($objectManager->hasObjectDescriptor($className = get_class($instance))) {
 
             // load the object descriptor
             $objectDescriptor = $objectManager->getObjectDescriptor($className);
+
+            // check if a reflection class instance has been passed or is already available
+            $reflectionClass = $this->getReflectionClassForObject($instance);
 
             // check for declared EPB references
             foreach ($objectDescriptor->getEpbReferences() as $epbReference) {
@@ -335,40 +336,53 @@ class Provider extends GenericStackable implements ProviderInterface
                     $lookupName = $this->resolveAlias($epbReference->getRefName());
 
                     // check the reference type
-                    if ($epbReference->getRefType() === 'Session') {
-                        $toInject = $this->getInitialContext()->lookup($lookupName, $sessionId);
-                    } else {
-                        $toInject = $this->getNamingDirectory()->search($lookupName, array($sessionId));
+                    switch ($refType = $epbReference->getRefType()) {
+
+                        case EpbReferenceDescriptor::REF_TYPE_SESSION: // a stateful, stateless or singleton session bean
+
+                            // load the instance to inject by lookup the initial context
+                            $toInject = $this->getInitialContext()->lookup($lookupName, $sessionId);
+                            break;
+
+                        case EpbReferenceDescriptor::REF_TYPE_RESOURCE: // a resource
+
+                            // load the instance to inject be searching the naming directory
+                            $toInject = $this->getNamingDirectory()->search($lookupName, array($sessionId));
+                            break;
+
+                        default:
+
+                            // throw an execption, because we found an unknown reference type
+                            throw new DependencyInjectionException(
+                                sprintf('Value %s for reference type of class %s not supported', $refType, $className)
+                            );
                     }
 
-                    // query if we've a reflection property with the target name
-                    if ($reflectionClass->hasProperty($targetName = $injectionTarget->getTargetName())) {
+                    // query for method injection
+                    if (method_exists($instance, $targetMethod = $injectionTarget->getTargetMethod())) {
+
+                        // inject the target by invoking the method
+                        $instance->$targetMethod($toInject);
+
+                    // query if we've a reflection property with the target name - this is the faster method!
+                    } elseif (property_exists($instance, $targetProperty = $injectionTarget->getTargetProperty())) {
 
                         // load the reflection property
-                        $reflectionProperty = $reflectionClass->getProperty($targetName);
+                        $reflectionProperty = $reflectionClass->getProperty($targetProperty);
 
                         // load the PHP ReflectionProperty instance to inject the bean instance
                         $phpReflectionProperty = $reflectionProperty->toPhpReflectionProperty();
                         $phpReflectionProperty->setAccessible(true);
                         $phpReflectionProperty->setValue($instance, $toInject);
 
-                    } elseif ($reflectionClass->hasMethod($targetName)) { // query if we've a reflection method with the target name
-
-                        // load and invoke the reflection method
-                        $reflectionMethod = $reflectionClass->getMethod($targetName);
-                        $reflectionMethod->invoke($instance, $this->getInitialContext()->lookup($lookupName, $sessionId));
-
                     } else { // throw an exception
-                        throw new EnterpriseBeansException(
+                        throw new DependencyInjectionException(
                             sprintf('Can\'t find property or method %s in class %s', $targetName, $className)
                         );
                     }
                 }
             }
         }
-
-        // add the reflection class name to the array (because it could have been updated)
-        $this->setReflectionClass($reflectionClass);
     }
 
     /**

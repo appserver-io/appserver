@@ -13,7 +13,7 @@
  *
  * @category   Server
  * @package    Appserver
- * @subpackage Application
+ * @subpackage DependencyInjectionContainer
  * @author     Tim Wagner <tw@appserver.io>
  * @copyright  2014 TechDivision GmbH <info@appserver.io>
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
@@ -35,7 +35,7 @@ use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\SingletonSessi
  *
  * @category   Server
  * @package    Appserver
- * @subpackage Application
+ * @subpackage DependencyInjectionContainer
  * @author     Tim Wagner <tw@appserver.io>
  * @copyright  2014 TechDivision GmbH <info@appserver.io>
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)

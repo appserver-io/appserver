@@ -13,7 +13,7 @@
  *
  * @category   Server
  * @package    Appserver
- * @subpackage Application
+ * @subpackage DependencyInjectionContainer
  * @author     Tim Wagner <tw@appserver.io>
  * @copyright  2014 TechDivision GmbH <info@appserver.io>
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
@@ -31,7 +31,7 @@ use AppserverIo\Lang\Reflection\PropertyInterface;
  *
  * @category   Server
  * @package    Appserver
- * @subpackage Application
+ * @subpackage DependencyInjectionContainer
  * @author     Tim Wagner <tw@appserver.io>
  * @copyright  2014 TechDivision GmbH <info@appserver.io>
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
@@ -48,11 +48,18 @@ class InjectionTargetDescriptor implements InjectionTargetDescriptorInterface
     protected $targetClass;
 
     /**
-     * The target member name we want to inject to.
+     * The target property name we want to inject to.
      *
      * @var string
      */
-    protected $targetName;
+    protected $targetProperty;
+
+    /**
+     * The target method name we want use for injection.
+     *
+     * @var string
+     */
+    protected $targetMethod;
 
     /**
      * Sets the target class we want to inject to.
@@ -77,25 +84,47 @@ class InjectionTargetDescriptor implements InjectionTargetDescriptorInterface
     }
 
     /**
-     * Sets the target member name we want to inject to.
+     * Sets the target property name we want to inject to.
      *
-     * @param string $targetName The target member name we want to inject to
+     * @param string $targetProperty The target property name we want to inject to
      *
      * @return void
      */
-    public function setTargetName($targetName)
+    public function setTargetProperty($targetProperty)
     {
-        $this->targetName = $targetName;
+        $this->targetProperty = $targetProperty;
     }
 
     /**
-     * Returns the target member name we want to inject to.
+     * Returns the target property name we want to inject to.
      *
-     * @return string The target member name we want to inject to
+     * @return string The target property name we want to inject to
      */
-    public function getTargetName()
+    public function getTargetProperty()
     {
-        return $this->targetName;
+        return $this->targetProperty;
+    }
+
+    /**
+     * Sets the target method we want to use for injection.
+     *
+     * @param string $targetProperty The target method used for injection
+     *
+     * @return void
+     */
+    public function setTargetMethod($targetMethod)
+    {
+        $this->targetMethod = $targetMethod;
+    }
+
+    /**
+     * Returns the target method we want use for injection.
+     *
+     * @return string The target method used for injection
+     */
+    public function getTargetMethod()
+    {
+        return $this->targetMethod;
     }
 
     /**
@@ -133,7 +162,7 @@ class InjectionTargetDescriptor implements InjectionTargetDescriptorInterface
     {
         // initialize the injection target from the passed property
         $this->setTargetClass($reflectionProperty->getClassName());
-        $this->setTargetName($reflectionProperty->getPropertyName());
+        $this->setTargetProperty($reflectionProperty->getPropertyName());
 
         // return the instance
         return $this;
@@ -152,7 +181,7 @@ class InjectionTargetDescriptor implements InjectionTargetDescriptorInterface
 
         // initialize the injection target from the passed method
         $this->setTargetClass($reflectionMethod->getClassName());
-        $this->setTargetName($reflectionMethod->getMethodName());
+        $this->setTargetMethod($reflectionMethod->getMethodName());
 
         // return the instance
         return $this;
@@ -174,9 +203,14 @@ class InjectionTargetDescriptor implements InjectionTargetDescriptorInterface
             $this->setTargetClass($targetClass);
         }
 
-        // query for the target member name we want to inject to
-        if ($targetName = (string) $node->{'injection-target-name'}) {
-            $this->setTargetName($targetName);
+        // query for the target property name we want to inject to
+        if ($targetProperty = (string) $node->{'injection-target-property'}) {
+            $this->setTargetProperty($targetProperty);
+        }
+
+        // query for the target method we want to use for injection
+        if ($targetMethod = (string) $node->{'injection-target-method'}) {
+            $this->setTargetMethod($targetMethod);
         }
 
         // return the instance
@@ -194,14 +228,19 @@ class InjectionTargetDescriptor implements InjectionTargetDescriptorInterface
     public function merge(InjectionTargetDescriptorInterface $injectionTargetDescriptor)
     {
 
-        // merge the injection target name
-        if ($targetName = $injectionTargetDescriptor->getTargetName()) {
-            $this->setTargetName($targetName);
-        }
-
         // merge the injection target class
         if ($targetClass = $injectionTargetDescriptor->getTargetClass()) {
             $this->setTargetClass($targetClass);
+        }
+
+        // merge the injection target property
+        if ($targetProperty = $injectionTargetDescriptor->getTargetProperty()) {
+            $this->setTargetProperty($targetProperty);
+        }
+
+        // merge the injection target method
+        if ($targetMethod = $injectionTargetDescriptor->getTargetMethod()) {
+            $this->setTargetMethod($targetMethod);
         }
     }
 }
