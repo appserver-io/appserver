@@ -26,17 +26,17 @@ use AppserverIo\Psr\Servlet\Servlet;
 use AppserverIo\Psr\Servlet\ServletContext;
 use AppserverIo\Psr\Servlet\Annotations\Route;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequest;
+use AppserverIo\Appserver\Core\AbstractManager;
 use AppserverIo\Storage\StorageInterface;
 use AppserverIo\Storage\StackableStorage;
+use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Lang\Reflection\ReflectionClass;
-use AppserverIo\Psr\Application\ManagerInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\ServletEngine\ServletConfiguration;
 use AppserverIo\Appserver\ServletEngine\InvalidServletMappingException;
 use AppserverIo\Appserver\DependencyInjectionContainer\DirectoryParser;
 use AppserverIo\Appserver\DependencyInjectionContainer\DeploymentDescriptorParser;
 use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\ServletDescriptorInterface;
-use AppserverIo\Storage\GenericStackable;
 
 /**
  * The servlet manager handles the servlets registered for the application.
@@ -49,18 +49,8 @@ use AppserverIo\Storage\GenericStackable;
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       http://www.appserver.io
  */
-class ServletManager extends \Stackable implements ServletContext, ManagerInterface
+class ServletManager extends AbstractManager implements ServletContext
 {
-
-    /**
-     * Initializes the queue manager.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->webappPath = '';
-    }
 
     /**
      * Injects the additional directories to be parsed when looking for servlets.
@@ -72,30 +62,6 @@ class ServletManager extends \Stackable implements ServletContext, ManagerInterf
     public function injectDirectories(array $directories)
     {
         $this->directories = $directories;
-    }
-
-    /**
-     * Inject the application instance.
-     *
-     * @param \AppserverIo\Psr\Application\ApplicationInterface $application The application instance
-     *
-     * @return void
-     */
-    public function injectApplication(ApplicationInterface $application)
-    {
-        $this->application = $application;
-    }
-
-    /**
-     * Injects the absolute path to the web application.
-     *
-     * @param string $webappPath The path to this web application
-     *
-     * @return void
-     */
-    public function injectWebappPath($webappPath)
-    {
-        $this->webappPath = $webappPath;
     }
 
     /**
@@ -182,33 +148,6 @@ class ServletManager extends \Stackable implements ServletContext, ManagerInterf
     public function initialize(ApplicationInterface $application)
     {
         $this->registerServlets($application);
-    }
-
-    /**
-     * Returns a reflection class intance for the passed class name.
-     *
-     * @param string $className The class name to return the reflection class instance for
-     *
-     * @return \AppserverIo\Lang\Reflection\ReflectionClass The reflection instance
-     * @see \DependencyInjectionContainer\Interfaces\ProviderInterface::getReflectionClass()
-     */
-    public function getReflectionClass($className)
-    {
-        return $this->getApplication()->search('ProviderInterface')->getReflectionClass($className);
-    }
-
-    /**
-     * Returns a new instance of the passed class name.
-     *
-     * @param string      $className The fully qualified class name to return the instance for
-     * @param string|null $sessionId The session-ID, necessary to inject stateful session beans (SFBs)
-     * @param array       $args      Arguments to pass to the constructor of the instance
-     *
-     * @return object The instance itself
-     */
-    public function newInstance($className, $sessionId = null, array $args = array())
-    {
-        return $this->getApplication()->search('ProviderInterface')->newInstance($className, $sessionId, $args);
     }
 
     /**
@@ -373,16 +312,6 @@ class ServletManager extends \Stackable implements ServletContext, ManagerInterf
     }
 
     /**
-     * Returns the application instance.
-     *
-     * @return string The application instance
-     */
-    public function getApplication()
-    {
-        return $this->application;
-    }
-
-    /**
      * Returns all the additional directories to be parsed for servlets.
      *
      * @return array The additional directories
@@ -475,16 +404,6 @@ class ServletManager extends \Stackable implements ServletContext, ManagerInterf
     public function addServletMapping($pattern, $servletName)
     {
         $this->servletMappings[$pattern] = $servletName;
-    }
-
-    /**
-     * Returns the path to the webapp.
-     *
-     * @return string The path to the webapp
-     */
-    public function getWebappPath()
-    {
-        return $this->webappPath;
     }
 
     /**
@@ -636,25 +555,13 @@ class ServletManager extends \Stackable implements ServletContext, ManagerInterf
     }
 
     /**
-     * Initializes the manager instance.
+     * Returns the identifier for the servlet manager instance.
      *
-     * @return void
-     * @see \AppserverIo\Psr\Application\ManagerInterface::initialize()
+     * @return string
+     * @see \AppserverIo\Psr\Application\ManagerInterface::getIdentifier()
      */
     public function getIdentifier()
     {
         return ServletContext::IDENTIFIER;
-    }
-
-    /**
-     * Returns the value with the passed name from the context.
-     *
-     * @param string $key The key of the value to return from the context.
-     *
-     * @return mixed The requested attribute
-     */
-    public function getAttribute($key)
-    {
-        throw new \Exception(sprintf('%s is not implemented yes', __METHOD__));
     }
 }

@@ -24,20 +24,13 @@
 
 namespace AppserverIo\Appserver\PersistenceContainer;
 
-use AppserverIo\Appserver\Naming\InitialContext;
-use AppserverIo\Collections\ArrayList;
-use AppserverIo\Collections\HashMap;
 use AppserverIo\Storage\StorageInterface;
-use AppserverIo\Storage\GenericStackable;
-use AppserverIo\Storage\StackableStorage;
+use AppserverIo\Appserver\Core\AbstractManager;
+use AppserverIo\Appserver\Naming\InitialContext;
+use AppserverIo\Lang\Reflection\AnnotationInterface;
+use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Psr\PersistenceContainerProtocol\BeanContext;
 use AppserverIo\Psr\PersistenceContainerProtocol\RemoteMethod;
-use AppserverIo\Psr\Application\ManagerInterface;
-use AppserverIo\Psr\Application\ApplicationInterface;
-use AppserverIo\Lang\Reflection\ClassInterface;
-use AppserverIo\Lang\Reflection\ReflectionClass;
-use AppserverIo\Lang\Reflection\ReflectionObject;
-use AppserverIo\Lang\Reflection\AnnotationInterface;
 use AppserverIo\Appserver\DependencyInjectionContainer\DirectoryParser;
 use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\BeanDescriptorInterface;
 use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\SessionBeanDescriptorInterface;
@@ -60,44 +53,8 @@ use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\MessageDrivenB
  * @link       https://github.com/appserver-io/appserver
  * @link       http://www.appserver.io
  */
-class BeanManager extends GenericStackable implements BeanContext, ManagerInterface
+class BeanManager extends AbstractManager implements BeanContext
 {
-
-    /**
-     * Inject the data storage.
-     *
-     * @param \AppserverIo\Storage\StorageInterface $data The data storage to use
-     *
-     * @return void
-     */
-    public function injectData(StorageInterface $data)
-    {
-        $this->data = $data;
-    }
-
-    /**
-     * Inject the application instance.
-     *
-     * @param \AppserverIo\Psr\Application\ApplicationInterface $application The application instance
-     *
-     * @return void
-     */
-    public function injectApplication(ApplicationInterface $application)
-    {
-        $this->application = $application;
-    }
-
-    /**
-     * Injects the absolute path to the web application.
-     *
-     * @param string $webappPath The absolute path to this web application
-     *
-     * @return void
-     */
-    public function injectWebappPath($webappPath)
-    {
-        $this->webappPath = $webappPath;
-    }
 
     /**
      * Injects the resource locator that locates the requested queue.
@@ -265,26 +222,6 @@ class BeanManager extends GenericStackable implements BeanContext, ManagerInterf
     protected function newAnnotationInstance(AnnotationInterface $annotation)
     {
         return $this->getApplication()->search('ProviderInterface')->newAnnotationInstance($annotation);
-    }
-
-    /**
-     * Returns the application instance.
-     *
-     * @return \AppserverIo\Psr\Application\ApplicationInterface The application instance
-     */
-    public function getApplication()
-    {
-        return $this->application;
-    }
-
-    /**
-     * Returns the absolute path to the web application.
-     *
-     * @return string The absolute path
-     */
-    public function getWebappPath()
-    {
-        return $this->webappPath;
     }
 
     /**
@@ -547,90 +484,10 @@ class BeanManager extends GenericStackable implements BeanContext, ManagerInterf
     }
 
     /**
-     * Registers the value with the passed key in the container.
+     * Returns the identifier for the bean manager instance.
      *
-     * @param string $key   The key to register the value with
-     * @param object $value The value to register
-     *
-     * @return void
-     */
-    public function setAttribute($key, $value)
-    {
-        $this->data->set($key, $value);
-    }
-
-    /**
-     * Returns the attribute with the passed key from the container.
-     *
-     * @param string $key The key the requested value is registered with
-     *
-     * @return mixed|null The requested value if available
-     */
-    public function getAttribute($key)
-    {
-        if ($this->data->has($key)) {
-            return $this->data->get($key);
-        }
-    }
-
-    /**
-     * Returns a new reflection class intance for the passed class name.
-     *
-     * @param string $className The class name to return the reflection class instance for
-     *
-     * @return \AppserverIo\Lang\Reflection\ReflectionClass The reflection instance
-     */
-    public function newReflectionClass($className)
-    {
-        return $this->getApplication()->search('ProviderInterface')->newReflectionClass($className);
-    }
-
-    /**
-     * Returns a reflection class intance for the passed class name.
-     *
-     * @param string $className The class name to return the reflection class instance for
-     *
-     * @return \AppserverIo\Lang\Reflection\ReflectionClass The reflection instance
-     * @see \DependencyInjectionContainer\Interfaces\ProviderInterface::getReflectionClass()
-     */
-    public function getReflectionClass($className)
-    {
-        return $this->getApplication()->search('ProviderInterface')->getReflectionClass($className);
-    }
-
-    /**
-     * Returns a reflection class intance for the passed class name.
-     *
-     * @param object $instance The instance to return the reflection class instance for
-     *
-     * @return \AppserverIo\Lang\Reflection\ReflectionClass The reflection instance
-     * @see \DependencyInjectionContainer\Interfaces\ProviderInterface::newReflectionClass()
-     * @see \DependencyInjectionContainer\Interfaces\ProviderInterface::getReflectionClass()
-     */
-    public function getReflectionClassForObject($instance)
-    {
-        return $this->getApplication()->search('ProviderInterface')->getReflectionClassForObject($instance);
-    }
-
-    /**
-     * Returns a new instance of the passed class name.
-     *
-     * @param string      $className The fully qualified class name to return the instance for
-     * @param string|null $sessionId The session-ID, necessary to inject stateful session beans (SFBs)
-     * @param array       $args      Arguments to pass to the constructor of the instance
-     *
-     * @return object The instance itself
-     */
-    public function newInstance($className, $sessionId = null, array $args = array())
-    {
-        return $this->getApplication()->search('ProviderInterface')->newInstance($className, $sessionId, $args);
-    }
-
-    /**
-     * Initializes the manager instance.
-     *
-     * @return void
-     * @see \AppserverIo\Psr\Application\ManagerInterface::initialize()
+     * @return string
+     * @see \AppserverIo\Psr\Application\ManagerInterface::getIdentifier()
      */
     public function getIdentifier()
     {
