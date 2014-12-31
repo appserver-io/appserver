@@ -108,7 +108,7 @@ class InjectionTargetDescriptor implements InjectionTargetDescriptorInterface
     /**
      * Sets the target method we want to use for injection.
      *
-     * @param string $targetProperty The target method used for injection
+     * @param string $targetMethod The target method used for injection
      *
      * @return void
      */

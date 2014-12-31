@@ -264,7 +264,7 @@ abstract class BeanDescriptor implements BeanDescriptorInterface
      *
      * @return \AppserverIo\Lang\Reflection\AnnotationInterface The reflection annotation
      */
-    protected abstract function newAnnotationInstance(ClassInterface $reflectionClass);
+    abstract protected function newAnnotationInstance(ClassInterface $reflectionClass);
 
     /**
      * Initializes the bean configuration instance from the passed reflection class instance.

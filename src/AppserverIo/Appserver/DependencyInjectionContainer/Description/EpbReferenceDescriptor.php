@@ -201,7 +201,7 @@ class EpbReferenceDescriptor implements EpbReferenceDescriptorInterface
      * Creates and initializes a beans reference configuration instance from the passed
      * reflection property instance.
      *
-     * @param \AppserverIo\Lang\Reflection\ClassInterface $reflectionClass The reflection class with the beans reference configuration
+     * @param \AppserverIo\Lang\Reflection\PropertyInterface $reflectionProperty The reflection property with the beans reference configuration
      *
      * @return \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\EpbReferenceDescriptorInterface|null The initialized descriptor instance
      */
@@ -254,7 +254,7 @@ class EpbReferenceDescriptor implements EpbReferenceDescriptorInterface
      * Creates and initializes a beans reference configuration instance from the passed
      * reflection method instance.
      *
-     * @param \AppserverIo\Lang\Reflection\ClassInterface $reflectionClass The reflection class with the beans reference configuration
+     * @param \AppserverIo\Lang\Reflection\MethodInterface $reflectionMethod The reflection method with the beans reference configuration
      *
      * @return \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\EpbReferenceDescriptorInterface|null The initialized descriptor instance
      */
