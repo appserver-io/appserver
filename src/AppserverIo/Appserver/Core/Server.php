@@ -517,6 +517,14 @@ class Server
             array($this->getInitialContext())
         );
 
+        /*
+        // Add a webapps scanner
+        $monitors[] = $this->newInstance(
+            'AppserverIo\Appserver\Core\Scanner\WebappsScanner',
+            array($this->getInitialContext())
+        );
+        */
+
         // Start all monitors
         foreach ($monitors as $monitor) {
             $monitor->start();

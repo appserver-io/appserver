@@ -321,19 +321,31 @@ abstract class AbstractScanner extends AbstractContextThread
     }
 
     /**
+     * Returns an array with file extensions that are used
+     * to create the directory hash.
+     *
+     * @return array The array with the file extensions
+     * @see \AppserverIo\Appserver\Core\Scanner\AbstractScanner::getDirectoryHash()
+     */
+    abstract protected function getExtensionsToWatch();
+
+    /**
      * Calculates an hash value for all files with certain extensions.
      * This is used to test if the hash value changed, so if
      * it changed, the appserver can react accordingly.
      *
-     * @param \SplFileInfo $directory         The directory to watch
-     * @param array        $extensionsToWatch The extensions we have to look for
+     * @param \SplFileInfo $directory The directory to watch
      *
      * @return string The hash value build out of the found filenames
      */
-    protected function getDirectoryHash(\SplFileInfo $directory, array $extensionsToWatch)
+    protected function getDirectoryHash(\SplFileInfo $directory)
     {
+
         // prepare the array
         $files = new \ArrayObject();
+
+        // prepare the array with the file extensions of the files used to build the hash
+        $extensionsToWatch = $this->getExtensionsToWatch();
 
         // add all files with the found extensions to the array
         foreach (new \DirectoryIterator($directory) as $fileInfo) {

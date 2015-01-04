@@ -29,7 +29,7 @@ use AppserverIo\Appserver\Core\Interfaces\ExtractorInterface;
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       http://www.appserver.io
  */
-class DeploymentScanner extends AbstractScanner
+class WebappsScanner extends DeploymentScanner
 {
 
     /**
@@ -39,7 +39,7 @@ class DeploymentScanner extends AbstractScanner
      */
     public function getDirectory()
     {
-        return new \SplFileInfo($this->getService()->getDeployDir());
+        return new \SplFileInfo($this->getService()->getWebappsDir());
     }
 
     /**
@@ -50,7 +50,7 @@ class DeploymentScanner extends AbstractScanner
      */
     protected function getExtensionsToWatch()
     {
-        return array('dodeploy', 'deployed');
+        return array('php');
     }
 
     /**
@@ -119,16 +119,45 @@ class DeploymentScanner extends AbstractScanner
     }
 
     /**
-     * This method returns 0 to signal that the no successful deployment has been processed
-     * so far, e. g. the server has been installed and not been started yet.
+     * Calculates an hash value for all files with certain extensions.
+     * This is used to test if the hash value changed, so if
+     * it changed, the appserver can react accordingly.
      *
-     * @param \SplFileInfo $file The deployment directory
+     * @param \SplFileInfo $directory The directory to watch
      *
-     * @return integer The UNIX timestamp with the last successfully deployment date or 0 if no successful
-     *      deployment has been processed
+     * @return string The hash value build out of the found filenames
      */
-    public function getLastSuccessfullyDeployment(\SplFileInfo $file)
+    protected function getDirectoryHash(\SplFileInfo $directory)
     {
-        return $this->getLastFileTouch($file);
+
+        // clear the stat cache
+        clearstatcache();
+
+        // initialize the array for the file stats
+        $files = array();
+        $result = array();
+
+        // prepare the array with the file extensions of the files used to build the hash
+        $extensionsToWatch = $this->getExtensionsToWatch();
+
+        // load all files
+        foreach ($extensionsToWatch as $extensionToWatch) {
+            $files = array_merge($files, $this->getService()->globDir($directory . DIRECTORY_SEPARATOR . '*.' . $extensionToWatch));
+        }
+
+        // iterate over the files
+        foreach ($files as $file) {
+
+            // load the last modification time
+            $mtime = filemtime($file);
+
+            // store the modification time
+            if (isset($result[$file]) === false || $result[$file] !== $mtime) {
+                $result[$file] = $mtime;
+            }
+        }
+
+        // return a md5 hash representation of the directory
+        return md5(serialize($result));
     }
 }
