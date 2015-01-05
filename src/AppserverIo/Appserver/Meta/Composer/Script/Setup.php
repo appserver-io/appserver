@@ -102,14 +102,15 @@ class Setup
      * @var array
      */
     protected static $osProperties = array(
-        SetupKeys::OS_DARWIN  => array(SetupKeys::OS_FAMILY => SetupKeys::OS_FAMILY_DARWIN, SetupKeys::GROUP => 'staff', SetupKeys::USER => '_www'),
-        SetupKeys::OS_DEBIAN  => array(SetupKeys::OS_FAMILY => SetupKeys::OS_FAMILY_LINUX,  SetupKeys::GROUP => 'www-data', SetupKeys::USER => 'www-data'),
-        SetupKeys::OS_UBUNTU  => array(SetupKeys::OS_FAMILY => SetupKeys::OS_FAMILY_LINUX,  SetupKeys::GROUP => 'www-data', SetupKeys::USER => 'www-data'),
-        SetupKeys::OS_FEDORA  => array(SetupKeys::OS_FAMILY => SetupKeys::OS_FAMILY_LINUX),
-        SetupKeys::OS_REDHAT  => array(SetupKeys::OS_FAMILY => SetupKeys::OS_FAMILY_LINUX),
-        SetupKeys::OS_CENTOS  => array(SetupKeys::OS_FAMILY => SetupKeys::OS_FAMILY_LINUX),
+        SetupKeys::OS_DARWIN  => array(SetupKeys::OS_FAMILY => SetupKeys::OS_FAMILY_DARWIN, SetupKeys::OS_ARCHITECTURE => 'x86_64', SetupKeys::GROUP => 'staff',    SetupKeys::USER => '_www'),
+        SetupKeys::OS_DEBIAN  => array(SetupKeys::OS_FAMILY => SetupKeys::OS_FAMILY_LINUX,  SetupKeys::OS_ARCHITECTURE => 'x86_64', SetupKeys::GROUP => 'www-data', SetupKeys::USER => 'www-data'),
+        SetupKeys::OS_UBUNTU  => array(SetupKeys::OS_FAMILY => SetupKeys::OS_FAMILY_LINUX,  SetupKeys::OS_ARCHITECTURE => 'x86_64', SetupKeys::GROUP => 'www-data', SetupKeys::USER => 'www-data'),
+        SetupKeys::OS_FEDORA  => array(SetupKeys::OS_FAMILY => SetupKeys::OS_FAMILY_LINUX,  SetupKeys::OS_ARCHITECTURE => 'x86_64', ),
+        SetupKeys::OS_REDHAT  => array(SetupKeys::OS_FAMILY => SetupKeys::OS_FAMILY_LINUX,  SetupKeys::OS_ARCHITECTURE => 'x86_64', ),
+        SetupKeys::OS_CENTOS  => array(SetupKeys::OS_FAMILY => SetupKeys::OS_FAMILY_LINUX,  SetupKeys::OS_ARCHITECTURE => 'x86_64', ),
         SetupKeys::OS_WINDOWS => array(
             SetupKeys::OS_FAMILY                                     => SetupKeys::OS_FAMILY_WINDOWS,
+            SetupKeys::OS_ARCHITECTURE                               => 'x86',
             SetupKeys::CONTAINER_HTTP_WORKER_NUMBER                  => 8,
             SetupKeys::CONTAINER_HTTPS_WORKER_NUMBER                 => 8,
             SetupKeys::CONTAINER_PERSISTENCE_CONTAINER_WORKER_NUMBER => 8
@@ -177,7 +178,15 @@ class Setup
             Setup::$osProperties[$os]
         );
 
-        // prepare the properties that has to be merge out of other ones
+        // prepare the properties for the OS identifier, e. g. iron-horse_debian_x86_64
+        Setup::$mergedProperties[SetupKeys::OS_IDENTIFIER] = sprintf(
+            '%s_%s_%s',
+            str_replace(' ', '-', strtolower(Setup::$mergedProperties[SetupKeys::RELEASE_NAME])),
+            $os,
+            Setup::$mergedProperties[SetupKeys::OS_ARCHITECTURE]
+        );
+
+        // prepare the properties for the software identifier, e. g. appserver/1.0.0 (debian) PHP/5.5.19
         Setup::$mergedProperties[SetupKeys::SOFTWARE_IDENTIFIER] = sprintf(
             'appserver/%s (%s) PHP/%s',
             Setup::$mergedProperties[SetupKeys::VERSION],
@@ -197,13 +206,25 @@ class Setup
     public static function postInstall(Event $event)
     {
 
-        // load the version of this package => the appserver version
-        $version = $event->getComposer()->getPackage()->getVersion();
+        // check if we've a file with the actual version number
+        if (file_exists($filename = getcwd() .'/etc/appserver/.release-version')) {
+            $version = file_get_contents($filename);
+        } else { // load the version (GIT) of this package as fallback
+            $version = $event->getComposer()->getPackage()->getPrettyVersion();
+        }
+
+        // check if we've a file with the actual release name
+        if (file_exists($filename = getcwd() .'/etc/appserver/.release-name')) {
+            $releaseName = file_get_contents($filename);
+        } else { // set the release name to 'Unknown' if not
+            $releaseName = 'Unknown';
+        }
 
         // prepare the context properties
         $contextProperties = array(
+            SetupKeys::VERSION => $version,
             SetupKeys::INSTALL_DIR => getcwd(),
-            SetupKeys::VERSION => $version
+            SetupKeys::RELEASE_NAME => $releaseName
         );
 
         // load the OS signature => sscanf is necessary to detect Windows, e. g. Windows NT for Windows 7
@@ -278,7 +299,7 @@ class Setup
         }
 
         // process and move the configuration files their target directory
-        Setup::processTemplate('var/tmp/opcache-blacklist.txt');
+        Setup::processTemplate('webapps/index.html');
         Setup::processTemplate('etc/appserver/appserver.xml');
 
         // write a message to the console

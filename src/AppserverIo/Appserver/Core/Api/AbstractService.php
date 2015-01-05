@@ -489,6 +489,31 @@ abstract class AbstractService implements ServiceInterface
     }
 
     /**
+     * Recursively parses and returns the directories that matches the passed
+     * glob pattern.
+     *
+     * @param string  $pattern The glob pattern used to parse the directories
+     * @param integer $flags   The flags passed to the glob function
+     *
+     * @return array The directories matches the passed glob pattern
+     * @link http://php.net/glob
+     */
+    public function globDir($pattern, $flags = 0)
+    {
+
+        // parse the first directory
+        $files = glob($pattern, $flags);
+
+        // parse all subdirectories
+        foreach (glob(dirname($pattern). DIRECTORY_SEPARATOR . '*', GLOB_ONLYDIR|GLOB_NOSORT) as $dir) {
+            $files = array_merge($files, $this->globDir($dir . DIRECTORY_SEPARATOR . basename($pattern), $flags));
+        }
+
+        // return the array with the files matching the glob pattern
+        return $files;
+    }
+
+    /**
      * Creates the SSL file passed as parameter or nothing if the file already exists.
      *
      * @param \SplFileInfo $certificate The file info about the SSL file to generate

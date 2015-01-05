@@ -58,7 +58,11 @@ class ServletValve implements Valve
         $servletManager = $servletRequest->getContext()->search('ServletContext');
 
         // locate and service the servlet
-        $servletManager->locate($servletRequest)->service($servletRequest, $servletResponse);
+        $servlet = $servletManager->locate($servletRequest);
+        $servlet->service($servletRequest, $servletResponse);
+
+        // finally invoke the destroy() method
+        $servlet->destroy();
 
         // dispatch this request, because we have finished processing it
         $servletRequest->setDispatched(true);

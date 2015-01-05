@@ -85,6 +85,16 @@ class TimerTask extends \Thread
     }
 
     /**
+     * Returns the timer instance the task is bound to.
+     *
+     * @return \AppserverIo\Psr\EnterpriseBeans\TimerInterface The timer instance
+     */
+    public function getTimer()
+    {
+        return $this->timer;
+    }
+
+    /**
      * Queries whether the timer task has been finished or not.
      *
      * @return boolean TRUE if the timer task has been finished, else FALSE

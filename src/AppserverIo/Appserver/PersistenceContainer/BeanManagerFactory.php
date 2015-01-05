@@ -80,7 +80,6 @@ class BeanManagerFactory
         $beanManager->injectData($data);
         $beanManager->injectApplication($application);
         $beanManager->injectResourceLocator($beanLocator);
-        $beanManager->injectWebappPath($application->getWebappPath());
         $beanManager->injectSingletonSessionBeans($singletonSessionBeans);
         $beanManager->injectStatefulSessionBeans($statefulSessionBeans);
         $beanManager->injectStatefulSessionBeanSettings($statefulSessionBeanSettings);

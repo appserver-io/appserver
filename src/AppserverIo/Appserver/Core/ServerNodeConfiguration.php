@@ -47,6 +47,13 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     protected $node;
 
     /**
+     * Hold's the analytics array
+     *
+     * @var array
+     */
+    protected $analytics;
+
+    /**
      * Hold's the handlers array
      *
      * @var array
@@ -120,6 +127,20 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     }
 
     /**
+     * Returns analytics
+     *
+     * @return string
+     */
+    public function getAnalytics()
+    {
+        if (!$this->analytics) {
+            $this->analytics = $this->prepareAnalytics($this->node);
+        }
+
+        return $this->analytics;
+    }
+
+    /**
      * Returns the username we want to execute the processes with.
      *
      * @return string
@@ -140,7 +161,7 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     }
 
     /**
-     * Return's type
+     * Returns type
      *
      * @return string
      */
@@ -150,7 +171,7 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     }
 
     /**
-     * Return's logger name
+     * Returns logger name
      *
      * @return string
      */
@@ -160,7 +181,7 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     }
 
     /**
-     * Return's servers name
+     * Returns servers name
      *
      * @return string
      */
@@ -170,7 +191,7 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     }
 
     /**
-     * Return's transport
+     * Returns transport
      *
      * @return string
      */
@@ -180,7 +201,7 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     }
 
     /**
-     * Return's address
+     * Returns address
      *
      * @return string
      */
@@ -190,7 +211,7 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     }
 
     /**
-     * Return's port
+     * Returns port
      *
      * @return int
      */
@@ -200,7 +221,7 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     }
 
     /**
-     * Return's software
+     * Returns software
      *
      * @return string
      */
@@ -210,7 +231,7 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     }
 
     /**
-     * Return's admin
+     * Returns admin
      *
      * @return string
      */
@@ -220,7 +241,7 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     }
 
     /**
-     * Return's keep-alive max connection
+     * Returns keep-alive max connection
      *
      * @return int
      */
@@ -230,7 +251,7 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     }
 
     /**
-     * Return's keep-alive timeout
+     * Returns keep-alive timeout
      *
      * @return int
      */
@@ -240,7 +261,7 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     }
 
     /**
-     * Return's template file path for errors page
+     * Returns template file path for errors page
      *
      * @return string
      */
@@ -250,7 +271,7 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     }
 
     /**
-     * Return's worker number
+     * Returns worker number
      *
      * @return int
      */
@@ -260,7 +281,7 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     }
 
     /**
-     * Return's worker's accept min count
+     * Returns worker's accept min count
      *
      * @return int
      */
@@ -270,7 +291,7 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     }
 
     /**
-     * Return's worker's accept max count
+     * Returns worker's accept max count
      *
      * @return int
      */
@@ -280,7 +301,7 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     }
 
     /**
-     * Return's context type
+     * Returns context type
      *
      * @return string
      */
@@ -290,7 +311,7 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     }
 
     /**
-     * Return's request type
+     * Returns request type
      *
      * @return string
      */
@@ -300,7 +321,7 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     }
 
     /**
-     * Return's socket type
+     * Returns socket type
      *
      * @return string
      */
@@ -310,7 +331,7 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     }
 
     /**
-     * Return's worker type
+     * Returns worker type
      *
      * @return string
      */
@@ -320,7 +341,7 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     }
 
     /**
-     * Return's document root
+     * Returns document root
      *
      * @return string
      */
@@ -330,7 +351,7 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     }
 
     /**
-     * Return's directory index definition
+     * Returns directory index definition
      *
      * @return string
      */
@@ -340,7 +361,7 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     }
 
     /**
-     * Return's connection handlers
+     * Returns connection handlers
      *
      * @return array
      */
@@ -354,7 +375,7 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     }
 
     /**
-     * Return's modules
+     * Returns modules
      *
      * @return array
      */
@@ -368,7 +389,7 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     }
 
     /**
-     * Return's handlers
+     * Returns handlers
      *
      * @return array
      */
@@ -382,7 +403,7 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     }
 
     /**
-     * Return's virtual hosts
+     * Returns virtual hosts
      *
      * @return array
      */
@@ -409,7 +430,7 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     }
 
     /**
-     * Return's cert path
+     * Returns cert path
      *
      * @return string
      */
@@ -419,7 +440,7 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     }
 
     /**
-     * Return's passphrase
+     * Returns passphrase
      *
      * @return string
      */
@@ -546,6 +567,7 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
                         'accesses' => $this->prepareAccesses($virtualHost),
                         'locations' => $this->prepareLocations($virtualHost),
                         'authentications' => $this->prepareAuthentications($virtualHost),
+                        'analytics' => $this->prepareAnalytics($virtualHost),
                     );
                 }
             }
@@ -680,6 +702,23 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
             }
         }
         return $accesses;
+    }
+
+    /**
+     * Prepares the analytics array based on a node implementing NodeInterface
+     *
+     * @param \AppserverIo\Configuration\Interfaces\NodeInterface $node The node instance
+     *
+     * @return array
+     */
+    public function prepareAnalytics(NodeInterface $node)
+    {
+        $analytics = array();
+        if (is_array($node->getAnalytics())) {
+
+            $analytics = $node->getAnalyticsAsArray();
+        }
+        return $analytics;
     }
 
     /**

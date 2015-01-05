@@ -64,8 +64,9 @@ class QueueManagerFactory
         // initialize the queue manager
         $queueManager = new QueueManager();
         $queueManager->injectQueues($queues);
-        $queueManager->injectWebappPath($application->getWebappPath());
+        $queueManager->injectApplication($application);
         $queueManager->injectResourceLocator($queueLocator);
+        $queueManager->injectWebappPath($application->getWebappPath());
 
         // attach the instance
         $application->addManager($queueManager, $managerConfiguration);

@@ -87,7 +87,7 @@ class BeanLocator implements ResourceLocator
     {
 
         // get the reflection class for the passed class name
-        $reflectionClass = $beanManager->newReflectionClass($className);
+        $reflectionClass = $beanManager->getReflectionClass($className);
 
         // @Stateful
         if ($reflectionClass->hasAnnotation(Stateful::ANNOTATION)) {

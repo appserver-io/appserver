@@ -1,3 +1,47 @@
+# Version 1.0.0-beta3
+
+# Bugfixes
+
+* Fixing problems with FastCGI connection to latest HHVM versions
+* Analytics module configuration within virtual hosts was ignored
+
+# Features
+
+* None
+
+# Version 1.0.0-beta2
+
+# Bugfixes
+
+* Query directories under webapps for WEB-INF or META-INF to make sure we have a valid application
+* Bugfixing invalid servlet init parameter initialization when using @Route annotation on servlets
+* Bugfixing for invalid folder check when try to parse folders defined in context.xml for servlets
+
+# Features
+
+* Closed #299 - Refactor Message-Queue Client
+* Add welcome page functionality + Iron Horse logos in webapps/welcome-page directory
+* Added support for the webserver's analytics module configuration
+
+# Version 1.0.0-beta1
+
+## Bugfixes
+
+* Set correct class name for Core\Api\Node\StorageServerNode to avoid warning if use Composer --optimizer-autoloader
+* Changed behaviour of DB creation provisioning step so it does not need root permissions
+
+## Features
+
+* Closed #286 - Version number in server software signature
+* Closed #294 - Session-ID structure
+* Closed #288 - Session-ID will be reused
+* Closed #292 - Annotation based configuration for servlets
+* Closed #298 - Invoke destroy() method on Servlets after handling a request
+* Move var/tmp/opcache-blacklist.txt to runtime build
+* Remove unnecessary handler manager because WebSocketServer is not activated by default any longer
+* Optimize class loaders for performance
+* App based AOP can now be configured using pure XML file META-INF/pointcuts.xml
+
 # Version 1.0.0-beta
 
 ## Bugfixes

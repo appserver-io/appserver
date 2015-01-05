@@ -81,10 +81,9 @@ class InitialContext implements ContextInterface
         // add the storage to the initial context
         $this->setStorage($storage);
 
-        // initialize the class loader instance
-        $classLoaderNode = $initialContextNode->getClassLoader();
-        $reflectionClass = $this->newReflectionClass($classLoaderNode->getType());
-        $this->setClassLoader($reflectionClass->newInstanceArgs(array($this)));
+        // initialize the default class loader instance
+        $classLoaderType = $initialContextNode->getClassLoader()->getType();
+        $this->setClassLoader($classLoaderType::factory());
 
         // attach the system configuration to the initial context
         $this->setSystemConfiguration($systemConfiguration);

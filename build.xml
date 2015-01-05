@@ -5,6 +5,13 @@
     <!-- initialize ENV variable -->
     <property environment="env" />
     
+    <!-- ==================================================================== -->
+    <!-- Generate a time stamp for further use in build targets               -->
+    <!-- ==================================================================== --> 
+    <tstamp>
+        <format property="time.stamp" pattern="yyyy-MM-dd_HHmmss"/>
+    </tstamp>
+    
     <!-- initialize file based properties -->
     <property file="${basedir}/build.properties"/>
     <property file="${basedir}/build.default.properties"/>
@@ -86,15 +93,18 @@
         <!-- copy all files to the target directory -->
         <copy todir="${php-target.dir}/appserver" preservelastmodified="true" overwrite="true">
             <fileset dir="${basedir}">
+                <include name="etc/**/*" />
                 <include name="src/**/*" />
                 <include name="var/**/*" />
                 <include name="tests/**/*" />
+                <include name="webapps/**/*" />
                 <include name="resources/**/*" />
                 <include name="server.php" />
                 <include name="composer.json" />
-                <include name="etc/appserver/conf.d/context.xml" />
             </fileset>
         </copy>
+        <!-- create the file with the version number -->
+        <echo file="${php-target.dir}/appserver/etc/appserver/.release-version" message="dev-master.${build.number}" />
     </target>
     
     <!-- ==================================================================== -->

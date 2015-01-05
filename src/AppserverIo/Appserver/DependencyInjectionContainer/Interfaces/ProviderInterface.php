@@ -13,7 +13,7 @@
  *
  * @category   Server
  * @package    Appserver
- * @subpackage Application
+ * @subpackage DependencyInjectionContainer
  * @author     Tim Wagner <tw@appserver.io>
  * @copyright  2014 TechDivision GmbH <info@appserver.io>
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
@@ -32,7 +32,7 @@ use AppserverIo\Psr\Application\ManagerInterface;
  *
  * @category   Server
  * @package    Appserver
- * @subpackage Application
+ * @subpackage DependencyInjectionContainer
  * @author     Tim Wagner <tw@appserver.io>
  * @copyright  2014 TechDivision GmbH <info@appserver.io>
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
@@ -52,13 +52,12 @@ interface ProviderInterface extends ManagerInterface
     /**
      * Injects the dependencies of the passed instance.
      *
-     * @param object                                           $instance        The instance to inject the dependencies for
-     * @param \AppserverIo\Lang\Reflection\ClassInterface|null $reflectionClass The reflection class for the passed instance
-     * @param string|null                                      $sessionId       The session-ID, necessary to inject stateful session beans (SFBs)
+     * @param object      $instance  The instance to inject the dependencies for
+     * @param string|null $sessionId The session-ID, necessary to inject stateful session beans (SFBs)
      *
      * @return void
      */
-    public function injectDependencies($instance, ClassInterface $reflectionClass = null, $sessionId = null);
+    public function injectDependencies($instance, $sessionId = null);
 
     /**
      * Returns a new instance of the passed class name.
@@ -113,11 +112,32 @@ interface ProviderInterface extends ManagerInterface
     public function resolveAlias($lookupName);
 
     /**
-     * Returns a reflection class intance for the passed class name.
+     * Returns a new reflection class intance for the passed class name.
      *
-     * @param string $className The class name to return the reflection instance for
+     * @param string $className The class name to return the reflection class instance for
      *
      * @return \AppserverIo\Lang\Reflection\ReflectionClass The reflection instance
      */
     public function newReflectionClass($className);
+
+    /**
+     * Returns a reflection class intance for the passed class name.
+     *
+     * @param string $className The class name to return the reflection class instance for
+     *
+     * @return \AppserverIo\Lang\Reflection\ReflectionClass The reflection instance
+     * @see \DependencyInjectionContainer\Interfaces\ProviderInterface::getReflectionClass()
+     */
+    public function getReflectionClass($className);
+
+    /**
+     * Returns a reflection class intance for the passed class name.
+     *
+     * @param object $instance The instance to return the reflection class instance for
+     *
+     * @return \AppserverIo\Lang\Reflection\ReflectionClass The reflection instance
+     * @see \DependencyInjectionContainer\Interfaces\ProviderInterface::newReflectionClass()
+     * @see \DependencyInjectionContainer\Interfaces\ProviderInterface::getReflectionClass()
+     */
+    public function getReflectionClassForObject($instance);
 }

@@ -105,7 +105,23 @@ class Response extends GenericStackable implements HttpServletResponse
      */
     public function addCookie(CookieInterface $cookie)
     {
-        $this->cookies[$cookie->getName()] = serialize($cookie);
+
+        // check if this cookie has already been set
+        if ($this->hasCookie($name = $cookie->getName())) {
+
+            // then check if we've already one cookie header available
+            if (is_array($cookieValue = $this->getCookie($name))) {
+                $cookieValue[] = $cookie;
+            } else {
+                $cookieValue = array($cookieValue, $cookie);
+            }
+
+            // add the cookie array
+            $this->cookies[$name] = serialize($cookieValue);
+
+        } else { // when add it the first time, simply add it
+            $this->cookies[$name] = serialize($cookie);
+        }
     }
 
     /**
@@ -122,17 +138,19 @@ class Response extends GenericStackable implements HttpServletResponse
     }
 
     /**
-     * Returns the cookie with the  a cookie
+     * Returns the cookie with the a cookie
      *
      * @param string $cookieName Name of the cookie to be checked
      *
-     * @return \AppserverIo\Http\HttpCookieInterface $cookie The cookie instance
+     * @return mixed The cookie instance or an array of cookie instances
+     * @throws \AppserverIo\Http\HttpException Is thrown if the requested header is not available
      */
     public function getCookie($cookieName)
     {
-        if ($this->hasCookie($cookieName)) {
-            return unserialize($this->cookies[$cookieName]);
+        if ($this->hasCookie($cookieName) === false) {
+            throw new HttpException("Cookie '$name' not found");
         }
+        return unserialize($this->cookies[$cookieName]);
     }
 
     /**
