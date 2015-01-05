@@ -52,6 +52,7 @@ class AppserverNode extends AbstractNode
      * @var \AppserverIo\Appserver\Core\Api\Node\InitialContextNode @AS\Mapping(nodeName="initialContext", nodeType="AppserverIo\Appserver\Core\Api\Node\InitialContextNode")
      */
     protected $initialContext;
+
     /**
      * Array with nodes for the registered loggers.
      *
@@ -95,12 +96,20 @@ class AppserverNode extends AbstractNode
     protected $datasources = array();
 
     /**
+     * Array with nodes for the registered scanners.
+     *
+     * @var array @AS\Mapping(nodeName="scanners/scanner", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\ScannerNode")
+     */
+    protected $scanners = array();
+
+    /**
      * Initializes the node with default values.
      */
     public function __construct()
     {
         // initialize the default configuration
         $this->initDefaultLoggers();
+        $this->initDefaultScanners();
         $this->initDefaultExtractors();
         $this->initDefaultProvisioners();
         $this->initDefaultInitialContext();
@@ -121,6 +130,31 @@ class AppserverNode extends AbstractNode
 
         // set the default initial context configuration
         $this->initialContext = new InitialContextNode('AppserverIo\Appserver\Core\InitialContext', $description, $classLoader, $storage);
+    }
+
+    /**
+     * Initializes the default scanners for archive based deployment.
+     *
+     * @return void
+     */
+    protected function initDefaultScanners()
+    {
+
+        // initialize the params for the deployment scanner
+        $scannerParams = array();
+        $intervalParam = new ParamNode('interval', 'integer', new NodeValue(1));
+        $extensionsToWatchParam = new ParamNode('extendsToWatch', 'string', new NodeValue('dodeploy, deployed'));
+        $scannerParams[$intervalParam->getPrimaryKey()] = $intervalParam;
+        $scannerParams[$extensionsToWatchParam->getPrimaryKey()] = $extensionsToWatchParam;
+
+        // initialize the directories to scan
+        $directories = array(new DirectoryNode(new NodeValue('deploy')));
+
+        // initialize the deployment scanner
+        $deploymentScanner = new ScannerNode('deployment', 'AppserverIo\Appserver\Core\Scanner\DeploymentScanner', $scannerParams, $directories);
+
+        // add scanner to the appserver node
+        $this->scanners[$deploymentScanner->getPrimaryKey()] = $deploymentScanner;
     }
 
     /**
@@ -357,5 +391,15 @@ class AppserverNode extends AbstractNode
     public function attachDatasource(DatasourceNode $datasource)
     {
         $this->datasources[$datasource->getPrimaryKey()] = $datasource;
+    }
+
+    /**
+     * Returns the array with all available scanners.
+     *
+     * @return array The available scanners
+     */
+    public function getScanners()
+    {
+        return $this->scanners;
     }
 }

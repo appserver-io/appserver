@@ -16,10 +16,11 @@
 namespace AppserverIo\Appserver\Core\Scanner;
 
 use AppserverIo\Appserver\Core\Interfaces\ExtractorInterface;
+use AppserverIo\Appserver\Application\Interfaces\ContextInterface;
 
 /**
- * This is a monitor that watches the deployment directory and restarts
- * the appserver by using the sbin/appserverctl script.
+ * This is a scanner that watches a flat directory for files that changed
+ * and restarts the appserver by using the OS specific start/stop script.
  *
  * @category   Server
  * @package    Appserver
@@ -33,13 +34,77 @@ class DeploymentScanner extends AbstractScanner
 {
 
     /**
+     * The interval in seconds we use to scan the directory.
+     *
+     * @var integer
+     */
+    protected $interval;
+
+    /**
+     * A list with extensions of files we want to watch.
+     *
+     * @var array
+     */
+    protected $extensionsToWatch;
+
+    /**
+     * The directory we want to watch.
+     *
+     * @var array
+     */
+    protected $directory;
+
+    /**
+     * Constructor sets initialContext object per default and calls
+     * init function to pass other args.
+     *
+     * @param \AppserverIo\Appserver\Application\Interfaces\ContextInterface $initialContext The initial context instance
+     * @param string                                                         $directory      The directory we want to scan
+     * @param integer                                                        $interval       The interval in seconds we want scan the directory
+     * @param string                                                         $extensionsToWatch The comma separeted list with extensions of files we want to watch
+     */
+    public function __construct($initialContext, $directory, $interval = 1, $extensionsToWatch = '')
+    {
+
+        // call parent constructor
+        parent::__construct($initialContext);
+
+        // initialize the members
+        $this->interval = $interval;
+        $this->directory = $directory;
+
+        // explode the comma separated list of file extensions
+        $this->extensionsToWatch = explode(',', str_replace(' ', '', $extensionsToWatch));
+    }
+
+    /**
+     * Returns the interval in seconds we want to scan the directory.
+     *
+     * @return integer The interval in seconds
+     */
+    public function getInterval()
+    {
+        return $this->interval;
+    }
+
+    /**
      * Returns the path to the deployment directory
      *
      * @return \SplFileInfo The deployment directory
      */
     public function getDirectory()
     {
-        return new \SplFileInfo($this->getService()->getDeployDir());
+        return new \SplFileInfo($this->directory);
+    }
+
+    /**
+     * Returns the file information of the deployment flag
+     *
+     * @return \SplFileInfo The deployment flag file information
+     */
+    public function getDeploymentFlag()
+    {
+        return new \SplFileInfo($this->getService()->getDeployDir() . DIRECTORY_SEPARATOR . ExtractorInterface::FILE_DEPLOYMENT_SUCCESSFULL);
     }
 
     /**
@@ -50,7 +115,7 @@ class DeploymentScanner extends AbstractScanner
      */
     protected function getExtensionsToWatch()
     {
-        return array('dodeploy', 'deployed');
+        return $this->extensionsToWatch;
     }
 
     /**
@@ -63,19 +128,22 @@ class DeploymentScanner extends AbstractScanner
     public function main()
     {
 
+        // load the interval we want to scan the directory
+        $interval = $this->getInterval();
+
         // load the deployment directory
         $directory = $this->getDirectory();
 
         // log the configured deployment directory
-        $this->getSystemLogger()->debug(sprintf('Start watching deployment directory %s', $directory));
+        $this->getSystemLogger()->debug(sprintf('Start watching directory %s', $directory));
 
-        // open the deployment flag
-        $deploymentFlag = new \SplFileInfo($directory . DIRECTORY_SEPARATOR . ExtractorInterface::FILE_DEPLOYMENT_SUCCESSFULL);
+        // load the deployment flag
+        $deploymentFlag = $this->getDeploymentFlag();
 
         // wait until the server has been successfully started at least once
         while ($this->getLastSuccessfullyDeployment($deploymentFlag) === 0) {
-            $this->getSystemLogger()->debug('Deplyoment scanner is waiting for first successful deployment ...');
-            sleep(1);
+            $this->getSystemLogger()->debug(sprintf('%s is waiting for first successful deployment ...', __CLASS__));
+            sleep($interval);
         }
 
         // load the initial hash value of the deployment directory
@@ -93,7 +161,7 @@ class DeploymentScanner extends AbstractScanner
             if ($oldHash !== $newHash) {
 
                 // log that changes have been found
-                $this->getSystemLogger()->debug(sprintf('Found changes in deployment directory %s', $directory));
+                $this->getSystemLogger()->debug(sprintf('Found changes in directory %s', $directory));
 
                 // log the UNIX timestamp of the last successfull deployment
                 $lastSuccessfullDeployment = $this->getLastSuccessfullyDeployment($deploymentFlag);
@@ -103,7 +171,7 @@ class DeploymentScanner extends AbstractScanner
 
                 // wait until deployment has been finished
                 while ($lastSuccessfullDeployment == $this->getLastSuccessfullyDeployment($deploymentFlag)) {
-                    sleep(1);
+                    sleep($interval);
                 }
 
                 // set the directory new hash value after successfull deployment
@@ -113,7 +181,7 @@ class DeploymentScanner extends AbstractScanner
                 $this->getSystemLogger()->debug('appserver has successfully been restarted');
 
             } else { // if no changes has been found, wait a second
-                sleep(1);
+                sleep($interval);
             }
         }
     }

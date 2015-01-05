@@ -93,6 +93,27 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
             </handlers>
         </logger>
     </loggers>
+
+    <scanners>
+        <scanner name="deployment" type="AppserverIo\Appserver\Core\Scanner\DeploymentScanner">
+            <params>
+                <param name="interval" type="integer">1</param>
+                <param name="extensionsToWatch" type="string">dodeploy, deployed</param>
+            </params>
+            <directories>
+                <directory>deploy</directory>
+            </directories>
+        </scanner>
+        <scanner name="webapps" type="AppserverIo\Appserver\Core\Scanner\WebappsScanner">
+            <params>
+                <param name="interval" type="integer">1</param>
+                <param name="extensionsToWatch" type="string">php</param>
+            </params>
+            <directories>
+                <directory>webapps</directory>
+            </directories>
+        </scanner>
+    </scanners>
     -->
 
     <containers>
