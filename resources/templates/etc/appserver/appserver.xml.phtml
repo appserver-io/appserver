@@ -104,7 +104,7 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
                 <directory>deploy</directory>
             </directories>
         </scanner>
-        <scanner name="webapps" type="AppserverIo\Appserver\Core\Scanner\WebappsScanner">
+        <scanner name="webapps" type="AppserverIo\Appserver\Core\Scanner\RecursiveDirectoryScanner">
             <params>
                 <param name="interval" type="integer">1</param>
                 <param name="extensionsToWatch" type="string">php</param>
