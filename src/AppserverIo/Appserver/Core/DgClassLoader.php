@@ -105,10 +105,20 @@ class DgClassLoader extends \Stackable implements ClassLoaderInterface
             $this->config = $config;
         }
 
+        // cache is not ready by default
+        $this->cacheIsReady = false;
+
         // pre-load the configuration values
         $this->cacheDir =  $this->config->getValue('cache/dir');
         $this->environment = $this->config->getValue('environment');
-        $this->autoloaderOmit = $this->config->hasValue('autoloader/omit');
+
+        // we want to know if there are namespaces to be omitted from autoloading
+        $this->autoloaderOmit = false;
+        if ($this->config->hasValue('autoloader/omit')) {
+
+            $autoloadingOmitted = $this->config->getValue('autoloader/omit');
+            $this->autoloaderOmit = !empty($autoloadingOmitted);
+        }
 
         // Now that we got the config we can create a structure map to load from
         $this->structureMap = new StackableStructureMap(
@@ -157,7 +167,7 @@ class DgClassLoader extends \Stackable implements ClassLoaderInterface
     protected function createDefinitions()
     {
         // Get all the structures we found
-        $structures = $this->structureMap->getEntries(true, true);
+        $structures = $this->structureMap->getEntries();
 
         // We will need a CacheMap instance which we can pass to the generator
         // We need the caching configuration
@@ -179,7 +189,7 @@ class DgClassLoader extends \Stackable implements ClassLoaderInterface
         foreach ($structures as $identifier => $structure) {
 
             // Working on our own files has very weird side effects, so don't do it
-            if (strpos($structure->getIdentifier(), 'AppserverIo\Doppelgaenger') !== false || !$structure->isEnforced()) {
+            if (strpos($structure->getIdentifier(), 'AppserverIo\Doppelgaenger') !== false) {
 
                 continue;
             }
@@ -194,8 +204,19 @@ class DgClassLoader extends \Stackable implements ClassLoaderInterface
                 }
             }
 
-            // Fill it into the generator stack
-            $generatorStack[$identifier] = $structure;
+            // structures which are enforced will be added to the generator stack, others will only be copied (symlinks are not reliable)
+            if ($structure->isEnforced()) {
+
+                $generatorStack[$identifier] = $structure;
+
+            } else {
+
+                $tmpFileName = ltrim(str_replace('\\', '_', $structure->getIdentifier()), '_');
+                copy(
+                    $structure->getPath(),
+                    $this->config->getValue('cache/dir') . DIRECTORY_SEPARATOR . $tmpFileName . '.php'
+                );
+            }
         }
 
         // Chuck the stack and start generating
@@ -214,6 +235,9 @@ class DgClassLoader extends \Stackable implements ClassLoaderInterface
 
             $generatorThread->join();
         }
+
+        // mark this instance as production ready cachewise
+        $this->cacheIsReady = true;
 
         // Still here? Sounds about right
         return true;
@@ -383,16 +407,16 @@ class DgClassLoader extends \Stackable implements ClassLoaderInterface
     public function register($throw = true, $prepend = true)
     {
 
-        // Now we have a config no matter what, we can store any instance we might need
+        // now we have a config no matter what, we can store any instance we might need
         $this->getConfig()->storeInstances();
 
-        // Query whether we have directories to omitted or not in production mode
-        if ($this->autoloaderOmit || $this->environment !== 'production') { // If yes, load the apropriate autoloader method
+        // query whether the cache is ready or if we aren't in production mode
+        if (!$this->cacheIsReady || $this->environment !== 'production') { // If yes, load the appropriate autoloader method
             spl_autoload_register(array($this, self::OUR_LOADER), $throw, $prepend);
             return;
         }
 
-        // We don't have directories to omit register the simple class loader
+        // the cache is ready, so register the simple class loader
         spl_autoload_register(array($this, self::OUR_LOADER_PROD_NO_OMIT), $throw, $prepend);
     }
 
@@ -404,13 +428,13 @@ class DgClassLoader extends \Stackable implements ClassLoaderInterface
     public function unregister()
     {
 
-        // Query whether we have directories to omitted or not in production mode
-        if ($this->autoloaderOmit || $this->environment !== 'production') { // If yes, unload the apropriate autoloader method
+        // query whether the cache is ready or if we aren't in production mode
+        if (!$this->cacheIsReady || $this->environment !== 'production') { // If yes, unload the appropriate autoloader method
             spl_autoload_unregister(array($this, self::OUR_LOADER));
             return;
         }
 
-        // We don't have directories to omit unregister the simple class loader
+        // the cache has been ready, so unregister the simple class loader
         spl_autoload_unregister(array($this, self::OUR_LOADER_PROD_NO_OMIT));
     }
 }
