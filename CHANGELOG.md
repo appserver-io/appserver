@@ -3,6 +3,7 @@
 # Bugfixes
 
 * Closed #336 - Positioning of namespace definition next to php tag
+* Closed #348 - Changed determination of omitted namespaces
 
 # Features
 
@@ -10,6 +11,7 @@
 * Closed #300 - Timer Service doesn't support seconds as period
 * Add scanner to restart application server when a PHP file changes in webapps directory (deactivated by default)
 * Integration of appserver-io/microcron to allow for second based timer task execution
+* Improved performance by dynamic switching to simplified class loading
 
 # Version 1.0.0-beta3
 
