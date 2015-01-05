@@ -2,11 +2,12 @@
 
 # Bugfixes
 
-* None
+* Closed #348 - Changed determination of omitted namespaces
 
 # Features
 
 * Integration of appserver-io/microcron to allow for second based timer task execution
+* Improved performance by dynamic switching to simplified class loading
 
 # Version 1.0.0-beta3
 
