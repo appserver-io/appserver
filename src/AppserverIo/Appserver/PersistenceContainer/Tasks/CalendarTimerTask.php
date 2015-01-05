@@ -23,10 +23,7 @@
 
 namespace AppserverIo\Appserver\PersistenceContainer\Tasks;
 
-use Cron\CronExpression;
-use AppserverIo\Storage\StackableStorage;
 use AppserverIo\Psr\EnterpriseBeans\TimerInterface;
-use AppserverIo\Appserver\PersistenceContainer\Timer;
 
 /**
  * The timer task for a calendar timer.
