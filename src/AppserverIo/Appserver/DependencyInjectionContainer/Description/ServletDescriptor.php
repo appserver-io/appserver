@@ -321,49 +321,69 @@ class ServletDescriptor implements ServletDescriptorInterface
             return;
         }
 
-        // query if we've a servlet with a @Route annotation
-        if ($reflectionClass->hasAnnotation(Route::ANNOTATION) === false) { // if not, do nothing
-            return;
+        // query if we've an interface or an abstract class
+        if ($reflectionClass->toPhpReflectionClass()->isInterface() ||
+            $reflectionClass->toPhpReflectionClass()->isAbstract())
+        {
+            return; // if so, do nothing
         }
 
-        // create a new annotation instance
-        $reflectionAnnotation = $this->newAnnotationInstance($reflectionClass);
+        // set the servlet name
+        $this->setName(lcfirst($reflectionClass->getShortName()));
 
-        // load class name
+        // set the class name
         $this->setClassName($reflectionClass->getName());
 
-        // initialize the annotation instance
-        $annotationInstance = $reflectionAnnotation->newInstance(
-            $reflectionAnnotation->getAnnotationName(),
-            $reflectionAnnotation->getValues()
-        );
+        // query if we've a servlet with a @Route annotation
+        if ($reflectionClass->hasAnnotation(Route::ANNOTATION)) { // if not, do nothing
 
-        // load the default name to register in naming directory
-        if ($nameAttribute = $annotationInstance->getName()) {
-            $this->setName($nameAttribute);
-        } else { // if @Annotation(name=****) is NOT set, we use the short class name by default
-            $this->setName($reflectionClass->getShortName());
+            // create a new annotation instance
+            $reflectionAnnotation = $this->newAnnotationInstance($reflectionClass);
+
+            // initialize the annotation instance
+            $annotationInstance = $reflectionAnnotation->newInstance(
+                $reflectionAnnotation->getAnnotationName(),
+                $reflectionAnnotation->getValues()
+            );
+
+            // load the default name to register in naming directory
+            if ($nameAttribute = $annotationInstance->getName()) {
+                $this->setName($nameAttribute);
+            }
+
+            // register the servlet description defined as @Route(description=****)
+            if ($description = $annotationInstance->getDescription()) {
+                $this->setDescription($description);
+            }
+
+            // register the servlet display name defined as @Route(displayName=****)
+            if ($displayName = $annotationInstance->getDisplayName()) {
+                $this->setDisplayName($displayName);
+            }
+
+            // register the init params defined as @Route(initParams=****)
+            foreach ($annotationInstance->getInitParams() as $initParam) {
+                list ($paramName, $paramValue) = $initParam;
+                $this->addInitParam($paramName, $paramValue);
+            }
+
+            // register the URL pattern defined as @Route(urlPattern=****)
+            foreach ($annotationInstance->getUrlPattern() as $urlPattern) {
+                $this->addUrlPattern($urlPattern);
+            }
+        }
+        // we've to check for property annotations that references EPB or resources
+        foreach ($reflectionClass->getProperties() as $reflectionProperty) {
+            if ($epbReference = EpbReferenceDescriptor::newDescriptorInstance()->fromReflectionProperty($reflectionProperty)) {
+                $this->addEpbReference($epbReference);
+            }
         }
 
-        // register the servlet description defined as @Route(description=****)
-        if ($description = $annotationInstance->getDescription()) {
-            $this->setDescription($description);
-        }
-
-        // register the servlet display name defined as @Route(displayName=****)
-        if ($displayName = $annotationInstance->getDisplayName()) {
-            $this->setDisplayName($displayName);
-        }
-
-        // register the init params defined as @Route(initParams=****)
-        foreach ($annotationInstance->getInitParams() as $initParam) {
-            list ($paramName, $paramValue) = $initParam;
-            $this->addInitParam($paramName, $paramValue);
-        }
-
-        // retister the URL pattern defined as @Route(urlPattern=****)
-        foreach ($annotationInstance->getUrlPattern() as $urlPattern) {
-            $this->addUrlPattern($urlPattern);
+        // we've to check for method annotations that references EPB or resources
+        foreach ($reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $reflectionMethod) {
+            if ($epbReference = EpbReferenceDescriptor::newDescriptorInstance()->fromReflectionMethod($reflectionMethod)) {
+                $this->addEpbReference($epbReference);
+            }
         }
 
         // return the instance
