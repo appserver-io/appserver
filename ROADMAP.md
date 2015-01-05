@@ -92,6 +92,7 @@ This category defines features that will be part of a cluster functionality. The
 * Webapps running on nodes in same network can be executed across all appserver nodes
 * Farming-Deployment, an application deployed on one node will deployed automatically on all nodes within the cluster
 * Hot-Deployment, deploy an application among the cluster without restarting any of the cluster nodes
+* Graphical User Interface
 
 #### Functional
 
