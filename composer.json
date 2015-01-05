@@ -11,7 +11,7 @@
 		"cboden/ratchet" : "0.3.*",
 		"react/event-loop" : "0.4.*",
 		"nikic/phlexy" : "dev-master",
-		"mtdowling/cron-expression" : "1.0.*",
+		"appserver-io/microcron": "0.1.*",
 		"appserver-io-psr/epb" : "0.1.*",
 		"appserver-io-psr/servlet" : "0.6.*",
 		"appserver-io-psr/messagequeueprotocol" : "0.2.*",

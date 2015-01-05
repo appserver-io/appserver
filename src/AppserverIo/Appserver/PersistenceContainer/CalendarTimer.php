@@ -22,7 +22,7 @@
 
 namespace AppserverIo\Appserver\PersistenceContainer;
 
-use Cron\CronExpression;
+use AppserverIo\Microcron\CronExpression;
 use AppserverIo\Psr\EnterpriseBeans\TimerInterface;
 use AppserverIo\Psr\EnterpriseBeans\ScheduleExpression;
 use AppserverIo\Psr\EnterpriseBeans\NoMoreTimeoutsException;
@@ -61,7 +61,7 @@ class CalendarTimer extends Timer
     protected $autoTimer = false;
 
     /**
-     * The thimeout method called if we've an auto-timer.
+     * The timeout method called if we've an auto-timer.
      *
      * \AppserverIo\Lang\Reflection\MethodInterface
      */

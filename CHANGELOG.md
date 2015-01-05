@@ -1,3 +1,13 @@
+# Version 1.0.0-beta4
+
+# Bugfixes
+
+* None
+
+# Features
+
+* Integration of appserver-io/microcron to allow for second based timer task execution
+
 # Version 1.0.0-beta3
 
 # Bugfixes
