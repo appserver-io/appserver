@@ -1,3 +1,16 @@
+# Version 1.0.0-beta4
+
+# Bugfixes
+
+* Closed #336 - Positioning of namespace definition next to php tag
+
+# Features
+
+* Closed #291 - Configuration (XML configuration) based bean declaration
+* Closed #300 - Timer Service doesn't support seconds as period
+* Add scanner to restart application server when a PHP file changes in webapps directory (deactivated by default)
+* Integration of appserver-io/microcron to allow for second based timer task execution
+
 # Version 1.0.0-beta3
 
 # Bugfixes

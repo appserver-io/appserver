@@ -22,12 +22,12 @@
 
 namespace AppserverIo\Appserver\PersistenceContainer;
 
-use Cron\FieldFactory;
-use Cron\CronExpression;
+use AppserverIo\Microcron\FieldFactory;
+use AppserverIo\Microcron\CronExpression;
 use AppserverIo\Psr\EnterpriseBeans\ScheduleExpression;
 
 /**
- * A wrapper for a cron expression implementation.
+ * A wrapper for a (micro-)cron expression implementation.
  *
  * @category   Server
  * @package    Appserver
@@ -49,11 +49,11 @@ class CalendarBasedTimeout extends CronExpression
     protected $scheduleExpression;
 
     /**
-     * Parse a CRON expression
+     * Parse a Microcron (seconds digit + CRON ) expression
      *
-     * @param string                                              $expression         CRON expression (e.g. '8 * * * *')
+     * @param string                                              $expression         Microcron expression (e.g. '8 * * * * *')
      * @param \AppserverIo\Psr\EnterpriseBeans\ScheduleExpression $scheduleExpression The schedule expression with the data to create the instance with
-     * @param \Cron\FieldFactory                                  $fieldFactory       Factory to create cron fields
+     * @param \AppserverIo\Microcron\FieldFactory                 $fieldFactory       Factory to create cron fields
      */
     public function __construct($expression, ScheduleExpression $scheduleExpression, FieldFactory $fieldFactory = null)
     {
@@ -77,7 +77,8 @@ class CalendarBasedTimeout extends CronExpression
 
         // prepare the CRON expression
         $cronExpression = sprintf(
-            '%s %s %s %s %s %s',
+            '%s %s %s %s %s %s %s',
+            $scheduleExpression->getSecond(),
             $scheduleExpression->getMinute(),
             $scheduleExpression->getHour(),
             $scheduleExpression->getDayOfMonth(),

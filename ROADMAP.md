@@ -65,6 +65,7 @@ need advanced features like cluster functionality.
 
 - [ ] Separate configuration files for server, container and application [Issue #192](https://github.com/appserver-io/appserver/issues/192)
 - [ ] Expose Stateless Session Beans as SOAP Web Service endpoint
+- [ ] Container-Managed Transactions
 - [ ] RPM repository, http://rpm.appserver.io
 
 ## Enterprise Edition
@@ -85,29 +86,30 @@ Below we've defined a list with features we plan to integrate in the EE. Before 
 
 This category defines features that will be part of a cluster functionality. The cluster functionality targets systems with HA needs, e. g. ecommerce systems with really high number of transactions.
 
-* HA Load-Balancing Container
+* Vertical and horizontal clustering
+* Components can be distributed across cluster nodes
 * Nodes get known each other in same network automatically
-* Webapps running on nodes in same network can be executed via all appserver nodes
-* Webapps can be synchronized between appserver nodes to be executed locally
+* Webapps running on nodes in same network can be executed across all appserver nodes
 * Farming-Deployment, an application deployed on one node will deployed automatically on all nodes within the cluster
 * Hot-Deployment, deploy an application among the cluster without restarting any of the cluster nodes
+* Graphical User Interface
 
 #### Functional
 
 This category covers functional add-on's that enables developers to implement business logic in faster, more reusable und maintanable way. 
 
-* Container-Managed Transactions
-
 #### Snapshots/Backup
 
 Backup tools.
 
+* Webapps can be synchronized between appserver nodes to be executed locally
 * Snapshot functionality for webapps
 
 #### Servers
 
 Category that provides additional services.
 
+* HA Load-Balancing Server
 * SSH Server
 * DNS Server
 * LDAP Server
