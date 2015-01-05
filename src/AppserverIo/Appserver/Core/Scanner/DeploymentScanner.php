@@ -94,7 +94,7 @@ class DeploymentScanner extends AbstractScanner
      */
     public function getDirectory()
     {
-        return new \SplFileInfo($this->directory);
+        return new \SplFileInfo($this->getService()->getBaseDirectory($this->directory));
     }
 
     /**

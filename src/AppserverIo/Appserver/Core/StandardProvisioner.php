@@ -53,60 +53,44 @@ class StandardProvisioner extends AbstractProvisioner
      */
     public function provision()
     {
-        // check if deploy dir exists
-        if (is_dir($this->getWebappsDir())) {
+
+        // check if the webapps directory exists
+        if (is_dir($webappsPath = $this->getWebappsDir())) {
 
             // load the service instance
             $service = $this->getService();
 
             // Iterate through all provisioning files (provision.xml) and attach them to the configuration
-            foreach (new \DirectoryIterator($this->getWebappsDir()) as $webappPath) {
+            foreach ($service->globDir($webappsPath . '/*/{WEB-INF,META-INF}/provision.xml', GLOB_BRACE) as $provisionFile) {
 
-                // check if we found an application directory
-                if ($webappPath->isDir() === false || $webappPath->isDot()) {
-                    continue;
+                // load the path of web application
+                $webappPath = new \SplFileInfo(dirname(dirname($provisionFile)));
+
+                // load the provisioning configuration
+                $provisionNode = new ProvisionNode();
+                $provisionNode->initFromFile($provisionFile);
+
+                // try to load the datasource from the system configuration
+                $datasourceNode = $service->findByName(
+                    $provisionNode->getDatasource()->getName()
+                );
+
+                // try to inject the datasource node if available
+                if ($datasourceNode != null) {
+                    $provisionNode->injectDatasource($datasourceNode);
                 }
 
-                // prepare the iterator for parsing META-INF/WEB-INF directories
-                $directory = new \RecursiveDirectoryIterator($webappPath->getPathname());
-                $iterator = new \RecursiveIteratorIterator($directory);
+                /* Reprovision the provision.xml (reinitialize).
+                 *
+                 * ATTENTION: The reprovisioning is extremely important, because
+                 * this allows dynamic replacment of placeholders by using the
+                 * XML file as a template that will reinterpreted with the PHP
+                 * interpreter!
+                 */
+                $provisionNode->reprovision($provisionFile);
 
-                // we need to use another regex on Windows here
-                if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-                    $regex = sprintf('/^.*\\\(META-INF|WEB-INF)\\\provision.xml$/');
-                } else {
-                    $regex = sprintf('/^.*\/(META-INF|WEB-INF)\/provision.xml$/');
-                }
-
-                // Iterate through all provisioning files (provision.xml) and attach them to the configuration
-                foreach (new \RegexIterator($iterator, $regex) as $provisionFile) {
-
-                    // load the provisioning configuration
-                    $provisionNode = new ProvisionNode();
-                    $provisionNode->initFromFile($provisionFile->getPathname());
-
-                    // try to load the datasource from the system configuration
-                    $datasourceNode = $service->findByName(
-                        $provisionNode->getDatasource()->getName()
-                    );
-
-                    // try to inject the datasource node if available
-                    if ($datasourceNode != null) {
-                        $provisionNode->injectDatasource($datasourceNode);
-                    }
-
-                    /* Reprovision the provision.xml (reinitialize).
-                     *
-                     * ATTENTION: The reprovisioning is extremely important, because
-                     * this allows dynamic replacment of placeholders by using the
-                     * XML file as a template that will reinterpreted with the PHP
-                     * interpreter!
-                     */
-                    $provisionNode->reprovision($provisionFile->getPathname());
-
-                    // execute the provisioning workflow
-                    $this->executeProvision($provisionNode, $webappPath);
-                }
+                // execute the provisioning workflow
+                $this->executeProvision($provisionNode, $webappPath);
             }
         }
     }

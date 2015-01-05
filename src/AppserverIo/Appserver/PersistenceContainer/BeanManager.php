@@ -167,7 +167,7 @@ class BeanManager extends AbstractManager implements BeanContext
         $objectManager = $this->getApplication()->search('ObjectManagerInterface');
 
         // register the beans located by annotations and the XML configuration
-        foreach ($objectManager->getObjectDescriptors() as $className => $descriptor) {
+        foreach ($objectManager->getObjectDescriptors() as $descriptor) {
 
             // check if we've found a bean descriptor
             if ($descriptor instanceof BeanDescriptorInterface) { // register the bean

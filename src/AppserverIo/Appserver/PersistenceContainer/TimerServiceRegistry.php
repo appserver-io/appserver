@@ -47,33 +47,33 @@ class TimerServiceRegistry extends ServiceRegistry implements TimerServiceContex
 
     /**
      * The timer service executor.
-     * 
+     *
      * @var \AppserverIo\Appserver\PersistenceContainer\ServiceExecutor
      */
     protected $timerServiceExecutor;
-    
+
     /**
      * Injects the service executor for the timer service registry.
-     * 
+     *
      * @param \AppserverIo\Appserver\PersistenceContainer\ServiceExecutor $timerServiceExecutor The service executor
-     * 
+     *
      * @return void
      */
     public function injectTimerServiceExecutor(ServiceExecutor $timerServiceExecutor)
     {
         $this->timerServiceExecutor = $timerServiceExecutor;
     }
-    
+
     /**
      * Returns the service executor for the timer service registry.
-     * 
+     *
      * @return \AppserverIo\Appserver\PersistenceContainer\ServiceExecutor The timer service executor instance
      */
     public function getTimerServiceExecutor()
     {
         return $this->timerServiceExecutor;
     }
-    
+
     /**
      * Has been automatically invoked by the container after the application
      * instance has been created.
@@ -96,13 +96,12 @@ class TimerServiceRegistry extends ServiceRegistry implements TimerServiceContex
         if (is_dir($metaInfDir) === false) {
             return;
         }
-        
+
         // load the timer service executor
         $timerServiceExecutor = $this->getTimerServiceExecutor();
 
-        // check meta-inf classes or any other sub folder to pre init beans
-        $recursiveIterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($metaInfDir));
-        $phpFiles = new \RegexIterator($recursiveIterator, '/^(.+)\.php$/i');
+        $service = $application->newService('AppserverIo\Appserver\Core\Api\DeploymentService');
+        $phpFiles = $service->globDir($metaInfDir . DIRECTORY_SEPARATOR . '*.php');
 
         // iterate all php files
         foreach ($phpFiles as $phpFile) {

@@ -347,11 +347,12 @@ abstract class AbstractScanner extends AbstractContextThread
         // prepare the array with the file extensions of the files used to build the hash
         $extensionsToWatch = $this->getExtensionsToWatch();
 
+        // clear the cache
+        clearstatcache();
+
         // add all files with the found extensions to the array
-        foreach (new \DirectoryIterator($directory) as $fileInfo) {
-            if ($fileInfo->isFile() && in_array($fileInfo->getExtension(), $extensionsToWatch)) {
-                $files->append($fileInfo->getFilename());
-            }
+        foreach (glob($directory . '/*.{' . implode(',', $extensionsToWatch) . '}', GLOB_BRACE) as $filename) {
+            $files->append($filename);
         }
 
         // calculate and return the hash value for the array
