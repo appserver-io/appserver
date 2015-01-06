@@ -64,7 +64,7 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
     {
         $this->response->redirect($url = 'http://test.local');
         $this->assertSame($url, $this->response->getHeader(HttpProtocol::HEADER_LOCATION));
-        $this->assertSame(302, $this->response->getStatusCode());
+        $this->assertSame(301, $this->response->getStatusCode());
     }
 
     /**
@@ -74,7 +74,7 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
      */
     public function testRedirectWithCustomStatusCode()
     {
-        $this->response->redirect($url = 'http://test.local', $code = 301);
+        $this->response->redirect($url = 'http://test.local', $code = 302);
         $this->assertSame($url, $this->response->getHeader(HttpProtocol::HEADER_LOCATION));
         $this->assertSame($code, $this->response->getStatusCode());
     }
