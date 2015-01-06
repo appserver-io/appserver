@@ -226,43 +226,32 @@ class AspectManager implements AspectManagerInterface, ManagerInterface
     protected function registerAspectClasses(ApplicationInterface $application)
     {
 
+        // load the webapp path
+        $webappPath = $this->getWebappPath();
+
         // build up our directory vars
-        $webappPath = $this->getWebappPath() . DIRECTORY_SEPARATOR;
         $aspectDirectories = array(
-            $webappPath . 'META-INF',
-            $webappPath . 'WEB-INF',
-            $webappPath . 'common'
+            $webappPath . DIRECTORY_SEPARATOR. 'META-INF' . DIRECTORY_SEPARATOR . 'classes',
+            $webappPath . DIRECTORY_SEPARATOR. 'WEB-INF' . DIRECTORY_SEPARATOR . 'classes',
+            $webappPath . DIRECTORY_SEPARATOR. 'common' . DIRECTORY_SEPARATOR . 'classes'
         );
 
-        // check if we've found a valid directories and get us some iterators
-        $iterators = array();
+        // check directory for PHP files with classes we want to register
+        $service = $application->newService('AppserverIo\Appserver\Core\Api\DeploymentService');
+
+        // iterate over the directories and try to find aspects
         foreach ($aspectDirectories as $aspectDirectory) {
 
-            if (is_dir($aspectDirectory) === true) {
-
-                $iterators[] = new \RegexIterator(
-                    new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($aspectDirectory)),
-                    '/^(.+)\.php$/i'
-                );
-            }
-        }
-
-        // iterate all php files
-        foreach ($iterators as $phpFiles) {
-            foreach ($phpFiles as $phpFile) {
+            // iterate all PHP files found in the directory
+            foreach ($service->globDir($aspectDirectory . DIRECTORY_SEPARATOR . '*.php') as $phpFile) {
 
                 try {
 
                     // cut off the META-INF directory and replace OS specific directory separators
-                    $relativePathToPhpFile = str_replace(
-                        DIRECTORY_SEPARATOR,
-                        '\\',
-                        str_replace($webappPath, '', $phpFile)
-                    );
+                    $relativePathToPhpFile = str_replace(DIRECTORY_SEPARATOR, '\\', str_replace($aspectDirectory, '', $phpFile));
 
-                    // now cut off the first two directory segments
-                    $pregResult = preg_replace('%^\\\\.+?\\\\.+?\\\\%', '', '\\' . $relativePathToPhpFile);
-                    $className = substr($pregResult, 0, -4);
+                    // now cut off the .php extension
+                    $className = substr($relativePathToPhpFile, 0, -4);
 
                     // we need a reflection class to read the annotations
                     $reflectionClass = $this->getReflectionClass($className);
