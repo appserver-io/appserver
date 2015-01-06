@@ -39,14 +39,13 @@ class DatasourceProvisioner extends AbstractProvisioner
     {
 
         // check if deploy dir exists
-        if (is_dir($this->getWebappsDir())) {
+        if (is_dir($directory = $this->getWebappsDir())) {
 
-            // init file iterator on webapps directory
-            $directory = new \RecursiveDirectoryIterator($this->getWebappsDir());
-            $iterator = new \RecursiveIteratorIterator($directory);
+            // load the datasource files
+            $datasourceFiles = $this->getService()->globDir($directory . DIRECTORY_SEPARATOR . '*-ds.xml');
 
             // Iterate through all provisioning files (provision.xml) and attach them to the configuration
-            foreach (new \RegexIterator($iterator, '/^.*\\-ds.xml$/') as $datasourceFile) {
+            foreach ($datasourceFiles as $datasourceFile) {
 
                 // load the database configuration
                 $datasourceNodes = $this->getService()->initFromFile($datasourceFile);

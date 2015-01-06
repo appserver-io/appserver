@@ -13,6 +13,7 @@
                 <xs:element ref="appserver:extractors" />
                 <xs:element ref="appserver:provisioners" />
                 <xs:element ref="appserver:loggers" />
+                <xs:element ref="appserver:scanners" />
                 <xs:element ref="appserver:containers" />
                 <xs:element ref="appserver:apps" />
             </xs:choice>
@@ -322,6 +323,24 @@
             </xs:choice>
             <xs:attribute name="type" type="xs:string" />
             <xs:attribute name="channelName" type="xs:string" />
+            <xs:attribute name="name" type="xs:string" />
+            <xs:attribute name="uuid" type="xs:string" />
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="scanners">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="appserver:scanner"/>
+            </xs:choice>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="scanner">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="appserver:params" />
+                <xs:element ref="appserver:directories" />
+            </xs:choice>
+            <xs:attribute name="type" type="xs:string" />
             <xs:attribute name="name" type="xs:string" />
             <xs:attribute name="uuid" type="xs:string" />
         </xs:complexType>

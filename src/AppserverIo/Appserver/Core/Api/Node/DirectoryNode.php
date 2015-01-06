@@ -15,6 +15,8 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Configuration\Interfaces\ValueInterface;
+
 /**
  * DTO to transfer the directory information.
  *
@@ -26,7 +28,7 @@ namespace AppserverIo\Appserver\Core\Api\Node;
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       http://www.appserver.io
  */
-class DirectoryNode extends AbstractValueNode
+class DirectoryNode extends AbstractValueNode implements DirectoryNodeInterface
 {
 
     /**
@@ -36,6 +38,18 @@ class DirectoryNode extends AbstractValueNode
      * @AS\Mapping(nodeType="boolean")
      */
     protected $enforced;
+
+    /**
+     * Initializes the directory node with the necessary data.
+     *
+     * @param \AppserverIo\Configuration\Interfaces\ValueInterface|null $nodeValue The node value
+     * @param string                                                    $enforced  The enforcement flag
+     */
+    public function __construct(ValueInterface $nodeValue = null, $enforced = false)
+    {
+        $this->nodeValue = $nodeValue;
+        $this->enforced = $enforced;
+    }
 
     /**
      * Returns the enforcement flag.

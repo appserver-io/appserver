@@ -23,7 +23,7 @@ use AppserverIo\Appserver\Core\Interfaces\ProvisionerInterface;
 use AppserverIo\Appserver\Core\Interfaces\ExtractorInterface;
 use AppserverIo\Appserver\Core\InitialContext;
 use AppserverIo\Appserver\Core\Api\Node\AppserverNode;
-use AppserverIo\Appserver\Core\Scanner\HeartbeatScanner;
+use AppserverIo\Appserver\Core\Scanner\ScannerFactory;
 use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
 use AppserverIo\Appserver\Core\Utilities\ContainerStateKeys;
 
@@ -508,18 +508,22 @@ class Server
     public function watch()
     {
 
+        // load the initial context instance
+        $initialContext = $this->getInitialContext();
+
         // initialize the default monitor for the deployment directory
-        $monitors = array();
+        $scanners = array();
 
-        // Add a deployment scanner
-        $monitors[] = $this->newInstance(
-            'AppserverIo\Appserver\Core\Scanner\DeploymentScanner',
-            array($this->getInitialContext())
-        );
+        // add the configured extractors to the internal array
+        foreach ($this->getSystemConfiguration()->getScanners() as $scannerNode) {
+            foreach ($scannerNode->getDirectories() as $directoryNode) {
+                $scanners[] = ScannerFactory::factory($initialContext, $directoryNode, $scannerNode);
+            }
+        }
 
-        // Start all monitors
-        foreach ($monitors as $monitor) {
-            $monitor->start();
+        // start all scanners
+        foreach ($scanners as $scanner) {
+            $scanner->start();
         }
     }
 

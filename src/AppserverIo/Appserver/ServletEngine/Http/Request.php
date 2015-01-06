@@ -267,6 +267,18 @@ class Request extends GenericStackable implements HttpServletRequest
     }
 
     /**
+     * Queries whether the request contains a parameter or not.
+     *
+     * @param string $name The name of the param we're query for
+     *
+     * @return boolean TRUE if the parameter is available, else FALSE
+     */
+    public function hasParameter($name)
+    {
+        return $this->getHttpRequest()->hasParam($name);
+    }
+
+    /**
      * Returns the parameter with the passed name if available or null
      * if the parameter not exists.
      *

@@ -162,4 +162,14 @@ class HeartbeatScanner extends AbstractScanner
             }
         }
     }
+
+    /**
+     * Returns an array, because we don't watch files here.
+     *
+     * @return array An empty array
+     */
+    protected function getExtensionsToWatch()
+    {
+        return array();
+    }
 }
