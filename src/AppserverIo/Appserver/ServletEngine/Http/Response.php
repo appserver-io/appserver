@@ -148,7 +148,7 @@ class Response extends GenericStackable implements HttpServletResponse
     public function getCookie($cookieName)
     {
         if ($this->hasCookie($cookieName) === false) {
-            throw new HttpException("Cookie '$name' not found");
+            throw new HttpException("Cookie '$cookieName' not found");
         }
         return unserialize($this->cookies[$cookieName]);
     }
@@ -441,14 +441,14 @@ class Response extends GenericStackable implements HttpServletResponse
 
     /**
      * Redirects to the passed URL by adding a 'Location' header and
-     * setting the apropriate status code, by default 302.
+     * setting the apropriate status code, by default 301.
      *
      * @param string  $url  The URL to forward to
      * @param integer $code The status code to set
      *
      * @return void
      */
-    public function redirect($url, $code = 302)
+    public function redirect($url, $code = 301)
     {
         $this->setStatusCode($code);
         $this->addHeader(HttpProtocol::HEADER_LOCATION, $url);
