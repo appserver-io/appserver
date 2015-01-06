@@ -261,7 +261,7 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
     {
 
         // define the methods to mock
-        $methodsToMock = array('getClassLoader', 'newInstance', 'newService', 'getAttribute', 'getSystemConfiguration');
+        $methodsToMock = array('getClassLoader', 'newInstance', 'newService', 'getAttribute', 'getSystemLogger', 'getSystemConfiguration');
 
         // create a mock instance
         $mockInitialContext = $this->getMock('AppserverIo\Appserver\Application\Interfaces\ContextInterface', $methodsToMock);
@@ -302,30 +302,6 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test if the newInstance() method will be forwarded to the initial context.
-     *
-     * @return void
-     */
-    public function testNewInstance()
-    {
-
-        return;
-
-        // define the methods to mock
-        $methodsToMock = array('getClassLoader', 'newInstance', 'newService', 'getAttribute', 'getSystemConfiguration');
-
-        // create a mock instance
-        $mockInitialContext = $this->getMock('AppserverIo\Appserver\Application\Interfaces\ContextInterface', $methodsToMock);
-        $mockInitialContext->expects($this->any())
-            ->method('newInstance')
-            ->will($this->returnValue($newInstance = new \stdClass()));
-
-        // check if the passed instance is equal to the getter one
-        $this->application->injectInitialContext($mockInitialContext);
-        $this->assertEquals($newInstance, $this->application->newInstance('\stdClass'));
-    }
-
-    /**
      * Test if the newService() method will be forwarded to the initial context.
      *
      * @return void
@@ -334,7 +310,7 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
     {
 
         // define the methods to mock
-        $methodsToMock = array('getClassLoader', 'newInstance', 'newService', 'getAttribute', 'getSystemConfiguration');
+        $methodsToMock = array('getClassLoader', 'newInstance', 'newService', 'getAttribute', 'getSystemLogger', 'getSystemConfiguration');
 
         // create a mock instance
         $mockInitialContext = $this->getMock('AppserverIo\Appserver\Application\Interfaces\ContextInterface', $methodsToMock);
@@ -545,6 +521,21 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
     public function testRegisterClassLoaders()
     {
 
+        // initialize the mock logger
+        $mockLogger = $this->getMock('Psr\Log\LoggerInterface', array('log', 'error', 'warning', 'notice', 'emergency', 'debug', 'info', 'alert', 'critical'));
+
+        // define the methods to mock
+        $methodsToMock = array('getClassLoader', 'newInstance', 'newService', 'getAttribute', 'getSystemLogger', 'getSystemConfiguration');
+
+        // create a mock instance
+        $mockInitialContext = $this->getMock('AppserverIo\Appserver\Application\Interfaces\ContextInterface', $methodsToMock);
+        $mockInitialContext->expects($this->any())
+            ->method('getSystemLogger')
+            ->will($this->returnValue($mockLogger));
+
+        // inject the mock initial context instance
+        $this->application->injectInitialContext($mockInitialContext);
+
         // register the mock class loader instance
         $this->application->addClassLoader($mockClassLoader = new MockClassLoader());
         $this->application->registerClassLoaders();
@@ -560,6 +551,21 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
      */
     public function testInitializeManagers()
     {
+
+        // initialize the mock logger
+        $mockLogger = $this->getMock('Psr\Log\LoggerInterface', array('log', 'error', 'warning', 'notice', 'emergency', 'debug', 'info', 'alert', 'critical'));
+
+        // define the methods to mock
+        $methodsToMock = array('getClassLoader', 'newInstance', 'newService', 'getAttribute', 'getSystemLogger', 'getSystemConfiguration');
+
+        // create a mock instance
+        $mockInitialContext = $this->getMock('AppserverIo\Appserver\Application\Interfaces\ContextInterface', $methodsToMock);
+        $mockInitialContext->expects($this->any())
+            ->method('getSystemLogger')
+            ->will($this->returnValue($mockLogger));
+
+        // inject the mock initial context instance
+        $this->application->injectInitialContext($mockInitialContext);
 
         // prepare the lookup names
         $lookupNames = array(

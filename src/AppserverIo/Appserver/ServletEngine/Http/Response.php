@@ -438,4 +438,19 @@ class Response extends GenericStackable implements HttpServletResponse
     {
         return ($this->state === $state);
     }
+
+    /**
+     * Redirects to the passed URL by adding a 'Location' header and
+     * setting the apropriate status code, by default 302.
+     *
+     * @param string  $url  The URL to forward to
+     * @param integer $code The status code to set
+     *
+     * @return void
+     */
+    public function redirect($url, $code = 302)
+    {
+        $this->setStatusCode($code);
+        $this->addHeader(HttpProtocol::HEADER_LOCATION, $url);
+    }
 }

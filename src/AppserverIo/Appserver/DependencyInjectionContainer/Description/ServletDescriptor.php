@@ -323,8 +323,7 @@ class ServletDescriptor implements ServletDescriptorInterface
 
         // query if we've an interface or an abstract class
         if ($reflectionClass->toPhpReflectionClass()->isInterface() ||
-            $reflectionClass->toPhpReflectionClass()->isAbstract())
-        {
+            $reflectionClass->toPhpReflectionClass()->isAbstract()) {
             return; // if so, do nothing
         }
 

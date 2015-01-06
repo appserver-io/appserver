@@ -67,6 +67,13 @@ interface ContextInterface extends Context
     public function getClassLoader();
 
     /**
+     * Returns the system logger instance.
+     *
+     * @return \Psr\Log\LoggerInterface
+     */
+    public function getSystemLogger();
+
+    /**
      * Returns the system configuration.
      *
      * @return \AppserverIo\Configuration\Interfaces\ConfigurationInterface The system configuration
