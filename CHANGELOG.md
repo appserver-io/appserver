@@ -9,6 +9,9 @@
 
 * Closed #291 - Configuration (XML configuration) based bean declaration
 * Closed #300 - Timer Service doesn't support seconds as period
+* Add scanner for changed files in webapps directory
+* Remove some SPL Iteratators
+* Remove automatic directory parsing of appserver-io/routlt package from context.xml
 * Add scanner to restart application server when a PHP file changes in webapps directory (deactivated by default)
 * Integration of appserver-io/microcron to allow for second based timer task execution
 * Improved performance by dynamic switching to simplified class loading
