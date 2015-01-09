@@ -36,7 +36,6 @@ use AppserverIo\Psr\EnterpriseBeans\Annotations\AnnotationKeys;
 use AppserverIo\Psr\Application\ManagerInterface;
 use AppserverIo\Appserver\Application\Interfaces\ContextInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
-use AppserverIo\Appserver\Application\Interfaces\VirtualHostInterface;
 use AppserverIo\Appserver\Application\Interfaces\ManagerConfigurationInterface;
 
 /**
@@ -60,7 +59,6 @@ use AppserverIo\Appserver\Application\Interfaces\ManagerConfigurationInterface;
  * @property \AppserverIo\Storage\GenericStackable                          $managers        Stackable of managers for this application
  * @property string                                                         $name            Name of the application
  * @property \AppserverIo\Psr\Naming\NamingDirectoryInterface               $namingDirectory The naming directory instance
- * @property \AppserverIo\Storage\GenericStackable                          $virtualHosts    Stackable containing all virtual hosts used for this application
  */
 class Application extends \Thread implements ApplicationInterface
 {
@@ -167,18 +165,6 @@ class Application extends \Thread implements ApplicationInterface
     public function injectManagers(GenericStackable $managers)
     {
         $this->managers = $managers;
-    }
-
-    /**
-     * Injects the storage for the virtual hosts.
-     *
-     * @param \AppserverIo\Storage\GenericStackable $virtualHosts The storage for the virtual hosts
-     *
-     * @return void
-     */
-    public function injectVirtualHosts(GenericStackable $virtualHosts)
-    {
-        $this->virtualHosts = $virtualHosts;
     }
 
     /**
@@ -454,16 +440,6 @@ class Application extends \Thread implements ApplicationInterface
     }
 
     /**
-     * Returns the applications available virtual host configurations.
-     *
-     * @return \AppserverIo\Storage\GenericStackable The available virtual host configurations
-     */
-    public function getVirtualHosts()
-    {
-        return $this->virtualHosts;
-    }
-
-    /**
      * Return the requested class loader instance
      *
      * @param string $identifier The unique identifier of the requested class loader
@@ -509,40 +485,6 @@ class Application extends \Thread implements ApplicationInterface
         if (isset($this->managers[$identifier])) {
             return $this->managers[$identifier];
         }
-    }
-
-    /**
-     * Checks if the application is a virtual host for the passed server name.
-     *
-     * @param string $serverName The server name to check the application being a virtual host of
-     *
-     * @return boolean TRUE if the application is a virtual host, else FALSE
-     */
-    public function isVHostOf($serverName)
-    {
-
-        // check if the application is a virtual host for the passed server name
-        foreach ($this->getVirtualHosts() as $virtualHost) {
-
-            // compare the virtual host name itself
-            if (strcmp($virtualHost->getName(), $serverName) === 0) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Bounds the application to the passed virtual host.
-     *
-     * @param \AppserverIo\Appserver\Application\Interfaces\VirtualHostInterface $virtualHost The virtual host to add
-     *
-     * @return void
-     */
-    public function addVirtualHost(VirtualHostInterface $virtualHost)
-    {
-        $this->virtualHosts[] = $virtualHost;
     }
 
     /**

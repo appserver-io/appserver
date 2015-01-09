@@ -9,6 +9,7 @@
 # Features
 
 * Closed #289 - Refactoring bean/servlet/manager registration in naming directory
+* Closed #285 - Refactor servlet engine virtual host management #285
 * Closed #291 - Configuration (XML configuration) based bean declaration
 * Closed #300 - Timer Service doesn't support seconds as period
 * Add scanner for changed files in webapps directory
@@ -16,6 +17,7 @@
 * Remove automatic directory parsing of appserver-io/routlt package from context.xml
 * Add scanner to restart application server when a PHP file changes in webapps directory (deactivated by default)
 * Integration of appserver-io/microcron to allow for second based timer task execution
+* Refactored servlet engines to provide app path information without the use of virtual hosts + cleanup in applications
 * Improved performance by dynamic switching to simplified class loading
 
 # Version 1.0.0-beta3

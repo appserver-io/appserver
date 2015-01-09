@@ -322,7 +322,6 @@ class WebSocketConnectionHandler implements MessageComponentInterface
     {
 
         // load the path information and the server name
-        $host = $request->getHost();
         $pathInfo = $request->getPath();
 
         // initialize the handler path
@@ -337,26 +336,9 @@ class WebSocketConnectionHandler implements MessageComponentInterface
             // load the application from the array
             $application = $this->applications[$applicationName];
 
-        } else { // iterate over the applications and check if one of the virtual hosts match the request
+        } else {
 
-            foreach ($this->applications as $application) {
-                if ($application->isVhostOf($host)) {
-                    break;
-                }
-            }
-        }
-
-        // if not throw an exception if we can't find an application
-        if ($application == null) {
             throw new BadRequestException("Can't find application for '$applicationName'");
-        }
-
-        // prepare and set the applications context path
-        $request->setContextPath($contextPath = '/' . $application->getName());
-
-        // prepare the path information depending if we're in a vhost or not
-        if ($application->isVhostOf($host) === false) {
-            $request->setHandlerPath(str_replace($contextPath, '', $request->getHandlerPath()));
         }
 
         // inject the application context into the handler request

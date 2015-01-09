@@ -93,6 +93,7 @@ class Request extends GenericStackable implements HttpServletRequest
         $this->pathInfo = '';
         $this->requestedSessionId = '';
         $this->requestedSessionName = '';
+        $this->baseModifier = '';
 
         // initialize the server variables and the parts
         $this->serverVars = new GenericStackable();
@@ -147,6 +148,16 @@ class Request extends GenericStackable implements HttpServletRequest
     }
 
     /**
+     * Returns the base modifier which allows for base path generation within rewritten URL environments
+     *
+     * @return string
+     */
+    public function getBaseModifier()
+    {
+        return $this->baseModifier;
+    }
+
+    /**
      * Returns the context that allows access to session and
      * server information.
      *
@@ -166,6 +177,26 @@ class Request extends GenericStackable implements HttpServletRequest
     public function getRequestHandler()
     {
         return $this->requestHandler;
+    }
+
+    /**
+     * Returns the part of this request's URL from the protocol name up to the query string in the first line of the HTTP request.
+     *
+     * @return string
+     */
+    public function getRequestUri()
+    {
+        return $this->getServerVar(ServerVars::X_REQUEST_URI);
+    }
+
+    /**
+     * Returns the URL the client used to make the request.
+     *
+     * @return string
+     */
+    public function getRequestUrl()
+    {
+        return $this->getServerVar(ServerVars::HTTP_HOST) . $this->getServerVar(ServerVars::X_REQUEST_URI);
     }
 
     /**
@@ -230,6 +261,18 @@ class Request extends GenericStackable implements HttpServletRequest
     public function getBodyStream()
     {
         return $this->bodyStream;
+    }
+
+    /**
+     * Set the base modifier
+     *
+     * @param string $baseModifier Base modifier which allows for base path generation within rewritten URL environments
+     *
+     * @return null
+     */
+    public function setBaseModifier($baseModifier)
+    {
+        $this->baseModifier = $baseModifier;
     }
 
     /**
