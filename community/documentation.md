@@ -1,11 +1,12 @@
 ---
 layout: default
-title: Services
-position: 30
-permalink: /services.html
+title: Documentation
+position: 10
+group: Community
+permalink: /community/documentation.html
 ---
 
-## Services
+## Documentation
 ***
 
 Our documentation moved. It can be found in our [appserver github wiki](https://github.com/appserver-io/appserver/wiki) now!

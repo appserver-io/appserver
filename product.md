@@ -1,8 +1,8 @@
 ---
 layout: default
-title: What is appserver.io
+title: Product
 position: 10
-permalink: /what-is-appserver-io.html
+permalink: /product.html
 ---
 
 ## What is appserver.io?

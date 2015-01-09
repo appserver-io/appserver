@@ -30,7 +30,7 @@ boxes-targetgroups:
 {% include widgets/boxes.html boxes = page.boxes-targetgroups %}
 <p><br/></p>
 
-appserver.io is a next-generation PHP infrastructure consisting of a lightning fast webserver completely
+The new appserver.io is a next-generation PHP infrastructure consisting of a lightning fast webserver completely
 written in PHP including additional frequently needed services in one powerful bundle. You can use all of
 the services or only specifically selected services in your existing application with no additional tweaks.
 This is just what you need since we have eliminated the need for additional tools or additional services,

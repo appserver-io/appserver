@@ -11,7 +11,7 @@ description: > # The objective of the project is to develop a multithreaded
 port: 4000
 host: 0.0.0.0
 baseurl: ""
-url: "http://appserver.io"
+url: "http://localhost:4000/"
 
 collections:
   docs:
