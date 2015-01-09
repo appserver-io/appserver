@@ -280,34 +280,50 @@ class ServletManager extends AbstractManager implements ServletContext
     protected function registerServlet(ServletDescriptorInterface $descriptor)
     {
 
-        // create a new reflection class instance
-        $reflectionClass = new ReflectionClass($descriptor->getClassName());
+        try {
 
-        // instanciate the servlet
-        $instance = $reflectionClass->newInstance();
+            // create a new reflection class instance
+            $reflectionClass = new ReflectionClass($descriptor->getClassName());
 
-        // load servlet name
-        $servletName = $descriptor->getName();
+            // instanciate the servlet
+            $instance = $reflectionClass->newInstance();
 
-        // initialize the servlet configuration
-        $servletConfig = new ServletConfiguration();
-        $servletConfig->injectServletContext($this);
-        $servletConfig->injectServletName($servletName);
+            // load servlet name
+            $servletName = $descriptor->getName();
 
-        // append the init params to the servlet configuration
-        foreach ($descriptor->getInitParams() as $paramName => $paramValue) {
-            $servletConfig->addInitParameter($paramName, $paramValue);
-        }
+            // initialize the servlet configuration
+            $servletConfig = new ServletConfiguration();
+            $servletConfig->injectServletContext($this);
+            $servletConfig->injectServletName($servletName);
 
-        // initialize the servlet
-        $instance->init($servletConfig);
+            // append the init params to the servlet configuration
+            foreach ($descriptor->getInitParams() as $paramName => $paramValue) {
+                $servletConfig->addInitParameter($paramName, $paramValue);
+            }
 
-        // the servlet is added to the dictionary using the complete request path as the key
-        $this->addServlet($servletName, $instance);
+            // initialize the servlet
+            $instance->init($servletConfig);
 
-        // prepend the url-pattern - servlet mapping to the servlet mappings
-        foreach ($descriptor->getUrlPatterns() as $pattern) {
-            $this->addServletMapping($pattern, $servletName);
+            // the servlet is added to the dictionary using the complete request path as the key
+            $this->addServlet($servletName, $instance);
+
+            // prepend the url-pattern - servlet mapping to the servlet mappings
+            foreach ($descriptor->getUrlPatterns() as $pattern) {
+                $this->addServletMapping($pattern, $servletName);
+            }
+
+            // register the EPB references
+            foreach ($descriptor->getEpbReferences() as $epbReference) {
+                $this->registerEpbReference($epbReference);
+            }
+
+            // register the resource references
+            foreach ($descriptor->getResReferences() as $resReference) {
+                $this->registerResReference($resReference);
+            }
+
+        } catch (\Exception $e) { // log the exception
+            $this->getApplication()->getInitialContext()->getSystemLogger()->critical($e->__toString());
         }
     }
 

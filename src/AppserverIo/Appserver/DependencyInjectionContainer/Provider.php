@@ -185,18 +185,6 @@ class Provider extends GenericStackable implements ProviderInterface
     }
 
     /**
-     * Returns the lookup name for a @Enterprise or @Resource annotation.
-     *
-     * @param \AppserverIo\Lang\Reflection\AnnotationInterface $annotation The annotation to return the lookup name
-     *
-     * @return string The lookup name
-     */
-    public function getLookupName(AnnotationInterface $annotation)
-    {
-        return $this->resolveAlias($this->newAnnotationInstance($annotation)->getLookupName());
-    }
-
-    /**
      * Tries to resolve an alias, if given, for the passed lookup name.
      *
      * @param string $lookupName The lookup name we try to resolve the alias for
@@ -326,49 +314,29 @@ class Provider extends GenericStackable implements ProviderInterface
             // check if a reflection class instance has been passed or is already available
             $reflectionClass = $this->getReflectionClassForObject($instance);
 
-            // check for declared EPB references
-            foreach ($objectDescriptor->getEpbReferences() as $epbReference) {
+            // check for declared EPB and resource references
+            foreach ($objectDescriptor->getReferences() as $references) {
 
                 // check if we've a reflection target defined
-                if ($injectionTarget = $epbReference->getInjectionTarget()) {
+                if ($injectionTarget = $references->getInjectionTarget()) {
 
                     // resolve the lookup name
-                    $lookupName = $this->resolveAlias($epbReference->getRefName());
+                    $lookupName = $this->resolveAlias($references->getRefName());
 
-                    // check the reference type
-                    switch ($refType = $epbReference->getRefType()) {
-
-                        case EpbReferenceDescriptor::REF_TYPE_SESSION: // a stateful, stateless or singleton session bean
-
-                            // load the instance to inject by lookup the initial context
-                            $toInject = $this->getInitialContext()->lookup($lookupName, $sessionId);
-                            break;
-
-                        case EpbReferenceDescriptor::REF_TYPE_RESOURCE: // a resource
-
-                            // load the instance to inject be searching the naming directory
-                            $toInject = $this->getNamingDirectory()->search($lookupName, array($sessionId));
-                            break;
-
-                        default:
-
-                            // throw an execption, because we found an unknown reference type
-                            throw new DependencyInjectionException(
-                                sprintf('Value %s for reference type of class %s not supported', $refType, $className)
-                            );
-                    }
+                    // load the instance to inject by lookup the initial context
+                    $toInject = $this->getNamingDirectory()->search($lookupName, array($sessionId));
 
                     // query for method injection
-                    if (method_exists($instance, $targetMethod = $injectionTarget->getTargetMethod())) {
+                    if (method_exists($instance, $targetName = $injectionTarget->getTargetMethod())) {
 
                         // inject the target by invoking the method
-                        $instance->$targetMethod($toInject);
+                        $instance->$targetName($toInject);
 
                     // query if we've a reflection property with the target name - this is the faster method!
-                    } elseif (property_exists($instance, $targetProperty = $injectionTarget->getTargetProperty())) {
+                    } elseif (property_exists($instance, $targetName = $injectionTarget->getTargetProperty())) {
 
                         // load the reflection property
-                        $reflectionProperty = $reflectionClass->getProperty($targetProperty);
+                        $reflectionProperty = $reflectionClass->getProperty($targetName);
 
                         // load the PHP ReflectionProperty instance to inject the bean instance
                         $phpReflectionProperty = $reflectionProperty->toPhpReflectionProperty();

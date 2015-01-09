@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\SessionBeanDescriptorInterface
+ * AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\ReferenceDescriptorInterface
  *
  * NOTICE OF LICENSE
  *
@@ -23,7 +23,7 @@
 namespace AppserverIo\Appserver\DependencyInjectionContainer\Interfaces;
 
 /**
- * Interface for a bean descriptor.
+ * Inferface for utility classes that stores a reference configuration.
  *
  * @category   Server
  * @package    Appserver
@@ -33,41 +33,27 @@ namespace AppserverIo\Appserver\DependencyInjectionContainer\Interfaces;
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       http://www.appserver.io
  */
-interface SessionBeanDescriptorInterface extends BeanDescriptorInterface
+interface ReferenceDescriptorInterface extends DescriptorInterface
 {
 
     /**
-     * Returns the beans session type.
+     * Returns the reference name.
      *
-     * @return string The beans session type
+     * @return string The reference name
      */
-    public function getSessionType();
+    public function getRefName();
 
     /**
-     * Returns the local interface name.
+     * Returns the beans description.
      *
-     * @return string The local interface name
+     * @return string The beans description
      */
-    public function getLocal();
+    public function getDescription();
 
     /**
-     * Returns the remote interface name.
+     * Returns the injection target specification.
      *
-     * @return string The remote interface name
+     * @return \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\InjectionTargetDescriptorInterface The injection target specification
      */
-    public function getRemote();
-
-    /**
-     * The array with the post construct callback method names.
-     *
-     * @return array The post construct callback method names
-     */
-    public function getPostConstructCallbacks();
-
-    /**
-     * The array with the pre destroy callback method names.
-     *
-     * @return array The pre destroy callback method names
-     */
-    public function getPreDestroyCallbacks();
+    public function getInjectionTarget();
 }

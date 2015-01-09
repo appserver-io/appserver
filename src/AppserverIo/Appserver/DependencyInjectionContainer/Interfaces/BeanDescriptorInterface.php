@@ -51,39 +51,25 @@ interface BeanDescriptorInterface extends DescriptorInterface
     public function getClassName();
 
     /**
-     * Returns the beans description.
-     *
-     * @return string The beans description
-     */
-    public function getDescription();
-
-    /**
-     * Returns the configurable bean name.
-     *
-     * @return string The configurable bean name
-     */
-    public function getBeanName();
-
-    /**
-     * Returns the bean interface.
-     *
-     * @return string The bean interface
-     */
-    public function getBeanInterface();
-
-    /**
-     * Returns the mapped name.
-     *
-     * @return string The mapped name
-     */
-    public function getMappedName();
-
-    /**
      * The array with the EPB references.
      *
      * @return array The EPB references
      */
     public function getEpbReferences();
+
+    /**
+     * The array with the resource references.
+     *
+     * @return array The resource references
+     */
+    public function getResReferences();
+
+    /**
+     * Returns an array with the merge EBP and resource references.
+     *
+     * @return array The array with the merge all bean references
+     */
+    public function getReferences();
 
     /**
      * Merges the passed configuration into this one. Configuration values

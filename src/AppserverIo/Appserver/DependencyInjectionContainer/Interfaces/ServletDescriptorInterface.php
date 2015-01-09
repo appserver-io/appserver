@@ -65,13 +65,6 @@ interface ServletDescriptorInterface extends DescriptorInterface
     public function getDisplayName();
 
     /**
-     * The array with the EPB references.
-     *
-     * @return array The EPB references
-     */
-    public function getEpbReferences();
-
-    /**
      * The array with the initialization parameters.
      *
      * @return array The initialization parameters
@@ -84,6 +77,27 @@ interface ServletDescriptorInterface extends DescriptorInterface
      * @return array The URL patterns
      */
     public function getUrlPatterns();
+
+    /**
+     * The array with the EPB references.
+     *
+     * @return array The EPB references
+     */
+    public function getEpbReferences();
+
+    /**
+     * The array with the resource references.
+     *
+     * @return array The resource references
+     */
+    public function getResReferences();
+
+    /**
+     * Returns an array with the merge EBP and resource references.
+     *
+     * @return array The array with the merge all bean references
+     */
+    public function getReferences();
 
     /**
      * Merges the passed configuration into this one. Configuration values

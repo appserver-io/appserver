@@ -22,13 +22,13 @@
 
 namespace AppserverIo\Appserver\DependencyInjectionContainer\Description;
 
-use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\EpbReferenceDescriptorInterface;
-use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\InjectionTargetDescriptorInterface;
+use AppserverIo\Lang\Reflection\ClassInterface;
+use AppserverIo\Lang\Reflection\MethodInterface;
 use AppserverIo\Lang\Reflection\PropertyInterface;
 use AppserverIo\Lang\Reflection\AnnotationInterface;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\Resource;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\EnterpriseBean;
-use AppserverIo\Lang\Reflection\MethodInterface;
+use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\EpbReferenceDescriptorInterface;
+use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\InjectionTargetDescriptorInterface;
 
 /**
  * Utility class that stores a beans reference configuration.
@@ -45,18 +45,11 @@ class EpbReferenceDescriptor implements EpbReferenceDescriptorInterface
 {
 
     /**
-     * Defines the value for the reference type 'Session' in a relation.
+     * Prefix for EPB references.
      *
      * @var string
      */
-    const REF_TYPE_SESSION = 'Session';
-
-    /**
-     * Defines the value for the reference type 'Resource' in a relation.
-     *
-     * @var string
-     */
-    const REF_TYPE_RESOURCE = 'Resource';
+    const REF_DIRECTORY = 'env';
 
     /**
      * The reference name.
@@ -66,18 +59,32 @@ class EpbReferenceDescriptor implements EpbReferenceDescriptorInterface
     protected $refName;
 
     /**
-     * The reference type.
+     * The beans description.
      *
      * @var string
      */
-    protected $refType;
+    protected $description;
 
     /**
      * The configurable bean name.
      *
      * @var string
      */
-    protected $link;
+    protected $beanName;
+
+    /**
+     * The bean interface.
+     *
+     * @var string
+     */
+    protected $beanInterface;
+
+    /**
+     * The lookup name.
+     *
+     * @var string
+     */
+    protected $lookup;
 
     /**
      * The injection target specification.
@@ -109,47 +116,91 @@ class EpbReferenceDescriptor implements EpbReferenceDescriptorInterface
     }
 
     /**
-     * Sets the reference type.
+     * Sets the beans description.
      *
-     * @param string $refType The reference type
-     *
-     * @return void
-     */
-    public function setRefType($refType)
-    {
-        $this->refType = $refType;
-    }
-
-    /**
-     * Returns the reference type.
-     *
-     * @return string The reference type
-     */
-    public function getRefType()
-    {
-        return $this->refType;
-    }
-
-    /**
-     * Sets the reference link.
-     *
-     * @param string $link The reference link
+     * @param string $description The beans description
      *
      * @return void
      */
-    public function setLink($link)
+    public function setDescription($description)
     {
-        $this->link = $link;
+        $this->description = $description;
     }
 
     /**
-     * Returns the reference link.
+     * Returns the beans description.
      *
-     * @return string The reference link
+     * @return string The beans description
      */
-    public function getLink()
+    public function getDescription()
     {
-        return $this->link;
+        return $this->description;
+    }
+
+    /**
+     * Sets the configurable bean name.
+     *
+     * @param string $beanName The configurable bean name
+     *
+     * @return void
+     */
+    public function setBeanName($beanName)
+    {
+        $this->beanName = $beanName;
+    }
+
+    /**
+     * Returns the configurable bean name.
+     *
+     * @return string The configurable bean name
+     */
+    public function getBeanName()
+    {
+        return $this->beanName;
+    }
+
+    /**
+     * Sets the bean interface.
+     *
+     * @param string $beanInterface The bean interface
+     *
+     * @return void
+     */
+    public function setBeanInterface($beanInterface)
+    {
+        $this->beanInterface = $beanInterface;
+    }
+
+    /**
+     * Returns the bean interface.
+     *
+     * @return string The bean interface
+     */
+    public function getBeanInterface()
+    {
+        return $this->beanInterface;
+    }
+
+    /**
+     * Sets the lookup name.
+     *
+     * @param string $lookup The lookup name
+     *
+     * @return void
+     */
+    public function setLookup($lookup)
+    {
+        $this->lookup = $lookup;
+    }
+
+    /**
+     * Returns the lookup name.
+     *
+     * @return string The lookup name
+     */
+    public function getLookup()
+    {
+        return $this->lookup;
     }
 
     /**
@@ -209,45 +260,50 @@ class EpbReferenceDescriptor implements EpbReferenceDescriptorInterface
     {
 
         // if we found a @EnterpriseBean annotation, load the annotation instance
-        if ($reflectionProperty->hasAnnotation(EnterpriseBean::ANNOTATION)) {
-
-            // initialize the annotation instance
-            $annotation = $reflectionProperty->getAnnotation(EnterpriseBean::ANNOTATION);
-
-            // initialize the reference type
-            $refType = EpbReferenceDescriptor::REF_TYPE_SESSION;
+        if ($reflectionProperty->hasAnnotation(EnterpriseBean::ANNOTATION) === false) { // if not, do nothing
+            return;
         }
 
-        // if we found a @Resource annotation, load the annotation instance
-        if ($reflectionProperty->hasAnnotation(Resource::ANNOTATION)) {
+        // initialize the annotation instance
+        $annotation = $reflectionProperty->getAnnotation(EnterpriseBean::ANNOTATION);
 
-            // initialize the annotation instance
-            $annotation = $reflectionProperty->getAnnotation(Resource::ANNOTATION);
+        // load the annotation instance
+        $annotationInstance = $annotation->newInstance($annotation->getAnnotationName(), $annotation->getValues());
 
-            // initialize the reference type
-            $refType = EpbReferenceDescriptor::REF_TYPE_RESOURCE;
+        // load the reference name defined as @EnterpriseBean(name=****)
+        if ($refName = $annotationInstance->getName()) {
+            $this->setRefName(sprintf('%s/%s', EpbReferenceDescriptor::REF_DIRECTORY, $refName));
         }
 
-        // if we found a annotation instance, initialize the instance
-        if ($annotation instanceof AnnotationInterface) {
-
-            // load the annotation instance
-            $annotationInstance = $annotation->newInstance($annotation->getAnnotationName(), $annotation->getValues());
-
-            // load the reference name
-            if ($refName = $annotationInstance->getName()) {
-                $this->setRefName($refName);
-            }
-
-            // set the ref type
-            $this->setRefType($refType);
-
-            // load the injection target data
-            $this->setInjectionTarget(InjectionTargetDescriptor::newDescriptorInstance()->fromReflectionProperty($reflectionProperty));
-
-            // return the instance
-            return $this;
+        // register the bean with the interface defined as @EnterpriseBean(beanInterface=****)
+        if ($beanInterfaceAttribute = $annotationInstance->getBeanInterface()) {
+            $this->setBeanInterface($beanInterfaceAttribute);
+        } else { // use the property name as local business interface
+            $this->setBeanInterface(sprintf('%sLocal', ucfirst($reflectionProperty->getPropertyName())));
         }
+
+        // register the bean with the name defined as @EnterpriseBean(beanName=****)
+        if ($beanNameAttribute = $annotationInstance->getBeanName()) {
+            $this->setBeanName($beanNameAttribute);
+        } else { // use the property name
+            $this->setBeanName(ucfirst($reflectionProperty->getPropertyName()));
+        }
+
+        // register the bean with the lookup name defined as @EnterpriseBean(lookup=****)
+        if ($lookupAttribute = $annotationInstance->getLookup()) {
+            $this->setLookup($lookupAttribute);
+        }
+
+        // register the bean with the interface defined as @EnterpriseBean(description=****)
+        if ($descriptionAttribute = $annotationInstance->getDescription()) {
+            $this->setDescription($descriptionAttribute);
+        }
+
+        // load the injection target data
+        $this->setInjectionTarget(InjectionTargetDescriptor::newDescriptorInstance()->fromReflectionProperty($reflectionProperty));
+
+        // return the instance
+        return $this;
     }
 
     /**
@@ -262,45 +318,54 @@ class EpbReferenceDescriptor implements EpbReferenceDescriptorInterface
     {
 
         // if we found a @EnterpriseBean annotation, load the annotation instance
-        if ($reflectionMethod->hasAnnotation(EnterpriseBean::ANNOTATION)) {
-
-            // initialize the annotation instance
-            $annotation = $reflectionMethod->getAnnotation(EnterpriseBean::ANNOTATION);
-
-            // initialize the reference type
-            $refType = EpbReferenceDescriptor::REF_TYPE_SESSION;
+        if ($reflectionMethod->hasAnnotation(EnterpriseBean::ANNOTATION) === false) { // if not, do nothing
+            return;
         }
 
-        // if we found a @Resource annotation, load the annotation instance
-        if ($reflectionMethod->hasAnnotation(Resource::ANNOTATION)) {
+        // initialize the annotation instance
+        $annotation = $reflectionMethod->getAnnotation(EnterpriseBean::ANNOTATION);
 
-            // initialize the annotation instance
-            $annotation = $reflectionMethod->getAnnotation(Resource::ANNOTATION);
+        // load the annotation instance
+        $annotationInstance = $annotation->newInstance($annotation->getAnnotationName(), $annotation->getValues());
 
-            // initialize the reference type
-            $refType = EpbReferenceDescriptor::REF_TYPE_RESOURCE;
+        // load the reference name defined as @EnterpriseBean(name=****)
+        if ($refName = $annotationInstance->getName()) {
+            $this->setRefName(sprintf('%s/%s', EpbReferenceDescriptor::REF_DIRECTORY, $refName));
         }
 
-        // if we found a annotation instance, initialize the instance
-        if ($annotation instanceof AnnotationInterface) {
-
-            // load the annotation instance
-            $annotationInstance = $annotation->newInstance($annotation->getAnnotationName(), $annotation->getValues());
-
-            // load the reference name
-            if ($refName = $annotationInstance->getName()) {
-                $this->setRefName($refName);
-            }
-
-            // set the ref type
-            $this->setRefType($refType);
-
-            // load the injection target data
-            $this->setInjectionTarget(InjectionTargetDescriptor::newDescriptorInstance()->fromReflectionMethod($reflectionMethod));
-
-            // return the instance
-            return $this;
+        // register the bean with the interface defined as @EnterpriseBean(beanInterface=****)
+        if ($beanInterfaceAttribute = $annotationInstance->getBeanInterface()) {
+            $this->setBeanInterface($beanInterfaceAttribute);
+        } else {
+            throw new \Exception(
+                sprintf("beanInterface has to be specified for reflection method %s", $reflectionMethod->getMethodName())
+            );
         }
+
+        // register the bean with the name defined as @EnterpriseBean(beanName=****)
+        if ($beanNameAttribute = $annotationInstance->getBeanName()) {
+            $this->setBeanName($beanNameAttribute);
+        } else {
+            throw new \Exception(
+                sprintf("beanName has to be specified for reflection method %s", $reflectionMethod->getMethodName())
+            );
+        }
+
+        // register the bean with the lookup name defined as @EnterpriseBean(lookup=****)
+        if ($lookupAttribute = $annotationInstance->getLookup()) {
+            $this->setLookup($lookupAttribute);
+        }
+
+        // register the bean with the interface defined as @EnterpriseBean(description=****)
+        if ($descriptionAttribute = $annotationInstance->getDescription()) {
+            $this->setDescription($descriptionAttribute);
+        }
+
+        // load the injection target data
+        $this->setInjectionTarget(InjectionTargetDescriptor::newDescriptorInstance()->fromReflectionMethod($reflectionMethod));
+
+        // return the instance
+        return $this;
     }
 
     /**
@@ -314,19 +379,38 @@ class EpbReferenceDescriptor implements EpbReferenceDescriptorInterface
     public function fromDeploymentDescriptor(\SimpleXmlElement $node)
     {
 
+        // query if we've a <epb-ref> descriptor node
+        if ($node->getName() !== 'epb-ref') { // if not, do nothing
+            return;
+        }
+
         // query for the reference name
         if ($refName = (string) $node->{'epb-ref-name'}) {
-            $this->setRefName($refName);
+            $this->setRefName(sprintf('%s/%s', EpbReferenceDescriptor::REF_DIRECTORY, $refName));
         }
 
-        // query for the reference type
-        if ($refType = (string) $node->{'epb-ref-type'}) {
-            $this->setRefType($refType);
+        // query for the bean name and set it
+        if ($beanName = (string) $node->{'epb-link'}) {
+            $this->setBeanName($beanName);
         }
 
-        // query for reference link
-        if ($link = (string) $node->{'epb-link'}) {
-            $this->setLink($link);
+        // query for the lookup name and set it
+        if ($lookup = (string) $node->{'lookup-name'}) {
+            $this->setLookup($lookup);
+        }
+
+        // query for the bean interface and set it
+        if ($beanInterface = (string) $node->{'local'}) {
+            $this->setBeanInterface($beanInterface);
+        } elseif ($beanInterface = (string) $node->{'remote'}) {
+            $this->setBeanInterface($beanInterface);
+        } else { // use the bean name as local interface
+            $this->setBeanInterface(sprintf('%sLocal', str_replace('Bean', '', $this->getBeanName())));
+        }
+
+        // query for the description and set it
+        if ($description = (string) $node->{'description'}) {
+            $this->setDescription($description);
         }
 
         // query for the injection target
@@ -354,14 +438,24 @@ class EpbReferenceDescriptor implements EpbReferenceDescriptorInterface
             $this->setRefName($refName);
         }
 
-        // merge the reference type
-        if ($refType = $epbReferenceDescriptor->getRefType()) {
-            $this->setRefType($refType);
+        // merge the bean interface
+        if ($beanInterface = $epbReferenceDescriptor->getBeanInterface()) {
+            $this->setBeanInterface($beanInterface);
         }
 
-        // merge the reference link
-        if ($link = $epbReferenceDescriptor->getLink()) {
-            $this->setLink($link);
+        // merge the bean name
+        if ($beanName = $epbReferenceDescriptor->getBeanName()) {
+            $this->setBeanName($beanName);
+        }
+
+        // merge the lookup name
+        if ($lookup = $epbReferenceDescriptor->getLookup()) {
+            $this->setLookup($lookup);
+        }
+
+        // merge the description
+        if ($description = $epbReferenceDescriptor->getDescription()) {
+            $this->setDescription($description);
         }
 
         // merge the injection target

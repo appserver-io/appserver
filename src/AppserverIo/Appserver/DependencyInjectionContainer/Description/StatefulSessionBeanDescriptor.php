@@ -93,6 +93,9 @@ class StatefulSessionBeanDescriptor extends SessionBeanDescriptor implements Sta
             return;
         }
 
+        // set the session type
+        $this->setSessionType(StatefulSessionBeanDescriptor::SESSION_TYPE);
+
         // initialize the descriptor instance
         parent::fromReflectionClass($reflectionClass);
 

@@ -33,36 +33,29 @@ namespace AppserverIo\Appserver\DependencyInjectionContainer\Interfaces;
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       http://www.appserver.io
  */
-interface EpbReferenceDescriptorInterface extends DescriptorInterface
+interface EpbReferenceDescriptorInterface extends ReferenceDescriptorInterface
 {
 
     /**
-     * Returns the reference name.
+     * Returns the configurable bean name.
      *
-     * @return string The reference name
+     * @return string The configurable bean name
      */
-    public function getRefName();
+    public function getBeanName();
 
     /**
-     * Returns the reference type.
+     * Returns the bean interface.
      *
-     * @return string The reference type
+     * @return string The bean interface
      */
-    public function getRefType();
+    public function getBeanInterface();
 
     /**
-     * Returns the reference link.
+     * Returns the lookup name.
      *
-     * @return string The reference link
+     * @return string The lookup name
      */
-    public function getLink();
-
-    /**
-     * Returns the injection target specification.
-     *
-     * @return \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\InjectionTargetDescriptorInterface The injection target specification
-     */
-    public function getInjectionTarget();
+    public function getLookup();
 
     /**
      * Merges the passed configuration into this one. Configuration values

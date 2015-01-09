@@ -94,15 +94,6 @@ interface ProviderInterface extends ManagerInterface
     public function newAnnotationInstance(AnnotationInterface $annotation);
 
     /**
-     * Returns the lookup name for a @Enterprise or @Resource annotation.
-     *
-     * @param \AppserverIo\Lang\Reflection\AnnotationInterface $annotation The annotation to return the lookup name
-     *
-     * @return string The lookup name
-     */
-    public function getLookupName(AnnotationInterface $annotation);
-
-    /**
      * Tries to resolve an alias, if given, for the passed lookup name.
      *
      * @param string $lookupName The lookup name we try to resolve the alias for

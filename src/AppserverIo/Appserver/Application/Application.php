@@ -609,11 +609,6 @@ class Application extends \Thread implements ApplicationInterface
             $this->getNamingDirectory()->bind($beanNameAttribute, array(&$this, 'getManager'), array($identifier));
         }
 
-        // register the bean with the name defined as @Annotation(mappedName=****)
-        if ($mappedNameAttribute = $lookupNames[AnnotationKeys::MAPPED_NAME]) {
-            $this->getNamingDirectory()->bind($mappedNameAttribute, array(&$this, 'getManager'), array($identifier));
-        }
-
         // register the manager instance itself
         $this->managers[$identifier] = $manager;
     }
@@ -713,6 +708,9 @@ class Application extends \Thread implements ApplicationInterface
      */
     public function run()
     {
+
+        // create the applications 'env' directory the beans will be bound to
+        $appEnvDir = $this->createSubdirectory('env');
 
         // register the class loaders
         $this->registerClassLoaders();

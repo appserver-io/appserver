@@ -28,6 +28,8 @@ use AppserverIo\Storage\StackableStorage;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\Application\Interfaces\ManagerConfigurationInterface;
 
+use AppserverIo\Appserver\Naming\InitialContext as NamingContext;
+
 /**
  * The bean manager handles the message and session beans registered for the application.
  *
@@ -61,6 +63,10 @@ class BeanManagerFactory
         // initialize the bean locator
         $beanLocator = new BeanLocator();
 
+        // create the initial context instance
+        $initialContext = new NamingContext();
+        $initialContext->injectApplication($application);
+
         // initialize the stackable for the data, the stateful + singleton session beans and the naming directory
         $data = new StackableStorage();
         $statefulSessionBeans = new StackableStorage();
@@ -80,6 +86,7 @@ class BeanManagerFactory
         $beanManager->injectData($data);
         $beanManager->injectApplication($application);
         $beanManager->injectResourceLocator($beanLocator);
+        $beanManager->injectInitialContext($initialContext);
         $beanManager->injectSingletonSessionBeans($singletonSessionBeans);
         $beanManager->injectStatefulSessionBeans($statefulSessionBeans);
         $beanManager->injectStatefulSessionBeanSettings($statefulSessionBeanSettings);

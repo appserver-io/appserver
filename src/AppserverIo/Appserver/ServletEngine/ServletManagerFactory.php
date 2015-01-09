@@ -27,6 +27,8 @@ use AppserverIo\Storage\StackableStorage;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\Application\Interfaces\ManagerConfigurationInterface;
 
+use AppserverIo\Appserver\Naming\InitialContext as NamingContext;
+
 /**
  * The servlet manager handles the servlets registered for the application.
  *
@@ -52,6 +54,10 @@ class ServletManagerFactory
     public static function visit(ApplicationInterface $application, ManagerConfigurationInterface $managerConfiguration)
     {
 
+        // create the initial context instance
+        $initialContext = new NamingContext();
+        $initialContext->injectApplication($application);
+
         // initialize the stackable storage
         $data = new StackableStorage();
         $servlets = new StackableStorage();
@@ -68,6 +74,7 @@ class ServletManagerFactory
         $servletManager->injectData($data);
         $servletManager->injectServlets($servlets);
         $servletManager->injectApplication($application);
+        $servletManager->injectInitialContext($initialContext);
         $servletManager->injectInitParameters($initParameters);
         $servletManager->injectResourceLocator($servletLocator);
         $servletManager->injectServletMappings($servletMappings);
