@@ -125,13 +125,6 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
     protected $managers;
 
     /**
-     * The storage for the virtual hosts.
-     *
-     * @var \AppserverIo\Storage\GenericStackable
-     */
-    protected $virtualHosts;
-
-    /**
      * The storage for the class loaders.
      *
      * @var \AppserverIo\Storage\GenericStackable
@@ -160,7 +153,6 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
         // create a generic stackable for the necessary storages
         $this->data = new StackableStorage();
         $this->managers = new GenericStackable();
-        $this->virtualHosts = new GenericStackable();
         $this->classLoaders = new GenericStackable();
 
         // create a mock instance of the naming directory
@@ -181,7 +173,6 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
         $this->application->injectName(ApplicationTest::NAME);
         $this->application->injectData($this->data);
         $this->application->injectManagers($this->managers);
-        $this->application->injectVirtualHosts($this->virtualHosts);
         $this->application->injectClassLoaders($this->classLoaders);
         $this->application->injectNamingDirectory($this->namingDirectory);
     }
@@ -282,16 +273,6 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test if the getter/setter for the virtual hosts works.
-     *
-     * @return void
-     */
-    public function testInjectGetVirtualHosts()
-    {
-        $this->assertEquals($this->virtualHosts, $this->application->getVirtualHosts());
-    }
-
-    /**
      * Test if the getter/setter for the class loaders works.
      *
      * @return void
@@ -361,40 +342,6 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
 
         // inject the path components
         $this->assertEquals($webappPath, $this->application->getWebappPath());
-    }
-
-    /**
-     * Test if the the application is a virtual host.
-     *
-     * @return void
-     */
-    public function testIsVhostOf()
-    {
-
-        // create an array with the methods to mock
-        $methodsToMock = array('getName', 'getAppBase', 'match');
-
-        // create a mock for a virtual host
-        $mockVirtualHost = $this->getMock('AppserverIo\Appserver\Application\Interfaces\VirtualHostInterface', $methodsToMock);
-        $mockVirtualHost->expects($this->any())
-            ->method('getName')
-            ->will($this->returnValue(ApplicationTest::SERVER_NAME));
-
-        // add the virtual host mock
-        $this->application->addVirtualHost($mockVirtualHost);
-
-        // check if we're a virtual host of
-        $this->assertTrue($this->application->isVHostOf(ApplicationTest::SERVER_NAME));
-    }
-
-    /**
-     * Test if the the application is NOT a virtual host.
-     *
-     * @return void
-     */
-    public function testIsVhostOfIsFalse()
-    {
-        $this->assertFalse($this->application->isVHostOf(ApplicationTest::SERVER_NAME));
     }
 
     /**
