@@ -336,19 +336,21 @@ class EpbReferenceDescriptor implements EpbReferenceDescriptorInterface
         // register the bean with the interface defined as @EnterpriseBean(beanInterface=****)
         if ($beanInterfaceAttribute = $annotationInstance->getBeanInterface()) {
             $this->setBeanInterface($beanInterfaceAttribute);
-        } else {
-            throw new \Exception(
-                sprintf("beanInterface has to be specified for reflection method %s", $reflectionMethod->getMethodName())
-            );
+        } else { // use the name of the first parameter as local business interface
+            foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
+                $this->setBeanInterface(sprintf('%sLocal', ucfirst($reflectionParameter->getParameterName())));
+                break;
+            }
         }
 
         // register the bean with the name defined as @EnterpriseBean(beanName=****)
         if ($beanNameAttribute = $annotationInstance->getBeanName()) {
             $this->setBeanName($beanNameAttribute);
-        } else {
-            throw new \Exception(
-                sprintf("beanName has to be specified for reflection method %s", $reflectionMethod->getMethodName())
-            );
+        } else { // use the name of the first parameter as local business interface
+            foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
+                $this->setBeanInterface(ucfirst($reflectionParameter->getParameterName()));
+                break;
+            }
         }
 
         // register the bean with the lookup name defined as @EnterpriseBean(lookup=****)
