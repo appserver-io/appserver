@@ -8,7 +8,8 @@
 
 # Features
 
-* Closed #285 - Configuration (XML configuration) based bean declaration
+* Closed #289 - Refactoring bean/servlet/manager registration in naming directory
+* Closed #285 - Refactor servlet engine virtual host management #285
 * Closed #291 - Configuration (XML configuration) based bean declaration
 * Closed #300 - Timer Service doesn't support seconds as period
 * Add scanner for changed files in webapps directory

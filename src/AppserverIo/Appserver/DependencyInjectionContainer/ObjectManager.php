@@ -28,7 +28,6 @@ use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Appserver\Core\AbstractManager;
 use AppserverIo\Psr\Application\ManagerInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
-use AppserverIo\Appserver\DependencyInjectionContainer\Parsers\BeanDescriptor;
 use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\DescriptorInterface;
 use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\ObjectManagerInterface;
 use AppserverIo\Collections\IndexOutOfBoundsException;

@@ -380,8 +380,7 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
         $lookupNames = array(
             AnnotationKeys::NAME => MockManager::IDENTIFIER,
             AnnotationKeys::BEAN_NAME => 'MockManager',
-            AnnotationKeys::BEAN_INTERFACE => 'MockInterface',
-            AnnotationKeys::MAPPED_NAME => 'MappedMockManager'
+            AnnotationKeys::BEAN_INTERFACE => 'MockInterface'
         );
 
         // define the methods to mock
@@ -423,16 +422,14 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
         $lookupNames1 = array(
             AnnotationKeys::NAME => 'MockManager1',
             AnnotationKeys::BEAN_NAME => 'MockManager1',
-            AnnotationKeys::BEAN_INTERFACE => 'MockInterface1',
-            AnnotationKeys::MAPPED_NAME => 'MappedMockManager1'
+            AnnotationKeys::BEAN_INTERFACE => 'MockInterface1'
         );
 
         // prepare the lookup names
         $lookupNames2 = array(
             AnnotationKeys::NAME => 'MockManager2',
             AnnotationKeys::BEAN_NAME => 'MockManager2',
-            AnnotationKeys::BEAN_INTERFACE => 'MockInterface2',
-            AnnotationKeys::MAPPED_NAME => 'MappedMockManager2'
+            AnnotationKeys::BEAN_INTERFACE => 'MockInterface2'
         );
 
         // create a mock manager configuration
@@ -518,8 +515,7 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
         $lookupNames = array(
             AnnotationKeys::NAME => 'MockManager',
             AnnotationKeys::BEAN_NAME => 'MockManager',
-            AnnotationKeys::BEAN_INTERFACE => 'MockInterface',
-            AnnotationKeys::MAPPED_NAME => 'MappedMockManager'
+            AnnotationKeys::BEAN_INTERFACE => 'MockInterface'
         );
 
         // define the methods to mock
