@@ -24,6 +24,8 @@ namespace AppserverIo\Appserver\ServletEngine;
 use AppserverIo\Appserver\Application\VirtualHost;
 use AppserverIo\Appserver\ServletEngine\Authentication\AuthenticationValve;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequest;
+use AppserverIo\Server\Dictionaries\ServerVars;
+use AppserverIo\Server\Interfaces\RequestContextInterface;
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\WebServer\Interfaces\HttpModuleInterface;
 
@@ -40,6 +42,11 @@ use AppserverIo\WebServer\Interfaces\HttpModuleInterface;
  * @copyright  2014 TechDivision GmbH - <info@appserver.io>
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       http://www.appserver.io/
+ *
+ * @property \AppserverIo\Storage\GenericStackable $applications Storage with the available applications
+ * @property \AppserverIo\Storage\GenericStackable $dependencies Storage with the available applications
+ * @property \AppserverIo\Storage\GenericStackable $handlers     Storage handlers registered in the web server
+ * @property \AppserverIo\Storage\GenericStackable $valves       Storage for the servlet engines valves that handles the request
  */
 abstract class AbstractServletEngine extends GenericStackable implements HttpModuleInterface
 {
@@ -77,20 +84,36 @@ abstract class AbstractServletEngine extends GenericStackable implements HttpMod
          * @var \AppserverIo\Storage\GenericStackable
          */
         $this->applications = new GenericStackable();
+    }
 
-        /**
-         * Storage with the registered virtual hosts.
-         *
-         * @var \AppserverIo\Storage\GenericStackable
-         */
-        $this->virtualHosts = new GenericStackable();
+    /**
+     * Will try to find the application based on the context path taken from the requested filename.
+     * Will return the found application on success and throw an exception if nothing could be found
+     *
+     * @param \AppserverIo\Server\Interfaces\RequestContextInterface $requestContext Context of the current request
+     *
+     * @return null|\AppserverIo\Psr\Application\ApplicationInterface
+     *
+     * @throws \AppserverIo\Appserver\ServletEngine\BadRequestException
+     */
+    protected function findRequestedApplication(RequestContextInterface $requestContext)
+    {
+        // prepare the request URL we want to match
+        $webappsDir = $this->getServerContext()->getServerConfig()->getDocumentRoot();
+        $relativeRequestPath = strstr($requestContext->getServerVar(ServerVars::DOCUMENT_ROOT) . $requestContext->getServerVar(ServerVars::X_REQUEST_URI), $webappsDir);
+        $proposedAppName = strstr(str_replace($webappsDir . '/', '', $relativeRequestPath), '/', true);
 
-        /**
-         * Storage with URL => application mappings.
-         *
-         * @var \AppserverIo\Storage\GenericStackable
-         */
-        $this->urlMappings = new GenericStackable();
+        // try to match a registered application with the passed request
+        foreach ($this->applications as $application) {
+
+            if ($application->getName() === $proposedAppName) {
+
+                return $application;
+            }
+        }
+
+        // if we did not find anything we should throw a bad request exception
+        throw new BadRequestException(sprintf('Can\'t find application for URL %s%s', $requestContext->getServerVar(ServerVars::HTTP_HOST), $requestContext->getServerVar(ServerVars::X_REQUEST_URI)));
     }
 
     /**
@@ -150,20 +173,7 @@ abstract class AbstractServletEngine extends GenericStackable implements HttpMod
      */
     public function initApplications()
     {
-
-        // iterate over a applications vhost/alias configuration
-        foreach ($this->getServerContext()->getContainer()->getApplications() as $applicationName => $application) {
-
-            // iterate over the virtual hosts
-            foreach ($this->virtualHosts as $virtualHost) {
-                if ($virtualHost->match($application)) {
-                    $application->addVirtualHost($virtualHost);
-                }
-            }
-
-            // finally APPEND a wildcard pattern for each application to the patterns array
-            $this->applications[$applicationName] = $application;
-        }
+        $this->applications = $this->getServerContext()->getContainer()->getApplications();
     }
 
     /**
@@ -179,30 +189,6 @@ abstract class AbstractServletEngine extends GenericStackable implements HttpMod
     }
 
     /**
-     * Initialize the URL mappings.
-     *
-     * @return void
-     */
-    public function initUrlMappings()
-    {
-
-        // iterate over a applications vhost/alias configuration
-        foreach ($this->getApplications() as $application) {
-
-            // initialize the application name
-            $applicationName = $application->getName();
-
-            // iterate over the virtual hosts and add a mapping for each
-            foreach ($application->getVirtualHosts() as $virtualHost) {
-                $this->urlMappings['/^' . $virtualHost->getName() . '\/(([a-z0-9+\$_-]\.?)+)*\/?/'] = $applicationName;
-            }
-
-            // finally APPEND a wildcard pattern for each application to the patterns array
-            $this->urlMappings['/^[a-z0-9-.]*\/' . $applicationName . '\/(([a-z0-9+\$_-]\.?)+)*\/?/'] = $applicationName;
-        }
-    }
-
-    /**
      * Initialize the valves that handles the requests.
      *
      * @return void
@@ -211,27 +197,6 @@ abstract class AbstractServletEngine extends GenericStackable implements HttpMod
     {
         $this->valves[] = new AuthenticationValve();
         $this->valves[] = new ServletValve();
-    }
-
-    /**
-     * Initialize the configured virtual hosts.
-     *
-     * @return void
-     */
-    public function initVirtualHosts()
-    {
-        // load the document root and the web servers virtual host configuration
-        $documentRoot = $this->getServerContext()->getServerConfig()->getDocumentRoot();
-
-        // prepare the virtual host configurations
-        foreach ($this->getServerContext()->getServerConfig()->getVirtualHosts() as $domain => $virtualHost) {
-
-            // prepare the applications base directory
-            $appBase = str_replace($documentRoot, '', $virtualHost['params']['documentRoot']);
-
-            // append the virtual host to the array
-            $this->virtualHosts[] = new VirtualHost($domain, $appBase);
-        }
     }
 
     /**

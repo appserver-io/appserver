@@ -29,7 +29,6 @@ use AppserverIo\Http\HttpResponseStates;
 use AppserverIo\Psr\HttpMessage\RequestInterface;
 use AppserverIo\Psr\HttpMessage\ResponseInterface;
 use AppserverIo\Storage\GenericStackable;
-use AppserverIo\Appserver\Application\VirtualHost;
 use AppserverIo\Appserver\Application\Interfaces\ContextInterface;
 use AppserverIo\Psr\Servlet\ServletRequest;
 use AppserverIo\Psr\Servlet\ServletResponse;
@@ -108,9 +107,7 @@ class ServletEngine extends AbstractServletEngine
             // initialize the servlet engine
             $this->initValves();
             $this->initHandlers();
-            $this->initVirtualHosts();
             $this->initApplications();
-            $this->initUrlMappings();
             $this->initRequestHandlers();
 
         } catch (\Exception $e) {
@@ -177,7 +174,7 @@ class ServletEngine extends AbstractServletEngine
 
         try {
 
-            // if false hook is comming do nothing
+            // if false hook is coming do nothing
             if (ModuleHooks::REQUEST_POST !== $hook) {
                 return;
             }
@@ -193,7 +190,7 @@ class ServletEngine extends AbstractServletEngine
             $servletRequest->injectServerVars($requestContext->getServerVars());
 
             // initialize the parts
-            foreach ($request->getParts() as $name => $part) {
+            foreach ($request->getParts() as $part) {
                 $servletRequest->addPart(Part::fromHttpRequest($part));
             }
 
@@ -209,30 +206,32 @@ class ServletEngine extends AbstractServletEngine
             $servletResponse = new Response();
             $servletRequest->injectResponse($servletResponse);
 
-            // load a NOT working request handler from the pool
-            $urlMappings = $this->urlMappings;
-            $applications = $this->applications;
+            // get the valve locally
+            $valves = $this->valves;
 
-            // explode host and port from the host header
-            list ($host, ) = explode(':', $request->getHeader(HttpProtocol::HEADER_HOST));
+            // load the application associated with this request
+            $application = $this->findRequestedApplication($requestContext);
 
-            // prepare the request URL we want to match
-            $url =  $host . $requestContext->getServerVar(ServerVars::X_REQUEST_URI);
+            // prepare and set the applications context path
+            $servletRequest->setContextPath($contextPath = '/' . $application->getName());
+            $servletRequest->setServletPath(str_replace($contextPath, '', $servletRequest->getServletPath()));
 
-            // try to match a registered application with the passed request
-            foreach ($urlMappings as $pattern => $applicationName) {
-                if (preg_match($pattern, $url) === 1) {
-                    break;
-                }
-            }
+            // prepare the base modifier which allows our apps to provide a base URL
+            $webappsDir = $this->getServerContext()->getServerConfig()->getDocumentRoot();
+            $relativeRequestPath = strstr($servletRequest->getServerVar(ServerVars::DOCUMENT_ROOT), $webappsDir);
+            $proposedBaseModifier = str_replace($webappsDir, '', $relativeRequestPath);
+            if (strpos($proposedBaseModifier, $contextPath) === 0) {
 
-            // check if an application is available
-            if (isset($applications[$applicationName]) === false) { // if not throw a bad request exception
-                throw new BadRequestException(sprintf('Can\'t find application for URL %s', $url));
+                $servletRequest->setBaseModifier('');
+
+            } else {
+
+                $servletRequest->setBaseModifier($contextPath);
             }
 
             // initialize the request handler instance
             $dispatched = false;
+            $applicationName = $application->getName();
             while ($dispatched === false) {
                 if ($this->requestHandlers[$applicationName][$i = rand(0, 9)]->isWaiting()) {
                     $this->requestHandlers[$applicationName][$i]->handleRequest($servletRequest, $servletResponse);

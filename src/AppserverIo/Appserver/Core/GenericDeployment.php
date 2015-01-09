@@ -85,7 +85,6 @@ class GenericDeployment extends AbstractDeployment
                 // initialize the storage for managers, virtual hosts an class loaders
                 $data = new StackableStorage();
                 $managers = new GenericStackable();
-                $virtualHosts = new GenericStackable();
                 $classLoaders = new GenericStackable();
 
                 // bind the application specific temporary directory to the naming directory
@@ -96,7 +95,6 @@ class GenericDeployment extends AbstractDeployment
                 $application->injectMutex($mutex);
                 $application->injectManagers($managers);
                 $application->injectName($applicationName);
-                $application->injectVirtualHosts($virtualHosts);
                 $application->injectClassLoaders($classLoaders);
                 $application->injectNamingDirectory($namingDirectory);
                 $application->injectInitialContext($this->getInitialContext());
@@ -148,7 +146,7 @@ class GenericDeployment extends AbstractDeployment
 
                 // write a log message, that the folder doesn't contain a valid application
                 $this->getInitialContext()->getSystemLogger()->info(
-                    sprintf('Directory %s doesn\'t contain a valid application, so we ignore it!', $folder)
+                    sprintf('Directory %s doesn\'t contain a webapp, will assume a need for legacy support.', $folder)
                 );
             }
         }
