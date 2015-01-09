@@ -11,7 +11,7 @@ description: > # The objective of the project is to develop a multithreaded
 port: 4000
 host: 0.0.0.0
 baseurl: ""
-url: "http://localhost:4000/"
+url: "http://willkommers.github.io/appserver/"
 
 collections:
   docs:
@@ -19,8 +19,8 @@ collections:
 
 twitter_username: php_appserver
 
-github_username:  appserver-io
-github_repository: https://github.com/appserver.io/appserver
+github_username:  willkommers
+github_repository: https://github.com/willkommers/appserver
 
 google_analytics_id: UA-42386171-1
 
