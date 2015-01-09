@@ -116,14 +116,6 @@ class RequestHandler extends \Thread
             $servletRequest = $this->servletRequest;
             $servletResponse = $this->servletResponse;
 
-            // prepare and set the applications context path
-            $servletRequest->setContextPath($contextPath = '/' . $application->getName());
-
-            // prepare the path information depending if we're in a vhost or not
-            if ($application->isVhostOf($servletRequest->getServerVar(ServerVars::SERVER_NAME)) === false) {
-                $servletRequest->setServletPath(str_replace($contextPath, '', $servletRequest->getServletPath()));
-            }
-
             // inject the found application into the servlet request
             $servletRequest->injectContext($application);
 

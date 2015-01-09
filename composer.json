@@ -13,7 +13,7 @@
 		"nikic/phlexy" : "dev-master",
 		"appserver-io/microcron" : "0.1.*",
 		"appserver-io-psr/epb" : "0.2.*",
-		"appserver-io-psr/servlet" : "0.6.*",
+		"appserver-io-psr/servlet" : "0.7.*",
 		"appserver-io-psr/messagequeueprotocol" : "0.2.*",
 		"appserver-io/doppelgaenger" : "0.4.*",
 		"appserver-io/http" : "0.2.*",
