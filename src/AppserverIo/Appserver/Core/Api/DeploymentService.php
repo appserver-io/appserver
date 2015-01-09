@@ -125,15 +125,10 @@ class DeploymentService extends AbstractService
         $contextInstances = array();
 
         // iterate over all applications and create the context configuration
-        foreach (new \DirectoryIterator($container->getAppBase()) as $webappPath) {
-
-            // check if we found an application directory
-            if ($webappPath->isDir() === false || $webappPath->isDot()) {
-                continue;
-            }
+        foreach (glob($container->getAppBase() . '/*', GLOB_ONLYDIR) as $webappPath) {
 
             // prepare the context path
-            $contextPath = '/' . $webappPath->getBasename();
+            $contextPath = '/' . basename($webappPath);
 
             // load the default context configuration
             $context = new ContextNode();
@@ -144,16 +139,12 @@ class DeploymentService extends AbstractService
                 $context->merge($contextToMerge);
             }
 
-            // prepare the recursive directory iterator
-            $directory = new \RecursiveDirectoryIterator($webappPath->getPathname());
-            $iterator = new \RecursiveIteratorIterator($directory);
-
             // iterate through all context configurations (context.xml) and merge them
-            foreach (new \RegexIterator($iterator, '/^.*\/(META-INF)\/context.xml$/') as $contextFile) {
+            foreach ($this->globDir($webappPath . '/META-INF/context.xml') as $contextFile) {
 
                 // create a new context node instance
                 $contextInstance = new ContextNode();
-                $contextInstance->initFromFile($contextFile->getPathname());
+                $contextInstance->initFromFile($contextFile);
 
                 // merge it into the default configuration
                 $context->merge($contextInstance);

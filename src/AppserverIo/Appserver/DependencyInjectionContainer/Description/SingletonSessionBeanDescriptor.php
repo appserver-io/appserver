@@ -126,6 +126,9 @@ class SingletonSessionBeanDescriptor extends SessionBeanDescriptor implements Si
             return;
         }
 
+        // set the session type
+        $this->setSessionType(SingletonSessionBeanDescriptor::SESSION_TYPE);
+
         // initialize the descriptor instance
         parent::fromReflectionClass($reflectionClass);
 

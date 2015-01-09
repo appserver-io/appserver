@@ -27,6 +27,7 @@ use AppserverIo\Psr\Servlet\Annotations\Route;
 use AppserverIo\Lang\Reflection\ClassInterface;
 use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\ServletDescriptorInterface;
 use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\EpbReferenceDescriptorInterface;
+use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\ResReferenceDescriptorInterface;
 
 /**
  * A servlet descriptor implementation.
@@ -90,6 +91,13 @@ class ServletDescriptor implements ServletDescriptorInterface
      * @var array
      */
     protected $epbReferences = array();
+
+    /**
+     * The array with the resource references.
+     *
+     * @var array
+     */
+    protected $resReferences = array();
 
     /**
      * Sets the servlet name.
@@ -285,6 +293,50 @@ class ServletDescriptor implements ServletDescriptorInterface
     }
 
     /**
+     * Adds a resource reference configuration.
+     *
+     * @param \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\ResReferenceDescriptorInterface $resReference The resource reference configuration
+     *
+     * @return void
+     */
+    public function addResReference(ResReferenceDescriptorInterface $resReference)
+    {
+        $this->resReferences[$resReference->getRefName()] = $resReference;
+    }
+
+    /**
+     * Sets the array with the resource references.
+     *
+     * @param array $resReferences The resource references
+     *
+     * @return void
+     */
+    public function setResReferences(array $resReferences)
+    {
+        $this->resReferences = $resReferences;
+    }
+
+    /**
+     * The array with the resource references.
+     *
+     * @return array The resource references
+     */
+    public function getResReferences()
+    {
+        return $this->resReferences;
+    }
+
+    /**
+     * Returns an array with the merge EBP and resource references.
+     *
+     * @return array The array with the merge all bean references
+     */
+    public function getReferences()
+    {
+        return array_merge($this->epbReferences, $this->resReferences);
+    }
+
+    /**
      * Returns a new descriptor instance.
      *
      * @return \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\BeanDescriptorInterface The descriptor instance
@@ -373,15 +425,29 @@ class ServletDescriptor implements ServletDescriptorInterface
         }
         // we've to check for property annotations that references EPB or resources
         foreach ($reflectionClass->getProperties() as $reflectionProperty) {
+
+            // load the EPB references
             if ($epbReference = EpbReferenceDescriptor::newDescriptorInstance()->fromReflectionProperty($reflectionProperty)) {
                 $this->addEpbReference($epbReference);
+            }
+
+            // load the resource references
+            if ($resReference = ResReferenceDescriptor::newDescriptorInstance()->fromReflectionProperty($reflectionProperty)) {
+                $this->addResReference($resReference);
             }
         }
 
         // we've to check for method annotations that references EPB or resources
         foreach ($reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $reflectionMethod) {
+
+            // load the EPB references
             if ($epbReference = EpbReferenceDescriptor::newDescriptorInstance()->fromReflectionMethod($reflectionMethod)) {
                 $this->addEpbReference($epbReference);
+            }
+
+            // load the resource references
+            if ($resReference = ResReferenceDescriptor::newDescriptorInstance()->fromReflectionMethod($reflectionMethod)) {
+                $this->addResReference($resReference);
             }
         }
 
@@ -429,9 +495,14 @@ class ServletDescriptor implements ServletDescriptorInterface
             $this->addInitParam((string) $initParam->{'param-name'}, (string) $initParam->{'param-value'});
         }
 
-        // initialize the enterprise bean references
+        // initialize the EPB references
         foreach ($node->xpath('epb-ref') as $epbReference) {
             $this->addEpbReference(EpbReferenceDescriptor::newDescriptorInstance()->fromDeploymentDescriptor($epbReference));
+        }
+
+        // initialize the resource references
+        foreach ($node->xpath('res-ref') as $resReference) {
+            $this->addResReference(ResReferenceDescriptor::newDescriptorInstance()->fromDeploymentDescriptor($resReference));
         }
 
         // return the instance
@@ -472,11 +543,14 @@ class ServletDescriptor implements ServletDescriptorInterface
             $this->setDisplayName($displayName);
         }
 
-        // mrege the EPB references
+        // merge the EPB references
         foreach ($servletDescriptor->getEpbReferences() as $epbReference) {
-            if (isset($this->epbReferences[$epbReference->getRefName()]) === false) {
-                $this->addEpbReference($epbReference);
-            }
+            $this->addEpbReference($epbReference);
+        }
+
+        // merge the EPB references
+        foreach ($servletDescriptor->getResReferences() as $resReference) {
+            $this->addResReference($resReference);
         }
     }
 }
