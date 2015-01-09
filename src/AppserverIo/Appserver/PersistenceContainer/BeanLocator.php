@@ -30,6 +30,10 @@ use AppserverIo\Psr\EnterpriseBeans\Annotations\Singleton;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Stateless;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\MessageDriven;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\PostConstruct;
+use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\StatefulSessionBeanDescriptorInterface;
+use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\SingletonSessionBeanDescriptorInterface;
+use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\StatelessSessionBeanDescriptorInterface;
+use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\MessageDrivenBeanDescriptorInterface;
 
 /**
  * The bean resource locator implementation.
@@ -86,11 +90,14 @@ class BeanLocator implements ResourceLocator
     public function lookup(BeanManager $beanManager, $className, $sessionId = null, array $args = array())
     {
 
-        // get the reflection class for the passed class name
-        $reflectionClass = $beanManager->getReflectionClass($className);
+        // load the object manager
+        $objectManager = $beanManager->getApplication()->search('ObjectManagerInterface');
 
-        // @Stateful
-        if ($reflectionClass->hasAnnotation(Stateful::ANNOTATION)) {
+        // load the bean descriptor
+        $descriptor = $objectManager->getObjectDescriptors()->get($className);
+
+        // query if we've a Stateful session bean
+        if ($descriptor instanceof StatefulSessionBeanDescriptorInterface) {
 
             // try to load the stateful session bean from the bean manager
             if ($instance = $beanManager->lookupStatefulSessionBean($sessionId, $className)) {
@@ -100,21 +107,17 @@ class BeanLocator implements ResourceLocator
             // if not create a new instance and return it
             $instance = $beanManager->newInstance($className, $sessionId, $args);
 
-            // we've to check for @PostConstruct method annotations
-            foreach ($reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $reflectionMethod) {
-
-                // if we found a @PostConstruct annotation, invoke the method
-                if ($reflectionMethod->hasAnnotation(PostConstruct::ANNOTATION)) {
-                    $reflectionMethod->invoke($instance); // method MUST has no parameters
-                }
+            // we've to check for post-construct callback
+            foreach ($descriptor->getPostConstructCallbacks() as $postConstructCallback) {
+                $instance->$postConstructCallback();
             }
 
             // return the instance
             return $instance;
         }
 
-        // @Singleton
-        if ($reflectionClass->hasAnnotation(Singleton::ANNOTATION)) {
+        // query if we've a Singleton session bean
+        if ($descriptor instanceof SingletonSessionBeanDescriptorInterface) {
 
             // try to load the singleton session bean from the bean manager
             if ($instance = $beanManager->lookupSingletonSessionBean($className)) {
@@ -132,37 +135,35 @@ class BeanLocator implements ResourceLocator
             // add the singleton session bean to the container
             $beanManager->getSingletonSessionBeans()->set($className, $instance);
 
-            // we've to check for @PostConstruct method annotations
-            foreach ($reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $reflectionMethod) {
-
-                // if we found a @PostConstruct annotation, invoke the method
-                if ($reflectionMethod->hasAnnotation(PostConstruct::ANNOTATION)) {
-                    $reflectionMethod->invoke($instance); // method MUST has no parameters
-                }
+            // we've to check for post-construct callback
+            foreach ($descriptor->getPostConstructCallbacks() as $postConstructCallback) {
+                $instance->$postConstructCallback();
             }
 
             // return the instance
             return $instance;
         }
 
-        // @Stateless or @MessageDriven
-        if ($reflectionClass->hasAnnotation(Stateless::ANNOTATION) ||
-            $reflectionClass->hasAnnotation(MessageDriven::ANNOTATION)) {
+        // query if we've a Stateless session bean
+        if ($descriptor instanceof StatelessSessionBeanDescriptorInterface) {
 
             // if not create a new instance and return it
             $instance = $beanManager->newInstance($className, $sessionId, $args);
 
-            // we've to check for @PostConstruct method annotations
-            foreach ($reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $reflectionMethod) {
-
-                // if we found a @PostConstruct annotation, invoke the method
-                if ($reflectionMethod->hasAnnotation(PostConstruct::ANNOTATION)) {
-                    $reflectionMethod->invoke($instance); // method MUST has no parameters
-                }
+            // we've to check for post-construct callback
+            foreach ($descriptor->getPostConstructCallbacks() as $postConstructCallback) {
+                $instance->$postConstructCallback();
             }
 
             // return the instance
             return $instance;
+        }
+
+        //  query if we've a MessageDriven bean
+        if ($descriptor instanceof MessageDrivenBeanDescriptorInterface) {
+
+            // create a new instance and return it
+            return $beanManager->newInstance($className, $sessionId, $args);
         }
 
         // we've an unknown bean type => throw an exception

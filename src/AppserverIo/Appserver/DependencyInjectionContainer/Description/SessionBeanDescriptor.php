@@ -54,6 +54,20 @@ abstract class SessionBeanDescriptor extends BeanDescriptor implements SessionBe
     protected $sessionType;
 
     /**
+     * The local interface name.
+     *
+     * @var string
+     */
+    protected $local;
+
+    /**
+     * The remote interface name.
+     *
+     * @var string
+     */
+    protected $remote;
+
+    /**
      * The array with the post construct callback method names.
      *
      * @var array
@@ -87,6 +101,50 @@ abstract class SessionBeanDescriptor extends BeanDescriptor implements SessionBe
     public function getSessionType()
     {
         return $this->sessionType;
+    }
+
+    /**
+     * Sets the local interface name.
+     *
+     * @param string $local The local interface name
+     *
+     * @return void
+     */
+    public function setLocal($local)
+    {
+        $this->local = $local;
+    }
+
+    /**
+     * Returns the local interface name.
+     *
+     * @return string The local interface name
+     */
+    public function getLocal()
+    {
+        return $this->local;
+    }
+
+    /**
+     * Sets the remote interface name.
+     *
+     * @param string $remote The remote interface name
+     *
+     * @return void
+     */
+    public function setRemote($remote)
+    {
+        $this->remote = $remote;
+    }
+
+    /**
+     * Returns the remote interface name.
+     *
+     * @return string The remote interface name
+     */
+    public function getRemote()
+    {
+        return $this->remote;
     }
 
     /**
@@ -170,6 +228,18 @@ abstract class SessionBeanDescriptor extends BeanDescriptor implements SessionBe
         // initialize the bean descriptor
         parent::fromReflectionClass($reflectionClass);
 
+        if ($reflectionClass->hasAnnotation('Local')) {
+            throw \Exception('@Local annotation not implemented');
+        } else {
+            $this->setLocal(sprintf('%sLocal', rtrim($this->getName(), 'Bean')));
+        }
+
+        if ($reflectionClass->hasAnnotation('Remote')) {
+            throw \Exception('@Remote annotation not implemented');
+        } else {
+            $this->setRemote(sprintf('%sRemote', rtrim($this->getName(), 'Bean')));
+        }
+
         // we've to check for a @PostConstruct or @PreDestroy annotation
         foreach ($reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $reflectionMethod) {
 
@@ -201,6 +271,20 @@ abstract class SessionBeanDescriptor extends BeanDescriptor implements SessionBe
         // query for the session type and set it
         if ($sessionType = (string) $node->{'session-type'}) {
             $this->setSessionType($sessionType);
+        }
+
+        // query for the name of the local business interface and set it
+        if ($local = (string) $node->{'local'}) {
+            $this->setLocal($local);
+        } else {
+            $this->setLocal(sprintf('%sLocal', rtrim($this->getName(), 'Bean')));
+        }
+
+        // query for the name of the remote business interface and set it
+        if ($remote = (string) $node->{'remote'}) {
+            $this->setRemote($remote);
+        } else {
+            $this->setRemote(sprintf('%sRemote', rtrim($this->getName(), 'Bean')));
         }
 
         // initialize the post construct callback methods

@@ -25,8 +25,13 @@ namespace AppserverIo\Appserver\Core;
 
 use AppserverIo\Storage\StorageInterface;
 use AppserverIo\Storage\GenericStackable;
+use AppserverIo\Psr\Naming\NamingException;
 use AppserverIo\Psr\Application\ManagerInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
+use AppserverIo\Appserver\Naming\InitialContext;
+use AppserverIo\Appserver\DependencyInjectionContainer\Description\EpbReferenceDescriptor;
+use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\EpbReferenceDescriptorInterface;
+use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\ResReferenceDescriptorInterface;
 
 /**
  * Abstract manager implementation.
@@ -79,6 +84,28 @@ abstract class AbstractManager extends GenericStackable implements ManagerInterf
     }
 
     /**
+     * The global naming directory.
+     *
+     * @param \AppserverIo\Appserver\Naming\InitialContext $initialContext The global naming directory
+     *
+     * @return void
+     */
+    public function injectInitialContext(InitialContext $initialContext)
+    {
+        $this->initialContext = $initialContext;
+    }
+
+    /**
+     * Returns the global naming directory.
+     *
+     * @return \AppserverIo\Appserver\Naming\InitialContext The global naming directory
+     */
+    public function getInitialContext()
+    {
+        return $this->initialContext;
+    }
+
+    /**
      * Returns the absolute path to the web application.
      *
      * @return string The absolute path
@@ -125,6 +152,113 @@ abstract class AbstractManager extends GenericStackable implements ManagerInterf
     public function newReflectionClass($className)
     {
         return $this->getApplication()->search('ProviderInterface')->newReflectionClass($className);
+    }
+
+    /**
+     * Registers the passed EPB reference in the applications directory.
+     *
+     * @param \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\EpbReferenceDescriptorInterface $epbReference The EPB reference to register
+     *
+     * @return void
+     * @todo Replace lookupProxy callback with real proxy instance
+     */
+    protected function registerEpbReference(EpbReferenceDescriptorInterface $epbReference)
+    {
+
+        try {
+
+            // load the application instance
+            $application = $this->getApplication();
+
+            // query whether the reference has already been bound to the application
+            if ($application->search($refName = $epbReference->getRefName())) { // if yes, do nothing
+
+                // log a message that the reference has already been bound
+                $application->getInitialContext()->getSystemLogger()->critical(
+                    sprintf('Reference php:global/%s/%s has already been bound to naming directory', $application->getName(), $refName)
+                );
+
+                // return immediately
+                return;
+            }
+
+        } catch (NamingException $e) { // catch the NamingException if the ref name is not bound yet
+
+            // log a message that we've to register the EPB reference now
+            $application->getInitialContext()->getSystemLogger()->debug(
+                sprintf('Can\'t find php:global/%s/%s in naming directory', $application->getName(), $refName)
+            );
+        }
+
+        // this has to be refactored, because it'll be quite faster to inject either
+        // the remote/local proxy instance as injection a callback that creates the
+        // proxy on-the-fly!
+
+        // prepare the bean name
+        if ($beanName = str_replace('Bean', '', $epbReference->getBeanName())) {
+
+            // query whether we've a local business interface
+            if ($epbReference->getBeanInterface() === ($regName = sprintf('%sLocal', $beanName))) {
+
+                // bind the local business interface of the bean to the appliations naming directory
+                $application->bind($refName, array(&$this, 'lookupProxy'), array($regName = sprintf('%s/local', $beanName)));
+
+            // query whether we've a remote business interface
+            } elseif ($epbReference->getBeanInterface() === ($regName = sprintf('%sRemote', $beanName))) {
+
+                // bind the remote business interface of the bean to the applications naming directory
+                $application->bind($refName, array(&$this, 'lookupProxy'), array($regName = sprintf('%s/remote', $beanName)));
+
+            // at least, we need a business interface
+            } else {
+
+                // log a critical message that we can't bind the reference
+                $application->getInitialContext()->getSystemLogger()->critical(
+                    sprintf('Can\'t bind php:global/%s/env/%s to naming directory', $refName, $regName)
+                );
+            }
+
+        // try to use the lookup, if we don't have the beanName
+        } elseif ($lookup = $epbReference->getLookup()) {
+
+            // create a reference to a bean in the global directory
+            $application->getNamingDirectory()->bind($refName, array(&$this, 'lookup'), array($lookup));
+
+        } else { // log a critical message that we can't bind the reference
+
+            $application->getInitialContext()->getSystemLogger()->critical(
+                sprintf(
+                    'Can\'t bind reference php:global/%s/%s to naming directory, because of missing source bean definition',
+                    $application->getName(),
+                    $refName
+                )
+            );
+        }
+    }
+
+    /**
+     * Registers the passed resource reference in the applications directory.
+     *
+     * @param \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\ResReferenceDescriptorInterface $resReference The resource reference to register
+     *
+     * @return void
+     */
+    protected function registerResReference(ResReferenceDescriptorInterface $resReference)
+    {
+        // do nothing
+    }
+
+    /**
+     * This returns a proxy to the requested session bean.
+     *
+     * @param string $lookupName The lookup name for the requested session bean
+     * @param string $sessionId  The session-ID if available
+     *
+     * @return \AppserverIo\Psr\PersistenceContainerProtocol\RemoteObject The proxy instance
+     */
+    public function lookupProxy($lookupName, $sessionId = null)
+    {
+        return $this->getInitialContext()->lookup($lookupName, $sessionId);
     }
 
     /**

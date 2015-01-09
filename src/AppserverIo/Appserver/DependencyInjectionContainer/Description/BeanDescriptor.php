@@ -27,6 +27,7 @@ use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\BeanDescriptor
 use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\EpbReferenceDescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\EnterpriseBean;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Resource;
+use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\ResReferenceDescriptorInterface;
 
 /**
  * Abstract class for all bean descriptors.
@@ -57,39 +58,18 @@ abstract class BeanDescriptor implements BeanDescriptorInterface
     protected $className;
 
     /**
-     * The configurable bean name.
-     *
-     * @var string
-     */
-    protected $beanName;
-
-    /**
-     * The bean interface.
-     *
-     * @var string
-     */
-    protected $beanInterface;
-
-    /**
-     * The mapped name.
-     *
-     * @var string
-     */
-    protected $mappedName;
-
-    /**
-     * The beans description.
-     *
-     * @var string
-     */
-    protected $description;
-
-    /**
      * The array with the EPB references.
      *
      * @var array
      */
     protected $epbReferences = array();
+
+    /**
+     * The array with the resource references.
+     *
+     * @var array
+     */
+    protected $resReferences = array();
 
     /**
      * Sets the bean name.
@@ -136,94 +116,6 @@ abstract class BeanDescriptor implements BeanDescriptorInterface
     }
 
     /**
-     * Sets the beans description.
-     *
-     * @param string $description The beans description
-     *
-     * @return void
-     */
-    public function setDescription($description)
-    {
-        $this->description = $description;
-    }
-
-    /**
-     * Returns the beans description.
-     *
-     * @return string The beans description
-     */
-    public function getDescription()
-    {
-        return $this->description;
-    }
-
-    /**
-     * Sets the configurable bean name.
-     *
-     * @param string $beanName The configurable bean name
-     *
-     * @return void
-     */
-    public function setBeanName($beanName)
-    {
-        $this->beanName = $beanName;
-    }
-
-    /**
-     * Returns the configurable bean name.
-     *
-     * @return string The configurable bean name
-     */
-    public function getBeanName()
-    {
-        return $this->beanName;
-    }
-
-    /**
-     * Sets the bean interface.
-     *
-     * @param string $beanInterface The bean interface
-     *
-     * @return void
-     */
-    public function setBeanInterface($beanInterface)
-    {
-        $this->beanInterface = $beanInterface;
-    }
-
-    /**
-     * Returns the bean interface.
-     *
-     * @return string The bean interface
-     */
-    public function getBeanInterface()
-    {
-        return $this->beanInterface;
-    }
-
-    /**
-     * Sets the mapped name.
-     *
-     * @param string $mappedName The mapped name
-     *
-     * @return void
-     */
-    public function setMappedName($mappedName)
-    {
-        $this->mappedName = $mappedName;
-    }
-
-    /**
-     * Returns the mapped name.
-     *
-     * @return string The mapped name
-     */
-    public function getMappedName()
-    {
-        return $this->mappedName;
-    }
-
-    /**
      * Adds a EPB reference configuration.
      *
      * @param \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\EpbReferenceDescriptorInterface $epbReference The EPB reference configuration
@@ -255,6 +147,50 @@ abstract class BeanDescriptor implements BeanDescriptorInterface
     public function getEpbReferences()
     {
         return $this->epbReferences;
+    }
+
+    /**
+     * Adds a resource reference configuration.
+     *
+     * @param \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\ResReferenceDescriptorInterface $resReference The resource reference configuration
+     *
+     * @return void
+     */
+    public function addResReference(ResReferenceDescriptorInterface $resReference)
+    {
+        $this->resReferences[$resReference->getRefName()] = $resReference;
+    }
+
+    /**
+     * Sets the array with the resource references.
+     *
+     * @param array $resReferences The resource references
+     *
+     * @return void
+     */
+    public function setResReferences(array $resReferences)
+    {
+        $this->resReferences = $resReferences;
+    }
+
+    /**
+     * The array with the resource references.
+     *
+     * @return array The resource references
+     */
+    public function getResReferences()
+    {
+        return $this->resReferences;
+    }
+
+    /**
+     * Returns an array with the merge EBP and resource references.
+     *
+     * @return array The array with the merge all bean references
+     */
+    public function getReferences()
+    {
+        return array_merge($this->epbReferences, $this->resReferences);
     }
 
     /**
@@ -295,32 +231,31 @@ abstract class BeanDescriptor implements BeanDescriptorInterface
             $this->setName($reflectionClass->getShortName());
         }
 
-        // register the bean with the interface defined as @Annotation(beanInterface=****)
-        if ($beanInterfaceAttribute = $annotationInstance->getBeanInterface()) {
-            $this->setBeanInterface($beanInterfaceAttribute);
-        }
-
-        // register the bean with the name defined as @Annotation(beanName=****)
-        if ($beanNameAttribute = $annotationInstance->getBeanName()) {
-            $this->setBeanName($beanNameAttribute);
-        }
-
-        // register the bean with the name defined as @Annotation(mappedName=****)
-        if ($mappedNameAttribute = $annotationInstance->getMappedName()) {
-            $this->setMappedName($mappedNameAttribute);
-        }
-
         // we've to check for property annotations that references EPB or resources
         foreach ($reflectionClass->getProperties() as $reflectionProperty) {
+
+            // load the EPB references
             if ($epbReference = EpbReferenceDescriptor::newDescriptorInstance()->fromReflectionProperty($reflectionProperty)) {
                 $this->addEpbReference($epbReference);
+            }
+
+            // load the resource references
+            if ($resReference = ResReferenceDescriptor::newDescriptorInstance()->fromReflectionProperty($reflectionProperty)) {
+                $this->addResReference($resReference);
             }
         }
 
         // we've to check for method annotations that references EPB or resources
         foreach ($reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $reflectionMethod) {
+
+            // load the EPB references
             if ($epbReference = EpbReferenceDescriptor::newDescriptorInstance()->fromReflectionMethod($reflectionMethod)) {
                 $this->addEpbReference($epbReference);
+            }
+
+            // load the resource references
+            if ($resReference = ResReferenceDescriptor::newDescriptorInstance()->fromReflectionMethod($reflectionMethod)) {
+                $this->addResReference($resReference);
             }
         }
     }
@@ -345,29 +280,14 @@ abstract class BeanDescriptor implements BeanDescriptorInterface
             $this->setName($name);
         }
 
-        // query for the bean interface and set it
-        if ($beanInterface = (string) $node->{'bean-interface'}) {
-            $this->setBeanInterface($beanInterface);
-        }
-
-        // query for the bean name and set it
-        if ($beanName = (string) $node->{'bean-name'}) {
-            $this->setBeanName($beanName);
-        }
-
-        // query for the mapped name and set it
-        if ($mappedName = (string) $node->{'mapped-name'}) {
-            $this->setMappedName($mappedName);
-        }
-
-        // query for the description and set it
-        if ($description = (string) $node->{'description'}) {
-            $this->setDescription($description);
-        }
-
         // initialize the enterprise bean references
         foreach ($node->xpath('epb-ref') as $epbReference) {
             $this->addEpbReference(EpbReferenceDescriptor::newDescriptorInstance()->fromDeploymentDescriptor($epbReference));
+        }
+
+        // initialize the resource references
+        foreach ($node->xpath('res-ref') as $resReference) {
+            $this->addResReference(ResReferenceDescriptor::newDescriptorInstance()->fromDeploymentDescriptor($resReference));
         }
     }
 
@@ -394,24 +314,14 @@ abstract class BeanDescriptor implements BeanDescriptorInterface
             $this->setName($name);
         }
 
-        // merge the bean interface
-        if ($beanInterface = $beanDescriptor->getBeanInterface()) {
-            $this->setBeanInterface($beanInterface);
-        }
-
-        // merge the bean name
-        if ($beanName = $beanDescriptor->getBeanName()) {
-            $this->setBeanName($beanName);
-        }
-
-        // merge the description
-        if ($description = $beanDescriptor->getDescription()) {
-            $this->setDescription($description);
-        }
-
         // merge the EPB references
         foreach ($beanDescriptor->getEpbReferences() as $epbReference) {
             $this->addEpbReference($epbReference);
+        }
+
+        // merge the EPB references
+        foreach ($beanDescriptor->getResReferences() as $resReference) {
+            $this->addResReference($resReference);
         }
     }
 }

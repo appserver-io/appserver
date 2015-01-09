@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\SessionBeanDescriptorInterface
+ * AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\ResReferenceDescriptorInterface
  *
  * NOTICE OF LICENSE
  *
@@ -23,7 +23,7 @@
 namespace AppserverIo\Appserver\DependencyInjectionContainer\Interfaces;
 
 /**
- * Interface for a bean descriptor.
+ * Inferface for utility classes that stores a resource reference configuration.
  *
  * @category   Server
  * @package    Appserver
@@ -33,41 +33,23 @@ namespace AppserverIo\Appserver\DependencyInjectionContainer\Interfaces;
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       http://www.appserver.io
  */
-interface SessionBeanDescriptorInterface extends BeanDescriptorInterface
+interface ResReferenceDescriptorInterface extends ReferenceDescriptorInterface
 {
 
     /**
-     * Returns the beans session type.
+     * Returns the resource type.
      *
-     * @return string The beans session type
+     * @return string The resource type
      */
-    public function getSessionType();
+    public function getRefType();
 
     /**
-     * Returns the local interface name.
+     * Merges the passed configuration into this one. Configuration values
+     * of the passed configuration will overwrite the this one.
      *
-     * @return string The local interface name
-     */
-    public function getLocal();
-
-    /**
-     * Returns the remote interface name.
+     * @param \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\ResReferenceDescriptorInterface $resReferenceDescriptor The configuration to merge
      *
-     * @return string The remote interface name
+     * @return void
      */
-    public function getRemote();
-
-    /**
-     * The array with the post construct callback method names.
-     *
-     * @return array The post construct callback method names
-     */
-    public function getPostConstructCallbacks();
-
-    /**
-     * The array with the pre destroy callback method names.
-     *
-     * @return array The pre destroy callback method names
-     */
-    public function getPreDestroyCallbacks();
+    public function merge(ResReferenceDescriptorInterface $resReferenceDescriptor);
 }

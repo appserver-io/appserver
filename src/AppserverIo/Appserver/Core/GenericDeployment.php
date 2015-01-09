@@ -63,7 +63,7 @@ class GenericDeployment extends AbstractDeployment
         $contextInstances = $this->getDeploymentService()->loadContextInstancesByContainer($container);
 
         // gather all the deployed web applications
-        foreach (new \FilesystemIterator($container->getAppBase()) as $folder) {
+        foreach (glob($container->getAppBase() . '/*', GLOB_ONLYDIR) as $folder) {
 
             // declare META-INF and WEB-INF directory
             $webInfDir = $folder . DIRECTORY_SEPARATOR . 'WEB-INF';
@@ -71,10 +71,10 @@ class GenericDeployment extends AbstractDeployment
 
             // check if we've a directory containing a valid application,
             // at least a WEB-INF or META-INF folder has to be available
-            if ($folder->isDir() && (is_dir($webInfDir) || is_dir($metaInfDir))) {
+            if (is_dir($webInfDir) || is_dir($metaInfDir)) {
 
                 // this IS the unique application name
-                $applicationName = $folder->getBasename();
+                $applicationName = basename($folder);
 
                 // try to load a context configuration for the context path
                 $context = $contextInstances['/'. $applicationName];
@@ -142,16 +142,12 @@ class GenericDeployment extends AbstractDeployment
                 // add the application to the container
                 $container->addApplication($application);
 
-            } elseif ($folder->isDir()) { // if we found a directory
+            } else { // if we can't find WEB-INF or META-INF directory
 
                 // write a log message, that the folder doesn't contain a valid application
                 $this->getInitialContext()->getSystemLogger()->info(
                     sprintf('Directory %s doesn\'t contain a webapp, will assume a need for legacy support.', $folder)
                 );
-
-            } else { // if we found a file only
-
-                // do nothing here, because we only found a file
             }
         }
     }

@@ -342,7 +342,24 @@ class InitialContext
         $connection->injectPort($resourceIdentifier->getPort());
         $connection->injectAddress($resourceIdentifier->getHost());
         $connection->injectTransport($resourceIdentifier->getTransport());
-        $connection->injectAppName($resourceIdentifier->getContextName());
+
+        // query if we've a context name defined in the resource identifier
+        if ($contextName = $resourceIdentifier->getContextName()) {
+
+            // if yes, use it as application name
+            $connection->injectAppName($contextName);
+        } else {
+
+            // use the application context from the servlet request
+            if ($this->getServletRequest() && $this->getServletRequest()->getContext()) {
+                $application = $this->getServletRequest()->getContext();
+            } else {
+                $application = $this->getApplication();
+            }
+
+            // use the application name
+            $connection->injectAppName($application->getName());
+        }
 
         // finally try to lookup the bean
         return $this->doLookup($resourceIdentifier, $connection, $sessionId);

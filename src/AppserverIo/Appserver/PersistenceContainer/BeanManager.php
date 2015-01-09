@@ -39,6 +39,7 @@ use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\SingletonSessi
 use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\StatefulSessionBeanDescriptorInterface;
 use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\StatelessSessionBeanDescriptorInterface;
 use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\MessageDrivenBeanDescriptorInterface;
+use AppserverIo\Appserver\DependencyInjectionContainer\Description\EpbReferenceDescriptor;
 
 /**
  * The bean manager handles the message and session beans registered for the application.
@@ -191,24 +192,23 @@ class BeanManager extends AbstractManager implements BeanContext
     protected function registerBean(BeanDescriptorInterface $descriptor)
     {
 
-        // load the beans class name
-        $className = $descriptor->getClassName();
+        try {
 
-        // register the bean with the default name/short class name
-        $this->getApplication()->bind($descriptor->getName(), array(&$this, 'lookup'), array($className));
+            // register the bean with the default name/short class name
+            $this->getApplication()->bind($descriptor->getName(), array(&$this, 'lookup'), array($descriptor->getClassName()));
 
-        // register the bean with the interface name
-        if ($beanInterface = $descriptor->getBeanInterface()) {
-            $this->getApplication()->bind($beanInterface, array(&$this, 'lookup'), array($className));
-        }
-        // register the bean with the bean name
-        if ($beanName = $descriptor->getBeanName()) {
-            $this->getNamingDirectory()->bind($beanName, array(&$this, 'lookup'), array($className));
-        }
+            //  register the EPB references
+            foreach ($descriptor->getEpbReferences() as $epbReference) {
+                $this->registerEpbReference($epbReference);
+            }
 
-        // register the bean with the mapped name
-        if ($mappedName = $descriptor->getMappedName()) {
-            $this->getNamingDirectory()->bind($mappedName, array(&$this, 'lookup'), array($className));
+            // register the resource references
+            foreach ($descriptor->getResReferences() as $resReference) {
+                $this->registerResReference($resReference);
+            }
+
+        } catch (\Exception $e) { // log the exception
+            $this->getApplication()->getInitialContext()->getSystemLogger()->critical($e->__toString());
         }
     }
 

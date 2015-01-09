@@ -2,6 +2,7 @@
 
 # Bugfixes
 
+* Closed #350 - Creating EPB references by annotations + XML configuration
 * Closed #336 - Positioning of namespace definition next to php tag
 * Closed #348 - Changed determination of omitted namespaces
 
