@@ -73,6 +73,9 @@ class GenericDeployment extends AbstractDeployment
             // at least a WEB-INF or META-INF folder has to be available
             if (is_dir($webInfDir) || is_dir($metaInfDir)) {
 
+                // lock the mutex before application initialization
+                \Mutex::lock($mutex);
+
                 // this IS the unique application name
                 $applicationName = basename($folder);
 
@@ -141,6 +144,9 @@ class GenericDeployment extends AbstractDeployment
 
                 // add the application to the container
                 $container->addApplication($application);
+
+                // unlock the mutex after application initialization
+                \Mutex::unlock($mutex);
 
             } else { // if we can't find WEB-INF or META-INF directory
 
