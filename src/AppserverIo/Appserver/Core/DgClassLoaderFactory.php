@@ -110,6 +110,6 @@ class DgClassLoaderFactory
         $config->setValue('enforcement/logger', $application->getInitialContext()->getSystemLogger());
 
         // create the autoloader instance and fill the structure map
-        $application->addClassLoader(new DgClassLoader($config));
+        $application->addClassLoader(new DgClassLoader($config), $configuration);
     }
 }

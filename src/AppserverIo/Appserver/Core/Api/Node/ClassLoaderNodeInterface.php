@@ -80,12 +80,4 @@ interface ClassLoaderNodeInterface extends NodeInterface
      * @return integer The enforcement level
      */
     public function getEnforcementLevel();
-
-    /**
-     * Returns the class loader's lookup names found in the configuration, merge with the annotation
-     * values, whereas the configuration values will override the annotation values.
-     *
-     * @return array The array with the managers lookup names
-     */
-    public function toLookupNames();
 }

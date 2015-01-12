@@ -203,34 +203,4 @@ class ClassLoaderNode extends AbstractNode implements ClassLoaderNodeInterface
     {
         return $this->getParam(ClassLoaderKeys::ENFORCEMENT_LEVEL);
     }
-
-    /**
-     * Returns the class loader's lookup names found in the configuration, merge with the annotation
-     * values, whereas the configuration values will override the annotation values.
-     *
-     * @return array The array with the managers lookup names
-     */
-    public function toLookupNames()
-    {
-
-        // create a new reflection object of the manager instance
-        $reflectionClass = new ReflectionClass($this->getType());
-
-        // initialize the lookup names and the name attribute with the short class name
-        $lookupNames = array();
-        $lookupNames[AnnotationKeys::NAME] = $reflectionClass->getShortName();
-
-        // overwrite the name attribute from the configuration, if given
-        if ($name = $this->getName()) {
-            $lookupNames[AnnotationKeys::NAME] = $name;
-        }
-
-        // overwrite the beanInterface attribute from the configuration, if given
-        if ($beanInterface = $this->getInterface()) {
-            $lookupNames[AnnotationKeys::BEAN_INTERFACE] = $beanInterface;
-        }
-
-        // return the lookup names
-        return $lookupNames;
-    }
 }

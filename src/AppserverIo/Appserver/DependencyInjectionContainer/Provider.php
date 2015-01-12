@@ -88,8 +88,7 @@ class Provider extends GenericStackable implements ProviderInterface
      */
     public function initialize(ApplicationInterface $application)
     {
-        // set application alias => resolve application with @Resource(name="ApplicationInterface") anntotation
-        $this->namingDirectoryAliases['ApplicationInterface'] = sprintf('php:global/%s', $application->getName());
+        // do nothing here
     }
 
     /**
@@ -182,25 +181,6 @@ class Provider extends GenericStackable implements ProviderInterface
     public function newAnnotationInstance(AnnotationInterface $annotation)
     {
         return $annotation->newInstance($annotation->getAnnotationName(), $annotation->getValues());
-    }
-
-    /**
-     * Tries to resolve an alias, if given, for the passed lookup name.
-     *
-     * @param string $lookupName The lookup name we try to resolve the alias for
-     *
-     * @return string The lookup name itself, or the alias if found
-     */
-    public function resolveAlias($lookupName)
-    {
-
-        // check if a naming directory alias for the lookup name is available
-        if (isset($this->namingDirectoryAliases[$lookupName])) {
-            return $this->namingDirectoryAliases[$lookupName];
-        }
-
-        // if not, return the original lookup name
-        return $lookupName;
     }
 
     /**
@@ -315,16 +295,13 @@ class Provider extends GenericStackable implements ProviderInterface
             $reflectionClass = $this->getReflectionClassForObject($instance);
 
             // check for declared EPB and resource references
-            foreach ($objectDescriptor->getReferences() as $references) {
+            foreach ($objectDescriptor->getReferences() as $reference) {
 
                 // check if we've a reflection target defined
-                if ($injectionTarget = $references->getInjectionTarget()) {
-
-                    // resolve the lookup name
-                    $lookupName = $this->resolveAlias($references->getRefName());
+                if ($injectionTarget = $reference->getInjectionTarget()) {
 
                     // load the instance to inject by lookup the initial context
-                    $toInject = $this->getNamingDirectory()->search($lookupName, array($sessionId));
+                    $toInject = $this->getNamingDirectory()->search($reference->getName(), array($sessionId));
 
                     // query for method injection
                     if (method_exists($instance, $targetName = $injectionTarget->getTargetMethod())) {

@@ -60,46 +60,10 @@ interface ManagerConfigurationInterface
     public function getFactory();
 
     /**
-     * Returns the bean class name.
-     *
-     * @return string The bean class name
-     */
-    public function getBeanName();
-
-    /**
-     * Returns the mapped class name.
-     *
-     * @return string The mapped class name
-     */
-    public function getMappedName();
-
-    /**
-     * Returns the bean interface name.
-     *
-     * @return string The bean interface name
-     */
-    public function getBeanInterface();
-
-    /**
-     * Returns the beans fully qualified PNDI lookup name.
-     *
-     * @return string The beans fully qualified lookup name
-     */
-    public function getLookup();
-
-    /**
      * Returns the params casted to the defined type
      * as associative array.
      *
      * @return array The array with the casted params
      */
     public function getParamsAsArray();
-
-    /**
-     * Returns the managers ENC lookup names found in the configuration, merge with the annotation
-     * values, whereas the configuration values will override the annotation values.
-     *
-     * @return array The array with the managers lookup names
-     */
-    public function toLookupNames();
 }

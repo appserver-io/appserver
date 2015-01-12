@@ -45,18 +45,25 @@ class ResReferenceDescriptor implements ResReferenceDescriptorInterface
 {
 
     /**
+     * Prefix for resource references.
+     *
+     * @var string
+     */
+    const REF_DIRECTORY = 'env';
+
+    /**
      * The reference name.
      *
      * @var string
      */
-    protected $refName;
+    protected $name;
 
     /**
      * The resource type.
      *
      * @var string
      */
-    protected $refType;
+    protected $type;
 
     /**
      * The resource description.
@@ -68,13 +75,13 @@ class ResReferenceDescriptor implements ResReferenceDescriptorInterface
     /**
      * Sets the reference name.
      *
-     * @param string $refName The reference name
+     * @param string $name The reference name
      *
      * @return void
      */
-    public function setRefName($refName)
+    public function setName($name)
     {
-        $this->refName = $refName;
+        $this->name = $name;
     }
 
     /**
@@ -82,21 +89,21 @@ class ResReferenceDescriptor implements ResReferenceDescriptorInterface
      *
      * @return string The reference name
      */
-    public function getRefName()
+    public function getName()
     {
-        return $this->refName;
+        return $this->name;
     }
 
     /**
      * Sets the resource type.
      *
-     * @param string $refType The resource type
+     * @param string $type The resource type
      *
      * @return void
      */
-    public function setRefType($refType)
+    public function setType($type)
     {
-        $this->refType = $refType;
+        $this->type = $type;
     }
 
     /**
@@ -104,9 +111,9 @@ class ResReferenceDescriptor implements ResReferenceDescriptorInterface
      *
      * @return string The resource type
      */
-    public function getRefType()
+    public function getType()
     {
-        return $this->refType;
+        return $this->type;
     }
 
     /**
@@ -199,18 +206,20 @@ class ResReferenceDescriptor implements ResReferenceDescriptorInterface
         $annotationInstance = $annotation->newInstance($annotation->getAnnotationName(), $annotation->getValues());
 
         // load the reference name defined as @Resource(name=****)
-        if ($refName = $annotationInstance->getName()) {
-            $this->setRefName($refName);
+        if ($name = $annotationInstance->getName()) {
+            $this->setName(sprintf('%s/%s', ResReferenceDescriptor::REF_DIRECTORY, $name));
         }
 
         // load the resource type defined as @Resource(type=****)
-        if ($refType = $annotationInstance->getType()) {
-            $this->setRefType($refType);
+        if ($type = $annotationInstance->getType()) {
+            $this->setType($type);
+        } else {
+            $this->setType(ucfirst($reflectionProperty->getPropertyName()));
         }
 
         // load the resource description defined as @Resource(description=****)
-        if ($descriptionAttribute = $annotationInstance->getDescription()) {
-            $this->setDescription($descriptionAttribute);
+        if ($description = $annotationInstance->getDescription()) {
+            $this->setDescription($description);
         }
 
         // load the injection target data
@@ -243,17 +252,24 @@ class ResReferenceDescriptor implements ResReferenceDescriptorInterface
         $annotationInstance = $annotation->newInstance($annotation->getAnnotationName(), $annotation->getValues());
 
         // load the reference name defined as @Resource(name=****)
-        if ($refName = $annotationInstance->getName()) {
-            $this->setRefName($refName);
+        if ($name = $annotationInstance->getName()) {
+            $this->setName(sprintf('%s/%s', ResReferenceDescriptor::REF_DIRECTORY, $name));
         }
+
         // load the resource type defined as @Resource(type=****)
-        if ($refType = $annotationInstance->getType()) {
-            $this->setRefType($refType);
+        if ($type = $annotationInstance->getType()) {
+            $this->setType($type);
+        } else {
+            // use the name of the first parameter as local business interface
+            foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
+                $this->setType(ucfirst($reflectionParameter->getParameterName()));
+                break;
+            }
         }
 
         // load the resource description defined as @Resource(description=****)
-        if ($descriptionAttribute = $annotationInstance->getDescription()) {
-            $this->setDescription($descriptionAttribute);
+        if ($description = $annotationInstance->getDescription()) {
+            $this->setDescription($description);
         }
 
         // load the injection target data
@@ -275,13 +291,13 @@ class ResReferenceDescriptor implements ResReferenceDescriptorInterface
     {
 
         // query for the reference name
-        if ($refName = (string) $node->{'res-ref-name'}) {
-            $this->setRefName($refName);
+        if ($name = (string) $node->{'res-ref-name'}) {
+            $this->setName($name);
         }
 
         // query for the reference type
-        if ($refType = (string) $node->{'res-ref-type'}) {
-            $this->setRefType($refType);
+        if ($type = (string) $node->{'res-ref-type'}) {
+            $this->setType($type);
         }
 
         // query for the description and set it
@@ -310,13 +326,13 @@ class ResReferenceDescriptor implements ResReferenceDescriptorInterface
     {
 
         // merge the reference name
-        if ($refName = $resReferenceDescriptor->getRefName()) {
-            $this->setRefName($refName);
+        if ($name = $resReferenceDescriptor->getName()) {
+            $this->setName(sprintf('%s/%s', ResReferenceDescriptor::REF_DIRECTORY, $name));
         }
 
         // merge the reference type
-        if ($refType = $resReferenceDescriptor->getRefType()) {
-            $this->setRefType($refType);
+        if ($type = $resReferenceDescriptor->getType()) {
+            $this->setType($type);
         }
 
         // merge the description

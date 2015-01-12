@@ -95,7 +95,7 @@ class ComposerClassLoaderFactory
                 }
 
                 // attach the class loader instance
-                $application->addClassLoader($classLoader);
+                $application->addClassLoader($classLoader, $configuration);
             }
         }
     }

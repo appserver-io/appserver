@@ -108,6 +108,20 @@ trait BindingTrait
     }
 
     /**
+     * Binds a reference with the passed name to the naming directory.
+     *
+     * @param string $name      The name to bind the reference with
+     * @param string $reference The name of the reference
+     *
+     * @return void
+     * @see \AppserverIo\Appserver\Naming\NamingDirectory::bind()
+     */
+    public function bindReference($name, $reference)
+    {
+        $this->bindCallback($name, array(&$this, 'search'), array($reference, array()));
+    }
+
+    /**
      * Queries the naming directory for the requested name and returns the value
      * or invokes the binded callback.
      *

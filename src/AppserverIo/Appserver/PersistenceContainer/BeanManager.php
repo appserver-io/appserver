@@ -177,7 +177,7 @@ class BeanManager extends AbstractManager implements BeanContext
 
             // if we found a singleton session bean with a startup callback
             if ($descriptor instanceof SingletonSessionBeanDescriptorInterface && $descriptor->isInitOnStartup()) {
-                $this->getApplication()->search($descriptor->getName(), array(null, array($application)));
+                $this->getApplication()->search($descriptor->getName(), array($sessionId = null, array($application)));
             }
         }
     }

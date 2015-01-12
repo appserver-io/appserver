@@ -94,15 +94,6 @@ interface ProviderInterface extends ManagerInterface
     public function newAnnotationInstance(AnnotationInterface $annotation);
 
     /**
-     * Tries to resolve an alias, if given, for the passed lookup name.
-     *
-     * @param string $lookupName The lookup name we try to resolve the alias for
-     *
-     * @return string The lookup name itself, or the alias if found
-     */
-    public function resolveAlias($lookupName);
-
-    /**
      * Returns a new reflection class intance for the passed class name.
      *
      * @param string $className The class name to return the reflection class instance for
