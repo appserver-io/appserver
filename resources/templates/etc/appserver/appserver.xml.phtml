@@ -19,7 +19,7 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
 
 ?>
 <?php echo '<?xml version="1.0" encoding="UTF-8"?>' . PHP_EOL ?>
-<appserver xmlns="http://www.appserver.io/appserver">
+<appserver xmlns="http://www.appserver.io/appserver"  xmlns:xi="http://www.w3.org/2001/XInclude">
 
     <params>
         <param name="user" type="string"><?php echo Setup::getValue(SetupKeys::USER) ?></param>
