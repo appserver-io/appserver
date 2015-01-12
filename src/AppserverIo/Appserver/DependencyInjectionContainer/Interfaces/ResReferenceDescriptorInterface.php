@@ -41,7 +41,7 @@ interface ResReferenceDescriptorInterface extends ReferenceDescriptorInterface
      *
      * @return string The resource type
      */
-    public function getRefType();
+    public function getType();
 
     /**
      * Merges the passed configuration into this one. Configuration values

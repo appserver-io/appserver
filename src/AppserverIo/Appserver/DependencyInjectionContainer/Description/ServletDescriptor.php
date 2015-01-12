@@ -267,7 +267,7 @@ class ServletDescriptor implements ServletDescriptorInterface
      */
     public function addEpbReference(EpbReferenceDescriptorInterface $epbReference)
     {
-        $this->epbReferences[$epbReference->getRefName()] = $epbReference;
+        $this->epbReferences[$epbReference->getName()] = $epbReference;
     }
 
     /**
@@ -301,7 +301,7 @@ class ServletDescriptor implements ServletDescriptorInterface
      */
     public function addResReference(ResReferenceDescriptorInterface $resReference)
     {
-        $this->resReferences[$resReference->getRefName()] = $resReference;
+        $this->resReferences[$resReference->getName()] = $resReference;
     }
 
     /**

@@ -46,7 +46,7 @@ class SplClassLoader extends GenericStackable implements ClassLoaderInterface
      *
      * @var string
      */
-    const IDENTIFIER = 'spl';
+    const IDENTIFIER = 'SplClassLoader';
 
     /**
      * Visitor method that adds a initialized class loader to the passed application.
