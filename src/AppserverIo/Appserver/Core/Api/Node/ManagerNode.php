@@ -81,9 +81,9 @@ class ManagerNode extends AbstractNode implements ManagerConfigurationInterface
     /**
      * Initializes the manager configuration with the passed values.
      *
-     * @param string $name          The unique manager name
-     * @param string $type          The manager class name
-     * @param string $factory       The managers factory class name
+     * @param string $name    The unique manager name
+     * @param string $type    The manager class name
+     * @param string $factory The managers factory class name
      */
     public function __construct($name = '', $type = '', $factory = '')
     {

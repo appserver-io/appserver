@@ -351,7 +351,23 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
      */
     public function testAddClassLoader()
     {
-        $this->application->addClassLoader($mockLoader = $this->getMock('\AppserverIo\Appserver\Core\Interfaces\ClassLoaderInterface'));
+
+        // define the methods to mock
+        $methodsToMock = array('getName', 'getDirectories', 'getEnforcementLevel', 'getProcessing', 'getType', 'getTypeSafety', 'getEnvironment');
+
+        // create a mock loader configuration
+        $mockLoaderConfiguration = $this->getMock('AppserverIo\Appserver\Core\Api\Node\ClassLoaderNodeInterface', $methodsToMock);
+        $mockLoaderConfiguration->expects($this->any())
+            ->method('getName')
+            ->will($this->returnValue('MockLoader'));
+
+        // create the mock class loader instance
+        $mockLoader = $this->getMock('\AppserverIo\Appserver\Core\Interfaces\ClassLoaderInterface');
+
+        // add the class loader to the application
+        $this->application->addClassLoader($mockLoader, $mockLoaderConfiguration);
+
+        // iterate over the class loaders
         foreach ($this->application->getClassLoaders() as $cls) {
             $this->assertEquals($cls, $mockLoader);
         }
@@ -376,21 +392,14 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
     public function testAddManager()
     {
 
-        // prepare the lookup names
-        $lookupNames = array(
-            AnnotationKeys::NAME => MockManager::IDENTIFIER,
-            AnnotationKeys::BEAN_NAME => 'MockManager',
-            AnnotationKeys::BEAN_INTERFACE => 'MockInterface'
-        );
-
         // define the methods to mock
-        $methodsToMock = array('getLookup', 'getParamsAsArray',  'getBeanName', 'getMappedName', 'getBeanInterface',  'getFactory', 'getType', 'getName', 'toLookupNames');
+        $methodsToMock = array('getFactory', 'getType', 'getName', 'getParamsAsArray');
 
         // create a mock manager configuration
         $mockManagerConfiguration = $this->getMock('AppserverIo\Appserver\Application\Interfaces\ManagerConfigurationInterface', $methodsToMock);
         $mockManagerConfiguration->expects($this->any())
-            ->method('toLookupNames')
-            ->will($this->returnValue($lookupNames));
+            ->method('getName')
+            ->will($this->returnValue(MockManager::IDENTIFIER));
 
         // add a mock manager
         $this->application->addManager($mockManager = new MockManager(), $mockManagerConfiguration);
@@ -416,33 +425,19 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
     {
 
         // define the methods to mock
-        $methodsToMock = array('getLookup', 'getParamsAsArray',  'getBeanName', 'getMappedName', 'getBeanInterface',  'getFactory', 'getType', 'getName', 'toLookupNames');
-
-        // prepare the lookup names
-        $lookupNames1 = array(
-            AnnotationKeys::NAME => 'MockManager1',
-            AnnotationKeys::BEAN_NAME => 'MockManager1',
-            AnnotationKeys::BEAN_INTERFACE => 'MockInterface1'
-        );
-
-        // prepare the lookup names
-        $lookupNames2 = array(
-            AnnotationKeys::NAME => 'MockManager2',
-            AnnotationKeys::BEAN_NAME => 'MockManager2',
-            AnnotationKeys::BEAN_INTERFACE => 'MockInterface2'
-        );
+        $methodsToMock = array('getFactory', 'getType', 'getName', 'getParamsAsArray');
 
         // create a mock manager configuration
         $mockManagerConfiguration1 = $this->getMock('AppserverIo\Appserver\Application\Interfaces\ManagerConfigurationInterface', $methodsToMock);
         $mockManagerConfiguration1->expects($this->any())
-            ->method('toLookupNames')
-            ->will($this->returnValue($lookupNames1));
+            ->method('getName')
+            ->will($this->returnValue('MockManager1'));
 
         // create a mock manager configuration
         $mockManagerConfiguration2 = $this->getMock('AppserverIo\Appserver\Application\Interfaces\ManagerConfigurationInterface', $methodsToMock);
         $mockManagerConfiguration2->expects($this->any())
-            ->method('toLookupNames')
-            ->will($this->returnValue($lookupNames2));
+            ->method('getName')
+            ->will($this->returnValue('MockManager2'));
 
         // initialize the managers
         $mgr1 = new MockManager('test_01');
@@ -480,8 +475,17 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
         // inject the mock initial context instance
         $this->application->injectInitialContext($mockInitialContext);
 
+        // define the methods to mock
+        $methodsToMock = array('getName', 'getDirectories', 'getEnforcementLevel', 'getProcessing', 'getType', 'getTypeSafety', 'getEnvironment');
+
+        // create a mock loader configuration
+        $mockLoaderConfiguration = $this->getMock('AppserverIo\Appserver\Core\Api\Node\ClassLoaderNodeInterface', $methodsToMock);
+        $mockLoaderConfiguration->expects($this->any())
+            ->method('getName')
+            ->will($this->returnValue('MockLoader'));
+
         // register the mock class loader instance
-        $this->application->addClassLoader($mockClassLoader = new MockClassLoader());
+        $this->application->addClassLoader($mockClassLoader = new MockClassLoader(), $mockLoaderConfiguration);
         $this->application->registerClassLoaders();
 
         // check that the mock class loader has been registered
@@ -511,21 +515,14 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
         // inject the mock initial context instance
         $this->application->injectInitialContext($mockInitialContext);
 
-        // prepare the lookup names
-        $lookupNames = array(
-            AnnotationKeys::NAME => 'MockManager',
-            AnnotationKeys::BEAN_NAME => 'MockManager',
-            AnnotationKeys::BEAN_INTERFACE => 'MockInterface'
-        );
-
         // define the methods to mock
-        $methodsToMock = array('getLookup', 'getParamsAsArray',  'getBeanName', 'getMappedName', 'getBeanInterface',  'getFactory', 'getType', 'getName', 'toLookupNames');
+        $methodsToMock = array('getName', 'getType', 'getFactory', 'getParamsAsArray');
 
         // create a mock manager configuration
         $mockManagerConfiguration = $this->getMock('AppserverIo\Appserver\Application\Interfaces\ManagerConfigurationInterface', $methodsToMock);
         $mockManagerConfiguration->expects($this->any())
-            ->method('toLookupNames')
-            ->will($this->returnValue($lookupNames));
+            ->method('getName')
+            ->will($this->returnValue('MockManager'));
 
         // register the mock manager instance
         $this->application->addManager($mockManager = new MockManager(), $mockManagerConfiguration);
