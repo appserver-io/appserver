@@ -593,6 +593,8 @@ class Application extends \Thread implements ApplicationInterface
      */
     public function registerClassLoaders()
     {
+
+        // initialize the registered managers
         foreach ($this->getClassLoaders() as $classLoader) {
 
             // log the class loader we want to initialize
@@ -617,11 +619,9 @@ class Application extends \Thread implements ApplicationInterface
      */
     public function initializeManagers()
     {
-        foreach ($this->getManagers() as $manager) {
 
-            // lock the mutex for manager initialization, because SPL usage
-            // and IO read/write operations can propably cause segfaults!
-            \Mutex::lock($this->mutex);
+        // initialize the registered managers
+        foreach ($this->getManagers() as $manager) {
 
             // log the manager we want to initialize
             $this->getInitialContext()->getSystemLogger()->debug(
@@ -635,9 +635,6 @@ class Application extends \Thread implements ApplicationInterface
             $this->getInitialContext()->getSystemLogger()->debug(
                 sprintf('Now registered manager %s for application %s', get_class($manager), $this->getName())
             );
-
-            // unlock the mutex
-            \Mutex::unlock($this->mutex);
         }
     }
 
