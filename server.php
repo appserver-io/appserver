@@ -46,6 +46,11 @@ require __DIR__ . DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR . 'scripts' 
 // bootstrap the application
 require __DIR__ . DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR . 'scripts' . DIRECTORY_SEPARATOR . 'bootstrap.php';
 
+// check if server.php has been started with additional options
+$watch = 'w';
+$configTest = 't';
+$arguments = getopt("$watch::$configTest::");
+
 // initialize configuration and schema file name
 $configurationFileName = DirectoryKeys::realpath(sprintf('%s/%s/appserver.xml', APPSERVER_BP, DirectoryKeys::CONF));
 $schemaFileName = DirectoryKeys::realpath(sprintf('%s/resources/schema/appserver.xsd', APPSERVER_BP));
@@ -60,15 +65,32 @@ $configurationFile->load($configurationFileName);
 // substitude xincludes
 $configurationFile->xinclude(LIBXML_SCHEMA_CREATE);
 
-// validate the configuration file with the schema
-$validationFailed = false;
+// validate the configuration file with the schema and make sure to make the correct output if we got called to only test the file
 if ($configurationFile->schemaValidate($schemaFileName) === false) {
-    $validationFailed = true;
+
     foreach (libxml_get_errors() as $error) {
-        $message = "Found a schema validation error on line %s with code %s and message %s when validating configuration file %s";
-        error_log(var_export($error, true));
-        throw new \Exception(sprintf($message, $error->line, $error->code, $error->message, $error->file));
+        $message = sprintf(
+            "Found a schema validation error on line %s with code %s and message %s when validating configuration file %s, see error dump below: %s",
+            $error->line,
+            $error->code,
+            $error->message,
+            $error->file,
+            var_export($error, true)
+        );
+
+        // if we are here to test we will make a sane output instead of throwing an exception
+        if (array_key_exists($configTest, $arguments)) {
+
+            echo $message;
+            exit;
+        }
+        throw new \Exception($message);
     }
+
+} elseif (array_key_exists($configTest, $arguments)) {
+
+    echo "Syntax OK\n";
+    exit;
 }
 
 // initialize the SimpleXMLElement with the content XML configuration file
@@ -79,24 +101,8 @@ $configuration->addChildWithNameAndValue('baseDirectory', APPSERVER_BP);
 // create the server instance
 $server = new Server($configuration);
 
-// check if server.php has been started with additional options
-$watch = 'w';
-$configTest = 't';
-$arguments = getopt("$watch::$configTest::");
-
 // if -w option has been passed, watch deployment directory only, if -t has been passed we tell them everything went fine (otherwise we would not have reached this point)
-if (array_key_exists($configTest, $arguments)) {
-
-    if ($validationFailed === true) {
-
-        throw new \Exception('Syntax errors detected, see error log for further information.');
-
-    } else {
-
-        error_log('Syntax OK');
-    }
-
-} elseif (array_key_exists($watch, $arguments)) {
+if (array_key_exists($watch, $arguments)) {
 
     $server->watch();
 
