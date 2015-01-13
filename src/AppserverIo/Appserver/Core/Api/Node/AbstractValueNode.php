@@ -19,7 +19,7 @@ use AppserverIo\Configuration\Interfaces\ValueInterface;
 use AppserverIo\Configuration\Interfaces\NodeValueInterface;
 
 /**
- * DTO to transfer aliases.
+ * Abstract class to handle node values
  *
  * @category   Server
  * @package    Appserver
