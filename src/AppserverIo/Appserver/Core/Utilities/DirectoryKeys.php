@@ -1,4 +1,5 @@
 <?php
+
 /**
  * AppserverIo\Appserver\Core\Utilities\DirectoryKeys
  *
@@ -31,53 +32,74 @@ class DirectoryKeys
 {
 
     /**
+     * Key for the base directory.
+     *
+     * @var string
+     */
+    const BASE = 'base.dir';
+
+    /**
      * Key for the webapps directory.
      *
      * @var string
      */
-    const WEBAPPS = 'webapps';
+    const WEBAPPS = 'webapps.dir';
 
     /**
      * Key for the temporary directory.
      *
      * @var string
      */
-    const TMP = 'var/tmp';
+    const TMP = 'tmp.dir';
 
     /**
      * Key for the log directory.
      *
      * @var string
      */
-    const LOG = 'var/log';
+    const LOG = 'log.dir';
 
     /**
      * Key for the run directory.
      *
      * @var string
      */
-    const RUN = 'var/run';
+    const RUN = 'run.dir';
 
     /**
      * Key for the deployment directory.
      *
      * @var string
      */
-    const DEPLOY = 'deploy';
+    const DEPLOY = 'deploy.dir';
 
     /**
      * Path the to main configuration directory.
      *
      * @var string
      */
-    const CONF = 'etc/appserver';
+    const CONF = 'conf.dir';
 
     /**
      * Path the to the configurations subdirectory.
      *
      * @var string
      */
-    const CONFD = 'etc/appserver/conf.d';
+    const CONFD = 'confd.dir';
+
+    /**
+     * Path the to the application specific cache directory.
+     *
+     * @var string
+     */
+    const CACHE = 'cache.dir';
+
+    /**
+     * Path the to the application specific session directory.
+     *
+     * @var string
+     */
+    const SESSION = 'session.dir';
 
     /**
      * This is a utility class, so protect it against direct
@@ -97,13 +119,11 @@ class DirectoryKeys
     }
 
     /**
-     * Returns the application server's directory structure,
-     * all directories has to be relative to the base path.
+     * Returns the application servers directory keys.
      *
-     * @return array The directory structure
-     * @todo Has to be extended for all necessary directories
+     * @return array The application server directory keys
      */
-    public static function getDirectories()
+    public static function getServerDirectoryKeys()
     {
         return array(
             DirectoryKeys::WEBAPPS,
@@ -113,6 +133,19 @@ class DirectoryKeys
             DirectoryKeys::RUN,
             DirectoryKeys::CONF,
             DirectoryKeys::CONFD
+        );
+    }
+
+    /**
+     * Returns the application specific directory keys.
+     *
+     * @return array The application specific directory keys
+     */
+    public static function getApplicationDirectoryKeys()
+    {
+        return array(
+            DirectoryKeys::CACHE,
+            DirectoryKeys::SESSION
         );
     }
 

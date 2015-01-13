@@ -37,6 +37,13 @@ ini_set('max_execution_time', 0);
 // set environmental variables in $_ENV globals per default
 $_ENV = appserver_get_envs();
 
+// define the available options
+$watch = 'w';
+$config = 'c';
+
+// check if server.php has been started with -w and/or -c option
+$arguments = getopt("$watch::", array("$config::"));
+
 // define a constant with the appserver base directory
 define('APPSERVER_BP', __DIR__);
 
@@ -46,8 +53,20 @@ require __DIR__ . DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR . 'scripts' 
 // bootstrap the application
 require __DIR__ . DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR . 'scripts' . DIRECTORY_SEPARATOR . 'bootstrap.php';
 
+// query whether a configuration file has been specified or not
+if (array_key_exists($config, $arguments) && file_exists($arguments[$config])) {
+    // set the file passed as parameter
+    $filename = $arguments[$config];
+} elseif (file_exists(sprintf('%s/etc/appserver/appserver.xml', APPSERVER_BP))) {
+    // try to load the default configuration file
+    $filename = sprintf('%s/etc/appserver/appserver.xml', APPSERVER_BP);
+} else {
+    // throw an exception if we don't have a configuration file
+    throw new \Exception('Can\' find a configuration file');
+}
+
 // initialize configuration and schema file name
-$configurationFileName = DirectoryKeys::realpath(sprintf('%s/%s/appserver.xml', APPSERVER_BP, DirectoryKeys::CONF));
+$configurationFileName = DirectoryKeys::realpath($filename);
 $schemaFileName = DirectoryKeys::realpath(sprintf('%s/resources/schema/appserver.xsd', APPSERVER_BP));
 
 // initialize the DOMDocument with the configuration file to be validated
@@ -69,14 +88,9 @@ if ($configurationFile->schemaValidate($schemaFileName) === false) {
 // initialize the SimpleXMLElement with the content XML configuration file
 $configuration = new \AppserverIo\Configuration\Configuration();
 $configuration->initFromFile($configurationFileName);
-$configuration->addChildWithNameAndValue('baseDirectory', APPSERVER_BP);
 
 // create the server instance
 $server = new Server($configuration);
-
-// check if server.php has been started with -w option
-$watch = 'w';
-$arguments = getopt("$watch::");
 
 // if -w option has been passed, watch deployment directory only
 if (array_key_exists($watch, $arguments)) {

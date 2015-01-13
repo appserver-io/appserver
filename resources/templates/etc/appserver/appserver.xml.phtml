@@ -22,6 +22,16 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
 <appserver xmlns="http://www.appserver.io/appserver">
 
     <params>
+        <!--
+        <param name="base.dir" type="string">/opt/appserver</param>
+        <param name="log.dir" type="string">/var/log</param>
+        <param name="run.dir" type="string">/var/run</param>
+        <param name="tmp.dir" type="string">/var/tmp</param>
+        <param name="deploy.dir" type="string">/deploy</param>
+        <param name="webapps.dir" type="string">/webapps</param>
+        <param name="conf.dir" type="string">/etc/appserver</param>
+        <param name="confd.dir" type="string">/etc/appserver/conf.d</param>
+        -->
         <param name="user" type="string"><?php echo Setup::getValue(SetupKeys::USER) ?></param>
         <param name="group" type="string"><?php echo Setup::getValue(SetupKeys::GROUP) ?></param>
         <param name="umask" type="string"><?php echo Setup::getValue(SetupKeys::UMASK) ?></param>

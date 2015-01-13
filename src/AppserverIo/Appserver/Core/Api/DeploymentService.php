@@ -1,4 +1,5 @@
 <?php
+
 /**
  * AppserverIo\Appserver\Core\Api\DeploymentService
  *
@@ -15,12 +16,12 @@
 
 namespace AppserverIo\Appserver\Core\Api;
 
+use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\Core\Api\AbstractService;
 use AppserverIo\Appserver\Core\Api\Node\ContextNode;
 use AppserverIo\Appserver\Core\Api\Node\DeploymentNode;
 use AppserverIo\Appserver\Core\Api\ServiceInterface;
 use AppserverIo\Appserver\Core\Interfaces\ContainerInterface;
-use AppserverIo\Psr\Application\ApplicationInterface;
 
 /**
  * A service that handles deployment configuration data.
@@ -99,7 +100,7 @@ class DeploymentService extends AbstractService
      *
      * @return void
      */
-    public function cleanUpFolders($application)
+    public function cleanUpFolders(ApplicationInterface $application)
     {
 
         // create the directory we want to store the sessions in

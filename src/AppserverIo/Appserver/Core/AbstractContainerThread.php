@@ -20,11 +20,10 @@ namespace AppserverIo\Appserver\Core;
 
 use AppserverIo\Logger\LoggerUtils;
 use AppserverIo\Storage\GenericStackable;
+use AppserverIo\Appserver\Naming\NamingDirectory;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\Core\Interfaces\ContainerInterface;
-use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
 use AppserverIo\Appserver\Core\Utilities\ContainerStateKeys;
-use AppserverIo\Appserver\Naming\NamingDirectory;
 
 /**
  * Class AbstractContainerThread
@@ -147,8 +146,7 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
         // define webservers base dir
         define(
             'SERVER_BASEDIR',
-            $this->getInitialContext()->getSystemConfiguration()->getBaseDirectory()->getNodeValue()->__toString()
-            . DIRECTORY_SEPARATOR
+            $this->getInitialContext()->getSystemConfiguration()->getBaseDirectory() . DIRECTORY_SEPARATOR
         );
 
         // check if we've the old or the new directory structure

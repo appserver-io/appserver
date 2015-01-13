@@ -21,21 +21,23 @@
 
 namespace AppserverIo\Appserver\Application;
 
+use AppserverIo\Lang\Reflection\ReflectionObject;
+use AppserverIo\Logger\LoggerUtils;
+use AppserverIo\Storage\GenericStackable;
+use AppserverIo\Storage\StorageInterface;
 use AppserverIo\Appserver\Core\Api\Node\ClassLoaderNodeInterface;
 use AppserverIo\Appserver\Core\Interfaces\ClassLoaderInterface;
 use AppserverIo\Appserver\Naming\BindingTrait;
-use AppserverIo\Logger\LoggerUtils;
 use AppserverIo\Appserver\Naming\NamingDirectory;
 use AppserverIo\Psr\Naming\NamingException;
 use AppserverIo\Psr\Naming\NamingDirectoryInterface;
-use AppserverIo\Storage\GenericStackable;
-use AppserverIo\Storage\StorageInterface;
-use AppserverIo\Lang\Reflection\ReflectionObject;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\EnterpriseBean;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\AnnotationKeys;
 use AppserverIo\Psr\Application\ManagerInterface;
-use AppserverIo\Appserver\Application\Interfaces\ContextInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
+use AppserverIo\Psr\Application\DirectoryAwareInterface;
+use AppserverIo\Psr\Application\FilesystemAwareInterface;
+use AppserverIo\Appserver\Application\Interfaces\ContextInterface;
 use AppserverIo\Appserver\Application\Interfaces\ManagerConfigurationInterface;
 
 /**
@@ -60,7 +62,7 @@ use AppserverIo\Appserver\Application\Interfaces\ManagerConfigurationInterface;
  * @property string                                                         $name            Name of the application
  * @property \AppserverIo\Psr\Naming\NamingDirectoryInterface               $namingDirectory The naming directory instance
  */
-class Application extends \Thread implements ApplicationInterface
+class Application extends \Thread implements ApplicationInterface, DirectoryAwareInterface, FilesystemAwareInterface
 {
 
     /**
@@ -337,16 +339,6 @@ class Application extends \Thread implements ApplicationInterface
     }
 
     /**
-     * Returns the absolute path to the web application base directory.
-     *
-     * @return string The path to the webapps folder
-     */
-    public function getWebappPath()
-    {
-        return $this->getAppBase() . DIRECTORY_SEPARATOR . $this->getName();
-    }
-
-    /**
      * Returns the absolute path to the applications base directory.
      *
      * @return string The app base directory
@@ -354,6 +346,16 @@ class Application extends \Thread implements ApplicationInterface
     public function getAppBase()
     {
         return $this->getNamingDirectory()->search('php:env/appBase');
+    }
+
+    /**
+     * Returns the absolute path to the web application base directory.
+     *
+     * @return string The path to the webapps folder
+     */
+    public function getWebappPath()
+    {
+        return $this->getNamingDirectory()->search(sprintf('php:env/%s/webappPath', $this->getName()));
     }
 
     /**
@@ -373,7 +375,7 @@ class Application extends \Thread implements ApplicationInterface
      */
     public function getSessionDir()
     {
-        return $this->getTmpDir() . DIRECTORY_SEPARATOR . ApplicationInterface::SESSION_DIRECTORY;
+        return $this->getNamingDirectory()->search(sprintf('php:env/%s/sessionDirectory', $this->getName()));
     }
 
     /**
@@ -383,7 +385,7 @@ class Application extends \Thread implements ApplicationInterface
      */
     public function getCacheDir()
     {
-        return $this->getTmpDir() . DIRECTORY_SEPARATOR . ApplicationInterface::CACHE_DIRECTORY;
+        return $this->getNamingDirectory()->search(sprintf('php:env/%s/cacheDirectory', $this->getName()));
     }
 
     /**
@@ -616,6 +618,9 @@ class Application extends \Thread implements ApplicationInterface
     public function run()
     {
 
+        // lock application to allow exclusive deployment
+        \Mutex::lock($this->mutex);
+
         // create the applications 'env' directory the beans will be bound to
         $appEnvDir = $this->createSubdirectory('env');
 
@@ -627,6 +632,9 @@ class Application extends \Thread implements ApplicationInterface
 
         // initialize the managers
         $this->initializeManagers();
+
+        // unlock application to allow deployment of other applications
+        \Mutex::unlock($this->mutex);
 
         // initialize the profile logger and the thread context
         $profileLogger = null;

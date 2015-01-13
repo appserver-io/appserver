@@ -32,6 +32,27 @@ class ParamNode extends AbstractValueNode
 {
 
     /**
+     * The constant for the param type 'string';
+     *
+     * @var string
+     */
+    const TYPE_STRING = 'string';
+
+    /**
+     * The constant for the param type 'boolean';
+     *
+     * @var string
+     */
+    const TYPE_BOOLEAN = 'boolean';
+
+    /**
+     * The constant for the param type 'integer';
+     *
+     * @var string
+     */
+    const TYPE_INTEGER = 'integer';
+
+    /**
      * The paramss name.
      *
      * @var string
