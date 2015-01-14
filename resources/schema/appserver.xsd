@@ -121,12 +121,62 @@
             <xs:attribute ref="xml:base"/>
         </xs:complexType>
     </xs:element>
-    <!-- TODO: complete these definitions -->
+    <xs:element name="module">
+        <xs:complexType>
+            <xs:attribute name="type" type="xs:string" use="required"/>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
     <xs:element name="modules">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="appserver:module"/>
+            </xs:choice>
+        </xs:complexType>
+        <xs:unique name="uniqueModuleType">
+            <xs:selector xpath="appserver:module" />
+            <xs:field xpath="@type" />
+        </xs:unique>
+    </xs:element>
+    <xs:element name="fileHandler">
+        <xs:complexType>
+            <xs:all minOccurs="0">
+                <xs:element ref="appserver:params"/>
+            </xs:all>
+            <xs:attribute name="name" type="xs:string" use="required"/>
+            <xs:attribute name="extension" type="xs:string" use="required"/>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
     </xs:element>
     <xs:element name="fileHandlers">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="appserver:fileHandler"/>
+            </xs:choice>
+        </xs:complexType>
+        <xs:unique name="uniqueFileHandlerExtension">
+            <xs:selector xpath="appserver:fileHandler" />
+            <xs:field xpath="@extension" />
+        </xs:unique>
+    </xs:element>
+    <xs:element name="location">
+        <xs:complexType>
+            <xs:all minOccurs="1">
+                <xs:element ref="appserver:fileHandlers"/>
+            </xs:all>
+            <xs:attribute name="condition" type="xs:string" use="required"/>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
     </xs:element>
     <xs:element name="locations">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="appserver:location"/>
+            </xs:choice>
+        </xs:complexType>
     </xs:element>
     <xs:element name="server">
         <xs:complexType>
