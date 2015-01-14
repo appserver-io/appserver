@@ -618,9 +618,6 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
     public function run()
     {
 
-        // lock application to allow exclusive deployment
-        \Mutex::lock($this->mutex);
-
         // create the applications 'env' directory the beans will be bound to
         $appEnvDir = $this->createSubdirectory('env');
 
@@ -632,9 +629,6 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
 
         // initialize the managers
         $this->initializeManagers();
-
-        // unlock application to allow deployment of other applications
-        \Mutex::unlock($this->mutex);
 
         // initialize the profile logger and the thread context
         $profileLogger = null;
