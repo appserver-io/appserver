@@ -10,7 +10,7 @@
 		"react/socket" : "0.4.*",
 		"cboden/ratchet" : "0.3.*",
 		"react/event-loop" : "0.4.*",
-		"nikic/phlexy" : "dev-master",
+        "nikic/phlexy": "0.1",
 		"appserver-io/microcron" : "0.1.*",
 		"appserver-io-psr/epb" : "0.2.*",
 		"appserver-io-psr/servlet" : "0.7.*",
