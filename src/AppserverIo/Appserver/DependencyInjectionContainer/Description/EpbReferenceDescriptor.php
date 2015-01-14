@@ -56,7 +56,7 @@ class EpbReferenceDescriptor implements EpbReferenceDescriptorInterface
      *
      * @var string
      */
-    protected $refName;
+    protected $name;
 
     /**
      * The beans description.
@@ -96,13 +96,13 @@ class EpbReferenceDescriptor implements EpbReferenceDescriptorInterface
     /**
      * Sets the reference name.
      *
-     * @param string $refName The reference name
+     * @param string $name The reference name
      *
      * @return void
      */
-    public function setRefName($refName)
+    public function setName($name)
     {
-        $this->refName = $refName;
+        $this->name = $name;
     }
 
     /**
@@ -110,9 +110,9 @@ class EpbReferenceDescriptor implements EpbReferenceDescriptorInterface
      *
      * @return string The reference name
      */
-    public function getRefName()
+    public function getName()
     {
-        return $this->refName;
+        return $this->name;
     }
 
     /**
@@ -271,8 +271,8 @@ class EpbReferenceDescriptor implements EpbReferenceDescriptorInterface
         $annotationInstance = $annotation->newInstance($annotation->getAnnotationName(), $annotation->getValues());
 
         // load the reference name defined as @EnterpriseBean(name=****)
-        if ($refName = $annotationInstance->getName()) {
-            $this->setRefName(sprintf('%s/%s', EpbReferenceDescriptor::REF_DIRECTORY, $refName));
+        if ($name = $annotationInstance->getName()) {
+            $this->setName(sprintf('%s/%s', EpbReferenceDescriptor::REF_DIRECTORY, $name));
         }
 
         // register the bean with the interface defined as @EnterpriseBean(beanInterface=****)
@@ -329,8 +329,8 @@ class EpbReferenceDescriptor implements EpbReferenceDescriptorInterface
         $annotationInstance = $annotation->newInstance($annotation->getAnnotationName(), $annotation->getValues());
 
         // load the reference name defined as @EnterpriseBean(name=****)
-        if ($refName = $annotationInstance->getName()) {
-            $this->setRefName(sprintf('%s/%s', EpbReferenceDescriptor::REF_DIRECTORY, $refName));
+        if ($name = $annotationInstance->getName()) {
+            $this->setName(sprintf('%s/%s', EpbReferenceDescriptor::REF_DIRECTORY, $name));
         }
 
         // register the bean with the interface defined as @EnterpriseBean(beanInterface=****)
@@ -387,8 +387,8 @@ class EpbReferenceDescriptor implements EpbReferenceDescriptorInterface
         }
 
         // query for the reference name
-        if ($refName = (string) $node->{'epb-ref-name'}) {
-            $this->setRefName(sprintf('%s/%s', EpbReferenceDescriptor::REF_DIRECTORY, $refName));
+        if ($name = (string) $node->{'epb-ref-name'}) {
+            $this->setName(sprintf('%s/%s', EpbReferenceDescriptor::REF_DIRECTORY, $name));
         }
 
         // query for the bean name and set it
@@ -436,8 +436,8 @@ class EpbReferenceDescriptor implements EpbReferenceDescriptorInterface
     {
 
         // merge the reference name
-        if ($refName = $epbReferenceDescriptor->getRefName()) {
-            $this->setRefName($refName);
+        if ($name = $epbReferenceDescriptor->getName()) {
+            $this->setName($name);
         }
 
         // merge the bean interface

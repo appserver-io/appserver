@@ -24,13 +24,13 @@ namespace AppserverIo\Appserver\Core;
 
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Storage\StackableStorage;
+use AppserverIo\Appserver\Naming\NamingDirectory;
 use AppserverIo\Appserver\Application\Application;
 use AppserverIo\Appserver\Application\Interfaces\ContextInterface;
 use AppserverIo\Appserver\Core\AbstractDeployment;
-use AppserverIo\Appserver\Core\Interfaces\ContainerInterface;
-use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
 use AppserverIo\Appserver\Core\Api\Node\ContextNode;
-use AppserverIo\Appserver\Naming\NamingDirectory;
+use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
+use AppserverIo\Appserver\Core\Interfaces\ContainerInterface;
 
 /**
  * Generic deployment implementation for web applications.
@@ -45,6 +45,13 @@ use AppserverIo\Appserver\Naming\NamingDirectory;
  */
 class GenericDeployment extends AbstractDeployment
 {
+
+    /**
+     * Array containing the application specific 'env' naming directories.
+     *
+     * @var array
+     */
+    protected $envAppDirs = array();
 
     /**
      * Initializes the available applications and adds them to the deployment instance.
@@ -72,9 +79,6 @@ class GenericDeployment extends AbstractDeployment
             // check if we've a directory containing a valid application,
             // at least a WEB-INF or META-INF folder has to be available
             if (is_dir($webInfDir) || is_dir($metaInfDir)) {
-
-                // lock the mutex before application initialization
-                \Mutex::lock($mutex);
 
                 // this IS the unique application name
                 $applicationName = basename($folder);
@@ -106,11 +110,19 @@ class GenericDeployment extends AbstractDeployment
                 $globalDir = $namingDirectory->search('php:global');
                 $globalDir->bind($applicationName, $application);
 
-                // register the applications temporary directory in the naming directory
+                // prepare the application specific directories
+                $webappPath = sprintf('%s/%s', $namingDirectory->search('env/appBase'), $applicationName);
                 $tmpDirectory = sprintf('%s/%s', $namingDirectory->search('env/tmpDirectory'), $applicationName);
+                $cacheDirectory = sprintf('%s/%s', $tmpDirectory, ltrim($context->getParam(DirectoryKeys::CACHE, '/')));
+                $sessionDirectory = sprintf('%s/%s', $tmpDirectory, ltrim($context->getParam(DirectoryKeys::SESSION, '/')));
+
+                // register the applications temporary directory in the naming directory
                 list ($envDir, ) = $namingDirectory->getAttribute('env');
-                $envAppDir = $envDir->createSubdirectory($applicationName);
-                $envAppDir->bind('tmpDirectory', $tmpDirectory);
+                $this->envAppDirs[$applicationName] = $envDir->createSubdirectory($applicationName);
+                $this->envAppDirs[$applicationName]->bind('webappPath', $webappPath);
+                $this->envAppDirs[$applicationName]->bind('tmpDirectory', $tmpDirectory);
+                $this->envAppDirs[$applicationName]->bind('cacheDirectory', $cacheDirectory);
+                $this->envAppDirs[$applicationName]->bind('sessionDirectory', $sessionDirectory);
 
                 // create the applications temporary folders and cleans the folders up
                 $this->getDeploymentService()->createTmpFolders($application);
@@ -144,9 +156,6 @@ class GenericDeployment extends AbstractDeployment
 
                 // add the application to the container
                 $container->addApplication($application);
-
-                // unlock the mutex after application initialization
-                \Mutex::unlock($mutex);
 
             } else { // if we can't find WEB-INF or META-INF directory
 

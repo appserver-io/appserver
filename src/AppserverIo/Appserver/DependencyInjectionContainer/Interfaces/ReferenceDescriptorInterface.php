@@ -41,7 +41,7 @@ interface ReferenceDescriptorInterface extends DescriptorInterface
      *
      * @return string The reference name
      */
-    public function getRefName();
+    public function getName();
 
     /**
      * Returns the beans description.

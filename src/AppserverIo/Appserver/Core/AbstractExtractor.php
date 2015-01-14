@@ -17,7 +17,6 @@
 namespace AppserverIo\Appserver\Core;
 
 use AppserverIo\Appserver\Application\Interfaces\ContextInterface;
-use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
 use AppserverIo\Appserver\Core\Interfaces\ExtractorInterface;
 use AppserverIo\Appserver\Core\Api\Node\ExtractorNodeInterface;
 
@@ -108,9 +107,7 @@ abstract class AbstractExtractor implements ExtractorInterface
         }
 
         // prepare the filename for the file with the last succesfull deployment timestamp
-        $successFile = $this->getService()->realpath(
-            DirectoryKeys::DEPLOY . DIRECTORY_SEPARATOR . ExtractorInterface::FILE_DEPLOYMENT_SUCCESSFULL
-        );
+        $successFile = $this->getService()->getDeployDir(ExtractorInterface::FILE_DEPLOYMENT_SUCCESSFULL);
 
         // create a flag file with date of the last successfull deployment
         touch($successFile);
@@ -129,7 +126,7 @@ abstract class AbstractExtractor implements ExtractorInterface
         // delete all old flags
         $this->unflagArchive($archive);
         // get archives folder name from deploy dir
-        $deployFolderName = $this->getDeployDir() . DIRECTORY_SEPARATOR . $archive->getFilename();
+        $deployFolderName = $this->getDeployDir($archive->getFilename());
         // flag archive
         file_put_contents($deployFolderName . $flag, $archive->getFilename());
         // set correct user/group for the flag file
@@ -165,7 +162,7 @@ abstract class AbstractExtractor implements ExtractorInterface
     {
 
         // prepare the deploy folder
-        $deployFolderName = $this->getDeployDir() . DIRECTORY_SEPARATOR . $archive->getFilename();
+        $deployFolderName = $this->getDeployDir($archive->getFilename());
 
         // check if the .dodeploy flag file exists
         if (file_exists($deployFolderName . ExtractorInterface::FLAG_DODEPLOY)) {
@@ -188,7 +185,7 @@ abstract class AbstractExtractor implements ExtractorInterface
     {
 
         // prepare the deploy folder
-        $deployFolderName = $this->getDeployDir() . DIRECTORY_SEPARATOR . $archive->getFilename();
+        $deployFolderName = $this->getDeployDir($archive->getFilename());
 
         // make sure that NO flag for the archive is available
         foreach ($this->getFlags() as $flag) {
@@ -213,8 +210,7 @@ abstract class AbstractExtractor implements ExtractorInterface
     {
 
         // prepare the upload target in the deploy directory
-        $deployDirectory = $this->getDeployDir();
-        $target = $deployDirectory . DIRECTORY_SEPARATOR . $archive->getFilename();
+        $target = $this->getDeployDir($archive->getFilename());
 
         // move the uploaded file from the tmp to the deploy directory
         rename($archive->getPathname(), $target);
@@ -238,7 +234,7 @@ abstract class AbstractExtractor implements ExtractorInterface
 
             // create webapp folder name based on the archive's basename
             $webappFolderName = new \SplFileInfo(
-                $this->getWebappsDir() . DIRECTORY_SEPARATOR . basename($archive->getFilename(), $this->getExtensionSuffix())
+                $this->getWebappsDir(basename($archive->getFilename(), $this->getExtensionSuffix()))
             );
 
             // check if app has to be undeployed
@@ -258,10 +254,10 @@ abstract class AbstractExtractor implements ExtractorInterface
             }
 
         } catch (\Exception $e) {
+
             // log error
-            $this->getInitialContext()
-                ->getSystemLogger()
-                ->error($e->__toString());
+            $this->getInitialContext()->getSystemLogger()->error($e->__toString());
+
             // flag webapp as failed
             $this->flagArchive($archive, ExtractorInterface::FLAG_FAILED);
         }
@@ -283,10 +279,8 @@ abstract class AbstractExtractor implements ExtractorInterface
         }
 
         // create tmp & webapp folder name based on the archive's basename
-        $webappFolderName = $this->getWebappsDir() . DIRECTORY_SEPARATOR
-            . basename($archive->getFilename(), $this->getExtensionSuffix());
-        $tmpFolderName = $this->getTmpDir() . DIRECTORY_SEPARATOR
-            . md5(basename($archive->getFilename(), $this->getExtensionSuffix()));
+        $webappFolderName = $this->getWebappsDir(basename($archive->getFilename(), $this->getExtensionSuffix()));
+        $tmpFolderName = $this->getTmpDir(md5(basename($archive->getFilename(), $this->getExtensionSuffix())));
 
         // copy backup to webapp directory
         $this->copyDir($tmpFolderName, $webappFolderName);
@@ -361,31 +355,37 @@ abstract class AbstractExtractor implements ExtractorInterface
     /**
      * Returns the servers tmp directory.
      *
+     * @param string $relativePathToAppend A relative path to append
+     *
      * @return string
      */
-    public function getTmpDir()
+    public function getTmpDir($relativePathToAppend = '')
     {
-        return $this->getService()->getTmpDir();
+        return $this->getService()->getTmpDir($relativePathToAppend);
     }
 
     /**
      * Returns the servers deploy directory.
      *
+     * @param string $relativePathToAppend A relative path to append
+     *
      * @return string
      */
-    public function getDeployDir()
+    public function getDeployDir($relativePathToAppend = '')
     {
-        return $this->getService()->getDeployDir();
+        return $this->getService()->getDeployDir($relativePathToAppend);
     }
 
     /**
      * Returns the servers webapps directory.
      *
+     * @param string $relativePathToAppend A relative path to append
+     *
      * @return string The web application directory
      */
-    public function getWebappsDir()
+    public function getWebappsDir($relativePathToAppend = '')
     {
-        return $this->getService()->getWebappsDir();
+        return $this->getService()->getWebappsDir($relativePathToAppend);
     }
 
     /**

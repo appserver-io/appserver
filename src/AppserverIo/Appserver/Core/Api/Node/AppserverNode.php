@@ -17,6 +17,7 @@ namespace AppserverIo\Appserver\Core\Api\Node;
 
 use Psr\Log\LogLevel;
 use AppserverIo\Logger\LoggerUtils;
+use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
 
 /**
  * DTO to transfer the application server's complete configuration.
@@ -108,6 +109,7 @@ class AppserverNode extends AbstractNode
     public function __construct()
     {
         // initialize the default configuration
+        $this->initDefaultDirectories();
         $this->initDefaultLoggers();
         $this->initDefaultScanners();
         $this->initDefaultExtractors();
@@ -116,16 +118,32 @@ class AppserverNode extends AbstractNode
     }
 
     /**
+     * Initialize the default directories.
+     *
+     * @return void
+     */
+    public function initDefaultDirectories()
+    {
+        $this->setParam(DirectoryKeys::LOG, ParamNode::TYPE_STRING, '/var/log');
+        $this->setParam(DirectoryKeys::RUN, ParamNode::TYPE_STRING, '/var/run');
+        $this->setParam(DirectoryKeys::TMP, ParamNode::TYPE_STRING, '/var/tmp');
+        $this->setParam(DirectoryKeys::DEPLOY, ParamNode::TYPE_STRING, '/deploy');
+        $this->setParam(DirectoryKeys::WEBAPPS, ParamNode::TYPE_STRING, '/webapps');
+        $this->setParam(DirectoryKeys::CONF, ParamNode::TYPE_STRING, '/etc/appserver');
+        $this->setParam(DirectoryKeys::CONFD, ParamNode::TYPE_STRING, '/etc/appserver/conf.d');
+    }
+
+    /**
      * Initializes the default initial context configuration.
      *
      * @return void
      */
-    public function initDefaultInitialContext()
+    protected function initDefaultInitialContext()
     {
 
         // initialize the configuration values for the initial context
         $description = new DescriptionNode(new NodeValue('The initial context configuration.'));
-        $classLoader = new ClassLoaderNode('default', 'ClassLoaderInterface', 'AppserverIo\Appserver\Core\SplClassLoader');
+        $classLoader = new ClassLoaderNode('SplClassLoader', 'ClassLoaderInterface', 'AppserverIo\Appserver\Core\SplClassLoader');
         $storage = new StorageNode('AppserverIo\Storage\StackableStorage');
 
         // set the default initial context configuration
@@ -278,31 +296,19 @@ class AppserverNode extends AbstractNode
     }
 
     /**
-     * Sets the passed base directory node.
-     *
-     * @param \AppserverIo\Appserver\Core\Api\Node\BaseDirectoryNode $baseDirectory The base directory node to set
-     *
-     * @return void
-     */
-    public function setBaseDirectory($baseDirectory)
-    {
-        $this->baseDirectory = $baseDirectory;
-    }
-
-    /**
      * Returns the node with the base directory information.
      *
-     * @return \AppserverIo\Appserver\Core\Api\Node\BaseDirectoryNode The base directory information
+     * @return string The base directory information
      */
     public function getBaseDirectory()
     {
-        return $this->baseDirectory;
+        return $this->getParam(DirectoryKeys::BASE);
     }
 
     /**
      * Returns the node containing information about the initial context.
      *
-     * @return \AppserverIo\Appserver\Core\Api\Node\BaseDirectoryNode The initial context information
+     * @return \AppserverIo\Appserver\Core\Api\Node\InitialContextNode The initial context information
      */
     public function getInitialContext()
     {

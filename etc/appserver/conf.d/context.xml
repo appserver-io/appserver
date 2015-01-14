@@ -1,9 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <context type="AppserverIo\Appserver\Application\Application">
-    
+
+    <!--
+    <params>
+        <param name="cache.dir" type="string">/cache</param>
+        <param name="session.dir" type="string">/session</param>
+    </params>
+    -->
+
     <classLoaders>
         <classLoader
-            name="composer"
+            name="ComposerClassLoader"
             interface="ClassLoaderInterface"
             type="AppserverIo\Appserver\Core\ComposerClassLoader"
             factory="AppserverIo\Appserver\Core\ComposerClassLoaderFactory">
@@ -12,7 +19,7 @@
             </directories>
         </classLoader>
         <classLoader
-            name="doppelgaenger"
+            name="DgClassLoader"
             interface="ClassLoaderInterface"
             type="AppserverIo\Appserver\Core\DgClassLoader"
             factory="AppserverIo\Appserver\Core\DgClassLoaderFactory">
@@ -31,7 +38,7 @@
     </classLoaders>
 
     <managers>
-        <manager name="ObjectManager" beanInterface="ObjectManagerInterface" type="AppserverIo\Appserver\DependencyInjectionContainer\ObjectManager" factory="AppserverIo\Appserver\DependencyInjectionContainer\ObjectManagerFactory">
+        <manager name="ObjectManagerInterface" type="AppserverIo\Appserver\DependencyInjectionContainer\ObjectManager" factory="AppserverIo\Appserver\DependencyInjectionContainer\ObjectManagerFactory">
             <descriptors>
                 <descriptor>AppserverIo\Appserver\DependencyInjectionContainer\Description\ServletDescriptor</descriptor>
                 <descriptor>AppserverIo\Appserver\DependencyInjectionContainer\Description\SingletonSessionBeanDescriptor</descriptor>
@@ -40,23 +47,26 @@
                 <descriptor>AppserverIo\Appserver\DependencyInjectionContainer\Description\MessageDrivenBeanDescriptor</descriptor>
             </descriptors>
         </manager>
-        <manager name="Provider" beanInterface="ProviderInterface" type="AppserverIo\Appserver\DependencyInjectionContainer\Provider" factory="AppserverIo\Appserver\DependencyInjectionContainer\ProviderFactory"/>
-        <manager name="BeanManager" beanInterface="BeanContext" type="AppserverIo\Appserver\PersistenceContainer\BeanManager" factory="AppserverIo\Appserver\PersistenceContainer\BeanManagerFactory">
+        <manager name="ProviderInterface" type="AppserverIo\Appserver\DependencyInjectionContainer\Provider" factory="AppserverIo\Appserver\DependencyInjectionContainer\ProviderFactory"/>
+        <manager name="BeanContext" type="AppserverIo\Appserver\PersistenceContainer\BeanManager" factory="AppserverIo\Appserver\PersistenceContainer\BeanManagerFactory">
             <!-- params>
                 <param name="lifetime" type="integer">1440</param>
                 <param name="garbageCollectionProbability" type="float">0.1</param>
             </params -->
+            <directories>
+                <directory>/META-INF/classes</directory>
+            </directories>
         </manager>
-        <manager name="QueueManager" beanInterface="QueueContext" type="AppserverIo\Appserver\MessageQueue\QueueManager" factory="AppserverIo\Appserver\MessageQueue\QueueManagerFactory"/>
-        <manager name="ServletManager" beanInterface="ServletContext" type="AppserverIo\Appserver\ServletEngine\ServletManager" factory="AppserverIo\Appserver\ServletEngine\ServletManagerFactory">
+        <manager name="QueueContext" type="AppserverIo\Appserver\MessageQueue\QueueManager" factory="AppserverIo\Appserver\MessageQueue\QueueManagerFactory"/>
+        <manager name="ServletContext" type="AppserverIo\Appserver\ServletEngine\ServletManager" factory="AppserverIo\Appserver\ServletEngine\ServletManagerFactory">
             <directories>
                 <directory>/WEB-INF/classes</directory>
             </directories>
         </manager>
-        <manager name="StandardSessionManager" beanInterface="SessionManager" type="AppserverIo\Appserver\ServletEngine\StandardSessionManager" factory="AppserverIo\Appserver\ServletEngine\StandardSessionManagerFactory"/>
-        <manager name="TimerServiceRegistry" beanInterface="TimerServiceContext" type="AppserverIo\Appserver\PersistenceContainer\TimerServiceRegistry" factory="AppserverIo\Appserver\PersistenceContainer\TimerServiceRegistryFactory"/>
-        <manager name="StandardAuthenticationManager" beanInterface="AuthenticationManager" type="AppserverIo\Appserver\ServletEngine\Authentication\StandardAuthenticationManager" factory="AppserverIo\Appserver\ServletEngine\Authentication\StandardAuthenticationManagerFactory"/>
-        <manager name="AspectManager" beanInterface="AspectManagerInterface" type="AppserverIo\Appserver\AspectContainer\AspectManager" factory="AppserverIo\Appserver\AspectContainer\AspectManagerFactory"/>
+        <manager name="SessionManager" type="AppserverIo\Appserver\ServletEngine\StandardSessionManager" factory="AppserverIo\Appserver\ServletEngine\StandardSessionManagerFactory"/>
+        <manager name="TimerServiceContext" type="AppserverIo\Appserver\PersistenceContainer\TimerServiceRegistry" factory="AppserverIo\Appserver\PersistenceContainer\TimerServiceRegistryFactory"/>
+        <manager name="AuthenticationManager" type="AppserverIo\Appserver\ServletEngine\Authentication\StandardAuthenticationManager" factory="AppserverIo\Appserver\ServletEngine\Authentication\StandardAuthenticationManagerFactory"/>
+        <manager name="AspectManagerInterface" type="AppserverIo\Appserver\AspectContainer\AspectManager" factory="AppserverIo\Appserver\AspectContainer\AspectManagerFactory"/>
     </managers>
 
 </context>
