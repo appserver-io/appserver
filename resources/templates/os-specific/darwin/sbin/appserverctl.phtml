@@ -111,9 +111,9 @@ restart|graceful)
     ERROR=$?
     ;;
 configtest)
-    `DAEMON DAEMON_OPTS -t`
+    echo `$DAEMON $DAEMON_OPTS -t`
     ERROR=$?
-;;
+    ;;
 help|-h|--help|*)
     display_help
     ERROR=1
