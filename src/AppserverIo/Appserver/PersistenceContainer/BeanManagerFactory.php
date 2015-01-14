@@ -87,8 +87,9 @@ class BeanManagerFactory
         $beanManager->injectApplication($application);
         $beanManager->injectResourceLocator($beanLocator);
         $beanManager->injectInitialContext($initialContext);
-        $beanManager->injectSingletonSessionBeans($singletonSessionBeans);
         $beanManager->injectStatefulSessionBeans($statefulSessionBeans);
+        $beanManager->injectSingletonSessionBeans($singletonSessionBeans);
+        $beanManager->injectDirectories($managerConfiguration->getDirectories());
         $beanManager->injectStatefulSessionBeanSettings($statefulSessionBeanSettings);
         $beanManager->injectStatefulSessionBeanMapFactory($statefulSessionBeanMapFactory);
 

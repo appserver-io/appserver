@@ -23,16 +23,16 @@
 
 namespace AppserverIo\Appserver\Core;
 
+use AppserverIo\Lang\Reflection\ReflectionClass;
 use AppserverIo\Storage\StorageInterface;
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Psr\Naming\NamingException;
 use AppserverIo\Psr\Application\ManagerInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
-use AppserverIo\Appserver\Naming\InitialContext;
 use AppserverIo\Appserver\DependencyInjectionContainer\Description\EpbReferenceDescriptor;
 use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\EpbReferenceDescriptorInterface;
 use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\ResReferenceDescriptorInterface;
-use AppserverIo\Lang\Reflection\ReflectionClass;
+use AppserverIo\Appserver\Naming\InitialContext as NamingDirectory;
 
 /**
  * Abstract manager implementation.
@@ -91,7 +91,7 @@ abstract class AbstractManager extends GenericStackable implements ManagerInterf
      *
      * @return void
      */
-    public function injectInitialContext(InitialContext $initialContext)
+    public function injectInitialContext(NamingDirectory $initialContext)
     {
         $this->initialContext = $initialContext;
     }

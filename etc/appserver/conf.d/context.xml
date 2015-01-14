@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <context type="AppserverIo\Appserver\Application\Application">
-    
+
+    <!--
+    <params>
+        <param name="cache.dir" type="string">/cache</param>
+        <param name="session.dir" type="string">/session</param>
+    </params>
+    -->
+
     <classLoaders>
         <classLoader
             name="ComposerClassLoader"
@@ -46,6 +53,9 @@
                 <param name="lifetime" type="integer">1440</param>
                 <param name="garbageCollectionProbability" type="float">0.1</param>
             </params -->
+            <directories>
+                <directory>/META-INF/classes</directory>
+            </directories>
         </manager>
         <manager name="QueueContext" type="AppserverIo\Appserver\MessageQueue\QueueManager" factory="AppserverIo\Appserver\MessageQueue\QueueManagerFactory"/>
         <manager name="ServletContext" type="AppserverIo\Appserver\ServletEngine\ServletManager" factory="AppserverIo\Appserver\ServletEngine\ServletManagerFactory">

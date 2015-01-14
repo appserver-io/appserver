@@ -68,6 +68,33 @@ trait ParamsNodeTrait
     }
 
     /**
+     * Sets the param with the passed name, type and value.
+     *
+     * @param string $name  The param name
+     * @param string $type  The param type
+     * @param mixed  $value The param value
+     *
+     * @return void
+     */
+    public function setParam($name, $type, $value)
+    {
+
+        // initialize the param to set
+        $paramToSet = new ParamNode($name, $type, new NodeValue($value));
+
+        // query whether a param with this name has already been set
+        foreach ($this->params as $key => $param) {
+            if ($param->getName() === $paramToSet->getName()) { // override the param
+                $this->params[$key] = $paramToSet;
+                return;
+            }
+        }
+
+        // append the param
+        $this->params[] = $paramToSet;
+    }
+
+    /**
      * Returns the param with the passed name casted to
      * the specified type.
      *

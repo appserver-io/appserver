@@ -58,6 +58,18 @@ class BeanManager extends AbstractManager implements BeanContext
 {
 
     /**
+     * Injects the additional directories to be parsed when looking for servlets.
+     *
+     * @param array $directories The additional directories to be parsed
+     *
+     * @return void
+     */
+    public function injectDirectories(array $directories)
+    {
+        $this->directories = $directories;
+    }
+
+    /**
      * Injects the resource locator that locates the requested queue.
      *
      * @param \AppserverIo\Appserver\MessageQueue\ResourceLocator $resourceLocator The resource locator
@@ -141,21 +153,37 @@ class BeanManager extends AbstractManager implements BeanContext
     protected function registerBeans(ApplicationInterface $application)
     {
 
-        // build up META-INF directory var
-        $metaInfDir = $this->getWebappPath() . DIRECTORY_SEPARATOR . 'META-INF';
-
-        // check if we've found a valid directory
-        if (is_dir($metaInfDir) === false) {
+        // query if the web application folder exists
+        if (is_dir($folder = $this->getWebappPath()) === false) { // if not, do nothing
             return;
+        }
+
+        // load the directories to be parsed
+        $directories = array();
+
+        // append the directory found in the servlet managers configuration
+        foreach ($this->getDirectories() as $directoryNode) {
+
+            // prepare the custom directory defined in the servlet managers configuration
+            $customDir = $folder . DIRECTORY_SEPARATOR . ltrim($directoryNode->getNodeValue()->getValue(), DIRECTORY_SEPARATOR);
+
+            // check if the directory exists
+            if (is_dir($customDir)) {
+                $directories[] = $customDir;
+            }
         }
 
         // parse the directory for annotated beans
         $directoryParser = new DirectoryParser();
         $directoryParser->injectApplication($application);
-        $directoryParser->parse($metaInfDir . DIRECTORY_SEPARATOR . 'classes');
 
-        // query whether we found epb.xml deployment descriptor file
-        if (file_exists($deploymentDescriptor = $metaInfDir . DIRECTORY_SEPARATOR . 'epb.xml') === true) {
+        // parse the directories for annotated servlets
+        foreach ($directories as $directory) {
+            $directoryParser->parse($directory);
+        }
+
+        // it's no valid application without at least the epb.xml file
+        if (file_exists($deploymentDescriptor = $folder . DIRECTORY_SEPARATOR . 'META-INF' . DIRECTORY_SEPARATOR . 'epb.xml')) {
 
             // parse the deployment descriptor for registered beans
             $deploymentDescriptorParser = new DeploymentDescriptorParser();
@@ -222,6 +250,16 @@ class BeanManager extends AbstractManager implements BeanContext
     protected function newAnnotationInstance(AnnotationInterface $annotation)
     {
         return $this->getApplication()->search('ProviderInterface')->newAnnotationInstance($annotation);
+    }
+
+    /**
+     * Returns all the additional directories to be parsed for servlets.
+     *
+     * @return array The additional directories
+     */
+    public function getDirectories()
+    {
+        return $this->directories;
     }
 
     /**
