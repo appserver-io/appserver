@@ -106,24 +106,31 @@ class ServerTest extends AbstractTest
         $appserverConfiguration->addChild($baseDirectoryConfiguration);
         $configuration->merge($appserverConfiguration);
 
-        $methodsToMock = array('initExtractors', 'startContainers', 'initProcessUser', 'initProvisioners', 'initFileSystem', 'initSslCertificate');
+        // initialize the mock logger
+        $mockLogger = $this->getMock('Psr\Log\LoggerInterface', array('log', 'error', 'warning', 'notice', 'emergency', 'debug', 'info', 'alert', 'critical'));
+
+        $mockSystemConfiguration = $this->getMock('AppserverIo\Appserver\Core\Api\Node\AppserverNode', array('getBaseDirectory'));
+
+        $methodsToMock = array('initExtractors', 'startContainers', 'initProcessUser', 'initContainers', 'initProvisioners', 'initFileSystem', 'initSslCertificate', 'getSystemLogger', 'getSystemConfiguration');
 
         // create a new mock server implementation
-        $server = $this->getMock('AppserverIo\Appserver\Core\Server', $methodsToMock, array($configuration));
+        $server = $this->getMock('AppserverIo\Appserver\Core\Server', $methodsToMock, array($configuration), '', false);
 
         // mock the servers startContainers() and the initConstructors() method
-        $server->expects($this->any())->method('initFileSystem');
-        $server->expects($this->any())->method('initSslCertificate');
         $server->expects($this->once())->method('initExtractors');
+        $server->expects($this->once())->method('initContainers');
         $server->expects($this->once())->method('startContainers');
         $server->expects($this->once())->method('initProcessUser');
         $server->expects($this->once())->method('initProvisioners');
+        $server->expects($this->once())
+            ->method('getSystemLogger')
+            ->will($this->returnValue($mockLogger));
+        $server->expects($this->once())
+            ->method('getSystemConfiguration')
+            ->will($this->returnValue($mockSystemConfiguration));
 
         // start the server instance
         $server->start();
-
-        // check that we found the configured container
-        $this->assertCount(1, $server->getContainers());
     }
 
     /**
