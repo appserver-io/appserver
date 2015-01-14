@@ -400,24 +400,6 @@ class Server
     }
 
     /**
-     * Will safely put the appserver to rest by cleaning up after the last run
-     *
-     * @return void
-     */
-    public function cleanup()
-    {
-        // We need to delete the heartbeat file as the watcher might restart the appserver otherwise
-        unlink(
-            $this->getSystemConfiguration()
-                ->getBaseDirectory()
-                ->getNodeValue()
-                ->__toString() . DIRECTORY_SEPARATOR .
-            DirectoryKeys::RUN . DIRECTORY_SEPARATOR .
-            HeartbeatScanner::HEARTBEAT_FILE_NAME
-        );
-    }
-
-    /**
      * Start the container threads.
      *
      * @return void
@@ -436,10 +418,7 @@ class Server
         $this->getSystemLogger()->info(
             sprintf(
                 'Server successfully started in basedirectory %s ',
-                $this->getSystemConfiguration()
-                    ->getBaseDirectory()
-                    ->getNodeValue()
-                    ->__toString()
+                $this->getSystemConfiguration()->getBaseDirectory()
             )
         );
 
@@ -465,33 +444,6 @@ class Server
                 $profileLogger->debug('Successfully processed incoming connection');
             }
             sleep(2);
-        }
-    }
-
-    /**
-     * Starts giving the heartbeat to tell everyone we are alive.
-     * This will keep your server in an endless loop, so be wary!
-     *
-     * @return void
-     *
-     * @TODO integrate this into a maintenance layer
-     */
-    protected function initHeartbeat()
-    {
-        while (true) {
-
-            // Tell them we are alive
-            touch(
-                $this->getSystemConfiguration()
-                    ->getBaseDirectory()
-                    ->getNodeValue()
-                    ->__toString() . DIRECTORY_SEPARATOR .
-                DirectoryKeys::RUN . DIRECTORY_SEPARATOR .
-                HeartbeatScanner::HEARTBEAT_FILE_NAME
-            );
-
-            // Sleep a little
-            sleep(1);
         }
     }
 
@@ -674,5 +626,46 @@ class Server
     public function newService($className)
     {
         return $this->getInitialContext()->newService($className);
+    }
+
+    /**
+     * Will safely put the appserver to rest by cleaning up after the last run
+     *
+     * @return void
+     */
+    public function cleanup()
+    {
+        // We need to delete the heartbeat file as the watcher might restart the appserver otherwise
+        unlink(
+            $this->getSystemConfiguration()
+                ->getBaseDirectory() . DIRECTORY_SEPARATOR .
+            DirectoryKeys::RUN . DIRECTORY_SEPARATOR .
+            HeartbeatScanner::HEARTBEAT_FILE_NAME
+        );
+    }
+
+    /**
+     * Starts giving the heartbeat to tell everyone we are alive.
+     * This will keep your server in an endless loop, so be wary!
+     *
+     * @return void
+     *
+     * @TODO integrate this into a maintenance layer
+     */
+    protected function initHeartbeat()
+    {
+        while (true) {
+
+            // Tell them we are alive
+            touch(
+                $this->getSystemConfiguration()
+                    ->getBaseDirectory() . DIRECTORY_SEPARATOR .
+                DirectoryKeys::RUN . DIRECTORY_SEPARATOR .
+                HeartbeatScanner::HEARTBEAT_FILE_NAME
+            );
+
+            // Sleep a little
+            sleep(1);
+        }
     }
 }

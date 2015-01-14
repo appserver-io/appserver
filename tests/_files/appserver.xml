@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <appserver xmlns="http://www.appserver.io/appserver">
 
-	<baseDirectory>/opt/appserver</baseDirectory>
+	<params>
+        <param name="base.dir" type="string">/opt/appserver</param>
+    </params>
 
 	<initialContext type="AppserverIo\Appserver\Core\InitialContext">
 		<description><![CDATA[The initial context configuration.]]></description>

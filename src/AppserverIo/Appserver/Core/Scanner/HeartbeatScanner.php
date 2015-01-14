@@ -95,6 +95,7 @@ class HeartbeatScanner extends AbstractScanner
      */
     public function main()
     {
+
         // log the configured deployment directory
         $this->getSystemLogger()->debug(
             sprintf(

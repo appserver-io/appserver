@@ -145,10 +145,7 @@ abstract class AbstractService implements ServiceInterface
     {
 
         // load the base directory from the system configuration
-        $baseDirectory = $this->getSystemConfiguration()
-            ->getBaseDirectory()
-            ->getNodeValue()
-            ->__toString();
+        $baseDirectory = $this->getSystemConfiguration()->getBaseDirectory();
 
         // if a directory has been passed, make it absolute and append it
         if ($directoryToAppend != null) {
@@ -160,13 +157,23 @@ abstract class AbstractService implements ServiceInterface
     }
 
     /**
-     * Return's the directory structure to be created at first start.
+     * Returns the directory structure to be created at first start.
      *
      * @return array The directory structure to be created if necessary
      */
     public function getDirectories()
     {
-        return DirectoryKeys::getDirectories();
+
+        // initialize the array with the directories
+        $directories = array();
+
+        // iterate over the directory keys and read the configuration values
+        foreach (DirectoryKeys::getServerDirectoryKeys() as $directoryKey) {
+            $directories[$directoryKey] = $this->getSystemConfiguration()->getParam($directoryKey);
+        }
+
+        // return the array with the directories
+        return $directories;
     }
 
     /**
@@ -192,7 +199,11 @@ abstract class AbstractService implements ServiceInterface
      */
     public function getTmpDir($relativePathToAppend = '')
     {
-        return $this->realpath($this->makePathAbsolute(DirectoryKeys::TMP . $this->makePathAbsolute($relativePathToAppend)));
+        return $this->realpath(
+            $this->makePathAbsolute(
+                $this->getSystemConfiguration()->getParam(DirectoryKeys::TMP) . $this->makePathAbsolute($relativePathToAppend)
+            )
+        );
     }
 
     /**
@@ -204,7 +215,11 @@ abstract class AbstractService implements ServiceInterface
      */
     public function getDeployDir($relativePathToAppend = '')
     {
-        return $this->realpath($this->makePathAbsolute(DirectoryKeys::DEPLOY . $this->makePathAbsolute($relativePathToAppend)));
+        return $this->realpath(
+            $this->makePathAbsolute(
+                $this->getSystemConfiguration()->getParam(DirectoryKeys::DEPLOY) . $this->makePathAbsolute($relativePathToAppend)
+            )
+        );
     }
 
     /**
@@ -216,7 +231,11 @@ abstract class AbstractService implements ServiceInterface
      */
     public function getWebappsDir($relativePathToAppend = '')
     {
-        return $this->realpath($this->makePathAbsolute(DirectoryKeys::WEBAPPS . $this->makePathAbsolute($relativePathToAppend)));
+        return $this->realpath(
+            $this->makePathAbsolute(
+                $this->getSystemConfiguration()->getParam(DirectoryKeys::WEBAPPS) . $this->makePathAbsolute($relativePathToAppend)
+            )
+        );
     }
 
     /**
@@ -228,7 +247,11 @@ abstract class AbstractService implements ServiceInterface
      */
     public function getLogDir($relativePathToAppend = '')
     {
-        return $this->realpath($this->makePathAbsolute(DirectoryKeys::LOG . $this->makePathAbsolute($relativePathToAppend)));
+        return $this->realpath(
+            $this->makePathAbsolute(
+                $this->getSystemConfiguration()->getParam(DirectoryKeys::LOG) . $this->makePathAbsolute($relativePathToAppend)
+            )
+        );
     }
 
     /**
@@ -240,7 +263,11 @@ abstract class AbstractService implements ServiceInterface
      */
     public function getConfDir($relativePathToAppend = '')
     {
-        return $this->realpath($this->makePathAbsolute(DirectoryKeys::CONF . $this->makePathAbsolute($relativePathToAppend)));
+        return $this->realpath(
+            $this->makePathAbsolute(
+                $this->getSystemConfiguration()->getParam(DirectoryKeys::CONF) . $this->makePathAbsolute($relativePathToAppend)
+            )
+        );
     }
 
     /**
@@ -252,7 +279,11 @@ abstract class AbstractService implements ServiceInterface
      */
     public function getConfdDir($relativePathToAppend = '')
     {
-        return $this->realpath($this->makePathAbsolute(DirectoryKeys::CONFD . $this->makePathAbsolute($relativePathToAppend)));
+        return $this->realpath(
+            $this->makePathAbsolute(
+                $this->getSystemConfiguration()->getParam(DirectoryKeys::CONFD) . $this->makePathAbsolute($relativePathToAppend)
+            )
+        );
     }
 
     /**

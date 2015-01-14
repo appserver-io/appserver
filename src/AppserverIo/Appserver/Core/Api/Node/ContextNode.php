@@ -16,6 +16,8 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
+
 /**
  * DTO to transfer server information.
  *
@@ -30,10 +32,27 @@ namespace AppserverIo\Appserver\Core\Api\Node;
  */
 class ContextNode extends AbstractNode
 {
-    // We use several traits which give us the possibility to have collections of the child nodes mentioned in the
-    // corresponding trait name
+
+    /**
+     * A class loader trait.
+     *
+     * @var \TraitInterface
+     */
     use ClassLoadersNodeTrait;
+
+    /**
+     * A managers node trait.
+     *
+     * @var \TraitInterface
+     */
     use ManagersNodeTrait;
+
+    /**
+     * A params node trait.
+     *
+     * @var \TraitInterface
+     */
+    use ParamsNodeTrait;
 
     /**
      * The context name,
@@ -54,13 +73,31 @@ class ContextNode extends AbstractNode
     /**
      * Initializes the context configuration with the passed values.
      *
-     * @param string $name The context name
-     * @param string $type The context class name
+     * @param string $name   The context name
+     * @param string $type   The context class name
+     * @param array  $params The context params
      */
-    public function __construct($name = '', $type = '')
+    public function __construct($name = '', $type = '', array $params = array())
     {
+
+        // set name and type
         $this->name = $name;
         $this->type = $type;
+        $this->params = $params;
+
+        // initialize the default directories
+        $this->initDefaultDirectories();
+    }
+
+    /**
+     * Initialize the default directories.
+     *
+     * @return void
+     */
+    public function initDefaultDirectories()
+    {
+        $this->setParam(DirectoryKeys::CACHE, ParamNode::TYPE_STRING, '/cache');
+        $this->setParam(DirectoryKeys::SESSION, ParamNode::TYPE_STRING, '/session');
     }
 
     /**
@@ -94,6 +131,26 @@ class ContextNode extends AbstractNode
      */
     public function merge(ContextNode $contextNode)
     {
+
+        // load the params defined in this context
+        $localParams = $this->getParams();
+
+        // merge them with the passed ones
+        foreach ($contextNode->getParams() as $paramToMerge) {
+            $isMerged = false;
+            foreach ($localParams as $key => $param) {
+                if ($param->getName() == $paramToMerge->getName()) {
+                    $localParams[$key] = $paramToMerge;
+                    $isMerged = true;
+                }
+            }
+            if ($isMerged === false) {
+                $localParams[$paramToMerge->getUuid()] = $paramToMerge;
+            }
+        }
+
+        // set the params back to the context
+        $this->setParams($localParams);
 
         // load the managers defined of this context
         $localManagers = $this->getManagers();

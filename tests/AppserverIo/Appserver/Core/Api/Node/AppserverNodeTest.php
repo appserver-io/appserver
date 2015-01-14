@@ -48,8 +48,7 @@ class AppserverNodeTest extends AbstractTest
      */
     public function testGetBaseDirectory()
     {
-        $baseDirectory = $this->appserverNode->getBaseDirectory();
-        $this->assertInstanceOf('AppserverIo\Appserver\Core\Api\Node\BaseDirectoryNode', $baseDirectory);
+        $this->assertSame('/opt/appserver', $this->appserverNode->getBaseDirectory());
     }
 
     /**
