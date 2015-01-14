@@ -19,41 +19,40 @@ use AppserverIo\Appserver\Core\Api\Node\NodeValue;
  *
  * @package AppserverIo\Appserver\Core
  * @copyright Copyright (c) 2010 <info@techdivision.com> - TechDivision GmbH
- * @license http://opensource.org/licenses/osl-3.0.php
- *          Open Software License (OSL 3.0)
+ * @license http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @author Tim Wagner <tw@techdivision.com>
  */
 class ServerTest extends AbstractTest
 {
 
     /**
-     * The server instance to test.
+     * Creates and returns a mock server instance with NO methods mocked.
      *
-     * @var AppserverIo\Appserver\Core\Server
-     */
-    protected $server;
-
-    /**
-     * Initializes the server instance to test.
+     * @param array   $methodsToMock           The methods we want to mock
+     * @param boolean $callOriginalConstructor TRUE if the original constructor should be invoked, else FALSE
      *
-     * @return void
+     * @return PHPUnit_Framework_MockObject_MockObject The mocked server instance
      */
-    public function setUp()
+    public function getMockServer(array $methodsToMock = array(), $callOriginalConstructor = true)
     {
+
         // initialize the configuration
         $configuration = $this->getAppserverConfiguration();
 
-        // replace the base directory
-        $appserverConfiguration = new Configuration();
-        $appserverConfiguration->setNodeName('appserver');
-        $baseDirectoryConfiguration = new Configuration();
-        $baseDirectoryConfiguration->setNodeName('baseDirectory');
-        $baseDirectoryConfiguration->setValue(__DIR__);
-        $appserverConfiguration->addChild($baseDirectoryConfiguration);
-        $configuration->merge($appserverConfiguration);
+        // create a new mock server implementation
+        return $this->getMock('AppserverIo\Appserver\Core\Server', $methodsToMock, array($configuration), '', $callOriginalConstructor);
+    }
 
-        // initialize the server instance
-        $this->server = new Server($configuration);
+    /**
+     * Creates and returns a mock logger instance with all methods mocked.
+     *
+     * @param array $methodsToMock The methods we want to mock
+     *
+     * @return PHPUnit_Framework_MockObject_MockObject The mocked logger instance
+     */
+    public function getMockLogger(array $methodsToMock = array('log', 'error', 'warning', 'notice', 'emergency', 'debug', 'info', 'alert', 'critical'))
+    {
+        return $this->getMock('Psr\Log\LoggerInterface', $methodsToMock);
     }
 
     /**
@@ -63,7 +62,12 @@ class ServerTest extends AbstractTest
      */
     public function testGetInitialContext()
     {
-        $this->assertInstanceOf('AppserverIo\Appserver\Core\InitialContext', $this->server->getInitialContext());
+
+        // initialize the mock server
+        $mockServer = $this->getMockServer(array('initUmask','initFileSystem', 'initSslCertificate'));
+
+        // check the initial context type
+        $this->assertInstanceOf('AppserverIo\Appserver\Core\InitialContext', $mockServer->getInitialContext());
     }
 
     /**
@@ -73,7 +77,12 @@ class ServerTest extends AbstractTest
      */
     public function testGetSystemLogger()
     {
-        $this->assertInstanceOf('Monolog\Logger', $this->server->getSystemLogger());
+
+        // initialize the mock server
+        $mockServer = $this->getMockServer(array('initUmask','initFileSystem', 'initSslCertificate'));
+
+        // check the logger configuration type
+        $this->assertInstanceOf('Monolog\Logger', $mockServer->getSystemLogger());
     }
 
     /**
@@ -83,7 +92,12 @@ class ServerTest extends AbstractTest
      */
     public function testGetSystemConfiguration()
     {
-        $this->assertInstanceOf('AppserverIo\Appserver\Core\Api\Node\AppserverNode', $this->server->getSystemConfiguration());
+
+        // initialize the mock server
+        $mockServer = $this->getMockServer(array('initUmask','initFileSystem', 'initSslCertificate'));
+
+        // check the system configuration type
+        $this->assertInstanceOf('AppserverIo\Appserver\Core\Api\Node\AppserverNode', $mockServer->getSystemConfiguration());
     }
 
     /**
@@ -107,14 +121,32 @@ class ServerTest extends AbstractTest
         $configuration->merge($appserverConfiguration);
 
         // initialize the mock logger
-        $mockLogger = $this->getMock('Psr\Log\LoggerInterface', array('log', 'error', 'warning', 'notice', 'emergency', 'debug', 'info', 'alert', 'critical'));
+        $mockLogger = $this->getMockLogger();
 
-        $mockSystemConfiguration = $this->getMock('AppserverIo\Appserver\Core\Api\Node\AppserverNode', array('getBaseDirectory'));
-
-        $methodsToMock = array('initExtractors', 'startContainers', 'initProcessUser', 'initContainers', 'initProvisioners', 'initFileSystem', 'initSslCertificate', 'getSystemLogger', 'getSystemConfiguration');
+        // mock the system configuration
+        $mockSystemConfiguration = $this->getMock(
+            'AppserverIo\Appserver\Core\Api\Node\AppserverNode',
+            array('getBaseDirectory')
+        );
 
         // create a new mock server implementation
-        $server = $this->getMock('AppserverIo\Appserver\Core\Server', $methodsToMock, array($configuration), '', false);
+        $server = $this->getMock(
+            'AppserverIo\Appserver\Core\Server',
+            array(
+                'initExtractors',
+                'startContainers',
+                'initProcessUser',
+                'initContainers',
+                'initProvisioners',
+                'initFileSystem',
+                'initSslCertificate',
+                'getSystemLogger',
+                'getSystemConfiguration'
+            ),
+            array($configuration),
+            '',
+            false
+        );
 
         // mock the servers startContainers() and the initConstructors() method
         $server->expects($this->once())->method('initExtractors');
@@ -140,13 +172,16 @@ class ServerTest extends AbstractTest
      */
     public function testNewInstance()
     {
+
+        // initialize the mock server
+        $mockServer = $this->getMockServer(array('initUmask','initFileSystem', 'initSslCertificate'));
+
+        // create a new container thread instance
         $id = 1;
         $className = 'AppserverIo\Appserver\Core\Mock\MockContainerThread';
-        $instance = $this->server->newInstance(
+        $instance = $mockServer->newInstance(
             $className,
-            array(
-                $this->server->getInitialContext(), \Mutex::create(false), $id
-            )
+            array($mockServer->getInitialContext(), \Mutex::create(false), $id)
         );
         $this->assertInstanceOf($className, $instance);
     }
