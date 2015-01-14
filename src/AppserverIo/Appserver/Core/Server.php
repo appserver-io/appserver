@@ -88,7 +88,6 @@ class Server
 
         // initialize the configuration and the base directory
         $systemConfiguration = new AppserverNode();
-        $systemConfiguration->setParam(DirectoryKeys::BASE, 'string', APPSERVER_BP);
         $systemConfiguration->initFromConfiguration($configuration);
         $this->setSystemConfiguration($systemConfiguration);
 

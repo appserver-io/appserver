@@ -22,6 +22,7 @@
 
 namespace AppserverIo\Appserver\Core;
 
+use AppserverIo\Appserver\Core\Api\Node\ParamNode;
 use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
 
 declare (ticks = 1);
@@ -73,11 +74,25 @@ $schemaFileName = DirectoryKeys::realpath(sprintf('%s/resources/schema/appserver
 $configurationFile = new \DOMDocument();
 $configurationFile->load($configurationFileName);
 
+// create a DOMElement with the base.dir configuration
+$paramElement = $configurationFile->createElement('param', APPSERVER_BP);
+$paramElement->setAttribute('name', DirectoryKeys::BASE);
+$paramElement->setAttribute('type', ParamNode::TYPE_STRING);
+
+// append the base.dir DOMElement
+if ($paramsNode = $configurationFile->getElementsByTagName('params')->item(0)) {
+    $paramsNode->appendChild($paramElement);
+}
+
+// create a new DOMDocument with the merge content => necessary because else, schema validation fails!!
+$mergeDoc = new \DOMDocument();
+$mergeDoc->loadXML($configurationFile->saveXML());
+
 // activate internal error handling, necessary to catch errors with libxml_get_errors()
 libxml_use_internal_errors(true);
 
 // validate the configuration file with the schema
-if ($configurationFile->schemaValidate($schemaFileName) === false) {
+if ($mergeDoc->schemaValidate($schemaFileName) === false) {
     foreach (libxml_get_errors() as $error) {
         $message = "Found a schema validation error on line %s with code %s and message %s when validating configuration file %s";
         error_log(var_export($error, true));
@@ -87,7 +102,7 @@ if ($configurationFile->schemaValidate($schemaFileName) === false) {
 
 // initialize the SimpleXMLElement with the content XML configuration file
 $configuration = new \AppserverIo\Configuration\Configuration();
-$configuration->initFromFile($configurationFileName);
+$configuration->initFromString($mergeDoc->saveXML());
 
 // create the server instance
 $server = new Server($configuration);

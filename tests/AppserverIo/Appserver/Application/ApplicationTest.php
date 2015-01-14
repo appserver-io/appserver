@@ -104,6 +104,27 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
     const TMP_DIR = '/opt/appserver/var/tmp/foo';
 
     /**
+     * The application cache directory for testing purposes.
+     *
+     * @var string
+     */
+    const CACHE_DIR = '/opt/appserver/var/tmp/foo/cache';
+
+    /**
+     * The application directory for testing purposes.
+     *
+     * @var string
+     */
+    const WEBAPP_PATH = '/opt/appserver/webapps/foo';
+
+    /**
+     * The application session directory for testing purposes.
+     *
+     * @var string
+     */
+    const SESSION_DIR = '/opt/appserver/var/tmp/foo/session';
+
+    /**
      * The server name for testing purposes.
      *
      * @var  string
@@ -159,13 +180,17 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
         $this->namingDirectory = new NamingDirectory();
         $this->namingDirectory->setScheme('php');
         $this->envDir = $this->namingDirectory->createSubdirectory('env');
+        $this->appDir = $this->envDir->createSubdirectory('foo');
 
         $this->namingDirectory->bind('php:global/foo', $this->application);
         $this->namingDirectory->bind('php:env/user', ApplicationTest::USER);
         $this->namingDirectory->bind('php:env/group', ApplicationTest::GROUP);
         $this->namingDirectory->bind('php:env/umask', ApplicationTest::UMASK);
         $this->namingDirectory->bind('php:env/tmpDirectory', ApplicationTest::GLOBAL_TMP_DIR);
+        $this->namingDirectory->bind('php:env/foo/webappPath', ApplicationTest::WEBAPP_PATH);
         $this->namingDirectory->bind('php:env/foo/tmpDirectory', ApplicationTest::TMP_DIR);
+        $this->namingDirectory->bind('php:env/foo/cacheDirectory', ApplicationTest::CACHE_DIR);
+        $this->namingDirectory->bind('php:env/foo/sessionDirectory', ApplicationTest::SESSION_DIR);
         $this->namingDirectory->bind('php:env/baseDirectory', ApplicationTest::BASE_DIRECTORY);
         $this->namingDirectory->bind('php:env/appBase', ApplicationTest::APP_BASE);
 
@@ -228,8 +253,7 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetSessionDir()
     {
-        $sessionDir = ApplicationTest::TMP_DIR . DIRECTORY_SEPARATOR . ApplicationInterface::SESSION_DIRECTORY;
-        $this->assertEquals($sessionDir, $this->application->getSessionDir());
+        $this->assertEquals(ApplicationTest::SESSION_DIR, $this->application->getSessionDir());
     }
 
     /**
@@ -239,8 +263,7 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetCacheDir()
     {
-        $cacheDir = ApplicationTest::TMP_DIR . DIRECTORY_SEPARATOR . ApplicationInterface::CACHE_DIRECTORY;
-        $this->assertEquals($cacheDir, $this->application->getCacheDir());
+        $this->assertEquals(ApplicationTest::CACHE_DIR, $this->application->getCacheDir());
     }
 
     /**
@@ -336,12 +359,7 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetWebappPath()
     {
-
-        // prepare the expected webapp path
-        $webappPath = ApplicationTest::APP_BASE . DIRECTORY_SEPARATOR . ApplicationTest::NAME;
-
-        // inject the path components
-        $this->assertEquals($webappPath, $this->application->getWebappPath());
+        $this->assertEquals(ApplicationTest::WEBAPP_PATH, $this->application->getWebappPath());
     }
 
     /**
