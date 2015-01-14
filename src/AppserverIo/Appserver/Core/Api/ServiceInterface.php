@@ -41,7 +41,7 @@ interface ServiceInterface
     public function getInitialContext();
 
     /**
-     * Returns the system configuration.
+     * Allows to set the system configuration.
      *
      * @param \AppserverIo\Configuration\Interfaces\NodeInterface $systemConfiguration The system configuration
      *
@@ -57,7 +57,7 @@ interface ServiceInterface
     public function getSystemConfiguration();
 
     /**
-     * Return's all nodes.
+     * Returns all nodes.
      *
      * @return array An array with all nodes
      */

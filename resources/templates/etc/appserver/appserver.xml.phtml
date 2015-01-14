@@ -19,7 +19,7 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
 
 ?>
 <?php echo '<?xml version="1.0" encoding="UTF-8"?>' . PHP_EOL ?>
-<appserver xmlns="http://www.appserver.io/appserver">
+<appserver xmlns="http://www.appserver.io/appserver"  xmlns:xi="http://www.w3.org/2001/XInclude">
 
     <params>
         <!--
@@ -37,93 +37,10 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
     </params>
 
     <!--
-    <initialContext type="AppserverIo\Appserver\Core\InitialContext">
-        <description><![CDATA[The initial context configuration.]]></description>
-        <classLoader name="SplClassLoader" type="AppserverIo\Appserver\Core\SplClassLoader" />
-        <storage type="AppserverIo\Storage\StackableStorage" />
-    </initialContext>
-
-    <extractors>
-        <extractor name="phar" type="AppserverIo\Appserver\Core\Extractors\PharExtractor" createBackups="false" restoreBackups="false" />
-    </extractors>
-
-    <provisioners>
-        <provisioner name="datasource" type="AppserverIo\Appserver\Core\DatasourceProvisioner" />
-        <provisioner name="standard" type="AppserverIo\Appserver\Core\StandardProvisioner" />
-    </provisioners>
-
-    <loggers>
-        <logger channelName="system" name="System" type="\AppserverIo\Logger\Logger">
-            <handlers>
-                <handler type="\AppserverIo\Logger\Handlers\CustomFileHandler">
-                    <formatter type="\AppserverIo\Logger\Formatters\StandardFormatter"/>
-                    <params>
-                        <param name="logFile" type="string">var/log/appserver-errors.log</param>
-                        <param name="logLevel" type="string">info</param>
-                    </params>
-                </handler>
-            </handlers>
-        </logger>
-        <logger channelName="access" name="Access" type="\AppserverIo\Logger\Logger">
-            <handlers>
-                <handler type="\AppserverIo\Logger\Handlers\CustomFileHandler">
-                    <formatter type="\AppserverIo\Logger\Formatters\StandardFormatter">
-                        <params>
-                            <param name="format" type="string">%4$s</param>
-                        </params>
-                    </formatter>
-                    <params>
-                        <param name="logFile" type="string">var/log/appserver-access.log</param>
-                        <param name="logLevel" type="string">info</param>
-                    </params>
-                </handler>
-            </handlers>
-        </logger>
-        <logger channelName="profile" name="Profile" type="\AppserverIo\Logger\Logger">
-            <processors>
-                <processor type="\AppserverIo\Logger\Processors\MemoryProcessor"/>
-                <processor type="\AppserverIo\Logger\Processors\SysloadProcessor"/>
-                <processor type="\AppserverIo\Logger\Processors\ThreadContextProcessor"/>
-            </processors>
-            <handlers>
-                <handler type="\AppserverIo\Logger\Handlers\LogstashHandler">
-                    <params>
-                        <param name="host" type="string">127.0.0.1</param>
-                        <param name="port" type="integer">9514</param>
-                        <param name="logLevel" type="string">debug</param>
-                    </params>
-                </handler>
-                <handler type="\AppserverIo\Logger\Handlers\CustomFileHandler">
-                    <params>
-                        <param name="logFile" type="string">var/log/appserver-profile.log</param>
-                        <param name="logLevel" type="string">debug</param>
-                    </params>
-                </handler>
-            </handlers>
-        </logger>
-    </loggers>
-
-    <scanners>
-        <scanner name="deployment" type="AppserverIo\Appserver\Core\Scanner\DeploymentScanner">
-            <params>
-                <param name="interval" type="integer">1</param>
-                <param name="extensionsToWatch" type="string">dodeploy, deployed</param>
-            </params>
-            <directories>
-                <directory>deploy</directory>
-            </directories>
-        </scanner>
-        <scanner name="webapps" type="AppserverIo\Appserver\Core\Scanner\RecursiveDirectoryScanner">
-            <params>
-                <param name="interval" type="integer">1</param>
-                <param name="extensionsToWatch" type="string">php</param>
-            </params>
-            <directories>
-                <directory>webapps</directory>
-            </directories>
-        </scanner>
-    </scanners>
-    -->
+     ! You might add optional configuration for implicitly configured components here
+     !
+     ! https://github.com/appserver-io/appserver/wiki/13.-Configuration#optional-configuration
+     -->
 
     <containers>
 

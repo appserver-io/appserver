@@ -41,9 +41,10 @@ $_ENV = appserver_get_envs();
 // define the available options
 $watch = 'w';
 $config = 'c';
+$configTest = 't';
 
 // check if server.php has been started with -w and/or -c option
-$arguments = getopt("$watch::", array("$config::"));
+$arguments = getopt("$watch::$configTest::", array("$config::"));
 
 // define a constant with the appserver base directory
 define('APPSERVER_BP', __DIR__);
@@ -63,7 +64,7 @@ if (array_key_exists($config, $arguments) && file_exists($arguments[$config])) {
     $filename = sprintf('%s/etc/appserver/appserver.xml', APPSERVER_BP);
 } else {
     // throw an exception if we don't have a configuration file
-    throw new \Exception('Can\' find a configuration file');
+    throw new \Exception('Can\'t find a configuration file');
 }
 
 // initialize configuration and schema file name
@@ -73,6 +74,9 @@ $schemaFileName = DirectoryKeys::realpath(sprintf('%s/resources/schema/appserver
 // initialize the DOMDocument with the configuration file to be validated
 $configurationFile = new \DOMDocument();
 $configurationFile->load($configurationFileName);
+
+// substitude xincludes
+$configurationFile->xinclude(LIBXML_SCHEMA_CREATE);
 
 // create a DOMElement with the base.dir configuration
 $paramElement = $configurationFile->createElement('param', APPSERVER_BP);
@@ -93,11 +97,30 @@ libxml_use_internal_errors(true);
 
 // validate the configuration file with the schema
 if ($mergeDoc->schemaValidate($schemaFileName) === false) {
+
     foreach (libxml_get_errors() as $error) {
-        $message = "Found a schema validation error on line %s with code %s and message %s when validating configuration file %s";
-        error_log(var_export($error, true));
-        throw new \Exception(sprintf($message, $error->line, $error->code, $error->message, $error->file));
+        $message = sprintf(
+            "Found a schema validation error on line %s with code %s and message %s when validating configuration file %s, see error dump below: %s",
+            $error->line,
+            $error->code,
+            $error->message,
+            $error->file,
+            var_export($error, true)
+        );
+
+        // if we are here to test we will make a sane output instead of throwing an exception
+        if (array_key_exists($configTest, $arguments)) {
+
+            echo $message;
+            exit;
+        }
+        throw new \Exception($message);
     }
+
+} elseif (array_key_exists($configTest, $arguments)) {
+
+    echo "Syntax OK\n";
+    exit;
 }
 
 // initialize the SimpleXMLElement with the content XML configuration file
@@ -109,7 +132,9 @@ $server = new Server($configuration);
 
 // if -w option has been passed, watch deployment directory only
 if (array_key_exists($watch, $arguments)) {
+
     $server->watch();
+
 } else {
     $server->start();
     $server->profile();
