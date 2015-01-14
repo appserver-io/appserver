@@ -106,13 +106,16 @@ class ServerTest extends AbstractTest
         $appserverConfiguration->addChild($baseDirectoryConfiguration);
         $configuration->merge($appserverConfiguration);
 
+        $methodsToMock = array('initExtractors', 'startContainers', 'initProcessUser', 'initProvisioners');
+
         // create a new mock server implementation
-        $server = $this->getMock('AppserverIo\Appserver\Core\Server', array('startContainers', 'initExtractors', 'initProvisioners'), array($configuration));
+        $server = $this->getMock('AppserverIo\Appserver\Core\Server', $methodsToMock, array($configuration));
 
         // mock the servers startContainers() and the initConstructors() method
         $server->expects($this->once())->method('initExtractors');
-        $server->expects($this->once())->method('initProvisioners');
         $server->expects($this->once())->method('startContainers');
+        $server->expects($this->once())->method('initProcessUser');
+        $server->expects($this->once())->method('initProvisioners');
 
         // start the server instance
         $server->start();
