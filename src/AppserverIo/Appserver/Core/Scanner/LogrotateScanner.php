@@ -40,15 +40,9 @@ class LogrotateScanner extends AbstractScanner
      *
      * @var integer
      */
-    // const MAX_FILE_SIZE = 2147483647;
-    const MAX_FILE_SIZE = 1048576;
-
-    /**
-     * Placeholder for the "date" part of the file format.
-     *
-     * @var string
-     */
-    const DATE_FORMAT_PLACEHOLDER = '{date}';
+    // const MAX_FILE_SIZE = 2147483647; // 2GB
+    // const MAX_FILE_SIZE =    1048576; // 1MB
+    const MAX_FILE_SIZE =        102400; // 100KB
 
     /**
      * Placeholder for the "original filename" part of the file format.
@@ -86,7 +80,8 @@ class LogrotateScanner extends AbstractScanner
     protected $directory;
 
     /**
-     * Number of maximal files to keep. Older files exceeding this limit will be deleted.
+     * Number of maximal files to keep. Older files exceeding this limit
+     * will be deleted.
      *
      * @var integer
      */
@@ -100,16 +95,10 @@ class LogrotateScanner extends AbstractScanner
     protected $maxSize;
 
     /**
-     * Format for the date shown within the rotated filename, e. g. 'Y-m-d'.
+     * UNIX timestamp at which the next rotation has to take
+     * place (if there are no size based rotations before).
      *
-     * @var string
-     */
-    protected $dateFormat;
-
-    /**
-     * Date at which the next rotation has to take place (if there are no size based rotations before)
-     *
-     * @var \DateTime
+     * @var integer
      */
     protected $nextRotationDate;
 
@@ -145,16 +134,15 @@ class LogrotateScanner extends AbstractScanner
 
         // pre-initialize the filename format
         $this->filenameFormat =
-            LogrotateScanner::FILENAME_FORMAT_PLACEHOLDER . '-' .
-            LogrotateScanner::DATE_FORMAT_PLACEHOLDER . '.' .
+            LogrotateScanner::FILENAME_FORMAT_PLACEHOLDER . '.' .
             LogrotateScanner::SIZE_FORMAT_PLACEHOLDER;
-
-        // pre-initialize some default values
-        $this->dateFormat = 'Y-m-d';
-        $this->nextRotationDate = new \DateTime('tomorrow');
 
         // explode the comma separated list of file extensions
         $this->extensionsToWatch = explode(',', str_replace(' ', '', $extensionsToWatch));
+
+        // next rotation date is tomorrow
+        $tomorrow = new \DateTime('tomorrow');
+        $this->nextRotationDate = $tomorrow->getTimestamp();
     }
 
     /**
@@ -215,12 +203,6 @@ class LogrotateScanner extends AbstractScanner
             // log the found directory hash value
             $this->getSystemLogger()->info("Now checking files to be rotated");
 
-            if ($this->nextRotationDate >= new \DateTime()) {
-                $this->nextRotationDate = new \DateTime('tomorrow');
-            }
-
-             $this->getSystemLogger()->debug("Now check files to be rotated!");
-
             foreach (glob($directory . '/*.' . $extensionsToWatch, GLOB_BRACE) as $fileToRotate) {
 
                 $this->getSystemLogger()->info("Now check file $fileToRotate");
@@ -238,38 +220,58 @@ class LogrotateScanner extends AbstractScanner
     }
 
     /**
-     * Will return the name of the file the next rotation will produce
+     * Will return the name of the file the next rotation will produce.
      *
      * @param string $fileToRotate The file to be rotated
      *
      * @return string
      */
-    public function getRotatedFilename($fileToRotate)
+    protected function getRotatedFilename($fileToRotate)
     {
 
+        // load the file information
         $fileInfo = pathinfo($fileToRotate);
 
+        // prepare the name for rotated file
         $currentFilename = str_replace(
-            array(
-                LogrotateScanner::FILENAME_FORMAT_PLACEHOLDER,
-                LogrotateScanner::DATE_FORMAT_PLACEHOLDER,
-                LogrotateScanner::SIZE_FORMAT_PLACEHOLDER
-            ),
-            array(
-                $fileInfo['filename'],
-                date($this->getDateFormat()),
-                $this->getCurrentSizeIteration($fileToRotate)
-            ),
+            array(LogrotateScanner::FILENAME_FORMAT_PLACEHOLDER, LogrotateScanner::SIZE_FORMAT_PLACEHOLDER),
+            array($fileInfo['filename'], $this->getCurrentSizeIteration($fileToRotate)),
             $fileInfo['dirname'] . '/' . $this->getFilenameFormat()
         );
 
-        /*
-        if (!empty($fileInfo['extension'])) {
-            $currentFilename .= '.' . $fileInfo['extension'];
-        }
-        */
-
+        // return the name for the rotated file
         return $currentFilename;
+    }
+
+    /**
+     * Will return a glob pattern with which log files belonging to the currently rotated
+     * file can be found.
+     *
+     * @param string $fileToRotate  The file to be rotated
+     * @param string $fileExtension The file extension
+     *
+     * @return string
+     */
+    protected function getGlobPattern($fileToRotate, $fileExtension = '')
+    {
+
+        // load the file information
+        $fileInfo = pathinfo($fileToRotate);
+
+        // create a glob expression to find all log files
+        $glob = str_replace(
+            array(LogrotateScanner::FILENAME_FORMAT_PLACEHOLDER, LogrotateScanner::SIZE_FORMAT_PLACEHOLDER),
+            array($fileInfo['filename'], '[0-9]'),
+            $fileInfo['dirname'] . '/' . $this->getFilenameFormat()
+        );
+
+        // append the file extension if available
+        if (empty($fileExtension) === false) {
+            $glob .= '.' . $fileExtension;
+        }
+
+        // return the glob expression
+        return $glob;
     }
 
     /**
@@ -282,29 +284,18 @@ class LogrotateScanner extends AbstractScanner
     protected function getCurrentSizeIteration($fileToRotate)
     {
 
-        $globPattern = $this->getGlobPattern($fileToRotate, date($this->dateFormat));
-
-        error_log("Use glob pattern $globPattern to check current size iteration");
-
         // load an iterator the current log files
-        $logFiles = glob($globPattern);
+        $logFiles = glob($this->getGlobPattern($fileToRotate, 'gz'));
 
-        $fileCount = count($logFiles); // count the files
+        // count the files
+        $fileCount = count($logFiles);
+
+        // return the next iteration
         if ($fileCount === 0) {
             return 1;
         } else {
-            return count($logFiles) + 1;
+            return $fileCount + 1;
         }
-    }
-
-    /**
-     * Getter for the date format to store the logfiles under.
-     *
-     * @return string The date format to store the logfiles under
-     */
-    public function getDateFormat()
-    {
-        return $this->dateFormat;
     }
 
     /**
@@ -312,48 +303,9 @@ class LogrotateScanner extends AbstractScanner
      *
      * @return string The file format to store the logfiles under
      */
-    public function getFilenameFormat()
+    protected function getFilenameFormat()
     {
         return $this->filenameFormat;
-    }
-
-    /**
-     * Will return a glob pattern with which log files belonging to the currently rotated file can be found
-     *
-     * @param string           $fileToRotate  The file to be rotated
-     * @param string|\DateTime $dateSpecifier Might specify a specific date to search files for
-     * @param string           $fileExtension The file extension
-     *
-     * @return string
-     */
-    public function getGlobPattern($fileToRotate, $dateSpecifier = '*', $fileExtension = '')
-    {
-
-        // load the file information
-        $fileInfo = pathinfo($fileToRotate);
-
-        // create a glob expression to find all log files
-        $glob = str_replace(
-            array(
-                LogrotateScanner::FILENAME_FORMAT_PLACEHOLDER,
-                LogrotateScanner::DATE_FORMAT_PLACEHOLDER,
-                LogrotateScanner::SIZE_FORMAT_PLACEHOLDER
-            ),
-            array(
-                $fileInfo['filename'],
-                $dateSpecifier,
-                '[0-9]'
-            ),
-            $fileInfo['dirname'] . '/' . $this->filenameFormat
-        );
-
-        // append the file extension if available
-        if (empty($fileExtension) === false) {
-            $glob .= '.' . $fileInfo['extension'];
-        }
-
-        // return the glob expression
-        return $glob;
     }
 
     /**
@@ -363,7 +315,7 @@ class LogrotateScanner extends AbstractScanner
      *
      * @return void
      */
-    public function handle($fileToRotate)
+    protected function handle($fileToRotate)
     {
 
         // do we have to rotate based on the current date or the file's size?
@@ -384,7 +336,13 @@ class LogrotateScanner extends AbstractScanner
      */
     protected function rotate($fileToRotate)
     {
+
+        // rotate the file
         rename($fileToRotate, $this->getRotatedFilename($fileToRotate));
+
+        // next rotation date is tomorrow
+        $tomorrow = new \DateTime('tomorrow');
+        $this->nextRotationDate = $tomorrow->getTimestamp();
     }
 
     /**
@@ -395,7 +353,7 @@ class LogrotateScanner extends AbstractScanner
     protected function compressFiles($fileToRotate)
     {
 
-        // load the uncompressed files and compress them
+        // load the array with uncompressed, but rotated files
         $logFiles = glob($this->getGlobPattern($fileToRotate));
 
         // sorting the files by name to remove the older ones
@@ -406,10 +364,13 @@ class LogrotateScanner extends AbstractScanner
             }
         );
 
-        // collect the files we have to archive and clean and prepare the archive's internal mapping
-        $oldFiles = array();
+        // iterate over the uncompressed, but rotated log files
         foreach ($logFiles as $fileToCompress) {
+
+            // compress the log files
             file_put_contents("compress.zlib://$fileToCompress.gz", file_get_contents($fileToCompress));
+
+            // delete the uncompressed file
             unlink($fileToCompress);
         }
     }
@@ -429,8 +390,11 @@ class LogrotateScanner extends AbstractScanner
             return;
         }
 
-        $logFiles = glob($this->getGlobPattern($fileToRotate));
-        if ($this->maxFiles >= count($logFiles)) { // no files to remove
+        // load the rotated log files
+        $logFiles = glob($this->getGlobPattern($fileToRotate, 'gz'));
+
+        // query whether we've the maximum number of files reached
+        if ($this->maxFiles >= count($logFiles)) {
             return;
         }
 
