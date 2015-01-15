@@ -102,8 +102,10 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
             </handlers>
         </logger>
     </loggers>
+    -->
 
     <scanners>
+        <!--
         <scanner name="deployment" type="AppserverIo\Appserver\Core\Scanner\DeploymentScanner">
             <params>
                 <param name="interval" type="integer">1</param>
@@ -122,8 +124,18 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
                 <directory>webapps</directory>
             </directories>
         </scanner>
+        -->
+        <scanner name="logrotate" type="AppserverIo\Appserver\Core\Scanner\LogrotateScanner">
+            <params>
+                <param name="interval" type="integer">1</param>
+                <param name="extensionsToWatch" type="string">log</param>
+                <param name="maxFiles" type="string">5</param>
+            </params>
+            <directories>
+                <directory>var/log</directory>
+            </directories>
+        </scanner>
     </scanners>
-    -->
 
     <containers>
 
