@@ -20,8 +20,8 @@ use AppserverIo\Appserver\Core\Interfaces\ExtractorInterface;
 use AppserverIo\Appserver\Application\Interfaces\ContextInterface;
 
 /**
- * This is a scanner that watches a flat directory for files that changed
- * and restarts the appserver by using the OS specific start/stop script.
+ * This is a scanner that watches a flat directory for files that has to
+ * be rotated.
  *
  * @category   Server
  * @package    Appserver
@@ -38,11 +38,15 @@ class LogrotateScanner extends AbstractScanner
      * The maximal possible file size (2Gb). Limited as a precaution due to PHP
      * integer type limitation on x86 systems.
      *
+     * Example values are:
+     *
+     * 102400 = 100KB
+     * 1048576 = 1MB
+     * 2147483647 = 2GB
+     *
      * @var integer
      */
-    // const MAX_FILE_SIZE = 2147483647; // 2GB
-    // const MAX_FILE_SIZE =    1048576; // 1MB
-    const MAX_FILE_SIZE =        102400; // 100KB
+    const MAX_FILE_SIZE = 1048576;
 
     /**
      * Placeholder for the "original filename" part of the file format.
@@ -177,6 +181,16 @@ class LogrotateScanner extends AbstractScanner
     }
 
     /**
+     * Getter for the file format to store the logfiles under.
+     *
+     * @return string The file format to store the logfiles under
+     */
+    protected function getFilenameFormat()
+    {
+        return $this->filenameFormat;
+    }
+
+    /**
      * Start's the logrotate scanner that restarts the server
      * when a PHAR should be deployed or undeployed.
      *
@@ -189,58 +203,30 @@ class LogrotateScanner extends AbstractScanner
         // load the interval we want to scan the directory
         $interval = $this->getInterval();
 
-        // load the deployment directory
+        // load the configured directory
         $directory = $this->getDirectory();
 
         // prepare the extensions of the file we want to watch
         $extensionsToWatch = sprintf('{%s}', implode(',', $this->getExtensionsToWatch()));
 
         // log the configured deployment directory
-        $this->getSystemLogger()->info(sprintf('Start watching directory %s, interval %d', $directory, $interval));
+        $this->getSystemLogger()->info(sprintf('Start scanning directory %s for files to be rotated (interval %d)', $directory, $interval));
 
-        while (true) { // watch the deployment directory
+        while (true) { // watch the configured directory
 
-            // log the found directory hash value
-            $this->getSystemLogger()->info("Now checking files to be rotated");
-
+            // iterate over the files to be watched
             foreach (glob($directory . '/*.' . $extensionsToWatch, GLOB_BRACE) as $fileToRotate) {
 
-                $this->getSystemLogger()->info("Now check file $fileToRotate");
-
+                // handle file rotation
                 $this->handle($fileToRotate);
 
-                // compress and cleanup files
-                $this->compressFiles($fileToRotate);
+                // cleanup files
                 $this->cleanupFiles($fileToRotate);
             }
 
-            // if no changes has been found, wait a second
+            // sleep a while
             sleep($interval);
         }
-    }
-
-    /**
-     * Will return the name of the file the next rotation will produce.
-     *
-     * @param string $fileToRotate The file to be rotated
-     *
-     * @return string
-     */
-    protected function getRotatedFilename($fileToRotate)
-    {
-
-        // load the file information
-        $fileInfo = pathinfo($fileToRotate);
-
-        // prepare the name for rotated file
-        $currentFilename = str_replace(
-            array(LogrotateScanner::FILENAME_FORMAT_PLACEHOLDER, LogrotateScanner::SIZE_FORMAT_PLACEHOLDER),
-            array($fileInfo['filename'], $this->getCurrentSizeIteration($fileToRotate)),
-            $fileInfo['dirname'] . '/' . $this->getFilenameFormat()
-        );
-
-        // return the name for the rotated file
-        return $currentFilename;
     }
 
     /**
@@ -275,40 +261,6 @@ class LogrotateScanner extends AbstractScanner
     }
 
     /**
-     * Will return the currently used iteration based on a file's size.
-     *
-     * @param string $fileToRotate The file to be rotated
-     *
-     * @return integer The number of logfiles already exists
-     */
-    protected function getCurrentSizeIteration($fileToRotate)
-    {
-
-        // load an iterator the current log files
-        $logFiles = glob($this->getGlobPattern($fileToRotate, 'gz'));
-
-        // count the files
-        $fileCount = count($logFiles);
-
-        // return the next iteration
-        if ($fileCount === 0) {
-            return 1;
-        } else {
-            return $fileCount + 1;
-        }
-    }
-
-    /**
-     * Getter for the file format to store the logfiles under.
-     *
-     * @return string The file format to store the logfiles under
-     */
-    protected function getFilenameFormat()
-    {
-        return $this->filenameFormat;
-    }
-
-    /**
      * Handles the log message.
      *
      * @param string $fileToRotate The file to be rotated
@@ -337,24 +289,11 @@ class LogrotateScanner extends AbstractScanner
     protected function rotate($fileToRotate)
     {
 
-        // rotate the file
-        rename($fileToRotate, $this->getRotatedFilename($fileToRotate));
+        // clear the filesystem cache
+        clearstatcache();
 
-        // next rotation date is tomorrow
-        $tomorrow = new \DateTime('tomorrow');
-        $this->nextRotationDate = $tomorrow->getTimestamp();
-    }
-
-    /**
-     *
-     * @param unknown $fileToRotate
-     * @return number
-     */
-    protected function compressFiles($fileToRotate)
-    {
-
-        // load the array with uncompressed, but rotated files
-        $logFiles = glob($this->getGlobPattern($fileToRotate));
+        // load the existing log files
+        $logFiles = glob($this->getGlobPattern($fileToRotate, 'gz'));
 
         // sorting the files by name to remove the older ones
         usort(
@@ -364,15 +303,46 @@ class LogrotateScanner extends AbstractScanner
             }
         );
 
-        // iterate over the uncompressed, but rotated log files
-        foreach ($logFiles as $fileToCompress) {
+        // load the information about the found file
+        $dirname = pathinfo($fileToRotate, PATHINFO_DIRNAME);
+        $filename = pathinfo($fileToRotate, PATHINFO_FILENAME);
 
-            // compress the log files
-            file_put_contents("compress.zlib://$fileToCompress.gz", file_get_contents($fileToCompress));
+        // raise the counter of the rotated files
+        foreach ($logFiles as $fileToRename) {
 
-            // delete the uncompressed file
-            unlink($fileToCompress);
+            // load the information about the found file
+            $extension = pathinfo($fileToRename, PATHINFO_EXTENSION);
+            $basename = pathinfo($fileToRename, PATHINFO_BASENAME);
+
+            // prepare the regex to grep the counter with
+            $regex = sprintf('/^%s\.([0-9]{1,})\.%s/', $filename, $extension);
+
+            // check the counter
+            if (preg_match($regex, $basename, $counter)) {
+
+                // load and raise the counter by one
+                $raised = ((integer) end($counter)) + 1;
+
+                // prepare the new filename
+                $newFilename = sprintf('%s/%s.%d.%s', $dirname, $filename, $raised, $extension);
+
+                // rename the file
+                rename($fileToRename, $newFilename);
+            }
         }
+
+        // rotate the file
+        rename($fileToRotate, $newFilename = sprintf('%s/%s.0', $dirname, $filename));
+
+        // compress the log file
+        file_put_contents("compress.zlib://$newFilename.gz", file_get_contents($newFilename));
+
+        // delete the old file
+        unlink($newFilename);
+
+        // next rotation date is tomorrow
+        $tomorrow = new \DateTime('tomorrow');
+        $this->nextRotationDate = $tomorrow->getTimestamp();
     }
 
     /**
@@ -398,15 +368,7 @@ class LogrotateScanner extends AbstractScanner
             return;
         }
 
-        // sorting the files by name to remove the older ones
-        usort(
-            $logFiles,
-            function ($a, $b) {
-                return strcmp($b, $a);
-            }
-        );
-
-        // collect the files we have to archive and clean and prepare the archive's internal mapping
+        // iterate over the files we want to clean-up
         foreach (array_slice($logFiles, $this->maxFiles) as $fileToDelete) {
             unlink($fileToDelete);
         }
