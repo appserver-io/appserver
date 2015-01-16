@@ -166,6 +166,8 @@ abstract class AbstractManager extends GenericStackable implements ManagerInterf
     protected function registerEpbReference(EpbReferenceDescriptorInterface $epbReference)
     {
 
+        $application = null;
+        $name = '';
         try {
 
             // load the application instance
@@ -186,7 +188,7 @@ abstract class AbstractManager extends GenericStackable implements ManagerInterf
         } catch (NamingException $e) { // catch the NamingException if the ref name is not bound yet
 
             // log a message that we've to register the EPB reference now
-            $application->getInitialContext()->getSystemLogger()->debug(
+            $application->getInitialContext()->getSystemLogger()->critical(
                 sprintf('Can\'t find php:global/%s/%s in naming directory', $application->getName(), $name)
             );
         }
@@ -246,7 +248,8 @@ abstract class AbstractManager extends GenericStackable implements ManagerInterf
      */
     protected function registerResReference(ResReferenceDescriptorInterface $resReference)
     {
-
+        $application = null;
+        $name = '';
         try {
 
             // load the application instance
@@ -267,13 +270,13 @@ abstract class AbstractManager extends GenericStackable implements ManagerInterf
         } catch (NamingException $e) { // catch the NamingException if the ref name is not bound yet
 
             // log a message that we've to register the resource reference now
-            $application->getInitialContext()->getSystemLogger()->debug($e->__toString());
+            $application->getInitialContext()->getSystemLogger()->critical($e->__toString());
         }
 
         // the reflection class for the passed type
         $reflectionClass = new ReflectionClass($resReference->getType());
 
-        // bind a refererence to the resource shortname
+        // bind a reference to the resource shortname
         $application->bindReference($name, $reflectionClass->getShortName());
     }
 

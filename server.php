@@ -22,6 +22,7 @@
 
 namespace AppserverIo\Appserver\Core;
 
+use AppserverIo\Appserver\Core\Api\ConfigurationTester;
 use AppserverIo\Appserver\Core\Api\Node\ParamNode;
 use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
 
@@ -69,7 +70,6 @@ if (array_key_exists($config, $arguments) && file_exists($arguments[$config])) {
 
 // initialize configuration and schema file name
 $configurationFileName = DirectoryKeys::realpath($filename);
-$schemaFileName = DirectoryKeys::realpath(sprintf('%s/resources/schema/appserver.xsd', APPSERVER_BP));
 
 // initialize the DOMDocument with the configuration file to be validated
 $configurationFile = new \DOMDocument();
@@ -92,21 +92,13 @@ if ($paramsNode = $configurationFile->getElementsByTagName('params')->item(0)) {
 $mergeDoc = new \DOMDocument();
 $mergeDoc->loadXML($configurationFile->saveXML());
 
-// activate internal error handling, necessary to catch errors with libxml_get_errors()
-libxml_use_internal_errors(true);
+// get an instance of our configuration tester
+$configurationTester = new ConfigurationTester();
 
 // validate the configuration file with the schema
-if ($mergeDoc->schemaValidate($schemaFileName) === false) {
+if ($configurationTester->validateXml($mergeDoc) === false) {
 
-    foreach (libxml_get_errors() as $error) {
-        $message = sprintf(
-            "Found a schema validation error on line %s with code %s and message %s when validating configuration file %s, see error dump below: %s",
-            $error->line,
-            $error->code,
-            $error->message,
-            $error->file,
-            var_export($error, true)
-        );
+    foreach ($configurationTester->getErrorMessages() as $message) {
 
         // if we are here to test we will make a sane output instead of throwing an exception
         if (array_key_exists($configTest, $arguments)) {

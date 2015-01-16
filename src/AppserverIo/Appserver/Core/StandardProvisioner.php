@@ -16,6 +16,7 @@
 
 namespace AppserverIo\Appserver\Core;
 
+use AppserverIo\Appserver\Core\Api\ConfigurationTester;
 use AppserverIo\Appserver\Core\Api\Node\ProvisionNode;
 
 /**
@@ -33,14 +34,14 @@ class StandardProvisioner extends AbstractProvisioner
 {
 
     /**
-     * Path the to appservers PHP executable on UNIX systems.
+     * Path the to appserver's PHP executable on UNIX systems.
      *
      * @var string
      */
     const PHP_EXECUTABLE_UNIX = '/bin/php';
 
     /**
-     * Path the to appservers PHP executable on Windows systems.
+     * Path the to appserver's PHP executable on Windows systems.
      *
      * @var string
      */
@@ -60,8 +61,19 @@ class StandardProvisioner extends AbstractProvisioner
             // load the service instance
             $service = $this->getService();
 
-            // Iterate through all provisioning files (provision.xml) and attach them to the configuration
+            // Iterate through all provisioning files (provision.xml), validate them and attach them to the configuration
+            $configurationTester = new ConfigurationTester();
             foreach ($service->globDir($webappsPath . '/*/{WEB-INF,META-INF}/provision.xml', GLOB_BRACE) as $provisionFile) {
+
+                // validate the file, but skip it if validation fails
+                if (!$configurationTester->validateFile($provisionFile, null)) {
+
+                    $errorMessages = $configurationTester->getErrorMessages();
+                    $systemLogger = $this->getInitialContext()->getSystemLogger();
+                    $systemLogger->error(reset($errorMessages));
+                    $systemLogger->critical(sprintf('Will skip reading provisioning steps in %s, provisioning might not have been done.', $provisionFile));
+                    continue;
+                }
 
                 // load the path of web application
                 $webappPath = new \SplFileInfo(dirname(dirname($provisionFile)));
@@ -80,10 +92,10 @@ class StandardProvisioner extends AbstractProvisioner
                     $provisionNode->injectDatasource($datasourceNode);
                 }
 
-                /* Reprovision the provision.xml (reinitialize).
+                /* Re-provision the provision.xml (reinitialize).
                  *
-                 * ATTENTION: The reprovisioning is extremely important, because
-                 * this allows dynamic replacment of placeholders by using the
+                 * ATTENTION: The re-provisioning is extremely important, because
+                 * this allows dynamic replacement of placeholders by using the
                  * XML file as a template that will reinterpreted with the PHP
                  * interpreter!
                  */

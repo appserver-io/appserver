@@ -125,23 +125,50 @@ class DeploymentService extends AbstractService
         // initialize the array for the context instances
         $contextInstances = array();
 
+        // we will need to test our configuration files
+        $configurationTester = new ConfigurationTester();
+        $baseContextPath = $this->getConfdDir('context.xml');
+
+        // validate the base context file and load it as default if validation succeeds
+        $baseContext = new ContextNode();
+        if (!$configurationTester->validateFile($baseContextPath, null)) {
+
+            $errorMessages = $configurationTester->getErrorMessages();
+            $systemLogger = $this->getInitialContext()->getSystemLogger();
+            $systemLogger->error(reset($errorMessages));
+            $systemLogger->critical(sprintf('Problems validating base context file %s, this might affect app configurations badly.', $baseContextPath));
+
+        } else {
+
+            $baseContext->initFromFile($baseContextPath);
+        }
+
         // iterate over all applications and create the context configuration
         foreach (glob($container->getAppBase() . '/*', GLOB_ONLYDIR) as $webappPath) {
 
             // prepare the context path
             $contextPath = '/' . basename($webappPath);
 
-            // load the default context configuration
-            $context = new ContextNode();
-            $context->initFromFile($this->getConfdDir('context.xml'));
+            // start with a fresh clone of the base context configuration
+            $context = clone $baseContext;
 
             // try to load a context configuration (from appserver.xml) for the context path
             if ($contextToMerge = $container->getContainerNode()->getHost()->getContext($contextPath)) {
                 $context->merge($contextToMerge);
             }
 
-            // iterate through all context configurations (context.xml) and merge them
+            // iterate through all context configurations (context.xml), validate and merge them
             foreach ($this->globDir($webappPath . '/META-INF/context.xml') as $contextFile) {
+
+                // validate the file, but skip it if validation fails
+                if (!$configurationTester->validateFile($contextFile, null)) {
+
+                    $errorMessages = $configurationTester->getErrorMessages();
+                    $systemLogger = $this->getInitialContext()->getSystemLogger();
+                    $systemLogger->error(reset($errorMessages));
+                    $systemLogger->alert(sprintf('Will skip app specific context file %s, configuration might be faulty.', $contextFile));
+                    continue;
+                }
 
                 // create a new context node instance
                 $contextInstance = new ContextNode();

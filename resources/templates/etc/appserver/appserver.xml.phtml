@@ -9,6 +9,8 @@
  * @package    Appserver
  * @subpackage Meta
  * @author     Tim Wagner <tw@appserver.io>
+ * @author     Bernhard Wick <bw@appserver.io>
+ * @author     Johann Zelger <jz@appserver.io>
  * @copyright  2014 TechDivision GmbH <info@appserver.io>
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       http://www.appserver.io
@@ -249,11 +251,8 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
                         </access>
                     </accesses>
 
-                    <!--
-                     ! Some examples to configuration your virtual host can be found at:
-                     !
-                     ! https://github.com/techdivision/TechDivision_AppserverDocumentation/blob/master/docs/components/servers/webserver/modules/vhostmodule.md
-                     -->
+                    <!-- include of virtual host configurations -->
+                    <xi:include href="conf.d/virtual-hosts.xml"/>
 
                     <modules>
                         <!-- REQUEST_POST hook -->
@@ -354,11 +353,8 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
                         </access>
                     </accesses>
 
-                    <!--
-                     ! Some examples to configuration your virtual host can be found at:
-                     !
-                     ! https://github.com/techdivision/TechDivision_AppserverDocumentation/blob/master/docs/components/servers/webserver/modules/vhostmodule.md
-                     -->
+                    <!-- include of virtual host configurations -->
+                    <xi:include href="conf.d/virtual-hosts.xml"/>
 
                     <modules>
                         <!-- REQUEST_POST hook -->

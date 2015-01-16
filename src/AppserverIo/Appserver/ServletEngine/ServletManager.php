@@ -22,6 +22,7 @@
 
 namespace AppserverIo\Appserver\ServletEngine;
 
+use AppserverIo\Appserver\Core\Api\InvalidConfigurationException;
 use AppserverIo\Psr\Servlet\Servlet;
 use AppserverIo\Psr\Servlet\ServletContext;
 use AppserverIo\Psr\Servlet\Annotations\Route;
@@ -156,6 +157,8 @@ class ServletManager extends AbstractManager implements ServletContext
      * @param \AppserverIo\Psr\Application\ApplicationInterface $application The application instance
      *
      * @return void
+     *
+     * @throws \AppserverIo\Appserver\ServletEngine\InvalidServletMappingException
      */
     protected function registerServlets(ApplicationInterface $application)
     {
@@ -195,16 +198,24 @@ class ServletManager extends AbstractManager implements ServletContext
         // it's no valid application without at least the web.xml file
         if (file_exists($deploymentDescriptor = $folder . DIRECTORY_SEPARATOR . 'WEB-INF' . DIRECTORY_SEPARATOR . 'web.xml')) {
 
-            // parse the deployment descriptor for registered servlets
-            $deploymentDescriptorParser = new DeploymentDescriptorParser();
-            $deploymentDescriptorParser->injectApplication($application);
-            $deploymentDescriptorParser->parse($deploymentDescriptor, '/web-app/servlet');
+            try {
+                // parse the deployment descriptor for registered servlets
+                $deploymentDescriptorParser = new DeploymentDescriptorParser();
+                $deploymentDescriptorParser->injectApplication($application);
+                $deploymentDescriptorParser->parse($deploymentDescriptor, '/a:web-app/a:servlet');
+
+            } catch (InvalidConfigurationException $e) {
+
+                $application->getInitialContext()->getSystemLogger()->critical($e->getMessage());
+                return;
+            }
 
             // load the application config
             $config = new \SimpleXMLElement(file_get_contents($deploymentDescriptor));
+            $config->registerXPathNamespace('a', 'http://www.appserver.io/appserver');
 
             // initialize the servlets by parsing the servlet-mapping nodes
-            foreach ($config->xpath('/web-app/servlet-mapping') as $mapping) {
+            foreach ($config->xpath('/a:web-app/a:servlet-mapping') as $mapping) {
 
                 // load the url pattern and the servlet name
                 $urlPattern = (string) $mapping->{'url-pattern'};
@@ -234,11 +245,8 @@ class ServletManager extends AbstractManager implements ServletContext
                 );
             }
 
-            // load the application config
-            $config = new \SimpleXMLElement(file_get_contents($deploymentDescriptor));
-
-            // intialize the security configuration by parseing the security nodes
-            foreach ($config->xpath('/web-app/security') as $key => $securityParam) {
+            // initialize the security configuration by parseing the security nodes
+            foreach ($config->xpath('/a:web-app/a:security') as $key => $securityParam) {
                 // prepare the URL config in JSON format
                 $securedUrlConfig = json_decode(json_encode($securityParam), 1);
                 // add the web app path to the security config (to resolve relative filenames)
@@ -248,12 +256,12 @@ class ServletManager extends AbstractManager implements ServletContext
             }
 
             // initialize the context by parsing the context-param nodes
-            foreach ($config->xpath('/web-app/context-param') as $contextParam) {
+            foreach ($config->xpath('/a:web-app/a:context-param') as $contextParam) {
                 $this->addInitParameter((string) $contextParam->{'param-name'}, (string) $contextParam->{'param-value'});
             }
 
-            // initialize the session configuration by parsing the session-config childs
-            foreach ($config->xpath('/web-app/session-config') as $sessionConfig) {
+            // initialize the session configuration by parsing the session-config children
+            foreach ($config->xpath('/a:web-app/a:session-config') as $sessionConfig) {
                 foreach ($sessionConfig as $key => $value) {
                     $this->addSessionParameter(str_replace(' ', '', ucwords(str_replace('-', ' ', (string) $key))), (string) $value);
                 }
@@ -285,7 +293,7 @@ class ServletManager extends AbstractManager implements ServletContext
             // create a new reflection class instance
             $reflectionClass = new ReflectionClass($descriptor->getClassName());
 
-            // instanciate the servlet
+            // instantiate the servlet
             $instance = $reflectionClass->newInstance();
 
             // load servlet name

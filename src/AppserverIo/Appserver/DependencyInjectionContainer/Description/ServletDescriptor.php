@@ -464,6 +464,7 @@ class ServletDescriptor implements ServletDescriptorInterface
      */
     public function fromDeploymentDescriptor(\SimpleXmlElement $node)
     {
+        $node->registerXPathNamespace('a', 'http://www.appserver.io/appserver');
 
         // query if we've a <servlet> descriptor node
         if ($node->getName() !== 'servlet') { // if not, do nothing
@@ -496,12 +497,12 @@ class ServletDescriptor implements ServletDescriptorInterface
         }
 
         // initialize the EPB references
-        foreach ($node->xpath('epb-ref') as $epbReference) {
+        foreach ($node->xpath('a:epb-ref') as $epbReference) {
             $this->addEpbReference(EpbReferenceDescriptor::newDescriptorInstance()->fromDeploymentDescriptor($epbReference));
         }
 
         // initialize the resource references
-        foreach ($node->xpath('res-ref') as $resReference) {
+        foreach ($node->xpath('a:res-ref') as $resReference) {
             $this->addResReference(ResReferenceDescriptor::newDescriptorInstance()->fromDeploymentDescriptor($resReference));
         }
 
