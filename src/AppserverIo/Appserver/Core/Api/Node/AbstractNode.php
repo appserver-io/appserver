@@ -28,7 +28,7 @@ use AppserverIo\Lang\Integer;
 use AppserverIo\Lang\Float;
 
 /**
- * DTO to transfer aliases.
+ * Abstract node class
  *
  * @category   Server
  * @package    Appserver

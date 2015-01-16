@@ -69,7 +69,8 @@ ULIMIT_MAX_FILES=""
 LAUNCHCTL="/bin/launchctl"
 JOB_LABEL="io.appserver.appserver"
 LAUNCHD_JOB="<?php echo Setup::getValue(SetupKeys::INSTALL_DIR) ?>/sbin/plist/$JOB_LABEL.plist"
-
+DAEMON="<?php echo Setup::getValue(SetupKeys::INSTALL_DIR) ?>/bin/php"
+DAEMON_OPTS="-dappserver.php_sapi=appserver -dappserver.remove_functions=getenv,putenv <?php echo Setup::getValue(SetupKeys::INSTALL_DIR) ?>/server.php"
 
 run_launchctl() {
     if [ $UID != 0 ]; then
@@ -85,7 +86,7 @@ if [ "x$ULIMIT_MAX_FILES" != "x" ] ; then
 fi
 
 display_help() {
-    echo "usage $0 [start|restart|graceful|stop|status|graceful-stop]
+    echo "usage $0 [start|restart|graceful|stop|status|graceful-stop|configtest]
     (see code for more info)"
 }
 
@@ -107,6 +108,10 @@ status)
 restart|graceful)
     run_launchctl unload -w $LAUNCHD_JOB 2> /dev/null
     run_launchctl load -w $LAUNCHD_JOB
+    ERROR=$?
+    ;;
+configtest)
+    echo `$DAEMON $DAEMON_OPTS -t`
     ERROR=$?
     ;;
 help|-h|--help|*)

@@ -22,7 +22,7 @@ use AppserverIo\Appserver\Core\Interfaces\ExtractorInterface;
 use AppserverIo\Appserver\Core\Extractors\PharExtractor;
 
 /**
- * This services provides access to the deplyed applications and allows
+ * This services provides access to the deployed applications and allows
  * to deploy new applications or remove a deployed one.
  *
  * @category   Server
