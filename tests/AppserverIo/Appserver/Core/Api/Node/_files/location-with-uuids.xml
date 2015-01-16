@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<location uuid="a47ac10b-58cc-4372-a567-0e02b2c3d479" condition="^test\/.*\.php">
+    <fileHandlers>
+        <fileHandler uuid="b47ac10b-4372- 58cc-a567-0e02b2c3d479" name="hhvm" extension=".php">
+            <params>
+                <param uuid="c47ac10b-4372- 58cc-a567-0e02b2c3d479" name="host" type="string">127.0.0.1</param>
+                <param uuid="d47ac10b-4372- 58cc-a567-0e02b2c3d479" name="port" type="integer">9000</param>
+            </params>
+        </fileHandler>
+    </fileHandlers>
+</location>

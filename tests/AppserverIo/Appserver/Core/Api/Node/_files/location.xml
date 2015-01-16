@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<location condition="^test\/.*\.php">
+    <fileHandlers>
+        <fileHandler name="hhvm" extension=".php">
+            <params>
+                <param name="host" type="string">127.0.0.1</param>
+                <param name="port" type="integer">9000</param>
+            </params>
+        </fileHandler>
+    </fileHandlers>
+</location>
