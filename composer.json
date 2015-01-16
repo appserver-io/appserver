@@ -1,76 +1,77 @@
 {
-	"name" : "appserver-io/appserver",
-	"description" : "Thread based PHP application server",
-	"homepage" : "https://github.com/appserver-io/appserver",
-	"license" : "OSL-3.0",
-	"require" : {
-		"php" : ">=5.4.0",
-		"rhumsaa/uuid" : "~2.4",
-		"doctrine/orm" : "2.4.*",
-		"react/socket" : "0.4.*",
-		"cboden/ratchet" : "0.3.*",
-		"react/event-loop" : "0.4.*",
-        "nikic/phlexy": "0.1",
-		"appserver-io/microcron" : "0.1.*",
-		"appserver-io-psr/epb" : "0.2.*",
-		"appserver-io-psr/servlet" : "0.7.*",
-		"appserver-io-psr/application" : "0.4.*",
-		"appserver-io-psr/messagequeueprotocol" : "0.2.*",
-		"appserver-io/doppelgaenger" : "0.4.*",
-		"appserver-io/http" : "0.2.*",
-		"appserver-io/server" : "0.2.*",
-		"appserver-io/storage" : "0.5.*",
-		"appserver-io/webserver" : "0.3.*",
-		"appserver-io/properties" : "0.1.*",
-		"appserver-io/configuration" : "0.1.*",
-		"appserver-io/messagequeueclient" : "0.6.*",
-		"appserver-io/persistencecontainerclient" : "0.7.*"
-	},
-	"require-dev" : {
-		"phpunit/phpunit" : "3.7.*",
-		"appserver-io/build" : "0.1.*"
-	},
-	"autoload" : {
-		"psr-0" : {
-			"AppserverIo\\Appserver" : [
-				"src/",
-				"tests/"
-			]
-		}
-	},
-	"config" : {
-		"github-oauth" : {
-			"github.com" : "604a3b5943228e434a5b52c2ba3cf72286d30db9"
-		}
-	},
-	"authors" : [{
-			"name" : "Tim Wagner",
-			"email" : "tw@appserver.io",
-			"homepage" : "https://github.com/wagnert",
-			"role" : "Developer"
-		}, {
-			"name" : "Johann Zelger",
-			"email" : "jz@appserver.io",
-			"homepage" : "https://github.com/zelgerj",
-			"role" : "Developer"
-		}, {
-			"name" : "Bernhard Wick",
-			"email" : "bw@appserver.io",
-			"homepage" : "https://github.com/wick-ed",
-			"role" : "Developer"
-		}
-	],
-	"support" : {
-		"email" : "tw@appserver.io",
-		"issues" : "https://github.com/appserver-io/appserver/issues",
-		"source" : "https://github.com/appserver-io/appserver"
-	},
-	"keywords" : [
-		"php application server"
-	],
-	"scripts" : {
-		"post-install-cmd" : [
-			"AppserverIo\\Appserver\\Meta\\Composer\\Script\\Setup::postInstall"
-		]
-	}
+    "name" : "appserver-io/appserver",
+    "description" : "Thread based PHP application server",
+    "homepage" : "https://github.com/appserver-io/appserver",
+    "license" : "OSL-3.0",
+    "require" : {
+        "php" : ">=5.4.0",
+        "rhumsaa/uuid" : "~2.4",
+        "doctrine/orm" : "2.4.*",
+        "react/socket" : "0.4.*",
+        "cboden/ratchet" : "0.3.*",
+        "react/event-loop" : "0.4.*",
+        "nikic/phlexy" : "0.1",
+        "appserver-io/microcron" : "0.1.*",
+        "appserver-io-psr/epb" : "0.2.*",
+        "appserver-io-psr/servlet" : "0.7.*",
+        "appserver-io-psr/application" : "0.4.*",
+        "appserver-io-psr/messagequeueprotocol" : "0.2.*",
+        "appserver-io/doppelgaenger" : "0.4.*",
+        "appserver-io/http" : "0.2.*",
+        "appserver-io/server" : "0.2.*",
+        "appserver-io/logger" : "0.1.*",
+        "appserver-io/storage" : "0.5.*",
+        "appserver-io/webserver" : "0.3.*",
+        "appserver-io/properties" : "0.1.*",
+        "appserver-io/configuration" : "0.1.*",
+        "appserver-io/messagequeueclient" : "0.6.*",
+        "appserver-io/persistencecontainerclient" : "0.7.*"
+    },
+    "require-dev" : {
+        "phpunit/phpunit" : "3.7.*",
+        "appserver-io/build" : "0.1.*"
+    },
+    "autoload" : {
+        "psr-0" : {
+            "AppserverIo\\Appserver" : [
+                "src/",
+                "tests/"
+            ]
+        }
+    },
+    "config" : {
+        "github-oauth" : {
+            "github.com" : "604a3b5943228e434a5b52c2ba3cf72286d30db9"
+        }
+    },
+    "authors" : [{
+            "name" : "Tim Wagner",
+            "email" : "tw@appserver.io",
+            "homepage" : "https://github.com/wagnert",
+            "role" : "Developer"
+        }, {
+            "name" : "Johann Zelger",
+            "email" : "jz@appserver.io",
+            "homepage" : "https://github.com/zelgerj",
+            "role" : "Developer"
+        }, {
+            "name" : "Bernhard Wick",
+            "email" : "bw@appserver.io",
+            "homepage" : "https://github.com/wick-ed",
+            "role" : "Developer"
+        }
+    ],
+    "support" : {
+        "email" : "tw@appserver.io",
+        "issues" : "https://github.com/appserver-io/appserver/issues",
+        "source" : "https://github.com/appserver-io/appserver"
+    },
+    "keywords" : [
+        "php application server"
+    ],
+    "scripts" : {
+        "post-install-cmd" : [
+            "AppserverIo\\Appserver\\Meta\\Composer\\Script\\Setup::postInstall"
+        ]
+    }
 }
