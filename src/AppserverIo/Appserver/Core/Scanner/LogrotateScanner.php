@@ -78,7 +78,7 @@ class LogrotateScanner extends AbstractScanner
     /**
      * The directory we want to watch.
      *
-     * @var array
+     * @var string
      */
     protected $directory;
 
