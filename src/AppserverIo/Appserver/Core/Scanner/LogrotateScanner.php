@@ -114,15 +114,15 @@ class LogrotateScanner extends AbstractScanner
      * @param integer                                                        $interval          The interval in seconds we want scan the directory
      * @param string                                                         $extensionsToWatch The comma separeted list with extensions of files we want to watch
      * @param integer                                                        $maxFiles          The maximal amount of files to keep (0 means unlimited)
-     * @param integer|null                                                   $maxSize           The maximal size of a log file in byte (limited to a technical max of 2GB)
+     * @param integer                                                        $maxSize           The maximal size of a log file in byte (limited to a technical max of 2GB)
      */
     public function __construct(
         ContextInterface $initialContext,
         $directory,
         $interval = 1,
         $extensionsToWatch = '',
-        $maxFiles = 0,
-        $maxSize = null
+        $maxFiles = 10,
+        $maxSize = LogrotateScanner::MAX_FILE_SIZE
     ) {
 
         // call parent constructor
@@ -132,11 +132,6 @@ class LogrotateScanner extends AbstractScanner
         $this->interval = $interval;
         $this->directory = $directory;
         $this->maxFiles = (integer) $maxFiles;
-
-        // also set the maximal size, but make sure we do not exceed the boundary
-        if ($maxSize > LogrotateScanner::MAX_FILE_SIZE || is_null($maxSize)) {
-            $maxSize = LogrotateScanner::MAX_FILE_SIZE;
-        }
 
         // set the maximum size of log files
         $this->maxSize = (int) $maxSize;

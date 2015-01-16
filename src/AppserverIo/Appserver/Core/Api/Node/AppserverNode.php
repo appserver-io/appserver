@@ -161,7 +161,7 @@ class AppserverNode extends AbstractNode
         // initialize the params for the deployment scanner
         $scannerParams = array();
         $intervalParam = new ParamNode('interval', 'integer', new NodeValue(1));
-        $extensionsToWatchParam = new ParamNode('extendsToWatch', 'string', new NodeValue('dodeploy, deployed'));
+        $extensionsToWatchParam = new ParamNode('extensionsToWatch', 'string', new NodeValue('dodeploy, deployed'));
         $scannerParams[$intervalParam->getPrimaryKey()] = $intervalParam;
         $scannerParams[$extensionsToWatchParam->getPrimaryKey()] = $extensionsToWatchParam;
 
@@ -173,6 +173,22 @@ class AppserverNode extends AbstractNode
 
         // add scanner to the appserver node
         $this->scanners[$deploymentScanner->getPrimaryKey()] = $deploymentScanner;
+
+        // initialize the params for the logrotate scanner
+        $scannerParams = array();
+        $intervalParam = new ParamNode('interval', 'integer', new NodeValue(1));
+        $extensionsToWatchParam = new ParamNode('extensionsToWatch', 'string', new NodeValue('log'));
+        $scannerParams[$intervalParam->getPrimaryKey()] = $intervalParam;
+        $scannerParams[$extensionsToWatchParam->getPrimaryKey()] = $extensionsToWatchParam;
+
+        // initialize the directories to scan
+        $directories = array(new DirectoryNode(new NodeValue('var/log')));
+
+        // initialize the logrotate scanner
+        $logrotateScanner = new ScannerNode('logrotate', 'AppserverIo\Appserver\Core\Scanner\LogrotateScanner', $scannerParams, $directories);
+
+        // add scanner to the appserver node
+        $this->scanners[$logrotateScanner->getPrimaryKey()] = $logrotateScanner;
     }
 
     /**

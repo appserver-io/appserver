@@ -1,18 +1,25 @@
 # Version 1.0.0-beta4
 
 # Bugfixes
+
+* Closed #290 - Segfault in Windows build
 * Closed #336 - Positioning of namespace definition next to php tag
 * Closed #348 - Changed determination of omitted namespaces
 
 # Features
 
 * Closed #282 - Implement logrotate functionality as Server
+* Closed #192 - Refactor configuration
 * Closed #350 - Creating EPB references by annotations + XML configuration
 * Closed #284 - Refactor Application implementation/interface
 * Closed #289 - Refactoring bean/servlet/manager registration in naming directory
 * Closed #285 - Refactor servlet engine virtual host management #285
 * Closed #291 - Configuration (XML configuration) based bean declaration
 * Closed #300 - Timer Service doesn't support seconds as period
+* Closed #281 - Refactoring InitialContext in NamingDirectory
+* Changed nikic/phlexy version from unstable `dev-master` to stable release `0.1`
+* Extended configuration validation and provided the new `configtest` CLI command
+* `appserver.xml` configuration can now be splitted into several files using the `xinclude` XML feature
 * Add --c start argument to change default configuration file
 * Add scanner for changed files in webapps directory
 * Remove some SPL Iteratators
