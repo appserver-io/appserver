@@ -264,6 +264,7 @@ abstract class SessionBeanDescriptor extends BeanDescriptor implements SessionBe
      */
     public function fromDeploymentDescriptor(\SimpleXmlElement $node)
     {
+        $node->registerXPathNamespace('a', 'http://www.appserver.io/appserver');
 
         // initialize the bean descriptor
         parent::fromDeploymentDescriptor($node);
@@ -288,12 +289,12 @@ abstract class SessionBeanDescriptor extends BeanDescriptor implements SessionBe
         }
 
         // initialize the post construct callback methods
-        foreach ($node->xpath('post-construct/lifecycle-callback-method') as $postConstructCallback) {
+        foreach ($node->xpath('a:post-construct/a:lifecycle-callback-method') as $postConstructCallback) {
             $this->addPostConstructCallback((string) $postConstructCallback);
         }
 
         // initialize the pre destroy callback methods
-        foreach ($node->xpath('pre-destroy/lifecycle-callback-method') as $preDestroyCallback) {
+        foreach ($node->xpath('a:pre-destroy/a:lifecycle-callback-method') as $preDestroyCallback) {
             $this->addPreDestroyCallback((string) $preDestroyCallback);
         }
     }

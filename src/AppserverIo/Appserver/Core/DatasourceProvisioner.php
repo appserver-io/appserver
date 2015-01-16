@@ -51,7 +51,7 @@ class DatasourceProvisioner extends AbstractProvisioner
             foreach ($datasourceFiles as $datasourceFile) {
 
                 // validate the file, but skip it if validation fails
-                if(!$configurationTester->validateFile($datasourceFile)) {
+                if (!$configurationTester->validateFile($datasourceFile)) {
 
                     $errorMessages = $configurationTester->getErrorMessages();
                     $systemLogger = $this->getInitialContext()->getSystemLogger();

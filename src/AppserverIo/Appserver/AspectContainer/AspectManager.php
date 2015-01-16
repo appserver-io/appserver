@@ -308,6 +308,7 @@ class AspectManager implements AspectManagerInterface, ManagerInterface
 
             // load the aop config
             $config = new \SimpleXMLElement(file_get_contents($xmlPath));
+            $config->registerXPathNamespace('a', 'http://www.appserver.io/appserver');
 
             // create us an aspect
             // name of the aspect will be the application name
@@ -315,7 +316,7 @@ class AspectManager implements AspectManagerInterface, ManagerInterface
             $aspect->setName($application->getName());
 
             // check if we got some pointcuts
-            foreach ($config->xpath('/pointcuts/pointcut') as $key => $pointcutConfiguration) {
+            foreach ($config->xpath('/a:pointcuts/a:pointcut') as $key => $pointcutConfiguration) {
 
                 // build up the pointcut and add it to the collection
                 $pointcut = new Pointcut();
@@ -327,7 +328,7 @@ class AspectManager implements AspectManagerInterface, ManagerInterface
             }
 
             // check if we got some advices
-            foreach ($config->xpath('/pointcuts/advice') as $key => $adviceConfiguration) {
+            foreach ($config->xpath('/a:pointcuts/a:advice') as $key => $adviceConfiguration) {
 
                 // build up the advice and add it to the aspect
                 $advice = new Advice();

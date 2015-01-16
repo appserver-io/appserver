@@ -24,6 +24,8 @@
 
 namespace AppserverIo\Appserver\MessageQueue;
 
+use AppserverIo\Appserver\Core\Api\ConfigurationTester;
+use AppserverIo\Appserver\Core\Api\InvalidConfigurationException;
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Psr\Naming\NamingException;
 use AppserverIo\Psr\MessageQueueProtocol\Queue;
@@ -44,14 +46,19 @@ use AppserverIo\Psr\Application\ApplicationInterface;
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       https://github.com/appserver-io/appserver
  * @link       http://www.appserver.io
+ *
+ * @property \AppserverIo\Psr\Application\ApplicationInterface   $application     The application to manage queues for
+ * @property array                                               $directories     Our directories
+ * @property \AppserverIo\Appserver\MessageQueue\ResourceLocator $resourceLocator Locator for the requested queues
+ * @property \AppserverIo\Storage\GenericStackable               $queues          Queues to manage
+ *
+ * @todo inherit from AbstractManager
  */
 class QueueManager extends GenericStackable implements QueueContext, ManagerInterface
 {
 
     /**
      * Initializes the queue manager.
-     *
-     * @return void
      */
     public function __construct()
     {
@@ -153,10 +160,25 @@ class QueueManager extends GenericStackable implements QueueContext, ManagerInte
 
                 // try to initialize a SimpleXMLElement
                 $sxe = new \SimpleXMLElement($file, null, true);
+                $sxe->registerXPathNamespace('a', 'http://www.appserver.io/appserver');
 
                 // lookup the MessageQueue's defined in the passed XML node
-                if (($nodes = $sxe->xpath('/message-queues/message-queue')) === false) {
+                if (($nodes = $sxe->xpath('/a:message-queues/a:message-queue')) === false) {
                     continue;
+                }
+
+                // validate the file here, if it is not valid we can skip further steps
+                try {
+
+                    $configurationTester = new ConfigurationTester();
+                    $configurationTester->validateFile($file, null, true);
+
+                } catch (InvalidConfigurationException $e) {
+
+                    $systemLogger = $this->getApplication()->getInitialContext()->getSystemLogger();
+                    $systemLogger->error($e->getMessage());
+                    $systemLogger->critical(sprintf('Message queue configuration file %s is invalid, needed queues might be missing.', $file));
+                    return;
                 }
 
                 // iterate over all found queues and initialize them
@@ -195,7 +217,7 @@ class QueueManager extends GenericStackable implements QueueContext, ManagerInte
                 // log an error message
                 $application->getInitialContext()->getSystemLogger()->error($e->__toString());
 
-                // proceed with the nexet bean
+                // proceed with the next queue
                 continue;
             }
         }
@@ -320,7 +342,7 @@ class QueueManager extends GenericStackable implements QueueContext, ManagerInte
     /**
      * Initializes the manager instance.
      *
-     * @return void
+     * @return string
      * @see \AppserverIo\Psr\Application\ManagerInterface::initialize()
      */
     public function getIdentifier()

@@ -44,6 +44,8 @@ use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       https://github.com/appserver-io/appserver
  * @link       http://www.appserver.io
+ *
+ * @todo inherit from AbstractManager
  */
 class HandlerManager extends GenericStackable implements HandlerContext
 {
@@ -163,7 +165,7 @@ class HandlerManager extends GenericStackable implements HandlerContext
 
             } catch (InvalidConfigurationException $e) {
 
-                $systemLogger = $this->get ->getInitialContext()->getSystemLogger();
+                $systemLogger = $this->getApplication()->getInitialContext()->getSystemLogger();
                 $systemLogger->error($e->getMessage());
                 $systemLogger->critical(sprintf('Pointcuts configuration file %s is invalid, AOP functionality might not work as expected.', $web));
                 return;
@@ -171,14 +173,15 @@ class HandlerManager extends GenericStackable implements HandlerContext
 
             // load the application config
             $config = new \SimpleXMLElement(file_get_contents($web));
+            $config->registerXPathNamespace('a', 'http://www.appserver.io/appserver');
 
             // initialize the context by parsing the context-param nodes
-            foreach ($config->xpath('/web-app/context-param') as $contextParam) {
+            foreach ($config->xpath('/a:web-app/a:context-param') as $contextParam) {
                 $this->addInitParameter((string) $contextParam->{'param-name'}, (string) $contextParam->{'param-value'});
             }
 
             // initialize the handlers by parsing the handler-mapping nodes
-            foreach ($config->xpath('/web-app/handler') as $handler) {
+            foreach ($config->xpath('/a:web-app/a:handler') as $handler) {
 
                 // load the handler name and check if it already has been initialized
                 $handlerName = (string) $handler->{'handler-name'};
@@ -214,7 +217,7 @@ class HandlerManager extends GenericStackable implements HandlerContext
             }
 
             // initialize the handlers by parsing the handler-mapping nodes
-            foreach ($config->xpath('/web-app/handler-mapping') as $mapping) {
+            foreach ($config->xpath('/a:web-app/a:handler-mapping') as $mapping) {
 
                 // load the url pattern and the handler name
                 $urlPattern = (string) $mapping->{'url-pattern'};

@@ -131,7 +131,7 @@ class DeploymentService extends AbstractService
 
         // validate the base context file and load it as default if validation succeeds
         $baseContext = new ContextNode();
-        if(!$configurationTester->validateFile($baseContextPath, null)) {
+        if (!$configurationTester->validateFile($baseContextPath, null)) {
 
             $errorMessages = $configurationTester->getErrorMessages();
             $systemLogger = $this->getInitialContext()->getSystemLogger();
@@ -161,7 +161,7 @@ class DeploymentService extends AbstractService
             foreach ($this->globDir($webappPath . '/META-INF/context.xml') as $contextFile) {
 
                 // validate the file, but skip it if validation fails
-                if(!$configurationTester->validateFile($contextFile, null)) {
+                if (!$configurationTester->validateFile($contextFile, null)) {
 
                     $errorMessages = $configurationTester->getErrorMessages();
                     $systemLogger = $this->getInitialContext()->getSystemLogger();

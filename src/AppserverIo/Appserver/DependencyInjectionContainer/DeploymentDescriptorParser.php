@@ -90,6 +90,7 @@ class DeploymentDescriptorParser
 
         // load the application config
         $config = new \SimpleXMLElement(file_get_contents($deploymentDescriptor));
+        $config->registerXPathNamespace('a', 'http://www.appserver.io/appserver');
 
         // initialize the session beans by parsing the nodes
         foreach ($config->xpath($xpath) as $node) {

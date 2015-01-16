@@ -155,9 +155,9 @@ class ConfigurationTester
      * Will return true if validation passes, false otherwise.
      * A specific schema file to use might be passed as well, if none is given the tester tries to choose the right one
      *
-     * @param string       $fileName     Name of the file to validate
-     * @param string|null  $schemaFile   The specific schema file to validate against (optional)
-     * @param boolean      $failOnErrors If the validation should fail on error (optional)
+     * @param string      $fileName     Name of the file to validate
+     * @param string|null $schemaFile   The specific schema file to validate against (optional)
+     * @param boolean     $failOnErrors If the validation should fail on error (optional)
      *
      * @return boolean
      *

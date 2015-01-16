@@ -66,7 +66,7 @@ class StandardProvisioner extends AbstractProvisioner
             foreach ($service->globDir($webappsPath . '/*/{WEB-INF,META-INF}/provision.xml', GLOB_BRACE) as $provisionFile) {
 
                 // validate the file, but skip it if validation fails
-                if(!$configurationTester->validateFile($provisionFile, null)) {
+                if (!$configurationTester->validateFile($provisionFile, null)) {
 
                     $errorMessages = $configurationTester->getErrorMessages();
                     $systemLogger = $this->getInitialContext()->getSystemLogger();

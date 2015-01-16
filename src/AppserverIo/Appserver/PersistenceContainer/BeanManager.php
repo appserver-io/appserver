@@ -190,8 +190,8 @@ class BeanManager extends AbstractManager implements BeanContext
                 // parse the deployment descriptor for registered beans
                 $deploymentDescriptorParser = new DeploymentDescriptorParser();
                 $deploymentDescriptorParser->injectApplication($application);
-                $deploymentDescriptorParser->parse($deploymentDescriptor, '/epb/enterprise-beans/session');
-                $deploymentDescriptorParser->parse($deploymentDescriptor, '/epb/enterprise-beans/message-driven');
+                $deploymentDescriptorParser->parse($deploymentDescriptor, '/a:epb/a:enterprise-beans/a:session');
+                $deploymentDescriptorParser->parse($deploymentDescriptor, '/a:epb/a:enterprise-beans/a:message-driven');
 
             } catch (InvalidConfigurationException $e) {
 
