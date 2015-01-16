@@ -16,6 +16,7 @@
 * Closed #291 - Configuration (XML configuration) based bean declaration
 * Closed #300 - Timer Service doesn't support seconds as period
 * Closed #281 - Refactoring InitialContext in NamingDirectory
+* Closed #182 -  HTTP digest authentication within webserver
 * Changed nikic/phlexy version from unstable `dev-master` to stable release `0.1`
 * Extended configuration validation and provided the new `configtest` CLI command
 * `appserver.xml` configuration can now be splitted into several files using the `xinclude` XML feature
@@ -27,6 +28,7 @@
 * Integration of appserver-io/microcron to allow for second based timer task execution
 * Refactored servlet engines to provide app path information without the use of virtual hosts + cleanup in applications
 * Improved performance by dynamic switching to simplified class loading
+* Refactored and extended the webserver's authentication capabilities
 
 # Version 1.0.0-beta3
 
