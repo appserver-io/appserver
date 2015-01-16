@@ -17,7 +17,9 @@
 * Closed #291 - Configuration (XML configuration) based bean declaration
 * Closed #300 - Timer Service doesn't support seconds as period
 * Closed #281 - Refactoring InitialContext in NamingDirectory
-* Closed #182 -  HTTP digest authentication within webserver
+* Closed #182 - HTTP digest authentication within webserver
+* Closed #367 - Add XSD validation for additional XML configuration files
+* Introduced XSD validation for app based configuration files
 * Changed nikic/phlexy version from unstable `dev-master` to stable release `0.1`
 * Extended configuration validation and provided the new `configtest` CLI command
 * `appserver.xml` configuration can now be splitted into several files using the `xinclude` XML feature
