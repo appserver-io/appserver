@@ -6,6 +6,7 @@
 
 # Features
 
+* Closed #282 - Implement logrotate functionality as Server
 * Closed #350 - Creating EPB references by annotations + XML configuration
 * Closed #284 - Refactor Application implementation/interface
 * Closed #289 - Refactoring bean/servlet/manager registration in naming directory

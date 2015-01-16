@@ -129,7 +129,8 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
             <params>
                 <param name="interval" type="integer">1</param>
                 <param name="extensionsToWatch" type="string">log</param>
-                <param name="maxFiles" type="string">10</param>
+                <param name="maxFiles" type="integer">10</param>
+                <param name="maxSize" type="integer">1048576</param>
             </params>
             <directories>
                 <directory>var/log</directory>

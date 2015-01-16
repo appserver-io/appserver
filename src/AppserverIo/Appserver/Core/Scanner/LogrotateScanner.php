@@ -16,7 +16,6 @@
 
 namespace AppserverIo\Appserver\Core\Scanner;
 
-use AppserverIo\Appserver\Core\Interfaces\ExtractorInterface;
 use AppserverIo\Appserver\Application\Interfaces\ContextInterface;
 
 /**
@@ -92,7 +91,7 @@ class LogrotateScanner extends AbstractScanner
     protected $maxFiles;
 
     /**
-     * Maximal size a log file might have after rotation gets triggered.
+     * Maximal size in byte a file might have after rotation gets triggered.
      *
      * @var integer
      */
@@ -117,8 +116,14 @@ class LogrotateScanner extends AbstractScanner
      * @param integer                                                        $maxFiles          The maximal amount of files to keep (0 means unlimited)
      * @param integer|null                                                   $maxSize           The maximal size of a log file in byte (limited to a technical max of 2GB)
      */
-    public function __construct($initialContext, $directory, $interval = 1, $extensionsToWatch = '', $maxFiles = 0, $maxSize = null)
-    {
+    public function __construct(
+        ContextInterface $initialContext,
+        $directory,
+        $interval = 1,
+        $extensionsToWatch = '',
+        $maxFiles = 0,
+        $maxSize = null
+    ) {
 
         // call parent constructor
         parent::__construct($initialContext);
@@ -154,7 +159,7 @@ class LogrotateScanner extends AbstractScanner
      *
      * @return integer The interval in seconds
      */
-    public function getInterval()
+    protected function getInterval()
     {
         return $this->interval;
     }
@@ -191,8 +196,52 @@ class LogrotateScanner extends AbstractScanner
     }
 
     /**
-     * Start's the logrotate scanner that restarts the server
-     * when a PHAR should be deployed or undeployed.
+     * Getter for the maximal size in bytes a log file might have after rotation
+     * gets triggered.
+     *
+     * @return integer The maximal file size in bytes
+     */
+    protected function getMaxSize()
+    {
+        return $this->maxSize;
+    }
+
+    /**
+     * Getter for the number of maximal files to keep. Older files exceeding this limit
+     * will be deleted.
+     *
+     * @return integer The maximal number of files to keep
+     */
+    protected function getMaxFiles()
+    {
+        return $this->maxFiles;
+    }
+
+    /**
+     * Setter for UNIX timestamp at which the next rotation has to take.
+     *
+     * @param integer $nextRotationDate The next rotation date as UNIX timestamp
+     *
+     * @return void
+     */
+    protected function setNextRotationDate($nextRotationDate)
+    {
+        $this->nextRotationDate = $nextRotationDate;
+    }
+
+    /**
+     * Getter for UNIX timestamp at which the next rotation has to take.
+     *
+     * @return string The next rotation date as UNIX timestamp
+     */
+    protected function getNextRotationDate()
+    {
+        return $this->nextRotationDate;
+    }
+
+    /**
+     * Start the logrotate scanner that queries whether the configured
+     * log files has to be rotated or not.
      *
      * @return void
      * @see \AppserverIo\Appserver\Core\AbstractThread::main()
@@ -210,18 +259,25 @@ class LogrotateScanner extends AbstractScanner
         $extensionsToWatch = sprintf('{%s}', implode(',', $this->getExtensionsToWatch()));
 
         // log the configured deployment directory
-        $this->getSystemLogger()->info(sprintf('Start scanning directory %s for files to be rotated (interval %d)', $directory, $interval));
+        $this->getSystemLogger()->info(
+            sprintf('Start scanning directory %s for files to be rotated (interval %d)', $directory, $interval)
+        );
 
         while (true) { // watch the configured directory
 
             // iterate over the files to be watched
             foreach (glob($directory . '/*.' . $extensionsToWatch, GLOB_BRACE) as $fileToRotate) {
 
+                // log that we're rotate the file
+                $this->getSystemLogger()->debug(
+                    sprintf('Query wheter it is necessary to rotate %s', $fileToRotate)
+                );
+
                 // handle file rotation
                 $this->handle($fileToRotate);
 
                 // cleanup files
-                $this->cleanupFiles($fileToRotate);
+                $this->cleanup($fileToRotate);
             }
 
             // sleep a while
@@ -242,13 +298,14 @@ class LogrotateScanner extends AbstractScanner
     {
 
         // load the file information
-        $fileInfo = pathinfo($fileToRotate);
+        $dirname = pathinfo($fileToRotate, PATHINFO_DIRNAME);
+        $filename = pathinfo($fileToRotate, PATHINFO_FILENAME);
 
         // create a glob expression to find all log files
         $glob = str_replace(
             array(LogrotateScanner::FILENAME_FORMAT_PLACEHOLDER, LogrotateScanner::SIZE_FORMAT_PLACEHOLDER),
-            array($fileInfo['filename'], '[0-9]'),
-            $fileInfo['dirname'] . '/' . $this->getFilenameFormat()
+            array($filename, '[0-9]'),
+            $dirname . '/' . $this->getFilenameFormat()
         );
 
         // append the file extension if available
@@ -270,10 +327,13 @@ class LogrotateScanner extends AbstractScanner
     protected function handle($fileToRotate)
     {
 
+        // next rotation date is tomorrow
+        $today = new \DateTime();
+
         // do we have to rotate based on the current date or the file's size?
-        if ($this->nextRotationDate < new \DateTime()) {
+        if ($this->getNextRotationDate() < $today->getTimestamp()) {
             $this->rotate($fileToRotate);
-        } elseif (file_exists($fileToRotate) && filesize($fileToRotate) >= $this->maxSize) {
+        } elseif (file_exists($fileToRotate) && filesize($fileToRotate) >= $this->getMaxSize()) {
             $this->rotate($fileToRotate);
         }
     }
@@ -291,6 +351,17 @@ class LogrotateScanner extends AbstractScanner
 
         // clear the filesystem cache
         clearstatcache();
+
+        // query whether the file is NOT available anymore or we dont have access to it
+        if (file_exists($fileToRotate) === false ||
+            is_writable($fileToRotate) === false) {
+            return;
+        }
+
+        // query whether the file has any content, because we don't want to rotate empty files
+        if (filesize($fileToRotate) === 0) {
+            return;
+        }
 
         // load the existing log files
         $logFiles = glob($this->getGlobPattern($fileToRotate, 'gz'));
@@ -342,7 +413,7 @@ class LogrotateScanner extends AbstractScanner
 
         // next rotation date is tomorrow
         $tomorrow = new \DateTime('tomorrow');
-        $this->nextRotationDate = $tomorrow->getTimestamp();
+        $this->setNextRotationDate($tomorrow->getTimestamp());
     }
 
     /**
@@ -352,11 +423,14 @@ class LogrotateScanner extends AbstractScanner
      *
      * @return void
      */
-    protected function cleanupFiles($fileToRotate)
+    protected function cleanup($fileToRotate)
     {
 
+        // load the maximum number of files to keep
+        $maxFiles = $this->getMaxFiles();
+
         // skip GC of old logs if files are unlimited
-        if (0 === $this->maxFiles) {
+        if (0 === $maxFiles) {
             return;
         }
 
@@ -364,12 +438,12 @@ class LogrotateScanner extends AbstractScanner
         $logFiles = glob($this->getGlobPattern($fileToRotate, 'gz'));
 
         // query whether we've the maximum number of files reached
-        if ($this->maxFiles >= count($logFiles)) {
+        if ($maxFiles >= count($logFiles)) {
             return;
         }
 
         // iterate over the files we want to clean-up
-        foreach (array_slice($logFiles, $this->maxFiles) as $fileToDelete) {
+        foreach (array_slice($logFiles, $maxFiles) as $fileToDelete) {
             unlink($fileToDelete);
         }
     }
