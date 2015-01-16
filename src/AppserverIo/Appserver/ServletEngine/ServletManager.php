@@ -22,6 +22,7 @@
 
 namespace AppserverIo\Appserver\ServletEngine;
 
+use AppserverIo\Appserver\Core\Api\InvalidConfigurationException;
 use AppserverIo\Psr\Servlet\Servlet;
 use AppserverIo\Psr\Servlet\ServletContext;
 use AppserverIo\Psr\Servlet\Annotations\Route;
@@ -156,6 +157,8 @@ class ServletManager extends AbstractManager implements ServletContext
      * @param \AppserverIo\Psr\Application\ApplicationInterface $application The application instance
      *
      * @return void
+     *
+     * @throws \AppserverIo\Appserver\ServletEngine\InvalidServletMappingException
      */
     protected function registerServlets(ApplicationInterface $application)
     {
@@ -195,10 +198,16 @@ class ServletManager extends AbstractManager implements ServletContext
         // it's no valid application without at least the web.xml file
         if (file_exists($deploymentDescriptor = $folder . DIRECTORY_SEPARATOR . 'WEB-INF' . DIRECTORY_SEPARATOR . 'web.xml')) {
 
-            // parse the deployment descriptor for registered servlets
-            $deploymentDescriptorParser = new DeploymentDescriptorParser();
-            $deploymentDescriptorParser->injectApplication($application);
-            $deploymentDescriptorParser->parse($deploymentDescriptor, '/web-app/servlet');
+            try {
+                // parse the deployment descriptor for registered servlets
+                $deploymentDescriptorParser = new DeploymentDescriptorParser();
+                $deploymentDescriptorParser->injectApplication($application);
+                $deploymentDescriptorParser->parse($deploymentDescriptor, '/web-app/servlet');
+
+            } catch (InvalidConfigurationException $e) {
+
+                $application->getInitialContext()->getSystemLogger()->critical($e->getMessage());
+            }
 
             // load the application config
             $config = new \SimpleXMLElement(file_get_contents($deploymentDescriptor));

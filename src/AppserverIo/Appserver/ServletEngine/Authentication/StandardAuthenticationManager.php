@@ -70,7 +70,7 @@ class StandardAuthenticationManager implements AuthenticationManager
             if (fnmatch($urlPattern, $servletRequest->getServletPath() . $servletRequest->getPathInfo())) {
 
                 // load security configuration
-                $configuredAuthType = $securedUrlConfig['auth']['auth_type'];
+                $configuredAuthType = $securedUrlConfig['auth']['auth-type'];
 
                 // check the authentication type
                 switch ($configuredAuthType) {

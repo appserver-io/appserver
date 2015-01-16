@@ -23,6 +23,7 @@
 
 namespace AppserverIo\Appserver\DependencyInjectionContainer;
 
+use AppserverIo\Appserver\Core\Api\ConfigurationTester;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Lang\Reflection\ReflectionClass;
 
@@ -80,13 +81,17 @@ class DeploymentDescriptorParser
             return;
         }
 
+        // validate the passed configuration file
+        $configurationTester = new ConfigurationTester();
+        $configurationTester->validateFile($deploymentDescriptor, null, true);
+
         // load the object manager instance
         $objectManager = $this->getApplication()->search('ObjectManagerInterface');
 
         // load the application config
         $config = new \SimpleXMLElement(file_get_contents($deploymentDescriptor));
 
-        // intialize the session beans by parsing the nodes
+        // initialize the session beans by parsing the nodes
         foreach ($config->xpath($xpath) as $node) {
 
             // iterate over all configured descriptors and try to load object description

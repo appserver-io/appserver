@@ -21,6 +21,8 @@
 namespace AppserverIo\Appserver\AspectContainer;
 
 use AppserverIo\Appserver\AspectContainer\Interfaces\AspectManagerInterface;
+use AppserverIo\Appserver\Core\Api\ConfigurationTester;
+use AppserverIo\Appserver\Core\Api\InvalidConfigurationException;
 use AppserverIo\Doppelgaenger\AspectRegister;
 use AppserverIo\Doppelgaenger\Config;
 use AppserverIo\Doppelgaenger\Entities\Definitions\Advice;
@@ -290,6 +292,20 @@ class AspectManager implements AspectManagerInterface, ManagerInterface
         $xmlPath = $this->getWebappPath() . DIRECTORY_SEPARATOR . 'META-INF' . DIRECTORY_SEPARATOR . self::CONFIG_FILE;
         if (is_readable($xmlPath)) {
 
+            // validate the file here, if it is not valid we can skip further steps
+            try {
+
+                $configurationTester = new ConfigurationTester();
+                $configurationTester->validateFile($xmlPath, null, true);
+
+            } catch (InvalidConfigurationException $e) {
+
+                $systemLogger = $application->getInitialContext()->getSystemLogger();
+                $systemLogger->error($e->getMessage());
+                $systemLogger->critical(sprintf('Pointcuts configuration file %s is invalid, AOP functionality might not work as expected.', $xmlPath));
+                return;
+            }
+
             // load the aop config
             $config = new \SimpleXMLElement(file_get_contents($xmlPath));
 
@@ -322,9 +338,9 @@ class AspectManager implements AspectManagerInterface, ManagerInterface
                 // there might be several pointcuts
                 // we have to look them up within the pointcuts we got here and the ones we already have in our register
                 $pointcutFactory = new PointcutFactory();
-                foreach ($adviceConfiguration->{'pointcuts'} as $pointcutConfiguration) {
+                foreach ($adviceConfiguration->{'advice-pointcuts'} as $pointcutConfiguration) {
 
-                    $pointcutName = (string) $pointcutConfiguration->{'pointcut'};
+                    $pointcutName = (string) $pointcutConfiguration->{'pointcut-name'};
                     $pointcutPointcut = $pointcutFactory->getInstance(PointcutPointcut::TYPE . '(' . $pointcutName . ')');
 
                     // check if we just parsed the referenced pointcut

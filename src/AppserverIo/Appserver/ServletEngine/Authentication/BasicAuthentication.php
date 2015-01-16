@@ -49,7 +49,7 @@ class BasicAuthentication extends AbstractAuthentication
         $res = $this->getServletResponse();
 
         $realm = $config['auth']['realm'];
-        $adapterType = $config['auth']['adapter_type'];
+        $adapterType = $config['auth']['adapter-type'];
 
         // if client provided authentication data
         if ($authorizationData = $req->getHeader(HttpProtocol::HEADER_AUTHORIZATION)) {

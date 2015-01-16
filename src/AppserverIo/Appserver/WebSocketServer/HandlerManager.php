@@ -23,6 +23,7 @@
 
 namespace AppserverIo\Appserver\WebSocketServer;
 
+use AppserverIo\Appserver\Core\Api\ConfigurationTester;
 use Ratchet\MessageComponentInterface;
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Storage\StackableStorage;
@@ -30,6 +31,7 @@ use AppserverIo\Appserver\WebSocketProtocol\Request;
 use AppserverIo\Appserver\WebSocketProtocol\Handler;
 use AppserverIo\Appserver\WebSocketProtocol\HandlerContext;
 use AppserverIo\Psr\Application\ApplicationInterface;
+use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 
 /**
  * The handler manager handles the handlers registered for the application.
@@ -48,8 +50,6 @@ class HandlerManager extends GenericStackable implements HandlerContext
 
     /**
      * Initializes the handler manager.
-     *
-     * @return void
      */
     public function __construct()
     {
@@ -152,6 +152,20 @@ class HandlerManager extends GenericStackable implements HandlerContext
 
             // it's no valid application without at least the web.xml file
             if (!file_exists($web = $folder . DIRECTORY_SEPARATOR . 'WEB-INF' . DIRECTORY_SEPARATOR . 'handler.xml')) {
+                return;
+            }
+
+            // validate the file here, if it is not valid we can skip further steps
+            try {
+
+                $configurationTester = new ConfigurationTester();
+                $configurationTester->validateFile($web, null, true);
+
+            } catch (InvalidConfigurationException $e) {
+
+                $systemLogger = $this->get ->getInitialContext()->getSystemLogger();
+                $systemLogger->error($e->getMessage());
+                $systemLogger->critical(sprintf('Pointcuts configuration file %s is invalid, AOP functionality might not work as expected.', $web));
                 return;
             }
 
