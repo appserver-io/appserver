@@ -8,6 +8,7 @@
 
 # Features
 
+* Closed #282 - Implement logrotate functionality as Server
 * Closed #192 - Refactor configuration
 * Closed #350 - Creating EPB references by annotations + XML configuration
 * Closed #284 - Refactor Application implementation/interface
