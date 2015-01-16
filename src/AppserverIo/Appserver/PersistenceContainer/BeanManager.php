@@ -40,6 +40,7 @@ use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\StatefulSessio
 use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\StatelessSessionBeanDescriptorInterface;
 use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\MessageDrivenBeanDescriptorInterface;
 use AppserverIo\Appserver\DependencyInjectionContainer\Description\EpbReferenceDescriptor;
+use AppserverIo\Appserver\Core\Api\InvalidConfigurationException;
 
 /**
  * The bean manager handles the message and session beans registered for the application.
@@ -185,11 +186,17 @@ class BeanManager extends AbstractManager implements BeanContext
         // it's no valid application without at least the epb.xml file
         if (file_exists($deploymentDescriptor = $folder . DIRECTORY_SEPARATOR . 'META-INF' . DIRECTORY_SEPARATOR . 'epb.xml')) {
 
-            // parse the deployment descriptor for registered beans
-            $deploymentDescriptorParser = new DeploymentDescriptorParser();
-            $deploymentDescriptorParser->injectApplication($application);
-            $deploymentDescriptorParser->parse($deploymentDescriptor, '/epb/enterprise-beans/session');
-            $deploymentDescriptorParser->parse($deploymentDescriptor, '/epb/enterprise-beans/message-driven');
+            try {
+                // parse the deployment descriptor for registered beans
+                $deploymentDescriptorParser = new DeploymentDescriptorParser();
+                $deploymentDescriptorParser->injectApplication($application);
+                $deploymentDescriptorParser->parse($deploymentDescriptor, '/a:epb/a:enterprise-beans/a:session');
+                $deploymentDescriptorParser->parse($deploymentDescriptor, '/a:epb/a:enterprise-beans/a:message-driven');
+
+            } catch (InvalidConfigurationException $e) {
+
+                $application->getInitialContext()->getSystemLogger()->critical($e->getMessage());
+            }
         }
 
         // load the object manager

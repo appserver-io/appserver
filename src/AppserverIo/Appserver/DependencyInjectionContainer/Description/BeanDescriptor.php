@@ -28,6 +28,7 @@ use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\EpbReferenceDe
 use AppserverIo\Psr\EnterpriseBeans\Annotations\EnterpriseBean;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Resource;
 use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\ResReferenceDescriptorInterface;
+use AppserverIo\Psr\EnterpriseBeans\EnterpriseBeansException;
 
 /**
  * Abstract class for all bean descriptors.
@@ -269,6 +270,7 @@ abstract class BeanDescriptor implements BeanDescriptorInterface
      */
     public function fromDeploymentDescriptor(\SimpleXmlElement $node)
     {
+        $node->registerXPathNamespace('a', 'http://www.appserver.io/appserver');
 
         // query for the class name and set it
         if ($className = (string) $node->{'epb-class'}) {
@@ -281,12 +283,12 @@ abstract class BeanDescriptor implements BeanDescriptorInterface
         }
 
         // initialize the enterprise bean references
-        foreach ($node->xpath('epb-ref') as $epbReference) {
+        foreach ($node->xpath('a:epb-ref') as $epbReference) {
             $this->addEpbReference(EpbReferenceDescriptor::newDescriptorInstance()->fromDeploymentDescriptor($epbReference));
         }
 
         // initialize the resource references
-        foreach ($node->xpath('res-ref') as $resReference) {
+        foreach ($node->xpath('a:res-ref') as $resReference) {
             $this->addResReference(ResReferenceDescriptor::newDescriptorInstance()->fromDeploymentDescriptor($resReference));
         }
     }

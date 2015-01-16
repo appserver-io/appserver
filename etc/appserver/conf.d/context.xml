@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<context type="AppserverIo\Appserver\Application\Application">
+<context name="globalBaseContext" type="AppserverIo\Appserver\Application\Application" xmlns="http://www.appserver.io/appserver">
 
     <!--
     <params>

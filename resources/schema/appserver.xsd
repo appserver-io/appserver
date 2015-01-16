@@ -5,6 +5,132 @@
            elementFormDefault="unqualified"
            attributeFormDefault="unqualified">
     <xs:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="http://www.w3.org/2001/03/xml.xsd"/>
+
+    <xs:complexType name="simpleElement">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="uuid" type="xs:string"/>
+                <xs:attribute ref="xml:base"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:element name="access">
+        <xs:complexType>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element ref="appserver:params"/>
+            </xs:choice>
+            <xs:attribute name="type" type="xs:string" use="required"/>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="accesses">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="appserver:access"/>
+            </xs:choice>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="adapter-type">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="advice-aspect">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="advice-name">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="advice-pointcuts">
+        <xs:complexType>
+            <xs:all>
+                <xs:element ref="appserver:pointcut-name"/>
+            </xs:all>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="advice-type">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="advice">
+        <xs:complexType>
+            <xs:all>
+                <xs:element ref="appserver:advice-aspect"/>
+                <xs:element ref="appserver:advice-name"/>
+                <xs:element ref="appserver:advice-type"/>
+                <xs:element ref="appserver:advice-pointcuts"/>
+            </xs:all>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="analytic">
+        <xs:complexType>
+            <xs:choice minOccurs="1" maxOccurs="1">
+                <xs:element ref="appserver:connectors"/>
+            </xs:choice>
+            <xs:attribute name="uri" type="xs:string" use="required"/>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="analytics">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="appserver:analytic"/>
+            </xs:choice>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="app">
+        <xs:complexType>
+            <xs:attribute name="name" type="xs:string" use="required"/>
+            <xs:attribute name="webappPath" type="xs:string" use="required"/>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="apps">
+        <xs:complexType>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element ref="appserver:app"/>
+            </xs:choice>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
     <xs:element name="appserver">
         <xs:complexType>
             <xs:all>
@@ -21,6 +147,47 @@
             <xs:attribute ref="xml:base"/>
         </xs:complexType>
     </xs:element>
+    <xs:element name="auth-type">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="auth">
+        <xs:complexType>
+            <xs:all>
+                <xs:element ref="appserver:adapter-type"/>
+                <xs:element ref="appserver:auth-type"/>
+                <xs:element ref="appserver:options" minOccurs="0"/>
+                <xs:element ref="appserver:realm" minOccurs="0"/>
+            </xs:all>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="authentication">
+        <xs:complexType>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element ref="appserver:params"/>
+            </xs:choice>
+            <xs:attribute name="uri" type="xs:string" use="required"/>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="authentications">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="appserver:authentication"/>
+            </xs:choice>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
     <xs:element name="baseDirectory">
         <xs:complexType>
             <xs:simpleContent>
@@ -31,26 +198,19 @@
             </xs:simpleContent>
         </xs:complexType>
     </xs:element>
-    <xs:element name="initialContext">
+    <xs:element name="classLoader">
         <xs:complexType>
-            <xs:choice maxOccurs="1">
-                <xs:element ref="appserver:description" minOccurs="0"/>
-                <xs:element ref="appserver:classLoader"/>
-                <xs:element ref="appserver:storage"/>
-            </xs:choice>
+            <xs:all>
+                <xs:element ref="appserver:params" minOccurs="0"/>
+                <xs:element ref="appserver:directories"/>
+                <xs:element ref="appserver:namespaces" minOccurs="0"/>
+            </xs:all>
+            <xs:attribute name="name" type="xs:string" use="required"/>
+            <xs:attribute name="interface" type="xs:string"/>
             <xs:attribute name="type" type="xs:string" use="required"/>
+            <xs:attribute name="factory" type="xs:string"/>
             <xs:attribute name="uuid" type="xs:string"/>
             <xs:attribute ref="xml:base"/>
-        </xs:complexType>
-    </xs:element>
-    <xs:element name="description">
-        <xs:complexType>
-            <xs:simpleContent>
-                <xs:extension base="xs:string">
-                    <xs:attribute name="uuid" type="xs:string"/>
-                    <xs:attribute ref="xml:base"/>
-                </xs:extension>
-            </xs:simpleContent>
         </xs:complexType>
     </xs:element>
     <xs:element name="classLoaders">
@@ -66,16 +226,285 @@
             <xs:field xpath="@name" />
         </xs:unique>
     </xs:element>
-    <xs:element name="classLoader">
+    <xs:element name="connectionHandler">
         <xs:complexType>
-            <xs:all minOccurs="0">
+            <xs:attribute name="type" type="xs:string" use="required"/>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="module">
+        <xs:complexType>
+            <xs:attribute name="type" type="xs:string" use="required"/>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="connectionHandlers">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="appserver:connectionHandler"/>
+            </xs:choice>
+        </xs:complexType>
+        <xs:unique name="uniqueConnectionHandlerType">
+            <xs:selector xpath="appserver:connectionHandler" />
+            <xs:field xpath="@type" />
+        </xs:unique>
+    </xs:element>
+    <xs:element name="connector">
+        <xs:complexType>
+            <xs:choice minOccurs="0" maxOccurs="1">
                 <xs:element ref="appserver:params"/>
-                <xs:element ref="appserver:directories" minOccurs="1"/>
-                <xs:element ref="appserver:namespaces"/>
+            </xs:choice>
+            <xs:attribute name="name" type="xs:string" use="required"/>
+            <xs:attribute name="type" type="xs:string" use="required"/>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="connectors">
+        <xs:complexType>
+            <xs:choice minOccurs="1" maxOccurs="unbounded">
+                <xs:element ref="appserver:connector"/>
+            </xs:choice>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+        <xs:unique name="uniqueConnectorName">
+            <xs:selector xpath="appserver:connector" />
+            <xs:field xpath="@name" />
+        </xs:unique>
+    </xs:element>
+    <xs:element name="container">
+        <xs:complexType>
+            <xs:all>
+                <xs:element ref="appserver:description"/>
+                <xs:element ref="appserver:servers"/>
+                <xs:element ref="appserver:deployment"/>
+                <xs:element ref="appserver:host"/>
             </xs:all>
             <xs:attribute name="name" type="xs:string" use="required"/>
             <xs:attribute name="type" type="xs:string" use="required"/>
-            <xs:attribute name="factory" type="xs:string"/>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="containers">
+        <xs:complexType>
+            <xs:choice minOccurs="1" maxOccurs="unbounded">
+                <xs:element ref="appserver:container"/>
+            </xs:choice>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+        <xs:unique name="uniqueContainerName">
+            <xs:selector xpath="appserver:container" />
+            <xs:field xpath="@name" />
+        </xs:unique>
+    </xs:element>
+    <xs:element name="context-param">
+        <xs:complexType>
+            <xs:all>
+                <xs:element ref="appserver:param-name"/>
+                <xs:element ref="appserver:param-value"/>
+            </xs:all>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="context">
+        <xs:complexType>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element ref="appserver:classLoaders"/>
+                <xs:element ref="appserver:managers"/>
+            </xs:choice>
+            <xs:attribute name="name" type="xs:string" use="required"/>
+            <xs:attribute name="type" type="xs:string" use="required"/>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="contexts">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="appserver:context"/>
+            </xs:choice>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+        <xs:unique name="uniqueContextName">
+            <xs:selector xpath="appserver:context" />
+            <xs:field xpath="@name" />
+        </xs:unique>
+    </xs:element>
+    <xs:element name="init-on-startup">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:restriction base="appserver:simpleElement">
+                    <xs:enumeration value="true"/>
+                    <xs:enumeration value="false"/>
+                </xs:restriction>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="init-param">
+        <xs:complexType>
+            <xs:all>
+                <xs:element ref="appserver:param-name"/>
+                <xs:element ref="appserver:param-value"/>
+            </xs:all>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="initialContext">
+        <xs:complexType>
+            <xs:choice maxOccurs="1">
+                <xs:element ref="appserver:description" minOccurs="0"/>
+                <xs:element ref="appserver:classLoader"/>
+                <xs:element ref="appserver:storage"/>
+            </xs:choice>
+            <xs:attribute name="type" type="xs:string" use="required"/>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="injection-target-class">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="injection-target-method">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="injection-target-property">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="injection-target">
+        <xs:complexType>
+            <xs:all>
+                <xs:element ref="appserver:injection-target-class"/>
+                <xs:element ref="appserver:injection-target-method" minOccurs="0"/>
+                <xs:element ref="appserver:injection-target-property" minOccurs="0"/>
+            </xs:all>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="installation">
+        <xs:complexType>
+            <xs:all>
+                <xs:element ref="appserver:steps" minOccurs="0"/>
+            </xs:all>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="description">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="descriptor">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="descriptors">
+        <xs:complexType>
+            <xs:choice>
+                <xs:element ref="appserver:descriptor" maxOccurs="unbounded"/>
+            </xs:choice>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+        <xs:unique name="uniqueDescriptor">
+            <xs:selector xpath="appserver:descriptor" />
+            <xs:field xpath="." />
+        </xs:unique>
+    </xs:element>
+    <xs:element name="destination">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="directories">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="appserver:directory"/>
+            </xs:choice>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="directory">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="enforced" type="xs:string"/>
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="display-name">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="step">
+        <xs:complexType>
+            <xs:choice>
+                <xs:element ref="appserver:params" minOccurs="0" maxOccurs="1"/>
+            </xs:choice>
+            <xs:attribute name="type" type="xs:string" use="required"/>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="steps">
+        <xs:complexType>
+            <xs:choice>
+                <xs:element ref="appserver:step" maxOccurs="unbounded"/>
+            </xs:choice>
             <xs:attribute name="uuid" type="xs:string"/>
             <xs:attribute ref="xml:base"/>
         </xs:complexType>
@@ -103,27 +532,45 @@
             <xs:field xpath="@name" />
         </xs:unique>
     </xs:element>
-    <xs:element name="connectionHandlers">
+    <xs:element name="servlet-class">
         <xs:complexType>
-            <xs:choice maxOccurs="unbounded">
-                <xs:element ref="appserver:connectionHandler"/>
-            </xs:choice>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
         </xs:complexType>
-        <xs:unique name="uniqueConnectionHandlerType">
-            <xs:selector xpath="appserver:connectionHandler" />
-            <xs:field xpath="@type" />
-        </xs:unique>
     </xs:element>
-    <xs:element name="connectionHandler">
+    <xs:element name="servlet-mapping">
         <xs:complexType>
-            <xs:attribute name="type" type="xs:string" use="required"/>
+            <xs:all>
+                <xs:element ref="appserver:servlet-name"/>
+                <xs:element ref="appserver:url-pattern"/>
+            </xs:all>
             <xs:attribute name="uuid" type="xs:string"/>
             <xs:attribute ref="xml:base"/>
         </xs:complexType>
     </xs:element>
-    <xs:element name="module">
+    <xs:element name="servlet-name">
         <xs:complexType>
-            <xs:attribute name="type" type="xs:string" use="required"/>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="servlet">
+        <xs:complexType>
+            <xs:all>
+                <xs:element ref="appserver:description" minOccurs="0"/>
+                <xs:element ref="appserver:display-name" minOccurs="0"/>
+                <xs:element ref="appserver:servlet-name"/>
+                <xs:element ref="appserver:servlet-class"/>
+                <xs:element ref="appserver:init-param" minOccurs="0"/>
+            </xs:all>
             <xs:attribute name="uuid" type="xs:string"/>
             <xs:attribute ref="xml:base"/>
         </xs:complexType>
@@ -138,6 +585,16 @@
             <xs:selector xpath="appserver:module" />
             <xs:field xpath="@type" />
         </xs:unique>
+    </xs:element>
+    <xs:element name="file">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
     </xs:element>
     <xs:element name="fileHandler">
         <xs:complexType>
@@ -161,6 +618,16 @@
             <xs:field xpath="@extension" />
         </xs:unique>
     </xs:element>
+    <xs:element name="lifecycle-callback-method">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
     <xs:element name="location">
         <xs:complexType>
             <xs:all minOccurs="1">
@@ -176,6 +643,357 @@
             <xs:choice maxOccurs="unbounded">
                 <xs:element ref="appserver:location"/>
             </xs:choice>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="rewriteMaps">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="appserver:rewriteMap"/>
+            </xs:choice>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="rewriteMap">
+        <xs:complexType>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element ref="appserver:params"/>
+            </xs:choice>
+            <xs:attribute name="type" type="xs:string" use="required"/>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="url-pattern">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="virtualHost">
+        <xs:complexType>
+            <xs:all>
+                <xs:element ref="appserver:analytics" minOccurs="0"/>
+                <xs:element ref="appserver:params"/>
+                <xs:element ref="appserver:rewrites" minOccurs="0"/>
+                <xs:element ref="appserver:authentications" minOccurs="0"/>
+                <xs:element ref="appserver:environmentVariables" minOccurs="0"/>
+                <xs:element ref="appserver:accesses" minOccurs="0"/>
+                <xs:element ref="appserver:locations" minOccurs="0"/>
+                <xs:element ref="appserver:rewriteMaps" minOccurs="0"/>
+            </xs:all>
+            <xs:attribute name="name" type="xs:string" use="required"/>
+            <xs:attribute name="extensionType" type="xs:string"/>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="virtualHosts">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="appserver:virtualHost"/>
+            </xs:choice>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+        <xs:unique name="uniqueVirtualHostName">
+            <xs:selector xpath="appserver:virtualHost" />
+            <xs:field xpath="@name" />
+        </xs:unique>
+    </xs:element>
+    <xs:element name="realm">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="remote">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="res-ref">
+        <xs:complexType>
+            <xs:all>
+                <xs:element ref="appserver:res-ref-name"/>
+                <xs:element ref="appserver:description" minOccurs="0"/>
+                <xs:element ref="appserver:injection-target" minOccurs="0"/>
+            </xs:all>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="res-ref-name">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="rewrites">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="appserver:rewrite"/>
+            </xs:choice>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="rewrite">
+        <xs:complexType>
+            <xs:attribute name="condition" type="xs:string" use="required"/>
+            <xs:attribute name="target" type="xs:string" use="required"/>
+            <xs:attribute name="flag" type="xs:string" use="required"/>
+            <xs:attribute name="extensionType" type="xs:string"/>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="enterprise-beans">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="appserver:session" minOccurs="0"/>
+                <xs:element ref="appserver:message-driven" minOccurs="0"/>
+            </xs:choice>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="environmentVariable">
+        <xs:complexType>
+            <xs:attribute name="condition" type="xs:string" use="required"/>
+            <xs:attribute name="definition" type="xs:string" use="required"/>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="environmentVariables">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="appserver:environmentVariable"/>
+            </xs:choice>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="epb-class">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="epb-link">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="epb-name">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="epb-ref">
+        <xs:complexType>
+            <xs:all>
+                <xs:element ref="appserver:epb-ref-name"/>
+                <xs:element ref="appserver:lookup-name" minOccurs="0"/>
+                <xs:element ref="appserver:epb-link" minOccurs="0"/>
+                <xs:element ref="appserver:remote" minOccurs="0"/>
+                <xs:element ref="appserver:injection-target" minOccurs="0"/>
+            </xs:all>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="epb-ref-name">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="epb">
+        <xs:complexType>
+            <xs:choice>
+                <xs:element ref="appserver:enterprise-beans" maxOccurs="unbounded"/>
+            </xs:choice>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="extractors">
+        <xs:complexType>
+            <xs:choice>
+                <xs:element ref="appserver:extractor" maxOccurs="unbounded"/>
+            </xs:choice>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+        <xs:unique name="uniqueExtractorName">
+            <xs:selector xpath="appserver:extractor" />
+            <xs:field xpath="@name" />
+        </xs:unique>
+    </xs:element>
+    <xs:element name="extractor">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="appserver:extractor"/>
+            </xs:choice>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="provision">
+        <xs:complexType>
+            <xs:all>
+                <xs:element ref="appserver:datasource" minOccurs="0"/>
+                <xs:element ref="appserver:installation"/>
+            </xs:all>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="provisioner">
+        <xs:complexType>
+            <xs:attribute name="name" type="xs:string" use="required"/>
+            <xs:attribute name="type" type="xs:string" use="required"/>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="provisioners">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="appserver:provisioner"/>
+            </xs:choice>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+        <xs:unique name="uniqueProvisionerName">
+            <xs:selector xpath="appserver:provisioner" />
+            <xs:field xpath="@name" />
+        </xs:unique>
+    </xs:element>
+    <xs:element name="logger">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="appserver:processors"/>
+                <xs:element name="handlers">
+                    <xs:complexType>
+                        <xs:choice minOccurs="1" maxOccurs="unbounded">
+                            <xs:element name="handler">
+                                <xs:complexType>
+                                    <xs:choice minOccurs="0" maxOccurs="unbounded">
+                                        <xs:element ref="appserver:formatter"/>
+                                        <xs:element ref="appserver:params"/>
+                                    </xs:choice>
+                                    <xs:attribute name="type" type="xs:string" use="required"/>
+                                    <xs:attribute name="uuid" type="xs:string"/>
+                                    <xs:attribute ref="xml:base"/>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:choice>
+                        <xs:attribute name="uuid" type="xs:string"/>
+                        <xs:attribute ref="xml:base"/>
+                    </xs:complexType>
+                </xs:element>
+            </xs:choice>
+            <xs:attribute name="type" type="xs:string" use="required"/>
+            <xs:attribute name="channelName" type="xs:string" use="required"/>
+            <xs:attribute name="name" type="xs:string" use="required"/>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="loggers">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="appserver:logger"/>
+            </xs:choice>
+        </xs:complexType>
+        <xs:unique name="uniqueLoggerName">
+            <xs:selector xpath="appserver:logger" />
+            <xs:field xpath="@name" />
+        </xs:unique>
+        <xs:unique name="uniqueLoggerChannelName">
+            <xs:selector xpath="appserver:logger" />
+            <xs:field xpath="@channelName" />
+        </xs:unique>
+    </xs:element>
+    <xs:element name="lookup-name">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="scanner">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="appserver:params"/>
+                <xs:element ref="appserver:directories"/>
+            </xs:choice>
+            <xs:attribute name="type" type="xs:string"/>
+            <xs:attribute name="name" type="xs:string"/>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="scanners">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="appserver:scanner"/>
+            </xs:choice>
+        </xs:complexType>
+        <xs:unique name="uniqueScannerName">
+            <xs:selector xpath="appserver:scanner" />
+            <xs:field xpath="@name" />
+        </xs:unique>
+    </xs:element>
+    <xs:element name="security">
+        <xs:complexType>
+            <xs:all>
+                <xs:element ref="appserver:url-pattern"/>
+                <xs:element ref="appserver:auth"/>
+            </xs:all>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
         </xs:complexType>
     </xs:element>
     <xs:element name="server">
@@ -205,286 +1023,147 @@
             <xs:attribute ref="xml:base"/>
         </xs:complexType>
     </xs:element>
-    <xs:element name="authentications">
+    <xs:element name="session-config">
         <xs:complexType>
-            <xs:choice maxOccurs="unbounded">
-                <xs:element ref="appserver:authentication"/>
-            </xs:choice>
-            <xs:attribute name="uuid" type="xs:string"/>
-            <xs:attribute ref="xml:base"/>
-        </xs:complexType>
-    </xs:element>
-    <xs:element name="authentication">
-        <xs:complexType>
-            <xs:choice minOccurs="0" maxOccurs="unbounded">
-                <xs:element ref="appserver:params"/>
-            </xs:choice>
-            <xs:attribute name="uri" type="xs:string" use="required"/>
-            <xs:attribute name="uuid" type="xs:string"/>
-            <xs:attribute ref="xml:base"/>
-        </xs:complexType>
-    </xs:element>
-    <xs:element name="accesses">
-        <xs:complexType>
-            <xs:choice maxOccurs="unbounded">
-                <xs:element ref="appserver:access"/>
-            </xs:choice>
-            <xs:attribute name="uuid" type="xs:string"/>
-            <xs:attribute ref="xml:base"/>
-        </xs:complexType>
-    </xs:element>
-    <xs:element name="access">
-        <xs:complexType>
-            <xs:choice minOccurs="0" maxOccurs="unbounded">
-                <xs:element ref="appserver:params"/>
-            </xs:choice>
-            <xs:attribute name="type" type="xs:string" use="required"/>
-            <xs:attribute name="uuid" type="xs:string"/>
-            <xs:attribute ref="xml:base"/>
-        </xs:complexType>
-    </xs:element>
-    <xs:element name="analytics">
-        <xs:complexType>
-            <xs:choice maxOccurs="unbounded">
-                <xs:element ref="appserver:analytic"/>
-            </xs:choice>
-            <xs:attribute name="uuid" type="xs:string"/>
-            <xs:attribute ref="xml:base"/>
-        </xs:complexType>
-    </xs:element>
-    <xs:element name="analytic">
-        <xs:complexType>
-            <xs:choice minOccurs="1" maxOccurs="1">
-                <xs:element ref="appserver:connectors"/>
-            </xs:choice>
-            <xs:attribute name="uri" type="xs:string" use="required"/>
-            <xs:attribute name="uuid" type="xs:string"/>
-            <xs:attribute ref="xml:base"/>
-        </xs:complexType>
-    </xs:element>
-    <xs:element name="connectors">
-        <xs:complexType>
-            <xs:choice minOccurs="1" maxOccurs="unbounded">
-                <xs:element ref="appserver:connector"/>
-            </xs:choice>
-            <xs:attribute name="uuid" type="xs:string"/>
-            <xs:attribute ref="xml:base"/>
-        </xs:complexType>
-        <xs:unique name="uniqueConnectorName">
-            <xs:selector xpath="appserver:connector" />
-            <xs:field xpath="@name" />
-        </xs:unique>
-    </xs:element>
-    <xs:element name="connector">
-        <xs:complexType>
-            <xs:choice minOccurs="0" maxOccurs="1">
-                <xs:element ref="appserver:params"/>
-            </xs:choice>
-            <xs:attribute name="name" type="xs:string" use="required"/>
-            <xs:attribute name="type" type="xs:string" use="required"/>
-            <xs:attribute name="uuid" type="xs:string"/>
-            <xs:attribute ref="xml:base"/>
-        </xs:complexType>
-    </xs:element>
-    <xs:element name="rewriteMaps">
-        <xs:complexType>
-            <xs:choice maxOccurs="unbounded">
-                <xs:element ref="appserver:rewriteMap"/>
-            </xs:choice>
-            <xs:attribute name="uuid" type="xs:string"/>
-            <xs:attribute ref="xml:base"/>
-        </xs:complexType>
-    </xs:element>
-    <xs:element name="rewriteMap">
-        <xs:complexType>
-            <xs:choice minOccurs="0" maxOccurs="unbounded">
-                <xs:element ref="appserver:params"/>
-            </xs:choice>
-            <xs:attribute name="type" type="xs:string" use="required"/>
-            <xs:attribute name="uuid" type="xs:string"/>
-            <xs:attribute ref="xml:base"/>
-        </xs:complexType>
-    </xs:element>
-    <xs:element name="virtualHosts">
-        <xs:complexType>
-            <xs:choice maxOccurs="unbounded">
-                <xs:element ref="appserver:virtualHost"/>
-            </xs:choice>
-            <xs:attribute name="uuid" type="xs:string"/>
-            <xs:attribute ref="xml:base"/>
-        </xs:complexType>
-        <xs:unique name="uniqueVirtualHostName">
-            <xs:selector xpath="appserver:virtualHost" />
-            <xs:field xpath="@name" />
-        </xs:unique>
-    </xs:element>
-    <xs:element name="virtualHost">
-        <xs:complexType>
-            <xs:all minOccurs="0">
-                <xs:element ref="appserver:analytics"/>
-                <xs:element ref="appserver:params" minOccurs="1"/>
-                <xs:element ref="appserver:rewrites"/>
-                <xs:element ref="appserver:authentications"/>
-                <xs:element ref="appserver:environmentVariables"/>
-                <xs:element ref="appserver:accesses"/>
-                <xs:element ref="appserver:locations"/>
-                <xs:element ref="appserver:rewriteMaps"/>
+            <xs:all>
+                <xs:element ref="appserver:session-name"/>
+                <xs:element ref="appserver:session-file-prefix" minOccurs="0"/>
+                <xs:element ref="appserver:garbage-collection-probability" minOccurs="0"/>
+                <xs:element ref="appserver:session-save-path" minOccurs="0"/>
+                <xs:element ref="appserver:session-maximum-age" minOccurs="0"/>
+                <xs:element ref="appserver:session-inactivity-timeout" minOccurs="0"/>
+                <xs:element ref="appserver:session-cookie-lifetime" minOccurs="0"/>
+                <xs:element ref="appserver:session-cookie-domain" minOccurs="0"/>
+                <xs:element ref="appserver:session-cookie-path" minOccurs="0"/>
+                <xs:element ref="appserver:session-cookie-secure" minOccurs="0"/>
+                <xs:element ref="appserver:session-http-only" minOccurs="0"/>
             </xs:all>
-            <xs:attribute name="name" type="xs:string" use="required"/>
-            <xs:attribute name="extensionType" type="xs:string"/>
             <xs:attribute name="uuid" type="xs:string"/>
             <xs:attribute ref="xml:base"/>
         </xs:complexType>
     </xs:element>
-    <xs:element name="rewrites">
+    <xs:element name="session-cookie-domain">
         <xs:complexType>
-            <xs:choice maxOccurs="unbounded">
-                <xs:element ref="appserver:rewrite"/>
-            </xs:choice>
-            <xs:attribute name="uuid" type="xs:string"/>
-            <xs:attribute ref="xml:base"/>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
         </xs:complexType>
     </xs:element>
-    <xs:element name="rewrite">
+    <xs:element name="session-cookie-lifetime">
         <xs:complexType>
-            <xs:attribute name="condition" type="xs:string" use="required"/>
-            <xs:attribute name="target" type="xs:string" use="required"/>
-            <xs:attribute name="flag" type="xs:string" use="required"/>
-            <xs:attribute name="extensionType" type="xs:string"/>
-            <xs:attribute name="uuid" type="xs:string"/>
-            <xs:attribute ref="xml:base"/>
+            <xs:simpleContent>
+                <xs:extension base="xs:integer">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
         </xs:complexType>
     </xs:element>
-    <xs:element name="environmentVariables">
+    <xs:element name="session-cookie-path">
         <xs:complexType>
-            <xs:choice maxOccurs="unbounded">
-                <xs:element ref="appserver:environmentVariable"/>
-            </xs:choice>
-            <xs:attribute name="uuid" type="xs:string"/>
-            <xs:attribute ref="xml:base"/>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
         </xs:complexType>
     </xs:element>
-    <xs:element name="environmentVariable">
+    <xs:element name="session-cookie-secure">
         <xs:complexType>
-            <xs:attribute name="condition" type="xs:string" use="required"/>
-            <xs:attribute name="definition" type="xs:string" use="required"/>
-            <xs:attribute name="uuid" type="xs:string"/>
-            <xs:attribute ref="xml:base"/>
+            <xs:simpleContent>
+                <xs:restriction base="appserver:simpleElement">
+                    <xs:enumeration value="true"/>
+                    <xs:enumeration value="false"/>
+                </xs:restriction>
+            </xs:simpleContent>
         </xs:complexType>
     </xs:element>
-    <xs:element name="extractors">
+    <xs:element name="session-file-prefix">
         <xs:complexType>
-            <xs:choice maxOccurs="unbounded">
-                <xs:element ref="appserver:extractor"/>
-            </xs:choice>
-            <xs:attribute name="uuid" type="xs:string"/>
-            <xs:attribute ref="xml:base"/>
-        </xs:complexType>
-        <xs:unique name="uniqueExtractorName">
-            <xs:selector xpath="appserver:extractor" />
-            <xs:field xpath="@name" />
-        </xs:unique>
-    </xs:element>
-    <xs:element name="extractor">
-        <xs:complexType>
-            <xs:attribute name="name" type="xs:string" use="required"/>
-            <xs:attribute name="type" type="xs:string" use="required"/>
-            <xs:attribute name="createBackups" type="xs:boolean" use="required"/>
-            <xs:attribute name="restoreBackups" type="xs:boolean" use="required"/>
-            <xs:attribute name="uuid" type="xs:string"/>
-            <xs:attribute ref="xml:base"/>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
         </xs:complexType>
     </xs:element>
-    <xs:element name="provisioners">
+    <xs:element name="session-http-only">
         <xs:complexType>
-            <xs:choice maxOccurs="unbounded">
-                <xs:element ref="appserver:provisioner"/>
-            </xs:choice>
-            <xs:attribute name="uuid" type="xs:string"/>
-            <xs:attribute ref="xml:base"/>
-        </xs:complexType>
-        <xs:unique name="uniqueProvisionerName">
-            <xs:selector xpath="appserver:provisioner" />
-            <xs:field xpath="@name" />
-        </xs:unique>
-    </xs:element>
-    <xs:element name="provisioner">
-        <xs:complexType>
-            <xs:attribute name="name" type="xs:string" use="required"/>
-            <xs:attribute name="type" type="xs:string" use="required"/>
-            <xs:attribute name="uuid" type="xs:string"/>
-            <xs:attribute ref="xml:base"/>
+            <xs:simpleContent>
+                <xs:restriction base="appserver:simpleElement">
+                    <xs:enumeration value="true"/>
+                    <xs:enumeration value="false"/>
+                </xs:restriction>
+            </xs:simpleContent>
         </xs:complexType>
     </xs:element>
-    <xs:element name="loggers">
+    <xs:element name="session-inactivity-timeout">
         <xs:complexType>
-            <xs:choice maxOccurs="unbounded">
-                <xs:element ref="appserver:logger"/>
-            </xs:choice>
-        </xs:complexType>
-        <xs:unique name="uniqueLoggerName">
-            <xs:selector xpath="appserver:logger" />
-            <xs:field xpath="@name" />
-        </xs:unique>
-        <xs:unique name="uniqueLoggerChannelName">
-            <xs:selector xpath="appserver:logger" />
-            <xs:field xpath="@channelName" />
-        </xs:unique>
-    </xs:element>
-    <xs:element name="logger">
-        <xs:complexType>
-            <xs:choice maxOccurs="unbounded">
-                <xs:element ref="appserver:processors"/>
-                <xs:element ref="appserver:handlers"/>
-            </xs:choice>
-            <xs:attribute name="type" type="xs:string" use="required"/>
-            <xs:attribute name="channelName" type="xs:string" use="required"/>
-            <xs:attribute name="name" type="xs:string" use="required"/>
-            <xs:attribute name="uuid" type="xs:string"/>
-            <xs:attribute ref="xml:base"/>
+            <xs:simpleContent>
+                <xs:extension base="xs:integer">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
         </xs:complexType>
     </xs:element>
-    <xs:element name="scanners">
+    <xs:element name="session-maximum-age">
         <xs:complexType>
-            <xs:choice maxOccurs="unbounded">
-                <xs:element ref="appserver:scanner"/>
-            </xs:choice>
-        </xs:complexType>
-        <xs:unique name="uniqueScannerName">
-            <xs:selector xpath="appserver:scanner" />
-            <xs:field xpath="@name" />
-        </xs:unique>
-    </xs:element>
-    <xs:element name="scanner">
-        <xs:complexType>
-            <xs:choice maxOccurs="unbounded">
-                <xs:element ref="appserver:params"/>
-                <xs:element ref="appserver:directories"/>
-            </xs:choice>
-            <xs:attribute name="type" type="xs:string" use="required"/>
-            <xs:attribute name="name" type="xs:string" use="required"/>
-            <xs:attribute name="uuid" type="xs:string"/>
-            <xs:attribute ref="xml:base"/>
+            <xs:simpleContent>
+                <xs:extension base="xs:integer">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
         </xs:complexType>
     </xs:element>
-    <xs:element name="containers">
+    <xs:element name="session-name">
         <xs:complexType>
-            <xs:choice minOccurs="1" maxOccurs="unbounded">
-                <xs:element ref="appserver:container"/>
-            </xs:choice>
-            <xs:attribute name="uuid" type="xs:string"/>
-            <xs:attribute ref="xml:base"/>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
         </xs:complexType>
-        <xs:unique name="uniqueContainerName">
-            <xs:selector xpath="appserver:container" />
-            <xs:field xpath="@name" />
-        </xs:unique>
     </xs:element>
-    <xs:element name="apps">
+    <xs:element name="session-save-path">
         <xs:complexType>
-            <xs:choice minOccurs="0" maxOccurs="unbounded">
-                <xs:element ref="appserver:app"/>
-            </xs:choice>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="session-type">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="session">
+        <xs:complexType>
+            <xs:all>
+                <xs:element ref="appserver:session-type"/>
+                <xs:element ref="appserver:epb-name"/>
+                <xs:element ref="appserver:epb-class"/>
+                <xs:element ref="appserver:init-on-startup" minOccurs="0"/>
+                <xs:element ref="appserver:post-construct" minOccurs="0"/>
+                <xs:element ref="appserver:pre-destroy" minOccurs="0"/>
+                <xs:element ref="appserver:epb-ref" minOccurs="0"/>
+                <xs:element ref="appserver:res-ref" minOccurs="0"/>
+            </xs:all>
             <xs:attribute name="uuid" type="xs:string"/>
             <xs:attribute ref="xml:base"/>
         </xs:complexType>
@@ -502,33 +1181,10 @@
             <xs:field xpath="@name" />
         </xs:unique>
     </xs:element>
-    <xs:element name="container">
-        <xs:complexType>
-            <xs:choice maxOccurs="unbounded">
-                <xs:element ref="appserver:description"/>
-                <xs:element ref="appserver:receiver"/>
-                <xs:element ref="appserver:servers"/>
-                <xs:element ref="appserver:deployment"/>
-                <xs:element ref="appserver:host"/>
-            </xs:choice>
-            <xs:attribute name="name" type="xs:string" use="required"/>
-            <xs:attribute name="type" type="xs:string" use="required"/>
-            <xs:attribute name="uuid" type="xs:string"/>
-            <xs:attribute ref="xml:base"/>
-        </xs:complexType>
-    </xs:element>
-    <xs:element name="app">
-        <xs:complexType>
-            <xs:attribute name="name" type="xs:string" use="required"/>
-            <xs:attribute name="webappPath" type="xs:string" use="required"/>
-            <xs:attribute name="uuid" type="xs:string"/>
-            <xs:attribute ref="xml:base"/>
-        </xs:complexType>
-    </xs:element>
     <xs:element name="datasource">
         <xs:complexType>
-            <xs:choice maxOccurs="unbounded">
-                <xs:element ref="appserver:database"/>
+            <xs:choice>
+                <xs:element ref="appserver:database" minOccurs="0"/>
             </xs:choice>
             <xs:attribute name="name" type="xs:string" use="required"/>
             <xs:attribute name="uuid" type="xs:string"/>
@@ -537,13 +1193,15 @@
     </xs:element>
     <xs:element name="database">
         <xs:complexType>
-            <xs:choice maxOccurs="1">
+            <xs:all>
                 <xs:element ref="appserver:driver"/>
-                <xs:element ref="appserver:user"/>
-                <xs:element ref="appserver:password"/>
-                <xs:element ref="appserver:databaseName"/>
-                <xs:element ref="appserver:path"/>
-            </xs:choice>
+                <xs:element ref="appserver:user" minOccurs="0"/>
+                <xs:element ref="appserver:password" minOccurs="0"/>
+                <xs:element ref="appserver:databaseHost" minOccurs="0"/>
+                <xs:element ref="appserver:databaseName" minOccurs="0"/>
+                <xs:element ref="appserver:path" minOccurs="0"/>
+                <xs:element ref="appserver:memory" minOccurs="0"/>
+            </xs:all>
             <xs:attribute name="uuid" type="xs:string"/>
             <xs:attribute ref="xml:base"/>
         </xs:complexType>
@@ -568,7 +1226,7 @@
             </xs:simpleContent>
         </xs:complexType>
     </xs:element>
-    <xs:element name="password">
+    <xs:element name="databaseHost">
         <xs:complexType>
             <xs:simpleContent>
                 <xs:extension base="xs:string">
@@ -598,25 +1256,6 @@
             </xs:simpleContent>
         </xs:complexType>
     </xs:element>
-    <xs:element name="receiver">
-        <xs:complexType>
-            <xs:choice maxOccurs="unbounded">
-                <xs:element ref="appserver:worker"/>
-                <xs:element ref="appserver:thread"/>
-                <xs:element ref="appserver:params"/>
-            </xs:choice>
-            <xs:attribute name="type" type="xs:string" use="required"/>
-            <xs:attribute name="uuid" type="xs:string"/>
-            <xs:attribute ref="xml:base"/>
-        </xs:complexType>
-    </xs:element>
-    <xs:element name="worker">
-        <xs:complexType>
-            <xs:attribute name="type" type="xs:string" use="required"/>
-            <xs:attribute name="uuid" type="xs:string"/>
-            <xs:attribute ref="xml:base"/>
-        </xs:complexType>
-    </xs:element>
     <xs:element name="thread">
         <xs:complexType>
             <xs:attribute name="type" type="xs:string" use="required"/>
@@ -644,37 +1283,70 @@
             <xs:attribute ref="xml:base"/>
         </xs:complexType>
     </xs:element>
-    <xs:element name="contexts">
-        <xs:complexType>
-            <xs:choice maxOccurs="unbounded">
-                <xs:element ref="appserver:context"/>
-            </xs:choice>
-            <xs:attribute name="uuid" type="xs:string"/>
-            <xs:attribute ref="xml:base"/>
-        </xs:complexType>
-        <xs:unique name="uniqueContextName">
-            <xs:selector xpath="appserver:context" />
-            <xs:field xpath="@name" />
-        </xs:unique>
-    </xs:element>
-    <xs:element name="context">
-        <xs:complexType>
-            <xs:choice minOccurs="0" maxOccurs="unbounded">
-                <xs:element ref="appserver:classLoaders"/>
-                <xs:element ref="appserver:managers"/>
-            </xs:choice>
-            <xs:attribute name="name" type="xs:string" use="required"/>
-            <xs:attribute name="type" type="xs:string" use="required"/>
-            <xs:attribute name="uuid" type="xs:string"/>
-            <xs:attribute ref="xml:base"/>
-        </xs:complexType>
-    </xs:element>
     <xs:element name="formatter">
         <xs:complexType>
             <xs:choice minOccurs="0" maxOccurs="unbounded">
                 <xs:element ref="appserver:params"/>
             </xs:choice>
             <xs:attribute name="type" type="xs:string" use="required"/>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="pointcut-name">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="pointcut-pattern">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="pointcut">
+        <xs:complexType>
+            <xs:all>
+                <xs:element ref="appserver:pointcut-name"/>
+                <xs:element ref="appserver:pointcut-pattern"/>
+            </xs:all>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="pointcuts">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="appserver:advice"/>
+                <xs:element ref="appserver:pointcut"/>
+            </xs:choice>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="post-construct">
+        <xs:complexType>
+            <xs:choice>
+                <xs:element ref="appserver:lifecycle-callback-method" maxOccurs="unbounded"/>
+            </xs:choice>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="pre-destroy">
+        <xs:complexType>
+            <xs:choice>
+                <xs:element ref="appserver:lifecycle-callback-method" maxOccurs="unbounded"/>
+            </xs:choice>
             <xs:attribute name="uuid" type="xs:string"/>
             <xs:attribute ref="xml:base"/>
         </xs:complexType>
@@ -698,36 +1370,87 @@
             <xs:attribute ref="xml:base"/>
         </xs:complexType>
     </xs:element>
-    <xs:element name="handlers">
+    <xs:element name="garbage-collection-probability">
         <xs:complexType>
-            <xs:choice minOccurs="1" maxOccurs="unbounded">
-                <xs:element ref="appserver:handler"/>
-            </xs:choice>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="handler-class">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="handler-mapping">
+        <xs:complexType>
+            <xs:all>
+                <xs:element ref="appserver:handler-name"/>
+                <xs:element ref="appserver:url-pattern"/>
+            </xs:all>
             <xs:attribute name="uuid" type="xs:string"/>
             <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="handler-name">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
         </xs:complexType>
     </xs:element>
     <xs:element name="handler">
         <xs:complexType>
-            <xs:choice minOccurs="0" maxOccurs="unbounded">
-                <xs:element ref="appserver:formatter"/>
-                <xs:element ref="appserver:params"/>
-            </xs:choice>
-            <xs:attribute name="type" type="xs:string" use="required"/>
+            <xs:all>
+                <xs:element ref="appserver:description" minOccurs="0"/>
+                <xs:element ref="appserver:display-name" minOccurs="0"/>
+                <xs:element ref="appserver:handler-name"/>
+                <xs:element ref="appserver:handler-class"/>
+            </xs:all>
             <xs:attribute name="uuid" type="xs:string"/>
             <xs:attribute ref="xml:base"/>
         </xs:complexType>
     </xs:element>
-    <xs:element name="params">
+    <xs:element name="handlers">
         <xs:complexType>
             <xs:choice maxOccurs="unbounded">
-                <xs:element ref="appserver:param"/>
+                <xs:element ref="appserver:handler-mapping" minOccurs="0"/>
+                <xs:element ref="appserver:handler" minOccurs="0"/>
             </xs:choice>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
         </xs:complexType>
-        <xs:unique name="uniqueParamName">
-            <xs:selector xpath="appserver:param" />
-            <xs:field xpath="@name" />
-        </xs:unique>
+    </xs:element>
+    <xs:element name="param-name">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="param-value">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
     </xs:element>
     <xs:element name="param">
         <xs:complexType>
@@ -741,22 +1464,42 @@
             </xs:simpleContent>
         </xs:complexType>
     </xs:element>
-    <xs:element name="directories">
+    <xs:element name="params">
         <xs:complexType>
             <xs:choice maxOccurs="unbounded">
-                <xs:element ref="appserver:directory"/>
+                <xs:element ref="appserver:param"/>
             </xs:choice>
         </xs:complexType>
+        <xs:unique name="uniqueParamName">
+            <xs:selector xpath="appserver:param" />
+            <xs:field xpath="@name" />
+        </xs:unique>
     </xs:element>
-    <xs:element name="directory">
+    <xs:element name="password">
         <xs:complexType>
             <xs:simpleContent>
                 <xs:extension base="xs:string">
-                    <xs:attribute name="enforced" type="xs:string"/>
                     <xs:attribute name="uuid" type="xs:string"/>
                     <xs:attribute ref="xml:base"/>
                 </xs:extension>
             </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="manager">
+        <xs:complexType>
+            <xs:all>
+                <xs:element ref="appserver:descriptors" minOccurs="0"/>
+                <xs:element ref="appserver:params" minOccurs="0"/>
+                <xs:element ref="appserver:directories" minOccurs="0"/>
+            </xs:all>
+            <xs:attribute name="name" type="xs:string" use="required"/>
+            <xs:attribute name="beanName" type="xs:string"/>
+            <xs:attribute name="mappedName" type="xs:string"/>
+            <xs:attribute name="beanInterface" type="xs:string"/>
+            <xs:attribute name="type" type="xs:string" use="required"/>
+            <xs:attribute name="factory" type="xs:string"/>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
         </xs:complexType>
     </xs:element>
     <xs:element name="managers">
@@ -772,20 +1515,55 @@
             <xs:field xpath="@name" />
         </xs:unique>
     </xs:element>
-    <xs:element name="manager">
+    <xs:element name="memory">
         <xs:complexType>
-            <xs:choice minOccurs="0" maxOccurs="unbounded">
-                <xs:element ref="appserver:params"/>
-                <xs:element ref="appserver:directories"/>
-            </xs:choice>
-            <xs:attribute name="name" type="xs:string" use="required"/>
-            <xs:attribute name="beanName" type="xs:string"/>
-            <xs:attribute name="mappedName" type="xs:string"/>
-            <xs:attribute name="beanInterface" type="xs:string"/>
-            <xs:attribute name="type" type="xs:string" use="required"/>
-            <xs:attribute name="factory" type="xs:string"/>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="message-driven">
+        <xs:complexType>
+            <xs:all>
+                <xs:element ref="appserver:epb-name"/>
+                <xs:element ref="appserver:epb-class"/>
+            </xs:all>
             <xs:attribute name="uuid" type="xs:string"/>
             <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="message-queue">
+        <xs:complexType>
+            <xs:all>
+                <xs:element ref="appserver:destination"/>
+            </xs:all>
+            <xs:attribute name="type" type="xs:string" use="required"/>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="message-queues">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="appserver:message-queue"/>
+            </xs:choice>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="namespace">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="omitEnforcement" type="xs:string"/>
+                    <xs:attribute name="omitAutoLoading" type="xs:string"/>
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
         </xs:complexType>
     </xs:element>
     <xs:element name="namespaces">
@@ -801,16 +1579,37 @@
             <xs:field xpath="value" />
         </xs:unique>
     </xs:element>
-    <xs:element name="namespace">
+    <xs:element name="options">
         <xs:complexType>
-            <xs:simpleContent>
-                <xs:extension base="xs:string">
-                    <xs:attribute name="omitEnforcement" type="xs:string"/>
-                    <xs:attribute name="omitAutoLoading" type="xs:string"/>
-                    <xs:attribute name="uuid" type="xs:string"/>
-                    <xs:attribute ref="xml:base"/>
-                </xs:extension>
-            </xs:simpleContent>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="appserver:file" minOccurs="0"/>
+            </xs:choice>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="web-app">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="appserver:display-name" minOccurs="0" maxOccurs="1"/>
+                <xs:element ref="appserver:description" minOccurs="0" maxOccurs="1"/>
+                <xs:element ref="appserver:session-config" minOccurs="0" maxOccurs="1"/>
+                <xs:element ref="appserver:context-param" minOccurs="0" maxOccurs="1"/>
+                <xs:element ref="appserver:handler" minOccurs="0"/>
+                <xs:element ref="appserver:handler-mapping" minOccurs="0"/>
+                <xs:element ref="appserver:servlet" minOccurs="0"/>
+                <xs:element ref="appserver:servlet-mapping" minOccurs="0"/>
+                <xs:element ref="appserver:security" minOccurs="0"/>
+            </xs:choice>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="worker">
+        <xs:complexType>
+            <xs:attribute name="type" type="xs:string" use="required"/>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
         </xs:complexType>
     </xs:element>
 </xs:schema>
