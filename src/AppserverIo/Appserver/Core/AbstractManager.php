@@ -163,7 +163,7 @@ abstract class AbstractManager extends GenericStackable implements ManagerInterf
      * @return void
      * @todo Replace lookupProxy callback with real proxy instance
      */
-    protected function registerEpbReference(EpbReferenceDescriptorInterface $epbReference)
+    public function registerEpbReference(EpbReferenceDescriptorInterface $epbReference)
     {
 
         $application = null;
@@ -246,7 +246,7 @@ abstract class AbstractManager extends GenericStackable implements ManagerInterf
      *
      * @return void
      */
-    protected function registerResReference(ResReferenceDescriptorInterface $resReference)
+    public function registerResReference(ResReferenceDescriptorInterface $resReference)
     {
         $application = null;
         $name = '';
