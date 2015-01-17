@@ -1,9 +1,9 @@
 ---
-layout: news
-title: News
+layout: default
+title: Blog
 position: 10
 group: Community
-permalink: /community/news.html
+permalink: /community/blog.html
 author: all
 ---
 

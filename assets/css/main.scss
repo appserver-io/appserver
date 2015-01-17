@@ -6,6 +6,7 @@
 @import "appserver-variables";
 @import "bootstrap";
 @import "syntax/github";
+@import "countdown";
 
 // import font
 @import url(http://fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,400,600);
@@ -22,6 +23,7 @@ body {
   margin-bottom: 240px;
   padding-bottom: 50px;
   z-index: 200;
+  font-size: 16px;
 }
 
 .container-full {
@@ -116,7 +118,7 @@ div.carousel .carousel-inner {
   bottom: 15%;
   text-shadow: 0 2px 1px rgba(0, 0, 0, 0.1);
   h1 {
-    font-size: 4vw;
+    font-size: 3vw;
     font-weight: bold;
   }
 }
@@ -201,6 +203,21 @@ ul.nav li.dropdown:hover ul.dropdown-menu{
   border-color: #fff;
 }
 
+.btn-info-highlight {
+  color: white;
+  background-color: #a82629;
+  border-color: #a82629;
+  margin-top: 2vw;
+}
+
+.btn-info-highlight:hover,
+.btn-info-highlight:focus,
+.btn-info-highlight:active {
+  color: white;
+  background-color: #5bc0de;
+  border-color: #46b8da;
+}
+
 .btn-slider:hover,
 .btn-slider:focus,
 .btn-slider:active,
@@ -208,6 +225,56 @@ ul.nav li.dropdown:hover ul.dropdown-menu{
 .open .dropdown-toggle.btn-slider {
   color: #119fbc;
   background-color: #ffffff;
+}
+
+/* icon color definitions */
+.icon-ok {
+    color: green;
+}
+.icon-nok {
+    color: #a82629;
+}
+.icon-ci {
+    color: #31b0d5;
+}
+
+/* subpage properties */
+.subpage-fill {
+    height: 6vw;
+    padding: 1vw;
+    background: linear-gradient(45deg,#a4f0ff 0,#119fbc 100%);
+  -webkit-box-shadow: 0 2px 2px rgba(0,0,0,0.03);
+  -moz-box-shadow: 0 2px 2px rgba(0,0,0,0.03);
+  box-shadow: 0 2px 2px rgba(0,0,0,0.03);
+}
+
+.subpage-fill h1 {
+    color: white;
+}
+
+.elastic-video {
+	position: relative;
+	padding-bottom: 55%;
+	padding-top: 15px;
+	height: 0;
+	overflow: hidden;
+}
+.elastic-video iframe {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+}
+
+.elastic-video-wrapper {
+	width: 500px;
+	max-width: 100%;
+}
+
+div.content-table {
+  overflow:auto;
+  padding-top: 0px;
 }
 
 footer {

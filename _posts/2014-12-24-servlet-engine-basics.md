@@ -50,6 +50,7 @@ you dont't need to write any configuration therefor. Let's have a look at how yo
 servlet
 
 ```php
+<?php
 namespace AppserverIo\Example\Servlets;
 
 use AppserverIo\Psr\Servlet\Http\HttpServlet;

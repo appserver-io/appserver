@@ -5,22 +5,22 @@ position: 20
 permalink: /downloads.html
 ---
 
-## Downloads
+## <i class="fa fa-download"> Downloads</i>
 ***
 
 Get the latest Version of appserver.io free and enjoy the most powerful PHP infrastructure in the world with only one click!
 <p><br/></p>
 
 <ul class="nav nav-tabs nav-justified list-unstyled downloads">
-    <li class="active"><a href="#mac-osx" data-toggle="tab">Mac OS X</a>
+<li class="active"><a href="#mac-osx" data-toggle="tab"><i class="fa fa-apple"> Mac OS X</i></a>
     </li>
-    <li class=""><a href="#windows" data-toggle="tab">Windows</a>
+    <li class=""><a href="#windows" data-toggle="tab"><i class="fa fa-windows"> Windows</i></a>
     </li>
-    <li class=""><a href="#debian" data-toggle="tab">Debian</a>
+    <li class=""><a href="#debian" data-toggle="tab"><i class="fa fa-linux"> Debian </i></a>
     </li>
-    <li class=""><a href="#fedora" data-toggle="tab">Fedora</a>
+    <li class=""><a href="#fedora" data-toggle="tab"><i class="fa fa-linux"> Fedora</i></a>
     </li>
-    <li class=""><a href="#cent-os" data-toggle="tab">Cent OS</a>
+    <li class=""><a href="#cent-os" data-toggle="tab"><i class="fa fa-linux"> Cent OS</i></a>
     </li>
     <li class=""><a href="#raspbian" data-toggle="tab">Raspbian</a>
     </li>

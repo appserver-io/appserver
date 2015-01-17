@@ -1,0 +1,6 @@
+<!-- Navigation -->
+<div class="list-group">
+    {% for link in site.data.[page.subnavigation] %}
+        <a href="{{ link.url }}" class="list-group-item">{{ link.title }}</a>
+    {% endfor %}  
+</div>
