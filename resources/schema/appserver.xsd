@@ -564,13 +564,13 @@
     </xs:element>
     <xs:element name="servlet">
         <xs:complexType>
-            <xs:all>
+            <xs:choice maxOccurs="unbounded">
                 <xs:element ref="appserver:description" minOccurs="0"/>
                 <xs:element ref="appserver:display-name" minOccurs="0"/>
                 <xs:element ref="appserver:servlet-name"/>
                 <xs:element ref="appserver:servlet-class"/>
-                <xs:element ref="appserver:init-param" minOccurs="0"/>
-            </xs:all>
+                <xs:element ref="appserver:init-param"/>
+            </xs:choice>
             <xs:attribute name="uuid" type="xs:string"/>
             <xs:attribute ref="xml:base"/>
         </xs:complexType>
@@ -1594,7 +1594,7 @@
                 <xs:element ref="appserver:display-name" minOccurs="0" maxOccurs="1"/>
                 <xs:element ref="appserver:description" minOccurs="0" maxOccurs="1"/>
                 <xs:element ref="appserver:session-config" minOccurs="0" maxOccurs="1"/>
-                <xs:element ref="appserver:context-param" minOccurs="0" maxOccurs="1"/>
+                <xs:element ref="appserver:context-param" minOccurs="0"/>
                 <xs:element ref="appserver:handler" minOccurs="0"/>
                 <xs:element ref="appserver:handler-mapping" minOccurs="0"/>
                 <xs:element ref="appserver:servlet" minOccurs="0"/>
