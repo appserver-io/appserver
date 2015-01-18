@@ -40,6 +40,8 @@ One solution can be using a Servlet-Engine, like we integrated in our applicatio
 As in many other frameworks do, our Servlet-Engine use a URL path to map a request to a controller, in our case this will be a servlet. You can write as many servlets as you want, but you dont't need to write any configuration therefor. Let's have a look at how you can map an URL path to a servlet
 
 ```php
+<?php
+
 namespace AppserverIo\Example\Servlets;
 
 use AppserverIo\Psr\Servlet\Http\HttpServlet;
@@ -105,6 +107,8 @@ invoked by the application server when the servlet is instanciated and initializ
 our previous example
 
 ```php
+<?php
+
 namespace AppserverIo\Example\Servlets;
 
 use AppserverIo\Psr\Servlet\ServletConfig;
@@ -182,6 +186,8 @@ values. You can also do this with the `@Route` annotation. So imagine, we want t
 with the resources configurable.
 
 ```php
+<?php
+
 namespace AppserverIo\Example\Servlets;
 
 use AppserverIo\Psr\Servlet\ServletConfig;
@@ -264,6 +270,8 @@ Starting a session is one of the things you'll need in nearly every application.
 quite simple. So let's see how we can integrate session handling in our application.
 
 ```php
+<?php
+
 namespace AppserverIo\Example\Servlets;
 
 use AppserverIo\Psr\Servlet\ServletConfig;
@@ -506,6 +514,8 @@ the session would never expire, except it'll be destroyed by your application, e
 you invoke
 
 ```php
+<?php
+
 /**
  * Handles a HTTP POST request, destroys the session and logs the user out.
  *
@@ -592,6 +602,8 @@ we want to load the path to the `applicationProperties`, defined as context para
 We can do this, by adding the following code, implemented in the `init()` method to a servlet
 
 ```php
+<?php
+
 /**
  * Initializes the servlet with the application properties.
  *
@@ -675,6 +687,8 @@ This nodes value is the parameters value. Here you can specify anything that is 
 You can access a servlets initialization parameters by invoking the `$this->getInitParameter()` method like
 
 ```php
+<?php
+
 /**
  * Initializes the servlet with the path to the configuration file.
  *
