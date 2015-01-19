@@ -2,7 +2,7 @@
 layout: detail
 title: Message Queue
 position: 10
-group: Products
+group: Features
 permalink: /products/features/message-queue.html
 subnavigation: features
 author: all

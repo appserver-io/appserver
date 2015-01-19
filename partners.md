@@ -12,8 +12,10 @@ We´re working on a partner program which will be rolled out soon. Our partner p
 objective to expand our reach in supporting all of our users and customers in getting the most out of their
 appserver.io installations. The appserver.io partnership programs differentiate between three different sub-programs
 to fulfill the specific needs of our partners:
- 
- <div class="row">
+
+<p><br/></p>
+
+<div class="row">
     <div class="col-md-4">
         <div class="panel panel-primary text-center">
             <div class="panel-heading">
@@ -23,13 +25,13 @@ to fulfill the specific needs of our partners:
                 <span class="price">30%</span>
                 <span class="period">lifetime commsion on sales</span>
             </div>
-            <ul class="list-group">
-                <li class="list-group-item">right of sale</li>
-                <li class="list-group-item">access to closed partner area</li>
-                <li class="list-group-item">developer license for enterprise edition</li>
-                <li class="list-group-item">use of appserver logo</li>
-                <li class="list-group-item">named as partner on website</li>
-                <li class="list-group-item"><a href="http://techdivision.us1.list-manage.com/subscribe/?u=e6acb2703beadfd670dfc87f3&id=74e80f6488" class="btn btn-info">Apply now!</a>
+            <ul class="list-group list-unstyled">
+                <li>right of sale</li>
+                <li>access to closed partner area</li>
+                <li>developer license for enterprise edition</li>
+                <li>use of appserver logo</li>
+                <li>named as partner on website</li>
+                <li><br/><a href="http://techdivision.us1.list-manage.com/subscribe/?u=e6acb2703beadfd670dfc87f3&id=74e80f6488" class="btn btn-info">Apply now!</a>
                 </li>
             </ul>
         </div>
@@ -43,13 +45,13 @@ to fulfill the specific needs of our partners:
                 <span class="price">OEM</span>
                 <span class="period">licensing modell for bundeling</span>
             </div>
-            <ul class="list-group">
-                <li class="list-group-item">right of sale</li>
-                <li class="list-group-item">access to closed partner area</li>
-                <li class="list-group-item">developer license for enterprise edition</li>
-                <li class="list-group-item">use of appserver logo</li>
-                <li class="list-group-item">special discounts for trainings</li>
-                <li class="list-group-item"><a href="http://techdivision.us1.list-manage.com/subscribe/?u=e6acb2703beadfd670dfc87f3&id=74e80f6488" class="btn btn-info">Apply now!</a>
+            <ul class="list-group list-unstyled">
+                <li>right of sale</li>
+                <li>access to closed partner area</li>
+                <li>developer license for enterprise edition</li>
+                <li>use of appserver logo</li>
+                <li>special discounts for trainings</li>
+                <li><br/><a href="http://techdivision.us1.list-manage.com/subscribe/?u=e6acb2703beadfd670dfc87f3&id=74e80f6488" class="btn btn-info">Apply now!</a>
                 </li>
             </ul>
         </div>
@@ -63,13 +65,13 @@ to fulfill the specific needs of our partners:
                 <span class="price"><sup>til</sup>1<sup>hour</sup></span>
                 <span class="period">reaction time on SLA</span>
             </div>
-            <ul class="list-group">
-                <li class="list-group-item">right of sale</li>
-                <li class="list-group-item">access to closed partner area</li>
-                <li class="list-group-item">developer license for enterprise edition</li>
-                <li class="list-group-item">only 2 per country</li>
-                <li class="list-group-item">named as partner on website</li>
-                <li class="list-group-item"><a href="http://techdivision.us1.list-manage.com/subscribe/?u=e6acb2703beadfd670dfc87f3&id=74e80f6488" class="btn btn-info">Apply now!</a>
+            <ul class="list-group list-unstyled">
+                <li>right of sale</li>
+                <li>access to closed partner area</li>
+                <li>developer license for enterprise edition</li>
+                <li>only 2 per country</li>
+                <li>named as partner on website</li>
+                <li><br/><a href="http://techdivision.us1.list-manage.com/subscribe/?u=e6acb2703beadfd670dfc87f3&id=74e80f6488" class="btn btn-info">Apply now!</a>
                 </li>
             </ul>
         </div>

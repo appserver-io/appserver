@@ -13,6 +13,6 @@ author: all
 We are working hard on the roadmap and the feature set of the Enterprise Edition. If want to know more about this stunning product please contact us directly.
 
 
-<a class="btn btn-info btn-lg" href="mailto:info@appserver.io">
+<a class="btn btn-info btn-lg" href="{{ "/contact.html" | prepend: site.baseurl }}">
     <i class="fa fa-envelope-o"></i>&nbsp;&nbsp;Contact us
 </a>

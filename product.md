@@ -40,7 +40,7 @@ You are interested and want to learn more about the of appserver.io. See the dif
                 appserver.io delivers the most feature richt plattform for PHP applications worldwide. Why? It's pretty simple. There is no compareable infrastructure enabling you get the most out of your software components by using a just one component below.
             </p>
             <a class="btn btn-info btn-lg"
-               href="/product/features.html">
+               href="{{ "/products/features.html" | prepend: site.baseurl }}">
                 <i class="fa fa-bars"></i>&nbsp;&nbsp;learn more about the features
             </a>
         </div>
@@ -51,7 +51,7 @@ You are interested and want to learn more about the of appserver.io. See the dif
             </p>
             <p>
                 Of course an infrastructure like this is first of all not easy to understand and start with but we got it pretty well documented with a lot of real world examples.</p>
-                <a class="btn btn-info btn-lg" href="/community/documentation.html">
+                <a class="btn btn-info btn-lg" href="{{ "/docs.html" | prepend: site.baseurl }}">
                     <i class="fa fa-info-circle"></i>&nbsp;&nbsp;step into the documentation
                 </a>.
             

@@ -62,13 +62,13 @@ appserver.io and PHP and you´re done!
                 <td class="text-center">PHP</td>
             </tr>
             <tr>
-                <td><a href="/product/features/webserver.html">Webserver HTTP Compliant <i class="icon-ci fa fa-info-circle"></i></a></td>
+                <td><a href="{{ "/products/features/webserver.html" | prepend: site.baseurl }}">Webserver HTTP Compliant <i class="icon-ci fa fa-info-circle"></i></a></td>
                 <td class="text-center"><i class="icon-ok fa fa-2x fa-check-square-o"></i></td>
                 <td class="text-center"><i class="icon-ok fa fa-2x fa-check-square-o"></i></td>	
                 <td class="text-center"><i class="icon-ok fa fa-2x fa-check-square-o"></i></td>
             </tr>
             <tr>
-            <td><a href="/product/features/rewrite-engine.html">Rewrite Engine <i class="icon-ci fa fa-info-circle"></i></a></td>
+            <td><a href="{{ "/products/features/rewrite-engine.html" | prepend: site.baseurl }}">Rewrite Engine <i class="icon-ci fa fa-info-circle"></i></a></td>
                 <td class="text-center"><i class="icon-ok fa fa-2x fa-check-square-o"></i></td>
                 <td class="text-center"><i class="icon-ok fa fa-2x fa-check-square-o"></i></td>	
                 <td class="text-center"><i class="icon-ok fa fa-2x fa-check-square-o"></i></td>
@@ -86,25 +86,25 @@ appserver.io and PHP and you´re done!
                 <td class="text-center"><i class="icon-ok fa fa-2x fa-check-square-o"></i></td>
             </tr>
             <tr>
-            <td><a href="/product/features/servlet-engine.html">Servlet Engine <i class="icon-ci fa fa-info-circle"></i></a></td>
+            <td><a href="{{ "/products/features/servlet-engine.html" | prepend: site.baseurl }}">Servlet Engine <i class="icon-ci fa fa-info-circle"></i></a></td>
                 <td class="text-center"><i class="icon-nok fa fa-2x fa-minus-square"></i></td>
                 <td class="text-center"><i class="icon-nok fa fa-2x fa-minus-square"></i></td>	
                 <td class="text-center"><i class="icon-ok fa fa-2x fa-check-square-o"></i></td>
             </tr>
             <tr>
-            <td><a href="/product/features/message-queue.html">Message Queue <i class="icon-ci fa fa-info-circle"></i></a></td>
+            <td><a href="{{ "/products/features/message-queue.html" | prepend: site.baseurl }}">Message Queue <i class="icon-ci fa fa-info-circle"></i></a></td>
                 <td class="text-center"><i class="icon-nok fa fa-2x fa-minus-square"></i></td>
                 <td class="text-center"><i class="icon-nok fa fa-2x fa-minus-square"></i></td>	
                 <td class="text-center"><i class="icon-ok fa fa-2x fa-check-square-o"></i></td>
             </tr>
             <tr>
-            <td><a href="/product/features/timer-service.html">Timer Service <i class="icon-ci fa fa-info-circle"></i></a></td>
+            <td><a href="{{ "/products/features/timer-service.html" | prepend: site.baseurl }}">Timer Service <i class="icon-ci fa fa-info-circle"></i></a></td>
                 <td class="text-center"><i class="icon-nok fa fa-2x fa-minus-square"></i></td>
                 <td class="text-center"><i class="icon-nok fa fa-2x fa-minus-square"></i></td>	
                 <td class="text-center"><i class="icon-ok fa fa-2x fa-check-square-o"></i></td>
             </tr>
             <tr>
-            <td><a href="/product/features/persistence-container.md">Persistence Container <i class="icon-ci fa fa-info-circle"></i></a></td>
+            <td><a href="{{ "/products/features/persistence-container.html" | prepend: site.baseurl }}">Persistence Container <i class="icon-ci fa fa-info-circle"></i></a></td>
                 <td class="text-center"><i class="icon-nok fa fa-2x fa-minus-square"></i></td>
                 <td class="text-center"><i class="icon-nok fa fa-2x fa-minus-square"></i></td>	
                 <td class="text-center"><i class="icon-ok fa fa-2x fa-check-square-o"></i></td>
@@ -133,7 +133,7 @@ appserver.io and PHP and you´re done!
     <div class="col-md-6">With the appserver.io plattform an increase in performance of your application is not to far away. If you use the services the infrastructure is offering a tremendous boost is absolutely possible and it comes along with an improvement for different parts of your software. 
     <p><br/></p>
     <a class="btn btn-info btn-lg"
-                   href="/product/features.html">
+                   href="{{ "/products/features.html" | prepend: site.baseurl }}">
                     <i class="fa fa-bars"></i>&nbsp;&nbsp;learn more about the possibilies
                 </a>
 

@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: news
 title: Blog
 position: 10
 group: Community

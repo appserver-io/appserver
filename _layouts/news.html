@@ -36,11 +36,11 @@ w<!DOCTYPE html>
                     <!-- Blog Categories Well -->
                     <div class="well">
                         <ul class="list-side-news">
-                            <li class="{% if page.title == 'News' %}active{% endif %}">
-                                <a href="{{ "/news.html" | prepend: site.baseurl }}">All News</a>
+                            <li class="{% if page.title == 'Blog' %}active{% endif %}">
+                                <a href="{{ "/community/blog.html" | prepend: site.baseurl }}">All News</a>
                             </li>
                             <li class="{% if page.title == 'Releases' %}active{% endif %}">
-                                <a href="{{ "/news/releases.html" | prepend: site.baseurl }}">appserver Releases</a>
+                                <a href="{{ "/community/releases.html" | prepend: site.baseurl }}">appserver Releases</a>
                             </li>
                         </ul>
                         <i class="fa fa-rss"></i> subscribe <a href="{{ "/feed.xml" | prepend: site.baseurl }}">via RSS</a>
