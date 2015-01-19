@@ -1,6 +1,7 @@
 ---
 layout: docs
-title: Documentation
+title: Docs
+position: 30
 permalink: /docs.html
 ---
 
