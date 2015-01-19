@@ -6,11 +6,11 @@ group: Docs
 permalink: /documentation/installation.html
 ---
 
-> [Mac OS X](#mac-os-x)
-> [Windows](#windows)
-> [Debian](#debian)
-> [Fedora](#fedora)
-> [CentOS](#centos)
+> [Mac OS X](#mac-os-x)  
+> [Windows](#windows)  
+> [Debian](#debian)  
+> [Fedora](#fedora)  
+> [CentOS](#centos)  
 > [Raspian](#raspian)
 
 Besides supporting several operating systems and their specific ways of installing software, we
