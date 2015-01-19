@@ -2,9 +2,9 @@
 
 # Bugfixes
 
-* Closed #290 - Segfault in Windows build
-* Closed #336 - Positioning of namespace definition next to php tag
-* Closed #348 - Changed determination of omitted namespaces
+* Fixed #290 - Segfault in Windows build
+* Fixed #336 - Positioning of namespace definition next to php tag
+* Fixed #348 - Changed determination of omitted namespaces
 
 # Features
 
