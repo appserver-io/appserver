@@ -6,7 +6,7 @@ group: Docs
 permalink: /documentation/persistence-container.html
 ---
 
-> [Singleton SessionBean](#singleton-sessionbean)
+> [Singleton SessionBean](#singleton-sessionbean)  
 > [Stateless SessionBean](#stateless-sessionbean)  
 > [Stateful SessionBean](#stateful-sessionbean)  
 > [Example](#example)  
