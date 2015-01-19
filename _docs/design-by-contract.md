@@ -56,6 +56,7 @@ Supposed, we want to make sure, that the counter in our stateful SessionBean wil
 define a simple contract therefor
 
 ```php
+<?php
 
 namespace Namespace\Module;
 

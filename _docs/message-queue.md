@@ -42,6 +42,7 @@ and save this in a file called `/opt/appserver/myapp/META-INF/message-queues.xml
 we need is the `MessageBean` that allows us to receive and process a message in a separate thread.
 
 ```php
+<?php
 
 namespace Namespace\Modulename;
 
@@ -87,6 +88,7 @@ to initialize the Message-Queue Client and specify which `Queue` you want to sen
 Again, we will extend our `Servlet` to start an import process on a POST request 
 
 ```php
+<?php
 
 namespace Namespace\Module;
 

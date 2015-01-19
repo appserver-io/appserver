@@ -63,6 +63,7 @@ The following example shows you a really simple implementation of a stateful `Se
 a counter that'll be raised whenever you call the `raiseMe()` method.
 
 ```php
+<?php
 
 namespace Namespace\Module;
 
@@ -103,6 +104,7 @@ To develop our `HelloWorldServlet` further, let's raise the counter with each re
 do this, we've to refactor the `doGet()` method 
 
 ```php
+<?php
 
 namespace Namespace\Module;
 

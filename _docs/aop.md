@@ -30,6 +30,7 @@ Let's say we simply want to log all GET requests on our HelloWorldServlet withou
 code to the servlet itself. To do this, we first have to create an Aspect class like
 
 ```php
+<?php
 
 namespace Namespace\Module;
 

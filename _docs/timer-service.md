@@ -19,6 +19,7 @@ of your Beans in such a way. How can this be done? I'm sure you know the answer:
 annotation to your method
 
 ```php
+<?php
 
 namespace Namespace\Modulename;
 
