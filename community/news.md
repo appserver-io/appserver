@@ -1,8 +1,9 @@
 ---
 layout: news
-title: News
-position: 40
-permalink: /news.html
+title: Blog
+position: 10
+group: Community
+permalink: /community/blog.html
 author: all
 ---
 

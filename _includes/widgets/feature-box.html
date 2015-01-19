@@ -1,0 +1,11 @@
+{% for b in include.box %}
+<div class="col-md-4 img-portfolio">
+    <a href="{{ b.link | prepend: site.baseurl }}">
+        <img class="img-responsive img-hover" src="{{ b.image }}" alt="" style="width:50%">
+    </a>
+    <h3>
+        <a href="{{ b.link | prepend: site.baseurl }}">{{ b.title }}</a>
+    </h3>
+    <p>{{ b.description }}</p>
+</div>
+{% endfor %}

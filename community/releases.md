@@ -2,8 +2,8 @@
 layout: news
 title: Releases
 position: 60
-group: News
-permalink: /news/releases.html
+group: Community
+permalink: /community/releases.html
 author: all
 ---
 

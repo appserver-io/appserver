@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{% include head.html %}
+
+<body role="document">
+
+    {% include header.html %}
+
+    <!-- Page Content -->
+    <div class="container-page">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 content">
+                      <h2>{{ page.title }}</h2><hr/>
+                </div>
+            </div>
+            
+            <p><br/></p>
+            
+            <div class="row">
+                <div class="col-md-3">
+                    {% include subnavigation.html %}
+                </div>
+                <!-- Content Section -->
+                <div class="col-md-9">    
+                    {{ content }}
+                </div>
+            </div>
+            <!-- /.row -->
+        </div>
+    </div>
+    <!-- /.container -->
+
+    {% include footer.html %}
+
+</body>
+</html>

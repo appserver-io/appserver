@@ -16,6 +16,8 @@ url: "http://appserver.io"
 collections:
   docs:
     output: true
+  features:
+    path: products/
 
 twitter_username: php_appserver
 
