@@ -6,7 +6,7 @@ group: Docs
 permalink: /documentation/aop.html
 ---
 
-> [How to add an Advice](#how-to-add-an-advice)
+> [How to add an Advice](#how-to-add-an-advice)  
 
 Meanwhile, AOP is more than a buzzword. Many of the PHP frameworks out there are supporting AOP for
 some years, in other languages like Java it's available for a long time. As there is actually
