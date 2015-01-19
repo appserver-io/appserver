@@ -1,5 +1,7 @@
 # TechDivision_ApplicationServer
 
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/appserver-io/appserver?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Main repository for the [appserver.io](http://www.appserver.io/) project.
 
 [![Latest Stable Version](https://poser.pugx.org/techdivision/appserver/v/stable.png)](https://packagist.org/packages/techdivision/appserver) [![Total Downloads](https://poser.pugx.org/techdivision/appserver/downloads.png)](https://packagist.org/packages/techdivision/appserver) [![Latest Unstable Version](https://poser.pugx.org/techdivision/appserver/v/unstable.png)](https://packagist.org/packages/techdivision/appserver) [![License](https://poser.pugx.org/techdivision/appserver/license.png)](https://packagist.org/packages/techdivision/appserver) [![Build Status](https://travis-ci.org/techdivision/TechDivision_ApplicationServer.png)](https://travis-ci.org/techdivision/TechDivision_ApplicationServer) [![Code Coverage](https://scrutinizer-ci.com/g/techdivision/TechDivision_ApplicationServer/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/techdivision/TechDivision_ApplicationServer/?branch=master)
