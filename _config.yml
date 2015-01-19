@@ -14,8 +14,10 @@ baseurl: ""
 url: "http://appserver.io"
 
 collections:
-    features:
-        path: product/
+  docs:
+    output: true
+  features:
+    path: product/
 
 twitter_username: php_appserver
 

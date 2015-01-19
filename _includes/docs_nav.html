@@ -1,4 +1,4 @@
-{% assign items = site.data.[page.subnavigation] %}
+{% assign items = site.docs | sort: 'position' %}
 
 <!-- Navigation -->
 <div class="list-group">
