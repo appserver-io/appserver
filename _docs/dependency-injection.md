@@ -6,7 +6,7 @@ group: Docs
 permalink: /documentation/dependency-injection.html
 ---
 
-> [What can be injected](#what-can-be-injected)
+> [What can be injected](#what-can-be-injected)  
 > [How to inject an instance](#how-to-inject-an-instance)   
 
 Dependency Injection, furthermore DI, enables developers to write cleaner, reusable and maintainable
