@@ -76,7 +76,7 @@ appserver.io and PHP and you´re done!
             <tr>
             <td>Rewrite Map</td>
                 <td class="text-center"><i class="icon-ok fa fa-2x fa-check-square-o"></td>
-                <td class="text-center"><i class="icon-nok fa fa-2x fa-minus-square"></i></td>	
+                <td class="text-center"><i class="icon-nok fa fa-2x fa-check-square-o"></i></td>	
                 <td class="text-center"><i class="icon-ok fa fa-2x fa-check-square-o"></i></td>
             </tr>
             <tr>
