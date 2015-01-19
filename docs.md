@@ -2,7 +2,7 @@
 layout: docs
 title: Docs
 position: 30
-permalink: /docs.html
+permalink: /documentation.html
 ---
 
 The objective of the project is to develop a multithreaded application server for PHP, written

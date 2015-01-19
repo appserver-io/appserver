@@ -3,7 +3,7 @@ layout: docs
 title: Uninstall
 position: 30
 group: Docs
-permalink: /docs/uninstall.html
+permalink: /documentation/uninstall.html
 ---
 
 Before uninstalling you should stop all services which are still running (rpm-based packages will see to that themselves), otherwise there might

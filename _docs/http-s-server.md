@@ -3,7 +3,7 @@ layout: docs
 title: HTTP(S) Server
 position: 40
 group: Docs
-permalink: /docs/http-s-server.html
+permalink: /documentation/http-s-server.html
 ---
 
 > [Configure a Virtual Host](#configure-a-virtual-host)

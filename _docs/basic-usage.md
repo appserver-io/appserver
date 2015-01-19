@@ -3,7 +3,7 @@ layout: docs
 title: Basic Usage
 position: 20
 group: Docs
-permalink: /docs/basic-usage.html
+permalink: /documentation/basic-usage.html
 ---
 
 > [Start and Stop Scripts](#start-and-stop-scripts)

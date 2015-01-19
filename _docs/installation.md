@@ -3,7 +3,7 @@ layout: docs
 title: Installation
 position: 10
 group: Docs
-permalink: /docs/installation.html
+permalink: /documentation/installation.html
 ---
 
 > [Mac OS X](#mac-os-x)

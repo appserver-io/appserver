@@ -3,7 +3,7 @@ layout: docs
 title: Dependency Injection
 position: 70
 group: Docs
-permalink: /docs/dependency-injection.html
+permalink: /documentation/dependency-injection.html
 ---
 
 > [What can be injected](#what-can-be-injected)

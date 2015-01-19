@@ -3,7 +3,7 @@ layout: docs
 title: AOP
 position: 110
 group: Docs
-permalink: /docs/aop.html
+permalink: /documentation/aop.html
 ---
 
 > [How to add an Advice](#how-to-add-an-advice)

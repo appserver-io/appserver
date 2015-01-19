@@ -3,7 +3,7 @@ layout: docs
 title: Design by Contract
 position: 120
 group: Docs
-permalink: /docs/design-by-contract.html
+permalink: /documentation/design-by-contract.html
 ---
 
 > [What can be done](#what-can-be-done)

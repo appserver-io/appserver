@@ -3,7 +3,7 @@ layout: docs
 title: Message Queue
 position: 90
 group: Docs
-permalink: /docs/message-queue.html
+permalink: /documentation/message-queue.html
 ---
 
 > [Got mail](#got-mail)
