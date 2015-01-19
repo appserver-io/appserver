@@ -1,19 +1,19 @@
 # Version 1.0.0-beta4
 
-# Bugfixes
+## Bugfixes
 
 * Fixed #290 - Segfault in Windows build
 * Fixed #336 - Positioning of namespace definition next to php tag
 * Fixed #348 - Changed determination of omitted namespaces
 
-# Features
+## Features
 
 * Closed #282 - Implement logrotate functionality as Server
 * Closed #192 - Refactor configuration
 * Closed #350 - Creating EPB references by annotations + XML configuration
 * Closed #284 - Refactor Application implementation/interface
 * Closed #289 - Refactoring bean/servlet/manager registration in naming directory
-* Closed #285 - Refactor servlet engine virtual host management #285
+* Closed #285 - Refactor servlet engine virtual host management
 * Closed #291 - Configuration (XML configuration) based bean declaration
 * Closed #300 - Timer Service doesn't support seconds as period
 * Closed #281 - Refactoring InitialContext in NamingDirectory
@@ -35,24 +35,24 @@
 
 # Version 1.0.0-beta3
 
-# Bugfixes
+## Bugfixes
 
 * Fixing problems with FastCGI connection to latest HHVM versions
 * Analytics module configuration within virtual hosts was ignored
 
-# Features
+## Features
 
 * None
 
 # Version 1.0.0-beta2
 
-# Bugfixes
+## Bugfixes
 
 * Query directories under webapps for WEB-INF or META-INF to make sure we have a valid application
 * Bugfixing invalid servlet init parameter initialization when using @Route annotation on servlets
 * Bugfixing for invalid folder check when try to parse folders defined in context.xml for servlets
 
-# Features
+## Features
 
 * Closed #299 - Refactor Message-Queue Client
 * Add welcome page functionality + Iron Horse logos in webapps/welcome-page directory
