@@ -2,8 +2,8 @@
 layout: default
 title: community edition
 position: 30
-group: Product
-permalink: /product/community-edition.html
+group: Products
+permalink: /products/community-edition.html
 author: all
 ---
 

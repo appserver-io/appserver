@@ -1,9 +1,9 @@
 ---
 layout: default
-title: Certification
+title: 
 position: 40
 group: Services
-permalink: /services/certification.html
+permalink: 
 ---
 
 ## Certification

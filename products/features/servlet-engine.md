@@ -3,7 +3,7 @@ layout: detail
 title: Servlet Engine
 position: 10
 group: Features
-permalink: /product/features/servlet-engine.html
+permalink: /products/features/servlet-engine.html
 subnavigation: features
 author: all
 ---

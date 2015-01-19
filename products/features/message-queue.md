@@ -3,7 +3,7 @@ layout: detail
 title: Message Queue
 position: 10
 group: Features
-permalink: /product/features/message-queue.html
+permalink: /products/features/message-queue.html
 subnavigation: features
 author: all
 ---

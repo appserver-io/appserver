@@ -1,9 +1,9 @@
 ---
 layout: default
-title: Company
+title: 
 position: 40
 group: About
-permalink: /about/company.html
+permalink: 
 ---
 
 ## Company

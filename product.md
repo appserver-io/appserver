@@ -1,8 +1,8 @@
 ---
 layout: default
-title: Product
+title: Products
 position: 10
-permalink: /product.html
+permalink: /products.html
 ---
 
 ## <i class="fa fa-question-circle"> What is appserver.io?</i>
