@@ -29,7 +29,7 @@ to fulfill the specific needs of our partners:
                 <li class="list-group-item">developer license for enterprise edition</li>
                 <li class="list-group-item">use of appserver logo</li>
                 <li class="list-group-item">named as partner on website</li>
-                <li class="list-group-item"><a href="#" class="btn btn-info">Apply now!</a>
+                <li class="list-group-item"><a href="http://techdivision.us1.list-manage.com/subscribe/?u=e6acb2703beadfd670dfc87f3&id=74e80f6488" class="btn btn-info">Apply now!</a>
                 </li>
             </ul>
         </div>
@@ -49,7 +49,7 @@ to fulfill the specific needs of our partners:
                 <li class="list-group-item">developer license for enterprise edition</li>
                 <li class="list-group-item">use of appserver logo</li>
                 <li class="list-group-item">special discounts for trainings</li>
-                <li class="list-group-item"><a href="#" class="btn btn-info">Apply now!</a>
+                <li class="list-group-item"><a href="http://techdivision.us1.list-manage.com/subscribe/?u=e6acb2703beadfd670dfc87f3&id=74e80f6488" class="btn btn-info">Apply now!</a>
                 </li>
             </ul>
         </div>
@@ -69,7 +69,7 @@ to fulfill the specific needs of our partners:
                 <li class="list-group-item">developer license for enterprise edition</li>
                 <li class="list-group-item">only 2 per country</li>
                 <li class="list-group-item">named as partner on website</li>
-                <li class="list-group-item"><a href="#" class="btn btn-info">Apply now!</a>
+                <li class="list-group-item"><a href="http://techdivision.us1.list-manage.com/subscribe/?u=e6acb2703beadfd670dfc87f3&id=74e80f6488" class="btn btn-info">Apply now!</a>
                 </li>
             </ul>
         </div>

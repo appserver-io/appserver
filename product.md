@@ -5,7 +5,7 @@ position: 10
 permalink: /product.html
 ---
 
-## <i class="icon-ci fa fa-question-circle"> What is appserver.io?</i>
+## <i class="fa fa-question-circle"> What is appserver.io?</i>
 ***
 
 appserver.io is a next generation PHP infrastructure. It is not a webserver like Apache or nginx, nor a Timer Service or Message Queue. It is all of them and much more in one extremely powerful bundle. And it is completely written in PHP enabling PHP developers to adapt appserver.io to their specific needs with no additional coding language - just PHP!
@@ -14,7 +14,7 @@ appserver.io is a next generation PHP infrastructure. It is not a webserver like
 
 ![alt text]({{ "/assets/img/appserver-stack.png" | prepend: site.baseurl }} "appserver.io stack")
 
-### <i class="icon-ci fa fa-info-circle"> Want to learn more about the power of appserver.io?</i>
+### <i class="fa fa-info-circle"> Want to learn more about the power of appserver.io?</i>
 
 You are interested and want to learn more about the of appserver.io. See the different sections below.
 
