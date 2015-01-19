@@ -1,9 +1,9 @@
 ---
 layout: default
-title: appserver.io enterprise edition
+title: enterprise edition
 position: 40
 group: Product
-permalink: /product/appserver-io-enterprise-edition.html
+permalink: /product/enterprise-edition.html
 author: all
 ---
 

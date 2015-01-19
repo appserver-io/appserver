@@ -1,9 +1,9 @@
 ---
 layout: default
-title: appserver.io community edition
+title: community edition
 position: 30
 group: Product
-permalink: /product/appserver-io-community-edition.html
+permalink: /product/community-edition.html
 author: all
 ---
 

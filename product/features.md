@@ -19,12 +19,6 @@ rewrite-engine:
     link   : /product/features/webserver.html
     image  : /assets/img/icon/rewrite_engine.png
     
-rewrite-map:
-  - title       : Rewrite Map
-    description : Easy to use on all platforms and just PHP<br/><br/><br/>
-    link   : /product/features/webserver.html
-    image  : /assets/img/icon/rewrite_map.png
-    
 servlet-engine:
   - title       : Servlet Engine
     description : Easy to use on all platforms and just PHP<br/><br/><br/>
@@ -57,7 +51,6 @@ persistence-container:
 <div class="row">
     {% include widgets/feature-box.html box = page.webserver %}
     {% include widgets/feature-box.html box = page.rewrite-engine %}
-    {% include widgets/feature-box.html box = page.rewrite-map %}
     {% include widgets/feature-box.html box = page.servlet-engine %}
     {% include widgets/feature-box.html box = page.message-queue %}
     {% include widgets/feature-box.html box = page.timer-service %}
