@@ -6,12 +6,12 @@ group: Docs
 permalink: /documentation/configuration.html
 ---
 
-> [Basic Architecture](#basic-architecture)
+> [Basic Architecture](#basic-architecture)  
 > [Container Configuration](#container-configuration)  
 > [Server Configuration](#server-configuration)  
 > [Application Configuration](#application-configuration)  
 > [Configuration Defaults](#configuration-defaults)  
-> [Optional Configuration](#optional-configuration) 
+> [Optional Configuration](#optional-configuration)  
 
 We believe that the appserver should be highly configurable, so anyone interested can fiddle 
 around with it. Therefor we provide a central configuration file located at `/opt/appserver/etc/appserver.xml`.
