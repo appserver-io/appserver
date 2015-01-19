@@ -6,7 +6,7 @@ group: Docs
 permalink: /documentation/message-queue.html
 ---
 
-> [Got mail](#got-mail)
+> [Got mail](#got-mail)  
 > [Send a message](#send-a-message)  
 
 A Message-Queue provides the possibility to process long running tasks in a encapsulated context.
