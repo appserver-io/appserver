@@ -1,9 +1,9 @@
 ---
 layout: default
-title: Trainings
+title: 
 position: 30
 group: Services
-permalink: /services/trainings.html
+permalink: 
 ---
 
 ## Trainings

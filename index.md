@@ -18,19 +18,19 @@ slider:
 boxes-targetgroups:
   - title       : For Developers
     text        : Easy to use on all platforms and just PHP
-    link-href   : /what-is-appserver-io/for-developers.html
+    link-href   : /downloads.html
     link-label  : Learn more
   - title       : For Vendors
     text        : More performance and reduced maintenance
-    link-href   : /what-is-appserver-io/for-merchants.html
+    link-href   : /partners.html
     link-label  : Learn more
   - title       : For Agencies
     text        : Increases efficiency and sales potential
-    link-href   : /what-is-appserver-io/for-agencies.html
+    link-href   : /partners.html
     link-label  : Learn more
   - title       : For Companies
     text        : Easier distribution and seamless integration
-    link-href   : /what-is-appserver-io/for-software.html
+    link-href   : /partners.html
     link-label  : Learn more
 ---
 
@@ -74,7 +74,7 @@ appserver.io and PHP and you´re done!
                 <td class="text-center"><i class="icon-ok fa fa-2x fa-check-square-o"></i></td>
             </tr>
             <tr>
-            <td><a href="/product/features/rewrite-map.html">Map <i class="icon-ci fa fa-info-circle"></i></a></td>
+            <td>Map</td>
                 <td class="text-center"><i class="icon-ok fa fa-2x fa-check-square-o"></td>
                 <td class="text-center"><i class="icon-nok fa fa-2x fa-minus-square"></i></td>	
                 <td class="text-center"><i class="icon-ok fa fa-2x fa-check-square-o"></i></td>
@@ -122,10 +122,11 @@ appserver.io and PHP and you´re done!
 ## <i class="fa fa-video-camera"> Watch the Video from the Imagine Conference</i>
 <p><br/></p>
 <div class="elastic-video">
-	<iframe width="854" height="510" src="//www.youtube.com/embed/D5rkJ1bznKo" frameborder="0" allowfullscreen></iframe>
+	<iframe width="854" height="510" src="//www.youtube.com/embed/D5rkJ1bznKo#t=10" frameborder="0" allowfullscreen></iframe>
 </div>
 <p><br/></p>
 
+<!--
 ## <i class="fa fa-hand-o-right"></i> Lightning speed is only one part of the benefits of appserver.io...
 <p><br/></p>
 <div class="row">
@@ -140,5 +141,7 @@ appserver.io and PHP and you´re done!
     <div class="col-md-6"><img class="img-responsive img-hover" src="http://placehold.it/700x400" alt="">     </div>
 </div>
 <p><br/></p>
+-->
+
 
 ## <i class="fa fa-arrow-right"></i>&nbsp;&nbsp; ... and best of all it´s completely open source!

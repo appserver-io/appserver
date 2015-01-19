@@ -3,7 +3,7 @@ layout: detail
 title: Webserver
 position: 10
 group: Features
-permalink: /product/features/webserver.html
+permalink: /products/features/webserver.html
 subnavigation: features
 author: all
 ---

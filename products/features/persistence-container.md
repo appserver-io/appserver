@@ -3,7 +3,7 @@ layout: detail
 title: Persistence Container
 position: 10
 group: Features
-permalink: /product/features/persistence-container.html
+permalink: /products/features/persistence-container.html
 subnavigation: features
 author: all
 ---

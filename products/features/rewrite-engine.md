@@ -3,7 +3,7 @@ layout: detail
 title: Rewrite Engine
 position: 20
 group: Features
-permalink: /product/features/rewrite-engine.html
+permalink: /products/features/rewrite-engine.html
 subnavigation: features
 author: all
 ---

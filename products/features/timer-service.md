@@ -3,7 +3,7 @@ layout: detail
 title: Timer Service
 position: 10
 group: Features
-permalink: /product/features/timer-service.html
+permalink: /products/features/timer-service.html
 subnavigation: features
 author: all
 ---
