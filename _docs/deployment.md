@@ -6,7 +6,7 @@ group: Docs
 permalink: /documentation/deployment.html
 ---
 
-> [Deployment Modes](#deployment-modes)
+> [Deployment Modes](#deployment-modes)  
 > [Marker Files](#marker-files)  
 > [Basic Workflows](#basic-workflows)  
 > [Windows Notes](#windows-notes)  
