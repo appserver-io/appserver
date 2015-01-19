@@ -22,6 +22,7 @@ instance to your class, you have to register it. Registering a class for DI is p
 register a class in the DI container the most common way is to use annotations.
 
 ```php
+<?php
 
 namespace Namespace\Modulename
 
@@ -52,6 +53,7 @@ You simple has to tell the DI container what you need, let's have a look at the 
 The first possibility we have is to annotate a class property
 
 ```php
+<?php
 
 namespace Namespace\Module;
 
@@ -131,6 +133,7 @@ available annotations will be part of the [Persistence-Container](#persistence-c
 The second possibility to inject an instance is setter injection.
 
 ```php
+<?php
 
 namespace Namespace\Module;
 

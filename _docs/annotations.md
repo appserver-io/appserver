@@ -17,6 +17,7 @@ If you, for example, think about extending the actions of the controller compone
 MVC framework with a @Route annotation, you can do that in the following way
 
 ```php
+<?php
 
 namespace Namespace\Module;
 
