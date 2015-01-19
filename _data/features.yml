@@ -1,17 +1,17 @@
 - title: Webserver
-  url: /product/features/webserver.html
+  url: /products/features/webserver.html
   
 - title: Rewrite Engine
-  url: /product/features/rewrite-engine.html
+  url: /products/features/rewrite-engine.html
 
 - title: Servlet Engine
-  url: /product/features/servlet-engine.html
+  url: /products/features/servlet-engine.html
   
 - title: Message Queue
-  url: /product/features/message-queue.html
+  url: /products/features/message-queue.html
   
 - title: Timer Service
-  url: /product/features/timer-service.html
+  url: /products/features/timer-service.html
   
 - title: Persistence Container
-  url: /product/features/persistence-container.html
+  url: /products/features/persistence-container.html
