@@ -6,7 +6,7 @@ group: Docs
 permalink: /documentation/design-by-contract.html
 ---
 
-> [What can be done](#what-can-be-done)
+> [What can be done](#what-can-be-done)  
 > [How does it work](#how-does-it-work)  
 > [Usage](#usage)  
 
