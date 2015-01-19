@@ -6,7 +6,7 @@ group: Docs
 permalink: /documentation/http-s-server.html
 ---
 
-> [Configure a Virtual Host](#configure-a-virtual-host)
+> [Configure a Virtual Host](#configure-a-virtual-host)  
 > [Configure your Environment Variables](#configure-your-environment-variables)  
 
 The configuration itself is mostly self-explanatory so just have a look to the preferred config
