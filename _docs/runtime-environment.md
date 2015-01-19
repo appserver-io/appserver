@@ -2,6 +2,7 @@
 layout: docs
 title: Runtime Environment
 position: 150
+group: Docs
 permalink: /docs/runtime-environment.html
 ---
 

@@ -2,6 +2,7 @@
 layout: docs
 title: Installation
 position: 10
+group: Docs
 permalink: /docs/installation.html
 ---
 

@@ -2,6 +2,7 @@
 layout: docs
 title: Persistence Container
 position: 80
+group: Docs
 permalink: /docs/persistence-container.html
 ---
 

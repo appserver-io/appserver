@@ -2,6 +2,7 @@
 layout: docs
 title: HTTP(S) Server
 position: 40
+group: Docs
 permalink: /docs/http-s-server.html
 ---
 

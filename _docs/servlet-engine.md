@@ -2,6 +2,7 @@
 layout: docs
 title: Servlet Engine
 position: 50
+group: Docs
 permalink: /docs/servlet-engine.html
 ---
 

@@ -2,6 +2,7 @@
 layout: docs
 title: Design by Contract
 position: 120
+group: Docs
 permalink: /docs/design-by-contract.html
 ---
 

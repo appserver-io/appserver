@@ -2,6 +2,7 @@
 layout: docs
 title: Timer Service
 position: 100
+group: Docs
 permalink: /docs/timer-service.html
 ---
 

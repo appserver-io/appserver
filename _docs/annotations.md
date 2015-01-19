@@ -2,6 +2,7 @@
 layout: docs
 title: Annotations
 position: 60
+group: Docs
 permalink: /docs/annotations.html
 ---
 

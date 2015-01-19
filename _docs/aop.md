@@ -2,6 +2,7 @@
 layout: docs
 title: AOP
 position: 110
+group: Docs
 permalink: /docs/aop.html
 ---
 

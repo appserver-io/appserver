@@ -32,7 +32,7 @@
                       </ul>
                     </li>
                 {% else %}
-                    <li id="nav-{{ lpage.title | downcase | replace: ' ', '-' | replace: '.', '-' }}" class="{% if lpage.title == page.title %}active{% endif %}">
+                    <li id="nav-{{ lpage.title | downcase | replace: ' ', '-' | replace: '.', '-' }}" class="{% if lpage.title == page.title or lpage.title == page.group %}active{% endif %}">
                         <a href="{{ lpage.url | prepend: site.baseurl }}"><span>{{ lpage.title }}</span></a>
                     </li>
                 {% endif %}

@@ -2,6 +2,7 @@
 layout: docs
 title: Dependency Injection
 position: 70
+group: Docs
 permalink: /docs/dependency-injection.html
 ---
 

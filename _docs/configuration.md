@@ -2,6 +2,7 @@
 layout: docs
 title: Configuration
 position: 130
+group: Docs
 permalink: /docs/configuration.html
 ---
 

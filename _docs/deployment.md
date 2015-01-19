@@ -2,6 +2,7 @@
 layout: docs
 title: Deployment
 position: 150
+group: Docs
 permalink: /docs/deployment.html
 ---
 
