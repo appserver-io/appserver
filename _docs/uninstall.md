@@ -1,7 +1,7 @@
 ---
 layout: docs
 title: Uninstall
-position: 30
+position: 160
 group: Docs
 permalink: /documentation/uninstall.html
 ---
