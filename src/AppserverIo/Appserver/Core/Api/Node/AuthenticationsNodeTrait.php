@@ -63,17 +63,17 @@ trait AuthenticationsNodeTrait
      */
     public function getAuthentication($uri)
     {
-        // Iterate over all authentications
+
+        // iterate over all authentications
         foreach ($this->getAuthentications() as $authenticationNode) {
 
-            // If we found one with a matching URI we will return it
+            // if we found one with a matching URI we will return it
             if ($authenticationNode->getUri() === $uri) {
-
                 return $authenticationNode;
             }
         }
 
-        // Still here? Seems we did not find anything
+        // we did not find anything
         return false;
     }
 
@@ -84,18 +84,16 @@ trait AuthenticationsNodeTrait
      */
     public function getAuthenticationsAsArray()
     {
-        // Iterate over the authentication nodes and sort them into an array
-        $authentications = array();
-        foreach ($this->getAuthentications() as $authenticationNode) {
 
-            // Restructure to an array
-            $authentications[] = array(
-                'uri' => $authenticationNode->getUri(),
-                'params' => $authenticationNode->getParamsAsArray()
-            );
+        // initializet the array for the authentications
+        $authentications = array();
+
+        // iterate over the authentication nodes and sort them into an array
+        foreach ($this->getAuthentications() as $authenticationNode) {
+            $authentications[$authenticationNode->getUri()] = $authenticationNode->getParamsAsArray();
         }
 
-        // Return what we got
+        // return the array
         return $authentications;
     }
 }

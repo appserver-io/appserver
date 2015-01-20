@@ -1,0 +1,94 @@
+{
+    "example.local":{
+        "params":{
+            "admin":"info@appserver.io",
+            "documentRoot":"webapps\/example"
+        },
+        "rewriteMaps":[
+            
+        ],
+        "rewrites":[
+            {
+                "condition":"-d{OR}-f{OR}-l",
+                "target":null,
+                "flag":"L"
+            }
+        ],
+        "environmentVariables":[
+            
+        ],
+        "accesses":{
+            "allow":[
+                {
+                    "X_REQUEST_URI":"^.*"
+                }
+            ]
+        },
+        "locations":[
+            {
+                "condition":"^test\\\/.*\\.php",
+                "handlers":{
+                    ".php":{
+                        "name":"hhvm",
+                        "params":{
+                            "host":"127.0.0.1",
+                            "port":9000
+                        }
+                    }
+                }
+            }
+        ],
+        "authentications":[
+            
+        ],
+        "analytics":[
+            
+        ]
+    },
+    "www.example.local":{
+        "params":{
+            "admin":"info@appserver.io",
+            "documentRoot":"webapps\/example"
+        },
+        "rewriteMaps":[
+            
+        ],
+        "rewrites":[
+            {
+                "condition":"-d{OR}-f{OR}-l",
+                "target":null,
+                "flag":"L"
+            }
+        ],
+        "environmentVariables":[
+            
+        ],
+        "accesses":{
+            "allow":[
+                {
+                    "X_REQUEST_URI":"^.*"
+                }
+            ]
+        },
+        "locations":[
+            {
+                "condition":"^test\\\/.*\\.php",
+                "handlers":{
+                    ".php":{
+                        "name":"hhvm",
+                        "params":{
+                            "host":"127.0.0.1",
+                            "port":9000
+                        }
+                    }
+                }
+            }
+        ],
+        "authentications":[
+            
+        ],
+        "analytics":[
+            
+        ]
+    }
+}

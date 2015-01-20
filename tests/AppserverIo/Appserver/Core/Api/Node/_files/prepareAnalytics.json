@@ -1,0 +1,20 @@
+[
+    {
+        "uri":"^\\\/welcome-page\\\/logo_(.+?)_(.+?)_(.+?)\\.png.*",
+        "connectors":[
+            {
+                "name":"ga-app-tracking",
+                "type":"\\AppserverIo\\WebServer\\Modules\\Analytics\\Connectors\\UniversalAnalytics\\MeasurementProtocol",
+                "params":{
+                    "t":"screenview",
+                    "av":"$1",
+                    "aid":"$2",
+                    "aiid":"$3",
+                    "tid":"UA-12386171-4",
+                    "an":"appserver",
+                    "cd":"installation"
+                }
+            }
+        ]
+    }
+]

@@ -1,0 +1,7 @@
+[
+    {
+        "condition":"-d{OR}-f{OR}-l",
+        "target":null,
+        "flag":"L"
+    }
+]

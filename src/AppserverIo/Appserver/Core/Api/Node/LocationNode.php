@@ -30,20 +30,19 @@ class LocationNode extends AbstractNode
 {
 
     /**
+     * The file handler node trait.
+     *
+     * @var \AppserverIo\Appserver\Core\Api\Node\FileHandlersNodeTrait
+     */
+    use FileHandlersNodeTrait;
+
+    /**
      * The condition to match for.
      *
      * @var string
      * @AS\Mapping(nodeType="string")
      */
     protected $condition;
-
-    /**
-     * The file handlers
-     *
-     * @var array
-     * @AS\Mapping(nodeName="fileHandlers/fileHandler", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\FileHandlerNode")
-     */
-    protected $fileHandlers;
 
     /**
      * Returns the condition to match for.
@@ -56,12 +55,16 @@ class LocationNode extends AbstractNode
     }
 
     /**
-     * Returns the file handler nodes.
+     * Converts the location node into an assoziative array
+     * and returns it.
      *
-     * @return array The file handler nodes
+     * @return array The array with the location node data
      */
-    public function getFileHandlers()
+    public function toArray()
     {
-        return $this->fileHandlers;
+        return array(
+            'condition' => $this->getCondition(),
+            'handlers' => $this->getFileHandlersAsArray()
+        );
     }
 }

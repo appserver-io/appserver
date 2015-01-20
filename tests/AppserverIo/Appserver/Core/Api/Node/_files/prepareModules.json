@@ -1,0 +1,14 @@
+{
+    "9a9fd0dd-26ca-46b0-a49e-bbc84daf4a26":"\\AppserverIo\\WebServer\\Modules\\VirtualHostModule",
+    "702d4d0b-bc12-4673-b665-efa9d4de12c9":"\\AppserverIo\\WebServer\\Modules\\AuthenticationModule",
+    "b169353f-bfec-450c-9959-db646760c2a8":"\\AppserverIo\\WebServer\\Modules\\EnvironmentVariableModule",
+    "10211bfa-dc0e-42d2-92f3-348a03133c00":"\\AppserverIo\\WebServer\\Modules\\RewriteModule",
+    "400ce4a9-7141-442b-bb04-f6b3627c636b":"\\AppserverIo\\WebServer\\Modules\\DirectoryModule",
+    "9775157f-453b-47c7-a0d5-390a4c078247":"\\AppserverIo\\WebServer\\Modules\\AccessModule",
+    "82284b6a-76df-415b-93c8-04d9ef59e5ca":"\\AppserverIo\\WebServer\\Modules\\CoreModule",
+    "a2a4f7a5-b9cc-4c97-858d-bea17f552480":"\\AppserverIo\\WebServer\\Modules\\PhpModule",
+    "1a6bf9a6-6f20-4d53-9c8a-55c398f08c06":"\\AppserverIo\\WebServer\\Modules\\FastCgiModule",
+    "a6b8b049-d209-47d4-82f7-7d77fd80dc68":"\\AppserverIo\\Appserver\\ServletEngine\\ServletEngine",
+    "b4b27187-43bf-4243-a16b-02ce01f40ced":"\\AppserverIo\\WebServer\\Modules\\DeflateModule",
+    "c16a0a5f-d2e2-4642-a53c-1c96edb7805d":"\\AppserverIo\\Appserver\\Core\\Modules\\ProfileModule"
+}

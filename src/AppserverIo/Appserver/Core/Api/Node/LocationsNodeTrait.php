@@ -35,7 +35,7 @@ namespace AppserverIo\Appserver\Core\Api\Node;
  */
 trait LocationsNodeTrait
 {
-    
+
 
     /**
      * The locations.
@@ -44,7 +44,7 @@ trait LocationsNodeTrait
      * @AS\Mapping(nodeName="locations/location", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\LocationNode")
      */
     protected $locations = array();
-    
+
     /**
      * Will return the locations array.
      *
@@ -54,7 +54,7 @@ trait LocationsNodeTrait
     {
         return $this->locations;
     }
-    
+
     /**
      * Will return the location node with the specified condition and if nothing could be found we will return false.
      *
@@ -66,17 +66,17 @@ trait LocationsNodeTrait
     {
         // iterate over all locations
         foreach ($this->getLocations() as $location) {
-    
+
             // if we found one with a matching condition we will return it
             if ($location->getCondition() === $condition) {
                 return $location;
             }
         }
-    
+
         // Still here? Seems we did not find anything
         return false;
     }
-    
+
     /**
      * Returns the locations as an associative array.
      *
@@ -87,13 +87,14 @@ trait LocationsNodeTrait
         // iterate over the location nodes and sort them into an array
         $locations = array();
         foreach ($this->getLocations() as $locationNode) {
-    
+
             // restructure to an array
             $locations[$locationNode->getCondition()] = array(
-                'condition' => $locationNode->getCondition()
+                'condition' => $locationNode->getCondition(),
+                'handlers' =>  $locationNode->getFileHandlersAsArray()
             );
         }
-    
+
         // return what we got
         return $locations;
     }

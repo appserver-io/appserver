@@ -61,17 +61,17 @@ trait RewritesNodeTrait
      */
     public function getRewrite($condition)
     {
-        // Iterate over all rewrites
+
+        // iterate over all rewrites
         foreach ($this->getRewrites() as $rewriteNode) {
 
-            // If we found one with a matching condition we will return it
+            // if we found one with a matching condition we will return it
             if ($rewriteNode->getCondition() === $condition) {
-
                 return $rewriteNode;
             }
         }
 
-        // Still here? Seems we did not find anything
+        // we did not find anything
         return false;
     }
 
@@ -82,19 +82,29 @@ trait RewritesNodeTrait
      */
     public function getRewritesAsArray()
     {
-        // Iterate over the rewrite nodes and sort them into an array
-        $rewrites = array();
-        foreach ($this->getRewrites() as $rewriteNode) {
 
-            // Restructure to an array
-            $rewrites[$rewriteNode->getCondition()] = array(
-                'condition' => $rewriteNode->getCondition(),
-                'target' => $rewriteNode->getTarget(),
-                'flag' => $rewriteNode->getFlag()
+        // initialize the array for the rewrites
+        $rewrites = array();
+
+        // prepare the array with the rewrite rules
+        foreach ($this->getRewrites() as $rewrite) {
+
+            // rewrites might be extended using different injector extension types, check for that
+            if ($rewrite->hasInjector()) {
+                $target = $rewrite->getInjection();
+            } else {
+                $target = $rewrite->getTarget();
+            }
+
+            // build up the array entry
+            $rewrites[] = array(
+                'condition' => $rewrite->getCondition(),
+                'target' => $target,
+                'flag' => $rewrite->getFlag()
             );
         }
 
-        // Return what we got
+        // return the array
         return $rewrites;
     }
 }
