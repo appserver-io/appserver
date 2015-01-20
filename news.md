@@ -1,6 +1,4 @@
 ---
-layout: default
-title: 
-position: 30
+original: news.html
 permalink: /community/blog.html
 ---
