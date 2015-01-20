@@ -38,10 +38,10 @@ class LocationNodeTest extends AbstractTest
      *
      * @var \AppserverIo\Appserver\Core\Api\Node\LocationNode
      */
-    protected $locationNode;
+    protected $location;
 
     /**
-     * Initializes an location node class we want to test.
+     * Initializes a location node class we want to test.
      *
      * @return void
      * @see PHPUnit_Framework_TestCase::setUp()
