@@ -1,4 +1,6 @@
 ---
-original: news.html
-permalink: /community/blog.html
+layout: redirect
+title: News
+permalink: /news.html
+redirect: /community/blog.html
 ---
