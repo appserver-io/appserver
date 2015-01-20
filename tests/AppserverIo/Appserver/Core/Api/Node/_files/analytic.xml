@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<analytic uri="^\/welcome-page\/logo_(.+?)_(.+?)_(.+?)\.png.*">
+    <connectors>
+        <connector name="ga-app-tracking"
+            type="\AppserverIo\WebServer\Modules\Analytics\Connectors\UniversalAnalytics\MeasurementProtocol">
+            <params>
+                <param name="t" type="string">screenview</param>
+                <param name="av" type="string">$1</param>
+                <param name="aid" type="string">$2</param>
+                <param name="aiid" type="string">$3</param>
+                <param name="tid" type="string">UA-12386171-4</param>
+                <param name="an" type="string">appserver</param>
+                <param name="cd" type="string">installation</param>
+            </params>
+        </connector>
+    </connectors>
+</analytic>
