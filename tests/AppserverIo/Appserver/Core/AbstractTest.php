@@ -8,7 +8,18 @@
  * This source file is subject to the Open Software License (OSL 3.0)
  * that is available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
+ *
+ * PHP version 5
+ *
+ * @category   Server
+ * @package    Appserver
+ * @subpackage Core
+ * @author     Tim Wagner <tw@techdivision.com>
+ * @copyright  2014 TechDivision GmbH <info@appserver.io>
+ * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link       http://www.appserver.io
  */
+
 namespace AppserverIo\Appserver\Core;
 
 use AppserverIo\Configuration\Configuration;
@@ -16,14 +27,19 @@ use AppserverIo\Appserver\Core\Api\Node\AppserverNode;
 use AppserverIo\Appserver\Core\Api\Node\ContainerNode;
 use AppserverIo\Appserver\Core\Api\Node\DeploymentNode;
 use AppserverIo\Appserver\Core\Mock\MockInitialContext;
+use org\bovigo\vfs\vfsStreamDirectory;
+use org\bovigo\vfs\vfsStreamWrapper;
 
 /**
+ * Abstract base class for appserver related tests
  *
- * @package AppserverIo\Appserver\Core
- * @copyright Copyright (c) 2010 <info@techdivision.com> - TechDivision GmbH
- * @license http://opensource.org/licenses/osl-3.0.php
- *          Open Software License (OSL 3.0)
- * @author Tim Wagner <tw@techdivision.com>
+ * @category   Server
+ * @package    Appserver
+ * @subpackage Core
+ * @author     Tim Wagner <tw@techdivision.com>
+ * @copyright  2014 TechDivision GmbH <info@appserver.io>
+ * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link       http://www.appserver.io
  */
 abstract class AbstractTest extends \PHPUnit_Framework_TestCase
 {
@@ -132,5 +148,34 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
 
         // return the array with the socket pair
         return $sockets;
+    }
+
+    /**
+     * Path to a real, existing directory which might be used for not-mockable filesystem operations (e.g. chown)
+     *
+     * @return string
+     */
+    public function getTmpDir()
+    {
+        return realpath(__DIR__ . '/../../../_files/var/tmp');
+    }
+
+    /**
+     * Will set up a virtual stream wrapper to mock file system operations below a configured root path
+     * Usage:
+     *  $rootDir = vfsStreamWrapper::getRoot();
+     *
+     * @param string $rootDir Root directory path of your mocked file system path
+     *
+     * @return null
+     *
+     * @see https://phpunit.de/manual/3.7/en/test-doubles.html#test-doubles.mocking-the-filesystem.examples.ExampleTest2.php
+     * @see https://github.com/mikey179/vfsStream/wiki
+     * @see http://tech.vg.no/2011/03/09/mocking-the-file-system-using-phpunit-and-vfsstream/
+     */
+    public function setUpFilesystemMock($rootDir)
+    {
+        vfsStreamWrapper::register();
+        vfsStreamWrapper::setRoot(new vfsStreamDirectory($rootDir));
     }
 }

@@ -236,13 +236,18 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
      * Test if the getter for a certain class loader works.
      *
      * @return void
-     *
-     * @depends testAddClassLoader
      */
     public function testGetClassLoader()
     {
-        $this->application->addClassLoader($mockLoader = $this->getMock('\AppserverIo\Appserver\Core\Interfaces\ClassLoaderInterface'));
+        $mockLoader = $this->getMock('\AppserverIo\Appserver\Core\Interfaces\ClassLoaderInterface');
         $reflectionClass = new \ReflectionClass($mockLoader);
+
+        $mockLoaderConfig = $this->getMock('\AppserverIo\Appserver\Core\Api\Node\ClassLoaderNodeInterface');
+        $mockLoaderConfig->expects($this->any())
+            ->method('getName')
+            ->will($this->returnValue($reflectionClass->getShortName()));
+
+        $this->application->addClassLoader($mockLoader, $mockLoaderConfig);
         $this->assertEquals($mockLoader, $this->application->getClassLoader($reflectionClass->getShortName()));
     }
 

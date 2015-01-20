@@ -2,6 +2,12 @@
 /**
  * AppserverIo\Appserver\Core\Api\AbstractService
  *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Open Software License (OSL 3.0)
+ * that is available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/osl-3.0.php
+ *
  * PHP version 5
  *
  * @category   Server
@@ -18,6 +24,7 @@ namespace AppserverIo\Appserver\Core\Api;
 use AppserverIo\Configuration\Interfaces\NodeInterface;
 use AppserverIo\Appserver\Core\InitialContext;
 use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
+use AppserverIo\Lang\NotImplementedException;
 
 /**
  * Abstract service implementation.
@@ -255,6 +262,16 @@ abstract class AbstractService implements ServiceInterface
     }
 
     /**
+     * Will return a three character OS identifier e.g. WIN or LIN
+     *
+     * @return string
+     */
+    public function getOsIdentifier()
+    {
+        return strtoupper(substr(PHP_OS, 0, 3));
+    }
+
+    /**
      * Returns the servers main configuration directory.
      *
      * @param string $relativePathToAppend A relative path to append
@@ -305,10 +322,13 @@ abstract class AbstractService implements ServiceInterface
      * @param \AppserverIo\Configuration\Interfaces\NodeInterface $node A node to persist
      *
      * @return void
+     *
+     * @throws \AppserverIo\Lang\NotImplementedException Upon call as it did not get implemented yet!
      */
     public function persist(NodeInterface $node)
     {
-        // implement this
+        // TODO implement this
+        throw new NotImplementedException();
     }
 
     /**
@@ -322,7 +342,7 @@ abstract class AbstractService implements ServiceInterface
     {
 
         // don't do anything under windows
-        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+        if ($this->getOsIdentifier() === 'WIN') {
             return;
         }
 
@@ -352,7 +372,7 @@ abstract class AbstractService implements ServiceInterface
     public function setUserRights(\SplFileInfo $targetDir)
     {
         // we don't do anything under Windows
-        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+        if ($this->getOsIdentifier() === 'WIN') {
             return;
         }
 
@@ -412,7 +432,7 @@ abstract class AbstractService implements ServiceInterface
     {
 
         // don't do anything under Windows
-        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+        if ($this->getOsIdentifier() === 'WIN') {
             return;
         }
 
@@ -576,14 +596,14 @@ abstract class AbstractService implements ServiceInterface
         );
 
         // check the operating system
-        switch (strtoupper(PHP_OS)) {
+        switch ($this->getOsIdentifier()) {
 
-            case 'DARWIN': // on Mac OS X use the system default configuration
+            case 'DAR': // on Mac OS X use the system default configuration
 
                 $configargs = array('config' => '/System/Library/OpenSSL/openssl.cnf');
                 break;
 
-            case 'WINNT': // on Windows use the system configuration we deliver
+            case 'WIN': // on Windows use the system configuration we deliver
 
                 $configargs = array('config' => $this->getBaseDirectory('/php/extras/ssl/openssl.cnf'));
                 break;

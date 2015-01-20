@@ -18,6 +18,7 @@
         "appserver-io-psr/messagequeueprotocol" : "0.2.*",
         "appserver-io/doppelgaenger" : "0.4.*",
         "appserver-io/http" : "0.2.*",
+        "appserver-io/lang" : "0.1.*",
         "appserver-io/server" : "0.2.*",
         "appserver-io/logger" : "0.1.*",
         "appserver-io/storage" : "0.5.*",
@@ -29,7 +30,8 @@
     },
     "require-dev" : {
         "phpunit/phpunit" : "3.7.*",
-        "appserver-io/build" : "0.1.*"
+        "appserver-io/build" : "0.1.*",
+        "mikey179/vfsStream": "1.*"
     },
     "autoload" : {
         "psr-0" : {
