@@ -88,12 +88,9 @@ class DirectoryParser
 
         // iterate all php files
         foreach ($phpFiles as $phpFile) {
-
             // iterate over all configured descriptors and try to load object description
             foreach ($objectManager->getConfiguredDescriptors() as $descriptor) {
-
                 try {
-
                     // cut off the META-INF directory and replace OS specific directory separators
                     $relativePathToPhpFile = str_replace(DIRECTORY_SEPARATOR, '\\', str_replace($directory, '', $phpFile));
 
@@ -111,8 +108,8 @@ class DirectoryParser
                         $objectManager->addObjectDescriptor($objectDescriptor);
                     }
 
-                } catch (\Exception $e) { // if class can not be reflected continue with next class
-
+                // if class can not be reflected continue with next class
+                } catch (\Exception $e) {
                     // log an error message
                     $this->getApplication()->getInitialContext()->getSystemLogger()->error($e->__toString());
 

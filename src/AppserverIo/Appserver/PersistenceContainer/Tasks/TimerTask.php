@@ -127,10 +127,8 @@ class TimerTask extends \Thread
         $timer->lock();
 
         try {
-
             // check if the timer is active
             if ($timer->isActive() === false) {
-
                 // log an info that the timer is NOT active
                 $application->getInitialContext()->getSystemLogger()->info(
                     sprintf(
@@ -213,7 +211,6 @@ class TimerTask extends \Thread
 
         // check if we've a interval
         if ($intervalDuration > 0) {
-
             // load the next expiration date
             $nextExpiration = $timer->getNextExpiration();
 

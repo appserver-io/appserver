@@ -84,7 +84,6 @@ class CreateDatabaseStep extends AbstractStep
     {
 
         try {
-
             // check if we have a valid datasource node
             if ($this->getDatasourceNode() == null) {
                 return;

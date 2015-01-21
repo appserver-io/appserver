@@ -65,10 +65,8 @@ trait ConnectorsNodeTrait
     {
         // Iterate over all connectors
         foreach ($this->getConnectors() as $connectorNode) {
-
             // If we found one with a matching URI we will return it
             if ($connectorNode->getName() === $name) {
-
                 return $connectorNode;
             }
         }
@@ -87,7 +85,6 @@ trait ConnectorsNodeTrait
         // Iterate over the connectors nodes and sort them into an array
         $connectors = array();
         foreach ($this->getConnectors() as $connectorNode) {
-
             // Restructure to an array
             $connectors[] = array(
                 'name' => $connectorNode->getName(),

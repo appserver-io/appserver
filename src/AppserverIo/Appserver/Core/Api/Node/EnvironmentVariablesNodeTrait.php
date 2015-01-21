@@ -35,7 +35,7 @@ namespace AppserverIo\Appserver\Core\Api\Node;
  */
 trait EnvironmentVariablesNodeTrait
 {
-    
+
     /**
      * The environment variables specified within the parent node
      *
@@ -66,10 +66,8 @@ trait EnvironmentVariablesNodeTrait
     {
         // Iterate over all environmentVariables
         foreach ($this->getEnvironmentVariables() as $environmentVariableNode) {
-
             // If we found one with a matching definition we will return it
             if ($environmentVariableNode->getDefinition() === $definition) {
-
                 return $environmentVariableNode;
             }
         }
@@ -88,7 +86,6 @@ trait EnvironmentVariablesNodeTrait
         // Iterate over the environmentVariable nodes and sort them into an array
         $environmentVariables = array();
         foreach ($this->getEnvironmentVariables() as $environmentVariableNode) {
-
             // Restructure to an array
             $environmentVariables[] = array(
                 'condition' => $environmentVariableNode->getCondition(),

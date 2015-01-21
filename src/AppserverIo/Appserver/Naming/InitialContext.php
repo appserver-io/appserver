@@ -119,7 +119,6 @@ class InitialContext
 
         // initialize the default properties if no ones has been passed
         if ($properties == null) {
-
             // initialize the default properties
             $properties = new Properties();
             foreach ($this->defaultProperties as $key => $value) {
@@ -298,7 +297,6 @@ class InitialContext
 
         // lex the passed resource name
         foreach ($this->getLexer()->lex($resourceName) as $token) {
-
             switch ($token[0]) { // check the found type
 
                 case InitialContext::T_SCHEME: // we found a scheme, e. g. php
@@ -345,11 +343,9 @@ class InitialContext
 
         // query if we've a context name defined in the resource identifier
         if ($contextName = $resourceIdentifier->getContextName()) {
-
             // if yes, use it as application name
             $connection->injectAppName($contextName);
         } else {
-
             // use the application context from the servlet request
             if ($this->getServletRequest() && $this->getServletRequest()->getContext()) {
                 $application = $this->getServletRequest()->getContext();

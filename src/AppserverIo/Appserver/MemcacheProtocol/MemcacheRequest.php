@@ -56,7 +56,6 @@ class MemcacheRequest extends AbstractRequest
         if ($this->getRequestAction()) {
             $this->pushData($line);
         } else {
-
             // parse the request data
             $var = $this->parseRequest($line);
 

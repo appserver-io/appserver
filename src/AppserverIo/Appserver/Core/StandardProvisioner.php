@@ -57,17 +57,14 @@ class StandardProvisioner extends AbstractProvisioner
 
         // check if the webapps directory exists
         if (is_dir($webappsPath = $this->getWebappsDir())) {
-
             // load the service instance
             $service = $this->getService();
 
-            // Iterate through all provisioning files (provision.xml), validate them and attach them to the configuration
+            // iterate through all provisioning files (provision.xml), validate them and attach them to the configuration
             $configurationTester = new ConfigurationTester();
             foreach ($service->globDir($webappsPath . '/*/{WEB-INF,META-INF}/provision.xml', GLOB_BRACE) as $provisionFile) {
-
                 // validate the file, but skip it if validation fails
                 if (!$configurationTester->validateFile($provisionFile, null)) {
-
                     $errorMessages = $configurationTester->getErrorMessages();
                     $systemLogger = $this->getInitialContext()->getSystemLogger();
                     $systemLogger->error(reset($errorMessages));
@@ -123,9 +120,7 @@ class StandardProvisioner extends AbstractProvisioner
 
         // execute all steps found in the configuration
         foreach ($stepNodes as $stepNode) {
-
             try {
-
                 // create a new reflection class of the step
                 $reflectionClass = new \ReflectionClass($stepNode->getType());
                 $step = $reflectionClass->newInstance();
@@ -160,7 +155,8 @@ class StandardProvisioner extends AbstractProvisioner
     public function getAbsolutPathToPhpExecutable()
     {
         $executable = StandardProvisioner::PHP_EXECUTABLE_UNIX;
-        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') { // we have a different executable on Windows systems
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+            // we have a different executable on Windows systems
             $executable = StandardProvisioner::PHP_EXECUTABLE_WIN;
         }
         return $this->getService()->realpath($executable);

@@ -58,7 +58,6 @@ class PersistenceContainerValve implements Valve
     {
 
         try {
-
             // unpack the remote method call
             $remoteMethod = RemoteMethodProtocol::unpack($servletRequest->getBodyContent());
 
@@ -84,7 +83,8 @@ class PersistenceContainerValve implements Valve
             // reattach the bean instance in the container and unlock it
             $beanManager->attach($instance, $sessionId);
 
-        } catch (\Exception $e) { // catch the exception and append it to the body stream
+        } catch (\Exception $e) {
+            // catch the exception and append it to the body stream
             $servletResponse->appendBodyStream(RemoteMethodProtocol::pack($e));
         }
 

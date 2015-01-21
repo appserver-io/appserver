@@ -61,7 +61,6 @@ trait ExtensionInjectorParameterTrait
         $class = '';
         if (!class_exists($class = $this->extensionType) &&
             !class_exists($class = strstr($this->extensionType, '(', true))) {
-
             throw new \Exception('Unknown injector class ' . $class);
         }
 
@@ -86,11 +85,9 @@ trait ExtensionInjectorParameterTrait
     public function getInjector()
     {
         if (!isset($this->injector)) {
-
             $this->initExtensionType();
         }
-
-            return $this->injector;
+        return $this->injector;
     }
 
     /**

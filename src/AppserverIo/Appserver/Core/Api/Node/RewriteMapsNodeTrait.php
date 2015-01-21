@@ -59,15 +59,16 @@ trait RewriteMapsNodeTrait
      */
     public function getRewriteMapsAsArray()
     {
-        // Iterate over the rewriteMaps nodes and sort them into an array
+
+        // initialize the array for the rewrite maps
         $rewriteMaps = array();
+
+        // iterate over the rewriteMaps nodes and sort them into an array
         foreach ($this->getRewriteMaps() as $rewriteMapNode) {
-            // Restructure to an array
-            $rewriteMaps[$rewriteMapNode->getType()] = array(
-                'params' => $rewriteMapNode->getParamsAsArray()
-            );
+            $rewriteMaps[$rewriteMapNode->getType()] = $rewriteMapNode->getParamsAsArray();
         }
-        // Return what we got
+
+        // return the array
         return $rewriteMaps;
     }
 }

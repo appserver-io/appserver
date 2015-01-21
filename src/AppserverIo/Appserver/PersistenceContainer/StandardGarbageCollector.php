@@ -85,8 +85,8 @@ class StandardGarbageCollector extends \Thread
         }
 
         while (true) {
-
-            $this->synchronized(function () { // wait one second
+            // wait one second
+            $this->synchronized(function () {
                 $this->wait(1000000 * StandardGarbageCollector::TIME_TO_LIVE);
             });
 
@@ -98,23 +98,23 @@ class StandardGarbageCollector extends \Thread
 
             // iterate over the applications sessions with stateful session beans
             foreach ($statefulSessionBeans as $sessionId => $sessions) {
-
-                if ($sessions instanceof StatefulSessionBeanMap) { // if we've a map with stateful session beans
-
+                // query if we've a map with stateful session beans
+                if ($sessions instanceof StatefulSessionBeanMap) {
                     // initialize the timestamp with the actual time
                     $actualTime = time();
 
                     // check the lifetime of the stateful session beans
                     foreach ($sessions->getLifetime() as $className => $lifetime) {
-
-                        if ($lifetime < $actualTime) { // if the stateful session bean has timed out, remove it
+                        if ($lifetime < $actualTime) {
+                            // if the stateful session bean has timed out, remove it
                             $beanManager->removeStatefulSessionBean($sessionId, $className);
                         }
                     }
                 }
             }
 
-            if ($profileLogger) { // profile the stateful session bean map size
+            if ($profileLogger) {
+                // profile the stateful session bean map size
                 $profileLogger->debug(
                     sprintf('Processed standard garbage collector, handling %d SFBs', sizeof($statefulSessionBeans))
                 );

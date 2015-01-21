@@ -260,7 +260,8 @@ class EpbReferenceDescriptor implements EpbReferenceDescriptorInterface
     {
 
         // if we found a @EnterpriseBean annotation, load the annotation instance
-        if ($reflectionProperty->hasAnnotation(EnterpriseBean::ANNOTATION) === false) { // if not, do nothing
+        if ($reflectionProperty->hasAnnotation(EnterpriseBean::ANNOTATION) === false) {
+            // if not, do nothing
             return;
         }
 
@@ -278,14 +279,16 @@ class EpbReferenceDescriptor implements EpbReferenceDescriptorInterface
         // register the bean with the interface defined as @EnterpriseBean(beanInterface=****)
         if ($beanInterfaceAttribute = $annotationInstance->getBeanInterface()) {
             $this->setBeanInterface($beanInterfaceAttribute);
-        } else { // use the property name as local business interface
+        } else {
+            // use the property name as local business interface
             $this->setBeanInterface(sprintf('%sLocal', ucfirst($reflectionProperty->getPropertyName())));
         }
 
         // register the bean with the name defined as @EnterpriseBean(beanName=****)
         if ($beanNameAttribute = $annotationInstance->getBeanName()) {
             $this->setBeanName($beanNameAttribute);
-        } else { // use the property name
+        } else {
+            // use the property name
             $this->setBeanName(ucfirst($reflectionProperty->getPropertyName()));
         }
 
@@ -318,7 +321,8 @@ class EpbReferenceDescriptor implements EpbReferenceDescriptorInterface
     {
 
         // if we found a @EnterpriseBean annotation, load the annotation instance
-        if ($reflectionMethod->hasAnnotation(EnterpriseBean::ANNOTATION) === false) { // if not, do nothing
+        if ($reflectionMethod->hasAnnotation(EnterpriseBean::ANNOTATION) === false) {
+            // if not, do nothing
             return;
         }
 
@@ -336,7 +340,8 @@ class EpbReferenceDescriptor implements EpbReferenceDescriptorInterface
         // register the bean with the interface defined as @EnterpriseBean(beanInterface=****)
         if ($beanInterfaceAttribute = $annotationInstance->getBeanInterface()) {
             $this->setBeanInterface($beanInterfaceAttribute);
-        } else { // use the name of the first parameter as local business interface
+        } else {
+            // use the name of the first parameter as local business interface
             foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
                 $this->setBeanInterface(sprintf('%sLocal', ucfirst($reflectionParameter->getParameterName())));
                 break;
@@ -346,7 +351,8 @@ class EpbReferenceDescriptor implements EpbReferenceDescriptorInterface
         // register the bean with the name defined as @EnterpriseBean(beanName=****)
         if ($beanNameAttribute = $annotationInstance->getBeanName()) {
             $this->setBeanName($beanNameAttribute);
-        } else { // use the name of the first parameter as local business interface
+        } else {
+            // use the name of the first parameter as local business interface
             foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
                 $this->setBeanInterface(ucfirst($reflectionParameter->getParameterName()));
                 break;
@@ -382,7 +388,8 @@ class EpbReferenceDescriptor implements EpbReferenceDescriptorInterface
     {
 
         // query if we've a <epb-ref> descriptor node
-        if ($node->getName() !== 'epb-ref') { // if not, do nothing
+        if ($node->getName() !== 'epb-ref') {
+            // if not, do nothing
             return;
         }
 
@@ -406,7 +413,8 @@ class EpbReferenceDescriptor implements EpbReferenceDescriptorInterface
             $this->setBeanInterface($beanInterface);
         } elseif ($beanInterface = (string) $node->{'remote'}) {
             $this->setBeanInterface($beanInterface);
-        } else { // use the bean name as local interface
+        } else {
+            // use the bean name as local interface
             $this->setBeanInterface(sprintf('%sLocal', str_replace('Bean', '', $this->getBeanName())));
         }
 

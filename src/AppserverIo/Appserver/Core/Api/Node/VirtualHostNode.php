@@ -32,16 +32,68 @@ use AppserverIo\Appserver\Core\Api\ExtensionInjectorParameterTrait;
  */
 class VirtualHostNode extends AbstractNode
 {
-    // We use several traits which give us the possibility to have collections of the child nodes mentioned in the
-    // corresponding trait name
+
+    /**
+     * The trait for the virtual host environment variables.
+     *
+     * @var AppserverIo\Appserver\Core\Api\Node\EnvironmentVariablesNodeTrait
+     */
     use EnvironmentVariablesNodeTrait;
+
+    /**
+     * The trait for the virtual host params.
+     *
+     * @var AppserverIo\Appserver\Core\Api\Node\ParamsNodeTrait
+     */
     use ParamsNodeTrait;
+
+    /**
+     * The trait for the virtual host rewrite maps.
+     *
+     * @var AppserverIo\Appserver\Core\Api\Node\RewriteMapsNodeTrait
+     */
     use RewriteMapsNodeTrait;
+
+    /**
+     * The trait for the virtual host rewrites.
+     *
+     * @var AppserverIo\Appserver\Core\Api\Node\RewritesNodeTrait
+     */
     use RewritesNodeTrait;
+
+    /**
+     * The trait for the virtual host access.
+     *
+     * @var AppserverIo\Appserver\Core\Api\Node\AccessesNodeTrait
+     */
     use AccessesNodeTrait;
+
+    /**
+     * The trait for the virtual host locations.
+     *
+     * @var AppserverIo\Appserver\Core\Api\Node\LocationsNodeTrait
+     */
     use LocationsNodeTrait;
+
+    /**
+     * The trait for the virtual host extension injectors.
+     *
+     * @var AppserverIo\Appserver\Core\Api\Node\ExtensionInjectorParameterTrait
+     */
     use ExtensionInjectorParameterTrait;
+
+    /**
+     * The trait for the virtual host authentications.
+     *
+     * @var AppserverIo\Appserver\Core\Api\Node\AuthenticationsNodeTrait
+     */
     use AuthenticationsNodeTrait;
+
+    /**
+     * The trait for the virtual host analytics.
+     *
+     * @var AppserverIo\Appserver\Core\Api\Node\AnalyticsNodeTrait
+     */
     use AnalyticsNodeTrait;
 
     /**

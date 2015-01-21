@@ -195,7 +195,8 @@ class ResReferenceDescriptor implements ResReferenceDescriptorInterface
     {
 
         // if we found a @Resource annotation, load the annotation instance
-        if ($reflectionProperty->hasAnnotation(Resource::ANNOTATION) === false) { // if not, do nothing
+        if ($reflectionProperty->hasAnnotation(Resource::ANNOTATION) === false) {
+            // if not, do nothing
             return;
         }
 
@@ -241,7 +242,8 @@ class ResReferenceDescriptor implements ResReferenceDescriptorInterface
     {
 
         // if we found a @Resource annotation, load the annotation instance
-        if ($reflectionMethod->hasAnnotation(Resource::ANNOTATION) === false) { // if not, do nothing
+        if ($reflectionMethod->hasAnnotation(Resource::ANNOTATION) === false) {
+            // if not, do nothing
             return;
         }
 

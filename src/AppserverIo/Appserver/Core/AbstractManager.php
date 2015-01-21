@@ -166,16 +166,16 @@ abstract class AbstractManager extends GenericStackable implements ManagerInterf
     public function registerEpbReference(EpbReferenceDescriptorInterface $epbReference)
     {
 
-        $application = null;
-        $name = '';
         try {
+            // initialize the variables
+            $application = null;
+            $name = '';
 
             // load the application instance
             $application = $this->getApplication();
 
             // query whether the reference has already been bound to the application
-            if ($application->search($name = $epbReference->getName())) { // if yes, do nothing
-
+            if ($application->search($name = $epbReference->getName())) {
                 // log a message that the reference has already been bound
                 $application->getInitialContext()->getSystemLogger()->info(
                     sprintf('Reference php:global/%s/%s has already been bound to naming directory', $application->getName(), $name)
@@ -185,8 +185,8 @@ abstract class AbstractManager extends GenericStackable implements ManagerInterf
                 return;
             }
 
-        } catch (NamingException $e) { // catch the NamingException if the ref name is not bound yet
-
+        // catch the NamingException if the ref name is not bound yet
+        } catch (NamingException $e) {
             // log a message that we've to register the EPB reference now
             $application->getInitialContext()->getSystemLogger()->critical(
                 sprintf('Can\'t find php:global/%s/%s in naming directory', $application->getName(), $name)
@@ -199,22 +199,18 @@ abstract class AbstractManager extends GenericStackable implements ManagerInterf
 
         // prepare the bean name
         if ($beanName = str_replace('Bean', '', $epbReference->getBeanName())) {
-
             // query whether we've a local business interface
             if ($epbReference->getBeanInterface() === ($regName = sprintf('%sLocal', $beanName))) {
-
                 // bind the local business interface of the bean to the appliations naming directory
                 $application->bind($name, array(&$this, 'lookupProxy'), array($regName = sprintf('%s/local', $beanName)));
 
             // query whether we've a remote business interface
             } elseif ($epbReference->getBeanInterface() === ($regName = sprintf('%sRemote', $beanName))) {
-
                 // bind the remote business interface of the bean to the applications naming directory
                 $application->bind($name, array(&$this, 'lookupProxy'), array($regName = sprintf('%s/remote', $beanName)));
 
             // at least, we need a business interface
             } else {
-
                 // log a critical message that we can't bind the reference
                 $application->getInitialContext()->getSystemLogger()->critical(
                     sprintf('Can\'t bind php:global/%s/env/%s to naming directory', $name, $regName)
@@ -223,12 +219,11 @@ abstract class AbstractManager extends GenericStackable implements ManagerInterf
 
         // try to use the lookup, if we don't have the beanName
         } elseif ($lookup = $epbReference->getLookup()) {
-
             // create a reference to a bean in the global directory
             $application->getNamingDirectory()->bind($name, array(&$this, 'lookup'), array($lookup));
 
-        } else { // log a critical message that we can't bind the reference
-
+        // log a critical message that we can't bind the reference
+        } else {
             $application->getInitialContext()->getSystemLogger()->critical(
                 sprintf(
                     'Can\'t bind reference php:global/%s/%s to naming directory, because of missing source bean definition',
@@ -248,16 +243,17 @@ abstract class AbstractManager extends GenericStackable implements ManagerInterf
      */
     public function registerResReference(ResReferenceDescriptorInterface $resReference)
     {
-        $application = null;
-        $name = '';
+
         try {
+            // initialize the variables
+            $application = null;
+            $name = '';
 
             // load the application instance
             $application = $this->getApplication();
 
             // query whether the reference has already been bound to the application
-            if ($application->search($name = $resReference->getName())) { // if yes, do nothing
-
+            if ($application->search($name = $resReference->getName())) {
                 // log a message that the reference has already been bound
                 $application->getInitialContext()->getSystemLogger()->info(
                     sprintf('Reference php:global/%s/%s has already been bound to naming directory', $application->getName(), $name)
@@ -267,8 +263,8 @@ abstract class AbstractManager extends GenericStackable implements ManagerInterf
                 return;
             }
 
-        } catch (NamingException $e) { // catch the NamingException if the ref name is not bound yet
-
+        // catch the NamingException if the ref name is not bound yet
+        } catch (NamingException $e) {
             // log a message that we've to register the resource reference now
             $application->getInitialContext()->getSystemLogger()->critical($e->__toString());
         }

@@ -184,20 +184,18 @@ class TimerServiceExecutor extends \Thread implements ServiceExecutor
             $profileLogger->appendThreadContext('timer-service-executor');
         }
 
-        while (true) { // handle the timer events
-
+        // handle the timer events
+        while (true) {
             // wait 1 second or till we've been notified
             $this->synchronized(function ($self) {
                 $self->wait(1000000);
             }, $this);
 
             try {
-
                 // iterate over the timer tasks that has to be executed
                 foreach ($this->tasksToExecute as $taskId => $timerTaskWrapper) {
-
-                    if (!$timerTaskWrapper instanceof \stdClass) { // this should never happpen
-
+                    // this should never happpen
+                    if (!$timerTaskWrapper instanceof \stdClass) {
                         // log an error message because we task wrapper has wrong type
                         $this->getApplication()->getInitialContext()->getSystemLogger()->error(
                             sprintf('Timer-Task-Wrapper %s has wrong type %s', $taskId, get_class($timerTaskWrapper))
@@ -208,10 +206,8 @@ class TimerServiceExecutor extends \Thread implements ServiceExecutor
 
                     // query if the task has to be executed now
                     if ($timerTaskWrapper->executeAt < microtime(true)) {
-
                         // load the timer task wrapper we want to execute
                         if ($pk = $this->scheduledTimers[$timerId = $timerTaskWrapper->timerId]) {
-
                             // load the timer service registry
                             $timerServiceRegistry = $this->getApplication()->search('TimerServiceContext');
 
@@ -225,7 +221,6 @@ class TimerServiceExecutor extends \Thread implements ServiceExecutor
                             unset($this->tasksToExecute[$taskId]);
 
                         } else {
-
                             // log an error message because we can't find the timer instance
                             $this->getApplication()->getInitialContext()->getSystemLogger()->error(
                                 sprintf('Can\'t find timer %s to create timer task %s', $timerTaskWrapper->timerId, $taskId)
@@ -236,10 +231,8 @@ class TimerServiceExecutor extends \Thread implements ServiceExecutor
 
                 // remove the finished timer tasks
                 foreach ($timerTasksExecuting as $taskId => $executingTimerTask) {
-
                     // query, whether the timer has finished
                     if ($executingTimerTask->isFinished()) {
-
                         // remove the finished timer task from the list
                         unset($timerTasksExecuting[$taskId]);
                     }
@@ -253,7 +246,6 @@ class TimerServiceExecutor extends \Thread implements ServiceExecutor
                 }
 
             } catch (\Exception $e) {
-
                 // log a critical error message
                 $this->getApplication()->getInitialContext()->getSystemLogger()->critical($e->__toString());
             }

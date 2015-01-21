@@ -63,17 +63,16 @@ trait AnalyticsNodeTrait
      */
     public function getAnalytic($uri)
     {
-        // Iterate over all analytics
+
+        // iterate over all analytics
         foreach ($this->getAnalytics() as $analyticNode) {
-
-            // If we found one with a matching URI we will return it
+            // if we found one with a matching URI we will return it
             if ($analyticNode->getUri() === $uri) {
-
                 return $analyticNode;
             }
         }
 
-        // Still here? Seems we did not find anything
+        // we did not find anything
         return false;
     }
 
@@ -84,18 +83,20 @@ trait AnalyticsNodeTrait
      */
     public function getAnalyticsAsArray()
     {
-        // Iterate over the analytics nodes and sort them into an array
-        $analytics = array();
-        foreach ($this->getAnalytics() as $analyticNode) {
 
-            // Restructure to an array
+        // initialize the array for the analytics
+        $analytics = array();
+
+        // iterate over the analytics nodes and sort them into an array
+        foreach ($this->getAnalytics() as $analyticNode) {
+            // restructure to an array
             $analytics[] = array(
                 'uri' => $analyticNode->getUri(),
                 'connectors' => $analyticNode->getConnectorsAsArray()
             );
         }
 
-        // Return what we got
+        // return the array
         return $analytics;
     }
 }

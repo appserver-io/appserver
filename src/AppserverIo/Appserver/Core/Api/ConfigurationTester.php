@@ -86,7 +86,6 @@ class ConfigurationTester
         $this->schemaFile = realpath(__DIR__ . '/../../../../../') . DIRECTORY_SEPARATOR . self::DEFAULT_XML_SCHEMA;
         $fileName = pathinfo($fileName, PATHINFO_FILENAME);
         if (isset($this->schemaFiles[$fileName])) {
-
             $this->schemaFile = $this->schemaFiles[$fileName];
         }
     }
@@ -100,7 +99,6 @@ class ConfigurationTester
     {
         $errorMessages = array();
         foreach ($this->getErrors() as $error) {
-
             $errorMessages[] = sprintf(
                 "Found a schema validation error on line %s with code %s and message %s when validating configuration file %s, see error dump below: %s",
                 $error->line,
@@ -110,7 +108,6 @@ class ConfigurationTester
                 var_export($error, true)
             );
         }
-
         return $errorMessages;
     }
 
@@ -167,7 +164,6 @@ class ConfigurationTester
     {
         // if we did not get a schema file we have to check if we know which one to use
         if (is_null($schemaFile)) {
-
             $this->findSchemaFile($fileName);
             $schemaFile = $this->schemaFile;
         }
@@ -213,7 +209,6 @@ class ConfigurationTester
         // if we got a specific schema file we will use it, otherwise we will use the one we got globally
         $schemaFileName = $this->schemaFile;
         if (!is_null($schemaFile)) {
-
             $schemaFileName = $schemaFile;
         }
 
@@ -223,7 +218,6 @@ class ConfigurationTester
         // validate the configuration file with the schema
         $result = true;
         if ($domDocument->schemaValidate($schemaFileName) === false) {
-
             // collect the errors and return as a failure
             $this->errors = libxml_get_errors();
             $result = false;
@@ -231,7 +225,6 @@ class ConfigurationTester
 
         // if we have to fail on errors we might do so here
         if ($failOnErrors && !$result) {
-
             $errorMessages = $this->getErrorMessages();
             throw new InvalidConfigurationException(reset($errorMessages));
         }

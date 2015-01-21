@@ -176,11 +176,9 @@ class Part implements PartInterface
     }
 
     /**
-     * Gets the orig form filename.
+     * Gets the original form filename.
      *
-     * @return string The file's name
-     *
-     * @return string
+     * @return string The filesname
      */
     public function getFilename()
     {
@@ -203,8 +201,6 @@ class Part implements PartInterface
      * Returns the temporary filename.
      *
      * @return string The temporary filename
-     *
-     * @return string
      */
     public function getTmpFilename()
     {

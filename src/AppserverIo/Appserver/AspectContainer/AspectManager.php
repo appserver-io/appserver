@@ -243,12 +243,9 @@ class AspectManager implements AspectManagerInterface, ManagerInterface
 
         // iterate over the directories and try to find aspects
         foreach ($aspectDirectories as $aspectDirectory) {
-
             // iterate all PHP files found in the directory
             foreach ($service->globDir($aspectDirectory . DIRECTORY_SEPARATOR . '*.php') as $phpFile) {
-
                 try {
-
                     // cut off the META-INF directory and replace OS specific directory separators
                     $relativePathToPhpFile = str_replace(DIRECTORY_SEPARATOR, '\\', str_replace($aspectDirectory, '', $phpFile));
 
@@ -260,15 +257,14 @@ class AspectManager implements AspectManagerInterface, ManagerInterface
 
                     // if we found an aspect we have to register it using our aspect register class
                     if ($reflectionClass->hasAnnotation(AspectAnnotation::ANNOTATION)) {
-
                         $parser = new AspectParser($phpFile, new Config());
                         $this->aspectRegister->register(
                             $parser->getDefinition($reflectionClass->getShortName(), false)
                         );
                     }
 
-                } catch (\Exception $e) { // if class can not be reflected continue with next class
-
+                // if class can not be reflected continue with next class
+                } catch (\Exception $e) {
                     // log an error message
                     $application->getInitialContext()->getSystemLogger()->error($e->__toString());
 
@@ -291,15 +287,11 @@ class AspectManager implements AspectManagerInterface, ManagerInterface
         // check if we even have a XMl file to read from
         $xmlPath = $this->getWebappPath() . DIRECTORY_SEPARATOR . 'META-INF' . DIRECTORY_SEPARATOR . self::CONFIG_FILE;
         if (is_readable($xmlPath)) {
-
             // validate the file here, if it is not valid we can skip further steps
             try {
-
                 $configurationTester = new ConfigurationTester();
                 $configurationTester->validateFile($xmlPath, null, true);
-
             } catch (InvalidConfigurationException $e) {
-
                 $systemLogger = $application->getInitialContext()->getSystemLogger();
                 $systemLogger->error($e->getMessage());
                 $systemLogger->critical(sprintf('Pointcuts configuration file %s is invalid, AOP functionality might not work as expected.', $xmlPath));
@@ -317,19 +309,16 @@ class AspectManager implements AspectManagerInterface, ManagerInterface
 
             // check if we got some pointcuts
             foreach ($config->xpath('/a:pointcuts/a:pointcut') as $key => $pointcutConfiguration) {
-
                 // build up the pointcut and add it to the collection
                 $pointcut = new Pointcut();
                 $pointcut->setAspectName($aspect->getName());
                 $pointcut->setName((string) $pointcutConfiguration->{'pointcut-name'});
                 $pointcut->setPointcutExpression(new PointcutExpression((string) $pointcutConfiguration->{'pointcut-pattern'}));
-
                 $aspect->getPointcuts()->add($pointcut);
             }
 
             // check if we got some advices
             foreach ($config->xpath('/a:pointcuts/a:advice') as $key => $adviceConfiguration) {
-
                 // build up the advice and add it to the aspect
                 $advice = new Advice();
                 $advice->setAspectName((string) $adviceConfiguration->{'advice-aspect'});
@@ -340,19 +329,15 @@ class AspectManager implements AspectManagerInterface, ManagerInterface
                 // we have to look them up within the pointcuts we got here and the ones we already have in our register
                 $pointcutFactory = new PointcutFactory();
                 foreach ($adviceConfiguration->{'advice-pointcuts'} as $pointcutConfiguration) {
-
                     $pointcutName = (string) $pointcutConfiguration->{'pointcut-name'};
                     $pointcutPointcut = $pointcutFactory->getInstance(PointcutPointcut::TYPE . '(' . $pointcutName . ')');
 
                     // check if we just parsed the referenced pointcut
                     $pointcuts = array();
                     if ($pointcut = $aspect->getPointcuts()->get($pointcutName)) {
-
                         $pointcuts[] = $pointcut;
-
                     } else {
                         // or did we already know of it?
-
                         $pointcuts = $this->getAspectRegister()->lookupPointcuts($pointcutName);
                     }
 
@@ -366,7 +351,6 @@ class AspectManager implements AspectManagerInterface, ManagerInterface
 
             // if the aspect contains pointcuts or advices it can be used
             if ($aspect->getPointcuts()->count() > 0 || $aspect->getAdvices()->count() > 0) {
-
                 $this->getAspectRegister()->add($aspect);
             }
         }

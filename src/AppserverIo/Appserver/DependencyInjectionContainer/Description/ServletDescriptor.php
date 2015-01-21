@@ -369,14 +369,16 @@ class ServletDescriptor implements ServletDescriptorInterface
     {
 
         // query if we've a servlet
-        if ($reflectionClass->implementsInterface('AppserverIo\Psr\Servlet\Servlet') === false) { // if not, do nothing
+        if ($reflectionClass->implementsInterface('AppserverIo\Psr\Servlet\Servlet') === false) {
+            // if not, do nothing
             return;
         }
 
         // query if we've an interface or an abstract class
         if ($reflectionClass->toPhpReflectionClass()->isInterface() ||
             $reflectionClass->toPhpReflectionClass()->isAbstract()) {
-            return; // if so, do nothing
+            // if so, do nothing
+            return;
         }
 
         // set the servlet name
@@ -386,8 +388,7 @@ class ServletDescriptor implements ServletDescriptorInterface
         $this->setClassName($reflectionClass->getName());
 
         // query if we've a servlet with a @Route annotation
-        if ($reflectionClass->hasAnnotation(Route::ANNOTATION)) { // if not, do nothing
-
+        if ($reflectionClass->hasAnnotation(Route::ANNOTATION)) {
             // create a new annotation instance
             $reflectionAnnotation = $this->newAnnotationInstance($reflectionClass);
 
@@ -425,7 +426,6 @@ class ServletDescriptor implements ServletDescriptorInterface
         }
         // we've to check for property annotations that references EPB or resources
         foreach ($reflectionClass->getProperties() as $reflectionProperty) {
-
             // load the EPB references
             if ($epbReference = EpbReferenceDescriptor::newDescriptorInstance()->fromReflectionProperty($reflectionProperty)) {
                 $this->addEpbReference($epbReference);
@@ -439,7 +439,6 @@ class ServletDescriptor implements ServletDescriptorInterface
 
         // we've to check for method annotations that references EPB or resources
         foreach ($reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $reflectionMethod) {
-
             // load the EPB references
             if ($epbReference = EpbReferenceDescriptor::newDescriptorInstance()->fromReflectionMethod($reflectionMethod)) {
                 $this->addEpbReference($epbReference);
@@ -467,7 +466,8 @@ class ServletDescriptor implements ServletDescriptorInterface
         $node->registerXPathNamespace('a', 'http://www.appserver.io/appserver');
 
         // query if we've a <servlet> descriptor node
-        if ($node->getName() !== 'servlet') { // if not, do nothing
+        if ($node->getName() !== 'servlet') {
+            // if not, do nothing
             return;
         }
 

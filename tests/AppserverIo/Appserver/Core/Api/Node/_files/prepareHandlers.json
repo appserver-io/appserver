@@ -1,0 +1,22 @@
+{
+    ".php":{
+        "name":"fastcgi",
+        "params":{
+            "host":"127.0.0.1",
+            "port":9010
+        }
+    },
+    ".phtml":{
+        "name":"fastcgi",
+        "params":{
+            "host":"127.0.0.1",
+            "port":9010
+        }
+    },
+    ".do":{
+        "name":"servlet",
+        "params":[
+            
+        ]
+    }
+}

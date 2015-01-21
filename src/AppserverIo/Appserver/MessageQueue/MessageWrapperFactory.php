@@ -65,7 +65,8 @@ class MessageWrapperFactory extends \Thread
     protected function emptyInstance()
     {
 
-        $this->synchronized(function ($self) { // create the instance
+        // create the instance
+        $this->synchronized(function ($self) {
             $self->notify();
         }, $this);
 
@@ -81,11 +82,11 @@ class MessageWrapperFactory extends \Thread
     public function run()
     {
         while (true) {
-
             // create a new message wrapper instance
             $this->instance = MessageWrapper::emptyInstance();
 
-            $this->synchronized(function ($self) { // and wait
+            // and wait
+            $this->synchronized(function ($self) {
                 $this->wait();
             }, $this);
         }

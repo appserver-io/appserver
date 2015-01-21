@@ -58,7 +58,6 @@ class SplClassLoaderFactory
 
         // load the composer class loader for the configured directories
         foreach ($configuration->getDirectories() as $directory) {
-
             // we prepare the directories to include scripts AFTER registering (in application context)
             $includePath[] = $webappPath . $directory->getNodeValue();
         }

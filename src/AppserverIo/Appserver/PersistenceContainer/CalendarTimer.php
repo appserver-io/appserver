@@ -79,10 +79,11 @@ class CalendarTimer extends Timer
         // call parent constructor
         parent::__construct($builder, $timerService);
 
-        // check if we've an auto timer
+        // load the auto timer flag
         $this->autoTimer = $builder->isAutoTimer();
-        if ($this->autoTimer) {
 
+        // check if we've an auto timer
+        if ($this->autoTimer) {
             // check if the timeout method is available
             if ($builder->getTimeoutMethod() == null) {
                 // TODO: Throw an exception here, because we NEED a timeout method
@@ -92,7 +93,6 @@ class CalendarTimer extends Timer
             $this->timeoutMethod = $builder->getTimeoutMethod();
 
         } else {
-
             // we don't expect an timeout method here
             if ($builder->getTimeoutMethod() != null) {
                 // TODO: Throw an exception here, because we DON'T expect a timeout method
@@ -120,7 +120,6 @@ class CalendarTimer extends Timer
 
         // if the timer has a next date and is new
         if ($builder->getNextDate() == null && $builder->isNewTimer()) {
-
             // compute the next timeout (from "now")
             $nextTimeout = $this->calendarTimeout->getNextRunDate();
             if ($nextTimeout != null) {

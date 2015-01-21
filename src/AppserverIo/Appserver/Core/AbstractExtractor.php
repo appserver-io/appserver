@@ -231,7 +231,6 @@ abstract class AbstractExtractor implements ExtractorInterface
     public function undeployArchive(\SplFileInfo $archive)
     {
         try {
-
             // create webapp folder name based on the archive's basename
             $webappFolderName = new \SplFileInfo(
                 $this->getWebappsDir(basename($archive->getFilename(), $this->getExtensionSuffix()))
@@ -239,7 +238,6 @@ abstract class AbstractExtractor implements ExtractorInterface
 
             // check if app has to be undeployed
             if ($this->isUndeployable($archive) && $webappFolderName->isDir()) {
-
                 // flag webapp as undeploing
                 $this->flagArchive($archive, ExtractorInterface::FLAG_UNDEPLOYING);
 
@@ -254,7 +252,6 @@ abstract class AbstractExtractor implements ExtractorInterface
             }
 
         } catch (\Exception $e) {
-
             // log error
             $this->getInitialContext()->getSystemLogger()->error($e->__toString());
 

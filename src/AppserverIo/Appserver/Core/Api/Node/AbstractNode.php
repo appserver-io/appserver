@@ -262,8 +262,8 @@ abstract class AbstractNode implements NodeInterface
         $nodeType = $mapping->getNodeType();
         $configurationNodeName = $this->getConfigurationNodeName($configuration, $mapping);
 
-        if (class_exists($nodeType) && $this->isValueClass($nodeType)) { // initialize a new value configuration node
-
+        // initialize a new value configuration node
+        if (class_exists($nodeType) && $this->isValueClass($nodeType)) {
             // initialize the new node type
             $newNode = new $nodeType();
             $newNode->initFromConfiguration($configuration);
@@ -271,11 +271,10 @@ abstract class AbstractNode implements NodeInterface
             // set the instance
             return $this->{$reflectionProperty->getName()} = $newNode;
 
-        } elseif (class_exists($nodeType)) { // initialize a new configuration node from the found child data
-
+        // initialize a new configuration node from the found child data
+        } elseif (class_exists($nodeType)) {
             // first we've to check if the child has data
             if ($child = $configuration->getChild($configurationNodeName)) {
-
                 // initialize the new node type
                 $newNode = new $nodeType();
                 $newNode->initFromConfiguration($child);
@@ -291,10 +290,8 @@ abstract class AbstractNode implements NodeInterface
 
         // array => create the configured nodes and add them
         if ($nodeType === 'array') {
-
             // iterate over all elements and create the node
             foreach ($configuration->getChilds($configurationNodeName) as $child) {
-
                 // initialize the node and load the data from the configuration
                 $elementType = $mapping->getElementType();
                 $newNode = new $elementType();
@@ -453,7 +450,6 @@ abstract class AbstractNode implements NodeInterface
 
         // if we can't find the specified path in that instance
         if (!empty($token) && !empty($next)) {
-
             // initialize the configuration value
             $child = new Configuration();
             $child->setNodeName($token);
@@ -464,14 +460,15 @@ abstract class AbstractNode implements NodeInterface
             // and also add it to the passed configuration
             $configuration->addChild($child);
 
-        } elseif (!empty($token) && empty($next)) { // if we can find it
-
+        // if we can find it
+        } elseif (!empty($token) && empty($next)) {
             // only add it the the passed configuration
             foreach ($this->{$reflectionProperty->getName()} as $node) {
                 $configuration->addChild($node->exportToConfiguration());
             }
 
-        } else { // or throw an exception if the passed path is not valid
+        } else {
+            // or throw an exception if the passed path is not valid
             throw new \Exception(sprintf('Found invalid path %s', $path));
         }
     }

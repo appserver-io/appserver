@@ -94,44 +94,66 @@ class DgClassLoader extends \Stackable implements ClassLoaderInterface
      */
     public function __construct(Config $config = null)
     {
-        // If we got a config we can use it, if not we will get a context less config instance
-        if (is_null($config)) {
 
+        // query whether we've a configuration or not
+        if (is_null($config)) {
+            //  if not we will get a context less configuration instance
             $config = new Config();
             $config->load(APPSERVER_BP . DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . self::CONFIG_FILE);
 
-        } else {
-
-            $this->config = $config;
         }
 
-        // cache is not ready by default
+        // set the configuration
+        $this->config = $config;
+
+        // initialize the variables
         $this->cacheIsReady = false;
+        $this->cache = null;
+        $this->autoloaderOmit = false;
+        $this->aspectRegister = new AspectRegister();
+    }
+
+    /**
+     * Initializes the autoloader with the values from the configuration
+     * and creates and fills the structure map instance.
+     *
+     * @return void
+     */
+    public function init()
+    {
+
+        // load the configuration
+        $config = $this->getConfig();
 
         // pre-load the configuration values
-        $this->cacheDir =  $this->config->getValue('cache/dir');
-        $this->environment = $this->config->getValue('environment');
+        $this->cacheDir =  $config->getValue('cache/dir');
+        $this->environment = $config->getValue('environment');
 
         // we want to know if there are namespaces to be omitted from autoloading
-        $this->autoloaderOmit = false;
-        if ($this->config->hasValue('autoloader/omit')) {
-
-            $autoloadingOmitted = $this->config->getValue('autoloader/omit');
+        if ($config->hasValue('autoloader/omit')) {
+            $autoloadingOmitted = $config->getValue('autoloader/omit');
             $this->autoloaderOmit = !empty($autoloadingOmitted);
         }
 
-        // Now that we got the config we can create a structure map to load from
+        // now that we got the config we can create a structure map to load from
         $this->structureMap = new StackableStructureMap(
-            $this->getConfig()->getValue('autoloader/dirs'),
-            $this->getConfig()->getValue('enforcement/dirs'),
-            $this->getConfig()
+            $config->getValue('autoloader/dirs'),
+            $config->getValue('enforcement/dirs'),
+            $config
         );
 
-        $this->cache = null;
-        $this->aspectRegister = new AspectRegister();
-
-        // We now have a structure map instance, so fill it initially
+        // we now have a structure map instance, so fill it initially
         $this->getStructureMap()->fill();
+    }
+
+    /**
+     * Returns the cache directory.
+     *
+     * @return string The cache directory
+     */
+    public function getCacheDir()
+    {
+        return $this->cacheDir;
     }
 
     /**
@@ -145,16 +167,12 @@ class DgClassLoader extends \Stackable implements ClassLoaderInterface
         // If not we will fill the cache, if there are we will check if there have been any changes to the enforced dirs
         $fileIterator = new \FilesystemIterator($this->getConfig()->getValue('cache/dir'), \FilesystemIterator::SKIP_DOTS);
         if (iterator_count($fileIterator) <= 1 || $this->getConfig()->getValue('environment') === 'development') {
-
             // Fill the cache
             $this->fillCache();
 
         } else {
-
             if (!$this->structureMap->isRecent()) {
-
                 $this->refillCache();
-
             }
         }
     }
@@ -180,37 +198,30 @@ class DgClassLoader extends \Stackable implements ClassLoaderInterface
         // namespaces
         $omittedNamespaces = array();
         if ($this->getConfig()->hasValue('autoloader/omit')) {
-
             $omittedNamespaces = $this->getConfig()->getValue('autoloader/omit');
         }
 
         // Now check which structures we have to create and split them up for multi-threaded creation
         $generatorStack = array();
         foreach ($structures as $identifier => $structure) {
-
             // Working on our own files has very weird side effects, so don't do it
             if (strpos($structure->getIdentifier(), 'AppserverIo\Doppelgaenger') !== false) {
-
                 continue;
             }
 
             // Might this be an omitted structure after all?
             foreach ($omittedNamespaces as $omittedNamespace) {
-
                 // If our class name begins with the omitted part e.g. it's namespace
                 if (strpos($structure->getIdentifier(), $omittedNamespace) === 0) {
-
                     continue 2;
                 }
             }
 
             // structures which are enforced will be added to the generator stack, others will only be copied (symlinks are not reliable)
             if ($structure->isEnforced()) {
-
                 $generatorStack[$identifier] = $structure;
 
             } else {
-
                 $tmpFileName = ltrim(str_replace('\\', '_', $structure->getIdentifier()), '_');
                 copy(
                     $structure->getPath(),
@@ -225,14 +236,12 @@ class DgClassLoader extends \Stackable implements ClassLoaderInterface
         // Generate all the structures!
         $generatorThreads = array();
         foreach ($generatorStack as $key => $generatorStackChunk) {
-
             $generatorThreads[$key] = new GeneratorThread($generator, $generatorStackChunk);
             $generatorThreads[$key]->start();
         }
 
         // Wait on the threads
         foreach ($generatorThreads as $generatorThread) {
-
             $generatorThread->join();
         }
 
@@ -314,7 +323,6 @@ class DgClassLoader extends \Stackable implements ClassLoaderInterface
 
         // check if the file is readable
         if (is_readable($cachePath)) {
-
             require $cachePath;
             return true;
         }
@@ -338,10 +346,8 @@ class DgClassLoader extends \Stackable implements ClassLoaderInterface
 
         // Might the class be a omitted one? If so we can require the original.
         if ($this->autoloaderOmit) {
-
             $omittedNamespaces = $this->config->getValue('autoloader/omit');
             foreach ($omittedNamespaces as $omitted) {
-
                 // If our class name begins with the omitted part e.g. it's namespace
                 if (strpos($className, str_replace('\\\\', '\\', $omitted)) === 0) {
                     return false;
@@ -384,9 +390,7 @@ class DgClassLoader extends \Stackable implements ClassLoaderInterface
 
         // Lets clear the cache so we can fill it anew
         foreach (new \DirectoryIterator($this->getConfig()->getValue('cache/dir')) as $fileInfo) {
-
             if (!$fileInfo->isDot()) {
-
                 // Unlink the file
                 unlink($fileInfo->getPathname());
             }
@@ -411,7 +415,8 @@ class DgClassLoader extends \Stackable implements ClassLoaderInterface
         $this->getConfig()->storeInstances();
 
         // query whether the cache is ready or if we aren't in production mode
-        if (!$this->cacheIsReady || $this->environment !== 'production') { // If yes, load the appropriate autoloader method
+        if (!$this->cacheIsReady || $this->environment !== 'production') {
+            // If yes, load the appropriate autoloader method
             spl_autoload_register(array($this, self::OUR_LOADER), $throw, $prepend);
             return;
         }
@@ -429,7 +434,8 @@ class DgClassLoader extends \Stackable implements ClassLoaderInterface
     {
 
         // query whether the cache is ready or if we aren't in production mode
-        if (!$this->cacheIsReady || $this->environment !== 'production') { // If yes, unload the appropriate autoloader method
+        if (!$this->cacheIsReady || $this->environment !== 'production') {
+            // If yes, unload the appropriate autoloader method
             spl_autoload_unregister(array($this, self::OUR_LOADER));
             return;
         }

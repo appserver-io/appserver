@@ -160,11 +160,11 @@ class StandardGarbageCollector extends \Thread implements GarbageCollector
         }
 
         while ($this->run) {
-
             // collect the session garbage
             $this->collectGarbage();
 
-            if ($profileLogger) { // profile the size of the sessions
+            if ($profileLogger) {
+                // profile the size of the sessions
                 $profileLogger->debug(sprintf('Collect garbage for session pool with size: %d', sizeof($this->getSessions())));
             }
 
@@ -216,25 +216,19 @@ class StandardGarbageCollector extends \Thread implements GarbageCollector
 
         // if we can to collect the garbage, start collecting now
         if (rand(0, 100 * $factor) <= ($garbageCollectionProbability * $factor)) {
-
             // we want to know what inactivity timeout we've to check the sessions for
             $inactivityTimeout = $this->getSessionSettings()->getInactivityTimeout();
-
             // iterate over all session and collect the session garbage
             if ($inactivityTimeout !== 0) {
-
                 // iterate over all sessions and remove the expired ones
                 foreach ($this->getSessions() as $session) {
-
                     // check if we've a session instance
                     if ($session instanceof ServletSession) {
-
                         // load the sessions last activity timestamp
                         $lastActivitySecondsAgo = time() - $session->getLastActivityTimestamp();
 
                         // if session has been expired, destroy and remove it
                         if ($lastActivitySecondsAgo > $inactivityTimeout) {
-
                             // load the session-ID
                             $sessionId = $session->getId();
 

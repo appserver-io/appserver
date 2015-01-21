@@ -34,6 +34,7 @@ namespace AppserverIo\Appserver\Core\Api\Node;
  */
 trait AccessesNodeTrait
 {
+
     /**
      * The access definitions
      *
@@ -59,15 +60,16 @@ trait AccessesNodeTrait
      */
     public function getAccessesAsArray()
     {
-        // Iterate over the access nodes and sort them into an array
+
+        // initialize the array for the accesses
         $accesses = array();
+
+        // iterate over the access nodes and sort them into an array
         foreach ($this->getAccesses() as $accessNode) {
-            // Restructure to an array
-            $accesses[$accessNode->getType()][] = array(
-                'params' => $accessNode->getParamsAsArray()
-            );
+            $accesses[$accessNode->getType()][] = $accessNode->getParamsAsArray();
         }
-        // Return what we got
+
+        // return the array
         return $accesses;
     }
 }

@@ -101,7 +101,6 @@ class RequestHandler extends \Thread
     {
 
         try {
-
             // register shutdown handler
             register_shutdown_function(array(&$this, "shutdown"));
 
@@ -166,7 +165,6 @@ class RequestHandler extends \Thread
         // check if there was a fatal error caused shutdown
         $lastError = error_get_last();
         if ($lastError['type'] === E_ERROR || $lastError['type'] === E_USER_ERROR) {
-
             // synchronize the servlet response
             $servletResponse = $this->servletResponse;
 

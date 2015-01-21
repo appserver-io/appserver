@@ -372,19 +372,18 @@ abstract class AbstractService implements ServiceInterface
 
         // We got them all, now append them onto a new RecursiveIteratorIterator and return it.
         $recursiveIterator = new \AppendIterator();
-            // Append the directory iterator
-            $recursiveIterator->append(
-                new \RecursiveIteratorIterator(
-                    $directoryIterator,
-                    \RecursiveIteratorIterator::SELF_FIRST,
-                    \RecursiveIteratorIterator::CATCH_GET_CHILD
-                )
-            );
+        // Append the directory iterator
+        $recursiveIterator->append(
+            new \RecursiveIteratorIterator(
+                $directoryIterator,
+                \RecursiveIteratorIterator::SELF_FIRST,
+                \RecursiveIteratorIterator::CATCH_GET_CHILD
+            )
+        );
 
         // Check for the existence of a user
         $user = $systemConfiguration->getParam('user');
         if (!empty($user)) {
-
             // Change the rights of everything within the defined dirs
             foreach ($recursiveIterator as $file) {
                 chown($file, $user);
@@ -394,7 +393,6 @@ abstract class AbstractService implements ServiceInterface
         // Check for the existence of a group
         $group = $systemConfiguration->getParam('group');
         if (!empty($group)) {
-
             // Change the rights of everything within the defined dirs
             foreach ($recursiveIterator as $file) {
                 chgrp($file, $group);
@@ -420,7 +418,8 @@ abstract class AbstractService implements ServiceInterface
         umask($newUmask = $this->getInitialContext()->getSystemConfiguration()->getParam('umask'));
 
         // check if we have successfull set the umask
-        if (umask() != $newUmask) { // check if set, throw an exception if not
+        if (umask() != $newUmask) {
+            // check if set, throw an exception if not
             throw new \Exception(sprintf('Can\'t set configured umask \'%s\' found \'%\' instead', $newUmask, umask()));
         }
     }
@@ -442,7 +441,6 @@ abstract class AbstractService implements ServiceInterface
 
         // we don't have a directory to change the user/group permissions for
         if ($directoryToCreate->isDir() === false) {
-
             // create the directory if necessary
             if (mkdir($directoryToCreate) === false) {
                 throw new \Exception(sprintf('Directory %s can\'t be created', $directoryToCreate));

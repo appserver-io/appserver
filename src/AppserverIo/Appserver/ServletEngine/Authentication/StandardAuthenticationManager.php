@@ -58,7 +58,7 @@ class StandardAuthenticationManager implements AuthenticationManager
 
         // iterate over all servlets and return the matching one
         foreach ($context->search('ServletContext')->getSecuredUrlConfigs() as $securedUrlConfig) {
-
+            // continue if the can't find a config
             if ($securedUrlConfig == null) {
                 continue;
             }
@@ -68,7 +68,6 @@ class StandardAuthenticationManager implements AuthenticationManager
 
             // we'll match our URI against the URL pattern
             if (fnmatch($urlPattern, $servletRequest->getServletPath() . $servletRequest->getPathInfo())) {
-
                 // load security configuration
                 $configuredAuthType = $securedUrlConfig['auth']['auth-type'];
 

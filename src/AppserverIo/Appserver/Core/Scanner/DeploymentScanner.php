@@ -149,8 +149,8 @@ class DeploymentScanner extends AbstractScanner
         // load the initial hash value of the deployment directory
         $oldHash = $this->getDirectoryHash($directory);
 
-        while (true) { // watch the deployment directory
-
+        // watch the deployment directory
+        while (true) {
             // load the actual hash value for the deployment directory
             $newHash = $this->getDirectoryHash($directory);
 
@@ -159,7 +159,6 @@ class DeploymentScanner extends AbstractScanner
 
             // compare the hash values, if not equal restart the appserver
             if ($oldHash !== $newHash) {
-
                 // log that changes have been found
                 $this->getSystemLogger()->debug(sprintf('Found changes in directory %s', $directory));
 
@@ -180,7 +179,8 @@ class DeploymentScanner extends AbstractScanner
                 // log that the appserver has been restarted successfull
                 $this->getSystemLogger()->debug('appserver has successfully been restarted');
 
-            } else { // if no changes has been found, wait a second
+            } else {
+                // if no changes has been found, wait a second
                 sleep($interval);
             }
         }

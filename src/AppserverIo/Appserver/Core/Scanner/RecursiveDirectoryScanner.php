@@ -61,7 +61,6 @@ class RecursiveDirectoryScanner extends DeploymentScanner
 
         // iterate over the files
         foreach ($files as $file) {
-
             // load the last modification time
             $mtime = filemtime($file);
 
