@@ -25,6 +25,7 @@ namespace AppserverIo\Appserver\Core\Api;
 
 use AppserverIo\Appserver\Core\AbstractTest;
 use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
+use org\bovigo\vfs\vfsStream;
 
 /**
  * Callback wrapper for the chgrp function
@@ -65,6 +66,76 @@ function chown($filename, $user)
 function mkdir($pathname, $mode = 0777, $recursive = false, $context = null)
 {
     return call_user_func_array(AbstractServiceTest::$mkdirCallback, func_get_args());
+}
+
+/**
+ * Mocked OpenSSL function used to avoid failures if the extension might not be available in an testing environment
+ *
+ * @return string
+ */
+function openssl_csr_new()
+{
+    return '';
+}
+
+/**
+ * Mocked OpenSSL function used to avoid failures if the extension might not be available in an testing environment
+ *
+ * @return string
+ */
+function openssl_csr_sign()
+{
+    return '';
+}
+
+/**
+ * Mocked OpenSSL function used to avoid failures if the extension might not be available in an testing environment
+ *
+ * @return string
+ */
+function openssl_error_string()
+{
+    return call_user_func_array(AbstractServiceTest::$opensslErrorStringCallback, func_get_args());
+}
+
+/**
+ * Mocked OpenSSL function used to avoid failures if the extension might not be available in an testing environment
+ *
+ * @return string
+ */
+function openssl_pkey_export()
+{
+    return '';
+}
+
+/**
+ * Mocked OpenSSL function used to avoid failures if the extension might not be available in an testing environment
+ *
+ * @return string
+ */
+function openssl_pkey_new()
+{
+    return '';
+}
+
+/**
+ * Mocked OpenSSL function used to avoid failures if the extension might not be available in an testing environment
+ *
+ * @return string
+ */
+function openssl_x509_export()
+{
+    return '';
+}
+
+/**
+ * Callback wrapper for the umask function
+ *
+ * @return int
+ */
+function umask()
+{
+    return call_user_func_array(AbstractServiceTest::$umaskCallback, func_get_args());
 }
 
 /**
@@ -118,16 +189,37 @@ class AbstractServiceTest extends AbstractTest
     public static $mkdirCallback = '';
 
     /**
+     * Callback wrapper for the OpenSSL function openssl_error_string
+     *
+     * @var string $opensslErrorStringCallback
+     */
+    public static $opensslErrorStringCallback = '';
+
+    /**
+     * Callback wrapper for system function umask
+     *
+     * @var string $umaskCallback
+     */
+    public static $umaskCallback = '';
+
+    /**
      * Initializes the service instance to test.
      *
      * @return null
      */
     public function setUp()
     {
+        if (!is_dir($this->getTmpDir())) {
+
+            \mkdir($this->getTmpDir());
+        }
+
         // set default callbacks for our wrapped system functions
         self::$chownCallback = '\chgrp';
         self::$chownCallback = '\chown';
         self::$mkdirCallback = '\mkdir';
+        self::$opensslErrorStringCallback = '\openssl_error_string';
+        self::$umaskCallback = '\umask';
         self::$callbackCallStack = array();
 
         // create a basic mock for our abstract service class
@@ -142,6 +234,16 @@ class AbstractServiceTest extends AbstractTest
             ->will($this->returnValue(null));
 
         $this->service = $service;
+    }
+
+    /**
+     * Make sure to cleanup after our tests
+     *
+     * @return null
+     */
+    public function tearDown()
+    {
+        $this->clearTmpDir();
     }
 
     /**
@@ -466,6 +568,8 @@ class AbstractServiceTest extends AbstractTest
      */
     public function testSetUserRight()
     {
+        $this->skipOnWindows();
+
         // track if the system calls to chown and chgrp have been made
         self::$chownCallback = function () {
             AbstractServiceTest::$callbackCallStack[] = 'chown';
@@ -487,22 +591,93 @@ class AbstractServiceTest extends AbstractTest
      */
     public function testSetUserRightOmitWindows()
     {
+        $this->skipOnWindows();
+
         // temporarily mock the getOsIdentifier() method to fake a windows system
-        $service = $this->getMockBuilder('\AppserverIo\Appserver\Core\Api\AbstractService')
-            ->setMethods(array('findAll', 'load', 'getOsIdentifier'))
-            ->setConstructorArgs(array($this->getMockInitialContext()))
-            ->getMockForAbstractClass();
-        $service->expects($this->any())
-            ->method('findAll')
-            ->will($this->returnValue(array()));
-        $service->expects($this->any())
-            ->method('load')
-            ->will($this->returnValue(null));
+        $service = $this->getPartialServiceMock(array('getOsIdentifier'));
         $service->expects($this->atLeastOnce())
             ->method('getOsIdentifier')
             ->will($this->returnValue('WIN'));
 
         $service->setUserRight($this->getMockBuilder('\SplFileInfo')->setConstructorArgs(array($this->getTmpDir()))->getMock());
+    }
+
+    /**
+     * Tests if changing user and group is possible without errors
+     *
+     * @return null
+     */
+    public function testSetUserRights()
+    {
+        $this->skipOnWindows();
+
+        // track if the system calls to chown and chgrp have been made
+        self::$chownCallback = function () {
+            AbstractServiceTest::$callbackCallStack[] = 'chown';
+        };
+        self::$chgrpCallback = function () {
+            AbstractServiceTest::$callbackCallStack[] = 'chgrp';
+        };
+
+        // make the call and check if we did run into the important parts
+        $this->service->setUserRights($this->getMockBuilder('\SplFileInfo')->setConstructorArgs(array($this->getTmpDir()))->getMock());
+        $this->assertContains('chown', self::$callbackCallStack);
+        $this->assertContains('chgrp', self::$callbackCallStack);
+    }
+
+    /**
+     * Tests if changing user and group is not done for Windows systems
+     *
+     * @return null
+     */
+    public function testSetUserRightsOmitWindows()
+    {
+        $this->skipOnWindows();
+
+        // temporarily mock the getOsIdentifier() method to fake a windows system
+        $service = $this->getPartialServiceMock(array('getOsIdentifier'));
+        $service->expects($this->once())
+            ->method('getOsIdentifier')
+            ->will($this->returnValue('WIN'));
+
+        // mock an \SplFileInfo object to test if we reached any file operation (which we should not)
+        $someDir = $this->getTmpDir() . DIRECTORY_SEPARATOR . md5(__FUNCTION__);
+        $splFileMock = $this->getMockBuilder('\SplFileInfo')
+            ->setMethods(array('isDir'))
+            ->setConstructorArgs(array($someDir))
+            ->getMock();
+        $splFileMock->expects($this->never())
+            ->method('isDir')
+            ->will($this->returnValue(true));
+
+        $service->setUserRights($splFileMock);
+    }
+
+    /**
+     * Tests if we bail when we get passed an invalid directory
+     *
+     * @return null
+     */
+    public function testSetUserRightsBailOnWrongPath()
+    {
+        $this->skipOnWindows();
+
+        $service = $this->getPartialServiceMock(array('getInitialContext'));
+        $service->expects($this->never())
+            ->method('getInitialContext');
+
+        // mock an \SplFileInfo object to test if we reached any file operation (which we should not)
+        $someDir = $this->getTmpDir() . DIRECTORY_SEPARATOR . md5(__FUNCTION__);
+        $splFileMock = $this->getMockBuilder('\SplFileInfo')
+            ->setMethods(array('isDir'))
+            ->setConstructorArgs(array($someDir))
+            ->getMock();
+        $splFileMock->expects($this->once())
+            ->method('isDir')
+            ->will($this->returnValue(false));
+
+        // the test is fine if 'getInitialContext' never gets called
+        $service->setUserRights($splFileMock);
     }
 
     /**
@@ -512,17 +687,10 @@ class AbstractServiceTest extends AbstractTest
      */
     protected function getCreateDirectoryMockService()
     {
+        $this->skipOnWindows();
+
         // temporarily switch off initUmask() and setUserRights() as they would make problems
-        $service = $this->getMockBuilder('\AppserverIo\Appserver\Core\Api\AbstractService')
-        ->setMethods(array('findAll', 'load', 'initUmask', 'setUserRights'))
-        ->setConstructorArgs(array($this->getMockInitialContext()))
-        ->getMockForAbstractClass();
-        $service->expects($this->any())
-        ->method('findAll')
-        ->will($this->returnValue(array()));
-        $service->expects($this->any())
-        ->method('load')
-        ->will($this->returnValue(null));
+        $service = $this->getPartialServiceMock(array('initUmask', 'setUserRights'));
         $service->expects($this->once())
         ->method('initUmask');
         $service->expects($this->any())
@@ -572,216 +740,440 @@ class AbstractServiceTest extends AbstractTest
 
         $testDir = $this->getTmpDir() . DIRECTORY_SEPARATOR . __FUNCTION__;
         $service->createDirectory(new \SplFileInfo($testDir));
-        //$this->assertTrue(file_exists($testDir));
-        //$this->assertTrue(is_dir($testDir));
+        $this->assertTrue(is_dir($testDir));
         rmdir($testDir);
     }
 
     /**
+     * Test if we can clear directories which contain files
      *
      * @return null
      */
     public function testCleanUpDir()
     {
+        $testDir = $this->getTmpDir() . DIRECTORY_SEPARATOR . md5(rand());
 
+        \mkdir($testDir);
+        \touch($testDir . DIRECTORY_SEPARATOR . __FUNCTION__);
+        $this->assertTrue(file_exists($testDir . DIRECTORY_SEPARATOR . __FUNCTION__));
 
-
+        $this->service->cleanUpDir(new \SplFileInfo($this->getTmpDir()));
+        $this->assertFalse(file_exists($testDir . DIRECTORY_SEPARATOR . __FUNCTION__));
     }
 
     /**
+     * Test if we leave paths which are no directories alone
      *
      * @return null
      */
-    public function testCleanUpDirAlsoFiles()
+    public function testCleanUpDirNoInitialDirGiven()
     {
+        $testFile = $this->getTmpDir() . DIRECTORY_SEPARATOR . md5(rand());
+        touch($testFile);
 
+        $this->assertTrue(file_exists($testFile));
+        $this->service->cleanUpDir(new \SplFileInfo($testFile), false);
+        $this->assertTrue(file_exists($testFile));
     }
 
     /**
+     * Will test if we can clean empty directories from a given path
      *
      * @return null
      */
-    public function testCleanUpDirNoDir()
+    public function testCleanUpDirNoFilesCleanup()
     {
+        $testDir1 = $this->getTmpDir() . DIRECTORY_SEPARATOR . md5(rand());
+        $testDir2 = $this->getTmpDir() . DIRECTORY_SEPARATOR . md5(rand());
 
+        \mkdir($testDir1);
+        \mkdir($testDir2);
+        $this->assertTrue(is_dir($testDir1));
+        $this->assertTrue(is_dir($testDir2));
+
+        $this->service->cleanUpDir(new \SplFileInfo($this->getTmpDir()), false);
+        $this->assertFalse(is_dir($testDir1));
+        $this->assertFalse(is_dir($testDir2));
     }
 
     /**
-     * Deletes all files and subdirectories from the passed directory.
+     * Test if we can run through with an invalid source without provoking errors
      *
-     * @param \SplFileInfo $dir             The directory to remove
-     * @param bool         $alsoRemoveFiles The flag for removing files also
-     *
-     * @return void
-     *
-    public function cleanUpDir(\SplFileInfo $dir, $alsoRemoveFiles = true)
+     * @return null
+     */
+    public function testCopyDirInvalidSourceDir()
     {
+        $invalidDir = $this->getTmpDir() . DIRECTORY_SEPARATOR . md5(rand());
+        $tmpDir = $this->getTmpDir();
 
-        // first check if the directory exists, if not return immediately
-        if ($dir->isDir() === false) {
-            return;
-        }
+        $currentFileCount = count(scandir($tmpDir));
+        $this->assertFalse(file_exists($invalidDir));
+        $this->service->copyDir($invalidDir, $tmpDir);
+        $this->assertCount($currentFileCount, scandir($tmpDir));
+    }
 
-        // remove old archive from webapps folder recursively
-        $files = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator($dir->getPathname()),
-            \RecursiveIteratorIterator::CHILD_FIRST
-        );
-        foreach ($files as $file) {
-            // skip . and .. dirs
-            if ($file->getFilename() === '.' || $file->getFilename() === '..') {
-                continue;
-            }
-            if ($file->isDir()) {
-                @rmdir($file->getRealPath());
-            } elseif ($file->isFile() && $alsoRemoveFiles) {
-                unlink($file->getRealPath());
-            } else {
-                // do nothing, because file should NOT be deleted obviously
-            }
+    /**
+     * Test if we actually can copy a file from one directory to another
+     *
+     * @return null
+     */
+    public function testCopyDirBothDirsExist()
+    {
+        $rootDir = $this->setUpFilesystemMock('tmp');
+        $dir = vfsStream::newDirectory('tmp1');
+        $dir->addChild(vfsStream::newFile('copyMe'));
+        $rootDir->addChild($dir);
+        $rootDir->addChild(vfsStream::newDirectory('tmp2'));
+
+        $this->assertFalse(file_exists(vfsStream::url('tmp2/copyMe')));
+        $this->service->copyDir(vfsStream::url('tmp1'), vfsStream::url('tmp2'));
+        $this->assertTrue(file_exists(vfsStream::url('tmp2/copyMe')));
+    }
+
+    /**
+     * Test if we can copy a file into a non existing directory
+     *
+     * @return null
+     */
+    public function testCopyDirOneDirExists()
+    {
+        $rootDir = $this->setUpFilesystemMock('tmp');
+        $dir = vfsStream::newDirectory('tmp1');
+        $dir->addChild(vfsStream::newFile('copyMe'));
+        $rootDir->addChild($dir);
+
+        $dstDir = $this->getTmpDir() . DIRECTORY_SEPARATOR . md5(__FUNCTION__) . DIRECTORY_SEPARATOR;
+
+        $this->assertFalse(file_exists($dstDir . 'copyMe'));
+        $this->service->copyDir(vfsStream::url('tmp1'), $dstDir);
+        $this->assertTrue(file_exists($dstDir . 'copyMe'));
+    }
+
+    /**
+     * Tests if we can copy a solitary file
+     *
+     * @return null
+     */
+    public function testCopyDirWhichIsAFile()
+    {
+        $rootDir = $this->setUpFilesystemMock('tmp');
+        $rootDir->addChild(vfsStream::newFile('copyMe'));
+        $rootDir->addChild(vfsStream::newDirectory('tmp2'));
+
+        $this->assertFalse(file_exists(vfsStream::url('tmp2/copyMe')));
+        $this->service->copyDir(vfsStream::url('copyMe'), vfsStream::url('tmp2'));
+        $this->assertTrue(file_exists(vfsStream::url('tmp2/copyMe')));
+    }
+
+    /**
+     * Test if we can copy something that has been linked to
+     *
+     * @return null
+     */
+    public function testCopyDirWhichIsALink()
+    {
+        $tmpDir = $this->getTmpDir() . DIRECTORY_SEPARATOR;
+        $file = md5(rand() . microtime(true));
+        $linkName = $tmpDir . md5(rand() . microtime(true));
+        $dirName = $tmpDir . md5(rand() . microtime(true)) . DIRECTORY_SEPARATOR;
+        touch($tmpDir . $file);
+        symlink($tmpDir . $file, $linkName);
+        \mkdir($dirName);
+
+        $this->assertFalse(file_exists($dirName . $file));
+        $this->service->copyDir($linkName, $dirName . $file);
+        $this->assertTrue(file_exists($dirName . $file));
+    }
+
+    /**
+     * Rests if we can glob directories and files as we should
+     *
+     * @return null
+     */
+    public function testGlobDir()
+    {
+        $tmpDir = $this->getTmpDir() . DIRECTORY_SEPARATOR;
+        touch($tmpDir . 'globMe1');
+        \mkdir($tmpDir . 'globMeAsWell');
+        touch($tmpDir . 'dontGlobMe');
+
+        $files = $this->service->globDir($tmpDir . 'globMe*');
+        $this->assertContains($tmpDir . 'globMe1', $files);
+        $this->assertContains($tmpDir . 'globMeAsWell', $files);
+        $this->assertNotContains($tmpDir . 'dontGlobMe', $files);
+    }
+
+    /**
+     * Tests if we are able to set a umask
+     *
+     * @return null
+     */
+    public function testInitUmask()
+    {
+        $this->skipOnWindows();
+
+        // the test is clear if we did not receive an exception
+        $this->service->initUmask();
+    }
+
+    /**
+     * Use to skip your test on windows machines
+     *
+     * @return null
+     */
+    protected function skipOnWindows()
+    {
+        // not testable on Windows machines
+        if ($this->service->getOsIdentifier() === 'WIN') {
+            $this->markTestSkipped('Not testable on Windows machines');
         }
     }
 
     /**
-     * Copies a directory recursively.
+     * Tests if we are able to check for failures on umask changes
      *
-     * @param string $src The source directory to copy
-     * @param string $dst The target directory
+     * @return null
      *
-     * @return void
-     *
-    public function copyDir($src, $dst)
+     * @expectedException \Exception
+     */
+    public function testInitUmaskFailureException()
     {
-        if (is_link($src)) {
-            symlink(readlink($src), $dst);
-        } elseif (is_dir($src)) {
-            if (is_dir($dst) === false) {
-                mkdir($dst, 0775, true);
-            }
-            // copy files recursive
-            foreach (scandir($src) as $file) {
-                if ($file != '.' && $file != '..') {
-                    $this->copyDir("$src/$file", "$dst/$file");
-                }
-            }
+        $this->skipOnWindows();
 
-        } elseif (is_file($src)) {
-            copy($src, $dst);
-        } else {
-            // do nothing, we didn't have a directory to copy
-        }
+        self::$umaskCallback = function () {
+            return 1000; // umasks will never exceed 0777
+        };
+
+        // the test is clear if we did not receive an exception
+        $this->service->initUmask();
     }
 
     /**
-     * Recursively parses and returns the directories that matches the passed
-     * glob pattern.
+     * Tests if we will successfully shun windows
      *
-     * @param string  $pattern The glob pattern used to parse the directories
-     * @param integer $flags   The flags passed to the glob function
-     *
-     * @return array The directories matches the passed glob pattern
-     * @link http://php.net/glob
-     *
-    public function globDir($pattern, $flags = 0)
+     * @return null
+     */
+    public function testInitUmaskOmitWindows()
     {
+        $this->skipOnWindows();
 
-        // parse the first directory
-        $files = glob($pattern, $flags);
+        // temporarily mock the getOsIdentifier() method to fake a windows system
+        $service = $this->getPartialServiceMock(array('getOsIdentifier'));
+        $service->expects($this->atLeastOnce())
+            ->method('getOsIdentifier')
+            ->will($this->returnValue('WIN'));
 
-        // parse all subdirectories
-        foreach (glob(dirname($pattern). DIRECTORY_SEPARATOR . '*', GLOB_ONLYDIR|GLOB_NOSORT|GLOB_BRACE) as $dir) {
-            $files = array_merge($files, $this->globDir($dir . DIRECTORY_SEPARATOR . basename($pattern), $flags));
-        }
+        // make any calls to umask() trackable and avoid returning an useful value
+        self::$umaskCallback = function () {
+            AbstractServiceTest::$callbackCallStack[] = 'umask';
+            return 'definitely not an int';
+        };
 
-        // return the array with the files matching the glob pattern
-        return $files;
+        // make the call and check if umask() did get called
+        $service->initUmask();
+        $this->assertNotContains('umask', self::$callbackCallStack);
     }
 
     /**
-     * Creates the SSL file passed as parameter or nothing if the file already exists.
+     * Tests if we are able to successfully run through SSL certificate creation logic for Linux.
+     * We do NOT test the actual OpenSSL functionality
      *
-     * @param \SplFileInfo $certificate The file info about the SSL file to generate
-     *
-     * @return void
-     *
-    public function createSslCertificate(\SplFileInfo $certificate)
+     * @return null
+     */
+    public function testCreateSslCertificateLinux()
     {
+        // temporarily mock the isOpenSslAvailable() method to fake a windows system
+        $service = $this->getPartialServiceMock(array('isOpenSslAvailable', 'getOsIdentifier'));
+        $service->expects($this->once())
+            ->method('isOpenSslAvailable')
+            ->will($this->returnValue(true));
+        $service->expects($this->once())
+            ->method('getOsIdentifier')
+            ->will($this->returnValue('LIN'));
 
-        // first we've to check if OpenSSL is available
-        if (!extension_loaded('openssl')) {
-            return;
-        }
+        $certPath = $this->getTmpDir() . DIRECTORY_SEPARATOR . md5(__FUNCTION__);
 
-        // do nothing if the file is already available
-        if ($certificate->isFile()) {
-            return;
-        }
+        $service->createSslCertificate(new \SplFileInfo($certPath));
+        $this->assertTrue(file_exists($certPath));
+    }
 
-        // prepare the certificate data from our configuration
-        $dn = array(
-            "countryName" => "DE",
-            "stateOrProvinceName" => "Bavaria",
-            "localityName" => "Kolbermoor",
-            "organizationName" => "appserver.io",
-            "organizationalUnitName" => "Development",
-            "commonName" => gethostname(),
-            "emailAddress" => "info@appserver.io"
-        );
+    /**
+     * Tests if we are able to successfully run through SSL certificate creation logic for Mac.
+     * We do NOT test the actual OpenSSL functionality
+     *
+     * @return null
+     */
+    public function testCreateSslCertificateMac()
+    {
+        // temporarily mock the isOpenSslAvailable() method to fake a windows system
+        $service = $this->getPartialServiceMock(array('isOpenSslAvailable', 'getOsIdentifier'));
+        $service->expects($this->once())
+            ->method('isOpenSslAvailable')
+            ->will($this->returnValue(true));
+        $service->expects($this->once())
+            ->method('getOsIdentifier')
+            ->will($this->returnValue('DAR'));
 
-        // check the operating system
-        switch (strtoupper(PHP_OS)) {
+        $certPath = $this->getTmpDir() . DIRECTORY_SEPARATOR . md5(__FUNCTION__);
 
-            case 'DARWIN': // on Mac OS X use the system default configuration
+        $service->createSslCertificate(new \SplFileInfo($certPath));
+        $this->assertTrue(file_exists($certPath));
+    }
 
-                $configargs = array('config' => '/System/Library/OpenSSL/openssl.cnf');
-                break;
+    /**
+     * Tests if we are able to successfully run through SSL certificate creation logic for Windows.
+     * We do NOT test the actual OpenSSL functionality
+     *
+     * @return null
+     */
+    public function testCreateSslCertificateWindows()
+    {
+        // temporarily mock the isOpenSslAvailable() method to fake a windows system
+        $service = $this->getPartialServiceMock(array('isOpenSslAvailable', 'getOsIdentifier'));
+        $service->expects($this->once())
+            ->method('isOpenSslAvailable')
+            ->will($this->returnValue(true));
+        $service->expects($this->once())
+            ->method('getOsIdentifier')
+            ->will($this->returnValue('WIN'));
 
-            case 'WINNT': // on Windows use the system configuration we deliver
+        $certPath = $this->getTmpDir() . DIRECTORY_SEPARATOR . md5(__FUNCTION__);
 
-                $configargs = array('config' => $this->getBaseDirectory('/php/extras/ssl/openssl.cnf'));
-                break;
+        $service->createSslCertificate(new \SplFileInfo($certPath));
+        $this->assertTrue(file_exists($certPath));
+    }
 
-            default: // on all other use a standard configuration
+    /**
+     * Tests if we will not try to create a certificate without the OpenSSL extension
+     *
+     * @return null
+     */
+    public function testCreateSslCertificateMissingExtension()
+    {
+        // temporarily mock the isOpenSslAvailable() method to test for specific logic flow
+        $service = $this->getPartialServiceMock(array('isOpenSslAvailable'));
+        $service->expects($this->atLeastOnce())
+            ->method('isOpenSslAvailable')
+            ->will($this->returnValue(false));
 
-                $configargs = array(
-                    'digest_alg' => 'md5',
-                    'x509_extensions' => 'v3_ca',
-                    'req_extensions'   => 'v3_req',
-                    'private_key_bits' => 2048,
-                    'private_key_type' => OPENSSL_KEYTYPE_RSA,
-                    'encrypt_key' => false
-                );
-        }
+        // mock an \SplFileInfo object to test if we reached any file operation (which we should not)
+        $certPath = $this->getTmpDir() . DIRECTORY_SEPARATOR . md5(__FUNCTION__);
+        $splFileMock = $this->getMockBuilder('\SplFileInfo')
+            ->setMethods(array('isFile'))
+            ->setConstructorArgs(array($certPath))
+            ->getMock();
+        $splFileMock->expects($this->never())
+            ->method('isFile');
 
-        // generate a new private (and public) key pair
-        $privkey = openssl_pkey_new($configargs);
+        $service->createSslCertificate($splFileMock);
+    }
 
-        // Generate a certificate signing request
-        $csr = openssl_csr_new($dn, $privkey, $configargs);
+    /**
+     * Tests if we will not try to create a certificate without the OpenSSL extension
+     *
+     * @return null
+     *
+     * @expectedException \Exception
+     */
+    public function testCreateSslCertificateWhichCannotBeWritten()
+    {
+        // temporarily mock the isOpenSslAvailable() method to test for specific logic flow
+        $service = $this->getPartialServiceMock(array('isOpenSslAvailable'));
+        $service->expects($this->once())
+            ->method('isOpenSslAvailable')
+            ->will($this->returnValue(true));
 
-        // create a self-signed cert that is valid for 365 days
-        $sscert = openssl_csr_sign($csr, null, $privkey, 365, $configargs);
+        // create a \SplFileObject mock which cannot be written to
+        $certPath = $this->getTmpDir() . DIRECTORY_SEPARATOR . md5(__FUNCTION__);
+        $splFileMock = $this->getMockBuilder('\SplFileObject')
+            ->setMethods(array('fwrite'))
+            ->setConstructorArgs(array($certPath))
+            ->getMock();
+        $splFileMock->expects($this->once())
+            ->method('fwrite')
+            ->will($this->returnValue(false));
 
-        // export the cert + pk files
-        $certout = '';
-        $pkeyout = '';
-        openssl_x509_export($sscert, $certout);
-        openssl_pkey_export($privkey, $pkeyout, null, $configargs);
+        // mock an \SplFileInfo mock which only opens a readonly file
+        $splInfoMock = $this->getMockBuilder('\SplFileInfo')
+            ->setMethods(array('openFile'))
+            ->setConstructorArgs(array($certPath))
+            ->getMock();
+        $splInfoMock->expects($this->once())
+            ->method('openFile')
+            ->will($this->returnValue($splFileMock));
 
-        // write the SSL certificate data to the target
-        $file = $certificate->openFile('w');
-        if (($written = $file->fwrite($certout . $pkeyout)) === false) {
-            throw new \Exception(sprintf('Can\'t create SSL certificate %s', $certificate->getPathname()));
-        }
+        $service->createSslCertificate($splInfoMock);
+    }
 
-        // log a message that the file has been written successfully
-        $this->getInitialContext()->getSystemLogger()->info(
-            sprintf('Successfully created %s with %d bytes', $certificate->getPathname(), $written)
-        );
+    /**
+     * Tests if we will not try to create a certificate without the OpenSSL extension
+     *
+     * @return null
+     */
+    public function testCreateSslCertificateLogThatAnOpenSslErrorOccured()
+    {
+        // temporarily mock the isOpenSslAvailable() method to test for specific logic flow
+        $service = $this->getPartialServiceMock(array('isOpenSslAvailable'));
+        $service->expects($this->atLeastOnce())
+            ->method('isOpenSslAvailable')
+            ->will($this->returnValue(true));
 
-        // log any errors that occurred here
-        while (($e = openssl_error_string()) !== false) {
-            $this->getInitialContext()->getSystemLogger()->debug($e);
-        }
-    }*/
+        // make our "OpenSSL extension" return an error (but only once!)
+        self::$opensslErrorStringCallback = function () {
+            AbstractServiceTest::$callbackCallStack[] = 'openssl_error_string';
+            if (!in_array('openssl_error_string', AbstractServiceTest::$callbackCallStack)) {
+                return 'I am an error, fear me!';
+            }
+
+            return false;
+        };
+
+        $service->createSslCertificate(new \SplFileInfo($this->getTmpDir() . DIRECTORY_SEPARATOR . md5(__FUNCTION__)));
+    }
+
+    /**
+     * Tests if we omit overwriting of an already existing file
+     *
+     * @return null
+     */
+    public function testCreateSslCertificateNoOverwriteOfFile()
+    {
+        // temporarily mock the isOpenSslAvailable() and getOsIdentifier() method to test for specific logic flow
+        $service = $this->getPartialServiceMock(array('isOpenSslAvailable', 'getOsIdentifier'));
+        $service->expects($this->atLeastOnce())
+            ->method('isOpenSslAvailable')
+            ->will($this->returnValue(false));
+        $service->expects($this->never())
+            ->method('getOsIdentifier');
+
+        $certPath = $this->getTmpDir() . DIRECTORY_SEPARATOR . md5(__FUNCTION__);
+        touch($certPath);
+
+        // test is fine if we never reach the call to 'getOsIdentifier'
+        $service->createSslCertificate(new \SplFileInfo($certPath));
+    }
+
+    /**
+     * Returns a partially mocked mock instance of our abstract service
+     *
+     * @param array $methodsToMock The methods we want to mock besides 'findAll' and 'load'
+     *
+     * @param array $methodsToMock
+     * @return \PHPUnit_Framework_MockObject_MockObject|\AppserverIo\Appserver\Core\Api\AbstractService
+     */
+    protected function getPartialServiceMock(array $methodsToMock)
+    {
+        $service = $this->getMockBuilder('\AppserverIo\Appserver\Core\Api\AbstractService')
+            ->setMethods(array_merge(array('findAll', 'load'), $methodsToMock))
+            ->setConstructorArgs(array($this->getMockInitialContext()))
+            ->getMockForAbstractClass();
+        $service->expects($this->any())
+            ->method('findAll')
+            ->will($this->returnValue(array()));
+        $service->expects($this->any())
+            ->method('load')
+            ->will($this->returnValue(null));
+
+        return $service;
+    }
 }

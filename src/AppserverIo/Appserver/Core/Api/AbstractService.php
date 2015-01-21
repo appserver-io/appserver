@@ -142,6 +142,18 @@ abstract class AbstractService implements ServiceInterface
     }
 
     /**
+     * Returns true if the OpenSSL extension is loaded, false otherwise
+     *
+     * @return boolean
+     *
+     * @codeCoverageIgnore this will most likely always be mocked/stubbed, and it is trivial anyway
+     */
+    protected function isOpenSslAvailable()
+    {
+        return extension_loaded('openssl');
+    }
+
+    /**
      * Returns the application servers base directory.
      *
      * @param string|null $directoryToAppend Append this directory to the base directory before returning it
@@ -439,8 +451,9 @@ abstract class AbstractService implements ServiceInterface
         // set the configured umask to use
         umask($newUmask = $this->getInitialContext()->getSystemConfiguration()->getParam('umask'));
 
-        // check if we have successfull set the umask
-        if (umask() != $newUmask) { // check if set, throw an exception if not
+        // check if we have successfully set the umask
+        if (umask() != $newUmask) {
+            // check if set, throw an exception if not
             throw new \Exception(sprintf('Can\'t set configured umask \'%s\' found \'%\' instead', $newUmask, umask()));
         }
     }
@@ -570,12 +583,14 @@ abstract class AbstractService implements ServiceInterface
      * @param \SplFileInfo $certificate The file info about the SSL file to generate
      *
      * @return void
+     *
+     * @throws \Exception
      */
     public function createSslCertificate(\SplFileInfo $certificate)
     {
 
         // first we've to check if OpenSSL is available
-        if (!extension_loaded('openssl')) {
+        if (!$this->isOpenSslAvailable()) {
             return;
         }
 

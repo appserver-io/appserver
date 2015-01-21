@@ -27,8 +27,7 @@ use AppserverIo\Appserver\Core\Api\Node\AppserverNode;
 use AppserverIo\Appserver\Core\Api\Node\ContainerNode;
 use AppserverIo\Appserver\Core\Api\Node\DeploymentNode;
 use AppserverIo\Appserver\Core\Mock\MockInitialContext;
-use org\bovigo\vfs\vfsStreamDirectory;
-use org\bovigo\vfs\vfsStreamWrapper;
+use org\bovigo\vfs\vfsStream;
 
 /**
  * Abstract base class for appserver related tests
@@ -43,6 +42,33 @@ use org\bovigo\vfs\vfsStreamWrapper;
  */
 abstract class AbstractTest extends \PHPUnit_Framework_TestCase
 {
+
+    /**
+     * Will clear all files from the temporary directory
+     *
+     * @return boolean
+     */
+    protected function clearTmpDir()
+    {
+        return $this->deleteTree($this->getTmpDir());
+    }
+
+    /**
+     * Will recursively delete the content of a directory
+     *
+     * @param string $dir Path to the directory
+     *
+     * @return boolean
+     */
+    protected function deleteTree($dir)
+    {
+        $files = array_diff(scandir($dir), array('.','..', '.gitignore'));
+        foreach ($files as $file) {
+            (is_dir("$dir/$file")) ? $this->deleteTree("$dir/$file") : unlink("$dir/$file");
+        }
+
+        return rmdir($dir);
+    }
 
     /**
      * Returns the system configuration.
@@ -157,7 +183,7 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
      */
     public function getTmpDir()
     {
-        return realpath(__DIR__ . '/../../../_files/var/tmp');
+        return sys_get_temp_dir() . DIRECTORY_SEPARATOR  . md5(__CLASS__);
     }
 
     /**
@@ -167,7 +193,7 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
      *
      * @param string $rootDir Root directory path of your mocked file system path
      *
-     * @return null
+     * @return \org\bovigo\vfs\vfsStreamDirectory
      *
      * @see https://phpunit.de/manual/3.7/en/test-doubles.html#test-doubles.mocking-the-filesystem.examples.ExampleTest2.php
      * @see https://github.com/mikey179/vfsStream/wiki
@@ -175,7 +201,6 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
      */
     public function setUpFilesystemMock($rootDir)
     {
-        vfsStreamWrapper::register();
-        vfsStreamWrapper::setRoot(new vfsStreamDirectory($rootDir));
+        return vfsStream::setup($rootDir);
     }
 }
