@@ -1107,8 +1107,6 @@ The `@Schedule` annotation on the `invokedByTimer()` method schedules the invoca
 method every minute without the need to have an CRON configured or running. Such `Timers` can
 also be created programatically, if you want to know more about that, have a look at our [example](https://github.com/appserver-io-apps/example).
 
-> Actually we don't support seconds as period you can schedule (see Issue [#300](#300)).
-
 # AOP
 
 Meanwhile, AOP is more than a buzzword. Many of the PHP frameworks out there are supporting AOP for
