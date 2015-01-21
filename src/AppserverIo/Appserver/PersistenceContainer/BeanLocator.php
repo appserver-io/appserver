@@ -23,8 +23,11 @@
 
 namespace AppserverIo\Appserver\PersistenceContainer;
 
-use AppserverIo\Appserver\PersistenceContainer\BeanManager;
+use AppserverIo\Psr\PersistenceContainerProtocol\BeanContext;
 use AppserverIo\Psr\PersistenceContainerProtocol\RemoteMethod;
+use AppserverIo\Psr\PersistenceContainerProtocol\ResourceLocator;
+use AppserverIo\Psr\PersistenceContainerProtocol\InvalidBeanTypeException;
+use AppserverIo\Psr\EnterpriseBeans\EnterpriseBeansException;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Stateful;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Singleton;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Stateless;
@@ -54,14 +57,14 @@ class BeanLocator implements ResourceLocator
      * Tries to locate the bean that handles the request and returns the instance
      * if one can be found.
      *
-     * @param \AppserverIo\Appserver\PersistenceContainer\BeanManager    $beanManager  The bean manager instance
+     * @param \AppserverIo\Psr\PersistenceContainerProtocol\BeanContext  $beanManager  The bean manager instance
      * @param \AppserverIo\Psr\PersistenceContainerProtocol\RemoteMethod $remoteMethod The remote method call request
      * @param array                                                      $args         The arguments passed to the session beans constructor
      *
      * @return object The requested bean instance
-     * @see \AppserverIo\Appserver\PersistenceContainer\ResourceLocator::locate()
+     * @see \AppserverIo\Psr\PersistenceContainerProtocol\ResourceLocator::locate()
      */
-    public function locate(BeanManager $beanManager, RemoteMethod $remoteMethod, array $args = array())
+    public function locate(BeanContext $beanManager, RemoteMethod $remoteMethod, array $args = array())
     {
 
         // load the information to locate the requested bean
@@ -85,9 +88,9 @@ class BeanLocator implements ResourceLocator
      * @param array                                                   $args        The arguments passed to the session beans constructor
      *
      * @return object The requested session bean
-     * @throws \AppserverIo\Appserver\PersistenceContainer\InvalidBeanTypeException Is thrown if passed class name is no session bean or is a entity bean (not implmented yet)
+     * @throws \AppserverIo\Psr\PersistenceContainerProtocol\InvalidBeanTypeException Is thrown if passed class name is no session bean or is a entity bean (not implmented yet)
      */
-    public function lookup(BeanManager $beanManager, $className, $sessionId = null, array $args = array())
+    public function lookup(BeanContext $beanManager, $className, $sessionId = null, array $args = array())
     {
 
         // load the object manager
@@ -124,7 +127,7 @@ class BeanLocator implements ResourceLocator
 
             // singleton session beans MUST extends \Stackable
             if (is_subclass_of($className, '\Stackable') === false) {
-                throw new \Exception(sprintf('Singleton session bean %s MUST extend \Stackable', $className));
+                throw new EnterpriseBeansException(sprintf('Singleton session bean %s MUST extend \Stackable', $className));
             }
 
             // if not create a new instance and return it

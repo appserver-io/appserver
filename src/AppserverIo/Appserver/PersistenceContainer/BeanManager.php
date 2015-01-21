@@ -27,10 +27,13 @@ namespace AppserverIo\Appserver\PersistenceContainer;
 use AppserverIo\Storage\StorageInterface;
 use AppserverIo\Appserver\Core\AbstractManager;
 use AppserverIo\Appserver\Naming\InitialContext;
+use AppserverIo\Appserver\Core\Api\InvalidConfigurationException;
 use AppserverIo\Lang\Reflection\AnnotationInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Psr\PersistenceContainerProtocol\BeanContext;
 use AppserverIo\Psr\PersistenceContainerProtocol\RemoteMethod;
+use AppserverIo\Psr\PersistenceContainerProtocol\ResourceLocator;
+use AppserverIo\Psr\PersistenceContainerProtocol\InvalidBeanTypeException;
 use AppserverIo\Appserver\DependencyInjectionContainer\DirectoryParser;
 use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\BeanDescriptorInterface;
 use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\SessionBeanDescriptorInterface;
@@ -40,7 +43,6 @@ use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\StatefulSessio
 use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\StatelessSessionBeanDescriptorInterface;
 use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\MessageDrivenBeanDescriptorInterface;
 use AppserverIo\Appserver\DependencyInjectionContainer\Description\EpbReferenceDescriptor;
-use AppserverIo\Appserver\Core\Api\InvalidConfigurationException;
 
 /**
  * The bean manager handles the message and session beans registered for the application.
@@ -73,7 +75,7 @@ class BeanManager extends AbstractManager implements BeanContext
     /**
      * Injects the resource locator that locates the requested queue.
      *
-     * @param \AppserverIo\Appserver\MessageQueue\ResourceLocator $resourceLocator The resource locator
+     * @param \AppserverIo\Psr\PersistenceContainerProtocol\ResourceLocator $resourceLocator The resource locator
      *
      * @return void
      */
@@ -270,7 +272,7 @@ class BeanManager extends AbstractManager implements BeanContext
     /**
      * Return the resource locator instance.
      *
-     * @return \AppserverIo\Appserver\PersistenceContainer\ResourceLocator The resource locator instance
+     * @return \AppserverIo\Psr\PersistenceContainerProtocol\ResourceLocator The resource locator instance
      */
     public function getResourceLocator()
     {
@@ -359,7 +361,7 @@ class BeanManager extends AbstractManager implements BeanContext
      * @param array  $args      The arguments passed to the session beans constructor
      *
      * @return object The requested bean instance
-     * @throws \AppserverIo\Appserver\PersistenceContainer\InvalidBeanTypeException Is thrown if passed class name is no session bean or is a entity bean (not implmented yet)
+     * @throws \AppserverIo\Psr\PersistenceContainerProtocol\InvalidBeanTypeException Is thrown if passed class name is no session bean or is a entity bean (not implmented yet)
      */
     public function lookup($className, $sessionId = null, array $args = array())
     {
