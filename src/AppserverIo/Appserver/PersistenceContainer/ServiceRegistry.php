@@ -26,6 +26,9 @@ namespace AppserverIo\Appserver\PersistenceContainer;
 use AppserverIo\Storage\StorageInterface;
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Storage\StackableStorage;
+use AppserverIo\Psr\Application\ManagerInterface;
+use AppserverIo\Psr\PersistenceContainerProtocol\ServiceContext;
+use AppserverIo\Psr\PersistenceContainerProtocol\ServiceResourceLocator;
 
 /**
  * The abstract service registry as base for implementations that handles applications services.
@@ -39,7 +42,7 @@ use AppserverIo\Storage\StackableStorage;
  * @link       https://github.com/appserver-io/appserver
  * @link       http://www.appserver.io
  */
-abstract class ServiceRegistry extends GenericStackable implements ServiceContext
+abstract class ServiceRegistry extends GenericStackable implements ServiceContext, ManagerInterface
 {
 
     /**
@@ -69,7 +72,7 @@ abstract class ServiceRegistry extends GenericStackable implements ServiceContex
     /**
      * Injects the service locator to locate the service.
      *
-     * @param \AppserverIo\Appserver\MessageQueue\ResourceLocator $serviceLocator The service locator
+     * @param \AppserverIo\Psr\PersistenceContainerProtocol\ServiceResourceLocator $serviceLocator The service locator
      *
      * @return void
      */
@@ -103,7 +106,7 @@ abstract class ServiceRegistry extends GenericStackable implements ServiceContex
     /**
      * Return the service locator instance.
      *
-     * @return \AppserverIo\Appserver\PersistenceContainer\ServiceLocator The service locator instance
+     * @return \AppserverIo\Psr\PersistenceContainerProtocol\ServiceResourceLocator The service locator instance
      */
     public function getServiceLocator()
     {
@@ -126,7 +129,7 @@ abstract class ServiceRegistry extends GenericStackable implements ServiceContex
      * @param string $serviceName The name of the requested service
      * @param array  $args        The arguments passed to the service providers constructor
      *
-     * @return \AppserverIo\Appserver\PersistenceContainer\ServiceProvider The requested service instance
+     * @return \AppserverIo\Psr\PersistenceContainerProtocol\ServiceProvider The requested service instance
      */
     public function locate($serviceName, array $args = array())
     {

@@ -34,6 +34,8 @@ use AppserverIo\Psr\EnterpriseBeans\TimerServiceInterface;
 use AppserverIo\Psr\EnterpriseBeans\TimedObjectInvokerInterface;
 use AppserverIo\Appserver\PersistenceContainer\Utils\TimerState;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Schedule;
+use AppserverIo\Psr\PersistenceContainerProtocol\ServiceExecutor;
+use AppserverIo\Psr\PersistenceContainerProtocol\ServiceProvider;
 use AppserverIo\Psr\PersistenceContainerProtocol\RemoteMethodCall;
 
 /**
@@ -74,11 +76,11 @@ class TimerService extends GenericStackable implements TimerServiceInterface, Se
     /**
      * Injects the timer service executor.
      *
-     * @param \AppserverIo\Appserver\PersistencContainer\TimerServiceExecutor $timerServiceExecutor The timer service executor instance
+     * @param \AppserverIo\Psr\PersistenceContainerProtocol\ServiceExecutor $timerServiceExecutor The timer service executor instance
      *
      * @return void
      */
-    public function injectTimerServiceExecutor(TimerServiceExecutor $timerServiceExecutor)
+    public function injectTimerServiceExecutor(ServiceExecutor $timerServiceExecutor)
     {
         $this->timerServiceExecutor = $timerServiceExecutor;
     }
@@ -111,7 +113,7 @@ class TimerService extends GenericStackable implements TimerServiceInterface, Se
      * Returns identifier for this timer service instance.
      *
      * @return string The primary key of the timer service instance
-     * @see \AppserverIo\Appserver\PersistenceContainer\ServiceProvider::getPrimaryKey()
+     * @see \AppserverIo\Psr\PersistenceContainerProtocol\ServiceProvider::getPrimaryKey()
      */
     public function getPrimaryKey()
     {
@@ -122,7 +124,7 @@ class TimerService extends GenericStackable implements TimerServiceInterface, Se
      * Returns the unique service name.
      *
      * @return string The service name
-     * @see \AppserverIo\Appserver\PersistenceContainer\ServiceProvider::getServiceName()
+     * @see \AppserverIo\Psr\PersistenceContainerProtocol\ServiceProvider::getServiceName()
      */
     public function getServiceName()
     {
@@ -410,7 +412,7 @@ class TimerService extends GenericStackable implements TimerServiceInterface, Se
     /**
      * Returns the timer object executor instances.
      *
-     * @return \AppserverIo\Appserver\PersistenceContainer\TimerServiceExecutor The timer service executor
+     * @return \AppserverIo\Psr\PersistenceContainerProtocol\ServiceExecutor The timer service executor
      */
     public function getTimerServiceExecutor()
     {

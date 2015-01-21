@@ -25,8 +25,9 @@ namespace AppserverIo\Appserver\PersistenceContainer;
 
 use AppserverIo\Logger\LoggerUtils;
 use AppserverIo\Storage\GenericStackable;
-use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Psr\EnterpriseBeans\TimerInterface;
+use AppserverIo\Psr\Application\ApplicationInterface;
+use AppserverIo\Psr\PersistenceContainerProtocol\ServiceExecutor;
 
 /**
  * The executor thread for the timers.

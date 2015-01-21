@@ -24,11 +24,15 @@
 namespace AppserverIo\Appserver\PersistenceContainer;
 
 use AppserverIo\Storage\StackableStorage;
-use AppserverIo\Psr\PersistenceContainerProtocol\BeanContext;
+use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Stateless;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Singleton;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\MessageDriven;
-use AppserverIo\Psr\Application\ApplicationInterface;
+use AppserverIo\Psr\PersistenceContainerProtocol\BeanContext;
+use AppserverIo\Psr\PersistenceContainerProtocol\ServiceProvider;
+use AppserverIo\Psr\PersistenceContainerProtocol\ServiceExecutor;
+use AppserverIo\Psr\PersistenceContainerProtocol\TimerServiceContext;
+use AppserverIo\Psr\PersistenceContainerProtocol\ServiceAlreadyRegisteredException;
 
 /**
  * The timer service registry handles an applications timer services.
@@ -48,14 +52,14 @@ class TimerServiceRegistry extends ServiceRegistry implements TimerServiceContex
     /**
      * The timer service executor.
      *
-     * @var \AppserverIo\Appserver\PersistenceContainer\ServiceExecutor
+     * @var \AppserverIo\Psr\PersistenceContainerProtocol\ServiceExecutor
      */
     protected $timerServiceExecutor;
 
     /**
      * Injects the service executor for the timer service registry.
      *
-     * @param \AppserverIo\Appserver\PersistenceContainer\ServiceExecutor $timerServiceExecutor The service executor
+     * @param \AppserverIo\Psr\PersistenceContainerProtocol\ServiceExecutor $timerServiceExecutor The service executor
      *
      * @return void
      */
@@ -67,7 +71,7 @@ class TimerServiceRegistry extends ServiceRegistry implements TimerServiceContex
     /**
      * Returns the service executor for the timer service registry.
      *
-     * @return \AppserverIo\Appserver\PersistenceContainer\ServiceExecutor The timer service executor instance
+     * @return \AppserverIo\Psr\PersistenceContainerProtocol\ServiceExecutor The timer service executor instance
      */
     public function getTimerServiceExecutor()
     {
@@ -172,10 +176,10 @@ class TimerServiceRegistry extends ServiceRegistry implements TimerServiceContex
     /**
      * Attaches the passed service, to the context.
      *
-     * @param \AppserverIo\Appserver\PersistenceContainer\ServiceProvider $instance The service instance to attach
+     * @param \AppserverIo\Psr\PersistenceContainerProtocol\ServiceProvider $instance The service instance to attach
      *
      * @return void
-     * @throws \AppserverIo\Appserver\PersistenceContainer\ServiceAlreadyRegisteredException Is thrown if the passed service has already been registered
+     * @throws \AppserverIo\Psr\PersistenceContainerProtocol\ServiceAlreadyRegisteredException Is thrown if the passed service has already been registered
      */
     public function register(ServiceProvider $instance)
     {
