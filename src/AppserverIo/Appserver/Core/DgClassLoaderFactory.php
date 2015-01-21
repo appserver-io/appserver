@@ -72,16 +72,13 @@ class DgClassLoaderFactory
 
         // iterate over all namespaces and check if they are omitted in one or the other way
         foreach ($configuration->getNamespaces() as $namespace) {
-
             // is the enforcement omitted for this namespace?
             if ($namespace->omitEnforcement()) {
-
                 $omittedEnforcement[] = $namespace->getNodeValue()->__toString();
             }
 
             // is the autoloading omitted for this namespace?
             if ($namespace->omitAutoLoading()) {
-
                 $omittedAutoLoading[] = $namespace->getNodeValue()->__toString();
             }
         }
@@ -109,7 +106,11 @@ class DgClassLoaderFactory
         $config->setValue('enforcement/level', $configuration->getEnforcementLevel());
         $config->setValue('enforcement/logger', $application->getInitialContext()->getSystemLogger());
 
-        // create the autoloader instance and fill the structure map
-        $application->addClassLoader(new DgClassLoader($config), $configuration);
+        // create a autoloader instance and initialize it
+        $classLoader = new DgClassLoader($config);
+        $classLoader->init();
+
+        // add the autoloader to the manager
+        $application->addClassLoader($classLoader, $configuration);
     }
 }

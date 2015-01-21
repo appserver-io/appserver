@@ -71,7 +71,6 @@ class GenericDeployment extends AbstractDeployment
 
         // gather all the deployed web applications
         foreach (glob($container->getAppBase() . '/*', GLOB_ONLYDIR) as $folder) {
-
             // declare META-INF and WEB-INF directory
             $webInfDir = $folder . DIRECTORY_SEPARATOR . 'WEB-INF';
             $metaInfDir = $folder . DIRECTORY_SEPARATOR . 'META-INF';
@@ -79,7 +78,6 @@ class GenericDeployment extends AbstractDeployment
             // check if we've a directory containing a valid application,
             // at least a WEB-INF or META-INF folder has to be available
             if (is_dir($webInfDir) || is_dir($metaInfDir)) {
-
                 // this IS the unique application name
                 $applicationName = basename($folder);
 
@@ -136,9 +134,11 @@ class GenericDeployment extends AbstractDeployment
 
                 // add the configured class loaders
                 foreach ($context->getClassLoaders() as $classLoader) {
-                    if ($classLoaderFactory = $classLoader->getFactory()) { // use the factory if available
+                    if ($classLoaderFactory = $classLoader->getFactory()) {
+                        // use the factory if available
                         $classLoaderFactory::visit($application, $classLoader);
-                    } else { // if not, try to instanciate the class loader directly
+                    } else {
+                        // if not, try to instanciate the class loader directly
                         $classLoaderType = $classLoader->getType();
                         $application->addClassLoader(new $classLoaderType($classLoader), $classLoader);
                     }
@@ -146,9 +146,11 @@ class GenericDeployment extends AbstractDeployment
 
                 // add the configured managers
                 foreach ($context->getManagers() as $manager) {
-                    if ($managerFactory = $manager->getFactory()) { // use the factory if available
+                    if ($managerFactory = $manager->getFactory()) {
+                        // use the factory if available
                         $managerFactory::visit($application, $manager);
-                    } else { // if not, try to instanciate the manager directly
+                    } else {
+                        // if not, try to instanciate the manager directly
                         $managerType = $manager->getType();
                         $application->addManager(new $managerType($manager), $manager);
                     }
@@ -157,8 +159,8 @@ class GenericDeployment extends AbstractDeployment
                 // add the application to the container
                 $container->addApplication($application);
 
-            } else { // if we can't find WEB-INF or META-INF directory
-
+            // if we can't find WEB-INF or META-INF directory
+            } else {
                 // write a log message, that the folder doesn't contain a valid application
                 $this->getInitialContext()->getSystemLogger()->info(
                     sprintf('Directory %s doesn\'t contain a webapp, will assume a need for legacy support.', $folder)

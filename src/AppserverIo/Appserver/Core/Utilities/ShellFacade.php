@@ -59,13 +59,10 @@ class ShellFacade
     {
         // Check for prohibited commands
         foreach ($this->prohibitedCommands as $prohibitedCommand) {
-
             if (strpos(trim($command), $prohibitedCommand) !== false) {
-
                 throw new \Exception('The shell command ' . $command . ' is prohibited');
             }
         }
-
         return exec($command);
     }
 

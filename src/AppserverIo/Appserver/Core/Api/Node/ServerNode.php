@@ -1,6 +1,13 @@
 <?php
+
 /**
  * AppserverIo\Appserver\Core\Api\Node\ServerNode
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Open Software License (OSL 3.0)
+ * that is available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/osl-3.0.php
  *
  * PHP version 5
  *
@@ -28,18 +35,92 @@ namespace AppserverIo\Appserver\Core\Api\Node;
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       http://www.appserver.io
  */
-class ServerNode extends AbstractNode
+class ServerNode extends AbstractNode implements ServerNodeInterface
 {
-    // We use several traits which give us the possibility to have collections of the child nodes mentioned in the
-    // corresponding trait name
+
+    /**
+     * The trait for the server environment variables.
+     *
+     * @var AppserverIo\Appserver\Core\Api\Node\EnvironmentVariablesNodeTrait
+     */
     use EnvironmentVariablesNodeTrait;
+
+    /**
+     * The trait for the server params.
+     *
+     * @var AppserverIo\Appserver\Core\Api\Node\ParamsNodeTrait
+     */
     use ParamsNodeTrait;
+
+    /**
+     * The trait for the server rewrite maps.
+     *
+     * @var AppserverIo\Appserver\Core\Api\Node\RewriteMapsNodeTrait
+     */
     use RewriteMapsNodeTrait;
+
+    /**
+     * The trait for the server rewrites.
+     *
+     * @var AppserverIo\Appserver\Core\Api\Node\RewritesNodeTrait
+     */
     use RewritesNodeTrait;
+
+    /**
+     * The trait for the server access.
+     *
+     * @var AppserverIo\Appserver\Core\Api\Node\AccessesNodeTrait
+     */
     use AccessesNodeTrait;
+
+    /**
+     * The trait for the server locations.
+     *
+     * @var AppserverIo\Appserver\Core\Api\Node\LocationsNodeTrait
+     */
     use LocationsNodeTrait;
+
+    /**
+     * The trait for the server authentications.
+     *
+     * @var AppserverIo\Appserver\Core\Api\Node\AuthenticationsNodeTrait
+     */
     use AuthenticationsNodeTrait;
+
+    /**
+     * The trait for the server analytics.
+     *
+     * @var AppserverIo\Appserver\Core\Api\Node\AnalyticsNodeTrait
+     */
     use AnalyticsNodeTrait;
+
+    /**
+     * The trait for the server file handlers.
+     *
+     * @var AppserverIo\Appserver\Core\Api\Node\FileHandlersNodeTrait
+     */
+    use FileHandlersNodeTrait;
+
+    /**
+     * The trait for the server connection handlers.
+     *
+     * @var AppserverIo\Appserver\Core\Api\Node\ConnectionHandlersNodeTrait
+     */
+    use ConnectionHandlersNodeTrait;
+
+    /**
+     * The trait for the server modules.
+     *
+     * @var AppserverIo\Appserver\Core\Api\Node\ModulesNodeTrait
+     */
+    use ModulesNodeTrait;
+
+    /**
+     * The trait for the virtual hosts.
+     *
+     * @var AppserverIo\Appserver\Core\Api\Node\VirtualHostNodeTrait
+     */
+    use VirtualHostsNodeTrait;
 
     /**
      * The servers type.
@@ -96,38 +177,6 @@ class ServerNode extends AbstractNode
      * @AS\Mapping(nodeType="string")
      */
     protected $requestContext;
-
-    /**
-     * The virtual hosts.
-     *
-     * @var array
-     * @AS\Mapping(nodeName="virtualHosts/virtualHost", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\VirtualHostNode")
-     */
-    protected $virtualHosts;
-
-    /**
-     * The connection handlers.
-     *
-     * @var array
-     * @AS\Mapping(nodeName="connectionHandlers/connectionHandler", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\ConnectionHandlerNode")
-     */
-    protected $connectionHandlers;
-
-    /**
-     * The modules.
-     *
-     * @var array
-     * @AS\Mapping(nodeName="modules/module", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\ModuleNode")
-     */
-    protected $modules;
-
-    /**
-     * The file handlers.
-     *
-     * @var array
-     * @AS\Mapping(nodeName="fileHandlers/fileHandler", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\FileHandlerNode")
-     */
-    protected $fileHandlers;
 
     /**
      * Returns the servers type.
@@ -197,45 +246,5 @@ class ServerNode extends AbstractNode
     public function getRequestContext()
     {
         return $this->requestContext;
-    }
-
-    /**
-     * Returns the virtual hosts.
-     *
-     * @return array
-     */
-    public function getVirtualHosts()
-    {
-        return $this->virtualHosts;
-    }
-
-    /**
-     * Returns the connection handler nodes.
-     *
-     * @return array
-     */
-    public function getConnectionHandlers()
-    {
-        return $this->connectionHandlers;
-    }
-
-    /**
-     * Returns the file handler nodes.
-     *
-     * @return array
-     */
-    public function getFileHandlers()
-    {
-        return $this->fileHandlers;
-    }
-
-    /**
-     * Returns the module nodes.
-     *
-     * @return array
-     */
-    public function getModules()
-    {
-        return $this->modules;
     }
 }

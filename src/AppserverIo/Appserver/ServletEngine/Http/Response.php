@@ -108,7 +108,6 @@ class Response extends GenericStackable implements HttpServletResponse
 
         // check if this cookie has already been set
         if ($this->hasCookie($name = $cookie->getName())) {
-
             // then check if we've already one cookie header available
             if (is_array($cookieValue = $this->getCookie($name))) {
                 $cookieValue[] = $cookie;
@@ -119,7 +118,8 @@ class Response extends GenericStackable implements HttpServletResponse
             // add the cookie array
             $this->cookies[$name] = serialize($cookieValue);
 
-        } else { // when add it the first time, simply add it
+        } else {
+            // when add it the first time, simply add it
             $this->cookies[$name] = serialize($cookie);
         }
     }
@@ -228,9 +228,9 @@ class Response extends GenericStackable implements HttpServletResponse
             if (!$offset && !$maxlength) {
                 $this->bodyStream = stream_get_contents($sourceStream);
             }
-        } else { // if not, copy the string
+        } else {
+            // if not, copy the string
             $this->bodyStream = substr($sourceStream, $offset, $maxlength);
-
         }
 
         // return the sring length
@@ -289,7 +289,6 @@ class Response extends GenericStackable implements HttpServletResponse
 
         // check if we've a Set-Cookie header to process
         if ($this->hasHeader($name) && $append === true) {
-
             // then check if we've already one cookie header available
             if (is_array($headerValue = $this->getHeader($name))) {
                 $headerValue[] = $value;

@@ -187,7 +187,6 @@ class SessionFactory extends \Thread
 
         // while we should create threads, to it
         while ($this->run) {
-
             $this->synchronized(function ($self) {
 
                 // wait until we receive a notification for a method invokation
@@ -226,7 +225,8 @@ class SessionFactory extends \Thread
 
             }, $this);
 
-            if ($profileLogger) { // profile the size of the session pool
+            if ($profileLogger) {
+                // profile the size of the session pool
                 $profileLogger->debug(sprintf('Size of session pool is: %d', sizeof($this->sessionPool)));
             }
         }

@@ -98,13 +98,11 @@ class RequestHandler extends \Thread
         \Mutex::lock($this->mutex);
 
         do {
-
             // create a counter
             $counter = 0;
 
             // if this is the first loop
             if ($counter === 0) {
-
                 // we're not dispatched
                 $this->dispatched = false;
 
@@ -122,7 +120,8 @@ class RequestHandler extends \Thread
             // raise the counter
             $counter++;
 
-            if ($counter > 100) { // we wait for 100 iterations
+            // we wait for 100 iterations
+            if ($counter > 100) {
                 throw new \Exception('Can\'t handle request');
             }
 
@@ -155,10 +154,9 @@ class RequestHandler extends \Thread
         // synchronize the valves
         $valves = $this->valves;
 
-        while (true) { // run forever
-
+        // run forever
+        while (true) {
             try {
-
                 // wait until we've been notified
                 $this->synchronized(function ($self) {
                     $self->wait();
@@ -223,7 +221,6 @@ class RequestHandler extends \Thread
         // check if there was a fatal error caused shutdown
         $lastError = error_get_last();
         if ($lastError['type'] === E_ERROR || $lastError['type'] === E_USER_ERROR) {
-
             // synchronize the servlet response
             $servletResponse = $this->servletResponse;
 

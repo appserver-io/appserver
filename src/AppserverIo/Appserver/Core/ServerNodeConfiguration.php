@@ -24,6 +24,7 @@ namespace AppserverIo\Appserver\Core;
 
 use AppserverIo\Configuration\Interfaces\NodeInterface;
 use AppserverIo\Server\Interfaces\ServerConfigurationInterface;
+use AppserverIo\Appserver\Core\Api\Node\ServerNodeInterface;
 
 /**
  * Class ServerNodeConfiguration
@@ -40,21 +41,21 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
 {
 
     /**
-     * Hold's node instance
+     * The server node instance.
      *
-     * @var \AppserverIo\Configuration\Interfaces\NodeInterface
+     * @var \AppserverIo\Appserver\Core\Api\Node\ServerNodeInterface
      */
     protected $node;
 
     /**
-     * Hold's the analytics array
+     * The analytics array.
      *
      * @var array
      */
     protected $analytics;
 
     /**
-     * Hold's the handlers array
+     * The handlers array.
      *
      * @var array
      */
@@ -68,62 +69,85 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     protected $connectionHandlers;
 
     /**
-     * Hold's the virtual hosts array
+     * The virtual hosts array.
      *
      * @var array
      */
     protected $virtualHosts;
 
     /**
-     * Hold's the authentications array
+     * The authentications array.
      *
      * @var array
      */
     protected $authentications;
 
     /**
-     * Hold's the modules array
+     * The modules array.
      *
      * @var array
      */
     protected $modules;
 
     /**
-     * Hold's the rewrites array
+     * The rewrites array.
      *
      * @var array
      */
     protected $rewrites;
 
     /**
-     * Hold's the accesses array
+     * The array with the rewrite maps.
+     *
+     * @var array
+     */
+    protected $rewriteMaps;
+
+    /**
+     * The accesses array.
      *
      * @var array
      */
     protected $accesses;
 
     /**
-     * Holds the environmentVariables array
+     * The environmentVariables array.
      *
      * @var array
      */
     protected $environmentVariables;
 
     /**
-     * Hold's the locations array.
+     * The locations array.
      *
      * @var array
      */
     protected $locations;
 
     /**
-     * Constructs config
+     * Initializes the configuration with the values found in
+     * the passed server configuration node.
      *
-     * @param \AppserverIo\Configuration\Interfaces\NodeInterface $node The node instance
+     * @param \AppserverIo\Appserver\Core\Api\Node\ServerNodeInterface $node The server node instance
      */
-    public function __construct($node)
+    public function __construct(ServerNodeInterface $node)
     {
+
+        // set the node itself
         $this->node = $node;
+
+        // pre-load the nodes data
+        $this->analytics = $node->getAnalyticsAsArray();
+        $this->virtualHosts = $node->getVirtualHostsAsArray();
+        $this->handlers = $node->getFileHandlersAsArray();
+        $this->connectionHandlers = $node->getConnectionHandlersAsArray();
+        $this->authentications = $node->getAuthenticationsAsArray();
+        $this->modules = $node->getModulesAsArray();
+        $this->rewrites = $node->getRewritesAsArray();
+        $this->rewriteMaps = $node->getRewriteMapsAsArray();
+        $this->accesses = $node->getAccessesAsArray();
+        $this->environmentVariables = $node->getEnvironmentVariablesAsArray();
+        $this->locations = $node->getLocationsAsArray();
     }
 
     /**
@@ -133,10 +157,6 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
      */
     public function getAnalytics()
     {
-        if (!$this->analytics) {
-            $this->analytics = $this->prepareAnalytics($this->node);
-        }
-
         return $this->analytics;
     }
 
@@ -367,10 +387,6 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
      */
     public function getConnectionHandlers()
     {
-        if (!$this->connectionHandlers) {
-            $this->connectionHandlers = $this->prepareConnectionHandlers($this->node);
-        }
-
         return $this->connectionHandlers;
     }
 
@@ -381,10 +397,6 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
      */
     public function getModules()
     {
-        if (!$this->modules) {
-            $this->modules = $this->prepareModules($this->node);
-        }
-
         return $this->modules;
     }
 
@@ -395,10 +407,6 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
      */
     public function getHandlers()
     {
-        if (!$this->handlers) {
-            $this->handlers = $this->prepareHandlers($this->node);
-        }
-
         return $this->handlers;
     }
 
@@ -409,10 +417,6 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
      */
     public function getVirtualHosts()
     {
-        if (!$this->virtualHosts) {
-            $this->virtualHosts = $this->prepareVirtualHosts($this->node);
-        }
-
         return $this->virtualHosts;
     }
 
@@ -423,9 +427,6 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
      */
     public function getAuthentications()
     {
-        if (!$this->authentications) {
-            $this->authentications = $this->prepareAuthentications($this->node);
-        }
         return $this->authentications;
     }
 
@@ -456,11 +457,6 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
      */
     public function getRewrites()
     {
-        // init rewrites
-        if (!$this->rewrites) {
-            $this->rewrites = $this->prepareRewrites($this->node);
-        }
-        // return the rewrites
         return $this->rewrites;
     }
 
@@ -471,182 +467,7 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
      */
     public function getAccesses()
     {
-        // init accesses
-        if (!$this->accesses) {
-            $this->accesses = $this->prepareAccesses($this->node);
-        }
         return $this->accesses;
-    }
-
-    /**
-     * Prepares the modules array based on a node implementing NodeInterface
-     *
-     * @param \AppserverIo\Configuration\Interfaces\NodeInterface $node The node instance
-     *
-     * @return array
-     */
-    public function prepareModules(NodeInterface $node)
-    {
-        $modules = array();
-        if (is_array($node->getModules())) {
-            foreach ($node->getModules() as $module) {
-                $modules[$module->getUuid()] = $module->getType();
-            }
-        }
-        return $modules;
-    }
-
-    /**
-     * Prepares the connectionHandlers array based on a node implementing NodeInterface
-     *
-     * @param \AppserverIo\Configuration\Interfaces\NodeInterface $node The node instance
-     *
-     * @return array
-     */
-    public function prepareConnectionHandlers(NodeInterface $node)
-    {
-        $connectionHandlers = array();
-        if (is_array($node->getConnectionHandlers())) {
-            foreach ($node->getConnectionHandlers() as $connectionHandler) {
-                $connectionHandlers[$connectionHandler->getUuid()] = $connectionHandler->getType();
-            }
-        }
-        return $connectionHandlers;
-    }
-
-    /**
-     * Prepares the handlers array based on a node implementing NodeInterface
-     *
-     * @param \AppserverIo\Configuration\Interfaces\NodeInterface $node The node instance
-     *
-     * @return array
-     */
-    public function prepareHandlers(NodeInterface $node)
-    {
-        $handlers = array();
-        if (is_array($node->getFileHandlers())) {
-            foreach ($node->getFileHandlers() as $fileHandler) {
-                $handlers[$fileHandler->getExtension()] = array(
-                    'name' => $fileHandler->getName(),
-                    'params' => $fileHandler->getParamsAsArray()
-                );
-            }
-        }
-        return $handlers;
-    }
-
-    /**
-     * Prepares the virtual hosts array based on a node implementing NodeInterface
-     *
-     * @param \AppserverIo\Configuration\Interfaces\NodeInterface $node The node instance
-     *
-     * @return array
-     */
-    public function prepareVirtualHosts(NodeInterface $node)
-    {
-        $virtualHosts = array();
-
-        if (is_array($node->getVirtualHosts())) {
-            // iterate hosts
-            foreach ($node->getVirtualHosts() as $virtualHost) {
-                $virtualHostNames = explode(' ', $virtualHost->getName());
-
-                // Some virtual hosts might have an extensionType to expand their name attribute, check for that
-                if ($virtualHost->hasInjector()) {
-
-                    $virtualHostNames = array_merge($virtualHostNames, explode(' ', $virtualHost->getInjection()));
-                }
-
-                foreach ($virtualHostNames as $virtualHostName) {
-                    // set all virtual hosts params per key for faster matching later on
-                    $virtualHosts[trim($virtualHostName)] = array(
-                        'params' => $virtualHost->getParamsAsArray(),
-                        'rewriteMaps' => $this->prepareRewriteMaps($virtualHost),
-                        'rewrites' => $this->prepareRewrites($virtualHost),
-                        'environmentVariables' => $this->prepareEnvironmentVariables($virtualHost),
-                        'accesses' => $this->prepareAccesses($virtualHost),
-                        'locations' => $this->prepareLocations($virtualHost),
-                        'authentications' => $this->prepareAuthentications($virtualHost),
-                        'analytics' => $this->prepareAnalytics($virtualHost),
-                    );
-                }
-            }
-        }
-        return $virtualHosts;
-    }
-
-    /**
-     * Prepares the rewrites array based on a node implementing NodeInterface
-     *
-     * @param \AppserverIo\Configuration\Interfaces\NodeInterface $node The node instance
-     *
-     * @return array
-     */
-    public function prepareRewrites(NodeInterface $node)
-    {
-        $rewrites = array();
-
-        if (is_array($node->getRewrites())) {
-            // prepare the array with the rewrite rules
-            foreach ($node->getRewrites() as $rewrite) {
-
-                // Rewrites might be extended using different injector extension types, check for that
-                if ($rewrite->hasInjector()) {
-
-                    $target = $rewrite->getInjection();
-
-                } else {
-
-                    $target = $rewrite->getTarget();
-                }
-
-                // Build up the array entry
-                $rewrites[] = array(
-                    'condition' => $rewrite->getCondition(),
-                    'target' => $target,
-                    'flag' => $rewrite->getFlag()
-                );
-            }
-        }
-        return $rewrites;
-    }
-
-    /**
-     * Prepares the locations array based on a node implementing NodeInterface
-     *
-     * @param \AppserverIo\Configuration\Interfaces\NodeInterface $node The node instance
-     *
-     * @return array
-     */
-    public function prepareLocations(NodeInterface $node)
-    {
-        $locations = array();
-        if (is_array($node->getLocations())) {
-            // prepare the array with the locations
-            foreach ($node->getLocations() as $location) {
-                // Build up the array entry
-                $locations[] = array(
-                    'condition' => $location->getCondition(),
-                    'handlers' => $this->prepareHandlers($location)
-                );
-            }
-        }
-        return $locations;
-    }
-
-    /**
-     * Prepares the environmentVariables array based on a node implementing NodeInterface
-     *
-     * @param \AppserverIo\Configuration\Interfaces\NodeInterface $node The node instance
-     *
-     * @return array
-     */
-    public function prepareEnvironmentVariables(NodeInterface $node)
-    {
-        $environmentVariables = array();
-        // Get the nodes from our main node
-        $environmentVariables = $node->getEnvironmentVariablesAsArray();
-        return $environmentVariables;
     }
 
     /**
@@ -656,89 +477,7 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
      */
     public function getEnvironmentVariables()
     {
-        // init EnvironmentVariables
-        if (!$this->environmentVariables) {
-            // Get the nodes from our main node
-            $this->environmentVariables = $this->prepareEnvironmentVariables($this->node);
-        }
-        // return the environmentVariables
         return $this->environmentVariables;
-    }
-
-    /**
-     * Prepares the authentications array based on a node implementing NodeInterface
-     *
-     * @param \AppserverIo\Configuration\Interfaces\NodeInterface $node The node instance
-     *
-     * @return array
-     */
-    public function prepareAuthentications(NodeInterface $node)
-    {
-        $authentications = array();
-        if (is_array($node->getAuthentications())) {
-            foreach ($node->getAuthentications() as $authentication) {
-                $authenticationUri = $authentication->getUri();
-                $authentications[$authenticationUri] = $authentication->getParamsAsArray();
-            }
-        }
-        return $authentications;
-    }
-
-    /**
-     * Prepares the access array based on a node implementing NodeInterface
-     *
-     * @param \AppserverIo\Configuration\Interfaces\NodeInterface $node The node instance
-     *
-     * @return array
-     */
-    public function prepareAccesses(NodeInterface $node)
-    {
-        $accesses = array();
-        if (is_array($node->getAccesses())) {
-            foreach ($node->getAccesses() as $access) {
-                $accessType = $access->getType();
-                // set all accesses information's
-                $accesses[$accessType][] = $access->getParamsAsArray();
-            }
-        }
-        return $accesses;
-    }
-
-    /**
-     * Prepares the analytics array based on a node implementing NodeInterface
-     *
-     * @param \AppserverIo\Configuration\Interfaces\NodeInterface $node The node instance
-     *
-     * @return array
-     */
-    public function prepareAnalytics(NodeInterface $node)
-    {
-        $analytics = array();
-        if (is_array($node->getAnalytics())) {
-
-            $analytics = $node->getAnalyticsAsArray();
-        }
-        return $analytics;
-    }
-
-    /**
-     * Prepares the rewrite maps array based on a node implementing NodeInterface
-     *
-     * @param \AppserverIo\Configuration\Interfaces\NodeInterface $node The node instance
-     *
-     * @return array
-     */
-    public function prepareRewriteMaps(NodeInterface $node)
-    {
-        $rewriteMaps = array();
-        if (is_array($node->getRewriteMaps())) {
-            foreach ($node->getRewriteMaps() as $rewriteMap) {
-                $rewriteMapType = $rewriteMap->getType();
-                // set all rewrite maps information's
-                $rewriteMaps[$rewriteMapType] = $rewriteMap->getParamsAsArray();
-            }
-        }
-        return $rewriteMaps;
     }
 
     /**
@@ -748,11 +487,6 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
      */
     public function getLocations()
     {
-        // init locations
-        if (!$this->locations) {
-            $this->locations = $this->prepareLocations($this->node);
-        }
-        // return the locations
         return $this->locations;
     }
 
@@ -763,11 +497,6 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
      */
     public function getRewriteMaps()
     {
-        // init locations
-        if (!$this->rewriteMaps) {
-            $this->rewriteMaps = $this->prepareRewriteMaps($this->node);
-        }
-        // return the locations
         return $this->rewriteMaps;
     }
 }

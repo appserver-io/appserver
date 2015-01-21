@@ -43,7 +43,6 @@ class ExecCliStep extends AbstractStep
 
         // try to load the script from the configuration
         if ($script = $this->getStepNode()->getExecute()->getScript()) {
-
             // prepare script by prepending the webapp directory
             $script = new \SplFileInfo(
                 $this->getWebappPath() . DIRECTORY_SEPARATOR . ltrim($script, DIRECTORY_SEPARATOR)
@@ -70,7 +69,8 @@ class ExecCliStep extends AbstractStep
             exec($toExecute, $output, $returnVar);
 
             // check if script has been executed successfully
-            if ($returnVar !== 0) { // if not, throw an exception
+            if ($returnVar !== 0) {
+                // if not, throw an exception
                 throw new \Exception(implode(PHP_EOL, $output));
             }
         }

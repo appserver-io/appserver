@@ -127,7 +127,6 @@ class StandardSessionManager extends GenericStackable implements SessionManager
 
         // if we've session parameters defined in our servlet context
         if ($servletManager->hasSessionParameters()) {
-
             // we want to merge the session settings from the servlet context
             $sessionSettings->mergeServletContext($servletManager);
         }
@@ -226,7 +225,6 @@ class StandardSessionManager extends GenericStackable implements SessionManager
 
         // copy the default session configuration for lifetime from the settings
         if ($lifetime == null) {
-
             // create a the actual date and add the cookie lifetime
             $dateTime = new \DateTime();
             $dateTime->modify("+{$this->getSessionSettings()->getSessionCookieLifetime()} second");
@@ -310,7 +308,6 @@ class StandardSessionManager extends GenericStackable implements SessionManager
 
         // load the session with the passed ID
         if ($session = $this->getSessions()->get($id)) {
-
             // if we find a session, we've to check if it can be resumed
             if ($session->canBeResumed()) {
                 $session->resume();

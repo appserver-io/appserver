@@ -344,7 +344,6 @@ class DefaultSessionSettings extends GenericStackable implements SessionSettings
 
         // check if the context has his own session parameters
         if ($context->hasSessionParameters() === true) {
-
             if (($garbageCollectionProbability = $context->getSessionParameter(ServletSession::GARBAGE_COLLECTION_PROBABILITY)) != null) {
                 $this->setGarbageCollectionProbability((float) $garbageCollectionProbability);
             }

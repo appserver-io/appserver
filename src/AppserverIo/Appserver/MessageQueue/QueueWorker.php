@@ -126,11 +126,10 @@ class QueueWorker extends \Thread
          */
         $sleepFor = pow(10, $this->priorityKey->getPriority() * 2);
 
-        while (true) { // run forever
-
+        // run forever
+        while (true) {
             // iterate over all messages found in the message storage
             foreach ($this->storage as $messageId => $message) {
-
                 // check the message state
                 switch ($message->getState()) {
 
@@ -161,7 +160,6 @@ class QueueWorker extends \Thread
 
                         // lookup the queue and process the message
                         if ($queue = $application->search('QueueContext')->locate($queueProxy)) {
-
                             // lock the message
                             $message->setState(MQStateInProgress::get());
 
@@ -201,7 +199,8 @@ class QueueWorker extends \Thread
                 usleep($sleepFor);
             }
 
-            if ($profileLogger) { // profile the size of the session pool
+            if ($profileLogger) {
+                // profile the size of the session pool
                 $profileLogger->debug(
                     sprintf('Processed queue worker with priority %s, size of queue size is: %d', $this->priorityKey, sizeof($this->storage))
                 );

@@ -228,13 +228,13 @@ abstract class BeanDescriptor implements BeanDescriptorInterface
         // load the default name to register in naming directory
         if ($nameAttribute = $annotationInstance->getName()) {
             $this->setName($nameAttribute);
-        } else { // if @Annotation(name=****) is NOT set, we use the short class name by default
+        } else {
+            // if @Annotation(name=****) is NOT set, we use the short class name by default
             $this->setName($reflectionClass->getShortName());
         }
 
         // we've to check for property annotations that references EPB or resources
         foreach ($reflectionClass->getProperties() as $reflectionProperty) {
-
             // load the EPB references
             if ($epbReference = EpbReferenceDescriptor::newDescriptorInstance()->fromReflectionProperty($reflectionProperty)) {
                 $this->addEpbReference($epbReference);
@@ -248,7 +248,6 @@ abstract class BeanDescriptor implements BeanDescriptorInterface
 
         // we've to check for method annotations that references EPB or resources
         foreach ($reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $reflectionMethod) {
-
             // load the EPB references
             if ($epbReference = EpbReferenceDescriptor::newDescriptorInstance()->fromReflectionMethod($reflectionMethod)) {
                 $this->addEpbReference($epbReference);

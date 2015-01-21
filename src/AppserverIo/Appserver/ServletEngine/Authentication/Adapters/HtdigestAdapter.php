@@ -54,7 +54,7 @@ class HtdigestAdapter extends AuthenticationAdapter
      */
     public function init()
     {
-        
+
         // get content of htdigest file.
         $htDigestData = file($this->getFilename());
 
@@ -79,7 +79,6 @@ class HtdigestAdapter extends AuthenticationAdapter
         $credentials = $this->getHtDigest();
         $user = $data['username'];
         if ($credentials[$user] && $credentials[$user]['realm'] == $data['realm']) {
-
             $HA1 = $credentials[$user]['hash'];
             $HA2 = md5($reqMethod.":".$data['uri']);
             $middle = ':'.$data['nonce'].':'.$data['nc'].':'.$data['cnonce'].':'.$data['qop'].':';

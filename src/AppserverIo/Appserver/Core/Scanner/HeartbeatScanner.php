@@ -110,8 +110,8 @@ class HeartbeatScanner extends AbstractScanner
             sleep(1);
         }
 
-        while (true) { // watch the heartbeat file
-
+        // watch the heartbeat file
+        while (true) {
             // load the current file change time of the heartbeat file and store it
             $oldMTime = $this->getLastFileTouch($this->getHeartbeatFile());
 
@@ -129,7 +129,6 @@ class HeartbeatScanner extends AbstractScanner
 
             // compare the mTime values, if they differ more than allowed we have to take action
             if (($currentTime - $oldMTime) > self::HEARTBEAT_INTERVAL) {
-
                 // log that changes have been found
                 $this->getSystemLogger()->debug(
                     sprintf(
@@ -138,10 +137,9 @@ class HeartbeatScanner extends AbstractScanner
                     )
                 );
 
-                // As long as the heartbeat does not come back up we will try to restart the appserver
+                // as long as the heartbeat does not come back up we will try to restart the appserver
                 while ($oldMTime === $this->getLastFileTouch($this->getHeartbeatFile())) {
-
-                    // Tell them we try to restart
+                    // tell them we try to restart
                     $this->getSystemLogger()->debug("Will try to restart the appserver.");
 
                     // restart the appserver
@@ -149,8 +147,7 @@ class HeartbeatScanner extends AbstractScanner
 
                     // wait until restart has been finished, but only wait for so long
                     for ($i = 0; $i <= self::RESTART_INTERVAL; $i ++) {
-
-                        // Sleep a little
+                        // sleep a little
                         sleep(1);
                     }
                 }
@@ -158,7 +155,8 @@ class HeartbeatScanner extends AbstractScanner
                 // log that the appserver has been restarted successfully
                 $this->getSystemLogger()->debug("appserver has successfully been restarted.");
 
-            } else { // if no changes has been found, wait a second
+            } else {
+                // if no changes has been found, wait a second
                 sleep(1);
             }
         }

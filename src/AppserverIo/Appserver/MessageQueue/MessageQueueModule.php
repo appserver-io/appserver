@@ -96,19 +96,14 @@ class MessageQueueModule extends GenericStackable
     public function init(ServerContextInterface $serverContext)
     {
         try {
-
             // create a queue worker for each application
             foreach ($serverContext->getContainer()->getApplications() as $application) {
-
                 // load the queue manager to check if there are queues registered for the application
                 if ($queueManager = $application->search('QueueContext')) {
-
                     // if yes, initialize and start the queue worker
                     foreach ($queueManager->getQueues() as $queue) {
-
                         // initialize the queues storage for the priorities
                         $this->queues[$queueName = $queue->getName()] = new GenericStackable();
-
                         // create a separate queue for each priority
                         foreach (PriorityKeys::getAll() as $priorityKey) {
                             $this->queues[$queueName][$priorityKey] = new QueueWorker($priorityKey, $application);
@@ -141,7 +136,6 @@ class MessageQueueModule extends GenericStackable
     ) {
 
         try {
-
             // if false hook is comming do nothing
             if (ModuleHooks::REQUEST_POST !== $hook) {
                 return;

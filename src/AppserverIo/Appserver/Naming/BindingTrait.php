@@ -62,10 +62,8 @@ trait BindingTrait
 
         // while we've tokens, try to find the apropriate subdirectory
         while ($token !== false) {
-
             // check if we can find something
             if ($this->hasAttribute($token)) {
-
                 // load the data bound to the token
                 $data = $this->getAttribute($token);
 
@@ -80,7 +78,8 @@ trait BindingTrait
                 // throw an exception if we can't resolve the name
                 throw new NamingException(sprintf('Cant\'t bind %s to value of naming directory %s', $token, $this->getIdentifier()));
 
-            } else { // bind the value
+            } else {
+                // bind the value
                 return $this->setAttribute($token, array($value, $args));
             }
 
@@ -142,10 +141,8 @@ trait BindingTrait
 
         // while we've tokens, try to find a value bound to the token
         while ($token !== false) {
-
             // check if we can find something
             if ($this->hasAttribute($token)) {
-
                 // load the value
                 $found = $this->getAttribute($token);
 
@@ -153,14 +150,15 @@ trait BindingTrait
                 list ($value, $bindArgs) = $found;
 
                 // check if we've a callback method
-                if (is_callable($value)) { // if yes, merge the params and invoke the callback
+                if (is_callable($value)) {
+                    // if yes, merge the params and invoke the callback
                     return call_user_func_array($value, array_merge($bindArgs, $args));
                 }
 
                 // search recursive
                 if ($value instanceof NamingDirectoryInterface) {
-
-                    if ($value->getName() !== $name) { // if $value is NOT what we're searching for
+                    if ($value->getName() !== $name) {
+                        // if $value is NOT what we're searching for
                         return $value->search(str_replace($token . '/', '', $name), $args);
                     }
                 }

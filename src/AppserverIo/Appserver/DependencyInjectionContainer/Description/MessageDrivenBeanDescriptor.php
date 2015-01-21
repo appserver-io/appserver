@@ -74,7 +74,8 @@ class MessageDrivenBeanDescriptor extends BeanDescriptor implements MessageDrive
     {
 
         // query if we've an enterprise bean with a @MessageDriven annotation
-        if ($reflectionClass->hasAnnotation(MessageDriven::ANNOTATION) === false) { // if not, do nothing
+        if ($reflectionClass->hasAnnotation(MessageDriven::ANNOTATION) === false) {
+            // if not, do nothing
             return;
         }
 
@@ -96,7 +97,8 @@ class MessageDrivenBeanDescriptor extends BeanDescriptor implements MessageDrive
     {
 
         // query if we've a <message-driven> descriptor node
-        if ($node->getName() !== 'message-driven') { // if not, do nothing
+        if ($node->getName() !== 'message-driven') {
+            // if not, do nothing
             return;
         }
 

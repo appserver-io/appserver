@@ -242,7 +242,6 @@ abstract class SessionBeanDescriptor extends BeanDescriptor implements SessionBe
 
         // we've to check for a @PostConstruct or @PreDestroy annotation
         foreach ($reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $reflectionMethod) {
-
             // if we found a @PostConstruct annotation, invoke the method
             if ($reflectionMethod->hasAnnotation(PostConstruct::ANNOTATION)) {
                 $this->addPostConstructCallback($reflectionMethod->getMethodName());

@@ -287,7 +287,6 @@ class Provider extends GenericStackable implements ProviderInterface
 
         // load the object descriptor for the instance from the the object manager
         if ($objectManager->hasObjectDescriptor($className = get_class($instance))) {
-
             // load the object descriptor
             $objectDescriptor = $objectManager->getObjectDescriptor($className);
 
@@ -296,22 +295,18 @@ class Provider extends GenericStackable implements ProviderInterface
 
             // check for declared EPB and resource references
             foreach ($objectDescriptor->getReferences() as $reference) {
-
                 // check if we've a reflection target defined
                 if ($injectionTarget = $reference->getInjectionTarget()) {
-
                     // load the instance to inject by lookup the initial context
                     $toInject = $this->getNamingDirectory()->search($reference->getName(), array($sessionId));
 
                     // query for method injection
                     if (method_exists($instance, $targetName = $injectionTarget->getTargetMethod())) {
-
                         // inject the target by invoking the method
                         $instance->$targetName($toInject);
 
                     // query if we've a reflection property with the target name - this is the faster method!
                     } elseif (property_exists($instance, $targetName = $injectionTarget->getTargetProperty())) {
-
                         // load the reflection property
                         $reflectionProperty = $reflectionClass->getProperty($targetName);
 
@@ -320,7 +315,8 @@ class Provider extends GenericStackable implements ProviderInterface
                         $phpReflectionProperty->setAccessible(true);
                         $phpReflectionProperty->setValue($instance, $toInject);
 
-                    } else { // throw an exception
+                    } else {
+                        // throw an exception
                         throw new DependencyInjectionException(
                             sprintf('Can\'t find property or method %s in class %s', $targetName, $className)
                         );

@@ -155,7 +155,6 @@ class SplClassLoader extends GenericStackable implements ClassLoaderInterface
 
         // if a namespace is available OR the classname contains a namespace
         if ($namespaceAndSeparator === substr($className, 0, strlen($namespaceAndSeparator)) || $this->namespace === null) {
-
             // initialize filename, classname and namespace
             $fileName = '';
             $namespace = '';

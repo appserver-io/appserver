@@ -199,7 +199,6 @@ class AppService extends AbstractService
 
         // try to load the app node with the passe UUID
         if ($appNode = $this->load($uuid)) {
-
             // prepare file name
             $extractor = new PharExtractor($this->getInitialContext());
             $fileName = $appNode->getName() . $extractor->getExtensionSuffix();

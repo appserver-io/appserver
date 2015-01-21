@@ -149,7 +149,6 @@ class StatefulSessionBeanMapFactory extends \Thread
     {
 
         do {
-
             $this->synchronized(function ($self, $id) {
 
                 // set action and session-ID
@@ -187,20 +186,23 @@ class StatefulSessionBeanMapFactory extends \Thread
 
         // while we should create threads, to it
         while ($this->run) {
-
-            $this->synchronized(function ($self) { // wait until we receive a notification for a method invokation
+            // wait until we receive a notification for a method invokation
+            $this->synchronized(function ($self) {
                 $self->wait(1000000 * StatefulSessionBeanMapFactory::TIME_TO_LIVE);
             }, $this);
 
-            switch ($this->action) { // check the method we want to invoke
+            // check the method we want to invoke
+            switch ($this->action) {
 
-                case StatefulSessionBeanMapFactory::ACTION_NEW_INSTANCE: // we want to create a new session instance
+                // we want to create a new session instance
+                case StatefulSessionBeanMapFactory::ACTION_NEW_INSTANCE:
 
                     $this->sessionPool->set($this->sessionId, new StatefulSessionBeanMap());
 
                     break;
 
-                case StatefulSessionBeanMapFactory::ACTION_REMOVE_BY_SESSION_ID: // we want to remove a session instance from the pool
+                // we want to remove a session instance from the pool
+                case StatefulSessionBeanMapFactory::ACTION_REMOVE_BY_SESSION_ID:
 
                     foreach ($this->sessionPool as $sessionId => $session) {
                         if ($session instanceof Map && $sessionId === $this->sessionId) {
@@ -210,7 +212,8 @@ class StatefulSessionBeanMapFactory extends \Thread
 
                     break;
 
-                default: // do nothing, because we've an unknown action
+                // do nothing, because we've an unknown action
+                default:
 
                     break;
             }
@@ -219,7 +222,8 @@ class StatefulSessionBeanMapFactory extends \Thread
             $this->action = null;
             $this->sessionId = null;
 
-            if ($profileLogger) { // profile the size of the session pool
+            if ($profileLogger) {
+                // profile the size of the session pool
                 $profileLogger->debug(
                     sprintf('Size of session pool is: %d', sizeof($this->sessionPool))
                 );

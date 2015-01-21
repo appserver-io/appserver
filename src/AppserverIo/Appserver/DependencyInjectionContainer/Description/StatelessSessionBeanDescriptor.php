@@ -89,7 +89,8 @@ class StatelessSessionBeanDescriptor extends SessionBeanDescriptor implements St
     {
 
         // query if we've an enterprise bean with a @Stateless annotation
-        if ($reflectionClass->hasAnnotation(Stateless::ANNOTATION) === false) { // if not, do nothing
+        if ($reflectionClass->hasAnnotation(Stateless::ANNOTATION) === false) {
+            // if not, do nothing
             return;
         }
 
@@ -114,12 +115,14 @@ class StatelessSessionBeanDescriptor extends SessionBeanDescriptor implements St
     {
 
         // query if we've a <session> descriptor node
-        if ($node->getName() !== 'session') { // if not, do nothing
+        if ($node->getName() !== 'session') {
+            // if not, do nothing
             return;
         }
 
         // query if the session type matches
-        if ((string) $node->{'session-type'} !== StatelessSessionBeanDescriptor::SESSION_TYPE) { // if not, do nothing
+        if ((string) $node->{'session-type'} !== StatelessSessionBeanDescriptor::SESSION_TYPE) {
+            // if not, do nothing
             return;
         }
 

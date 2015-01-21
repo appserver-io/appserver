@@ -73,20 +73,17 @@ class PharExtractor extends AbstractExtractor
     {
 
         try {
-
             // create folder names based on the archive's basename
             $tmpFolderName = new \SplFileInfo($this->getTmpDir() . DIRECTORY_SEPARATOR . $archive->getFilename());
             $webappFolderName = new \SplFileInfo($this->getWebappsDir() . DIRECTORY_SEPARATOR . basename($archive->getFilename(), $this->getExtensionSuffix()));
 
             // check if archive has not been deployed yet or failed sometime
             if ($this->isDeployable($archive)) {
-
                 // flag webapp as deploying
                 $this->flagArchive($archive, ExtractorInterface::FLAG_DEPLOYING);
 
                 // backup actual webapp folder, if available
                 if ($webappFolderName->isDir()) {
-
                     // backup files that are NOT part of the archive
                     $this->backupArchive($archive);
 
@@ -115,11 +112,8 @@ class PharExtractor extends AbstractExtractor
             }
 
         } catch (\Exception $e) {
-
             // log error
-            $this->getInitialContext()
-                ->getSystemLogger()
-                ->error($e->__toString());
+            $this->getInitialContext()->getSystemLogger()->error($e->__toString());
 
             // flag webapp as failed
             $this->flagArchive($archive, ExtractorInterface::FLAG_FAILED);

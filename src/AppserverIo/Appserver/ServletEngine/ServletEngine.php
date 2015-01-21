@@ -93,7 +93,6 @@ class ServletEngine extends AbstractServletEngine
     public function init(ServerContextInterface $serverContext)
     {
         try {
-
             // set the servlet context
             $this->serverContext = $serverContext;
 
@@ -126,7 +125,6 @@ class ServletEngine extends AbstractServletEngine
     ) {
 
         try {
-
             // if false hook is coming do nothing
             if (ModuleHooks::REQUEST_POST !== $hook) {
                 return;
@@ -173,12 +171,10 @@ class ServletEngine extends AbstractServletEngine
             $webappsDir = $this->getServerContext()->getServerConfig()->getDocumentRoot();
             $relativeRequestPath = strstr($servletRequest->getServerVar(ServerVars::DOCUMENT_ROOT), $webappsDir);
             $proposedBaseModifier = str_replace($webappsDir, '', $relativeRequestPath);
+
             if (strpos($proposedBaseModifier, $contextPath) === 0) {
-
                 $servletRequest->setBaseModifier('');
-
             } else {
-
                 $servletRequest->setBaseModifier($contextPath);
             }
 
@@ -207,15 +203,15 @@ class ServletEngine extends AbstractServletEngine
 
             // copy the servlet response cookies back to the HTTP response
             foreach ($servletResponse->getCookies() as $cookieName => $cookieValue) {
-
                 // load the cookie and check if we've an array or a single cookie instance
                 if (is_array($cookie = $servletResponse->getCookie($cookieName))) {
-
-                    foreach ($cookie as $c) { // add all the cookies
+                    foreach ($cookie as $c) {
+                        // add all the cookies
                         $response->addCookie($c);
                     }
 
-                } else { // add the cookie instance directly
+                } else {
+                    // add the cookie instance directly
                     $response->addCookie($cookie);
                 }
             }

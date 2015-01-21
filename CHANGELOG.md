@@ -1,10 +1,10 @@
-# Version 1.0.0-RC1
+# Version 1.0.0-rc1
 
-# Bugfixes
+## Bugfixes
 
 * Added missing dependency to appserver-io/lang
 
-# Features
+## Features
 
 * None
 

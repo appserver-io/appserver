@@ -77,7 +77,6 @@ class HtpasswdAdapter extends AuthenticationAdapter
     {
         // if user is valid
         if ($this->htpasswd[$user]) {
-
             if ($this->checkPlainMd5($pwd, $this->htpasswd[$user])) {
                 return true;
             } elseif ($this->checkApr1Md5($pwd, $this->htpasswd[$user])) {
