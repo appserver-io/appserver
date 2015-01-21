@@ -545,7 +545,8 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
             // start the application
             $self->start();
 
-            while ($self->connected === false) { // wait until we've been connected (classloaders and managers has been initialized)
+            while ($self->connected === false) {
+                // wait until we've been connected (classloaders and managers has been initialized)
                 $self->wait(1000000 * Application::TIME_TO_LIVE);
             }
 
@@ -566,7 +567,6 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
 
         // initialize the registered managers
         foreach ($this->getClassLoaders() as $classLoader) {
-
             // log the class loader we want to initialize
             $this->getInitialContext()->getSystemLogger()->debug(
                 sprintf('Now register classloader %s for application %s', get_class($classLoader), $this->getName())
@@ -592,7 +592,6 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
 
         // initialize the registered managers
         foreach ($this->getManagers() as $manager) {
-
             // log the manager we want to initialize
             $this->getInitialContext()->getSystemLogger()->debug(
                 sprintf('Now register manager %s for application %s', get_class($manager), $this->getName())
@@ -641,12 +640,13 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
 
         // we do nothing here
         while (true) {
-
+            // wait a second to lower system load
             $this->synchronized(function ($self) {
                 $self->wait(1000000 * Application::TIME_TO_LIVE);
             }, $this);
-
-            if ($profileLogger) { // profile the application context
+            // if we've a profile logger, log resource usage
+            if ($profileLogger) {
+                // profile the application context
                 $profileLogger->debug(sprintf('Application %s is running', $this->getName()));
             }
         }

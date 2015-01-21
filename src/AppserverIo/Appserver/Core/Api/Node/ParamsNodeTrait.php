@@ -84,7 +84,8 @@ trait ParamsNodeTrait
 
         // query whether a param with this name has already been set
         foreach ($this->params as $key => $param) {
-            if ($param->getName() === $paramToSet->getName()) { // override the param
+            if ($param->getName() === $paramToSet->getName()) {
+                // override the param
                 $this->params[$key] = $paramToSet;
                 return;
             }

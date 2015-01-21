@@ -274,12 +274,13 @@ class FilesystemPersistenceManager extends \Thread implements PersistenceManager
             $profileLogger->appendThreadContext('filesystem-persistence-manager');
         }
 
-        while ($this->run) { // we run forever
-
+        // we run forever
+        while ($this->run) {
             // now persist inactive sessions
             $this->persist();
 
-            if ($profileLogger) { // profile the size of the sessions
+            if ($profileLogger) {
+                // profile the size of the sessions
                 $profileLogger->debug(sprintf('Persisted sessions to filesystem for sessions size: %d', sizeof($this->getSessions())));
             }
 
@@ -304,10 +305,8 @@ class FilesystemPersistenceManager extends \Thread implements PersistenceManager
 
         // iterate over all the checksums (session that are active and loaded)
         foreach ($this->getSessions() as $id => $session) {
-
             // if we found a session
             if ($session instanceof ServletSession) {
-
                 // if we don't have a checksum, this is a new session
                 $checksum = null;
                 if ($this->getChecksums()->has($id)) {
@@ -324,7 +323,6 @@ class FilesystemPersistenceManager extends \Thread implements PersistenceManager
 
                 // we want to detach the session (to free memory), when the last activity is > the inactivity timeout (1440 by default)
                 if ($session->getId() != null && $checksum === $session->checksum() && $lastActivitySecondsAgo > $inactivityTimeout) {
-
                     // prepare the session filename
                     $sessionFilename = $this->getSessionSavePath($this->getSessionSettings()->getSessionFilePrefix() . $id);
 
@@ -342,7 +340,6 @@ class FilesystemPersistenceManager extends \Thread implements PersistenceManager
 
                 // we want to persist the session because its data has been changed
                 if ($session->getId() != null && $checksum !== $session->checksum()) {
-
                     // prepare the session filename
                     $sessionFilename = $this->getSessionSavePath($this->getSessionSettings()->getSessionFilePrefix() . $id);
 
@@ -354,7 +351,6 @@ class FilesystemPersistenceManager extends \Thread implements PersistenceManager
 
                 // we want to remove the session file, because the session has been destroyed
                 if ($session->getId() == null && $checksum !== $session->checksum()) {
-
                     // prepare the session filename
                     $sessionFilename = $this->getSessionSavePath($this->getSessionSettings()->getSessionFilePrefix() . $id);
                     // delete the file containing the session data if available
@@ -413,14 +409,11 @@ class FilesystemPersistenceManager extends \Thread implements PersistenceManager
 
         // iterate through all session files and initialize them
         foreach ($sessionFilter as $sessionFile) {
-
             try {
-
                 // unpersist the session data itself
                 $this->loadSessionFromFile($sessionFile->getPathname());
 
             } catch (SessionDataNotReadableException $sdnre) {
-
                 // this maybe happens when the session file is corrupt
                 $this->removeSessionFile($sessionFile->getPathname());
             }
@@ -439,10 +432,8 @@ class FilesystemPersistenceManager extends \Thread implements PersistenceManager
     {
 
         try {
-
             // try to load the session with the passed ID
             if ($this->getSessions()->has($id) === false) {
-
                 // prepare the pathname to the file containing the session data
                 $filename = $this->getSessionSettings()->getSessionFilePrefix() . $id;
                 $pathname = $this->getSessionSavePath($filename);
@@ -452,7 +443,6 @@ class FilesystemPersistenceManager extends \Thread implements PersistenceManager
             }
 
         } catch (SessionDataNotReadableException $sdnre) {
-
             // this maybe happens when the session file is corrupt
             $this->removeSessionFile($pathname);
         }

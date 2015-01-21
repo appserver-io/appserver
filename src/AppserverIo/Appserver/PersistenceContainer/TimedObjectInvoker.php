@@ -155,14 +155,16 @@ class TimedObjectInvoker extends GenericStackable implements TimedObjectInvokerI
         $instance = $initialContext->lookup($this->getTimedObjectId());
 
         // check if the timeout method has been passed
-        if ($timeoutMethod != null) { // if yes, invoke it on the proxy
+        if ($timeoutMethod != null) {
+            // if yes, invoke it on the proxy
             $callback = array($instance, $timeoutMethod->getMethodName());
             call_user_func_array($callback, array($timer));
             return;
         }
 
         // check if we've a default timeout method
-        if ($this->defaultTimeoutMethod != null) { // if yes, invoke it on the proxy
+        if ($this->defaultTimeoutMethod != null) {
+            // if yes, invoke it on the proxy
             $callback = array($instance, $this->defaultTimeoutMethod->getMethodName());
             call_user_func_array($callback, array($timer));
             return;
@@ -189,7 +191,6 @@ class TimedObjectInvoker extends GenericStackable implements TimedObjectInvokerI
         // check the methods of the bean for a @Timeout annotation => overwrite the default
         // timeout method defined by the interface
         foreach ($reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $timeoutMethod) {
-
             // check if the timed object instance has @Timeout annotation => default timeout method
             if ($timeoutMethod->hasAnnotation(Timeout::ANNOTATION)) {
                 $this->defaultTimeoutMethod = $timeoutMethod;

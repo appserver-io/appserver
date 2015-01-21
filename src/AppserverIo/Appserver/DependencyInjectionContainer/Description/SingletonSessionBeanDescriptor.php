@@ -122,7 +122,8 @@ class SingletonSessionBeanDescriptor extends SessionBeanDescriptor implements Si
     {
 
         // query if we've an enterprise bean with a @Singleton annotation
-        if ($reflectionClass->hasAnnotation(Singleton::ANNOTATION) === false) { // if not, do nothing
+        if ($reflectionClass->hasAnnotation(Singleton::ANNOTATION) === false) {
+            // if not, do nothing
             return;
         }
 
@@ -133,7 +134,8 @@ class SingletonSessionBeanDescriptor extends SessionBeanDescriptor implements Si
         parent::fromReflectionClass($reflectionClass);
 
         // if we found a bean with @Singleton + @Startup annotation
-        if ($reflectionClass->hasAnnotation(Startup::ANNOTATION)) { // instanciate the bean
+        if ($reflectionClass->hasAnnotation(Startup::ANNOTATION)) {
+            // instanciate the bean
             $this->setInitOnStartup();
         }
 
@@ -152,12 +154,14 @@ class SingletonSessionBeanDescriptor extends SessionBeanDescriptor implements Si
     {
 
         // query if we've a <session> descriptor node
-        if ($node->getName() !== 'session') { // if not, do nothing
+        if ($node->getName() !== 'session') {
+            // if not, do nothing
             return;
         }
 
         // query if the session type matches
-        if ((string) $node->{'session-type'} !== SingletonSessionBeanDescriptor::SESSION_TYPE) { // if not, do nothing
+        if ((string) $node->{'session-type'} !== SingletonSessionBeanDescriptor::SESSION_TYPE) {
+            // if not, do nothing
             return;
         }
 

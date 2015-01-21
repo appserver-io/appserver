@@ -56,7 +56,6 @@ class LoggerFactory
         // initialize the handlers
         $handlers = array();
         foreach ($loggerNode->getHandlers() as $handlerNode) {
-
             // initialize the handler node
             $reflectionClass = new \ReflectionClass($handlerNode->getType());
             $handler = $reflectionClass->newInstanceArgs($handlerNode->getParamsAsArray());

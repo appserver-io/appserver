@@ -152,7 +152,8 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
         // check if we've the old or the new directory structure
         if (file_exists(SERVER_BASEDIR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php')) {
             $autoloaderFile = SERVER_BASEDIR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
-        } else { // this is the old directory structure
+        } else {
+            // this is the old directory structure
             $autoloaderFile = SERVER_BASEDIR . 'app' . DIRECTORY_SEPARATOR . 'code' . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
         }
 
@@ -182,7 +183,6 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
 
         // start servers by given configurations
         foreach ($serverConfigurations as $serverConfig) {
-
             // get type definitions
             $serverType = $serverConfig->getType();
             $serverContextType = $serverConfig->getServerContextType();
@@ -206,10 +206,10 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
         // wait for all servers to be started
         $waitForServers = true;
         while ($waitForServers) {
-
             // iterate over all servers to check the state
             foreach ($servers as $server) {
-                if ($server->state === 0) { // if the server has not been started
+                if ($server->state === 0) {
+                    // if the server has not been started
                     sleep(1);
                     continue 2;
                 }
@@ -224,7 +224,6 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
 
         // wait for shutdown signal
         while ($this->containerState->equals(ContainerStateKeys::get(ContainerStateKeys::SERVERS_STARTED_SUCCESSFUL))) {
-
             // profile the worker shutdown beeing processed
             if ($profileLogger) {
                 $profileLogger->debug(sprintf('Container %s still waiting for shutdown', $this->getContainerNode()->getName()));

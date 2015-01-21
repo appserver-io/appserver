@@ -132,20 +132,17 @@ class DeploymentService extends AbstractService
         // validate the base context file and load it as default if validation succeeds
         $baseContext = new ContextNode();
         if (!$configurationTester->validateFile($baseContextPath, null)) {
-
             $errorMessages = $configurationTester->getErrorMessages();
             $systemLogger = $this->getInitialContext()->getSystemLogger();
             $systemLogger->error(reset($errorMessages));
             $systemLogger->critical(sprintf('Problems validating base context file %s, this might affect app configurations badly.', $baseContextPath));
 
         } else {
-
             $baseContext->initFromFile($baseContextPath);
         }
 
         // iterate over all applications and create the context configuration
         foreach (glob($container->getAppBase() . '/*', GLOB_ONLYDIR) as $webappPath) {
-
             // prepare the context path
             $contextPath = '/' . basename($webappPath);
 
@@ -159,10 +156,8 @@ class DeploymentService extends AbstractService
 
             // iterate through all context configurations (context.xml), validate and merge them
             foreach ($this->globDir($webappPath . '/META-INF/context.xml') as $contextFile) {
-
                 // validate the file, but skip it if validation fails
                 if (!$configurationTester->validateFile($contextFile, null)) {
-
                     $errorMessages = $configurationTester->getErrorMessages();
                     $systemLogger = $this->getInitialContext()->getSystemLogger();
                     $systemLogger->error(reset($errorMessages));

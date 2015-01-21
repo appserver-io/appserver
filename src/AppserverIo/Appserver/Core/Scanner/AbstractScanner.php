@@ -162,7 +162,6 @@ abstract class AbstractScanner extends AbstractContextThread
 
         // check if the restart command is registered
         if (array_key_exists($os, $this->restartCommands)) {
-
             // load the command
             $command = $this->restartCommands[$os];
 
@@ -206,7 +205,6 @@ abstract class AbstractScanner extends AbstractContextThread
 
                 // If we did not get anything
                 if (!$distribution) {
-
                     // Log the error
                     $this->getSystemLogger()->error(
                         "The used Linux distribution could not be determined, it might not be supported."
@@ -253,31 +251,26 @@ abstract class AbstractScanner extends AbstractContextThread
         // but only if there is no list provided already
         $etcDir = '/etc';
         if (empty($etcList)) {
-
             $etcList = scandir($etcDir);
             $etcList = array_flip($etcList);
         }
 
-        //Loop through our mapping and look if we have a match
+        // Loop through our mapping and look if we have a match
         $distributionCandidates = array();
         foreach ($this->distroMapping as $distribution => $releaseFile) {
-
             // Do we have a match which is not just a soft link on the actual file? If so collect the distro
             if (isset($etcList[$releaseFile]) && !is_link($etcDir . DIRECTORY_SEPARATOR . $releaseFile)) {
-
                 $distributionCandidates[$releaseFile] = $distribution;
             }
         }
 
         // If we have several matches we might have to resort
         if (count($distributionCandidates) === 1) {
-
             return array_pop($distributionCandidates);
 
         } elseif (count($distributionCandidates) > 1) {
             // the file lsb-release might be existent in several Linux systems, filter it out
             if (isset($distributionCandidates['lsb-release'])) {
-
                 unset($distributionCandidates['lsb-release']);
             }
 

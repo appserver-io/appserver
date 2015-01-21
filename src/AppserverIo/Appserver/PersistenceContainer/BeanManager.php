@@ -155,7 +155,8 @@ class BeanManager extends AbstractManager implements BeanContext
     {
 
         // query if the web application folder exists
-        if (is_dir($folder = $this->getWebappPath()) === false) { // if not, do nothing
+        if (is_dir($folder = $this->getWebappPath()) === false) {
+            // if not, do nothing
             return;
         }
 
@@ -164,7 +165,6 @@ class BeanManager extends AbstractManager implements BeanContext
 
         // append the directory found in the servlet managers configuration
         foreach ($this->getDirectories() as $directoryNode) {
-
             // prepare the custom directory defined in the servlet managers configuration
             $customDir = $folder . DIRECTORY_SEPARATOR . ltrim($directoryNode->getNodeValue()->getValue(), DIRECTORY_SEPARATOR);
 
@@ -185,7 +185,6 @@ class BeanManager extends AbstractManager implements BeanContext
 
         // it's no valid application without at least the epb.xml file
         if (file_exists($deploymentDescriptor = $folder . DIRECTORY_SEPARATOR . 'META-INF' . DIRECTORY_SEPARATOR . 'epb.xml')) {
-
             try {
                 // parse the deployment descriptor for registered beans
                 $deploymentDescriptorParser = new DeploymentDescriptorParser();
@@ -194,7 +193,6 @@ class BeanManager extends AbstractManager implements BeanContext
                 $deploymentDescriptorParser->parse($deploymentDescriptor, '/a:epb/a:enterprise-beans/a:message-driven');
 
             } catch (InvalidConfigurationException $e) {
-
                 $application->getInitialContext()->getSystemLogger()->critical($e->getMessage());
             }
         }
@@ -204,9 +202,9 @@ class BeanManager extends AbstractManager implements BeanContext
 
         // register the beans located by annotations and the XML configuration
         foreach ($objectManager->getObjectDescriptors() as $descriptor) {
-
             // check if we've found a bean descriptor
-            if ($descriptor instanceof BeanDescriptorInterface) { // register the bean
+            if ($descriptor instanceof BeanDescriptorInterface) {
+                // register the bean
                 $this->registerBean($descriptor);
             }
 
@@ -228,7 +226,6 @@ class BeanManager extends AbstractManager implements BeanContext
     {
 
         try {
-
             // register the bean with the default name/short class name
             $this->getApplication()->bind($descriptor->getName(), array(&$this, 'lookup'), array($descriptor->getClassName()));
 
@@ -242,7 +239,8 @@ class BeanManager extends AbstractManager implements BeanContext
                 $this->registerResReference($resReference);
             }
 
-        } catch (\Exception $e) { // log the exception
+        } catch (\Exception $e) {
+            // log the exception
             $this->getApplication()->getInitialContext()->getSystemLogger()->critical($e->__toString());
         }
     }
@@ -409,7 +407,6 @@ class BeanManager extends AbstractManager implements BeanContext
 
         // check if the stateful session bean has already been initialized
         if ($this->getStatefulSessionBeans()->get($sessionId)->exists($className) === true) {
-
             // remove the stateful session bean from the sessions
             $sessions = $this->getStatefulSessionBeans()->get($sessionId);
 
@@ -481,7 +478,6 @@ class BeanManager extends AbstractManager implements BeanContext
 
         // query if we've stateful session bean
         if ($descriptor instanceof StatefulSessionBeanDescriptorInterface) {
-
             // check if we've a session-ID available
             if ($sessionId == null) {
                 throw new \Exception('Can\'t find a session-ID to attach stateful session bean');
@@ -491,7 +487,8 @@ class BeanManager extends AbstractManager implements BeanContext
             $lifetime = $this->getStatefulSessionBeanSettings()->getLifetime();
 
             // initialize the map for the stateful session beans
-            if ($this->getStatefulSessionBeans()->has($sessionId) === false) { // create a new session bean map instance
+            if ($this->getStatefulSessionBeans()->has($sessionId) === false) {
+                // create a new session bean map instance
                 $this->getStatefulSessionBeanMapFactory()->newInstance($sessionId);
 
             }
@@ -509,7 +506,6 @@ class BeanManager extends AbstractManager implements BeanContext
         // query if we've stateless session or message bean
         if ($descriptor instanceof StatelessSessionBeanDescriptorInterface ||
             $descriptor instanceof MessageDrivenBeanDescriptorInterface) {
-
             // simply destroy the instance
             $this->destroyBeanInstance($instance);
 
@@ -519,7 +515,6 @@ class BeanManager extends AbstractManager implements BeanContext
 
         // query if we've singleton session bean
         if ($descriptor instanceof SingletonSessionBeanDescriptorInterface) {
-
             // do nothing here
             return;
         }

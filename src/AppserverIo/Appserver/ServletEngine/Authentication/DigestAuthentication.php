@@ -54,10 +54,8 @@ class DigestAuthentication extends AbstractAuthentication
 
         // if client provided authentication data
         if ($authorizationData = $req->getHeader(HttpProtocol::HEADER_AUTHORIZATION)) {
-
             // check if Authentication is DIGEST
             if (substr($authorizationData, 0, 6) == AbstractAuthentication::AUTHENTICATION_METHOD_DIGEST) {
-
                 $data = array();
                 $parts = explode(", ", substr($authorizationData, 7));
 

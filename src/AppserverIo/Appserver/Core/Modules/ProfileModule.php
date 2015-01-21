@@ -133,7 +133,8 @@ class ProfileModule implements HttpModuleInterface
      */
     public function prepare()
     {
-        if ($this->profileLogger instanceof ThreadSafeLoggerInterface) { // set the thread-worker context in the profile logger
+        // set the thread-worker context in the profile logger
+        if ($this->profileLogger instanceof ThreadSafeLoggerInterface) {
             $this->profileLogger->appendThreadContext('thread-worker');
         }
     }

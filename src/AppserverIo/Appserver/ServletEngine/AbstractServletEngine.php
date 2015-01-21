@@ -98,6 +98,7 @@ abstract class AbstractServletEngine extends GenericStackable implements HttpMod
      */
     protected function findRequestedApplication(RequestContextInterface $requestContext)
     {
+
         // prepare the request URL we want to match
         $webappsDir = $this->getServerContext()->getServerConfig()->getDocumentRoot();
         $relativeRequestPath = strstr($requestContext->getServerVar(ServerVars::DOCUMENT_ROOT) . $requestContext->getServerVar(ServerVars::X_REQUEST_URI), $webappsDir);
@@ -105,9 +106,7 @@ abstract class AbstractServletEngine extends GenericStackable implements HttpMod
 
         // try to match a registered application with the passed request
         foreach ($this->applications as $application) {
-
             if ($application->getName() === $proposedAppName) {
-
                 return $application;
             }
         }
@@ -234,11 +233,10 @@ abstract class AbstractServletEngine extends GenericStackable implements HttpMod
         // make the registered handlers local
         $handlers = $this->getHandlers();
 
-        do { // descent the directory structure down to find the (almost virtual) servlet file
-
+        // descent the directory structure down to find the (almost virtual) servlet file
+        do {
             // bingo we found a (again: almost virtual) servlet file
             if (array_key_exists(".$extension", $handlers) && $handlers[".$extension"]->getName() === $this->getModuleName()) {
-
                 // prepare the servlet path
                 if ($dirname === '/') {
                     $servletPath = '/' . $basename;

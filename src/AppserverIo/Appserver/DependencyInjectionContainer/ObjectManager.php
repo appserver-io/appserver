@@ -124,7 +124,6 @@ class ObjectManager extends AbstractManager implements ObjectManagerInterface
 
         // query whether we've to merge the configuration found in annotations
         if ($this->hasObjectDescriptor($objectDescriptor->getClassName()) && $merge) {
-
             // load the existing descriptor
             $existingDescriptor = $this->getObjectDescriptor($objectDescriptor->getClassName());
 
@@ -135,7 +134,6 @@ class ObjectManager extends AbstractManager implements ObjectManagerInterface
             $this->setObjectDescriptor($existingDescriptor);
 
         } else {
-
             // register the object descriptor
             $this->setObjectDescriptor($objectDescriptor);
         }
@@ -177,7 +175,8 @@ class ObjectManager extends AbstractManager implements ObjectManagerInterface
     {
 
         // query if we've an object descriptor registered
-        if ($this->hasObjectDescriptor($className)) { // return the object descriptor
+        if ($this->hasObjectDescriptor($className)) {
+            // return the object descriptor
             return $this->objectDescriptors->get($className);
         }
 

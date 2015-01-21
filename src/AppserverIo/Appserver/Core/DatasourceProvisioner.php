@@ -42,17 +42,13 @@ class DatasourceProvisioner extends AbstractProvisioner
 
         // check if deploy dir exists
         if (is_dir($directory = $this->getWebappsDir())) {
-
             // load the datasource files
             $datasourceFiles = $this->getService()->globDir($directory . DIRECTORY_SEPARATOR . '*-ds.xml');
-
             // iterate through all provisioning files (provision.xml), validate them and attach them to the configuration
             $configurationTester = new ConfigurationTester();
             foreach ($datasourceFiles as $datasourceFile) {
-
                 // validate the file, but skip it if validation fails
                 if (!$configurationTester->validateFile($datasourceFile)) {
-
                     $errorMessages = $configurationTester->getErrorMessages();
                     $systemLogger = $this->getInitialContext()->getSystemLogger();
                     $systemLogger->error(reset($errorMessages));

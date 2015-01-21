@@ -264,7 +264,6 @@ class ResourceIdentifier
 
         // firs check if the resource identifier has a path
         if ($path = $this->getPath()) {
-
             // we're searching for the . => signals a file
             $foundDot = strpos($path, '.');
 

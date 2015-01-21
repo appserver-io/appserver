@@ -151,7 +151,6 @@ class HandlerManager extends GenericStackable implements HandlerContext
 
         // the phar files have been deployed into folders
         if (is_dir($folder = $this->getWebappPath())) {
-
             // it's no valid application without at least the web.xml file
             if (!file_exists($web = $folder . DIRECTORY_SEPARATOR . 'WEB-INF' . DIRECTORY_SEPARATOR . 'handler.xml')) {
                 return;
@@ -159,12 +158,10 @@ class HandlerManager extends GenericStackable implements HandlerContext
 
             // validate the file here, if it is not valid we can skip further steps
             try {
-
                 $configurationTester = new ConfigurationTester();
                 $configurationTester->validateFile($web, null, true);
 
             } catch (InvalidConfigurationException $e) {
-
                 $systemLogger = $this->getApplication()->getInitialContext()->getSystemLogger();
                 $systemLogger->error($e->getMessage());
                 $systemLogger->critical(sprintf('Pointcuts configuration file %s is invalid, AOP functionality might not work as expected.', $web));
@@ -182,7 +179,6 @@ class HandlerManager extends GenericStackable implements HandlerContext
 
             // initialize the handlers by parsing the handler-mapping nodes
             foreach ($config->xpath('/a:web-app/a:handler') as $handler) {
-
                 // load the handler name and check if it already has been initialized
                 $handlerName = (string) $handler->{'handler-name'};
                 if (array_key_exists($handlerName, $this->handlers)) {
@@ -218,7 +214,6 @@ class HandlerManager extends GenericStackable implements HandlerContext
 
             // initialize the handlers by parsing the handler-mapping nodes
             foreach ($config->xpath('/a:web-app/a:handler-mapping') as $mapping) {
-
                 // load the url pattern and the handler name
                 $urlPattern = (string) $mapping->{'url-pattern'};
                 $handlerName = (string) $mapping->{'handler-name'};

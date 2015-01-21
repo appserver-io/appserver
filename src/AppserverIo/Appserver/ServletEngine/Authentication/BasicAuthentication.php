@@ -44,16 +44,19 @@ class BasicAuthentication extends AbstractAuthentication
      */
     public function authenticate()
     {
+
+        // load the configuration
         $config = $this->getSecuredUrlConfig();
         $req = $this->getServletRequest();
         $res = $this->getServletResponse();
 
+        // initialize realm/adapter type from configuration
         $realm = $config['auth']['realm'];
         $adapterType = $config['auth']['adapter-type'];
 
         // if client provided authentication data
         if ($authorizationData = $req->getHeader(HttpProtocol::HEADER_AUTHORIZATION)) {
-
+            // extract the authorization data from the header
             list ($authType, $data) = explode(' ', $authorizationData);
 
             // handle authentication method and get credentials
@@ -64,7 +67,6 @@ class BasicAuthentication extends AbstractAuthentication
 
             // if credentials are provided and authorization method is the same as configured
             if ($credentials) {
-
                 // get real credentials
                 list ($user, $pwd) = explode(':', $credentials);
 

@@ -28,7 +28,8 @@
 		"appserver-io/persistencecontainerclient" : "0.7.*"
 	},
 	"require-dev" : {
-		"appserver-io/build" : "0.2.*"
+		"appserver-io/build" : "0.2.*",
+        "squizlabs/php_codesniffer" : "dev-master as 2.1.0"
 	},
 	"autoload" : {
 		"psr-0" : {

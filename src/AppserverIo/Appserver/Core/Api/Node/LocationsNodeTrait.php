@@ -66,7 +66,6 @@ trait LocationsNodeTrait
     {
         // iterate over all locations
         foreach ($this->getLocations() as $location) {
-
             // if we found one with a matching condition we will return it
             if ($location->getCondition() === $condition) {
                 return $location;
@@ -87,7 +86,6 @@ trait LocationsNodeTrait
         // iterate over the location nodes and sort them into an array
         $locations = array();
         foreach ($this->getLocations() as $locationNode) {
-
             // restructure to an array
             $locations[$locationNode->getCondition()] = array(
                 'condition' => $locationNode->getCondition(),

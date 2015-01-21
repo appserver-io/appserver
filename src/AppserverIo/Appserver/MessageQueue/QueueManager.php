@@ -155,9 +155,7 @@ class QueueManager extends GenericStackable implements QueueContext, ManagerInte
 
         // gather all the deployed web applications
         foreach ($xmlFiles as $file) {
-
             try {
-
                 // try to initialize a SimpleXMLElement
                 $sxe = new \SimpleXMLElement($file, null, true);
                 $sxe->registerXPathNamespace('a', 'http://www.appserver.io/appserver');
@@ -169,12 +167,10 @@ class QueueManager extends GenericStackable implements QueueContext, ManagerInte
 
                 // validate the file here, if it is not valid we can skip further steps
                 try {
-
                     $configurationTester = new ConfigurationTester();
                     $configurationTester->validateFile($file, null, true);
 
                 } catch (InvalidConfigurationException $e) {
-
                     $systemLogger = $this->getApplication()->getInitialContext()->getSystemLogger();
                     $systemLogger->error($e->getMessage());
                     $systemLogger->critical(sprintf('Message queue configuration file %s is invalid, needed queues might be missing.', $file));
@@ -183,7 +179,6 @@ class QueueManager extends GenericStackable implements QueueContext, ManagerInte
 
                 // iterate over all found queues and initialize them
                 foreach ($nodes as $node) {
-
                     // load the nodes attributes
                     $attributes = $node->attributes();
 
@@ -212,11 +207,10 @@ class QueueManager extends GenericStackable implements QueueContext, ManagerInte
                     $application->bindCallback($destination, array(&$this, 'createSenderForQueue'), array($destination));
                 }
 
-            } catch (\Exception $e) { // if class can not be reflected continue with next class
-
+            // if class can not be reflected continue with next class
+            } catch (\Exception $e) {
                 // log an error message
                 $application->getInitialContext()->getSystemLogger()->error($e->__toString());
-
                 // proceed with the next queue
                 continue;
             }

@@ -141,14 +141,12 @@ class Setup
         // loop through /etc results...
         $distro = '';
 
-        foreach ($etcList as $entry) { // iterate over all found files
-
+        // iterate over all found files
+        foreach ($etcList as $entry) {
             // loop through list of distros..
             foreach ($distros as $distroReleaseFile) {
-
                 // match was found.
                 if ($distroReleaseFile === $entry) {
-
                     // find distros array key (i.e. distro name) by value (i.e. distro release file)
                     $distro = array_search($distroReleaseFile, $distros);
                     break 2; // break inner and outer loop.
@@ -209,14 +207,16 @@ class Setup
         // check if we've a file with the actual version number
         if (file_exists($filename = getcwd() .'/etc/appserver/.release-version')) {
             $version = file_get_contents($filename);
-        } else { // load the version (GIT) of this package as fallback
+        } else {
+            // load the version (GIT) of this package as fallback
             $version = $event->getComposer()->getPackage()->getPrettyVersion();
         }
 
         // check if we've a file with the actual release name
         if (file_exists($filename = getcwd() .'/etc/appserver/.release-name')) {
             $releaseName = file_get_contents($filename);
-        } else { // set the release name to 'Unknown' if not
+        } else {
+            // set the release name to 'Unknown' if not
             $releaseName = 'Unknown';
         }
 
@@ -238,8 +238,8 @@ class Setup
 
                 // get the distribution
                 $distribution = Setup::getLinuxDistro();
-                if ($distribution == null) { // if we cant find one of the supported systems
-
+                // if we cant find one of the supported systems
+                if ($distribution == null) {
                     // set debian as default
                     $distribution = SetupKeys::OS_DEBIAN;
 

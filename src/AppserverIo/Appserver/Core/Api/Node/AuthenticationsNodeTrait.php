@@ -66,7 +66,6 @@ trait AuthenticationsNodeTrait
 
         // iterate over all authentications
         foreach ($this->getAuthentications() as $authenticationNode) {
-
             // if we found one with a matching URI we will return it
             if ($authenticationNode->getUri() === $uri) {
                 return $authenticationNode;

@@ -105,9 +105,7 @@ class TimerServiceRegistry extends ServiceRegistry implements TimerServiceContex
 
         // iterate all php files
         foreach ($phpFiles as $phpFile) {
-
             try {
-
                 // cut off the META-INF directory and replace OS specific directory separators
                 $relativePathToPhpFile = str_replace(DIRECTORY_SEPARATOR, '\\', str_replace($metaInfDir, '', $phpFile));
 
@@ -160,8 +158,8 @@ class TimerServiceRegistry extends ServiceRegistry implements TimerServiceContex
                     )
                 );
 
-            } catch (\Exception $e) { // if class can not be reflected continue with next class
-
+            // if class can not be reflected continue with next class
+            } catch (\Exception $e) {
                 // log an error message
                 $application->getInitialContext()->getSystemLogger()->error($e->__toString());
 

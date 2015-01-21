@@ -258,11 +258,10 @@ class LogrotateScanner extends AbstractScanner
             sprintf('Start scanning directory %s for files to be rotated (interval %d)', $directory, $interval)
         );
 
-        while (true) { // watch the configured directory
-
+        // watch the configured directory
+        while (true) {
             // iterate over the files to be watched
             foreach (glob($directory . '/*.' . $extensionsToWatch, GLOB_BRACE) as $fileToRotate) {
-
                 // log that we're rotate the file
                 $this->getSystemLogger()->debug(
                     sprintf('Query wheter it is necessary to rotate %s', $fileToRotate)
@@ -375,7 +374,6 @@ class LogrotateScanner extends AbstractScanner
 
         // raise the counter of the rotated files
         foreach ($logFiles as $fileToRename) {
-
             // load the information about the found file
             $extension = pathinfo($fileToRename, PATHINFO_EXTENSION);
             $basename = pathinfo($fileToRename, PATHINFO_BASENAME);
@@ -385,7 +383,6 @@ class LogrotateScanner extends AbstractScanner
 
             // check the counter
             if (preg_match($regex, $basename, $counter)) {
-
                 // load and raise the counter by one
                 $raised = ((integer) end($counter)) + 1;
 

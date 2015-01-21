@@ -98,7 +98,6 @@ class BeanLocator implements ResourceLocator
 
         // query if we've a Stateful session bean
         if ($descriptor instanceof StatefulSessionBeanDescriptorInterface) {
-
             // try to load the stateful session bean from the bean manager
             if ($instance = $beanManager->lookupStatefulSessionBean($sessionId, $className)) {
                 return $instance;
@@ -118,7 +117,6 @@ class BeanLocator implements ResourceLocator
 
         // query if we've a Singleton session bean
         if ($descriptor instanceof SingletonSessionBeanDescriptorInterface) {
-
             // try to load the singleton session bean from the bean manager
             if ($instance = $beanManager->lookupSingletonSessionBean($className)) {
                 return $instance;
@@ -146,7 +144,6 @@ class BeanLocator implements ResourceLocator
 
         // query if we've a Stateless session bean
         if ($descriptor instanceof StatelessSessionBeanDescriptorInterface) {
-
             // if not create a new instance and return it
             $instance = $beanManager->newInstance($className, $sessionId, $args);
 
@@ -161,7 +158,6 @@ class BeanLocator implements ResourceLocator
 
         //  query if we've a MessageDriven bean
         if ($descriptor instanceof MessageDrivenBeanDescriptorInterface) {
-
             // create a new instance and return it
             return $beanManager->newInstance($className, $sessionId, $args);
         }

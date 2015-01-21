@@ -151,11 +151,14 @@ class StatefulSessionBeanMap extends GenericStackable implements Map
         // check if a primitive datatype is passed
         if (is_integer($key) || is_string($key) || is_double($key) || is_bool($key)) {
             // return the value for the passed key, if it exists
-            if (array_key_exists($key, $this->items) && !$this->isTimedOut($key)) { // item is available and NOT timed out
+            if (array_key_exists($key, $this->items) && !$this->isTimedOut($key)) {
+                // item is available and NOT timed out
                 return $this->items[$key];
-            } elseif (array_key_exists($key, $this->items) && $this->isTimedOut($key)) { // item is available, but timed out
+            } elseif (array_key_exists($key, $this->items) && $this->isTimedOut($key)) {
+                // item is available, but timed out
                 return;
-            } else { // item is generally not available
+            } else {
+                // item is generally not available
                 throw new IndexOutOfBoundsException(sprintf('Index %s out of bounds', $key));
             }
         }
@@ -175,11 +178,14 @@ class StatefulSessionBeanMap extends GenericStackable implements Map
                 throw new InvalidKeyException('Passed key has to be a primitve datatype or has to implement the __toString() method');
             }
             // return the value for the passed key, if it exists
-            if (array_key_exists($newKey, $this->items) && !$this->isTimedOut($newKey)) { // item is available and NOT timed out
+            if (array_key_exists($newKey, $this->items) && !$this->isTimedOut($newKey)) {
+                // item is available and NOT timed out
                 return $this->items[$newKey];
-            } elseif (array_key_exists($newKey, $this->items) && $this->isTimedOut($newKey)) { // item is available, but timed out
+            } elseif (array_key_exists($newKey, $this->items) && $this->isTimedOut($newKey)) {
+                // item is available, but timed out
                 return;
-            } else { // item is generally not available
+            } else {
+                // item is generally not available
                 throw new IndexOutOfBoundsException(sprintf('Index %s out of bounds', $newKey));
             }
         }

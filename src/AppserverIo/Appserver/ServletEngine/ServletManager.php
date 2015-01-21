@@ -164,7 +164,8 @@ class ServletManager extends AbstractManager implements ServletContext
     {
 
         // query if the web application folder exists
-        if (is_dir($folder = $this->getWebappPath()) === false) { // if not, do nothing
+        if (is_dir($folder = $this->getWebappPath()) === false) {
+            // if not, do nothing
             return;
         }
 
@@ -176,7 +177,6 @@ class ServletManager extends AbstractManager implements ServletContext
 
         // append the directory found in the servlet managers configuration
         foreach ($this->getDirectories() as $directoryNode) {
-
             // prepare the custom directory defined in the servlet managers configuration
             $customDir = $folder . DIRECTORY_SEPARATOR . ltrim($directoryNode->getNodeValue()->getValue(), DIRECTORY_SEPARATOR);
 
@@ -197,7 +197,6 @@ class ServletManager extends AbstractManager implements ServletContext
 
         // it's no valid application without at least the web.xml file
         if (file_exists($deploymentDescriptor = $folder . DIRECTORY_SEPARATOR . 'WEB-INF' . DIRECTORY_SEPARATOR . 'web.xml')) {
-
             try {
                 // parse the deployment descriptor for registered servlets
                 $deploymentDescriptorParser = new DeploymentDescriptorParser();
@@ -205,7 +204,6 @@ class ServletManager extends AbstractManager implements ServletContext
                 $deploymentDescriptorParser->parse($deploymentDescriptor, '/a:web-app/a:servlet');
 
             } catch (InvalidConfigurationException $e) {
-
                 $application->getInitialContext()->getSystemLogger()->critical($e->getMessage());
                 return;
             }
@@ -216,18 +214,15 @@ class ServletManager extends AbstractManager implements ServletContext
 
             // initialize the servlets by parsing the servlet-mapping nodes
             foreach ($config->xpath('/a:web-app/a:servlet-mapping') as $mapping) {
-
                 // load the url pattern and the servlet name
                 $urlPattern = (string) $mapping->{'url-pattern'};
                 $servletName = (string) $mapping->{'servlet-name'};
 
                 // try to find the servlet with the configured name
                 foreach ($objectManager->getObjectDescriptors() as $descriptor) {
-
                     // query if we've a servlet and the name matches the mapped servlet name
                     if ($descriptor instanceof ServletDescriptorInterface &&
                         $descriptor->getName() === $servletName) {
-
                         // add the URL pattern
                         $descriptor->addUrlPattern($urlPattern);
 
@@ -270,9 +265,9 @@ class ServletManager extends AbstractManager implements ServletContext
 
         // register the beans located by annotations and the XML configuration
         foreach ($objectManager->getObjectDescriptors() as $descriptor) {
-
             // check if we've found a servlet descriptor
-            if ($descriptor instanceof ServletDescriptorInterface) { // register the servlet
+            if ($descriptor instanceof ServletDescriptorInterface) {
+                // register the servlet
                 $this->registerServlet($descriptor);
             }
         }
@@ -289,7 +284,6 @@ class ServletManager extends AbstractManager implements ServletContext
     {
 
         try {
-
             // create a new reflection class instance
             $reflectionClass = new ReflectionClass($descriptor->getClassName());
 
@@ -330,7 +324,8 @@ class ServletManager extends AbstractManager implements ServletContext
                 $this->registerResReference($resReference);
             }
 
-        } catch (\Exception $e) { // log the exception
+        } catch (\Exception $e) {
+            // log the exception
             $this->getApplication()->getInitialContext()->getSystemLogger()->critical($e->__toString());
         }
     }

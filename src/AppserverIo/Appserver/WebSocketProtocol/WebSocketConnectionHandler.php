@@ -238,7 +238,6 @@ class WebSocketConnectionHandler implements MessageComponentInterface
         if (isset($from->WebSocket->request)) {
             $from->WebSocket->request->getBody()->write($msg);
         } else {
-
             try {
                 if (null === ($request = $this->reqParser->onMessage($from, $msg))) {
                     return;
@@ -332,12 +331,9 @@ class WebSocketConnectionHandler implements MessageComponentInterface
 
         // if not, check if the request matches a folder
         if (array_key_exists($applicationName, $this->applications)) {
-
             // load the application from the array
             $application = $this->applications[$applicationName];
-
         } else {
-
             throw new BadRequestException("Can't find application for '$applicationName'");
         }
 

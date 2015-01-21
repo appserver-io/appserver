@@ -341,9 +341,8 @@ class TimerService extends GenericStackable implements TimerServiceInterface, Se
 
         // load the timeout methods annotated with @Schedule
         foreach ($this->getTimedObjectInvoker()->getTimeoutMethods() as $timeoutMethod) {
-
-            if ($timeoutMethod instanceof MethodInterface) { // make sure we've a timeout method
-
+            // make sure we've a timeout method
+            if ($timeoutMethod instanceof MethodInterface) {
                 // create the schedule expression from the timeout methods @Schedule annotation
                 $reflectionAnnotation = $timeoutMethod->getAnnotation(Schedule::ANNOTATION);
 

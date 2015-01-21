@@ -67,7 +67,6 @@ trait VirtualHostsNodeTrait
 
         // iterate hosts
         foreach ($this->getVirtualHosts() as $virtualHost) {
-
             // explode the virtual host names
             $virtualHostNames = explode(' ', $virtualHost->getName());
 

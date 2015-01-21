@@ -100,7 +100,6 @@ class ServletEngine extends AbstractServletEngine
     public function init(ServerContextInterface $serverContext)
     {
         try {
-
             // set the servlet context
             $this->serverContext = $serverContext;
 
@@ -128,13 +127,11 @@ class ServletEngine extends AbstractServletEngine
 
         // iterate over the applications and initialize a pool of request handlers for each
         foreach ($this->applications as $application) {
-
             // initialize the pool
             $pool = new GenericStackable();
 
             // initialize 10 request handlers per for each application
             for ($i = 0; $i < 10; $i++) {
-
                 // create a mutex
                 $mutex = \Mutex::create();
 
@@ -173,7 +170,6 @@ class ServletEngine extends AbstractServletEngine
     ) {
 
         try {
-
             // if false hook is coming do nothing
             if (ModuleHooks::REQUEST_POST !== $hook) {
                 return;
@@ -206,9 +202,6 @@ class ServletEngine extends AbstractServletEngine
             $servletResponse = new Response();
             $servletRequest->injectResponse($servletResponse);
 
-            // get the valve locally
-            $valves = $this->valves;
-
             // load the application associated with this request
             $application = $this->findRequestedApplication($requestContext);
 
@@ -221,11 +214,8 @@ class ServletEngine extends AbstractServletEngine
             $relativeRequestPath = strstr($servletRequest->getServerVar(ServerVars::DOCUMENT_ROOT), $webappsDir);
             $proposedBaseModifier = str_replace($webappsDir, '', $relativeRequestPath);
             if (strpos($proposedBaseModifier, $contextPath) === 0) {
-
                 $servletRequest->setBaseModifier('');
-
             } else {
-
                 $servletRequest->setBaseModifier($contextPath);
             }
 

@@ -94,12 +94,9 @@ class DeploymentDescriptorParser
 
         // initialize the session beans by parsing the nodes
         foreach ($config->xpath($xpath) as $node) {
-
             // iterate over all configured descriptors and try to load object description
             foreach ($objectManager->getConfiguredDescriptors() as $descriptor) {
-
                 try {
-
                     // load the descriptor class
                     $descriptorClass = $descriptor->getNodeValue()->getValue();
 
@@ -111,8 +108,8 @@ class DeploymentDescriptorParser
                     // proceed with the next descriptor
                     continue;
 
-                } catch (\Exception $e) { // if class can not be reflected continue with next class
-
+                // if class can not be reflected continue with next class
+                } catch (\Exception $e) {
                     // log an error message
                     $this->getApplication()->getInitialContext()->getSystemLogger()->error($e->__toString());
 

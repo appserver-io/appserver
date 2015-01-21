@@ -128,7 +128,6 @@ class SessionWrapper extends HttpSessionWrapper
 
         // check if the session has already been destroyed
         if ($this->getId() != null) {
-
             // create a new cookie with the session values
             $cookie = new HttpCookie(
                 $this->getName(),

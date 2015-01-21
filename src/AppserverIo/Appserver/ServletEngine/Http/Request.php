@@ -459,7 +459,6 @@ class Request extends GenericStackable implements HttpServletRequest
 
         // check if we can find a cookie
         if (is_array($cookieFound)) {
-
             // iterate over the cookies and try to find one that is not expired
             foreach ($cookieFound as $cookie) {
                 if ($cookie instanceof CookieInterface && $cookie->isExpired() === false) {
@@ -477,9 +476,9 @@ class Request extends GenericStackable implements HttpServletRequest
 
         // if we can't find a session or session has been expired and we want to create a new one
         if ($session == null && $create === true) {
-
             // check if a session ID has been specified
-            if ($id == null) { // if not, generate a unique one
+            if ($id == null) {
+                // if not, generate a unique one
                 $id = SessionUtils::generateRandomString();
             }
 

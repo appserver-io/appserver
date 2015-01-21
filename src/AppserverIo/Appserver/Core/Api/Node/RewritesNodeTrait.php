@@ -64,7 +64,6 @@ trait RewritesNodeTrait
 
         // iterate over all rewrites
         foreach ($this->getRewrites() as $rewriteNode) {
-
             // if we found one with a matching condition we will return it
             if ($rewriteNode->getCondition() === $condition) {
                 return $rewriteNode;
@@ -88,7 +87,6 @@ trait RewritesNodeTrait
 
         // prepare the array with the rewrite rules
         foreach ($this->getRewrites() as $rewrite) {
-
             // rewrites might be extended using different injector extension types, check for that
             if ($rewrite->hasInjector()) {
                 $target = $rewrite->getInjection();

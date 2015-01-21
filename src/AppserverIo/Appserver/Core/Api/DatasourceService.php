@@ -121,7 +121,6 @@ class DatasourceService extends AbstractService
         // iterate over the found datasources, append them to the array and return the array
         $datasourceNodes = array();
         foreach ($configuration->getChilds('/datasources/datasource') as $datasourceConfiguration) {
-
             // Add the information about the container name here
             $datasourceConfiguration->appendData(array('containerName' => $containerName));
 

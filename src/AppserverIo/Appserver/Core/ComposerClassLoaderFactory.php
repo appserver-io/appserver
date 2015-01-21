@@ -53,13 +53,11 @@ class ComposerClassLoaderFactory
 
         // load the composer class loader for the configured directories
         foreach ($configuration->getDirectories() as $directory) {
-
             // we prepare the directories to include scripts AFTER registering (in application context)
             $directories[] = $webappPath . $directory->getNodeValue();
 
             // check if an autoload.php is available
             if (file_exists($webappPath . $directory->getNodeValue() . DIRECTORY_SEPARATOR . 'autoload.php')) {
-
                 // if yes, we try to instanciate a new class loader instance
                 $classLoader = new ComposerClassLoader($directories);
 
