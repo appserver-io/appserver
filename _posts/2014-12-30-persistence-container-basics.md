@@ -54,3 +54,97 @@ In opposite to a HTTP Session, `Stateful Session Beans` enables you to have sess
 Other than `Session Beans`, you MUST not invoke `Message Beans` over a proxy, but as receiver of the messages you can send. The messages are not directly sent to a `Message Bean` instead they are sent to a `Message Broker`. The `Message Broker` adds them to a queue until a worker, what will be separate thread, collects and processes it.
 
 > Using `Message Beans` enables you to process long running processes `asynchronously`, because you don't have to wait for an answer after sending a message to the `Message Broker`.
+
+#### Lifecycle Callbacks
+
+
+
+#### Interceptors
+
+`Interceptors` allows you to weave cross-cutting concerns into your application, without adding code to your business methods. The functionality behind the secenes is [AOP](http://appserver.io/documentation/aop.html) and an `Interceptor` is nothing else than an advice.
+
+To add a very basic logging functionality we've to implement a simple aspect first, something like this
+
+```php
+<?php
+
+namespace AppserverIo\Example\Aspects;
+
+/**
+ * @Aspect
+ */
+class LogInterceptor
+{
+
+  /**
+   * Advice used to log the call to any advised method.
+   *
+   * @param \AppserverIo\Doppelgaenger\Entities\MethodInvocation $methodInvocation 
+   *   Initially invoked method
+   *
+   * @return void
+   */
+  public function logInfo(MethodInvocation $methodInvocation)
+  {
+
+    // load class and method name
+    $className = $methodInvocation->getStructureName();
+    $methodName = $methodInvocation->getName()
+
+    // log the method invocation
+    $methodInvocation->getContext()
+      ->getApplication()
+      ->getInitialContext()
+      ->getSystemLogger()
+      ->info(
+        sprintf('The method %s::%s is about to be called', className, methodName)
+      );
+  }
+}
+```
+
+> Keep in mind, that the `$methodInvocation->getContext()` method gives you access to component the advice has been declared!
+
+So if we want to log each call to a `Session Bean` method, we simply have to declare it by adding an annotation like
+
+```php
+<?php
+
+namespace AppserverIo\Example\SessionBeans;
+
+/**
+ * @Stateless
+ */
+class LoggedBean
+{
+
+  /**
+   * The application instance, injected by DI.
+   *
+   * @var AppserverIo\Psr\Application\ApplicationInterface
+   * @Resource(name="ApplicationInterface")
+   */
+  protected $application;
+ 
+  /**
+   * Returns the application instance. This is necessary to access the logger
+   * in the aspects logInfo() method.
+   */
+  public function getApplication()
+  {
+    return $this->application;
+  }
+
+  /**
+   * A business method with an around advice that will simple log the
+   * method call by invoking the logInfo() method of our aspect.
+   *
+   * @return void
+   * @Around("advise(LogInterceptor->logInfo())")
+   */
+  public function someBusinessMethod()
+  {
+    // do something here
+  }
+}
+```
