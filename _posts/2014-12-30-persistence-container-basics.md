@@ -12,12 +12,12 @@ Maybe you had a look at our previous post about the [Servlet-Engine Basics](/ser
 ### New options using a Persistence-Container
 ***
 
-As not persisting data to a database is the main purpose of a Persistence-Container, we've to figure other reasons you may use it. As PHP till now was used as a scripting language, it'll lack of the possiblity to have objects persistent in memory. The Persistence-Container gives you the possiblity to exactly do this. This is, admittedly, not a problem it can solve for you, but in fact it is a powerful option. This option, beside performance of course, gives you many possibilities you will not benefit from when working with the well known LAMP stack. This post is all about the possibilities the Persistence-Container provides and how they can enable you to write enterprise applications.
+As not persisting data to a database is the main purpose of a Persistence-Container, we've to figure other reasons you may use it. As PHP till now was used as a scripting language, it'll lack of the possiblity to have objects, let's call them components, persistent in memory. The Persistence-Container gives you the possiblity to exactly do this. This is, admittedly, not a problem it can solve for you, but in fact it is a powerful option. This option, beside performance of course, gives you many possibilities you will not benefit from when working with the well known LAMP stack. This post is all about the possibilities the Persistence-Container provides and how they can enable you to write enterprise applications.
 
-### Enterprise PHP Beans
+### Server-Side Component Types
 ***
 
-You may wonder how it should be possible to have an object persistent in memory using PHP, a scripting language! Usually after every request the instance will be destroyed? The simple answer is: As appserver.io runs as a daemon, or better, it provides containers that runs as daemons, you can specify classes, that'll be loaded when the application server starts and will be in memory until the server has been shutdown. To make it simple, we call that classes ['Beans`](http://en.wikipedia.org/wiki/Enterprise_JavaBeans), as they do it in Java. 
+You may wonder how it should be possible to have a component persistent in memory using PHP, a scripting language! Usually after every request the instance will be destroyed? The simple answer is: As appserver.io runs as a daemon, or better, it provides containers that runs as daemons, you can specify component, that'll be loaded when the application server starts and will be in memory until the server has been shutdown. To make it simple, we call that classes [Beans](http://en.wikipedia.org/wiki/Enterprise_JavaBeans), as they do it in Java. 
 
 We've three different types of Beans, `Session Beans`, `Message Beans` and `Entity Beans`. In version 1.0.0 we don't have support for `Entity Beans`, because we see mainly think that the responsiblity therefor is up to ORM libraries like Doctrine. So we support Doctrine to handle database persistence.
 
@@ -27,17 +27,19 @@ A Session Bean basically is a plain PHP class. You MUST not instantiate it direc
 
 ##### Different types of Session Beans
 
-When you write a Session Bean, you have to specify the type the Session Bean should have. This can be done by adding an annotation to the class doc block or specifing it in a configuration file. As it seems to be easier to add the annotation and, in most cases this is sufficient, we recommend that for the start.
+When you write a Session Bean, you have to specify the type of Bean you want to implement. This can either be done by adding an annotation to the class doc block or specifing it in a configuration file. As it seems to be easier to add the annotation and, in most cases this is sufficient, we recommend that for the start.
 
-We differ between three kinds of Session Beans
+We differ between three kinds of Session Beans named Singleton, Stateless and Stateful.
 
-* Singleton
-* Stateless
-* Stateful
+###### Singleton Session Beans (SSBs)
 
-A `Singleton Session Bean` will be created only one time for each application. This means, whenever you'll request an instance, you'll receive the same one. If you set a variable in the SessionBean, it'll be available until you'll overwrite it, or the application server has been restarted.
+A `Singleton Session Bean` will be created by the container only one time for each application. This means, whenever you'll request an instance, you'll receive the same one. If you set a variable in the SessionBean, it'll be available until you'll overwrite it, or the application server has been restarted.
 
-In opposite to a `Singleton Session Bean`, a `Stateless Session Bean` will always be instantiated when you request it. It has NO state, only for the time you invoke a method on it.
+###### Stateless Session Beans (SLSBs)
+
+In opposite to a `Singleton Session Bean`, a `Stateless Session Bean` will always be instantiated when you request it. It has NO state, only for the time you invoke a method on it. Therefore it is the type of Session Bean that will be probably the easiest to handle.
+
+###### Stateful Session Beans (SFSBs)
 
 The `Stateful Session Bean` is something between the two other types. It is stateful for the session with the ID you pass to the client when you request the instance. A `Stateful Session Bean` is very useful, if you want to implement something like a shopping cart. If you declare the shopping cart instance a class member of your `Session Bean`, this will make it persistent for your session lifetime.
 
