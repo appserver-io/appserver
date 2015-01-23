@@ -1,8 +1,7 @@
 <article class="post-content">
 <h2><a href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>&nbsp;<small>{{ post.categories | array_to_sentence_string }}</small></h2>
 <p>
-<i class="fa fa-clock-o"></i> Posted on {{ post.date | date_to_string }}
-{% if post.author %} | <a href="https://github.com/{{ post.author }}" class="post-author"><img src="https://github.com/{{ post.author }}.png" class="avatar img-circle" alt="{{ post.author }}" width="24" height="24" /> {{ post.author }}</a>{% endif %} | <a href="{{ post.url | prepend: site.baseurl }}#disqus_thread">0 Comments</a>
+<a href="https://github.com/{{ post.author }}" class="post-author"><img src="https://github.com/{{ post.author }}.png" class="avatar img-circle" alt="{{ post.author }}" width="24" height="24" /> {{ post.author }}</a> <i class="fa fa-clock-o"></i> Posted on {{ post.date | date_to_string }} | <a href="{{ post.url | prepend: site.baseurl }}#disqus_thread">0 Comments</a>
 </p>
 {% if post.image %}
 <hr/>
