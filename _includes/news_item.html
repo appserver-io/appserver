@@ -1,10 +1,9 @@
----
 <article>
     <h2><a href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>&nbsp;<small>{{ post.categories | array_to_sentence_string }}</small></h2>
     <p>
         <i class="fa fa-clock-o"></i> Posted on {{ post.date | date_to_string }}
-        {% if post.author %}&nbsp;
-        <a href="https://github.com/{{ post.author }}" class="post-author">
+        {% if post.author %}
+        &nbsp;<a href="https://github.com/{{ post.author }}" class="post-author">
             <img src="https://github.com/{{ post.author }}.png" class="avatar" alt="{{ post.author }}" width="24" height="24" />
             {{ post.author }}
         </a>&nbsp;<span class="disqus-comment-count" data-disqus-url="{{ site.url }}{{ post.url | prepend: site.baseurl }}"></span>
@@ -17,7 +16,9 @@
     </a>
     {% endif %}
     <hr/>
-    <p>{{ post.content }}</p>
-    {% if forloop.last == false %}<hr/>{% endif %}
+    <p>
+    {{ post.content }}
+    </p>
+   
     <p><br/></p>
 </article>
