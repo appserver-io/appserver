@@ -3,6 +3,7 @@
 ## Bugfixes
 
 * Remove unnecessary interfaces SenderInterface + ReceiverInterface
+* Fixed invalid namespace in QueueManager::createSenderForQueue() method
 
 ## Features
 
