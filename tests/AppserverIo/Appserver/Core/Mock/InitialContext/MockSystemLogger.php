@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Mock\InitialContext\MockStorage
+ * AppserverIo\Appserver\Core\Mock\InitialContext\MockSystemLogger
  *
  * NOTICE OF LICENSE
  *

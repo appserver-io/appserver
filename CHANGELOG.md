@@ -2,6 +2,7 @@
 
 ## Bugfixes
 
+* Added missing dependency to appserver-io/lang
 * Remove unnecessary interfaces SenderInterface + ReceiverInterface
 
 ## Features

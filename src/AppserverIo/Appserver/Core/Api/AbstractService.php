@@ -2,6 +2,12 @@
 /**
  * AppserverIo\Appserver\Core\Api\AbstractService
  *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Open Software License (OSL 3.0)
+ * that is available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/osl-3.0.php
+ *
  * PHP version 5
  *
  * @category   Server
@@ -18,6 +24,7 @@ namespace AppserverIo\Appserver\Core\Api;
 use AppserverIo\Configuration\Interfaces\NodeInterface;
 use AppserverIo\Appserver\Core\InitialContext;
 use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
+use AppserverIo\Lang\NotImplementedException;
 
 /**
  * Abstract service implementation.
@@ -132,6 +139,18 @@ abstract class AbstractService implements ServiceInterface
     public function newService($className)
     {
         return $this->getInitialContext()->newService($className);
+    }
+
+    /**
+     * Returns true if the OpenSSL extension is loaded, false otherwise
+     *
+     * @return boolean
+     *
+     * @codeCoverageIgnore this will most likely always be mocked/stubbed, and it is trivial anyway
+     */
+    protected function isOpenSslAvailable()
+    {
+        return extension_loaded('openssl');
     }
 
     /**
@@ -255,6 +274,16 @@ abstract class AbstractService implements ServiceInterface
     }
 
     /**
+     * Will return a three character OS identifier e.g. WIN or LIN
+     *
+     * @return string
+     */
+    public function getOsIdentifier()
+    {
+        return strtoupper(substr(PHP_OS, 0, 3));
+    }
+
+    /**
      * Returns the servers main configuration directory.
      *
      * @param string $relativePathToAppend A relative path to append
@@ -305,10 +334,13 @@ abstract class AbstractService implements ServiceInterface
      * @param \AppserverIo\Configuration\Interfaces\NodeInterface $node A node to persist
      *
      * @return void
+     *
+     * @throws \AppserverIo\Lang\NotImplementedException Upon call as it did not get implemented yet!
      */
     public function persist(NodeInterface $node)
     {
-        // implement this
+        // TODO implement this
+        throw new NotImplementedException();
     }
 
     /**
@@ -322,7 +354,7 @@ abstract class AbstractService implements ServiceInterface
     {
 
         // don't do anything under windows
-        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+        if ($this->getOsIdentifier() === 'WIN') {
             return;
         }
 
@@ -352,7 +384,7 @@ abstract class AbstractService implements ServiceInterface
     public function setUserRights(\SplFileInfo $targetDir)
     {
         // we don't do anything under Windows
-        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+        if ($this->getOsIdentifier() === 'WIN') {
             return;
         }
 
@@ -364,28 +396,14 @@ abstract class AbstractService implements ServiceInterface
         // Get our system configuration as it contains the user and group to set
         $systemConfiguration = $this->getInitialContext()->getSystemConfiguration();
 
-        // As we might have several rootPaths we have to create several RecursiveDirectoryIterators.
-        $directoryIterator = new \RecursiveDirectoryIterator(
-            $targetDir,
-            \RecursiveIteratorIterator::SELF_FIRST
-        );
-
-        // We got them all, now append them onto a new RecursiveIteratorIterator and return it.
-        $recursiveIterator = new \AppendIterator();
-        // Append the directory iterator
-        $recursiveIterator->append(
-            new \RecursiveIteratorIterator(
-                $directoryIterator,
-                \RecursiveIteratorIterator::SELF_FIRST,
-                \RecursiveIteratorIterator::CATCH_GET_CHILD
-            )
-        );
+        // get all the files recursively
+        $files = $this->globDir($targetDir . '*');
 
         // Check for the existence of a user
         $user = $systemConfiguration->getParam('user');
         if (!empty($user)) {
             // Change the rights of everything within the defined dirs
-            foreach ($recursiveIterator as $file) {
+            foreach ($files as $file) {
                 chown($file, $user);
             }
         }
@@ -394,7 +412,7 @@ abstract class AbstractService implements ServiceInterface
         $group = $systemConfiguration->getParam('group');
         if (!empty($group)) {
             // Change the rights of everything within the defined dirs
-            foreach ($recursiveIterator as $file) {
+            foreach ($files as $file) {
                 chgrp($file, $group);
             }
         }
@@ -410,14 +428,14 @@ abstract class AbstractService implements ServiceInterface
     {
 
         // don't do anything under Windows
-        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+        if ($this->getOsIdentifier() === 'WIN') {
             return;
         }
 
         // set the configured umask to use
         umask($newUmask = $this->getInitialContext()->getSystemConfiguration()->getParam('umask'));
 
-        // check if we have successfull set the umask
+        // check if we have successfully set the umask
         if (umask() != $newUmask) {
             // check if set, throw an exception if not
             throw new \Exception(sprintf('Can\'t set configured umask \'%s\' found \'%\' instead', $newUmask, umask()));
@@ -442,8 +460,8 @@ abstract class AbstractService implements ServiceInterface
         // we don't have a directory to change the user/group permissions for
         if ($directoryToCreate->isDir() === false) {
             // create the directory if necessary
-            if (mkdir($directoryToCreate) === false) {
-                throw new \Exception(sprintf('Directory %s can\'t be created', $directoryToCreate));
+            if (mkdir($directoryToCreate->getPathname()) === false) {
+                throw new \Exception(sprintf('Directory %s can\'t be created', $directoryToCreate->getPathname()));
             }
         }
 
@@ -468,21 +486,13 @@ abstract class AbstractService implements ServiceInterface
         }
 
         // remove old archive from webapps folder recursively
-        $files = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator($dir->getPathname()),
-            \RecursiveIteratorIterator::CHILD_FIRST
-        );
+        $files = $this->globDir($dir->getPathname() . DIRECTORY_SEPARATOR . '*');
+
         foreach ($files as $file) {
-            // skip . and .. dirs
-            if ($file->getFilename() === '.' || $file->getFilename() === '..') {
-                continue;
-            }
-            if ($file->isDir()) {
-                @rmdir($file->getRealPath());
-            } elseif ($file->isFile() && $alsoRemoveFiles) {
-                unlink($file->getRealPath());
-            } else {
-                // do nothing, because file should NOT be deleted obviously
+            if (is_dir($file)) {
+                @rmdir(realpath($file));
+            } elseif (is_file($file) && $alsoRemoveFiles) {
+                unlink(realpath($file));
             }
         }
     }
@@ -548,12 +558,14 @@ abstract class AbstractService implements ServiceInterface
      * @param \SplFileInfo $certificate The file info about the SSL file to generate
      *
      * @return void
+     *
+     * @throws \Exception
      */
     public function createSslCertificate(\SplFileInfo $certificate)
     {
 
         // first we've to check if OpenSSL is available
-        if (!extension_loaded('openssl')) {
+        if (!$this->isOpenSslAvailable()) {
             return;
         }
 
@@ -574,14 +586,14 @@ abstract class AbstractService implements ServiceInterface
         );
 
         // check the operating system
-        switch (strtoupper(PHP_OS)) {
+        switch ($this->getOsIdentifier()) {
 
-            case 'DARWIN': // on Mac OS X use the system default configuration
+            case 'DAR': // on Mac OS X use the system default configuration
 
                 $configargs = array('config' => '/System/Library/OpenSSL/openssl.cnf');
                 break;
 
-            case 'WINNT': // on Windows use the system configuration we deliver
+            case 'WIN': // on Windows use the system configuration we deliver
 
                 $configargs = array('config' => $this->getBaseDirectory('/php/extras/ssl/openssl.cnf'));
                 break;

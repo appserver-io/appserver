@@ -126,6 +126,7 @@ class DirectoryKeys
     public static function getServerDirectoryKeys()
     {
         return array(
+            DirectoryKeys::BASE,
             DirectoryKeys::WEBAPPS,
             DirectoryKeys::TMP,
             DirectoryKeys::DEPLOY,

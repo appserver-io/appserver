@@ -15,11 +15,11 @@
 
 namespace AppserverIo\Appserver\Core;
 
+use AppserverIo\Appserver\Core\Interfaces\ClassLoaderInterface;
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Storage\StorageInterface;
 use AppserverIo\Appserver\Core\InitialContext\ContextKeys;
 use AppserverIo\Configuration\Interfaces\NodeInterface;
-use AppserverIo\Appserver\Core\SplClassLoader;
 use AppserverIo\Appserver\Application\Interfaces\ContextInterface;
 
 /**
@@ -114,11 +114,11 @@ class InitialContext implements ContextInterface
     /**
      * Set's the initial context's class loader.
      *
-     * @param \AppserverIo\Appserver\Core\SplClassLoader $classLoader The class loader used
+     * @param \AppserverIo\Appserver\Core\Interfaces\ClassLoaderInterface $classLoader The class loader used
      *
      * @return void
      */
-    public function setClassLoader(SplClassLoader $classLoader)
+    public function setClassLoader(ClassLoaderInterface $classLoader)
     {
         $this->classLoader = $classLoader;
     }
