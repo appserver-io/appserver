@@ -13,7 +13,7 @@ layout: news
         {{ page.author }}
       </a>&nbsp;
       {% endif %}
-      | &nbsp;<a href="{{ page.url | prepend: site.baseurl }}#disqus_thread">0 Comments</a>
+      | &nbsp;<a href="{{ site.url }}{{ page.url | prepend: site.baseurl }}#disqus_thread">0 Comments</a>
     </p>
     <hr>
   </header>
