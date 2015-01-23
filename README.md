@@ -51,9 +51,7 @@ do any of the following:
 * Grab any of our [**nightlies**](<http://builds.appserver.io/>) from our project page to get 
   bleeding edge install packages which still might have some bugs
 
-* Build your own package using [ANT](<http://ant.apache.org/>)! To do so clone the [runtime](<https://github.com/appserver-io-php/runtime>) 
-  first. Then update at least the `os.family` and `os.distribution` build properties according to 
-  your environment and build the appserver with the ANT `build` and `create-package` target
+* Build your own package using [ANT](<http://ant.apache.org/>)! To do so clone the [runtime](<https://github.com/appserver-io-php/runtime>) first. Then update at least the `os.family` and `os.distribution` build properties according to your environment and build the appserver with the ANT `build` and `create-package` target
 
 The package will install with these basic default characteristics:
 
@@ -115,9 +113,7 @@ yourself (plan at least 5 hours) as we currently do not offer prepared install p
 
 # Uninstall
 
-Before uninstalling you should stop all services which are still running (rpm-based packages will see to that themselves), otherwise there might
-be problems with existing pid-files on Linux and Mac for the next time you install it. You can 
-have a look how to do so [here](#start-and-stop-scripts).
+Before uninstalling you should stop all services which are still running (rpm-based packages will see to that themselves), otherwise there might be problems with existing pid-files on Linux and Mac for the next time you install it. You can have a look how to do so [here](#start-and-stop-scripts).
 
 To uninstall the appserver on Linux you might rely on your package management system. 
 On Windows you can use the normal uninstall process provided by the operating system.
