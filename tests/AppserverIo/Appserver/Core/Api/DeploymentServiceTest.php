@@ -135,4 +135,40 @@ class DeploymentServiceTest extends AbstractServicesTest
         $this->assertTrue(is_dir($cacheDir));
         $this->assertTrue(is_dir($sessionDir));
     }
+
+    /**
+     * Tests if we are able to clear the tmp directory of an application
+     *
+     * @return null
+     */
+    public function testCleanUpFolders()
+    {
+        $cacheDir = $this->getTmpDir() . DIRECTORY_SEPARATOR . 'cache';
+        if (!is_dir($cacheDir)) {
+
+            \mkdir($cacheDir);
+        }
+        touch($cacheDir . DIRECTORY_SEPARATOR . md5(__METHOD__));
+
+        $mockApplication = $this->getMockBuilder('\AppserverIo\Psr\Application\ApplicationInterface')
+            ->setMethods(get_class_methods('\AppserverIo\Appserver\Application\Application'))
+            ->getMock();
+        $mockApplication->expects($this->once())
+            ->method('getCacheDir')
+            ->will($this->returnValue($cacheDir));
+
+        $this->assertCount(3, scandir($cacheDir));
+        $this->service->cleanUpFolders($mockApplication);
+        $this->assertCount(2, scandir($cacheDir));
+    }
+
+    /**
+     * Tests if we are able to instantiate application contexts
+     *
+     * @return null
+     */
+    public function testLoadContextInstancesByContainer()
+    {
+
+    }
 }

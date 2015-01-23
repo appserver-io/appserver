@@ -74,16 +74,6 @@ class AbstractServiceTest extends AbstractServicesTest
     }
 
     /**
-     * Make sure to cleanup after our tests
-     *
-     * @return null
-     */
-    public function tearDown()
-    {
-        $this->clearTmpDir();
-    }
-
-    /**
      * Test if the initial context has successfully been initialized.
      *
      * @return null
@@ -957,9 +947,9 @@ class AbstractServiceTest extends AbstractServicesTest
         $mockSystemLogger->expects($this->once())
             ->method('debug');
 
-        $mockInitialContext = $this->getMockBuilder('\AppserverIo\Appserver\Core\Mock\MockInitialContext')
+        $mockInitialContext = $this->getMockBuilder('\AppserverIo\Appserver\Core\Api\Mock\MockInitialContext')
             ->setMethods(array_merge(array('getSystemLogger')))
-            ->setConstructorArgs(array($this->getAppserverConfiguration()))
+            ->setConstructorArgs(array($this->getAppserverNode()))
             ->getMock();
         $mockInitialContext->expects($this->atLeastOnce())
             ->method('getSystemLogger')

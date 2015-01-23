@@ -24,6 +24,7 @@
 namespace AppserverIo\Appserver\Core\Api;
 
 use AppserverIo\Appserver\Core\AbstractTest;
+use AppserverIo\Appserver\Core\Api\Mock\MockInitialContext;
 
 /**
  * Callback wrapper for the chgrp function
@@ -207,5 +208,26 @@ abstract class AbstractServicesTest extends AbstractTest
         self::$mkdirCallback = '\mkdir';
         self::$opensslErrorStringCallback = '\openssl_error_string';
         self::$umaskCallback = '\umask';
+    }
+
+    /**
+     * Make sure to cleanup after our tests
+     *
+     * @return null
+     */
+    public function tearDown()
+    {
+        $this->clearTmpDir();
+    }
+
+    /**
+     * Returns an initial context instance with a mock configuration.
+     * Done again (instead of within AbstractService) to avoid \Stackable usage by omitting the autoloader management
+     *
+     * @return \AppserverIo\Appserver\Core\InitialContext Initial context with mock configuration
+     */
+    public function getMockInitialContext()
+    {
+        return new MockInitialContext($this->getAppserverNode());
     }
 }
