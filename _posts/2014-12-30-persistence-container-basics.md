@@ -33,7 +33,7 @@ We differ between three kinds of Session Beans named Singleton, Stateless and St
 
 ###### Singleton Session Beans (SSBs)
 
-A `Singleton Session Bean` will be created by the container only one time for each application. This means, whenever you'll request an instance, you'll receive the same one. If you set a variable in the SessionBean, it'll be available until you'll overwrite it, or the application server has been restarted.
+A `Singleton Session Bean` will be created by the container only one time for each application. This means, whenever you'll request an instance, you'll receive the same one. If you set a variable in the Session Bean, it'll be available until you'll overwrite it, or the application server has been restarted.
 
 ###### Stateless Session Beans (SLSBs)
 
