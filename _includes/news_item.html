@@ -1,2 +1,20 @@
+<article class="post-content">
 <h2><a href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>&nbsp;<small>{{ post.categories | array_to_sentence_string }}</small></h2>
+<p>
+    <i class="fa fa-clock-o"></i> Posted on {{ post.date | date_to_string }}
+    {% if post.author %}&nbsp;
+    <a href="https://github.com/{{ post.author }}" class="post-author">
+        <img src="https://github.com/{{ post.author }}.png" class="avatar" alt="{{ post.author }}" width="24" height="24" />
+        {{ post.author }}
+    </a>&nbsp;<span class="disqus-comment-count" data-disqus-url="{{ site.url }}{{ post.url | prepend: site.baseurl }}">First article</span>{% endif %}</p>
+{% if post.image %}
+<hr/>
+<a href="#">
+    <img class="img-responsive img-hover" src="{{ post.image }}" alt="" />
+</a>
+{% endif %}
+<hr/>
 {{ post.content }}
+{% if forloop.last == false %}<hr/>{% endif %}
+<p><br/></p>
+</article>
