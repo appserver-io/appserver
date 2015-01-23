@@ -115,9 +115,7 @@ yourself (plan at least 5 hours) as we currently do not offer prepared install p
 
 # Uninstall
 
-Before uninstalling you should stop all services which are still running (rpm-based packages will see to that themselves), otherwise there might
-be problems with existing pid-files on Linux and Mac for the next time you install it. You can 
-have a look how to do so [here](#start-and-stop-scripts).
+Before uninstalling you should stop all services which are still running (rpm-based packages will see to that themselves), otherwise there might be problems with existing pid-files on Linux and Mac for the next time you install it. You can have a look how to do so [here](#start-and-stop-scripts).
 
 To uninstall the appserver on Linux you might rely on your package management system. 
 On Windows you can use the normal uninstall process provided by the operating system.
