@@ -25,17 +25,17 @@ namespace AppserverIo\Appserver\Naming;
 use Phlexy\Lexer;
 use Phlexy\LexerDataGenerator;
 use Phlexy\LexerFactory\Stateless\UsingPregReplace;
+use AppserverIo\Properties\Properties;
+use AppserverIo\Properties\PropertiesInterface;
 use AppserverIo\Psr\Servlet\SessionUtils;
 use AppserverIo\Psr\Servlet\ServletRequest;
 use AppserverIo\Psr\Naming\NamingException;
-use AppserverIo\Properties\Properties;
-use AppserverIo\Properties\PropertiesInterface;
-use AppserverIo\Psr\PersistenceContainerProtocol\Session;
-use AppserverIo\Psr\PersistenceContainerProtocol\BeanContext;
+use AppserverIo\Psr\EnterpriseBeans\BeanContext;
 use AppserverIo\Psr\Application\ApplicationInterface;
-use AppserverIo\PersistenceContainerClient\Connection;
-use AppserverIo\PersistenceContainerClient\LocalConnectionFactory;
-use AppserverIo\PersistenceContainerClient\RemoteConnectionFactory;
+use AppserverIo\RemoteMethodInvocation\Session;
+use AppserverIo\RemoteMethodInvocation\Connection;
+use AppserverIo\RemoteMethodInvocation\LocalConnectionFactory;
+use AppserverIo\RemoteMethodInvocation\RemoteConnectionFactory;
 
 /**
  * Initial context implementation to lookup enterprise beans.

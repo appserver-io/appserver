@@ -23,7 +23,7 @@
 
 namespace AppserverIo\Appserver\MessageQueue;
 
-use AppserverIo\Psr\MessageQueueProtocol\Queue;
+use AppserverIo\Psr\Pms\Queue;
 
 /**
  * Class Queue

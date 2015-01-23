@@ -27,7 +27,7 @@ use AppserverIo\Logger\LoggerUtils;
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Psr\EnterpriseBeans\TimerInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
-use AppserverIo\Psr\PersistenceContainerProtocol\ServiceExecutor;
+use AppserverIo\Psr\EnterpriseBeans\ServiceExecutor;
 
 /**
  * The executor thread for the timers.
@@ -212,8 +212,8 @@ class TimerServiceExecutor extends \Thread implements ServiceExecutor
                             // load the timer service registry
                             $timerServiceRegistry = $this->getApplication()->search('TimerServiceContext');
 
-                            // load the timer from the timer service
-                            $timer = $timerServiceRegistry->locate($pk)->getTimers()->get($timerId);
+                            // lookup the timer from the timer service
+                            $timer = $timerServiceRegistry->lookup($pk)->getTimers()->get($timerId);
 
                             // create the timer task to be executed
                             $timerTasksExecuting[$taskId] = $timer->getTimerTask($application);

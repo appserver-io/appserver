@@ -25,7 +25,7 @@ namespace AppserverIo\Appserver\PersistenceContainer;
 
 use AppserverIo\Logger\LoggerUtils;
 use AppserverIo\Storage\StackableStorage;
-use AppserverIo\Psr\PersistenceContainerProtocol\BeanContext;
+use AppserverIo\Psr\EnterpriseBeans\BeanContext;
 use AppserverIo\Psr\Application\ApplicationInterface;
 
 /**

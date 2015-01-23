@@ -24,15 +24,16 @@
 
 namespace AppserverIo\Appserver\MessageQueue;
 
-use AppserverIo\Appserver\Core\Api\ConfigurationTester;
-use AppserverIo\Appserver\Core\Api\InvalidConfigurationException;
 use AppserverIo\Storage\GenericStackable;
+use AppserverIo\Psr\Pms\QueueContext;
+use AppserverIo\Psr\Pms\ResourceLocator;
+use AppserverIo\Psr\Pms\Queue;
+use AppserverIo\Psr\Pms\Message;
 use AppserverIo\Psr\Naming\NamingException;
-use AppserverIo\Psr\MessageQueueProtocol\Queue;
-use AppserverIo\Psr\MessageQueueProtocol\Message;
-use AppserverIo\Psr\MessageQueueProtocol\QueueContext;
 use AppserverIo\Psr\Application\ManagerInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
+use AppserverIo\Appserver\Core\Api\ConfigurationTester;
+use AppserverIo\Appserver\Core\Api\InvalidConfigurationException;
 
 /**
  * The queue manager handles the queues and message beans registered for the application.
@@ -47,10 +48,10 @@ use AppserverIo\Psr\Application\ApplicationInterface;
  * @link       https://github.com/appserver-io/appserver
  * @link       http://www.appserver.io
  *
- * @property \AppserverIo\Psr\Application\ApplicationInterface   $application     The application to manage queues for
- * @property array                                               $directories     Our directories
- * @property \AppserverIo\Appserver\MessageQueue\ResourceLocator $resourceLocator Locator for the requested queues
- * @property \AppserverIo\Storage\GenericStackable               $queues          Queues to manage
+ * @property \AppserverIo\Psr\Application\ApplicationInterface $application     The application to manage queues for
+ * @property array                                             $directories     Our directories
+ * @property \AppserverIo\Psr\Pms\ResourceLocator              $resourceLocator Locator for the requested queues
+ * @property \AppserverIo\Storage\GenericStackable             $queues          Queues to manage
  *
  * @todo inherit from AbstractManager
  */
@@ -92,7 +93,7 @@ class QueueManager extends GenericStackable implements QueueContext, ManagerInte
     /**
      * Injects the resource locator that locates the requested queue.
      *
-     * @param \AppserverIo\Appserver\MessageQueue\ResourceLocator $resourceLocator The resource locator
+     * @param \AppserverIo\Psr\Pms\ResourceLocator $resourceLocator The resource locator
      *
      * @return void
      */
@@ -218,7 +219,7 @@ class QueueManager extends GenericStackable implements QueueContext, ManagerInte
     }
 
     /**
-     * Returns the array with queue names and the MessageReceiver class
+     * Returns the array with queue names and the MessageListener class
      * names as values.
      *
      * @return array The registered queues
@@ -241,7 +242,7 @@ class QueueManager extends GenericStackable implements QueueContext, ManagerInte
     /**
      * Return the resource locator instance.
      *
-     * @return \AppserverIo\Appserver\MessageQueue\ResourceLocator The resource locator instance
+     * @return \AppserverIo\Psr\Pms\ResourceLocator The resource locator instance
      */
     public function getResourceLocator()
     {
@@ -262,7 +263,7 @@ class QueueManager extends GenericStackable implements QueueContext, ManagerInte
      * Returns TRUE if the application is related with the
      * passed queue instance.
      *
-     * @param \AppserverIo\Psr\MessageQueueProtocol\Queue $queue The queue the application has to be related to
+     * @param \AppserverIo\Psr\Pms\Queue $queue The queue the application has to be related to
      *
      * @return boolean TRUE if the application is related, else FALSE
      */
@@ -275,9 +276,9 @@ class QueueManager extends GenericStackable implements QueueContext, ManagerInte
      * Tries to locate the queue that handles the request and returns the instance
      * if one can be found.
      *
-     * @param \AppserverIo\Psr\MessageQueueProtocol\Queue $queue The queue request
+     * @param \AppserverIo\Psr\Pms\Queue $queue The queue request
      *
-     * @return \AppserverIo\Psr\MessageQueueProtocol\Queue The requested queue instance
+     * @return \AppserverIo\Psr\Pms\Queue The requested queue instance
      */
     public function locate(Queue $queue)
     {
@@ -288,11 +289,11 @@ class QueueManager extends GenericStackable implements QueueContext, ManagerInte
      * Runs a lookup for the message queue with the passed class name and
      * session ID.
      *
-     * @param string $lookupName The servlet path
+     * @param string $lookupName The queue lookup name
      * @param string $sessionId  The session ID
      * @param array  $args       The arguments passed to the queue
      *
-     * @return \AppserverIo\Psr\Servlet\GenericServlet The requested servlet
+     * @return \AppserverIo\Psr\Pms\Queue The requested queue instance
      * @todo Still to implement
      */
     public function lookup($lookupName, $sessionId = null, array $args = array())
@@ -306,7 +307,7 @@ class QueueManager extends GenericStackable implements QueueContext, ManagerInte
      * @param string $lookupName The lookup name of the queue to return a sender for
      * @param string $sessionId  The session-ID to be passed to the queue session
      *
-     * @return \AppserverIo\MessageQueueClient\QueueSender The sender instance
+     * @return \AppserverIo\Messaging\QueueSender The sender instance
      */
     public function createSenderForQueue($lookupName, $sessionId = null)
     {
@@ -324,7 +325,7 @@ class QueueManager extends GenericStackable implements QueueContext, ManagerInte
     /**
      * Updates the message monitor.
      *
-     * @param \AppserverIo\Psr\MessageQueueProtocol\Message $message The message to update the monitor for
+     * @param \AppserverIo\Psr\Pms\Message $message The message to update the monitor for
      *
      * @return void
      */

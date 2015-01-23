@@ -2,7 +2,7 @@
 
 ## Bugfixes
 
-* None
+* Remove unnecessary interfaces SenderInterface + ReceiverInterface
 
 ## Features
 
