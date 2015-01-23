@@ -22,10 +22,6 @@
 
 namespace AppserverIo\Appserver\Core\Api;
 
-use AppserverIo\Appserver\Core\AbstractTest;
-use AppserverIo\Appserver\Core\Api\Node\AppNode;
-use AppserverIo\Appserver\Core\Api\Node\DeploymentNode;
-
 /**
  * Unit tests for our deployment service implementation.
  *
@@ -37,7 +33,7 @@ use AppserverIo\Appserver\Core\Api\Node\DeploymentNode;
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       http://www.appserver.io
  */
-class DeploymentServiceTest extends AbstractTest
+class DeploymentServiceTest extends AbstractServicesTest
 {
 
     /**
@@ -54,6 +50,8 @@ class DeploymentServiceTest extends AbstractTest
      */
     public function setUp()
     {
+        parent::setUp();
+
         $this->service = new DeploymentService($this->getMockInitialContext());
     }
 
@@ -88,5 +86,53 @@ class DeploymentServiceTest extends AbstractTest
     public function testLoadWithInvalidPrimaryKey()
     {
         $this->assertNull($this->service->load('invalidPrimaryKey'));
+    }
+
+    /**
+     * Tests if we can create the tmp directories a passed application needs
+     *
+     * @return null
+     */
+    public function testCreateTmpFolders()
+    {
+        // temporarily switch off initUmask() and setUserRights() as they would make problems
+        $service = $this->getMockBuilder('\AppserverIo\Appserver\Core\Api\DeploymentService')
+            ->setMethods(array_merge(array('findAll', 'load', 'initUmask', 'setUserRights')))
+            ->setConstructorArgs(array($this->getMockInitialContext()))
+            ->getMockForAbstractClass();
+        $service->expects($this->any())
+            ->method('findAll')
+            ->will($this->returnValue(array()));
+        $service->expects($this->any())
+            ->method('load')
+            ->will($this->returnValue(null));
+        $service->expects($this->exactly(3))
+            ->method('initUmask');
+        $service->expects($this->exactly(3))
+            ->method('setUserRights');
+
+        $tmp = $this->getTmpDir() . DIRECTORY_SEPARATOR;
+        $tmpDir = $tmp . 'tmp';
+        $cacheDir = $tmp . 'cache';
+        $sessionDir = $tmp . 'session';
+
+        $mockApplication = $this->getMockBuilder('\AppserverIo\Psr\Application\ApplicationInterface')
+            ->setMethods(get_class_methods('\AppserverIo\Appserver\Application\Application'))
+            ->getMock();
+        $mockApplication->expects($this->once())
+            ->method('getTmpDir')
+            ->will($this->returnValue($tmpDir));
+        $mockApplication->expects($this->once())
+            ->method('getCacheDir')
+            ->will($this->returnValue($cacheDir));
+        $mockApplication->expects($this->once())
+            ->method('getSessionDir')
+            ->will($this->returnValue($sessionDir));
+
+        $service->createTmpFolders($mockApplication);
+
+        $this->assertTrue(is_dir($tmpDir));
+        $this->assertTrue(is_dir($cacheDir));
+        $this->assertTrue(is_dir($sessionDir));
     }
 }

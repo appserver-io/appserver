@@ -460,8 +460,8 @@ abstract class AbstractService implements ServiceInterface
         // we don't have a directory to change the user/group permissions for
         if ($directoryToCreate->isDir() === false) {
             // create the directory if necessary
-            if (mkdir($directoryToCreate) === false) {
-                throw new \Exception(sprintf('Directory %s can\'t be created', $directoryToCreate));
+            if (mkdir($directoryToCreate->getPathname()) === false) {
+                throw new \Exception(sprintf('Directory %s can\'t be created', $directoryToCreate->getPathname()));
             }
         }
 

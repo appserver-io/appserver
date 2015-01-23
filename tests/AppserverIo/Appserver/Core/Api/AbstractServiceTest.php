@@ -23,120 +23,9 @@
 
 namespace AppserverIo\Appserver\Core\Api;
 
-use AppserverIo\Appserver\Core\AbstractTest;
+use AppserverIo\Appserver\Core\Api\Mock\MockInitialContext;
 use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
 use org\bovigo\vfs\vfsStream;
-
-/**
- * Callback wrapper for the chgrp function
- *
- * @param string $filename Name of the file to work with
- * @param mixed  $group    Group to work with
- *
- * @return mixed
- */
-function chgrp($filename, $group)
-{
-    return call_user_func_array(AbstractServiceTest::$chgrpCallback, func_get_args());
-}
-
-/**
- * Callback wrapper for the chown function
- *
- * @param string $filename Name of the file to work with
- * @param mixed  $user     User to work with
- *
- * @return mixed
- */
-function chown($filename, $user)
-{
-    return call_user_func_array(AbstractServiceTest::$chownCallback, func_get_args());
-}
-
-/**
- * Callback wrapper for the mkdir function
- *
- * @param string   $pathname  Name of the path to work with
- * @param integer  $mode      Mode to set (optional)
- * @param boolean  $recursive Do so recursively (optional)
- * @param resource $context   Context resource (optional)
- *
- * @return mixed
- */
-function mkdir($pathname, $mode = 0777, $recursive = false, $context = null)
-{
-    return call_user_func_array(AbstractServiceTest::$mkdirCallback, func_get_args());
-}
-
-/**
- * Mocked OpenSSL function used to avoid failures if the extension might not be available in an testing environment
- *
- * @return string
- */
-function openssl_csr_new()
-{
-    return '';
-}
-
-/**
- * Mocked OpenSSL function used to avoid failures if the extension might not be available in an testing environment
- *
- * @return string
- */
-function openssl_csr_sign()
-{
-    return '';
-}
-
-/**
- * Mocked OpenSSL function used to avoid failures if the extension might not be available in an testing environment
- *
- * @return string
- */
-function openssl_error_string()
-{
-    return call_user_func_array(AbstractServiceTest::$opensslErrorStringCallback, func_get_args());
-}
-
-/**
- * Mocked OpenSSL function used to avoid failures if the extension might not be available in an testing environment
- *
- * @return string
- */
-function openssl_pkey_export()
-{
-    return '';
-}
-
-/**
- * Mocked OpenSSL function used to avoid failures if the extension might not be available in an testing environment
- *
- * @return string
- */
-function openssl_pkey_new()
-{
-    return '';
-}
-
-/**
- * Mocked OpenSSL function used to avoid failures if the extension might not be available in an testing environment
- *
- * @return string
- */
-function openssl_x509_export()
-{
-    return '';
-}
-
-/**
- * Callback wrapper for the umask function
- *
- * @return int
- */
-function umask()
-{
-    return call_user_func_array(AbstractServiceTest::$umaskCallback, func_get_args());
-}
 
 /**
  * Unit tests for our abstract service implementation.
@@ -150,7 +39,7 @@ function umask()
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       http://www.appserver.io
  */
-class AbstractServiceTest extends AbstractTest
+class AbstractServiceTest extends AbstractServicesTest
 {
 
     /**
@@ -161,71 +50,18 @@ class AbstractServiceTest extends AbstractTest
     protected $service;
 
     /**
-     * Array which can be used to track calls of wrapped, mocked or stubbed functions and methods
-     *
-     * @var array $callbackCallStack
-     */
-    public static $callbackCallStack = array();
-
-    /**
-     * Callback wrapper for system function chgrp
-     *
-     * @var string $chgrpCallback
-     */
-    public static $chgrpCallback = '';
-
-    /**
-     * Callback wrapper for system function chown
-     *
-     * @var string $chownCallback
-     */
-    public static $chownCallback = '';
-
-    /**
-     * Callback wrapper for system function mkdir
-     *
-     * @var string $mkdirCallback
-     */
-    public static $mkdirCallback = '';
-
-    /**
-     * Callback wrapper for the OpenSSL function openssl_error_string
-     *
-     * @var string $opensslErrorStringCallback
-     */
-    public static $opensslErrorStringCallback = '';
-
-    /**
-     * Callback wrapper for system function umask
-     *
-     * @var string $umaskCallback
-     */
-    public static $umaskCallback = '';
-
-    /**
      * Initializes the service instance to test.
      *
      * @return null
      */
     public function setUp()
     {
-        if (!is_dir($this->getTmpDir())) {
-
-            \mkdir($this->getTmpDir());
-        }
-
-        // set default callbacks for our wrapped system functions
-        AbstractServiceTest::$chownCallback = '\chgrp';
-        AbstractServiceTest::$chownCallback = '\chown';
-        AbstractServiceTest::$mkdirCallback = '\mkdir';
-        AbstractServiceTest::$opensslErrorStringCallback = '\openssl_error_string';
-        AbstractServiceTest::$umaskCallback = '\umask';
-        AbstractServiceTest::$callbackCallStack = array();
+        parent::setUp();
 
         // create a basic mock for our abstract service class
         $service = $this->getMockBuilder('\AppserverIo\Appserver\Core\Api\AbstractService')
             ->setMethods(array('findAll', 'load'))
-            ->setConstructorArgs(array($this->getMockInitialContext()))
+            ->setConstructorArgs(array(new MockInitialContext($this->getAppserverNode())))
             ->getMockForAbstractClass();
         $service->expects($this->any())
             ->method('findAll')
@@ -1115,8 +951,31 @@ class AbstractServiceTest extends AbstractTest
      */
     public function testCreateSslCertificateLogThatAnOpenSslErrorOccured()
     {
+        $mockSystemLogger = $this->getMockBuilder('\AppserverIo\Appserver\Core\Mock\InitialContext\MockSystemLogger')
+            ->setMethods(array_merge(array('debug')))
+            ->getMock();
+        $mockSystemLogger->expects($this->once())
+            ->method('debug');
+
+        $mockInitialContext = $this->getMockBuilder('\AppserverIo\Appserver\Core\Mock\MockInitialContext')
+            ->setMethods(array_merge(array('getSystemLogger')))
+            ->setConstructorArgs(array($this->getAppserverConfiguration()))
+            ->getMock();
+        $mockInitialContext->expects($this->atLeastOnce())
+            ->method('getSystemLogger')
+            ->will($this->returnValue($mockSystemLogger));
+
         // temporarily mock the isOpenSslAvailable() method to test for specific logic flow
-        $service = $this->getPartialServiceMock(array('isOpenSslAvailable'));
+        $service = $this->getMockBuilder('\AppserverIo\Appserver\Core\Api\AbstractService')
+            ->setMethods(array_merge(array('findAll', 'load', 'isOpenSslAvailable')))
+            ->setConstructorArgs(array($mockInitialContext))
+            ->getMockForAbstractClass();
+        $service->expects($this->any())
+            ->method('findAll')
+            ->will($this->returnValue(array()));
+        $service->expects($this->any())
+            ->method('load')
+            ->will($this->returnValue(null));
         $service->expects($this->atLeastOnce())
             ->method('isOpenSslAvailable')
             ->will($this->returnValue(true));

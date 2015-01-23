@@ -25,7 +25,7 @@ class InitialContextTest extends AbstractTest
     /**
      * The initial context instance to test.
      *
-     * @var AppserverIo\Appserver\Core\InitialContext
+     * @var \AppserverIo\Appserver\Core\InitialContext
      */
     protected $initialContext;
 
@@ -40,7 +40,7 @@ class InitialContextTest extends AbstractTest
     }
 
     /**
-     * Test's the if the storage has been initialized successfully.
+     * Tests the if the storage has been initialized successfully.
      *
      * @return void
      */
@@ -50,7 +50,7 @@ class InitialContextTest extends AbstractTest
     }
 
     /**
-     * Test's the if the class loader has been initialized successfully.
+     * Tests the if the class loader has been initialized successfully.
      *
      * @return void
      */
@@ -60,7 +60,7 @@ class InitialContextTest extends AbstractTest
     }
 
     /**
-     * Test's the if the attribute getter/setter works with a simple data type.
+     * Tests the if the attribute getter/setter works with a simple data type.
      *
      * @return void
      */
@@ -72,7 +72,7 @@ class InitialContextTest extends AbstractTest
     }
 
     /**
-     * Test's the if the method to remove a attribute works.
+     * Tests the if the method to remove a attribute works.
      *
      * @return void
      */
@@ -86,7 +86,7 @@ class InitialContextTest extends AbstractTest
     }
 
     /**
-     * Test's the if the attribute getter/setter works with a object.
+     * Tests the if the attribute getter/setter works with a object.
      *
      * @return void
      */
@@ -99,7 +99,7 @@ class InitialContextTest extends AbstractTest
     }
 
     /**
-     * Test's if creating a new instance with a constructor argument works.
+     * Tests if creating a new instance with a constructor argument works.
      *
      * @return void
      */
