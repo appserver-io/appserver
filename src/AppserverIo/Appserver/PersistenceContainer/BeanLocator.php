@@ -23,10 +23,10 @@
 
 namespace AppserverIo\Appserver\PersistenceContainer;
 
-use AppserverIo\Psr\PersistenceContainerProtocol\BeanContext;
-use AppserverIo\Psr\PersistenceContainerProtocol\RemoteMethod;
-use AppserverIo\Psr\PersistenceContainerProtocol\ResourceLocator;
-use AppserverIo\Psr\PersistenceContainerProtocol\InvalidBeanTypeException;
+use AppserverIo\RemoteMethodInvocation\RemoteMethod;
+use AppserverIo\Psr\EnterpriseBeans\BeanContext;
+use AppserverIo\Psr\EnterpriseBeans\ResourceLocator;
+use AppserverIo\Psr\EnterpriseBeans\InvalidBeanTypeException;
 use AppserverIo\Psr\EnterpriseBeans\EnterpriseBeansException;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Stateful;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Singleton;
@@ -54,28 +54,6 @@ class BeanLocator implements ResourceLocator
 {
 
     /**
-     * Tries to locate the bean that handles the request and returns the instance
-     * if one can be found.
-     *
-     * @param \AppserverIo\Psr\PersistenceContainerProtocol\BeanContext  $beanManager  The bean manager instance
-     * @param \AppserverIo\Psr\PersistenceContainerProtocol\RemoteMethod $remoteMethod The remote method call request
-     * @param array                                                      $args         The arguments passed to the session beans constructor
-     *
-     * @return object The requested bean instance
-     * @see \AppserverIo\Psr\PersistenceContainerProtocol\ResourceLocator::locate()
-     */
-    public function locate(BeanContext $beanManager, RemoteMethod $remoteMethod, array $args = array())
-    {
-
-        // load the information to locate the requested bean
-        $className = $remoteMethod->getClassName();
-        $sessionId = $remoteMethod->getSessionId();
-
-        // lookup the requested bean
-        return $this->lookup($beanManager, $className, $sessionId, $args);
-    }
-
-    /**
      * Runs a lookup for the session bean with the passed class name and
      * session ID.
      *
@@ -88,7 +66,7 @@ class BeanLocator implements ResourceLocator
      * @param array                                                   $args        The arguments passed to the session beans constructor
      *
      * @return object The requested session bean
-     * @throws \AppserverIo\Psr\PersistenceContainerProtocol\InvalidBeanTypeException Is thrown if passed class name is no session bean or is a entity bean (not implmented yet)
+     * @throws \AppserverIo\Psr\EnterpriseBeans\InvalidBeanTypeException Is thrown if passed class name is no session bean or is a entity bean (not implmented yet)
      */
     public function lookup(BeanContext $beanManager, $className, $sessionId = null, array $args = array())
     {

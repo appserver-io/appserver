@@ -1,4 +1,5 @@
 <?php
+
 /**
  * AppserverIo\Appserver\Core\Interfaces\ContainerInterface
  *
@@ -16,7 +17,7 @@
 namespace AppserverIo\Appserver\Core\Interfaces;
 
 /**
- * Interface ContainerInterface
+ * Interface for container implementations.
  *
  * @category   Server
  * @package    Appserver
@@ -28,11 +29,4 @@ namespace AppserverIo\Appserver\Core\Interfaces;
  */
 interface ContainerInterface
 {
-    
-    /**
-     * Returns the receiver instance ready to be started.
-     *
-     * @return \AppserverIo\Appserver\Core\Interfaces\ReceiverInterface The receiver instance
-     */
-    public function getReceiver();
 }

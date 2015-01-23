@@ -29,11 +29,11 @@ use AppserverIo\Appserver\Core\AbstractManager;
 use AppserverIo\Appserver\Naming\InitialContext;
 use AppserverIo\Appserver\Core\Api\InvalidConfigurationException;
 use AppserverIo\Lang\Reflection\AnnotationInterface;
+use AppserverIo\RemoteMethodInvocation\RemoteMethod;
 use AppserverIo\Psr\Application\ApplicationInterface;
-use AppserverIo\Psr\PersistenceContainerProtocol\BeanContext;
-use AppserverIo\Psr\PersistenceContainerProtocol\RemoteMethod;
-use AppserverIo\Psr\PersistenceContainerProtocol\ResourceLocator;
-use AppserverIo\Psr\PersistenceContainerProtocol\InvalidBeanTypeException;
+use AppserverIo\Psr\EnterpriseBeans\BeanContext;
+use AppserverIo\Psr\EnterpriseBeans\ResourceLocator;
+use AppserverIo\Psr\EnterpriseBeans\InvalidBeanTypeException;
 use AppserverIo\Appserver\DependencyInjectionContainer\DirectoryParser;
 use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\BeanDescriptorInterface;
 use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\SessionBeanDescriptorInterface;
@@ -73,9 +73,9 @@ class BeanManager extends AbstractManager implements BeanContext
     }
 
     /**
-     * Injects the resource locator that locates the requested queue.
+     * Injects the resource locator to lookup the requested queue.
      *
-     * @param \AppserverIo\Psr\PersistenceContainerProtocol\ResourceLocator $resourceLocator The resource locator
+     * @param \AppserverIo\Psr\EnterpriseBeans\ResourceLocator $resourceLocator The resource locator
      *
      * @return void
      */
@@ -202,7 +202,7 @@ class BeanManager extends AbstractManager implements BeanContext
         // load the object manager
         $objectManager = $this->getApplication()->search('ObjectManagerInterface');
 
-        // register the beans located by annotations and the XML configuration
+        // register the beans found by annotations and the XML configuration
         foreach ($objectManager->getObjectDescriptors() as $descriptor) {
             // check if we've found a bean descriptor
             if ($descriptor instanceof BeanDescriptorInterface) {
@@ -272,7 +272,7 @@ class BeanManager extends AbstractManager implements BeanContext
     /**
      * Return the resource locator instance.
      *
-     * @return \AppserverIo\Psr\PersistenceContainerProtocol\ResourceLocator The resource locator instance
+     * @return \AppserverIo\Psr\EnterpriseBeans\ResourceLocator The resource locator instance
      */
     public function getResourceLocator()
     {
@@ -330,26 +330,6 @@ class BeanManager extends AbstractManager implements BeanContext
     }
 
     /**
-     * Tries to locate the queue that handles the request and returns the instance
-     * if one can be found.
-     *
-     * @param \AppserverIo\Psr\PersistenceContainerProtocol\RemoteMethod $remoteMethod The remote method call
-     * @param array                                                      $args         The arguments passed to the session beans constructor
-     *
-     * @return object The requested bean instance
-     */
-    public function locate(RemoteMethod $remoteMethod, array $args = array())
-    {
-
-        // load the information to locate the requested bean
-        $className = $remoteMethod->getClassName();
-        $sessionId = $remoteMethod->getSessionId();
-
-        // lookup the requested bean
-        return $this->lookup($className, $sessionId, $args);
-    }
-
-    /**
      * Runs a lookup for the session bean with the passed class name and
      * session ID.
      *
@@ -361,7 +341,7 @@ class BeanManager extends AbstractManager implements BeanContext
      * @param array  $args      The arguments passed to the session beans constructor
      *
      * @return object The requested bean instance
-     * @throws \AppserverIo\Psr\PersistenceContainerProtocol\InvalidBeanTypeException Is thrown if passed class name is no session bean or is a entity bean (not implmented yet)
+     * @throws \AppserverIo\Psr\EnterpriseBeans\InvalidBeanTypeException Is thrown if passed class name is no session bean or is a entity bean (not implmented yet)
      */
     public function lookup($className, $sessionId = null, array $args = array())
     {

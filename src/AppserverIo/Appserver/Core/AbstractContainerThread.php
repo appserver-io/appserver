@@ -88,16 +88,6 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
     }
 
     /**
-     * Returns the receiver instance ready to be started.
-     *
-     * @return \AppserverIo\Appserver\Core\Interfaces\ReceiverInterface The receiver instance
-     */
-    public function getReceiver()
-    {
-        // nothing
-    }
-
-    /**
      * Returns the mutex to lock/unlock resources during application deployment.
      *
      * @return integer The mutex

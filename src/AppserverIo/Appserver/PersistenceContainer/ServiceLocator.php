@@ -24,8 +24,8 @@
 namespace AppserverIo\Appserver\PersistenceContainer;
 
 use AppserverIo\Psr\EnterpriseBeans\EnterpriseBeansException;
-use AppserverIo\Psr\PersistenceContainerProtocol\ServiceContext;
-use AppserverIo\Psr\PersistenceContainerProtocol\ServiceResourceLocator;
+use AppserverIo\Psr\EnterpriseBeans\ServiceContext;
+use AppserverIo\Psr\EnterpriseBeans\ServiceResourceLocator;
 
 /**
  * The service locator implementation.
@@ -43,17 +43,17 @@ class ServiceLocator implements ServiceResourceLocator
 {
 
     /**
-     * Tries to locate the service with the passed identifier.
+     * Tries to lookup the service with the passed identifier.
      *
-     * @param \AppserverIo\Psr\PersistenceContainerProtocol\ServiceContext $serviceContext    The service context instance
-     * @param string                                                       $serviceIdentifier The identifier of the service to be located
-     * @param array                                                        $args              The arguments passed to the service providers constructor
+     * @param \AppserverIo\Psr\EnterpriseBeans\ServiceContext $serviceContext    The service context instance
+     * @param string                                          $serviceIdentifier The identifier of the service to be looked up
+     * @param array                                           $args              The arguments passed to the service providers constructor
      *
-     * @return \AppserverIo\Psr\PersistenceContainerProtocol\ServiceProvider The requested service provider instance
-     * @throws \AppserverIo\Psr\EnterpriseBeans\EnterpriseBeansException Is thrown if the requested server can't be located
-     * @see \AppserverIo\Psr\PersistenceContainerProtocol\ServiceResourceLocator::locate()
+     * @return \AppserverIo\Psr\EnterpriseBeans\ServiceProvider The requested service provider instance
+     * @throws \AppserverIo\Psr\EnterpriseBeans\EnterpriseBeansException Is thrown if the requested server can't be lookup up
+     * @see \AppserverIo\Psr\EnterpriseBeans\ServiceResourceLocator::lookup()
      */
-    public function locate(ServiceContext $serviceContext, $serviceIdentifier, array $args = array())
+    public function lookup(ServiceContext $serviceContext, $serviceIdentifier, array $args = array())
     {
 
         // first check if the service is available

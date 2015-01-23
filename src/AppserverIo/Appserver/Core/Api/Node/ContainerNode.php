@@ -135,16 +135,6 @@ class ContainerNode extends AbstractNode
     }
 
     /**
-     * Returns the receiver configuration used to start the container's socket.
-     *
-     * @return \AppserverIo\Appserver\Core\Api\Node\ReceiverNode The receiver configuration
-     */
-    public function getReceiver()
-    {
-        return $this->receiver;
-    }
-
-    /**
      * Returns the host configuration information.
      *
      * @return \AppserverIo\Appserver\Core\Api\Node\HostNode The host configuration information

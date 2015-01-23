@@ -27,8 +27,8 @@ use AppserverIo\Storage\StorageInterface;
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Storage\StackableStorage;
 use AppserverIo\Psr\Application\ManagerInterface;
-use AppserverIo\Psr\PersistenceContainerProtocol\ServiceContext;
-use AppserverIo\Psr\PersistenceContainerProtocol\ServiceResourceLocator;
+use AppserverIo\Psr\EnterpriseBeans\ServiceContext;
+use AppserverIo\Psr\EnterpriseBeans\ServiceResourceLocator;
 
 /**
  * The abstract service registry as base for implementations that handles applications services.
@@ -70,9 +70,9 @@ abstract class ServiceRegistry extends GenericStackable implements ServiceContex
     }
 
     /**
-     * Injects the service locator to locate the service.
+     * Injects the service locator to lookup the service.
      *
-     * @param \AppserverIo\Psr\PersistenceContainerProtocol\ServiceResourceLocator $serviceLocator The service locator
+     * @param \AppserverIo\Psr\EnterpriseBeans\ServiceResourceLocator $serviceLocator The service locator
      *
      * @return void
      */
@@ -106,7 +106,7 @@ abstract class ServiceRegistry extends GenericStackable implements ServiceContex
     /**
      * Return the service locator instance.
      *
-     * @return \AppserverIo\Psr\PersistenceContainerProtocol\ServiceResourceLocator The service locator instance
+     * @return \AppserverIo\Psr\EnterpriseBeans\ServiceResourceLocator The service locator instance
      */
     public function getServiceLocator()
     {
@@ -124,16 +124,16 @@ abstract class ServiceRegistry extends GenericStackable implements ServiceContex
     }
 
     /**
-     * Tries to locate and return the service with the passed name.
+     * Tries to lookup and return the service with the passed name.
      *
      * @param string $serviceName The name of the requested service
      * @param array  $args        The arguments passed to the service providers constructor
      *
-     * @return \AppserverIo\Psr\PersistenceContainerProtocol\ServiceProvider The requested service instance
+     * @return \AppserverIo\Psr\EnterpriseBeans\ServiceProvider The requested service instance
      */
-    public function locate($serviceName, array $args = array())
+    public function lookup($serviceName, array $args = array())
     {
-        return $this->getServiceLocator()->locate($this, $serviceName);
+        return $this->getServiceLocator()->lookup($this, $serviceName);
     }
 
     /**

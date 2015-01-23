@@ -11,25 +11,25 @@
 		"cboden/ratchet" : "0.3.*",
 		"react/event-loop" : "0.4.*",
 		"nikic/phlexy" : "0.1",
-		"appserver-io/microcron" : "0.1.*",
-		"appserver-io-psr/epb" : "0.2.*",
+		"appserver-io-psr/epb" : "0.3.*",
+		"appserver-io-psr/pms" : "0.1.*",
 		"appserver-io-psr/servlet" : "0.7.*",
 		"appserver-io-psr/application" : "0.4.*",
-		"appserver-io-psr/messagequeueprotocol" : "0.2.*",
-		"appserver-io/doppelgaenger" : "0.4.*",
+		"appserver-io/rmi" : "0.4.*",
 		"appserver-io/http" : "0.2.*",
 		"appserver-io/server" : "0.2.*",
 		"appserver-io/logger" : "0.1.*",
 		"appserver-io/storage" : "0.5.*",
+		"appserver-io/messaging" : "0.3.*",
+		"appserver-io/microcron" : "0.1.*",
 		"appserver-io/webserver" : "0.3.*",
 		"appserver-io/properties" : "0.1.*",
 		"appserver-io/configuration" : "0.1.*",
-		"appserver-io/messagequeueclient" : "0.6.*",
-		"appserver-io/persistencecontainerclient" : "0.7.*"
+		"appserver-io/doppelgaenger" : "0.4.*"
 	},
 	"require-dev" : {
 		"appserver-io/build" : "0.2.*",
-        "squizlabs/php_codesniffer" : "dev-master as 2.1.0"
+		"squizlabs/php_codesniffer" : "dev-master as 2.1.0"
 	},
 	"autoload" : {
 		"psr-0" : {
