@@ -1,0 +1,11 @@
+- slug: release
+  name: Releases
+  title: appserver.io Releases
+
+- slug: website
+  name: Website
+  title: Website News
+
+- slug: servlet-engine
+  name: Servlet-Engine
+  title: Servlet-Engine News
