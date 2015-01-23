@@ -11,19 +11,17 @@ As announced in our last blog post, we want to give you an overview of the servi
 application server will provide. Let's start with the Servlet-Engine, because we think that this will
 be a good start for all developers who never get in contact with an application server before.
 
-Reading this post, you'll get the feeling, that a [Servlet-Engine](https://github.com/appserver-io/appserver/wiki/05.-Servlet-Engine) is something like a framework.
-This is not completely wrong. A [Servlet-Engine](https://github.com/appserver-io/appserver/wiki/05.-Servlet-Engine) is **NOT** a framework, but it is a part in a framework. So you should see it as the controller part of a MVC
-framework. This is the reason why you'll read stuff about routing, request methods and other like that. As the
-framworks out there are actually not implemented for running in an  application server like [appserver.io](http://www.appserver.io), they provide stuff like a HTTP foundation library by themselves. We hope,
+Reading this post, you will get the feeling, that a [Servlet-Engine](http://appserver.io/documentation/servlet-engine.html) is something like a framework.
+This is not completely wrong. A Servlet-Engine is **NOT** a framework, but it is a part in a framework. So you should see it as the controller part of a MVC framework. This is the reason why you'll read stuff about routing, request methods and other like that. As the framworks out there are actually not implemented for running in an  application server like appserver.io, they provide stuff like a HTTP foundation library by themselves. We hope,
 that someday all of the frameworks recognize the advantages an application server provide and will be ported to
-run on top of [appserver.io](http://www.appserver.io) by using the infrastructure with all functionality it
+run on top of appserver.io by using the infrastructure with all functionality it
 provides, instead of implementing it again and again in each of them. For sure this will be  a long way, but we
 think it'll be worth waiting for it.
 
 ### Problems without Servlet-Engine
 ***
 
-Some of you, who are familiar with a Java Servlet-Engine will wonder: a [Servlet-Engine](https://github.com/appserver-io/appserver/wiki/05.-Servlet-Engine) in PHP? Does 
+Some of you, who are familiar with a Java Servlet-Engine will wonder: a Servlet-Engine in PHP? Does 
 that make sense because of all the great frameworks out there. We think yes, because one of the big
 issues with the frameworks is, that they'll get huge during the last years and bootstrapping became
 a big meaning meanwhile. As PHP is used as a scripting language, the problem of the bootstrapping is,
@@ -37,19 +35,13 @@ solution can be caching, but that entails many other problems that you may have 
 ### How can a Servlet-Engine help
 ***
 
-One solution can be using a [Servlet-Engine](https://github.com/appserver-io/appserver/wiki/05.-Servlet-Engine),
-like we integrated in our application server. Imagine a servlet as a class that implements the servlet interface,
-part of our PSR's, that provides some kind of MVC pattern controller functionality by implementing some methods
-that will be invoked when a request came in, nothing more, nothing less. So to implement your first servlet, you
-have to think about two things. First, which requests should our servlet dispatch, the second is what functionality
-it should provide.
+One solution can be using a Servlet-Engine, like we integrated in our application server. Imagine a servlet as a class that implements the servlet interface, part of our PSR's, that provides some kind of MVC pattern controller functionality by implementing some methods that will be invoked when a request came in, nothing more, nothing less. So to implement your first servlet, you have to think about two things. First, which requests should our servlet dispatch, the second is what functionality it should provide.
 
-As in many other frameworks do, our [Servlet-Engine](https://github.com/appserver-io/appserver/wiki/05.-Servlet-Engine) use a URL path to map a
-request to a controller, in our case this will be a servlet. You can write as many servlets as you want, but
-you dont't need to write any configuration therefor. Let's have a look at how you can map an URL path to a 
-servlet
+As in many other frameworks do, our Servlet-Engine use a URL path to map a request to a controller, in our case this will be a servlet. You can write as many servlets as you want, but you dont't need to write any configuration therefor. Let's have a look at how you can map an URL path to a servlet
 
 ```php
+<?php
+
 namespace AppserverIo\Example\Servlets;
 
 use AppserverIo\Psr\Servlet\Http\HttpServlet;
@@ -97,7 +89,7 @@ we want to provide. For our first example, we only want to add the `Hello World!
 That is pretty simple, we think! So, given you've downloaded and installed the latest version of the application
 server, create a folder `examples/WEB-INF/classes/AppserverIo/Example/Servlets` under the `webapps` folder of 
 your installation. In the folder, create a new file named `HelloWorldServlet.php`, copy the code from above and
-save it. After [restarting](https://github.com/appserver-io/appserver/wiki/02.-Basic-Usage#start-and-stop-scripts)
+save it. After [restarting](http://appserver.io/documentation/basic-usage.html)
 the application server, open the URL `http://127.0.0.1:9080/examples/helloWorld.do` in your favorite browser.
 You should see the text `Hello World`. Congratulations, you have written your first servlet!
 
@@ -115,6 +107,8 @@ invoked by the application server when the servlet is instanciated and initializ
 our previous example
 
 ```php
+<?php
+
 namespace AppserverIo\Example\Servlets;
 
 use AppserverIo\Psr\Servlet\ServletConfig;
@@ -192,6 +186,8 @@ values. You can also do this with the `@Route` annotation. So imagine, we want t
 with the resources configurable.
 
 ```php
+<?php
+
 namespace AppserverIo\Example\Servlets;
 
 use AppserverIo\Psr\Servlet\ServletConfig;
@@ -274,6 +270,8 @@ Starting a session is one of the things you'll need in nearly every application.
 quite simple. So let's see how we can integrate session handling in our application.
 
 ```php
+<?php
+
 namespace AppserverIo\Example\Servlets;
 
 use AppserverIo\Psr\Servlet\ServletConfig;
@@ -516,6 +514,8 @@ the session would never expire, except it'll be destroyed by your application, e
 you invoke
 
 ```php
+<?php
+
 /**
  * Handles a HTTP POST request, destroys the session and logs the user out.
  *
@@ -602,6 +602,8 @@ we want to load the path to the `applicationProperties`, defined as context para
 We can do this, by adding the following code, implemented in the `init()` method to a servlet
 
 ```php
+<?php
+
 /**
  * Initializes the servlet with the application properties.
  *
@@ -637,15 +639,12 @@ public function init(ServletConfig $config)
 > application.
 
 #### Servlet Configuration
-As this post is all about our [Servlet-Engine](https://github.com/appserver-io/appserver/wiki/05.-Servlet-Engine),
-maybe the most important thing is, how you can define the servlets, or override annotations you defined in the servlets itself, which will be parsed when the application server starts.
+As this post is all about our Servlet-Engine, maybe the most important thing is, how you can define the servlets, or override annotations you defined in the servlets itself, which will be parsed when the application server starts.
 
 ##### `/web-app/servlet` *string*
 In many cases, it'll be the easiest way to use annotations to define your sevlets and map them to a request URL.
 Sometimes it'll be necessary that you define servlets in the `web.xml` file. As the order, the servlets will be
-loaded, is relevant for matching the URL when the request will be handled by the [Servlet-Engine](https://github.com/appserver-io/appserver/wiki/05.-Servlet-Engine),
-it could be necessary that you have to manually change it in this file. You can define a servlet by add the
-following snippet to your configuration file
+loaded, is relevant for matching the URL when the request will be handled by the Servlet-Engine, it could be necessary that you have to manually change it in this file. You can define a servlet by add the following snippet to your configuration file
 
 ```xml
 <servlet>
@@ -673,9 +672,7 @@ You must specify a name, unique in your application, for the servlet here. This 
 [map](#servlet-mapping) your servlet to a request URL later.
 
 ##### `/web-app/servlet/servlet-class` *string*
-The [Servlet-Engine](https://github.com/appserver-io/appserver/wiki/05.-Servlet-Engine) needs to know, which
-class has to instanciated when initializing the servlet. So you have to specify the fully qualified name of
-your servlet here.
+The Servlet-Engine needs to know, which class has to instanciated when initializing the servlet. So you have to specify the fully qualified name of your servlet here.
 
 ##### `/web-app/servlet/init-param` *string*
 You can specifiy a random number of initialization parameters here. The parameters will be parsed when the
@@ -690,6 +687,8 @@ This nodes value is the parameters value. Here you can specify anything that is 
 You can access a servlets initialization parameters by invoking the `$this->getInitParameter()` method like
 
 ```php
+<?php
+
 /**
  * Initializes the servlet with the path to the configuration file.
  *
@@ -726,10 +725,7 @@ public function init(ServletConfig $config)
 > and pre-loads the action classes when the application server starts.
 
 #### Servlet Mapping
-Finally it is necessary to map the servlet we've configured before, to a URL path. As the 
-[Servlet-Engine](https://github.com/appserver-io/appserver/wiki/05.-Servlet-Engine) is a webserver module, by
-default it is bound to the file extension `.do`. You can change this in the `appserver.xml` confguration file
-in directory `etc/appserver/appserver.xml`.
+Finally it is necessary to map the servlet we've configured before, to a URL path. As the Servlet-Engine is a webserver module, by default it is bound to the file extension `.do`. You can change this in the `appserver.xml` confguration file in directory `etc/appserver/appserver.xml`.
 
 ##### `/web-app/servlet-mapping` *string*
 You can specify as many servlet mappings you need. The mapping maps a `servlet-name` to a `url-pattern`. The
@@ -800,9 +796,7 @@ Again, there is an online [website](http://jesin.tk/tools/htdigest-generator-too
 that will work on Windows also.
 
 ##### `/web-app/security/url-pattern` *string*
-The value of this node allows you to specify a URL pattern. If a request has to be handled, the
-[Servlet-Engine](https://github.com/appserver-io/appserver/wiki/05.-Servlet-Engine) again uses the PHP
-[fnmatch](http://php.net/fnmatch) method to match the URL against that pattern.
+The value of this node allows you to specify a URL pattern. If a request has to be handled, the Servlet-Engine again uses the PHP [fnmatch](http://php.net/fnmatch) method to match the URL against that pattern.
 
 ##### `/web-app/security/auth/auth_type` *string*
 The value of this node defines the authentication type you want to use. `Basic` enables HTTP basic authentication,
@@ -825,25 +819,21 @@ the file containing the `.htpasswd` or `.htdigest` file with the allowed users.
 ### Summary
 ***
 
-We hope, that this blog post give you a basic understanding of what a [Servlet-Engine](https://github.com/appserver-io/appserver/wiki/05.-Servlet-Engine)
-is, what possiblities you have and how you can write your first application that uses servlets.
+We hope, that this blog post give you a basic understanding of what a Servlet-Engine is, what possiblities you have and how you can write your first application that uses servlets.
 
 Some of the basic features like session handling and HTTP basic or digest authentication are very similar to
 LAMP stack or PHP. So it should not we too complicated to use that when writing your first application running
-on the application servers [Servlet-Engine](https://github.com/appserver-io/appserver/wiki/05.-Servlet-Engine).
+on the application servers Servlet-Engine.
 
 The routing is very simple, but fast and allows you a detailed configuration for the controller part of your
-application. Based on a servlet you're enabled to write your own controller frameworks, use or extend a 
-existing one like [Routlt](https://github.com/appserver-io/routlt) or migrate one of the frameworks to benefit
-from the possiblities an application server provide.
+application. Based on a servlet you're enabled to write your own controller frameworks, use or extend a existing one like Routlt or migrate one of the frameworks to benefit from the possiblities an application server provide.
 
 If you're looking for an example where you can have a deeper look in implementation and configuration of servlets
-running in the [Servlet-Engine](https://github.com/appserver-io/appserver/wiki/05.-Servlet-Engine), clone our
-[example](https://github.com/appserver-io-apps/example) project.
+running in the Servlet-Engine, clone our [example](https://github.com/appserver-io-apps/example) project.
 
 > One of the biggest advantages of an application server is the possibility to keep instances in memory, that
-> is what the [Servlet-Engine](https://github.com/appserver-io/appserver/wiki/05.-Servlet-Engine) is doing
-> with the servlets. You may need some time to understand the concepts and idea behind, but when that happens
-> you may wonder how you ever could have implemented applications without that power!
+> is what the Servlet-Engine is doing with the servlets. You may need some time to understand the concepts and
+> idea behind, but when that happens you may wonder how you ever could have implemented applications without 
+> that power!
 
 Hope you like this post :) Next post will be about our [Persistence-Container](https://github.com/appserver-io/appserver/wiki/08.-Persistence-Container) ... stay tuned

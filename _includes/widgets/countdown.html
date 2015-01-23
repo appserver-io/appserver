@@ -1,0 +1,14 @@
+<script src="{{ "/assets/js/jquery.plugin.min.js" | prepend: site.baseurl }}"></script>
+<script src="{{ "/assets/js/jquery.countdown.min.js" | prepend: site.baseurl }}"></script>
+<script>
+$(document).ready(function() {
+	$(function () {
+		var jDay = new Date(2015, 2-1, 15)
+		console.log(jDay);
+		$('#defaultCountdown').countdown({until: jDay, format: 'dHMS'});
+		
+	});
+});
+
+</script>
+<div id="defaultCountdown"></div>

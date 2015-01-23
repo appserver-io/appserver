@@ -1,0 +1,8 @@
+{% assign items = site.docs | sort: 'position' %}
+
+<!-- Navigation -->
+<div class="list-group">
+    {% for item in items %}
+        <a href="{{ item.url }}" class="list-group-item{% if item.url == page.url %} active{% endif %}">{{ item.title }}</a>
+    {% endfor %}  
+</div>
