@@ -1,4 +1,2 @@
-<article>
-    <h2><a href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>&nbsp;<small>{{ post.categories | array_to_sentence_string }}</small></h2>
-    {{ post.content }}
-</article>
+<h2><a href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>&nbsp;<small>{{ post.categories | array_to_sentence_string }}</small></h2>
+{{ post.content }}
