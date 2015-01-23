@@ -1,6 +1,4 @@
-##
 
-<article>
     <h2><a href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>&nbsp;<small>{{ post.categories | array_to_sentence_string }}</small></h2>
     <p>
         <i class="fa fa-clock-o"></i> Posted on {{ post.date | date_to_string }}
@@ -21,4 +19,3 @@
     <p>{{ post.content }}</p>
     {% if forloop.last == false %}<hr/>{% endif %}
     <p><br/></p>
-</article>
