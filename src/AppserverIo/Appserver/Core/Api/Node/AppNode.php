@@ -15,6 +15,8 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Psr\Application\ApplicationInterface;
+
 /**
  * DTO to transfer an app.
  *
@@ -28,6 +30,30 @@ namespace AppserverIo\Appserver\Core\Api\Node;
  */
 class AppNode extends AbstractNode
 {
+
+    /**
+     * The unique XML configuration node name for a app node.
+     *
+     * @var string
+     */
+    const NODE_NAME = 'application';
+
+    /**
+     * Default constructor
+     *
+     * @param string $name       Name of the webapp
+     * @param string $webappPath Path to the webapp
+     */
+    public function __construct($name = '', $webappPath = '')
+    {
+        // initialize the UUID and node name
+        $this->setUuid($this->newUuid());
+        $this->setNodeName(self::NODE_NAME);
+
+        // set the data
+        $this->name = $name;
+        $this->webappPath = $webappPath;
+    }
 
     /**
      * The unique application name.
@@ -46,19 +72,7 @@ class AppNode extends AbstractNode
     protected $webappPath;
 
     /**
-     * Set's the application name.
-     *
-     * @param string $name The unique application name
-     *
-     * @return void
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-    }
-
-    /**
-     * Return's the application name.
+     * Returns the application name.
      *
      * @return string The unique application name
      */
@@ -68,24 +82,20 @@ class AppNode extends AbstractNode
     }
 
     /**
-     * Set's the application's path.
-     *
-     * @param string $webappPath The application's path
-     *
-     * @return void
-     */
-    public function setWebappPath($webappPath)
-    {
-        $this->webappPath = $webappPath;
-    }
-
-    /**
-     * Return's the application's path.
+     * Returns the application's path.
      *
      * @return string The application's path
      */
     public function getWebappPath()
     {
         return $this->webappPath;
+    }
+
+    public function initFromApplication(ApplicationInterface $application)
+    {
+        $this->setNodeName(self::NODE_NAME);
+        $this->name = $application->getName();
+        $this->webappPath = $application->getWebappPath();
+        $this->setUuid($this->newUuid());
     }
 }

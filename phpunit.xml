@@ -1,7 +1,7 @@
 <phpunit>
     <testsuites>
 	    <testsuite name="appserver-io/appserver PHPUnit testsuite">
-	        <directory suffix="Test.php">tests</directory>
+	        <directory suffix="AbstractServiceTest.php">tests</directory>
 	    </testsuite>
 	</testsuites>
     <filter>

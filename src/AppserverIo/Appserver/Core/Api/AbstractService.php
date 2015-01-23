@@ -396,28 +396,14 @@ abstract class AbstractService implements ServiceInterface
         // Get our system configuration as it contains the user and group to set
         $systemConfiguration = $this->getInitialContext()->getSystemConfiguration();
 
-        // As we might have several rootPaths we have to create several RecursiveDirectoryIterators.
-        $directoryIterator = new \RecursiveDirectoryIterator(
-            $targetDir,
-            \RecursiveIteratorIterator::SELF_FIRST
-        );
-
-        // We got them all, now append them onto a new RecursiveIteratorIterator and return it.
-        $recursiveIterator = new \AppendIterator();
-        // Append the directory iterator
-        $recursiveIterator->append(
-            new \RecursiveIteratorIterator(
-                $directoryIterator,
-                \RecursiveIteratorIterator::SELF_FIRST,
-                \RecursiveIteratorIterator::CATCH_GET_CHILD
-            )
-        );
+        // get all the files recursively
+        $files = $this->globDir($targetDir . '*');
 
         // Check for the existence of a user
         $user = $systemConfiguration->getParam('user');
         if (!empty($user)) {
             // Change the rights of everything within the defined dirs
-            foreach ($recursiveIterator as $file) {
+            foreach ($files as $file) {
                 chown($file, $user);
             }
         }
@@ -426,7 +412,7 @@ abstract class AbstractService implements ServiceInterface
         $group = $systemConfiguration->getParam('group');
         if (!empty($group)) {
             // Change the rights of everything within the defined dirs
-            foreach ($recursiveIterator as $file) {
+            foreach ($files as $file) {
                 chgrp($file, $group);
             }
         }
@@ -500,21 +486,17 @@ abstract class AbstractService implements ServiceInterface
         }
 
         // remove old archive from webapps folder recursively
-        $files = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator($dir->getPathname()),
-            \RecursiveIteratorIterator::CHILD_FIRST
-        );
+        $files = $this->globDir($dir->getPathname() . DIRECTORY_SEPARATOR . '*');
+
         foreach ($files as $file) {
             // skip . and .. dirs
-            if ($file->getFilename() === '.' || $file->getFilename() === '..') {
+            if (basename($file) === '.' || basename($file) === '..') {
                 continue;
             }
-            if ($file->isDir()) {
-                @rmdir($file->getRealPath());
-            } elseif ($file->isFile() && $alsoRemoveFiles) {
-                unlink($file->getRealPath());
-            } else {
-                // do nothing, because file should NOT be deleted obviously
+            if (is_dir($file)) {
+                @rmdir(realpath($file));
+            } elseif (is_file($file) && $alsoRemoveFiles) {
+                unlink(realpath($file));
             }
         }
     }
@@ -577,13 +559,13 @@ abstract class AbstractService implements ServiceInterface
     /**
      * Creates the SSL file passed as parameter or nothing if the file already exists.
      *
-     * @param \SplFileInfo $certificate The file info about the SSL file to generate
+     * @param string $certificate The file path of the SSL file to generate
      *
      * @return void
      *
      * @throws \Exception
      */
-    public function createSslCertificate(\SplFileInfo $certificate)
+    public function createSslCertificate($certificate)
     {
 
         // first we've to check if OpenSSL is available
@@ -592,7 +574,7 @@ abstract class AbstractService implements ServiceInterface
         }
 
         // do nothing if the file is already available
-        if ($certificate->isFile()) {
+        if (is_file($certificate)) {
             return;
         }
 
@@ -648,14 +630,13 @@ abstract class AbstractService implements ServiceInterface
         openssl_pkey_export($privkey, $pkeyout, null, $configargs);
 
         // write the SSL certificate data to the target
-        $file = $certificate->openFile('w');
-        if (($written = $file->fwrite($certout . $pkeyout)) === false) {
-            throw new \Exception(sprintf('Can\'t create SSL certificate %s', $certificate->getPathname()));
+        if (($written = file_put_contents($certificate, $certout . $pkeyout)) === false) {
+            throw new \Exception(sprintf('Can\'t create SSL certificate %s', $certificate));
         }
 
         // log a message that the file has been written successfully
         $this->getInitialContext()->getSystemLogger()->info(
-            sprintf('Successfully created %s with %d bytes', $certificate->getPathname(), $written)
+            sprintf('Successfully created %s with %d bytes', $certificate, $written)
         );
 
         // log any errors that occurred here

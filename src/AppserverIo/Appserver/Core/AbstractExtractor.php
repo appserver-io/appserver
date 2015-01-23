@@ -56,7 +56,7 @@ abstract class AbstractExtractor implements ExtractorInterface
     protected $extractorNode;
 
     /**
-     * Contructor to initialize the extractor instance with the initial context
+     * Constructor to initialize the extractor instance with the initial context
      * and the extractor node configuration data.
      *
      * @param \AppserverIo\Appserver\Application\Interfaces\ContextInterface $initialContext The initial context instance
@@ -215,7 +215,7 @@ abstract class AbstractExtractor implements ExtractorInterface
         // move the uploaded file from the tmp to the deploy directory
         rename($archive->getPathname(), $target);
 
-        // makr the file to be deployed with the next restart
+        // mark the file to be deployed with the next restart
         $this->flagArchive(new \SplFileInfo($target), ExtractorInterface::FLAG_DODEPLOY);
     }
 

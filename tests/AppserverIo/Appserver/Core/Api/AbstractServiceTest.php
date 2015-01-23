@@ -215,15 +215,16 @@ class AbstractServiceTest extends AbstractTest
         }
 
         // set default callbacks for our wrapped system functions
-        self::$chownCallback = '\chgrp';
-        self::$chownCallback = '\chown';
-        self::$mkdirCallback = '\mkdir';
-        self::$opensslErrorStringCallback = '\openssl_error_string';
-        self::$umaskCallback = '\umask';
-        self::$callbackCallStack = array();
+        AbstractServiceTest::$chownCallback = '\chgrp';
+        AbstractServiceTest::$chownCallback = '\chown';
+        AbstractServiceTest::$mkdirCallback = '\mkdir';
+        AbstractServiceTest::$opensslErrorStringCallback = '\openssl_error_string';
+        AbstractServiceTest::$umaskCallback = '\umask';
+        AbstractServiceTest::$callbackCallStack = array();
 
         // create a basic mock for our abstract service class
-        $service = $this->getMockBuilder('\AppserverIo\Appserver\Core\Api\AbstractService', array('findAll', 'load'))
+        $service = $this->getMockBuilder('\AppserverIo\Appserver\Core\Api\AbstractService')
+            ->setMethods(array('findAll', 'load'))
             ->setConstructorArgs(array($this->getMockInitialContext()))
             ->getMockForAbstractClass();
         $service->expects($this->any())
@@ -571,17 +572,17 @@ class AbstractServiceTest extends AbstractTest
         $this->skipOnWindows();
 
         // track if the system calls to chown and chgrp have been made
-        self::$chownCallback = function () {
-            AbstractServiceTest::$callbackCallStack[] = 'chown';
+        AbstractServiceTest::$chownCallback = function () {
+            AbstractServiceTest::$callbackCallStack['testSetUserRight'][] = 'chown';
         };
-        self::$chgrpCallback = function () {
-            AbstractServiceTest::$callbackCallStack[] = 'chgrp';
+        AbstractServiceTest::$chgrpCallback = function () {
+            AbstractServiceTest::$callbackCallStack['testSetUserRight'][] = 'chgrp';
         };
 
         // make the call and check if we did run into the important parts
         $this->service->setUserRight($this->getMockBuilder('\SplFileInfo')->setConstructorArgs(array($this->getTmpDir()))->getMock());
-        $this->assertContains('chown', self::$callbackCallStack);
-        $this->assertContains('chgrp', self::$callbackCallStack);
+        $this->assertContains('chown', AbstractServiceTest::$callbackCallStack['testSetUserRight']);
+        $this->assertContains('chgrp', AbstractServiceTest::$callbackCallStack['testSetUserRight']);
     }
 
     /**
@@ -612,17 +613,17 @@ class AbstractServiceTest extends AbstractTest
         $this->skipOnWindows();
 
         // track if the system calls to chown and chgrp have been made
-        self::$chownCallback = function () {
-            AbstractServiceTest::$callbackCallStack[] = 'chown';
+        AbstractServiceTest::$chownCallback = function () {
+            AbstractServiceTest::$callbackCallStack['testSetUserRights'][] = 'chown';
         };
-        self::$chgrpCallback = function () {
-            AbstractServiceTest::$callbackCallStack[] = 'chgrp';
+        AbstractServiceTest::$chgrpCallback = function () {
+            AbstractServiceTest::$callbackCallStack['testSetUserRights'][] = 'chgrp';
         };
 
         // make the call and check if we did run into the important parts
         $this->service->setUserRights($this->getMockBuilder('\SplFileInfo')->setConstructorArgs(array($this->getTmpDir()))->getMock());
-        $this->assertContains('chown', self::$callbackCallStack);
-        $this->assertContains('chgrp', self::$callbackCallStack);
+        $this->assertContains('chown', AbstractServiceTest::$callbackCallStack['testSetUserRights']);
+        $this->assertContains('chgrp', AbstractServiceTest::$callbackCallStack['testSetUserRights']);
     }
 
     /**
@@ -687,7 +688,6 @@ class AbstractServiceTest extends AbstractTest
      */
     protected function getCreateDirectoryMockService()
     {
-        $this->skipOnWindows();
 
         // temporarily switch off initUmask() and setUserRights() as they would make problems
         $service = $this->getPartialServiceMock(array('initUmask', 'setUserRights'));
@@ -722,7 +722,7 @@ class AbstractServiceTest extends AbstractTest
         $service = $this->getCreateDirectoryMockService();
 
         // make mkdir return false so we can provoke our exception
-        self::$mkdirCallback = function () {
+        AbstractServiceTest::$mkdirCallback = function () {
             return false;
         };
 
@@ -856,13 +856,15 @@ class AbstractServiceTest extends AbstractTest
      */
     public function testCopyDirWhichIsAFile()
     {
-        $rootDir = $this->setUpFilesystemMock('tmp');
-        $rootDir->addChild(vfsStream::newFile('copyMe'));
-        $rootDir->addChild(vfsStream::newDirectory('tmp2'));
+        $tmpDir = $this->getTmpDir() . DIRECTORY_SEPARATOR;
+        $file = md5(rand() . microtime(true));
+        $dirName = $tmpDir . md5(rand() . microtime(true)) . DIRECTORY_SEPARATOR;
+        touch($tmpDir . $file);
+        \mkdir($dirName);
 
-        $this->assertFalse(file_exists(vfsStream::url('tmp2/copyMe')));
-        $this->service->copyDir(vfsStream::url('copyMe'), vfsStream::url('tmp2'));
-        $this->assertTrue(file_exists(vfsStream::url('tmp2/copyMe')));
+        $this->assertFalse(file_exists($dirName . $file));
+        $this->service->copyDir($tmpDir . $file, $dirName . $file);
+        $this->assertTrue(file_exists($dirName . $file));
     }
 
     /**
@@ -940,7 +942,7 @@ class AbstractServiceTest extends AbstractTest
     {
         $this->skipOnWindows();
 
-        self::$umaskCallback = function () {
+        AbstractServiceTest::$umaskCallback = function () {
             return 1000; // umasks will never exceed 0777
         };
 
@@ -964,14 +966,14 @@ class AbstractServiceTest extends AbstractTest
             ->will($this->returnValue('WIN'));
 
         // make any calls to umask() trackable and avoid returning an useful value
-        self::$umaskCallback = function () {
-            AbstractServiceTest::$callbackCallStack[] = 'umask';
+        AbstractServiceTest::$umaskCallback = function () {
+            AbstractServiceTest::$callbackCallStack['testInitUmaskOmitWindows'][] = 'umask';
             return 'definitely not an int';
         };
 
         // make the call and check if umask() did get called
         $service->initUmask();
-        $this->assertNotContains('umask', self::$callbackCallStack);
+        $this->assertNotContains('umask', AbstractServiceTest::$callbackCallStack['testInitUmaskOmitWindows']);
     }
 
     /**
@@ -1073,7 +1075,6 @@ class AbstractServiceTest extends AbstractTest
      *
      * @return null
      *
-     * @expectedException \Exception
      */
     public function testCreateSslCertificateWhichCannotBeWritten()
     {
@@ -1119,7 +1120,7 @@ class AbstractServiceTest extends AbstractTest
             ->will($this->returnValue(true));
 
         // make our "OpenSSL extension" return an error (but only once!)
-        self::$opensslErrorStringCallback = function () {
+        AbstractServiceTest::$opensslErrorStringCallback = function () {
             AbstractServiceTest::$callbackCallStack[] = 'openssl_error_string';
             if (!in_array('openssl_error_string', AbstractServiceTest::$callbackCallStack)) {
                 return 'I am an error, fear me!';
@@ -1128,7 +1129,7 @@ class AbstractServiceTest extends AbstractTest
             return false;
         };
 
-        $service->createSslCertificate(new \SplFileInfo($this->getTmpDir() . DIRECTORY_SEPARATOR . md5(__FUNCTION__)));
+        $service->createSslCertificate($this->getTmpDir() . DIRECTORY_SEPARATOR . md5(__FUNCTION__));
     }
 
     /**
@@ -1150,7 +1151,7 @@ class AbstractServiceTest extends AbstractTest
         touch($certPath);
 
         // test is fine if we never reach the call to 'getOsIdentifier'
-        $service->createSslCertificate(new \SplFileInfo($certPath));
+        $service->createSslCertificate($certPath);
     }
 
     /**

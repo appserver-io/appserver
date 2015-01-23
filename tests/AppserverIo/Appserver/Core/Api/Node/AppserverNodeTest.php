@@ -113,10 +113,7 @@ class AppserverNodeTest extends AbstractTest
      */
     public function testAttachApp()
     {
-        $appNode = new AppNode();
-        $appNode->setNodeName('application');
-        $appNode->setName('someApp');
-        $appNode->setWebappPath('/someApp');
+        $appNode = new AppNode('someApp', '/someApp');
 
         $this->appserverNode->attachApp($appNode);
         $this->assertCount(5, $this->appserverNode->getApps());
