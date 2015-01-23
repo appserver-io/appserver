@@ -8,6 +8,7 @@ description: > # The objective of the project is to develop a multithreaded
   help we hopefully establish a solution as the standard for enterprise
   applications in PHP environments.
 
+timezone: Europe/Berlin
 port: 4000
 host: 0.0.0.0
 baseurl: ""
