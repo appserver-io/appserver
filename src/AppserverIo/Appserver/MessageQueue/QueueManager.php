@@ -316,8 +316,8 @@ class QueueManager extends GenericStackable implements QueueContext, ManagerInte
         $applicationName = $this->getApplication()->getName();
 
         // initialize and return the sender
-        $queue = \AppserverIo\MessageQueueClient\MessageQueue::createQueue($lookupName);
-        $connection = \AppserverIo\MessageQueueClient\QueueConnectionFactory::createQueueConnection($applicationName);
+        $queue = \AppserverIo\Messaging\MessageQueue::createQueue($lookupName);
+        $connection = \AppserverIo\Messaging\QueueConnectionFactory::createQueueConnection($applicationName);
         $session = $connection->createQueueSession();
         return $session->createSender($queue);
     }
