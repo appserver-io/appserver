@@ -21,8 +21,8 @@
 
 namespace AppserverIo\Appserver\Naming;
 
-use AppserverIo\Psr\Naming\NamingDirectoryInterface;
 use AppserverIo\Psr\Naming\NamingException;
+use AppserverIo\Psr\Naming\NamingDirectoryInterface;
 
 /**
  * AppserverIo\Appserver\Naming\BindingTrait

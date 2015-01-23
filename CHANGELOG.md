@@ -3,10 +3,11 @@
 ## Bugfixes
 
 * Added missing dependency to appserver-io/lang
+* Remove unnecessary interfaces SenderInterface + ReceiverInterface
 
 ## Features
 
-* None
+* Refactoring, move interfaces of Persistence-Container + Message-Queue to separate packages
 
 # Version 1.0.0-beta4
 

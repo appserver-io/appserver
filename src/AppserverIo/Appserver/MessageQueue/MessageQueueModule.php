@@ -17,18 +17,17 @@
 
 namespace AppserverIo\Appserver\MessageQueue;
 
-use AppserverIo\Psr\HttpMessage\RequestInterface;
-use AppserverIo\Psr\HttpMessage\ResponseInterface;
-use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Http\HttpResponseStates;
+use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Server\Dictionaries\ServerVars;
 use AppserverIo\Server\Dictionaries\ModuleHooks;
 use AppserverIo\Server\Interfaces\RequestContextInterface;
 use AppserverIo\Server\Interfaces\ServerContextInterface;
 use AppserverIo\Server\Exceptions\ModuleException;
-use AppserverIo\Psr\MessageQueueProtocol\QueueContext;
-use AppserverIo\Psr\MessageQueueProtocol\Utils\PriorityKeys;
-use AppserverIo\Psr\MessageQueueProtocol\MessageQueueProtocol;
+use AppserverIo\Psr\HttpMessage\RequestInterface;
+use AppserverIo\Psr\HttpMessage\ResponseInterface;
+use AppserverIo\Messaging\Utils\PriorityKeys;
+use AppserverIo\Messaging\MessageQueueProtocol;
 
 /**
  * A message queue module implementation.

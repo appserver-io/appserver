@@ -18,21 +18,19 @@
 namespace AppserverIo\Appserver\MessageQueue;
 
 use AppserverIo\Logger\LoggerUtils;
-use AppserverIo\Appserver\Naming\InitialContext;
 use AppserverIo\Storage\GenericStackable;
-use AppserverIo\Psr\MessageQueueProtocol\Message;
-use AppserverIo\Psr\MessageQueueProtocol\QueueContext;
-use AppserverIo\Psr\MessageQueueProtocol\Utils\PriorityKey;
-use AppserverIo\Psr\MessageQueueProtocol\Utils\MQStateActive;
-use AppserverIo\Psr\MessageQueueProtocol\Utils\MQStateFailed;
-use AppserverIo\Psr\MessageQueueProtocol\Utils\MQStateInProgress;
-use AppserverIo\Psr\MessageQueueProtocol\Utils\MQStatePaused;
-use AppserverIo\Psr\MessageQueueProtocol\Utils\MQStateProcessed;
-use AppserverIo\Psr\MessageQueueProtocol\Utils\MQStateToProcess;
-use AppserverIo\Psr\MessageQueueProtocol\Utils\MQStateUnknown;
+use AppserverIo\Psr\Pms\Message;
+use AppserverIo\Psr\Pms\PriorityKey;
 use AppserverIo\Psr\Application\ApplicationInterface;
-use AppserverIo\Psr\PersistenceContainerProtocol\BeanContext;
-use AppserverIo\Psr\MessageQueueProtocol\Utils\PriorityMedium;
+use AppserverIo\Messaging\Utils\PriorityMedium;
+use AppserverIo\Messaging\Utils\StateActive;
+use AppserverIo\Messaging\Utils\StateFailed;
+use AppserverIo\Messaging\Utils\StateInProgress;
+use AppserverIo\Messaging\Utils\StatePaused;
+use AppserverIo\Messaging\Utils\StateProcessed;
+use AppserverIo\Messaging\Utils\StateToProcess;
+use AppserverIo\Messaging\Utils\StateUnknown;
+use AppserverIo\Appserver\Naming\InitialContext;
 
 /**
  * A message queue worker implementation listening to a queue, defined in the passed application.
@@ -52,8 +50,8 @@ class QueueWorker extends \Thread
     /**
      * Initializes the queue worker with the application and the storage it should work on.
      *
-     * @param \AppserverIo\Psr\MessageQueueProtocol\Utils\PriorityKey $priorityKey The priority of this queue worker
-     * @param \AppserverIo\Psr\Application\ApplicationInterface       $application The application instance with the queue manager/locator
+     * @param \AppserverIo\Psr\Pms\PriorityKey                  $priorityKey The priority of this queue worker
+     * @param \AppserverIo\Psr\Application\ApplicationInterface $application The application instance with the queue manager/locator
      *
      * @return void
      */
@@ -74,7 +72,7 @@ class QueueWorker extends \Thread
     /**
      * Attach a new message to the queue.
      *
-     * @param \AppserverIo\Psr\MessageQueueProtocol\Message $message the message to be attached to the queue
+     * @param \AppserverIo\Psr\Pms\Message $message the message to be attached to the queue
      *
      * @return void
      */
@@ -88,7 +86,7 @@ class QueueWorker extends \Thread
     /**
      * Removes the message from the queue.
      *
-     * @param \AppserverIo\Psr\MessageQueueProtocol\Message $message The message to be removed from the queue
+     * @param \AppserverIo\Psr\Pms\Message $message The message to be removed from the queue
      *
      * @return void
      */
@@ -133,26 +131,26 @@ class QueueWorker extends \Thread
                 // check the message state
                 switch ($message->getState()) {
 
-                    case MQStateActive::get(): // message is active and ready to be processed
+                    case StateActive::get(): // message is active and ready to be processed
 
                         // message is ready to be processed
-                        $message->setState(MQStateToProcess::get());
+                        $message->setState(StateToProcess::get());
                         break;
 
-                    case MQStatePaused::get(): // message is paused
-                    case MQStateInProgress::get(): // message is in progress
+                    case StatePaused::get(): // message is paused
+                    case StateInProgress::get(): // message is in progress
 
                         // do nothing here because everything is OK!
                         break;
 
-                    case MQStateFailed::get(): // message processing has been failure
-                    case MQStateProcessed::get(): // message processing has been successfully processed
+                    case StateFailed::get(): // message processing has been failure
+                    case StateProcessed::get(): // message processing has been successfully processed
 
                         // we remove the message to free the memory
                         $this->remove($message);
                         break;
 
-                    case MQStateToProcess::get(): // message has to be processed now
+                    case StateToProcess::get(): // message has to be processed now
 
                         // load class name and session ID from remote method
                         $queueProxy = $message->getDestination();
@@ -161,7 +159,7 @@ class QueueWorker extends \Thread
                         // lookup the queue and process the message
                         if ($queue = $application->search('QueueContext')->locate($queueProxy)) {
                             // lock the message
-                            $message->setState(MQStateInProgress::get());
+                            $message->setState(StateInProgress::get());
 
                             // the queues receiver type
                             $queueType = $queue->getType();
@@ -177,12 +175,12 @@ class QueueWorker extends \Thread
                             $instance->onMessage($message, $sessionId);
 
                             // remove the message from the storage
-                            $message->setState(MQStateProcessed::get());
+                            $message->setState(StateProcessed::get());
                         }
 
                         break;
 
-                    case MQStateUnknown::get(): // message is in an unknown state -> this is weired and should never happen!
+                    case StateUnknown::get(): // message is in an unknown state -> this is weired and should never happen!
 
                         // throw an exception, because this should never happen
                         throw \Exception(sprintf('Message %s has state %s', $messageId, $message->getState()));

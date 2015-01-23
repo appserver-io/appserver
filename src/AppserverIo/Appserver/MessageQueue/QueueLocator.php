@@ -24,7 +24,9 @@
 
 namespace AppserverIo\Appserver\MessageQueue;
 
-use AppserverIo\Psr\MessageQueueProtocol\Queue;
+use AppserverIo\Psr\Pms\Queue;
+use AppserverIo\Psr\Pms\QueueContext;
+use AppserverIo\Psr\Pms\ResourceLocator;
 use AppserverIo\Appserver\MessageQueue\QueueManager;
 
 /**
@@ -47,19 +49,19 @@ class QueueLocator implements ResourceLocator
      * Tries to locate the queue that handles the request and returns the instance
      * if one can be found.
      *
-     * @param \AppserverIo\Appserver\MessageQueue\QueueManager $queueManager The queue manager instance
-     * @param \AppserverIo\Psr\MessageQueueProtocol\Queue      $queue        The queue request
+     * @param \AppserverIo\Psr\QueueContext               $queueManager The queue manager instance
+     * @param \AppserverIo\Psr\MessageQueueProtocol\Queue $queue        The queue request
      *
      * @return \AppserverIo\Psr\MessageQueueProtocol\Queue The requested queue instance
      * @see \AppserverIo\Appserver\MessageQueue\ResourceLocator::locate()
      */
-    public function locate(QueueManager $queueManager, Queue $queue)
+    public function locate(QueueContext $queueManager, Queue $queue)
     {
 
         // load registered queues and requested queue name
         $queues = $queueManager->getQueues();
 
-        // return Receiver of requested queue if available
+        // return the listener of requested queue if available
         if (array_key_exists($queueName = $queue->getName(), $queues)) {
             return $queues[$queueName];
         }

@@ -26,8 +26,8 @@ namespace AppserverIo\Appserver\PersistenceContainer;
 use AppserverIo\Appserver\ServletEngine\Valve;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequest;
 use AppserverIo\Psr\Servlet\Http\HttpServletResponse;
-use AppserverIo\Psr\PersistenceContainerProtocol\BeanContext;
-use AppserverIo\Psr\PersistenceContainerProtocol\RemoteMethodProtocol;
+use AppserverIo\Psr\EnterpriseBeans\BeanContext;
+use AppserverIo\RemoteMethodInvocation\RemoteMethodProtocol;
 
 /**
  * Valve implementation that will be executed by the servlet engine to handle
