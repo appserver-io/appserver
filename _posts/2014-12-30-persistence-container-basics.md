@@ -49,5 +49,8 @@ The `Stateful Session Bean` is something between the two other types. It is stat
 
 In opposite to a HTTP Session, `Stateful Session Beans` enables you to have session bound persistence, without the need to explicit add the data to a session object. That makes development pretty easy and more comfortable. As `Stateful Session Beans` are persisted in memory and not serialized to files, the Application Server has to take care, that in order ot minimize the number of instances carried around, are flushed when their lifetime has been reached.
 
-#### Message Beans
- 
+#### Message Beans (MDBs)
+
+Other than `Session Beans`, you MUST not invoke `Message Beans` over a proxy, but as receiver of the messages you can send. The messages are not directly sent to a `Message Bean` instead they are sent to a `Message Broker`. The `Message Broker` adds them to a queue until a worker, what will be separate thread, collects and processes it.
+
+> Using `Message Beans` enables you to process long running processes `asynchronously`, because you don't have to wait for an answer after sending a message to the `Message Broker`.
