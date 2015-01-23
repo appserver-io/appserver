@@ -23,7 +23,11 @@ We've three different types of Beans, `Session Beans`, `Message Beans` and `Enti
 
 #### Session Beans
 
-A Session Bean basically is a plain PHP class. You MUST not instantiate it directly, because the application server takes care of its complete lifecycle. Therefore, if you need an instance of a SessionBean, you'll ask the application server to give you an instance, what can be done by a client or DI. In both cases, you will get a proxy to the session bean that allows you to invoke all methods, the SessionBean provides, as you can do if you would have a real instance. But, depending on your configuration, the proxy also allows you to call this method over a network as a remote method call. This makes it obvious for you if your SessionBean is on the same application server instance or on another one in your network. Based on that possibility, an Application Server like appserver.io gives you the power to distribute the components of your application over your network what includes a great and seamless scalability.
+A Session Bean basically is a plain PHP class. You MUST not instantiate it directly, because the application server takes care of its complete lifecycle.
+
+Therefore, if you need an instance of a SessionBean, you'll ask the application server to give you an instance, what can be done by a client or DI. In both cases, you will get a proxy to the session bean that allows you to invoke all methods, the SessionBean provides, as you can do if you would have a real instance. But, depending on your configuration, the proxy also allows you to call this method over a network as a remote method call. This makes it obvious for you if your SessionBean is on the same application server instance or on another one in your network. 
+
+> Based on that possibility, an Application Server like appserver.io gives you the power to distribute the components of your application over your network what includes a great and seamless scalability.
 
 ##### Different types of Session Beans
 
@@ -42,6 +46,8 @@ In opposite to a `Singleton Session Bean`, a `Stateless Session Bean` will alway
 ###### Stateful Session Beans (SFSBs)
 
 The `Stateful Session Bean` is something between the two other types. It is stateful for the session with the ID you pass to the client when you request the instance. A `Stateful Session Bean` is very useful, if you want to implement something like a shopping cart. If you declare the shopping cart instance a class member of your `Session Bean`, this will make it persistent for your session lifetime.
+
+In opposite to a HTTP Session, `Stateful Session Beans` enables you to have session bound persistence, without the need to explicit add the data to a session object. That makes development pretty easy and more comfortable. As `Stateful Session Beans` are persisted in memory and not serialized to files, the Application Server has to take care, that in order ot minimize the number of instances carried around, are flushed when their lifetime has been reached.
 
 #### Message Beans
  
