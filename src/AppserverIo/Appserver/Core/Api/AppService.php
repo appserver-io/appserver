@@ -111,18 +111,16 @@ class AppService extends AbstractService
     {
         // we will have a phar extractor by default
         if (!isset($this->extractor)) {
-
             $configuration = $this->getSystemConfiguration()->getExtractors();
             if (isset($configuration[self::DEFAULT_EXTRACTOR_NAME])) {
                 // create a new extractor with the default configuration
                 $this->extractor = new PharExtractor($this->getInitialContext(), $configuration[self::DEFAULT_EXTRACTOR_NAME]);
 
             } else {
-
                 $this->getInitialContext()->getSystemLogger()->warning(sprintf(
-                        'Did not find configuration for default extractor %s nor was an extractor injected.',
-                        self::DEFAULT_EXTRACTOR_NAME
-                    ));
+                    'Did not find configuration for default extractor %s nor was an extractor injected.',
+                    self::DEFAULT_EXTRACTOR_NAME
+                ));
                 $this->extractor = null;
             }
         }
@@ -133,7 +131,9 @@ class AppService extends AbstractService
     /**
      * Will inject a certain extractor to be used
      *
-     * @param \AppserverIo\Appserver\Core\Interfaces\ExtractorInterface $extractor
+     * @param \AppserverIo\Appserver\Core\Interfaces\ExtractorInterface $extractor The extractor instance to inject
+     *
+     * @return null
      */
     public function injectExtractor(ExtractorInterface $extractor)
     {

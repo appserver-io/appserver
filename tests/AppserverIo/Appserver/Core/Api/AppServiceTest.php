@@ -27,7 +27,7 @@ use AppserverIo\Appserver\Core\AbstractTest;
 use AppserverIo\Appserver\Core\Api\Node\AppNode;
 
 /**
- * Unit tests for our abstract service implementation.
+ * Unit tests for our app service implementation.
  *
  * @category   Server
  * @package    Appserver

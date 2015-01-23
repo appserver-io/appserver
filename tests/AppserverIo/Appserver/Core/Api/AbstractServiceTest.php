@@ -288,8 +288,7 @@ class AbstractServiceTest extends AbstractTest
     {
         $className = 'AppserverIo\Appserver\Core\Api\Mock\MockService';
         $instance = $this->service->newInstance($className, array(
-            $this->service->getInitialContext(),
-            \Mutex::create(false)
+            $this->service->getInitialContext()
         ));
         $this->assertInstanceOf($className, $instance);
     }
@@ -973,7 +972,7 @@ class AbstractServiceTest extends AbstractTest
 
         // make the call and check if umask() did get called
         $service->initUmask();
-        $this->assertNotContains('umask', AbstractServiceTest::$callbackCallStack['testInitUmaskOmitWindows']);
+        $this->assertFalse(isset(AbstractServiceTest::$callbackCallStack['testInitUmaskOmitWindows']));
     }
 
     /**
@@ -1075,6 +1074,7 @@ class AbstractServiceTest extends AbstractTest
      *
      * @return null
      *
+     * @expectedException \Exception
      */
     public function testCreateSslCertificateWhichCannotBeWritten()
     {
@@ -1086,9 +1086,11 @@ class AbstractServiceTest extends AbstractTest
 
         // create a \SplFileObject mock which cannot be written to
         $certPath = $this->getTmpDir() . DIRECTORY_SEPARATOR . md5(__FUNCTION__);
+        $existingCertPath = $this->getTmpDir() . DIRECTORY_SEPARATOR . md5(__METHOD__);
+        touch($existingCertPath);
         $splFileMock = $this->getMockBuilder('\SplFileObject')
             ->setMethods(array('fwrite'))
-            ->setConstructorArgs(array($certPath))
+            ->setConstructorArgs(array($existingCertPath))
             ->getMock();
         $splFileMock->expects($this->once())
             ->method('fwrite')
@@ -1121,15 +1123,16 @@ class AbstractServiceTest extends AbstractTest
 
         // make our "OpenSSL extension" return an error (but only once!)
         AbstractServiceTest::$opensslErrorStringCallback = function () {
-            AbstractServiceTest::$callbackCallStack[] = 'openssl_error_string';
+
             if (!in_array('openssl_error_string', AbstractServiceTest::$callbackCallStack)) {
+                AbstractServiceTest::$callbackCallStack[] = 'openssl_error_string';
                 return 'I am an error, fear me!';
             }
 
             return false;
         };
 
-        $service->createSslCertificate($this->getTmpDir() . DIRECTORY_SEPARATOR . md5(__FUNCTION__));
+        $service->createSslCertificate(new \SplFileInfo($this->getTmpDir() . DIRECTORY_SEPARATOR . md5(__FUNCTION__)));
     }
 
     /**
@@ -1143,7 +1146,7 @@ class AbstractServiceTest extends AbstractTest
         $service = $this->getPartialServiceMock(array('isOpenSslAvailable', 'getOsIdentifier'));
         $service->expects($this->atLeastOnce())
             ->method('isOpenSslAvailable')
-            ->will($this->returnValue(false));
+            ->will($this->returnValue(true));
         $service->expects($this->never())
             ->method('getOsIdentifier');
 
@@ -1151,7 +1154,7 @@ class AbstractServiceTest extends AbstractTest
         touch($certPath);
 
         // test is fine if we never reach the call to 'getOsIdentifier'
-        $service->createSslCertificate($certPath);
+        $service->createSslCertificate(new \SplFileInfo($certPath));
     }
 
     /**

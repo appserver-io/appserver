@@ -489,10 +489,6 @@ abstract class AbstractService implements ServiceInterface
         $files = $this->globDir($dir->getPathname() . DIRECTORY_SEPARATOR . '*');
 
         foreach ($files as $file) {
-            // skip . and .. dirs
-            if (basename($file) === '.' || basename($file) === '..') {
-                continue;
-            }
             if (is_dir($file)) {
                 @rmdir(realpath($file));
             } elseif (is_file($file) && $alsoRemoveFiles) {
@@ -559,13 +555,13 @@ abstract class AbstractService implements ServiceInterface
     /**
      * Creates the SSL file passed as parameter or nothing if the file already exists.
      *
-     * @param string $certificate The file path of the SSL file to generate
+     * @param \SplFileInfo $certificate The file info about the SSL file to generate
      *
      * @return void
      *
      * @throws \Exception
      */
-    public function createSslCertificate($certificate)
+    public function createSslCertificate(\SplFileInfo $certificate)
     {
 
         // first we've to check if OpenSSL is available
@@ -574,7 +570,7 @@ abstract class AbstractService implements ServiceInterface
         }
 
         // do nothing if the file is already available
-        if (is_file($certificate)) {
+        if ($certificate->isFile()) {
             return;
         }
 
@@ -630,13 +626,14 @@ abstract class AbstractService implements ServiceInterface
         openssl_pkey_export($privkey, $pkeyout, null, $configargs);
 
         // write the SSL certificate data to the target
-        if (($written = file_put_contents($certificate, $certout . $pkeyout)) === false) {
-            throw new \Exception(sprintf('Can\'t create SSL certificate %s', $certificate));
+        $file = $certificate->openFile('w');
+        if (($written = $file->fwrite($certout . $pkeyout)) === false) {
+            throw new \Exception(sprintf('Can\'t create SSL certificate %s', $certificate->getPathname()));
         }
 
         // log a message that the file has been written successfully
         $this->getInitialContext()->getSystemLogger()->info(
-            sprintf('Successfully created %s with %d bytes', $certificate, $written)
+            sprintf('Successfully created %s with %d bytes', $certificate->getPathname(), $written)
         );
 
         // log any errors that occurred here

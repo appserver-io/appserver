@@ -91,6 +91,13 @@ class AppNode extends AbstractNode
         return $this->webappPath;
     }
 
+    /**
+     * Will initialize an existing app node from a given application
+     *
+     * @param ApplicationInterface $application The application to init from
+     *
+     * @return null
+     */
     public function initFromApplication(ApplicationInterface $application)
     {
         $this->setNodeName(self::NODE_NAME);

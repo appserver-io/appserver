@@ -24,6 +24,7 @@ namespace AppserverIo\Appserver\Core\Mock;
 
 use AppserverIo\Appserver\Core\InitialContext;
 use AppserverIo\Appserver\Core\Mock\InitialContext\MockSystemLogger;
+use AppserverIo\Configuration\Interfaces\NodeInterface;
 
 /**
  * Mocked initial context
@@ -45,6 +46,34 @@ class MockInitialContext extends InitialContext
      * @var \AppserverIo\Appserver\Core\Mock\InitialContext\MockSystemLogger|\Psr\Log\LoggerInterface $systemLogger
      */
     protected $systemLogger;
+
+    /**
+     * Constructor without handling of classloaders.
+     * This allows for testing without pthreads extension
+     *
+     * @param \AppserverIo\Configuration\Interfaces\NodeInterface $systemConfiguration The system configuration
+     */
+    public function __construct(NodeInterface $systemConfiguration)
+    {
+        // initialize the storage
+        $initialContextNode = $systemConfiguration->getInitialContext();
+        $storageNode = $initialContextNode->getStorage();
+        $reflectionClass = $this->newReflectionClass($storageNode->getType());
+
+        // create the storage instance
+        $storage = $reflectionClass->newInstance();
+
+        // append the storage servers registered in system configuration
+        foreach ($storageNode->getStorageServers() as $storageServer) {
+            $storage->addServer($storageServer->getAddress(), $storageServer->getPort(), $storageServer->getWeight());
+        }
+
+        // add the storage to the initial context
+        $this->setStorage($storage);
+
+        // attach the system configuration to the initial context
+        $this->setSystemConfiguration($systemConfiguration);
+    }
 
     /**
      * Returns the system logger instance
