@@ -6,8 +6,7 @@
 
 ## Features
 
-* Move interfaces ResourceLocator, ServiceContext, ServiceExecutor, ServiceProvider, ServiceResourceLocator + TimerServiceContext from appserver-io/appserver package
-* Move exceptions InvalidBeanTypeException + ServiceAlreadyRegisteredException from appserver-io/appserver package
+* Refactoring, move interfaces of Persistence-Container + Message-Queue to separate packages
 
 # Version 1.0.0-beta4
 
