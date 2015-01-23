@@ -6,7 +6,7 @@
         <a href="https://github.com/{{ post.author }}" class="post-author">
             <img src="https://github.com/{{ post.author }}.png" class="avatar" alt="{{ post.author }}" width="24" height="24" />
             {{ post.author }}
-        </a>&nbsp;<span class="disqus-comment-count" data-disqus-url="{{ site.url }}{{ post.url | prepend: site.baseurl }}">First article</span>
+        </a>&nbsp;<span class="disqus-comment-count" data-disqus-url="{{ site.url }}{{ post.url | prepend: site.baseurl }}"></span>
         {% endif %}
     </p>
     {% if post.image %}
