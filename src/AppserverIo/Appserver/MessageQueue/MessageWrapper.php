@@ -34,6 +34,7 @@ use AppserverIo\Messaging\Utils\PriorityKeys;
 use AppserverIo\Messaging\Utils\PriorityLow;
 use AppserverIo\Messaging\Utils\StateKeys;
 use AppserverIo\Messaging\Utils\StateActive;
+use AppserverIo\Psr\Application\ApplicationInterface;
 
 /**
  * This is a simple stackable wrapper for a message.
@@ -100,11 +101,11 @@ class MessageWrapper extends GenericStackable implements Message
     /**
      * Initializes and returns a new job instance.
      *
-     * @param \AppserverIo\Psr\Application\ApplicationInterface The application instance
+     * @param \AppserverIo\Psr\Application\ApplicationInterface $application The application instance
      *
      * @return \AppserverIo\Appserver\MessageQueue\Job The job instance
      */
-    public function getJob($application)
+    public function getJob(ApplicationInterface $application)
     {
         return new Job($this, $application);
     }

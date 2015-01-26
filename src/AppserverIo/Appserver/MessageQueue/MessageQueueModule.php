@@ -112,7 +112,6 @@ class MessageQueueModule extends GenericStackable
 
                         // create a separate queue for each priority
                         foreach (PriorityKeys::getAll() as $priorityKey) {
-
                             // initialize the stackable for the job storage
                             $this->jobsToExecute[$jobCounter] = new GenericStackable();
 

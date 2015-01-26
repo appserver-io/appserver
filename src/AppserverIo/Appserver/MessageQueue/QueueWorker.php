@@ -120,9 +120,9 @@ class QueueWorker extends \Thread
     }
 
     /**
-     * Removes the job from the queue.
+     * Removes the message from the queue.
      *
-     * @param \AppserverIo\Appserver\MessageQueue\Job $job The job to be removed from the queue
+     * @param \AppserverIo\Psr\Pms\Message $message The message to be removed from the queue
      *
      * @return void
      */
@@ -167,7 +167,6 @@ class QueueWorker extends \Thread
         while (true) {
             // iterate over all job wrappers
             foreach ($this->jobsToExecute as $jobId => $jobWrapper) {
-
                 // load the message
                 $message = $this->messages[$jobWrapper->messageId];
 
@@ -191,7 +190,6 @@ class QueueWorker extends \Thread
 
                         // make sure the job has been finished
                         if ($jobsExecuting[$jobId]->isFinished()) {
-
                             // we remove the message to free the memory
                             $this->remove($message);
 
