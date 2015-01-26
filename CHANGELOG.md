@@ -4,6 +4,7 @@
 
 * Added missing dependency to appserver-io/lang
 * Remove unnecessary interfaces SenderInterface + ReceiverInterface
+* Fixed invalid namespace in QueueManager::createSenderForQueue() method
 
 ## Features
 
