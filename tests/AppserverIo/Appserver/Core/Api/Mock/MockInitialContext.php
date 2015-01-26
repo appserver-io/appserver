@@ -11,13 +11,11 @@
  *
  * PHP version 5
  *
- * @category   Server
- * @package    Appserver
- * @subpackage Core
- * @author     Bernhard Wick <bw@appserver.io>
- * @copyright  2015 TechDivision GmbH <info@appserver.io>
- * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link       http://www.appserver.io
+ * @author    Bernhard Wick <bw@appserver.io>
+ * @copyright 2015 TechDivision GmbH <info@appserver.io>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      https://github.com/appserver-io/appserver
+ * @link      http://www.appserver.io
  */
 
 namespace AppserverIo\Appserver\Core\Api\Mock;
@@ -26,15 +24,13 @@ use AppserverIo\Appserver\Core\InitialContext;
 use AppserverIo\Configuration\Interfaces\NodeInterface;
 
 /**
- * Mocked initial context
+ * Mocked initial context.
  *
- * @category   Server
- * @package    Appserver
- * @subpackage Core
- * @author     Bernhard Wick <bw@appserver.io>
- * @copyright  2015 TechDivision GmbH <info@appserver.io>
- * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link       http://www.appserver.io
+ * @author    Bernhard Wick <bw@appserver.io>
+ * @copyright 2015 TechDivision GmbH <info@appserver.io>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      https://github.com/appserver-io/appserver
+ * @link      http://www.appserver.io
  */
 class MockInitialContext extends \AppserverIo\Appserver\Core\Mock\MockInitialContext
 {

@@ -11,15 +11,12 @@
  *
  * PHP version 5
  *
- * @category   Server
- * @package    Appserver
- * @subpackage Application
- * @author     Tim Wagner <tw@appserver.io>
- * @author     Markus Stockbauer <ms@techdivision.com>
- * @copyright  2014 TechDivision GmbH <info@appserver.io>
- * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link       https://github.com/appserver-io/appserver
- * @link       http://www.appserver.io
+ * @author    Markus Stockbauer <ms@techdivision.com>
+ * @author    Tim Wagner <tw@appserver.io>
+ * @copyright 2015 TechDivision GmbH <info@appserver.io>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      https://github.com/appserver-io/appserver
+ * @link      http://www.appserver.io
  */
 
 namespace AppserverIo\Appserver\MessageQueue;
@@ -38,15 +35,12 @@ use AppserverIo\Appserver\Core\Api\InvalidConfigurationException;
 /**
  * The queue manager handles the queues and message beans registered for the application.
  *
- * @category   Server
- * @package    Appserver
- * @subpackage Application
- * @author     Tim Wagner <tw@appserver.io>
- * @author     Markus Stockbauer <ms@techdivision.com>
- * @copyright  2014 TechDivision GmbH <info@appserver.io>
- * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link       https://github.com/appserver-io/appserver
- * @link       http://www.appserver.io
+ * @author    Markus Stockbauer <ms@techdivision.com>
+ * @author    Tim Wagner <tw@appserver.io>
+ * @copyright 2015 TechDivision GmbH <info@appserver.io>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      https://github.com/appserver-io/appserver
+ * @link      http://www.appserver.io
  *
  * @property \AppserverIo\Psr\Application\ApplicationInterface $application     The application to manage queues for
  * @property array                                             $directories     Our directories

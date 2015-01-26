@@ -10,14 +10,12 @@
  * http://opensource.org/licenses/osl-3.0.php
  *
  * PHP version 5
- *
- * @category   Server
- * @package    Appserver
- * @subpackage Application
- * @author     Philipp Dittert <pd@techdivision.com>
- * @copyright  2014 TechDivision GmbH <info@appserver.io>
- * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link       http://www.appserver.io
+ * @author    Philipp Dittert <pd@techdivision.com>
+ * @author    Tim Wagner <tw@appserver.io>
+ * @copyright 2015 TechDivision GmbH <info@appserver.io>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      https://github.com/appserver-io/appserver
+ * @link      http://www.appserver.io
  */
 
 namespace AppserverIo\Appserver\ServletEngine\Authentication;
@@ -29,13 +27,12 @@ use AppserverIo\Psr\Servlet\ServletResponse;
 /**
  * Abstract class for authentication adapters.
  *
- * @category   Server
- * @package    Appserver
- * @subpackage Application
- * @author     Philipp Dittert <pd@techdivision.com>
- * @copyright  2014 TechDivision GmbH <info@appserver.io>
- * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link       http://www.appserver.io
+ * @author    Philipp Dittert <pd@techdivision.com>
+ * @author    Tim Wagner <tw@appserver.io>
+ * @copyright 2015 TechDivision GmbH <info@appserver.io>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      https://github.com/appserver-io/appserver
+ * @link      http://www.appserver.io
  */
 abstract class AbstractAuthentication
 {

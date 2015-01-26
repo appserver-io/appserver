@@ -8,18 +8,28 @@
  * This source file is subject to the Open Software License (OSL 3.0)
  * that is available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
+ *
+ * PHP version 5
+ *
+ * @author    Tim Wagner <tw@techdivision.com>
+ * @author    Johann Zelger <jw@appserver.io>
+ * @copyright 2015 TechDivision GmbH <info@appserver.io>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      https://github.com/appserver-io/appserver
+ * @link      http://www.appserver.io
  */
 namespace AppserverIo\Appserver\Core\Mock;
 
 /**
  * This is a mock object for running PHPUnit testing purposes only.
  *
- * @package AppserverIo\Appserver\Core
- * @copyright Copyright (c) 2010 <info@techdivision.com> - TechDivision GmbH
- * @license http://opensource.org/licenses/osl-3.0.php
- *          Open Software License (OSL 3.0)
- * @author Tim Wagner <tw@techdivision.com>
- * @author Johann Zelger <jz@appserver.io>
+ * @author    Tim Wagner <tw@techdivision.com>
+ * @author    Johann Zelger <jw@appserver.io>
+ * @copyright 2015 TechDivision GmbH <info@appserver.io>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      https://github.com/appserver-io/appserver
+ * @link      http://www.appserver.io
+ *
  * @coversNothing
  */
 class MockContainerThread
@@ -42,7 +52,7 @@ class MockContainerThread
      */
     public function join()
     {}
-    
+
     /**
      * @see \Thread::synchronized()
      */

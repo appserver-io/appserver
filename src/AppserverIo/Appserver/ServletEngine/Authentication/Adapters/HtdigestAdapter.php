@@ -11,14 +11,13 @@
  *
  * PHP version 5
  *
- * @category   Server
- * @package    Appserver
- * @subpackage Application
- * @author     Florian Sydekum <fs@techdivision.com>
- * @author     Philipp Dittert <pd@techdivision.com>
- * @copyright  2014 TechDivision GmbH <info@appserver.io>
- * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link       http://www.appserver.io
+ * @author    Florian Sydekum <fs@techdivision.com>
+ * @author    Philipp Dittert <pd@techdivision.com>
+ * @author    Tim Wagner <tw@appserver.io>
+ * @copyright 2015 TechDivision GmbH <info@appserver.io>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      https://github.com/appserver-io/appserver
+ * @link      http://www.appserver.io
  */
 
 namespace AppserverIo\Appserver\ServletEngine\Authentication\Adapters;
@@ -29,14 +28,13 @@ use AppserverIo\Appserver\ServletEngine\Authentication\AuthenticationAdapter;
 /**
  * Authentication adapter for htdigest file.
  *
- * @category   Server
- * @package    Appserver
- * @subpackage Application
- * @author     Florian Sydekum <fs@techdivision.com>
- * @author     Philipp Dittert <pd@techdivision.com>
- * @copyright  2014 TechDivision GmbH <info@appserver.io>
- * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link       http://www.appserver.io
+ * @author    Florian Sydekum <fs@techdivision.com>
+ * @author    Philipp Dittert <pd@techdivision.com>
+ * @author    Tim Wagner <tw@appserver.io>
+ * @copyright 2015 TechDivision GmbH <info@appserver.io>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      https://github.com/appserver-io/appserver
+ * @link      http://www.appserver.io
  */
 class HtdigestAdapter extends AuthenticationAdapter
 {
