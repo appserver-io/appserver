@@ -42,7 +42,7 @@ interface ExtractorInterface
     const FLAG_UNDEPLOYED = '.undeployed';
 
     /**
-     * Filename of the hidden file that contains timestamp with last succuessfull deployment.
+     * Filename of the hidden file that contains timestamp with last successful deployment.
      *
      * @var string
      */
@@ -58,7 +58,7 @@ interface ExtractorInterface
     /**
      * Soaks the passed archive from a location in the filesystem
      * into the deploy directory and prepares it for the next
-     * restart by setting the apropriate flag.
+     * restart by setting the appropriate flag.
      *
      * @param \SplFileInfo $archive The archive to be soaked
      *
@@ -78,10 +78,10 @@ interface ExtractorInterface
     public function deployArchive(\SplFileInfo $archive);
 
     /**
-     * Undeployes the passed archive after backing up
+     * Un-deploys the passed archive after backing up
      * files that are NOT part of the archive.
      *
-     * @param \SplFileInfo $archive The archive file to be undeployed
+     * @param \SplFileInfo $archive The archive file to be un-deployed
      *
      * @throws \Exception
      * @return void
@@ -115,6 +115,16 @@ interface ExtractorInterface
      * @return void
      */
     public function flagArchive(\SplFileInfo $archive, $flag);
+
+    /**
+     * Deletes all old flags, so the app will be un-deployed with
+     * the next appserver restart.
+     *
+     * @param \SplFileInfo $archive The archive to un-flag
+     *
+     * @return void
+     */
+    public function unflagArchive(\SplFileInfo $archive);
 
     /**
      * Returns the archive extension suffix e.g. .phar

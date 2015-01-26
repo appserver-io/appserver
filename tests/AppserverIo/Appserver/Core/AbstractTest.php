@@ -8,7 +8,18 @@
  * This source file is subject to the Open Software License (OSL 3.0)
  * that is available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
+ *
+ * PHP version 5
+ *
+ * @category   Server
+ * @package    Appserver
+ * @subpackage Core
+ * @author     Tim Wagner <tw@techdivision.com>
+ * @copyright  2014 TechDivision GmbH <info@appserver.io>
+ * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link       http://www.appserver.io
  */
+
 namespace AppserverIo\Appserver\Core;
 
 use AppserverIo\Configuration\Configuration;
@@ -16,17 +27,48 @@ use AppserverIo\Appserver\Core\Api\Node\AppserverNode;
 use AppserverIo\Appserver\Core\Api\Node\ContainerNode;
 use AppserverIo\Appserver\Core\Api\Node\DeploymentNode;
 use AppserverIo\Appserver\Core\Mock\MockInitialContext;
+use org\bovigo\vfs\vfsStream;
 
 /**
+ * Abstract base class for appserver related tests
  *
- * @package AppserverIo\Appserver\Core
- * @copyright Copyright (c) 2010 <info@techdivision.com> - TechDivision GmbH
- * @license http://opensource.org/licenses/osl-3.0.php
- *          Open Software License (OSL 3.0)
- * @author Tim Wagner <tw@techdivision.com>
+ * @category   Server
+ * @package    Appserver
+ * @subpackage Core
+ * @author     Tim Wagner <tw@techdivision.com>
+ * @copyright  2014 TechDivision GmbH <info@appserver.io>
+ * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link       http://www.appserver.io
  */
 abstract class AbstractTest extends \PHPUnit_Framework_TestCase
 {
+
+    /**
+     * Will clear all files from the temporary directory
+     *
+     * @return boolean
+     */
+    protected function clearTmpDir()
+    {
+        return $this->deleteTree($this->getTmpDir());
+    }
+
+    /**
+     * Will recursively delete the content of a directory
+     *
+     * @param string $dir Path to the directory
+     *
+     * @return boolean
+     */
+    protected function deleteTree($dir)
+    {
+        $files = array_diff(scandir($dir), array('.','..', '.gitignore'));
+        foreach ($files as $file) {
+            (is_dir("$dir/$file")) ? $this->deleteTree("$dir/$file") : unlink("$dir/$file");
+        }
+
+        return rmdir($dir);
+    }
 
     /**
      * Returns the system configuration.
@@ -132,5 +174,33 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
 
         // return the array with the socket pair
         return $sockets;
+    }
+
+    /**
+     * Path to a real, existing directory which might be used for not-mockable filesystem operations (e.g. chown)
+     *
+     * @return string
+     */
+    public function getTmpDir()
+    {
+        return sys_get_temp_dir() . DIRECTORY_SEPARATOR  . md5(__CLASS__);
+    }
+
+    /**
+     * Will set up a virtual stream wrapper to mock file system operations below a configured root path
+     * Usage:
+     *  $rootDir = vfsStreamWrapper::getRoot();
+     *
+     * @param string $rootDir Root directory path of your mocked file system path
+     *
+     * @return \org\bovigo\vfs\vfsStreamDirectory
+     *
+     * @see https://phpunit.de/manual/3.7/en/test-doubles.html#test-doubles.mocking-the-filesystem.examples.ExampleTest2.php
+     * @see https://github.com/mikey179/vfsStream/wiki
+     * @see http://tech.vg.no/2011/03/09/mocking-the-file-system-using-phpunit-and-vfsstream/
+     */
+    public function setUpFilesystemMock($rootDir)
+    {
+        return vfsStream::setup($rootDir);
     }
 }

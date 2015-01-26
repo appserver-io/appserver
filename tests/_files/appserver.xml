@@ -3,6 +3,14 @@
 
 	<params>
         <param name="base.dir" type="string">/opt/appserver</param>
+        <param name="tmp.dir" type="string">/var/tmp</param>
+        <param name="deploy.dir" type="string">/deploy</param>
+        <param name="webapps.dir" type="string">/webapps</param>
+        <param name="conf.dir" type="string">/etc/appserver</param>
+        <param name="confd.dir" type="string">/etc/appserver/conf.d</param>
+        <param name="user" type="string">nobody</param>
+        <param name="group" type="string">nobody</param>
+        <param name="umask" type="string">0002</param>
     </params>
 
 	<initialContext type="AppserverIo\Appserver\Core\InitialContext">
