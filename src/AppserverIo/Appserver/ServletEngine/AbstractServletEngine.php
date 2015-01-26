@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * AppserverIo\Appserver\ServletEngine\AbstractServletEngine
+ *
  * NOTICE OF LICENSE
  *
  * This source file is subject to the Open Software License (OSL 3.0)
@@ -9,14 +11,12 @@
  *
  * PHP version 5
  *
- * @category   Server
- * @package    Appserver
- * @subpackage ServletEngine
- * @author     Bernhard Wick <bw@appserver.io>
- * @author     Tim Wagner <tw@appserver.io>
- * @copyright  2014 TechDivision GmbH - <info@appserver.io>
- * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link       http://www.appserver.io/
+ * @author    Bernhard Wick <bw@appserver.io>
+ * @author    Tim Wagner <tw@appserver.io>
+ * @copyright 2015 TechDivision GmbH <info@appserver.io>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      https://github.com/appserver-io/appserver
+ * @link      http://www.appserver.io
  */
 
 namespace AppserverIo\Appserver\ServletEngine;
@@ -30,18 +30,14 @@ use AppserverIo\Storage\GenericStackable;
 use AppserverIo\WebServer\Interfaces\HttpModuleInterface;
 
 /**
- * AppserverIo\Appserver\ServletEngine\AbstractServletEngine
- *
  * Abstract servlet engine which provides basic functionality for child implementations
  *
- * @category   Server
- * @package    Appserver
- * @subpackage ServletEngine
- * @author     Bernhard Wick <bw@appserver.io>
- * @author     Tim Wagner <tw@appserver.io>
- * @copyright  2014 TechDivision GmbH - <info@appserver.io>
- * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link       http://www.appserver.io/
+ * @author    Bernhard Wick <bw@appserver.io>
+ * @author    Tim Wagner <tw@appserver.io>
+ * @copyright 2015 TechDivision GmbH <info@appserver.io>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      https://github.com/appserver-io/appserver
+ * @link      http://www.appserver.io
  *
  * @property \AppserverIo\Storage\GenericStackable $applications Storage with the available applications
  * @property \AppserverIo\Storage\GenericStackable $dependencies Storage with the available applications

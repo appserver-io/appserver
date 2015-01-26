@@ -11,14 +11,12 @@
  *
  * PHP version 5
  *
- * @category   Server
- * @package    Appserver
- * @subpackage DependencyInjectionContainer
- * @author     Tim Wagner <tw@appserver.io>
- * @copyright  2014 TechDivision GmbH <info@appserver.io>
- * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link       https://github.com/appserver-io/appserver
- * @link       http://www.appserver.io
+ * @author    Tim Wagner <tw@appserver.io>
+ * @author    Bernhard Wick <bw@appserver.io>
+ * @copyright 2015 TechDivision GmbH <info@appserver.io>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      https://github.com/appserver-io/appserver
+ * @link      http://www.appserver.io
  */
 
 namespace AppserverIo\Appserver\DependencyInjectionContainer;
@@ -33,15 +31,12 @@ use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\ObjectManagerI
  * The object manager is necessary to load and provides information about all
  * objects related with the application itself.
  *
- * @category   Server
- * @package    Appserver
- * @subpackage DependencyInjectionContainer
- * @author     Tim Wagner <tw@appserver.io>
- * @author     Bernhard Wick <bw@appserver.io>
- * @copyright  2014 TechDivision GmbH <info@appserver.io>
- * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link       https://github.com/appserver-io/appserver
- * @link       http://www.appserver.io
+ * @author    Tim Wagner <tw@appserver.io>
+ * @author    Bernhard Wick <bw@appserver.io>
+ * @copyright 2015 TechDivision GmbH <info@appserver.io>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      https://github.com/appserver-io/appserver
+ * @link      http://www.appserver.io
  *
  * @property array                                 $configuredDescriptors Descriptors used to parse deployment descriptors and annotations from the managers configuration
  * @property \AppserverIo\Storage\StorageInterface $objectDescriptors     Storage for our collected descriptors

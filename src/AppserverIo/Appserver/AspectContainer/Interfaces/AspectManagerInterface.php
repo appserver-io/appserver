@@ -9,13 +9,11 @@
  *
  * PHP version 5
  *
- * @category   Server
- * @package    Appserver
- * @subpackage Application
- * @author     Bernhard Wick <bw@appserver.io>
- * @copyright  2014 TechDivision GmbH - <info@appserver.io>
- * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link       http://www.appserver.io/
+ * @author    Bernhard Wick <bw@appserver.io>
+ * @copyright 2015 TechDivision GmbH - <info@appserver.io>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      https://github.com/appserver-io/appserver
+ * @link      http://www.appserver.io/
  */
 
 namespace AppserverIo\Appserver\AspectContainer\Interfaces;
@@ -23,17 +21,13 @@ namespace AppserverIo\Appserver\AspectContainer\Interfaces;
 use AppserverIo\Doppelgaenger\AspectRegister;
 
 /**
- * AppserverIo\Appserver\AspectContainer\Interfaces\AspectManagerInterface
+ * Interface which all manager classes supervising aspects should implement.
  *
- * Interface which all manager classes supervising aspects should implement
- *
- * @category   Server
- * @package    Appserver
- * @subpackage Application
- * @author     Bernhard Wick <bw@appserver.io>
- * @copyright  2014 TechDivision GmbH - <info@appserver.io>
- * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link       http://www.appserver.io/
+ * @author    Bernhard Wick <bw@appserver.io>
+ * @copyright 2015 TechDivision GmbH - <info@appserver.io>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      https://github.com/appserver-io/appserver
+ * @link      http://www.appserver.io/
  */
 interface AspectManagerInterface
 {

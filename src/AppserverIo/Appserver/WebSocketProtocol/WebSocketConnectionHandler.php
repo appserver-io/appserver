@@ -11,15 +11,13 @@
  *
  * PHP version 5
  *
- * @category   Server
- * @package    Appserver
- * @subpackage WebSocketProtocol
- * @author     Tim Wagner <tw@techdivision.com>
- * @copyright  2014 TechDivision GmbH <info@appserver.io>
- * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link       http://www.appserver.io
- * @link       http://ca.php.net/manual/en/ref.http.php
- * @link       http://dev.w3.org/html5/websockets
+ * @author    Tim Wagner <tw@appserver.io>
+ * @copyright 2015 TechDivision GmbH <info@appserver.io>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      https://github.com/appserver-io/appserver
+ * @link      http://www.appserver.io
+ * @link      http://ca.php.net/manual/en/ref.http.php
+ * @link      http://dev.w3.org/html5/websockets
  */
 
 namespace AppserverIo\Appserver\WebSocketProtocol;
@@ -44,15 +42,13 @@ use AppserverIo\Server\Interfaces\ServerContextInterface;
  * This is a mediator between the Server and the applications provided by
  * the container to handle real-time messaging through a web browser.
  *
- * @category   Server
- * @package    Appserver
- * @subpackage WebSocketProtocol
- * @author     Tim Wagner <tw@techdivision.com>
- * @copyright  2014 TechDivision GmbH <info@appserver.io>
- * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link       http://www.appserver.io
- * @link       http://ca.php.net/manual/en/ref.http.php
- * @link       http://dev.w3.org/html5/websockets
+ * @author    Tim Wagner <tw@appserver.io>
+ * @copyright 2015 TechDivision GmbH <info@appserver.io>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      https://github.com/appserver-io/appserver
+ * @link      http://www.appserver.io
+ * @link      http://ca.php.net/manual/en/ref.http.php
+ * @link      http://dev.w3.org/html5/websockets
  */
 class WebSocketConnectionHandler implements MessageComponentInterface
 {

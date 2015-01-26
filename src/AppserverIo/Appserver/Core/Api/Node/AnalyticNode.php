@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * AppserverIo\Appserver\Core\Api\Node\AnalyticNode
+ *
  * NOTICE OF LICENSE
  *
  * This source file is subject to the Open Software License (OSL 3.0)
@@ -9,34 +11,32 @@
  *
  * PHP version 5
  *
- * @category   Server
- * @package    Appserver
- * @subpackage Core
- * @author     Bernhard Wick <bw@appserver.io>
- * @copyright  2014 TechDivision GmbH - <info@appserver.io>
- * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link       http://www.appserver.io/
+ * @author    Bernhard Wick <bw@appserver.io>
+ * @copyright 2015 TechDivision GmbH <info@appserver.io>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      https://github.com/appserver-io/appserver
+ * @link      http://www.appserver.io
  */
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
 /**
- * AppserverIo\Appserver\Core\Api\Node\AnalyticNode
+ * Node which represents a collection of analytic steps run on a certain URI.
  *
- * Node which represents a collection of analytic steps run on a certain uri
- *
- * @category   Server
- * @package    Appserver
- * @subpackage Core
- * @author     Bernhard Wick <bw@appserver.io>
- * @copyright  2014 TechDivision GmbH - <info@appserver.io>
- * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link       http://www.appserver.io/
+ * @author    Bernhard Wick <bw@appserver.io>
+ * @copyright 2015 TechDivision GmbH <info@appserver.io>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      https://github.com/appserver-io/appserver
+ * @link      http://www.appserver.io
  */
 class AnalyticNode extends AbstractNode
 {
-    // We use traits which give us the possibility to have collections of the child nodes mentioned in the
-    // corresponding trait name
+
+    /**
+     * A connectors node trait.
+     *
+     * @var \AppserverIo\Appserver\Core\Api\Node\ConnectionHandlersNodeTrait
+     */
     use ConnectorsNodeTrait;
 
     /**
