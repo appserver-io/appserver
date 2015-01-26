@@ -3,15 +3,21 @@ layout: docs
 title: Configuration
 position: 130
 group: Docs
+subDocs:
+  - title: Basic Architecture
+    href: basic-architecture
+  - title: Container Configuration
+    href: container-configuration
+  - title: Server Configuration
+    href: server-configuration
+  - title: Application Configuration
+    href: application-configuration
+  - title: Configuration Defaults
+    href: configuration-defaults
+  - title: Optional Configuration
+    href: optional-configuration
 permalink: /documentation/configuration.html
 ---
-
-> [Basic Architecture](#basic-architecture)  
-> [Container Configuration](#container-configuration)  
-> [Server Configuration](#server-configuration)  
-> [Application Configuration](#application-configuration)  
-> [Configuration Defaults](#configuration-defaults)  
-> [Optional Configuration](#optional-configuration)  
 
 We believe that the appserver should be highly configurable, so anyone interested can fiddle 
 around with it. Therefor we provide a central configuration file located at `/opt/appserver/etc/appserver.xml`.
