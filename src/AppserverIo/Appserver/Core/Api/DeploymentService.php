@@ -34,7 +34,7 @@ use AppserverIo\Appserver\Core\Interfaces\ContainerInterface;
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       http://www.appserver.io
  */
-class DeploymentService extends AbstractService
+class DeploymentService extends AbstractFileOperationService
 {
 
     /**
@@ -126,7 +126,7 @@ class DeploymentService extends AbstractService
         $contextInstances = array();
 
         // we will need to test our configuration files
-        $configurationTester = new ConfigurationTester();
+        $configurationTester = new ConfigurationService($this->getInitialContext());
         $baseContextPath = $this->getConfdDir('context.xml');
 
         // validate the base context file and load it as default if validation succeeds

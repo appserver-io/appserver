@@ -140,7 +140,7 @@ class DatasourceService extends AbstractService
      *
      * @return void
      */
-    public function attachDatasource(DatasourceNode $datasourceNode)
+    public function persist(DatasourceNode $datasourceNode)
     {
         $systemConfiguration = $this->getSystemConfiguration();
         $systemConfiguration->attachDatasource($datasourceNode);

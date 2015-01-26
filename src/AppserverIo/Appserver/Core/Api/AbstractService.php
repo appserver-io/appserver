@@ -1,4 +1,5 @@
 <?php
+
 /**
  * AppserverIo\Appserver\Core\Api\AbstractService
  *
@@ -14,6 +15,7 @@
  * @package    Appserver
  * @subpackage Application
  * @author     Tim Wagner <tw@appserver.io>
+ * @author     Bernhard Wick <bw@appserver.io>
  * @copyright  2014 TechDivision GmbH <info@appserver.io>
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       http://www.appserver.io
@@ -33,6 +35,7 @@ use AppserverIo\Lang\NotImplementedException;
  * @package    Appserver
  * @subpackage Application
  * @author     Tim Wagner <tw@appserver.io>
+ * @author     Bernhard Wick <bw@appserver.io>
  * @copyright  2014 TechDivision GmbH <info@appserver.io>
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       http://www.appserver.io
@@ -139,18 +142,6 @@ abstract class AbstractService implements ServiceInterface
     public function newService($className)
     {
         return $this->getInitialContext()->newService($className);
-    }
-
-    /**
-     * Returns true if the OpenSSL extension is loaded, false otherwise
-     *
-     * @return boolean
-     *
-     * @codeCoverageIgnore this will most likely always be mocked/stubbed, and it is trivial anyway
-     */
-    protected function isOpenSslAvailable()
-    {
-        return extension_loaded('openssl');
     }
 
     /**
@@ -344,190 +335,6 @@ abstract class AbstractService implements ServiceInterface
     }
 
     /**
-     * Sets the configured user/group settings on the passed file.
-     *
-     * @param \SplFileInfo $fileInfo The file to set user/group for
-     *
-     * @return void
-     */
-    public function setUserRight(\SplFileInfo $fileInfo)
-    {
-
-        // don't do anything under windows
-        if ($this->getOsIdentifier() === 'WIN') {
-            return;
-        }
-
-        // Get our system configuration as it contains the user and group to set
-        $systemConfiguration = $this->getInitialContext()->getSystemConfiguration();
-
-        // Check for the existence of a user
-        $user = $systemConfiguration->getParam('user');
-        if (!empty($user)) {
-            chown($fileInfo, $user);
-        }
-
-        // Check for the existence of a group
-        $group = $systemConfiguration->getParam('group');
-        if (!empty($group)) {
-            chgrp($fileInfo, $group);
-        }
-    }
-
-    /**
-     * Will set the owner and group on the passed directory.
-     *
-     * @param \SplFileInfo $targetDir The directory to set the rights for
-     *
-     * @return void
-     */
-    public function setUserRights(\SplFileInfo $targetDir)
-    {
-        // we don't do anything under Windows
-        if ($this->getOsIdentifier() === 'WIN') {
-            return;
-        }
-
-        // we don't have a directory to change the user/group permissions for
-        if ($targetDir->isDir() === false) {
-            return;
-        }
-
-        // Get our system configuration as it contains the user and group to set
-        $systemConfiguration = $this->getInitialContext()->getSystemConfiguration();
-
-        // get all the files recursively
-        $files = $this->globDir($targetDir . '*');
-
-        // Check for the existence of a user
-        $user = $systemConfiguration->getParam('user');
-        if (!empty($user)) {
-            // Change the rights of everything within the defined dirs
-            foreach ($files as $file) {
-                chown($file, $user);
-            }
-        }
-
-        // Check for the existence of a group
-        $group = $systemConfiguration->getParam('group');
-        if (!empty($group)) {
-            // Change the rights of everything within the defined dirs
-            foreach ($files as $file) {
-                chgrp($file, $group);
-            }
-        }
-    }
-
-    /**
-     * Init the umask to use creating files/directories.
-     *
-     * @return void
-     * @throws \Exception Is thrown if the umask can not be set
-     */
-    public function initUmask()
-    {
-
-        // don't do anything under Windows
-        if ($this->getOsIdentifier() === 'WIN') {
-            return;
-        }
-
-        // set the configured umask to use
-        umask($newUmask = $this->getInitialContext()->getSystemConfiguration()->getParam('umask'));
-
-        // check if we have successfully set the umask
-        if (umask() != $newUmask) {
-            // check if set, throw an exception if not
-            throw new \Exception(sprintf('Can\'t set configured umask \'%s\' found \'%\' instead', $newUmask, umask()));
-        }
-    }
-
-    /**
-     * Creates the passed directory with the umask specified in the system
-     * configuration and sets the user permissions.
-     *
-     * @param \SplFileInfo $directoryToCreate The directory that should be created
-     *
-     * @return void
-     * @throws \Exception Is thrown if the directory can't be created
-     */
-    public function createDirectory(\SplFileInfo $directoryToCreate)
-    {
-
-        // set the umask that is necessary to create the directory
-        $this->initUmask();
-
-        // we don't have a directory to change the user/group permissions for
-        if ($directoryToCreate->isDir() === false) {
-            // create the directory if necessary
-            if (mkdir($directoryToCreate->getPathname()) === false) {
-                throw new \Exception(sprintf('Directory %s can\'t be created', $directoryToCreate->getPathname()));
-            }
-        }
-
-        // load the deployment service
-        $this->setUserRights($directoryToCreate);
-    }
-
-    /**
-     * Deletes all files and subdirectories from the passed directory.
-     *
-     * @param \SplFileInfo $dir             The directory to remove
-     * @param bool         $alsoRemoveFiles The flag for removing files also
-     *
-     * @return void
-     */
-    public function cleanUpDir(\SplFileInfo $dir, $alsoRemoveFiles = true)
-    {
-
-        // first check if the directory exists, if not return immediately
-        if ($dir->isDir() === false) {
-            return;
-        }
-
-        // remove old archive from webapps folder recursively
-        $files = $this->globDir($dir->getPathname() . DIRECTORY_SEPARATOR . '*');
-
-        foreach ($files as $file) {
-            if (is_dir($file)) {
-                @rmdir(realpath($file));
-            } elseif (is_file($file) && $alsoRemoveFiles) {
-                unlink(realpath($file));
-            }
-        }
-    }
-
-    /**
-     * Copies a directory recursively.
-     *
-     * @param string $src The source directory to copy
-     * @param string $dst The target directory
-     *
-     * @return void
-     */
-    public function copyDir($src, $dst)
-    {
-        if (is_link($src)) {
-            symlink(readlink($src), $dst);
-        } elseif (is_dir($src)) {
-            if (is_dir($dst) === false) {
-                mkdir($dst, 0775, true);
-            }
-            // copy files recursive
-            foreach (scandir($src) as $file) {
-                if ($file != '.' && $file != '..') {
-                    $this->copyDir("$src/$file", "$dst/$file");
-                }
-            }
-
-        } elseif (is_file($src)) {
-            copy($src, $dst);
-        } else {
-            // do nothing, we didn't have a directory to copy
-        }
-    }
-
-    /**
      * Recursively parses and returns the directories that matches the passed
      * glob pattern.
      *
@@ -550,95 +357,5 @@ abstract class AbstractService implements ServiceInterface
 
         // return the array with the files matching the glob pattern
         return $files;
-    }
-
-    /**
-     * Creates the SSL file passed as parameter or nothing if the file already exists.
-     *
-     * @param \SplFileInfo $certificate The file info about the SSL file to generate
-     *
-     * @return void
-     *
-     * @throws \Exception
-     */
-    public function createSslCertificate(\SplFileInfo $certificate)
-    {
-
-        // first we've to check if OpenSSL is available
-        if (!$this->isOpenSslAvailable()) {
-            return;
-        }
-
-        // do nothing if the file is already available
-        if ($certificate->isFile()) {
-            return;
-        }
-
-        // prepare the certificate data from our configuration
-        $dn = array(
-            "countryName" => "DE",
-            "stateOrProvinceName" => "Bavaria",
-            "localityName" => "Kolbermoor",
-            "organizationName" => "appserver.io",
-            "organizationalUnitName" => "Development",
-            "commonName" => gethostname(),
-            "emailAddress" => "info@appserver.io"
-        );
-
-        // check the operating system
-        switch ($this->getOsIdentifier()) {
-
-            case 'DAR': // on Mac OS X use the system default configuration
-
-                $configargs = array('config' => '/System/Library/OpenSSL/openssl.cnf');
-                break;
-
-            case 'WIN': // on Windows use the system configuration we deliver
-
-                $configargs = array('config' => $this->getBaseDirectory('/php/extras/ssl/openssl.cnf'));
-                break;
-
-            default: // on all other use a standard configuration
-
-                $configargs = array(
-                    'digest_alg' => 'md5',
-                    'x509_extensions' => 'v3_ca',
-                    'req_extensions'   => 'v3_req',
-                    'private_key_bits' => 2048,
-                    'private_key_type' => OPENSSL_KEYTYPE_RSA,
-                    'encrypt_key' => false
-                );
-        }
-
-        // generate a new private (and public) key pair
-        $privkey = openssl_pkey_new($configargs);
-
-        // Generate a certificate signing request
-        $csr = openssl_csr_new($dn, $privkey, $configargs);
-
-        // create a self-signed cert that is valid for 365 days
-        $sscert = openssl_csr_sign($csr, null, $privkey, 365, $configargs);
-
-        // export the cert + pk files
-        $certout = '';
-        $pkeyout = '';
-        openssl_x509_export($sscert, $certout);
-        openssl_pkey_export($privkey, $pkeyout, null, $configargs);
-
-        // write the SSL certificate data to the target
-        $file = $certificate->openFile('w');
-        if (($written = $file->fwrite($certout . $pkeyout)) === false) {
-            throw new \Exception(sprintf('Can\'t create SSL certificate %s', $certificate->getPathname()));
-        }
-
-        // log a message that the file has been written successfully
-        $this->getInitialContext()->getSystemLogger()->info(
-            sprintf('Successfully created %s with %d bytes', $certificate->getPathname(), $written)
-        );
-
-        // log any errors that occurred here
-        while (($e = openssl_error_string()) !== false) {
-            $this->getInitialContext()->getSystemLogger()->debug($e);
-        }
     }
 }

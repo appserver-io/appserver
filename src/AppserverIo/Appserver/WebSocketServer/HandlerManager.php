@@ -23,7 +23,7 @@
 
 namespace AppserverIo\Appserver\WebSocketServer;
 
-use AppserverIo\Appserver\Core\Api\ConfigurationTester;
+use AppserverIo\Appserver\Core\Api\ConfigurationService;
 use Ratchet\MessageComponentInterface;
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Storage\StackableStorage;
@@ -158,8 +158,8 @@ class HandlerManager extends GenericStackable implements HandlerContext
 
             // validate the file here, if it is not valid we can skip further steps
             try {
-                $configurationTester = new ConfigurationTester();
-                $configurationTester->validateFile($web, null, true);
+                $configurationService = $this->getApplication()->newService('AppserverIo\Appserver\Core\Api\ConfigurationService');
+                $configurationService->validateFile($web, null, true);
 
             } catch (InvalidConfigurationException $e) {
                 $systemLogger = $this->getApplication()->getInitialContext()->getSystemLogger();

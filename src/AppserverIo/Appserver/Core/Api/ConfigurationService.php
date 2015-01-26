@@ -20,10 +20,13 @@
 
 namespace AppserverIo\Appserver\Core\Api;
 
+use AppserverIo\Appserver\Core\InitialContext;
+use AppserverIo\Configuration\Interfaces\NodeInterface;
+
 /**
- * AppserverIo\Appserver\Core\Api\ConfigurationTester
+ * AppserverIo\Appserver\Core\Api\ConfigurationService
  *
- * This class clan be used to validate configuration files against known schemas
+ * This class can be used to validate configuration files against known schemas
  *
  * @category   Server
  * @package    Appserver
@@ -33,7 +36,7 @@ namespace AppserverIo\Appserver\Core\Api;
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       http://www.appserver.io
  */
-class ConfigurationTester
+class ConfigurationService extends AbstractService
 {
 
     /**
@@ -67,10 +70,24 @@ class ConfigurationTester
 
     /**
      * Default constructor
+     *
+     * @param \AppserverIo\Appserver\Core\InitialContext $initialContext The initial context instance
      */
-    public function __construct()
+    public function __construct(InitialContext $initialContext)
     {
+        parent::__construct($initialContext);
+
         $this->init();
+    }
+
+    /**
+     * Returns all nodes.
+     *
+     * @return array An array with all nodes
+     */
+    public function findAll()
+    {
+        // TODO: Implement findAll() method.
     }
 
     /**
@@ -132,6 +149,18 @@ class ConfigurationTester
         $this->errors = array();
         $this->schemaFile = realpath(__DIR__ . '/../../../../../') . DIRECTORY_SEPARATOR . self::DEFAULT_XML_SCHEMA;
         $this->schemaFiles = array();
+    }
+
+    /**
+     * Returns the node with the passed UUID.
+     *
+     * @param integer $uuid UUID of the node to return
+     *
+     * @return \AppserverIo\Configuration\Interfaces\NodeInterface The node with the UUID passed as parameter
+     */
+    public function load($uuid)
+    {
+        // TODO: Implement load() method.
     }
 
     /**

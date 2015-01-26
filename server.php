@@ -22,9 +22,11 @@
 
 namespace AppserverIo\Appserver\Core;
 
-use AppserverIo\Appserver\Core\Api\ConfigurationTester;
+use AppserverIo\Appserver\Core\Api\ConfigurationService;
+use AppserverIo\Appserver\Core\Api\Node\AppserverNode;
 use AppserverIo\Appserver\Core\Api\Node\ParamNode;
 use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
+use AppserverIo\Appserver\Naming\InitialContext;
 
 declare (ticks = 1);
 
@@ -93,12 +95,12 @@ $mergeDoc = new \DOMDocument();
 $mergeDoc->loadXML($configurationFile->saveXML());
 
 // get an instance of our configuration tester
-$configurationTester = new ConfigurationTester();
+$configurationService = new ConfigurationService(new InitialContext(new AppserverNode()));
 
 // validate the configuration file with the schema
-if ($configurationTester->validateXml($mergeDoc) === false) {
+if ($configurationService->validateXml($mergeDoc) === false) {
 
-    foreach ($configurationTester->getErrorMessages() as $message) {
+    foreach ($configurationService->getErrorMessages() as $message) {
 
         // if we are here to test we will make a sane output instead of throwing an exception
         if (array_key_exists($configTest, $arguments)) {

@@ -24,6 +24,7 @@
 
 namespace AppserverIo\Appserver\MessageQueue;
 
+use AppserverIo\Appserver\Core\Api\ConfigurationService;
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Psr\Pms\QueueContext;
 use AppserverIo\Psr\Pms\ResourceLocator;
@@ -32,7 +33,6 @@ use AppserverIo\Psr\Pms\Message;
 use AppserverIo\Psr\Naming\NamingException;
 use AppserverIo\Psr\Application\ManagerInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
-use AppserverIo\Appserver\Core\Api\ConfigurationTester;
 use AppserverIo\Appserver\Core\Api\InvalidConfigurationException;
 
 /**
@@ -148,7 +148,7 @@ class QueueManager extends GenericStackable implements QueueContext, ManagerInte
 
         // check META-INF + subdirectories for XML files with MQ definitions
         $service = $application->newService('AppserverIo\Appserver\Core\Api\DeploymentService');
-        $xmlFiles = $service->globDir($metaInfDir . DIRECTORY_SEPARATOR . '*.xml');
+        $xmlFiles = $service->globDir($metaInfDir . DIRECTORY_SEPARATOR . 'message-queues.xml');
 
         // initialize the array for the creating the subdirectories
         $this->directories = new GenericStackable();
@@ -168,8 +168,8 @@ class QueueManager extends GenericStackable implements QueueContext, ManagerInte
 
                 // validate the file here, if it is not valid we can skip further steps
                 try {
-                    $configurationTester = new ConfigurationTester();
-                    $configurationTester->validateFile($file, null, true);
+                    $configurationService = $application->newService('AppserverIo\Appserver\Core\Api\ConfigurationService');
+                    $configurationService->validateFile($file, null, true);
 
                 } catch (InvalidConfigurationException $e) {
                     $systemLogger = $this->getApplication()->getInitialContext()->getSystemLogger();

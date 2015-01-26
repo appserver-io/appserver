@@ -16,7 +16,7 @@
 
 namespace AppserverIo\Appserver\Core;
 
-use AppserverIo\Appserver\Core\Api\ConfigurationTester;
+use AppserverIo\Appserver\Core\Api\ConfigurationService;
 use AppserverIo\Appserver\Core\Api\Node\ProvisionNode;
 
 /**
@@ -61,11 +61,11 @@ class StandardProvisioner extends AbstractProvisioner
             $service = $this->getService();
 
             // iterate through all provisioning files (provision.xml), validate them and attach them to the configuration
-            $configurationTester = new ConfigurationTester();
+            $configurationService = $this->getInitialContext()->newService('AppserverIo\Appserver\Core\Api\ConfigurationService');
             foreach ($service->globDir($webappsPath . '/*/{WEB-INF,META-INF}/provision.xml', GLOB_BRACE) as $provisionFile) {
                 // validate the file, but skip it if validation fails
-                if (!$configurationTester->validateFile($provisionFile, null)) {
-                    $errorMessages = $configurationTester->getErrorMessages();
+                if (!$configurationService->validateFile($provisionFile, null)) {
+                    $errorMessages = $configurationService->getErrorMessages();
                     $systemLogger = $this->getInitialContext()->getSystemLogger();
                     $systemLogger->error(reset($errorMessages));
                     $systemLogger->critical(sprintf('Will skip reading provisioning steps in %s, provisioning might not have been done.', $provisionFile));

@@ -521,7 +521,7 @@ abstract class AbstractNode implements NodeInterface
         foreach ($reflectionObject->getProperties(\ReflectionProperty::IS_PROTECTED) as $reflectionProperty) {
             // load property name
             $propertyName = $reflectionProperty->getName();
-            // uncamelcase property names in stdClass representation
+            // un-camelcase property names in stdClass representation
             $stdClass->{ltrim(strtolower(preg_replace('/[A-Z]/', '_$0', $propertyName)), '_')} = $this->$propertyName;
         }
 

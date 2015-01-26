@@ -21,7 +21,7 @@
 namespace AppserverIo\Appserver\AspectContainer;
 
 use AppserverIo\Appserver\AspectContainer\Interfaces\AspectManagerInterface;
-use AppserverIo\Appserver\Core\Api\ConfigurationTester;
+use AppserverIo\Appserver\Core\Api\ConfigurationService;
 use AppserverIo\Appserver\Core\Api\InvalidConfigurationException;
 use AppserverIo\Doppelgaenger\AspectRegister;
 use AppserverIo\Doppelgaenger\Config;
@@ -289,10 +289,10 @@ class AspectManager implements AspectManagerInterface, ManagerInterface
         if (is_readable($xmlPath)) {
             // validate the file here, if it is not valid we can skip further steps
             try {
-                $configurationTester = new ConfigurationTester();
-                $configurationTester->validateFile($xmlPath, null, true);
+                $configurationService = $this->getApplication()->newService('AppserverIo\Appserver\Core\Api\ConfigurationService');
+                $configurationService->validateFile($xmlPath, null, true);
             } catch (InvalidConfigurationException $e) {
-                $systemLogger = $application->getInitialContext()->getSystemLogger();
+                $systemLogger = $this->getApplication()->getInitialContext()->getSystemLogger();
                 $systemLogger->error($e->getMessage());
                 $systemLogger->critical(sprintf('Pointcuts configuration file %s is invalid, AOP functionality might not work as expected.', $xmlPath));
                 return;
