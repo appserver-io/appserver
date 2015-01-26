@@ -17,6 +17,15 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+// inline code
+code {
+  padding: 3px 8px;
+  font-size: 90%;
+  color: $code-color;
+  background-color: $code-bg;
+  border-radius: $border-radius-base;
+}
+
 .container-page {
   background-color: $body-bg;
   position: relative;
@@ -149,6 +158,14 @@ nav {
 }
 
 .docs-content {
+
+  // inherit table styling for markdown docs table
+  table {
+    @extend .table;
+    @extend .table-bordered;
+    font-size: 14px;
+  }
+
   h2:before {
     display: block;
     content: " ";
