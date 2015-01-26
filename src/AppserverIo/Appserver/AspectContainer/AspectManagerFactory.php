@@ -9,13 +9,11 @@
  *
  * PHP version 5
  *
- * @category   Server
- * @package    Appserver
- * @subpackage Application
- * @author     Bernhard Wick <bw@appserver.io>
- * @copyright  2014 TechDivision GmbH - <info@appserver.io>
- * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link       http://www.appserver.io/
+ * @author    Bernhard Wick <bw@appserver.io>
+ * @copyright 2014 TechDivision GmbH - <info@appserver.io>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      https://github.com/appserver-io/appserver
+ * @link      http://www.appserver.io/
  */
 
 namespace AppserverIo\Appserver\AspectContainer;
@@ -24,17 +22,14 @@ use AppserverIo\Appserver\Application\Interfaces\ManagerConfigurationInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
 
 /**
- * AppserverIo\Appserver\AspectContainer\AspectManagerFactory
+ * Factory which allows for the injection of an aspect manager into an application based
+ * on the visitor pattern.
  *
- * Factory which allows for the injection of an aspect manager into an application based on the visitor pattern
- *
- * @category   Server
- * @package    Appserver
- * @subpackage Application
- * @author     Bernhard Wick <bw@appserver.io>
- * @copyright  2014 TechDivision GmbH - <info@appserver.io>
- * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link       http://www.appserver.io/
+ * @author    Bernhard Wick <bw@appserver.io>
+ * @copyright 2014 TechDivision GmbH - <info@appserver.io>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      https://github.com/appserver-io/appserver
+ * @link      http://www.appserver.io/
  */
 class AspectManagerFactory
 {

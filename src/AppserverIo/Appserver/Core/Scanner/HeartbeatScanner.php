@@ -1,5 +1,8 @@
 <?php
+
 /**
+ * AppserverIo\Appserver\Core\Scanner\HeartbeatScanner
+ *
  * NOTICE OF LICENSE
  *
  * This source file is subject to the Open Software License (OSL 3.0)
@@ -8,32 +11,27 @@
  *
  * PHP version 5
  *
- * @category   Server
- * @package    Appserver
- * @subpackage Application
- * @author     Bernhard Wick <bw@appserver.io>
- * @copyright  2014 TechDivision GmbH - <info@techdivision.com>
- * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link       http://www.techdivision.com/
+ * @author    Bernhard Wick <bw@appserver.io>
+ * @copyright 2014 TechDivision GmbH - <info@techdivision.com>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      https://github.com/appserver-io/appserver
+ * @link      http://www.techdivision.com/
  */
 
 namespace AppserverIo\Appserver\Core\Scanner;
 
 /**
- * AppserverIo\Appserver\Core\Scanner\HeartbeatScanner
+ * Scanner to check for proper functioning of the appserver.
  *
- * Scanner to check for proper functioning of the appserver
- *
- * @category   Server
- * @package    Appserver
- * @subpackage Application
- * @author     Bernhard Wick <bw@appserver.io>
- * @copyright  2014 TechDivision GmbH - <info@techdivision.com>
- * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link       http://www.techdivision.com/
+ * @author    Bernhard Wick <bw@appserver.io>
+ * @copyright 2014 TechDivision GmbH - <info@techdivision.com>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      https://github.com/appserver-io/appserver
+ * @link      http://www.techdivision.com/
  */
 class HeartbeatScanner extends AbstractScanner
 {
+
     /**
      * Name of the heartbeat file to watch
      *

@@ -1,38 +1,42 @@
 <?php
+
 /**
- * File containing the ShellFacade class
+ * AppserverIo\Appserver\Core\Utilities\ShellFacade
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Open Software License (OSL 3.0)
+ * that is available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/osl-3.0.php
  *
  * PHP version 5
  *
- * @category   Server
- * @package    Appserver
- * @subpackage Application
- * @author     Bernhard Wick <bw@appserver.io>
- * @copyright  2014 TechDivision GmbH - <info@techdivision.com>
- * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link       http://www.techdivision.com/
+ * @author    Bernhard Wick <bw@appserver.io>
+ * @copyright 2014 TechDivision GmbH - <info@techdivision.com>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      https://github.com/appserver-io/appserver
+ * @link      http://www.techdivision.com/
  */
 
 namespace AppserverIo\Appserver\Core\Utilities;
 
 /**
- * AppserverIo\Appserver\Core\Utilities\ShellFacade
+ * Shell facade to wrap away the exec() shell interface so certain things like forbidden
+ * commands can be implemented. It also helps mocking any results coming from the shell.
  *
- * Shell facade to wrap away the exec() shell interface so certain things like forbidden commands can be implemented.
- * It also helps mocking any results coming from the shell.
- *
- * @category   Server
- * @package    Appserver
- * @subpackage Application
- * @author     Bernhard Wick <bw@appserver.io>
- * @copyright  2014 TechDivision GmbH - <info@techdivision.com>
- * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link       http://www.techdivision.com/
+ * @author    Bernhard Wick <bw@appserver.io>
+ * @copyright 2014 TechDivision GmbH - <info@techdivision.com>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      https://github.com/appserver-io/appserver
+ * @link      http://www.techdivision.com/
  */
 class ShellFacade
 {
+
     /**
-     * @var array Commands which are prohibited to pass the facade
+     * Commands which are prohibited to pass the facade.
+     *
+     * @var array
      */
     protected $prohibitedCommands;
 
