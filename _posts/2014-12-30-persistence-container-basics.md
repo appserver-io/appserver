@@ -45,17 +45,19 @@ In opposite to a HTTP Session, `Stateful Session Beans` enables you to have sess
 
 ##### Singleton Session Beans (SSBs)
 
+A `Singleton Session Bean` will be created by the container only one time for each application. This means, whenever you'll request an instance, you'll receive the same one. If you set a variable in the Session Bean, it'll be available until you'll overwrite it, or the application server has been restarted.
+
 ###### Concurrency
 
 ###### Lifecycle
 
-In opposite to a `Stateless Session Bean`, the lifecycle of a `Singleton Session Bean` is a bit different. Once the instance has been created, it'll be shared between all requests, and instead of destroying the instance after each request the instance persists in memory until the application server will be shutdown or restarted.
+In opposite to a `Stateless Session Bean`, the lifecycle of a `Singleton Session Bean` is a bit different. Once the instance has been created, it'll be shared between all requests, and instead of destroying the instance after each request the instance persists in memory until the application will be shutdown or restarted.
 
 > A `Singleton Session Bean` gives you great power, because all data you add to a member will stay in memory until you unset it. So, if you want to share data across some requests, a `Singleton Session Bean` can be a good option for you. But remember: With great power, great responsibilty came together. So, always have an eye on memory consumption of your `Singleton Session Bean`, because YOU are responsible for that now!
 
-####### Explicit Startup
+###### Explicit Startup
 
-A `Singleton Session Bean` will be created by the container only one time for each application. This means, whenever you'll request an instance, you'll receive the same one. If you set a variable in the Session Bean, it'll be available until you'll overwrite it, or the application server has been restarted.
+In combination with the possiblity to have data persistent in memory, a `Singleton Session Bean` additionally allows you, to be pre-loaded on application startup. This can be done by adding the `Startup` annotation to the class doc block. Using the explict startup together with the possiblity to have the data persistent in memory, you'll be able to improve performance of your application, by pre-loading data from a database or a configuration file on application startup.
 
 #### Message Beans (MDBs)
 
