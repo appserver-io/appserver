@@ -148,6 +148,43 @@ nav {
   img { height: 34px; }
 }
 
+.docs-content {
+  h2:before {
+    display: block;
+    content: " ";
+    margin-top: -85px;
+    height: 85px;
+    visibility: hidden;
+  }
+}
+
+.docs_nav {
+
+  a.active {
+    color: $subnavbar-link-color;
+    font-weight: bold;
+  }
+
+  ul {
+    font-size: 14px;
+    margin-top: 10px;
+    margin-bottom: 0;
+    padding-left: 20px;
+
+    a, a:hover, a:active, a:visited {
+      color: $subnavbar-link-color;
+      text-decoration: none;
+    }
+
+    li:before {
+      font-family: 'FontAwesome';
+      content: '\f105';
+      margin:0 5px 0 -11px;
+      color: #D0EDF6;
+    }
+  }
+}
+
 ul.nav li.dropdown:hover ul.dropdown-menu{
   display: block;
   margin-top:0px
