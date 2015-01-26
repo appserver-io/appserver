@@ -179,8 +179,12 @@ nav {
     li:before {
       font-family: 'FontAwesome';
       content: '\f105';
-      margin:0 5px 0 -11px;
+      margin: 0 5px 0 -11px;
       color: #D0EDF6;
+    }
+
+    li {
+      margin: 8px 0;
     }
   }
 }
