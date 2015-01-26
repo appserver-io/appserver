@@ -98,6 +98,18 @@ class MessageWrapper extends GenericStackable implements Message
     }
 
     /**
+     * Initializes and returns a new job instance.
+     *
+     * @param \AppserverIo\Psr\Application\ApplicationInterface The application instance
+     *
+     * @return \AppserverIo\Appserver\MessageQueue\Job The job instance
+     */
+    public function getJob($application)
+    {
+        return new Job($this, $application);
+    }
+
+    /**
      * Returns the message id.
      *
      * @return string The message id as hash value

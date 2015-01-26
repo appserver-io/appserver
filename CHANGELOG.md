@@ -2,8 +2,9 @@
 
 ## Bugfixes
 
-* Remove unnecessary interfaces SenderInterface + ReceiverInterface
+* Fixed MQ memory leak because of missing job thread when handling messages
 * Fixed invalid namespace in QueueManager::createSenderForQueue() method
+* Remove unnecessary interfaces SenderInterface + ReceiverInterface
 
 ## Features
 
