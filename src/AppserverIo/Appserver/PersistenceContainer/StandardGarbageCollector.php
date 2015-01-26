@@ -116,7 +116,7 @@ class StandardGarbageCollector extends \Thread
             if ($profileLogger) {
                 // profile the stateful session bean map size
                 $profileLogger->debug(
-                    sprintf('Processed standard garbage collector, handling %d SFBs', sizeof($statefulSessionBeans))
+                    sprintf('Processed standard garbage collector, handling %d SFSBs', sizeof($statefulSessionBeans))
                 );
             }
         }
