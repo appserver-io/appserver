@@ -1,5 +1,8 @@
 <?php
+
 /**
+ * AppserverIo\Appserver\Core\Mock\MockAbstractContainerThread
+ *
  * NOTICE OF LICENSE
  *
  * This source file is subject to the Open Software License (OSL 3.0)
@@ -8,13 +11,11 @@
  *
  * PHP version 5
  *
- * @category   Server
- * @package    Appserver
- * @subpackage Application
- * @author     <TODO AUTHOR> <AUTHOR@techdivision.com>
- * @copyright  2014 TechDivision GmbH - <info@techdivision.com>
- * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link       http://www.techdivision.com/
+ * @author    Thomas Kreidenhuber <t.kreidenhuber@techdivision.com>
+ * @copyright 2015 TechDivision GmbH <info@appserver.io>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      https://github.com/appserver-io/appserver
+ * @link      http://www.appserver.io
  */
 
 namespace AppserverIo\Appserver\Core\Mock;
@@ -22,20 +23,22 @@ namespace AppserverIo\Appserver\Core\Mock;
 use AppserverIo\Appserver\Core\AbstractContainerThread;
 
 /**
- * AppserverIo\Appserver\Core\Mock\MockAbstractContainerThread
+ * An abstract mock container tread implementation.
  *
- * <TODO CLASS DESCRIPTION>
- *
- * @category   Server
- * @package    Appserver
- * @subpackage Application
- * @author     <TODO AUTHOR> <AUTHOR@techdivision.com>
- * @copyright  2014 TechDivision GmbH - <info@techdivision.com>
- * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link       http://www.techdivision.com/
+ * @author    Thomas Kreidenhuber <t.kreidenhuber@techdivision.com>
+ * @copyright 2015 TechDivision GmbH <info@appserver.io>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      https://github.com/appserver-io/appserver
+ * @link      http://www.appserver.io
  */
 class MockAbstractContainerThread extends AbstractContainerThread
 {
+
+    /**
+     * The threads main function.
+     *
+     * @see \AppserverIo\Appserver\Core\AbstractContainerThread::main()
+     */
     public function main()
     {
         // We have to notify the logical parent thread, the appserver, as it has to

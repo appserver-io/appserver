@@ -11,14 +11,12 @@
  *
  * PHP version 5
  *
- * @category   Server
- * @package    Appserver
- * @subpackage PersistentServletEngine
- * @author     Bernhard Wick <bw@appserver.io>
- * @author     Tim Wagner <tw@appserver.io>
- * @copyright  2014 TechDivision GmbH - <info@appserver.io>
- * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link       http://www.appserver.io/
+ * @author    Bernhard Wick <bw@appserver.io>
+ * @author    Tim Wagner <tw@appserver.io>
+ * @copyright 2015 TechDivision GmbH <info@appserver.io>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      https://github.com/appserver-io/appserver
+ * @link      http://www.appserver.io
  */
 
 namespace AppserverIo\Appserver\PersistentServletEngine;
@@ -34,14 +32,12 @@ use AppserverIo\Psr\Application\ApplicationInterface;
  * This is a request handler that is necessary to process each request of an
  * application in a separate context.
  *
- * @category   Server
- * @package    Appserver
- * @subpackage PersistentServletEngine
- * @author     Bernhard Wick <bw@appserver.io>
- * @author     Tim Wagner <tw@appserver.io>
- * @copyright  2014 TechDivision GmbH - <info@appserver.io>
- * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link       http://www.appserver.io/
+ * @author    Bernhard Wick <bw@appserver.io>
+ * @author    Tim Wagner <tw@appserver.io>
+ * @copyright 2015 TechDivision GmbH <info@appserver.io>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      https://github.com/appserver-io/appserver
+ * @link      http://www.appserver.io
  */
 class RequestHandler extends \Thread
 {

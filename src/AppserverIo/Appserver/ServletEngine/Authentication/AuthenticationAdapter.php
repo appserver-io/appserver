@@ -11,13 +11,12 @@
  *
  * PHP version 5
  *
- * @category   Server
- * @package    Appserver
- * @subpackage Application
- * @author     Florian Sydekum <fs@techdivision.com>
- * @copyright  2014 TechDivision GmbH <info@appserver.io>
- * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link       http://www.appserver.io
+ * @author    Florian Sydekum <fs@techdivision.com>
+ * @author    Tim Wagner <tw@appserver.io>
+ * @copyright 2015 TechDivision GmbH <info@appserver.io>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      https://github.com/appserver-io/appserver
+ * @link      http://www.appserver.io
  */
 
 namespace AppserverIo\Appserver\ServletEngine\Authentication;
@@ -27,24 +26,23 @@ use AppserverIo\Psr\Servlet\Servlet;
 /**
  * Abstract class for authentication adapters.
  *
- * @category   Server
- * @package    Appserver
- * @subpackage Application
- * @author     Florian Sydekum <fs@techdivision.com>
- * @copyright  2014 TechDivision GmbH <info@appserver.io>
- * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link       http://www.appserver.io
+ * @author    Florian Sydekum <fs@techdivision.com>
+ * @author    Tim Wagner <tw@appserver.io>
+ * @copyright 2015 TechDivision GmbH <info@appserver.io>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      https://github.com/appserver-io/appserver
+ * @link      http://www.appserver.io
  */
 abstract class AuthenticationAdapter
 {
-    
+
     /**
      * Necessary options for specific adapter.
      *
      * @var array
      */
     protected $options;
-    
+
     /**
      * The path to the actual web application (to resolve relative URLs).
      *
@@ -68,10 +66,10 @@ abstract class AuthenticationAdapter
     {
         // initialize the options and the webapp path
         $this->setOptions($securedUrlConfig['auth']['options']);
-        
+
         // set the absolute path to the filename containing the users + passwords
         $this->setFilename($securedUrlConfig['webapp-path'] . DIRECTORY_SEPARATOR . $this->options['file']);
-        
+
         // initialize the adapter implementations
         $this->init();
     }

@@ -12,7 +12,7 @@
  * PHP version 5
  *
  * @author    Bernhard Wick <bw@appserver.io>
- * @copyright 2014 TechDivision GmbH - <info@techdivision.com>
+ * @copyright 2015 TechDivision GmbH - <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.techdivision.com/
@@ -26,7 +26,7 @@ use AppserverIo\Appserver\Core\AbstractContextThread;
  * Abstract scanner which provides basic functionality to its children.
  *
  * @author    Bernhard Wick <bw@appserver.io>
- * @copyright 2014 TechDivision GmbH - <info@techdivision.com>
+ * @copyright 2015 TechDivision GmbH - <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.techdivision.com/
