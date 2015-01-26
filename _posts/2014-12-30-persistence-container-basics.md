@@ -33,21 +33,27 @@ Therefore, if you need an instance of a SessionBean, you'll ask the application 
 
 When you write a Session Bean, you have to specify the type of Bean you want to implement. This can either be done by adding an annotation to the class doc block or specifing it in a configuration file. As it seems to be easier to add the annotation and, in most cases this is sufficient, we recommend that for the start.
 
-We differ between three kinds of Session Beans named Singleton, Stateless and Stateful.
-
-###### Singleton Session Beans (SSBs)
-
-A `Singleton Session Bean` will be created by the container only one time for each application. This means, whenever you'll request an instance, you'll receive the same one. If you set a variable in the Session Bean, it'll be available until you'll overwrite it, or the application server has been restarted.
+We differ between three kinds of Session Beans named Stateless, Stateful and Singleton.
 
 ###### Stateless Session Beans (SLSBs)
 
-In opposite to a `Singleton Session Bean`, a `Stateless Session Bean` will always be instantiated when you request it. It has NO state, only for the time you invoke a method on it. Therefore it is the type of Session Bean that will be probably the easiest to handle.
+A `Stateless Session Bean` will always be instantiated when requested. It has NO state, only for the time you invoke a method on it. Therefore it is the type of Session Bean that will be probably the easiest to handle.
 
 ###### Stateful Session Beans (SFSBs)
 
 The `Stateful Session Bean` is something between the two other types. It is stateful for the session with the ID you pass to the client when you request the instance. A `Stateful Session Bean` is very useful, if you want to implement something like a shopping cart. If you declare the shopping cart instance a class member of your `Session Bean`, this will make it persistent for your session lifetime.
 
 In opposite to a HTTP Session, `Stateful Session Beans` enables you to have session bound persistence, without the need to explicit add the data to a session object. That makes development pretty easy and more comfortable. As `Stateful Session Beans` are persisted in memory and not serialized to files, the Application Server has to take care, that in order ot minimize the number of instances carried around, are flushed when their lifetime has been reached.
+
+###### Singleton Session Beans (SSBs)
+
+####### Concurrency
+
+####### Lifecycle
+
+######## Explicit Startup
+
+A `Singleton Session Bean` will be created by the container only one time for each application. This means, whenever you'll request an instance, you'll receive the same one. If you set a variable in the Session Bean, it'll be available until you'll overwrite it, or the application server has been restarted.
 
 #### Message Beans (MDBs)
 
@@ -57,7 +63,13 @@ Other than `Session Beans`, you MUST not invoke `Message Beans` over a proxy, bu
 
 #### Lifecycle Callbacks
 
+`Lifecycle Callbacks` enables a developer to declare callback methods depending on the `Beans` lifecycle. Actually we only deploy a `post-construct` and `pre-destroy` callback. `Lifecycle Callbacks` can be configured either by annotations or the XML configuration. Declaring `Lifecycle Callbacks` by annotations is more intuitive, as you have to add the annotation directly to the method. Therfore we go with the annotations here.
 
+##### Post Construct Callback
+
+A `Post Construct Callback` enables a developer to 
+
+##### Pre Destroy Callback
 
 #### Interceptors
 
@@ -103,7 +115,7 @@ class LogInterceptor
 }
 ```
 
-> Keep in mind, that the `$methodInvocation->getContext()` method gives you access to component the advice has been declared!
+> Keep in mind, that the `$methodInvocation->getContext()` method gives you access to component the advice has been declared, in our example this is the `Stateless Session Bean`!
 
 So if we want to log each call to a `Session Bean` method, we simply have to declare it by adding an annotation like
 
