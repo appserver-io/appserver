@@ -23,6 +23,8 @@
 
 namespace AppserverIo\Appserver\DependencyInjectionContainer\Interfaces;
 
+use AppserverIo\Storage\StorageInterface;
+
 /**
  * Interface for all object manager implementations.
  *
@@ -47,9 +49,60 @@ interface ObjectManagerInterface
     const IDENTIFIER = 'ObjectManagerInterface';
 
     /**
-     * Returns the application instance.
+     * Adds the passed object descriptor to the object manager. If the merge flag is TRUE, then
+     * we check if already an object descriptor for the class exists before they will be merged.
      *
-     * @return \AppserverIo\Psr\Application\ApplicationInterface The application instance
+     * When we merge object descriptors this means, that the values of the passed descriptor
+     * will override the existing ones.
+     *
+     * @param \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\DescriptorInterface $objectDescriptor The object descriptor to add
+     * @param boolean                                                                            $merge            TRUE if we want to merge with an existing object descriptor
+     *
+     * @return void
      */
-    public function getApplication();
+    public function addObjectDescriptor(DescriptorInterface $objectDescriptor, $merge = false);
+
+    /**
+     * Returns the object descriptor if we've registered it.
+     *
+     * @param string $className The class name we want to return the object descriptor for
+     *
+     * @return \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\DescriptorInterface|null The requested object descriptor instance
+     * @throws \AppserverIo\Appserver\DependencyInjectionContainer\UnknownObjectDescriptorException Is thrown if someone tries to access an unknown object desciptor
+     */
+    public function getObjectDescriptor($className);
+
+    /**
+     * Returns the storage with the object descriptors.
+     *
+     * @return \AppserverIo\Storage\StorageInterface The storage with the object descriptors
+     */
+    public function getObjectDescriptors();
+
+    /**
+     * Query if we've an object descriptor for the passed class name.
+     *
+     * @param string $className The class name we query for a object descriptor
+     *
+     * @return boolean TRUE if an object descriptor has been registered, else FALSE
+     */
+    public function hasObjectDescriptor($className);
+
+    /**
+     * Inject the storage for the object descriptors.
+     *
+     * @param \AppserverIo\Storage\StorageInterface $objectDescriptors The storage for the object descriptors
+     *
+     * @return void
+     */
+    public function injectObjectDescriptors(StorageInterface $objectDescriptors);
+
+    /**
+     * Registers the passed object descriptor under its class name.
+     *
+     * @param \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\DescriptorInterface $objectDescriptor The object descriptor to set
+     *
+     * @return void
+     */
+    public function setObjectDescriptor(DescriptorInterface $objectDescriptor);
 }

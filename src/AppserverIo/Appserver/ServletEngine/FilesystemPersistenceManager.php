@@ -28,7 +28,7 @@ use \AppserverIo\Storage\StackableStorage;
 use AppserverIo\Appserver\ServletEngine\SessionFilter;
 
 /**
- * A thread thats preinitialized session instances and adds them to the
+ * A thread which pre-initializes session instances and adds them to the
  * the session pool.
  *
  * @category   Server

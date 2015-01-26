@@ -319,7 +319,7 @@ class StandardSessionManager extends GenericStackable implements SessionManager
     /**
      * Initializes the manager instance.
      *
-     * @return void
+     * @return string
      * @see \AppserverIo\Psr\Application\ManagerInterface::initialize()
      */
     public function getIdentifier()

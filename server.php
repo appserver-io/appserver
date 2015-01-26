@@ -26,7 +26,7 @@ use AppserverIo\Appserver\Core\Api\ConfigurationService;
 use AppserverIo\Appserver\Core\Api\Node\AppserverNode;
 use AppserverIo\Appserver\Core\Api\Node\ParamNode;
 use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
-use AppserverIo\Appserver\Naming\InitialContext;
+use AppserverIo\Appserver\Core\InitialContext;
 
 declare (ticks = 1);
 
@@ -77,7 +77,7 @@ $configurationFileName = DirectoryKeys::realpath($filename);
 $configurationFile = new \DOMDocument();
 $configurationFile->load($configurationFileName);
 
-// substitude xincludes
+// substitute xincludes
 $configurationFile->xinclude(LIBXML_SCHEMA_CREATE);
 
 // create a DOMElement with the base.dir configuration

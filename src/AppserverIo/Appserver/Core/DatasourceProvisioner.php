@@ -45,7 +45,7 @@ class DatasourceProvisioner extends AbstractProvisioner
             // load the datasource files
             $datasourceFiles = $this->getService()->globDir($directory . DIRECTORY_SEPARATOR . '*-ds.xml');
             // iterate through all provisioning files (provision.xml), validate them and attach them to the configuration
-            $configurationService = $this->getApplication()->newService('AppserverIo\Appserver\Core\Api\ConfigurationService');
+            $configurationService = new ConfigurationService($this->getInitialContext());
             foreach ($datasourceFiles as $datasourceFile) {
                 // validate the file, but skip it if validation fails
                 if (!$configurationService->validateFile($datasourceFile)) {

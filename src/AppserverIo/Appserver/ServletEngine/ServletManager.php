@@ -22,12 +22,12 @@
 
 namespace AppserverIo\Appserver\ServletEngine;
 
+use AppserverIo\Appserver\Core\AbstractEpbManager;
 use AppserverIo\Appserver\Core\Api\InvalidConfigurationException;
 use AppserverIo\Psr\Servlet\Servlet;
 use AppserverIo\Psr\Servlet\ServletContext;
 use AppserverIo\Psr\Servlet\Annotations\Route;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequest;
-use AppserverIo\Appserver\Core\AbstractManager;
 use AppserverIo\Storage\StorageInterface;
 use AppserverIo\Storage\StackableStorage;
 use AppserverIo\Storage\GenericStackable;
@@ -49,8 +49,16 @@ use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\ServletDescrip
  * @copyright  2014 TechDivision GmbH <info@appserver.io>
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       http://www.appserver.io
+ *
+ * @property array                                                $directories       The additional directories to be parsed
+ * @property \AppserverIo\Storage\StorageInterface                $initParameters    The container for the init parameters
+ * @property \AppserverIo\Appserver\ServletEngine\ResourceLocator $resourceLocator   The resource locator for requested servlets
+ * @property \AppserverIo\Storage\StorageInterface                $securedUrlConfigs The container for the secured URL configurations
+ * @property \AppserverIo\Storage\GenericStackable                $servletMappings   The container for the servlet mappings
+ * @property \AppserverIo\Storage\StorageInterface                $servlets          The container for the servlets
+ * @property \AppserverIo\Storage\StorageInterface                $sessionParameters The container for the session parameters
  */
-class ServletManager extends AbstractManager implements ServletContext
+class ServletManager extends AbstractEpbManager implements ServletContext
 {
 
     /**

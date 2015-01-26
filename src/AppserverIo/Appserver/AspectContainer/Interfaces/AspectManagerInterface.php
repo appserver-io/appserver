@@ -20,6 +20,8 @@
 
 namespace AppserverIo\Appserver\AspectContainer\Interfaces;
 
+use AppserverIo\Doppelgaenger\AspectRegister;
+
 /**
  * AppserverIo\Appserver\AspectContainer\Interfaces\AspectManagerInterface
  *
@@ -36,9 +38,25 @@ namespace AppserverIo\Appserver\AspectContainer\Interfaces;
 interface AspectManagerInterface
 {
     /**
+     * The unique identifier to be registered in the application context.
+     *
+     * @var string
+     */
+    const IDENTIFIER = 'AspectManagerInterface';
+
+    /**
      * Getter for the $aspectRegister property
      *
      * @return \AppserverIo\Doppelgaenger\AspectRegister The aspect register
      */
     public function getAspectRegister();
+
+    /**
+     * Inject the aspect register
+     *
+     * @param \AppserverIo\Doppelgaenger\AspectRegister $aspectRegister The aspect register instance
+     *
+     * @return null
+     */
+    public function injectAspectRegister(AspectRegister $aspectRegister);
 }

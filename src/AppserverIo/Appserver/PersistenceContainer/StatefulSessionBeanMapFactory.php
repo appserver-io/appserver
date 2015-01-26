@@ -26,8 +26,7 @@ use AppserverIo\Collections\Map;
 use AppserverIo\Logger\LoggerUtils;
 
 /**
- * A thread thats preinitialized session instances and adds them to the
- * the session pool.
+ * A thread that pre-initializes session instances and adds them to the session pool.
  *
  * @category   Server
  * @package    Appserver
@@ -48,14 +47,14 @@ class StatefulSessionBeanMapFactory extends \Thread
     const TIME_TO_LIVE = 1;
 
     /**
-     * Key for invokation of method 'removeBySessionId()'.
+     * Key for invocation of method 'removeBySessionId()'.
      *
      * @var string
      */
     const ACTION_REMOVE_BY_SESSION_ID = 1;
 
     /**
-     * Key for invokation of method 'newInstance()'.
+     * Key for invocation of method 'newInstance()'.
      *
      * @var string
      */
@@ -186,7 +185,7 @@ class StatefulSessionBeanMapFactory extends \Thread
 
         // while we should create threads, to it
         while ($this->run) {
-            // wait until we receive a notification for a method invokation
+            // wait until we receive a notification for a method invocation
             $this->synchronized(function ($self) {
                 $self->wait(1000000 * StatefulSessionBeanMapFactory::TIME_TO_LIVE);
             }, $this);

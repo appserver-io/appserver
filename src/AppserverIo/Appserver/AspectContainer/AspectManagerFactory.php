@@ -58,7 +58,6 @@ class AspectManagerFactory
         $aspectManager = new AspectManager();
         $aspectManager->injectApplication($application);
         $aspectManager->injectAspectRegister($aspectRegister);
-        $aspectManager->injectWebappPath($application->getWebappPath());
 
         // attach the instance
         $application->addManager($aspectManager, $managerConfiguration);

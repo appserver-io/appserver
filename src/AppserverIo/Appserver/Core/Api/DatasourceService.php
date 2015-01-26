@@ -16,8 +16,7 @@
 namespace AppserverIo\Appserver\Core\Api;
 
 use AppserverIo\Configuration\Configuration;
-use AppserverIo\Appserver\Core\Api\AbstractService;
-use AppserverIo\Appserver\Core\Api\Node\DatasourceNode;
+use AppserverIo\Configuration\Interfaces\NodeInterface;
 
 /**
  * This services provides access to the deployed datasources and allows
@@ -136,11 +135,11 @@ class DatasourceService extends AbstractService
     /**
      * Persists the passed datasource.
      *
-     * @param \AppserverIo\Appserver\Core\Api\Node\DatasourceNode $datasourceNode The datasource to persist
+     * @param \AppserverIo\Configuration\Interfaces\NodeInterface $datasourceNode The datasource to persist
      *
      * @return void
      */
-    public function persist(DatasourceNode $datasourceNode)
+    public function persist(NodeInterface $datasourceNode)
     {
         $systemConfiguration = $this->getSystemConfiguration();
         $systemConfiguration->attachDatasource($datasourceNode);

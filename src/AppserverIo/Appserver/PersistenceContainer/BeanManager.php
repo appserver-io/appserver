@@ -24,8 +24,8 @@
 
 namespace AppserverIo\Appserver\PersistenceContainer;
 
+use AppserverIo\Appserver\Core\AbstractEpbManager;
 use AppserverIo\Storage\StorageInterface;
-use AppserverIo\Appserver\Core\AbstractManager;
 use AppserverIo\Appserver\Naming\InitialContext;
 use AppserverIo\Appserver\Core\Api\InvalidConfigurationException;
 use AppserverIo\Lang\Reflection\AnnotationInterface;
@@ -57,7 +57,7 @@ use AppserverIo\Appserver\DependencyInjectionContainer\Description\EpbReferenceD
  * @link       https://github.com/appserver-io/appserver
  * @link       http://www.appserver.io
  */
-class BeanManager extends AbstractManager implements BeanContext
+class BeanManager extends AbstractEpbManager implements BeanContext
 {
 
     /**
@@ -472,7 +472,6 @@ class BeanManager extends AbstractManager implements BeanContext
             if ($this->getStatefulSessionBeans()->has($sessionId) === false) {
                 // create a new session bean map instance
                 $this->getStatefulSessionBeanMapFactory()->newInstance($sessionId);
-
             }
 
             // load the session bean map instance

@@ -23,6 +23,7 @@
 
 namespace AppserverIo\Appserver\WebSocketServer;
 
+use AppserverIo\Appserver\Core\AbstractManager;
 use AppserverIo\Appserver\Core\Api\ConfigurationService;
 use Ratchet\MessageComponentInterface;
 use AppserverIo\Storage\GenericStackable;
@@ -45,9 +46,12 @@ use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
  * @link       https://github.com/appserver-io/appserver
  * @link       http://www.appserver.io
  *
- * @todo inherit from AbstractManager
+ * @property \AppserverIo\Appserver\WebSocketServer\ResourceLocatorInterface $handlerLocator  The handler locator
+ * @property \AppserverIo\Storage\GenericStackable                           $handlerMappings An storage for the handler mappings
+ * @property \AppserverIo\Storage\GenericStackable                           $handlers        An storage for the web socket handlers
+ * @property \AppserverIo\Storage\GenericStackable                           $initParameters  An storage for the initialization parameters
  */
-class HandlerManager extends GenericStackable implements HandlerContext
+class HandlerManager extends AbstractManager implements HandlerContext
 {
 
     /**
@@ -56,25 +60,12 @@ class HandlerManager extends GenericStackable implements HandlerContext
     public function __construct()
     {
         // initialize the member variables
-        $this->webappPath = '';
         $this->handlerLocator = null;
 
         // initialize the stackabls
         $this->handlers = new GenericStackable();
         $this->handlerMappings = new GenericStackable();
         $this->initParameters = new GenericStackable();
-    }
-
-    /**
-     * Injects the absolute path to the web application.
-     *
-     * @param string $webappPath The path to this web application
-     *
-     * @return void
-     */
-    public function injectWebappPath($webappPath)
-    {
-        $this->webappPath = $webappPath;
     }
 
     /**
@@ -281,7 +272,7 @@ class HandlerManager extends GenericStackable implements HandlerContext
     }
 
     /**
-     * Register's the init parameter under the passed name.
+     * Registers the init parameter under the passed name.
      *
      * @param string $name  Name to register the init parameter with
      * @param string $value The value of the init parameter
@@ -290,11 +281,11 @@ class HandlerManager extends GenericStackable implements HandlerContext
      */
     public function addInitParameter($name, $value)
     {
-        $this->initParameter[$name] = $value;
+        $this->initParameters[$name] = $value;
     }
 
     /**
-     * Return's the init parameter with the passed name.
+     * Returns the init parameter with the passed name.
      *
      * @param string $name Name of the init parameter to return
      *
@@ -302,19 +293,9 @@ class HandlerManager extends GenericStackable implements HandlerContext
      */
     public function getInitParameter($name)
     {
-        if (array_key_exists($name, $this->initParameter)) {
-            return $this->initParameter[$name];
+        if (array_key_exists($name, $this->initParameters)) {
+            return $this->initParameters[$name];
         }
-    }
-
-    /**
-     * Returns the path to the webapp.
-     *
-     * @return string The path to the webapp
-     */
-    public function getWebappPath()
-    {
-        return $this->webappPath;
     }
 
     /**
