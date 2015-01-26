@@ -3,14 +3,19 @@ layout: docs
 title: Servlet Engine
 position: 50
 group: Docs
+subDocs:
+  - title: How can a Servlet-Engine help
+    href: how-can-a-servlet-engine-help
+  - title: Bootstrapping a Servlet
+    href: bootstrapping-a-servlet
+  - title: Passing data from configuration
+    href: passing-data-from-configuration
+  - title: Starting a Session
+    href: starting-a-session
+  - title: Optional XML Configuration
+    href: optional-xml-configuration
 permalink: /documentation/servlet-engine.html
 ---
-
-> [How can a Servlet-Engine help](#how-can-a-servlet-engine-help)  
-> [Bootstrapping a Servlet](#bootstrapping-a-servlet)  
-> [Passing data from configuration](#passing-data-from-configuration)  
-> [Starting a Session](#starting-a-session)  
-> [Optional XML Configuration](#optional-xml-configuration)  
 
 Originally Servlets are the Java counterpart to other dynamic web technologies like PHP or the
 Microsoft .NET plattform. In contrast to PHP, a Servlet written in Java is not a script that'll
