@@ -25,33 +25,35 @@ We've three different types of Beans, `Session Beans`, `Message Beans` and `Enti
 
 #### Session Beans
 
-A Session Bean basically is a plain PHP class. You MUST not instantiate it directly, because the application server takes care of its complete lifecycle.
+A `Session Bean` basically is a plain PHP class. You MUST not instantiate it directly, because the application server takes care of its complete lifecycle.
 
 Therefore, if you need an instance of a SessionBean, you'll ask the application server to give you an instance, what can be done by a client or DI. In both cases, you will get a proxy to the session bean that allows you to invoke all methods, the SessionBean provides, as you can do if you would have a real instance. But, depending on your configuration, the proxy also allows you to call this method over a network as a remote method call. This makes it obvious for you if your SessionBean is on the same application server instance or on another one in your network.
 
-##### Different types of Session Beans
-
 When you write a Session Bean, you have to specify the type of Bean you want to implement. This can either be done by adding an annotation to the class doc block or specifing it in a configuration file. As it seems to be easier to add the annotation and, in most cases this is sufficient, we recommend that for the start.
 
-We differ between three kinds of Session Beans named Stateless, Stateful and Singleton.
+We differ between three kinds of `Session Beans` named `Stateless`, `Stateful` and `Singleton`.
 
-###### Stateless Session Beans (SLSBs)
+##### Stateless Session Beans (SLSBs)
 
 A `Stateless Session Bean` will always be instantiated when requested. It has NO state, only for the time you invoke a method on it. Therefore it is the type of Session Bean that will be probably the easiest to handle.
 
-###### Stateful Session Beans (SFSBs)
+##### Stateful Session Beans (SFSBs)
 
 The `Stateful Session Bean` is something between the two other types. It is stateful for the session with the ID you pass to the client when you request the instance. A `Stateful Session Bean` is very useful, if you want to implement something like a shopping cart. If you declare the shopping cart instance a class member of your `Session Bean`, this will make it persistent for your session lifetime.
 
 In opposite to a HTTP Session, `Stateful Session Beans` enables you to have session bound persistence, without the need to explicit add the data to a session object. That makes development pretty easy and more comfortable. As `Stateful Session Beans` are persisted in memory and not serialized to files, the Application Server has to take care, that in order ot minimize the number of instances carried around, are flushed when their lifetime has been reached.
 
-###### Singleton Session Beans (SSBs)
+##### Singleton Session Beans (SSBs)
 
-####### Concurrency
+###### Concurrency
 
-####### Lifecycle
+###### Lifecycle
 
-######## Explicit Startup
+In opposite to a `Stateless Session Bean`, the lifecycle of a `Singleton Session Bean` is a bit different. Once the instance has been created, it'll be shared between all requests, and instead of destroying the instance after each request the instance persists in memory until the application server will be shutdown or restarted.
+
+> A `Singleton Session Bean` gives you great power, because all data you add to a member will stay in memory until you unset it. So, if you want to share data across some requests, a `Singleton Session Bean` can be a good option for you. But remember: With great power, great responsibilty came together. So, always have an eye on memory consumption of your `Singleton Session Bean`, because YOU are responsible for that now!
+
+####### Explicit Startup
 
 A `Singleton Session Bean` will be created by the container only one time for each application. This means, whenever you'll request an instance, you'll receive the same one. If you set a variable in the Session Bean, it'll be available until you'll overwrite it, or the application server has been restarted.
 
