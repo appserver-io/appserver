@@ -14,8 +14,8 @@ subDocs:
     href: fedora
   - title: CentOS
     href: centos
-  - title: Raspian
-    href: raspian
+  - title: Raspbian
+    href: raspbian
 permalink: /documentation/installation.html
 ---
 
