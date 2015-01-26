@@ -3,11 +3,13 @@ layout: docs
 title: HTTP(S) Server
 position: 40
 group: Docs
+subDocs:
+  - title: Configure a Virtual Host
+    href: configure-a-virtual-host
+  - title: Configure your Environment Variables
+    href: configure-your-environment-variables
 permalink: /documentation/http-s-server.html
 ---
-
-> [Configure a Virtual Host](#configure-a-virtual-host)  
-> [Configure your Environment Variables](#configure-your-environment-variables)  
 
 The configuration itself is mostly self-explanatory so just have a look to the preferred config
 file and try to change settings. 

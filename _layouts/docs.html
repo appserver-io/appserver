@@ -15,15 +15,13 @@
                       <h2>{% if page.title != 'Docs'%}<small>Docs / </small>{% endif %}{{ page.title }}</h2><hr/>
                 </div>
             </div>
-            
-            <p><br/></p>
-            
+
             <div class="row">
-                <div class="col-md-3">
+                <div class="col-md-3" id="leftCol">
                     {% include docs_nav.html %}
                 </div>
                 <!-- Content Section -->
-                <div class="col-md-9">    
+                <div class="col-md-9 docs-content">
                     {{ content }}
                 </div>
             </div>
@@ -33,6 +31,8 @@
     <!-- /.container -->
 
     {% include footer.html %}
+
+    <script src="{{ "/assets/js/appserver.docs.js" | prepend: site.baseurl }}"></script>
 
 </body>
 </html>
