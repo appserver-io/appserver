@@ -71,7 +71,10 @@ class MessageQueueModule extends GenericStackable
 
         // initialize the members
         $this->queues = new GenericStackable();
-        $this->messageWrapperFactory = new MessageWrapperFactory();
+        $this->messages = new GenericStackable();
+
+        // initialize the array containing the worker specific stackables
+        $this->jobsToExecute = new GenericStackable();
     }
 
     /**
@@ -95,6 +98,9 @@ class MessageQueueModule extends GenericStackable
     public function init(ServerContextInterface $serverContext)
     {
         try {
+            // initialize the job counter
+            $jobCounter = 0;
+
             // create a queue worker for each application
             foreach ($serverContext->getContainer()->getApplications() as $application) {
                 // load the queue manager to check if there are queues registered for the application
@@ -103,9 +109,25 @@ class MessageQueueModule extends GenericStackable
                     foreach ($queueManager->getQueues() as $queue) {
                         // initialize the queues storage for the priorities
                         $this->queues[$queueName = $queue->getName()] = new GenericStackable();
+
                         // create a separate queue for each priority
                         foreach (PriorityKeys::getAll() as $priorityKey) {
-                            $this->queues[$queueName][$priorityKey] = new QueueWorker($priorityKey, $application);
+                            // initialize the stackable for the job storage
+                            $this->jobsToExecute[$jobCounter] = new GenericStackable();
+
+                            // initialize and start the queue worker
+                            $queueWorker = new QueueWorker();
+                            $queueWorker->injectPriorityKey($priorityKey);
+                            $queueWorker->injectApplication($application);
+                            $queueWorker->injectMessages($this->messages);
+                            $queueWorker->injectJobsToExecute($this->jobsToExecute[$jobCounter]);
+                            $queueWorker->start();
+
+                            // add the queue instance to the module
+                            $this->queues[$queueName][$priorityKey] = $queueWorker;
+
+                            // raise the job counter
+                            $jobCounter++;
                         }
                     }
                 }
@@ -146,7 +168,7 @@ class MessageQueueModule extends GenericStackable
             }
 
             // unpack the message from the request body
-            $message = $this->messageWrapperFactory->emptyInstance();
+            $message = new MessageWrapper();
             $message->init(MessageQueueProtocol::unpack($request->getBodyContent()));
 
             // load queue name and priority key
@@ -154,12 +176,16 @@ class MessageQueueModule extends GenericStackable
             $priorityKey = $message->getPriority();
 
             // prevents to attach message to none existing queue
-            if (!isset($this->queues[$queueName][$priorityKey])) {
+            if (isset($this->queues[$queueName][$priorityKey]) === false) {
                 throw new ModuleException(sprintf("Queue %s not found", $queueName));
             }
 
+            // add the message to the queue
+            $this->messages[$message->getMessageId()] = $message;
+
             // attach the message to the queue found as message destination
-            $this->queues[$queueName][$priorityKey]->attach($message);
+            $queue = $this->queues[$queueName][$priorityKey];
+            $queue->attach($message);
 
             // set response state to be dispatched after this without calling other modules process
             $response->setState(HttpResponseStates::DISPATCH);

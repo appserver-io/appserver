@@ -48,39 +48,75 @@ class QueueWorker extends \Thread
 {
 
     /**
-     * Initializes the queue worker with the application and the storage it should work on.
+     * Injects the priority of the queue worker.
      *
-     * @param \AppserverIo\Psr\Pms\PriorityKey                  $priorityKey The priority of this queue worker
+     * @param \AppserverIo\Psr\Pms\PriorityKey $priorityKey The priority of this queue worker
+     *
+     * @return void
+     */
+    public function injectPriorityKey(PriorityKey $priorityKey)
+    {
+        $this->priorityKey = $priorityKey;
+    }
+
+    /**
+     * Inject the storage for the jobs to be executed.
+     *
+     * @param \AppserverIo\Storage\GenericStackable $jobsToExecute The storage for the jobs to be executed
+     *
+     * @return void
+     */
+    public function injectJobsToExecute(GenericStackable $jobsToExecute)
+    {
+        $this->jobsToExecute = $jobsToExecute;
+    }
+
+    /**
+     * Inject the storage for the messages.
+     *
+     * @param \AppserverIo\Storage\GenericStackable $messages The storage for the messages
+     *
+     * @return void
+     */
+    public function injectMessages(GenericStackable $messages)
+    {
+        $this->messages = $messages;
+    }
+
+    /**
+     * Inject the application instance the worker is bound to.
+     *
      * @param \AppserverIo\Psr\Application\ApplicationInterface $application The application instance with the queue manager/locator
      *
      * @return void
      */
-    public function __construct(PriorityKey $priorityKey, ApplicationInterface $application)
+    public function injectApplication(ApplicationInterface $application)
     {
-
-        // bind the worker to the application
-        $this->priorityKey = $priorityKey;
         $this->application = $application;
-
-        // initialize the message and priority storage
-        $this->storage = new GenericStackable();
-
-        // start the worker
-        $this->start();
     }
 
     /**
      * Attach a new message to the queue.
      *
-     * @param \AppserverIo\Psr\Pms\Message $message the message to be attached to the queue
+     * @param \AppserverIo\Psr\Pms\Message $message The messsage to be attached to the queue
      *
      * @return void
      */
-    protected function attach(Message $message)
+    public function attach(Message $message)
     {
 
-        // add the new message to the message and priority storage
-        $this->storage[$message->getMessageId()] = $message;
+        // force handling the timer tasks now
+        $this->synchronized(function ($self, $m) {
+
+            // store the job-ID and the PK of the message => necessary to load the message later
+            $jobWrapper = new \stdClass();
+            $jobWrapper->jobId = uniqid();
+            $jobWrapper->messageId = $m->getMessageId();
+
+            // attach the job wrapper
+            $self->jobsToExecute[$jobWrapper->jobId] = $jobWrapper;
+
+        }, $this, $message);
     }
 
     /**
@@ -90,13 +126,13 @@ class QueueWorker extends \Thread
      *
      * @return void
      */
-    protected function remove(Message $message)
+    public function remove(Message $message)
     {
-        unset($this->storage[$message->getMessageId()]);
+        unset($this->messages[$message->getMessageId()]);
     }
 
     /**
-     * We process the messages here.
+     * We process the messages/jobs here.
      *
      * @return void
      */
@@ -114,6 +150,9 @@ class QueueWorker extends \Thread
             $profileLogger->appendThreadContext(sprintf('queue-worker-%s', $this->priorityKey));
         }
 
+        // initialize an array with jobs that are executed actually
+        $jobsExecuting = array();
+
         /*
          * Reduce CPU load depending on the queues priority, whereas priority
          * can be 1, 2 or 3 actually, so possible values for usleep are:
@@ -126,8 +165,11 @@ class QueueWorker extends \Thread
 
         // run forever
         while (true) {
-            // iterate over all messages found in the message storage
-            foreach ($this->storage as $messageId => $message) {
+            // iterate over all job wrappers
+            foreach ($this->jobsToExecute as $jobId => $jobWrapper) {
+                // load the message
+                $message = $this->messages[$jobWrapper->messageId];
+
                 // check the message state
                 switch ($message->getState()) {
 
@@ -146,38 +188,24 @@ class QueueWorker extends \Thread
                     case StateFailed::get(): // message processing has been failure
                     case StateProcessed::get(): // message processing has been successfully processed
 
-                        // we remove the message to free the memory
-                        $this->remove($message);
+                        // make sure the job has been finished
+                        if ($jobsExecuting[$jobId]->isFinished()) {
+                            // we remove the message to free the memory
+                            $this->remove($message);
+
+                            // we also remove the job
+                            unset($jobsExecuting[$jobId]);
+                        }
+
                         break;
 
                     case StateToProcess::get(): // message has to be processed now
 
-                        // load class name and session ID from remote method
-                        $queueProxy = $message->getDestination();
-                        $sessionId = $message->getSessionId();
+                        // start the job and add it to the internal array
+                        $jobsExecuting[$jobId] = $message->getJob($application);
 
-                        // lookup the queue and process the message
-                        if ($queue = $application->search('QueueContext')->locate($queueProxy)) {
-                            // lock the message
-                            $message->setState(StateInProgress::get());
-
-                            // the queues receiver type
-                            $queueType = $queue->getType();
-
-                            // create an intial context instance
-                            $initialContext = new InitialContext();
-                            $initialContext->injectApplication($application);
-
-                            // lookup the bean instance
-                            $instance = $initialContext->lookup($queueType);
-
-                            // inject the application to the receiver and process the message
-                            $instance->onMessage($message, $sessionId);
-
-                            // remove the message from the storage
-                            $message->setState(StateProcessed::get());
-                        }
-
+                        // remove the job from the list of jobs to be executed
+                        unset($this->jobsToExecute[$jobId]);
                         break;
 
                     case StateUnknown::get(): // message is in an unknown state -> this is weired and should never happen!

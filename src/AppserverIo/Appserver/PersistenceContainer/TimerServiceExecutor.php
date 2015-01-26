@@ -218,7 +218,7 @@ class TimerServiceExecutor extends \Thread implements ServiceExecutor
                             // create the timer task to be executed
                             $timerTasksExecuting[$taskId] = $timer->getTimerTask($application);
 
-                            // remove the key from the list ot tasks to be executed
+                            // remove the key from the list of tasks to be executed
                             unset($this->tasksToExecute[$taskId]);
 
                         } else {
