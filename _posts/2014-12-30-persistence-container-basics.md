@@ -540,7 +540,6 @@ class LoginServlet extends HttpServlet
 }
 ```
 
-
 #### Message Beans (MDBs)
 
 Other than session beans, you MUST not invoke `MDBs` over a proxy, but as receiver of the messages you can send. The messages are not directly sent to a `MDB` instead they are sent to a `Message Broker`. The `Message Broker` adds them to a queue until a worker, what will be separate thread, collects and processes it.
@@ -555,15 +554,81 @@ In opposite to session beans, `MDBs` have to implement the `AppserverIo\Psr\Pms\
 
 > Be aware, that `Lifecycle Callbacks` are optional, must be `public`, must NOT have any arguments and can't throw checked exceptions. Exceptions will be catched by the container and result in a `critical` log message.
 
-##### Post Construct Callback
+##### Post-Construct Callback
 
-As the beans lifecycle is controlled by the container and DI works either by property or method injection, a `Post Construct Callback` enables a developer to implement a method that'll be invoked by the container after the bean has been created and all instances injected.
+As the beans lifecycle is controlled by the container and DI works either by property or method injection, a `Post-Construct` callback enables a developer to implement a method that'll be invoked by the container after the bean has been created and all instances injected.
 
 > This callback can be very helpful for implementing functionalty like cache systems that need to load data from a datasource once and will update it only frequently.
 
-##### Pre Destroy Callback
+##### Pre-Destroy Callback
 
-The second callback is the `Pre Destroy Callback`. This will be fired before the container destroys the instance of the bean.
+The second callback is the `Pre-Destroy` callback. This will be fired before the container destroys the instance of the bean.
+
+##### Example
+
+As a simple example we add a `Post-Construct` and a `Pre-Destroy` callback to our `SSB` example from the last section. 
+
+```php
+<?php
+
+namespace AppserverIo\Example\SessionBeans;
+
+/**
+ * @Singleton
+ */
+class ASingletonSessionBean
+{
+
+  /**
+   * The number of successful logins since the last restart.
+   *
+   * @var integer
+   */
+  protected $counter;
+  
+  /**
+   * Lifecycle Callback that'll be invoked by the container on
+   * application startup.
+   *
+   * @return void
+   * @PostConstruct
+   */
+  public function startup()
+  {
+    // try to load the counter from a simple textfile
+    if ($counter = file_get_contents('/tmp/counter.txt')) {
+      $this->counter = (integer) $counter;
+    } else {
+      $this->counter = 0;
+    }
+  }
+
+  /**
+   * Lifecycle Callback that'll be invoked by the container before the
+   * bean will be destroyed.
+   *
+   * @return void
+   * @PreDestroy
+   */
+  public function shutdown()
+  {
+    // write the counter back to a simple textfile
+    file_put_contents('/tmp/counter.txt', $this->counter);
+  }
+
+  /**
+   * Raises the login counter.
+   *
+   * @return integer The new number of successful logins
+   */
+  public function raise()
+  {
+    return $this->counter++;
+  }
+}
+```
+
+This extends the `SSB` with some kind of real persistence by loading the counter from a simple textfile on application startup or writing it back before the `SSB` will be destroyed. 
 
 #### Interceptors
 
