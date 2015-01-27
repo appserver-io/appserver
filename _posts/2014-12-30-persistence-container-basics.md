@@ -123,7 +123,7 @@ class AStatefulSessionBean
      * Implement login functionality, e. g. check user/password in DB
      */
      
-    // add user instance to the SFSB
+    // make user entity persistent by setting it as SFSB property
     $this->user = $user;
   }
   
