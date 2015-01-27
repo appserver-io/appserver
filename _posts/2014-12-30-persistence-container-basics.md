@@ -88,7 +88,7 @@ In opposite to a HTTP Session, `SFSBs` enables you to have session bound persist
 
 ###### Example
 
-As described above, a `SFSB` has a state that is bound to a HTTP session that has to be started before accessing it. Let's imaging we've a servlet.
+As described above, a `SFSB` has a state that is bound to a HTTP session that has to be started before accessing it. Let's imagine we've a servlet and want to a access a `SFSB` to login a user with credentials found as request parameters and persist the user entity in the `SFSB` to query against in order protect other requests.
 
 ```php
 <?php
@@ -102,32 +102,143 @@ class AStatefulSessionBean
 {
 
   /**
-   * The SessionBean instance we want to have injected.
+   * The user, logged into the system.
    *
-   * @var \AppserverIo\Example\SessionBeans\AStatelessSessionBean
-   * @EnterpriseBean(name="AStatelessSessionBean")
+   * @var \AppserverIo\Apps\Example\Entities\User $user
    */
-  protected $aStatelessSessionBean;
+  protected $user;
 
   /**
-   * Encrypts and stores a password.
+   * Logs the user into the system.
    *
-   * @param string $password The password to be encrypted and stored
+   * @param string $username The username to login
+   * @param string $password The password used to login
    *
    * @return void
    */
-  public function savePassword($password)
+  public function login($username, $password)
   {
     
-    // encrypt password by calling the SLSB
-    $encryptedPassword = $this->aStatelessSessionBean->hashPassword($password);
-    
     /*
-     * Implement functionality to store password to database here
+     * Implement login functionality, e. g. check user/password in DB
      */
+     
+    // add user instance to the SFSB
+    $this->user = $user;
+  }
+  
+  /**
+   * Checks if a user has been logged into the system, if not an exception
+   * will be thrown.
+   *
+   * @return void
+   * @throws \Exception Is thrown if no user is logged into the system
+   */
+  public function isLoggedIn()
+  {
+    if (isset($this->user) === false) {
+      throw new \Exception('Please log-in first!');
+    }
   }
 }
 ```
+
+> The `SFSB` is pretty easy and is implemented as a plain old PHP class. Important is, that the user entity, once set in the `SFSB` is available at every request, as long as the HTTP session is available.
+
+The servlet is also a very simple example that implements the login on a `POST` request, whereas the `GET` request is protected.
+
+```php
+<?php
+
+namespace AppserverIo\Example\Servlets;
+
+use AppserverIo\Psr\Servlet\ServletConfig;
+use AppserverIo\Psr\Servlet\Http\HttpServlet;
+use AppserverIo\Psr\Servlet\Http\HttpServletRequest;
+use AppserverIo\Psr\Servlet\Http\HttpServletResponse;
+
+/**
+ * This servlets implements login functionality using a SFSB.
+ *
+ * @Route(name="login", urlPattern={"/login.do", "/login.do*"})
+ */
+class LoginServlet extends HttpServlet
+{
+
+  /**
+   * The SFSB instance we want to have injected, used for login.
+   *
+   * @var \AppserverIo\Example\SessionBeans\AStatefulSessionBean
+   * @EnterpriseBean(name="AStatefulSessionBean")
+   */
+  protected $aStatefulSessionBean;
+
+  /**
+   * Handles a HTTP POST request.
+   *
+   * This is a very simple example that shows how to start a new session to
+   * login the a user with credentials found as request parameters.
+   *
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest  $servletRequest
+   *   The request instance
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponse $servletResponse
+   *   The response instance
+   *
+   * @return void
+   * @see \AppserverIo\Psr\Servlet\Http\HttpServlet::doGet()
+   */
+  public function doPost(
+    HttpServletRequest $servletRequest,
+    HttpServletResponse $servletResponse)
+  {
+
+    // create a new session, if not available
+    $session = $servletRequest->getSession(true);
+
+    // start the session and add the cookie to the response
+    $session->start();
+
+    // login by invoking the SFSB login() method
+    $this->aStatefulSessionBean->login(
+      $servletRequest->getParameter('username'),
+      $servletRequest->getParameter('password')
+    );
+  }
+  
+  /**
+   * Handles a HTTP GET request.
+   *
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest  $servletRequest
+   *   The request instance
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponse $servletResponse
+   *   The response instance
+   *
+   * @return void
+   * @see \AppserverIo\Psr\Servlet\Http\HttpServlet::doGet()
+   */
+  public function doGet(
+    HttpServletRequest $servletRequest,
+    HttpServletResponse $servletResponse)
+  {
+
+    try {
+    
+      // check for a user logged in
+      $this->aStatefulSessionBean->isLoggedIn();
+      
+      /*
+       * do some other, almost protected, stuff here
+       */
+    
+    } catch(\Exception $e) {
+      $servletResponse->setStatusCode(500);
+      $servletResponse->appendBodyStream($e->getMessage());
+    }
+  }
+}
+```
+
+> You don't have to restart the session in the `GET` request again, because the `Servlet-Engine` is aware of the session-ID passed as request header and uses it when the `SFSB` will be injected on runtime.
 
 ##### Singleton Session Beans (SSBs)
 
