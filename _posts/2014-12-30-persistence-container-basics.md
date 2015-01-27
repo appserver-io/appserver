@@ -37,13 +37,23 @@ We differ between three kinds of `Session Beans` named `Stateless`, `Stateful` a
 
 ##### Stateless Session Beans (SLSBs)
 
-A `SLSB` will always be instantiated when requested. It has NO state, only for the time you invoke a method on it. Therefore it is the type of Session Bean that will be probably the easiest to handle.
+A `SLSB` has NO state, only for the time you invoke a method on it. As these bean type is designed for efficiency and simplicity the developer doesn't need to take care about memory consumption, concurrency or lifecycle.
+
+###### Lifecycle
+
+On each request an new `SLSB` will be instantiated when requested.
 
 ##### Stateful Session Beans (SFSBs)
 
 The `SFSB` is something between the two other types. It is stateful for the session with the ID you pass to the client when you request the instance. A `SFSB` is very useful, if you want to implement something like a shopping cart. If you declare the shopping cart instance a class member of your session bean, this will make it persistent for your session lifetime.
 
 In opposite to a HTTP Session, `SFSBs` enables you to have session bound persistence, without the need to explicit add the data to a session object. That makes development pretty easy and more comfortable. As `SFSBs` are persisted in memory and not serialized to files, the Application Server has to take care, that in order ot minimize the number of instances carried around, are flushed when their lifetime has been reached.
+
+###### Lifecycle
+
+`SFSBs` are created by the container when requested and no instance, based on the passed session-ID, is available. After the request has been processed, the instance will be re-attached to the container ready to handle the next request.
+
+> If the session is removed, times out, or the application server restarts, the data of a 'SFSB' will be lost.
 
 ##### Singleton Session Beans (SSBs)
 
@@ -73,17 +83,17 @@ Other than session beans, you MUST not invoke `MDBs` over a proxy, but as receiv
 
 `Lifecycle Callbacks` enables a developer to declare callback methods depending on the beans lifecycle. Actually we only support `post-construct` and `pre-destroy` callbacks. `Lifecycle Callbacks` can be configured either by annotations or the XML configuration. Declaring `Lifecycle Callbacks` by annotations is more intuitive, as you have to add the annotation directly to the method. Therfore we go with the annotations here.
 
-> Be aware, that `Lifecycle Callbacks` must be `public` and must NOT have any parameter.
+> Be aware, that `Lifecycle Callbacks` are optional, must be `public`, must NOT have any arguments and can't throw checked exceptions. Exceptions will be catched by the container and result in a `critical` log message.
 
 ##### Post Construct Callback
 
-As the beans lifecycle is controlled by the container and DI works either by property or method injection, a `Post Construct Callback` enables a developer to implement a method that'll be invoked by the container after the bean has been created and all instances injected. This method is optional, but must NOT have arguments, return any value or throw checked exceptions. Exceptions will be catched by the container and result in a `critical` log message.
+As the beans lifecycle is controlled by the container and DI works either by property or method injection, a `Post Construct Callback` enables a developer to implement a method that'll be invoked by the container after the bean has been created and all instances injected.
 
 > This callback can be very helpful for implementing functionalty like cache systems that need to load data from a datasource once and will update it only frequently.
 
 ##### Pre Destroy Callback
 
-The second callback is the `Pre Destroy Callback`. This will be fired before the container destroys the instance of the bean. Like the `Post Construct Callback`, this method is optional, but must NOT have arguments, return any value or throw checked exceptions. Exceptions will be catched by the container and result in a `critical` log message.
+The second callback is the `Pre Destroy Callback`. This will be fired before the container destroys the instance of the bean.
 
 #### Interceptors
 
