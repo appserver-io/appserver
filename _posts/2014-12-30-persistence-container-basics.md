@@ -723,7 +723,9 @@ class LoggedBean
 ### Naming Directory
 ***
 
-The application server handles access to all resources an application provides. Resources can be beans, contexts, the application instance itself or the managers provided by an application. All that resources are registered in the `Naming Directory` which allows you the access them if needed. 
+Every container running in the application server has a internal registry, we call it Naming Directory. In Java this is call `Enterprise Naming Context` or `ENC`, in short. The naming directory is something like an object store, the container registers references to beans and resources.
+
+The application server handles access to all resources an application provides. Resources can be beans, contexts, the application instance itself or the managers provided by an application. All that resources are registered in the `Naming Directory` which allows you the access them if needed.
 
 #### Register Resources
 
