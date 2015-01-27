@@ -88,7 +88,7 @@ In opposite to a HTTP Session, `SFSBs` enables you to have session bound persist
 
 ###### Example
 
-As described above, a `SFSB` has a state that is bound to a HTTP session that has to be started before accessing it. Let's imagine we've a servlet and want to a access a `SFSB` to login a user with credentials found as request parameters and persist the user entity in the `SFSB` to query against in order protect other requests.
+As described above, a `SFSB` has a state that is bound to a HTTP session. It is necessary to start the HTTP session once before accessing it. Let's imagine we've a servlet and want to a access a `SFSB` used to login a user with credentials found as request parameters. After a successfull login, the user entity should be persisted in the `SFSB` in order to protect the following `GET` requests.
 
 ```php
 <?php
