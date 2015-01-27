@@ -94,7 +94,9 @@ class AStatefulSessionBean
     // encrypt password by calling the SLSB
     $encryptedPassword = $this->aStatelessSessionBean->hashPassword($password);
     
-    // implement functionality to store password to database here
+    /*
+     * Implement functionality to store password to database here
+     */
   }
 }
 ```
@@ -152,7 +154,9 @@ class AStatefulSessionBean
     // encrypt password by calling the SLSB
     $encryptedPassword = $this->aStatelessSessionBean->hashPassword($password);
     
-    // implement functionality to store password to database here
+    /*
+     * Implement functionality to store password to database here
+     */
   }
 }
 ```
