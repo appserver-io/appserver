@@ -104,7 +104,7 @@ class AStatefulSessionBean
   /**
    * The user, logged into the system.
    *
-   * @var \AppserverIo\Apps\Example\Entities\User $user
+   * @var \AppserverIo\Apps\Example\Entities\User
    */
   protected $user;
 
@@ -203,6 +203,9 @@ class LoginServlet extends HttpServlet
       $servletRequest->getParameter('username'),
       $servletRequest->getParameter('password')
     );
+    
+    // add a message to the response
+    $servletResponse->appendBodyStream("You've successfully been logged in!");
   }
   
   /**
@@ -257,6 +260,206 @@ In opposite to a `SLSB`, the lifecycle of a `SSB` is a bit different. Once the i
 ###### Explicit Startup
 
 In combination with the possiblity to have data persistent in memory, a `SSB` additionally allows you, to be pre-loaded on application startup. This can be done by adding the `Startup` annotation to the class doc block. Using the explict startup together with the possiblity to have the data persistent in memory, you'll be able to improve performance of your application, by pre-loading data from a database or a configuration file on application startup.
+
+###### Example
+
+To give you an example of how a `SSB` can be used reasonable, we'll extend our example from the `SFSB` with a counter that tracks the number of successful logins.
+
+```php
+<?php
+
+namespace AppserverIo\Example\SessionBeans;
+
+/**
+ * @Singleton
+ */
+class ASingletonSessionBean
+{
+
+  /**
+   * The number of successful logins since the last restart.
+   *
+   * @var integer
+   */
+  protected $counter;
+
+  /**
+   * Raises the login counter.
+   *
+   * @return integer The new number of successful logins
+   */
+  public function raise()
+  {
+    return $this->counter++;
+  }
+}
+```
+
+To use the `SSB` in our `SFSB`, the developer can inject it by using the `@EnterpriseBeans` annotation. Additionally the `login()` method has to be customized to raise and return the number of successful logins by invoking the `raise()` method of the `SSB`.
+
+```php
+<?php
+
+namespace AppserverIo\Example\SessionBeans;
+
+/**
+ * @Stateful
+ */
+class AStatefulSessionBean
+{
+
+  /**
+   * The SSB instance that counts succesful logins.
+   *
+   * @var \AppserverIo\Example\SessionBeans\ASingletonSessionBean
+   * @EnterpriseBean(name="ASingletonSessionBean")
+   */
+  protected $aSingletonSessionBean;
+
+  /**
+   * The user, logged into the system.
+   *
+   * @var \AppserverIo\Apps\Example\Entities\User
+   */
+  protected $user;
+
+  /**
+   * Logs the user into the system.
+   *
+   * @param string $username The username to login
+   * @param string $password The password used to login
+   *
+   * @return void
+   */
+  public function login($username, $password)
+  {
+    
+    /*
+     * Implement login functionality, e. g. check user/password in DB
+     */
+    
+    // make user entity persistent by setting it as SFSB property
+    $this->user = $user;
+    
+    // raise and return the successfull login counter
+    return $this->aSingletonSessionBean->raise();
+  }
+  
+  /**
+   * Checks if a user has been logged into the system, if not an exception
+   * will be thrown.
+   *
+   * @return void
+   * @throws \Exception Is thrown if no user is logged into the system
+   */
+  public function isLoggedIn()
+  {
+    if (isset($this->user) === false) {
+      throw new \Exception('Please log-in first!');
+    }
+  }
+}
+```
+
+Finally the servlet receives the number ob successul logins since the application server last restart and add's it to the response.
+
+```php
+<?php
+
+namespace AppserverIo\Example\Servlets;
+
+use AppserverIo\Psr\Servlet\ServletConfig;
+use AppserverIo\Psr\Servlet\Http\HttpServlet;
+use AppserverIo\Psr\Servlet\Http\HttpServletRequest;
+use AppserverIo\Psr\Servlet\Http\HttpServletResponse;
+
+/**
+ * This servlets implements login functionality using a SFSB.
+ *
+ * @Route(name="login", urlPattern={"/login.do", "/login.do*"})
+ */
+class LoginServlet extends HttpServlet
+{
+
+  /**
+   * The SFSB instance we want to have injected, used for login.
+   *
+   * @var \AppserverIo\Example\SessionBeans\AStatefulSessionBean
+   * @EnterpriseBean(name="AStatefulSessionBean")
+   */
+  protected $aStatefulSessionBean;
+
+  /**
+   * Handles a HTTP POST request.
+   *
+   * This is a very simple example that shows how to start a new session to
+   * login the a user with credentials found as request parameters.
+   *
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest  $servletRequest
+   *   The request instance
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponse $servletResponse
+   *   The response instance
+   *
+   * @return void
+   * @see \AppserverIo\Psr\Servlet\Http\HttpServlet::doGet()
+   */
+  public function doPost(
+    HttpServletRequest $servletRequest,
+    HttpServletResponse $servletResponse)
+  {
+
+    // create a new session, if not available
+    $session = $servletRequest->getSession(true);
+
+    // start the session and add the cookie to the response
+    $session->start();
+
+    // login by invoking the SFSB login() method + receive number
+    // of successful logins since last application server restart
+    $successfulLogins = $this->aStatefulSessionBean->login(
+      $servletRequest->getParameter('username'),
+      $servletRequest->getParameter('password')
+    );
+    
+    // add the number of successful login attempts to the response
+    $servletResponse->appendBodyStream(
+      "$successfulLogins login attempts since last restart!"
+    );
+  }
+  
+  /**
+   * Handles a HTTP GET request.
+   *
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest  $servletRequest
+   *   The request instance
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponse $servletResponse
+   *   The response instance
+   *
+   * @return void
+   * @see \AppserverIo\Psr\Servlet\Http\HttpServlet::doGet()
+   */
+  public function doGet(
+    HttpServletRequest $servletRequest,
+    HttpServletResponse $servletResponse)
+  {
+
+    try {
+    
+      // check for a user logged in
+      $this->aStatefulSessionBean->isLoggedIn();
+      
+      /*
+       * do some other, almost protected, stuff here
+       */
+    
+    } catch(\Exception $e) {
+      $servletResponse->setStatusCode(500);
+      $servletResponse->appendBodyStream($e->getMessage());
+    }
+  }
+}
+```
+
 
 #### Message Beans (MDBs)
 
