@@ -95,7 +95,9 @@ class AStatefulSessionBean
 }
 ```
 
-With the `name` attribute of the `@EnterpriseBean`annotation you have the possibility to specify the name of the bean, you registered before by annotating it. A more detailed description about the available annotations will be part of the [Persistence-Container](#persistence-container).
+With the `name` attribute of the `@EnterpriseBean`annotation you have the possibility to specify the name of the bean, you registered before by annotating it. A more detailed description about the available annotations will be part of the Persistence-Container.
+
+> This method is the preferred one, because of performance improvements. 
 
 ##### Setter Injection
 
@@ -104,88 +106,48 @@ The second possibility to inject an instance is setter injection.
 ```php
 <?php
 
-namespace Namespace\Module;
-
-use AppserverIo\Psr\Servlet\ServletConfig;
-use AppserverIo\Psr\Servlet\Http\HttpServlet;
-use AppserverIo\Psr\Servlet\Http\HttpServletRequest;
-use AppserverIo\Psr\Servlet\Http\HttpServletResponse;
+namespace AppserverIo\Example\SessionBeans;
 
 /**
- * This is the famous 'Hello World' as servlet implementation.
+ * @Stateful
  */
-class HelloWorldServlet extends HttpServlet
+class AStatefulSessionBean
 {
 
   /**
    * The SessionBean instance we want to have injected.
    *
-   * @var \Namespace\Modulename\MyStatefulSessionBean
+   * @var \AppserverIo\Example\SessionBeans\AStatelessSessionBean
    */
-  protected $myStatefulSessionBean;
-  
-  /**
-   * The text to be rendered.
-   *
-   * @var string
-   */
-  protected $helloWorld = '';
+  protected $aStatelessSessionBean;
 
   /**
-   * Initializes the servlet with the passed configuration.
+   * Encrypts and stores a password.
    *
-   * @param \AppserverIo\Psr\Servlet\ServletConfig $config 
-   *   The configuration to initialize the servlet with
+   * @param string $password The password to be encrypted and stored
    *
    * @return void
    */
-  public function init(ServletConfig $config)
+  public function savePassword($password)
   {
-
-    // call parent method
-    parent::init($config);
-
-    // prepare the text here
-    $this->helloWorld = 'Hello World!';
-
-    // @todo Do all the bootstrapping here, because this method will
-    //       be invoked only once when the Servlet Engines starts up
-  }
-
-  /**
-   * Handles a HTTP GET request.
-   *
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest  $servletRequest  
-   *   The request instance
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponse $servletResponse 
-   *   The response instance
-   *
-   * @return void
-   * @see \AppserverIo\Psr\Servlet\Http\HttpServlet::doGet()
-   */
-  public function doGet(
-    HttpServletRequest $servletRequest,
-    HttpServletResponse $servletResponse)
-  {
-    $servletResponse->appendBodyStream($this->helloWorld);
+    $encryptedPassword = $this->aStatelessSessionBean->hashPassword($password);
   }
   
   /**
-   * Injects the session bean by its setter method.
+   * Injects the stateless session bean.
    *
-   * @param \Namespace\Modulename\MyStatefulSessionBean $myStatefulSessionBean 
-   *   The instance to inject
-   * @EnterpriseBean(name="MyStatefulSessionBean")
+   * @param \AppserverIo\Example\SessionBeans\AStatelessSessionBean $aStatelessSessionBean
+   *     The stateless session to be injected
+   *
+   * @return void
+   * @EnterpriseBean(name="AStatelessSessionBean")
    */
-  public function setMySessionBean(MyStatefulSessionBean $myStatefulSessionBean)
+  public function injectAStatelessSessionBean($aStatelessSessionBean)
   {
-    $this->myStatefulSessionBean = $myStatefulSessionBean;
+    $this->aStatelessSessionBean = $aStatelessSessionBean;
   }
 }
 ```
-
-> This method is the preferred one, because it'll be refactored not to use reflection in further
-> versions.
 
 ### Server-Side Component Types
 ***
