@@ -6,10 +6,16 @@ group: Docs
 subDocs:
   - title: Configure the HTTP(S) server
     href: configure-the-http-s-server
+  - title: The connection handler
+    href: the-connection-handler
+  - title: Server modules
+    href: server-modules
   - title: Configure a Virtual Host
     href: configure-a-virtual-host
   - title: Configure your Environment Variables
     href: configure-your-environment-variables
+  - title: Configure authentications
+    href: configure-authentications
 permalink: /documentation/http-s-server.html
 ---
 
@@ -63,8 +69,8 @@ Next thing we'll have a look at are server params.
 </params>
 ```
 
-They are used to define several key/value pairs for the http(s) server implementation to react on
-which are described in the following table.
+They are used to define several key/value pairs for the HTTP(S) server implementation to react on. Find the param
+descriptions below.
 
 | Param                    | Description |
 | ------------------------ | ----------- |
@@ -82,7 +88,92 @@ which are described in the following table.
 | `keepAliveTimeout`       | The number of seconds waiting for a subsequent request while in keep-alive loop before closing the connection. |
 | `errorsPageTemplatePath` | The path to the errors page template. The path will be relative to the servers root directory if there is no beginning slash "/". |
 
-A detailed overview of all configuration settings will follow ...
+If you want to setup a HTTPS server you have to configure 2 more params.
+
+| Param         | Description |
+| --------------| ----------- |
+| `certPath`    | The path to your certificate file which as to be a combined PEM file of private key and certificate. The path will be relative to the servers root directory if there is no beginning slash "/". |
+| `passphrase`  | The passphrase you have created your SSL private key file with. Can be optional. |
+
+## The connection handler
+
+As we wanted to handle requests based on a specific protocol, the server needs a mechanism to understand and handle
+those requests in a proper way.
+
+For our http(s) server we use `\AppserverIo\WebServer\ConnectionHandlers\HttpConnectionHandler`
+which implements the `\AppserverIo\Server\Interfaces\ConnectionHandlerInterface` and follows the HTTP/1.1 specification,
+which can be found [here](<http://tools.ietf.org/html/rfc7230>) using our [http library](<https://github.com/appserver-io/http>).
+
+```xml
+<connectionHandlers>
+    <connectionHandler type="\AppserverIo\WebServer\ConnectionHandlers\HttpConnectionHandler" />
+</connectionHandlers>
+```
+
+> There is the possibility to provide more than one connection handler, but in most cases it does not make sense because
+> you will have to handle another protocol which might not be compatible with the modules you provided in the same server
+> configuration. In certain circumstances it will make sense but it's not best practise to do this.
+
+## Server modules
+
+As mentioned at the beginning we're using our [multithreaded server framework](<https://github.com/appserver-io/server>)
+which allows you to provide modules for request and response processing triggered from several hooks.
+
+Let's get an overview of those hooks which can also be found in the corresponding dictionary class `\AppserverIo\Server\Dictionaries\ModuleHooks`
+
+| Hook             | Description |
+| -----------------| ----------- |
+| `REQUEST_PRE`    | The request pre hook should be used to do something before the request will be parsed. So if there is a keep-alive loop going on this will be triggered every request loop. |
+| `REQUEST_POST`   | The request post hook should be used to do something after the request has been parsed. Most modules such as CoreModule will use this hook to do their job. |
+| `RESPONSE_PRE`   | The response pre hook will be triggered at the point before the response will be prepared for sending it to the to the connection endpoint. |
+| `RESPONSE_POST`  | The response post hook is the last hook triggered within a keep-alive loop and will execute the modules logic when the response is well prepared and ready to dispatch. |
+| `SHUTDOWN`       | The shutdown hook is called whenever a php fatal error will shutdown the current worker process. In this case current filehandler module will be called to process the shutdown hook. This enables the module the possibility to react on fatal error's by it's own in some cases. If it does not react on this shutdown hook, the default error handling response dispatcher logic will be used. If the module reacts on the shutdown hook and set's the response state to be dispatched no other error handling shutdown logic will be called to fill up the response. |
+
+Now let's dig into the modules list provided for the HTTP(S) server by default.
+
+```xml
+<modules>
+    <!-- REQUEST_POST hook -->
+    <module type="\AppserverIo\WebServer\Modules\VirtualHostModule"/>
+    <module type="\AppserverIo\WebServer\Modules\AuthenticationModule"/>
+    <module type="\AppserverIo\WebServer\Modules\EnvironmentVariableModule" />
+    <module type="\AppserverIo\WebServer\Modules\RewriteModule"/>
+    <module type="\AppserverIo\WebServer\Modules\DirectoryModule"/>
+    <module type="\AppserverIo\WebServer\Modules\AccessModule"/>
+    <module type="\AppserverIo\WebServer\Modules\CoreModule"/>
+    <module type="\AppserverIo\WebServer\Modules\PhpModule"/>
+    <module type="\AppserverIo\WebServer\Modules\FastCgiModule"/>
+    <module type="\AppserverIo\Appserver\ServletEngine\ServletEngine" />
+    <!-- RESPONSE_PRE hook -->
+    <module type="\AppserverIo\WebServer\Modules\DeflateModule"/>
+    <!-- RESPONSE_POST hook -->
+    <module type="\AppserverIo\Appserver\Core\Modules\ProfileModule"/>
+</modules>
+```
+
+For every hook all modules are processed in the same order as they are listed in the xml configuration.
+> The order of the modules provided by the default configuration is intended and should not be changed. For example if you change the
+> order of AccessModule to come before the RewriteModule it would be possible to lever an access rule by any rewrite rule.
+
+Our webserver provides an interface called `\AppserverIo\WebServer\Interfaces\HttpModuleInterface` that every module has
+to implement.
+
+Find an overview of all modules below ...
+
+| Module                      | Description |
+| ----------------------------| ----------- |
+| `VirtualHostModule`         | Provides virtual host functionality that allows you to run more than one hostname (such as yourname.example.com and othername.example.com) on the same server while having different params and configurations. |
+| `AuthenticationModule`      | Offers the possibility to secure resources using basic or digest authentication based on request uri with regular expression support. |
+| `EnvironmentVariableModule` | This module let you manipulate server environment variables. These can be conditionally set, unset and copied in form of an OS context. |
+| `RewriteModule`             | A simple rewrite module for PHP based web servers which uses a self made structure for usable rules. It can be used similar to Apaches mod_rewrite and provides rewriting and redirecting capabilities. |
+| `DirectoryModule`           | Provides for "trailing slash" redirects and serving directory index files. |
+| `AccessModule`              | Allows a http header based access management with regular expression support. |
+| `CoreModule`                | HTTP server features that are always available such as serving static resources and finding defined file handlers. |
+| `PhpModule`                 | Acts like a classic php webserver module (such as `mod_php` for apache) which calls and runs your requested php scripts in an isolated context with all globals (such as `$_SERVER`, `$_GET`, `$_POST` etc.) prepared in the common way. |
+| `FastCgiModule`             | The Module allows you to connect several fastcgi backends (such as `php-fpm` or `hhvm`) based on configured file-handlers. |
+| `ServletEngine`             | The ServletEngine introduces a super fast and simple way to implement an entry point to handle HTTP requests that allows you to execute all performance critical tasks. Please see [Servlet Engine](<{{ "/documentation/servlet-engine.html" | prepend: site.baseurl }}>) for full documentation. |
+| `DeflateModule`             | It provides the `deflate` output filter that allows output from your server to be compressed before being sent to the client over the network. |
+| `ProfileModule`             | Allows request based realtime profiling using external tools like logstash and kibana. |
 
 ## Configure a Virtual Host
 
@@ -147,3 +238,7 @@ some specialities too:
 - You can use backreferences for the value you want to set as well. But those are limited to 
   environment variables of the PHP process
 - Values will be treated as strings
+
+## Configure authentications
+
+You can setup request uri based basic or digest authentication based on the  with regular expression support.
