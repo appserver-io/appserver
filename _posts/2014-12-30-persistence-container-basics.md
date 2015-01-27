@@ -49,6 +49,8 @@ A `Singleton Session Bean` will be created by the container only one time for ea
 
 ###### Concurrency
 
+Concurrency is, in case of a `Singleton Session Bean`, a bit more complicated. Oher than `Stateless` and `Stateful Session Beans` the data has to be shared across request, which means, that only one request a time has access to the data of a `Stateful Session Bean`. Requests are serialized and blocked until the instance will become available again. 
+
 ###### Lifecycle
 
 In opposite to a `Stateless Session Bean`, the lifecycle of a `Singleton Session Bean` is a bit different. Once the instance has been created, it'll be shared between all requests, and instead of destroying the instance after each request the instance persists in memory until the application will be shutdown or restarted.
@@ -63,15 +65,17 @@ In combination with the possiblity to have data persistent in memory, a `Singlet
 
 Other than `Session Beans`, you MUST not invoke `Message Beans` over a proxy, but as receiver of the messages you can send. The messages are not directly sent to a `Message Bean` instead they are sent to a `Message Broker`. The `Message Broker` adds them to a queue until a worker, what will be separate thread, collects and processes it.
 
-> Using `Message Beans` enables you to process long running processes `asynchronously`, because you don't have to wait for an answer after sending a message to the `Message Broker`.
+> Using `Message Beans` enables you to execute long running processes `asynchronously`, because you don't have to wait for an answer after sending a message to the `Message Broker`.
 
 #### Lifecycle Callbacks
 
-`Lifecycle Callbacks` enables a developer to declare callback methods depending on the `Beans` lifecycle. Actually we only deploy a `post-construct` and `pre-destroy` callback. `Lifecycle Callbacks` can be configured either by annotations or the XML configuration. Declaring `Lifecycle Callbacks` by annotations is more intuitive, as you have to add the annotation directly to the method. Therfore we go with the annotations here.
+`Lifecycle Callbacks` enables a developer to declare callback methods depending on the `Beans` lifecycle. Actually we only support `post-construct` and `pre-destroy` callbacks. `Lifecycle Callbacks` can be configured either by annotations or the XML configuration. Declaring `Lifecycle Callbacks` by annotations is more intuitive, as you have to add the annotation directly to the method. Therfore we go with the annotations here.
+
+> Be aware, that `Lifecycle Callbacks` must be `public` and must NOT have any parameter.
 
 ##### Post Construct Callback
 
-A `Post Construct Callback` enables a developer to 
+As `Beans` can also have a constructor,  lifecycle is controlled by the container and will never be accessed directly, a `Post Construct Callback` enables a developer to implement a method that works similar to a constructor. That method 
 
 ##### Pre Destroy Callback
 
