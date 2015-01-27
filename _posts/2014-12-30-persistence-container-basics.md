@@ -60,7 +60,7 @@ You simple has to tell the DI container what you need, let's have a look at the 
 
 ##### Property Injection
 
-The first possibility we have is to annotate a class property
+The first possibility we have is to annotate a class property using the `@EnterpriseBean` annotation. The annotation accepts a `name` attribute which allows you to specify the name of a bean you've registered before. The following example shows you how to annotate a class property.
 
 ```php
 <?php
@@ -101,13 +101,13 @@ class AStatefulSessionBean
 }
 ```
 
-With the `name` attribute of the `@EnterpriseBean`annotation you have the possibility to specify the name of the bean, you registered before by annotating it. A more detailed description about the available annotations will follow later.
+In our case the `name` attribute of the `@EnterpriseBean` annotation injects an instance of `AStatelessSessionBean` at runtime. A more detailed description about the available annotations will follow later.
 
 > Property injection is the preferred, because of massive performance improvements. 
 
 ##### Setter Injection
 
-The second possibility to inject an instance is setter injection.
+The second possibility to inject an instance is the setter injection. Setter injection allows developers to inject instances by using methods. 
 
 ```php
 <?php
@@ -161,7 +161,13 @@ class AStatefulSessionBean
 }
 ```
 
-What happens behind the scenes? DI can be a complicated subject, escpecially if it come together with application state! Let's try to explain the most important things in short. When the application server starts, it parses the `META-INF/classes` and `WEB-INF/classes` folders by default to find classes with supported annotations. If a class is found, the class will be registered in the application servers naming directory under the name you specify in the annotations `name` Attribute, in this example `AStatelessSessionBean`. The `name` attribute is optional, so if the developer don't specify it, the short class name will be used to register it in the naming directory.
+In that example the container will inject an instance of `AStatelessSessionBean` at runtime by invoking the `injectAStatelessSessionBean` method passing the instance as argument.
+
+> Method injection only works on methods with exactly one argument. As described above, the container don't inject a real instance of the bean, instead it injects a proxy. That proxy actually not extends the class or, if given, implements the interfaces of your bean. So do NOT type hint the argument with the class or a interface name!
+
+#### What happens behind the scenes?
+
+DI can be a complicated subject, escpecially if it come together with application state! Let's try to explain the most important things in short. When the application server starts, it parses the `META-INF/classes` and `WEB-INF/classes` folders by default to find classes with supported annotations. If a class is found, the class will be registered in the application servers naming directory under the name you specify in the annotations `name` Attribute, in this example `AStatelessSessionBean`. The `name` attribute is optional, so if the developer don't specify it, the short class name will be used to register it in the naming directory.
 
 When you want to inject that bean, you have to know the name it has been registered with. In the example above, the bean will be registered in the naming directory under `php:global/example/AStatelessSessionBean`. When using annotations to inject components, you don't have to know the fully qualified name, because the application server knows the actual context, tries to lookup the bean and injects it.
 
