@@ -14,24 +14,40 @@ Maybe you had a look at our previous post about the [Servlet-Engine Basics](/ser
 
 As not persisting data to a database is the main purpose of a Persistence-Container, we've to figure other reasons you may use it. As PHP till now was used as a scripting language, it'll lack of the possiblity to have objects, let's call them components, persistent in memory. The Persistence-Container gives you the possiblity to exactly do this. This is, admittedly, not a problem it can solve for you, but in fact it is a powerful option. This option, beside performance of course, gives you many possibilities you will not benefit from when working with the well known LAMP stack. This post is all about the possibilities the Persistence-Container provides and how they can enable you to write enterprise applications.
 
-### Dependency Injection
+### Server-Side Component Types
 ***
 
-As we probably use DI to inject instances of [Server-Side Component Types](#server-side-component-types) we'll give you a brief introduction of how DI works in the `Persistence-Container` context. 
+You may wonder how it should be possible to have a component persistent in memory using PHP, a scripting language! Usually after every request the instance will be destroyed? The simple answer is: As appserver.io runs as a daemon, or better, it provides containers that runs as daemons, you can specify component, that'll be loaded when the application server starts and will be in memory until the server has been shutdown. To make it simple, we call that classes [Beans](http://en.wikipedia.org/wiki/Enterprise_JavaBeans), as they do it in Java. 
 
-Dependency Injection, furthermore DI, enables developers to write cleaner, reusable and maintainable code with less coupling by injecting necessary instances at runtime instead of instantiating them in the class itself. Within the application server, each application has it's own scope and therefore a  own dependency injection container. This prevents your application from fatal errors like `Cannot redeclare class ...`.
+We've three different types of beans, `Session Beans`, `Message Beans` and `Entity Beans`. In version 1.0.0 we don't have support for `Entity Beans`, because we see mainly think that the responsiblity therefor is up to ORM libraries like Doctrine. So we support Doctrine to handle database persistence.
 
-#### What happens behind the scenes?
+All bean types must provide a non-argument constructor, optionally no constructor.
 
-DI can be a complicated subject, escpecially if it come together with application state! Let's try to explain the most important things in short. When the application server starts, it parses the `META-INF/classes` and `WEB-INF/classes` folders by default to find classes with supported annotations. If a class is found, the class will be registered in the application servers naming directory under the name you specify in the annotations `name` Attribute, in following example `AStatelessSessionBean`. The `name` attribute is optional, so if the developer don't specify it, the short class name will be used to register it in the naming directory.
+> Based on that possibility, an application server like appserver.io gives you the power to distribute the components of your application over your network what includes a great and seamless scalability.
 
-When you want to inject that bean later, you have to know the name it has been registered with. In the following example, the bean will be registered in the naming directory under `php:global/example/AStatelessSessionBean`, whereas `example` is the name of the application. When using annotations to inject components, you don't have to know the fully qualified name, because the application server knows the actual context, tries to lookup the bean and injects it.
+#### Session Beans
 
-#### What can be injected
+A session bean basically is a plain PHP class. You MUST not instantiate it directly, because the application server takes care of its complete lifecycle.
 
-The application server itself doesn't use DI, instead it provides DI as a service for the applications running within. Actually all session and message driven beans, the application instance and all managers can be injected.  But, before you can let the DI container inject an instance to your class, you have to register it.
+Therefore, an developer needs access to a session bean, he requests the application server to give him an instance, what can be done by a client or [Dependency Injection](#dependency-injection). In both cases, you will get a proxy to the session bean that allows you to invoke all methods, the session bean provides, as you can do if you would have a real instance. But, depending on your configuration, the proxy also allows you to call this method over a network as a remote method call. This makes it obvious for you if your session bean is on the same application server instance or on another one in your network.
 
-The following example shows you how to annotated a `Stateless Session Bean` and make it available for DI.
+When you write a session bean, you have to specify the type of bean you want to implement. This can either be done by adding an annotation to the class doc block or specifing it in a configuration file. As it seems to be easier to add the annotation and, in most cases this is sufficient, we recommend that for the start.
+
+We differ between three kinds of session beans, even `Stateless`, `Stateful` and `Singleton` session beans.
+
+##### Stateless Session Beans (SLSBs)
+
+A `SLSB` has NO state, only for the time you invoke a method on it. As these bean type is designed for efficiency and simplicity the developer doesn't need to take care about memory consumption, concurrency or lifecycle.
+
+> `SLSBs` are similar to PHP`s default request behaviour, where instances are created to handle a request and will be destroyed when the request has been finished. 
+
+###### Lifecycle
+
+On each request an new `SLSB` instance will be created. After handling the request, the instance will simply be destroyed.
+
+###### Example
+
+The example shows how to implement a `SLSB` and register it under the name `AStatelessSessionBean` in the application servers [Naming Directory](#naming-directory). Registering a bean in the Naming Directory is necessary to use it for [Dependency Injection](#dependency-injection) that'll be explained later on.
 
 ```php
 <?php
@@ -58,182 +74,9 @@ class AStatelessSessionBean
 }
 ```
 
-After register your beans, what is pretty simple when using annotations, you're ready to inject them!
-
-#### How to inject an instance
-
-Basically DI can be a manual process where you `inject` an instance, needed by another class by passing it to the constructor. Inside the `Persistence-Container`, the injection is an process you can't see, it's more a kind of magic which happens behind the scenes. So instead of manually pass the necessary instances to a classes constructor, the DI container will do that for you.
-
-You simple has to tell the DI container what you need, let's have a look at the details.
-
-##### Property Injection
-
-The first possibility we have is to annotate a class property using the `@EnterpriseBean` annotation. The annotation accepts a `name` attribute which allows you to specify the name of a bean you've registered before. The following example shows you how to annotate a class property and let the application server inject an instance of `AStatelessSessionBean` at runtime.
-
-```php
-<?php
-
-namespace AppserverIo\Example\SessionBeans;
-
-/**
- * @Stateful
- */
-class AStatefulSessionBean
-{
-
-  /**
-   * The SessionBean instance we want to have injected.
-   *
-   * @var \AppserverIo\Example\SessionBeans\AStatelessSessionBean
-   * @EnterpriseBean(name="AStatelessSessionBean")
-   */
-  protected $aStatelessSessionBean;
-
-  /**
-   * Encrypts and stores a password.
-   *
-   * @param string $password The password to be encrypted and stored
-   *
-   * @return void
-   */
-  public function savePassword($password)
-  {
-    
-    // encrypt password by calling the SLSB
-    $encryptedPassword = $this->aStatelessSessionBean->hashPassword($password);
-    
-    /*
-     * Implement functionality to store password to database here
-     */
-  }
-}
-```
-
-A more detailed description about the available annotations will follow later.
-
-> Property injection is preferred, because of massive performance improvements.
-
-##### Setter Injection
-
-The second possibility to inject an instance is the setter injection. Setter injection allows developers to inject instances by using methods. 
-
-```php
-<?php
-
-namespace AppserverIo\Example\SessionBeans;
-
-/**
- * @Stateful
- */
-class AStatefulSessionBean
-{
-
-  /**
-   * The SessionBean instance we want to have injected.
-   *
-   * @var \AppserverIo\Example\SessionBeans\AStatelessSessionBean
-   */
-  protected $aStatelessSessionBean;
-  
-  /**
-   * Injects the stateless session bean.
-   *
-   * @param \AppserverIo\Example\SessionBeans\AStatelessSessionBean $aStatelessSessionBean
-   *     The stateless session to be injected
-   *
-   * @return void
-   * @EnterpriseBean(name="AStatelessSessionBean")
-   */
-  public function injectAStatelessSessionBean($aStatelessSessionBean)
-  {
-    $this->aStatelessSessionBean = $aStatelessSessionBean;
-  }
-
-  /**
-   * Encrypts and stores a password.
-   *
-   * @param string $password The password to be encrypted and stored
-   *
-   * @return void
-   */
-  public function savePassword($password)
-  {
-    
-    // encrypt password by calling the SLSB
-    $encryptedPassword = $this->aStatelessSessionBean->hashPassword($password);
-    
-    /*
-     * Implement functionality to store password to database here
-     */
-  }
-}
-```
-
-In that example the container will inject an instance of `AStatelessSessionBean` at runtime by invoking the `injectAStatelessSessionBean` method passing the instance as argument.
-
-> Method injection only works on methods with exactly one argument. As described above, the container don't inject a real instance of the bean, instead it injects a proxy. That proxy actually not extends the class or, if given, implements the interfaces of your bean. So do NOT type hint the argument with the class or a interface name!
-
-### Server-Side Component Types
-***
-
-You may wonder how it should be possible to have a component persistent in memory using PHP, a scripting language! Usually after every request the instance will be destroyed? The simple answer is: As appserver.io runs as a daemon, or better, it provides containers that runs as daemons, you can specify component, that'll be loaded when the application server starts and will be in memory until the server has been shutdown. To make it simple, we call that classes [Beans](http://en.wikipedia.org/wiki/Enterprise_JavaBeans), as they do it in Java. 
-
-We've three different types of beans, `Session Beans`, `Message Beans` and `Entity Beans`. In version 1.0.0 we don't have support for `Entity Beans`, because we see mainly think that the responsiblity therefor is up to ORM libraries like Doctrine. So we support Doctrine to handle database persistence.
-
-All bean types must provide a non-argument constructor, optionally no constructor.
-
-> Based on that possibility, an Application Server like appserver.io gives you the power to distribute the components of your application over your network what includes a great and seamless scalability.
-
-#### Session Beans
-
-A `Session Bean` basically is a plain PHP class. You MUST not instantiate it directly, because the application server takes care of its complete lifecycle.
-
-Therefore, if you need an instance of a SessionBean, you'll ask the application server to give you an instance, what can be done by a client or DI. In both cases, you will get a proxy to the session bean that allows you to invoke all methods, the SessionBean provides, as you can do if you would have a real instance. But, depending on your configuration, the proxy also allows you to call this method over a network as a remote method call. This makes it obvious for you if your SessionBean is on the same application server instance or on another one in your network.
-
-When you write a Session Bean, you have to specify the type of Bean you want to implement. This can either be done by adding an annotation to the class doc block or specifing it in a configuration file. As it seems to be easier to add the annotation and, in most cases this is sufficient, we recommend that for the start.
-
-We differ between three kinds of `Session Beans` named `Stateless`, `Stateful` and `Singleton`.
-
-##### Stateless Session Beans (SLSBs)
-
-A `SLSB` has NO state, only for the time you invoke a method on it. As these bean type is designed for efficiency and simplicity the developer doesn't need to take care about memory consumption, concurrency or lifecycle.
-
-> `SLSBs` are similar to PHP`s default request behaviour, where instances are created to handle a request and will be destroyed when the request has been finished. 
-
-###### Lifecycle
-
-On each request an new `SLSB` instance will be created. After handling the request, the instance will simply be destroyed.
-
-###### Example
-
-```php
-<?php
-
-namespace AppserverIo\Apps\Example\Services;
-
-/**
- * @Stateless
- */
-class AStatelessSessionBean
-{
-
-  /**
-     * Loads and returns the entity with the ID passed as parameter.
-     *
-     * @param integer $id The ID of the entity to load
-     *
-     * @return object The entity
-     */
-    public function load($id)
-    {
-      // load data from database here  
-    }
-}
-```
-
 ##### Stateful Session Beans (SFSBs)
 
-The `SFSB` is something between the two other types. It is stateful for the session with the ID you pass to the client when you request the instance. A `SFSB` is very useful, if you want to implement something like a shopping cart. If you declare the shopping cart instance a class member of your session bean, this will make it persistent for your session lifetime.
+The `SFSB` is something between the two other types. It is bound to the session with the ID pass to the client, when an instance is requested. A `SFSB` is very useful, if you want to implement something like a shopping cart. If you declare the shopping cart instance a class member of your session bean, this will make it persistent for your session lifetime.
 
 In opposite to a HTTP Session, `SFSBs` enables you to have session bound persistence, without the need to explicit add the data to a session object. That makes development pretty easy and more comfortable. As `SFSBs` are persisted in memory and not serialized to files, the Application Server has to take care, that in order ot minimize the number of instances carried around, are flushed when their lifetime has been reached.
 
@@ -241,7 +84,50 @@ In opposite to a HTTP Session, `SFSBs` enables you to have session bound persist
 
 `SFSBs` are created by the container when requested and no instance, based on the passed session-ID, is available. After the request has been processed, the instance will be re-attached to the container ready to handle the next request.
 
-> If the session is removed, times out, or the application server restarts, the data of a 'SFSB' will be lost.
+> If the session is removed, times out, or the application server restarts, the data of a `SFSB` will be lost. Because `SFSBs` use the HTTP session-ID, it is necessary to start an HTTP session before you invoke methods on it.
+
+###### Example
+
+As described above, a `SFSB` has a state that is bound to a HTTP session that has to be started before accessing it. Let's imaging we've a servlet.
+
+```php
+<?php
+
+namespace AppserverIo\Example\SessionBeans;
+
+/**
+ * @Stateful
+ */
+class AStatefulSessionBean
+{
+
+  /**
+   * The SessionBean instance we want to have injected.
+   *
+   * @var \AppserverIo\Example\SessionBeans\AStatelessSessionBean
+   * @EnterpriseBean(name="AStatelessSessionBean")
+   */
+  protected $aStatelessSessionBean;
+
+  /**
+   * Encrypts and stores a password.
+   *
+   * @param string $password The password to be encrypted and stored
+   *
+   * @return void
+   */
+  public function savePassword($password)
+  {
+    
+    // encrypt password by calling the SLSB
+    $encryptedPassword = $this->aStatelessSessionBean->hashPassword($password);
+    
+    /*
+     * Implement functionality to store password to database here
+     */
+  }
+}
+```
 
 ##### Singleton Session Beans (SSBs)
 
@@ -331,7 +217,7 @@ class LogInterceptor
 
 > Keep in mind, that the `$methodInvocation->getContext()` method gives you access to component the advice has been declared, in our example this is the `Stateless Session Bean`!
 
-So if we want to log each call to a `Session Bean` method, we simply have to declare it by adding an annotation like
+So if we want to log each call to a session bean method, we simply have to declare it by adding an annotation like
 
 ```php
 <?php
@@ -374,3 +260,169 @@ class LoggedBean
   }
 }
 ```
+
+### Naming Directory
+***
+
+The application server handles access to all resources an application provides. Resources can be beans, contexts, the application instance itself or the managers provided by an application. All that resources are registered in the `Naming Directory` which allows you the access them if needed. 
+
+#### Register Resources
+
+When the application server starts, it parses the `META-INF/classes` and `WEB-INF/classes` folders by default to find classes with supported annotations. If a class is found, the class will be registered in the application servers naming directory under the name you specify in the annotations `name` Attribute, in following example `AStatelessSessionBean`. As the `name` attribute is optional, the bean will be registered in the naming directory with the short class name, if not specified.
+
+When you want to inject that bean later, you have to know the name it has been registered with. In the following example, the bean will be registered in the naming directory under `php:global/example/AStatelessSessionBean`, whereas `example` is the name of the application. When using annotations to inject components, you don't have to know the fully qualified name, because the application server knows the actual context, tries to lookup the bean and injects it.
+
+### Dependency Injection
+***
+
+As we probably use DI to inject instances of [Server-Side Component Types](#server-side-component-types) this section gives you a brief introduction of how DI works in the `Persistence-Container` context. 
+
+Dependency Injection, furthermore DI, enables developers to write cleaner, reusable and maintainable code with less coupling by injecting necessary instances at runtime instead of instantiating them in the class itself. Within the application server, each application has it's own scope and therefore a  own dependency injection container. This prevents your application from fatal errors like `Cannot redeclare class ...`.
+
+DI can be a complicated subject, escpecially if it come together with application state! Let's try to explain the most important things in short. 
+
+#### What can be injected
+
+The application server itself doesn't use DI, instead it provides DI as a service for the applications running within. Actually all session and message driven beans, the application instance and all managers can be injected.  But, before you can let the DI container inject an instance to your class, you have to register it. Registering beans can either be done by annotations or a deployment descriptor.
+
+The following example shows you how to annotated a `SLSB` and make it available for DI.
+
+```php
+<?php
+
+namespace AppserverIo\Example\SessionBeans;
+
+/**
+ * @Stateless(name="AStatelessSessionBean")
+ */
+class AStatelessSessionBean
+{
+  
+  /**
+   * Creates and returns a new md5 hash for the passed password.
+   * 
+   * @param string $password The password we want to hash
+   * 
+   * @return string The md5 hash representation of the password
+   */
+  public function hashPassword($password)
+  {
+    return md5($password);
+  }
+}
+```
+
+After register your beans, what is pretty simple when using annotations, you're ready to inject them!
+
+#### How to inject an instance
+
+Basically DI can be a manual process where you `inject` an instance, needed by another class by passing it to the constructor for example. Inside the `Persistence-Container`, the injection is an process you can't see, it's more some kind of magic which happens behind the scenes. So instead of manually pass the necessary instances to a classes constructor, the DI container will do that for you.
+
+A developer simply has to tell the DI container what instance has to be injected at runtime. So let's have a look at the options he has.
+
+##### Property Injection
+
+The first possibility we have is to annotate a class property using the `@EnterpriseBean` annotation. The annotation accepts a `name` attribute which allows you to specify the name of a bean you've registered before. The following example shows you how to annotate a class property and let the application server inject an instance of `AStatelessSessionBean` at runtime.
+
+```php
+<?php
+
+namespace AppserverIo\Example\SessionBeans;
+
+/**
+ * @Stateful
+ */
+class AStatefulSessionBean
+{
+
+  /**
+   * The SessionBean instance we want to have injected.
+   *
+   * @var \AppserverIo\Example\SessionBeans\AStatelessSessionBean
+   * @EnterpriseBean(name="AStatelessSessionBean")
+   */
+  protected $aStatelessSessionBean;
+
+  /**
+   * Encrypts and stores a password.
+   *
+   * @param string $password The password to be encrypted and stored
+   *
+   * @return void
+   */
+  public function savePassword($password)
+  {
+    
+    // encrypt password by calling the SLSB
+    $encryptedPassword = $this->aStatelessSessionBean->hashPassword($password);
+    
+    /*
+     * Implement functionality to store password to database here
+     */
+  }
+}
+```
+
+As the `@EnterpriseBean` annotation with the `name` attribute is not the only option to inject instances, a more detailed description about the available annotations will follow later.
+
+> Property injection is preferred, because of massive performance improvements.
+
+##### Setter Injection
+
+The second possibility to inject an instance is the setter injection. Setter injection allows developers to inject instances by using methods. 
+
+```php
+<?php
+
+namespace AppserverIo\Example\SessionBeans;
+
+/**
+ * @Stateful
+ */
+class AStatefulSessionBean
+{
+
+  /**
+   * The SessionBean instance we want to have injected.
+   *
+   * @var \AppserverIo\Example\SessionBeans\AStatelessSessionBean
+   */
+  protected $aStatelessSessionBean;
+  
+  /**
+   * Injects the stateless session bean.
+   *
+   * @param \AppserverIo\Example\SessionBeans\AStatelessSessionBean $aStatelessSessionBean
+   *     The stateless session to be injected
+   *
+   * @return void
+   * @EnterpriseBean(name="AStatelessSessionBean")
+   */
+  public function injectAStatelessSessionBean($aStatelessSessionBean)
+  {
+    $this->aStatelessSessionBean = $aStatelessSessionBean;
+  }
+
+  /**
+   * Encrypts and stores a password.
+   *
+   * @param string $password The password to be encrypted and stored
+   *
+   * @return void
+   */
+  public function savePassword($password)
+  {
+    
+    // encrypt password by calling the SLSB
+    $encryptedPassword = $this->aStatelessSessionBean->hashPassword($password);
+    
+    /*
+     * Implement functionality to store password to database here
+     */
+  }
+}
+```
+
+In that example the container will inject an instance of `AStatelessSessionBean` at runtime by invoking the `injectAStatelessSessionBean` method passing the instance as argument.
+
+> Method injection only works on methods with exactly one argument. As described above, the container don't inject a real instance of the bean, instead it injects a proxy. That proxy actually not extends the class or, if given, implements the interfaces of your bean. So do NOT type hint the argument with the class or a interface name!
