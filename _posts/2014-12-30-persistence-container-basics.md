@@ -90,7 +90,11 @@ class AStatefulSessionBean
    */
   public function savePassword($password)
   {
+    
+    // encrypt password by calling the SLSB
     $encryptedPassword = $this->aStatelessSessionBean->hashPassword($password);
+    
+    // implement functionality to store password to database here
   }
 }
 ```
@@ -120,18 +124,6 @@ class AStatefulSessionBean
    * @var \AppserverIo\Example\SessionBeans\AStatelessSessionBean
    */
   protected $aStatelessSessionBean;
-
-  /**
-   * Encrypts and stores a password.
-   *
-   * @param string $password The password to be encrypted and stored
-   *
-   * @return void
-   */
-  public function savePassword($password)
-  {
-    $encryptedPassword = $this->aStatelessSessionBean->hashPassword($password);
-  }
   
   /**
    * Injects the stateless session bean.
@@ -145,6 +137,22 @@ class AStatefulSessionBean
   public function injectAStatelessSessionBean($aStatelessSessionBean)
   {
     $this->aStatelessSessionBean = $aStatelessSessionBean;
+  }
+
+  /**
+   * Encrypts and stores a password.
+   *
+   * @param string $password The password to be encrypted and stored
+   *
+   * @return void
+   */
+  public function savePassword($password)
+  {
+    
+    // encrypt password by calling the SLSB
+    $encryptedPassword = $this->aStatelessSessionBean->hashPassword($password);
+    
+    // implement functionality to store password to database here
   }
 }
 ```
