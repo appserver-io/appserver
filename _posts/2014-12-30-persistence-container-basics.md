@@ -39,9 +39,11 @@ We differ between three kinds of `Session Beans` named `Stateless`, `Stateful` a
 
 A `SLSB` has NO state, only for the time you invoke a method on it. As these bean type is designed for efficiency and simplicity the developer doesn't need to take care about memory consumption, concurrency or lifecycle.
 
+> `SLSBs` are similar to PHP`s default request behaviour, where instances are created to handle a request and will be destroyed when the request has been finished. 
+
 ###### Lifecycle
 
-On each request an new `SLSB` will be instantiated when requested.
+On each request an new `SLSB` instance will be created. After handling the request, the instance will simply be destroyed.
 
 ##### Stateful Session Beans (SFSBs)
 
@@ -78,6 +80,8 @@ In combination with the possiblity to have data persistent in memory, a `SSB` ad
 Other than session beans, you MUST not invoke `MDBs` over a proxy, but as receiver of the messages you can send. The messages are not directly sent to a `MDB` instead they are sent to a `Message Broker`. The `Message Broker` adds them to a queue until a worker, what will be separate thread, collects and processes it.
 
 > Using `MDBs` enables you to execute long running processes `asynchronously`, because you don't have to wait for an answer after sending a message to the `Message Broker`.
+
+In opposite to session beans, `MDBs` have to implement the `AppserverIo\Psr\Pms\MessageListenerInterface` interface. As `MDBs` are mostly used in context of a [Message-Queue](http://appserver.io/documentation/message-queue.html), this blog post will not describe functionality in deep. Instead we'll write a separate blog post that is all about `MDBs` and context of a `Message-Queue`.
 
 #### Lifecycle Callbacks
 
