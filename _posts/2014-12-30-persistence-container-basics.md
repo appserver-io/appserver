@@ -39,7 +39,7 @@ We differ between three kinds of session beans, even `Stateless`, `Stateful` and
 
 A `SLSB` has NO state, only for the time you invoke a method on it. As these bean type is designed for efficiency and simplicity the developer doesn't need to take care about memory consumption, concurrency or lifecycle.
 
-> `SLSBs` are similar to PHP`s default request behaviour, where instances are created to handle a request and will be destroyed when the request has been finished. 
+> `SLSBs` behave very similar to PHP`s default request behaviour, as they are instances created to handle the request and will be destroyed when the request has been finished. 
 
 ###### Lifecycle
 
@@ -47,7 +47,7 @@ On each request an new `SLSB` instance will be created. After handling the reque
 
 ###### Example
 
-The example shows how to implement a `SLSB` and register it under the name `AStatelessSessionBean` in the application servers [Naming Directory](#naming-directory). Registering a bean in the Naming Directory is necessary to use it for [Dependency Injection](#dependency-injection) that'll be explained later on.
+So let's implement a `SLSB` that provides functionality to create a user from the arguments passed to the `createUser()` method. The `SLSB` will be registered under the name `AStatelessSessionBean` in the application servers [Naming Directory](#naming-directory). Registering a bean in the Naming Directory is necessary to use it for [Dependency Injection](#dependency-injection) that'll be explained later on.
 
 ```php
 <?php
@@ -71,8 +71,88 @@ class AStatelessSessionBean
   {
     return md5($password);
   }
+  
+  /* Creates a new user, hashes the password before.
+   *
+   * @param string $username The username of the user to create
+   * @param string $password The password bound to the user
+   *
+   * @return void
+   */
+  public function createUser($username, $password)
+  {
+    
+    // hash the password
+    $hashedPassword = $this->hashPassword($password);
+    
+    /*
+     * Implement functionality to create user in DB
+     */
+  }
 }
 ```
+
+Then we can implement a servlet that invokes the method with the credentials loaded from the request. The servlet could look like this.
+
+```php
+<?php
+
+namespace AppserverIo\Example\Servlets;
+
+use AppserverIo\Psr\Servlet\ServletConfig;
+use AppserverIo\Psr\Servlet\Http\HttpServlet;
+use AppserverIo\Psr\Servlet\Http\HttpServletRequest;
+use AppserverIo\Psr\Servlet\Http\HttpServletResponse;
+
+/**
+ * This servlets implements functionality to store user data by
+ * invoking a SLSB instance.
+ *
+ * @Route(name="user", urlPattern={"/user.do", "/user.do*"})
+ */
+class UserServlet extends HttpServlet
+{
+
+  /**
+   * The SLSB instance we want to have injected, used to store the user.
+   *
+   * @var \AppserverIo\Example\SessionBeans\AStatelessSessionBean
+   * @EnterpriseBean(name="AStatelessSessionBean")
+   */
+  protected $aStatelessSessionBean;
+
+  /**
+   * Handles a HTTP POST request.
+   *
+   * This is a very simple example that shows how to start a new session to
+   * login the a user with credentials found as request parameters.
+   *
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest  $servletRequest
+   *   The request instance
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponse $servletResponse
+   *   The response instance
+   *
+   * @return void
+   * @see \AppserverIo\Psr\Servlet\Http\HttpServlet::doGet()
+   */
+  public function doPost(
+    HttpServletRequest $servletRequest,
+    HttpServletResponse $servletResponse)
+  {
+
+    // create the user by invoking the SLSB createUser() method
+    $this->aStatelessSessionBean->createUser(
+      $username = $servletRequest->getParameter('username'),
+      $servletRequest->getParameter('password')
+    );
+    
+    // add a message to the response
+    $servletResponse->appendBodyStream("$username has successfully been created!");
+  }
+}
+```
+
+If we now would invoke a `POST` request on our servlet, sending a `username` and a `password` parameter, the application server will inject the `SLSB` at runtime and invoke the `doPost()` method. That will invoke the `createUser()` method on the `SLSB` and adds a success message to the response.  
 
 ##### Stateful Session Beans (SFSBs)
 
