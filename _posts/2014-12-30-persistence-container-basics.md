@@ -19,7 +19,9 @@ As not persisting data to a database is the main purpose of a Persistence-Contai
 
 You may wonder how it should be possible to have a component persistent in memory using PHP, a scripting language! Usually after every request the instance will be destroyed? The simple answer is: As appserver.io runs as a daemon, or better, it provides containers that runs as daemons, you can specify component, that'll be loaded when the application server starts and will be in memory until the server has been shutdown. To make it simple, we call that classes [Beans](http://en.wikipedia.org/wiki/Enterprise_JavaBeans), as they do it in Java. 
 
-We've three different types of Beans, `Session Beans`, `Message Beans` and `Entity Beans`. In version 1.0.0 we don't have support for `Entity Beans`, because we see mainly think that the responsiblity therefor is up to ORM libraries like Doctrine. So we support Doctrine to handle database persistence.
+We've three different types of beans, `Session Beans`, `Message Beans` and `Entity Beans`. In version 1.0.0 we don't have support for `Entity Beans`, because we see mainly think that the responsiblity therefor is up to ORM libraries like Doctrine. So we support Doctrine to handle database persistence.
+
+All bean types must provide a non-argument constructor, optionally no constructor.
 
 > Based on that possibility, an Application Server like appserver.io gives you the power to distribute the components of your application over your network what includes a great and seamless scalability.
 
@@ -35,49 +37,53 @@ We differ between three kinds of `Session Beans` named `Stateless`, `Stateful` a
 
 ##### Stateless Session Beans (SLSBs)
 
-A `Stateless Session Bean` will always be instantiated when requested. It has NO state, only for the time you invoke a method on it. Therefore it is the type of Session Bean that will be probably the easiest to handle.
+A `SLSB` will always be instantiated when requested. It has NO state, only for the time you invoke a method on it. Therefore it is the type of Session Bean that will be probably the easiest to handle.
 
 ##### Stateful Session Beans (SFSBs)
 
-The `Stateful Session Bean` is something between the two other types. It is stateful for the session with the ID you pass to the client when you request the instance. A `Stateful Session Bean` is very useful, if you want to implement something like a shopping cart. If you declare the shopping cart instance a class member of your `Session Bean`, this will make it persistent for your session lifetime.
+The `SFSB` is something between the two other types. It is stateful for the session with the ID you pass to the client when you request the instance. A `SFSB` is very useful, if you want to implement something like a shopping cart. If you declare the shopping cart instance a class member of your session bean, this will make it persistent for your session lifetime.
 
-In opposite to a HTTP Session, `Stateful Session Beans` enables you to have session bound persistence, without the need to explicit add the data to a session object. That makes development pretty easy and more comfortable. As `Stateful Session Beans` are persisted in memory and not serialized to files, the Application Server has to take care, that in order ot minimize the number of instances carried around, are flushed when their lifetime has been reached.
+In opposite to a HTTP Session, `SFSBs` enables you to have session bound persistence, without the need to explicit add the data to a session object. That makes development pretty easy and more comfortable. As `SFSBs` are persisted in memory and not serialized to files, the Application Server has to take care, that in order ot minimize the number of instances carried around, are flushed when their lifetime has been reached.
 
 ##### Singleton Session Beans (SSBs)
 
-A `Singleton Session Bean` will be created by the container only one time for each application. This means, whenever you'll request an instance, you'll receive the same one. If you set a variable in the Session Bean, it'll be available until you'll overwrite it, or the application server has been restarted.
+A `SSB` will be created by the container only one time for each application. This means, whenever you'll request an instance, you'll receive the same one. If you set a variable in the Session Bean, it'll be available until you'll overwrite it, or the application server has been restarted.
 
 ###### Concurrency
 
-Concurrency is, in case of a `Singleton Session Bean`, a bit more complicated. Oher than `Stateless` and `Stateful Session Beans` the data has to be shared across request, which means, that only one request a time has access to the data of a `Stateful Session Bean`. Requests are serialized and blocked until the instance will become available again. 
+Concurrency is, in case of a `SSB`, a bit more complicated. Oher than `SLSBs` and `SFSBs` the data has to be shared across request, which means, that only one request a time has access to the data of a `SFSB`. Requests are serialized and blocked until the instance will become available again. 
 
 ###### Lifecycle
 
-In opposite to a `Stateless Session Bean`, the lifecycle of a `Singleton Session Bean` is a bit different. Once the instance has been created, it'll be shared between all requests, and instead of destroying the instance after each request the instance persists in memory until the application will be shutdown or restarted.
+In opposite to a `SLSB`, the lifecycle of a `SSB` is a bit different. Once the instance has been created, it'll be shared between all requests, and instead of destroying the instance after each request the instance persists in memory until the application will be shutdown or restarted.
 
-> A `Singleton Session Bean` gives you great power, because all data you add to a member will stay in memory until you unset it. So, if you want to share data across some requests, a `Singleton Session Bean` can be a good option for you. But remember: With great power, great responsibilty came together. So, always have an eye on memory consumption of your `Singleton Session Bean`, because YOU are responsible for that now!
+> A `SSB` gives you great power, because all data you add to a member will stay in memory until you unset it. So, if you want to share data across some requests, a `SSB` can be a good option for you. But remember: With great power, great responsibilty came together. So, always have an eye on memory consumption of your `SSB`, because YOU are responsible for that now!
 
 ###### Explicit Startup
 
-In combination with the possiblity to have data persistent in memory, a `Singleton Session Bean` additionally allows you, to be pre-loaded on application startup. This can be done by adding the `Startup` annotation to the class doc block. Using the explict startup together with the possiblity to have the data persistent in memory, you'll be able to improve performance of your application, by pre-loading data from a database or a configuration file on application startup.
+In combination with the possiblity to have data persistent in memory, a `SSB` additionally allows you, to be pre-loaded on application startup. This can be done by adding the `Startup` annotation to the class doc block. Using the explict startup together with the possiblity to have the data persistent in memory, you'll be able to improve performance of your application, by pre-loading data from a database or a configuration file on application startup.
 
 #### Message Beans (MDBs)
 
-Other than `Session Beans`, you MUST not invoke `Message Beans` over a proxy, but as receiver of the messages you can send. The messages are not directly sent to a `Message Bean` instead they are sent to a `Message Broker`. The `Message Broker` adds them to a queue until a worker, what will be separate thread, collects and processes it.
+Other than session beans, you MUST not invoke `MDBs` over a proxy, but as receiver of the messages you can send. The messages are not directly sent to a `MDB` instead they are sent to a `Message Broker`. The `Message Broker` adds them to a queue until a worker, what will be separate thread, collects and processes it.
 
-> Using `Message Beans` enables you to execute long running processes `asynchronously`, because you don't have to wait for an answer after sending a message to the `Message Broker`.
+> Using `MDBs` enables you to execute long running processes `asynchronously`, because you don't have to wait for an answer after sending a message to the `Message Broker`.
 
 #### Lifecycle Callbacks
 
-`Lifecycle Callbacks` enables a developer to declare callback methods depending on the `Beans` lifecycle. Actually we only support `post-construct` and `pre-destroy` callbacks. `Lifecycle Callbacks` can be configured either by annotations or the XML configuration. Declaring `Lifecycle Callbacks` by annotations is more intuitive, as you have to add the annotation directly to the method. Therfore we go with the annotations here.
+`Lifecycle Callbacks` enables a developer to declare callback methods depending on the beans lifecycle. Actually we only support `post-construct` and `pre-destroy` callbacks. `Lifecycle Callbacks` can be configured either by annotations or the XML configuration. Declaring `Lifecycle Callbacks` by annotations is more intuitive, as you have to add the annotation directly to the method. Therfore we go with the annotations here.
 
 > Be aware, that `Lifecycle Callbacks` must be `public` and must NOT have any parameter.
 
 ##### Post Construct Callback
 
-As `Beans` can also have a constructor,  lifecycle is controlled by the container and will never be accessed directly, a `Post Construct Callback` enables a developer to implement a method that works similar to a constructor. That method 
+As the beans lifecycle is controlled by the container and DI works either by property or method injection, a `Post Construct Callback` enables a developer to implement a method that'll be invoked by the container after the bean has been created and all instances injected. This method must NOT have arguments, return any value or throw exceptions.
+
+> This callback can be very helpful for implementing functionalty like cache systems that need to load data from a datasource once and will update it only frequently.
 
 ##### Pre Destroy Callback
+
+The second callback is the `Pre Destroy Callback`. This will be fired before the container destroys the instance of a bean.
 
 #### Interceptors
 
