@@ -51,7 +51,7 @@ A `SSB` will be created by the container only one time for each application. Thi
 
 ###### Concurrency
 
-Concurrency is, in case of a `SSB`, a bit more complicated. Oher than `SLSBs` and `SFSBs` the data has to be shared across request, which means, that only one request a time has access to the data of a `SFSB`. Requests are serialized and blocked until the instance will become available again. 
+Concurrency is, in case of a `SSB`, a bit more complicated. Oher than `SLSBs` and `SFSBs` the data will be shared across request, which means, that the container have to make sure, that only one request a time can access the data of a `SFSB`. Therefore requests are serialized and blocked until the instance will become available again.
 
 ###### Lifecycle
 
@@ -77,13 +77,13 @@ Other than session beans, you MUST not invoke `MDBs` over a proxy, but as receiv
 
 ##### Post Construct Callback
 
-As the beans lifecycle is controlled by the container and DI works either by property or method injection, a `Post Construct Callback` enables a developer to implement a method that'll be invoked by the container after the bean has been created and all instances injected. This method must NOT have arguments, return any value or throw exceptions.
+As the beans lifecycle is controlled by the container and DI works either by property or method injection, a `Post Construct Callback` enables a developer to implement a method that'll be invoked by the container after the bean has been created and all instances injected. This method is optional, but must NOT have arguments, return any value or throw checked exceptions. Exceptions will be catched by the container and result in a `critical` log message.
 
 > This callback can be very helpful for implementing functionalty like cache systems that need to load data from a datasource once and will update it only frequently.
 
 ##### Pre Destroy Callback
 
-The second callback is the `Pre Destroy Callback`. This will be fired before the container destroys the instance of a bean.
+The second callback is the `Pre Destroy Callback`. This will be fired before the container destroys the instance of the bean. Like the `Post Construct Callback`, this method is optional, but must NOT have arguments, return any value or throw checked exceptions. Exceptions will be catched by the container and result in a `critical` log message.
 
 #### Interceptors
 
