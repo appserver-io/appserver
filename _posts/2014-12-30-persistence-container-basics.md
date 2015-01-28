@@ -844,48 +844,63 @@ The following example is a simplyfied copy of the deployment descriptor of our [
 </epb>
 ```
 
-The structure should be self-explanatory, as it nearly reflects the annotations. The following table describes all possible nodes and gives a short description about meaning and options.
+The structure should be self-explanatory, as it nearly reflects the annotation `@EnterpriseBean` and `Resource` annotations. The following table describes all possible nodes and gives a short description about meaning and options.
 
 `/epb/enterprise-beans/session`
 
-| Node Name                   | Type        | Description                                                        |
-| --------------------------- | ----------- | ------------------------------------------------------------------ |
-| `session-type`              | `string`    | Can be one of `Stateless`, `Stateful` or `Singleton`.              |
-| `epb-name`                  | `string`    | Short name of the component used for registration in naming        |
-|                             |             | directory.                                                         |
-| `epb-class`                 | `string`    | Fully qualified class name of the components class.                |
-| `init-on-startup`           | `boolean`   | TRUE if a instance should be created on application startup.       |
-|                             |             | This can only be set to TRUE if `session-type` is `Singleton`.     |
+| Node Name                   | Type        | Description                                                          |
+| --------------------------- | ----------- | -------------------------------------------------------------------- |
+| `session-type`              | `string`    | Can be one of `Stateless`, `Stateful` or `Singleton`.                |
+| `epb-name`                  | `string`    | Short name of the component used for registration in naming          |
+|                             |             | directory.                                                           |
+| `epb-class`                 | `string`    | Fully qualified class name of the components class.                  |
+| `init-on-startup`           | `boolean`   | TRUE if a instance should be created on application startup.         |
+|                             |             | This can only be set to TRUE if `session-type` is `Singleton`.       |
 
-`post-construct/lifecycle-callback-method`
+`/epb/enterprise-beans/[session or message-driven]/post-construct`
 
-`pre-destroy/lifecycle-callback-method`
+| Node Name                   | Type        | Description                                                          |
+| --------------------------- | ----------- | -------------------------------------------------------------------- |
+| `lifecycle-callback-method` | `string`    | Name of a class method that will be invoked after the component      |
+|                             |             | been initialized.                                                    |
 
-`epb-ref`
+`/epb/enterprise-beans/[session or message-driven]/pre-destroy`
 
-| Node Name                   | Type        | Description                                                         |
-| --------------------------- | ----------- | ------------------------------------------------------------------- |
-| `description`               | `string`    | A short description of the reference we create.                     |
-| `epb-ref-name`              | `string`    |  |
-| `epb-link`                  | `string`    |  |
-| `lookup-name`               | `string`    |  |
-| `remote`                    | `boolean`   |  |
+| Node Name                   | Type        | Description                                                          |
+| --------------------------- | ----------- | -------------------------------------------------------------------- |
+| `lifecycle-callback-method` | `string`    | Name of a class methode that will be invoked before the class        |
+|                             |             | will be destroyed.                                                   |
 
-`res-ref`
+`/epb/enterprise-beans/[session or message-driven]/epb-ref`
 
-| Node Name                   | Type        | Description                                                         |
-| --------------------------- | ----------- | ------------------------------------------------------------------- |
-| `description`               | `string`    |  |
-| `res-ref-name`              | `string`    |  |
-| `lookup-name`               | `string`    |  |
+| Node Name                   | Type        | Description                                                          |
+| --------------------------- | ----------- | -------------------------------------------------------------------- |
+| `description`               | `string`    | A short description of the reference that will be created.           |
+| `epb-ref-name`              | `string`    | The name of the reference created in the naming directory.           |
+| `epb-link`                  | `string`    | Name of referenced component. This name is by default the short      |
+|                             |             | class name or can be overwritten by the `name` attribute of the      |
+|                             |             |`Stateless`, `Stateful` or `Singleton` annotations.                   |
+| `lookup-name`               | `string`    | Optionally to the `epb-link` this value contains the fully qualified |
+|                             |             | name of the referenced component.                                    |
+| `remote`                    | `boolean`   | If a value has been specified, a reference to the remote proxy will  |
+|                             |             | be created instead of a local one.                                   |
 
-`injection-target`
+`/epb/enterprise-beans/[session or message-driven]/res-ref`
 
-| Node Name                   | Type        | Description                                                         |
-| --------------------------- | ----------- | ------------------------------------------------------------------- |
-| `injection-target-class`    | `string`    |  |
-| `injection-target-property` | `string`    |  |
-| `injection-target-method`   | `string`    |  |
+| Node Name                   | Type        | Description                                                          |
+| --------------------------- | ----------- | -------------------------------------------------------------------- |
+| `description`               | `string`    | A short description of the reference that will be created.           |
+| `res-ref-name`              | `string`    | The name of the reference created in the naming directory.           |
+| `res-ref-type`              | `string`    |            |
+
+`/epb/enterprise-beans/[session or message-driven]/[ebp-ref or res-ref]/injection-target`
+
+| Node Name                   | Type        | Description                                                          |
+| --------------------------- | ----------- | -------------------------------------------------------------------- |
+| `injection-target-class`    | `string`    | The class we want to inject the reference.                           |
+| `injection-target-method`   | `string`    | Use this method to inject the reference on runtime.                  |
+| `injection-target-property` | `string`    | Inject the reference to this property, whereas either this node or   |
+|                             |             | `injection-target-method` can be specified.                          |
 
 > Annotations can be seen as default values, whereas a deployment descriptor enables a developer or a system administrator to override values specified in annotations. So keep in mind, that a deployment descriptor will always override the values specified by annotations. 
 
