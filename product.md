@@ -5,7 +5,7 @@ position: 10
 permalink: /products.html
 ---
 
-## <i class="fa fa-question-circle"> What is appserver.io?</i>
+## <i class="fa fa-question-circle"></i> What is appserver.io?
 ***
 
 appserver.io is a next generation PHP infrastructure. It is not a webserver like Apache or nginx, nor a Timer Service or Message Queue. It is all of them and much more in one extremely powerful bundle. And it is completely written in PHP enabling PHP developers to adapt appserver.io to their specific needs with no additional coding language - just PHP!
@@ -14,16 +14,16 @@ appserver.io is a next generation PHP infrastructure. It is not a webserver like
 
 ![alt text]({{ "/assets/img/appserver-stack.png" | prepend: site.baseurl }} "appserver.io stack")
 
-### <i class="fa fa-info-circle"> Want to learn more about the power of appserver.io?</i>
+### <i class="fa fa-info-circle"></i> Want to learn more about the power of appserver.io?
 
 You are interested and want to learn more about the of appserver.io. See the different sections below.
 
 <p><br/></p>
 
 <ul class="nav nav-tabs nav-justified list-unstyled downloads">
-    <li class="active"><a href="#features" data-toggle="tab"><i class="fa fa-cogs"> Features</i></a>
+    <li class="active"><a href="#features" data-toggle="tab"><i class="fa fa-cogs"></i> Features</a>
     </li>
-    <li class=""><a href="#docs" data-toggle="tab"><i class="fa fa-file-code-o"> Documentation</i></a>
+    <li class=""><a href="#docs" data-toggle="tab"><i class="fa fa-file-code-o"></i> Documentation</a>
     </li>
 </ul>
 <p><br/></p>

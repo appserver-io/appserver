@@ -9,3 +9,7 @@
 - slug: servlet-engine
   name: Servlet-Engine
   title: Servlet-Engine News
+
+- slug: webserver
+  name: WebServer
+  title: WebServer News
