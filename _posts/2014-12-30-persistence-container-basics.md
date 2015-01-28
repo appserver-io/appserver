@@ -646,23 +646,43 @@ namespace AppserverIo\Example\Aspects;
 /**
  * @Aspect
  */
-class LogInterceptor
+class AuthorizationInterceptor
 {
 
   /**
-   * Advice used to log the call to any advised method.
+   * Advice used to check user authorization on method call.
    *
    * @param \AppserverIo\Doppelgaenger\Entities\MethodInvocation $methodInvocation 
    *   Initially invoked method
    *
    * @return void
+   * @throws \AppserverIo\Example\Exceptions\AuthorizationException
+   *     Is thrown if access is denied for the user logged into the system
    */
-  public function logInfo(MethodInvocation $methodInvocation)
+  public function authorize(MethodInvocation $methodInvocation)
   {
 
     // load class and method name
     $className = $methodInvocation->getStructureName();
     $methodName = $methodInvocation->getName()
+    
+    // load context, a instance of AStatefulSessionBean
+    $context = $methodInvocation->getContext();
+    
+    // load the application context
+    $application = $context->getApplication();
+    
+    // load user logged into the system
+    $user = $context->getUser()
+
+    // query whether the user is allowed to invoke the method 
+    if ($application->search('AclSessionBean')->allowed($methodInvocation, $user)) {
+    
+      // throw an exception if access is denied
+      throw new \AuthorizationException(
+        sprintf('Access to %s::%s is denied for user %s', $className, $methodName, $user)
+      );
+    }
 
     // log the method invocation
     $methodInvocation->getContext()
@@ -676,9 +696,9 @@ class LogInterceptor
 }
 ```
 
-> Keep in mind, that the `$methodInvocation->getContext()` method gives you access to component the advice has been declared, in our example this is the `Stateless Session Bean`!
+> Keep in mind, that the `$methodInvocation->getContext()` method gives you access to component the advice has been declared, in our example this is the `SSB` instance itself!
 
-So if we want to log each call to a session bean method, we simply have to declare it by adding an annotation like
+So if we want to authorize the user logged into the system for the method callto a session bean method, we simply have to declare it by adding an annotation like
 
 ```php
 <?php
@@ -686,26 +706,70 @@ So if we want to log each call to a session bean method, we simply have to decla
 namespace AppserverIo\Example\SessionBeans;
 
 /**
- * @Stateless
+ * @Stateful
  */
-class LoggedBean
+class AStatefulSessionBean
 {
 
   /**
-   * The application instance, injected by DI.
+   * The SSB instance that counts succesful logins.
    *
-   * @var AppserverIo\Psr\Application\ApplicationInterface
-   * @Resource(name="ApplicationInterface")
+   * @var \AppserverIo\Example\SessionBeans\ASingletonSessionBean
+   * @EnterpriseBean(name="ASingletonSessionBean")
    */
-  protected $application;
- 
+  protected $aSingletonSessionBean;
+
   /**
-   * Returns the application instance. This is necessary to access the logger
-   * in the aspects logInfo() method.
+   * The user, logged into the system.
+   *
+   * @var \AppserverIo\Apps\Example\Entities\User
    */
-  public function getApplication()
+  protected $user;
+
+  /**
+   * Logs the user into the system.
+   *
+   * @param string $username The username to login
+   * @param string $password The password used to login
+   *
+   * @return void
+   */
+  public function login($username, $password)
   {
-    return $this->application;
+    
+    /*
+     * Implement login functionality, e. g. check user/password in DB
+     */
+    
+    // make user entity persistent by setting it as SFSB property
+    $this->user = $user;
+    
+    // raise and return the successfull login counter
+    return $this->aSingletonSessionBean->raise();
+  }
+  
+  /**
+   * Checks if a user has been logged into the system, if not an exception
+   * will be thrown.
+   *
+   * @return void
+   * @throws \Exception Is thrown if no user is logged into the system
+   */
+  public function isLoggedIn()
+  {
+    if (isset($this->user) === false) {
+      throw new \Exception('Please log-in first!');
+    }
+  }
+  
+  /**
+   * Returns the user logged into the system.
+   *
+   * @return \AppserverIo\Apps\Example\Entities\User The user logged into the system
+   */
+  public function getUser()
+  {
+    return $this->user;
   }
 
   /**
@@ -713,11 +777,11 @@ class LoggedBean
    * method call by invoking the logInfo() method of our aspect.
    *
    * @return void
-   * @Around("advise(LogInterceptor->logInfo())")
+   * @Around("advise(AuthorizationInterceptor->authorize())")
    */
-  public function someBusinessMethod()
+  public function protectedMethod()
   {
-    // do something here
+    // do something protected here
   }
 }
 ```
