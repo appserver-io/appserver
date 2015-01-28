@@ -788,7 +788,110 @@ The `AclSessionBean` is NOT implemented in this example, because we only want to
 ### Deployment Descriptor
 ***
 
-Beside the possibility to configure nearly everything by annotations, it is also possible to resign annotations and use a XML based deployment descriptor called `epb.xml`. As we think that annotations are the way, that most developers will prefer, we don't describe the specification of the deployment descriptor here. Using a
+Beside the possibility to configure nearly everything by annotations, it is also possible to resign annotations and use a XML based deployment descriptor called `epb.xml`. As we think that annotations are the way, that most developers will prefer, we'll only give a short overview of a deployment descriptors structure here.
+
+The following example is a simplyfied copy of the deployment descriptor of our [example](https://github.com/appserver-io-apps/example) application and provides a brief overview of the structure.
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<epb xmlns="http://www.appserver.io/appserver">
+  <enterprise-beans>
+    <session>
+      <session-type>Singleton</session-type>
+      <epb-name>ASingletonProcessor</epb-name>
+      <epb-class>AppserverIo\Apps\Example\Services\ASingletonProcessor</epb-class>
+      <init-on-startup>true</init-on-startup>
+      <post-construct>
+        <lifecycle-callback-method>initialize</lifecycle-callback-method>
+      </post-construct>
+    </session>
+    <session>
+      <session-type>Stateful</session-type>
+      <epb-name>UserProcessor</epb-name>
+      <epb-class>AppserverIo\Apps\Example\Services\UserProcessor</epb-class>
+      <pre-destroy>
+        <lifecycle-callback-method>destroy</lifecycle-callback-method>
+      </pre-destroy>
+    </session>
+    <session>
+      <session-type>Stateless</session-type>
+      <epb-name>SampleProcessor</epb-name>
+      <epb-class>AppserverIo\Apps\Example\Services\SampleProcessor</epb-class>
+      <post-construct>
+        <lifecycle-callback-method>initialize</lifecycle-callback-method>
+      </post-construct>
+      <pre-destroy>
+        <lifecycle-callback-method>destroy</lifecycle-callback-method>
+      </pre-destroy>
+      <epb-ref>
+        <epb-ref-name>UserProcessor</epb-ref-name>
+        <lookup-name>php:global/example/UserProcessor</lookup-name>
+        <injection-target>
+          <injection-target-class>AppserverIo\Apps\Example\Services\SampleProcessor</injection-target-class>
+          <injection-target-property>userProcessor</injection-target-property>
+        </injection-target>
+      </epb-ref>
+      <res-ref>
+        <description>Reference to the application</description>
+        <res-ref-name>ApplicationInterface</res-ref-name>
+        <injection-target>
+          <injection-target-class>AppserverIo\Apps\Example\Services\AbstractProcessor</injection-target-class>
+          <injection-target-method>injectApplication</injection-target-method>
+        </injection-target>
+      </res-ref>
+    </session>
+  </enterprise-beans>
+</epb>
+```
+
+The structure should be self-explanatory, as it nearly reflects the annotations. The following table describes all possible nodes and gives a short description about meaning and options.
+
+`/epb/enterprise-beans/session`
+
+| Node Name                   | Type        | Description                                                        |
+| --------------------------- | ----------- | ------------------------------------------------------------------ |
+| `session-type`              | `string`    | Can be one of `Stateless`, `Stateful` or `Singleton`.              |
+| `epb-name`                  | `string`    | Short name of the component used for registration in naming        |
+|                             |             | directory.                                                         |
+| `epb-class`                 | `string`    | Fully qualified class name of the components class.                |
+| `init-on-startup`           | `boolean`   | TRUE if a instance should be created on application startup.       |
+|                             |             | This can only be set to TRUE if `session-type` is `Singleton`.     |
+| --------------------------- | ----------- | ------------------------------------------------------------------ |
+
+`post-construct/lifecycle-callback-method`
+
+`pre-destroy/lifecycle-callback-method`
+
+`epb-ref`
+
+| Node Name                   | Type        | Description                                                         |
+| --------------------------- | ----------- | ------------------------------------------------------------------- |
+| `description`               | `string`    |  |
+| `epb-ref-name`              | `string`    |  |
+| `epb-link`                  | `string`    |  |
+| `lookup-name`               | `string`    |  |
+| `remote`                    | `boolean`   |  |
+| --------------------------- | ----------- | ------------------------------------------------------------------- |
+
+`res-ref`
+
+| Node Name                   | Type        | Description                                                         |
+| --------------------------- | ----------- | ------------------------------------------------------------------- |
+| `description`               | `string`    |  |
+| `res-ref-name`              | `string`    |  |
+| `lookup-name`               | `string`    |  |
+| --------------------------- | ----------- | ------------------------------------------------------------------- |
+
+`injection-target`
+
+| Node Name                   | Type        | Description                                                         |
+| --------------------------- | ----------- | ------------------------------------------------------------------- |
+| `injection-target-class`    | `string`    |  |
+| `injection-target-property` | `string`    |  |
+| `injection-target-method`   | `string`    |  |
+| --------------------------- | ----------- | ------------------------------------------------------------------- |
+
+> Annotations can be seen as default values, whereas a deployment descriptor enables a developer or a system administrator to override values specified in annotations. So keep in mind, that a deployment descriptor will always override the values specified by annotations. 
 
 ### Summary
 ***
