@@ -853,7 +853,7 @@ The structure should be self-explanatory, as it nearly reflects the annotation `
 | `session-type`              | `string`    | Can be one of `Stateless`, `Stateful` or `Singleton`.                |
 | `epb-name`                  | `string`    | Short name of the component used for registration in naming directory. |
 | `epb-class`                 | `string`    | Fully qualified class name of the components class.                  |
-| `init-on-startup`           | `boolean`   | TRUE if a instance should be created on application startup. This can only be set to TRUE if `session-type` is `Singleton`. |
+| `init-on-startup`           | `boolean`   | `true` if a instance should be created on application startup. This can only be set to `true` if `session-type` is `Singleton`. |
 
 `/epb/enterprise-beans/[session or message-driven]/post-construct`
 
@@ -883,6 +883,7 @@ The structure should be self-explanatory, as it nearly reflects the annotation `
 | --------------------------- | ----------- | -------------------------------------------------------------------- |
 | `description`               | `string`    | A short description of the reference that will be created.           |
 | `res-ref-name`              | `string`    | The name of the reference created in the naming directory.           |
+| `res-ref-type`              | `string`    | The type of the reference resource.                                  |
 
 `/epb/enterprise-beans/[session or message-driven]/[ebp-ref or res-ref]/injection-target`
 
