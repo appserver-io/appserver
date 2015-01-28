@@ -856,7 +856,6 @@ The structure should be self-explanatory, as it nearly reflects the annotations.
 | `epb-class`                 | `string`    | Fully qualified class name of the components class.                |
 | `init-on-startup`           | `boolean`   | TRUE if a instance should be created on application startup.       |
 |                             |             | This can only be set to TRUE if `session-type` is `Singleton`.     |
-| --------------------------- | ----------- | ------------------------------------------------------------------ |
 
 `post-construct/lifecycle-callback-method`
 
@@ -871,7 +870,6 @@ The structure should be self-explanatory, as it nearly reflects the annotations.
 | `epb-link`                  | `string`    |  |
 | `lookup-name`               | `string`    |  |
 | `remote`                    | `boolean`   |  |
-| --------------------------- | ----------- | ------------------------------------------------------------------- |
 
 `res-ref`
 
@@ -880,7 +878,6 @@ The structure should be self-explanatory, as it nearly reflects the annotations.
 | `description`               | `string`    |  |
 | `res-ref-name`              | `string`    |  |
 | `lookup-name`               | `string`    |  |
-| --------------------------- | ----------- | ------------------------------------------------------------------- |
 
 `injection-target`
 
@@ -889,7 +886,6 @@ The structure should be self-explanatory, as it nearly reflects the annotations.
 | `injection-target-class`    | `string`    |  |
 | `injection-target-property` | `string`    |  |
 | `injection-target-method`   | `string`    |  |
-| --------------------------- | ----------- | ------------------------------------------------------------------- |
 
 > Annotations can be seen as default values, whereas a deployment descriptor enables a developer or a system administrator to override values specified in annotations. So keep in mind, that a deployment descriptor will always override the values specified by annotations. 
 
