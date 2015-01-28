@@ -16,6 +16,29 @@ When the application server starts, it parses the `META-INF/classes` and `WEB-IN
 
 When you want to inject that bean later, you have to know the name it has been registered with. In the following example, the bean will be registered in the naming directory under `php:global/example/AStatelessSessionBean`, whereas `example` is the name of the application. When using annotations to inject components, you don't have to know the fully qualified name, because the application server knows the actual context, tries to lookup the bean and injects it.
 
+### Application Configuration
+
+```xml
+<managers>
+  <manager
+    name="BeanContext"
+    type="AppserverIo\Appserver\PersistenceContainer\BeanManager"
+    factory="AppserverIo\Appserver\PersistenceContainer\BeanManagerFactory">
+    <directories>
+      <directory>/META-INF/classes</directory>
+    </directories>
+  </manager>
+  <manager
+    name="ServletContext"
+    type="AppserverIo\Appserver\ServletEngine\ServletManager"
+    factory="AppserverIo\Appserver\ServletEngine\ServletManagerFactory">
+    <directories>
+      <directory>/WEB-INF/classes</directory>
+    </directories>
+  </manager>
+</managers>
+```
+
 ### Annotations
 ***
 
