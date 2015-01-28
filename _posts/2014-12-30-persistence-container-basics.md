@@ -636,7 +636,7 @@ This extends the `SSB` with some kind of real persistence by loading the counter
 
 `Interceptors` allows you to weave cross-cutting concerns into your application, without adding code to your business methods. The functionality behind the secenes is [AOP](http://appserver.io/documentation/aop.html) and an `Interceptor` is nothing else than an advice.
 
-To add a very basic logging functionality we've to implement a simple aspect first, something like this
+To add a very basic ACL authorization functionality that use an `Interceptor`, we've to implement a simple aspect first. The aspect looks like this
 
 ```php
 <?php
@@ -696,9 +696,9 @@ class AuthorizationInterceptor
 }
 ```
 
-> Keep in mind, that the `$methodInvocation->getContext()` method gives you access to component the advice has been declared, in our example this is the `SSB` instance itself!
+> Keep in mind, that the `$methodInvocation->getContext()` method gives you access to the component the advice has been declared, in our example this is the `SSB` instance below!
 
-So if we want to authorize the user logged into the system for the method callto a session bean method, we simply have to declare it by adding an annotation like
+So if we want to authorize the user logged into the system for the method call to a session bean method, we simply have to declare it by adding an annotation like
 
 ```php
 <?php
@@ -785,3 +785,9 @@ class AStatefulSessionBean
   }
 }
 ```
+
+The `AclSessionBean` is NOT implemented in this example, because we only want to show you a rough way how you could implement such a functionality and how you can use interceptors.
+
+### Summary
+***
+
