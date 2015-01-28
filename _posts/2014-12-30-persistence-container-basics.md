@@ -785,6 +785,11 @@ class AStatefulSessionBean
 
 The `AclSessionBean` is NOT implemented in this example, because we only want to show you a rough way how you could implement such a functionality and how you can use interceptors.
 
+### Deployment Descriptor
+***
+
+Beside the possibility to configure nearly everything by annotations, it is also possible to resign annotations and use a XML based deployment descriptor called `epb.xml`. As we think that annotations are the way, that most developers will prefer, we don't describe the specification of the deployment descriptor here. Using a
+
 ### Summary
 ***
 
