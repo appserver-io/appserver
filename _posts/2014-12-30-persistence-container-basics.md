@@ -7,12 +7,12 @@ version: 1.0.0beta4
 categories: [Persistence-Container]
 ---
 
-Maybe you had a look at our previous post about the [Servlet-Engine Basics](<{{ "/servlet-engine/2014/12/24/servlet-engine-basics.html" | prepend: site.baseurl }}>). Beside the Servlet-Engine, the [Persistence-Container](http://appserver.io/documentation/persistence-container.html) is one of the main services appserver.io provides. The name Persistence-Container, can lead to some missunderstanding in our case, as many people think that it mostly refers to database persistence. In Java there are EJB-Containers that provide a broad set of functionalities like [Bean- or Container-Managed-Persistence](http://en.wikipedia.org/wiki/Enterprise_JavaBeans), whereas appserver.io actually only provides a small subset of the functionality as plattforms like [Wildfly](http://en.wikipedia.org/wiki/WildFly) does. Persisting data to a database is only one functionality the Persistence-Container can provide, but by far not the most important one.
+Maybe you had a look at our previous post about the [Servlet-Engine Basics](<{{ "/servlet-engine/2014/12/24/servlet-engine-basics.html" | prepend: site.baseurl }}>). Beside the `Servlet-Engine`, the [Persistence-Container](http://appserver.io/documentation/persistence-container.html) is one of the main services appserver.io provides. The name `Persistence-Container`, can lead to some missunderstanding in our case, as many people think that it mostly refers to database persistence. In Java there are EJB-Containers that provide a broad set of functionalities like [Bean- or Container-Managed-Persistence](http://en.wikipedia.org/wiki/Enterprise_JavaBeans), whereas appserver.io actually only provides a small subset of the functionality as plattforms like [Wildfly](http://en.wikipedia.org/wiki/WildFly) does. Persisting data to a database is only one functionality the `Persistence-Container` can provide, but by far not the most important one.
 
 ### New options using a Persistence-Container
 ***
 
-As not persisting data to a database is the main purpose of a Persistence-Container, we've to figure other reasons you may use it. As PHP till now was used as a scripting language, it'll lack of the possiblity to have objects, let's call them components, persistent in memory. The Persistence-Container gives you the possiblity to exactly do this. This is, admittedly, not a problem it can solve for you, but in fact it is a powerful option. This option, beside performance of course, gives you many possibilities you will not benefit from when working with the well known LAMP stack. This post is all about the possibilities the Persistence-Container provides and how they can enable you to write enterprise applications.
+As not persisting data to a database is the main purpose of a `Persistence-Container`, we've to figure other reasons you may use it. As PHP till now was used as a scripting language, it'll lack of the possiblity to have objects, let's call them components, persistent in memory. The `Persistence-Container' gives you the possiblity to exactly do this. This is, admittedly, not a problem it can solve for you, but in fact it is a powerful option. This option, beside performance of course, gives you many possibilities you will not benefit from when working with the well known LAMP stack. This post is all about the possibilities the `Persistence-Container` provides and how they can enable you to write enterprise applications.
 
 ### Server-Side Component Types
 ***
@@ -29,7 +29,7 @@ All bean types must provide a non-argument constructor, optionally no constructo
 
 A session bean basically is a plain PHP class. You MUST not instantiate it directly, because the application server takes care of its complete lifecycle.
 
-Therefore, an developer needs access to a session bean, he requests the application server to give him an instance, what can be done by a client or [Dependency Injection](#dependency-injection). In both cases, you will get a proxy to the session bean that allows you to invoke all methods, the session bean provides, as you can do if you would have a real instance. But, depending on your configuration, the proxy also allows you to call this method over a network as a remote method call. This makes it obvious for you if your session bean is on the same application server instance or on another one in your network.
+Therefore, an developer needs access to a session bean, he requests the application server to give him an instance, what can be done by a client or Dependency Injection. In both cases, you will get a proxy to the session bean that allows you to invoke all methods, the session bean provides, as you can do if you would have a real instance. But, depending on your configuration, the proxy also allows you to call this method over a network as a remote method call. This makes it obvious for you if your session bean is on the same application server instance or on another one in your network.
 
 When you write a session bean, you have to specify the type of bean you want to implement. This can either be done by adding an annotation to the class doc block or specifing it in a configuration file. As it seems to be easier to add the annotation and, in most cases this is sufficient, we recommend that for the start.
 
@@ -47,7 +47,7 @@ On each request an new `SLSB` instance will be created. After handling the reque
 
 ###### Example
 
-So let's implement a `SLSB` that provides functionality to create a user from the arguments passed to the `createUser()` method. The `SLSB` will be registered under the name `AStatelessSessionBean` in the application servers [Naming Directory](#naming-directory). Registering a bean in the Naming Directory is necessary to use it for [Dependency Injection](#dependency-injection) that'll be explained later on.
+So let's implement a `SLSB` that provides functionality to create a user from the arguments passed to the `createUser()` method. The `SLSB` will be registered under the name `AStatelessSessionBean` in the application servers `Naming Directory`. Registering a bean in the `Naming Directory` is necessary to use it for `Dependency Injection` explained in our [documentation](<{{ "/documentation/dependency-injection.html" | prepend: site.baseurl }}>).
 
 ```php
 <?php
@@ -323,7 +323,7 @@ class LoginServlet extends HttpServlet
 
 ##### Singleton Session Beans (SSBs)
 
-A `SSB` will be created by the container only one time for each application. This means, whenever you'll request an instance, you'll receive the same one. If you set a variable in the Session Bean, it'll be available until you'll overwrite it, or the application server has been restarted.
+A `SSB` will be created by the container only one time for each application. This means, whenever you'll request an instance, you'll receive the same one. If you set a variable in the session bean, it'll be available until you'll overwrite it, or the application server has been restarted.
 
 ###### Concurrency
 
@@ -545,7 +545,7 @@ Other than session beans, you MUST not invoke `MDBs` over a proxy, but as receiv
 
 > Using `MDBs` enables you to execute long running processes `asynchronously`, because you don't have to wait for an answer after sending a message to the `Message Broker`.
 
-In opposite to session beans, `MDBs` have to implement the `AppserverIo\Psr\Pms\MessageListenerInterface` interface. As `MDBs` are mostly used in context of a [Message-Queue](http://appserver.io/documentation/message-queue.html), this blog post will not describe functionality in deep. Instead we'll write a separate blog post that is all about `MDBs` and context of a `Message-Queue`.
+In opposite to session beans, `MDBs` have to implement the `AppserverIo\Psr\Pms\MessageListenerInterface` interface. As `MDBs` are mostly used in context of a [Message-Queue](<{{ "/documentation/message-queue.html" | prepend: site.baseurl }}>), this blog post will not describe functionality in deep. Instead we'll write a separate blog post that is all about `MDBs` and context of a `Message-Queue`.
 
 #### Lifecycle Callbacks
 
@@ -631,7 +631,7 @@ This extends the `SSB` with some kind of real persistence by loading the counter
 
 #### Interceptors
 
-`Interceptors` allows you to weave cross-cutting concerns into your application, without adding code to your business methods. The functionality behind the secenes is [AOP](http://appserver.io/documentation/aop.html) and an `Interceptor` is nothing else than an advice.
+`Interceptors` allows you to weave cross-cutting concerns into your application, without adding code to your business methods. The functionality behind the secenes is [AOP](<{{ "/documentation/aop.html" | prepend: site.baseurl }}>) and an `Interceptor` is nothing else than an advice.
 
 To add a very basic ACL authorization functionality that use an `Interceptor`, we've to implement a simple aspect first. The aspect looks like this
 
