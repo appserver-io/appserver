@@ -114,12 +114,12 @@ appserver.io and PHP and you´re done!
     </table>
 </div>
 
-## <i class="fa fa-dot-circle-o"> Learn more about our target groups</i>
+## <i class="fa fa-dot-circle-o"></i>  Learn more about our target groups
 <p><br/></p>
 {% include widgets/boxes.html boxes = page.boxes-targetgroups %}
 <p><br/></p>
 
-## <i class="fa fa-video-camera"> Watch the Video from the Imagine Conference</i>
+## <i class="fa fa-video-camera"></i> Watch the Video from the Imagine Conference
 <p><br/></p>
 <div class="elastic-video">
 	<iframe width="854" height="510" src="//www.youtube.com/embed/D5rkJ1bznKo#t=10" frameborder="0" allowfullscreen></iframe>
