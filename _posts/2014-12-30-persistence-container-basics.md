@@ -409,7 +409,7 @@ class AStatefulSessionBean
    * @param string $username The username to login
    * @param string $password The password used to login
    *
-   * @return void
+   * @return integer The number of successful logins since the last restart
    */
   public function login($username, $password)
   {
