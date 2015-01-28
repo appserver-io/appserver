@@ -50,7 +50,7 @@
     border-bottom: 1px solid #eee;
   }
 
-  h2:before {
+  h1:before, h2:before, h3:before, h4:before, h5:before {
     display: block;
     content: " ";
     margin-top: -85px;
