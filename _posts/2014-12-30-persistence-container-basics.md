@@ -865,7 +865,7 @@ The structure should be self-explanatory, as it nearly reflects the annotations.
 
 | Node Name                   | Type        | Description                                                         |
 | --------------------------- | ----------- | ------------------------------------------------------------------- |
-| `description`               | `string`    |  |
+| `description`               | `string`    | A short description of the reference we create.                     |
 | `epb-ref-name`              | `string`    |  |
 | `epb-link`                  | `string`    |  |
 | `lookup-name`               | `string`    |  |
