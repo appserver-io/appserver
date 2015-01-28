@@ -12,7 +12,7 @@ Maybe you had a look at our previous post about the [Servlet-Engine Basics](<{{ 
 ### New options using a Persistence-Container
 ***
 
-As not persisting data to a database is the main purpose of a `Persistence-Container`, we've to figure other reasons you may use it. As PHP till now was used as a scripting language, it'll lack of the possiblity to have objects, let's call them components, persistent in memory. The `Persistence-Container' gives you the possiblity to exactly do this. This is, admittedly, not a problem it can solve for you, but in fact it is a powerful option. This option, beside performance of course, gives you many possibilities you will not benefit from when working with the well known LAMP stack. This post is all about the possibilities the `Persistence-Container` provides and how they can enable you to write enterprise applications.
+As not persisting data to a database is the main purpose of a `Persistence-Container`, we've to figure other reasons you may use it. As PHP till now was used as a scripting language, it'll lack of the possiblity to have objects, let's call them components, persistent in memory. The `Persistence-Container` gives you the possiblity to exactly do this. This is, admittedly, not a problem it can solve for you, but in fact it is a powerful option. This option, beside performance of course, gives you many possibilities you will not benefit from when working with the well known LAMP stack. This post is all about the possibilities the `Persistence-Container` provides and how they can enable you to write enterprise applications.
 
 ### Server-Side Component Types
 ***
