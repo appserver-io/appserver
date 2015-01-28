@@ -7,7 +7,7 @@ version: 1.0.0beta4
 categories: [Naming-Directory]
 ---
 
-Every container running in the application server has a internal registry, we call it Naming Directory. In Java this is call `Enterprise Naming Context` or `ENC`, in short. The naming directory is something like an object store, the container registers references to its resources. Resources can be beans or contexts provided by an application. All that resources are registered in the `Naming Directory` which allows you the access them if needed.
+Every container running in the application server has a internal registry, we call it Naming Directory. In Java this is called `Enterprise Naming Context` or in short `ENC`. The naming directory is something like an object store, the container registers references to its resources. Resources can be beans or contexts provided by an application. All that resources are registered in the `Naming Directory` which allows you the access them if needed.
 
 ### Register Resources
 ***
@@ -19,8 +19,23 @@ When you want to inject that bean later, you have to know the name it has been r
 ### Annotations
 ***
 
+#### Explicit Startup (@Startup)
 
+#### Post-Construct Callback (@PostConstruct)
 
+#### Pre-Desctory Callback (@PreDestroy)
+
+#### Stateless Session Bean (@Stateless)
+
+#### Stateful Session Bean (@Stateful)
+
+#### Singleton Session Bean (@Singleton)
+
+#### Message Driven Bean (@MessageDriven)
+
+#### Enterprise Beans (@EnterpriseBeans)
+
+#### Resources (@Resource)
 
 ### Deployment Descriptor
 ***
