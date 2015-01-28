@@ -4,26 +4,28 @@ title: HTTP(S) Server
 position: 40
 group: Docs
 subDocs:
-  - title: Configure the HTTP(S) server
-    href: configure-the-http-s-server
-  - title: The connection handler
-    href: the-connection-handler
-  - title: Server modules
+  - title: Connection Handler
+    href: connection-handler
+  - title: Server Modules
     href: server-modules
-  - title: Configure a Virtual Host
-    href: configure-a-virtual-host
-  - title: Configure your Environment Variables
-    href: configure-your-environment-variables
-  - title: Configure authentications
-    href: configure-authentications
+  - title: Virtual Hosts
+    href: virtual-hosts
+  - title: CEnvironment Variables
+    href: environment-variables
+  - title: Authentications
+    href: authentications
+  - title: Accesses
+    href: accesses
+  - title: File Handlers
+    href: file-handlers
+  - title: Locations
+    href: locations
 permalink: /documentation/http-s-server.html
 ---
 
-## Configure the HTTP(S) server
-
-The http(s) server is configured like any other server component using our
+The HTTP(S) Server is build and configured like any other server component using our
 [multithreaded server framework](<https://github.com/appserver-io/server>). Let's have a look at the main configuration
-of the http server component.
+of the server component itselfe.
 
 ```xml
 <server
@@ -91,11 +93,11 @@ descriptions below.
 If you want to setup a HTTPS server you have to configure 2 more params.
 
 | Param         | Description |
-| --------------| ----------- |
+| ------------- | ----------- |
 | `certPath`    | The path to your certificate file which as to be a combined PEM file of private key and certificate. The path will be relative to the servers root directory if there is no beginning slash "/". |
 | `passphrase`  | The passphrase you have created your SSL private key file with. Can be optional. |
 
-## The connection handler
+## Connection Handler
 
 As we wanted to handle requests based on a specific protocol, the server needs a mechanism to understand and handle
 those requests in a proper way.
@@ -114,7 +116,7 @@ which can be found [here](<http://tools.ietf.org/html/rfc7230>) using our [http 
 > you will have to handle another protocol which might not be compatible with the modules you provided in the same server
 > configuration. In certain circumstances it will make sense but it's not best practise to do this.
 
-## Server modules
+## Server Modules
 
 As mentioned at the beginning we're using our [multithreaded server framework](<https://github.com/appserver-io/server>)
 which allows you to provide modules for request and response processing triggered from several hooks.
@@ -122,7 +124,7 @@ which allows you to provide modules for request and response processing triggere
 Let's get an overview of those hooks which can also be found in the corresponding dictionary class `\AppserverIo\Server\Dictionaries\ModuleHooks`
 
 | Hook             | Description |
-| -----------------| ----------- |
+| ---------------- | ----------- |
 | `REQUEST_PRE`    | The request pre hook should be used to do something before the request will be parsed. So if there is a keep-alive loop going on this will be triggered every request loop. |
 | `REQUEST_POST`   | The request post hook should be used to do something after the request has been parsed. Most modules such as CoreModule will use this hook to do their job. |
 | `RESPONSE_PRE`   | The response pre hook will be triggered at the point before the response will be prepared for sending it to the to the connection endpoint. |
@@ -161,7 +163,7 @@ to implement.
 Find an overview of all modules below ...
 
 | Module                      | Description |
-| ----------------------------| ----------- |
+| --------------------------- | ----------- |
 | `VirtualHostModule`         | Provides virtual host functionality that allows you to run more than one hostname (such as yourname.example.com and othername.example.com) on the same server while having different params and configurations. |
 | `AuthenticationModule`      | Offers the possibility to secure resources using basic or digest authentication based on request uri with regular expression support. |
 | `EnvironmentVariableModule` | This module let you manipulate server environment variables. These can be conditionally set, unset and copied in form of an OS context. |
@@ -175,10 +177,10 @@ Find an overview of all modules below ...
 | `DeflateModule`             | It provides the `deflate` output filter that allows output from your server to be compressed before being sent to the client over the network. |
 | `ProfileModule`             | Allows request based realtime profiling using external tools like logstash and kibana. |
 
-## Configure a Virtual Host
+## Virtual Hosts
 
 Using virtual hosts you can extend the default server configuration and produce a host specific
-environment for your app to run.
+environment for your hostname or app to run.
 
 You can do so by adding a virtual host configuration to your global server configuration file. See
 the example for a XML based configuration below:
@@ -201,10 +203,14 @@ the example for a XML based configuration below:
 The above configuration sits within the server element and opens up the virtual host `example.local`
 which has a different document root than the global configuration has. The virtual host is born. :-)
 
+> Most of the `params` that are available in the `server` node can be overwritten and you can also define all following
+> configurations like [Environment Variables](<#configure-your-environment-variables>), [Authentications](<#configure-authentications>), [Accesses](<#configure-accesses>) and of course [Locations](<#configure-locations>) for every virtual host
+> on its own.
+
 The `virtualHost` element can hold params, rewrite rules or environment variables which are only 
 available for the host specifically.
 
-## Configure your Environment Variables
+## Environment Variables
 
 You can set environment variables using either the global or the virtual host based configuration.
 The example below shows a basic usage of environment variables in XML format.
@@ -239,6 +245,121 @@ some specialities too:
   environment variables of the PHP process
 - Values will be treated as strings
 
-## Configure authentications
+## Authentications
 
-You can setup request uri based basic or digest authentication based on the  with regular expression support.
+You can setup request uri based basic or digest authentication with regular expression support using authentications.
+Here is an example how to configure basic or digest auth.
+
+```xml
+<authentications>
+    <authentication uri="^\/auth\/basic\/.*">
+        <params>
+            <param name="type" type="string">
+                \AppserverIo\WebServer\Authentication\BasicAuthentication
+            </param>
+            <param name="realm" type="string">
+                PhpWebServer Basic Authentication System
+            </param>
+            <param name="file" type="string">
+                var/www/auth/basic/.htpasswd
+            </param>
+        </params>
+    </authentication>
+    <authentication uri="^\/auth\/digest\/.*">
+        <params>
+            <param name="type" type="string">
+                \AppserverIo\WebServer\Authentication\DigestAuthentication
+            </param>
+            <param name="realm" type="string">
+                appserver.io Digest Authentication System
+            </param>
+            <param name="file" type="string">
+                var/www/auth/digest/.htpasswd
+            </param>
+        </params>
+    </authentication>
+</authentications>
+```
+
+As you can see every `authentication` node has it `uri` attribute where you can use regular expressions for a request
+uri to match. It also has some params which are descripted below.
+
+| Module  | Description |
+| ------- | ----------- |
+| `type`  | The type represents an implementation of the `\AppserverIo\WebServer\Interfaces\AuthenticationInterface` which provides specific auth mechanism. You can use the predelivered classes `\AppserverIo\WebServer\Authentication\BasicAuthentication` and `\AppserverIo\WebServer\Authentication\BasicAuthentication` for basic and digest authentication. |
+| `realm` | The string assigned by the server to identify the protection space of the request uri. |
+| `file`  | The path to your credentials .htpasswd file. The path will be relative to the servers root directory if there is no beginning slash "/". |
+
+## Accesses
+
+You can easily allow or deny access on resources based on client's http request headers by setting up accesses within
+your server or virtual-host configuration.
+
+```xml
+    <accesses>
+        <!-- per default allow everything -->
+        <access type="allow">
+            <params>
+                <param name="X_REQUEST_URI" type="string">.*</param>
+            </params>
+        </access>
+    </accesses>
+```
+
+All `access` nodes need to have a type which can be either `allow` or `deny`. To react on specific request headers and
+their values you have to add a one `param` node per header. The `name` attribute has to be the request header name and
+the value is a regular expression you want to match.
+
+> All request header value checks (means all `param` nodes), given by an `access` node are AND combined.
+
+## File Handlers
+
+File handlers are used for define a mapping between specific [Server Modules](<#server-modules>) and requested
+resources by their file extensions.
+
+```xml
+<fileHandlers>
+    <fileHandler name="fastcgi" extension=".php">
+        <params>
+            <param name="host" type="string">127.0.0.1</param>
+            <param name="port" type="integer">9010</param>
+        </params>
+    </fileHandler>
+<fileHandlers>
+```
+
+If you use this configuration a client requesting a resource having the extension `.php` will be processed by the
+fastcgi server module. That means instead of serving the `.php` file as static resource by the core module the fastcgi
+module will proceed the request by connecting to a fastcgi backend provided in the corresponding `params` node.
+
+| Param  | Description |
+| ------ | ----------- |
+| `host` | The ip address to the fastcgi backend |
+| `port` | The port to the fastcgi backend |
+
+> The file handlers name have to be equal to the modules name you want to trigger. So every module has to implement
+> a `getModuleName()` method as defined in `\AppserverIo\Server\Interfaces\ModuleInterface`.
+
+## Locations
+
+Locations are usefull if you want to have other fileHandlers or the fileHandlers configuration changed on a
+certain request uri pattern to be triggered.
+
+```xml
+<locations>
+    <location condition="\/test\.php">
+        <handlers>
+            <handler name="fastcgi" extension=".php">
+                <!--
+                <params>
+                    <param name="host" type="string">127.0.0.1</param>
+                    <param name="port" type="integer">9555</param>
+                </params>
+                 -->
+            </handler>
+        </handlers>
+    </location>
+</locations>
+```
+
+In this example the `/test.php` script will be processed by another fastcgi backend listening on `127.0.0.1:9555`
