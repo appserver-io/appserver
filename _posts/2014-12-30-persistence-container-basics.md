@@ -99,10 +99,9 @@ Then we can implement a servlet that invokes the method with the credentials loa
 
 namespace AppserverIo\Example\Servlets;
 
-use AppserverIo\Psr\Servlet\ServletConfig;
 use AppserverIo\Psr\Servlet\Http\HttpServlet;
-use AppserverIo\Psr\Servlet\Http\HttpServletRequest;
-use AppserverIo\Psr\Servlet\Http\HttpServletResponse;
+use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
+use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
 
 /**
  * This servlets implements functionality to store user data by
@@ -127,17 +126,17 @@ class UserServlet extends HttpServlet
    * This is a very simple example that shows how to start a new session to
    * login the a user with credentials found as request parameters.
    *
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest  $servletRequest
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface $servletRequest
    *   The request instance
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponse $servletResponse
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse
    *   The response instance
    *
    * @return void
    * @see \AppserverIo\Psr\Servlet\Http\HttpServlet::doGet()
    */
   public function doPost(
-    HttpServletRequest $servletRequest,
-    HttpServletResponse $servletResponse)
+    HttpServletRequestInterface $servletRequest,
+    HttpServletResponseInterface $servletResponse)
   {
 
     // create the user by invoking the SLSB createUser() method
@@ -232,10 +231,9 @@ The servlet is also a very simple example that implements the login on a `POST` 
 
 namespace AppserverIo\Example\Servlets;
 
-use AppserverIo\Psr\Servlet\ServletConfig;
 use AppserverIo\Psr\Servlet\Http\HttpServlet;
-use AppserverIo\Psr\Servlet\Http\HttpServletRequest;
-use AppserverIo\Psr\Servlet\Http\HttpServletResponse;
+use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
+use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
 
 /**
  * This servlets implements login functionality using a SFSB.
@@ -259,17 +257,17 @@ class LoginServlet extends HttpServlet
    * This is a very simple example that shows how to start a new session to
    * login the a user with credentials found as request parameters.
    *
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest  $servletRequest
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface $servletRequest
    *   The request instance
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponse $servletResponse
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse
    *   The response instance
    *
    * @return void
    * @see \AppserverIo\Psr\Servlet\Http\HttpServlet::doGet()
    */
   public function doPost(
-    HttpServletRequest $servletRequest,
-    HttpServletResponse $servletResponse)
+    HttpServletRequestInterface $servletRequest,
+    HttpServletResponseInterface $servletResponse)
   {
 
     // create a new session, if not available
@@ -291,17 +289,17 @@ class LoginServlet extends HttpServlet
   /**
    * Handles a HTTP GET request.
    *
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest  $servletRequest
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface $servletRequest
    *   The request instance
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponse $servletResponse
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse
    *   The response instance
    *
    * @return void
    * @see \AppserverIo\Psr\Servlet\Http\HttpServlet::doGet()
    */
   public function doGet(
-    HttpServletRequest $servletRequest,
-    HttpServletResponse $servletResponse)
+    HttpServletRequestInterface $servletRequest,
+    HttpServletResponseInterface $servletResponse)
   {
 
     try {
@@ -450,10 +448,9 @@ Finally the servlet receives the number ob successul logins since the applicatio
 
 namespace AppserverIo\Example\Servlets;
 
-use AppserverIo\Psr\Servlet\ServletConfig;
 use AppserverIo\Psr\Servlet\Http\HttpServlet;
-use AppserverIo\Psr\Servlet\Http\HttpServletRequest;
-use AppserverIo\Psr\Servlet\Http\HttpServletResponse;
+use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
+use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
 
 /**
  * This servlets implements login functionality using a SFSB.
@@ -477,17 +474,17 @@ class LoginServlet extends HttpServlet
    * This is a very simple example that shows how to start a new session to
    * login the a user with credentials found as request parameters.
    *
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest  $servletRequest
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface $servletRequest
    *   The request instance
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponse $servletResponse
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse
    *   The response instance
    *
    * @return void
    * @see \AppserverIo\Psr\Servlet\Http\HttpServlet::doGet()
    */
   public function doPost(
-    HttpServletRequest $servletRequest,
-    HttpServletResponse $servletResponse)
+    HttpServletRequestInterface $servletRequest,
+    HttpServletResponseInterface $servletResponse)
   {
 
     // create a new session, if not available
@@ -512,17 +509,17 @@ class LoginServlet extends HttpServlet
   /**
    * Handles a HTTP GET request.
    *
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest  $servletRequest
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface $servletRequest
    *   The request instance
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponse $servletResponse
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse
    *   The response instance
    *
    * @return void
    * @see \AppserverIo\Psr\Servlet\Http\HttpServlet::doGet()
    */
   public function doGet(
-    HttpServletRequest $servletRequest,
-    HttpServletResponse $servletResponse)
+    HttpServletRequestInterface $servletRequest,
+    HttpServletResponseInterface $servletResponse)
   {
 
     try {
@@ -773,8 +770,8 @@ class AStatefulSessionBean
   }
 
   /**
-   * A business method with an around advice that will simple log the
-   * method call by invoking the logInfo() method of our aspect.
+   * A business method protected by an around advice that will query authorization for
+   * the users method call by invoking the authorize() method of our interceptor.
    *
    * @return void
    * @Around("advise(AuthorizationInterceptor->authorize())")
@@ -791,3 +788,6 @@ The `AclSessionBean` is NOT implemented in this example, because we only want to
 ### Summary
 ***
 
+To build an application or components by using `Server-Side Component Types` provided by the `Persistence-Container` gives developers powerful options concerning performance, scalability and reusability.
+
+In our next blog posts, we'll step deeper into the application servers `Naming Directory` and `Dependency Injection`. 
