@@ -10,7 +10,7 @@ subDocs:
     href: server-modules
   - title: Virtual Hosts
     href: virtual-hosts
-  - title: CEnvironment Variables
+  - title: Environment Variables
     href: environment-variables
   - title: Authentications
     href: authentications
