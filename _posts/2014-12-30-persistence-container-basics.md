@@ -783,11 +783,11 @@ class AStatefulSessionBean
 }
 ```
 
-The `AclSessionBean` is NOT implemented in this example, because we only want to show you a rough way how you could implement such a functionality and how you can use interceptors.
+The `AclSessionBean` is NOT implemented in this example, because this blog post should give you a rough direction how you could implement such a functionality and how you can use interceptors.
 
 ### Summary
 ***
 
-To build an application or components by using `Server-Side Component Types` provided by the `Persistence-Container` gives developers powerful options concerning performance, scalability and reusability.
+To build an application or components by using `Server-Side Component Types` provided by the `Persistence-Container` gives developers powerful options concerning performance, scalability and reusability. In combination with the `Servlet Engine` developers are able to build high-performance, stateful web applications by taking advantage of enterprise services like a `Message-Queue` or the `Timer-Service` and a rock-solid infrastructure.
 
-In our next blog posts, we'll step deeper into the application servers `Naming Directory` and `Dependency Injection`. 
+To be in the scope of a blog post, it is only possible to focus on the major functionality of the `Persistence Container`. Above the described components, there is much more functionality that is part of the `Persistence Container` or have a massive impact on development when working with it. To cover all that stuff bit by bit, we'll step deeper into the application servers `Naming Directory` and `Dependency Injection` you already had been in contact with, when reading this post. 
