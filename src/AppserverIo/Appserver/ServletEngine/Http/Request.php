@@ -20,17 +20,14 @@
 
 namespace AppserverIo\Appserver\ServletEngine\Http;
 
-use AppserverIo\Psr\Context\Context;
+use AppserverIo\Psr\Context\ContextInterface;
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Psr\HttpMessage\CookieInterface;
 use AppserverIo\Psr\HttpMessage\RequestInterface;
 use AppserverIo\Psr\Servlet\SessionUtils;
-use AppserverIo\Psr\Servlet\Http\HttpSession;
-use AppserverIo\Psr\Servlet\Http\HttpServletRequest;
-use AppserverIo\Psr\Servlet\Http\HttpServletResponse;
-use AppserverIo\Appserver\ServletEngine\SessionManager;
+use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
+use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
 use AppserverIo\Server\Dictionaries\ServerVars;
-use AppserverIo\Psr\Application\ApplicationInterface;
 
 /**
  * A Http servlet request implementation.
@@ -41,13 +38,11 @@ use AppserverIo\Psr\Application\ApplicationInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class Request extends GenericStackable implements HttpServletRequest
+class Request extends GenericStackable implements HttpServletRequestInterface
 {
 
     /**
      * Initialize the servlet response.
-     *
-     * @return void
      */
     public function __construct()
     {
@@ -100,11 +95,11 @@ class Request extends GenericStackable implements HttpServletRequest
      * Injects the context that allows access to session and
      * server information.
      *
-     * @param \AppserverIo\Psr\Context\Context $context The request context instance
+     * @param \AppserverIo\Psr\Context\ContextInterface $context The request context instance
      *
      * @return void
      */
-    public function injectContext(Context $context)
+    public function injectContext(ContextInterface $context)
     {
         $this->context = $context;
     }
@@ -157,7 +152,7 @@ class Request extends GenericStackable implements HttpServletRequest
      * Returns the context that allows access to session and
      * server information.
      *
-     * @return \AppserverIo\Psr\Context\Context The request context
+     * @return \AppserverIo\Psr\Context\ContextInterface The request context
      */
     public function getContext()
     {
@@ -165,10 +160,20 @@ class Request extends GenericStackable implements HttpServletRequest
     }
 
     /**
+     * Returns a part instance
+     *
+     * @return \AppserverIo\Psr\HttpMessage\PartInterface
+     */
+    public function getHttpPartInstance()
+    {
+        
+    }
+
+    /**
      * Returns the context that allows access to session and
      * server information.
      *
-     * @return \AppserverIo\Appserver\ServletEngine\Http\RequestContext The request context
+     * @return \AppserverIo\Appserver\ServletEngine\Http\RequestContextInterface The request context
      */
     public function getRequestHandler()
     {
@@ -198,11 +203,11 @@ class Request extends GenericStackable implements HttpServletRequest
     /**
      * Injects the servlet response bound to this request.
      *
-     * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponse $response The servlet respone instance
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $response The servlet respone instance
      *
      * @return void
      */
-    public function injectResponse(HttpServletResponse $response)
+    public function injectResponse(HttpServletResponseInterface $response)
     {
         $this->response = $response;
     }
@@ -210,7 +215,7 @@ class Request extends GenericStackable implements HttpServletRequest
     /**
      * Returns the servlet response bound to this request.
      *
-     * @return \AppserverIo\Psr\Servlet\Http\HttpServletResponse The response instance
+     * @return \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface The response instance
      */
     public function getResponse()
     {
@@ -272,7 +277,7 @@ class Request extends GenericStackable implements HttpServletRequest
     }
 
     /**
-     * Resetss the stream resource pointing to body content.
+     * Resets the stream resource pointing to body content.
      *
      * @param resource $bodyStream The body content stream resource
      *
@@ -325,7 +330,6 @@ class Request extends GenericStackable implements HttpServletRequest
      * @param integer $filter The filter to use
      *
      * @return string|null
-     * @todo Implement filter handling
      */
     public function getParameter($name, $filter = FILTER_SANITIZE_STRING)
     {
@@ -424,13 +428,15 @@ class Request extends GenericStackable implements HttpServletRequest
      *
      * @param boolean $create TRUE to create a new session, else FALSE
      *
-     * @return \AppserverIo\Psr\Servlet\Http\HttpSession The session instance
+     * @return null|\AppserverIo\Psr\Servlet\Http\HttpSessionInterface The session instance
+     *
+     * @throws \Exception
      */
     public function getSession($create = false)
     {
 
         // if no session has already been load, initialize the session manager
-        $manager = $this->getContext()->search('SessionManager');
+        $manager = $this->getContext()->search('SessionManagerInterface');
 
         // if no session manager was found, we don't support sessions
         if ($manager == null) {

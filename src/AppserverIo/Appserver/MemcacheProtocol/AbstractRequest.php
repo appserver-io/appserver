@@ -31,7 +31,7 @@ namespace AppserverIo\Appserver\MemcacheProtocol;
  * @link      http://www.appserver.io
  * @link      https://github.com/memcached/memcached/blob/master/doc/protocol.txt
  */
-abstract class AbstractRequest implements CacheRequest
+abstract class AbstractRequest implements CacheRequestInterface
 {
 
     /**
@@ -105,10 +105,7 @@ abstract class AbstractRequest implements CacheRequest
     protected $newLine;
 
     /**
-     * Constructor that reset's all attributes to
-     * default values.
-     *
-     * @return void
+     * Constructor that resets all attributes to default values.
      */
     public function __construct()
     {
@@ -157,7 +154,7 @@ abstract class AbstractRequest implements CacheRequest
     }
 
     /**
-     * Set's the instance flags.
+     * Sets the instance flags.
      *
      * @param integer $flags The instance flags
      *
@@ -169,7 +166,7 @@ abstract class AbstractRequest implements CacheRequest
     }
 
     /**
-     * Return's the instance flags.
+     * Returns the instance flags.
      *
      * @return integer The instance flags
      */
@@ -179,7 +176,7 @@ abstract class AbstractRequest implements CacheRequest
     }
 
     /**
-     * Set's the request action passed as parameter.
+     * Sets the request action passed as parameter.
      *
      * @param string $value The request action for this instance
      *
@@ -201,7 +198,7 @@ abstract class AbstractRequest implements CacheRequest
     }
 
     /**
-     * Set's the number of the bytes of the data.
+     * Sets the number of the bytes of the data.
      *
      * @param integer $bytes The number of bytes
      *
@@ -213,9 +210,9 @@ abstract class AbstractRequest implements CacheRequest
     }
 
     /**
-     * Return's the number of bytes of the data.
+     * Returns the number of bytes of the data.
      *
-     * @return integer The nubmer of bytes
+     * @return integer The number of bytes
      */
     public function getBytes()
     {
@@ -223,7 +220,7 @@ abstract class AbstractRequest implements CacheRequest
     }
 
     /**
-     * Set's the key to store the data with
+     * Sets the key to store the data with
      *
      * @param string $key The key to store the data with
      *
@@ -235,7 +232,7 @@ abstract class AbstractRequest implements CacheRequest
     }
 
     /**
-     * Return's the key to store the data with.
+     * Returns the key to store the data with.
      *
      * @return string The key to store the data with
      */
@@ -245,7 +242,7 @@ abstract class AbstractRequest implements CacheRequest
     }
 
     /**
-     * Set's the expriation time for the data in seconds.
+     * Sets the expriation time for the data in seconds.
      *
      * @param integer $expTime The data's expiration time in seconds
      *
@@ -257,7 +254,7 @@ abstract class AbstractRequest implements CacheRequest
     }
 
     /**
-     * Return's the expiration time for the data in seconds.
+     * Returns the expiration time for the data in seconds.
      *
      * @return integer The data's expiration time in seconds
      */
@@ -277,7 +274,7 @@ abstract class AbstractRequest implements CacheRequest
     }
 
     /**
-     * Set's current request state, TRUE for completed, else FALSE.
+     * Sets current request state, TRUE for completed, else FALSE.
      *
      * @param boolean $value The request state
      *
@@ -289,7 +286,7 @@ abstract class AbstractRequest implements CacheRequest
     }
 
     /**
-     * Return's the current request state, TRUE for completed, else FALSE.
+     * Returns the current request state, TRUE for completed, else FALSE.
      *
      * @return boolean The current request state
      */
@@ -299,7 +296,7 @@ abstract class AbstractRequest implements CacheRequest
     }
 
     /**
-     * Return's TRUE if the request is complete, ELSE false
+     * Returns TRUE if the request is complete, ELSE false
      *
      * @return boolean TRUE if the request is complete, ELSE false
      * @see \AppserverIo\Appserver\MemcacheProtocol\CacheRequest::getComplete()

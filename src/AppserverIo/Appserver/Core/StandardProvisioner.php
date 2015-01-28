@@ -20,7 +20,6 @@
 
 namespace AppserverIo\Appserver\Core;
 
-use AppserverIo\Appserver\Core\Api\ConfigurationService;
 use AppserverIo\Appserver\Core\Api\Node\ProvisionNode;
 
 /**

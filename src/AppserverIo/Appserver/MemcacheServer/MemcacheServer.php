@@ -22,7 +22,7 @@
 
 namespace AppserverIo\Appserver\MemcacheServer;
 
-use AppserverIo\Appserver\MemcacheProtocol\CacheRequest;
+use AppserverIo\Appserver\MemcacheProtocol\CacheRequestInterface;
 
 /**
  * Memcache compatible cache implementation.
@@ -35,13 +35,13 @@ use AppserverIo\Appserver\MemcacheProtocol\CacheRequest;
  * @link      http://www.appserver.io
  * @link      https://github.com/memcached/memcached/blob/master/doc/protocol.txt
  */
-class MemcacheServer implements Cache
+class MemcacheServer implements CacheInterface
 {
 
     /**
      * Holds the request instance.
      *
-     * @var \AppserverIo\Appserver\MemacheProtocol\CacheRequest
+     * @var \AppserverIo\Appserver\MemcacheProtocol\CacheRequestInterface
      */
     protected $vo = null;
 
@@ -140,8 +140,6 @@ class MemcacheServer implements Cache
      * Initializes the instance with the store and the mutex value.
      *
      * @param \Stackable $store The store instance
-     *
-     * @return void
      */
     public function __construct(\Stackable $store)
     {
@@ -153,16 +151,16 @@ class MemcacheServer implements Cache
     /**
      * Handle the the passed request VO.
      *
-     * @param \AppserverIo\Appserver\MemacheProtocol\CacheRequest $vo The VO with the data to handle
+     * @param \AppserverIo\Appserver\MemcacheProtocol\CacheRequestInterface $vo The VO with the data to handle
      *
      * @return void
      */
-    public function request(CacheRequest $vo)
+    public function request(CacheRequestInterface $vo)
     {
         // initialize the VO
         $this->vo = $vo;
 
-        // build methodname from request action und "Action"
+        // build method name from request action und "Action"
         $method = $vo->getRequestAction() . "Action";
         $this->$method();
     }
@@ -490,7 +488,7 @@ class MemcacheServer implements Cache
     /**
      * Returns the value object instance.
      *
-     * @return \AppserverIo\Appserver\MemcacheProtocol\CacheRequest
+     * @return \AppserverIo\Appserver\MemcacheProtocol\CacheRequestInterface
      */
     protected function getVO()
     {

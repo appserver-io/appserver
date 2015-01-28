@@ -43,7 +43,7 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
     use BindingTrait;
 
     /**
-     * Initialize the diretory with a name and the parent one.
+     * Initialize the directory with a name and the parent one.
      *
      * @param string                                           $name   The directory name
      * @param \AppserverIo\Psr\Naming\NamingDirectoryInterface $parent The parent directory
@@ -140,7 +140,7 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
      * @param string $key The key of the value to return from the context.
      *
      * @return mixed The requested attribute
-     * @see \AppserverIo\Psr\Context\Context::getAttribute()
+     * @see \AppserverIo\Psr\Context\ContextInterface::getAttribute()
      */
     public function getAttribute($key)
     {

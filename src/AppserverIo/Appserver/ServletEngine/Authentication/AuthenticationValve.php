@@ -20,9 +20,9 @@
 
 namespace AppserverIo\Appserver\ServletEngine\Authentication;
 
-use AppserverIo\Appserver\ServletEngine\Valve;
-use AppserverIo\Psr\Servlet\Http\HttpServletRequest;
-use AppserverIo\Psr\Servlet\Http\HttpServletResponse;
+use AppserverIo\Appserver\ServletEngine\ValveInterface;
+use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
+use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
 
 /**
  * This valve will check if the actual request needs authentication.
@@ -33,26 +33,26 @@ use AppserverIo\Psr\Servlet\Http\HttpServletResponse;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class AuthenticationValve implements Valve
+class AuthenticationValve implements ValveInterface
 {
 
     /**
      * Processes this valve (authenticate this request if necessary).
      *
-     * @param \AppserverIo\Psr\Servlet\ServletRequest  $servletRequest  The request instance
-     * @param \AppserverIo\Psr\Servlet\ServletResponse $servletResponse The response instance
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface  $servletRequest  The request instance
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse The response instance
      *
      * @return void
      */
-    public function invoke(HttpServletRequest $servletRequest, HttpServletResponse $servletResponse)
+    public function invoke(HttpServletRequestInterface $servletRequest, HttpServletResponseInterface $servletResponse)
     {
 
         // load the authentication manager
-        $authenticationManager = $servletRequest->getContext()->search('AuthenticationManager');
+        $authenticationManager = $servletRequest->getContext()->search('AuthenticationManagerInterface');
 
         // authenticate the request
         if ($authenticationManager->handleRequest($servletRequest, $servletResponse) === false) {
-            // dispatch this request, because we have to authenticat first
+            // dispatch this request, because we have to authenticate first
             $servletRequest->setDispatched(true);
         }
     }

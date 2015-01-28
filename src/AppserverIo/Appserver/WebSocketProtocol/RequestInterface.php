@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\WebSocketProtocol\Request
+ * AppserverIo\Appserver\WebSocketProtocol\RequestInterface
  *
  * NOTICE OF LICENSE
  *
@@ -20,7 +20,7 @@
 
 namespace AppserverIo\Appserver\WebSocketProtocol;
 
-use Guzzle\Http\Message\RequestInterface;
+use Guzzle\Http\Message\RequestInterface as GuzzleRequest;
 use AppserverIo\Psr\Application\ApplicationInterface;
 
 /**
@@ -32,7 +32,7 @@ use AppserverIo\Psr\Application\ApplicationInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-interface Request
+interface RequestInterface
 {
 
     /**
@@ -42,7 +42,7 @@ interface Request
      *
      * @return void
      */
-    public function injectRequest(RequestInterface $request);
+    public function injectRequest(GuzzleRequest $request);
 
     /**
      * Injects the request context that is the web application almost.

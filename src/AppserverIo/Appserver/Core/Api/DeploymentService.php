@@ -21,10 +21,8 @@
 namespace AppserverIo\Appserver\Core\Api;
 
 use AppserverIo\Psr\Application\ApplicationInterface;
-use AppserverIo\Appserver\Core\Api\AbstractService;
 use AppserverIo\Appserver\Core\Api\Node\ContextNode;
 use AppserverIo\Appserver\Core\Api\Node\DeploymentNode;
-use AppserverIo\Appserver\Core\Api\ServiceInterface;
 use AppserverIo\Appserver\Core\Interfaces\ContainerInterface;
 
 /**

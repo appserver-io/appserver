@@ -20,9 +20,7 @@
 
 namespace AppserverIo\Appserver\ServletEngine;
 
-use AppserverIo\Psr\Servlet\ServletContext;
-use AppserverIo\Psr\Servlet\ServletRequest;
-use AppserverIo\Psr\Servlet\ServletResponse;
+use AppserverIo\Psr\Servlet\ServletContextInterface;
 
 /**
  * The servlet resource locator implementation.
@@ -33,20 +31,20 @@ use AppserverIo\Psr\Servlet\ServletResponse;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class ServletLocator implements ResourceLocator
+class ServletLocator implements ResourceLocatorInterface
 {
 
     /**
      * Tries to locate the resource related with the request.
      *
-     * @param \AppserverIo\Psr\Servlet\ServletContext $servletContext The servlet context that handles the servlets
-     * @param string                                  $servletPath    The servlet path to return the servlet for
+     * @param \AppserverIo\Psr\Servlet\ServletContextInterface $servletContext The servlet context that handles the servlets
+     * @param string                                           $servletPath    The servlet path to return the servlet for
      *
-     * @return \AppserverIo\Psr\Servlet\Servlet The requested servlet
+     * @return \AppserverIo\Psr\Servlet\ServletInterface The requested servlet
      * @see \AppserverIo\Appserver\ServletEngine\ResourceLocator::locate()
      * @throws \AppserverIo\Appserver\ServletEngine\ServletNotFoundException Is thrown if no servlet can be found for the passed request
      */
-    public function locate(ServletContext $servletContext, $servletPath)
+    public function locate(ServletContextInterface $servletContext, $servletPath)
     {
 
         // iterate over all servlets and return the matching one

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\WebSocketProtocol\Handler
+ * AppserverIo\Appserver\WebSocketProtocol\HandlerInterface
  *
  * NOTICE OF LICENSE
  *
@@ -21,7 +21,6 @@
 namespace AppserverIo\Appserver\WebSocketProtocol;
 
 use Ratchet\MessageComponentInterface;
-use AppserverIo\Appserver\WebSocketProtocol\HandlerConfig;
 
 /**
  * Interface for all handlers.
@@ -32,37 +31,37 @@ use AppserverIo\Appserver\WebSocketProtocol\HandlerConfig;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-interface Handler extends MessageComponentInterface
+interface HandlerInterface extends MessageComponentInterface
 {
 
     /**
      * Initializes the handler with the passed configuration.
      *
-     * @param \AppserverIo\Appserver\WebSocketProtocol\HandlerConfig $config The configuration to initialize the handler with
+     * @param \AppserverIo\Appserver\WebSocketProtocol\HandlerConfigInterface $config The configuration to initialize the handler with
      *
      * @return void
      * @throws \AppserverIo\Appserver\WebSocketProtocol\HandlerException Is thrown if the configuration has errors
      */
-    public function init(HandlerConfig $config);
+    public function init(HandlerConfigInterface $config);
 
     /**
      * Returns the servlets configuration.
      *
-     * @return \AppserverIo\Appserver\WebSocketProtocol\HandlerConfig The handlers configuration
+     * @return \AppserverIo\Appserver\WebSocketProtocol\HandlerConfigInterface The handlers configuration
      */
     public function getHandlerConfig();
 
     /**
      * Returns the handler context instance
      *
-     * @return \AppserverIo\Appserver\WebSocketProtocol\HandlerContext The handler context instance
+     * @return \AppserverIo\Appserver\WebSocketProtocol\HandlerContextInterface The handler context instance
      */
     public function getHandlerContext();
 
     /**
      * Returns the request instance.
      *
-     * @return \AppserverIo\Appserver\WebSocketProtocol\Request The request instance
+     * @return \AppserverIo\Appserver\WebSocketProtocol\RequestInterface The request instance
      */
     public function getRequest();
 }

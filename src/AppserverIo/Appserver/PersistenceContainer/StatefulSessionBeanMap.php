@@ -26,8 +26,7 @@ use AppserverIo\Lang\Float;
 use AppserverIo\Lang\Integer;
 use AppserverIo\Lang\Boolean;
 use AppserverIo\Lang\NullPointerException;
-use AppserverIo\Collections\Map;
-use AppserverIo\Collections\AbstractMap;
+use AppserverIo\Collections\MapInterface;
 use AppserverIo\Collections\InvalidKeyException;
 use AppserverIo\Collections\IndexOutOfBoundsException;
 
@@ -40,7 +39,7 @@ use AppserverIo\Collections\IndexOutOfBoundsException;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class StatefulSessionBeanMap extends GenericStackable implements Map
+class StatefulSessionBeanMap extends GenericStackable implements MapInterface
 {
 
     /**
@@ -74,8 +73,8 @@ class StatefulSessionBeanMap extends GenericStackable implements Map
      * @param mixed   $object   The object to add to the instance
      * @param integer $lifetime The items lifetime
      *
-     * @return \AppserverIo\Collections\StatefulSessionBeanMap The instance
-     * @throws \AppserverIo\Collections\InvalidKeyException Is thrown if the passed key is NOT an primitve datatype
+     * @return null
+     * @throws \AppserverIo\Collections\InvalidKeyException Is thrown if the passed key is NOT an primitive datatype
      * @throws \AppserverIo\Lang\NullPointerException Is thrown if the passed key is null or not a flat datatype like Integer, String, Double or Boolean
      */
     public function add($key, $object, $lifetime = 0)
@@ -112,7 +111,7 @@ class StatefulSessionBeanMap extends GenericStackable implements Map
             } elseif (method_exists($key, '__toString')) {
                 $newKey = $key->__toString();
             } else {
-                throw new InvalidKeyException('Passed key has to be a primitve datatype or has to implement the __toString() method');
+                throw new InvalidKeyException('Passed key has to be a primitive datatype or has to implement the __toString() method');
             }
             // add the item and lifetime to the array
             $this->items[$newKey] = $object;
@@ -123,7 +122,7 @@ class StatefulSessionBeanMap extends GenericStackable implements Map
             // and return
             return;
         }
-        throw new InvalidKeyException('Passed key has to be a primitve datatype or has to implement the __toString() method');
+        throw new InvalidKeyException('Passed key has to be a primitive datatype or has to implement the __toString() method');
     }
 
     /**
@@ -134,7 +133,7 @@ class StatefulSessionBeanMap extends GenericStackable implements Map
      *
      * @return mixed The requested element
      * @throws \AppserverIo\Collections\InvalidKeyException Is thrown if the passed key is NOT an integer
-     * @throws \AppserverIo\Collections\NullPointerException Is thrown if the passed key OR value are NULL
+     * @throws \AppserverIo\Lang\NullPointerException Is thrown if the passed key OR value are NULL
      * @throws \AppserverIo\Collections\IndexOutOfBoundsException Is thrown if no element with the passed key exists in the Collection
      * @see \AppserverIo\Collections\Collection::get($key)
      */
@@ -171,7 +170,7 @@ class StatefulSessionBeanMap extends GenericStackable implements Map
             } elseif (method_exists($key, '__toString')) {
                 $newKey = $key->__toString();
             } else {
-                throw new InvalidKeyException('Passed key has to be a primitve datatype or has to implement the __toString() method');
+                throw new InvalidKeyException('Passed key has to be a primitive datatype or has to implement the __toString() method');
             }
             // return the value for the passed key, if it exists
             if (array_key_exists($newKey, $this->items) && !$this->isTimedOut($newKey)) {
@@ -185,7 +184,7 @@ class StatefulSessionBeanMap extends GenericStackable implements Map
                 throw new IndexOutOfBoundsException(sprintf('Index %s out of bounds', $newKey));
             }
         }
-        throw new InvalidKeyException('Passed key has to be a primitve datatype or has to implement the __toString() method');
+        throw new InvalidKeyException('Passed key has to be a primitive datatype or has to implement the __toString() method');
     }
 
     /**
@@ -198,7 +197,8 @@ class StatefulSessionBeanMap extends GenericStackable implements Map
      *
      * @return void
      * @throws \AppserverIo\Collections\InvalidKeyException Is thrown if the passed key is NOT an integer
-     * @throws \AppserverIo\Collections\NullPointerException Is thrown if the passed key is NULL
+     * @throws \AppserverIo\Lang\NullPointerException Is thrown if the passed key is NULL
+     * @throws \AppserverIo\Collections\IndexOutOfBoundsException Is thrown if no element with the passed key exists in the Collection
      */
     public function remove($key, callable $beforeRemove = null)
     {
@@ -238,7 +238,7 @@ class StatefulSessionBeanMap extends GenericStackable implements Map
             } elseif (method_exists($key, '__toString')) {
                 $newKey = $key->__toString();
             } else {
-                throw new InvalidKeyException('Passed key has to be a primitve datatype or ' . 'has to implement the __toString() method');
+                throw new InvalidKeyException('Passed key has to be a primitive datatype or ' . 'has to implement the __toString() method');
             }
             if (array_key_exists($newKey, $this->items)) {
                 // invoke the callback before
@@ -257,7 +257,7 @@ class StatefulSessionBeanMap extends GenericStackable implements Map
                 throw new IndexOutOfBoundsException('Index ' . $newKey . ' out of bounds');
             }
         }
-        throw new InvalidKeyException('Passed key has to be a primitve datatype or ' . 'has to implement the __toString() method');
+        throw new InvalidKeyException('Passed key has to be a primitive datatype or ' . 'has to implement the __toString() method');
     }
 
     /**
@@ -359,7 +359,7 @@ class StatefulSessionBeanMap extends GenericStackable implements Map
      *
      * @param array $array Holds the array with the values to add
      *
-     * @return \AppserverIo\Collections\Collection The instance
+     * @return \AppserverIo\Collections\CollectionInterface The instance
      */
     public function addAll($array)
     {

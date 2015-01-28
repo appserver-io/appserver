@@ -24,10 +24,10 @@ namespace AppserverIo\Appserver\MessageQueue;
 
 use AppserverIo\Appserver\Core\AbstractManager;
 use AppserverIo\Storage\GenericStackable;
-use AppserverIo\Psr\Pms\QueueContext;
-use AppserverIo\Psr\Pms\ResourceLocator;
-use AppserverIo\Psr\Pms\Queue;
-use AppserverIo\Psr\Pms\Message;
+use AppserverIo\Psr\Pms\QueueContextInterface;
+use AppserverIo\Psr\Pms\ResourceLocatorInterface;
+use AppserverIo\Psr\Pms\QueueInterface;
+use AppserverIo\Psr\Pms\MessageInterface;
 use AppserverIo\Psr\Naming\NamingException;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\Core\Api\InvalidConfigurationException;
@@ -45,10 +45,10 @@ use AppserverIo\Appserver\Core\Api\InvalidConfigurationException;
  *
  * @property \AppserverIo\Psr\Application\ApplicationInterface $application     The application to manage queues for
  * @property array                                             $directories     Our directories
- * @property \AppserverIo\Psr\Pms\ResourceLocator              $resourceLocator Locator for the requested queues
+ * @property \AppserverIo\Psr\Pms\ResourceLocatorInterface     $resourceLocator Locator for the requested queues
  * @property \AppserverIo\Storage\GenericStackable             $queues          Queues to manage
  */
-class QueueManager extends AbstractManager implements QueueContext
+class QueueManager extends AbstractManager implements QueueContextInterface
 {
 
     /**
@@ -66,11 +66,11 @@ class QueueManager extends AbstractManager implements QueueContext
     /**
      * Injects the resource locator that locates the requested queue.
      *
-     * @param \AppserverIo\Psr\Pms\ResourceLocator $resourceLocator The resource locator
+     * @param \AppserverIo\Psr\Pms\ResourceLocatorInterface $resourceLocator The resource locator
      *
      * @return void
      */
-    public function injectResourceLocator(ResourceLocator $resourceLocator)
+    public function injectResourceLocator(ResourceLocatorInterface $resourceLocator)
     {
         $this->resourceLocator = $resourceLocator;
     }
@@ -154,7 +154,7 @@ class QueueManager extends AbstractManager implements QueueContext
                     // register destination and receiver type
                     $this->queues[$instance->getName()] = $instance;
 
-                    // prepare the naming diretory to bind the callbak to
+                    // prepare the naming directory to bind the callback to
                     $path = explode('/', $destination);
 
                     for ($i = 0; $i < sizeof($path) - 1; $i++) {
@@ -193,7 +193,7 @@ class QueueManager extends AbstractManager implements QueueContext
     /**
      * Return the resource locator instance.
      *
-     * @return \AppserverIo\Psr\Pms\ResourceLocator The resource locator instance
+     * @return \AppserverIo\Psr\Pms\ResourceLocatorInterface The resource locator instance
      */
     public function getResourceLocator()
     {
@@ -204,11 +204,11 @@ class QueueManager extends AbstractManager implements QueueContext
      * Returns TRUE if the application is related with the
      * passed queue instance.
      *
-     * @param \AppserverIo\Psr\Pms\Queue $queue The queue the application has to be related to
+     * @param \AppserverIo\Psr\Pms\QueueInterface $queue The queue the application has to be related to
      *
      * @return boolean TRUE if the application is related, else FALSE
      */
-    public function hasQueue(Queue $queue)
+    public function hasQueue(QueueInterface $queue)
     {
         return array_key_exists($queue->getName(), $this->getQueues());
     }
@@ -217,11 +217,11 @@ class QueueManager extends AbstractManager implements QueueContext
      * Tries to locate the queue that handles the request and returns the instance
      * if one can be found.
      *
-     * @param \AppserverIo\Psr\Pms\Queue $queue The queue request
+     * @param \AppserverIo\Psr\Pms\QueueInterface $queue The queue request
      *
-     * @return \AppserverIo\Psr\Pms\Queue The requested queue instance
+     * @return \AppserverIo\Psr\Pms\QueueInterface The requested queue instance
      */
-    public function locate(Queue $queue)
+    public function locate(QueueInterface $queue)
     {
         return $this->getResourceLocator()->locate($this, $queue);
     }
@@ -234,7 +234,7 @@ class QueueManager extends AbstractManager implements QueueContext
      * @param string $sessionId  The session ID
      * @param array  $args       The arguments passed to the queue
      *
-     * @return \AppserverIo\Psr\Pms\Queue The requested queue instance
+     * @return \AppserverIo\Psr\Pms\QueueInterface The requested queue instance
      * @todo Still to implement
      */
     public function lookup($lookupName, $sessionId = null, array $args = array())
@@ -266,11 +266,11 @@ class QueueManager extends AbstractManager implements QueueContext
     /**
      * Updates the message monitor.
      *
-     * @param \AppserverIo\Psr\Pms\Message $message The message to update the monitor for
+     * @param \AppserverIo\Psr\Pms\MessageInterface $message The message to update the monitor for
      *
      * @return void
      */
-    public function updateMonitor(Message $message)
+    public function updateMonitor(MessageInterface $message)
     {
         error_log('Update message monitor for message: ' . spl_object_hash($message));
     }
@@ -283,6 +283,6 @@ class QueueManager extends AbstractManager implements QueueContext
      */
     public function getIdentifier()
     {
-        return QueueContext::IDENTIFIER;
+        return QueueContextInterface::IDENTIFIER;
     }
 }

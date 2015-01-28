@@ -20,9 +20,6 @@
 
 namespace AppserverIo\Appserver\Core\Interfaces;
 
-use AppserverIo\Psr\Application\ApplicationInterface;
-use AppserverIo\Appserver\Core\Api\Node\ClassLoaderNodeInterface;
-
 /**
  * Interface for all class loaders that can be registered in the application server.
  *

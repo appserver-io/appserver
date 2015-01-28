@@ -21,8 +21,8 @@
 namespace AppserverIo\Appserver\ServletEngine;
 
 use AppserverIo\Http\HttpCookie;
-use AppserverIo\Psr\Servlet\ServletSession;
-use AppserverIo\Psr\Servlet\ServletContext;
+use AppserverIo\Psr\Servlet\ServletSessionInterface;
+use AppserverIo\Psr\Servlet\ServletContextInterface;
 use AppserverIo\Storage\GenericStackable;
 
 /**
@@ -33,10 +33,10 @@ use AppserverIo\Storage\GenericStackable;
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
- * @link       http://php.net/session
- * @link       http://php.net/setcookie
+ * @link      http://php.net/session
+ * @link      http://php.net/setcookie
  */
-class DefaultSessionSettings extends GenericStackable implements SessionSettings
+class DefaultSessionSettings extends GenericStackable implements SessionSettingsInterface
 {
 
     /**
@@ -337,56 +337,56 @@ class DefaultSessionSettings extends GenericStackable implements SessionSettings
     /**
      * Merges the values of the passed settings into this instance and overwrites the one of this instance.
      *
-     * @param \AppserverIo\Psr\ServletContext\ServletContext $context The context we want to merge the session settings from
+     * @param \AppserverIo\Psr\Servlet\ServletContextInterface $context The context we want to merge the session settings from
      *
      * @return void
      */
-    public function mergeServletContext(ServletContext $context)
+    public function mergeServletContext(ServletContextInterface $context)
     {
 
         // check if the context has his own session parameters
         if ($context->hasSessionParameters() === true) {
-            if (($garbageCollectionProbability = $context->getSessionParameter(ServletSession::GARBAGE_COLLECTION_PROBABILITY)) != null) {
+            if (($garbageCollectionProbability = $context->getSessionParameter(ServletSessionInterface::GARBAGE_COLLECTION_PROBABILITY)) != null) {
                 $this->setGarbageCollectionProbability((float) $garbageCollectionProbability);
             }
 
-            if (($sessionName = $context->getSessionParameter(ServletSession::SESSION_NAME)) != null) {
+            if (($sessionName = $context->getSessionParameter(ServletSessionInterface::SESSION_NAME)) != null) {
                 $this->setSessionName($sessionName);
             }
 
-            if (($sessionFilePrefix = $context->getSessionParameter(ServletSession::SESSION_FILE_PREFIX)) != null) {
+            if (($sessionFilePrefix = $context->getSessionParameter(ServletSessionInterface::SESSION_FILE_PREFIX)) != null) {
                 $this->setSessionFilePrefix($sessionFilePrefix);
             }
 
-            if (($sessionSavePath = $context->getSessionParameter(ServletSession::SESSION_SAVE_PATH)) != null) {
+            if (($sessionSavePath = $context->getSessionParameter(ServletSessionInterface::SESSION_SAVE_PATH)) != null) {
                 $this->setSessionSavePath($sessionSavePath);
             }
 
-            if (($sessionMaximumAge = $context->getSessionParameter(ServletSession::SESSION_MAXIMUM_AGE)) != null) {
+            if (($sessionMaximumAge = $context->getSessionParameter(ServletSessionInterface::SESSION_MAXIMUM_AGE)) != null) {
                 $this->setSessionMaximumAge((integer) $sessionMaximumAge);
             }
 
-            if (($sessionInactivityTimeout = $context->getSessionParameter(ServletSession::SESSION_INACTIVITY_TIMEOUT)) != null) {
+            if (($sessionInactivityTimeout = $context->getSessionParameter(ServletSessionInterface::SESSION_INACTIVITY_TIMEOUT)) != null) {
                 $this->setInactivityTimeout((integer) $sessionInactivityTimeout);
             }
 
-            if (($sessionCookieLifetime = $context->getSessionParameter(ServletSession::SESSION_COOKIE_LIFETIME)) != null) {
+            if (($sessionCookieLifetime = $context->getSessionParameter(ServletSessionInterface::SESSION_COOKIE_LIFETIME)) != null) {
                 $this->setSessionCookieLifetime((integer) $sessionCookieLifetime);
             }
 
-            if (($sessionCookieDomain = $context->getSessionParameter(ServletSession::SESSION_COOKIE_DOMAIN)) != null) {
+            if (($sessionCookieDomain = $context->getSessionParameter(ServletSessionInterface::SESSION_COOKIE_DOMAIN)) != null) {
                 $this->setSessionCookieDomain($sessionCookieDomain);
             }
 
-            if (($sessionCookiePath = $context->getSessionParameter(ServletSession::SESSION_COOKIE_PATH)) != null) {
+            if (($sessionCookiePath = $context->getSessionParameter(ServletSessionInterface::SESSION_COOKIE_PATH)) != null) {
                 $this->setSessionCookiePath($sessionCookiePath);
             }
 
-            if (($sessionCookieSecure = $context->getSessionParameter(ServletSession::SESSION_COOKIE_SECURE)) != null) {
+            if (($sessionCookieSecure = $context->getSessionParameter(ServletSessionInterface::SESSION_COOKIE_SECURE)) != null) {
                 $this->setSessionCookieSecure((boolean) $sessionCookieSecure);
             }
 
-            if (($sessionCookieHttpOnly = $context->getSessionParameter(ServletSession::SESSION_COOKIE_HTTP_ONLY)) != null) {
+            if (($sessionCookieHttpOnly = $context->getSessionParameter(ServletSessionInterface::SESSION_COOKIE_HTTP_ONLY)) != null) {
                 $this->setSessionCookieHttpOnly((boolean) $sessionCookieHttpOnly);
             }
         }

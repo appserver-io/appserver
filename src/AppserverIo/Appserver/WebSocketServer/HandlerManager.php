@@ -21,13 +21,10 @@
 namespace AppserverIo\Appserver\WebSocketServer;
 
 use AppserverIo\Appserver\Core\AbstractManager;
-use AppserverIo\Appserver\Core\Api\ConfigurationService;
-use Ratchet\MessageComponentInterface;
 use AppserverIo\Storage\GenericStackable;
-use AppserverIo\Storage\StackableStorage;
-use AppserverIo\Appserver\WebSocketProtocol\Request;
-use AppserverIo\Appserver\WebSocketProtocol\Handler;
-use AppserverIo\Appserver\WebSocketProtocol\HandlerContext;
+use AppserverIo\Appserver\WebSocketProtocol\RequestInterface;
+use AppserverIo\Appserver\WebSocketProtocol\HandlerInterface;
+use AppserverIo\Appserver\WebSocketProtocol\HandlerContextInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 
@@ -45,7 +42,7 @@ use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
  * @property \AppserverIo\Storage\GenericStackable                           $handlers        An storage for the web socket handlers
  * @property \AppserverIo\Storage\GenericStackable                           $initParameters  An storage for the initialization parameters
  */
-class HandlerManager extends AbstractManager implements HandlerContext
+class HandlerManager extends AbstractManager implements HandlerContextInterface
 {
 
     /**
@@ -56,7 +53,7 @@ class HandlerManager extends AbstractManager implements HandlerContext
         // initialize the member variables
         $this->handlerLocator = null;
 
-        // initialize the stackabls
+        // initialize the stackables
         $this->handlers = new GenericStackable();
         $this->handlerMappings = new GenericStackable();
         $this->initParameters = new GenericStackable();
@@ -230,12 +227,12 @@ class HandlerManager extends AbstractManager implements HandlerContext
     /**
      * Registers a handler under the passed key.
      *
-     * @param string                                           $key     The key to register with the handler with
-     * @param \AppserverIo\Appserver\WebSocketProtocol\Handler $handler The handler to be registered
+     * @param string                                                    $key     The key to register with the handler with
+     * @param \AppserverIo\Appserver\WebSocketProtocol\HandlerInterface $handler The handler to be registered
      *
      * @return void
      */
-    public function addHandler($key, Handler $handler)
+    public function addHandler($key, HandlerInterface $handler)
     {
         $this->handlers[$key] = $handler;
     }
@@ -256,7 +253,7 @@ class HandlerManager extends AbstractManager implements HandlerContext
      *
      * @param string $key The name of the handler to return
      *
-     * @return \AppserverIo\Appserver\WebSocketProtocol\Handler The handler instance
+     * @return \AppserverIo\Appserver\WebSocketProtocol\HandlerInterface The handler instance
      */
     public function getHandler($key)
     {
@@ -305,12 +302,12 @@ class HandlerManager extends AbstractManager implements HandlerContext
     /**
      * Tries to locate the handler that handles the request and returns the instance if one can be found.
      *
-     * @param \AppserverIo\Appserver\\WebSocketProtocol\Request $request The request instance
+     * @param \AppserverIo\Appserver\WebSocketProtocol\RequestInterface $request The request instance
      *
      * @return \Ratchet\MessageComponentInterface The handler that maps the request instance
      * @see \AppserverIo\Appserver\WebSocketServer\Service\Locator\ResourceLocatorInterface::locate()
      */
-    public function locate(Request $request)
+    public function locate(RequestInterface $request)
     {
         return $this->getHandlerLocator()->locate($this, $request);
     }
@@ -323,7 +320,7 @@ class HandlerManager extends AbstractManager implements HandlerContext
      */
     public function getIdentifier()
     {
-        return HandlerContext::IDENTIFIER;
+        return HandlerContextInterface::IDENTIFIER;
     }
 
     /**

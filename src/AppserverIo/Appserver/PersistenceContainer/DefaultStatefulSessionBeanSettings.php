@@ -20,9 +20,6 @@
 
 namespace AppserverIo\Appserver\PersistenceContainer;
 
-use AppserverIo\Http\HttpCookie;
-use AppserverIo\Psr\Servlet\ServletSession;
-use AppserverIo\Psr\Servlet\ServletContext;
 use AppserverIo\Storage\GenericStackable;
 
 /**
@@ -34,7 +31,7 @@ use AppserverIo\Storage\GenericStackable;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class DefaultStatefulSessionBeanSettings extends GenericStackable implements StatefulSessionBeanSettings
+class DefaultStatefulSessionBeanSettings extends GenericStackable implements StatefulSessionBeanSettingsInterface
 {
 
     /**
@@ -45,7 +42,7 @@ class DefaultStatefulSessionBeanSettings extends GenericStackable implements Sta
     const DEFAULT_LIFETIME = 1440;
 
     /**
-     * The default probaility the garbage collection will be invoked.
+     * The default probability the garbage collection will be invoked.
      *
      * @var string
      */

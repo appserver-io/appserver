@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * AppserverIo\Appserver\Core\StackableStructureMap
+ *
  * NOTICE OF LICENSE
  *
  * This source file is subject to the Open Software License (OSL 3.0)
@@ -22,8 +24,6 @@ use AppserverIo\Doppelgaenger\Config;
 use AppserverIo\Doppelgaenger\StructureMap;
 
 /**
- * AppserverIo\Appserver\Core\StructureMap
- *
  * This class wraps Doppelgaenger's StructureMap class to make it possible to have the map stored
  * as a Stackable object. This is needed for inter-thread sharing of the structure map.
  *

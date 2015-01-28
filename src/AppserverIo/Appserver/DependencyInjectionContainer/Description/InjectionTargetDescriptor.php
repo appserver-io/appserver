@@ -21,11 +21,12 @@
 namespace AppserverIo\Appserver\DependencyInjectionContainer\Description;
 
 use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\InjectionTargetDescriptorInterface;
+use AppserverIo\Lang\Reflection\ClassInterface;
 use AppserverIo\Lang\Reflection\MethodInterface;
 use AppserverIo\Lang\Reflection\PropertyInterface;
 
 /**
- * Utility classe that stores a beans injection target configuration.
+ * Utility class that stores a beans injection target configuration.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>

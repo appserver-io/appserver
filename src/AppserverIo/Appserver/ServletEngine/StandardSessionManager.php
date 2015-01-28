@@ -19,14 +19,7 @@
  */
 namespace AppserverIo\Appserver\ServletEngine;
 
-use AppserverIo\Psr\Servlet\ServletSession;
-use AppserverIo\Psr\Servlet\ServletContext;
-use AppserverIo\Psr\Servlet\Http\HttpSession;
-use AppserverIo\Psr\Servlet\Http\HttpServletRequest;
-use AppserverIo\Appserver\ServletEngine\Http\Session;
-use AppserverIo\Appserver\ServletEngine\SessionSettings;
-use AppserverIo\Storage\StorageInterface;
-use AppserverIo\Storage\StackableStorage;
+use AppserverIo\Psr\Servlet\ServletSessionInterface;
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Psr\Application\ApplicationInterface;
 
@@ -40,7 +33,7 @@ use AppserverIo\Psr\Application\ApplicationInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class StandardSessionManager extends GenericStackable implements SessionManager
+class StandardSessionManager extends GenericStackable implements SessionManagerInterface
 {
 
     /**
@@ -70,7 +63,7 @@ class StandardSessionManager extends GenericStackable implements SessionManager
     /**
      * Injects the session settings.
      *
-     * @param \AppserverIo\Appserver\ServletEngine\SessionSettings $sessionSettings Settings for the session handling
+     * @param \AppserverIo\Appserver\ServletEngine\SessionSettingsInterface $sessionSettings Settings for the session handling
      *
      * @return void
      */
@@ -82,11 +75,11 @@ class StandardSessionManager extends GenericStackable implements SessionManager
     /**
      * Injects the persistence manager.
      *
-     * @param \AppserverIo\Appserver\ServletEngine\PersistenceManager $persistenceManager The persistence manager
+     * @param \AppserverIo\Appserver\ServletEngine\PersistenceManagerInterface $persistenceManager The persistence manager
      *
      * @return void
      */
-    public function injectPersistenceManager(PersistenceManager $persistenceManager)
+    public function injectPersistenceManager(PersistenceManagerInterface $persistenceManager)
     {
         $this->persistenceManager = $persistenceManager;
     }
@@ -94,11 +87,11 @@ class StandardSessionManager extends GenericStackable implements SessionManager
     /**
      * Injects the garbage collector.
      *
-     * @param \AppserverIo\Appserver\ServletEngine\GarbageCollector $garbageCollector The garbage collector
+     * @param \AppserverIo\Appserver\ServletEngine\GarbageCollectorInterface $garbageCollector The garbage collector
      *
      * @return void
      */
-    public function injectGarbageCollector(GarbageCollector $garbageCollector)
+    public function injectGarbageCollector(GarbageCollectorInterface $garbageCollector)
     {
         $this->garbageCollector = $garbageCollector;
     }
@@ -115,7 +108,7 @@ class StandardSessionManager extends GenericStackable implements SessionManager
     {
 
         // load the servlet manager with the session settings configured in web.xml
-        $servletManager = $application->search('ServletContext');
+        $servletManager = $application->search('ServletContextInterface');
 
         // load the settings, set the default session save path
         $sessionSettings = $this->getSessionSettings();
@@ -145,7 +138,7 @@ class StandardSessionManager extends GenericStackable implements SessionManager
     /**
      * Returns the session settings.
      *
-     * @return \AppserverIo\Appserver\ServletEngine\SessionSettings The session settings
+     * @return \AppserverIo\Appserver\ServletEngine\SessionSettingsInterface The session settings
      */
     public function getSessionSettings()
     {
@@ -185,7 +178,7 @@ class StandardSessionManager extends GenericStackable implements SessionManager
     /**
      * Returns the garbage collector instance.
      *
-     * @return \AppserverIo\Appserver\ServletEngine\GarbageCollector The garbage collector instance
+     * @return \AppserverIo\Appserver\ServletEngine\GarbageCollectorInterface The garbage collector instance
      */
     public function getGarbageCollector()
     {
@@ -195,7 +188,7 @@ class StandardSessionManager extends GenericStackable implements SessionManager
     /**
      * Returns the servlet manager instance.
      *
-     * @return \AppserverIo\Psr\Servlet\ServletContext The servlet manager instance
+     * @return \AppserverIo\Psr\Servlet\ServletContextInterface The servlet manager instance
      */
     public function getServletManager()
     {
@@ -205,16 +198,16 @@ class StandardSessionManager extends GenericStackable implements SessionManager
     /**
      * Creates a new session with the passed session ID and session name if given.
      *
-     * @param mixed            $id         The session ID
-     * @param string           $name       The session name
-     * @param integer|DateTime $lifetime   Date and time after the session expires
-     * @param integer|null     $maximumAge Number of seconds until the session expires
-     * @param string|null      $domain     The host to which the user agent will send this cookie
-     * @param string           $path       The path describing the scope of this cookie
-     * @param boolean          $secure     If this cookie should only be sent through a "secure" channel by the user agent
-     * @param boolean          $httpOnly   If this cookie should only be used through the HTTP protocol
+     * @param mixed             $id         The session ID
+     * @param string            $name       The session name
+     * @param integer|\DateTime $lifetime   Date and time after the session expires
+     * @param integer|null      $maximumAge Number of seconds until the session expires
+     * @param string|null       $domain     The host to which the user agent will send this cookie
+     * @param string            $path       The path describing the scope of this cookie
+     * @param boolean           $secure     If this cookie should only be sent through a "secure" channel by the user agent
+     * @param boolean           $httpOnly   If this cookie should only be used through the HTTP protocol
      *
-     * @return \AppserverIo\Psr\Servlet\ServletSession The requested session
+     * @return \AppserverIo\Psr\Servlet\ServletSessionInterface The requested session
      */
     public function create($id, $name, $lifetime = null, $maximumAge = null, $domain = null, $path = null, $secure = null, $httpOnly = null)
     {
@@ -266,15 +259,15 @@ class StandardSessionManager extends GenericStackable implements SessionManager
     }
 
     /**
-     * Attachs the passed session to the manager and returns the instance.
+     * Attaches the passed session to the manager and returns the instance.
      * If a session
      * with the session identifier already exists, it will be overwritten.
      *
-     * @param \AppserverIo\Psr\Servlet\ServletSession $session The session to attach
+     * @param \AppserverIo\Psr\Servlet\ServletSessionInterface $session The session to attach
      *
      * @return void
      */
-    public function attach(ServletSession $session)
+    public function attach(ServletSessionInterface $session)
     {
 
         // load session ID
@@ -294,12 +287,12 @@ class StandardSessionManager extends GenericStackable implements SessionManager
      *
      * @param string $id The unique session ID to that has to be returned
      *
-     * @return \AppserverIo\Psr\Servlet\HttpSession The requested session
+     * @return \AppserverIo\Psr\Servlet\Http\HttpSessionInterface The requested session
      */
     public function find($id)
     {
 
-        // check if the session has already been loaded, if not try to unpersist it
+        // check if the session has already been loaded, if not try to un-persist it
         $this->getPersistenceManager()->unpersist($id);
 
         // load the session with the passed ID

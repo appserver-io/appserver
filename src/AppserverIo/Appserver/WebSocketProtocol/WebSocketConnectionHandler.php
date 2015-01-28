@@ -23,18 +23,17 @@
 namespace AppserverIo\Appserver\WebSocketProtocol;
 
 use Ratchet\Http\HttpRequestParser;
-use Ratchet\WebSocket\WsServer;
 use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;
 use Ratchet\WebSocket\Version;
 use Ratchet\WebSocket\Encoding\ToggleableValidator;
 use Ratchet\WebSocket\VersionManager;
 use Ratchet\WebSocket\Version\RFC6455;
-use Ratchet\WebSocket\Version\HyBi10;
 use Ratchet\WebSocket\Version\Hixie76;
 use Guzzle\Http\Message\Response;
 use Guzzle\Http\Message\RequestInterface;
 use AppserverIo\Server\Interfaces\ServerContextInterface;
+use Ratchet\WebSocket\WsServerInterface;
 
 /**
  * The adapter to handle WebSocket requests/responses.
@@ -298,7 +297,7 @@ class WebSocketConnectionHandler implements MessageComponentInterface
         $application->registerClassLoaders();
 
         // load the handler
-        $handler = $application->getManager(HandlerContext::IDENTIFIER)->locate($request);
+        $handler = $application->getManager(HandlerContextInterface::IDENTIFIER)->locate($request);
         $handler->injectRequest($request);
 
         // return the initialized handler instance
@@ -354,7 +353,7 @@ class WebSocketConnectionHandler implements MessageComponentInterface
             $decor = $this->connections[$conn];
             $this->connections->detach($conn);
             foreach ($this->applications as $application) {
-                foreach ($application->getManager(HandlerContext::IDENTIFIER)->getHandlers() as $handler) {
+                foreach ($application->getManager(HandlerContextInterface::IDENTIFIER)->getHandlers() as $handler) {
                     $handler->onClose($decor);
                 }
             }
@@ -374,7 +373,7 @@ class WebSocketConnectionHandler implements MessageComponentInterface
     {
         if ($conn->WebSocket->established) {
             foreach ($this->applications as $application) {
-                foreach ($application->getManager(HandlerContext::IDENTIFIER)->getHandlers() as $handler) {
+                foreach ($application->getManager(HandlerContextInterface::IDENTIFIER)->getHandlers() as $handler) {
                     $handler->onError($this->connections[$conn], $e);
                 }
             }
@@ -421,7 +420,7 @@ class WebSocketConnectionHandler implements MessageComponentInterface
     {
         if ($this->isSpGenerated === false) {
             foreach ($this->applications as $application) {
-                foreach ($application->getManager(HandlerContext::IDENTIFIER)->getHandlers() as $handler) {
+                foreach ($application->getManager(HandlerContextInterface::IDENTIFIER)->getHandlers() as $handler) {
                     if ($this->_decorating instanceof WsServerInterface) {
                         $this->acceptedSubProtocols = array_merge($this->acceptedSubProtocols, array_flip($handler->getSubProtocols()));
                     }

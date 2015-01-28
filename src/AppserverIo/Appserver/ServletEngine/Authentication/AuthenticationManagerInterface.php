@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\Authentication\AuthenticationManager
+ * AppserverIo\Appserver\ServletEngine\Authentication\AuthenticationManagerInterface
  *
  * NOTICE OF LICENSE
  *
@@ -20,8 +20,8 @@
 
 namespace AppserverIo\Appserver\ServletEngine\Authentication;
 
-use AppserverIo\Psr\Servlet\ServletRequest;
-use AppserverIo\Psr\Servlet\ServletResponse;
+use AppserverIo\Psr\Servlet\ServletRequestInterface;
+use AppserverIo\Psr\Servlet\ServletResponseInterface;
 use AppserverIo\Psr\Application\ManagerInterface;
 
 /**
@@ -33,7 +33,7 @@ use AppserverIo\Psr\Application\ManagerInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-interface AuthenticationManager extends ManagerInterface
+interface AuthenticationManagerInterface extends ManagerInterface
 {
 
     /**
@@ -41,15 +41,15 @@ interface AuthenticationManager extends ManagerInterface
      *
      * @var string
      */
-    const IDENTIFIER = 'AuthenticationManager';
+    const IDENTIFIER = 'AuthenticationManagerInterface';
 
     /**
      * Handles request in order to authenticate.
      *
-     * @param \AppserverIo\Psr\Servlet\ServletRequest  $servletRequest  The request instance
-     * @param \AppserverIo\Psr\Servlet\ServletResponse $servletResponse The response instance
+     * @param \AppserverIo\Psr\Servlet\ServletRequestInterface  $servletRequest  The request instance
+     * @param \AppserverIo\Psr\Servlet\ServletResponseInterface $servletResponse The response instance
      *
-     * @return boolean TRUE if the authentication has been successfull, else FALSE
+     * @return boolean TRUE if the authentication has been successful, else FALSE
      */
-    public function handleRequest(ServletRequest $servletRequest, ServletResponse $servletResponse);
+    public function handleRequest(ServletRequestInterface $servletRequest, ServletResponseInterface $servletResponse);
 }

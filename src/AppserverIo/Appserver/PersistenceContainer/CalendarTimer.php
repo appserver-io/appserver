@@ -19,11 +19,7 @@
 
 namespace AppserverIo\Appserver\PersistenceContainer;
 
-use AppserverIo\Microcron\CronExpression;
-use AppserverIo\Psr\EnterpriseBeans\TimerInterface;
 use AppserverIo\Psr\EnterpriseBeans\ScheduleExpression;
-use AppserverIo\Psr\EnterpriseBeans\NoMoreTimeoutsException;
-use AppserverIo\Psr\EnterpriseBeans\NoSuchObjectLocalException;
 use AppserverIo\Psr\EnterpriseBeans\TimerServiceInterface;
 use AppserverIo\Appserver\PersistenceContainer\Tasks\CalendarTimerTask;
 use AppserverIo\Psr\Application\ApplicationInterface;
@@ -125,7 +121,7 @@ class CalendarTimer extends Timer
     /**
      * Returns the calendar base timeout instance.
      *
-     * @return \AppserverIo\Appserver\PersistenceContainer\CalendarBaseTimeout The calendar timeout instance
+     * @return \AppserverIo\Appserver\PersistenceContainer\CalendarBasedTimeout The calendar timeout instance
      */
     public function getCalendarTimeout()
     {
@@ -180,7 +176,7 @@ class CalendarTimer extends Timer
      *
      * @param \AppserverIo\Psr\Application\ApplicationInterface $application The application instance
      *
-     * @return \AppserverIo\Appserver\PersistenceContainer\CalendarTimerTask The task
+     * @return \AppserverIo\Appserver\PersistenceContainer\Tasks\CalendarTimerTask The task
      */
     protected function getTimerTask(ApplicationInterface $application)
     {
@@ -190,7 +186,7 @@ class CalendarTimer extends Timer
     /**
      * Instanciates a new builder that creates a timer instance.
      *
-     *  @return \AppserverIo\Appserver\PersistenceContainer\CalenderTimerBuilder The builder instance
+     *  @return \AppserverIo\Appserver\PersistenceContainer\CalendarTimerBuilder The builder instance
      */
     public static function builder()
     {

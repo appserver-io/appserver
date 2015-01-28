@@ -21,7 +21,7 @@
 namespace AppserverIo\Appserver\WebSocketServer;
 
 /**
- * Is thrown if a failure occured when parsing the web applications deployment descriptor.
+ * Is thrown if a failure occurred when parsing the web applications deployment descriptor.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>

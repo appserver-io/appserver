@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\WebSocketProtocol\HandlerConfig
+ * AppserverIo\Appserver\PersistenceContainer\StatefulSessionBeanSettingsInterface
  *
  * NOTICE OF LICENSE
  *
@@ -18,10 +18,10 @@
  * @link      http://www.appserver.io
  */
 
-namespace AppserverIo\Appserver\WebSocketProtocol;
+namespace AppserverIo\Appserver\PersistenceContainer;
 
 /**
- * Interface for the handler configuration.
+ * Interface for the stateful session bean settings.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -29,27 +29,20 @@ namespace AppserverIo\Appserver\WebSocketProtocol;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-interface HandlerConfig
+interface StatefulSessionBeanSettingsInterface
 {
 
     /**
-     * Returns the handlers name from the handler.xml configuration file.
+     * Returns the number of seconds for a stateful session bean lifetime.
      *
-     * @return string The handler name
+     * @return integer The stateful session bean lifetime
      */
-    public function getHandlerName();
+    public function getLifetime();
 
     /**
-     * Returns the handler context instance.
+     * Returns the probability the garbage collector will be invoked on the session.
      *
-     * @return \AppserverIo\Appserver\WebSocketProtocol\HandlerContext The handler context instance
+     * @return float The garbage collector probability
      */
-    public function getHandlerContext();
-
-    /**
-     * Returns the webapp base path.
-     *
-     * @return string The webapp base path
-     */
-    public function getWebappPath();
+    public function getGarbageCollectionProbability();
 }

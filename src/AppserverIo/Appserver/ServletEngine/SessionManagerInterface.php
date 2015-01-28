@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\SessionManager
+ * AppserverIo\Appserver\ServletEngine\SessionManagerInterface
  *
  * NOTICE OF LICENSE
  *
@@ -20,8 +20,7 @@
 
 namespace AppserverIo\Appserver\ServletEngine;
 
-use AppserverIo\Psr\Servlet\ServletSession;
-use AppserverIo\Appserver\ServletEngine\SessionSettings;
+use AppserverIo\Psr\Servlet\ServletSessionInterface;
 use AppserverIo\Psr\Application\ManagerInterface;
 
 /**
@@ -33,7 +32,7 @@ use AppserverIo\Psr\Application\ManagerInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-interface SessionManager extends ManagerInterface
+interface SessionManagerInterface extends ManagerInterface
 {
 
     /**
@@ -41,21 +40,21 @@ interface SessionManager extends ManagerInterface
      *
      * @var string
      */
-    const IDENTIFIER = 'SessionManager';
+    const IDENTIFIER = 'SessionManagerInterface';
 
     /**
      * Creates a new session with the passed session ID and session name if give.
      *
-     * @param mixed            $id         The session ID
-     * @param string           $name       The session name
-     * @param integer|DateTime $lifetime   Date and time after the session expires
-     * @param integer|null     $maximumAge Number of seconds until the session expires
-     * @param string|null      $domain     The host to which the user agent will send this cookie
-     * @param string           $path       The path describing the scope of this cookie
-     * @param boolean          $secure     If this cookie should only be sent through a "secure" channel by the user agent
-     * @param boolean          $httpOnly   If this cookie should only be used through the HTTP protocol
+     * @param mixed             $id         The session ID
+     * @param string            $name       The session name
+     * @param integer|\DateTime $lifetime   Date and time after the session expires
+     * @param integer|null      $maximumAge Number of seconds until the session expires
+     * @param string|null       $domain     The host to which the user agent will send this cookie
+     * @param string            $path       The path describing the scope of this cookie
+     * @param boolean           $secure     If this cookie should only be sent through a "secure" channel by the user agent
+     * @param boolean           $httpOnly   If this cookie should only be used through the HTTP protocol
      *
-     * @return \AppserverIo\Psr\Servlet\ServletSession The requested session
+     * @return \AppserverIo\Psr\Servlet\ServletSessionInterface The requested session
      */
     public function create($id, $name, $lifetime = null, $maximumAge = null, $domain = null, $path = null, $secure = null, $httpOnly = null);
 
@@ -63,11 +62,11 @@ interface SessionManager extends ManagerInterface
      * Attachs the passed session to the manager and returns the instance. If a session
      * with the session identifier already exists, it will be overwritten.
      *
-     * @param \AppserverIo\Psr\Servlet\ServletSession $session The session to attach
+     * @param \AppserverIo\Psr\Servlet\ServletSessionInterface $session The session to attach
      *
      * @return void
      */
-    public function attach(ServletSession $session);
+    public function attach(ServletSessionInterface $session);
 
     /**
      * Tries to find a session for the given request. The session id will be
@@ -78,21 +77,21 @@ interface SessionManager extends ManagerInterface
      *
      * @param string $id The unique session ID to that has to be returned
      *
-     * @return \AppserverIo\Psr\Servlet\HttpSession The requested session
+     * @return \AppserverIo\Psr\Servlet\Http\HttpSessionInterface The requested session
      */
     public function find($id);
 
     /**
      * Returns the session settings.
      *
-     * @return \AppserverIo\Appserver\ServletEngine\SessionSettings The session settings
+     * @return \AppserverIo\Appserver\ServletEngine\SessionSettingsInterface The session settings
      */
     public function getSessionSettings();
 
     /**
      * Returns the session settings.
      *
-     * @return \AppserverIo\Appserver\ServletEngine\SessionSettings The session settings
+     * @return \AppserverIo\Appserver\ServletEngine\SessionSettingsInterface The session settings
      */
     public function getSessions();
 
@@ -120,7 +119,7 @@ interface SessionManager extends ManagerInterface
     /**
      * Returns the garbage collector instance.
      *
-     * @return \AppserverIo\Appserver\ServletEngine\GarbageCollector The garbage collector instance
+     * @return \AppserverIo\Appserver\ServletEngine\GarbageCollectorInterface The garbage collector instance
      */
     public function getGarbageCollector();
 }

@@ -20,12 +20,11 @@
 
 namespace AppserverIo\Appserver\Core;
 
-use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\Core\InitialContext;
 use AppserverIo\Appserver\Core\Interfaces\DeploymentInterface;
 
 /**
- * Abstrace deployment implementation.
+ * Abstract deployment implementation.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>

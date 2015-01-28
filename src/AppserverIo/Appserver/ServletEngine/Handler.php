@@ -21,7 +21,6 @@
 namespace AppserverIo\Appserver\ServletEngine;
 
 use AppserverIo\Storage\GenericStackable;
-use AppserverIo\Psr\Application\ApplicationInterface;
 
 /**
  * Handler implementation.
@@ -39,8 +38,6 @@ class Handler extends GenericStackable
      * Initializes the handler with the necessary information.
      *
      * @param string $name The handler name
-     *
-     * @return void
      */
     public function __construct($name)
     {

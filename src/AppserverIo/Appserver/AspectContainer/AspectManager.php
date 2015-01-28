@@ -19,8 +19,6 @@
 namespace AppserverIo\Appserver\AspectContainer;
 
 use AppserverIo\Appserver\AspectContainer\Interfaces\AspectManagerInterface;
-use AppserverIo\Appserver\Core\AbstractManager;
-use AppserverIo\Appserver\Core\Api\ConfigurationService;
 use AppserverIo\Appserver\Core\Api\InvalidConfigurationException;
 use AppserverIo\Doppelgaenger\AspectRegister;
 use AppserverIo\Doppelgaenger\Config;
@@ -156,6 +154,8 @@ class AspectManager implements AspectManagerInterface, ManagerInterface
      * @param string $key The key of the value to return from the context.
      *
      * @return mixed The requested attribute
+     *
+     * @throws \Exception
      */
     public function getAttribute($key)
     {

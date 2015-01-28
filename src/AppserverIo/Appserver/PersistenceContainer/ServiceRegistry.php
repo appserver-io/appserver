@@ -22,10 +22,9 @@ namespace AppserverIo\Appserver\PersistenceContainer;
 
 use AppserverIo\Storage\StorageInterface;
 use AppserverIo\Storage\GenericStackable;
-use AppserverIo\Storage\StackableStorage;
 use AppserverIo\Psr\Application\ManagerInterface;
-use AppserverIo\Psr\EnterpriseBeans\ServiceContext;
-use AppserverIo\Psr\EnterpriseBeans\ServiceResourceLocator;
+use AppserverIo\Psr\EnterpriseBeans\ServiceContextInterface;
+use AppserverIo\Psr\EnterpriseBeans\ServiceResourceLocatorInterface;
 
 /**
  * The abstract service registry as base for implementations that handles applications services.
@@ -36,13 +35,13 @@ use AppserverIo\Psr\EnterpriseBeans\ServiceResourceLocator;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-abstract class ServiceRegistry extends GenericStackable implements ServiceContext, ManagerInterface
+abstract class ServiceRegistry extends GenericStackable implements ServiceContextInterface, ManagerInterface
 {
 
     /**
      * Inject the data storage.
      *
-     * @param \AppserverIo\Storage\StackableStorage $data The data storage to use
+     * @param \AppserverIo\Storage\StorageInterface $data The data storage to use
      *
      * @return void
      */
@@ -66,11 +65,11 @@ abstract class ServiceRegistry extends GenericStackable implements ServiceContex
     /**
      * Injects the service locator to lookup the service.
      *
-     * @param \AppserverIo\Psr\EnterpriseBeans\ServiceResourceLocator $serviceLocator The service locator
+     * @param \AppserverIo\Psr\EnterpriseBeans\ServiceResourceLocatorInterface $serviceLocator The service locator
      *
      * @return void
      */
-    public function injectServiceLocator(ServiceResourceLocator $serviceLocator)
+    public function injectServiceLocator(ServiceResourceLocatorInterface $serviceLocator)
     {
         $this->serviceLocator = $serviceLocator;
     }
@@ -100,7 +99,7 @@ abstract class ServiceRegistry extends GenericStackable implements ServiceContex
     /**
      * Return the service locator instance.
      *
-     * @return \AppserverIo\Psr\EnterpriseBeans\ServiceResourceLocator The service locator instance
+     * @return \AppserverIo\Psr\EnterpriseBeans\ServiceResourceLocatorInterface The service locator instance
      */
     public function getServiceLocator()
     {
@@ -123,7 +122,7 @@ abstract class ServiceRegistry extends GenericStackable implements ServiceContex
      * @param string $serviceName The name of the requested service
      * @param array  $args        The arguments passed to the service providers constructor
      *
-     * @return \AppserverIo\Psr\EnterpriseBeans\ServiceProvider The requested service instance
+     * @return \AppserverIo\Psr\EnterpriseBeans\ServiceProviderInterface The requested service instance
      */
     public function lookup($serviceName, array $args = array())
     {

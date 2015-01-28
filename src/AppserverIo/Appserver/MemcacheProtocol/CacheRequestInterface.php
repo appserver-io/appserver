@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\MemcacheProtocol\CacheRequest
+ * AppserverIo\Appserver\MemcacheProtocol\CacheRequestInterface
  *
  * NOTICE OF LICENSE
  *
@@ -32,7 +32,7 @@ namespace AppserverIo\Appserver\MemcacheProtocol;
  * @link      http://www.appserver.io
  * @link      https://github.com/memcached/memcached/blob/master/doc/protocol.txt
  */
-interface CacheRequest
+interface CacheRequestInterface
 {
 
     /**

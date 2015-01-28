@@ -20,10 +20,8 @@
 
 namespace AppserverIo\Appserver\ServletEngine\Authentication;
 
-use AppserverIo\Storage\GenericStackable;
-use AppserverIo\Psr\Servlet\ServletContext;
-use AppserverIo\Psr\Servlet\ServletRequest;
-use AppserverIo\Psr\Servlet\ServletResponse;
+use AppserverIo\Psr\Servlet\ServletRequestInterface;
+use AppserverIo\Psr\Servlet\ServletResponseInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
 
 /**
@@ -35,25 +33,27 @@ use AppserverIo\Psr\Application\ApplicationInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class StandardAuthenticationManager implements AuthenticationManager
+class StandardAuthenticationManager implements AuthenticationManagerInterface
 {
 
     /**
      * Handles request in order to authenticate.
      *
-     * @param \AppserverIo\Psr\Servlet\ServletRequest  $servletRequest  The request instance
-     * @param \AppserverIo\Psr\Servlet\ServletResponse $servletResponse The response instance
+     * @param \AppserverIo\Psr\Servlet\ServletRequestInterface  $servletRequest  The request instance
+     * @param \AppserverIo\Psr\Servlet\ServletResponseInterface $servletResponse The response instance
      *
-     * @return boolean TRUE if the authentication has been successfull, else FALSE
+     * @return boolean TRUE if the authentication has been successful, else FALSE
+     *
+     * @throws \Exception
      */
-    public function handleRequest(ServletRequest $servletRequest, ServletResponse $servletResponse)
+    public function handleRequest(ServletRequestInterface $servletRequest, ServletResponseInterface $servletResponse)
     {
 
         // load the actual context instance
         $context = $servletRequest->getContext();
 
         // iterate over all servlets and return the matching one
-        foreach ($context->search('ServletContext')->getSecuredUrlConfigs() as $securedUrlConfig) {
+        foreach ($context->search('ServletContextInterface')->getSecuredUrlConfigs() as $securedUrlConfig) {
             // continue if the can't find a config
             if ($securedUrlConfig == null) {
                 continue;
@@ -92,12 +92,12 @@ class StandardAuthenticationManager implements AuthenticationManager
     /**
      * Initializes the manager instance.
      *
-     * @return void
+     * @return string
      * @see \AppserverIo\Psr\Application\ManagerInterface::initialize()
      */
     public function getIdentifier()
     {
-        return AuthenticationManager::IDENTIFIER;
+        return AuthenticationManagerInterface::IDENTIFIER;
     }
 
     /**

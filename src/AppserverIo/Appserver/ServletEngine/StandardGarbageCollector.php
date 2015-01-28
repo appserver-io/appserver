@@ -20,10 +20,10 @@
 namespace AppserverIo\Appserver\ServletEngine;
 
 use AppserverIo\Logger\LoggerUtils;
-use AppserverIo\Psr\Servlet\ServletSession;
+use AppserverIo\Psr\Servlet\ServletSessionInterface;
 
 /**
- * A thread thats preinitialized session instances and adds them to the
+ * A thread which pre-initializes session instances and adds them to the
  * the session pool.
  *
  * @author    Tim Wagner <tw@appserver.io>
@@ -32,7 +32,7 @@ use AppserverIo\Psr\Servlet\ServletSession;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class StandardGarbageCollector extends \Thread implements GarbageCollector
+class StandardGarbageCollector extends \Thread implements GarbageCollectorInterface
 {
 
     /**
@@ -90,7 +90,7 @@ class StandardGarbageCollector extends \Thread implements GarbageCollector
     /**
      * Injects the session settings.
      *
-     * @param \AppserverIo\Appserver\ServletEngine\SessionSettings $sessionSettings Settings for the session handling
+     * @param \AppserverIo\Appserver\ServletEngine\SessionSettingsInterface $sessionSettings Settings for the session handling
      *
      * @return void
      */
@@ -122,7 +122,7 @@ class StandardGarbageCollector extends \Thread implements GarbageCollector
     /**
      * Returns the session settings.
      *
-     * @return \AppserverIo\Appserver\ServletEngine\SessionSettings The session settings
+     * @return \AppserverIo\Appserver\ServletEngine\SessionSettingsInterface The session settings
      */
     public function getSessionSettings()
     {
@@ -219,7 +219,7 @@ class StandardGarbageCollector extends \Thread implements GarbageCollector
                 // iterate over all sessions and remove the expired ones
                 foreach ($this->getSessions() as $session) {
                     // check if we've a session instance
-                    if ($session instanceof ServletSession) {
+                    if ($session instanceof ServletSessionInterface) {
                         // load the sessions last activity timestamp
                         $lastActivitySecondsAgo = time() - $session->getLastActivityTimestamp();
 

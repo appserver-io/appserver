@@ -20,8 +20,6 @@
 
 namespace AppserverIo\Appserver\Core\Api;
 
-use AppserverIo\Appserver\Core\Api\AbstractService;
-
 /**
  * A service that handles container configuration data.
  *

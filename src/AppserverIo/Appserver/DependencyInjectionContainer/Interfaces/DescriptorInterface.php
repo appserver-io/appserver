@@ -20,8 +20,6 @@
 
 namespace AppserverIo\Appserver\DependencyInjectionContainer\Interfaces;
 
-use AppserverIo\Lang\Reflection\ClassInterface;
-
 /**
  * Basic interface for all descriptors.
  *

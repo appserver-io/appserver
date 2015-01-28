@@ -20,9 +20,9 @@
 
 namespace AppserverIo\Appserver\WebSocketServer\Handlers;
 
-use AppserverIo\Appserver\WebSocketProtocol\Request;
-use AppserverIo\Appserver\WebSocketProtocol\Handler;
-use AppserverIo\Appserver\WebSocketProtocol\HandlerConfig;
+use AppserverIo\Appserver\WebSocketProtocol\RequestInterface;
+use AppserverIo\Appserver\WebSocketProtocol\HandlerInterface;
+use AppserverIo\Appserver\WebSocketProtocol\HandlerConfigInterface;
 
 /**
  * Abstract base class for all handlers.
@@ -33,32 +33,32 @@ use AppserverIo\Appserver\WebSocketProtocol\HandlerConfig;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-abstract class AbstractHandler implements Handler
+abstract class AbstractHandler implements HandlerInterface
 {
 
     /**
      * The handler configuration instance.
      *
-     * @var \AppserverIo\Appserver\WebSocketProtocol\HandlerConfig
+     * @var \AppserverIo\Appserver\WebSocketProtocol\HandlerConfigInterface
      */
     protected $config;
 
     /**
      * Current request on a handled connection
      *
-     * @var \AppserverIo\Appserver\WebSocketProtocol\Request $request
+     * @var \AppserverIo\Appserver\WebSocketProtocol\RequestInterface $request
      */
     protected $request;
 
     /**
      * Initializes the handler with the passed configuration.
      *
-     * @param \AppserverIo\Appserver\WebSocketProtocol\HandlerConfig $config The configuration to initialize the handler with
+     * @param \AppserverIo\Appserver\WebSocketProtocol\HandlerConfigInterface $config The configuration to initialize the handler with
      *
      * @return void
      * @throws \AppserverIo\Appserver\WebSocketProtocol\HandlerException Is thrown if the configuration has errors
      */
-    public function init(HandlerConfig $config)
+    public function init(HandlerConfigInterface $config)
     {
         $this->config = $config;
     }
@@ -66,11 +66,11 @@ abstract class AbstractHandler implements Handler
     /**
      * Injects the request instance when the connection has been created.
      *
-     * @param \AppserverIo\Appserver\WebSocketProtocol\Request $request The request instance
+     * @param \AppserverIo\Appserver\WebSocketProtocol\RequestInterface $request The request instance
      *
      * @return void
      */
-    public function injectRequest(Request $request)
+    public function injectRequest(RequestInterface $request)
     {
         $this->request = $request;
     }
@@ -78,7 +78,7 @@ abstract class AbstractHandler implements Handler
     /**
      * Return's the servlet's configuration.
      *
-     * @return \AppserverIo\Appserver\WebSocketProtocol\HandlerConfig The handler's configuration
+     * @return \AppserverIo\Appserver\WebSocketProtocol\HandlerConfigInterface The handler's configuration
      */
     public function getHandlerConfig()
     {
@@ -88,7 +88,7 @@ abstract class AbstractHandler implements Handler
     /**
      * Returns the handler context instance
      *
-     * @return \AppserverIo\Appserver\WebSocketProtocol\HandlerContext The handler context instance
+     * @return \AppserverIo\Appserver\WebSocketProtocol\HandlerContextInterface The handler context instance
      */
     public function getHandlerContext()
     {
@@ -98,7 +98,7 @@ abstract class AbstractHandler implements Handler
     /**
      * Returns the request instance.
      *
-     * @return \AppserverIo\Appserver\WebSocketProtocol\Request The request instance
+     * @return \AppserverIo\Appserver\WebSocketProtocol\RequestInterface The request instance
      */
     public function getRequest()
     {

@@ -20,16 +20,10 @@
 
 namespace AppserverIo\Appserver\PersistenceContainer;
 
-use AppserverIo\RemoteMethodInvocation\RemoteMethod;
-use AppserverIo\Psr\EnterpriseBeans\BeanContext;
-use AppserverIo\Psr\EnterpriseBeans\ResourceLocator;
+use AppserverIo\Psr\EnterpriseBeans\BeanContextInterface;
+use AppserverIo\Psr\EnterpriseBeans\ResourceLocatorInterface;
 use AppserverIo\Psr\EnterpriseBeans\InvalidBeanTypeException;
 use AppserverIo\Psr\EnterpriseBeans\EnterpriseBeansException;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\Stateful;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\Singleton;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\Stateless;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\MessageDriven;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\PostConstruct;
 use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\StatefulSessionBeanDescriptorInterface;
 use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\SingletonSessionBeanDescriptorInterface;
 use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\StatelessSessionBeanDescriptorInterface;
@@ -44,7 +38,7 @@ use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\MessageDrivenB
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class BeanLocator implements ResourceLocator
+class BeanLocator implements ResourceLocatorInterface
 {
 
     /**
@@ -54,15 +48,15 @@ class BeanLocator implements ResourceLocator
      * If the passed class name is a session bean an instance
      * will be returned.
      *
-     * @param \AppserverIo\Appserver\PersistenceContainer\BeanManager $beanManager The bean manager instance
-     * @param string                                                  $className   The name of the session bean's class
-     * @param string                                                  $sessionId   The session ID
-     * @param array                                                   $args        The arguments passed to the session beans constructor
+     * @param \AppserverIo\Psr\EnterpriseBeans\BeanContextInterface $beanManager The bean manager instance
+     * @param string                                                $className   The name of the session bean's class
+     * @param string                                                $sessionId   The session ID
+     * @param array                                                 $args        The arguments passed to the session beans constructor
      *
      * @return object The requested session bean
      * @throws \AppserverIo\Psr\EnterpriseBeans\InvalidBeanTypeException Is thrown if passed class name is no session bean or is a entity bean (not implmented yet)
      */
-    public function lookup(BeanContext $beanManager, $className, $sessionId = null, array $args = array())
+    public function lookup(BeanContextInterface $beanManager, $className, $sessionId = null, array $args = array())
     {
 
         // load the object manager

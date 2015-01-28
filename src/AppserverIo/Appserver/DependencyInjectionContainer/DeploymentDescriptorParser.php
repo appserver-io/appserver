@@ -20,9 +20,7 @@
 
 namespace AppserverIo\Appserver\DependencyInjectionContainer;
 
-use AppserverIo\Appserver\Core\Api\ConfigurationService;
 use AppserverIo\Psr\Application\ApplicationInterface;
-use AppserverIo\Lang\Reflection\ReflectionClass;
 
 /**
  * Parser to parse a deployment descriptor for beans or servlets.

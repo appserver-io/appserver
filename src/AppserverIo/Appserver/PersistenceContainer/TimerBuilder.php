@@ -106,7 +106,7 @@ class TimerBuilder
     /**
      * Sets the unique identifier of timer we want to create.
      *
-     * @param string $id The unique indentifier of the timer to be created
+     * @param string $id The unique identifier of the timer to be created
      *
      * @return \AppserverIo\Appserver\PersistenceContainer\TimerBuilder The instance itself
      */

@@ -20,10 +20,9 @@
 
 namespace AppserverIo\Appserver\PersistenceContainer;
 
-use AppserverIo\Appserver\ServletEngine\Valve;
-use AppserverIo\Psr\Servlet\Http\HttpServletRequest;
-use AppserverIo\Psr\Servlet\Http\HttpServletResponse;
-use AppserverIo\Psr\EnterpriseBeans\BeanContext;
+use AppserverIo\Appserver\ServletEngine\ValveInterface;
+use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
+use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
 use AppserverIo\RemoteMethodInvocation\RemoteMethodProtocol;
 
 /**
@@ -36,19 +35,19 @@ use AppserverIo\RemoteMethodInvocation\RemoteMethodProtocol;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class PersistenceContainerValve implements Valve
+class PersistenceContainerValve implements ValveInterface
 {
 
     /**
      * Processes the request by invoking the request handler that executes the servlet
      * in a protected context.
      *
-     * @param \AppserverIo\Psr\Servlet\ServletRequest  $servletRequest  The request instance
-     * @param \AppserverIo\Psr\Servlet\ServletResponse $servletResponse The response instance
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface  $servletRequest  The request instance
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse The response instance
      *
      * @return void
      */
-    public function invoke(HttpServletRequest $servletRequest, HttpServletResponse $servletResponse)
+    public function invoke(HttpServletRequestInterface $servletRequest, HttpServletResponseInterface $servletResponse)
     {
 
         try {
@@ -65,7 +64,7 @@ class PersistenceContainerValve implements Valve
             $sessionId = $remoteMethod->getSessionId();
 
             // load the bean manager and the bean instance
-            $beanManager = $application->search('BeanContext');
+            $beanManager = $application->search('BeanContextInterface');
             $instance = $application->search($className, array($sessionId, array($application)));
 
             // invoke the remote method call on the local instance

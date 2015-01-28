@@ -23,7 +23,6 @@ namespace AppserverIo\Appserver\PersistenceContainer;
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Appserver\ServletEngine\ServletEngine;
 use AppserverIo\Server\Interfaces\ServerContextInterface;
-use AppserverIo\Appserver\PersistenceContainer\PersistenceContainerValve;
 
 /**
  * A persistence container module implementation.
@@ -45,8 +44,6 @@ class PersistenceContainerModule extends ServletEngine
 
     /**
      * Initialize the module.
-     *
-     * @return void
      */
     public function __construct()
     {

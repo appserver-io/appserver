@@ -23,7 +23,6 @@ namespace AppserverIo\Appserver\DependencyInjectionContainer\Description;
 use AppserverIo\Lang\Reflection\ClassInterface;
 use AppserverIo\Lang\Reflection\MethodInterface;
 use AppserverIo\Lang\Reflection\PropertyInterface;
-use AppserverIo\Lang\Reflection\AnnotationInterface;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Resource;
 use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\ResReferenceDescriptorInterface;
 use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\InjectionTargetDescriptorInterface;
@@ -316,7 +315,7 @@ class ResReferenceDescriptor implements ResReferenceDescriptorInterface
      * Merges the passed configuration into this one. Configuration values
      * of the passed configuration will overwrite the this one.
      *
-     * @param \AppserverIo\Appserver\PersistenceContainer\ResReferenceDescriptorInterface $resReferenceDescriptor The configuration to merge
+     * @param \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\ResReferenceDescriptorInterface $resReferenceDescriptor The configuration to merge
      *
      * @return void
      */

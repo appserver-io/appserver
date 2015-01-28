@@ -20,14 +20,11 @@
 namespace AppserverIo\Appserver\ServletEngine;
 
 use AppserverIo\Logger\LoggerUtils;
-use AppserverIo\Storage\StorageInterface;
 use AppserverIo\Appserver\ServletEngine\Http\Session;
-use AppserverIo\Storage\GenericStackable;
-use AppserverIo\Psr\Servlet\ServletSession;
-use AppserverIo\Psr\Servlet\Http\HttpSession;
+use AppserverIo\Psr\Servlet\ServletSessionInterface;
 
 /**
- * A thread thats preinitialized session instances and adds them to the
+ * A thread which pre-initializes session instances and adds them to the
  * the session pool.
  *
  * @author    Tim Wagner <tw@appserver.io>
@@ -47,14 +44,14 @@ class SessionFactory extends \Thread
     const TIME_TO_LIVE = 1;
 
     /**
-     * Key for invokation of method 'removeBySessionId()'.
+     * Key for invocation of method 'removeBySessionId()'.
      *
      * @var string
      */
     const ACTION_REMOVE_BY_SESSION_ID = 1;
 
     /**
-     * Key for invokation of method 'nextFromPool()'.
+     * Key for invocation of method 'nextFromPool()'.
      *
      * @var string
      */
@@ -118,7 +115,7 @@ class SessionFactory extends \Thread
     /**
      * Load the next initialized session instance from the session pool.
      *
-     * @return \AppserverIo\Psr\Servlet\ServletSession The session instance
+     * @return \AppserverIo\Psr\Servlet\ServletSessionInterface The session instance
      */
     protected function nextFromPool()
     {
@@ -176,6 +173,7 @@ class SessionFactory extends \Thread
         require SERVER_AUTOLOADER;
 
         // try to load the profile logger
+        $profileLogger = null;
         if (isset($this->loggers[LoggerUtils::PROFILE])) {
             $profileLogger = $this->loggers[LoggerUtils::PROFILE];
             $profileLogger->appendThreadContext('session-factory');
@@ -185,7 +183,7 @@ class SessionFactory extends \Thread
         while ($this->run) {
             $this->synchronized(function ($self) {
 
-                // wait until we receive a notification for a method invokation
+                // wait until we receive a notification for a method invocation
                 $self->wait(1000000 * SessionFactory::TIME_TO_LIVE);
 
                 switch ($self->action) { // check the method we want to invoke
@@ -196,7 +194,7 @@ class SessionFactory extends \Thread
                         $self->sessionPool->set($self->uniqueId, Session::emptyInstance());
                         $self->sessionAvailable = true;
 
-                        // send a notification that method invokation has been processed
+                        // send a notification that method invocation has been processed
                         $self->notify();
 
                         break;
@@ -204,7 +202,7 @@ class SessionFactory extends \Thread
                     case SessionFactory::ACTION_REMOVE_BY_SESSION_ID: // we want to remove a session instance from the pool
 
                         foreach ($self->sessionPool as $uniqueId => $session) {
-                            if ($session instanceof ServletSession && $session->getId() === $self->sessionId) {
+                            if ($session instanceof ServletSessionInterface && $session->getId() === $self->sessionId) {
                                 $self->sessionPool->remove($uniqueId);
                             }
                         }

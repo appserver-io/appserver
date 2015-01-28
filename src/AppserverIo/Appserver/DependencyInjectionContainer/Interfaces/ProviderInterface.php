@@ -20,7 +20,6 @@
 
 namespace AppserverIo\Appserver\DependencyInjectionContainer\Interfaces;
 
-use AppserverIo\Lang\Reflection\ClassInterface;
 use AppserverIo\Lang\Reflection\AnnotationInterface;
 use AppserverIo\Psr\Application\ManagerInterface;
 

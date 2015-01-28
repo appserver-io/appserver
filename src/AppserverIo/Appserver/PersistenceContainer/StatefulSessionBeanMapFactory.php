@@ -20,7 +20,7 @@
 
 namespace AppserverIo\Appserver\PersistenceContainer;
 
-use AppserverIo\Collections\Map;
+use AppserverIo\Collections\MapInterface;
 use AppserverIo\Logger\LoggerUtils;
 
 /**
@@ -200,7 +200,7 @@ class StatefulSessionBeanMapFactory extends \Thread
                 case StatefulSessionBeanMapFactory::ACTION_REMOVE_BY_SESSION_ID:
 
                     foreach ($this->sessionPool as $sessionId => $session) {
-                        if ($session instanceof Map && $sessionId === $this->sessionId) {
+                        if ($session instanceof MapInterface && $sessionId === $this->sessionId) {
                             $this->sessionPool->remove($sessionId);
                         }
                     }

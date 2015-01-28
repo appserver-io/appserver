@@ -20,15 +20,11 @@
 
 namespace AppserverIo\Appserver\DependencyInjectionContainer\Description;
 
-use AppserverIo\Lang\String;
 use AppserverIo\Lang\Reflection\ClassInterface;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\PreDestroy;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\PostConstruct;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\Singleton;
-use AppserverIo\Psr\EnterpriseBeans\EnterpriseBeansException;
 use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\BeanDescriptorInterface;
 use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\SessionBeanDescriptorInterface;
-use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\EpbReferenceDescriptorInterface;
 
 /**
  * Implementation for an abstract session bean descriptor.
@@ -217,6 +213,8 @@ abstract class SessionBeanDescriptor extends BeanDescriptor implements SessionBe
      * @param \AppserverIo\Lang\Reflection\ClassInterface $reflectionClass The reflection class with the bean description
      *
      * @return void
+     *
+     * @throws \Exception
      */
     public function fromReflectionClass(ClassInterface $reflectionClass)
     {
@@ -225,13 +223,13 @@ abstract class SessionBeanDescriptor extends BeanDescriptor implements SessionBe
         parent::fromReflectionClass($reflectionClass);
 
         if ($reflectionClass->hasAnnotation('Local')) {
-            throw \Exception('@Local annotation not implemented');
+            throw new \Exception('@Local annotation not implemented');
         } else {
             $this->setLocal(sprintf('%sLocal', rtrim($this->getName(), 'Bean')));
         }
 
         if ($reflectionClass->hasAnnotation('Remote')) {
-            throw \Exception('@Remote annotation not implemented');
+            throw new \Exception('@Remote annotation not implemented');
         } else {
             $this->setRemote(sprintf('%sRemote', rtrim($this->getName(), 'Bean')));
         }

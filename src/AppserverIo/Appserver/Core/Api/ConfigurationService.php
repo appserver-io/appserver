@@ -21,7 +21,6 @@
 namespace AppserverIo\Appserver\Core\Api;
 
 use AppserverIo\Appserver\Core\InitialContext;
-use AppserverIo\Configuration\Interfaces\NodeInterface;
 
 /**
  * This class can be used to validate configuration files against known schemas.

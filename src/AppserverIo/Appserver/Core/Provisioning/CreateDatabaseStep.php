@@ -20,11 +20,9 @@
 
 namespace AppserverIo\Appserver\Core\Provisioning;
 
-use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\Setup;
 use Doctrine\ORM\Tools\SchemaTool;
-use Doctrine\Common\Persistence\ObjectManager;
 
 /**
  * An step implementation that creates a database based on the specified datasource.
@@ -80,7 +78,7 @@ class CreateDatabaseStep extends AbstractStep
      *
      * @return void
      * @throws \Exception Is thrown if the script can't be executed
-     * @see \AppserverIo\Appserver\Core\Provisioning\Step::execute()
+     * @see \AppserverIo\Appserver\Core\Provisioning\StepInterface::execute()
      */
     public function execute()
     {

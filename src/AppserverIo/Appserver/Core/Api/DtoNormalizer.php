@@ -21,7 +21,6 @@
 namespace AppserverIo\Appserver\Core\Api;
 
 use AppserverIo\Configuration\Interfaces\ConfigurationInterface;
-use AppserverIo\Appserver\Core\Api\NormalizerInterface;
 
 /**
  * Normalizes configuration nodes to DTO instances.

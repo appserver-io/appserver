@@ -17,13 +17,11 @@
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
+
 namespace AppserverIo\Appserver\ServletEngine;
 
 use AppserverIo\Logger\LoggerUtils;
-use AppserverIo\Psr\Servlet\ServletSession;
-use \AppserverIo\Storage\StorageInterface;
-use \AppserverIo\Storage\StackableStorage;
-use AppserverIo\Appserver\ServletEngine\SessionFilter;
+use AppserverIo\Psr\Servlet\ServletSessionInterface;
 
 /**
  * A thread which pre-initializes session instances and adds them to the
@@ -35,7 +33,7 @@ use AppserverIo\Appserver\ServletEngine\SessionFilter;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class FilesystemPersistenceManager extends \Thread implements PersistenceManager
+class FilesystemPersistenceManager extends \Thread implements PersistenceManagerInterface
 {
 
     /**
@@ -90,7 +88,7 @@ class FilesystemPersistenceManager extends \Thread implements PersistenceManager
     }
 
     /**
-     * Injects the cecksums.
+     * Injects the checksums.
      *
      * @param \AppserverIo\Storage\StorageInterface $checksums The checksums
      *
@@ -104,7 +102,7 @@ class FilesystemPersistenceManager extends \Thread implements PersistenceManager
     /**
      * Injects the session settings.
      *
-     * @param \AppserverIo\Appserver\ServletEngine\SessionSettings $sessionSettings Settings for the session handling
+     * @param \AppserverIo\Appserver\ServletEngine\SessionSettingsInterface $sessionSettings Settings for the session handling
      *
      * @return void
      */
@@ -116,7 +114,7 @@ class FilesystemPersistenceManager extends \Thread implements PersistenceManager
     /**
      * Injects the session marshaller.
      *
-     * @param \AppserverIo\Appserver\ServletEngine\SessionMarshaller $sessionMarshaller The session marshaller instance
+     * @param \AppserverIo\Appserver\ServletEngine\SessionMarshallerInterface $sessionMarshaller The session marshaller instance
      *
      * @return void
      */
@@ -196,7 +194,7 @@ class FilesystemPersistenceManager extends \Thread implements PersistenceManager
     /**
      * Returns the session settings.
      *
-     * @return \AppserverIo\Appserver\ServletEngine\SessionSettings The session settings
+     * @return \AppserverIo\Appserver\ServletEngine\SessionSettingsInterface The session settings
      */
     public function getSessionSettings()
     {
@@ -206,7 +204,7 @@ class FilesystemPersistenceManager extends \Thread implements PersistenceManager
     /**
      * Returns the session marshaller.
      *
-     * @return \AppserverIo\Appserver\ServletEngine\SessionMarshaller The session marshaller
+     * @return \AppserverIo\Appserver\ServletEngine\SessionMarshallerInterface The session marshaller
      */
     public function getSessionMarshaller()
     {
@@ -265,6 +263,7 @@ class FilesystemPersistenceManager extends \Thread implements PersistenceManager
         require SERVER_AUTOLOADER;
 
         // try to load the profile logger
+        $profileLogger = null;
         if (isset($this->loggers[LoggerUtils::PROFILE])) {
             $profileLogger = $this->loggers[LoggerUtils::PROFILE];
             $profileLogger->appendThreadContext('filesystem-persistence-manager');
@@ -302,7 +301,7 @@ class FilesystemPersistenceManager extends \Thread implements PersistenceManager
         // iterate over all the checksums (session that are active and loaded)
         foreach ($this->getSessions() as $id => $session) {
             // if we found a session
-            if ($session instanceof ServletSession) {
+            if ($session instanceof ServletSessionInterface) {
                 // if we don't have a checksum, this is a new session
                 $checksum = null;
                 if ($this->getChecksums()->has($id)) {
@@ -513,7 +512,7 @@ class FilesystemPersistenceManager extends \Thread implements PersistenceManager
      *
      * @param string $marshalled The marshalled session representation
      *
-     * @return \AppserverIo\Psr\Servlet\ServletSession The unmarshalled servlet session instance
+     * @return \AppserverIo\Psr\Servlet\ServletSessionInterface The unmarshalled servlet session instance
      */
     public function unmarshall($marshalled)
     {
@@ -532,17 +531,17 @@ class FilesystemPersistenceManager extends \Thread implements PersistenceManager
      * Transforms the passed session instance into a JSON encoded string. If the data contains
      * objects, each of them will be serialized before store them to the persistence layer.
      *
-     * @param \AppserverIo\Psr\Servlet\ServletSession $servletSession The servlet session to be transformed
+     * @param \AppserverIo\Psr\Servlet\ServletSessionInterface $servletSession The servlet session to be transformed
      *
      * @return string The marshalled servlet session representation
      */
-    public function marshall(ServletSession $servletSession)
+    public function marshall(ServletSessionInterface $servletSession)
     {
         return $this->getSessionMarshaller()->marshall($servletSession);
     }
 
     /**
-     * Stops the peristence manager.
+     * Stops the persistence manager.
      *
      * @return void
      */

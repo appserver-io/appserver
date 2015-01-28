@@ -23,7 +23,6 @@ namespace AppserverIo\Appserver\DependencyInjectionContainer\Description;
 use AppserverIo\Lang\Reflection\ClassInterface;
 use AppserverIo\Lang\Reflection\MethodInterface;
 use AppserverIo\Lang\Reflection\PropertyInterface;
-use AppserverIo\Lang\Reflection\AnnotationInterface;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\EnterpriseBean;
 use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\EpbReferenceDescriptorInterface;
 use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\InjectionTargetDescriptorInterface;
@@ -238,6 +237,8 @@ class EpbReferenceDescriptor implements EpbReferenceDescriptorInterface
      * @param \AppserverIo\Lang\Reflection\ClassInterface $reflectionClass The reflection class with the beans reference configuration
      *
      * @return \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\EpbReferenceDescriptorInterface|null The initialized descriptor instance
+     *
+     * @throws \Exception
      */
     public function fromReflectionClass(ClassInterface $reflectionClass)
     {
@@ -432,7 +433,7 @@ class EpbReferenceDescriptor implements EpbReferenceDescriptorInterface
      * Merges the passed configuration into this one. Configuration values
      * of the passed configuration will overwrite the this one.
      *
-     * @param \AppserverIo\Appserver\PersistenceContainer\EbpReferenceDescriptorInterface $epbReferenceDescriptor The configuration to merge
+     * @param \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\EpbReferenceDescriptorInterface $epbReferenceDescriptor The configuration to merge
      *
      * @return void
      */

@@ -155,7 +155,7 @@ abstract class AbstractManager extends GenericStackable implements ManagerInterf
      * @param string $lookupName The lookup name for the requested session bean
      * @param string $sessionId  The session-ID if available
      *
-     * @return \AppserverIo\RemoteMethodInvocation\RemoteObject The proxy instance
+     * @return \AppserverIo\RemoteMethodInvocation\RemoteObjectInterface The proxy instance
      */
     public function lookupProxy($lookupName, $sessionId = null)
     {

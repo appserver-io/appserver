@@ -21,7 +21,7 @@
 namespace AppserverIo\Appserver\DependencyInjectionContainer\Interfaces;
 
 /**
- * Inferface for utility classes that stores a resource reference configuration.
+ * Interface for utility classes that stores a resource reference configuration.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>

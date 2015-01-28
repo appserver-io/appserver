@@ -37,7 +37,7 @@ class StatefulSessionBeanDescriptor extends SessionBeanDescriptor implements Sta
 {
 
     /**
-     * Defines a keyword for a statefule session bean in a deployment descriptor node.
+     * Defines a keyword for a stateful session bean in a deployment descriptor node.
      *
      * @var string
      */

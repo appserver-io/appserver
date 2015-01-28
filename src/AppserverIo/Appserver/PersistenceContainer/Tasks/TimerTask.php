@@ -20,7 +20,6 @@
 
 namespace AppserverIo\Appserver\PersistenceContainer\Tasks;
 
-use AppserverIo\Storage\StackableStorage;
 use AppserverIo\Psr\EnterpriseBeans\TimerInterface;
 use AppserverIo\Appserver\PersistenceContainer\Utils\TimerState;
 use AppserverIo\Psr\Application\ApplicationInterface;

@@ -20,8 +20,8 @@
 
 namespace AppserverIo\Appserver\WebSocketServer;
 
-use AppserverIo\Appserver\WebSocketProtocol\Request;
-use AppserverIo\Appserver\WebSocketProtocol\HandlerContext;
+use AppserverIo\Appserver\WebSocketProtocol\RequestInterface;
+use AppserverIo\Appserver\WebSocketProtocol\HandlerContextInterface;
 
 /**
  * Interface for the resource locator instances.
@@ -38,10 +38,10 @@ interface ResourceLocatorInterface
     /**
      * Tries to locate the handler that handles the request and returns the instance if one can be found.
      *
-     * @param \AppserverIo\Appserver\WebSocketProtocol\HandlerContext $handlerManager The handler manager
-     * @param \AppserverIo\Appserver\WebSocketProtocol\Request        $request        The request instance
+     * @param \AppserverIo\Appserver\WebSocketProtocol\HandlerContextInterface $handlerManager The handler manager
+     * @param \AppserverIo\Appserver\WebSocketProtocol\RequestInterface        $request        The request instance
      *
      * @return \Ratchet\MessageComponentInterface The handler that maps the request instance
      */
-    public function locate(HandlerContext $handlerManager, Request $request);
+    public function locate(HandlerContextInterface $handlerManager, RequestInterface $request);
 }

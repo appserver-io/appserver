@@ -50,7 +50,7 @@ class SessionFilter extends \FilterIterator
     public function __construct(\Iterator $iterator, $maximumAge)
     {
 
-        // call parent contructor
+        // call parent constructor
         parent::__construct($iterator);
 
         // initialize the maximum age of the session files we want to load
@@ -69,10 +69,10 @@ class SessionFilter extends \FilterIterator
         // load the current file
         $splFileInfo = $this->getInnerIterator()->current();
 
-        // calculate the maxiumum age of sessions we want to load
+        // calculate the maximum age of sessions we want to load
         $aTime = time() - $this->maximumAge;
 
-        // compare the session files age agains the maximum age
+        // compare the session files age against the maximum age
         if ($splFileInfo->getATime() < $aTime) {
             return false;
         }

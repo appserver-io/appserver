@@ -37,14 +37,12 @@ class MessageWrapperFactory extends \Thread
     /**
      * The message wrapper instance we want to return.
      *
-     * @return \AppserverIo\Psr\MessageQueueProtocol\Message
+     * @return \AppserverIo\Psr\Pms\MessageInterface
      */
     protected $instance;
 
     /**
      * Initializes and starts the message wrapper factory.
-     *
-     * @return void
      */
     public function __construct()
     {
@@ -55,7 +53,7 @@ class MessageWrapperFactory extends \Thread
     /**
      * Creates and returns a new empty message wrapper instance.
      *
-     * @return \AppserverIo\Psr\MessageQueueProtocol\Message $message The empty message wrapper instance
+     * @return \AppserverIo\Psr\Pms\MessageInterface $message The empty message wrapper instance
      */
     protected function emptyInstance()
     {

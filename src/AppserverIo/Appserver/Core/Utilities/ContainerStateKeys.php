@@ -160,7 +160,7 @@ class ContainerStateKeys
      * @param integer $containerState The container state to create an instance for
      *
      * @return \AppserverIo\Appserver\Core\Utilities\ContainerStateKeys The container state key instance
-     * @throws \AppserverIo\Appserver\Core\Utilities\InvalidRunlevelException
+     * @throws \AppserverIo\Appserver\Core\Utilities\InvalidContainerStateException
      *      Is thrown if the container state is not available
      */
     public static function get($containerState)

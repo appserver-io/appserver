@@ -63,8 +63,6 @@ class MessageQueueModule extends GenericStackable
 
     /**
      * Initialize the module and the necessary members.
-     *
-     * @return void
      */
     public function __construct()
     {
@@ -104,7 +102,7 @@ class MessageQueueModule extends GenericStackable
             // create a queue worker for each application
             foreach ($serverContext->getContainer()->getApplications() as $application) {
                 // load the queue manager to check if there are queues registered for the application
-                if ($queueManager = $application->search('QueueContext')) {
+                if ($queueManager = $application->search('QueueContextInterface')) {
                     // if yes, initialize and start the queue worker
                     foreach ($queueManager->getQueues() as $queue) {
                         // initialize the queues storage for the priorities
@@ -157,7 +155,7 @@ class MessageQueueModule extends GenericStackable
     ) {
 
         try {
-            // if false hook is comming do nothing
+            // if false hook is coming do nothing
             if (ModuleHooks::REQUEST_POST !== $hook) {
                 return;
             }

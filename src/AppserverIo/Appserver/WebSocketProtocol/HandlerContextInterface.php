@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\WebSocketProtocol\HandlerContext
+ * AppserverIo\Appserver\WebSocketProtocol\HandlerContextInterface
  *
  * NOTICE OF LICENSE
  *
@@ -23,7 +23,7 @@ namespace AppserverIo\Appserver\WebSocketProtocol;
 use AppserverIo\Psr\Application\ManagerInterface;
 
 /**
- * The handler context inteface for all handler managers.
+ * The handler context interface for all handler managers.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -31,7 +31,7 @@ use AppserverIo\Psr\Application\ManagerInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-interface HandlerContext extends ManagerInterface
+interface HandlerContextInterface extends ManagerInterface
 {
 
     /**
@@ -39,7 +39,7 @@ interface HandlerContext extends ManagerInterface
      *
      * @var string
      */
-    const IDENTIFIER = 'HandlerContext';
+    const IDENTIFIER = 'HandlerContextInterface';
 
     /**
      * Returns the registered handlers.

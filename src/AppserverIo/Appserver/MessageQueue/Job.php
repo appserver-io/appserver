@@ -20,7 +20,7 @@
 
 namespace AppserverIo\Appserver\MessageQueue;
 
-use AppserverIo\Psr\Pms\Message;
+use AppserverIo\Psr\Pms\MessageInterface;
 use AppserverIo\Messaging\Utils\StateProcessed;
 use AppserverIo\Messaging\Utils\StateInProgress;
 use AppserverIo\Appserver\Naming\InitialContext;
@@ -41,7 +41,7 @@ class Job extends \Thread
     /**
      * The message we have to handle.
      *
-     * @var \AppserverIo\Psr\Jms\Message
+     * @var \AppserverIo\Psr\Pms\MessageInterface
      */
     protected $message;
 
@@ -62,10 +62,10 @@ class Job extends \Thread
     /**
      * Initializes the job with the application and the storage it should work on.
      *
-     * @param \AppserverIo\Psr\Pms\Message                      $message     The message we have to handle
+     * @param \AppserverIo\Psr\Pms\MessageInterface             $message     The message we have to handle
      * @param \AppserverIo\Psr\Application\ApplicationInterface $application The application instance
      */
-    public function __construct(Message $message, ApplicationInterface $application)
+    public function __construct(MessageInterface $message, ApplicationInterface $application)
     {
 
         // we want to start working
@@ -92,7 +92,7 @@ class Job extends \Thread
     /**
      * Returns the message instance the job is bound to.
      *
-     * @return \AppserverIo\Psr\Pms\Message The message instance
+     * @return \AppserverIo\Psr\Pms\MessageInterface The message instance
      */
     public function getMessage()
     {
@@ -133,7 +133,7 @@ class Job extends \Thread
             $sessionId = $message->getSessionId();
 
             // lookup the queue and process the message
-            if ($queue = $application->search('QueueContext')->locate($queueProxy)) {
+            if ($queue = $application->search('QueueContextInterface')->locate($queueProxy)) {
                 // lock the message
                 $message->setState(StateInProgress::get());
 

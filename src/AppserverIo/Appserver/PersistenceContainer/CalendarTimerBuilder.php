@@ -377,7 +377,7 @@ class CalendarTimerBuilder extends TimerBuilder
     /**
      * Queries if the calendar timer will be a auto timer.
      *
-     * @return boolean TRUE if calandar timer is an auto timer
+     * @return boolean TRUE if calendar timer is an auto timer
      */
     public function isAutoTimer()
     {

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\ResourceLocator
+ * AppserverIo\Appserver\ServletEngine\ResourceLocatorInterface
  *
  * NOTICE OF LICENSE
  *
@@ -17,10 +17,10 @@
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
+
 namespace AppserverIo\Appserver\ServletEngine;
 
-use AppserverIo\Psr\Servlet\ServletRequest;
-use AppserverIo\Psr\Servlet\ServletContext;
+use AppserverIo\Psr\Servlet\ServletContextInterface;
 
 /**
  * Interface for the resource locator instances.
@@ -31,16 +31,16 @@ use AppserverIo\Psr\Servlet\ServletContext;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-interface ResourceLocator
+interface ResourceLocatorInterface
 {
 
     /**
      * Tries to locate the resource related with the request.
      *
-     * @param \AppserverIo\Psr\Servlet\ServletContext $servletContext The servlet context that handles the servlets
-     * @param string                                  $servletPath    The servlet path to return the servlet for
+     * @param \AppserverIo\Psr\Servlet\ServletContextInterface $servletContext The servlet context that handles the servlets
+     * @param string                                           $servletPath    The servlet path to return the servlet for
      *
-     * @return \AppserverIo\Psr\Servlet\Servlet The requested servlet
+     * @return \AppserverIo\Psr\Servlet\ServletInterface The requested servlet
      */
-    public function locate(ServletContext $servletContext, $servletPath);
+    public function locate(ServletContextInterface $servletContext, $servletPath);
 }

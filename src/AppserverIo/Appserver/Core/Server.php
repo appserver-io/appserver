@@ -20,10 +20,10 @@
 
 namespace AppserverIo\Appserver\Core;
 
+use AppserverIo\Appserver\Core\Scanner\HeartbeatScanner;
 use AppserverIo\Logger\LoggerUtils;
 use AppserverIo\Configuration\Interfaces\NodeInterface;
 use AppserverIo\Configuration\Interfaces\ConfigurationInterface;
-use AppserverIo\Appserver\Core\Extractors\PharExtractor;
 use AppserverIo\Appserver\Core\Interfaces\ProvisionerInterface;
 use AppserverIo\Appserver\Core\Interfaces\ExtractorInterface;
 use AppserverIo\Appserver\Core\InitialContext;
@@ -335,7 +335,7 @@ class Server
      */
     public function setInitialContext(InitialContext $initialContext)
     {
-        return $this->initialContext = $initialContext;
+        $this->initialContext = $initialContext;
     }
 
     /**
@@ -367,7 +367,7 @@ class Server
      */
     public function addExtractor(ExtractorInterface $extractor)
     {
-        return $this->extractors[$extractor->getExtractorNode()->getName()] = $extractor;
+        $this->extractors[$extractor->getExtractorNode()->getName()] = $extractor;
     }
 
     /**

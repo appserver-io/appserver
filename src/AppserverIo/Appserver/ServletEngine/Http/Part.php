@@ -80,7 +80,7 @@ class Part implements PartInterface
     /**
      * Creates a new servlet part instance with the data from the HTTP part.
      *
-     * @param AppserverIo\Psr\HttpMessage\PartInterface $httpPart The HTTP part we want to copy
+     * @param \AppserverIo\Psr\HttpMessage\PartInterface $httpPart The HTTP part we want to copy
      *
      * @return \AppserverIo\Appserver\ServletEngine\Http\Part The initialized servlet part
      */
@@ -174,7 +174,7 @@ class Part implements PartInterface
     /**
      * Gets the original form filename.
      *
-     * @return string The filesname
+     * @return string The file's name
      */
     public function getFilename()
     {
@@ -253,7 +253,7 @@ class Part implements PartInterface
      *
      * @param string $fileName The name of the file to which the stream will be written.
      *
-     * @return void
+     * @return integer
     */
     public function write($fileName)
     {
@@ -288,6 +288,8 @@ class Part implements PartInterface
         if (array_key_exists($name, $this->headers)) {
             return $this->headers[$name];
         }
+
+        return '';
     }
 
     /**

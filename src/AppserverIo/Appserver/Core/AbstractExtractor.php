@@ -108,10 +108,10 @@ abstract class AbstractExtractor implements ExtractorInterface
             }
         }
 
-        // prepare the filename for the file with the last succesfull deployment timestamp
+        // prepare the filename for the file with the last successful deployment timestamp
         $successFile = $this->getService()->getDeployDir(ExtractorInterface::FILE_DEPLOYMENT_SUCCESSFULL);
 
-        // create a flag file with date of the last successfull deployment
+        // create a flag file with date of the last successful deployment
         touch($successFile);
     }
 

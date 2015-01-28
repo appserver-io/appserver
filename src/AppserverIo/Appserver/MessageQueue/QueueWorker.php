@@ -22,10 +22,9 @@ namespace AppserverIo\Appserver\MessageQueue;
 
 use AppserverIo\Logger\LoggerUtils;
 use AppserverIo\Storage\GenericStackable;
-use AppserverIo\Psr\Pms\Message;
-use AppserverIo\Psr\Pms\PriorityKey;
+use AppserverIo\Psr\Pms\MessageInterface;
+use AppserverIo\Psr\Pms\PriorityKeyInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
-use AppserverIo\Messaging\Utils\PriorityMedium;
 use AppserverIo\Messaging\Utils\StateActive;
 use AppserverIo\Messaging\Utils\StateFailed;
 use AppserverIo\Messaging\Utils\StateInProgress;
@@ -33,7 +32,6 @@ use AppserverIo\Messaging\Utils\StatePaused;
 use AppserverIo\Messaging\Utils\StateProcessed;
 use AppserverIo\Messaging\Utils\StateToProcess;
 use AppserverIo\Messaging\Utils\StateUnknown;
-use AppserverIo\Appserver\Naming\InitialContext;
 
 /**
  * A message queue worker implementation listening to a queue, defined in the passed application.
@@ -43,6 +41,11 @@ use AppserverIo\Appserver\Naming\InitialContext;
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
+ *
+ * @property \AppserverIo\Psr\Application\ApplicationInterface $application   The application instance with the queue manager/locator
+ * @property \AppserverIo\Storage\GenericStackable             $jobsToExecute The storage for the jobs to be executed
+ * @property \AppserverIo\Storage\GenericStackable             $messages      The storage for the messages
+ * @property \AppserverIo\Psr\Pms\PriorityKeyInterface         $priorityKey   The priority of this queue worker
  */
 class QueueWorker extends \Thread
 {
@@ -50,11 +53,11 @@ class QueueWorker extends \Thread
     /**
      * Injects the priority of the queue worker.
      *
-     * @param \AppserverIo\Psr\Pms\PriorityKey $priorityKey The priority of this queue worker
+     * @param \AppserverIo\Psr\Pms\PriorityKeyInterface $priorityKey The priority of this queue worker
      *
      * @return void
      */
-    public function injectPriorityKey(PriorityKey $priorityKey)
+    public function injectPriorityKey(PriorityKeyInterface $priorityKey)
     {
         $this->priorityKey = $priorityKey;
     }
@@ -98,11 +101,11 @@ class QueueWorker extends \Thread
     /**
      * Attach a new message to the queue.
      *
-     * @param \AppserverIo\Psr\Pms\Message $message The messsage to be attached to the queue
+     * @param \AppserverIo\Psr\Pms\MessageInterface $message The messsage to be attached to the queue
      *
      * @return void
      */
-    public function attach(Message $message)
+    public function attach(MessageInterface $message)
     {
 
         // force handling the timer tasks now
@@ -122,11 +125,11 @@ class QueueWorker extends \Thread
     /**
      * Removes the message from the queue.
      *
-     * @param \AppserverIo\Psr\Pms\Message $message The message to be removed from the queue
+     * @param \AppserverIo\Psr\Pms\MessageInterface $message The message to be removed from the queue
      *
      * @return void
      */
-    public function remove(Message $message)
+    public function remove(MessageInterface $message)
     {
         unset($this->messages[$message->getMessageId()]);
     }
@@ -135,11 +138,13 @@ class QueueWorker extends \Thread
      * We process the messages/jobs here.
      *
      * @return void
+     *
+     * @throws \Exception
      */
     public function run()
     {
 
-        // create a local instance of appication and storage
+        // create a local instance of application and storage
         $application = $this->application;
 
         // register the class loader again, because each thread has its own context
@@ -211,13 +216,13 @@ class QueueWorker extends \Thread
                     case StateUnknown::get(): // message is in an unknown state -> this is weired and should never happen!
 
                         // throw an exception, because this should never happen
-                        throw \Exception(sprintf('Message %s has state %s', $messageId, $message->getState()));
+                        throw new \Exception(sprintf('Message %s has state %s', $message->getId(), $message->getState()));
                         break;
 
                     default: // we don't know the message state -> this is weired and should never happen!
 
                         // throw an exception, because this should never happen
-                        throw \Exception(sprintf('Message %s has an invalid state', $messageId));
+                        throw new \Exception(sprintf('Message %s has an invalid state', $message->getId()));
                         break;
                 }
 

@@ -29,7 +29,6 @@ use AppserverIo\Psr\EnterpriseBeans\TimedObjectInterface;
 use AppserverIo\Psr\EnterpriseBeans\TimedObjectInvokerInterface;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Timeout;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Schedule;
-use AppserverIo\Psr\EnterpriseBeans\BeanContext;
 use AppserverIo\Psr\Application\ApplicationInterface;
 
 /**
@@ -71,7 +70,7 @@ class TimedObjectInvoker extends GenericStackable implements TimedObjectInvokerI
     /**
      * Injects the application instance.
      *
-     * @param \AppserverIo\Appserver\Application\ApplicationInterface $application The application instance
+     * @param \AppserverIo\Psr\Application\ApplicationInterface $application The application instance
      *
      * @return void
      */
