@@ -1,6 +1,6 @@
 ---
 layout: docs
-title: HTTP(S) Server
+title: Webserver
 position: 40
 group: Docs
 subDocs:
@@ -24,10 +24,10 @@ subDocs:
     href: rewrites
   - title: VirtualHost Examples
     href: virtualhost-examples
-permalink: /documentation/http-s-server.html
+permalink: /documentation/webserver.html
 ---
 
-The HTTP(S) Server is build and configured like any other server component using our
+The Webserver is build and configured like any other server component using our
 [multithreaded server framework](<https://github.com/appserver-io/server>). Let's have a look at the main configuration
 of the server component itselfe.
 
@@ -75,7 +75,7 @@ Next thing we'll have a look at are server params.
 </params>
 ```
 
-They are used to define several key/value pairs for the HTTP(S) server implementation to react on. Find the param
+They are used to define several key/value pairs for the Webserver implementation to react on. Find the param
 descriptions below.
 
 | Param                    | Description |
@@ -84,7 +84,7 @@ descriptions below.
 | `software`               | The software signature as showen in the response header for example. |
 | `transport`              | The transport layer. In ssl mode `ssl` will be used instead of plain `tcp`. |
 | `address`                | The address the server-socket should be bind and listen to. If you want to allow only connection on local loopback define ´127.0.0.1´ as in the example above shown. This will be good enough for local development and testing purpos. If you want to allow connections to your external ethernet interfaces just define `0.0.0.0` or if you want to allow connection only on a specific interface just define the ip of your interface `192.168.1.100`. |
-| `port`                   | The port for the server-socket to accept connections to. Default setting is `9080` and `9443` for ssl. If you want to serve through default HTTP(S) ports just define `80` and for https `443`. Make sure there is no other Webserver installed blocking the default ports.|
+| `port`                   | The port for the server-socket to accept connections to. Default setting is `9080` and `9443` for ssl. If you want to serve through default web ports just define `80` and for https `443`. Make sure there is no other Webserver installed blocking the default ports.|
 | `workerNumber`           | Defines the number of worker-queues to be started waiting for requests to process. |
 | `workerAcceptMin`        | Describes the minimum number of requests for the worker to be accepted for randomize its lifetime. |
 | `workerAcceptMax`        | Describes the maximum number of requests for the worker to be accepted for randomize its lifetime. |
@@ -94,7 +94,7 @@ descriptions below.
 | `keepAliveTimeout`       | The number of seconds waiting for a subsequent request while in keep-alive loop before closing the connection. |
 | `errorsPageTemplatePath` | The path to the errors page template. The path will be relative to the servers root directory if there is no beginning slash "/". |
 
-If you want to setup a HTTPS server you have to configure 2 more params.
+If you want to setup a Webserver you have to configure 2 more params.
 
 | Param         | Description |
 | ------------- | ----------- |
@@ -106,7 +106,7 @@ If you want to setup a HTTPS server you have to configure 2 more params.
 As we wanted to handle requests based on a specific protocol, the server needs a mechanism to understand and handle
 those requests in a proper way.
 
-For our HTTP(S) server we use `\AppserverIo\WebServer\ConnectionHandlers\HttpConnectionHandler`
+For our Webserver we use `\AppserverIo\WebServer\ConnectionHandlers\HttpConnectionHandler`
 which implements the `\AppserverIo\Server\Interfaces\ConnectionHandlerInterface` and follows the HTTP/1.1 specification,
 which can be found [here](<http://tools.ietf.org/html/rfc7230>) using our [HTTP library](<https://github.com/appserver-io/http>).
 
@@ -135,7 +135,7 @@ Let's get an overview of those hooks which can also be found in the correspondin
 | `RESPONSE_POST`  | The response post hook is the last hook triggered within a keep-alive loop and will execute the modules logic when the response is well prepared and ready to dispatch. |
 | `SHUTDOWN`       | The shutdown hook is called whenever a php fatal error will shutdown the current worker process. In this case current filehandler module will be called to process the shutdown hook. This enables the module the possibility to react on fatal error's by it's own in some cases. If it does not react on this shutdown hook, the default error handling response dispatcher logic will be used. If the module reacts on the shutdown hook and set's the response state to be dispatched no other error handling shutdown logic will be called to fill up the response. |
 
-Now let's dig into the modules list provided for the HTTP(S) server by default.
+Now let's dig into the modules list provided for the Webserver by default.
 
 ```xml
 <modules>
