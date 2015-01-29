@@ -75,7 +75,7 @@ A simple rewrite to do this could look like this:
     ...
     <rewrites>
         <rewrite condition="-f" target="" flag="L" />
-        <rewrite condition="^/(.*)$" target="index.php" flag="L" />
+        <rewrite condition="^/(.*)$" target="index.php/$1" flag="L" />
     </rewrites>
 ```
 
