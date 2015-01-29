@@ -6,7 +6,7 @@ author: zelgerj
 categories: [webserver]
 ---
 
-As you may already know, the appserver has a fully http/1.1 compliant [Webserver](<https://github.com/appserver-io/webserver>)
+As you may already know, the appserver has a fully HTTP/1.1 compliant [Webserver](<https://github.com/appserver-io/webserver>)
 included which is build upon our [multithreaded server framework](<https://github.com/appserver-io/server>) which
 is also available open-source on github as well.
 
