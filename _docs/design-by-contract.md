@@ -3,7 +3,7 @@ layout: docs
 title: Design by Contract
 position: 120
 group: Docs
-subDocs:
+subNav:
   - title: What can be done
     href: what-can-be-done
   - title: How does it work

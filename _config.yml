@@ -13,9 +13,14 @@ port: 4000
 host: 0.0.0.0
 baseurl: ""
 url: "http://appserver.io"
+future: false
 
 collections:
   docs:
+    output: true
+  faq:
+    output: true
+  tuts:
     output: true
   features:
     path: products/

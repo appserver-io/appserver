@@ -3,7 +3,7 @@ layout: docs
 title: AOP
 position: 110
 group: Docs
-subDocs:
+subNav:
   - title: How to add an Advice
     href: how-to-add-an-advice
 permalink: /documentation/aop.html

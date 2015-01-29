@@ -3,7 +3,7 @@ layout: docs
 title: Deployment
 position: 150
 group: Docs
-subDocs:
+subNav:
   - title: Deployment Modes
     href: deployment-modes
   - title: Marker Files

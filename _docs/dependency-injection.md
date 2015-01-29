@@ -3,7 +3,7 @@ layout: docs
 title: Dependency Injection
 position: 70
 group: Docs
-subDocs:
+subNav:
   - title: What can be injected
     href: what-can-be-injected
   - title: How to inject an instance

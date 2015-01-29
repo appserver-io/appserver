@@ -3,7 +3,7 @@ layout: docs
 title: Configuration
 position: 130
 group: Docs
-subDocs:
+subNav:
   - title: Basic Architecture
     href: basic-architecture
   - title: Container Configuration
