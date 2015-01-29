@@ -29,7 +29,7 @@ our appserver main https-server configuration.
         <param name="certPath" type="string">etc/appserver/server.pem</param>
         <param name="passphrase" type="string"></param>
         <param name="documentRoot" type="string">webapps</param>
-        <param name="directoryIndex" type="string">index.do index.php index.html index.htm</param>
+        <param name="directoryIndex" type="string">index.php index.html index.htm</param>
         <param name="keepAliveMax" type="integer">64</param>
         <param name="keepAliveTimeout" type="integer">5</param>
         <param name="errorsPageTemplatePath" type="string">var/www/errors/error.phtml</param>
