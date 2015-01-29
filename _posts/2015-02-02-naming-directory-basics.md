@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  Naming-Directory Basics
-date:   2015-01-28 12:00:00
+date:   2015-02-02 12:00:00
 author: wagnert
 version: 1.0.0beta4
 categories: [Naming-Directory]
@@ -140,23 +140,31 @@ The `@Stateless` annotation defines a component als `Stateless` session bean. Th
 
 #### Stateful Session Bean (@Stateful)
 
-The `@Stateful` annotation defines a component als `Stateful` session bean. The annotation only supports the optional `name` attribute. If the `name` attribute is specified, the given value will be used to register the component in the `Naming-Directory` instead of the short class name.
+The `@Stateful` annotation defines a component als `Stateful` session bean. The annotation only supports the optional `name` attribute. If the `name` attribute is specified, the given value will be used to register the component in the `Naming-Directory` instead of the short class name. The annotation has to be set at the classes DocBlock.
 
 #### Singleton Session Bean (@Singleton)
 
-The `@Singleton` annotation defines a component als `Singleton` session bean. The annotation only supports the optional `name` attribute. If the `name` attribute is specified, the given value will be used to register the component in the `Naming-Directory` instead of the short class name.
+The `@Singleton` annotation defines a component als `Singleton` session bean. The annotation only supports the optional `name` attribute. If the `name` attribute is specified, the given value will be used to register the component in the `Naming-Directory` instead of the short class name. The annotation has to be set at the classes DocBlock.
 
 #### Message Driven Bean (@MessageDriven)
 
-The `@MessageDriven` annotation defines a component als `Message` bean. The annotation only supports the optional `name` attribute. If the `name` attribute is specified, the given value will be used to register the component in the `Naming-Directory` instead of the short class name.
+The `@MessageDriven` annotation defines a component als `Message Driven` bean. The annotation only supports the optional `name` attribute. If the `name` attribute is specified, the given value will be used to register the component in the `Naming-Directory` instead of the short class name. The annotation has to be set at the classes DocBlock.
 
 #### Explicit Startup (@Startup)
 
+The `@Startup` annotation configures a `Singleton` session bean to be initialized on application startup and can **explicitly** be used on `Singleton` session beans. The annotation doesn't accept any attributes and has to be set at the classes DocBlock.
+
 #### Post-Construct Callback (@PostConstruct)
 
-#### Pre-Desctory Callback (@PreDestroy)
+This annotation marks a method as `post-construct` lifecycle callback and has to be set at the methods DocBlock. The annotation can be used on all [Server-Side Component Types](<{{ "/persistence-container/2014/12/30/persistence-container-basics.html#server-side-component-types" | prepend: site.baseurl }}>) and doesn't accept any attributes.
+
+#### Pre-Destroy Callback (@PreDestroy)
+
+This annotation marks a method as `pre-destroy` lifecycle callback and has to be set at the methods DocBlock. The annotation can be used on all [Server-Side Component Types](<{{ "/persistence-container/2014/12/30/persistence-container-basics.html#server-side-component-types" | prepend: site.baseurl }}>) and doesn't accept any attributes.
 
 #### Enterprise Beans (@EnterpriseBeans)
+
+
 
 #### Resources (@Resource)
 
