@@ -704,7 +704,7 @@ So if we want to authorize the user logged into the system for the method call t
 
 namespace AppserverIo\Example\SessionBeans;
 
-use Net\Faett\AtChurch\Interceptors\AuthorizationInterceptor;
+use AppserverIo\Example\Interceptors\AuthorizationInterceptor;
 
 /**
  * @Stateful
