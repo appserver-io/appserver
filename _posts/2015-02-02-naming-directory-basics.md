@@ -3,7 +3,7 @@ layout: post
 title:  Naming-Directory Basics
 date:   2015-02-02 12:00:00
 author: wagnert
-version: 1.0.0beta4
+version: 1.0.0-rc1
 categories: [Naming-Directory]
 ---
 
