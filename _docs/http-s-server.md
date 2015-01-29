@@ -84,7 +84,7 @@ descriptions below.
 | `software`               | The software signature as showen in the response header for example. |
 | `transport`              | The transport layer. In ssl mode `ssl` will be used instead of plain `tcp`. |
 | `address`                | The address the server-socket should be bind and listen to. If you want to allow only connection on local loopback define ´127.0.0.1´ as in the example above shown. This will be good enough for local development and testing purpos. If you want to allow connections to your external ethernet interfaces just define `0.0.0.0` or if you want to allow connection only on a specific interface just define the ip of your interface `192.168.1.100`. |
-| `port`                   | The port for the server-socket to accept connections to. Default setting is `9080` and `9443` for ssl. If you want to serve through default http(s) ports just define `80` and for https `443`. Make sure there is no other Webserver installed blocking the default ports.|
+| `port`                   | The port for the server-socket to accept connections to. Default setting is `9080` and `9443` for ssl. If you want to serve through default HTTP(S) ports just define `80` and for https `443`. Make sure there is no other Webserver installed blocking the default ports.|
 | `workerNumber`           | Defines the number of worker-queues to be started waiting for requests to process. |
 | `workerAcceptMin`        | Describes the minimum number of requests for the worker to be accepted for randomize its lifetime. |
 | `workerAcceptMax`        | Describes the maximum number of requests for the worker to be accepted for randomize its lifetime. |
@@ -106,9 +106,9 @@ If you want to setup a HTTPS server you have to configure 2 more params.
 As we wanted to handle requests based on a specific protocol, the server needs a mechanism to understand and handle
 those requests in a proper way.
 
-For our http(s) server we use `\AppserverIo\WebServer\ConnectionHandlers\HttpConnectionHandler`
+For our HTTP(S) server we use `\AppserverIo\WebServer\ConnectionHandlers\HttpConnectionHandler`
 which implements the `\AppserverIo\Server\Interfaces\ConnectionHandlerInterface` and follows the HTTP/1.1 specification,
-which can be found [here](<http://tools.ietf.org/html/rfc7230>) using our [http library](<https://github.com/appserver-io/http>).
+which can be found [here](<http://tools.ietf.org/html/rfc7230>) using our [HTTP library](<https://github.com/appserver-io/http>).
 
 ```xml
 <connectionHandlers>
@@ -173,7 +173,7 @@ Find an overview of all modules below ...
 | `EnvironmentVariableModule` | This module let you manipulate server environment variables. These can be conditionally set, unset and copied in form of an OS context. |
 | `RewriteModule`             | A simple rewrite module for PHP based web servers which uses a self made structure for usable rules. It can be used similar to Apaches mod_rewrite and provides rewriting and redirecting capabilities. |
 | `DirectoryModule`           | Provides for "trailing slash" redirects and serving directory index files. |
-| `AccessModule`              | Allows a http header based access management with regular expression support. |
+| `AccessModule`              | Allows a HTTP header based access management with regular expression support. |
 | `CoreModule`                | HTTP server features that are always available such as serving static resources and finding defined file handlers. |
 | `PhpModule`                 | Acts like a classic php Webserver module (such as `mod_php` for apache) which calls and runs your requested php scripts in an isolated context with all globals (such as `$_SERVER`, `$_GET`, `$_POST` etc.) prepared in the common way. |
 | `FastCgiModule`             | The Module allows you to connect several fastcgi backends (such as `php-fpm` or `hhvm`) based on configured file-handlers. |
@@ -296,7 +296,7 @@ uri to match. It also has some params which are descripted below.
 
 ## Accesses
 
-You can easily allow or deny access on resources based on client's http request headers by setting up accesses within
+You can easily allow or deny access on resources based on client's HTTP request headers by setting up accesses within
 your server or virtual-host configuration.
 
 ```xml
