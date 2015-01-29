@@ -68,10 +68,10 @@ author: all
 
 ### <i class="fa fa-edit"></i> Use Case
 <p>
-During the last years, as PHP tries to advance to the enterprise market, PHP developers have to face the reality, that PHP doesn't provide an enterprise ready infrastructure like Java does. That leads to the situation, that PHP developers have to build up huge knowledge about external tools and libraries written in languages they are not familiar with. As the application server brings the missing infrastructure to the PHP ecosystem, it enables PHP developers to use the services it provides. Extending and using such services will be much more convenient, as they are written in their native language.
+During the last years, as PHP tries to advance to the enterprise market, PHP developers have had to face the reality that PHP does not provide an enterprise ready infrastructure like Java. That leads to the situation where PHP developers have to build up huge knowledge about external tools and libraries written in languages they are not familiar with as the application server brings the missing infrastructure to the PHP ecosystem; it enables PHP developers to use the services it provides. Extending and using such services will be much more convenient since they are written in their native language.
 </p>
 <p>
-One part of the infrastructure is the Servlet Engine. Using a Servlet Engine gives developers the possibility to write blazing fast applications optimized to perfectly fit their requirements as it provides only one functionality: The controller part of an application, based on the MVC pattern. Naturally it allows developers to integrate third-party libraries like a template engine, whenever needed.
+One part of the infrastructure is the Servlet Engine. Using a Servlet Engine gives developers the possibility to write blazing fast applications optimized that perfectly fit their requirements as it provides single functionality.  The controller part of an application, based on the MVC pattern naturally allows developers to integrate third-party libraries like a template engine, whenever needed.
 </p>
 <p>
 The perfect use case for the Servlet Engine are enterprise level applications, that makes massive usage of the application servers services. That applications can benefit from the Servlet Engines performance, flexibility and simplicity in particular.

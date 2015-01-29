@@ -15,7 +15,7 @@ author: all
         <tbody>
             <tr>
                 <td class="col-md-2"><b>Short description</b></td>
-                <td class="col-md-8">The Message Queue provides services that enables developers to process messages asynchronously. Therefore messages, which are plain PHP objects, are stacked on the queue whereas receivers, represented by MessageDriven beans, consumes them in a chronological order. By prioritizing messages, software developers are enabled to optimize a system for optimal resource utilization 
+                <td class="col-md-8">The Message Queue provides services that enables developers to process messages asynchronously therefore messages which are plain PHP objects, are stacked on the queue whereas receivers, represented by MessageDriven beans, consumes them in a chronological order. By prioritizing messages, software developers are enabled to optimize a system for optimal resource utilization 
                 </td>
             </tr>
             <tr>
