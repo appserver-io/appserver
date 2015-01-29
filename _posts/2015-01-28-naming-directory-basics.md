@@ -9,11 +9,11 @@ categories: [Naming-Directory]
 
 Every container running in the application server has a internal registry, we call it Naming Directory. In Java this is called `Enterprise Naming Context` or in short `ENC`. The naming directory is something like an object store, the container registers references to its resources. Resources can be beans or contexts provided by an application. All that resources are registered in the `Naming Directory` which allows you the access them if needed.
 
-### Application Configuration
+### Configure directories to be parsed
 
-When the application server starts, it parses the `META-INF/classes` and `WEB-INF/classes` folders by default to find classes with supported annotations.
+When the application server starts, by default, it parses the `META-INF/classes` and `WEB-INF/classes` folders of your application to find components with supported annotations.
 
-What directories should be parsed for annotated classes can be configured in your applications configuration file. If you don't bundle a specific configuration file with your application, the default configuration will be used. The default application configuration is located under `etc/appserver/conf.d/context.xml`. The nodes `/context/managers/manager[@name="BeanContextInterface" or @name="ServletContextInterface"]` are responsible for parsing and initializing the components.
+What directories are parsed to locate annotated components can be configured in your applications configuration file. If you don't bundle a specific configuration file with your application, the default configuration will be used. The default application configuration is located under `etc/appserver/conf.d/context.xml` and should *NEVER* be edited. The nodes `/context/managers/manager[@name="BeanContextInterface" or @name="ServletContextInterface"]` are responsible for parsing and initializing the components.
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -45,7 +45,7 @@ What directories should be parsed for annotated classes can be configured in you
 </context>
 ```
 
-You can bundle your application with its own, customized `context.xml` file. This MUST be placed in your applications `META-INF` directory. The file MUST not be a full copy of the default one, it allows you to override the nodes you want to customize or extend. To add an additional directory `common/classes` your `context.xml` file could simply look like this
+You can bundle your application with its own, customized `context.xml` file. This *MUST* be placed in your applications `META-INF` directory. The file *MUST NOT* be a full copy of the default one, it allows you to override the nodes you want to customize or extend. To add an additional directory `common/classes` your `context.xml` file could simply look like this
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -69,14 +69,65 @@ You can bundle your application with its own, customized `context.xml` file. Thi
 
 > Keep in mind, that the directory MUST be relative to your applications root directory and start with a `/`.
 
-If a class is found, the class will be registered in the application servers naming directory under the name you specify in the annotations `name` Attribute, in following example `AStatelessSessionBean`. As the `name` attribute is optional, the bean will be registered in the naming directory with the short class name, if not specified.
-
 More detailed information about the how to configure an application can be found in the section [Application Configuration](<{{ "/documentation/configuration.html#application-configuration" | prepend: site.baseurl }}>) of the documentation.
 
 ### Register Resources
 ***
 
-When you want to inject that bean later, you have to know the name it has been registered with. In the following example, the bean will be registered in the naming directory under `php:global/example/AStatelessSessionBean`, whereas `example` is the name of the application. When using annotations to inject components, you don't have to know the fully qualified name, because the application server knows the actual context, tries to lookup the bean and injects it.
+If a class is found, the class will be registered in the application servers naming directory under the name you specify in the annotations `name` attribut. As the `name` attribute is optional, the bean will be registered in the naming directory with the short class name, if not specified.
+
+When you want to inject a bean later, you have to know the name it has been registered with. In the following example, the bean will be registered in the naming directory under 
+
+* `php:global/example/AStatelessSessionBean`
+
+whereas `example` is the name of the application.
+
+> The name of your application is *ALWAYS* the directory it'll be deployed to. As the document root is by default `webapps`, which, for example on a Linux system, will result in `/opt/appserver/webapps`. So if your application can be found under `/opt/appserver/webapps/example`, your application name is `example`.
+
+When using annotations to inject components, you don't have to know the fully qualified name, because the application server knows the context you're in, tries to lookup the bean and injects it.
+
+```php
+<?php
+
+namespace AppserverIo\Example\SessionBeans;
+
+/**
+ * @Stateless
+ */
+class AStatelessSessionBean
+{
+  
+  /**
+   * Creates and returns a new md5 hash for the passed password.
+   * 
+   * @param string $password The password we want to hash
+   * 
+   * @return string The md5 hash representation of the password
+   */
+  public function hashPassword($password)
+  {
+    return md5($password);
+  }
+  
+  /* Creates a new user, hashes the password before.
+   *
+   * @param string $username The username of the user to create
+   * @param string $password The password bound to the user
+   *
+   * @return void
+   */
+  public function createUser($username, $password)
+  {
+    
+    // hash the password
+    $hashedPassword = $this->hashPassword($password);
+    
+    /*
+     * Implement functionality to create user in DB
+     */
+  }
+}
+```
 
 ### Annotations
 ***
