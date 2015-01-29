@@ -13,7 +13,7 @@ Every container running in the application server has a internal registry, we ca
 
 When the application server starts, by default, it parses the `META-INF/classes` and `WEB-INF/classes` folders of your application to find components with supported annotations.
 
-What directories are parsed to locate annotated components can be configured in your applications configuration file. If you don't bundle a specific configuration file with your application, the default configuration will be used. The default application configuration is located under `etc/appserver/conf.d/context.xml` and should *NEVER* be edited. The nodes `/context/managers/manager[@name="BeanContextInterface" or @name="ServletContextInterface"]` are responsible for parsing and initializing the components.
+What directories are parsed to locate annotated components can be configured in your applications configuration file. If you don't bundle a specific configuration file with your application, the default configuration will be used. The default application configuration is located under `etc/appserver/conf.d/context.xml` and should **NEVER** be edited. The nodes `/context/managers/manager[@name="BeanContextInterface" or @name="ServletContextInterface"]` are responsible for parsing and initializing the components.
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -45,7 +45,7 @@ What directories are parsed to locate annotated components can be configured in 
 </context>
 ```
 
-You can bundle your application with its own, customized `context.xml` file. This *MUST* be placed in your applications `META-INF` directory. The file *MUST NOT* be a full copy of the default one, it allows you to override the nodes you want to customize or extend. To add an additional directory `common/classes` your `context.xml` file could simply look like this
+You can bundle your application with its own, customized `context.xml` file. This **MUST** be placed in your applications `META-INF` directory. The file **MUST NOT** be a full copy of the default one, it allows you to override the nodes you want to customize or extend. To add an additional directory `common/classes` your `context.xml` file could simply look like this
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
