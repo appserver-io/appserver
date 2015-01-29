@@ -42,7 +42,7 @@ An detailed description of every parameter can be found under [docs](<{{ "/docum
 
 ### Virtual Hosts
 
-What would live without having the possibility setting up virtual hosts within a http(s)-server and of course our
+What would live without having the possibility setting up virtual hosts within a HTTP(S) Server and of course our
 Webserver is offering you the ability in a simple but flexible way.
 
 See the simplest virtual host configuration:
