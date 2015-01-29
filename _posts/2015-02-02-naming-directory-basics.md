@@ -217,9 +217,10 @@ class ASingletonSessionBean
   /**
    * Injects a stateful session bean instance.
    *
-   * @param \AppserverIo\Example\SessionBeans\AStatelfulSessionBean
+   * @param \AppserverIo\Example\SessionBeans\AStatefulSessionBean
    *
    * @return void
+   * @EnterpriseBean
    */
   public function injectAStatelessSessionBean($aStatefulSessionBean)
   {
