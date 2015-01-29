@@ -164,7 +164,7 @@ This annotation marks a method as `pre-destroy` lifecycle callback and has to be
 
 #### Enterprise Beans (@EnterpriseBean)
 
-This annotation is used to inject components into other components.
+This annotation is used to inject [components](<{{ "/persistence-container/2015/01/30/persistence-container-basics.html#server-side-component-types" | prepend: site.baseurl }}>) into other components.
 
 The `@EnterpriseBean` annotation can be used in two scopes. First scope is in the DocBlock of a components class member, second of a class method. In both cases, the member or the method is marked as target for `Dependency Injection`.
 
