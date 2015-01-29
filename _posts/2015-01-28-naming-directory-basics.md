@@ -136,11 +136,19 @@ Using annotations to configure your components will probably be the easiest way.
 
 #### Stateless Session Bean (@Stateless)
 
+The `@Stateless` annotation defines a component als `Stateless` session bean. The annotation only supports the optional `name` attribute. If the `name` attribute is specified, the given value will be used to register the component in the `Naming-Directory` instead of the short class name.
+
 #### Stateful Session Bean (@Stateful)
+
+The `@Stateful` annotation defines a component als `Stateful` session bean. The annotation only supports the optional `name` attribute. If the `name` attribute is specified, the given value will be used to register the component in the `Naming-Directory` instead of the short class name.
 
 #### Singleton Session Bean (@Singleton)
 
+The `@Singleton` annotation defines a component als `Singleton` session bean. The annotation only supports the optional `name` attribute. If the `name` attribute is specified, the given value will be used to register the component in the `Naming-Directory` instead of the short class name.
+
 #### Message Driven Bean (@MessageDriven)
+
+The `@MessageDriven` annotation defines a component als `Message` bean. The annotation only supports the optional `name` attribute. If the `name` attribute is specified, the given value will be used to register the component in the `Naming-Directory` instead of the short class name.
 
 #### Explicit Startup (@Startup)
 
