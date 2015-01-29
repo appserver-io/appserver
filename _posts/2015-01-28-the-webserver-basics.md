@@ -10,7 +10,7 @@ As you may already know, the appserver has a fully http/1.1 compliant [Webserver
 included which is build upon our [multithreaded server framework](<https://github.com/appserver-io/server>) which
 is also available open-source on github as well.
 
-Your vision is to replace Webservers like apache, nginx or lighttpd in long terms by providing the same feature-set and giving you the opportunity to enhance it by just writing PHP code because its all written in PHP.
+Your vision is to detach Webservers as apache, nginx or lighttpd in long terms by providing the same feature-set and give you the opportunity to enhance our Webserver by just writing PHP code because its all written in PHP.
 
 ### How to configure the Webserver?
 
