@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Provisioning\Step
+ * AppserverIo\Appserver\Core\Provisioning\StepInterface
  *
  * NOTICE OF LICENSE
  *
@@ -32,7 +32,7 @@ use AppserverIo\Appserver\Core\Api\Node\DatasourceNode;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-interface Step
+interface StepInterface
 {
 
     /**

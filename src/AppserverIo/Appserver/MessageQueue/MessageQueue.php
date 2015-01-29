@@ -20,7 +20,7 @@
 
 namespace AppserverIo\Appserver\MessageQueue;
 
-use AppserverIo\Psr\Pms\Queue;
+use AppserverIo\Psr\Pms\QueueInterface;
 
 /**
  * A message queue wrapper implementation.
@@ -31,7 +31,7 @@ use AppserverIo\Psr\Pms\Queue;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class MessageQueue implements Queue
+class MessageQueue implements QueueInterface
 {
 
     /**

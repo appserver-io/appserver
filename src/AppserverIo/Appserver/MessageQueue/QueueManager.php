@@ -11,8 +11,9 @@
  *
  * PHP version 5
  *
- * @author    Markus Stockbauer <ms@techdivision.com>
  * @author    Tim Wagner <tw@appserver.io>
+ * @author    Markus Stockbauer <ms@techdivision.com>
+ * @author    Bernhard Wick <bw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
@@ -21,22 +22,22 @@
 
 namespace AppserverIo\Appserver\MessageQueue;
 
+use AppserverIo\Appserver\Core\AbstractManager;
 use AppserverIo\Storage\GenericStackable;
-use AppserverIo\Psr\Pms\QueueContext;
-use AppserverIo\Psr\Pms\ResourceLocator;
-use AppserverIo\Psr\Pms\Queue;
-use AppserverIo\Psr\Pms\Message;
+use AppserverIo\Psr\Pms\QueueContextInterface;
+use AppserverIo\Psr\Pms\ResourceLocatorInterface;
+use AppserverIo\Psr\Pms\QueueInterface;
+use AppserverIo\Psr\Pms\MessageInterface;
 use AppserverIo\Psr\Naming\NamingException;
-use AppserverIo\Psr\Application\ManagerInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
-use AppserverIo\Appserver\Core\Api\ConfigurationTester;
 use AppserverIo\Appserver\Core\Api\InvalidConfigurationException;
 
 /**
  * The queue manager handles the queues and message beans registered for the application.
  *
- * @author    Markus Stockbauer <ms@techdivision.com>
  * @author    Tim Wagner <tw@appserver.io>
+ * @author    Markus Stockbauer <ms@techdivision.com>
+ * @author    Bernhard Wick <bw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
@@ -44,21 +45,11 @@ use AppserverIo\Appserver\Core\Api\InvalidConfigurationException;
  *
  * @property \AppserverIo\Psr\Application\ApplicationInterface $application     The application to manage queues for
  * @property array                                             $directories     Our directories
- * @property \AppserverIo\Psr\Pms\ResourceLocator              $resourceLocator Locator for the requested queues
+ * @property \AppserverIo\Psr\Pms\ResourceLocatorInterface     $resourceLocator Locator for the requested queues
  * @property \AppserverIo\Storage\GenericStackable             $queues          Queues to manage
- *
- * @todo inherit from AbstractManager
  */
-class QueueManager extends GenericStackable implements QueueContext, ManagerInterface
+class QueueManager extends AbstractManager implements QueueContextInterface
 {
-
-    /**
-     * Initializes the queue manager.
-     */
-    public function __construct()
-    {
-        $this->webappPath = '';
-    }
 
     /**
      * Injects the storage for the queues.
@@ -73,39 +64,15 @@ class QueueManager extends GenericStackable implements QueueContext, ManagerInte
     }
 
     /**
-     * Injects the absolute path to the web application.
-     *
-     * @param string $webappPath The absolute path to this web application
-     *
-     * @return void
-     */
-    public function injectWebappPath($webappPath)
-    {
-        $this->webappPath = $webappPath;
-    }
-
-    /**
      * Injects the resource locator that locates the requested queue.
      *
-     * @param \AppserverIo\Psr\Pms\ResourceLocator $resourceLocator The resource locator
+     * @param \AppserverIo\Psr\Pms\ResourceLocatorInterface $resourceLocator The resource locator
      *
      * @return void
      */
-    public function injectResourceLocator(ResourceLocator $resourceLocator)
+    public function injectResourceLocator(ResourceLocatorInterface $resourceLocator)
     {
         $this->resourceLocator = $resourceLocator;
-    }
-
-    /**
-     * Inject the application instance.
-     *
-     * @param \AppserverIo\Psr\Application\ApplicationInterface $application The application instance
-     *
-     * @return void
-     */
-    public function injectApplication(ApplicationInterface $application)
-    {
-        $this->application = $application;
     }
 
     /**
@@ -142,7 +109,7 @@ class QueueManager extends GenericStackable implements QueueContext, ManagerInte
 
         // check META-INF + subdirectories for XML files with MQ definitions
         $service = $application->newService('AppserverIo\Appserver\Core\Api\DeploymentService');
-        $xmlFiles = $service->globDir($metaInfDir . DIRECTORY_SEPARATOR . '*.xml');
+        $xmlFiles = $service->globDir($metaInfDir . DIRECTORY_SEPARATOR . 'message-queues.xml');
 
         // initialize the array for the creating the subdirectories
         $this->directories = new GenericStackable();
@@ -162,8 +129,8 @@ class QueueManager extends GenericStackable implements QueueContext, ManagerInte
 
                 // validate the file here, if it is not valid we can skip further steps
                 try {
-                    $configurationTester = new ConfigurationTester();
-                    $configurationTester->validateFile($file, null, true);
+                    $configurationService = $application->newService('AppserverIo\Appserver\Core\Api\ConfigurationService');
+                    $configurationService->validateFile($file, null, true);
 
                 } catch (InvalidConfigurationException $e) {
                     $systemLogger = $this->getApplication()->getInitialContext()->getSystemLogger();
@@ -187,7 +154,7 @@ class QueueManager extends GenericStackable implements QueueContext, ManagerInte
                     // register destination and receiver type
                     $this->queues[$instance->getName()] = $instance;
 
-                    // prepare the naming diretory to bind the callbak to
+                    // prepare the naming directory to bind the callback to
                     $path = explode('/', $destination);
 
                     for ($i = 0; $i < sizeof($path) - 1; $i++) {
@@ -224,19 +191,9 @@ class QueueManager extends GenericStackable implements QueueContext, ManagerInte
     }
 
     /**
-     * Returns the absolute path to the web application.
-     *
-     * @return string The absolute path
-     */
-    public function getWebappPath()
-    {
-        return $this->webappPath;
-    }
-
-    /**
      * Return the resource locator instance.
      *
-     * @return \AppserverIo\Psr\Pms\ResourceLocator The resource locator instance
+     * @return \AppserverIo\Psr\Pms\ResourceLocatorInterface The resource locator instance
      */
     public function getResourceLocator()
     {
@@ -244,24 +201,14 @@ class QueueManager extends GenericStackable implements QueueContext, ManagerInte
     }
 
     /**
-     * Returns the application instance.
-     *
-     * @return string The application instance
-     */
-    public function getApplication()
-    {
-        return $this->application;
-    }
-
-    /**
      * Returns TRUE if the application is related with the
      * passed queue instance.
      *
-     * @param \AppserverIo\Psr\Pms\Queue $queue The queue the application has to be related to
+     * @param \AppserverIo\Psr\Pms\QueueInterface $queue The queue the application has to be related to
      *
      * @return boolean TRUE if the application is related, else FALSE
      */
-    public function hasQueue(Queue $queue)
+    public function hasQueue(QueueInterface $queue)
     {
         return array_key_exists($queue->getName(), $this->getQueues());
     }
@@ -270,11 +217,11 @@ class QueueManager extends GenericStackable implements QueueContext, ManagerInte
      * Tries to locate the queue that handles the request and returns the instance
      * if one can be found.
      *
-     * @param \AppserverIo\Psr\Pms\Queue $queue The queue request
+     * @param \AppserverIo\Psr\Pms\QueueInterface $queue The queue request
      *
-     * @return \AppserverIo\Psr\Pms\Queue The requested queue instance
+     * @return \AppserverIo\Psr\Pms\QueueInterface The requested queue instance
      */
-    public function locate(Queue $queue)
+    public function locate(QueueInterface $queue)
     {
         return $this->getResourceLocator()->locate($this, $queue);
     }
@@ -287,7 +234,7 @@ class QueueManager extends GenericStackable implements QueueContext, ManagerInte
      * @param string $sessionId  The session ID
      * @param array  $args       The arguments passed to the queue
      *
-     * @return \AppserverIo\Psr\Pms\Queue The requested queue instance
+     * @return \AppserverIo\Psr\Pms\QueueInterface The requested queue instance
      * @todo Still to implement
      */
     public function lookup($lookupName, $sessionId = null, array $args = array())
@@ -319,11 +266,11 @@ class QueueManager extends GenericStackable implements QueueContext, ManagerInte
     /**
      * Updates the message monitor.
      *
-     * @param \AppserverIo\Psr\Pms\Message $message The message to update the monitor for
+     * @param \AppserverIo\Psr\Pms\MessageInterface $message The message to update the monitor for
      *
      * @return void
      */
-    public function updateMonitor(Message $message)
+    public function updateMonitor(MessageInterface $message)
     {
         error_log('Update message monitor for message: ' . spl_object_hash($message));
     }
@@ -336,18 +283,6 @@ class QueueManager extends GenericStackable implements QueueContext, ManagerInte
      */
     public function getIdentifier()
     {
-        return QueueContext::IDENTIFIER;
-    }
-
-    /**
-     * Returns the value with the passed name from the context.
-     *
-     * @param string $key The key of the value to return from the context.
-     *
-     * @return mixed The requested attribute
-     */
-    public function getAttribute($key)
-    {
-        throw new \Exception(sprintf('%s is not implemented yes', __METHOD__));
+        return QueueContextInterface::IDENTIFIER;
     }
 }

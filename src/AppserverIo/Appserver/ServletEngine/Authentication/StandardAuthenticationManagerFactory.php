@@ -20,7 +20,6 @@
 
 namespace AppserverIo\Appserver\ServletEngine\Authentication;
 
-use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\Application\Interfaces\ManagerConfigurationInterface;
 

@@ -21,10 +21,8 @@
 namespace AppserverIo\Appserver\Core\Api;
 
 use AppserverIo\Psr\Application\ApplicationInterface;
-use AppserverIo\Appserver\Core\Api\AbstractService;
 use AppserverIo\Appserver\Core\Api\Node\ContextNode;
 use AppserverIo\Appserver\Core\Api\Node\DeploymentNode;
-use AppserverIo\Appserver\Core\Api\ServiceInterface;
 use AppserverIo\Appserver\Core\Interfaces\ContainerInterface;
 
 /**
@@ -36,7 +34,7 @@ use AppserverIo\Appserver\Core\Interfaces\ContainerInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class DeploymentService extends AbstractService
+class DeploymentService extends AbstractFileOperationService
 {
 
     /**
@@ -128,7 +126,7 @@ class DeploymentService extends AbstractService
         $contextInstances = array();
 
         // we will need to test our configuration files
-        $configurationTester = new ConfigurationTester();
+        $configurationTester = new ConfigurationService($this->getInitialContext());
         $baseContextPath = $this->getConfdDir('context.xml');
 
         // validate the base context file and load it as default if validation succeeds

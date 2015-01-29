@@ -22,7 +22,6 @@
 
 namespace AppserverIo\Appserver\ServletEngine\Authentication\Adapters;
 
-use AppserverIo\Psr\Servlet\Servlet;
 use AppserverIo\Appserver\ServletEngine\Authentication\AuthenticationAdapter;
 
 /**
@@ -69,7 +68,7 @@ class HtdigestAdapter extends AuthenticationAdapter
      * @param array  $data      The auth data
      * @param string $reqMethod The request method, e. g. GET or POST
      *
-     * @return boolan TRUE if authentication was successfull, else FALSE
+     * @return boolean TRUE if authentication was successful, else FALSE
      */
     public function authenticate($data, $reqMethod)
     {

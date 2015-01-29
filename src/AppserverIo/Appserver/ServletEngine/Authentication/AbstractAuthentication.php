@@ -20,9 +20,8 @@
 
 namespace AppserverIo\Appserver\ServletEngine\Authentication;
 
-use AppserverIo\Psr\Servlet\Servlet;
-use AppserverIo\Psr\Servlet\ServletRequest;
-use AppserverIo\Psr\Servlet\ServletResponse;
+use AppserverIo\Psr\Servlet\ServletRequestInterface;
+use AppserverIo\Psr\Servlet\ServletResponseInterface;
 
 /**
  * Abstract class for authentication adapters.
@@ -54,14 +53,14 @@ abstract class AbstractAuthentication
     /**
      * Holds the Http servlet request instance.
      *
-     * @var \AppserverIo\Psr\Servlet\HttpServletRequest
+     * @var \AppserverIo\Psr\Servlet\ServletRequestInterface
      */
     protected $servletRequest;
 
     /**
      * Holds the Http servlet response instance.
      *
-     * @var \AppserverIo\Psr\Servlet\ServletResponse
+     * @var \AppserverIo\Psr\Servlet\ServletResponseInterface
      */
     protected $servletResponse;
 
@@ -85,12 +84,12 @@ abstract class AbstractAuthentication
     /**
      * An alternative constructor that has to be called manually.
      *
-     * @param \AppserverIo\Psr\Servlet\ServletRequest  $servletRequest  The request instance
-     * @param \AppserverIo\Psr\Servlet\ServletResponse $servletResponse The response instance
+     * @param \AppserverIo\Psr\Servlet\ServletRequestInterface  $servletRequest  The request instance
+     * @param \AppserverIo\Psr\Servlet\ServletResponseInterface $servletResponse The response instance
      *
      * @return void
      */
-    public function init(ServletRequest $servletRequest, ServletResponse $servletResponse)
+    public function init(ServletRequestInterface $servletRequest, ServletResponseInterface $servletResponse)
     {
         $this->setServletRequest($servletRequest);
         $this->setServletResponse($servletResponse);
@@ -99,11 +98,11 @@ abstract class AbstractAuthentication
     /**
      * Sets servlet request instance.
      *
-     * @param \AppserverIo\Psr\Servlet\ServletRequest $servletRequest The request instance
+     * @param \AppserverIo\Psr\Servlet\ServletRequestInterface $servletRequest The request instance
      *
      * @return void
      */
-    protected function setServletRequest(ServletRequest $servletRequest)
+    protected function setServletRequest(ServletRequestInterface $servletRequest)
     {
         $this->servletRequest = $servletRequest;
     }
@@ -111,7 +110,7 @@ abstract class AbstractAuthentication
     /**
      * Returns servlet request instance.
      *
-     * @return \AppserverIo\Psr\Servlet\ServletRequest The servlet request instance
+     * @return \AppserverIo\Psr\Servlet\ServletRequestInterface The servlet request instance
      */
     protected function getServletRequest()
     {
@@ -121,11 +120,11 @@ abstract class AbstractAuthentication
     /**
      * Sets servlet response instance.
      *
-     * @param \AppserverIo\Psr\Servlet\ServletResponse $servletResponse The response instance
+     * @param \AppserverIo\Psr\Servlet\ServletResponseInterface $servletResponse The response instance
      *
      * @return void
      */
-    protected function setServletResponse(ServletResponse $servletResponse)
+    protected function setServletResponse(ServletResponseInterface $servletResponse)
     {
         $this->servletResponse = $servletResponse;
     }
@@ -133,7 +132,7 @@ abstract class AbstractAuthentication
     /**
      * Returns servlet response instance.
      *
-     * @return \AppserverIo\Psr\Servlet\ServletResponse The servlet response instance
+     * @return \AppserverIo\Psr\Servlet\ServletResponseInterface The servlet response instance
      */
     protected function getServletResponse()
     {

@@ -20,19 +20,15 @@
 
 namespace AppserverIo\Appserver\ServletEngine;
 
+use AppserverIo\Appserver\Core\AbstractEpbManager;
 use AppserverIo\Appserver\Core\Api\InvalidConfigurationException;
-use AppserverIo\Psr\Servlet\Servlet;
-use AppserverIo\Psr\Servlet\ServletContext;
-use AppserverIo\Psr\Servlet\Annotations\Route;
-use AppserverIo\Psr\Servlet\Http\HttpServletRequest;
-use AppserverIo\Appserver\Core\AbstractManager;
+use AppserverIo\Psr\Servlet\ServletInterface;
+use AppserverIo\Psr\Servlet\ServletContextInterface;
+use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
 use AppserverIo\Storage\StorageInterface;
-use AppserverIo\Storage\StackableStorage;
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Lang\Reflection\ReflectionClass;
 use AppserverIo\Psr\Application\ApplicationInterface;
-use AppserverIo\Appserver\ServletEngine\ServletConfiguration;
-use AppserverIo\Appserver\ServletEngine\InvalidServletMappingException;
 use AppserverIo\Appserver\DependencyInjectionContainer\DirectoryParser;
 use AppserverIo\Appserver\DependencyInjectionContainer\DeploymentDescriptorParser;
 use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\ServletDescriptorInterface;
@@ -45,8 +41,16 @@ use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\ServletDescrip
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
+ *
+ * @property array                                                         $directories       The additional directories to be parsed
+ * @property \AppserverIo\Storage\StorageInterface                         $initParameters    The container for the init parameters
+ * @property \AppserverIo\Appserver\ServletEngine\ResourceLocatorInterface $resourceLocator   The resource locator for requested servlets
+ * @property \AppserverIo\Storage\StorageInterface                         $securedUrlConfigs The container for the secured URL configurations
+ * @property \AppserverIo\Storage\GenericStackable                         $servletMappings   The container for the servlet mappings
+ * @property \AppserverIo\Storage\StorageInterface                         $servlets          The container for the servlets
+ * @property \AppserverIo\Storage\StorageInterface                         $sessionParameters The container for the session parameters
  */
-class ServletManager extends AbstractManager implements ServletContext
+class ServletManager extends AbstractEpbManager implements ServletContextInterface
 {
 
     /**
@@ -64,11 +68,11 @@ class ServletManager extends AbstractManager implements ServletContext
     /**
      * Injects the resource locator that locates the requested servlet.
      *
-     * @param \AppserverIo\Appserver\ServletEngine\ResourceLocator $resourceLocator The resource locator
+     * @param \AppserverIo\Appserver\ServletEngine\ResourceLocatorInterface $resourceLocator The resource locator
      *
      * @return void
      */
-    public function injectResourceLocator(ResourceLocator $resourceLocator)
+    public function injectResourceLocator(ResourceLocatorInterface $resourceLocator)
     {
         $this->resourceLocator = $resourceLocator;
     }
@@ -360,7 +364,7 @@ class ServletManager extends AbstractManager implements ServletContext
     /**
      * Returns the resource locator for the servlets.
      *
-     * @return \AppserverIo\Appserver\ServletEngine\ResourceLocator The resource locator for the servlets
+     * @return \AppserverIo\Appserver\ServletEngine\ResourceLocatorInterface The resource locator for the servlets
      */
     public function getServletLocator()
     {
@@ -372,7 +376,7 @@ class ServletManager extends AbstractManager implements ServletContext
      *
      * @param string $key The name of the servlet to return
      *
-     * @return \AppserverIo\Psr\Servlet\Servlet The servlet instance
+     * @return \AppserverIo\Psr\Servlet\ServletInterface The servlet instance
      */
     public function getServlet($key)
     {
@@ -386,7 +390,7 @@ class ServletManager extends AbstractManager implements ServletContext
      *
      * @param string $urlMapping The URL mapping to return the servlet for
      *
-     * @return \AppserverIo\Psr\Servlet\Servlet The servlet instance
+     * @return \AppserverIo\Psr\Servlet\ServletInterface The servlet instance
      */
     public function getServletByMapping($urlMapping)
     {
@@ -398,12 +402,12 @@ class ServletManager extends AbstractManager implements ServletContext
     /**
      * Registers a servlet under the passed key.
      *
-     * @param string                           $key     The servlet to key to register with
-     * @param \AppserverIo\Psr\Servlet\Servlet $servlet The servlet to be registered
+     * @param string                                    $key     The servlet to key to register with
+     * @param \AppserverIo\Psr\Servlet\ServletInterface $servlet The servlet to be registered
      *
      * @return void
      */
-    public function addServlet($key, Servlet $servlet)
+    public function addServlet($key, ServletInterface $servlet)
     {
         $this->servlets->set($key, $servlet);
     }
@@ -424,21 +428,11 @@ class ServletManager extends AbstractManager implements ServletContext
     /**
      * Return the resource locator instance.
      *
-     * @return \AppserverIo\Appserver\ServletEngine\ResourceLocator The resource locator instance
+     * @return \AppserverIo\Appserver\ServletEngine\ResourceLocatorInterface The resource locator instance
      */
     public function getResourceLocator()
     {
         return $this->resourceLocator;
-    }
-
-    /**
-     * Returns the host configuration.
-     *
-     * @return \AppserverIo\Appserver\Core\Configuration The host configuration
-     */
-    public function getConfiguration()
-    {
-        throw new \Exception(__METHOD__ . ' not implemented');
     }
 
     /**
@@ -518,13 +512,13 @@ class ServletManager extends AbstractManager implements ServletContext
     /**
      * Tries to locate the resource related with the request.
      *
-     * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest $servletRequest The request instance to return the servlet for
-     * @param array                                            $args           The arguments passed to the servlet constructor
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface $servletRequest The request instance to return the servlet for
+     * @param array                                                     $args           The arguments passed to the servlet constructor
      *
-     * @return \AppserverIo\Psr\Servlet\Servlet The requested servlet
+     * @return \AppserverIo\Psr\Servlet\ServletInterface The requested servlet
      * @see \AppserverIo\Appserver\ServletEngine\ResourceLocator::locate()
      */
-    public function locate(HttpServletRequest $servletRequest, array $args = array())
+    public function locate(HttpServletRequestInterface $servletRequest, array $args = array())
     {
 
         // load the servlet path => to locate the servlet
@@ -534,7 +528,7 @@ class ServletManager extends AbstractManager implements ServletContext
         $sessionId = null;
 
         // if no session has already been load, initialize the session manager
-        if ($manager = $this->getApplication()->search('SessionManager')) {
+        if ($manager = $this->getApplication()->search('SessionManagerInterface')) {
             $requestedSessionName = $manager->getSessionSettings()->getSessionName();
             if ($servletRequest->hasCookie($requestedSessionName)) {
                 $sessionId = $servletRequest->getCookie($requestedSessionName)->getValue();
@@ -577,6 +571,6 @@ class ServletManager extends AbstractManager implements ServletContext
      */
     public function getIdentifier()
     {
-        return ServletContext::IDENTIFIER;
+        return ServletContextInterface::IDENTIFIER;
     }
 }

@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * AppserverIo\Appserver\Application\Application
+ *
  * NOTICE OF LICENSE
  *
  * This source file is subject to the Open Software License (OSL 3.0)
@@ -18,7 +20,6 @@
 
 namespace AppserverIo\Appserver\Application;
 
-use AppserverIo\Lang\Reflection\ReflectionObject;
 use AppserverIo\Logger\LoggerUtils;
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Storage\StorageInterface;
@@ -28,8 +29,6 @@ use AppserverIo\Appserver\Naming\BindingTrait;
 use AppserverIo\Appserver\Naming\NamingDirectory;
 use AppserverIo\Psr\Naming\NamingException;
 use AppserverIo\Psr\Naming\NamingDirectoryInterface;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\EnterpriseBean;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\AnnotationKeys;
 use AppserverIo\Psr\Application\ManagerInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Psr\Application\DirectoryAwareInterface;
@@ -38,8 +37,6 @@ use AppserverIo\Appserver\Application\Interfaces\ContextInterface;
 use AppserverIo\Appserver\Application\Interfaces\ManagerConfigurationInterface;
 
 /**
- * AppserverIo\Appserver\Application\Application
- *
  * The application instance holds all information about the deployed application
  * and provides a reference to the servlet manager and the initial context.
  *
@@ -85,7 +82,7 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
      * @param string $key The key of the value to return from the context.
      *
      * @return mixed The requested attribute
-     * @see \AppserverIo\Psr\Context\Context::getAttribute()
+     * @see \AppserverIo\Psr\Context\ContextInterface::getAttribute()
      */
     public function getAttribute($key)
     {
@@ -259,6 +256,8 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
      * recursive from the scheme and the root directory.
      *
      * @return string The unique identifier
+     *
+     * @throws \AppserverIo\Psr\Naming\NamingException
      * @see \AppserverIo\Storage\StorageInterface::getIdentifier()
      */
     public function getIdentifier()

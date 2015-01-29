@@ -22,7 +22,6 @@
 
 namespace AppserverIo\Appserver\ServletEngine\Authentication\Adapters;
 
-use AppserverIo\Psr\Servlet\Servlet;
 use AppserverIo\Appserver\ServletEngine\Authentication\AuthenticationAdapter;
 
 /**
@@ -71,7 +70,7 @@ class HtpasswdAdapter extends AuthenticationAdapter
      * @param string $user The username
      * @param string $pwd  The password
      *
-     * @return boolean TRUE if authentication was successfull, else FALSE
+     * @return boolean TRUE if authentication was successful, else FALSE
      */
     public function authenticate($user, $pwd)
     {

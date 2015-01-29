@@ -365,7 +365,7 @@ class ServletDescriptor implements ServletDescriptorInterface
     {
 
         // query if we've a servlet
-        if ($reflectionClass->implementsInterface('AppserverIo\Psr\Servlet\Servlet') === false) {
+        if ($reflectionClass->implementsInterface('AppserverIo\Psr\Servlet\ServletInterface') === false) {
             // if not, do nothing
             return;
         }

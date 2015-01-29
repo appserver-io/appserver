@@ -311,7 +311,7 @@ class ResourceIdentifier
     }
 
     /**
-     * Creates a new resource identifer instance with the data extracted from the passed URL.
+     * Creates a new resource identifier instance with the data extracted from the passed URL.
      *
      * @param string $url The URL to load the data from
      *

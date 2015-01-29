@@ -25,10 +25,9 @@ use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Stateless;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Singleton;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\MessageDriven;
-use AppserverIo\Psr\EnterpriseBeans\BeanContext;
-use AppserverIo\Psr\EnterpriseBeans\ServiceProvider;
-use AppserverIo\Psr\EnterpriseBeans\ServiceExecutor;
-use AppserverIo\Psr\EnterpriseBeans\TimerServiceContext;
+use AppserverIo\Psr\EnterpriseBeans\ServiceProviderInterface;
+use AppserverIo\Psr\EnterpriseBeans\ServiceExecutorInterface;
+use AppserverIo\Psr\EnterpriseBeans\TimerServiceContextInterface;
 use AppserverIo\Psr\EnterpriseBeans\ServiceAlreadyRegisteredException;
 
 /**
@@ -40,24 +39,24 @@ use AppserverIo\Psr\EnterpriseBeans\ServiceAlreadyRegisteredException;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class TimerServiceRegistry extends ServiceRegistry implements TimerServiceContext
+class TimerServiceRegistry extends ServiceRegistry implements TimerServiceContextInterface
 {
 
     /**
      * The timer service executor.
      *
-     * @var \AppserverIo\Psr\EnterpriseBeans\ServiceExecutor
+     * @var \AppserverIo\Psr\EnterpriseBeans\ServiceExecutorInterface
      */
     protected $timerServiceExecutor;
 
     /**
      * Injects the service executor for the timer service registry.
      *
-     * @param \AppserverIo\Psr\EnterpriseBeans\ServiceExecutor $timerServiceExecutor The service executor
+     * @param \AppserverIo\Psr\EnterpriseBeans\ServiceExecutorInterface $timerServiceExecutor The service executor
      *
      * @return void
      */
-    public function injectTimerServiceExecutor(ServiceExecutor $timerServiceExecutor)
+    public function injectTimerServiceExecutor(ServiceExecutorInterface $timerServiceExecutor)
     {
         $this->timerServiceExecutor = $timerServiceExecutor;
     }
@@ -65,7 +64,7 @@ class TimerServiceRegistry extends ServiceRegistry implements TimerServiceContex
     /**
      * Returns the service executor for the timer service registry.
      *
-     * @return \AppserverIo\Psr\EnterpriseBeans\ServiceExecutor The timer service executor instance
+     * @return \AppserverIo\Psr\EnterpriseBeans\ServiceExecutorInterface The timer service executor instance
      */
     public function getTimerServiceExecutor()
     {
@@ -107,7 +106,7 @@ class TimerServiceRegistry extends ServiceRegistry implements TimerServiceContex
                 // cut off the META-INF directory and replace OS specific directory separators
                 $relativePathToPhpFile = str_replace(DIRECTORY_SEPARATOR, '\\', str_replace($metaInfDir, '', $phpFile));
 
-                // now cut off the first directory, that'll be '/classes' by default
+                // now cut off the first directory, that will be '/classes' by default
                 $pregResult = preg_replace('%^(\\\\*)[^\\\\]+%', '', $relativePathToPhpFile);
                 $className = substr($pregResult, 0, -4);
 
@@ -161,7 +160,7 @@ class TimerServiceRegistry extends ServiceRegistry implements TimerServiceContex
                 // log an error message
                 $application->getInitialContext()->getSystemLogger()->error($e->__toString());
 
-                // proceed with the nexet bean
+                // proceed with the next bean
                 continue;
             }
         }
@@ -170,12 +169,12 @@ class TimerServiceRegistry extends ServiceRegistry implements TimerServiceContex
     /**
      * Attaches the passed service, to the context.
      *
-     * @param \AppserverIo\Psr\EnterpriseBeans\ServiceProvider $instance The service instance to attach
+     * @param \AppserverIo\Psr\EnterpriseBeans\ServiceProviderInterface $instance The service instance to attach
      *
      * @return void
      * @throws \AppserverIo\Psr\EnterpriseBeans\ServiceAlreadyRegisteredException Is thrown if the passed service has already been registered
      */
-    public function register(ServiceProvider $instance)
+    public function register(ServiceProviderInterface $instance)
     {
 
         // check if the service has already been registered
@@ -196,11 +195,11 @@ class TimerServiceRegistry extends ServiceRegistry implements TimerServiceContex
     /**
      * Initializes the manager instance.
      *
-     * @return void
+     * @return string
      * @see \AppserverIo\Psr\Application\ManagerInterface::initialize()
      */
     public function getIdentifier()
     {
-        return TimerServiceContext::IDENTIFIER;
+        return TimerServiceContextInterface::IDENTIFIER;
     }
 }

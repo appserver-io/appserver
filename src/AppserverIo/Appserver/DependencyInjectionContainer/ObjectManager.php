@@ -12,6 +12,7 @@
  * PHP version 5
  *
  * @author    Tim Wagner <tw@appserver.io>
+ * @author    Bernhard Wick <bw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
@@ -21,23 +22,24 @@
 namespace AppserverIo\Appserver\DependencyInjectionContainer;
 
 use AppserverIo\Storage\StorageInterface;
-use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Appserver\Core\AbstractManager;
-use AppserverIo\Psr\Application\ManagerInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\DescriptorInterface;
 use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\ObjectManagerInterface;
-use AppserverIo\Collections\IndexOutOfBoundsException;
 
 /**
  * The object manager is necessary to load and provides information about all
  * objects related with the application itself.
  *
  * @author    Tim Wagner <tw@appserver.io>
+ * @author    Bernhard Wick <bw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
+ *
+ * @property array                                 $configuredDescriptors Descriptors used to parse deployment descriptors and annotations from the managers configuration
+ * @property \AppserverIo\Storage\StorageInterface $objectDescriptors     Storage for our collected descriptors
  */
 class ObjectManager extends AbstractManager implements ObjectManagerInterface
 {

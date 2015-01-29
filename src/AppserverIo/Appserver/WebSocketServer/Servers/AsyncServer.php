@@ -20,13 +20,9 @@
 
 namespace AppserverIo\Appserver\WebSocketServer\Servers;
 
-use AppserverIo\Server\Dictionaries\ModuleVars;
-use AppserverIo\Server\Dictionaries\ServerVars;
 use AppserverIo\Server\Dictionaries\ServerStateKeys;
-use AppserverIo\Server\Interfaces\ServerConfigurationInterface;
 use AppserverIo\Server\Interfaces\ServerContextInterface;
 use AppserverIo\Server\Interfaces\ServerInterface;
-use AppserverIo\Server\Exceptions\ModuleNotFoundException;
 use AppserverIo\Server\Exceptions\ConnectionHandlerNotFoundException;
 
 /**
@@ -122,7 +118,7 @@ class AsyncServer extends \Thread implements ServerInterface
         $connectionHandlersTypes = $serverConfig->getConnectionHandlers();
         foreach ($connectionHandlersTypes as $connectionHandlerType) {
 
-            // check if conenction handler type exists
+            // check if connection handler type exists
             if (!class_exists($connectionHandlerType)) {
                 throw new ConnectionHandlerNotFoundException($connectionHandlerType);
             }
@@ -147,7 +143,7 @@ class AsyncServer extends \Thread implements ServerInterface
         // get class names
         $socketType = $serverConfig->getSocketType();
 
-        // setup server bound on local adress
+        // setup server bound on local address
         $serverConnection = $socketType::getServerInstance(
             $connectionHandler,
             $serverConfig->getPort(),

@@ -60,7 +60,7 @@ class HandlerManagerFactory
         $handlerManager->injectHandlers($handlers);
         $handlerManager->injectHandlerMappings($handlerMappings);
         $handlerManager->injectInitParameters($initParameters);
-        $handlerManager->injectWebappPath($application->getWebappPath());
+        $handlerManager->injectApplication($application);
         $handlerManager->injectHandlerLocator($handlerLocator);
 
         // attach the instance

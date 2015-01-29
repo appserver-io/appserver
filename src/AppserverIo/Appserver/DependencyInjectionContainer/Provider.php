@@ -24,9 +24,6 @@ use AppserverIo\Psr\Naming\NamingDirectoryInterface;
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Lang\Reflection\ClassInterface;
 use AppserverIo\Lang\Reflection\ReflectionClass;
-use AppserverIo\Lang\Reflection\ReflectionMethod;
-use AppserverIo\Lang\Reflection\ReflectionAnnotation;
-use AppserverIo\Lang\Reflection\ReflectionProperty;
 use AppserverIo\Lang\Reflection\AnnotationInterface;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\MessageDriven;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\PreDestroy;
@@ -45,8 +42,6 @@ use AppserverIo\Psr\Servlet\Annotations\Route;
 
 // ATTENTION: this is necessary for Windows
 use AppserverIo\Appserver\Naming\InitialContext as NamingContext;
-use AppserverIo\Psr\EnterpriseBeans\EnterpriseBeansException;
-use AppserverIo\Appserver\DependencyInjectionContainer\Description\EpbReferenceDescriptor;
 
 /**
  * A basic dependency injection provider implementation.

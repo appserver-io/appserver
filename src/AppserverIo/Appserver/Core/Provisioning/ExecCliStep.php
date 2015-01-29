@@ -38,7 +38,7 @@ class ExecCliStep extends AbstractStep
      *
      * @return void
      * @throws \Exception Is thrown if the script can't be executed
-     * @see \AppserverIo\Appserver\Core\Provisioning\Step::execute()
+     * @see \AppserverIo\Appserver\Core\Provisioning\StepInterface::execute()
      */
     public function execute()
     {

@@ -34,7 +34,7 @@ use AppserverIo\Appserver\Core\InitialContext;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-abstract class AbstractStep extends \Thread implements Step
+abstract class AbstractStep extends \Thread implements StepInterface
 {
 
     /**
@@ -61,7 +61,7 @@ abstract class AbstractStep extends \Thread implements Step
     /**
      * The initial context.
      *
-     * @var \AppserverIo\Appserver\Core\Interfaces\ContextInterface
+     * @var \AppserverIo\Appserver\Application\Interfaces\ContextInterface
      */
     protected $initialContext;
 
@@ -142,7 +142,7 @@ abstract class AbstractStep extends \Thread implements Step
     /**
      * Injects the initial context.
      *
-     * @param \AppserverIo\Appserver\Core\Interfaces\ContextInterface $initialContext The initial context instance
+     * @param \AppserverIo\Appserver\Application\Interfaces\ContextInterface $initialContext The initial context instance
      *
      * @return void
      */
@@ -184,7 +184,7 @@ abstract class AbstractStep extends \Thread implements Step
     /**
      * Returns the initial context instance.
      *
-     * @return \AppserverIo\Appserver\Core\Interfaces\ContextInterface The initial context
+     * @return \AppserverIo\Appserver\Application\Interfaces\ContextInterface The initial context
      */
     public function getInitialContext()
     {

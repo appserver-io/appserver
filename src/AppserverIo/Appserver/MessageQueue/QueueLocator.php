@@ -21,10 +21,9 @@
 
 namespace AppserverIo\Appserver\MessageQueue;
 
-use AppserverIo\Psr\Pms\Queue;
-use AppserverIo\Psr\Pms\QueueContext;
-use AppserverIo\Psr\Pms\ResourceLocator;
-use AppserverIo\Appserver\MessageQueue\QueueManager;
+use AppserverIo\Psr\Pms\QueueInterface;
+use AppserverIo\Psr\Pms\QueueContextInterface;
+use AppserverIo\Psr\Pms\ResourceLocatorInterface;
 
 /**
  * The queue resource locator implementation.
@@ -36,20 +35,20 @@ use AppserverIo\Appserver\MessageQueue\QueueManager;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class QueueLocator implements ResourceLocator
+class QueueLocator implements ResourceLocatorInterface
 {
 
     /**
      * Tries to locate the queue that handles the request and returns the instance
      * if one can be found.
      *
-     * @param \AppserverIo\Psr\QueueContext               $queueManager The queue manager instance
-     * @param \AppserverIo\Psr\MessageQueueProtocol\Queue $queue        The queue request
+     * @param \AppserverIo\Psr\Pms\QueueContextInterface $queueManager The queue manager instance
+     * @param \AppserverIo\Psr\Pms\QueueInterface        $queue        The queue request
      *
-     * @return \AppserverIo\Psr\MessageQueueProtocol\Queue The requested queue instance
+     * @return \AppserverIo\Psr\Pms\QueueInterface The requested queue instance
      * @see \AppserverIo\Appserver\MessageQueue\ResourceLocator::locate()
      */
-    public function locate(QueueContext $queueManager, Queue $queue)
+    public function locate(QueueContextInterface $queueManager, QueueInterface $queue)
     {
 
         // load registered queues and requested queue name

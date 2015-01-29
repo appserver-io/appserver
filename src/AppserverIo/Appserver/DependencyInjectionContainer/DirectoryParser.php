@@ -21,7 +21,6 @@
 namespace AppserverIo\Appserver\DependencyInjectionContainer;
 
 use AppserverIo\Psr\Application\ApplicationInterface;
-use AppserverIo\Lang\Reflection\ReflectionClass;
 
 /**
  * Parser to parse a directory for annotated beans or servlets.

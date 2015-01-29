@@ -20,10 +20,8 @@
 
 namespace AppserverIo\Appserver\ServletEngine;
 
-use AppserverIo\Psr\Servlet\ServletContext;
-use AppserverIo\Psr\Servlet\Http\HttpServletRequest;
-use AppserverIo\Psr\Servlet\Http\HttpServletResponse;
-use AppserverIo\Appserver\ServletEngine\Valve;
+use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
+use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
 
 /**
  * Valve implementation that will be executed by the servlet engine to handle
@@ -35,23 +33,23 @@ use AppserverIo\Appserver\ServletEngine\Valve;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class ServletValve implements Valve
+class ServletValve implements ValveInterface
 {
 
     /**
      * Processes the request by invoking the request handler that executes the servlet
      * in a protected context.
      *
-     * @param \AppserverIo\Psr\Servlet\ServletRequest  $servletRequest  The request instance
-     * @param \AppserverIo\Psr\Servlet\ServletResponse $servletResponse The response instance
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface  $servletRequest  The request instance
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse The response instance
      *
      * @return void
      */
-    public function invoke(HttpServletRequest $servletRequest, HttpServletResponse $servletResponse)
+    public function invoke(HttpServletRequestInterface $servletRequest, HttpServletResponseInterface $servletResponse)
     {
 
         // load the servlet manager
-        $servletManager = $servletRequest->getContext()->search('ServletContext');
+        $servletManager = $servletRequest->getContext()->search('ServletContextInterface');
 
         // locate and service the servlet
         $servlet = $servletManager->locate($servletRequest);

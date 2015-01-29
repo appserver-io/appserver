@@ -22,9 +22,8 @@ namespace AppserverIo\Appserver\ServletEngine;
 
 use AppserverIo\Logger\LoggerUtils;
 use AppserverIo\Storage\GenericStackable;
-use AppserverIo\Server\Dictionaries\ServerVars;
-use AppserverIo\Psr\Servlet\Http\HttpServletRequest;
-use AppserverIo\Psr\Servlet\Http\HttpServletResponse;
+use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
+use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
 
 /**
@@ -67,11 +66,11 @@ class RequestHandler extends \Thread
     /**
      * Inject the actual servlet request.
      *
-     * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest $servletRequest The actual request instance
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface $servletRequest The actual request instance
      *
      * @return void
      */
-    public function injectRequest(HttpServletRequest $servletRequest)
+    public function injectRequest(HttpServletRequestInterface $servletRequest)
     {
         $this->servletRequest = $servletRequest;
     }
@@ -79,11 +78,11 @@ class RequestHandler extends \Thread
     /**
      * Inject the actual servlet response.
      *
-     * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponse $servletResponse The actual response instance
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse The actual response instance
      *
      * @return void
      */
-    public function injectResponse(HttpServletResponse $servletResponse)
+    public function injectResponse(HttpServletResponseInterface $servletResponse)
     {
         $this->servletResponse = $servletResponse;
     }

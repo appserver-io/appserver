@@ -20,7 +20,7 @@
 
 namespace AppserverIo\Appserver\Application\Interfaces;
 
-use AppserverIo\Psr\Context\Context;
+use AppserverIo\Psr\Context\ContextInterface as Context;
 
 /**
  * Interface for a context.

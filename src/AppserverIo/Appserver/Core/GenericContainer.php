@@ -20,8 +20,6 @@
 
 namespace AppserverIo\Appserver\Core;
 
-use AppserverIo\Appserver\Core\AbstractContainerThread;
-
 /**
  * Generic container implementation.
  *

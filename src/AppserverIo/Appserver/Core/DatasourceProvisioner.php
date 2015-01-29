@@ -20,7 +20,7 @@
 
 namespace AppserverIo\Appserver\Core;
 
-use AppserverIo\Appserver\Core\Api\ConfigurationTester;
+use AppserverIo\Appserver\Core\Api\ConfigurationService;
 
 /**
  * Standard provisioning functionality.
@@ -47,11 +47,11 @@ class DatasourceProvisioner extends AbstractProvisioner
             // load the datasource files
             $datasourceFiles = $this->getService()->globDir($directory . DIRECTORY_SEPARATOR . '*-ds.xml');
             // iterate through all provisioning files (provision.xml), validate them and attach them to the configuration
-            $configurationTester = new ConfigurationTester();
+            $configurationService = new ConfigurationService($this->getInitialContext());
             foreach ($datasourceFiles as $datasourceFile) {
                 // validate the file, but skip it if validation fails
-                if (!$configurationTester->validateFile($datasourceFile)) {
-                    $errorMessages = $configurationTester->getErrorMessages();
+                if (!$configurationService->validateFile($datasourceFile)) {
+                    $errorMessages = $configurationService->getErrorMessages();
                     $systemLogger = $this->getInitialContext()->getSystemLogger();
                     $systemLogger->error(reset($errorMessages));
                     $systemLogger->critical(sprintf('Will skip reading configuration in %s, datasources might be missing.', $datasourceFile));
@@ -63,7 +63,7 @@ class DatasourceProvisioner extends AbstractProvisioner
 
                 // store the datasource in the system configuration
                 foreach ($datasourceNodes as $datasourceNode) {
-                    $this->getService()->attachDatasource($datasourceNode);
+                    $this->getService()->persist($datasourceNode);
                 }
             }
         }

@@ -21,8 +21,6 @@
 
 namespace AppserverIo\Appserver\ServletEngine\Authentication;
 
-use AppserverIo\Psr\Servlet\Servlet;
-
 /**
  * Abstract class for authentication adapters.
  *

@@ -22,10 +22,8 @@ namespace AppserverIo\Appserver\ServletEngine\Http;
 
 use AppserverIo\Http\HttpCookie;
 use AppserverIo\Psr\Servlet\SessionUtils;
-use AppserverIo\Psr\Servlet\ServletSession;
-use AppserverIo\Psr\Servlet\Http\HttpServletRequest;
+use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
 use AppserverIo\Psr\Servlet\Http\HttpSessionWrapper;
-use AppserverIo\Appserver\ServletEngine\SessionManager;
 
 /**
  * A wrapper to simplify session handling.
@@ -42,18 +40,18 @@ class SessionWrapper extends HttpSessionWrapper
     /**
      * The request instance we're working on.
      *
-     * @var \AppserverIo\Psr\Servlet\Http\HttpServletRequest
+     * @var \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface
      */
     protected $request;
 
     /**
      * Injects the request instance.
      *
-     * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest $request The request instance we're working on
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface $request The request instance we're working on
      *
      * @return void
      */
-    public function injectRequest(HttpServletRequest $request)
+    public function injectRequest(HttpServletRequestInterface $request)
     {
         $this->request = $request;
     }
@@ -61,7 +59,7 @@ class SessionWrapper extends HttpSessionWrapper
     /**
      * Returns the request instance we're working on.
      *
-     * @return \AppserverIo\Psr\Servlet\Http\HttpServletRequest
+     * @return \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface
      */
     public function getRequest()
     {
@@ -71,7 +69,7 @@ class SessionWrapper extends HttpSessionWrapper
     /**
      * Returns the response instance we're working on.
      *
-     * @return \AppserverIo\Psr\Servlet\Http\HttpServletResponse
+     * @return \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface
      */
     public function getResponse()
     {
@@ -164,7 +162,7 @@ class SessionWrapper extends HttpSessionWrapper
         $this->setId(SessionUtils::generateRandomString());
 
         // load the session manager
-        $sessionManager = $this->getContext()->search('SessionManager');
+        $sessionManager = $this->getContext()->search('SessionManagerInterface');
 
         // attach this session with the new ID
         $sessionManager->attach($this->getSession());

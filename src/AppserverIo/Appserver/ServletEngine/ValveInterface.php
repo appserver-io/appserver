@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\GarbageCollector
+ * AppserverIo\Appserver\ServletEngine\Valve
  *
  * NOTICE OF LICENSE
  *
@@ -17,11 +17,15 @@
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
+
 namespace AppserverIo\Appserver\ServletEngine;
 
+use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
+use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
+
 /**
- * A thread thats preinitialized session instances and adds them to the
- * the session pool.
+ * Interface for the valves that will be executed by the servlet engine to handle
+ * an incoming Http request.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -29,27 +33,16 @@ namespace AppserverIo\Appserver\ServletEngine;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-interface GarbageCollector
+interface ValveInterface
 {
 
     /**
-     * Initializes the garbage collector.
+     * Processes this valve.
+     *
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface  $servletRequest  The request instance
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse The response instance
      *
      * @return void
      */
-    public function initialize();
-
-    /**
-     * Starts the garbage collector.
-     *
-     * @return void
-     */
-    public function run();
-
-    /**
-     * Stops the garbage collector.
-     *
-     * @return void
-     */
-    public function stop();
+    public function invoke(HttpServletRequestInterface $servletRequest, HttpServletResponseInterface $servletResponse);
 }

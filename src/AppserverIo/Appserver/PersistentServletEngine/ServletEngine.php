@@ -21,32 +21,21 @@
 
 namespace AppserverIo\Appserver\PersistentServletEngine;
 
-use AppserverIo\Http\HttpCookie;
 use AppserverIo\Http\HttpProtocol;
 use AppserverIo\Http\HttpResponseStates;
 use AppserverIo\Psr\HttpMessage\RequestInterface;
 use AppserverIo\Psr\HttpMessage\ResponseInterface;
 use AppserverIo\Storage\GenericStackable;
-use AppserverIo\Appserver\Application\Interfaces\ContextInterface;
-use AppserverIo\Psr\Servlet\ServletRequest;
-use AppserverIo\Psr\Servlet\ServletResponse;
-use AppserverIo\Psr\Servlet\Http\HttpServletRequest;
-use AppserverIo\Psr\Servlet\Http\HttpServletResponse;
+use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
 use AppserverIo\Server\Dictionaries\ModuleHooks;
 use AppserverIo\Server\Dictionaries\ServerVars;
-use AppserverIo\WebServer\Interfaces\HttpModuleInterface;
 use AppserverIo\Server\Interfaces\RequestContextInterface;
 use AppserverIo\Server\Interfaces\ServerContextInterface;
 use AppserverIo\Server\Exceptions\ModuleException;
-use AppserverIo\Appserver\ServletEngine\Http\Session;
 use AppserverIo\Appserver\ServletEngine\Http\Request;
 use AppserverIo\Appserver\ServletEngine\Http\Response;
 use AppserverIo\Appserver\ServletEngine\Http\Part;
-use AppserverIo\Appserver\ServletEngine\BadRequestException;
 use AppserverIo\Appserver\ServletEngine\AbstractServletEngine;
-use AppserverIo\Appserver\ServletEngine\Authentication\AuthenticationValve;
-use AppserverIo\Appserver\Core\Interfaces\ContainerInterface;
-use AppserverIo\Server\Dictionaries\EnvVars;
 
 /**
  * A servlet engine implementation.
@@ -88,10 +77,10 @@ class ServletEngine extends AbstractServletEngine
     /**
      * Initializes the module.
      *
-     * @param \TechDivision\Server\Interfaces\ServerContextInterface $serverContext The servers context instance
+     * @param \AppserverIo\Server\Interfaces\ServerContextInterface $serverContext The servers context instance
      *
      * @return void
-     * @throws \TechDivision\Server\Exceptions\ModuleException
+     * @throws \AppserverIo\Server\Exceptions\ModuleException
      */
     public function init(ServerContextInterface $serverContext)
     {
@@ -111,7 +100,7 @@ class ServletEngine extends AbstractServletEngine
     }
 
     /**
-     * Initialize the pool of persistant request handlers per application.
+     * Initialize the pool of persistent request handlers per application.
      *
      * @return void
      */
@@ -176,7 +165,7 @@ class ServletEngine extends AbstractServletEngine
                 return;
             }
 
-            // intialize servlet session, request + response
+            // initialize servlet session, request + response
             $servletRequest = new Request();
             $servletRequest->injectHttpRequest($request);
             $servletRequest->injectServerVars($requestContext->getServerVars());
@@ -262,12 +251,12 @@ class ServletEngine extends AbstractServletEngine
     /**
      * Tries to find a request handler that matches the actual request and injects it into the request.
      *
-     * @param \TechDivision\Servlet\Http\HttpServletRequest $servletRequest The servlet request we need a request handler to handle for
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface $servletRequest The servlet request we need a request handler to handle for
      *
      * @return string The application name of the application to handle the request
      * @deprecated This method is deprecated since 0.8.0
      */
-    protected function requestHandlerFromPool(HttpServletRequest $servletRequest)
+    protected function requestHandlerFromPool(HttpServletRequestInterface $servletRequest)
     {
         // nothing to do here
     }

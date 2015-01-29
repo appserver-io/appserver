@@ -21,11 +21,11 @@
 
 namespace AppserverIo\Appserver\MessageQueue;
 
-use AppserverIo\Psr\Pms\Queue;
-use AppserverIo\Psr\Pms\Message;
-use AppserverIo\Psr\Pms\Monitor;
-use AppserverIo\Psr\Pms\StateKey;
-use AppserverIo\Psr\Pms\PriorityKey;
+use AppserverIo\Psr\Pms\QueueInterface;
+use AppserverIo\Psr\Pms\MessageInterface;
+use AppserverIo\Psr\Pms\MonitorInterface;
+use AppserverIo\Psr\Pms\StateKeyInterface;
+use AppserverIo\Psr\Pms\PriorityKeyInterface;
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Messaging\Utils\PriorityKeys;
 use AppserverIo\Messaging\Utils\PriorityLow;
@@ -43,7 +43,7 @@ use AppserverIo\Psr\Application\ApplicationInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class MessageWrapper extends GenericStackable implements Message
+class MessageWrapper extends GenericStackable implements MessageInterface
 {
 
     /**
@@ -66,7 +66,7 @@ class MessageWrapper extends GenericStackable implements Message
     /**
      * Creates a new and empty wrapper instance.
      *
-     * @return \AppserverIo\Psr\Pms\Message The empty message wrapper instance
+     * @return \AppserverIo\Psr\Pms\MessageInterface The empty message wrapper instance
      */
     public static function emptyInstance()
     {
@@ -76,11 +76,11 @@ class MessageWrapper extends GenericStackable implements Message
     /**
      * Initializes the wrapper with the real message
      *
-     * @param \AppserverIo\Psr\Pms\Message $message The message we want to wrap
+     * @param \AppserverIo\Psr\Pms\MessageInterface $message The message we want to wrap
      *
      * @return void
      */
-    public function init(Message $message)
+    public function init(MessageInterface $message)
     {
         $this->messageId = $message->getMessageId();
         $this->message = $message->getMessage();
@@ -159,11 +159,11 @@ class MessageWrapper extends GenericStackable implements Message
     /**
      * Sets the destination Queue.
      *
-     * @param \AppserverIo\Psr\Pms\Queue $destination The destination
+     * @param \AppserverIo\Psr\Pms\QueueInterface $destination The destination
      *
      * @return void
      */
-    public function setDestination(Queue $destination)
+    public function setDestination(QueueInterface $destination)
     {
         $this->destination = $destination;
     }
@@ -171,7 +171,7 @@ class MessageWrapper extends GenericStackable implements Message
     /**
      * Returns the destination Queue.
      *
-     * @return \AppserverIo\Psr\Pms\Queue The destination Queue
+     * @return \AppserverIo\Psr\Pms\QueueInterface The destination Queue
      */
     public function getDestination()
     {
@@ -181,11 +181,11 @@ class MessageWrapper extends GenericStackable implements Message
     /**
      * Sets the priority of the message.
      *
-     * @param \AppserverIo\Psr\Pms\PriorityKey $priority The priority to set the message to
+     * @param \AppserverIo\Psr\Pms\PriorityKeyInterface $priority The priority to set the message to
      *
      * @return void
      */
-    public function setPriority(PriorityKey $priority)
+    public function setPriority(PriorityKeyInterface $priority)
     {
         $this->priority = $priority->getPriority();
     }
@@ -193,7 +193,7 @@ class MessageWrapper extends GenericStackable implements Message
     /**
      * Returns the priority of the message.
      *
-     * @return \AppserverIo\Psr\Pms\PriorityKey The priority of the message
+     * @return \AppserverIo\Psr\Pms\PriorityKeyInterface The priority of the message
      */
     public function getPriority()
     {
@@ -203,11 +203,11 @@ class MessageWrapper extends GenericStackable implements Message
     /**
      * Sets the state of the message.
      *
-     * @param \AppserverIo\Psr\Pms\StateKey $state The new state
+     * @param \AppserverIo\Psr\Pms\StateKeyInterface $state The new state
      *
      * @return void
      */
-    public function setState(StateKey $state)
+    public function setState(StateKeyInterface $state)
     {
         $this->state = $state->getState();
     }
@@ -215,7 +215,7 @@ class MessageWrapper extends GenericStackable implements Message
     /**
      * Returns the state of the message.
      *
-     * @return \AppserverIo\Psr\Pms\StateKey The message state
+     * @return \AppserverIo\Psr\Pms\StateKeyInterface The message state
      */
     public function getState()
     {
@@ -225,11 +225,11 @@ class MessageWrapper extends GenericStackable implements Message
     /**
      * Sets the parent message.
      *
-     * @param \AppserverIo\Psr\Pms\Message $parentMessage The parent message
+     * @param \AppserverIo\Psr\Pms\MessageInterface $parentMessage The parent message
      *
      * @return void
      */
-    public function setParentMessage(Message $parentMessage)
+    public function setParentMessage(MessageInterface $parentMessage)
     {
         $this->parentMessage = $parentMessage;
     }
@@ -237,8 +237,8 @@ class MessageWrapper extends GenericStackable implements Message
     /**
      * Returns the parent message.
      *
-     * @return \AppserverIo\Psr\Pms\Message The parent message
-     * @see \AppserverIo\Psr\Pms\Message::getParentMessage()
+     * @return \AppserverIo\Psr\Pms\MessageInterface The parent message
+     * @see \AppserverIo\Psr\Pms\MessageInterface::getParentMessage()
      */
     public function getParentMessage()
     {
@@ -248,11 +248,11 @@ class MessageWrapper extends GenericStackable implements Message
     /**
      * Sets the monitor for monitoring the message itself.
      *
-     * @param \AppserverIo\Psr\Pms\Monitor $messageMonitor The monitor
+     * @param \AppserverIo\Psr\Pms\MonitorInterface $messageMonitor The monitor
      *
      * @return void
      */
-    public function setMessageMonitor(Monitor $messageMonitor)
+    public function setMessageMonitor(MonitorInterface $messageMonitor)
     {
         $this->messageMonitor = $messageMonitor;
     }
@@ -260,7 +260,7 @@ class MessageWrapper extends GenericStackable implements Message
     /**
      * Returns the message monitor.
      *
-     * @return \AppserverIo\Psr\Pms\Monitor The monitor
+     * @return \AppserverIo\Psr\Pms\MonitorInterface The monitor
      * @see \AppserverIo\Appserver\Pms\Message::getMessageMonitor()
      */
     public function getMessageMonitor()

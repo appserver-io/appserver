@@ -21,19 +21,18 @@
 
 namespace AppserverIo\Appserver\PersistenceContainer;
 
+use AppserverIo\Psr\EnterpriseBeans\ServiceExecutorInterface;
 use Rhumsaa\Uuid\Uuid;
 use AppserverIo\Storage\StorageInterface;
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Lang\Reflection\MethodInterface;
-use AppserverIo\Psr\EnterpriseBeans\TimerConfig;
 use AppserverIo\Psr\EnterpriseBeans\TimerInterface;
 use AppserverIo\Psr\EnterpriseBeans\ScheduleExpression;
 use AppserverIo\Psr\EnterpriseBeans\TimerServiceInterface;
 use AppserverIo\Psr\EnterpriseBeans\TimedObjectInvokerInterface;
 use AppserverIo\Appserver\PersistenceContainer\Utils\TimerState;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Schedule;
-use AppserverIo\Psr\EnterpriseBeans\ServiceExecutor;
-use AppserverIo\Psr\EnterpriseBeans\ServiceProvider;
+use AppserverIo\Psr\EnterpriseBeans\ServiceProviderInterface;
 
 /**
  * The timer service implementation providing functionality to handle timers.
@@ -45,7 +44,7 @@ use AppserverIo\Psr\EnterpriseBeans\ServiceProvider;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class TimerService extends GenericStackable implements TimerServiceInterface, ServiceProvider
+class TimerService extends GenericStackable implements TimerServiceInterface, ServiceProviderInterface
 {
 
     /**
@@ -71,11 +70,11 @@ class TimerService extends GenericStackable implements TimerServiceInterface, Se
     /**
      * Injects the timer service executor.
      *
-     * @param \AppserverIo\Psr\EnterpriseBeans\ServiceExecutor $timerServiceExecutor The timer service executor instance
+     * @param \AppserverIo\Psr\EnterpriseBeans\ServiceExecutorInterface $timerServiceExecutor The timer service executor instance
      *
      * @return void
      */
-    public function injectTimerServiceExecutor(ServiceExecutor $timerServiceExecutor)
+    public function injectTimerServiceExecutor(ServiceExecutorInterface $timerServiceExecutor)
     {
         $this->timerServiceExecutor = $timerServiceExecutor;
     }
@@ -108,7 +107,7 @@ class TimerService extends GenericStackable implements TimerServiceInterface, Se
      * Returns identifier for this timer service instance.
      *
      * @return string The primary key of the timer service instance
-     * @see \AppserverIo\Psr\EnterpriseBeans\ServiceProvider::getPrimaryKey()
+     * @see \AppserverIo\Psr\EnterpriseBeans\ServiceProviderInterface::getPrimaryKey()
      */
     public function getPrimaryKey()
     {
@@ -119,7 +118,7 @@ class TimerService extends GenericStackable implements TimerServiceInterface, Se
      * Returns the unique service name.
      *
      * @return string The service name
-     * @see \AppserverIo\Psr\EnterpriseBeans\ServiceProvider::getServiceName()
+     * @see \AppserverIo\Psr\EnterpriseBeans\ServiceProviderInterface::getServiceName()
      */
     public function getServiceName()
     {
@@ -250,8 +249,6 @@ class TimerService extends GenericStackable implements TimerServiceInterface, Se
      * @param boolean       $persistent        TRUE if the newly created timer has to be persistent
      *
      * @return \AppserverIo\Psr\EnterpriseBeans\TimerInterface Returns the newly created timer
-     * @throws IllegalArgumentException If initialExpiration is null or intervalDuration is negative
-     * @throws IllegalStateException If this method was invoked during a lifecycle callback on the enterprise bean
      */
     protected function createTimer(\DateTime $initialExpiration, $intervalDuration = 0, \Serializable $info = null, $persistent = true)
     {
@@ -407,7 +404,7 @@ class TimerService extends GenericStackable implements TimerServiceInterface, Se
     /**
      * Returns the timer object executor instances.
      *
-     * @return \AppserverIo\Psr\EnterpriseBeans\ServiceExecutor The timer service executor
+     * @return \AppserverIo\Psr\EnterpriseBeans\ServiceExecutorInterface The timer service executor
      */
     public function getTimerServiceExecutor()
     {

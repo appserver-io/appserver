@@ -20,7 +20,7 @@
 
 namespace AppserverIo\Appserver\ServletEngine;
 
-use AppserverIo\Psr\Servlet\ServletSession;
+use AppserverIo\Psr\Servlet\ServletSessionInterface;
 
 /**
  * This valve will check if the actual request needs authentication.
@@ -31,19 +31,19 @@ use AppserverIo\Psr\Servlet\ServletSession;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class StandardSessionMarshaller implements SessionMarshaller
+class StandardSessionMarshaller implements SessionMarshallerInterface
 {
 
     /**
      * Transforms the passed session instance into a JSON encoded string. If the data contains
      * objects, each of them will be serialized before store them to the persistence layer.
      *
-     * @param \AppserverIo\Psr\Servlet\ServletSession $servletSession The session to be transformed
+     * @param \AppserverIo\Psr\Servlet\ServletSessionInterface $servletSession The session to be transformed
      *
      * @return string The JSON encoded session representation
      * @see \AppserverIo\Appserver\ServletEngine\SessionMarshaller::marshall()
      */
-    public function marshall(ServletSession $servletSession)
+    public function marshall(ServletSessionInterface $servletSession)
     {
 
         // create the stdClass (that can easy be transformed into an JSON object)
@@ -76,13 +76,13 @@ class StandardSessionMarshaller implements SessionMarshaller
      * data contains objects, they will be unserialized before reattached to the
      * session instance.
      *
-     * @param \AppserverIo\Psr\Servlet\ServletSession $servletSession The empty session instance we want the unmarshalled data be added to
-     * @param string                                  $marshalled     The marshalled session representation
+     * @param \AppserverIo\Psr\Servlet\ServletSessionInterface $servletSession The empty session instance we want the unmarshalled data be added to
+     * @param string                                           $marshalled     The marshalled session representation
      *
-     * @return \AppserverIo\Psr\Servlet\ServletSession The decoded session instance
+     * @return \AppserverIo\Psr\Servlet\ServletSessionInterface The decoded session instance
      * @see \AppserverIo\Appserver\ServletEngine\SessionMarshaller::unmarshall()
      */
-    public function unmarshall(ServletSession $servletSession, $marshalled)
+    public function unmarshall(ServletSessionInterface $servletSession, $marshalled)
     {
 
         // decode the string

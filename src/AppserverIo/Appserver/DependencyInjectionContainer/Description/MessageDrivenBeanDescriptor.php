@@ -64,7 +64,7 @@ class MessageDrivenBeanDescriptor extends BeanDescriptor implements MessageDrive
      *
      * @param \AppserverIo\Lang\Reflection\ClassInterface $reflectionClass The reflection class with the bean configuration
      *
-     * @return \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\MesssageDrivenBeanDescriptorInterface|null The initialized descriptor instance
+     * @return \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\MessageDrivenBeanDescriptorInterface|null The initialized descriptor instance
      */
     public function fromReflectionClass(ClassInterface $reflectionClass)
     {
@@ -87,7 +87,7 @@ class MessageDrivenBeanDescriptor extends BeanDescriptor implements MessageDrive
      *
      * @param \SimpleXmlElement $node The deployment node with the bean configuration
      *
-     * @return \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\MesssageDrivenBeanDescriptorInterface|null The initialized descriptor instance
+     * @return \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\MessageDrivenBeanDescriptorInterface|null The initialized descriptor instance
      */
     public function fromDeploymentDescriptor(\SimpleXmlElement $node)
     {

@@ -21,7 +21,6 @@
 namespace AppserverIo\Appserver\Core\Scanner;
 
 use AppserverIo\Appserver\Core\Interfaces\ExtractorInterface;
-use AppserverIo\Appserver\Application\Interfaces\ContextInterface;
 
 /**
  * This is a scanner that watches a flat directory for files that changed

@@ -26,12 +26,10 @@ use Phlexy\LexerFactory\Stateless\UsingPregReplace;
 use AppserverIo\Properties\Properties;
 use AppserverIo\Properties\PropertiesInterface;
 use AppserverIo\Psr\Servlet\SessionUtils;
-use AppserverIo\Psr\Servlet\ServletRequest;
+use AppserverIo\Psr\Servlet\ServletRequestInterface;
 use AppserverIo\Psr\Naming\NamingException;
-use AppserverIo\Psr\EnterpriseBeans\BeanContext;
 use AppserverIo\Psr\Application\ApplicationInterface;
-use AppserverIo\RemoteMethodInvocation\Session;
-use AppserverIo\RemoteMethodInvocation\Connection;
+use AppserverIo\RemoteMethodInvocation\ConnectionInterface;
 use AppserverIo\RemoteMethodInvocation\LocalConnectionFactory;
 use AppserverIo\RemoteMethodInvocation\RemoteConnectionFactory;
 
@@ -84,7 +82,7 @@ class InitialContext
     /**
      * The servlet request instance the context is bound to.
      *
-     * @var \AppserverIo\Psr\Servlet\ServletRequest
+     * @var \AppserverIo\Psr\Servlet\ServletRequestInterface
      */
     protected $servletRequest;
 
@@ -183,11 +181,11 @@ class InitialContext
     /**
      * The servlet request instance for binding stateful session beans to.
      *
-     * @param \AppserverIo\Psr\Servlet\ServletRequest $servletRequest The servlet request instance
+     * @param \AppserverIo\Psr\Servlet\ServletRequestInterface $servletRequest The servlet request instance
      *
      * @return void
      */
-    public function injectServletRequest(ServletRequest $servletRequest)
+    public function injectServletRequest(ServletRequestInterface $servletRequest)
     {
         $this->servletRequest = $servletRequest;
     }
@@ -225,7 +223,7 @@ class InitialContext
     /**
      * Returns the servlet request instance for binding stateful session beans to.
      *
-     * @return \AppserverIo\Psr\Servlet\ServletRequest The servlet request instance
+     * @return \AppserverIo\Psr\Servlet\ServletRequestInterface The servlet request instance
      */
     public function getServletRequest()
     {
@@ -387,13 +385,13 @@ class InitialContext
      * Finally this method does the lookup for the passed resource identifier
      * using the also passed connection.
      *
-     * @param \AppserverIo\Appserver\Naming\ResourceIdentifier   $resourceIdentifier The identifier for the requested bean
-     * @param \AppserverIo\PersistenceContainerClient\Connection $connection         The connection we use for loading the bean
-     * @param string                                             $sessionId          The session-ID, necessary for lookup stateful session beans
+     * @param \AppserverIo\Appserver\Naming\ResourceIdentifier        $resourceIdentifier The identifier for the requested bean
+     * @param \AppserverIo\RemoteMethodInvocation\ConnectionInterface $connection         The connection we use for loading the bean
+     * @param string                                                  $sessionId          The session-ID, necessary for lookup stateful session beans
      *
      * @return object The been proxy instance
      */
-    protected function doLookup(ResourceIdentifier $resourceIdentifier, Connection $connection, $sessionId = null)
+    protected function doLookup(ResourceIdentifier $resourceIdentifier, ConnectionInterface $connection, $sessionId = null)
     {
 
         // initialize the session

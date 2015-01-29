@@ -22,11 +22,6 @@ namespace AppserverIo\Appserver\Core;
 
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Storage\StackableStorage;
-use AppserverIo\Appserver\Naming\NamingDirectory;
-use AppserverIo\Appserver\Application\Application;
-use AppserverIo\Appserver\Application\Interfaces\ContextInterface;
-use AppserverIo\Appserver\Core\AbstractDeployment;
-use AppserverIo\Appserver\Core\Api\Node\ContextNode;
 use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
 use AppserverIo\Appserver\Core\Interfaces\ContainerInterface;
 

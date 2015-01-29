@@ -20,8 +20,10 @@
 
 namespace AppserverIo\Appserver\Core\Api;
 
+use AppserverIo\Appserver\Core\InitialContext;
+
 /**
- * This class clan be used to validate configuration files against known schemas.
+ * This class can be used to validate configuration files against known schemas.
  *
  * @author    Bernhard Wick <bw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -29,7 +31,7 @@ namespace AppserverIo\Appserver\Core\Api;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class ConfigurationTester
+class ConfigurationService extends AbstractService
 {
 
     /**
@@ -63,10 +65,24 @@ class ConfigurationTester
 
     /**
      * Default constructor
+     *
+     * @param \AppserverIo\Appserver\Core\InitialContext $initialContext The initial context instance
      */
-    public function __construct()
+    public function __construct(InitialContext $initialContext)
     {
+        parent::__construct($initialContext);
+
         $this->init();
+    }
+
+    /**
+     * Returns all nodes.
+     *
+     * @return array An array with all nodes
+     */
+    public function findAll()
+    {
+        // TODO: Implement findAll() method.
     }
 
     /**
@@ -128,6 +144,18 @@ class ConfigurationTester
         $this->errors = array();
         $this->schemaFile = realpath(__DIR__ . '/../../../../../') . DIRECTORY_SEPARATOR . self::DEFAULT_XML_SCHEMA;
         $this->schemaFiles = array();
+    }
+
+    /**
+     * Returns the node with the passed UUID.
+     *
+     * @param integer $uuid UUID of the node to return
+     *
+     * @return \AppserverIo\Configuration\Interfaces\NodeInterface The node with the UUID passed as parameter
+     */
+    public function load($uuid)
+    {
+        // TODO: Implement load() method.
     }
 
     /**

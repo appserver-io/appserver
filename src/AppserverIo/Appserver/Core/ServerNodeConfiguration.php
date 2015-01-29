@@ -20,7 +20,6 @@
 
 namespace AppserverIo\Appserver\Core;
 
-use AppserverIo\Configuration\Interfaces\NodeInterface;
 use AppserverIo\Server\Interfaces\ServerConfigurationInterface;
 use AppserverIo\Appserver\Core\Api\Node\ServerNodeInterface;
 

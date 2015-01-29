@@ -25,8 +25,7 @@ use AppserverIo\Http\HttpProtocol;
 use AppserverIo\Http\HttpException;
 use AppserverIo\Http\HttpResponseStates;
 use AppserverIo\Psr\HttpMessage\CookieInterface;
-use AppserverIo\Psr\HttpMessage\ResponseInterface;
-use AppserverIo\Psr\Servlet\Http\HttpServletResponse;
+use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
 
 /**
  * A servlet request implementation.
@@ -37,13 +36,11 @@ use AppserverIo\Psr\Servlet\Http\HttpServletResponse;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class Response extends GenericStackable implements HttpServletResponse
+class Response extends GenericStackable implements HttpServletResponseInterface
 {
 
     /**
      * Initialize the servlet response.
-     *
-     * @return void
      */
     public function __construct()
     {
@@ -95,7 +92,7 @@ class Response extends GenericStackable implements HttpServletResponse
     /**
      * Adds a cookie.
      *
-     * @param \AppserverIo\Http\HttpCookieInterface $cookie The cookie instance to add
+     * @param \AppserverIo\Psr\HttpMessage\CookieInterface $cookie The cookie instance to add
      *
      * @return void
      */
@@ -229,7 +226,7 @@ class Response extends GenericStackable implements HttpServletResponse
             $this->bodyStream = substr($sourceStream, $offset, $maxlength);
         }
 
-        // return the sring length
+        // return the string length
         return strlen($this->bodyStream);
     }
 
@@ -258,13 +255,29 @@ class Response extends GenericStackable implements HttpServletResponse
     }
 
     /**
-     * Return's all headers as array
+     * Returns all headers as array
      *
      * @return array
      */
     public function getHeaders()
     {
         return $this->headers;
+    }
+
+    /**
+     * Returns the headers as string
+     *
+     * @return string
+     */
+    public function getHeadersAsString()
+    {
+        $headerString = '';
+        foreach ($this->getHeaders() as $name => $header) {
+            // build up a header string
+            $headerString .= $name . ': ' . $header . PHP_EOL;
+        }
+
+        return $headerString;
     }
 
     /**
@@ -317,7 +330,7 @@ class Response extends GenericStackable implements HttpServletResponse
     }
 
     /**
-     * Return's the http version of the response
+     * Returns the http version of the response
      *
      * @return string
      */
@@ -353,7 +366,7 @@ class Response extends GenericStackable implements HttpServletResponse
     }
 
     /**
-     * Set's the http response status code
+     * Sets the http response status code
      *
      * @param int $code The status code to set
      *
@@ -369,7 +382,7 @@ class Response extends GenericStackable implements HttpServletResponse
     }
 
     /**
-     * Return's the response status code
+     * Returns the response status code
      *
      * @return int
      */
@@ -379,7 +392,7 @@ class Response extends GenericStackable implements HttpServletResponse
     }
 
     /**
-     * Set's the status reason phrase
+     * Sets the status reason phrase
      *
      * @param string $statusReasonPhrase The reason phrase
      *
@@ -391,7 +404,7 @@ class Response extends GenericStackable implements HttpServletResponse
     }
 
     /**
-     * Return's the status phrase based on the status code
+     * Returns the status phrase based on the status code
      *
      * @return string
      */
@@ -401,7 +414,7 @@ class Response extends GenericStackable implements HttpServletResponse
     }
 
     /**
-     * Set's state of response
+     * Sets state of response
      *
      * @param int $state The state value
      *
@@ -413,7 +426,7 @@ class Response extends GenericStackable implements HttpServletResponse
     }
 
     /**
-     * Return's the current state
+     * Returns the current state
      *
      * @return int
      */
@@ -427,7 +440,7 @@ class Response extends GenericStackable implements HttpServletResponse
      *
      * @param int $state The state to compare with
      *
-     * @return bool Wheater state is equal (true) or not (false)
+     * @return bool Whether state is equal (true) or not (false)
      */
     public function hasState($state)
     {
@@ -436,7 +449,7 @@ class Response extends GenericStackable implements HttpServletResponse
 
     /**
      * Redirects to the passed URL by adding a 'Location' header and
-     * setting the apropriate status code, by default 301.
+     * setting the appropriate status code, by default 301.
      *
      * @param string  $url  The URL to forward to
      * @param integer $code The status code to set

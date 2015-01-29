@@ -22,9 +22,7 @@ namespace AppserverIo\Appserver\ServletEngine\Http;
 
 use AppserverIo\Storage\StackableStorage;
 use AppserverIo\Storage\GenericStackable;
-use AppserverIo\Psr\Servlet\ServletSession;
-use AppserverIo\Psr\Servlet\Http\HttpSession;
-use AppserverIo\Psr\Servlet\Http\HttpServletResponse;
+use AppserverIo\Psr\Servlet\ServletSessionInterface;
 
 /**
  * A modular session implementation based on the caching framework.
@@ -43,20 +41,20 @@ use AppserverIo\Psr\Servlet\Http\HttpServletResponse;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class Session extends GenericStackable implements ServletSession
+class Session extends GenericStackable implements ServletSessionInterface
 {
 
     /**
      * Constructor to initialize a newly created session.
      *
-     * @param mixed            $id         The session ID
-     * @param string           $name       The session name
-     * @param integer|DateTime $lifetime   Date and time after the session expires
-     * @param integer|null     $maximumAge Number of seconds until the session expires
-     * @param string|null      $domain     The host to which the user agent will send this cookie
-     * @param string           $path       The path describing the scope of this cookie
-     * @param boolean          $secure     If this cookie should only be sent through a "secure" channel by the user agent
-     * @param boolean          $httpOnly   If this cookie should only be used through the HTTP protocol
+     * @param mixed             $id         The session ID
+     * @param string            $name       The session name
+     * @param integer|\DateTime $lifetime   Date and time after the session expires
+     * @param integer|null      $maximumAge Number of seconds until the session expires
+     * @param string|null       $domain     The host to which the user agent will send this cookie
+     * @param string            $path       The path describing the scope of this cookie
+     * @param boolean           $secure     If this cookie should only be sent through a "secure" channel by the user agent
+     * @param boolean           $httpOnly   If this cookie should only be used through the HTTP protocol
      */
     public function __construct($id, $name, $lifetime, $maximumAge, $domain, $path, $secure, $httpOnly)
     {
@@ -74,14 +72,14 @@ class Session extends GenericStackable implements ServletSession
     /**
      * Initializes the session with the passed data.
      *
-     * @param mixed            $id         The session ID
-     * @param string           $name       The session name
-     * @param integer|DateTime $lifetime   Date and time after the session expires
-     * @param integer|null     $maximumAge Number of seconds until the session expires
-     * @param string|null      $domain     The host to which the user agent will send this cookie
-     * @param string           $path       The path describing the scope of this cookie
-     * @param boolean          $secure     If this cookie should only be sent through a "secure" channel by the user agent
-     * @param boolean          $httpOnly   If this cookie should only be used through the HTTP protocol
+     * @param mixed             $id         The session ID
+     * @param string            $name       The session name
+     * @param integer|\DateTime $lifetime   Date and time after the session expires
+     * @param integer|null      $maximumAge Number of seconds until the session expires
+     * @param string|null       $domain     The host to which the user agent will send this cookie
+     * @param string            $path       The path describing the scope of this cookie
+     * @param boolean           $secure     If this cookie should only be sent through a "secure" channel by the user agent
+     * @param boolean           $httpOnly   If this cookie should only be used through the HTTP protocol
      *
      * @return void
      */
@@ -182,7 +180,7 @@ class Session extends GenericStackable implements ServletSession
     /**
      * Returns date and time after the session expires.
      *
-     * @return integer|DateTime The date and time after the session expires
+     * @return integer|\DateTime The date and time after the session expires
      */
     public function getLifetime()
     {
@@ -192,7 +190,7 @@ class Session extends GenericStackable implements ServletSession
     /**
      * Sets date and time after the session expires.
      *
-     * @param integer|DateTime $lifetime The date and time after the session expires
+     * @param integer|\DateTime $lifetime The date and time after the session expires
      *
      * @return void
      */
@@ -433,7 +431,7 @@ class Session extends GenericStackable implements ServletSession
     /**
      * Creates a new and empty session instance.
      *
-     * @return \AppserverIo\Psr\Servlet\ServletSession The empty, but initialized session instance
+     * @return \AppserverIo\Psr\Servlet\ServletSessionInterface The empty, but initialized session instance
      */
     public static function emptyInstance()
     {

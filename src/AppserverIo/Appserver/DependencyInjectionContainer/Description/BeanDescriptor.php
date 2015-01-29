@@ -23,8 +23,6 @@ namespace AppserverIo\Appserver\DependencyInjectionContainer\Description;
 use AppserverIo\Lang\Reflection\ClassInterface;
 use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\BeanDescriptorInterface;
 use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\EpbReferenceDescriptorInterface;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\EnterpriseBean;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\Resource;
 use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\ResReferenceDescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\EnterpriseBeansException;
 

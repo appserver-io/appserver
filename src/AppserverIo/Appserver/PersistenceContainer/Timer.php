@@ -20,14 +20,10 @@
 namespace AppserverIo\Appserver\PersistenceContainer;
 
 use AppserverIo\Storage\GenericStackable;
-use AppserverIo\Lang\NumberFormatException;
 use AppserverIo\Lang\IllegalStateException;
 use AppserverIo\Psr\EnterpriseBeans\TimerInterface;
-use AppserverIo\Psr\EnterpriseBeans\ScheduleExpression;
 use AppserverIo\Psr\EnterpriseBeans\NoMoreTimeoutsException;
-use AppserverIo\Psr\EnterpriseBeans\EnterpriseBeansException;
 use AppserverIo\Psr\EnterpriseBeans\NoSuchObjectLocalException;
-use AppserverIo\Psr\EnterpriseBeans\TimedObjectInterface;
 use AppserverIo\Psr\EnterpriseBeans\TimerServiceInterface;
 use AppserverIo\Appserver\PersistenceContainer\Tasks\TimerTask;
 use AppserverIo\Appserver\PersistenceContainer\Utils\TimerState;
@@ -62,7 +58,7 @@ class Timer extends GenericStackable implements TimerInterface
     /**
      * The timer service instance.
      *
-     * @var \AppserverIo\Appserver\PersistenceContainer\TimerServiceInterface
+     * @var \AppserverIo\Psr\EnterpriseBeans\TimerServiceInterface
      */
     protected $timerService;
 
@@ -176,7 +172,7 @@ class Timer extends GenericStackable implements TimerInterface
     /**
      * Returns the instance that'll be invoked when the timeout expires.
      *
-     * @return \AppserverIo\Psr\EnterpriseBeans\TimeServiceInterface The instance to be invoked when the timeout expires
+     * @return \AppserverIo\Psr\EnterpriseBeans\TimerServiceInterface The instance to be invoked when the timeout expires
      */
     public function getTimerService()
     {
@@ -399,7 +395,7 @@ class Timer extends GenericStackable implements TimerInterface
      *
      * @param \AppserverIo\Psr\Application\ApplicationInterface $application The application instance
      *
-     * @return \AppserverIo\Appserver\PersistenceContainer\TimerTask The task
+     * @return \AppserverIo\Appserver\PersistenceContainer\Tasks\TimerTask The task
      */
     protected function getTimerTask(ApplicationInterface $application)
     {

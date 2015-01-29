@@ -21,8 +21,6 @@
 namespace AppserverIo\Appserver\PersistenceContainer;
 
 use AppserverIo\Logger\LoggerUtils;
-use AppserverIo\Storage\StackableStorage;
-use AppserverIo\Psr\EnterpriseBeans\BeanContext;
 use AppserverIo\Psr\Application\ApplicationInterface;
 
 /**
@@ -47,7 +45,7 @@ class StandardGarbageCollector extends \Thread
     /**
      * Initializes the queue worker with the application and the storage it should work on.
      *
-     * @param \AppserverIo\Appserver\Core\Interfaces\ApplicationInterface $application The application instance with the queue manager/locator
+     * @param \AppserverIo\Psr\Application\ApplicationInterface $application The application instance with the queue manager/locator
      */
     public function __construct(ApplicationInterface $application)
     {
@@ -67,7 +65,7 @@ class StandardGarbageCollector extends \Thread
     public function run()
     {
 
-        // create a local instance of appication and storage
+        // create a local instance of application and storage
         $application = $this->application;
 
         // register the class loader again, because each thread has its own context
@@ -85,7 +83,7 @@ class StandardGarbageCollector extends \Thread
             });
 
             // we need the bean manager that handles all the beans
-            $beanManager = $application->search('BeanContext');
+            $beanManager = $application->search('BeanContextInterface');
 
             // load the map with the stateful session beans
             $statefulSessionBeans = $beanManager->getStatefulSessionBeans();

@@ -1577,7 +1577,7 @@ in `/opt/appserver/etc/appserver/conf.d/context.xml`
     <!-- provides the services necessary to handle Session- and MessageBeans -->
     <manager 
       name="BeanManager"
-      beanInterface="BeanContext"
+      beanInterface="BeanContextInterface"
       type="AppserverIo\Appserver\PersistenceContainer\BeanManager"
       factory="AppserverIo\Appserver\PersistenceContainer\BeanManagerFactory">
       <!-- params>
@@ -1608,14 +1608,14 @@ in `/opt/appserver/etc/appserver/conf.d/context.xml`
     <!-- provides functionality to handle HTTP sessions -->
     <manager 
       name="StandardSessionManager"
-      beanInterface="SessionManager"
+      beanInterface="SessionManagerInterface"
       type="AppserverIo\Appserver\ServletEngine\StandardSessionManager"
       factory="AppserverIo\Appserver\ServletEngine\StandardSessionManagerFactory"/>
 
     <!-- provides functionality to handle Timers -->
     <manager 
       name="TimerServiceRegistry"
-      beanInterface="TimerServiceContext"
+      beanInterface="TimerServiceContextInterfacek"
       type="AppserverIo\Appserver\PersistenceContainer\TimerServiceRegistry"
       factory="AppserverIo\Appserver\PersistenceContainer\TimerServiceRegistryFactory"/>
 

@@ -20,9 +20,6 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
-use AppserverIo\Lang\Reflection\ReflectionClass;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\Resource;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\AnnotationKeys;
 use AppserverIo\Appserver\Application\Interfaces\ManagerConfigurationInterface;
 
 /**

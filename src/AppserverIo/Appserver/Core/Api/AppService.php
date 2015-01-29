@@ -27,7 +27,7 @@ use AppserverIo\Appserver\Core\Interfaces\ExtractorInterface;
 use AppserverIo\Appserver\Core\Extractors\PharExtractor;
 
 /**
- * This services provides access to the deployed applicatio
+ * This services provides access to the deployed application
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>

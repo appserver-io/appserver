@@ -20,7 +20,7 @@
 
 namespace AppserverIo\Appserver\ServletEngine;
 
-use AppserverIo\Psr\Servlet\ServletConfig;
+use AppserverIo\Psr\Servlet\ServletConfigInterface;
 
 /**
  * Servlet configuration.
@@ -31,7 +31,7 @@ use AppserverIo\Psr\Servlet\ServletConfig;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class ServletConfiguration implements ServletConfig
+class ServletConfiguration implements ServletConfigInterface
 {
 
     /**
@@ -44,7 +44,7 @@ class ServletConfiguration implements ServletConfig
     /**
      * The application instance.
      *
-     * @var \AppserverIo\Psr\Servlet\ServletContext
+     * @var \AppserverIo\Psr\Servlet\ServletContextInterface
      */
     protected $servletContext;
 
@@ -58,7 +58,7 @@ class ServletConfiguration implements ServletConfig
     /**
      * Initializes the servlet configuration with the servlet context instance.
      *
-     * @param \AppserverIo\Psr\Servlet\ServletContext $servletContext The servlet context instance
+     * @param \AppserverIo\Psr\Servlet\ServletContextInterface $servletContext The servlet context instance
      *
      * @return void
      */
@@ -68,7 +68,7 @@ class ServletConfiguration implements ServletConfig
     }
 
     /**
-     * Set's the servlet's Uname from the web.xml configuration file.
+     * Sets the servlet's Uname from the web.xml configuration file.
      *
      * @param string $servletName The servlet name
      *
@@ -82,7 +82,7 @@ class ServletConfiguration implements ServletConfig
     /**
      * Returns the servlet context instance.
      *
-     * @return \AppserverIo\Psr\Servlet\ServletContext The servlet context instance
+     * @return \AppserverIo\Psr\Servlet\ServletContextInterface The servlet context instance
      */
     public function getServletContext()
     {
@@ -90,10 +90,10 @@ class ServletConfiguration implements ServletConfig
     }
 
     /**
-     * Return's the servlet's name from the web.xml configuration file.
+     * Returns the servlet's name from the web.xml configuration file.
      *
      * @return string The servlet name
-     * @see \AppserverIo\Psr\Servlet\ServletConfig::getServletName()
+     * @see \AppserverIo\Psr\Servlet\ServletConfigInterface::getServletName()
      */
     public function getServletName()
     {

@@ -24,7 +24,7 @@ use AppserverIo\Logger\LoggerUtils;
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Psr\EnterpriseBeans\TimerInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
-use AppserverIo\Psr\EnterpriseBeans\ServiceExecutor;
+use AppserverIo\Psr\EnterpriseBeans\ServiceExecutorInterface;
 
 /**
  * The executor thread for the timers.
@@ -35,7 +35,7 @@ use AppserverIo\Psr\EnterpriseBeans\ServiceExecutor;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class TimerServiceExecutor extends \Thread implements ServiceExecutor
+class TimerServiceExecutor extends \Thread implements ServiceExecutorInterface
 {
 
     /**
@@ -62,7 +62,7 @@ class TimerServiceExecutor extends \Thread implements ServiceExecutor
     /**
      * Injects the application instance.
      *
-     * @param \AppserverIo\Appserver\Application\ApplicationInterface $application The application instance
+     * @param \AppserverIo\Psr\Application\ApplicationInterface $application The application instance
      *
      * @return void
      */
@@ -204,7 +204,7 @@ class TimerServiceExecutor extends \Thread implements ServiceExecutor
                         // load the timer task wrapper we want to execute
                         if ($pk = $this->scheduledTimers[$timerId = $timerTaskWrapper->timerId]) {
                             // load the timer service registry
-                            $timerServiceRegistry = $this->getApplication()->search('TimerServiceContext');
+                            $timerServiceRegistry = $this->getApplication()->search('TimerServiceContextInterface');
 
                             // lookup the timer from the timer service
                             $timer = $timerServiceRegistry->lookup($pk)->getTimers()->get($timerId);

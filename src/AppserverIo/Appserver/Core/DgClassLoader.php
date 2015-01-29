@@ -23,14 +23,10 @@ namespace AppserverIo\Appserver\Core;
 use AppserverIo\Appserver\Core\Interfaces\ClassLoaderInterface;
 use AppserverIo\Doppelgaenger\AspectRegister;
 use AppserverIo\Doppelgaenger\CacheMap;
-use AppserverIo\Doppelgaenger\Dictionaries\Placeholders;
 use AppserverIo\Doppelgaenger\Entities\Definitions\Structure;
 use AppserverIo\Doppelgaenger\Generator;
-use AppserverIo\Doppelgaenger\StructureMap;
 use AppserverIo\Doppelgaenger\Config;
-use AppserverIo\Doppelgaenger\AutoLoader;
 use AppserverIo\Appserver\Core\InitialContext;
-use AppserverIo\Psr\Application\ApplicationInterface;
 
 /**
  * This class is used to delegate to doppelgaenger's autoloader. This is needed as our
@@ -42,6 +38,14 @@ use AppserverIo\Psr\Application\ApplicationInterface;
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
+ *
+ * @property \AppserverIo\Doppelgaenger\AspectRegister         $aspectRegister Register for all aspects which have to be taken into account
+ * @property boolean                                           $autoloaderOmit Whether or not certain namespaces get omitted
+ * @property string                                            $cacheDir       Directory where cached definitions reside
+ * @property boolean                                           $cacheIsReady   Whether or not the cache is ready for usage
+ * @property \AppserverIo\Doppelgaenger\Config                 $config         THe configuration for this classloader
+ * @property string                                            $environment    Environment, either 'production' or 'development'
+ * @property \AppserverIo\Appserver\Core\StackableStructureMap $structureMap   Map which holds all known structures
  */
 class DgClassLoader extends \Stackable implements ClassLoaderInterface
 {
@@ -106,7 +110,6 @@ class DgClassLoader extends \Stackable implements ClassLoaderInterface
 
         // initialize the variables
         $this->cacheIsReady = false;
-        $this->cache = null;
         $this->autoloaderOmit = false;
         $this->aspectRegister = new AspectRegister();
     }

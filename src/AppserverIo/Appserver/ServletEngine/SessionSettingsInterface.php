@@ -1,6 +1,6 @@
 <?php
 /**
- * AppserverIo\Appserver\ServletEngine\SessionSettings
+ * AppserverIo\Appserver\ServletEngine\SessionSettingsInterface
  *
  * PHP version 5
  *
@@ -13,7 +13,7 @@
 
 namespace AppserverIo\Appserver\ServletEngine;
 
-use AppserverIo\Psr\Servlet\ServletContext;
+use AppserverIo\Psr\Servlet\ServletContextInterface;
 
 /**
  * Interface for all session storage implementation.
@@ -26,7 +26,7 @@ use AppserverIo\Psr\Servlet\ServletContext;
  * @link      http://php.net/session
  * @link      http://php.net/setcookie
  */
-interface SessionSettings
+interface SessionSettingsInterface
 {
 
     /**
@@ -95,9 +95,9 @@ interface SessionSettings
     /**
      * Merges the values of the passed settings into this instance and overwrites the one of this instance.
      *
-     * @param \AppserverIo\Psr\ServletContext\ServletContext $context The context we want to merge the session settings from
+     * @param \AppserverIo\Psr\Servlet\ServletContextInterface $context The context we want to merge the session settings from
      *
      * @return void
      */
-    public function mergeServletContext(ServletContext $context);
+    public function mergeServletContext(ServletContextInterface $context);
 }

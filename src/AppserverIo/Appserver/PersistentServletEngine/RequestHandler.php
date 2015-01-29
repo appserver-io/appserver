@@ -23,9 +23,8 @@ namespace AppserverIo\Appserver\PersistentServletEngine;
 
 use AppserverIo\Logger\LoggerUtils;
 use AppserverIo\Storage\GenericStackable;
-use AppserverIo\Server\Dictionaries\ServerVars;
-use AppserverIo\Psr\Servlet\Http\HttpServletRequest;
-use AppserverIo\Psr\Servlet\Http\HttpServletResponse;
+use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
+use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
 
 /**
@@ -82,12 +81,14 @@ class RequestHandler extends \Thread
     /**
      * Handles the request processing.
      *
-     * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest  $servletRequest  The actual request instance
-     * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponse $servletResponse The actual response instance
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface  $servletRequest  The actual request instance
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse The actual response instance
      *
      * @return void
+     *
+     * @throws \Exception
      */
-    public function handleRequest(HttpServletRequest $servletRequest, HttpServletResponse $servletResponse)
+    public function handleRequest(HttpServletRequestInterface $servletRequest, HttpServletResponseInterface $servletResponse)
     {
 
         // lock the method

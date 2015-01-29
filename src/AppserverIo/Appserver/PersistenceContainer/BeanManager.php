@@ -21,15 +21,13 @@
 
 namespace AppserverIo\Appserver\PersistenceContainer;
 
+use AppserverIo\Appserver\Core\AbstractEpbManager;
 use AppserverIo\Storage\StorageInterface;
-use AppserverIo\Appserver\Core\AbstractManager;
-use AppserverIo\Appserver\Naming\InitialContext;
 use AppserverIo\Appserver\Core\Api\InvalidConfigurationException;
 use AppserverIo\Lang\Reflection\AnnotationInterface;
-use AppserverIo\RemoteMethodInvocation\RemoteMethod;
 use AppserverIo\Psr\Application\ApplicationInterface;
-use AppserverIo\Psr\EnterpriseBeans\BeanContext;
-use AppserverIo\Psr\EnterpriseBeans\ResourceLocator;
+use AppserverIo\Psr\EnterpriseBeans\BeanContextInterface;
+use AppserverIo\Psr\EnterpriseBeans\ResourceLocatorInterface;
 use AppserverIo\Psr\EnterpriseBeans\InvalidBeanTypeException;
 use AppserverIo\Appserver\DependencyInjectionContainer\DirectoryParser;
 use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\BeanDescriptorInterface;
@@ -39,7 +37,6 @@ use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\SingletonSessi
 use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\StatefulSessionBeanDescriptorInterface;
 use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\StatelessSessionBeanDescriptorInterface;
 use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\MessageDrivenBeanDescriptorInterface;
-use AppserverIo\Appserver\DependencyInjectionContainer\Description\EpbReferenceDescriptor;
 
 /**
  * The bean manager handles the message and session beans registered for the application.
@@ -51,7 +48,7 @@ use AppserverIo\Appserver\DependencyInjectionContainer\Description\EpbReferenceD
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class BeanManager extends AbstractManager implements BeanContext
+class BeanManager extends AbstractEpbManager implements BeanContextInterface
 {
 
     /**
@@ -69,11 +66,11 @@ class BeanManager extends AbstractManager implements BeanContext
     /**
      * Injects the resource locator to lookup the requested queue.
      *
-     * @param \AppserverIo\Psr\EnterpriseBeans\ResourceLocator $resourceLocator The resource locator
+     * @param \AppserverIo\Psr\EnterpriseBeans\ResourceLocatorInterface $resourceLocator The resource locator
      *
      * @return void
      */
-    public function injectResourceLocator(ResourceLocator $resourceLocator)
+    public function injectResourceLocator(ResourceLocatorInterface $resourceLocator)
     {
         $this->resourceLocator = $resourceLocator;
     }
@@ -105,11 +102,11 @@ class BeanManager extends AbstractManager implements BeanContext
     /**
      * Injects the stateful session bean settings.
      *
-     * @param \AppserverIo\Appserver\PersistenceContainer\StatefulSessionBeanSettings $statefulSessionBeanSettings Settings for the stateful session beans
+     * @param \AppserverIo\Appserver\PersistenceContainer\StatefulSessionBeanSettingsInterface $statefulSessionBeanSettings Settings for the stateful session beans
      *
      * @return void
      */
-    public function injectStatefulSessionBeanSettings(StatefulSessionBeanSettings $statefulSessionBeanSettings)
+    public function injectStatefulSessionBeanSettings(StatefulSessionBeanSettingsInterface $statefulSessionBeanSettings)
     {
         $this->statefulSessionBeanSettings = $statefulSessionBeanSettings;
     }
@@ -266,7 +263,7 @@ class BeanManager extends AbstractManager implements BeanContext
     /**
      * Return the resource locator instance.
      *
-     * @return \AppserverIo\Psr\EnterpriseBeans\ResourceLocator The resource locator instance
+     * @return \AppserverIo\Psr\EnterpriseBeans\ResourceLocatorInterface The resource locator instance
      */
     public function getResourceLocator()
     {
@@ -306,7 +303,7 @@ class BeanManager extends AbstractManager implements BeanContext
     /**
      * Returns the stateful session bean settings.
      *
-     * @return \AppserverIo\Appserver\PersistenceContainer\BeanSettings The stateful session bean settings
+     * @return \AppserverIo\Appserver\PersistenceContainer\StatefulSessionBeanSettingsInterface The stateful session bean settings
      */
     public function getStatefulSessionBeanSettings()
     {
@@ -466,7 +463,6 @@ class BeanManager extends AbstractManager implements BeanContext
             if ($this->getStatefulSessionBeans()->has($sessionId) === false) {
                 // create a new session bean map instance
                 $this->getStatefulSessionBeanMapFactory()->newInstance($sessionId);
-
             }
 
             // load the session bean map instance
@@ -507,6 +503,6 @@ class BeanManager extends AbstractManager implements BeanContext
      */
     public function getIdentifier()
     {
-        return BeanContext::IDENTIFIER;
+        return BeanContextInterface::IDENTIFIER;
     }
 }

@@ -21,9 +21,7 @@
 namespace AppserverIo\Appserver\Core;
 
 use Composer\Autoload\ClassLoader;
-use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\Core\Interfaces\ClassLoaderInterface;
-use AppserverIo\Appserver\Core\Api\Node\ClassLoaderNodeInterface;
 
 /**
  * A Wrapper for the web application specific composer class loader.

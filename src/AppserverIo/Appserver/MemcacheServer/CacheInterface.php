@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\MemcacheServer\Cache
+ * AppserverIo\Appserver\MemcacheServer\CacheInterface
  *
  * NOTICE OF LICENSE
  *
@@ -21,7 +21,7 @@
 
 namespace AppserverIo\Appserver\MemcacheServer;
 
-use AppserverIo\Appserver\MemcacheProtocol\CacheRequest;
+use AppserverIo\Appserver\MemcacheProtocol\CacheRequestInterface;
 
 /**
  * Interface for all cache server implementations.
@@ -33,17 +33,17 @@ use AppserverIo\Appserver\MemcacheProtocol\CacheRequest;
  * @link      http://www.appserver.io
  * @link      https://github.com/memcached/memcached/blob/master/doc/protocol.txt
  */
-interface Cache
+interface CacheInterface
 {
 
     /**
      * Handle the the passed request instance.
      *
-     * @param \AppserverIo\Appserver\MemacheProtocol\CacheRequest $cacheRequest The request instance with the data to handle
+     * @param \AppserverIo\Appserver\MemcacheProtocol\CacheRequestInterface $cacheRequest The request instance with the data to handle
      *
      * @return void
      */
-    public function request(CacheRequest $cacheRequest);
+    public function request(CacheRequestInterface $cacheRequest);
 
     /**
      * Reset all attributes for reusing the object.

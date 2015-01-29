@@ -17,9 +17,10 @@
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
+
 namespace AppserverIo\Appserver\WebSocketProtocol;
 
-use Guzzle\Http\Message\RequestInterface;
+use Guzzle\Http\Message\RequestInterface as GuzzleRequest;
 use AppserverIo\Psr\Application\ApplicationInterface;
 
 /**
@@ -31,7 +32,7 @@ use AppserverIo\Psr\Application\ApplicationInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class WebSocketRequest implements Request
+class WebSocketRequest implements RequestInterface
 {
 
     /**
@@ -68,9 +69,9 @@ class WebSocketRequest implements Request
      * @param \Guzzle\Http\Message\RequestInterface $request The guzzle request passed from ratchet
      *
      * @return void
-     * @see \AppserverIo\Appserver\WebSocketProtocol\Request::injectRequest()
+     * @see \AppserverIo\Appserver\WebSocketProtocol\RequestInterface::injectRequest()
      */
-    public function injectRequest(RequestInterface $request)
+    public function injectRequest(GuzzleRequest $request)
     {
         $this->request = $request;
     }
@@ -91,7 +92,7 @@ class WebSocketRequest implements Request
      * Returns the guzzle request instance passed from ratchet.
      *
      * @return \Guzzle\Http\Message\RequestInterface The guzzle request instance
-     * @see \AppserverIo\Appserver\WebSocketProtocol\Request::getRequest()
+     * @see \AppserverIo\Appserver\WebSocketProtocol\RequestInterface::getRequest()
      */
     public function getRequest()
     {
@@ -102,7 +103,7 @@ class WebSocketRequest implements Request
      * Returns the request context that is the web application almost.
      *
      * @return \AppserverIo\Psr\Application\ApplicationInterface The request context
-     * @see \AppserverIo\Appserver\WebSocketProtocol\Request::getContext()
+     * @see \AppserverIo\Appserver\WebSocketProtocol\RequestInterface::getContext()
      */
     public function getContext()
     {
@@ -125,7 +126,7 @@ class WebSocketRequest implements Request
      * Returns the path the handler that is always absolute from the context path.
      *
      * @return string The path to the handler
-     * @see \AppserverIo\Appserver\WebSocketProtocol\Request::getHandlerPath()
+     * @see \AppserverIo\Appserver\WebSocketProtocol\RequestInterface::getHandlerPath()
      */
     public function getHandlerPath()
     {
@@ -148,7 +149,7 @@ class WebSocketRequest implements Request
      * Returns the context path (application name).
      *
      * @return string The context path
-     * @see \AppserverIo\Appserver\WebSocketProtocol\Request::getHandlerPath()
+     * @see \AppserverIo\Appserver\WebSocketProtocol\RequestInterface::getHandlerPath()
      */
     public function getContextPath()
     {
@@ -159,7 +160,7 @@ class WebSocketRequest implements Request
      * Returns the host that handles this request.
      *
      * @return string The host name that handles this request
-     * @see \AppserverIo\Appserver\WebSocketProtocol\Request::getHost()
+     * @see \AppserverIo\Appserver\WebSocketProtocol\RequestInterface::getHost()
      */
     public function getHost()
     {
@@ -171,7 +172,7 @@ class WebSocketRequest implements Request
      * name if we're not in an virtual host.
      *
      * @return string The request path
-     * @see \AppserverIo\Appserver\WebSocketProtocol\Request::getPath()
+     * @see \AppserverIo\Appserver\WebSocketProtocol\RequestInterface::getPath()
      */
     public function getPath()
     {

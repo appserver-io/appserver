@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\PersistenceManager
+ * AppserverIo\Appserver\ServletEngine\RequestContextInterface
  *
  * NOTICE OF LICENSE
  *
@@ -17,11 +17,13 @@
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-namespace AppserverIo\Appserver\ServletEngine;
+
+namespace AppserverIo\Appserver\ServletEngine\Http;
+
+use \AppserverIo\Psr\Context\ContextInterface;
 
 /**
- * A thread thats preinitialized session instances and adds them to the
- * the session pool.
+ * A Http servlet request interface.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -29,32 +31,20 @@ namespace AppserverIo\Appserver\ServletEngine;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-interface PersistenceManager
+interface RequestContextInterface extends ContextInterface
 {
 
     /**
-     * Initializes the persistence manager instance and unpersists the all sessions that has
-     * been used during the time defined with the last inactivity timeout defined in the
-     * session configuration.
+     * Returns the session manager instance associated with this request.
      *
-     * If the session data could not be loaded, because the files data is corrupt, the
-     * file with the session data will be deleted.
-     *
-     * @return void
+     * @return \AppserverIo\Appserver\ServletEngine\SessionManagerInterface The session manager instance
      */
-    public function initialize();
+    public function getSessionManager();
 
     /**
-     * Starts the persistence manager.
+     * Returns the authentication manager instance associated with this request.
      *
-     * @return void
+     * @return \AppserverIo\Appserver\ServletEngine\Authentication\AuthenticationManagerInterface The authentication manager instance
      */
-    public function run();
-
-    /**
-     * Stops the persistence manager.
-     *
-     * @return void
-     */
-    public function stop();
+    public function getAuthenticationManager();
 }

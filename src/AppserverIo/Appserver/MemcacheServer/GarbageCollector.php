@@ -39,18 +39,16 @@ class GarbageCollector extends \Thread
     /**
      * Holds the cache API.
      *
-     * @var \AppserverIo\Appserver\MemcacheServer\Cache
+     * @var \AppserverIo\Appserver\MemcacheServer\CacheInterface
      */
     protected $cache;
 
     /**
      * Constructs the garbage collector instance.
      *
-     * @param \AppserverIo\Appserver\MemcacheServer\Cache $cache The cache API
-     *
-     * @return void
+     * @param \AppserverIo\Appserver\MemcacheServer\CacheInterface $cache The cache API
      */
-    public function __construct(Cache $cache)
+    public function __construct(CacheInterface $cache)
     {
 
         // set the cache API
@@ -63,7 +61,7 @@ class GarbageCollector extends \Thread
     /**
      * Returns the context instance.
      *
-     * @return \AppserverIo\Appserver\MemcacheServer\Cache The cache API
+     * @return \AppserverIo\Appserver\MemcacheServer\CacheInterface The cache API
      */
     public function getCache()
     {

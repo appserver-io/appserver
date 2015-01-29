@@ -20,7 +20,6 @@
 namespace AppserverIo\Appserver\Core;
 
 use AppserverIo\Appserver\Core\Interfaces\ClassLoaderInterface;
-use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Storage\StorageInterface;
 use AppserverIo\Appserver\Core\InitialContext\ContextKeys;
 use AppserverIo\Configuration\Interfaces\NodeInterface;
@@ -136,7 +135,7 @@ class InitialContext implements ContextInterface
     }
 
     /**
-     * Adds the system configuration to the inital context.
+     * Adds the system configuration to the initial context.
      *
      * @param object $systemConfiguration The system configuration
      *
@@ -161,7 +160,7 @@ class InitialContext implements ContextInterface
      * Stores the passed key value pair in the initial context.
      *
      * @param string $key   The key to store the value under
-     * @param mixed  $value The value to add to the inital context
+     * @param mixed  $value The value to add to the initial context
      *
      * @return void
      */
@@ -195,7 +194,7 @@ class InitialContext implements ContextInterface
     }
 
     /**
-     * Returns a reflection class intance for the passed class name.
+     * Returns a reflection class instance for the passed class name.
      *
      * @param string $className The class name to return the reflection instance for
      *

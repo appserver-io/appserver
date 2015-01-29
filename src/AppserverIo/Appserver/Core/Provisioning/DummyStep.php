@@ -37,7 +37,7 @@ class DummyStep extends AbstractStep
      * because this is a dummy implementation.
      *
      * @return void
-     * @see \AppserverIo\Appserver\Core\Provisioning\Step::execute()
+     * @see \AppserverIo\Appserver\Core\Provisioning\StepInterface::execute()
      */
     public function execute()
     {

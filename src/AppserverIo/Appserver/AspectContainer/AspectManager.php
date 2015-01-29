@@ -19,7 +19,6 @@
 namespace AppserverIo\Appserver\AspectContainer;
 
 use AppserverIo\Appserver\AspectContainer\Interfaces\AspectManagerInterface;
-use AppserverIo\Appserver\Core\Api\ConfigurationTester;
 use AppserverIo\Appserver\Core\Api\InvalidConfigurationException;
 use AppserverIo\Doppelgaenger\AspectRegister;
 use AppserverIo\Doppelgaenger\Config;
@@ -35,13 +34,15 @@ use AppserverIo\Psr\Application\ManagerInterface;
 use AppserverIo\Doppelgaenger\Entities\Annotations\Aspect as AspectAnnotation;
 
 /**
- * Manager which enables the registration of aspects within a certain application context.
+ * Manager which enables the registration of aspects within a certain application context
  *
  * @author    Bernhard Wick <bw@appserver.io>
  * @copyright 2015 TechDivision GmbH - <info@appserver.io>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io/
+ *
+ * @property \AppserverIo\Doppelgaenger\AspectRegister $aspectRegister The aspect register used for registering the found aspects of this application
+ * @property \AppserverIo\Psr\Application\ApplicationInterface $application    The application to manage
  */
 class AspectManager implements AspectManagerInterface, ManagerInterface
 {
@@ -54,44 +55,6 @@ class AspectManager implements AspectManagerInterface, ManagerInterface
     const CONFIG_FILE = 'pointcuts.xml';
 
     /**
-     * The unique identifier to be registered in the application context.
-     *
-     * @var string
-     */
-    const IDENTIFIER = 'AspectManager';
-
-    /**
-     * The application instance
-     *
-     * @var \AppserverIo\Psr\Application\ApplicationInterface $application
-     */
-    protected $application;
-
-    /**
-     * The aspect register used for registering the found aspects of this application
-     *
-     * @var \AppserverIo\Doppelgaenger\AspectRegister $aspectRegister
-     */
-    protected $aspectRegister;
-
-    /**
-     * Path of the directory the webapps lie in
-     *
-     * @var string $webappPath
-     */
-    protected $webappPath;
-
-    /**
-     * Returns the application instance.
-     *
-     * @return string The application instance
-     */
-    public function getApplication()
-    {
-        return $this->application;
-    }
-
-    /**
      * Getter for the $aspectRegister property
      *
      * @return \AppserverIo\Doppelgaenger\AspectRegister The aspect register
@@ -102,15 +65,13 @@ class AspectManager implements AspectManagerInterface, ManagerInterface
     }
 
     /**
-     * Returns the value with the passed name from the context.
+     * Returns the application instance.
      *
-     * @param string $key The key of the value to return from the context.
-     *
-     * @return array<\AppserverIo\Doppelgaenger\Entities\Definitions\Aspect> The aspects found for the given key
+     * @return \AppserverIo\Psr\Application\ApplicationInterface The application instance
      */
-    public function getAttribute($key)
+    public function getApplication()
     {
-        return $this->aspectRegister->lookupAspects($key);
+        return $this->application;
     }
 
     /**
@@ -120,7 +81,20 @@ class AspectManager implements AspectManagerInterface, ManagerInterface
      */
     public function getIdentifier()
     {
-        return self::IDENTIFIER;
+        return AspectManagerInterface::IDENTIFIER;
+    }
+
+    /**
+     * Returns a reflection class intance for the passed class name.
+     *
+     * @param string $className The class name to return the reflection class instance for
+     *
+     * @return \AppserverIo\Lang\Reflection\ReflectionClass The reflection instance
+     * @see \DependencyInjectionContainer\Interfaces\ProviderInterface::getReflectionClass()
+     */
+    public function getReflectionClass($className)
+    {
+        return $this->getApplication()->search('ProviderInterface')->getReflectionClass($className);
     }
 
     /**
@@ -130,7 +104,7 @@ class AspectManager implements AspectManagerInterface, ManagerInterface
      */
     public function getWebappPath()
     {
-        return $this->webappPath;
+        return $this->getApplication()->getWebappPath();
     }
 
     /**
@@ -175,27 +149,17 @@ class AspectManager implements AspectManagerInterface, ManagerInterface
     }
 
     /**
-     * Injects the absolute path to the web application.
+     * Returns the value with the passed name from the context.
      *
-     * @param string $webappPath The absolute path to this web application
+     * @param string $key The key of the value to return from the context.
      *
-     * @return void
+     * @return mixed The requested attribute
+     *
+     * @throws \Exception
      */
-    public function injectWebappPath($webappPath)
+    public function getAttribute($key)
     {
-        $this->webappPath = $webappPath;
-    }
-
-    /**
-     * Returns a reflection class instance for the passed class name.
-     *
-     * @param string $className The class name to return the reflection instance for
-     *
-     * @return \AppserverIo\Lang\Reflection\ReflectionClass The reflection instance
-     */
-    public function getReflectionClass($className)
-    {
-        return $this->getApplication()->search('ProviderInterface')->getReflectionClass($className);
+        throw new \Exception(sprintf('%s is not implemented yes', __METHOD__));
     }
 
     /**
@@ -221,7 +185,6 @@ class AspectManager implements AspectManagerInterface, ManagerInterface
      */
     protected function registerAspectClasses(ApplicationInterface $application)
     {
-
         // load the webapp path
         $webappPath = $this->getWebappPath();
 
@@ -283,10 +246,10 @@ class AspectManager implements AspectManagerInterface, ManagerInterface
         if (is_readable($xmlPath)) {
             // validate the file here, if it is not valid we can skip further steps
             try {
-                $configurationTester = new ConfigurationTester();
-                $configurationTester->validateFile($xmlPath, null, true);
+                $configurationService = $this->getApplication()->newService('AppserverIo\Appserver\Core\Api\ConfigurationService');
+                $configurationService->validateFile($xmlPath, null, true);
             } catch (InvalidConfigurationException $e) {
-                $systemLogger = $application->getInitialContext()->getSystemLogger();
+                $systemLogger = $this->getApplication()->getInitialContext()->getSystemLogger();
                 $systemLogger->error($e->getMessage());
                 $systemLogger->critical(sprintf('Pointcuts configuration file %s is invalid, AOP functionality might not work as expected.', $xmlPath));
                 return;

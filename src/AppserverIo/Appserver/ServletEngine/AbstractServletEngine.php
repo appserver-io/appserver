@@ -21,9 +21,8 @@
 
 namespace AppserverIo\Appserver\ServletEngine;
 
-use AppserverIo\Appserver\Application\VirtualHost;
 use AppserverIo\Appserver\ServletEngine\Authentication\AuthenticationValve;
-use AppserverIo\Psr\Servlet\Http\HttpServletRequest;
+use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
 use AppserverIo\Server\Dictionaries\ServerVars;
 use AppserverIo\Server\Interfaces\RequestContextInterface;
 use AppserverIo\Storage\GenericStackable;
@@ -208,13 +207,13 @@ abstract class AbstractServletEngine extends GenericStackable implements HttpMod
     /**
      * Tries to find an application that matches the passed request.
      *
-     * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest $servletRequest The request instance to locate the application for
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface $servletRequest The request instance to locate the application for
      *
      * @return array The application info that matches the request
      *
      * @throws \AppserverIo\Appserver\ServletEngine\BadRequestException Is thrown if no application matches the request
      */
-    protected function prepareServletRequest(HttpServletRequest $servletRequest)
+    protected function prepareServletRequest(HttpServletRequestInterface $servletRequest)
     {
         // load the request URI and query string
         $uri = $servletRequest->getUri();

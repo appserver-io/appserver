@@ -20,8 +20,6 @@
 namespace AppserverIo\Appserver\Core\Api;
 
 use AppserverIo\Appserver\Core\InitialContext;
-use AppserverIo\Appserver\Core\Api\NormalizerInterface;
-use AppserverIo\Appserver\Core\Api\ServiceInterface;
 
 /**
  * Normalizes configuration nodes to \stdClass instances.

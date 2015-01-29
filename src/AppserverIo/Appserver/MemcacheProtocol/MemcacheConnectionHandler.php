@@ -60,7 +60,7 @@ class MemcacheConnectionHandler implements ConnectionHandlerInterface
     /**
      * The connection instance
      *
-     * @var \AppserverIo\Server\Sockets\SocketInterface
+     * @var \AppserverIo\Psr\Socket\SocketInterface
      */
     protected $connection;
 
@@ -72,7 +72,7 @@ class MemcacheConnectionHandler implements ConnectionHandlerInterface
     protected $worker;
 
     /**
-     * Hold's an array of modules to use for connection handler
+     * Holds an array of modules to use for connection handler
      *
      * @var array
      */
@@ -151,7 +151,7 @@ class MemcacheConnectionHandler implements ConnectionHandlerInterface
     /**
      * Returns the cache API implementation.
      *
-     * @return \AppserverIo\Appserver\MemcacheServer\Cache The cache API implementation.
+     * @return \AppserverIo\Appserver\MemcacheServer\CacheInterface The cache API implementation.
      */
     public function getCache()
     {

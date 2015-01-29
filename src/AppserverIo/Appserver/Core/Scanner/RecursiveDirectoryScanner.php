@@ -20,8 +20,6 @@
 
 namespace AppserverIo\Appserver\Core\Scanner;
 
-use AppserverIo\Appserver\Core\Interfaces\ExtractorInterface;
-
 /**
  * This is a scanner that recursively watches the configured directory for files that
  * changed and restarts the appserver by using the OS specific start/stop script.

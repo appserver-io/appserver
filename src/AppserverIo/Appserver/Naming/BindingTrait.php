@@ -56,14 +56,14 @@ trait BindingTrait
         // tokenize the name
         $token = strtok($name, '/');
 
-        // while we've tokens, try to find the apropriate subdirectory
+        // while we've tokens, try to find the appropriate subdirectory
         while ($token !== false) {
             // check if we can find something
             if ($this->hasAttribute($token)) {
                 // load the data bound to the token
                 $data = $this->getAttribute($token);
 
-                // load the binded value/args
+                // load the bound value/args
                 list ($valueFound, ) = $data;
 
                 // try to bind it to the subdirectory

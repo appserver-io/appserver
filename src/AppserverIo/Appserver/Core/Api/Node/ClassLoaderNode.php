@@ -21,8 +21,6 @@
 namespace AppserverIo\Appserver\Core\Api\Node;
 
 use AppserverIo\Appserver\Core\Utilities\ClassLoaderKeys;
-use AppserverIo\Lang\Reflection\ReflectionClass;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\AnnotationKeys;
 
 /**
  * DTO to transfer a app.

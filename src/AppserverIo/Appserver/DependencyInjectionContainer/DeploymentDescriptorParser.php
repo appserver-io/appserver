@@ -20,9 +20,7 @@
 
 namespace AppserverIo\Appserver\DependencyInjectionContainer;
 
-use AppserverIo\Appserver\Core\Api\ConfigurationTester;
 use AppserverIo\Psr\Application\ApplicationInterface;
-use AppserverIo\Lang\Reflection\ReflectionClass;
 
 /**
  * Parser to parse a deployment descriptor for beans or servlets.
@@ -76,8 +74,8 @@ class DeploymentDescriptorParser
         }
 
         // validate the passed configuration file
-        $configurationTester = new ConfigurationTester();
-        $configurationTester->validateFile($deploymentDescriptor, null, true);
+        $configurationService = $this->getApplication()->newService('AppserverIo\Appserver\Core\Api\ConfigurationService');
+        $configurationService->validateFile($deploymentDescriptor, null, true);
 
         // load the object manager instance
         $objectManager = $this->getApplication()->search('ObjectManagerInterface');
