@@ -4,7 +4,7 @@ title:  Persistence-Container Basics
 date:   2015-01-30 12:00:00
 author: wagnert
 version: 1.0.0-rc1
-categories: [Persistence-Container]
+categories: [persistence-container]
 ---
 
 Maybe you had a look at our previous post about the [Servlet-Engine Basics](<{{ "/servlet-engine/2014/12/24/servlet-engine-basics.html" | prepend: site.baseurl }}>). Beside the `Servlet-Engine`, the [Persistence-Container](http://appserver.io/documentation/persistence-container.html) is one of the main services appserver.io provides. The name `Persistence-Container`, can lead to some missunderstanding in our case, as many people think that it mostly refers to database persistence. In Java there are EJB-Containers that provide a broad set of functionalities like [Bean- or Container-Managed-Persistence](http://en.wikipedia.org/wiki/Enterprise_JavaBeans), whereas appserver.io actually only provides a small subset of the functionality as plattforms like [Wildfly](http://en.wikipedia.org/wiki/WildFly) does. Persisting data to a database is only one functionality the `Persistence-Container` can provide, but by far not the most important one.

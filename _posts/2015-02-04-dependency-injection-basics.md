@@ -4,7 +4,7 @@ title:  Dependency-Injection Basics
 date:   2015-02-04 12:00:00
 author: wagnert
 version: 1.0.0-rc1
-categories: [Dependency-Injection]
+categories: [dependency-injection]
 ---
 
 As we probably use DI to inject instances of [Server-Side Component Types](#server-side-component-types) this section gives you a brief introduction of how DI works in the `Persistence-Container` context. 
