@@ -164,12 +164,15 @@ This annotation marks a method as `pre-destroy` lifecycle callback and has to be
 
 #### Enterprise Beans (@EnterpriseBean)
 
+This annotation is used to inject components into other components.
+
 The `@EnterpriseBean` annotation can be used in two scopes. First scope is in the DocBlock of a components class member, second of a class method. In both cases, the member or the method is marked as target for `Dependency Injection`.
 
 In the simplest case **NO** attribute is needed. If so, the member or parameter name **MUST** exactly match the components `name` that should be injected. Otherwise you have to specify the `name` attribute and optionally the `beanName` and `beanInterface` or `lookup` attribute.
 
 | Node Name                   | Type        | Description                                                          |
 | --------------------------- | ----------- | -------------------------------------------------------------------- |
+| `description`               | `string`    | Short description for the created reference.                         |
 | `name`                      | `string`    | Name the reference will be registered in the `Naming-Directory`.     |
 | `beanName`                  | `string`    | The `name` of the component we want to reference.                    |
 | `beanInterface`             | `string`    | The business interface we want to reference. This has to be the `name`, suffixed with either one of `Local` or `Remote`. |
@@ -177,7 +180,23 @@ In the simplest case **NO** attribute is needed. If so, the member or parameter 
 
 #### Resources (@Resource)
 
+This annotation is used to inject resources into components.
+
+As resources are classes, that are initialized during application server startup to handle the main application functionality, they are not accessed by a proxy. When adding a `@Resource` annotation to inject a resource, a simple reference to the resource, using a callback, will be registered in the `Naming-Directory`.
+
+The `@Resource` annotation can be used in two scopes. First scope is in the DocBlock of a components class member, second of a class method. In both cases, the member or the method is marked as target for `Dependency Injection`.
+
+In the simplest case **NO** attribute is needed. If so, the member or parameter name **MUST** exactly match the resource `name` that should be injected. Otherwise you have to specify the `name` attribute and the `type` attribute.
+
+| Node Name                   | Type        | Description                                                          |
+| --------------------------- | ----------- | -------------------------------------------------------------------- |
+| `description`               | `string`    | Short description for the created reference.                         |
+| `name`                      | `string`    | Name the reference will be registered in the `Naming-Directory`.     |
+| `type`                      | `string`    | The `name` of the resource we want to reference.                     |
+
 #### Example
+
+The following example implementation of a `Singleton` session bean contains all available annotations and demonstrates how they can be used.
 
 ```php
 <?php
@@ -185,6 +204,10 @@ In the simplest case **NO** attribute is needed. If so, the member or parameter 
 namespace AppserverIo\Example\SessionBeans;
 
 /**
+ * Example implementation of a singleton session bean using that'll be initialized
+ * on application startup, uses post-construct and pre-destroy lifecycle callbacks
+ * and dependency injection.
+ *
  * @Singleton
  * @Startup
  */
@@ -225,6 +248,28 @@ class ASingletonSessionBean
   public function injectAStatelessSessionBean($aStatefulSessionBean)
   {
     $this->aStatefulSessionBean = $aStatefulSessionBean;
+  }
+  
+  /**
+   * Post-Construct lifecycle callback implementation.
+   *
+   * @return void
+   * @PostConstruct
+   */
+  public function postConstruct()
+  {
+    // to something after initialization here
+  }
+  
+  /**
+   * Pre-Destroy lifecycle callback implementation.
+   *
+   * @return void
+   * @PreDestroy
+   */
+  public function preDestroy()
+  {
+    // to something before destruction here
   }
 }
 ```
