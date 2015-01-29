@@ -11,7 +11,7 @@ As announced in our last blog post, we want to give you an overview of the servi
 application server will provide. Let's start with the Servlet-Engine, because we think that this will
 be a good start for all developers who never get in contact with an application server before.
 
-Reading this post, you will get the feeling, that a [Servlet-Engine](http://appserver.io/documentation/servlet-engine.html) is something like a framework.
+Reading this post, you will get the feeling, that a [Servlet-Engine](<{{ "/documentation/servlet-engine.html" | prepend: site.baseurl }}>) is something like a framework.
 This is not completely wrong. A Servlet-Engine is **NOT** a framework, but it is a part in a framework. So you should see it as the controller part of a MVC framework. This is the reason why you'll read stuff about routing, request methods and other like that. As the framworks out there are actually not implemented for running in an  application server like appserver.io, they provide stuff like a HTTP foundation library by themselves. We hope,
 that someday all of the frameworks recognize the advantages an application server provide and will be ported to
 run on top of appserver.io by using the infrastructure with all functionality it
@@ -45,8 +45,8 @@ As in many other frameworks do, our Servlet-Engine use a URL path to map a reque
 namespace AppserverIo\Example\Servlets;
 
 use AppserverIo\Psr\Servlet\Http\HttpServlet;
-use AppserverIo\Psr\Servlet\Http\HttpServletRequest;
-use AppserverIo\Psr\Servlet\Http\HttpServletResponse;
+use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
+use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
 
 /**
  * This is the famous 'Hello World' as servlet implementation.
@@ -59,18 +59,18 @@ class HelloWorldServlet extends HttpServlet
   /**
    * Handles a HTTP GET request.
    *
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest  $servletRequest
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface  $servletRequest
    *   The request instance
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponse $servletResponse
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse
    *   The response instance
    *
    * @return void
    * @see \AppserverIo\Psr\Servlet\Http\HttpServlet::doGet()
    */
   public function doGet(
-    HttpServletRequest $servletRequest,
-    HttpServletResponse $servletResponse)
-  {
+    HttpServletRequestInterface $servletRequest,
+    HttpServletResponseInterface $servletResponse
+  ) {
     $servletResponse->appendBodyStream('Hello World!');
   }
 }
@@ -89,7 +89,7 @@ we want to provide. For our first example, we only want to add the `Hello World!
 That is pretty simple, we think! So, given you've downloaded and installed the latest version of the application
 server, create a folder `examples/WEB-INF/classes/AppserverIo/Example/Servlets` under the `webapps` folder of
 your installation. In the folder, create a new file named `HelloWorldServlet.php`, copy the code from above and
-save it. After [restarting](http://appserver.io/documentation/basic-usage.html)
+save it. After [restarting](<{{ "/documentation/basic-usage.html" | prepend: site.baseurl }}>)
 the application server, open the URL `http://127.0.0.1:9080/examples/helloWorld.do` in your favorite browser.
 You should see the text `Hello World`. Congratulations, you have written your first servlet!
 
@@ -111,10 +111,10 @@ our previous example
 
 namespace AppserverIo\Example\Servlets;
 
-use AppserverIo\Psr\Servlet\ServletConfig;
+use AppserverIo\Psr\Servlet\ServletConfigInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServlet;
-use AppserverIo\Psr\Servlet\Http\HttpServletRequest;
-use AppserverIo\Psr\Servlet\Http\HttpServletResponse;
+use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
+use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
 
 /**
  * This is the famous 'Hello World' as servlet implementation.
@@ -134,12 +134,12 @@ class HelloWorldServlet extends HttpServlet
   /**
    * Initializes the servlet with the passed configuration.
    *
-   * @param \AppserverIo\Psr\Servlet\ServletConfig $config
+   * @param \AppserverIo\Psr\Servlet\ServletConfigInterface $config
    *   The configuration to initialize the servlet with
    *
    * @return void
    */
-  public function init(ServletConfig $config)
+  public function init(ServletConfigInterface $config)
   {
 
     // call parent method
@@ -152,18 +152,18 @@ class HelloWorldServlet extends HttpServlet
   /**
    * Handles a HTTP GET request.
    *
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest  $servletRequest
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface  $servletRequest
    *   The request instance
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponse $servletResponse
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse
    *   The response instance
    *
    * @return void
    * @see \AppserverIo\Psr\Servlet\Http\HttpServlet::doGet()
    */
   public function doGet(
-    HttpServletRequest $servletRequest,
-    HttpServletResponse $servletResponse)
-  {
+    HttpServletRequestInterface $servletRequest,
+    HttpServletResponseInterface $servletResponse
+  ) {
     $servletResponse->appendBodyStream($this->resources['hello-world.en_US.key']);
   }
 }
@@ -190,10 +190,10 @@ with the resources configurable.
 
 namespace AppserverIo\Example\Servlets;
 
-use AppserverIo\Psr\Servlet\ServletConfig;
+use AppserverIo\Psr\Servlet\ServletConfigInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServlet;
-use AppserverIo\Psr\Servlet\Http\HttpServletRequest;
-use AppserverIo\Psr\Servlet\Http\HttpServletResponse;
+use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
+use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
 
 /**
  * This is the famous 'Hello World' as servlet implementation.
@@ -215,12 +215,12 @@ class HelloWorldServlet extends HttpServlet
   /**
    * Initializes the servlet with the passed configuration.
    *
-   * @param \AppserverIo\Psr\Servlet\ServletConfig $config
+   * @param \AppserverIo\Psr\Servlet\ServletConfigInterface $config
    *   The configuration to initialize the servlet with
    *
    * @return void
    */
-  public function init(ServletConfig $config)
+  public function init(ServletConfigInterface $config)
   {
 
     // call parent method
@@ -235,18 +235,18 @@ class HelloWorldServlet extends HttpServlet
   /**
    * Handles a HTTP GET request.
    *
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest  $servletRequest
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface  $servletRequest
    *   The request instance
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponse $servletResponse
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse
    *   The response instance
    *
    * @return void
    * @see \AppserverIo\Psr\Servlet\Http\HttpServlet::doGet()
    */
   public function doGet(
-    HttpServletRequest $servletRequest,
-    HttpServletResponse $servletResponse)
-  {
+    HttpServletRequestInterface $servletRequest,
+    HttpServletResponseInterface $servletResponse
+  ) {
     $servletResponse->appendBodyStream($this->resources['hello-world.en_US.key']);
   }
 }
@@ -274,10 +274,10 @@ quite simple. So let's see how we can integrate session handling in our applicat
 
 namespace AppserverIo\Example\Servlets;
 
-use AppserverIo\Psr\Servlet\ServletConfig;
+use AppserverIo\Psr\Servlet\ServletConfigInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServlet;
-use AppserverIo\Psr\Servlet\Http\HttpServletRequest;
-use AppserverIo\Psr\Servlet\Http\HttpServletResponse;
+use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
+use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
 
 /**
  * This is the famous 'Hello World' as servlet implementation.
@@ -299,12 +299,12 @@ class HelloWorldServlet extends HttpServlet
   /**
    * Initializes the servlet with the passed configuration.
    *
-   * @param \AppserverIo\Psr\Servlet\ServletConfig $config
+   * @param \AppserverIo\Psr\Servlet\ServletConfigInterface $config
    *   The configuration to initialize the servlet with
    *
    * @return void
    */
-  public function init(ServletConfig $config)
+  public function init(ServletConfigInterface $config)
   {
 
     // call parent method
@@ -319,18 +319,18 @@ class HelloWorldServlet extends HttpServlet
   /**
    * Handles a HTTP GET request.
    *
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest  $servletRequest
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface  $servletRequest
    *   The request instance
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponse $servletResponse
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse
    *   The response instance
    *
    * @return void
    * @see \AppserverIo\Psr\Servlet\Http\HttpServlet::doGet()
    */
   public function doGet(
-    HttpServletRequest $servletRequest,
-    HttpServletResponse $servletResponse)
-  {
+    HttpServletRequestInterface $servletRequest,
+    HttpServletResponseInterface $servletResponse
+  ) {
 
     // try to load the username from the session
     if ($session = $servletRequest->getSession()) {
@@ -352,18 +352,18 @@ class HelloWorldServlet extends HttpServlet
    * This is a very simple example that shows how to start a new session, adding
    * the username passed with the POST data to the session.
    *
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest  $servletRequest
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface  $servletRequest
    *   The request instance
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponse $servletResponse
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse
    *   The response instance
    *
    * @return void
    * @see \AppserverIo\Psr\Servlet\Http\HttpServlet::doGet()
    */
   public function doPost(
-    HttpServletRequest $servletRequest,
-    HttpServletResponse $servletResponse)
-  {
+    HttpServletRequestInterface $servletRequest,
+    HttpServletResponseInterface $servletResponse
+  ) {
 
     // create a new session, if not available
     $session = $servletRequest->getSession(true);
@@ -519,15 +519,17 @@ you invoke
 /**
  * Handles a HTTP POST request, destroys the session and logs the user out.
  *
- * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest  $servletRequest
+ * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface  $servletRequest
  *   The request instance
- * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponse $servletResponse
+ * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse
  *   The response instance
  *
  * @return void
  */
-public function doPost(HttpServletRequest $servletRequest, HttpServletResponse $servletResponse)
-{
+public function doPost(
+  HttpServletRequestInterface $servletRequest, 
+  HttpServletResponseInterface $servletResponse
+) {
 
     // destroy the session and reset the cookie
     if ($session = $servletRequest->getSession()) {
@@ -607,7 +609,7 @@ We can do this, by adding the following code, implemented in the `init()` method
 /**
  * Initializes the servlet with the application properties.
  *
- * @param \AppserverIo\Psr\Servlet\ServletConfig $servletConfig
+ * @param \AppserverIo\Psr\Servlet\ServletConfigInterface $servletConfig
  *   The configuration to initialize the servlet with
  *
  * @throws \AppserverIo\Psr\Servlet\ServletException
@@ -615,7 +617,7 @@ We can do this, by adding the following code, implemented in the `init()` method
  * @return void
  * @see \AppserverIo\Psr\Servlet\GenericServlet::init()
  */
-public function init(ServletConfig $config)
+public function init(ServletConfigInterface $config)
 {
 
   // call parent method
@@ -692,7 +694,7 @@ You can access a servlets initialization parameters by invoking the `$this->getI
 /**
  * Initializes the servlet with the path to the configuration file.
  *
- * @param \AppserverIo\Psr\Servlet\ServletConfig $servletConfig
+ * @param \AppserverIo\Psr\Servlet\ServletConfigInterface $servletConfig
  *   The configuration to initialize the servlet with
  *
  * @throws \AppserverIo\Psr\Servlet\ServletException
@@ -700,7 +702,7 @@ You can access a servlets initialization parameters by invoking the `$this->getI
  * @return void
  * @see \AppserverIo\Psr\Servlet\GenericServlet::init()
  */
-public function init(ServletConfig $config)
+public function init(ServletConfigInterface $config)
 {
 
   // call parent method
@@ -836,4 +838,4 @@ running in the Servlet-Engine, clone our [example](https://github.com/appserver-
 > idea behind, but when that happens you may wonder how you ever could have implemented applications without
 > that power!
 
-Hope you like this post :) Next post will be about our [Persistence-Container](https://github.com/appserver-io/appserver/wiki/08.-Persistence-Container) ... stay tuned
+Hope you like this post :) Next post will be about our [Persistence-Container](<{{ "/documentation/persistence-container.html" | prepend: site.baseurl }}>) ... stay tuned
