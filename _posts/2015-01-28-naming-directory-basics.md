@@ -45,7 +45,7 @@ What directories are parsed to locate annotated components can be configured in 
 </context>
 ```
 
-You can bundle your application with its own, customized `context.xml` file. This **MUST** be placed in your applications `META-INF` directory. The file **MUST NOT** be a full copy of the default one, it allows you to override the nodes you want to customize or extend. To add an additional directory `common/classes` your `context.xml` file could simply look like this
+You can bundle your application with its own, customized `context.xml` file. This **MUST** be placed in your applications `META-INF` directory. The file **MUST NOT** be a full copy of the default one, it allows you to override the nodes you want to customize or extend. To add an additional directory like `common/classes` for example, your `context.xml` file could simply look like this
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -132,13 +132,7 @@ class AStatelessSessionBean
 ### Annotations
 ***
 
-Configuration 
-
-#### Explicit Startup (@Startup)
-
-#### Post-Construct Callback (@PostConstruct)
-
-#### Pre-Desctory Callback (@PreDestroy)
+Using annotations to configure your components will probably be the easiest way. We provide several annotations that allows you to register and configure your components on the one side and inject them during runtime on the other.
 
 #### Stateless Session Bean (@Stateless)
 
@@ -147,6 +141,12 @@ Configuration
 #### Singleton Session Bean (@Singleton)
 
 #### Message Driven Bean (@MessageDriven)
+
+#### Explicit Startup (@Startup)
+
+#### Post-Construct Callback (@PostConstruct)
+
+#### Pre-Desctory Callback (@PreDestroy)
 
 #### Enterprise Beans (@EnterpriseBeans)
 
