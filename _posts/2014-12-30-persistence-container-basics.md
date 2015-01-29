@@ -640,6 +640,8 @@ To add a very basic ACL authorization functionality that use an `Interceptor`, w
 
 namespace AppserverIo\Example\Aspects;
 
+use AppserverIo\Doppelgaenger\Entities\MethodInvocation;
+
 /**
  * @Aspect
  */
@@ -701,6 +703,8 @@ So if we want to authorize the user logged into the system for the method call t
 <?php
 
 namespace AppserverIo\Example\SessionBeans;
+
+use Net\Faett\AtChurch\Interceptors\AuthorizationInterceptor;
 
 /**
  * @Stateful
