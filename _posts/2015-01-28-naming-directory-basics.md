@@ -82,7 +82,7 @@ When you want to inject a bean later, you have to know the name it has been regi
 
 whereas `example` is the name of the application.
 
-> The name of your application is *ALWAYS* the directory it'll be deployed to. As the document root is by default `webapps`, which, for example on a Linux system, will result in `/opt/appserver/webapps`. So if your application can be found under `/opt/appserver/webapps/example`, your application name is `example`.
+> The name of your application is *ALWAYS* the directory it'll be deployed to. As the document root is by default `webapps`, which, for example on a Linux system, will result in `/opt/appserver/webapps`, the name of your application will be `example` and will be located under `/opt/appserver/webapps/example`.
 
 When using annotations to inject components, you don't have to know the fully qualified name, because the application server knows the context you're in, tries to lookup the bean and injects it.
 
