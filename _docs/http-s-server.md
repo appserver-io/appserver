@@ -84,7 +84,7 @@ descriptions below.
 | `software`               | The software signature as showen in the response header for example. |
 | `transport`              | The transport layer. In ssl mode `ssl` will be used instead of plain `tcp`. |
 | `address`                | The address the server-socket should be bind and listen to. If you want to allow only connection on local loopback define ´127.0.0.1´ as in the example above shown. This will be good enough for local development and testing purpos. If you want to allow connections to your external ethernet interfaces just define `0.0.0.0` or if you want to allow connection only on a specific interface just define the ip of your interface `192.168.1.100`. |
-| `port`                   | The port for the server-socket to accept connections to. Default setting is `9080` and `9443` for ssl. If you want to serve through default http(s) ports just define `80` and for https `443`. Make sure there is no other webserver installed blocking the default ports.|
+| `port`                   | The port for the server-socket to accept connections to. Default setting is `9080` and `9443` for ssl. If you want to serve through default http(s) ports just define `80` and for https `443`. Make sure there is no other Webserver installed blocking the default ports.|
 | `workerNumber`           | Defines the number of worker-queues to be started waiting for requests to process. |
 | `workerAcceptMin`        | Describes the minimum number of requests for the worker to be accepted for randomize its lifetime. |
 | `workerAcceptMax`        | Describes the maximum number of requests for the worker to be accepted for randomize its lifetime. |
@@ -161,7 +161,7 @@ For every hook all modules are processed in the same order as they are listed in
 > The order of the modules provided by the default configuration is intended and should not be changed. For example if you change the
 > order of AccessModule to come before the RewriteModule it would be possible to lever an access rule by any rewrite rule.
 
-Our webserver provides an interface called `\AppserverIo\WebServer\Interfaces\HttpModuleInterface` that every module has
+Our Webserver provides an interface called `\AppserverIo\WebServer\Interfaces\HttpModuleInterface` that every module has
 to implement.
 
 Find an overview of all modules below ...
@@ -175,7 +175,7 @@ Find an overview of all modules below ...
 | `DirectoryModule`           | Provides for "trailing slash" redirects and serving directory index files. |
 | `AccessModule`              | Allows a http header based access management with regular expression support. |
 | `CoreModule`                | HTTP server features that are always available such as serving static resources and finding defined file handlers. |
-| `PhpModule`                 | Acts like a classic php webserver module (such as `mod_php` for apache) which calls and runs your requested php scripts in an isolated context with all globals (such as `$_SERVER`, `$_GET`, `$_POST` etc.) prepared in the common way. |
+| `PhpModule`                 | Acts like a classic php Webserver module (such as `mod_php` for apache) which calls and runs your requested php scripts in an isolated context with all globals (such as `$_SERVER`, `$_GET`, `$_POST` etc.) prepared in the common way. |
 | `FastCgiModule`             | The Module allows you to connect several fastcgi backends (such as `php-fpm` or `hhvm`) based on configured file-handlers. |
 | `ServletEngine`             | The ServletEngine introduces a super fast and simple way to implement an entry point to handle HTTP requests that allows you to execute all performance critical tasks. Please see [Servlet Engine](<{{ "/documentation/servlet-engine.html" | prepend: site.baseurl }}>) for full documentation. |
 | `DeflateModule`             | It provides the `deflate` output filter that allows output from your server to be compressed before being sent to the client over the network. |
@@ -451,7 +451,7 @@ Currently supported flags are:
 - *R* : If this flag is set we will redirect the client to the URL specified in the `target string`. If this is just an URI we will redirect to the same host.
     You might also specify a custom status code between 300 and 399 to indicate the reason for/kind of the redirect. Default is `301` aka `permanent`
 
-- *M* : Stands for map. Using this flag you can specify an external source (have a look at the Injector classes of the WebServer project) of a target map.
+- *M* : Stands for map. Using this flag you can specify an external source (have a look at the Injector classes of the Webserver project) of a target map.
     With `M=<MY_BACKREFERENCE>` you can specify what the map's index has to match. This matching is done **only** if the rewrite condition matches and will behave as another condition
 
 ## VirtualHost Examples
