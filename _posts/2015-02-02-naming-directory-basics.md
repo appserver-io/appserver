@@ -7,7 +7,7 @@ version: 1.0.0-rc1
 categories: [Naming-Directory]
 ---
 
-Every container running in the application server has a internal registry, we call it Naming Directory. In Java this is called `Enterprise Naming Context` or in short `ENC`. The naming directory is something like an object store, the container registers references to its resources. Resources can be beans or contexts provided by an application. All that resources are registered in the `Naming Directory` which allows you the access them if needed.
+Every container running in the application server has a internal registry, we call it Naming Directory. In Java this is called `Enterprise Naming Context` or in short `ENC`. The naming directory is something like an object store, the container registers references to its resources. Resources can be beans or contexts provided by an application. All that resources are registered in the `Naming-Directory` which allows you the access them if needed.
 
 ### Configure directories to be parsed
 
@@ -176,6 +176,57 @@ In the simplest case **NO** attribute is needed. If so, the member or parameter 
 | `lookup`                    | `string`    | The fully qualified name the component that has to be referenced has been registered in the `Naming-Directory`. |
 
 #### Resources (@Resource)
+
+#### Example
+
+```php
+<?php
+
+namespace AppserverIo\Example\SessionBeans;
+
+/**
+ * @Singleton
+ * @Startup
+ */
+class ASingletonSessionBean
+{
+
+  /**
+   * The application instance that provides the entity manager.
+   *
+   * @var \AppserverIo\Psr\Application\ApplicationInterface
+   * @Resource(name="ApplicationInterface")
+   */
+  protected $application;
+
+  /**
+   * A stateless session bean instance that using property injection.
+   *
+   * @var \AppserverIo\Example\SessionBeans\AStatelessSessionBean
+   * @EnterpriseBean
+   */
+  protected $aStatelessSessionBean;
+
+  /**
+   * A stateful session bean instance injected by method injection.
+   *
+   * @var \AppserverIo\Example\SessionBeans\AStatefulSessionBean
+   */
+  protected $aStatefulSessionBean;
+  
+  /**
+   * Injects a stateful session bean instance.
+   *
+   * @param \AppserverIo\Example\SessionBeans\AStatelfulSessionBean
+   *
+   * @return void
+   */
+  public function injectAStatelessSessionBean($aStatefulSessionBean)
+  {
+    $this->aStatefulSessionBean = $aStatefulSessionBean;
+  }
+}
+```
 
 ### Deployment Descriptor
 ***
