@@ -5,7 +5,7 @@ position: 20
 permalink: /downloads.html
 ---
 
-## <i class="fa fa-download"> Downloads</i>
+## <i class="fa fa-download"></i> Downloads
 ***
 
 Get the latest Version of appserver.io free and enjoy the most powerful PHP infrastructure in the world with only one click!

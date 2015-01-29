@@ -3,13 +3,17 @@ layout: docs
 title: Deployment
 position: 150
 group: Docs
+subDocs:
+  - title: Deployment Modes
+    href: deployment-modes
+  - title: Marker Files
+    href: marker-files
+  - title: Basic Workflows
+    href: basic-workflows
+  - title: Windows Notes
+    href: windows-notes
 permalink: /documentation/deployment.html
 ---
-
-> [Deployment Modes](#deployment-modes)  
-> [Marker Files](#marker-files)  
-> [Basic Workflows](#basic-workflows)  
-> [Windows Notes](#windows-notes)  
 
 The deploy directory in the appserver.io Application Server distribution is the location end users can place their deployment content (e. g. phar files) to have it deployed into the server runtime.
 

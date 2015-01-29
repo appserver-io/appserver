@@ -1,0 +1,12 @@
+{% for tcategory in site.data.categories %}
+    {% if tcategory.slug == page.category %}
+        {% assign category = tcategory %}
+    {% endif %}
+{% endfor %}
+
+<h2>{{ category.title }}</h2>
+<hr/>
+
+{% for post in site.categories.[page.category] %}
+{% include news_item.html %}
+{% endfor %}

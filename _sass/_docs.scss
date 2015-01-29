@@ -1,0 +1,65 @@
+//
+// Styles for documentation
+// --------------------------------------------------
+
+// docs sidebar navigation
+.docs_nav {
+
+  a.active {
+    color: $subnavbar-link-color;
+    font-weight: bold;
+  }
+
+  ul {
+    font-size: 14px;
+    margin-top: 10px;
+    margin-bottom: 0;
+    padding-left: 20px;
+
+    a, a:hover, a:active, a:visited {
+      color: $subnavbar-link-color;
+      text-decoration: none;
+    }
+
+    li:before {
+      font-family: 'FontAwesome';
+      content: '\f105';
+      margin: 0 5px 0 -11px;
+      color: #D0EDF6;
+    }
+
+    li {
+      margin: 8px 0;
+    }
+  }
+}
+
+// docs content styling
+.docs-content {
+
+  // inherit table styling for markdown docs table
+  table {
+    @extend .table;
+    @extend .table-bordered;
+    font-size: 14px;
+    margin: 20px 0;
+  }
+
+  h2 {
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+  }
+
+  h1:before, h2:before, h3:before, h4:before, h5:before {
+    display: block;
+    content: " ";
+    margin-top: -85px;
+    height: 85px;
+    visibility: hidden;
+  }
+
+  .highlight {
+    padding: 15px 0;
+  }
+}
+

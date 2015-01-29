@@ -3,12 +3,15 @@ layout: docs
 title: Design by Contract
 position: 120
 group: Docs
+subDocs:
+  - title: What can be done
+    href: what-can-be-done
+  - title: How does it work
+    href: how-does-it-work
+  - title: Usage
+    href: usage
 permalink: /documentation/design-by-contract.html
 ---
-
-> [What can be done](#what-can-be-done)  
-> [How does it work](#how-does-it-work)  
-> [Usage](#usage)  
 
 Beside AOP, [Design-by-Contract](http://en.wikipedia.org/wiki/Design_by_contract) is another
 interesting approach we support out-of-the-box when you think about the architecture of your

@@ -7,6 +7,7 @@
 @import "bootstrap";
 @import "syntax/github";
 @import "countdown";
+@import "docs";
 
 // import font
 @import url(http://fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,400,600);
@@ -15,6 +16,15 @@
 body {
   padding-top: 65px;
   -webkit-font-smoothing: antialiased;
+}
+
+// inline code
+code {
+  padding: 3px 8px;
+  font-size: 90%;
+  color: $code-color;
+  background-color: $code-bg;
+  border-radius: $border-radius-base;
 }
 
 .container-page {

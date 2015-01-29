@@ -1,13 +1,13 @@
 ---
 layout: post
-title:  Servlet-Engine Basics
-date:   2014-12-24 11:00:00
+title: Servlet-Engine Basics
+date: 2014-12-24 11:00:00
 author: wagnert
 version: 1.0.0beta2
-categories: [Servlet-Engine]
+categories: [servlet-engine]
 ---
 
-As announced in our last blog post, we want to give you an overview of the services and functions an 
+As announced in our last blog post, we want to give you an overview of the services and functions an
 application server will provide. Let's start with the Servlet-Engine, because we think that this will
 be a good start for all developers who never get in contact with an application server before.
 
@@ -21,11 +21,11 @@ think it'll be worth waiting for it.
 ### Problems without Servlet-Engine
 ***
 
-Some of you, who are familiar with a Java Servlet-Engine will wonder: a Servlet-Engine in PHP? Does 
+Some of you, who are familiar with a Java Servlet-Engine will wonder: a Servlet-Engine in PHP? Does
 that make sense because of all the great frameworks out there. We think yes, because one of the big
 issues with the frameworks is, that they'll get huge during the last years and bootstrapping became
 a big meaning meanwhile. As PHP is used as a scripting language, the problem of the bootstrapping is,
-that is has be done at every request and therefore it leads to a massive loss of performance. One 
+that is has be done at every request and therefore it leads to a massive loss of performance. One
 solution can be caching, but that entails many other problems that you may have faced in your projects.
 
 > A Servlet-Engine is not a solution for all the problems you'll face nor for bad code you'll probably
@@ -59,9 +59,9 @@ class HelloWorldServlet extends HttpServlet
   /**
    * Handles a HTTP GET request.
    *
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest  $servletRequest  
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest  $servletRequest
    *   The request instance
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponse $servletResponse 
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponse $servletResponse
    *   The response instance
    *
    * @return void
@@ -78,7 +78,7 @@ class HelloWorldServlet extends HttpServlet
 
 To map a servlet to a URL, you can simply use the `@Route` annotation. With the `name` attribute you have
 specify a name that has to be unique in your application scope, the attribute `urlPattern` allows you to
-specify a list of URL patterns you want to map the servlet to. In our example, we want to map the 
+specify a list of URL patterns you want to map the servlet to. In our example, we want to map the
 `HelloWorldServlet` to the URL's like `http://127.0.0.1:9080/examples/helloWorld.do`, whatever parameters
 are appended.
 
@@ -87,14 +87,14 @@ has been sent, and therefore is the main entry point to handle the request by im
 we want to provide. For our first example, we only want to add the `Hello World!` that should be rendered.
 
 That is pretty simple, we think! So, given you've downloaded and installed the latest version of the application
-server, create a folder `examples/WEB-INF/classes/AppserverIo/Example/Servlets` under the `webapps` folder of 
+server, create a folder `examples/WEB-INF/classes/AppserverIo/Example/Servlets` under the `webapps` folder of
 your installation. In the folder, create a new file named `HelloWorldServlet.php`, copy the code from above and
 save it. After [restarting](http://appserver.io/documentation/basic-usage.html)
 the application server, open the URL `http://127.0.0.1:9080/examples/helloWorld.do` in your favorite browser.
 You should see the text `Hello World`. Congratulations, you have written your first servlet!
 
-> Simplicity is one of our main targets, because we want you to write your applications with a minimum of 
-> configuration, actually NULL. So to start write an application that perfectly works in the application 
+> Simplicity is one of our main targets, because we want you to write your applications with a minimum of
+> configuration, actually NULL. So to start write an application that perfectly works in the application
 > server, you only have to download and install it, create some folders and write your code!
 
 ### Bootstrapping a Servlet
@@ -134,7 +134,7 @@ class HelloWorldServlet extends HttpServlet
   /**
    * Initializes the servlet with the passed configuration.
    *
-   * @param \AppserverIo\Psr\Servlet\ServletConfig $config 
+   * @param \AppserverIo\Psr\Servlet\ServletConfig $config
    *   The configuration to initialize the servlet with
    *
    * @return void
@@ -144,17 +144,17 @@ class HelloWorldServlet extends HttpServlet
 
     // call parent method
     parent::init($config);
-    
+
     // parse the application resources from an INI file
     $this->resources = parse_ini_file($config->getWebappPath() . '/WEB-INF/resources.ini');
   }
-  
+
   /**
    * Handles a HTTP GET request.
    *
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest  $servletRequest  
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest  $servletRequest
    *   The request instance
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponse $servletResponse 
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponse $servletResponse
    *   The response instance
    *
    * @return void
@@ -215,7 +215,7 @@ class HelloWorldServlet extends HttpServlet
   /**
    * Initializes the servlet with the passed configuration.
    *
-   * @param \AppserverIo\Psr\Servlet\ServletConfig $config 
+   * @param \AppserverIo\Psr\Servlet\ServletConfig $config
    *   The configuration to initialize the servlet with
    *
    * @return void
@@ -225,19 +225,19 @@ class HelloWorldServlet extends HttpServlet
 
     // call parent method
     parent::init($config);
-    
+
     // parse the application resources from an INI file
     $this->resources = parse_ini_file(
        $config->getWebappPath() . '/' . $config->getInitParam('resourceFile')
     );
   }
-  
+
   /**
    * Handles a HTTP GET request.
    *
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest  $servletRequest  
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest  $servletRequest
    *   The request instance
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponse $servletResponse 
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponse $servletResponse
    *   The response instance
    *
    * @return void
@@ -299,7 +299,7 @@ class HelloWorldServlet extends HttpServlet
   /**
    * Initializes the servlet with the passed configuration.
    *
-   * @param \AppserverIo\Psr\Servlet\ServletConfig $config 
+   * @param \AppserverIo\Psr\Servlet\ServletConfig $config
    *   The configuration to initialize the servlet with
    *
    * @return void
@@ -309,19 +309,19 @@ class HelloWorldServlet extends HttpServlet
 
     // call parent method
     parent::init($config);
-    
+
     // parse the application resources from an INI file
     $this->resources = parse_ini_file(
       $config->getWebappPath() . '/' . $config->getInitParameter('resourceFile')
     );
   }
-  
+
   /**
    * Handles a HTTP GET request.
    *
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest  $servletRequest  
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest  $servletRequest
    *   The request instance
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponse $servletResponse 
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponse $servletResponse
    *   The response instance
    *
    * @return void
@@ -330,31 +330,31 @@ class HelloWorldServlet extends HttpServlet
   public function doGet(
     HttpServletRequest $servletRequest,
     HttpServletResponse $servletResponse)
-  { 
-  
+  {
+
     // try to load the username from the session
     if ($session = $servletRequest->getSession()) {
       $username = $session->getData('username');
     } else { // username not available
       $username = 'Unknown';
     }
-    
+
     // prepare the hello world string, this should look like 'Hello World %s!'
     $helloWorld = sprintf($this->resources['hello-world.en_US.key'], $username);
-    
+
     // append the prepared hello world to the response
     $servletResponse->appendBodyStream($helloWorld);
   }
-  
+
   /**
    * Handles a HTTP POST request.
    *
    * This is a very simple example that shows how to start a new session, adding
    * the username passed with the POST data to the session.
    *
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest  $servletRequest  
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest  $servletRequest
    *   The request instance
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponse $servletResponse 
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponse $servletResponse
    *   The response instance
    *
    * @return void
@@ -364,13 +364,13 @@ class HelloWorldServlet extends HttpServlet
     HttpServletRequest $servletRequest,
     HttpServletResponse $servletResponse)
   {
-  
+
     // create a new session, if not available
     $session = $servletRequest->getSession(true);
-    
+
     // start the session and add the cookie to the response
     $session->start();
-    
+
     // store the username found in the POST data
     $session->putData('username', $servletRequest->getParameter('username'));
   }
@@ -394,7 +394,7 @@ As described before, we thought, that it have to be very simple, to write a serv
 annotations that gives you the power to configure the basics. For sure, for many things we deliver a good
 default configuration, but you need the power to overwrite that.
 
-You can overwrite the default configuration values in a simple XML file called `web.xml` that you've to 
+You can overwrite the default configuration values in a simple XML file called `web.xml` that you've to
 store in your applications `WEB-INF` folder. In that file you can configure Servlets, overwrite values you've
 specified in annotations, change the default session settings and give or deny users access to resources with
 HTTP basic or digest authentication.
@@ -411,7 +411,7 @@ HTTP basic or digest authentication.
   <session-config>
     <session-name>PHPSESSID</session-name>
     <session-file-prefix></session-file-prefix>
-    <!-- defaults to application specifc temporary directory 
+    <!-- defaults to application specifc temporary directory
          e. g. /opt/appserver/var/tmp/example/session -->
     <session-save-path></session-save-path>
     <!-- default configuration for session/cookie lifetime and gc -->
@@ -425,7 +425,7 @@ HTTP basic or digest authentication.
     <session-cookie-secure>false</session-cookie-secure>
     <session-http-only>false</session-http-only>
   </session-config>
-  
+
   <!-- application context initialization parameter -->
   <context-param>
     <param-name>applicationProperties</param-name>
@@ -471,7 +471,7 @@ HTTP basic or digest authentication.
 </web-app>
 ```
 
-The XML configuration seems to be a bit complicated for the start, right? So we will go through it, node by 
+The XML configuration seems to be a bit complicated for the start, right? So we will go through it, node by
 node and give you a brief introduction what you can configure with it.
 
 #### Meta-Data Configuration
@@ -479,7 +479,7 @@ node and give you a brief introduction what you can configure with it.
 
 ##### `/web-app/display-name` *string*
 This node actually doesn't has any functionality. Actually you can use it to give your application a name.
-In later versions, this name will be displayed in admin UI where all applications are listed. 
+In later versions, this name will be displayed in admin UI where all applications are listed.
 
 ##### `/web-app/description` *string*
 As `/web-app/display-name`, this node has also no functionality. You can add a short description about your
@@ -496,7 +496,7 @@ In some cases, e. g. if you want to specify a indivdual cookie name for your ses
 the name of the session cookie, customize the value of this node to your choice. Please be aware that you can only
 use chars that are defined in [RFC2616 - Section 2.2](http://tools.ietf.org/html/rfc2616#section-2.2).
 
-##### `/web-app/session-config/session-file-prefix` *string* 
+##### `/web-app/session-config/session-file-prefix` *string*
 As sessions are persisted to the filesystem after the configured inactivity timeout, by default 1.440 seconds,
 you can also specify a prefix for the filename used to store the session data. To specify a custom prefix, change
 the value for node . As for the cookie name, be aware of the restrictions for filenames, that'll depend on the OS
@@ -519,9 +519,9 @@ you invoke
 /**
  * Handles a HTTP POST request, destroys the session and logs the user out.
  *
- * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest  $servletRequest  
+ * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest  $servletRequest
  *   The request instance
- * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponse $servletResponse 
+ * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponse $servletResponse
  *   The response instance
  *
  * @return void
@@ -570,7 +570,7 @@ the host name of the server which generated the cookie according to cookies spec
 
 ##### `/web-app/session-config/session-cookie-path` *string*
 With this value of this node, you specify the path to set in the session cookie, which defaults to `/`. The path
-tells the browser to use the cookie only when requesting pages contains the path you specify. If you use the 
+tells the browser to use the cookie only when requesting pages contains the path you specify. If you use the
 default value, the cookie will be valid for all paths in your application.
 
 ##### `/web-app/session-config/session-cookie-secure` *boolean*
@@ -584,7 +584,7 @@ reduce identity theft through XSS attacks. Keep in mind, that although it is not
 default, this value is set to `false`.
 
 #### Global Initialization Parameters
-Something you actually can not configure with annotations are context parameters. You can and should use context 
+Something you actually can not configure with annotations are context parameters. You can and should use context
 parameters when you want to specify and pass values to your application, you would need to bootstrap your servlets,
 e. g. the path to a application specific configuration file.
 
@@ -607,7 +607,7 @@ We can do this, by adding the following code, implemented in the `init()` method
 /**
  * Initializes the servlet with the application properties.
  *
- * @param \AppserverIo\Psr\Servlet\ServletConfig $servletConfig 
+ * @param \AppserverIo\Psr\Servlet\ServletConfig $servletConfig
  *   The configuration to initialize the servlet with
  *
  * @throws \AppserverIo\Psr\Servlet\ServletException
@@ -624,8 +624,8 @@ public function init(ServletConfig $config)
   // load the servlet context
   $context = $config->getServletContext();
 
-  // load path to application and to properties  
-  $webappPath = $context->getWebappPath();                 
+  // load path to application and to properties
+  $webappPath = $context->getWebappPath();
   $pathToProperties = $context->getInitParameter('applicationProperties')
 
   // load and initialize the application properties
@@ -635,7 +635,7 @@ public function init(ServletConfig $config)
 ```
 
 > Context parameters enables you to load data from configuration files, databases, webservices on application
-> server startup. In the end, this means that this is the best place to bootstrap your servlet or your 
+> server startup. In the end, this means that this is the best place to bootstrap your servlet or your
 > application.
 
 #### Servlet Configuration
@@ -665,7 +665,7 @@ this description will be displayed in the servlet details in admin UI.
 
 ##### `/web-app/servlet/display-name` *string*
 This node actually doesn't has any functionality. Actually you can use it to give your servlet a name.
-In later versions, this name will be displayed in admin UI where all servlets are listed. 
+In later versions, this name will be displayed in admin UI where all servlets are listed.
 
 ##### `/web-app/servlet/servlet-name` *string*
 You must specify a name, unique in your application, for the servlet here. This name will be used to
@@ -692,7 +692,7 @@ You can access a servlets initialization parameters by invoking the `$this->getI
 /**
  * Initializes the servlet with the path to the configuration file.
  *
- * @param \AppserverIo\Psr\Servlet\ServletConfig $servletConfig 
+ * @param \AppserverIo\Psr\Servlet\ServletConfig $servletConfig
  *   The configuration to initialize the servlet with
  *
  * @throws \AppserverIo\Psr\Servlet\ServletException
@@ -705,12 +705,12 @@ public function init(ServletConfig $config)
 
   // call parent method
   parent::init($config);
-  
+
   // load the servlet context
   $context = $config->getServletContext();
 
-  // load path to servlet and to properties  
-  $webappPath = $context->getWebappPath();                 
+  // load path to servlet and to properties
+  $webappPath = $context->getWebappPath();
   $pathToProperties = $this->getInitParameter('servletProperties')
 
   // load and initialize the application properties
@@ -750,7 +750,7 @@ patterns `/helloWorld.do` and `/helloWorld.do*` like
 ```
 
 This is necessary, because the `HttpServlet::service()` method has to be invoked either when you open
-`http://127.0.0.1:9080/example/helloWorld.do` or anything like `http://127.0.0.1:9080/example/helloWorld.do/my/path/info?test=test`. You can understand the URL mapping, 
+`http://127.0.0.1:9080/example/helloWorld.do` or anything like `http://127.0.0.1:9080/example/helloWorld.do/my/path/info?test=test`. You can understand the URL mapping,
 containing the `*` as a catch all.
 
 > Keep in mind, if you want to write a servlet, in general you should map it to a path with a `.do` file extension,
@@ -759,7 +759,7 @@ containing the `*` as a catch all.
 > actually use the PHP [fnmatch](http://php.net/fnmatch) method.
 
 #### HTTP Basic and Digest Authentication
-Security will be a very important topic when writing applications, especially web applications. You have the 
+Security will be a very important topic when writing applications, especially web applications. You have the
 possibility secure your servlets either with HTTP basic or digest authentication as described in [RFC2617](http://tools.ietf.org/html/rfc2617).
 
 ##### `/web-app/security` *string*
@@ -792,7 +792,7 @@ example you can use [.Htaccesstools](http://www.htaccesstools.com/htpasswd-gener
 file.
 
 To create a file for HTTP digest authentication, you can use the tool [htdigest](http://httpd.apache.org/docs/2.2/programs/htdigest.html).
-Again, there is an online [website](http://jesin.tk/tools/htdigest-generator-tool/) you can generate a file 
+Again, there is an online [website](http://jesin.tk/tools/htdigest-generator-tool/) you can generate a file
 that will work on Windows also.
 
 ##### `/web-app/security/url-pattern` *string*
@@ -804,7 +804,7 @@ The value of this node defines the authentication type you want to use. `Basic` 
 options described below.
 
 ##### `/web-app/security/auth/realm` *string*
-This value defines the text the browser dialogue will render after `The server says:`. So if you can specify a 
+This value defines the text the browser dialogue will render after `The server says:`. So if you can specify a
 short message to the user that helps him to rember his credentials. In our example we specify `Basic Authentication Type` here.
 
 ##### `/web-app/security/auth/adapter` *string*
@@ -813,7 +813,7 @@ dialog. Actually we have `htpasswd` for HTTP basic authentication, `htdigest`for
 later releases we'll provide other adpaters, e. g. a LDAP implementation you can use for HTTP basic authentication.
 
 ##### `/web-app/security/auth/options/file` *string*
-Based on the value for `/web-app/security/auth/auth_type` you've defined, you have to enter the relative path to 
+Based on the value for `/web-app/security/auth/auth_type` you've defined, you have to enter the relative path to
 the file containing the `.htpasswd` or `.htdigest` file with the allowed users.
 
 ### Summary
@@ -833,7 +833,7 @@ running in the Servlet-Engine, clone our [example](https://github.com/appserver-
 
 > One of the biggest advantages of an application server is the possibility to keep instances in memory, that
 > is what the Servlet-Engine is doing with the servlets. You may need some time to understand the concepts and
-> idea behind, but when that happens you may wonder how you ever could have implemented applications without 
+> idea behind, but when that happens you may wonder how you ever could have implemented applications without
 > that power!
 
 Hope you like this post :) Next post will be about our [Persistence-Container](https://github.com/appserver-io/appserver/wiki/08.-Persistence-Container) ... stay tuned

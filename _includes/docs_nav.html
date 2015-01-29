@@ -1,8 +1,21 @@
 {% assign items = site.docs | sort: 'position' %}
 
 <!-- Navigation -->
-<div class="list-group">
+<div class="docs_nav list-group">
     {% for item in items %}
-        <a href="{{ item.url }}" class="list-group-item{% if item.url == page.url %} active{% endif %}">{{ item.title }}</a>
-    {% endfor %}  
+        {% assign activeClass = ""%}
+        {% if item.url == page.url %}
+            {% assign activeClass = "active"%}
+        {% endif %}
+        <div class="list-group-item {{ activeClass }}">
+            <a class="{{ activeClass }}" href="{{ item.url }}">{{ item.title }}</a>
+            {% if item.subDocs and activeClass != "" %}
+                <ul class="list-unstyled">
+                {% for subDoc in item.subDocs %}
+                    <li><a href="#{{ subDoc.href }}">{{ subDoc.title }}</a></li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+    {% endfor %}
 </div>

@@ -3,11 +3,13 @@ layout: docs
 title: Dependency Injection
 position: 70
 group: Docs
+subDocs:
+  - title: What can be injected
+    href: what-can-be-injected
+  - title: How to inject an instance
+    href: how-to-inject-an-instance
 permalink: /documentation/dependency-injection.html
 ---
-
-> [What can be injected](#what-can-be-injected)  
-> [How to inject an instance](#how-to-inject-an-instance)   
 
 Dependency Injection, furthermore DI, enables developers to write cleaner, reusable and maintainable
 code with less coupling by injecting necessary instances at runtime instead of instantiating them in

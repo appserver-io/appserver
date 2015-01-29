@@ -3,15 +3,21 @@ layout: docs
 title: Installation
 position: 10
 group: Docs
+subDocs:
+  - title: Mac OS X
+    href: mac-os-x
+  - title: Windows
+    href: windows
+  - title: Debian
+    href: debian
+  - title: Fedora
+    href: fedora
+  - title: CentOS
+    href: centos
+  - title: Raspbian
+    href: raspbian
 permalink: /documentation/installation.html
 ---
-
-> [Mac OS X](#mac-os-x)  
-> [Windows](#windows)  
-> [Debian](#debian)  
-> [Fedora](#fedora)  
-> [CentOS](#centos)  
-> [Raspian](#raspian)
 
 Besides supporting several operating systems and their specific ways of installing software, we
 also support several ways of getting this software. So to get your appserver.io package you might
