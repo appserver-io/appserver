@@ -156,15 +156,24 @@ The `@Startup` annotation configures a `Singleton` session bean to be initialize
 
 #### Post-Construct Callback (@PostConstruct)
 
-This annotation marks a method as `post-construct` lifecycle callback and has to be set at the methods DocBlock. The annotation can be used on all [Server-Side Component Types](<{{ "/persistence-container/2014/12/30/persistence-container-basics.html#server-side-component-types" | prepend: site.baseurl }}>) and doesn't accept any attributes.
+This annotation marks a method as `post-construct` lifecycle callback and has to be set at the methods DocBlock. The annotation can be used on all [Server-Side Component Types](<{{ "/persistence-container/2015/01/30/persistence-container-basics.html#server-side-component-types" | prepend: site.baseurl }}>) and doesn't accept any attributes.
 
 #### Pre-Destroy Callback (@PreDestroy)
 
-This annotation marks a method as `pre-destroy` lifecycle callback and has to be set at the methods DocBlock. The annotation can be used on all [Server-Side Component Types](<{{ "/persistence-container/2014/12/30/persistence-container-basics.html#server-side-component-types" | prepend: site.baseurl }}>) and doesn't accept any attributes.
+This annotation marks a method as `pre-destroy` lifecycle callback and has to be set at the methods DocBlock. The annotation can be used on all [Server-Side Component Types](<{{ "/persistence-container/2015/01/30/persistence-container-basics.html#server-side-component-types" | prepend: site.baseurl }}>) and doesn't accept any attributes.
 
-#### Enterprise Beans (@EnterpriseBeans)
+#### Enterprise Beans (@EnterpriseBean)
 
+The `@EnterpriseBean` annotation can be used in two scopes. First scope is in the DocBlock of a components class member, second of a class method. In both cases, the member or the method is marked as target for `Dependency Injection`.
 
+In the simplest case **NO** attribute is needed. If so, the member or parameter name **MUST** exactly match the components `name` that should be injected. Otherwise you have to specify the `name` attribute and optionally the `beanName` and `beanInterface` or `lookup` attribute.
+
+| Node Name                   | Type        | Description                                                          |
+| --------------------------- | ----------- | -------------------------------------------------------------------- |
+| `name`                      | `string`    | Name the reference will be registered in the `Naming-Directory`.     |
+| `beanName`                  | `string`    | The `name` of the component we want to reference.                    |
+| `beanInterface`             | `string`    | The business interface we want to reference. This has to be the `name`, suffixed with either one of `Local` or `Remote`. |
+| `lookup`                    | `string`    | The fully qualified name the component that has to be referenced has been registered in the `Naming-Directory`. |
 
 #### Resources (@Resource)
 
