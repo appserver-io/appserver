@@ -1,18 +1,18 @@
 ---
 layout: post
-title:  WebServer Basics
+title:  Webserver Basics
 date:   2015-01-28 19:24:00
 author: zelgerj
 categories: [webserver]
 ---
 
-As you may already know, the appserver has a fully http/1.1 compliant [webserver](<https://github.com/appserver-io/webserver>)
+As you may already know, the appserver has a fully http/1.1 compliant [Webserver](<https://github.com/appserver-io/webserver>)
 included which is build upon our [multithreaded server framework](<https://github.com/appserver-io/server>) which
 is also available open-source on github as well.
 
-Your vision is to replace webservers like apache, nginx or lighttpd in long terms by providing the same feature-set and giving you the opportunity to enhance it by just writing PHP code because its all written in PHP.
+Your vision is to replace Webservers like apache, nginx or lighttpd in long terms by providing the same feature-set and giving you the opportunity to enhance it by just writing PHP code because its all written in PHP.
 
-### How to configure the webserver?
+### How to configure the Webserver?
 
 At the beginning you have to set some main parameters for the server itself as shown in the example taken from
 our appserver main https-server configuration.
@@ -43,7 +43,7 @@ An detailed description of every parameter can be found under [docs](<{{ "/docum
 ### Virtual Hosts
 
 What would live without having the possibility setting up virtual hosts within a http(s)-server and of course our
-webserver is offering you the ability in a simple but flexible way.
+Webserver is offering you the ability in a simple but flexible way.
 
 See the simplest virtual host configuration:
 
@@ -87,7 +87,7 @@ If you want to know how it will work in detail and whats exactly beyond those at
 ### Authentications
 
 You want to protect a folder or directory very easy using username and password credentials as you know it from apache
-or other webservers? Just do it using the same `.htpasswd` files and a simple configuration like this:
+or other Webservers? Just do it using the same `.htpasswd` files and a simple configuration like this:
 
 ```xml
 <server name="https" ...>
@@ -109,7 +109,7 @@ or other webservers? Just do it using the same `.htpasswd` files and a simple co
 ```
 
 Checkout our [docs](<{{ "/documentation/http-s-server.html#authentications" | prepend: site.baseurl }}>) to get more into
-authentications and all the other cool features the webserver provides you.
+authentications and all the other cool features the Webserver provides you.
 
 We appreciate any feedback So, do not hesitate to share your experiences or any problems you encountered while using it
 with us here via comments or better on github via the issue tracker. Cheers :-)
