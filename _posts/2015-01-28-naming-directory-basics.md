@@ -9,38 +9,79 @@ categories: [Naming-Directory]
 
 Every container running in the application server has a internal registry, we call it Naming Directory. In Java this is called `Enterprise Naming Context` or in short `ENC`. The naming directory is something like an object store, the container registers references to its resources. Resources can be beans or contexts provided by an application. All that resources are registered in the `Naming Directory` which allows you the access them if needed.
 
+### Application Configuration
+
+When the application server starts, it parses the `META-INF/classes` and `WEB-INF/classes` folders by default to find classes with supported annotations.
+
+What directories should be parsed for annotated classes can be configured in your applications configuration file. If you don't bundle a specific configuration file with your application, the default configuration will be used. The default application configuration is located under `etc/appserver/conf.d/context.xml`. The nodes `/context/managers/manager[@name="BeanContextInterface" or @name="ServletContextInterface"]` are responsible for parsing and initializing the components.
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<context 
+  name="globalBaseContext"
+  type="AppserverIo\Appserver\Application\Application"
+  xmlns="http://www.appserver.io/appserver">
+  ...
+  <managers>
+    ...
+    <manager
+      name="BeanContextInterface"
+      type="AppserverIo\Appserver\PersistenceContainer\BeanManager"
+      factory="AppserverIo\Appserver\PersistenceContainer\BeanManagerFactory">
+      <directories>
+        <directory>/META-INF/classes</directory>
+      </directories>
+    </manager>
+    <manager
+      name="ServletContextInterface"
+      type="AppserverIo\Appserver\ServletEngine\ServletManager"
+      factory="AppserverIo\Appserver\ServletEngine\ServletManagerFactory">
+      <directories>
+        <directory>/WEB-INF/classes</directory>
+      </directories>
+    </manager>
+    ...
+  </managers>
+</context>
+```
+
+You can bundle your application with its own, customized `context.xml` file. This MUST be placed in your applications `META-INF` directory. The file MUST not be a full copy of the default one, it allows you to override the nodes you want to customize or extend. To add an additional directory `common/classes` your `context.xml` file could simply look like this
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<context 
+  name="globalBaseContext"
+  type="AppserverIo\Appserver\Application\Application"
+  xmlns="http://www.appserver.io/appserver">
+  <managers>
+    <manager
+      name="BeanContextInterface"
+      type="AppserverIo\Appserver\PersistenceContainer\BeanManager"
+      factory="AppserverIo\Appserver\PersistenceContainer\BeanManagerFactory">
+      <directories>
+        <directory>/common/classes</directory>
+        <directory>/META-INF/classes</directory>
+      </directories>
+    </manager>
+  </managers>
+</context>
+```
+
+> Keep in mind, that the directory MUST be relative to your applications root directory and start with a `/`.
+
+If a class is found, the class will be registered in the application servers naming directory under the name you specify in the annotations `name` Attribute, in following example `AStatelessSessionBean`. As the `name` attribute is optional, the bean will be registered in the naming directory with the short class name, if not specified.
+
+More detailed information about the how to configure an application can be found in the section [Application Configuration](<{{ "/documentation/configuration.html#application-configuration" | prepend: site.baseurl }}>) of the documentation.
+
 ### Register Resources
 ***
 
-When the application server starts, it parses the `META-INF/classes` and `WEB-INF/classes` folders by default to find classes with supported annotations. If a class is found, the class will be registered in the application servers naming directory under the name you specify in the annotations `name` Attribute, in following example `AStatelessSessionBean`. As the `name` attribute is optional, the bean will be registered in the naming directory with the short class name, if not specified.
-
 When you want to inject that bean later, you have to know the name it has been registered with. In the following example, the bean will be registered in the naming directory under `php:global/example/AStatelessSessionBean`, whereas `example` is the name of the application. When using annotations to inject components, you don't have to know the fully qualified name, because the application server knows the actual context, tries to lookup the bean and injects it.
-
-### Application Configuration
-
-```xml
-<managers>
-  <manager
-    name="BeanContext"
-    type="AppserverIo\Appserver\PersistenceContainer\BeanManager"
-    factory="AppserverIo\Appserver\PersistenceContainer\BeanManagerFactory">
-    <directories>
-      <directory>/META-INF/classes</directory>
-    </directories>
-  </manager>
-  <manager
-    name="ServletContext"
-    type="AppserverIo\Appserver\ServletEngine\ServletManager"
-    factory="AppserverIo\Appserver\ServletEngine\ServletManagerFactory">
-    <directories>
-      <directory>/WEB-INF/classes</directory>
-    </directories>
-  </manager>
-</managers>
-```
 
 ### Annotations
 ***
+
+Configuration 
 
 #### Explicit Startup (@Startup)
 
