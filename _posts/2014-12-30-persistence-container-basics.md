@@ -661,7 +661,7 @@ class AuthorizationInterceptor
 
     // load class and method name
     $className = $methodInvocation->getStructureName();
-    $methodName = $methodInvocation->getName()
+    $methodName = $methodInvocation->getName();
     
     // load context, a instance of AStatefulSessionBean
     $context = $methodInvocation->getContext();
@@ -670,7 +670,7 @@ class AuthorizationInterceptor
     $application = $context->getApplication();
     
     // load user logged into the system
-    $user = $context->getUser()
+    $user = $context->getUser();
 
     // query whether the user is allowed to invoke the method 
     if ($application->search('AclSessionBean')->allowed($methodInvocation, $user)) {
