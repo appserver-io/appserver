@@ -9,11 +9,11 @@ description: > # The objective of the project is to develop a multithreaded
   applications in PHP environments.
 
 timezone: Europe/Berlin
+future: false
 port: 4000
 host: 0.0.0.0
 baseurl: ""
 url: "http://appserver.io"
-future: false
 
 collections:
   docs:

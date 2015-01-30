@@ -7,6 +7,8 @@ $brand-primary: #5bc0de !default;
 $font-family-base: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif !default;
 $font-size-base: 15px !default;
 
+$font-size-h1: floor(($font-size-base * 2.3)) !default;
+
 $code-color: #222222 !default;
 $code-bg: #f4f4f4 !default;
 

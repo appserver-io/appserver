@@ -4,16 +4,9 @@ title: Team
 position: 20
 group: About
 permalink: /about/team.html
-
-stefan:
-  - name       : Stefan Willkommer
-    title      : CTO
-    text       : Stefan studied computer science at the University of applied sciences in Rosenheim, Germany. During this time he started his entrepreneurship with several projects leading into founding the TechDivision GmbH as an internet support company for open source driven solutions in the area of content management and ecommerce. The Magento Gold Partner TechDivision become one of the leading companies in Europe for consulting, developing and supporting Magento Enterprise solutions. During the last 5 years Stefan Willkommer supervised lots of international Magento and TYPO3 projects for very well known customers like Ferrero, WMF and Ritter Sport. Within TechDivision he introduced lot's of market leading technologies in the area of deploying php applications and is addicted to lean project management methodology.
-    image  : http://placehold.it/700x400
-
 ---
 
-## Team
+# Team
 ***
 
 We really believe that we can change the world by providing you with the next generation PHP infrastructure:

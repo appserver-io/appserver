@@ -34,7 +34,7 @@ boxes-targetgroups:
     link-label  : Learn more
 ---
 
-## <i class="fa fa-cubes"></i> Comparison of PHP infrastructural components
+# <i class="fa fa-cubes"></i> Comparison of PHP infrastructural components
 <p><br/></p>
 appserver.io is a next-generation PHP infrastructure consisting of a lightning fast webserver completely
 written in PHP including additional frequently needed services in one powerful bundle. You can use all of

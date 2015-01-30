@@ -7,7 +7,7 @@ permalink: /community/blog.html
 author: all
 ---
 
-## All News
+# All News
 ***
 
 {% for post in site.posts %}
