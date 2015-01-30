@@ -1,0 +1,16 @@
+//
+// Styles for blog content
+// --------------------------------------------------
+
+
+// blog content styling
+.blog-content {
+
+  // inherit table styling for markdown blog table
+  table {
+    @extend .table;
+    @extend .table-bordered;
+    font-size: 14px;
+    margin: 20px 0;
+  }
+}
