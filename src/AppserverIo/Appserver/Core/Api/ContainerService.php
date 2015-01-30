@@ -29,7 +29,7 @@ namespace AppserverIo\Appserver\Core\Api;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class ContainerService extends AbstractService
+class ContainerService extends AbstractFileOperationService
 {
 
     /**
