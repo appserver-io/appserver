@@ -58,6 +58,18 @@
     visibility: hidden;
   }
 
+  ul {
+
+    padding-top: 15px;
+    padding-bottom: 15px;
+
+    li {
+      p {
+        display: inline;
+      }
+    }
+  }
+
   .highlight {
     padding: 15px 0;
   }
