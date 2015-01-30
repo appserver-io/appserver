@@ -26,7 +26,7 @@
 		"appserver-io/webserver" : "0.4.*",
 		"appserver-io/properties" : "0.2.*",
 		"appserver-io/configuration" : "0.1.*",
-		"appserver-io/doppelgaenger" : "0.4.*"
+		"appserver-io/doppelgaenger" : "0.5.*"
 	},
 	"require-dev" : {
 		"appserver-io/build" : "0.2.*",
