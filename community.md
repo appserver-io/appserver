@@ -5,7 +5,7 @@ position: 50
 permalink: /community/mailing-list.html
 ---
 
-## Subscribe to our mailinglist
+# Subscribe to our mailinglist
 ***
 
 Get interesting informations and the latest news about appserver.io automatically.

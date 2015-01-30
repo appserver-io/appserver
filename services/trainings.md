@@ -6,7 +6,7 @@ group: Services
 permalink: 
 ---
 
-## Trainings
+# Trainings
 ***
 
 Content here

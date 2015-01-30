@@ -6,7 +6,7 @@ group: About
 permalink: 
 ---
 
-## Company
+# Company
 ***
 
 Content here

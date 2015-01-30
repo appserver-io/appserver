@@ -5,11 +5,9 @@ position: 10
 group: Features
 permalink: /products/features/message-queue.html
 subnavigation: features
-author: all
 ---
 
-
-### <i class="fa fa-info"></i> Info
+## <i class="fa fa-info"></i> Info
 <div class="bs-example" data-example-id="simple-table">
     <table class="table">
         <tbody>
@@ -39,7 +37,7 @@ author: all
 </div>
 <p><br/></p>
 
-### <i class="fa fa-bars"></i> Functions
+## <i class="fa fa-bars"></i> Functions
 <div class="bs-example" data-example-id="simple-table">
     <table class="table">
         <tbody>
@@ -63,7 +61,7 @@ author: all
     </table>
 </div>
 
-### <i class="fa fa-edit"></i> Use Case
+## <i class="fa fa-edit"></i> Use Case
 <p>
 Importing a huge number of products, e. g. into an online shop system can take some time using a single-threaded PHP environment. So if you have to import 100.000 products on a server with 4 CPU's each providing 8 cores, the import process will make, by default, use of exactly 1 of the 32 available cores. This will lead to an import time of round about 14 hours, what in reality will be a really huge problem. Using a Message-Queue can be a solution, because it allows you to chunk the data, supposed 100 rows per chunk, and import them in separate threads by sending each to the queue. This can speed up the import process up to 0.5 hours in best case.
 </p>
