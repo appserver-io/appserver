@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  Dependency-Injection Basics
+title:  Dependency Injection Basics
 date:   2015-02-04 12:00:00
 author: wagnert
 version: 1.0.0-rc1
@@ -13,7 +13,8 @@ Dependency Injection, furthermore DI, enables developers to write cleaner, reusa
 
 DI can be a complicated subject, escpecially if it come together with application state! Let's try to explain the most important things in short. 
 
-#### What can be injected
+## What can be injected
+***
 
 The application server itself doesn't use DI, instead it provides DI as a service for the applications running within. Actually all session and message driven beans, the application instance and all managers can be injected.  But, before you can let the DI container inject an instance to your class, you have to register it. Registering beans can either be done by annotations or a deployment descriptor.
 
@@ -46,14 +47,14 @@ class AStatelessSessionBean
 
 After register your beans, what is pretty simple when using annotations, you're ready to inject them!
 
-### How to inject an instance
+## How to inject an instance
 ***
 
 Basically DI can be a manual process where you `inject` an instance, needed by another class by passing it to the constructor for example. Inside the `Persistence-Container`, the injection is an process you can't see, it's more some kind of magic which happens behind the scenes. So instead of manually pass the necessary instances to a classes constructor, the DI container will do that for you.
 
 A developer simply has to tell the DI container what instance has to be injected at runtime. So let's have a look at the options he has.
 
-#### Property Injection
+### Property Injection
 
 The first possibility we have is to annotate a class property using the `@EnterpriseBean` annotation. The annotation accepts a `name` attribute which allows you to specify the name of a bean you've registered before. The following example shows you how to annotate a class property and let the application server inject an instance of `AStatelessSessionBean` at runtime.
 
@@ -100,7 +101,7 @@ As the `@EnterpriseBean` annotation with the `name` attribute is not the only op
 
 > Property injection is preferred, because of massive performance improvements.
 
-#### Setter Injection
+### Setter Injection
 
 The second possibility to inject an instance is the setter injection. Setter injection allows developers to inject instances by using methods. 
 

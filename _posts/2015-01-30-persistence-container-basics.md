@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  Persistence-Container Basics
-date:   2015-01-30 12:00:00
+date:   2015-01-30 10:00:00
 author: wagnert
 version: 1.0.0-rc1
 categories: [persistence-container]
@@ -9,43 +9,43 @@ categories: [persistence-container]
 
 Maybe you had a look at our previous post about the [Servlet-Engine Basics](<{{ "/servlet-engine/2014/12/24/servlet-engine-basics.html" | prepend: site.baseurl }}>). Beside the `Servlet-Engine`, the [Persistence-Container](http://appserver.io/documentation/persistence-container.html) is one of the main services appserver.io provides. The name `Persistence-Container`, can lead to some missunderstanding in our case, as many people think that it mostly refers to database persistence. In Java there are EJB-Containers that provide a broad set of functionalities like [Bean- or Container-Managed-Persistence](http://en.wikipedia.org/wiki/Enterprise_JavaBeans), whereas appserver.io actually only provides a small subset of the functionality as plattforms like [Wildfly](http://en.wikipedia.org/wiki/WildFly) does. Persisting data to a database is only one functionality the `Persistence-Container` can provide, but by far not the most important one.
 
-### New options using a Persistence-Container
+## New options using a Persistence-Container
 ***
 
-As not persisting data to a database is the main purpose of a `Persistence-Container`, we've to figure other reasons you may use it. As PHP till now was used as a scripting language, it'll lack of the possiblity to have objects, let's call them components, persistent in memory. The `Persistence-Container` gives you the possiblity to exactly do this. This is, admittedly, not a problem it can solve for you, but in fact it is a powerful option. This option, beside performance of course, gives you many possibilities you will not benefit from when working with the well known LAMP stack. This post is all about the possibilities the `Persistence-Container` provides and how they can enable you to write enterprise applications.
+As persisting data to a database is **NOT** the main purpose of our `Persistence-Container`, this blog post wants to figure out other reasons you may use it. Since PHP till now is probably used as a scripting language, it'll lack of the possiblity to have objects, we'll call them components, persistent in memory. The `Persistence-Container` gives you the possiblity to exactly do this. This is, admittedly, not a problem it can solve for you, but in fact it is a powerful option. This option, beside performance of course, gives you many possibilities you will not benefit from when working with the well known LAMP stack. This post is all about the possibilities the `Persistence-Container` provides and how they can enable you to write enterprise ready applications.
 
-### Server-Side Component Types
+## Server-Side Component Types
 ***
 
-You may wonder how it should be possible to have a component persistent in memory using PHP, a scripting language! Usually after every request the instance will be destroyed? The simple answer is: As appserver.io runs as a daemon, or better, it provides containers that runs as daemons, you can specify component, that'll be loaded when the application server starts and will be in memory until the server has been shutdown. To make it simple, we call that classes [Beans](http://en.wikipedia.org/wiki/Enterprise_JavaBeans), as they do it in Java. 
+You may wonder how it should be possible to have a component persistent in memory using PHP, a scripting language! Usually after every request the instance will be destroyed? The simple answer is: As appserver.io is a daemon, or better, it provides containers that runs as daemons, you can specify components, that'll be loaded when the application server starts and will be in memory until the server has been shutdown. To make it simple, furthermore we call that classes [Beans](http://en.wikipedia.org/wiki/Enterprise_JavaBeans), as they do it in Java.
 
-We've three different types of beans, `Session Beans`, `Message Beans` and `Entity Beans`. In version 1.0.0 we don't have support for `Entity Beans`, because we see mainly think that the responsiblity therefor is up to ORM libraries like Doctrine. So we support Doctrine to handle database persistence.
+We separate three different types of beans, `Session Beans`, `Message Beans` and `Entity Beans`. In version 1.0.0 we don't have support for `Entity Beans`, because we think that the responsiblity therefore is up to ORM libraries like Doctrine. So we support Doctrine to handle database persistence.
 
-All bean types must provide a non-argument constructor, optionally no constructor.
+> These `Server-Side Component Types` can be distributed across a network, free of charge for developers! If components has been deployed on different instances, distribution simply has to be activated by configuration.
 
-> Based on that possibility, an application server like appserver.io gives you the power to distribute the components of your application over your network what includes a great and seamless scalability.
-
-#### Session Beans
+### Session Beans
 
 A session bean basically is a plain PHP class. You MUST not instantiate it directly, because the application server takes care of its complete lifecycle.
 
-Therefore, an developer needs access to a session bean, he requests the application server to give him an instance, what can be done by a client or Dependency Injection. In both cases, you will get a proxy to the session bean that allows you to invoke all methods, the session bean provides, as you can do if you would have a real instance. But, depending on your configuration, the proxy also allows you to call this method over a network as a remote method call. This makes it obvious for you if your session bean is on the same application server instance or on another one in your network.
+> A session bean **MUST** provide a non-argument constructor, optionally no constructor.
 
-When you write a session bean, you have to specify the type of bean you want to implement. This can either be done by adding an annotation to the class doc block or specifing it in a configuration file. As it seems to be easier to add the annotation and, in most cases this is sufficient, we recommend that for the start.
+Therefore, if an developer needs access to a session bean, he requests the application server for an instance. This can either be done by a client or Dependency Injection. In both cases, you will get a proxy to the session bean that allows you to invoke its methods. Depending on your configuration, the proxy also allows you to call this method over a network as a `Remote Method Call`. This makes it obvious for you if your session bean is located on the same application server instance or on another one in your network.
+
+When writing a session bean, the developer has to specify the type of bean he want to implement. This can either be done by adding an annotation to the classes DocBlock or specifing it in a deployment descriptor. As it seems to be easier to add the annotation and, in most cases this is sufficient, we recommend that for the start.
 
 We differ between three kinds of session beans, even `Stateless`, `Stateful` and `Singleton` session beans.
 
-##### Stateless Session Beans (SLSBs)
+#### Stateless Session Beans (SLSBs)
 
-A `SLSB` has NO state, only for the time you invoke a method on it. As these bean type is designed for efficiency and simplicity the developer doesn't need to take care about memory consumption, concurrency or lifecycle.
+A `SLSBs` state is only available for the time you invoke a method on it. As these bean type is designed for efficiency and simplicity the developer doesn't need to take care about memory consumption, concurrency or lifecycle.
 
-> `SLSBs` behave very similar to PHP`s default request behaviour, as they are instances created to handle the request and will be destroyed when the request has been finished. 
+> `SLSBs` behave very similar to PHP`s default request behaviour, as they are created to handle the request and will be destroyed when the request has been finished.
 
-###### Lifecycle
+##### Lifecycle
 
-On each request an new `SLSB` instance will be created. After handling the request, the instance will simply be destroyed.
+On each request an new `SLSB` instance will be created. After handling the request, the instance will be destroyed by the container.
 
-###### Example
+##### Example
 
 So let's implement a `SLSB` that provides functionality to create a user from the arguments passed to the `createUser()` method. The `SLSB` will be registered under the name `AStatelessSessionBean` in the application servers `Naming Directory`. Registering a bean in the `Naming Directory` is necessary to use it for `Dependency Injection` explained in our [documentation](<{{ "/documentation/dependency-injection.html" | prepend: site.baseurl }}>).
 
@@ -126,10 +126,10 @@ class UserServlet extends HttpServlet
    * This is a very simple example that shows how to start a new session to
    * login the a user with credentials found as request parameters.
    *
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface $servletRequest
-   *   The request instance
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse
-   *   The response instance
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface
+   *   $servletRequest The request instance
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface
+   *   $servletResponse The response instance
    *
    * @return void
    * @see \AppserverIo\Psr\Servlet\Http\HttpServlet::doGet()
@@ -151,21 +151,21 @@ class UserServlet extends HttpServlet
 }
 ```
 
-If we now would invoke a `POST` request on our servlet, sending a `username` and a `password` parameter, the application server will inject the `SLSB` at runtime and invoke the `doPost()` method. That will invoke the `createUser()` method on the `SLSB` and adds a success message to the response.  
+If we now invoke a `POST` request on our servlet, sending `username` and `password` parameters, the application server will inject the `SLSB` at runtime and invoke the `doPost()` method. That again will invoke the `createUser()` method on the `SLSB` and adds a success message to the response.
 
-##### Stateful Session Beans (SFSBs)
+#### Stateful Session Beans (SFSBs)
 
-The `SFSB` is something between the two other types. It is bound to the session with the ID pass to the client, when an instance is requested. A `SFSB` is very useful, if you want to implement something like a shopping cart. If you declare the shopping cart instance a class member of your session bean, this will make it persistent for your session lifetime.
+The `SFSB` is something between the two other types. It is bound to the session with the ID pass to the client, when an instance is requested. A `SFSB` is very useful, if you want to implement something like a shopping cart. If the shopping cart instance will be declared as a class member of `SFSB`, it'll be persistent for the sessions lifetime.
 
-In opposite to a HTTP Session, `SFSBs` enables you to have session bound persistence, without the need to explicit add the data to a session object. That makes development pretty easy and more comfortable. As `SFSBs` are persisted in memory and not serialized to files, the Application Server has to take care, that in order ot minimize the number of instances carried around, are flushed when their lifetime has been reached.
+In opposite to a HTTP Session, `SFSBs` enables you to have session bound persistence, without the need to explicitly add the data to a session object. That makes development pretty easy and comfortable. As `SFSBs` are persisted in memory and not serialized to files, the Application Server has to take care, that, in order ot minimize the number of instances carried around, they are flushed when their lifetime has been reached.
 
-###### Lifecycle
+##### Lifecycle
 
 `SFSBs` are created by the container when requested and no instance, based on the passed session-ID, is available. After the request has been processed, the instance will be re-attached to the container ready to handle the next request.
 
 > If the session is removed, times out, or the application server restarts, the data of a `SFSB` will be lost. Because `SFSBs` use the HTTP session-ID, it is necessary to start an HTTP session before you invoke methods on it.
 
-###### Example
+##### Example
 
 As described above, a `SFSB` has a state that is bound to a HTTP session. It is necessary to start the HTTP session once before accessing it. Let's imagine we've a servlet and want to a access a `SFSB` used to login a user with credentials found as request parameters. After a successfull login, the user entity should be persisted in the `SFSB` in order to protect the following `GET` requests.
 
@@ -222,9 +222,9 @@ class AStatefulSessionBean
 }
 ```
 
-> The `SFSB` is pretty easy and is implemented as a plain old PHP class. Important is, that the user entity, once set in the `SFSB` is available at every request, as long as the HTTP session is available.
+> A `SFSB` is pretty easy to use and has to be implemented as a plain old PHP class. Important is, that the user entity, once set in the `SFSB` is available at every request, as long as the HTTP session is available.
 
-The servlet is also a very simple example that implements the login on a `POST` request, whereas the `GET` request is protected.
+The necessary servlet is also a very simple example that implements the login on a `POST` request, whereas the `GET` request is protected.
 
 ```php
 <?php
@@ -257,10 +257,10 @@ class LoginServlet extends HttpServlet
    * This is a very simple example that shows how to start a new session to
    * login the a user with credentials found as request parameters.
    *
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface $servletRequest
-   *   The request instance
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse
-   *   The response instance
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface
+   *   $servletRequest The request instance
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface
+   *   $servletResponse The response instance
    *
    * @return void
    * @see \AppserverIo\Psr\Servlet\Http\HttpServlet::doGet()
@@ -289,10 +289,10 @@ class LoginServlet extends HttpServlet
   /**
    * Handles a HTTP GET request.
    *
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface $servletRequest
-   *   The request instance
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse
-   *   The response instance
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface
+   *   $servletRequest The request instance
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface
+   *   $servletResponse The response instance
    *
    * @return void
    * @see \AppserverIo\Psr\Servlet\Http\HttpServlet::doGet()
@@ -321,29 +321,29 @@ class LoginServlet extends HttpServlet
 
 > You don't have to restart the session in the `GET` request again, because the `Servlet-Engine` is aware of the session-ID passed as request header and uses it when the `SFSB` will be injected on runtime.
 
-##### Singleton Session Beans (SSBs)
+#### Singleton Session Beans (SSBs)
 
-A `SSB` will be created by the container only one time for each application. This means, whenever you'll request an instance, you'll receive the same one. If you set a variable in the session bean, it'll be available until you'll overwrite it, or the application server has been restarted.
+A `SSB` will be created by the container only one time for each application. This means, whenever an instance is requested, this will be the same one. If a variable is set as a `SSB` member, it'll be available until someone will overwrite it, or the application server has been restarted.
 
-###### Concurrency
+##### Concurrency
 
-Concurrency is, in case of a `SSB`, a bit more complicated. Oher than `SLSBs` and `SFSBs` the data will be shared across requests, which means, that the container have to make sure, that only one request a time can access the data of a `SFSB`. Therefore requests are serialized and blocked until the instance will become available again.
+Concurrency is, in case of a `SSB`, a bit more complicated. Oher than `SLSBs` and `SFSBs` the data will be shared across requests, which means, that the container have to make sure, that only one request has access to the data of a `SFSB`. Therefore requests are serialized and blocked until the instance will become available again.
 
-> To enable a `SSB` to share its data across requests, it has to extend the `\Stackable` class. This class is comes with the PECL [pthreads](https://github.com/appserver-io-php/pthreads.git) extension that brings multithreading to PHP. appserver.io actually uses a fork of the 1.x branch, because of some restrictions introduced with 2.x branch.
+> To enable a `SSB` for sharing its data across requests, it has to extend the `\Stackable` class. This class comes with the PECL [pthreads](https://github.com/appserver-io-php/pthreads.git) extension that brings multithreading to PHP. appserver.io actually uses a fork of the 1.x branch, because of some restrictions introduced with 2.x branch.
 
-###### Lifecycle
+##### Lifecycle
 
 In opposite to a `SLSB`, the lifecycle of a `SSB` is a bit different. Once the instance has been created, it'll be shared between all requests, and instead of destroying the instance after each request the instance persists in memory until the application will be shutdown or restarted.
 
-> A `SSB` gives you great power, because all data you add to a member will stay in memory until you unset it. So, if you want to share data across some requests, a `SSB` can be a good option for you. But remember: With great power, great responsibilty came together. So, always have an eye on memory consumption of your `SSB`, because YOU are responsible for that now!
+> A `SSB` gives a developer great power, because all data added to a member will stay in memory until someone will unset it. So, if data has to be shared across requests, a `SSB` will be a good option. But remember: With great power, great responsibilty came together. So, a developer always should have an eye on memory consumption of a `SSB`, because **HE** is responsible for that now!
 
-###### Explicit Startup
+##### Explicit Startup
 
-In combination with the possiblity to have data persistent in memory, a `SSB` additionally allows you, to be pre-loaded on application startup. This can be done by adding the `Startup` annotation to the class doc block. Using the explict startup together with the possiblity to have the data persistent in memory, you'll be able to improve performance of your application, by pre-loading data from a database or a configuration file on application startup.
+In combination with the possiblity to have data persistent in memory, a `SSB` additionally can be pre-loaded on application startup. This can be done by adding the `@Startup` annotation to the classes DocBlock. Using explict startup functionality together with loading data from a configuration file or a DB persistent in memory, my lead to massive performance improvements.
 
-###### Example
+##### Example
 
-To give you an example of how a `SSB` can be used reasonable, we'll extend our example from the `SFSB` with a counter that tracks the number of successful logins.
+As an example of how a `SSB` can be used reasonable, we'll extend our example from the `SFSB` with a counter that tracks the number of successful logins.
 
 ```php
 <?php
@@ -375,7 +375,7 @@ class ASingletonSessionBean extends \Stackable
 }
 ```
 
-To use the `SSB` in our `SFSB`, the developer can inject it by using the `@EnterpriseBeans` annotation. Additionally the `login()` method has to be customized to raise and return the number of successful logins by invoking the `raise()` method of the `SSB`.
+To use the `SSB` in a `SFSB`,it can be injected by using the `@EnterpriseBeans` annotation. Additionally the `login()` method has to be customized to raise and return the number of successful logins by invoking the `raise()` method of the `SSB`.
 
 ```php
 <?php
@@ -474,10 +474,10 @@ class LoginServlet extends HttpServlet
    * This is a very simple example that shows how to start a new session to
    * login the a user with credentials found as request parameters.
    *
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface $servletRequest
-   *   The request instance
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse
-   *   The response instance
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface
+   *   $servletRequest The request instance
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface
+   *   $servletResponse The response instance
    *
    * @return void
    * @see \AppserverIo\Psr\Servlet\Http\HttpServlet::doGet()
@@ -509,10 +509,10 @@ class LoginServlet extends HttpServlet
   /**
    * Handles a HTTP GET request.
    *
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface $servletRequest
-   *   The request instance
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse
-   *   The response instance
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface
+   *   $servletRequest The request instance
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface
+   *   $servletResponse The response instance
    *
    * @return void
    * @see \AppserverIo\Psr\Servlet\Http\HttpServlet::doGet()
@@ -539,31 +539,31 @@ class LoginServlet extends HttpServlet
 }
 ```
 
-#### Message Beans (MDBs)
+### Message Beans (MDBs)
 
-Other than session beans, you MUST not invoke `MDBs` over a proxy, but as receiver of the messages you can send. The messages are not directly sent to a `MDB` instead they are sent to a `Message Broker`. The `Message Broker` adds them to a queue until a worker, what will be separate thread, collects and processes it.
+Other than session beans, `MDBs` are **NOT** invoked by a proxy, but as receiver of the messages sent to a `Message Broker`. The `Message Broker` adds them to a queue until a worker, that'll be separate thread, collects and processes it.
 
-> Using `MDBs` enables you to execute long running processes `asynchronously`, because you don't have to wait for an answer after sending a message to the `Message Broker`.
+> Using `MDBs` enables you to execute long running processes `asynchronously`, because you don't have to wait for an answer after sending a message to the `Message Broker`. In opposite to session beans, `MDBs` have to implement the `AppserverIo\Psr\Pms\MessageListenerInterface` interface. Like session beans, `MDBs` **MUST** provide a non-argument constructor, optionally no constructor.
 
-In opposite to session beans, `MDBs` have to implement the `AppserverIo\Psr\Pms\MessageListenerInterface` interface. As `MDBs` are mostly used in context of a [Message-Queue](<{{ "/documentation/message-queue.html" | prepend: site.baseurl }}>), this blog post will not describe functionality in deep. Instead we'll write a separate blog post that is all about `MDBs` and context of a `Message-Queue`.
+As `MDBs` are mostly used in context of a [Message-Queue](<{{ "/documentation/message-queue.html" | prepend: site.baseurl }}>), this blog post will not describe functionality in deep. Instead we'll write a separate blog post that is all about `MDBs` and context of a `Message-Queue`.
 
-#### Lifecycle Callbacks
+### Lifecycle Callbacks
 
-`Lifecycle Callbacks` enables a developer to declare callback methods depending on the beans lifecycle. Actually we only support `post-construct` and `pre-destroy` callbacks. `Lifecycle Callbacks` can be configured either by annotations or the XML configuration. Declaring `Lifecycle Callbacks` by annotations is more intuitive, as you have to add the annotation directly to the method. Therfore we go with the annotations here.
+`Lifecycle Callbacks` enables a developer to declare callback methods depending on the beans lifecycle. Actually we only support `post-construct` and `pre-destroy` callbacks. `Lifecycle Callbacks` can be configured either by annotations or the deployment descriptor. Declaring `Lifecycle Callbacks` by annotations is more intuitive, as you simply have to add the annotation to the methods DocBlock. Therfore we go with the annotations here.
 
-> Be aware, that `Lifecycle Callbacks` are optional, must be `public`, must NOT have any arguments and can't throw checked exceptions. Exceptions will be catched by the container and result in a `critical` log message.
+> Be aware, that `Lifecycle Callbacks` are optional, **MUST** be `public`, **MUST NOT** have any arguments and **CAN'T** throw checked exceptions. Exceptions will be catched by the container and result in a `critical` log message.
 
-##### Post-Construct Callback
+#### Post-Construct Callback
 
-As the beans lifecycle is controlled by the container and DI works either by property or method injection, a `Post-Construct` callback enables a developer to implement a method that'll be invoked by the container after the bean has been created and all instances injected.
+As the beans lifecycle is controlled by the container and `Dependency Injection` works either by property or method injection, a `Post-Construct` callback enables a developer to implement a method that'll be invoked by the container after the bean has been created and all instances injected.
 
 > This callback can be very helpful for implementing functionalty like cache systems that need to load data from a datasource once and will update it only frequently.
 
-##### Pre-Destroy Callback
+#### Pre-Destroy Callback
 
 The second callback is the `Pre-Destroy` callback. This will be fired before the container destroys the instance of the bean.
 
-##### Example
+#### Example
 
 As a simple example we add a `Post-Construct` and a `Pre-Destroy` callback to our `SSB` example from the last section. 
 
@@ -629,9 +629,9 @@ class ASingletonSessionBean
 
 This extends the `SSB` with some kind of real persistence by loading the counter from a simple textfile on application startup or writing it back before the `SSB` will be destroyed. 
 
-#### Interceptors
+### Interceptors
 
-`Interceptors` allows you to weave cross-cutting concerns into your application, without adding code to your business methods. The functionality behind the secenes is [AOP](<{{ "/documentation/aop.html" | prepend: site.baseurl }}>) and an `Interceptor` is nothing else than an advice.
+`Interceptors` enables a developer to weave cross-cutting concerns into his application, without adding code to business methods. The functionality behind the secenes is [AOP](<{{ "/documentation/aop.html" | prepend: site.baseurl }}>) and an `Interceptor` is nothing else than an advice.
 
 To add a very basic ACL authorization functionality that use an `Interceptor`, we've to implement a simple aspect first. The aspect looks like this
 
@@ -656,7 +656,7 @@ class AuthorizationInterceptor
    *
    * @return void
    * @throws \AppserverIo\Example\Exceptions\AuthorizationException
-   *     Is thrown if access is denied for the user logged into the system
+   *   Is thrown if access is denied for the user logged into the system
    */
   public function authorize(MethodInvocation $methodInvocation)
   {
@@ -674,14 +674,14 @@ class AuthorizationInterceptor
     // load user logged into the system
     $user = $context->getUser();
 
-    // query whether the user is allowed to invoke the method 
-    if ($application->search('AclSessionBean')->allowed($methodInvocation, $user)) {
-    
-      // throw an exception if access is denied
-      throw new \AuthorizationException(
-        sprintf('Access to %s::%s is denied for user %s', $className, $methodName, $user)
-      );
-    }
+    // load the SLSB handling the ACLs
+    $aclSessionBean = $application->search('AclSessionBean');
+
+    /* 
+     * Query whether the user is allowed to invoke the method and will throw
+     * an exception that could be catched/handled in the servlet for example
+     */ 
+    $aclSessionBean->allowed($methodInvocation, $user);
 
     // log the method invocation
     $methodInvocation->getContext()
@@ -695,7 +695,7 @@ class AuthorizationInterceptor
 }
 ```
 
-> Keep in mind, that the `$methodInvocation->getContext()` method gives you access to the component the advice has been declared, in our example this is the `SSB` instance below!
+> Keep in mind, that the `$methodInvocation->getContext()` method allows access to the component the advice has been declared in, in our example this is the `SSB` instance below!
 
 So if we want to authorize the user logged into the system for the method call to a session bean method, we simply have to declare it by adding an annotation like
 
@@ -766,7 +766,8 @@ class AStatefulSessionBean
   /**
    * Returns the user logged into the system.
    *
-   * @return \AppserverIo\Apps\Example\Entities\User The user logged into the system
+   * @return \AppserverIo\Apps\Example\Entities\User
+   *   The user logged into the system
    */
   public function getUser()
   {
@@ -774,11 +775,12 @@ class AStatefulSessionBean
   }
 
   /**
-   * A business method protected by an around advice that will query authorization for
-   * the users method call by invoking the authorize() method of our interceptor.
+   * A business method protected by a before advice that will query authorization
+   * for the users method call by invoking the authorize() method of our
+   * interceptor.
    *
    * @return void
-   * @Around("advise(AuthorizationInterceptor->authorize())")
+   * @Before("advise(AuthorizationInterceptor->authorize())")
    */
   public function protectedMethod()
   {
@@ -787,11 +789,11 @@ class AStatefulSessionBean
 }
 ```
 
-The `AclSessionBean` is NOT implemented in this example, because this blog post should give you a rough direction how you could implement such a functionality and how you can use interceptors.
+The `AclSessionBean` is **NOT** implemented in this example, because this blog post should only give a rough direction how to implement such a functionality and how an `Interceptor` can be used.
 
-### Summary
+## Summary
 ***
 
-To build an application or components by using `Server-Side Component Types` provided by the `Persistence-Container` gives developers powerful options concerning performance, scalability and reusability. In combination with the `Servlet Engine` developers are able to build high-performance, stateful web applications by taking advantage of enterprise services like a `Message-Queue` or the `Timer-Service` and a rock-solid infrastructure.
+Builing an application or components by using `Server-Side Component Types` gives developers powerful options concerning performance, scalability and reusability. In combination with the `Servlet-Engine` developers are able to build high-performance, stateful web applications by taking advantage of enterprise services like a `Message-Queue` or the `Timer-Service` and a rock-solid infrastructure.
 
-To be in the scope of a blog post, it is only possible to focus on the major functionality of the `Persistence Container`. Above the described components, there is much more functionality that is part of the `Persistence Container` or have a massive impact on development when working with it. To cover all that stuff bit by bit, we'll step deeper into the application servers `Naming Directory` and `Dependency Injection` you already had been in contact with, when reading this post. 
+To be in the scope of a blog post, it is only possible to focus on the major functionality of the `Persistence-Container`. Above the described components, there is much more functionality that is part of the `Persistence-Container` or have a massive impact on development when working with it. To cover all that stuff bit by bit, we'll step deeper into the application servers `Naming-Directory` with our next blog post.
