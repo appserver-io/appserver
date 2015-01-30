@@ -3,7 +3,7 @@ layout: docs
 title: Webserver
 position: 40
 group: Docs
-subDocs:
+subNav:
   - title: Connection Handler
     href: connection-handler
   - title: Server Modules

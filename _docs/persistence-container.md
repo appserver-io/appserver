@@ -3,7 +3,7 @@ layout: docs
 title: Persistence Container
 position: 80
 group: Docs
-subDocs:
+subNav:
   - title: Singleton SessionBean
     href: singleton-sessionbean
   - title: Stateless SessionBean

@@ -3,7 +3,7 @@ layout: docs
 title: Installation
 position: 10
 group: Docs
-subDocs:
+subNav:
   - title: Mac OS X
     href: mac-os-x
   - title: Windows

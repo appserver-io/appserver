@@ -18,6 +18,10 @@ url: "http://appserver.io"
 collections:
   docs:
     output: true
+  faq:
+    output: true
+  tuts:
+    output: true
   features:
     path: products/
 

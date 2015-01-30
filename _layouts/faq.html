@@ -13,12 +13,12 @@
 
             <div class="row">
                 <div class="col-md-3" id="leftCol">
-                    {% assign items = site.docs | sort: 'position' %}
+                    {% assign items = site.faq | sort: 'position' %}
                     {% include sub_nav.html %}
                 </div>
                 <!-- Content Section -->
                 <div class="col-md-9 content">
-                    <h1><i class="fa fa-book"></i> {% if page.group and page.group != "Community" %}<small>{{ page.group }} / </small>{{ page.title }}{% else %}{{ page.headline }}{% endif %}</h1><hr/>
+                    <h2><i class="fa fa-question-circle"></i> {% if page.group and page.group != "Community" %}<small>{{ page.group }} / </small>{{ page.title }}{% else %}{{ page.headline }}{% endif %}</h2><hr/>
                     <div class="docs-content">
                         {{ content }}
                     </div>

@@ -3,7 +3,7 @@ layout: docs
 title: Message Queue
 position: 90
 group: Docs
-subDocs:
+subNav:
   - title: Got mail
     href: got-mail
   - title: Send a message

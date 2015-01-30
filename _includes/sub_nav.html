@@ -1,5 +1,3 @@
-{% assign items = site.docs | sort: 'position' %}
-
 <!-- Navigation -->
 <div class="docs_nav list-group">
     {% for item in items %}
@@ -9,10 +7,10 @@
         {% endif %}
         <div class="list-group-item {{ activeClass }}">
             <a class="{{ activeClass }}" href="{{ item.url }}">{{ item.title }}</a>
-            {% if item.subDocs and activeClass != "" %}
+            {% if item.subNav and activeClass != "" %}
                 <ul class="list-unstyled">
-                {% for subDoc in item.subDocs %}
-                    <li><a href="#{{ subDoc.href }}">{{ subDoc.title }}</a></li>
+                {% for subNav in item.subNav %}
+                    <li><a href="#{{ subNav.href }}">{{ subNav.title }}</a></li>
                 {% endfor %}
                 </ul>
             {% endif %}

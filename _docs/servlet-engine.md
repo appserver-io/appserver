@@ -3,7 +3,7 @@ layout: docs
 title: Servlet Engine
 position: 50
 group: Docs
-subDocs:
+subNav:
   - title: How can a Servlet-Engine help
     href: how-can-a-servlet-engine-help
   - title: Bootstrapping a Servlet
