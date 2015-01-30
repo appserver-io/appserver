@@ -9,7 +9,8 @@ categories: [naming-directory]
 
 Every container running in the application server has a internal registry, we call it Naming Directory. In Java this is called `Enterprise Naming Context` or in short `ENC`. The naming directory is something like an object store, the container registers references to its resources. Resources can be beans or contexts provided by an application. All that resources are registered in the `Naming-Directory` which allows you the access them if needed.
 
-### Configure directories to be parsed
+## Configure directories to be parsed
+***
 
 When the application server starts, by default, it parses the `META-INF/classes` and `WEB-INF/classes` folders of your application to find components with supported annotations.
 
@@ -71,7 +72,7 @@ You can bundle your application with its own, customized `context.xml` file. Thi
 
 More detailed information about the how to configure an application can be found in the section [Application Configuration](<{{ "/documentation/configuration.html#application-configuration" | prepend: site.baseurl }}>) of the documentation.
 
-### Register Resources
+## Register Resources
 ***
 
 If a class is found, the class will be registered in the application servers naming directory under the name you specify in the annotations `name` attribut. As the `name` attribute is optional, the bean will be registered in the naming directory with the short class name, if not specified.
@@ -129,40 +130,40 @@ class AStatelessSessionBean
 }
 ```
 
-### Annotations
+## Annotations
 ***
 
 Using annotations to configure your components will probably be the easiest way. We provide several annotations that allows you to register and configure your components on the one side and inject them during runtime on the other.
 
-#### Stateless Session Bean (@Stateless)
+### Stateless Session Bean (@Stateless)
 
 The `@Stateless` annotation defines a component als `Stateless` session bean. The annotation only supports the optional `name` attribute. If the `name` attribute is specified, the given value will be used to register the component in the `Naming-Directory` instead of the short class name.
 
-#### Stateful Session Bean (@Stateful)
+### Stateful Session Bean (@Stateful)
 
 The `@Stateful` annotation defines a component als `Stateful` session bean. The annotation only supports the optional `name` attribute. If the `name` attribute is specified, the given value will be used to register the component in the `Naming-Directory` instead of the short class name. The annotation has to be set at the classes DocBlock.
 
-#### Singleton Session Bean (@Singleton)
+### Singleton Session Bean (@Singleton)
 
 The `@Singleton` annotation defines a component als `Singleton` session bean. The annotation only supports the optional `name` attribute. If the `name` attribute is specified, the given value will be used to register the component in the `Naming-Directory` instead of the short class name. The annotation has to be set at the classes DocBlock.
 
-#### Message Driven Bean (@MessageDriven)
+### Message Driven Bean (@MessageDriven)
 
 The `@MessageDriven` annotation defines a component als `Message Driven` bean. The annotation only supports the optional `name` attribute. If the `name` attribute is specified, the given value will be used to register the component in the `Naming-Directory` instead of the short class name. The annotation has to be set at the classes DocBlock.
 
-#### Explicit Startup (@Startup)
+### Explicit Startup (@Startup)
 
 The `@Startup` annotation configures a `Singleton` session bean to be initialized on application startup and can **explicitly** be used on `Singleton` session beans. The annotation doesn't accept any attributes and has to be set at the classes DocBlock.
 
-#### Post-Construct Callback (@PostConstruct)
+### Post-Construct Callback (@PostConstruct)
 
 This annotation marks a method as `post-construct` lifecycle callback and has to be set at the methods DocBlock. The annotation can be used on all [Server-Side Component Types](<{{ "/persistence-container/2015/01/30/persistence-container-basics.html#server-side-component-types" | prepend: site.baseurl }}>) and doesn't accept any attributes.
 
-#### Pre-Destroy Callback (@PreDestroy)
+### Pre-Destroy Callback (@PreDestroy)
 
 This annotation marks a method as `pre-destroy` lifecycle callback and has to be set at the methods DocBlock. The annotation can be used on all [Server-Side Component Types](<{{ "/persistence-container/2015/01/30/persistence-container-basics.html#server-side-component-types" | prepend: site.baseurl }}>) and doesn't accept any attributes.
 
-#### Enterprise Beans (@EnterpriseBean)
+### Enterprise Beans (@EnterpriseBean)
 
 This annotation is used to inject [components](<{{ "/persistence-container/2015/01/30/persistence-container-basics.html#server-side-component-types" | prepend: site.baseurl }}>) into other components.
 
@@ -178,7 +179,7 @@ In the simplest case **NO** attribute is needed. If so, the member or parameter 
 | `beanInterface`             | `string`    | The business interface we want to reference. This has to be the `name`, suffixed with either one of `Local` or `Remote`. |
 | `lookup`                    | `string`    | The fully qualified name the component that has to be referenced has been registered in the `Naming-Directory`. |
 
-#### Resources (@Resource)
+### Resources (@Resource)
 
 This annotation is used to inject resources into components.
 
@@ -194,7 +195,7 @@ In the simplest case **NO** attribute is needed. If so, the member or parameter 
 | `name`                      | `string`    | Name the reference will be registered in the `Naming-Directory`.     |
 | `type`                      | `string`    | The `name` of the resource we want to reference.                     |
 
-#### Example
+### Example
 
 The following example implementation of a `Singleton` session bean contains all available annotations and demonstrates how they can be used.
 
@@ -274,7 +275,7 @@ class ASingletonSessionBean
 }
 ```
 
-### Deployment Descriptor
+## Deployment Descriptor
 ***
 
 Beside the possibility to configure nearly everything by annotations, it is also possible to resign annotations and use a XML based deployment descriptor called `epb.xml`. As we think that annotations are the way, that most developers will prefer, we'll only give a short overview of a deployment descriptors structure here.
@@ -316,7 +317,9 @@ The following example is a simplyfied copy of the deployment descriptor of our [
         <epb-ref-name>UserProcessor</epb-ref-name>
         <lookup-name>php:global/example/UserProcessor</lookup-name>
         <injection-target>
-          <injection-target-class>AppserverIo\Apps\Example\Services\SampleProcessor</injection-target-class>
+          <injection-target-class>
+	   AppserverIo\Apps\Example\Services\SampleProcessor
+          </injection-target-class>
           <injection-target-property>userProcessor</injection-target-property>
         </injection-target>
       </epb-ref>
@@ -324,7 +327,9 @@ The following example is a simplyfied copy of the deployment descriptor of our [
         <description>Reference to the application</description>
         <res-ref-name>ApplicationInterface</res-ref-name>
         <injection-target>
-          <injection-target-class>AppserverIo\Apps\Example\Services\AbstractProcessor</injection-target-class>
+          <injection-target-class>
+            AppserverIo\Apps\Example\Services\AbstractProcessor
+          </injection-target-class>
           <injection-target-method>injectApplication</injection-target-method>
         </injection-target>
       </res-ref>
@@ -404,3 +409,7 @@ Injects the reference by either using the method or property defined. The class 
 | `injection-target-property` | `string`    | Inject the reference to this property, whereas either this node or `injection-target-method` can be specified. |
 
 > Annotations can be seen as default values, whereas a deployment descriptor enables a developer or a system administrator to override values specified in annotations. So keep in mind, that a deployment descriptor will always override the values specified by annotations. 
+
+## Summary
+***
+
