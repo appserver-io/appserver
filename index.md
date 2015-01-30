@@ -35,87 +35,87 @@ boxes-targetgroups:
 ---
 
 <section>
-    <div class="container">
+<div class="container">
 
-        <h1><i class="fa fa-cubes"></i> Comparison of PHP infrastructural components</h1>
-        appserver.io is a next-generation PHP infrastructure consisting of a lightning fast webserver completely
-        written in PHP including additional frequently needed services in one powerful bundle. You can use all of
-        the services or only specifically selected services in your existing application with no additional tweaks.
-        This is just what you need since we have eliminated the need for additional tools or additional services,
-        appserver.io and PHP and you´re done!
+<h1><i class="fa fa-cubes"></i> Comparison of PHP infrastructural components</h1>
+appserver.io is a next-generation PHP infrastructure consisting of a lightning fast webserver completely
+written in PHP including additional frequently needed services in one powerful bundle. You can use all of
+the services or only specifically selected services in your existing application with no additional tweaks.
+This is just what you need since we have eliminated the need for additional tools or additional services,
+appserver.io and PHP and you´re done!
 
-        <p><br/></p>
+<p><br/></p>
 
-        <div class="bs-example" data-example-id="simple-table">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th class="col-md-3"><h4>Feature</h4></th>
-                        <th class="col-md-3 text-center"><h4>Apache</h4></th>
-                        <th class="col-md-3 text-center"><h4>nginx</h4></th>
-                        <th class="col-md-3 text-center"><h4>appserver.io</h4></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Language</td>
-                        <td class="text-center">C</td>
-                        <td class="text-center">C</td>
-                        <td class="text-center">PHP</td>
-                    </tr>
-                    <tr>
-                        <td><a href="{{ "/products/features/webserver.html" | prepend: site.baseurl }}">Webserver HTTP Compliant <i class="icon-ci fa fa-info-circle"></i></a></td>
-                        <td class="text-center"><i class="icon-ok fa fa-2x fa-check-square-o"></i></td>
-                        <td class="text-center"><i class="icon-ok fa fa-2x fa-check-square-o"></i></td>
-                        <td class="text-center"><i class="icon-ok fa fa-2x fa-check-square-o"></i></td>
-                    </tr>
-                    <tr>
-                    <td><a href="{{ "/products/features/rewrite-engine.html" | prepend: site.baseurl }}">Rewrite Engine <i class="icon-ci fa fa-info-circle"></i></a></td>
-                        <td class="text-center"><i class="icon-ok fa fa-2x fa-check-square-o"></i></td>
-                        <td class="text-center"><i class="icon-ok fa fa-2x fa-check-square-o"></i></td>
-                        <td class="text-center"><i class="icon-ok fa fa-2x fa-check-square-o"></i></td>
-                    </tr>
-                    <tr>
-                    <td>Rewrite Map</td>
-                        <td class="text-center"><i class="icon-ok fa fa-2x fa-check-square-o"></td>
-                        <td class="text-center"><i class="icon-ok fa fa-2x fa-check-square-o"></i></td>
-                        <td class="text-center"><i class="icon-ok fa fa-2x fa-check-square-o"></i></td>
-                    </tr>
-                    <tr>
-                        <td>Fast CGI Interface</td>
-                        <td class="text-center"><i class="icon-ok fa fa-2x fa-check-square-o"></i></td>
-                        <td class="text-center"><i class="icon-ok fa fa-2x fa-check-square-o"></i></td>
-                        <td class="text-center"><i class="icon-ok fa fa-2x fa-check-square-o"></i></td>
-                    </tr>
-                    <tr>
-                    <td><a href="{{ "/products/features/servlet-engine.html" | prepend: site.baseurl }}">Servlet Engine <i class="icon-ci fa fa-info-circle"></i></a></td>
-                        <td class="text-center"><i class="icon-nok fa fa-2x fa-minus-square"></i></td>
-                        <td class="text-center"><i class="icon-nok fa fa-2x fa-minus-square"></i></td>
-                        <td class="text-center"><i class="icon-ok fa fa-2x fa-check-square-o"></i></td>
-                    </tr>
-                    <tr>
-                    <td><a href="{{ "/products/features/message-queue.html" | prepend: site.baseurl }}">Message Queue <i class="icon-ci fa fa-info-circle"></i></a></td>
-                        <td class="text-center"><i class="icon-nok fa fa-2x fa-minus-square"></i></td>
-                        <td class="text-center"><i class="icon-nok fa fa-2x fa-minus-square"></i></td>
-                        <td class="text-center"><i class="icon-ok fa fa-2x fa-check-square-o"></i></td>
-                    </tr>
-                    <tr>
-                    <td><a href="{{ "/products/features/timer-service.html" | prepend: site.baseurl }}">Timer Service <i class="icon-ci fa fa-info-circle"></i></a></td>
-                        <td class="text-center"><i class="icon-nok fa fa-2x fa-minus-square"></i></td>
-                        <td class="text-center"><i class="icon-nok fa fa-2x fa-minus-square"></i></td>
-                        <td class="text-center"><i class="icon-ok fa fa-2x fa-check-square-o"></i></td>
-                    </tr>
-                    <tr>
-                    <td><a href="{{ "/products/features/persistence-container.html" | prepend: site.baseurl }}">Persistence Container <i class="icon-ci fa fa-info-circle"></i></a></td>
-                        <td class="text-center"><i class="icon-nok fa fa-2x fa-minus-square"></i></td>
-                        <td class="text-center"><i class="icon-nok fa fa-2x fa-minus-square"></i></td>
-                        <td class="text-center"><i class="icon-ok fa fa-2x fa-check-square-o"></i></td>
-                    </tr>
+<div class="bs-example" data-example-id="simple-table">
+  <table class="table">
+      <thead>
+          <tr>
+              <th class="col-md-3"><h4>Feature</h4></th>
+              <th class="col-md-3 text-center"><h4>Apache</h4></th>
+              <th class="col-md-3 text-center"><h4>nginx</h4></th>
+              <th class="col-md-3 text-center"><h4>appserver.io</h4></th>
+          </tr>
+      </thead>
+      <tbody>
+          <tr>
+              <td>Language</td>
+              <td class="text-center">C</td>
+              <td class="text-center">C</td>
+              <td class="text-center">PHP</td>
+          </tr>
+          <tr>
+              <td><a href="{{ "/products/features/webserver.html" | prepend: site.baseurl }}">Webserver HTTP Compliant <i class="icon-ci fa fa-info-circle"></i></a></td>
+              <td class="text-center"><i class="icon-ok fa fa-2x fa-check-square-o"></i></td>
+              <td class="text-center"><i class="icon-ok fa fa-2x fa-check-square-o"></i></td>
+              <td class="text-center"><i class="icon-ok fa fa-2x fa-check-square-o"></i></td>
+          </tr>
+          <tr>
+          <td><a href="{{ "/products/features/rewrite-engine.html" | prepend: site.baseurl }}">Rewrite Engine <i class="icon-ci fa fa-info-circle"></i></a></td>
+              <td class="text-center"><i class="icon-ok fa fa-2x fa-check-square-o"></i></td>
+              <td class="text-center"><i class="icon-ok fa fa-2x fa-check-square-o"></i></td>
+              <td class="text-center"><i class="icon-ok fa fa-2x fa-check-square-o"></i></td>
+          </tr>
+          <tr>
+          <td>Rewrite Map</td>
+              <td class="text-center"><i class="icon-ok fa fa-2x fa-check-square-o"></td>
+              <td class="text-center"><i class="icon-ok fa fa-2x fa-check-square-o"></i></td>
+              <td class="text-center"><i class="icon-ok fa fa-2x fa-check-square-o"></i></td>
+          </tr>
+          <tr>
+              <td>Fast CGI Interface</td>
+              <td class="text-center"><i class="icon-ok fa fa-2x fa-check-square-o"></i></td>
+              <td class="text-center"><i class="icon-ok fa fa-2x fa-check-square-o"></i></td>
+              <td class="text-center"><i class="icon-ok fa fa-2x fa-check-square-o"></i></td>
+          </tr>
+          <tr>
+          <td><a href="{{ "/products/features/servlet-engine.html" | prepend: site.baseurl }}">Servlet Engine <i class="icon-ci fa fa-info-circle"></i></a></td>
+              <td class="text-center"><i class="icon-nok fa fa-2x fa-minus-square"></i></td>
+              <td class="text-center"><i class="icon-nok fa fa-2x fa-minus-square"></i></td>
+              <td class="text-center"><i class="icon-ok fa fa-2x fa-check-square-o"></i></td>
+          </tr>
+          <tr>
+          <td><a href="{{ "/products/features/message-queue.html" | prepend: site.baseurl }}">Message Queue <i class="icon-ci fa fa-info-circle"></i></a></td>
+              <td class="text-center"><i class="icon-nok fa fa-2x fa-minus-square"></i></td>
+              <td class="text-center"><i class="icon-nok fa fa-2x fa-minus-square"></i></td>
+              <td class="text-center"><i class="icon-ok fa fa-2x fa-check-square-o"></i></td>
+          </tr>
+          <tr>
+          <td><a href="{{ "/products/features/timer-service.html" | prepend: site.baseurl }}">Timer Service <i class="icon-ci fa fa-info-circle"></i></a></td>
+              <td class="text-center"><i class="icon-nok fa fa-2x fa-minus-square"></i></td>
+              <td class="text-center"><i class="icon-nok fa fa-2x fa-minus-square"></i></td>
+              <td class="text-center"><i class="icon-ok fa fa-2x fa-check-square-o"></i></td>
+          </tr>
+          <tr>
+          <td><a href="{{ "/products/features/persistence-container.html" | prepend: site.baseurl }}">Persistence Container <i class="icon-ci fa fa-info-circle"></i></a></td>
+              <td class="text-center"><i class="icon-nok fa fa-2x fa-minus-square"></i></td>
+              <td class="text-center"><i class="icon-nok fa fa-2x fa-minus-square"></i></td>
+              <td class="text-center"><i class="icon-ok fa fa-2x fa-check-square-o"></i></td>
+          </tr>
 
-                </tbody>
-            </table>
-        </div>
-    </div>
+</tbody>
+</table>
+</div>
+</div>
 </section>
 
 <section class="grey text-center">
