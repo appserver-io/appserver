@@ -1,23 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
-
 {% include head.html %}
-
 <body role="document">
-
     {% include header.html %}
-
     <!-- Page Content -->
     <div class="container-page">
         <div class="container">
-
             <div class="row">
                 <!-- Content Section -->
                 <div class="col-md-12 content">
                     <h1><i class="fa fa-share-alt"></i> {% if page.group and page.group != "Docs" %}<small><a href="{{ "/documentation/tutorials.html" | prepend: site.baseurl }}">{{ page.group }}</a> / </small>{{ page.title }}{% else %}{{ page.headline }}{% endif %}</h1><hr/>
                     <div class="docs-content">
                         {{ content }}
-
                         {% if page.group != "Tutorials" %}
                         <p><br/></p>
                         {% assign items = site.tuts | sort: 'position' %}
@@ -27,7 +21,6 @@
                             <br/><br/>
                         {% endfor %}
                         {% endif %}
-
                     </div>
                 </div>
             </div>
@@ -35,8 +28,6 @@
         </div>
     </div>
     <!-- /.container -->
-
     {% include footer.html %}
-
 </body>
 </html>

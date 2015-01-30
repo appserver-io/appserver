@@ -2,7 +2,6 @@
 layout: news
 ---
 <div class="post">
-
   <header class="post-header">
     <h1 class="post-title"><i class="fa fa-tag"></i> {{ page.title }}</h1>
     <p>
@@ -17,15 +16,10 @@ layout: news
     </p>
     <hr>
   </header>
-
   <article class="post-content blog-content">
     {{ content }}
   </article>
-
   <p><br/></p>
-
   <div id="disqus_thread"></div>
-
 </div>
-
 {% include disqus_embed.html %}

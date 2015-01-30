@@ -1,16 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-
 {% include head.html %}
-
 <body role="document">
-
     {% include header.html %}
-
     <!-- Page Content -->
     <div class="container-page">
         <div class="container">
-
             <div class="row">
                 <div class="col-md-3" id="leftCol">
                     {% assign items = site.docs | sort: 'position' %}
@@ -28,8 +23,6 @@
         </div>
     </div>
     <!-- /.container -->
-
     {% include footer.html %}
-
 </body>
 </html>
