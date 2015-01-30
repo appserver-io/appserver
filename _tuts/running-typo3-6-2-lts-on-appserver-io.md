@@ -1,9 +1,10 @@
 ---
 layout: tuts
 title: Running TYPO3 6.2 LTS on appserver.io
+description: It shows you how easy it is to install appserver.io on a Mac and run TYPO3 6.2 on it.
 position: 10
 group: Tutorials
-permalink: /documentation/tutorials/running-typo3-6-2-lts.html
+permalink: /documentation/tutorials/running-typo3-6-2-lts-on-appserver-io.html
 ---
 
 **Prerequirements**: *Up and running installation of MySQL*

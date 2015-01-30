@@ -12,15 +12,22 @@
         <div class="container">
 
             <div class="row">
-                <div class="col-md-3" id="leftCol">
-                    {% assign items = site.tuts | sort: 'position' %}
-                    {% include sub_nav.html %}
-                </div>
                 <!-- Content Section -->
-                <div class="col-md-9 content">
-                    <h2>{% if page.group and page.group != "Docs" %}<small>{{ page.group }} / </small>{{ page.title }}{% else %}{{ page.headline }}{% endif %}</h2><hr/>
+                <div class="col-md-12 content">
+                    <h1><i class="fa fa-share-alt"></i> {% if page.group and page.group != "Docs" %}<small><a href="{{ "/documentation/tutorials.html" | prepend: site.baseurl }}">{{ page.group }}</a> / </small>{{ page.title }}{% else %}{{ page.headline }}{% endif %}</h1><hr/>
                     <div class="docs-content">
                         {{ content }}
+
+                        {% if page.group != "Tutorials" %}
+                        <p><br/></p>
+                        {% assign items = site.tuts | sort: 'position' %}
+                        {% for item in items %}
+                            <h2><a href="{{ item.url }}">{{ item.title }}</a></h2>
+                            {{ item.description }}
+                            <br/><br/>
+                        {% endfor %}
+                        {% endif %}
+
                     </div>
                 </div>
             </div>

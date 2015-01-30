@@ -1,9 +1,9 @@
 ---
 layout: faq
-title: FAQ
+title: {{ FAQ }}
 headline: Frequently Asked Questions (FAQ)
 position: 25
-group: Community
+group: {{ Community }}
 permalink: /community/faq.html
 ---
 
