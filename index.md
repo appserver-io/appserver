@@ -44,7 +44,11 @@ the services or only specifically selected services in your existing application
 This is just what you need since we have eliminated the need for additional tools or additional services,
 appserver.io and PHP and you´re done!
 
-<p><br/></p>
+</div>
+</section>
+
+<section class="grey">
+<div class="container">
 
 <div class="bs-example" data-example-id="simple-table">
   <table class="table">
@@ -118,7 +122,7 @@ appserver.io and PHP and you´re done!
 </div>
 </section>
 
-<section class="grey text-center">
+<section class="text-center">
 <div class="container">
 <h2><i class="fa fa-dot-circle-o"></i>&nbsp;&nbsp;Learn more about our target groups</h2>
 <p><br/></p>
@@ -126,7 +130,7 @@ appserver.io and PHP and you´re done!
 </div>
 </section>
 
-<section class="text-center">
+<section class="grey text-center">
 <div class="container">
 <h2><i class="fa fa-video-camera"></i>&nbsp;&nbsp;Watch the Video from the Imagine Conference</h2>
 <p><br/></p>

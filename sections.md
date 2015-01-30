@@ -3,7 +3,7 @@ layout: sections
 title: Sections
 permalink: /sections.html
 ---
-<section class="black">
+<section class="bluepink">
     <div class="container">
         <h2>How does appserver work?</h2>
         <p>
