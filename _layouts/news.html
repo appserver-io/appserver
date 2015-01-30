@@ -1,23 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
-
 {% include head.html %}
-
 <body role="document">
-
     {% include header.html %}
-
     <!-- Page Content -->
     <div class="container-page">
         <div class="container content">
-
             <div class="row">
-
                 <!-- Blog Entries Column -->
                 <div class="col-md-9 blog-content">
-
                     {{ content }}
-
                     <!-- Pager
                     <ul class="pager">
                         <li class="previous">
@@ -29,10 +21,8 @@
                     </ul>
                      -->
                 </div>
-
                 <!-- Blog Sidebar Widgets Column -->
                 <div class="col-md-3">
-
                     <!-- Blog Top Well -->
                     <div class="well">
                         <ul class="list-side-news">
@@ -45,7 +35,6 @@
                         </ul>
                         <i class="fa fa-rss"></i> subscribe <a href="{{ "/feed.xml" | prepend: site.baseurl }}">via RSS</a>
                     </div>
-
                     <div class="well">
                         <h4>Categories</h4>
                         <ul class="list-side-news">
@@ -60,7 +49,6 @@
                         {% endfor %}
                         </ul>
                     </div>
-
                     <!-- Blog Recent Releases Well -->
                     <div class="well">
                         <h4>Recent Releases</h4>
@@ -72,7 +60,6 @@
                             {% endfor %}
                         </ul>
                     </div>
-
                     <!-- Blog Other News Well -->
                     <div class="well">
                         <h4>Other News</h4>
@@ -86,18 +73,13 @@
                             {% endfor %}
                         </ul>
                     </div>
-
                 </div>
-
             </div>
             <!-- /.row -->
         </div>
     </div>
     <!-- /.container -->
-
     {% include footer.html %}
-
     {% include disqus_count.html %}
-
 </body>
 </html>
