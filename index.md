@@ -119,21 +119,21 @@ appserver.io and PHP and you´re done!
 </section>
 
 <section class="grey text-center">
-    <div class="container">
-        <h2><i class="fa fa-dot-circle-o"></i>&nbsp;&nbsp;Learn more about our target groups</h2>
-        <p><br/></p>
-        {% include widgets/boxes.html boxes = page.boxes-targetgroups %}
-    </div>
+<div class="container">
+<h2><i class="fa fa-dot-circle-o"></i>&nbsp;&nbsp;Learn more about our target groups</h2>
+<p><br/></p>
+{% include widgets/boxes.html boxes = page.boxes-targetgroups %}
+</div>
 </section>
 
 <section class="text-center">
-    <div class="container">
-        <h2><i class="fa fa-video-camera"></i>&nbsp;&nbsp;Watch the Video from the Imagine Conference</h2>
-        <p><br/></p>
-        <div class="elastic-video">
-            <iframe width="854" height="510" src="//www.youtube.com/embed/D5rkJ1bznKo#t=10" frameborder="0" allowfullscreen></iframe>
-        </div>
-    </div>
+<div class="container">
+<h2><i class="fa fa-video-camera"></i>&nbsp;&nbsp;Watch the Video from the Imagine Conference</h2>
+<p><br/></p>
+<div class="elastic-video">
+<iframe width="854" height="510" src="//www.youtube.com/embed/D5rkJ1bznKo#t=10" frameborder="0" allowfullscreen></iframe>
+</div>
+</div>
 </section>
 
 <!--
