@@ -23,11 +23,14 @@ Besides supporting several operating systems and their specific ways of installi
 also support several ways of getting this software. So to get your appserver.io package you might
 do any of the following:
 
-* Download one of our [**releases**](<https://github.com/appserver-io/appserver/releases>) right from this repository which provide tested install packages
-
-* Grab any of our [**nightlies**](<http://builds.appserver.io/>) from our project page to get bleeding edge install packages which still might have some bugs
-
-* Build your own package using [ANT](<http://ant.apache.org/>)! To do so clone the [runtime](<https://github.com/appserver-io-php/runtime>) first. Then update at least the `os.family` and `os.distribution` build properties according to your environment and build the appserver with the ANT `build` and `create-package` target
+* Download one of our [**releases**](<https://github.com/appserver-io/appserver/releases>) right from this repository
+  which provide tested install packages
+* Grab any of our [**nightlies**](<http://builds.appserver.io/>) from our project page to get bleeding edge install
+  packages which still might have some bugs
+* Build your own package using [ANT](<http://ant.apache.org/>)! To do so clone the
+  [runtime](<https://github.com/appserver-io-php/runtime>) first. Then update at least the `os.family` and
+  `os.distribution` build properties according to your environment and build the appserver with the ANT `build`
+  and `create-package` target
 
 The package will install with these basic default characteristics:
 
