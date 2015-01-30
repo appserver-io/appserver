@@ -7,7 +7,7 @@ permalink: /products/enterprise-edition.html
 author: all
 ---
 
-## appserver.io Enterprise Edition
+# appserver.io Enterprise Edition
 ***
 
 We are working hard on the roadmap and the feature set of the Enterprise Edition. If want to know more about this stunning product please contact us directly.

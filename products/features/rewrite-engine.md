@@ -5,10 +5,9 @@ position: 20
 group: Features
 permalink: /products/features/rewrite-engine.html
 subnavigation: features
-author: all
 ---
 
-### <i class="fa fa-info"></i> Info
+## <i class="fa fa-info"></i> Info
 <div class="bs-example" data-example-id="simple-table">
     <table class="table">
         <tbody>
@@ -35,7 +34,7 @@ In addition, the rewrite engine also serves as a basis for complex rewrite maps 
 </div>
 <p><br/></p>
 
-### <i class="fa fa-bars"></i> Functions
+## <i class="fa fa-bars"></i> Functions
 <div class="bs-example" data-example-id="simple-table">
     <table class="table">
         <tbody>
@@ -59,7 +58,7 @@ In addition, the rewrite engine also serves as a basis for complex rewrite maps 
     </table>
 </div>
 
-### <i class="fa fa-edit"></i> Use Case
+## <i class="fa fa-edit"></i> Use Case
 <p>
 The rewrite module is a webserver module included within the appserver.io Webserver environment by default. It provides sophisticated rewriting and redirecting capabilities based on complex request analysis and is oriented on similar solutions of other webserver components. Especially functionality of the Apache solution mod_rewrite got adopted and is offered by the Rewrite Module.
 </p>

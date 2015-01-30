@@ -5,11 +5,10 @@ position: 10
 group: Features
 permalink: /products/features/servlet-engine.html
 subnavigation: features
-author: all
 ---
 
 
-### <i class="fa fa-info"></i> Info
+## <i class="fa fa-info"></i> Info
 <div class="bs-example" data-example-id="simple-table">
     <table class="table">
         <tbody>
@@ -39,7 +38,7 @@ author: all
 </div>
 <p><br/></p>
 
-### <i class="fa fa-bars"></i> Functions
+## <i class="fa fa-bars"></i> Functions
 <div class="bs-example" data-example-id="simple-table">
     <table class="table">
         <tbody>
@@ -66,7 +65,7 @@ author: all
     </table>
 </div>
 
-### <i class="fa fa-edit"></i> Use Case
+## <i class="fa fa-edit"></i> Use Case
 <p>
 During the last years, as PHP tries to advance to the enterprise market, PHP developers have had to face the reality that PHP does not provide an enterprise ready infrastructure like Java. That leads to the situation where PHP developers have to build up huge knowledge about external tools and libraries written in languages they are not familiar with as the application server brings the missing infrastructure to the PHP ecosystem; it enables PHP developers to use the services it provides. Extending and using such services will be much more convenient since they are written in their native language.
 </p>
