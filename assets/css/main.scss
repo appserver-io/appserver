@@ -9,6 +9,7 @@
 @import "countdown";
 @import "docs";
 @import "blog";
+@import "sections";
 
 // import font
 @import url(http://fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,400,600);
@@ -32,7 +33,6 @@ code {
   background-color: $body-bg;
   position: relative;
   margin-bottom: 240px;
-  padding-bottom: 50px;
   z-index: 200;
   font-size: 16px;
 }
@@ -193,6 +193,12 @@ ul.nav li.dropdown:hover ul.dropdown-menu{
   box-shadow: none;
 }
 
+.panel-heading {
+  h1, h2, h3, h4, h5, h6 {
+    margin: 0;
+  }
+}
+
 .price {
   display: block;
   font-size: 50px;
@@ -342,6 +348,11 @@ footer {
   // remove home nav entry
   #nav-home {
     display: none;
+  }
+
+  // smaller the navbar elements
+  .navbar-nav > li > a {
+    padding: 22px 10px;
   }
 
   // rename what is appserver to info

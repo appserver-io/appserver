@@ -1,0 +1,46 @@
+//
+// Styles for sections
+// --------------------------------------------------
+
+section {
+
+  padding: 50px 0;
+
+  h1, h2, h3, h4, h5, h6 {
+    margin-top: 0;
+    margin-bottom: 25px;
+  }
+
+}
+
+// section background themes
+section.inverted {
+  background-color: #000;
+  color: #fafafa;
+}
+
+section.grey {
+  background-color: #fafafa;
+}
+
+section.black {
+  @extend section.inverted;
+  background-color: #000000;
+}
+
+section.blue {
+  @extend section.inverted;
+  background-color: $link-color;
+}
+
+section.bluepink {
+  @extend section.inverted;
+  background-image: url(/assets/img/sections/bluepink.jpg);
+  background-repeat: no-repeat;
+  background-position: 50% 0;
+  -ms-background-size: cover;
+  -o-background-size: cover;
+  -moz-background-size: cover;
+  -webkit-background-size: cover;
+  background-size: cover;
+}
