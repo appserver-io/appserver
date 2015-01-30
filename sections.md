@@ -3,7 +3,6 @@ layout: sections
 title: Sections
 permalink: /sections.html
 ---
-
 <section class="black">
     <div class="container">
         <h2>How does appserver work?</h2>
@@ -12,7 +11,6 @@ permalink: /sections.html
         </p>
     </div>
 </section>
-
 <section class="grey text-center">
     <div class="container">
         <h2>appserver.io Community Edition</h2>
@@ -21,7 +19,6 @@ permalink: /sections.html
         <p>
     </div>
 </section>
-
 <section class="blue text-center">
     <div class="container">
         <h2>appserver.io Enterprise Edition</h2>
@@ -33,7 +30,6 @@ permalink: /sections.html
         </a>
     </div>
 </section>
-
 <section>
     <div class="container">
         <h2>white stuff</h2>
