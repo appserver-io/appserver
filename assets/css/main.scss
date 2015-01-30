@@ -253,14 +253,14 @@ ul.nav li.dropdown:hover ul.dropdown-menu{
 }
 
 /* icon color definitions */
-.icon-ok {
-    color: green;
-}
 .icon-nok {
     color: #a82629;
 }
 .icon-ci {
     color: #31b0d5;
+}
+.icon-ok {
+  @extend .icon-ci;
 }
 
 /* subpage properties */
