@@ -12,7 +12,7 @@
  * PHP version 5
  *
  * @author    Tim Wagner <tw@appserver.io>
- * @copyright 2015 TechDivision GmbH <info@appserver.io>
+ * @copyright 2014 TechDivision GmbH <info@appserver.io>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
@@ -31,12 +31,13 @@ use AppserverIo\Psr\HttpMessage\RequestInterface;
 use AppserverIo\Psr\HttpMessage\ResponseInterface;
 use AppserverIo\Messaging\Utils\PriorityKeys;
 use AppserverIo\Messaging\MessageQueueProtocol;
+use AppserverIo\Messaging\Utils\StateActive;
 
 /**
  * A message queue module implementation.
  *
  * @author    Tim Wagner <tw@appserver.io>
- * @copyright 2015 TechDivision GmbH <info@appserver.io>
+ * @copyright 2014 TechDivision GmbH <info@appserver.io>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
@@ -67,11 +68,15 @@ class MessageQueueModule extends GenericStackable
     public function __construct()
     {
 
+        // initialize the mutex
+        $this->mutex = \Mutex::create();
+
         // initialize the members
         $this->queues = new GenericStackable();
         $this->messages = new GenericStackable();
 
         // initialize the array containing the worker specific stackables
+        $this->jobsExecuting = new GenericStackable();
         $this->jobsToExecute = new GenericStackable();
     }
 
@@ -110,7 +115,8 @@ class MessageQueueModule extends GenericStackable
 
                         // create a separate queue for each priority
                         foreach (PriorityKeys::getAll() as $priorityKey) {
-                            // initialize the stackable for the job storage
+                            // initialize the stackable for the job storage and the jobs excecuting
+                            $this->jobsExecuting[$jobCounter] = new GenericStackable();
                             $this->jobsToExecute[$jobCounter] = new GenericStackable();
 
                             // initialize and start the queue worker
@@ -118,6 +124,7 @@ class MessageQueueModule extends GenericStackable
                             $queueWorker->injectPriorityKey($priorityKey);
                             $queueWorker->injectApplication($application);
                             $queueWorker->injectMessages($this->messages);
+                            $queueWorker->injectJobsExecuting($this->jobsExecuting[$jobCounter]);
                             $queueWorker->injectJobsToExecute($this->jobsToExecute[$jobCounter]);
                             $queueWorker->start();
 
@@ -165,9 +172,8 @@ class MessageQueueModule extends GenericStackable
                 return;
             }
 
-            // unpack the message from the request body
-            $message = new MessageWrapper();
-            $message->init(MessageQueueProtocol::unpack($request->getBodyContent()));
+            $message = MessageQueueProtocol::unpack($request->getBodyContent());
+            $message->setState(StateActive::get());
 
             // load queue name and priority key
             $queueName = $message->getDestination()->getName();

@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\MessageQueue;
 
+use AppserverIo\Psr\Pms\JobInterface;
 use AppserverIo\Psr\Pms\MessageInterface;
 use AppserverIo\Messaging\Utils\StateProcessed;
 use AppserverIo\Messaging\Utils\StateInProgress;
@@ -35,7 +36,7 @@ use AppserverIo\Psr\Application\ApplicationInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class Job extends \Thread
+class Job extends \Thread implements JobInterface
 {
 
     /**
@@ -104,7 +105,7 @@ class Job extends \Thread
      *
      * @return boolean TRUE if the timer task has been finished, else FALSE
      */
-    protected function isFinished()
+    public function isFinished()
     {
         return $this->finished;
     }
@@ -134,8 +135,6 @@ class Job extends \Thread
 
             // lookup the queue and process the message
             if ($queue = $application->search('QueueContextInterface')->locate($queueProxy)) {
-                // lock the message
-                $message->setState(StateInProgress::get());
 
                 // the queues receiver type
                 $queueType = $queue->getType();
@@ -149,9 +148,6 @@ class Job extends \Thread
 
                 // inject the application to the receiver and process the message
                 $instance->onMessage($message, $sessionId);
-
-                // remove the message from the storage
-                $message->setState(StateProcessed::get());
             }
 
             // mark the job finished

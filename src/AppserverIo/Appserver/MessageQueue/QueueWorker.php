@@ -20,8 +20,10 @@
 
 namespace AppserverIo\Appserver\MessageQueue;
 
+use Rhumsaa\Uuid\Uuid;
 use AppserverIo\Logger\LoggerUtils;
 use AppserverIo\Storage\GenericStackable;
+use AppserverIo\Psr\Pms\JobInterface;
 use AppserverIo\Psr\Pms\MessageInterface;
 use AppserverIo\Psr\Pms\PriorityKeyInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
@@ -75,6 +77,18 @@ class QueueWorker extends \Thread
     }
 
     /**
+     * Inject the storage for the executing jobs.
+     *
+     * @param \AppserverIo\Storage\GenericStackable $jobsExecuting The storage for the executing jobs
+     *
+     * @return void
+     */
+    public function injectJobsExecuting(GenericStackable $jobsExecuting)
+    {
+        $this->jobsExecuting = $jobsExecuting;
+    }
+
+    /**
      * Inject the storage for the messages.
      *
      * @param \AppserverIo\Storage\GenericStackable $messages The storage for the messages
@@ -98,6 +112,11 @@ class QueueWorker extends \Thread
         $this->application = $application;
     }
 
+    public function getApplication()
+    {
+        return $this->application;
+    }
+
     /**
      * Attach a new message to the queue.
      *
@@ -113,7 +132,7 @@ class QueueWorker extends \Thread
 
             // store the job-ID and the PK of the message => necessary to load the message later
             $jobWrapper = new \stdClass();
-            $jobWrapper->jobId = uniqid();
+            $jobWrapper->jobId = $m->getMessageId();
             $jobWrapper->messageId = $m->getMessageId();
 
             // attach the job wrapper
@@ -132,6 +151,99 @@ class QueueWorker extends \Thread
     public function remove(MessageInterface $message)
     {
         unset($this->messages[$message->getMessageId()]);
+    }
+
+    public function processActive(MessageInterface $message)
+    {
+
+        $message->setState(StateToProcess::get());
+
+        $this->messages[$message->getMessageId()] = $message;
+    }
+
+    public function processInProgress(MessageInterface $message)
+    {
+
+        // make sure the job has been finished
+        if (isset($this->jobsExecuting[$message->getMessageId()]) &&
+            $this->jobsExecuting[$message->getMessageId()] instanceof JobInterface &&
+            $this->jobsExecuting[$message->getMessageId()]->isFinished()) {
+
+            // log a message that the job is still in progress
+            $this->getApplication()->getInitialContext()->getSystemLogger()->info(
+                sprintf('Job %s has been finished, remove it from job queue now', $message->getMessageId())
+            );
+
+            // we also remove the job
+            unset($this->jobsExecuting[$message->getMessageId()]);
+
+            $message->setState(StateProcessed::get());
+
+            $this->messages[$message->getMessageId()] = $message;
+
+        } else {
+            // log a message that the job is still in progress
+            $this->getApplication()->getInitialContext()->getSystemLogger()->info(
+                sprintf('Job %s is still in progress', $message->getMessageId())
+            );
+        }
+    }
+
+    public function processProcessed(MessageInterface $message)
+    {
+
+        unset($this->jobsToExecute[$message->getMessageId()]);
+
+        $this->remove($message);
+    }
+
+    public function processToProcess(MessageInterface $message)
+    {
+
+        // count messages in queue
+        $inQueue = sizeof($this->jobsExecuting);
+
+        // we only process 50 jobs in parallel
+        if ($inQueue < 50) {
+            // load application
+            $application = $this->getApplication();
+
+            // start the job and add it to the internal array
+            $this->jobsExecuting[$message->getMessageId()] = new Job($message, $application);
+
+            $message->setState(StateInProgress::get());
+            $this->messages[$message->getMessageId()] = $message;
+
+        } else {
+            // log a message that queue is actually full
+            $this->getApplication()->getInitialContext()->getSystemLogger()->info(
+                sprintf('Job queue full - (%d jobs/%d msg wait)', $inQueue, sizeof($this->messages))
+            );
+        }
+    }
+
+    public function processUnknown(MessageInterface $message)
+    {
+
+        $message->setState(StateFailed::get());
+
+        $this->messages[$message->getMessageId()] = $message;
+
+        $this->getApplication()->getInitialContext()->getSystemLogger()->critical(
+            sprintf('Message %s has state %s', $message->getMessageId(), $message->getState())
+        );
+    }
+
+    public function processInvalid(MessageInterface $message)
+    {
+
+        $message->setState(StateFailed::get());
+
+        $this->messages[$message->getMessageId()] = $message;
+
+        $this->getApplication()->getInitialContext()->getSystemLogger()->critical(
+            sprintf('Message %s has an invalid state', $message->getMessageId())
+        );
     }
 
     /**
@@ -155,9 +267,6 @@ class QueueWorker extends \Thread
             $profileLogger->appendThreadContext(sprintf('queue-worker-%s', $this->priorityKey));
         }
 
-        // initialize an array with jobs that are executed actually
-        $jobsExecuting = array();
-
         /*
          * Reduce CPU load depending on the queues priority, whereas priority
          * can be 1, 2 or 3 actually, so possible values for usleep are:
@@ -170,68 +279,72 @@ class QueueWorker extends \Thread
 
         // run forever
         while (true) {
+
             // iterate over all job wrappers
-            foreach ($this->jobsToExecute as $jobId => $jobWrapper) {
-                // load the message
-                $message = $this->messages[$jobWrapper->messageId];
+            foreach ($this->jobsToExecute as $id => $jobWrapper) {
 
-                // check the message state
-                switch ($message->getState()) {
+                try {
 
-                    case StateActive::get(): // message is active and ready to be processed
+                    // load the message
+                    $message = $this->messages[$id];
 
-                        // message is ready to be processed
-                        $message->setState(StateToProcess::get());
-                        break;
+                    // check if we've a message found
+                    if ($message instanceof MessageInterface) {
 
-                    case StatePaused::get(): // message is paused
-                    case StateInProgress::get(): // message is in progress
+                        // check the message state
+                        switch ($state = $message->getState()) {
 
-                        // do nothing here because everything is OK!
-                        break;
+                            // message is active and ready to be processed
+                            case StateActive::get():
 
-                    case StateFailed::get(): // message processing has been failure
-                    case StateProcessed::get(): // message processing has been successfully processed
+                                $this->processActive($message);
+                                break;
 
-                        // make sure the job has been finished
-                        if ($jobsExecuting[$jobId]->isFinished()) {
-                            // we remove the message to free the memory
-                            $this->remove($message);
+                            // message is paused or in progress
+                            case StatePaused::get():
+                            case StateInProgress::get():
 
-                            // we also remove the job
-                            unset($jobsExecuting[$jobId]);
+                                $this->processInProgress($message);
+                                break;
+
+                            // message processing failed or has been successfully processed
+                            case StateFailed::get():
+                            case StateProcessed::get():
+
+                                $this->processProcessed($message);
+                                break;
+
+                            // message has to be processed now
+                            case StateToProcess::get():
+
+                                $this->processToProcess($message);
+                                break;
+
+                            // message is in an unknown state -> this is weired and should never happen!
+                            case StateUnknown::get():
+
+                                $this->processUnknown($message);
+                                break;
+
+                            // we don't know the message state -> this is weired and should never happen!
+                            default:
+
+                                $this->processInvalid($message);
+                                break;
                         }
+                    }
 
-                        break;
-
-                    case StateToProcess::get(): // message has to be processed now
-
-                        // start the job and add it to the internal array
-                        $jobsExecuting[$jobId] = $message->getJob($application);
-
-                        // remove the job from the list of jobs to be executed
-                        unset($this->jobsToExecute[$jobId]);
-                        break;
-
-                    case StateUnknown::get(): // message is in an unknown state -> this is weired and should never happen!
-
-                        // throw an exception, because this should never happen
-                        throw new \Exception(sprintf('Message %s has state %s', $message->getId(), $message->getState()));
-                        break;
-
-                    default: // we don't know the message state -> this is weired and should never happen!
-
-                        // throw an exception, because this should never happen
-                        throw new \Exception(sprintf('Message %s has an invalid state', $message->getId()));
-                        break;
+                // catch all exceptions
+                } catch (\Exception $e) {
+                    $application->getInitialContext()->getSystemLogger()->critical($e->__toString());
                 }
 
                 // reduce CPU load depending on queue priority
                 usleep($sleepFor);
             }
 
+            // profile the size of the session pool
             if ($profileLogger) {
-                // profile the size of the session pool
                 $profileLogger->debug(
                     sprintf('Processed queue worker with priority %s, size of queue size is: %d', $this->priorityKey, sizeof($this->storage))
                 );
