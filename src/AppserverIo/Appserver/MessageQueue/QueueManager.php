@@ -272,7 +272,9 @@ class QueueManager extends AbstractManager implements QueueContextInterface
      */
     public function updateMonitor(MessageInterface $message)
     {
-        error_log('Update message monitor for message: ' . spl_object_hash($message));
+        $this->getApplication()->getInitialContext()->getSystemLogger()->info(
+            sprintf('Update message monitor for message: %s', spl_object_hash($message))
+        );
     }
 
     /**
