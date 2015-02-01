@@ -135,7 +135,6 @@ class Job extends \Thread implements JobInterface
 
             // lookup the queue and process the message
             if ($queue = $application->search('QueueContextInterface')->locate($queueProxy)) {
-
                 // the queues receiver type
                 $queueType = $queue->getType();
 
