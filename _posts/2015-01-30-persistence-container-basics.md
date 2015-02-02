@@ -47,7 +47,7 @@ On each request an new `SLSB` instance will be created. After handling the reque
 
 ##### Example
 
-So let's implement a `SLSB` that provides functionality to create a user from the arguments passed to the `createUser()` method. The `SLSB` will be registered under the name `AStatelessSessionBean` in the application servers `Naming Directory`. Registering a bean in the `Naming Directory` is necessary to use it for `Dependency Injection` explained in our [documentation](<{{ "/get-started/documentation/dependency-injection.html" | prepend: site.baseurl }}>).
+So let's implement a `SLSB` that provides functionality to create a user from the arguments passed to the `createUser()` method. The `SLSB` will be registered under the name `AStatelessSessionBean` in the application servers `Naming Directory`. Registering a bean in the `Naming Directory` is necessary to use it for `Dependency Injection` explained in our [documentation](<{{ "/get-started/documentation.html" | prepend: site.baseurl }}>).
 
 ```php
 <?php
