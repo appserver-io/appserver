@@ -198,8 +198,19 @@ class Setup
     public static function postInstall(Event $event)
     {
 
+        // initialize the installation directory
+        $installDir = getcwd();
+
+        // check the arguments for an installation directory
+        foreach ($event->getArguments() as $arg) {
+            list ($key, $value) = explode('=', $arg);
+            if ($key === SetupKeys::ARG_INSTALL_DIR) {
+                $installDir = $value;
+            }
+        }
+
         // check if we've a file with the actual version number
-        if (file_exists($filename = getcwd() .'/etc/appserver/.release-version')) {
+        if (file_exists($filename = $installDir .'/etc/appserver/.release-version')) {
             $version = file_get_contents($filename);
         } else {
             // load the version (GIT) of this package as fallback
@@ -207,7 +218,7 @@ class Setup
         }
 
         // check if we've a file with the actual release name
-        if (file_exists($filename = getcwd() .'/etc/appserver/.release-name')) {
+        if (file_exists($filename = $installDir .'/etc/appserver/.release-name')) {
             $releaseName = file_get_contents($filename);
         } else {
             // set the release name to 'Unknown' if not
@@ -217,7 +228,7 @@ class Setup
         // prepare the context properties
         $contextProperties = array(
             SetupKeys::VERSION => $version,
-            SetupKeys::INSTALL_DIR => getcwd(),
+            SetupKeys::INSTALL_DIR => $installDir,
             SetupKeys::RELEASE_NAME => $releaseName
         );
 

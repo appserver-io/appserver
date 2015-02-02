@@ -7,6 +7,7 @@
 ## Features
 
 * Remove var/www/core_functions.php script and include from server.php
+* Allow argument --install-dir for composer post-install-cmd
 
 # Version 1.0.0-rc1
 
