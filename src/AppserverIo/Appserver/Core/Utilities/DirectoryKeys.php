@@ -121,9 +121,28 @@ class DirectoryKeys
     }
 
     /**
-     * Returns the application servers directory keys.
+     * Returns the application servers directory keys for the directories that
+     * has to be created on startup.
      *
-     * @return array The application server directory keys
+     * @return array The keys for the directories to be created on startup
+     */
+    public static function getServerDirectoryKeysToBeCreated()
+    {
+        return array(
+            DirectoryKeys::WEBAPPS,
+            DirectoryKeys::TMP,
+            DirectoryKeys::DEPLOY,
+            DirectoryKeys::LOG,
+            DirectoryKeys::RUN,
+            DirectoryKeys::CONF,
+            DirectoryKeys::CONFD
+        );
+    }
+
+    /**
+     * Returns the all application servers directory keys.
+     *
+     * @return array All application server directory keys
      */
     public static function getServerDirectoryKeys()
     {
