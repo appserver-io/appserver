@@ -9,17 +9,40 @@ subNav:
 permalink: /documentation/aop.html
 ---
 
-Meanwhile, AOP is more than a buzzword. Many of the PHP frameworks out there are supporting AOP for
-some years, in other languages like Java it's available for a long time. As there is actually
-no stable PECL extension nor is AOP part of the PHP core, performance is a big problem,
-because of its nature, AOP needs to be deeply weaved into your code. Most of the solutions
-available for PHP solve that by generating so called `proxy classes` that wrap the original
-methods and allow to weave the advices before, after or around the original implementation.
+AOP, or [Aspect-oriented programming](http://en.wikipedia.org/wiki/Aspect-oriented_programming) is the concept of decoupling so called *cross-cutting concerns*, logic which is logic duplicated throughout the complete  codebase, and implemented them at a central point.
+These cross-cutting concerns are logical patterns which are needed in a manifold of places but has a simple implementation. Examples would be security/authentication or logging.
+Implementing logging at several places is either a huge duplication mess or results in dependencies to your logging infrastructure littered all over your application.
+With AOP logging gets implemented once and you can centrally (or at the actual place of use if you like) define where to use it.
+This allows for very easy reactions to changes within your infrastructure.
 
-As we're in a multithreaded environment, and performance is one of our main goals, we were not 
-able to use on of the available solutions. As we also need to generate proxy classes, we decided
-to do that triggered by the autoloader. As the autoloader is part of the appserver.io distribution, you
-don't have to configure anything to use AOP in your code.
+Meanwhile, AOP is more than a buzzword. Many of the PHP frameworks out there are supporting AOP for some years, in other languages like Java it's available for a long time. Currently there is
+no stable PECL extension nor is AOP part of the PHP core. For this reason we implement our own AOP solution which is completely written in PHP and can be found [in this repository](https://github.com/appserver-io/doppelgaenger). Besides AOP this library also supports [Design by Contract](https://en.wikipedia.org/wiki/Design_by_contract) and can be used separate from the appserver as well.
+Within the appserver environment, this solution is enabled by default and can be used in every webapp from the first start on.
+
+## How does it work
+
+AOP is often realized using so called `Proxy Classes` which wrap around actual classes and can be used to invoke code hooks on certain points in the program flow. Solutions injecting calls to a managing component which handles the execution of cross cutting logic are also possible.
+At appserver.io we are concerned with two things: good performance and accessibility for the community. To accommodate these concerns we implemented everything in PHP and tried to do as much work during bootstrapping as possible.
+
+## Join-points
+
+
+## Advices
+
+## Pointcuts
+A pointcut is basically a definition of a certain point within the flow of the application code. This might e.g. be the execution of a certain method or a method of a certain kind throwing an exception.
+You can specify these certain points using something called a [join-point model](https://en.wikipedia.org/wiki/Aspect-oriented_programming#Join_point_models). This model explains how a pointcut
+sets advices and join-points in relation to build an actual execution of aspect code.
+
+Pseudocode might be `execute AdviceA at call to MethodB`.
+ 
+Pointcuts can be specified in three different ways:
+
+### Direct annotation aka interceptors
+
+### Generic annotations within aspects
+
+### Generic configuration in XML 
 
 ## How to add an Advice
 
