@@ -103,7 +103,7 @@ class QueueWorker extends \Thread
     /**
      * Inject the application instance the worker is bound to.
      *
-     * @param \AppserverIo\Psr\Application\ApplicationInterface $application The application instance with the queue manager/locator
+     * @param \AppserverIo\Psr\Application\ApplicationInterface $application The application instance
      *
      * @return void
      */
@@ -112,6 +112,11 @@ class QueueWorker extends \Thread
         $this->application = $application;
     }
 
+    /**
+     * Returns the application instance the worker is bound to.
+     *
+     * @return \AppserverIo\Psr\Application\ApplicationInterface The application instance
+     */
     public function getApplication()
     {
         return $this->application;
@@ -153,22 +158,36 @@ class QueueWorker extends \Thread
         unset($this->messages[$message->getMessageId()]);
     }
 
+    /**
+     * Process a message with the state `StateActive.
+     *
+     * @param \AppserverIo\Psr\Pms\MessageInterface $message The message to be processed
+     *
+     * @return void
+     */
     public function processActive(MessageInterface $message)
     {
 
+        // set new state and re-attach the message
         $message->setState(StateToProcess::get());
-
         $this->messages[$message->getMessageId()] = $message;
     }
 
+    /**
+     * Process a message with the state `StateInProgress.
+     *
+     * @param \AppserverIo\Psr\Pms\MessageInterface $message The message to be processed
+     *
+     * @return void
+     */
     public function processInProgress(MessageInterface $message)
     {
 
         // make sure the job has been finished
         if (isset($this->jobsExecuting[$message->getMessageId()]) &&
             $this->jobsExecuting[$message->getMessageId()] instanceof JobInterface &&
-            $this->jobsExecuting[$message->getMessageId()]->isFinished()) {
-
+            $this->jobsExecuting[$message->getMessageId()]->isFinished()
+        ) {
             // log a message that the job is still in progress
             $this->getApplication()->getInitialContext()->getSystemLogger()->info(
                 sprintf('Job %s has been finished, remove it from job queue now', $message->getMessageId())
@@ -177,26 +196,41 @@ class QueueWorker extends \Thread
             // we also remove the job
             unset($this->jobsExecuting[$message->getMessageId()]);
 
+            // set new state and re-attach the message
             $message->setState(StateProcessed::get());
-
             $this->messages[$message->getMessageId()] = $message;
 
         } else {
             // log a message that the job is still in progress
-            $this->getApplication()->getInitialContext()->getSystemLogger()->info(
+            $this->getApplication()->getInitialContext()->getSystemLogger()->debug(
                 sprintf('Job %s is still in progress', $message->getMessageId())
             );
         }
     }
 
+
+    /**
+     * Process a message with the state `StateProcessed.
+     *
+     * @param \AppserverIo\Psr\Pms\MessageInterface $message The message to be processed
+     *
+     * @return void
+     */
     public function processProcessed(MessageInterface $message)
     {
-
+        // remove the job from the queue with jobs that has to be excecuted
         unset($this->jobsToExecute[$message->getMessageId()]);
-
+        // remove the message from the queue
         $this->remove($message);
     }
 
+    /**
+     * Process a message with the state `StateToProcess.
+     *
+     * @param \AppserverIo\Psr\Pms\MessageInterface $message The message to be processed
+     *
+     * @return void
+     */
     public function processToProcess(MessageInterface $message)
     {
 
@@ -211,36 +245,54 @@ class QueueWorker extends \Thread
             // start the job and add it to the internal array
             $this->jobsExecuting[$message->getMessageId()] = new Job($message, $application);
 
+            // set new state and re-attach the message
             $message->setState(StateInProgress::get());
             $this->messages[$message->getMessageId()] = $message;
 
         } else {
             // log a message that queue is actually full
-            $this->getApplication()->getInitialContext()->getSystemLogger()->info(
+            $this->getApplication()->getInitialContext()->getSystemLogger()->debug(
                 sprintf('Job queue full - (%d jobs/%d msg wait)', $inQueue, sizeof($this->messages))
             );
         }
     }
 
+    /**
+     * Process a message with the state `StateUnknown.
+     *
+     * @param \AppserverIo\Psr\Pms\MessageInterface $message The message to be processed
+     *
+     * @return void
+     */
     public function processUnknown(MessageInterface $message)
     {
 
+        // set new state and re-attach the message
         $message->setState(StateFailed::get());
-
         $this->messages[$message->getMessageId()] = $message;
 
+        // log a message that we've a message with a unknown state
         $this->getApplication()->getInitialContext()->getSystemLogger()->critical(
             sprintf('Message %s has state %s', $message->getMessageId(), $message->getState())
         );
     }
 
+
+    /**
+     * Process a message with an invalid state.
+     *
+     * @param \AppserverIo\Psr\Pms\MessageInterface $message The message to be processed
+     *
+     * @return void
+     */
     public function processInvalid(MessageInterface $message)
     {
 
+        // set new state and re-attach the message
         $message->setState(StateFailed::get());
-
         $this->messages[$message->getMessageId()] = $message;
 
+        // log a message that we've a message with an invalid state
         $this->getApplication()->getInitialContext()->getSystemLogger()->critical(
             sprintf('Message %s has an invalid state', $message->getMessageId())
         );
@@ -279,18 +331,13 @@ class QueueWorker extends \Thread
 
         // run forever
         while (true) {
-
             // iterate over all job wrappers
             foreach ($this->jobsToExecute as $id => $jobWrapper) {
-
                 try {
-
                     // load the message
                     $message = $this->messages[$id];
-
                     // check if we've a message found
                     if ($message instanceof MessageInterface) {
-
                         // check the message state
                         switch ($state = $message->getState()) {
 
