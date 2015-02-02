@@ -111,17 +111,23 @@ class DgClassLoader extends \Stackable implements ClassLoaderInterface
         // initialize the variables
         $this->cacheIsReady = false;
         $this->autoloaderOmit = false;
-        $this->aspectRegister = new AspectRegister();
     }
 
     /**
      * Initializes the autoloader with the values from the configuration
      * and creates and fills the structure map instance.
      *
+     * @param \AppserverIo\Appserver\Core\StackableStructureMap $structureMap   Structure map to be used
+     * @param \AppserverIo\Doppelgaenger\AspectRegister         $aspectRegister The register for all found aspects
+     *
      * @return void
      */
-    public function init()
+    public function init(StackableStructureMap $structureMap, AspectRegister $aspectRegister)
     {
+
+        // collect the passed instances
+        $this->structureMap = $structureMap;
+        $this->aspectRegister = $aspectRegister;
 
         // load the configuration
         $config = $this->getConfig();
@@ -136,16 +142,11 @@ class DgClassLoader extends \Stackable implements ClassLoaderInterface
             $this->autoloaderOmit = !empty($autoloadingOmitted);
         }
 
-        // now that we got the config we can create a structure map to load from
-        $this->structureMap = new StackableStructureMap(
-            $config->getValue('autoloader/dirs'),
-            $config->getValue('enforcement/dirs'),
-            $config
-        );
-
         // we now have a structure map instance, so fill it initially
         $this->getStructureMap()->fill();
     }
+
+
 
     /**
      * Returns the cache directory.

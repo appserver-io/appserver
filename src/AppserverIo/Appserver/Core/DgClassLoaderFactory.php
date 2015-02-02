@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\Core;
 
+use AppserverIo\Doppelgaenger\AspectRegister;
 use AppserverIo\Doppelgaenger\Config;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\Core\Api\Node\ClassLoaderNodeInterface;
@@ -106,7 +107,14 @@ class DgClassLoaderFactory
 
         // create a autoloader instance and initialize it
         $classLoader = new DgClassLoader($config);
-        $classLoader->init();
+        $classLoader->init(
+            new StackableStructureMap(
+                $config->getValue('autoloader/dirs'),
+                $config->getValue('enforcement/dirs'),
+                $config
+            ),
+            new AspectRegister()
+        );
 
         // add the autoloader to the manager
         $application->addClassLoader($classLoader, $configuration);

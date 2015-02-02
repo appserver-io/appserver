@@ -24,7 +24,6 @@
 namespace AppserverIo\Appserver\Core\Api;
 
 use AppserverIo\Appserver\Core\Api\Mock\MockInitialContext;
-use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
 use org\bovigo\vfs\vfsStream;
 
 /**
@@ -45,7 +44,7 @@ class AbstractFileOperationServiceTest extends AbstractServicesTest
     /**
      * The abstract service instance to test.
      *
-     * @var \PHPUnit_Framework_MockObject_MockObject|\AppserverIo\Appserver\Core\Api\AbstractService $service
+     * @var \PHPUnit_Framework_MockObject_MockObject|\AppserverIo\Appserver\Core\Api\AbstractFileOperationService $service
      */
     protected $service;
 
@@ -74,7 +73,7 @@ class AbstractFileOperationServiceTest extends AbstractServicesTest
     }
 
     /**
-     * Tests if changing user and group is not done for Windows systems
+     * Tests if we are able to change user rights and group
      *
      * @return null
      */
@@ -111,7 +110,7 @@ class AbstractFileOperationServiceTest extends AbstractServicesTest
             ->method('getOsIdentifier')
             ->will($this->returnValue('WIN'));
 
-        $service->setUserRight($this->getMockBuilder('\SplFileInfo')->setConstructorArgs(array($this->getTmpDir()))->getMock());
+        $service->setUserRight(new \SplFileInfo($this->getTmpDir()));
     }
 
     /**
@@ -132,7 +131,7 @@ class AbstractFileOperationServiceTest extends AbstractServicesTest
         };
 
         // make the call and check if we did run into the important parts
-        $this->service->setUserRights($this->getMockBuilder('\SplFileInfo')->setConstructorArgs(array($this->getTmpDir()))->getMock());
+        $this->service->setUserRights(new \SplFileInfo($this->getTmpDir()));
         $this->assertContains('chown', AbstractServiceTest::$callbackCallStack['testSetUserRights']);
         $this->assertContains('chgrp', AbstractServiceTest::$callbackCallStack['testSetUserRights']);
     }
@@ -195,7 +194,7 @@ class AbstractFileOperationServiceTest extends AbstractServicesTest
     /**
      * Will create a mock service instance specifically stubbed & mocked for tests of the createDirectory() method
      *
-     * @return \PHPUnit_Framework_MockObject_MockObject|\AppserverIo\Appserver\Core\Api\AbstractService
+     * @return \PHPUnit_Framework_MockObject_MockObject|\AppserverIo\Appserver\Core\Api\AbstractFileOperationService
      */
     protected function getCreateDirectoryMockService()
     {
@@ -475,7 +474,7 @@ class AbstractFileOperationServiceTest extends AbstractServicesTest
      * @param array $methodsToMock The methods we want to mock besides 'findAll' and 'load'
      *
      * @param array $methodsToMock
-     * @return \PHPUnit_Framework_MockObject_MockObject|\AppserverIo\Appserver\Core\Api\AbstractService
+     * @return \PHPUnit_Framework_MockObject_MockObject|\AppserverIo\Appserver\Core\Api\AbstractFileOperationService
      */
     protected function getPartialServiceMock(array $methodsToMock)
     {
