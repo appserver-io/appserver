@@ -38,7 +38,7 @@ our appserver main https-server configuration.
     </params>
 ```
 
-An detailed description of every parameter can be found under [docs](<{{ "/documentation/webserver.html" | prepend: site.baseurl }}>).
+An detailed description of every parameter can be found under [docs](<{{ "/get-started/documentation/webserver.html" | prepend: site.baseurl }}>).
 
 ### Virtual Hosts
 
@@ -61,7 +61,7 @@ See the simplest virtual host configuration:
 
 It will introduce a new virtual host for `myapp.local` with the document root pointing to `webapps/myapp`. You can
 imagine that just reseting the document root is not the only thing you can do with the virtual host feature. More
-informations on that can be found under [docs](<{{ "/documentation/webserver.html#virtual-hosts" | prepend: site.baseurl }}>).
+informations on that can be found under [docs](<{{ "/get-started/documentation/webserver.html#virtual-hosts" | prepend: site.baseurl }}>).
 
 ### Rewrites
 
@@ -82,7 +82,7 @@ A simple rewrite to do this could look like this:
 ```
 
 If you want to know how it will work in detail and whats exactly beyond those attributes `condition`, `target` and
-`flag` just have a look to our [docs](<{{ "/documentation/webserver.html#rewrites" | prepend: site.baseurl }}>).
+`flag` just have a look to our [docs](<{{ "/get-started/documentation/webserver.html#rewrites" | prepend: site.baseurl }}>).
 
 ### Authentications
 
@@ -108,7 +108,7 @@ or other Webservers? Just do it using the same `.htpasswd` files and a simple co
     </authentication>
 ```
 
-Checkout our [docs](<{{ "/documentation/webserver.html#authentications" | prepend: site.baseurl }}>) to get more into
+Checkout our [docs](<{{ "/get-started/documentation/webserver.html#authentications" | prepend: site.baseurl }}>) to get more into
 authentications and all the other cool features the Webserver provides you.
 
 We appreciate any feedback So, do not hesitate to share your experiences or any problems you encountered while using it

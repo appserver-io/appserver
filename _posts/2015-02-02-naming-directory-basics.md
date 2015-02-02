@@ -70,7 +70,7 @@ You can bundle your application with its own, customized `context.xml` file. Thi
 
 > Keep in mind, that the directory MUST be relative to your applications root directory and start with a `/`.
 
-More detailed information about the how to configure an application can be found in the section [Application Configuration](<{{ "/documentation/configuration.html#application-configuration" | prepend: site.baseurl }}>) of the documentation.
+More detailed information about the how to configure an application can be found in the section [Application Configuration](<{{ "/get-started/documentation/configuration.html#application-configuration" | prepend: site.baseurl }}>) of the documentation.
 
 ## Register Resources
 ***
