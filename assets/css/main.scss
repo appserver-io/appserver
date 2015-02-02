@@ -165,11 +165,6 @@ nav {
   img { height: 34px; }
 }
 
-ul.nav li.dropdown:hover ul.dropdown-menu{
-  display: block;
-  margin-top:0px
-}
-
 .navbar-nav>li>a {
   padding: 22px 15px;
 }
@@ -185,6 +180,7 @@ ul.nav li.dropdown:hover ul.dropdown-menu{
 
 #leftCol {
   margin-top: 60px;
+  margin-bottom: 30px;
 }
 
 .error-404 { font-size: 100px; }
@@ -228,6 +224,15 @@ ul.nav li.dropdown:hover ul.dropdown-menu{
   border-color: #fff;
 }
 
+.btn-slider:hover,
+.btn-slider:focus,
+.btn-slider:active,
+.btn-slider.active,
+.open .dropdown-toggle.btn-slider {
+  color: #119fbc;
+  background-color: #ffffff;
+}
+
 .btn-info-highlight {
   color: white;
   background-color: #a82629;
@@ -238,19 +243,11 @@ ul.nav li.dropdown:hover ul.dropdown-menu{
 .btn-info-highlight:hover,
 .btn-info-highlight:focus,
 .btn-info-highlight:active {
-  color: white;
-  background-color: #5bc0de;
-  border-color: #46b8da;
-}
-
-.btn-slider:hover,
-.btn-slider:focus,
-.btn-slider:active,
-.btn-slider.active,
-.open .dropdown-toggle.btn-slider {
   color: #119fbc;
   background-color: #ffffff;
+  border-color: #fff;
 }
+
 
 /* icon color definitions */
 .icon-nok {

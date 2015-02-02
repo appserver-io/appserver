@@ -1,6 +1,6 @@
 ---
-layout: redirect
+nav: true
 title: Home
-permalink: /home.html
-redirect: /
+position: 10
+permalink: /
 ---

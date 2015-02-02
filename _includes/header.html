@@ -14,30 +14,28 @@
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav navbar-right">
-            {% assign sorted_pages = (site.pages | sort: 'position') %}
-            {% for lpage in sorted_pages %}
-            {% if lpage.title and lpage.group == null and lpage.position != null %}
-
-                {% assign sorted_subpages = (site.pages | where:'group',lpage.title | sort: 'position') %}
-
-                {% if sorted_subpages.size > 0 %}
-                    <li id="nav-{{ lpage.title | downcase | replace: ' ', '-' | replace: '.', '-' }}" class="{% if lpage.title == page.title or lpage.title == page.group %}active {% endif %}dropdown">
-                      <a href="{{ lpage.url | prepend: site.baseurl }}" class="dropdown-toggle"><span>{{ lpage.title }}</span> <b class="caret"></b></a>
-                      <ul class="dropdown-menu">
-                          {% for spage in sorted_subpages %}
-                          <li class="{% if spage.title == page.title %}active{% endif %}">
-                              <a href="{{ spage.url | prepend: site.baseurl }}">{{ spage.title }}</a>
-                          </li>
-                          {% endfor %}
-                      </ul>
-                    </li>
-                {% else %}
-                    <li id="nav-{{ lpage.title | downcase | replace: ' ', '-' | replace: '.', '-' }}" class="{% if lpage.title == page.title or lpage.title == page.group %}active{% endif %}">
-                        <a href="{{ lpage.url | prepend: site.baseurl }}"><span>{{ lpage.title }}</span></a>
-                    </li>
-                {% endif %}
-            {% endif %}
-            {% endfor %}
+          {% assign sorted_pages = (site.pages | sort: 'position') %}
+          {% for lpage in sorted_pages %}
+          {% if lpage.nav != null %}
+          {% assign sorted_subpages = (site.pages | where:'group',lpage.title | sort: 'position') %}
+          {% if sorted_subpages.size > 0 %}
+          <li id="nav-{{ lpage.title | downcase | replace: ' ', '-' | replace: '.', '-' }}" class="{% if lpage.title == page.title or lpage.title == page.group %}active {% endif %}dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><span>{{ lpage.title }}</span> <b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                  {% for spage in sorted_subpages %}
+                  <li class="{% if spage.title == page.title %}active{% endif %}">
+                      <a href="{{ spage.url | prepend: site.baseurl }}">{{ spage.title }}</a>
+                  </li>
+                  {% endfor %}
+              </ul>
+          </li>
+          {% else %}
+          <li id="nav-{{ lpage.title | downcase | replace: ' ', '-' | replace: '.', '-' }}" class="{% if lpage.title == page.title or lpage.title == page.group %}active{% endif %}">
+              <a href="{{ lpage.url | prepend: site.baseurl }}"><span>{{ lpage.title }}</span></a>
+          </li>
+          {% endif %}
+          {% endif %}
+          {% endfor %}
       </ul>
     </div>
     <!-- /.navbar-collapse -->
