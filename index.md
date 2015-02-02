@@ -14,6 +14,9 @@ slider:
     link-label: APPLY NOW
     img: /assets/img/Slider_02_Handshake_grey.png
     countdown: false
+  - title: The next-generation PHP infrastructure
+    img: /assets/img/slider_appserver_zoom_slogo.jpg
+    countdown: false
 
 boxes-targetgroups:
   - title       : For Developers
