@@ -7,12 +7,14 @@
 * Fixed invalid namespace in QueueManager::createSenderForQueue() method
 * Remove unnecessary interfaces SenderInterface + ReceiverInterface
 * minor bugfixes
+* Bugfix within service tests
 
 ## Features
 
 * Refactoring, move interfaces of Persistence-Container + Message-Queue to separate packages
 * Applied new file name and coding conventions
 * Updated dependencies
+* Removed risk factor of non-injected \Stackable within class loader
 
 # Version 1.0.0-beta4
 

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\StackableStructureMap
+ * \AppserverIo\Appserver\Core\StackableStructureMap
  *
  * NOTICE OF LICENSE
  *
