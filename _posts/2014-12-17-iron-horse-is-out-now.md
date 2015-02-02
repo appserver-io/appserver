@@ -40,23 +40,23 @@ To do this, we need some kind of web server functionality like Apache or nginx h
 the main purpose an application server should have. Beside the functionality of acting as a web server, it
 comes with the following services, we'll focus on in our next blog posts
 
-* [Servlet-Engine](https://github.com/appserver-io/appserver/wiki/05.-Servlet-Engine)
-* [Persistence-Container](https://github.com/appserver-io/appserver/wiki/08.-Persistence-Container)
-* [Message-Queue](https://github.com/appserver-io/appserver/wiki/09.-Message-Queue)
-* [Timer-Service](https://github.com/appserver-io/appserver/wiki/10.-Timer-Service)
+* [Servlet-Engine](<{{ "/get-started/documentation/servlet-engine.html" | prepend: site.baseurl }}>)
+* [Persistence-Container](<{{ "/get-started/documentation/persistence-container.html" | prepend: site.baseurl }}>)
+* [Message-Queue](<{{ "/get-started/documentation/message-queue.html" | prepend: site.baseurl }}>)
+* [Timer-Service](<{{ "/get-started/documentation/timer-service.html" | prepend: site.baseurl }}>)
 
 On top of these services, it provides client libraries that enables you to use those and extends them with 
 functionality, that you know from some of the well known frameworks. To make it short, the application server
 comes with
 
-* [Annotations](https://github.com/appserver-io/appserver/wiki/06.-Annotations)
-* [Dependendcy Injection (DI)](https://github.com/appserver-io/appserver/wiki/07.-Dependency-Injection)
-* [Aspect Oriented Programming (AOP)](https://github.com/appserver-io/appserver/wiki/11.-AOP)
-* [Design-by-Contract (DbC)](https://github.com/appserver-io/appserver/wiki/12.-Design-by-Contract)
+* [Annotations](<{{ "/get-started/documentation/annotations.html" | prepend: site.baseurl }}>)
+* [Dependendcy Injection (DI)](<{{ "/get-started/documentation/dependency-injection.html" | prepend: site.baseurl }}>)
+* [Aspect Oriented Programming (AOP)](<{{ "/get-started/documentation/aop.html" | prepend: site.baseurl }}>)
+* [Design-by-Contract (DbC)](<{{ "/get-started/documentation/design-by-contract.html" | prepend: site.baseurl }}>)
 
 The services, the client libraries plus these functionality enables you to write fast, scalable and secure
 applications. If you want a more detailed description of a service or a functionality click on the item and
-have a look at our project [WIKI](https://github.com/appserver-io/appserver/wiki).
+have a look at our project [documentation](<{{ "/get-started/documentation.html" | prepend: site.baseurl }}>).
 
 ### Why should i use an application server?
 ***
