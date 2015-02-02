@@ -78,6 +78,7 @@ abstract class AbstractFileOperationService extends AbstractService
      */
     public function setUserRights(\SplFileInfo $targetDir)
     {
+
         // we don't do anything under Windows
         if ($this->getOsIdentifier() === 'WIN') {
             return;
@@ -92,7 +93,7 @@ abstract class AbstractFileOperationService extends AbstractService
         $systemConfiguration = $this->getInitialContext()->getSystemConfiguration();
 
         // get all the files recursively
-        $files = $this->globDir($targetDir . '*');
+        $files = $this->globDir($targetDir . '/*');
 
         // Check for the existence of a user
         $user = $systemConfiguration->getParam('user');
@@ -181,13 +182,22 @@ abstract class AbstractFileOperationService extends AbstractService
         }
 
         // remove old archive from webapps folder recursively
-        $files = $this->globDir($dir->getPathname() . DIRECTORY_SEPARATOR . '*');
+        $files = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($dir->getPathname()),
+            \RecursiveIteratorIterator::CHILD_FIRST
+        );
 
         foreach ($files as $file) {
-            if (is_dir($file)) {
-                @rmdir(realpath($file));
-            } elseif (is_file($file) && $alsoRemoveFiles) {
-                unlink(realpath($file));
+            // skip . and .. dirs
+            if ($file->getFilename() === '.' || $file->getFilename() === '..') {
+                continue;
+            }
+            if ($file->isDir()) {
+                @rmdir($file->getRealPath());
+            } elseif ($file->isFile() && $alsoRemoveFiles) {
+                unlink($file->getRealPath());
+            } else {
+                // do nothing, because file should NOT be deleted obviously
             }
         }
     }
