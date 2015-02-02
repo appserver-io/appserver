@@ -91,11 +91,11 @@ class QueueWorker extends \Thread
     /**
      * Inject the storage for the executing jobs.
      *
-     * @param \AppserverIo\Storage\GenericStackable $jobsExecuting The storage for the executing jobs
+     * @param array $jobsExecuting The storage for the executing jobs
      *
      * @return void
      */
-    public function injectJobsExecuting($jobsExecuting)
+    public function injectJobsExecuting(array $jobsExecuting)
     {
         $this->jobsExecuting = $jobsExecuting;
     }
