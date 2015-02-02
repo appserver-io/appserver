@@ -3,7 +3,7 @@ layout: docs
 title: Timer Service
 position: 100
 group: Docs
-permalink: /documentation/timer-service.html
+permalink: /get-started/documentation/timer-service.html
 ---
 
 In most of your projects you have the need to schedule things to be processed in regular intervals

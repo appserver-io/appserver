@@ -52,7 +52,7 @@ You are interested and want to learn more about the of appserver.io. See the dif
             </p>
             <p>
                 Of course an infrastructure like this is first of all not easy to understand and start with but we got it pretty well documented with a lot of real world examples.</p>
-                <a class="btn btn-info btn-lg" href="{{ "/documentation.html" | prepend: site.baseurl }}">
+                <a class="btn btn-info btn-lg" href="{{ "/get-started/documentation.html" | prepend: site.baseurl }}">
                     <i class="fa fa-info-circle"></i>&nbsp;&nbsp;step into the documentation
                 </a>.
             

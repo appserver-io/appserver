@@ -8,7 +8,7 @@ subNav:
     href: got-mail
   - title: Send a message
     href: send-a-message
-permalink: /documentation/message-queue.html
+permalink: /get-started/documentation/message-queue.html
 ---
 
 A Message-Queue provides the possibility to process long running tasks in a encapsulated context.

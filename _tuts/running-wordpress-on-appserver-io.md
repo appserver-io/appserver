@@ -4,7 +4,7 @@ title: Running Wordpress on appserver.io
 description: It shows you how easy it is to install appserver.io on a Mac and run Wordpress on it.
 position: 20
 group: Tutorials
-permalink: /documentation/tutorials/running-wordpress-on-appserver-io.html
+permalink: /get-started/tutorials/running-wordpress-on-appserver-io.html
 ---
 
 **Prerequirements**: *Up and running installation of MySQL*

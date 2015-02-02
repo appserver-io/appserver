@@ -14,7 +14,7 @@ subNav:
     href: starting-a-session
   - title: Optional XML Configuration
     href: optional-xml-configuration
-permalink: /documentation/servlet-engine.html
+permalink: /get-started/documentation/servlet-engine.html
 ---
 
 Originally Servlets are the Java counterpart to other dynamic web technologies like PHP or the

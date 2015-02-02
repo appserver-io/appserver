@@ -6,7 +6,7 @@ group: Docs
 subNav:
   - title: Start and Stop Scripts
     href: start-and-stop-scripts
-permalink: /documentation/basic-usage.html
+permalink: /get-started/documentation/basic-usage.html
 ---
 
 The appserver will automatically start after your installation wizard (or package manager) finishes
