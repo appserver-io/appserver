@@ -40,27 +40,6 @@ class Job extends \Thread implements JobInterface
 {
 
     /**
-     * The message we have to handle.
-     *
-     * @var \AppserverIo\Psr\Pms\MessageInterface
-     */
-    protected $message;
-
-    /**
-     * The application instance.
-     *
-     * @var \AppserverIo\Psr\Application\ApplicationInterface
-     */
-    protected $application;
-
-    /**
-     * Whether the job has been finished or not.
-     *
-     * @var boolean
-     */
-    protected $finished;
-
-    /**
      * Initializes the job with the application and the storage it should work on.
      *
      * @param \AppserverIo\Psr\Pms\MessageInterface             $message     The message we have to handle

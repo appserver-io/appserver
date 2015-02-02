@@ -77,13 +77,25 @@ class QueueWorker extends \Thread
     }
 
     /**
+     * Inject the storage for the message states.
+     *
+     * @param \AppserverIo\Storage\GenericStackable $messageStates The storage for the message states
+     *
+     * @return void
+     */
+    public function injectMessageStates(GenericStackable $messageStates)
+    {
+        $this->messageStates = $messageStates;
+    }
+
+    /**
      * Inject the storage for the executing jobs.
      *
      * @param \AppserverIo\Storage\GenericStackable $jobsExecuting The storage for the executing jobs
      *
      * @return void
      */
-    public function injectJobsExecuting(GenericStackable $jobsExecuting)
+    public function injectJobsExecuting($jobsExecuting)
     {
         $this->jobsExecuting = $jobsExecuting;
     }
@@ -142,6 +154,7 @@ class QueueWorker extends \Thread
 
             // attach the job wrapper
             $self->jobsToExecute[$jobWrapper->jobId] = $jobWrapper;
+            $this->messageStates[$jobWrapper->jobId] = StateActive::KEY;
 
         }, $this, $message);
     }
@@ -156,6 +169,7 @@ class QueueWorker extends \Thread
     public function remove(MessageInterface $message)
     {
         unset($this->messages[$message->getMessageId()]);
+        unset($this->messageStates[$message->getMessageId()]);
     }
 
     /**
@@ -168,9 +182,8 @@ class QueueWorker extends \Thread
     public function processActive(MessageInterface $message)
     {
 
-        // set new state and re-attach the message
-        $message->setState(StateToProcess::get());
-        $this->messages[$message->getMessageId()] = $message;
+        // set new state
+        $this->messageStates[$message->getMessageId()] = StateToProcess::KEY;
     }
 
     /**
@@ -196,9 +209,8 @@ class QueueWorker extends \Thread
             // we also remove the job
             unset($this->jobsExecuting[$message->getMessageId()]);
 
-            // set new state and re-attach the message
-            $message->setState(StateProcessed::get());
-            $this->messages[$message->getMessageId()] = $message;
+            // set new state
+            $this->messageStates[$message->getMessageId()] = StateProcessed::KEY;
 
         } else {
             // log a message that the job is still in progress
@@ -245,9 +257,8 @@ class QueueWorker extends \Thread
             // start the job and add it to the internal array
             $this->jobsExecuting[$message->getMessageId()] = new Job($message, $application);
 
-            // set new state and re-attach the message
-            $message->setState(StateInProgress::get());
-            $this->messages[$message->getMessageId()] = $message;
+            // set new state
+            $this->messageStates[$message->getMessageId()] = StateInProgress::KEY;
 
         } else {
             // log a message that queue is actually full
@@ -267,16 +278,14 @@ class QueueWorker extends \Thread
     public function processUnknown(MessageInterface $message)
     {
 
-        // set new state and re-attach the message
-        $message->setState(StateFailed::get());
-        $this->messages[$message->getMessageId()] = $message;
+        // set new state
+        $this->messageStates[$message->getMessageId()] = StateFailed::KEY;
 
         // log a message that we've a message with a unknown state
         $this->getApplication()->getInitialContext()->getSystemLogger()->critical(
-            sprintf('Message %s has state %s', $message->getMessageId(), $message->getState())
+            sprintf('Message %s has state %s', $message->getMessageId(), StateFailed::KEY)
         );
     }
-
 
     /**
      * Process a message with an invalid state.
@@ -288,9 +297,8 @@ class QueueWorker extends \Thread
     public function processInvalid(MessageInterface $message)
     {
 
-        // set new state and re-attach the message
-        $message->setState(StateFailed::get());
-        $this->messages[$message->getMessageId()] = $message;
+        // set new state
+        $this->messageStates[$message->getMessageId()] = StateFailed::KEY;
 
         // log a message that we've a message with an invalid state
         $this->getApplication()->getInitialContext()->getSystemLogger()->critical(
@@ -332,43 +340,43 @@ class QueueWorker extends \Thread
         // run forever
         while (true) {
             // iterate over all job wrappers
-            foreach ($this->jobsToExecute as $id => $jobWrapper) {
+            foreach ($this->jobsToExecute as $jobWrapper) {
                 try {
                     // load the message
-                    $message = $this->messages[$id];
+                    $message = $this->messages[$jobWrapper->jobId];
                     // check if we've a message found
                     if ($message instanceof MessageInterface) {
                         // check the message state
-                        switch ($state = $message->getState()) {
+                        switch ($this->messageStates[$jobWrapper->jobId]) {
 
                             // message is active and ready to be processed
-                            case StateActive::get():
+                            case StateActive::KEY:
 
                                 $this->processActive($message);
                                 break;
 
                             // message is paused or in progress
-                            case StatePaused::get():
-                            case StateInProgress::get():
+                            case StatePaused::KEY:
+                            case StateInProgress::KEY:
 
                                 $this->processInProgress($message);
                                 break;
 
                             // message processing failed or has been successfully processed
-                            case StateFailed::get():
-                            case StateProcessed::get():
+                            case StateFailed::KEY:
+                            case StateProcessed::KEY:
 
                                 $this->processProcessed($message);
                                 break;
 
                             // message has to be processed now
-                            case StateToProcess::get():
+                            case StateToProcess::KEY:
 
                                 $this->processToProcess($message);
                                 break;
 
                             // message is in an unknown state -> this is weired and should never happen!
-                            case StateUnknown::get():
+                            case StateUnknown::KEY:
 
                                 $this->processUnknown($message);
                                 break;
