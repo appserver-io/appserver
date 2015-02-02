@@ -173,8 +173,6 @@ class Server
             // prepare the path to the directory to be created
             $toBeCreated = $service->realpath($directory);
             // prepare the directory name and check if the directory already exists
-            error_log($toBeCreated);
-            error_log(var_export($toBeCreated, true));
             if (is_dir($toBeCreated) === false) {
                 // if not create it
                 mkdir($toBeCreated, 0755, true);
