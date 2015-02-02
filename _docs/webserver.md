@@ -177,7 +177,7 @@ Find an overview of all modules below ...
 | `CoreModule`                | HTTP server features that are always available such as serving static resources and finding defined file handlers. |
 | `PhpModule`                 | Acts like a classic php Webserver module (such as `mod_php` for apache) which calls and runs your requested php scripts in an isolated context with all globals (such as `$_SERVER`, `$_GET`, `$_POST` etc.) prepared in the common way. |
 | `FastCgiModule`             | The Module allows you to connect several fastcgi backends (such as `php-fpm` or `hhvm`) based on configured file-handlers. |
-| `ServletEngine`             | The ServletEngine introduces a super fast and simple way to implement an entry point to handle HTTP requests that allows you to execute all performance critical tasks. Please see [Servlet Engine](<{{ "/documentation/servlet-engine.html" | prepend: site.baseurl }}>) for full documentation. |
+| `ServletEngine`             | The ServletEngine introduces a super fast and simple way to implement an entry point to handle HTTP requests that allows you to execute all performance critical tasks. Please see [Servlet Engine](<{{ "/get-started/documentation/servlet-engine.html" | prepend: site.baseurl }}>) for full documentation. |
 | `DeflateModule`             | It provides the `deflate` output filter that allows output from your server to be compressed before being sent to the client over the network. |
 | `ProfileModule`             | Allows request based realtime profiling using external tools like logstash and kibana. |
 
