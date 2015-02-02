@@ -6,15 +6,16 @@
 * Fixed MQ memory leak because of missing job thread when handling messages
 * Fixed invalid namespace in QueueManager::createSenderForQueue() method
 * Remove unnecessary interfaces SenderInterface + ReceiverInterface
-* minor bugfixes
+* Fixed error when prepared directories to be created on startup
 * Bugfix within service tests
+* Minor bugfixes
 
 ## Features
 
 * Refactoring, move interfaces of Persistence-Container + Message-Queue to separate packages
+* Removed risk factor of non-injected \Stackable within class loader
 * Applied new file name and coding conventions
 * Updated dependencies
-* Removed risk factor of non-injected \Stackable within class loader
 
 # Version 1.0.0-beta4
 
