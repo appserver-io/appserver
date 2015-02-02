@@ -2,9 +2,9 @@
 layout: tuts
 title: Tutorials
 headline: Tutorials
-group: Docs
+group: Get Started
 position: 30
-permalink: /documentation/tutorials.html
+permalink: /get-started/tutorials.html
 ---
 
 We are working hard making the most valuable tutorials not only for how you can develop on the appserver.io

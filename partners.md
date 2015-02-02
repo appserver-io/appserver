@@ -1,7 +1,8 @@
 ---
+nav: true
 layout: default
 title: Partners
-position: 30
+position: 70
 permalink: /partners.html
 ---
 

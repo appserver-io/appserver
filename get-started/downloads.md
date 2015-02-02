@@ -1,8 +1,9 @@
 ---
 layout: default
 title: Downloads
-position: 20
-permalink: /downloads.html
+group: Get Started
+position: 900
+permalink: /get-started/downloads.html
 ---
 
 # <i class="fa fa-download"></i> Downloads

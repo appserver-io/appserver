@@ -1,8 +1,9 @@
 ---
 layout: default
-title: Products
+title: What is appserver.io?
 position: 10
-permalink: /products.html
+group: Products
+permalink: /products/what-is-appserver-io.html
 ---
 
 # <i class="fa fa-question-circle"></i> What is appserver.io?
@@ -37,7 +38,7 @@ You are interested and want to learn more about the of appserver.io. See the dif
                 <b>The most feature rich PHP plattform worldwide</b>
             </p>
             <p>
-                appserver.io delivers the most feature richt plattform for PHP applications worldwide. Why? It's pretty simple. There is no compareable infrastructure enabling you get the most out of your software components by using a just one component below.
+                appserver.io delivers the most feature rich plattform for PHP applications worldwide. Why? It's pretty simple. There is no compareable infrastructure enabling you get the most out of your software components by using a just one component below.
             </p>
             <a class="btn btn-info btn-lg"
                href="{{ "/products/features.html" | prepend: site.baseurl }}">

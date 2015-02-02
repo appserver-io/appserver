@@ -1,6 +1,5 @@
 ---
-layout: redirect
-title: News
+layout: default
 permalink: /news.html
 redirect: /community/blog.html
 ---

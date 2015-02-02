@@ -19,7 +19,7 @@
                 <h1>{{ slide.title }}</h1><br>
                 {% if slide.countdown %} {% include widgets/countdown.html %} {% endif %}
                  {% if slide.countdown %}{{ slide.text }}</h2>{% endif %}
-                {% if slide.link-label %}<a href="{{ slide.link-href | prepend: site.baseurl }}" class="btn btn-info-highlight">{{ slide.link-label }}</a>{% endif %}
+                {% if slide.link-label %}<a href="{{ slide.link-href | prepend: site.baseurl }}" class="btn btn-lg btn-info-highlight">{{ slide.link-label }}</a>{% endif %}
             </div>
         </div>
         {% endif %}

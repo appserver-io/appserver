@@ -9,7 +9,7 @@
             <div class="row">
                 <!-- Content Section -->
                 <div class="col-md-12 content">
-                    <h1><i class="fa fa-share-alt"></i> {% if page.group and page.group != "Docs" %}<small><a href="{{ "/documentation/tutorials.html" | prepend: site.baseurl }}">{{ page.group }}</a> / </small>{{ page.title }}{% else %}{{ page.headline }}{% endif %}</h1><hr/>
+                    <h1><i class="fa fa-share-alt"></i> {% if page.group and page.group != "Get Started" %}<small><a href="{{ "/get-started/tutorials.html" | prepend: site.baseurl }}">{{ page.group }}</a> / </small>{{ page.title }}{% else %}{{ page.headline }}{% endif %}</h1><hr/>
                     <div class="docs-content">
                         {{ content }}
                         {% if page.group != "Tutorials" %}
