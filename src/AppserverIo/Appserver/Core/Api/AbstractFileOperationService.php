@@ -78,7 +78,6 @@ abstract class AbstractFileOperationService extends AbstractService
      */
     public function setUserRights(\SplFileInfo $targetDir)
     {
-
         // we don't do anything under Windows
         if ($this->getOsIdentifier() === 'WIN') {
             return;
@@ -102,6 +101,7 @@ abstract class AbstractFileOperationService extends AbstractService
             foreach ($files as $file) {
                 chown($file, $user);
             }
+            chown($targetDir, $user);
         }
 
         // Check for the existence of a group
@@ -111,6 +111,7 @@ abstract class AbstractFileOperationService extends AbstractService
             foreach ($files as $file) {
                 chgrp($file, $group);
             }
+            chgrp($targetDir, $group);
         }
     }
 
