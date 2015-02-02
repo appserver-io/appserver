@@ -23,4 +23,4 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
 APPSERVER_ROOT="<?php echo Setup::getValue(SetupKeys::INSTALL_DIR) ?>"
 
 cd $APPSERVER_ROOT
-$APPSERVER_ROOT/bin/php -dappserver.php_sapi=appserver -dappserver.remove_functions=getenv,putenv -f server.php -- -w
+$APPSERVER_ROOT/bin/php -dappserver.php_sapi=appserver -f server.php -- -w
