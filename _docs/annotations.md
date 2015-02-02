@@ -3,7 +3,7 @@ layout: docs
 title: Annotations
 position: 60
 group: Docs
-permalink: /documentation/annotations.html
+permalink: /get-started/documentation/annotations.html
 ---
 
 As one of our main targets is to make configuration as simple as possible we decided to use

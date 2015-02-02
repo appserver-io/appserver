@@ -6,7 +6,7 @@ group: Docs
 subNav:
   - title: How to add an Advice
     href: how-to-add-an-advice
-permalink: /documentation/aop.html
+permalink: /get-started/documentation//aop.html
 ---
 
 Meanwhile, AOP is more than a buzzword. Many of the PHP frameworks out there are supporting AOP for

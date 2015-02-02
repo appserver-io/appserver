@@ -24,7 +24,7 @@ subNav:
     href: rewrites
   - title: VirtualHost Examples
     href: virtualhost-examples
-permalink: /documentation/webserver.html
+permalink: /get-started/documentation/webserver.html
 ---
 
 The Webserver is build and configured like any other server component using our
