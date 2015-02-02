@@ -27,4 +27,4 @@ APPSERVER_ROOT="<?php echo Setup::getValue(SetupKeys::INSTALL_DIR) ?>"
 cd $APPSERVER_ROOT
 
 # Start the appserver itself
-$APPSERVER_ROOT/bin/php -dappserver.php_sapi=appserver -dappserver.remove_functions=getenv,putenv server.php
+$APPSERVER_ROOT/bin/php -dappserver.php_sapi=appserver server.php

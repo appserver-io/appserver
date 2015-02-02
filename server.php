@@ -52,9 +52,6 @@ $arguments = getopt("$watch::$configTest::", array("$config::"));
 // define a constant with the appserver base directory
 define('APPSERVER_BP', __DIR__);
 
-// load core functions to override in runtime environment
-require __DIR__ . DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR . 'scripts' . DIRECTORY_SEPARATOR . 'core_functions.php';
-
 // bootstrap the application
 require __DIR__ . DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR . 'scripts' . DIRECTORY_SEPARATOR . 'bootstrap.php';
 
