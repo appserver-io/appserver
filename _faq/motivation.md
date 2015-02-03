@@ -8,7 +8,7 @@ subNav:
     href: this-is-question-1?
   - title: And this is question 2?
     href: ant-this-is-question-2?
-permalink: /faq/motivation.html
+permalink: /get-started/faq/motivation.html
 ---
 
 ### This is question 1?
