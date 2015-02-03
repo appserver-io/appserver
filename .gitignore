@@ -6,3 +6,9 @@
 /.project
 /.settings
 .DS_Store
+/webapps
+/composer.lock
+jmeter.log
+/bin
+/etc
+/vendor

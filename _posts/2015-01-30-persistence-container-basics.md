@@ -640,7 +640,7 @@ To add a very basic ACL authorization functionality that use an `Interceptor`, w
 
 namespace AppserverIo\Example\Aspects;
 
-use AppserverIo\Doppelgaenger\Entities\MethodInvocation;
+use AppserverIo\Doppelgaenger\Interfaces\MethodInvocationInterface;
 
 /**
  * @Aspect
@@ -651,14 +651,16 @@ class AuthorizationInterceptor
   /**
    * Advice used to check user authorization on method call.
    *
-   * @param \AppserverIo\Doppelgaenger\Entities\MethodInvocation $methodInvocation 
+   * @param \AppserverIo\Doppelgaenger\Interfaces\MethodInvocationInterface $methodInvocation 
    *   Initially invoked method
    *
    * @return void
    * @throws \AppserverIo\Example\Exceptions\AuthorizationException
    *   Is thrown if access is denied for the user logged into the system
+   *
+   * @Before
    */
-  public function authorize(MethodInvocation $methodInvocation)
+  public function authorize(MethodInvocationInterface $methodInvocation)
   {
 
     // load class and method name
