@@ -1,4 +1,5 @@
 <article class="post-content">
 {% include news_header.html %}
-{% if forloop.last == false %}<hr/>{% endif %}
+<hr>
+{{ post.content | strip_html | truncatewords: 45 }} <a href="{{ post.url | prepend: site.baseurl }}"><i class="fa fa-chevron-circle-right"></i> Read more</a>
 </article>
