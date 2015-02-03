@@ -8,6 +8,7 @@
 
 * Remove var/www/core_functions.php script and include from server.php
 * Allow argument --install-dir for composer post-install-cmd
+* Move OS specific templates and resources to dist packages
 
 # Version 1.0.0-rc1
 
