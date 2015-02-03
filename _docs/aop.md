@@ -164,9 +164,9 @@ The basic connectives the doppelgaenger library supports are:
 
 | Connective  | Symbol      | Description                                                                                          |
 | ------------| ------------| -----------------------------------------------------------------------------------------------------|
-| and         | &&          | Both parts of the pointcut have to evaluate to `true` that the weaving will take effect.             |
-| or          | &#124;&#124;| *At least one* part on both sides of the or connective have to be true that the weaving takes place. |
-| if...then   | if(...)     | The boolean result of the condition within the brackets can be used to determine if weaving will take place. The condition will share the scope of the method(s) specified within the narrowed `call` join point |
+| `and`         | &&          | Both parts of the pointcut have to evaluate to `true` that the weaving will take effect.             |
+| `or`          | &#124;&#124;| *At least one* part on both sides of the or connective have to be true that the weaving takes place. |
+| `if...then`   | if(...)     | The boolean result of the condition within the brackets can be used to determine if weaving will take place. The condition will share the scope of the method(s) specified within the narrowed `call` join point |
 
 As you can also see, you do not have to specify the full name of the targeted code as we support [bash wildcard patterns](https://www.shell-tips.com/2006/11/04/using-bash-wildcards/) within so called `Signature Pointcuts`.
 
