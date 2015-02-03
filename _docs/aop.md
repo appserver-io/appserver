@@ -12,7 +12,7 @@ subNav:
     
   - title: Usage
     href: usage
-permalink: /documentation/aop.html
+permalink: /get-started/documentation/aop.html
 ---
 
 AOP, or [Aspect-oriented programming](http://en.wikipedia.org/wiki/Aspect-oriented_programming) is the concept of decoupling so called *cross-cutting concerns*, logic which is duplicated throughout the complete  codebase, and implement them at a central point.

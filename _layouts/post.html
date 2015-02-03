@@ -5,17 +5,16 @@ layout: news
   <header class="post-header">
     <h1 class="post-title"><i class="fa fa-tag"></i> {{ page.title }}</h1>
     <p>
-      <i class="fa fa-clock-o"></i> Posted on {{ page.date | date_to_string }}
-      {% if page.author %} |
-      <a href="https://github.com/{{ page.author }}" class="post-author">
-        <img src="https://github.com/{{ page.author }}.png" class="avatar" alt="{{ page.author }}" width="24" height="24" />
-        {{ page.author }}
-      </a>&nbsp;
-      {% endif %}
-      | &nbsp;<a href="{{ site.url }}{{ page.url | prepend: site.baseurl }}#disqus_thread">0 Comments</a>
+      <a href="https://github.com/{{ page.author }}" class="post-author"><img src="https://github.com/{{ page.author }}.png" class="avatar img-circle" alt="{{ page.author }}" width="24" height="24" /> {{ page.author }}</a> <i class="fa fa-clock-o"></i> Posted on {{ page.date | date_to_string }} | <a href="{{ site.url }}{{ page.url | prepend: site.baseurl }}#disqus_thread">0 Comments</a>
     </p>
-    <hr>
+    {% if page.image %}
+    <hr/>
+    <a href="#">
+      <img class="img-responsive img-hover" src="{{ page.image }}" alt="" />
+    </a>
+    {% endif %}
   </header>
+  <hr>
   <article class="post-content blog-content">
     {{ content }}
   </article>

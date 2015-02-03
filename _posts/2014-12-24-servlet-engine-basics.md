@@ -11,7 +11,7 @@ As announced in our last blog post, we want to give you an overview of the servi
 application server will provide. Let's start with the Servlet-Engine, because we think that this will
 be a good start for all developers who never get in contact with an application server before.
 
-Reading this post, you will get the feeling, that a [Servlet-Engine](<{{ "/documentation/servlet-engine.html" | prepend: site.baseurl }}>) is something like a framework.
+Reading this post, you will get the feeling, that a [Servlet-Engine](<{{ "/get-started/documentation/servlet-engine.html" | prepend: site.baseurl }}>) is something like a framework.
 This is not completely wrong. A Servlet-Engine is **NOT** a framework, but it is a part in a framework. So you should see it as the controller part of a MVC framework. This is the reason why you'll read stuff about routing, request methods and other like that. As the framworks out there are actually not implemented for running in an  application server like appserver.io, they provide stuff like a HTTP foundation library by themselves. We hope,
 that someday all of the frameworks recognize the advantages an application server provide and will be ported to
 run on top of appserver.io by using the infrastructure with all functionality it
@@ -89,7 +89,7 @@ we want to provide. For our first example, we only want to add the `Hello World!
 That is pretty simple, we think! So, given you've downloaded and installed the latest version of the application
 server, create a folder `examples/WEB-INF/classes/AppserverIo/Example/Servlets` under the `webapps` folder of
 your installation. In the folder, create a new file named `HelloWorldServlet.php`, copy the code from above and
-save it. After [restarting](<{{ "/documentation/basic-usage.html" | prepend: site.baseurl }}>)
+save it. After [restarting](<{{ "/get-started/documentation/basic-usage.html" | prepend: site.baseurl }}>)
 the application server, open the URL `http://127.0.0.1:9080/examples/helloWorld.do` in your favorite browser.
 You should see the text `Hello World`. Congratulations, you have written your first servlet!
 

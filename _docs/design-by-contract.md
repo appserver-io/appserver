@@ -10,7 +10,7 @@ subNav:
     href: how-does-it-work
   - title: Usage
     href: usage
-permalink: /documentation/design-by-contract.html
+permalink: /get-started/documentation/design-by-contract.html
 ---
 
 Beside AOP, [Design-by-Contract](http://en.wikipedia.org/wiki/Design_by_contract) is another

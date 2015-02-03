@@ -12,7 +12,7 @@ subNav:
     href: basic-workflows
   - title: Windows Notes
     href: windows-notes
-permalink: /documentation/deployment.html
+permalink: /get-started/documentation/deployment.html
 ---
 
 The deploy directory in the appserver.io Application Server distribution is the location end users can place their deployment content (e. g. phar files) to have it deployed into the server runtime.

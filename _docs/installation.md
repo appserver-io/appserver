@@ -16,7 +16,7 @@ subNav:
     href: centos
   - title: Raspbian
     href: raspbian
-permalink: /documentation/installation.html
+permalink: /get-started/documentation/installation.html
 ---
 
 Besides supporting several operating systems and their specific ways of installing software, we

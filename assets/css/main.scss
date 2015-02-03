@@ -34,6 +34,14 @@ code {
   border-radius: $border-radius-base;
 }
 
+.highlight {
+  padding: 15px 0;
+
+  pre {
+    max-height: 200px;
+  }
+}
+
 .container-page {
   background-color: $body-bg;
   position: relative;
@@ -176,6 +184,10 @@ nav {
 
 .navbar-toggle {
   padding: 16px 10px;
+}
+
+.post-content {
+  padding-bottom: 30px;
 }
 
 #leftCol {
