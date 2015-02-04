@@ -31,13 +31,12 @@ As stated above this library aims to bring you the power of Design by Contract, 
 your applications more robust and easier to debug. This contains basic features as:
 
 - Use your basic `DocBlock` annotations `@param` and `@return` as type hints (scalar and class/interface
-  based), including special features like `typed arrays` using e. g. `array<int>` (collections for
-  complex types only yet)
+  based), including special features like `typed arrays` using e. g. `\stdClass[]`
 - Specify complex method contracts in PHP syntax using `@requires` as precondition and `@ensures` as 
   postcondition
-- Specify a state of validity for your classes (e.g. `$this->attribute !== null`) which will be true
+- Specify a state of validity for your classes (e.g. `$this->attribute !== null`) which should be true
   all times using `@invariant`
-- The above (not including type safety) will be inherited by every child structure, strengthening your
+- The above can be (not enabled by default) inherited by every child structure, strengthening your
   object hierarchies
 - The library will warn you (exception or log message) on violation of these contracts
 
