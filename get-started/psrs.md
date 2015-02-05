@@ -15,15 +15,15 @@ During the last years, [PHP-FIG](http://http://www.php-fig.org) has been establi
 
 The intention behind our `PSR's` is, to give Admins, DevOps, Solution Providers, Developers and all other contributors of `appserver.io` a public, stable and easy to access API they can implement their applications and components against.
 
-> Up from the final version 1.0.0 aka `Iron Horse`, we guarantee, that `appserver.io` will follow [Semantic Versioning](http://semver.org) and take care, that backwards compatibility within a major version will **NEVER** be broken.
+> Up from the final version 1.0.0 `Iron Horse`, we guarantee, that `appserver.io` will follow [Semantic Versioning](http://semver.org) and take care, that backwards compatibility within a major version will **NEVER** be broken.
 
 ## What does our `PSR's` mean for you
 
-This means, that if you implement an application that works with 1.0.0, we guarantee that it'll work without changes for all releases, up to 2.x. PSR's will only be supplemented with new interfaces and methods, whereas existing interfaces and methods will **NOT** be touched.
+This means, that if you implement an application that works with 1.0.0, we guarantee that it'll run without changes for all releases < 2.0.0. `PSR's` will only be supplemented with new interfaces and methods, whereas existing interfaces and methods will **NOT** be touched.
 
 ## Our vision regarding `PSR's`
 
-As our `PSR's` are on a higher level that the ones maintained by `PHP-FIG` we hope, that someday we've the possiblity to merge them together and let them be maintained and extended by the PHP community. As `appserver.io` actually is the only infrastructure (that we know) for PHP, completely written in PHP, the `PSR's` will hopefully help other developers and companies to get a better understanding of how things are implemented and encourages them to work on their own, almost compatible solutions, which enables developers to deploy their applications on every `PHP Application Server` that implements these `PSR's`.
+As our `PSR's` are on a higher level that the ones maintained by `PHP-FIG` we hope, that someday we've the possiblity to merge them together and let them be maintained and extended by the PHP community. As `appserver.io` actually is the only infrastructure (that we know) for PHP, completely written in PHP, the `PSR's` will hopefully help other developers and companies to get a better understanding of how things are implemented and encourages them to work on their own, almost compatible solutions, which will enable developers to deploy their applications on every `PHP Application Server` that implements these `PSR's`.
 
 More information about our *PHP Standard Recommendations* will follow...
 
