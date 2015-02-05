@@ -208,8 +208,14 @@ class ServletEngine extends AbstractServletEngine
             $response->setState(HttpResponseStates::DISPATCH);
 
         } catch (ModuleException $me) {
+            // log the exception
+            $this->logCriticalException($me);
+            // re-throw the exception
             throw $me;
         } catch (\Exception $e) {
+            // log the exception
+            $this->logCriticalException($e);
+            // cast to ModuleException and re-throw with a 500 status code
             throw new ModuleException($e, 500);
         }
     }
