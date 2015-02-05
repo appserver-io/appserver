@@ -23,7 +23,7 @@ This means, that if you implement an application that works with 1.0.0, we guara
 
 ## What is our vision
 
-As our `PSR's` are on a higher level that the ones maintained by `PHP-FIG` we hope, that someday we've the possiblity to merge them together and let them be maintained and extended by the PHP community. As `appserver.io` actually is the only infrastructure for PHP completely written in PHP, the `PSR's` will help other developers and companies to get a better understanding of how things are implemented and encourages them to work on their own, hopefully almost compatible solutions, which enables developers to deploy their applications on every `PHP Application Server` that implements that `PSR's`.
+As our `PSR's` are on a higher level that the ones maintained by `PHP-FIG` we hope, that someday we've the possiblity to merge them together and let them be maintained and extended by the PHP community. As `appserver.io` actually is the only infrastructure (that we know) for PHP, completely written in PHP, the `PSR's` will hopefully help other developers and companies to get a better understanding of how things are implemented and encourages them to work on their own, almost compatible solutions, which enables developers to deploy their applications on every `PHP Application Server` that implements these `PSR's`.
 
 More information about our *PHP Standard Recommendations* will follow...
 
