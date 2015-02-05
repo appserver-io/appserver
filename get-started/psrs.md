@@ -21,7 +21,7 @@ The intention behind our `PSR's` is, to give Admins, DevOps, Solution Providers,
 
 This means, that if you implement an application that works with 1.0.0, we guarantee that it'll work without changes for all releases, up to 2.x. PSR's will only be supplemented with new interfaces and methods, whereas existing interfaces and methods will **NOT** be touched.
 
-## What is our vision
+## Our vision regarding `PSR's`
 
 As our `PSR's` are on a higher level that the ones maintained by `PHP-FIG` we hope, that someday we've the possiblity to merge them together and let them be maintained and extended by the PHP community. As `appserver.io` actually is the only infrastructure (that we know) for PHP, completely written in PHP, the `PSR's` will hopefully help other developers and companies to get a better understanding of how things are implemented and encourages them to work on their own, almost compatible solutions, which enables developers to deploy their applications on every `PHP Application Server` that implements these `PSR's`.
 
