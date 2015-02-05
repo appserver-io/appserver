@@ -24,6 +24,8 @@ collections:
     output: true
   tuts:
     output: true
+  roadmap:
+    output: true
   features:
     path: products/
 
