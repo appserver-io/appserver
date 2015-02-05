@@ -16,9 +16,11 @@ During the last years, [PHP-FIG](http://http://www.php-fig.org) has been establi
 
 The intention behind our `PSR's` is, to give Admins, DevOps, Solution Providers, Developers and all other contributors of `appserver.io` a public, stable and easy to access API they can implement their applications and components against.
 
-With version 1.0.0 we will provide the following `PSR's`
+With version 1.0.0 we will provide the following, application and server specifc, `PSR's`
 
 ### Application specific `PSR's`
+
+Applications specific `PSR's` describe all interfaces a developers needs to build an application that runs on `appserver.io` and uses `Server-Side component types` like `Servlets`, `Session` or `Message Driven` beans.
 
 * [servlet](https://github.com/appserver-io-psr/servlet)
 * [epb](https://github.com/appserver-io-psr/epb)
@@ -26,14 +28,16 @@ With version 1.0.0 we will provide the following `PSR's`
 * [application](https://github.com/appserver-io-psr/application)
 * [naming](https://github.com/appserver-io-psr/naming)
 
+> Up from the final version 1.0.0 `Iron Horse`, we guarantee, that `appserver.io` will follow [Semantic Versioning](http://semver.org) and take care, that backwards compatibility for [application specific PSR's]() within a major version will **NEVER** be broken.
+
 ### Server specific `PSR's`
+
+Beside the above, application specific `PSR's` 
 
 * [socket](https://github.com/appserver-io-psr/socket)
 * [context](https://github.com/appserver-io-psr/context)
 * [socket](https://github.com/appserver-io-psr/http-message)
 * [deplyoment](https://github.com/appserver-io-psr/deployment)
-
-> Up from the final version 1.0.0 `Iron Horse`, we guarantee, that `appserver.io` will follow [Semantic Versioning](http://semver.org) and take care, that backwards compatibility within a major version will **NEVER** be broken.
 
 ## What does our `PSR's` mean for you
 ***
