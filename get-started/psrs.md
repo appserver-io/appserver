@@ -44,14 +44,12 @@ Beside [application specific PSRs](#application-specific-psrs) we're also workin
 ## What does our `PSRs` mean for you
 ***
 
-This means, that if you implement an application that works with 1.0.0, we guarantee that it'll run without changes for all releases < 2.0.0. The [application specific PSRs](#application-specific-psrs) will only be supplemented with new interfaces, whereas existing interfaces nor their methods will be touched.
+This means, that if you implement an application that works with 1.0.0, we guarantee that it'll run without changes on all releases < 2.0.0. The [application specific PSRs](#application-specific-psrs) will only be supplemented with new interfaces, whereas existing interfaces nor their methods will be touched.
 
 ## Our vision regarding `PSRs`
 ***
 
 As our `PSRs` are on a higher level that the ones maintained by `PHP-FIG` we hope, that someday we've the possiblity to merge them together and let them be maintained and extended by the PHP community. As `appserver.io` actually is the only infrastructure (that we know) for PHP, completely written in PHP, the `PSRs` will hopefully help other developers and companies to get a better understanding of how things are implemented and encourages them to work on their own, almost compatible solutions, which will enable developers to deploy their applications on every `PHP Application Server` that implements these `PSRs`.
 
-More information about our *PHP Standard Recommendations* will follow...
-
-> Meanwhile you can checkout our [appserver-io-psr organisation on GitHub](<https://github.com/appserver-io-psr>).
+> Soon, you'll find detailed information for each PSR on our [appserver-io-psr organisation page on GitHub](<https://github.com/appserver-io-psr>).
 
