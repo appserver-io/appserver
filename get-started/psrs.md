@@ -17,7 +17,7 @@ The intention behind our `PSR's` is, to give Admins, DevOps, Solution Providers,
 
 > We guarantee, that `appserver.io` will follow [Semantic Versioning](http://semver.org) and take care, that backwards compatibility within a major version will **NEVER** be broken.
 
-## What does this mean for you
+## What does our `PSR's` mean for you
 
 This means, that if you implement an application that works with 1.0.0, we guarantee that it'll work without changes for all releases, up to 2.x. PSR's will only be supplemented with new interfaces and methods, whereas existing interfaces and methods will **NOT** be touched.
 
