@@ -2,10 +2,13 @@
 
 ## Bugfixes
 
-* None
+* Fixed missing documentRoot param to persistence-container configuration in appserver.xml
+* Fixed invalid registration of local/remote business interfaces for session beans
 
 ## Features
 
+* Log exceptions thrown in ServletEngine::process method
+* Add method logCriticalException() to AbstractServletEngine to simplify exception logging
 * Remove var/www/core_functions.php script and include from server.php
 * Allow argument --install-dir for composer post-install-cmd
 * Move OS specific templates and resources to dist packages

@@ -21,12 +21,13 @@
 
 namespace AppserverIo\Appserver\ServletEngine;
 
-use AppserverIo\Appserver\ServletEngine\Authentication\AuthenticationValve;
-use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
+use AppserverIo\Logger\LoggerUtils;
+use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Server\Dictionaries\ServerVars;
 use AppserverIo\Server\Interfaces\RequestContextInterface;
-use AppserverIo\Storage\GenericStackable;
 use AppserverIo\WebServer\Interfaces\HttpModuleInterface;
+use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
+use AppserverIo\Appserver\ServletEngine\Authentication\AuthenticationValve;
 
 /**
  * Abstract servlet engine which provides basic functionality for child implementations
@@ -253,5 +254,20 @@ abstract class AbstractServletEngine extends GenericStackable implements HttpMod
             list ($dirname, $basename, $extension) = array_values(pathinfo($dirname));
 
         } while ($dirname !== false); // stop until we reached the root of the URI
+    }
+
+    /**
+     * Helper method that writes critical system exceptions to the system
+     * logger if configured.
+     *
+     * @param \Exception $e The exception to be logged
+     *
+     * @return void
+     */
+    protected function logCriticalException(\Exception $e)
+    {
+        if ($this->getServerContext()->hasLogger(LoggerUtils::SYSTEM)) {
+            $this->getServerContext()->getLogger(LoggerUtils::SYSTEM)->critical($e->__toString());
+        }
     }
 }

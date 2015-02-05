@@ -204,6 +204,8 @@ class ResReferenceDescriptor implements ResReferenceDescriptorInterface
         // load the reference name defined as @Resource(name=****)
         if ($name = $annotationInstance->getName()) {
             $this->setName(sprintf('%s/%s', ResReferenceDescriptor::REF_DIRECTORY, $name));
+        } else {
+            $this->setName(sprintf('%s/%s', ResReferenceDescriptor::REF_DIRECTORY, ucfirst($reflectionProperty->getPropertyName())));
         }
 
         // load the resource type defined as @Resource(type=****)
@@ -251,6 +253,12 @@ class ResReferenceDescriptor implements ResReferenceDescriptorInterface
         // load the reference name defined as @Resource(name=****)
         if ($name = $annotationInstance->getName()) {
             $this->setName(sprintf('%s/%s', ResReferenceDescriptor::REF_DIRECTORY, $name));
+        } else {
+            // use the name of the first parameter
+            foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
+                $this->setName(sprintf('%s/%s', ResReferenceDescriptor::REF_DIRECTORY, ucfirst($reflectionParameter->getParameterName())));
+                break;
+            }
         }
 
         // load the resource type defined as @Resource(type=****)

@@ -271,6 +271,9 @@ class EpbReferenceDescriptor implements EpbReferenceDescriptorInterface
         // load the reference name defined as @EnterpriseBean(name=****)
         if ($name = $annotationInstance->getName()) {
             $this->setName(sprintf('%s/%s', EpbReferenceDescriptor::REF_DIRECTORY, $name));
+        } else {
+            // use the property name
+            $this->setName(sprintf('%s/%s', EpbReferenceDescriptor::REF_DIRECTORY, ucfirst($reflectionProperty->getPropertyName())));
         }
 
         // register the bean with the interface defined as @EnterpriseBean(beanInterface=****)
@@ -332,6 +335,12 @@ class EpbReferenceDescriptor implements EpbReferenceDescriptorInterface
         // load the reference name defined as @EnterpriseBean(name=****)
         if ($name = $annotationInstance->getName()) {
             $this->setName(sprintf('%s/%s', EpbReferenceDescriptor::REF_DIRECTORY, $name));
+        } else {
+            // use the name of the first parameter as local business interface
+            foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
+                $this->setName(sprintf('%s/%s', EpbReferenceDescriptor::REF_DIRECTORY, ucfirst($reflectionParameter->getParameterName())));
+                break;
+            }
         }
 
         // register the bean with the interface defined as @EnterpriseBean(beanInterface=****)
@@ -351,7 +360,7 @@ class EpbReferenceDescriptor implements EpbReferenceDescriptorInterface
         } else {
             // use the name of the first parameter as local business interface
             foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
-                $this->setBeanInterface(ucfirst($reflectionParameter->getParameterName()));
+                $this->setBeanName(ucfirst($reflectionParameter->getParameterName()));
                 break;
             }
         }
