@@ -87,6 +87,16 @@ abstract class AbstractDeployment implements DeploymentInterface
     }
 
     /**
+     * Returns the initial context instance.
+     *
+     * @return \AppserverIo\Appserver\Application\Interfaces\ContextInterface The initial context instance
+     */
+    public function getInitialContext()
+    {
+        return $this->getContainer()->getInitialContext();
+    }
+
+    /**
      * (non-PHPdoc)
      *
      * @param string $className The fully qualified class name to return the instance for
@@ -97,7 +107,7 @@ abstract class AbstractDeployment implements DeploymentInterface
      */
     public function newInstance($className, array $args = array())
     {
-        return $this->getContainer()->getInitialContext()->newInstance($className, $args);
+        return $this->getInitialContext()->newInstance($className, $args);
     }
 
     /**
@@ -109,6 +119,6 @@ abstract class AbstractDeployment implements DeploymentInterface
      */
     public function newService($className)
     {
-        return $this->getContainer()->getInitialContext()->newService($className);
+        return $this->getInitialContext()->newService($className);
     }
 }
