@@ -39,7 +39,7 @@ Beside [application specific PSRs](#application-specific-psrs) we're also workin
 * [socket](https://github.com/appserver-io-psr/http-message)
 * [deplyoment](https://github.com/appserver-io-psr/deployment)
 
-> As theses `PSRs` are still in progress, our guarantee actually is **NOT** valid for those. We hope, that we can extend the guarantee with the next release, so it'll also include the `server specific PSRs` then. 
+> As theses `PSRs` are still in progress, our guarantee actually is **NOT** valid for those. We hope, that we can extend the guarantee with the next releases, so it'll also include the `server specific PSRs`. 
 
 ## What does our `PSRs` mean for you
 ***
