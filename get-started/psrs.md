@@ -32,12 +32,14 @@ Applications specific `PSRs` describe all interfaces a developers needs to build
 
 ### Server specific `PSRs`
 
-Beside [application specific PSRs](#application-specific-psrs) we're also working on `PSRs` that are implemented by containers, servers or modules `appserver.io` is built on. As theses `PSRs` are still in progress and our guarantee actually is **NOT** valid for those. We hope, that we can extend the guarantee with the next release, so it'll also include the `server specific PSRs` then.  
+Beside [application specific PSRs](#application-specific-psrs) we're also working on `PSRs` that are implemented by containers, servers or modules `appserver.io` is built on. 
 
 * [socket](https://github.com/appserver-io-psr/socket)
 * [context](https://github.com/appserver-io-psr/context)
 * [socket](https://github.com/appserver-io-psr/http-message)
 * [deplyoment](https://github.com/appserver-io-psr/deployment)
+
+> As theses `PSRs` are still in progress and our guarantee actually is **NOT** valid for those. We hope, that we can extend the guarantee with the next release, so it'll also include the `server specific PSRs` then. 
 
 ## What does our `PSRs` mean for you
 ***
