@@ -138,11 +138,17 @@ div.carousel .carousel-inner {
 }
 
 .carousel-caption {
-  bottom: 15%;
   text-shadow: 0 2px 1px rgba(0, 0, 0, 0.1);
   h1 {
     font-size: 3vw;
     font-weight: bold;
+  }
+}
+
+.carousel-info {
+  a, a:hover, a:visited, a:active {
+    color: #fff;
+    font-size: 120%;
   }
 }
 
