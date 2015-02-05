@@ -34,9 +34,9 @@ class AbstractDeploymentTest extends AbstractTest
 {
 
     /**
-     * The deployment instance to test.
+     * The abstract deployment instance to test.
      *
-     * @var \AppserverIo\Appserver\Core\MockDeployment
+     * @var \AppserverIo\Appserver\Core\AbstractDeployment
      */
     protected $deployment;
 
@@ -47,17 +47,41 @@ class AbstractDeploymentTest extends AbstractTest
      */
     public function setUp()
     {
-        $this->deployment = new MockDeployment($this->getMockInitialContext(), $this->getContainerNode(), $this->getDeploymentNode());
+        $this->deployment = $this->getMockForAbstractClass('AppserverIo\Appserver\Core\AbstractDeployment');
     }
 
     /**
-     * Checks if the new instance method works as expected.
+     * Checks if the newInstance() method works as expected.
      *
      * @return void
      */
     public function testNewInstance()
     {
+
+        // define the name of the instance to be created
         $className = 'AppserverIo\Configuration\Configuration';
+
+        // mock the initial context
+        $mockInitialContext = $this->getMockBuilder('AppserverIo\Appserver\Application\Interfaces\ContextInterface')
+                                   ->setMethods(get_class_methods('AppserverIo\Appserver\Application\Interfaces\ContextInterface'))
+                                   ->getMock();
+        $mockInitialContext->expects($this->once())
+                           ->method('newInstance')
+                           ->with($className, array())
+                           ->will($this->returnValue(new $className()));
+
+        // mock the container
+        $mockContainer = $this->getMockBuilder('AppserverIo\Appserver\Core\Interfaces\ContainerInterface')
+                              ->setMethods(get_class_methods('AppserverIo\Appserver\Core\Interfaces\ContainerInterface'))
+                              ->getMock();
+        $mockContainer->expects($this->once())
+                      ->method('getInitialContext')
+                      ->will($this->returnValue($mockInitialContext));
+
+        // inject the container
+        $this->deployment->injectContainer($mockContainer);
+
+        // query the created instance
         $this->assertInstanceOf($className, $this->deployment->newInstance($className));
     }
 }

@@ -65,13 +65,6 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
     protected $containerState;
 
     /**
-     * The mutex to lock/unlock resources during application deployment.
-     *
-     * @var integer
-     */
-    protected $mutex;
-
-    /**
      * Initializes the container with the initial context, the unique container ID
      * and the deployed applications.
      *
@@ -84,19 +77,6 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
         // initialize the initial context + the container node
         $this->initialContext = $initialContext;
         $this->containerNode = $containerNode;
-
-        // initialize the containers mutex
-        $this->mutex = \Mutex::create();
-    }
-
-    /**
-     * Returns the mutex to lock/unlock resources during application deployment.
-     *
-     * @return integer The mutex
-     */
-    public function getMutex()
-    {
-        return $this->mutex;
     }
 
     /**
@@ -154,7 +134,8 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
 
         // deploy and initialize the applications for this container
         $deployment = $this->getDeployment();
-        $deployment->deploy($this);
+        $deployment->injectContainer($this);
+        $deployment->deploy();
 
         // initialize the profile logger and the thread context
         if ($profileLogger = $this->getInitialContext()->getLogger(LoggerUtils::PROFILE)) {
@@ -296,9 +277,10 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
     }
 
     /**
-     * Return's the initial context instance
+     * Returns the initial context instance.
      *
-     * @return \AppserverIo\Appserver\Core\InitialContext
+     * @return \AppserverIo\Appserver\Application\Interfaces\ContextInterface The initial context instance
+     * @see \AppserverIo\Appserver\Core\Interfaces\ContainerInterface::getInitialContext()
      */
     public function getInitialContext()
     {
@@ -336,16 +318,11 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
      * Returns the deployment interface for the container for
      * this container thread.
      *
-     * @return \AppserverIo\Appserver\Core\Interfaces\DeploymentInterface The deployment instance for this container thread
+     * @return \AppserverIo\Psr\Deployment\DeploymentInterface The deployment instance for this container thread
      */
     public function getDeployment()
     {
-        return $this->newInstance(
-            $this->getContainerNode()->getDeployment()->getType(),
-            array(
-                $this->getInitialContext()
-            )
-        );
+        return $this->newInstance($this->getContainerNode()->getDeployment()->getType());
     }
 
     /**
@@ -403,7 +380,7 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
         }
 
         // connect the application to the container
-        $application->connect($this->mutex);
+        $application->connect();
     }
 
     /**

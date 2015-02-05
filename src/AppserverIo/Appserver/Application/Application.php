@@ -185,18 +185,6 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
     }
 
     /**
-     * The mutex to lock/unlock resources during application deployment.
-     *
-     * @param integer $mutex The mutex to lock/unlock resources during application deployment
-     *
-     * @return void
-     */
-    public function injectMutex($mutex)
-    {
-        $this->mutex = $mutex;
-    }
-
-    /**
      * Injects the application name.
      *
      * @param string $name The application name

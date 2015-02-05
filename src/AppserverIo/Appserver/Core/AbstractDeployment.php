@@ -21,7 +21,9 @@
 namespace AppserverIo\Appserver\Core;
 
 use AppserverIo\Appserver\Core\InitialContext;
-use AppserverIo\Appserver\Core\Interfaces\DeploymentInterface;
+use AppserverIo\Psr\Deployment\DeploymentInterface;
+use AppserverIo\Appserver\Core\Interfaces\ContainerInterface;
+use AppserverIo\Appserver\Application\Interfaces\ContextInterface;
 
 /**
  * Abstract deployment implementation.
@@ -36,11 +38,11 @@ abstract class AbstractDeployment implements DeploymentInterface
 {
 
     /**
-     * The initial context instance.
+     * The container instance.
      *
-     * @var \AppserverIo\Appserver\Core\InitialContext
+     * @var \AppserverIo\Appserver\Core\Interfaces\ContainerInterface
      */
-    protected $initialContext;
+    protected $container;
 
     /**
      * The deployment service instance.
@@ -50,28 +52,25 @@ abstract class AbstractDeployment implements DeploymentInterface
     protected $deploymentService;
 
     /**
-     * Initializes the deployment with the container thread.
+     * Injects the container instance.
      *
-     * @param \AppserverIo\Appserver\Core\InitialContext $initialContext The initial context instance
+     * @param \AppserverIo\Appserver\Core\Interfaces\ContainerInterface $container The initial context instance
+     *
+     * @return void
      */
-    public function __construct(InitialContext $initialContext)
+    public function injectContainer(ContainerInterface $container)
     {
-
-        // set the initial context instance
-        $this->initialContext = $initialContext;
-
-        // create a deployment service instance
-        $this->deploymentService = $this->newService('AppserverIo\Appserver\Core\Api\DeploymentService');
+        $this->container = $container;
     }
 
     /**
-     * Returns the initialContext instance
+     * Returns the container instance
      *
-     * @return \AppserverIo\Appserver\Core\InitialContext The initial context instance
+     * @return \AppserverIo\Appserver\Core\Interfaces\ContainerInterface The container instance
      */
-    public function getInitialContext()
+    public function getContainer()
     {
-        return $this->initialContext;
+        return $this->container;
     }
 
     /**
@@ -81,7 +80,20 @@ abstract class AbstractDeployment implements DeploymentInterface
      */
     public function getDeploymentService()
     {
+        if ($this->deploymentService == null) {
+            $this->deploymentService = $this->newService('AppserverIo\Appserver\Core\Api\DeploymentService');
+        }
         return $this->deploymentService;
+    }
+
+    /**
+     * Returns the initial context instance.
+     *
+     * @return \AppserverIo\Appserver\Application\Interfaces\ContextInterface The initial context instance
+     */
+    public function getInitialContext()
+    {
+        return $this->getContainer()->getInitialContext();
     }
 
     /**
