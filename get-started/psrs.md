@@ -15,7 +15,7 @@ During the last years, [PHP-FIG](http://http://www.php-fig.org) has been establi
 
 The intention behind our `PSR's` is, to give Admins, DevOps, Solution Providers, Developers and all other contributors of `appserver.io` a public, stable and easy to access API they can implement their applications and components against.
 
-> We guarantee, that `appserver.io` will follow [Semantic Versioning](http://semver.org) and take care, that backwards compatibility within a major version will **NEVER** be broken.
+> Up from the final version 1.0.0 aka `Iron Horse`, we guarantee, that `appserver.io` will follow [Semantic Versioning](http://semver.org) and take care, that backwards compatibility within a major version will **NEVER** be broken.
 
 ## What does our `PSR's` mean for you
 
