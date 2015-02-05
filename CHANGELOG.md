@@ -9,10 +9,11 @@
 
 * Closed #473 - Create deployment PSR
 * Log exceptions thrown in ServletEngine::process method
-* Add method logCriticalException() to AbstractServletEngine to simplify exception logging
-* Remove var/www/core_functions.php script and include from server.php
-* Allow argument --install-dir for composer post-install-cmd
 * Move OS specific templates and resources to dist packages
+* Allow argument --install-dir for composer post-install-cmd
+* Moved OS specific Windows resources to appserver-io-dist/windows
+* Remove var/www/core_functions.php script and include from server.php
+* Add method logCriticalException() to AbstractServletEngine to simplify exception logging
 
 # Version 1.0.0-rc1
 
