@@ -1,11 +1,12 @@
 ---
 layout: default
-title: Products
+title: What is appserver.io?
 position: 10
-permalink: /products.html
+group: Products
+permalink: /products/what-is-appserver-io.html
 ---
 
-## <i class="fa fa-question-circle"></i> What is appserver.io?
+# <i class="fa fa-question-circle"></i> What is appserver.io?
 ***
 
 appserver.io is a next generation PHP infrastructure. It is not a webserver like Apache or nginx, nor a Timer Service or Message Queue. It is all of them and much more in one extremely powerful bundle. And it is completely written in PHP enabling PHP developers to adapt appserver.io to their specific needs with no additional coding language - just PHP!
@@ -14,7 +15,7 @@ appserver.io is a next generation PHP infrastructure. It is not a webserver like
 
 ![alt text]({{ "/assets/img/appserver-stack.png" | prepend: site.baseurl }} "appserver.io stack")
 
-### <i class="fa fa-info-circle"></i> Want to learn more about the power of appserver.io?
+## <i class="fa fa-info-circle"></i> Want to learn more about the power of appserver.io?
 
 You are interested and want to learn more about the of appserver.io. See the different sections below.
 
@@ -37,7 +38,7 @@ You are interested and want to learn more about the of appserver.io. See the dif
                 <b>The most feature rich PHP plattform worldwide</b>
             </p>
             <p>
-                appserver.io delivers the most feature richt plattform for PHP applications worldwide. Why? It's pretty simple. There is no compareable infrastructure enabling you get the most out of your software components by using a just one component below.
+                appserver.io delivers the most feature rich plattform for PHP applications worldwide. Why? It's pretty simple. There is no compareable infrastructure enabling you get the most out of your software components by using a just one component below.
             </p>
             <a class="btn btn-info btn-lg"
                href="{{ "/products/features.html" | prepend: site.baseurl }}">
@@ -51,7 +52,7 @@ You are interested and want to learn more about the of appserver.io. See the dif
             </p>
             <p>
                 Of course an infrastructure like this is first of all not easy to understand and start with but we got it pretty well documented with a lot of real world examples.</p>
-                <a class="btn btn-info btn-lg" href="{{ "/documentation.html" | prepend: site.baseurl }}">
+                <a class="btn btn-info btn-lg" href="{{ "/get-started/documentation.html" | prepend: site.baseurl }}">
                     <i class="fa fa-info-circle"></i>&nbsp;&nbsp;step into the documentation
                 </a>.
             

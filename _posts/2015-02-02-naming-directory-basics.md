@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  Naming-Directory Basics
-date:   2015-02-02 12:00:00
+date:   2015-02-04 12:00:00
 author: wagnert
 version: 1.0.0-rc1
 categories: [naming-directory]
@@ -46,7 +46,7 @@ What directories are parsed to locate annotated components can be configured in 
 </context>
 ```
 
-You can bundle your application with its own, customized `context.xml` file. This **MUST** be placed in your applications `META-INF` directory. The file **MUST NOT** be a full copy of the default one, it allows you to override the nodes you want to customize or extend. To add an additional directory like `common/classes` for example, your `context.xml` file could simply look like this
+You can bundle your application with a customized `context.xml` file. This **MUST** be placed in your applications `META-INF` directory. The file **MUST NOT** be a full copy of the default one, it allows you to override the nodes you want to customize or extend. To add an additional directory like `common/classes` for example, your `context.xml` file could simply look like this
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -70,20 +70,16 @@ You can bundle your application with its own, customized `context.xml` file. Thi
 
 > Keep in mind, that the directory MUST be relative to your applications root directory and start with a `/`.
 
-More detailed information about the how to configure an application can be found in the section [Application Configuration](<{{ "/documentation/configuration.html#application-configuration" | prepend: site.baseurl }}>) of the documentation.
+More detailed information about the how to configure an application can be found in the section [Application Configuration](<{{ "/get-started/documentation/configuration.html#application-configuration" | prepend: site.baseurl }}>) of the documentation.
 
 ## Register Resources
 ***
 
-If a class is found, the class will be registered in the application servers naming directory under the name you specify in the annotations `name` attribut. As the `name` attribute is optional, the bean will be registered in the naming directory with the short class name, if not specified.
+If a class is found, it'll be registered in the application servers naming directory under the name you specify in the annotations `name` attribut. As the `name` attribute is optional, the bean will be registered in the naming directory with the short class name, if not specified.
 
-When you want to inject a bean later, you have to know the name it has been registered with. In the following example, the bean will be registered in the naming directory under 
+To inject a bean later, the developer needs to know the name it has been registered with. In the following example, the bean will be registered in the naming directory under `php:global/example/AStatelessSessionBean` whereas `example` is the name of the application.
 
-* `php:global/example/AStatelessSessionBean`
-
-whereas `example` is the name of the application.
-
-> The name of your application is *ALWAYS* the directory it'll be deployed to. As the document root is by default `webapps`, which, for example on a Linux system, will result in `/opt/appserver/webapps`, the name of your application will be `example` and will be located under `/opt/appserver/webapps/example`.
+> The name of your application is **ALWAYS** the directory it'll be deployed to. As the document root is by default `webapps`, which, for example on a Linux system, will result in `/opt/appserver/webapps`, the name of your application will be `example` and will be located under `/opt/appserver/webapps/example`.
 
 When using annotations to inject components, you don't have to know the fully qualified name, because the application server knows the context you're in, tries to lookup the bean and injects it.
 
@@ -197,7 +193,7 @@ In the simplest case **NO** attribute is needed. If so, the member or parameter 
 
 ### Example
 
-The following example implementation of a `Singleton` session bean contains all available annotations and demonstrates how they can be used.
+The following example implementation of a `Singleton` session bean contains nearly all available annotations and demonstrates how they can be used.
 
 ```php
 <?php
@@ -413,3 +409,6 @@ Injects the reference by either using the method or property defined. The class 
 ## Summary
 ***
 
+The `Naming-Directory` is the central registry of the application server, and knows all about application components. In most cases, it is **NOT** necessary for a developer to know what happens behind the scenes, but it is necessary to know how components can be configured and reference in an application. After a component has been configured by using annotations or a deployment descriptor, the next blog post is all about `Dependency Injection` in the application server context and how it can make a developers life easier.
+
+Actually the `Naming Directory` only provides basic functionalities but have restrictions when a developer tries to bind components to it or search for them. We'll improve the `Naming Directory` with the next releases to make handling more comfortable.

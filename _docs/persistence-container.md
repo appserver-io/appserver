@@ -3,7 +3,7 @@ layout: docs
 title: Persistence Container
 position: 80
 group: Docs
-subDocs:
+subNav:
   - title: Singleton SessionBean
     href: singleton-sessionbean
   - title: Stateless SessionBean
@@ -12,7 +12,7 @@ subDocs:
     href: stateful-sessionbean
   - title: Example
     href: example
-permalink: /documentation/persistence-container.html
+permalink: /get-started/documentation/persistence-container.html
 ---
 
 As described in the introduction the application is designed inside a runtime environment like

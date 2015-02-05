@@ -3,7 +3,7 @@ layout: docs
 title: Runtime Environment
 position: 150
 group: Docs
-permalink: /documentation/runtime-environment.html
+permalink: /get-started/documentation/runtime-environment.html
 ---
 
 The appserver.io runtime environment is delivered by the package [runtime](<https://github.com/appserver-io-php/runtime>).

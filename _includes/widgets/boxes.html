@@ -1,17 +1,17 @@
 <div class="row">
-    {% for box in include.boxes %}
-    {% if box.title %}
-    <div class="col-md-{{ 12 | divided_by:forloop.length }}">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h4><i class="fa fa-fw fa-check"></i>&nbsp;{{ box.title }}</h4>
-            </div>
-            <div class="panel-body">
-                <p>{{ box.text }}</p>
-                <a href="{{ box.link-href | prepend: site.baseurl }}" class="btn btn-info">{{ box.link-label }}</a>
-            </div>
-        </div>
-    </div>
-    {% endif %}
-    {% endfor %}
+{% for box in include.boxes %}
+{% if box.title %}
+<div class="col-md-{{ 12 | divided_by:forloop.length }}">
+<div class="panel panel-default">
+<div class="panel-heading">
+    <h4><i class="fa fa-fw fa-check"></i>&nbsp;{{ box.title }}</h4>
+</div>
+<div class="panel-body">
+    <p>{{ box.text }}</p>
+    <a href="{{ box.link-href | prepend: site.baseurl }}" class="btn btn-info">{{ box.link-label }}</a>
+</div>
+</div>
+</div>
+{% endif %}
+{% endfor %}
 </div>

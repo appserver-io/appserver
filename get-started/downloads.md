@@ -1,11 +1,12 @@
 ---
 layout: default
 title: Downloads
-position: 20
-permalink: /downloads.html
+group: Get Started
+position: 900
+permalink: /get-started/downloads.html
 ---
 
-## <i class="fa fa-download"></i> Downloads
+# <i class="fa fa-download"></i> Downloads
 ***
 
 Get the latest Version of appserver.io free and enjoy the most powerful PHP infrastructure in the world with only one click!

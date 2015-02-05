@@ -5,10 +5,9 @@ position: 10
 group: Features
 permalink: /products/features/webserver.html
 subnavigation: features
-author: all
 ---
 
-### <i class="fa fa-info"></i> Info
+## <i class="fa fa-info"></i> Info
 <div class="bs-example" data-example-id="simple-table">
     <table class="table">
         <tbody>
@@ -38,7 +37,7 @@ The actual request processing can be delegated any given backend following suppo
 </div>
 <p><br/></p>
 
-### <i class="fa fa-bars"></i> Functions
+## <i class="fa fa-bars"></i> Functions
 <div class="bs-example" data-example-id="simple-table">
     <table class="table">
         <tbody>
@@ -64,7 +63,7 @@ The actual request processing can be delegated any given backend following suppo
     </table>
 </div>
 
-### <i class="fa fa-edit"></i> Use Case
+## <i class="fa fa-edit"></i> Use Case
 <p>
 A central part of classical PHP web infrastructure is a web server which delivers static data upon a clients request and helps with the delivery of dynamical content through additional service backends.
 The appserver.io ecosystem also offers a web server implementation completely written in PHP which handles these exact same tasks.

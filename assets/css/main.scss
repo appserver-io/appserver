@@ -9,6 +9,7 @@
 @import "countdown";
 @import "docs";
 @import "blog";
+@import "sections";
 
 // import font
 @import url(http://fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,400,600);
@@ -17,6 +18,11 @@
 body {
   padding-top: 65px;
   -webkit-font-smoothing: antialiased;
+}
+
+p:empty {
+    padding: 0;
+    margin: 0;
 }
 
 // inline code
@@ -28,11 +34,18 @@ code {
   border-radius: $border-radius-base;
 }
 
+.highlight {
+  padding: 15px 0;
+
+  pre {
+    max-height: 200px;
+  }
+}
+
 .container-page {
   background-color: $body-bg;
   position: relative;
   margin-bottom: 240px;
-  padding-bottom: 50px;
   z-index: 200;
   font-size: 16px;
 }
@@ -45,6 +58,7 @@ code {
 div.content {
   overflow:auto;
   padding-top: 40px;
+  padding-bottom: 60px;
 
   ul {
     padding-left:20px;
@@ -124,11 +138,17 @@ div.carousel .carousel-inner {
 }
 
 .carousel-caption {
-  bottom: 15%;
   text-shadow: 0 2px 1px rgba(0, 0, 0, 0.1);
   h1 {
     font-size: 3vw;
     font-weight: bold;
+  }
+}
+
+.carousel-info {
+  a, a:hover, a:visited, a:active {
+    color: #fff;
+    font-size: 120%;
   }
 }
 
@@ -159,11 +179,6 @@ nav {
   img { height: 34px; }
 }
 
-ul.nav li.dropdown:hover ul.dropdown-menu{
-  display: block;
-  margin-top:0px
-}
-
 .navbar-nav>li>a {
   padding: 22px 15px;
 }
@@ -177,6 +192,15 @@ ul.nav li.dropdown:hover ul.dropdown-menu{
   padding: 16px 10px;
 }
 
+.post-content {
+  padding-bottom: 30px;
+}
+
+#leftCol {
+  margin-top: 60px;
+  margin-bottom: 30px;
+}
+
 .error-404 { font-size: 100px; }
 
 .well {
@@ -187,6 +211,12 @@ ul.nav li.dropdown:hover ul.dropdown-menu{
   border-radius: 4px;
   -webkit-box-shadow: none;
   box-shadow: none;
+}
+
+.panel-heading {
+  h1, h2, h3, h4, h5, h6 {
+    margin: 0;
+  }
 }
 
 .price {
@@ -212,6 +242,15 @@ ul.nav li.dropdown:hover ul.dropdown-menu{
   border-color: #fff;
 }
 
+.btn-slider:hover,
+.btn-slider:focus,
+.btn-slider:active,
+.btn-slider.active,
+.open .dropdown-toggle.btn-slider {
+  color: #119fbc;
+  background-color: #ffffff;
+}
+
 .btn-info-highlight {
   color: white;
   background-color: #a82629;
@@ -222,29 +261,21 @@ ul.nav li.dropdown:hover ul.dropdown-menu{
 .btn-info-highlight:hover,
 .btn-info-highlight:focus,
 .btn-info-highlight:active {
-  color: white;
-  background-color: #5bc0de;
-  border-color: #46b8da;
-}
-
-.btn-slider:hover,
-.btn-slider:focus,
-.btn-slider:active,
-.btn-slider.active,
-.open .dropdown-toggle.btn-slider {
   color: #119fbc;
   background-color: #ffffff;
+  border-color: #fff;
 }
 
+
 /* icon color definitions */
-.icon-ok {
-    color: green;
-}
 .icon-nok {
     color: #a82629;
 }
 .icon-ci {
     color: #31b0d5;
+}
+.icon-ok {
+  @extend .icon-ci;
 }
 
 /* subpage properties */
@@ -338,6 +369,11 @@ footer {
   // remove home nav entry
   #nav-home {
     display: none;
+  }
+
+  // smaller the navbar elements
+  .navbar-nav > li > a {
+    padding: 22px 10px;
   }
 
   // rename what is appserver to info

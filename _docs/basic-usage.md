@@ -3,10 +3,10 @@ layout: docs
 title: Basic Usage
 position: 20
 group: Docs
-subDocs:
+subNav:
   - title: Start and Stop Scripts
     href: start-and-stop-scripts
-permalink: /documentation/basic-usage.html
+permalink: /get-started/documentation/basic-usage.html
 ---
 
 The appserver will automatically start after your installation wizard (or package manager) finishes

@@ -4,32 +4,32 @@ title: Terms
 permalink: /terms.html
 ---
 
-## appserver.io Terms
+# appserver.io Terms
 ***
 
 Welcome to www.appserver.io (together with its sub-domains, Content, Marks and services, the “site”).
 Please read the following Terms of Use (“terms”) carefully before using this Site so that you are aware of your legal rights and obligations with respect to TechDivision GmbH and our affiliated companies (collectively, “TechDivision”, „appserver.io“, “we”, “our” or “us”).
 
-### 1. Background
+## 1. Background
 TechDivision is the creator, among other things, of appserver.io which is the next-generation of PHP infrastructure consisting of a lightning fast webserver completely written in PHP including different additional services often needed in modern web applications. The site is intended to provide: (i) information about appserver.io and its products and services; (ii) a news section, as well as possibly future forums and wikis, all in which account holders will be able to share relevant ideas and comments through user submissions.
 
-### 2. Consent and Modification
+## 2. Consent and Modification
 By visiting or using this site, you signify your assent to these terms. These terms apply to all users of the site. If you do not agree to these terms then please do not access or otherwise use the site. We reserve the right, at our discretion, to change these terms at any time. Such change will be effective twenty (20) days following posting of the revised terms on the site, and your continued use of the site thereafter means that you accept those changes.
 
-### 3. Ability to Accept Terms
+## 3. Ability to Accept Terms
 Employer Authority. If you are entering into these terms, and/or using the site, on behalf of your employer or other legal entity, you represent and warrant that you have full authority to: (i) bind said employer or other legal entity to these terms (if they have not already done so); and (ii) use the site on behalf of your employer or other legal entity. If you do not have the foregoing authority please do not accept these terms or access or use the site.
 
-### 4. Site Access
+## 4. Site Access
 For such time as these terms are in effect, we hereby grant you permission to visit and use the site provided that you comply with these terms and applicable law. You acknowledge that certain parts of the site or certain uses of the site may only accessible to registered users who have a site account (defined below).
 
-### 5. Restrictions
+## 5. Restrictions
 You shall not, and shall not permit any third party to: (i) copy, distribute or modify any part of the site or to copy, use, modify, create derivative works of, transfer (by sale, resale, license, sublicense, download or otherwise), reproduce, distribute, display or disclose content (defined below), except as expressly authorized herein; (ii) disrupt any servers or networks connected to the site; (iii) use or launch any automated system (including without limitation, “robots” and “spiders”) to access the site and/or enter information onto the site; (iv) circumvent, disable or otherwise interfere with security-related features of the site or features that prevent or restrict use or copying of any content or that enforce limitations on use of the site; (v) use the communications systems provided by the site to send unsolicited or unauthorized commercial communications including the use communication platforms; (vi) remove, alter or obscure any proprietary notice or identification, including copyright, trademark, patent or other notices, contained in or displayed on the Site; (vii) use the appserver.io name, logo or trademarks without our prior written consent; (viii) use the site to violate any applicable laws, rules or regulations, or for any unlawful, harmful, irresponsible, or inappropriate purpose, or in any manner that breaches these terms; and/or (ix) engage in any action, indirectly or directly, that may be harmful to appserver.io, the appserver.io community, software, products, site or any function thereof.
 
-### 6. Intellectual Property Rights
+## 6. Intellectual Property Rights
 1. Content and marks. The: (i) text, documents, articles, comments, suggestions, ideas, brochures, descriptions, graphics, photos, sounds, videos and interactive features on the site including appearance, visual elements, design, concepts, business models, operational models, databases, collections of links, hyper text markup language (HTML) code, scripts and all products sold and services offered (collectively, the “materials“), (ii) site products, API’s, tools, services, programs and software (collectively, the “software“), (iii) user submissions, as defined below (and together with the marks (as defined hereafter), materials and software, the “Content“), and (iv) the marks, names, trademarks, service marks and logos contained therein, whether registered or not, (“marks“), are the property of appserver.io and/or its licensors and may be protected by applicable copyright or other intellectual property laws and treaties. ‘appserver.io’, the appserver.io logo, and other marks are Marks of TechDivision GmbH or its affiliates. All other trademarks, service marks, and logos used on the site are the trademarks, service marks, or logos of their respective owners. We reserve all rights not expressly granted in and to the site and the content.
 2. Use of content. The content on the site is provided to you on an ‘as is’ and ‘as available’ basis for your informational and personal use only and may not be used, modified, copied, distributed, transmitted, broadcast, displayed, sold, licensed, de-compiled, or otherwise exploited for any other purposes whatsoever without our prior written consent or as expressly permitted herein. If you download or print a copy of any content you must retain all copyright and other proprietary notices contained therein.
 
-### 7. User Submissions
+## 7. User Submissions
 General. The site may permit the submission, hosting, sharing and publishing of materials or any other text, comment, suggestion, information or idea by you and other site users whether through the site, within the appserver.io software, or other (“user submissions“).
 1. License to user submissions. By posting, publishing or uploading your user submissions to the site, or submitting your user submissions to appserver.io, you hereby grant appserver.io a worldwide, irrevocable, non-exclusive, royalty-free, perpetual, sublicenseable and transferable license to use, reproduce, distribute, prepare derivative works of display, and perform the user submissions in connection with the site and appserver.io’ business, including without limitation for redistributing part or all of your user submissions (and derivative works thereof) in any media formats and through any media channels and, and you hereby waive any moral rights in your user submissions, to the extent permitted by law. You also hereby grant each user of the site or other viewer or user of the user submission a non-exclusive right to use, reproduce, distribute, prepare derivative works of, display and perform such user submissions, all in accordance with these terms.
 2. Suggestions. Notwithstanding and without derogating from the license, we shall have a royalty-free, worldwide, transferable, sublicenseable, irrevocable, perpetual license to use or incorporate into the materials any suggestions, enhancement requests, recommendations or other feedback provided by you (as well as relating to the services and/or products), including by way of user submissions.
@@ -38,43 +38,43 @@ General. The site may permit the submission, hosting, sharing and publishing of 
 5. Prohibited Content. You agree that you will not display, post, submit, publish, upload or transmit a user submission that: (i) is unfair or deceptive under the consumer protection laws of any jurisdiction; (ii) is copyrighted, protected by trade secret or is otherwise subject to third party intellectual property or proprietary rights, including privacy and publicity rights, unless you are the owner of such rights; (iii) creates a risk to a person’s safety or health, creates a risk to public safety or health, compromises national security, or interferes with an investigation by law enforcement; (iv) impersonates another person; (v) violates export control laws; (vi) is unlawful, known to be false, defamatory, libelous, threatening, pornographic, harassing, hateful, racially or ethnically offensive, or encourages conduct that would be considered a criminal offense, gives rise to civil liability, violates any law, or is inappropriate; (vii) is otherwise malicious or fraudulent; and/or (viii) breaches these terms.
 6. Exposure. You understand and acknowledge that when accessing and using the site: (i) you will be exposed to user submissions from a variety of sources, and that appserver.io is not responsible for the accuracy, usefulness, safety, or Intellectual property rights of, or relating to, such user submissions; and (ii) you may be exposed to user submissions that are inaccurate, offensive, indecent, or objectionable. You hereby agree to waive, and hereby do waive, any legal or equitable rights or remedies you may have against appserver.io with respect to (i) and (ii) herein.
 
-### 8. Information Description
+## 8. Information Description
 We attempt to be as accurate as possible. However, we cannot and do not warrant that the content available on the site is accurate, complete, reliable, current, or error-free. We reserve the right to make changes in or to the content, or any part thereof, in our sole judgment, without the requirement of giving any notice prior to or after making such changes to the content. Your use of the content, or any part thereof, is made solely at your own risk and responsibility.
 
-### 9. Disclosure
+## 9. Disclosure
 We reserve the right to access, read, preserve, and disclose any information that we obtain in connection with the site, and your use thereof, as we reasonably believe is necessary to: (i) satisfy any applicable law, regulation, legal process, subpoena or governmental request, (ii) enforce the site terms, including to investigate potential violations of them, (iii) detect, prevent, or otherwise address fraud, security or technical issues, (iv) respond to user support requests, or (v) protect the rights, property or safety of appserver.io, its users or the public.
 
-### 10. Links
+## 10. Links
 Links to other websites. The site may contain links, and may enable you to post content, to third party websites that are not owned or controlled by appserver.io. We are not affiliated with, have no control over, and assume no responsibility for the content, privacy policies, or practices of, any third party websites linked through our site or that link to our site. You: (i) are solely responsible and liable for your use of and linking to or from third party websites and any content that you may send or post to a third party website; and (ii) expressly release appserver.io from any and all liability arising from your use of any third party website. Accordingly, we encourage you to read the terms and conditions and privacy policy of each third party website that you may choose to visit, link to, link from or post content on.
 
-### 11. Privacy
+## 11. Privacy
 We will use any personal information that we may collect or obtain in connection with the site in accordance with our privacy policy which is available at www.appserver.io/privacy.html (“privacy policy“). You agree that we may use personal information that you provide or make available to us in accordance with the privacy policy.
 
-### 12. Warranty Disclaimers
+## 12. Warranty Disclaimers
 1. The site, APIs, Services, Tools, Software, Content, Materials and programs offered by appserver.io are provided an on „as is“ and „as available“ basis and without warranties of any kind either express or implied. appserver.io hereby disclaims all warranties, epxress or implied, including but not limited to implied warranties of merchantability, title, fitness for a particular purpose, non-infringement and provides no promises of any earnings or that commercial gains are made by you in any way. appserver.io does not guarantee that the site will be free of bugs, security breaches, or virus attacks. The site may occasionally be unavailable for routine maintenance, upgrading, or other reasons. You agree that appserver.io will not be held responsible for any consequences to you or any third party including those that may result from technical problems of the internet, slow connections, traffic congestion or overload of our or other servers. Except as expressly stated in our privacy policy, appserver.io does not make any representations, warranties or conditions of any kind, epxress or implied, as to the security of any information you may provide or activities you engage in during the course of your use of the site.
 2. We do not warrant, endorse or guarantee any content, material, software, product or service that is featured or advertised on the site by a third party and we disclaim all liability for any such content and matters. You specifically acknowledge that appserver.io shall is not responsible for the user submissions or conduct of any site user and that the risk of harm or damage from the foregoing rests entirely with you. Your reliance on or use of any user submissio or site user, is at your sole risk. If you have a dispute with any user submission, you agree that appserver.io is not liable for any claims or damages arising out of or connected with such a dispute. appserver.io reserves the right, but has no obligation, to monitor any such dispute.
 3. This section applies whether or not the services provided under the Site are for payment. Applicable law may not allow the exclusion of certain warranties, so to that extent certain exclusions set forth herein may not apply.
 
-### 13. Limitation of liability
+## 13. Limitation of liability
 To the fulliest extent permissible by lay: (i) appserver.io shall not be liable for any indirect, exemplary, special, consequential or incidential damages of any kind arising under these terms or out of your use of, or inability to use the site, even if appserver.io has been advised of the possility of such damages, and (ii) in no event shall the aggregate liability of appserver.io for any damages arising under these terms or out of your use of, or inability to use, the site exceed the total amount of fees, if any, paid by you to appserver.io for using the site during the three (3) month prior to bringing the claim. Some jurisdictions do not allow the limitation or exclusion of liability for incidental or consequential damages, so the above limitations may not apply to you.
 
-### 14. Indemnity
+## 14. Indemnity
 You agree to defend, indemnify and hold harmless appserver.io and our affiliates, and our respective officers, directors, employees and agents, from and against any and all claims, damages, obligations, losses, liabilities, costs and expenses (including but not limited to attorney’s fees) arising from: (i) use of, or inability to use, the site or any part thereof or therein including the content, materials and software; (ii) your user submissions; (iii) your interaction with any site user; or (iv) your violation of these terms.
 
-### 15. Information and Press Releases
+## 15. Information and Press Releases
 The site may contain information and press releases about appserver.io. While such information was believed to be accurate as of the date prepared, we disclaim any duty or obligation to update this information or any press releases. Further, information about companies other than ours contained in the press release or otherwise should not be relied upon as being provided or endorsed by us.
 
-### 16. Term and Termination
+## 16. Term and Termination
 These terms are effective until terminated by appserver.io or you. appserver.io, in its sole discretion, has the right to terminate these terms and/or any or parts of the site and/or your access to the site, or any part thereof, immediately at any time and with or without cause (including, without any limitation, for a breach of these Terms). appserver.io shall not be liable to you or any third party for termination of the site, or any part thereof. If you object to any term or condition of these terms, or any subsequent modifications thereto, or become dissatisfied with the site in any way, your only recourse is to immediately discontinue use of the Site. Upon termination of these Terms, you shall cease all use of the site.
 
-### 17. Independent contractors
+## 17. Independent contractors
 You and appserver.io are independent contractors. Nothing in these terms creates a partnership, joint venture, agency, or employment relationship between you and appserver.io. You must not under any circumstances make, or undertake, any warranties, representations, commitments or obligations on behalf of appserver.io.
 
-### 18. Assignment
+## 18. Assignment
 These terms, and any rights and licenses granted hereunder, may not be transferred or assigned by you but may be assigned by appserver.io without restriction or notification to you.
 
-### 19. Governing Law and Disputes
+## 19. Governing Law and Disputes
 These terms and the relationship between you and appserver.io shall be governed by and construed in accordance with the laws of Germany, without regard to its principles of conflict of laws. You agree to submit to the personal and exclusive jurisdiction of the courts located in Rosenheim, Germany and waive any jurisdictional, venue, or inconvenient forum objections to such courts, provided that appserver.io may seek injunctive relief in any court of competent jurisdiction.
 
-### 20. General
+## 20. General
 appserver.io reserves the right to discontinue or modify any aspect of the site at any time. These terms shall constitute the entire agreement between you and appserver.io concerning the site. If any provision of these terms is deemed invalid by a court of competent jurisdiction, the invalidity of such provision shall not affect the validity of the remaining provisions of these terms, which shall remain in full force and effect. No waiver of any term of these terms shall be deemed a further or continuing waiver of such term or any other term, and a party’s failure to assert any right or provision under these Terms shall not constitute a waiver of such right or provision.

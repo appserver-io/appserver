@@ -9,7 +9,6 @@
         {% endif %}
         {% endfor %}
     </ol>
-
     <!-- Wrapper for slides -->
     <div class="carousel-inner">
         {% for slide in page.slider %}
@@ -17,16 +16,17 @@
         <div class="item {% if forloop.first %}active{% endif %}">
             <div class="fill" style="background-image:url('{{ slide.img | prepend: site.baseurl }}');opacity:.75;"></div>
             <div class="carousel-caption">
-                <h1>{{ slide.title }}</h1><br>
+                <h1>{{ slide.title }}</h1>
                 {% if slide.countdown %} {% include widgets/countdown.html %} {% endif %}
-                 {% if slide.countdown %}{{ slide.text }}</h2>{% endif %}
-                {% if slide.link-label %}<a href="{{ slide.link-href | prepend: site.baseurl }}" class="btn btn-info-highlight">{{ slide.link-label }}</a>{% endif %}
+                {% if slide.text %}{{ slide.text }}<br>{% endif %}
+                {% if slide.link-label %}<a href="{{ slide.link-href | prepend: site.baseurl }}" class="btn btn-lg btn-info-highlight"><i class="fa fa-download fa-lg"></i>&nbsp;&nbsp;{{ slide.link-label }}</a>{% endif %}
+                <br/><br/>
+                <p class="carousel-info">Version {{ site.appserver_version }}&nbsp;&nbsp;·&nbsp;&nbsp;<a href="{{ "/get-started/documentation.html" | prepend: site.baseurl }}" ><i class="fa fa-book"></i> Documentation</a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="{{ site.github_repository }}"><i class="fa fa-github"></i> Github Project</a></p>
             </div>
         </div>
         {% endif %}
         {% endfor %}
     </div>
-
     <!-- Controls -->
     <a class="left carousel-control" href="#myCarousel" data-slide="prev">
         <span class="icon-prev"></span>

@@ -3,7 +3,7 @@ layout: docs
 title: Configuration
 position: 130
 group: Docs
-subDocs:
+subNav:
   - title: Basic Architecture
     href: basic-architecture
   - title: Container Configuration
@@ -16,7 +16,7 @@ subDocs:
     href: configuration-defaults
   - title: Optional Configuration
     href: optional-configuration
-permalink: /documentation/configuration.html
+permalink: /get-started/documentation/configuration.html
 ---
 
 We believe that the appserver should be highly configurable, so anyone interested can fiddle 

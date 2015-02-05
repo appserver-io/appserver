@@ -5,10 +5,9 @@ position: 10
 group: Features
 permalink: /products/features/timer-service.html
 subnavigation: features
-author: all
 ---
 
-### <i class="fa fa-info"></i> Info
+## <i class="fa fa-info"></i> Info
 <div class="bs-example" data-example-id="simple-table">
     <table class="table">
         <tbody>
@@ -38,7 +37,7 @@ author: all
 </div>
 <p><br/></p>
 
-### <i class="fa fa-bars"></i> Functions
+## <i class="fa fa-bars"></i> Functions
 <div class="bs-example" data-example-id="simple-table">
     <table class="table">
         <tbody>
@@ -60,7 +59,7 @@ author: all
     </table>
 </div>
 
-### <i class="fa fa-edit"></i> Use Case
+## <i class="fa fa-edit"></i> Use Case
 <p>
 The need to schedule tasks is given in nearly every application, especially for applications in an enterprise environment. In most cases, PHP applications use system services like CRON to schedule their tasks. Several e-commerce applications provides script like cron.sh, that has to be scheduled by CRON every minute and itself will again execute configured, long running tasks, like updating the table indexes, by a complicated, internal functionality. As PHP is single-threaded by default, this leads to several problems, e. g. long running tasks blocks others, also very important tasks, that can be executed only if the previous task has been finished. The Message Queue is a simple solution to solve such problems, because every task will be executed asynchronously in a separate thread that will never block other tasks.
 </p>

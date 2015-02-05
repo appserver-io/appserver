@@ -58,8 +58,17 @@
     visibility: hidden;
   }
 
-  .highlight {
-    padding: 15px 0;
+  ul {
+
+    padding-top: 15px;
+    padding-bottom: 15px;
+
+    li {
+      p {
+        display: inline;
+      }
+    }
   }
+
 }
 

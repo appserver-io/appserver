@@ -1,10 +1,12 @@
 ---
 layout: default
 title: Contact
-permalink: /contact.html
+position: 50
+group: About
+permalink: /about/contact.html
 ---
 
-## Contact
+# Contact
 ***
 
 Do not hesitate to send us a message if you have any question or request about our project!

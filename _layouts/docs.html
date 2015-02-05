@@ -1,36 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
-
 {% include head.html %}
-
 <body role="document">
-
     {% include header.html %}
-
     <!-- Page Content -->
     <div class="container-page">
         <div class="container">
             <div class="row">
-                <div class="col-md-12 content">
-                      <h2>{% if page.title != 'Docs'%}<small>Docs / </small>{% endif %}{{ page.title }}</h2><hr/>
-                </div>
-            </div>
-
-            <div class="row">
                 <div class="col-md-3" id="leftCol">
-                    {% include docs_nav.html %}
+                    {% assign items = site.docs | sort: 'position' %}
+                    {% include sub_nav.html %}
                 </div>
                 <!-- Content Section -->
-                <div class="col-md-9 docs-content">
-                    {{ content }}
+                <div class="col-md-9 content">
+                    <h1><i class="fa fa-book"></i> {% if page.group and page.group != "Get Started" %}<small>{{ page.group }} / </small>{% endif %}{{ page.title }}</h1><hr/>
+                    <div class="docs-content">
+                        {{ content }}
+                    </div>
                 </div>
             </div>
             <!-- /.row -->
         </div>
     </div>
     <!-- /.container -->
-
     {% include footer.html %}
-
 </body>
 </html>
