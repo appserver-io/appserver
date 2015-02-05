@@ -65,10 +65,8 @@ abstract class AbstractEpbManager extends AbstractManager
 
             // prepare the bean name
             if ($beanName = $epbReference->getBeanName()) {
-
                 // query whether we've a local business interface
                 if ($epbReference->getBeanInterface() === ($regName = sprintf('%sLocal', $beanName))) {
-
                     // bind the local business interface of the bean to the appliations naming directory
                     $application->bind($name, array(&$this, 'lookupProxy'), array($regName = sprintf('%s/local', $beanName)));
 
