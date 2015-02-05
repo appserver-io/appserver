@@ -1,6 +1,6 @@
 ---
 layout: default
-title: PSRs
+title: PSR's
 group: Get Started
 position: 90
 permalink: /get-started/psrs.html
