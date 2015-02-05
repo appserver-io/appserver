@@ -7,6 +7,7 @@
 
 ## Features
 
+* Closed #473 - Create deployment PSR
 * Log exceptions thrown in ServletEngine::process method
 * Add method logCriticalException() to AbstractServletEngine to simplify exception logging
 * Remove var/www/core_functions.php script and include from server.php
