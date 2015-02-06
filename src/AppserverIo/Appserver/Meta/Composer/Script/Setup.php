@@ -198,8 +198,26 @@ class Setup
     public static function postInstall(Event $event)
     {
 
+        // initialize the installation directory
+        $installDir = getcwd();
+        $override = false;
+
+        // check the arguments for an installation directory
+        foreach ($event->getArguments() as $arg) {
+            // extract arguments
+            list ($key, ) = explode('=', $arg);
+            // query we want to override files
+            if ($key === SetupKeys::ARG_OVERRIDE) {
+                $override = true;
+            }
+            // query for a custom installation directory
+            if ($key === SetupKeys::ARG_INSTALL_DIR) {
+                $installDir = str_replace("$key=", '', $arg);
+            }
+        }
+
         // check if we've a file with the actual version number
-        if (file_exists($filename = getcwd() .'/etc/appserver/.release-version')) {
+        if (file_exists($filename = $installDir .'/etc/appserver/.release-version')) {
             $version = file_get_contents($filename);
         } else {
             // load the version (GIT) of this package as fallback
@@ -207,7 +225,7 @@ class Setup
         }
 
         // check if we've a file with the actual release name
-        if (file_exists($filename = getcwd() .'/etc/appserver/.release-name')) {
+        if (file_exists($filename = $installDir .'/etc/appserver/.release-name')) {
             $releaseName = file_get_contents($filename);
         } else {
             // set the release name to 'Unknown' if not
@@ -217,7 +235,7 @@ class Setup
         // prepare the context properties
         $contextProperties = array(
             SetupKeys::VERSION => $version,
-            SetupKeys::INSTALL_DIR => getcwd(),
+            SetupKeys::INSTALL_DIR => $installDir,
             SetupKeys::RELEASE_NAME => $releaseName
         );
 
@@ -249,11 +267,6 @@ class Setup
                 // merge the properties for the found Linux distribution
                 Setup::prepareProperties($distribution, $contextProperties);
 
-                // process the binaries for the systemd services on Fedora
-                if ($distribution === SetupKeys::OS_FEDORA || $distribution === SetupKeys::OS_REDHAT) {
-                    Setup::processTemplate('bin/appserver', 0755);
-                    Setup::processTemplate('bin/appserver-watcher', 0755);
-                }
                 break;
 
             // installation running on Mac OS X
@@ -261,18 +274,6 @@ class Setup
 
                 // merge the properties for Mac OS X
                 Setup::prepareProperties($os, $contextProperties);
-
-                // process the control files for the launchctl service
-                Setup::processOsSpecificTemplate(SetupKeys::OS_DARWIN, 'sbin/appserverctl', 0755);
-                Setup::processOsSpecificTemplate(SetupKeys::OS_DARWIN, 'sbin/appserver-watcherctl', 0755);
-                Setup::processOsSpecificTemplate(SetupKeys::OS_DARWIN, 'sbin/appserver-php5-fpmctl', 0755);
-                Setup::processOsSpecificTemplate(SetupKeys::OS_DARWIN, 'sbin/plist/io.appserver.appserver.plist');
-                Setup::processOsSpecificTemplate(SetupKeys::OS_DARWIN, 'sbin/plist/io.appserver.appserver-watcher.plist');
-                Setup::processOsSpecificTemplate(SetupKeys::OS_DARWIN, 'sbin/plist/io.appserver.appserver-php5-fpm.plist');
-
-                // process the binaries for the launchctl service
-                Setup::processTemplate('bin/appserver', 0755);
-                Setup::processTemplate('bin/appserver-watcher', 0755);
                 break;
 
             // installation running on Windows
@@ -280,10 +281,6 @@ class Setup
 
                 // merge the properties for Windows
                 Setup::prepareProperties($os, $contextProperties);
-
-                // process the control files for the launchctl service
-                Setup::copyOsSpecificResource(SetupKeys::OS_WINDOWS, 'appserver.bat');
-                Setup::processOsSpecificTemplate(SetupKeys::OS_WINDOWS, 'appserver-php5-fpm.bat');
                 break;
 
             // all other OS are NOT supported actually
@@ -293,8 +290,8 @@ class Setup
         }
 
         // process and move the configuration files their target directory
-        Setup::processTemplate('webapps/index.html');
-        Setup::processTemplate('etc/appserver/appserver.xml');
+        Setup::processTemplate('webapps/index.html', $override);
+        Setup::processTemplate('etc/appserver/appserver.xml', $override);
 
         // write a message to the console
         $event->getIo()->write(
@@ -324,11 +321,12 @@ class Setup
      *
      * @param string  $os       The OS we want to copy the files for
      * @param string  $resource The resource file we want to copy
+     * @param boolean $override TRUE if the file should be overwritten if exists, else FALSE
      * @param integer $mode     The mode of the target file
      *
      * @return void
      */
-    public static function copyOsSpecificResource($os, $resource, $mode = 0644)
+    public static function copyOsSpecificResource($os, $resource, $override = false, $mode = 0644)
     {
 
         // we need the installation directory
@@ -337,6 +335,11 @@ class Setup
         // prepare source and target directory
         $source = Setup::prepareOsSpecificPath(sprintf('%s/resources/os-specific/%s/%s', $installDir, $os, $resource));
         $target = Setup::prepareOsSpecificPath(sprintf('%s/%s', $installDir, $resource));
+
+        // query whether we've to override the file
+        if ($override === false && is_file($target) === true) {
+            return;
+        }
 
         // prepare the target directory
         Setup::prepareDirectory($target);
@@ -353,12 +356,21 @@ class Setup
      *
      * @param string  $os       The OS we want to process the template for
      * @param string  $template The path to the template
+     * @param boolean $override TRUE if the file should be overwritten if exists, else FALSE
      * @param integer $mode     The mode of the target file
      *
      * @return void
      */
-    public static function processOsSpecificTemplate($os, $template, $mode = 0644)
+    public static function processOsSpecificTemplate($os, $template, $override = false, $mode = 0644)
     {
+
+        // prepare the target filename
+        $targetFile = Setup::prepareOsSpecificPath($template);
+
+        // query whether we've to override the file
+        if ($override === false && is_file($targetFile) === true) {
+            return;
+        }
 
         // prepare the target directory
         Setup::prepareDirectory($template);
@@ -366,7 +378,7 @@ class Setup
         // process the template and store the result in the passed file
         ob_start();
         include Setup::prepareOsSpecificPath(sprintf('resources/templates/os-specific/%s/%s.phtml', $os, $template));
-        file_put_contents(Setup::prepareOsSpecificPath($template), ob_get_clean());
+        file_put_contents($targetFile, ob_get_clean());
 
         // set the correct mode for the file
         Setup::changeFilePermissions($template, $mode);
@@ -376,12 +388,21 @@ class Setup
      * Processes the template and replace the properties with the OS specific values.
      *
      * @param string  $template The path to the template
+     * @param boolean $override TRUE if the file should be overwritten if exists, else FALSE
      * @param integer $mode     The mode of the target file
      *
      * @return void
      */
-    public static function processTemplate($template, $mode = 0644)
+    public static function processTemplate($template, $override = false, $mode = 0644)
     {
+
+        // prepare the target filename
+        $targetFile = Setup::prepareOsSpecificPath($template);
+
+        // query whether we've to override the file
+        if ($override === false && is_file($targetFile) === true) {
+            return;
+        }
 
         // prepare the target directory
         Setup::prepareDirectory($template);
@@ -389,7 +410,7 @@ class Setup
         // process the template and store the result in the passed file
         ob_start();
         include Setup::prepareOsSpecificPath(sprintf('resources/templates/%s.phtml', $template));
-        file_put_contents(Setup::prepareOsSpecificPath($template), ob_get_clean());
+        file_put_contents($targetFile, ob_get_clean());
 
         // set the correct mode for the file
         Setup::changeFilePermissions($template, $mode);

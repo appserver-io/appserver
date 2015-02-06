@@ -31,4 +31,11 @@ namespace AppserverIo\Appserver\Core\Interfaces;
  */
 interface ContainerInterface
 {
+
+    /**
+     * Returns the initial context instance.
+     *
+     * @return \AppserverIo\Appserver\Application\Interfaces\ContextInterface The initial context instance
+     */
+    public function getInitialContext();
 }

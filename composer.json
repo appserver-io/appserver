@@ -14,10 +14,11 @@
 		"appserver-io-psr/epb" : "0.4.*",
 		"appserver-io-psr/pms" : "0.2.*",
 		"appserver-io-psr/servlet" : "0.8.*",
+        "appserver-io-psr/deployment" : "0.1.*",
 		"appserver-io-psr/application" : "0.5.*",
 		"appserver-io/rmi" : "0.6.*",
 		"appserver-io/http" : "0.2.*",
-        "appserver-io/lang" : "0.1.*",
+		"appserver-io/lang" : "0.1.*",
 		"appserver-io/server" : "0.2.*",
 		"appserver-io/logger" : "0.1.*",
 		"appserver-io/storage" : "0.5.*",
@@ -30,8 +31,8 @@
 	},
 	"require-dev" : {
 		"appserver-io/build" : "0.2.*",
-        "squizlabs/php_codesniffer" : "dev-master as 2.1.0",
-        "mikey179/vfsStream": "1.*"
+		"squizlabs/php_codesniffer" : "dev-master as 2.1.0",
+		"mikey179/vfsStream" : "1.*"
 	},
 	"autoload" : {
 		"psr-0" : {

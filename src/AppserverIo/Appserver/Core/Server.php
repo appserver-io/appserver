@@ -160,6 +160,7 @@ class Server
      * Prepares filesystem to be sure that everything is on place as expected
      *
      * @return void
+     * @throws \Exception Is thrown if a server directory can't be created
      */
     protected function initFileSystem()
     {
@@ -167,15 +168,23 @@ class Server
         // init API service to use
         $service = $this->newService('AppserverIo\Appserver\Core\Api\ContainerService');
 
+        // load the directories
+        $directories = $service->getDirectories();
+
         // check if the log directory already exists, if not, create it
-        foreach ($service->getDirectories() as $directory) {
+        foreach (DirectoryKeys::getServerDirectoryKeysToBeCreated() as $directoryKey) {
 
             // prepare the path to the directory to be created
-            $toBeCreated = $service->realpath($directory);
+            $toBeCreated = $service->realpath($directories[$directoryKey]);
+
             // prepare the directory name and check if the directory already exists
             if (is_dir($toBeCreated) === false) {
-                // if not create it
-                mkdir($toBeCreated, 0755, true);
+                // if not, try to create it
+                if (mkdir($toBeCreated, 0755, true) === false)  {
+                    throw new \Exception(
+                        sprintf('Can\'t create necessary directory %s while starting application server', $toBeCreated)
+                    );
+                }
             }
         }
     }

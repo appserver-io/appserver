@@ -45,17 +45,17 @@ class GenericDeployment extends AbstractDeployment
     protected $envAppDirs = array();
 
     /**
-     * Initializes the available applications and adds them to the deployment instance.
-     *
-     * @param \AppserverIo\Appserver\Core\Interfaces\ContainerInterface $container The container we want to add the applications to
+     * Initializes the available applications and adds them to the container.
      *
      * @return void
+     * @see \AppserverIo\Psr\Deployment\DeploymentInterface::deploy()
      */
-    public function deploy(ContainerInterface $container)
+    public function deploy()
     {
 
-        // load the mutex to lock/unlock resources during application deployment
-        $mutex = $container->getMutex();
+        // load the container and initial context instance
+        $container = $this->getContainer();
+        $initialContext = $container->getInitialContext();
 
         // load the context instances for this container
         $contextInstances = $this->getDeploymentService()->loadContextInstancesByContainer($container);
@@ -88,12 +88,11 @@ class GenericDeployment extends AbstractDeployment
 
                 // initialize the generic instances and information
                 $application->injectData($data);
-                $application->injectMutex($mutex);
                 $application->injectManagers($managers);
                 $application->injectName($applicationName);
                 $application->injectClassLoaders($classLoaders);
+                $application->injectInitialContext($initialContext);
                 $application->injectNamingDirectory($namingDirectory);
-                $application->injectInitialContext($this->getInitialContext());
 
                 // bind the application (which is also a naming directory)
                 $globalDir = $namingDirectory->search('php:global');
@@ -119,8 +118,8 @@ class GenericDeployment extends AbstractDeployment
 
                 // add the default class loader
                 $application->addClassLoader(
-                    $this->getInitialContext()->getClassLoader(),
-                    $this->getInitialContext()->getSystemConfiguration()->getInitialContext()->getClassLoader()
+                    $initialContext->getClassLoader(),
+                    $initialContext->getSystemConfiguration()->getInitialContext()->getClassLoader()
                 );
 
                 // add the configured class loaders
@@ -153,7 +152,7 @@ class GenericDeployment extends AbstractDeployment
             // if we can't find WEB-INF or META-INF directory
             } else {
                 // write a log message, that the folder doesn't contain a valid application
-                $this->getInitialContext()->getSystemLogger()->info(
+                $initialContext->getSystemLogger()->info(
                     sprintf('Directory %s doesn\'t contain a webapp, will assume a need for legacy support.', $folder)
                 );
             }

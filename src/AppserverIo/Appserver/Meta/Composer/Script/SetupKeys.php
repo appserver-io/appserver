@@ -346,4 +346,18 @@ class SetupKeys
      * @var string
      */
     const GROUP = 'appserver.group';
+
+    /**
+     * Composer argument for post-install-cmd
+     *
+     * @var string
+     */
+    const ARG_INSTALL_DIR = '--install-dir';
+
+    /**
+     * Composer argument for post-install-cmd
+     *
+     * @var string
+     */
+    const ARG_OVERRIDE = '--override';
 }

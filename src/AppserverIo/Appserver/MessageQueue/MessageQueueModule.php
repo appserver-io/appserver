@@ -78,6 +78,7 @@ class MessageQueueModule extends GenericStackable
         // initialize the array containing the worker specific stackables
         $this->jobsExecuting = new GenericStackable();
         $this->jobsToExecute = new GenericStackable();
+        $this->messageStates = new GenericStackable();
     }
 
     /**
@@ -116,8 +117,9 @@ class MessageQueueModule extends GenericStackable
                         // create a separate queue for each priority
                         foreach (PriorityKeys::getAll() as $priorityKey) {
                             // initialize the stackable for the job storage and the jobs excecuting
-                            $this->jobsExecuting[$jobCounter] = new GenericStackable();
+                            $this->jobsExecuting[$jobCounter] = array();
                             $this->jobsToExecute[$jobCounter] = new GenericStackable();
+                            $this->messageStates[$jobCounter] = new GenericStackable();
 
                             // initialize and start the queue worker
                             $queueWorker = new QueueWorker();
@@ -126,6 +128,7 @@ class MessageQueueModule extends GenericStackable
                             $queueWorker->injectMessages($this->messages);
                             $queueWorker->injectJobsExecuting($this->jobsExecuting[$jobCounter]);
                             $queueWorker->injectJobsToExecute($this->jobsToExecute[$jobCounter]);
+                            $queueWorker->injectMessageStates($this->messageStates[$jobCounter]);
                             $queueWorker->start();
 
                             // add the queue instance to the module
