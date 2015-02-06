@@ -13,7 +13,7 @@ appserver.io is a pretty cool and sophiscated infrastructure fully built upon th
 
 ## Installation
 
-First of all you have to download the latest appserver package which is available on the appserver.io webpage under downloads. We have installers for all major operating systems, but for that example we just download the `.pkg` for the Mac OS X. Once you have downloaded the package you just have to follow the steps in the installer. After the setup has been finished, try to open the welcome page [http://127.0.0.1:9080/](<http://127.0.0.1:9080/>) with your favorite browser.
+First of all you have to download the latest appserver package which is available on the appserver.io webpage under downloads. We have installers for all major operating systems, but for that example we just download the `.pkg` for the Mac OS X. Once you have downloaded the package you just have to follow the steps in the installer. After the setup has been finished, try to open the welcome page [http://127.0.0.1:9080](<http://127.0.0.1:9080>) with your favorite browser.
 
 By default appserver.io is configured to run on port `9080` in order not to affect any existing webserver installations. You can easily change that in the `/opt/appserver/etc/appserver.xml` just by going to section
 
@@ -65,7 +65,11 @@ Optional you can use another database administration tool like `phpMyAdmin` to c
 Now, as you're prepared to step through the Magento installer, start your favourite browser and open 
 `http://127.0.0.1:9080/magento`.
 
-If you alread installed wordpress and now you want to use the configured filename you just have to change the siteurl in the settings menu of wordpress.
+![Magento Installation Wizard - Step 1]({{ "/assets/img/magento_installation_step_01.png" | prepend: site.baseurl }} "Magento License, agree to Terms and Condition")
+
+The first step of the Magento installation wizard contains the OSL lisence and a checkbox. By activating the checkbox, you agreement to the Magento terms and conditions and are able to proceed to step 2 by clicking on the button `Continue`.
+
+![Magento Installation Wizard - Step 2]({{ "/assets/img/magento_installation_step_02.png" | prepend: site.baseurl }} "Database and Webserver Configuration")
 
 ## Virtual Host Configuration
 
