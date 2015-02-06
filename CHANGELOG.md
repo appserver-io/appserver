@@ -11,7 +11,6 @@
 * Log exceptions thrown in ServletEngine::process method
 * Move OS specific templates and resources to dist packages
 * Allow argument --install-dir for composer post-install-cmd
-* Moved OS specific Windows resources to appserver-io-dist/windows
 * Remove var/www/core_functions.php script and include from server.php
 * Add method logCriticalException() to AbstractServletEngine to simplify exception logging
 
