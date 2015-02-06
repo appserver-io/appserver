@@ -4,6 +4,7 @@
 
 * Fixed missing documentRoot param to persistence-container configuration in appserver.xml
 * Fixed invalid registration of local/remote business interfaces for session beans
+* Fixed XSD validation problems for logger entries based on wrong handlers element namespace
 
 ## Features
 

@@ -44,13 +44,6 @@ class AppserverNode extends AbstractNode
     use ParamsNodeTrait;
 
     /**
-     * The node containing information about the base directory.
-     *
-     * @var \AppserverIo\Appserver\Core\Api\Node\BaseDirectoryNode @AS\Mapping(nodeName="baseDirectory", nodeType="AppserverIo\Appserver\Core\Api\Node\BaseDirectoryNode")
-     */
-    protected $baseDirectory;
-
-    /**
      * The node containing information about the initial context.
      *
      * @var \AppserverIo\Appserver\Core\Api\Node\InitialContextNode @AS\Mapping(nodeName="initialContext", nodeType="AppserverIo\Appserver\Core\Api\Node\InitialContextNode")

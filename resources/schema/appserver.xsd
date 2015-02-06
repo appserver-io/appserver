@@ -315,6 +315,7 @@
     <xs:element name="context">
         <xs:complexType>
             <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element ref="appserver:params"/>
                 <xs:element ref="appserver:classLoaders"/>
                 <xs:element ref="appserver:managers"/>
             </xs:choice>
@@ -910,26 +911,8 @@
     <xs:element name="logger">
         <xs:complexType>
             <xs:choice maxOccurs="unbounded">
+                <xs:element ref="appserver:handlers"/>
                 <xs:element ref="appserver:processors"/>
-                <xs:element name="handlers">
-                    <xs:complexType>
-                        <xs:choice minOccurs="1" maxOccurs="unbounded">
-                            <xs:element name="handler">
-                                <xs:complexType>
-                                    <xs:choice minOccurs="0" maxOccurs="unbounded">
-                                        <xs:element ref="appserver:formatter"/>
-                                        <xs:element ref="appserver:params"/>
-                                    </xs:choice>
-                                    <xs:attribute name="type" type="xs:string" use="required"/>
-                                    <xs:attribute name="uuid" type="xs:string"/>
-                                    <xs:attribute ref="xml:base"/>
-                                </xs:complexType>
-                            </xs:element>
-                        </xs:choice>
-                        <xs:attribute name="uuid" type="xs:string"/>
-                        <xs:attribute ref="xml:base"/>
-                    </xs:complexType>
-                </xs:element>
             </xs:choice>
             <xs:attribute name="type" type="xs:string" use="required"/>
             <xs:attribute name="channelName" type="xs:string" use="required"/>
@@ -1380,53 +1363,21 @@
             </xs:simpleContent>
         </xs:complexType>
     </xs:element>
-    <xs:element name="handler-class">
-        <xs:complexType>
-            <xs:simpleContent>
-                <xs:extension base="xs:string">
-                    <xs:attribute name="uuid" type="xs:string"/>
-                    <xs:attribute ref="xml:base"/>
-                </xs:extension>
-            </xs:simpleContent>
-        </xs:complexType>
-    </xs:element>
-    <xs:element name="handler-mapping">
-        <xs:complexType>
-            <xs:all>
-                <xs:element ref="appserver:handler-name"/>
-                <xs:element ref="appserver:url-pattern"/>
-            </xs:all>
-            <xs:attribute name="uuid" type="xs:string"/>
-            <xs:attribute ref="xml:base"/>
-        </xs:complexType>
-    </xs:element>
-    <xs:element name="handler-name">
-        <xs:complexType>
-            <xs:simpleContent>
-                <xs:extension base="xs:string">
-                    <xs:attribute name="uuid" type="xs:string"/>
-                    <xs:attribute ref="xml:base"/>
-                </xs:extension>
-            </xs:simpleContent>
-        </xs:complexType>
-    </xs:element>
     <xs:element name="handler">
         <xs:complexType>
-            <xs:all>
-                <xs:element ref="appserver:description" minOccurs="0"/>
-                <xs:element ref="appserver:display-name" minOccurs="0"/>
-                <xs:element ref="appserver:handler-name"/>
-                <xs:element ref="appserver:handler-class"/>
-            </xs:all>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element ref="appserver:formatter"/>
+                <xs:element ref="appserver:params"/>
+            </xs:choice>
+            <xs:attribute name="type" type="xs:string" use="required"/>
             <xs:attribute name="uuid" type="xs:string"/>
             <xs:attribute ref="xml:base"/>
         </xs:complexType>
     </xs:element>
     <xs:element name="handlers">
         <xs:complexType>
-            <xs:choice maxOccurs="unbounded">
-                <xs:element ref="appserver:handler-mapping" minOccurs="0"/>
-                <xs:element ref="appserver:handler" minOccurs="0"/>
+            <xs:choice minOccurs="1" maxOccurs="unbounded">
+                <xs:element ref="appserver:handler"/>
             </xs:choice>
             <xs:attribute name="uuid" type="xs:string"/>
             <xs:attribute ref="xml:base"/>
@@ -1595,8 +1546,6 @@
                 <xs:element ref="appserver:description" minOccurs="0" maxOccurs="1"/>
                 <xs:element ref="appserver:session-config" minOccurs="0" maxOccurs="1"/>
                 <xs:element ref="appserver:context-param" minOccurs="0"/>
-                <xs:element ref="appserver:handler" minOccurs="0"/>
-                <xs:element ref="appserver:handler-mapping" minOccurs="0"/>
                 <xs:element ref="appserver:servlet" minOccurs="0"/>
                 <xs:element ref="appserver:servlet-mapping" minOccurs="0"/>
                 <xs:element ref="appserver:security" minOccurs="0"/>
