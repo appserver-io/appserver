@@ -9,17 +9,13 @@ permalink: /get-started/tutorials/running-magento-on-appserver-io.html
 
 **Prerequirements**: *Up and running installation of MySQL*
 
-Appserver.io is a pretty cool and sophiscated infrastructure fully built upon the PHP stack. This makes it truely easy to develop and extend the platform. Appserver.io comes with an built in webserver module with PHP-FPM therefore it is possible to install any PHP-App you like and run it on that platform. The following guide shows you how easy it is to install appserver.io on a Mac and run Wordpress on it.
+appserver.io is a pretty cool and sophiscated infrastructure fully built upon the PHP stack. This makes it truely easy to develop and extend the platform. appserver.io comes with a built in webserver module that provides Fast-CGI support. Therefore it is possible to run and install any PHP application. The following tutorial guides you through the Magento installation process necessary to run on appserver.io.
 
-## Installation:
-First of all you have to download the latest appserver package. You always find the latest and stable release on the
-appserver.io webpage below downloads. We have installers for all important operating systems but in our case we just
-download the .pkg for the Mac. Once you have downloaded the package you just have to follow the steps in the installer.
-After the setup has finished the appserver.io is up and running and you can call the welcome page with
+## Installation
 
-[http://localhost:9080/](<http://localhost:9080/>)
+First of all you have to download the latest appserver package which is available on the appserver.io webpage under downloads. We have installers for all major operating systems, but for that example we just download the `.pkg` for the Mac OS X. Once you have downloaded the package you just have to follow the steps in the installer. After the setup has been finished, try to open the welcome page [http://127.0.0.1:9080/](<http://127.0.0.1:9080/>) with your favorite browser.
 
-By default appserver.io is configured to run on port `9080` in order not to affect any existing webserver installations. You can easily change that in the /opt/appserver/etc/appserver.xml just by going to section
+By default appserver.io is configured to run on port `9080` in order not to affect any existing webserver installations. You can easily change that in the `/opt/appserver/etc/appserver.xml` just by going to section
 
 ```xml
 <server name="http"
