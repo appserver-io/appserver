@@ -39,43 +39,48 @@ $ cd /opt/appserver/webapps
 $ tar xvfz magento-community-1.9.1.0.tar.gz
 ```
 
-This will create a folder `magento` and extracts the Magento source files to it.
-
-After successfully unpacking the Magento sources you are able to use the Magento intaller by just opening `http://127.0.0.1:9080/magento` with your favourite browser. Before you step over to the installation you **MUST** correct the rights of the `magento` folder to ensure Magento is able to write the configuration.
+This will create a folder `magento` and extracts the Magento source files to it. Before you're able to step over to installation you **MUST** correct the rights of the `magento` folder to ensure Magento is able to write the configuration files.
 
 ```bash
-sudo chown -R _www:staff 
+sudo chown -R _www:staff magento
 sudo chmod -R 775 magento
 ```
 
-Now you are free to step over the installation wizard and for that it is necessary to create a database on your local running mysql. To create a database you can use the mysql command line or just use another database administration tool like phpMyAdmin. Of course you can also install phpMyAdmin on appserver.io. <a href="{{ "/get-started/documentation/tutorials/running-phpmyadmin-on-appserver-io.html" | prepend: site.baseurl }}"> Just read the appropriate tutorial.</a>
-
-To create the database by the command line just use the following line
+Additional Magento requires an existing MySQL database and an user that has access to the database. To create the database and the user, we use the MySQL commandline utilities. To log in to the MySQL commandline utilities, type
 
 ```bash
-mysql -uroot -p
+$ mysql -uroot -p
 ```
 
-Now you are on the mysql command line and it is pretty easy to create an empty database. Just use the following command.
-
-```sql
-CREATE DATABASE wordpress;
-```
-
-Now you are ready to install wordpress. Just follow to steps on the install wizard.
-
-If you want to use a virtual host to run wordpress simply follow the steps below. As with any other Webserver using a vhost you first have to add the domain you'd like to use in your hosts file.
+on your system commandline. After successful login, we can create the database, the user and the password with
 
 ```bash
-sudo vi /etc/hosts
+mysql> create database magento;
+mysql> grant all on magento.* to "magento"@"localhost" identified by "magento";
+mysql> flush privileges;
+```
+
+Optional you can use another database administration tool like `phpMyAdmin` to create the database. Of course you can also install [phpMyAdmin](<{{"/get-started/documentation/tutorials/running-phpmyadmin-on-appserver-io.html" | prepend: site.baseurl }}">) on appserver.io.
+
+Now, as you're prepared to step through the Magento installer, start your favourite browser and open 
+`http://127.0.0.1:9080/magento`.
+
+If you alread installed wordpress and now you want to use the configured filename you just have to change the siteurl in the settings menu of wordpress.
+
+## Virtual Host Configuration
+
+If you want to use a virtual host to run Magento simply follow the steps below. As with any other webserver using a virtual host, you first have to add the domain you like to use in your hosts file.
+
+```bash
+$ sudo vi /etc/hosts
 ```
 
 Add the following lines there:
 
 ```bash
-127.0.0.1 wordpress.local
-::1 wordpress.local
-fe80::1%lo0 wordpress.local
+127.0.0.1 magento.dev
+::1 magento.dev
+fe80::1%lo0 magento.dev
 ```
 
 Afterwards you have to add the vhost to the webserver config of the appserver which you also find in
@@ -96,5 +101,3 @@ After adding the Vhost you have to restart the appserver and you should start wi
 ```bash
 sudo /opt/appserver/sbin/appserverctl restart
 ```
-
-If you alread installed wordpress and now you want to use the configured filename you just have to change the siteurl in the settings menu of wordpress.
