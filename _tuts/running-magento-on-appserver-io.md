@@ -22,23 +22,30 @@ By default appserver.io is configured to run on port `9080` in order not to affe
 	...
 ```
 
-and change the port within that section to for example 80. After that you have to restart the appserver.io which can be done by the following command.
+and change the port within that section to for example `80`. After that you have to restart with
 
 ```bash
-sudo /opt/appserver/sbin/appserverctl restart
+$ sudo /opt/appserver/sbin/appserverctl restart
 ```
 
-Of course there is no need to change the port if you only want ot check out the capabilities of this amazing platform.
+Of course there is no need to change the port if you only want ot check out the capabilities of appserver.io.
 
-You are now set to install and run your application on appserver.io. For that we download the latest wordpress releasefrom wordpress.org.
+You are now set to install and run your application on appserver.io. To start, you've to [download]((http://www.magentocommerce.com/download)) the latest Magento CE version from the Magento website.
 
-To go ahead and install wordpress we have now two options. The easiest way is to install wordpress without creating a vhost. Therefore you just unpack the wordpress source into your Webrootfolder which in case of the appserver is always the webapps folder underneath /opt/appserver/webapps/. In that folder you will still find the already installed example app and of course the welcome page. We are just creating a folder with name „newtypo3“ and unpacking the source there.
-
-After successfully unpacking the wordpress sources you are able to use the wordpress webinstaller just by opening a
-browser and calling the URL http://127.0.0.1:9080/wordpress/. Before you step over the installation you should correct the rights of the wordpress folder to ensure wordpress is able to write the configuration.
+To go ahead and install Magento, we have now two options. The easiest way is to install Magento without creating a vhost. Therefore you just extract the Magento source into the document root under `/opt/appserver/webapps` by opening a commandline and type
 
 ```bash
-chmod -R 775 /opt/appserver/webapps/wordpress/
+$ cd /opt/appserver/webapps
+$ tar xvfz magento-community-1.9.1.0.tar.gz
+```
+
+This will create a folder `magento` and extracts the Magento source files to it.
+
+After successfully unpacking the Magento sources you are able to use the Magento intaller by just opening `http://127.0.0.1:9080/magento` with your favourite browser. Before you step over to the installation you **MUST** correct the rights of the `magento` folder to ensure Magento is able to write the configuration.
+
+```bash
+sudo chown -R _www:staff 
+sudo chmod -R 775 magento
 ```
 
 Now you are free to step over the installation wizard and for that it is necessary to create a database on your local running mysql. To create a database you can use the mysql command line or just use another database administration tool like phpMyAdmin. Of course you can also install phpMyAdmin on appserver.io. <a href="{{ "/get-started/documentation/tutorials/running-phpmyadmin-on-appserver-io.html" | prepend: site.baseurl }}"> Just read the appropriate tutorial.</a>
