@@ -21,7 +21,7 @@
                 {% if slide.text %}{{ slide.text }}<br>{% endif %}
                 {% if slide.link-label %}<a href="{{ slide.link-href | prepend: site.baseurl }}" class="btn btn-lg btn-info-highlight"><i class="fa fa-download fa-lg"></i>&nbsp;&nbsp;{{ slide.link-label }}</a>{% endif %}
                 <br/><br/>
-                <p class="carousel-info">Version {{ site.appserver_version }}&nbsp;&nbsp;·&nbsp;&nbsp;<a href="{{ "/get-started/documentation.html" | prepend: site.baseurl }}" ><i class="fa fa-book"></i> Documentation</a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="{{ site.github_repository }}"><i class="fa fa-github"></i> Github Project</a></p>
+                <p class="carousel-info">Version {{ site.appserver_version }}&nbsp;&nbsp;·&nbsp;&nbsp;<a href="{{ "/get-started/documentation.html" | prepend: site.baseurl }}" ><i class="fa fa-book"></i> Documentation</a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="{{ site.github_repository }}"><i class="fa fa-github"></i> Github Project</a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="{{ site.gitter }}"><i class="fa fa-weixin"></i> Gitter Support Chat</a></p>
             </div>
         </div>
         {% endif %}
