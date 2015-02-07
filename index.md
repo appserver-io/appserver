@@ -37,6 +37,13 @@ boxes-targetgroups:
     link-label  : Learn more
 ---
 
+
+<section class="grey small midsizefont text-right">
+<div class="container">
+<a href="{{ "/get-started/documentation.html" | prepend: site.baseurl }}" class="white"><i class="fa fa-book"></i> Documentation</a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="{{ site.github_repository }}"><i class="fa fa-github"></i> Github Project</a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="{{ site.github_gitter }}"><i class="fa fa-weixin"></i> Gitter Support Chat</a>
+</div>
+</section>
+
 <section>
 <div class="container">
 

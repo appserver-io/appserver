@@ -19,8 +19,30 @@ section.inverted {
   color: #fafafa;
 }
 
+section.small {
+    padding: 25px 0;
+}
+
 section.grey {
   background-color: #fafafa;
+}
+
+section.darkgrey {
+  background-color: #222222;
+  color: #fafafa;
+}
+
+section.red {
+  background-color: #a82629;
+  color: #fafafa;
+}
+
+section.red a, section.blue a  {
+  color: #fafafa;
+}
+
+section.midsizefont {
+  font-size: 100%;
 }
 
 section.black {
