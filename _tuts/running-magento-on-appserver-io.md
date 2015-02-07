@@ -11,6 +11,8 @@ subNav:
     href: securing-your-installation
   - title: Virtual Host Configuration
     href: virtual-host-configuration
+  - title: Rotating Logfiles
+    href: rotating-logfiles
   - title: Executing Magento CRON Jobs
     href: executing-magento-cron-jobs
 permalink: /get-started/tutorials/running-magento-on-appserver-io.html
