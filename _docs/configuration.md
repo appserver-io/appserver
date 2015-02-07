@@ -16,7 +16,7 @@ subNav:
     href: configuration-defaults
   - title: Optional Configuration
     href: optional-configuration
-permalink: /documentation/configuration.html
+permalink: /get-started/documentation/configuration.html
 ---
 
 We believe that the appserver should be highly configurable, so anyone interested can fiddle 

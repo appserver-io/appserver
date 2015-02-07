@@ -1,6 +1,5 @@
 ---
-layout: redirect
-title: What is appserver.io
+layout: default
 permalink: /what-is-appserver-io.html
 redirect: /products.html
 ---

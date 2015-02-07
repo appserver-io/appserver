@@ -7,7 +7,7 @@ version: 1.0.0-rc1
 categories: [persistence-container]
 ---
 
-Maybe you had a look at our previous post about the [Servlet-Engine Basics](<{{ "/servlet-engine/2014/12/24/servlet-engine-basics.html" | prepend: site.baseurl }}>). Beside the `Servlet-Engine`, the [Persistence-Container](http://appserver.io/documentation/persistence-container.html) is one of the main services appserver.io provides. The name `Persistence-Container`, can lead to some missunderstanding in our case, as many people think that it mostly refers to database persistence. In Java there are EJB-Containers that provide a broad set of functionalities like [Bean- or Container-Managed-Persistence](http://en.wikipedia.org/wiki/Enterprise_JavaBeans), whereas appserver.io actually only provides a small subset of the functionality as plattforms like [Wildfly](http://en.wikipedia.org/wiki/WildFly) does. Persisting data to a database is only one functionality the `Persistence-Container` can provide, but by far not the most important one.
+Maybe you had a look at our previous post about the [Servlet-Engine Basics](<{{ "/servlet-engine/2014/12/24/servlet-engine-basics.html" | prepend: site.baseurl }}>). Beside the `Servlet-Engine`, the [Persistence-Container](<{{ "/get-started/documentation/persistence-container.html" | prepend: site.baseurl }}>) is one of the main services appserver.io provides. The name `Persistence-Container`, can lead to some missunderstanding in our case, as many people think that it mostly refers to database persistence. In Java there are EJB-Containers that provide a broad set of functionalities like [Bean- or Container-Managed-Persistence](http://en.wikipedia.org/wiki/Enterprise_JavaBeans), whereas appserver.io actually only provides a small subset of the functionality as plattforms like [Wildfly](http://en.wikipedia.org/wiki/WildFly) does. Persisting data to a database is only one functionality the `Persistence-Container` can provide, but by far not the most important one.
 
 ## New options using a Persistence-Container
 ***
@@ -47,7 +47,7 @@ On each request an new `SLSB` instance will be created. After handling the reque
 
 ##### Example
 
-So let's implement a `SLSB` that provides functionality to create a user from the arguments passed to the `createUser()` method. The `SLSB` will be registered under the name `AStatelessSessionBean` in the application servers `Naming Directory`. Registering a bean in the `Naming Directory` is necessary to use it for `Dependency Injection` explained in our [documentation](<{{ "/documentation/dependency-injection.html" | prepend: site.baseurl }}>).
+So let's implement a `SLSB` that provides functionality to create a user from the arguments passed to the `createUser()` method. The `SLSB` will be registered under the name `AStatelessSessionBean` in the application servers `Naming Directory`. Registering a bean in the `Naming Directory` is necessary to use it for `Dependency Injection` explained in our [documentation](<{{ "/get-started/documentation.html" | prepend: site.baseurl }}>).
 
 ```php
 <?php
@@ -545,7 +545,7 @@ Other than session beans, `MDBs` are **NOT** invoked by a proxy, but as receiver
 
 > Using `MDBs` enables you to execute long running processes `asynchronously`, because you don't have to wait for an answer after sending a message to the `Message Broker`. In opposite to session beans, `MDBs` have to implement the `AppserverIo\Psr\Pms\MessageListenerInterface` interface. Like session beans, `MDBs` **MUST** provide a non-argument constructor, optionally no constructor.
 
-As `MDBs` are mostly used in context of a [Message-Queue](<{{ "/documentation/message-queue.html" | prepend: site.baseurl }}>), this blog post will not describe functionality in deep. Instead we'll write a separate blog post that is all about `MDBs` and context of a `Message-Queue`.
+As `MDBs` are mostly used in context of a [Message-Queue](<{{ "/get-started/documentation/message-queue.html" | prepend: site.baseurl }}>), this blog post will not describe functionality in deep. Instead we'll write a separate blog post that is all about `MDBs` and context of a `Message-Queue`.
 
 ### Lifecycle Callbacks
 
@@ -631,7 +631,7 @@ This extends the `SSB` with some kind of real persistence by loading the counter
 
 ### Interceptors
 
-`Interceptors` enables a developer to weave cross-cutting concerns into his application, without adding code to business methods. The functionality behind the secenes is [AOP](<{{ "/documentation/aop.html" | prepend: site.baseurl }}>) and an `Interceptor` is nothing else than an advice.
+`Interceptors` enables a developer to weave cross-cutting concerns into his application, without adding code to business methods. The functionality behind the secenes is [AOP](<{{ "/get-started/documentation/aop.html" | prepend: site.baseurl }}>) and an `Interceptor` is nothing else than an advice.
 
 To add a very basic ACL authorization functionality that use an `Interceptor`, we've to implement a simple aspect first. The aspect looks like this
 
@@ -640,7 +640,7 @@ To add a very basic ACL authorization functionality that use an `Interceptor`, w
 
 namespace AppserverIo\Example\Aspects;
 
-use AppserverIo\Doppelgaenger\Entities\MethodInvocation;
+use AppserverIo\Doppelgaenger\Interfaces\MethodInvocationInterface;
 
 /**
  * @Aspect
@@ -651,14 +651,16 @@ class AuthorizationInterceptor
   /**
    * Advice used to check user authorization on method call.
    *
-   * @param \AppserverIo\Doppelgaenger\Entities\MethodInvocation $methodInvocation 
+   * @param \AppserverIo\Doppelgaenger\Interfaces\MethodInvocationInterface $methodInvocation 
    *   Initially invoked method
    *
    * @return void
    * @throws \AppserverIo\Example\Exceptions\AuthorizationException
    *   Is thrown if access is denied for the user logged into the system
+   *
+   * @Before
    */
-  public function authorize(MethodInvocation $methodInvocation)
+  public function authorize(MethodInvocationInterface $methodInvocation)
   {
 
     // load class and method name
@@ -796,4 +798,4 @@ The `AclSessionBean` is **NOT** implemented in this example, because this blog p
 
 Builing an application or components by using `Server-Side Component Types` gives developers powerful options concerning performance, scalability and reusability. In combination with the `Servlet-Engine` developers are able to build high-performance, stateful web applications by taking advantage of enterprise services like a `Message-Queue` or the `Timer-Service` and a rock-solid infrastructure.
 
-To be in the scope of a blog post, it is only possible to focus on the major functionality of the `Persistence-Container`. Above the described components, there is much more functionality that is part of the `Persistence-Container` or have a massive impact on development when working with it. To cover all that stuff bit by bit, we'll step deeper into the application servers `Naming-Directory` with our next blog post.
+To be in the scope of a blog post, it is only possible to focus on the major functionality of the `Persistence-Container`. Above the described components, there is much more functionality that is part of the `Persistence-Container` or have a massive impact on development when working with it. To cover all that stuff bit by bit, we'll step deeper into the application servers [Naming-Directory](<{{ "/naming-directory/2015/02/04/naming-directory-basics.html" | prepend: site.baseurl }}>) with our next blog post.

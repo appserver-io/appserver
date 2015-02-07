@@ -16,11 +16,15 @@ baseurl: ""
 url: "http://appserver.io"
 
 collections:
+  redirects:
+    output: true
   docs:
     output: true
   faq:
     output: true
   tuts:
+    output: true
+  roadmap:
     output: true
   features:
     path: products/
@@ -28,10 +32,12 @@ collections:
 twitter_username: php_appserver
 
 github_username:  appserver-io
-github_repository: https://github.com/appserver.io/appserver
+github_repository: https://github.com/appserver-io/appserver
 github_issue: https://github.com/appserver-io/appserver/issues/
 
 google_analytics_id: UA-42386171-1
+
+appserver_version: 1.0.0rc1
 
 markdown: redcarpet
 redcarpet:

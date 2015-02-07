@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  Dependency Injection Basics
-date:   2015-02-04 12:00:00
+date:   2015-02-08 12:00:00
 author: wagnert
 version: 1.0.0-rc1
 categories: [dependency-injection]

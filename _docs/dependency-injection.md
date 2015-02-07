@@ -8,7 +8,7 @@ subNav:
     href: what-can-be-injected
   - title: How to inject an instance
     href: how-to-inject-an-instance
-permalink: /documentation/dependency-injection.html
+permalink: /get-started/documentation/dependency-injection.html
 ---
 
 Dependency Injection, furthermore DI, enables developers to write cleaner, reusable and maintainable

@@ -1,14 +1,14 @@
 ---
 layout: faq
 title: Tools
-position: 10
+position: 30
 group: FAQ
 subNav:
   - title: This is question 1?
     href: this-is-question-1?
   - title: And this is question 2?
     href: ant-this-is-question-2?
-permalink: /faq/tools.html
+permalink: /get-started/faq/tools.html
 ---
 
 ### This is question 1?

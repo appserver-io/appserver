@@ -9,9 +9,15 @@ permalink: /about/team.html
 # Team
 ***
 
-We really believe that we can change the world by providing you with the next generation PHP infrastructure:
-<p><br/></p>
+The TechDivision GmbH is an established internet agency who supports famous national and international customers with
+the planning, conception and implementation of web-based technologies already for years. As Magento Gold Partner and
+TYPO3 Association Gold Member TechDivision is one of the leading addresses for ambitious Magento- and TYPO3 solutions.
+Beside divers medium-sized companies a lot of international acting companies, such as Ritter-Sport, American Express,
+Meggle or Ferrero trust the know-how and experience of TechDivision. Actually TechDivision has 3 locations in
+Rosenheim/Kolbermoor and Munich.
 
+We really believe that we can change the world by providing you with the next generation PHP infrastructure:
+<br/>
 
 <div class="well">
     <div class="row">

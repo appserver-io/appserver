@@ -12,7 +12,7 @@ subNav:
     href: stateful-sessionbean
   - title: Example
     href: example
-permalink: /documentation/persistence-container.html
+permalink: /get-started/documentation/persistence-container.html
 ---
 
 As described in the introduction the application is designed inside a runtime environment like

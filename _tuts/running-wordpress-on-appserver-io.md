@@ -4,7 +4,7 @@ title: Running Wordpress on appserver.io
 description: It shows you how easy it is to install appserver.io on a Mac and run Wordpress on it.
 position: 20
 group: Tutorials
-permalink: /documentation/tutorials/running-wordpress-on-appserver-io.html
+permalink: /get-started/tutorials/running-wordpress-on-appserver-io.html
 ---
 
 **Prerequirements**: *Up and running installation of MySQL*
@@ -58,7 +58,7 @@ chmod -R 775 /opt/appserver/webapps/wordpress/
 Now you are free to step over the installation wizard and for that it is necessary to create a database on your local
 running mysql. To create a database you can use the mysql command line or just use another database administration tool
 like phpMyAdmin. Of course you can also install phpMyAdmin on appserver.io. 
-<a href="{{ "/documentation/tutorials/running-phpmyadmin-on-appserver-io.html" | prepend: site.baseurl }}">
+<a href="{{ "/get-started/documentation/tutorials/running-phpmyadmin-on-appserver-io.html" | prepend: site.baseurl }}">
 Just read the appropriate tutorial.</a>
 
 To create the database by the command line just use the following line

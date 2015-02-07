@@ -1,7 +1,9 @@
 ---
 layout: default
 title: Contact
-permalink: /contact.html
+position: 50
+group: About
+permalink: /about/contact.html
 ---
 
 # Contact

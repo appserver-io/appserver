@@ -4,16 +4,19 @@ title: Home
 position: 0
 permalink: /
 slider:
-  - title : PHP revolution is only a few days away
-    link-href : /downloads.html
-    link-label : DOWNLOAD BETA NOW
-    img : /assets/img/slider_jday.png
-    countdown : true
-  - title : Apply for a revolutionary partnership 
-    link-href : /partners.html
-    link-label : APPLY NOW
-    img : /assets/img/Slider_02_Handshake_grey.png
-    countdown : false
+  - title: PHP revolution is only a few days away
+    link-href: /downloads.html
+    link-label: Download
+    img: /assets/img/slider_jday.png
+    countdown: true
+  - title: Apply for a revolutionary partnership
+    link-href: /partners.html
+    link-label: Apply now
+    img: /assets/img/Slider_02_Handshake_grey.png
+    countdown: false
+  - title: The next-generation PHP infrastructure
+    img: /assets/img/slider_appserver_zoom_slogo.jpg
+    countdown: false
 
 boxes-targetgroups:
   - title       : For Developers

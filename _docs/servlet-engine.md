@@ -14,7 +14,7 @@ subNav:
     href: starting-a-session
   - title: Optional XML Configuration
     href: optional-xml-configuration
-permalink: /documentation/servlet-engine.html
+permalink: /get-started/documentation/servlet-engine.html
 ---
 
 Originally Servlets are the Java counterpart to other dynamic web technologies like PHP or the
@@ -389,9 +389,9 @@ complicated thing and we tried to break it down to be as simple as we can imagin
 to configure anything, but you still have to option to configure everything in a XML configuration file that
 has to be stored in you applications `WEB-INF` folder as `web.xml`.
 
-> Other as a simple web server, we've the possiblity to hold a number of sessions persistent in the application
+> Other as a simple web server, we've the possibility to hold a number of sessions persistent in the application
 > servers memory. This ensures great performance on the one hand, but came with great responsibility for the
-> developer on the other. By writing an application that should be runned in an application server, you have to
+> developer on the other. By writing an application that should be run in an application server, you have to
 > be aware of what you are doing and have a look at the memory footprint of your application.
 
 ## Optional XML Configuration
@@ -676,7 +676,7 @@ You must specify a name, unique in your application, for the servlet here. This 
 [map](#servlet-mapping) your servlet to a request URL later.
 
 ##### `/web-app/servlet/servlet-class` *string*
-The Servlet-Engine needs to know, which class has to instanciated when initializing the servlet. So you have to specify the fully qualified name of your servlet here.
+The Servlet-Engine needs to know, which class has to instantiated when initializing the servlet. So you have to specify the fully qualified name of your servlet here.
 
 ##### `/web-app/servlet/init-param` *string*
 You can specifiy a random number of initialization parameters here. The parameters will be parsed when the
