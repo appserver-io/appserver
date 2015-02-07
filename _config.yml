@@ -33,6 +33,7 @@ twitter_username: php_appserver
 
 github_username:  appserver-io
 github_repository: https://github.com/appserver-io/appserver
+github_gitter: https://gitter.im/appserver-io/appserver
 github_issue: https://github.com/appserver-io/appserver/issues/
 
 google_analytics_id: UA-42386171-1
