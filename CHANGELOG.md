@@ -1,3 +1,13 @@
+# Version 1.0.0-rc3
+
+## Bugfixes
+
+* Fixed error by adding clearstatcache() when adding additional files to logrotate configuration
+
+## Features
+
+* None
+
 # Version 1.0.0-rc2
 
 ## Bugfixes
