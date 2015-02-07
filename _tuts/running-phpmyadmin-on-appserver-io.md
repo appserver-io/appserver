@@ -1,5 +1,5 @@
 ---
-layout: tuts
+layout: tutorial
 title: Running phpMyAdmin on appserver.io
 description: It shows you how easy it is installing phpMyAdmin on appserver.io
 position: 40

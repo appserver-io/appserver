@@ -1,5 +1,5 @@
 ---
-layout: tuts
+layout: tutorial
 title: Tutorials
 headline: Tutorials
 group: Get Started

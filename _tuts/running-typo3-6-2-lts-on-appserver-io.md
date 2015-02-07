@@ -1,5 +1,5 @@
 ---
-layout: tuts
+layout: tutorial
 title: Running TYPO3 6.2 LTS on appserver.io
 description: It shows you how easy it is to install appserver.io on a Mac and run TYPO3 6.2 on it.
 position: 10
