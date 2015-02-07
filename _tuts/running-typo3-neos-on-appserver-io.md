@@ -1,6 +1,6 @@
 ---
 layout: tutorial
-title: Running TYPO3 Neos on appserver.io
+title: Running TYPO3 Neos
 description: It shows you how easy it is to install appserver.io on a Mac and run TYPO3 Neos on it.
 position: 20
 group: Tutorials
