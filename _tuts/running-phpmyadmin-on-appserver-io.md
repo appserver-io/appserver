@@ -54,3 +54,5 @@ chmod -R 775 /opt/appserver/webapps/phpmyadmin/
 Now you are able to login into your phpMyAdmin installation just by opening the following URL in your favourite browser.
 
 [http://localhost:9080/phpmyadmin](<http://localhost:9080/phpmyadmin>)
+
+Just log in with your mysql credentials and you are able administer your database.
