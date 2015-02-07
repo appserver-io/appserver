@@ -8,7 +8,7 @@ subNav:
   - title: Installation
     href: installation
   - title: Securing your Installation
-    href: important-terms
+    href: securing-your-installation
   - title: Virtual Host Configuration
     href: virtual-host-configuration
   - title: Executing Magento CRON Jobs
