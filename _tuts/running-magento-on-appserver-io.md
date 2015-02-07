@@ -138,7 +138,7 @@ After that, the `application.xml` file should look like that
 	    		...
 	    		<server name="http" ...>
     				...
-				    <accesses>
+				<accesses>
 				        <!-- per default deny everything -->
 				        <!-- access type="allow">
 				            <params>
@@ -152,9 +152,9 @@ After that, the `application.xml` file should look like that
 				                </param>
 				            </params>
 				        </access>
-				    </accesses>
-				    ...
-				</server>
+				</accesses>
+				...
+			</server>
 	    		<server name="https" ...>
     				...
 				    <accesses>
@@ -181,6 +181,19 @@ After that, the `application.xml` file should look like that
 ```
 
 [Restart]((<{{"/get-started/documentation/basic-usage.html#start-and-stop-scripts" | prepend: site.baseurl }}">)) the application server and open the dashboard again. The security warning should have gone!
+
+## Adding Rewrites
+
+Adding rewrite funtionality for your Magento installation is very similar to make it secure. Add the following lines to `<server name="http">...</server>` and  `<server name="https">...</server>` nodes.
+
+```xml
+<rewrites>
+	<rewrite condition="-d{OR}-f{OR}-l" target="" flag="L" />
+        <rewrite condition="/magento/(.*)" target="index.php/$1" flag="L" />
+</rewrites>
+```
+
+[Restart]((<{{"/get-started/documentation/basic-usage.html#start-and-stop-scripts" | prepend: site.baseurl }}">)) the application server and proceed to activate the Magento Rewrite functionality in the `admin` panel.
 
 ## Virtual Host Configuration
 
