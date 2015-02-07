@@ -228,8 +228,13 @@ $ mysql -uroot -p
 and execute the following SQL statements
 
 ```sql
-UPDATE magento.core_config_data SET value = 'https://magento.dev:9443/' WHERE path = 'web/secure/base_url';
-UPDATE magento.core_config_data SET value = 'http://magento.dev:9080/' WHERE path = 'web/unsecure/base_url';
+UPDATE magento.core_config_data \ 
+   SET value = 'https://magento.dev:9443/' \ 
+ WHERE path = 'web/secure/base_url';
+ 
+UPDATE magento.core_config_data \
+   SET value = 'http://magento.dev:9080/' \ 
+WHERE path = 'web/unsecure/base_url';
 ```
 
 Clear the Magento cache by executing
@@ -239,6 +244,36 @@ $ sudo rm -rf /opt/appserver/webapps/magento/var/cache/*
 ```
 
 and you're all set. Start your favorite browser and open the URL `http://magento.dev:9080`, voilá!
+
+## Rotating Logfiles
+
+Rotating the Magento Logfiles can also be activated by adding the following below the `params` node
+
+```xml
+<appserver ... >
+    ...
+    <scanners>
+        <scanner 
+            name="logrotate-magento" 
+            type="AppserverIo\Appserver\Core\Scanner\LogrotateScanner">
+            <params>
+                <param name="interval" type="integer">1</param>
+                <param name="extensionsToWatch" type="string">log</param>
+                <param name="maxFiles" type="integer">10</param>
+                <param name="maxSize" type="integer">1048576</param>
+            </params>
+            <directories>
+                <directory>webapps/magento/var/log</directory>
+            </directories>
+         </scanner>
+    </scanners>
+    ...
+</appserver>
+```
+
+> Keep in mind, that the directory `webapps/magento/var/log` has to be relative from the application servers base directory. You can also add multiple `<directory>` nodes pointing to directories containing files to be rotated.
+
+After [restarting]((<{{"/get-started/documentation/basic-usage.html#start-and-stop-scripts" | prepend: site.baseurl }}">)) the application server, your Magento log files will be rotated every day, or if they reached 1 MB.
 
 ## Executing Magento CRON Jobs
 
