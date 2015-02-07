@@ -1,6 +1,6 @@
 ---
 layout: tutorial
-title: Running phpMyAdmin on appserver.io
+title: Running phpMyAdmin
 description: It shows you how easy it is installing phpMyAdmin on appserver.io
 position: 40
 group: Tutorials

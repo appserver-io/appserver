@@ -1,10 +1,10 @@
 ---
 layout: tutorial
-title: Running Wordpress
-description: It shows you how easy it is to install appserver.io on a Mac and run Wordpress on it.
+title: Running Drupal
+description: It shows you how easy it is to install drupal on appserver.io.
 position: 20
 group: Tutorials
-permalink: /get-started/tutorials/running-wordpress-on-appserver-io.html
+permalink: /get-started/tutorials/running-drupal-on-appserver-io.html
 ---
 
 **Prerequirements**: *Up and running installation of MySQL*
@@ -39,20 +39,26 @@ sudo /opt/appserver/sbin/appserverctl restart
 
 Of course there is no need to change the port if you only want ot check out the capabilities of this amazing platform.
 
-You are now set to install and run your application on appserver.io. For that we download the latest wordpress release
-from wordpress.org.
+You are now set to install and run your application on appserver.io. For that we download the latest drupal release
+from drupal.org.
 
-To go ahead and install wordpress we have now two options. The easiest way is to install wordpress without creating a
-vhost. Therefore you just unpack the wordpress source into your Webrootfolder which in case of the appserver is always
+To go ahead and install drupal we have now two options. The easiest way is to install drupal without creating a
+vhost. Therefore you just unpack the drupal source into your Webrootfolder which in case of the appserver is always
 the webapps folder underneath /opt/appserver/webapps/. In that folder you will still find the already installed example
-app and of course the welcome page. We are just creating a folder with name „wordpress“ and unpacking the source there.
+app and of course the welcome page. We are just creating a folder with name „drupal“ and unpacking the source there.
 
-After successfully unpacking the wordpress sources you are able to use the wordpress webinstaller just by opening a
-browser and calling the URL http://127.0.0.1:9080/wordpress/. Before you step over the installation you should correct
-the rights of the wordpress folder to ensure wordpress is able to write the configuration.
+After successfully unpacking the drupal sources you are able to use the drupal webinstaller just by opening a
+browser and calling the URL http://127.0.0.1:9080/drupal/. Before you step over the installation it is necessary
+to create a settings.php file. For that you can just copy the default settings
 
 ```bash
-chmod -R 775 /opt/appserver/webapps/wordpress/
+cp /opt/appserver/webapps/drupal/sites/default/default.settings.php /opt/appserver/webapps/drupal/sites/default/settings.php
+```
+
+In addition to that you should correct the rights of the drupal folder to ensure drupal is able to write the configuration.
+
+```bash
+chmod -R 775 /opt/appserver/webapps/drupal/
 ```
 
 Now you are free to step over the installation wizard and for that it is necessary to create a database on your local
@@ -70,12 +76,14 @@ mysql -uroot -p
 Now you are on the mysql command line and it is pretty easy to create an empty database. Just use the following command.
 
 ```sql
-CREATE DATABASE wordpress;
+CREATE DATABASE drupal;
 ```
 
-Now you are ready to install wordpress. Just follow to steps on the install wizard.
+Now you are ready to install drupal. Just follow to steps on the install wizard.
 
-If you want to use a virtual host to run wordpress simply follow the steps below. As with any other Webserver using a
+
+
+If you want to use a virtual host to run drupal simply follow the steps below. As with any other Webserver using a
 vhost you first have to add the domain you'd like to use in your hosts file.
 
 ```bash
@@ -85,9 +93,9 @@ sudo vi /etc/hosts
 Add the following lines there:
 
 ```bash
-127.0.0.1 wordpress.local
-::1 wordpress.local
-fe80::1%lo0 wordpress.local
+127.0.0.1 drupal.local
+::1 drupal.local
+fe80::1%lo0 drupal.local
 ```
 
 Afterwards you have to add the vhost to the webserver config of the appserver which you also find in
@@ -95,10 +103,10 @@ Afterwards you have to add the vhost to the webserver config of the appserver wh
 available there. Put the following configuration within the <virtualHosts> tag.
 
 ```xml
-<virtualHost name="wordpress.local">
+<virtualHost name="drupal.local">
     <params>
         <param name="admin" type="string">info@appserver.io</param>
-        <param name="documentRoot" type="string">webapps/wordpress</param>
+        <param name="documentRoot" type="string">webapps/drupal</param>
     </params>
 </virtualHost>
 ```
@@ -109,6 +117,3 @@ the beginning of this tutorial
 ```bash
 sudo /opt/appserver/sbin/appserverctl restart
 ```
-
-If you alread installed wordpress and now you want to use the configured filename you just have to change the siteurl
-in the settings menu of wordpress.
