@@ -44,7 +44,7 @@ boxes-targetgroups:
 </div>
 </section>
 
-<section>
+<section class="darkgrey">
 <div class="container">
 
 <h1><i class="fa fa-cubes"></i> Comparison of PHP infrastructural components</h1>
