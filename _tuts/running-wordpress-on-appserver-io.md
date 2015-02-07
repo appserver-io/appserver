@@ -1,5 +1,5 @@
 ---
-layout: tuts
+layout: tutorial
 title: Running Wordpress on appserver.io
 description: It shows you how easy it is to install appserver.io on a Mac and run Wordpress on it.
 position: 20

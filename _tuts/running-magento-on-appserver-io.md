@@ -1,5 +1,5 @@
 ---
-layout: tuts
+layout: tutorial
 title: Running Magento on appserver.io
 description: It shows you how easy it is to install appserver.io on a Mac and run Magento on it.
 position: 20
