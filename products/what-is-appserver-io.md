@@ -1,21 +1,30 @@
 ---
-layout: default
+layout: sections
 title: What is appserver.io?
 position: 10
 group: Products
 permalink: /products/what-is-appserver-io.html
 ---
 
-# <i class="fa fa-question-circle"></i> What is appserver.io?
-***
+<section class="bluepink">
+<div class="container">
+<h1><i class="fa fa-question-circle"></i> What is appserver.io?</h1>
 
 appserver.io is a next generation PHP infrastructure. It is not a webserver like Apache or nginx, nor a Timer Service or Message Queue. It is all of them and much more in one extremely powerful bundle. And it is completely written in PHP enabling PHP developers to adapt appserver.io to their specific needs with no additional coding language - just PHP!
+<br /> <br />
+<h2>Or in other words: appserver.io is the PHP infrastructure for the future!</h2>
+</div>
+</section>
 
-**Or in other words: appserver.io is the PHP infrastructure for the future!**
+<section>
+<div class="container">
+    <p><img src="{{ "/assets/img/appserver-stack.png" | prepend: site.baseurl }}" class="img-responsive" title="appserver.io stack" /></p>
+</div>
+</section>
 
-![alt text]({{ "/assets/img/appserver-stack.png" | prepend: site.baseurl }} "appserver.io stack")
-
-## <i class="fa fa-info-circle"></i> Want to learn more about the power of appserver.io?
+<section class="grey">
+<div class="container">
+<h2><i class="fa fa-info-circle"></i> Want to learn more about the power of appserver.io?</h2>
 
 You are interested and want to learn more about the of appserver.io. See the different sections below.
 
@@ -62,3 +71,5 @@ You are interested and want to learn more about the of appserver.io. See the dif
 
     </div>
 </div>
+</div>
+</section> 
