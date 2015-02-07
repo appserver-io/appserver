@@ -4,6 +4,15 @@ title: Running Magento on appserver.io
 description: It shows you how easy it is to install appserver.io on a Mac and run Magento on it.
 position: 20
 group: Tutorials
+subNav:
+  - title: Installation
+    href: installation
+  - title: Securing your Installation
+    href: important-terms
+  - title: Virtual Host Configuration
+    href: virtual-host-configuration
+  - title: Executing Magento CRON Jobs
+    href: executing-magento-cron-jobs
 permalink: /get-started/tutorials/running-magento-on-appserver-io.html
 ---
 
