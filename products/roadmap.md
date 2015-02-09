@@ -14,7 +14,7 @@ author: all
 ***
 * Update PHP to version 5.6
 * Upgrade to latest pthreads version
-* Optional Integration von Dotdeb-Pakete
+* Optional Integration of Dotdeb-Pakete
 * Integration of servlet filters
 * Use ACLs to define groups, roles and and users and bind them to the internal naming directory
 * Enable authentication agains internal naming directory

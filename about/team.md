@@ -22,7 +22,7 @@ We really believe that we can change the world by providing you with the next ge
 <div class="well">
     <div class="row">
         <div class="col-md-2 text-center">
-            <img src="https://github.com/willkommers.png" class="avatar img-circle">
+            <img src="{{ "/assets/img/team/swillkommer.png" | prepend: site.baseurl }}" class="avatar img-circle">
         </div>
         <div class="col-md-10">
             <h4><b>Stefan</b>, CTO</h4>
@@ -43,7 +43,7 @@ We really believe that we can change the world by providing you with the next ge
 <div class="well">
     <div class="row">
         <div class="col-md-2 text-center">
-            <img src="https://github.com/wagnert.png" class="avatar img-circle">
+            <img src="{{ "/assets/img/team/twagner.png" | prepend: site.baseurl }}" class="avatar img-circle">
         </div>
         <div class="col-md-10">
             <h4><b>Tim</b>, Project Founder & Lead Developer</h4>
@@ -61,7 +61,7 @@ We really believe that we can change the world by providing you with the next ge
 <div class="well">
     <div class="row">
         <div class="col-md-2 text-center">
-            <img src="https://github.com/zelgerj.png" class="avatar img-circle">
+            <img src="{{ "/assets/img/team/jzelger.png" | prepend: site.baseurl }}" class="avatar img-circle" />
         </div>
         <div class="col-md-10">
             <h4><b>Johann</b>, Lead Developer & Softwarearchitect</h4>
@@ -77,7 +77,7 @@ We really believe that we can change the world by providing you with the next ge
 <div class="well">
     <div class="row">
         <div class="col-md-2 text-center">
-            <img src="https://github.com/wick-ed.png" class="avatar img-circle">
+            <img src="{{ "/assets/img/team/bwick.png" | prepend: site.baseurl }}" class="avatar img-circle">
         </div>
         <div class="col-md-10">
             <h4><b>Bernhard</b>, Softwarearchitect</h4>
@@ -95,7 +95,7 @@ We really believe that we can change the world by providing you with the next ge
 <div class="well">
     <div class="row">
         <div class="col-md-2 text-center">
-            <img src="https://github.com/willkommerj.png" class="avatar img-circle">
+            <img src="{{ "/assets/img/team/jwillkommer.png" | prepend: site.baseurl }}" class="avatar img-circle">
         </div>
         <div class="col-md-10">
             <h4><b>Josef</b>, CMO</h4>
