@@ -314,7 +314,12 @@ All `access` nodes need to have a type which can be either `allow` or `deny`. To
 their values you have to add a one `param` node per header. The `name` attribute has to be the request header name and
 the value is a regular expression you want to match.
 
+Everything is denied if there are no accesses configured. That's the reason why you'll find an allow all access rule
+in the appserver.xml by default. That means that you can either allow everything and deny specific things or just allow
+specific things. Deny rules will overload access rules!
+
 > All request header value checks (means all `param` nodes), given by an `access` node are AND combined.
+> The default behaviour is to deny everything if there are no accesses configured.
 
 ## File Handlers
 
