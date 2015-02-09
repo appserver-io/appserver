@@ -1,7 +1,7 @@
 <?php
 
 /**
- * resources/templates/webapps/index.html.phtml
+ * var/www/errors/welcome.phtml
  *
  * PHP version 5
  *
@@ -17,6 +17,9 @@
 
 use AppserverIo\Appserver\Meta\Composer\Script\Setup;
 use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
+
+// prepare context
+Setup::prepareContext();
 
 ?>
 <!DOCTYPE html>
