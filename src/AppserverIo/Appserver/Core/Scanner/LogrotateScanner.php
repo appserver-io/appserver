@@ -262,6 +262,9 @@ class LogrotateScanner extends AbstractScanner
 
         // watch the configured directory
         while (true) {
+            // clear the filesystem cache
+            clearstatcache();
+
             // iterate over the files to be watched
             foreach (glob($directory . '/*.' . $extensionsToWatch, GLOB_BRACE) as $fileToRotate) {
                 // log that we're rotate the file
@@ -382,6 +385,9 @@ class LogrotateScanner extends AbstractScanner
 
             // prepare the regex to grep the counter with
             $regex = sprintf('/^%s\.([0-9]{1,})\.%s/', $filename, $extension);
+
+            // initialize the counter for the regex result
+            $counter = array();
 
             // check the counter
             if (preg_match($regex, $basename, $counter)) {
