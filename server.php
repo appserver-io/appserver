@@ -157,6 +157,8 @@ if (array_key_exists($setup, $arguments)) {
                     '${1}' . $user,
                     file_get_contents($configurationFileName)
                 ));
+                // add everyone write access to configuration files for dev mode
+                FileSystem::recursiveChmod(APPSERVER_BP . DIRECTORY_SEPARATOR . 'etc', 0777, 0777);
 
                 break;
 
@@ -171,6 +173,8 @@ if (array_key_exists($setup, $arguments)) {
                     '${1}' . $group,
                     file_get_contents($configurationFileName)
                 ));
+                // set correct file permissions for configurations
+                FileSystem::recursiveChmod(APPSERVER_BP . DIRECTORY_SEPARATOR . 'etc');
 
                 break;
 
@@ -190,6 +194,9 @@ if (array_key_exists($setup, $arguments)) {
                 $user = $server->getSystemConfiguration()->getParam('user');
                 $group = $server->getSystemConfiguration()->getParam('group');
 
+                // set correct file permissions for configurations
+                FileSystem::recursiveChmod(APPSERVER_BP . DIRECTORY_SEPARATOR . 'etc');
+
                 break;
             default:
                 throw new \Exception('No valid setup mode given');
@@ -205,8 +212,6 @@ if (array_key_exists($setup, $arguments)) {
             FileSystem::recursiveChmod(APPSERVER_BP . DIRECTORY_SEPARATOR . 'webapps');
             FileSystem::recursiveChown(APPSERVER_BP . DIRECTORY_SEPARATOR . 'deploy', $user, $group);
             FileSystem::recursiveChmod(APPSERVER_BP . DIRECTORY_SEPARATOR . 'deploy');
-            FileSystem::recursiveChown(APPSERVER_BP . DIRECTORY_SEPARATOR . 'etc', $user, $group);
-            FileSystem::recursiveChmod(APPSERVER_BP . DIRECTORY_SEPARATOR . 'etc');
             FileSystem::recursiveChown(APPSERVER_BP . DIRECTORY_SEPARATOR . 'src', $user, $group);
             FileSystem::recursiveChown(APPSERVER_BP . DIRECTORY_SEPARATOR . 'vendor', $user, $group);
 
