@@ -134,7 +134,8 @@ $server = new Server($configuration);
 // check if server.php -s is called for doing setup process
 if (array_key_exists($setup, $arguments)) {
     try {
-        // try to get setup mode
+
+        // get setup mode from arguments
         $setupMode = $arguments[$setup];
         // init user and group vars
         $user = null;
