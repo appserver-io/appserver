@@ -29,7 +29,6 @@ use AppserverIo\Appserver\Core\Api\Node\ParamNode;
 use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
 use AppserverIo\Appserver\Core\InitialContext;
 use AppserverIo\Appserver\Core\Utilities\FileSystem;
-use Ratchet\Wamp\Exception;
 
 declare (ticks = 1);
 
