@@ -1,3 +1,4 @@
+#!/opt/appserver/bin/php
 <?php
 
 /**
@@ -27,6 +28,7 @@ use AppserverIo\Appserver\Core\Api\Node\AppserverNode;
 use AppserverIo\Appserver\Core\Api\Node\ParamNode;
 use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
 use AppserverIo\Appserver\Core\InitialContext;
+use AppserverIo\Appserver\Core\Utilities\FileSystem;
 
 declare (ticks = 1);
 
@@ -45,12 +47,19 @@ $_ENV = appserver_get_envs();
 $watch = 'w';
 $config = 'c';
 $configTest = 't';
+$setup = 's';
 
-// check if server.php has been started with -w and/or -c option
-$arguments = getopt("$watch::$configTest::", array("$config::"));
+// check if server.php has been started with -w , -s and/or -c option
+$arguments = getopt("$watch::$configTest::$setup:", array("$config::"));
 
-// define a constant with the appserver base directory
+// define a all constants appserver base directory
 define('APPSERVER_BP', __DIR__);
+// define install flag for setup mode install to check
+define(
+'IS_INSTALLED_FILE',
+    __DIR__ . DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'appserver' . DIRECTORY_SEPARATOR . '.is-installed'
+);
+define('IS_INSTALLED', is_file(IS_INSTALLED_FILE));
 
 // bootstrap the application
 require __DIR__ . DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR . 'scripts' . DIRECTORY_SEPARATOR . 'bootstrap.php';
@@ -120,6 +129,106 @@ $configuration->initFromString($mergeDoc->saveXML());
 
 // create the server instance
 $server = new Server($configuration);
+
+// check if server.php -s is called for doing setup process
+if (array_key_exists($setup, $arguments)) {
+    try {
+
+        // get setup mode from arguments
+        $setupMode = $arguments[$setup];
+        // init user and group vars
+        $user = null;
+        $group = null;
+
+        $configurationUserReplacePattern = '/(<appserver[^>]+>[^<]+<params>.*<param name="user[^>]+>)([^<]+)/s';
+
+        // check setup modes
+        switch ($setupMode) {
+
+            // prepares everything for developer mode
+            case 'dev':
+                // get current user to set permissions for
+                $user = get_current_user();
+                // get defined group from configuration
+                $group = $server->getSystemConfiguration()->getParam('group');
+                // replace user in configuration file
+                file_put_contents($configurationFileName, preg_replace(
+                    $configurationUserReplacePattern,
+                    '${1}' . $user,
+                    file_get_contents($configurationFileName)
+                ));
+                // add everyone write access to configuration files for dev mode
+                FileSystem::recursiveChmod(APPSERVER_BP . DIRECTORY_SEPARATOR . 'etc', 0777, 0777);
+
+                break;
+
+            // prepares everything for production mode
+            case 'prod':
+                // get defined user and group from configuration
+                $user = $server->getSystemConfiguration()->getParam('user');
+                $group = $server->getSystemConfiguration()->getParam('group');
+                // replace user to be same as group in configuration file
+                file_put_contents($configurationFileName, preg_replace(
+                    $configurationUserReplacePattern,
+                    '${1}' . $group,
+                    file_get_contents($configurationFileName)
+                ));
+                // set correct file permissions for configurations
+                FileSystem::recursiveChmod(APPSERVER_BP . DIRECTORY_SEPARATOR . 'etc');
+
+                break;
+
+            // prepares everything for first installation which is default mode
+            case 'install':
+                // first check if install flag was set before
+                if (IS_INSTALLED) {
+                    echo "Nothing to do. Setup for mode '$setupMode' already done!" . PHP_EOL;
+                    // exit normally
+                    exit(0);
+                }
+
+                // create is installed flag for prevent further setup install mode calls
+                touch(IS_INSTALLED_FILE);
+
+                // get defined user and group from configuration
+                $user = $server->getSystemConfiguration()->getParam('user');
+                $group = $server->getSystemConfiguration()->getParam('group');
+
+                // set correct file permissions for configurations
+                FileSystem::recursiveChmod(APPSERVER_BP . DIRECTORY_SEPARATOR . 'etc');
+
+                break;
+            default:
+                throw new \Exception('No valid setup mode given');
+
+        }
+
+        // check if user and group is set
+        if (!is_null($user) && !is_null($group)) {
+            // set needed files as accessable
+            FileSystem::recursiveChown(APPSERVER_BP . DIRECTORY_SEPARATOR . 'var', $user, $group);
+            FileSystem::recursiveChmod(APPSERVER_BP . DIRECTORY_SEPARATOR . 'var');
+            FileSystem::recursiveChown(APPSERVER_BP . DIRECTORY_SEPARATOR . 'webapps', $user, $group);
+            FileSystem::recursiveChmod(APPSERVER_BP . DIRECTORY_SEPARATOR . 'webapps');
+            FileSystem::recursiveChown(APPSERVER_BP . DIRECTORY_SEPARATOR . 'deploy', $user, $group);
+            FileSystem::recursiveChmod(APPSERVER_BP . DIRECTORY_SEPARATOR . 'deploy');
+            FileSystem::recursiveChown(APPSERVER_BP . DIRECTORY_SEPARATOR . 'src', $user, $group);
+            FileSystem::recursiveChown(APPSERVER_BP . DIRECTORY_SEPARATOR . 'vendor', $user, $group);
+
+            echo "Setup for mode '$setupMode' done successfully!" . PHP_EOL;
+
+        } else {
+            throw new \Exception('No user or group given');
+        }
+
+        // exit normally
+        exit(0);
+
+    } catch (\Exception $e) {
+        echo $e . PHP_EOL;
+        exit($e->getCode());
+    }
+}
 
 // if -w option has been passed, watch deployment directory only
 if (array_key_exists($watch, $arguments)) {

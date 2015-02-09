@@ -188,40 +188,28 @@ class Setup
     }
 
     /**
-     * This method will be invoked by composer after a successfull installation and creates
-     * the application server configuration file under etc/appserver/appserver.xml.
+     * Prepares the context by given event or without event for other usage
      *
-     * @param \Composer\Script\Event $event The event that invokes this method
+     * @param null|string $installDir The install dir to check for info files
+     * @param null|Event  $event      The event instance or null
      *
      * @return void
      */
-    public static function postInstall(Event $event)
+    public static function prepareContext($installDir = null, $event = null)
     {
-
         // initialize the installation directory
-        $installDir = getcwd();
-        $override = false;
-
-        // check the arguments for an installation directory
-        foreach ($event->getArguments() as $arg) {
-            // extract arguments
-            list ($key, ) = explode('=', $arg);
-            // query we want to override files
-            if ($key === SetupKeys::ARG_OVERRIDE) {
-                $override = true;
-            }
-            // query for a custom installation directory
-            if ($key === SetupKeys::ARG_INSTALL_DIR) {
-                $installDir = str_replace("$key=", '', $arg);
-            }
+        if (is_null($installDir)) {
+            $installDir = getcwd();
         }
 
         // check if we've a file with the actual version number
         if (file_exists($filename = $installDir .'/etc/appserver/.release-version')) {
             $version = file_get_contents($filename);
         } else {
-            // load the version (GIT) of this package as fallback
-            $version = $event->getComposer()->getPackage()->getPrettyVersion();
+            // load the version (GIT) of this package as fallback if called with event instance
+            if (!is_null($event)) {
+                $version = $event->getComposer()->getPackage()->getPrettyVersion();
+            }
         }
 
         // check if we've a file with the actual release name
@@ -255,13 +243,15 @@ class Setup
                     // set debian as default
                     $distribution = SetupKeys::OS_DEBIAN;
 
-                    // write a message to the console
-                    $event->getIo()->write(
-                        sprintf(
-                            '<warning>Unknown Linux distribution found, use Debian default values: ' .
-                            'Please check user/group configuration in etc/appserver/appserver.xml</warning>'
-                        )
-                    );
+                    // write a message to the console if called with event instance
+                    if (!is_null($event)) {
+                        $event->getIo()->write(
+                            sprintf(
+                                '<warning>Unknown Linux distribution found, use Debian default values: ' .
+                                'Please check user/group configuration in etc/appserver/appserver.xml</warning>'
+                            )
+                        );
+                    }
                 }
 
                 // merge the properties for the found Linux distribution
@@ -285,12 +275,41 @@ class Setup
 
             // all other OS are NOT supported actually
             default:
-
                 break;
         }
+    }
+
+    /**
+     * This method will be invoked by composer after a successfull installation and creates
+     * the application server configuration file under etc/appserver/appserver.xml.
+     *
+     * @param \Composer\Script\Event $event The event that invokes this method
+     *
+     * @return void
+     */
+    public static function postInstall(Event $event)
+    {
+        // initialize the installation directory
+        $override = false;
+        $installDir = getcwd();
+
+        // check the arguments for an installation directory
+        foreach ($event->getArguments() as $arg) {
+            // extract arguments
+            list ($key, ) = explode('=', $arg);
+            // query we want to override files
+            if ($key === SetupKeys::ARG_OVERRIDE) {
+                $override = true;
+            }
+            // query for a custom installation directory
+            if ($key === SetupKeys::ARG_INSTALL_DIR) {
+                $installDir = str_replace("$key=", '', $arg);
+            }
+        }
+
+        Setup::prepareContext($installDir, $event);
 
         // process and move the configuration files their target directory
-        Setup::processTemplate('webapps/index.html', $override);
         Setup::processTemplate('etc/appserver/appserver.xml', $override);
 
         // write a message to the console

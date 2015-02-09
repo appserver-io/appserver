@@ -16,6 +16,8 @@
 /bin
 /sbin
 /etc/appserver/appserver.xml
+/etc/appserver/.is-installed
+/etc/appserver/server.pem
 /var/tmp/opcache-blacklist.txt
 /webapps/index.html
 *.log

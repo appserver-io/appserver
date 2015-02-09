@@ -286,6 +286,16 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     }
 
     /**
+     * Returns template path for possible configured welcome page
+     *
+     * @return string
+     */
+    public function getWelcomePageTemplatePath()
+    {
+        return (string)$this->node->getParam('welcomePageTemplatePath');
+    }
+
+    /**
      * Returns worker number
      *
      * @return int
