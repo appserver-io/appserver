@@ -9,10 +9,13 @@
 
 ## Features
 
+* Closed [#457](https://github.com/appserver-io/appserver/issues/457) - Refactoring of annotation syntax
+* Closed [#458](https://github.com/appserver-io/appserver/issues/458) - Create new PSR for pbc and aop usage
 * Closed [#505](https://github.com/appserver-io/appserver/issues/505) - Refactoring Application initialisation to better support community Applications
 * Added welcome-page support for servers to be configurable as well
 * Refactored installation setup process to be called only once in dist post install scripts
 * Introduced [#469](https://github.com/appserver-io/appserver/issues/469) Provide setup script for developer mode
+* Updated dependencies of appserver-io/doppelgaenger and appserver-io/rmi
 
 # Version 1.0.0-rc2
 
