@@ -3,10 +3,16 @@
 ## Bugfixes
 
 * Fixed error by adding clearstatcache() when adding additional files to logrotate configuration
+* Fixed [#478](https://github.com/appserver-io/appserver/issues/478) - Optimize update process on all OS
+* Fixed [#492](https://github.com/appserver-io/appserver/issues/492) - 500 Internal error page will be rendered on missing PHP file
+* Fixed [#503](https://github.com/appserver-io/appserver/issues/486) - Wrong PHP version within welcome page
 
 ## Features
 
-* Closed #505 - [appserver-io/appserver] Refactoring Application initialisation to better support community Applications
+* Closed [#505](https://github.com/appserver-io/appserver/issues/505) - Refactoring Application initialisation to better support community Applications
+* Added welcome-page support for servers to be configurable as well
+* Refactored installation setup process to be called only once in dist post install scripts
+* Introduced [#469](https://github.com/appserver-io/appserver/issues/469) Provide setup script for developer mode
 
 # Version 1.0.0-rc2
 
