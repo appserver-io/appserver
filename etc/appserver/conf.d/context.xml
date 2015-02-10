@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<context name="globalBaseContext" type="AppserverIo\Appserver\Application\Application" xmlns="http://www.appserver.io/appserver">
+<context 
+    name="globalBaseContext" 
+    factory="AppserverIo\Appserver\Application\ApplicationFactory" 
+    type="AppserverIo\Appserver\Application\Application" 
+    xmlns="http://www.appserver.io/appserver">
 
     <!--
     <params>
