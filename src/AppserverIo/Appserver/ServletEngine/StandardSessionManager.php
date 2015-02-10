@@ -19,8 +19,8 @@
  */
 namespace AppserverIo\Appserver\ServletEngine;
 
-use AppserverIo\Psr\Servlet\ServletSessionInterface;
 use AppserverIo\Storage\GenericStackable;
+use AppserverIo\Psr\Servlet\ServletSessionInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
 
 /**
@@ -278,8 +278,7 @@ class StandardSessionManager extends GenericStackable implements SessionManagerI
     }
 
     /**
-     * Tries to find a session for the given request.
-     * The session id will be
+     * Tries to find a session for the given request. The session-ID will be
      * searched in the cookie header of the request, and in the request query
      * string. If both values are present, the value in the query string takes
      * precedence. If no session id is found, a new one is created and assigned

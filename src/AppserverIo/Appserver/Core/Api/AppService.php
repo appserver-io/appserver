@@ -35,7 +35,7 @@ use AppserverIo\Appserver\Core\Extractors\PharExtractor;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class AppService extends AbstractService
+class AppService extends AbstractFileOperationService
 {
 
     /**
@@ -248,6 +248,49 @@ class AppService extends AbstractService
 
             // un-flag the archiv => un-deploy it with the next restart
             $extractor->unflagArchive($archive);
+        }
+    }
+
+    /**
+     * Creates the temporary directory for the webapp.
+     *
+     * @param \AppserverIo\Psr\Application\ApplicationInterface $application The application to create the temporary directories for
+     *
+     * @return void
+     */
+    public function createTmpFolders(ApplicationInterface $application)
+    {
+
+        // create the directory we want to store the sessions in
+        $tmpFolders = array(
+            new \SplFileInfo($application->getTmpDir()),
+            new \SplFileInfo($application->getCacheDir()),
+            new \SplFileInfo($application->getSessionDir())
+        );
+
+        // create the applications temporary directories
+        foreach ($tmpFolders as $tmpFolder) {
+            $this->createDirectory($tmpFolder);
+        }
+    }
+
+    /**
+     * Clean up the the directories for the webapp, e. g. to delete cached stuff
+     * that has to be recreated after a restart.
+     *
+     * @param \AppserverIo\Psr\Application\ApplicationInterface $application The application to clean up the directories for
+     *
+     * @return void
+     */
+    public function cleanUpFolders(ApplicationInterface $application)
+    {
+
+        // create the directory we want to store the sessions in
+        $cleanUpFolders = array(new \SplFileInfo($application->getCacheDir()));
+
+        // create the applications temporary directories
+        foreach ($cleanUpFolders as $cleanUpFolder) {
+            $this->cleanUpDir($cleanUpFolder);
         }
     }
 }

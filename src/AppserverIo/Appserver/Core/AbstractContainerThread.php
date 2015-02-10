@@ -223,16 +223,6 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
     }
 
     /**
-     * Returns the dependency injection container.
-     *
-     * @return \AppserverIo\Appserver\Application\Interfaces\DependencyInjectionContainerInterface The dependency injection container
-     */
-    public function getDependencyInjectionContainer()
-    {
-        return $this->dependencyInjectionContainer;
-    }
-
-    /**
      * Returns the deployed applications.
      *
      * @return \AppserverIo\Storage\GenericStackable The with applications
@@ -257,9 +247,9 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
     }
 
     /**
-     * Return's the containers config node
+     * Returns the containers configuration node.
      *
-     * @return \AppserverIo\Appserver\Core\Api\Node\ContainerNode
+     * @return \AppserverIo\Appserver\Core\Api\Node\ContainerNode The configuration node
      */
     public function getContainerNode()
     {

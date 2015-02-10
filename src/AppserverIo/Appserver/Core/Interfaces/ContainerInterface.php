@@ -33,9 +33,39 @@ interface ContainerInterface
 {
 
     /**
+     * Returns the containers configuration node.
+     *
+     * @return \AppserverIo\Appserver\Core\Api\Node\ContainerNode The configuration node
+     */
+    public function getContainerNode();
+
+    /**
+     * Returns the containers naming directory.
+     *
+     * @return \AppserverIo\Psr\Naming\NamingDirectoryInterface The containers naming directory
+     */
+    public function getNamingDirectory();
+
+    /**
      * Returns the initial context instance.
      *
      * @return \AppserverIo\Appserver\Application\Interfaces\ContextInterface The initial context instance
      */
     public function getInitialContext();
+
+    /**
+     * Returns the deployed applications.
+     *
+     * @return \AppserverIo\Storage\GenericStackable The with applications
+     */
+    public function getApplications();
+
+    /**
+     * Returns the application instance with the passed name.
+     *
+     * @param string $name The name of the application to return
+     *
+     * @return \AppserverIo\Psr\Application\ApplicationInterface The application instance
+     */
+    public function getApplication($name);
 }

@@ -58,7 +58,7 @@ class ContextNode extends AbstractNode
     use ParamsNodeTrait;
 
     /**
-     * The context name,
+     * The context name.
      *
      * @var string
      * @AS\Mapping(nodeType="string")
@@ -74,18 +74,28 @@ class ContextNode extends AbstractNode
     protected $type;
 
     /**
+     * The context factory class name.
+     *
+     * @var string
+     * @AS\Mapping(nodeType="string")
+     */
+    protected $factory;
+
+    /**
      * Initializes the context configuration with the passed values.
      *
-     * @param string $name   The context name
-     * @param string $type   The context class name
+     * @param string $name    The context name
+     * @param string $type    The context class name
+     * @param string $factory The context factory class name
      * @param array  $params The context params
      */
-    public function __construct($name = '', $type = '', array $params = array())
+    public function __construct($name = '', $type = '', $factory = '', array $params = array())
     {
 
-        // set name and type
+        // set name, type and factory
         $this->name = $name;
         $this->type = $type;
+        $this->factory = $factory;
         $this->params = $params;
 
         // initialize the default directories
@@ -104,6 +114,18 @@ class ContextNode extends AbstractNode
     }
 
     /**
+     * Sets the context name.
+     *
+     * @param string $name The context name
+     *
+     * @return void
+     */
+    public function setName($name)
+    {
+        return $this->name = $name;
+    }
+
+    /**
      * Returns the context name.
      *
      * @return mixed
@@ -114,13 +136,47 @@ class ContextNode extends AbstractNode
     }
 
     /**
+     * Sets the context type.
+     *
+     * @param string $type The context type
+     *
+     * @return void
+     */
+    public function setType($type)
+    {
+        return $this->type = $type;
+    }
+
+    /**
      * Returns the context type.
      *
-     * @return mixed
+     * @return string|null The context type
      */
     public function getType()
     {
         return $this->type;
+    }
+
+    /**
+     * Sets the context factory class name.
+     *
+     * @param string $factory The context factory class name
+     *
+     * @return void
+     */
+    public function setFactory($factory)
+    {
+        return $this->factory = $factory;
+    }
+
+    /**
+     * Returns the context factory class name.
+     *
+     * @return mixed
+     */
+    public function getFactory()
+    {
+        return $this->factory;
     }
 
     /**
@@ -134,6 +190,16 @@ class ContextNode extends AbstractNode
      */
     public function merge(ContextNode $contextNode)
     {
+
+        // merge the application type
+        if ($type = $contextNode->getType()) {
+            $this->setType($type);
+        }
+
+        // merge the application factory class name
+        if ($factory = $contextNode->getFactory()) {
+            $this->setFactory($factory);
+        }
 
         // load the params defined in this context
         $localParams = $this->getParams();

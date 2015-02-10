@@ -70,49 +70,6 @@ class DeploymentService extends AbstractFileOperationService
     }
 
     /**
-     * Creates the temporary directory for the webapp.
-     *
-     * @param \AppserverIo\Psr\Application\ApplicationInterface $application The application to create the temporary directories for
-     *
-     * @return void
-     */
-    public function createTmpFolders(ApplicationInterface $application)
-    {
-
-        // create the directory we want to store the sessions in
-        $tmpFolders = array(
-            new \SplFileInfo($application->getTmpDir()),
-            new \SplFileInfo($application->getCacheDir()),
-            new \SplFileInfo($application->getSessionDir())
-        );
-
-        // create the applications temporary directories
-        foreach ($tmpFolders as $tmpFolder) {
-            $this->createDirectory($tmpFolder);
-        }
-    }
-
-    /**
-     * Clean up the the directories for the webapp, e. g. to delete cached stuff
-     * that has to be recreated after a restart.
-     *
-     * @param \AppserverIo\Psr\Application\ApplicationInterface $application The application to clean up the directories for
-     *
-     * @return void
-     */
-    public function cleanUpFolders(ApplicationInterface $application)
-    {
-
-        // create the directory we want to store the sessions in
-        $cleanUpFolders = array(new \SplFileInfo($application->getCacheDir()));
-
-        // create the applications temporary directories
-        foreach ($cleanUpFolders as $cleanUpFolder) {
-            $this->cleanUpDir($cleanUpFolder);
-        }
-    }
-
-    /**
      * Initializes the available application contexts and returns them.
      *
      * @param \AppserverIo\Appserver\Core\Interfaces\ContainerInterface $container The container we want to add the applications to
@@ -144,7 +101,7 @@ class DeploymentService extends AbstractFileOperationService
         // iterate over all applications and create the context configuration
         foreach (glob($container->getAppBase() . '/*', GLOB_ONLYDIR) as $webappPath) {
             // prepare the context path
-            $contextPath = '/' . basename($webappPath);
+            $contextPath = basename($webappPath);
 
             // start with a fresh clone of the base context configuration
             $context = clone $baseContext;
@@ -172,6 +129,9 @@ class DeploymentService extends AbstractFileOperationService
                 // merge it into the default configuration
                 $context->merge($contextInstance);
             }
+
+            // set the real context name
+            $context->setName($contextPath);
 
             // attach the context to the context instance
             $contextInstances[$contextPath] = $context;
