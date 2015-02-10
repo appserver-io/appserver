@@ -34,7 +34,7 @@ use AppserverIo\Appserver\Core\Api\Node\AppNode;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class AppServiceTest extends AbstractTest
+class AppServiceTest extends AbstractServicesTest
 {
 
     /**
@@ -51,6 +51,7 @@ class AppServiceTest extends AbstractTest
      */
     public function setUp()
     {
+        parent::setUp();
         $this->appService = new AppService($this->getMockInitialContext());
     }
 
@@ -261,5 +262,79 @@ class AppServiceTest extends AbstractTest
         $appNode = new AppNode(__METHOD__, '/opt/appserver/targetwebapp');
 
         $this->appService->undeploy($appNode->getUuid());
+    }
+
+    /**
+     * Tests if we can create the tmp directories a passed application needs
+     *
+     * @return null
+     */
+    public function testCreateTmpFolders()
+    {
+        // temporarily switch off initUmask() and setUserRights() as they would make problems
+        $service = $this->getMockBuilder('\AppserverIo\Appserver\Core\Api\AppService')
+            ->setMethods(array_merge(array('findAll', 'load', 'initUmask', 'setUserRights')))
+            ->setConstructorArgs(array($this->getMockInitialContext()))
+            ->getMockForAbstractClass();
+        $service->expects($this->any())
+            ->method('findAll')
+            ->will($this->returnValue(array()));
+        $service->expects($this->any())
+            ->method('load')
+            ->will($this->returnValue(null));
+        $service->expects($this->exactly(3))
+            ->method('initUmask');
+        $service->expects($this->exactly(3))
+            ->method('setUserRights');
+
+        $tmp = $this->getTmpDir() . DIRECTORY_SEPARATOR;
+        $tmpDir = $tmp . 'tmp';
+        $cacheDir = $tmp . 'cache';
+        $sessionDir = $tmp . 'session';
+
+        $mockApplication = $this->getMockBuilder('\AppserverIo\Psr\Application\ApplicationInterface')
+            ->setMethods(get_class_methods('\AppserverIo\Appserver\Application\Application'))
+            ->getMock();
+        $mockApplication->expects($this->once())
+            ->method('getTmpDir')
+            ->will($this->returnValue($tmpDir));
+        $mockApplication->expects($this->once())
+            ->method('getCacheDir')
+            ->will($this->returnValue($cacheDir));
+        $mockApplication->expects($this->once())
+            ->method('getSessionDir')
+            ->will($this->returnValue($sessionDir));
+
+        $service->createTmpFolders($mockApplication);
+
+        $this->assertTrue(is_dir($tmpDir));
+        $this->assertTrue(is_dir($cacheDir));
+        $this->assertTrue(is_dir($sessionDir));
+    }
+
+    /**
+     * Tests if we are able to clear the tmp directory of an application
+     *
+     * @return null
+     */
+    public function testCleanUpFolders()
+    {
+        $cacheDir = $this->getTmpDir() . DIRECTORY_SEPARATOR . 'cache';
+        if (!is_dir($cacheDir)) {
+
+            \mkdir($cacheDir);
+        }
+        touch($cacheDir . DIRECTORY_SEPARATOR . md5(__METHOD__));
+
+        $mockApplication = $this->getMockBuilder('\AppserverIo\Psr\Application\ApplicationInterface')
+            ->setMethods(get_class_methods('\AppserverIo\Appserver\Application\Application'))
+            ->getMock();
+        $mockApplication->expects($this->once())
+            ->method('getCacheDir')
+            ->will($this->returnValue($cacheDir));
+
+        $this->assertCount(3, scandir($cacheDir));
+        $this->appService->cleanUpFolders($mockApplication);
+        $this->assertCount(2, scandir($cacheDir));
     }
 }

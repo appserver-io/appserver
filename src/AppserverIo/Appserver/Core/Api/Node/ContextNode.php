@@ -87,7 +87,7 @@ class ContextNode extends AbstractNode
      * @param string $name    The context name
      * @param string $type    The context class name
      * @param string $factory The context factory class name
-     * @param array  $params The context params
+     * @param array  $params  The context params
      */
     public function __construct($name = '', $type = '', $factory = '', array $params = array())
     {
