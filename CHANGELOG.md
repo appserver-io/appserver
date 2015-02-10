@@ -6,7 +6,7 @@
 
 ## Features
 
-* None
+* Closed #505 - [appserver-io/appserver] Refactoring Application initialisation to better support community Applications
 
 # Version 1.0.0-rc2
 
