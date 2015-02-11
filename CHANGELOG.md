@@ -9,6 +9,7 @@
 
 ## Features
 
+* Closed [#508](https://github.com/appserver-io/appserver/issues/508) - Refactoring Naming to improve decoupling of Frameworks
 * Closed [#505](https://github.com/appserver-io/appserver/issues/505) - Refactoring Application initialisation to better support community Applications
 * Added welcome-page support for servers to be configurable as well
 * Refactored installation setup process to be called only once in dist post install scripts
