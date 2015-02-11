@@ -1,7 +1,9 @@
 ---
 layout: tutorial
-title: My first webapp
-description: It gives you a guide how to implement your first webapp on appserver.io
+title: My First WebApp
+description: It gives you a guide how to implement your first webapp with appserver.io
+date: 2015-02-11 14:45:00
+author: zelgerj
 position: 1
 group: Tutorials
 subNav:
@@ -15,6 +17,8 @@ subNav:
     href: hello-world-servlet
   - title: Using Services
     href: using-services
+  - title: Okay thats all folks!
+    href: okay-thats-all-folks! 
 permalink: /get-started/tutorials/my-first-webapp.html
 ---
 [PSR-0]: https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-0.md
@@ -37,12 +41,11 @@ project you can easily [download](http://127.0.0.1:4000/get-started/downloads.ht
 ## Preparations
 
 At first we have to switch to *dev mode* in our local appserver.io installation. This will set the correct filesystem
-permissions for your user account and also let the appserver process itself run as your user which it a lot easier for
-local development.
+permissions for your user account and also let the appserver process itself run as current user which makes it a lot easier
+for local development.
 
 ```bash
 sudo /opt/appserver/server.php -s dev
-
 # Should return: Setup for mode 'dev' done successfully!
 ```
 
@@ -58,17 +61,19 @@ mkdir myapp
 # Go into myapp
 cd myapp
 
-# If you would like to use PHPStorm, you can easily open it right now with
+# Open it with your favorite editor if you want to...
 pstorm .
+brackets .
+atom .
 ```
 
-Lets keep our webapp under version controler from the early beginning, so you always have the chance rollback things
-and maybe push it finally to github with all the history in it.
+Let's keep our webapp under version controll from the early beginning, so you always have the chance to rollback things
+and maybe push it finally to github with all the history in it if you want to.
 
 ```bash
 git init
 
-# Lets do some default git ignore stuff
+# Some default git ignore stuff
 echo ".idea\n/vendor\ncomposer.lock" > .gitignore
 
 # Do initial commit
@@ -78,8 +83,8 @@ git commit -m "initial commit"
 
 ## *Hello-World* Script
 
-The simplest way to echo things like *Hello-World* to the client is the way you already know. Using a PHP script.
-So let's create one called `hello.php` directly in our webapps folder `/opt/appserver/webapps/myapp`.
+The simplest way to echo things like *Hello-World* to the client is the way you already know. Using a simple PHP script.
+So let's check if that works in appserver and create one called `hello.php` directly in our webapps folder `/opt/appserver/webapps/myapp`.
 
 ```php
 <?php echo "hello i'am a simple php script"; ?>
@@ -90,9 +95,10 @@ Open your browser at [http://127.0.0.1/myapp/hello.php] and you should get...
 ![Simple PHP script browser result]({{ "/assets/img/tutorials/my-first-webapp/simple-php-script-browser.png" | prepend: site.baseurl }})
 <br/>
 
-Commit the progress state via git.
+Wooow it works... looks great :)
 
 ```bash
+# Commit the current state via git.
 git add .
 git commit -m "added hello-world script"
 ```
@@ -151,9 +157,10 @@ After the appserver has restarted we can goto [http://127.0.0.1/myapp/hello.do] 
 
 ![Simple servlet browser result]({{ "/assets/img/tutorials/my-first-webapp/simple-servlet-browser.png" | prepend: site.baseurl }})
 
-Strike! :) Commit the progress state via git.
+Strike! :)
 
 ```bash
+# Commit the current state via git.
 git add .
 git commit -m "added hello-world servlet"
 ```
@@ -189,7 +196,7 @@ class HelloService
 }
 ```
 
-To inject the `HelloService` into our `HelloServlet` we have to add a Setter-Injection method and modify the `doGet`
+To inject the `HelloService` into our `HelloServlet` we have to add an annotated property `$helloService` and modify the `doGet`
 method to make usage of the injected service instance. The `HelloServlet` should now look like this...
 
 ```php
@@ -207,10 +214,7 @@ class HelloServlet extends HttpServlet
     /**
      * @EnterpriseBean(name="HelloService")
      */
-    public function setFileService($helloService)
-    {
-        $this->helloService = $helloService;
-    }
+    protected $helloService;
 
     public function doGet($servletRequest, $servletResponse)
     {
@@ -221,11 +225,67 @@ class HelloServlet extends HttpServlet
 }
 ```
 
-Restart the appserver again and refresh our browser at [http://127.0.0.1/myapp/hello.do]. Here we go...
+Restart the appserver again and refresh your browser at [http://127.0.0.1/myapp/hello.do]. Here we go...
 
 ![Simple servlet service browser result]({{ "/assets/img/tutorials/my-first-webapp/simple-servlet-service-browser.png" | prepend: site.baseurl }})
 
-Hint about the annotations and link to docu...
+And here it is... Your First WebApp on appserver.io!
+
+```bash
+# Commit the current state via git.
+git add .
+git commit -m "added hello-world service and enhanced servlet"
+```
+
+> Feel free to enhance it and let us know what you've build upon the next PHP infrastructure!
+
+<br/>
+## Annotations but why? 
+
+To use servlets without configuration, it's necessary to add a `@Route` annotation for the servlet-engine being able to map a specific url to the servlet.
+
+```php
+<?php
+/**
+ * @Route(name="helloWorld", urlPattern={"/hello.do", "/hello.do*"})
+ */
+ class HelloServlet extends HttpServlet
+ ```
+ 
+ This annotation maps the url `http://127.0.0.1/myapp/hello.do` and `http://127.0.0.1/myapp/hello.do/anything/you/want` to your servlet.
+ If you want to get more in detail with servlets checkout out [Servlet Engine](<{{ "/get-started/documentation/servlet-engine.html" | prepend: site.baseurl }}>)
+ section in our [Documentation](<{{ "/get-started/documentation.html | prepend: site.baseurl }}>)
+
+You also have to use annotations if you want to use Dependency-Injection. To make our `HelloService` injectable we have to add an annotation
+above the class definition. In our case we want to have a stateless Session-Bean so we put `@Stateless` to class doc block.
+
+```php
+<?php
+/**
+ * @Stateless
+ */
+class HelloService
+```
+
+To inject our `HelloService` to the `HelloServlet` via property injection we just have to put the annotation above the member property like this...
+
+```php
+<?php
+class HelloServlet extends HttpServlet
+{
+    /**
+     * @EnterpriseBean(name="HelloService")
+     */
+    protected $helloService;
+```
+
+<br/>
+## Okay thats all folks!
+
+We hope this tutorial provides you a smooth start into the world of **appserver.io webapps**!
+
+Any feedback is very appreciated so, do not hesitate to share your experiences or any problems you encountered with us. Cheers! :)
+
 
 
 
