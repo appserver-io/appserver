@@ -31,7 +31,7 @@ use AppserverIo\Doppelgaenger\Entities\Pointcuts\PointcutPointcut;
 use AppserverIo\Doppelgaenger\Parser\AspectParser;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Psr\Application\ManagerInterface;
-use AppserverIo\Doppelgaenger\Entities\Annotations\Aspect as AspectAnnotation;
+use AppserverIo\Psr\MetaobjectProtocol\Aop\Annotations\Aspect as AspectAnnotation;
 
 /**
  * Manager which enables the registration of aspects within a certain application context
