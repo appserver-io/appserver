@@ -66,7 +66,7 @@ interface ProviderInterface extends ManagerInterface
     /**
      * Returns the naming context instance.
      *
-     * @return \AppserverIo\Appserver\Naming\InitialContext The naming context instance
+     * @return \AppserverIo\Psr\Naming\InitialContext The naming context instance
      */
     public function getInitialContext();
 

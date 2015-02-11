@@ -25,7 +25,7 @@ use AppserverIo\Storage\StackableStorage;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\Application\Interfaces\ManagerConfigurationInterface;
 
-use AppserverIo\Appserver\Naming\InitialContext as NamingContext;
+use AppserverIo\Psr\Naming\InitialContext as NamingContext;
 
 /**
  * The bean manager handles the message and session beans registered for the application.

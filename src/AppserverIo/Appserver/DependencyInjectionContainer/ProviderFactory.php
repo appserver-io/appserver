@@ -25,7 +25,7 @@ use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\Application\Interfaces\ManagerConfigurationInterface;
 
 // ATTENTION: this is necessary for Windows
-use AppserverIo\Appserver\Naming\InitialContext as NamingContext;
+use AppserverIo\Psr\Naming\InitialContext as NamingContext;
 
 /**
  * The factory for the dependency injection provider.
