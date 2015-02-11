@@ -6,6 +6,7 @@
 * Fixed [#478](https://github.com/appserver-io/appserver/issues/478) - Optimize update process on all OS
 * Fixed [#492](https://github.com/appserver-io/appserver/issues/492) - 500 Internal error page will be rendered on missing PHP file
 * Fixed [#503](https://github.com/appserver-io/appserver/issues/486) - Wrong PHP version within welcome page
+* Usage of wrong annotation classes within the AspectManager class + new dependencies
 
 ## Features
 
