@@ -9,7 +9,7 @@ permalink: /get-started/tutorials/running-drupal-on-appserver-io.html
 
 **Prerequirements**: *Up and running installation of MySQL*
 
-Appserver.io is a pretty cool and sophiscated infrastructure fully built upon the PHP stack. This makes it truely easy
+Appserver.io is a cool and sophiscated infrastructure fully built upon the PHP stack. This makes it truely easy
 to develop and extend the platform. Appserver.io comes with an built in webserver module with PHP-FPM therefore it is
 possible to install any PHP-App you like and run it on that platform. The following guide shows you how easy it is to
 install appserver.io on a Mac and run Wordpress on it.
