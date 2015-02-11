@@ -10,6 +10,7 @@
 
 ## Features
 
+* Closed [#508](https://github.com/appserver-io/appserver/issues/508) - Refactoring Naming to improve decoupling of Frameworks
 * Closed [#457](https://github.com/appserver-io/appserver/issues/457) - Refactoring of annotation syntax
 * Closed [#458](https://github.com/appserver-io/appserver/issues/458) - Create new PSR for pbc and aop usage
 * Closed [#505](https://github.com/appserver-io/appserver/issues/505) - Refactoring Application initialisation to better support community Applications

@@ -56,7 +56,7 @@ use AppserverIo\Appserver\Core\Api\Node\ContextNode;
  * @property \AppserverIo\Psr\Naming\NamingDirectoryInterface               $namingDirectory The naming directory instance
  * @property \AppserverIo\Psr\Naming\NamingDirectoryInterface               $envAppDir       A reference to the application specific environment naming directory instance
  */
-class Application extends \Thread implements ApplicationInterface, DirectoryAwareInterface, FilesystemAwareInterface
+class Application extends \Thread implements ApplicationInterface, NamingDirectoryInterface, DirectoryAwareInterface, FilesystemAwareInterface
 {
 
     /**

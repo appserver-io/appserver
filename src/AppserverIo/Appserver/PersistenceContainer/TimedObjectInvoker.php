@@ -19,11 +19,11 @@
 
 namespace AppserverIo\Appserver\PersistenceContainer;
 
-use AppserverIo\Appserver\Naming\InitialContext;
 use AppserverIo\Storage\StorageInterface;
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Lang\Reflection\ClassInterface;
 use AppserverIo\Lang\Reflection\MethodInterface;
+use AppserverIo\Psr\Naming\InitialContext;
 use AppserverIo\Psr\EnterpriseBeans\TimerInterface;
 use AppserverIo\Psr\EnterpriseBeans\TimedObjectInterface;
 use AppserverIo\Psr\EnterpriseBeans\TimedObjectInvokerInterface;
