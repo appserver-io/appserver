@@ -38,7 +38,7 @@ github_issue: https://github.com/appserver-io/appserver/issues/
 
 google_analytics_id: UA-42386171-1
 
-appserver_version: 1.0.0-rc2
+appserver_version: 1.0.0-rc3
 appserver_runtime_version: 1.0.0-rc1
 
 appserver_download_baseurl: https://github.com/appserver-io/appserver/releases/download/
