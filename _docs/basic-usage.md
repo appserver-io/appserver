@@ -6,6 +6,8 @@ group: Docs
 subNav:
   - title: Start and Stop Scripts
     href: start-and-stop-scripts
+  - title: Setup script
+    href: setup-script
 permalink: /get-started/documentation/basic-usage.html
 ---
 
@@ -65,4 +67,28 @@ Best thing to do would be starting a command prompt as an administrator and run 
 ```
 C:\Windows\system32>cd "C:\Program Files\appserver"
 C:\Program Files\appserver>server.bat
+```
+
+## Setup Script
+
+The appserver comes with a simple setup mechanism, that will mainly set the correct filesystem
+permissions for your environmental needs.
+
+```bash
+sudo /opt/appserver/server.php -s <MODE>
+```
+
+Actually there are 3 modes you can use to setup the appserver to your environmental needs.
+
+| Mode      | Description |
+| ----------| ----------- |
+| `install` | The *install* setup mode will be triggered when installing the appserver on your system. It'll put a flag file `/opt/appserver/etc/appserver/.is_installed` to indicate if the appserver has been installed already. If the flag file exists the *install* setup mode will not executed. |
+| `prod`    | Use this mode if you want to use the appserver in production mode. The *install* mode which is executed on first time installation represents the *prod* mode. |
+| `dev`     | It'll set the correct filesystem permissions for your user account and also let the appserver process itself run as current user which makes it a lot easier for local development. |
+
+This is how it should be executed if you want to be everything ready for local development.
+
+```bash
+sudo /opt/appserver/server.php -s dev
+# Should return: Setup for mode 'dev' done successfully!
 ```
