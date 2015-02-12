@@ -148,9 +148,8 @@ if (array_key_exists($setup, $arguments)) {
             case 'dev':
                 // set current user
                 $user = get_current_user();
-                // check if script is called via sudo
+                // check if script is called via sudo set current sudo user
                 if (array_key_exists('SUDO_USER', $_SERVER)) {
-                    // set current sudo user
                     $user = $_SERVER['SUDO_USER'];
                 }
                 // get defined group from configuration
