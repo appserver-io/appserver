@@ -133,7 +133,6 @@ $server = new Server($configuration);
 // check if server.php -s is called for doing setup process
 if (array_key_exists($setup, $arguments)) {
     try {
-
         // get setup mode from arguments
         $setupMode = $arguments[$setup];
         // init user and group vars
@@ -147,8 +146,13 @@ if (array_key_exists($setup, $arguments)) {
 
             // prepares everything for developer mode
             case 'dev':
-                // get current user to set permissions for
+                // set current user
                 $user = get_current_user();
+                // check if script is called via sudo
+                if (array_key_exists('SUDO_USER', $_SERVER)) {
+                    // set current sudo user
+                    $user = $_SERVER['SUDO_USER'];
+                }
                 // get defined group from configuration
                 $group = $server->getSystemConfiguration()->getParam('group');
                 // replace user in configuration file
