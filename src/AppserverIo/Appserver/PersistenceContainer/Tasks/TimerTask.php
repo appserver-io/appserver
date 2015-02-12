@@ -52,13 +52,6 @@ class TimerTask extends \Thread
     protected $application;
 
     /**
-     * Wheter the timer task has been finished or not.
-     *
-     * @var boolean
-     */
-    protected $finished;
-
-    /**
      * Initializes the queue worker with the application and the storage it should work on.
      *
      * @param \AppserverIo\Psr\EnterpriseBeans\TimerInterface   $timer       The timer we have to handle
@@ -66,9 +59,6 @@ class TimerTask extends \Thread
      */
     public function __construct(TimerInterface $timer, ApplicationInterface $application)
     {
-
-        // we want to start working
-        $this->finished = false;
 
         // initialize timer and application instance
         $this->timer = $timer;
@@ -89,25 +79,12 @@ class TimerTask extends \Thread
     }
 
     /**
-     * Queries whether the timer task has been finished or not.
-     *
-     * @return boolean TRUE if the timer task has been finished, else FALSE
-     */
-    protected function isFinished()
-    {
-        return $this->finished;
-    }
-
-    /**
      * We process the timer here.
      *
      * @return void
      */
     public function run()
     {
-
-        // register shutdown handler
-        register_shutdown_function(array(&$this, "shutdown"));
 
         // load application and timer instance
         $application = $this->application;
@@ -123,11 +100,13 @@ class TimerTask extends \Thread
         try {
             // check if the timer is active
             if ($timer->isActive() === false) {
+                // create the actual date
+                $now = new \DateTime('now');
                 // log an info that the timer is NOT active
                 $application->getInitialContext()->getSystemLogger()->info(
                     sprintf(
                         'Timer is not active, skipping this scheduled execution at: %s for %s',
-                        date('Y-m-d'),
+                        $now->format('Y-m-d'),
                         $timer->getId()
                     )
                 );
@@ -156,19 +135,6 @@ class TimerTask extends \Thread
 
         // call timeout method
         $this->callTimeout($timer);
-    }
-
-    /**
-     * Does shutdown logic for worker if something breaks in process.
-     *
-     * This shutdown function will be called from specific connection handler if an error occurs, so the connection
-     * handler can send an response in the correct protocol specifications and a new worker can be started
-     *
-     * @return void
-     */
-    public function shutdown()
-    {
-        $this->finished = true;
     }
 
     /**
