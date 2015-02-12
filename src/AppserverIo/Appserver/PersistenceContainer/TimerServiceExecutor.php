@@ -167,6 +167,9 @@ class TimerServiceExecutor extends \Thread implements ServiceExecutorInterface
         // register a shutdown function
         register_shutdown_function(array($this, 'shutdown'));
 
+        // create a mutex to make GC safe
+        $mutex = \Mutex::create();
+
         // the array with the timer tasks that'll be executed actually
         $timerTasksExecuting = array();
 
@@ -210,7 +213,7 @@ class TimerServiceExecutor extends \Thread implements ServiceExecutorInterface
                             $timer = $timerServiceRegistry->lookup($pk)->getTimers()->get($timerId);
 
                             // create the timer task to be executed
-                            $timerTasksExecuting[$taskId] = $timer->getTimerTask($application);
+                            $timer->getTimerTask($application);
 
                             // remove the key from the list of tasks to be executed
                             unset($this->tasksToExecute[$taskId]);
@@ -221,15 +224,6 @@ class TimerServiceExecutor extends \Thread implements ServiceExecutorInterface
                                 sprintf('Can\'t find timer %s to create timer task %s', $timerTaskWrapper->timerId, $taskId)
                             );
                         }
-                    }
-                }
-
-                // remove the finished timer tasks
-                foreach ($timerTasksExecuting as $taskId => $executingTimerTask) {
-                    // query, whether the timer has finished
-                    if ($executingTimerTask->isFinished()) {
-                        // remove the finished timer task from the list
-                        unset($timerTasksExecuting[$taskId]);
                     }
                 }
 

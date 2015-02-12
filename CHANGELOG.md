@@ -2,6 +2,7 @@
 
 ## Bugfixes
 
+* Fixed [#514](https://github.com/appserver-io/appserver/issues/514) - @Singleton session bean needs @Startup annotation
 * Fixed [#513](https://github.com/appserver-io/appserver/issues/513) - Manually creating a timer results in a segfault
 
 ## Features

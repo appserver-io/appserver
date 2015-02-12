@@ -97,7 +97,7 @@ class BeanLocator implements ResourceLocatorInterface
             }
 
             // if not create a new instance and return it
-            $instance = $beanManager->newInstance($className, $sessionId, $args);
+            $instance = $beanManager->newSingletonSessionBeanInstance($className, $sessionId, $args);
 
             // add the singleton session bean to the container
             $beanManager->getSingletonSessionBeans()->set($className, $instance);
