@@ -80,6 +80,30 @@ class TimerService extends GenericStackable implements TimerServiceInterface, Se
     }
 
     /**
+     * Injects the timer factory for the timer service registry.
+     *
+     * @param \AppserverIo\Appserver\PersistenceContainer\TimerFactoryInterface $timerFactory The timer factory
+     *
+     * @return void
+     */
+    public function injectTimerFactory(TimerFactoryInterface $timerFactory)
+    {
+        $this->timerFactory = $timerFactory;
+    }
+
+    /**
+     * Injects the calendar timer factory for the timer service registry.
+     *
+     * @param \AppserverIo\Appserver\PersistenceContainer\CalendarTimerFactoryInterface $calendarTimerFactory The calendar timer factory
+     *
+     * @return void
+     */
+    public function injectCalendarTimerFactory(CalendarTimerFactoryInterface $calendarTimerFactory)
+    {
+        $this->calendarTimerFactory = $calendarTimerFactory;
+    }
+
+    /**
      * Injects the storage for the timers.
      *
      * @param \AppserverIo\Storage\StorageInterface $timers The storage for the timers
@@ -189,27 +213,8 @@ class TimerService extends GenericStackable implements TimerServiceInterface, Se
     public function createCalendarTimer(ScheduleExpression $schedule, \Serializable $info = null, $persistent = true, MethodInterface $timeoutMethod = null)
     {
 
-        // create the timer
-        $timer = CalendarTimer::builder()
-            ->setAutoTimer($timeoutMethod != null)
-            ->setScheduleExprSecond($schedule->getSecond())
-            ->setScheduleExprMinute($schedule->getMinute())
-            ->setScheduleExprHour($schedule->getHour())
-            ->setScheduleExprDayOfWeek($schedule->getDayOfWeek())
-            ->setScheduleExprDayOfMonth($schedule->getDayOfMonth())
-            ->setScheduleExprMonth($schedule->getMonth())
-            ->setScheduleExprYear($schedule->getYear())
-            ->setScheduleExprStartDate(\DateTime::createFromFormat(ScheduleExpression::DATE_FORMAT, $schedule->getStart()))
-            ->setScheduleExprEndDate(\DateTime::createFromFormat(ScheduleExpression::DATE_FORMAT, $schedule->getEnd()))
-            ->setScheduleExprTimezone($schedule->getTimezone())
-            ->setTimeoutMethod($timeoutMethod)
-            ->setTimerState(TimerState::CREATED)
-            ->setId(Uuid::uuid4()->__toString())
-            ->setPersistent($persistent)
-            ->setTimedObjectId($this->getTimedObjectInvoker()->getTimedObjectId())
-            ->setInfo($info)
-            ->setNewTimer(true)
-            ->build($this);
+        // create the calendar timer
+        $timer = $this->getCalendarTimerFactory()->createTimer($this, $schedule, $info, $persistent, $timeoutMethod);
 
         // persist the timer
         $this->persistTimer($timer, true);
@@ -254,16 +259,7 @@ class TimerService extends GenericStackable implements TimerServiceInterface, Se
     {
 
         // create the timer
-        $timer = Timer::builder()
-            ->setNewTimer(true)
-            ->setId(Uuid::uuid4()->__toString())
-            ->setInitialDate($initialExpiration)
-            ->setRepeatInterval($intervalDuration)
-            ->setInfo($info)
-            ->setPersistent($persistent)
-            ->setTimerState(TimerState::CREATED)
-            ->setTimedObjectId($this->getTimedObjectInvoker()->getTimedObjectId())
-            ->build($this);
+        $timer = $this->getTimerFactory()->createTimer($this, $initialExpiration, $intervalDuration, $info, $persistent);
 
         // persist the timer
         $this->persistTimer($timer, true);
@@ -409,6 +405,26 @@ class TimerService extends GenericStackable implements TimerServiceInterface, Se
     public function getTimerServiceExecutor()
     {
         return $this->timerServiceExecutor;
+    }
+
+    /**
+     * Returns the timer factory for the timer service registry.
+     *
+     * @return \AppserverIo\Appserver\PersistenceContainer\TimerFactoryInterface The timer factory instance
+     */
+    public function getTimerFactory()
+    {
+        return $this->timerFactory;
+    }
+
+    /**
+     * Returns the calendar timer factory for the timer service registry.
+     *
+     * @return \AppserverIo\Appserver\PersistenceContainer\CalendarTimerFactoryInterface The calendar timer factory instance
+     */
+    public function getCalendarTimerFactory()
+    {
+        return $this->calendarTimerFactory;
     }
 
     /**

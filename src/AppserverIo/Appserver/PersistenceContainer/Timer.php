@@ -397,7 +397,7 @@ class Timer extends GenericStackable implements TimerInterface
      *
      * @return \AppserverIo\Appserver\PersistenceContainer\Tasks\TimerTask The task
      */
-    protected function getTimerTask(ApplicationInterface $application)
+    public function getTimerTask(ApplicationInterface $application)
     {
         return new TimerTask($this, $application);
     }

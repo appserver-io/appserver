@@ -178,7 +178,7 @@ class CalendarTimer extends Timer
      *
      * @return \AppserverIo\Appserver\PersistenceContainer\Tasks\CalendarTimerTask The task
      */
-    protected function getTimerTask(ApplicationInterface $application)
+    public function getTimerTask(ApplicationInterface $application)
     {
         return new CalendarTimerTask($this, $application);
     }
