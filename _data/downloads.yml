@@ -1,0 +1,31 @@
+- os: Mac OS X
+  id: osx
+  icon: fa-apple
+  dist-suffix: .33.mac.x86_64.pkg
+  
+- os: Windows
+  id: win
+  icon: fa-windows   
+  dist-suffix: .45.win.x86.jar
+
+- os: Debian
+  id: debian
+  icon: fa-linux
+  dist-suffix: .28.linux.debian.x86_64.deb
+  runtime-suffix: .17.linux.debian.x86_64.deb
+
+- os: Fedora
+  id: fedora
+  icon: fa-linux
+  dist-suffix: .49.linux.fedora.x86_64.rpm
+  runtime-suffix: .25.linux.fedora.x86_64.rpm
+
+- os: Cent OS
+  id: centos
+  icon: fa-linux
+  dist-suffix: .34.linux.centos.x86_64.rpm
+  runtime-suffix: .27.linux.centos.x86_64.rpm
+
+- os: Raspbian
+  id: raspbian
+  icon: fa-linux
