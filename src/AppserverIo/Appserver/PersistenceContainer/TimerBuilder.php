@@ -50,7 +50,7 @@ class TimerBuilder
     /**
      * The date time fo the first timeout expiration.
      *
-     * @var \DateTime
+     * @var string
      */
     protected $initialDate;
 
@@ -64,14 +64,14 @@ class TimerBuilder
     /**
      * The date time for the next expiration.
      *
-     * @var \DateTime
+     * @var string
      */
     protected $nextDate;
 
     /**
      * The date time of the previous run.
      *
-     * @var \DateTime
+     * @var string
      */
     protected $previousRun;
 
@@ -132,13 +132,13 @@ class TimerBuilder
     /**
      * The date time fo the first timeout expiration.
      *
-     * @param \DateTime $initialDate The date time for the first timeout expiration
+     * @param string $initialDate The date time for the first timeout expiration
      *
      * @return \AppserverIo\Appserver\PersistenceContainer\TimerBuilder The instance itself
      */
-    public function setInitialDate(\DateTime $initialDate)
+    public function setInitialDate($initialDate)
     {
-        $this->initialDate = $initialDate;
+        $this->initialDate = (string) $initialDate;
         return $this;
     }
 
@@ -158,26 +158,26 @@ class TimerBuilder
     /**
      * Sets the date time for the next expiration.
      *
-     * @param \DateTime $nextDate The date time for the next expiration
+     * @param string $nextDate The date time for the next expiration
      *
      * @return \AppserverIo\Appserver\PersistenceContainer\TimerBuilder The instance itself
      */
-    public function setNextDate(\DateTime $nextDate)
+    public function setNextDate($nextDate)
     {
-        $this->nextDate = $nextDate;
+        $this->nextDate = (string) $nextDate;
         return $this;
     }
 
     /**
      * Sets the date time of the previous run.
      *
-     * @param \DateTime $previousRun The date time of the previous run
+     * @param string $previousRun The date time of the previous run
      *
      * @return \AppserverIo\Appserver\PersistenceContainer\TimerBuilder The instance itself
      */
-    public function setPreviousRun(\DateTime $previousRun)
+    public function setPreviousRun($previousRun)
     {
-        $this->previousRun = $previousRun;
+        $this->previousRun = (string) $previousRun;
         return $this;
     }
 
@@ -256,7 +256,7 @@ class TimerBuilder
     /**
      * Returns the date time fo the first timeout expiration.
      *
-     * @return \DateTime The first timeout expiration
+     * @return string The first timeout expiration
      */
     public function getInitialDate()
     {
@@ -276,7 +276,7 @@ class TimerBuilder
     /**
      * Returns the date time for the next expiration.
      *
-     * @return \DateTime The date time for the next expiration
+     * @return string The date time for the next expiration
      */
     public function getNextDate()
     {

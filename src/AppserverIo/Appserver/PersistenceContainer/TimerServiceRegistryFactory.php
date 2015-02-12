@@ -57,6 +57,16 @@ class TimerServiceRegistryFactory
         $tasksToExecute = new GenericStackable();
         $scheduledTimers = new GenericStackable();
 
+        // initialize the timer factory
+        $timerFactory = new TimerFactory();
+        $timerFactory->injectApplication($application);
+        $timerFactory->start();
+
+        // initialize the calendar timer factory
+        $calendarTimerFactory = new CalendarTimerFactory();
+        $calendarTimerFactory->injectApplication($application);
+        $calendarTimerFactory->start();
+
         // initialize the executor for the scheduled timer tasks
         $timerServiceExecutor = new TimerServiceExecutor();
         $timerServiceExecutor->injectApplication($application);
@@ -68,8 +78,10 @@ class TimerServiceRegistryFactory
         $serviceRegistry = new TimerServiceRegistry();
         $serviceRegistry->injectData($data);
         $serviceRegistry->injectServices($services);
+        $serviceRegistry->injectTimerFactory($timerFactory);
         $serviceRegistry->injectServiceLocator($serviceLocator);
         $serviceRegistry->injectWebappPath($application->getWebappPath());
+        $serviceRegistry->injectCalendarTimerFactory($calendarTimerFactory);
         $serviceRegistry->injectTimerServiceExecutor($timerServiceExecutor);
 
         // attach the instance

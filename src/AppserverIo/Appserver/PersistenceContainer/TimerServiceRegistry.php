@@ -50,6 +50,20 @@ class TimerServiceRegistry extends ServiceRegistry implements TimerServiceContex
     protected $timerServiceExecutor;
 
     /**
+     * The timer factory.
+     *
+     * @var \AppserverIo\Appserver\PersistenceContainer\TimerFactoryInterface
+     */
+    protected $timerFactory;
+
+    /**
+     * The calendar timer factory.
+     *
+     * @var \AppserverIo\Appserver\PersistenceContainer\CalendarTimerFactoryInterface
+     */
+    protected $calendarTimerFactory;
+
+    /**
      * Injects the service executor for the timer service registry.
      *
      * @param \AppserverIo\Psr\EnterpriseBeans\ServiceExecutorInterface $timerServiceExecutor The service executor
@@ -62,6 +76,30 @@ class TimerServiceRegistry extends ServiceRegistry implements TimerServiceContex
     }
 
     /**
+     * Injects the timer factory for the timer service registry.
+     *
+     * @param \AppserverIo\Appserver\PersistenceContainer\TimerFactoryInterface $timerFactory The timer factory
+     *
+     * @return void
+     */
+    public function injectTimerFactory(TimerFactoryInterface $timerFactory)
+    {
+        $this->timerFactory = $timerFactory;
+    }
+
+    /**
+     * Injects the calendar timer factory for the timer service registry.
+     *
+     * @param \AppserverIo\Appserver\PersistenceContainer\CalendarTimerFactoryInterface $calendarTimerFactory The calendar timer factory
+     *
+     * @return void
+     */
+    public function injectCalendarTimerFactory(CalendarTimerFactoryInterface $calendarTimerFactory)
+    {
+        $this->calendarTimerFactory = $calendarTimerFactory;
+    }
+
+    /**
      * Returns the service executor for the timer service registry.
      *
      * @return \AppserverIo\Psr\EnterpriseBeans\ServiceExecutorInterface The timer service executor instance
@@ -69,6 +107,26 @@ class TimerServiceRegistry extends ServiceRegistry implements TimerServiceContex
     public function getTimerServiceExecutor()
     {
         return $this->timerServiceExecutor;
+    }
+
+    /**
+     * Returns the timer factory for the timer service registry.
+     *
+     * @return \AppserverIo\Appserver\PersistenceContainer\TimerFactoryInterface The timer factory instance
+     */
+    public function getTimerFactory()
+    {
+        return $this->timerFactory;
+    }
+
+    /**
+     * Returns the calendar timer factory for the timer service registry.
+     *
+     * @return \AppserverIo\Appserver\PersistenceContainer\CalendarTimerFactoryInterface The calendar timer factory instance
+     */
+    public function getCalendarTimerFactory()
+    {
+        return $this->calendarTimerFactory;
     }
 
     /**
@@ -94,9 +152,12 @@ class TimerServiceRegistry extends ServiceRegistry implements TimerServiceContex
             return;
         }
 
-        // load the timer service executor
+        // load the timer service executor and timer factories
+        $timerFactory = $this->getTimerFactory();
+        $calendarTimerFactory = $this->getCalendarTimerFactory();
         $timerServiceExecutor = $this->getTimerServiceExecutor();
 
+        // load the service to iterate over application folders
         $service = $application->newService('AppserverIo\Appserver\Core\Api\DeploymentService');
         $phpFiles = $service->globDir($metaInfDir . DIRECTORY_SEPARATOR . '*.php');
 
@@ -140,7 +201,9 @@ class TimerServiceRegistry extends ServiceRegistry implements TimerServiceContex
                 // initialize the timer service
                 $timerService = new TimerService();
                 $timerService->injectTimers($timers);
+                $timerService->injectTimerFactory($timerFactory);
                 $timerService->injectTimedObjectInvoker($timedObjectInvoker);
+                $timerService->injectCalendarTimerFactory($calendarTimerFactory);
                 $timerService->injectTimerServiceExecutor($timerServiceExecutor);
                 $timerService->start();
 

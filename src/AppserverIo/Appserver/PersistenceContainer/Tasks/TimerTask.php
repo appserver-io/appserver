@@ -23,6 +23,7 @@ namespace AppserverIo\Appserver\PersistenceContainer\Tasks;
 use AppserverIo\Psr\EnterpriseBeans\TimerInterface;
 use AppserverIo\Appserver\PersistenceContainer\Utils\TimerState;
 use AppserverIo\Psr\Application\ApplicationInterface;
+use AppserverIo\Psr\EnterpriseBeans\ScheduleExpression;
 
 /**
  * The timer task.
@@ -138,7 +139,7 @@ class TimerTask extends \Thread
             $timer->setPreviousRun(new \DateTime());
 
             // set the next timeout
-            $timer->setNextTimeout($this->calculateNextTimeout($timer));
+            $timer->setNextTimeout($this->calculateNextTimeout($timer)->format(ScheduleExpression::DATE_FORMAT));
 
             // change the state to mark it as in timeout method
             $timer->setTimerState(TimerState::IN_TIMEOUT);

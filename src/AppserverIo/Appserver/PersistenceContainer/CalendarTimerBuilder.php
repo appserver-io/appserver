@@ -86,14 +86,14 @@ class CalendarTimerBuilder extends TimerBuilder
     /**
      * The date time for the calendar timer start date.
      *
-     * @var \DateTime
+     * @var string
      */
     protected $scheduleExprStartDate;
 
     /**
      * The date time for the calendar timer end date.
      *
-     * @var \DateTime
+     * @var string
      */
     protected $scheduleExprEndDate;
 
@@ -212,11 +212,11 @@ class CalendarTimerBuilder extends TimerBuilder
     /**
      * Sets the date time for the calendar end date.
      *
-     * @param \DateTime $scheduleExprStartDate The start date
+     * @param string $scheduleExprStartDate The start date
      *
      * @return \AppserverIo\Appserver\PersistenceContainer\CalendarTimerBuilder The instance itself
      */
-    public function setScheduleExprStartDate(\DateTime $scheduleExprStartDate)
+    public function setScheduleExprStartDate($scheduleExprStartDate)
     {
         $this->scheduleExprStartDate = $scheduleExprStartDate;
         return $this;
@@ -225,11 +225,11 @@ class CalendarTimerBuilder extends TimerBuilder
     /**
      * Sets the date time for the calendar end date.
      *
-     * @param \DateTime $scheduleExprEndDate The end date
+     * @param string $scheduleExprEndDate The end date
      *
      * @return \AppserverIo\Appserver\PersistenceContainer\CalendarTimerBuilder The instance itself
      */
-    public function setScheduleExprEndDate(\DateTime $scheduleExprEndDate)
+    public function setScheduleExprEndDate($scheduleExprEndDate)
     {
         $this->scheduleExprEndDate = $scheduleExprEndDate;
         return $this;
@@ -251,7 +251,7 @@ class CalendarTimerBuilder extends TimerBuilder
     /**
      * Whether the calendar timer will be an auto timer or not.
      *
-     * @param boolean $autoTimer TRUE fi the calendar timer will be an auto timer
+     * @param boolean $autoTimer TRUE if the calendar timer will be an auto timer
      *
      * @return \AppserverIo\Appserver\PersistenceContainer\CalendarTimerBuilder The instance itself
      */
@@ -347,7 +347,7 @@ class CalendarTimerBuilder extends TimerBuilder
     /**
      * The date time for the calendar end date.
      *
-     * @return \DateTime The end date
+     * @return string The end date
      */
     public function getScheduleExprStartDate()
     {
@@ -357,7 +357,7 @@ class CalendarTimerBuilder extends TimerBuilder
     /**
      * The date time for the calendar timer start date.
      *
-     * @return \DateTime The start date
+     * @return string The start date
      */
     public function getScheduleExprEndDate()
     {

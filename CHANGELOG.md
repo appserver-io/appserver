@@ -1,3 +1,13 @@
+# Version 1.0.0
+
+## Bugfixes
+
+* Fixed [#513](https://github.com/appserver-io/appserver/issues/513) - Manually creating a timer results in a segfault
+
+## Features
+
+* None
+
 # Version 1.0.0-rc3
 
 ## Bugfixes
