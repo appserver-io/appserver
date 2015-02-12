@@ -24,7 +24,7 @@ use AppserverIo\Psr\Pms\JobInterface;
 use AppserverIo\Psr\Pms\MessageInterface;
 use AppserverIo\Messaging\Utils\StateProcessed;
 use AppserverIo\Messaging\Utils\StateInProgress;
-use AppserverIo\Appserver\Naming\InitialContext;
+use AppserverIo\Psr\Naming\InitialContext;
 use AppserverIo\Psr\Application\ApplicationInterface;
 
 /**

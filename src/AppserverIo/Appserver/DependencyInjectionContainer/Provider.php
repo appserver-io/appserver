@@ -41,7 +41,7 @@ use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\ProviderInterf
 use AppserverIo\Psr\Servlet\Annotations\Route;
 
 // ATTENTION: this is necessary for Windows
-use AppserverIo\Appserver\Naming\InitialContext as NamingContext;
+use AppserverIo\Psr\Naming\InitialContext as NamingContext;
 
 /**
  * A basic dependency injection provider implementation.
@@ -107,7 +107,7 @@ class Provider extends GenericStackable implements ProviderInterface
     /**
      * Injects the naming context.
      *
-     * @param \AppserverIo\Appserver\Naming\InitialContext $initialContext The naming context
+     * @param \AppserverIo\Psr\Naming\InitialContext $initialContext The naming context
      *
      * @return void
      */
@@ -143,7 +143,7 @@ class Provider extends GenericStackable implements ProviderInterface
     /**
      * Returns the naming context instance.
      *
-     * @return \AppserverIo\Appserver\Naming\InitialContext The naming context instance
+     * @return \AppserverIo\Psr\Naming\InitialContext The naming context instance
      */
     public function getInitialContext()
     {

@@ -173,6 +173,6 @@ trait BindingTrait
         }
 
         // throw an exception if we can't resolve the name
-        throw new NamingException(sprintf('Cant\'t resolve %s in naming directory %s', $token, $this->getIdentifier()));
+        throw new NamingException(sprintf('Cant\'t resolve %s in naming directory %s', ltrim($name, '/'), $this->getIdentifier()));
     }
 }

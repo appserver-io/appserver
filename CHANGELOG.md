@@ -3,15 +3,22 @@
 ## Bugfixes
 
 * Fixed error by adding clearstatcache() when adding additional files to logrotate configuration
-* Fixed [#478](https://github.com/appserver-io/appserver/issues/478) Optimize update process on all OS
-* Fixed [#492](https://github.com/appserver-io/appserver/issues/492) 500 Internal error page will be rendered on missing PHP file
-* Fixed [#503](https://github.com/appserver-io/appserver/issues/486) Wrong PHP version within welcome page
+* Fixed [#478](https://github.com/appserver-io/appserver/issues/478) - Optimize update process on all OS
+* Fixed [#492](https://github.com/appserver-io/appserver/issues/492) - 500 Internal error page will be rendered on missing PHP file
+* Fixed [#503](https://github.com/appserver-io/appserver/issues/486) - Wrong PHP version within welcome page
+* Usage of wrong annotation classes within the AspectManager class + new dependencies
 
 ## Features
 
+* Closed [#487](https://github.com/appserver-io/appserver/issues/487) - Register logger instances in Naming Directory 
+* Closed [#508](https://github.com/appserver-io/appserver/issues/508) - Refactoring Naming to improve decoupling of Frameworks
+* Closed [#457](https://github.com/appserver-io/appserver/issues/457) - Refactoring of annotation syntax
+* Closed [#458](https://github.com/appserver-io/appserver/issues/458) - Create new PSR for pbc and aop usage
+* Closed [#505](https://github.com/appserver-io/appserver/issues/505) - Refactoring Application initialisation to better support community Applications
 * Added welcome-page support for servers to be configurable as well
 * Refactored installation setup process to be called only once in dist post install scripts
 * Introduced [#469](https://github.com/appserver-io/appserver/issues/469) Provide setup script for developer mode
+* Updated dependencies of appserver-io/doppelgaenger and appserver-io/rmi
 
 # Version 1.0.0-rc2
 

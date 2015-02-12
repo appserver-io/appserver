@@ -25,7 +25,7 @@ use AppserverIo\Storage\StorageInterface;
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Psr\Application\ManagerInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
-use AppserverIo\Appserver\Naming\InitialContext as NamingDirectory;
+use AppserverIo\Psr\Naming\InitialContext as NamingDirectory;
 
 /**
  * Abstract manager implementation.
@@ -39,7 +39,7 @@ use AppserverIo\Appserver\Naming\InitialContext as NamingDirectory;
  *
  * @property \AppserverIo\Psr\Application\ApplicationInterface $application    The application to manage
  * @property \AppserverIo\Storage\StorageInterface             $data           Storage container for arbitrary data
- * @property \AppserverIo\Appserver\Naming\InitialContext      $initialContext The initial context of our naming directory
+ * @property \AppserverIo\Psr\Naming\InitialContext            $initialContext The initial context of our naming directory
  */
 abstract class AbstractManager extends GenericStackable implements ManagerInterface
 {
@@ -81,7 +81,7 @@ abstract class AbstractManager extends GenericStackable implements ManagerInterf
     /**
      * The global naming directory.
      *
-     * @param \AppserverIo\Appserver\Naming\InitialContext $initialContext The global naming directory
+     * @param \AppserverIo\Psr\Naming\InitialContext $initialContext The global naming directory
      *
      * @return void
      */
@@ -93,7 +93,7 @@ abstract class AbstractManager extends GenericStackable implements ManagerInterf
     /**
      * Returns the global naming directory.
      *
-     * @return \AppserverIo\Appserver\Naming\InitialContext The global naming directory
+     * @return \AppserverIo\Psr\Naming\InitialContext The global naming directory
      */
     public function getInitialContext()
     {

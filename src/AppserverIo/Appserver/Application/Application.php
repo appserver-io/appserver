@@ -23,6 +23,7 @@ namespace AppserverIo\Appserver\Application;
 use AppserverIo\Logger\LoggerUtils;
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Storage\StorageInterface;
+use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
 use AppserverIo\Appserver\Core\Api\Node\ClassLoaderNodeInterface;
 use AppserverIo\Appserver\Core\Interfaces\ClassLoaderInterface;
 use AppserverIo\Appserver\Naming\BindingTrait;
@@ -35,6 +36,7 @@ use AppserverIo\Psr\Application\DirectoryAwareInterface;
 use AppserverIo\Psr\Application\FilesystemAwareInterface;
 use AppserverIo\Appserver\Application\Interfaces\ContextInterface;
 use AppserverIo\Appserver\Application\Interfaces\ManagerConfigurationInterface;
+use AppserverIo\Appserver\Core\Api\Node\ContextNode;
 
 /**
  * The application instance holds all information about the deployed application
@@ -52,8 +54,9 @@ use AppserverIo\Appserver\Application\Interfaces\ManagerConfigurationInterface;
  * @property \AppserverIo\Storage\GenericStackable                          $managers        Stackable of managers for this application
  * @property string                                                         $name            Name of the application
  * @property \AppserverIo\Psr\Naming\NamingDirectoryInterface               $namingDirectory The naming directory instance
+ * @property \AppserverIo\Psr\Naming\NamingDirectoryInterface               $envAppDir       A reference to the application specific environment naming directory instance
  */
-class Application extends \Thread implements ApplicationInterface, DirectoryAwareInterface, FilesystemAwareInterface
+class Application extends \Thread implements ApplicationInterface, NamingDirectoryInterface, DirectoryAwareInterface, FilesystemAwareInterface
 {
 
     /**
@@ -504,6 +507,43 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
 
         // add the manager instance to the application
         $this->managers[$configuration->getName()] = $manager;
+    }
+
+    /**
+     * Prepares the application with the specific data found in the
+     * passed context node.
+     *
+     * @param \AppserverIo\Appserver\Core\Api\Node\ContextNode $context The application configuration
+     *
+     * @return void
+     */
+    public function prepare(ContextNode $context)
+    {
+
+        // load application name + naming directory
+        $applicationName = $context->getName();
+        $namingDirectory = $this->getNamingDirectory();
+
+        // bind the application (which is also a naming directory)
+        $globalDir = $namingDirectory->search('php:global');
+        $globalDir->bind($applicationName, $this);
+
+        // prepare the application specific directories
+        $webappPath = sprintf('%s/%s', $namingDirectory->search('env/appBase'), $applicationName);
+        $tmpDirectory = sprintf('%s/%s', $namingDirectory->search('env/tmpDirectory'), $applicationName);
+        $cacheDirectory = sprintf('%s/%s', $tmpDirectory, ltrim($context->getParam(DirectoryKeys::CACHE), '/'));
+        $sessionDirectory = sprintf('%s/%s', $tmpDirectory, ltrim($context->getParam(DirectoryKeys::SESSION), '/'));
+
+        // register the applications temporary directory in the naming directory
+        list ($envDir, ) = $namingDirectory->getAttribute('env');
+
+        // ATTENTION: This is necessary to avoid segfaults, resulting out of loosing the
+        //            reference to the naming directory which is a \Stackable instance!
+        $this->envAppDir = $envDir->createSubdirectory($applicationName);
+        $this->envAppDir->bind('webappPath', $webappPath);
+        $this->envAppDir->bind('tmpDirectory', $tmpDirectory);
+        $this->envAppDir->bind('cacheDirectory', $cacheDirectory);
+        $this->envAppDir->bind('sessionDirectory', $sessionDirectory);
     }
 
     /**

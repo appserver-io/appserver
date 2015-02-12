@@ -31,6 +31,8 @@ use AppserverIo\Appserver\Core\Api\Node\AppserverNode;
 use AppserverIo\Appserver\Core\Scanner\ScannerFactory;
 use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
 use AppserverIo\Appserver\Core\Utilities\ContainerStateKeys;
+use AppserverIo\Storage\GenericStackable;
+use AppserverIo\Appserver\Naming\NamingDirectory;
 
 /**
  * This is the main server class that starts the application server

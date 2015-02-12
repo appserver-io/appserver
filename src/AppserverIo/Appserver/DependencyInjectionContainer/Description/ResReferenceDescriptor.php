@@ -61,6 +61,13 @@ class ResReferenceDescriptor implements ResReferenceDescriptorInterface
     protected $type;
 
     /**
+     * The lookup name.
+     *
+     * @var string
+     */
+    protected $lookup;
+
+    /**
      * The resource description.
      *
      * @var string
@@ -109,6 +116,28 @@ class ResReferenceDescriptor implements ResReferenceDescriptorInterface
     public function getType()
     {
         return $this->type;
+    }
+
+    /**
+     * Sets the lookup name.
+     *
+     * @param string $lookup The lookup name
+     *
+     * @return void
+     */
+    public function setLookup($lookup)
+    {
+        $this->lookup = $lookup;
+    }
+
+    /**
+     * Returns the lookup name.
+     *
+     * @return string The lookup name
+     */
+    public function getLookup()
+    {
+        return $this->lookup;
     }
 
     /**
@@ -215,6 +244,11 @@ class ResReferenceDescriptor implements ResReferenceDescriptorInterface
             $this->setType(ucfirst($reflectionProperty->getPropertyName()));
         }
 
+        // load the lookup defined as @Resource(lookup=****)
+        if ($lookup = $annotationInstance->getLookup()) {
+            $this->setLookup($lookup);
+        }
+
         // load the resource description defined as @Resource(description=****)
         if ($description = $annotationInstance->getDescription()) {
             $this->setDescription($description);
@@ -272,6 +306,11 @@ class ResReferenceDescriptor implements ResReferenceDescriptorInterface
             }
         }
 
+        // load the lookup defined as @Resource(lookup=****)
+        if ($lookup = $annotationInstance->getLookup()) {
+            $this->setLookup($lookup);
+        }
+
         // load the resource description defined as @Resource(description=****)
         if ($description = $annotationInstance->getDescription()) {
             $this->setDescription($description);
@@ -310,6 +349,11 @@ class ResReferenceDescriptor implements ResReferenceDescriptorInterface
             $this->setDescription($description);
         }
 
+        // query for the lookup name and set it
+        if ($lookup = (string) $node->{'lookup'}) {
+            $this->setLookup($lookup);
+        }
+
         // query for the injection target
         if ($injectionTarget = $node->{'injection-target'}) {
             $this->setInjectionTarget(InjectionTargetDescriptor::newDescriptorInstance()->fromDeploymentDescriptor($injectionTarget));
@@ -338,6 +382,11 @@ class ResReferenceDescriptor implements ResReferenceDescriptorInterface
         // merge the reference type
         if ($type = $resReferenceDescriptor->getType()) {
             $this->setType($type);
+        }
+
+        // merge the lookup name
+        if ($lookup = $resReferenceDescriptor->getLookup()) {
+            $this->setLookup($lookup);
         }
 
         // merge the description

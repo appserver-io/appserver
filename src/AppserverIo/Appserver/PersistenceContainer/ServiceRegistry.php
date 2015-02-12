@@ -126,7 +126,7 @@ abstract class ServiceRegistry extends GenericStackable implements ServiceContex
      */
     public function lookup($serviceName, array $args = array())
     {
-        return $this->getServiceLocator()->lookup($this, $serviceName);
+        return $this->getServiceLocator()->lookup($this, $serviceName, $args);
     }
 
     /**
