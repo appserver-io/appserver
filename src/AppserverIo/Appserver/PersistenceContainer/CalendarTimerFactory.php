@@ -134,7 +134,9 @@ class CalendarTimerFactory extends \Thread implements CalendarTimerFactoryInterf
     }
 
     /**
-     * (non-PHPdoc)
+     * Invoked when the thread starts.
+     *
+     * @return void
      * @see Stackable::run()
      */
     public function run()
@@ -144,8 +146,8 @@ class CalendarTimerFactory extends \Thread implements CalendarTimerFactoryInterf
         $application = $this->getApplication();
         $application->registerClassLoaders();
 
+        // run forever
         while (true) {
-
             // wait until we've been notified
             $this->synchronized(function ($self) {
                 $self->wait();
@@ -161,8 +163,8 @@ class CalendarTimerFactory extends \Thread implements CalendarTimerFactoryInterf
                 ->setScheduleExprDayOfMonth($this->schedule->getDayOfMonth())
                 ->setScheduleExprMonth($this->schedule->getMonth())
                 ->setScheduleExprYear($this->schedule->getYear())
-                ->setScheduleExprStartDate(\DateTime::createFromFormat(ScheduleExpression::DATE_FORMAT, $this->schedule->getStart()))
-                ->setScheduleExprEndDate(\DateTime::createFromFormat(ScheduleExpression::DATE_FORMAT, $this->schedule->getEnd()))
+                ->setScheduleExprStartDate($this->schedule->getStart())
+                ->setScheduleExprEndDate($this->schedule->getEnd())
                 ->setScheduleExprTimezone($this->schedule->getTimezone())
                 ->setTimeoutMethod($this->timeoutMethod)
                 ->setTimerState(TimerState::CREATED)

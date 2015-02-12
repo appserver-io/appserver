@@ -24,6 +24,7 @@ use Rhumsaa\Uuid\Uuid;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Psr\EnterpriseBeans\TimerServiceInterface;
 use AppserverIo\Appserver\PersistenceContainer\Utils\TimerState;
+use AppserverIo\Psr\EnterpriseBeans\ScheduleExpression;
 
 /**
  * A thread which creates timer instances.
@@ -104,7 +105,7 @@ class TimerFactory extends \Thread implements TimerFactoryInterface
                 $this->persistent = $persistent;
                 $this->timerService = $timerService;
                 $this->intervalDuration = $intervalDuration;
-                $this->initialExpiration = $initialExpiration;
+                $this->initialExpiration = $initialExpiration->format(ScheduleExpression::DATE_FORMAT);
 
                 // notify the thread
                 $this->synchronized(function ($self) {
@@ -134,7 +135,9 @@ class TimerFactory extends \Thread implements TimerFactoryInterface
     }
 
     /**
-     * (non-PHPdoc)
+     * Invoked when the thread starts.
+     *
+     * @return void
      * @see Stackable::run()
      */
     public function run()
@@ -144,8 +147,8 @@ class TimerFactory extends \Thread implements TimerFactoryInterface
         $application = $this->getApplication();
         $application->registerClassLoaders();
 
+        // run forever
         while (true) {
-
             // wait until we've been notified
             $this->synchronized(function ($self) {
                 $self->wait();

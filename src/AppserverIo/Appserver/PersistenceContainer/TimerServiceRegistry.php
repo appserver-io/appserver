@@ -90,7 +90,7 @@ class TimerServiceRegistry extends ServiceRegistry implements TimerServiceContex
     /**
      * Injects the calendar timer factory for the timer service registry.
      *
-     * @param \AppserverIo\Appserver\PersistenceContainer\CalendarTimerFactoryInterface $timerFactory The calendar timer factory
+     * @param \AppserverIo\Appserver\PersistenceContainer\CalendarTimerFactoryInterface $calendarTimerFactory The calendar timer factory
      *
      * @return void
      */

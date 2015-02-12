@@ -28,6 +28,7 @@ use AppserverIo\Psr\EnterpriseBeans\TimerServiceInterface;
 use AppserverIo\Appserver\PersistenceContainer\Tasks\TimerTask;
 use AppserverIo\Appserver\PersistenceContainer\Utils\TimerState;
 use AppserverIo\Psr\Application\ApplicationInterface;
+use AppserverIo\Psr\EnterpriseBeans\ScheduleExpression;
 
 /**
  * A timer implementation for single action and interval timers.
@@ -122,14 +123,14 @@ class Timer extends GenericStackable implements TimerInterface
 
         // initialize the members
         $this->id = $builder->getId();
-        $this->timedObjectId = $builder->getTimedObjectId();
         $this->info = $builder->getInfo();
         $this->persistent = $builder->isPersistent();
+        $this->timedObjectId = $builder->getTimedObjectId();
         $this->intervalDuration = $builder->getRepeatInterval();
 
         // if we found a initial date, set it
-        if ($builder->getInitialDate() != null) {
-            $this->initialExpiration = $builder->getInitialDate()->format(Timer::DATE_FORMAT);
+        if ($initialDate = $builder->getInitialDate()) {
+            $this->initialExpiration = $initialDate;
         }
 
         // check if this is a new timer and the builders next date is NULL
@@ -137,7 +138,7 @@ class Timer extends GenericStackable implements TimerInterface
             // if yes, the next expiration date is the initial date
             $this->nextExpiration = $this->initialExpiration;
         } else {
-            $this->nextExpiration = $builder->getNextDate()->format(Timer::DATE_FORMAT);
+            $this->nextExpiration = $builder->getNextDate();
         }
 
         // we don't have a previous run
@@ -186,7 +187,7 @@ class Timer extends GenericStackable implements TimerInterface
      */
     public function getInitialExpiration()
     {
-        return \DateTime::createFromFormat(Timer::DATE_FORMAT, $this->initialExpiration);
+        return \DateTime::createFromFormat(ScheduleExpression::DATE_FORMAT, $this->initialExpiration);
     }
 
     /**
@@ -207,7 +208,7 @@ class Timer extends GenericStackable implements TimerInterface
     public function getPreviousRun()
     {
         if ($this->previousRun != null) {
-            return \DateTime::createFromFormat(Timer::DATE_FORMAT, $this->previousRun);
+            return \DateTime::createFromFormat(ScheduleExpression::DATE_FORMAT, $this->previousRun);
         }
     }
 
@@ -244,21 +245,21 @@ class Timer extends GenericStackable implements TimerInterface
     public function getNextExpiration()
     {
         if ($this->nextExpiration != null) {
-            return \DateTime::createFromFormat(Timer::DATE_FORMAT, $this->nextExpiration);
+            return \DateTime::createFromFormat(ScheduleExpression::DATE_FORMAT, $this->nextExpiration);
         }
     }
 
     /**
      * Sets the next timeout of this timer.
      *
-     * @param \DateTime $next The next scheduled timeout of this timer
+     * @param string $next The next scheduled timeout of this timer
      *
      * @return void
      */
-    public function setNextTimeout(\DateTime $next = null)
+    public function setNextTimeout($next = null)
     {
-        if ($next instanceof \DateTime) {
-            $this->nextExpiration = $next->format(Timer::DATE_FORMAT);
+        if ($next != null) {
+            $this->nextExpiration = $next;
         } else {
             $this->nextExpiration = null;
         }
@@ -433,7 +434,7 @@ class Timer extends GenericStackable implements TimerInterface
      */
     public function setPreviousRun(\DateTime $previousRun)
     {
-        $this->previousRun = $previousRun->format(Timer::DATE_FORMAT);
+        $this->previousRun = $previousRun->format(ScheduleExpression::DATE_FORMAT);
     }
 
     /**
