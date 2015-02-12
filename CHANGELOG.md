@@ -10,6 +10,7 @@
 
 ## Features
 
+* Closed [#487](https://github.com/appserver-io/appserver/issues/487) - Register logger instances in Naming Directory 
 * Closed [#508](https://github.com/appserver-io/appserver/issues/508) - Refactoring Naming to improve decoupling of Frameworks
 * Closed [#457](https://github.com/appserver-io/appserver/issues/457) - Refactoring of annotation syntax
 * Closed [#458](https://github.com/appserver-io/appserver/issues/458) - Create new PSR for pbc and aop usage

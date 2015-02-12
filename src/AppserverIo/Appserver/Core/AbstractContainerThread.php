@@ -97,7 +97,7 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
         $this->namingDirectory = new NamingDirectory();
         $this->namingDirectory->setScheme('php');
 
-        // create global/env naming directories
+        // create global/env and global/log naming directories
         $globalDir = $this->namingDirectory->createSubdirectory('global');
         $envDir = $this->namingDirectory->createSubdirectory('env');
 
@@ -108,6 +108,14 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
         $this->namingDirectory->bind('php:env/umask', $this->getInitialContext()->getSystemConfiguration()->getUmask());
         $this->namingDirectory->bind('php:env/user', $this->getInitialContext()->getSystemConfiguration()->getUser());
         $this->namingDirectory->bind('php:env/group', $this->getInitialContext()->getSystemConfiguration()->getGroup());
+
+        // create the directory the loggers will be bound to
+        $logDir = $globalDir->createSubdirectory('log');
+
+        // register the loggers in the naming directory
+        foreach ($this->getInitialContext()->getLoggers() as $name => $logger) {
+            $logDir->bind($name, $logger);
+        }
 
         // initialize instance that contains the applications
         $this->applications = new GenericStackable();

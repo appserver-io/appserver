@@ -70,12 +70,12 @@ abstract class AbstractEpbManager extends AbstractManager
                     // bind the local business interface of the bean to the appliations naming directory
                     $application->bind($name, array(&$this, 'lookupProxy'), array($regName = sprintf('%s/local', $beanName)));
 
-                    // query whether we've a remote business interface
+                // query whether we've a remote business interface
                 } elseif ($epbReference->getBeanInterface() === ($regName = sprintf('%sRemote', $beanName))) {
                     // bind the remote business interface of the bean to the applications naming directory
                     $application->bind($name, array(&$this, 'lookupProxy'), array($regName = sprintf('%s/remote', $beanName)));
 
-                    // at least, we need a business interface
+                // at least, we need a business interface
                 } else {
                     // log a critical message that we can't bind the reference
                     $application->getInitialContext()->getSystemLogger()->critical(
@@ -83,12 +83,12 @@ abstract class AbstractEpbManager extends AbstractManager
                     );
                 }
 
-                // try to use the lookup, if we don't have the beanName
+            // try to use the lookup, if we don't have the beanName
             } elseif ($lookup = $epbReference->getLookup()) {
                 // create a reference to a bean in the global directory
                 $application->getNamingDirectory()->bind($name, array(&$this, 'lookup'), array($lookup));
 
-                // log a critical message that we can't bind the reference
+            // log a critical message that we can't bind the reference
             } else {
                 $application->getInitialContext()->getSystemLogger()->critical(
                     sprintf(
@@ -99,12 +99,16 @@ abstract class AbstractEpbManager extends AbstractManager
                 );
             }
 
-            // catch the NamingException if the ref name is not bound yet
+        // catch the the exception that occures if a reference has already been created
         } catch (NamingException $e) {
-            // log a message that we've to register the EPB reference now
-            $application->getInitialContext()->getSystemLogger()->critical(
-                sprintf('Can\'t find php:global/%s/%s in naming directory', $application->getName(), $name)
+            // log a warning that the reference has already been registered
+            $application->getInitialContext()->getSystemLogger()->warning(
+                sprintf('Reference php:global/%s/%s already exists', $application->getName(), $name)
             );
+
+        // catch all other exceptions
+        } catch (\Exception $e) {
+            $application->getInitialContext()->getSystemLogger()->critical($e->__toString());
         }
     }
 
@@ -118,7 +122,7 @@ abstract class AbstractEpbManager extends AbstractManager
     public function registerResReference(ResReferenceDescriptorInterface $resReference)
     {
         try {
-            // load the application instance
+            // load the application instance and reference name
             $application = $this->getApplication();
 
             // query whether the reference has already been bound to the application
@@ -135,13 +139,39 @@ abstract class AbstractEpbManager extends AbstractManager
             // catch the NamingException if the ref name is not bound yet
         } catch (NamingException $e) {
             // log a message that we've to register the resource reference now
-            $application->getInitialContext()->getSystemLogger()->critical($e->__toString());
+            $application->getInitialContext()->getSystemLogger()->debug(
+                sprintf('Reference php:global/%s/%s has not been bound to naming directory', $application->getName(), $name)
+            );
         }
 
-        // the reflection class for the passed type
-        $reflectionClass = new ReflectionClass($resReference->getType());
+        try {
+            // try to use the lookup to bind the reference to
+            if ($lookup = $resReference->getLookup()) {
+                // create a reference to a resource in the global directory
+                $application->bindReference($name, $lookup);
 
-        // bind a reference to the resource shortname
-        $application->bindReference($name, $reflectionClass->getShortName());
+            // try to bind the reference by the specified type
+            } elseif ($type = $resReference->getType()) {
+                // the reflection class for the passed type
+                $reflectionClass = new ReflectionClass($resReference->getType());
+
+                // bind a reference to the resource shortname
+                $application->bindReference($name, $reflectionClass->getShortName());
+
+            // log a critical message that we can't bind the reference
+            } else {
+                $application->getInitialContext()->getSystemLogger()->critical(
+                    sprintf(
+                        'Can\'t bind reference php:global/%s/%s to naming directory, because of missing source bean definition',
+                        $application->getName(),
+                        $name
+                    )
+                );
+            }
+
+        // catch all other exceptions
+        } catch (\Exception $e) {
+            $application->getInitialContext()->getSystemLogger()->critical($e->__toString());
+        }
     }
 }
