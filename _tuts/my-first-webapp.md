@@ -282,7 +282,7 @@ class HelloServlet extends HttpServlet
 <br/>
 ## Okay thats all folks!
 
-We hope this tutorial provides you a smooth start into the world of **appserver.io webapps**!
+We hope this tutorial helps you to have a smooth start into the world of **appserver.io webapps**!
 
 Any feedback is very appreciated so, do not hesitate to share your experiences or any problems you encountered with us. Cheers! :)
 
