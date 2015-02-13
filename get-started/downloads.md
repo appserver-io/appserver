@@ -12,7 +12,6 @@ permalink: /get-started/downloads.html
 ***
 
 Get the latest Version of appserver.io free and enjoy the most powerful PHP infrastructure in the world with only one click!
-<p><br/></p>
 
 {% include widgets/download.html %}
 

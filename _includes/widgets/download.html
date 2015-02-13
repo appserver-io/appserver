@@ -1,3 +1,5 @@
+<p><br/></p>
+
 <ul class="nav nav-tabs nav-justified list-unstyled downloads">
 {% for download in site.data.downloads %}
     <li class="{% if forloop.first %}active{% endif %}">
@@ -12,18 +14,18 @@
     <div class="tab-content">
         {% for download in site.data.downloads %}
             <div class="tab-pane fade {% if forloop.first %}active in{% endif %}" id="{{ download.id }}">
+                {% capture distname %}{{ site.appserver_download_dist_prefix }}{{ site.appserver_version }}{{ download.dist-suffix }}{% endcapture %}
+                {% capture runtimename %}{{ site.appserver_download_runtime_prefix }}{{ site.appserver_runtime_version }}{{ download.runtime-suffix }}{% endcapture %}
                 {% capture downloadcontent %}{% include downloads/content.md %}{% endcapture %}
                 {{ downloadcontent | markdownify }}
                 <hr>
                 {% if download.dist-suffix %}
-                    {% capture distname %}{{ site.appserver_download_dist_prefix }}{{ site.appserver_version }}{{ download.dist-suffix }}{% endcapture %}
                     <a id="btn-download-{{ download.id }}" class="btn btn-info btn-lg"
                        href="{{ site.appserver_download_baseurl }}{{ site.appserver_version }}/{{ distname }}">
                         <i class="fa fa-download"></i>&nbsp;&nbsp;{{ distname }}
                     </a>
                 {% endif %}
                 {% if download.runtime-suffix %}
-                    {% capture runtimename %}{{ site.appserver_download_runtime_prefix }}{{ site.appserver_runtime_version }}{{ download.runtime-suffix }}{% endcapture %}
                     <a class="btn btn-info btn-lg"
                        href="{{ site.appserver_download_baseurl }}{{ site.appserver_version }}/{{ runtimename }}">
                         <i class="fa fa-download"></i>&nbsp;&nbsp;{{ runtimename }}
@@ -41,7 +43,7 @@ $(function () {
         var activeTab = $('[href=' + location.hash + ']');
         activeTab && activeTab.tab('show');
     }
-    
+
     $('.nav-tabs a').on('click', function (e) {
         var newhash = $(e.target).attr('href');
         window.location.hash = newhash;
