@@ -36,8 +36,8 @@ This tutorial will show you how to implement your first webapp on **appserver.io
 ## Prerequirements
 
 Of course you'll need a running installation of appserver.io *(>= Version 1.0.0-rc3)*. If you are new to this
-project you can easily [download](http://127.0.0.1:4000/get-started/downloads.html) it and follow the
-[installation guide](http://127.0.0.1:4000/get-started/documentation/installation.html) for your specific OS.
+project you can easily [download](<{{ "/get-started/downloads.html" | prepend: site.baseurl }}>) it and follow the
+[installation guide](<{{ "/get-started/documentation/installation.html" | prepend: site.baseurl }}>) for your specific OS.
 
 <br/>
 ## Preparations
