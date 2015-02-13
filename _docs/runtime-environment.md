@@ -14,8 +14,7 @@ compiled PHP environment. Besides the most recent PHP 5.5.x version the package 
 extensions:
 
 * [pthreads](http://github.com/appserver-io-php/pthreads)
-* [appserver](https://github.com/appserver-io/php-ext-appserver) (contains some replacement functions
-  which behave badly in a multithreaded environment)
+* [appserver](https://github.com/appserver-io-php/php-ext-appserver) (contains some replacement functions which behave badly in a multithreaded environment)
 
 Additionally the PECL extensions [XDebug](http://pecl.php.net/package/xdebug) and [ev](http://pecl.php.net/package/ev) 
 are compiled as shared modules. `XDebug` is necessary to render detailed code coverage reports when 

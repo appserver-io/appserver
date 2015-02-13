@@ -25,7 +25,7 @@ First thing you've to do is to create your SessionBean. What is a `SessionBean`?
 to describe it in only a few words, but I'll try. A `SessionBean` basically is a plain PHP class.
 You MUST not instantiate it directly, because the application server takes care of its complete
 lifecycle. Therefore, if you need an instance of a SessionBean, you'll ask the application server 
-to give you an instance. This can be done by a [client](<https://github.com/appserver-io/persistencecontainerclient>).
+to give you an instance.
 
 The persistence container client will give you a proxy to the session bean that allows you to
 invoke all methods the SessionBean provides as you can do if you would have a real instance. But
