@@ -39,7 +39,7 @@ If following [common syntax](http://phpdoc.org/docs/latest/guides/types.html) we
 
 
 
-- Specify complex method contracts in PHP syntax using `@requires` as precondition and `@Ensures` as 
+- Specify complex method contracts in PHP syntax using `@Requires` as precondition and `@Ensures` as
   postcondition
 - Specify a state of validity for your classes (e.g. `$this->attribute !== null`) which should be true
   all times using `@Invariant`
@@ -67,7 +67,7 @@ define a simple contract therefor
 ```php
 <?php
 
-namespace Namespace\Module;
+namespace My\Project;
 
 /**
  * This is demo implementation of stateful session bean.
