@@ -3,7 +3,7 @@ layout: post
 title:  AOP and DbC - your API guards
 meta_title: appserver.io aop and dbc api guard blog post
 meta_description: A blog post explaining how AOP and Design by Contract can be used to protect a RESTful API
-date:   2015-02-14 00:05:00
+date:   2015-02-13 12:00:00
 author: wick-ed
 version: 1.0.0-rc3
 categories: [design-by-contract]
