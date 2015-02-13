@@ -1,6 +1,8 @@
 ---
 layout: post
 title:  Naming-Directory Basics
+meta_title: appserver.io naming directory basics
+meta_description: Every container running in the application server has a internal registry, we call it Naming Directory. It is something like an object store.
 date:   2015-02-04 12:00:00
 author: wagnert
 version: 1.0.0-rc1

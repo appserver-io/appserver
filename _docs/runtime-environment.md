@@ -1,6 +1,8 @@
 ---
 layout: docs
 title: Runtime Environment
+meta_title: appserver.io runtime environment
+meta_description: appserver.io provides a runtime which is system independent and encloses a thread-safe compiled PHP environment.
 position: 150
 group: Docs
 permalink: /get-started/documentation/runtime-environment.html

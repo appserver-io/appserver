@@ -1,6 +1,8 @@
 ---
 layout: tutorial
 title: Running TYPO3 Neos
+meta_title: Running TYPO3 Neos on appserver.io
+meta_description: This guide shows you how easy it is to install appserver.io on a Mac and run TYPO3 Neos on the most powerful PHP infrastructure on the planet.
 description: It shows you how easy it is to install appserver.io on a Mac and run TYPO3 Neos on it.
 position: 20
 group: Tutorials

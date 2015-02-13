@@ -1,6 +1,8 @@
 ---
 layout: default
 title: Contributing
+meta_title: Be part of the appserver.io community
+meta_description: Help us to deliver the world´s most powerful PHP infrastructure. Report Bugs, tell us your experiences, help us to improve appserver.io.
 position: 20
 group: Community
 permalink: /community/contributing.html

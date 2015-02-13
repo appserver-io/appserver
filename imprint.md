@@ -1,6 +1,7 @@
 ---
 layout: default
 title: Imprint
+meta_title: appserver.io imprint
 permalink: /imprint.html
 ---
 

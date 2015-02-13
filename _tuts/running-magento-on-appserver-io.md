@@ -1,6 +1,8 @@
 ---
 layout: tutorial
 title: Running Magento
+meta_title: Running Magento on appserver.io
+meta_description: This guide shows you how easy it is to install appserver.io on a Mac and run Magento on the most powerful PHP infrastructure on the planet.
 description: It shows you how easy it is to install appserver.io on a Mac and run Magento on it.
 position: 20
 group: Tutorials

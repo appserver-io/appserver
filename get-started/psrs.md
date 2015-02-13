@@ -1,6 +1,8 @@
 ---
 layout: default
 title: PSRs
+meta_title: appserver.io PSRs
+meta_description: PSR stands for PHP Standard Recommendation. Since they started with PSR-0 many things in the PHP ecosystem turn to the better, we think!
 group: Get Started
 position: 90
 permalink: /get-started/psrs.html

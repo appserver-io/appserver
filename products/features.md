@@ -1,6 +1,8 @@
 ---
 layout: default
 title: Features
+meta_title: appserver.io features
+meta_description: appserver.io is a next generation PHP infrastructure. It bundles a lightning fast PHP webserver with additional services in one powerful bundle.
 position: 20
 group: Products
 permalink: /products/features.html

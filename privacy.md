@@ -1,6 +1,8 @@
 ---
 layout: default
 title: Privacy
+meta_title: Privacy policy - appserver.io
+meta_description: This page informs you of our policies regarding the collection, use and disclosure of Personal Information we receive from users of the Site.
 permalink: /privacy.html
 ---
 

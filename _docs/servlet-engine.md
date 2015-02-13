@@ -1,6 +1,8 @@
 ---
 layout: docs
 title: Servlet Engine
+meta_title: appserver.io servlet engine
+meta_description: Originally Servlets are the Java counterpart to other dynamic web technologies like PHP or the Microsoft .NET plattform.
 position: 50
 group: Docs
 subNav:

@@ -1,6 +1,8 @@
 ---
 layout: docs
 title: Installation
+meta_title: appserver.io installation
+meta_description: Besides supporting several operating systems and their specific ways of installing software, we also support several ways of getting this software.
 position: 10
 group: Docs
 subNav:

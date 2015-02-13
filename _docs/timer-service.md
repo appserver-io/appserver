@@ -1,6 +1,8 @@
 ---
 layout: docs
 title: Timer Service
+meta_title: appserver.io timer service documentation
+meta_description: As CRON does, the Timer Service allows you to schedule processing your functionality at a given date or in regular intervals.
 position: 100
 group: Docs
 permalink: /get-started/documentation/timer-service.html

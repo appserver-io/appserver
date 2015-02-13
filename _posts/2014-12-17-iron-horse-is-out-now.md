@@ -1,6 +1,8 @@
 ---
 layout: post
 title:  1.0.0-beta2 aka "Iron Horse" is out now
+meta_title: appserver.io 1.0.0-beta2 aka "Iron Horse" is out now
+meta_description: Many guys we talked to during the last years, told us: It's not possible to build an infrastructure solution completely based on PHP – but we made it!
 date:   2014-12-17 12:00:00
 author: wagnert
 version: 1.0.0beta2

@@ -1,6 +1,8 @@
 ---
 layout: post
 title: Servlet-Engine Basics
+meta_title: appserver.io servlet engine basics
+meta_description: A Servlet-Engine is NOT a framework, but it is a part in a framework. So you should see it as the controller part of a MVC framework.
 date: 2014-12-24 11:00:00
 author: wagnert
 version: 1.0.0beta2

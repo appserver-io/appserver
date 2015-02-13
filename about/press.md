@@ -1,6 +1,8 @@
 ---
 layout: default
 title: Press
+meta_title: You are a journalist? Here you go!  - appserver.io
+meta_description: Check out the latest informations, press releases and background informations about appserver.io and the team behind the software.
 position: 30
 group: About
 permalink: /about/press.html

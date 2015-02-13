@@ -1,6 +1,8 @@
 ---
 layout: tutorial
 title: Running Drupal
+meta_title: Running Drupal on appserver.io
+meta_description: This guide shows you how easy it is to install appserver.io on a Mac and run Drupal on the most powerful PHP infrastructure on the planet.
 description: It shows you how easy it is to install drupal on appserver.io.
 position: 20
 group: Tutorials
