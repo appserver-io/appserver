@@ -25,26 +25,33 @@ author: all
 
 <section class="grey text-right">
 <div class="container">
-{% capture sectioncontent %}{% include sections/servlet-engine.md %}{% endcapture %}
+{% capture sectioncontent %}{% include sections/rewrite-engine.md %}{% endcapture %}
 {{ sectioncontent | markdownify }}
 </div>
 </section>
 
 <section class="darkgrey">
 <div class="container">
-{% capture sectioncontent %}{% include sections/persistence-container.md %}{% endcapture %}
+{% capture sectioncontent %}{% include sections/servlet-engine.md %}{% endcapture %}
 {{ sectioncontent | markdownify }}
 </div>
 </section>
 
 <section class="grey text-right">
 <div class="container">
-{% capture sectioncontent %}{% include sections/message-queue.md %}{% endcapture %}
+{% capture sectioncontent %}{% include sections/persistence-container.md %}{% endcapture %}
 {{ sectioncontent | markdownify }}
 </div>
 </section>
 
 <section class="darkgrey">
+<div class="container">
+{% capture sectioncontent %}{% include sections/message-queue.md %}{% endcapture %}
+{{ sectioncontent | markdownify }}
+</div>
+</section>
+
+<section class="grey text-right">
 <div class="container">
 {% capture sectioncontent %}{% include sections/timer-service.md %}{% endcapture %}
 {{ sectioncontent | markdownify }}
