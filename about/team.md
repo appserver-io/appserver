@@ -15,7 +15,7 @@ The TechDivision GmbH is an established internet agency who supports famous nati
 the planning, conception and implementation of web-based technologies already for years. As Magento Gold Partner and
 TYPO3 Association Gold Member TechDivision is one of the leading addresses for ambitious Magento- and TYPO3 solutions.
 Beside divers medium-sized companies a lot of international acting companies, such as Ritter-Sport, American Express,
-Meggle or Ferrero trust the know-how and experience of TechDivision. Actually TechDivision has 3 locations in
+Meggle or Ferrero trust the know-how and experience of TechDivision. Actually TechDivision has 2 locations in
 Rosenheim/Kolbermoor and Munich.
 
 We really believe that we can change the world by providing you with the next generation PHP infrastructure:
@@ -108,6 +108,21 @@ We really believe that we can change the world by providing you with the next ge
                 the development of the web-area of a big austrian newspaper publisher, before he founded the
                 online-agency TechDivision with his brother, of which he made one of the leading companies
                 for ambitious web-development in the PHP-surrounding.
+            </p>
+        </div>
+    </div>
+</div>
+<div class="well">
+    <div class="row">
+        <div class="col-md-2 text-center">
+            <img src="{{ "/assets/img/team/gsieger.png" | prepend: site.baseurl }}" class="avatar img-circle">
+        </div>
+        <div class="col-md-10">
+            <h4><b>Guido</b>, Head of Partner and License Management</h4>
+            <p>
+                Guido studied law at the University of Regensburg. He worked for several companies for 
+                international contract law. At appserver.io he is responsible for partner management and
+                licensing. 
             </p>
         </div>
     </div>

@@ -140,7 +140,7 @@ class HelloServlet extends HttpServlet
 ```
 
 Due to the reason that servlets are pre-initialised by the servlet-engine at the appserver.io startup we have to
-restart the appserver process every time we wanted to test our recent changes. Here's a short overview for all systems.
+restart the appserver every time we want to test our recent changes. Here's a short overview how to restart it.
 
 ```bash
 # OSX
@@ -176,7 +176,7 @@ and classes MUST also follow an *autoloading* PSR: [PSR-0].
 mkdir -p META-INF/classes/MyVendor/MyApp
 ```
 
-Let's introduce our `HelloService` which provides the `getHelloMessage()` method which returns the hello-world message
+Let's introduce our `HelloService` which provides the `getHelloMessage()` method that returns the hello-world message
 the servlet should serve to the client. Create a PHP class file called `HelloService.php` in folder `META-INF/classes/MyVendor/MyApp`
 
 ```php
@@ -197,7 +197,7 @@ class HelloService
 ```
 
 To inject the `HelloService` into our `HelloServlet` we have to add an annotated property `$helloService` and modify the `doGet`
-method to make usage of the injected service instance. The `HelloServlet` should now look like this...
+method to make use of the injected service instance. The `HelloServlet` should now look like this...
 
 ```php
 <?php
@@ -237,10 +237,10 @@ git add .
 git commit -m "added hello-world service and enhanced servlet"
 ```
 
-> Feel free to enhance it and let us know what you've build upon the next PHP infrastructure!
+> Feel free to enhance it and let us know what you've built upon the next PHP infrastructure!
 
 <br/>
-## Annotations but why? 
+## Annotations! But why? 
 
 To use servlets without configuration, it's necessary to add a `@Route` annotation for the servlet-engine being able to map a specific url to the servlet.
 
@@ -267,7 +267,7 @@ above the class definition. In our case we want to have a stateless Session-Bean
 class HelloService
 ```
 
-To inject our `HelloService` to the `HelloServlet` via property injection we just have to put the annotation above the member property like this...
+To inject our `HelloService` to the `HelloServlet` via [Property-Injection](<{{ "/get-started/documentation/dependency-injection.html#how-to-inject-an-instance" | prepend: site.baseurl }}>) we just have to put the annotation above the member property like this...
 
 ```php
 <?php
@@ -282,7 +282,7 @@ class HelloServlet extends HttpServlet
 <br/>
 ## Okay thats all folks!
 
-We hope this tutorial provides you a smooth start into the world of **appserver.io webapps**!
+We hope this tutorial helps you to have a smooth start into the world of **appserver.io webapps**!
 
 Any feedback is very appreciated so, do not hesitate to share your experiences or any problems you encountered with us. Cheers! :)
 
