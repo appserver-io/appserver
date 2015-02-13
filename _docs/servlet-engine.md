@@ -95,7 +95,7 @@ we want to provide. For our first example, we only want to add the `Hello World!
 That is pretty simple, we think! So, given you've downloaded and installed the latest version of the application
 server, create a folder `examples/WEB-INF/classes/AppserverIo/Example/Servlets` under the `webapps` folder of
 your installation. In the folder, create a new file named `HelloWorldServlet.php`, copy the code from above and
-save it. After [restarting](https://github.com/appserver-io/appserver/wiki/02.-Basic-Usage#start-and-stop-scripts)
+save it. After [restarting]({{ "/get-started/documentation/basic-usage.html#start-and-stop-scripts" | prepend: site.baseurl }})
 the application server, open the URL `http://127.0.0.1:9080/examples/helloWorld.do` in your favorite browser.
 You should see the text `Hello World`. Congratulations, you have written your first servlet!
 
