@@ -22,24 +22,42 @@ subNav:
 permalink: /get-started/tutorials/running-magento-on-appserver-io.html
 ---
 
-**Prerequisite**: *Up and running installation of MySQL*
 
 appserver.io is a pretty cool and sophisticated infrastructure fully built upon the PHP stack. This makes it truly easy to develop and extend the platform. appserver.io comes with a built in webserver module that provides Fast-CGI support. Therefore it is possible to run and install any PHP application. The following tutorial guides you through the Magento installation process necessary to run on appserver.io.
 
-## Installation
 
-First of all you have to download the latest appserver package which is available on the appserver.io webpage under downloads. We have installers for all major operating systems, but for that example we just download the `.pkg` for the Mac OS X. Once you have downloaded the package you just have to follow the steps in the installer. After the setup has been finished, try to open the welcome page [http://127.0.0.1:9080](<http://127.0.0.1:9080>) with your favorite browser.
+**Prerequisite**: *Up and running installation of MySQL*
 
-By default appserver.io is configured to run on port `9080` in order not to affect any existing webserver installations. You can easily change that in the `/opt/appserver/etc/appserver.xml` just by going to section
+You will need a running installation of appserver.io *(>= Version 1.0.0-rc3)*. If you are new to this
+project you can easily [download](<{{ "/get-started/downloads.html" | prepend: site.baseurl }}>) and follow the
+[installation guide](<{{ "/get-started/documentation/installation.html" | prepend: site.baseurl }}>) for your specific OS.
+
+After the setup has finished the appserver.io is up and running and you can call the welcome page with
+
+[http://localhost:9080/](<http://localhost:9080/>)
+
+By default, appserver.io is configured to run on port `9080` in order to not to affect any existing webserver installations.
+You can easily change that in the /opt/appserver/etc/appserver.xml just by going to section
 
 ```xml
 <server name="http"
 	...
 ```
 
-and change the port within that section to for example `80`. After that, [restart](<{{"/get-started/documentation/basic-usage.html#start-and-stop-scripts" | prepend: site.baseurl }}">) the application server. Of course there is no need to change the port if you only want to check out the capabilities of `appserver.io`.
+and change the port within that section for example to 80. After that restart the appserver.io which can be
+done with the following command.
 
-You are now all set to install and run Magento on appserver.io. To start, you have to [download](http://www.magentocommerce.com/download) the latest Magento CE version from the Magento website.
+```bash
+sudo /opt/appserver/sbin/appserverctl restart
+```
+
+Of course there is no need to change the port if you only want to check out the capabilities of `appserver.io`
+
+
+
+## Installation
+
+To start, you have to [download](http://www.magentocommerce.com/download) the latest Magento CE version from the Magento website.
 
 To install Magento, we have now two options. The easiest way is to install Magento without creating a vhost. Therefore you just extract the Magento source into the document root under `/opt/appserver/webapps` by opening a commandline and type
 
