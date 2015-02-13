@@ -1,6 +1,8 @@
 ---
 layout: detail
 title: Persistence Container
+meta_title: appserver.io persitence container
+meta_description: The Persistence Container enables developers to hold objects, so-called beans, in memory giving you completely new possibilities in PHP.
 position: 10
 group: Features
 permalink: /products/features/persistence-container.html

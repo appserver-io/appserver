@@ -1,6 +1,8 @@
 ---
 layout: default
 title: On Tour
+meta_title: appserver.io on tour – Check our talks
+meta_description: Meet us on tour and discuss the future of PHP infrastructure. Let us know your thoughts, doubts, wishes etc... We´re very happy to talk with you!
 position: 30
 group: Community
 permalink: /community/talks.html

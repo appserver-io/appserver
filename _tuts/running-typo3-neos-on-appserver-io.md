@@ -1,46 +1,54 @@
 ---
 layout: tutorial
 title: Running TYPO3 Neos
+meta_title: Running TYPO3 Neos on appserver.io
+meta_description: This guide shows you how easy it is to install appserver.io on a Mac and run TYPO3 Neos on the most powerful PHP infrastructure on the planet.
 description: It shows you how easy it is to install appserver.io on a Mac and run TYPO3 Neos on it.
 position: 20
 group: Tutorials
 permalink: /get-started/tutorials/running-typo3-neos-on-appserver-io.html
 ---
 
-**Prerequirements**: *Up and running installation of MySQL*
 
 Appserver.io is a pretty cool and sophiscated infrastructure fully built upon the PHP stack. This makes it truely easy
 to develop and extend the platform. Appserver.io comes with an built in webserver module with PHP-FPM therefore it is
 possible to install any PHP-App you like and run it on that platform. The following guide shows you how easy it is to
 install appserver.io on a Mac and run TYPO3 Neos on it.
 
-## Installation:
-First of all you have to download the latest appserver package. You always find the latest and stable release on the
-appserver.io webpage belowdownloads. We have installers for all important operating systems but in our case we just
-download the .pkg for the Mac. Once you have downloaded the package you just have to follow the steps in the installer.
+
+**Prerequirements**: *Up and running installation of MySQL*
+
+You will need a running installation of appserver.io *(>= Version 1.0.0-rc3)*. If you are new to this
+project you can easily [download](<{{ "/get-started/downloads.html" | prepend: site.baseurl }}>) and follow the
+[installation guide](<{{ "/get-started/documentation/installation.html" | prepend: site.baseurl }}>) for your specific OS.
+
 After the setup has finished the appserver.io is up and running and you can call the welcome page with
 
 [http://localhost:9080/](<http://localhost:9080/>)
 
-By default appserver.io is configured to run on port `9080` in order not to affect any existing webserver installations.
-You can easily change that in the `/opt/appserver/etc/appserver/appserver.xml` just by going to section
+By default, appserver.io is configured to run on port `9080` in order to not to affect any existing webserver installations.
+You can easily change that in the /opt/appserver/etc/appserver.xml just by going to section
 
 ```xml
 <server name="http"
 	...
 ```
 
-and change the port within that section to for example 80. After that you have to restart the appserver.io which can
-be done by the following command.
+and change the port within that section for example to 80. After that restart the appserver.io which can be
+done with the following command.
 
 ```bash
 sudo /opt/appserver/sbin/appserverctl restart
 ```
 
-Of course there is no need to change the port if you only want ot check out the capabilities of this amazing platform.
+Of course there is no need to change the port if you only want to check out the capabilities of this amazingly platform.
 
-You are now set to install and run your application on the appserver.io. For that we download the latest TYPO3 Neos
-Release from neos.typo3.org. To go ahead and install TYPO3 Neos first of all you have to create a virtual host.
+
+
+
+## Installation:
+
+Download the latest TYPO3 Neos Release from neos.typo3.org. To go ahead and install TYPO3 Neos first you have to create a virtual host.
 
 As with any other Webserver using a vhost you first have to add the domain you'd like to use in your hosts file.
 

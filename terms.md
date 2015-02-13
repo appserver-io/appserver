@@ -1,6 +1,7 @@
 ---
 layout: default
 title: Terms
+meta_title: appserver.io terms
 permalink: /terms.html
 ---
 

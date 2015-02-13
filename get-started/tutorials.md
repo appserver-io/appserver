@@ -1,6 +1,8 @@
 ---
 layout: tutorial
 title: Tutorials
+meta_title: appserver.io tutorials – Getting started now
+meta_description: Check out the most valuable tutorials not only for how you can develop on the appserver.io platform but also running legacy php apps on it.
 headline: Tutorials
 group: Get Started
 position: 30

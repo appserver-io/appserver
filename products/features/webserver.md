@@ -1,6 +1,8 @@
 ---
 layout: detail
 title: Webserver
+meta_title: appserver.io web server
+meta_description: appserver.io provides a fully HTTP/1.1 compliant webserver written in PHP which can process requests over HTTP as well as HTTPS.
 position: 10
 group: Features
 permalink: /products/features/webserver.html

@@ -1,6 +1,8 @@
 ---
 layout: detail
 title: Message Queue
+meta_title: appserver.io message queue
+meta_description: appserver.io comes with an integrated message queue providing services that enables developers to process messages asynchronously
 position: 10
 group: Features
 permalink: /products/features/message-queue.html

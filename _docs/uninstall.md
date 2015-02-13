@@ -1,6 +1,8 @@
 ---
 layout: docs
 title: Uninstall
+meta_title: appserver.io uninstall
+meta_description: To uninstall the appserver on Linux you might rely on your package management system. On Windows you can use the normal uninstall process.
 position: 160
 group: Docs
 permalink: /get-started/documentation/uninstall.html

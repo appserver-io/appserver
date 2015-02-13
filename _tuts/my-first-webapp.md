@@ -1,6 +1,8 @@
 ---
 layout: tutorial
 title: My First WebApp
+meta_title: Building your first web app on appserver.io
+meta_description: How-to-guide for your first web app on appserver.io from the scratch using the Servlet-Engine mixed with Dependency Injection and Session-Bean integration.
 description: It gives you a guide how to implement your first webapp with appserver.io
 date: 2015-02-11 14:45:00
 author: zelgerj
@@ -27,21 +29,21 @@ permalink: /get-started/tutorials/my-first-webapp.html
 ![My first webapp]({{ "/assets/img/tutorials/my-first-webapp/my-first-webapp-image.jpg" | prepend: site.baseurl }})
 ***
 
-This tutorial will show you how to implement your first webapp on **appserver.io** from the scratch using the
+This tutorial explains how to implement your first webapp on **appserver.io** from scratch using the
 **Servlet-Engine** mixed with **Dependency Injection** and **Session-Bean** integration.
 
 <br/>
-## Prerequirements
+## Prerequisite
 
-Of course you'll need a running installation of appserver.io *(>= Version 1.0.0-rc3)*. If you are new to this
-project you can easily [download](http://127.0.0.1:4000/get-started/downloads.html) it and follow the
-[installation guide](http://127.0.0.1:4000/get-started/documentation/installation.html) for your specific OS.
+First you will need a running installation of appserver.io *(>= Version 1.0.0-rc3)*. If you are new to this
+project you can easily [download](<{{ "/get-started/downloads.html" | prepend: site.baseurl }}>) and follow the
+[installation guide](<{{ "/get-started/documentation/installation.html" | prepend: site.baseurl }}>) for your specific OS.
 
 <br/>
 ## Preparations
 
-At first we have to switch to *dev mode* in our local appserver.io installation. This will set the correct filesystem
-permissions for your user account and also let the appserver process itself run as current user which makes it a lot easier
+At first switch to *dev mode* in our local appserver.io installation. This will set the correct filesystem
+permissions for your user account and also let the appserver process itself run as the current user. This will make it easy 
 for local development.
 
 ```bash
@@ -49,7 +51,7 @@ sudo /opt/appserver/server.php -s dev
 # Should return: Setup for mode 'dev' done successfully!
 ```
 
-Now we're ready to create our webapp called `myapp`
+Now  you are ready to create the webapp called `myapp`
 
 ```bash
 # Goto appserver.io webapps folder
@@ -67,8 +69,8 @@ brackets .
 atom .
 ```
 
-Let's keep our webapp under version controll from the early beginning, so you always have the chance to rollback things
-and maybe push it finally to github with all the history in it if you want to.
+Keep the webapp under version control from the early beginning, so that you always have a chance to rollback things
+and maybe push it finally to GitHub with all the history in it if you want to.
 
 ```bash
 git init
@@ -84,13 +86,13 @@ git commit -m "initial commit"
 ## *Hello-World* Script
 
 The simplest way to echo things like *Hello-World* to the client is the way you already know. Using a simple PHP script.
-So let's check if that works in appserver and create one called `hello.php` directly in our webapps folder `/opt/appserver/webapps/myapp`.
+So check if that works in appserver and create a PHP script called `hello.php` directly in the webapps folder `/opt/appserver/webapps/myapp`.
 
 ```php
 <?php echo "hello i'am a simple php script"; ?>
 ```
 
-Open your browser at [http://127.0.0.1/myapp/hello.php] and you should get...
+Open the browser at [http://127.0.0.1/myapp/hello.php] and you should get...
 
 ![Simple PHP script browser result]({{ "/assets/img/tutorials/my-first-webapp/simple-php-script-browser.png" | prepend: site.baseurl }})
 <br/>
@@ -106,8 +108,8 @@ git commit -m "added hello-world script"
 <br/>
 ## *Hello-World* Servlet
 
-Ok let's do the same thing using the Servlet-Engine by creating your first simple *Hello-World* Servlet. In the
-beginning we need to create the `WEB-INF/classes` folder where all Servlets have to be. In this folder the namespaces
+Ok now do the same thing using the Servlet-Engine by creating your first simple *Hello-World* Servlet. In the
+beginning create the `WEB-INF/classes` folder where all Servlets are. In this folder the namespaces
 and classes MUST follow an *autoloading* PSR: [PSR-0].
 
 > [PSR-4] support is comming in one of the next appserver.io releases.
@@ -139,8 +141,8 @@ class HelloServlet extends HttpServlet
 }
 ```
 
-Due to the reason that servlets are pre-initialised by the servlet-engine at the appserver.io startup we have to
-restart the appserver every time we want to test our recent changes. Here's a short overview how to restart it.
+Due to the reason that servlets are pre-initialised by the servlet-engine at the appserver.io startup it is necessary to
+restart the appserver every time it is needed to test the recent changes. Here is a short overview how to restart.
 
 ```bash
 # OSX
@@ -153,7 +155,7 @@ sudo /etc/init.d/appserver restart
 sudo systemctl restart appserver
 ```
 
-After the appserver has restarted we can goto [http://127.0.0.1/myapp/hello.do] and should get...
+After the appserver has restarted goto [http://127.0.0.1/myapp/hello.do] and you should get...
 
 ![Simple servlet browser result]({{ "/assets/img/tutorials/my-first-webapp/simple-servlet-browser.png" | prepend: site.baseurl }})
 
@@ -167,17 +169,17 @@ git commit -m "added hello-world servlet"
 
 ## Using Services
 
-As the most business logic should be separated into services we'll implement a simple `HelloService` which we want to
-inject into our `HelloServlet` via [Dependency-Injection](<{{ "/get-started/documentation/dependency-injection.html" | prepend: site.baseurl }}>).
-To use Dependency-Injection we have to put our service classes at `META-INF/classes` where the namespaces
+As the most business logic should be separated into services now *implement a simple `HelloService` which is getting
+inject into the `HelloServlet` via [Dependency-Injection](<{{ "/get-started/documentation/dependency-injection.html" | prepend: site.baseurl }}>).
+To use Dependency-Injection you have to put the service classes at `META-INF/classes` where the namespaces
 and classes MUST also follow an *autoloading* PSR: [PSR-0].
 
 ```bash
 mkdir -p META-INF/classes/MyVendor/MyApp
 ```
 
-Let's introduce our `HelloService` which provides the `getHelloMessage()` method that returns the hello-world message
-the servlet should serve to the client. Create a PHP class file called `HelloService.php` in folder `META-INF/classes/MyVendor/MyApp`
+Let us introduce the `HelloService` which provides the `getHelloMessage()` method that returns the hello-world message
+that the servlet should serve to the client. Create a PHP class file called `HelloService.php` in folder `META-INF/classes/MyVendor/MyApp`
 
 ```php
 <?php
@@ -196,7 +198,7 @@ class HelloService
 }
 ```
 
-To inject the `HelloService` into our `HelloServlet` we have to add an annotated property `$helloService` and modify the `doGet`
+To inject the `HelloService` into the `HelloServlet` add an annotated property `$helloService` and modify the `doGet`
 method to make use of the injected service instance. The `HelloServlet` should now look like this...
 
 ```php
@@ -225,7 +227,7 @@ class HelloServlet extends HttpServlet
 }
 ```
 
-Restart the appserver again and refresh your browser at [http://127.0.0.1/myapp/hello.do]. Here we go...
+Restart the appserver again and refresh the browser at [http://127.0.0.1/myapp/hello.do]. Here you go...
 
 ![Simple servlet service browser result]({{ "/assets/img/tutorials/my-first-webapp/simple-servlet-service-browser.png" | prepend: site.baseurl }})
 
@@ -237,12 +239,12 @@ git add .
 git commit -m "added hello-world service and enhanced servlet"
 ```
 
-> Feel free to enhance it and let us know what you've built upon the next PHP infrastructure!
+> Feel free to enhance it and let us know what you have built upon the next PHP infrastructure!
 
 <br/>
 ## Annotations! But why? 
 
-To use servlets without configuration, it's necessary to add a `@Route` annotation for the servlet-engine being able to map a specific url to the servlet.
+To use servlets without configuration, it is necessary to add a `@Route` annotation so the servlet-engine is able to map a specific url to the servlet.
 
 ```php
 <?php
@@ -252,12 +254,12 @@ To use servlets without configuration, it's necessary to add a `@Route` annotati
  class HelloServlet extends HttpServlet
  ```
  
- This annotation maps the url `http://127.0.0.1/myapp/hello.do` and `http://127.0.0.1/myapp/hello.do/anything/you/want` to your servlet.
- If you want to get more in detail with servlets checkout out [Servlet Engine](<{{ "/get-started/documentation/servlet-engine.html" | prepend: site.baseurl }}>)
+ This annotation maps the URL `http://127.0.0.1/myapp/hello.do` and `http://127.0.0.1/myapp/hello.do/anything/you/want` to the servlet.
+ For more servelt details checkout out [Servlet Engine](<{{ "/get-started/documentation/servlet-engine.html" | prepend: site.baseurl }}>)
  section in our [Documentation](<{{ "/get-started/documentation.html | prepend: site.baseurl }}>)
 
-You also have to use annotations if you want to use Dependency-Injection. To make our `HelloService` injectable we have to add an annotation
-above the class definition. In our case we want to have a stateless Session-Bean so we put `@Stateless` to class doc block.
+You also use annotations to use Dependency-Injection. To make our `HelloService` injectable add an annotation
+above the class definition. In this case we want to have a stateless Session-Bean so put `@Stateless` to class doc block.
 
 ```php
 <?php
@@ -280,11 +282,11 @@ class HelloServlet extends HttpServlet
 ```
 
 <br/>
-## Okay thats all folks!
+## Okay, folks that is all!
 
 We hope this tutorial helps you to have a smooth start into the world of **appserver.io webapps**!
 
-Any feedback is very appreciated so, do not hesitate to share your experiences or any problems you encountered with us. Cheers! :)
+Any feedback is appreciated so do not hesitate to share your experiences or any problems you encounter with us. Cheers! :)
 
 
 

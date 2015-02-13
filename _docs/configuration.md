@@ -1,6 +1,8 @@
 ---
 layout: docs
 title: Configuration
+meta_title: appserver.io configuration
+meta_description: appserver.io is highly configurable giving you the flexibility you need. Therefore we provide a central and very powerful configuration file.
 position: 130
 group: Docs
 subNav:
@@ -201,8 +203,8 @@ architecture is driven by configuration.
 ``` 
 
 In the above example you can see three important components of the appserver architecture being 
-used. The [*container*](docs/docs/architecture.md#container>), [*server*](docs/docs/architecture.md#server) and a 
-[*protocol*](docs/docs/architecture.md#protocol>) (if you did not read about our basic [architecture](docs/docs/architecture.md) 
+used. The [*container*](#container-configuration), [*server*](#server-configuration) and a
+[*protocol*](docs/docs/architecture.md#protocol>) (if you did not read about our [*basic architecture*](#basic-architecture)
 you should now). We are basically building up a container which holds a server using the websocket 
 protocol to handle incoming requests.
 
@@ -240,7 +242,7 @@ to make the server handle a certain type of requests it needs to know which *pro
 
 This can be done using the `connectionHandler` element. Certain server wrappers can handle certain
 protocols. Therefor we can use the protocols which a server wrapper, e.g. `WebServer` supports in 
-form of connection handlers. [WebServer](<https://github.com/appserver.io/webserver>)
+form of connection handlers. [WebServer](<https://github.com/appserver-io/webserver>)
 offers a `HttpConnectionHandler` class. By using it, the server is able to understand the HTTP 
 protocol.
 

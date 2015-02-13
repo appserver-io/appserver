@@ -1,6 +1,8 @@
 ---
 layout: detail
 title: Servlet Engine
+meta_title: appserver.io servlet engine
+meta_description: The Servlet Engine provides a web container that enables developers loading applications and objects and hold them persistently in memory.
 position: 10
 group: Features
 permalink: /products/features/servlet-engine.html

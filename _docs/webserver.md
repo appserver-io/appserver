@@ -1,6 +1,8 @@
 ---
 layout: docs
 title: Webserver
+meta_title: appserver.io webserver
+meta_description: appserver.io comes with a integrated webserver. This is build and configured like any other server component using our multithreaded server framework.
 position: 40
 group: Docs
 subNav:
