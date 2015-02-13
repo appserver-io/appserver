@@ -35,8 +35,8 @@ class FileSystem
     /**
      * Chmod function
      *
-     * @param string $path     Relative or absolute path to a file or directory which should be processed.
-     * @param int    $perm     The permissions any file or dir should get.
+     * @param string $path Relative or absolute path to a file or directory which should be processed.
+     * @param int    $perm The permissions any file or dir should get.
 
      * @return bool
      */
