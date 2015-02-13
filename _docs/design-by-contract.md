@@ -37,8 +37,6 @@ If following [common syntax](http://phpdoc.org/docs/latest/guides/types.html) we
 > We currently support the `@param` and `@return` annotations as type hints (scalar and class/interface
 > based), including special features like `typed arrays` using e. g. `\stdClass[]`
 
-
-
 - Specify complex method contracts in PHP syntax using `@Requires` as precondition and `@Ensures` as
   postcondition
 - Specify a state of validity for your classes (e.g. `$this->attribute !== null`) which should be true
