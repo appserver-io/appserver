@@ -10,10 +10,6 @@
 		    <exclude>
                 <!-- these libraries are in testing status -->
                 <directory>src/AppserverIo/Appserver/Meta</directory>
-                <directory>src/AppserverIo/Appserver/WebSocketServer</directory>
-                <directory>src/AppserverIo/Appserver/WebSocketProtocol</directory>
-                <directory>src/AppserverIo/Appserver/MemcacheServer</directory>
-                <directory>src/AppserverIo/Appserver/MemcacheProtocol</directory>
                 <directory>src/AppserverIo/Appserver/PersistentServletEngine</directory>
 		    </exclude>
         </whitelist>

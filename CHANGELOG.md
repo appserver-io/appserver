@@ -7,7 +7,8 @@
 
 ## Features
 
-* None
+* Removed old dependencies
+* Updated to stable requirements
 
 # Version 1.0.0-rc3
 
