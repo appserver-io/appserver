@@ -34,10 +34,10 @@ your applications more robust and easier to debug. This contains basic features 
 
 - Use your basic `DocBlock` annotations `@param` and `@return` as type hints (scalar and class/interface
   based), including special features like `typed arrays` using e. g. `\stdClass[]`
-- Specify complex method contracts in PHP syntax using `@requires` as precondition and `@ensures` as 
+- Specify complex method contracts in PHP syntax using `@Requires` as precondition and `@Ensures` as 
   postcondition
 - Specify a state of validity for your classes (e.g. `$this->attribute !== null`) which should be true
-  all times using `@invariant`
+  all times using `@Invariant`
 - The above can be (not enabled by default) inherited by every child structure, strengthening your
   object hierarchies
 - The library will warn you (exception or log message) on violation of these contracts
@@ -62,13 +62,13 @@ define a simple contract therefor
 ```php
 <?php
 
-namespace Namespace\Module;
+namespace My\Project;
 
 /**
  * This is demo implementation of stateful session bean.
  *
  * @Stateful
- * @invariant is_integer($this->counter)
+ * @Invariant("is_integer($this->counter)")
  */
 class MyStatefulSessionBean
 {
