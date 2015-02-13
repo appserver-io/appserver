@@ -169,7 +169,7 @@ if (array_key_exists($setup, $arguments)) {
             // prepares everything for production mode
             case 'prod':
                 // get defined user and group from configuration
-                $user = $server->getSystemConfiguration()->getParam('user');
+                $user = $server->getSystemConfiguration()->getParam('group');
                 $group = $server->getSystemConfiguration()->getParam('group');
                 // replace user to be same as group in configuration file
                 file_put_contents($configurationFileName, preg_replace(
@@ -209,7 +209,19 @@ if (array_key_exists($setup, $arguments)) {
 
         // check if user and group is set
         if (!is_null($user) && !is_null($group)) {
-            // set needed files as accessable
+            // get needed files as accessable for all root files remove "." and ".." from the list
+            $rootFiles = scandir(APPSERVER_BP);
+            // iterate all files
+            foreach ($rootFiles as $rootFile) {
+                // we want just files on root dir
+                if (is_file($rootFile) && !in_array($rootFile, array('.', '..'))) {
+                    FileSystem::chmod($rootFile, 0644);
+                    FileSystem::chown($rootFile, $user, $group);
+                }
+            }
+            // ... and change and mod following directories
+            FileSystem::recursiveChown(APPSERVER_BP . DIRECTORY_SEPARATOR . 'resources', $user, $group);
+            FileSystem::recursiveChmod(APPSERVER_BP . DIRECTORY_SEPARATOR . 'resources');
             FileSystem::recursiveChown(APPSERVER_BP . DIRECTORY_SEPARATOR . 'var', $user, $group);
             FileSystem::recursiveChmod(APPSERVER_BP . DIRECTORY_SEPARATOR . 'var');
             FileSystem::recursiveChown(APPSERVER_BP . DIRECTORY_SEPARATOR . 'webapps', $user, $group);
@@ -217,7 +229,14 @@ if (array_key_exists($setup, $arguments)) {
             FileSystem::recursiveChown(APPSERVER_BP . DIRECTORY_SEPARATOR . 'deploy', $user, $group);
             FileSystem::recursiveChmod(APPSERVER_BP . DIRECTORY_SEPARATOR . 'deploy');
             FileSystem::recursiveChown(APPSERVER_BP . DIRECTORY_SEPARATOR . 'src', $user, $group);
+            FileSystem::recursiveChmod(APPSERVER_BP . DIRECTORY_SEPARATOR . 'src');
+            FileSystem::recursiveChown(APPSERVER_BP . DIRECTORY_SEPARATOR . 'var', $user, $group);
+            FileSystem::recursiveChmod(APPSERVER_BP . DIRECTORY_SEPARATOR . 'var');
+            FileSystem::recursiveChown(APPSERVER_BP . DIRECTORY_SEPARATOR . 'tests', $user, $group);
+            FileSystem::recursiveChmod(APPSERVER_BP . DIRECTORY_SEPARATOR . 'tests');
             FileSystem::recursiveChown(APPSERVER_BP . DIRECTORY_SEPARATOR . 'vendor', $user, $group);
+            FileSystem::recursiveChmod(APPSERVER_BP . DIRECTORY_SEPARATOR . 'vendor');
+            FileSystem::chmod(APPSERVER_BP . DIRECTORY_SEPARATOR . 'server.php', 0755);
 
             echo "Setup for mode '$setupMode' done successfully!" . PHP_EOL;
 
