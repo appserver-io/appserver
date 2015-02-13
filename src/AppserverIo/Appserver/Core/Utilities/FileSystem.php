@@ -33,6 +33,42 @@ class FileSystem
 {
 
     /**
+     * Chmod function
+     *
+     * @param string $path     Relative or absolute path to a file or directory which should be processed.
+     * @param int    $perm     The permissions any file or dir should get.
+
+     * @return bool
+     */
+    public static function chmod($path, $perm)
+    {
+        return chmod($path, $perm);
+    }
+
+    /**
+     * Chown function
+     *
+     * @param string   $path  Relative or absolute path to a file or directory which should be processed.
+     * @param int      $user  The user that should gain owner rights.
+     * @param int|null $group The group that should gain group rights.
+     *
+     * @return bool
+     */
+    public static function chown($path, $user, $group = null)
+    {
+        // check if the path exists
+        if (!file_exists($path)) {
+            return false;
+        }
+        chown($path, $user);
+        // check if group is given too
+        if (!is_null($group)) {
+            chgrp($path, $group);
+        }
+        return true;
+    }
+
+    /**
      * Chmods files and folders with different permissions.
      *
      * This is an all-PHP alternative to using: \n
@@ -55,24 +91,24 @@ class FileSystem
         // see whether this is a file
         if (is_file($path)) {
             // Chmod the file with our given filepermissions
-            chmod($path, $filePerm);
+            FileSystem::chmod($path, $filePerm);
 
             // if this is a directory...
         } elseif (is_dir($path)) {
             // then get an array of the contents
             $foldersAndFiles = scandir($path);
 
-            // remove "." and ".." from the list
-            $entries = array_slice($foldersAndFiles, 2);
-
             // parse every result...
-            foreach ($entries as $entry) {
+            foreach ($foldersAndFiles as $entry) {
+                if (in_array($entry, array('.', '..'))) {
+                    continue;
+                }
                 // and call this function again recursively, with the same permissions
-                FileSystem::recursiveChmod($path."/".$entry, $filePerm, $dirPerm);
+                FileSystem::recursiveChmod($path . DIRECTORY_SEPARATOR . $entry, $filePerm, $dirPerm);
             }
 
             // when we are done with the contents of the directory, we chmod the directory itself
-            chmod($path, $dirPerm);
+            FileSystem::chmod($path, $dirPerm);
         }
 
         // everything seemed to work out well, return true
@@ -102,26 +138,24 @@ class FileSystem
         // see whether this is a file
         if (is_file($path)) {
             // Chown the file with our given owner group
-            chown($path, $user);
-            chgrp($path, $group);
+            FileSystem::chown($path, $user, $group);
 
             // if this is a directory...
         } elseif (is_dir($path)) {
             // then get an array of the contents
             $foldersAndFiles = scandir($path);
 
-            // remove "." and ".." from the list
-            $entries = array_slice($foldersAndFiles, 2);
-
             // parse every result...
-            foreach ($entries as $entry) {
+            foreach ($foldersAndFiles as $entry) {
+                if (in_array($entry, array('.', '..'))) {
+                    continue;
+                }
                 // and call this function again recursively, with the same permissions
-                FileSystem::recursiveChown($path."/".$entry, $user, $group);
+                FileSystem::recursiveChown($path . DIRECTORY_SEPARATOR . $entry, $user, $group);
             }
 
             // when we are done with the contents of the directory, we chmod the directory itself
-            chown($path, $user);
-            chgrp($path, $group);
+            FileSystem::chown($path, $user, $group);
         }
 
         // everything seemed to work out well, return true
