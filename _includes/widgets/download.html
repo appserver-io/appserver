@@ -37,9 +37,11 @@
 <!-- Script to open specific tab by given location.hash -->
 <script>
 $(function () {
-    var activeTab = $('[href=' + location.hash + ']');
-    activeTab && activeTab.tab('show');
-
+    if (location.hash) {
+        var activeTab = $('[href=' + location.hash + ']');
+        activeTab && activeTab.tab('show');
+    }
+    
     $('.nav-tabs a').on('click', function (e) {
         var newhash = $(e.target).attr('href');
         window.location.hash = newhash;
