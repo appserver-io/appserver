@@ -3,12 +3,15 @@ layout: docs
 title: Design by Contract
 position: 120
 group: Docs
-permalink: /documentation/design-by-contract.html
+subNav:
+  - title: What can be done
+    href: what-can-be-done
+  - title: How does it work
+    href: how-does-it-work
+  - title: Usage
+    href: usage
+permalink: /get-started/documentation/design-by-contract.html
 ---
-
-> [What can be done](#what-can-be-done)  
-> [How does it work](#how-does-it-work)  
-> [Usage](#usage)  
 
 Beside AOP, [Design-by-Contract](http://en.wikipedia.org/wiki/Design_by_contract) is another
 interesting approach we support out-of-the-box when you think about the architecture of your
@@ -28,13 +31,12 @@ As stated above this library aims to bring you the power of Design by Contract, 
 your applications more robust and easier to debug. This contains basic features as:
 
 - Use your basic `DocBlock` annotations `@param` and `@return` as type hints (scalar and class/interface
-  based), including special features like `typed arrays` using e. g. `array<int>` (collections for
-  complex types only yet)
+  based), including special features like `typed arrays` using e. g. `\stdClass[]`
 - Specify complex method contracts in PHP syntax using `@requires` as precondition and `@ensures` as 
   postcondition
-- Specify a state of validity for your classes (e.g. `$this->attribute !== null`) which will be true
+- Specify a state of validity for your classes (e.g. `$this->attribute !== null`) which should be true
   all times using `@invariant`
-- The above (not including type safety) will be inherited by every child structure, strengthening your
+- The above can be (not enabled by default) inherited by every child structure, strengthening your
   object hierarchies
 - The library will warn you (exception or log message) on violation of these contracts
 

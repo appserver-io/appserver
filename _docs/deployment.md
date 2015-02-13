@@ -3,13 +3,17 @@ layout: docs
 title: Deployment
 position: 150
 group: Docs
-permalink: /documentation/deployment.html
+subNav:
+  - title: Deployment Modes
+    href: deployment-modes
+  - title: Marker Files
+    href: marker-files
+  - title: Basic Workflows
+    href: basic-workflows
+  - title: Windows Notes
+    href: windows-notes
+permalink: /get-started/documentation/deployment.html
 ---
-
-> [Deployment Modes](#deployment-modes)  
-> [Marker Files](#marker-files)  
-> [Basic Workflows](#basic-workflows)  
-> [Windows Notes](#windows-notes)  
 
 The deploy directory in the appserver.io Application Server distribution is the location end users can place their deployment content (e. g. phar files) to have it deployed into the server runtime.
 
@@ -28,7 +32,7 @@ The marker files always have the same name as the deployment content to which th
 The relevant marker file types are:
 
 | Marker       | Description                                                     |
-|:-------------|:----------------------------------------------------------------|
+| -------------| ----------------------------------------------------------------|
 | .dodeploy    | Placed by the user to indicate that the given content should be deployed or redeployed into the runtime.                     |
 | .deploying   | Placed by the deployment scanner service to indicate that it has noticed a .dodeploy file and is in the process of deploying the content. This marker file will be deleted when the deployment process completes.                                   |
 | .deployed    | Placed by the deployment scanner service to indicate that the given content has been deployed into the runtime. If an end user deletes this file and no other marker is available, the content will be undeployed.                                     |
@@ -67,7 +71,7 @@ $ mv $AS/deploy/example.phar.deployed $AS/deploy/example.phar.dodeploy
 The above examples use UNIX shell commands. Windows equivalents are:
 
 | UNIX           | Windows                 |
-|:---------------|:------------------------|
+| ---------------| ------------------------|
 | cp src dest    | xcopy /y src dest       |
 | cp -r src dest | xcopy /e /s /y src dest |
 | rm afile       | del afile               |

@@ -3,14 +3,19 @@ layout: docs
 title: Servlet Engine
 position: 50
 group: Docs
-permalink: /documentation/servlet-engine.html
+subNav:
+  - title: How can a Servlet-Engine help
+    href: how-can-a-servlet-engine-help
+  - title: Bootstrapping a Servlet
+    href: bootstrapping-a-servlet
+  - title: Passing data from configuration
+    href: passing-data-from-configuration
+  - title: Starting a Session
+    href: starting-a-session
+  - title: Optional XML Configuration
+    href: optional-xml-configuration
+permalink: /get-started/documentation/servlet-engine.html
 ---
-
-> [How can a Servlet-Engine help](#how-can-a-servlet-engine-help)  
-> [Bootstrapping a Servlet](#bootstrapping-a-servlet)  
-> [Passing data from configuration](#passing-data-from-configuration)  
-> [Starting a Session](#starting-a-session)  
-> [Optional XML Configuration](#optional-xml-configuration)  
 
 Originally Servlets are the Java counterpart to other dynamic web technologies like PHP or the
 Microsoft .NET plattform. In contrast to PHP, a Servlet written in Java is not a script that'll
@@ -90,7 +95,7 @@ we want to provide. For our first example, we only want to add the `Hello World!
 That is pretty simple, we think! So, given you've downloaded and installed the latest version of the application
 server, create a folder `examples/WEB-INF/classes/AppserverIo/Example/Servlets` under the `webapps` folder of
 your installation. In the folder, create a new file named `HelloWorldServlet.php`, copy the code from above and
-save it. After [restarting](https://github.com/appserver-io/appserver/wiki/02.-Basic-Usage#start-and-stop-scripts)
+save it. After [restarting]({{ "/get-started/documentation/basic-usage.html#start-and-stop-scripts" | prepend: site.baseurl }})
 the application server, open the URL `http://127.0.0.1:9080/examples/helloWorld.do` in your favorite browser.
 You should see the text `Hello World`. Congratulations, you have written your first servlet!
 
@@ -384,9 +389,9 @@ complicated thing and we tried to break it down to be as simple as we can imagin
 to configure anything, but you still have to option to configure everything in a XML configuration file that
 has to be stored in you applications `WEB-INF` folder as `web.xml`.
 
-> Other as a simple web server, we've the possiblity to hold a number of sessions persistent in the application
+> Other as a simple web server, we've the possibility to hold a number of sessions persistent in the application
 > servers memory. This ensures great performance on the one hand, but came with great responsibility for the
-> developer on the other. By writing an application that should be runned in an application server, you have to
+> developer on the other. By writing an application that should be run in an application server, you have to
 > be aware of what you are doing and have a look at the memory footprint of your application.
 
 ## Optional XML Configuration
@@ -671,7 +676,7 @@ You must specify a name, unique in your application, for the servlet here. This 
 [map](#servlet-mapping) your servlet to a request URL later.
 
 ##### `/web-app/servlet/servlet-class` *string*
-The Servlet-Engine needs to know, which class has to instanciated when initializing the servlet. So you have to specify the fully qualified name of your servlet here.
+The Servlet-Engine needs to know, which class has to instantiated when initializing the servlet. So you have to specify the fully qualified name of your servlet here.
 
 ##### `/web-app/servlet/init-param` *string*
 You can specifiy a random number of initialization parameters here. The parameters will be parsed when the

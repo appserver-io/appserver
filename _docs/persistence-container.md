@@ -3,13 +3,17 @@ layout: docs
 title: Persistence Container
 position: 80
 group: Docs
-permalink: /documentation/persistence-container.html
+subNav:
+  - title: Singleton SessionBean
+    href: singleton-sessionbean
+  - title: Stateless SessionBean
+    href: stateless-sessionbean
+  - title: Stateful SessionBean
+    href: stateful-sessionbean
+  - title: Example
+    href: example
+permalink: /get-started/documentation/persistence-container.html
 ---
-
-> [Singleton SessionBean](#singleton-sessionbean)  
-> [Stateless SessionBean](#stateless-sessionbean)  
-> [Stateful SessionBean](#stateful-sessionbean)  
-> [Example](#example)  
 
 As described in the introduction the application is designed inside a runtime environment like
 an application server as appserver.io is. The following example gives you a short introduction 

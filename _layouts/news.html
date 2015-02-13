@@ -1,23 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
-
 {% include head.html %}
-
 <body role="document">
-
     {% include header.html %}
-
     <!-- Page Content -->
     <div class="container-page">
         <div class="container content">
-
             <div class="row">
-
                 <!-- Blog Entries Column -->
-                <div class="col-md-9">
-
+                <div class="col-md-9 blog-content">
                     {{ content }}
-
                     <!-- Pager
                     <ul class="pager">
                         <li class="previous">
@@ -29,23 +21,34 @@
                     </ul>
                      -->
                 </div>
-
                 <!-- Blog Sidebar Widgets Column -->
                 <div class="col-md-3">
-
-                    <!-- Blog Categories Well -->
+                    <!-- Blog Top Well -->
                     <div class="well">
                         <ul class="list-side-news">
                             <li class="{% if page.title == 'Blog' %}active{% endif %}">
                                 <a href="{{ "/community/blog.html" | prepend: site.baseurl }}">All News</a>
                             </li>
                             <li class="{% if page.title == 'Releases' %}active{% endif %}">
-                                <a href="{{ "/community/releases.html" | prepend: site.baseurl }}">appserver Releases</a>
+                                <a href="{{ "/community/news/categories/release.html" | prepend: site.baseurl }}">appserver Releases</a>
                             </li>
                         </ul>
                         <i class="fa fa-rss"></i> subscribe <a href="{{ "/feed.xml" | prepend: site.baseurl }}">via RSS</a>
                     </div>
-
+                    <div class="well">
+                        <h4>Categories</h4>
+                        <ul class="list-side-news">
+                        <!-- Blog Categories Well -->
+                        {% for site_category in site.categories %}
+                            {% for tcategory in site.data.categories %}
+                                {% if tcategory.slug == site_category[0] %}
+                                    {% assign category = tcategory %}
+                                {% endif %}
+                            {% endfor %}
+                            <li><a href="{{ "/community/news/categories/" | append: site_category[0] | append: ".html"  | prepend: site.baseurl }}"> {{ category.name }}</a> <small>({{ site_category | last | size }})</small></li>
+                        {% endfor %}
+                        </ul>
+                    </div>
                     <!-- Blog Recent Releases Well -->
                     <div class="well">
                         <h4>Recent Releases</h4>
@@ -57,7 +60,6 @@
                             {% endfor %}
                         </ul>
                     </div>
-
                     <!-- Blog Other News Well -->
                     <div class="well">
                         <h4>Other News</h4>
@@ -71,16 +73,13 @@
                             {% endfor %}
                         </ul>
                     </div>
-
                 </div>
-
             </div>
             <!-- /.row -->
         </div>
     </div>
     <!-- /.container -->
-
     {% include footer.html %}
-
+    {% include disqus_count.html %}
 </body>
 </html>

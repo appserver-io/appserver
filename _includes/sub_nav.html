@@ -1,0 +1,19 @@
+<!-- Navigation -->
+<div class="docs_nav list-group">
+    {% for item in items %}
+        {% assign activeClass = ""%}
+        {% if item.url == page.url %}
+            {% assign activeClass = "active"%}
+        {% endif %}
+        <div class="list-group-item {{ activeClass }}">
+            <a class="{{ activeClass }}" href="{{ item.url }}">{{ item.title }}</a>
+            {% if item.subNav and activeClass != "" %}
+                <ul class="list-unstyled">
+                {% for subNav in item.subNav %}
+                    <li><a href="#{{ subNav.href }}">{{ subNav.title }}</a></li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+    {% endfor %}
+</div>

@@ -45,7 +45,7 @@ persistence-container:
 
 ---
 
-## <i class="fa fa-bars"> Features</i>
+# <i class="fa fa-bars"></i> Features
 ***
 
 <div class="row">

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+{% include head.html %}
+<body role="document">
+    {% include header.html %}
+    <!-- Page Content -->
+    <div class="container-page">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3" id="leftCol">
+                    {% assign items = site.tuts | sort: 'position' %}
+                    {% include sub_nav.html %}
+                </div>
+                <!-- Content Section -->
+                <div class="col-md-9 content">
+                    <h1><i class="fa fa-book"></i> {% if page.group and page.group != "Get Started" %}<small>{{ page.group }} / </small>{% endif %}{{ page.title }}</h1>
+                    {% if page.author %}
+                        <a href="https://github.com/{{ post.author }}" class="post-author"><img src="https://github.com/{{ page.author }}.png" class="avatar img-circle" alt="{{ page.author }}" width="24" height="24" /> {{ page.author }}</a> {% if page.date %}<i class="fa fa-clock-o"></i> Posted on {{ page.date | date_to_string }}{% endif %}
+                    {% endif %}
+                    
+                    <hr/>
+                    <div class="docs-content">
+                        {{ content }}
+                        <p><br/></p>
+                        <div id="disqus_thread"></div>
+                    </div>
+                </div>
+            </div>
+            <!-- /.row -->
+        </div>
+    </div>
+    <!-- /.container -->
+    {% include disqus_embed.html %}
+    {% include footer.html %}
+</body>
+</html>

@@ -8,13 +8,23 @@ description: > # The objective of the project is to develop a multithreaded
   help we hopefully establish a solution as the standard for enterprise
   applications in PHP environments.
 
+timezone: Europe/Berlin
+future: false
 port: 4000
 host: 0.0.0.0
 baseurl: ""
 url: "http://appserver.io"
 
 collections:
+  redirects:
+    output: true
   docs:
+    output: true
+  faq:
+    output: true
+  tuts:
+    output: true
+  roadmap:
     output: true
   features:
     path: products/
@@ -22,9 +32,18 @@ collections:
 twitter_username: php_appserver
 
 github_username:  appserver-io
-github_repository: https://github.com/appserver.io/appserver
+github_repository: https://github.com/appserver-io/appserver
+github_gitter: https://gitter.im/appserver-io/appserver
+github_issue: https://github.com/appserver-io/appserver/issues/
 
 google_analytics_id: UA-42386171-1
+
+appserver_version: 1.0.0-rc3
+appserver_runtime_version: 1.0.0-rc1
+
+appserver_download_baseurl: https://github.com/appserver-io/appserver/releases/download/
+appserver_download_dist_prefix: appserver-dist-
+appserver_download_runtime_prefix: appserver-runtime-
 
 markdown: redcarpet
 redcarpet:

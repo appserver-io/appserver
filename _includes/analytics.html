@@ -9,25 +9,11 @@
     ga('create', '{{ site.google_analytics_id }}', 'auto');
     ga('send', 'pageview');
 
-    $('#btn-download-osx').on('click', function() {
-      ga('send', 'event', 'download-btn', 'click', 'osx');
-    });
-
-    $('#btn-download-win').on('click', function() {
-      ga('send', 'event', 'download-btn', 'click', 'win');
-    });
-
-    $('#btn-download-debian').on('click', function() {
-      ga('send', 'event', 'download-btn', 'click', 'debian');
-    });
-
-    $('#btn-download-fedora').on('click', function() {
-      ga('send', 'event', 'download-btn', 'click', 'fedora');
-    });
-
-    $('#btn-download-centos').on('click', function() {
-      ga('send', 'event', 'download-btn', 'click', 'centos');
-    });
+    {% for download in site.data.downloads %}
+        $('#btn-download-{{ download.id }}').on('click', function() {
+          ga('send', 'event', 'download-btn', 'click', '{{ download.id }}');
+        });
+    {% endfor %}
 
   </script>
 {% endif %}

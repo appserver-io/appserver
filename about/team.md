@@ -4,26 +4,25 @@ title: Team
 position: 20
 group: About
 permalink: /about/team.html
-
-stefan:
-  - name       : Stefan Willkommer
-    title      : CTO
-    text       : Stefan studied computer science at the University of applied sciences in Rosenheim, Germany. During this time he started his entrepreneurship with several projects leading into founding the TechDivision GmbH as an internet support company for open source driven solutions in the area of content management and ecommerce. The Magento Gold Partner TechDivision become one of the leading companies in Europe for consulting, developing and supporting Magento Enterprise solutions. During the last 5 years Stefan Willkommer supervised lots of international Magento and TYPO3 projects for very well known customers like Ferrero, WMF and Ritter Sport. Within TechDivision he introduced lot's of market leading technologies in the area of deploying php applications and is addicted to lean project management methodology.
-    image  : http://placehold.it/700x400
-
 ---
 
-## Team
+# Team
 ***
 
-We really believe that we can change the world by providing you with the next generation PHP infrastructure:
-<p><br/></p>
+The TechDivision GmbH is an established internet agency who supports famous national and international customers with
+the planning, conception and implementation of web-based technologies already for years. As Magento Gold Partner and
+TYPO3 Association Gold Member TechDivision is one of the leading addresses for ambitious Magento- and TYPO3 solutions.
+Beside divers medium-sized companies a lot of international acting companies, such as Ritter-Sport, American Express,
+Meggle or Ferrero trust the know-how and experience of TechDivision. Actually TechDivision has 2 locations in
+Rosenheim/Kolbermoor and Munich.
 
+We really believe that we can change the world by providing you with the next generation PHP infrastructure:
+<br/>
 
 <div class="well">
     <div class="row">
         <div class="col-md-2 text-center">
-            <img src="https://github.com/willkommers.png" class="avatar img-circle">
+            <img src="{{ "/assets/img/team/swillkommer.png" | prepend: site.baseurl }}" class="avatar img-circle">
         </div>
         <div class="col-md-10">
             <h4><b>Stefan</b>, CTO</h4>
@@ -44,7 +43,7 @@ We really believe that we can change the world by providing you with the next ge
 <div class="well">
     <div class="row">
         <div class="col-md-2 text-center">
-            <img src="https://github.com/wagnert.png" class="avatar img-circle">
+            <img src="{{ "/assets/img/team/twagner.png" | prepend: site.baseurl }}" class="avatar img-circle">
         </div>
         <div class="col-md-10">
             <h4><b>Tim</b>, Project Founder & Lead Developer</h4>
@@ -62,7 +61,7 @@ We really believe that we can change the world by providing you with the next ge
 <div class="well">
     <div class="row">
         <div class="col-md-2 text-center">
-            <img src="https://github.com/zelgerj.png" class="avatar img-circle">
+            <img src="{{ "/assets/img/team/jzelger.png" | prepend: site.baseurl }}" class="avatar img-circle" />
         </div>
         <div class="col-md-10">
             <h4><b>Johann</b>, Lead Developer & Softwarearchitect</h4>
@@ -78,7 +77,7 @@ We really believe that we can change the world by providing you with the next ge
 <div class="well">
     <div class="row">
         <div class="col-md-2 text-center">
-            <img src="https://github.com/wick-ed.png" class="avatar img-circle">
+            <img src="{{ "/assets/img/team/bwick.png" | prepend: site.baseurl }}" class="avatar img-circle">
         </div>
         <div class="col-md-10">
             <h4><b>Bernhard</b>, Softwarearchitect</h4>
@@ -96,7 +95,7 @@ We really believe that we can change the world by providing you with the next ge
 <div class="well">
     <div class="row">
         <div class="col-md-2 text-center">
-            <img src="https://github.com/willkommerj.png" class="avatar img-circle">
+            <img src="{{ "/assets/img/team/jwillkommer.png" | prepend: site.baseurl }}" class="avatar img-circle">
         </div>
         <div class="col-md-10">
             <h4><b>Josef</b>, CMO</h4>
@@ -107,6 +106,21 @@ We really believe that we can change the world by providing you with the next ge
                 the development of the web-area of a big austrian newspaper publisher, before he founded the
                 online-agency TechDivision with his brother, of which he made one of the leading companies
                 for ambitious web-development in the PHP-surrounding.
+            </p>
+        </div>
+    </div>
+</div>
+<div class="well">
+    <div class="row">
+        <div class="col-md-2 text-center">
+            <img src="{{ "/assets/img/team/gsieger.png" | prepend: site.baseurl }}" class="avatar img-circle">
+        </div>
+        <div class="col-md-10">
+            <h4><b>Guido</b>, Head of Partner and License Management</h4>
+            <p>
+                Guido studied law at the University of Regensburg. He worked for several companies for 
+                international contract law. At appserver.io he is responsible for partner management and
+                licensing. 
             </p>
         </div>
     </div>

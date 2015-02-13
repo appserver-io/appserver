@@ -1,0 +1,27 @@
+- slug: release
+  name: Releases
+  title: appserver.io Releases
+
+- slug: website
+  name: Website
+  title: Website News
+
+- slug: servlet-engine
+  name: Servlet-Engine
+  title: Servlet-Engine News
+
+- slug: persistence-container
+  name: Persistence-Container
+  title: Persistence-Container News
+
+- slug: naming-directory
+  name: Naming-Directory
+  title: Naming-Directory News
+
+- slug: dependency-injection
+  name: Dependency-Injection
+  title: Dependency-Injection News
+
+- slug: webserver
+  name: WebServer
+  title: WebServer News

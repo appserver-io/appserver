@@ -5,11 +5,9 @@ position: 10
 group: Features
 permalink: /products/features/persistence-container.html
 subnavigation: features
-author: all
 ---
 
-
-### <i class="fa fa-info"></i> Info
+## <i class="fa fa-info"></i> Info
 <div class="bs-example" data-example-id="simple-table">
     <table class="table">
         <tbody>
@@ -39,7 +37,7 @@ author: all
 </div>
 <p><br/></p>
 
-### <i class="fa fa-bars"></i> Functions
+## <i class="fa fa-bars"></i> Functions
 <div class="bs-example" data-example-id="simple-table">
     <table class="table">
         <tbody>
@@ -64,6 +62,6 @@ author: all
     </table>
 </div>
 
-### <i class="fa fa-edit"></i> Use Case
+## <i class="fa fa-edit"></i> Use Case
 <p>
 Nearly everybody who has been involved in development of an online shop system, neither for the own company or as project for a customer, has been faced the developers question: „How many products will be listed in the catalogue finally?“. The background of that question, in most cases, will be the problem that with a growing number of products the response time will become worse. This problem is partly a result of PHP's “shared nothing” paradigm. This paradigm makes it complicated to hold products, that has been loaded once, in memory and avoid to reload them on every request again and again. A workaround, that has been established in most PHP applications is the heavy usage of cache systems. At first sight, this solves the problem, but having a deeper look at the insights of many applications shows new problems that cache systems introduce. So massive usage of a cache system leads to the need to refresh to cached values, but the selective refreshing of cached data can be very complicated and will lead to critical mistakes in many cases. Using the Persistence Container offers the possibility to load objects into memory, which gives developers high performant access to them and avoids the usage of complicated cache systems in many cases. </p>

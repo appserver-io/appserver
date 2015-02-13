@@ -7,9 +7,9 @@ permalink: /community/blog.html
 author: all
 ---
 
-## All News
+#<i class="fa fa-newspaper-o"></i> All News
 ***
 
 {% for post in site.posts %}
-  {% include news_item.html %}
+{% include news_item.html %}
 {% endfor %}

@@ -3,11 +3,13 @@ layout: docs
 title: Message Queue
 position: 90
 group: Docs
-permalink: /documentation/message-queue.html
+subNav:
+  - title: Got mail
+    href: got-mail
+  - title: Send a message
+    href: send-a-message
+permalink: /get-started/documentation/message-queue.html
 ---
-
-> [Got mail](#got-mail)  
-> [Send a message](#send-a-message)  
 
 A Message-Queue provides the possibility to process long running tasks in a encapsulated context.
 For example if you want to import a lot of products in your online shop, you can send a

@@ -1,11 +1,12 @@
 ---
+nav: true
 layout: default
 title: Partners
-position: 30
+position: 70
 permalink: /partners.html
 ---
 
-## <i class="fa fa-users"> Partners</i>
+# <i class="fa fa-users"></i> Partners
 ***
 
 We´re working on a partner program which will be rolled out soon. Our partner program is designed with the
