@@ -1,29 +1,29 @@
 <?xml version="1.0"?>
 <!DOCTYPE project>
 <project name="appserver-io/appserver" default="composer-init" basedir=".">
-    
+
     <!-- initialize ENV variable -->
     <property environment="env" />
-    
+
     <!-- ==================================================================== -->
     <!-- Generate a time stamp for further use in build targets               -->
-    <!-- ==================================================================== --> 
+    <!-- ==================================================================== -->
     <tstamp>
         <format property="time.stamp" pattern="yyyy-MM-dd_HHmmss"/>
     </tstamp>
-    
+
     <!-- initialize file based properties -->
     <property file="${basedir}/build.properties"/>
     <property file="${basedir}/build.default.properties"/>
     <property file="${basedir}/build.${os.family}.properties"/>
-    
+
     <!-- initialize the library specific properties -->
     <property name="codepool" value="vendor"/>
-    
+
     <!-- initialize the directory where we can find the real build files -->
     <property name="vendor.dir" value ="${basedir}/${codepool}" />
     <property name="build.dir" value="${vendor.dir}/appserver-io/build" />
-    
+
     <!-- ==================================================================== -->
     <!-- Import the common build configuration file                           -->
     <!-- ==================================================================== -->
@@ -37,7 +37,7 @@
             <available file="${build.dir}" type="dir"/>
         </condition>
     </target>
-    
+
     <!-- ==================================================================== -->
     <!-- Installs all dependencies defined in composer.json                   -->
     <!-- ==================================================================== -->
@@ -65,26 +65,6 @@
     </target>
 
     <!-- ==================================================================== -->
-    <!-- Copies the documentation to the target directory                     -->
-    <!-- ==================================================================== -->
-    <target name="copy-doc" description="Copies the documentation to the target directory.">
-        <exec executable="make" dir="${basedir}/doc-generator" failonerror="true">
-            <arg line="html" />
-        </exec>
-        <copy file="${doc.build.file}" tofile="${doc.target.file}" overwrite="true"/>
-        <copy todir="${doc.image.target.dir}" preservelastmodified="true" overwrite="true">
-            <fileset dir="${doc.image.build.dir}">
-                <include name="**/*" />
-            </fileset>
-        </copy>
-        <replaceregexp file="${doc.target.file}"
-                       match="src=&quot;_images"
-                       replace="src=&quot;static/img/docs"
-                       byline="true"
-        />
-    </target>
-    
-    <!-- ==================================================================== -->
     <!-- Copies the sources to the temporary directory                        -->
     <!-- ==================================================================== -->
     <target name="copy" description="Copies the sources to the temporary directory.">
@@ -106,7 +86,7 @@
         <!-- create the file with the version number -->
         <echo file="${php-target.dir}/appserver/etc/appserver/.release-version" message="dev-master.${build.number}" />
     </target>
-    
+
     <!-- ==================================================================== -->
     <!-- Copies the sources to the deploy directory                           -->
     <!-- ==================================================================== -->
