@@ -1,6 +1,8 @@
 ---
 layout: default
 title: Contributing
+meta_title: Be part of the appserver.io community
+meta_description: Help us to deliver the world´s most powerful PHP infrastructure. Report Bugs, tell us your experiences, help us to improve appserver.io.
 position: 20
 group: Community
 permalink: /community/contributing.html
@@ -10,10 +12,8 @@ permalink: /community/contributing.html
 ***
 The appserver.io source is hosted on [Github][github-repo]. To contribute patches, create a fork of the project on
 [Github][github-repo] and submit a pull request. Please be sure to include unit tests and documentation
-for any new features you add. In order to avoid any misunderstandings or dissatisfaction,
-please be aware of our [coding guidelines](http://docs.appserver.io/master/organisational/guidelines.html).
-We want to provide the best open source quality you can get, therefore we can only accept commits
-with these guidelines in mind.
+for any new features you add. In order to avoid any misunderstandings or dissatisfaction.
+We want to provide the best open source quality you can get.
 
 # Report it to the team
 ***

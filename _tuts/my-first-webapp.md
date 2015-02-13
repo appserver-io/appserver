@@ -1,6 +1,8 @@
 ---
 layout: tutorial
 title: My First WebApp
+meta_title: Building your first web app on appserver.io
+meta_description: How-to-guide for your first web app on appserver.io from the scratch using the Servlet-Engine mixed with Dependency Injection and Session-Bean integration.
 description: It gives you a guide how to implement your first webapp with appserver.io
 date: 2015-02-11 14:45:00
 author: zelgerj
@@ -34,8 +36,8 @@ This tutorial explains how to implement your first webapp on **appserver.io** fr
 ## Prerequisite
 
 First  you will need a running installation of appserver.io *(>= Version 1.0.0-rc3)*. If you are new to this
-project you can easily [download](http://127.0.0.1:4000/get-started/downloads.html) and follow the
-[installation guide](http://127.0.0.1:4000/get-started/documentation/installation.html) for your specific OS.
+project you can easily [download](<{{ "/get-started/downloads.html" | prepend: site.baseurl }}>) and follow the
+[installation guide](<{{ "/get-started/documentation/installation.html" | prepend: site.baseurl }}>) for your specific OS.
 
 <br/>
 ## Preparations

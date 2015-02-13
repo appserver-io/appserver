@@ -1,6 +1,8 @@
 ---
 layout: docs
 title: AOP
+meta_title: appserver.io AOP – aspect-oriented programming
+meta_description: AOP is the concept of decoupling cross-cutting concerns, logic which is duplicated throughout the complete codebase, and implement them at a central point. 
 position: 110
 group: Docs
 subNav:

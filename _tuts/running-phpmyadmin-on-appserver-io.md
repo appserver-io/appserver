@@ -1,10 +1,12 @@
 ---
 layout: tutorial
 title: Running phpMyAdmin
+meta_title: Running phpMyAdmin on appserver.io
+meta_description: appserver.io comes with an built in webserver module with PHP-FPM therefore it is possible to install any PHP-App you like and run it on that platform.
 description: It shows you how easy it is installing phpMyAdmin on appserver.io
 position: 40
 group: Tutorials
-permalink: /get-started/tutorials/tutorials/running-phpmyadmin-on-appserver-io.html
+permalink: /get-started/tutorials/running-phpmyadmin-on-appserver-io.html
 ---
 
 **Prerequirements**: *Up and running installation of MySQL*

@@ -1,6 +1,8 @@
 ---
 layout: docs
 title: Annotations
+meta_title: appserver.io annotations
+meta_description: As one of our main targets is to make configuration as simple as possible we decided to use annotations wherever possible.
 position: 60
 group: Docs
 permalink: /get-started/documentation/annotations.html

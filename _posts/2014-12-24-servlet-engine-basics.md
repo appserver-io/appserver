@@ -1,6 +1,8 @@
 ---
 layout: post
 title: Servlet-Engine Basics
+meta_title: appserver.io servlet engine basics
+meta_description: A Servlet-Engine is NOT a framework, but it is a part in a framework. So you should see it as the controller part of a MVC framework.
 date: 2014-12-24 11:00:00
 author: wagnert
 version: 1.0.0beta2
@@ -841,4 +843,4 @@ running in the Servlet-Engine, clone our [example](https://github.com/appserver-
 > idea behind, but when that happens you may wonder how you ever could have implemented applications without
 > that power!
 
-Hope you like this post :) Next post will be about our [Persistence-Container](<{{ "/persistence-container/2015/01/29/persistence-container-basics.html" | prepend: site.baseurl }}>) ... stay tuned
+Hope you like this post :) Next post will be about our [Persistence-Container](<{{ "/persistence-container/2015/01/30/persistence-container-basics.html" | prepend: site.baseurl }}>) ... stay tuned

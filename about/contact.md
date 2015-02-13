@@ -1,6 +1,8 @@
 ---
 layout: default
 title: Contact
+meta_title: appserver.io contact
+meta_description: Do not hesitate to send us a message if you have any question or request! Please keep in mind, that support is only available via Github. 
 position: 50
 group: About
 permalink: /about/contact.html

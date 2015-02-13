@@ -1,6 +1,8 @@
 ---
 layout: default
 title: Team
+meta_title: appserver.io team – behind the scenes
+meta_description: appserver.io is made with dedication and enthusiasm by a crazy and pretty cool team. Check out our team members!
 position: 20
 group: About
 permalink: /about/team.html

@@ -1,6 +1,8 @@
 ---
 layout: default
 title: Roadmap
+meta_title: appserver.io roadmap – Only the sky is the limit
+meta_description: We´re continously working hard to improve appserver.io. Check out the appserver.io roadmap for detailed informations.
 position: 80
 group: Products
 permalink: /products/roadmap.html

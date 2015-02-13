@@ -1,6 +1,8 @@
 ---
 layout: tutorial
 title: Running TYPO3 6.2 LTS
+meta_title: Running TYPO3 6.2 LTS on appserver.io
+meta_description: This guide shows you how easy it is to install appserver.io on a Mac and run TYPO3 6.2 on the most powerful PHP infrastructure on the planet.
 description: It shows you how easy it is to install appserver.io on a Mac and run TYPO3 6.2 on it.
 position: 10
 group: Tutorials

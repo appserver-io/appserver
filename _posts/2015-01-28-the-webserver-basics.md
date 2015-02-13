@@ -1,6 +1,8 @@
 ---
 layout: post
 title:  Webserver Basics
+meta_title: appserver.io webserver basics
+meta_description: As you may already know, the appserver has a fully HTTP/1.1 compliant Webserver included which is build upon our multithreaded server framework
 date:   2015-01-28 19:24:00
 author: zelgerj
 categories: [webserver]
