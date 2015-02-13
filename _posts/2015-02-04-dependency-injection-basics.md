@@ -1,6 +1,8 @@
 ---
 layout: post
 title:  Dependency Injection Basics
+meta_title: appserver.io dependency injection basics
+meta_description: As we use DI to inject instances of Server-Side Component Types this section gives you a brief introduction of how DI works in the Persistence-Container context.
 date:   2015-02-08 12:00:00
 author: wagnert
 version: 1.0.0-rc1

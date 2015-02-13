@@ -1,6 +1,8 @@
 ---
 nav: true
 layout: default
+meta_title: appserver.io partner programe
+meta_description: Our partner program is designed to expand our reach in supporting all of our users and customers in getting the most out of their appserver.io installations.
 title: Partners
 position: 70
 permalink: /partners.html

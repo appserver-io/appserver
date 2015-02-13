@@ -1,6 +1,8 @@
 ---
 layout: post
 title:  Persistence-Container Basics
+meta_title: appserver.io persistence container basics
+meta_description: The Persistence-Container is one of the main services appserver.io provides. But persisting data to a database is only one functionality...
 date:   2015-01-30 10:00:00
 author: wagnert
 version: 1.0.0-rc1

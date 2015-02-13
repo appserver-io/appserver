@@ -1,6 +1,8 @@
 ---
 layout: detail
 title: Timer Service
+meta_title: appserver.io timer service
+meta_description: The Timer Service enables the execution of methods at a determined point of time and allows a significant higher differentiation then services like CRON
 position: 10
 group: Features
 permalink: /products/features/timer-service.html

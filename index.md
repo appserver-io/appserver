@@ -1,6 +1,8 @@
 ---
 layout: sections
 title: Home
+meta_title: Next-generation PHP infrastructure – appserver.io
+meta_description: Next-generation PHP infrastructure consisting of a lightning fast webserver written in PHP plus additional useful services in one powerful bundle...
 position: 0
 permalink: /
 slider:

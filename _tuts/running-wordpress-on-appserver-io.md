@@ -1,6 +1,8 @@
 ---
 layout: tutorial
 title: Running Wordpress
+meta_title: Running Wordpress on appserver.io
+meta_description: This guide shows you how easy it is to install appserver.io on a Mac and run Wordpress on the most powerful PHP infrastructure on the planet.
 description: It shows you how easy it is to install appserver.io on a Mac and run Wordpress on it.
 position: 20
 group: Tutorials

@@ -1,6 +1,8 @@
 ---
 layout: docs
 title: Dependency Injection
+meta_title: Dependency Injection - appserver.io
+meta_description: Dependency Injection enables developers to write cleaner, reusable and maintainable code with less coupling by injecting necessary instances at runtime.
 position: 70
 group: Docs
 subNav:

@@ -1,6 +1,8 @@
 ---
 layout: docs
 title: Persistence Container
+meta_title: Persistence Container - appserver.io
+meta_description: The following example gives you a short introduction how you can create a stateful session bean and the way you can invoke it's method on client side.
 position: 80
 group: Docs
 subNav:

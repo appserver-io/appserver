@@ -1,6 +1,8 @@
 ---
 layout: docs
 title: Basic Usage
+meta_title: appserver.io basic usage
+meta_description: The appserver will automatically start after your installation wizard finishes the setup. You can use it without limitations from now on.
 position: 20
 group: Docs
 subNav:

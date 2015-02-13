@@ -1,6 +1,8 @@
 ---
 layout: docs
 title: Documentation
+meta_title: appserver.io documentation – Getting started
+meta_description: We´re continously working hard on the appserver.io documentation, providing you comprehensive informations and guidance for an easy start.
 position: 30
 group: Get Started
 permalink: /get-started/documentation.html

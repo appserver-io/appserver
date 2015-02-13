@@ -1,6 +1,8 @@
 ---
 layout: docs
 title: Configuration
+meta_title: appserver.io configuration
+meta_description: appserver.io is highly configurable giving you the flexibility you need. Therefore we provide a central and very powerful configuration file.
 position: 130
 group: Docs
 subNav:

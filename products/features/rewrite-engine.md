@@ -1,6 +1,8 @@
 ---
 layout: detail
 title: Rewrite Engine
+meta_title: appserver.io rewrite engine
+meta_description: appserver.io provides a very flexible and powerful module for rewriting URLs and redirecting requests by using classical regular expressions.
 position: 20
 group: Features
 permalink: /products/features/rewrite-engine.html
