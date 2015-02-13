@@ -41,7 +41,7 @@ done with the following command.
 sudo /opt/appserver/sbin/appserverctl restart
 ```
 
-Of course there is no need to change the port if you only want ot check out the capabilities of this unbelivable platform.
+Of course there is no need to change the port if you only want to check out the capabilities of this unbelivable platform.
 
 
 
