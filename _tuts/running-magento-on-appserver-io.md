@@ -22,7 +22,7 @@ subNav:
 permalink: /get-started/tutorials/running-magento-on-appserver-io.html
 ---
 
-**Prerequirements**: *Up and running installation of MySQL*
+**Prerequisite**: *Up and running installation of MySQL*
 
 appserver.io is a pretty cool and sophisticated infrastructure fully built upon the PHP stack. This makes it truly easy to develop and extend the platform. appserver.io comes with a built in webserver module that provides Fast-CGI support. Therefore it is possible to run and install any PHP application. The following tutorial guides you through the Magento installation process necessary to run on appserver.io.
 
@@ -37,9 +37,9 @@ By default appserver.io is configured to run on port `9080` in order not to affe
 	...
 ```
 
-and change the port within that section to for example `80`. After that, [restart]((<{{"/get-started/documentation/basic-usage.html#start-and-stop-scripts" | prepend: site.baseurl }}">)) the application server. Of course there is no need to change the port if you only want to check out the capabilities of `appserver.io`.
+and change the port within that section to for example `80`. After that, [restart](<{{"/get-started/documentation/basic-usage.html#start-and-stop-scripts" | prepend: site.baseurl }}">) the application server. Of course there is no need to change the port if you only want to check out the capabilities of `appserver.io`.
 
-You are now set to install and run your application on appserver.io. To start, you've to [download]((http://www.magentocommerce.com/download)) the latest Magento CE version from the Magento website.
+You are now set to install and run your application on appserver.io. To start, you've to [download](http://www.magentocommerce.com/download) the latest Magento CE version from the Magento website.
 
 To go ahead and install Magento, we have now two options. The easiest way is to install Magento without creating a vhost. Therefore you just extract the Magento source into the document root under `/opt/appserver/webapps` by opening a commandline and type
 
@@ -69,7 +69,7 @@ mysql> grant all on magento.* to "magento"@"localhost" identified by "magento";
 mysql> flush privileges;
 ```
 
-Optional you can use another database administration tool like `phpMyAdmin` to create the database. Of course you can also install [phpMyAdmin](<{{"/get-started/documentation/tutorials/running-phpmyadmin-on-appserver-io.html" | prepend: site.baseurl }}">) on appserver.io.
+Optional you can use another database administration tool like `phpMyAdmin` to create the database. Of course you can also install [phpMyAdmin](<{{"/get-started/tutorials/running-phpmyadmin-on-appserver-io.html" | prepend: site.baseurl }}">) on appserver.io.
 
 Now, as you're prepared to step through the Magento installer, start your favorite browser and open 
 `http://127.0.0.1:9080/magento`.

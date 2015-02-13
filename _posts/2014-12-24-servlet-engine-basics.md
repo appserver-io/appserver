@@ -843,4 +843,4 @@ running in the Servlet-Engine, clone our [example](https://github.com/appserver-
 > idea behind, but when that happens you may wonder how you ever could have implemented applications without
 > that power!
 
-Hope you like this post :) Next post will be about our [Persistence-Container](<{{ "/persistence-container/2015/01/29/persistence-container-basics.html" | prepend: site.baseurl }}>) ... stay tuned
+Hope you like this post :) Next post will be about our [Persistence-Container](<{{ "/persistence-container/2015/01/30/persistence-container-basics.html" | prepend: site.baseurl }}>) ... stay tuned
