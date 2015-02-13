@@ -117,8 +117,12 @@ class TimerTask extends \Thread
             // set the current date as the "previous run" of the timer
             $timer->setPreviousRun(new \DateTime());
 
-            // set the next timeout
-            $timer->setNextTimeout($this->calculateNextTimeout($timer)->format(ScheduleExpression::DATE_FORMAT));
+            // set the next timeout, if one is available
+            if ($nextTimeout = $this->calculateNextTimeout($timer)) {
+                $timer->setNextTimeout($nextTimeout->format(ScheduleExpression::DATE_FORMAT));
+            } else {
+                $timer->setNextTimeout(null);
+            }
 
             // change the state to mark it as in timeout method
             $timer->setTimerState(TimerState::IN_TIMEOUT);
