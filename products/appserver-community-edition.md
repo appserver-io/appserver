@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: sections
 title: Community Edition
 meta_title: appserver.io community edition
 meta_description: The Community Edition is your entry in the new and amazing world of multithreading enabled PHP. We hope you'll give it a try. Enjoy!
@@ -9,12 +9,48 @@ permalink: /products/community-edition.html
 author: all
 ---
 
-# appserver.io Community Edition
-***
+<section class="grey">
+<div class="container">
+{% capture sectioncontent %}{% include sections/community-edition.md %}{% endcapture %}
+{{ sectioncontent | markdownify }}
+</div>
+</section>
 
-The Community Edition is your entry in the new and amazing world of multithreading enabled PHP. It offers you all the services documented <a href="features.html">here</a> without any restrictions. We hope you'll give it a try. Enjoy!
-<p><br/></p>
+<section class="darkgrey">
+<div class="container">
+{% capture sectioncontent %}{% include sections/webserver.md %}{% endcapture %}
+{{ sectioncontent | markdownify }}
+</div>
+</section>
 
-{% include widgets/download.html %}
+<section class="grey text-right">
+<div class="container">
+{% capture sectioncontent %}{% include sections/servlet-engine.md %}{% endcapture %}
+{{ sectioncontent | markdownify }}
+</div>
+</section>
+
+<section class="darkgrey">
+<div class="container">
+{% capture sectioncontent %}{% include sections/persistence-container.md %}{% endcapture %}
+{{ sectioncontent | markdownify }}
+</div>
+</section>
+
+<section class="grey text-right">
+<div class="container">
+{% capture sectioncontent %}{% include sections/message-queue.md %}{% endcapture %}
+{{ sectioncontent | markdownify }}
+</div>
+</section>
+
+<section class="darkgrey">
+<div class="container">
+{% capture sectioncontent %}{% include sections/timer-service.md %}{% endcapture %}
+{{ sectioncontent | markdownify }}
+</div>
+</section>
+
+
 
 
