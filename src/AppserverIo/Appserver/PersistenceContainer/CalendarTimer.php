@@ -19,10 +19,10 @@
 
 namespace AppserverIo\Appserver\PersistenceContainer;
 
+use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Psr\EnterpriseBeans\ScheduleExpression;
 use AppserverIo\Psr\EnterpriseBeans\TimerServiceInterface;
 use AppserverIo\Appserver\PersistenceContainer\Tasks\CalendarTimerTask;
-use AppserverIo\Psr\Application\ApplicationInterface;
 
 /**
  * Represents a timer which is created out a calendar expression.
@@ -113,7 +113,7 @@ class CalendarTimer extends Timer
             // compute the next timeout (from "now")
             $nextTimeout = $this->calendarTimeout->getNextRunDate();
             if ($nextTimeout != null) {
-                $this->nextExpiration = $nextTimeout->format(Timer::DATE_FORMAT);
+                $this->nextExpiration = $nextTimeout->format($scheduledExpression::DATE_FORMAT);
             }
         }
     }
@@ -178,7 +178,7 @@ class CalendarTimer extends Timer
      *
      * @return \AppserverIo\Appserver\PersistenceContainer\Tasks\CalendarTimerTask The task
      */
-    protected function getTimerTask(ApplicationInterface $application)
+    public function getTimerTask(ApplicationInterface $application)
     {
         return new CalendarTimerTask($this, $application);
     }

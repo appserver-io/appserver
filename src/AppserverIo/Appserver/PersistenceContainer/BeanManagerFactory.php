@@ -22,6 +22,7 @@
 namespace AppserverIo\Appserver\PersistenceContainer;
 
 use AppserverIo\Storage\StackableStorage;
+use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\Application\Interfaces\ManagerConfigurationInterface;
 
@@ -63,6 +64,7 @@ class BeanManagerFactory
 
         // initialize the stackable for the data, the stateful + singleton session beans and the naming directory
         $data = new StackableStorage();
+        $instances = new GenericStackable();
         $statefulSessionBeans = new StackableStorage();
         $singletonSessionBeans = new StackableStorage();
 
@@ -75,11 +77,18 @@ class BeanManagerFactory
         $statefulSessionBeanMapFactory->injectLoggers($loggers);
         $statefulSessionBeanMapFactory->start();
 
+        // create an instance of the object factory
+        $objectFactory = new GenericObjectFactory();
+        $objectFactory->injectInstances($instances);
+        $objectFactory->injectApplication($application);
+        $objectFactory->start();
+
         // initialize the bean manager
         $beanManager = new BeanManager();
         $beanManager->injectData($data);
         $beanManager->injectApplication($application);
         $beanManager->injectResourceLocator($beanLocator);
+        $beanManager->injectObjectFactory($objectFactory);
         $beanManager->injectInitialContext($initialContext);
         $beanManager->injectStatefulSessionBeans($statefulSessionBeans);
         $beanManager->injectSingletonSessionBeans($singletonSessionBeans);

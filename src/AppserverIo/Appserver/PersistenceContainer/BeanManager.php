@@ -124,6 +124,18 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface
     }
 
     /**
+     * Injects the object factory instance.
+     *
+     * @param \AppserverIo\Appserver\PersistenceContainer\ObjectFactory $objectFactory The object factory instance
+     *
+     * @return void
+     */
+    public function injectObjectFactory(ObjectFactoryInterface $objectFactory)
+    {
+        $this->objectFactory = $objectFactory;
+    }
+
+    /**
      * Has been automatically invoked by the container after the application
      * instance has been created.
      *
@@ -321,6 +333,16 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface
     }
 
     /**
+     * Returns the object factory instance.
+     *
+     * @return \AppserverIo\Appserver\PersistenceContainer\ObjectFactory The object factory instance
+     */
+    public function getObjectFactory()
+    {
+        return $this->objectFactory;
+    }
+
+    /**
      * Runs a lookup for the session bean with the passed class name and
      * session ID.
      *
@@ -391,6 +413,20 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface
                 $this->getStatefulSessionBeans()->remove($sessionId);
             }
         }
+    }
+
+    /**
+     * Returns a new instance of the SSB with the passed class name.
+     *
+     * @param string      $className The fully qualified class name to return the instance for
+     * @param string|null $sessionId The session-ID, necessary to inject stateful session beans (SFBs)
+     * @param array       $args      Arguments to pass to the constructor of the instance
+     *
+     * @return object The instance itself
+     */
+    public function newSingletonSessionBeanInstance($className, $sessionId = null, array $args = array())
+    {
+        return $this->getObjectFactory()->newInstance($className, $sessionId, $args);
     }
 
     /**
