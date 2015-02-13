@@ -41,35 +41,11 @@ done with the following command.
 sudo /opt/appserver/sbin/appserverctl restart
 ```
 
-Of course there is no need to change the port if you only want ot check out the capabilities of this amazing platform.
+Of course there is no need to change the port if you only want to check out the capabilities of this amazing platform.
 
 
 
 ##Installation:
-First you will need a running installation of appserver.io *(>= Version 1.0.0-rc3)*. If you are new to this
-project you can easily [download](<{{ "/get-started/downloads.html" | prepend: site.baseurl }}>) and follow the
-[installation guide](<{{ "/get-started/documentation/installation.html" | prepend: site.baseurl }}>) for your specific OS.
-
-After the setup has finished the appserver.io is up and running and you can call the welcome page with
-
-[http://localhost:9080/](<http://localhost:9080/>)
-
-By default, appserver.io is configured to run on port `9080` in order to not to affect any existing webserver installations.
-You can easily change that in the /opt/appserver/etc/appserver.xml just by going to section
-
-```xml
-<server name="http"
-	...
-```
-
-and change the port within that section for example to 80. After that restart the appserver.io which can be
-done with the following command.
-
-```bash
-sudo /opt/appserver/sbin/appserverctl restart
-```
-
-Of course there is no need to change the port if you only want ot check out the capabilities of this amazing platform.
 
 In order to run the application on appserver.io, download the latest drupal release from drupal.org.
 
