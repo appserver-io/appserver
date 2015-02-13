@@ -11,8 +11,8 @@ permalink: /get-started/tutorials/running-drupal-on-appserver-io.html
 
 Appserver.io is a pretty cool and sophiscated infrastructure fully built upon the PHP stack. This makes it truely easy
 to develop and extend the platform. Appserver.io comes with an built in webserver module with PHP-FPM therefore it is
-possible to install any PHP-App you like and run it on that platform. The following guide shows you how easy it is to
-install appserver.io on a Mac and run Wordpress on it.
+possible to install any PHP-App and run it on that platform. The following guide shows how easy it is to
+install appserver.io on a Mac and run Wordpress.
 
 ##Installation:
 First of all you have to download the latest appserver package. You always find the latest and stable release on the
@@ -22,7 +22,7 @@ After the setup has finished the appserver.io is up and running and you can call
 
 [http://localhost:9080/](<http://localhost:9080/>)
 
-By default appserver.io is configured to run on port `9080` in order not to affect any existing webserver installations.
+By default, appserver.io is configured to run on port `9080` in order, not to affect any existing webserver installations.
 You can easily change that in the /opt/appserver/etc/appserver.xml just by going to section
 
 ```xml
