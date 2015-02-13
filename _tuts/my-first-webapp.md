@@ -35,7 +35,7 @@ This tutorial explains how to implement your first webapp on **appserver.io** fr
 <br/>
 ## Prerequisite
 
-First  you will need a running installation of appserver.io *(>= Version 1.0.0-rc3)*. If you are new to this
+First you will need a running installation of appserver.io *(>= Version 1.0.0-rc3)*. If you are new to this
 project you can easily [download](<{{ "/get-started/downloads.html" | prepend: site.baseurl }}>) and follow the
 [installation guide](<{{ "/get-started/documentation/installation.html" | prepend: site.baseurl }}>) for your specific OS.
 
@@ -286,7 +286,7 @@ class HelloServlet extends HttpServlet
 
 We hope this tutorial helps you to have a smooth start into the world of **appserver.io webapps**!
 
-Any feedback is very appreciated so, do not hesitate to share your experiences or any problems you encountered with us. Cheers! :)
+Any feedback is appreciated so do not hesitate to share your experiences or any problems you encounter with us. Cheers! :)
 
 
 
