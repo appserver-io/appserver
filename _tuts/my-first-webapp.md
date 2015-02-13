@@ -31,7 +31,7 @@ This tutorial explains how to implement your first webapp on **appserver.io** fr
 **Servlet-Engine** mixed with **Dependency Injection** and **Session-Bean** integration.
 
 <br/>
-## Prerequirements
+## Prerequisite
 
 First  you will need a running installation of appserver.io *(>= Version 1.0.0-rc3)*. If you are new to this
 project you can easily [download](http://127.0.0.1:4000/get-started/downloads.html) and follow the
