@@ -6,7 +6,7 @@ meta_description: appserver.io comes with an built in webserver module with PHP-
 description: It shows you how easy it is installing phpMyAdmin on appserver.io
 position: 40
 group: Tutorials
-permalink: /get-started/tutorials/tutorials/running-phpmyadmin-on-appserver-io.html
+permalink: /get-started/tutorials/running-phpmyadmin-on-appserver-io.html
 ---
 
 **Prerequirements**: *Up and running installation of MySQL*
