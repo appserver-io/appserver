@@ -7,7 +7,7 @@ group: Tutorials
 permalink: /get-started/tutorials/running-drupal-on-appserver-io.html
 ---
 
-**Prerequirements**: *Up and running installation of MySQL*
+**Prerequisite**: *Up and running installation of MySQL*
 
 Appserver.io is a pretty cool and sophiscated infrastructure fully built upon the PHP stack. This makes it truely easy
 to develop and extend the platform. Appserver.io comes with an built in webserver module with PHP-FPM therefore it is
