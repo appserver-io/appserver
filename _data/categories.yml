@@ -25,3 +25,11 @@
 - slug: webserver
   name: WebServer
   title: WebServer News
+
+- slug: design-by-contract
+  name: Design by Contract
+  title: Design by Contract News
+
+- slug: aop
+  name: AOP
+  title: AOP News
