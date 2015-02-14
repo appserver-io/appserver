@@ -21,19 +21,16 @@ subNav:
 permalink: /get-started/documentation/configuration.html
 ---
 
-We believe that the appserver should be highly configurable, so anyone interested can fiddle 
-around with it. Therefor we provide a central configuration file located at `/opt/appserver/etc/appserver.xml`.
+We fancy that appserver should be highly configurable, so that anyone who is interested can give it a shot. Therefore we provide a central configuration file located at `/opt/appserver/etc/appserver.xml`.
 
 This file contains the complete [architecture](#the-architecture) as an XML structure.
 
-So if you want to change used components, introduce new services or scale the system by adding
-additional servers you can do so with some lines of XML.You might have a look at a basic 
+To change used components, introduce new services or scale the system by adding additional servers you can do so with some lines of XML. Look at a basic 
 `appserver.xml`.
 
 ## Basic Architecture
 
-In this example we have a shortened piece of the `appserver.xml` file to understand how the 
-architecture is driven by configuration.
+In this example, we use a shortened piece of the `appserver.xml` file to understand how the architecture is driven by configuration.
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -202,10 +199,10 @@ architecture is driven by configuration.
 </appserver>
 ``` 
 
-In the above example you can see three important components of the appserver architecture being 
+In the above example, you can see three important components of the appserver architecture being 
 used. The [*container*](#container-configuration), [*server*](#server-configuration) and a
-[*protocol*](docs/docs/architecture.md#protocol>) (if you did not read about our [*basic architecture*](#basic-architecture)
-you should now). We are basically building up a container which holds a server using the websocket 
+[*protocol*](docs/docs/architecture.md#protocol>) (if you have not read our [*basic architecture*](#basic-architecture)
+you should do so now). We are basically building up a container which holds a server using the WebSocket 
 protocol to handle incoming requests.
 
 ## Container Configuration
@@ -220,8 +217,7 @@ being built up by the system on startup:
 * The `deployment` element states a class containing preparations for starting up the container. 
   It can be considered a hook which will be invoked before the container will be available.
 
-That is basically everything there is to do to create a new container. To make use of it, it has 
-to contain at least one *server* within its `servers` collection.
+That is basically everything to create a new container. To make use of it, it has to contain at least one *server* within its `servers` collection.
 
 ## Server Configuration
 
@@ -230,14 +226,13 @@ will be instantiated on container bootup. To enable a *server* you have to menti
 attributes of the element:
 
 * The `type` specifies a class implementing the `ServerInterface` which implements the basic 
-  behaviour of the server on receiving a connection and how it will handle it.
-
+  behavior of the server on receiving a connection and how it will handle it.
 * The `socket` attribute specifies the type of socket the server should open. E.g. a stream or 
-  asynchronious socket
+  asynchronous socket
 * The `serverContext` specifies the server's source of configuration and container for runtime 
   information e.g. ServerVariables like `DOCUMENT_ROOT`
 
-So we have our specific server which will open a certain port and operate in a defined context. But
+So we have the specific server which will open a certain port and operate in a defined context. But
 to make the server handle a certain type of requests it needs to know which *protocol* to speak.
 
 This can be done using the `connectionHandler` element. Certain server wrappers can handle certain
@@ -248,8 +243,8 @@ protocol.
 
 ## Application Configuration
 
-Beside Container and Server it is also possible to configuration the Application. Each Application
-can have it's own autoloaders and managers. By default, each Application found in the application
+Beside Container and Server, it is also possible to configure the Application. Each Application
+can have its own autoloaders and managers. By default, each Application found in the application
 servers webapp directory `/opt/appserver/webapps` will be initialized with the defaults, defined
 in `/opt/appserver/etc/appserver/conf.d/context.xml`
 
@@ -365,18 +360,18 @@ in `/opt/appserver/etc/appserver/conf.d/context.xml`
 </context>
 ```
 
-If your application doesn't use any of the defined class loaders or managers or you want to implement
-your own managers, you can define them in a `context.xml` file, you have to deliver with your
+If your application does not use any of the defined class loaders or managers, or you want to implement
+your own managers, you can define them in a `context.xml` file, that you have to deliver with your
 application. Your own, customized file, has to be stored in `META-INF/context.xml`. When the application
-server starts, this file will be parsed and your application will be initialized with the class loaders
-and managers you have defined there.
+server starts, this file will be parsed and your application will be initialized with the defined class loaders
+and managers.
 
 > Please be aware, that the default class loaders and managers provide most of the functionality
-> described above. So if you remove them from the `context.xml` you have to expect unexpected behaviour.
+> described above. If you remove them from the `context.xml` you have to anticipate unexpected behavior.
 
 ## Module Configuration
 
-The web server comes with a package of default modules. The functionality that allows us to configure
+The web server comes with a package of default modules. The functionality that allows to configure
 a virtual host or environment variables, for example, is also provided by two, maybe the most important,
 modules.
 
@@ -389,25 +384,24 @@ project as it offers all needed infrastructure.
 
 #### Rules
 
-Most important part of the module is the way in which it can perform rewrites. All rewrites are 
-based on rewrite rules which consist of three important parts:
+Most important part of the module is the way it can perform rewrites. All rewrites are based on rewrite rules which consist of three important parts:
 
-- *condition string* : Conditions which have to be met in order for the rule to take effect. 
+- *condition string* : Conditions to be met in order for the rule to take effect. 
   See more [down here](#condition-syntax)
 
-- *target string* : The target to rewrite the requested URI to. Within this string you can use 
+- *target string* : The target to rewrite the requested URI to. Within this string, you can use 
   backreferences similar
   to the Apache mod_rewrite module with the difference that you have to use the `$ syntax`
   (instead of the `$/%/%{} syntax` of Apache).
   
-  Matching rule conditions which you specifically pick out via regex are also part of available backreferences
+  Matching rule conditions to pick out specifically via regex are also part of available backreferences
   as well as server and environment variables.
 
   *Simple example* : A condition like `(.+)@$X_REQUEST_URI` would produce a back reference `$1` 
   with the value `/index` for a requested URI `/index`. The target string `$1/welcome.html` would
-  therefore result in a rewrite to `/index/welcome.html`
+  therefore, result in a rewrite to `/index/welcome.html`
 
-- *flag string* : You can use flags similar to mod_rewrite which are used to make rules react in a 
+- *flag string* : Use flags similar to mod_rewrite which are used to make rules react in a 
   certain way or influence further processing. See more [down here](#flags)
 
 #### Condition Syntax
@@ -415,16 +409,16 @@ based on rewrite rules which consist of three important parts:
 The Syntax of possible conditions is roughly based on the possibilities of Apache's RewriteCondition 
 and RewriteRule combined.
 
-To make use of such a combination you can chain conditions together using the `{OR}` symbol for 
-OR-combined, and the `{AND}` symbol for AND-combined conditions.
+To make use of such a combination, you can chain conditions together using the `{OR}` symbol for 
+OR-combined and the `{AND}` symbol for AND-combined conditions.
 
 Please be aware that AND takes precedence over OR! Conditions can either be PCRE regex or certain fixed 
 expressions. So a condition string of `([A-Z]+\.txt){OR}^/([0-9]+){AND}-f` would match only real files 
-(through `-f`) which either begin with numbers or end with capital letters and the extension .txt.
+(through `-f`) which either begins with numbers or end with capital letters and the extension .txt.
 
 As you might have noticed: Backslashes do **not have to be escaped**.
 
-You might also be curious of the `-f` condition. This is a direct copy of Apaches -f RewriteCondition.
+You might also be curious about the `-f` condition. This is a direct copy of Apaches -f RewriteCondition.
 We also support several other expressions to regex based conditions which are:
 
  - *<<COMPARE_STRING>* : Is the operand lexically preceding `<COMPARE_STRING>`?
@@ -437,7 +431,7 @@ We also support several other expressions to regex based conditions which are:
  - *-x* : Is the operand an executable file?
 
 If you are wondering what the `operand` might be: it is **whatever you want it to be**! You can specify
-any operand you like using the `@` symbol. All conditions within a rule will use the next operand to 
+any operand you like using the `@` symbol. All conditions of a rule will use the next operand to 
 their right and if none is given the requested URI. For example:
 
 - *`([A-Z]+\.txt){OR}^/([0-9]+)`* Will take the requested URI for both conditions (note the `{OR}` symbol)
@@ -446,11 +440,11 @@ their right and if none is given the requested URI. For example:
   and the second against the requested URI
 
 You might have noted the `$` symbol before `DOCUMENT_ROOT` and remembered it from the backreference 
-syntax. That's because all Apache common server vars can be explicitly used as backreferences too!
+syntax. That is because all Apache common server vars can be explicitly used as backreferences too!
 
 That does not work for you? Need the exact opposite? No problem!
 
-All conditions, weather regex or expression based can be negated using the `!` symbol in front of 
+All conditions, regex or expression based can be negated using the `!` symbol in front of 
 them! So `!^([0-9]+)` would match all strings which do NOT begin with a number and `!-d` would match
 all non-directories.
 
@@ -511,11 +505,11 @@ following example, that would enable a Magento installation under `http://magent
 ## Configuration Defaults
 
 You will see that we provide basic frontend implementations of services the appserver runtime
-provides. If you want to use these services yourself you should have a look into the code of our 
+provides. If you want to use these services yourself you should have a look at the code of our 
 apps and read about [app development](#deployment).
 
 You might be curious about the different ports we use. Per default the appserver will open several 
-ports at which it's services are available. As we do not want to block (or be blocked by) other 
+ports where its services are available. As we do not want to block (or be blocked by) other 
 services we use ports of a higher range.
 
 As a default we use the following ports:
@@ -536,9 +530,9 @@ have a deeper look into our [architecture](docs/docs/architecture.md)
 
 ## Optional Configuration
 
-Simplicity has always been in our main focus. Therefor we do provide several [configuration defaults](#configuration-defaults) which are not even shown in the configuration file, 
+Simplicity has always been in our main focus. Therefore we do provide several [configuration defaults](#configuration-defaults) which are not even shown in the configuration file, 
 as their default setup works very well out of the box.
-If you might to change this values on the other hand, we do not want to stand in your way.
+You might change these values and we do not want to stand in your way.
 So following are some configurable components which are already configured implicitly but can be explicitly set up in the configuration files.
 
 ### Extractors
@@ -573,7 +567,7 @@ Loggers can be used to log specific types of messages in a specific way. This is
 - access logger -> appserver-access.log
 - error logger -> php_errors.log
 
-Loggers are configured within the `appserver` node following the examples below:
+Loggers are configured within the `appserver` node:
 
 ```xml
 <loggers>
@@ -630,8 +624,8 @@ Loggers are configured within the `appserver` node following the examples below:
 
 ### Provisioners
 
-Provisioners can be used to automatically setup webapps upon their deployment. You might integrate your own using provided steps, or completely code a new one.
-The shown example would create datasources configured within the application.
+Provisioners can be used to automatically setup webapps upon their deployment. You might integrate your own, using provided steps, or completely code new ones.
+The shown example creates data sources configured within the application.
 
 ```xml
 <provisioners>

@@ -18,13 +18,13 @@ permalink: /get-started/documentation/persistence-container.html
 ---
 
 As described in the introduction the application is designed inside a runtime environment like
-an application server as appserver.io is. The following example gives you a short introduction 
-how you can create a stateful session bean and the way you can invoke it's method on client side.
+an application server as appserver.io is. The following example gives a short introduction 
+how you can create a stateful session bean and the way you can invoke its method on the client-side.
 
-First thing you've to do is to create your SessionBean. What is a `SessionBean`? It's not simple
-to describe it in only a few words, but I'll try. A `SessionBean` basically is a plain PHP class.
-You MUST not instantiate it directly, because the application server takes care of its complete
-lifecycle. Therefore, if you need an instance of a SessionBean, you'll ask the application server 
+First thing to do is to create your SessionBean. What is a `SessionBean`? It is not simple
+to describe it in only a few words, but let us try. A `SessionBean` basically is a plain PHP class.
+You MUST not instantiate it directly because the application server takes care of its complete
+lifecycle. Therefore, if you need an instance of a SessionBean, you will ask the application server 
 to give you an instance.
 
 The persistence container client will give you a proxy to the session bean that allows you to
@@ -36,25 +36,25 @@ to distribute the components of your application over your network what includes
 seamless scalability.
 
 You have to tell the persistence container of the type the `SessionBean` should have. This MUST 
-be done by simply add an annotation to the class doc block. The possible annotations therefore 
-are
+be done by simply adding an annotation to the class doc block. The possible annotations therefore 
+are:
 
 * @Singleton
 * @Stateless
 * @Stateful
 
-The `SessionBean` types are self explanatory I think.
+The `SessionBean` types are self explanatory.
 
 ## Singleton SessionBean
 
 A SessionBean with a `@Singleton` annotation will be created only one time for each application.
-This means, whenever you'll request an instance, you'll receive the same one. If you set a
-variable in the `SessionBean`, it'll be available until you'll overwrite it, or the application
+This means, whenever you will request an instance, you'll receive the same one. If you set a
+variable in the `SessionBean`, it'll be available until you'll overwrite it or the application
 server has been restarted.
 
 ## Stateless SessionBean
 
-In opposite to a `SessionBean` with a `@Singleton` annotation, a `SessionBean` with a `@Stateless` annotation will always be instantiated when you request it. It has NO state, only for the time you invoke a method on it.
+Opposite to a `SessionBean` with a `@Singleton` annotation, a `SessionBean` with a `@Stateless` annotation will always be instantiated when you request it. It has NO state, only for the time you invoke a method on it.
 
 ## Stateful SessionBean
 
@@ -65,8 +65,8 @@ instance a class member of your SessionBean makes it persistent for your session
 
 ## Example
 
-The following example shows you a really simple implementation of a stateful `SessionBean` providing
-a counter that'll be raised whenever you call the `raiseMe()` method.
+The following example shows a really simple implementation of a stateful `SessionBean` providing
+a counter that be raised whenever you call the `raiseMe()` method.
 
 ```php
 <?php
@@ -103,11 +103,11 @@ class MyStatefulSessionBean
 Save the `SessionBean` in `/opt/appserver/myapp/META-INF/classes/Namespace/Module/MyStatefulSessionBean.php`.
 
 As described above, you MUST not instantiate it directly. To request an instance of the `SessionBean`
-you MUST use the persistence container client. With the `lookup()` method you'll receive a proxy to
-your `SessionBean`, on that you can invoke the methods as you can do with a real instance.
+you MUST use the persistence container client. With the `lookup()` method you receive a proxy to
+your `SessionBean`, to invoke the methods, as you can do with a real instance.
 
-To develop our `HelloWorldServlet` further, let's raise the counter with each request to the `Servlet`. To
-do this, we've to refactor the `doGet()` method 
+To develop our `HelloWorldServlet` further, let us raise the counter with each request to the `Servlet`. To
+do this, we have to refactor the `doGet()` method 
 
 ```php
 <?php
