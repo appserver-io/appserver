@@ -14,7 +14,7 @@ slider:
   - title: Apply for a revolutionary partnership
     link-href: /partners.html
     link-label: Apply now
-    img: /assets/img/Slider_02_Handshake_grey.png
+    img: /assets/img/slider_partner.png
     countdown: false
   - title: The next-generation PHP infrastructure
     img: /assets/img/slider_appserver_zoom_slogo.jpg
