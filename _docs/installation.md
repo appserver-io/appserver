@@ -22,13 +22,12 @@ permalink: /get-started/documentation/installation.html
 ---
 
 Besides supporting several operating systems and their specific ways of installing software, we
-also support several ways of getting this software. So to get your appserver.io package you might
-do any of the following:
+also support several ways to get an appserver.io package. You might do any of the following:
 
 * Download one of our [**releases**](<https://github.com/appserver-io/appserver/releases>) right from this repository
   which provide tested install packages
-* Grab any of our [**nightlies**](<http://builds.appserver.io/>) from our project page to get bleeding edge install
-  packages which still might have some bugs
+* Get any of our [**nightlies**](<http://builds.appserver.io/>) from our project page to get bleeding edge install
+  packages that still might have some bugs
 * Build your own package using [ANT](<http://ant.apache.org/>)! To do so clone the
   [runtime](<https://github.com/appserver-io-php/runtime>) first. Then update at least the `os.family` and
   `os.distribution` build properties according to your environment and build the appserver with the ANT `build`
@@ -61,7 +60,7 @@ If this requirement is met you can start the installation by simply double-click
 
 > Runs and tested on Debian Squeeze (64-bit) and higher!
 
-If you're on a Debian system you might also try our `.deb` repository:
+If you are on a Debian system you might also try our `.deb` repository:
 
 ```
 root@debian:~# echo "deb http://deb.appserver.io/ wheezy main" > /etc/apt/sources.list.d/appserver.list
