@@ -11,7 +11,7 @@ permalink: /get-started/psrs.html
 #<i class="fa fa-file-text-o"></i> PSRs
 ***
 
-After years, [PHP-FIG](http://www.php-fig.org) has been established as the group witch takes care about the `PSR` Standard. `PSR` stands for `PHP Standard Recommendation`. Since they started with [PSR-0](http://www.php-fig.org/psr/psr-0) a lot in the PHP ecosystem improved in our opinion! So, with our `PSRs` we don't want to replace `PHP-FIG` neither getting in conflict with them. `appserver.io` is **NO** framwework per definition, but a infrastructure solution and a new player in the PHP ecosystem that provides functionality witch has **NOT** been available so far or was partially been covered by webservers like [nginx](http://nginx.org) or [Apache](http://apache.org).
+After years, [PHP-FIG](http://www.php-fig.org) has been established as the group witch takes care about the `PSR` Standard. `PSR` stands for `PHP Standard Recommendation`. Since they started with [PSR-0](http://www.php-fig.org/psr/psr-0) a lot in the PHP ecosystem improved in our opinion! So, with our `PSRs` we don't want to replace `PHP-FIG` neither getting in conflict with them. `appserver.io` is **not a framework** per definition, but a infrastructure solution and a new player in the PHP ecosystem that provides functionality witch has **NOT** been available so far or was partially been covered by webservers like [nginx](http://nginx.org) or [Apache](http://apache.org).
 
 ## Intention behind our own `PSRs`
 ***
