@@ -18,7 +18,7 @@ After years, [PHP-FIG](http://www.php-fig.org) has been established as the group
 
 The intention behind our `PSRs` is, to provide Admins, DevOps, Solution Providers, Developers and all other contributors of `appserver.io` a public, stable and easy accessible API witch makes it possible to implement own applications and components.
 
-With version 1.0.0 we will provide sequenced server specific `PSRs`
+With version 1.0.0 we will provide sequenced application specific `PSRs`
 
 ### Application specific `PSRs`
 
