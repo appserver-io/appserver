@@ -50,7 +50,7 @@ Of course there is no need to change the port if you only want to check out the 
 
 Download the latest TYPO3 Neos Release from neos.typo3.org. To go ahead and install TYPO3 Neos first you have to create a virtual host.
 
-As with any other Webserver using a vhost you first have to add the domain you'd like to use in your hosts file.
+As with any other Webserver using a vhost you first have to add the domain you like to use in your hosts file.
 
 ```bash
 sudo vi /etc/hosts
