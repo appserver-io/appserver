@@ -16,7 +16,7 @@ possible to install any PHP-App you like and run it on that platform. The follow
 install appserver.io on a Mac and run TYPO3 6.2 on it.
 
 
-**Prerequirements**: *Up and running installation of MySQL*
+**Prerequisite**: *Up and running installation of MySQL*
 
 You will need a running installation of appserver.io *(>= Version 1.0.0-rc3)*. If you are new to this
 project you can easily [download](<{{ "/get-started/downloads.html" | prepend: site.baseurl }}>) and follow the
@@ -139,5 +139,4 @@ TYPO3 there.
 </virtualHost>
 ```
 
-After adding the Vhost you have to restart the appserver and if everything was correct you should also be able to
-request TYPO3 over the name based virtual host.
+After adding the Vhost restart the appserver and you should also be able to request TYPO3 over the name based virtual host.
