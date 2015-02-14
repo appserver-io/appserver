@@ -79,7 +79,7 @@ To create the database by the command line just use the following line
 mysql -uroot -p
 ```
 
-On the mysql command line it is easy to create an empty database. Just use the following command.
+On the MySQL command line it is easy to create an empty database. Just use the following command.
 
 ```sql
 CREATE DATABASE drupal;
@@ -89,8 +89,8 @@ Now you are ready to install drupal. Just follow the install wizard.
 
 
 
-If you want to use a virtual host to run drupal simply follow the steps below. As with any other Webserver using a
-vhost you first have to add the domain you like to use in your hosts file.
+To run a virtual host simply follow the steps below. As with any other Webserver using a
+vhost you have to add the domain you like to use in your hosts file first.
 
 ```bash
 sudo vi /etc/hosts
@@ -104,9 +104,9 @@ Add the following lines:
 fe80::1%lo0 drupal.local
 ```
 
-Afterwards you have to add the vhost to the webserver config of the appserver which you also find in
+Afterwards add the vhost to the webserver config of the appserver which you also find in
 `/opt/appserver/etc/appserver/conf.d/virtual-hosts.xml`. There is already an example virtual host configuration
-available. Put the following configuration within the <virtualHosts> tag.
+available. Add the following configuration within the <virtualHosts> tag.
 
 ```xml
 <virtualHost name="drupal.local">
@@ -117,7 +117,7 @@ available. Put the following configuration within the <virtualHosts> tag.
 </virtualHost>
 ```
 
-After adding the Vhost you have to restart the appserver and you should start with the Installation, described at
+After adding the Vhost, restart the appserver and start with the Installation as described at
 the beginning of this tutorial
 
 ```bash
