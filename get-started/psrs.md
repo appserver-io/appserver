@@ -52,7 +52,7 @@ In case you implement an application that works with 1.0.0, we guarantee that it
 ## Our vision regarding `PSRs`
 ***
 
-As our `PSRs` are on a higher level then the `PSRs` maintained by `PHP-FIG` we hope someday we will have the possiblity to merge them together and let them be maintained and extended by the PHP community. As `appserver.io` actually is the only infrastructure (to the best of our knowledge) for PHP, completely written in PHP, the `PSRs`. the `PSRs` will hopefully help other developers and companies to get a better understanding of how certain mechanisms are implemented and encourages People to work on their autonomous, almost compatible solutions, which will enable developers to deploy their applications on every `PHP Application Server` that implements the `PSRs`.
+As our `PSRs` are on a higher level then the `PSRs` maintained by `PHP-FIG` we hope someday we will have the possiblity to merge them together and let them be maintained and extended by the PHP community. The `appserver.io` actually is the only infrastructure (to the best of our knowledge) for PHP, completely written in PHP including the `PSRs`. The `PSRs` will hopefully help other developers and companies to get a better understanding of how certain mechanisms are implemented and encourages People to work on their autonomous, almost compatible solutions, which will enable developers to deploy their applications on every `PHP Application Server` that implements the `PSRs`.
 
 > Soon, you will find detailed information for each PSR on our [appserver-io-psr organisation page on GitHub](<https://github.com/appserver-io-psr>).
 
