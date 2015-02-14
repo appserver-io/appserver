@@ -65,7 +65,7 @@ chmod -R 775 /opt/appserver/webapps/wordpress/
 ```
 
 Now you are free to step over the installation wizard and for that it is necessary to create a database on your local
-running mysql. To create a database you can use the mysql command line or just use another database administration tool
+running MySQL. To create a database you can use the MySQL command line or just use another database administration tool
 like phpMyAdmin. Of course you can also install phpMyAdmin on appserver.io. 
 <a href="{{ "/get-started/tutorials/running-phpmyadmin-on-appserver-io.html" | prepend: site.baseurl }}">
 Just read the appropriate tutorial.</a>
@@ -76,7 +76,7 @@ To create the database by the command line just use the following line
 mysql -uroot -p
 ```
 
-Now you are on the mysql command line and it is pretty easy to create an empty database. Just use the following command.
+Now you are on the MySQL command line and it is pretty easy to create an empty database. Just use the following command.
 
 ```sql
 CREATE DATABASE wordpress;
