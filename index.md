@@ -6,18 +6,15 @@ meta_description: Next-generation PHP infrastructure consisting of a lightning f
 position: 0
 permalink: /
 slider:
-  - title: PHP revolution is only a few days away
+  - title: <img src="/assets/img/logo_web-v0.4.png"/><p></p>Version 1.0.0 OUT NOW!
     link-href: /downloads.html
     link-label: Download
-    img: /assets/img/slider_jday.png
-    countdown: true
-  - title: Apply for a revolutionary partnership
+    img: /assets/img/appserver-header-image.jpg
+    countdown: false
+  - title: Apply for a<br>revolutionary<br>partnership
     link-href: /partners.html
     link-label: Apply now
-    img: /assets/img/Slider_02_Handshake_grey.png
-    countdown: false
-  - title: The next-generation PHP infrastructure
-    img: /assets/img/slider_appserver_zoom_slogo.jpg
+    img: assets/img/slider_partnership-01.png
     countdown: false
 
 boxes-targetgroups:
