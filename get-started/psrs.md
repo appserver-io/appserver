@@ -47,7 +47,7 @@ Beside [application specific PSRs](#application-specific-psrs) we're also workin
 ## What does our `PSRs` mean for you
 ***
 
-In Case you implement an application that works with 1.0.0, we guarantee that it will run without changes on all releases < 2.0.0. The [application specific PSRs](#application-specific-psrs) will only be supplemented with new interfaces that effect existing interfaces otherwise their methods will not be effected.
+In case you implement an application that works with 1.0.0, we guarantee that it will run without changes on all releases < 2.0.0. The [application specific PSRs](#application-specific-psrs) will only be supplemented with new interfaces that effect existing interfaces otherwise their methods will not be effected.
 
 ## Our vision regarding `PSRs`
 ***
