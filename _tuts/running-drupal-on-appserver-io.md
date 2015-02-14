@@ -88,6 +88,7 @@ CREATE DATABASE drupal;
 Now you are ready to install drupal. Just follow the install wizard.
 
 
+### Installing with Virtual Host
 
 To run a virtual host simply follow the steps below. As with any other Webserver using a
 vhost you have to add the domain you like to use in your hosts file first.
