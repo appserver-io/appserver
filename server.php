@@ -29,6 +29,8 @@ use AppserverIo\Appserver\Core\Api\Node\ParamNode;
 use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
 use AppserverIo\Appserver\Core\InitialContext;
 use AppserverIo\Appserver\Core\Utilities\FileSystem;
+use AppserverIo\Appserver\Meta\Composer\Script\Setup;
+use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
 
 declare (ticks = 1);
 
@@ -135,6 +137,10 @@ if (array_key_exists($setup, $arguments)) {
     try {
         // get setup mode from arguments
         $setupMode = $arguments[$setup];
+
+        // init setup context
+        Setup::prepareContext(APPSERVER_BP);
+
         // init user and group vars
         $user = null;
         $group = null;
@@ -154,7 +160,7 @@ if (array_key_exists($setup, $arguments)) {
                     $user = $_SERVER['SUDO_USER'];
                 }
                 // get defined group from configuration
-                $group = $server->getSystemConfiguration()->getParam('group');
+                $group = Setup::getValue(SetupKeys::GROUP);
                 // replace user in configuration file
                 file_put_contents($configurationFileName, preg_replace(
                     $configurationUserReplacePattern,
@@ -169,8 +175,8 @@ if (array_key_exists($setup, $arguments)) {
             // prepares everything for production mode
             case 'prod':
                 // get defined user and group from configuration
-                $user = $server->getSystemConfiguration()->getParam('group');
-                $group = $server->getSystemConfiguration()->getParam('group');
+                $user = Setup::getValue(SetupKeys::USER);
+                $group = Setup::getValue(SetupKeys::GROUP);
                 // replace user to be same as group in configuration file
                 file_put_contents($configurationFileName, preg_replace(
                     $configurationUserReplacePattern,
@@ -195,8 +201,8 @@ if (array_key_exists($setup, $arguments)) {
                 touch(IS_INSTALLED_FILE);
 
                 // get defined user and group from configuration
-                $user = $server->getSystemConfiguration()->getParam('user');
-                $group = $server->getSystemConfiguration()->getParam('group');
+                $user = Setup::getValue(SetupKeys::USER);
+                $group = Setup::getValue(SetupKeys::GROUP);
 
                 // set correct file permissions for configurations
                 FileSystem::recursiveChmod(APPSERVER_BP . DIRECTORY_SEPARATOR . 'etc');
@@ -236,6 +242,7 @@ if (array_key_exists($setup, $arguments)) {
             FileSystem::recursiveChmod(APPSERVER_BP . DIRECTORY_SEPARATOR . 'tests');
             FileSystem::recursiveChown(APPSERVER_BP . DIRECTORY_SEPARATOR . 'vendor', $user, $group);
             FileSystem::recursiveChmod(APPSERVER_BP . DIRECTORY_SEPARATOR . 'vendor');
+            // make server.php executable
             FileSystem::chmod(APPSERVER_BP . DIRECTORY_SEPARATOR . 'server.php', 0755);
 
             echo "Setup for mode '$setupMode' done successfully!" . PHP_EOL;
