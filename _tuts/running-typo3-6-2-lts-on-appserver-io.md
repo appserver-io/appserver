@@ -109,7 +109,7 @@ fe80::1%lo0 typo3.local
 ```
 
 Afterwards you had to add the vhost to the webserver config of the appserver which you also find in the appserver.xml.
-You will find 2 <server> nodes in the xml. The first is for the http and second for the https definitions. If don't
+You will find two <server> nodes in the xml. The first is for the http and second for the https definitions. If don't
 need a SSL-Certificate just scroll to the the <virtualHosts> Section and add the following host configuration for
 TYPO3 there.
 
