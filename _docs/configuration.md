@@ -229,7 +229,7 @@ attributes of the element:
   behavior of the server on receiving a connection and how it will handle it.
 * The `socket` attribute specifies the type of socket the server should open. E.g. a stream or 
   asynchronous socket
-* The `serverContext` specifies the servers source of configuration and container for runtime 
+* The `serverContext` specifies the server's source of configuration and container for runtime 
   information e.g. ServerVariables like `DOCUMENT_ROOT`
 
 So we have the specific server which will open a certain port and operate in a defined context. But
@@ -638,7 +638,7 @@ The shown example creates data sources configured within the application.
 
 Scanners are classes reacting to file system changes and can be configured within the `appserver` node.
 You might want to use this feature to tightly integrate a deployment scanner like used in the `appserver-watcher` process using the first example configuration below, or
-add a scanner to restart the appserver upon changes to your webapps code as in the second example.
+add a scanner to restart the appserver upon changes to your webapp's code as in the second example.
 Implementing your own scanners is possible as well.
 
 ```xml
