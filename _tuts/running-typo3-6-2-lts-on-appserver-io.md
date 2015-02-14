@@ -61,37 +61,32 @@ mkdir newtypo3
 
 and unpacking the source there.
 
-After successfully unpacking the TYPO3 sources you are able to use the TYPO3 installer just by opening a browser and
-calling the URL http://127.0.0.1:9080/newtypo3/. If you do so TYPO3 will give you the message to create the install
-file. You can do that just by creating an empty file in the TYPO3 Webroot.
+After successfully unpacking the TYPO3 sources, use the TYPO3 installer just by opening a browser and calling the URL http://127.0.0.1:9080/newtypo3/. If you do so, TYPO3 will display the message to create the install file. You can do that just by creating an empty file in the TYPO3 Webroot.
 
 ```bash
 touch /opt/appserver/webapps/newtypo3/FIRST_INSTALL
 ```
 
-To go ahead with the installation process you have to fix the file permissions in order to manage TYPO3 can create
-the necessary folders.
+To go ahead with the installation process you have to rectify the file permissions in order for TYPO3 to create the necessary folders.
 
 ```bash
 chmod -R 775 /opt/appserver/webapps/newtypo3/
 ```
 
-After fixing the file permissions you can call the Installation Tool by using the URL mentioned before and you will
-get the main installer. There might by some warnings concerning the upload size and the php_max_execution time but
-there is no need to fix that now so you are able to step ahead with the installation process and type in the MySQL
-login credentials. You can for example create a new database „typo3_newtest“.  After that you just have to create a
-backend user and once done you are all set.
+After correcting the file permissions call the Installation Tool by using the URL mentioned before and you will
+get the main installer. There might be some warnings concerning the upload size and the php_max_execution time but
+there is no need to fix that now. Move on with the installation process and type in the MySQL login credentials. You can create a new database „typo3_newtest“ for example.  After that create a backend user and you are all set.
 
 #### Additional Infos
 
-To correct the problems occured during the installation you just have to change your PHP settings. If you are using
+To correct the issues occurred during the installation you just have to change your PHP settings. If you are using
 the PHP-FPM delivered with appserver.io which is configured by default you will find the php.ini in:
 
 ```bash
 /opt/appserver/etc/
 ```
 
-After changing the ini you have to restart the PHP-FPM by following command:
+After changing the ini, you have to restart the PHP-FPM with the following command:
 
 ```bash
 sudo /opt/appserver/sbin/phpfpmctl restart
@@ -99,7 +94,7 @@ sudo /opt/appserver/sbin/phpfpmctl restart
 
 ### Installing with Virtual Host
 
-As with any other Webserver using a vhost you first have to add the domain you'd like to use in your hosts file.
+As with any other Webserver using a vhost you first have to add the domain you like to use in your hosts file.
 
 ```bash
 sudo vi /etc/hosts
