@@ -22,46 +22,64 @@ subNav:
 permalink: /get-started/tutorials/running-magento-on-appserver-io.html
 ---
 
-**Prerequirements**: *Up and running installation of MySQL*
 
 appserver.io is a pretty cool and sophisticated infrastructure fully built upon the PHP stack. This makes it truly easy to develop and extend the platform. appserver.io comes with a built in webserver module that provides Fast-CGI support. Therefore it is possible to run and install any PHP application. The following tutorial guides you through the Magento installation process necessary to run on appserver.io.
 
-## Installation
 
-First of all you have to download the latest appserver package which is available on the appserver.io webpage under downloads. We have installers for all major operating systems, but for that example we just download the `.pkg` for the Mac OS X. Once you have downloaded the package you just have to follow the steps in the installer. After the setup has been finished, try to open the welcome page [http://127.0.0.1:9080](<http://127.0.0.1:9080>) with your favorite browser.
+**Prerequisite**: *Up and running installation of MySQL*
 
-By default appserver.io is configured to run on port `9080` in order not to affect any existing webserver installations. You can easily change that in the `/opt/appserver/etc/appserver.xml` just by going to section
+You will need a running installation of appserver.io *(>= Version 1.0.0-rc3)*. If you are new to this
+project you can easily [download](<{{ "/get-started/downloads.html" | prepend: site.baseurl }}>) and follow the
+[installation guide](<{{ "/get-started/documentation/installation.html" | prepend: site.baseurl }}>) for your specific OS.
+
+After the setup has finished the appserver.io is up and running and you can call the welcome page with
+
+[http://localhost:9080/](<http://localhost:9080/>)
+
+By default, appserver.io is configured to run on port `9080` in order to not to affect any existing webserver installations.
+You can easily change that in the /opt/appserver/etc/appserver.xml just by going to section
 
 ```xml
 <server name="http"
 	...
 ```
 
-and change the port within that section to for example `80`. After that, [restart](<{{"/get-started/documentation/basic-usage.html#start-and-stop-scripts" | prepend: site.baseurl }}">) the application server. Of course there is no need to change the port if you only want to check out the capabilities of `appserver.io`.
+and change the port within that section for example to 80. After that restart the appserver.io which can be
+done with the following command.
 
-You are now set to install and run your application on appserver.io. To start, you've to [download](http://www.magentocommerce.com/download) the latest Magento CE version from the Magento website.
+```bash
+sudo /opt/appserver/sbin/appserverctl restart
+```
 
-To go ahead and install Magento, we have now two options. The easiest way is to install Magento without creating a vhost. Therefore you just extract the Magento source into the document root under `/opt/appserver/webapps` by opening a commandline and type
+Of course there is no need to change the port if you only want to check out the capabilities of `appserver.io`
+
+
+
+## Installation
+
+To start, you have to [download](http://www.magentocommerce.com/download) the latest Magento CE version from the Magento website.
+
+To install Magento, we have now two options. The easiest way is to install Magento without creating a vhost. Therefore you just extract the Magento source into the document root under `/opt/appserver/webapps` by opening a commandline and type
 
 ```bash
 $ cd /opt/appserver/webapps
 $ tar xvfz magento-community-1.9.1.0.tar.gz
 ```
 
-This will create a folder `magento` and extracts the Magento source files to it. Before you're able to step over to installation you **MUST** correct the rights of the `magento` folder to ensure Magento is able to write the configuration files.
+This will create a folder `magento` and extracts the Magento source files to it. Before you are able to step through the installation you **MUST** correct the rights of the `magento` folder to ensure Magento is able to write the configuration files.
 
 ```bash
 sudo chown -R _www:staff magento
 sudo chmod -R 775 magento
 ```
 
-Additional Magento requires an existing MySQL database and an user that has access to the database. To create the database and the user, we use the MySQL commandline utilities. To log in to the MySQL commandline utilities, type
+In addition, Magento requires an existing MySQL database and a user that has access to the database. To create the database and the user, use the MySQL command line utilities. To log in to the MySQL command line utilities, type
 
 ```bash
 $ mysql -uroot -p
 ```
 
-on your system command line. After successful login, we can create the database, the user and the password with
+After successful login, create the database, the user and the password with
 
 ```bash
 mysql> create database magento;
@@ -71,18 +89,18 @@ mysql> flush privileges;
 
 Optional you can use another database administration tool like `phpMyAdmin` to create the database. Of course you can also install [phpMyAdmin](<{{"/get-started/tutorials/running-phpmyadmin-on-appserver-io.html" | prepend: site.baseurl }}">) on appserver.io.
 
-Now, as you're prepared to step through the Magento installer, start your favorite browser and open 
+Now, as you are prepared to step through the Magento installer, start your favorite browser and open 
 `http://127.0.0.1:9080/magento`.
 
 ![Magento Installation Wizard - Step 1]({{ "/assets/img/posts/magento_installation_step_01.png" | prepend: site.baseurl }} "Welcome to Magento's Installation Wizard!")
 
-The first step of the Magento installation wizard contains the OSL license and a checkbox that allows yout to agree to the Magento Terms and Conditions. By activating the checkbox, you agreement to the Magento terms and conditions and are able to proceed to step 2 by clicking on the button `Continue`.
+The first step of the Magento installation wizard contains the OSL license and a checkbox that allows to agree to the Magento Terms and Conditions. By activating the checkbox, you agree to the Magento terms and conditions and are able to proceed to step 2 by clicking on the button `Continue`.
 
 ![Magento Installation Wizard - Step 2]({{ "/assets/img/posts/magento_installation_step_02.png" | prepend: site.baseurl }} "Configuration")
 
-The first fieldset `Database Connection` requires the database configuration. As you've created a database and the necessary user credentials before, you've to enter these values here.
+The first fieldset `Database Connection` requires the database configuration. As you have created a database and the necessary user credentials before, you have to enter these values here.
 
-The second fieldset `Web access options` allows you, beside the standard options, to activate SSL to use secure URLs for the admin interface. As `appserver.io` generates a default wildcard SSL certificate on startup, you can activate the `Use Secure URLs (SSL)` checkbox.
+The second fieldset `Web access options` allows, beside the standard options, to activate SSL to use secure URLs for the admin interface. As `appserver.io` generates a default wildcard SSL certificate on startup, you can activate the `Use Secure URLs (SSL)` checkbox.
 
 After activation, another field and a checkbox will appear. As the default port for SSL connections on `appserver.io` is, by default, **NOT** `443`, you've to correct the preset URL to `https://127.0.0.1:9443/magento/`. Then activate the checkbox `Run admin interface with SSL`. All other options are good with their default values.
 
@@ -92,31 +110,31 @@ Proceed to step 3 by clicking on the button `Continue`.
 
 ![Magento Installation Wizard - Step 3]({{ "/assets/img/posts/magento_installation_step_03.png" | prepend: site.baseurl }} "Create Admin Account")
 
-The final step of the installation wizard allows you to create an admin account. This is necessary to login to the the `admin` panel. Enter your personal data and some user credentials here. The `Encryption Key` is optional, so you don't have to enter any data here.
+The final step of the installation wizard allows to create an admin account. This is necessary to login to the the `admin` panel. Enter your personal data and the user credentials here. The `Encryption Key` is optional, so you do not have to enter any data here.
 
 Finish the installation wizard by clicking on the button `Continue`.
 
 ![Magento Installation Wizard - Step 4]({{ "/assets/img/posts/magento_installation_step_04.png" | prepend: site.baseurl }} "You're All Set")
 
-> Congratulations, you've successfully installed Magento on your local `appserver.io` infrastructure!
+> Congratulations, you have successfully installed Magento on your local `appserver.io` infrastructure!
 
 ## Securing your Installation
 
-In contrast to an installation on the `Apache` webserver, `appserver.io` actually can't parse `.htaccess` files. So it is necessary to secure your installation manually by adding the apropriate directives to the `appserver.xml` configuration file.
+In contrast to an installation on the `Apache` webserver, `appserver.io` actually can not parse `.htaccess` files. So it is necessary to secure your installation manually by adding the apropriate directives to the `appserver.xml` configuration file.
 
 So, after the installation process, described above, the next step is to login to the `admin` panel. To do this, open `http://127.0.0.1:9080/magento/index.php/admin`
 
 ![Magento - Log in to Admin Panel]({{ "/assets/img/posts/magento_admin_login.png" | prepend: site.baseurl }} "Enter Username and Password")
 
-and login with the user credentials you've created before. After you've deleted the unread messages and update the `Indexers`, there will still be one message left below the top navigation.
+and login with the user credentials that you created before. Delete the unread messages and update the `Indexers`. There will be one message left below the top navigation.
 
 ![Magento - Dashboard]({{ "/assets/img/posts/magento_admin_config_incorrect.png" | prepend: site.baseurl }} "Security Issue")
 
-This message is a result of a Magento internal security check that tries to open the previously generated `/opt/appserver/webapps/magento/app/etc/config.xml` by simulating a browser. Try it by yourself! Start your favorite browser and open `http://127.0.0.1:9080/magento/app/etc/config.xml`. You should see a page, very similar to this
+This message is a result of a Magento internal security check that tries to open the previously generated `/opt/appserver/webapps/magento/app/etc/config.xml` by simulating a browser. Try it by yourself! Start your favorite browser and open `http://127.0.0.1:9080/magento/app/etc/config.xml`. You should see a page very similar to this
 
 ![Magento - XML Configuration]({{ "/assets/img/posts/magento_config_data.png" | prepend: site.baseurl }} "XML Configuration data in browser")
 
-This means, depending on your `appserver.io` configuration, your Magento configuration, including DB username and password, is visible to everyone that can access your IP. How can we solve this? Pretty simple!
+This means, depending on your `appserver.io` configuration, your Magento configuration, including DB username and password, is visible to everyone that can access your IP. To solve this is pretty simple!
 
 Open `/opt/appserver/etc/appserver/appserver.xml` file with the editor of your choice (you need admin access to edit this file).
 
@@ -132,7 +150,7 @@ First comment out the `<access type="allow">...</access>`, but explicitly allow 
 </access>
 ```
 
-After that, the `application.xml` file should look like that
+Now the `application.xml` file should look like this
 
 ```xml
 <appserver ... >
@@ -184,11 +202,11 @@ After that, the `application.xml` file should look like that
 </appserver>
 ```
 
-[Restart]((<{{"/get-started/documentation/basic-usage.html#start-and-stop-scripts" | prepend: site.baseurl }}">)) the application server and open the dashboard again. The security warning should have gone!
+[Restart]((<{{"/get-started/documentation/basic-usage.html#start-and-stop-scripts" | prepend: site.baseurl }}">)) the application server and open the dashboard again. The security warning should have been gone!
 
 ## Adding Rewrites
 
-Adding rewrite funtionality for your Magento installation is very similar to make it secure. Add the following lines to `<server name="http">...</server>` and  `<server name="https">...</server>` nodes.
+Adding rewrite funtionality for your Magento installation is a very similar process as to make it secure. Add the following lines to `<server name="http">...</server>` and  `<server name="https">...</server>` nodes.
 
 ```xml
 <rewrites>
@@ -201,9 +219,9 @@ Adding rewrite funtionality for your Magento installation is very similar to mak
 
 ## Virtual Host Configuration
 
-If you want to use a virtual host to run Magento, follow the steps below. As with any other webserver using a virtual host, you first have to add the domain you like to use in your hosts file.
+To use a virtual host to run Magento, follow the steps below. As with any other webserver using a virtual host, first add the domain you like to use in your hosts file.
 
-Assuming `magento.dev` is the domain you want the local installation make available, you have to do the following steps. First, open the `/etc/hosts` (you need admin access) with your favorite editor and add the following lines
+Assuming `magento.dev` is the domain where you want the local installation to be available, you have to do the following steps. First, open the `/etc/hosts` (you need admin access) with your favorite editor and add the following lines
 
 ```bash
 ::1 magento.dev
@@ -213,7 +231,7 @@ fe80::1%lo0 magento.dev
 
 and save the file. 
 
-Then you have to add a virtual host node to the webserver configuration you will find in `/opt/appserver/etc/appserver/conf.d/virtual-hosts.xml`. There is already an example virtual host configuration available there. Put the following configuration within the `<virtualHosts>` node.
+Then add a virtual host node to the webserver configuration that you will find in `/opt/appserver/etc/appserver/conf.d/virtual-hosts.xml`. Here is already an example virtual host configuration available. Add the following configuration within the `<virtualHosts>` node.
 
 ```xml
 <virtualHost name="magento.dev">
@@ -236,9 +254,9 @@ Then you have to add a virtual host node to the webserver configuration you will
 </virtualHost>
 ```
 
-After adding the virtual host you have to [restart]((<{{"/get-started/documentation/basic-usage.html#start-and-stop-scripts" | prepend: site.baseurl }}">)) the application server.
+After adding the virtual host [restart]((<{{"/get-started/documentation/basic-usage.html#start-and-stop-scripts" | prepend: site.baseurl }}">)) the application server.
 
-As Magento stores the base URL of the shop in the database, **MUST** change these URLs in the database. Again, login to the `MySQL` command line with 
+As Magento stores the base URL of the shop in the database, you  **MUST** change these URLs in the database. Again, login to the `MySQL` command line with 
 
 ```bash
 $ mysql -uroot -p
@@ -262,11 +280,11 @@ Clear the Magento cache by executing
 $ sudo rm -rf /opt/appserver/webapps/magento/var/cache/*
 ```
 
-and you're all set. Start your favorite browser and open the URL `http://magento.dev:9080`, voilá!
+and you are all set. Start your favorite browser and open the URL `http://magento.dev:9080`, voilá!
 
 ## Rotating Logfiles
 
-Rotating the Magento Logfiles can also be activated by adding the following below the `params` node
+Rotating the Magento Logfiles can also be activated by adding the following lines below the `params` node
 
 ```xml
 <appserver ... >
@@ -296,9 +314,9 @@ After [restarting]((<{{"/get-started/documentation/basic-usage.html#start-and-st
 
 ## Executing Magento CRON Jobs
 
-When you run Magento on a Debian Linux for example, you've to register the `cron.sh` in your systems CRON table to be executed periodically. This is, for sure, **NO** big deal, but maybe come together with some handicaps like you have missing permissions to do this for example. If you run Magento inside `appserver.io`, life will a bit less complicated, because you're able to execute the Magento CRON by a `Stateless` session bean.
+When you run Magento on a Debian Linux for example, you have to register the `cron.sh` in your systems CRON table to be executed periodically. This is, for sure, **NO** big deal, but it might come together with some handicaps like missing permissions for example. If you run Magento inside `appserver.io`, life will be less complicated, because you are able to execute the Magento CRON by a `Stateless` session bean.
 
-Creating a `Stateless` session bean is very simple, because this is a plain PHP class with some annotations. Let's have a look at an example you can find in one of our [repositories](https://github.com/appserver-io-apps/magento-cron).
+Creating a `Stateless` session bean is very simple, because this is a plain PHP class with some annotations. Let us have a look at an example you can find in one of our [repositories](https://github.com/appserver-io-apps/magento-cron).
 
 ```php
 <?php
@@ -468,10 +486,10 @@ class CronSessionBean implements TimedObjectInterface
 }
 ```
 
-You have the choice. Either, you can save the PHP code from above into your Magento application folder `/opt/appserver/webapps/magento` under `META-INF/classes/AppserverIo/Apps/Magento/Cron/SessionBeans/CronSessionBean.php` or read the [installation](https://github.com/appserver-io-apps/magento-cron#installation) instructions of the repository.
+You have the choice. Either, save the PHP code from above into your Magento application folder `/opt/appserver/webapps/magento` under `META-INF/classes/AppserverIo/Apps/Magento/Cron/SessionBeans/CronSessionBean.php` or read the [installation](https://github.com/appserver-io-apps/magento-cron#installation) instructions of the repository.
 
 After [restarting]((<{{"/get-started/documentation/basic-usage.html#start-and-stop-scripts" | prepend: site.baseurl }}">)) the application server, your Magento CRON jobs will be executed every minute.
 
 ## Summary
 
-After finishing that tutorial, you've a completely optimized Magento installation ready for production or your local development process.
+After finishing this tutorial, you have a completely optimized Magento installation ready for production or your local development process.
