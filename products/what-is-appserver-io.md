@@ -7,7 +7,7 @@ group: Products
 permalink: /products/what-is-appserver-io.html
 ---
 
-<section class="bluepink">
+<section class="bluegrey">
 <div class="container">
 <h1><i class="fa fa-question-circle"></i> What is appserver.io?</h1>
 
