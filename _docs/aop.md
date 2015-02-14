@@ -175,7 +175,7 @@ As you can also see, you do not have to specify the full name of the targeted co
 
 ### Advices
 
-Advices are used to implement logic of cross-cutting concerns which will be woven into our applications code if a join point is reached.
+Advices are used to implement logic of cross-cutting concerns which will be woven into our application's code if a join point is reached.
 
 Advices are logically gathered together in so-called `aspects`. Aspects are a group of logic concern actions just as a class is the grouping of actions an object can perform for itself or others. You will find this fitting as aspects are simply classes annotated in a certain way in our AOP implementation.
 A commonly used example of an aspect is a class providing several methods for logging, e.g. for different severity levels.
@@ -339,7 +339,7 @@ A thought to keep in mind when configuring pointcuts.
 
 ### Direct annotation
 
-For some use cases, to implement explicit pointcuts can be considered an overhead, as they might be referenced only once or reference only one point within your applications code themselves.
+For some use cases, to implement explicit pointcuts can be considered an overhead, as they might be referenced only once or reference only one point within your application's code themselves.
 For these cases, it can make sense to use a more direct approach which also makes the AOP weaving known to the target code.
 
 To use such a direct approach, it is possible to directly annotate a target method with the type and qualified name of the advice(s) which have to be woven.
@@ -409,7 +409,9 @@ The passed instance of the type `MethodInvocationInterface` fulfills three impor
 - It contains the context of the original call, meaning the instance of the called class
 - It contains the advice chain and allows to manually iterate through layered around advices
 
-Below is an example where an advice uses the passed context instance to retrieve the systems logger and other information about the method call:
+
+
+Below is an example where an advice uses the passed context instance to retrieve the system's logger and other information about the method call:
 
 ```php
 <?php
