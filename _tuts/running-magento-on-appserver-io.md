@@ -116,7 +116,7 @@ Finish the installation wizard by clicking on the button `Continue`.
 
 ![Magento Installation Wizard - Step 4]({{ "/assets/img/posts/magento_installation_step_04.png" | prepend: site.baseurl }} "You're All Set")
 
-> Congratulations, you've successfully installed Magento on your local `appserver.io` infrastructure!
+> Congratulations, you have successfully installed Magento on your local `appserver.io` infrastructure!
 
 ## Securing your Installation
 
@@ -134,7 +134,7 @@ This message is a result of a Magento internal security check that tries to open
 
 ![Magento - XML Configuration]({{ "/assets/img/posts/magento_config_data.png" | prepend: site.baseurl }} "XML Configuration data in browser")
 
-This means, depending on your `appserver.io` configuration, your Magento configuration, including DB username and password, is visible to everyone that can access your IP. How can we solve this? Pretty simple!
+This means, depending on your `appserver.io` configuration, your Magento configuration, including DB username and password, is visible to everyone that can access your IP. To solve this is pretty simple!
 
 Open `/opt/appserver/etc/appserver/appserver.xml` file with the editor of your choice (you need admin access to edit this file).
 
@@ -150,7 +150,7 @@ First comment out the `<access type="allow">...</access>`, but explicitly allow 
 </access>
 ```
 
-After that, the `application.xml` file should look like that
+Now the `application.xml` file should look like this
 
 ```xml
 <appserver ... >
@@ -202,11 +202,11 @@ After that, the `application.xml` file should look like that
 </appserver>
 ```
 
-[Restart]((<{{"/get-started/documentation/basic-usage.html#start-and-stop-scripts" | prepend: site.baseurl }}">)) the application server and open the dashboard again. The security warning should have gone!
+[Restart]((<{{"/get-started/documentation/basic-usage.html#start-and-stop-scripts" | prepend: site.baseurl }}">)) the application server and open the dashboard again. The security warning should have been gone!
 
 ## Adding Rewrites
 
-Adding rewrite funtionality for your Magento installation is very similar to make it secure. Add the following lines to `<server name="http">...</server>` and  `<server name="https">...</server>` nodes.
+Adding rewrite funtionality for your Magento installation is a very similar process as to make it secure. Add the following lines to `<server name="http">...</server>` and  `<server name="https">...</server>` nodes.
 
 ```xml
 <rewrites>
@@ -219,9 +219,9 @@ Adding rewrite funtionality for your Magento installation is very similar to mak
 
 ## Virtual Host Configuration
 
-If you want to use a virtual host to run Magento, follow the steps below. As with any other webserver using a virtual host, you first have to add the domain you like to use in your hosts file.
+To use a virtual host to run Magento, follow the steps below. As with any other webserver using a virtual host, first add the domain you like to use in your hosts file.
 
-Assuming `magento.dev` is the domain you want the local installation make available, you have to do the following steps. First, open the `/etc/hosts` (you need admin access) with your favorite editor and add the following lines
+Assuming `magento.dev` is the domain where you want the local installation to be available, you have to do the following steps. First, open the `/etc/hosts` (you need admin access) with your favorite editor and add the following lines
 
 ```bash
 ::1 magento.dev
@@ -231,7 +231,7 @@ fe80::1%lo0 magento.dev
 
 and save the file. 
 
-Then you have to add a virtual host node to the webserver configuration you will find in `/opt/appserver/etc/appserver/conf.d/virtual-hosts.xml`. There is already an example virtual host configuration available there. Put the following configuration within the `<virtualHosts>` node.
+Then add a virtual host node to the webserver configuration that you will find in `/opt/appserver/etc/appserver/conf.d/virtual-hosts.xml`. Here is already an example virtual host configuration available. Add the following configuration within the `<virtualHosts>` node.
 
 ```xml
 <virtualHost name="magento.dev">
@@ -254,9 +254,9 @@ Then you have to add a virtual host node to the webserver configuration you will
 </virtualHost>
 ```
 
-After adding the virtual host you have to [restart]((<{{"/get-started/documentation/basic-usage.html#start-and-stop-scripts" | prepend: site.baseurl }}">)) the application server.
+After adding the virtual host [restart]((<{{"/get-started/documentation/basic-usage.html#start-and-stop-scripts" | prepend: site.baseurl }}">)) the application server.
 
-As Magento stores the base URL of the shop in the database, **MUST** change these URLs in the database. Again, login to the `MySQL` command line with 
+As Magento stores the base URL of the shop in the database, you  **MUST** change these URLs in the database. Again, login to the `MySQL` command line with 
 
 ```bash
 $ mysql -uroot -p
@@ -284,7 +284,7 @@ and you are all set. Start your favorite browser and open the URL `http://magent
 
 ## Rotating Logfiles
 
-Rotating the Magento Logfiles can also be activated by adding the following below the `params` node
+Rotating the Magento Logfiles can also be activated by adding the following lines below the `params` node
 
 ```xml
 <appserver ... >
@@ -314,9 +314,9 @@ After [restarting]((<{{"/get-started/documentation/basic-usage.html#start-and-st
 
 ## Executing Magento CRON Jobs
 
-When you run Magento on a Debian Linux for example, you've to register the `cron.sh` in your systems CRON table to be executed periodically. This is, for sure, **NO** big deal, but maybe come together with some handicaps like you have missing permissions to do this for example. If you run Magento inside `appserver.io`, life will a bit less complicated, because you're able to execute the Magento CRON by a `Stateless` session bean.
+When you run Magento on a Debian Linux for example, you have to register the `cron.sh` in your systems CRON table to be executed periodically. This is, for sure, **NO** big deal, but it might come together with some handicaps like missing permissions for example. If you run Magento inside `appserver.io`, life will be less complicated, because you are able to execute the Magento CRON by a `Stateless` session bean.
 
-Creating a `Stateless` session bean is very simple, because this is a plain PHP class with some annotations. Let's have a look at an example you can find in one of our [repositories](https://github.com/appserver-io-apps/magento-cron).
+Creating a `Stateless` session bean is very simple, because this is a plain PHP class with some annotations. Let us have a look at an example you can find in one of our [repositories](https://github.com/appserver-io-apps/magento-cron).
 
 ```php
 <?php
@@ -492,4 +492,4 @@ After [restarting]((<{{"/get-started/documentation/basic-usage.html#start-and-st
 
 ## Summary
 
-After finishing that tutorial, you have a completely optimized Magento installation ready for production or your local development process.
+After finishing this tutorial, you have a completely optimized Magento installation ready for production or your local development process.
