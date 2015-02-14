@@ -31,7 +31,7 @@ Application specific `PSRs` describe all interfaces a developer needs to build a
 * [naming](https://github.com/appserver-io-psr/naming)
 * [mop](https://github.com/appserver-io-psr/mop)
 
-> With the final ersion 1.0.0 `Iron Horse`, we guarantee, that `appserver.io` will follow [Semantic Versioning](http://semver.org) and take cares of backward compatibility for the `application specific PSRs`. The major version will **NEVER** be broken.
+> With the final ersion 1.0.0 `Iron Horse`, we guarantee, that `appserver.io` will follow [Semantic Versioning](http://semver.org) and take cares of backward compatibility for the `application specific PSRs`. The major version will never be broken.
 
 ### Server specific `PSRs`
 
@@ -42,7 +42,7 @@ Beside [application specific PSRs](#application-specific-psrs) we're also workin
 * [socket](https://github.com/appserver-io-psr/http-message)
 * [deplyoment](https://github.com/appserver-io-psr/deployment)
 
-> As long as the `PSRs` are in progress, our guarantee actually is **NOT** valid for those. We hope, that we can extend the guarantee with the next releases, so it will also include the `server specific PSRs`. 
+> As long as the `PSRs` are in progress, there will be no guarantee for our `PSRs`. We hope we can extend the guarantee with the next releases, so it will also include the `server specific PSRs`. 
 
 ## What does our `PSRs` mean for you
 ***
