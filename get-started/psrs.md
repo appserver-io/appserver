@@ -31,7 +31,7 @@ Application specific `PSRs` describe all interfaces a developer needs to build a
 * [naming](https://github.com/appserver-io-psr/naming)
 * [mop](https://github.com/appserver-io-psr/mop)
 
-> With the final ersion 1.0.0 `Iron Horse`, we guarantee, that `appserver.io` will follow [Semantic Versioning](http://semver.org) and take care for backward compatibility for the `application specific PSRs`. The major version will **NEVER** be broken.
+> With the final ersion 1.0.0 `Iron Horse`, we guarantee, that `appserver.io` will follow [Semantic Versioning](http://semver.org) and take cares of backward compatibility for the `application specific PSRs`. The major version will **NEVER** be broken.
 
 ### Server specific `PSRs`
 
