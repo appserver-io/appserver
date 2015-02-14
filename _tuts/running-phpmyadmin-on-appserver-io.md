@@ -16,7 +16,7 @@ possible to install any PHP-App you like and run it on that platform. The follow
 install appserver.io on a Mac and run Wordpress on it.
 
 
-**Prerequirements**: *Up and running installation of MySQL*
+**Prerequisite**: *Up and running installation of MySQL*
 
 You will need a running installation of appserver.io *(>= Version 1.0.0-rc3)*. If you are new to this
 project you can easily [download](<{{ "/get-started/downloads.html" | prepend: site.baseurl }}>) and follow the
@@ -50,7 +50,7 @@ Of course there is no need to change the port if you only want ot check out the 
 Download the latest phpMyAdmin release from [http://phpmyadmin.net](<http://phpmyadmin.net>).
 
 After successfully unpacking the phpmyadmin sources into the webapps folder within the your appserver installation you 
-should correct the rights of the phpmyadmin folder to ensure phpmyadmin is able to write the configuration. 
+should correct the rights of the phpmyadmin folder to ensure phpmyadmin is able to write to the configuration. 
 
 ```bash
 chmod -R 775 /opt/appserver/webapps/phpmyadmin/
@@ -62,4 +62,4 @@ Now you are able to login into your phpMyAdmin installation just by opening the 
 
 [http://localhost:9080/phpmyadmin](<http://localhost:9080/phpmyadmin>)
 
-Just log in with your mysql credentials and you are able administer your database.
+Just log in with your MySQL credentials and you are able to administer your database.
