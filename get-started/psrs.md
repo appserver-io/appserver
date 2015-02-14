@@ -22,7 +22,7 @@ With version 1.0.0 we will provide sequenced application specific `PSRs`
 
 ### Application specific `PSRs`
 
-Applications specific `PSRs` describe all interfaces a developers needs to build a application that runs on `appserver.io` and uses `Server-Side component types` like `Servlets`, `Session` or `Message Driven` beans.
+Application specific `PSRs` describe all interfaces a developer needs to build a application that runs on `appserver.io` and uses `Server-Side component types` like `Servlets`, `Session` or `Message Driven` beans.
 
 * [servlet](https://github.com/appserver-io-psr/servlet)
 * [epb](https://github.com/appserver-io-psr/epb)
