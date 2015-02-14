@@ -70,3 +70,15 @@ section.bluepink {
   -webkit-background-size: cover;
   background-size: cover;
 }
+
+section.bluegrey {
+  @extend section.inverted;
+  background-image: url(/assets/img/sections/bluegrey.jpg);
+  background-repeat: no-repeat;
+  background-position: 50% 0;
+  -ms-background-size: cover;
+  -o-background-size: cover;
+  -moz-background-size: cover;
+  -webkit-background-size: cover;
+  background-size: cover;
+}
