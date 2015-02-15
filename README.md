@@ -288,10 +288,10 @@ Let's write a simple example and start with a famous `Hello World` servlet
 
 namespace Namespace\Module;
 
-use AppserverIo\Psr\Servlet\ServletConfig;
+use AppserverIo\Psr\Servlet\ServletConfigInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServlet;
-use AppserverIo\Psr\Servlet\Http\HttpServletRequest;
-use AppserverIo\Psr\Servlet\Http\HttpServletResponse;
+use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
+use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
 
 /**
  * This is the famous 'Hello World' as servlet implementation.
@@ -314,12 +314,12 @@ class HelloWorldServlet extends HttpServlet
   /**
    * Initializes the servlet with the passed configuration.
    *
-   * @param \AppserverIo\Psr\Servlet\ServletConfig $config 
+   * @param \AppserverIo\Psr\Servlet\ServletConfigInterface $config 
    *   The configuration to initialize the servlet with
    *
    * @return void
    */
-  public function init(ServletConfig $config)
+  public function init(ServletConfigInterface $config)
   {
 
     // call parent method
@@ -335,17 +335,17 @@ class HelloWorldServlet extends HttpServlet
   /**
    * Handles a HTTP GET request.
    *
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest  $servletRequest  
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface  $servletRequest  
    *   The request instance
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponse $servletResponse 
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse 
    *   The response instance
    *
    * @return void
    * @see \AppserverIo\Psr\Servlet\Http\HttpServlet::doGet()
    */
   public function doGet(
-    HttpServletRequest $servletRequest,
-    HttpServletResponse $servletResponse)
+    HttpServletRequestInterface $servletRequest,
+    HttpServletResponseInterface $servletResponse)
   {
     $servletResponse->appendBodyStream($this->helloWorld);
   }
@@ -468,10 +468,10 @@ The first possibility we have is to annotate a class property
 
 namespace Namespace\Module;
 
-use AppserverIo\Psr\Servlet\ServletConfig;
+use AppserverIo\Psr\Servlet\ServletConfigInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServlet;
-use AppserverIo\Psr\Servlet\Http\HttpServletRequest;
-use AppserverIo\Psr\Servlet\Http\HttpServletResponse;
+use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
+use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
 
 /**
  * This is the famous 'Hello World' as servlet implementation.
@@ -497,12 +497,12 @@ class HelloWorldServlet extends HttpServlet
   /**
    * Initializes the servlet with the passed configuration.
    *
-   * @param \AppserverIo\Psr\Servlet\ServletConfig $config 
+   * @param \AppserverIo\Psr\Servlet\ServletConfigInterface $config 
    *   The configuration to initialize the servlet with
    *
    * @return void
    */
-  public function init(ServletConfig $config)
+  public function init(ServletConfigInterface $config)
   {
 
     // call parent method
@@ -518,17 +518,17 @@ class HelloWorldServlet extends HttpServlet
   /**
    * Handles a HTTP GET request.
    *
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest  $servletRequest  
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface  $servletRequest  
    *   The request instance
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponse $servletResponse 
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse 
    *   The response instance
    *
    * @return void
    * @see \AppserverIo\Psr\Servlet\Http\HttpServlet::doGet()
    */
   public function doGet(
-    HttpServletRequest $servletRequest,
-    HttpServletResponse $servletResponse)
+    HttpServletRequestInterface $servletRequest,
+    HttpServletResponseInterface $servletResponse)
   {
     $servletResponse->appendBodyStream($this->helloWorld);
   }
@@ -547,10 +547,10 @@ The second possibility to inject an instance is setter injection.
 
 namespace Namespace\Module;
 
-use AppserverIo\Psr\Servlet\ServletConfig;
+use AppserverIo\Psr\Servlet\ServletConfigInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServlet;
-use AppserverIo\Psr\Servlet\Http\HttpServletRequest;
-use AppserverIo\Psr\Servlet\Http\HttpServletResponse;
+use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
+use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
 
 /**
  * This is the famous 'Hello World' as servlet implementation.
@@ -575,12 +575,12 @@ class HelloWorldServlet extends HttpServlet
   /**
    * Initializes the servlet with the passed configuration.
    *
-   * @param \AppserverIo\Psr\Servlet\ServletConfig $config 
+   * @param \AppserverIo\Psr\Servlet\ServletConfigInterface $config 
    *   The configuration to initialize the servlet with
    *
    * @return void
    */
-  public function init(ServletConfig $config)
+  public function init(ServletConfigInterface $config)
   {
 
     // call parent method
@@ -596,17 +596,17 @@ class HelloWorldServlet extends HttpServlet
   /**
    * Handles a HTTP GET request.
    *
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest  $servletRequest  
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface  $servletRequest  
    *   The request instance
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponse $servletResponse 
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse 
    *   The response instance
    *
    * @return void
    * @see \AppserverIo\Psr\Servlet\Http\HttpServlet::doGet()
    */
   public function doGet(
-    HttpServletRequest $servletRequest,
-    HttpServletResponse $servletResponse)
+    HttpServletRequestInterface $servletRequest,
+    HttpServletResponseInterface $servletResponse)
   {
     $servletResponse->appendBodyStream($this->helloWorld);
   }
@@ -727,10 +727,10 @@ do this, we've to refactor the `doGet()` method
 
 namespace Namespace\Module;
 
-use AppserverIo\Psr\Servlet\ServletConfig;
+use AppserverIo\Psr\Servlet\ServletConfigInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServlet;
-use AppserverIo\Psr\Servlet\Http\HttpServletRequest;
-use AppserverIo\Psr\Servlet\Http\HttpServletResponse;
+use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
+use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
 
 /**
  * This is the famous 'Hello World' as servlet implementation.
@@ -755,12 +755,12 @@ class HelloWorldServlet extends HttpServlet
   /**
    * Initializes the servlet with the passed configuration.
    *
-   * @param \AppserverIo\Psr\Servlet\ServletConfig $config 
+   * @param \AppserverIo\Psr\Servlet\ServletConfigInterface $config 
    *   The configuration to initialize the servlet with
    *
    * @return void
    */
-  public function init(ServletConfig $config)
+  public function init(ServletConfigInterface $config)
   {
 
     // call parent method
@@ -776,17 +776,17 @@ class HelloWorldServlet extends HttpServlet
   /**
    * Handles a HTTP GET request.
    *
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest  $servletRequest  
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface  $servletRequest  
    *   The request instance
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponse $servletResponse 
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse 
    *   The response instance
    *
    * @return void
    * @see \AppserverIo\Psr\Servlet\Http\HttpServlet::doGet()
    */
   public function doGet(
-    HttpServletRequest $servletRequest,
-    HttpServletResponse $servletResponse)
+    HttpServletRequestInterface $servletRequest,
+    HttpServletResponseInterface $servletResponse)
   {
 
     // start a session, because our @Stateful SessionBean
@@ -904,10 +904,10 @@ Again, we will extend our `Servlet` to start an import process on a POST request
 
 namespace Namespace\Module;
 
-use AppserverIo\Psr\Servlet\ServletConfig;
+use AppserverIo\Psr\Servlet\ServletConfigInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServlet;
-use AppserverIo\Psr\Servlet\Http\HttpServletRequest;
-use AppserverIo\Psr\Servlet\Http\HttpServletResponse;
+use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
+use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
 use AppserverIo\Psr\MessageQueueProtocol\Messages\StringMessage;
 
 /**
@@ -956,12 +956,12 @@ class HelloWorldServlet extends HttpServlet
   /**
    * Initializes the servlet with the passed configuration.
    *
-   * @param \AppserverIo\Psr\Servlet\ServletConfig $config 
+   * @param \AppserverIo\Psr\Servlet\ServletConfigInterface $config 
    *   The configuration to initialize the servlet with
    *
    * @return void
    */
-  public function init(ServletConfig $config)
+  public function init(ServletConfigInterface $config)
   {
 
     // call parent method
@@ -977,17 +977,17 @@ class HelloWorldServlet extends HttpServlet
   /**
    * Handles a HTTP GET request.
    *
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest  $servletRequest  
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface  $servletRequest  
    *   The request instance
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponse $servletResponse 
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse 
    *   The response instance
    *
    * @return void
    * @see \AppserverIo\Psr\Servlet\Http\HttpServlet::doGet()
    */
   public function doGet(
-    HttpServletRequest $servletRequest,
-    HttpServletResponse $servletResponse)
+    HttpServletRequestInterface $servletRequest,
+    HttpServletResponseInterface $servletResponse)
   {
 
     // start a session, because our @Stateful SessionBean
@@ -1018,8 +1018,8 @@ class HelloWorldServlet extends HttpServlet
    *   Is thrown because the request method is not implemented yet
    */
   public function doPost(
-    HttpServletRequest $servletRequest,
-    HttpServletResponse $servletResponse)
+    HttpServletRequestInterface $servletRequest,
+    HttpServletResponseInterface $servletResponse)
   {
 
     // load the filename we have to import
@@ -1149,13 +1149,13 @@ class LoggerAspect
   /**
    * Advice used to log the call to any advised method.
    *
-   * @param \AppserverIo\Doppelgaenger\Entities\MethodInvocation $methodInvocation 
+   * @param \AppserverIo\Doppelgaenger\Interfaces\MethodInvocationInterface $methodInvocation 
    *   Initially invoked method
    *
    * @return null
    * @Before("pointcut(allIndexActions())")
    */
-  public function logInfoAdvice(MethodInvocation $methodInvocation)
+  public function logInfoAdvice(MethodInvocationInterface $methodInvocation)
   {
 
     // load class and method name
@@ -1529,13 +1529,23 @@ in `/opt/appserver/etc/appserver/conf.d/context.xml`
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <context 
-  type="AppserverIo\Appserver\Application\Application">
+  name="globalBaseContext" 
+  factory="AppserverIo\Appserver\Application\ApplicationFactory" 
+  type="AppserverIo\Appserver\Application\Application" 
+  xmlns="http://www.appserver.io/appserver">
+
+  <!--
+  <params>
+    <param name="cache.dir" type="string">/cache</param>
+    <param name="session.dir" type="string">/session</param>
+  </params>
+  -->
 
   <classLoaders>
-
+        
     <!-- necessary to load files from the vendor directory of your application -->
     <classLoader
-      name="composer"
+      name="ComposerClassLoader"
       interface="ClassLoaderInterface"
       type="AppserverIo\Appserver\Core\ComposerClassLoader"
       factory="AppserverIo\Appserver\Core\ComposerClassLoaderFactory">
@@ -1543,11 +1553,11 @@ in `/opt/appserver/etc/appserver/conf.d/context.xml`
         <directory>/vendor</directory>
       </directories>
     </classLoader>
-
+        
     <!-- necessary to load files from WEB-INF/classes and META-INF/classes, also -->
     <!-- provides the functionality for Design-by-Contract and AOP               -->
     <classLoader
-      name="doppelgaenger"
+      name="DgClassLoader"
       interface="ClassLoaderInterface"
       type="AppserverIo\Appserver\Core\DgClassLoader"
       factory="AppserverIo\Appserver\Core\DgClassLoaderFactory">
@@ -1566,75 +1576,81 @@ in `/opt/appserver/etc/appserver/conf.d/context.xml`
   </classLoaders>
 
   <managers>
-
+  
+    <!-- provides object management services -->
+    <manager 
+      name="ObjectManagerInterface"
+      type="AppserverIo\Appserver\DependencyInjectionContainer\ObjectManager" 
+      factory="AppserverIo\Appserver\DependencyInjectionContainer\ObjectManagerFactory">
+      <descriptors>
+        <descriptor>AppserverIo\Appserver\DependencyInjectionContainer\Description\ServletDescriptor</descriptor>
+        <descriptor>AppserverIo\Appserver\DependencyInjectionContainer\Description\SingletonSessionBeanDescriptor</descriptor>
+        <descriptor>AppserverIo\Appserver\DependencyInjectionContainer\Description\StatefulSessionBeanDescriptor</descriptor>
+        <descriptor>AppserverIo\Appserver\DependencyInjectionContainer\Description\StatelessSessionBeanDescriptor</descriptor>
+        <descriptor>AppserverIo\Appserver\DependencyInjectionContainer\Description\MessageDrivenBeanDescriptor</descriptor>
+      </descriptors>
+    </manager>
+    
     <!-- provides services necessary for DI -->
     <manager 
-      name="Provider" 
-      beanInterface="ProviderInterface" 
+      name="ProviderInterface" 
       type="AppserverIo\Appserver\DependencyInjectionContainer\Provider" 
       factory="AppserverIo\Appserver\DependencyInjectionContainer\ProviderFactory"/>
-
+      
     <!-- provides the services necessary to handle Session- and MessageBeans -->
     <manager 
-      name="BeanManager"
-      beanInterface="BeanContextInterface"
-      type="AppserverIo\Appserver\PersistenceContainer\BeanManager"
+      name="BeanContextInterface" 
+      type="AppserverIo\Appserver\PersistenceContainer\BeanManager" 
       factory="AppserverIo\Appserver\PersistenceContainer\BeanManagerFactory">
-      <!-- params>
-        <param name="lifetime" type="integer">1440</param>
-        <param name="garbageCollectionProbability" type="float">0.1</param>
-      </params -->
-    </manager>
-
-    <!-- provides the functionality to define and run a Queue -->
-    <manager
-      name="QueueManager"
-      beanInterface="QueueContext"
-      type="AppserverIo\Appserver\MessageQueue\QueueManager"
-      factory="AppserverIo\Appserver\MessageQueue\QueueManagerFactory"/>
-
-    <!-- provides the functionality to define Servlets handling HTTP request -->
-    <manager 
-      name="ServletManager"
-      beanInterface="ServletContext"
-      type="AppserverIo\Appserver\ServletEngine\ServletManager"
-      factory="AppserverIo\Appserver\ServletEngine\ServletManagerFactory">
-      <directories>
-        <directory enforced="true">/WEB-INF/classes</directory>
-        <directory enforced="true">/vendor/appserver-io/routlt/src</directory>
-      </directories>
-    </manager>
-
-    <!-- provides functionality to handle HTTP sessions -->
-    <manager 
-      name="StandardSessionManager"
-      beanInterface="SessionManagerInterface"
-      type="AppserverIo\Appserver\ServletEngine\StandardSessionManager"
-      factory="AppserverIo\Appserver\ServletEngine\StandardSessionManagerFactory"/>
-
-    <!-- provides functionality to handle Timers -->
-    <manager 
-      name="TimerServiceRegistry"
-      beanInterface="TimerServiceContextInterfacek"
-      type="AppserverIo\Appserver\PersistenceContainer\TimerServiceRegistry"
-      factory="AppserverIo\Appserver\PersistenceContainer\TimerServiceRegistryFactory"/>
-
-    <!-- provides functionality to handle HTTP basic/digest authentication -->
-    <manager 
-      name="StandardAuthenticationManager"
-      beanInterface="AuthenticationManager"
-      type="AppserverIo\Appserver\ServletEngine\Authentication\StandardAuthenticationManager"
-      factory="AppserverIo\Appserver\ServletEngine\Authentication\StandardAuthenticationManagerFactory"/>
-
-    <!-- provides functionality to preload Advices found in WEB-INF/classes or META-INF/classes -->
-    <manager
-      name="AspectManager"
-      beanInterface="AspectManagerInterface"
-      type="AppserverIo\Appserver\AspectContainer\AspectManager"
-      factory="AppserverIo\Appserver\AspectContainer\AspectManagerFactory"/>
-
+        <!-- params>
+          <param name="lifetime" type="integer">1440</param>
+          <param name="garbageCollectionProbability" type="float">0.1</param>
+        </params -->
+        <directories>
+          <directory>/META-INF/classes</directory>
+        </directories>
+      </manager>
+      
+      <!-- provides the functionality to define and run a Queue -->
+      <manager 
+        name="QueueContextInterface" 
+        type="AppserverIo\Appserver\MessageQueue\QueueManager" 
+        factory="AppserverIo\Appserver\MessageQueue\QueueManagerFactory"/>
+        
+      <!-- provides the functionality to define Servlets handling HTTP request -->
+      <manager 
+        name="ServletContextInterface" 
+        type="AppserverIo\Appserver\ServletEngine\ServletManager" 
+        factory="AppserverIo\Appserver\ServletEngine\ServletManagerFactory">
+        <directories>
+          <directory>/WEB-INF/classes</directory>
+        </directories>
+      </manager>
+      
+      <!-- provides functionality to handle HTTP sessions -->
+      <manager 
+        name="SessionManagerInterface" 
+        type="AppserverIo\Appserver\ServletEngine\StandardSessionManager" 
+        factory="AppserverIo\Appserver\ServletEngine\StandardSessionManagerFactory"/>
+        
+      <!-- provides functionality to handle Timers -->
+      <manager 
+        name="TimerServiceContextInterface" 
+        type="AppserverIo\Appserver\PersistenceContainer\TimerServiceRegistry" 
+        factory="AppserverIo\Appserver\PersistenceContainer\TimerServiceRegistryFactory"/>
+    
+      <!-- provides functionality to handle HTTP basic/digest authentication -->
+      <manager 
+        name="AuthenticationManagerInterface" 
+        type="AppserverIo\Appserver\ServletEngine\Authentication\StandardAuthenticationManager" 
+        factory="AppserverIo\Appserver\ServletEngine\Authentication\StandardAuthenticationManagerFactory"/>
+    
+      <!-- provides functionality to preload Advices found in WEB-INF/classes or META-INF/classes -->
+      <manager 
+        name="AspectManagerInterface" 
+        type="AppserverIo\Appserver\AspectContainer\AspectManager" 
+        factory="AppserverIo\Appserver\AspectContainer\AspectManagerFactory"/>
   </managers>
-
 </context>
 ```
 
