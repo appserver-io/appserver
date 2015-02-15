@@ -92,7 +92,7 @@ So check if that works in appserver and create a PHP script called `hello.php` d
 <?php echo "hello i'am a simple php script"; ?>
 ```
 
-Open the browser at [http://127.0.0.1/myapp/hello.php] and you should get...
+Open the browser at [http://127.0.0.1:9080/myapp/hello.php] and you should get...
 
 ![Simple PHP script browser result]({{ "/assets/img/tutorials/my-first-webapp/simple-php-script-browser.png" | prepend: site.baseurl }})
 <br/>
