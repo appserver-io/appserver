@@ -5,6 +5,7 @@
 * Fixed [#514](https://github.com/appserver-io/appserver/issues/514) - @Singleton session bean needs @Startup annotation
 * Fixed [#513](https://github.com/appserver-io/appserver/issues/513) - Manually creating a timer results in a segfault
 * Fixed bug for invalid call to format() method if calculateNextTimeout() returns NULL
+* Fixed bug in SplClassLoaderFactory::visit() method by add missing $configuration parameter
 
 ## Features
 

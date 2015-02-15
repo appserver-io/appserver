@@ -61,6 +61,6 @@ class SplClassLoaderFactory
         }
 
         // initialize and return the SPL class loader instance
-        $application->addClassLoader(new SplClassLoader($classMap, $includePath));
+        $application->addClassLoader(new SplClassLoader($classMap, $includePath), $configuration);
     }
 }
