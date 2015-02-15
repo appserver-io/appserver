@@ -146,7 +146,7 @@ restart the appserver every time it is needed to test the recent changes. Here i
 
 ```bash
 # OSX
-sudo /opt/appserver/sbin/appserver restart
+sudo /opt/appserver/sbin/appserverctl restart
 
 # Debian / Ubuntu / CentOS
 sudo /etc/init.d/appserver restart
