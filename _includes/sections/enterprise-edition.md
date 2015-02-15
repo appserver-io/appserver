@@ -1,7 +1,7 @@
 #<i class="fa fa-th-large"></i> Enterprise Edition (EE)
 ***
 
-We had many, really interesting, discussions with experienced PHP, as well as PHP core developers about the possibilities and pitfalls that multithreading, in a language like PHP, will come along. Most of them thought, that it still will **not** be possible to provide a stable and high performant server implementation as base for an application server. Months later, we think, we can refute that: Don't believe it? Have a look at our [CE](<{{ "/products/community-edition.html" | prepend: site.baseurl }}>)!
+We had many, really interesting, discussions with experienced PHP, as well as PHP core developers about the possibilities and pitfalls that multithreading, in a language like PHP, comes along with. Most of them thought, that it still will **not** be possible to provide a stable and high performant server implementation as base for an application server. Months later, we think, we can refute that: Don't believe it? Have a look at our [CE](<{{ "/products/community-edition.html" | prepend: site.baseurl }}>)!
 
 We've have a vision for the future of PHP!
 
