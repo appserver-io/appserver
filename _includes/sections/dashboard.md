@@ -1,0 +1,3 @@
+## Dashboard
+
+The Dashboard provides a web-based managing GUI enabling and simplifying the maintenance in a single server, as well as in a cluster environment. The Dashboard can be used to make smooth and easy configuration changes and apply them directly to specific servers or the whole cluster environment. It also allows to analyze server state and obtain key figures of the configured environment.
