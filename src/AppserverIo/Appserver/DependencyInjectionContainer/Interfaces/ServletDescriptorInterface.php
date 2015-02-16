@@ -20,6 +20,8 @@
 
 namespace AppserverIo\Appserver\DependencyInjectionContainer\Interfaces;
 
+use AppserverIo\Psr\Deployment\DescriptorInterface;
+
 /**
  * Interface for a servlet descriptor.
  *

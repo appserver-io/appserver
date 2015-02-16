@@ -20,6 +20,8 @@
 
 namespace AppserverIo\Appserver\DependencyInjectionContainer\Interfaces;
 
+use AppserverIo\Psr\Deployment\DescriptorInterface;
+
 /**
  * Inferface for utility classes that stores a beans injection target configuration.
  *

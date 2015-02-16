@@ -20,6 +20,8 @@
 
 namespace AppserverIo\Appserver\DependencyInjectionContainer\Interfaces;
 
+use AppserverIo\Psr\Deployment\DescriptorInterface;
+
 /**
  * Interface for utility classes that stores a reference configuration.
  *
