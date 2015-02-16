@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: sections
 title: Enterprise Edition
 meta_title: appserver.io enterprise edition
 meta_description: We have a great feature set for our enterprise edition. But we are still looking for partners giving input on it. Interested? Please contact us!
@@ -9,86 +9,79 @@ permalink: /products/enterprise-edition.html
 author: all
 ---
 
-# appserver.io Enterprise Edition
-***
-
-<div class="col-md-9">
-    We have a great feature set for our enterprise edition. But still we are looking for partners giving some input on it. If you are interessted please contact us.
+<section class="grey">
+<div class="container">
+{% capture sectioncontent %}{% include sections/enterprise-edition.md %}{% endcapture %}
+{{ sectioncontent | markdownify }}
 </div>
-<div class="col-md-3">
-    <a class="btn btn-info btn-lg" href="{{ "/contact.html" | prepend: site.baseurl }}">
-        <i class="fa fa-envelope-o"></i>&nbsp;&nbsp;Contact us
-    </a>
-</div>
+</section>
 
-<br /><br /><br />
-
-> Below you can find some of the stunning features for the upcoming enterprise edition.
-
+<section class="blue">
+<div class="container">
 <div class="row">
-    <div class="col-md-6">
-        <h3>Clustering</h3>
-        <ul>
-            <li>Cluster node communication and configuration by multicast messages</li>
-            <li>Automatic cluster node discovery</li>
-            <li>Enable application components be distributed across cluster nodes</li>
-            <li>Failover for SFSB + HTTP sessions by full or buddy replication</li>
-            <li>Farming Deployment</li>
-            <li>Vertical Clustering</li>
-            <li>Horizontal Clustering</li>
-            <li>Snapshot functionality for applications</li>
-            <li>Synchronize applications between cluster nodes to be executed locally</li>
-        </ul>
-    </div>
-    <div class="col-md-6">
-        <h3>Load-Balancer</h3>
-        <ul>
-            <li>Random scheduling algorithm</li>
-            <li>Round Robin scheduling algorithm</li>
-            <li>Sticky Session scheduling algorithm</li>
-            <li>Support for asymmetric load distribution</li>
-            <li>Integration priority activation of additional nodes on demand</li>
-            <li>Health checking for nodes, remove offline nodes automatically</li>
-            <li>Client authentication to give access to websites only to authenticated users</li>
-            <li>Programmatic traffic manipulation</li>
-            <li>HTTP compression</li>
-        </ul>
-    </div>
+<div class="col-md-2">
+<img class="img-responsive img-hover" src="/assets/img/icon/webserver_invert.png" alt="" style="width:100%">
 </div>
+<div class="col-md-10">
+{% capture sectioncontent %}{% include sections/clustering.md %}{% endcapture %}
+{{ sectioncontent | markdownify }}
+</div>
+</div>
+</div>
+</section>
 
+<section class="grey text-right">
+<div class="container">
 <div class="row">
-    <div class="col-md-6">
-        <h3>Dashboard</h3>
-        <ul>
-            <li>RESTful webservice that allows application server remote management</li>
-            <li>JavaScript SPA with user right management and user specific characteristics</li>
-            <li>Local server configuration of all server parameters</li>
-            <li>Remote server configuration of all server parameters</li>
-            <li>Template functionality to simplify configuration of new servers</li>
-            <li>Distributed server configuration on all or specific cluster nodes</li>
-            <li>Drag-and-Drop deployment of applications</li>
-            <li>Access, filter and search server logs in real time</li>
-            <li>Extensive reports for local server instance</li>
-            <li>Extensive reports for remote server instances</li>
-            <li>Extensive reports about cluster health</li>
-            <li>Scripting of customer specific reports</li>
-
-        </ul>
-    </div>
-    <div class="col-md-6">
-        <h3>Monitor-Event-Manager</h3>
-        <ul>
-            <li>Extends the Dashboard by alerts on low resources like CPU, RAM or HDD</li>
-            <li>Alerts for application response times</li>
-            <li>Alerts for custom application errors</li>
-            <li>Handle different notification channels like mail, SMS or API</li>
-            <li>API to integrate custom events</li>
-        </ul>
-        <h3>Process Workflow- and Rightmanager</h3>
-        <ul>
-            <li>Extends the Dashboard with workflow management for server and applications</li>
-            <li>Authentication via LDAP</li>
-            <li>Authentication via Active Directory</li>    
-        </ul>
-    </div>
+<div class="col-md-10">
+{% capture sectioncontent %}{% include sections/load-balancing.md %}{% endcapture %}
+{{ sectioncontent | markdownify }}
 </div>
+<div class="col-md-2">
+<img class="img-responsive img-hover" src="/assets/img/icon/rewrite_engine.png" alt="" style="width:100%">
+</div>
+</div>
+</div>
+</section>
+
+<section class="midgrey">
+<div class="container">
+<div class="row">
+<div class="col-md-2">
+<img class="img-responsive img-hover" src="/assets/img/icon/servlet_engine.png" alt="" style="width:100%">
+</div>
+<div class="col-md-10">
+{% capture sectioncontent %}{% include sections/dashboard.md %}{% endcapture %}
+{{ sectioncontent | markdownify }}
+</div>
+</div>
+</div>
+</section>
+
+<section class="grey text-right">
+<div class="container">
+<div class="row">
+<div class="col-md-10">
+{% capture sectioncontent %}{% include sections/event-monitor.md %}{% endcapture %}
+{{ sectioncontent | markdownify }}
+</div>
+<div class="col-md-2">
+<img class="img-responsive img-hover" src="/assets/img/icon/persistence_container.png" alt="" style="width:100%">
+</div>
+</div>
+</div>
+</section>
+
+<section class="blue">
+<div class="container">
+<div class="row">
+<div class="col-md-2">
+<img class="img-responsive img-hover" src="/assets/img/icon/message_queue_invert.png" alt="" style="width:100%">
+</div>
+<div class="col-md-10">
+{% capture sectioncontent %}{% include sections/authentication-and-authorization-services.md %}{% endcapture %}
+{{ sectioncontent | markdownify }}
+</div>
+</div>
+</div>
+</section>

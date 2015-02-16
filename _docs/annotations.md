@@ -8,15 +8,15 @@ group: Docs
 permalink: /get-started/documentation/annotations.html
 ---
 
-As one of our main targets is to make configuration as simple as possible we decided to use
-annotations wherever possible. As annotations are not supported natively by PHP, we provide
-annotation support over our [lang](https://github.com/appserver-io/lang) package.
+As one of our main targets is to make the configuration as simple as possible we decided to use
+annotations wherever possible. Annotations are not supported natively by PHP, therefore we provide
+annotation support over the [lang](https://github.com/appserver-io/lang) package.
 
-Beside the usage in our application server components, it'll also possible to extend your 
+Beside the usage of the application server components, it is also possible to extend yours 
 application with annotations by using the functionality we deliver out-of-the-box.
 
 If you, for example, think about extending the actions of the controller component in your
-MVC framework with a @Route annotation, you can do that in the following way
+MVC framework with a @Route annotation, you can do this in the following way
 
 ```php
 <?php
@@ -63,5 +63,4 @@ $pattern = $reflectionAnnotation->newInstance()->getPattern();
 ```
 
 Most of the annotation implementations provided by our [Enterprise Beans](https://github.com/appserver-io-psr/epb)
-PSR and used for [Dependency Injection](#dependency-injection), which will be described below,
-are based on that annotation implementation.
+PSR and used for [Dependency Injection](#dependency-injection), are based on that annotation implementation.

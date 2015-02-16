@@ -13,8 +13,7 @@ permalink: /partners.html
 
 We´re working on a partner program which will be rolled out soon. Our partner program is designed with the
 objective to expand our reach in supporting all of our users and customers in getting the most out of their
-appserver.io installations. The appserver.io partnership programs differentiate between three different sub-programs
-to fulfill the specific needs of our partners:
+appserver.io installations. The appserver.io partnership programs differentiate between three different sub-programs to fulfill the specific needs of our partners:
 
 <p><br/></p>
 

@@ -92,7 +92,7 @@ So check if that works in appserver and create a PHP script called `hello.php` d
 <?php echo "hello i'am a simple php script"; ?>
 ```
 
-Open the browser at [http://127.0.0.1/myapp/hello.php] and you should get...
+Open the browser at [http://127.0.0.1:9080/myapp/hello.php] and you should get...
 
 ![Simple PHP script browser result]({{ "/assets/img/tutorials/my-first-webapp/simple-php-script-browser.png" | prepend: site.baseurl }})
 <br/>
@@ -146,7 +146,7 @@ restart the appserver every time it is needed to test the recent changes. Here i
 
 ```bash
 # OSX
-sudo /opt/appserver/sbin/appserver restart
+sudo /opt/appserver/sbin/appserverctl restart
 
 # Debian / Ubuntu / CentOS
 sudo /etc/init.d/appserver restart
@@ -155,7 +155,7 @@ sudo /etc/init.d/appserver restart
 sudo systemctl restart appserver
 ```
 
-After the appserver has restarted goto [http://127.0.0.1/myapp/hello.do] and you should get...
+After the appserver has restarted goto [http://127.0.0.1:9080/myapp/hello.do] and you should get...
 
 ![Simple servlet browser result]({{ "/assets/img/tutorials/my-first-webapp/simple-servlet-browser.png" | prepend: site.baseurl }})
 
@@ -227,7 +227,7 @@ class HelloServlet extends HttpServlet
 }
 ```
 
-Restart the appserver again and refresh the browser at [http://127.0.0.1/myapp/hello.do]. Here you go...
+Restart the appserver again and refresh the browser at [http://127.0.0.1:9080/myapp/hello.do]. Here you go...
 
 ![Simple servlet service browser result]({{ "/assets/img/tutorials/my-first-webapp/simple-servlet-service-browser.png" | prepend: site.baseurl }})
 
@@ -254,7 +254,7 @@ To use servlets without configuration, it is necessary to add a `@Route` annotat
  class HelloServlet extends HttpServlet
  ```
  
- This annotation maps the URL `http://127.0.0.1/myapp/hello.do` and `http://127.0.0.1/myapp/hello.do/anything/you/want` to the servlet.
+ This annotation maps the URL `http://127.0.0.1:9080/myapp/hello.do` and `http://127.0.0.1:9080/myapp/hello.do/anything/you/want` to the servlet.
  For more servelt details checkout out [Servlet Engine](<{{ "/get-started/documentation/servlet-engine.html" | prepend: site.baseurl }}>)
  section in our [Documentation](<{{ "/get-started/documentation.html | prepend: site.baseurl }}>)
 

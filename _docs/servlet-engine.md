@@ -20,31 +20,31 @@ permalink: /get-started/documentation/servlet-engine.html
 ---
 
 Originally Servlets are the Java counterpart to other dynamic web technologies like PHP or the
-Microsoft .NET plattform. In contrast to PHP, a Servlet written in Java is not a script that'll
-be interpreted per request, instead it is a class instantiated when the Servlet Engine starts up
+Microsoft .NET platform. In contrast to PHP, a Servlet written in Java is not a script that will
+be interpreted per request. It is rather a class instantiated when the Servlet Engine starts up
 process requests be invoking one of its methods.
 
-> In most cases, this is a major advantage against the common PHP way to load the script on each
-> request again. Sinces PHP applications, mostly based on frameworks like Yii or Symfony growed
-> immensly during the last years, reload all the script filest, required by the application again
-> and again slows down performance in a critical manner. This is one of the reasons, why caching
+> In most cases, this is a major advantage of the common PHP way to load the script on each
+> request again. Since PHP applications, mostly based on frameworks like Yii or Symfony growed
+> immensely during the last years, reload all the script files, required by the application again
+> and again slows down performance in a critical manner. That is one of the reasons, why caching
 > is meanwhile a major part of nearly all frameworks. On the one hand, caching takes care, that
-> the application responds to the request in an acceptable time, on the other hand it is the
-> origin of many problems, such as how to invalidate parts of the cache during a applications
+> the application responds to the request in an acceptable time, on the other hand, it is the
+> origin of many problems. Such problems can be how to invalidate parts of the cache during an applications
 > runtime.
 
-Using a Servlet Engine and, as a consequence of that, Servlets enables you to implement your
+Using a Servlet Engine and, as a consequence of that, Servlets enables you to implement yours
 application logic as you are used to, without the need to take care about the expensive
-bootstrapping process that came together with common legacy frameworks. A Servlet is a super
-fast and simple way to implement an entry point to handle HTTP requests that allows you to
+bootstrapping process that came together with the common legacy frameworks. A Servlet is a super
+fast and simple way to implement an entry point to handle HTTP requests. It allows you to
 execute all performance critical tasks, like bootstrapping, in a method called `init()`, when
 the Servlet Engine starts up.
 
 ## How can a Servlet-Engine help
 
-One solution can be using a Servlet-Engine, like we integrated in our application server. Imagine a servlet as a class that implements the servlet interface, part of our PSR's, that provides some kind of MVC pattern controller functionality by implementing some methods that will be invoked when a request came in, nothing more, nothing less. So to implement your first servlet, you have to think about two things. First, which requests should our servlet dispatch, the second is what functionality it should provide.
+One solution can be using a Servlet-Engine like we integrated with our application server. Imagine a servlet as a class that implements the servlet interface, part of our PSR's, that provides some kind of MVC pattern controller functionality by implementing some methods that will be invoked when a request came in, nothing more, nothing less. So to implement your first servlet, you have to think about two things. First, which requests should the servlet dispatch, the second is what functionality it should provide.
 
-As in many other frameworks do, our Servlet-Engine use a URL path to map a request to a controller, in our case this will be a servlet. You can write as many servlets as you want, but you dont't need to write any configuration therefor. Let's have a look at how you can map an URL path to a servlet
+As in many other frameworks do, our Servlet-Engine uses a URL path to map a request to a controller, in our case this will be a servlet. You can write as many servlets as you want, but you do not need to write any configuration therefor. Let's have a look at how you can map a URL path to a servlet
 
 ```php
 <?php
@@ -90,8 +90,8 @@ specify a list of URL patterns you want to map the servlet to. In our example, w
 `HelloWorldServlet` to the URL's like `http://127.0.0.1:9080/examples/helloWorld.do`, whatever parameters
 are appended.
 
-Last but not least, we've to implement the `doGet()` method, that'll be invoked, when a `GET` request,
-has been sent, and therefore is the main entry point to handle the request by implementing the functionality
+Last but not least, we've to implement the `doGet()` method, that will be invoked, when a `GET` request,
+has been sent, and therefore, is the main entry point to handle the request by implementing the functionality
 we want to provide. For our first example, we only want to add the `Hello World!` that should be rendered.
 
 That is pretty simple, we think! So, given you've downloaded and installed the latest version of the application
@@ -101,17 +101,17 @@ save it. After [restarting]({{ "/get-started/documentation/basic-usage.html#star
 the application server, open the URL `http://127.0.0.1:9080/examples/helloWorld.do` in your favorite browser.
 You should see the text `Hello World`. Congratulations, you have written your first servlet!
 
-> Simplicity is one of our main targets, because we want you to write your applications with a minimum of
-> configuration, actually NULL. So to start write an application that perfectly works in the application
-> server, you only have to download and install it, create some folders and write your code!
+> Simplicity is one of our main targets because we want you to write your applications with a minimum of
+> configuration, actually NULL. So to write an application that perfectly works with the appserver,
+> you only have to download and install it, create some folders and write your code!
 
 ## Bootstrapping a Servlet
 
-As described before, bootstrapping a framework with every request is a very expensive procedure if have be done
-again and again. Using an application server with a Servlet-Engine can be a great help here. Beside the fact,
+As described before, bootstrapping a framework with every request is a very expensive procedure when be done
+again and again. Using an application server with a Servlet-Engine can be a great help here. Besides the fact,
 that parsing configuration like the `@Route` annotation, will be done only once when the application server
-starts, You additionally have the possiblity to do all that expensive stuff in an `ìnit()` method that'll be
-invoked by the application server when the servlet is instanciated and initialized at startup. Let's extend
+starts. You additionally have the possibility to do all that expensive stuff in an `ìnit()` method that will be
+invoked by the application server when the servlet is instanciated and initialized at startup. Let us extend
 our previous example
 
 ```php
@@ -180,18 +180,18 @@ class HelloWorldServlet extends HttpServlet
 }
 ```
 
-We've extended the example by reading the translated `Hello World!` from a resource file, when the application
+We extended the example by reading the translated `Hello World!` from a resource file, when the application
 server starts. When we handle the request later, we only need to resolve the translation from the array with
 the resources by its key.
 
 > You can get major performance improvements, letting the application server do CPU expensive functionality
 > during startup. Keep in mind, that you get a copy of the servlet when the `doGet()` method is invoked.
-> Therefor it doesn't make sense to write data to members there, because it'll be not available in the next
+> Therefor it doesn't make sense to write data to members there because it will be not available in the next
 > request!
 
-## Passing data from configuration
+## Passing data from a configuration
 
-In some cases, it'll be necessary, that you need to pass data to the `init()` method, e. g. configuration
+In some cases, it will be necessary, that you need to pass data to the `init()` method, e. g. configuration
 values. You can also do this with the `@Route` annotation. So imagine, we want to make the path to the file
 with the resources configurable.
 
@@ -262,21 +262,21 @@ class HelloWorldServlet extends HttpServlet
 }
 ```
 
-With the `ìnitParams` attribute of the `@Route` annotation you can specify a list of parameters that'll
-available later by the `$config` instance passed to the `ìnit()` method. You can specify a random number
+With the `ìnitParams` attribute of the `@Route` annotation, you can specify a list of parameters that will be
+available later on the `$config` instance passed to the `ìnit()` method. You can specify a random number
 of key/value pair whereas the first value will be the key you later can load the value with. In our example
 we register a the path to our resources file `WEB-INF/resources.ini` under the key `resourceFile` in our
 servlet configuration. In the `ìnit()` method we can then load the path from the servlet configuration.
 
-> You maybe think, that it doesn't make to much sense specifying such values in an annotation. That can be
-> true, but keep in mind, that you can overwrite these values later in a XML configuration. So you can see
-> the values specified in the annotation as some kind of default value. We'll see an example of how we can
-> overwrite these values in a XML configuration later.
+> You maybe think, that it doesn't make too much sense specifying such values in an annotation. That can be
+> true, but keep in mind, that you can overwrite these values later in an XML configuration. So you can see
+> the values specified in the annotation as some default value. We will see an example of how we can
+> overwrite these values in an XML configuration later.
 
 ## Starting a Session
 
-Starting a session is one of the things you'll need in nearly every application. Start a new session is
-quite simple. So let's see how we can integrate session handling in our application.
+Starting a session is one of the things that you will need in nearly every application. Start a new session is
+quite simple. So let us see how we can integrate session handling in the application.
 
 ```php
 <?php
@@ -386,20 +386,20 @@ class HelloWorldServlet extends HttpServlet
 }
 ```
 
-This is a very simple example of how you can start a session and add some data to it. Session handling is a
-complicated thing and we tried to break it down to be as simple as we can imagine. By default you don't have
-to configure anything, but you still have to option to configure everything in a XML configuration file that
+Above is a very simple example of how you can start a session and add some data to it. Session handling is a
+complicated thing, and we tried to break it down to be as simple as one can imagine. By default you don not have
+to configure anything, but you still have to option to configure everything in an XML configuration file that
 has to be stored in you applications `WEB-INF` folder as `web.xml`.
 
-> Other as a simple web server, we've the possibility to hold a number of sessions persistent in the application
-> servers memory. This ensures great performance on the one hand, but came with great responsibility for the
+> Other as a simple web server, we have the possibility to hold a number of sessions persistent in the application
+> servers memory. This ensures great performance on the one hand but came with great responsibility for the
 > developer on the other. By writing an application that should be run in an application server, you have to
 > be aware of what you are doing and have a look at the memory footprint of your application.
 
 ## Optional XML Configuration
 
-As described before, we thought, that it have to be very simple, to write a servlet. Therefore we provide
-annotations that gives you the power to configure the basics. For sure, for many things we deliver a good
+As described before, we thought, that it have to be very simple, to write a servlet. Therefore, we provide
+annotations that give you the power to configure the basics. For sure, for many things we deliver a good
 default configuration, but you need the power to overwrite that.
 
 You can overwrite the default configuration values in a simple XML file called `web.xml` that you've to

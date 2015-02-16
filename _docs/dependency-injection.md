@@ -15,15 +15,14 @@ permalink: /get-started/documentation/dependency-injection.html
 
 Dependency Injection, furthermore DI, enables developers to write cleaner, reusable and maintainable
 code with less coupling by injecting necessary instances at runtime instead of instantiating them in
-the class itself. Within the application server, each application has it's own scope and therefore a 
+the class itself. Within the appserver, each application has its own scope and, therefore, an 
 own dependency injection container. This prevents your application from fatal errors like `Cannot redeclare class ...`.
 
 ## What can be injected
 
-Generally everything! The application server itself doesn't use DI, instead it provides DI as a
-service for the applications running within. But, before you can let the DI container inject an
-instance to your class, you have to register it. Registering a class for DI is pretty simple. To
-register a class in the DI container the most common way is to use annotations.
+Generally everything! The appserver itself does not use DI, instead it provides DI as a
+service for the applications running within. But, before you let the DI container inject an
+instance to your class, you have to register it. Registering a class for DI is pretty simple, the most common way is to use annotations.
 
 ```php
 <?php
@@ -38,23 +37,23 @@ class MyStatefulSessionBean
 }
 ```
 
-When the application server starts, it parses the `META-INF/classes` and `WEB-INF/classes` folder
-classes with supported annotations. If a class is found, the class will be registered in the 
-application servers naming directory under the name you specify in the annotations `name` Attribute,
+When the appserver starts, it parses the `META-INF/classes` and `WEB-INF/classes` folder
+for classes with supported annotations. If a class is found, the class will be registered in the 
+appservers naming directory under the name you specify in the annotations `name` Attribute,
 in this example `MyStatefulSessionBean`. 
 
 ## How to inject an instance
 
-Basically DI can be a manual process where you `inject` an instance, needed by another class by 
-passing it to the constructor. Inside the application server, the injection is an process you can't
-see, it's more a kind of magic which happens behind the scenes. So instead of manually pass the
+Basically DI can be a manual process where you `inject` an instance, needed by another class, by 
+passing it to the constructor. Inside the appserver, the injection is a process you cannot
+see, it is more some kind of magic which happens behind the scenes. So instead of manually pass the
 necessary instances to a classes constructor, the DI container will do that for you. 
 
-You simple has to tell the DI container what you need, let's have a look at the details.
+You simply have to tell the DI container you need. Let us have a look at the details.
 
 ### Property Injection
 
-The first possibility we have is to annotate a class property
+The first possibility is to annotate a class property
 
 ```php
 <?php
@@ -219,5 +218,5 @@ class HelloWorldServlet extends HttpServlet
 }
 ```
 
-> This method is the preferred one, because it'll be refactored not to use reflection in further
+> This method is the preferred one because it will be refactored to not use reflection in further
 > versions.
