@@ -20,4 +20,21 @@ Get the latest Version of appserver.io free and enjoy the most powerful PHP infr
 
 {% include widgets/download.html %}
 
+<!-- Facebook Conversion Code for appserver.io Download Page -->
+<script>(function() {
+  var _fbq = window._fbq || (window._fbq = []);
+  if (!_fbq.loaded) {
+    var fbds = document.createElement('script');
+    fbds.async = true;
+    fbds.src = '//connect.facebook.net/en_US/fbds.js';
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(fbds, s);
+    _fbq.loaded = true;
+  }
+})();
+window._fbq = window._fbq || [];
+window._fbq.push(['track', '6021093404814', {'value':'0.00','currency':'EUR'}]);
+</script>
+<noscript><img height="1" width="1" alt="" style="display:none" src="https://www.facebook.com/tr?ev=6021093404814&amp;cd[value]=0.00&amp;cd[currency]=EUR&amp;noscript=1" /></noscript>
+
 <iframe src="http://cdn.appserver.io/welcome-page/ga.html" width="0" height="0" frameborder="0" marginheight="0" marginwidth="0"></iframe>
