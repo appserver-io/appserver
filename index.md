@@ -6,7 +6,7 @@ meta_description: Next-generation PHP infrastructure consisting of a lightning f
 position: 0
 permalink: /
 slider:
-  - title: <img src="/assets/img/logo_web-v0.4.png"/><p></p>Version 1.0.0 OUT NOW!
+  - title: Stable version 1.0.0 is OUT!<br/><small>Get the revolution NOW!</small>
     link-href: /downloads.html
     link-label: Download
     img: /assets/img/appserver-header-image.jpg
@@ -37,7 +37,7 @@ boxes-targetgroups:
 ---
 
 
-<section class="grey small midsizefont text-right">
+<section class="blue small midsizefont text-center">
 <div class="container">
 <a href="{{ "/get-started/documentation.html" | prepend: site.baseurl }}" class="white"><i class="fa fa-book"></i> Documentation</a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="{{ site.github_repository }}"><i class="fa fa-github"></i> Github Project</a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="{{ site.github_gitter }}"><i class="fa fa-weixin"></i> Gitter Support Chat</a>
 </div>

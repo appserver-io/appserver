@@ -144,10 +144,14 @@ div.carousel .carousel-inner {
 }
 
 .carousel-caption {
-  text-shadow: 0 0px 4px rgba(0, 0, 0, 0.25);
+  text-shadow: 0 0px 4px rgba(0, 0, 0, 0.45);
   h1 {
-    font-size: 3vw;
+    font-size: 4vw;
     font-weight: bold;
+
+    small {
+      color: #222;
+    }
   }
 }
 
