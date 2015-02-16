@@ -2,7 +2,7 @@
 layout: detail
 title: Message Queue
 meta_title: appserver.io message queue
-meta_description: appserver.io comes with an integrated message queue providing services that enables developers to process messages asynchronously
+meta_description: appserver.io comes with an integrated message queue providing services that enable developers to process messages asynchronously
 position: 10
 group: Features
 permalink: /products/features/message-queue.html
@@ -15,7 +15,7 @@ subnavigation: features
         <tbody>
             <tr>
                 <td class="col-md-2"><b>Short description</b></td>
-                <td class="col-md-8">The Message Queue provides services that enables developers to process messages asynchronously therefore messages which are plain PHP objects, are stacked on the queue whereas receivers, represented by MessageDriven beans, consumes them in a chronological order. By prioritizing messages, software developers are enabled to optimize a system for optimal resource utilization 
+                <td class="col-md-8">The Message Queue provides services that enable developers to process messages asynchronously therefore messages that are plain PHP objects, are stacked on the queue whereas receivers, represented by MessageDriven beans, consumes them in a chronological order. Software developers are enabled to optimize a system for optimal resource utilization by prioritizing messages. 
                 </td>
             </tr>
             <tr>
@@ -65,5 +65,5 @@ subnavigation: features
 
 ## <i class="fa fa-edit"></i> Use Case
 <p>
-Importing a huge number of products, e. g. into an online shop system can take some time using a single-threaded PHP environment. So if you have to import 100.000 products on a server with 4 CPU's each providing 8 cores, the import process will make, by default, use of exactly 1 of the 32 available cores. This will lead to an import time of round about 14 hours, what in reality will be a really huge problem. Using a Message-Queue can be a solution, because it allows you to chunk the data, supposed 100 rows per chunk, and import them in separate threads by sending each to the queue. This can speed up the import process up to 0.5 hours in best case.
+Importing a huge number of products, e. g. into an online shop system can take some time using a single-threaded PHP environment. So if you have to import 100.000 products on a server with 4 CPU's each providing 8 cores, the import process will make, by default, use of exactly 1 of the 32 available cores. This will lead to an import time of approximately 14 hours, what in reality will be a huge problem. Using a Message-Queue can be a solution because it allows you to chunk the data, supposed 100 rows per chunk, and import them in separate threads by sending each to the queue. That can speed up the import process up to 0.5 hours in the best case.
 </p>
