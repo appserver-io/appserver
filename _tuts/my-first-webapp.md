@@ -155,7 +155,7 @@ sudo /etc/init.d/appserver restart
 sudo systemctl restart appserver
 ```
 
-After the appserver has restarted goto [http://127.0.0.1/myapp/hello.do] and you should get...
+After the appserver has restarted goto [http://127.0.0.1:9080/myapp/hello.do] and you should get...
 
 ![Simple servlet browser result]({{ "/assets/img/tutorials/my-first-webapp/simple-servlet-browser.png" | prepend: site.baseurl }})
 
