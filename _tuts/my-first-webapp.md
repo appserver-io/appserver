@@ -254,7 +254,7 @@ To use servlets without configuration, it is necessary to add a `@Route` annotat
  class HelloServlet extends HttpServlet
  ```
  
- This annotation maps the URL `http://127.0.0.1:9080/myapp/hello.do` and `http://127.0.0.1/myapp/hello.do/anything/you/want` to the servlet.
+ This annotation maps the URL `http://127.0.0.1:9080/myapp/hello.do` and `http://127.0.0.1:9080/myapp/hello.do/anything/you/want` to the servlet.
  For more servelt details checkout out [Servlet Engine](<{{ "/get-started/documentation/servlet-engine.html" | prepend: site.baseurl }}>)
  section in our [Documentation](<{{ "/get-started/documentation.html | prepend: site.baseurl }}>)
 
