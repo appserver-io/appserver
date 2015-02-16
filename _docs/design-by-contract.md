@@ -251,8 +251,7 @@ See their meaning and options as listed below.
 | `environment`      | production&#124;development | Whether or not contracted definitions get cached. Recommended is production, as an appserver restart will clear the cache by force, therefore the cache does not hinder development   |
 | `enforcementLevel` | [ 1 - 7 ]                   | A bitmask similar to the Linux user right notation. This will be used to switch on (or off) enforcement features. The bitmask can be written as `invariants post-conditions preconditions`, so the default `7` results in all contract elements being enforced whereas `1` would only enforce preconditions |
 | `typeSafety`       | 0&#124;1                    | Whether or not annotation based type hints get enforced as described [above](#what-can-be-contracted) |
-| `processing`       | logging&#124;exception      | Which kind of reaction a contract or type safety breach triggers. `logging` will result a message within the system logger.
-`exception` will result in an exception of the type `\AppserverIo\Psr\MetaobjectProtocol\Dbc\ContractExceptionInterface`. Throw point is the method in which the contract got breached |
+| `processing`       | logging&#124;exception      | Which kind of reaction a contract or type safety breach triggers. `logging` will result a message within the system logger. `exception` will result in an exception of the type `\AppserverIo\Psr\MetaobjectProtocol\Dbc\ContractExceptionInterface`. Throw point is the method in which the contract got breached |
 
 Adding a `directory` element we can specify which directory should be loaded by our class loader.
 This is common configuration for every class loader type.
