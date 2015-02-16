@@ -1,3 +1,13 @@
+# Version 1.0.1
+
+## Bugfixes
+
+* Remove invalid reference to DescriptorInterface, because interface moved to package appserver-io-psr/deployment
+
+## Features
+
+* None
+
 # Version 1.0.0
 
 ## Bugfixes
