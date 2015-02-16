@@ -6,18 +6,15 @@ meta_description: Next-generation PHP infrastructure consisting of a lightning f
 position: 0
 permalink: /
 slider:
-  - title: PHP revolution is only a few days away
+  - title: Stable version 1.0.0 is OUT!<br/><small>Get the revolution NOW!</small>
     link-href: /downloads.html
     link-label: Download
-    img: /assets/img/slider_jday.png
-    countdown: true
-  - title: Apply for a revolutionary partnership
+    img: /assets/img/appserver-header-image.jpg
+    countdown: false
+  - title: Apply for a<br>revolutionary<br>partnership
     link-href: /partners.html
     link-label: Apply now
-    img: /assets/img/slider_partner.png
-    countdown: false
-  - title: The next-generation PHP infrastructure
-    img: /assets/img/slider_appserver_zoom_slogo.jpg
+    img: assets/img/slider_partnership-01.png
     countdown: false
 
 boxes-targetgroups:
@@ -40,7 +37,7 @@ boxes-targetgroups:
 ---
 
 
-<section class="grey small midsizefont text-right">
+<section class="blue small midsizefont text-center">
 <div class="container">
 <a href="{{ "/get-started/documentation.html" | prepend: site.baseurl }}" class="white"><i class="fa fa-book"></i> Documentation</a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="{{ site.github_repository }}"><i class="fa fa-github"></i> Github Project</a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="{{ site.github_gitter }}"><i class="fa fa-weixin"></i> Gitter Support Chat</a>
 </div>

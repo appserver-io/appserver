@@ -135,13 +135,23 @@ div.carousel .item,
 div.carousel .item.active,
 div.carousel .carousel-inner {
   height: 100%;
+
+  img {
+    padding: 10px 0;
+    -webkit-filter: drop-shadow(0px 0px 10px #005f79);
+    filter: drop-shadow(0px 0px 10px #005f79);
+  }
 }
 
 .carousel-caption {
-  text-shadow: 0 2px 1px rgba(0, 0, 0, 0.1);
+  text-shadow: 0 0px 4px rgba(0, 0, 0, 0.45);
   h1 {
-    font-size: 3vw;
+    font-size: 4vw;
     font-weight: bold;
+
+    small {
+      color: #222;
+    }
   }
 }
 
