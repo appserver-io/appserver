@@ -15,7 +15,7 @@ Spinnereiinsel 3a<br />
 83059 Kolbermoor<br />
 
 ## Represented by:<br />
-Stefan und Josef Willkommer
+Stefan and Josef Willkommer
 
 ## Contact:
 Phone: +49 8031 221055-0<br />
