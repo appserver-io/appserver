@@ -6,8 +6,8 @@ meta_description: AOP is the concept of decoupling cross-cutting concerns, logic
 position: 110
 group: Docs
 subNav:
-  - title: How does it work
-    href: how-does-it-work
+  - title: How it works
+    href: how-it-works
     
   - title: Important terms
     href: important-terms
@@ -29,7 +29,7 @@ AOP is more than a buzzword. Many of the PHP frameworks out there are supporting
 Besides AOP, this library also supports [Design by Contract](https://en.wikipedia.org/wiki/Design_by_contract) and can be used separately from the appserver as well.
 Within the appserver environment, this solution is enabled by default and can be used in every webapp from the first start.
 
-## How does it work
+## How it works
 
 AOP is often done using [`Proxy Classes`](https://en.wikipedia.org/wiki/Proxy_pattern) that wrap around actual classes and can be used to invoke code hooks on certain points in the program flow. Solutions injecting calls to a managing component which handles the execution of cross-cutting logic are also possible.
 
