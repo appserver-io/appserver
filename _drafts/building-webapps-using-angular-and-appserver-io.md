@@ -27,13 +27,12 @@ permalink: /get-started/tutorials/building-webapps-using-angular-and-appserver-i
 ***
 
 This tutorial shows how to build a webapp using AngularJS as single page app in the frontend and **appserver.io** as
-RESTful  service backend using **Design by Contract** for automated input validation and **AOP** for json output
-formatting and ACL integration.
+RESTful service backend using **Servlets**, **Dependency-Injection**, **AOP** and **Annotated-Validation**.
 
 <br/>
 ## Prerequirements
 
-A running installation of appserver.io *(>= Version 1.0.0)*. If you are new to this
+A running installation of **appserver.io** *(>= Version 1.0.0)*. If you are new to this
 project you can easily [download](http://127.0.0.1:4000/get-started/downloads.html) it and follow the
 [installation guide](http://127.0.0.1:4000/get-started/documentation/installation.html) for your specific OS.
 
@@ -47,8 +46,8 @@ system correctly.
 <br/>
 ## Preparations
 
-At first we have to switch to *dev mode* in our local appserver.io installation. This will set the correct filesystem
-permissions for your user account and also let the appserver process itself run as current user which makes it a lot easier
+At first we have to switch to *dev mode* in our local **appserver.io** installation. This will set the correct filesystem
+permissions for your user account and also let the **appserver** process itself run as current user which makes it a lot easier
 for local development.
 
 ```bash
@@ -59,7 +58,7 @@ sudo /opt/appserver/server.php -s dev
 Now we're ready to create our webapp called `myapp`
 
 ```bash
-# Goto appserver.io webapps folder
+# Goto **appserver.io** webapps folder
 cd /opt/appserver/webapps/
 
 # Create myapp
@@ -89,7 +88,7 @@ yo angular
 # Hit enter for any questions
 ```
 
-Before we can open our webapp in the browser we've to add some Virtual-Hosts to the appserver configuration. Do so
+Before we can open our webapp in the browser we've to add some Virtual-Hosts to the **appserver** configuration. Do so
 by opening `/opt/appserver/conf.d/virtual-hosts.xml` with your favorite editor and add this.
 
 ```xml
@@ -119,7 +118,7 @@ address.
 ::1         myapp.dev myapp.dist
 ```
 
-Now restart the appserver and build the kickstarted AngularJS app by just calling grunt in our webapps folder `/opt/appserver/webapps/myapp`
+Now restart the **appserver** and build the kickstarted AngularJS app by just calling grunt in our webapps folder `/opt/appserver/webapps/myapp`
 
 ```bash
 # OSX
@@ -344,11 +343,10 @@ where you can find a collection of ideas for authentication and access control.
 <br/>
 ## RESTful Service
 
-Here's where the appserver and all included services comes into place. We'll make use of the Servlet-Engine and
-the Dependency-Injection feature as we did in the
-[My First WebApp](<{{ "/get-started/tutorials/my-first-webapp.html" | prepend: site.baseurl }}>) for providing as
-Service-Oriented architecture. We also take advantage of AOP for the need of building a RESTful
-service api based on json format to keep it solid.
+Here's where the **appserver** comes into place. We'll make use of the **Servlet-Engine** and **Dependency-Injection**
+as we did in the [My First WebApp](<{{ "/get-started/tutorials/my-first-webapp.html" | prepend: site.baseurl }}>)
+for providing as [Service-Oriented architecture](http://en.wikipedia.org/wiki/Service-oriented_architecture).
+We also take advantage of **AOP** for the need of building a RESTful service api based on json format to keep it solid.
 
 Let's start implementing the `AuthService` by creating it `META-INF/classes/MyVendor/MyApp/AuthService.php` and
 implement some simple auth functionality with hardcoded valid credentials, which can of course easily be replaced using
@@ -444,7 +442,7 @@ class LoginServlet extends HttpServlet
 ```
 
 Ok, looks good... but how does it work without `json_encode` the returned array and where is the `$this->data`
-property created from? This can easily be done by using one of the powerful features the appserver comes with. It's
+property created from? This can easily be done by using one of the powerful features the **appserver** comes with. It's
 called AOP or [Aspect-oriented programming](http://en.wikipedia.org/wiki/Aspect-oriented_programming). Just click on the
 link if you are not familiar with it.
 
@@ -516,9 +514,9 @@ I hope the inline comments are good enough to understand whats going on. You may
 [AOP Documentation Section](<{{ "/get-started/documentation/aop.html" | prepend: site.baseurl }}>)
 if you want to get more details about AOP within the appserver.
 
-Let's give it a try if that works! :) Restart the appserver and do a browser-refresh at [http://myapp.dev:9080].
+Let's give it a try if that works! :) Restart the **appserver** and do a browser-refresh at [http://myapp.dev:9080].
 
-> If the browser can not connect to the appserver you better check any appserver log files which are located at
+> If the browser can not connect to the **appserver** you better check any **appserver** log files which are located at
 `/opt/appserver/var/log` for any errors.
 
 You should see the app still unchanged if everything went fine. Now just click the `Login` Button and sign in using
@@ -562,7 +560,7 @@ and `setPassword` methods of our `AuthService`.
     }
 ```
 
-Restart the appserver and check it out...
+Restart the **appserver** and check it out...
 
 ![AngularJS appserver.io login validation username]({{ "/assets/img/tutorials/building-webapps-using-angular-and-appserver-io/yo-angular-login-validation-username.png" | prepend: site.baseurl }} "AngularJS appserver.io login validation username")
 ![AngularJS appserver.io login validation password]({{ "/assets/img/tutorials/building-webapps-using-angular-and-appserver-io/yo-angular-login-validation-password.png" | prepend: site.baseurl }} "AngularJS appserver.io login validation password")
@@ -573,7 +571,7 @@ Restart the appserver and check it out...
 
 We hope you enjoyed this tutorial and it helps you to have a quick overview how easy it is to create a RESTful service
 backend by using great features like **Servlets**, **Dependency-Injection**, **AOP** and **Annotated-Validation** the
-appserver provides out of the box. Even there is no need using a specific framework as the appserver is not only a
+appserver provides out of the box. Even there is no need using a specific framework as the **appserver** is not only a
 powerful PHP infrastructure, but also a fully featured enterprise solution for PHP.
 
 Any feedback is appreciated so do not hesitate to share your experiences or any problems you encounter with us.
