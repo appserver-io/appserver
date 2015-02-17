@@ -13,10 +13,14 @@ subNav:
     href: preparations
   - title: Login Form
     href: login-form
-  - title: Frontend Auth Service
-    href: frontend-auth-service
-  - title: Backend Auth Service
-    href: backend-auth-service
+  - title: Frontend Authentication
+    href: frontend-authentication
+  - title: RESTful Service
+    href: restful-service
+  - title: Input Validation
+    href: input-validation
+  - title: That's it!
+    href: that's-it!
 permalink: /get-started/tutorials/building-webapps-using-angular-and-appserver-io.html
 ---
 ![Building WebApps with AngularJS and appserver.io]({{ "/assets/img/tutorials/building-webapps-using-angular-and-appserver-io/angular_and_appserver.jpg" | prepend: site.baseurl }})
@@ -133,7 +137,7 @@ grunt
 
 Open [http://myapp.dist:9080] in your browser and it should look like this.
 
-![Yo angular dist start]({{ "/assets/img/tutorials/building-webapps-using-angular-and-appserver-io/yo-angular-start-dist.png" | prepend: site.baseurl }} "Yo angular dist start")
+![AngularJS appserver.io dist start]({{ "/assets/img/tutorials/building-webapps-using-angular-and-appserver-io/yo-angular-start-dist.png" | prepend: site.baseurl }} "AngularJS appserver.io dist start")
 
 Looks awesome... :)
 
@@ -174,7 +178,7 @@ element as last one:
 
 Refresh your browser at [http://myapp.dev:9080] and click on the new `login` navigation element.
 
-![Yo angular login route]({{ "/assets/img/tutorials/building-webapps-using-angular-and-appserver-io/yo-angular-login-route.png" | prepend: site.baseurl }} "Yo angular login route")
+![AngularJS appserver.io login route]({{ "/assets/img/tutorials/building-webapps-using-angular-and-appserver-io/yo-angular-login-route.png" | prepend: site.baseurl }} "AngularJS appserver.io login route")
 
 Cool... the route is reachable. Now let's add a login form by editing the login template located in `app/views/login.html`.
 
@@ -197,12 +201,12 @@ Cool... the route is reachable. Now let's add a login form by editing the login 
 
 Refresh your browser and click on the `Login` Button located at the navigation.
 
-![Yo angular login form]({{ "/assets/img/tutorials/building-webapps-using-angular-and-appserver-io/yo-angular-login-form.png" | prepend: site.baseurl }} "Yo angular login form")
+![AngularJS appserver.io login form]({{ "/assets/img/tutorials/building-webapps-using-angular-and-appserver-io/yo-angular-login-form.png" | prepend: site.baseurl }} "AngularJS appserver.io login form")
 
 For being able to submit the login form, we will need a backend as well as a frontend implementation of an `AuthService`.
 
 <br/>
-## Frontend Auth Service
+## Frontend Authentication
 
 Let us start building a simple `AuthService` in AngularJS by kickstarting the service easily via yeoman...
 
@@ -272,6 +276,7 @@ angular.module('myappApp')
     };
     $scope.login = function (credentials) {
       AuthService.login(credentials).then(function (username) {
+        $scope.setErrorMessage(null);
         $scope.setCurrentUsername(username);
         $location.path('/');
       }, function (response) {
@@ -336,7 +341,8 @@ Until we can test our frontend auth mechanism we have to implement the backend `
 [Link](https://medium.com/opinionated-angularjs/techniques-for-authentication-in-angularjs-applications-7bbf0346acec)
 where you can find a collection of ideas for authentication and access control.
 
-## Backend Auth Service
+<br/>
+## RESTful Service
 
 Here's where the appserver and all included services comes into place. We'll make use of the Servlet-Engine and
 the Dependency-Injection feature as we did in the
@@ -363,18 +369,33 @@ class AuthService
         'user'  => 'pass',
         'guest' => 'guest'
     );
+    protected $username;
+    protected $password;
 
-    protected function auth($username, $password)
+    protected function setUsername($username)
     {
-        if (isset($this->credentials[$username]) && $this->credentials[$username] === $password) {
-            return $username;
+        $this->username = $username;
+    }
+
+    protected function setPassword($password)
+    {
+        $this->password = $password;
+    }
+
+    protected function auth()
+    {
+        if (isset($this->credentials[$this->username])
+        && ($this->credentials[$this->username] === $this->password)) {
+            return $this->username;
         }
         throw new \Exception('Username or Password invalid', 401);
     }
 
     public function login($credentials)
     {
-        return $this->auth($credentials->username, $credentials->password);
+        $this->setUsername($credentials->username);
+        $this->setPassword($credentials->password);
+        return $this->auth();
     }
 }
 ```
@@ -423,7 +444,7 @@ class LoginServlet extends HttpServlet
 ```
 
 Ok, looks good... but how does it work without `json_encode` the returned array and where is the `$this->data`
-property comming from? This can easily be done by using one of the powerful features the appserver comes with. It's
+property created from? This can easily be done by using one of the powerful features the appserver comes with. It's
 called AOP or [Aspect-oriented programming](http://en.wikipedia.org/wiki/Aspect-oriented_programming). Just click on the
 link if you are not familiar with it.
 
@@ -493,7 +514,7 @@ class JsonHandlingAspect
 
 I hope the inline comments are good enough to understand whats going on. You may also checkout our
 [AOP Documentation Section](<{{ "/get-started/documentation/aop.html" | prepend: site.baseurl }}>)
-if you want to get more into detail with AOP within the appserver.
+if you want to get more details about AOP within the appserver.
 
 Let's give it a try if that works! :) Restart the appserver and do a browser-refresh at [http://myapp.dev:9080].
 
@@ -503,9 +524,57 @@ Let's give it a try if that works! :) Restart the appserver and do a browser-ref
 You should see the app still unchanged if everything went fine. Now just click the `Login` Button and sign in using
 any valid credentials like `admin/admin`, `guest/guest` or `user/pass`.
 
-![Yo angular login success]({{ "/assets/img/tutorials/building-webapps-using-angular-and-appserver-io/yo-angular-login-success.png" | prepend: site.baseurl }} "Yo angular login success")
+![AngularJS appserver.io login success]({{ "/assets/img/tutorials/building-webapps-using-angular-and-appserver-io/yo-angular-login-success.png" | prepend: site.baseurl }} "AngularJS appserver.io login success")
 
-If the `Login` Button has disappeared and a welcome paragraph is showing `Logged in as {username}` everything works as expected! :)
+If the `Login` Button has disappeared and a welcome paragraph is showing `Logged in as {username}` everything works as
+expected! Please also check if invalid credentials will bring up the error message box.
+
+![AngularJS appserver.io login error]({{ "/assets/img/tutorials/building-webapps-using-angular-and-appserver-io/yo-angular-login-error.png" | prepend: site.baseurl }} "AngularJS appserver.io login error")
+
+<br/>
+## Input Validation
+
+Imagine if you could easily add input validation of client-side form data via annotation using the most awesome
+validation engine ever created for PHP [Respect\Validation](https://github.com/Respect/Validation)... Sounds great?
+Works great! :)
+
+Let's say we wanna validate that the username field value of your login form is not an email address format and the
+password field value is not allowed to be empty. All we have to do is add the following annotations to the `setUsername`
+and `setPassword` methods of our `AuthService`.
+
+```php
+<?php
+...
+    /**
+     * @Validate(berny du bist dro)
+     */
+    protected function setUsername($username)
+    {
+        $this->username = $username;
+    }
+
+    /**
+     * @Validate(berny auf gehts)
+     */
+    protected function setPassword($password)
+    {
+        $this->password = $password;
+    }
+```
+
+Restart the appserver and check it out...
+
+![AngularJS appserver.io login validation username]({{ "/assets/img/tutorials/building-webapps-using-angular-and-appserver-io/yo-angular-login-validation-username.png" | prepend: site.baseurl }} "AngularJS appserver.io login validation username")
+![AngularJS appserver.io login validation password]({{ "/assets/img/tutorials/building-webapps-using-angular-and-appserver-io/yo-angular-login-validation-password.png" | prepend: site.baseurl }} "AngularJS appserver.io login validation password")
 
 
+<br/>
+## That's it!
 
+We hope you enjoyed this tutorial and it helps you to have a quick overview how easy it is to create a RESTful service
+backend by using great features like **Servlets**, **Dependency-Injection**, **AOP** and **Annotated-Validation** the
+appserver provides out of the box. Even there is no need using a specific framework as the appserver is not only a
+powerful PHP infrastructure, but also a fully featured enterprise solution for PHP.
+
+Any feedback is appreciated so do not hesitate to share your experiences or any problems you encounter with us.
+Cheers! :)
