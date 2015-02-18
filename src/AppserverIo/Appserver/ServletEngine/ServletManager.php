@@ -20,18 +20,18 @@
 
 namespace AppserverIo\Appserver\ServletEngine;
 
-use AppserverIo\Appserver\Core\AbstractEpbManager;
-use AppserverIo\Appserver\Core\Api\InvalidConfigurationException;
-use AppserverIo\Psr\Servlet\ServletInterface;
-use AppserverIo\Psr\Servlet\ServletContextInterface;
-use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
 use AppserverIo\Storage\StorageInterface;
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Lang\Reflection\ReflectionClass;
+use AppserverIo\Psr\Servlet\ServletInterface;
+use AppserverIo\Psr\Servlet\ServletContextInterface;
+use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
+use AppserverIo\Psr\Servlet\Description\ServletDescriptorInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
+use AppserverIo\Appserver\Core\AbstractEpbManager;
+use AppserverIo\Appserver\Core\Api\InvalidConfigurationException;
 use AppserverIo\Appserver\DependencyInjectionContainer\DirectoryParser;
 use AppserverIo\Appserver\DependencyInjectionContainer\DeploymentDescriptorParser;
-use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\ServletDescriptorInterface;
 
 /**
  * The servlet manager handles the servlets registered for the application.
@@ -276,7 +276,7 @@ class ServletManager extends AbstractEpbManager implements ServletContextInterfa
     /**
      * Register the servlet described by the passed descriptor.
      *
-     * @param \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\ServletDescriptorInterface $descriptor The servlet descriptor
+     * @param \AppserverIo\Psr\Servlet\Description\ServletDescriptorInterface $descriptor The servlet descriptor
      *
      * @return void
      */

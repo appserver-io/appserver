@@ -731,6 +731,8 @@
         <xs:complexType>
             <xs:all>
                 <xs:element ref="appserver:res-ref-name"/>
+                <xs:element ref="appserver:res-ref-type" minOccurs="0"/>
+                <xs:element ref="appserver:lookup-name" minOccurs="0"/>
                 <xs:element ref="appserver:description" minOccurs="0"/>
                 <xs:element ref="appserver:injection-target" minOccurs="0"/>
             </xs:all>
@@ -739,6 +741,16 @@
         </xs:complexType>
     </xs:element>
     <xs:element name="res-ref-name">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="res-ref-type">
         <xs:complexType>
             <xs:simpleContent>
                 <xs:extension base="xs:string">

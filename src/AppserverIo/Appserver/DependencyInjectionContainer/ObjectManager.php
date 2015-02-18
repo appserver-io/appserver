@@ -23,8 +23,8 @@ namespace AppserverIo\Appserver\DependencyInjectionContainer;
 
 use AppserverIo\Storage\StorageInterface;
 use AppserverIo\Appserver\Core\AbstractManager;
+use AppserverIo\Psr\Deployment\DescriptorInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
-use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\DescriptorInterface;
 use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\ObjectManagerInterface;
 
 /**
@@ -109,8 +109,8 @@ class ObjectManager extends AbstractManager implements ObjectManagerInterface
      * When we merge object descriptors this means, that the values of the passed descriptor
      * will override the existing ones.
      *
-     * @param \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\DescriptorInterface $objectDescriptor The object descriptor to add
-     * @param boolean                                                                            $merge            TRUE if we want to merge with an existing object descriptor
+     * @param \AppserverIo\Psr\Deployment\DescriptorInterface $objectDescriptor The object descriptor to add
+     * @param boolean                                         $merge            TRUE if we want to merge with an existing object descriptor
      *
      * @return void
      */
@@ -137,7 +137,7 @@ class ObjectManager extends AbstractManager implements ObjectManagerInterface
     /**
      * Registers the passed object descriptor under its class name.
      *
-     * @param \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\DescriptorInterface $objectDescriptor The object descriptor to set
+     * @param \AppserverIo\Psr\Deployment\DescriptorInterface $objectDescriptor The object descriptor to set
      *
      * @return void
      */
@@ -163,7 +163,7 @@ class ObjectManager extends AbstractManager implements ObjectManagerInterface
      *
      * @param string $className The class name we want to return the object descriptor for
      *
-     * @return \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\DescriptorInterface|null The requested object descriptor instance
+     * @return \AppserverIo\Psr\Deployment\DescriptorInterface|null The requested object descriptor instance
      * @throws \AppserverIo\Appserver\DependencyInjectionContainer\UnknownObjectDescriptorException Is thrown if someone tries to access an unknown object desciptor
      */
     public function getObjectDescriptor($className)
