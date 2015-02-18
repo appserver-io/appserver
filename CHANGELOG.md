@@ -2,11 +2,11 @@
 
 ## Bugfixes
 
-* Remove invalid reference to DescriptorInterface, because interface moved to package appserver-io-psr/deployment
+* None
 
 ## Features
 
-* None
+* Closed [#572](https://github.com/appserver-io/appserver/issues/527) - Refactor Descriptor integration, move interfaces to PSRs
 
 # Version 1.0.0
 
