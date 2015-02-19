@@ -1,7 +1,9 @@
 # appserver.io, a PHP application server
 
 [![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/appserver-io/appserver?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![Build Status](https://travis-ci.org/appserver-io/appserver.png)](https://travis-ci.org/appserver-io/appserver) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/appserver-io/appserver/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/appserver-io/appserver/?branch=master) [![Code Coverage](https://scrutinizer-ci.com/g/appserver-io/appserver/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/appserver-io/appserver/?branch=master)
+ [![Build Status](https://img.shields.io/travis/appserver-io/appserver/master.svg?style=flat-square)](http://travis-ci.org/appserver-io/appserver)
+ [![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/appserver-io/appserver/master.svg?style=flat-square)](https://scrutinizer-ci.com/g/appserver-io/appserver/?branch=master)
+ [![Code Coverage](https://img.shields.io/scrutinizer/coverage/g/appserver-io/appserver/master.svg?style=flat-square)](https://scrutinizer-ci.com/g/appserver-io/appserver/?branch=master)
 
 This is the main repository for the [appserver.io](http://www.appserver.io/) project.
 
@@ -21,10 +23,15 @@ hopefully establish a solution as the standard for enterprise applications in PH
 
 Give it a try!
 
+# Semantic versioning
+
+appserver.io follows semantic versioning. For the purpose of defining a public API we introduced [appserver.io specific `PSRs`](http://appserver.io/get-started/psrs.html).
+They build up appserver.io's public API within their own definition and versioning.
+This means that **semantic versioning applies to these PSRs, not the appserver package itself**.
+
 #### Table of Contents
 
-[Installation](#installation)  
-[Uninstall](#uninstall)  
+[Installation](#installation)
 [Basic Usage](#basic-usage)  
 [HTTP Server](#https-server)  
 [Servlet-Engine](#servlet-engine)  
@@ -38,6 +45,7 @@ Give it a try!
 [Runtime Environment](#runtime-environment)  
 [Configuration](#configuration)  
 [Deployment](#deployment)  
+[Uninstall](#uninstall)  
 
 # Installation
 
@@ -110,15 +118,6 @@ satisfy additional dependencies.
 As an experiment we offer Raspbian and brought the appserver to an ARM environment. What should 
 we say, it worked! :D With `os.distribution` = raspbian you might give it a try to build it 
 yourself (plan at least 5 hours) as we currently do not offer prepared install packages.
-
-# Uninstall
-
-Before uninstalling you should stop all services which are still running (rpm-based packages will see to that themselves), otherwise there might be problems with existing pid-files on Linux and Mac for the next time you install it. You can have a look how to do so [here](#start-and-stop-scripts).
-
-To uninstall the appserver on Linux you might rely on your package management system. 
-On Windows you can use the normal uninstall process provided by the operating system.
-
-Under Mac OS X you can simply delete the `/opt/appserver` folder that containers all installed files.
 
 # Basic Usage
 
@@ -1898,6 +1897,15 @@ The above examples use UNIX shell commands. Windows equivalents are:
 | touch afile    | echo >> afile           |
 
 Note that the behavior of ```touch``` and ```echo``` are different but thedifferences are not relevant to the usages 
+
+# Uninstall
+
+Before uninstalling you should stop all services which are still running (rpm-based packages will see to that themselves), otherwise there might be problems with existing pid-files on Linux and Mac for the next time you install it. You can have a look how to do so [here](#start-and-stop-scripts).
+
+To uninstall the appserver on Linux you might rely on your package management system. 
+On Windows you can use the normal uninstall process provided by the operating system.
+
+Under Mac OS X you can simply delete the `/opt/appserver` folder that containers all installed files.
 
 # External Links
 
