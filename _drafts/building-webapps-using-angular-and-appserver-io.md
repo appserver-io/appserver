@@ -466,7 +466,6 @@ Do so by creating `META-INF/classes/MyVendor/MyApp/JsonHandlingAspect.php` and i
 namespace MyVendor\MyApp;
 
 use AppserverIo\Psr\MetaobjectProtocol\Aop\MethodInvocationInterface;
-use AppserverIo\Psr\MetaobjectProtocol\Dbc\ContractExceptionInterface;
 
 /**
  * @Aspect
@@ -495,16 +494,19 @@ class JsonHandlingAspect
                 throw new \Exception('Invalid request format', 400);
             }
             // set json parsed object into data property of servlet object
-            $methodInvocation->getContext()->data = json_decode($servletRequest->getBodyContent());
+            $methodInvocation->getContext()->data = json_decode(
+                $servletRequest->getBodyContent()
+            );
             // call orig function
             $responseJsonObject = $methodInvocation->proceed();
         } catch(\Exception $e) {
+            $servletResponse->setStatusCode(
+                $e->getCode() ? $e->getCode() : 400
+            );
             // create error json response object
             $responseJsonObject = new \stdClass();
             $responseJsonObject->error = new \stdClass();
             $responseJsonObject->error->message = nl2br($e->getMessage());
-            $responseJsonObject->error->code = $e->getCode();
-            $servletResponse->setStatusCode($e->getCode() ? $e->getCode() : 400);
         }
         // add json encoded string to response body stream
         $servletResponse->appendBodyStream(json_encode($responseJsonObject));
