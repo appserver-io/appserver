@@ -89,7 +89,7 @@ yo angular
 ```
 
 Before we can open our webapp in the browser we've to add some Virtual-Hosts to the **appserver** configuration. Do so
-by opening `/opt/appserver/conf.d/virtual-hosts.xml` with your favorite editor and add this.
+by opening `/opt/appserver/et/conf.d/virtual-hosts.xml` with your favorite editor and add this.
 
 ```xml
 <virtualHost name="myapp.dist">
@@ -320,7 +320,7 @@ again add a welcome paragraph just before the `<ul class="nav navbar-nav">`.
 
 ```html
 ...
-<p ng-if="isAuthenticated()" class="navbar-text"><span class="welcome">Logged in as <b>{{ currentUsername }}</b></span>
+<p ng-if="isAuthenticated()" class="navbar-text"><span class="welcome">Logged in as <b>{% raw %}{{ currentUsername }}{% endraw %}</b></span>
 ```
 
 All error messages should also be displayed. In `app/index.html` search for `<div ng-view=""></div>` and add this
@@ -329,7 +329,7 @@ before and right after the main container div `<div class="container">`...
 ```html
 <div ng-if="errorMessage" class="alert alert-danger alert-error">
   <span class="close" ng-click="setErrorMessage(null)">&times;</span>
-  <strong>Error!</strong> {{ errorMessage }}
+  <strong>Error!</strong> {% raw %}{{ errorMessage }}{% endraw %}
 </div>
 ```
 
@@ -359,6 +359,7 @@ namespace MyVendor\MyApp;
 
 /**
  * @Stateless
+ * @Processing("exception")
  */
 class AuthService
 {
@@ -493,16 +494,19 @@ class JsonHandlingAspect
                 throw new \Exception('Invalid request format', 400);
             }
             // set json parsed object into data property of servlet object
-            $methodInvocation->getContext()->data = json_decode($servletRequest->getBodyContent());
+            $methodInvocation->getContext()->data = json_decode(
+                $servletRequest->getBodyContent()
+            );
             // call orig function
             $responseJsonObject = $methodInvocation->proceed();
-        } catch (\Exception $e) {
+        } catch(\Exception $e) {
+            $servletResponse->setStatusCode(
+                $e->getCode() ? $e->getCode() : 400
+            );
             // create error json response object
             $responseJsonObject = new \stdClass();
             $responseJsonObject->error = new \stdClass();
-            $responseJsonObject->error->message = $e->getMessage();
-            $responseJsonObject->error->code = $e->getCode();
-            $servletResponse->setStatusCode($e->getCode());
+            $responseJsonObject->error->message = nl2br($e->getMessage());
         }
         // add json encoded string to response body stream
         $servletResponse->appendBodyStream(json_encode($responseJsonObject));
@@ -538,13 +542,15 @@ Works great! :)
 
 Let's say we wanna validate that the username field value of your login form is not an email address format and the
 password field value is not allowed to be empty. All we have to do is add the following annotations to the `setUsername`
-and `setPassword` methods of our `AuthService`.
+and `setPassword` methods of our `AuthService` and introduce `Respect\Validation\Validator` as `v` via use-statement.
 
 ```php
 <?php
 ...
+use Respect\Validation\Validator as v;
+...
     /**
-     * @Validate(berny du bist dro)
+     * @Requires(type="RespectValidation", constraint="v::not(v::email()->setName('Username'))->check($username)")
      */
     protected function setUsername($username)
     {
@@ -552,7 +558,7 @@ and `setPassword` methods of our `AuthService`.
     }
 
     /**
-     * @Validate(berny auf gehts)
+     * @Requires(type="RespectValidation", constraint="v::notEmpty()->setName('Password')->check($password)")
      */
     protected function setPassword($password)
     {
