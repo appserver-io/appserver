@@ -21,10 +21,10 @@
 
 namespace AppserverIo\Appserver\Core;
 
-use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\EpbReferenceDescriptorInterface;
-use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\ResReferenceDescriptorInterface;
-use AppserverIo\Lang\Reflection\ReflectionClass;
 use AppserverIo\Psr\Naming\NamingException;
+use AppserverIo\Lang\Reflection\ReflectionClass;
+use AppserverIo\Psr\EnterpriseBeans\Description\EpbReferenceDescriptorInterface;
+use AppserverIo\Psr\EnterpriseBeans\Description\ResReferenceDescriptorInterface;
 
 /**
  * AppserverIo\Appserver\Core\AbstractEpbManager
@@ -46,7 +46,7 @@ abstract class AbstractEpbManager extends AbstractManager
     /**
      * Registers the passed EPB reference in the applications directory.
      *
-     * @param \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\EpbReferenceDescriptorInterface $epbReference The EPB reference to register
+     * @param \AppserverIo\Psr\EnterpriseBeans\Description\EpbReferenceDescriptorInterface $epbReference The EPB reference to register
      *
      * @return void
      * @todo Replace lookupProxy callback with real proxy instance
@@ -115,7 +115,7 @@ abstract class AbstractEpbManager extends AbstractManager
     /**
      * Registers the passed resource reference in the applications directory.
      *
-     * @param \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\ResReferenceDescriptorInterface $resReference The resource reference to register
+     * @param \AppserverIo\Psr\EnterpriseBeans\Description\ResReferenceDescriptorInterface $resReference The resource reference to register
      *
      * @return void
      */
