@@ -26,3 +26,6 @@ Check out some stuff about appserver.io and the appserver.io team in the press!
 Asynchronous I/O in PHP, oder doch lieber Threads? (Tim Wagner)
 
 <a href="https://phpmagazin.de/PHP-Magazin/PHP-Magazin-62013-167091"><img class="img-thumbnail unstyled" width="339" height="479" src="{{ "/assets/img/pm6-13-cover.jpg" | prepend: site.baseurl }}"></a>
+
+## PHP-Magazin 02/2015
+[Interview with Stefan Willkommer about the Iron Horse Release (German)](http://phpmagazin.de/artikel/appserver-io-1-0-iron-horse-178914)

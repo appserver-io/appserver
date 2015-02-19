@@ -66,6 +66,7 @@ appserver.io and PHP and you´re done!
               <th class="col-md-3"><h4>Feature</h4></th>
               <th class="col-md-3 text-center"><h4>Apache</h4></th>
               <th class="col-md-3 text-center"><h4>nginx</h4></th>
+              <th class="col-md-3 text-center"><h4>Zend Server</h4></th>
               <th class="col-md-3 text-center"><h4>appserver.io</h4></th>
           </tr>
       </thead>
@@ -74,55 +75,64 @@ appserver.io and PHP and you´re done!
               <td>Language</td>
               <td class="text-center">C</td>
               <td class="text-center">C</td>
+              <td class="text-center">C</td>
               <td class="text-center">PHP</td>
           </tr>
           <tr>
               <td><a href="{{ "/products/features/webserver.html" | prepend: site.baseurl }}">Webserver HTTP Compliant <i class="icon-ci fa fa-info-circle"></i></a></td>
-              <td class="text-center"><i class="icon-ok fa fa-check-square-o"></i></td>
-              <td class="text-center"><i class="icon-ok fa fa-check-square-o"></i></td>
-              <td class="text-center"><i class="icon-ok fa fa-check-square-o"></i></td>
+              <td class="text-center"><i class="icon-ok fa fa-check"></i></td>
+              <td class="text-center"><i class="icon-ok fa fa-check"></i></td>
+              <td class="text-center"><i class="icon-ok fa fa-check"></i></td>
+              <td class="text-center"><i class="icon-ok fa fa-check"></i></td>
           </tr>
           <tr>
           <td><a href="{{ "/products/features/rewrite-engine.html" | prepend: site.baseurl }}">Rewrite Engine <i class="icon-ci fa fa-info-circle"></i></a></td>
-              <td class="text-center"><i class="icon-ok fa fa-check-square-o"></i></td>
-              <td class="text-center"><i class="icon-ok fa fa-check-square-o"></i></td>
-              <td class="text-center"><i class="icon-ok fa fa-check-square-o"></i></td>
+              <td class="text-center"><i class="icon-ok fa fa-check"></i></td>
+              <td class="text-center"><i class="icon-ok fa fa-check"></i></td>
+              <td class="text-center"><i class="icon-ok fa fa-check"></i></td>
+              <td class="text-center"><i class="icon-ok fa fa-check"></i></td>
           </tr>
           <tr>
           <td>Rewrite Map</td>
-              <td class="text-center"><i class="icon-ok fa fa-check-square-o"></td>
-              <td class="text-center"><i class="icon-ok fa fa-check-square-o"></i></td>
-              <td class="text-center"><i class="icon-ok fa fa-check-square-o"></i></td>
+              <td class="text-center"><i class="icon-ok fa fa-check"></td>
+              <td class="text-center"><i class="icon-ok fa fa-check"></i></td>
+              <td class="text-center"><i class="icon-ok fa fa-check"></i></td>
+              <td class="text-center"><i class="icon-ok fa fa-check"></i></td>
           </tr>
           <tr>
               <td>Fast CGI Interface</td>
-              <td class="text-center"><i class="icon-ok fa fa-check-square-o"></i></td>
-              <td class="text-center"><i class="icon-ok fa fa-check-square-o"></i></td>
-              <td class="text-center"><i class="icon-ok fa fa-check-square-o"></i></td>
+              <td class="text-center"><i class="icon-ok fa fa-check"></i></td>
+              <td class="text-center"><i class="icon-ok fa fa-check"></i></td>
+              <td class="text-center"><i class="icon-ok fa fa-check"></i></td>
+              <td class="text-center"><i class="icon-ok fa fa-check"></i></td>
           </tr>
           <tr>
           <td><a href="{{ "/products/features/servlet-engine.html" | prepend: site.baseurl }}">Servlet Engine <i class="icon-ci fa fa-info-circle"></i></a></td>
-              <td class="text-center"><i class="icon-nok fa fa-minus-square"></i></td>
-              <td class="text-center"><i class="icon-nok fa fa-minus-square"></i></td>
-              <td class="text-center"><i class="icon-ok fa fa-check-square-o"></i></td>
+              <td class="text-center"><i class="icon-nok fa fa-remove"></i></td>
+              <td class="text-center"><i class="icon-nok fa fa-remove"></i></td>
+              <td class="text-center"><i class="icon-nok fa fa-remove"></i></td>
+              <td class="text-center"><i class="icon-ok fa fa-check"></i></td>
           </tr>
           <tr>
           <td><a href="{{ "/products/features/message-queue.html" | prepend: site.baseurl }}">Message Queue <i class="icon-ci fa fa-info-circle"></i></a></td>
-              <td class="text-center"><i class="icon-nok fa fa-minus-square"></i></td>
-              <td class="text-center"><i class="icon-nok fa fa-minus-square"></i></td>
-              <td class="text-center"><i class="icon-ok fa fa-check-square-o"></i></td>
+              <td class="text-center"><i class="icon-nok fa fa-remove"></i></td>
+              <td class="text-center"><i class="icon-nok fa fa-remove"></i></td>
+              <td class="text-center"><i class="icon-nok fa fa-remove"></i></td>
+              <td class="text-center"><i class="icon-ok fa fa-check"></i></td>
           </tr>
           <tr>
           <td><a href="{{ "/products/features/timer-service.html" | prepend: site.baseurl }}">Timer Service <i class="icon-ci fa fa-info-circle"></i></a></td>
-              <td class="text-center"><i class="icon-nok fa fa-minus-square"></i></td>
-              <td class="text-center"><i class="icon-nok fa fa-minus-square"></i></td>
-              <td class="text-center"><i class="icon-ok fa fa-check-square-o"></i></td>
+              <td class="text-center"><i class="icon-nok fa fa-remove"></i></td>
+              <td class="text-center"><i class="icon-nok fa fa-remove"></i></td>
+              <td class="text-center"><i class="icon-nok fa fa-remove"></i></td>
+              <td class="text-center"><i class="icon-ok fa fa-check"></i></td>
           </tr>
           <tr>
           <td><a href="{{ "/products/features/persistence-container.html" | prepend: site.baseurl }}">Persistence Container <i class="icon-ci fa fa-info-circle"></i></a></td>
-              <td class="text-center"><i class="icon-nok fa fa-minus-square"></i></td>
-              <td class="text-center"><i class="icon-nok fa fa-minus-square"></i></td>
-              <td class="text-center"><i class="icon-ok fa fa-check-square-o"></i></td>
+              <td class="text-center"><i class="icon-nok fa fa-remove"></i></td>
+              <td class="text-center"><i class="icon-nok fa fa-remove"></i></td>
+              <td class="text-center"><i class="icon-nok fa fa-remove"></i></td>
+              <td class="text-center"><i class="icon-ok fa fa-check"></i></td>
           </tr>
 
 </tbody>
