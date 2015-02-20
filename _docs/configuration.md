@@ -27,8 +27,7 @@ We fancy that appserver should be highly configurable, so that anyone who is int
 
 This file contains the complete architecture as an XML structure.
 
-To change used components, introduce new services or scale the system by adding additional servers you can do so with some lines of XML. Look at a basic 
-`appserver.xml`.
+To change used components, introduce new services or scale the system by adding additional servers you can do so with some lines of XML.
 
 ## Basic Architecture
 
@@ -60,7 +59,7 @@ In this example, we use a shortened piece of the `appserver.xml` file to underst
         name="localhost"
         appBase="/webapps"
         serverAdmin="info@appserver.io"
-        serverSoftware="appserver/1.0.0-beta (mac) PHP/5.5.16" />
+        serverSoftware="appserver/1.0.0.0 (darwin) PHP/5.5.21" />
 
         <servers>
         
@@ -78,7 +77,7 @@ In this example, we use a shortened piece of the `appserver.xml` file to underst
             <params>
               <param name="admin" type="string">info@appserver.io</param>
               <param name="software" type="string">
-                appserver/1.0.0.0 (darwin) PHP/5.5.16
+                appserver/1.0.0.0 (darwin) PHP/5.5.21
               </param>
                 <param name="transport" type="string">tcp</param>
                 <param name="address" type="string">127.0.0.1</param>
@@ -143,7 +142,7 @@ In this example, we use a shortened piece of the `appserver.xml` file to underst
                     admin@appserver.io
                   </param>
                   <param name="documentRoot" type="string">
-                    /opt/appserver/webapps/example
+                    webapps/example
                   </param>
                 </params>
               </virtualHost>
@@ -203,14 +202,26 @@ In this example, we use a shortened piece of the `appserver.xml` file to underst
 
 In the above example, you can see three important components of the appserver architecture being 
 used. The [*container*](#container-configuration), [*server*](#server-configuration) and some
-[*modules*](docs/docs/architecture.md#protocol>) (if you have not read our [*basic architecture*](#basic-architecture)
-you should do so now). We are basically building up a container which holds a server using the WebSocket 
-protocol to handle incoming requests.
+[*modules*](#module-configuration). We are basically building up a container which holds a server that uses different modules 
+to process incoming HTTP (have a look at the `connectionHandler`) requests.
+
+When looking at the configuration file of a current installation it will become visible that certain structures are handled differently on a live system.
+The most obvious is the usage of the separation of different aspects of the configuration.
+
+The `appserver.xml` configuration supports the [XInclude](http://en.wikipedia.org/wiki/XInclude) mechanism to allow for re-usability.
+Following example (which is actually used) shows how the virtual host configuration is separated into an extra file.
+
+```xml
+<!-- include of virtual host configurations -->
+<xi:include href="conf.d/virtual-hosts.xml"/>
+```
+
+This makes virtual hosts re-usable within several servers with just one line within the XML configuration.
 
 ## Container Configuration
 
 A *container* is created by using the `container` element within the `containers` collection 
-of the `appserver` document element. Two things make this element in a specific container 
+of the `appserver` document element. Two things make this element into a specific container 
 being built up by the system on startup:
 
 * The `type` attribute states a class extending our `AbstractContainerThread` which makes a 
@@ -224,7 +235,7 @@ That is basically everything to create a new container. To make use of it, it ha
 ## Server Configuration
 
 The *servers* contained by our *container* can also be loosely drafted by the XML configuration and 
-will be instantiated on container bootup. To enable a *server* you have to mention three basic 
+will be instantiated on container boot-up. To enable a *server* you have to mention three basic 
 attributes of the element:
 
 * The `type` specifies a class implementing the `ServerInterface` which implements the basic 
@@ -235,19 +246,19 @@ attributes of the element:
   information e.g. ServerVariables like `DOCUMENT_ROOT`
 
 So we have the specific server which will open a certain port and operate in a defined context. But
-to make the server handle a certain type of requests it needs to know which *protocol* to speak.
+to make the server handle a certain type of requests it needs to know which protocol to speak.
 
 This can be done using the `connectionHandler` element. Certain server wrappers can handle certain
-protocols. Therefor we can use the protocols which a server wrapper, e.g. `WebServer` supports in 
+protocols. Therefor we can use the protocols which a server wrapper, e.g. [`WebServer`]({{ "/get-started/documentation/webserver.html" | prepend: site.baseurl }}) supports in 
 form of connection handlers. [WebServer](<https://github.com/appserver-io/webserver>)
 offers a `HttpConnectionHandler` class. By using it, the server is able to understand the HTTP 
 protocol.
 
 ## Application Configuration
 
-Beside Container and Server, it is also possible to configure the Application. Each Application
-can have its own autoloaders and managers. By default, each Application found in the application
-servers webapp directory `/opt/appserver/webapps` will be initialized with the defaults, defined
+Beside Container and Server, it is also possible to configure the application. Each application
+can have its own autoloaders and managers. By default, each application found in the application
+server's webapp directory `/opt/appserver/webapps` will be initialized with the defaults, defined
 in `/opt/appserver/etc/appserver/conf.d/context.xml`
 
 ```xml
@@ -259,7 +270,7 @@ in `/opt/appserver/etc/appserver/conf.d/context.xml`
 
     <!-- necessary to load files from the vendor directory of your application -->
     <classLoader
-      name="composer"
+      name="ComposerClassLoader"
       interface="ClassLoaderInterface"
       type="AppserverIo\Appserver\Core\ComposerClassLoader"
       factory="AppserverIo\Appserver\Core\ComposerClassLoaderFactory">
@@ -271,7 +282,7 @@ in `/opt/appserver/etc/appserver/conf.d/context.xml`
     <!-- necessary to load files from WEB-INF/classes and META-INF/classes, also -->
     <!-- provides the functionality for Design-by-Contract and AOP               -->
     <classLoader
-      name="doppelgaenger"
+      name="DgClassLoader"
       interface="ClassLoaderInterface"
       type="AppserverIo\Appserver\Core\DgClassLoader"
       factory="AppserverIo\Appserver\Core\DgClassLoaderFactory">
@@ -301,7 +312,7 @@ in `/opt/appserver/etc/appserver/conf.d/context.xml`
     <!-- provides the services necessary to handle Session- and MessageBeans -->
     <manager 
       name="BeanManager"
-      beanInterface="BeanContext"
+      beanInterface="BeanContextInterface"
       type="AppserverIo\Appserver\PersistenceContainer\BeanManager"
       factory="AppserverIo\Appserver\PersistenceContainer\BeanManagerFactory">
       <!-- params>
@@ -313,14 +324,14 @@ in `/opt/appserver/etc/appserver/conf.d/context.xml`
     <!-- provides the functionality to define and run a Queue -->
     <manager
       name="QueueManager"
-      beanInterface="QueueContext"
+      beanInterface="QueueContextInterface"
       type="AppserverIo\Appserver\MessageQueue\QueueManager"
       factory="AppserverIo\Appserver\MessageQueue\QueueManagerFactory"/>
 
     <!-- provides the functionality to define Servlets handling HTTP request -->
     <manager 
       name="ServletManager"
-      beanInterface="ServletContext"
+      beanInterface="ServletContextInterface"
       type="AppserverIo\Appserver\ServletEngine\ServletManager"
       factory="AppserverIo\Appserver\ServletEngine\ServletManagerFactory">
       <directories>
@@ -332,21 +343,21 @@ in `/opt/appserver/etc/appserver/conf.d/context.xml`
     <!-- provides functionality to handle HTTP sessions -->
     <manager 
       name="StandardSessionManager"
-      beanInterface="SessionManager"
+      beanInterface="SessionManagerInterface"
       type="AppserverIo\Appserver\ServletEngine\StandardSessionManager"
       factory="AppserverIo\Appserver\ServletEngine\StandardSessionManagerFactory"/>
 
     <!-- provides functionality to handle Timers -->
     <manager 
       name="TimerServiceRegistry"
-      beanInterface="TimerServiceContext"
+      beanInterface="TimerServiceContextInterface"
       type="AppserverIo\Appserver\PersistenceContainer\TimerServiceRegistry"
       factory="AppserverIo\Appserver\PersistenceContainer\TimerServiceRegistryFactory"/>
 
     <!-- provides functionality to handle HTTP basic/digest authentication -->
     <manager 
       name="StandardAuthenticationManager"
-      beanInterface="AuthenticationManager"
+      beanInterface="AuthenticationManagerInterface"
       type="AppserverIo\Appserver\ServletEngine\Authentication\StandardAuthenticationManager"
       factory="AppserverIo\Appserver\ServletEngine\Authentication\StandardAuthenticationManagerFactory"/>
 
@@ -474,7 +485,7 @@ flags are:
 
 The module can be used according to the `\AppserverIo\WebServer\Interfaces\HttpModuleInterface`
 interface. It needs an initial call of the `init` method and will process any request offered to 
-the `process` method. The module is best used within the [webserver](<https://github.com/appserver-io/webserver>)
+the `process` method. The module is best used within the [webserver](https://github.com/appserver-io/webserver)
 project as it offers all needed infrastructure.
 
 If you need to configure a virtual host, it should look like the 
@@ -506,10 +517,6 @@ following example, that would enable a Magento installation under `http://magent
 
 ## Configuration Defaults
 
-You will see that we provide basic frontend implementations of services the appserver runtime
-provides. If you want to use these services yourself you should have a look at the code of our 
-apps and read about [app development](#deployment).
-
 You might be curious about the different ports we use. Per default the appserver will open several 
 ports where its services are available. As we do not want to block (or be blocked by) other 
 services we use ports of a higher range.
@@ -526,13 +533,11 @@ As a default we use the following ports:
     - Persistence-Container: `8585`
     - Message-Queue: `8587`
 
-You can change this default port mapping by using the [configuration file](#the-architecture).
-If you are interested in our naming, you can see our container->server pattern, you might want to 
-have a deeper look into our [architecture](docs/docs/architecture.md)
+You can change this default port mapping by using the [server configuration](#server-configuration).
 
 ## Optional Configuration
 
-Simplicity has always been in our main focus. Therefore we do provide several [configuration defaults](#configuration-defaults) which are not even shown in the configuration file, 
+Simplicity has always been in our main focus. Therefore we do provide several configuration defaults which are not even shown in the configuration file, 
 as their default setup works very well out of the box.
 You might change these values and we do not want to stand in your way.
 So following are some configurable components which are already configured implicitly but can be explicitly set up in the configuration files.
