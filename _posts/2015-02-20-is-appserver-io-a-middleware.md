@@ -32,7 +32,7 @@ introduction of PSR-0 and the increasing number of libraries implementing it, PH
 
 When we 2004 started, with a component that covers the Controller part in an MVC pattern based framework, there was nothing available that looks like a framework. Funny people commented things like "Why should someone needs a framework, i'll be implement that on my own". Only some years later, nearly everyone uses a framework. Actually this means, that when you wrote an application using one of the frameworks, you're deeply coupled to it. As Matthew mentioned, one reason is, because PHP lacks of a good HTTP abstraction layer.
 
-With PSR-7 accepted, again, another big step towards reusability, maintainability and standardization in the PHP ecosystem can be done.
+With [PSR-7](https://github.com/php-fig/fig-standards/tree/master/proposed) accepted, again, another big step towards reusability, maintainability and standardization in the PHP ecosystem can be done.
 
 Working for a PHP service provider that provides Magento and TYPO3 solutions since many years, we faced situations, where a middleware would be a good solution to help solve recurring problems and reduce costs. So, in case of a framework change, in most cases, it'll be the best to solution, to rewrite the software from the scratch. A middleware, based on PSR-7, together with frameworks that implements PSR-7 would allow a real refactoring that will save time, money and last but not least hopefully good and tested code.
 
@@ -87,7 +87,9 @@ Hopefully this will be soon!
 
 ## Conclusion
 
-As appserver.io bootstraps a applications on startup, it is possible to massively reduce the process of dispatching a request. This will result in promising benchmark results when running our JMeter tests. Nevertheless, we and PHP itself are closely at a threshold to enter a new era, the era of PHP middleware. We think that is awesome!
+appserver.io **IS** a `Middleware`, anyway by the definition of Matthew and from our point of view!
+
+As appserver.io bootstraps applications on startup, it is possible to massively reduce the process of dispatching a request. This will result in promising benchmark results when running our JMeter tests. Nevertheless, we and PHP itself are closely at a threshold to enter a new era, the era of PHP middleware. We think that is awesome!
 
 Altogether i came to the conclusion, that standardization started with PHP-FIG and the available PSRs are a good start for PHP to get rid of its amateur smell, making the next step into professional software development. Nevertheless, it'll be a long way, as PSRs are not enough to write solid, reusable components and libraries. It'll also be necessary, that developers will start to stick on contracts introduced by the PSRs together with following semantic versioning to guarantee compatibility and stability.
 
