@@ -43,6 +43,7 @@ layer we can build the HTTP related middleware around. All available implementat
 In one ouf our previous blog posts you can read a brief introduction to the [Servlet-Engine](<{{ "/get-started/documentation/servlet-engine.html" | prepend: site.baseurl }}>), the middleware service of appserver.io. As Matthew described in his blog post, the `Servlet-Engine` is the first real world implementation of his `MiddlewareRunner`. The middleware implementation is represented by a `Servlet`. By adding servlets, a developer can already implement components, that are compliant with an early PSR-7 version. Let's have a quick look at the `ServletInterface`
 
 ```php
+<?php
 interface ServletInterface
 {
    
@@ -61,6 +62,8 @@ interface ServletInterface
 To add a Servlet, or better a `Middleware`, to the `MiddlewareRunner` you can simply annotate it like this
 
 ```php
+<?php
+
 /**
  * @Route(name="blog", urlPattern={"/blog.do", "/blog.do*"})
  */
