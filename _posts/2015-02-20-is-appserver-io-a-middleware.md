@@ -13,7 +13,7 @@ Recently, i came across a very interesting and informational blog post on [HTTP,
 
 Beside the post's content, the notable thing is, that this was the first time, i've found someone in the PHP universe, who ever thought about re-use capabilities of components across several frameworks, what shouldn't mean, that beside him, there is no one out there ;)
 
-In his conclusion, he wrote
+In the conclusion of his blog post, he wrote
 
 > If PSR-7 is ratified, I think we have a strong foot forward towards building framework-agnostic web-focused components that have real re-use capabilities -- not just re-use within our chosen framework fiefdoms.
 
