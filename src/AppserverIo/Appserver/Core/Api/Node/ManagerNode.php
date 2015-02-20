@@ -20,8 +20,6 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
-use AppserverIo\Appserver\Application\Interfaces\ManagerConfigurationInterface;
-
 /**
  * DTO to transfer a manager.
  *
@@ -31,7 +29,7 @@ use AppserverIo\Appserver\Application\Interfaces\ManagerConfigurationInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class ManagerNode extends AbstractNode implements ManagerConfigurationInterface
+class ManagerNode extends AbstractNode implements ManagerNodeInterface
 {
     /**
      * The params trait.

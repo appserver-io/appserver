@@ -21,6 +21,7 @@
 namespace AppserverIo\Appserver\Core\Api\Node;
 
 use AppserverIo\Configuration\Interfaces\NodeInterface;
+use AppserverIo\Psr\Application\ClassLoaderConfigurationInterface;
 
 /**
  * The interface for the class loader configuration.
@@ -31,15 +32,8 @@ use AppserverIo\Configuration\Interfaces\NodeInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-interface ClassLoaderNodeInterface extends NodeInterface
+interface ClassLoaderNodeInterface extends ClassLoaderConfigurationInterface, NodeInterface
 {
-
-    /**
-     * Returns the class loader name.
-     *
-     * @return string The unique application name
-     */
-    public function getName();
 
     /**
      * Returns the class loader type.

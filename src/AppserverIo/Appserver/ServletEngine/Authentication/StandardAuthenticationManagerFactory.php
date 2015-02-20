@@ -21,7 +21,7 @@
 namespace AppserverIo\Appserver\ServletEngine\Authentication;
 
 use AppserverIo\Psr\Application\ApplicationInterface;
-use AppserverIo\Appserver\Application\Interfaces\ManagerConfigurationInterface;
+use AppserverIo\Appserver\Core\Api\Node\ManagerNodeInterface;
 
 /**
  * A factory for the standard session authentication manager instances.
@@ -38,12 +38,12 @@ class StandardAuthenticationManagerFactory
     /**
      * The main method that creates new instances in a separate context.
      *
-     * @param \AppserverIo\Psr\Application\ApplicationInterface                           $application          The application instance to register the class loader with
-     * @param \AppserverIo\Appserver\Application\Interfaces\ManagerConfigurationInterface $managerConfiguration The manager configuration
+     * @param \AppserverIo\Psr\Application\ApplicationInterface         $application          The application instance to register the class loader with
+     * @param \AppserverIo\Appserver\Core\Api\Node\ManagerNodeInterface $managerConfiguration The manager configuration
      *
      * @return void
      */
-    public static function visit(ApplicationInterface $application, ManagerConfigurationInterface $managerConfiguration)
+    public static function visit(ApplicationInterface $application, ManagerNodeInterface $managerConfiguration)
     {
 
         // initialize the authentication manager

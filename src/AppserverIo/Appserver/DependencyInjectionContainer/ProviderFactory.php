@@ -22,7 +22,7 @@ namespace AppserverIo\Appserver\DependencyInjectionContainer;
 
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Psr\Application\ApplicationInterface;
-use AppserverIo\Appserver\Application\Interfaces\ManagerConfigurationInterface;
+use AppserverIo\Appserver\Core\Api\Node\ManagerNodeInterface;
 
 // ATTENTION: this is necessary for Windows
 use AppserverIo\Psr\Naming\InitialContext as NamingContext;
@@ -42,12 +42,12 @@ class ProviderFactory
     /**
      * The main method that creates new instances in a separate context.
      *
-     * @param \AppserverIo\Psr\Application\ApplicationInterface                           $application          The application instance to register the class loader with
-     * @param \AppserverIo\Appserver\Application\Interfaces\ManagerConfigurationInterface $managerConfiguration The manager configuration
+     * @param \AppserverIo\Psr\Application\ApplicationInterface         $application          The application instance to register the class loader with
+     * @param \AppserverIo\Appserver\Core\Api\Node\ManagerNodeInterface $managerConfiguration The manager configuration
      *
      * @return void
      */
-    public static function visit(ApplicationInterface $application, ManagerConfigurationInterface $managerConfiguration)
+    public static function visit(ApplicationInterface $application, ManagerNodeInterface $managerConfiguration)
     {
 
         // create the initial context instance

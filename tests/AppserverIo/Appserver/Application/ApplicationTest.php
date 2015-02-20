@@ -413,7 +413,7 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
         $methodsToMock = array('getFactory', 'getType', 'getName', 'getParamsAsArray');
 
         // create a mock manager configuration
-        $mockManagerConfiguration = $this->getMock('AppserverIo\Appserver\Application\Interfaces\ManagerConfigurationInterface', $methodsToMock);
+        $mockManagerConfiguration = $this->getMock('AppserverIo\Appserver\Core\Api\Node\ManagerNodeInterface', $methodsToMock);
         $mockManagerConfiguration->expects($this->any())
             ->method('getName')
             ->will($this->returnValue(MockManager::IDENTIFIER));
@@ -445,13 +445,13 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
         $methodsToMock = array('getFactory', 'getType', 'getName', 'getParamsAsArray');
 
         // create a mock manager configuration
-        $mockManagerConfiguration1 = $this->getMock('AppserverIo\Appserver\Application\Interfaces\ManagerConfigurationInterface', $methodsToMock);
+        $mockManagerConfiguration1 = $this->getMock('AppserverIo\Appserver\Core\Api\Node\ManagerNodeInterface', $methodsToMock);
         $mockManagerConfiguration1->expects($this->any())
             ->method('getName')
             ->will($this->returnValue('MockManager1'));
 
         // create a mock manager configuration
-        $mockManagerConfiguration2 = $this->getMock('AppserverIo\Appserver\Application\Interfaces\ManagerConfigurationInterface', $methodsToMock);
+        $mockManagerConfiguration2 = $this->getMock('AppserverIo\Appserver\Core\Api\Node\ManagerNodeInterface', $methodsToMock);
         $mockManagerConfiguration2->expects($this->any())
             ->method('getName')
             ->will($this->returnValue('MockManager2'));
@@ -536,7 +536,7 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
         $methodsToMock = array('getName', 'getType', 'getFactory', 'getParamsAsArray');
 
         // create a mock manager configuration
-        $mockManagerConfiguration = $this->getMock('AppserverIo\Appserver\Application\Interfaces\ManagerConfigurationInterface', $methodsToMock);
+        $mockManagerConfiguration = $this->getMock('AppserverIo\Appserver\Core\Api\Node\ManagerNodeInterface', $methodsToMock);
         $mockManagerConfiguration->expects($this->any())
             ->method('getName')
             ->will($this->returnValue('MockManager'));

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Application\Interfaces\ManagerConfigurationInterface
+ * AppserverIo\Appserver\Core\Api\Node\ManagerNodeInterface
  *
  * NOTICE OF LICENSE
  *
@@ -11,33 +11,28 @@
  *
  * PHP version 5
  *
- * @author    Tim Wagner <tw@techdivision.com>
+ * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
 
-namespace AppserverIo\Appserver\Application\Interfaces;
+namespace AppserverIo\Appserver\Core\Api\Node;
+
+use AppserverIo\Psr\Application\ManagerConfigurationInterface;
 
 /**
  * Interface for the manager configuration node.
  *
- * @author    Tim Wagner <tw@techdivision.com>
+ * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-interface ManagerConfigurationInterface
+interface ManagerNodeInterface extends ManagerConfigurationInterface
 {
-
-    /**
-     * Returns the application name.
-     *
-     * @return string The unique application name
-     */
-    public function getName();
 
     /**
      * Returns the class name.
