@@ -44,6 +44,7 @@ In one ouf our previous blog posts you can read a brief introduction to the [Ser
 
 ```php
 <?php
+
 interface ServletInterface
 {
    
