@@ -62,7 +62,7 @@ class Setup
      * @var array
      */
     protected static $defaultProperties = array(
-        SetupKeys::PHP_VERSION                                   => PHP_VERSION,
+        SetupKeys::PHP_VERSION                                   => '5.5.21',
         SetupKeys::ADMIN_EMAIL                                   => 'info@appserver.io',
         SetupKeys::CONTAINER_SERVER_WORKER_ACCEPT_MIN            => 3,
         SetupKeys::CONTAINER_SERVER_WORKER_ACCEPT_MAX            => 8,
@@ -178,7 +178,7 @@ class Setup
             Setup::$mergedProperties[SetupKeys::OS_ARCHITECTURE]
         );
 
-        // prepare the properties for the software identifier, e. g. appserver/1.0.0 (debian) PHP/5.5.19
+        // prepare the properties for the software identifier, e. g. appserver/1.0.0 (debian) PHP/5.5.21
         Setup::$mergedProperties[SetupKeys::SOFTWARE_IDENTIFIER] = sprintf(
             'appserver/%s (%s) PHP/%s',
             Setup::$mergedProperties[SetupKeys::VERSION],
