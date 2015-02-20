@@ -87,7 +87,7 @@ The `ServletEngine` will process the request and routes it to the component with
 
 As PSR-7 unfortunately has not been accepted yet, we copied a early version to a separate Github repository which allows us to add it as Composer dependency. As soon as PSR-7 will be accepted, we'll refactor appserver.io and implement the original one.
 
-** Hopefully this will be soon!**
+**Hopefully this will be soon!**
 
 ## Conclusion
 
