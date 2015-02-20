@@ -14,6 +14,8 @@ subNav:
     href: server-configuration
   - title: Application Configuration
     href: application-configuration
+  - title: Module Configuration
+    href: module-configuration
   - title: Configuration Defaults
     href: configuration-defaults
   - title: Optional Configuration
@@ -21,9 +23,9 @@ subNav:
 permalink: /get-started/documentation/configuration.html
 ---
 
-We fancy that appserver should be highly configurable, so that anyone who is interested can give it a shot. Therefore we provide a central configuration file located at `/opt/appserver/etc/appserver.xml`.
+We fancy that appserver should be highly configurable, so that anyone who is interested can give it a shot. Therefore we provide a central configuration file located at `/opt/appserver/etc/appserver/appserver.xml`.
 
-This file contains the complete [architecture](#the-architecture) as an XML structure.
+This file contains the complete architecture as an XML structure.
 
 To change used components, introduce new services or scale the system by adding additional servers you can do so with some lines of XML. Look at a basic 
 `appserver.xml`.
@@ -200,8 +202,8 @@ In this example, we use a shortened piece of the `appserver.xml` file to underst
 ``` 
 
 In the above example, you can see three important components of the appserver architecture being 
-used. The [*container*](#container-configuration), [*server*](#server-configuration) and a
-[*protocol*](docs/docs/architecture.md#protocol>) (if you have not read our [*basic architecture*](#basic-architecture)
+used. The [*container*](#container-configuration), [*server*](#server-configuration) and some
+[*modules*](docs/docs/architecture.md#protocol>) (if you have not read our [*basic architecture*](#basic-architecture)
 you should do so now). We are basically building up a container which holds a server using the WebSocket 
 protocol to handle incoming requests.
 
