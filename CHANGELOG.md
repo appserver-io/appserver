@@ -6,6 +6,7 @@
 
 ## Features
 
+* Closed [#582](https://github.com/appserver-io/appserver/issues/582) - Move manager/class loader interfaces to application PSR
 * Closed [#572](https://github.com/appserver-io/appserver/issues/527) - Refactor Descriptor integration, move interfaces to PSRs
 
 # Version 1.0.0

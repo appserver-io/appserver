@@ -18,8 +18,8 @@
 
 namespace AppserverIo\Appserver\AspectContainer;
 
-use AppserverIo\Appserver\Application\Interfaces\ManagerConfigurationInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
+use AppserverIo\Appserver\Core\Api\Node\ManagerNodeInterface;
 
 /**
  * Factory which allows for the injection of an aspect manager into an application based
@@ -36,12 +36,12 @@ class AspectManagerFactory
     /**
      * The main method that creates new instances in a separate context.
      *
-     * @param \AppserverIo\Psr\Application\ApplicationInterface                           $application          The application instance to register the class loader with
-     * @param \AppserverIo\Appserver\Application\Interfaces\ManagerConfigurationInterface $managerConfiguration The manager configuration
+     * @param \AppserverIo\Psr\Application\ApplicationInterface         $application          The application instance to register the class loader with
+     * @param \AppserverIo\Appserver\Core\Api\Node\ManagerNodeInterface $managerConfiguration The manager configuration
      *
      * @return void
      */
-    public static function visit(ApplicationInterface $application, ManagerConfigurationInterface $managerConfiguration)
+    public static function visit(ApplicationInterface $application, ManagerNodeInterface $managerConfiguration)
     {
 
         // check if the correct autoloader has been registered, if so we have to get its aspect register.

@@ -24,6 +24,8 @@ use AppserverIo\Logger\LoggerUtils;
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Storage\StorageInterface;
 use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
+use AppserverIo\Appserver\Core\Api\Node\ContextNode;
+use AppserverIo\Appserver\Core\Api\Node\ManagerNodeInterface;
 use AppserverIo\Appserver\Core\Api\Node\ClassLoaderNodeInterface;
 use AppserverIo\Appserver\Core\Interfaces\ClassLoaderInterface;
 use AppserverIo\Appserver\Naming\BindingTrait;
@@ -35,8 +37,6 @@ use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Psr\Application\DirectoryAwareInterface;
 use AppserverIo\Psr\Application\FilesystemAwareInterface;
 use AppserverIo\Appserver\Application\Interfaces\ContextInterface;
-use AppserverIo\Appserver\Application\Interfaces\ManagerConfigurationInterface;
-use AppserverIo\Appserver\Core\Api\Node\ContextNode;
 
 /**
  * The application instance holds all information about the deployed application
@@ -494,12 +494,12 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
     /**
      * Injects manager instance and the configuration.
      *
-     * @param \AppserverIo\Psr\Application\ManagerInterface                               $manager       A manager instance
-     * @param \AppserverIo\Appserver\Application\Interfaces\ManagerConfigurationInterface $configuration The managers configuration
+     * @param \AppserverIo\Psr\Application\ManagerInterface             $manager       A manager instance
+     * @param \AppserverIo\Appserver\Core\Api\Node\ManagerNodeInterface $configuration The managers configuration
      *
      * @return void
      */
-    public function addManager(ManagerInterface $manager, ManagerConfigurationInterface $configuration)
+    public function addManager(ManagerInterface $manager, ManagerNodeInterface $configuration)
     {
 
         // bind the manager callback to the naming directory => the application itself

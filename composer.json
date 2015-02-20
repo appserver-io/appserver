@@ -24,14 +24,13 @@
 		"appserver-io/microcron" : "~1.0",
 		"appserver-io/webserver" : "~1.0",
 		"appserver-io/properties" : "~1.0",
-        "appserver-io/description" : "~1.0",
+		"appserver-io/description" : "~1.0",
 		"appserver-io/configuration" : "~1.0",
 		"appserver-io/doppelgaenger" : "~1.0"
 	},
 	"require-dev" : {
-		"appserver-io/build" : "~1.0",
-		"squizlabs/php_codesniffer" : "dev-master as 2.1.0",
-		"mikey179/vfsStream" : "1.*"
+		"mikey179/vfsStream" : "1.*",
+		"appserver-io/build" : "~1.0"
 	},
 	"autoload" : {
 		"psr-0" : {

@@ -22,7 +22,7 @@ namespace AppserverIo\Appserver\Application\Mock;
 
 use AppserverIo\Psr\Application\ManagerInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
-use AppserverIo\Appserver\Application\Interfaces\ManagerConfigurationInterface;
+use AppserverIo\Appserver\Core\Api\Node\ManagerNodeInterface;
 
 /**
  * Test implementation for the virtual host.
@@ -80,12 +80,12 @@ class MockManager extends \Stackable implements ManagerInterface
     /**
      * Factory method that adds a initialized manager instance to the passed application.
      *
-     * @param \AppserverIo\Appserver\Application\Interfaces\ApplicationInterface               $application          The application instance
-     * @param \AppserverIo\Appserver\Application\Interfaces\ManagerConfigurationInterface|null $managerConfiguration The manager configuration
+     * @param \AppserverIo\Psr\Application\ApplicationInterface              $application          The application instance
+     * @param \AppserverIo\Appserver\Core\Api\Node\ManagerNodeInterface|null $managerConfiguration The manager configuration
      *
-     * @return \AppserverIo\Appserver\Application\Interfaces\ManagerInterface The configured manager instance
+     * @return \AppserverIo\Psr\Application\ManagerInterface The configured manager instance
      */
-    public static function visit(ApplicationInterface $application, ManagerConfigurationInterface $managerConfiguration = null)
+    public static function visit(ApplicationInterface $application, ManagerNodeInterface $managerConfiguration = null)
     {
         return new MockManager();
     }
