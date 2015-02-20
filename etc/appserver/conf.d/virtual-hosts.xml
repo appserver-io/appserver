@@ -3,7 +3,7 @@
  ! The following is a basic showcase example for a virtual host configuration.
  ! Some more examples can be found at:
  !
- ! https://github.com/techdivision/TechDivision_AppserverDocumentation/blob/master/docs/components/servers/webserver/modules/vhostmodule.md
+ ! http://appserver.io/get-started/documentation/webserver.html#virtualhost-examples
  -->
 <virtualHosts xmlns="http://www.appserver.io/appserver">
     <virtualHost name="example.local www.example.local">
