@@ -9,7 +9,7 @@ version: 1.0.0
 categories: [servlet-engine]
 ---
 
-Recently i read a very interesting and informational blog post on [HTTP, Middleware, and PSR-7](https://mwop.net/blog/2015-01-08-on-http-middleware-and-psr-7.html) from a guy named Matthew Weier O`Phinney. He obviously worked hard on PSR-7, a PSR many developers out there are waiting to be accepted for.
+Recently, i came across a very interesting and informational blog post on [HTTP, Middleware, and PSR-7](https://mwop.net/blog/2015-01-08-on-http-middleware-and-psr-7.html) from a guy named Matthew Weier O`Phinney. He obviously worked hard on PSR-7, a PSR many developers out there are waiting to be accepted for.
 
 Beside the post's content, the notable thing is, that this was the first time, i've found someone in the PHP universe, who ever thought about re-use capabilities of components across several frameworks, what shouldn't mean, that beside him, there is no one out there ;)
 
