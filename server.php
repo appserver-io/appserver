@@ -93,9 +93,25 @@ $paramElement = $configurationFile->createElement('param', APPSERVER_BP);
 $paramElement->setAttribute('name', DirectoryKeys::BASE);
 $paramElement->setAttribute('type', ParamNode::TYPE_STRING);
 
-// append the base.dir DOMElement
-if ($paramsNode = $configurationFile->getElementsByTagName('params')->item(0)) {
-    $paramsNode->appendChild($paramElement);
+// create an XPath instance
+$xpath = new \DOMXpath($configurationFile);
+$xpath->registerNamespace('a', 'http://www.appserver.io/appserver');
+
+// for node data in a selected id
+$baseDirParam = $xpath->query(sprintf('/a:appserver/a:params/a:param[@name="%s"]', DirectoryKeys::BASE));
+if ($baseDirParam->length === 0) {
+
+    // load the <params> node
+    $paramNodes = $xpath->query('/a:appserver/a:params');
+
+    // load the first item => the node itself
+    if ($paramsNode = $paramNodes->item(0)) {
+        // append the base.dir DOMElement
+        $paramsNode->appendChild($paramElement);
+    } else {
+        // throw an exception, because we can't find a mandatory node
+        throw \Exception('Can\'t find /appserver/params node');
+    }
 }
 
 // create a new DOMDocument with the merge content => necessary because else, schema validation fails!!
