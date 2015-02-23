@@ -41,32 +41,11 @@ class DirectoryKeys
     const BASE = 'base.dir';
 
     /**
-     * Key for the webapps directory.
-     *
-     * @var string
-     */
-    const WEBAPPS = 'webapps.dir';
-
-    /**
-     * Key for the temporary directory.
+     * Key for the tmp directory.
      *
      * @var string
      */
     const TMP = 'tmp.dir';
-
-    /**
-     * Key for the log directory.
-     *
-     * @var string
-     */
-    const LOG = 'log.dir';
-
-    /**
-     * Key for the run directory.
-     *
-     * @var string
-     */
-    const RUN = 'run.dir';
 
     /**
      * Key for the deployment directory.
@@ -76,18 +55,46 @@ class DirectoryKeys
     const DEPLOY = 'deploy.dir';
 
     /**
+     * Key for the webapps directory.
+     *
+     * @var string
+     */
+    const WEBAPPS = 'webapps.dir';
+
+    /**
+     * Key for the var/tmp directory.
+     *
+     * @var string
+     */
+    const VAR_TMP = 'var.tmp.dir';
+
+    /**
+     * Key for the var/log directory.
+     *
+     * @var string
+     */
+    const VAR_LOG = 'var.log.dir';
+
+    /**
+     * Key for the var/run directory.
+     *
+     * @var string
+     */
+    const VAR_RUN = 'var.run.dir';
+
+    /**
      * Path the to main configuration directory.
      *
      * @var string
      */
-    const CONF = 'conf.dir';
+    const ETC_APPSERVER = 'etc.appserver.dir';
 
     /**
      * Path the to the configurations subdirectory.
      *
      * @var string
      */
-    const CONFD = 'confd.dir';
+    const ETC_APPSERVER_CONFD = 'etc.appserver.confd.dir';
 
     /**
      * Path the to the application specific cache directory.
@@ -129,14 +136,26 @@ class DirectoryKeys
     public static function getServerDirectoryKeysToBeCreated()
     {
         return array(
-            DirectoryKeys::WEBAPPS,
             DirectoryKeys::TMP,
             DirectoryKeys::DEPLOY,
-            DirectoryKeys::LOG,
-            DirectoryKeys::RUN,
-            DirectoryKeys::CONF,
-            DirectoryKeys::CONFD
+            DirectoryKeys::WEBAPPS,
+            DirectoryKeys::VAR_TMP,
+            DirectoryKeys::VAR_LOG,
+            DirectoryKeys::VAR_RUN,
+            DirectoryKeys::ETC_APPSERVER,
+            DirectoryKeys::ETC_APPSERVER_CONFD
         );
+    }
+
+    /**
+     * Returns the application servers directory keys for the directories that
+     * has to be cleaned up on startup.
+     *
+     * @return array The keys for the directories to be cleaned on startup
+     */
+    public static function getServerDirectoryKeysToBeCleanedUp()
+    {
+        return array(DirectoryKeys::TMP);
     }
 
     /**
@@ -148,13 +167,14 @@ class DirectoryKeys
     {
         return array(
             DirectoryKeys::BASE,
-            DirectoryKeys::WEBAPPS,
             DirectoryKeys::TMP,
             DirectoryKeys::DEPLOY,
-            DirectoryKeys::LOG,
-            DirectoryKeys::RUN,
-            DirectoryKeys::CONF,
-            DirectoryKeys::CONFD
+            DirectoryKeys::WEBAPPS,
+            DirectoryKeys::VAR_TMP,
+            DirectoryKeys::VAR_LOG,
+            DirectoryKeys::VAR_RUN,
+            DirectoryKeys::ETC_APPSERVER,
+            DirectoryKeys::ETC_APPSERVER_CONFD
         );
     }
 

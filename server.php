@@ -244,8 +244,6 @@ if (array_key_exists($setup, $arguments)) {
             // ... and change and mod following directories
             FileSystem::recursiveChown(APPSERVER_BP . DIRECTORY_SEPARATOR . 'resources', $user, $group);
             FileSystem::recursiveChmod(APPSERVER_BP . DIRECTORY_SEPARATOR . 'resources');
-            FileSystem::recursiveChown(APPSERVER_BP . DIRECTORY_SEPARATOR . 'var', $user, $group);
-            FileSystem::recursiveChmod(APPSERVER_BP . DIRECTORY_SEPARATOR . 'var');
             FileSystem::recursiveChown(APPSERVER_BP . DIRECTORY_SEPARATOR . 'webapps', $user, $group);
             FileSystem::recursiveChmod(APPSERVER_BP . DIRECTORY_SEPARATOR . 'webapps');
             FileSystem::recursiveChown(APPSERVER_BP . DIRECTORY_SEPARATOR . 'deploy', $user, $group);
@@ -258,6 +256,8 @@ if (array_key_exists($setup, $arguments)) {
             FileSystem::recursiveChmod(APPSERVER_BP . DIRECTORY_SEPARATOR . 'tests');
             FileSystem::recursiveChown(APPSERVER_BP . DIRECTORY_SEPARATOR . 'vendor', $user, $group);
             FileSystem::recursiveChmod(APPSERVER_BP . DIRECTORY_SEPARATOR . 'vendor');
+            FileSystem::recursiveChown(APPSERVER_BP . DIRECTORY_SEPARATOR . 'tmp', $user, $group);
+            FileSystem::recursiveChmod(APPSERVER_BP . DIRECTORY_SEPARATOR . 'tmp');
             // make server.php executable
             FileSystem::chmod(APPSERVER_BP . DIRECTORY_SEPARATOR . 'server.php', 0755);
 

@@ -173,9 +173,8 @@ class Server
         // load the directories
         $directories = $service->getDirectories();
 
-        // check if the log directory already exists, if not, create it
+        // check if the necessary directories already exists, if not, create them
         foreach (DirectoryKeys::getServerDirectoryKeysToBeCreated() as $directoryKey) {
-
             // prepare the path to the directory to be created
             $toBeCreated = $service->realpath($directories[$directoryKey]);
 
@@ -187,6 +186,17 @@ class Server
                         sprintf('Can\'t create necessary directory %s while starting application server', $toBeCreated)
                     );
                 }
+            }
+        }
+
+        // check if specific directories has to be cleaned up on startup
+        foreach (DirectoryKeys::getServerDirectoryKeysToBeCleanedUp() as $directoryKey) {
+            // prepare the path to the directory to be cleaned up
+            $toBeCleanedUp = $service->realpath($directories[$directoryKey]);
+
+            // if the directory exists, clean it up
+            if (is_dir($toBeCleanedUp)) {
+                $service->cleanUpDir(new \SplFileInfo($toBeCleanedUp));
             }
         }
     }
@@ -653,7 +663,7 @@ class Server
         unlink(
             $this->getSystemConfiguration()
                 ->getBaseDirectory() . DIRECTORY_SEPARATOR .
-            DirectoryKeys::RUN . DIRECTORY_SEPARATOR .
+            DirectoryKeys::VAR_RUN . DIRECTORY_SEPARATOR .
             HeartbeatScanner::HEARTBEAT_FILE_NAME
         );
     }
@@ -674,7 +684,7 @@ class Server
             touch(
                 $this->getSystemConfiguration()
                     ->getBaseDirectory() . DIRECTORY_SEPARATOR .
-                DirectoryKeys::RUN . DIRECTORY_SEPARATOR .
+                DirectoryKeys::VAR_RUN . DIRECTORY_SEPARATOR .
                 HeartbeatScanner::HEARTBEAT_FILE_NAME
             );
 

@@ -163,7 +163,7 @@ class AbstractServiceTest extends AbstractServicesTest
     {
         $directories = $this->service->getDirectories();
 
-        $this->assertCount(8, $directories);
+        $this->assertCount(9, $directories);
         $this->assertArrayHasKey(DirectoryKeys::BASE, $directories);
         $this->assertArrayHasKey(DirectoryKeys::DEPLOY, $directories);
         $this->assertEquals('/opt/appserver', $directories[DirectoryKeys::BASE]);
