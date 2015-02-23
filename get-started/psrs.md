@@ -39,7 +39,7 @@ Besides [application specific PSRs](#application-specific-psrs) we are also work
 
 * [socket](https://github.com/appserver-io-psr/socket)
 * [context](https://github.com/appserver-io-psr/context)
-* [socket](https://github.com/appserver-io-psr/http-message)
+* [http-message](https://github.com/appserver-io-psr/http-message)
 * [deplyoment](https://github.com/appserver-io-psr/deployment)
 
 > As long as these `PSRs` are in progress, there will be no guarantee for their compatibility. We hope we can extend the guarantee with the next releases, so it will also include the `server specific PSRs` within tight semantic versioning. 
