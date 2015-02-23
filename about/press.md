@@ -13,6 +13,9 @@ permalink: /about/press.html
 
 Check out some stuff about appserver.io and the appserver.io team in the press!
 
+## Pressrelease 02/2015
+[appserver.io 1.0.0 stable release is now available for free](<{{ "/press/2015/02/23/pressrelease-stable-release-of-appserver-io.html" | prepend: site.baseurl }}>)
+
 ## PHP-Magazin 02/2015
 [Interview with Stefan Willkommer about the Iron Horse Release (German)](http://phpmagazin.de/artikel/appserver-io-1-0-iron-horse-178914)
 
