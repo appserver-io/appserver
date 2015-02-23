@@ -120,13 +120,14 @@ class AppserverNode extends AbstractNode
      */
     public function initDefaultDirectories()
     {
-        $this->setParam(DirectoryKeys::LOG, ParamNode::TYPE_STRING, '/var/log');
-        $this->setParam(DirectoryKeys::RUN, ParamNode::TYPE_STRING, '/var/run');
-        $this->setParam(DirectoryKeys::TMP, ParamNode::TYPE_STRING, '/var/tmp');
+        $this->setParam(DirectoryKeys::TMP, ParamNode::TYPE_STRING, '/tmp');
         $this->setParam(DirectoryKeys::DEPLOY, ParamNode::TYPE_STRING, '/deploy');
         $this->setParam(DirectoryKeys::WEBAPPS, ParamNode::TYPE_STRING, '/webapps');
-        $this->setParam(DirectoryKeys::CONF, ParamNode::TYPE_STRING, '/etc/appserver');
-        $this->setParam(DirectoryKeys::CONFD, ParamNode::TYPE_STRING, '/etc/appserver/conf.d');
+        $this->setParam(DirectoryKeys::VAR_LOG, ParamNode::TYPE_STRING, '/var/log');
+        $this->setParam(DirectoryKeys::VAR_RUN, ParamNode::TYPE_STRING, '/var/run');
+        $this->setParam(DirectoryKeys::VAR_TMP, ParamNode::TYPE_STRING, '/var/tmp');
+        $this->setParam(DirectoryKeys::ETC_APPSERVER, ParamNode::TYPE_STRING, '/etc/appserver');
+        $this->setParam(DirectoryKeys::ETC_APPSERVER_CONFD, ParamNode::TYPE_STRING, '/etc/appserver/conf.d');
     }
 
     /**

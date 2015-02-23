@@ -205,7 +205,7 @@ abstract class AbstractService implements ServiceInterface
     {
         return $this->realpath(
             $this->makePathAbsolute(
-                $this->getSystemConfiguration()->getParam(DirectoryKeys::TMP) . $this->makePathAbsolute($relativePathToAppend)
+                $this->getSystemConfiguration()->getParam(DirectoryKeys::VAR_TMP) . $this->makePathAbsolute($relativePathToAppend)
             )
         );
     }
@@ -253,7 +253,7 @@ abstract class AbstractService implements ServiceInterface
     {
         return $this->realpath(
             $this->makePathAbsolute(
-                $this->getSystemConfiguration()->getParam(DirectoryKeys::LOG) . $this->makePathAbsolute($relativePathToAppend)
+                $this->getSystemConfiguration()->getParam(DirectoryKeys::VAR_LOG) . $this->makePathAbsolute($relativePathToAppend)
             )
         );
     }
@@ -279,7 +279,7 @@ abstract class AbstractService implements ServiceInterface
     {
         return $this->realpath(
             $this->makePathAbsolute(
-                $this->getSystemConfiguration()->getParam(DirectoryKeys::CONF) . $this->makePathAbsolute($relativePathToAppend)
+                $this->getSystemConfiguration()->getParam(DirectoryKeys::ETC_APPSERVER) . $this->makePathAbsolute($relativePathToAppend)
             )
         );
     }
@@ -295,7 +295,7 @@ abstract class AbstractService implements ServiceInterface
     {
         return $this->realpath(
             $this->makePathAbsolute(
-                $this->getSystemConfiguration()->getParam(DirectoryKeys::CONFD) . $this->makePathAbsolute($relativePathToAppend)
+                $this->getSystemConfiguration()->getParam(DirectoryKeys::ETC_APPSERVER_CONFD) . $this->makePathAbsolute($relativePathToAppend)
             )
         );
     }
