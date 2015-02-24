@@ -2,11 +2,13 @@
 
 ## Bugfixes
 
+* Fixed [#551](https://github.com/appserver-io/appserver/issues/551) - Pre-uninstall can fail to stop php-fpm process
 * Fixed [#550](https://github.com/appserver-io/appserver/issues/550) - Content of var/tmp does not get cleared correctly
 * Fixed [#489](https://github.com/appserver-io/appserver/issues/489) - Problems setting base dir for wrong configuration sequence
 
 ## Features
 
+* Closed [#593](https://github.com/appserver-io/appserver/issues/593) - Update PHP/PECL version + upload_tmp_dir configuration directive  enhancement
 * Closed [#582](https://github.com/appserver-io/appserver/issues/582) - Move manager/class loader interfaces to application PSR
 * Closed [#572](https://github.com/appserver-io/appserver/issues/527) - Refactor Descriptor integration, move interfaces to PSRs
 

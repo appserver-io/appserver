@@ -19,7 +19,7 @@
 		"appserver-io/lang" : "~1.0",
 		"appserver-io/server" : "~1.0",
 		"appserver-io/logger" : "~1.0",
-		"appserver-io/storage" : "~1.0",
+		"appserver-io/storage" : "~2.0",
 		"appserver-io/messaging" : "~1.0",
 		"appserver-io/microcron" : "~1.0",
 		"appserver-io/webserver" : "~1.0",
