@@ -62,7 +62,7 @@ class Setup
      * @var array
      */
     protected static $defaultProperties = array(
-        SetupKeys::PHP_VERSION                                   => '5.5.21',
+        SetupKeys::PHP_VERSION                                   => PHP_VERSION,
         SetupKeys::ADMIN_EMAIL                                   => 'info@appserver.io',
         SetupKeys::CONTAINER_SERVER_WORKER_ACCEPT_MIN            => 3,
         SetupKeys::CONTAINER_SERVER_WORKER_ACCEPT_MAX            => 8,

@@ -1,5 +1,20 @@
 # Upgrade from 1.0.0 to 1.0.1
 
+## Development Mode
+
+After an update, all files will be resetted to the original ownership and rights. So if you've switched to [Development-Mode](http://appserver.io/get-started/documentation/basic-usage.html#setup-script), you need to run the setup script again to re-activate the development mode again.
+
+To do so, open a console and type the following
+
+```sh
+sudo /opt/appserver/server.php -s dev
+# Should return: Setup for mode 'dev' done successfully!
+```
+
+## Udpating Mac OS X and Windows
+
+When updating a Mac OS X or Windows installation, we actually do **NOT** take care about changes in your configuration files. Please **BACKUP** all customized files, especially `etc/appserver/appserver.xml` and `etc/appserver/conf.d/virtual-hosts.xml` to not loose your changes.
+
 ## Configuration
 
 We've made minor changes in some configuration files. This changes **SHOULD NOT** affect you in most cases.
