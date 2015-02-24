@@ -206,11 +206,10 @@ if (array_key_exists($setup, $arguments)) {
 
             // prepares everything for first installation which is default mode
             case 'install':
-                // first check if install flag was set before
-                if (IS_INSTALLED) {
-                    echo "Nothing to do. Setup for mode '$setupMode' already done!" . PHP_EOL;
-                    // exit normally
-                    exit(0);
+                // first check if it is a fresh installation
+                if (!IS_INSTALLED) {
+                    // set example app dodeploy flag to be deployed for a fresh installation
+                    touch(APPSERVER_BP . DIRECTORY_SEPARATOR . 'deploy' . DIRECTORY_SEPARATOR . 'example.phar.dodeploy');
                 }
 
                 // create is installed flag for prevent further setup install mode calls
@@ -241,11 +240,10 @@ if (array_key_exists($setup, $arguments)) {
                     FileSystem::chown($rootFile, $user, $group);
                 }
             }
-            // ... and change and mod following directories
+            // ... and change own and mod of following directories
+            FileSystem::chown(APPSERVER_BP . DIRECTORY_SEPARATOR . 'webapps', $user, $group);
             FileSystem::recursiveChown(APPSERVER_BP . DIRECTORY_SEPARATOR . 'resources', $user, $group);
             FileSystem::recursiveChmod(APPSERVER_BP . DIRECTORY_SEPARATOR . 'resources');
-            FileSystem::recursiveChown(APPSERVER_BP . DIRECTORY_SEPARATOR . 'webapps', $user, $group);
-            FileSystem::recursiveChmod(APPSERVER_BP . DIRECTORY_SEPARATOR . 'webapps');
             FileSystem::recursiveChown(APPSERVER_BP . DIRECTORY_SEPARATOR . 'deploy', $user, $group);
             FileSystem::recursiveChmod(APPSERVER_BP . DIRECTORY_SEPARATOR . 'deploy');
             FileSystem::recursiveChown(APPSERVER_BP . DIRECTORY_SEPARATOR . 'src', $user, $group);
