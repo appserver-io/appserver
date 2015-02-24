@@ -2,6 +2,7 @@
 
 ## Bugfixes
 
+* Fixed [#599](https://github.com/appserver-io/appserver/issues/599) - After updating on Debian, the server signature will not been updated if appserver.xml has not been replaced
 * Fixed [#551](https://github.com/appserver-io/appserver/issues/551) - Pre-uninstall can fail to stop php-fpm process
 * Fixed [#550](https://github.com/appserver-io/appserver/issues/550) - Content of var/tmp does not get cleared correctly
 * Fixed [#489](https://github.com/appserver-io/appserver/issues/489) - Problems setting base dir for wrong configuration sequence

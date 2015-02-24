@@ -352,4 +352,30 @@ abstract class AbstractService implements ServiceInterface
         // return the array with the files matching the glob pattern
         return $files;
     }
+
+    /**
+     * Returns the real server signature depending on the installed
+     * appserver version and the PHP version we're running on, for
+     * example:
+     *
+     * appserver/1.0.1-45 (darwin) PHP/5.5.21
+     *
+     * @return string The server signature
+     */
+    public function getServerSignature()
+    {
+
+        // try to load the OS identifier
+        list($os, ) = sscanf(strtolower(php_uname('s')), '%s %s');
+
+        // check if we've a file with the actual version number
+        if (file_exists($filename = $this->getConfDir('/.release-version'))) {
+            $version = file_get_contents($filename);
+        } else {
+            $version = 'dev-' . gethostname();
+        }
+
+        // prepare and return the server signature
+        return sprintf('appserver/%s (%s) PHP/%s', $version, $os, PHP_VERSION);
+    }
 }
