@@ -28,6 +28,7 @@ use AppserverIo\Appserver\Naming\NamingDirectory;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\Core\Interfaces\ContainerInterface;
 use AppserverIo\Appserver\Core\Utilities\ContainerStateKeys;
+use AppserverIo\Appserver\Core\Api\Node\ParamNode;
 
 /**
  * Abstract container implementation.
@@ -156,6 +157,12 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
         // setup configurations
         $serverConfigurations = array();
         foreach ($this->getContainerNode()->getServers() as $serverNode) {
+            // query whether a server signature (software) has been configured
+            if ($serverNode->getParam('software') == null) {
+                $serverNode->setParam('software', ParamNode::TYPE_STRING, $this->getService()->getServerSignature());
+            }
+
+            // add the server node configuration
             $serverConfigurations[] = new ServerNodeConfiguration($serverNode);
         }
 

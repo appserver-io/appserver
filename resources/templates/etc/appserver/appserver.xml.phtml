@@ -76,7 +76,6 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
 
                     <params>
                         <param name="admin" type="string"><?php echo Setup::getValue(SetupKeys::ADMIN_EMAIL) ?></param>
-                        <param name="software" type="string"><?php echo Setup::getValue(SetupKeys::SOFTWARE_IDENTIFIER) ?></param>
                         <param name="transport" type="string">tcp</param>
                         <param name="address" type="string"><?php echo Setup::getValue(SetupKeys::CONTAINER_PERSISTENCE_CONTAINER_HOST) ?></param>
                         <param name="port" type="integer"><?php echo Setup::getValue(SetupKeys::CONTAINER_PERSISTENCE_CONTAINER_PORT) ?></param>
@@ -143,7 +142,6 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
 
                     <params>
                         <param name="admin" type="string"><?php echo Setup::getValue(SetupKeys::ADMIN_EMAIL) ?></param>
-                        <param name="software" type="string"><?php echo Setup::getValue(SetupKeys::SOFTWARE_IDENTIFIER) ?></param>
                         <param name="transport" type="string">tcp</param>
                         <param name="address" type="string"><?php echo Setup::getValue(SetupKeys::CONTAINER_MESSAGE_QUEUE_HOST) ?></param>
                         <param name="port" type="integer"><?php echo Setup::getValue(SetupKeys::CONTAINER_MESSAGE_QUEUE_PORT) ?></param>
@@ -205,7 +203,6 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
                         loggerName="System">
                     <params>
                         <param name="admin" type="string"><?php echo Setup::getValue(SetupKeys::ADMIN_EMAIL) ?></param>
-                        <param name="software" type="string"><?php echo Setup::getValue(SetupKeys::SOFTWARE_IDENTIFIER) ?></param>
                         <param name="transport" type="string">tcp</param>
                         <param name="address" type="string"><?php echo Setup::getValue(SetupKeys::CONTAINER_HTTP_HOST) ?></param>
                         <param name="port" type="integer"><?php echo Setup::getValue(SetupKeys::CONTAINER_HTTP_PORT) ?></param>
@@ -306,7 +303,6 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
                         loggerName="System">
                     <params>
                         <param name="admin" type="string"><?php echo Setup::getValue(SetupKeys::ADMIN_EMAIL) ?></param>
-                        <param name="software" type="string"><?php echo Setup::getValue(SetupKeys::SOFTWARE_IDENTIFIER) ?></param>
                         <param name="workerNumber" type="integer"><?php echo Setup::getValue(SetupKeys::CONTAINER_HTTPS_WORKER_NUMBER) ?></param>
                         <param name="workerAcceptMin" type="integer"><?php echo Setup::getValue(SetupKeys::CONTAINER_SERVER_WORKER_ACCEPT_MIN) ?></param>
                         <param name="workerAcceptMax" type="integer"><?php echo Setup::getValue(SetupKeys::CONTAINER_SERVER_WORKER_ACCEPT_MAX) ?></param>
