@@ -20,6 +20,7 @@
 /etc/appserver/server.pem
 /var/tmp/opcache-blacklist.txt
 /webapps/index.html
+/.vagrant
 *.log
 .README.md.html
 .ROADMAP.md.html
