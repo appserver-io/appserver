@@ -11,6 +11,7 @@
 
 ## Features
 
+* Closed [#607](https://github.com/appserver-io/appserver/issues/607) - Improve ServletEngine exception handling
 * Closed [#593](https://github.com/appserver-io/appserver/issues/593) - Update PHP/PECL version + upload_tmp_dir configuration directive  enhancement
 * Closed [#582](https://github.com/appserver-io/appserver/issues/582) - Move manager/class loader interfaces to application PSR
 * Closed [#572](https://github.com/appserver-io/appserver/issues/527) - Refactor Descriptor integration, move interfaces to PSRs
