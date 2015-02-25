@@ -58,6 +58,9 @@ class Response extends GenericStackable implements HttpServletResponseInterface
         // init body stream
         $this->bodyStream = '';
 
+        // init exception
+        $this->exception = null;
+
         // init default response properties
         $this->statusCode = 200;
         $this->version = 'HTTP/1.1';
@@ -460,5 +463,37 @@ class Response extends GenericStackable implements HttpServletResponseInterface
     {
         $this->setStatusCode($code);
         $this->addHeader(HttpProtocol::HEADER_LOCATION, $url);
+    }
+
+    /**
+     * Queries whether the response contains an exception or not.
+     *
+     * @return boolean TRUE if an exception has been attached, else FALSE
+     */
+    public function hasException()
+    {
+        return $this->exception instanceof \Exception;
+    }
+
+    /**
+     * Returns the exception bound to the response.
+     *
+     * @return \Exception|null The exception
+     */
+    public function getException()
+    {
+        return $this->exception;
+    }
+
+    /**
+     * Binds the exception to the response.
+     *
+     * @param \Exception $exception The exception to bind.
+     *
+     * @return void
+     */
+    public function setException(\Exception $exception)
+    {
+        $this->exception = $exception;
     }
 }
