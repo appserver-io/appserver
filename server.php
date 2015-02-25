@@ -241,6 +241,7 @@ if (array_key_exists($setup, $arguments)) {
                 }
             }
             // ... and change own and mod of following directories
+            FileSystem::chown(APPSERVER_BP, $user, $group);
             FileSystem::chown(APPSERVER_BP . DIRECTORY_SEPARATOR . 'webapps', $user, $group);
             FileSystem::recursiveChown(APPSERVER_BP . DIRECTORY_SEPARATOR . 'resources', $user, $group);
             FileSystem::recursiveChmod(APPSERVER_BP . DIRECTORY_SEPARATOR . 'resources');
