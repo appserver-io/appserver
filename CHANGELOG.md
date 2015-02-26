@@ -9,7 +9,8 @@
 * Fixed [#550](https://github.com/appserver-io/appserver/issues/550) - Content of var/tmp does not get cleared correctly
 * Fixed [#489](https://github.com/appserver-io/appserver/issues/489) - Problems setting base dir for wrong configuration sequence
 * Fixed [#569](https://github.com/appserver-io/appserver/issues/569) - Comment-less structures are ignored by pointcuts
-* Fixed [#580](https://github.com/appserver-io/appserver/issues/580) - Update on *nix OS does not restart daemons 
+* Fixed [#580](https://github.com/appserver-io/appserver/issues/580) - Update on *nix OS does not restart daemons
+* Fixed [#612](https://github.com/appserver-io/appserver/issues/612) - php_opcache.dll failed to load if installed in non default path (Windows)
 
 ## Features
 
