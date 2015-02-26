@@ -219,17 +219,8 @@ class DgClassLoader extends \Stackable implements ClassLoaderInterface
                 }
             }
 
-            // structures which are enforced will be added to the generator stack, others will only be copied (symlinks are not reliable)
-            if ($structure->isEnforced()) {
-                $generatorStack[$identifier] = $structure;
-
-            } else {
-                $tmpFileName = ltrim(str_replace('\\', '_', $structure->getIdentifier()), '_');
-                copy(
-                    $structure->getPath(),
-                    $this->config->getValue('cache/dir') . DIRECTORY_SEPARATOR . $tmpFileName . '.php'
-                );
-            }
+            // adding all structures to the generator stack as we cannot assure cross references from aspects here
+            $generatorStack[$identifier] = $structure;
         }
 
         // Chuck the stack and start generating
