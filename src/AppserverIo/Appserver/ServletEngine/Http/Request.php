@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\Request
+ * AppserverIo\Appserver\ServletEngine\Http\Request
  *
  * NOTICE OF LICENSE
  *
@@ -166,7 +166,7 @@ class Request extends GenericStackable implements HttpServletRequestInterface
      */
     public function getHttpPartInstance()
     {
-        
+
     }
 
     /**
