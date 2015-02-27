@@ -2,6 +2,7 @@
 
 ## Bugfixes
 
+* Fixed [#618](https://github.com/appserver-io/appserver/issues/618) - Segfault on Mac OS X when restarting after a new installation
 * Fixed [#599](https://github.com/appserver-io/appserver/issues/599) - After updating on Debian, the server signature will not been updated if appserver.xml has not been replaced
 * Fixed [#598](https://github.com/appserver-io/appserver/issues/598) - Update changes fileowner to root instead of user configured in configuration
 * Fixed [#597](https://github.com/appserver-io/appserver/issues/597) - Example app should not be reinstalled on upgrades
