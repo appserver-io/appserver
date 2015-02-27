@@ -11,7 +11,7 @@ sudo /opt/appserver/server.php -s dev
 # Should return: Setup for mode 'dev' done successfully!
 ```
 
-## Udpating Mac OS X
+## Updating Mac OS X
 
 When updating a Mac OS X installation, we actually do **NOT** take care about changes in your configuration files. Please **BACKUP** all customized files, especially `etc/appserver/appserver.xml` and `etc/appserver/conf.d/virtual-hosts.xml` to not loose your changes.
 
