@@ -6,7 +6,7 @@ meta_description: Next-generation PHP infrastructure consisting of a lightning f
 position: 0
 permalink: /
 slider:
-  - title: Stable version 1.0.0 is OUT!<br/><small>Get the revolution NOW!</small>
+  - title: Stable version 1.0.1 is OUT!<br/><small>Get the revolution NOW!</small>
     link-href: /downloads.html
     link-label: Download
     img: /assets/img/appserver-header-image.jpg
