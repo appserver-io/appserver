@@ -35,9 +35,4 @@ with that tag. Please check to see if your question has already been answered be
 In the near future we will start a discussion forum on our webpage where you can participate in and which
 is a great venue for discussing features, architecture and best practices. Stay tuned!
 
-# Live-Chat on our public hipchat channel.
-***
-
-{% include hipchat.html %}
-
 [github-repo]: https://github.com/appserver-io/appserver

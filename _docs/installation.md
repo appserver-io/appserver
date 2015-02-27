@@ -47,6 +47,8 @@ For OS specific steps and characteristics see below for tested environments.
 
 For Mac OS X > 10.8.x we provide a `.pkg` file for [download](https://github.com/appserver-io/appserver/releases/download/1.0.0-rc2/appserver-dist-1.0.0-rc2.33.mac.x86_64.pkg) that contains the runtime and the distribution. Double-clicking on the `.pkg` starts and guides you through the installation process.
 
+> We **STRONGLY** recommend, that you have a look at our [upgrade guide](https://github.com/appserver-io/appserver/blob/master/UPGRADE-1.0.1.md), before upgrading your installation from 1.0.0 to 1.0.1!
+
 ## Windows
 
 > Runs and tested on Windows 7 (32-bit) and higher!
