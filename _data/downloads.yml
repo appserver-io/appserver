@@ -1,34 +1,34 @@
 - os: Mac OS X
   id: osx
   icon: fa-apple
-  dist-suffix: -44_x86_64.pkg
+  dist-suffix: -52_x86_64.pkg
   separator: "_"
   
 - os: Windows
   id: win
   icon: fa-windows   
-  dist-suffix: -57_x86.jar
+  dist-suffix: -66_x86.jar
   separator: "_"
 
 - os: Debian
   id: debian
   icon: fa-linux
-  dist-suffix: -45_amd64.deb
-  runtime-suffix: -24_amd64.deb
+  dist-suffix: -52_amd64.deb
+  runtime-suffix: -35_amd64.deb
   separator: "_"
 
 - os: Fedora
   id: fedora
   icon: fa-linux
-  dist-suffix: -62.fc20.x86_64.rpm
-  runtime-suffix: -34.fc20.x86_64.rpm
+  dist-suffix: -70.fc20.x86_64.rpm
+  runtime-suffix: -42.fc20.x86_64.rpm
   separator: "-"
 
 - os: Cent OS
   id: centos
   icon: fa-linux
-  dist-suffix: -49.el6.x86_64.rpm
-  runtime-suffix: -40.el6.x86_64.rpm
+  dist-suffix: -57.el6.x86_64.rpm
+  runtime-suffix: -48.el6.x86_64.rpm
   separator: "-"
 
 - os: Raspbian
