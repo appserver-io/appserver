@@ -150,7 +150,7 @@ First comment out the `<access type="allow">...</access>`, but explicitly allow 
 </access>
 ```
 
-Now the `application.xml` file should look like this
+Now the `appserver.xml` file should look like this
 
 ```xml
 <appserver ... >

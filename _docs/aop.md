@@ -252,6 +252,8 @@ class AnExampleAspect
 
 Aspect classes have to be implemented within your webapp, namely within the `META-INF`, `WEB-INF` or `common` directory.
 
+> Please also note that aspects MUST NOT have a constructor requiring parameters
+
 ### Generic annotations within aspects
 
 The first usage possibility is solely based on the on aspect classes and annotations.
