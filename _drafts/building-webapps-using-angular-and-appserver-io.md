@@ -320,7 +320,7 @@ again add a welcome paragraph just before the `<ul class="nav navbar-nav">`.
 
 ```html
 ...
-<p ng-if="isAuthenticated()" class="navbar-text"><span class="welcome">Logged in as <b>{% raw %}{{ currentUsername }}{% endraw %}</b></span>
+<p ng-if="isAuthenticated()" class="navbar-text"><span class="welcome">Logged in as <b>{% raw %}{{ currentUsername }}{% endraw %}</b></span></p>
 ```
 
 All error messages should also be displayed. In `app/index.html` search for `<div ng-view=""></div>` and add this
@@ -328,8 +328,8 @@ before and right after the main container div `<div class="container">`...
 
 ```html
 <div ng-if="errorMessage" class="alert alert-danger alert-error">
-  <span class="close" ng-click="setErrorMessage(null)">&times;</span>
-  <strong>Error!</strong> {% raw %}{{ errorMessage }}{% endraw %}
+  <span class="close" ng-click="setErrorMessage(null)">&times;</span> 
+  <strong>Error!</strong><div ng-bind-html="errorMessage"></div>
 </div>
 ```
 
