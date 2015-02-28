@@ -102,10 +102,14 @@ class PharExtractor extends AbstractExtractor
                 // create a recursive directory iterator
                 $iterator = new \RecursiveIteratorIterator($p);
 
+                // unify the archive filename, because Windows uses a \ instead of /
+                $archiveFilename = sprintf('phar://%s', str_replace(DIRECTORY_SEPARATOR, '/', $archive->getPathname()));
+
                 // iterate over all files
                 foreach ($iterator as $file) {
+
                     // prepare the temporary filename
-                    $target = $tmpFolderName . str_replace(sprintf('phar://%s', $archive->getPathname()), '', $file->getPathname());
+                    $target = $tmpFolderName . str_replace($archiveFilename, '', $file->getPathname());
 
                     // create the directory if necessary
                     if (file_exists($directory = dirname($target)) === false) {
