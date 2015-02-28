@@ -107,7 +107,6 @@ class PharExtractor extends AbstractExtractor
 
                 // iterate over all files
                 foreach ($iterator as $file) {
-
                     // prepare the temporary filename
                     $target = $tmpFolderName . str_replace($archiveFilename, '', $file->getPathname());
 
