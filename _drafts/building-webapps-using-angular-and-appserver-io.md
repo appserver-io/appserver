@@ -26,36 +26,33 @@ permalink: /get-started/tutorials/building-webapps-using-angular-and-appserver-i
 ![Building WebApps with AngularJS and appserver.io]({{ "/assets/img/tutorials/building-webapps-using-angular-and-appserver-io/angular_and_appserver.jpg" | prepend: site.baseurl }})
 ***
 
-This tutorial shows how to build a webapp using AngularJS as single page app in the frontend and **appserver.io** as
-RESTful service backend using **Servlets**, **Dependency-Injection**, **AOP** and **Annotated-Validation**.
+This tutorial shows how to build a webapp using AngularJS as a single page app in the frontend and **appserver.io** as
+a RESTful service in the backend using **Servlets**, **Dependency-Injection**, **AOP** and **Annotated-Validation**.
 
 <br/>
-## Prerequirements
-
-A running installation of **appserver.io** *(>= Version 1.0.0)*. If you are new to this
-project you can easily [download](http://127.0.0.1:4000/get-started/downloads.html) it and follow the
-[installation guide](http://127.0.0.1:4000/get-started/documentation/installation.html) for your specific OS.
-
-You also need to have your system well prepared for Javascript, HTML and CSS/SASS development.
-We will generate an AngularJS app using [Yeoman](http://yeoman.io) which allows us to kickstart an AngularJS app,
-prescribing best practices and tools to help you stay productive.
-
+**Prerequisite**: *Your system should be well prepared for Javascript, HTML, and CSS/SASS development.
+We will generate an AngularJS app using [Yeoman](http://yeoman.io), that allows to kickstart an AngularJS app,
+prescribing best practices and tools to help you stay productive*
 So please check out and follow the [Instructions](http://yeoman.io/codelab/setup.html) at Yeoman guide to setup your
 system correctly.
+
+You will need a running installation of **appserver.io** *(>= Version 1.0.0)*. If you are new to this
+project you can easily [download](http://127.0.0.1:4000/get-started/downloads.html) and follow the
+[installation guide](http://127.0.0.1:4000/get-started/documentation/installation.html) for your specific OS.
+
 
 <br/>
 ## Preparations
 
-At first we have to switch to *dev mode* in our local **appserver.io** installation. This will set the correct filesystem
-permissions for your user account and also let the **appserver** process itself run as current user which makes it a lot easier
-for local development.
+At first switch your local **appserver.io** installation to *dev mode*. This will set the correct filesystem
+permissions for your user account and also let the **appserver** process itself run as a current user that makes it a lot easier for local development.
 
 ```bash
 sudo /opt/appserver/server.php -s dev
 # Should return: Setup for mode 'dev' done successfully!
 ```
 
-Now we're ready to create our webapp called `myapp`
+Now you are ready to create our webapp called `myapp`
 
 ```bash
 # Goto **appserver.io** webapps folder
@@ -74,22 +71,21 @@ brackets .
 atom .
 ```
 
-To kickstart our AngularJS app via Yeoman, we need the correct yeoman generator installed globally first.
+To start the AngularJS app via Yeoman, you need the correct yeoman generator installed globally first.
 
 ```bash
 sudo npm install -g generator-angular
 ```
 
-Let's kickstart our AngularJS app right under our webapp folder ```/opt/appserver/webapps/myapp```. You will
-be ask if you want to use Sass or include Bootstrap. Just hit enter for default values and go for it.
+Start your AngularJS app right under our webapp folder ```/opt/appserver/webapps/myapp```. Decide if you want to use Sass or include Bootstrap. Just hit enter for default values.
 
 ```bash
 yo angular
 # Hit enter for any questions
 ```
 
-Before we can open our webapp in the browser we've to add some Virtual-Hosts to the **appserver** configuration. Do so
-by opening `/opt/appserver/et/conf.d/virtual-hosts.xml` with your favorite editor and add this.
+Before you can open our webapp in the browser please add some Virtual-Hosts to the **appserver** configuration. Do so
+by opening `/opt/appserver/et/conf.d/virtual-hosts.xml` with your favorite editor and add this:
 
 ```xml
 <virtualHost name="myapp.dist">
@@ -138,14 +134,14 @@ Open [http://myapp.dist:9080] in your browser and it should look like this.
 
 ![AngularJS appserver.io dist start]({{ "/assets/img/tutorials/building-webapps-using-angular-and-appserver-io/yo-angular-start-dist.png" | prepend: site.baseurl }} "AngularJS appserver.io dist start")
 
-Looks awesome... :)
+Does it look awesome... :)
 
 If you use `grunt` or the similar `grunt build` command, grunt will build the app into a subdirectory called `dist`,
 where everything has been optimized (concatenated, uglified etc...) for production usage.
 
-For local development it's highly recommended to use the `grunt watch` command which observes all the javascript app
-files and builds it automatically if anything has been changed without uglifing or doing other optimizations so you're
-still able to debug your app. That's the reason why we configured the Virtual-Host `myapp.dev` where you can reach the
+For local development, it is highly recommended to use the `grunt watch` command that observes all the javascript app
+files and builds it automatically. If anything has been changed without uglifing or doing other optimizations, so you are
+still able to debug your app. That is the reason why we configured the Virtual-Host `myapp.dev`, where you can reach the
 debuggable version of your javascript app. So let's try it by typing...
 
 ```bash
@@ -154,13 +150,13 @@ grunt watch
 
 Open [http://myapp.dev:9080] in your browser and it should look like as shown above in the dist screenshot.
 
-Cool... everything fine! Being ready for take off? :)
+Cool... everything is fine! Ready for take off? :)
 
 <br/>
 ## Login Form
 
-We'll enhance the AngularJS app by adding a login form that will make use of an Authentication-Service on the
-backend side, which we'll implement later on. First step is to create a new route `login` vi yeoman by doing...
+Now enhance the AngularJS app by adding a login form that will make use of an Authentication-Service on the
+backend side, which we'll implement later on. First step is to create a new route `login` vi Yeoman by doing:
 
 ```bash
 yo angular:route login
@@ -179,7 +175,7 @@ Refresh your browser at [http://myapp.dev:9080] and click on the new `login` nav
 
 ![AngularJS appserver.io login route]({{ "/assets/img/tutorials/building-webapps-using-angular-and-appserver-io/yo-angular-login-route.png" | prepend: site.baseurl }} "AngularJS appserver.io login route")
 
-Cool... the route is reachable. Now let's add a login form by editing the login template located in `app/views/login.html`.
+Cool... the route is reachable. Now add a login form by editing the login template located in `app/views/login.html`.
 
 ```html
 <form name="loginForm" ng-controller="LoginCtrl"
@@ -202,19 +198,19 @@ Refresh your browser and click on the `Login` Button located at the navigation.
 
 ![AngularJS appserver.io login form]({{ "/assets/img/tutorials/building-webapps-using-angular-and-appserver-io/yo-angular-login-form.png" | prepend: site.baseurl }} "AngularJS appserver.io login form")
 
-For being able to submit the login form, we will need a backend as well as a frontend implementation of an `AuthService`.
+For being able to submit the login form, you will need a backend as well as a frontend implementation of an `AuthService`.
 
 <br/>
 ## Frontend Authentication
 
-Let us start building a simple `AuthService` in AngularJS by kickstarting the service easily via yeoman...
+Let us start building a simple `AuthService` in AngularJS by kickstarting the service easily via Yeoman...
 
 ```bash
 yo angular:service AuthService
 ```
 
 This generates the service implementation file `app/scripts/services/authservice.js` and adds it automatically to the
-script includes section of `app/index.html`. Open the service file and edit it...
+script includes section of `app/index.html`. Open the service file and edit it:
 
 ```js
 angular.module('myappApp')
@@ -238,14 +234,14 @@ angular.module('myappApp')
 ```
 
 As we are using a `Session` singleton object here in the login method to keep the user’s session information, we have
-to kickstart it via yeoman too...
+to kickstart it via Yeoman too:
 
 ```bash
 yo angular:service Session
 ```
 
 Just open that generated `Session` singleton located at `app/scripts/services/session.js` and add simple
-functionality like `create` and `destroy` as shown below...
+functionality like `create` and `destroy` as shown below:
 
 ```js
 angular.module('myappApp')
@@ -343,12 +339,12 @@ where you can find a collection of ideas for authentication and access control.
 <br/>
 ## RESTful Service
 
-Here's where the **appserver** comes into place. We'll make use of the **Servlet-Engine** and **Dependency-Injection**
+Here is where the **appserver** comes into place. Make use of the **Servlet-Engine** and **Dependency-Injection**
 as we did in the [My First WebApp](<{{ "/get-started/tutorials/my-first-webapp.html" | prepend: site.baseurl }}>)
 for providing as [Service-Oriented architecture](http://en.wikipedia.org/wiki/Service-oriented_architecture).
-We also take advantage of **AOP** for the need of building a RESTful service api based on json format to keep it solid.
+Also take advantage of **AOP** for the need of building a RESTful service api based on json format to keep it solid.
 
-Let's start implementing the `AuthService` by creating it `META-INF/classes/MyVendor/MyApp/AuthService.php` and
+Start implementing the `AuthService` by creating it `META-INF/classes/MyVendor/MyApp/AuthService.php` and
 implement some simple auth functionality with hardcoded valid credentials, which can of course easily be replaced using
 a CredentialProvider if you want to enhance the tutorial later on.
 
@@ -399,8 +395,8 @@ class AuthService
 }
 ```
 
-Next thing we need is a Servlet `WEB-INF/classes/MyVendor/MyApp/LoginServlet.php` which listens to `http://myapp.dev:9080/login.do`
-where our AngularJS app `AuthService` is connected to. We'll inject the `AuthService` and implement the `doPost`
+Next is a Servlet `WEB-INF/classes/MyVendor/MyApp/LoginServlet.php` which listens to `http://myapp.dev:9080/login.do`
+where our AngularJS app `AuthService` is connected to. Inject the `AuthService` and implement the `doPost`
 method since there will only be credentials sent via HTTP-Post Method.
 
 ```php
@@ -573,12 +569,12 @@ Restart the **appserver** and check it out...
 
 
 <br/>
-## That's it!
+## Done!
 
-We hope you enjoyed this tutorial and it helps you to have a quick overview how easy it is to create a RESTful service
-backend by using great features like **Servlets**, **Dependency-Injection**, **AOP** and **Annotated-Validation** the
-appserver provides out of the box. Even there is no need using a specific framework as the **appserver** is not only a
+We hope you enjoyed this tutorial, and it helps for a quick overview how easy it is to create a RESTful service
+backend by using great features like **Servlets**, **Dependency-Injection**, **AOP** and **Annotated-Validation** that
+appserver provides out of the box. Even when there is no need to use a specific framework as the **appserver** is not only a
 powerful PHP infrastructure, but also a fully featured enterprise solution for PHP.
 
-Any feedback is appreciated so do not hesitate to share your experiences or any problems you encounter with us.
+Every feedback is appreciated so please do not hesitate to share experiences or any issue you may encounter with us.
 Cheers! :)
