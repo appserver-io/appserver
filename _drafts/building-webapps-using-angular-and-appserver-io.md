@@ -430,6 +430,7 @@ class LoginServlet extends HttpServlet
         $username = $this->authService->login($this->data);
         $session = $servletRequest->getSession(true);
         $session->start();
+        
         return array(
             'id' => $session->getId(),
             'username' => $username
