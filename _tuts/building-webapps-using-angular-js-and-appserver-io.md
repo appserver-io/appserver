@@ -21,7 +21,7 @@ subNav:
     href: input-validation
   - title: That's it!
     href: that's-it!
-permalink: /get-started/tutorials/building-webapps-using-angular-and-appserver-io.html
+permalink: /get-started/tutorials/building-webapps-using-angular-js-and-appserver-io.html
 ---
 ![Building WebApps with AngularJS and appserver.io]({{ "/assets/img/tutorials/building-webapps-using-angular-and-appserver-io/angular_and_appserver.jpg" | prepend: site.baseurl }})
 ***
