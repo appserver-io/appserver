@@ -34,6 +34,13 @@ code {
   border-radius: $border-radius-base;
 }
 
+.bitnami-pinup {
+  position: absolute;
+  top: 75px;
+  right: 5px;
+  z-index: 500;
+}
+
 .highlight {
   padding: 15px 0;
 
