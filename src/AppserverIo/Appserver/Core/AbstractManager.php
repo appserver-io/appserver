@@ -71,7 +71,7 @@ abstract class AbstractManager extends GenericStackable implements ManagerInterf
     /**
      * Returns the application instance.
      *
-     * @return \AppserverIo\Psr\Application\ApplicationInterface The application instance
+     * @return \AppserverIo\Psr\Application\ApplicationInterface|\AppserverIo\Psr\Naming\NamingDirectoryInterface The application instance
      */
     public function getApplication()
     {

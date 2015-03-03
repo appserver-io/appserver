@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\Authentication\Adapters\HtdigestAdapter
+ * \AppserverIo\Appserver\ServletEngine\Authentication\Adapters\HtdigestAdapter
  *
  * NOTICE OF LICENSE
  *

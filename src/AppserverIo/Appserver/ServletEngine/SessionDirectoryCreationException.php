@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\SessionDirectoryCreationException
+ * \AppserverIo\Appserver\ServletEngine\SessionDirectoryCreationException
  *
  * NOTICE OF LICENSE
  *

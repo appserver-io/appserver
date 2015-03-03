@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\InvalidApplicationArchiveException
+ * \AppserverIo\Appserver\ServletEngine\InvalidApplicationArchiveException
  *
  * NOTICE OF LICENSE
  *
@@ -21,7 +21,7 @@
 namespace AppserverIo\Appserver\ServletEngine;
 
 /**
- * Is thrown if a failure occured when parsing the web applications deployment descriptor.
+ * Is thrown if a failure occurred when parsing the web applications deployment descriptor.
  *
  * @author    Markus Stockbauer <ms@techdivision.com>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>

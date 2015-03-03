@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\Authentication\DigestAuthentication
+ * \AppserverIo\Appserver\ServletEngine\Authentication\DigestAuthentication
  *
  * NOTICE OF LICENSE
  *

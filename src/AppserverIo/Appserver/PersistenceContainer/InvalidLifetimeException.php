@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\PersistenceContainer\InvalidLifetimeException
+ * \AppserverIo\Appserver\PersistenceContainer\InvalidLifetimeException
  *
  * NOTICE OF LICENSE
  *

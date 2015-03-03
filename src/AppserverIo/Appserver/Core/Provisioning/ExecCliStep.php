@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Provisioning\ExecCliStep
+ * \AppserverIo\Appserver\Core\Provisioning\ExecCliStep
  *
  * NOTICE OF LICENSE
  *

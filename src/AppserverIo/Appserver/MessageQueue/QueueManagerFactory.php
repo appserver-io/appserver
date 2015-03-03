@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\MessageQueue\QueueManagerFactory
+ * \AppserverIo\Appserver\MessageQueue\QueueManagerFactory
  *
  * NOTICE OF LICENSE
  *

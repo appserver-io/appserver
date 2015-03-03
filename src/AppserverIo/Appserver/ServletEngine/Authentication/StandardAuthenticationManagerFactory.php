@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\Authentication\StandardAuthenticationManagerFactory
+ * \AppserverIo\Appserver\ServletEngine\Authentication\StandardAuthenticationManagerFactory
  *
  * NOTICE OF LICENSE
  *

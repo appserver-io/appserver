@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\DgClassLoaderFactory
+ * \AppserverIo\Appserver\Core\DgClassLoaderFactory
  *
  * NOTICE OF LICENSE
  *

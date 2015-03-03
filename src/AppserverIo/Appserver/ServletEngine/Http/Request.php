@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\Http\Request
+ * \AppserverIo\Appserver\ServletEngine\Http\Request
  *
  * NOTICE OF LICENSE
  *
@@ -37,6 +37,21 @@ use AppserverIo\Server\Dictionaries\ServerVars;
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
+ *
+ * @property string                                                            $baseModifier         Base modifier which allows for base path generation within rewritten URL environments
+ * @property resource                                                          $bodyStream           The body content stream resource
+ * @property \AppserverIo\Psr\Context\ContextInterface                         $context              The request context instance
+ * @property string                                                            $contextPath          The application context name
+ * @property boolean                                                           $dispatched           Whether or not the request has been dispatched
+ * @property \AppserverIo\Psr\HttpMessage\RequestInterface                     $httpRequest          The Http request instance
+ * @property string                                                            $parts                The request parts
+ * @property string                                                            $pathInfo             The absolute path info
+ * @property \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface        $response             The servlet response instance
+ * @property string                                                            $requestedSessionId   The new session id
+ * @property string                                                            $requestedSessionName The new session name
+ * @property \AppserverIo\Appserver\ServletEngine\Http\RequestContextInterface $requestHandler       The request context
+ * @property \AppserverIo\Storage\GenericStackable                             $serverVars           The server variables
+ * @property string                                                            $servletPath          The path to the servlet
  */
 class Request extends GenericStackable implements HttpServletRequestInterface
 {
@@ -203,7 +218,7 @@ class Request extends GenericStackable implements HttpServletRequestInterface
     /**
      * Injects the servlet response bound to this request.
      *
-     * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $response The servlet respone instance
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $response The servlet response instance
      *
      * @return void
      */

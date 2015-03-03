@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\DependencyInjectionContainer\ProviderFactory
+ * \AppserverIo\Appserver\DependencyInjectionContainer\ProviderFactory
  *
  * NOTICE OF LICENSE
  *

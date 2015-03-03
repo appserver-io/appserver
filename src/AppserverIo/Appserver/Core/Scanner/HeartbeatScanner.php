@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Scanner\HeartbeatScanner
+ * \AppserverIo\Appserver\Core\Scanner\HeartbeatScanner
  *
  * NOTICE OF LICENSE
  *

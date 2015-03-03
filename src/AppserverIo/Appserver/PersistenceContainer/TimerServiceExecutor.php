@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\PersistenceContainer\TimerServiceExecutor
+ * \AppserverIo\Appserver\PersistenceContainer\TimerServiceExecutor
  *
  * NOTICE OF LICENSE
  *
@@ -98,7 +98,7 @@ class TimerServiceExecutor extends \Thread implements ServiceExecutorInterface
     /**
      * Returns the application instance.
      *
-     * @return \AppserverIo\Psr\Application\ApplicationInterface The application instance
+     * @return \AppserverIo\Psr\Application\ApplicationInterface|\AppserverIo\Psr\Naming\NamingDirectoryInterface The application instance
      */
     public function getApplication()
     {
@@ -136,7 +136,7 @@ class TimerServiceExecutor extends \Thread implements ServiceExecutorInterface
     {
 
         // force handling the timer tasks now
-        $this->synchronized(function ($self, $t) {
+        $this->synchronized(function (TimerServiceExecutor $self, TimerInterface $t) {
 
             // store the timer-ID and the PK of the timer service => necessary to load the timer later
             $self->scheduledTimers[$timerId = $t->getId()] = $t->getTimerService()->getPrimaryKey();
@@ -167,10 +167,7 @@ class TimerServiceExecutor extends \Thread implements ServiceExecutorInterface
         // register a shutdown function
         register_shutdown_function(array($this, 'shutdown'));
 
-        // create a mutex to make GC safe
-        $mutex = \Mutex::create();
-
-        // the array with the timer tasks that'll be executed actually
+        // the array with the timer tasks which will be executed actually
         $timerTasksExecuting = array();
 
         // make the application available and register the class loaders
@@ -192,7 +189,7 @@ class TimerServiceExecutor extends \Thread implements ServiceExecutorInterface
             try {
                 // iterate over the timer tasks that has to be executed
                 foreach ($this->tasksToExecute as $taskId => $timerTaskWrapper) {
-                    // this should never happpen
+                    // this should never happen
                     if (!$timerTaskWrapper instanceof \stdClass) {
                         // log an error message because we task wrapper has wrong type
                         $this->getApplication()->getInitialContext()->getSystemLogger()->error(

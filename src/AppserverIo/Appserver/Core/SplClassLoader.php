@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\SplClassLoader
+ * \AppserverIo\Appserver\Core\SplClassLoader
  *
  * NOTICE OF LICENSE
  *
@@ -149,7 +149,7 @@ class SplClassLoader extends GenericStackable implements ClassLoaderInterface
         // check if the requested class name has already been loaded
         if (isset($this->classMap[$requestedClassName]) !== false) {
             require $this->classMap[$requestedClassName];
-            return true;
+            return;
         }
 
         // concatenate namespace and separator
@@ -179,19 +179,16 @@ class SplClassLoader extends GenericStackable implements ClassLoaderInterface
                     $this->classMap[$requestedClassName] = $toRequire;
                     // require the file and return TRUE
                     require $toRequire;
-                    return true;
+                    return;
 
                 } elseif (file_exists($psr4FileName) && !is_dir($psr4FileName)) {
                     // add the found file to the class map
                     $this->classMap[$requestedClassName] = $psr4FileName;
                     // require the file and return TRUE
                     require $psr4FileName;
-                    return true;
+                    return;
                 }
             }
         }
-
-        // return FALSE, because the class loader can't require the requested class name
-        return false;
     }
 }

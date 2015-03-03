@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\SplClassLoaderFactory
+ * \AppserverIo\Appserver\Core\SplClassLoaderFactory
  *
  * NOTICE OF LICENSE
  *
@@ -25,7 +25,7 @@ use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\Core\Api\Node\ClassLoaderNodeInterface;
 
 /**
- * A factory for the Doppelgaenger class loader instances.
+ * A factory for the Spl class loader instances.
  *
  * @author    Bernhard Wick <bw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>

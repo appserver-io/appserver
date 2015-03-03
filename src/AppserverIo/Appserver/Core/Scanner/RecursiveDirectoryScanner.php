@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Scanner\RecursiveDirectoryScanner
+ * \AppserverIo\Appserver\Core\Scanner\RecursiveDirectoryScanner
  *
  * NOTICE OF LICENSE
  *

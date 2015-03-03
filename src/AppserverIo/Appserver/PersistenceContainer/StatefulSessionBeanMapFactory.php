@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\PersistenceContainer\StatefulSessionBeanMapFactory
+ * \AppserverIo\Appserver\PersistenceContainer\StatefulSessionBeanMapFactory
  *
  * NOTICE OF LICENSE
  *
@@ -31,6 +31,8 @@ use AppserverIo\Logger\LoggerUtils;
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
+ *
+ * @property array $loggers The logger instances
  */
 class StatefulSessionBeanMapFactory extends \Thread
 {

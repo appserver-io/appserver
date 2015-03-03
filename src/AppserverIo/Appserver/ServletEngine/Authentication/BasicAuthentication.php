@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\Authentication\BasicAuthentication
+ * \AppserverIo\Appserver\ServletEngine\Authentication\BasicAuthentication
  *
  * NOTICE OF LICENSE
  *

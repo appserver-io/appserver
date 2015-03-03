@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Api\Node\ClassLoaderNodeInterface
+ * \AppserverIo\Appserver\Core\Api\Node\ClassLoaderNodeInterface
  *
  * NOTICE OF LICENSE
  *
@@ -57,9 +57,9 @@ interface ClassLoaderNodeInterface extends ClassLoaderConfigurationInterface, No
     public function getEnvironment();
 
     /**
-     * Flag that shows Doppelgaenger type safety is activated.
+     * Flag that shows Doppelgaenger's type safety is activated.
      *
-     * @return boolean TRUE if Doppelgaenger type safety is enabled, else FALSE
+     * @return boolean TRUE if Doppelgaenger's type safety is enabled, else FALSE
      */
     public function getTypeSafety();
 

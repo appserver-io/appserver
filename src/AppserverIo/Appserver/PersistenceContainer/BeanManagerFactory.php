@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\PersistenceContainer\BeanManagerFactory
+ * \AppserverIo\Appserver\PersistenceContainer\BeanManagerFactory
  *
  * NOTICE OF LICENSE
  *

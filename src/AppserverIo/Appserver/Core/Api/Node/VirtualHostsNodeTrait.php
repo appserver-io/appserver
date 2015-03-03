@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Api\Node\VirtualHostsNodeTrait
+ * \AppserverIo\Appserver\Core\Api\Node\VirtualHostsNodeTrait
  *
  * NOTICE OF LICENSE
  *
@@ -62,6 +62,9 @@ trait VirtualHostsNodeTrait
         $virtualHosts = array();
 
         // iterate hosts
+        /**
+         * @var \AppserverIo\Appserver\Core\Api\Node\VirtualHostNode $virtualHost
+         */
         foreach ($this->getVirtualHosts() as $virtualHost) {
             // explode the virtual host names
             $virtualHostNames = explode(' ', $virtualHost->getName());

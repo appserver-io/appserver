@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Scanner\DeploymentScanner
+ * \AppserverIo\Appserver\Core\Scanner\DeploymentScanner
  *
  * NOTICE OF LICENSE
  *
@@ -63,7 +63,7 @@ class DeploymentScanner extends AbstractScanner
      * @param \AppserverIo\Appserver\Application\Interfaces\ContextInterface $initialContext    The initial context instance
      * @param string                                                         $directory         The directory we want to scan
      * @param integer                                                        $interval          The interval in seconds we want scan the directory
-     * @param string                                                         $extensionsToWatch The comma separeted list with extensions of files we want to watch
+     * @param string                                                         $extensionsToWatch The comma separated list with extensions of files we want to watch
      */
     public function __construct($initialContext, $directory, $interval = 1, $extensionsToWatch = '')
     {
@@ -164,7 +164,7 @@ class DeploymentScanner extends AbstractScanner
                 // log that changes have been found
                 $this->getSystemLogger()->debug(sprintf('Found changes in directory %s', $directory));
 
-                // log the UNIX timestamp of the last successfull deployment
+                // log the UNIX timestamp of the last successful deployment
                 $lastSuccessfullDeployment = $this->getLastSuccessfullyDeployment($deploymentFlag);
 
                 // restart the appserver
@@ -175,10 +175,10 @@ class DeploymentScanner extends AbstractScanner
                     sleep($interval);
                 }
 
-                // set the directory new hash value after successfull deployment
+                // set the directory new hash value after successful deployment
                 $oldHash = $this->getDirectoryHash($directory);
 
-                // log that the appserver has been restarted successfull
+                // log that the appserver has been restarted successful
                 $this->getSystemLogger()->debug('appserver has successfully been restarted');
 
             } else {

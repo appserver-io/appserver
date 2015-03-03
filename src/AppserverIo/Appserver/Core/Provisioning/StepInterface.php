@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Provisioning\StepInterface
+ * \AppserverIo\Appserver\Core\Provisioning\StepInterface
  *
  * NOTICE OF LICENSE
  *

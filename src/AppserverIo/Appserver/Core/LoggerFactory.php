@@ -44,6 +44,9 @@ class LoggerFactory
 
         // initialize the processors
         $processors = array();
+        /**
+         * @var \AppserverIo\Appserver\Core\Api\Node\ProcessorNode $processorNode
+         */
         foreach ($loggerNode->getProcessors() as $processorNode) {
             $reflectionClass = new \ReflectionClass($processorNode->getType());
             $processors[] = $reflectionClass->newInstanceArgs($processorNode->getParamsAsArray());
@@ -51,12 +54,15 @@ class LoggerFactory
 
         // initialize the handlers
         $handlers = array();
+        /**
+         * @var \AppserverIo\Appserver\Core\Api\Node\HandlerNode $handlerNode
+         */
         foreach ($loggerNode->getHandlers() as $handlerNode) {
             // initialize the handler node
             $reflectionClass = new \ReflectionClass($handlerNode->getType());
             $handler = $reflectionClass->newInstanceArgs($handlerNode->getParamsAsArray());
 
-            // if we've a formatter, initialize the formtter also
+            // if we've a formatter, initialize the formatter also
             if ($formatterNode = $handlerNode->getFormatter()) {
                 $reflectionClass = new \ReflectionClass($formatterNode->getType());
                 $handler->setFormatter($reflectionClass->newInstanceArgs($formatterNode->getParamsAsArray()));

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Meta\Composer\Script\SetupKeys
+ * \AppserverIo\Appserver\Meta\Composer\Script\SetupKeys
  *
  * NOTICE OF LICENSE
  *

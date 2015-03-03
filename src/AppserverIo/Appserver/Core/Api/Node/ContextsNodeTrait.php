@@ -62,6 +62,9 @@ trait ContextsNodeTrait
      */
     public function getContext($name)
     {
+        /**
+         * @var \AppserverIo\Appserver\Core\Api\Node\ContextNode $context
+         */
         foreach ($this->getContexts() as $context) {
             if ($context->getName() === $name) {
                 return $context;

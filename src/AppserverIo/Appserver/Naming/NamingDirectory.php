@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Naming\NamingDirectory
+ * \AppserverIo\Appserver\Naming\NamingDirectory
  *
  * NOTICE OF LICENSE
  *
@@ -33,12 +33,16 @@ use AppserverIo\Psr\Naming\NamingDirectoryInterface;
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
+ *
+ * @property string $scheme The binding string scheme
  */
 class NamingDirectory extends GenericStackable implements NamingDirectoryInterface
 {
 
     /**
      * Trait which allows to bind instances and callbacks to the naming directory
+     *
+     * @var \AppserverIo\Appserver\Naming\BindingTrait
      */
     use BindingTrait;
 

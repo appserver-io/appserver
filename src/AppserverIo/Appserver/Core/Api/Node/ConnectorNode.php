@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Api\Node\AnalyticNode
+ * \AppserverIo\Appserver\Core\Api\Node\ConnectorNode
  *
  * NOTICE OF LICENSE
  *
@@ -31,8 +31,11 @@ namespace AppserverIo\Appserver\Core\Api\Node;
  */
 class ConnectorNode extends AbstractNode
 {
-    // We use traits which give us the possibility to have collections of the child nodes mentioned in the
-    // corresponding trait name
+    /**
+     * A params node trait.
+     *
+     * @var \AppserverIo\Appserver\Core\Api\Node\ParamsNodeTrait
+     */
     use ParamsNodeTrait;
 
     /**

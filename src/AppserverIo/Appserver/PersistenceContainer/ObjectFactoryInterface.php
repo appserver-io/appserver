@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\PersistenceContainer\GenericObjectFactory
+ * \AppserverIo\Appserver\PersistenceContainer\GenericObjectFactory
  *
  * NOTICE OF LICENSE
  *
@@ -19,8 +19,6 @@
  */
 
 namespace AppserverIo\Appserver\PersistenceContainer;
-
-use AppserverIo\Psr\Application\ApplicationInterface;
 
 /**
  * A thread which creates instances in a protected context.

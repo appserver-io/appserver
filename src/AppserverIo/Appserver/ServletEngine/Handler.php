@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\Handler
+ * \AppserverIo\Appserver\ServletEngine\Handler
  *
  * NOTICE OF LICENSE
  *

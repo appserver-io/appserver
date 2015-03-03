@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Api\Node\NodeValue
+ * \AppserverIo\Appserver\Core\Api\Node\NodeValue
  *
  * NOTICE OF LICENSE
  *
@@ -65,7 +65,7 @@ class NodeValue implements ValueInterface
     }
 
     /**
-     * Set's the node's value.
+     * Sets the node's value.
      *
      * @param string $value The value to set
      *
@@ -77,7 +77,7 @@ class NodeValue implements ValueInterface
     }
 
     /**
-     * Return's the node value.
+     * Returns the node value.
      *
      * @return string The node value
      */

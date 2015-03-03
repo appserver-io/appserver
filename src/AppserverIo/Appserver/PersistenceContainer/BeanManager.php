@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\PersistenceContainer\BeanManager
+ * \AppserverIo\Appserver\PersistenceContainer\BeanManager
  *
  * NOTICE OF LICENSE
  *
@@ -47,6 +47,14 @@ use AppserverIo\Psr\EnterpriseBeans\Description\MessageDrivenBeanDescriptorInter
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
+ *
+ * @property array                                                                            $directories                   The additional directories to be parsed
+ * @property \AppserverIo\Psr\EnterpriseBeans\ResourceLocatorInterface                        $resourceLocator               The resource locator
+ * @property \AppserverIo\Storage\StorageInterface                                            $statefulSessionBeans          The storage for the stateful session beans
+ * @property \AppserverIo\Storage\StorageInterface                                            $singletonSessionBeans         The storage for the singleton session beans
+ * @property \AppserverIo\Appserver\PersistenceContainer\StatefulSessionBeanSettingsInterface $statefulSessionBeanSettings   Settings for the stateful session beans
+ * @property \AppserverIo\Appserver\PersistenceContainer\StatefulSessionBeanMapFactory        $statefulSessionBeanMapFactory The factory instance
+ * @property \AppserverIo\Appserver\PersistenceContainer\ObjectFactoryInterface               $objectFactory                 The object factory instance
  */
 class BeanManager extends AbstractEpbManager implements BeanContextInterface
 {
@@ -126,7 +134,7 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface
     /**
      * Injects the object factory instance.
      *
-     * @param \AppserverIo\Appserver\PersistenceContainer\ObjectFactory $objectFactory The object factory instance
+     * @param \AppserverIo\Appserver\PersistenceContainer\ObjectFactoryInterface $objectFactory The object factory instance
      *
      * @return void
      */
@@ -223,7 +231,7 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface
     /**
      * Register the bean described by the passed descriptor.
      *
-     * @param \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\BeanDescriptorInterface $descriptor The bean descriptor
+     * @param \AppserverIo\Psr\EnterpriseBeans\Description\BeanDescriptorInterface $descriptor The bean descriptor
      *
      * @return void
      */
@@ -335,7 +343,7 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface
     /**
      * Returns the object factory instance.
      *
-     * @return \AppserverIo\Appserver\PersistenceContainer\ObjectFactory The object factory instance
+     * @return \AppserverIo\Appserver\PersistenceContainer\ObjectFactoryInterface The object factory instance
      */
     public function getObjectFactory()
     {
@@ -459,7 +467,7 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface
         // load the bean descriptor
         $descriptor = $objectManager->getObjectDescriptors()->get(get_class($instance));
 
-        // invoke the pre-destory callbacks if we've a session bean
+        // invoke the pre-destroy callbacks if we've a session bean
         if ($descriptor instanceof SessionBeanDescriptorInterface) {
             foreach ($descriptor->getPreDestroyCallbacks() as $preDestroyCallback) {
                 $instance->$preDestroyCallback();
@@ -528,7 +536,7 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface
         }
 
         // we've an unknown bean type => throw an exception
-        throw new InvalidBeanTypeException('Try to attach invalid bean type');
+        throw new InvalidBeanTypeException('Tried to attach invalid bean type');
     }
 
     /**

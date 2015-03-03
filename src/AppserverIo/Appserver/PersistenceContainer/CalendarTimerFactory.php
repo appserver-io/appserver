@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\PersistenceContainer\CalendarTimerFactory
+ * \AppserverIo\Appserver\PersistenceContainer\CalendarTimerFactory
  *
  * NOTICE OF LICENSE
  *
@@ -35,6 +35,14 @@ use AppserverIo\Appserver\PersistenceContainer\Utils\TimerState;
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
+ *
+ * @property \AppserverIo\Psr\Application\ApplicationInterface                $application   The application instance
+ * @property \Serializable                                                    $info          The serializable info passed to the timer
+ * @property boolean                                                          $persistent    TRUE if we want to create a persistent timer, else FALSE
+ * @property $schedule
+ * @property \AppserverIo\Appserver\PersistenceContainer\CalendarTimerBuilder $timer         The timer instance to be created
+ * @property \AppserverIo\Lang\Reflection\MethodInterface                     $timeoutMethod The timeout method instance
+ * @property \AppserverIo\Psr\EnterpriseBeans\TimerServiceInterface           $timerService  The timer service
  */
 class CalendarTimerFactory extends \Thread implements CalendarTimerFactoryInterface
 {
@@ -83,6 +91,7 @@ class CalendarTimerFactory extends \Thread implements CalendarTimerFactoryInterf
      *
      * @return \AppserverIo\Psr\EnterpriseBeans\TimerInterface The newly created Timer.
      * @throws \AppserverIo\Psr\EnterpriseBeans\EnterpriseBeansException If this method could not complete due to a system-level failure.
+     * @throws \Exception
      */
     public function createTimer(TimerServiceInterface $timerService, ScheduleExpression $schedule, \Serializable $info = null, $persistent = true, MethodInterface $timeoutMethod = null)
     {
@@ -149,7 +158,7 @@ class CalendarTimerFactory extends \Thread implements CalendarTimerFactoryInterf
         // run forever
         while (true) {
             // wait until we've been notified
-            $this->synchronized(function ($self) {
+            $this->synchronized(function (CalendarTimerFactory $self) {
                 $self->wait();
             }, $this);
 

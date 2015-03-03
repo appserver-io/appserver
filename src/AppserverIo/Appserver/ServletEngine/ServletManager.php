@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\ServletManager
+ * \AppserverIo\Appserver\ServletEngine\ServletManager
  *
  * NOTICE OF LICENSE
  *
@@ -46,6 +46,7 @@ use AppserverIo\Appserver\DependencyInjectionContainer\DeploymentDescriptorParse
  * @property \AppserverIo\Storage\StorageInterface                         $initParameters    The container for the init parameters
  * @property \AppserverIo\Appserver\ServletEngine\ResourceLocatorInterface $resourceLocator   The resource locator for requested servlets
  * @property \AppserverIo\Storage\StorageInterface                         $securedUrlConfigs The container for the secured URL configurations
+ * @property \AppserverIo\Appserver\ServletEngine\ResourceLocatorInterface $servletLocator    The resource locator for the servlets
  * @property \AppserverIo\Storage\GenericStackable                         $servletMappings   The container for the servlet mappings
  * @property \AppserverIo\Storage\StorageInterface                         $servlets          The container for the servlets
  * @property \AppserverIo\Storage\StorageInterface                         $sessionParameters The container for the session parameters
@@ -176,6 +177,9 @@ class ServletManager extends AbstractEpbManager implements ServletContextInterfa
         $directories = array();
 
         // append the directory found in the servlet managers configuration
+        /**
+         * @var \AppserverIo\Appserver\Core\Api\Node\DirectoryNode $directoryNode
+         */
         foreach ($this->getDirectories() as $directoryNode) {
             // prepare the custom directory defined in the servlet managers configuration
             $customDir = $folder . DIRECTORY_SEPARATOR . ltrim($directoryNode->getNodeValue()->getValue(), DIRECTORY_SEPARATOR);

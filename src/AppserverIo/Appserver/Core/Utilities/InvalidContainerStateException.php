@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Utilities\InvalidContainerStateException
+ * \AppserverIo\Appserver\Core\Utilities\InvalidContainerStateException
  *
  * NOTICE OF LICENSE
  *

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Api\RecursiveNormalizer
+ * \AppserverIo\Appserver\Core\Api\RecursiveNormalizer
  *
  * NOTICE OF LICENSE
  *

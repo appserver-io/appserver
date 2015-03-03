@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\PersistenceManagerInterface
+ * \AppserverIo\Appserver\ServletEngine\PersistenceManagerInterface
  *
  * NOTICE OF LICENSE
  *

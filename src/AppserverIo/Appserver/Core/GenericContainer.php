@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\GenericContainer
+ * \AppserverIo\Appserver\Core\GenericContainer
  *
  * NOTICE OF LICENSE
  *

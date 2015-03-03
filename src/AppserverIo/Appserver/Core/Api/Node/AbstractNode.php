@@ -145,7 +145,7 @@ abstract class AbstractNode implements NodeInterface
     }
 
     /**
-     * Return's the virtual ID applied by API services.
+     * Returns the virtual ID applied by API services.
      *
      * @return string The nodes unique node ID
      */
@@ -167,7 +167,7 @@ abstract class AbstractNode implements NodeInterface
     }
 
     /**
-     * Return's the unique virtual ID of the parent node.
+     * Returns the unique virtual ID of the parent node.
      *
      * @return string The unique ID of the parent node
      */
@@ -189,7 +189,7 @@ abstract class AbstractNode implements NodeInterface
     }
 
     /**
-     * Return's the node's name
+     * Returns the node's name
      *
      * @return string The node's name
      */
@@ -209,7 +209,7 @@ abstract class AbstractNode implements NodeInterface
     }
 
     /**
-     * Return's the configuration node name by given mapping and configuration
+     * Returns the configuration node name by given mapping and configuration
      *
      * @param \AppserverIo\Configuration\Interfaces\ConfigurationInterface $configuration The configuration instance
      * @param \AppserverIo\Appserver\Core\Api\Node\Mapping                 $mapping       The mapping instance
@@ -242,12 +242,12 @@ abstract class AbstractNode implements NodeInterface
     }
 
     /**
-     * Return's the value for a given reflection property and configuration
+     * Returns the value for a given reflection property and configuration
      *
      * @param \ReflectionProperty                                          $reflectionProperty The reflection property
      * @param \AppserverIo\Configuration\Interfaces\ConfigurationInterface $configuration      The configuration instance
      *
-     * @return array An array with all values from given reflection property
+     * @return array|null An array with all values from given reflection property
      * @throws \Exception
      */
     public function getValueForReflectionProperty(\ReflectionProperty $reflectionProperty, ConfigurationInterface $configuration)
@@ -268,6 +268,9 @@ abstract class AbstractNode implements NodeInterface
         // initialize a new value configuration node
         if (class_exists($nodeType) && $this->isValueClass($nodeType)) {
             // initialize the new node type
+            /**
+             * @var \AppserverIo\Appserver\Core\Api\Node\AbstractNode $newNode
+             */
             $newNode = new $nodeType();
             $newNode->initFromConfiguration($configuration);
 
@@ -279,6 +282,9 @@ abstract class AbstractNode implements NodeInterface
             // first we've to check if the child has data
             if ($child = $configuration->getChild($configurationNodeName)) {
                 // initialize the new node type
+                /**
+                 * @var \AppserverIo\Appserver\Core\Api\Node\AbstractNode $newNode
+                 */
                 $newNode = new $nodeType();
                 $newNode->initFromConfiguration($child);
                 $newNode->setParentUuid($this->getUuid());
@@ -297,6 +303,9 @@ abstract class AbstractNode implements NodeInterface
             foreach ($configuration->getChilds($configurationNodeName) as $child) {
                 // initialize the node and load the data from the configuration
                 $elementType = $mapping->getElementType();
+                /**
+                 * @var \AppserverIo\Appserver\Core\Api\Node\AbstractNode $newNode
+                 */
                 $newNode = new $elementType();
                 $newNode->initFromConfiguration($child);
                 $newNode->setParentUuid($this->getUuid());

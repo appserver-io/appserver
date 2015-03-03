@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Api\Node\ManagersNodeTrait
+ * \AppserverIo\Appserver\Core\Api\Node\ManagersNodeTrait
  *
  * NOTICE OF LICENSE
  *

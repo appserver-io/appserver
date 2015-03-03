@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Api\Node\ExtractorNodeInterface
+ * \AppserverIo\Appserver\Core\Api\Node\ExtractorNodeInterface
  *
  * NOTICE OF LICENSE
  *

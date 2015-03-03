@@ -1,6 +1,6 @@
 <?php
 /**
- * AppserverIo\Appserver\PersistenceContainer\TimedObjectInvoker
+ * \AppserverIo\Appserver\PersistenceContainer\TimedObjectInvoker
  *
  * NOTICE OF LICENSE
  *
@@ -39,6 +39,11 @@ use AppserverIo\Psr\Application\ApplicationInterface;
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
+ *
+ * @property \AppserverIo\Psr\Application\ApplicationInterface $application          The application instance
+ * @property \AppserverIo\Lang\Reflection\ClassInterface       $timedObject          The timed object instance
+ * @property \AppserverIo\Storage\StorageInterface             $timeoutMethods       The storage for the timeout methods
+ * @property \AppserverIo\Lang\Reflection\MethodInterface      $defaultTimeoutMethod The timeout method instance
  */
 class TimedObjectInvoker extends GenericStackable implements TimedObjectInvokerInterface
 {
@@ -183,6 +188,9 @@ class TimedObjectInvoker extends GenericStackable implements TimedObjectInvokerI
 
         // check the methods of the bean for a @Timeout annotation => overwrite the default
         // timeout method defined by the interface
+        /**
+         * @var \AppserverIo\Lang\Reflection\MethodInterface $timeoutMethod
+         */
         foreach ($reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $timeoutMethod) {
             // check if the timed object instance has @Timeout annotation => default timeout method
             if ($timeoutMethod->hasAnnotation(Timeout::ANNOTATION)) {

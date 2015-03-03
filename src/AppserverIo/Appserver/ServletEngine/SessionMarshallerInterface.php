@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\SessionMarshallerInterface
+ * \AppserverIo\Appserver\ServletEngine\SessionMarshallerInterface
  *
  * NOTICE OF LICENSE
  *
@@ -30,8 +30,8 @@ use AppserverIo\Psr\Servlet\ServletSessionInterface;
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
- * @link      http://php.net/session
- * @link      http://php.net/setcookie
+ * @see       http://php.net/session
+ * @see       http://php.net/setcookie
  */
 interface SessionMarshallerInterface
 {
@@ -46,10 +46,10 @@ interface SessionMarshallerInterface
     public function marshall(ServletSessionInterface $servletSession);
 
     /**
-     * Unmarshalls the marshalled session representation.
+     * Un-marshals the marshaled session representation.
      *
-     * @param \AppserverIo\Psr\Servlet\ServletSessionInterface $servletSession The empty session instance we want the unmarshalled data be added to
-     * @param string                                           $marshalled     The marshalled session representation
+     * @param \AppserverIo\Psr\Servlet\ServletSessionInterface $servletSession The empty session instance we want the un-marshaled data be added to
+     * @param string                                           $marshalled     The marshaled session representation
      *
      * @return void
      */

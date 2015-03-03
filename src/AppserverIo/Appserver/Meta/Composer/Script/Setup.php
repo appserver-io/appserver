@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Meta\Composer\Script\Setup
+ * \AppserverIo\Appserver\Meta\Composer\Script\Setup
  *
  * NOTICE OF LICENSE
  *
@@ -203,6 +203,7 @@ class Setup
         }
 
         // check if we've a file with the actual version number
+        $version = '';
         if (file_exists($filename = $installDir .'/etc/appserver/.release-version')) {
             $version = file_get_contents($filename);
         } else {
@@ -280,7 +281,7 @@ class Setup
     }
 
     /**
-     * This method will be invoked by composer after a successfull installation and creates
+     * This method will be invoked by composer after a successful installation and creates
      * the application server configuration file under etc/appserver/appserver.xml.
      *
      * @param \Composer\Script\Event $event The event that invokes this method

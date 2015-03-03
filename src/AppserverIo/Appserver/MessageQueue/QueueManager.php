@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\MessageQueue\QueueManager
+ * \AppserverIo\Appserver\MessageQueue\QueueManager
  *
  * NOTICE OF LICENSE
  *
@@ -92,7 +92,7 @@ class QueueManager extends AbstractManager implements QueueContextInterface
     /**
      * Deploys the message queues.
      *
-     * @param \AppserverIo\Psr\Application\ApplicationInterface $application The application instance
+     * @param \AppserverIo\Psr\Application\ApplicationInterface|\AppserverIo\Psr\Naming\NamingDirectoryInterface $application The application instance
      *
      * @return void
      */
@@ -108,6 +108,9 @@ class QueueManager extends AbstractManager implements QueueContextInterface
         }
 
         // check META-INF + subdirectories for XML files with MQ definitions
+        /**
+         * @var \AppserverIo\Appserver\Core\Api\DeploymentService $service
+         */
         $service = $application->newService('AppserverIo\Appserver\Core\Api\DeploymentService');
         $xmlFiles = $service->globDir($metaInfDir . DIRECTORY_SEPARATOR . 'message-queues.xml');
 
@@ -129,10 +132,16 @@ class QueueManager extends AbstractManager implements QueueContextInterface
 
                 // validate the file here, if it is not valid we can skip further steps
                 try {
+                    /**
+                     * @var \AppserverIo\Appserver\Core\Api\ConfigurationService $configurationService
+                     */
                     $configurationService = $application->newService('AppserverIo\Appserver\Core\Api\ConfigurationService');
                     $configurationService->validateFile($file, null, true);
 
                 } catch (InvalidConfigurationException $e) {
+                    /**
+                     * @var \Psr\Log\LoggerInterface $systemLogger
+                     */
                     $systemLogger = $this->getApplication()->getInitialContext()->getSystemLogger();
                     $systemLogger->error($e->getMessage());
                     $systemLogger->critical(sprintf('Message queue configuration file %s is invalid, needed queues might be missing.', $file));

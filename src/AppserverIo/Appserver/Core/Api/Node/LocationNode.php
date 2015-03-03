@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Api\Node\LocationNode
+ * \AppserverIo\Appserver\Core\Api\Node\LocationNode
  *
  * NOTICE OF LICENSE
  *
@@ -58,7 +58,7 @@ class LocationNode extends AbstractNode
     }
 
     /**
-     * Converts the location node into an assoziative array
+     * Converts the location node into an associative array
      * and returns it.
      *
      * @return array The array with the location node data

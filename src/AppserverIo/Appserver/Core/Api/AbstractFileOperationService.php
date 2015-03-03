@@ -1,6 +1,6 @@
 <?php
 /**
- * AppserverIo\Appserver\Core\Api\AbstractService
+ * \AppserverIo\Appserver\Core\Api\AbstractFileOperationService
  *
  * NOTICE OF LICENSE
  *

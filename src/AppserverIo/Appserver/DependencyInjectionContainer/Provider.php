@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\DependencyInjectionContainer\Provider
+ * \AppserverIo\Appserver\DependencyInjectionContainer\Provider
  *
  * NOTICE OF LICENSE
  *
@@ -51,6 +51,9 @@ use AppserverIo\Psr\Naming\InitialContext as NamingContext;
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
+ *
+ * @property \AppserverIo\Psr\Naming\InitialContext           $initialContext  The naming context instance
+ * @property \AppserverIo\Psr\Naming\NamingDirectoryInterface $namingDirectory The applications naming directory interface
  */
 class Provider extends GenericStackable implements ProviderInterface
 {
@@ -272,6 +275,9 @@ class Provider extends GenericStackable implements ProviderInterface
     {
 
         // load the object manager instance
+        /**
+         * @var \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\ObjectManagerInterface $objectManager
+         */
         $objectManager = $this->getNamingDirectory()->search('ObjectManagerInterface');
 
         // load the object descriptor for the instance from the the object manager

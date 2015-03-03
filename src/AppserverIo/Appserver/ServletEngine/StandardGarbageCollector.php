@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\StandardGarbageCollector
+ * \AppserverIo\Appserver\ServletEngine\StandardGarbageCollector
  *
  * NOTICE OF LICENSE
  *
@@ -17,6 +17,7 @@
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
+
 namespace AppserverIo\Appserver\ServletEngine;
 
 use AppserverIo\Logger\LoggerUtils;
@@ -31,6 +32,11 @@ use AppserverIo\Psr\Servlet\ServletSessionInterface;
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
+ *
+ * @property \Psr\Log\loggerInterface[]                                    $loggers         The logger instances
+ * @property \AppserverIo\Appserver\ServletEngine\SessionFactory           $sessionFactory  The session factory
+ * @property \AppserverIo\Storage\StorageInterface                         $sessions        The sessions
+ * @property \AppserverIo\Appserver\ServletEngine\SessionSettingsInterface $sessionSettings Settings for the session handling
  */
 class StandardGarbageCollector extends \Thread implements GarbageCollectorInterface
 {
@@ -203,7 +209,7 @@ class StandardGarbageCollector extends \Thread implements GarbageCollectorInterf
         // counter to store the number of removed sessions
         $sessionRemovalCount = 0;
 
-        // the probaility that we want to collect the garbage (float <= 1.0)
+        // the probability that we want to collect the garbage (float <= 1.0)
         $garbageCollectionProbability = $this->getSessionSettings()->getGarbageCollectionProbability();
 
         // calculate if the want to collect the garbage now

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Api\Node\ParamsNodeTrait
+ * \AppserverIo\Appserver\Core\Api\Node\ParamsNodeTrait
  *
  * NOTICE OF LICENSE
  *

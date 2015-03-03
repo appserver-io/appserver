@@ -1,6 +1,6 @@
 <?php
 /**
- * AppserverIo\Appserver\Core\InitialContext
+ * \AppserverIo\Appserver\Core\InitialContext
  *
  * NOTICE OF LICENSE
  *
@@ -33,6 +33,8 @@ use AppserverIo\Appserver\Application\Interfaces\ContextInterface;
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
+ *
+ * @property \Psr\Log\LoggerInterface[] $loggers The collection of loggers we know
  */
 class InitialContext implements ContextInterface
 {
@@ -45,7 +47,7 @@ class InitialContext implements ContextInterface
     protected $storage;
 
     /**
-     * The server's logger instance.
+     * The server's system logger instance.
      *
      * @var \Psr\Log\LoggerInterface
      */
@@ -212,7 +214,6 @@ class InitialContext implements ContextInterface
      * @param array  $args      Arguments to pass to the constructor of the instance
      *
      * @return object The instance itself
-     * @todo Has to be refactored to avoid registering autoloader on every call
      */
     public function newInstance($className, array $args = array())
     {

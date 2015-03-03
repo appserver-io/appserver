@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\GarbageCollectorInterface
+ * \AppserverIo\Appserver\ServletEngine\GarbageCollectorInterface
  *
  * NOTICE OF LICENSE
  *

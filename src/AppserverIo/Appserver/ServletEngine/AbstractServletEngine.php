@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\AbstractServletEngine
+ * \AppserverIo\Appserver\ServletEngine\AbstractServletEngine
  *
  * NOTICE OF LICENSE
  *
@@ -39,10 +39,11 @@ use AppserverIo\Appserver\ServletEngine\Authentication\AuthenticationValve;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  *
- * @property \AppserverIo\Storage\GenericStackable $applications Storage with the available applications
- * @property \AppserverIo\Storage\GenericStackable $dependencies Storage with the available applications
- * @property \AppserverIo\Storage\GenericStackable $handlers     Storage handlers registered in the web server
- * @property \AppserverIo\Storage\GenericStackable $valves       Storage for the servlet engines valves that handles the request
+ * @property \AppserverIo\Storage\GenericStackable                 $applications  Storage with the available applications
+ * @property \AppserverIo\Storage\GenericStackable                 $dependencies  Storage with the available applications
+ * @property \AppserverIo\Storage\GenericStackable                 $handlers      Storage handlers registered in the web server
+ * @property \AppserverIo\Server\Interfaces\ServerContextInterface $serverContext The actual server context instance
+ * @property \AppserverIo\Storage\GenericStackable                 $valves        Storage for the servlet engines valves that handles the request
  */
 abstract class AbstractServletEngine extends GenericStackable implements HttpModuleInterface
 {
@@ -53,33 +54,11 @@ abstract class AbstractServletEngine extends GenericStackable implements HttpMod
     public function __construct()
     {
 
-        /**
-         * Storage with the available applications.
-         *
-         * @var \AppserverIo\Storage\GenericStackable
-         */
-        $this->dependencies = new GenericStackable();
-
-        /**
-         * Storage for the servlet engines valves that handles the request.
-         *
-         * @var \AppserverIo\Storage\GenericStackable
-         */
-        $this->valves = new GenericStackable();
-
-        /**
-         * Storage handlers registered in the web server.
-         *
-         * @var \AppserverIo\Storage\GenericStackable
-         */
-        $this->handlers = new GenericStackable();
-
-        /**
-         * Storage with the available applications.
-         *
-         * @var \AppserverIo\Storage\GenericStackable
-         */
+        // initialize our storage properties
         $this->applications = new GenericStackable();
+        $this->dependencies = new GenericStackable();
+        $this->handlers = new GenericStackable();
+        $this->valves = new GenericStackable();
     }
 
     /**

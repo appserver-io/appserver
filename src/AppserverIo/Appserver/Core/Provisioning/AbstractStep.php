@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Provisioning\AbstractStep
+ * \AppserverIo\Appserver\Core\Provisioning\AbstractStep
  *
  * NOTICE OF LICENSE
  *
@@ -142,7 +142,7 @@ abstract class AbstractStep extends \Thread implements StepInterface
     /**
      * Injects the initial context.
      *
-     * @param \AppserverIo\Appserver\Application\Interfaces\ContextInterface $initialContext The initial context instance
+     * @param \AppserverIo\Appserver\Core\InitialContext $initialContext The initial context instance
      *
      * @return void
      */

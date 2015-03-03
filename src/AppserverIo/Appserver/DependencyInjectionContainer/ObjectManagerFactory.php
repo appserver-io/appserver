@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\DependencyInjectionContainer\ObjectManagerFactory
+ * \AppserverIo\Appserver\DependencyInjectionContainer\ObjectManagerFactory
  *
  * NOTICE OF LICENSE
  *

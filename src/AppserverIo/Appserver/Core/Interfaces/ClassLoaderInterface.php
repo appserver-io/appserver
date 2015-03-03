@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Interfaces\ClassLoaderInterface
+ * \AppserverIo\Appserver\Core\Interfaces\ClassLoaderInterface
  *
  * NOTICE OF LICENSE
  *

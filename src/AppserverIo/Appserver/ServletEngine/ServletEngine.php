@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\ServletEngine
+ * \AppserverIo\Appserver\ServletEngine\ServletEngine
  *
  * NOTICE OF LICENSE
  *
@@ -33,7 +33,6 @@ use AppserverIo\Server\Exceptions\ModuleException;
 use AppserverIo\Appserver\ServletEngine\Http\Request;
 use AppserverIo\Appserver\ServletEngine\Http\Response;
 use AppserverIo\Appserver\ServletEngine\Http\Part;
-use AppserverIo\Psr\Servlet\ServletException;
 
 /**
  * A servlet engine implementation.
@@ -43,6 +42,10 @@ use AppserverIo\Psr\Servlet\ServletException;
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
+ *
+ * @property
+ * @property
+ * @property \AppserverIo\Server\Interfaces\ServerContextInterface $serverContext The servers context instance
  */
 class ServletEngine extends AbstractServletEngine
 {
@@ -103,7 +106,9 @@ class ServletEngine extends AbstractServletEngine
      * @param \AppserverIo\Server\Interfaces\RequestContextInterface $requestContext A requests context instance
      * @param int                                                    $hook           The current hook to process logic for
      *
-     * @return bool
+     * @return boolean
+     *
+     * @throws \Exception
      */
     public function process(
         RequestInterface $request,

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\Authentication\Adapters\HtpasswdAdapter
+ * \AppserverIo\Appserver\ServletEngine\Authentication\Adapters\HtpasswdAdapter
  *
  * NOTICE OF LICENSE
  *

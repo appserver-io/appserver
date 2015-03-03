@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Api\Node\FormatterNode
+ * \AppserverIo\Appserver\Core\Api\Node\FormatterNode
  *
  * NOTICE OF LICENSE
  *
@@ -35,7 +35,7 @@ class FormatterNode extends AbstractNode
     /**
      * A params node trait.
      *
-     * @var \TraitInterface
+     * @var \AppserverIo\Appserver\Core\Api\Node\ParamsNodeTrait
      */
     use ParamsNodeTrait;
 

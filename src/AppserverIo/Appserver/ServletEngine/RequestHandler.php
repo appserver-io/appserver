@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\RequestHandler
+ * \AppserverIo\Appserver\ServletEngine\RequestHandler
  *
  * NOTICE OF LICENSE
  *
@@ -35,6 +35,11 @@ use AppserverIo\Psr\Application\ApplicationInterface;
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
+ *
+ * @property \AppserverIo\Psr\Application\ApplicationInterface          $application     The application instance
+ * @property \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface  $servletRequest  The actual request instance
+ * @property \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse The actual response instance
+ * @property \AppserverIo\Storage\GenericStackable                      $valves          The valves to process
  */
 class RequestHandler extends \Thread
 {

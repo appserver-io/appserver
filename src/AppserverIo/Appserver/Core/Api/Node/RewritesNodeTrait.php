@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Api\Node\ParamsNodeTrait
+ * \AppserverIo\Appserver\Core\Api\Node\ParamsNodeTrait
  *
  * NOTICE OF LICENSE
  *
@@ -83,6 +83,9 @@ trait RewritesNodeTrait
         $rewrites = array();
 
         // prepare the array with the rewrite rules
+        /**
+         * @var \AppserverIo\Appserver\Core\Api\Node\RewriteNode $rewrite
+         */
         foreach ($this->getRewrites() as $rewrite) {
             // rewrites might be extended using different injector extension types, check for that
             if ($rewrite->hasInjector()) {

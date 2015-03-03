@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Naming\BindingTrait
+ * \AppserverIo\Appserver\Naming\BindingTrait
  *
  * NOTICE OF LICENSE
  *
@@ -118,7 +118,7 @@ trait BindingTrait
 
     /**
      * Queries the naming directory for the requested name and returns the value
-     * or invokes the binded callback.
+     * or invokes the bound callback.
      *
      * @param string $name The name of the requested value
      * @param array  $args The arguments to pass to the callback

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\GenericDeployment
+ * \AppserverIo\Appserver\Core\GenericDeployment
  *
  * NOTICE OF LICENSE
  *
@@ -19,8 +19,6 @@
  */
 
 namespace AppserverIo\Appserver\Core;
-
-use AppserverIo\Appserver\Application\ApplicationFactory;
 
 /**
  * Generic deployment implementation for web applications.
@@ -56,7 +54,7 @@ class GenericDeployment extends AbstractDeployment
                 // use the factory if available
                 $applicationFactory::visit($container, $context);
             } else {
-                // if not, try to instanciate the application directly
+                // if not, try to instantiate the application directly
                 $applicationType = $context->getType();
                 $container->addApplication(new $applicationType($context));
             }

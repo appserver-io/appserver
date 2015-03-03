@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Api\Node\HostNode
+ * \AppserverIo\Appserver\Core\Api\Node\HostNode
  *
  * NOTICE OF LICENSE
  *
@@ -32,8 +32,11 @@ namespace AppserverIo\Appserver\Core\Api\Node;
 class HostNode extends AbstractNode
 {
 
-    // We use several traits which give us the possibility to have collections of the child nodes mentioned in the
-    // corresponding trait name
+    /**
+     * A context node trait.
+     *
+     * @var \AppserverIo\Appserver\Core\Api\Node\ContextsNodeTrait
+     */
     use ContextsNodeTrait;
 
     /**

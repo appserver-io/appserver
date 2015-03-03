@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\MessageQueue\MessageQueueModule
+ * \AppserverIo\Appserver\MessageQueue\MessageQueueModule
  *
  * NOTICE OF LICENSE
  *
@@ -116,7 +116,7 @@ class MessageQueueModule extends GenericStackable
 
                         // create a separate queue for each priority
                         foreach (PriorityKeys::getAll() as $priorityKey) {
-                            // initialize the stackable for the job storage and the jobs excecuting
+                            // initialize the stackable for the job storage and the jobs executing
                             $this->jobsExecuting[$jobCounter] = array();
                             $this->jobsToExecute[$jobCounter] = new GenericStackable();
                             $this->messageStates[$jobCounter] = new GenericStackable();

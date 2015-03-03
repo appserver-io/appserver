@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\AbstractProvisioner
+ * \AppserverIo\Appserver\Core\AbstractProvisioner
  *
  * NOTICE OF LICENSE
  *
@@ -110,7 +110,7 @@ abstract class AbstractProvisioner implements ProvisionerInterface
     /**
      * Returns the service instance to use.
      *
-     * @return \AppserverIo\Appserver\Core\Api\ServiceInterface $service The service to use
+     * @return \AppserverIo\Appserver\Core\Api\ProvisioningService $service The service to use
      */
     public function getService()
     {

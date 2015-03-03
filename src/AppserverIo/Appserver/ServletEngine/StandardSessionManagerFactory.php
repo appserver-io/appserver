@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\StandardSessionManagerFactory
+ * \AppserverIo\Appserver\ServletEngine\StandardSessionManagerFactory
  *
  * NOTICE OF LICENSE
  *
