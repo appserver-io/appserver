@@ -7,8 +7,8 @@ author: zelgerj
 position: 5
 group: Tutorials
 subNav:
-  - title: Prerequirements
-    href: prerequirements
+  - title: Prerequisite
+    href: prerequisite
   - title: Preparations
     href: preparations
   - title: Login Form
@@ -19,9 +19,9 @@ subNav:
     href: restful-service
   - title: Input Validation
     href: input-validation
-  - title: That's it!
-    href: that's-it!
-permalink: /get-started/tutorials/building-webapps-using-angular-and-appserver-io.html
+  - title: Done!
+    href: done!
+permalink: /get-started/tutorials/building-webapps-using-angular-js-and-appserver-io.html
 ---
 ![Building WebApps with AngularJS and appserver.io]({{ "/assets/img/tutorials/building-webapps-using-angular-and-appserver-io/angular_and_appserver.jpg" | prepend: site.baseurl }})
 ***
@@ -30,7 +30,9 @@ This tutorial shows how to build a webapp using AngularJS as a single page app i
 a RESTful service in the backend using **Servlets**, **Dependency-Injection**, **AOP** and **Annotated-Validation**.
 
 <br/>
-**Prerequisite**: *Your system should be well prepared for Javascript, HTML, and CSS/SASS development.
+## Prerequisite
+
+Your system should be well prepared for Javascript, HTML, and CSS/SASS development.
 We will generate an AngularJS app using [Yeoman](http://yeoman.io), that allows to kickstart an AngularJS app,
 prescribing best practices and tools to help you stay productive*
 So please check out and follow the [Instructions](http://yeoman.io/codelab/setup.html) at Yeoman guide to setup your
