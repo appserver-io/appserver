@@ -64,10 +64,11 @@ appserver.io and PHP and you´re done!
       <thead>
           <tr>
               <th class="col-md-3"><h4>Feature</h4></th>
-              <th class="col-md-3 text-center"><h4>Apache</h4></th>
-              <th class="col-md-3 text-center"><h4>nginx</h4></th>
-              <th class="col-md-3 text-center"><h4>Zend Server</h4></th>
-              <th class="col-md-3 text-center"><h4>appserver.io</h4></th>
+              <th class="col-md-2 text-center"><h4>Apache</h4></th>
+              <th class="col-md-2 text-center"><h4>nginx</h4></th>
+              <th class="col-md-2 text-center"><h4>Zend Server</h4></th>
+              <th class="col-md-2 text-center"><h4>WildFly</h4></th>
+              <th class="col-md-2 text-center"><h4>appserver.io</h4></th>
           </tr>
       </thead>
       <tbody>
@@ -76,10 +77,12 @@ appserver.io and PHP and you´re done!
               <td class="text-center">C</td>
               <td class="text-center">C</td>
               <td class="text-center">C</td>
+              <td class="text-center">Java</td>
               <td class="text-center">PHP</td>
           </tr>
           <tr>
               <td><a href="{{ "/products/features/webserver.html" | prepend: site.baseurl }}">Webserver HTTP Compliant <i class="icon-ci fa fa-info-circle"></i></a></td>
+              <td class="text-center"><i class="icon-ok fa fa-check"></i></td>
               <td class="text-center"><i class="icon-ok fa fa-check"></i></td>
               <td class="text-center"><i class="icon-ok fa fa-check"></i></td>
               <td class="text-center"><i class="icon-ok fa fa-check"></i></td>
@@ -91,6 +94,7 @@ appserver.io and PHP and you´re done!
               <td class="text-center"><i class="icon-ok fa fa-check"></i></td>
               <td class="text-center"><i class="icon-ok fa fa-check"></i></td>
               <td class="text-center"><i class="icon-ok fa fa-check"></i></td>
+              <td class="text-center"><i class="icon-ok fa fa-check"></i></td>
           </tr>
           <tr>
           <td>Rewrite Map</td>
@@ -98,9 +102,11 @@ appserver.io and PHP and you´re done!
               <td class="text-center"><i class="icon-ok fa fa-check"></i></td>
               <td class="text-center"><i class="icon-ok fa fa-check"></i></td>
               <td class="text-center"><i class="icon-ok fa fa-check"></i></td>
+              <td class="text-center"><i class="icon-ok fa fa-check"></i></td>
           </tr>
           <tr>
               <td>Fast CGI Interface</td>
+              <td class="text-center"><i class="icon-ok fa fa-check"></i></td>
               <td class="text-center"><i class="icon-ok fa fa-check"></i></td>
               <td class="text-center"><i class="icon-ok fa fa-check"></i></td>
               <td class="text-center"><i class="icon-ok fa fa-check"></i></td>
@@ -112,12 +118,14 @@ appserver.io and PHP and you´re done!
               <td class="text-center"><i class="icon-nok fa fa-remove"></i></td>
               <td class="text-center"><i class="icon-nok fa fa-remove"></i></td>
               <td class="text-center"><i class="icon-ok fa fa-check"></i></td>
+              <td class="text-center"><i class="icon-ok fa fa-check"></i></td>
           </tr>
           <tr>
           <td><a href="{{ "/products/features/message-queue.html" | prepend: site.baseurl }}">Message Queue <i class="icon-ci fa fa-info-circle"></i></a></td>
               <td class="text-center"><i class="icon-nok fa fa-remove"></i></td>
               <td class="text-center"><i class="icon-nok fa fa-remove"></i></td>
               <td class="text-center"><i class="icon-nok fa fa-remove"></i></td>
+              <td class="text-center"><i class="icon-ok fa fa-check"></i></td>
               <td class="text-center"><i class="icon-ok fa fa-check"></i></td>
           </tr>
           <tr>
@@ -126,12 +134,14 @@ appserver.io and PHP and you´re done!
               <td class="text-center"><i class="icon-nok fa fa-remove"></i></td>
               <td class="text-center"><i class="icon-nok fa fa-remove"></i></td>
               <td class="text-center"><i class="icon-ok fa fa-check"></i></td>
+              <td class="text-center"><i class="icon-ok fa fa-check"></i></td>
           </tr>
           <tr>
           <td><a href="{{ "/products/features/persistence-container.html" | prepend: site.baseurl }}">Persistence Container <i class="icon-ci fa fa-info-circle"></i></a></td>
               <td class="text-center"><i class="icon-nok fa fa-remove"></i></td>
               <td class="text-center"><i class="icon-nok fa fa-remove"></i></td>
               <td class="text-center"><i class="icon-nok fa fa-remove"></i></td>
+              <td class="text-center"><i class="icon-ok fa fa-check"></i></td>
               <td class="text-center"><i class="icon-ok fa fa-check"></i></td>
           </tr>
 
