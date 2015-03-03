@@ -37,8 +37,8 @@ So please check out and follow the [Instructions](http://yeoman.io/codelab/setup
 system correctly.
 
 You will need a running installation of **appserver.io** *(>= Version 1.0.1)*. If you are new to this
-project you can easily [download](http://127.0.0.1:4000/get-started/downloads.html) and follow the
-[installation guide](http://127.0.0.1:4000/get-started/documentation/installation.html) for your specific OS.
+project you can easily [download](<{{ "/get-started/downloads.html" | prepend: site.baseurl }}>) and follow the
+[installation guide](<{{ "get-started/documentation/installation.html" | prepend: site.baseurl }}>) for your specific OS.
 
 
 <br/>
@@ -567,7 +567,6 @@ Restart the **appserver** and check it out...
 
 ![AngularJS appserver.io login validation username]({{ "/assets/img/tutorials/building-webapps-using-angular-and-appserver-io/yo-angular-login-validation-username.png" | prepend: site.baseurl }} "AngularJS appserver.io login validation username")
 ![AngularJS appserver.io login validation password]({{ "/assets/img/tutorials/building-webapps-using-angular-and-appserver-io/yo-angular-login-validation-password.png" | prepend: site.baseurl }} "AngularJS appserver.io login validation password")
-
 
 <br/>
 ## Done!
