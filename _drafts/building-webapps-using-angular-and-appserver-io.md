@@ -36,7 +36,7 @@ prescribing best practices and tools to help you stay productive*
 So please check out and follow the [Instructions](http://yeoman.io/codelab/setup.html) at Yeoman guide to setup your
 system correctly.
 
-You will need a running installation of **appserver.io** *(>= Version 1.0.0)*. If you are new to this
+You will need a running installation of **appserver.io** *(>= Version 1.0.1)*. If you are new to this
 project you can easily [download](http://127.0.0.1:4000/get-started/downloads.html) and follow the
 [installation guide](http://127.0.0.1:4000/get-started/documentation/installation.html) for your specific OS.
 
@@ -396,7 +396,7 @@ class AuthService
 }
 ```
 
-Next is a Servlet `WEB-INF/classes/MyVendor/MyApp/LoginServlet.php` which listens to `http://myapp.dev:9080/login.do`
+Now a Servlet `WEB-INF/classes/MyVendor/MyApp/LoginServlet.php` is needed which listens to `http://myapp.dev:9080/login.do`
 where our AngularJS app `AuthService` is connected to. Inject the `AuthService` and implement the `doPost`
 method since there will only be credentials sent via HTTP-Post Method.
 
@@ -430,7 +430,7 @@ class LoginServlet extends HttpServlet
         $username = $this->authService->login($this->data);
         $session = $servletRequest->getSession(true);
         $session->start();
-        
+
         return array(
             'id' => $session->getId(),
             'username' => $username
@@ -450,7 +450,7 @@ pointcut triggered by `do*()` methods like `doGet()` or `doPost()` for all Servl
 
 For our `JsonHandlingAspect` example we will validate the requests body content if it can be decoded by using the
 `json_decode` function and set the decoded json object in the `data` property of the servlet instance. The actual
-return value of the servlet's `do*` methods will be automatically encoded to valid json strings via `json_encode`
+return value of the servlets `do*` methods will be automatically encoded to valid json strings via `json_encode`
 and appended to the response body stream. The same will happen if an exception is thrown in any service business logic
 used by the servlet with the addition that the response status code is filled with the code provided by the
 exception and it's message is sent via an error json format.
