@@ -20,7 +20,7 @@
 
 namespace AppserverIo\Appserver\Core\Api;
 
-use AppserverIo\Configuration\Interfaces\NodeInterface;
+use AppserverIo\Appserver\Core\Interfaces\AppserverConfigurationInterface;
 use AppserverIo\Appserver\Core\InitialContext;
 
 /**
@@ -46,16 +46,16 @@ interface ServiceInterface
     /**
      * Allows to set the system configuration.
      *
-     * @param \AppserverIo\Configuration\Interfaces\NodeInterface $systemConfiguration The system configuration
+     * @param \AppserverIo\Appserver\Core\Interfaces\AppserverConfigurationInterface $systemConfiguration The system configuration
      *
      * @return ServiceInterface
      */
-    public function setSystemConfiguration(NodeInterface $systemConfiguration);
+    public function setSystemConfiguration(AppserverConfigurationInterface $systemConfiguration);
 
     /**
      * Returns the system configuration.
      *
-     * @return \AppserverIo\Configuration\Interfaces\NodeInterface The system configuration
+     * @return \AppserverIo\Appserver\Core\Interfaces\AppserverConfigurationInterface The system configuration
      */
     public function getSystemConfiguration();
 

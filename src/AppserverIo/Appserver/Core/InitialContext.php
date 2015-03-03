@@ -19,6 +19,7 @@
 
 namespace AppserverIo\Appserver\Core;
 
+use AppserverIo\Appserver\Core\Interfaces\AppserverConfigurationInterface;
 use AppserverIo\Storage\StorageInterface;
 use AppserverIo\Configuration\Interfaces\NodeInterface;
 use AppserverIo\Appserver\Core\InitialContext\ContextKeys;
@@ -63,9 +64,9 @@ class InitialContext implements ContextInterface
     /**
      * Initializes the context with the connection to the storage backend.
      *
-     * @param \AppserverIo\Configuration\Interfaces\NodeInterface $systemConfiguration The system configuration
+     * @param \AppserverIo\Appserver\Core\Interfaces\AppserverConfigurationInterface $systemConfiguration The system configuration
      */
-    public function __construct(NodeInterface $systemConfiguration)
+    public function __construct(AppserverConfigurationInterface $systemConfiguration)
     {
 
         // initialize the storage
@@ -139,11 +140,11 @@ class InitialContext implements ContextInterface
     /**
      * Adds the system configuration to the initial context.
      *
-     * @param object $systemConfiguration The system configuration
+     * @param \AppserverIo\Appserver\Core\Interfaces\AppserverConfigurationInterface $systemConfiguration The system configuration
      *
      * @return void
      */
-    public function setSystemConfiguration($systemConfiguration)
+    public function setSystemConfiguration(AppserverConfigurationInterface $systemConfiguration)
     {
         $this->setAttribute(ContextKeys::SYSTEM_CONFIGURATION, $systemConfiguration);
     }
@@ -151,7 +152,7 @@ class InitialContext implements ContextInterface
     /**
      * Returns the system configuration.
      *
-     * @return \AppserverIo\Configuration\Interfaces\ConfigurationInterface The system configuration
+     * @return \AppserverIo\Appserver\Core\Interfaces\AppserverConfigurationInterface The system configuration
      */
     public function getSystemConfiguration()
     {

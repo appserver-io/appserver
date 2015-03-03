@@ -112,6 +112,9 @@ class ApplicationFactory
          * @var \AppserverIo\Appserver\Core\Api\Node\ClassLoaderNode $classLoader
          */
         foreach ($context->getClassLoaders() as $classLoader) {
+            /**
+             * @var \AppserverIo\Appserver\Core\Interfaces\ClassLoaderFactoryInterface $classLoaderFactory
+             */
             if ($classLoaderFactory = $classLoader->getFactory()) {
                 // use the factory if available
                 $classLoaderFactory::visit($application, $classLoader);

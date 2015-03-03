@@ -20,6 +20,8 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Appserver\Core\Interfaces\AppserverConfigurationInterface;
+use AppserverIo\Configuration\Interfaces\ConfigurationInterface;
 use Psr\Log\LogLevel;
 use AppserverIo\Logger\LoggerUtils;
 use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
@@ -33,7 +35,7 @@ use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class AppserverNode extends AbstractNode
+class AppserverNode extends AbstractNode implements AppserverConfigurationInterface
 {
 
     /**
@@ -111,6 +113,19 @@ class AppserverNode extends AbstractNode
         $this->initDefaultExtractors();
         $this->initDefaultProvisioners();
         $this->initDefaultInitialContext();
+    }
+
+    /**
+     * Checks if the passed configuration is equal. If yes, the method
+     * returns TRUE, if not FALSE.
+     *
+     * @param \AppserverIo\Configuration\Interfaces\ConfigurationInterface $configuration The configuration to compare to
+     *
+     * @return boolean TRUE if the configurations are equal, else FALSE
+     */
+    public function equals(ConfigurationInterface $configuration)
+    {
+        return $this === $configuration;
     }
 
     /**

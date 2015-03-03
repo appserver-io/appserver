@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\Core;
 
+use AppserverIo\Appserver\Core\Interfaces\AppserverConfigurationInterface;
 use AppserverIo\Appserver\Core\Scanner\HeartbeatScanner;
 use AppserverIo\Logger\LoggerUtils;
 use AppserverIo\Configuration\Interfaces\NodeInterface;
@@ -333,21 +334,21 @@ class Server
     }
 
     /**
-     * Set's the system configuration.
+     * Sets the system configuration.
      *
-     * @param \AppserverIo\Configuration\Interfaces\NodeInterface $systemConfiguration The system configuration object
+     * @param \AppserverIo\Appserver\Core\Interfaces\AppserverConfigurationInterface $systemConfiguration The system configuration object
      *
-     * @return \AppserverIo\Configuration\Interfaces\NodeInterface The system configuration
+     * @return null
      */
-    public function setSystemConfiguration(NodeInterface $systemConfiguration)
+    public function setSystemConfiguration(AppserverConfigurationInterface $systemConfiguration)
     {
-        return $this->systemConfiguration = $systemConfiguration;
+        $this->systemConfiguration = $systemConfiguration;
     }
 
     /**
      * Returns the system configuration.
      *
-     * @return \AppserverIo\Configuration\Interfaces\NodeInterface The system configuration
+     * @return \AppserverIo\Appserver\Core\Interfaces\AppserverConfigurationInterface The system configuration
      */
     public function getSystemConfiguration()
     {
@@ -355,7 +356,7 @@ class Server
     }
 
     /**
-     * Set's the initial context instance.
+     * Sets the initial context instance.
      *
      * @param \AppserverIo\Appserver\Core\InitialContext $initialContext The initial context instance
      *

@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\ServletEngine\Authentication;
 
+use AppserverIo\Appserver\Core\Interfaces\ManagerFactoryInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\Core\Api\Node\ManagerNodeInterface;
 
@@ -32,7 +33,7 @@ use AppserverIo\Appserver\Core\Api\Node\ManagerNodeInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class StandardAuthenticationManagerFactory
+class StandardAuthenticationManagerFactory implements ManagerFactoryInterface
 {
 
     /**

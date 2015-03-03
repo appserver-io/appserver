@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\Core;
 
+use AppserverIo\Appserver\Core\Interfaces\ClassLoaderFactoryInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\Core\Api\Node\ClassLoaderNodeInterface;
 
@@ -32,7 +33,7 @@ use AppserverIo\Appserver\Core\Api\Node\ClassLoaderNodeInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class ComposerClassLoaderFactory
+class ComposerClassLoaderFactory implements ClassLoaderFactoryInterface
 {
 
     /**

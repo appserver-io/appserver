@@ -21,6 +21,7 @@
 
 namespace AppserverIo\Appserver\PersistenceContainer;
 
+use AppserverIo\Appserver\Core\Interfaces\ManagerFactoryInterface;
 use AppserverIo\Storage\StackableStorage;
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Psr\Application\ApplicationInterface;
@@ -38,7 +39,7 @@ use AppserverIo\Psr\Naming\InitialContext as NamingContext;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class BeanManagerFactory
+class BeanManagerFactory implements ManagerFactoryInterface
 {
 
     /**

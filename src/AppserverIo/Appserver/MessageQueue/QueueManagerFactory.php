@@ -21,6 +21,7 @@
 
 namespace AppserverIo\Appserver\MessageQueue;
 
+use AppserverIo\Appserver\Core\Interfaces\ManagerFactoryInterface;
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\Core\Api\Node\ManagerNodeInterface;
@@ -35,7 +36,7 @@ use AppserverIo\Appserver\Core\Api\Node\ManagerNodeInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class QueueManagerFactory
+class QueueManagerFactory implements ManagerFactoryInterface
 {
 
     /**
