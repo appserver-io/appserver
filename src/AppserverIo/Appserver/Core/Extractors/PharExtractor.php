@@ -96,9 +96,32 @@ class PharExtractor extends AbstractExtractor
                 // remove old temporary directory
                 $this->removeDir($tmpFolderName);
 
-                // extract phar to tmp directory
+                // initialize a \Phar instance
                 $p = new \Phar($archive);
-                $p->extractTo($tmpFolderName);
+
+                // create a recursive directory iterator
+                $iterator = new \RecursiveIteratorIterator($p);
+
+                // unify the archive filename, because Windows uses a \ instead of /
+                $archiveFilename = sprintf('phar://%s', str_replace(DIRECTORY_SEPARATOR, '/', $archive->getPathname()));
+
+                // iterate over all files
+                foreach ($iterator as $file) {
+                    // prepare the temporary filename
+                    $target = $tmpFolderName . str_replace($archiveFilename, '', $file->getPathname());
+
+                    // create the directory if necessary
+                    if (file_exists($directory = dirname($target)) === false) {
+                        if (mkdir($directory, 0755, true) === false) {
+                            throw new \Exception(sprintf('Can\'t create directory %s', $directory));
+                        }
+                    }
+
+                    // finally copy the file
+                    if (copy($file, $target) === false) {
+                        throw new \Exception(sprintf('Can\'t copy %s file to %s', $file, $target));
+                    }
+                }
 
                 // move extracted content to webapps folder
                 rename($tmpFolderName->getPathname(), $webappFolderName->getPathname());

@@ -1,3 +1,13 @@
+# Version 1.0.2
+
+## Bugfixes 
+
+* Fixed [#635](https://github.com/appserver-io/appserver/issues/635) - Extracting PHAR archives containing empty files results in an exception
+
+## Features
+
+* None
+
 # Version 1.0.1
 
 ## Bugfixes
