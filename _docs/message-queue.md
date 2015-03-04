@@ -50,7 +50,8 @@ needed is the `MessageBean` that allows us to receive and process a message in a
 
 namespace Namespace\Modulename;
 
-use AppserverIo\Appserver\MessageQueue\Receiver\AbstractReceiver;
+use AppserverIo\Psr\Pms\MessageInterface;
+use AppserverIo\Messaging\AbstractMessageListener;
 
 /**
  * @MessageDriven
@@ -58,17 +59,17 @@ use AppserverIo\Appserver\MessageQueue\Receiver\AbstractReceiver;
 class ImportReceiver extends AbstractReceiver
 {
 
-  /**
-   * Will be invoked when a new message for this message bean will be available.
-   *
-   * @param \AppserverIo\Psr\MessageQueueProtocol\Message $message   A message this message bean is listen for
-   * @param string                                        $sessionId The session ID
-   *
-   * @return void
-   * @see \AppserverIo\Psr\MessageQueueProtocol\Receiver::onMessage()
-   */
-  public function onMessage(Message $message, $sessionId)
-  {
+    /**
+     * Will be invoked when a new message for this message bean will be available.
+     *
+     * @param \AppserverIo\Psr\Pms\MessageInterface $message   A message this message bean is listen for
+     * @param string                                $sessionId The session ID
+     *
+     * @return void
+     * @see \AppserverIo\Psr\Pms\MessageListenerInterface::onMessage()
+     */
+    public function onMessage(MessageInterface $message, $sessionId)
+    {
     $data = array_map('str_getcsv', file($message->getMessage()->__toString()));
     foreach ($data as $row) {
       // write the data to the database here
