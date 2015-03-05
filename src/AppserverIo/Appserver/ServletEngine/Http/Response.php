@@ -42,8 +42,10 @@ class Response extends GenericStackable implements HttpServletResponseInterface
     /**
      * Initialize the servlet response.
      */
-    public function __construct()
+    public function __construct($cookies, $headers)
     {
+        $this->cookies = $cookies;
+        $this->headers = $headers;
         $this->init();
     }
 
@@ -58,9 +60,6 @@ class Response extends GenericStackable implements HttpServletResponseInterface
         // init body stream
         $this->bodyStream = '';
 
-        // init exception
-        $this->exception = null;
-
         // init default response properties
         $this->statusCode = 200;
         $this->version = 'HTTP/1.1';
@@ -69,8 +68,16 @@ class Response extends GenericStackable implements HttpServletResponseInterface
         $this->state = HttpResponseStates::INITIAL;
 
         // init cookies and headers
-        $this->cookies = new GenericStackable();
-        $this->headers = new GenericStackable();
+
+        $clearKeys = array_keys((array)$this->cookies);
+        foreach($clearKeys as $key) {
+            unset($this->cookies["$key"]);
+        }
+
+        $clearKeys = array_keys((array)$this->headers);
+        foreach($clearKeys as $key) {
+            unset($this->headers["$key"]);
+        }
 
         // reset to default headers
         $this->initDefaultHeaders();
@@ -463,37 +470,5 @@ class Response extends GenericStackable implements HttpServletResponseInterface
     {
         $this->setStatusCode($code);
         $this->addHeader(HttpProtocol::HEADER_LOCATION, $url);
-    }
-
-    /**
-     * Queries whether the response contains an exception or not.
-     *
-     * @return boolean TRUE if an exception has been attached, else FALSE
-     */
-    public function hasException()
-    {
-        return $this->exception instanceof \Exception;
-    }
-
-    /**
-     * Returns the exception bound to the response.
-     *
-     * @return \Exception|null The exception
-     */
-    public function getException()
-    {
-        return $this->exception;
-    }
-
-    /**
-     * Binds the exception to the response.
-     *
-     * @param \Exception $exception The exception to bind.
-     *
-     * @return void
-     */
-    public function setException(\Exception $exception)
-    {
-        $this->exception = $exception;
     }
 }

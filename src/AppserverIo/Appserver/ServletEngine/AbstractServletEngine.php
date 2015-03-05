@@ -203,6 +203,7 @@ abstract class AbstractServletEngine extends GenericStackable implements HttpMod
      */
     public function prepare()
     {
+
     }
 
     /**
@@ -254,36 +255,6 @@ abstract class AbstractServletEngine extends GenericStackable implements HttpMod
             list ($dirname, $basename, $extension) = array_values(pathinfo($dirname));
 
         } while ($dirname !== false); // stop until we reached the root of the URI
-    }
-
-    /**
-     * Helper method that writes debug system exceptions to the system
-     * logger if configured.
-     *
-     * @param \Exception $e The exception to be logged
-     *
-     * @return void
-     */
-    protected function logDebugException(\Exception $e)
-    {
-        if ($this->getServerContext()->hasLogger(LoggerUtils::SYSTEM)) {
-            $this->getServerContext()->getLogger(LoggerUtils::SYSTEM)->debug($e->__toString());
-        }
-    }
-
-    /**
-     * Helper method that writes system exceptions to the system
-     * logger if configured.
-     *
-     * @param \Exception $e The exception to be logged
-     *
-     * @return void
-     */
-    protected function logErrorException(\Exception $e)
-    {
-        if ($this->getServerContext()->hasLogger(LoggerUtils::SYSTEM)) {
-            $this->getServerContext()->getLogger(LoggerUtils::SYSTEM)->error($e->__toString());
-        }
     }
 
     /**
