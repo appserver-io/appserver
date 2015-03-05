@@ -20,8 +20,6 @@
 
 namespace AppserverIo\Appserver\ServletEngine;
 
-use AppserverIo\Storage\GenericStackable;
-
 /**
  * Handler implementation.
  *
@@ -31,7 +29,7 @@ use AppserverIo\Storage\GenericStackable;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class Handler extends GenericStackable
+class Handler
 {
 
     /**

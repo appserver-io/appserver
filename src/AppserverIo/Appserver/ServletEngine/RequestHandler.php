@@ -21,10 +21,9 @@
 namespace AppserverIo\Appserver\ServletEngine;
 
 use AppserverIo\Logger\LoggerUtils;
-use AppserverIo\Storage\GenericStackable;
+use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
-use AppserverIo\Psr\Application\ApplicationInterface;
 
 /**
  * This is a request handler that is necessary to process each request of an
@@ -42,11 +41,11 @@ class RequestHandler extends \Thread
     /**
      * Injects the valves to be processed.
      *
-     * @param \AppserverIo\Storage\GenericStackable $valves The valves to process
+     * @param array $valves The valves to process
      *
      * @return void
      */
-    public function injectValves($valves)
+    public function injectValves(array $valves)
     {
         $this->valves = $valves;
     }

@@ -22,7 +22,6 @@ namespace AppserverIo\Appserver\ServletEngine;
 
 use AppserverIo\Http\HttpProtocol;
 use AppserverIo\Http\HttpResponseStates;
-use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Psr\HttpMessage\RequestInterface;
 use AppserverIo\Psr\HttpMessage\ResponseInterface;
 use AppserverIo\Psr\Servlet\ServletException;

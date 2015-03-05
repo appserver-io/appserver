@@ -22,7 +22,6 @@
 namespace AppserverIo\Appserver\ServletEngine;
 
 use AppserverIo\Logger\LoggerUtils;
-use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Server\Dictionaries\ServerVars;
 use AppserverIo\Server\Interfaces\RequestContextInterface;
 use AppserverIo\WebServer\Interfaces\HttpModuleInterface;
@@ -142,7 +141,7 @@ abstract class AbstractServletEngine implements HttpModuleInterface
     /**
      * Returns the initialized valves.
      *
-     * @return \AppserverIo\Storage\GenericStackable The initialized valves
+     * @return array The initialized valves
      */
     public function getValves()
     {
