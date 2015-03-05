@@ -83,7 +83,6 @@ class ServletEngine extends AbstractServletEngine
     public function init(ServerContextInterface $serverContext)
     {
         try {
-
             // set the servlet context
             $this->serverContext = $serverContext;
 

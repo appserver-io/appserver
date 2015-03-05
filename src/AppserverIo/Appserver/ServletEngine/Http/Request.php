@@ -56,6 +56,8 @@ class Request implements HttpServletRequestInterface
 
     /**
      * Initializes the request object with the default properties.
+     *
+     * @return void
      */
     public function init()
     {

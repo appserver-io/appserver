@@ -164,7 +164,6 @@ class RequestHandler extends \Thread
         // check if there was a fatal error caused shutdown
         $lastError = error_get_last();
         if ($lastError['type'] === E_ERROR || $lastError['type'] === E_USER_ERROR) {
-
             // set the status code and append the error message to the body
             $servletResponse->setStatusCode(500);
             $servletResponse->appendBodyStream($lastError['message']);
