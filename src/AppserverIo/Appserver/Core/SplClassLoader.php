@@ -40,7 +40,7 @@ use AppserverIo\Appserver\Core\Api\Node\ClassLoaderNodeInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class SplClassLoader extends GenericStackable implements ClassLoaderInterface
+class SplClassLoader implements ClassLoaderInterface
 {
 
     /**
@@ -72,8 +72,8 @@ class SplClassLoader extends GenericStackable implements ClassLoaderInterface
     {
 
         // initialize the storage for the class map and the include path
-        $classMap = new GenericStackable();
-        $includePath = new GenericStackable();
+        $classMap = array(); //new GenericStackable();
+        $includePath = array(); new GenericStackable();
 
         // initialize and return the SPL class loader instance
         return new SplClassLoader($classMap, $includePath);
@@ -91,7 +91,7 @@ class SplClassLoader extends GenericStackable implements ClassLoaderInterface
      * @param string                                $namespaceSeparator The namespace separator
      * @param string                                $fileExtension      The filename extension
      */
-    public function __construct(GenericStackable $classMap, GenericStackable $includePath, $namespace = null, $namespaceSeparator = '\\', $fileExtension = '.php')
+    public function __construct($classMap, $includePath, $namespace = null, $namespaceSeparator = '\\', $fileExtension = '.php')
     {
 
         // initialize the member variables
@@ -101,12 +101,14 @@ class SplClassLoader extends GenericStackable implements ClassLoaderInterface
         $this->fileExtension = $fileExtension;
         $this->namespaceSeparator = $namespaceSeparator;
 
+        $ip = array();
         // initialize the default include path
         foreach (explode(PATH_SEPARATOR, get_include_path()) as $val) {
             if (empty($val) === false) {
-                $this->includePath[] = $val;
+                $ip[] = $val;
             }
         }
+        $this->includePath = $ip;
     }
 
     /**

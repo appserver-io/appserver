@@ -38,7 +38,7 @@ use AppserverIo\Server\Dictionaries\ServerVars;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class Request extends GenericStackable implements HttpServletRequestInterface
+class Request implements HttpServletRequestInterface
 {
 
     /**

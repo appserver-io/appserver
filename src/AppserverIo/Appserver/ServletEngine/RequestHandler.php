@@ -128,11 +128,11 @@ class RequestHandler extends \Thread
             }
 
         } catch (\Exception $e) {
-            // bind the exception in the respsonse
-            $servletResponse->setException($e);
+            error_log($e->__toString());
+            $servletResponse->appendBodyStream($e->__toString());
+            $servletResponse->setStatusCode(500);
         }
 
-        // shutdown the request handler
         $this->__shutdown();
     }
 
@@ -168,7 +168,6 @@ class RequestHandler extends \Thread
             $servletResponse->appendBodyStream($lastError['message']);
         }
 
-        // shutdown the request handler
         $this->__shutdown();
     }
 }
