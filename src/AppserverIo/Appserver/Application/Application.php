@@ -637,8 +637,6 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
      */
     public function run()
     {
-
-        error_log('register shutdown function.');
         // register shutdown handler
         register_shutdown_function(array(&$this, "shutdown"));
 

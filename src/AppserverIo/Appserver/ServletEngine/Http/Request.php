@@ -20,14 +20,14 @@
 
 namespace AppserverIo\Appserver\ServletEngine\Http;
 
-use AppserverIo\Psr\Context\ContextInterface;
 use AppserverIo\Storage\GenericStackable;
+use AppserverIo\Server\Dictionaries\ServerVars;
+use AppserverIo\Psr\Context\ContextInterface;
 use AppserverIo\Psr\HttpMessage\CookieInterface;
 use AppserverIo\Psr\HttpMessage\RequestInterface;
 use AppserverIo\Psr\Servlet\SessionUtils;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
-use AppserverIo\Server\Dictionaries\ServerVars;
 
 /**
  * A Http servlet request implementation.

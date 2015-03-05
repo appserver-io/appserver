@@ -203,7 +203,6 @@ abstract class AbstractServletEngine extends GenericStackable implements HttpMod
      */
     public function prepare()
     {
-
     }
 
     /**

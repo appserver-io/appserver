@@ -74,7 +74,7 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
      *
      * @return \AppserverIo\Psr\Naming\NamingDirectoryInterface
      */
-    protected function getParent()
+    public function getParent()
     {
         return $this->parent;
     }

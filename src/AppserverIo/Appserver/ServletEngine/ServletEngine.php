@@ -22,6 +22,7 @@ namespace AppserverIo\Appserver\ServletEngine;
 
 use AppserverIo\Http\HttpProtocol;
 use AppserverIo\Http\HttpResponseStates;
+use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Psr\HttpMessage\RequestInterface;
 use AppserverIo\Psr\HttpMessage\ResponseInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
@@ -33,7 +34,6 @@ use AppserverIo\Server\Exceptions\ModuleException;
 use AppserverIo\Appserver\ServletEngine\Http\Request;
 use AppserverIo\Appserver\ServletEngine\Http\Response;
 use AppserverIo\Appserver\ServletEngine\Http\Part;
-use AppserverIo\Storage\GenericStackable;
 
 /**
  * A servlet engine implementation.
@@ -82,13 +82,18 @@ class ServletEngine extends AbstractServletEngine
     public function init(ServerContextInterface $serverContext)
     {
         try {
-            $this->requestHandlerCounter = 1;
+
+            // initialize the array for the request handlers
             $this->requestHandlers = array();
 
-            $this->cookies = new GenericStackable();
-            $this->headers = new GenericStackable();
+            // initialize the stackables for response cookies and headers
+            $this->servletCookies = new GenericStackable();
+            $this->servletHeaders = new GenericStackable();
 
-            $this->servletResponse = new Response($this->cookies, $this->headers);
+            // init the servlet response
+            $this->servletResponse = new Response();
+            $this->servletResponse->injectCookies($this->cookies);
+            $this->servletResponse->injectHeaders($this->headers);
 
             // set the servlet context
             $this->serverContext = $serverContext;
@@ -154,6 +159,7 @@ class ServletEngine extends AbstractServletEngine
             $servletResponse = $this->servletResponse;
             $servletResponse->init();
 
+            // inject the servlet response
             $servletRequest->injectResponse($servletResponse);
 
             // get the valve locally
@@ -185,8 +191,6 @@ class ServletEngine extends AbstractServletEngine
             $requestHandler->injectResponse($servletResponse);
             $requestHandler->start();
             $requestHandler->join();
-
-            $this->requestHandlerCounter++;
 
             // copy the values from the servlet response back to the HTTP response
             $response->setStatusCode($servletResponse->getStatusCode());

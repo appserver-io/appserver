@@ -72,13 +72,12 @@ class SplClassLoader implements ClassLoaderInterface
     {
 
         // initialize the storage for the class map and the include path
-        $classMap = array(); //new GenericStackable();
-        $includePath = array(); new GenericStackable();
+        $classMap = array();
+        $includePath = array();
 
         // initialize and return the SPL class loader instance
         return new SplClassLoader($classMap, $includePath);
     }
-
 
     /**
      * Creates a new <tt>SplClassLoader</tt> that loads classes of the specified
@@ -101,14 +100,18 @@ class SplClassLoader implements ClassLoaderInterface
         $this->fileExtension = $fileExtension;
         $this->namespaceSeparator = $namespaceSeparator;
 
-        $ip = array();
+        // initialize an array for the include paths
+        $paths = array();
+
         // initialize the default include path
         foreach (explode(PATH_SEPARATOR, get_include_path()) as $val) {
             if (empty($val) === false) {
-                $ip[] = $val;
+                $paths[] = $val;
             }
         }
-        $this->includePath = $ip;
+
+        // set the include paths
+        $this->includePath = $paths;
     }
 
     /**

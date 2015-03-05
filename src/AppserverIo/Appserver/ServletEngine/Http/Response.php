@@ -20,10 +20,10 @@
 
 namespace AppserverIo\Appserver\ServletEngine\Http;
 
-use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Http\HttpProtocol;
 use AppserverIo\Http\HttpException;
 use AppserverIo\Http\HttpResponseStates;
+use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Psr\HttpMessage\CookieInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
 
@@ -40,13 +40,27 @@ class Response extends GenericStackable implements HttpServletResponseInterface
 {
 
     /**
-     * Initialize the servlet response.
+     * Inject the storage for the cookies.
+     *
+     * @param \AppserverIo\Storage\GenericStackable $cookies The cookie storage
+     *
+     * @return void
      */
-    public function __construct($cookies, $headers)
+    public function injectCookies(GenericStackable $cookies)
     {
         $this->cookies = $cookies;
+    }
+
+    /**
+     * Inject the storage for the headers.
+     *
+     * @param \AppserverIo\Storage\GenericStackable $headers The header storage
+     *
+     * @return void
+     */
+    public function injectHeaders(GenericStackable $headers)
+    {
         $this->headers = $headers;
-        $this->init();
     }
 
     /**
@@ -67,14 +81,14 @@ class Response extends GenericStackable implements HttpServletResponseInterface
         $this->mimeType = "text/plain";
         $this->state = HttpResponseStates::INITIAL;
 
-        // init cookies and headers
-
-        $clearKeys = array_keys((array)$this->cookies);
+        // reset cookies
+        $clearKeys = array_keys((array) $this->cookies);
         foreach($clearKeys as $key) {
             unset($this->cookies["$key"]);
         }
 
-        $clearKeys = array_keys((array)$this->headers);
+        // reset headers
+        $clearKeys = array_keys((array) $this->headers);
         foreach($clearKeys as $key) {
             unset($this->headers["$key"]);
         }
