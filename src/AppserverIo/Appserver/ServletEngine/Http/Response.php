@@ -43,7 +43,7 @@ class Response implements HttpServletResponseInterface
      *
      * @return void
      */
-    public function __construct()
+    public function init()
     {
 
         // init body stream

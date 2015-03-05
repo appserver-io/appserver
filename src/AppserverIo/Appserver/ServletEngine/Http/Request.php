@@ -57,7 +57,7 @@ class Request implements HttpServletRequestInterface
     /**
      * Initializes the request object with the default properties.
      */
-    public function __construct()
+    public function init()
     {
 
         // init body stream
