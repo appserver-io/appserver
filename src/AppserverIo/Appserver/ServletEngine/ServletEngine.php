@@ -87,6 +87,8 @@ class ServletEngine extends AbstractServletEngine
             // set the servlet context
             $this->serverContext = $serverContext;
 
+            $this->requestHandlers = array();
+
             // initialize the servlet engine
             $this->initValves();
             $this->initHandlers();
@@ -125,7 +127,11 @@ class ServletEngine extends AbstractServletEngine
             return;
         }
 
+        // create a copy of the valve instances
+        $valves = $this->valves;
+
         // initialize servlet session, request + response
+        $servletResponse = new Response();
         $servletRequest = new Request();
         $servletRequest->injectHttpRequest($request);
         $servletRequest->injectServerVars($requestContext->getServerVars());
@@ -142,22 +148,6 @@ class ServletEngine extends AbstractServletEngine
 
         // prepare the servlet request
         $this->prepareServletRequest($servletRequest);
-
-        // initialize the stackables for response cookies and headers
-        $cookies = new GenericStackable();
-        $headers = new GenericStackable();
-
-        // init the servlet response
-        $servletResponse = new Response();
-        $servletResponse->injectCookies($cookies);
-        $servletResponse->injectHeaders($headers);
-        $servletResponse->initDefaultHeaders();
-
-        // inject the servlet response with the Http response values
-        $servletRequest->injectResponse($servletResponse);
-
-        // get the valve locally
-        $valves = $this->valves;
 
         // load the application associated with this request
         $application = $this->findRequestedApplication($requestContext);
@@ -186,6 +176,9 @@ class ServletEngine extends AbstractServletEngine
         $requestHandler->injectResponse($servletResponse);
         $requestHandler->start();
         $requestHandler->join();
+
+        // re-load the servlet response from the request handler
+        $servletResponse = $requestHandler->getServletResponse();
 
         // query whether an exception has been thrown, if yes, re-throw it
         if ($servletResponse->hasException()) {

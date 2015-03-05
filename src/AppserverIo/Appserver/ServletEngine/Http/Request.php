@@ -20,7 +20,6 @@
 
 namespace AppserverIo\Appserver\ServletEngine\Http;
 
-use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Server\Dictionaries\ServerVars;
 use AppserverIo\Psr\Context\ContextInterface;
 use AppserverIo\Psr\HttpMessage\CookieInterface;
@@ -757,7 +756,7 @@ class Request implements HttpServletRequestInterface
     /**
      * Returns the array with the server variables.
      *
-     * @return \AppserverIo\Storage\GenericStackable The array with the server variables
+     * @return array The array with the server variables
      */
     public function getServerVars()
     {

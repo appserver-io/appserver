@@ -110,6 +110,9 @@ class RequestHandler extends \Thread
             $servletRequest = $this->servletRequest;
             $servletResponse = $this->servletResponse;
 
+            // inject the servlet response with the Http response values
+            $servletRequest->injectResponse($servletResponse);
+
             // inject the found application into the servlet request
             $servletRequest->injectContext($application);
 
@@ -132,19 +135,18 @@ class RequestHandler extends \Thread
             $servletResponse->setException($e);
         }
 
-        // shutdown the request handler
-        $this->__shutdown();
+        // copy the servlet response back
+        $this->servletResponse = $servletResponse;
     }
 
     /**
-     * Thread shutdown function that allows you to cleanup
-     * garbage.
+     * Returns the processed servlet respone.
      *
-     * @return void
-     * @since appserver.io/pthreads >= 1.0.2
+     * @return \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface The processed servlet response
      */
-    public function __shutdown()
+    public function getServletResponse()
     {
+        return $this->servletResponse;
     }
 
     /**
@@ -156,18 +158,19 @@ class RequestHandler extends \Thread
     public function shutdown()
     {
 
+        // copy the servlet response
+        $servletResponse = $this->servletResponse;
+
         // check if there was a fatal error caused shutdown
         $lastError = error_get_last();
         if ($lastError['type'] === E_ERROR || $lastError['type'] === E_USER_ERROR) {
-            // synchronize the servlet response
-            $servletResponse = $this->servletResponse;
 
             // set the status code and append the error message to the body
             $servletResponse->setStatusCode(500);
             $servletResponse->appendBodyStream($lastError['message']);
         }
 
-        // shutdown the request handler
-        $this->__shutdown();
+        // copy the servlet response back
+        $this->servletResponse = $servletResponse;
     }
 }

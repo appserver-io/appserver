@@ -84,6 +84,9 @@ class SessionWrapper extends HttpSessionWrapper
     public function start()
     {
 
+        // load the response
+        $response = $this->getResponse();
+
         // we need the session to be started
         if ($this->isStarted()) {
             return;

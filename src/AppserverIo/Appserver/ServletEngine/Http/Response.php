@@ -23,12 +23,11 @@ namespace AppserverIo\Appserver\ServletEngine\Http;
 use AppserverIo\Http\HttpProtocol;
 use AppserverIo\Http\HttpException;
 use AppserverIo\Http\HttpResponseStates;
-use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Psr\HttpMessage\CookieInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
 
 /**
- * A servlet request implementation.
+ * A servlet response implementation.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -36,7 +35,7 @@ use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class Response extends GenericStackable implements HttpServletResponseInterface
+class Response implements HttpServletResponseInterface
 {
 
     /**
@@ -56,30 +55,13 @@ class Response extends GenericStackable implements HttpServletResponseInterface
         $this->statusReasonPhrase = "OK";
         $this->mimeType = "text/plain";
         $this->state = HttpResponseStates::INITIAL;
-    }
 
-    /**
-     * Inject the storage for the cookies.
-     *
-     * @param \AppserverIo\Storage\GenericStackable $cookies The cookie storage
-     *
-     * @return void
-     */
-    public function injectCookies(GenericStackable $cookies)
-    {
-        $this->cookies = $cookies;
-    }
+        // initialize cookies and headers
+        $this->cookies = array();
+        $this->headers = array();
 
-    /**
-     * Inject the storage for the headers.
-     *
-     * @param \AppserverIo\Storage\GenericStackable $headers The header storage
-     *
-     * @return void
-     */
-    public function injectHeaders(GenericStackable $headers)
-    {
-        $this->headers = $headers;
+        // initialize the default headers
+        $this->initDefaultHeaders();
     }
 
     /**
