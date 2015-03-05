@@ -72,7 +72,7 @@ class SplClassLoader implements ClassLoaderInterface
     {
 
         // initialize the storage for the class map and the include path
-        $classMap = array();
+        $classMap = new GenericStackable();
         $includePath = array();
 
         // initialize and return the SPL class loader instance

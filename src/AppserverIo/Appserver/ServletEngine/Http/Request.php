@@ -42,29 +42,23 @@ class Request implements HttpServletRequestInterface
 {
 
     /**
-     * Initialize the servlet response.
+     * The server variables.
+     *
+     * @var array
+     */
+    protected $serverVars = array();
+
+    /**
+     * The uploaded part instances.
+     *
+     * @var array
+     */
+    protected $parts = array();
+
+    /**
+     * Initializes the request object with the default properties.
      */
     public function __construct()
-    {
-        $this->init();
-    }
-
-    /**
-     * Cleanup method that allows manual garbage collection.
-     *
-     * @return void
-     */
-    public function __cleanup()
-    {
-        unset($this->context);
-    }
-
-    /**
-     * Initialises the response object to default properties
-     *
-     * @return void
-     */
-    public function init()
     {
 
         // init body stream
@@ -86,9 +80,9 @@ class Request implements HttpServletRequestInterface
         $this->requestedSessionName = '';
         $this->baseModifier = '';
 
-        // initialize the server variables and the parts
-        $this->serverVars = new GenericStackable();
-        $this->parts = new GenericStackable();
+        // reset the server variables and the parts
+        $serverVars = array();
+        $parts = array();
     }
 
     /**
@@ -107,7 +101,7 @@ class Request implements HttpServletRequestInterface
     /**
      * Injects the server variables.
      *
-     * @param \AppserverIo\Storage\GenericStackable $serverVars The server variables
+     * @param array $serverVars The server variables
      *
      * @return void
      */
@@ -166,7 +160,6 @@ class Request implements HttpServletRequestInterface
      */
     public function getHttpPartInstance()
     {
-
     }
 
     /**

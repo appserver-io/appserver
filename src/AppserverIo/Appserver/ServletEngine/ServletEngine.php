@@ -25,6 +25,7 @@ use AppserverIo\Http\HttpResponseStates;
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Psr\HttpMessage\RequestInterface;
 use AppserverIo\Psr\HttpMessage\ResponseInterface;
+use AppserverIo\Psr\Servlet\ServletException;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
 use AppserverIo\Server\Dictionaries\ModuleHooks;
 use AppserverIo\Server\Dictionaries\ServerVars;
@@ -83,18 +84,6 @@ class ServletEngine extends AbstractServletEngine
     {
         try {
 
-            // initialize the array for the request handlers
-            $this->requestHandlers = array();
-
-            // initialize the stackables for response cookies and headers
-            $this->servletCookies = new GenericStackable();
-            $this->servletHeaders = new GenericStackable();
-
-            // init the servlet response
-            $this->servletResponse = new Response();
-            $this->servletResponse->injectCookies($this->cookies);
-            $this->servletResponse->injectHeaders($this->headers);
-
             // set the servlet context
             $this->serverContext = $serverContext;
 
@@ -126,115 +115,114 @@ class ServletEngine extends AbstractServletEngine
         $hook
     ) {
 
-        try {
-            // if false hook is coming do nothing
-            if (ModuleHooks::REQUEST_POST !== $hook) {
-                return;
-            }
-
-            // check if we are the handler that has to process this request
-            if ($requestContext->getServerVar(ServerVars::SERVER_HANDLER) !== $this->getModuleName()) {
-                return;
-            }
-
-            // initialize servlet session, request + response
-            $servletRequest = new Request();
-            $servletRequest->injectHttpRequest($request);
-            $servletRequest->injectServerVars($requestContext->getServerVars());
-
-            // initialize the parts
-            foreach ($request->getParts() as $part) {
-                $servletRequest->addPart(Part::fromHttpRequest($part));
-            }
-
-            // set the body content if we can find one
-            if ($request->getHeader(HttpProtocol::HEADER_CONTENT_LENGTH) > 0) {
-                $servletRequest->setBodyStream($request->getBodyContent());
-            }
-
-            // prepare the servlet request
-            $this->prepareServletRequest($servletRequest);
-
-            // initialize the servlet response with the Http response values
-            $servletResponse = $this->servletResponse;
-            $servletResponse->init();
-
-            // inject the servlet response
-            $servletRequest->injectResponse($servletResponse);
-
-            // get the valve locally
-            $valves = $this->valves;
-
-            // load the application associated with this request
-            $application = $this->findRequestedApplication($requestContext);
-
-            // prepare and set the applications context path
-            $servletRequest->setContextPath($contextPath = '/' . $application->getName());
-            $servletRequest->setServletPath(str_replace($contextPath, '', $servletRequest->getServletPath()));
-
-            // prepare the base modifier which allows our apps to provide a base URL
-            $webappsDir = $this->getServerContext()->getServerConfig()->getDocumentRoot();
-            $relativeRequestPath = strstr($servletRequest->getServerVar(ServerVars::DOCUMENT_ROOT), $webappsDir);
-            $proposedBaseModifier = str_replace($webappsDir, '', $relativeRequestPath);
-
-            if (strpos($proposedBaseModifier, $contextPath) === 0) {
-                $servletRequest->setBaseModifier('');
-            } else {
-                $servletRequest->setBaseModifier($contextPath);
-            }
-
-            // initialize the request handler instance
-            $this->requestHandlers[] = $requestHandler = new RequestHandler();
-            $requestHandler->injectValves($valves);
-            $requestHandler->injectApplication($application);
-            $requestHandler->injectRequest($servletRequest);
-            $requestHandler->injectResponse($servletResponse);
-            $requestHandler->start();
-            $requestHandler->join();
-
-            // copy the values from the servlet response back to the HTTP response
-            $response->setStatusCode($servletResponse->getStatusCode());
-            $response->setStatusReasonPhrase($servletResponse->getStatusReasonPhrase());
-            $response->setVersion($servletResponse->getVersion());
-            $response->setState($servletResponse->getState());
-
-            // append the content to the body stream
-            $response->appendBodyStream($servletResponse->getBodyStream());
-
-            // transform the servlet headers back into HTTP headers
-            foreach ($servletResponse->getHeaders() as $name => $header) {
-                $response->addHeader($name, $header);
-            }
-
-            // copy the servlet response cookies back to the HTTP response
-            foreach ($servletResponse->getCookies() as $cookieName => $cookieValue) {
-                // load the cookie and check if we've an array or a single cookie instance
-                if (is_array($cookie = $servletResponse->getCookie($cookieName))) {
-                    foreach ($cookie as $c) {
-                        // add all the cookies
-                        $response->addCookie($c);
-                    }
-
-                } else {
-                    // add the cookie instance directly
-                    $response->addCookie($cookie);
-                }
-            }
-
-            // set response state to be dispatched after this without calling other modules process
-            $response->setState(HttpResponseStates::DISPATCH);
-
-        } catch (ModuleException $me) {
-            // log the exception
-            $this->logCriticalException($me);
-            // re-throw the exception
-            throw $me;
-        } catch (\Exception $e) {
-            // log the exception
-            $this->logCriticalException($e);
-            // cast to ModuleException and re-throw with a 500 status code
-            throw new ModuleException($e, 500);
+        // if false hook is coming do nothing
+        if (ModuleHooks::REQUEST_POST !== $hook) {
+            return;
         }
+
+        // check if we are the handler that has to process this request
+        if ($requestContext->getServerVar(ServerVars::SERVER_HANDLER) !== $this->getModuleName()) {
+            return;
+        }
+
+        // initialize servlet session, request + response
+        $servletRequest = new Request();
+        $servletRequest->injectHttpRequest($request);
+        $servletRequest->injectServerVars($requestContext->getServerVars());
+
+        // initialize the parts
+        foreach ($request->getParts() as $part) {
+            $servletRequest->addPart(Part::fromHttpRequest($part));
+        }
+
+        // set the body content if we can find one
+        if ($request->getHeader(HttpProtocol::HEADER_CONTENT_LENGTH) > 0) {
+            $servletRequest->setBodyStream($request->getBodyContent());
+        }
+
+        // prepare the servlet request
+        $this->prepareServletRequest($servletRequest);
+
+        // initialize the stackables for response cookies and headers
+        $cookies = new GenericStackable();
+        $headers = new GenericStackable();
+
+        // init the servlet response
+        $servletResponse = new Response();
+        $servletResponse->injectCookies($cookies);
+        $servletResponse->injectHeaders($headers);
+        $servletResponse->initDefaultHeaders();
+
+        // inject the servlet response with the Http response values
+        $servletRequest->injectResponse($servletResponse);
+
+        // get the valve locally
+        $valves = $this->valves;
+
+        // load the application associated with this request
+        $application = $this->findRequestedApplication($requestContext);
+
+        // prepare and set the applications context path
+        $servletRequest->setContextPath($contextPath = '/' . $application->getName());
+        $servletRequest->setServletPath(str_replace($contextPath, '', $servletRequest->getServletPath()));
+
+        // prepare the base modifier which allows our apps to provide a base URL
+        $webappsDir = $this->getServerContext()->getServerConfig()->getDocumentRoot();
+        $relativeRequestPath = strstr($servletRequest->getServerVar(ServerVars::DOCUMENT_ROOT), $webappsDir);
+        $proposedBaseModifier = str_replace($webappsDir, '', $relativeRequestPath);
+
+        //  prepare the base modifier
+        if (strpos($proposedBaseModifier, $contextPath) === 0) {
+            $servletRequest->setBaseModifier('');
+        } else {
+            $servletRequest->setBaseModifier($contextPath);
+        }
+
+        // initialize the request handler instance
+        $requestHandler = new RequestHandler();
+        $requestHandler->injectValves($valves);
+        $requestHandler->injectApplication($application);
+        $requestHandler->injectRequest($servletRequest);
+        $requestHandler->injectResponse($servletResponse);
+        $requestHandler->start();
+        $requestHandler->join();
+
+        // query whether an exception has been thrown, if yes, re-throw it
+        if ($servletResponse->hasException()) {
+            throw $servletResponse->getException();
+        }
+
+        // copy the values from the servlet response back to the HTTP response
+        $response->setStatusCode($servletResponse->getStatusCode());
+        $response->setStatusReasonPhrase($servletResponse->getStatusReasonPhrase());
+        $response->setVersion($servletResponse->getVersion());
+        $response->setState($servletResponse->getState());
+
+        // append the content to the body stream
+        $response->appendBodyStream($servletResponse->getBodyStream());
+
+        // transform the servlet headers back into HTTP headers
+        foreach ($servletResponse->getHeaders() as $name => $header) {
+            $response->addHeader($name, $header);
+        }
+
+        // copy the servlet response cookies back to the HTTP response
+        foreach ($servletResponse->getCookies() as $cookieName => $cookieValue) {
+            // load the cookie and check if we've an array or a single cookie instance
+            if (is_array($cookie = $servletResponse->getCookie($cookieName))) {
+                foreach ($cookie as $c) {
+                    // add all the cookies
+                    $response->addCookie($c);
+                }
+
+            } else {
+                // add the cookie instance directly
+                $response->addCookie($cookie);
+            }
+        }
+
+        // set response state to be dispatched after this without calling other modules process
+        $response->setState(HttpResponseStates::DISPATCH);
     }
 
     /**

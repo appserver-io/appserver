@@ -40,6 +40,25 @@ class Response extends GenericStackable implements HttpServletResponseInterface
 {
 
     /**
+     * Initialises the response object to default properties.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+
+        // init body stream
+        $this->bodyStream = '';
+
+        // init default response properties
+        $this->statusCode = 200;
+        $this->version = 'HTTP/1.1';
+        $this->statusReasonPhrase = "OK";
+        $this->mimeType = "text/plain";
+        $this->state = HttpResponseStates::INITIAL;
+    }
+
+    /**
      * Inject the storage for the cookies.
      *
      * @param \AppserverIo\Storage\GenericStackable $cookies The cookie storage
@@ -61,40 +80,6 @@ class Response extends GenericStackable implements HttpServletResponseInterface
     public function injectHeaders(GenericStackable $headers)
     {
         $this->headers = $headers;
-    }
-
-    /**
-     * Initialises the response object to default properties
-     *
-     * @return void
-     */
-    public function init()
-    {
-
-        // init body stream
-        $this->bodyStream = '';
-
-        // init default response properties
-        $this->statusCode = 200;
-        $this->version = 'HTTP/1.1';
-        $this->statusReasonPhrase = "OK";
-        $this->mimeType = "text/plain";
-        $this->state = HttpResponseStates::INITIAL;
-
-        // reset cookies
-        $clearKeys = array_keys((array) $this->cookies);
-        foreach($clearKeys as $key) {
-            unset($this->cookies["$key"]);
-        }
-
-        // reset headers
-        $clearKeys = array_keys((array) $this->headers);
-        foreach($clearKeys as $key) {
-            unset($this->headers["$key"]);
-        }
-
-        // reset to default headers
-        $this->initDefaultHeaders();
     }
 
     /**
@@ -386,7 +371,7 @@ class Response extends GenericStackable implements HttpServletResponseInterface
      */
     public function hasHeader($name)
     {
-        return array_key_exists($name, $this->headers);
+        return isset($this->headers[$name]);
     }
 
     /**
@@ -484,5 +469,37 @@ class Response extends GenericStackable implements HttpServletResponseInterface
     {
         $this->setStatusCode($code);
         $this->addHeader(HttpProtocol::HEADER_LOCATION, $url);
+    }
+
+    /**
+     * Queries whether the response contains an exception or not.
+     *
+     * @return boolean TRUE if an exception has been attached, else FALSE
+     */
+    public function hasException()
+    {
+        return $this->exception instanceof \Exception;
+    }
+
+    /**
+     * Returns the exception bound to the response.
+     *
+     * @return \Exception|null The exception
+     */
+    public function getException()
+    {
+        return $this->exception;
+    }
+
+    /**
+     * Binds the exception to the response.
+     *
+     * @param \Exception $exception The exception to bind.
+     *
+     * @return void
+     */
+    public function setException(\Exception $exception)
+    {
+        $this->exception = $exception;
     }
 }

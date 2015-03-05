@@ -54,9 +54,6 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
         // initialize the members
         $this->parent = $parent;
         $this->name = $name;
-
-        // initialize the data
-        // $this->data = array(); //new StackableStorage();
     }
 
     /**
@@ -144,7 +141,7 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
      */
     public function getAttribute($key)
     {
-        return $this["$key"];
+        return $this[$key];
     }
 
     /**
@@ -156,7 +153,7 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
      */
     public function hasAttribute($key)
     {
-        return isset($this["$key"]);
+        return isset($this[$key]);
     }
 
     /**
@@ -169,7 +166,7 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
      */
     public function setAttribute($key, $value)
     {
-        $this["$key"] = $value;
+        $this[$key] = $value;
     }
 
     /**
@@ -179,7 +176,7 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
      */
     public function getAllKeys()
     {
-        return array_keys($this);
+        return array_keys((array) $this);
     }
 
     /**
