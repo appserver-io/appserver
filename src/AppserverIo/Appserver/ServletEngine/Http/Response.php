@@ -103,11 +103,11 @@ class Response implements HttpServletResponseInterface
             }
 
             // add the cookie array
-            $this->cookies[$name] = serialize($cookieValue);
+            $this->cookies[$name] = $cookieValue;
 
         } else {
             // when add it the first time, simply add it
-            $this->cookies[$name] = serialize($cookie);
+            $this->cookies[$name] = $cookie;
         }
     }
 
@@ -137,7 +137,7 @@ class Response implements HttpServletResponseInterface
         if ($this->hasCookie($cookieName) === false) {
             throw new HttpException("Cookie '$cookieName' not found");
         }
-        return unserialize($this->cookies[$cookieName]);
+        return $this->cookies[$cookieName];
     }
 
     /**

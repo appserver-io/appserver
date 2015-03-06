@@ -149,13 +149,23 @@ abstract class AbstractServletEngine implements HttpModuleInterface
     }
 
     /**
+     * Returns the container instance.
+     *
+     * @return \AppserverIo\Appserver\Core\Interfaces\ContainerInterface The container instance
+     */
+    public function getContainer()
+    {
+        return $this->getServerContext()->getContainer();
+    }
+
+    /**
      * Initialize the applications.
      *
      * @return void
      */
     public function initApplications()
     {
-        $this->applications = $this->getServerContext()->getContainer()->getApplications();
+        $this->applications = $this->getContainer()->getApplications();
     }
 
     /**
@@ -165,9 +175,7 @@ abstract class AbstractServletEngine implements HttpModuleInterface
      */
     public function initHandlers()
     {
-        foreach ($this->getServerContext()->getServerConfig()->getHandlers() as $extension => $handler) {
-            $this->handlers[$extension] = new Handler($handler['name']);
-        }
+        $this->handlers = $this->getServerContext()->getServerConfig()->getHandlers();
     }
 
     /**
@@ -190,57 +198,6 @@ abstract class AbstractServletEngine implements HttpModuleInterface
      */
     public function prepare()
     {
-    }
-
-    /**
-     * Tries to find an application that matches the passed request.
-     *
-     * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface $servletRequest The request instance to locate the application for
-     *
-     * @return array The application info that matches the request
-     *
-     * @throws \AppserverIo\Appserver\ServletEngine\BadRequestException Is thrown if no application matches the request
-     */
-    protected function prepareServletRequest(HttpServletRequestInterface $servletRequest)
-    {
-        // load the request URI and query string
-        $uri = $servletRequest->getUri();
-        $queryString = $servletRequest->getQueryString();
-
-        // get uri without querystring
-        $uriWithoutQueryString = str_replace('?' . $queryString, '', $uri);
-
-        // initialize the path information and the directory to start with
-        list ($dirname, $basename, $extension) = array_values(pathinfo($uriWithoutQueryString));
-
-        // make the registered handlers local
-        $handlers = $this->getHandlers();
-
-        // descent the directory structure down to find the (almost virtual) servlet file
-        do {
-            // bingo we found a (again: almost virtual) servlet file
-            if (array_key_exists(".$extension", $handlers) && $handlers[".$extension"]->getName() === $this->getModuleName()) {
-                // prepare the servlet path
-                if ($dirname === '/') {
-                    $servletPath = '/' . $basename;
-                } else {
-                    $servletPath = $dirname . '/' . $basename;
-                }
-
-                // we set the basename, because this is the servlet path
-                $servletRequest->setServletPath($servletPath);
-
-                // we set the path info, what is the request URI with stripped dir- and basename
-                $servletRequest->setPathInfo(str_replace($servletPath, '', $uriWithoutQueryString));
-
-                // we've found what we were looking for, so break here
-                break;
-            }
-
-            // descend down the directory tree
-            list ($dirname, $basename, $extension) = array_values(pathinfo($dirname));
-
-        } while ($dirname !== false); // stop until we reached the root of the URI
     }
 
     /**
