@@ -49,6 +49,9 @@ class Response implements HttpServletResponseInterface
         // init body stream
         $this->bodyStream = '';
 
+        // init exception
+        $this->exception = null;
+
         // init default response properties
         $this->statusCode = 200;
         $this->version = 'HTTP/1.1';
