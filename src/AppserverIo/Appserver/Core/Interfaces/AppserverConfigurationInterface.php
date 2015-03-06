@@ -22,10 +22,9 @@ namespace AppserverIo\Appserver\Core\Interfaces;
 
 use AppserverIo\Appserver\Core\Api\Node\AppNode;
 use AppserverIo\Appserver\Core\Api\Node\DatasourceNode;
-use AppserverIo\Configuration\Interfaces\ConfigurationInterface;
 
 /**
- * Interface common to all classes which represent an OO configuration for the complete appserver
+ * Interface common to all classes which represent an configuration for the complete appserver
  *
  * @author    Bernhard Wick <bw@appserver.io>
  * @copyright 2015 TechDivision GmbH - <info@appserver.io>
@@ -33,12 +32,8 @@ use AppserverIo\Configuration\Interfaces\ConfigurationInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io/
  */
-interface AppserverConfigurationInterface extends ConfigurationInterface
+interface AppserverConfigurationInterface
 {
-    /*
-    \AppserverIo\Configuration\Interfaces\ConfigurationInterface::getParam
-    \AppserverIo\Configuration\Interfaces\ConfigurationInterface::getUuid
-    */
 
     /**
      * Attaches the passed app node.

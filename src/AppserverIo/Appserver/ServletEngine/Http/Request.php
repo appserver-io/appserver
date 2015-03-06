@@ -21,6 +21,7 @@
 namespace AppserverIo\Appserver\ServletEngine\Http;
 
 use AppserverIo\Psr\Context\ContextInterface;
+use AppserverIo\Psr\HttpMessage\PartInterface;
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Psr\HttpMessage\CookieInterface;
 use AppserverIo\Psr\HttpMessage\RequestInterface;
@@ -122,7 +123,7 @@ class Request extends GenericStackable implements HttpServletRequestInterface
     /**
      * Injects the server variables.
      *
-     * @param \AppserverIo\Storage\GenericStackable $serverVars The server variables
+     * @param \AppserverIo\Storage\GenericStackable|array $serverVars The server variables
      *
      * @return void
      */
@@ -386,7 +387,7 @@ class Request extends GenericStackable implements HttpServletRequestInterface
      *
      * @return void
      */
-    public function addPart(Part $part, $name = null)
+    public function addPart(PartInterface $part, $name = null)
     {
         if ($name == null) {
             $name = $part->getName();
@@ -451,6 +452,7 @@ class Request extends GenericStackable implements HttpServletRequestInterface
     {
 
         // if no session has already been load, initialize the session manager
+        /** @var \AppserverIo\Appserver\ServletEngine\SessionManagerInterface $manager */
         $manager = $this->getContext()->search('SessionManagerInterface');
 
         // if no session manager was found, we don't support sessions
@@ -533,7 +535,7 @@ class Request extends GenericStackable implements HttpServletRequestInterface
     }
 
     /**
-     * Returns the absolute path info started from the context path.
+     * Sets the absolute path info started from the context path.
      *
      * @param string $pathInfo The absolute path info
      *

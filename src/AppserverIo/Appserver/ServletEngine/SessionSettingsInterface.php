@@ -93,6 +93,20 @@ interface SessionSettingsInterface
     public function getInactivityTimeout();
 
     /**
+     * Returns the default path to persist sessions.
+     *
+     * @return string The default path to persist session
+     */
+    public function getSessionSavePath();
+
+    /**
+     * Returns the session file prefix to use.
+     *
+     * @return string The session file prefix
+     */
+    public function getSessionFilePrefix();
+
+    /**
      * Merges the values of the passed settings into this instance and overwrites the one of this instance.
      *
      * @param \AppserverIo\Psr\Servlet\ServletContextInterface $context The context we want to merge the session settings from

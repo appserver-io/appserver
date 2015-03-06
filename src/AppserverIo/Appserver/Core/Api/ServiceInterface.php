@@ -44,6 +44,42 @@ interface ServiceInterface
     public function getInitialContext();
 
     /**
+     * Returns the servers tmp directory, append with the passed directory.
+     *
+     * @param string $relativePathToAppend A relative path to append
+     *
+     * @return string
+     */
+    public function getTmpDir($relativePathToAppend = '');
+
+    /**
+     * Returns the servers deploy directory.
+     *
+     * @param string $relativePathToAppend A relative path to append
+     *
+     * @return string
+     */
+    public function getDeployDir($relativePathToAppend = '');
+
+    /**
+     * Returns the servers webapps directory.
+     *
+     * @param string $relativePathToAppend A relative path to append
+     *
+     * @return string
+     */
+    public function getWebappsDir($relativePathToAppend = '');
+
+    /**
+     * Returns the servers log directory.
+     *
+     * @param string $relativePathToAppend A relative path to append
+     *
+     * @return string
+     */
+    public function getLogDir($relativePathToAppend = '');
+
+    /**
      * Allows to set the system configuration.
      *
      * @param \AppserverIo\Appserver\Core\Interfaces\AppserverConfigurationInterface $systemConfiguration The system configuration

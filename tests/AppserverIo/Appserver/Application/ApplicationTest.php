@@ -274,7 +274,7 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
     {
 
         // define the methods to mock
-        $methodsToMock = array('getClassLoader', 'newInstance', 'newService', 'getAttribute', 'getSystemLogger', 'getSystemConfiguration');
+        $methodsToMock = array('getClassLoader', 'newInstance', 'newService', 'getAttribute', 'getSystemLogger', 'getSystemConfiguration', 'getLogger');
 
         // create a mock instance
         $mockInitialContext = $this->getMock('AppserverIo\Appserver\Application\Interfaces\ContextInterface', $methodsToMock);
@@ -313,7 +313,7 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
     {
 
         // define the methods to mock
-        $methodsToMock = array('getClassLoader', 'newInstance', 'newService', 'getAttribute', 'getSystemLogger', 'getSystemConfiguration');
+        $methodsToMock = array('getClassLoader', 'newInstance', 'newService', 'getAttribute', 'getSystemLogger', 'getSystemConfiguration', 'getLogger');
 
         // create a mock instance
         $mockInitialContext = $this->getMock('AppserverIo\Appserver\Application\Interfaces\ContextInterface', $methodsToMock);
@@ -481,7 +481,7 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
         $mockLogger = $this->getMock('Psr\Log\LoggerInterface', array('log', 'error', 'warning', 'notice', 'emergency', 'debug', 'info', 'alert', 'critical'));
 
         // define the methods to mock
-        $methodsToMock = array('getClassLoader', 'newInstance', 'newService', 'getAttribute', 'getSystemLogger', 'getSystemConfiguration');
+        $methodsToMock = array('getClassLoader', 'newInstance', 'newService', 'getAttribute', 'getSystemLogger', 'getSystemConfiguration', 'getLogger');
 
         // create a mock instance
         $mockInitialContext = $this->getMock('AppserverIo\Appserver\Application\Interfaces\ContextInterface', $methodsToMock);
@@ -521,7 +521,7 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
         $mockLogger = $this->getMock('Psr\Log\LoggerInterface', array('log', 'error', 'warning', 'notice', 'emergency', 'debug', 'info', 'alert', 'critical'));
 
         // define the methods to mock
-        $methodsToMock = array('getClassLoader', 'newInstance', 'newService', 'getAttribute', 'getSystemLogger', 'getSystemConfiguration');
+        $methodsToMock = array('getClassLoader', 'newInstance', 'newService', 'getAttribute', 'getSystemLogger', 'getSystemConfiguration', 'getLogger');
 
         // create a mock instance
         $mockInitialContext = $this->getMock('AppserverIo\Appserver\Application\Interfaces\ContextInterface', $methodsToMock);

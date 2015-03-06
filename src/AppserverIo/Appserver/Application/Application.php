@@ -374,7 +374,7 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
     }
 
     /**
-     * Injects the username the application should be executed with.
+     * Returns the username the application should be executed with.
      *
      * @return string The username
      */
@@ -384,7 +384,7 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
     }
 
     /**
-     * Injects the groupname the application should be executed with.
+     * Returns the groupname the application should be executed with.
      *
      * @return string The groupname
      */
@@ -588,9 +588,7 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
     {
 
         // initialize the registered managers
-        /**
-         * @var \AppserverIo\Appserver\Core\Interfaces\ClassLoaderInterface $classLoader
-         */
+        /** @var \AppserverIo\Appserver\Core\Interfaces\ClassLoaderInterface $classLoader */
         foreach ($this->getClassLoaders() as $classLoader) {
             // log the class loader we want to initialize
             $this->getInitialContext()->getSystemLogger()->debug(

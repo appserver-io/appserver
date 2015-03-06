@@ -49,6 +49,7 @@ class ServletValve implements ValveInterface
     {
 
         // load the servlet manager
+        /** @var \AppserverIo\Psr\Servlet\ServletContextInterface|\AppserverIo\Psr\Application\ManagerInterface $servletManager */
         $servletManager = $servletRequest->getContext()->search('ServletContextInterface');
 
         // locate and service the servlet

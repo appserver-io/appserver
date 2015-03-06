@@ -177,9 +177,7 @@ class ServletManager extends AbstractEpbManager implements ServletContextInterfa
         $directories = array();
 
         // append the directory found in the servlet managers configuration
-        /**
-         * @var \AppserverIo\Appserver\Core\Api\Node\DirectoryNode $directoryNode
-         */
+        /** @var \AppserverIo\Appserver\Core\Api\Node\DirectoryNode $directoryNode */
         foreach ($this->getDirectories() as $directoryNode) {
             // prepare the custom directory defined in the servlet managers configuration
             $customDir = $folder . DIRECTORY_SEPARATOR . ltrim($directoryNode->getNodeValue()->getValue(), DIRECTORY_SEPARATOR);
@@ -223,6 +221,7 @@ class ServletManager extends AbstractEpbManager implements ServletContextInterfa
                 $servletName = (string) $mapping->{'servlet-name'};
 
                 // try to find the servlet with the configured name
+                /** @var \AppserverIo\Psr\Servlet\Description\ServletDescriptorInterface $descriptor */
                 foreach ($objectManager->getObjectDescriptors() as $descriptor) {
                     // query if we've a servlet and the name matches the mapped servlet name
                     if ($descriptor instanceof ServletDescriptorInterface &&
@@ -244,7 +243,7 @@ class ServletManager extends AbstractEpbManager implements ServletContextInterfa
                 );
             }
 
-            // initialize the security configuration by parseing the security nodes
+            // initialize the security configuration by parsing the security nodes
             foreach ($config->xpath('/a:web-app/a:security') as $key => $securityParam) {
                 // prepare the URL config in JSON format
                 $securedUrlConfig = json_decode(json_encode($securityParam), 1);

@@ -325,7 +325,6 @@ abstract class AbstractService implements ServiceInterface
      */
     public function persist(NodeInterface $node)
     {
-        // TODO implement this
         throw new NotImplementedException();
     }
 

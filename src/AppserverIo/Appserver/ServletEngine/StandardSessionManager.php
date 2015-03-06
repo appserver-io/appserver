@@ -116,6 +116,7 @@ class StandardSessionManager extends GenericStackable implements SessionManagerI
     {
 
         // load the servlet manager with the session settings configured in web.xml
+        /** @var \AppserverIo\Psr\Servlet\ServletContextInterface|\AppserverIo\Psr\Application\ManagerInterface $servletManager */
         $servletManager = $application->search('ServletContextInterface');
 
         // load the settings, set the default session save path

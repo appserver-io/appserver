@@ -6,7 +6,7 @@
 
 ## Features
 
-* None
+* Closed [#620](https://github.com/appserver-io/appserver/issues/620) - Extend in-code comments in regards to missing properties
 
 # Version 1.0.1
 

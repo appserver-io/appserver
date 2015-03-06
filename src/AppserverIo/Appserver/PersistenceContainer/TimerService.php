@@ -393,7 +393,7 @@ class TimerService extends GenericStackable implements TimerServiceInterface, Se
     }
 
     /**
-     * Returns the timed object invoker handling timer invokation on timed object instances.
+     * Returns the timed object invoker handling timer invocation on timed object instances.
      *
      * @return \AppserverIo\Psr\EnterpriseBeans\TimedObjectInvokerInterface The timed object invoker instance
      */

@@ -23,7 +23,6 @@ namespace AppserverIo\Appserver\Core;
 use AppserverIo\Appserver\Core\Interfaces\AppserverConfigurationInterface;
 use AppserverIo\Appserver\Core\Scanner\HeartbeatScanner;
 use AppserverIo\Logger\LoggerUtils;
-use AppserverIo\Configuration\Interfaces\NodeInterface;
 use AppserverIo\Configuration\Interfaces\ConfigurationInterface;
 use AppserverIo\Appserver\Core\Interfaces\ProvisionerInterface;
 use AppserverIo\Appserver\Core\Interfaces\ExtractorInterface;

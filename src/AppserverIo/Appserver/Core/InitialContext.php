@@ -21,7 +21,6 @@ namespace AppserverIo\Appserver\Core;
 
 use AppserverIo\Appserver\Core\Interfaces\AppserverConfigurationInterface;
 use AppserverIo\Storage\StorageInterface;
-use AppserverIo\Configuration\Interfaces\NodeInterface;
 use AppserverIo\Appserver\Core\InitialContext\ContextKeys;
 use AppserverIo\Appserver\Core\Interfaces\ClassLoaderInterface;
 use AppserverIo\Appserver\Application\Interfaces\ContextInterface;
@@ -128,7 +127,7 @@ class InitialContext implements ContextInterface
     }
 
     /**
-     * Return's the initial context's class loader.
+     * Returns the initial context's class loader.
      *
      * @return \AppserverIo\Appserver\Core\SplClassLoader The class loader used
      */
@@ -272,7 +271,7 @@ class InitialContext implements ContextInterface
     }
 
     /**
-     * Get's the logger by given name
+     * Gets the logger by given name
      *
      * @param string $loggerName the loggers name
      *
@@ -286,7 +285,7 @@ class InitialContext implements ContextInterface
     }
 
     /**
-     * Return's the system logger instance.
+     * Returns the system logger instance.
      *
      * @return \Psr\Log\LoggerInterface
      */
