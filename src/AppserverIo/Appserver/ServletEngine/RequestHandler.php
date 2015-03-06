@@ -161,8 +161,12 @@ class RequestHandler extends \Thread
         // copy the body content to the HTTP response
         $httpResponse->appendBodyStream($this->bodyStream);
 
-        // copy headers and cookies to the HTTP response
-        $httpResponse->setHeaders($this->headers);
+        // copy headers to the HTTP response
+        foreach ($this->headers as $headerName => $headerValue) {
+            $httpResponse->addHeader($headerName, $headerValue);
+        }
+
+        // copy cookies to the HTTP response
         $httpResponse->setCookies($this->cookies);
 
         // query whether an exception has been thrown, if yes, re-throw it
