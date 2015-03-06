@@ -134,7 +134,7 @@ class RequestHandler extends \Thread
             $servletResponse->setException($e);
         }
 
-        // copy the servlet response back
+        // copy the servlet response
         $this->servletResponse = $servletResponse;
     }
 

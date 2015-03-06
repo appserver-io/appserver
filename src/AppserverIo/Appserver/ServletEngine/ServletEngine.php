@@ -85,13 +85,6 @@ class ServletEngine extends AbstractServletEngine
             // set the servlet context
             $this->serverContext = $serverContext;
 
-            // initialize the array for the request handlers
-            $this->requestHandlers = array();
-
-            // initialize servlet session, request + response
-            $this->servletResponse = new Response();
-            $this->servletRequest = new Request();
-
             // initialize the servlet engine
             $this->initValves();
             $this->initHandlers();
@@ -132,8 +125,10 @@ class ServletEngine extends AbstractServletEngine
 
         // create a copy of the valve instances
         $valves = $this->valves;
-        $servletRequest = $this->servletRequest;
-        $servletResponse = $this->servletResponse;
+
+        // initialize servlet session, request + response
+        $servletResponse = new Response();
+        $servletRequest = new Request();
 
         // reset the servlet request
         $servletRequest->init();
@@ -174,6 +169,9 @@ class ServletEngine extends AbstractServletEngine
 
         // reset the servlet response
         $servletResponse->init();
+
+        // inject the servlet response with the Http response values
+        $servletRequest->injectResponse($servletResponse);
 
         // initialize the request handler instance
         $requestHandler = new RequestHandler();
