@@ -24,25 +24,15 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
 <appserver xmlns="http://www.appserver.io/appserver"  xmlns:xi="http://www.w3.org/2001/XInclude">
 
     <params>
-        <!--
-        <param name="tmp.dir" type="string">/tmp</param>
-        <param name="deploy.dir" type="string">/deploy</param>
-        <param name="webapps.dir" type="string">/webapps</param>
-        <param name="var.log.dir" type="string">/var/log</param>
-        <param name="var.run.dir" type="string">/var/run</param>
-        <param name="var.tmp.dir" type="string">/var/tmp</param>
-        <param name="etc.appserver.dir" type="string">/etc/appserver</param>
-        <param name="etc.appserver.confd.dir" type="string">/etc/appserver/conf.d</param>
-        -->
         <param name="user" type="string"><?php echo Setup::getValue(SetupKeys::USER) ?></param>
         <param name="group" type="string"><?php echo Setup::getValue(SetupKeys::GROUP) ?></param>
         <param name="umask" type="string"><?php echo Setup::getValue(SetupKeys::UMASK) ?></param>
     </params>
 
     <!--
-     ! You might add optional configuration for implicitly configured components here
+     ! You might add optional configuration for implicitly configured components here.
      !
-     ! https://github.com/appserver-io/appserver/wiki/13.-Configuration#optional-configuration
+     ! http://appserver.io/get-started/documentation/configuration.html#optional-configuration
      -->
 
     <containers>
@@ -65,71 +55,12 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
 
             <servers>
 
-                <server
-                        name="persistence-container"
-                        type="\AppserverIo\Server\Servers\MultiThreadedServer"
-                        worker="\AppserverIo\Server\Workers\ThreadWorker"
-                        socket="\AppserverIo\Server\Sockets\StreamSocket"
-                        requestContext="\AppserverIo\Server\Contexts\RequestContext"
-                        serverContext="\AppserverIo\Server\Contexts\ServerContext"
-                        loggerName="System">
-
-                    <params>
-                        <param name="admin" type="string"><?php echo Setup::getValue(SetupKeys::ADMIN_EMAIL) ?></param>
-                        <param name="transport" type="string">tcp</param>
-                        <param name="address" type="string"><?php echo Setup::getValue(SetupKeys::CONTAINER_PERSISTENCE_CONTAINER_HOST) ?></param>
-                        <param name="port" type="integer"><?php echo Setup::getValue(SetupKeys::CONTAINER_PERSISTENCE_CONTAINER_PORT) ?></param>
-                        <param name="workerNumber" type="integer"><?php echo Setup::getValue(SetupKeys::CONTAINER_PERSISTENCE_CONTAINER_WORKER_NUMBER) ?></param>
-                        <param name="workerAcceptMin" type="integer"><?php echo Setup::getValue(SetupKeys::CONTAINER_SERVER_WORKER_ACCEPT_MIN) ?></param>
-                        <param name="workerAcceptMax" type="integer"><?php echo Setup::getValue(SetupKeys::CONTAINER_SERVER_WORKER_ACCEPT_MAX) ?></param>
-                        <param name="documentRoot" type="string">webapps</param>
-                        <param name="directoryIndex" type="string">index.pc</param>
-                        <param name="keepAliveMax" type="integer">64</param>
-                        <param name="keepAliveTimeout" type="integer">5</param>
-                        <param name="errorsPageTemplatePath" type="string">var/www/errors/error.phtml</param>
-                    </params>
-
-                    <environmentVariables>
-                        <environmentVariable condition="" definition="LOGGER_ACCESS=Access" />
-                    </environmentVariables>
-
-                    <connectionHandlers>
-                        <connectionHandler type="\AppserverIo\WebServer\ConnectionHandlers\HttpConnectionHandler" />
-                    </connectionHandlers>
-
-                    <accesses>
-                        <!-- per default allow everything -->
-                        <access type="allow">
-                            <params>
-                                <param name="X_REQUEST_URI" type="string">.*</param>
-                            </params>
-                        </access>
-                    </accesses>
-
-                    <!-- include of virtual host configurations -->
-                    <xi:include href="conf.d/virtual-hosts.xml"/>
-
-                    <modules>
-                        <!-- REQUEST_POST hook -->
-                        <module type="\AppserverIo\WebServer\Modules\AuthenticationModule"/>
-                        <module type="\AppserverIo\WebServer\Modules\VirtualHostModule"/>
-                        <module type="\AppserverIo\WebServer\Modules\EnvironmentVariableModule" />
-                        <module type="\AppserverIo\WebServer\Modules\RewriteModule"/>
-                        <module type="\AppserverIo\WebServer\Modules\DirectoryModule"/>
-                        <module type="\AppserverIo\WebServer\Modules\AccessModule"/>
-                        <module type="\AppserverIo\WebServer\Modules\CoreModule"/>
-                        <module type="\AppserverIo\Appserver\PersistenceContainer\PersistenceContainerModule" />
-                        <!-- RESPONSE_PRE hook -->
-                        <module type="\AppserverIo\WebServer\Modules\DeflateModule"/>
-                        <!-- RESPONSE_POST hook -->
-                        <module type="\AppserverIo\Appserver\Core\Modules\ProfileModule"/>
-                    </modules>
-
-                    <fileHandlers>
-                        <fileHandler name="persistence-container" extension=".pc" />
-                    </fileHandlers>
-
-                </server>
+                <!--
+                 | To distribute componenents like SLSBs across a network, you've to configure separate server for
+                 | the Persistence-Container.
+                 |
+                 | http://appserver.io/get-started/documentation/configuration.html#persistence-container-(remote)
+                 |-->
 
                 <server
                         name="message-queue"
