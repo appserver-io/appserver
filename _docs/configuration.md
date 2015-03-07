@@ -681,3 +681,75 @@ Implementing your own scanners is possible as well.
   </scanner>
 </scanners>
 ```
+
+### Persistence-Container (Remote)
+
+The [Persistence-Container](<{{ "/get-started/documentation/persistence-container.html" | prepend: site.baseurl }}>) can also be used remote. This allows you, to distribute the components of your application across a network. Therefore you need to configure an own server for the Persistence-Container that allows to connect over a streaming socket.
+
+```xml
+<server
+  name="persistence-container"
+  type="\AppserverIo\Server\Servers\MultiThreadedServer"
+  worker="\AppserverIo\Server\Workers\ThreadWorker"
+  socket="\AppserverIo\Server\Sockets\StreamSocket"
+  requestContext="\AppserverIo\Server\Contexts\RequestContext"
+  serverContext="\AppserverIo\Server\Contexts\ServerContext"
+  loggerName="System">
+
+  <params>
+    <param name="admin" type="string">info@appserver.io</param>
+    <param name="transport" type="string">tcp</param>
+    <param name="address" type="string">127.0.0.1</param>
+    <param name="port" type="integer">8585</param>
+    <param name="workerNumber" type="integer">8</param>
+    <param name="workerAcceptMin" type="integer">3</param>
+    <param name="workerAcceptMax" type="integer">8</param>
+    <param name="documentRoot" type="string">webapps</param>
+    <param name="directoryIndex" type="string">index.pc</param>
+    <param name="keepAliveMax" type="integer">64</param>
+    <param name="keepAliveTimeout" type="integer">5</param>
+    <param name="errorsPageTemplatePath" type="string">var/www/errors/error.phtml</param>
+  </params>
+
+  <environmentVariables>
+    <environmentVariable condition="" definition="LOGGER_ACCESS=Access" />
+  </environmentVariables>
+
+  <connectionHandlers>
+    <connectionHandler type="\AppserverIo\WebServer\ConnectionHandlers\HttpConnectionHandler" />
+  </connectionHandlers>
+
+  <accesses>
+    <!-- per default allow everything -->
+    <access type="allow">
+      <params>
+        <param name="X_REQUEST_URI" type="string">.*</param>
+      </params>
+    </access>
+  </accesses>
+
+  <!-- include of virtual host configurations -->
+  <xi:include href="conf.d/virtual-hosts.xml"/>
+
+  <modules>
+    <!-- REQUEST_POST hook -->
+    <module type="\AppserverIo\WebServer\Modules\AuthenticationModule"/>
+    <module type="\AppserverIo\WebServer\Modules\VirtualHostModule"/>
+    <module type="\AppserverIo\WebServer\Modules\EnvironmentVariableModule" />
+    <module type="\AppserverIo\WebServer\Modules\RewriteModule"/>
+    <module type="\AppserverIo\WebServer\Modules\DirectoryModule"/>
+    <module type="\AppserverIo\WebServer\Modules\AccessModule"/>
+    <module type="\AppserverIo\WebServer\Modules\CoreModule"/>
+    <module type="\AppserverIo\Appserver\PersistenceContainer\PersistenceContainerModule" />
+    <!-- RESPONSE_PRE hook -->
+    <module type="\AppserverIo\WebServer\Modules\DeflateModule"/>
+    <!-- RESPONSE_POST hook -->
+    <module type="\AppserverIo\Appserver\Core\Modules\ProfileModule"/>
+  </modules>
+
+  <fileHandlers>
+    <fileHandler name="persistence-container" extension=".pc" />
+  </fileHandlers>
+
+</server>
+```
