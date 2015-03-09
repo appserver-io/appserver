@@ -236,48 +236,6 @@ class SetupKeys
     const CONTAINER_HTTPS_PORT = 'appserver.container.https.port';
 
     /**
-     * Configuration key for 'appserver.container.persistence-container.worker.number'.
-     *
-     * @var string
-     */
-    const CONTAINER_PERSISTENCE_CONTAINER_WORKER_NUMBER = 'appserver.container.persistence-container.worker.number';
-
-    /**
-     * Configuration key for 'appserver.container.persistence-container.host'.
-     *
-     * @var string
-     */
-    const CONTAINER_PERSISTENCE_CONTAINER_HOST = 'appserver.container.persistence-container.host';
-
-    /**
-     * Configuration key for 'appserver.container.persistence-container.port'.
-     *
-     * @var string
-     */
-    const CONTAINER_PERSISTENCE_CONTAINER_PORT = 'appserver.container.persistence-container.port';
-
-    /**
-     * Configuration key for 'appserver.container.memcached.worker.number'.
-     *
-     * @var string
-     */
-    const CONTAINER_MEMCACHED_WORKER_NUMBER = 'appserver.container.memcached.worker.number';
-
-    /**
-     * Configuration key for 'appserver.container.memcached.host'.
-     *
-     * @var string
-     */
-    const CONTAINER_MEMCACHED_HOST = 'appserver.container.memcached.host';
-
-    /**
-     * Configuration key for 'appserver.container.memcached.port'.
-     *
-     * @var string
-     */
-    const CONTAINER_MEMCACHED_PORT = 'appserver.container.memcached.port';
-
-    /**
      * Configuration key for 'appserver.container.message-queue.worker.number'.
      *
      * @var string
@@ -297,20 +255,6 @@ class SetupKeys
      * @var string
      */
     const CONTAINER_MESSAGE_QUEUE_PORT = 'appserver.container.message-queue.port';
-
-    /**
-     * Configuration key for 'appserver.container.web-socket.host'.
-     *
-     * @var string
-     */
-    const CONTAINER_WEB_SOCKET_HOST = 'appserver.appserver.container.web-socket.host';
-
-    /**
-     * Configuration key for 'container.web-socket.port'.
-     *
-     * @var string
-     */
-    const CONTAINER_WEB_SOCKET_PORT= 'appserver.appserver.container.web-socket.port';
 
     /**
      * Configuration key for 'appserver.php-fpm.port'.

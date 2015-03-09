@@ -66,23 +66,15 @@ class Setup
         SetupKeys::ADMIN_EMAIL                                   => 'info@appserver.io',
         SetupKeys::CONTAINER_SERVER_WORKER_ACCEPT_MIN            => 3,
         SetupKeys::CONTAINER_SERVER_WORKER_ACCEPT_MAX            => 8,
-        SetupKeys::CONTAINER_HTTP_WORKER_NUMBER                  => 64,
+        SetupKeys::CONTAINER_HTTP_WORKER_NUMBER                  => 16,
         SetupKeys::CONTAINER_HTTP_HOST                           => SetupKeys::DEFAULT_HOST,
         SetupKeys::CONTAINER_HTTP_PORT                           => 9080,
-        SetupKeys::CONTAINER_HTTPS_WORKER_NUMBER                 => 64,
+        SetupKeys::CONTAINER_HTTPS_WORKER_NUMBER                 => 16,
         SetupKeys::CONTAINER_HTTPS_HOST                          => SetupKeys::DEFAULT_HOST,
         SetupKeys::CONTAINER_HTTPS_PORT                          => 9443,
-        SetupKeys::CONTAINER_PERSISTENCE_CONTAINER_WORKER_NUMBER => 64,
-        SetupKeys::CONTAINER_PERSISTENCE_CONTAINER_HOST          => SetupKeys::DEFAULT_HOST,
-        SetupKeys::CONTAINER_PERSISTENCE_CONTAINER_PORT          => 8585,
-        SetupKeys::CONTAINER_MEMCACHED_WORKER_NUMBER             => 8,
-        SetupKeys::CONTAINER_MEMCACHED_HOST                      => SetupKeys::DEFAULT_HOST,
-        SetupKeys::CONTAINER_MEMCACHED_PORT                      => 11210,
-        SetupKeys::CONTAINER_MESSAGE_QUEUE_WORKER_NUMBER         => 8,
+        SetupKeys::CONTAINER_MESSAGE_QUEUE_WORKER_NUMBER         => 4,
         SetupKeys::CONTAINER_MESSAGE_QUEUE_HOST                  => SetupKeys::DEFAULT_HOST,
         SetupKeys::CONTAINER_MESSAGE_QUEUE_PORT                  => 8587,
-        SetupKeys::CONTAINER_WEB_SOCKET_HOST                     => SetupKeys::DEFAULT_HOST,
-        SetupKeys::CONTAINER_WEB_SOCKET_PORT                     => 8589,
         SetupKeys::PHP_FPM_PORT                                  => 9010,
         SetupKeys::PHP_FPM_HOST                                  => SetupKeys::DEFAULT_HOST,
         SetupKeys::UMASK                                         => '0002',
@@ -106,8 +98,7 @@ class Setup
             SetupKeys::OS_FAMILY                                     => SetupKeys::OS_FAMILY_WINDOWS,
             SetupKeys::OS_ARCHITECTURE                               => 'x86',
             SetupKeys::CONTAINER_HTTP_WORKER_NUMBER                  => 8,
-            SetupKeys::CONTAINER_HTTPS_WORKER_NUMBER                 => 8,
-            SetupKeys::CONTAINER_PERSISTENCE_CONTAINER_WORKER_NUMBER => 8
+            SetupKeys::CONTAINER_HTTPS_WORKER_NUMBER                 => 8
         )
     );
 

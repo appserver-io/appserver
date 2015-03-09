@@ -1273,8 +1273,6 @@
             </xs:choice>
             <xs:attribute name="appBase" type="xs:string" use="required"/>
             <xs:attribute name="name" type="xs:string" use="required"/>
-            <xs:attribute name="serverAdmin" type="xs:string" use="required"/>
-            <xs:attribute name="serverSoftware" type="xs:string" use="required"/>
             <xs:attribute name="uuid" type="xs:string"/>
             <xs:attribute ref="xml:base"/>
         </xs:complexType>
