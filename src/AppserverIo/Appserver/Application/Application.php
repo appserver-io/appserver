@@ -676,18 +676,20 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
     }
 
     /**
-     * Shutdown
+     * Shutdown function to log unexpected errors.
      *
      * @return void
+     * @see http://php.net/register_shutdown_function
      */
     public function shutdown()
     {
-        error_log('called: ' . __METHOD__);
         // check if there was a fatal error caused shutdown
         $lastError = error_get_last();
+
+        // query whether we found an error
         if ($lastError['type'] === E_ERROR || $lastError['type'] === E_USER_ERROR) {
-            // log error
-            error_log($lastError['message']);
+            // log the last found error
+            $this->getInitialContext()->getSystemLogger()->critical($lastError['message']);
         }
     }
 }
