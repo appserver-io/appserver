@@ -47,11 +47,7 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
 
             <deployment type="AppserverIo\Appserver\Core\GenericDeployment" />
 
-            <host
-                    name="localhost"
-                    appBase="/webapps"
-                    serverAdmin="info@appserver.io"
-                    serverSoftware="<?php echo Setup::getValue(SetupKeys::SOFTWARE_IDENTIFIER) ?>" />
+            <host name="localhost" appBase="/webapps" />
 
             <servers>
 

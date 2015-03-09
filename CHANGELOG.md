@@ -6,6 +6,7 @@
 
 ## Features
 
+* Closed [#657](https://github.com/appserver-io/appserver/issues/657) - Remove serverSoftware and serverAdmin attributes from host node
 * Closed [#656](https://github.com/appserver-io/appserver/issues/656) - Refactoring ServletEngine + PersistenceContainerModule for less usage of \Stackables
 * Closed [#655](https://github.com/appserver-io/appserver/issues/655) - Reduce memory consumption by decrease worker number
 
