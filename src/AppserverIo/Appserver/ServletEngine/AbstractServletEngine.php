@@ -22,7 +22,6 @@
 namespace AppserverIo\Appserver\ServletEngine;
 
 use AppserverIo\Logger\LoggerUtils;
-use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Server\Dictionaries\ServerVars;
 use AppserverIo\Server\Interfaces\RequestContextInterface;
 use AppserverIo\WebServer\Interfaces\HttpModuleInterface;
@@ -38,49 +37,37 @@ use AppserverIo\Appserver\ServletEngine\Authentication\AuthenticationValve;
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
- *
- * @property \AppserverIo\Storage\GenericStackable $applications Storage with the available applications
- * @property \AppserverIo\Storage\GenericStackable $dependencies Storage with the available applications
- * @property \AppserverIo\Storage\GenericStackable $handlers     Storage handlers registered in the web server
- * @property \AppserverIo\Storage\GenericStackable $valves       Storage for the servlet engines valves that handles the request
  */
-abstract class AbstractServletEngine extends GenericStackable implements HttpModuleInterface
+abstract class AbstractServletEngine implements HttpModuleInterface
 {
 
     /**
-     * Initialize the module
+     * Storage with the available applications.
+     *
+     * @var array
      */
-    public function __construct()
-    {
+    protected $dependencies;
 
-        /**
-         * Storage with the available applications.
-         *
-         * @var \AppserverIo\Storage\GenericStackable
-         */
-        $this->dependencies = new GenericStackable();
+    /**
+     * Storage for the servlet engines valves that handles the request.
+     *
+     * @var array
+     */
+    protected $valves = array();
 
-        /**
-         * Storage for the servlet engines valves that handles the request.
-         *
-         * @var \AppserverIo\Storage\GenericStackable
-         */
-        $this->valves = new GenericStackable();
+    /**
+     * Storage handlers registered in the web server.
+     *
+     * @var array
+     */
+    protected $handlers = array();
 
-        /**
-         * Storage handlers registered in the web server.
-         *
-         * @var \AppserverIo\Storage\GenericStackable
-         */
-        $this->handlers = new GenericStackable();
-
-        /**
-         * Storage with the available applications.
-         *
-         * @var \AppserverIo\Storage\GenericStackable
-         */
-        $this->applications = new GenericStackable();
-    }
+    /**
+     * Storage with the available applications.
+     *
+     * @var array
+     */
+    protected $applications = array();
 
     /**
      * Will try to find the application based on the context path taken from the requested filename.
@@ -114,7 +101,7 @@ abstract class AbstractServletEngine extends GenericStackable implements HttpMod
     /**
      * Returns the initialized applications.
      *
-     * @return \AppserverIo\Storage\GenericStackable The initialized application instances
+     * @return array The initialized application instances
      */
     public function getApplications()
     {
@@ -124,7 +111,7 @@ abstract class AbstractServletEngine extends GenericStackable implements HttpMod
     /**
      * Returns an array of module names which should be executed first.
      *
-     * @return \AppserverIo\Storage\GenericStackable The module names this module depends on
+     * @return array The module names this module depends on
      */
     public function getDependencies()
     {
@@ -134,7 +121,7 @@ abstract class AbstractServletEngine extends GenericStackable implements HttpMod
     /**
      * Returns the initialized web server handlers.
      *
-     * @return \AppserverIo\Storage\GenericStackable The initialized web server handlers
+     * @return array The initialized web server handlers
      */
     public function getHandlers()
     {
@@ -154,11 +141,21 @@ abstract class AbstractServletEngine extends GenericStackable implements HttpMod
     /**
      * Returns the initialized valves.
      *
-     * @return \AppserverIo\Storage\GenericStackable The initialized valves
+     * @return array The initialized valves
      */
     public function getValves()
     {
         return $this->valves;
+    }
+
+    /**
+     * Returns the container instance.
+     *
+     * @return \AppserverIo\Appserver\Core\Interfaces\ContainerInterface The container instance
+     */
+    public function getContainer()
+    {
+        return $this->getServerContext()->getContainer();
     }
 
     /**
@@ -168,7 +165,7 @@ abstract class AbstractServletEngine extends GenericStackable implements HttpMod
      */
     public function initApplications()
     {
-        $this->applications = $this->getServerContext()->getContainer()->getApplications();
+        $this->applications = $this->getContainer()->getApplications();
     }
 
     /**
@@ -178,9 +175,7 @@ abstract class AbstractServletEngine extends GenericStackable implements HttpMod
      */
     public function initHandlers()
     {
-        foreach ($this->getServerContext()->getServerConfig()->getHandlers() as $extension => $handler) {
-            $this->handlers[$extension] = new Handler($handler['name']);
-        }
+        $this->handlers = $this->getServerContext()->getServerConfig()->getHandlers();
     }
 
     /**
@@ -203,57 +198,6 @@ abstract class AbstractServletEngine extends GenericStackable implements HttpMod
      */
     public function prepare()
     {
-    }
-
-    /**
-     * Tries to find an application that matches the passed request.
-     *
-     * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface $servletRequest The request instance to locate the application for
-     *
-     * @return array The application info that matches the request
-     *
-     * @throws \AppserverIo\Appserver\ServletEngine\BadRequestException Is thrown if no application matches the request
-     */
-    protected function prepareServletRequest(HttpServletRequestInterface $servletRequest)
-    {
-        // load the request URI and query string
-        $uri = $servletRequest->getUri();
-        $queryString = $servletRequest->getQueryString();
-
-        // get uri without querystring
-        $uriWithoutQueryString = str_replace('?' . $queryString, '', $uri);
-
-        // initialize the path information and the directory to start with
-        list ($dirname, $basename, $extension) = array_values(pathinfo($uriWithoutQueryString));
-
-        // make the registered handlers local
-        $handlers = $this->getHandlers();
-
-        // descent the directory structure down to find the (almost virtual) servlet file
-        do {
-            // bingo we found a (again: almost virtual) servlet file
-            if (array_key_exists(".$extension", $handlers) && $handlers[".$extension"]->getName() === $this->getModuleName()) {
-                // prepare the servlet path
-                if ($dirname === '/') {
-                    $servletPath = '/' . $basename;
-                } else {
-                    $servletPath = $dirname . '/' . $basename;
-                }
-
-                // we set the basename, because this is the servlet path
-                $servletRequest->setServletPath($servletPath);
-
-                // we set the path info, what is the request URI with stripped dir- and basename
-                $servletRequest->setPathInfo(str_replace($servletPath, '', $uriWithoutQueryString));
-
-                // we've found what we were looking for, so break here
-                break;
-            }
-
-            // descend down the directory tree
-            list ($dirname, $basename, $extension) = array_values(pathinfo($dirname));
-
-        } while ($dirname !== false); // stop until we reached the root of the URI
     }
 
     /**

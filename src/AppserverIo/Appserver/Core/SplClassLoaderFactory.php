@@ -49,7 +49,7 @@ class SplClassLoaderFactory
 
         // initialize the storage for the class map and the include path
         $classMap = new GenericStackable();
-        $includePath = new GenericStackable();
+        $includePath = array();
 
         // load the application directory
         $webappPath = $application->getWebappPath();

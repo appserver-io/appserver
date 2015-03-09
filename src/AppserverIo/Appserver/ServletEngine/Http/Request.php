@@ -20,14 +20,14 @@
 
 namespace AppserverIo\Appserver\ServletEngine\Http;
 
+use AppserverIo\Http\HttpProtocol;
+use AppserverIo\Server\Dictionaries\ServerVars;
 use AppserverIo\Psr\Context\ContextInterface;
-use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Psr\HttpMessage\CookieInterface;
 use AppserverIo\Psr\HttpMessage\RequestInterface;
 use AppserverIo\Psr\Servlet\SessionUtils;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
-use AppserverIo\Server\Dictionaries\ServerVars;
 
 /**
  * A Http servlet request implementation.
@@ -38,33 +38,36 @@ use AppserverIo\Server\Dictionaries\ServerVars;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class Request extends GenericStackable implements HttpServletRequestInterface
+class Request implements HttpServletRequestInterface
 {
 
     /**
-     * Initialize the servlet response.
+     * The server variables.
+     *
+     * @var array
+     */
+    protected $serverVars = array();
+
+    /**
+     * The uploaded part instances.
+     *
+     * @var array
+     */
+    protected $parts = array();
+
+    /**
+     * The available request handlers.
+     *
+     * @var array
+     */
+    protected $handlers = array();
+
+    /**
+     * Initializes the request object with the default properties.
+     *
+     * @return void
      */
     public function __construct()
-    {
-        $this->init();
-    }
-
-    /**
-     * Cleanup method that allows manual garbage collection.
-     *
-     * @return void
-     */
-    public function __cleanup()
-    {
-        unset($this->context);
-    }
-
-    /**
-     * Initialises the response object to default properties
-     *
-     * @return void
-     */
-    public function init()
     {
 
         // init body stream
@@ -86,9 +89,103 @@ class Request extends GenericStackable implements HttpServletRequestInterface
         $this->requestedSessionName = '';
         $this->baseModifier = '';
 
-        // initialize the server variables and the parts
-        $this->serverVars = new GenericStackable();
-        $this->parts = new GenericStackable();
+        // reset the server variables and the parts
+        $this->parts = array();
+        $this->handlers = array();
+        $this->serverVars = array();
+    }
+
+    /**
+     * Initializes the servlet request with the data from the passe HTTP request instance.
+     *
+     * @param \AppserverIo\Psr\HttpMessage\RequestInterface $request A request object
+     *
+     * @return void
+     */
+    public function fromHttpRequest(RequestInterface $httpRequest)
+    {
+
+        // reset the servlet request
+        $this->injectHttpRequest($httpRequest);
+
+        // initialize the parts
+        foreach ($httpRequest->getParts() as $part) {
+            $this->addPart(Part::fromHttpRequest($part));
+        }
+
+        // set the body content if we can find one
+        if ($httpRequest->getHeader(HttpProtocol::HEADER_CONTENT_LENGTH) > 0) {
+            $this->setBodyStream($httpRequest->getBodyContent());
+        }
+    }
+
+    /**
+     * Prepares the request instance.
+     *
+     * @return void
+     */
+    public function prepare()
+    {
+
+        // prepare the context path
+        $contextPath = str_replace($this->getContext()->getAppBase(), '', $this->getContext()->getWebappPath());
+
+        // set the context path
+        $this->setContextPath($contextPath);
+
+        // load the request URI and query string
+        $uri = $this->getUri();
+        $queryString = $this->getQueryString();
+
+        // get uri without querystring
+        $uriWithoutQueryString = str_replace('?' . $queryString, '', $uri);
+
+        // initialize the path information and the directory to start with
+        list ($dirname, $basename, $extension) = array_values(pathinfo($uriWithoutQueryString));
+
+        // make the registered handlers local
+        $handlers = $this->getHandlers();
+
+        // descent the directory structure down to find the (almost virtual) servlet file
+        do {
+            // bingo we found a (again: almost virtual) servlet file
+            if (isset($handlers[".$extension"])) {
+                // prepare the servlet path
+                if ($dirname === '/') {
+                    $servletPath = '/' . $basename;
+                } else {
+                    $servletPath = $dirname . '/' . $basename;
+                }
+
+                // we set the basename, because this is the servlet path
+                $this->setServletPath($servletPath);
+
+                // we set the path info, what is the request URI with stripped dir- and basename
+                $this->setPathInfo(str_replace($servletPath, '', $uriWithoutQueryString));
+
+                // we've found what we were looking for, so break here
+                break;
+            }
+
+            // descend down the directory tree
+            list ($dirname, $basename, $extension) = array_values(pathinfo($dirname));
+
+        } while ($dirname !== false); // stop until we reached the root of the URI
+
+        // prepare and set the servlet path
+        $this->setServletPath(str_replace($contextPath, '', $this->getServletPath()));
+
+        // prepare the base modifier which allows our apps to provide a base URL
+        $webappsDir = str_replace($this->getContext()->getBaseDirectory(), '', $this->getContext()->getAppBase());
+        $relativeRequestPath = strstr($this->getServerVar(ServerVars::DOCUMENT_ROOT), $webappsDir);
+        $proposedBaseModifier = str_replace($webappsDir, '', $relativeRequestPath);
+
+        //  prepare the base modifier
+        if (strpos($proposedBaseModifier, $contextPath) === 0) {
+            $this->setBaseModifier('');
+        } else {
+            $this->setBaseModifier($contextPath);
+        }
     }
 
     /**
@@ -107,11 +204,11 @@ class Request extends GenericStackable implements HttpServletRequestInterface
     /**
      * Injects the server variables.
      *
-     * @param \AppserverIo\Storage\GenericStackable $serverVars The server variables
+     * @param array $serverVars The server variables
      *
      * @return void
      */
-    public function injectServerVars($serverVars)
+    public function injectServerVars(array $serverVars)
     {
         $this->serverVars = $serverVars;
     }
@@ -136,6 +233,28 @@ class Request extends GenericStackable implements HttpServletRequestInterface
     public function getHttpRequest()
     {
         return $this->httpRequest;
+    }
+
+    /**
+     * Injects the available file handlers registered by the webserver configuration.
+     *
+     * @param array $handlers The available file handlers
+     *
+     * @return void
+     */
+    public function injectHandlers(array $handlers)
+    {
+        $this->handlers = $handlers;
+    }
+
+    /**
+     * Returns the available file handlers registered by the webserver configuration.
+     *
+     * @return array The file handlers
+     */
+    public function getHandlers()
+    {
+        return $this->handlers;
     }
 
     /**
@@ -166,7 +285,6 @@ class Request extends GenericStackable implements HttpServletRequestInterface
      */
     public function getHttpPartInstance()
     {
-
     }
 
     /**
@@ -764,7 +882,7 @@ class Request extends GenericStackable implements HttpServletRequestInterface
     /**
      * Returns the array with the server variables.
      *
-     * @return \AppserverIo\Storage\GenericStackable The array with the server variables
+     * @return array The array with the server variables
      */
     public function getServerVars()
     {

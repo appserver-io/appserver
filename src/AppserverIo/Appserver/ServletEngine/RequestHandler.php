@@ -21,10 +21,11 @@
 namespace AppserverIo\Appserver\ServletEngine;
 
 use AppserverIo\Logger\LoggerUtils;
-use AppserverIo\Storage\GenericStackable;
+use AppserverIo\Appserver\ServletEngine\Http\Response;
+use AppserverIo\Psr\HttpMessage\ResponseInterface;
+use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
-use AppserverIo\Psr\Application\ApplicationInterface;
 
 /**
  * This is a request handler that is necessary to process each request of an
@@ -42,11 +43,11 @@ class RequestHandler extends \Thread
     /**
      * Injects the valves to be processed.
      *
-     * @param \AppserverIo\Storage\GenericStackable $valves The valves to process
+     * @param array $valves The valves to process
      *
      * @return void
      */
-    public function injectValves(GenericStackable $valves)
+    public function injectValves(array $valves)
     {
         $this->valves = $valves;
     }
@@ -76,18 +77,6 @@ class RequestHandler extends \Thread
     }
 
     /**
-     * Inject the actual servlet response.
-     *
-     * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse The actual response instance
-     *
-     * @return void
-     */
-    public function injectResponse(HttpServletResponseInterface $servletResponse)
-    {
-        $this->servletResponse = $servletResponse;
-    }
-
-    /**
      * The main method that handles the thread in a separate context.
      *
      * @return void
@@ -99,7 +88,7 @@ class RequestHandler extends \Thread
             // register shutdown handler
             register_shutdown_function(array(&$this, "shutdown"));
 
-            // reset request/response instance
+            // synchronize the application instance
             $application = $this->application;
 
             // register class loaders
@@ -108,10 +97,17 @@ class RequestHandler extends \Thread
             // synchronize the valves, servlet request/response
             $valves = $this->valves;
             $servletRequest = $this->servletRequest;
-            $servletResponse = $this->servletResponse;
 
-            // inject the found application into the servlet request
+            // initialize servlet session, request + response
+            $servletResponse = new Response();
+            $servletResponse->init();
+
+            // inject the sapplication and servlet response
+            $servletRequest->injectResponse($servletResponse);
             $servletRequest->injectContext($application);
+
+            // prepare the request instance
+            $servletRequest->prepare();
 
             // process the valves
             foreach ($valves as $valve) {
@@ -129,23 +125,54 @@ class RequestHandler extends \Thread
 
         } catch (\Exception $e) {
             // bind the exception in the respsonse
-            $servletResponse->setException($e);
+            $this->exception = $e;
         }
 
-        // shutdown the request handler
-        $this->__shutdown();
+        // copy the the response values
+        $this->statusCode = $servletResponse->getStatusCode();
+        $this->statusReasonPhrase = $servletResponse->getStatusReasonPhrase();
+        $this->version = $servletResponse->getVersion();
+        $this->state = $servletResponse->getState();
+
+        // copy the content of the body stream
+        $this->bodyStream = $servletResponse->getBodyStream();
+
+        // copy headers and cookies
+        $this->headers = $servletResponse->getHeaders();
+        $this->cookies = $servletResponse->getCookies();
     }
 
     /**
-     * Thread shutdown function that allows you to cleanup
-     * garbage.
+     * Copies the values from the request handler back to the passed HTTP response instance.
+     *
+     * \AppserverIo\Psr\HttpMessage\ResponseInterface $response A HTTP response object
      *
      * @return void
-     * @since appserver.io/pthreads >= 1.0.2
      */
-    public function __shutdown()
+    public function copyToHttpResponse(ResponseInterface $httpResponse)
     {
-        $this->servletRequest->__cleanup();
+
+        // copy response values to the HTTP response
+        $httpResponse->setStatusCode($this->statusCode);
+        $httpResponse->setStatusReasonPhrase($this->statusReasonPhrase);
+        $httpResponse->setVersion($this->version);
+        $httpResponse->setState($this->state);
+
+        // copy the body content to the HTTP response
+        $httpResponse->appendBodyStream($this->bodyStream);
+
+        // copy headers to the HTTP response
+        foreach ($this->headers as $headerName => $headerValue) {
+            $httpResponse->addHeader($headerName, $headerValue);
+        }
+
+        // copy cookies to the HTTP response
+        $httpResponse->setCookies($this->cookies);
+
+        // query whether an exception has been thrown, if yes, re-throw it
+        if ($this->exception instanceof \Exception) {
+            throw $this->exception;
+        }
     }
 
     /**
@@ -160,15 +187,9 @@ class RequestHandler extends \Thread
         // check if there was a fatal error caused shutdown
         $lastError = error_get_last();
         if ($lastError['type'] === E_ERROR || $lastError['type'] === E_USER_ERROR) {
-            // synchronize the servlet response
-            $servletResponse = $this->servletResponse;
-
             // set the status code and append the error message to the body
-            $servletResponse->setStatusCode(500);
-            $servletResponse->appendBodyStream($lastError['message']);
+            $this->statusCode = 500;
+            $this->bodyStream = $lastError['message'];
         }
-
-        // shutdown the request handler
-        $this->__shutdown();
     }
 }

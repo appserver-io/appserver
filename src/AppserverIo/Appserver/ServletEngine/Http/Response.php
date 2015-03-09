@@ -20,7 +20,6 @@
 
 namespace AppserverIo\Appserver\ServletEngine\Http;
 
-use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Http\HttpProtocol;
 use AppserverIo\Http\HttpException;
 use AppserverIo\Http\HttpResponseStates;
@@ -28,7 +27,7 @@ use AppserverIo\Psr\HttpMessage\CookieInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
 
 /**
- * A servlet request implementation.
+ * A servlet response implementation.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -36,19 +35,11 @@ use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class Response extends GenericStackable implements HttpServletResponseInterface
+class Response implements HttpServletResponseInterface
 {
 
     /**
-     * Initialize the servlet response.
-     */
-    public function __construct()
-    {
-        $this->init();
-    }
-
-    /**
-     * Initialises the response object to default properties
+     * Initialises the response object to default properties.
      *
      * @return void
      */
@@ -68,11 +59,11 @@ class Response extends GenericStackable implements HttpServletResponseInterface
         $this->mimeType = "text/plain";
         $this->state = HttpResponseStates::INITIAL;
 
-        // init cookies and headers
-        $this->cookies = new GenericStackable();
-        $this->headers = new GenericStackable();
+        // initialize cookies and headers
+        $this->cookies = array();
+        $this->headers = array();
 
-        // reset to default headers
+        // initialize the default headers
         $this->initDefaultHeaders();
     }
 
@@ -112,11 +103,11 @@ class Response extends GenericStackable implements HttpServletResponseInterface
             }
 
             // add the cookie array
-            $this->cookies[$name] = serialize($cookieValue);
+            $this->cookies[$name] = $cookieValue;
 
         } else {
             // when add it the first time, simply add it
-            $this->cookies[$name] = serialize($cookie);
+            $this->cookies[$name] = $cookie;
         }
     }
 
@@ -146,7 +137,7 @@ class Response extends GenericStackable implements HttpServletResponseInterface
         if ($this->hasCookie($cookieName) === false) {
             throw new HttpException("Cookie '$cookieName' not found");
         }
-        return unserialize($this->cookies[$cookieName]);
+        return $this->cookies[$cookieName];
     }
 
     /**
@@ -365,7 +356,7 @@ class Response extends GenericStackable implements HttpServletResponseInterface
      */
     public function hasHeader($name)
     {
-        return array_key_exists($name, $this->headers);
+        return isset($this->headers[$name]);
     }
 
     /**
