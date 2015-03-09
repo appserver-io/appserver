@@ -98,7 +98,7 @@ class Request implements HttpServletRequestInterface
     /**
      * Initializes the servlet request with the data from the passe HTTP request instance.
      *
-     * @param \AppserverIo\Psr\HttpMessage\RequestInterface $request A request object
+     * @param \AppserverIo\Psr\HttpMessage\RequestInterface $httpRequest A request object
      *
      * @return void
      */

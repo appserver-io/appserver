@@ -145,7 +145,7 @@ class RequestHandler extends \Thread
     /**
      * Copies the values from the request handler back to the passed HTTP response instance.
      *
-     * \AppserverIo\Psr\HttpMessage\ResponseInterface $response A HTTP response object
+     * @param \AppserverIo\Psr\HttpMessage\ResponseInterface $httpResponse A HTTP response object
      *
      * @return void
      */
