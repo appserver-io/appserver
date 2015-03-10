@@ -148,7 +148,11 @@ trait BindingTrait
                 // check if we've a callback method
                 if (is_callable($value)) {
                     // if yes, merge the params and invoke the callback
-                    return call_user_func_array($value, array_merge($bindArgs, $args));
+                    foreach ($args as $arg) {
+                        $bindArgs[] = $arg;
+                    }
+                    // invoke the callback
+                    return call_user_func_array($value, $bindArgs);
                 }
 
                 // search recursive

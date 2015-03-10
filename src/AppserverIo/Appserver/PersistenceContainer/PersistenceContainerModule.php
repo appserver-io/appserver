@@ -20,7 +20,6 @@
 
 namespace AppserverIo\Appserver\PersistenceContainer;
 
-use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Appserver\ServletEngine\ServletEngine;
 use AppserverIo\Server\Interfaces\ServerContextInterface;
 
@@ -35,6 +34,7 @@ use AppserverIo\Server\Interfaces\ServerContextInterface;
  */
 class PersistenceContainerModule extends ServletEngine
 {
+
     /**
      * The unique module name in the web server context.
      *
@@ -43,17 +43,11 @@ class PersistenceContainerModule extends ServletEngine
     const MODULE_NAME = 'persistence-container';
 
     /**
-     * Initialize the module.
+     * The array with the garbage collector instances.
+     *
+     * @var array
      */
-    public function __construct()
-    {
-
-        // call parent constructor
-        parent::__construct();
-
-        // initialize the member variables
-        $this->garbageCollectors = new GenericStackable();
-    }
+    protected $garbageCollectors = array();
 
     /**
      * Returns the module name.

@@ -639,6 +639,8 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
      */
     public function run()
     {
+        // register shutdown handler
+        register_shutdown_function(array(&$this, "shutdown"));
 
         // create the applications 'env' directory the beans will be bound to
         $appEnvDir = $this->createSubdirectory('env');
@@ -672,6 +674,24 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
                 // profile the application context
                 $profileLogger->debug(sprintf('Application %s is running', $this->getName()));
             }
+        }
+    }
+
+    /**
+     * Shutdown function to log unexpected errors.
+     *
+     * @return void
+     * @see http://php.net/register_shutdown_function
+     */
+    public function shutdown()
+    {
+        // check if there was a fatal error caused shutdown
+        $lastError = error_get_last();
+
+        // query whether we found an error
+        if ($lastError['type'] === E_ERROR || $lastError['type'] === E_USER_ERROR) {
+            // log the last found error
+            $this->getInitialContext()->getSystemLogger()->critical($lastError['message']);
         }
     }
 }
