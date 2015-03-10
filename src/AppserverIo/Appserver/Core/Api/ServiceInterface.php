@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Api\ServiceInterface
+ * \AppserverIo\Appserver\Core\Api\ServiceInterface
  *
  * NOTICE OF LICENSE
  *
@@ -20,7 +20,7 @@
 
 namespace AppserverIo\Appserver\Core\Api;
 
-use AppserverIo\Configuration\Interfaces\NodeInterface;
+use AppserverIo\Appserver\Core\Interfaces\SystemConfigurationInterface;
 use AppserverIo\Appserver\Core\InitialContext;
 
 /**
@@ -44,18 +44,54 @@ interface ServiceInterface
     public function getInitialContext();
 
     /**
+     * Returns the servers tmp directory, append with the passed directory.
+     *
+     * @param string $relativePathToAppend A relative path to append
+     *
+     * @return string
+     */
+    public function getTmpDir($relativePathToAppend = '');
+
+    /**
+     * Returns the servers deploy directory.
+     *
+     * @param string $relativePathToAppend A relative path to append
+     *
+     * @return string
+     */
+    public function getDeployDir($relativePathToAppend = '');
+
+    /**
+     * Returns the servers webapps directory.
+     *
+     * @param string $relativePathToAppend A relative path to append
+     *
+     * @return string
+     */
+    public function getWebappsDir($relativePathToAppend = '');
+
+    /**
+     * Returns the servers log directory.
+     *
+     * @param string $relativePathToAppend A relative path to append
+     *
+     * @return string
+     */
+    public function getLogDir($relativePathToAppend = '');
+
+    /**
      * Allows to set the system configuration.
      *
-     * @param \AppserverIo\Configuration\Interfaces\NodeInterface $systemConfiguration The system configuration
+     * @param \AppserverIo\Appserver\Core\Interfaces\SystemConfigurationInterface $systemConfiguration The system configuration
      *
      * @return ServiceInterface
      */
-    public function setSystemConfiguration(NodeInterface $systemConfiguration);
+    public function setSystemConfiguration(SystemConfigurationInterface $systemConfiguration);
 
     /**
      * Returns the system configuration.
      *
-     * @return \AppserverIo\Configuration\Interfaces\NodeInterface The system configuration
+     * @return \AppserverIo\Appserver\Core\Interfaces\SystemConfigurationInterface The system configuration
      */
     public function getSystemConfiguration();
 

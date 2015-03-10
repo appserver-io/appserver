@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Scanner\AbstractScanner
+ * \AppserverIo\Appserver\Core\Scanner\AbstractScanner
  *
  * NOTICE OF LICENSE
  *
@@ -301,7 +301,7 @@ abstract class AbstractScanner extends AbstractContextThread
         // clear the stat cache to get real mtime if changed
         clearstatcache();
 
-        // return the change date (last successfull deployment date)
+        // return the change date (last successful deployment date)
         if (is_file($file)) {
             $mtime = filemtime($file);
         }

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\AbstractProvisioner
+ * \AppserverIo\Appserver\Core\AbstractProvisioner
  *
  * NOTICE OF LICENSE
  *
@@ -62,7 +62,7 @@ abstract class AbstractProvisioner implements ProvisionerInterface
      * and the provision node configuration data.
      *
      * @param \AppserverIo\Appserver\Application\Interfaces\ContextInterface $initialContext  The initial context instance
-     * @param \AppserverIo\Appserver\Core\Api\Node\ExtractorNodeInterface    $provisionerNode The provisioner node configuration data
+     * @param \AppserverIo\Appserver\Core\Api\Node\ProvisionerNodeInterface  $provisionerNode The provisioner node configuration data
      */
     public function __construct(ContextInterface $initialContext, ProvisionerNodeInterface $provisionerNode)
     {
@@ -110,7 +110,7 @@ abstract class AbstractProvisioner implements ProvisionerInterface
     /**
      * Returns the service instance to use.
      *
-     * @return \AppserverIo\Appserver\Core\Api\ServiceInterface $service The service to use
+     * @return \AppserverIo\Appserver\Core\Api\ProvisioningService $service The service to use
      */
     public function getService()
     {

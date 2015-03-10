@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\PersistenceContainer\TimerFactory
+ * \AppserverIo\Appserver\PersistenceContainer\TimerFactory
  *
  * NOTICE OF LICENSE
  *
@@ -33,7 +33,14 @@ use AppserverIo\Psr\EnterpriseBeans\ScheduleExpression;
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
- * @link      http://www.appserver.io
+ * @link      http://www.appserver.
+ *
+ * @property \AppserverIo\Psr\Application\ApplicationInterface      $application       The application instance
+ * @property \AppserverIo\Psr\EnterpriseBeans\TimerServiceInterface $timerService      The timer service to create the service for
+ * @property \DateTime                                              $initialExpiration The date at which the first timeout should occur.
+ * @property integer                                                $intervalDuration  The interval (in milli seconds) between consecutive timeouts for the newly created timer.
+ * @property \Serializable                                          $info              Serializable info that will be made available through the newly created timers Timer::getInfo() method
+ * @property boolean                                                $persistent        TRUE if the newly created timer has to be persistent
  */
 class TimerFactory extends \Thread implements TimerFactoryInterface
 {
@@ -84,6 +91,8 @@ class TimerFactory extends \Thread implements TimerFactoryInterface
      * @param boolean                                                $persistent        TRUE if the newly created timer has to be persistent
      *
      * @return \AppserverIo\Psr\EnterpriseBeans\TimerInterface Returns the newly created timer
+     *
+     * @throws \Exception
      */
     public function createTimer(TimerServiceInterface $timerService, \DateTime $initialExpiration, $intervalDuration = 0, \Serializable $info = null, $persistent = true)
     {

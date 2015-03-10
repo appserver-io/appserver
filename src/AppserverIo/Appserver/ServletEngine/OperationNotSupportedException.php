@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\OperationNotSupportedException
+ * \AppserverIo\Appserver\ServletEngine\OperationNotSupportedException
  *
  * NOTICE OF LICENSE
  *

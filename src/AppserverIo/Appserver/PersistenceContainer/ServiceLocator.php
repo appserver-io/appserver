@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\PersistenceContainer\ServiceLocator
+ * \AppserverIo\Appserver\PersistenceContainer\ServiceLocator
  *
  * NOTICE OF LICENSE
  *

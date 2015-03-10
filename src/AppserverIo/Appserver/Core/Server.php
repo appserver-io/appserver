@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Server
+ * \AppserverIo\Appserver\Core\Server
  *
  * NOTICE OF LICENSE
  *
@@ -20,9 +20,9 @@
 
 namespace AppserverIo\Appserver\Core;
 
+use AppserverIo\Appserver\Core\Interfaces\SystemConfigurationInterface;
 use AppserverIo\Appserver\Core\Scanner\HeartbeatScanner;
 use AppserverIo\Logger\LoggerUtils;
-use AppserverIo\Configuration\Interfaces\NodeInterface;
 use AppserverIo\Configuration\Interfaces\ConfigurationInterface;
 use AppserverIo\Appserver\Core\Interfaces\ProvisionerInterface;
 use AppserverIo\Appserver\Core\Interfaces\ExtractorInterface;
@@ -31,8 +31,6 @@ use AppserverIo\Appserver\Core\Api\Node\AppserverNode;
 use AppserverIo\Appserver\Core\Scanner\ScannerFactory;
 use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
 use AppserverIo\Appserver\Core\Utilities\ContainerStateKeys;
-use AppserverIo\Storage\GenericStackable;
-use AppserverIo\Appserver\Naming\NamingDirectory;
 
 /**
  * This is the main server class that starts the application server
@@ -168,6 +166,7 @@ class Server
     {
 
         // init API service to use
+        /** @var \AppserverIo\Appserver\Core\Api\ContainerService $service */
         $service = $this->newService('AppserverIo\Appserver\Core\Api\ContainerService');
 
         // load the directories
@@ -209,6 +208,7 @@ class Server
     protected function initSslCertificate()
     {
         // load the service instance and create the SSL file if not available
+        /** @var \AppserverIo\Appserver\Core\Api\ContainerService $service */
         $service = $this->newService('AppserverIo\Appserver\Core\Api\ContainerService');
         $service->createSslCertificate(new \SplFileInfo($service->getConfDir('/server.pem')));
     }
@@ -253,6 +253,7 @@ class Server
         }
 
         // let the extractor extract the web applications
+        /** @var \AppserverIo\Appserver\Core\Interfaces\ExtractorInterface $extractor */
         foreach ($this->getExtractors() as $name => $extractor) {
 
             // deploy the found archives
@@ -326,21 +327,21 @@ class Server
     }
 
     /**
-     * Set's the system configuration.
+     * Sets the system configuration.
      *
-     * @param \AppserverIo\Configuration\Interfaces\NodeInterface $systemConfiguration The system configuration object
+     * @param \AppserverIo\Appserver\Core\Interfaces\SystemConfigurationInterface $systemConfiguration The system configuration object
      *
-     * @return \AppserverIo\Configuration\Interfaces\NodeInterface The system configuration
+     * @return null
      */
-    public function setSystemConfiguration(NodeInterface $systemConfiguration)
+    public function setSystemConfiguration(SystemConfigurationInterface $systemConfiguration)
     {
-        return $this->systemConfiguration = $systemConfiguration;
+        $this->systemConfiguration = $systemConfiguration;
     }
 
     /**
      * Returns the system configuration.
      *
-     * @return \AppserverIo\Configuration\Interfaces\NodeInterface The system configuration
+     * @return \AppserverIo\Appserver\Core\Interfaces\SystemConfigurationInterface The system configuration
      */
     public function getSystemConfiguration()
     {
@@ -348,7 +349,7 @@ class Server
     }
 
     /**
-     * Set's the initial context instance.
+     * Sets the initial context instance.
      *
      * @param \AppserverIo\Appserver\Core\InitialContext $initialContext The initial context instance
      *
@@ -673,8 +674,6 @@ class Server
      * This will keep your server in an endless loop, so be wary!
      *
      * @return void
-     *
-     * @TODO integrate this into a maintenance layer
      */
     protected function initHeartbeat()
     {

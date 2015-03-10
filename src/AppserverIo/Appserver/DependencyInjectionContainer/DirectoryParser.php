@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\DependencyInjectionContainer\DirectoryParser
+ * \AppserverIo\Appserver\DependencyInjectionContainer\DirectoryParser
  *
  * NOTICE OF LICENSE
  *
@@ -30,6 +30,8 @@ use AppserverIo\Psr\Application\ApplicationInterface;
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
+ *
+ * @property \AppserverIo\Psr\Application\ApplicationInterface $application The application instance which parsed directories belong to
  */
 class DirectoryParser
 {
@@ -49,7 +51,7 @@ class DirectoryParser
     /**
      * Returns the application instance.
      *
-     * @return \AppserverIo\Psr\Application\ApplicationInterface The application instance
+     * @return \AppserverIo\Psr\Application\ApplicationInterface|\AppserverIo\Psr\Naming\NamingDirectoryInterface The application instance
      */
     public function getApplication()
     {
@@ -76,6 +78,7 @@ class DirectoryParser
         $objectManager = $this->getApplication()->search('ObjectManagerInterface');
 
         // check directory for classes we want to register
+        /** @var \AppserverIo\Appserver\Core\Api\DeploymentService $service */
         $service = $this->getApplication()->newService('AppserverIo\Appserver\Core\Api\DeploymentService');
         $phpFiles = $service->globDir($directory . DIRECTORY_SEPARATOR . '*.php');
 
@@ -106,7 +109,7 @@ class DirectoryParser
                     // log an error message
                     $this->getApplication()->getInitialContext()->getSystemLogger()->error($e->__toString());
 
-                    // proceed with the nexet bean
+                    // proceed with the next bean
                     continue;
                 }
             }

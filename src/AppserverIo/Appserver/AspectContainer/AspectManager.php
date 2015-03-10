@@ -67,7 +67,7 @@ class AspectManager implements AspectManagerInterface, ManagerInterface
     /**
      * Returns the application instance.
      *
-     * @return \AppserverIo\Psr\Application\ApplicationInterface The application instance
+     * @return \AppserverIo\Psr\Application\ApplicationInterface|\AppserverIo\Psr\Naming\NamingDirectoryInterface The application instance
      */
     public function getApplication()
     {
@@ -85,7 +85,7 @@ class AspectManager implements AspectManagerInterface, ManagerInterface
     }
 
     /**
-     * Returns a reflection class intance for the passed class name.
+     * Returns a reflection class instance for the passed class name.
      *
      * @param string $className The class name to return the reflection class instance for
      *
@@ -111,7 +111,7 @@ class AspectManager implements AspectManagerInterface, ManagerInterface
      * Has been automatically invoked by the container after the application
      * instance has been created.
      *
-     * @param \AppserverIo\Psr\Application\ApplicationInterface $application The application instance
+     * @param \AppserverIo\Psr\Application\ApplicationInterface|\AppserverIo\Psr\Naming\NamingDirectoryInterface $application The application instance
      *
      * @return void
      */
@@ -196,6 +196,7 @@ class AspectManager implements AspectManagerInterface, ManagerInterface
         );
 
         // check directory for PHP files with classes we want to register
+        /** @var \AppserverIo\Appserver\Core\Api\DeploymentService $service */
         $service = $application->newService('AppserverIo\Appserver\Core\Api\DeploymentService');
 
         // iterate over the directories and try to find aspects
@@ -246,9 +247,11 @@ class AspectManager implements AspectManagerInterface, ManagerInterface
         if (is_readable($xmlPath)) {
             // validate the file here, if it is not valid we can skip further steps
             try {
+                /** @var \AppserverIo\Appserver\Core\Api\ConfigurationService $configurationService */
                 $configurationService = $this->getApplication()->newService('AppserverIo\Appserver\Core\Api\ConfigurationService');
                 $configurationService->validateFile($xmlPath, null, true);
             } catch (InvalidConfigurationException $e) {
+                /** @var \Psr\Log\LoggerInterface $systemLogger */
                 $systemLogger = $this->getApplication()->getInitialContext()->getSystemLogger();
                 $systemLogger->error($e->getMessage());
                 $systemLogger->critical(sprintf('Pointcuts configuration file %s is invalid, AOP functionality might not work as expected.', $xmlPath));
@@ -287,6 +290,8 @@ class AspectManager implements AspectManagerInterface, ManagerInterface
                 $pointcutFactory = new PointcutFactory();
                 foreach ($adviceConfiguration->{'advice-pointcuts'} as $pointcutConfiguration) {
                     $pointcutName = (string) $pointcutConfiguration->{'pointcut-name'};
+
+                    /** @var \AppserverIo\Doppelgaenger\Entities\Pointcuts\PointcutPointcut $pointcutPointcut */
                     $pointcutPointcut = $pointcutFactory->getInstance(PointcutPointcut::TYPE . '(' . $pointcutName . ')');
 
                     // check if we just parsed the referenced pointcut

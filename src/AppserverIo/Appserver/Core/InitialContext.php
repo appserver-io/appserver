@@ -1,6 +1,6 @@
 <?php
 /**
- * AppserverIo\Appserver\Core\InitialContext
+ * \AppserverIo\Appserver\Core\InitialContext
  *
  * NOTICE OF LICENSE
  *
@@ -19,8 +19,8 @@
 
 namespace AppserverIo\Appserver\Core;
 
+use AppserverIo\Appserver\Core\Interfaces\SystemConfigurationInterface;
 use AppserverIo\Storage\StorageInterface;
-use AppserverIo\Configuration\Interfaces\NodeInterface;
 use AppserverIo\Appserver\Core\InitialContext\ContextKeys;
 use AppserverIo\Appserver\Core\Interfaces\ClassLoaderInterface;
 use AppserverIo\Appserver\Application\Interfaces\ContextInterface;
@@ -33,6 +33,8 @@ use AppserverIo\Appserver\Application\Interfaces\ContextInterface;
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
+ *
+ * @property \Psr\Log\LoggerInterface[] $loggers The collection of loggers we know
  */
 class InitialContext implements ContextInterface
 {
@@ -45,7 +47,7 @@ class InitialContext implements ContextInterface
     protected $storage;
 
     /**
-     * The server's logger instance.
+     * The server's system logger instance.
      *
      * @var \Psr\Log\LoggerInterface
      */
@@ -61,9 +63,9 @@ class InitialContext implements ContextInterface
     /**
      * Initializes the context with the connection to the storage backend.
      *
-     * @param \AppserverIo\Configuration\Interfaces\NodeInterface $systemConfiguration The system configuration
+     * @param \AppserverIo\Appserver\Core\Interfaces\SystemConfigurationInterface $systemConfiguration The system configuration
      */
-    public function __construct(NodeInterface $systemConfiguration)
+    public function __construct(SystemConfigurationInterface $systemConfiguration)
     {
 
         // initialize the storage
@@ -125,7 +127,7 @@ class InitialContext implements ContextInterface
     }
 
     /**
-     * Return's the initial context's class loader.
+     * Returns the initial context's class loader.
      *
      * @return \AppserverIo\Appserver\Core\SplClassLoader The class loader used
      */
@@ -137,11 +139,11 @@ class InitialContext implements ContextInterface
     /**
      * Adds the system configuration to the initial context.
      *
-     * @param object $systemConfiguration The system configuration
+     * @param \AppserverIo\Appserver\Core\Interfaces\SystemConfigurationInterface $systemConfiguration The system configuration
      *
      * @return void
      */
-    public function setSystemConfiguration($systemConfiguration)
+    public function setSystemConfiguration(SystemConfigurationInterface $systemConfiguration)
     {
         $this->setAttribute(ContextKeys::SYSTEM_CONFIGURATION, $systemConfiguration);
     }
@@ -149,7 +151,7 @@ class InitialContext implements ContextInterface
     /**
      * Returns the system configuration.
      *
-     * @return \AppserverIo\Configuration\Interfaces\ConfigurationInterface The system configuration
+     * @return \AppserverIo\Appserver\Core\Interfaces\SystemConfigurationInterface The system configuration
      */
     public function getSystemConfiguration()
     {
@@ -212,7 +214,6 @@ class InitialContext implements ContextInterface
      * @param array  $args      Arguments to pass to the constructor of the instance
      *
      * @return object The instance itself
-     * @todo Has to be refactored to avoid registering autoloader on every call
      */
     public function newInstance($className, array $args = array())
     {
@@ -270,7 +271,7 @@ class InitialContext implements ContextInterface
     }
 
     /**
-     * Get's the logger by given name
+     * Gets the logger by given name
      *
      * @param string $loggerName the loggers name
      *
@@ -284,7 +285,7 @@ class InitialContext implements ContextInterface
     }
 
     /**
-     * Return's the system logger instance.
+     * Returns the system logger instance.
      *
      * @return \Psr\Log\LoggerInterface
      */

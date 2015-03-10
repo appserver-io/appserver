@@ -34,6 +34,16 @@ use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
+ *
+ * @property resource                                       $bodyStream         The body content stream resource
+ * @property \AppserverIo\Psr\HttpMessage\CookieInterface[] $cookies            The cookie instance to add
+ * @property \Exception                                     $exception          The exception to bind.
+ * @property string[]                                       $headers            The headers array
+ * @property string                                         $mimeType           The responses mime type
+ * @property integer                                        $state              The state value
+ * @property integer                                        $statusCode         The status code to set
+ * @property string                                         $statusReasonPhrase The reason phrase
+ * @property string                                         $version            The HTTP version string to return
  */
 class Response implements HttpServletResponseInterface
 {

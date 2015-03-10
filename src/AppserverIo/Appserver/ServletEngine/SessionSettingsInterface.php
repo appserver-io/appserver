@@ -1,6 +1,6 @@
 <?php
 /**
- * AppserverIo\Appserver\ServletEngine\SessionSettingsInterface
+ * \AppserverIo\Appserver\ServletEngine\SessionSettingsInterface
  *
  * PHP version 5
  *
@@ -23,8 +23,8 @@ use AppserverIo\Psr\Servlet\ServletContextInterface;
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
- * @link      http://php.net/session
- * @link      http://php.net/setcookie
+ * @see      http://php.net/session
+ * @see      http://php.net/setcookie
  */
 interface SessionSettingsInterface
 {
@@ -91,6 +91,20 @@ interface SessionSettingsInterface
      * @return integer The inactivity timeout in seconds
      */
     public function getInactivityTimeout();
+
+    /**
+     * Returns the default path to persist sessions.
+     *
+     * @return string The default path to persist session
+     */
+    public function getSessionSavePath();
+
+    /**
+     * Returns the session file prefix to use.
+     *
+     * @return string The session file prefix
+     */
+    public function getSessionFilePrefix();
 
     /**
      * Merges the values of the passed settings into this instance and overwrites the one of this instance.

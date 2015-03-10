@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Deployment
+ * \AppserverIo\Appserver\Core\Deployment
  *
  * NOTICE OF LICENSE
  *
@@ -23,7 +23,6 @@ namespace AppserverIo\Appserver\Core;
 use AppserverIo\Appserver\Core\InitialContext;
 use AppserverIo\Psr\Deployment\DeploymentInterface;
 use AppserverIo\Appserver\Core\Interfaces\ContainerInterface;
-use AppserverIo\Appserver\Application\Interfaces\ContextInterface;
 
 /**
  * Abstract deployment implementation.

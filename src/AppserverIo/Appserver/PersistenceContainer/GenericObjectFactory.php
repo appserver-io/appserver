@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\PersistenceContainer\GenericObjectFactory
+ * \AppserverIo\Appserver\PersistenceContainer\GenericObjectFactory
  *
  * NOTICE OF LICENSE
  *
@@ -20,7 +20,6 @@
 
 namespace AppserverIo\Appserver\PersistenceContainer;
 
-use Rhumsaa\Uuid\Uuid;
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Psr\Application\ApplicationInterface;
 
@@ -32,6 +31,12 @@ use AppserverIo\Psr\Application\ApplicationInterface;
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
+ *
+ * @property \AppserverIo\Psr\Application\ApplicationInterface $application The application instance
+ * @property \AppserverIo\Storage\GenericStackable             $instances   The container for the factory created instances
+ * @property string                                            $className   The fully qualified class name to return the instance for
+ * @property string|null                                       $sessionId   The session-ID, necessary to inject stateful session beans (SFBs)
+ * @property array                                             $args        Arguments to pass to the constructor of the instance
  */
 class GenericObjectFactory extends \Thread implements ObjectFactoryInterface
 {
@@ -88,6 +93,8 @@ class GenericObjectFactory extends \Thread implements ObjectFactoryInterface
      * @param array       $args      Arguments to pass to the constructor of the instance
      *
      * @return object The instance itself
+     *
+     * @throws \Exception
      */
     public function newInstance($className, $sessionId = null, array $args = array())
     {

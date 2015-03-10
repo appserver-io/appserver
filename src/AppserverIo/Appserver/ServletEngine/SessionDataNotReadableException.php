@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\SessionDataNotReadableException
+ * \AppserverIo\Appserver\ServletEngine\SessionDataNotReadableException
  *
  * NOTICE OF LICENSE
  *

@@ -1,6 +1,6 @@
 <?php
 /**
- * AppserverIo\Appserver\PersistenceContainer\Utils\TimerState
+ * \AppserverIo\Appserver\PersistenceContainer\Utils\TimerState
  *
  * NOTICE OF LICENSE
  *
@@ -32,7 +32,7 @@ class TimerState
 {
 
     /**
-     * State indicEnumg that a timer has been created.
+     * State indicating that a timer has been created.
      *
      * @var integer
      */

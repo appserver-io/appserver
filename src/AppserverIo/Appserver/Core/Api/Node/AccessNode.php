@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * \AppserverIo\Appserver\Core\Api\Node\AccessNode
+ *
  * NOTICE OF LICENSE
  *
  * This source file is subject to the Open Software License (OSL 3.0)
@@ -19,8 +21,6 @@
 namespace AppserverIo\Appserver\Core\Api\Node;
 
 /**
- * AppserverIo\Appserver\Core\Api\Node\AccessNode
- *
  * Node class which represents the Access node of the configuration.
  *
  * @author    Johann Zelger <jz@appserver.io>

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Api\Node\PasswordNode
+ * \AppserverIo\Appserver\Core\Api\Node\PasswordNode
  *
  * NOTICE OF LICENSE
  *

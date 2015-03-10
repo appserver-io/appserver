@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\AbstractContextThread
+ * \AppserverIo\Appserver\Core\AbstractContextThread
  *
  * NOTICE OF LICENSE
  *
@@ -44,7 +44,7 @@ abstract class AbstractContextThread extends AbstractThread
      * Constructor sets initialContext object per default and calls
      * init function to pass other args.
      *
-     * @param \Stackable $initialContext The initial context instance
+     * @param \AppserverIo\Appserver\Application\Interfaces\ContextInterface $initialContext The initial context instance
      */
     public function __construct($initialContext)
     {
@@ -74,7 +74,7 @@ abstract class AbstractContextThread extends AbstractThread
     /**
      * Returns the initialContext object
      *
-     * @return \Stackable
+     * @return \AppserverIo\Appserver\Application\Interfaces\ContextInterface
      */
     public function getInitialContext()
     {

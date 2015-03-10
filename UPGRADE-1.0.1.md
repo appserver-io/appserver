@@ -2,7 +2,7 @@
 
 ## Development Mode
 
-After an update, all files will be resetted to the original ownership and rights. So if you've switched to [Development-Mode](http://appserver.io/get-started/documentation/basic-usage.html#setup-script), you need to run the setup script again to re-activate the development mode again.
+After an update, all files will be reset to the original ownership and rights. So if you've switched to [Development-Mode](http://appserver.io/get-started/documentation/basic-usage.html#setup-script), you need to run the setup script again to re-activate the development mode again.
 
 To do so, open a console and type the following
 
@@ -117,5 +117,5 @@ to the following values
 </managers>
 ```
 
-This is necessary, because we moved the desriptors to a separate package `appserver-io/description`
+This is necessary, because we moved the descriptors to a separate package `appserver-io/description`
 to enable developers writing loose coupled frameworks.

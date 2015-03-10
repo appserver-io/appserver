@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Api\Normalizer
+ * \AppserverIo\Appserver\Core\Api\Normalizer
  *
  * NOTICE OF LICENSE
  *

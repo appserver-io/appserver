@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Utilities\ClassLoaderKeys
+ * \AppserverIo\Appserver\Core\Utilities\ClassLoaderKeys
  *
  * NOTICE OF LICENSE
  *

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Api\Node\ConnectionHandlersNodeTrait
+ * \AppserverIo\Appserver\Core\Api\Node\ConnectionHandlersNodeTrait
  *
  * NOTICE OF LICENSE
  *
@@ -62,6 +62,7 @@ trait ConnectionHandlersNodeTrait
         $connectionHandlers = array();
 
         // iterate over the connection handler nodes and sort them into an array
+        /** @var \AppserverIo\Appserver\Core\Api\Node\ConnectionHandlerNode $connectionHandler */
         foreach ($this->getConnectionHandlers() as $connectionHandler) {
             $connectionHandlers[$connectionHandler->getUuid()] = $connectionHandler->getType();
         }

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\MessageQueue\Job
+ * \AppserverIo\Appserver\MessageQueue\Job
  *
  * NOTICE OF LICENSE
  *
@@ -22,8 +22,6 @@ namespace AppserverIo\Appserver\MessageQueue;
 
 use AppserverIo\Psr\Pms\JobInterface;
 use AppserverIo\Psr\Pms\MessageInterface;
-use AppserverIo\Messaging\Utils\StateProcessed;
-use AppserverIo\Messaging\Utils\StateInProgress;
 use AppserverIo\Psr\Naming\InitialContext;
 use AppserverIo\Psr\Application\ApplicationInterface;
 
@@ -97,13 +95,12 @@ class Job extends \Thread implements JobInterface
     public function run()
     {
 
+        // load application and message instance
+        $application = $this->application;
+        $message = $this->message;
         try {
             // register shutdown handler
             register_shutdown_function(array(&$this, "shutdown"));
-
-            // load application and message instance
-            $application = $this->application;
-            $message = $this->message;
 
             // we need to register the class loaders again
             $application->registerClassLoaders();

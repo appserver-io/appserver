@@ -274,7 +274,7 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
     {
 
         // define the methods to mock
-        $methodsToMock = array('getClassLoader', 'newInstance', 'newService', 'getAttribute', 'getSystemLogger', 'getSystemConfiguration');
+        $methodsToMock = array('getClassLoader', 'newInstance', 'newService', 'getAttribute', 'getSystemLogger', 'getSystemConfiguration', 'getLogger');
 
         // create a mock instance
         $mockInitialContext = $this->getMock('AppserverIo\Appserver\Application\Interfaces\ContextInterface', $methodsToMock);
@@ -313,7 +313,7 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
     {
 
         // define the methods to mock
-        $methodsToMock = array('getClassLoader', 'newInstance', 'newService', 'getAttribute', 'getSystemLogger', 'getSystemConfiguration');
+        $methodsToMock = array('getClassLoader', 'newInstance', 'newService', 'getAttribute', 'getSystemLogger', 'getSystemConfiguration', 'getLogger');
 
         // create a mock instance
         $mockInitialContext = $this->getMock('AppserverIo\Appserver\Application\Interfaces\ContextInterface', $methodsToMock);
@@ -368,12 +368,9 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
      */
     public function testAddClassLoader()
     {
-
-        // define the methods to mock
-        $methodsToMock = array('getName', 'getDirectories', 'getEnforcementLevel', 'getProcessing', 'getType', 'getTypeSafety', 'getEnvironment');
-
         // create a mock loader configuration
-        $mockLoaderConfiguration = $this->getMock('AppserverIo\Appserver\Core\Api\Node\ClassLoaderNodeInterface', $methodsToMock);
+        $classToMock = 'AppserverIo\Appserver\Core\Api\Node\ClassLoaderNodeInterface';
+        $mockLoaderConfiguration = $this->getMock($classToMock, get_class_methods($classToMock));
         $mockLoaderConfiguration->expects($this->any())
             ->method('getName')
             ->will($this->returnValue('MockLoader'));
@@ -409,11 +406,9 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
     public function testAddManager()
     {
 
-        // define the methods to mock
-        $methodsToMock = array('getFactory', 'getType', 'getName', 'getParamsAsArray');
-
         // create a mock manager configuration
-        $mockManagerConfiguration = $this->getMock('AppserverIo\Appserver\Core\Api\Node\ManagerNodeInterface', $methodsToMock);
+        $classToMock = 'AppserverIo\Appserver\Core\Api\Node\ManagerNodeInterface';
+        $mockManagerConfiguration = $this->getMock($classToMock, get_class_methods($classToMock));
         $mockManagerConfiguration->expects($this->any())
             ->method('getName')
             ->will($this->returnValue(MockManager::IDENTIFIER));
@@ -440,18 +435,15 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetManagers()
     {
-
-        // define the methods to mock
-        $methodsToMock = array('getFactory', 'getType', 'getName', 'getParamsAsArray');
-
         // create a mock manager configuration
-        $mockManagerConfiguration1 = $this->getMock('AppserverIo\Appserver\Core\Api\Node\ManagerNodeInterface', $methodsToMock);
+        $classToMock = 'AppserverIo\Appserver\Core\Api\Node\ManagerNodeInterface';
+        $mockManagerConfiguration1 = $this->getMock($classToMock, get_class_methods($classToMock));
         $mockManagerConfiguration1->expects($this->any())
             ->method('getName')
             ->will($this->returnValue('MockManager1'));
 
-        // create a mock manager configuration
-        $mockManagerConfiguration2 = $this->getMock('AppserverIo\Appserver\Core\Api\Node\ManagerNodeInterface', $methodsToMock);
+        // create another mock manager configuration
+        $mockManagerConfiguration2 = $this->getMock($classToMock, get_class_methods($classToMock));
         $mockManagerConfiguration2->expects($this->any())
             ->method('getName')
             ->will($this->returnValue('MockManager2'));
@@ -480,11 +472,9 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
         // initialize the mock logger
         $mockLogger = $this->getMock('Psr\Log\LoggerInterface', array('log', 'error', 'warning', 'notice', 'emergency', 'debug', 'info', 'alert', 'critical'));
 
-        // define the methods to mock
-        $methodsToMock = array('getClassLoader', 'newInstance', 'newService', 'getAttribute', 'getSystemLogger', 'getSystemConfiguration');
-
         // create a mock instance
-        $mockInitialContext = $this->getMock('AppserverIo\Appserver\Application\Interfaces\ContextInterface', $methodsToMock);
+        $classToMock = 'AppserverIo\Appserver\Application\Interfaces\ContextInterface';
+        $mockInitialContext = $this->getMock($classToMock, get_class_methods($classToMock));
         $mockInitialContext->expects($this->any())
             ->method('getSystemLogger')
             ->will($this->returnValue($mockLogger));
@@ -492,11 +482,9 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
         // inject the mock initial context instance
         $this->application->injectInitialContext($mockInitialContext);
 
-        // define the methods to mock
-        $methodsToMock = array('getName', 'getDirectories', 'getEnforcementLevel', 'getProcessing', 'getType', 'getTypeSafety', 'getEnvironment');
-
         // create a mock loader configuration
-        $mockLoaderConfiguration = $this->getMock('AppserverIo\Appserver\Core\Api\Node\ClassLoaderNodeInterface', $methodsToMock);
+        $classToMock = 'AppserverIo\Appserver\Core\Api\Node\ClassLoaderNodeInterface';
+        $mockLoaderConfiguration = $this->getMock($classToMock, get_class_methods($classToMock));
         $mockLoaderConfiguration->expects($this->any())
             ->method('getName')
             ->will($this->returnValue('MockLoader'));
@@ -520,11 +508,9 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
         // initialize the mock logger
         $mockLogger = $this->getMock('Psr\Log\LoggerInterface', array('log', 'error', 'warning', 'notice', 'emergency', 'debug', 'info', 'alert', 'critical'));
 
-        // define the methods to mock
-        $methodsToMock = array('getClassLoader', 'newInstance', 'newService', 'getAttribute', 'getSystemLogger', 'getSystemConfiguration');
-
         // create a mock instance
-        $mockInitialContext = $this->getMock('AppserverIo\Appserver\Application\Interfaces\ContextInterface', $methodsToMock);
+        $classToMock = 'AppserverIo\Appserver\Application\Interfaces\ContextInterface';
+        $mockInitialContext = $this->getMock($classToMock, get_class_methods($classToMock));
         $mockInitialContext->expects($this->any())
             ->method('getSystemLogger')
             ->will($this->returnValue($mockLogger));
@@ -532,11 +518,9 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
         // inject the mock initial context instance
         $this->application->injectInitialContext($mockInitialContext);
 
-        // define the methods to mock
-        $methodsToMock = array('getName', 'getType', 'getFactory', 'getParamsAsArray');
-
         // create a mock manager configuration
-        $mockManagerConfiguration = $this->getMock('AppserverIo\Appserver\Core\Api\Node\ManagerNodeInterface', $methodsToMock);
+        $classToMock = 'AppserverIo\Appserver\Core\Api\Node\ManagerNodeInterface';
+        $mockManagerConfiguration = $this->getMock($classToMock, get_class_methods($classToMock));
         $mockManagerConfiguration->expects($this->any())
             ->method('getName')
             ->will($this->returnValue('MockManager'));

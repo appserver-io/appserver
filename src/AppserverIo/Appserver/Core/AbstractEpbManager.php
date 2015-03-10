@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * \AppserverIo\Appserver\Core\AbstractEpbManager
+ *
  * NOTICE OF LICENSE
  *
  * This source file is subject to the Open Software License (OSL 3.0)
@@ -27,8 +29,6 @@ use AppserverIo\Psr\EnterpriseBeans\Description\EpbReferenceDescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\ResReferenceDescriptorInterface;
 
 /**
- * AppserverIo\Appserver\Core\AbstractEpbManager
- *
  * Abstract manager which is able to handle EPB and resource registrations
  *
  * @category   Server

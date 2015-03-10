@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Api\Node\ProvisionerNodeInterface
+ * \AppserverIo\Appserver\Core\Api\Node\ProvisionerNodeInterface
  *
  * NOTICE OF LICENSE
  *

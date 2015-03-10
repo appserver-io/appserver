@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Provisioning\DummyStep
+ * \AppserverIo\Appserver\Core\Provisioning\DummyStep
  *
  * NOTICE OF LICENSE
  *

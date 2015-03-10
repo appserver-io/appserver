@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\InvalidServletMappingException
+ * \AppserverIo\Appserver\ServletEngine\InvalidServletMappingException
  *
  * NOTICE OF LICENSE
  *

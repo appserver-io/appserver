@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\PersistenceContainer\Tasks\CalendarTimerTask
+ * \AppserverIo\Appserver\PersistenceContainer\Tasks\CalendarTimerTask
  *
  * NOTICE OF LICENSE
  *

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Utilities\ShellFacade
+ * \AppserverIo\Appserver\Core\Utilities\ShellFacade
  *
  * NOTICE OF LICENSE
  *

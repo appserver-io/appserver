@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\StandardSessionMarshaller
+ * \AppserverIo\Appserver\ServletEngine\StandardSessionMarshaller
  *
  * NOTICE OF LICENSE
  *
@@ -73,11 +73,11 @@ class StandardSessionMarshaller implements SessionMarshallerInterface
 
     /**
      * Initializes the session instance from the passed JSON string. If the encoded
-     * data contains objects, they will be unserialized before reattached to the
+     * data contains objects, they will be un-serialized before reattached to the
      * session instance.
      *
-     * @param \AppserverIo\Psr\Servlet\ServletSessionInterface $servletSession The empty session instance we want the unmarshalled data be added to
-     * @param string                                           $marshalled     The marshalled session representation
+     * @param \AppserverIo\Psr\Servlet\ServletSessionInterface $servletSession The empty session instance we want the un-marshaled data be added to
+     * @param string                                           $marshalled     The marshaled session representation
      *
      * @return \AppserverIo\Psr\Servlet\ServletSessionInterface The decoded session instance
      * @see \AppserverIo\Appserver\ServletEngine\SessionMarshaller::unmarshall()

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Api\Node\RewriteMapsNodeTrait
+ * \AppserverIo\Appserver\Core\Api\Node\RewriteMapsNodeTrait
  *
  * NOTICE OF LICENSE
  *

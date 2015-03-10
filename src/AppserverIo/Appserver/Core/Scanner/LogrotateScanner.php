@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Scanner\LogrotateScanner
+ * \AppserverIo\Appserver\Core\Scanner\LogrotateScanner
  *
  * NOTICE OF LICENSE
  *

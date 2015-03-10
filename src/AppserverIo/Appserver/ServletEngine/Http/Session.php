@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\Http\Session
+ * \AppserverIo\Appserver\ServletEngine\Http\Session
  *
  * NOTICE OF LICENSE
  *
@@ -40,6 +40,16 @@ use AppserverIo\Psr\Servlet\ServletSessionInterface;
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
+ *
+ * @property mixed             $id                   The session ID
+ * @property string            $name                 The session name
+ * @property integer|\DateTime $lifetime             Date and time after the session expires
+ * @property integer|null      $maximumAge           Number of seconds until the session expires
+ * @property string|null       $domain               The host to which the user agent will send this cookie
+ * @property string            $path                 The path describing the scope of this cookie
+ * @property boolean           $secure               If this cookie should only be sent through a "secure" channel by the user agent
+ * @property boolean           $httpOnly             If this cookie should only be used through the HTTP protocol
+ * @property integer           lastActivityTimestamp The UNIX timestamp where the last action on this session happens
  */
 class Session extends GenericStackable implements ServletSessionInterface
 {

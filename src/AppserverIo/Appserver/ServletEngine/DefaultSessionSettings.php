@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\DefaultSessionSettings
+ * \AppserverIo\Appserver\ServletEngine\DefaultSessionSettings
  *
  * NOTICE OF LICENSE
  *
@@ -33,8 +33,20 @@ use AppserverIo\Storage\GenericStackable;
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
- * @link      http://php.net/session
- * @link      http://php.net/setcookie
+ * @see       http://php.net/session
+ * @see       http://php.net/setcookie
+ *
+ * @property string  $sessionName                  The session name
+ * @property string  $sessionFilePrefix            The session file prefix
+ * @property string  $sessionSavePath              The default path to persist sessions
+ * @property integer $sessionCookieLifetime        The session cookie lifetime
+ * @property integer $sessionMaximumAge            The maximum age in seconds, or NULL if none has been defined
+ * @property string  $sessionCookieDomain          The cookie domain set for the session
+ * @property string  $sessionCookiePath            The cookie path set for the session
+ * @property boolean $sessionCookieSecure          TRUE if a secure cookie should be set, else FALSE
+ * @property boolean $sessionCookieHttpOnly        TRUE if a Http only cookie should be used
+ * @property float   $garbageCollectionProbability The garbage collector probability
+ * @property integer $inactivityTimeout            The inactivity timeout in seconds
  */
 class DefaultSessionSettings extends GenericStackable implements SessionSettingsInterface
 {

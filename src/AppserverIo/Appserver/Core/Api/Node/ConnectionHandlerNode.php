@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Api\Node\ConnectionHandlerNode
+ * \AppserverIo\Appserver\Core\Api\Node\ConnectionHandlerNode
  *
  * NOTICE OF LICENSE
  *

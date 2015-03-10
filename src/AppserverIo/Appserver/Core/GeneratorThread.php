@@ -1,6 +1,6 @@
 <?php
 /**
- * AppserverIo\Appserver\Core\GeneratorThread
+ * \AppserverIo\Appserver\Core\GeneratorThread
  *
  * NOTICE OF LICENSE
  *

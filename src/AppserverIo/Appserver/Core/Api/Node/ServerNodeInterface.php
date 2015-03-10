@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Api\Node\ServerNodeInterface
+ * \AppserverIo\Appserver\Core\Api\Node\ServerNodeInterface
  *
  * NOTICE OF LICENSE
  *
@@ -110,6 +110,13 @@ interface ServerNodeInterface extends NodeInterface
      * @return array
      */
     public function getModules();
+
+    /**
+     * Returns the modules as an associative array
+     *
+     * @return array The array with the sorted modules
+     */
+    public function getModulesAsArray();
 
     /**
      * Will return the environment variables array.
@@ -232,6 +239,20 @@ interface ServerNodeInterface extends NodeInterface
     public function getAccessesAsArray();
 
     /**
+     * Returns the connection handlers as an associative array
+     *
+     * @return array The array with the sorted connection handlers
+     */
+    public function getConnectionHandlersAsArray();
+
+    /**
+     * Returns the file handlers as an associative array.
+     *
+     * @return array The array with the sorted file handlers
+     */
+    public function getFileHandlersAsArray();
+
+    /**
      * Will return the locations array.
      *
      * @return array
@@ -277,6 +298,13 @@ interface ServerNodeInterface extends NodeInterface
      * @return array The array with the sorted authentications
      */
     public function getAuthenticationsAsArray();
+
+    /**
+     * Returns the virtual hosts as an associative array
+     *
+     * @return array The array with the sorted virtual hosts
+     */
+    public function getVirtualHostsAsArray();
 
     /**
      * Will return the analytics array

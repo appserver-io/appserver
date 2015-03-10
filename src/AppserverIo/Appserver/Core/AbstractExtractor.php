@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\AbstractExtractor
+ * \AppserverIo\Appserver\Core\AbstractExtractor
  *
  * NOTICE OF LICENSE
  *
@@ -344,7 +344,7 @@ abstract class AbstractExtractor implements ExtractorInterface
     /**
      * Returns the service instance to use.
      *
-     * @return \AppserverIo\Appserver\Core\Api\ServiceInterface $service The service to use
+     * @return \AppserverIo\Appserver\Core\Api\AbstractFileOperationService $service The service to use
      */
     public function getService()
     {

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\SessionFactory
+ * \AppserverIo\Appserver\ServletEngine\SessionFactory
  *
  * NOTICE OF LICENSE
  *
@@ -17,6 +17,7 @@
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
+
 namespace AppserverIo\Appserver\ServletEngine;
 
 use AppserverIo\Logger\LoggerUtils;
@@ -32,6 +33,14 @@ use AppserverIo\Psr\Servlet\ServletSessionInterface;
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
+ *
+ * @property string|null                           $action           Callback for factory method invocation
+ * @property \Psr\Log\LoggerInterface[]            $loggers          Our logger stack
+ * @property boolean                               $run              Whether or not the session factory is running
+ * @property boolean                               $sessionAvailable Whether or not there is a session available
+ * @property string                                $sessionId        ID of the session we want to remove
+ * @property \AppserverIo\Storage\GenericStackable $sessionPool      The session pool
+ * @property string|null                           $uniqueId         Unique session id
  */
 class SessionFactory extends \Thread
 {
@@ -95,7 +104,7 @@ class SessionFactory extends \Thread
      */
     public function stop()
     {
-        $this->synchronized(function ($self) {
+        $this->synchronized(function (SessionFactory $self) {
             $self->run = false;
         }, $this);
     }
@@ -107,7 +116,7 @@ class SessionFactory extends \Thread
      */
     public function getSessionPool()
     {
-        return $this->synchronized(function ($self) {
+        return $this->synchronized(function (SessionFactory $self) {
             return $self->sessionPool;
         }, $this);
     }
@@ -119,7 +128,7 @@ class SessionFactory extends \Thread
      */
     protected function nextFromPool()
     {
-        return $this->synchronized(function ($self) {
+        return $this->synchronized(function (SessionFactory $self) {
 
             // set the action and the flag we want to wait for
             $self->action = SessionFactory::ACTION_NEXT_FROM_POOL;
@@ -148,7 +157,7 @@ class SessionFactory extends \Thread
      */
     protected function removeBySessionId($sessionId)
     {
-        $this->synchronized(function ($self, $id) {
+        $this->synchronized(function (SessionFactory $self, $id) {
 
             // set the action and the session-ID
             $self->action = SessionFactory::ACTION_REMOVE_BY_SESSION_ID;

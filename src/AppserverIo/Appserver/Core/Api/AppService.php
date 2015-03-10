@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Api\AppService
+ * \AppserverIo\Appserver\Core\Api\AppService
  *
  * NOTICE OF LICENSE
  *

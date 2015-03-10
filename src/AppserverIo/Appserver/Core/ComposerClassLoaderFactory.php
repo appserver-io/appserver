@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\ComposerClassLoaderFactory
+ * \AppserverIo\Appserver\Core\ComposerClassLoaderFactory
  *
  * NOTICE OF LICENSE
  *
@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\Core;
 
+use AppserverIo\Appserver\Core\Interfaces\ClassLoaderFactoryInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\Core\Api\Node\ClassLoaderNodeInterface;
 
@@ -32,7 +33,7 @@ use AppserverIo\Appserver\Core\Api\Node\ClassLoaderNodeInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class ComposerClassLoaderFactory
+class ComposerClassLoaderFactory implements ClassLoaderFactoryInterface
 {
 
     /**
@@ -53,6 +54,7 @@ class ComposerClassLoaderFactory
         $directories = array();
 
         // load the composer class loader for the configured directories
+        /** @var \AppserverIo\Appserver\Core\Api\Node\DirectoryNode $directory */
         foreach ($configuration->getDirectories() as $directory) {
             // we prepare the directories to include scripts AFTER registering (in application context)
             $directories[] = $webappPath . $directory->getNodeValue();

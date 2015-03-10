@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\PersistenceContainer\PersistenceContainerValve
+ * \AppserverIo\Appserver\PersistenceContainer\PersistenceContainerValve
  *
  * NOTICE OF LICENSE
  *
@@ -55,6 +55,7 @@ class PersistenceContainerValve implements ValveInterface
             $remoteMethod = RemoteMethodProtocol::unpack($servletRequest->getBodyContent());
 
             // load the application context
+            /** @var \AppserverIo\Appserver\Application\Application $application */
             $application = $servletRequest->getContext();
 
             // prepare method name and parameters and invoke method

@@ -87,6 +87,9 @@ abstract class AbstractArgsNode extends AbstractNode
     public function getArgsAsArray()
     {
         $args = array();
+        /**
+         * @var \AppserverIo\Appserver\Core\Api\Node\ArgNode $arg
+         */
         foreach ($this->getArgs() as $arg) {
             $args[$arg->getName()] = $arg->castToType();
         }

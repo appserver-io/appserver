@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Api\Node\RewriteMapNode
+ * \AppserverIo\Appserver\Core\Api\Node\RewriteMapNode
  *
  * NOTICE OF LICENSE
  *

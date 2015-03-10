@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\AbstractNormalizer
+ * \AppserverIo\Appserver\Core\AbstractNormalizer
  *
  * NOTICE OF LICENSE
  *
@@ -17,6 +17,7 @@
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
+
 namespace AppserverIo\Appserver\Core\Api;
 
 use AppserverIo\Appserver\Core\InitialContext;

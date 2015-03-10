@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\PersistenceContainer\TimerServiceRegistryFactory
+ * \AppserverIo\Appserver\PersistenceContainer\TimerServiceRegistryFactory
  *
  * NOTICE OF LICENSE
  *
@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\PersistenceContainer;
 
+use AppserverIo\Appserver\Core\Interfaces\ManagerFactoryInterface;
 use AppserverIo\Storage\StackableStorage;
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Psr\Application\ApplicationInterface;
@@ -34,7 +35,7 @@ use AppserverIo\Appserver\Core\Api\Node\ManagerNodeInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class TimerServiceRegistryFactory
+class TimerServiceRegistryFactory implements ManagerFactoryInterface
 {
 
     /**

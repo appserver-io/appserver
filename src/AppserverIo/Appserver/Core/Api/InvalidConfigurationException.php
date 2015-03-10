@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Api\InvalidConfigurationException
+ * \AppserverIo\Appserver\Core\Api\InvalidConfigurationException
  *
  * NOTICE OF LICENSE
  *

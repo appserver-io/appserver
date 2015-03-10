@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\ResourceLocatorInterface
+ * \AppserverIo\Appserver\ServletEngine\ResourceLocatorInterface
  *
  * NOTICE OF LICENSE
  *

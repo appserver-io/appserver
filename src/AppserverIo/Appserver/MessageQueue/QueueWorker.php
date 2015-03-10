@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\MessageQueue\QueueWorker
+ * \AppserverIo\Appserver\MessageQueue\QueueWorker
  *
  * NOTICE OF LICENSE
  *
@@ -20,7 +20,6 @@
 
 namespace AppserverIo\Appserver\MessageQueue;
 
-use Rhumsaa\Uuid\Uuid;
 use AppserverIo\Logger\LoggerUtils;
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Psr\Pms\JobInterface;
@@ -45,8 +44,10 @@ use AppserverIo\Messaging\Utils\StateUnknown;
  * @link      http://www.appserver.io
  *
  * @property \AppserverIo\Psr\Application\ApplicationInterface $application   The application instance with the queue manager/locator
+ * @property \AppserverIo\Storage\GenericStackable             $jobsExecuting The storage for the jobs currently executing
  * @property \AppserverIo\Storage\GenericStackable             $jobsToExecute The storage for the jobs to be executed
  * @property \AppserverIo\Storage\GenericStackable             $messages      The storage for the messages
+ * @property \AppserverIo\Storage\GenericStackable             $messageStates The storage for the messages' states
  * @property \AppserverIo\Psr\Pms\PriorityKeyInterface         $priorityKey   The priority of this queue worker
  */
 class QueueWorker extends \Thread
@@ -145,7 +146,7 @@ class QueueWorker extends \Thread
     {
 
         // force handling the timer tasks now
-        $this->synchronized(function ($self, $m) {
+        $this->synchronized(function (QueueWorker $self, MessageInterface $m) {
 
             // store the job-ID and the PK of the message => necessary to load the message later
             $jobWrapper = new \stdClass();
@@ -230,7 +231,7 @@ class QueueWorker extends \Thread
      */
     public function processProcessed(MessageInterface $message)
     {
-        // remove the job from the queue with jobs that has to be excecuted
+        // remove the job from the queue with jobs that has to be executed
         unset($this->jobsToExecute[$message->getMessageId()]);
         // remove the message from the queue
         $this->remove($message);

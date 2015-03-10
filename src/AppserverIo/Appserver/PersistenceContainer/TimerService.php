@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\PersistenceContainer\TimerService
+ * \AppserverIo\Appserver\PersistenceContainer\TimerService
  *
  * NOTICE OF LICENSE
  *
@@ -22,7 +22,6 @@
 namespace AppserverIo\Appserver\PersistenceContainer;
 
 use AppserverIo\Psr\EnterpriseBeans\ServiceExecutorInterface;
-use Rhumsaa\Uuid\Uuid;
 use AppserverIo\Storage\StorageInterface;
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Lang\Reflection\MethodInterface;
@@ -30,7 +29,6 @@ use AppserverIo\Psr\EnterpriseBeans\TimerInterface;
 use AppserverIo\Psr\EnterpriseBeans\ScheduleExpression;
 use AppserverIo\Psr\EnterpriseBeans\TimerServiceInterface;
 use AppserverIo\Psr\EnterpriseBeans\TimedObjectInvokerInterface;
-use AppserverIo\Appserver\PersistenceContainer\Utils\TimerState;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Schedule;
 use AppserverIo\Psr\EnterpriseBeans\ServiceProviderInterface;
 
@@ -43,6 +41,13 @@ use AppserverIo\Psr\EnterpriseBeans\ServiceProviderInterface;
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
+ *
+ * @property \AppserverIo\Psr\EnterpriseBeans\TimedObjectInvokerInterface              $timedObjectInvoker   The timed object invoker instance
+ * @property \AppserverIo\Psr\EnterpriseBeans\ServiceExecutorInterface                 $timerServiceExecutor The timer service executor instance
+ * @property \AppserverIo\Appserver\PersistenceContainer\TimerFactoryInterface         $timerFactory         The timer factory
+ * @property \AppserverIo\Storage\StorageInterface                                     $timers               The storage for the timers
+ * @property \AppserverIo\Storage\StorageInterface                                     $scheduledTimerTasks  The storage for the scheduled timer tasks
+ * @property \AppserverIo\Appserver\PersistenceContainer\CalendarTimerFactoryInterface $calendarTimerFactory The calendar timer factory
  */
 class TimerService extends GenericStackable implements TimerServiceInterface, ServiceProviderInterface
 {
@@ -56,7 +61,7 @@ class TimerService extends GenericStackable implements TimerServiceInterface, Se
     }
 
     /**
-     * Injects the timed object invoker handling timer invokation on timed object instances.
+     * Injects the timed object invoker handling timer invocation on timed object instances.
      *
      * @param \AppserverIo\Psr\EnterpriseBeans\TimedObjectInvokerInterface $timedObjectInvoker The timed object invoker instance
      *
@@ -153,7 +158,7 @@ class TimerService extends GenericStackable implements TimerServiceInterface, Se
      * Create an interval timer whose first expiration occurs at a given point in time and
      * whose subsequent expirations occur after a specified interval.
      *
-     * @param integer       $initialExpiration The number of milliseconds that must elapse before the firsttimer expiration notification
+     * @param integer       $initialExpiration The number of milliseconds that must elapse before the first timer expiration notification
      * @param integer       $intervalDuration  The number of milliseconds that must elapse between timer
      *      expiration notifications. Expiration notifications are scheduled relative to the time of the first expiration. If
      *      expiration is delayed(e.g. due to the interleaving of other method calls on the bean) two or more expiration notifications
@@ -388,7 +393,7 @@ class TimerService extends GenericStackable implements TimerServiceInterface, Se
     }
 
     /**
-     * Returns the timed object invoker handling timer invokation on timed object instances.
+     * Returns the timed object invoker handling timer invocation on timed object instances.
      *
      * @return \AppserverIo\Psr\EnterpriseBeans\TimedObjectInvokerInterface The timed object invoker instance
      */

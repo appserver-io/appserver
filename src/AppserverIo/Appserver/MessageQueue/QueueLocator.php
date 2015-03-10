@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\MessageQueue\QueueLocator
+ * \AppserverIo\Appserver\MessageQueue\QueueLocator
  *
  * NOTICE OF LICENSE
  *

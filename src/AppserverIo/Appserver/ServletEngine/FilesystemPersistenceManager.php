@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\FilesystemPersistenceManager
+ * \AppserverIo\Appserver\ServletEngine\FilesystemPersistenceManager
  *
  * NOTICE OF LICENSE
  *
@@ -32,6 +32,16 @@ use AppserverIo\Psr\Servlet\ServletSessionInterface;
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
+ *
+ * @property array                                                           $loggers           The logger instances
+ * @property \AppserverIo\Storage\StorageInterface                           $sessions          The sessions
+ * @property \AppserverIo\Storage\StorageInterface                           $checksums         The checksums
+ * @property \AppserverIo\Appserver\ServletEngine\SessionSettingsInterface   $sessionSettings   Settings for the session handling
+ * @property \AppserverIo\Appserver\ServletEngine\SessionMarshallerInterface $sessionMarshaller The session marshaller instance
+ * @property \AppserverIo\Appserver\ServletEngine\SessionFactory             $sessionFactory    The session factory instance
+ * @property string                                                          $user              The user used for file system interactions
+ * @property string                                                          $group             The user group used for file system interactions
+ * @property string                                                          $umask             The umask used for file system interactions
  */
 class FilesystemPersistenceManager extends \Thread implements PersistenceManagerInterface
 {
@@ -491,7 +501,7 @@ class FilesystemPersistenceManager extends \Thread implements PersistenceManager
             throw new SessionDataNotReadableException(sprintf('Can\'t load session data from file %s', $pathname));
         }
 
-        // create a new session instance from the marshalled object representation
+        // create a new session instance from the marshaled object representation
         $session = $this->unmarshall($marshalled);
 
         // load session ID and checksum
@@ -510,9 +520,9 @@ class FilesystemPersistenceManager extends \Thread implements PersistenceManager
      * data contains objects, they will be unserialized before reattached to the
      * session instance.
      *
-     * @param string $marshalled The marshalled session representation
+     * @param string $marshalled The marshaled session representation
      *
-     * @return \AppserverIo\Psr\Servlet\ServletSessionInterface The unmarshalled servlet session instance
+     * @return \AppserverIo\Psr\Servlet\ServletSessionInterface The un-marshaled servlet session instance
      */
     public function unmarshall($marshalled)
     {

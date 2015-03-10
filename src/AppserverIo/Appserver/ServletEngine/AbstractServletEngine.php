@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\AbstractServletEngine
+ * \AppserverIo\Appserver\ServletEngine\AbstractServletEngine
  *
  * NOTICE OF LICENSE
  *
@@ -25,7 +25,6 @@ use AppserverIo\Logger\LoggerUtils;
 use AppserverIo\Server\Dictionaries\ServerVars;
 use AppserverIo\Server\Interfaces\RequestContextInterface;
 use AppserverIo\WebServer\Interfaces\HttpModuleInterface;
-use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
 use AppserverIo\Appserver\ServletEngine\Authentication\AuthenticationValve;
 
 /**
@@ -37,6 +36,8 @@ use AppserverIo\Appserver\ServletEngine\Authentication\AuthenticationValve;
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
+ *
+ * @property \AppserverIo\Server\Interfaces\ServerContextInterface $serverContext The actual server context instance
  */
 abstract class AbstractServletEngine implements HttpModuleInterface
 {

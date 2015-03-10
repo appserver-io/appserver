@@ -1,6 +1,6 @@
 <?php
 /**
- * AppserverIo\Appserver\PersistenceContainer\Timer
+ * \AppserverIo\Appserver\PersistenceContainer\Timer
  *
  * NOTICE OF LICENSE
  *

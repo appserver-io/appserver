@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Api\Node\ClassLoadersNodeTrait
+ * \AppserverIo\Appserver\Core\Api\Node\ClassLoadersNodeTrait
  *
  * NOTICE OF LICENSE
  *

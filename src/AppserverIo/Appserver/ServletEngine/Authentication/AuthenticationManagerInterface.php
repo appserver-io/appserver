@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\Authentication\AuthenticationManagerInterface
+ * \AppserverIo\Appserver\ServletEngine\Authentication\AuthenticationManagerInterface
  *
  * NOTICE OF LICENSE
  *
@@ -20,8 +20,8 @@
 
 namespace AppserverIo\Appserver\ServletEngine\Authentication;
 
-use AppserverIo\Psr\Servlet\ServletRequestInterface;
-use AppserverIo\Psr\Servlet\ServletResponseInterface;
+use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
+use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
 use AppserverIo\Psr\Application\ManagerInterface;
 
 /**
@@ -46,10 +46,10 @@ interface AuthenticationManagerInterface extends ManagerInterface
     /**
      * Handles request in order to authenticate.
      *
-     * @param \AppserverIo\Psr\Servlet\ServletRequestInterface  $servletRequest  The request instance
-     * @param \AppserverIo\Psr\Servlet\ServletResponseInterface $servletResponse The response instance
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface  $servletRequest  The request instance
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse The response instance
      *
      * @return boolean TRUE if the authentication has been successful, else FALSE
      */
-    public function handleRequest(ServletRequestInterface $servletRequest, ServletResponseInterface $servletResponse);
+    public function handleRequest(HttpServletRequestInterface $servletRequest, HttpServletResponseInterface $servletResponse);
 }

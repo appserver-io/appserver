@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Api\Node\DirectoriesNodeTrait
+ * \AppserverIo\Appserver\Core\Api\Node\DirectoriesNodeTrait
  *
  * NOTICE OF LICENSE
  *
@@ -55,7 +55,7 @@ trait DirectoriesNodeTrait
     /**
      * Array with the directories.
      *
-     * @return array
+     * @return \AppserverIo\Appserver\Core\Api\Node\DirectoryNode[]
      */
     public function getDirectories()
     {

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Utilities\FileSystem
+ * \AppserverIo\Appserver\Core\Utilities\FileSystem
  *
  * NOTICE OF LICENSE
  *
@@ -90,7 +90,7 @@ class FileSystem
 
         // see whether this is a file
         if (is_file($path)) {
-            // Chmod the file with our given filepermissions
+            // Chmod the file with our given file permissions
             FileSystem::chmod($path, $filePerm);
 
             // if this is a directory...

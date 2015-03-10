@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Api\Node\LocationsNodeTrait
+ * \AppserverIo\Appserver\Core\Api\Node\LocationsNodeTrait
  *
  * NOTICE OF LICENSE
  *
@@ -61,6 +61,7 @@ trait LocationsNodeTrait
     public function getLocation($condition)
     {
         // iterate over all locations
+        /** @var \AppserverIo\Appserver\Core\Api\Node\LocationNode $location */
         foreach ($this->getLocations() as $location) {
             // if we found one with a matching condition we will return it
             if ($location->getCondition() === $condition) {
@@ -81,6 +82,7 @@ trait LocationsNodeTrait
     {
         // iterate over the location nodes and sort them into an array
         $locations = array();
+        /** @var \AppserverIo\Appserver\Core\Api\Node\LocationNode $locationNode */
         foreach ($this->getLocations() as $locationNode) {
             // restructure to an array
             $locations[$locationNode->getCondition()] = array(

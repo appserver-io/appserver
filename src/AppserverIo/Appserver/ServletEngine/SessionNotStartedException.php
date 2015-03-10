@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\SessionNotStartedException
+ * \AppserverIo\Appserver\ServletEngine\SessionNotStartedException
  *
  * NOTICE OF LICENSE
  *
