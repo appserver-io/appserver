@@ -43,8 +43,6 @@ use AppserverIo\Appserver\ServletEngine\Http\Part;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  *
- * @property
- * @property
  * @property \AppserverIo\Server\Interfaces\ServerContextInterface $serverContext The servers context instance
  */
 class ServletEngine extends AbstractServletEngine
