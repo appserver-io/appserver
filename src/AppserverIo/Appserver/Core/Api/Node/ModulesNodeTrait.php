@@ -62,9 +62,7 @@ trait ModulesNodeTrait
         $modules = array();
 
         // iterate over the module nodes and sort them into an array
-        /**
-         * @var \AppserverIo\Appserver\Core\Api\Node\ModuleNode $module
-         */
+        /** @var \AppserverIo\Appserver\Core\Api\Node\ModuleNode $module */
         foreach ($this->getModules() as $module) {
             $modules[$module->getUuid()] = $module->getType();
         }

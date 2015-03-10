@@ -59,6 +59,7 @@ class ContainerNode extends AbstractNode
     protected $threadType;
 
     /**
+     * Container description
      *
      * @var \AppserverIo\Appserver\Core\Api\Node\DescriptionNode
      * @AS\Mapping(nodeName="description", nodeType="AppserverIo\Appserver\Core\Api\Node\DescriptionNode")

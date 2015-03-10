@@ -61,9 +61,7 @@ trait ConnectorsNodeTrait
     public function getConnector($name)
     {
         // Iterate over all connectors
-        /**
-         * @var \AppserverIo\Appserver\Core\Api\Node\ConnectorNode $connectorNode
-         */
+        /** @var \AppserverIo\Appserver\Core\Api\Node\ConnectorNode $connectorNode */
         foreach ($this->getConnectors() as $connectorNode) {
             // If we found one with a matching URI we will return it
             if ($connectorNode->getName() === $name) {
@@ -84,9 +82,7 @@ trait ConnectorsNodeTrait
     {
         // Iterate over the connectors nodes and sort them into an array
         $connectors = array();
-        /**
-         * @var \AppserverIo\Appserver\Core\Api\Node\ConnectorNode $connectorNode
-         */
+        /** @var \AppserverIo\Appserver\Core\Api\Node\ConnectorNode $connectorNode */
         foreach ($this->getConnectors() as $connectorNode) {
             // Restructure to an array
             $connectors[] = array(

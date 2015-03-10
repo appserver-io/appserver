@@ -83,9 +83,7 @@ class StandardGarbageCollector extends \Thread
             });
 
             // we need the bean manager that handles all the beans
-            /**
-             * @var \AppserverIo\Psr\EnterpriseBeans\BeanContextInterface $beanManager
-             */
+            /** @var \AppserverIo\Psr\EnterpriseBeans\BeanContextInterface $beanManager */
             $beanManager = $application->search('BeanContextInterface');
 
             // load the map with the stateful session beans

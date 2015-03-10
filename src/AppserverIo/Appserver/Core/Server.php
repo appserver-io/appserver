@@ -166,9 +166,7 @@ class Server
     {
 
         // init API service to use
-        /**
-         * @var \AppserverIo\Appserver\Core\Api\ContainerService $service
-         */
+        /** @var \AppserverIo\Appserver\Core\Api\ContainerService $service */
         $service = $this->newService('AppserverIo\Appserver\Core\Api\ContainerService');
 
         // load the directories
@@ -210,9 +208,7 @@ class Server
     protected function initSslCertificate()
     {
         // load the service instance and create the SSL file if not available
-        /**
-         * @var \AppserverIo\Appserver\Core\Api\ContainerService $service
-         */
+        /** @var \AppserverIo\Appserver\Core\Api\ContainerService $service */
         $service = $this->newService('AppserverIo\Appserver\Core\Api\ContainerService');
         $service->createSslCertificate(new \SplFileInfo($service->getConfDir('/server.pem')));
     }
@@ -257,9 +253,7 @@ class Server
         }
 
         // let the extractor extract the web applications
-        /**
-         * @var \AppserverIo\Appserver\Core\Interfaces\ExtractorInterface $extractor
-         */
+        /** @var \AppserverIo\Appserver\Core\Interfaces\ExtractorInterface $extractor */
         foreach ($this->getExtractors() as $name => $extractor) {
 
             // deploy the found archives

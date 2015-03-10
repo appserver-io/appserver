@@ -63,9 +63,7 @@ trait AuthenticationsNodeTrait
     {
 
         // iterate over all authentications
-        /**
-         * @var \AppserverIo\Appserver\Core\Api\Node\AuthenticationNode $authenticationNode
-         */
+        /** @var \AppserverIo\Appserver\Core\Api\Node\AuthenticationNode $authenticationNode */
         foreach ($this->getAuthentications() as $authenticationNode) {
             // if we found one with a matching URI we will return it
             if ($authenticationNode->getUri() === $uri) {
@@ -89,9 +87,7 @@ trait AuthenticationsNodeTrait
         $authentications = array();
 
         // iterate over the authentication nodes and sort them into an array
-        /**
-         * @var \AppserverIo\Appserver\Core\Api\Node\AuthenticationNode $authenticationNode
-         */
+        /** @var \AppserverIo\Appserver\Core\Api\Node\AuthenticationNode $authenticationNode */
         foreach ($this->getAuthentications() as $authenticationNode) {
             $authentications[$authenticationNode->getUri()] = $authenticationNode->getParamsAsArray();
         }

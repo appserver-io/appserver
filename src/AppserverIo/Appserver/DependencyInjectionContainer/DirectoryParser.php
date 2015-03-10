@@ -78,9 +78,7 @@ class DirectoryParser
         $objectManager = $this->getApplication()->search('ObjectManagerInterface');
 
         // check directory for classes we want to register
-        /**
-         * @var \AppserverIo\Appserver\Core\Api\DeploymentService $service
-         */
+        /** @var \AppserverIo\Appserver\Core\Api\DeploymentService $service */
         $service = $this->getApplication()->newService('AppserverIo\Appserver\Core\Api\DeploymentService');
         $phpFiles = $service->globDir($directory . DIRECTORY_SEPARATOR . '*.php');
 

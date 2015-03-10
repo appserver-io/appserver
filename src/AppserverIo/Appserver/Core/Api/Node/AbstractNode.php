@@ -268,9 +268,7 @@ abstract class AbstractNode implements NodeInterface
         // initialize a new value configuration node
         if (class_exists($nodeType) && $this->isValueClass($nodeType)) {
             // initialize the new node type
-            /**
-             * @var \AppserverIo\Appserver\Core\Api\Node\AbstractNode $newNode
-             */
+            /** @var \AppserverIo\Appserver\Core\Api\Node\AbstractNode $newNode */
             $newNode = new $nodeType();
             $newNode->initFromConfiguration($configuration);
 
@@ -282,9 +280,7 @@ abstract class AbstractNode implements NodeInterface
             // first we've to check if the child has data
             if ($child = $configuration->getChild($configurationNodeName)) {
                 // initialize the new node type
-                /**
-                 * @var \AppserverIo\Appserver\Core\Api\Node\AbstractNode $newNode
-                 */
+                /** @var \AppserverIo\Appserver\Core\Api\Node\AbstractNode $newNode */
                 $newNode = new $nodeType();
                 $newNode->initFromConfiguration($child);
                 $newNode->setParentUuid($this->getUuid());
@@ -303,9 +299,7 @@ abstract class AbstractNode implements NodeInterface
             foreach ($configuration->getChilds($configurationNodeName) as $child) {
                 // initialize the node and load the data from the configuration
                 $elementType = $mapping->getElementType();
-                /**
-                 * @var \AppserverIo\Appserver\Core\Api\Node\AbstractNode $newNode
-                 */
+                /** @var \AppserverIo\Appserver\Core\Api\Node\AbstractNode $newNode */
                 $newNode = new $elementType();
                 $newNode->initFromConfiguration($child);
                 $newNode->setParentUuid($this->getUuid());

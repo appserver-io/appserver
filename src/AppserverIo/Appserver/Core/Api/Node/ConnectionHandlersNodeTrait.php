@@ -62,9 +62,7 @@ trait ConnectionHandlersNodeTrait
         $connectionHandlers = array();
 
         // iterate over the connection handler nodes and sort them into an array
-        /**
-         * @var \AppserverIo\Appserver\Core\Api\Node\ConnectionHandlerNode $connectionHandler
-         */
+        /** @var \AppserverIo\Appserver\Core\Api\Node\ConnectionHandlerNode $connectionHandler */
         foreach ($this->getConnectionHandlers() as $connectionHandler) {
             $connectionHandlers[$connectionHandler->getUuid()] = $connectionHandler->getType();
         }

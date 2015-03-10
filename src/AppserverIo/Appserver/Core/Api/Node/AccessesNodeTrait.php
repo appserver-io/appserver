@@ -62,9 +62,7 @@ trait AccessesNodeTrait
         $accesses = array();
 
         // iterate over the access nodes and sort them into an array
-        /**
-         * @var \AppserverIo\Appserver\Core\Api\Node\AccessNode $accessNode
-         */
+        /** @var \AppserverIo\Appserver\Core\Api\Node\AccessNode $accessNode */
         foreach ($this->getAccesses() as $accessNode) {
             $accesses[$accessNode->getType()][] = $accessNode->getParamsAsArray();
         }

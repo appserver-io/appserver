@@ -83,9 +83,7 @@ trait RewritesNodeTrait
         $rewrites = array();
 
         // prepare the array with the rewrite rules
-        /**
-         * @var \AppserverIo\Appserver\Core\Api\Node\RewriteNode $rewrite
-         */
+        /** @var \AppserverIo\Appserver\Core\Api\Node\RewriteNode $rewrite */
         foreach ($this->getRewrites() as $rewrite) {
             // rewrites might be extended using different injector extension types, check for that
             if ($rewrite->hasInjector()) {

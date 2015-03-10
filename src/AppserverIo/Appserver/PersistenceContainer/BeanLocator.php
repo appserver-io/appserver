@@ -60,9 +60,7 @@ class BeanLocator implements ResourceLocatorInterface
     {
 
         // load the object manager
-        /**
-         * @var \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\ObjectManagerInterface $objectManager
-         */
+        /** @var \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\ObjectManagerInterface $objectManager */
         $objectManager = $beanManager->getApplication()->search('ObjectManagerInterface');
 
         // load the bean descriptor

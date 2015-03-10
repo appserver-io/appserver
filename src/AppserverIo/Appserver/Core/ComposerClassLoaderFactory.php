@@ -54,9 +54,7 @@ class ComposerClassLoaderFactory implements ClassLoaderFactoryInterface
         $directories = array();
 
         // load the composer class loader for the configured directories
-        /**
-         * @var \AppserverIo\Appserver\Core\Api\Node\DirectoryNode $directory
-         */
+        /** @var \AppserverIo\Appserver\Core\Api\Node\DirectoryNode $directory */
         foreach ($configuration->getDirectories() as $directory) {
             // we prepare the directories to include scripts AFTER registering (in application context)
             $directories[] = $webappPath . $directory->getNodeValue();

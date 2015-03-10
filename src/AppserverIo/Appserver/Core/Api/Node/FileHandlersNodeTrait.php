@@ -62,9 +62,7 @@ trait FileHandlersNodeTrait
         $fileHandlers = array();
 
         // iterate over the file handlers nodes and sort them into an array
-        /**
-         * @var \AppserverIo\Appserver\Core\Api\Node\FileHandlerNode $fileHandler
-         */
+        /** @var \AppserverIo\Appserver\Core\Api\Node\FileHandlerNode $fileHandler */
         foreach ($this->getFileHandlers() as $fileHandler) {
             $fileHandlers[$fileHandler->getExtension()] = array(
                 'name' => $fileHandler->getName(),

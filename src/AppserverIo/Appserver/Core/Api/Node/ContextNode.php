@@ -207,9 +207,7 @@ class ContextNode extends AbstractNode
         // merge them with the passed ones
         foreach ($contextNode->getParams() as $paramToMerge) {
             $isMerged = false;
-            /**
-             * @var \AppserverIo\Appserver\Core\Api\Node\ParamNode $param
-             */
+            /** @var \AppserverIo\Appserver\Core\Api\Node\ParamNode $param */
             foreach ($localParams as $key => $param) {
                 if ($param->getName() == $paramToMerge->getName()) {
                     $localParams[$key] = $paramToMerge;
@@ -228,14 +226,10 @@ class ContextNode extends AbstractNode
         $localManagers = $this->getManagers();
 
         // merge them with the passed ones
-        /**
-         * @var \AppserverIo\Appserver\Core\Api\Node\ManagerNode $managerToMerge
-         */
+        /**  @var \AppserverIo\Appserver\Core\Api\Node\ManagerNode $managerToMerge */
         foreach ($contextNode->getManagers() as $managerToMerge) {
             $isMerged = false;
-            /**
-             * @var \AppserverIo\Appserver\Core\Api\Node\ManagerNode $manager
-             */
+            /** @var \AppserverIo\Appserver\Core\Api\Node\ManagerNode $manager */
             foreach ($localManagers as $key => $manager) {
                 if ($manager->getName() === $managerToMerge->getName()) {
                     $localManagers[$key] = $managerToMerge;
@@ -254,14 +248,10 @@ class ContextNode extends AbstractNode
         $localClassLoaders = $this->getClassLoaders();
 
         // merge them with the passed ones
-        /**
-         * @var \AppserverIo\Appserver\Core\Api\Node\ClassLoaderNode $classLoaderToMerge
-         */
+        /** @var \AppserverIo\Appserver\Core\Api\Node\ClassLoaderNode $classLoaderToMerge */
         foreach ($contextNode->getClassLoaders() as $classLoaderToMerge) {
             $isMerged = false;
-            /**
-             * @var \AppserverIo\Appserver\Core\Api\Node\ClassLoaderNode $classLoader
-             */
+            /** @var \AppserverIo\Appserver\Core\Api\Node\ClassLoaderNode $classLoader */
             foreach ($localClassLoaders as $key => $classLoader) {
                 if ($classLoader->getName() === $classLoaderToMerge->getName()) {
                     $localClassLoaders[$key] = $classLoaderToMerge;

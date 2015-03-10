@@ -275,9 +275,7 @@ class Provider extends GenericStackable implements ProviderInterface
     {
 
         // load the object manager instance
-        /**
-         * @var \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\ObjectManagerInterface $objectManager
-         */
+        /** @var \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\ObjectManagerInterface $objectManager */
         $objectManager = $this->getNamingDirectory()->search('ObjectManagerInterface');
 
         // load the object descriptor for the instance from the the object manager

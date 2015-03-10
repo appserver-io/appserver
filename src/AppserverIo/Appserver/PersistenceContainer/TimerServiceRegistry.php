@@ -158,9 +158,7 @@ class TimerServiceRegistry extends ServiceRegistry implements TimerServiceContex
         $timerServiceExecutor = $this->getTimerServiceExecutor();
 
         // load the service to iterate over application folders
-        /**
-         * @var \AppserverIo\Appserver\Core\Api\DeploymentService $service
-         */
+        /** @var \AppserverIo\Appserver\Core\Api\DeploymentService $service */
         $service = $application->newService('AppserverIo\Appserver\Core\Api\DeploymentService');
         $phpFiles = $service->globDir($metaInfDir . DIRECTORY_SEPARATOR . '*.php');
 

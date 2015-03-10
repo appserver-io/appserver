@@ -62,9 +62,7 @@ trait EnvironmentVariablesNodeTrait
     public function getEnvironmentVariable($definition)
     {
         // Iterate over all environmentVariables
-        /**
-         * @var \AppserverIo\Appserver\Core\Api\Node\EnvironmentVariableNode $environmentVariableNode
-         */
+        /** @var \AppserverIo\Appserver\Core\Api\Node\EnvironmentVariableNode $environmentVariableNode */
         foreach ($this->getEnvironmentVariables() as $environmentVariableNode) {
             // If we found one with a matching definition we will return it
             if ($environmentVariableNode->getDefinition() === $definition) {
@@ -85,9 +83,7 @@ trait EnvironmentVariablesNodeTrait
     {
         // Iterate over the environmentVariable nodes and sort them into an array
         $environmentVariables = array();
-        /**
-         * @var \AppserverIo\Appserver\Core\Api\Node\EnvironmentVariableNode $environmentVariableNode
-         */
+        /** @var \AppserverIo\Appserver\Core\Api\Node\EnvironmentVariableNode $environmentVariableNode */
         foreach ($this->getEnvironmentVariables() as $environmentVariableNode) {
             // Restructure to an array
             $environmentVariables[] = array(

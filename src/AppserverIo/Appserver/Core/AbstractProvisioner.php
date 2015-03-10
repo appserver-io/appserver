@@ -62,7 +62,7 @@ abstract class AbstractProvisioner implements ProvisionerInterface
      * and the provision node configuration data.
      *
      * @param \AppserverIo\Appserver\Application\Interfaces\ContextInterface $initialContext  The initial context instance
-     * @param \AppserverIo\Appserver\Core\Api\Node\ExtractorNodeInterface    $provisionerNode The provisioner node configuration data
+     * @param \AppserverIo\Appserver\Core\Api\Node\ProvisionerNodeInterface  $provisionerNode The provisioner node configuration data
      */
     public function __construct(ContextInterface $initialContext, ProvisionerNodeInterface $provisionerNode)
     {

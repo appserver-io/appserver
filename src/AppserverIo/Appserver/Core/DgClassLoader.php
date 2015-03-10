@@ -205,9 +205,7 @@ class DgClassLoader extends \Stackable implements ClassLoaderInterface
 
         // Now check which structures we have to create and split them up for multi-threaded creation
         $generatorStack = array();
-        /**
-         * @var \AppserverIo\Doppelgaenger\Entities\Definitions\Structure $structure
-         */
+        /** @var \AppserverIo\Doppelgaenger\Entities\Definitions\Structure $structure */
         foreach ($structures as $identifier => $structure) {
             // Working on our own files has very weird side effects, so don't do it
             if (strpos($structure->getIdentifier(), 'AppserverIo\Doppelgaenger') !== false) {

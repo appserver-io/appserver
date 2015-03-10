@@ -188,9 +188,7 @@ class TimedObjectInvoker extends GenericStackable implements TimedObjectInvokerI
 
         // check the methods of the bean for a @Timeout annotation => overwrite the default
         // timeout method defined by the interface
-        /**
-         * @var \AppserverIo\Lang\Reflection\MethodInterface $timeoutMethod
-         */
+        /** @var \AppserverIo\Lang\Reflection\MethodInterface $timeoutMethod */
         foreach ($reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $timeoutMethod) {
             // check if the timed object instance has @Timeout annotation => default timeout method
             if ($timeoutMethod->hasAnnotation(Timeout::ANNOTATION)) {

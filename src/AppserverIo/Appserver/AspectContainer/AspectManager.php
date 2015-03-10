@@ -196,9 +196,7 @@ class AspectManager implements AspectManagerInterface, ManagerInterface
         );
 
         // check directory for PHP files with classes we want to register
-        /**
-         * @var \AppserverIo\Appserver\Core\Api\DeploymentService $service
-         */
+        /** @var \AppserverIo\Appserver\Core\Api\DeploymentService $service */
         $service = $application->newService('AppserverIo\Appserver\Core\Api\DeploymentService');
 
         // iterate over the directories and try to find aspects
@@ -249,15 +247,11 @@ class AspectManager implements AspectManagerInterface, ManagerInterface
         if (is_readable($xmlPath)) {
             // validate the file here, if it is not valid we can skip further steps
             try {
-                /**
-                 * @var \AppserverIo\Appserver\Core\Api\ConfigurationService $configurationService
-                 */
+                /** @var \AppserverIo\Appserver\Core\Api\ConfigurationService $configurationService */
                 $configurationService = $this->getApplication()->newService('AppserverIo\Appserver\Core\Api\ConfigurationService');
                 $configurationService->validateFile($xmlPath, null, true);
             } catch (InvalidConfigurationException $e) {
-                /**
-                 * @var \Psr\Log\LoggerInterface $systemLogger
-                 */
+                /** @var \Psr\Log\LoggerInterface $systemLogger */
                 $systemLogger = $this->getApplication()->getInitialContext()->getSystemLogger();
                 $systemLogger->error($e->getMessage());
                 $systemLogger->critical(sprintf('Pointcuts configuration file %s is invalid, AOP functionality might not work as expected.', $xmlPath));
@@ -297,9 +291,7 @@ class AspectManager implements AspectManagerInterface, ManagerInterface
                 foreach ($adviceConfiguration->{'advice-pointcuts'} as $pointcutConfiguration) {
                     $pointcutName = (string) $pointcutConfiguration->{'pointcut-name'};
 
-                    /**
-                     * @var \AppserverIo\Doppelgaenger\Entities\Pointcuts\PointcutPointcut $pointcutPointcut
-                     */
+                    /** @var \AppserverIo\Doppelgaenger\Entities\Pointcuts\PointcutPointcut $pointcutPointcut */
                     $pointcutPointcut = $pointcutFactory->getInstance(PointcutPointcut::TYPE . '(' . $pointcutName . ')');
 
                     // check if we just parsed the referenced pointcut
