@@ -19,7 +19,7 @@
 
 namespace AppserverIo\Appserver\Core;
 
-use AppserverIo\Appserver\Core\Interfaces\AppserverConfigurationInterface;
+use AppserverIo\Appserver\Core\Interfaces\SystemConfigurationInterface;
 use AppserverIo\Storage\StorageInterface;
 use AppserverIo\Appserver\Core\InitialContext\ContextKeys;
 use AppserverIo\Appserver\Core\Interfaces\ClassLoaderInterface;
@@ -63,9 +63,9 @@ class InitialContext implements ContextInterface
     /**
      * Initializes the context with the connection to the storage backend.
      *
-     * @param \AppserverIo\Appserver\Core\Interfaces\AppserverConfigurationInterface $systemConfiguration The system configuration
+     * @param \AppserverIo\Appserver\Core\Interfaces\SystemConfigurationInterface $systemConfiguration The system configuration
      */
-    public function __construct(AppserverConfigurationInterface $systemConfiguration)
+    public function __construct(SystemConfigurationInterface $systemConfiguration)
     {
 
         // initialize the storage
@@ -139,11 +139,11 @@ class InitialContext implements ContextInterface
     /**
      * Adds the system configuration to the initial context.
      *
-     * @param \AppserverIo\Appserver\Core\Interfaces\AppserverConfigurationInterface $systemConfiguration The system configuration
+     * @param \AppserverIo\Appserver\Core\Interfaces\SystemConfigurationInterface $systemConfiguration The system configuration
      *
      * @return void
      */
-    public function setSystemConfiguration(AppserverConfigurationInterface $systemConfiguration)
+    public function setSystemConfiguration(SystemConfigurationInterface $systemConfiguration)
     {
         $this->setAttribute(ContextKeys::SYSTEM_CONFIGURATION, $systemConfiguration);
     }
@@ -151,7 +151,7 @@ class InitialContext implements ContextInterface
     /**
      * Returns the system configuration.
      *
-     * @return \AppserverIo\Appserver\Core\Interfaces\AppserverConfigurationInterface The system configuration
+     * @return \AppserverIo\Appserver\Core\Interfaces\SystemConfigurationInterface The system configuration
      */
     public function getSystemConfiguration()
     {

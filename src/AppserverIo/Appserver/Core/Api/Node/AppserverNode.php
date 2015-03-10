@@ -20,7 +20,7 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
-use AppserverIo\Appserver\Core\Interfaces\AppserverConfigurationInterface;
+use AppserverIo\Appserver\Core\Interfaces\SystemConfigurationInterface;
 use AppserverIo\Configuration\Interfaces\ConfigurationInterface;
 use Psr\Log\LogLevel;
 use AppserverIo\Logger\LoggerUtils;
@@ -35,7 +35,7 @@ use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class AppserverNode extends AbstractNode implements AppserverConfigurationInterface
+class AppserverNode extends AbstractNode implements SystemConfigurationInterface
 {
 
     /**

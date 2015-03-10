@@ -1,7 +1,7 @@
 <?php
 
 /**
- * \AppserverIo\Appserver\Core\Interfaces\AppserverConfigurationInterface
+ * \AppserverIo\Appserver\Core\Interfaces\SystemConfigurationInterface
  *
  * NOTICE OF LICENSE
  *
@@ -32,7 +32,7 @@ use AppserverIo\Appserver\Core\Api\Node\DatasourceNode;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io/
  */
-interface AppserverConfigurationInterface
+interface SystemConfigurationInterface
 {
 
     /**
