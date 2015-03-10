@@ -22,7 +22,7 @@
 		"appserver-io/storage" : "~2.0",
 		"appserver-io/messaging" : "~1.0",
 		"appserver-io/microcron" : "~1.0",
-		"appserver-io/webserver" : "~1.0",
+		"appserver-io/webserver" : "~2.0",
 		"appserver-io/properties" : "~1.0",
 		"appserver-io/description" : "~1.0",
 		"appserver-io/configuration" : "~2.0",
