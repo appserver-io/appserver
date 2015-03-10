@@ -57,7 +57,7 @@ table.
 | `requestContext`  | The request context implementation classname based on `\AppserverIo\Server\Interfaces\RequestContextInterface`. It holds all vars needed (server, environment and module vars) which can be processed and modified by the server-module-chain defined. After the request was pre processed by internal server-modules the request context will provide those information for specific file-handlers being able to process the request in a common way. |
 | `loggerName`      | The logger instance to use in the server's context. |
 
-Next thing we'll have a look at are server params.
+Next thing we will have a look at are server params.
 
 ```xml
 <params>
@@ -77,31 +77,27 @@ Next thing we'll have a look at are server params.
 </params>
 ```
 
-They are used to define several key/value pairs for the Webserver implementation to react on. Find the param
-descriptions below.
+They are used to define several key/value pairs for the Webserver implementation to react on. Some of them are common to all HTTP servers.
+Their descriptions can be found [within the server configuration documentation]({{ "/get-started/documentation/configuration.html#server-configuration" | prepend: site.baseurl }})
 
-| Param                    | Description |
-| ------------------------ | ----------- |
-| `admin`                  | The email address of the administrator who is responsible for. |
-| `software`               | The software signature as showen in the response header for example. |
-| `transport`              | The transport layer. In ssl mode `ssl` will be used instead of plain `tcp`. |
-| `address`                | The address the server-socket should be bind and listen to. If you want to allow only connection on local loopback define ´127.0.0.1´ as in the example above shown. This will be good enough for local development and testing purpos. If you want to allow connections to your external ethernet interfaces just define `0.0.0.0` or if you want to allow connection only on a specific interface just define the ip of your interface `192.168.1.100`. |
-| `port`                   | The port for the server-socket to accept connections to. Default setting is `9080` and `9443` for ssl. If you want to serve through default web ports just define `80` and for https `443`. Make sure there is no other Webserver installed blocking the default ports.|
-| `workerNumber`           | Defines the number of worker-queues to be started waiting for requests to process. |
-| `workerAcceptMin`        | Describes the minimum number of requests for the worker to be accepted for randomize its lifetime. |
-| `workerAcceptMax`        | Describes the maximum number of requests for the worker to be accepted for randomize its lifetime. |
-| `documentRoot`           | Defines the root directory for the server to append the uri with and search for the requested file or directory. The document root path will be relative to the servers root directory if there is no beginning slash "/" |
-| `directoryIndex`         | Defines the index resources to lookup for the requested directory. The server will return the first one that it finds. If none of the resources exist, the server will respond with a 404 Not Found. |
-| `keepAliveMax`           | The number of requests allowed per connection when keep-alive is on. If it is set to 0 keep-alive feature will be deactivated. |
-| `keepAliveTimeout`       | The number of seconds waiting for a subsequent request while in keep-alive loop before closing the connection. |
-| `errorsPageTemplatePath` | The path to the errors page template. The path will be relative to the servers root directory if there is no beginning slash "/". |
+Descriptions for webserver specific params can be found below.
 
-If you want to setup a Webserver you have to configure 2 more params.
+| Param                    | Type     | Description                                                    |
+| -------------------------| ---------| ---------------------------------------------------------------|
+| `documentRoot`           | string   | Defines the root directory for the server to append the uri with and search for the requested file or directory. The document root path will be relative to the servers root directory if there is no beginning slash "/" |
+| `directoryIndex`         | string   | Whitespace separated list of index resources to lookup for the requested directory. The server will return the first one that it finds. If none of the resources exist, the server will respond with a 404 Not Found. |
+| `keepAliveMax`           | integer  | The number of requests allowed per connection when keep-alive is on. If it is set to 0 keep-alive feature will be deactivated. |
+| `keepAliveTimeout`       | integer  | The number of seconds waiting for a subsequent request while in keep-alive loop before closing the connection. |
+| `errorsPageTemplatePath` | string   | The path to the errors page template. The path will be relative to the servers root directory if there is no beginning slash "/". |
 
-| Param         | Description |
-| ------------- | ----------- |
-| `certPath`    | The path to your certificate file which as to be a combined PEM file of private key and certificate. The path will be relative to the servers root directory if there is no beginning slash "/". |
-| `passphrase`  | The passphrase you have created your SSL private key file with. Can be optional. |
+If you want to setup a HTTPS Webserver you have to configure 2 more params.
+
+| Param         | Type     | Description |
+| --------------| ---------| ------------|
+| `certPath`    | string   | The path to your certificate file which as to be a combined PEM file of private key and certificate. The path will be relative to the servers root directory if there is no beginning slash "/". |
+| `passphrase`  | string   | The passphrase you have created your SSL private key file with. Can be optional. |
+
+
 
 ## Connection Handler
 
