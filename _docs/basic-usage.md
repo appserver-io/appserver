@@ -6,6 +6,8 @@ meta_description: The appserver will automatically start after your installation
 position: 20
 group: Docs
 subNav:
+  - title: Service availability
+    href: service-availability
   - title: Start and Stop Scripts
     href: start-and-stop-scripts
   - title: Setup script
@@ -19,6 +21,18 @@ Below you find basic instructions on how to make use of the appserver. After the
 
 Start your preferred browser and check out what we can do. :) To pass the password barriers use
 the default login `appserver/appserver.i0`.
+
+## Service availability
+
+appserver.io does expose several [servers]({{ "/get-started/documentation/configuration.html#server-configuration" | prepend: site.baseurl }}) which are reachable using their respective address and port.
+Per default we only allow for local access using the `localhost` address `127.0.0.1`.
+
+If any of the server's availability has to be changed it can be done using the appropriate configuration file as [described here]({{ "/get-started/documentation/configuration.html#server-configuration" | prepend: site.baseurl }}) by altering the `address` param.
+
+Please also make sure that the configured port gets forwarded within your environment.
+
+Server availability can be tested using tools like `telnet`, `CURL` or something similar.
+On a successful request a response should be given and the configured [access log]({{ "/get-started/documentation/configuration.html#optional-configuration" | prepend: site.baseurl }}) will show the handled request.
 
 ## Start and Stop Scripts
 

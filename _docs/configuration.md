@@ -254,6 +254,42 @@ form of connection handlers. [WebServer](<https://github.com/appserver-io/webser
 offers a `HttpConnectionHandler` class. By using it, the server is able to understand the HTTP 
 protocol.
 
+The server configuration makes heavy use of the `param` element which is used to apply some of the most important configuration values to a server instance.
+An example of the params a server can take can be found in the example below.
+
+```xml
+<params>
+    <param name="admin" type="string">info@appserver.io</param>
+    <param name="software" type="string">
+        appserver/1.0.0 (darwin) PHP/5.5.21
+    </param>
+    <param name="transport" type="string">tcp</param>
+    <param name="address" type="string">127.0.0.1</param>
+    <param name="port" type="integer">9080</param>
+    <param name="workerNumber" type="integer">64</param>
+    <param name="workerAcceptMin" type="integer">3</param>
+    <param name="workerAcceptMax" type="integer">8</param>
+    <!-- ... -->
+</params>
+```
+
+Some of these params do speak for themselves, but others don't. You can find a complete list of their meaning below:
+
+| Param name           | Type     | Description                                                    |
+| ---------------------| ---------| ---------------------------------------------------------------|
+| `admin`              | string   | The email address of the administrator who is responsible for. |
+| `software`           | string   |  The software signature as shown in the response header for example. |
+| `transport`          | string   |  The transport layer. In ssl mode `ssl` will be used instead of plain `tcp`. |
+| `address`            | string   |  The address the server-socket should be bind and listen to. If you want to allow only connection on local loopback define `127.0.0.1` as in the example above shown. This will be good enough for local development and testing purpose. If you want to allow connections to your external ethernet interfaces just define `0.0.0.0` or if you want to allow connection only on a specific interface just define the ip of your interface `192.168.1.100`. |
+| `port`               | integer  |  The port for the server-socket to accept connections to. This can be any [common port number](http://en.wikipedia.org/wiki/Port_%28computer_networking%29#Common_port_numbers). Make sure there is no other server installed blocking the default ports.|
+| `workerNumber`       | integer  |  Defines the number of worker-queues to be started waiting for requests to process. |
+| `workerAcceptMin`    | integer  |  Describes the minimum number of requests for the worker to be accepted for randomize its lifetime. |
+| `workerAcceptMax`    | integer  |  Describes the maximum number of requests for the worker to be accepted for randomize its lifetime. |
+
+All params listed above are common to servers using the `HttpConnectionHandler`.
+
+> The param composition may vary depending on the server implementation.
+
 ## Application Configuration
 
 Beside Container and Server, it is also possible to configure the application. Each application
