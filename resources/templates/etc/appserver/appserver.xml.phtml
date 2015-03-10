@@ -230,15 +230,16 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
                     <authentications>
                         <authentication uri="^\/auth\/basic\/.*">
                             <params>
-                                <param name="type" type="string">\AppserverIo\WebServer\Authentication\BasicAuthentication</param>
+                                <param name="type" type="string">\AppserverIo\Http\Authentication\BasicAuthentication</param>
                                 <param name="realm" type="string">PhpWebServer Basic Authentication System</param>
                                 <param name="file" type="string">var/www/auth/basic/.htpasswd</param>
                             </params>
                         </authentication>
                         <authentication uri="^\/auth\/digest\/.*">
                             <params>
-                                <param name="type" type="string">\AppserverIo\WebServer\Authentication\DigestAuthentication</param>
+                                <param name="type" type="string">\AppserverIo\Http\Authentication\DigestAuthentication</param>
                                 <param name="realm" type="string">appserver.io Digest Authentication System</param>
+                                <param name="adapter-type" type="string">htdigest</param>
                                 <param name="file" type="string">var/www/auth/digest/.htpasswd</param>
                             </params>
                         </authentication>
@@ -332,14 +333,14 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
                     <authentications>
                         <authentication uri="^\/auth\/basic\/.*">
                             <params>
-                                <param name="type" type="string">\AppserverIo\WebServer\Authentication\BasicAuthentication</param>
+                                <param name="type" type="string">\AppserverIo\Http\Authentication\BasicAuthentication</param>
                                 <param name="realm" type="string">PhpWebServer Basic Authentication System</param>
                                 <param name="file" type="string">var/www/auth/basic/.htpasswd</param>
                             </params>
                         </authentication>
                         <authentication uri="^\/auth\/digest\/.*">
                             <params>
-                                <param name="type" type="string">\AppserverIo\WebServer\Authentication\DigestAuthentication</param>
+                                <param name="type" type="string">\AppserverIo\Http\Authentication\DigestAuthentication</param>
                                 <param name="realm" type="string">appserver.io Digest Authentication System</param>
                                 <param name="file" type="string">var/www/auth/digest/.htpasswd</param>
                             </params>

@@ -1387,7 +1387,7 @@ architecture is driven by configuration.
               <authentication uri="^\/admin.*">
                 <params>
                   <param name="type" type="string">
-                    \AppserverIo\WebServer\Authentication\BasicAuthentication
+                    \AppserverIo\Http\Authentication\BasicAuthentication
                   </param>
                   <param name="realm" type="string">
                     appserver.io Basic Authentication System

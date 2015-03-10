@@ -7,6 +7,7 @@
 ## Features
 
 * Closed [#620](https://github.com/appserver-io/appserver/issues/620) - Extend in-code comments in regards to missing properties
+* Closed [#645](https://github.com/appserver-io/appserver/issues/645) - Remove obsolete authentication adapters from ServletEngine
 
 # Version 1.0.1
 

@@ -1,6 +1,6 @@
 {
     "^\\\/auth\\\/digest\\\/.*":{
-        "type":"\\AppserverIo\\WebServer\\Authentication\\DigestAuthentication",
+        "type":"\\AppserverIo\\Http\\Authentication\\DigestAuthentication",
         "realm":"appserver.io Digest Authentication System",
         "file":"var\/www\/auth\/digest\/.htpasswd"
     }

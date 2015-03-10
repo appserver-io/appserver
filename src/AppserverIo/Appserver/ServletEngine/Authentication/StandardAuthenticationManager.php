@@ -12,6 +12,7 @@
  * PHP version 5
  *
  * @author    Florian Sydekum <fs@techdivision.com>
+ * @author    Bernhard Wick <bw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
@@ -20,73 +21,67 @@
 
 namespace AppserverIo\Appserver\ServletEngine\Authentication;
 
-use AppserverIo\Psr\Servlet\ServletRequestInterface;
-use AppserverIo\Psr\Servlet\ServletResponseInterface;
+use AppserverIo\Appserver\Core\AbstractManager;
+use AppserverIo\Http\HttpProtocol;
+use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
+use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
 
 /**
  * The authentication manager handles request which need Http authentication.
  *
  * @author    Florian Sydekum <fs@techdivision.com>
+ * @author    Bernhard Wick <bw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
+ *
+ * @property \AppserverIo\WebServer\Interfaces\AuthenticationInterface[] $authenticationAdapters Contains all registered authentication adapters sorted by URI pattern
  */
-class StandardAuthenticationManager implements AuthenticationManagerInterface
+class StandardAuthenticationManager extends AbstractManager implements AuthenticationManagerInterface
 {
 
     /**
      * Handles request in order to authenticate.
      *
-     * @param \AppserverIo\Psr\Servlet\ServletRequestInterface  $servletRequest  The request instance
-     * @param \AppserverIo\Psr\Servlet\ServletResponseInterface $servletResponse The response instance
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface  $servletRequest  The request instance
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse The response instance
      *
      * @return boolean TRUE if the authentication has been successful, else FALSE
      *
      * @throws \Exception
      */
-    public function handleRequest(ServletRequestInterface $servletRequest, ServletResponseInterface $servletResponse)
+    public function handleRequest(HttpServletRequestInterface $servletRequest, HttpServletResponseInterface $servletResponse)
     {
 
-        // load the actual context instance
-        $context = $servletRequest->getContext();
-
         // iterate over all servlets and return the matching one
-        foreach ($context->search('ServletContextInterface')->getSecuredUrlConfigs() as $securedUrlConfig) {
-            // continue if the can't find a config
-            if ($securedUrlConfig == null) {
-                continue;
-            }
-
-            // extract URL pattern and authentication configuration
-            list ($urlPattern, $auth) = array_values($securedUrlConfig);
-
+        /**
+         * @var string $urlPattern
+         * @var \AppserverIo\Http\Authentication\AuthenticationInterface $authenticationAdapter
+         */
+        foreach ($this->authenticationAdapters as $urlPattern => $authenticationAdapter) {
             // we'll match our URI against the URL pattern
+
             if (fnmatch($urlPattern, $servletRequest->getServletPath() . $servletRequest->getPathInfo())) {
-                // load security configuration
-                $configuredAuthType = $securedUrlConfig['auth']['auth-type'];
+                // the URI pattern matches, init the adapter and try to authenticate
 
-                // check the authentication type
-                switch ($configuredAuthType) {
-                    case "Basic":
-                        $authImplementation =  'AppserverIo\Appserver\ServletEngine\Authentication\BasicAuthentication';
-                        break;
-                    case "Digest":
-                        $authImplementation =  'AppserverIo\Appserver\ServletEngine\Authentication\DigestAuthentication';
-                        break;
-                    default:
-                        throw new \Exception(sprintf('Unknown authentication type %s', $configuredAuthType));
-                }
-
-                // initialize the authentication manager
-                $auth = new $authImplementation($securedUrlConfig);
-                $auth->init($servletRequest, $servletResponse);
+                $authenticationAdapter->init($servletRequest->getHeader(HttpProtocol::HEADER_AUTHORIZATION), $servletRequest->getMethod());
 
                 // try to authenticate the request
-                return $auth->authenticate();
+                $authenticated = $authenticationAdapter->authenticate();
+                if (!$authenticated) {
+                    // send header for challenge authentication against client
+                    $servletResponse->setStatusCode(401);
+                    $servletResponse->addHeader(HttpProtocol::HEADER_WWW_AUTHENTICATE, $authenticationAdapter->getAuthenticateHeader());
+                }
+
+                return $authenticated;
             }
         }
+
+        // we did not find an adapter for that URI pattern, no authentication required then
+        return true;
     }
 
     /**
@@ -107,9 +102,61 @@ class StandardAuthenticationManager implements AuthenticationManagerInterface
      *
      * @return void
      * @see \AppserverIo\Psr\Application\ManagerInterface::initialize()
+     *
+     * @throws \Exception
      */
     public function initialize(ApplicationInterface $application)
     {
+
+        // iterate over all servlets and return the matching one
+        $authenticationAdapters = array();
+        foreach ($application->search('ServletContextInterface')->getSecuredUrlConfigs() as $securedUrlConfig) {
+            // continue if the can't find a config
+            if ($securedUrlConfig == null) {
+                continue;
+            }
+
+            // extract URL pattern and authentication configuration
+            list ($urlPattern, $auth) = array_values($securedUrlConfig);
+            // load security configuration
+            $configuredAuthType = $securedUrlConfig['auth']['auth-type'];
+
+            // check the authentication type
+            switch ($configuredAuthType) {
+                case "Basic":
+                    $authImplementation =  '\AppserverIo\Http\Authentication\BasicAuthentication';
+                    break;
+                case "Digest":
+                    $authImplementation =  '\AppserverIo\Http\Authentication\DigestAuthentication';
+                    break;
+                default:
+                    throw new \Exception(sprintf('Unknown authentication type %s', $configuredAuthType));
+            }
+
+            // in preparation we have to flatten the configuration structure
+            $config = $securedUrlConfig['auth'];
+            array_shift($config);
+            $options = $config['options'];
+            unset($config['options']);
+
+            // we do need to make some alterations
+            if (isset($options['file'])) {
+                $options['file'] = $application->getWebappPath() . DIRECTORY_SEPARATOR . $options['file'];
+            }
+
+            // initialize the authentication manager
+            /** @var \AppserverIo\Http\Authentication\AuthenticationInterface $auth */
+            $auth = new $authImplementation(
+                array_merge(
+                    array('type' => $authImplementation),
+                    $config,
+                    $options
+                )
+            );
+            $authenticationAdapters[$urlPattern] = $auth;
+        }
+
+        $this->authenticationAdapters = $authenticationAdapters;
     }
 
     /**
@@ -121,6 +168,6 @@ class StandardAuthenticationManager implements AuthenticationManagerInterface
      */
     public function getAttribute($key)
     {
-        throw new \Exception(sprintf('%s is not implemented yes', __METHOD__));
+        throw new \Exception(sprintf('%s is not implemented yet', __METHOD__));
     }
 }

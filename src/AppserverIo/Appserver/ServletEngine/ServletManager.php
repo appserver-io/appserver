@@ -505,7 +505,7 @@ class ServletManager extends AbstractEpbManager implements ServletContextInterfa
     /**
      * Returns TRUE if we've at least one session parameter configured, else FALSE.
      *
-     * @return boolean TRUE if we've at least one session parametr configured, else FALSE
+     * @return boolean TRUE if we've at least one session parameter configured, else FALSE
      */
     public function hasSessionParameters()
     {

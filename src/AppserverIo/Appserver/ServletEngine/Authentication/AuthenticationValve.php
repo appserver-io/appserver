@@ -48,9 +48,7 @@ class AuthenticationValve implements ValveInterface
     {
 
         // load the authentication manager
-        /**
-         * @var \AppserverIo\Appserver\ServletEngine\Authentication\AuthenticationManagerInterface $authenticationManager
-         */
+        /** @var \AppserverIo\Appserver\ServletEngine\Authentication\AuthenticationManagerInterface $authenticationManager */
         $authenticationManager = $servletRequest->getContext()->search('AuthenticationManagerInterface');
 
         // authenticate the request
