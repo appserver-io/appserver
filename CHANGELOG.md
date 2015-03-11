@@ -2,10 +2,12 @@
 
 ## Bugfixes 
 
+* Fixed [#654](https://github.com/appserver-io/appserver/issues/654) - Existing files containing spaces are ignored 
 * Fixed [#635](https://github.com/appserver-io/appserver/issues/635) - Extracting PHAR archives containing empty files results in an exception
 
 ## Features
 
+* Closed [#283](https://github.com/appserver-io/appserver/issues/283) - MSI based Windows installer
 * Closed [#657](https://github.com/appserver-io/appserver/issues/657) - Remove serverSoftware and serverAdmin attributes from host node
 * Closed [#656](https://github.com/appserver-io/appserver/issues/656) - Refactoring ServletEngine + PersistenceContainerModule for less usage of \Stackables
 * Closed [#655](https://github.com/appserver-io/appserver/issues/655) - Reduce memory consumption by decrease worker number
