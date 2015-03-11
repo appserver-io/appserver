@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Api\ExtensionInjectorParameterTrait
+ * \AppserverIo\Appserver\Core\Api\ExtensionInjectorParameterTrait
  *
  * NOTICE OF LICENSE
  *

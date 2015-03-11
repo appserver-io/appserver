@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\Http\Request
+ * \AppserverIo\Appserver\ServletEngine\Http\Request
  *
  * NOTICE OF LICENSE
  *
@@ -23,6 +23,8 @@ namespace AppserverIo\Appserver\ServletEngine\Http;
 use AppserverIo\Http\HttpProtocol;
 use AppserverIo\Server\Dictionaries\ServerVars;
 use AppserverIo\Psr\Context\ContextInterface;
+use AppserverIo\Psr\HttpMessage\PartInterface;
+use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Psr\HttpMessage\CookieInterface;
 use AppserverIo\Psr\HttpMessage\RequestInterface;
 use AppserverIo\Psr\Servlet\SessionUtils;
@@ -37,6 +39,21 @@ use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
+ *
+ * @property string                                                            $baseModifier         Base modifier which allows for base path generation within rewritten URL environments
+ * @property resource                                                          $bodyStream           The body content stream resource
+ * @property \AppserverIo\Psr\Context\ContextInterface                         $context              The request context instance
+ * @property string                                                            $contextPath          The application context name
+ * @property boolean                                                           $dispatched           Whether or not the request has been dispatched
+ * @property \AppserverIo\Psr\HttpMessage\RequestInterface                     $httpRequest          The Http request instance
+ * @property string                                                            $parts                The request parts
+ * @property string                                                            $pathInfo             The absolute path info
+ * @property \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface        $response             The servlet response instance
+ * @property string                                                            $requestedSessionId   The new session id
+ * @property string                                                            $requestedSessionName The new session name
+ * @property \AppserverIo\Appserver\ServletEngine\Http\RequestContextInterface $requestHandler       The request context
+ * @property \AppserverIo\Storage\GenericStackable                             $serverVars           The server variables
+ * @property string                                                            $servletPath          The path to the servlet
  */
 class Request implements HttpServletRequestInterface
 {
@@ -321,7 +338,7 @@ class Request implements HttpServletRequestInterface
     /**
      * Injects the servlet response bound to this request.
      *
-     * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $response The servlet respone instance
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $response The servlet response instance
      *
      * @return void
      */
@@ -489,7 +506,7 @@ class Request implements HttpServletRequestInterface
      *
      * @return void
      */
-    public function addPart(Part $part, $name = null)
+    public function addPart(PartInterface $part, $name = null)
     {
         if ($name == null) {
             $name = $part->getName();
@@ -554,6 +571,7 @@ class Request implements HttpServletRequestInterface
     {
 
         // if no session has already been load, initialize the session manager
+        /** @var \AppserverIo\Appserver\ServletEngine\SessionManagerInterface $manager */
         $manager = $this->getContext()->search('SessionManagerInterface');
 
         // if no session manager was found, we don't support sessions
@@ -636,7 +654,7 @@ class Request implements HttpServletRequestInterface
     }
 
     /**
-     * Returns the absolute path info started from the context path.
+     * Sets the absolute path info started from the context path.
      *
      * @param string $pathInfo The absolute path info
      *

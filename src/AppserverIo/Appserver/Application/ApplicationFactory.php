@@ -73,6 +73,7 @@ class ApplicationFactory
         $applicationName = $context->getName();
 
         // create a new application instance
+        /** @var \AppserverIo\Appserver\Application\Application $application */
         $application = new $contextType();
 
         // initialize the storage for managers, virtual hosts an class loaders
@@ -92,6 +93,7 @@ class ApplicationFactory
         $application->prepare($context);
 
         // create the applications temporary folders and cleans the folders up
+        /** @var \AppserverIo\Appserver\Core\Api\AppService $appService */
         $appService->createTmpFolders($application);
         $appService->cleanUpFolders($application);
 
@@ -102,7 +104,9 @@ class ApplicationFactory
         );
 
         // add the configured class loaders
+        /** @var \AppserverIo\Appserver\Core\Api\Node\ClassLoaderNode $classLoader */
         foreach ($context->getClassLoaders() as $classLoader) {
+            /** @var \AppserverIo\Appserver\Core\Interfaces\ClassLoaderFactoryInterface $classLoaderFactory */
             if ($classLoaderFactory = $classLoader->getFactory()) {
                 // use the factory if available
                 $classLoaderFactory::visit($application, $classLoader);
@@ -114,6 +118,7 @@ class ApplicationFactory
         }
 
         // add the configured managers
+        /** @var \AppserverIo\Appserver\Core\Api\Node\ManagerNode $manager */
         foreach ($context->getManagers() as $manager) {
             if ($managerFactory = $manager->getFactory()) {
                 // use the factory if available

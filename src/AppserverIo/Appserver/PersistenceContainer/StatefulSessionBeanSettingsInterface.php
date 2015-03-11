@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\PersistenceContainer\StatefulSessionBeanSettingsInterface
+ * \AppserverIo\Appserver\PersistenceContainer\StatefulSessionBeanSettingsInterface
  *
  * NOTICE OF LICENSE
  *

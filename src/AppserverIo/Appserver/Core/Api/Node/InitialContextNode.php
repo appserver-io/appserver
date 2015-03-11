@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Api\Node\InitialContextNode
+ * \AppserverIo\Appserver\Core\Api\Node\InitialContextNode
  *
  * NOTICE OF LICENSE
  *

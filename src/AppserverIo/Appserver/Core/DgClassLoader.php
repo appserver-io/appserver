@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\DgClassLoader
+ * \AppserverIo\Appserver\Core\DgClassLoader
  *
  * NOTICE OF LICENSE
  *
@@ -205,6 +205,7 @@ class DgClassLoader extends \Stackable implements ClassLoaderInterface
 
         // Now check which structures we have to create and split them up for multi-threaded creation
         $generatorStack = array();
+        /** @var \AppserverIo\Doppelgaenger\Entities\Definitions\Structure $structure */
         foreach ($structures as $identifier => $structure) {
             // Working on our own files has very weird side effects, so don't do it
             if (strpos($structure->getIdentifier(), 'AppserverIo\Doppelgaenger') !== false) {
@@ -306,7 +307,7 @@ class DgClassLoader extends \Stackable implements ClassLoaderInterface
      *
      * @param string $className The name of the structure we will try to load
      *
-     * @return boolean
+     * @return null
      */
     public function loadClassProductionNoOmit($className)
     {
@@ -317,11 +318,11 @@ class DgClassLoader extends \Stackable implements ClassLoaderInterface
         // check if the file is readable
         if (is_readable($cachePath)) {
             require $cachePath;
-            return true;
+            return;
         }
 
         // Still here? That sounds like bad news!
-        return false;
+        return;
     }
 
     /**
@@ -332,7 +333,7 @@ class DgClassLoader extends \Stackable implements ClassLoaderInterface
      *
      * @param string $className The name of the structure we will try to load
      *
-     * @return boolean
+     * @return null
      */
     public function loadClass($className)
     {
@@ -343,7 +344,7 @@ class DgClassLoader extends \Stackable implements ClassLoaderInterface
             foreach ($omittedNamespaces as $omitted) {
                 // If our class name begins with the omitted part e.g. it's namespace
                 if (strpos($className, str_replace('\\\\', '\\', $omitted)) === 0) {
-                    return false;
+                    return;
                 }
             }
         }
@@ -351,13 +352,13 @@ class DgClassLoader extends \Stackable implements ClassLoaderInterface
         // Do we have the file in our cache dir? If we are in development mode we have to ignore this.
         if ($this->environment !== 'development') {
             if ($this->loadClassProductionNoOmit($className) === true) {
-                return true;
+                return;
             }
         }
 
         // If we are loading something of our own library we can skip to composer
         if (strpos($className, 'AppserverIo\Doppelgaenger') === 0 || strpos($className, 'PHP') === 0) {
-            return false;
+            return;
         }
 
         // Get the file from the map
@@ -366,11 +367,11 @@ class DgClassLoader extends \Stackable implements ClassLoaderInterface
         // Did we get something? If so we have to load it
         if ($file instanceof Structure) {
             require $file->getPath();
-            return true;
+            return;
         }
 
         // Still here? That sounds like bad news!
-        return false;
+        return;
     }
 
     /**

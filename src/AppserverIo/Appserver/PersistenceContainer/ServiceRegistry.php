@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\PersistenceContainer\ServiceRegistry
+ * \AppserverIo\Appserver\PersistenceContainer\ServiceRegistry
  *
  * NOTICE OF LICENSE
  *
@@ -34,6 +34,11 @@ use AppserverIo\Psr\EnterpriseBeans\ServiceResourceLocatorInterface;
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
+ *
+ * @property \AppserverIo\Storage\StorageInterface                            $data           The data storage to use
+ * @property \AppserverIo\Psr\EnterpriseBeans\ServiceResourceLocatorInterface $serviceLocator The service locator
+ * @property \AppserverIo\Storage\StorageInterface                            $services       The storage for the services
+ * @property string                                                           $webappPath     The absolute path to this web application
  */
 abstract class ServiceRegistry extends GenericStackable implements ServiceContextInterface, ManagerInterface
 {

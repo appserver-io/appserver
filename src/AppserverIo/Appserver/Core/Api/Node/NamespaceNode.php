@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Api\Node\NamespaceNode
+ * \AppserverIo\Appserver\Core\Api\Node\NamespaceNode
  *
  * NOTICE OF LICENSE
  *

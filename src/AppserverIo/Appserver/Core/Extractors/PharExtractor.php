@@ -1,6 +1,6 @@
 <?php
 /**
- * AppserverIo\Appserver\Core\Extractors\PharExtractor
+ * \AppserverIo\Appserver\Core\Extractors\PharExtractor
  *
  * NOTICE OF LICENSE
  *

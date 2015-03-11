@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\DependencyInjectionContainer\DeploymentDescriptorParser
+ * \AppserverIo\Appserver\DependencyInjectionContainer\DeploymentDescriptorParser
  *
  * NOTICE OF LICENSE
  *
@@ -30,6 +30,8 @@ use AppserverIo\Psr\Application\ApplicationInterface;
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
+ *
+ * @property \AppserverIo\Psr\Application\ApplicationInterface $application The application instance which parsed beans and servlet belong to
  */
 class DeploymentDescriptorParser
 {
@@ -37,7 +39,7 @@ class DeploymentDescriptorParser
     /**
      * Inject the application instance.
      *
-     * @param \AppserverIo\Psr\Application\ApplicationInterface $application The application instance
+     * @param \AppserverIo\Psr\Application\ApplicationInterface|\AppserverIo\Psr\Naming\NamingDirectoryInterface $application The application instance
      *
      * @return void
      */

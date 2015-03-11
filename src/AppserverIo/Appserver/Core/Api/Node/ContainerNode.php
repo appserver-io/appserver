@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Api\Node\ContainerNode
+ * \AppserverIo\Appserver\Core\Api\Node\ContainerNode
  *
  * NOTICE OF LICENSE
  *
@@ -59,6 +59,7 @@ class ContainerNode extends AbstractNode
     protected $threadType;
 
     /**
+     * Container description
      *
      * @var \AppserverIo\Appserver\Core\Api\Node\DescriptionNode
      * @AS\Mapping(nodeName="description", nodeType="AppserverIo\Appserver\Core\Api\Node\DescriptionNode")

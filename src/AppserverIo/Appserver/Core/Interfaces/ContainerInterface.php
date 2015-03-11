@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Interfaces\ContainerInterface
+ * \AppserverIo\Appserver\Core\Interfaces\ContainerInterface
  *
  * NOTICE OF LICENSE
  *
@@ -20,6 +20,8 @@
 
 namespace AppserverIo\Appserver\Core\Interfaces;
 
+use AppserverIo\Psr\Application\ApplicationInterface;
+
 /**
  * Interface for container implementations.
  *
@@ -31,6 +33,23 @@ namespace AppserverIo\Appserver\Core\Interfaces;
  */
 interface ContainerInterface
 {
+
+    /**
+     * Append the deployed application to the deployment instance
+     * and registers it in the system configuration.
+     *
+     * @param \AppserverIo\Psr\Application\ApplicationInterface $application The application to append
+     *
+     * @return void
+     */
+    public function addApplication(ApplicationInterface $application);
+
+    /**
+     * The application base directory for this container
+     *
+     * @return string The application base directory for this container
+     */
+    public function getAppBase();
 
     /**
      * Returns the containers configuration node.
@@ -68,4 +87,13 @@ interface ContainerInterface
      * @return \AppserverIo\Psr\Application\ApplicationInterface The application instance
      */
     public function getApplication($name);
+
+    /**
+     * Will return a new instance of a given service class
+     *
+     * @param string $className The API service class name to return the instance for
+     *
+     * @return \AppserverIo\Appserver\Core\Api\ServiceInterface The service instance
+     */
+    public function newService($className);
 }

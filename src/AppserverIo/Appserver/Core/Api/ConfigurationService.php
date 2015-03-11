@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Api\ConfigurationTester
+ * \AppserverIo\Appserver\Core\Api\ConfigurationTester
  *
  * NOTICE OF LICENSE
  *

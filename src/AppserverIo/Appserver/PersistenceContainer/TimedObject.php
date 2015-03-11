@@ -1,6 +1,6 @@
 <?php
 /**
- * AppserverIo\Appserver\PersistenceContainer\TimedObject
+ * \AppserverIo\Appserver\PersistenceContainer\TimedObject
  *
  * NOTICE OF LICENSE
  *

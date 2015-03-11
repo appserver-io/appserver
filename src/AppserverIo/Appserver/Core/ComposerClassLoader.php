@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\ComposerClassLoader
+ * \AppserverIo\Appserver\Core\ComposerClassLoader
  *
  * NOTICE OF LICENSE
  *

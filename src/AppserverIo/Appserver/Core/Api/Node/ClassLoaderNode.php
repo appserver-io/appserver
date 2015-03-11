@@ -37,21 +37,21 @@ class ClassLoaderNode extends AbstractNode implements ClassLoaderNodeInterface
     /**
      * A params node trait.
      *
-     * @var \TraitInterface
+     * @var \AppserverIo\Appserver\Core\Api\Node\ParamsNodeTrait
      */
     use ParamsNodeTrait;
 
     /**
      * A directories node trait.
      *
-     * @var \TraitInterface
+     * @var \AppserverIo\Appserver\Core\Api\Node\DirectoriesNodeTrait
      */
     use DirectoriesNodeTrait;
 
     /**
      * A namespaces node trait.
      *
-     * @var \TraitInterface
+     * @var \AppserverIo\Appserver\Core\Api\Node\NamespacesNodeTrait
      */
     use NamespacesNodeTrait;
 

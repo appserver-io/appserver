@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\StandardSessionManagerFactory
+ * \AppserverIo\Appserver\ServletEngine\StandardSessionManagerFactory
  *
  * NOTICE OF LICENSE
  *
@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\ServletEngine;
 
+use AppserverIo\Appserver\Core\Interfaces\ManagerFactoryInterface;
 use AppserverIo\Storage\StackableStorage;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\Core\Api\Node\ManagerNodeInterface;
@@ -33,7 +34,7 @@ use AppserverIo\Appserver\Core\Api\Node\ManagerNodeInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class StandardSessionManagerFactory
+class StandardSessionManagerFactory implements ManagerFactoryInterface
 {
 
     /**

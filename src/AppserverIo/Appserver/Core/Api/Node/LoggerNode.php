@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Api\Node\LoggerNode
+ * \AppserverIo\Appserver\Core\Api\Node\LoggerNode
  *
  * NOTICE OF LICENSE
  *
@@ -33,9 +33,9 @@ class LoggerNode extends AbstractNode
 {
 
     /**
-     * A params node trait.
+     * The param node trait.
      *
-     * @var \TraitInterface
+     * @var \AppserverIo\Appserver\Core\Api\Node\ParamsNodeTrait
      */
     use ParamsNodeTrait;
 

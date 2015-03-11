@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Api\Node\ScannerNode
+ * \AppserverIo\Appserver\Core\Api\Node\ScannerNode
  *
  * NOTICE OF LICENSE
  *
@@ -35,14 +35,14 @@ class ScannerNode extends AbstractNode implements ScannerNodeInterface
     /**
      * A params node trait.
      *
-     * @var \TraitInterface
+     * @var \AppserverIo\Appserver\Core\Api\Node\ParamsNodeTrait
      */
     use ParamsNodeTrait;
 
     /**
      * A directories node trait.
      *
-     * @var \TraitInterface
+     * @var \AppserverIo\Appserver\Core\Api\Node\DirectoriesNodeTrait
      */
     use DirectoriesNodeTrait;
 

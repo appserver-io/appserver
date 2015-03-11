@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Provisioning\CreateDatabaseStep
+ * \AppserverIo\Appserver\Core\Provisioning\CreateDatabaseStep
  *
  * NOTICE OF LICENSE
  *

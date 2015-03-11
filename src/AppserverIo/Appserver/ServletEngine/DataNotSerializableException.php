@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\DataNotSerializableException
+ * \AppserverIo\Appserver\ServletEngine\DataNotSerializableException
  *
  * NOTICE OF LICENSE
  *

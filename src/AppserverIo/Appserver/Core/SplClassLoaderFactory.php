@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\SplClassLoaderFactory
+ * \AppserverIo\Appserver\Core\SplClassLoaderFactory
  *
  * NOTICE OF LICENSE
  *
@@ -20,12 +20,13 @@
 
 namespace AppserverIo\Appserver\Core;
 
+use AppserverIo\Appserver\Core\Interfaces\ClassLoaderFactoryInterface;
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\Core\Api\Node\ClassLoaderNodeInterface;
 
 /**
- * A factory for the Doppelgaenger class loader instances.
+ * A factory for the Spl class loader instances.
  *
  * @author    Bernhard Wick <bw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -33,7 +34,7 @@ use AppserverIo\Appserver\Core\Api\Node\ClassLoaderNodeInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class SplClassLoaderFactory
+class SplClassLoaderFactory implements ClassLoaderFactoryInterface
 {
 
     /**

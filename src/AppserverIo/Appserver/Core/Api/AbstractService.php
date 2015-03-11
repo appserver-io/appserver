@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Api\AbstractService
+ * \AppserverIo\Appserver\Core\Api\AbstractService
  *
  * NOTICE OF LICENSE
  *
@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\Core\Api;
 
+use AppserverIo\Appserver\Core\Interfaces\SystemConfigurationInterface;
 use AppserverIo\Configuration\Interfaces\NodeInterface;
 use AppserverIo\Appserver\Core\InitialContext;
 use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
@@ -90,7 +91,7 @@ abstract class AbstractService implements ServiceInterface
     /**
      * (non-PHPdoc)
      *
-     * @return \AppserverIo\Configuration\Interfaces\NodeInterface The system configuration
+     * @return \AppserverIo\Appserver\Core\Interfaces\SystemConfigurationInterface The system configuration
      * @see \AppserverIo\Appserver\Core\Api\ServiceInterface::getSystemConfiguration()
      */
     public function getSystemConfiguration()
@@ -101,12 +102,12 @@ abstract class AbstractService implements ServiceInterface
     /**
      * (non-PHPdoc)
      *
-     * @param \AppserverIo\Configuration\Interfaces\NodeInterface $systemConfiguration The system configuration
+     * @param \AppserverIo\Appserver\Core\Interfaces\SystemConfigurationInterface $systemConfiguration The system configuration
      *
      * @return \AppserverIo\Appserver\Core\Api\ServiceInterface
      * @see \AppserverIo\Appserver\Core\Api\ServiceInterface::setSystemConfiguration()
      */
-    public function setSystemConfiguration(NodeInterface $systemConfiguration)
+    public function setSystemConfiguration(SystemConfigurationInterface $systemConfiguration)
     {
         $this->getInitialContext()->setSystemConfiguration($systemConfiguration);
     }
@@ -324,7 +325,6 @@ abstract class AbstractService implements ServiceInterface
      */
     public function persist(NodeInterface $node)
     {
-        // TODO implement this
         throw new NotImplementedException();
     }
 

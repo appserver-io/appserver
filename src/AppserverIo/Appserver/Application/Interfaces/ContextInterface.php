@@ -61,6 +61,15 @@ interface ContextInterface extends Context
     public function getClassLoader();
 
     /**
+     * Gets the logger by given name
+     *
+     * @param string $loggerName the loggers name
+     *
+     * @return \Psr\Log\LoggerInterface|null The logger instance
+     */
+    public function getLogger($loggerName);
+
+    /**
      * Returns the system logger instance.
      *
      * @return \Psr\Log\LoggerInterface

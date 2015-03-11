@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Utilities\DirectoryKeys
+ * \AppserverIo\Appserver\Core\Utilities\DirectoryKeys
  *
  * NOTICE OF LICENSE
  *

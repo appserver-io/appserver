@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\AbstractThread
+ * \AppserverIo\Appserver\Core\AbstractThread
  *
  * NOTICE OF LICENSE
  *

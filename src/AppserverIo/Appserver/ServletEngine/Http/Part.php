@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\Http
+ * \AppserverIo\Appserver\ServletEngine\Http
  *
  * NOTICE OF LICENSE
  *
@@ -103,8 +103,8 @@ class Part implements PartInterface
     /**
      * Initiates a http form part object
      *
-     * @param string $streamWrapper The stream wrapper to use per default temp stream wrapper
-     * @param long   $maxMemory     Maximum memory in bytes per default to 5 MB
+     * @param string  $streamWrapper The stream wrapper to use per default temp stream wrapper
+     * @param integer $maxMemory     Maximum memory in bytes per default to 5 MB
      *
      * @throws \Exception
      * @return void
@@ -112,7 +112,7 @@ class Part implements PartInterface
     public function init($streamWrapper = self::STREAM_WRAPPER_TEMP, $maxMemory = 5242880)
     {
 
-        // weather we've alread set a filename open the input stream
+        // weather we've already set a filename open the input stream
         if ($tmpFilename = $this->getTmpFilename()) {
             if (!$this->inputStream = fopen($tmpFilename, 'r+')) {
                 throw new \Exception(sprintf('Can\'t open input temporary filename %s', $tmpFilename));

@@ -18,6 +18,7 @@
 
 namespace AppserverIo\Appserver\AspectContainer;
 
+use AppserverIo\Appserver\Core\Interfaces\ManagerFactoryInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\Core\Api\Node\ManagerNodeInterface;
 
@@ -31,13 +32,13 @@ use AppserverIo\Appserver\Core\Api\Node\ManagerNodeInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io/
  */
-class AspectManagerFactory
+class AspectManagerFactory implements ManagerFactoryInterface
 {
     /**
      * The main method that creates new instances in a separate context.
      *
-     * @param \AppserverIo\Psr\Application\ApplicationInterface         $application          The application instance to register the class loader with
-     * @param \AppserverIo\Appserver\Core\Api\Node\ManagerNodeInterface $managerConfiguration The manager configuration
+     * @param \AppserverIo\Psr\Application\ApplicationInterface|\AppserverIo\Psr\Naming\NamingDirectoryInterface $application          The application instance to register the class loader with
+     * @param \AppserverIo\Appserver\Core\Api\Node\ManagerNodeInterface                                          $managerConfiguration The manager configuration
      *
      * @return void
      */

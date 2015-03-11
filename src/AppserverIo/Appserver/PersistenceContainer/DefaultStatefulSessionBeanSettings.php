@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\PersistenceContainer\DefaultStatefulSessionBeanSettings
+ * \AppserverIo\Appserver\PersistenceContainer\DefaultStatefulSessionBeanSettings
  *
  * NOTICE OF LICENSE
  *
@@ -30,6 +30,9 @@ use AppserverIo\Storage\GenericStackable;
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
+ *
+ * @property integer $lifetime                     The stateful session bean lifetime
+ * @property float   $garbageCollectionProbability The garbage collector probability
  */
 class DefaultStatefulSessionBeanSettings extends GenericStackable implements StatefulSessionBeanSettingsInterface
 {

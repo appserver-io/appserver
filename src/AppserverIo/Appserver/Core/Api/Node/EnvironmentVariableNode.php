@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Api\Node\EnvironmentVariableNode
+ * \AppserverIo\Appserver\Core\Api\Node\EnvironmentVariableNode
  *
  * NOTICE OF LICENSE
  *

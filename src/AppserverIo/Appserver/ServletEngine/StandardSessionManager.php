@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\StandardSessionManager
+ * \AppserverIo\Appserver\ServletEngine\StandardSessionManager
  *
  * NOTICE OF LICENSE
  *
@@ -17,6 +17,7 @@
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
+
 namespace AppserverIo\Appserver\ServletEngine;
 
 use AppserverIo\Storage\GenericStackable;
@@ -32,6 +33,13 @@ use AppserverIo\Psr\Application\ApplicationInterface;
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
+ *
+ * @property \AppserverIo\Appserver\ServletEngine\GarbageCollectorInterface   $garbageCollector   The garbage collector
+ * @property \AppserverIo\Appserver\ServletEngine\PersistenceManagerInterface $persistenceManager The persistence manager
+ * @property \AppserverIo\Psr\Servlet\ServletContextInterface                 $servletManager     The servlet manager instance
+ * @property \AppserverIo\Appserver\ServletEngine\SessionFactory              $sessionFactory     The session factory
+ * @property \AppserverIo\Storage\StorageInterface                            $sessions           The sessions
+ * @property \AppserverIo\Appserver\ServletEngine\SessionSettingsInterface    $sessionSettings    Settings for the session handling
  */
 class StandardSessionManager extends GenericStackable implements SessionManagerInterface
 {
@@ -108,6 +116,7 @@ class StandardSessionManager extends GenericStackable implements SessionManagerI
     {
 
         // load the servlet manager with the session settings configured in web.xml
+        /** @var \AppserverIo\Psr\Servlet\ServletContextInterface|\AppserverIo\Psr\Application\ManagerInterface $servletManager */
         $servletManager = $application->search('ServletContextInterface');
 
         // load the settings, set the default session save path
@@ -312,7 +321,7 @@ class StandardSessionManager extends GenericStackable implements SessionManagerI
      */
     public function getIdentifier()
     {
-        return SessionManager::IDENTIFIER;
+        return SessionManagerInterface::IDENTIFIER;
     }
 
     /**

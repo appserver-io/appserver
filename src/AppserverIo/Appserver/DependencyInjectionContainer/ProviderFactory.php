@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\DependencyInjectionContainer\ProviderFactory
+ * \AppserverIo\Appserver\DependencyInjectionContainer\ProviderFactory
  *
  * NOTICE OF LICENSE
  *
@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\DependencyInjectionContainer;
 
+use AppserverIo\Appserver\Core\Interfaces\ManagerFactoryInterface;
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\Core\Api\Node\ManagerNodeInterface;
@@ -36,7 +37,7 @@ use AppserverIo\Psr\Naming\InitialContext as NamingContext;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class ProviderFactory
+class ProviderFactory implements ManagerFactoryInterface
 {
 
     /**

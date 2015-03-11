@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\InvalidRequestResponseException
+ * \AppserverIo\Appserver\ServletEngine\InvalidRequestResponseException
  *
  * NOTICE OF LICENSE
  *

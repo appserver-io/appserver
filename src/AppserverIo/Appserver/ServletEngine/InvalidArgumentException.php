@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\InvalidArgumentException
+ * \AppserverIo\Appserver\ServletEngine\InvalidArgumentException
  *
  * NOTICE OF LICENSE
  *

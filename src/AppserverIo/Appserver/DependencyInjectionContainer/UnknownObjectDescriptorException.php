@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\DependencyInjectionContainer\UnknownObjectDescriptorException
+ * \AppserverIo\Appserver\DependencyInjectionContainer\UnknownObjectDescriptorException
  *
  * NOTICE OF LICENSE
  *

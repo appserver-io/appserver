@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Api\Node\ManagerNodeInterface
+ * \AppserverIo\Appserver\Core\Api\Node\ManagerNodeInterface
  *
  * NOTICE OF LICENSE
  *
@@ -35,6 +35,38 @@ interface ManagerNodeInterface extends ManagerConfigurationInterface
 {
 
     /**
+     * Array with the directories.
+     *
+     * @param array $directories The directories
+     *
+     * @return void
+     */
+    public function setDirectories(array $directories);
+
+    /**
+     * Array with the directories.
+     *
+     * @return \AppserverIo\Appserver\Core\Api\Node\DirectoryNode[]
+     */
+    public function getDirectories();
+
+    /**
+     * Array with the descriptors.
+     *
+     * @param array $descriptors The descriptors
+     *
+     * @return void
+     */
+    public function setDescriptors(array $descriptors);
+
+    /**
+     * Array with the descriptors.
+     *
+     * @return array
+     */
+    public function getDescriptors();
+
+    /**
      * Returns the class name.
      *
      * @return string The class name
@@ -47,6 +79,43 @@ interface ManagerNodeInterface extends ManagerConfigurationInterface
      * @return string The factory class name
      */
     public function getFactory();
+
+    /**
+     * Array with the handler params to use.
+     *
+     * @return array
+     */
+    public function getParams();
+
+    /**
+     * Array with the handler params to use.
+     *
+     * @param array $params The handler params
+     *
+     * @return void
+     */
+    public function setParams(array $params);
+
+    /**
+     * Sets the param with the passed name, type and value.
+     *
+     * @param string $name  The param name
+     * @param string $type  The param type
+     * @param mixed  $value The param value
+     *
+     * @return void
+     */
+    public function setParam($name, $type, $value);
+
+    /**
+     * Returns the param with the passed name casted to
+     * the specified type.
+     *
+     * @param string $name The name of the param to be returned
+     *
+     * @return mixed The requested param casted to the specified type
+     */
+    public function getParam($name);
 
     /**
      * Returns the params casted to the defined type

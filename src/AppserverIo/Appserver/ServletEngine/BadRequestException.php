@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\BadRequestException
+ * \AppserverIo\Appserver\ServletEngine\BadRequestException
  *
  * NOTICE OF LICENSE
  *

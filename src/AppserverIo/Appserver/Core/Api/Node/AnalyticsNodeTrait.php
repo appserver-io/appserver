@@ -62,6 +62,7 @@ trait AnalyticsNodeTrait
     {
 
         // iterate over all analytics
+        /** @var \AppserverIo\Appserver\Core\Api\Node\AnalyticNode $analyticNode */
         foreach ($this->getAnalytics() as $analyticNode) {
             // if we found one with a matching URI we will return it
             if ($analyticNode->getUri() === $uri) {
@@ -85,6 +86,7 @@ trait AnalyticsNodeTrait
         $analytics = array();
 
         // iterate over the analytics nodes and sort them into an array
+        /** @var \AppserverIo\Appserver\Core\Api\Node\AnalyticNode $analyticNode */
         foreach ($this->getAnalytics() as $analyticNode) {
             // restructure to an array
             $analytics[] = array(

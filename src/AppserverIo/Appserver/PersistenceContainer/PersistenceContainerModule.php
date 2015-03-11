@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\PersistenceContainer\PersistenceContainerModule
+ * \AppserverIo\Appserver\PersistenceContainer\PersistenceContainerModule
  *
  * NOTICE OF LICENSE
  *

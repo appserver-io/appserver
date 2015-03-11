@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\DgClassLoaderFactory
+ * \AppserverIo\Appserver\Core\DgClassLoaderFactory
  *
  * NOTICE OF LICENSE
  *
@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\Core;
 
+use AppserverIo\Appserver\Core\Interfaces\ClassLoaderFactoryInterface;
 use AppserverIo\Doppelgaenger\AspectRegister;
 use AppserverIo\Doppelgaenger\Config;
 use AppserverIo\Psr\Application\ApplicationInterface;
@@ -34,7 +35,7 @@ use AppserverIo\Appserver\Core\Api\Node\ClassLoaderNodeInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class DgClassLoaderFactory
+class DgClassLoaderFactory implements ClassLoaderFactoryInterface
 {
 
     /**

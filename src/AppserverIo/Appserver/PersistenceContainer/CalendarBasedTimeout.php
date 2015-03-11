@@ -1,6 +1,6 @@
 <?php
 /**
- * AppserverIo\Appserver\PersistenceContainer\CalendarBasedTimeout
+ * \AppserverIo\Appserver\PersistenceContainer\CalendarBasedTimeout
  *
  * NOTICE OF LICENSE
  *

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\DependencyInjectionContainer\DependencyInjectionException
+ * \AppserverIo\Appserver\DependencyInjectionContainer\DependencyInjectionException
  *
  * NOTICE OF LICENSE
  *

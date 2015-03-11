@@ -39,21 +39,21 @@ class ContextNode extends AbstractNode
     /**
      * A class loader trait.
      *
-     * @var \TraitInterface
+     * @var \AppserverIo\Appserver\Core\Api\Node\ClassLoadersNodeTrait
      */
     use ClassLoadersNodeTrait;
 
     /**
      * A managers node trait.
      *
-     * @var \TraitInterface
+     * @var \AppserverIo\Appserver\Core\Api\Node\ManagersNodeTrait
      */
     use ManagersNodeTrait;
 
     /**
      * A params node trait.
      *
-     * @var \TraitInterface
+     * @var \AppserverIo\Appserver\Core\Api\Node\ParamsNodeTrait
      */
     use ParamsNodeTrait;
 
@@ -122,7 +122,7 @@ class ContextNode extends AbstractNode
      */
     public function setName($name)
     {
-        return $this->name = $name;
+        $this->name = $name;
     }
 
     /**
@@ -144,7 +144,7 @@ class ContextNode extends AbstractNode
      */
     public function setType($type)
     {
-        return $this->type = $type;
+        $this->type = $type;
     }
 
     /**
@@ -166,7 +166,7 @@ class ContextNode extends AbstractNode
      */
     public function setFactory($factory)
     {
-        return $this->factory = $factory;
+        $this->factory = $factory;
     }
 
     /**
@@ -207,6 +207,7 @@ class ContextNode extends AbstractNode
         // merge them with the passed ones
         foreach ($contextNode->getParams() as $paramToMerge) {
             $isMerged = false;
+            /** @var \AppserverIo\Appserver\Core\Api\Node\ParamNode $param */
             foreach ($localParams as $key => $param) {
                 if ($param->getName() == $paramToMerge->getName()) {
                     $localParams[$key] = $paramToMerge;
@@ -225,8 +226,10 @@ class ContextNode extends AbstractNode
         $localManagers = $this->getManagers();
 
         // merge them with the passed ones
+        /**  @var \AppserverIo\Appserver\Core\Api\Node\ManagerNode $managerToMerge */
         foreach ($contextNode->getManagers() as $managerToMerge) {
             $isMerged = false;
+            /** @var \AppserverIo\Appserver\Core\Api\Node\ManagerNode $manager */
             foreach ($localManagers as $key => $manager) {
                 if ($manager->getName() === $managerToMerge->getName()) {
                     $localManagers[$key] = $managerToMerge;
@@ -245,8 +248,10 @@ class ContextNode extends AbstractNode
         $localClassLoaders = $this->getClassLoaders();
 
         // merge them with the passed ones
+        /** @var \AppserverIo\Appserver\Core\Api\Node\ClassLoaderNode $classLoaderToMerge */
         foreach ($contextNode->getClassLoaders() as $classLoaderToMerge) {
             $isMerged = false;
+            /** @var \AppserverIo\Appserver\Core\Api\Node\ClassLoaderNode $classLoader */
             foreach ($localClassLoaders as $key => $classLoader) {
                 if ($classLoader->getName() === $classLoaderToMerge->getName()) {
                     $localClassLoaders[$key] = $classLoaderToMerge;

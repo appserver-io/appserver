@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Api\Node\ManagerNode
+ * \AppserverIo\Appserver\Core\Api\Node\ManagerNode
  *
  * NOTICE OF LICENSE
  *
@@ -32,23 +32,23 @@ namespace AppserverIo\Appserver\Core\Api\Node;
 class ManagerNode extends AbstractNode implements ManagerNodeInterface
 {
     /**
-     * The params trait.
+     * The param node trait.
      *
-     * @var \Trait
+     * @var \AppserverIo\Appserver\Core\Api\Node\ParamsNodeTrait
      */
     use ParamsNodeTrait;
 
     /**
      * A directories node trait.
      *
-     * @var \TraitInterface
+     * @var \AppserverIo\Appserver\Core\Api\Node\DirectoriesNodeTrait
      */
     use DirectoriesNodeTrait;
 
     /**
      * A descriptors node trait.
      *
-     * @var \TraitInterface
+     * @var \AppserverIo\Appserver\Core\Api\Node\DescriptorsNodeTrait
      */
     use DescriptorsNodeTrait;
 

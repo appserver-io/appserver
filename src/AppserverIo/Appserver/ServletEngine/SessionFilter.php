@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\FilterIterator
+ * \AppserverIo\Appserver\ServletEngine\FilterIterator
  *
  * NOTICE OF LICENSE
  *
@@ -58,10 +58,10 @@ class SessionFilter extends \FilterIterator
     }
 
     /**
-     * This method compares the session files age against the confiugured
+     * This method compares the session files age against the configured
      * maximum age of session files we want to load.
      *
-     * @return boolean TRUE if we want to load the session, else FALS
+     * @return boolean TRUE if we want to load the session, else FALSE
      */
     public function accept()
     {

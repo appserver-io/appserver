@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\ServletManager
+ * \AppserverIo\Appserver\ServletEngine\ServletManager
  *
  * NOTICE OF LICENSE
  *
@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\ServletEngine;
 
+use AppserverIo\Appserver\Core\Interfaces\ManagerFactoryInterface;
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Storage\StackableStorage;
 use AppserverIo\Psr\Application\ApplicationInterface;
@@ -36,7 +37,7 @@ use AppserverIo\Psr\Naming\InitialContext as NamingContext;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class ServletManagerFactory
+class ServletManagerFactory implements ManagerFactoryInterface
 {
 
     /**

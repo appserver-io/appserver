@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\AbstractContainerThread
+ * \AppserverIo\Appserver\Core\AbstractContainerThread
  *
  * NOTICE OF LICENSE
  *
@@ -40,6 +40,9 @@ use AppserverIo\Appserver\Core\Api\Node\ParamNode;
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
+ *
+ * @property \AppserverIo\Psr\Naming\NamingDirectoryInterface $namingDirectory Naming directory used for binding various information to
+ * @property \AppserverIo\Appserver\Core\Api\AppService       $service         The app service used to bind applications to the configuration
  */
 abstract class AbstractContainerThread extends AbstractContextThread implements ContainerInterface
 {
@@ -170,13 +173,14 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
         $servers = array();
 
         // start servers by given configurations
+        /** @var \AppserverIo\Server\Interfaces\ServerConfigurationInterface $serveConfig */
         foreach ($serverConfigurations as $serverConfig) {
             // get type definitions
             $serverType = $serverConfig->getType();
             $serverContextType = $serverConfig->getServerContextType();
 
             // create a new instance server context
-            /* @var \AppserverIo\Server\Interfaces\ServerContextInterface $serverContext */
+            /** @var \AppserverIo\Server\Interfaces\ServerContextInterface $serverContext */
             $serverContext = new $serverContextType();
 
             // inject container to be available in specific mods etc. and initialize the module
@@ -272,7 +276,7 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
     }
 
     /**
-     * Returns the service instance we need to handle systen configuration tasks.
+     * Returns the service instance we need to handle system configuration tasks.
      *
      * @return \AppserverIo\Appserver\Core\Api\AppService The service instance we need
      */
@@ -381,7 +385,7 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
 
         // check if the application has already been attached to the container
         if ($appNode == null) {
-            $appNode = $this->getService()->newFromApplication($application);
+            $this->getService()->newFromApplication($application);
         }
 
         // connect the application to the container

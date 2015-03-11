@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\Authentication\AuthenticationValve
+ * \AppserverIo\Appserver\ServletEngine\Authentication\AuthenticationValve
  *
  * NOTICE OF LICENSE
  *
@@ -48,6 +48,7 @@ class AuthenticationValve implements ValveInterface
     {
 
         // load the authentication manager
+        /** @var \AppserverIo\Appserver\ServletEngine\Authentication\AuthenticationManagerInterface $authenticationManager */
         $authenticationManager = $servletRequest->getContext()->search('AuthenticationManagerInterface');
 
         // authenticate the request

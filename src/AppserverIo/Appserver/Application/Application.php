@@ -55,6 +55,7 @@ use AppserverIo\Appserver\Application\Interfaces\ContextInterface;
  * @property string                                                         $name            Name of the application
  * @property \AppserverIo\Psr\Naming\NamingDirectoryInterface               $namingDirectory The naming directory instance
  * @property \AppserverIo\Psr\Naming\NamingDirectoryInterface               $envAppDir       A reference to the application specific environment naming directory instance
+ * @property string                                                         $scheme          The scheme specific to this application
  */
 class Application extends \Thread implements ApplicationInterface, NamingDirectoryInterface, DirectoryAwareInterface, FilesystemAwareInterface
 {
@@ -373,7 +374,7 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
     }
 
     /**
-     * Injects the username the application should be executed with.
+     * Returns the username the application should be executed with.
      *
      * @return string The username
      */
@@ -383,7 +384,7 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
     }
 
     /**
-     * Injects the groupname the application should be executed with.
+     * Returns the groupname the application should be executed with.
      *
      * @return string The groupname
      */
@@ -574,7 +575,7 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
         }, $this);
 
         // log a message that we has successfully been connected now
-        $this->getInitialContext()->getSystemLogger()->debug(sprintf('%s has successufully been connected', $this->getName()));
+        $this->getInitialContext()->getSystemLogger()->debug(sprintf('%s has successfully been connected', $this->getName()));
     }
 
     /**
@@ -587,6 +588,7 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
     {
 
         // initialize the registered managers
+        /** @var \AppserverIo\Appserver\Core\Interfaces\ClassLoaderInterface $classLoader */
         foreach ($this->getClassLoaders() as $classLoader) {
             // log the class loader we want to initialize
             $this->getInitialContext()->getSystemLogger()->debug(
@@ -630,7 +632,7 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
 
     /**
      * This is the threads main() method that initializes the application with the autoloader and
-     * instanciates all the necessary manager instances.
+     * instantiates all the necessary manager instances.
      *
      * @return void
      * @codeCoverageIgnore
