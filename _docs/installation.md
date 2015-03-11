@@ -122,4 +122,20 @@ But what about environments without prepared properties?
 
 Best would be to use the `os.family` and `os.distribution` properties to load the build files most fitting to your environment and overwrite different properties locally.
 The same can be done for our ANT targets within the `build.xml`.
-The doctrine *First come first serve* applies, so targets present within the initial build file are able to take the place of more specific targets in included files.-
+The doctrine *First come first serve* applies, so targets present within the initial build file are able to take the place of more specific targets in included files.
+
+### The distribution source
+
+The built runtime is still missing the distribution sources to create a running instance of the appserver.
+To get them download or clone from [our github repository](https://github.com/appserver-io/appserver) and use ANT (`sudo ant deploy`) or copy the sources into the freshly built runtime.
+
+Finally we need to get all dependencies.
+To do so invoke `sudo composer install` within your built runtime and you are good to go!
+
+### Services and scripts
+
+Any self-built environment will lack proper services and init-scripts as we do offer those for supported operating systems only.
+Any script we provide can be found within [our distribution repositories](https://github.com/appserver-io-dist). Maybe something can be re-used.
+
+
+Otherwise start the appserver using the built `PHP` binaries and the `server.php` script like `/opt/appserver/bin/php /opt/appserver/server.php`.
