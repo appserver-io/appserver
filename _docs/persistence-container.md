@@ -17,7 +17,7 @@ subNav:
 permalink: /get-started/documentation/persistence-container.html
 ---
 
-In addition to the `Servlet-Engine`, the [Persistence-Container](<{{ "/get-started/documentation/persistence-container.html" | prepend: site.baseurl }}>) is one of the main services appserver.io provides. The name `Persistence-Container`, can lead to some missunderstanding in our case, as many people think that it mostly refers to database persistence. In Java there are EJB-Containers that provide a broad set of functionalities like [Bean- or Container-Managed-Persistence](http://en.wikipedia.org/wiki/Enterprise_JavaBeans), whereas appserver.io actually only provides a small subset of the functionality as plattforms like [Wildfly](http://en.wikipedia.org/wiki/WildFly) does. Persisting data to a database is only one functionality the `Persistence-Container` can provide, but it is by far not the most important one.
+In addition to the `Servlet-Engine`, the [Persistence-Container](<{{ "/get-started/documentation/persistence-container.html" | prepend: site.baseurl }}>) is one of the main services appserver.io provides. The name `Persistence-Container` might lead to some misunderstanding in our case, as many people think that it mostly refers to database persistence. In Java there are EJB-Containers that provide a broad set of functionalities like [Bean- or Container-Managed-Persistence](http://en.wikipedia.org/wiki/Enterprise_JavaBeans), whereas appserver.io only provides a small subset of the functionality as platforms like [Wildfly](http://en.wikipedia.org/wiki/WildFly) does. Persisting data to a database is only one functionality the `Persistence-Container` can provide, but it is by far not the most important one.
 
 ## New options using a Persistence-Container
 ***
