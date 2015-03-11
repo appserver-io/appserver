@@ -2,12 +2,14 @@
 
 ## Bugfixes 
 
+* Fixed [#110](https://github.com/appserver-io/appserver/issues/110) - Digest auth does not work on windows build
 * Fixed [#605](https://github.com/appserver-io/appserver/issues/605) - Problems saving structure map on Windows
 * Fixed [#654](https://github.com/appserver-io/appserver/issues/654) - Existing files containing spaces are ignored 
 * Fixed [#635](https://github.com/appserver-io/appserver/issues/635) - Extracting PHAR archives containing empty files results in an exception
 
 ## Features
 
+* Closed [#179](https://github.com/appserver-io/appserver/issues/179) - Standardize Windows builds
 * Closed [#283](https://github.com/appserver-io/appserver/issues/283) - MSI based Windows installer
 * Closed [#620](https://github.com/appserver-io/appserver/issues/620) - Extend in-code comments in regards to missing properties
 * Closed [#645](https://github.com/appserver-io/appserver/issues/645) - Remove obsolete authentication adapters from ServletEngine
