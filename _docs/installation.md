@@ -35,7 +35,7 @@ also support several ways to get an appserver.io package. You might do any of th
 
 The package will install with these basic default characteristics:
 
-* Install dir: `/opt/appserver`
+* Install directory: `/opt/appserver`
 * Autostart after installation, no autostart on reboot
 * Reachable under pre-configured ports as described [here](#basic-usage)
 
