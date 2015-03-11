@@ -2,7 +2,7 @@
 
 ## Bugfixes 
 
-* Fixed [#605](https://github.com/appserver-io/appserver/issues/605) - problems saving structure map on Windows
+* Fixed [#605](https://github.com/appserver-io/appserver/issues/605) - Problems saving structure map on Windows
 * Fixed [#654](https://github.com/appserver-io/appserver/issues/654) - Existing files containing spaces are ignored 
 * Fixed [#635](https://github.com/appserver-io/appserver/issues/635) - Extracting PHAR archives containing empty files results in an exception
 
