@@ -32,7 +32,7 @@ also support several ways to get an appserver.io package. You might do any of th
 
 The package will install with these basic default characteristics:
 
-* Install dir: `/opt/appserver` (`C:\Program Files\appserver` on Windows)
+* Install directory: `/opt/appserver` (`C:\Program Files\appserver` on Windows)
 * Autostart after installation, no autostart on reboot
 * Reachable under pre-configured ports as described [here]({{"/get-started/documentation/configuration.html#configuration-defaults" | prepend: site.baseurl }})
 
