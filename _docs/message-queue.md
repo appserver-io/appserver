@@ -3,7 +3,7 @@ layout: docs
 title: Message Queue
 meta_title: appserver.io message queue
 meta_description: Using a Message-Queue gives you the power to use threads in PHP without taking care of the pitfalls!
-position: 90
+position: 100
 group: Docs
 subNav:
   - title: Got mail
