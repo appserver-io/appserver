@@ -22,13 +22,13 @@ permalink: /get-started/documentation/installation.html
 ---
 
 Besides supporting several operating systems and their specific ways of installing software, we
-also support several ways to get an appserver.io package. You might do any of the following:
+also support ways to get an appserver.io package. You might do any of the following:
 
-* Download one of our [**releases**](<https://github.com/appserver-io/appserver/releases>) right from this repository
-  which provide tested install packages
+* Download one of our [**releases**](<https://github.com/appserver-io/appserver/releases>) from this repository
+  that provide tested install packages
 * Get any of our [**nightlies**](<http://builds.appserver.io/>) from our project page to get bleeding edge install
-  packages that still might have some bugs
-* Build your own package using [ANT](<http://ant.apache.org/>)! To do so clone the
+  packages (that still might have some bugs)
+* Build your own package using [ANT](<http://ant.apache.org/>). To do so clone the
   [runtime](<https://github.com/appserver-io-php/runtime>) first. Then update at least the `os.family` and
   `os.distribution` build properties according to your environment and build the appserver with the ANT `build`
   and `create-package` target
@@ -39,22 +39,21 @@ The package will install with these basic default characteristics:
 * Autostart after installation, no autostart on reboot
 * Reachable under pre-configured ports as described [here](#basic-usage)
 
-For OS specific steps and characteristics see below for tested environments.
+For OS specific steps and characteristics see the section below for tested environments.
 
 ## Mac OS X
 
-> Runs and tested on Mac OS X 10.8.x and higher!
+> Runs and tested on Mac OS X 10.8.x and higher.
 
 For Mac OS X > 10.8.x we provide a `.pkg` file for [download](https://github.com/appserver-io/appserver/releases/download/1.0.0-rc2/appserver-dist-1.0.0-rc2.33.mac.x86_64.pkg) that contains the runtime and the distribution. Double-clicking on the `.pkg` starts and guides you through the installation process.
 
-> We **STRONGLY** recommend, that you have a look at our [upgrade guide](https://github.com/appserver-io/appserver/blob/master/UPGRADE-1.0.1.md), before upgrading your installation from 1.0.0 to 1.0.1!
+> We **STRONGLY** recommend to have a look at our [upgrade guide](https://github.com/appserver-io/appserver/blob/master/UPGRADE-1.0.1.md), before upgrading your installation from 1.0.0 to 1.0.1.
 
 ## Windows
 
-> Runs and tested on Windows 7 (32-bit) and higher!
+> Runs and tested on Windows 7 (32-bit) and higher.
 
-As we deliver the Windows appserver as a .jar file you can [download](https://github.com/appserver-io/appserver/releases/download/1.0.0-rc2/appserver-dist-1.0.0-rc2.45.win.x86.jar), a installed Java Runtime Environment (or JDK
-that is) is a vital requirement for using it. If the JRE/JDK is not installed you have to do so
+As we deliver the Windows appserver as a .jar file, you can [download](https://github.com/appserver-io/appserver/releases/download/1.0.0-rc2/appserver-dist-1.0.0-rc2.45.win.x86.jar) an installed Java Runtime Environment (or JDK that is) is a vital requirement for using it. If the JRE/JDK is not installed you have to do so
 first. You might get it from [Oracle's download page](<http://www.oracle.com/technetwork/java/javase/downloads/jre7-downloads-1880261.html>).
 If this requirement is met you can start the installation by simply double-clicking the .jar archive.
 
