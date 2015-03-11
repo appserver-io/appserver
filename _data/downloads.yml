@@ -30,7 +30,3 @@
   dist-suffix: -57.el6.x86_64.rpm
   runtime-suffix: -48.el6.x86_64.rpm
   separator: "-"
-
-- os: Raspbian
-  id: raspbian
-  icon: fa-linux
