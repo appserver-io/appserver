@@ -229,12 +229,8 @@ abstract class AbstractScanner extends AbstractContextThread
                 exec($this->getRestartCommand($distribution . $os));
                 break;
 
-            // Restart with the Mac command
+            // Restart with the Mac or Windows command
             case DeploymentScanner::DARWIN:
-                exec($this->getRestartCommand($os));
-                break;
-
-            // Restart with the Windows command
             case DeploymentScanner::WINDOWS_NT:
                 exec($this->getRestartCommand($os));
                 break;
