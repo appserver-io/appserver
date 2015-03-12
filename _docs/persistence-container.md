@@ -6,26 +6,20 @@ meta_description: The Persistence-Container is one of the main services appserve
 position: 80
 group: Docs
 subNav:
-  - title: Singleton SessionBean
-    href: singleton-sessionbean
-  - title: Stateless SessionBean
-    href: stateless-sessionbean
-  - title: Stateful SessionBean
-    href: stateful-sessionbean
-  - title: Example
-    href: example
+  - title: Persistence-Container Options
+    href: persistence-container-options
+  - title: Server-Side Component Types
+    href: server-side-component-types
 permalink: /get-started/documentation/persistence-container.html
 ---
 
-In addition to the `Servlet-Engine`, the [Persistence-Container](<{{ "/get-started/documentation/persistence-container.html" | prepend: site.baseurl }}>) is one of the main services appserver.io provides. The name `Persistence-Container` might lead to some misunderstanding in our case, as many people think that it mostly refers to database persistence. In Java there are EJB-Containers that provide a broad set of functionalities like [Bean- or Container-Managed-Persistence](http://en.wikipedia.org/wiki/Enterprise_JavaBeans), whereas appserver.io only provides a small subset of the functionality as platforms like [Wildfly](http://en.wikipedia.org/wiki/WildFly) does. In the following, the possibilities the `Persistence-Container` and how it can be used to write enterprise-ready applications, are described in detail.
+In addition to the `Servlet-Engine`, the Persistence-Container is one of the main services appserver.io provides. The name `Persistence-Container` might lead to some misunderstanding in our case, as many people think that it mostly refers to database persistence. In Java there are EJB-Containers that provide a broad set of functionalities like [Bean- or Container-Managed-Persistence](http://en.wikipedia.org/wiki/Enterprise_JavaBeans), whereas appserver.io only provides a small subset of the functionality as platforms like [Wildfly](http://en.wikipedia.org/wiki/WildFly) does. In the following, the possibilities the `Persistence-Container` and how it can be used to write enterprise-ready applications, are described in detail.
 
-## New options using a Persistence-Container
-***
+## Persistence-Container Options
 
 Although providing persisting data to a database is one functionality of the `Persistence-Container`, it is by far not the most important one. The following reasons support the use of `Persistence-Container`. Since PHP is used as a scripting language until now, it lacks the possibility of having objects, we call them components, persistent in memory. The `Persistence-Container` enables you to do exactly this. This option, besides performance, gives you many possibilities you would not benefit from if you were working with the well known LAMP stack. 
 
 ## Server-Side Component Types
-***
 
 You may wonder how it is possible to have a component persistent in memory using PHP, a scripting language. Usually after every request the instance will be destroyed? The simple answer is: As appserver.io is provides containers that run as daemons, you can specify components, that will be loaded when the application server starts and will be in memory until the server shuts down. To make it simple, furthermore we call that classes [Beans](http://en.wikipedia.org/wiki/Enterprise_JavaBeans), as they do it in Java.
 
@@ -57,7 +51,7 @@ On each request an new `SLSB` instance will be created. After handling the reque
 
 ##### Example
 
-So let's implement a `SLSB` that provides functionality to create a user from the arguments passed to the `createUser()` method. The `SLSB` will be registered under the name `AStatelessSessionBean` in the application servers `Naming Directory`. Registering a bean in the `Naming Directory` is necessary to use it for `Dependency Injection` explained in our [documentation](<{{ "/get-started/documentation.html" | prepend: site.baseurl }}>).
+So let's implement a `SLSB` that provides functionality to create a user from the arguments passed to the `createUser()` method. The `SLSB` will be registered under the name `AStatelessSessionBean` in the application servers `Naming Directory`. Registering a bean in the [Naming Directory](<{{ "/get-started/documentation/naming-directory.html" | prepend: site.baseurl }}>) is necessary to use it for [Dependency Injection](<{{ "/get-started/documentation/dependency-injection.html" | prepend: site.baseurl }}>) explained in our documentation.
 
 ```php
 <?php
@@ -802,8 +796,3 @@ class AStatefulSessionBean
 ```
 
 The `AclSessionBean` is **NOT** implemented in this example, because this blog post should only give a rough direction how to implement such a functionality and how an `Interceptor` can be used.
-
-## Summary
-***
-
-Builing an application or components by using `Server-Side Component Types` gives developers powerful options concerning performance, scalability and reusability. In combination with the `Servlet-Engine` developers are able to build high-performance, stateful web applications by taking advantage of enterprise services like a `Message-Queue` or the `Timer-Service` and a rock-solid infrastructure.

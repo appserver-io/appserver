@@ -12,14 +12,13 @@ subNav:
     href: how-to-inject-an-instance
 permalink: /get-started/documentation/dependency-injection.html
 ---
-As we probably use DI to inject instances of [Server-Side Component Types](#server-side-component-types) this section gives you a brief introduction of how DI works in the `Persistence-Container` context. 
+As we probably use DI to inject instances of [Server-Side Component Types](<{{ "/get-started/documentation/persistence-container.html#server-side-component-types" | prepend: site.baseurl }}>) this section gives you a brief introduction of how DI works in the `Persistence-Container` context. 
 
 Dependency Injection, furthermore DI, enables developers to write cleaner, reusable and maintainable code with less coupling by injecting necessary instances at runtime instead of instantiating them in the class itself. Within the application server, each application has it's own scope and therefore a  own dependency injection container. This prevents your application from fatal errors like `Cannot redeclare class ...`.
 
 DI can be a complicated subject, escpecially if it come together with application state! Let's try to explain the most important things in short. 
 
 ## What can be injected
-***
 
 The application server itself doesn't use DI, instead it provides DI as a service for the applications running within. Actually all session and message driven beans, the application instance and all managers can be injected.  But, before you can let the DI container inject an instance to your class, you have to register it. Registering beans can either be done by annotations or a deployment descriptor.
 
@@ -53,7 +52,6 @@ class AStatelessSessionBean
 After register your beans, what is pretty simple when using annotations, you're ready to inject them!
 
 ## How to inject an instance
-***
 
 Basically DI can be a manual process where you `inject` an instance, needed by another class by passing it to the constructor for example. Inside the `Persistence-Container`, the injection is an process you can't see, it's more some kind of magic which happens behind the scenes. So instead of manually pass the necessary instances to a classes constructor, the DI container will do that for you.
 
