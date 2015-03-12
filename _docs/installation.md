@@ -21,8 +21,8 @@ subNav:
 permalink: /get-started/documentation/installation.html
 ---
 
-Besides supporting several operating systems and their specific ways of installing software, we
-also support ways to get an appserver.io package. You might do any of the following:
+Besides supporting several operating systems and specific ways of installing the respective software, we
+also demonstrate how to get an appserver.io package. You might do any of the following:
 
 * Download one of our [releases](http://appserver.io/get-started/downloads.html) right from our download page
   that provide tested install packages
@@ -36,7 +36,7 @@ The package will install with these basic default characteristics:
 * Autostart after installation, no autostart on reboot
 * Reachable under pre-configured ports as described [here]({{"/get-started/documentation/configuration.html#configuration-defaults" | prepend: site.baseurl }})
 
-For OS specific steps and characteristics see below for tested environments.
+For OS specific steps and characteristics see the section below for tested environments.
 
 > We **STRONGLY** recommend to have a look at our [upgrade guides](https://github.com/appserver-io/appserver/search?utf8=%E2%9C%93&q=UPGRADE+in%3Apath&type=Code), before upgrading any previous installation.
 
