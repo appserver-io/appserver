@@ -1,5 +1,29 @@
 # Upgrade from 1.0.1 to 1.0.2
 
+## General
+
+When updating 1.0.1 to 1.0.2 and not replacing the `etc/appserver/appserver.xml` with the latest bundled version, it is necessary to remove the `serverAdmin` and `serverSoftware` attributes from the `<host>` node after installation, because the schema didn't allow them now.
+
+So, if your 1.0.1 version looks like
+
+```xml
+    ...
+    <host
+        name="localhost"
+        appBase="/webapps"
+        serverAdmin="info@appserver.io"
+        serverSoftware="appserver/1.0.2-56 (darwin) PHP/5.5.22" />
+    ...
+```
+
+after update to 1.0.2 it has to look like 
+
+```xml
+    ...
+    <host name="localhost" appBase="/webapps" />
+    ...
+```
+
 ## Development Mode
 
 After an update, all files will be reset to the original ownership and rights. So if you've switched to [Development-Mode](http://appserver.io/get-started/documentation/basic-usage.html#setup-script), you need to run the setup script again to re-activate the development mode again.
