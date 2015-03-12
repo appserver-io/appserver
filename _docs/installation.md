@@ -22,12 +22,12 @@ permalink: /get-started/documentation/installation.html
 ---
 
 Besides supporting several operating systems and their specific ways of installing software, we
-also support several ways to get an appserver.io package. You might do any of the following:
+also support ways to get an appserver.io package. You might do any of the following:
 
 * Download one of our [releases](http://appserver.io/get-started/downloads.html) right from our download page
-  which provide tested install packages
+  that provide tested install packages
 * Get any of our [developer builds](<http://builds.appserver.io/>) from our project page to get bleeding edge install
-  packages that still might have some bugs
+  packages (that still might have some bugs)
 * Build your own packages using [ANT](<http://ant.apache.org/>). How to do that will be described [below](#building-it-yourself)
 
 The package will install with these basic default characteristics:
@@ -42,15 +42,15 @@ For OS specific steps and characteristics see below for tested environments.
 
 ## Mac OS X
 
-> Runs and tested on Mac OS X 10.8.x and higher!
+> Runs and tested on Mac OS X 10.8.x and higher.
 
 For Mac OS X > 10.8.x we provide a `.pkg` file for [download]({{"/get-started/downloads.html#osx" | prepend: site.baseurl }}) that contains the runtime and the distribution. Double-clicking on the `.pkg` starts and guides you through the installation process.
 
 ## Windows
 
-> Runs and tested on Windows 7 (32-bit) and higher!
+> Runs and tested on Windows 7 (32-bit) and higher.
 
-As we deliver the Windows appserver as a .jar file you can [download]({{"/get-started/downloads.html#win" | prepend: site.baseurl }}), a installed Java Runtime Environment (or JDK
+As we deliver the Windows appserver as a .jar file, you can [download]({{"/get-started/downloads.html#win" | prepend: site.baseurl }}), a installed Java Runtime Environment (or JDK
 that is) is a vital requirement for using it. If the JRE/JDK is not installed you have to do so
 first. You might get it from [Oracle's download page](<http://www.oracle.com/technetwork/java/javase/downloads/jre7-downloads-1880261.html>).
 If this requirement is met you can start the installation by simply double-clicking the .jar archive.

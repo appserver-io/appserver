@@ -3,7 +3,7 @@ layout: docs
 title: Deployment
 meta_title: appserver.io deployment
 meta_description: The deploy directory is the location end users can place their deployment content (e. g. phar files) to have it deployed into the server runtime.
-position: 150
+position: 170
 group: Docs
 subNav:
   - title: Deployment Modes

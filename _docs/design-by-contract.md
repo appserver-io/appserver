@@ -3,7 +3,7 @@ layout: docs
 title: Design by Contract
 meta_title: appserver.io design by contract (DbC)
 meta_description: DbC extends the ordinary definition of classes, abstract classes and interfaces by adding pre-/postconditions and invariants referred to as contracts
-position: 120
+position: 140
 group: Docs
 subNav:
   - title: What can be contracted?
