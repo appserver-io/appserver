@@ -1,5 +1,24 @@
 # Upgrade from 1.0.1 to 1.0.2
 
+## Development Mode
+
+After an update, all files will be reset to the original ownership and rights. So if you've switched to [Development-Mode](http://appserver.io/get-started/documentation/basic-usage.html#setup-script), you need to run the setup script again to re-activate the development mode again.
+
+To do so, open a console and type the following
+
+```sh
+sudo /opt/appserver/server.php -s dev
+# Should return: Setup for mode 'dev' done successfully!
+```
+
+## Updating Mac OS X
+
+When updating a Mac OS X installation, we actually do **NOT** take care about changes in your configuration files. Please **BACKUP** all customized files, especially `etc/appserver/appserver.xml` and `etc/appserver/conf.d/virtual-hosts.xml` to not loose your changes.
+
+## Configuration
+
+We've made minor changes in some configuration files. This changes **SHOULD NOT** affect you in most cases.
+
 ## General
 
 When updating 1.0.1 to 1.0.2 and not replacing the `etc/appserver/appserver.xml` with the latest bundled version, it is necessary to remove the `serverAdmin` and `serverSoftware` attributes from the `<host>` node after installation, because the schema didn't allow them now.
@@ -23,25 +42,6 @@ after update to 1.0.2 it has to look like
     <host name="localhost" appBase="/webapps" />
     ...
 ```
-
-## Development Mode
-
-After an update, all files will be reset to the original ownership and rights. So if you've switched to [Development-Mode](http://appserver.io/get-started/documentation/basic-usage.html#setup-script), you need to run the setup script again to re-activate the development mode again.
-
-To do so, open a console and type the following
-
-```sh
-sudo /opt/appserver/server.php -s dev
-# Should return: Setup for mode 'dev' done successfully!
-```
-
-## Updating Mac OS X
-
-When updating a Mac OS X installation, we actually do **NOT** take care about changes in your configuration files. Please **BACKUP** all customized files, especially `etc/appserver/appserver.xml` and `etc/appserver/conf.d/virtual-hosts.xml` to not loose your changes.
-
-## Configuration
-
-We've made minor changes in some configuration files. This changes **SHOULD NOT** affect you in most cases.
 
 ### Move of authentication to appserver-io/http
 
