@@ -44,15 +44,15 @@ For OS specific steps and characteristics see below for tested environments.
 
 > Runs and tested on Mac OS X 10.8.x and higher.
 
-For Mac OS X > 10.8.x we provide a `.pkg` file for [download]({{"/get-started/downloads.html#osx" | prepend: site.baseurl }}) that contains the runtime and the distribution. A double-click on the `.pkg` triggers the installation process.
+For Mac OS X > 10.8.x we provide a `.pkg` file for [download]({{"/get-started/downloads.html#osx" | prepend: site.baseurl }}) that contains the `runtime` and the `distribution`. A double-click on the `.pkg` triggers the installation process.
 
 ## Windows
 
 > Runs and tested on Windows 7 (32-bit) and higher.
 
-As we deliver the Windows appserver as a .jar file for [download]({{"/get-started/downloads.html#win" | prepend: site.baseurl }}), an installed Java Runtime Environment (or JDK) is a requirement for using it. In case the JRE/JDK is not installed, you have to do so
+As we deliver the Windows appserver as a .jar file for [download]({{"/get-started/downloads.html#win" | prepend: site.baseurl }}), an installed `Java Runtime Environment (or JDK)` is a requirement for using it. In case the JRE/JDK is not installed, you have to do so
 first. You might get it from [Oracle's download page](<http://www.oracle.com/technetwork/java/javase/downloads/jre7-downloads-1880261.html>).
-If this requirement is met, you can start the installation by double-clicking the .jar archive.
+If this requirement is met, the installation is triggered by double-clicking the `.jar` archive.
 
 ## Debian
 
@@ -89,7 +89,7 @@ Installation and basic usage are the same as on Fedora but we [provide different
 
 ## Building it yourself
 
-The following steps describe how to build appserver.io for other environments using the provided [ANT](<http://ant.apache.org/>) targets, which is the recommended build tool.
+The following steps describe how to build the appserver for other environments using the provided [ANT](<http://ant.apache.org/>) targets, which is the recommended build tool.
 Please download and install ANT to proceed.
 
 As an experiment, we tried [Raspbian](http://www.raspbian.org/) and brought the appserver to an ARM environment. This is why Rasbian is used as an example in the following.
