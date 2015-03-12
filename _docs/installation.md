@@ -69,7 +69,7 @@ root@debian:~# aptitude install appserver-dist
 
 Optionally you can [download]({{"/get-started/downloads.html#debian" | prepend: site.baseurl }}) the `.deb` files for `runtime` and `distribution`. A double-click triggers the installation process. Doing this will invoke the system default package manager and guides you through the installation process. 
 
-> Please install the runtime first, as it is a precondition for the distribution.
+> Please install the runtime first, as it is a dependency of the distribution.
 
 ## Fedora
 
@@ -77,7 +77,7 @@ Optionally you can [download]({{"/get-started/downloads.html#debian" | prepend: 
 
 We  also provide `.rpm` [files for Fedora]({{"/get-started/downloads.html#fedora" | prepend: site.baseurl }}), one for `runtime` and `distribution` for download. A double-click triggers the installation process. Doing this will invoke the system default package manager and guides you through the installation process. 
 
-> Please install the runtime first, as it is a precondition for the distribution.
+> Please install the runtime first, as it is a dependency of the distribution.
 
 ## CentOS
 
@@ -85,7 +85,7 @@ We  also provide `.rpm` [files for Fedora]({{"/get-started/downloads.html#fedora
 
 Installation and basic usage are the same as on Fedora but we [provide different packages]({{"/get-started/downloads.html#centos" | prepend: site.baseurl }}) for `runtime` and `distribution`. CentOS requires additional repositories like [remi](<http://rpms.famillecollet.com/>) or [EPEL](<http://fedoraproject.org/wiki/EPEL>) to satisfy additional dependencies.
 
-> Please install the runtime first, as it is a precondition for the distribution.
+> Please install the runtime first, as it is a dependency of the distribution.
 
 ## Building it yourself
 
