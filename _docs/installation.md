@@ -38,7 +38,7 @@ The package will install with these basic default characteristics:
 
 For OS specific steps and characteristics see below for tested environments.
 
-> We **STRONGLY** recommend, that you have a look at our [upgrade guides](https://github.com/appserver-io/appserver/search?utf8=%E2%9C%93&q=UPGRADE+in%3Apath&type=Code), before upgrading any previous installation
+> We **STRONGLY** recommend to have a look at our [upgrade guides](https://github.com/appserver-io/appserver/search?utf8=%E2%9C%93&q=UPGRADE+in%3Apath&type=Code), before upgrading any previous installation.
 
 ## Mac OS X
 
