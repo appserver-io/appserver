@@ -48,6 +48,13 @@ abstract class AbstractScanner extends AbstractContextThread
     const LINUX = 'Linux';
 
     /**
+     * OS signature when calling php_uname('s') on Windows NT.
+     *
+     * @var string
+     */
+    const WINDOWS_NT = 'Windows NT';
+
+    /**
      * There are some major init systems which are re-used within different OSs
      *
      * @var string
@@ -55,6 +62,7 @@ abstract class AbstractScanner extends AbstractContextThread
     const LAUNCHD_INIT_STRING = '/sbin/appserverctl restart';
     const SYSTEMV_INIT_STRING = '/etc/init.d/appserver restart > /dev/null';
     const SYSTEMD_INIT_STRING = 'systemctl restart appserver';
+    const WIN_NT_INIT_STRING = 'net stop "appserver" && net start "appserver" || net start "appserver"';
 
     /**
      * The mapping of Linux distributions to their release file's name
@@ -105,6 +113,7 @@ abstract class AbstractScanner extends AbstractContextThread
         // initialize the available restart commands
         $this->restartCommands = array(
             DeploymentScanner::DARWIN => DeploymentScanner::LAUNCHD_INIT_STRING,
+            DeploymentScanner::WINDOWS_NT => DeploymentScanner::WIN_NT_INIT_STRING,
             'Debian' . DeploymentScanner::LINUX => DeploymentScanner::SYSTEMV_INIT_STRING,
             'Ubuntu' . DeploymentScanner::LINUX => DeploymentScanner::SYSTEMV_INIT_STRING,
             'CentOS' . DeploymentScanner::LINUX => DeploymentScanner::SYSTEMV_INIT_STRING,
@@ -220,15 +229,16 @@ abstract class AbstractScanner extends AbstractContextThread
                 exec($this->getRestartCommand($distribution . $os));
                 break;
 
-            // Restart with the Mac command
+            // Restart with the Mac or Windows command
             case DeploymentScanner::DARWIN:
+            case DeploymentScanner::WINDOWS_NT:
                 exec($this->getRestartCommand($os));
                 break;
 
             // all other OS are NOT supported actually
             default:
                 $this->getSystemLogger()->error(
-                    "OS $os actually not supports auto restart"
+                    "OS $os does not support auto restart"
                 );
                 break;
         }
