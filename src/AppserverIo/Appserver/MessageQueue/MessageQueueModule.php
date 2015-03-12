@@ -42,7 +42,7 @@ use AppserverIo\Messaging\Utils\StateActive;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class MessageQueueModule extends GenericStackable
+class MessageQueueModule
 {
 
     /**
