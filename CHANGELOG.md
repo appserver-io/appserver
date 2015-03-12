@@ -7,6 +7,7 @@
 * Fixed [#654](https://github.com/appserver-io/appserver/issues/654) - Existing files containing spaces are ignored 
 * Fixed [#635](https://github.com/appserver-io/appserver/issues/635) - Extracting PHAR archives containing empty files results in an exception
 * Fixed [#666](https://github.com/appserver-io/appserver/issues/666) - appserver-watcher daemon does not work on Windows
+* Fixed [#673](https://github.com/appserver-io/appserver/issues/673) - "Cannot redeclare class ..." error on certain circumstances
 
 ## Features
 

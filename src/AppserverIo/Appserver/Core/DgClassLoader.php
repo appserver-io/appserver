@@ -320,9 +320,6 @@ class DgClassLoader extends \Stackable implements ClassLoaderInterface
             require $cachePath;
             return;
         }
-
-        // Still here? That sounds like bad news!
-        return;
     }
 
     /**
@@ -351,7 +348,8 @@ class DgClassLoader extends \Stackable implements ClassLoaderInterface
 
         // Do we have the file in our cache dir? If we are in development mode we have to ignore this.
         if ($this->environment !== 'development') {
-            if ($this->loadClassProductionNoOmit($className) === true) {
+            $this->loadClassProductionNoOmit($className);
+            if (class_exists($className, false) || interface_exists($className, false) || trait_exists($className, false)) {
                 return;
             }
         }
