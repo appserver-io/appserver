@@ -50,10 +50,9 @@ For Mac OS X > 10.8.x we provide a `.pkg` file for [download]({{"/get-started/do
 
 > Runs and tested on Windows 7 (32-bit) and higher.
 
-As we deliver the Windows appserver as a .jar file, you can [download]({{"/get-started/downloads.html#win" | prepend: site.baseurl }}), a installed Java Runtime Environment (or JDK
-that is) is a vital requirement for using it. If the JRE/JDK is not installed you have to do so
+As we deliver the Windows appserver as a .jar file for [download]({{"/get-started/downloads.html#win" | prepend: site.baseurl }}), an installed Java Runtime Environment (or JDK) is a requirement for using it. In case the JRE/JDK is not installed, you have to do so
 first. You might get it from [Oracle's download page](<http://www.oracle.com/technetwork/java/javase/downloads/jre7-downloads-1880261.html>).
-If this requirement is met you can start the installation by simply double-clicking the .jar archive.
+If this requirement is met, you can start the installation by simply double-clicking the .jar archive.
 
 ## Debian
 
@@ -68,25 +67,25 @@ root@debian:~# aptitude update
 root@debian:~# aptitude install appserver-dist
 ```
 
-Optionally you can [download]({{"/get-started/downloads.html#debian" | prepend: site.baseurl }}) the `.deb` files for the `runtime` and the `distribution` and install them by double-clicking on them. This will invoke the system default package manager and guides you through the installation process. 
+Optionally you can [download]({{"/get-started/downloads.html#debian" | prepend: site.baseurl }}) the `.deb` files for `runtime` and `distribution`. A double-click triggers the installation process. Doing this will invoke the system default package manager and guides you through the installation process. 
 
-> Please install the runtime first, as this is a dependency for the distribution.
+> Please install the runtime first, as it is a precondition for the distribution.
 
 ## Fedora
 
 > Runs and tested on version Fedora 20 (64-bit)!
 
-We  also provide `.rpm` [files for Fedora]({{"/get-started/downloads.html#fedora" | prepend: site.baseurl }}), one for `runtime` and `distribution`, that you can download and start the installation process by double-clicking on it. This will start the systems default package manager and guides you through the installation process.1
+We  also provide `.rpm` [files for Fedora]({{"/get-started/downloads.html#fedora" | prepend: site.baseurl }}), one for `runtime` and `distribution` for download. A double-click triggers the installation process. Doing this will invoke the system default package manager and guides you through the installation process. 
 
-> Please install the runtime first, as this is a dependency for the distribution.
+> Please install the runtime first, as it is a precondition for the distribution.
 
 ## CentOS
 
 > Runs and tested on CentOS 6 (64-bit)!
 
-Installation and basic usage is the same as on Fedora but we [provide different packages]({{"/get-started/downloads.html#centos" | prepend: site.baseurl }}) for `runtime` and `distribution`. CentOS requires additional repositories like [remi](<http://rpms.famillecollet.com/>) or [EPEL](<http://fedoraproject.org/wiki/EPEL>) to satisfy additional dependencies.
+Installation and basic usage are the same as on Fedora but we [provide different packages]({{"/get-started/downloads.html#centos" | prepend: site.baseurl }}) for `runtime` and `distribution`. CentOS requires additional repositories like [remi](<http://rpms.famillecollet.com/>) or [EPEL](<http://fedoraproject.org/wiki/EPEL>) to satisfy additional dependencies.
 
-> Please install the runtime first, as this is a dependency for the distribution.
+> Please install the runtime first, as it is a precondition for the distribution.
 
 ## Building it yourself
 
