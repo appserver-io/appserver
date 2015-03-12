@@ -349,7 +349,7 @@ class DgClassLoader extends \Stackable implements ClassLoaderInterface
         // Do we have the file in our cache dir? If we are in development mode we have to ignore this.
         if ($this->environment !== 'development') {
             $this->loadClassProductionNoOmit($className);
-            if (class_exists($className, false) === true) {
+            if (class_exists($className, false) || interface_exists($className, false) || trait_exists($className, false)) {
                 return;
             }
         }
