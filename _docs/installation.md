@@ -105,7 +105,7 @@ It contains information about the environment, about the dependencies appserver.
 > Build properties can be overwritten locally within a `build.properties` file in the package root.
 
 For our Raspbian example, we provide additional meta-information within the `buildfiles` directory. 
-To use it, the `os.distribution` property of our default build properties need to be overwritten which is shown below:
+To use it, the `os.distribution` property of our default build properties needs to be overwritten which is shown below:
 
 ```
 # ---- Default Operating System -------------------------------------------------
@@ -115,7 +115,7 @@ os.distribution = debian
 
 So, creating a file `build.properties` containing the line `os.distribution = raspbian` is sufficient for setting up the Raspbian build environment.
 
-> The actual build process can be started issuing `sudo ant build` on the command line.
+> The actual build process can be started by issuing `sudo ant build` on the command line.
 
 But what about environments without prepared properties?
 
