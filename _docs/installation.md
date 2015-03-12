@@ -114,7 +114,7 @@ os.family = linux
 os.distribution = debian
 ```
 
-So creating a file `build.properties` containing the line `os.distribution = raspbian` will be enough to set up hte Raspbian build environment.
+So creating a file `build.properties` containing the line `os.distribution = raspbian` will be enough to set up the Raspbian build environment.
 
 > The actual build process can be started issuing `sudo ant build` on the command line.
 
