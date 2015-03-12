@@ -26,17 +26,17 @@ also demonstrate how to get an appserver.io package. You might do any of the fol
 
 * Download one of our [releases](http://appserver.io/get-started/downloads.html) right from our download page
   that provide tested install packages
-* Get any of our [developer builds](<http://builds.appserver.io/>) from our project page to get bleeding edge install
-  packages (that still might have some bugs)
-* Build your own packages using [ANT](<http://ant.apache.org/>). How to do that will be described [below](#building-it-yourself)
+* Get any of our [developer builds](<http://builds.appserver.io/>) from our project page to get innovative install
+  packages (including minor issues)
+* Build your own packages using [ANT](<http://ant.apache.org/>). How to do this is described [below](#building-it-yourself)
 
-The package will install with these basic default characteristics:
+The package is installed with the following basic default characteristics:
 
 * Install directory: `/opt/appserver` (`C:\Program Files\appserver` on Windows)
 * Autostart after installation, no autostart on reboot
 * Reachable under pre-configured ports as described [here]({{"/get-started/documentation/configuration.html#configuration-defaults" | prepend: site.baseurl }})
 
-For OS specific steps and characteristics see the section below for tested environments.
+For OS specific steps and characteristics review the tested environments in the section below.
 
 > We **STRONGLY** recommend to have a look at our [upgrade guides](https://github.com/appserver-io/appserver/search?utf8=%E2%9C%93&q=UPGRADE+in%3Apath&type=Code), before upgrading any previous installation.
 
