@@ -23,6 +23,7 @@ namespace AppserverIo\Appserver\ServletEngine\Authentication;
 
 use AppserverIo\Appserver\Core\AbstractManager;
 use AppserverIo\Http\HttpProtocol;
+use AppserverIo\Psr\HttpMessage\Protocol;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
@@ -66,13 +67,19 @@ class StandardAuthenticationManager extends AbstractManager implements Authentic
             if (fnmatch($urlPattern, $servletRequest->getServletPath() . $servletRequest->getPathInfo())) {
                 // the URI pattern matches, init the adapter and try to authenticate
 
+                // check if auth header is not set in coming request headers
+                if (! $servletRequest->hasHeader(Protocol::HEADER_AUTHORIZATION)) {
+                    // send header for challenge authentication against client
+                    $servletResponse->addHeader(HttpProtocol::HEADER_WWW_AUTHENTICATE, $authenticationAdapter->getAuthenticateHeader());
+                }
+
+                // initialize the adapter with the current request
                 $authenticationAdapter->init($servletRequest->getHeader(HttpProtocol::HEADER_AUTHORIZATION), $servletRequest->getMethod());
 
                 // try to authenticate the request
                 $authenticated = $authenticationAdapter->authenticate();
                 if (!$authenticated) {
                     // send header for challenge authentication against client
-                    $servletResponse->setStatusCode(401);
                     $servletResponse->addHeader(HttpProtocol::HEADER_WWW_AUTHENTICATE, $authenticationAdapter->getAuthenticateHeader());
                 }
 
