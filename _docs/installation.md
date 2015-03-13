@@ -50,9 +50,13 @@ For Mac OS X > 10.8.x we provide a `.pkg` file for [download]({{"/get-started/do
 
 > Runs and tested on Windows 7 (32-bit) and higher.
 
-As we deliver the Windows appserver as a .jar file for [download]({{"/get-started/downloads.html#win" | prepend: site.baseurl }}), an installed `Java Runtime Environment (or JDK)` is a requirement for using it. In case the JRE/JDK is not installed, you have to do so
-first. You might get it from [Oracle's download page](http://www.oracle.com/technetwork/java/javase/downloads/jre7-downloads-1880261.html).
-If this requirement is met, the installation is triggered by double-clicking the `.jar` archive.
+As we deliver the Windows appserver as a .exe file which packages everything, there are no further dependencies.
+You can [download]({{"/get-started/downloads.html#win" | prepend: site.baseurl }}) it and install it on your machine as you would with other software.
+
+appserver.io will be added as a service daemon bundle to your Windows service management tool.
+
+Alternatively we provide a JAR file which you can use if you have an installed Java Runtime Environment (or JDK
+that is). It offers the same functionality as the EXE file but might be preferred by some. If the Java requirement is met you can start the installation by simply double-clicking the .jar archive.
 
 ## Debian
 

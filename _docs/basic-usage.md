@@ -70,15 +70,7 @@ in the form `/etc/init.d/<DAEMON> <COMMAND>`
 Systemd init scripts can be used using the `systemctl` command with the syntax `systemctl <COMMAND> <DAEMON>`
 
 * **Windows**:
-Unfortunately, we do not offer any of these scripts in Windows. After the installation, you can start the 
-Application Server with the ``server.bat`` file located in the root directory of your installation.
-Start a command prompt as an administrator and run the following commands
-(assuming default installation path).
-
-```
-C:\Windows\system32>cd "C:\Program Files\appserver"
-C:\Program Files\appserver>server.bat
-```
+Windows users will find the same three daemons as services within their Windows service management tool where they can be individually controlled.
 
 ## Setup Script
 
