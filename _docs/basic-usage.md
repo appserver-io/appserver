@@ -17,7 +17,7 @@ permalink: /get-started/documentation/basic-usage.html
 
 After the installation wizard (or package manager) has finished, the appserver starts automatically. You can now use it without limitations.
 
-Below you find basic instructions on how to make use of the appserver. After the installation, you might want to look at some apps. A showcase example is bundled with the installation at `http://127.0.0.1:9080/example`
+Below you find basic instructions on how to make use of the appserver. After the installation, you might want to look at some apps. A showcase example that is accessible via `http://127.0.0.1:9080/example` is bundled with appserver.io.
 
 Start your preferred browser and check out various possibilities. To pass the password barriers use
 the default login `appserver/appserver.i0`.
@@ -39,15 +39,14 @@ On a successful request, a response should be given. The configured [access log]
 In combination with the appserver we deliver several standalone processes which are needed for proper 
 functioning of different features.
 
-For these processes, we provide start and stop scripts for all nix like operating systems.
-They work the way they normally do based on the regarding system. They are:
+For these processes, we provide the following start and stop scripts for all nix like operating systems.
+They work the way they normally do based on the regarding system.
 
-* `appserver`: The central process that starts the appserver itself
-
-* `appserver-php5-fpm`: PHP-fpm + appserver configuration. Our default FastCGI backend. Others might
-  be added the same way
-
-* `appserver-watcher`: A watchdog that monitors filesystem changes and manages appserver restarts
+| Scripts      | Description |
+| ----------| ----------- |
+| `appserver` | The central process that starts the appserver itself. |
+| `appserver-php5-fpm`    | PHP-fpm + appserver configuration. Our default FastCGI backend. Others might be added the same way. |
+| `appserver-watcher`     | SA watchdog that monitors filesystem changes and manages appserver restarts. |
 
 Using a typical setup all three of these processes should run to enable the full feature set. To 
 ultimately execute the appserver only the appserver process is needed but you will miss simple on-the-fly 
@@ -59,18 +58,18 @@ processes e.g. supplying you with a [hhvm](http://hhvm.com/) backend.
 Currently, we support three different types of init scripts that support the commands `start`, `stop`,
 `status` and `restart` (additional commands might be available on other systems).
 
-**Mac OS X (LAUNCHD)**
+ * **Mac OS X (LAUNCHD)**:
 The LAUNCHD launch daemons are located within the appserver installation at `/opt/appserver/sbin`.
 They can be used with the schema `/opt/appserver/sbin/<DAEMON> <COMMAND>`
 
-**Debian, Raspbian, CentOS, ...(SystemV)**
-Commonly known and located in `/etc/init.d/` they also support the commands mentioned above provided 
-in the form `/etc/init.d/<DAEMON> <COMMAND>`.
+* **Debian, Raspbian, CentOS, ...(SystemV)**:
+They are commonly known and located in `/etc/init.d/` and support the commands mentioned above provided 
+in the form `/etc/init.d/<DAEMON> <COMMAND>`
 
-**Fedora, ... (systemd)**
-systemd init scripts can be used using the `systemctl` command with the syntax `systemctl <COMMAND> <DAEMON>`.
+* **Fedora, ... (systemd)**:
+Systemd init scripts can be used using the `systemctl` command with the syntax `systemctl <COMMAND> <DAEMON>`
 
-**Windows**
+* **Windows**:
 Unfortunately, we do not offer any of these scripts in Windows. After the installation, you can start the 
 Application Server with the ``server.bat`` file located in the root directory of your installation.
 Start a command prompt as an administrator and run the following commands
@@ -101,5 +100,5 @@ This is how it should be executed to be ready for local development.
 
 ```bash
 sudo /opt/appserver/server.php -s dev
-# Should return: Setup for mode 'dev' done successfully!
+# Should return: Setup for mode 'dev' done successfully.
 ```
