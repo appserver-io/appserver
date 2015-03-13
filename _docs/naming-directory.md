@@ -17,13 +17,13 @@ subNav:
 permalink: /get-started/documentation/naming-directory.html
 ---
 
-Every container running in the application server has a internal registry, we call it Naming Directory. In Java this is called `Enterprise Naming Context` or in short `ENC`. The naming directory is something like an object store, the container registers references to its resources. Resources can be beans or contexts provided by an application. All that resources are registered in the `Naming Directory` which allows you the access them if needed.
+Every container running in the application server has an internal registry; we name it Naming Directory. In Java, it is called `Enterprise Naming Context` or in short `ENC`. The naming directory an object store; the container registers references to its resources. Resources can be beans or contexts provided by an application. All resources are registered in the `Naming Directory`, which ensures accessability.
 
 ## Configure Directories
 
 When the application server starts, by default, it parses the `META-INF/classes` and `WEB-INF/classes` folders of your application to find components with supported annotations.
 
-What directories are parsed to locate annotated components can be configured in your applications configuration file. If you don't bundle a specific configuration file with your application, the default configuration will be used. The default application configuration is located under `etc/appserver/conf.d/context.xml` and should **NEVER** be edited. The nodes `/context/managers/manager[@name="BeanContextInterface" or @name="ServletContextInterface"]` are responsible for parsing and initializing the components.
+What directories are parsed to locate annotated components can be configured in your applications configuration file. If you do not bundle a particular configuration file with your application, the default configuration is used. The default application configuration is located in `etc/appserver/conf.d/context.xml` and MUST NOT be edited. The nodes `/context/managers/manager[@name="BeanContextInterface" or @name="ServletContextInterface"]` are responsible for parsing and initializing the components.
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -55,7 +55,7 @@ What directories are parsed to locate annotated components can be configured in 
 </context>
 ```
 
-You can bundle your application with a customized `context.xml` file. This **MUST** be placed in your applications `META-INF` directory. The file **MUST NOT** be a full copy of the default one, it allows you to override the nodes you want to customize or extend. To add an additional directory like `common/classes` for example, your `context.xml` file could simply look like this
+You can bundle your application with a customized `context.xml` file. This has to be placed in your application's `META-INF` directory. The file does not have to be a full copy of the default one, it allows you to override the nodes to be customized or extended. To add a directory like `common/classes` for example, configure the `context.xml` file as follows.
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -79,17 +79,17 @@ You can bundle your application with a customized `context.xml` file. This **MUS
 
 > Keep in mind, that the directory MUST be relative to your applications root directory and start with a `/`.
 
-More detailed information about the how to configure an application can be found in the section [Application Configuration](<{{ "/get-started/documentation/configuration.html#application-configuration" | prepend: site.baseurl }}>) of the documentation.
+Detailed information about an application's configuration is available in the section [Application Configuration](<{{ "/get-started/documentation/configuration.html#application-configuration" | prepend: site.baseurl }}>) of the documentation.
 
 ## Register Resources
 
-If a class is found, it'll be registered in the application servers naming directory under the name you specify in the annotations `name` attribut. As the `name` attribute is optional, the bean will be registered in the naming directory with the short class name, if not specified.
+If a class is found, it is registered in the application servers naming directory in the name you have specified in the annotations `name` attribute. As the `name` attribute is optional, the bean will be registered in the naming directory with the short class name if not specified.
 
-To inject a bean later, the developer needs to know the name it has been registered with. In the following example, the bean will be registered in the naming directory under `php:global/example/AStatelessSessionBean` whereas `example` is the name of the application.
+To inject a bean later, the developer needs to know the name it has been registered with. In the following example, the bean will be registered in the naming directory in `php:global/example/AStatelessSessionBean` whereas `example` is the name of the application.
 
-> The name of your application is **ALWAYS** the directory it'll be deployed to. As the document root is by default `webapps`, which, for example on a Linux system, will result in `/opt/appserver/webapps`, the name of your application will be `example` and will be located under `/opt/appserver/webapps/example`.
+> The name of your application is always the directory it is deployed to. As the document root is per default `webapps`, which, for example on a Linux system, results in `/opt/appserver/webapps`, the name of your application is `example` and located in `/opt/appserver/webapps/example`.
 
-When using annotations to inject components, you don't have to know the fully qualified name, because the application server knows the context you're in, tries to lookup the bean and injects it.
+When using annotations to inject components the completely qualified name is not neccessary, because the application server knows the context you are in. The appserver tries to lookup the bean and injects it.
 
 ```php
 <?php
@@ -136,7 +136,7 @@ class AStatelessSessionBean
 
 ## Annotations
 
-Using annotations to configure your components will probably be the easiest way. We provide several annotations that allows you to register and configure your components on the one side and inject them during runtime on the other.
+Annotations are used to configure components. We provide several annotations that allow registering and configuring your components on the one side and injecting them during runtime on the other.
 
 ### Stateless Session Bean (@Stateless)
 
