@@ -28,7 +28,7 @@ also demonstrate how to get an appserver.io package. You might do any of the fol
   that provide tested install packages
 * Get any of our [developer builds](<http://builds.appserver.io/>) from our project page to get innovative install
   packages (including minor issues)
-* Build your own packages using [ANT](<http://ant.apache.org/>). How to do this is described [below](#building-it-yourself)
+* Build your own packages using [ANT](<http://ant.apache.org/>) as described [below](#building-it-yourself)
 
 The package is installed with the following basic default characteristics:
 
