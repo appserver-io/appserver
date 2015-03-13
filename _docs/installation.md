@@ -26,9 +26,9 @@ also demonstrate how to get an appserver.io package. You might do any of the fol
 
 * Download one of our [releases](http://appserver.io/get-started/downloads.html) right from our download page
   that provide tested install packages
-* Get any of our [developer builds](<http://builds.appserver.io/>) from our project page to get innovative install
+* Get any of our [developer builds](http://builds.appserver.io/) from our project page to get innovative install
   packages (including minor issues)
-* Build your own packages using [ANT](<http://ant.apache.org/>) as described [below](#building-it-yourself)
+* Build your own packages using [ANT](http://ant.apache.org/) as described [below](#building-it-yourself)
 
 The package is installed with the following basic default characteristics:
 
@@ -51,7 +51,7 @@ For Mac OS X > 10.8.x we provide a `.pkg` file for [download]({{"/get-started/do
 > Runs and tested on Windows 7 (32-bit) and higher.
 
 As we deliver the Windows appserver as a .jar file for [download]({{"/get-started/downloads.html#win" | prepend: site.baseurl }}), an installed `Java Runtime Environment (or JDK)` is a requirement for using it. In case the JRE/JDK is not installed, you have to do so
-first. You might get it from [Oracle's download page](<http://www.oracle.com/technetwork/java/javase/downloads/jre7-downloads-1880261.html>).
+first. You might get it from [Oracle's download page](http://www.oracle.com/technetwork/java/javase/downloads/jre7-downloads-1880261.html).
 If this requirement is met, the installation is triggered by double-clicking the `.jar` archive.
 
 ## Debian
@@ -83,13 +83,13 @@ We  also provide `.rpm` [files for Fedora]({{"/get-started/downloads.html#fedora
 
 > Runs and tested on CentOS 6 (64-bit).
 
-Installation and basic usage are the same as on Fedora but we [provide different packages]({{"/get-started/downloads.html#centos" | prepend: site.baseurl }}) for `runtime` and `distribution`. CentOS requires additional repositories like [remi](<http://rpms.famillecollet.com/>) or [EPEL](<http://fedoraproject.org/wiki/EPEL>) to satisfy additional dependencies.
+Installation and basic usage are the same as on Fedora but we [provide different packages]({{"/get-started/downloads.html#centos" | prepend: site.baseurl }}) for `runtime` and `distribution`. CentOS requires additional repositories like [remi](http://rpms.famillecollet.com/) or [EPEL](http://fedoraproject.org/wiki/EPEL) to satisfy additional dependencies.
 
 > Please install the runtime first, as it is a dependency of the distribution.
 
 ## Building it yourself
 
-The following steps describe how to build the appserver for other environments using the provided [ANT](<http://ant.apache.org/>) targets, which is the recommended build tool.
+The following steps describe how to build the appserver for other environments using the provided [ANT](http://ant.apache.org/) targets, which is the recommended build tool.
 Please download and install ANT to proceed.
 
 As an experiment, we tried [Raspbian](http://www.raspbian.org/) and brought the appserver to an ARM environment. This is why Rasbian is used as an example in the following.
