@@ -140,37 +140,37 @@ Annotations are used to configure components. We provide several annotations tha
 
 ### Stateless Session Bean (@Stateless)
 
-The `@Stateless` annotation defines a component als `Stateless` session bean. The annotation only supports the optional `name` attribute. If the `name` attribute is specified, the given value will be used to register the component in the `Naming Directory` instead of the short class name.
+The `@Stateless` annotation defines a component as `Stateless` Session Bean. The annotation only supports the optional `name` attribute. If the `name` attribute is specified, the given value will be used to register the component in the `Naming Directory` instead of the short class name.
 
 ### Stateful Session Bean (@Stateful)
 
-The `@Stateful` annotation defines a component als `Stateful` session bean. The annotation only supports the optional `name` attribute. If the `name` attribute is specified, the given value will be used to register the component in the `Naming Directory` instead of the short class name. The annotation has to be set at the classes DocBlock.
+The `@Stateful` annotation defines a component as `Stateful` Session Bean. The annotation only supports the optional `name` attribute. If the `name` attribute is specified, the given value will be used to register the component in the `Naming Directory` instead of the short class name. The annotation has to be set at the classes DocBlock.
 
 ### Singleton Session Bean (@Singleton)
 
-The `@Singleton` annotation defines a component als `Singleton` session bean. The annotation only supports the optional `name` attribute. If the `name` attribute is specified, the given value will be used to register the component in the `Naming Directory` instead of the short class name. The annotation has to be set at the classes DocBlock.
+The `@Singleton` annotation defines a component as `Singleton` Session Bean. The annotation only supports the optional `name` attribute. If the `name` attribute is specified, the given value will be used to register the component in the `Naming Directory` instead of the short class name. The annotation has to be set at the classes DocBlock.
 
-### Message Driven Bean (@MessageDriven)
+### Message-Driven Bean (@MessageDriven)
 
-The `@MessageDriven` annotation defines a component als `Message Driven` bean. The annotation only supports the optional `name` attribute. If the `name` attribute is specified, the given value will be used to register the component in the `Naming Directory` instead of the short class name. The annotation has to be set at the classes DocBlock.
+The `@MessageDriven` annotation defines a component as `Message-Driven` Bean. The annotation only supports the optional `name` attribute. If the `name` attribute is specified, the given value will be used to register the component in the `Naming Directory` instead of the short class name. The annotation has to be set at the classes DocBlock.
 
 ### Explicit Startup (@Startup)
 
-The `@Startup` annotation configures a `Singleton` session bean to be initialized on application startup and can **explicitly** be used on `Singleton` session beans. The annotation doesn't accept any attributes and has to be set at the classes DocBlock.
+The `@Startup` annotation configures a `Singleton` Session Bean to be initialized on application startup and can **explicitly** be used on `Singleton` Session Beans. The annotation does not accept any attributes and has to be set at the classes DocBlock.
 
 ### Post-Construct Callback (@PostConstruct)
 
-This annotation marks a method as `post-construct` lifecycle callback and has to be set at the methods DocBlock. The annotation can be used on all [Server-Side Component Types](<{{ "/get-started/documentation/persistence-container.html#server-side-component-types" | prepend: site.baseurl }}>) and doesn't accept any attributes.
+The `@PostConstruct` annotation marks a method as `post-construct` lifecycle callback and has to be set at the methods DocBlock. The annotation can be used on all [Server-Side Component Types](<{{ "/get-started/documentation/persistence-container.html#server-side-component-types" | prepend: site.baseurl }}>) and does not accept any attributes.
 
 ### Pre-Destroy Callback (@PreDestroy)
 
-This annotation marks a method as `pre-destroy` lifecycle callback and has to be set at the methods DocBlock. The annotation can be used on all `Server-Side Component Types` and doesn't accept any attributes.
+The `@PreDestroy` annotation marks a method as `pre-destroy` lifecycle callback and has to be set at the methods DocBlock. The annotation can be used on all `Server-Side Component Types` and doesn't accept any attributes.
 
 ### Enterprise Beans (@EnterpriseBean)
 
-This annotation is used to inject components into other components.
+The `@EnterpriseBean` annotation is used to inject components into other components.
 
-The `@EnterpriseBean` annotation can be used in two scopes. First scope is in the DocBlock of a components class member, second of a class method. In both cases, the member or the method is marked as target for `Dependency Injection`.
+The annotation can be used in two scopes. First scope is in the DocBlock of a component's class member, second scope is in the DocBlock of a class method. In both cases, the member or the method are marked as a target for `Dependency Injection`.
 
 In the simplest case **NO** attribute is needed. If so, the member or parameter name **MUST** exactly match the components `name` that should be injected. Otherwise you have to specify the `name` attribute and optionally the `beanName` and `beanInterface` or `lookup` attribute.
 
