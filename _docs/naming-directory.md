@@ -140,67 +140,67 @@ Annotations are used to configure components. We provide several annotations tha
 
 ### Stateless Session Bean (@Stateless)
 
-The `@Stateless` annotation defines a component als `Stateless` session bean. The annotation only supports the optional `name` attribute. If the `name` attribute is specified, the given value will be used to register the component in the `Naming Directory` instead of the short class name.
+The `@Stateless` annotation defines a component as `Stateless` Session Bean. The annotation only supports the optional `name` attribute. If the `name` attribute is specified, the given value will be used to register the component in the `Naming Directory` instead of the short class name.
 
 ### Stateful Session Bean (@Stateful)
 
-The `@Stateful` annotation defines a component als `Stateful` session bean. The annotation only supports the optional `name` attribute. If the `name` attribute is specified, the given value will be used to register the component in the `Naming Directory` instead of the short class name. The annotation has to be set at the classes DocBlock.
+The `@Stateful` annotation defines a component as `Stateful` Session Bean. The annotation only supports the optional `name` attribute. If the `name` attribute is specified, the given value will be used to register the component in the `Naming Directory` instead of the short class name. The annotation has to be set at the classes DocBlock.
 
 ### Singleton Session Bean (@Singleton)
 
-The `@Singleton` annotation defines a component als `Singleton` session bean. The annotation only supports the optional `name` attribute. If the `name` attribute is specified, the given value will be used to register the component in the `Naming Directory` instead of the short class name. The annotation has to be set at the classes DocBlock.
+The `@Singleton` annotation defines a component as `Singleton` Session Bean. The annotation only supports the optional `name` attribute. If the `name` attribute is specified, the given value will be used to register the component in the `Naming Directory` instead of the short class name. The annotation has to be set at the classes DocBlock.
 
-### Message Driven Bean (@MessageDriven)
+### Message-Driven Bean (@MessageDriven)
 
-The `@MessageDriven` annotation defines a component als `Message Driven` bean. The annotation only supports the optional `name` attribute. If the `name` attribute is specified, the given value will be used to register the component in the `Naming Directory` instead of the short class name. The annotation has to be set at the classes DocBlock.
+The `@MessageDriven` annotation defines a component as `Message-Driven` Bean. The annotation only supports the optional `name` attribute. If the `name` attribute is specified, the given value will be used to register the component in the `Naming Directory` instead of the short class name. The annotation has to be set at the classes DocBlock.
 
 ### Explicit Startup (@Startup)
 
-The `@Startup` annotation configures a `Singleton` session bean to be initialized on application startup and can **explicitly** be used on `Singleton` session beans. The annotation doesn't accept any attributes and has to be set at the classes DocBlock.
+The `@Startup` annotation configures a `Singleton` Session Bean to be initialized on application startup and can **explicitly** be used on `Singleton` Session Beans. The annotation does not accept any attributes and has to be set at the classes DocBlock.
 
 ### Post-Construct Callback (@PostConstruct)
 
-This annotation marks a method as `post-construct` lifecycle callback and has to be set at the methods DocBlock. The annotation can be used on all [Server-Side Component Types](<{{ "/get-started/documentation/persistence-container.html#server-side-component-types" | prepend: site.baseurl }}>) and doesn't accept any attributes.
+The `@PostConstruct` annotation marks a method as `post-construct` lifecycle callback and has to be set at the methods DocBlock. The annotation can be used on all [Server-Side Component Types](<{{ "/get-started/documentation/persistence-container.html#server-side-component-types" | prepend: site.baseurl }}>) and does not accept any attributes.
 
 ### Pre-Destroy Callback (@PreDestroy)
 
-This annotation marks a method as `pre-destroy` lifecycle callback and has to be set at the methods DocBlock. The annotation can be used on all `Server-Side Component Types` and doesn't accept any attributes.
+The `@PreDestroy` annotation marks a method as `pre-destroy` lifecycle callback and has to be set at the methods DocBlock. The annotation can be used on all `Server-Side Component Types` and doesn't accept any attributes.
 
 ### Enterprise Beans (@EnterpriseBean)
 
-This annotation is used to inject components into other components.
+The `@EnterpriseBean` annotation is used to inject components into other components.
 
-The `@EnterpriseBean` annotation can be used in two scopes. First scope is in the DocBlock of a components class member, second of a class method. In both cases, the member or the method is marked as target for `Dependency Injection`.
+The annotation can be used in two scopes. First scope is in the DocBlock of a component's class member, second scope is in the DocBlock of a class method. In both cases, the member or the method are marked as a target for `Dependency Injection`.
 
-In the simplest case **NO** attribute is needed. If so, the member or parameter name **MUST** exactly match the components `name` that should be injected. Otherwise you have to specify the `name` attribute and optionally the `beanName` and `beanInterface` or `lookup` attribute.
+In the simplest case, no attribute is needed. If so, the member or parameter name MUST exactly match the components `name` that should be injected. Otherwise, you have to specify the `name` attribute and optionally the `beanName` and `beanInterface` or `lookup` attribute.
 
 | Node Name                   | Type        | Description                                                          |
 | --------------------------- | ----------- | -------------------------------------------------------------------- |
-| `description`               | `string`    | Short description for the created reference.                         |
-| `name`                      | `string`    | Name the reference will be registered in the `Naming Directory`.     |
-| `beanName`                  | `string`    | The `name` of the component we want to reference.                    |
-| `beanInterface`             | `string`    | The business interface we want to reference. This has to be the `name`, suffixed with either one of `Local` or `Remote`. |
-| `lookup`                    | `string`    | The fully qualified name the component that has to be referenced has been registered in the `Naming Directory`. |
+| `description`               | `string`    | Short description of the created reference.                         |
+| `name`                      | `string`    | The name of the reference will be registered in the `Naming Directory`.     |
+| `beanName`                  | `string`    | The `name` of the component we want to reference to.                    |
+| `beanInterface`             | `string`    | The business interface we want to reference to. This has to be the `name`, suffixed with either one of `Local` or `Remote`. |
+| `lookup`                    | `string`    | The fully qualified name of the component that has to be referenced to in the `Naming Directory`. |
 
 ### Resources (@Resource)
 
 This annotation is used to inject resources into components.
 
-As resources are classes, that are initialized during application server startup to handle the main application functionality, they are not accessed by a proxy. When adding a `@Resource` annotation to inject a resource, a simple reference to the resource, using a callback, will be registered in the `Naming Directory`.
+As resources are classes that are initialized during application server startup to handle the main application functionality, they are not accessed by a proxy. When adding a `@Resource` annotation to inject a resource, a simple reference to the resource, using a callback, will be registered in the `Naming Directory`.
 
-The `@Resource` annotation can be used in two scopes. First scope is in the DocBlock of a components class member, second of a class method. In both cases, the member or the method is marked as target for `Dependency Injection`.
+The `@Resource` annotation can be used in two scopes. First scope is in the DocBlock of a component's class member, second scope is in the DocBlock of a class method. In both cases, the member or the method are marked as a target for `Dependency Injection`.
 
-In the simplest case **NO** attribute is needed. If so, the member or parameter name **MUST** exactly match the resource `name` that should be injected. Otherwise you have to specify the `name` attribute and the `type` attribute.
+In the simplest case, no attribute is needed. If so, the member or parameter name MUST exactly match the resource `name` that should be injected. Otherwise, you have to specify the `name` attribute and the `type` attribute.
 
 | Node Name                   | Type        | Description                                                          |
 | --------------------------- | ----------- | -------------------------------------------------------------------- |
 | `description`               | `string`    | Short description for the created reference.                         |
-| `name`                      | `string`    | Name the reference will be registered in the `Naming Directory`.     |
+| `name`                      | `string`    | Name of the reference will be registered in the `Naming Directory`.     |
 | `type`                      | `string`    | The `name` of the resource we want to reference.                     |
 
 ### Example
 
-The following example implementation of a `Singleton` session bean contains nearly all available annotations and demonstrates how they can be used.
+The following example implementation of a `Singleton` session bean contains nearly all annotations and demonstrates their application.
 
 ```php
 <?php
@@ -208,7 +208,7 @@ The following example implementation of a `Singleton` session bean contains near
 namespace AppserverIo\Example\SessionBeans;
 
 /**
- * Example implementation of a singleton session bean using that'll be initialized
+ * Example implementation of a singleton session bean that'll be initialized
  * on application startup, uses post-construct and pre-destroy lifecycle callbacks
  * and dependency injection.
  *
@@ -227,7 +227,7 @@ class ASingletonSessionBean
   protected $application;
 
   /**
-   * A stateless session bean instance that using property injection.
+   * A stateless session bean instance that uses property injection.
    *
    * @var \AppserverIo\Example\SessionBeans\AStatelessSessionBean
    * @EnterpriseBean
@@ -262,7 +262,7 @@ class ASingletonSessionBean
    */
   public function postConstruct()
   {
-    // to something after initialization here
+    // do something after initialization here
   }
   
   /**
@@ -273,16 +273,16 @@ class ASingletonSessionBean
    */
   public function preDestroy()
   {
-    // to something before destruction here
+    // do something before destruction here
   }
 }
 ```
 
 ## Deployment Descriptor
 
-Beside the possibility to configure nearly everything by annotations, it is also possible to resign annotations and use a XML based deployment descriptor called `epb.xml`. As we think that annotations are the way, that most developers will prefer, we'll only give a short overview of a deployment descriptors structure here.
+Annotations can be used for configuring almost everything. Also, it is possible to resign annotations and use an XML-based deployment descriptor called `epb.xml`. As we think that using annotations is preferred by most developers, we give a short overview of a deployment descriptors structure.
 
-The following example is a simplyfied copy of the deployment descriptor of our [example](https://github.com/appserver-io-apps/example) application and provides a brief overview of the structure.
+The following example is a simplified copy of the deployment descriptor of our [example](https://github.com/appserver-io-apps/example) application and provides a brief overview of the structure.
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -340,47 +340,42 @@ The following example is a simplyfied copy of the deployment descriptor of our [
 </epb>
 ```
 
-The structure should be self-explanatory, as it nearly reflects the annotation `@EnterpriseBean` and `Resource` annotations. The following table describes all possible nodes and gives a short description about meaning and options.
+The structure is self-explanatory, as it reflects the annotations `@EnterpriseBean` and `Resource`. The following table describes all possible nodes and their meanings.
 
 `/epb/enterprise-beans/session`
-
-Either defines a `SLSB`, `SFSB` or a `SSB`.
+either defines a `SLSB`, `SFSB` or a `SSB`.
 
 | Node Name                   | Type        | Description                                                          |
 | --------------------------- | ----------- | -------------------------------------------------------------------- |
-| `session-type`              | `string`    | Can be one of `Stateless`, `Stateful` or `Singleton`.                |
+| `session-type`              | `string`    | Can be `Stateless`, `Stateful` or `Singleton`.                |
 | `epb-name`                  | `string`    | Short name of the component used for registration in naming directory. |
-| `epb-class`                 | `string`    | Fully qualified class name of the components class.                  |
+| `epb-class`                 | `string`    | Fully qualified class name of the component's class.                  |
 | `init-on-startup`           | `boolean`   | `true` if the component should be instanciated on application startup. This can only be set to `true` if `session-type` is `Singleton`. |
 
 `/epb/enterprise-beans/message-driven`
-
-Defines a `MDB`.
+defines a `MDB`.
 
 | Node Name                   | Type        | Description                                                          |
 | --------------------------- | ----------- | -------------------------------------------------------------------- |
 | `epb-name`                  | `string`    | Short name of the component used for registration in naming directory. |
-| `epb-class`                 | `string`    | Fully qualified class name of the components class.                  |
+| `epb-class`                 | `string`    | Fully qualified class name of the component's class.                  |
 
 `/epb/enterprise-beans/[session or message-driven]/post-construct`
-
-Adds a `post-construct` lifecycle callback to the component.
+adds a `post-construct` lifecycle callback to the component.
 
 | Node Name                   | Type        | Description                                                          |
 | --------------------------- | ----------- | -------------------------------------------------------------------- |
 | `lifecycle-callback-method` | `string`    | Name of a class method that will be invoked after the component been initialized. |
 
 `/epb/enterprise-beans/[session or message-driven]/pre-destroy`
-
-Adds a `pre-destroy` lifecycle callback to the component.
+adds a `pre-destroy` lifecycle callback to the component.
 
 | Node Name                   | Type        | Description                                                          |
 | --------------------------- | ----------- | -------------------------------------------------------------------- |
 | `lifecycle-callback-method` | `string`    | Name of a class methode that will be invoked before the class will be destroyed. |
 
 `/epb/enterprise-beans/[session or message-driven]/epb-ref`
-
-Creates a reference to the remote or local business interface of the defined session bean in the naming directory under `php:global/example/env/[epb-ref-name][Local or Remote]`. This reference can be used by other components or for DI purposes.
+creates a reference to the remote or local business interface of the defined session bean in the naming directory in `php:global/example/env/[epb-ref-name][Local or Remote]`. This reference can be used by other components or for Dependency Injection purposes.
 
 | Node Name                   | Type        | Description                                                          |
 | --------------------------- | ----------- | -------------------------------------------------------------------- |
@@ -391,8 +386,7 @@ Creates a reference to the remote or local business interface of the defined ses
 | `remote`                    | `boolean`   | If a value has been specified, a reference to the remote proxy will be created instead of a local one. |
 
 `/epb/enterprise-beans/[session or message-driven]/res-ref`
-
-Creates a reference the defined resource in the naming directory under `php:global/example/env/[res-ref-name]`. This reference can be used by other components or for DI purposes.
+creates a reference to the defined resource in the naming directory in `php:global/example/env/[res-ref-name]`. This reference can be used by other components or for Dependency Injection purposes.
 
 | Node Name                   | Type        | Description                                                          |
 | --------------------------- | ----------- | -------------------------------------------------------------------- |
@@ -401,13 +395,12 @@ Creates a reference the defined resource in the naming directory under `php:glob
 | `res-ref-type`              | `string`    | The type of the reference resource.                                  |
 
 `/epb/enterprise-beans/[session or message-driven]/[ebp-ref or res-ref]/injection-target`
-
-Injects the reference by either using the method or property defined. The class name will be of interest, if there exists a hierarchy and the target class has to be specified explictly.
+injects the reference by either using the method or property defined. The class name is of interest, if there is a hierarchy and the target class has to be specified explictly.
 
 | Node Name                   | Type        | Description                                                          |
 | --------------------------- | ----------- | -------------------------------------------------------------------- |
 | `injection-target-class`    | `string`    | The class we want to inject the reference.                           |
 | `injection-target-method`   | `string`    | Use this method to inject the reference on runtime.                  |
-| `injection-target-property` | `string`    | Inject the reference to this property, whereas either this node or `injection-target-method` can be specified. |
+| `injection-target-property` | `string`    | Inject the reference to this property, whereas this node or `injection-target-method` can be specified. |
 
-> Annotations can be seen as default values, whereas a deployment descriptor enables a developer or a system administrator to override values specified in annotations. So keep in mind, that a deployment descriptor will always override the values specified by annotations. 
+> Annotations are default values, whereas a deployment descriptor enables a developer or a system administrator to override values specified in annotations. So keep in mind, that a deployment descriptor will always override the values specified by annotations. 

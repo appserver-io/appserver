@@ -13,19 +13,19 @@ subNav:
 permalink: /get-started/documentation/persistence-container.html
 ---
 
-In addition to the `Servlet-Engine`, the Persistence-Container is one of the main services appserver.io provides. The name `Persistence-Container` might lead to some misunderstanding in our case, as many people think that it mostly refers to database persistence. In Java there are EJB-Containers that provide a broad set of functionalities like [Bean- or Container-Managed-Persistence](http://en.wikipedia.org/wiki/Enterprise_JavaBeans), whereas appserver.io only provides a small subset of the functionality as platforms like [Wildfly](http://en.wikipedia.org/wiki/WildFly) does. In the following, the possibilities the `Persistence-Container` and how it can be used to write enterprise-ready applications, are described in detail.
+In addition to the `Servlet-Engine`, the Persistence-Container is one of the main services appserver.io provides. The name `Persistence-Container` might lead to some misunderstanding, as many people think that it mostly refers to database persistence. In Java, there are EJB-Containers that provide a broad set of functionalities like [Bean- or Container-Managed-Persistence](http://en.wikipedia.org/wiki/Enterprise_JavaBeans), whereas appserver.io only provides a small subset of the functionality similar to platforms like [Wildfly](http://en.wikipedia.org/wiki/WildFly). In the following, the possibilities of the `Persistence-Container` and its usage for writing enterprise-ready applications, are described in detail.
 
 ## Persistence-Container Options
 
-Although providing persisting data to a database is one functionality of the `Persistence-Container`, it is by far not the most important one. The following reasons support the use of `Persistence-Container`. Since PHP is used as a scripting language until now, it lacks the possibility of having objects, we call them components, persistent in memory. The `Persistence-Container` enables you to do exactly this. This option, besides performance, gives you many possibilities you would not benefit from if you were working with the well known LAMP stack. 
+Although providing persisting data to a database is one functionality of the `Persistence-Container`, it is by far not the most important one. The following reasons support the usage of the `Persistence-Container`. Since PHP is used as a scripting language until now, it lacks the possibility of having objects, we call them components, persistent in memory. The `Persistence-Container` enables you to do exactly this. It provides performance and many other possibilities you would not benefit from if you were working with the well-known LAMP stack. 
 
 ## Server-Side Component Types
 
-You may wonder how it is possible to have a component persistent in memory using PHP, a scripting language. Usually after every request the instance will be destroyed? The simple answer is: As appserver.io is provides containers that run as daemons, you can specify components, that will be loaded when the application server starts and will be in memory until the server shuts down. To make it simple, furthermore we call that classes [Beans](http://en.wikipedia.org/wiki/Enterprise_JavaBeans), as they do it in Java.
+One may wonder how it is possible to have a component persistent in memory using PHP, a scripting language. Usually after every request the instance will be destroyed. The simple answer is: As appserver.io is provides containers that run as daemons, you can specify components, that are be loaded when the application server starts and are in memory until the server shuts down. For simplicity reasons, the classes are called [Beans](http://en.wikipedia.org/wiki/Enterprise_JavaBeans), as it is done in Java.
 
-We separate three different types of beans, `Session Beans`, `Message Beans` and `Entity Beans`. In version 1.0.0 we don't have support for `Entity Beans`, because we think that the responsiblity therefore is up to ORM libraries like Doctrine. So we support Doctrine to handle database persistence.
+There are three different types of beans, `Session Beans`, `Message Beans` and `Entity Beans`. In version 1.0.0 we do not deliver support for `Entity Beans`, because the responsiblity therefore is up to ORM libraries like Doctrine. So we support Doctrine to handle database persistence.
 
-> These `Server-Side Component Types` can be distributed across a network, free of charge for developers! If components has been deployed on different instances, distribution simply has to be activated by configuration.
+> These `Server-Side Component Types` can be distributed across a network, free of charge for developers! If components have been deployed on different instances, the distribution has to be activated by configuration.
 
 ### Session Beans
 

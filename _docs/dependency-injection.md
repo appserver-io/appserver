@@ -57,7 +57,7 @@ DI can be a manual process where you `inject` an instance, needed by another cla
 
 A developer simply has to tell the DI container what instance has to be injected at runtime. The following section describes the two otpions he has.
 
-### 1. Property Injection
+### Property Injection
 
 The first option is to annotate a class property using the `@EnterpriseBean` annotation. The annotation accepts a `name` attribute that allows you to specify the name of a bean you have registered before. The following example shows you how to annotate a class property and initiate the application server to inject an instance of `AStatelessSessionBean` at runtime.
 
@@ -104,7 +104,7 @@ As the `@EnterpriseBean` annotation with the `name` attribute is not the only op
 
 > Property injection is preferred, because of massive performance improvements.
 
-### 2. Setter Injection
+### Setter Injection
 
 The second possibility to inject an instance is the setter injection. Setter injection allows developers to inject instances by using methods. 
 
