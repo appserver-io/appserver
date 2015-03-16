@@ -33,25 +33,25 @@ A session bean basically is a plain PHP class. You MUST not instantiate it direc
 
 > A session bean **MUST** provide a non-argument constructor, optionally no constructor.
 
-Therefore, if an developer needs access to a session bean, he requests the application server for an instance. This can either be done by a client or Dependency Injection. In both cases, you will get a proxy to the session bean that allows you to invoke its methods. Depending on your configuration, the proxy also allows you to call this method over a network as a `Remote Method Call`. This makes it obvious for you if your session bean is located on the same application server instance or on another one in your network.
+Therefore, if a developer needs access to a session bean, he requests the application server for an instance. The request can either be initiated by a client or Dependency Injection. In both cases, a proxy to the session bean is delivered that allows invoking its methods. Depending on your configuration, the proxy also allows you to call this method over a network as a `Remote Method Call`. This enables you to figure out if the session bean is located on the same application server instance or on another one in your network.
 
-When writing a session bean, the developer has to specify the type of bean he want to implement. This can either be done by adding an annotation to the classes DocBlock or specifing it in a deployment descriptor. As it seems to be easier to add the annotation and, in most cases this is sufficient, we recommend that for the start.
+When writing a session bean, the developer has to specify the type of bean he wants to implement. This can either be done by adding an annotation to the classes DocBlock or specifying it in a deployment descriptor. As it seems to be easier to add the annotation and, in most cases this is sufficient, we recommend that for the start.
 
-We differ between three kinds of session beans, even `Stateless`, `Stateful` and `Singleton` session beans.
+We differentiate three kinds of session beans, even `Stateless`, `Stateful` and `Singleton` session beans.
 
 #### Stateless Session Beans (SLSBs)
 
-A `SLSBs` state is only available for the time you invoke a method on it. As these bean type is designed for efficiency and simplicity the developer doesn't need to take care about memory consumption, concurrency or lifecycle.
+A `SLSBs` state is only available for the time you invoke a method on it. As this bean type is designed for efficiency and simplicity, the developer does not need to take care about memory consumption, concurrency or lifecycle.
 
-> `SLSBs` behave very similar to PHP`s default request behaviour, as they are created to handle the request and will be destroyed when the request has been finished.
+> `SLSBs` are very similar to PHP`s default request behaviour, as they are created to handle the request and will be destroyed after the request is finished.
 
 ##### Lifecycle
 
-On each request an new `SLSB` instance will be created. After handling the request, the instance will be destroyed by the container.
+With each request, a new `SLSB` instance will be created. The instance is destroyed by the container after the request is handled.
 
 ##### Example
 
-So let's implement a `SLSB` that provides functionality to create a user from the arguments passed to the `createUser()` method. The `SLSB` will be registered under the name `AStatelessSessionBean` in the application servers `Naming Directory`. Registering a bean in the [Naming Directory](<{{ "/get-started/documentation/naming-directory.html" | prepend: site.baseurl }}>) is necessary to use it for [Dependency Injection](<{{ "/get-started/documentation/dependency-injection.html" | prepend: site.baseurl }}>) explained in our documentation.
+The following example demonstrates the implementation of a `SLSB` that provides functionality to create a user from the arguments passed to the `createUser()` method. The `SLSB` is registered with the name `AStatelessSessionBean` in the application servers `Naming Directory`. Registering a bean in the [Naming Directory](<{{ "/get-started/documentation/naming-directory.html" | prepend: site.baseurl }}>) is necessary to use it for [Dependency Injection](<{{ "/get-started/documentation/dependency-injection.html" | prepend: site.baseurl }}>) as explained in the documentation.
 
 ```php
 <?php
@@ -96,7 +96,7 @@ class AStatelessSessionBean
 }
 ```
 
-Then we can implement a servlet that invokes the method with the credentials loaded from the request. The servlet could look like this.
+Then we can implement a servlet that invokes the method with the credentials loaded from the request. The servlet can look like this.
 
 ```php
 <?php
@@ -128,7 +128,7 @@ class UserServlet extends HttpServlet
    * Handles a HTTP POST request.
    *
    * This is a very simple example that shows how to start a new session to
-   * login the a user with credentials found as request parameters.
+   * login a user with credentials found as request parameters.
    *
    * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface
    *   $servletRequest The request instance
@@ -155,11 +155,11 @@ class UserServlet extends HttpServlet
 }
 ```
 
-If we now invoke a `POST` request on our servlet, sending `username` and `password` parameters, the application server will inject the `SLSB` at runtime and invoke the `doPost()` method. That again will invoke the `createUser()` method on the `SLSB` and adds a success message to the response.
+If we now invoke a `POST` request on our servlet, sending `username` and `password` parameters, the application server will inject the `SLSB` at runtime and invoke the `doPost()` method. In return, this step invokes the `createUser()` method on the `SLSB` and adds a success message to the response.
 
 #### Stateful Session Beans (SFSBs)
 
-The `SFSB` is something between the two other types. It is bound to the session with the ID pass to the client, when an instance is requested. A `SFSB` is very useful, if you want to implement something like a shopping cart. If the shopping cart instance will be declared as a class member of `SFSB`, it'll be persistent for the sessions lifetime.
+The `SFSB` is something between the two other types. It is bound to the session with the ID pass to the client, when an instance is requested. A `SFSB` is very useful, if you want to implement something like a shopping cart. If the shopping cart instance will be declared as a class member of `SFSB`, it is persistent for the sessions lifetime.
 
 In opposite to a HTTP Session, `SFSBs` enables you to have session bound persistence, without the need to explicitly add the data to a session object. That makes development pretty easy and comfortable. As `SFSBs` are persisted in memory and not serialized to files, the Application Server has to take care, that, in order ot minimize the number of instances carried around, they are flushed when their lifetime has been reached.
 
@@ -323,11 +323,11 @@ class LoginServlet extends HttpServlet
 }
 ```
 
-> You don't have to restart the session in the `GET` request again, because the `Servlet-Engine` is aware of the session-ID passed as request header and uses it when the `SFSB` will be injected on runtime.
+> You do not have to restart the session in the `GET` request, because the `Servlet-Engine` is aware of the session-ID passed as request header and uses it when the `SFSB` is injected on runtime.
 
 #### Singleton Session Beans (SSBs)
 
-A `SSB` will be created by the container only one time for each application. This means, whenever an instance is requested, this will be the same one. If a variable is set as a `SSB` member, it'll be available until someone will overwrite it, or the application server has been restarted.
+A `SSB` is created by the container only one time for each application. This means, whenever an instance is requested, it will be the same one. If a variable is set as a `SSB` member, it is available until it is overwritten, or the application server is restarted.
 
 ##### Concurrency
 
