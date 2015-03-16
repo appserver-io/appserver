@@ -327,27 +327,27 @@ class LoginServlet extends HttpServlet
 
 #### Singleton Session Beans (SSBs)
 
-A `SSB` is created by the container only one time for each application. This means, whenever an instance is requested, it will be the same one. If a variable is set as a `SSB` member, it is available until it is overwritten, or the application server is restarted.
+A `SSB` is created by the container only once each application. Thus, whenever an instance is requested, it will be the same. If a variable is set as a `SSB` member, it is available until it is overwritten, or the application server is restarted.
 
 ##### Concurrency
 
-Concurrency is, in case of a `SSB`, a bit more complicated. Oher than `SLSBs` and `SFSBs` the data will be shared across requests, which means, that the container have to make sure, that only one request has access to the data of a `SFSB`. Therefore requests are serialized and blocked until the instance will become available again.
+Concurrency is, in case of a `SSB`, a more complex issue. In contrast to `SLSBs` and `SFSBs`, the data will be shared across requests. The container has to make sure, that only one request has access to the data of a `SFSB`. Therefore, requests are serialized and blocked until the instance is available again.
 
-> To enable a `SSB` for sharing its data across requests, it has to extend the `\Stackable` class. This class comes with the PECL [pthreads](https://github.com/appserver-io-php/pthreads.git) extension that brings multithreading to PHP. appserver.io actually uses a fork of the 1.x branch, because of some restrictions introduced with 2.x branch.
+> To enable a `SSB` for sharing its data across requests, it has to extend the `\Stackable` class. This class comes with the PECL [pthreads](https://github.com/appserver-io-php/pthreads.git) extension that brings multithreading to PHP. appserver.io uses a fork of the 1.x branch, due to some restrictions introduced with 2.x branch.
 
 ##### Lifecycle
 
-In opposite to a `SLSB`, the lifecycle of a `SSB` is a bit different. Once the instance has been created, it'll be shared between all requests, and instead of destroying the instance after each request the instance persists in memory until the application will be shutdown or restarted.
+In contrast to a `SLSB`, the lifecycle of a `SSB` is different. Once the instance is created, it is shared among all requests. Instead of destroying the instance after each request the instance persists in memory until the application is shut down or restarted.
 
-> A `SSB` gives a developer great power, because all data added to a member will stay in memory until someone will unset it. So, if data has to be shared across requests, a `SSB` will be a good option. But remember: With great power, great responsibilty came together. So, a developer always should have an eye on memory consumption of a `SSB`, because **HE** is responsible for that now!
+> A `SSB` gives developers great power because all data added to a member stays in memory until someone unsets it. Thus, a `SSB` is an excellent option for sharing data across requests. However, great power comes with great responsibility for the developer. This is why he always has to  keep an eye on a `SSB`'s memory consumption.
 
 ##### Explicit Startup
 
-In combination with the possiblity to have data persistent in memory, a `SSB` additionally can be pre-loaded on application startup. This can be done by adding the `@Startup` annotation to the classes DocBlock. Using explict startup functionality together with loading data from a configuration file or a DB persistent in memory, my lead to massive performance improvements.
+In combination with having data persistent in memory, a `SSB` can be pre-loaded on application startup. This can be done by adding the `@Startup` annotation to the classes DocBlock. Using explicit startup functionality and loading data from a configuration file or a DB persistent in memory, leads to massive performance improvements.
 
 ##### Example
 
-As an example of how a `SSB` can be used reasonable, we'll extend our example from the `SFSB` with a counter that tracks the number of successful logins.
+To demonstrate the usage of a `SSB` the previous example of the `SFSB` is extended by a counter, which tracks the number of successful logins.
 
 ```php
 <?php
@@ -379,7 +379,7 @@ class ASingletonSessionBean extends \Stackable
 }
 ```
 
-To use the `SSB` in a `SFSB`,it can be injected by using the `@EnterpriseBeans` annotation. Additionally the `login()` method has to be customized to raise and return the number of successful logins by invoking the `raise()` method of the `SSB`.
+To use the `SSB` in a `SFSB`, it can be injected by using the `@EnterpriseBeans` annotation. Additionally the `login()` method has to be customized to raise and return the number of successful logins by invoking the `raise()` method of the `SSB`.
 
 ```php
 <?php
@@ -430,7 +430,7 @@ class AStatefulSessionBean
   }
   
   /**
-   * Checks if a user has been logged into the system, if not an exception
+   * Checks if a user has been logged into the system, if not, an exception
    * will be thrown.
    *
    * @return void
@@ -445,7 +445,7 @@ class AStatefulSessionBean
 }
 ```
 
-Finally the servlet receives the number ob successul logins since the application server last restart and add's it to the response.
+Finally the servlet receives the number of successul logins since the application server's last restart and adds it to the response.
 
 ```php
 <?php
@@ -476,7 +476,7 @@ class LoginServlet extends HttpServlet
    * Handles a HTTP POST request.
    *
    * This is a very simple example that shows how to start a new session to
-   * login the a user with credentials found as request parameters.
+   * login the user with credentials found as request parameters.
    *
    * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface
    *   $servletRequest The request instance
@@ -545,11 +545,11 @@ class LoginServlet extends HttpServlet
 
 ### Message Beans (MDBs)
 
-Other than session beans, `MDBs` are **NOT** invoked by a proxy, but as receiver of the messages sent to a `Message Broker`. The `Message Broker` adds them to a queue until a worker, that'll be separate thread, collects and processes it.
+Other than session beans, `MDBs` are **NOT** invoked by a proxy, but are sent to a `Message Broker` as receiver of the messages. The `Message Broker` adds them to a queue until they are collected and proccessed in a separate thread.
 
-> Using `MDBs` enables you to execute long running processes `asynchronously`, because you don't have to wait for an answer after sending a message to the `Message Broker`. In opposite to session beans, `MDBs` have to implement the `AppserverIo\Psr\Pms\MessageListenerInterface` interface. Like session beans, `MDBs` **MUST** provide a non-argument constructor, optionally no constructor.
+> Using `MDBs` enables you to execute long running processes `asynchronously`, because waiting for an answer after having set a message to the `Message Broker` is no longer neccessary. Unlike session beans, `MDBs` have to implement the `AppserverIo\Psr\Pms\MessageListenerInterface` interface. Like session beans, `MDBs` **MUST** provide a non-argument constructor, optionally no constructor.
 
-As `MDBs` are mostly used in context of a [Message-Queue](<{{ "/get-started/documentation/message-queue.html" | prepend: site.baseurl }}>), this blog post will not describe functionality in deep. Instead we'll write a separate blog post that is all about `MDBs` and context of a `Message-Queue`.
+As `MDBs` are mostly used in context of a [Message-Queue](<{{ "/get-started/documentation/message-queue.html" | prepend: site.baseurl }}>), this section does not describe the functionality in deep.
 
 ### Lifecycle Callbacks
 
