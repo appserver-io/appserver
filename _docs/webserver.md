@@ -31,7 +31,7 @@ permalink: /get-started/documentation/webserver.html
 
 The Webserver is build and configured like any other server component using our
 [multithreaded server framework](<https://github.com/appserver-io/server>). Let's have a look at the main configuration
-of the server component itselfe.
+of the server component itself.
 
 ```xml
 <server
@@ -52,9 +52,9 @@ table.
 | `name`            | The name of the server component used for reference and logging purpose. |
 | `type`            | The server type implementation classname based on `AppserverIo\Server\Interfaces\ServerInterface`. It provides the main daemon like logic of the server. |
 | `worker`          | The worker queue implementation classname based on `\AppserverIo\Server\Interfaces\WorkerInterface`. It will introduce a common worker queue logic for the server being able processing many requests at the same time. This could be either a classic eventloop or a threaded, forked mechanism |
-| `socket`          | The socket implementation classname based on `AppserverIo\Psr\Socket\SocketInterface`. It provides common socket functionality. As we have our [psr for sockets](<https://github.com/appserver-io-psr/socket>) now you might have a look at it. |
+| `socket`          | The socket implementation classname based on `AppserverIo\Psr\Socket\SocketInterface`. It provides common socket functionality. As we have our [psr for sockets](<https://github.com/appserver-io-psr/socket>) you might want to have a look at it. |
 | `serverContext`   | The server context implementation classname based on `\AppserverIo\Server\Interfaces\ServerContextInterface`. It represents the server context while running as daemon and holds the configuration, loggers and an optional injectable container object which can be used to connect several server components. |
-| `requestContext`  | The request context implementation classname based on `\AppserverIo\Server\Interfaces\RequestContextInterface`. It holds all vars needed (server, environment and module vars) which can be processed and modified by the server-module-chain defined. After the request was pre processed by internal server-modules the request context will provide those information for specific file-handlers being able to process the request in a common way. |
+| `requestContext`  | The request context implementation classname based on `\AppserverIo\Server\Interfaces\RequestContextInterface`. It holds all vars needed (server, environment and module vars) which can be processed and modified by the server-module-chain defined. After the request was pre-processed by internal server-modules the request context will provide those information for specific file-handlers being able to process the request in a common way. |
 | `loggerName`      | The logger instance to use in the server's context. |
 
 Next thing we will have a look at are server params.
