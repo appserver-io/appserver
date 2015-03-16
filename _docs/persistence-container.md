@@ -33,25 +33,25 @@ A session bean basically is a plain PHP class. You MUST not instantiate it direc
 
 > A session bean **MUST** provide a non-argument constructor, optionally no constructor.
 
-Therefore, if an developer needs access to a session bean, he requests the application server for an instance. This can either be done by a client or Dependency Injection. In both cases, you will get a proxy to the session bean that allows you to invoke its methods. Depending on your configuration, the proxy also allows you to call this method over a network as a `Remote Method Call`. This makes it obvious for you if your session bean is located on the same application server instance or on another one in your network.
+Therefore, if a developer needs access to a session bean, he requests the application server for an instance. The request can either be initiated by a client or Dependency Injection. In both cases, a proxy to the session bean is delivered that allows invoking its methods. Depending on your configuration, the proxy also allows you to call this method over a network as a `Remote Method Call`. This enables you to figure out if the session bean is located on the same application server instance or on another one in your network.
 
-When writing a session bean, the developer has to specify the type of bean he want to implement. This can either be done by adding an annotation to the classes DocBlock or specifing it in a deployment descriptor. As it seems to be easier to add the annotation and, in most cases this is sufficient, we recommend that for the start.
+When writing a session bean, the developer has to specify the type of bean he wants to implement. This can either be done by adding an annotation to the classes DocBlock or specifying it in a deployment descriptor. As it seems to be easier to add the annotation and, in most cases this is sufficient, we recommend that for the start.
 
-We differ between three kinds of session beans, even `Stateless`, `Stateful` and `Singleton` session beans.
+We differentiate three kinds of session beans, even `Stateless`, `Stateful` and `Singleton` session beans.
 
 #### Stateless Session Beans (SLSBs)
 
-A `SLSBs` state is only available for the time you invoke a method on it. As these bean type is designed for efficiency and simplicity the developer doesn't need to take care about memory consumption, concurrency or lifecycle.
+A `SLSBs` state is only available for the time you invoke a method on it. As this bean type is designed for efficiency and simplicity, the developer does not need to take care about memory consumption, concurrency or lifecycle.
 
-> `SLSBs` behave very similar to PHP`s default request behaviour, as they are created to handle the request and will be destroyed when the request has been finished.
+> `SLSBs` are very similar to PHP`s default request behaviour, as they are created to handle the request and will be destroyed after the request is finished.
 
 ##### Lifecycle
 
-On each request an new `SLSB` instance will be created. After handling the request, the instance will be destroyed by the container.
+With each request, a new `SLSB` instance will be created. The instance is destroyed by the container after the request is handled.
 
 ##### Example
 
-So let's implement a `SLSB` that provides functionality to create a user from the arguments passed to the `createUser()` method. The `SLSB` will be registered under the name `AStatelessSessionBean` in the application servers `Naming Directory`. Registering a bean in the [Naming Directory](<{{ "/get-started/documentation/naming-directory.html" | prepend: site.baseurl }}>) is necessary to use it for [Dependency Injection](<{{ "/get-started/documentation/dependency-injection.html" | prepend: site.baseurl }}>) explained in our documentation.
+The following example demonstrates the implementation of a `SLSB` that provides functionality to create a user from the arguments passed to the `createUser()` method. The `SLSB` is registered with the name `AStatelessSessionBean` in the application servers `Naming Directory`. Registering a bean in the [Naming Directory](<{{ "/get-started/documentation/naming-directory.html" | prepend: site.baseurl }}>) is necessary to use it for [Dependency Injection](<{{ "/get-started/documentation/dependency-injection.html" | prepend: site.baseurl }}>) as explained in the documentation.
 
 ```php
 <?php
@@ -96,7 +96,7 @@ class AStatelessSessionBean
 }
 ```
 
-Then we can implement a servlet that invokes the method with the credentials loaded from the request. The servlet could look like this.
+Then we can implement a servlet that invokes the method with the credentials loaded from the request. The servlet can look like this.
 
 ```php
 <?php
@@ -128,7 +128,7 @@ class UserServlet extends HttpServlet
    * Handles a HTTP POST request.
    *
    * This is a very simple example that shows how to start a new session to
-   * login the a user with credentials found as request parameters.
+   * login a user with credentials found as request parameters.
    *
    * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface
    *   $servletRequest The request instance
@@ -155,17 +155,17 @@ class UserServlet extends HttpServlet
 }
 ```
 
-If we now invoke a `POST` request on our servlet, sending `username` and `password` parameters, the application server will inject the `SLSB` at runtime and invoke the `doPost()` method. That again will invoke the `createUser()` method on the `SLSB` and adds a success message to the response.
+If we now invoke a `POST` request on our servlet, sending `username` and `password` parameters, the application server will inject the `SLSB` at runtime and invoke the `doPost()` method. In return, this step invokes the `createUser()` method on the `SLSB` and adds a success message to the response.
 
 #### Stateful Session Beans (SFSBs)
 
-The `SFSB` is something between the two other types. It is bound to the session with the ID pass to the client, when an instance is requested. A `SFSB` is very useful, if you want to implement something like a shopping cart. If the shopping cart instance will be declared as a class member of `SFSB`, it'll be persistent for the sessions lifetime.
+The `SFSB` is something between the two other types. It is bound to the session with the ID pass to the client, when an instance is requested. A `SFSB` is very useful, if you want to implement something like a shopping cart. If the shopping cart instance will be declared as a class member of `SFSB`, it is persistent for the sessions lifetime.
 
 In opposite to a HTTP Session, `SFSBs` enables you to have session bound persistence, without the need to explicitly add the data to a session object. That makes development pretty easy and comfortable. As `SFSBs` are persisted in memory and not serialized to files, the Application Server has to take care, that, in order ot minimize the number of instances carried around, they are flushed when their lifetime has been reached.
 
 ##### Lifecycle
 
-`SFSBs` are created by the container when requested and no instance, based on the passed session-ID, is available. After the request has been processed, the instance will be re-attached to the container ready to handle the next request.
+`SFSBs` are created by the container when they are requested and no instance exists, based on the passed session-ID. After the request has been processed, the instance will be re-attached to the container ready to handle the next request.
 
 > If the session is removed, times out, or the application server restarts, the data of a `SFSB` will be lost. Because `SFSBs` use the HTTP session-ID, it is necessary to start an HTTP session before you invoke methods on it.
 
@@ -323,31 +323,31 @@ class LoginServlet extends HttpServlet
 }
 ```
 
-> You don't have to restart the session in the `GET` request again, because the `Servlet-Engine` is aware of the session-ID passed as request header and uses it when the `SFSB` will be injected on runtime.
+> You do not have to restart the session in the `GET` request, because the `Servlet-Engine` is aware of the session-ID passed as request header and uses it when the `SFSB` is injected on runtime.
 
 #### Singleton Session Beans (SSBs)
 
-A `SSB` will be created by the container only one time for each application. This means, whenever an instance is requested, this will be the same one. If a variable is set as a `SSB` member, it'll be available until someone will overwrite it, or the application server has been restarted.
+A `SSB` is created by the container only once each application. Thus, whenever an instance is requested, it will be the same. If a variable is set as a `SSB` member, it is available until it is overwritten, or the application server is restarted.
 
 ##### Concurrency
 
-Concurrency is, in case of a `SSB`, a bit more complicated. Oher than `SLSBs` and `SFSBs` the data will be shared across requests, which means, that the container have to make sure, that only one request has access to the data of a `SFSB`. Therefore requests are serialized and blocked until the instance will become available again.
+Concurrency is, in case of a `SSB`, a more complex issue. In contrast to `SLSBs` and `SFSBs`, the data will be shared across requests. The container has to make sure, that only one request has access to the data of a `SFSB`. Therefore, requests are serialized and blocked until the instance is available again.
 
-> To enable a `SSB` for sharing its data across requests, it has to extend the `\Stackable` class. This class comes with the PECL [pthreads](https://github.com/appserver-io-php/pthreads.git) extension that brings multithreading to PHP. appserver.io actually uses a fork of the 1.x branch, because of some restrictions introduced with 2.x branch.
+> To enable a `SSB` for sharing its data across requests, it has to extend the `\Stackable` class. This class comes with the PECL [pthreads](https://github.com/appserver-io-php/pthreads.git) extension that brings multithreading to PHP. appserver.io uses a fork of the 1.x branch, due to some restrictions introduced with 2.x branch.
 
 ##### Lifecycle
 
-In opposite to a `SLSB`, the lifecycle of a `SSB` is a bit different. Once the instance has been created, it'll be shared between all requests, and instead of destroying the instance after each request the instance persists in memory until the application will be shutdown or restarted.
+In contrast to a `SLSB`, the lifecycle of a `SSB` is different. Once the instance is created, it is shared among all requests. Instead of destroying the instance after each request the instance persists in memory until the application is shut down or restarted.
 
-> A `SSB` gives a developer great power, because all data added to a member will stay in memory until someone will unset it. So, if data has to be shared across requests, a `SSB` will be a good option. But remember: With great power, great responsibilty came together. So, a developer always should have an eye on memory consumption of a `SSB`, because **HE** is responsible for that now!
+> A `SSB` gives developers great power because all data added to a member stays in memory until someone unsets it. Thus, a `SSB` is an excellent option for sharing data across requests. However, great power comes with great responsibility for the developer. This is why he always has to  keep an eye on a `SSB`'s memory consumption.
 
 ##### Explicit Startup
 
-In combination with the possiblity to have data persistent in memory, a `SSB` additionally can be pre-loaded on application startup. This can be done by adding the `@Startup` annotation to the classes DocBlock. Using explict startup functionality together with loading data from a configuration file or a DB persistent in memory, my lead to massive performance improvements.
+In combination with having data persistent in memory, a `SSB` can be pre-loaded on application startup. This can be done by adding the `@Startup` annotation to the classes DocBlock. Using explicit startup functionality and loading data from a configuration file or a DB persistent in memory, leads to massive performance improvements.
 
 ##### Example
 
-As an example of how a `SSB` can be used reasonable, we'll extend our example from the `SFSB` with a counter that tracks the number of successful logins.
+To demonstrate the usage of a `SSB` the previous example of the `SFSB` is extended by a counter, which tracks the number of successful logins.
 
 ```php
 <?php
@@ -379,7 +379,7 @@ class ASingletonSessionBean extends \Stackable
 }
 ```
 
-To use the `SSB` in a `SFSB`,it can be injected by using the `@EnterpriseBeans` annotation. Additionally the `login()` method has to be customized to raise and return the number of successful logins by invoking the `raise()` method of the `SSB`.
+To use the `SSB` in a `SFSB`, the `SSB` can be injected with the `@EnterpriseBeans` annotation. Additionally, the `login()` method has to be customized to raise and return the number of successful logins by invoking the `raise()` method of the `SSB`.
 
 ```php
 <?php
@@ -430,7 +430,7 @@ class AStatefulSessionBean
   }
   
   /**
-   * Checks if a user has been logged into the system, if not an exception
+   * Checks if a user has been logged into the system, if not, an exception
    * will be thrown.
    *
    * @return void
@@ -445,7 +445,7 @@ class AStatefulSessionBean
 }
 ```
 
-Finally the servlet receives the number ob successul logins since the application server last restart and add's it to the response.
+Finally the servlet receives the number of successul logins since the application server's last restart and adds it to the response.
 
 ```php
 <?php
@@ -476,7 +476,7 @@ class LoginServlet extends HttpServlet
    * Handles a HTTP POST request.
    *
    * This is a very simple example that shows how to start a new session to
-   * login the a user with credentials found as request parameters.
+   * login the user with credentials found as request parameters.
    *
    * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface
    *   $servletRequest The request instance
@@ -545,21 +545,21 @@ class LoginServlet extends HttpServlet
 
 ### Message Beans (MDBs)
 
-Other than session beans, `MDBs` are **NOT** invoked by a proxy, but as receiver of the messages sent to a `Message Broker`. The `Message Broker` adds them to a queue until a worker, that'll be separate thread, collects and processes it.
+Other than session beans, `MDBs` are **NOT** invoked by a proxy, but are sent to a `Message Broker` as receiver of the messages. The `Message Broker` adds them to a queue until they are collected and proccessed in a separate thread.
 
-> Using `MDBs` enables you to execute long running processes `asynchronously`, because you don't have to wait for an answer after sending a message to the `Message Broker`. In opposite to session beans, `MDBs` have to implement the `AppserverIo\Psr\Pms\MessageListenerInterface` interface. Like session beans, `MDBs` **MUST** provide a non-argument constructor, optionally no constructor.
+> Using `MDBs` enables you to execute long running processes `asynchronously`, because waiting for an answer after having set a message to the `Message Broker` is no longer neccessary. Unlike session beans, `MDBs` have to implement the `AppserverIo\Psr\Pms\MessageListenerInterface` interface. Like session beans, `MDBs` **MUST** provide a non-argument constructor, optionally no constructor.
 
-As `MDBs` are mostly used in context of a [Message-Queue](<{{ "/get-started/documentation/message-queue.html" | prepend: site.baseurl }}>), this blog post will not describe functionality in deep. Instead we'll write a separate blog post that is all about `MDBs` and context of a `Message-Queue`.
+As `MDBs` are mostly used in context of a [Message-Queue](<{{ "/get-started/documentation/message-queue.html" | prepend: site.baseurl }}>), this section does not describe the functionality in deep.
 
 ### Lifecycle Callbacks
 
-`Lifecycle Callbacks` enables a developer to declare callback methods depending on the beans lifecycle. Actually we only support `post-construct` and `pre-destroy` callbacks. `Lifecycle Callbacks` can be configured either by annotations or the deployment descriptor. Declaring `Lifecycle Callbacks` by annotations is more intuitive, as you simply have to add the annotation to the methods DocBlock. Therfore we go with the annotations here.
+`Lifecycle Callbacks` enable a developer to declare callback methods depending on the bean's lifecycle.  We support `post-construct` and `pre-destroy` callbacks. `Lifecycle Callbacks` can be configured either by annotations or the deployment descriptor. Declaring `Lifecycle Callbacks` by annotations is more intuitive, as you easily add the annotation to the methods DocBlock. Therefore, we go with the annotations here.
 
-> Be aware, that `Lifecycle Callbacks` are optional, **MUST** be `public`, **MUST NOT** have any arguments and **CAN'T** throw checked exceptions. Exceptions will be catched by the container and result in a `critical` log message.
+> Keep in mind, that `Lifecycle Callbacks` are optional, **MUST** be `public`, **MUST NOT** have any arguments and **CAN NOT** deliver checked exceptions. Exceptions are handled by the container and result in a `critical` log message.
 
 #### Post-Construct Callback
 
-As the beans lifecycle is controlled by the container and `Dependency Injection` works either by property or method injection, a `Post-Construct` callback enables a developer to implement a method that'll be invoked by the container after the bean has been created and all instances injected.
+As the bean's lifecycle is controlled by the container and `Dependency Injection` works either by property or method injection, a `Post-Construct` callback enables a developer to implement a method that'll be invoked by the container after the bean has been created and all instances injected.
 
 > This callback can be very helpful for implementing functionalty like cache systems that need to load data from a datasource once and will update it only frequently.
 
