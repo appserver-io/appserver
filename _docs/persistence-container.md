@@ -165,7 +165,7 @@ In opposite to a HTTP Session, `SFSBs` enables you to have session bound persist
 
 ##### Lifecycle
 
-`SFSBs` are created by the container when requested and no instance, based on the passed session-ID, is available. After the request has been processed, the instance will be re-attached to the container ready to handle the next request.
+`SFSBs` are created by the container when they are requested and no instance exists, based on the passed session-ID. After the request has been processed, the instance will be re-attached to the container ready to handle the next request.
 
 > If the session is removed, times out, or the application server restarts, the data of a `SFSB` will be lost. Because `SFSBs` use the HTTP session-ID, it is necessary to start an HTTP session before you invoke methods on it.
 
@@ -379,7 +379,7 @@ class ASingletonSessionBean extends \Stackable
 }
 ```
 
-To use the `SSB` in a `SFSB`, it can be injected by using the `@EnterpriseBeans` annotation. Additionally the `login()` method has to be customized to raise and return the number of successful logins by invoking the `raise()` method of the `SSB`.
+To use the `SSB` in a `SFSB`, the `SSB` can be injected with the `@EnterpriseBeans` annotation. Additionally, the `login()` method has to be customized to raise and return the number of successful logins by invoking the `raise()` method of the `SSB`.
 
 ```php
 <?php
@@ -553,13 +553,13 @@ As `MDBs` are mostly used in context of a [Message-Queue](<{{ "/get-started/docu
 
 ### Lifecycle Callbacks
 
-`Lifecycle Callbacks` enables a developer to declare callback methods depending on the beans lifecycle. Actually we only support `post-construct` and `pre-destroy` callbacks. `Lifecycle Callbacks` can be configured either by annotations or the deployment descriptor. Declaring `Lifecycle Callbacks` by annotations is more intuitive, as you simply have to add the annotation to the methods DocBlock. Therfore we go with the annotations here.
+`Lifecycle Callbacks` enable a developer to declare callback methods depending on the bean's lifecycle.  We support `post-construct` and `pre-destroy` callbacks. `Lifecycle Callbacks` can be configured either by annotations or the deployment descriptor. Declaring `Lifecycle Callbacks` by annotations is more intuitive, as you easily add the annotation to the methods DocBlock. Therefore, we go with the annotations here.
 
-> Be aware, that `Lifecycle Callbacks` are optional, **MUST** be `public`, **MUST NOT** have any arguments and **CAN'T** throw checked exceptions. Exceptions will be catched by the container and result in a `critical` log message.
+> Keep in mind, that `Lifecycle Callbacks` are optional, **MUST** be `public`, **MUST NOT** have any arguments and **CAN NOT** deliver checked exceptions. Exceptions are handled by the container and result in a `critical` log message.
 
 #### Post-Construct Callback
 
-As the beans lifecycle is controlled by the container and `Dependency Injection` works either by property or method injection, a `Post-Construct` callback enables a developer to implement a method that'll be invoked by the container after the bean has been created and all instances injected.
+As the bean's lifecycle is controlled by the container and `Dependency Injection` works either by property or method injection, a `Post-Construct` callback enables a developer to implement a method that'll be invoked by the container after the bean has been created and all instances injected.
 
 > This callback can be very helpful for implementing functionalty like cache systems that need to load data from a datasource once and will update it only frequently.
 
