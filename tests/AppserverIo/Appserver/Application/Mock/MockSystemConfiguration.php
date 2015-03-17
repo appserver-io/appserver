@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Application\Mock\MockSystemConfiguration
+ * \AppserverIo\Appserver\Application\Mock\MockSystemConfiguration
  *
  * NOTICE OF LICENSE
  *

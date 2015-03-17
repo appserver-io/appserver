@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * \AppserverIo\Appserver\AspectContainer\AspectManager
+ *
  * NOTICE OF LICENSE
  *
  * This source file is subject to the Open Software License (OSL 3.0)
@@ -20,6 +22,7 @@ namespace AppserverIo\Appserver\AspectContainer;
 
 use AppserverIo\Appserver\AspectContainer\Interfaces\AspectManagerInterface;
 use AppserverIo\Appserver\Core\Api\InvalidConfigurationException;
+use AppserverIo\Appserver\Core\DgClassLoader;
 use AppserverIo\Doppelgaenger\AspectRegister;
 use AppserverIo\Doppelgaenger\Config;
 use AppserverIo\Doppelgaenger\Entities\Definitions\Advice;
@@ -39,9 +42,10 @@ use AppserverIo\Psr\MetaobjectProtocol\Aop\Annotations\Aspect as AspectAnnotatio
  * @author    Bernhard Wick <bw@appserver.io>
  * @copyright 2015 TechDivision GmbH - <info@appserver.io>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io/
  *
- * @property \AppserverIo\Doppelgaenger\AspectRegister $aspectRegister The aspect register used for registering the found aspects of this application
+ * @property \AppserverIo\Doppelgaenger\AspectRegister         $aspectRegister The aspect register used for registering the found aspects of this application
  * @property \AppserverIo\Psr\Application\ApplicationInterface $application    The application to manage
  */
 class AspectManager implements AspectManagerInterface, ManagerInterface
@@ -117,9 +121,25 @@ class AspectManager implements AspectManagerInterface, ManagerInterface
      */
     public function initialize(ApplicationInterface $application)
     {
+
+        /** @var \AppserverIo\Appserver\Core\DgClassLoader $dgClassLoader */
+        $dgClassLoader = $application->search('DgClassLoader');
+
+        // if we did not get the correct class loader our efforts are for naught
+        if (!$dgClassLoader instanceof DgClassLoader) {
+            $application->getInitialContext()->getSystemLogger()->warning(
+                sprintf(
+                    'Application %s uses the aspect manager but does not have access to the required Doppelgaenger class loader, AOP functionality will be omitted.',
+                    $application->getName()
+                )
+            );
+            return;
+        }
+
         // register the aspects and tell the class loader it can fill the cache
         $this->registerAspects($application);
-        $dgClassLoader = $application->search('DgClassLoader');
+
+        // inject the filled aspect register and create the cache based on it
         $dgClassLoader->injectAspectRegister($this->getAspectRegister());
         $dgClassLoader->createCache();
     }
@@ -185,21 +205,14 @@ class AspectManager implements AspectManagerInterface, ManagerInterface
      */
     protected function registerAspectClasses(ApplicationInterface $application)
     {
-        // load the webapp path
-        $webappPath = $this->getWebappPath();
-
-        // build up our directory vars
-        $aspectDirectories = array(
-            $webappPath . DIRECTORY_SEPARATOR. 'META-INF' . DIRECTORY_SEPARATOR . 'classes',
-            $webappPath . DIRECTORY_SEPARATOR. 'WEB-INF' . DIRECTORY_SEPARATOR . 'classes',
-            $webappPath . DIRECTORY_SEPARATOR. 'common' . DIRECTORY_SEPARATOR . 'classes'
-        );
 
         // check directory for PHP files with classes we want to register
         /** @var \AppserverIo\Appserver\Core\Api\DeploymentService $service */
         $service = $application->newService('AppserverIo\Appserver\Core\Api\DeploymentService');
 
         // iterate over the directories and try to find aspects
+        $aspectDirectories = $service->globDir($this->getWebappPath() . DIRECTORY_SEPARATOR . '{WEB-INF,META-INF,common}' .
+            DIRECTORY_SEPARATOR . 'classes', GLOB_BRACE);
         foreach ($aspectDirectories as $aspectDirectory) {
             // iterate all PHP files found in the directory
             foreach ($service->globDir($aspectDirectory . DIRECTORY_SEPARATOR . '*.php') as $phpFile) {
@@ -242,79 +255,116 @@ class AspectManager implements AspectManagerInterface, ManagerInterface
      */
     public function registerAspectXml(ApplicationInterface $application)
     {
+
+        /** @var \AppserverIo\Appserver\Core\Api\ConfigurationService $configurationService */
+        $configurationService = $application->newService('AppserverIo\Appserver\Core\Api\ConfigurationService');
+
         // check if we even have a XMl file to read from
-        $xmlPath = $this->getWebappPath() . DIRECTORY_SEPARATOR . 'META-INF' . DIRECTORY_SEPARATOR . self::CONFIG_FILE;
-        if (is_readable($xmlPath)) {
-            // validate the file here, if it is not valid we can skip further steps
-            try {
-                /** @var \AppserverIo\Appserver\Core\Api\ConfigurationService $configurationService */
-                $configurationService = $this->getApplication()->newService('AppserverIo\Appserver\Core\Api\ConfigurationService');
-                $configurationService->validateFile($xmlPath, null, true);
-            } catch (InvalidConfigurationException $e) {
-                /** @var \Psr\Log\LoggerInterface $systemLogger */
-                $systemLogger = $this->getApplication()->getInitialContext()->getSystemLogger();
-                $systemLogger->error($e->getMessage());
-                $systemLogger->critical(sprintf('Pointcuts configuration file %s is invalid, AOP functionality might not work as expected.', $xmlPath));
-                return;
-            }
-
-            // load the aop config
-            $config = new \SimpleXMLElement(file_get_contents($xmlPath));
-            $config->registerXPathNamespace('a', 'http://www.appserver.io/appserver');
-
-            // create us an aspect
-            // name of the aspect will be the application name
-            $aspect = new Aspect();
-            $aspect->setName($application->getName());
-
-            // check if we got some pointcuts
-            foreach ($config->xpath('/a:pointcuts/a:pointcut') as $key => $pointcutConfiguration) {
-                // build up the pointcut and add it to the collection
-                $pointcut = new Pointcut();
-                $pointcut->setAspectName($aspect->getName());
-                $pointcut->setName((string) $pointcutConfiguration->{'pointcut-name'});
-                $pointcut->setPointcutExpression(new PointcutExpression((string) $pointcutConfiguration->{'pointcut-pattern'}));
-                $aspect->getPointcuts()->add($pointcut);
-            }
-
-            // check if we got some advices
-            foreach ($config->xpath('/a:pointcuts/a:advice') as $key => $adviceConfiguration) {
-                // build up the advice and add it to the aspect
-                $advice = new Advice();
-                $advice->setAspectName((string) $adviceConfiguration->{'advice-aspect'});
-                $advice->setName((string) $adviceConfiguration->{'advice-name'});
-                $advice->setCodeHook((string) $adviceConfiguration->{'advice-type'});
-
-                // there might be several pointcuts
-                // we have to look them up within the pointcuts we got here and the ones we already have in our register
-                $pointcutFactory = new PointcutFactory();
-                foreach ($adviceConfiguration->{'advice-pointcuts'} as $pointcutConfiguration) {
-                    $pointcutName = (string) $pointcutConfiguration->{'pointcut-name'};
-
-                    /** @var \AppserverIo\Doppelgaenger\Entities\Pointcuts\PointcutPointcut $pointcutPointcut */
-                    $pointcutPointcut = $pointcutFactory->getInstance(PointcutPointcut::TYPE . '(' . $pointcutName . ')');
-
-                    // check if we just parsed the referenced pointcut
-                    $pointcuts = array();
-                    if ($pointcut = $aspect->getPointcuts()->get($pointcutName)) {
-                        $pointcuts[] = $pointcut;
-                    } else {
-                        // or did we already know of it?
-                        $pointcuts = $this->getAspectRegister()->lookupPointcuts($pointcutName);
-                    }
-
-                    $pointcutPointcut->setReferencedPointcuts($pointcuts);
-                    $advice->getPointcuts()->add($pointcutPointcut);
+        $xmlPaths = $configurationService->globDir($this->getWebappPath() . DIRECTORY_SEPARATOR . '{WEB-INF,META-INF,common}' .
+            DIRECTORY_SEPARATOR . self::CONFIG_FILE, GLOB_BRACE);
+        foreach ($xmlPaths as $xmlPath) {
+            // iterate all XML configuration files we found
+            if (is_readable($xmlPath)) {
+                // validate the file here, if it is not valid we can skip further steps
+                try {
+                    $configurationService->validateFile($xmlPath, null, true);
+                } catch (InvalidConfigurationException $e) {
+                    /** @var \Psr\Log\LoggerInterface $systemLogger */
+                    $systemLogger = $this->getApplication()->getInitialContext()->getSystemLogger();
+                    $systemLogger->error($e->getMessage());
+                    $systemLogger->critical(
+                        sprintf(
+                            'Pointcuts configuration file %s is invalid, AOP functionality might not work as expected.',
+                            $xmlPath
+                        )
+                    );
+                    continue;
                 }
 
-                // finally add the advice to our aspect (we will also add it without pointcuts of its own)
-                $aspect->getAdvices()->add($advice);
-            }
+                // load the aop config
+                $config = new \SimpleXMLElement(file_get_contents($xmlPath));
+                $config->registerXPathNamespace('a', 'http://www.appserver.io/appserver');
 
-            // if the aspect contains pointcuts or advices it can be used
-            if ($aspect->getPointcuts()->count() > 0 || $aspect->getAdvices()->count() > 0) {
-                $this->getAspectRegister()->add($aspect);
+                // create us an aspect
+                // name of the aspect will be the application name
+                $aspect = new Aspect();
+                $aspect->setName($xmlPath);
+
+                // check if we got some pointcuts
+                foreach ($config->xpath('/a:pointcuts/a:pointcut') as $key => $pointcutConfiguration) {
+                    // build up the pointcut and add it to the collection
+                    $pointcut = new Pointcut();
+                    $pointcut->setAspectName($aspect->getName());
+                    $pointcut->setName((string)$pointcutConfiguration->{'pointcut-name'});
+                    $pointcut->setPointcutExpression(
+                        new PointcutExpression((string)$pointcutConfiguration->{'pointcut-pattern'})
+                    );
+                    $aspect->getPointcuts()->add($pointcut);
+                }
+
+                // check if we got some advices
+                foreach ($config->xpath('/a:pointcuts/a:advice') as $key => $adviceConfiguration) {
+                    // build up the advice and add it to the aspect
+                    $advice = new Advice();
+                    $advice->setAspectName((string)$adviceConfiguration->{'advice-aspect'});
+                    $advice->setName($advice->getAspectName() . '->' . (string)$adviceConfiguration->{'advice-name'});
+                    $advice->setCodeHook((string)$adviceConfiguration->{'advice-type'});
+
+                    $pointcutPointcut = $this->generatePointcutPointcut((array) $adviceConfiguration->{'advice-pointcuts'}->{'pointcut-name'}, $aspect);
+                    $advice->getPointcuts()->add($pointcutPointcut);
+
+                    // finally add the advice to our aspect (we will also add it without pointcuts of its own)
+                    $aspect->getAdvices()->add($advice);
+                }
+
+                // if the aspect contains pointcuts or advices it can be used
+                if ($aspect->getPointcuts()->count() > 0 || $aspect->getAdvices()->count() > 0) {
+                    $this->getAspectRegister()->set($aspect->getName(), $aspect);
+                }
             }
         }
+    }
+
+    /**
+     * Will create a PointcutPointcut instance referencing all concrete pointcuts configured for a certain advice.
+     * Needs a list of these pointcuts
+     *
+     * @param array                                                  $pointcutNames List of names of referenced pointcuts
+     * @param \AppserverIo\Doppelgaenger\Entities\Definitions\Aspect $aspect        The aspect to which the advice belongs
+     *
+     * @return \AppserverIo\Doppelgaenger\Entities\Pointcuts\PointcutPointcut
+     */
+    protected function generatePointcutPointcut(array $pointcutNames, Aspect $aspect)
+    {
+        // there might be several pointcuts
+        // we have to look them up within the pointcuts we got here and the ones we already have in our register
+        $pointcutFactory = new PointcutFactory();
+        $referencedPointcuts = array();
+        $pointcutExpression = array();
+        foreach ($pointcutNames as $pointcutName) {
+            $pointcutName = (string) $pointcutName;
+            $referenceCount = count($referencedPointcuts);
+
+            // check if we recently parsed the referenced pointcut
+            if ($pointcut = $aspect->getPointcuts()->get($pointcutName)) {
+                $referencedPointcuts[] = $pointcut;
+            } else {
+                // or did we already know of it?
+                $referencedPointcuts = array_merge($referencedPointcuts, $this->getAspectRegister()->lookupPointcuts($pointcutName));
+            }
+
+            // build up the expression string for the PointcutPointcut instance
+            if ($referenceCount < count($referencedPointcuts)) {
+                $pointcutExpression[] = $pointcutName;
+            }
+        }
+
+        /** @var \AppserverIo\Doppelgaenger\Entities\Pointcuts\PointcutPointcut $pointcutPointcut */
+        $pointcutPointcut = $pointcutFactory->getInstance(
+            PointcutPointcut::TYPE . '(' . implode(PointcutPointcut::EXPRESSION_CONNECTOR, $pointcutExpression) . ')'
+        );
+        $pointcutPointcut->setReferencedPointcuts($referencedPointcuts);
+
+        return $pointcutPointcut;
     }
 }

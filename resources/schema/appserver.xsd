@@ -66,9 +66,9 @@
     </xs:element>
     <xs:element name="advice-pointcuts">
         <xs:complexType>
-            <xs:all>
+            <xs:choice maxOccurs="unbounded">
                 <xs:element ref="appserver:pointcut-name"/>
-            </xs:all>
+            </xs:choice>
             <xs:attribute name="uuid" type="xs:string"/>
             <xs:attribute ref="xml:base"/>
         </xs:complexType>
