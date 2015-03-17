@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pointcuts xmlns="http://www.appserver.io/appserver">
+    <pointcut>
+        <pointcut-name>webinfMethods</pointcut-name>
+        <pointcut-pattern>call(\AppserverIo\Appserver\NonExisting\WebInf\Namespace\*->randomMethod())</pointcut-pattern>
+    </pointcut>
+
+    <advice>
+        <advice-aspect>\AppserverIo\Appserver\NonExisting\WebInf\Namespace\TestAspect1</advice-aspect>
+        <advice-name>webinfAdvice</advice-name>
+        <advice-type>Before</advice-type>
+        <advice-pointcuts>
+            <pointcut-name>webinfMethods</pointcut-name>
+        </advice-pointcuts>
+    </advice>
+
+    <advice>
+        <advice-aspect>\AppserverIo\Appserver\NonExisting\WebInf\Namespace\TestAspect2</advice-aspect>
+        <advice-name>webinfAdvice</advice-name>
+        <advice-type>Before</advice-type>
+        <advice-pointcuts>
+            <pointcut-name>webinfMethods</pointcut-name>
+        </advice-pointcuts>
+    </advice>
+</pointcuts>

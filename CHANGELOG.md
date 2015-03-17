@@ -1,3 +1,13 @@
+# Version 1.0.3
+
+## Bugfixes 
+
+* Fixed [#680](https://github.com/appserver-io/appserver/issues/680) - Multiple advices by different pointcuts are eliminating each other
+
+## Features
+
+* None
+
 # Version 1.0.2
 
 ## Bugfixes 

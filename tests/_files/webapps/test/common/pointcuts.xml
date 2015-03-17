@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pointcuts xmlns="http://www.appserver.io/appserver">
+    <pointcut>
+        <pointcut-name>commonMethods</pointcut-name>
+        <pointcut-pattern>call(\AppserverIo\Appserver\NonExisting\Common\Namespace\*->randomMethod())</pointcut-pattern>
+    </pointcut>
+
+    <advice>
+        <advice-aspect>\AppserverIo\Appserver\NonExisting\Common\Namespace\TestAspect</advice-aspect>
+        <advice-name>commonAdvice1</advice-name>
+        <advice-type>Before</advice-type>
+        <advice-pointcuts>
+            <pointcut-name>commonMethods</pointcut-name>
+        </advice-pointcuts>
+    </advice>
+
+    <advice>
+        <advice-aspect>\AppserverIo\Appserver\NonExisting\Common\Namespace\TestAspect</advice-aspect>
+        <advice-name>commonAdvice2</advice-name>
+        <advice-type>Before</advice-type>
+        <advice-pointcuts>
+            <pointcut-name>commonMethods</pointcut-name>
+        </advice-pointcuts>
+    </advice>
+</pointcuts>
