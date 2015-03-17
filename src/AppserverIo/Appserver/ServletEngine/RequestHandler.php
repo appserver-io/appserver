@@ -27,7 +27,6 @@ use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Psr\Servlet\ServletException;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
-use AppserverIo\Http\HttpProtocol;
 
 /**
  * This is a request handler that is necessary to process each request of an
