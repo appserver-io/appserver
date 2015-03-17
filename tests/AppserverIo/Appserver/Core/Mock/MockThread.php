@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Mock\MockThread
+ * \AppserverIo\Appserver\Core\Mock\MockThread
  *
  * NOTICE OF LICENSE
  *
@@ -62,7 +62,7 @@ class MockThread extends AbstractThread
 
     /**
      * Helper method to check if the threads main
-     * method has been excecuted.
+     * method has been executed.
      *
      * @return boolean TRUE if the thread has been executed
      */
@@ -74,7 +74,7 @@ class MockThread extends AbstractThread
     /**
      * Returns some instance.
      *
-     * @return stdClass Some instance
+     * @return \stdClass Some instance
      */
     public function getSomeInstance()
     {
@@ -82,11 +82,11 @@ class MockThread extends AbstractThread
     }
 
     /**
-     * Method to initialze the thread with the constructor
+     * Method to initialize the thread with the constructor
      * params without the initial context.
      *
-     * @param stcClass $someInstance
-     *            Some instance to test
+     * @param \stcClass $someInstance Some instance to test
+     *
      * @return void
      */
     public function init($someInstance)

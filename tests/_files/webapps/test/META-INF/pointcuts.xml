@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pointcuts xmlns="http://www.appserver.io/appserver">
+    <pointcut>
+        <pointcut-name>metainfMethods1</pointcut-name>
+        <pointcut-pattern>call(\AppserverIo\Appserver\NonExisting\MetaInf\Namespace\*->randomMethod1())</pointcut-pattern>
+    </pointcut>
+
+    <pointcut>
+        <pointcut-name>metainfMethods2</pointcut-name>
+        <pointcut-pattern>call(\AppserverIo\Appserver\NonExisting\MetaInf\Namespace\*->randomMethod2())</pointcut-pattern>
+    </pointcut>
+
+    <advice>
+        <advice-aspect>\AppserverIo\Appserver\NonExisting\MetaInf\Namespace\TestAspect</advice-aspect>
+        <advice-name>metainfAdvice</advice-name>
+        <advice-type>Before</advice-type>
+        <advice-pointcuts>
+            <pointcut-name>metainfMethods1</pointcut-name>
+            <pointcut-name>metainfMethods2</pointcut-name>
+        </advice-pointcuts>
+    </advice>
+</pointcuts>
