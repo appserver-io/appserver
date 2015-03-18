@@ -24,6 +24,7 @@ use AppserverIo\Logger\LoggerUtils;
 use AppserverIo\Appserver\ServletEngine\Http\Response;
 use AppserverIo\Psr\HttpMessage\ResponseInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
+use AppserverIo\Psr\Servlet\ServletException;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
 
@@ -107,6 +108,15 @@ class RequestHandler extends \Thread
             $servletResponse = new Response();
             $servletResponse->init();
 
+            // we initialize this with a 500 to handle 'Fatal Error' case
+            $this->statusCode = 500;
+
+            // initialize arrays for header and cookies
+            $this->state = $servletResponse->getState();
+            $this->version = $servletResponse->getVersion();
+            $this->headers = $servletResponse->getHeaders();
+            $this->cookies = $servletResponse->getCookies();
+
             // inject the sapplication and servlet response
             $servletRequest->injectResponse($servletResponse);
             $servletRequest->injectContext($application);
@@ -181,8 +191,8 @@ class RequestHandler extends \Thread
     }
 
     /**
-     * Does shutdown logic for request handler if something went wrong and produces
-     * a fatal error for example.
+     * Does shutdown logic for request handler if something went wrong and
+     * produces a fatal error for example.
      *
      * @return void
      */
@@ -190,11 +200,14 @@ class RequestHandler extends \Thread
     {
 
         // check if there was a fatal error caused shutdown
-        $lastError = error_get_last();
-        if ($lastError['type'] === E_ERROR || $lastError['type'] === E_USER_ERROR) {
-            // set the status code and append the error message to the body
-            $this->statusCode = 500;
-            $this->bodyStream = $lastError['message'];
+        if ($lastError = error_get_last()) {
+            // extract the last error values
+            extract($lastError);
+
+            // query whether we've a fatal/user error
+            if ($type === E_ERROR || $type === E_USER_ERROR) {
+                $this->exception = new ServletException($message, 500);
+            }
         }
     }
 }

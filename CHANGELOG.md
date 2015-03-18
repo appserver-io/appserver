@@ -2,6 +2,7 @@
 
 ## Bugfixes 
 
+* Fixed [#682](https://github.com/appserver-io/appserver/issues/682) - Invalid output handling for fatal errors in Servlet-Engine
 * Fixed [#680](https://github.com/appserver-io/appserver/issues/680) - Multiple advices by different pointcuts are eliminating each other
 
 ## Features
