@@ -51,13 +51,13 @@ table.
 | ----------------- | ----------- |
 | `name`            | The name of the server component used for reference and logging purpose. |
 | `type`            | The server type implementation classname based on `AppserverIo\Server\Interfaces\ServerInterface`. It provides the main daemon like logic of the server. |
-| `worker`          | The worker queue implementation classname based on `\AppserverIo\Server\Interfaces\WorkerInterface`. It will introduce a common worker queue logic for the server being able processing many requests at the same time. This could be either a classic eventloop or a threaded, forked mechanism |
+| `worker`          | The worker queue implementation classname based on `\AppserverIo\Server\Interfaces\WorkerInterface`. It introduces a common worker queue logic for the server with the ability to process many requests at the same time. This could be either a classic event loop or a threaded, forked mechanism. |
 | `socket`          | The socket implementation classname based on `AppserverIo\Psr\Socket\SocketInterface`. It provides common socket functionality. As we have our [psr for sockets](<https://github.com/appserver-io-psr/socket>) you might want to have a look at it. |
-| `serverContext`   | The server context implementation classname based on `\AppserverIo\Server\Interfaces\ServerContextInterface`. It represents the server context while running as daemon and holds the configuration, loggers and an optional injectable container object which can be used to connect several server components. |
-| `requestContext`  | The request context implementation classname based on `\AppserverIo\Server\Interfaces\RequestContextInterface`. It holds all vars needed (server, environment and module vars) which can be processed and modified by the server-module-chain defined. After the request was pre-processed by internal server-modules the request context will provide those information for specific file-handlers being able to process the request in a common way. |
+| `serverContext`   | The server context implementation classname based on `\AppserverIo\Server\Interfaces\ServerContextInterface`. It represents the server context while running as a daemon and holds the configuration, loggers and an optional injectable container object which can be used to connect several server components. |
+| `requestContext`  | The request context implementation classname based on `\AppserverIo\Server\Interfaces\RequestContextInterface`. It holds all vars needed (server, environment and module vars) which can be processed and modified by the server-module-chain defined. After the request was pre-processed by internal server-modules the request context provides the information for specific file-handlers being able to process the request in a common way. |
 | `loggerName`      | The logger instance to use in the server's context. |
 
-Next thing we will have a look at are server params.
+In the following section, the server params are discussed.
 
 ```xml
 <params>
@@ -77,34 +77,34 @@ Next thing we will have a look at are server params.
 </params>
 ```
 
-They are used to define several key/value pairs for the Webserver implementation to react on. Some of them are common to all HTTP servers.
+They are used to define several key/value pairs for the Webserver implementation. Some of them are common to all HTTP servers.
 Their descriptions can be found [within the server configuration documentation]({{ "/get-started/documentation/configuration.html#server-configuration" | prepend: site.baseurl }})
 
-Descriptions for webserver specific params can be found below.
+Descriptions for webserver specific params are available below.
 
 | Param                    | Type     | Description                                                    |
 | -------------------------| ---------| ---------------------------------------------------------------|
-| `documentRoot`           | string   | Defines the root directory for the server to append the uri with and search for the requested file or directory. The document root path will be relative to the servers root directory if there is no beginning slash "/" |
-| `directoryIndex`         | string   | Whitespace separated list of index resources to lookup for the requested directory. The server will return the first one that it finds. If none of the resources exist, the server will respond with a 404 Not Found. |
+| `documentRoot`           | string   | Defines the root directory for the server to append the uri with and search for the requested file or directory. The document root path is relative to the servers root directory if there is no beginning slash "/" |
+| `directoryIndex`         | string   | Whitespace separated list of index resources to look up the requested directory. The server will return the first one that is found. If none of the resources exist, the server will respond with a 404 Not Found. |
 | `keepAliveMax`           | integer  | The number of requests allowed per connection when keep-alive is on. If it is set to 0 keep-alive feature will be deactivated. |
 | `keepAliveTimeout`       | integer  | The number of seconds waiting for a subsequent request while in keep-alive loop before closing the connection. |
-| `errorsPageTemplatePath` | string   | The path to the errors page template. The path will be relative to the servers root directory if there is no beginning slash "/". |
+| `errorsPageTemplatePath` | string   | The path to the errors page template. The path is relative to the server's root directory if there is no beginning slash "/". |
 
-If you want to setup a HTTPS Webserver you have to configure 2 more params.
+If you want to setup a HTTPS Webserver you have to configure two more params.
 
 | Param         | Type     | Description |
 | --------------| ---------| ------------|
-| `certPath`    | string   | The path to your certificate file which as to be a combined PEM file of private key and certificate. The path will be relative to the servers root directory if there is no beginning slash "/". |
+| `certPath`    | string   | The path to your certificate file which has to be a combined PEM file of private key and certificate. The path will be relative to the server's root directory if there is no beginning slash "/". |
 | `passphrase`  | string   | The passphrase you have created your SSL private key file with. Can be optional. |
 
 
 
 ## Connection Handler
 
-As we wanted to handle requests based on a specific protocol, the server needs a mechanism to understand and handle
-those requests in a proper way.
+As we want to handle requests based on a specific protocol, the server needs a mechanism to understand and manage
+those requests properly.
 
-For our Webserver we use `\AppserverIo\WebServer\ConnectionHandlers\HttpConnectionHandler`
+For our Webserver, we use `\AppserverIo\WebServer\ConnectionHandlers\HttpConnectionHandler`
 which implements the `\AppserverIo\Server\Interfaces\ConnectionHandlerInterface` and follows the HTTP/1.1 specification,
 which can be found [here](<http://tools.ietf.org/html/rfc7230>) using our [HTTP library](<https://github.com/appserver-io/http>).
 
@@ -114,26 +114,25 @@ which can be found [here](<http://tools.ietf.org/html/rfc7230>) using our [HTTP 
 </connectionHandlers>
 ```
 
-> There is the possibility to provide more than one connection handler, but in most cases it does not make sense because
+> There is the possibility to provide more than one connection handler. In most cases, it does not make sense, because
 > you will have to handle another protocol which might not be compatible with the modules you provided in the same server
-> configuration. In certain circumstances it will make sense but it's not best practise to do this.
+> configuration. Under certain circumstances providing more than one connection handler is reasonable but it is not best practice.
 
 ## Server Modules
 
-As mentioned at the beginning we're using our [multithreaded server framework](<https://github.com/appserver-io/server>)
-which allows you to provide modules for request and response processing triggered from several hooks.
+As mentioned in the beginning we use our [multithreaded server framework](<https://github.com/appserver-io/server>). It allows you to provide modules for request and response processing triggered by several hooks.
 
-Let's get an overview of those hooks which can also be found in the corresponding dictionary class `\AppserverIo\Server\Dictionaries\ModuleHooks`
+The following table gives an overview of the hooks which are also available in the corresponding dictionary class `\AppserverIo\Server\Dictionaries\ModuleHooks`.
 
 | Hook             | Description |
 | ---------------- | ----------- |
-| `REQUEST_PRE`    | The request pre hook should be used to do something before the request will be parsed. So if there is a keep-alive loop going on this will be triggered every request loop. |
-| `REQUEST_POST`   | The request post hook should be used to do something after the request has been parsed. Most modules such as CoreModule will use this hook to do their job. |
-| `RESPONSE_PRE`   | The response pre hook will be triggered at the point before the response will be prepared for sending it to the to the connection endpoint. |
-| `RESPONSE_POST`  | The response post hook is the last hook triggered within a keep-alive loop and will execute the modules logic when the response is well prepared and ready to dispatch. |
-| `SHUTDOWN`       | The shutdown hook is called whenever a php fatal error will shutdown the current worker process. In this case current filehandler module will be called to process the shutdown hook. This enables the module the possibility to react on fatal error's by it's own in some cases. If it does not react on this shutdown hook, the default error handling response dispatcher logic will be used. If the module reacts on the shutdown hook and set's the response state to be dispatched no other error handling shutdown logic will be called to fill up the response. |
+| `REQUEST_PRE`    | The request pre hook is used to do something before the request has been parsed. So if there is a keep-alive loop it will be triggered with every request loop. |
+| `REQUEST_POST`   | The request post hook is used to do something after the request has been parsed. Most modules such as CoreModule use this hook. |
+| `RESPONSE_PRE`   | The response pre hook is triggered before the response is prepared for sending it to the connection endpoint. |
+| `RESPONSE_POST`  | The response post hook is the last hook triggered within a keep-alive loop. It executes the module's logic when the response is well prepared and ready to dispatch. |
+| `SHUTDOWN`       | The shutdown hook is called whenever a php fatal error shuts down the current worker process. In this case, the current filehandler module is called to process the shutdown hook. This enables the module to react on fatal errors. If it does not react to this shutdown hook, the default error handling response dispatcher logic is used. If the module reacts on the shutdown hook and sets the response state to be dispatched, no other error handling shutdown logic will be called to fill up the response. |
 
-Now let's dig into the modules list provided for the Webserver by default.
+The next section elaborates on the list of modules provided for the Webserver by default.
 
 ```xml
 <modules>
@@ -156,13 +155,12 @@ Now let's dig into the modules list provided for the Webserver by default.
 ```
 
 For every hook all modules are processed in the same order as they are listed in the xml configuration.
-> The order of the modules provided by the default configuration is intended and should not be changed. For example if you change the
-> order of AccessModule to come before the RewriteModule it would be possible to lever an access rule by any rewrite rule.
+> The order of the modules provided by the default configuration is planned and should not be changed. For example, if you change the
+> order of AccessModule to come before the RewriteModule it is possible to lever an access rule by any rewrite rule.
 
-Our Webserver provides an interface called `\AppserverIo\WebServer\Interfaces\HttpModuleInterface` that every module has
-to implement.
+Our Webserver provides an interface called `\AppserverIo\WebServer\Interfaces\HttpModuleInterface` which has to be implemented by every module.
 
-Find an overview of all modules below ...
+All modules are described in the overview below.
 
 | Module                      | Description |
 | --------------------------- | ----------- |
