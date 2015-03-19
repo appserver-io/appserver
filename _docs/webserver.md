@@ -289,7 +289,7 @@ uri to match. It also has some params which are descripted below.
 
 ## Accesses
 
-You can easily allow or deny access on resources based on client's HTTP request headers by setting up accesses within
+You can easily allow or deny access to resources based on client's HTTP request headers by setting up accesses within
 your server or virtual-host configuration.
 
 ```xml
@@ -330,21 +330,21 @@ resources by their file extensions.
 <fileHandlers>
 ```
 
-If you use this configuration a client requesting a resource having the extension `.php` will be processed by the
-fastcgi server module. That means instead of serving the `.php` file as static resource by the core module the fastcgi
+If you use this configuration a client requesting a resource with the extension `.php` will be processed by the
+fastcgi server module. That means, instead of serving the `.php` file as a static resource by the core module the fastcgi
 module will proceed the request by connecting to a fastcgi backend provided in the corresponding `params` node.
 
 | Param  | Description |
 | ------ | ----------- |
-| `host` | The ip address to the fastcgi backend |
-| `port` | The port to the fastcgi backend |
+| `host` | The ip address to the fastcgi backend. |
+| `port` | The port to the fastcgi backend. |
 
-> The file handlers name have to be equal to the modules name you want to trigger. So every module has to implement
+> The file handler's name has to be equal to the module's name you want to trigger. So, every module has to implement
 > a `getModuleName()` method as defined in `\AppserverIo\Server\Interfaces\ModuleInterface`.
 
 ## Locations
 
-Locations are usefull if you want to have other fileHandlers or the fileHandlers configuration changed on a
+Locations are useful if you want to have other fileHandlers or if the fileHandlers configuration was changed on a
 certain request uri pattern to be triggered.
 
 ```xml
@@ -364,12 +364,12 @@ certain request uri pattern to be triggered.
 </locations>
 ```
 
-In this example the `/test.php` script will be processed by another fastcgi backend listening on `127.0.0.1:9555`
+In this example the `/test.php` script is processed by another fastcgi backend listening on `127.0.0.1:9555`
 
 ## Rewrites
 
-Of course you can do rewriting as well! Just have a look at this simple but well known rewrite example where all
-requests will be moved to an `index.php` script.
+Of course rewriting is possible as well. To do so, have a look at this simple but well known rewrite example where all
+requests are moved to an `index.php` script.
 
 ```xml
 <rewrites>
@@ -380,32 +380,32 @@ requests will be moved to an `index.php` script.
 
 All rewrites are based on rewrite rules which consist of three important parts:
 
-- *condition string* : Conditions which have to be met in order for the rule to take effect. See more [down here](<#condition-syntax>)
+- *condition string* : Conditions which have to be met to take effect for the rule. See more [here](<#condition-syntax>)
 
 - *target string* : The target to rewrite the requested URI to. Within this string you can use backreferences similar
     to the Apache mod_rewrite module with the difference that you have to use the `$ syntax`
     (instead of the `$/%/%{} syntax` of Apache).
     Backreferences are parts of the matching rule conditions which you specifically pick out via regex.
 
-    *Simple example* : A condition like `(.+)@$X_REQUEST_URI` would produce a back reference `$1` with the value `/index`
-        for a requested URI `/index`. The target string `$1/welcome.html` would therefore result in a rewrite to `/index/welcome.html`
+    *Simple example* : A condition like `(.+)@$X_REQUEST_URI` produces a back reference `$1` with the value `/index`
+        for a requested URI `/index`. The target string `$1/welcome.html` results in a rewrite to `/index/welcome.html`
 
 - *flag string* : You can use flags similar to mod_rewrite which are used to make rules react in a certain way or
-    influence further processing. See more [down here](<#flags>)
+    influence further processing. See more [here](<#flags>)
 
 ### Condition Syntax
 
 The Syntax of possible conditions is roughly based on the possibilities of Apache's RewriteCondition and RewriteRule
 combined.
-To make use of such a combination you can chain conditions together using the `{OR}` symbol for OR-combined, and the `{AND}`
+To make use of such a combination you can chain conditions using the `{OR}` symbol for OR-combined, and the `{AND}`
 symbol for AND-combined conditions.
-Please be aware that AND takes precedence over OR!
+Please be aware that AND takes precedence over OR.
 Conditions can either be PCRE regex or certain fixed expressions.
-So a condition string of `([A-Z]+\.txt){OR}^/([0-9]+){AND}-f` would match only real files (through `-f`) which either begin
-with numbers or end with capital letters and the extension .txt.
+So, a condition string of `([A-Z]+\.txt){OR}^/([0-9]+){AND}-f` matches real files (through `-f`) only which either begins
+with numbers or ends with capital letters and the extension .txt.
 As you might have noticed: Backslashes do **not have to be escaped**.
 
-You might also be curious of the `-f` condition.
+You might also be curious about the `-f` condition.
 This is a direct copy of Apaches -f RewriteCondition.
 We also support several other expressions to regex based conditions which are:
 
@@ -418,7 +418,7 @@ We also support several other expressions to regex based conditions which are:
  - *-l* : Is the operand a symbolic link?
  - *-x* : Is the operand an executable file?
 
-If you are wondering what the `operand` might be: it is **whatever you want it to be**!
+If you are wondering what the `operand` might be: it is **whatever you want it to be**.
 You can specify any operand you like using the `@` symbol.
 All conditions within a rule will use the next operand to their right and if none is given the requested URI.
 For example:
@@ -428,29 +428,29 @@ For example:
 - *`([A-Z]+\.txt)@$DOCUMENT_ROOT{OR}^/([0-9]+)`* Will only test the first one against the document root and the second against the requested URI
 
 You might have noted the `$` symbol before `DOCUMENT_ROOT` and remembered it from the backreference syntax.
-That's because all Apache common server vars can be explicitly used as backreferences too!
+That is because all Apache common server vars can be explicitly used as backreferences too.
 
-That does not work for you? Need the exact opposite? No problem!
+It this does not work for you, we also have an opposite approach for you.
 
-All conditions, weather regex or expression based can be negated using the `!` symbol in front of them!
-So `!^([0-9]+)` would match all strings which do NOT begin with a number and `!-d` would match all non-directories.
+All conditions, weather regex or expression based can be negated using the `!` symbol in front of them.
+So `!^([0-9]+)` matches all strings which do NOT begin with a number and `!-d` matches all non-directories.
 
 ### Flags
 
 Flags are used to further influence processing.
-You can specify as many flags per rewrite as you like, but be aware of their impact!
+You can specify as many flags per rewrite as you like, but be aware of their impact.
 Syntax for several flags is simple: just separate them with a `,` symbol.
-Flags which might accept a parameter can be assigned one by using the `=` symbol.
+Flags which might accept a parameter can be assigned one by one using the `=` symbol.
 Currently supported flags are:
 
 - *L* : As rules are normally processed one after the other, the `L` flag will make the flagged rule the last one processed
     if matched.
 
-- *R* : If this flag is set we will redirect the client to the URL specified in the `target string`. If this is just an URI we will redirect to the same host.
-    You might also specify a custom status code between 300 and 399 to indicate the reason for/kind of the redirect. Default is `301` aka `permanent`
+- *R* : If this flag is set we redirect the client to the URL specified in the `target string`. If this is just an URI we redirect to the same host.
+    You might also specify a custom status code between 300 and 399 to indicate the reason for/ the kind of the redirect. Default is `301` aka `permanent`
 
 - *M* : Stands for map. Using this flag you can specify an external source (have a look at the Injector classes of the Webserver project) of a target map.
-    With `M=<MY_BACKREFERENCE>` you can specify what the map's index has to match. This matching is done **only** if the rewrite condition matches and will behave as another condition
+    With `M=<MY_BACKREFERENCE>` you specify what the map's index has to match to. This matching is done **only** if the rewrite condition matches and will behave like another condition.
 
 ## VirtualHost Examples
 
