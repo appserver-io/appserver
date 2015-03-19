@@ -155,8 +155,7 @@ The next section elaborates on the list of modules provided for the Webserver by
 ```
 
 For every hook all modules are processed in the same order as they are listed in the xml configuration.
-> The order of the modules provided by the default configuration is planned and should not be changed. For example, if you change the
-> order of AccessModule to come before the RewriteModule it is possible to lever an access rule by any rewrite rule.
+> The order of the modules provided by the default configuration is planned and should not be changed. For example, if you position the AccessModule before the RewriteModule, it is possible to lever an access rule by any rewrite rule.
 
 Our Webserver provides an interface called `\AppserverIo\WebServer\Interfaces\HttpModuleInterface` which has to be implemented by every module.
 
@@ -166,23 +165,23 @@ All modules are described in the overview below.
 | --------------------------- | ----------- |
 | `VirtualHostModule`         | Provides virtual host functionality that allows you to run more than one hostname (such as yourname.example.com and othername.example.com) on the same server while having different params and configurations. |
 | `AuthenticationModule`      | Offers the possibility to secure resources using basic or digest authentication based on request uri with regular expression support. |
-| `EnvironmentVariableModule` | This module let you manipulate server environment variables. These can be conditionally set, unset and copied in form of an OS context. |
-| `RewriteModule`             | A simple rewrite module for PHP based web servers which uses a self made structure for usable rules. It can be used similar to Apaches mod_rewrite and provides rewriting and redirecting capabilities. |
+| `EnvironmentVariableModule` | This module enables you to manipulate server environment variables. They can be set conditionally, unset and copied in form of an OS context. |
+| `RewriteModule`             | A simple rewrite module for PHP based web servers which use a self-made structure for usable rules. It can be used similar to Apaches mod_rewrite and provides rewriting and redirecting capabilities. |
 | `DirectoryModule`           | Provides for "trailing slash" redirects and serving directory index files. |
 | `AccessModule`              | Allows a HTTP header based access management with regular expression support. |
 | `CoreModule`                | HTTP server features that are always available such as serving static resources and finding defined file handlers. |
 | `PhpModule`                 | Acts like a classic php Webserver module (such as `mod_php` for apache) which calls and runs your requested php scripts in an isolated context with all globals (such as `$_SERVER`, `$_GET`, `$_POST` etc.) prepared in the common way. |
 | `FastCgiModule`             | The Module allows you to connect several fastcgi backends (such as `php-fpm` or `hhvm`) based on configured file-handlers. |
 | `ServletEngine`             | The ServletEngine introduces a super fast and simple way to implement an entry point to handle HTTP requests that allows you to execute all performance critical tasks. Please see [Servlet Engine](<{{ "/get-started/documentation/servlet-engine.html" | prepend: site.baseurl }}>) for full documentation. |
-| `DeflateModule`             | It provides the `deflate` output filter that allows output from your server to be compressed before being sent to the client over the network. |
+| `DeflateModule`             | It provides the `deflate` output filter that enables output from your server to be compressed before being sent to the client via the network. |
 | `ProfileModule`             | Allows request based realtime profiling using external tools like logstash and kibana. |
 
 ## Virtual Hosts
 
-Using virtual hosts you can extend the default server configuration and produce a host specific
-environment for your hostname or app to run.
+Using virtual hosts the default server configuration can be extended and a host specific
+environment for your hostname or app to run can be produced.
 
-You can do so by adding a virtual host configuration to your global server configuration file. See
+This is done by adding a virtual host configuration to your global server configuration file. See
 the example for a XML based configuration below:
 
 ```xml
@@ -200,20 +199,19 @@ the example for a XML based configuration below:
 </virtualHosts>
 ```
 
-The above configuration sits within the server element and opens up the virtual host `example.local`
-which has a different document root than the global configuration has. The virtual host is born. :-)
+The configuration above is positioned within the server element and opens up the virtual host `example.local`,
+which has a different document root than the global configuration. The virtual host is born.
 
-> Most of the `params` that are available in the `server` node can be overwritten and you can also define all following
-> configurations like [Environment Variables](<#configure-your-environment-variables>), [Authentications](<#configure-authentications>), [Accesses](<#configure-accesses>) and of course [Locations](<#configure-locations>) for every virtual host
-> on its own.
+> Most of the `params` that are available in the `server` node can be overwritten. Also, you can define all following
+> configurations like [Environment Variables](<#configure-your-environment-variables>), [Authentications](<#configure-authentications>), [Accesses](<#configure-accesses>) and of course [Locations](<#configure-locations>) for every virtual host.
 
 The `virtualHost` element can hold params, rewrite rules or environment variables which are only 
-available for the host specifically.
+available for the specific host.
 
 ## Environment Variables
 
 You can set environment variables using either the global or the virtual host based configuration.
-The example below shows a basic usage of environment variables in XML format.
+The example below shows the basic usage of environment variables in XML format.
 
 ```xml
 <environmentVariables>
@@ -226,29 +224,28 @@ The example below shows a basic usage of environment variables in XML format.
 </environmentVariables>
 ```
 
-There are several ways in which this feature is used. You can get a rough idea when having a 
+There are several ways of using this feature. You can get a rough idea by having a 
 look at Apache modules [mod_env](<http://httpd.apache.org/docs/2.2/mod/mod_env.html>) and 
 [mod_setenvif](<http://httpd.apache.org/docs/2.2/mod/mod_setenvif.html>) which we adopted.
 
-You can make definitions of environment variables dependent on REGEX based conditions which will
-be performed on so called backreferences. These backreferences are request related server variables
+You can make definitions of environment variables dependent on REGEX based conditions which are performed on so called backreferences. These backreferences are request related server variables
 like `HTTP_USER_AGENT`.
 
 A condition has the format `<REGEX_CONDITION>@$<BACKREFERENCE>`. If the condition is empty the 
 environment variable will be set every time.
 
-The definition you can use has the form `<NAME_OF_VAR>=<THE_VALUE_TO_SET>`. The definition has 
-some specialities too:
+The definition is `<NAME_OF_VAR>=<THE_VALUE_TO_SET>`. It has 
+the following specialities:
 
 - Setting a var to `null` will unset the variable if it existed before
-- You can use backreferences for the value you want to set as well. But those are limited to 
+- You can use backreferences for the value you want to set as well. They are limited to 
   environment variables of the PHP process
 - Values will be treated as strings
 
 ## Authentications
 
 You can setup request uri based basic or digest authentication with regular expression support using authentications.
-Here is an example how to configure basic or digest auth.
+Here is an example of how to configure basic or digest auth.
 
 ```xml
 <authentications>
@@ -288,7 +285,7 @@ uri to match. It also has some params which are descripted below.
 | ------- | ----------- |
 | `type`  | The type represents an implementation of the `\AppserverIo\WebServer\Interfaces\AuthenticationInterface` which provides specific auth mechanism. You can use the predelivered classes `\AppserverIo\WebServer\Authentication\BasicAuthentication` and `\AppserverIo\WebServer\Authentication\BasicAuthentication` for basic and digest authentication. |
 | `realm` | The string assigned by the server to identify the protection space of the request uri. |
-| `file`  | The path to your credentials .htpasswd file. The path will be relative to the servers root directory if there is no beginning slash "/". |
+| `file`  | The path to your credentials .htpasswd file. The path is relative to the server's root directory if there is no beginning slash "/". |
 
 ## Accesses
 
