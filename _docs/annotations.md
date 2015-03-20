@@ -10,13 +10,13 @@ permalink: /get-started/documentation/annotations.html
 
 As one of our main targets is to make the configuration as simple as possible we decided to use
 annotations wherever possible. Annotations are not supported natively by PHP, therefore we provide
-annotation support over the [lang](https://github.com/appserver-io/lang) package.
+annotation support via the [lang](https://github.com/appserver-io/lang) package.
 
-Beside the usage of the application server components, it is also possible to extend yours 
+Beside the usage of the application server's components, it is possible to extend your 
 application with annotations by using the functionality we deliver out-of-the-box.
 
 If you, for example, think about extending the actions of the controller component in your
-MVC framework with a @Route annotation, you can do this in the following way
+MVC framework with a @Route annotation, you can do this in the following way:
 
 ```php
 <?php
