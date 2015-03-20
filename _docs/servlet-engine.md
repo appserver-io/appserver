@@ -20,31 +20,28 @@ permalink: /get-started/documentation/servlet-engine.html
 ---
 
 Originally Servlets are the Java counterpart to other dynamic web technologies like PHP or the
-Microsoft .NET platform. In contrast to PHP, a Servlet written in Java is not a script that will
-be interpreted per request. It is rather a class instantiated when the Servlet Engine starts up
-process requests be invoking one of its methods.
+Microsoft .NET platform. In contrast to PHP, a Servlet written in Java is not a script that is interpreted per request. It is rather a class instantiated when the Servlet Engine starts a
+process requests by invoking one of its methods.
 
 > In most cases, this is a major advantage of the common PHP way to load the script on each
-> request again. Since PHP applications, mostly based on frameworks like Yii or Symfony growed
-> immensely during the last years, reload all the script files, required by the application again
-> and again slows down performance in a critical manner. That is one of the reasons, why caching
-> is meanwhile a major part of nearly all frameworks. On the one hand, caching takes care, that
-> the application responds to the request in an acceptable time, on the other hand, it is the
-> origin of many problems. Such problems can be how to invalidate parts of the cache during an applications
+> request again. Since PHP applications, mostly based on frameworks like Yii or Symfony, have been growing
+> tremendously during the last years, reloading all script files required by the application again
+> and again slows down performance critically. This is why meanwhile caching
+> is a major part of nearly all frameworks. On the one hand, caching ensures the application to respond
+> to the request within an acceptable timeframe. On the other hand, it is the
+> origin of many problems, such as how to invalidate parts of the cache during an application's
 > runtime.
 
-Using a Servlet Engine and, as a consequence of that, Servlets enables you to implement yours
-application logic as you are used to, without the need to take care about the expensive
-bootstrapping process that came together with the common legacy frameworks. A Servlet is a super
-fast and simple way to implement an entry point to handle HTTP requests. It allows you to
+By using a Servlet Engine, you can implement your application logic as you are used to, without taking care of the expensive bootstrapping process, which is combined with the common legacy frameworks. 
+A Servlet is a very fast and simple way to implement an entry point to handle HTTP requests. It allows you to
 execute all performance critical tasks, like bootstrapping, in a method called `init()`, when
-the Servlet Engine starts up.
+the Servlet Engine starts.
 
-## How can a Servlet-Engine help
+## How a Servlet-Engine can help
 
-One solution can be using a Servlet-Engine like we integrated with our application server. Imagine a servlet as a class that implements the servlet interface, part of our PSR's, that provides some kind of MVC pattern controller functionality by implementing some methods that will be invoked when a request came in, nothing more, nothing less. So to implement your first servlet, you have to think about two things. First, which requests should the servlet dispatch, the second is what functionality it should provide.
+One solution is using a Servlet-Engine as it is intigrated in appserver.io. Imagine a servlet as a class that implements the servlet interface, part of our PSR's. It provides a kind of MVC pattern controller functionality by invoking methods when a request comes in. Two things have to be considered when implementing the first servlet: Which requests need to be dispatched by the servlet and what functionality is to be provided.
 
-As in many other frameworks do, our Servlet-Engine uses a URL path to map a request to a controller, in our case this will be a servlet. You can write as many servlets as you want, but you do not need to write any configuration therefor. Let's have a look at how you can map a URL path to a servlet
+As many other frameworks, our Servlet-Engine uses a URL path to map a request to a controller. In our case this is a servlet. You can write as many servlets as you want, but you do not need to provide any configuration. The following section demonstrates how to map a URL path to a servlet.
 
 ```php
 <?php
