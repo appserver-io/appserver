@@ -278,8 +278,7 @@ Here is an example of how to configure basic or digest auth.
 </authentications>
 ```
 
-As you can see every `authentication` node has it `uri` attribute where you can use regular expressions for a request
-uri to match. It also has some params which are descripted below.
+As you can see every `authentication` node has its `URI` attribute where you can use regular expressions for a request URI to match. It also has some params which are descripted below.
 
 | Module  | Description |
 | ------- | ----------- |
@@ -331,21 +330,20 @@ resources by their file extensions.
 ```
 
 If you use this configuration a client requesting a resource with the extension `.php` will be processed by the
-fastcgi server module. That means, instead of serving the `.php` file as a static resource by the core module the fastcgi
-module will proceed the request by connecting to a fastcgi backend provided in the corresponding `params` node.
+FastCGI server module. That means, instead of serving the `.php` file as a static resource by the core module the FastCGI module will proceed the request by connecting to a FastCGI backend provided in the corresponding `params` node.
 
 | Param  | Description |
 | ------ | ----------- |
-| `host` | The ip address to the fastcgi backend. |
-| `port` | The port to the fastcgi backend. |
+| `host` | The ip address to the FastCGI backend. |
+| `port` | The port to the FastCGI backend. |
 
 > The file handler's name has to be equal to the module's name you want to trigger. So, every module has to implement
 > a `getModuleName()` method as defined in `\AppserverIo\Server\Interfaces\ModuleInterface`.
 
 ## Locations
 
-Locations are useful if you want to have other fileHandlers or if the fileHandlers configuration was changed on a
-certain request uri pattern to be triggered.
+Locations are useful if you want to have other file handlers or if the file handler's configuration was changed on a
+certain request URI pattern.
 
 ```xml
 <locations>
@@ -364,7 +362,7 @@ certain request uri pattern to be triggered.
 </locations>
 ```
 
-In this example the `/test.php` script is processed by another fastcgi backend listening on `127.0.0.1:9555`
+In this example the `/test.php` script is processed by another FastCGi backend listening on `127.0.0.1:9555`
 
 ## Rewrites
 
