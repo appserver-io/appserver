@@ -184,8 +184,8 @@ the resources by its key.
 
 ## Passing data from a configuration
 
-In some cases, it will be necessary, that you need to pass data to the `init()` method, e. g. configuration
-values. You can also do this with the `@Route` annotation. So imagine, we want to make the path to the file
+In some cases, it will be necessary to pass data to the `init()` method, e. g. configuration
+values. You can also do this with the `@Route` annotation. Imagine, we want to make the path to the file
 with the resources configurable.
 
 ```php
@@ -255,21 +255,17 @@ class HelloWorldServlet extends HttpServlet
 }
 ```
 
-With the `ìnitParams` attribute of the `@Route` annotation, you can specify a list of parameters that will be
-available later on the `$config` instance passed to the `ìnit()` method. You can specify a random number
-of key/value pair whereas the first value will be the key you later can load the value with. In our example
-we register a the path to our resources file `WEB-INF/resources.ini` under the key `resourceFile` in our
-servlet configuration. In the `ìnit()` method we can then load the path from the servlet configuration.
+With the `ìnitParams` attribute of the `@Route` annotation, you can specify a list of parameters. This list will be available later in the `$config` instance passed to the `ìnit()` method. You can specify a random number
+of key/value pair whereas the first value will be the key you load the value with, later. In our example
+we register a the path to our resources file `WEB-INF/resources.ini` with the key `resourceFile` in our
+servlet configuration. Afterwards, we load the path from the servlet configuration in the `ìnit()` method.
 
-> You maybe think, that it doesn't make too much sense specifying such values in an annotation. That can be
-> true, but keep in mind, that you can overwrite these values later in an XML configuration. So you can see
-> the values specified in the annotation as some default value. We will see an example of how we can
-> overwrite these values in an XML configuration later.
+> You might think, that it does not make sense specifying such values in an annotation. Keep in mind that you can > overwrite these values in an XML configuration. So, the values specified in the annotation are some kind of 
+> default values. We will see an example of how we can overwrite these values in an XML configuration, later.
 
 ## Starting a Session
 
-Starting a session is one of the things that you will need in nearly every application. Start a new session is
-quite simple. So let us see how we can integrate session handling in the application.
+Starting a session is one of the things needed in nearly every application. This is why we show how to integrate session handling in the application.
 
 ```php
 <?php
@@ -379,21 +375,19 @@ class HelloWorldServlet extends HttpServlet
 }
 ```
 
-Above is a very simple example of how you can start a session and add some data to it. Session handling is a
-complicated thing, and we tried to break it down to be as simple as one can imagine. By default you don not have
-to configure anything, but you still have to option to configure everything in an XML configuration file that
-has to be stored in you applications `WEB-INF` folder as `web.xml`.
+The simple example above demonstrates how a session is started and how data is added to it. Since session handling is a complex topic, we will break it down into single steps for better understanding. By default, you do not have
+to configure anything, but you have the option to do it in an XML configuration file that
+is stored in you applications `WEB-INF` folder as `web.xml`.
 
-> Other as a simple web server, we have the possibility to hold a number of sessions persistent in the application
-> servers memory. This ensures great performance on the one hand but came with great responsibility for the
-> developer on the other. By writing an application that should be run in an application server, you have to
-> be aware of what you are doing and have a look at the memory footprint of your application.
+> In contrast to a simple web server, we have the possibility to hold a number of sessions persistent in the 
+> application server's memory. This guarantees excellent performance but comes along with great responsibility
+> for the developer. By writing an application that should run on an application server, you have to
+> have a look at the memory footprint of your application.
 
 ## Optional XML Configuration
 
-As described before, we thought, that it have to be very simple, to write a servlet. Therefore, we provide
-annotations that give you the power to configure the basics. For sure, for many things we deliver a good
-default configuration, but you need the power to overwrite that.
+
+As described before, writing a servlet is easy. Therefore, we provide annotations that enable you to configure the basics. For sure, we deliver good default configurations for many application areas. However, you still need the power to overwrite it.
 
 You can overwrite the default configuration values in a simple XML file called `web.xml` that you've to
 store in your applications `WEB-INF` folder. In that file you can configure Servlets, overwrite values you've
