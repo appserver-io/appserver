@@ -6,7 +6,7 @@ meta_description: Originally Servlets are the Java counterpart to other dynamic 
 position: 50
 group: Docs
 subNav:
-  - title: How can a Servlet-Engine help
+  - title: How can a Servlet Engine help
     href: how-can-a-servlet-engine-help
   - title: Bootstrapping a Servlet
     href: bootstrapping-a-servlet
@@ -37,11 +37,11 @@ A Servlet is a very fast and simple way to implement an entry point to handle HT
 execute all performance critical tasks, like bootstrapping, in a method called `init()`, when
 the Servlet Engine starts.
 
-## How a Servlet-Engine can help
+## Benefits of a Servlet Engine
 
-One solution is using a Servlet-Engine as it is intigrated in appserver.io. Imagine a servlet as a class that implements the servlet interface, part of our PSR's. It provides a kind of MVC pattern controller functionality by invoking methods when a request comes in. Two things have to be considered when implementing the first servlet: Which requests need to be dispatched by the servlet and what functionality is to be provided.
+One solution is using a Servlet Engine as it is intigrated in appserver.io. Imagine a servlet as a class that implements the servlet interface, part of our PSR's. It provides a kind of MVC pattern controller functionality by invoking methods when a request comes in. Two things have to be considered when implementing the first servlet: Which requests need to be dispatched by the servlet and what functionality is to be provided.
 
-As many other frameworks, our Servlet-Engine uses a URL path to map a request to a controller. In our case this is a servlet. You can write as many servlets as you want, but you do not need to provide any configuration. The following section demonstrates how to map a URL path to a servlet.
+As many other frameworks, our Servlet Engine uses a URL path to map a request to a controller. In our case this is a servlet. You can write as many servlets as you want, but you do not need to provide any configuration. The following section demonstrates how to map a URL path to a servlet.
 
 ```php
 <?php
@@ -103,7 +103,7 @@ You should see the text `Hello World`. Congratulations, you have written your fi
 ## Bootstrapping a Servlet
 
 As described before, bootstrapping a framework with every request is a very expensive procedure when doing it
-again and again. Using an application server with a Servlet-Engine has major advantages. First, parsing configuration like the `@Route` annotation is done only once when the application server
+again and again. Using an application server with a Servlet Engine has major advantages. First, parsing configuration like the `@Route` annotation is done only once when the application server
 starts. Secondly, you have the possibility to do all expensive steps in an `ìnit()` method that will be
 invoked by the application server when the servlet is instanciated and initialized at startup. The next section extends our previous example.
 
@@ -386,11 +386,9 @@ is stored in you applications `WEB-INF` folder as `web.xml`.
 
 ## Optional XML Configuration
 
+As described before, writing a servlet is easy. Therefore, we provide annotations that enable you to configure the basics. For sure, we deliver sound default configurations for many application areas. However, you still need the power to overwrite it.
 
-As described before, writing a servlet is easy. Therefore, we provide annotations that enable you to configure the basics. For sure, we deliver good default configurations for many application areas. However, you still need the power to overwrite it.
-
-You can overwrite the default configuration values in a simple XML file called `web.xml` that you've to
-store in your applications `WEB-INF` folder. In that file you can configure Servlets, overwrite values you've
+You can overwrite the default configuration values in a simple XML file called `web.xml` which is stored in your application's `WEB-INF` folder. In this file, you can configure servlets and overwrite values you have
 specified in annotations, change the default session settings and give or deny users access to resources with
 HTTP basic or digest authentication.
 
@@ -466,14 +464,11 @@ HTTP basic or digest authentication.
 </web-app>
 ```
 
-The XML configuration seems to be a bit complicated for the start, right? So we will go through it, node by
-node and give you a brief introduction what you can configure with it.
+At first sight, the XML configuration might seem complicated. This is why we go it through node by node and give a brief introduction to the configuration opportunities. 
 
 ### Meta-Data Configuration
 
-##### `/web-app/display-name` *string*
-This node actually doesn't has any functionality. Actually you can use it to give your application a name.
-In later versions, this name will be displayed in admin UI where all applications are listed.
+|`/web-app/display-name` *string* | This node does not have a functionality. Actually you can use it to give your application a name. In later versions, this name will be displayed in admin UI where all applications are listed.|
 
 ##### `/web-app/description` *string*
 As `/web-app/display-name`, this node has also no functionality. You can add a short description about your
@@ -632,12 +627,12 @@ public function init(ServletConfig $config)
 > application.
 
 ### Servlet Configuration
-As this post is all about our Servlet-Engine, maybe the most important thing is, how you can define the servlets, or override annotations you defined in the servlets itself, which will be parsed when the application server starts.
+As this post is all about our Servlet Engine, maybe the most important thing is, how you can define the servlets, or override annotations you defined in the servlets itself, which will be parsed when the application server starts.
 
 ##### `/web-app/servlet` *string*
 In many cases, it'll be the easiest way to use annotations to define your sevlets and map them to a request URL.
 Sometimes it'll be necessary that you define servlets in the `web.xml` file. As the order, the servlets will be
-loaded, is relevant for matching the URL when the request will be handled by the Servlet-Engine, it could be necessary that you have to manually change it in this file. You can define a servlet by add the following snippet to your configuration file
+loaded, is relevant for matching the URL when the request will be handled by the Servlet Engine, it could be necessary that you have to manually change it in this file. You can define a servlet by add the following snippet to your configuration file
 
 ```xml
 <servlet>
@@ -665,7 +660,7 @@ You must specify a name, unique in your application, for the servlet here. This 
 [map](#servlet-mapping) your servlet to a request URL later.
 
 ##### `/web-app/servlet/servlet-class` *string*
-The Servlet-Engine needs to know, which class has to instantiated when initializing the servlet. So you have to specify the fully qualified name of your servlet here.
+The Servlet Engine needs to know, which class has to instantiated when initializing the servlet. So you have to specify the fully qualified name of your servlet here.
 
 ##### `/web-app/servlet/init-param` *string*
 You can specifiy a random number of initialization parameters here. The parameters will be parsed when the
@@ -718,7 +713,7 @@ public function init(ServletConfig $config)
 > and pre-loads the action classes when the application server starts.
 
 ### Servlet Mapping
-Finally it is necessary to map the servlet we've configured before, to a URL path. As the Servlet-Engine is a webserver module, by default it is bound to the file extension `.do`. You can change this in the `appserver.xml` confguration file in directory `etc/appserver/appserver.xml`.
+Finally it is necessary to map the servlet we've configured before, to a URL path. As the Servlet Engine is a webserver module, by default it is bound to the file extension `.do`. You can change this in the `appserver.xml` confguration file in directory `etc/appserver/appserver.xml`.
 
 ##### `/web-app/servlet-mapping` *string*
 You can specify as many servlet mappings you need. The mapping maps a `servlet-name` to a `url-pattern`. The
@@ -787,7 +782,7 @@ Again, there is an online [website](http://jesin.tk/tools/htdigest-generator-too
 that will work on Windows also.
 
 ##### `/web-app/security/url-pattern` *string*
-The value of this node allows you to specify a URL pattern. If a request has to be handled, the Servlet-Engine again uses the PHP [fnmatch](http://php.net/fnmatch) method to match the URL against that pattern.
+The value of this node allows you to specify a URL pattern. If a request has to be handled, the Servlet Engine again uses the PHP [fnmatch](http://php.net/fnmatch) method to match the URL against that pattern.
 
 ##### `/web-app/security/auth/auth_type` *string*
 The value of this node defines the authentication type you want to use. `Basic` enables HTTP basic authentication,
