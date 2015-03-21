@@ -467,118 +467,37 @@ HTTP basic or digest authentication.
 At first sight, the XML configuration might seem complicated. This is why we go it through node by node and give a brief introduction to the configuration opportunities. 
 
 ### Meta-Data Configuration
-
-|`/web-app/display-name` *string* | This node does not have a functionality. Actually you can use it to give your application a name. In later versions, this name will be displayed in admin UI where all applications are listed.|
-
-##### `/web-app/description` *string*
-As `/web-app/display-name`, this node has also no functionality. You can add a short description about your
-application functionality. In later versions this description will be displayed in application details in
-admin UI.
+| Configuration | Data Type | Description |
+| ----------| ----------- | ----------- |
+|`/web-app/display-name` | *string* | This node does not have a functionality. You can use it to give your application a name. In later versions, this name will be displayed in admin UI where all applications are listed.|
+|`/web-app/description` | *string* | This node does not have a functionality. You can add a short description about your application functionality. In later versions, this description will be displayed in application details in admin UI. |
 
 ### Session Configuration
 
-By default, you'll not have to change the session configuration.
+By default, you do not have to change the session configuration.
 
-##### `/web-app/session-config/session-name` *string*
-In some cases, e. g. if you want to specify a indivdual cookie name for your session, you can do that. To change
-the name of the session cookie, customize the value of this node to your choice. Please be aware that you can only
-use chars that are defined in [RFC2616 - Section 2.2](http://tools.ietf.org/html/rfc2616#section-2.2).
-
-##### `/web-app/session-config/session-file-prefix` *string*
-As sessions are persisted to the filesystem after the configured inactivity timeout, by default 1.440 seconds,
-you can also specify a prefix for the filename used to store the session data. To specify a custom prefix, change
-the value for node . As for the cookie name, be aware of the restrictions for filenames, that'll depend on the OS
-you run the application server on. Also keep in mind, that you can only customize the prefix and the session-ID
-will always we added as suffix. For example, if you specify `foo_` as value for `/web-app/session-config/session-file-prefix`, the session files will result in something like `foo_au1ctio31v10lm9jlhipdlurn1`.
-
-##### `/web-app/session-config/session-save-path` *string*
-If you want to change the default folder, the application server stores the session files, you can specify the
-absolute path as value of node . This will be necessary if you want to use a shared folder to store the session
-files, e. g. on a cluster file system.
-
-##### `/web-app/session-config/session-maximum-age` *integer*
-The value of this node specifies the maximum age of the session. By default this value is `0`, what means that
-the session would never expire, except it'll be destroyed by your application, e. g. when a user logs out and
-you invoke
-
-```php
-<?php
-
-/**
- * Handles a HTTP POST request, destroys the session and logs the user out.
- *
- * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest  $servletRequest
- *   The request instance
- * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponse $servletResponse
- *   The response instance
- *
- * @return void
- */
-public function doPost(HttpServletRequest $servletRequest, HttpServletResponse $servletResponse)
-{
-
-    // destroy the session and reset the cookie
-    if ($session = $servletRequest->getSession()) {
-        $session->destroy('Explicit logout requested ');
-    }
-}
-```
-
-on your servlet for example.
-
-> Actually the session maximum age only depends on the sessions creation time. This means, independent how often
-> a users changes session data, the maximum age of the session will NOT be extended. After the maximum age is
-> reached the session will be destroyed and the user has to create a new one, by re-login for example. If you want
-> to implement something like a sticky login functionality, you MUST set the value for `session-maximum-age` to
-> `0` and the value for the [session-cookie-lifetime](#web-appsession-configsession-cookie-lifetime) to a value that > points far in the future.
-
-##### `/web-app/session-config/session-inactivity-timeout` *integer*
-This node allows you to specify a timeout in seconds that marks the session as inactive. This lets the application
-server remove the session from memory and persists it to the configurated persistence layer. By default, we persist
-sessions to the file system.
-
-> Actually we only have a filesystem persistence manager as part of our standard session manager. By registering
-> your own session manager, you are able to implement your own persistence manager that allows you to persist
-> sessions in cache systems like Redis for example.
-
-##### `/web-app/session-config/garbage-collection-probability` *float*
-Allows you to set a value, how often the garbage collector will be invoked. You can specify a value between `100`
-and `0`. As higher the value, as higher is the probability that the garbage collector will be invoked. With the
-number ob decimals you extend the range, and therefor the probability that the GC will be invoked. By default the
-value for this node is set to `0.1`.
-
-##### `/web-app/session-config/session-cookie-lifetime` *integer*
-Independent from the [session-maximum-age](#web-appsession-configsession-maximum-age-integer) value, you can
-specify a lifetime for the session cookie in seconds, that'll let the browser cookie expire and invalidates
-the session therefor.
-
-##### `/web-app/session-config/session-cookie-domain` *string*
-The value of this node specifies the domain to set in the session cookie. Default is `localhost` which results in
-the host name of the server which generated the cookie according to cookies specification.
-
-##### `/web-app/session-config/session-cookie-path` *string*
-With this value of this node, you specify the path to set in the session cookie, which defaults to `/`. The path
-tells the browser to use the cookie only when requesting pages contains the path you specify. If you use the
-default value, the cookie will be valid for all paths in your application.
-
-##### `/web-app/session-config/session-cookie-secure` *boolean*
-The value for this node specifies whether cookies should only be sent over secure connections. By default we've
-set this value to `false`, which means that cookies will always be set.
-
-##### `/web-app/session-config/session-http-only` *boolean*
-These configuration node allows you to mark the cookie as accessible only through the HTTP protocol. Setting this
-value to `true` makes the cookie inaccessible by scripting languages, such as JavaScript. This will effectively
-reduce identity theft through XSS attacks. Keep in mind, that although it is not supported by all browsers. By
-default, this value is set to `false`.
+| Configuration | Data Type | Description |
+| ----------| ----------- | ----------- |
+|`/web-app/session-config/session-name` | *string* | In some cases, for example, if you want to specify an indivdual cookie name for your session, you can do that. To change the name of the session cookie, customize the value of this node. Please be aware that you can only use chars that are defined in [RFC2616 - Section 2.2](http://tools.ietf.org/html/rfc2616#section-2.2). |
+|`/web-app/session-config/session-file-prefix` | *string* | As sessions are persisted to the filesystem after the configured inactivity timeout, by default 1.440 seconds, you can also specify a prefix for the file name used to store the session data. To specify a custom prefix, change the value for node . As for the cookie name, be aware of the restrictions for filenames, that will depend on the OS you run the application server on. Also keep in mind, that you can only customize the prefix and the session-ID will always we added as suffix. For example, if you specify `foo_` as value for `/web-app/session-config/session-file-prefix`, the session files will result in something like `foo_au1ctio31v10lm9jlhipdlurn1`. |
+| `/web-app/session-config/session-save-path` | *string* | If you want to change the default folder, the application server stores the session files, you can specify the absolute path as value of node . This will be necessary if you want to use a shared folder to store the session files, e. g. on a cluster file system. |
+| `/web-app/session-config/session-maximum-age` | *integer* | The value of this node specifies the maximum age of the session. By default this value is `0`, what means that the session would never expire, except it'll be destroyed by your application. Actually the session maximum age only depends on the sessions creation time. This means, independent how often a users changes session data, the maximum age of the session will NOT be extended. After the maximum age is reached the session will be destroyed and the user has to create a new one, by re-login for example. If you want to implement something like a sticky login functionality, you MUST set the value for `session-maximum-age` to `0` and the value for the [session-cookie-lifetime](#web-appsession-configsession-cookie-lifetime) to a value that points far in the future. |
+| `/web-app/session-config/session-inactivity-timeout` | *integer* | This node allows you to specify a timeout in seconds that marks the session as inactive. This lets the application server remove the session from memory and persists it to the configurated persistence layer. By default, we persist sessions to the file system. Actually we only have a filesystem persistence manager as part of our standard session manager. By registering your own session manager, you are able to implement your own persistence manager that allows you to persist sessions in cache systems like Redis for example. |
+| `/web-app/session-config/garbage-collection-probability` | *float* | Allows you to set a value, how often the garbage collector will be invoked. You can specify a value between `100` and `0`. As higher the value, as higher is the probability that the garbage collector will be invoked. With the number ob decimals you extend the range, and therefor the probability that the GC will be invoked. By default the value for this node is set to `0.1`.
+| `/web-app/session-config/session-cookie-lifetime` | *integer* | Independent from the [session-maximum-age](#web-appsession-configsession-maximum-age-integer) value, you can specify a lifetime for the session cookie in seconds, that'll let the browser cookie expire and invalidates the session therefore. |
+| `/web-app/session-config/session-cookie-domain` | *string* | The value of this node specifies the domain to set in the session cookie. Default is `localhost` which results in the host name of the server which generated the cookie according to cookies specification. |
+| `/web-app/session-config/session-cookie-path` | *string* | With this value of this node, you specify the path to set in the session cookie, which defaults to `/`. The path tells the browser to use the cookie only when requesting pages contains the path you specify. If you use the default value, the cookie will be valid for all paths in your application. |
+| `/web-app/session-config/session-cookie-secure` | *boolean* | The value for this node specifies whether cookies should only be sent over secure connections. By default we've set this value to `false`, which means that cookies will always be set. |
+| `/web-app/session-config/session-http-only` | *boolean* | These configuration node allows you to mark the cookie as accessible only through the HTTP protocol. Setting this value to `true` makes the cookie inaccessible by scripting languages, such as JavaScript. This will effectively reduce identity theft through XSS attacks. Keep in mind, that although it is not supported by all browsers. By default, this value is set to `false`. |
 
 ### Global Initialization Parameters
 Something you actually can not configure with annotations are context parameters. You can and should use context
 parameters when you want to specify and pass values to your application, you would need to bootstrap your servlets,
 e. g. the path to a application specific configuration file.
 
-##### `/web-app/context-param` *string*
-You can specify a random number of context parameters that you can load from the servlet context. For example, if
-we want to load the path to the `applicationProperties`, defined as context parameter in our [example](#optional-xml-configuration) XML configuration file
+| Configuration | Data Type | Description |
+| ----------| ----------- | ----------- |
+| `/web-app/context-param` | *string* | You can specify a random number of context parameters that you can load from the servlet context. For example, if we want to load the path to the `applicationProperties`, defined as context parameter in our [example](#optional-xml-configuration) XML configuration file. |
 
 ```xml
 <context-param>
@@ -629,11 +548,9 @@ public function init(ServletConfig $config)
 ### Servlet Configuration
 As this post is all about our Servlet Engine, maybe the most important thing is, how you can define the servlets, or override annotations you defined in the servlets itself, which will be parsed when the application server starts.
 
-##### `/web-app/servlet` *string*
-In many cases, it'll be the easiest way to use annotations to define your sevlets and map them to a request URL.
-Sometimes it'll be necessary that you define servlets in the `web.xml` file. As the order, the servlets will be
-loaded, is relevant for matching the URL when the request will be handled by the Servlet Engine, it could be necessary that you have to manually change it in this file. You can define a servlet by add the following snippet to your configuration file
-
+| Configuration | Data Type | Description |
+| ----------| ----------- | ----------- |
+| `/web-app/servlet` | *string* | In many cases, it'll be the easiest way to use annotations to define your sevlets and map them to a request URL. Sometimes it'll be necessary that you define servlets in the `web.xml` file. As the order, the servlets will be loaded, is relevant for matching the URL when the request will be handled by the Servlet Engine, it could be necessary that you have to manually change it in this file. You can define a servlet by add the following snippet to your configuration file. |
 ```xml
 <servlet>
   <description>The hello world as servlet implementation.</description>
@@ -644,33 +561,17 @@ loaded, is relevant for matching the URL when the request will be handled by the
     <param-name>servletProperties</param-name>
     <param-value>WEB-INF/hello-world.properties</param-value>
   </init-param>
-</servlet>
-```
-
-##### `/web-app/servlet/description` *string*
-You can specify a short description for the servlet here. Actually the description has no usage. In later versions
-this description will be displayed in the servlet details in admin UI.
-
-##### `/web-app/servlet/display-name` *string*
-This node actually doesn't has any functionality. Actually you can use it to give your servlet a name.
-In later versions, this name will be displayed in admin UI where all servlets are listed.
-
-##### `/web-app/servlet/servlet-name` *string*
-You must specify a name, unique in your application, for the servlet here. This name will be used to
-[map](#servlet-mapping) your servlet to a request URL later.
-
-##### `/web-app/servlet/servlet-class` *string*
-The Servlet Engine needs to know, which class has to instantiated when initializing the servlet. So you have to specify the fully qualified name of your servlet here.
-
-##### `/web-app/servlet/init-param` *string*
-You can specifiy a random number of initialization parameters here. The parameters will be parsed when the
-application starts und you can load them from the servlet configuration.
-
-##### `/web-app/servlet/init-param/param-name` *string*
-This represents the parameters key. You should only use US-ASCII chars (octets 0 - 127) for the key.
-
-##### `/web-app/servlet/init-param/param-value` *string*
-This nodes value is the parameters value. Here you can specify anything that is allowed to specify in a XML file.
+</servlet> 
+``` 
+| Configuration | Data Type | Description |
+| ----------| ----------- | ----------- |
+|`/web-app/servlet/description` | *string* | You can specify a short description for the servlet here. Actually the description has no usage. In later versions this description will be displayed in the servlet details in admin UI. |
+| `/web-app/servlet/display-name` | *string* | This node actually doesn't has any functionality. Actually you can use it to give your servlet a name. In later versions, this name will be displayed in admin UI where all servlets are listed. |
+| `/web-app/servlet/servlet-name` | *string* | You must specify a name, unique in your application, for the servlet here. This name will be used to [map](#servlet-mapping) your servlet to a request URL later. |
+|`/web-app/servlet/servlet-class` | *string* | The Servlet Engine needs to know, which class has to instantiated when initializing the servlet. So you have to specify the fully qualified name of your servlet here. |
+| `/web-app/servlet/init-param` | *string* |You can specifiy a random number of initialization parameters here. The parameters will be parsed when the application starts und you can load them from the servlet configuration. |
+| `/web-app/servlet/init-param/param-name` | *string* | This represents the parameters key. You should only use US-ASCII chars (octets 0 - 127) for the key. |
+| `/web-app/servlet/init-param/param-value` | *string* |This nodes value is the parameters value. Here you can specify anything that is allowed to specify in a XML file. |
 
 You can access a servlets initialization parameters by invoking the `$this->getInitParameter()` method like
 
@@ -715,16 +616,11 @@ public function init(ServletConfig $config)
 ### Servlet Mapping
 Finally it is necessary to map the servlet we've configured before, to a URL path. As the Servlet Engine is a webserver module, by default it is bound to the file extension `.do`. You can change this in the `appserver.xml` confguration file in directory `etc/appserver/appserver.xml`.
 
-##### `/web-app/servlet-mapping` *string*
-You can specify as many servlet mappings you need. The mapping maps a `servlet-name` to a `url-pattern`. The
-mapping has to be specified by the following subnodes.
-
-##### `/web-app/servlet-mapping/servlet-name` *string*
-This node has to contain the `servlet-name` you have specified in a `/web-app/servlet/servlet-name` node before.
-
-##### `/web-app/servlet-mapping/url-pattern` *string*
-To stay with our example, the `HelloWorldServlet` with `servlet-name` `helloWorld`, has to be mapped to the URL
-patterns `/helloWorld.do` and `/helloWorld.do*` like
+| Configuration | Data Type | Description |
+| ----------| ----------- | ----------- |
+| `/web-app/servlet-mapping` | *string* | You can specify as many servlet mappings you need. The mapping maps a `servlet-name` to a `url-pattern`. The mapping has to be specified by the following subnodes. |
+| `/web-app/servlet-mapping/servlet-name` | *string* | This node has to contain the `servlet-name` you have specified in a `/web-app/servlet/servlet-name` node before. |
+| `/web-app/servlet-mapping/url-pattern` | *string* | To stay with our example, the `HelloWorldServlet` with `servlet-name` `helloWorld`, has to be mapped to the URL patterns `/helloWorld.do` and `/helloWorld.do*` like the following. |
 
 ```xml
 <servlet-mapping>
@@ -750,10 +646,9 @@ containing the `*` as a catch all.
 Security will be a very important topic when writing applications, especially web applications. You have the
 possibility secure your servlets either with HTTP basic or digest authentication as described in [RFC2617](http://tools.ietf.org/html/rfc2617).
 
-##### `/web-app/security` *string*
-Configuration can done by defining a URL pattern you want to secure and, depending on the authentication type, the
-parameters where you want to authenticate against. If we want to secure our `helloWorld` servlet using basic
-authentication, the following snipped will do the job
+| Configuration | Data Type | Description |
+| ----------| ----------- | ----------- |
+| `/web-app/security` | *string* |  Configuration can done by defining a URL pattern you want to secure and, depending on the authentication type, the parameters where you want to authenticate against. If we want to secure our `helloWorld` servlet using basic authentication, the following snipped will do the job. |
 
 ```xml
 <security>
@@ -773,7 +668,7 @@ This protects access when someone tries to open the URL `http://127.0.0.1:9080/e
 browsers dialog and request a username and a password.
 
 You can define user credentials with the tool [htpasswd](http://httpd.apache.org/docs/2.2/programs/htpasswd.html)
-thatwill be available on all supported OS, except Windows. On Windows there are optional tools available, for
+that will be available on all supported OS, except Windows. On Windows there are optional tools available, for
 example you can use [.Htaccesstools](http://www.htaccesstools.com/htpasswd-generator-windows/) online to create a
 file.
 
@@ -781,23 +676,10 @@ To create a file for HTTP digest authentication, you can use the tool [htdigest]
 Again, there is an online [website](http://jesin.tk/tools/htdigest-generator-tool/) you can generate a file
 that will work on Windows also.
 
-##### `/web-app/security/url-pattern` *string*
-The value of this node allows you to specify a URL pattern. If a request has to be handled, the Servlet Engine again uses the PHP [fnmatch](http://php.net/fnmatch) method to match the URL against that pattern.
-
-##### `/web-app/security/auth/auth_type` *string*
-The value of this node defines the authentication type you want to use. `Basic` enables HTTP basic authentication,
-`Digest` the HTTP digest authentication. Depending on value you entered here, you have to add the appropriate
-options described below.
-
-##### `/web-app/security/auth/realm` *string*
-This value defines the text the browser dialogue will render after `The server says:`. So if you can specify a
-short message to the user that helps him to rember his credentials. In our example we specify `Basic Authentication Type` here.
-
-##### `/web-app/security/auth/adapter` *string*
-The value for this node defines the adapter used to validiate the credentials the user entered in the browsers
-dialog. Actually we have `htpasswd` for HTTP basic authentication, `htdigest`for HTTP digest authentication. In
-later releases we'll provide other adpaters, e. g. a LDAP implementation you can use for HTTP basic authentication.
-
-##### `/web-app/security/auth/options/file` *string*
-Based on the value for `/web-app/security/auth/auth_type` you've defined, you have to enter the relative path to
-the file containing the `.htpasswd` or `.htdigest` file with the allowed users.
+| Configuration | Data Type | Description |
+| ----------| ----------- | ----------- |
+| `/web-app/security/url-pattern` | *string* | The value of this node allows you to specify a URL pattern. If a request has to be handled, the Servlet Engine again uses the PHP [fnmatch](http://php.net/fnmatch) method to match the URL against that pattern. |
+| `/web-app/security/auth/auth_type` | *string* | The value of this node defines the authentication type you want to use. `Basic` enables HTTP basic authentication, `Digest` the HTTP digest authentication. Depending on value you entered here, you have to add the appropriate options described below. |
+| `/web-app/security/auth/realm` | *string* | This value defines the text the browser dialogue will render after `The server says:`. So if you can specify a short message to the user that helps him to rember his credentials. In our example we specify `Basic Authentication Type` here. |
+| `/web-app/security/auth/adapter` | *string* | The value for this node defines the adapter used to validiate the credentials the user entered in the browsers dialog. Actually we have `htpasswd` for HTTP basic authentication, `htdigest`for HTTP digest authentication. In later releases we'll provide other adpaters, e. g. a LDAP implementation you can use for HTTP basic authentication. |
+| `/web-app/security/auth/options/file` | *string* | Based on the value for `/web-app/security/auth/auth_type` you've defined, you have to enter the relative path to the file containing the `.htpasswd` or `.htdigest` file with the allowed users. |
