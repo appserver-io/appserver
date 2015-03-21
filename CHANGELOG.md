@@ -1,4 +1,14 @@
-# Version 1.1.0
+# Version 1.1.0-alpha1
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Closed [#683](https://github.com/appserver-io/appserver/issues/683) - Update PHP to 5.6
+
+# Version 1.0.3
 
 ## Bugfixes 
 
@@ -7,7 +17,7 @@
 
 ## Features
 
-* Closed [#683](https://github.com/appserver-io/appserver/issues/683) - Update PHP to 5.6
+* None
 
 # Version 1.0.2
 
