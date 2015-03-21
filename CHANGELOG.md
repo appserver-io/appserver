@@ -7,7 +7,7 @@
 
 ## Features
 
-* None
+* Closed [#683](https://github.com/appserver-io/appserver/issues/683) - Update PHP to 5.6
 
 # Version 1.0.2
 

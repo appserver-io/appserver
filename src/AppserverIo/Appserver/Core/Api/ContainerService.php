@@ -70,7 +70,7 @@ class ContainerService extends AbstractFileOperationService
 
             case 'DAR': // on Mac OS X use the system default configuration
 
-                $configargs = array('config' => '/System/Library/OpenSSL/openssl.cnf');
+                $configargs = array('config' => $this->getBaseDirectory('/ssl/openssl.cnf'));
                 break;
 
             case 'WIN': // on Windows use the system configuration we deliver
