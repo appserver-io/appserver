@@ -105,7 +105,7 @@ You should see the text `Hello World`. Congratulations, you have written your fi
 As described before, bootstrapping a framework with every request is a very expensive procedure when doing it
 again and again. Using an application server with a Servlet Engine has major advantages. First, parsing configuration like the `@Route` annotation is done only once when the application server
 starts. Secondly, you have the possibility to do all expensive steps in an `ìnit()` method that will be
-invoked by the application server when the servlet is instanciated and initialized at startup. The next section extends our previous example.
+invoked by appserver.io when the servlet is instanciated and initialized at startup. The next section extends our previous example.
 
 ```php
 <?php
@@ -177,7 +177,7 @@ We extended the example by reading the translated `Hello World!` from a resource
 server starts. When we handle the request later, we only need to resolve the translation from the array with
 the resources by its key.
 
-> You can get major performance improvements by letting the application server do CPU expensive functionality
+> You can get major performance improvements by letting appserver.io do CPU expensive functionality
 > during startup. Keep in mind, that you get a copy of the servlet when the `doGet()` method is invoked.
 > Therefore, it does not make sense to write data to members because it will be not available in the next
 > request.
@@ -380,7 +380,7 @@ The simple example above demonstrates how a session is started and how data is a
 to configure anything, but you have the option to do it in an XML configuration file that
 is stored in you applications `WEB-INF` folder as `web.xml`.
 
-> In contrast to a simple web server, we have the possibility to hold a number of sessions persistent in the 
+> In contrast to a simple webserver, we have the possibility to hold a number of sessions persistent in the 
 > application server's memory. This guarantees excellent performance but comes along with great responsibility
 > for the developer. By writing an application that runs on an application server, you have to
 > have a look at the memory footprint of your application.
@@ -480,7 +480,7 @@ By default, you do not have to change the session configuration.
 | Configuration | Data Type | Description |
 | ----------| ----------- | ----------- |
 |`/web-app/session-config/session-name` | *string* | In some cases, for example, if you want to specify an individual cookie name for your session, you can do so. To change the name of the session cookie, customize the value of the node. Please be aware that you can only use chars that are defined in [RFC2616 - Section 2.2](http://tools.ietf.org/html/rfc2616#section-2.2). |
-|`/web-app/session-config/session-file-prefix` | *string* | As sessions are persisted to the file system after the configured inactivity timeout, by default 1.440 seconds, you can also specify a prefix for the filename used to store the session data. To specify a custom prefix, change the value for node. As for the cookie name, be aware of the restrictions for filenames, which depend on the OS you run the application server on. Also, keep in mind that you can only customize the prefix, and the session-ID will always be added as a suffix. For example, if you specify `foo_` as value for `/web-app/session-config/session-file-prefix`, the session files result in something like `foo_au1ctio31v10lm9jlhipdlurn1`. |
+|`/web-app/session-config/session-file-prefix` | *string* | As sessions are persisted to the file system after the configured inactivity timeout, by default 1.440 seconds, you can also specify a prefix for the filename used to store the session data. To specify a custom prefix, change the value for node. As for the cookie name, be aware of the restrictions for filenames, which depend on the OS you run appserver.io on. Also, keep in mind that you can only customize the prefix, and the session-ID will always be added as a suffix. For example, if you specify `foo_` as value for `/web-app/session-config/session-file-prefix`, the session files result in something like `foo_au1ctio31v10lm9jlhipdlurn1`. |
 | `/web-app/session-config/session-save-path` | *string* | If you want to change the default folder, the application server stores the session files, you can specify the absolute path value of node . This will be necessary if you want to use a shared folder to store the session files, for example, on a cluster file system. |
 | `/web-app/session-config/session-maximum-age` | *integer* | The value of this node specifies the maximum age of the session. By default, this value is `0`, what means that the session would never expire except it is destroyed by your application. The session maximum age only depends on the sessions creation time. This means, independent how often a user changes session data, the maximum age of the session will not be extended. After the maximum age is reached the session is destroyed and the user has to create a new one by re-login, for example. If you want to implement something like a sticky login functionality, you must set the value for `session-maximum-age` to `0`. The value for the [session-cookie-lifetime](#web-appsession-configsession-cookie-lifetime) has to be set to a value that points far in the future. |
 | `/web-app/session-config/session-inactivity-timeout` | *integer* | This node allows you to quickly specify a timeout that marks the session as inactive. This enables the application server to remove the session from the memory and persists it to the configurated persistence layer. By default, we persist sessions to the file system.  We only have a file system persistence manager as part of our standard session manager. By registering your session manager, you can implement your persistence manager that enables persisting sessions in cache systems like Redis, for example. |
@@ -547,7 +547,7 @@ public function init(ServletConfig $config)
 > application.
 
 ### Servlet Configuration
-The following section demonstrates how to define the servlets and how to override annotations you have defined in the servlets, which are parsed when the application server starts.
+The following section demonstrates how to define the servlets and how to override annotations you have defined in the servlets, which are parsed when appserver.io starts.
 
 | Configuration | Data Type | Description |
 | ----------| ----------- | ----------- |
