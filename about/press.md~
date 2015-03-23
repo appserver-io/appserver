@@ -14,8 +14,8 @@ permalink: /about/press.html
 Check out some stuff about appserver.io and the appserver.io team in the press!
 
 ## PHP-Magazin 03/2015
-appserver.io - application server for PHP - Interview with **Stefan Willkommer** *CTO*<br>
-appserver.io as RESTful service for AngularJS-Apps **Johann Zelger** *Project Founder*
+* appserver.io - application server for PHP - Interview with **Stefan Willkommer, CTO**
+* appserver.io as RESTful service for AngularJS-Apps **Johann Zelger, Project Founder**
 
 <a href="http://phpmagazin.de/php-magazin-3-15"><img class="img-thumbnail unstyled" width="339" height="479" src="{{ "/assets/img/press/phpmagazin_03-15.jpg" | prepend: site.baseurl }}"></a>
 
