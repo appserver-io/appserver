@@ -117,6 +117,13 @@ class ServerNode extends AbstractNode implements ServerNodeInterface
      * @var \AppserverIo\Appserver\Core\Api\Node\VirtualHostsNodeTrait
      */
     use VirtualHostsNodeTrait;
+    
+    /**
+     * The trait for the certificates.
+     *
+     * @var \AppserverIo\Appserver\Core\Api\Node\CertificatesNodeTrait
+     */
+    use CertificatesNodeTrait;
 
     /**
      * The servers type.
@@ -173,6 +180,14 @@ class ServerNode extends AbstractNode implements ServerNodeInterface
      * @AS\Mapping(nodeType="string")
      */
     protected $requestContext;
+    
+    /**
+     * The stream context to use.
+     *
+     * @var string
+     * @AS\Mapping(nodeType="string")
+     */
+    protected $streamContext;
 
     /**
      * Returns the servers type.
@@ -242,5 +257,15 @@ class ServerNode extends AbstractNode implements ServerNodeInterface
     public function getRequestContext()
     {
         return $this->requestContext;
+    }
+    
+    /**
+     * Returns the stream context to use.
+     *
+     * @return string The stream context type
+     */
+    public function getStreamContext()
+    {
+        return $this->streamContext;
     }
 }

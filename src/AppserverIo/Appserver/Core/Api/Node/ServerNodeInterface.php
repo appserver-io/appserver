@@ -82,6 +82,13 @@ interface ServerNodeInterface extends NodeInterface
      * @return string The request context type
      */
     public function getRequestContext();
+    
+    /**
+     * Returns the stream context to use.
+     *
+     * @return string The stream context type
+     */
+    public function getStreamContext();
 
     /**
      * Returns the virtual hosts.

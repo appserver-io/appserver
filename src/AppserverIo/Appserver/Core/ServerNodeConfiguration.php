@@ -127,7 +127,6 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
      */
     public function __construct(ServerNodeInterface $node)
     {
-
         // set the node itself
         $this->node = $node;
 
@@ -143,6 +142,7 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
         $this->accesses = $node->getAccessesAsArray();
         $this->environmentVariables = $node->getEnvironmentVariablesAsArray();
         $this->locations = $node->getLocationsAsArray();
+        $this->certificates = $node->getCertificatesAsArray();
     }
 
     /**
@@ -523,5 +523,25 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     public function getRewriteMaps()
     {
         return $this->rewriteMaps;
+    }
+
+    /**
+     * Returns stream context type
+     *
+     * @return string
+     */
+    public function getStreamContextType()
+    {
+        return $this->node->getStreamContext();
+    }
+
+    /**
+     * Returns the certificates used by the server
+     *
+     * @return array
+     */
+    public function getCertificates()
+    {
+        return $this->certificates;
     }
 }
