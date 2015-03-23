@@ -3,7 +3,7 @@ layout: docs
 title: Configuration
 meta_title: appserver.io configuration
 meta_description: appserver.io is highly configurable giving you the flexibility you need. Therefore we provide a central and very powerful configuration file.
-position: 130
+position: 150
 group: Docs
 subNav:
   - title: Basic Architecture
@@ -253,6 +253,42 @@ protocols. Therefor we can use the protocols which a server wrapper, e.g. [`WebS
 form of connection handlers. [WebServer](<https://github.com/appserver-io/webserver>)
 offers a `HttpConnectionHandler` class. By using it, the server is able to understand the HTTP 
 protocol.
+
+The server configuration makes heavy use of the `param` element which is used to apply some of the most important configuration values to a server instance.
+An example of the params a server can take can be found in the example below.
+
+```xml
+<params>
+    <param name="admin" type="string">info@appserver.io</param>
+    <param name="software" type="string">
+        appserver/1.0.0 (darwin) PHP/5.5.21
+    </param>
+    <param name="transport" type="string">tcp</param>
+    <param name="address" type="string">127.0.0.1</param>
+    <param name="port" type="integer">9080</param>
+    <param name="workerNumber" type="integer">64</param>
+    <param name="workerAcceptMin" type="integer">3</param>
+    <param name="workerAcceptMax" type="integer">8</param>
+    <!-- ... -->
+</params>
+```
+
+Some of these params do speak for themselves, but others don't. You can find a complete list of their meaning below:
+
+| Param name           | Type     | Description                                                    |
+| ---------------------| ---------| ---------------------------------------------------------------|
+| `admin`              | string   | The email address of the administrator who is responsible for. |
+| `software`           | string   |  The software signature as shown in the response header for example. |
+| `transport`          | string   |  The transport layer. In ssl mode `ssl` will be used instead of plain `tcp`. |
+| `address`            | string   |  The address the server-socket should be bind and listen to. If you want to allow only connection on local loopback define `127.0.0.1` as in the example above shown. This will be good enough for local development and testing purpose. If you want to allow connections to your external ethernet interfaces just define `0.0.0.0` or if you want to allow connection only on a specific interface just define the ip of your interface `192.168.1.100`. |
+| `port`               | integer  |  The port for the server-socket to accept connections to. This can be any [common port number](http://en.wikipedia.org/wiki/Port_%28computer_networking%29#Common_port_numbers). Make sure there is no other server installed blocking the default ports.|
+| `workerNumber`       | integer  |  Defines the number of worker-queues to be started waiting for requests to process. |
+| `workerAcceptMin`    | integer  |  Describes the minimum number of requests for the worker to be accepted for randomize its lifetime. |
+| `workerAcceptMax`    | integer  |  Describes the maximum number of requests for the worker to be accepted for randomize its lifetime. |
+
+All params listed above are common to servers using the `HttpConnectionHandler`.
+
+> The param composition may vary depending on the server implementation.
 
 ## Application Configuration
 
@@ -680,4 +716,76 @@ Implementing your own scanners is possible as well.
     </directories>
   </scanner>
 </scanners>
+```
+
+### Persistence-Container (Remote)
+
+The [Persistence-Container](<{{ "/get-started/documentation/persistence-container.html" | prepend: site.baseurl }}>) can also be used remote. This allows you, to distribute the components of your application across a network. Therefore you need to configure an own server for the Persistence-Container that allows to connect over a streaming socket.
+
+```xml
+<server
+  name="persistence-container"
+  type="\AppserverIo\Server\Servers\MultiThreadedServer"
+  worker="\AppserverIo\Server\Workers\ThreadWorker"
+  socket="\AppserverIo\Server\Sockets\StreamSocket"
+  requestContext="\AppserverIo\Server\Contexts\RequestContext"
+  serverContext="\AppserverIo\Server\Contexts\ServerContext"
+  loggerName="System">
+
+  <params>
+    <param name="admin" type="string">info@appserver.io</param>
+    <param name="transport" type="string">tcp</param>
+    <param name="address" type="string">127.0.0.1</param>
+    <param name="port" type="integer">8585</param>
+    <param name="workerNumber" type="integer">8</param>
+    <param name="workerAcceptMin" type="integer">3</param>
+    <param name="workerAcceptMax" type="integer">8</param>
+    <param name="documentRoot" type="string">webapps</param>
+    <param name="directoryIndex" type="string">index.pc</param>
+    <param name="keepAliveMax" type="integer">64</param>
+    <param name="keepAliveTimeout" type="integer">5</param>
+    <param name="errorsPageTemplatePath" type="string">var/www/errors/error.phtml</param>
+  </params>
+
+  <environmentVariables>
+    <environmentVariable condition="" definition="LOGGER_ACCESS=Access" />
+  </environmentVariables>
+
+  <connectionHandlers>
+    <connectionHandler type="\AppserverIo\WebServer\ConnectionHandlers\HttpConnectionHandler" />
+  </connectionHandlers>
+
+  <accesses>
+    <!-- per default allow everything -->
+    <access type="allow">
+      <params>
+        <param name="X_REQUEST_URI" type="string">.*</param>
+      </params>
+    </access>
+  </accesses>
+
+  <!-- include of virtual host configurations -->
+  <xi:include href="conf.d/virtual-hosts.xml"/>
+
+  <modules>
+    <!-- REQUEST_POST hook -->
+    <module type="\AppserverIo\WebServer\Modules\AuthenticationModule"/>
+    <module type="\AppserverIo\WebServer\Modules\VirtualHostModule"/>
+    <module type="\AppserverIo\WebServer\Modules\EnvironmentVariableModule" />
+    <module type="\AppserverIo\WebServer\Modules\RewriteModule"/>
+    <module type="\AppserverIo\WebServer\Modules\DirectoryModule"/>
+    <module type="\AppserverIo\WebServer\Modules\AccessModule"/>
+    <module type="\AppserverIo\WebServer\Modules\CoreModule"/>
+    <module type="\AppserverIo\Appserver\PersistenceContainer\PersistenceContainerModule" />
+    <!-- RESPONSE_PRE hook -->
+    <module type="\AppserverIo\WebServer\Modules\DeflateModule"/>
+    <!-- RESPONSE_POST hook -->
+    <module type="\AppserverIo\Appserver\Core\Modules\ProfileModule"/>
+  </modules>
+
+  <fileHandlers>
+    <fileHandler name="persistence-container" extension=".pc" />
+  </fileHandlers>
+
+</server>
 ```

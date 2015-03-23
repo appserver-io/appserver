@@ -20,31 +20,28 @@ permalink: /get-started/documentation/servlet-engine.html
 ---
 
 Originally Servlets are the Java counterpart to other dynamic web technologies like PHP or the
-Microsoft .NET platform. In contrast to PHP, a Servlet written in Java is not a script that will
-be interpreted per request. It is rather a class instantiated when the Servlet Engine starts up
-process requests be invoking one of its methods.
+Microsoft .NET platform. In contrast to PHP, a Servlet written in Java is not a script that is interpreted per request. It is rather a class instantiated when the Servlet Engine starts a
+process requests by invoking one of its methods.
 
 > In most cases, this is a major advantage of the common PHP way to load the script on each
-> request again. Since PHP applications, mostly based on frameworks like Yii or Symfony growed
-> immensely during the last years, reload all the script files, required by the application again
-> and again slows down performance in a critical manner. That is one of the reasons, why caching
-> is meanwhile a major part of nearly all frameworks. On the one hand, caching takes care, that
-> the application responds to the request in an acceptable time, on the other hand, it is the
-> origin of many problems. Such problems can be how to invalidate parts of the cache during an applications
+> request again. Since PHP applications, mostly based on frameworks like Yii or Symfony, have been growing
+> tremendously during the last years, reloading all script files required by the application again
+> and again slows down performance critically. This is why meanwhile caching
+> is a major part of nearly all frameworks. On the one hand, caching ensures the application to respond
+> to the request within an acceptable timeframe. On the other hand, it is the
+> origin of many problems, such as how to invalidate parts of the cache during an application's
 > runtime.
 
-Using a Servlet Engine and, as a consequence of that, Servlets enables you to implement yours
-application logic as you are used to, without the need to take care about the expensive
-bootstrapping process that came together with the common legacy frameworks. A Servlet is a super
-fast and simple way to implement an entry point to handle HTTP requests. It allows you to
+By using a Servlet Engine, you can implement your application logic as you are used to, without taking care of the expensive bootstrapping process, which is combined with the common legacy frameworks. 
+A Servlet is a very fast and simple way to implement an entry point to handle HTTP requests. It allows you to
 execute all performance critical tasks, like bootstrapping, in a method called `init()`, when
-the Servlet Engine starts up.
+the Servlet Engine starts.
 
-## How can a Servlet-Engine help
+## How a Servlet-Engine can help
 
-One solution can be using a Servlet-Engine like we integrated with our application server. Imagine a servlet as a class that implements the servlet interface, part of our PSR's, that provides some kind of MVC pattern controller functionality by implementing some methods that will be invoked when a request came in, nothing more, nothing less. So to implement your first servlet, you have to think about two things. First, which requests should the servlet dispatch, the second is what functionality it should provide.
+One solution is using a Servlet-Engine as it is intigrated in appserver.io. Imagine a servlet as a class that implements the servlet interface, part of our PSR's. It provides a kind of MVC pattern controller functionality by invoking methods when a request comes in. Two things have to be considered when implementing the first servlet: Which requests need to be dispatched by the servlet and what functionality is to be provided.
 
-As in many other frameworks do, our Servlet-Engine uses a URL path to map a request to a controller, in our case this will be a servlet. You can write as many servlets as you want, but you do not need to write any configuration therefor. Let's have a look at how you can map a URL path to a servlet
+As many other frameworks, our Servlet-Engine uses a URL path to map a request to a controller. In our case this is a servlet. You can write as many servlets as you want, but you do not need to provide any configuration. The following section demonstrates how to map a URL path to a servlet.
 
 ```php
 <?php
@@ -84,35 +81,31 @@ class HelloWorldServlet extends HttpServlet
 }
 ```
 
-To map a servlet to a URL, you can simply use the `@Route` annotation. With the `name` attribute you have
-specify a name that has to be unique in your application scope, the attribute `urlPattern` allows you to
+To map a servlet to a URL, you can simply use the `@Route` annotation. With the `name` attribute you
+specify a unique name in your application scope. The attribute `urlPattern` allows you to
 specify a list of URL patterns you want to map the servlet to. In our example, we want to map the
-`HelloWorldServlet` to the URL's like `http://127.0.0.1:9080/examples/helloWorld.do`, whatever parameters
-are appended.
+`HelloWorldServlet` to the URL's like `http://127.0.0.1:9080/examples/helloWorld.do`, regardless of the parameters appended.
 
-Last but not least, we've to implement the `doGet()` method, that will be invoked, when a `GET` request,
-has been sent, and therefore, is the main entry point to handle the request by implementing the functionality
-we want to provide. For our first example, we only want to add the `Hello World!` that should be rendered.
+Last but not least, we have to implement the `doGet()` method, that is invoked, when a `GET` request,
+is sent. Therefore, it is the main entry point of handling the request by implementing the functionality
+we want to provide. For our first example, we only want to add the `Hello World!` that needs to be rendered.
 
-That is pretty simple, we think! So, given you've downloaded and installed the latest version of the application
-server, create a folder `examples/WEB-INF/classes/AppserverIo/Example/Servlets` under the `webapps` folder of
-your installation. In the folder, create a new file named `HelloWorldServlet.php`, copy the code from above and
+That is a simple procedure. Given you have downloaded and installed the latest version of the appserver.io, create a folder `examples/WEB-INF/classes/AppserverIo/Example/Servlets` in the `webapps` folder of
+your installation. In this folder, create a new file named `HelloWorldServlet.php`, copy the code from above and
 save it. After [restarting]({{ "/get-started/documentation/basic-usage.html#start-and-stop-scripts" | prepend: site.baseurl }})
 the application server, open the URL `http://127.0.0.1:9080/examples/helloWorld.do` in your favorite browser.
-You should see the text `Hello World`. Congratulations, you have written your first servlet!
+You should see the text `Hello World`. Congratulations, you have written your first servlet.
 
 > Simplicity is one of our main targets because we want you to write your applications with a minimum of
-> configuration, actually NULL. So to write an application that perfectly works with the appserver,
-> you only have to download and install it, create some folders and write your code!
+> configuration efforts, none actually. To write an application that perfectly works with appserver.io,
+> you only have to download and install it, create some folders and write your code.
 
 ## Bootstrapping a Servlet
 
-As described before, bootstrapping a framework with every request is a very expensive procedure when be done
-again and again. Using an application server with a Servlet-Engine can be a great help here. Besides the fact,
-that parsing configuration like the `@Route` annotation, will be done only once when the application server
-starts. You additionally have the possibility to do all that expensive stuff in an `ìnit()` method that will be
-invoked by the application server when the servlet is instanciated and initialized at startup. Let us extend
-our previous example
+As described before, bootstrapping a framework with every request is a very expensive procedure when doing it
+again and again. Using an application server with a Servlet-Engine has major advantages. First, parsing configuration like the `@Route` annotation is done only once when the application server
+starts. Secondly, you have the possibility to do all expensive steps in an `ìnit()` method that will be
+invoked by the application server when the servlet is instanciated and initialized at startup. The next section extends our previous example.
 
 ```php
 <?php
@@ -184,10 +177,10 @@ We extended the example by reading the translated `Hello World!` from a resource
 server starts. When we handle the request later, we only need to resolve the translation from the array with
 the resources by its key.
 
-> You can get major performance improvements, letting the application server do CPU expensive functionality
+> You can get major performance improvements by letting the application server do CPU expensive functionality
 > during startup. Keep in mind, that you get a copy of the servlet when the `doGet()` method is invoked.
-> Therefor it doesn't make sense to write data to members there because it will be not available in the next
-> request!
+> Therefore, it does not make sense to write data to members because it will be not available in the next
+> request.
 
 ## Passing data from a configuration
 
