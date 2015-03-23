@@ -20,6 +20,8 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Lang\String;
+use AppserverIo\Lang\Boolean;
 use AppserverIo\Configuration\Interfaces\ValueInterface;
 
 /**
@@ -128,8 +130,23 @@ class ParamNode extends AbstractValueNode
      */
     public function castToType()
     {
+
+        // load the params value
         $value = $this->getNodeValue()->__toString();
-        settype($value, $this->getType());
+
+        // query the parameters type
+        switch ($type = $this->getType()) {
+            case 'bool':
+            case 'boolean':
+                // bool + boolean needs custom handling
+                $value = Boolean::valueOf(new String($value))->booleanValue();
+                break;
+            default:
+                // all other can go the same way
+                settype($value, $type);
+        }
+
+        // return the value
         return $value;
     }
 }

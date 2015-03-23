@@ -40,6 +40,13 @@ class LocationNode extends AbstractNode
     use FileHandlersNodeTrait;
 
     /**
+     * The params node trait.
+     *
+     * @var \AppserverIo\Appserver\Core\Api\Node\ParamsNodeTrait
+     */
+    use ParamsNodeTrait;
+
+    /**
      * The condition to match for.
      *
      * @var string
@@ -67,7 +74,8 @@ class LocationNode extends AbstractNode
     {
         return array(
             'condition' => $this->getCondition(),
-            'handlers' => $this->getFileHandlersAsArray()
+            'params'    => $this->getParamsAsArray(),
+            'handlers'  => $this->getFileHandlersAsArray()
         );
     }
 }

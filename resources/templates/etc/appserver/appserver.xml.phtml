@@ -140,9 +140,22 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
                         <param name="directoryIndex" type="string">index.do index.php index.html index.htm</param>
                         <param name="keepAliveMax" type="integer">64</param>
                         <param name="keepAliveTimeout" type="integer">5</param>
+                        <param name="autoIndex" type="boolean">false</param>
                         <param name="errorsPageTemplatePath" type="string">var/www/errors/error.phtml</param>
                         <param name="welcomePageTemplatePath" type="string">var/www/errors/welcome.phtml</param>
+                        <param name="autoIndexTemplatePath" type="string">var/www/errors/auto_index.phtml</param>
                     </params>
+
+                    <!-- An example to activate a the auto index functionality on a custom directory -->
+                    <!--
+                    <locations>
+                        <location condition="^\/example\/META-INF\/.*">
+                            <params>
+                                <param name="autoIndex" type="boolean">true</param>
+                            </params>
+                        </location>
+                    </locations>
+                    -->
 
                     <environmentVariables>
                         <environmentVariable condition="" definition="LOGGER_ACCESS=Access" />
@@ -193,6 +206,7 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
                         <module type="\AppserverIo\WebServer\Modules\RewriteModule"/>
                         <module type="\AppserverIo\WebServer\Modules\DirectoryModule"/>
                         <module type="\AppserverIo\WebServer\Modules\AccessModule"/>
+                        <!-- module type="\AppserverIo\WebServer\Modules\AutoIndexModule"/ -->
                         <module type="\AppserverIo\WebServer\Modules\CoreModule"/>
                         <module type="\AppserverIo\WebServer\Modules\PhpModule"/>
                         <module type="\AppserverIo\WebServer\Modules\FastCgiModule"/>
@@ -243,9 +257,22 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
                         <param name="directoryIndex" type="string">index.do index.php index.html index.htm</param>
                         <param name="keepAliveMax" type="integer">64</param>
                         <param name="keepAliveTimeout" type="integer">5</param>
+                        <param name="autoIndex" type="boolean">false</param>
                         <param name="errorsPageTemplatePath" type="string">var/www/errors/error.phtml</param>
                         <param name="welcomePageTemplatePath" type="string">var/www/errors/welcome.phtml</param>
+                        <param name="autoIndexTemplatePath" type="string">var/www/errors/auto_index.phtml</param>
                     </params>
+
+                    <!-- An example to activate a the auto index functionality on a custom directory -->
+                    <!--
+                    <locations>
+                        <location condition="^\/example\/META-INF\/.*">
+                            <params>
+                                <param name="autoIndex" type="boolean">true</param>
+                            </params>
+                        </location>
+                    </locations>
+                    -->
 
                     <environmentVariables>
                         <environmentVariable condition="" definition="LOGGER_ACCESS=Access" />
@@ -295,6 +322,7 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
                         <module type="\AppserverIo\WebServer\Modules\RewriteModule"/>
                         <module type="\AppserverIo\WebServer\Modules\DirectoryModule"/>
                         <module type="\AppserverIo\WebServer\Modules\AccessModule"/>
+                        <!-- module type="\AppserverIo\WebServer\Modules\AutoIndexModule"/ -->
                         <module type="\AppserverIo\WebServer\Modules\CoreModule"/>
                         <module type="\AppserverIo\WebServer\Modules\PhpModule"/>
                         <module type="\AppserverIo\WebServer\Modules\FastCgiModule"/>

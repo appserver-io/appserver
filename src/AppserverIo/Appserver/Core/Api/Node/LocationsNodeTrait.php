@@ -87,6 +87,7 @@ trait LocationsNodeTrait
             // restructure to an array
             $locations[$locationNode->getCondition()] = array(
                 'condition' => $locationNode->getCondition(),
+                'params'    => $locationNode->getParamsAsArray(),
                 'handlers' =>  $locationNode->getFileHandlersAsArray()
             );
         }
