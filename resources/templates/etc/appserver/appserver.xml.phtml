@@ -65,6 +65,7 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
                         socket="\AppserverIo\Server\Sockets\StreamSocket"
                         requestContext="\AppserverIo\Server\Contexts\RequestContext"
                         serverContext="\AppserverIo\Server\Contexts\ServerContext"
+                        streamContext="\AppserverIo\Server\Contexts\StreamContext"
                         loggerName="System">
 
                     <params>
@@ -125,8 +126,9 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
                         type="\AppserverIo\Server\Servers\MultiThreadedServer"
                         worker="\AppserverIo\Server\Workers\ThreadWorker"
                         socket="\AppserverIo\Server\Sockets\StreamSocket"
-                        serverContext="\AppserverIo\Server\Contexts\ServerContext"
                         requestContext="\AppserverIo\Server\Contexts\RequestContext"
+                        serverContext="\AppserverIo\Server\Contexts\ServerContext"
+                        streamContext="\AppserverIo\Server\Contexts\StreamContext"
                         loggerName="System">
                     <params>
                         <param name="admin" type="string"><?php echo Setup::getValue(SetupKeys::ADMIN_EMAIL) ?></param>
@@ -226,8 +228,9 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
                         type="\AppserverIo\Server\Servers\MultiThreadedServer"
                         worker="\AppserverIo\Server\Workers\ThreadWorker"
                         socket="\AppserverIo\Server\Sockets\StreamSocket"
-                        serverContext="\AppserverIo\Server\Contexts\ServerContext"
                         requestContext="\AppserverIo\Server\Contexts\RequestContext"
+                        serverContext="\AppserverIo\Server\Contexts\ServerContext"
+                        streamContext="\AppserverIo\Server\Contexts\StreamContext"
                         loggerName="System">
                     <params>
                         <param name="admin" type="string"><?php echo Setup::getValue(SetupKeys::ADMIN_EMAIL) ?></param>
@@ -247,6 +250,14 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
                         <param name="welcomePageTemplatePath" type="string">var/www/errors/welcome.phtml</param>
                     </params>
 
+                    <!-- An example for using different certificates based for specific domains -->
+                    <!--
+                    <certificates>
+                        <certificate domain="appserver.dev" certPath="etc/appserver/server.pem" />
+                        <certificate domain="*.appserver.dev" certPath="etc/appserver/server.pem" />
+                    </certificates>
+                    -->
+                    
                     <environmentVariables>
                         <environmentVariable condition="" definition="LOGGER_ACCESS=Access" />
                     </environmentVariables>
