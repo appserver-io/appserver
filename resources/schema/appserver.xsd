@@ -588,6 +588,23 @@
             <xs:field xpath="@type" />
         </xs:unique>
     </xs:element>
+    <xs:element name="certificate">
+        <xs:complexType>
+            <xs:attribute name="domain" type="xs:string" use="required"/>
+            <xs:attribute name="certPath" type="xs:string" use="required"/>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="certificates">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="appserver:certificate"/>
+            </xs:choice>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
     <xs:element name="file">
         <xs:complexType>
             <xs:simpleContent>
@@ -1006,12 +1023,14 @@
                 <xs:element ref="appserver:modules"/>
                 <xs:element ref="appserver:fileHandlers"/>
                 <xs:element ref="appserver:locations"/>
+                <xs:element ref="appserver:certificates"/>
                 <xs:element ref="appserver:analytics"/>
             </xs:choice>
             <xs:attribute name="name" type="xs:string" use="required"/>
             <xs:attribute name="type" type="xs:string" use="required"/>
             <xs:attribute name="worker" type="xs:string" use="required"/>
             <xs:attribute name="socket" type="xs:string" use="required"/>
+            <xs:attribute name="streamContext" type="xs:string" use="required"/>
             <xs:attribute name="serverContext" type="xs:string" use="required"/>
             <xs:attribute name="requestContext" type="xs:string" use="required"/>
             <xs:attribute name="loggerName" type="xs:string" use="required"/>
