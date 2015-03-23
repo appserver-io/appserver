@@ -567,15 +567,15 @@ The following section demonstrates how to define the servlets and how to overrid
 ``` 
 | Configuration | Data Type | Description |
 | ----------| ----------- | ----------- |
-|`/web-app/servlet/description` | *string* | You can specify a short description for the servlet here. Actually the description has no usage. In later versions this description will be displayed in the servlet details in admin UI. |
-| `/web-app/servlet/display-name` | *string* | This node actually doesn't has any functionality. Actually you can use it to give your servlet a name. In later versions, this name will be displayed in admin UI where all servlets are listed. |
-| `/web-app/servlet/servlet-name` | *string* | You must specify a name, unique in your application, for the servlet here. This name will be used to [map](#servlet-mapping) your servlet to a request URL later. |
-|`/web-app/servlet/servlet-class` | *string* | The Servlet Engine needs to know, which class has to instantiated when initializing the servlet. So you have to specify the fully qualified name of your servlet here. |
-| `/web-app/servlet/init-param` | *string* |You can specifiy a random number of initialization parameters here. The parameters will be parsed when the application starts und you can load them from the servlet configuration. |
-| `/web-app/servlet/init-param/param-name` | *string* | This represents the parameters key. You should only use US-ASCII chars (octets 0 - 127) for the key. |
+|`/web-app/servlet/description` | *string* | You can specify a short description of the servlet here. The description has no usage. In later versions, this description is displayed in the servlet details in admin UI. |
+| `/web-app/servlet/display-name` | *string* | This node does not have a functionality. You can use it to give your servlet a name. In later versions, this name will be displayed in admin UI where all servlets are listed. |
+| `/web-app/servlet/servlet-name` | *string* | You must specify a name, unique in your application, for the servlet here. This name is used to [map](#servlet-mapping) your servlet to a request URL later. |
+|`/web-app/servlet/servlet-class` | *string* | The Servlet Engine needs to know, which class has to be instantiated when initializing the servlet. You have to specify the fully qualified name of your servlet here. |
+| `/web-app/servlet/init-param` | *string* |You can specify a random number of initialization parameters here. The parameters are parsed when the application's start und you can load them from the servlet configuration. |
+| `/web-app/servlet/init-param/param-name` | *string* | This represents the parameter's key. You should only use US-ASCII chars (octets 0 - 127) for the key. |
 | `/web-app/servlet/init-param/param-value` | *string* |This nodes value is the parameters value. Here you can specify anything that is allowed to specify in a XML file. |
 
-You can access a servlets initialization parameters by invoking the `$this->getInitParameter()` method like
+You can access a servlet's initialization parameters by invoking the `$this->getInitParameter()` method as follows.
 
 ```php
 <?php
@@ -610,19 +610,19 @@ public function init(ServletConfig $config)
 }
 ```
 
-> A good example is the [Routlt](https://github.com/appserver-io/routlt) library. This library provides a simple
-> [controller implementation](https://github.com/appserver-io/routlt/blob/master/src/AppserverIo/Routlt/ControllerServlet.php), but is actually missing the possibility to map the actions to the request path info
-> by annotations, we need a configuration file. This configuration file will be parsed by the controller servlet
+> A good example is the [Routlt](https://github.com/appserver-io/routlt) library. The library provides a simple
+> [controller implementation](https://github.com/appserver-io/routlt/blob/master/src/AppserverIo/Routlt/ControllerServlet.php), but is lacking the possibility to map the actions to the request path info
+> by annotations. This configuration file will be parsed by the controller servlet
 > and pre-loads the action classes when the application server starts.
 
 ### Servlet Mapping
-Finally it is necessary to map the servlet we've configured before, to a URL path. As the Servlet Engine is a webserver module, by default it is bound to the file extension `.do`. You can change this in the `appserver.xml` confguration file in directory `etc/appserver/appserver.xml`.
+Finally, it is necessary to map the servlet we have configured before, to a URL path. As the Servlet Engine is a webserver module, it is bound to the file extension `.do`. You can change this in the `appserver.xml` confguration file in directory `etc/appserver/appserver.xml`.
 
 | Configuration | Data Type | Description |
 | ----------| ----------- | ----------- |
-| `/web-app/servlet-mapping` | *string* | You can specify as many servlet mappings you need. The mapping maps a `servlet-name` to a `url-pattern`. The mapping has to be specified by the following subnodes. |
+| `/web-app/servlet-mapping` | *string* | You can specify as many servlet mappings as you need. The mapping maps a `servlet-name` to a `url-pattern`. The mapping has to be specified by the following subnodes. |
 | `/web-app/servlet-mapping/servlet-name` | *string* | This node has to contain the `servlet-name` you have specified in a `/web-app/servlet/servlet-name` node before. |
-| `/web-app/servlet-mapping/url-pattern` | *string* | To stay with our example, the `HelloWorldServlet` with `servlet-name` `helloWorld`, has to be mapped to the URL patterns `/helloWorld.do` and `/helloWorld.do*` like the following. |
+| `/web-app/servlet-mapping/url-pattern` | *string* | To stick to our example, the `HelloWorldServlet` with `servlet-name` `helloWorld`, has to be mapped to the URL patterns `/helloWorld.do` and `/helloWorld.do*` as displayed in the following. This is necessary, because the `HttpServlet::service()` method has to be invoked either when you open `http://127.0.0.1:9080/example/helloWorld.do` or anything like `http://127.0.0.1:9080/example/helloWorld.do/my/path/info?test=test`. You can understand the URL mapping, containing the `*` as a catch all. |
 
 ```xml
 <servlet-mapping>
@@ -635,22 +635,18 @@ Finally it is necessary to map the servlet we've configured before, to a URL pat
 </servlet-mapping>
 ```
 
-This is necessary, because the `HttpServlet::service()` method has to be invoked either when you open
-`http://127.0.0.1:9080/example/helloWorld.do` or anything like `http://127.0.0.1:9080/example/helloWorld.do/my/path/info?test=test`. You can understand the URL mapping,
-containing the `*` as a catch all.
-
-> Keep in mind, if you want to write a servlet, in general you should map it to a path with a `.do` file extension,
-> as long as you not change the default configuration for that. An exception is the default servlet, because this
-> should catch all requests that will not match by any other servlets. To match a servlet on a URL path, we're
-> actually use the PHP [fnmatch](http://php.net/fnmatch) method.
+> If you want to write a servlet, you should map it to a path with a `.do` file extension,
+> as long as you do not change the default configuration for that. An exception is the default servlet because this
+> should catch all requests that will not match any other servlets. To match a servlet on a URL path, we
+> use the PHP [fnmatch](http://php.net/fnmatch) method.
 
 #### HTTP Basic and Digest Authentication
-Security will be a very important topic when writing applications, especially web applications. You have the
-possibility secure your servlets either with HTTP basic or digest authentication as described in [RFC2617](http://tools.ietf.org/html/rfc2617).
+Security is a very important topic when writing applications, especially web applications. You have the
+possibility to secure your servlets with HTTP basic or digest authentication as described in [RFC2617](http://tools.ietf.org/html/rfc2617).
 
 | Configuration | Data Type | Description |
 | ----------| ----------- | ----------- |
-| `/web-app/security` | *string* |  Configuration can done by defining a URL pattern you want to secure and, depending on the authentication type, the parameters where you want to authenticate against. If we want to secure our `helloWorld` servlet using basic authentication, the following snipped will do the job. |
+| `/web-app/security` | *string* |  Configuration is done by defining a URL pattern you want to secure and, depending on the authentication type, the parameters against which you want to authenticate. If we want to secure our `helloWorld` servlet using basic authentication, the following snipped is used. |
 
 ```xml
 <security>
@@ -680,8 +676,8 @@ that will work on Windows also.
 
 | Configuration | Data Type | Description |
 | ----------| ----------- | ----------- |
-| `/web-app/security/url-pattern` | *string* | The value of this node allows you to specify a URL pattern. If a request has to be handled, the Servlet Engine again uses the PHP [fnmatch](http://php.net/fnmatch) method to match the URL against that pattern. |
-| `/web-app/security/auth/auth_type` | *string* | The value of this node defines the authentication type you want to use. `Basic` enables HTTP basic authentication, `Digest` the HTTP digest authentication. Depending on value you entered here, you have to add the appropriate options described below. |
-| `/web-app/security/auth/realm` | *string* | This value defines the text the browser dialogue will render after `The server says:`. So if you can specify a short message to the user that helps him to rember his credentials. In our example we specify `Basic Authentication Type` here. |
-| `/web-app/security/auth/adapter` | *string* | The value for this node defines the adapter used to validiate the credentials the user entered in the browsers dialog. Actually we have `htpasswd` for HTTP basic authentication, `htdigest`for HTTP digest authentication. In later releases we'll provide other adpaters, e. g. a LDAP implementation you can use for HTTP basic authentication. |
-| `/web-app/security/auth/options/file` | *string* | Based on the value for `/web-app/security/auth/auth_type` you've defined, you have to enter the relative path to the file containing the `.htpasswd` or `.htdigest` file with the allowed users. |
+| `/web-app/security/url-pattern` | *string* | The value of this node allows you to specify an URL pattern. If a request has to be handled, the Servlet Engine again uses the PHP [fnmatch](http://php.net/fnmatch) method to match the URL against the pattern. |
+| `/web-app/security/auth/auth_type` | *string* | The value of this node defines the authentication type you want to use. `Basic` enables HTTP basic authentication, `Digest` enables HTTP digest authentication. Depending on the value you have entered, you have to add the appropriate options as described below. |
+| `/web-app/security/auth/realm` | *string* | This value defines the text the browser dialogue renders after `The server says:`. If you can specify a short message to the user, he will remember his credentials easily. In our example we specify `Basic Authentication Type`. |
+| `/web-app/security/auth/adapter` | *string* | The value for this node defines the adapter used to validate the credentials the user has entered in the browsers dialog. We have `htpasswd` for HTTP basic authentication and `htdigest`for HTTP digest authentication. In later releases, we will provide other adapters, for example, a LDAP implementation you can use for HTTP basic authentication. |
+| `/web-app/security/auth/options/file` | *string* | Based on the value for `/web-app/security/auth/auth_type`, you have to enter the relative path to the file containing the `.htpasswd` or `.htdigest` file with the allowed users. |
