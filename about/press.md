@@ -13,6 +13,12 @@ permalink: /about/press.html
 
 Check out some stuff about appserver.io and the appserver.io team in the press!
 
+## PHP-Magazin 03/2015
+appserver.io - application server for PHP - Interview with **Stefan Willkommer** *CTO*<br>
+appserver.io as RESTful service for AngularJS-Apps **Johann Zelger** *Project Founder*
+
+<a href="http://phpmagazin.de/php-magazin-3-15"><img class="img-thumbnail unstyled" width="339" height="479" src="{{ "/assets/img/press/phpmagazin_03-15.jpg" | prepend: site.baseurl }}"></a>
+
 ## Pressrelease 02/2015
 [appserver.io 1.0.0 stable release is now available for free](<{{ "/press/2015/02/23/pressrelease-stable-release-of-appserver-io.html" | prepend: site.baseurl }}>)
 
@@ -20,7 +26,7 @@ Check out some stuff about appserver.io and the appserver.io team in the press!
 [Interview with Stefan Willkommer about the Iron Horse Release (German)](http://phpmagazin.de/artikel/appserver-io-1-0-iron-horse-178914)
 
 ## PHP-Magazin 01/2014
-Asynchronous I/O in PHP, oder doch lieber Threads? (Tim Wagner)
+Asynchronous I/O in PHP, oder doch lieber Threads? (Tim Wagner, Project Founder)
 
 <a href="https://phpmagazin.de/PHP-Magazin/PHP-Magazin-62013-167091"><img class="img-thumbnail unstyled" width="339" height="479" src="{{ "/assets/img/pm6-13-cover.jpg" | prepend: site.baseurl }}"></a>
 
