@@ -296,6 +296,16 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     }
 
     /**
+     * Returns template path for possible configured auto index page
+     *
+     * @return string
+     */
+    public function getAutoIndexTemplatePath()
+    {
+        return (string)$this->node->getParam('autoIndexTemplatePath');
+    }
+
+    /**
      * Returns worker number
      *
      * @return int
@@ -323,6 +333,16 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     public function getWorkerAcceptMax()
     {
         return $this->node->getParam('workerAcceptMax');
+    }
+
+    /**
+     * Returns the auto index configuration
+     *
+     * @return boolean
+     */
+    public function getAutoIndex()
+    {
+        return $this->node->getParam('autoIndex');
     }
 
     /**

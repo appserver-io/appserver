@@ -22,5 +22,15 @@
                 </params>
             </access>
         </accesses>
+        <!-- An example to activate a the auto index functionality on a custom directory -->
+        <!--
+        <locations>
+            <location condition="^\/META-INF\/.*">
+                <params>
+                    <param name="autoIndex" type="boolean">true</param>
+                </params>
+            </location>
+        </locations>
+        -->
     </virtualHost>
 </virtualHosts>

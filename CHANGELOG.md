@@ -1,3 +1,13 @@
+# Version 1.1.0-alpha3
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Closed [#700](https://github.com/appserver-io/appserver/issues/700) - Create an AutoIndex Module
+
 # Version 1.1.0-alpha2
 
 ## Bugfixes

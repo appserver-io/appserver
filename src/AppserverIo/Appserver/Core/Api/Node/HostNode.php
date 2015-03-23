@@ -56,22 +56,6 @@ class HostNode extends AbstractNode
     protected $appBase;
 
     /**
-     * The server admin's mail address.
-     *
-     * @var string
-     * @AS\Mapping(nodeType="string")
-     */
-    protected $serverAdmin;
-
-    /**
-     * The servers software signature.
-     *
-     * @var string
-     * @AS\Mapping(nodeType="string")
-     */
-    protected $serverSoftware;
-
-    /**
      * Returns the host name.
      *
      * @return string The host name
@@ -89,25 +73,5 @@ class HostNode extends AbstractNode
     public function getAppBase()
     {
         return $this->appBase;
-    }
-
-    /**
-     * Returns the server admin's mail address.
-     *
-     * @return string The server admin's mail address
-     */
-    public function getServerAdmin()
-    {
-        return $this->serverAdmin;
-    }
-
-    /**
-     * Returns the server's software signature.
-     *
-     * @return string The server's software signature
-     */
-    public function getServerSoftware()
-    {
-        return $this->serverSoftware;
     }
 }
