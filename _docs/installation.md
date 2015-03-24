@@ -50,7 +50,7 @@ For Mac OS X > 10.8.x we provide a `.pkg` file for [download]({{"/get-started/do
 
 > Runs and tested on Windows 7 (32-bit) and higher.
 
-As we deliver the Windows appserver as a .exe file which packages everything, there are no further dependencies.
+As we deliver the Windows application server as a .exe file, which packages everything, there are no further dependencies.
 You can [download]({{"/get-started/downloads.html#win" | prepend: site.baseurl }}) it and install it on your machine as you would with other software.
 
 appserver.io will be added as a service daemon bundle to your Windows service management tool.
@@ -93,10 +93,10 @@ Installation and basic usage are the same as on Fedora but we [provide different
 
 ## Building it yourself
 
-The following steps describe how to build the appserver for other environments using the provided [ANT](http://ant.apache.org/) targets, which is the recommended build tool.
+The following steps describe how to build appserver.io for other environments using the provided [ANT](http://ant.apache.org/) targets, which is the recommended build tool.
 Please download and install ANT to proceed.
 
-As an experiment, we tried [Raspbian](http://www.raspbian.org/) and brought the appserver to an ARM environment. This is why Rasbian is used as an example in the following.
+As an experiment, we tried [Raspbian](http://www.raspbian.org/) and brought the application server to an ARM environment. This is why Rasbian is used as an example in the following.
 
 ### The runtime
 
@@ -104,12 +104,12 @@ As an experiment, we tried [Raspbian](http://www.raspbian.org/) and brought the 
 
 All our builds are orchestrated using [ANT property files](http://www.tutorialspoint.com/ant/ant_property_files.htm) which are included in the runtime package. They contain meta-information needed for building the appserver.io sources.
 Most important is the `build.default.properties` file within the package root.
-It contains information about the environment, about the dependencies appserver.io has and the versions which can be used.
+It contains information about the environment, about the dependencies appserver.io has and the versions that can be used.
 
 > Build properties can be overwritten locally within a `build.properties` file in the package root.
 
 For our Raspbian example, we provide additional meta-information within the `buildfiles` directory. 
-To use it, the `os.distribution` property of our default build properties needs to be overwritten which is shown below:
+To use it, the `os.distribution` property of our default build properties need to be overwritten as it is shown below:
 
 ```
 # ---- Default Operating System -------------------------------------------------
