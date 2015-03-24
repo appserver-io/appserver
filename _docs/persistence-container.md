@@ -2,7 +2,7 @@
 layout: docs
 title: Persistence Container
 meta_title: Persistence Container - appserver.io
-meta_description: The Persistence-Container is one of the main services appserver.io provides. But persisting data to a database is only one functionality.
+meta_description: The Persistence Container is one of the main services appserver.io provides. But persisting data to a database is only one functionality.
 position: 80
 group: Docs
 subNav:
@@ -13,7 +13,7 @@ subNav:
 permalink: /get-started/documentation/persistence-container.html
 ---
 
-In addition to the `Servlet-Engine`, the Persistence-Container is one of the main services appserver.io provides. The name `Persistence-Container` might lead to some misunderstanding, as many people think that it mostly refers to database persistence. In Java, there are EJB-Containers that provide a broad set of functionalities like [Bean- or Container-Managed-Persistence](http://en.wikipedia.org/wiki/Enterprise_JavaBeans), whereas appserver.io only provides a small subset of the functionality similar to platforms like [Wildfly](http://en.wikipedia.org/wiki/WildFly). In the following, the possibilities of the `Persistence-Container` and its usage for writing enterprise-ready applications, are described in detail.
+In addition to the `Servlet-Engine`, the Persistence Container is one of the main services appserver.io provides. The name `Persistence-Container` might lead to some misunderstanding, as many people think that it mostly refers to database persistence. In Java, there are EJB-Containers that provide a broad set of functionalities like [Bean- or Container-Managed-Persistence](http://en.wikipedia.org/wiki/Enterprise_JavaBeans), whereas appserver.io only provides a small subset of the functionality similar to platforms like [Wildfly](http://en.wikipedia.org/wiki/WildFly). In the following, the possibilities of the `Persistence-Container` and its usage for writing enterprise-ready applications, are described in detail.
 
 ## Persistence-Container Options
 
