@@ -59,7 +59,7 @@ A developer simply has to tell the DI container what instance has to be injected
 
 ### Property Injection
 
-The first option is to annotate a class property using the `@EnterpriseBean` annotation. The annotation accepts a `name` attribute that allows you to specify the name of a bean you have registered before. The following example shows you how to annotate a class property and initiate the application server to inject an instance of `AStatelessSessionBean` at runtime.
+The first option is to annotate a class property using the `@EnterpriseBean` annotation. The annotation accepts a `name` attribute that allows you to specify the name of a bean you have registered before. The following example shows you how to annotate a class property and initiate appserver.io to inject an instance of `AStatelessSessionBean` at runtime.
 
 ```php
 <?php
