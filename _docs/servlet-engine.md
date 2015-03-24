@@ -622,7 +622,7 @@ Finally, it is necessary to map the servlet we have configured before, to a URL 
 | ----------| ----------- | ----------- |
 | `/web-app/servlet-mapping` | *string* | You can specify as many servlet mappings as you need. The mapping maps a `servlet-name` to a `url-pattern`. The mapping has to be specified by the following subnodes. |
 | `/web-app/servlet-mapping/servlet-name` | *string* | This node has to contain the `servlet-name` you have specified in a `/web-app/servlet/servlet-name` node before. |
-| `/web-app/servlet-mapping/url-pattern` | *string* | To stick to our example, the `HelloWorldServlet` with `servlet-name` `helloWorld`, has to be mapped to the URL patterns `/helloWorld.do` and `/helloWorld.do*` as displayed in the following. This is necessary, because the `HttpServlet::service()` method has to be invoked either when you open `http://127.0.0.1:9080/example/helloWorld.do` or anything like `http://127.0.0.1:9080/example/helloWorld.do/my/path/info?test=test`. You can understand the URL mapping, containing the `*` as a catch all. |
+| `/web-app/servlet-mapping/url-pattern` | *string* | To stick to our example, the `HelloWorldServlet` with `servlet-name` `helloWorld`, has to be mapped to the URL patterns `/helloWorld.do` and `/helloWorld.do*` as displayed in the following. This is necessary because the `HttpServlet::service()` method has to be invoked either when you open `http://127.0.0.1:9080/example/helloWorld.do` or anything like `http://127.0.0.1:9080/example/helloWorld.do/my/path/info?test=test`. You can understand the URL mapping, containing the `*` as a catch all. |
 
 ```xml
 <servlet-mapping>
