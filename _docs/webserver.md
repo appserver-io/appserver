@@ -84,7 +84,7 @@ Descriptions for webserver specific params are available below.
 
 | Param                    | Type     | Description                                                    |
 | -------------------------| ---------| ---------------------------------------------------------------|
-| `documentRoot`           | string   | Defines the root directory for the server to append the uri with and search for the requested file or directory. The document root path is relative to the servers root directory if there is no beginning slash "/" |
+| `documentRoot`           | string   | Defines the root directory for the server to append the URI with and search for the requested file or directory. The document root path is relative to the servers root directory if there is no beginning slash "/" |
 | `directoryIndex`         | string   | Whitespace separated list of index resources to look up the requested directory. The server will return the first one that is found. If none of the resources exist, the server will respond with a 404 Not Found. |
 | `keepAliveMax`           | integer  | The number of requests allowed per connection when keep-alive is on. If it is set to 0 keep-alive feature will be deactivated. |
 | `keepAliveTimeout`       | integer  | The number of seconds waiting for a subsequent request while in keep-alive loop before closing the connection. |
@@ -130,7 +130,7 @@ The following table gives an overview of the hooks which are also available in t
 | `REQUEST_POST`   | The request post hook is used to do something after the request has been parsed. Most modules such as CoreModule use this hook. |
 | `RESPONSE_PRE`   | The response pre hook is triggered before the response is prepared for sending it to the connection endpoint. |
 | `RESPONSE_POST`  | The response post hook is the last hook triggered within a keep-alive loop. It executes the module's logic when the response is well prepared and ready to dispatch. |
-| `SHUTDOWN`       | The shutdown hook is called whenever a php fatal error shuts down the current worker process. In this case, the current filehandler module is called to process the shutdown hook. This enables the module to react on fatal errors. If it does not react to this shutdown hook, the default error handling response dispatcher logic is used. If the module reacts on the shutdown hook and sets the response state to be dispatched, no other error handling shutdown logic will be called to fill up the response. |
+| `SHUTDOWN`       | The shutdown hook is called whenever a PHP fatal error shuts down the current worker process. In this case, the current filehandler module is called to process the shutdown hook. This enables the module to react on fatal errors. If it does not react to this shutdown hook, the default error handling response dispatcher logic is used. If the module reacts on the shutdown hook and sets the response state to be dispatched, no other error handling shutdown logic will be called to fill up the response. |
 
 The next section elaborates on the list of modules provided for the Webserver by default.
 
@@ -164,14 +164,14 @@ All modules are described in the overview below.
 | Module                      | Description |
 | --------------------------- | ----------- |
 | `VirtualHostModule`         | Provides virtual host functionality that allows you to run more than one hostname (such as yourname.example.com and othername.example.com) on the same server while having different params and configurations. |
-| `AuthenticationModule`      | Offers the possibility to secure resources using basic or digest authentication based on request uri with regular expression support. |
+| `AuthenticationModule`      | Offers the possibility to secure resources using basic or digest authentication based on request URI with regular expression support. |
 | `EnvironmentVariableModule` | This module enables you to manipulate server environment variables. They can be set conditionally, unset and copied in form of an OS context. |
 | `RewriteModule`             | A simple rewrite module for PHP based web servers which use a self-made structure for usable rules. It can be used similar to Apaches mod_rewrite and provides rewriting and redirecting capabilities. |
 | `DirectoryModule`           | Provides for "trailing slash" redirects and serving directory index files. |
 | `AccessModule`              | Allows a HTTP header based access management with regular expression support. |
 | `CoreModule`                | HTTP server features that are always available such as serving static resources and finding defined file handlers. |
-| `PhpModule`                 | Acts like a classic php Webserver module (such as `mod_php` for apache) which calls and runs your requested php scripts in an isolated context with all globals (such as `$_SERVER`, `$_GET`, `$_POST` etc.) prepared in the common way. |
-| `FastCgiModule`             | The Module allows you to connect several fastcgi backends (such as `php-fpm` or `hhvm`) based on configured file-handlers. |
+| `PhpModule`                 | Acts like a classic PHP Webserver module (such as `mod_php` for apache) which calls and runs your requested PHP scripts in an isolated context with all globals (such as `$_SERVER`, `$_GET`, `$_POST` etc.) prepared in the common way. |
+| `FastCgiModule`             | The Module allows you to connect several FastCGI backends (such as `php-fpm` or `hhvm`) based on configured file-handlers. |
 | `ServletEngine`             | The ServletEngine introduces a super fast and simple way to implement an entry point to handle HTTP requests that allows you to execute all performance critical tasks. Please see [Servlet Engine](<{{ "/get-started/documentation/servlet-engine.html" | prepend: site.baseurl }}>) for full documentation. |
 | `DeflateModule`             | It provides the `deflate` output filter that enables output from your server to be compressed before being sent to the client via the network. |
 | `ProfileModule`             | Allows request based realtime profiling using external tools like logstash and kibana. |
@@ -244,7 +244,7 @@ the following specialities:
 
 ## Authentications
 
-You can setup request uri based basic or digest authentication with regular expression support using authentications.
+You can setup request URI based basic or digest authentication with regular expression support using authentications.
 Here is an example of how to configure basic or digest auth.
 
 ```xml
@@ -283,7 +283,7 @@ As you can see every `authentication` node has its `URI` attribute where you can
 | Module  | Description |
 | ------- | ----------- |
 | `type`  | The type represents an implementation of the `\AppserverIo\WebServer\Interfaces\AuthenticationInterface` which provides specific auth mechanism. You can use the predelivered classes `\AppserverIo\WebServer\Authentication\BasicAuthentication` and `\AppserverIo\WebServer\Authentication\BasicAuthentication` for basic and digest authentication. |
-| `realm` | The string assigned by the server to identify the protection space of the request uri. |
+| `realm` | The string assigned by the server to identify the protection space of the request URI. |
 | `file`  | The path to your credentials .htpasswd file. The path is relative to the server's root directory if there is no beginning slash "/". |
 
 ## Accesses
@@ -330,7 +330,7 @@ resources by their file extensions.
 ```
 
 If you use this configuration a client requesting a resource with the extension `.php` will be processed by the
-FastCGI server module. That means, instead of serving the `.php` file as a static resource by the core module the FastCGI module will proceed the request by connecting to a FastCGI backend provided in the corresponding `params` node.
+FastCGI server module. That means, instead of serving the `.php` file as a static resource delivered by the core module, the FastCGI module will proceed the request by connecting to a FastCGI backend provided in the corresponding `params` node.
 
 | Param  | Description |
 | ------ | ----------- |
@@ -362,7 +362,7 @@ certain request URI pattern.
 </locations>
 ```
 
-In this example the `/test.php` script is processed by another FastCGi backend listening on `127.0.0.1:9555`
+In this example the `/test.php` script is processed by another FastCGI backend listening on `127.0.0.1:9555`
 
 ## Rewrites
 
@@ -393,14 +393,12 @@ All rewrites are based on rewrite rules which consist of three important parts:
 
 ### Condition Syntax
 
-The Syntax of possible conditions is roughly based on the possibilities of Apache's RewriteCondition and RewriteRule
-combined.
-To make use of such a combination you can chain conditions using the `{OR}` symbol for OR-combined, and the `{AND}`
+The Syntax of possible conditions is roughly based on the possibilities of Apache's RewriteCondition and RewriteRule.
+To make use of this combination you can chain conditions using the `{OR}` symbol for OR-combined, and the `{AND}`
 symbol for AND-combined conditions.
-Please be aware that AND takes precedence over OR.
+Be aware of the fact that AND takes precedence over OR.
 Conditions can either be PCRE regex or certain fixed expressions.
-So, a condition string of `([A-Z]+\.txt){OR}^/([0-9]+){AND}-f` matches real files (through `-f`) only which either begins
-with numbers or ends with capital letters and the extension .txt.
+So, a condition string of `([A-Z]+\.txt){OR}^/([0-9]+){AND}-f` matches real files (through `-f`) only if it either begins with numbers or ends with capital letters and the extension .txt.
 As you might have noticed: Backslashes do **not have to be escaped**.
 
 You might also be curious about the `-f` condition.

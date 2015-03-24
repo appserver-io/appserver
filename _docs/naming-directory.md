@@ -17,7 +17,7 @@ subNav:
 permalink: /get-started/documentation/naming-directory.html
 ---
 
-Every container running in the application server has an internal registry; we name it Naming Directory. In Java, it is called `Enterprise Naming Context` or in short `ENC`. The naming directory an object store; the container registers references to its resources. Resources can be beans or contexts provided by an application. All resources are registered in the `Naming Directory`, which ensures accessability.
+Every container running in the application server has an internal registry; we name it Naming Directory. In Java, it is called `Enterprise Naming Context` or in short `ENC`. The naming directory an object store; the container registers references to its resources. Resources can be beans or contexts provided by an application. All resources are registered in the `Naming Directory` to ensure accessability.
 
 ## Configure Directories
 
@@ -77,7 +77,7 @@ You can bundle your application with a customized `context.xml` file. This has t
 </context>
 ```
 
-> Keep in mind, that the directory MUST be relative to your applications root directory and start with a `/`.
+> Keep in mind that the directory must be relative to your applications root directory and start with a `/`.
 
 Detailed information about an application's configuration is available in the section [Application Configuration](<{{ "/get-started/documentation/configuration.html#application-configuration" | prepend: site.baseurl }}>) of the documentation.
 
@@ -87,9 +87,9 @@ If a class is found, it is registered in the application servers naming director
 
 To inject a bean later, the developer needs to know the name it has been registered with. In the following example, the bean will be registered in the naming directory in `php:global/example/AStatelessSessionBean` whereas `example` is the name of the application.
 
-> The name of your application is always the directory it is deployed to. As the document root is per default `webapps`, which, for example on a Linux system, results in `/opt/appserver/webapps`, the name of your application is `example` and located in `/opt/appserver/webapps/example`.
+> The name of your application is always the directory it is deployed to. The document root is per default `webapps`. For example, on a Linux system, this results in `/opt/appserver/webapps`. The name of your application is `example` and it is located in `/opt/appserver/webapps/example`.
 
-When using annotations to inject components the completely qualified name is not neccessary, because the application server knows the context you are in. The appserver tries to lookup the bean and injects it.
+When using annotations to inject components the completely qualified name is not neccessary, because the application server knows the context you are in. The application server tries to lookup the bean and injects it.
 
 ```php
 <?php
@@ -192,11 +192,11 @@ The `@Resource` annotation can be used in two scopes. First scope is in the DocB
 
 In the simplest case, no attribute is needed. If so, the member or parameter name MUST exactly match the resource `name` that should be injected. Otherwise, you have to specify the `name` attribute and the `type` attribute.
 
-| Node Name                   | Type        | Description                                                          |
-| --------------------------- | ----------- | -------------------------------------------------------------------- |
-| `description`               | `string`    | Short description for the created reference.                         |
-| `name`                      | `string`    | Name of the reference will be registered in the `Naming Directory`.     |
-| `type`                      | `string`    | The `name` of the resource we want to reference.                     |
+| Node Name                   | Type        | Description                                                        |
+| --------------------------- | ----------- | -------------------------------------------------------------------|
+| `description`               | `string`    | Short description for the created reference.                       |
+| `name`                      | `string`    | Name of the reference will be registered in the `Naming Directory`.|
+| `type`                      | `string`    | The `name` of the resource we want to reference.                   |
 
 ### Example
 
@@ -208,7 +208,7 @@ The following example implementation of a `Singleton` session bean contains near
 namespace AppserverIo\Example\SessionBeans;
 
 /**
- * Example implementation of a singleton session bean that'll be initialized
+ * Example implementation of a singleton session bean that will be initialized
  * on application startup, uses post-construct and pre-destroy lifecycle callbacks
  * and dependency injection.
  *
@@ -345,20 +345,20 @@ The structure is self-explanatory, as it reflects the annotations `@EnterpriseBe
 `/epb/enterprise-beans/session`
 either defines a `SLSB`, `SFSB` or a `SSB`.
 
-| Node Name                   | Type        | Description                                                          |
-| --------------------------- | ----------- | -------------------------------------------------------------------- |
-| `session-type`              | `string`    | Can be `Stateless`, `Stateful` or `Singleton`.                |
+| Node Name                   | Type        | Description                                                        |
+| --------------------------- | ----------- | -------------------------------------------------------------------|
+| `session-type`              | `string`    | Can be `Stateless`, `Stateful` or `Singleton`.                     |
 | `epb-name`                  | `string`    | Short name of the component used for registration in naming directory. |
-| `epb-class`                 | `string`    | Fully qualified class name of the component's class.                  |
+| `epb-class`                 | `string`    | Fully qualified class name of the component's class.               |
 | `init-on-startup`           | `boolean`   | `true` if the component should be instanciated on application startup. This can only be set to `true` if `session-type` is `Singleton`. |
 
 `/epb/enterprise-beans/message-driven`
 defines a `MDB`.
 
-| Node Name                   | Type        | Description                                                          |
-| --------------------------- | ----------- | -------------------------------------------------------------------- |
+| Node Name                   | Type        | Description                                                        |
+| --------------------------- | ----------- | -------------------------------------------------------------------|
 | `epb-name`                  | `string`    | Short name of the component used for registration in naming directory. |
-| `epb-class`                 | `string`    | Fully qualified class name of the component's class.                  |
+| `epb-class`                 | `string`    | Fully qualified class name of the component's class.               |
 
 `/epb/enterprise-beans/[session or message-driven]/post-construct`
 adds a `post-construct` lifecycle callback to the component.
@@ -370,17 +370,17 @@ adds a `post-construct` lifecycle callback to the component.
 `/epb/enterprise-beans/[session or message-driven]/pre-destroy`
 adds a `pre-destroy` lifecycle callback to the component.
 
-| Node Name                   | Type        | Description                                                          |
-| --------------------------- | ----------- | -------------------------------------------------------------------- |
+| Node Name                   | Type        | Description                                                        |
+| --------------------------- | ----------- | -------------------------------------------------------------------|
 | `lifecycle-callback-method` | `string`    | Name of a class methode that will be invoked before the class will be destroyed. |
 
 `/epb/enterprise-beans/[session or message-driven]/epb-ref`
 creates a reference to the remote or local business interface of the defined session bean in the naming directory in `php:global/example/env/[epb-ref-name][Local or Remote]`. This reference can be used by other components or for Dependency Injection purposes.
 
-| Node Name                   | Type        | Description                                                          |
-| --------------------------- | ----------- | -------------------------------------------------------------------- |
-| `description`               | `string`    | A short description of the reference that will be created.           |
-| `epb-ref-name`              | `string`    | The name of the reference created in the naming directory.           |
+| Node Name                   | Type        | Description                                                        |
+| --------------------------- | ----------- | -------------------------------------------------------------------|
+| `description`               | `string`    | A short description of the reference that will be created.         |
+| `epb-ref-name`              | `string`    | The name of the reference created in the naming directory.         |
 | `epb-link`                  | `string`    | Name of referenced component. This name is by default the short class name or can be overwritten by the `name` attribute of the `Stateless`, `Stateful` or `Singleton` annotations. |
 | `lookup-name`               | `string`    | Optionally to the `epb-link` this value contains the fully qualified name of the referenced component. |
 | `remote`                    | `boolean`   | If a value has been specified, a reference to the remote proxy will be created instead of a local one. |
@@ -388,19 +388,19 @@ creates a reference to the remote or local business interface of the defined ses
 `/epb/enterprise-beans/[session or message-driven]/res-ref`
 creates a reference to the defined resource in the naming directory in `php:global/example/env/[res-ref-name]`. This reference can be used by other components or for Dependency Injection purposes.
 
-| Node Name                   | Type        | Description                                                          |
-| --------------------------- | ----------- | -------------------------------------------------------------------- |
-| `description`               | `string`    | A short description of the reference that will be created.           |
-| `res-ref-name`              | `string`    | The name of the reference created in the naming directory.           |
-| `res-ref-type`              | `string`    | The type of the reference resource.                                  |
+| Node Name                   | Type        | Description                                                        |
+| --------------------------- | ----------- | -------------------------------------------------------------------|
+| `description`               | `string`    | A short description of the reference that will be created.         |
+| `res-ref-name`              | `string`    | The name of the reference created in the naming directory.         |
+| `res-ref-type`              | `string`    | The type of the reference resource.                                |
 
 `/epb/enterprise-beans/[session or message-driven]/[ebp-ref or res-ref]/injection-target`
 injects the reference by either using the method or property defined. The class name is of interest, if there is a hierarchy and the target class has to be specified explictly.
 
-| Node Name                   | Type        | Description                                                          |
-| --------------------------- | ----------- | -------------------------------------------------------------------- |
-| `injection-target-class`    | `string`    | The class we want to inject the reference.                           |
-| `injection-target-method`   | `string`    | Use this method to inject the reference on runtime.                  |
+| Node Name                   | Type        | Description                                                        |
+| --------------------------- | ----------- | -------------------------------------------------------------------|
+| `injection-target-class`    | `string`    | The class we want to inject the reference.                         |
+| `injection-target-method`   | `string`    | Use this method to inject the reference on runtime.                |
 | `injection-target-property` | `string`    | Inject the reference to this property, whereas this node or `injection-target-method` can be specified. |
 
 > Annotations are default values, whereas a deployment descriptor enables a developer or a system administrator to override values specified in annotations. So keep in mind, that a deployment descriptor will always override the values specified by annotations. 
