@@ -20,7 +20,7 @@ Since DI in combination with application state is a complex issue, it is worthwh
 
 ## Injection elements
 
-The appserver does not use DI. Instead, it provides DI as a service for the applications running in apperserver.io. All session and message-driven beans, the application instance and all managers can be injected.  But, before the DI container can inject an instance to your class, you have to register it. Registering beans is either done by annotations or a deployment descriptor.
+The application server does not use DI. Instead, it provides DI as a service for the applications running in apperserver.io. All session and message-driven beans, the application instance and all managers can be injected.  But, before the DI container can inject an instance to your class, you have to register it. Registering beans is either done by annotations or a deployment descriptor.
 
 The following example shows you how to annotated a `SLSB` and make it available for DI.
 
@@ -163,4 +163,3 @@ class AStatefulSessionBean
 In that example, the container injects an instance of `AStatelessSessionBean` at runtime by invoking the `injectAStatelessSessionBean` method passing the instance as argument.
 
 > Method injection only works on methods that have exactly one argument. As described above, the container does not inject a real instance of the bean. Instead, it injects a proxy. That proxy not extends the class or, if given, implements the interfaces of your bean. So, do NOT type hint the argument with the class or an interface name.
-
