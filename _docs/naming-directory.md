@@ -192,11 +192,11 @@ The `@Resource` annotation can be used in two scopes. First scope is in the DocB
 
 In the simplest case, no attribute is needed. If so, the member or parameter name MUST exactly match the resource `name` that should be injected. Otherwise, you have to specify the `name` attribute and the `type` attribute.
 
-| Node Name                   | Type        | Description                                                          |
-| --------------------------- | ----------- | -------------------------------------------------------------------- |
-| `description`               | `string`    | Short description for the created reference.                         |
-| `name`                      | `string`    | Name of the reference will be registered in the `Naming Directory`.     |
-| `type`                      | `string`    | The `name` of the resource we want to reference.                     |
+| Node Name                   | Type        | Description                                                        |
+| --------------------------- | ----------- | -------------------------------------------------------------------|
+| `description`               | `string`    | Short description for the created reference.                       |
+| `name`                      | `string`    | Name of the reference will be registered in the `Naming Directory`.|
+| `type`                      | `string`    | The `name` of the resource we want to reference.                   |
 
 ### Example
 
@@ -345,20 +345,20 @@ The structure is self-explanatory, as it reflects the annotations `@EnterpriseBe
 `/epb/enterprise-beans/session`
 either defines a `SLSB`, `SFSB` or a `SSB`.
 
-| Node Name                   | Type        | Description                                                          |
-| --------------------------- | ----------- | -------------------------------------------------------------------- |
-| `session-type`              | `string`    | Can be `Stateless`, `Stateful` or `Singleton`.                |
+| Node Name                   | Type        | Description                                                        |
+| --------------------------- | ----------- | -------------------------------------------------------------------|
+| `session-type`              | `string`    | Can be `Stateless`, `Stateful` or `Singleton`.                     |
 | `epb-name`                  | `string`    | Short name of the component used for registration in naming directory. |
-| `epb-class`                 | `string`    | Fully qualified class name of the component's class.                  |
+| `epb-class`                 | `string`    | Fully qualified class name of the component's class.               |
 | `init-on-startup`           | `boolean`   | `true` if the component should be instanciated on application startup. This can only be set to `true` if `session-type` is `Singleton`. |
 
 `/epb/enterprise-beans/message-driven`
 defines a `MDB`.
 
-| Node Name                   | Type        | Description                                                          |
-| --------------------------- | ----------- | -------------------------------------------------------------------- |
+| Node Name                   | Type        | Description                                                        |
+| --------------------------- | ----------- | -------------------------------------------------------------------|
 | `epb-name`                  | `string`    | Short name of the component used for registration in naming directory. |
-| `epb-class`                 | `string`    | Fully qualified class name of the component's class.                  |
+| `epb-class`                 | `string`    | Fully qualified class name of the component's class.               |
 
 `/epb/enterprise-beans/[session or message-driven]/post-construct`
 adds a `post-construct` lifecycle callback to the component.
@@ -370,17 +370,17 @@ adds a `post-construct` lifecycle callback to the component.
 `/epb/enterprise-beans/[session or message-driven]/pre-destroy`
 adds a `pre-destroy` lifecycle callback to the component.
 
-| Node Name                   | Type        | Description                                                          |
-| --------------------------- | ----------- | -------------------------------------------------------------------- |
+| Node Name                   | Type        | Description                                                        |
+| --------------------------- | ----------- | -------------------------------------------------------------------|
 | `lifecycle-callback-method` | `string`    | Name of a class methode that will be invoked before the class will be destroyed. |
 
 `/epb/enterprise-beans/[session or message-driven]/epb-ref`
 creates a reference to the remote or local business interface of the defined session bean in the naming directory in `php:global/example/env/[epb-ref-name][Local or Remote]`. This reference can be used by other components or for Dependency Injection purposes.
 
-| Node Name                   | Type        | Description                                                          |
-| --------------------------- | ----------- | -------------------------------------------------------------------- |
-| `description`               | `string`    | A short description of the reference that will be created.           |
-| `epb-ref-name`              | `string`    | The name of the reference created in the naming directory.           |
+| Node Name                   | Type        | Description                                                        |
+| --------------------------- | ----------- | -------------------------------------------------------------------|
+| `description`               | `string`    | A short description of the reference that will be created.         |
+| `epb-ref-name`              | `string`    | The name of the reference created in the naming directory.         |
 | `epb-link`                  | `string`    | Name of referenced component. This name is by default the short class name or can be overwritten by the `name` attribute of the `Stateless`, `Stateful` or `Singleton` annotations. |
 | `lookup-name`               | `string`    | Optionally to the `epb-link` this value contains the fully qualified name of the referenced component. |
 | `remote`                    | `boolean`   | If a value has been specified, a reference to the remote proxy will be created instead of a local one. |
@@ -388,19 +388,19 @@ creates a reference to the remote or local business interface of the defined ses
 `/epb/enterprise-beans/[session or message-driven]/res-ref`
 creates a reference to the defined resource in the naming directory in `php:global/example/env/[res-ref-name]`. This reference can be used by other components or for Dependency Injection purposes.
 
-| Node Name                   | Type        | Description                                                         |
-| --------------------------- | ----------- | -------------------------------------------------------------------- |
-| `description`               | `string`    | A short description of the reference that will be created.          |
-| `res-ref-name`              | `string`    | The name of the reference created in the naming directory.          |
-| `res-ref-type`              | `string`    | The type of the reference resource.                               |
+| Node Name                   | Type        | Description                                                        |
+| --------------------------- | ----------- | -------------------------------------------------------------------|
+| `description`               | `string`    | A short description of the reference that will be created.         |
+| `res-ref-name`              | `string`    | The name of the reference created in the naming directory.         |
+| `res-ref-type`              | `string`    | The type of the reference resource.                                |
 
 `/epb/enterprise-beans/[session or message-driven]/[ebp-ref or res-ref]/injection-target`
 injects the reference by either using the method or property defined. The class name is of interest, if there is a hierarchy and the target class has to be specified explictly.
 
-| Node Name                   | Type        | Description                                                         |
-| --------------------------- | ----------- | -------------------------------------------------------------------- |
-| `injection-target-class`    | `string`    | The class we want to inject the reference.                          |
-| `injection-target-method`   | `string`    | Use this method to inject the reference on runtime.                 |
+| Node Name                   | Type        | Description                                                        |
+| --------------------------- | ----------- | -------------------------------------------------------------------|
+| `injection-target-class`    | `string`    | The class we want to inject the reference.                         |
+| `injection-target-method`   | `string`    | Use this method to inject the reference on runtime.                |
 | `injection-target-property` | `string`    | Inject the reference to this property, whereas this node or `injection-target-method` can be specified. |
 
 > Annotations are default values, whereas a deployment descriptor enables a developer or a system administrator to override values specified in annotations. So keep in mind, that a deployment descriptor will always override the values specified by annotations. 
