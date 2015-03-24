@@ -478,7 +478,7 @@ At first sight, the XML configuration might seem complicated. This is why we go 
 By default, you do not have to change the session configuration.
 
 | Configuration | Data Type | Description |
-| ----------| ----------- | ----------- |
+| --------------| --------- | ----------- |
 |`/web-app/session-config/session-name` | *string* | In some cases, for example, if you want to specify an individual cookie name for your session, you can do so. To change the name of the session cookie, customize the value of the node. Please be aware that you can only use chars that are defined in [RFC2616 - Section 2.2](http://tools.ietf.org/html/rfc2616#section-2.2). |
 |`/web-app/session-config/session-file-prefix` | *string* | As sessions are persisted to the file system after the configured inactivity timeout, by default 1.440 seconds, you can also specify a prefix for the filename used to store the session data. To specify a custom prefix, change the value for node. As for the cookie name, be aware of the restrictions for filenames, which depend on the OS you run appserver.io on. Also, keep in mind that you can only customize the prefix, and the session-ID will always be added as a suffix. For example, if you specify `foo_` as value for `/web-app/session-config/session-file-prefix`, the session files result in something like `foo_au1ctio31v10lm9jlhipdlurn1`. |
 | `/web-app/session-config/session-save-path` | *string* | If you want to change the default folder, the application server stores the session files, you can specify the absolute path value of node . This will be necessary if you want to use a shared folder to store the session files, for example, on a cluster file system. |
@@ -497,7 +497,7 @@ parameters when you want to specify and pass values to your application, you wou
 for example, the path to an application specific configuration file.
 
 | Configuration | Data Type | Description |
-| ----------| ----------- | ----------- |
+| --------------| --------- | ----------- |
 | `/web-app/context-param` | *string* | You can specify a random number of context parameters that you can load from the servlet context. For example, if we want to load the path to the `applicationProperties`, defined as context parameter in our [example](#optional-xml-configuration) XML configuration file. |
 
 ```xml
@@ -550,7 +550,7 @@ public function init(ServletConfig $config)
 The following section demonstrates how to define the servlets and how to override annotations you have defined in the servlets, which are parsed when appserver.io starts.
 
 | Configuration | Data Type | Description |
-| ----------| ----------- | ----------- |
+| --------------| --------- | ----------- |
 | `/web-app/servlet` | *string* | Often, it is the easiest way to use annotations to define your servlets and map them to a request URL. Sometimes is necessary to define servlets in the `web.xml` file. As the order, in which the servlets are loaded, is relevant for matching the URL, it might be necessary to change it manually in this file. You can define a servlet by adding the following snippet to your configuration file. |
 
 ```xml
@@ -566,7 +566,7 @@ The following section demonstrates how to define the servlets and how to overrid
 </servlet> 
 ``` 
 | Configuration | Data Type | Description |
-| ----------| ----------- | ----------- |
+| --------------| --------- | ----------- |
 |`/web-app/servlet/description` | *string* | You can specify a short description of the servlet here. The description has no usage. In later versions, this description is displayed in the servlet details in admin UI. |
 | `/web-app/servlet/display-name` | *string* | This node does not have a functionality. You can use it to give your servlet a name. In later versions, this name will be displayed in admin UI where all servlets are listed. |
 | `/web-app/servlet/servlet-name` | *string* | You must specify a name, unique in your application, for the servlet here. This name is used to [map](#servlet-mapping) your servlet to a request URL later. |
@@ -619,7 +619,7 @@ public function init(ServletConfig $config)
 Finally, it is necessary to map the servlet we have configured before, to a URL path. As the Servlet Engine is a webserver module, it is bound to the file extension `.do`. You can change this in the `appserver.xml` confguration file in directory `etc/appserver/appserver.xml`.
 
 | Configuration | Data Type | Description |
-| ----------| ----------- | ----------- |
+| --------------| --------- | ----------- |
 | `/web-app/servlet-mapping` | *string* | You can specify as many servlet mappings as you need. The mapping maps a `servlet-name` to a `url-pattern`. The mapping has to be specified by the following subnodes. |
 | `/web-app/servlet-mapping/servlet-name` | *string* | This node has to contain the `servlet-name` you have specified in a `/web-app/servlet/servlet-name` node before. |
 | `/web-app/servlet-mapping/url-pattern` | *string* | To stick to our example, the `HelloWorldServlet` with `servlet-name` `helloWorld`, has to be mapped to the URL patterns `/helloWorld.do` and `/helloWorld.do*` as displayed in the following. This is necessary because the `HttpServlet::service()` method has to be invoked either when you open `http://127.0.0.1:9080/example/helloWorld.do` or anything like `http://127.0.0.1:9080/example/helloWorld.do/my/path/info?test=test`. You can understand the URL mapping, containing the `*` as a catch all. |
@@ -645,7 +645,7 @@ Security is a very important topic when writing applications, especially web app
 possibility to secure your servlets with HTTP basic or digest authentication as described in [RFC2617](http://tools.ietf.org/html/rfc2617).
 
 | Configuration | Data Type | Description |
-| ----------| ----------- | ----------- |
+| --------------| --------- | ----------- |
 | `/web-app/security` | *string* |  Configuration is done by defining a URL pattern you want to secure and, depending on the authentication type, the parameters against which you want to authenticate. If we want to secure our `helloWorld` servlet using basic authentication, the following snipped is used. |
 
 ```xml
@@ -675,7 +675,7 @@ Again, there is an online [website](http://jesin.tk/tools/htdigest-generator-too
 that will work on Windows also.
 
 | Configuration | Data Type | Description |
-| ----------| ----------- | ----------- |
+| --------------| --------- | ----------- |
 | `/web-app/security/url-pattern` | *string* | The value of this node allows you to specify an URL pattern. If a request has to be handled, the Servlet Engine again uses the PHP [fnmatch](http://php.net/fnmatch) method to match the URL against the pattern. |
 | `/web-app/security/auth/auth_type` | *string* | The value of this node defines the authentication type you want to use. `Basic` enables HTTP basic authentication, `Digest` enables HTTP digest authentication. Depending on the value you have entered, you have to add the appropriate options as described below. |
 | `/web-app/security/auth/realm` | *string* | This value defines the text the browser dialogue renders after `The server says:`. If you can specify a short message to the user, he will remember his credentials easily. In our example we specify `Basic Authentication Type`. |
