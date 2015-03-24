@@ -42,7 +42,7 @@ functioning of different features.
 For these processes, we provide the following start and stop scripts for all nix like operating systems.
 They work the way they normally do based on the regarding system.
 
-| Scripts      | Description |
+| Script    | Description |
 | ----------| ----------- |
 | `appserver` | The central process that starts the application server. |
 | `appserver-php5-fpm`    | PHP-fpm + appserver configuration. Our default FastCGI backend. Others might be added the same way. |
