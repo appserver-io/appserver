@@ -23,9 +23,9 @@ Although providing persisting data to a database is one functionality of the `Pe
 
 One may wonder how it is possible to have a component persistent in memory using PHP, a scripting language. Usually after every request the instance will be destroyed. The simple answer is: As appserver.io provides containers that run as daemons. You can specify components that are loaded when the application server starts and are in memory until the server shuts down. For simplicity reasons, the classes are called [Beans](http://en.wikipedia.org/wiki/Enterprise_JavaBeans), as it is done in Java.
 
-There are three different types of beans, `Session Beans`, `Message Beans` and `Entity Beans`. In version 1.0.0 we do not deliver support for `Entity Beans`, because the responsiblity therefore is up to ORM libraries like Doctrine. So we support Doctrine to handle database persistence.
+There are three different types of beans, `Session Beans`, `Message Beans` and `Entity Beans`. In version 1.0.0 we do not deliver support for `Entity Beans` because the responsibility is up to ORM libraries like Doctrine. So we support Doctrine to handle database persistence.
 
-> These `Server-Side Component Types` can be distributed across a network, free of charge for developers! If components have been deployed on different instances, the distribution has to be activated by configuration.
+> These `Server-Side Component Types` can be distributed across a network, free of charge for developers. If components have been deployed on different instances, the distribution has to be activated by configuration.
 
 ### Session Beans
 
@@ -323,7 +323,7 @@ class LoginServlet extends HttpServlet
 }
 ```
 
-> You do not have to restart the session in the `GET` request, because the `Servlet-Engine` is aware of the session-ID passed as request header and uses it when the `SFSB` is injected on runtime.
+> You do not have to restart the session in the `GET` request because the `Servlet-Engine` is aware of the session-ID passed as request header and uses it when the `SFSB` is injected on runtime.
 
 #### Singleton Session Beans (SSBs)
 
@@ -547,7 +547,7 @@ class LoginServlet extends HttpServlet
 
 Other than session beans, `MDBs` are **NOT** invoked by a proxy, but are sent to a `Message Broker` as receiver of the messages. The `Message Broker` adds them to a queue until they are collected and proccessed in a separate thread.
 
-> Using `MDBs` enables you to execute long running processes `asynchronously`, because waiting for an answer after having set a message to the `Message Broker` is no longer neccessary. Unlike session beans, `MDBs` have to implement the `AppserverIo\Psr\Pms\MessageListenerInterface` interface. Like session beans, `MDBs` **MUST** provide a non-argument constructor, optionally no constructor.
+> Using `MDBs` enables you to execute long running processes `asynchronously` because waiting for an answer after having set a message to the `Message Broker` is no longer neccessary. Unlike session beans, `MDBs` have to implement the `AppserverIo\Psr\Pms\MessageListenerInterface` interface. Like session beans, `MDBs` **MUST** provide a non-argument constructor, optionally no constructor.
 
 As `MDBs` are mostly used in context of a [Message-Queue](<{{ "/get-started/documentation/message-queue.html" | prepend: site.baseurl }}>), this section does not describe the functionality in deep.
 
@@ -701,7 +701,7 @@ class AuthorizationInterceptor
 }
 ```
 
-> Keep in mind that the `$methodInvocation->getContext()` method allows access to the component the advice has been declared in, in our example this is the `SSB` instance below!
+> Keep in mind that the `$methodInvocation->getContext()` method allows access to the component the advice has been declared in, in our example this is the `SSB` instance below.
 
 So if we want to authorize the user logged into the system for the method call to a session bean method, we simply have to declare it by adding an annotation like
 
@@ -795,4 +795,4 @@ class AStatefulSessionBean
 }
 ```
 
-The `AclSessionBean` is **NOT** implemented in this example, because this blog post should only give a rough direction how to implement such a functionality and how an `Interceptor` can be used.
+The `AclSessionBean` is **NOT** implemented in this example because this description only gives a rough indication on how to implement such a functionality and how an `Interceptor` can be used.
