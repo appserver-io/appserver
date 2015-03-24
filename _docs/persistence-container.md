@@ -21,7 +21,7 @@ Although providing persisting data to a database is one functionality of the `Pe
 
 ## Server-Side Component Types
 
-One may wonder how it is possible to have a component persistent in memory using PHP, a scripting language. Usually after every request the instance will be destroyed. The simple answer is: As appserver.io is provides containers that run as daemons, you can specify components, that are be loaded when the application server starts and are in memory until the server shuts down. For simplicity reasons, the classes are called [Beans](http://en.wikipedia.org/wiki/Enterprise_JavaBeans), as it is done in Java.
+One may wonder how it is possible to have a component persistent in memory using PHP, a scripting language. Usually after every request the instance will be destroyed. The simple answer is: As appserver.io provides containers that run as daemons. You can specify components that are loaded when the application server starts and are in memory until the server shuts down. For simplicity reasons, the classes are called [Beans](http://en.wikipedia.org/wiki/Enterprise_JavaBeans), as it is done in Java.
 
 There are three different types of beans, `Session Beans`, `Message Beans` and `Entity Beans`. In version 1.0.0 we do not deliver support for `Entity Beans`, because the responsiblity therefore is up to ORM libraries like Doctrine. So we support Doctrine to handle database persistence.
 
@@ -161,7 +161,7 @@ If we now invoke a `POST` request on our servlet, sending `username` and `passwo
 
 The `SFSB` is something between the two other types. It is bound to the session with the ID pass to the client, when an instance is requested. A `SFSB` is very useful, if you want to implement something like a shopping cart. If the shopping cart instance will be declared as a class member of `SFSB`, it is persistent for the sessions lifetime.
 
-In opposite to a HTTP Session, `SFSBs` enables you to have session bound persistence, without the need to explicitly add the data to a session object. That makes development pretty easy and comfortable. As `SFSBs` are persisted in memory and not serialized to files, the Application Server has to take care, that, in order ot minimize the number of instances carried around, they are flushed when their lifetime has been reached.
+In contrast to a HTTP Session, `SFSBs` enables you to have session bound persistence, without the need to explicitly add data to a session object. This makes development easy and comfortable. As `SFSBs` are persisted in memory and not serialized to files, the application server has to make sure that the number of instances are flushed when their lifetime has been reached. By doing so, the number of instances is minimized.
 
 ##### Lifecycle
 
@@ -226,7 +226,7 @@ class AStatefulSessionBean
 }
 ```
 
-> A `SFSB` is pretty easy to use and has to be implemented as a plain old PHP class. Important is, that the user entity, once set in the `SFSB` is available at every request, as long as the HTTP session is available.
+> A `SFSB` is pretty easy to use and has to be implemented as a plain old PHP class. It is important that the user entity, once set in the `SFSB`, is available at every request as long as the HTTP session is available.
 
 The necessary servlet is also a very simple example that implements the login on a `POST` request, whereas the `GET` request is protected.
 
@@ -331,7 +331,7 @@ A `SSB` is created by the container only once each application. Thus, whenever a
 
 ##### Concurrency
 
-Concurrency is, in case of a `SSB`, a more complex issue. In contrast to `SLSBs` and `SFSBs`, the data will be shared across requests. The container has to make sure, that only one request has access to the data of a `SFSB`. Therefore, requests are serialized and blocked until the instance is available again.
+Concurrency is, in case of a `SSB`, a more complex issue. In contrast to `SLSBs` and `SFSBs`, the data will be shared across requests. The container has to make sure that only one request has access to the data of a `SFSB`. Therefore, requests are serialized and blocked until the instance is available again.
 
 > To enable a `SSB` for sharing its data across requests, it has to extend the `\Stackable` class. This class comes with the PECL [pthreads](https://github.com/appserver-io-php/pthreads.git) extension that brings multithreading to PHP. appserver.io uses a fork of the 1.x branch, due to some restrictions introduced with 2.x branch.
 
@@ -347,7 +347,7 @@ In combination with having data persistent in memory, a `SSB` can be pre-loaded 
 
 ##### Example
 
-To demonstrate the usage of a `SSB` the previous example of the `SFSB` is extended by a counter, which tracks the number of successful logins.
+To demonstrate the usage of a `SSB` the previous example of the `SFSB` is extended by a counter tracking the number of successful logins.
 
 ```php
 <?php
@@ -555,7 +555,7 @@ As `MDBs` are mostly used in context of a [Message-Queue](<{{ "/get-started/docu
 
 `Lifecycle Callbacks` enable a developer to declare callback methods depending on the bean's lifecycle.  We support `post-construct` and `pre-destroy` callbacks. `Lifecycle Callbacks` can be configured either by annotations or the deployment descriptor. Declaring `Lifecycle Callbacks` by annotations is more intuitive, as you easily add the annotation to the methods DocBlock. Therefore, we go with the annotations here.
 
-> Keep in mind, that `Lifecycle Callbacks` are optional, **MUST** be `public`, **MUST NOT** have any arguments and **CAN NOT** deliver checked exceptions. Exceptions are handled by the container and result in a `critical` log message.
+> Keep in mind that `Lifecycle Callbacks` are optional, **MUST** be `public`, **MUST NOT** have any arguments and **CAN NOT** deliver checked exceptions. Exceptions are handled by the container and result in a `critical` log message.
 
 #### Post-Construct Callback
 
@@ -590,7 +590,7 @@ class ASingletonSessionBean
   protected $counter;
   
   /**
-   * Lifecycle Callback that'll be invoked by the container on
+   * Lifecycle Callback that will be invoked by the container on
    * application startup.
    *
    * @return void
@@ -607,7 +607,7 @@ class ASingletonSessionBean
   }
 
   /**
-   * Lifecycle Callback that'll be invoked by the container before the
+   * Lifecycle Callback that will be invoked by the container before the
    * bean will be destroyed.
    *
    * @return void
@@ -701,7 +701,7 @@ class AuthorizationInterceptor
 }
 ```
 
-> Keep in mind, that the `$methodInvocation->getContext()` method allows access to the component the advice has been declared in, in our example this is the `SSB` instance below!
+> Keep in mind that the `$methodInvocation->getContext()` method allows access to the component the advice has been declared in, in our example this is the `SSB` instance below!
 
 So if we want to authorize the user logged into the system for the method call to a session bean method, we simply have to declare it by adding an annotation like
 
