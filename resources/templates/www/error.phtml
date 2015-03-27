@@ -1,0 +1,56 @@
+<?php
+
+/**
+ * resources/templates/www/error.phtml
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Open Software License (OSL 3.0)
+ * that is available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/osl-3.0.php
+ *
+ * PHP version 5
+ *
+ * @author    Johann Zelger <jz@appserver.io>
+ * @copyright 2015 TechDivision GmbH <info@appserver.io>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      https://github.com/appserver-io/appserver
+ * @link      http://www.appserver.io
+ */
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="description" content="<?php echo $response->getStatusCode()?> <?php echo $response->getStatusReasonPhrase()?>">
+<title><?php echo $response->getStatusCode()?> <?php echo $response->getStatusReasonPhrase()?> | appserver.io</title>
+<style type="text/css">
+<!--
+    html, body { margin: 0; padding: 0; font-family: Arial, Helvetica, sans-serif; text-align: center; color: #222222;}
+    header { background-color: #222; padding: 40px 0 20px 0; color: #FFF; }
+    footer { font-size: 12px; border-top: 1px solid #eee; padding-top: 25px; margin-top: 25px; width: 90%; margin: 0 auto; text-align: right; }
+    address { font-family: monospace, serif; font-style: normal; }
+    h1 { margin: 0; font-size: 24px; padding: 10px 0 18px 0; font-weight: normal; }
+    p { padding-top: 15px; }
+    .exception { text-align: left; width: 90%; margin: 0 auto; font-size: 14px; font-family: monospace, serif; padding: 20px 0 40px 0; }
+-->
+</style>
+</head>
+<body>
+    <header>
+        <img title="appserver.io" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyRpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoTWFjaW50b3NoKSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDpEMTMyMTUwM0U4RDMxMUUyODM5QkJGQ0ZEQTdFRkY4MSIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDpEMTMyMTUwNEU4RDMxMUUyODM5QkJGQ0ZEQTdFRkY4MSI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkQxMzIxNTAxRThEMzExRTI4MzlCQkZDRkRBN0VGRjgxIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOkQxMzIxNTAyRThEMzExRTI4MzlCQkZDRkRBN0VGRjgxIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+3z6segAABiVJREFUeNrsm21s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">
+        <h1><?php echo $response->getStatusCode()?> <?php echo $response->getStatusReasonPhrase()?></h1>
+    </header>
+
+    <div class="exception">
+        <?php if ($response->getStatusReasonPhrase() !== $exception->getMessage()): ?>
+            <h2><?php echo $exception->getMessage() ?></h2>
+        <?php endif; ?>
+        <p><?php echo str_replace("\n","<br/><br/>", $exception->__toString()); ?></p>
+    </div>
+
+    <footer>
+        <?php echo $this->getRequestContext()->getServerVar('SERVER_SIGNATURE') ?>
+    </footer>
+</body>
+</html>
