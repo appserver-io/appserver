@@ -1,3 +1,13 @@
+# Version 1.1.0-alpha3
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Closed [#714](https://github.com/appserver-io/appserver/issues/714) moved and refactored error, welcome and auto-index pages
+
 # Version 1.1.0-alpha2
 
 ## Bugfixes
