@@ -21,10 +21,10 @@
 namespace AppserverIo\Appserver\ServletEngine\Http;
 
 use AppserverIo\Http\HttpProtocol;
+use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Server\Dictionaries\ServerVars;
 use AppserverIo\Psr\Context\ContextInterface;
 use AppserverIo\Psr\HttpMessage\PartInterface;
-use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Psr\HttpMessage\CookieInterface;
 use AppserverIo\Psr\HttpMessage\RequestInterface;
 use AppserverIo\Psr\Servlet\SessionUtils;
@@ -39,24 +39,93 @@ use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
- *
- * @property string                                                            $baseModifier         Base modifier which allows for base path generation within rewritten URL environments
- * @property resource                                                          $bodyStream           The body content stream resource
- * @property \AppserverIo\Psr\Context\ContextInterface                         $context              The request context instance
- * @property string                                                            $contextPath          The application context name
- * @property boolean                                                           $dispatched           Whether or not the request has been dispatched
- * @property \AppserverIo\Psr\HttpMessage\RequestInterface                     $httpRequest          The Http request instance
- * @property string                                                            $parts                The request parts
- * @property string                                                            $pathInfo             The absolute path info
- * @property \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface        $response             The servlet response instance
- * @property string                                                            $requestedSessionId   The new session id
- * @property string                                                            $requestedSessionName The new session name
- * @property \AppserverIo\Appserver\ServletEngine\Http\RequestContextInterface $requestHandler       The request context
- * @property \AppserverIo\Storage\GenericStackable                             $serverVars           The server variables
- * @property string                                                            $servletPath          The path to the servlet
  */
-class Request implements HttpServletRequestInterface
+class Request implements HttpServletRequestInterface, ContextInterface
 {
+
+    /**
+     * The path (URI) to the servlet.
+     *
+     * @var string
+     */
+    protected $servletPath;
+
+    /**
+     * The request context.
+     *
+     * @var \AppserverIo\Appserver\ServletEngine\Http\RequestContextInterface
+     */
+    protected $requestHandler;
+
+    /**
+     * The new session name.
+     *
+     * @var string
+     */
+    protected $requestedSessionName;
+
+    /**
+     * The new session-ID.
+     *
+     * @var string
+     */
+    protected $requestedSessionId;
+
+    /**
+     * The servlet response instance.
+     *
+     * @var \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface
+     */
+    protected $response;
+
+    /**
+     * The absolute path info.
+     *
+     * @var string
+     */
+    protected $pathInfo;
+
+    /**
+     * Base modifier which allows for base path generation within rewritten URL environments.
+     *
+     * @var string
+     */
+    protected $baseModifier;
+
+    /**
+     * The body content stream resource.
+     *
+     * @var resource
+     */
+    protected $bodyStream;
+
+    /**
+     * The request context instance.
+     *
+     * @var \AppserverIo\Psr\Context\ContextInterface
+     */
+    protected $context;
+
+    /**
+     * The application context name.
+     *
+     * @var string
+     */
+    protected $contextPath;
+
+    /**
+     * Whether or not the request has been dispatched.
+     *
+     * @var boolean
+     */
+    protected $dispatched = false;
+
+    /**
+     * The HTTP request instance.
+     *
+     * @var \AppserverIo\Psr\HttpMessage\RequestInterface
+     */
+    protected $httpRequest;
 
     /**
      * The server variables.
@@ -78,6 +147,13 @@ class Request implements HttpServletRequestInterface
      * @var array
      */
     protected $handlers = array();
+
+    /**
+     * Array that contains the attributes of this context.
+     *
+     * @var array
+     */
+    protected $attributes = array();
 
     /**
      * Initializes the request object with the default properties.
@@ -110,6 +186,35 @@ class Request implements HttpServletRequestInterface
         $this->parts = array();
         $this->handlers = array();
         $this->serverVars = array();
+        $this->attributes = array();
+    }
+
+    /**
+     * Adds the attribute with the passed name to this context.
+     *
+     * @param string $key   The key to add the value with
+     * @param mixed  $value The value to add to the context
+     *
+     * @return void
+     */
+    public function setAttribute($key, $value)
+    {
+        $this->attributes[$key] = $value;
+    }
+
+    /**
+     * Returns the value with the passed name from the context.
+     *
+     * @param string $key The key of the value to return from the context.
+     *
+     * @return mixed The requested attribute
+     * @see \AppserverIo\Psr\Context\Context::getAttribute($key)
+     */
+    public function getAttribute($key)
+    {
+        if (array_key_exists($key, $this->attributes)) {
+            return $this->attributes[$key];
+        }
     }
 
     /**

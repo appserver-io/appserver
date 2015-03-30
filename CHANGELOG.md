@@ -6,7 +6,8 @@
 
 ## Features
 
-* Closed [#714](https://github.com/appserver-io/appserver/issues/714) moved and refactored error, welcome and auto-index pages
+* Closed [#715](https://github.com/appserver-io/appserver/issues/715) - Add setAttribute/getAttribute methods to Request
+* Closed [#714](https://github.com/appserver-io/appserver/issues/714) - Moved and refactored error, welcome and auto-index pages
 
 # Version 1.1.0-alpha2
 
