@@ -950,7 +950,7 @@ class Request implements HttpServletRequestInterface, ContextInterface
      */
     public function getQueryString()
     {
-        return $this->getServerVar(ServerVars::QUERY_STRING);
+        return $this->getHttpRequest()->getQueryString();
     }
 
     /**
@@ -960,7 +960,7 @@ class Request implements HttpServletRequestInterface, ContextInterface
      */
     public function getUri()
     {
-        return $this->getServerVar(ServerVars::X_REQUEST_URI);
+        return $this->getHttpRequest()->getUri();
     }
 
     /**
@@ -982,7 +982,7 @@ class Request implements HttpServletRequestInterface, ContextInterface
      */
     public function getMethod()
     {
-        return $this->getServerVar(ServerVars::REQUEST_METHOD);
+        return $this->getHttpRequest()->getMethod();
     }
 
     /**
