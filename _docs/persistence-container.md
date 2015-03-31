@@ -327,7 +327,7 @@ class LoginServlet extends HttpServlet
 
 #### Singleton Session Beans (SSBs)
 
-A `SSB` is created by the container only once in each application. Thus, whenever an instance is requested, it will be the same. If a variable is set as a `SSB` member, it is available until it is overwritten, or the application server is restarted.
+A `SSB` is created by the container only once for each application. Thus, whenever an instance is requested, it will be the same. If a variable is set as a `SSB` member, it is available until it is overwritten, or the application server is restarted.
 
 ##### Concurrency
 
