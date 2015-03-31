@@ -3,7 +3,16 @@ layout: news
 ---
 <div class="post">
   <header class="post-header">
-    <h1 class="post-title"><i class="fa fa-tag"></i> {{ page.title }}</h1>
+    <h1 class="post-title" {% if page.cvss %}{% capture rvalue %}{{ page.cvss | times:25.5 }}{% endcapture %}{% capture gvalue %}{{ 255 | minus:rvalue }}{% endcapture %}style="color: rgb(240,{{ gvalue | split: "." | first }},15)"{% endif %}><i class="fa fa-{% if page.cvss %}exclamation-triangle{% else %}tag{% endif %}"></i> {{ page.title }}</h1>
+    
+{% if page.cvss %}
+<p class="cvss">
+    {% if page.version %}Affected versions: <strong>{{ page.version | array_to_sentence_string }}</strong> | {% endif %}
+    CVSS: <strong>{{ page.cvss }}</strong>
+    {% if page.cve %} | <a href="http://www.cvedetails.com/cve/{{ page.cve }}" target="_blank">{{ page.cve }}</a>{% endif %}
+</p>
+{% endif %}
+
     <p>
       <a href="https://github.com/{{ page.author }}" class="post-author"><img src="https://github.com/{{ page.author }}.png" class="avatar img-circle" alt="{{ page.author }}" width="24" height="24" /> {{ page.author }}</a> <i class="fa fa-clock-o"></i> Posted on {{ page.date | date_to_string }} | <a href="{{ site.url }}{{ page.url | prepend: site.baseurl }}#disqus_thread">0 Comments</a>
     </p>
