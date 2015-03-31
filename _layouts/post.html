@@ -8,7 +8,7 @@ layout: news
 {% if page.cvss %}
 <p class="cvss">
     {% if page.version %}Affected versions: <strong>{{ page.version | array_to_sentence_string }}</strong> | {% endif %}
-    <a href="http://de.wikipedia.org/wiki/CVSS" target="_blank">CVSS</a>: <strong>{{ page.cvss }}</strong>
+    <a href="http://en.wikipedia.org/wiki/CVSS" target="_blank">CVSS</a>: <strong>{{ page.cvss }}</strong>
     {% if page.cve %} | <a href="http://www.cvedetails.com/cve/{{ page.cve }}" target="_blank">{{ page.cve }}</a>{% endif %}
 </p>
 {% endif %}
