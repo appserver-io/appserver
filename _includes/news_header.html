@@ -3,7 +3,7 @@
 {% if post.cvss %}
 <p class="cvss">
     {% if post.version %}Affected versions: <strong>{{ post.version | array_to_sentence_string }}</strong> | {% endif %}
-    CVSS: <strong>{{ post.cvss }}</strong>
+    <a href="http://de.wikipedia.org/wiki/CVSS" target="_blank">CVSS</a>: <strong>{{ post.cvss }}</strong>
     {% if post.cve %} | <a href="http://www.cvedetails.com/cve/{{ post.cve }}" target="_blank">{{ post.cve }}</a>{% endif %}
 </p>
 {% endif %}
