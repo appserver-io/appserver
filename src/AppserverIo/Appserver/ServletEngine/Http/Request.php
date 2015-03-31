@@ -664,15 +664,11 @@ class Request implements HttpServletRequestInterface, ContextInterface
     }
 
     /**
-     * Returns the session for this request.
+     * Return the session identifier proposed by the actual configuration and request state.
      *
-     * @param boolean $create TRUE to create a new session, else FALSE
-     *
-     * @return null|\AppserverIo\Psr\Servlet\Http\HttpSessionInterface The session instance
-     *
-     * @throws \Exception
+     * @return string The session identifier proposed for this request
      */
-    public function getSession($create = false)
+    public function getProposedSessionId()
     {
 
         // if no session has already been load, initialize the session manager
@@ -705,17 +701,46 @@ class Request implements HttpServletRequestInterface, ContextInterface
             // iterate over the cookies and try to find one that is not expired
             foreach ($cookieFound as $cookie) {
                 if ($cookie instanceof CookieInterface && $cookie->isExpired() === false) {
-                    $this->setRequestedSessionId($cookie->getValue());
+                    $this->setRequestedSessionId($id = $cookie->getValue());
                 }
             }
 
         // if we found a single cookie instance
         } elseif ($cookieFound instanceof CookieInterface && $cookieFound->isExpired() === false) {
-            $this->setRequestedSessionId($cookieFound->getValue());
+            $this->setRequestedSessionId($id = $cookieFound->getValue());
         }
 
+        // return the requested session
+        return $id;
+    }
+
+    /**
+     * Returns the session for this request.
+     *
+     * @param boolean $create TRUE to create a new session, else FALSE
+     *
+     * @return null|\AppserverIo\Psr\Servlet\Http\HttpSessionInterface The session instance
+     *
+     * @throws \Exception
+     */
+    public function getSession($create = false)
+    {
+
+        // if no session has already been load, initialize the session manager
+        /** @var \AppserverIo\Appserver\ServletEngine\SessionManagerInterface $manager */
+        $manager = $this->getContext()->search('SessionManagerInterface');
+
+        // if no session manager was found, we don't support sessions
+        if ($manager == null) {
+            return;
+        }
+
+        // load the proposed session-ID and name
+        $id = $this->getProposedSessionId();
+        $sessionName = $this->getRequestedSessionName();
+
         // find or create a new session (if flag has been set)
-        $session = $manager->find($this->getRequestedSessionId());
+        $session = $manager->find($id);
 
         // if we can't find a session or session has been expired and we want to create a new one
         if ($session == null && $create === true) {
