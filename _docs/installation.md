@@ -46,6 +46,13 @@ For OS specific steps and characteristics review the tested environments in the 
 
 For Mac OS X > 10.8.x we provide a `.pkg` file for [download]({{"/get-started/downloads.html#osx" | prepend: site.baseurl }}) that contains the `runtime` and the `distribution`. A double-click on the `.pkg` triggers the installation process.
 
+Optionally you can install the appserver using [Homebrew Cask](http://caskroom.io/) as we do offer an appserver cask now.
+To do so use the following command:
+
+```bash
+brew cask install appserver
+```
+
 ## Windows
 
 > Runs and tested on Windows 7 (32-bit) and higher.
