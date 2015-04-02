@@ -2,7 +2,8 @@
 
 ## Bugfixes
 
-* None
+* Fixed [#719](https://github.com/appserver-io/appserver/issues/719) - Around advice chain does break at certain size
+* Fixed [#721](https://github.com/appserver-io/appserver/issues/721) - Different order of Advices in pointcut.xml depending on type
 
 ## Features
 
@@ -30,6 +31,17 @@
 ## Features
 
 * Closed [#683](https://github.com/appserver-io/appserver/issues/683) - Update PHP to 5.6
+
+# Version 1.0.4
+
+## Bugfixes
+
+* Fixed [#719](https://github.com/appserver-io/appserver/issues/719) - Around advice chain does break at certain size
+* Fixed [#721](https://github.com/appserver-io/appserver/issues/721) - Different order of Advices in pointcut.xml depending on type
+
+## Features
+
+* None
 
 # Version 1.0.3
 
