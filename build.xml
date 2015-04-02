@@ -12,6 +12,24 @@
         <format property="time.stamp" pattern="yyyy-MM-dd_HHmmss"/>
     </tstamp>
 
+    <!-- ==================================================================== -->
+    <!-- Defines helpful ANT targets                                          -->
+    <!-- ==================================================================== -->
+    <taskdef resource="net/sf/antcontrib/antlib.xml">
+        <classpath>
+            <pathelement location="${basedir}/resources/lib/ant-contrib-1.0b3.jar"/>
+        </classpath>
+    </taskdef>
+
+    <!-- ==================================================================== -->
+    <!-- Defines a XML helper library                                         -->
+    <!-- ==================================================================== -->
+    <taskdef name="xmltask" classname="com.oopsconsultancy.xmltask.ant.XmlTask">
+        <classpath>
+            <pathelement location="${basedir}/resources/lib/xmltask.jar"/>
+        </classpath>
+    </taskdef>
+
     <!-- initialize file based properties -->
     <property file="${basedir}/build.properties"/>
     <property file="${basedir}/build.default.properties"/>
@@ -25,9 +43,14 @@
     <property name="build.dir" value="${vendor.dir}/appserver-io/build" />
 
     <!-- ==================================================================== -->
-    <!-- Import the common build configuration file                           -->
+    <!-- Import all component specific build configuration files              -->
     <!-- ==================================================================== -->
-    <import file="${build.dir}/common.xml" optional="true"/>
+    <for param="component.build.file">
+        <fileset dir="${vendor.dir}" includes="**/common.xml" />
+        <sequential>
+            <import file="@{component.build.file}"/>
+        </sequential>
+    </for>
 
     <!-- ==================================================================== -->
     <!-- Checks if composer has installed it's dependencies                   -->
