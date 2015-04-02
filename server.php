@@ -130,7 +130,7 @@ if ($configurationService->validateXml($mergeDoc) === false) {
         if (array_key_exists($configTest, $arguments)) {
 
             echo $message;
-            exit;
+            exit(1);
         }
         throw new \Exception($message);
     }
@@ -138,7 +138,7 @@ if ($configurationService->validateXml($mergeDoc) === false) {
 } elseif (array_key_exists($configTest, $arguments)) {
 
     echo "Syntax OK\n";
-    exit;
+    exit(0);
 }
 
 // initialize the SimpleXMLElement with the content XML configuration file
