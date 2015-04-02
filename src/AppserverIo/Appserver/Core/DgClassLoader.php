@@ -51,13 +51,6 @@ class DgClassLoader extends \Stackable implements ClassLoaderInterface
 {
 
     /**
-     * Our default configuration file
-     *
-     * @const string CONFIG_FILE
-     */
-    const CONFIG_FILE = 'pbc.conf.json';
-
-    /**
      * The amount of structures we will generate per thread
      *
      * @const int GENERATOR_STACK_COUNT
@@ -92,18 +85,10 @@ class DgClassLoader extends \Stackable implements ClassLoaderInterface
      * Will check if there is content in the cache directory.
      * If not we will parse anew.
      *
-     * @param \AppserverIo\Doppelgaenger\Config|null $config An already existing config instance
+     * @param \AppserverIo\Doppelgaenger\Config $config An already existing config instance
      */
-    public function __construct(Config $config = null)
+    public function __construct(Config $config)
     {
-
-        // query whether we've a configuration or not
-        if (is_null($config)) {
-            //  if not we will get a context less configuration instance
-            $config = new Config();
-            $config->load(APPSERVER_BP . DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . self::CONFIG_FILE);
-
-        }
 
         // set the configuration
         $this->config = $config;
