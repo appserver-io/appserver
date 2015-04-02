@@ -16,7 +16,7 @@
 		"appserver-io-psr/application" : "~1.0",
 		"appserver-io/rmi" : "~1.0",
 		"appserver-io/http" : "~1.0",
-		"appserver-io/lang" : "~1.0",
+		"appserver-io/lang" : "2.0.0 as 1.0.0",
 		"appserver-io/server" : "~3.0",
 		"appserver-io/logger" : "~1.0",
 		"appserver-io/storage" : "~2.0",
