@@ -21,10 +21,10 @@
 namespace AppserverIo\Appserver\ServletEngine\Http;
 
 use AppserverIo\Http\HttpProtocol;
+use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Server\Dictionaries\ServerVars;
 use AppserverIo\Psr\Context\ContextInterface;
 use AppserverIo\Psr\HttpMessage\PartInterface;
-use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Psr\HttpMessage\CookieInterface;
 use AppserverIo\Psr\HttpMessage\RequestInterface;
 use AppserverIo\Psr\Servlet\SessionUtils;
@@ -39,24 +39,93 @@ use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
- *
- * @property string                                                            $baseModifier         Base modifier which allows for base path generation within rewritten URL environments
- * @property resource                                                          $bodyStream           The body content stream resource
- * @property \AppserverIo\Psr\Context\ContextInterface                         $context              The request context instance
- * @property string                                                            $contextPath          The application context name
- * @property boolean                                                           $dispatched           Whether or not the request has been dispatched
- * @property \AppserverIo\Psr\HttpMessage\RequestInterface                     $httpRequest          The Http request instance
- * @property string                                                            $parts                The request parts
- * @property string                                                            $pathInfo             The absolute path info
- * @property \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface        $response             The servlet response instance
- * @property string                                                            $requestedSessionId   The new session id
- * @property string                                                            $requestedSessionName The new session name
- * @property \AppserverIo\Appserver\ServletEngine\Http\RequestContextInterface $requestHandler       The request context
- * @property \AppserverIo\Storage\GenericStackable                             $serverVars           The server variables
- * @property string                                                            $servletPath          The path to the servlet
  */
-class Request implements HttpServletRequestInterface
+class Request implements HttpServletRequestInterface, ContextInterface
 {
+
+    /**
+     * The path (URI) to the servlet.
+     *
+     * @var string
+     */
+    protected $servletPath;
+
+    /**
+     * The request context.
+     *
+     * @var \AppserverIo\Appserver\ServletEngine\Http\RequestContextInterface
+     */
+    protected $requestHandler;
+
+    /**
+     * The new session name.
+     *
+     * @var string
+     */
+    protected $requestedSessionName;
+
+    /**
+     * The new session-ID.
+     *
+     * @var string
+     */
+    protected $requestedSessionId;
+
+    /**
+     * The servlet response instance.
+     *
+     * @var \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface
+     */
+    protected $response;
+
+    /**
+     * The absolute path info.
+     *
+     * @var string
+     */
+    protected $pathInfo;
+
+    /**
+     * Base modifier which allows for base path generation within rewritten URL environments.
+     *
+     * @var string
+     */
+    protected $baseModifier;
+
+    /**
+     * The body content stream resource.
+     *
+     * @var resource
+     */
+    protected $bodyStream;
+
+    /**
+     * The request context instance.
+     *
+     * @var \AppserverIo\Psr\Context\ContextInterface
+     */
+    protected $context;
+
+    /**
+     * The application context name.
+     *
+     * @var string
+     */
+    protected $contextPath;
+
+    /**
+     * Whether or not the request has been dispatched.
+     *
+     * @var boolean
+     */
+    protected $dispatched = false;
+
+    /**
+     * The HTTP request instance.
+     *
+     * @var \AppserverIo\Psr\HttpMessage\RequestInterface
+     */
+    protected $httpRequest;
 
     /**
      * The server variables.
@@ -78,6 +147,13 @@ class Request implements HttpServletRequestInterface
      * @var array
      */
     protected $handlers = array();
+
+    /**
+     * Array that contains the attributes of this context.
+     *
+     * @var array
+     */
+    protected $attributes = array();
 
     /**
      * Initializes the request object with the default properties.
@@ -110,6 +186,35 @@ class Request implements HttpServletRequestInterface
         $this->parts = array();
         $this->handlers = array();
         $this->serverVars = array();
+        $this->attributes = array();
+    }
+
+    /**
+     * Adds the attribute with the passed name to this context.
+     *
+     * @param string $key   The key to add the value with
+     * @param mixed  $value The value to add to the context
+     *
+     * @return void
+     */
+    public function setAttribute($key, $value)
+    {
+        $this->attributes[$key] = $value;
+    }
+
+    /**
+     * Returns the value with the passed name from the context.
+     *
+     * @param string $key The key of the value to return from the context.
+     *
+     * @return mixed The requested attribute
+     * @see \AppserverIo\Psr\Context\Context::getAttribute($key)
+     */
+    public function getAttribute($key)
+    {
+        if (array_key_exists($key, $this->attributes)) {
+            return $this->attributes[$key];
+        }
     }
 
     /**
@@ -559,15 +664,11 @@ class Request implements HttpServletRequestInterface
     }
 
     /**
-     * Returns the session for this request.
+     * Return the session identifier proposed by the actual configuration and request state.
      *
-     * @param boolean $create TRUE to create a new session, else FALSE
-     *
-     * @return null|\AppserverIo\Psr\Servlet\Http\HttpSessionInterface The session instance
-     *
-     * @throws \Exception
+     * @return string The session identifier proposed for this request
      */
-    public function getSession($create = false)
+    public function getProposedSessionId()
     {
 
         // if no session has already been load, initialize the session manager
@@ -600,17 +701,46 @@ class Request implements HttpServletRequestInterface
             // iterate over the cookies and try to find one that is not expired
             foreach ($cookieFound as $cookie) {
                 if ($cookie instanceof CookieInterface && $cookie->isExpired() === false) {
-                    $this->setRequestedSessionId($cookie->getValue());
+                    $this->setRequestedSessionId($id = $cookie->getValue());
                 }
             }
 
         // if we found a single cookie instance
         } elseif ($cookieFound instanceof CookieInterface && $cookieFound->isExpired() === false) {
-            $this->setRequestedSessionId($cookieFound->getValue());
+            $this->setRequestedSessionId($id = $cookieFound->getValue());
         }
 
+        // return the requested session
+        return $id;
+    }
+
+    /**
+     * Returns the session for this request.
+     *
+     * @param boolean $create TRUE to create a new session, else FALSE
+     *
+     * @return null|\AppserverIo\Psr\Servlet\Http\HttpSessionInterface The session instance
+     *
+     * @throws \Exception
+     */
+    public function getSession($create = false)
+    {
+
+        // if no session has already been load, initialize the session manager
+        /** @var \AppserverIo\Appserver\ServletEngine\SessionManagerInterface $manager */
+        $manager = $this->getContext()->search('SessionManagerInterface');
+
+        // if no session manager was found, we don't support sessions
+        if ($manager == null) {
+            return;
+        }
+
+        // load the proposed session-ID and name
+        $id = $this->getProposedSessionId();
+        $sessionName = $this->getRequestedSessionName();
+
         // find or create a new session (if flag has been set)
-        $session = $manager->find($this->getRequestedSessionId());
+        $session = $manager->find($id);
 
         // if we can't find a session or session has been expired and we want to create a new one
         if ($session == null && $create === true) {
@@ -845,7 +975,7 @@ class Request implements HttpServletRequestInterface
      */
     public function getQueryString()
     {
-        return $this->getServerVar(ServerVars::QUERY_STRING);
+        return $this->getHttpRequest()->getQueryString();
     }
 
     /**
@@ -855,7 +985,7 @@ class Request implements HttpServletRequestInterface
      */
     public function getUri()
     {
-        return $this->getServerVar(ServerVars::X_REQUEST_URI);
+        return $this->getHttpRequest()->getUri();
     }
 
     /**
@@ -877,7 +1007,7 @@ class Request implements HttpServletRequestInterface
      */
     public function getMethod()
     {
-        return $this->getServerVar(ServerVars::REQUEST_METHOD);
+        return $this->getHttpRequest()->getMethod();
     }
 
     /**
