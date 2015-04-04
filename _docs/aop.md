@@ -17,17 +17,16 @@ subNav:
 permalink: /get-started/documentation/aop.html
 ---
 
-AOP, or [Aspect-oriented programming](http://en.wikipedia.org/wiki/Aspect-oriented_programming) is the concept of decoupling so called *cross-cutting concerns*, logic which is duplicated throughout the complete  codebase, and implement them at a central point.
-These cross-cutting concerns are logical patterns which are needed in a manifold of places but mostly have a simple implementation. Examples would be security/authentication or logging.
+[Aspect-oriented programming](http://en.wikipedia.org/wiki/Aspect-oriented_programming) (AOP) is the concept of decoupling so-called *cross-cutting concerns*, a logic which is duplicated throughout the complete  codebase, and implement them at a central point.
+These cross-cutting concerns are logical patterns, which are needed in a manifold of places but mostly have a simple implementation. Examples would be security/authentication or logging.
 
 Implementing logging at several places is either a huge duplication mess or results in dependencies to your logging infrastructure scattered all over your application.
-With AOP, logging is implemented once and you can centrally (or at the actual place of use if you like) define where to use it.
-This allows for easy reactions to changes within your infrastructure.
+With AOP, logging is implemented once, and you can centrally (or at the actual place of usage) define where to use it. This allows for easy reactions to changes within your infrastructure.
 
-AOP is more than a buzzword. Many of the PHP frameworks out there are supporting AOP for some years, in other languages like Java it is available for a long time. Currently there is no stable PECL extension nor is AOP part of the PHP core. For this reason, we implement our own AOP solution which is completely written in PHP and can be found [in this repository](https://github.com/appserver-io/doppelgaenger). 
+AOP is more than a buzzword. Many of the PHP frameworks are supporting AOP for some years, in other languages like Java it is available for a long time. Currently, there is neither a stable PECL extension nor is AOP part of the PHP core. For this reason, we implement our own AOP solution that is completely written in PHP and can be found [in this repository](https://github.com/appserver-io/doppelgaenger). 
 
-Besides AOP, this library also supports [Design by Contract](https://en.wikipedia.org/wiki/Design_by_contract) and can be used separately from the appserver as well.
-Within the appserver environment, this solution is enabled by default and can be used in every webapp from the first start.
+Besides AOP, this library also supports [Design by Contract](https://en.wikipedia.org/wiki/Design_by_contract) and can be used separately from appserver.io as well.
+Within the application server's environment, this solution is enabled by default and can be used in every webapp from the first start.
 
 ## How it works
 
