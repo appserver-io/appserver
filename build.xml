@@ -46,7 +46,7 @@
     <!-- Import all component specific build configuration files              -->
     <!-- ==================================================================== -->
     <for param="component.build.file">
-        <fileset dir="${vendor.dir}" includes="**/common.xml" />
+        <fileset erroronmissingdir="false" dir="${vendor.dir}" includes="**/common.xml" />
         <sequential>
             <import file="@{component.build.file}"/>
         </sequential>
