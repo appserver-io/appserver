@@ -44,7 +44,7 @@ class ASingletonProcessor extends \Stackable
 ```
 
 The `@Schedule` annotation on the `invokedByTimer()` method schedules the invocation of this
-method every minute without needing a CRON configured or running. Such `Timers` can
+method every minute without a CRON configured or running. Such `Timers` can
 also be created programmatically. If you want to know more about it, have a look at our [example](https://github.com/appserver-io-apps/example).
 
-> Actually we do not support seconds as period you can schedule (see Issue [#300](#300)).
+> Currently, we do not support seconds as a period you can schedule (see Issue [#300](#300)).
