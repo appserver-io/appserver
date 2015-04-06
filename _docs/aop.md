@@ -18,32 +18,32 @@ permalink: /get-started/documentation/aop.html
 ---
 
 [Aspect-oriented programming](http://en.wikipedia.org/wiki/Aspect-oriented_programming) (AOP) is the concept of decoupling so-called *cross-cutting concerns*, a logic which is duplicated throughout the complete  codebase, and implement them at a central point.
-These cross-cutting concerns are logical patterns, which are needed in a manifold of places but mostly have a simple implementation. Examples would be security/authentication or logging.
+These cross-cutting concerns are logical patterns, which are needed in multiple places but mostly have a simple implementation. Examples are security/authentication or logging.
 
 Implementing logging at several places is either a huge duplication mess or results in dependencies to your logging infrastructure scattered all over your application.
-With AOP, logging is implemented once, and you can centrally (or at the actual place of usage) define where to use it. This allows for easy reactions to changes within your infrastructure.
+With AOP, logging is implemented once and you can centrally (or at the actual place of usage) define where to use it. This allows for easy reactions to changes within your infrastructure.
 
-AOP is more than a buzzword. Many of the PHP frameworks are supporting AOP for some years, in other languages like Java it is available for a long time. Currently, there is neither a stable PECL extension nor is AOP part of the PHP core. For this reason, we implement our own AOP solution that is completely written in PHP and can be found [in this repository](https://github.com/appserver-io/doppelgaenger). 
+AOP is more than a buzzword. Many of the PHP frameworks have been supporting AOP for some years. In other languages, like Java, it has been available for a long time. Currently, there is neither a stable PECL extension nor is AOP part of the PHP core. For this reason, we implement our AOP solution that is completely written in PHP and can be found [in this repository](https://github.com/appserver-io/doppelgaenger). 
 
-Besides AOP, this library also supports [Design by Contract](https://en.wikipedia.org/wiki/Design_by_contract) and can be used separately from appserver.io as well.
+Besides AOP, this library also supports [Design by Contract](https://en.wikipedia.org/wiki/Design_by_contract) and can be used separately from appserver.io.
 Within the application server's environment, this solution is enabled by default and can be used in every webapp from the first start.
 
 ## How it works
 
 AOP is often done using [`Proxy Classes`](https://en.wikipedia.org/wiki/Proxy_pattern) that wrap around actual classes and can be used to invoke code hooks on certain points in the program flow. Solutions injecting calls to a managing component which handles the execution of cross-cutting logic are also possible.
 
-At appserver.io, we have two things in mind: good performance and accessibility to the community. 
-To accommodate these concerns we implemented everything in PHP and tried to do as much work during bootstrapping as possible.
+With appserver.io, we have two things in mind: good performance and accessibility for the community. 
+To accommodate these concerns, we implemented everything in PHP and did as much work during bootstrapping as possible.
 
-This leaves us with the solution of building highly specialized proxy classes which get individually built for their respective AOP configuration.
-What this configuration is will be described further down, for now it is important to know that there are alternative classes which wrap around the original classes and executed cross-cutting logic.
+This leaves us with the solution of building highly specialized proxy classes, which get individually built for their respective AOP configuration.
+The configuration's details are described further down. For now it is important to know that there are alternative classes that wrap around the original classes and execute cross-cutting logic.
 
-We do not want to force a certain way in which objects are instantiated and we have to ensure that the proxy and the original implementation can be swapped externally but still without the use of any factory or entity manager which a programmer has to use.
+We do not want to force a certain way in which objects are instantiated. We have to ensure that the proxy and the original implementation can be swapped externally, without using a factory or entity manager.
 Therefore, we are working with the original definition of a structure (class, trait, or in another context interface).
 
-As we still want to switch between original and proxy we simply generate another implementation of the original class, let us call it `ExampleClass`, which contains method stubs which wrap around the original methods. As proxy generation is a very expensive thing we will store these new definitions in the file system for later re-use.
+As we still want to switch between original and proxy we simply generate another implementation of the original class, we call it `ExampleClass`. It contains method stubs that wrap around the original methods. As proxy generation is a very expensive thing, we will store these new definitions in the file system for later re-use.
 
-To make an example, every AOP usage for a class of the structure:
+To make an example, every AOP usage for a class of the following structure
 
 ```php
 <?php
@@ -78,15 +78,15 @@ class ExampleClass
 }
 ```
 
-As you might notice, this does not fit the proxy pattern a 100%, as we do not deal with instances here but rather structure definitions, but it fulfills the same purpose and does not require lot of logic during program runtime. 
+As you might notice, this does not fit the proxy pattern completely, as we do not deal with instances here but with structure definitions. Nevertheless, it fulfills the same purpose and does not require a lot of logic during program runtime. 
 
-To enable switching between the altered and the original definition, we utilize the autoloading concept of PHP. For this purpose, we have the autoloader class `\AppserverIo\Appserver\Core\DgClassLoader` which will preferably load the altered definition unless configured otherwise.
+To switch between the altered and the original definition, we utilize the autoloading concept of PHP. For this purpose, we have the autoloader class `\AppserverIo\Appserver\Core\DgClassLoader` that preferably loads the altered definition, unless configured otherwise.
 
-The `DgClassLoader` is the default class loader for all applications, so AOP as well as Design by Contract are enabled by default within the appserver.io environment.
-If you want to change this you can do so by registering your own classloader within the `context.xml` configuration files.
-You might do so on application level by placing a file called `context.xml` in your webapp's `META-INF` directory or by editing the system wide `context.xml` (which we do not encourage by any means).
+The `DgClassLoader` is the default class loader for all applications. So, AOP as well as Design by Contract are enabled by default within the appserver.io environment.
+If you want to change this, you can do so by registering your own classloader within the `context.xml` configuration files.
+You might do so on application level by placing a file called `context.xml` in your webapp's `META-INF` directory or by editing the system-wide `context.xml` (,which we do not encourage by any means).
 
-The classloader configuration might look something like this:
+The classloader configuration might look like the following.
 
 ```xml
 <classLoaders>
@@ -114,36 +114,34 @@ The classloader configuration might look something like this:
 
 ## Important terms
 
-The concepts described [above](#how-does-it-work) can be used in very complex and powerful ways. The AOP approach has some terms which are widely used within its field to better understand all aspects of its concepts.
-These terms will be used throughout our code and the following documentation. To make them understandable, we will describe them further below.
+The concepts described [above](#how-does-it-work) can be used in very complex and powerful ways. The AOP approach uses a number of terms to understand all aspects of its concept better.
+Since these terms will be used throughout our code and the following documentation, they are described in detail below. 
 
 You might additionally have a look at [this](https://en.wikipedia.org/wiki/Aspect-oriented_programming) and [this](http://eclipse.org/aspectj/doc/released/progguide/starting-aspectj.html) link for further explanations. 
 
 ### Join-points
-It is already clear, that AOP is about the insertion (one speaks of weaving) of a code (logic of our `cross-cutting concerns`) into defined points within a programs flow. It is also obvious that we have to describe this point and which concern we want to insert.
+It is already clear that AOP is about the insertion (one speaks of weaving) of a code (logic of our `cross-cutting concerns`) into defined points within a program's flow. It is also obvious that we have to describe this point and which concern we want to insert.
 
 `Join points` are used to describe a certain event within the actual flow of a running program at which weaving should take place. 
 
-> So rather than describing a place within the source code, join points describe something that is *happening* at a certain place in your application.
+> So, rather than describing a place within the source code, join points describe something that is *happening* at a specific place in your application.
  
- We currently support two specific join points, one standalone and the other as addition for other join points:
+ We currently support two join points, one standalone and the other one as addition for other join points.
  
 | Keyword      | Type       | Description                                                     |
 | -------------| -----------| ----------------------------------------------------------------|
-| `call`       | standalone | The call of a method whether being static or dynamic.           |
+| `call`       | standalone | The call of a method being static or dynamic.                   |
 | `execute`    | addition   | An addition to other join points. Describes that a certain join point has to be in the context of an execution stack. E.g. a call to `methodB` might only be interesting if it was made from within `methodA` |
 
 ### Pointcuts
-A pointcut is used to define an explicit event in the flow of a running program by combining a `join point` with a point within your applications code such as a method of a certain class.
-You can specify these explicit events using something called a [join-point model](https://en.wikipedia.org/wiki/Aspect-oriented_programming#Join_point_models). This model explains how a pointcut
-sets `advices` and join points in relation to build an actual execution of aspect code.
+A pointcut is used to define an explicit event in the flow of a running program by combining a `join point` with a point within your application's code such as a method of a certain class.
+You can specify these explicit events using something called a [join-point model](https://en.wikipedia.org/wiki/Aspect-oriented_programming#Join_point_models). This model explains how a pointcut sets `advices` and join points in relation to each other to build an actual execution of an aspect code.
 
 In the join point model we use pointcuts, only define the relation of a join point and a piece of code and can be actively referenced by advices.
 
 Pseudocode might be: `call to methodB while executing methodA`.
 
-As pseudocode does not make much sense for us, we mostly (see other possibilities [below](#usage)) use `annotations` to describe a pointcut.
-Such an annotation would look like this:
+As pseudocode does not make much sense for us. We mostly (see other possibilities [below](#usage)) use `annotations` to describe a pointcut. Such an annotation could look like the following.
 
 ```php
 <?php
@@ -157,10 +155,9 @@ public function certainMethodCallStack()
 
 As you can see, pointcuts can be specified using [logical connectives](https://en.wikipedia.org/wiki/Logical_connective#Common_logical_connectives) to express a very specific description of an event. Keep in mind that this description only narrows the necessary `call` join point.
 
+> All pointcut specifications MUST contain a single `call` join point.
 
-> All pointcut specifications MUST contain a single `call` join point
-
-The basic connectives the doppelgaenger library supports are:
+The basic connectives the doppelgaenger library supports are the following.
 
 | Connective  | Symbol      | Description                                                                                          |
 | ------------| ------------| -----------------------------------------------------------------------------------------------------|
