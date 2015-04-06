@@ -28,8 +28,7 @@ has to be a `MessageBean`. A `MessageBean` is very similar to a [@Stateless Sess
 but has only one single point of entry, the `onMessage()` message method. Whenever a message
 is sent to the queue, the Message-Queue simple pushes it on the stack. In the background a
 `QueueWorker` is running in another context and queries the stack for new messages. If a new
-message is available, it pulls a new instance from the stack of the receiver, the `Queue`
-is bound to, will be instantiated to pass the message to, for being processed.
+message is available, it will be instantiated and processed.
 
 The following example shows how to create a simple `Queue`.
 
@@ -250,4 +249,4 @@ class HelloWorldServlet extends HttpServlet
 ```
 
 > To make it easy, we can use the `@Resource` annotation. Thus, the container injects a sender
-> instance we can use to send the name of the file containing the data to the `Queue`.
+> instance, which can be used to send the name of the file.
