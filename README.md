@@ -1910,4 +1910,3 @@ Under Mac OS X you can simply delete the `/opt/appserver` folder that containers
 # External Links
 
 * All about appserver.io at [appserver.io](http://www.appserver.io)
-
