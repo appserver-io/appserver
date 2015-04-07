@@ -111,7 +111,7 @@ class SplClassLoader implements ClassLoaderInterface
         }
 
         // set the include paths
-        $this->includePath = $paths;
+        $this->includePath = array_merge($this->includePath, $paths);
     }
 
     /**

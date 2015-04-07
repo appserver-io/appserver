@@ -1,9 +1,10 @@
 # Version 1.0.4
-+
-+## Bugfixes
-+
-+* Fixed [#719](https://github.com/appserver-io/appserver/issues/719) - Around advice chain does break at certain size
-+* Fixed [#721](https://github.com/appserver-io/appserver/issues/721) - Different order of Advices in pointcut.xml depending on type
+
+## Bugfixes
+
+* Fixed [#731](https://github.com/appserver-io/appserver/issues/731) - Custom include paths in SplClassLoader not used
+* Fixed [#719](https://github.com/appserver-io/appserver/issues/719) - Around advice chain does break at certain size
+* Fixed [#721](https://github.com/appserver-io/appserver/issues/721) - Different order of Advices in pointcut.xml depending on type
 
 ## Features
 
