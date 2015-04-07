@@ -26,7 +26,8 @@
 		"appserver-io/properties" : "~1.0",
 		"appserver-io/description" : "~1.0",
 		"appserver-io/configuration" : "~2.0",
-		"appserver-io/doppelgaenger" : "~1.0"
+		"appserver-io/doppelgaenger" : "~1.0",
+        "appserver-io/routlt-project" : "~1.0"
 	},
 	"require-dev" : {
 		"mikey179/vfsStream" : "1.*",
