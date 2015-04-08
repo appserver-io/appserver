@@ -255,9 +255,11 @@ class Request implements HttpServletRequestInterface, ContextInterface
         // set the context path
         $this->setContextPath($contextPath);
 
-        // load the request URI and query string
-        $uri = $this->getUri();
-        $queryString = $this->getQueryString();
+        // Fixed #735 - Endless Loop for URLs without servlet name
+        // Load the request URI and query string from the server vars, because we have to
+        // take care about changes from other modules like directory or rewrite module!
+        $uri = $this->getServerVar(ServerVars::X_REQUEST_URI);
+        $queryString = $this->getServerVar(ServerVars::QUERY_STRING);
 
         // get uri without querystring
         $uriWithoutQueryString = str_replace('?' . $queryString, '', $uri);
