@@ -2,6 +2,7 @@
 
 ## Bugfixes
 
+* Fixed [#735](https://github.com/appserver-io/appserver/issues/735) - Endless Loop for URLs without servlet name
 * Fixed [#719](https://github.com/appserver-io/appserver/issues/719) - Around advice chain does break at certain size
 * Fixed [#721](https://github.com/appserver-io/appserver/issues/721) - Different order of Advices in pointcut.xml depending on type
 
