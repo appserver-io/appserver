@@ -297,16 +297,16 @@ class LoggerAspect
 
 This technique has several advantages:
 
-- Pointcuts and advices are defined in the same place which allows for better overview of what is referenced where. This leads to better control of weaving
-- Everything is managed decentrally and target code does not have to be touched, as all needed implementations can be made within the aspect class
-- Pointcuts can be re-used or referenced within several advices
+* Pointcuts and advices are defined in the same place for a better overview of references. This leads to better control of weaving
+* Everything is managed decentrally and the target code does not have to be touched, as all implementations needed can be made within the aspect class
+* Pointcuts can be re-used or referenced within several advices
 
 ### Generic configuration in XML 
 
-Additionally there is the possibility to configure pointcuts, and them being referenced by advices, within a central XML file.
+Additionally, there is the possibility to configure pointcuts within a central XML file.
 This file MUST be called `pointcuts.xml` and MUST be placed within the `META-INF` directory of your application.
 
-Example:
+This is shown in the following example.
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -327,21 +327,18 @@ Example:
 </pointcuts>
 ```
 
-The configuration describes a pointcut which specifies all `call` join points of all `doPost` methods within the `\Namespace\Module` namespace. This is very similar to the annotation example above and gets referenced by the same advice. To do so, the advice does not have to be changed in any way.
+The configuration describes a pointcut, which specifies all `call` join points of all `doPost` methods within the `\Namespace\Module` namespace. This is very similar to the annotation example above and is referenced by the same advice. To do so, the advice does not have to be changed.
 
 This method of using XML has the same advantages as annotating everything within the aspect class but serves another purpose:
 
 > By using XML the configuration allows for easy manipulation through external tools.
 
-A thought to keep in mind when configuring pointcuts.
-
 ### Direct annotation
 
-For some use cases, to implement explicit pointcuts can be considered an overhead, as they might be referenced only once or reference only one point within your application's code themselves.
+For some use cases, implementing explicit pointcuts can be considered an overhead as they might be referenced only once or reference only one point within your application's code.
 For these cases, it can make sense to use a more direct approach which also makes the AOP weaving known to the target code.
 
-To use such a direct approach, it is possible to directly annotate a target method with the type and qualified name of the advice(s) which have to be woven.
-
+To use such a direct approach, it is possible to directly annotate a target method with the type and qualified name of the advice(s), which have to be woven.
 Example:
 
 ```php
@@ -360,20 +357,20 @@ public function logIfTrue($param)
 
 We can take several pieces of information from this example:
 
-- We can use the same complex building blocks of [logical connectives](https://en.wikipedia.org/wiki/Logical_connective#Common_logical_connectives) and join points as for normal pointcuts
-- We do NOT need the `call` join point, as we will implicitly make the call to the annotated method our target event
-- The annotation defines the type of advice and therefor the actual point of weaving within the target code. This SHOULD be the used advice's actual type
-- When annotating directly we can use additional expressions instead of join points and logical connectives
+* We can use the same complex building blocks of [logical connectives](https://en.wikipedia.org/wiki/Logical_connective#Common_logical_connectives) and join points as we do for normal pointcuts
+* We do NOT need the `call` join point as we will implicitly make the call to the annotated method our target event
+* The annotation defines the type of advice and, therefore, the actual point of weaving within the target code. This SHOULD be the used an advice's actual type
+* When annotating directly we can use additional expressions instead of join points and logical connectives
 
 The additional expressions mentioned above are used to define the weaved code.
 We differ between two possible expressions:
 
 | Keyword      | Type       | Description                                                                                                           |
 | -------------| -----------| ----------------------------------------------------------------------------------------------------------------------|
-| `advise`     | standalone | The referenced advice will be woven into the target method. The advice's type SHOULD be the used annotation           |
-| `weave`      | standalone | Weave in arbitrary code at a certain point. This code will be run n the scope of the target method as if implemented within it |
+| `advise`     | standalone | The referenced advice will be woven into the target method. The advice's type SHOULD be the used annotation.           |
+| `weave`      | standalone | Weave in arbitrary code at a certain point. This code will be run in the scope of the target method as if it was implemented within it. |
 
-An example for the `weave` expression looks like this:
+An example, the `weave` expression looks like the following.
 
 ```php
 <?php
@@ -389,10 +386,10 @@ public function logIfTrue($param)
 }
 ```
 
-This is technically the same as if the call to the logger would have been implemented within the `logIfTrue` with two exceptions:
+This is technically the same as if the call to the logger would have been implemented within the `logIfTrue` besides two exceptions:
 
-- The weaving can be switched off externally by not using the AOP features for the annotated files
-- The woven code does not count into the method's original logic and is therefore not wrapped by other advices
+* The weaving can be switched off externally by not using the AOP features for the annotated files
+* The woven code does not count into the method's original logic and is therefore not wrapped by other advices
 
 ### Advices and the method invocation object
 
