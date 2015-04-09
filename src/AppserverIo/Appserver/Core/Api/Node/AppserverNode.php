@@ -204,8 +204,7 @@ class AppserverNode extends AbstractNode implements SystemConfigurationInterface
     }
 
     /**
-     * Initializes the default provisioners for database and
-     * application database relation.
+     * Initializes the default provisioners.
      *
      * @return void
      */
@@ -213,11 +212,9 @@ class AppserverNode extends AbstractNode implements SystemConfigurationInterface
     {
 
         // initialize the provisioners
-        $datasourceProvisioner = new ProvisionerNode('datasource', 'AppserverIo\Appserver\Core\DatasourceProvisioner');
         $standardProvisioner = new ProvisionerNode('standard', 'AppserverIo\Appserver\Core\StandardProvisioner');
 
         // add the provisioners to the appserver node
-        $this->provisioners[$datasourceProvisioner->getPrimaryKey()] = $datasourceProvisioner;
         $this->provisioners[$standardProvisioner->getPrimaryKey()] = $standardProvisioner;
     }
 

@@ -446,9 +446,6 @@ class Server
 
         // provision the applications
         $this->provision();
-
-        // deploy the applications
-        $this->deploy();
     }
 
     /**
@@ -618,27 +615,6 @@ class Server
                 $group
             )
         );
-    }
-
-    /**
-     * Deploys the applications for each container, found in the containers
-     * configured document root.
-     *
-     * @return void
-     */
-    protected function deploy()
-    {
-
-        // deploy the applications for each container
-        foreach ($this->getContainers() as $container) {
-
-            // load the containers deployment
-            $deployment = $container->getDeployment();
-            $deployment->injectContainer($container);
-
-            // deploy and initialize the container's applications
-            $deployment->deploy();
-        }
     }
 
     /**

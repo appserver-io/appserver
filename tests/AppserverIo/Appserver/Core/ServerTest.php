@@ -136,8 +136,7 @@ class ServerTest extends AbstractTest
                 'switchProcessUser',
                 'startContainers',
                 'provision',
-                'extract',
-                'deploy'
+                'extract'
             ),
             array(),
             '',
@@ -149,7 +148,6 @@ class ServerTest extends AbstractTest
         $server->expects($this->once())->method('switchProcessUser');
         $server->expects($this->once())->method('provision');
         $server->expects($this->once())->method('extract');
-        $server->expects($this->once())->method('deploy');
         $server->expects($this->once())
             ->method('getSystemLogger')
             ->will($this->returnValue($mockLogger));

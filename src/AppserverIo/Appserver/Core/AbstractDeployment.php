@@ -51,6 +51,20 @@ abstract class AbstractDeployment implements DeploymentInterface
     protected $deploymentService;
 
     /**
+     * The configuration service instance.
+     *
+     * @var \AppserverIo\Appserver\Core\Api\ConfigurationService
+     */
+    protected $configurationService;
+
+    /**
+     * The datasource service instance.
+     *
+     * @var \AppserverIo\Appserver\Core\Api\DatasourceService
+     */
+    protected $datasourceService;
+
+    /**
      * Injects the container instance.
      *
      * @param \AppserverIo\Appserver\Core\Interfaces\ContainerInterface $container The initial context instance
@@ -83,6 +97,32 @@ abstract class AbstractDeployment implements DeploymentInterface
             $this->deploymentService = $this->newService('AppserverIo\Appserver\Core\Api\DeploymentService');
         }
         return $this->deploymentService;
+    }
+
+    /**
+     * Returns the configuration service instance.
+     *
+     * @return \AppserverIo\Appserver\Core\Api\ConfigurationService The configuration service instance
+     */
+    public function getConfigurationService()
+    {
+        if ($this->configurationService == null) {
+            $this->configurationService = $this->newService('AppserverIo\Appserver\Core\Api\ConfigurationService');
+        }
+        return $this->configurationService;
+    }
+
+    /**
+     * Returns the datasource service instance.
+     *
+     * @return \AppserverIo\Appserver\Core\Api\DatasourceService The datasource service instance
+     */
+    public function getDatasourceService()
+    {
+        if ($this->datasourceService == null) {
+            $this->datasourceService = $this->newService('AppserverIo\Appserver\Core\Api\DatasourceService');
+        }
+        return $this->datasourceService;
     }
 
     /**
