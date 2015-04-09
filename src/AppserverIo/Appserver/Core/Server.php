@@ -20,18 +20,18 @@
 
 namespace AppserverIo\Appserver\Core;
 
-use AppserverIo\Appserver\Core\Interfaces\SystemConfigurationInterface;
-use AppserverIo\Appserver\Core\Scanner\HeartbeatScanner;
 use AppserverIo\Logger\LoggerUtils;
-use AppserverIo\Configuration\Interfaces\ConfigurationInterface;
-use AppserverIo\Appserver\Core\Interfaces\ProvisionerInterface;
-use AppserverIo\Appserver\Core\Interfaces\ExtractorInterface;
 use AppserverIo\Appserver\Core\InitialContext;
 use AppserverIo\Appserver\Core\Api\Node\AppserverNode;
 use AppserverIo\Appserver\Core\Scanner\ScannerFactory;
+use AppserverIo\Appserver\Core\Scanner\HeartbeatScanner;
 use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
 use AppserverIo\Appserver\Core\Utilities\ContainerStateKeys;
+use AppserverIo\Appserver\Core\Interfaces\ExtractorInterface;
 use AppserverIo\Appserver\Core\Interfaces\ContainerInterface;
+use AppserverIo\Appserver\Core\Interfaces\ProvisionerInterface;
+use AppserverIo\Appserver\Core\Interfaces\SystemConfigurationInterface;
+use AppserverIo\Configuration\Interfaces\ConfigurationInterface;
 
 /**
  * This is the main server class that starts the application server
@@ -106,7 +106,6 @@ class Server
      */
     protected function init()
     {
-
         // init the umask to use creating files/directories
         $this->initUmask();
         // init initial context
@@ -447,6 +446,9 @@ class Server
 
         // provision the applications
         $this->provision();
+
+        // deploy the applications
+        $this->deploy();
     }
 
     /**
@@ -501,7 +503,7 @@ class Server
      *
      * @return void
      */
-    public function startContainers()
+    protected function startContainers()
     {
 
         // start the container threads
@@ -616,6 +618,27 @@ class Server
                 $group
             )
         );
+    }
+
+    /**
+     * Deploys the applications for each container, found in the containers
+     * configured document root.
+     *
+     * @return void
+     */
+    protected function deploy()
+    {
+
+        // deploy the applications for each container
+        foreach ($this->getContainers() as $container) {
+
+            // load the containers deployment
+            $deployment = $container->getDeployment();
+            $deployment->injectContainer($container);
+
+            // deploy and initialize the container's applications
+            $deployment->deploy();
+        }
     }
 
     /**

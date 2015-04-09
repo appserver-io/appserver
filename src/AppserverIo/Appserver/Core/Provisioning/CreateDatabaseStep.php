@@ -100,8 +100,8 @@ class CreateDatabaseStep extends AbstractStep
             // load the database connection parameters
             $connectionParameters = $this->getConnectionParameters();
 
-            // register the class loader
-            $this->getInitialContext()->getClassLoader()->register(true, true);
+            // register the class loader again, because in a Thread the context has been lost maybe
+            require SERVER_AUTOLOADER;
 
             // initialize and load the entity manager and the schema tool
             $metadataConfiguration = Setup::createAnnotationMetadataConfiguration($absolutePaths, true);

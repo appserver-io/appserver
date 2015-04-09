@@ -20,8 +20,8 @@
 namespace AppserverIo\Appserver\Core;
 
 use AppserverIo\Configuration\Configuration;
-use AppserverIo\Appserver\Core\Api\Node\BaseDirectoryNode;
 use AppserverIo\Appserver\Core\Api\Node\NodeValue;
+use AppserverIo\Appserver\Core\Api\Node\BaseDirectoryNode;
 
 /**
  * Test for the server implementation.
@@ -118,18 +118,6 @@ class ServerTest extends AbstractTest
     public function testStart()
     {
 
-        // initialize the configuration
-        $configuration = $this->getAppserverConfiguration();
-
-        // replace the base directory
-        $appserverConfiguration = new Configuration();
-        $appserverConfiguration->setNodeName('appserver');
-        $baseDirectoryConfiguration = new Configuration();
-        $baseDirectoryConfiguration->setNodeName('baseDirectory');
-        $baseDirectoryConfiguration->setValue(__DIR__);
-        $appserverConfiguration->addChild($baseDirectoryConfiguration);
-        $configuration->merge($appserverConfiguration);
-
         // initialize the mock logger
         $mockLogger = $this->getMockLogger();
 
@@ -143,27 +131,25 @@ class ServerTest extends AbstractTest
         $server = $this->getMock(
             'AppserverIo\Appserver\Core\Server',
             array(
-                'initExtractors',
-                'startContainers',
-                'initProcessUser',
-                'initContainers',
-                'initProvisioners',
-                'initFileSystem',
-                'initSslCertificate',
                 'getSystemLogger',
-                'getSystemConfiguration'
+                'getSystemConfiguration',
+                'switchProcessUser',
+                'startContainers',
+                'provision',
+                'extract',
+                'deploy'
             ),
-            array($configuration),
+            array(),
             '',
             false
         );
 
         // mock the servers startContainers() and the initConstructors() method
-        $server->expects($this->once())->method('initExtractors');
-        $server->expects($this->once())->method('initContainers');
         $server->expects($this->once())->method('startContainers');
-        $server->expects($this->once())->method('initProcessUser');
-        $server->expects($this->once())->method('initProvisioners');
+        $server->expects($this->once())->method('switchProcessUser');
+        $server->expects($this->once())->method('provision');
+        $server->expects($this->once())->method('extract');
+        $server->expects($this->once())->method('deploy');
         $server->expects($this->once())
             ->method('getSystemLogger')
             ->will($this->returnValue($mockLogger));

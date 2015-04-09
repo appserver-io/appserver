@@ -32,4 +32,16 @@ foreach ($namespaces as $namespace) {
 // set the new include path
 set_include_path(get_include_path() . PATH_SEPARATOR . implode(PATH_SEPARATOR, $paths));
 
-require APPSERVER_BP . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
+// define application servers base dir
+define('SERVER_BASEDIR', APPSERVER_BP . DIRECTORY_SEPARATOR);
+
+// query whether we've a composer autoloader defined or not
+if (!file_exists($autoloaderFile = SERVER_BASEDIR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php')) {
+    throw new \Exception(sprintf('Can\' find default autoloader %s', $autoloaderFile));
+}
+
+// define the autoloader file
+define('SERVER_AUTOLOADER', $autoloaderFile);
+
+// initialize the composer autoloader
+require $autoloaderFile;

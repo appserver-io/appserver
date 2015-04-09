@@ -141,11 +141,10 @@ class AppserverNode extends AbstractNode implements SystemConfigurationInterface
 
         // initialize the configuration values for the initial context
         $description = new DescriptionNode(new NodeValue('The initial context configuration.'));
-        $classLoader = new ClassLoaderNode('SplClassLoader', 'ClassLoaderInterface', 'AppserverIo\Appserver\Core\SplClassLoader');
         $storage = new StorageNode('AppserverIo\Storage\StackableStorage');
 
         // set the default initial context configuration
-        $this->initialContext = new InitialContextNode('AppserverIo\Appserver\Core\InitialContext', $description, $classLoader, $storage);
+        $this->initialContext = new InitialContextNode('AppserverIo\Appserver\Core\InitialContext', $description, $storage);
     }
 
     /**

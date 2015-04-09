@@ -84,10 +84,6 @@ class InitialContext implements ContextInterface
         // add the storage to the initial context
         $this->setStorage($storage);
 
-        // initialize the default class loader instance
-        $classLoaderType = $initialContextNode->getClassLoader()->getType();
-        $this->setClassLoader($classLoaderType::factory());
-
         // attach the system configuration to the initial context
         $this->setSystemConfiguration($systemConfiguration);
     }
@@ -112,28 +108,6 @@ class InitialContext implements ContextInterface
     public function getStorage()
     {
         return $this->storage;
-    }
-
-    /**
-     * Set's the initial context's class loader.
-     *
-     * @param \AppserverIo\Appserver\Core\Interfaces\ClassLoaderInterface $classLoader The class loader used
-     *
-     * @return void
-     */
-    public function setClassLoader(ClassLoaderInterface $classLoader)
-    {
-        $this->classLoader = $classLoader;
-    }
-
-    /**
-     * Returns the initial context's class loader.
-     *
-     * @return \AppserverIo\Appserver\Core\SplClassLoader The class loader used
-     */
-    public function getClassLoader()
-    {
-        return $this->classLoader;
     }
 
     /**
