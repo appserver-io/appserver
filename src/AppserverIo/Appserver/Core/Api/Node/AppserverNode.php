@@ -141,11 +141,10 @@ class AppserverNode extends AbstractNode implements SystemConfigurationInterface
 
         // initialize the configuration values for the initial context
         $description = new DescriptionNode(new NodeValue('The initial context configuration.'));
-        $classLoader = new ClassLoaderNode('SplClassLoader', 'ClassLoaderInterface', 'AppserverIo\Appserver\Core\SplClassLoader');
         $storage = new StorageNode('AppserverIo\Storage\StackableStorage');
 
         // set the default initial context configuration
-        $this->initialContext = new InitialContextNode('AppserverIo\Appserver\Core\InitialContext', $description, $classLoader, $storage);
+        $this->initialContext = new InitialContextNode('AppserverIo\Appserver\Core\InitialContext', $description, $storage);
     }
 
     /**
@@ -205,8 +204,7 @@ class AppserverNode extends AbstractNode implements SystemConfigurationInterface
     }
 
     /**
-     * Initializes the default provisioners for database and
-     * application database relation.
+     * Initializes the default provisioners.
      *
      * @return void
      */
@@ -214,11 +212,9 @@ class AppserverNode extends AbstractNode implements SystemConfigurationInterface
     {
 
         // initialize the provisioners
-        $datasourceProvisioner = new ProvisionerNode('datasource', 'AppserverIo\Appserver\Core\DatasourceProvisioner');
         $standardProvisioner = new ProvisionerNode('standard', 'AppserverIo\Appserver\Core\StandardProvisioner');
 
         // add the provisioners to the appserver node
-        $this->provisioners[$datasourceProvisioner->getPrimaryKey()] = $datasourceProvisioner;
         $this->provisioners[$standardProvisioner->getPrimaryKey()] = $standardProvisioner;
     }
 

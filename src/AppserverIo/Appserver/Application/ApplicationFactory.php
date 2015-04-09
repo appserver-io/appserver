@@ -97,12 +97,6 @@ class ApplicationFactory
         $appService->createTmpFolders($application);
         $appService->cleanUpFolders($application);
 
-        // add the default class loader
-        $application->addClassLoader(
-            $initialContext->getClassLoader(),
-            $initialContext->getSystemConfiguration()->getInitialContext()->getClassLoader()
-        );
-
         // add the configured class loaders
         /** @var \AppserverIo\Appserver\Core\Api\Node\ClassLoaderNode $classLoader */
         foreach ($context->getClassLoaders() as $classLoader) {

@@ -161,7 +161,6 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
 
-
         // initialize the application instance
         $this->application = new Application();
 
