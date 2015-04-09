@@ -121,6 +121,9 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
             $logDir->bind($name, $logger);
         }
 
+        // initialize the container state
+        $this->containerState = ContainerStateKeys::get(ContainerStateKeys::INITIALIZATION_SUCCESSFUL);
+
         // initialize instance that contains the applications
         $this->applications = new GenericStackable();
 
@@ -131,8 +134,8 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
         // deploy and initialize the container's applications
         $deployment->deploy();
 
-        // initialize the container state
-        $this->containerState = ContainerStateKeys::get(ContainerStateKeys::INITIALIZATION_SUCCESSFUL);
+        // deployment has been successful
+        $this->containerState = ContainerStateKeys::get(ContainerStateKeys::DEPLOYMENT_SUCCESSFUL);
 
         // initialize the profile logger and the thread context
         if ($profileLogger = $this->getInitialContext()->getLogger(LoggerUtils::PROFILE)) {

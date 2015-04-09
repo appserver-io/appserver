@@ -54,11 +54,18 @@ class ContainerStateKeys
     const INITIALIZATION_SUCCESSFUL = 2;
 
     /**
+     * Deployment has been successfull.
+     *
+     * @var integer
+     */
+    const DEPLOYMENT_SUCCESSFUL = 3;
+
+    /**
      * Servers has been started successful.
      *
      * @var integer
      */
-    const SERVERS_STARTED_SUCCESSFUL = 3;
+    const SERVERS_STARTED_SUCCESSFUL = 4;
 
     /**
      * The actual container state.
@@ -118,6 +125,7 @@ class ContainerStateKeys
         return array(
             ContainerStateKeys::WAITING_FOR_INITIALIZATION,
             ContainerStateKeys::INITIALIZATION_SUCCESSFUL,
+            ContainerStateKeys::DEPLOYMENT_SUCCESSFUL,
             ContainerStateKeys::SERVERS_STARTED_SUCCESSFUL
         );
     }
