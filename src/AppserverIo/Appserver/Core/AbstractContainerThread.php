@@ -121,41 +121,26 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
             $logDir->bind($name, $logger);
         }
 
-        // initialize instance that contains the applications
-        $this->applications = new GenericStackable();
-
         // initialize the container state
         $this->containerState = ContainerStateKeys::get(ContainerStateKeys::INITIALIZATION_SUCCESSFUL);
 
-        // define webservers base dir
-        define(
-            'SERVER_BASEDIR',
-            $this->getInitialContext()->getSystemConfiguration()->getBaseDirectory() . DIRECTORY_SEPARATOR
-        );
+        // initialize instance that contains the applications
+        $this->applications = new GenericStackable();
 
-        // check if we've the old or the new directory structure
-        if (file_exists(SERVER_BASEDIR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php')) {
-            $autoloaderFile = SERVER_BASEDIR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
-        } else {
-            // this is the old directory structure
-            $autoloaderFile = SERVER_BASEDIR . 'app' . DIRECTORY_SEPARATOR . 'code' . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
-        }
-
-        // define the autoloader file
-        define('SERVER_AUTOLOADER', $autoloaderFile);
-
-        // deploy and initialize the applications for this container
+        // load the containers deployment
         $deployment = $this->getDeployment();
         $deployment->injectContainer($this);
+
+        // deploy and initialize the container's applications
         $deployment->deploy();
+
+        // deployment has been successful
+        $this->containerState = ContainerStateKeys::get(ContainerStateKeys::DEPLOYMENT_SUCCESSFUL);
 
         // initialize the profile logger and the thread context
         if ($profileLogger = $this->getInitialContext()->getLogger(LoggerUtils::PROFILE)) {
             $profileLogger->appendThreadContext($this->getContainerNode()->getName());
         }
-
-        // deployment has been successful
-        $this->containerState = ContainerStateKeys::get(ContainerStateKeys::DEPLOYMENT_SUCCESSFUL);
 
         // setup configurations
         $serverConfigurations = array();

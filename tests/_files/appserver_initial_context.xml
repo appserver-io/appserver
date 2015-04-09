@@ -1,5 +1,4 @@
 <initialContext type="AppserverIo\Appserver\Core\InitialContext">
     <description><![CDATA[The initial context configuration.]]></description>
-    <classLoader type="AppserverIo\Appserver\Core\SplClassLoader"/>
     <storage type="AppserverIo\Appserver\Core\Mock\InitialContext\MockStorage"/>
 </initialContext>
