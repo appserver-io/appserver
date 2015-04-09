@@ -3,7 +3,7 @@ layout: docs
 title: Webapps
 meta_title: appserver.io webapps
 meta_description: appserver.io specific applications aka webapps follow certain app principles, find out which 
-position: 110
+position: 130
 group: Docs
 subNav:
   - title: Structure

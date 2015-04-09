@@ -3,7 +3,7 @@ layout: docs
 title: Message Queue
 meta_title: appserver.io message queue
 meta_description: Using a Message-Queue gives you the power to use threads in PHP without taking care of the pitfalls!
-position: 90
+position: 100
 group: Docs
 subNav:
   - title: Got mail
@@ -15,23 +15,22 @@ permalink: /get-started/documentation/message-queue.html
 
 A Message-Queue provides the possibility to process long running tasks in a encapsulated context.
 For example, if you want to import a lot of products in your online shop, you can send a
-message to the Message-Queue which then will start the import process in the background without
+message to the Message-Queue that starts the import process in the background without
 preventing the calling process to continue.
 
-> Using a Message-Queue gives you the power to use threads without taking care of the pitfalls!
+> Using a Message-Queue gives you the power to use threads without taking care of the pitfalls.
 
 ## Got mail!
 
-Before sending a message, you have to specify what should happen, wenn you received one! The
-Message-Queue allows you to specify so called `Queues`. Each `Queue` can have a receiver, that
-has to be a so called `MessageBean`. A `MessageBean` is very similar to a [@Stateless SessionBean](#@stateless-session-bean)
+Before sending a message, you have to specify what has to happen when you received one. The
+Message-Queue allows you to specify so-called `Queues`. Each `Queue` can have a receiver that
+has to be a `MessageBean`. A `MessageBean` is very similar to a [@Stateless SessionBean](#@stateless-session-bean)
 but has only one single point of entry, the `onMessage()` message method. Whenever a message
-will be send to the queue, the Message-Queue simple pushes it on the stack. In the background a
+is sent to the queue, the Message-Queue simple pushes it on the stack. In the background a
 `QueueWorker` is running in another context and queries the stack for new messages. If a new
-message is available, it will pull from the stack a new instance of the receiver, the `Queue`
-is bound to, will be instantiated to pass the message to, for being processed.
+message is available, it will be instantiated and processed.
 
-So let us create a simple `Queue` with:
+The following example shows how to create a simple `Queue`.
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -42,7 +41,7 @@ So let us create a simple `Queue` with:
 </message-queues>
 ```
 
-and save this in a file called `/opt/appserver/myapp/META-INF/message-queues.xml`. The next thing
+Save this in a file called `/opt/appserver/myapp/META-INF/message-queues.xml`. The next thing
 needed is the `MessageBean` that allows us to receive and process a message in a separate thread.
 
 ```php
@@ -78,19 +77,18 @@ class ImportReceiver extends AbstractReceiver
 }
 ```
 
-> The important stuff here, beside the functionality you have to implement in the `onMessage()` 
-> message is the annotation `@MessageDriven`. You MUST annotate the MessageBean, for the container
+> In addition to the functionality you have to implement in the `onMessage()` 
+> message the annotation `@MessageDriven` is important. You MUST annotate the MessageBean, for the container
 > to know about and register it on startup.
 
-Pretty simple for running your import in a separate thread? But what about sending a message to
-this `Queue`?
+Running your import in a separate thread is pretty simple. The next sections demonstrates how to send a message to the `Queue`.
 
 ## Send a message
 
-Messages are POPOs that can be sent over the network. So if you want to send a message you have
+Messages are POPOs that can be sent over the network. If you want to send a message, you have
 to initialize the Message-Queue Client and specify which `Queue` you want to send the message to.
 
-Again, we will extend the `Servlet` to start an import process on a POST request 
+Again, we will extend the `Servlet` to start an import process on a POST request. 
 
 ```php
 <?php
@@ -250,5 +248,5 @@ class HelloWorldServlet extends HttpServlet
 }
 ```
 
-> To make it easy, we can use the `@Resource` annotation to let the container inject a sender
-> instance we can use to send the name of the file containing the data to the `Queue`.
+> To make it easy, we can use the `@Resource` annotation. Thus, the container injects a sender
+> instance, which can be used to send the name of the file.

@@ -37,3 +37,7 @@
 - slug: press
   name: Press
   title: Press News
+
+- slug: security
+  name: Security
+  title: Security News

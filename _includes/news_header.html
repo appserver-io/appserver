@@ -1,4 +1,13 @@
-<h2><a href="{{ post.url | prepend: site.baseurl }}"><i class="fa fa-tag"></i>  {{ post.title }}</a>&nbsp;<small>{{ post.categories | array_to_sentence_string }}</small></h2>
+<h2><a href="{{ post.url | prepend: site.baseurl }}" {% if post.cvss %}{% capture rvalue %}{{ post.cvss | times:25.5 }}{% endcapture %}{% capture gvalue %}{{ 255 | minus:rvalue }}{% endcapture %}style="color: rgb(240,{{ gvalue | split: "." | first }},15)"{% endif %}><i class="fa fa-{% if post.cvss %}exclamation-triangle{% else %}tag{% endif %}"></i>  {{ post.title }}</a>&nbsp;<small>{{ post.categories | array_to_sentence_string }}</small></h2>
+
+{% if post.cvss %}
+<p class="cvss">
+    {% if post.version %}Affected versions: <strong>{{ post.version | array_to_sentence_string }}</strong> | {% endif %}
+    <a href="http://en.wikipedia.org/wiki/CVSS" target="_blank">CVSS</a>: <strong>{{ post.cvss }}</strong>
+    {% if post.cve %} | <a href="http://www.cvedetails.com/cve/{{ post.cve }}" target="_blank">{{ post.cve }}</a>{% endif %}
+</p>
+{% endif %}
+
 <p>
     <a href="https://github.com/{{ post.author }}" class="post-author"><img src="https://github.com/{{ post.author }}.png" class="avatar img-circle" alt="{{ post.author }}" width="24" height="24" /> {{ post.author }}</a> <i class="fa fa-clock-o"></i> Posted on {{ post.date | date_to_string }} | <a href="{{ site.url }}{{ post.url | prepend: site.baseurl }}#disqus_thread">0 Comments</a>
 </p>

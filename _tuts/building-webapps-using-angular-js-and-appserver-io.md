@@ -34,7 +34,7 @@ a RESTful service in the backend using **Servlets**, **Dependency-Injection**, *
 
 Your system should be well prepared for Javascript, HTML, and CSS/SASS development.
 We will generate an AngularJS app using [Yeoman](http://yeoman.io), that allows to kickstart an AngularJS app,
-prescribing best practices and tools to help you stay productive*
+prescribing best practices and tools to help you stay productive.
 So please check out and follow the [Instructions](http://yeoman.io/codelab/setup.html) at Yeoman guide to setup your
 system correctly.
 
@@ -158,7 +158,7 @@ Cool... everything is fine! Ready for take off? :)
 ## Login Form
 
 Now enhance the AngularJS app by adding a login form that will make use of an Authentication-Service on the
-backend side, which we'll implement later on. First step is to create a new route `login` vi Yeoman by doing:
+backend side, which we'll implement later on. First step is to create a new route `login` via Yeoman by doing:
 
 ```bash
 yo angular:route login
@@ -262,7 +262,7 @@ angular.module('myappApp')
 
 To make use of our simple `AuthService` we have to inject it in the login controller and add the `login` method to the
 scope which is used by the login form via `ng-submit="login(credentials)"`. So, open `app/scripts/controllers/login.js`
-and add let it look like...
+and add, which lets it look like...
 
 ```js
 angular.module('myappApp')
@@ -304,6 +304,12 @@ angular.module('myappApp')
       $scope.currentUsername = username;
     };
   });
+```
+
+To make use of this controller we have to make it known to the app, so add the `ng-controller="AppCtrl"` attribute to your `index.html`'s `body` element start tag making it look like this:
+
+```html
+<body ng-app="myappApp" ng-controller="AppCtrl">
 ```
 
 Finally we want something to be happen if the user has authenticated. First let's hide the `Login` navigation element
@@ -538,6 +544,12 @@ expected! Please also check if invalid credentials will bring up the error messa
 Imagine if you could easily add input validation of client-side form data via annotation using the most awesome
 validation engine ever created for PHP [Respect\Validation](https://github.com/Respect/Validation)... Sounds great?
 Works great! :)
+
+Simply add it as a dependency to your app via composer:
+
+```bash
+composer require respect/validation
+```
 
 Let's say we wanna validate that the username field value of your login form is not an email address format and the
 password field value is not allowed to be empty. All we have to do is add the following annotations to the `setUsername`
