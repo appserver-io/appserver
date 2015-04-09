@@ -31,6 +31,7 @@ use AppserverIo\Appserver\Core\Api\Node\AppserverNode;
 use AppserverIo\Appserver\Core\Scanner\ScannerFactory;
 use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
 use AppserverIo\Appserver\Core\Utilities\ContainerStateKeys;
+use AppserverIo\Appserver\Core\Interfaces\ContainerInterface;
 
 /**
  * This is the main server class that starts the application server
@@ -54,20 +55,6 @@ class Server
     protected $containers = array();
 
     /**
-     * The system configuration.
-     *
-     * @var \AppserverIo\Configuration\Interfaces\NodeInterface
-     */
-    protected $systemConfiguration;
-
-    /**
-     * The servers initial context instance.
-     *
-     * @var \AppserverIo\Appserver\Application\Interfaces\ContextInterface
-     */
-    protected $initialContext;
-
-    /**
      * The registred extractors.
      *
      * @var array
@@ -80,6 +67,20 @@ class Server
      * @var array
      */
     protected $provisioners = array();
+
+    /**
+     * The system configuration.
+     *
+     * @var \AppserverIo\Configuration\Interfaces\NodeInterface
+     */
+    protected $systemConfiguration;
+
+    /**
+     * The servers initial context instance.
+     *
+     * @var \AppserverIo\Appserver\Application\Interfaces\ContextInterface
+     */
+    protected $initialContext;
 
     /**
      * Initializes the the server with the parsed configuration file.
@@ -116,6 +117,12 @@ class Server
         $this->initLoggers();
         // init the SSL certificate
         $this->initSslCertificate();
+        // init the extractor
+        $this->initExtractors();
+        // init the containers
+        $this->initContainers();
+        // init the provisioners
+        $this->initProvisioners();
     }
 
     /**
@@ -251,17 +258,6 @@ class Server
             // create a new instance and add it to the internal array
             $this->addExtractor($this->newInstance($extractorNode->getType(), $params));
         }
-
-        // let the extractor extract the web applications
-        /** @var \AppserverIo\Appserver\Core\Interfaces\ExtractorInterface $extractor */
-        foreach ($this->getExtractors() as $name => $extractor) {
-
-            // deploy the found archives
-            $extractor->deployWebapps();
-
-            // log that the extractor has successfully been initialized and executed
-            $this->getSystemLogger()->debug(sprintf('Extractor %s successfully initialized and executed', $name));
-        }
     }
 
     /**
@@ -282,16 +278,6 @@ class Server
             // create a new instance and add it to the internal array
             $this->addProvisioner($this->newInstance($provisionerNode->getType(), $params));
         }
-
-        // invoke the provisioners and provision the web applications
-        foreach ($this->getProvisioners() as $name => $provisioner) {
-
-            // execute the provisioning steps
-            $provisioner->provision();
-
-            // log that the provisioner has successfully been initialized and executed
-            $this->getSystemLogger()->debug(sprintf('Provisioner %s successfully initialized and executed', $name));
-        }
     }
 
     /**
@@ -302,9 +288,6 @@ class Server
     protected function initContainers()
     {
 
-        // initialize the array for the threads
-        $this->containers = array();
-
         // and initialize a container thread for each container
         foreach ($this->getSystemConfiguration()->getContainers() as $containerNode) {
 
@@ -312,8 +295,20 @@ class Server
             $params = array($this->getInitialContext(), $containerNode);
 
             // create and append the thread instance to the internal array
-            $this->containers[] = $this->newInstance($containerNode->getType(), $params);
+            $this->addContainer($this->newInstance($containerNode->getType(), $params));
         }
+    }
+
+    /**
+     * Adds the passed container to the server.
+     *
+     * @param \AppserverIo\Appserver\Core\Interfaces\ContainerInterface $container The container to add
+     *
+     * @return void
+     */
+    public function addContainer(ContainerInterface $container)
+    {
+        $this->containers[] = $container;
     }
 
     /**
@@ -433,28 +428,25 @@ class Server
     public function start()
     {
 
-        // init the extractor
-        $this->initExtractors();
-
-        // init the containers
-        $this->initContainers();
-
         // log that the server will be started now
         $this->getSystemLogger()->info(
             sprintf(
-                'Server successfully started in basedirectory %s ',
+                'Now starting Server in basedirectory %s ',
                 $this->getSystemConfiguration()->getBaseDirectory()
             )
         );
+
+        // extract the application archives
+        $this->extract();
 
         // start the container threads
         $this->startContainers();
 
         // Switch to the configured user (if any)
-        $this->initProcessUser();
+        $this->switchProcessUser();
 
-        // init the provisioner
-        $this->initProvisioners();
+        // provision the applications
+        $this->provision();
     }
 
     /**
@@ -535,7 +527,7 @@ class Server
      *
      * @return void
      */
-    protected function initProcessUser()
+    protected function switchProcessUser()
     {
         // if we're on a OS (not Windows) that supports POSIX we have
         // to change the configured user/group for security reasons.
@@ -624,6 +616,46 @@ class Server
                 $group
             )
         );
+    }
+
+    /**
+     * Provision the applications.
+     *
+     * @return void
+     */
+    protected function provision()
+    {
+
+        // invoke the provisioners and provision the web applications
+        /** @var \AppserverIo\Appserver\Core\Interfaces\ProvisionerInterface $provisioner */
+        foreach ($this->getProvisioners() as $name => $provisioner) {
+
+            // execute the provisioning steps
+            $provisioner->provision();
+
+            // log that the provisioner has successfully been initialized and executed
+            $this->getSystemLogger()->info(sprintf('Provisioner %s successfully initialized and executed', $name));
+        }
+    }
+
+    /**
+     * Extracts the application archives to the configured document root.
+     *
+     * @return void
+     */
+    protected function extract()
+    {
+
+        // let the extractor extract the web applications
+        /** @var \AppserverIo\Appserver\Core\Interfaces\ExtractorInterface $extractor */
+        foreach ($this->getExtractors() as $name => $extractor) {
+
+            // deploy the found archives
+            $extractor->deployWebapps();
+
+            // log that the extractor has successfully been initialized and executed
+            $this->getSystemLogger()->debug(sprintf('Extractor %s successfully initialized and executed', $name));
+        }
     }
 
     /**
