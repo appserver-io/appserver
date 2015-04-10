@@ -131,9 +131,10 @@ class ServletEngine extends AbstractServletEngine
 
         // create a new request instance from the HTTP request
         $servletRequest = new Request();
-        $servletRequest->fromHttpRequest($request);
         $servletRequest->injectHandlers($handlers);
+        $servletRequest->injectHttpRequest($request);
         $servletRequest->injectServerVars($requestContext->getServerVars());
+        $servletRequest->init();
 
         // initialize the request handler instance
         $requestHandler = new RequestHandler();

@@ -58,6 +58,20 @@ class Request implements HttpServletRequestInterface, ContextInterface
     protected $requestHandler;
 
     /**
+     * The request URI.
+     *
+     * @var string
+     */
+    protected $requestUri;
+
+    /**
+     * The request URL.
+     *
+     * @var string
+     */
+    protected $requestUrl;
+
+    /**
      * The new session name.
      *
      * @var string
@@ -79,11 +93,32 @@ class Request implements HttpServletRequestInterface, ContextInterface
     protected $response;
 
     /**
+     * The server name.
+     *
+     * @var string
+     */
+    protected $serverName;
+
+    /**
+     * The query string.
+     *
+     * @var string
+     */
+    protected $queryString;
+
+    /**
      * The absolute path info.
      *
      * @var string
      */
     protected $pathInfo;
+
+    /**
+     * The document root.
+     *
+     * @var string
+     */
+    protected $documentRoot;
 
     /**
      * Base modifier which allows for base path generation within rewritten URL environments.
@@ -176,11 +211,16 @@ class Request implements HttpServletRequestInterface, ContextInterface
         $this->requestHandler = null;
 
         // initialize the strings
-        $this->servletPath = '';
         $this->pathInfo = '';
+        $this->serverName = '';
+        $this->requestUri = '';
+        $this->requestUrl = '';
+        $this->queryString = '';
+        $this->servletPath = '';
+        $this->baseModifier = '';
+        $this->documentRoot = '';
         $this->requestedSessionId = '';
         $this->requestedSessionName = '';
-        $this->baseModifier = '';
 
         // reset the server variables and the parts
         $this->parts = array();
@@ -218,17 +258,15 @@ class Request implements HttpServletRequestInterface, ContextInterface
     }
 
     /**
-     * Initializes the servlet request with the data from the passe HTTP request instance.
-     *
-     * @param \AppserverIo\Psr\HttpMessage\RequestInterface $httpRequest A request object
+     * Initializes the servlet request with the data from the injected HTTP request instance.
      *
      * @return void
      */
-    public function fromHttpRequest(RequestInterface $httpRequest)
+    public function init()
     {
 
         // reset the servlet request
-        $this->injectHttpRequest($httpRequest);
+        $httpRequest = $this->getHttpRequest();
 
         // initialize the parts
         foreach ($httpRequest->getParts() as $part) {
@@ -239,6 +277,13 @@ class Request implements HttpServletRequestInterface, ContextInterface
         if ($httpRequest->getHeader(HttpProtocol::HEADER_CONTENT_LENGTH) > 0) {
             $this->setBodyStream($httpRequest->getBodyContent());
         }
+
+        // copy server variables to members
+        $this->setServerName($this->getServerVar(ServerVars::SERVER_NAME));
+        $this->setQueryString($this->getServerVar(ServerVars::QUERY_STRING));
+        $this->setRequestUri($this->getServerVar(ServerVars::X_REQUEST_URI));
+        $this->setDocumentRoot($this->getServerVar(ServerVars::DOCUMENT_ROOT));
+        $this->setRequestUrl($this->getServerVar(ServerVars::HTTP_HOST) . $this->getServerVar(ServerVars::X_REQUEST_URI));
     }
 
     /**
@@ -258,8 +303,8 @@ class Request implements HttpServletRequestInterface, ContextInterface
         // Fixed #735 - Endless Loop for URLs without servlet name
         // Load the request URI and query string from the server vars, because we have to
         // take care about changes from other modules like directory or rewrite module!
-        $uri = $this->getServerVar(ServerVars::X_REQUEST_URI);
-        $queryString = $this->getServerVar(ServerVars::QUERY_STRING);
+        $uri = $this->getRequestUri();
+        $queryString = $this->getQueryString();
 
         // get uri without querystring
         $uriWithoutQueryString = str_replace('?' . $queryString, '', $uri);
@@ -301,7 +346,7 @@ class Request implements HttpServletRequestInterface, ContextInterface
 
         // prepare the base modifier which allows our apps to provide a base URL
         $webappsDir = str_replace($this->getContext()->getBaseDirectory(), '', $this->getContext()->getAppBase());
-        $relativeRequestPath = strstr($this->getServerVar(ServerVars::DOCUMENT_ROOT), $webappsDir);
+        $relativeRequestPath = strstr($this->getDocumentRoot(), $webappsDir);
         $proposedBaseModifier = str_replace($webappsDir, '', $relativeRequestPath);
 
         //  prepare the base modifier
@@ -423,23 +468,69 @@ class Request implements HttpServletRequestInterface, ContextInterface
     }
 
     /**
+     * Sets the absolute path to the document root.
+     *
+     * @param string $documentRoot The document root
+     *
+     * @return void
+     */
+    public function setDocumentRoot($documentRoot)
+    {
+        return $this->documentRoot = $documentRoot;
+    }
+
+    /**
+     * Returns the absolut path to the document root.
+     *
+     * @return string The document root
+     */
+    public function getDocumentRoot()
+    {
+        return $this->documentRoot;
+    }
+
+    /**
+     * Sets the part of this request's URL from the protocol name up to the query string in the first line of the HTTP request.
+     *
+     * @param string $requestUri The request URI
+     *
+     * @return void
+     */
+    public function setRequestUri($requestUri)
+    {
+        $this->requestUri = $requestUri;
+    }
+
+    /**
      * Returns the part of this request's URL from the protocol name up to the query string in the first line of the HTTP request.
      *
-     * @return string
+     * @return string The request URI
      */
     public function getRequestUri()
     {
-        return $this->getServerVar(ServerVars::X_REQUEST_URI);
+        return $this->requestUri;
+    }
+
+    /**
+     * Sets the URL the client used to make the request.
+     *
+     * @param string $requestUrl The request URL
+     *
+     * @return void
+     */
+    public function setRequestUrl($requestUrl)
+    {
+        $this->requestUrl = $requestUrl;
     }
 
     /**
      * Returns the URL the client used to make the request.
      *
-     * @return string
+     * @return string The request URL
      */
     public function getRequestUrl()
     {
-        return $this->getServerVar(ServerVars::HTTP_HOST) . $this->getServerVar(ServerVars::X_REQUEST_URI);
+        return $this->requestUrl;
     }
 
     /**
@@ -961,13 +1052,37 @@ class Request implements HttpServletRequestInterface, ContextInterface
     }
 
     /**
-     * Returns the script name
+     * Sets the server name.
      *
-     * @return string
+     * @param string $serverName The server name
+     *
+     * @return void
+     */
+    public function setServerName($serverName)
+    {
+        $this->serverName = $serverName;
+    }
+
+    /**
+     * Returns the server name.
+     *
+     * @return string The server name
      */
     public function getServerName()
     {
-        return $this->getServerVar(ServerVars::SERVER_NAME);
+        return $this->serverName;
+    }
+
+    /**
+     * Sets the query string of the actual request.
+     *
+     * @param string $queryString The query string
+     *
+     * @return void
+     */
+    public function setQueryString($queryString)
+    {
+        $this->queryString = $queryString;
     }
 
     /**
@@ -977,7 +1092,7 @@ class Request implements HttpServletRequestInterface, ContextInterface
      */
     public function getQueryString()
     {
-        return $this->getHttpRequest()->getQueryString();
+        return $this->queryString;
     }
 
     /**
