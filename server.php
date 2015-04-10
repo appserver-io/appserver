@@ -56,6 +56,7 @@ $arguments = getopt("$watch::$configTest::$setup:", array("$config::"));
 
 // define a all constants appserver base directory
 define('APPSERVER_BP', __DIR__);
+
 // define install flag for setup mode install to check
 define(
 'IS_INSTALLED_FILE',

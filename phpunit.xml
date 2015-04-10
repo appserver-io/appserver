@@ -22,5 +22,6 @@
     </logging>
     <php>
         <ini name="date.timezone" value="Europe/Berlin"/>
+        <const name="SERVER_AUTOLOADER" value="vendor/autoload.php"/>
     </php>
 </phpunit>

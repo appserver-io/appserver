@@ -54,13 +54,6 @@ interface ContextInterface extends Context
     public function newService($className);
 
     /**
-     * Returns the default class loader.
-     *
-     * @return object The class loader used
-     */
-    public function getClassLoader();
-
-    /**
      * Gets the logger by given name
      *
      * @param string $loggerName the loggers name

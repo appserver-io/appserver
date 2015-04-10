@@ -59,16 +59,6 @@ class InitialContextTest extends AbstractTest
     }
 
     /**
-     * Tests the if the class loader has been initialized successfully.
-     *
-     * @return void
-     */
-    public function testGetClassLoader()
-    {
-        $this->assertInstanceOf('AppserverIo\Appserver\Core\SplClassLoader', $this->initialContext->getClassLoader());
-    }
-
-    /**
      * Tests the if the attribute getter/setter works with a simple data type.
      *
      * @return void

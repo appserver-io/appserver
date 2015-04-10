@@ -65,7 +65,7 @@ abstract class AbstractContextThread extends AbstractThread
     public function run()
     {
         // register the class loader again, because in a Thread the context has been lost maybe
-        $this->getInitialContext()->getClassLoader()->register(true);
+        require SERVER_AUTOLOADER;
 
         // call the parent run method to start the thread
         parent::run();

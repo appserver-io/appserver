@@ -587,6 +587,9 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
     public function registerClassLoaders()
     {
 
+        // register the default autoloader
+        require SERVER_AUTOLOADER;
+
         // initialize the registered managers
         /** @var \AppserverIo\Appserver\Core\Interfaces\ClassLoaderInterface $classLoader */
         foreach ($this->getClassLoaders() as $classLoader) {

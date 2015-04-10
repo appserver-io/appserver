@@ -40,6 +40,51 @@ class GenericDeployment extends AbstractDeployment
      */
     public function deploy()
     {
+        $this->deployDatasources();
+        $this->deployApplications();
+    }
+
+    /**
+     * Deploys the available datasources.
+     *
+     * @return void
+     */
+    protected function deployDatasources()
+    {
+
+        // check if deploy dir exists
+        if (is_dir($directory = $this->getDeploymentService()->getWebappsDir())) {
+            // load the datasource files
+            $datasourceFiles = $this->getDeploymentService()->globDir($directory . DIRECTORY_SEPARATOR . '*-ds.xml');
+            // iterate through all provisioning files (provision.xml), validate them and attach them to the configuration
+            foreach ($datasourceFiles as $datasourceFile) {
+                // validate the file, but skip it if validation fails
+                if ($this->getConfigurationService()->validateFile($datasourceFile) === false) {
+                    $errorMessages = $configurationService->getErrorMessages();
+                    $systemLogger = $this->getInitialContext()->getSystemLogger();
+                    $systemLogger->error(reset($errorMessages));
+                    $systemLogger->critical(sprintf('Will skip reading configuration in %s, datasources might be missing.', $datasourceFile));
+                    continue;
+                }
+
+                // load the database configuration
+                $datasourceNodes = $this->getDatasourceService()->initFromFile($datasourceFile);
+
+                // store the datasource in the system configuration
+                foreach ($datasourceNodes as $datasourceNode) {
+                    $this->getDatasourceService()->persist($datasourceNode);
+                }
+            }
+        }
+    }
+
+    /**
+     * Deploys the available applications.
+     *
+     * @return void
+     */
+    protected function deployApplications()
+    {
 
         // load the container and initial context instance
         $container = $this->getContainer();

@@ -49,14 +49,6 @@ class InitialContextNode extends AbstractNode
     protected $description;
 
     /**
-     * Node containing information about the class loader used by the initial context.
-     *
-     * @var \AppserverIo\Appserver\Core\Api\Node\ClassLoaderNode
-     * @AS\Mapping(nodeName="classLoader", nodeType="AppserverIo\Appserver\Core\Api\Node\ClassLoaderNode")
-     */
-    protected $classLoader;
-
-    /**
      * Node containing information about the storage implementation used by the inital context.
      *
      * @var \AppserverIo\Appserver\Core\Api\Node\StorageNode
@@ -69,10 +61,9 @@ class InitialContextNode extends AbstractNode
      *
      * @param string                                               $type        The initial context type
      * @param \AppserverIo\Appserver\Core\Api\Node\DescriptionNode $description A short description
-     * @param \AppserverIo\Appserver\Core\Api\Node\ClassLoaderNode $classLoader The default class loader configuration
      * @param \AppserverIo\Appserver\Core\Api\Node\StorageNode     $storage     The default storage configuration
      */
-    public function __construct($type = '', DescriptionNode $description = null, ClassLoaderNode $classLoader = null, StorageNode $storage = null)
+    public function __construct($type = '', DescriptionNode $description = null, StorageNode $storage = null)
     {
 
         // initialize the UUID
@@ -81,7 +72,6 @@ class InitialContextNode extends AbstractNode
         // set the data
         $this->type = $type;
         $this->description = $description;
-        $this->classLoader = $classLoader;
         $this->storage = $storage;
     }
 
@@ -114,16 +104,6 @@ class InitialContextNode extends AbstractNode
     public function getDescription()
     {
         return $this->description;
-    }
-
-    /**
-     * Returns the class loader configuration information.
-     *
-     * @return \AppserverIo\Appserver\Core\Api\Node\ClassLoaderNode The node with the class loader information
-     */
-    public function getClassLoader()
-    {
-        return $this->classLoader;
     }
 
     /**
