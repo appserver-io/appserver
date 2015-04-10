@@ -153,28 +153,31 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
             // add the server node configuration
             $serverConfigurations[] = new ServerNodeConfiguration($serverNode);
         }
-        
+
         // init upstreams
         $upstreams = array();
-        foreach ($this->getContainerNode()->getUpstreams() as $upstreamNode) {
-            // get upstream type
-            $upstreamType = $upstreamNode->getType();
-            // init upstream instance
-            $upstream = new $upstreamType();
-            // init upstream servers
-            $servers = array();
-            // get upstream servers from upstream
-            foreach ($upstreamNode->getUpstreamServers() as $upstreamServerNode) {
-                $upstreamServerType = $upstreamServerNode->getType();
-                $upstreamServerParams = $upstreamServerNode->getParamsAsArray();
-                $servers[$upstreamServerNode->getName()] = new $upstreamServerType($upstreamServerParams);
+        if ($this->getContainerNode()->getUpstreams()) {
+            $upstreams = $this->getContainerNode()->getUpstreams();
+            foreach ($this->getContainerNode()->getUpstreams() as $upstreamNode) {
+                // get upstream type
+                $upstreamType = $upstreamNode->getType();
+                // init upstream instance
+                $upstream = new $upstreamType();
+                // init upstream servers
+                $servers = array();
+                // get upstream servers from upstream
+                foreach ($upstreamNode->getUpstreamServers() as $upstreamServerNode) {
+                    $upstreamServerType = $upstreamServerNode->getType();
+                    $upstreamServerParams = $upstreamServerNode->getParamsAsArray();
+                    $servers[$upstreamServerNode->getName()] = new $upstreamServerType($upstreamServerParams);
+                }
+                // inject server instances to upstream
+                $upstream->injectServers($servers);
+                // set upstream by name
+                $upstreams[$upstreamNode->getName()] = $upstream;
             }
-            // inject server instances to upstream
-            $upstream->injectServers($servers);
-            // set upstream by name
-            $upstreams[$upstreamNode->getName()] = $upstream;
         }
-        
+
         // init server array
         $servers = array();
         // start servers by given configurations
@@ -190,13 +193,13 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
 
             // inject container to be available in specific mods etc. and initialize the module
             $serverContext->injectContainer($this);
-            
+
             // init server context by config
             $serverContext->init($serverConfig);
-            
+
             // inject upstreams
             $serverContext->injectUpstreams($upstreams);
-            
+
             // inject loggers
             $serverContext->injectLoggers($this->getInitialContext()->getLoggers());
 
