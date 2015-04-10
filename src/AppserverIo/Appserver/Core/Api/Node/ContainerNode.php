@@ -75,6 +75,14 @@ class ContainerNode extends AbstractNode
     protected $receiver;
 
     /**
+     * The upstreams used in container
+     *
+     * @var array
+     * @AS\Mapping(nodeName="upstreams/upstream", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\UpstreamNode")
+     */
+    protected $upstreams;
+    
+    /**
      * The servers used in container
      *
      * @var array
@@ -166,5 +174,15 @@ class ContainerNode extends AbstractNode
     public function getServers()
     {
         return $this->servers;
+    }
+    
+    /**
+     * Return's all upstream nodes
+     *
+     * @return array
+     */
+    public function getUpstreams()
+    {
+        return $this->upstreams;
     }
 }

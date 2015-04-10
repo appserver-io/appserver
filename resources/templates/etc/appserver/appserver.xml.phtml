@@ -49,6 +49,44 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
 
             <host name="localhost" appBase="/webapps" />
 
+            <!--
+             ! This is an example of how to configure upstream backends for proxy usage.
+             -->
+            <!-- 
+            <upstreams>
+                <upstream name="exampleBackend" type="\AppserverIo\WebServer\Upstreams\DefaultUpstream">
+                    <servers xmlns="">
+                        <server name="local-apache" type="\AppserverIo\WebServer\Upstreams\Servers\DefaultServer">
+                            <params xmlns="http://www.appserver.io/appserver">
+                                <param name="address" type="string">127.0.0.1</param>
+                                <param name="port" type="integer">80</param>
+                                <param name="weight" type="integer">1</param>
+                                <param name="maxFails" type="integer">10</param>
+                                <param name="failTimeout" type="integer">30</param>
+                                <param name="maxConns" type="integer">64</param>
+                                <param name="backup" type="boolean">false</param>
+                                <param name="down" type="boolean">false</param>
+                                <param name="resolve" type="boolean">false</param>
+                            </params>
+                        </server>
+                        <server name="local-nginx" type="\AppserverIo\WebServer\Upstreams\Servers\DefaultServer">
+                            <params xmlns="http://www.appserver.io/appserver">
+                                <param name="address" type="string">127.0.0.1</param>
+                                <param name="port" type="integer">8080</param>
+                                <param name="weight" type="integer">1</param>
+                                <param name="maxFails" type="integer">10</param>
+                                <param name="failTimeout" type="integer">30</param>
+                                <param name="maxConns" type="integer">64</param>
+                                <param name="backup" type="boolean">false</param>
+                                <param name="down" type="boolean">false</param>
+                                <param name="resolve" type="boolean">false</param>
+                            </params>
+                        </server>
+                    </servers>
+                </upstream>
+            </upstreams>
+             -->
+
             <servers>
 
                 <!--
@@ -158,7 +196,23 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
                         </location>
                     </locations>
                     -->
-
+                    
+                    <!-- An example how to activate the proxy module to use an upstream backend -->
+                    <!--
+                    <locations>
+                        <location condition="\/test\/.*">
+                            <fileHandlers>
+                                <fileHandler name="proxy" extension=".*">
+                                    <params>
+                                        <param name="transport" type="string">tcp</param>
+                                        <param name="upstream" type="string">exampleBackend</param>
+                                    </params>
+                                </fileHandler>
+                            </fileHandlers>
+                        </location>
+                    </locations>
+                    -->
+                    
                     <environmentVariables>
                         <environmentVariable condition="" definition="LOGGER_ACCESS=Access" />
                     </environmentVariables>
@@ -210,10 +264,12 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
                         <module type="\AppserverIo\WebServer\Modules\AccessModule"/>
                         <module type="\AppserverIo\WebServer\Modules\LocationModule"/>
                         <module type="\AppserverIo\WebServer\Modules\AutoIndexModule"/>
+                        <!-- FileHandler Modules -->
                         <module type="\AppserverIo\WebServer\Modules\CoreModule"/>
                         <module type="\AppserverIo\WebServer\Modules\PhpModule"/>
                         <module type="\AppserverIo\WebServer\Modules\FastCgiModule"/>
-                        <module type="\AppserverIo\Appserver\ServletEngine\ServletEngine" />
+                        <module type="\AppserverIo\Appserver\ServletEngine\ServletEngine"/>
+                        <module type="\AppserverIo\WebServer\Modules\ProxyModule"/>
                         <!-- RESPONSE_PRE hook -->
                         <module type="\AppserverIo\WebServer\Modules\DeflateModule"/>
                         <!-- RESPONSE_POST hook -->
@@ -336,10 +392,12 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
                         <module type="\AppserverIo\WebServer\Modules\AccessModule"/>
                         <module type="\AppserverIo\WebServer\Modules\LocationModule"/>
                         <module type="\AppserverIo\WebServer\Modules\AutoIndexModule"/>
+                        <!-- FileHandler Modules -->
                         <module type="\AppserverIo\WebServer\Modules\CoreModule"/>
                         <module type="\AppserverIo\WebServer\Modules\PhpModule"/>
                         <module type="\AppserverIo\WebServer\Modules\FastCgiModule"/>
-                        <module type="\AppserverIo\Appserver\ServletEngine\ServletEngine" />
+                        <module type="\AppserverIo\Appserver\ServletEngine\ServletEngine"/>
+                        <module type="\AppserverIo\WebServer\Modules\ProxyModule"/>
                         <!-- RESPONSE_PRE hook -->
                         <module type="\AppserverIo\WebServer\Modules\DeflateModule"/>
                         <!-- RESPONSE_POST hook -->
