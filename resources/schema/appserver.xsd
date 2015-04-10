@@ -279,7 +279,7 @@
         <xs:complexType>
             <xs:all>
                 <xs:element ref="appserver:description"/>
-                <xs:element ref="appserver:upstreams"/>
+                <xs:element ref="appserver:upstreams" minOccurs="0"/>
                 <xs:element ref="appserver:servers"/>
                 <xs:element ref="appserver:deployment"/>
                 <xs:element ref="appserver:host"/>
