@@ -13,6 +13,7 @@
 * Closed [#714](https://github.com/appserver-io/appserver/issues/714) - Moved and refactored error, welcome and auto-index pages
 * Closed [#743](https://github.com/appserver-io/appserver/issues/743) - Move PhtmlServlet as DhtmlServlet from Routlt 2 (to avoid conflicts with simple PHTML templates)
 * Closed [#744](https://github.com/appserver-io/appserver/issues/744) - Add .dhtml file handler for ServletEngine
+* Closed [#200](https://github.com/appserver-io/appserver/issues/200) - Create a proxy WebServer module
 
 # Version 1.1.0-alpha2
 
