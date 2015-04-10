@@ -327,7 +327,7 @@ This is shown in the following example.
 </pointcuts>
 ```
 
-The configuration describes a pointcut, which specifies all `call` join points of all `doPost` methods within the `\Namespace\Module` namespace. This is very similar to the annotation example above and is referenced by the same advice. To do so, the advice does not have to be changed.
+The configuration describes a pointcut, which specifies all `call` join points of all `doPost` methods within the `\Namespace\Module` namespace. This is very similar to the annotation example above and is referenced by the same advice. Therefore, the advice does not have to be changed.
 
 This method of using XML has the same advantages as annotating everything within the aspect class but serves another purpose:
 
@@ -336,10 +336,9 @@ This method of using XML has the same advantages as annotating everything within
 ### Direct annotation
 
 For some use cases, implementing explicit pointcuts can be considered an overhead as they might be referenced only once or reference only one point within your application's code.
-For these cases, it can make sense to use a more direct approach which also makes the AOP weaving known to the target code.
+For these cases, it can make sense to use a more direct approach that also makes the AOP weaving known to the target code.
 
-To use such a direct approach, it is possible to directly annotate a target method with the type and qualified name of the advice(s), which have to be woven.
-Example:
+This direct approach can be used for directly annotating a target method with the type and qualified name of the advice(s), which have to be woven. This is demonstrated in the following example.
 
 ```php
 <?php
@@ -363,7 +362,7 @@ We can take several pieces of information from this example:
 * When annotating directly we can use additional expressions instead of join points and logical connectives
 
 The additional expressions mentioned above are used to define the weaved code.
-We differ between two possible expressions:
+We differ from two possible expressions:
 
 | Keyword      | Type       | Description                                                                                                           |
 | -------------| -----------| ----------------------------------------------------------------------------------------------------------------------|
@@ -393,20 +392,18 @@ This is technically the same as if the call to the logger would have been implem
 
 ### Advices and the method invocation object
 
-Advices can be dynamically woven into several points within application code, but to really have a value they have to know about the target code and be able to influence it.
+Advices can be dynamically woven into several points within application code, but to have a value they have to know about the target code and be able to influence it.
 To achieve this, we will pass an object containing context information to every advice.
 
 > Every advice MUST accept exactly one parameter of the type `\AppserverIo\Doppelgaenger\Interfaces\MethodInvocationInterface`.
 
 The passed instance of the type `MethodInvocationInterface` fulfills three important purposes:
 
-- It contains information about the original function call such as passed parameters, possible results, structure and method name and allows changes to some of them
-- It contains the context of the original call, meaning the instance of the called class
-- It contains the advice chain and allows to manually iterate through layered around advices
+* It contains information about the original function call such as passed parameters, possible results, structure and method name and allows changes to some of them
+* It contains the context of the original call, meaning the instance of the called class
+* It contains the advice chain and allows to iterate manually through layered around advices
 
-
-
-Below is an example where an advice uses the passed context instance to retrieve the system's logger and other information about the method call:
+In the example below, an advice uses the passed context instance to retrieve the system's logger and other information about the method call.
 
 ```php
 <?php
