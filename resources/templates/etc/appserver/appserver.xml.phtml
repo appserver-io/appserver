@@ -233,6 +233,7 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
                                 <param name="port" type="integer"><?php echo Setup::getValue(SetupKeys::PHP_FPM_PORT) ?></param>
                             </params>
                         </fileHandler>
+                        <fileHandler name="servlet" extension=".dhtml" />
                         <fileHandler name="servlet" extension=".do" />
                     </fileHandlers>
 
@@ -358,6 +359,7 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
                                 <param name="port" type="integer"><?php echo Setup::getValue(SetupKeys::PHP_FPM_PORT) ?></param>
                             </params>
                         </fileHandler>
+                        <fileHandler name="servlet" extension=".dhtml" />
                         <fileHandler name="servlet" extension=".do" />
                     </fileHandlers>
 
