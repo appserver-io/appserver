@@ -17,7 +17,7 @@ subNav:
 permalink: /get-started/documentation/deployment.html
 ---
 
-The deploy directory in appserver.iodistribution is the location end users can place their deployment content (e. g. phar files) to have it deployed into the server runtime.
+The deploy directory in appserver.io distribution is the location where end users can place their deployment content (e. g. phar files) to have it deployed into the server runtime.
 
 Users, particularly those running production systems, are encouraged to use the appserver.io AS management APIs to upload and deploy content.
 
@@ -38,7 +38,7 @@ The relevant marker file types are:
 | .dodeploy    | Placed by the user to indicate that the given content should be deployed or redeployed into the runtime.                     |
 | .deploying   | Placed by the deployment scanner service to indicate that it has noticed a .dodeploy file and is in the process of deploying the content. This marker file will be deleted when the deployment process completes.                                   |
 | .deployed    | Placed by the deployment scanner service to indicate that the given content has been deployed into the runtime. If an end user deletes this file and no other marker is available, the content will be undeployed.                                     |
-| .failed      | Placed by the deployment scanner service to indicate that the given content failed to deploy into the runtime. The content of the file will include some information about the cause of the failure. Note that, removing this file will make the deployment eligible for deployment again.                       |
+| .failed      | Placed by the deployment scanner service to indicate that the given content failed to deploy into the runtime. The content of the file will include some information about the cause of the failure. Note that removing this file will make the deployment eligible for deployment again.                       |
 | .undeploying | Placed by the deployment scanner service to indicate that it has noticed a .deployed file has been deleted and the content is being undeployed. This marker file will be deleted when the undeployment process completes.                        |
 | .undeployed  | Placed by the deployment scanner service to indicate that the given content has been undeployed from the runtime. If an end content is being undeployed. This marker file will be deleted user deletes this file, it has no impact.                       |
 
@@ -70,7 +70,7 @@ $ mv $AS/deploy/example.phar.deployed $AS/deploy/example.phar.dodeploy
 
 ## Windows Notes
 
-The above examples use UNIX shell commands. Windows equivalents are:
+The above examples use UNIX shell commands. Windows equivalents are the following.
 
 | UNIX           | Windows                 |
 | ---------------| ------------------------|
@@ -79,4 +79,4 @@ The above examples use UNIX shell commands. Windows equivalents are:
 | rm afile       | del afile               |
 | touch afile    | echo >> afile           |
 
-Note that the behavior of ```touch``` and ```echo``` are different but the differences are not relevant to the usages 
+Note that the behavior of ```touch``` and ```echo``` are different but the differences are not relevant for the usage. 

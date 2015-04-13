@@ -18,7 +18,7 @@ permalink: /get-started/documentation/design-by-contract.html
 Besides AOP, [Design-by-Contract](http://en.wikipedia.org/wiki/Design_by_contract) is another
 interesting architectural approach we support out-of-the-box.
 
-First introduced by Bertram Meyer in connection with his design of the [Eiffel programming language](https://en.wikipedia.org/wiki/Eiffel_%28programming_language%29),
+First introduced by Bertram Meyer in combination with his design of the [Eiffel programming language](https://en.wikipedia.org/wiki/Eiffel_%28programming_language%29),
 Design by Contract allows you to define formal, precise and verifiable interface specifications of
 software components.
 
@@ -36,9 +36,9 @@ The most basic type of contract is one used all the time, and is already integra
 If following [common syntax](http://phpdoc.org/docs/latest/guides/types.html) we can make use of these annotations to enforce strong typing at method call and return point.
 
 > We currently support the `@param` and `@return` annotations as type hints (scalar and class/interface
-> based), including special features like `typed arrays` using e. g. `\stdClass[]`
+> based), including special features like `typed arrays` using e. g. `\stdClass[]`.
 
-A basic example would be the following
+Review the following example.
 
 ```php
 <?php
@@ -58,8 +58,8 @@ public function addString($string)
 
 As stated in the comments this example method will add a string to a storage and return the resulting storage size. Using Design by Contract both the parameter type and the return type will be enforced.
 
-This is possible for scalar types as well as complex ones and offers an addition for `typed arrays`.
-An example might be:
+This is possible for scalar types as well as for complex ones and offers an addition for `typed arrays`.
+Review the following example.
 
 ```php
 <?php
@@ -80,7 +80,7 @@ public function getStrings()
 A more complex use case is writing out execution constraints within contracts.
 This can be done using the mentioned condition clauses.
 
-An example expanding on the former `addString` code piece would be:
+The following example expands on the former `addString` code piece.
 
 ```php
 <?php
@@ -100,11 +100,9 @@ public function addString($string)
 }
 ```
 
-The resulting behaviour would not just check for basic parameter and return type, but would also assure that the passed string variable did actually get added 
-to the storage (assuming the existence of a `stringExists` method).
+The resulting behaviour does not just check for basic parameter and return type, but also assures that the passed string variable is added to the storage (assuming the existence of a `stringExists` method).
 
-This constraint on the execution of the `addString` method is by now solely base on its implementation and can therefore not be changed during runtime.
-But we can also make on parameters:
+This constraint on the execution of the `addString` method is, by now, solely based on its implementation and can not be changed during runtime. But we can also make it on parameters as shown below.
 
 ```php
 <?php
@@ -126,8 +124,8 @@ public function addShortString($string)
 }
 ```
 
-Assuming that our storage can only handle strings equally long or shorter than six characters we can constraint the length of our input parameter.
-The precondition constraint guards our storage by enforcing proper string length and at the same time gives the assurance that the string will be stored if having the proper length.
+Assuming that our storage can only handle strings equally long or shorter than six characters, we can constraint the length of our input parameter.
+The precondition constraint guards our storage by enforcing proper string length and at the same time assures that the string will be stored when having the proper length.
 
 A constraint based contract for the execution of a method is born.
 
@@ -138,7 +136,7 @@ The already mentioned `invariant` as a global constraint to possibilities of int
 
 In the financial market this would be laws about taxes and contract clauses, in the programming world this is a valid state an object has to maintain during its lifecycle.
 
-> The invariant describes a valid state an object must have at defined moments in its lifetime
+> The invariant describes a valid state an object must have at defined moments in its lifetime.
 
 For our implementation these defined moments are:
 
@@ -148,7 +146,7 @@ For our implementation these defined moments are:
 * Before and after any call to a public method
 
 These invariants are stated using the @Invariant annotation.
-A basic example following former examples would be:
+A basic example following former examples is:
 
 ```php
 <?php
@@ -164,7 +162,7 @@ class StringStorage
 }
 ```
 
-The annotation above would result in a constraint for the content of the storage (given `onlyContainsStrings` exists) which checks that there are only strings within the storage on every relevant public access to an object of the class `StringStorage`.
+The annotation above would result in a constraint for the content of the storage (given `onlyContainsStrings` exists) that checks that there are only strings within the storage on every relevant public access to an object of the class `StringStorage`.
 
 ## Usage
 
