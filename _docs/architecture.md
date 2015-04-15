@@ -3,7 +3,7 @@ layout: docs
 title: Architecture
 meta_title: appserver.io architcture
 meta_description: Describes appserver.io architecture
-position: 60
+position: 170
 group: Docs
 permalink: /get-started/documentation/architecture.html
 ---
