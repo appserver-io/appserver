@@ -11,7 +11,6 @@ permalink: /get-started/documentation/architecture.html
 appserver.io makes heavy use of threads and their context to inherit instances, configuration values, constants, functions, class definitions and comments in a selective way. Beside inheritance purposes, threads and their context also allows a separation concerns where necessary. In opposite to a processes threads allows separation on the one hand, but gives developers the possiblity to share data whenever needed.
 
 ## What is a Context
-***
 
 The context can be defined the runtime environment of a thread. This includes that **EACH** thread has its own context. When a thread is created, depending on the options passed to the `start()` method, the complete context including configuration values as well as declared constants, functions, classes and comments of the actual environment are copied into the new threads context.
 
@@ -57,7 +56,6 @@ In some cases this will be desired, but it is necessary to keep in mind, that co
 > Please be aware, that the context we're talking about here, **MUST** not be mixed up with a [function, method or class scope](http://php.net/manual/en/language.variables.scope.php), where you are also able to define variables or constants that can be either accessed in function, method or class scope.
 
 ## How to handle Errors and Exceptions
-***
 
 As there is the possiblity, that a fatal error occours while processing a request, it is necessary to shutdown it in a controlled way. Therefore, using PHP's `register_shutdown_function` allows a developer to catch fatal errors inside the thread's/context's `run()` method to implement a controlled shutdown.
 
@@ -104,7 +102,6 @@ $myThread->start(PTHREADS_INHERIT_NONE|PTHREADS_INHERIT_CONSTANTS);
 ```
 
 ## The Context Hierarchy
-***
 
 As each thread has it's own context, the context hierarchy describes when and how threads and their child threads are created during the application servers start-up process. Finally, when the application server has been started, the result is a context or thread tree.
 
@@ -143,7 +140,6 @@ The application context is not enough to handle concurrent requests, because of 
 > The request context will be a worker's child and therefore it'll inherit the root, the container, the server and the worker context's environment it has been created in.
 
 ## Start-Up
-***
 
 The following sections describes the application servers start-up process. The start-up process is complicated, because it is composed of several tasks that depends on other ones. For example, it is necessary to create the servers log directory before start logging.
 
@@ -175,7 +171,6 @@ The following sequence diagram describes roughly describes the start-up workflow
 ![Start-Up Sequence Diagram]({{ "/assets/img/server_start-up_sequence_diagram.jpg" | prepend: site.baseurl }} "Start-Up Sequence Diagram")
 
 ## Detailed Workflow and Dependencies
-***
 
 ### Step 1 - Initialization
 
