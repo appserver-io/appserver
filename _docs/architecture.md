@@ -12,9 +12,7 @@ appserver.io makes heavy use of threads and their context to inherit instances, 
 
 ## What is a Context
 
-The context can be defined the runtime environment of a thread. This includes that *EACH* thread has its own context.
-
-When a thread is created, depending on the options passed to the `start()` method, the complete context including configuration values as well as declared constants, functions, classes and comments of the actual environment are copied into the new threads context.
+The context can be defined the runtime environment of a thread. This includes that **EACH** thread has its own context. When a thread is created, depending on the options passed to the `start()` method, the complete context including configuration values as well as declared constants, functions, classes and comments of the actual environment are copied into the new threads context.
 
 For example, if you declare a constant like
 
@@ -55,7 +53,7 @@ This would also be possible if the thread's `start()` method will be invoked wit
 
 In some cases this will be desired, but it is necessary to keep in mind, that copying everything into each threads context will also require, and, in most cases wasts, a whole lot of memory. So the recommended way will be, to start each thread with `PTHREADS_INHERIT_NONE` and exactly define what has to be copied by passing additional options.
 
-> Please be aware, that the context we're talking about here, *MUST* not be mixed up with a [function, method or class scope](http://php.net/manual/en/language.variables.scope.php), where you are also able to define variables or constants that can be either accessed in function, method or class scope.
+> Please be aware, that the context we're talking about here, **MUST** not be mixed up with a [function, method or class scope](http://php.net/manual/en/language.variables.scope.php), where you are also able to define variables or constants that can be either accessed in function, method or class scope.
 
 ## How to handle Errors and Exceptions
 
@@ -141,7 +139,7 @@ The application context is not enough to handle concurrent requests, because of 
 
 > The request context will be a worker's child and therefore it'll inherit the root, the container, the server and the worker context's environment it has been created in.
 
-# Start-Up
+## Start-Up
 
 The following sections describes the application servers start-up process. The start-up process is complicated, because it is composed of several tasks that depends on other ones. For example, it is necessary to create the servers log directory before start logging.
 
@@ -166,84 +164,84 @@ In the second step the applications are extracted from their PHAR archives. Then
 * Switch the User
 * Provision the Applications
 
-# Detailed Workflow and Dependencies
+## Detailed Workflow and Dependencies
 
-## Step 1 - Initialization
+### Step 1 - Initialization
 
 Following sections describe the workflow that'll be executed during application server start-up. It is important to execute the steps in the order described above, because each step is a precondition for the next one.
 
-### 1. Normalize the System Configuration
+#### 1. Normalize the System Configuration
 
 As the system configuration is passed to the server's constructor, the first step is to convert it into a normalized and source independent object representation. After the nomalized system configuration has been set as a server's member variable, the main initialization process is started.
 
-### 2. Set the Umask
+#### 2. Set the Umask
 
 Next step is to set the umask for files and directories that will be created during the start-up process and later when handling requests. The umask will be inherited from all child contexts and doesn't need to be set again.
 
 > The umask will be loaded from the system configuration initailized in the prior step [Normalize the System Configuration](#normalize-the-system-configuration).
 
-### 3. Initialize the InitialContext
+#### 3. Initialize the InitialContext
 
 After setting the [umask](#set-the-umask), the next step is the initialization of the InitialContext instance. The InitialContext instance is the primary context that is passed through to the created threads containing the necessary data like system configuration and loggers. 
 
 > As the the InitialContext is necessary to use the service instances, it is a precondition for the next step, even the filesystem initialization.
 
-### 4. Initialize the Filesystem
+#### 4. Initialize the Filesystem
 
 After creating the InitialContext instance, the system is ready to prepare the filesystem. When the application server will be installed the first time, folders like `var/log` are **NOT** created. Instead, they will be created at the application server's first start-up. Additionally, on each start-up, the application server verifies, that all necessary folders are available, or one of these folders have to be cleaned-up. This is the case for the applications temporary directory, usually located at `var/tmp/<application-name>/tmp`, for example.
 
 > The next step, [initialize the loggers](#initialize-the-loggers) requires that the umask has been set, the InitialContext is available and the folder structure has been prepared.
 
-### 5. Initialize the Loggers
+#### 5. Initialize the Loggers
 
 The system logger initialization is necessary to log the start-up process giving the administrator or developer valuable information about the deployed applications or listenting server sockets.
 
 > The loggers can be initialized as soon as the umask has been set (which influences the permissions of the log files that will be created), the system configuration is available and the filesystem has been prepared (because the folders where the logfiles are located in, has to be created on first start-up).
 
-### 6. Create a SSL Certificate (if necessary)
+#### 6. Create a SSL Certificate (if necessary)
 
 As the application server also provide a HTTPS server, it is necessary that at least a self-signed SSL certifcate is available, the default HTTPS server socket can be bound to. On every start-up, the application server queries whether a SSL certificate `etc/appserver/server.pem` is available, if not, a new self-signed certificate will be created.
 
 > The SSL certificate create is necessary before the server context starts, because it is necessary that at least one certificate is available the HTTPS server socket can be bound to.
 
-### 7. Initialize the Extractors
+#### 7. Initialize the Extractors
 
 The extractors provide functionality to extract the application archives, like PHAR archives, that will be extracted to the container's default document root.
 
 > As the extractors needs access to the application server's configuration and services, it is necessary to make sure these instances are available before the extractors are initialized.
 
-### 8. Initialize the Containers
+#### 8. Initialize the Containers
 
 A container is the root context for a random number of server the for applications. Beside that, each container has a separate naming directory to store environment variables and references to the application itself, as well as the application specific class loaders and managers.
 
 > As the containers need access to the application server's configuration and services, it is necessary to make sure these instances are available before the containers are initialized.
 
-### 9. Initialize the Provisioners
+#### 9. Initialize the Provisioners
 
 The provisioners allows an application developer to execute custom steps after the application has been deployed, the server sockets are listening and the user has been switched. Provisioning steps are configured by a XML file, that has to be located either in the applications `META-INF` or `WEB-INF` directory.
 
 > As the containers need access to the application server's configuration and services, it is necessary to make sure these instances are available before the containers are initialized.
 
-## Step 2 - Start Server
+### Step 2 - Start Server
 
 After configuration has been succesful, the application server is ready to be started. Like the configuration process, the order of the steps to start the application server is also very important.
 
-### 1. Process the Extractors
+#### 1. Process the Extractors
 
 Before the containers and the servers can be started, it is necessary, that the application archives are extracted and their content is moved to the containers default `webapps` directory.
 
-> This is necesary, because the application deployment *MUST* be finished, before the container's servers starts, as modules like the `Servlet Engine` needs access to the deployed applications.
+> This is necesary, because the application deployment **MUST** be finished, before the container's servers starts, as modules like the `Servlet Engine` needs access to the deployed applications.
 
-### 2. Start the Containers
+#### 2. Start the Containers
 
 When all applications have been extracted, the containers are prepared. The next step is the initialization of the container's naming directory, followed by the datasource and application deployment and finshes with starting the servers. 
 
-> This process has to be executed step-by-step, to make sure that datasources are deployed *BEFORE* the applications, and the applications *BEFORE* the servers and their modules.
+> This process has to be executed step-by-step, to make sure that datasources are deployed **BEFORE** the applications, and the applications **BEFORE** the servers and their modules.
 
-### 3. Switch the User
+#### 3. Switch the User
 
-After the server sockets has been started, the user can be switched from `root` to the user configured in the system configuration. This step is necessary to make sure, that application provisioning will *NOT* be executed as `root`.
+After the server sockets has been started, the user can be switched from `root` to the user configured in the system configuration. This step is necessary to make sure, that application provisioning will **NOT** be executed as `root`.
 
-### 4. Provision the Applications
+#### 4. Provision the Applications
 
 The last step in the application server's start-up process is the application provisioning. Application provisioning allows an application vendor to create a SQLite database or execute a commandline script for example. 
