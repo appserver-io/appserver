@@ -137,7 +137,7 @@ It is already clear that AOP is about the insertion (one speaks of weaving) of a
 A pointcut is used to define an explicit event in the flow of a running program by combining a `join point` with a point within your application's code such as a method of a certain class.
 You can specify these explicit events using something called a [join-point model](https://en.wikipedia.org/wiki/Aspect-oriented_programming#Join_point_models). This model explains how a pointcut sets `advices` and join points in relation to each other to build an actual execution of an aspect code.
 
-In the join point model we use pointcuts, only define the relation of a join point and a piece of code and can be actively referenced by advices.
+In the join point model we use pointcuts to define the relation of a join point and a piece of code that can be actively referenced by advices.
 
 Pseudocode might be: `call to methodB while executing methodA`.
 
@@ -161,25 +161,25 @@ The basic connectives the doppelgaenger library supports are the following.
 
 | Connective  | Symbol      | Description                                                                                          |
 | ------------| ------------| -----------------------------------------------------------------------------------------------------|
-| `and`         | &&          | Both parts of the pointcut have to evaluate to `true` that the weaving will take effect.             |
-| `or`          | &#124;&#124;| *At least one* part on both sides of the or connective have to be true that the weaving takes place. |
-| `if...then`   | if(...)     | The boolean result of the condition within the brackets can be used to determine if weaving will take place. The condition will share the scope of the method(s) specified within the narrowed `call` join point |
+| `and`         | &&          | Both parts of the pointcut have to return `true` for the weaving to take effect.             |
+| `or`          | &#124;&#124;| *At least one* part on both sides of the connection have to be true for the weaving to take place. |
+| `if...then`   | if(...)     | The boolean result of the condition within the brackets can be used to determine if weaving will take place. The condition will share the scope of the method(s) specified within the narrowed `call` join point. |
 
-As you can also see, you do not have to specify the full name of the targeted code as we support [bash wildcard patterns](https://www.shell-tips.com/2006/11/04/using-bash-wildcards/) within so called `Signature Pointcuts`.
+As you can see, you do not have to specify the full name of the targeted code as we support [bash wildcard patterns](https://www.shell-tips.com/2006/11/04/using-bash-wildcards/) within so called `Signature Pointcuts`.
 
-> We can use very simple bash wildcard patterns to make the selection of code even more dynamic!
+> We can use very simple bash wildcard patterns to make the selection of code even more dynamic.
 
 ### Advices
 
-Advices are used to implement logic of cross-cutting concerns which will be woven into our application's code if a join point is reached.
+Advices are used to implement the logic of cross-cutting concerns which will be woven into our application's code if a join point is reached.
 
-Advices are logically gathered together in so-called `aspects`. Aspects are a group of logic concern actions just as a class is the grouping of actions an object can perform for itself or others. You will find this fitting as aspects are simply classes annotated in a certain way in our AOP implementation.
+Advices are logically gathered together in so-called `aspects`. Aspects are a group of logic concern actions just as a class is the grouping of actions an object can perform for itself or others. This sounds reasonalbe, because aspects are simply classes annotated in a certain way in our AOP implementation.
 A commonly used example of an aspect is a class providing several methods for logging, e.g. for different severity levels.
 
 As described above an advice can reference a `pointcut` to specify the `join point` and a piece of program code it will get woven into.
-To do so we also prefer the usage of an annotation.
+To do so, we also prefer the usage of an annotation.
 
-A basic example looks like this:
+A basic example looks like the following.
 
 ```php
 <?php
@@ -198,20 +198,20 @@ public static function someAdvice(MethodInvocationInterface $methodInvocation)
 }
 ```
 
-As shown we use `pointcut` pointcut to make clear what we are referencing to and simply specify the name of the method. 
+As shown we use `pointcut` to make clear what we are referencing to and simply specify the name of the method. 
 Please note that we can also use [bash wildcard patterns](https://www.shell-tips.com/2006/11/04/using-bash-wildcards/) here.
 
-What you will also notice is the name of the annotation: `Before`.
+You might notice the name of the annotation: `Before`.
 This describes the type of the advice and specifies exactly *how the woven advice will be positioned in relation to the specified piece of code*. This is a very important piece of information, as it determines in which context the advice will be executed and what kind of influence it will have on the targeted code.
 
-We differentiate between five types of advices:
+We differentiate five types of advices:
 
 | Type            | Description                                                                                                                                                   |
 | ----------------| --------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `Before`        | Will get executed *before* the actual logic of the targeted method. The advice has access to the parameters of the original method call and can change them. |
-| `AfterReturning`| Will be executed *after the method returned a value* and will therefore further narrow the join point, as any thrown exception will make the program flow omit this advice. Within the advice, we can access the result of the original method logic in a read-only way.                                                                                            |
-| `AfterThrowing` | Behaves similarly to the `AfterReturning` advice as it is only reached if the original method logic *throws an exception*. The advice has read-only access to the object of the thrown exception. |
-| `After`         | The after advice is a logical `and` combination of the `AfterReturning` and the `AfterThrowing` advice, as it gets always executed and has read-only access to either any thrown exception or the regular result of the original method logic (whichever happened). |
+| `AfterReturning`| Will be executed *after the method returned a value* and will further narrow the join point, as any thrown exception will make the program flow omit this advice. Within the advice, we can access the result of the original method logic in a read-only way. |                                                                        
+| `AfterThrowing` | Behaves simliar to the `AfterReturning` advice as it is only reached if the original method logic *throws an exception*. The advice has read-only access to the object of the thrown exception. |
+| `After`         | The `After` advice is a logical `and` combination of the `AfterReturning` and the `AfterThrowing` advice, as it gets always executed and has read-only access to either any thrown exception or the regular result of the original method logic. |
 | `Around`        | Around advices wrap around the actual method logic and combine the possibilities of the other advices as they can freely implement the call to the original method body, or even omit it entirely. Around advices can be stacked in an onion-like manner onto a target method to form a so-called `advice chain`. |
  
  To identify the type of the advice we use the annotation which also references the targeted pointcut.
@@ -222,14 +222,14 @@ We differentiate between five types of advices:
 
 This section will describe how to make use of the concepts mentioned above.
 
-When utilizing your application with AOP techniques please keep one thing in mind:
+When utilizing your application with AOP techniques please keep in mind:
 
 > AOP is a very powerful instrument to enrich your application with functionality and coupling.
-> But as in most cases, great power comes with great responsibility. So it is really 
-> necessary to keep in mind where your aspect classes are, and what they do. If not, someone
-> will wonder what happens and maybe need a long time to figure out problems.
+> However, great power comes with great responsibility. So it is 
+> necessary to keep in mind where your aspect classes are, and what they do. If not doing so, one
+> might wonder what happens and maybe needs a long time to figure out potential problems.
 
-Within the appserver environment, we can differentiate three ways in which AOP functionality can be used. No matter which way is chosen, the results in the code will stay the same, but you might have different problems or advantages coming with your choice. The usage of said aspects as collection of advices will always stay imminent, but the way in which pointcuts and join points are used differs.
+Within the application server's environment, we differentiate three ways of using AOP functionality. No matter which way is chosen, the results in the code will stay the same. However, you might have different problems or advantages coming along with your choice. The usage of the aspects as a collection of advices mentioned above will always stay imminent, but the way of using pointcuts and join points are different.
 An aspect is simply a class identified by the `@Aspect` annotation as seen in the example below:
 
 ```php
@@ -248,15 +248,15 @@ class AnExampleAspect
 
 Aspect classes have to be implemented within your webapp, namely within the `META-INF`, `WEB-INF` or `common` directory.
 
-> Please also note that aspects MUST NOT have a constructor requiring parameters
+> Please note that aspects MUST NOT have a constructor requiring parameters.
 
 ### Generic annotations within aspects
 
 The first usage possibility is solely based on the on aspect classes and annotations.
-Within these class definitions, we can define pointcuts and advices referencing them as already mentioned [above](#important-terms). 
+Within these class definitions, we can define pointcuts and advices for reference as mentioned [above](#important-terms). 
 
-In the example below you can see the pointcut `allDoGet` which defines a call to any method called `doGet` within any class in the `\Namespace\Module` namespace.
- The `Before` advice `logInfoAdvice` does reference the `allDoGet` pointcut and will therefore be woven into any `doGet` method right before (hence the `Before` type) the original method logic. 
+In the example below you can see the pointcut `allDoGet`, which defines a call to any method called `doGet`, within any class in the `\Namespace\Module` namespace.
+The `Before` advice `logInfoAdvice` references the `allDoGet` pointcut and will, therefore, be woven into any `doGet` method right before (hence the `Before` type) the original method logic. 
 
 ```php
 <?php
@@ -297,16 +297,16 @@ class LoggerAspect
 
 This technique has several advantages:
 
-- Pointcuts and advices are defined in the same place which allows for better overview of what is referenced where. This leads to better control of weaving
-- Everything is managed decentrally and target code does not have to be touched, as all needed implementations can be made within the aspect class
-- Pointcuts can be re-used or referenced within several advices
+* Pointcuts and advices are defined in the same place for a better overview of references. This leads to better control of weaving
+* Everything is managed decentrally and the target code does not have to be touched, as all implementations needed can be made within the aspect class
+* Pointcuts can be re-used or referenced within several advices
 
 ### Generic configuration in XML 
 
-Additionally there is the possibility to configure pointcuts, and them being referenced by advices, within a central XML file.
+Additionally, there is the possibility to configure pointcuts within a central XML file.
 This file MUST be called `pointcuts.xml` and MUST be placed within the `META-INF` directory of your application.
 
-Example:
+This is shown in the following example.
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -327,22 +327,18 @@ Example:
 </pointcuts>
 ```
 
-The configuration describes a pointcut which specifies all `call` join points of all `doPost` methods within the `\Namespace\Module` namespace. This is very similar to the annotation example above and gets referenced by the same advice. To do so, the advice does not have to be changed in any way.
+The configuration describes a pointcut, which specifies all `call` join points of all `doPost` methods within the `\Namespace\Module` namespace. This is very similar to the annotation example above and is referenced by the same advice. Therefore, the advice does not have to be changed.
 
 This method of using XML has the same advantages as annotating everything within the aspect class but serves another purpose:
 
 > By using XML the configuration allows for easy manipulation through external tools.
 
-A thought to keep in mind when configuring pointcuts.
-
 ### Direct annotation
 
-For some use cases, to implement explicit pointcuts can be considered an overhead, as they might be referenced only once or reference only one point within your application's code themselves.
-For these cases, it can make sense to use a more direct approach which also makes the AOP weaving known to the target code.
+For some use cases, implementing explicit pointcuts can be considered an overhead as they might be referenced only once or reference only one point within your application's code.
+For these cases, it can make sense to use a more direct approach that also makes the AOP weaving known to the target code.
 
-To use such a direct approach, it is possible to directly annotate a target method with the type and qualified name of the advice(s) which have to be woven.
-
-Example:
+This direct approach can be used for directly annotating a target method with the type and qualified name of the advice(s), which have to be woven. This is demonstrated in the following example.
 
 ```php
 <?php
@@ -360,20 +356,20 @@ public function logIfTrue($param)
 
 We can take several pieces of information from this example:
 
-- We can use the same complex building blocks of [logical connectives](https://en.wikipedia.org/wiki/Logical_connective#Common_logical_connectives) and join points as for normal pointcuts
-- We do NOT need the `call` join point, as we will implicitly make the call to the annotated method our target event
-- The annotation defines the type of advice and therefor the actual point of weaving within the target code. This SHOULD be the used advice's actual type
-- When annotating directly we can use additional expressions instead of join points and logical connectives
+* We can use the same complex building blocks of [logical connectives](https://en.wikipedia.org/wiki/Logical_connective#Common_logical_connectives) and join points as we do for normal pointcuts
+* We do NOT need the `call` join point as we will implicitly make the call to the annotated method our target event
+* The annotation defines the type of advice and, therefore, the actual point of weaving within the target code. This SHOULD be the used an advice's actual type
+* When annotating directly we can use additional expressions instead of join points and logical connectives
 
 The additional expressions mentioned above are used to define the weaved code.
-We differ between two possible expressions:
+We differ from two possible expressions:
 
 | Keyword      | Type       | Description                                                                                                           |
 | -------------| -----------| ----------------------------------------------------------------------------------------------------------------------|
-| `advise`     | standalone | The referenced advice will be woven into the target method. The advice's type SHOULD be the used annotation           |
-| `weave`      | standalone | Weave in arbitrary code at a certain point. This code will be run n the scope of the target method as if implemented within it |
+| `advise`     | standalone | The referenced advice will be woven into the target method. The advice's type SHOULD be the used annotation.           |
+| `weave`      | standalone | Weave in arbitrary code at a certain point. This code will be run in the scope of the target method as if it was implemented within it. |
 
-An example for the `weave` expression looks like this:
+An example, the `weave` expression looks like the following.
 
 ```php
 <?php
@@ -389,27 +385,25 @@ public function logIfTrue($param)
 }
 ```
 
-This is technically the same as if the call to the logger would have been implemented within the `logIfTrue` with two exceptions:
+This is technically the same as if the call to the logger would have been implemented within the `logIfTrue` besides two exceptions:
 
-- The weaving can be switched off externally by not using the AOP features for the annotated files
-- The woven code does not count into the method's original logic and is therefore not wrapped by other advices
+* The weaving can be switched off externally by not using the AOP features for the annotated files
+* The woven code does not count into the method's original logic and is therefore not wrapped by other advices
 
 ### Advices and the method invocation object
 
-Advices can be dynamically woven into several points within application code, but to really have a value they have to know about the target code and be able to influence it.
+Advices can be dynamically woven into several points within application code, but to have a value they have to know about the target code and be able to influence it.
 To achieve this, we will pass an object containing context information to every advice.
 
 > Every advice MUST accept exactly one parameter of the type `\AppserverIo\Doppelgaenger\Interfaces\MethodInvocationInterface`.
 
 The passed instance of the type `MethodInvocationInterface` fulfills three important purposes:
 
-- It contains information about the original function call such as passed parameters, possible results, structure and method name and allows changes to some of them
-- It contains the context of the original call, meaning the instance of the called class
-- It contains the advice chain and allows to manually iterate through layered around advices
+* It contains information about the original function call such as passed parameters, possible results, structure and method name and allows changes to some of them
+* It contains the context of the original call, meaning the instance of the called class
+* It contains the advice chain and allows to iterate manually through layered around advices
 
-
-
-Below is an example where an advice uses the passed context instance to retrieve the system's logger and other information about the method call:
+In the example below, an advice uses the passed context instance to retrieve the system's logger and other information about the method call.
 
 ```php
 <?php

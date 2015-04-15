@@ -395,7 +395,7 @@ HTTP basic or digest authentication.
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app version="1.0">
+<web-app xmlns="http://www.appserver.io/appserver">
 
   <!-- application meta information -->
   <display-name>appserver.io example application</display-name>
