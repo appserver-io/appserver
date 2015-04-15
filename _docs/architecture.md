@@ -8,11 +8,9 @@ group: Docs
 permalink: /get-started/documentation/architecture.html
 ---
 
-## Threads and Contexts
-
 appserver.io makes heavy use of threads and their context to inherit instances, configuration values, constants, functions, class definitions and comments in a selective way. Beside inheritance purposes, threads and their context also allows a separation concerns where necessary. In opposite to a processes threads allows separation on the one hand, but gives developers the possiblity to share data whenever needed.
 
-### What is a Context
+## What is a Context
 
 The context can be defined the runtime environment of a thread. This includes that *EACH* thread has its own context.
 
@@ -59,7 +57,7 @@ In some cases this will be desired, but it is necessary to keep in mind, that co
 
 > Please be aware, that the context we're talking about here, *MUST* not be mixed up with a [function, method or class scope](http://php.net/manual/en/language.variables.scope.php), where you are also able to define variables or constants that can be either accessed in function, method or class scope.
 
-### How to handle Errors and Exceptions
+## How to handle Errors and Exceptions
 
 As there is the possiblity, that a fatal error occours while processing a request, it is necessary to shutdown it in a controlled way. Therefore, using PHP's `register_shutdown_function` allows a developer to catch fatal errors inside the thread's/context's `run()` method to implement a controlled shutdown.
 
