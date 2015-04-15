@@ -5,6 +5,15 @@ meta_title: appserver.io architcture
 meta_description: Describes appserver.io architecture
 position: 170
 group: Docs
+subNav:
+  - title: What is a Context
+    href: what-is-a-context
+  - title: How to handle Errors and Exceptions
+    href: how-to-handle-errors-and-exceptions
+  - title: The Context Hierarchy
+    href: the-context-hierarchy
+  - title: Start-Up
+    href: start-up
 permalink: /get-started/documentation/architecture.html
 ---
 
@@ -166,7 +175,7 @@ In the second step the applications are extracted from their PHAR archives. Then
 
 ### Sequence Diagram
 
-The following sequence diagram describes roughly describes the start-up workflow for version 1.0.x. 
+The following sequence diagram roughly describes the start-up workflow for version 1.0.x. 
 
 ![Start-Up Sequence Diagram]({{ "/assets/img/server_start-up_sequence_diagram.jpg" | prepend: site.baseurl }} "Start-Up Sequence Diagram")
 
@@ -230,7 +239,7 @@ The provisioners allows an application developer to execute custom steps after t
 
 ### Step 2 - Start Server
 
-After configuration has been succesful, the application server is ready to be started. Like the configuration process, the order of the steps to start the application server is also very important.
+After the configuration has been successful, the application server is ready to be started. Like the configuration process, the order of the steps to start the application server is also very important.
 
 #### 1. Process the Extractors
 
