@@ -50,8 +50,10 @@ class QueueManagerFactory implements ManagerFactoryInterface
     public static function visit(ApplicationInterface $application, ManagerNodeInterface $managerConfiguration)
     {
 
-        // initialize the stackable for the queues
+        // initialize the stackable containers
         $queues = new GenericStackable();
+        $workers = new GenericStackable();
+        $messages = new GenericStackable();
 
         // initialize the queue locator
         $queueLocator = new QueueLocator();
@@ -59,6 +61,8 @@ class QueueManagerFactory implements ManagerFactoryInterface
         // initialize the queue manager
         $queueManager = new QueueManager();
         $queueManager->injectQueues($queues);
+        $queueManager->injectWorkers($workers);
+        $queueManager->injectMessages($messages);
         $queueManager->injectApplication($application);
         $queueManager->injectResourceLocator($queueLocator);
 

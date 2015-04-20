@@ -201,9 +201,11 @@ class RequestHandler extends \Thread
 
         // check if there was a fatal error caused shutdown
         if ($lastError = error_get_last()) {
+            // initialize type + message
+            $type = 0;
+            $message = '';
             // extract the last error values
             extract($lastError);
-
             // query whether we've a fatal/user error
             if ($type === E_ERROR || $type === E_USER_ERROR) {
                 $this->exception = new ServletException($message, 500);

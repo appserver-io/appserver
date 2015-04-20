@@ -75,6 +75,7 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
                         <param name="workerNumber" type="integer"><?php echo Setup::getValue(SetupKeys::CONTAINER_MESSAGE_QUEUE_WORKER_NUMBER) ?></param>
                         <param name="workerAcceptMin" type="integer"><?php echo Setup::getValue(SetupKeys::CONTAINER_SERVER_WORKER_ACCEPT_MIN) ?></param>
                         <param name="workerAcceptMax" type="integer"><?php echo Setup::getValue(SetupKeys::CONTAINER_SERVER_WORKER_ACCEPT_MAX) ?></param>
+                        <param name="documentRoot" type="string">webapps</param>
                         <param name="directoryIndex" type="string">index.mq</param>
                         <param name="keepAliveMax" type="integer">64</param>
                         <param name="keepAliveTimeout" type="integer">5</param>
