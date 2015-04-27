@@ -115,6 +115,9 @@ available. Add the following configuration within the <virtualHosts> tag.
         <param name="admin" type="string">info@appserver.io</param>
         <param name="documentRoot" type="string">webapps/drupal</param>
     </params>
+    <rewrites>
+        <rewrite condition="!-d{AND}!-f{AND}!^/favicon.ico" flag="L" target="/index.php"/>
+    </rewrites>
 </virtualHost>
 ```
 
