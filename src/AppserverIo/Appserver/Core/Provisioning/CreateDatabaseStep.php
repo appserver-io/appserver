@@ -72,6 +72,13 @@ class CreateDatabaseStep extends AbstractStep
      */
     const CONNECTION_PARAM_PASSWORD = 'password';
 
+	/**
+	 * The DB connection parameter with the databaseName to connect.
+	 *
+	 * @var string
+	 */
+	const CONNECTION_PARAM_DATABASENAME = 'dbname';
+
     /**
      * Executes the functionality for this step, in this case the execution of
      * the PHP script defined in the step configuration.
@@ -148,6 +155,11 @@ class CreateDatabaseStep extends AbstractStep
                 $connectionParameters[CreateDatabaseStep::CONNECTION_PARAM_PATH] = $this->getWebappPath(
                 ) . DIRECTORY_SEPARATOR . $path;
             }
+        }
+
+        if ($databaseNode->getDatabaseName()) {
+            $databaseName = $databaseNode->getDatabaseName()->getNodeValue()->__toString();
+            $connectionParameters[CreateDatabaseStep::CONNECTION_PARAM_DATABASENAME] = $databaseName;
         }
 
         // set the connection parameters
