@@ -57,9 +57,10 @@ class GenericDeployment extends AbstractDeployment
             // load the datasource files
             $datasourceFiles = $this->getDeploymentService()->globDir($directory . DIRECTORY_SEPARATOR . '*-ds.xml');
             // iterate through all provisioning files (provision.xml), validate them and attach them to the configuration
+            $configurationService = $this->getConfigurationService();
             foreach ($datasourceFiles as $datasourceFile) {
                 // validate the file, but skip it if validation fails
-                if ($this->getConfigurationService()->validateFile($datasourceFile) === false) {
+                if ($configurationService->validateFile($datasourceFile) === false) {
                     $errorMessages = $configurationService->getErrorMessages();
                     $systemLogger = $this->getInitialContext()->getSystemLogger();
                     $systemLogger->error(reset($errorMessages));
