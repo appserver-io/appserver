@@ -64,7 +64,6 @@ class CreateDatabaseStep extends AbstractStep
      */
     const CONNECTION_PARAM_USER = 'user';
 
-
     /**
      * The DB connection parameter with the passwort to connect.
      *
@@ -72,12 +71,12 @@ class CreateDatabaseStep extends AbstractStep
      */
     const CONNECTION_PARAM_PASSWORD = 'password';
 
-	/**
-	 * The DB connection parameter with the databaseName to connect.
-	 *
-	 * @var string
-	 */
-	const CONNECTION_PARAM_DATABASENAME = 'dbname';
+    /**
+     * The DB connection parameter with the databaseName to connect.
+     *
+     * @var string
+     */
+    const CONNECTION_PARAM_DATABASENAME = 'dbname';
 
     /**
      * Executes the functionality for this step, in this case the execution of
