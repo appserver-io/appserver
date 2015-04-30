@@ -143,7 +143,7 @@ class CreateDatabaseStep extends AbstractStep
         );
 
         // initialize the path to the database when we use sqlite for example
-        if ($databaseNode->getPath() instanceof \AppserverIo\Appserver\Core\Api\Node\PathNode) {
+        if ($databaseNode->getPath()) {
             if ($path = $databaseNode->getPath()->getNodeValue()->__toString()) {
                 $connectionParameters[CreateDatabaseStep::CONNECTION_PARAM_PATH] = $this->getWebappPath(
                 ) . DIRECTORY_SEPARATOR . $path;
