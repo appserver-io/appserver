@@ -59,7 +59,8 @@ class GenericDeployment extends AbstractDeployment
             // iterate through all provisioning files (provision.xml), validate them and attach them to the configuration
             foreach ($datasourceFiles as $datasourceFile) {
                 // validate the file, but skip it if validation fails
-                if ($this->getConfigurationService()->validateFile($datasourceFile) === false) {
+                $configurationService = $this->getConfigurationService();
+                if ($configurationService->validateFile($datasourceFile) === false) {
                     $errorMessages = $configurationService->getErrorMessages();
                     $systemLogger = $this->getInitialContext()->getSystemLogger();
                     $systemLogger->error(reset($errorMessages));
