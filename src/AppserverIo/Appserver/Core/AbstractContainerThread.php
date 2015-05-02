@@ -381,11 +381,11 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
     public function addApplication(ApplicationInterface $application)
     {
 
-        // register the application in this instance
-        $this->applications[$application->getName()] = $application;
-
         // adds the application to the system configuration
         $this->addApplicationToSystemConfiguration($application);
+
+        // register the application in this instance
+        $this->applications[$application->getName()] = $application;
 
         // log a message that the app has been started
         $this->getInitialContext()->getSystemLogger()->debug(
