@@ -91,6 +91,7 @@ class Setup
         SetupKeys::OS_DARWIN  => array(SetupKeys::OS_FAMILY => SetupKeys::OS_FAMILY_DARWIN, SetupKeys::OS_ARCHITECTURE => 'x86_64', SetupKeys::GROUP => 'staff',    SetupKeys::USER => '_www'),
         SetupKeys::OS_DEBIAN  => array(SetupKeys::OS_FAMILY => SetupKeys::OS_FAMILY_LINUX,  SetupKeys::OS_ARCHITECTURE => 'x86_64', SetupKeys::GROUP => 'www-data', SetupKeys::USER => 'www-data'),
         SetupKeys::OS_UBUNTU  => array(SetupKeys::OS_FAMILY => SetupKeys::OS_FAMILY_LINUX,  SetupKeys::OS_ARCHITECTURE => 'x86_64', SetupKeys::GROUP => 'www-data', SetupKeys::USER => 'www-data'),
+        SetupKeys::OS_ARCH    => array(SetupKeys::OS_FAMILY => SetupKeys::OS_FAMILY_LINUX,  SetupKeys::OS_ARCHITECTURE => 'x86_64', ),
         SetupKeys::OS_FEDORA  => array(SetupKeys::OS_FAMILY => SetupKeys::OS_FAMILY_LINUX,  SetupKeys::OS_ARCHITECTURE => 'x86_64', ),
         SetupKeys::OS_REDHAT  => array(SetupKeys::OS_FAMILY => SetupKeys::OS_FAMILY_LINUX,  SetupKeys::OS_ARCHITECTURE => 'x86_64', ),
         SetupKeys::OS_CENTOS  => array(SetupKeys::OS_FAMILY => SetupKeys::OS_FAMILY_LINUX,  SetupKeys::OS_ARCHITECTURE => 'x86_64', ),
