@@ -66,7 +66,7 @@ class QueueManager extends AbstractManager implements QueueContextInterface
     /**
      * Injects the storage for the messages.
      *
-     * @param \AppserverIo\Storage\GenericStackable $queues An storage for the messages
+     * @param \AppserverIo\Storage\GenericStackable $messages An storage for the messages
      *
      * @return void
      */

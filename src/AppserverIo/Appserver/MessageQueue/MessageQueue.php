@@ -63,6 +63,8 @@ class MessageQueue extends \Thread implements QueueInterface
      * Initializes the queue with the name to use.
      *
      * @param string $name Holds the queue name to use
+     *
+     * @return void
      */
     public function injectName($name)
     {
@@ -73,6 +75,8 @@ class MessageQueue extends \Thread implements QueueInterface
      * Initializes the queue with the message bean type that has to handle the messages.
      *
      * @param string $type The message bean type to handle the messages
+     *
+     * @return void
      */
     public function injectType($type)
     {
@@ -94,7 +98,7 @@ class MessageQueue extends \Thread implements QueueInterface
     /**
      * Injects the storage for the messages.
      *
-     * @param \AppserverIo\Storage\GenericStackable $queues An storage for the messages
+     * @param \AppserverIo\Storage\GenericStackable $messages An storage for the messages
      *
      * @return void
      */
@@ -259,7 +263,6 @@ class MessageQueue extends \Thread implements QueueInterface
 
         // create a separate queue for each priority
         foreach (PriorityKeys::getAll() as $priorityKey) {
-
             // create the containers for the worker
             $jobsExecuting[$counter] = new GenericStackable();
             $jobsToExceute[$counter] = new GenericStackable();
@@ -291,7 +294,6 @@ class MessageQueue extends \Thread implements QueueInterface
 
         // query whether we keep running
         while ($this->run) {
-
             // wait for the configured timeout
             $this->wait(MessageQueue::TTL);
 

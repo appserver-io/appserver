@@ -42,9 +42,10 @@ class QueueLocator implements ResourceLocatorInterface
      * Runs a lookup for the message queue with the passed lookup name and
      * session ID.
      *
-     * @param string $lookupName The queue lookup name
-     * @param string $sessionId  The session ID
-     * @param array  $args       The arguments passed to the queue
+     * @param \AppserverIo\Psr\Pms\QueueContextInterface $queueManager The queue manager instance
+     * @param string                                     $lookupName   The queue lookup name
+     * @param string                                     $sessionId    The session ID
+     * @param array                                      $args         The arguments passed to the queue
      *
      * @return \AppserverIo\Psr\Pms\QueueInterface The requested queue instance
      */
