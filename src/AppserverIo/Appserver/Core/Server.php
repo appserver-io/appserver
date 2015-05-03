@@ -435,14 +435,17 @@ class Server
             )
         );
 
-        // extract the application archives
-        $this->extract();
-
         // start the container threads
         $this->startContainers();
 
         // Switch to the configured user (if any)
         $this->switchProcessUser();
+
+        // extract the application archives
+        $this->extract();
+
+        // deploy the applications
+        $this->deploy();
 
         // provision the applications
         $this->provision();
@@ -615,6 +618,27 @@ class Server
                 $group
             )
         );
+    }
+
+    /**
+     * Deploys the applications.
+     *
+     * @return void
+     */
+    protected function deploy()
+    {
+
+        // deploy the applications for all containers
+        /** @var \AppserverIo\Appserver\Core\Interfaces\ContainerInterface $container */
+        foreach ($this->getContainers() as $container) {
+
+            // load the containers deployment
+            $deployment = $container->getDeployment();
+            $deployment->injectContainer($container);
+
+            // deploy and initialize the container's applications
+            $deployment->deploy();
+        }
     }
 
     /**

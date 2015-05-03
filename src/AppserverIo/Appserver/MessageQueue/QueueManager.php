@@ -64,6 +64,30 @@ class QueueManager extends AbstractManager implements QueueContextInterface
     }
 
     /**
+     * Injects the storage for the messages.
+     *
+     * @param \AppserverIo\Storage\GenericStackable $messages An storage for the messages
+     *
+     * @return void
+     */
+    public function injectMessages(GenericStackable $messages)
+    {
+        $this->messages = $messages;
+    }
+
+    /**
+     * Injects the storage for the workers.
+     *
+     * @param \AppserverIo\Storage\GenericStackable $workers An storage for the workers
+     *
+     * @return void
+     */
+    public function injectWorkers(GenericStackable $workers)
+    {
+        $this->workers = $workers;
+    }
+
+    /**
      * Injects the resource locator that locates the requested queue.
      *
      * @param \AppserverIo\Psr\Pms\ResourceLocatorInterface $resourceLocator The resource locator
@@ -144,32 +168,7 @@ class QueueManager extends AbstractManager implements QueueContextInterface
 
                 // iterate over all found queues and initialize them
                 foreach ($nodes as $node) {
-                    // load the nodes attributes
-                    $attributes = $node->attributes();
-
-                    // load destination queue and receiver type
-                    $destination = (string) $node->destination;
-                    $type = (string) $attributes['type'];
-
-                    // create a new queue instance
-                    $instance = MessageQueue::createQueue($destination, $type);
-
-                    // register destination and receiver type
-                    $this->queues[$instance->getName()] = $instance;
-
-                    // prepare the naming directory to bind the callback to
-                    $path = explode('/', $destination);
-
-                    for ($i = 0; $i < sizeof($path) - 1; $i++) {
-                        try {
-                            $this->directories[$i]->search($path[$i]);
-                        } catch (NamingException $ne) {
-                            $this->directories[$i + 1] = $this->directories[$i]->createSubdirectory($path[$i]);
-                        }
-                    }
-
-                    // bind the callback for creating a new MQ sender instance to the naming directory => necessary for DI provider
-                    $application->bindCallback($destination, array(&$this, 'createSenderForQueue'), array($destination));
+                    $this->registeMessageQueue($node);
                 }
 
             // if class can not be reflected continue with next class
@@ -180,6 +179,49 @@ class QueueManager extends AbstractManager implements QueueContextInterface
                 continue;
             }
         }
+    }
+
+    /**
+     * Deploys the message queue described by the passed XML node.
+     *
+     * @param \SimpleXMLElement $node The XML node that describes the message queue
+     *
+     * @return void
+     */
+    protected function registeMessageQueue(\SimpleXMLElement $node)
+    {
+
+        // load the nodes attributes
+        $attributes = $node->attributes();
+
+        // load destination queue and receiver type
+        $destination = (string) $node->destination;
+        $type = (string) $attributes['type'];
+
+        // initialize the message queue
+        $messageQueue = new MessageQueue();
+        $messageQueue->injectType($type);
+        $messageQueue->injectName($destination);
+        $messageQueue->injectWorkers($this->workers);
+        $messageQueue->injectMessages($this->messages);
+        $messageQueue->injectApplication($this->application);
+        $messageQueue->start();
+
+        // initialize the queues storage for the priorities
+        $this->queues[$queueName = $messageQueue->getName()] = $messageQueue;
+
+        // prepare the naming directory to bind the callback to
+        $path = explode('/', $destination);
+        for ($i = 0; $i < sizeof($path) - 1; $i++) {
+            try {
+                $this->directories[$i]->search($path[$i]);
+            } catch (NamingException $ne) {
+                $this->directories[$i + 1] = $this->directories[$i]->createSubdirectory($path[$i]);
+            }
+        }
+
+        // bind the callback for creating a new MQ sender instance to the naming directory => necessary for DI provider
+        $this->getApplication()->bindCallback($destination, array(&$this, 'createSenderForQueue'), array($destination));
     }
 
     /**
@@ -230,7 +272,7 @@ class QueueManager extends AbstractManager implements QueueContextInterface
     }
 
     /**
-     * Runs a lookup for the message queue with the passed class name and
+     * Runs a lookup for the message queue with the passed lookup name and
      * session ID.
      *
      * @param string $lookupName The queue lookup name
@@ -242,7 +284,7 @@ class QueueManager extends AbstractManager implements QueueContextInterface
      */
     public function lookup($lookupName, $sessionId = null, array $args = array())
     {
-        // still to implement
+        return $this->getResourceLocator()->lookup($this, $lookupName, $sessionId, $args);
     }
 
     /**

@@ -127,13 +127,6 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
         // initialize instance that contains the applications
         $this->applications = new GenericStackable();
 
-        // load the containers deployment
-        $deployment = $this->getDeployment();
-        $deployment->injectContainer($this);
-
-        // deploy and initialize the container's applications
-        $deployment->deploy();
-
         // deployment has been successful
         $this->containerState = ContainerStateKeys::get(ContainerStateKeys::DEPLOYMENT_SUCCESSFUL);
 
@@ -388,11 +381,11 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
     public function addApplication(ApplicationInterface $application)
     {
 
-        // register the application in this instance
-        $this->applications[$application->getName()] = $application;
-
         // adds the application to the system configuration
         $this->addApplicationToSystemConfiguration($application);
+
+        // register the application in this instance
+        $this->applications[$application->getName()] = $application;
 
         // log a message that the app has been started
         $this->getInitialContext()->getSystemLogger()->debug(
