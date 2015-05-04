@@ -79,12 +79,14 @@ class ApplicationFactory
         // initialize the storage for managers, virtual hosts an class loaders
         $data = new StackableStorage();
         $managers = new GenericStackable();
+        $provisioners = new GenericStackable();
         $classLoaders = new GenericStackable();
 
         // initialize the generic instances and information
         $application->injectData($data);
         $application->injectManagers($managers);
         $application->injectName($applicationName);
+        $application->injectProvisioners($provisioners);
         $application->injectClassLoaders($classLoaders);
         $application->injectInitialContext($initialContext);
         $application->injectNamingDirectory($namingDirectory);
@@ -121,6 +123,19 @@ class ApplicationFactory
                 // if not, try to instanciate the manager directly
                 $managerType = $manager->getType();
                 $application->addManager(new $managerType($manager), $manager);
+            }
+        }
+
+        // add the configured provisioners
+        /** @var \AppserverIo\Appserver\Core\Api\Node\ProvisionerNode $provisioner */
+        foreach ($context->getProvisioners() as $provisioner) {
+            if ($provisionerFactory = $provisioner->getFactory()) {
+                // use the factory if available
+                $provisionerFactory::visit($application, $provisioner);
+            } else {
+                // if not, try to instanciate the provisioner directly
+                $provisionerType = $provisioner->getType();
+                $application->addProvisioner(new $provisionerType($provisioner), $provisioner);
             }
         }
 
