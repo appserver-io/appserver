@@ -3,7 +3,7 @@ layout: sections
 title: Enterprise Edition
 meta_title: appserver.io enterprise edition
 meta_description: We have a great feature set for our enterprise edition. But we are still looking for partners giving input on it. Interested? Please contact us!
-position: 40
+position: 50
 group: Products
 permalink: /products/enterprise-edition.html
 author: all
