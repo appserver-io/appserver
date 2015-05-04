@@ -79,6 +79,7 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
      */
     public function __construct()
     {
+        $this->run = false;
         $this->connected = false;
     }
 
@@ -613,25 +614,17 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
      */
     public function connect()
     {
+        $this->start();
+    }
 
-        // log a message that we now start to connect the application
-        $this->getInitialContext()->getSystemLogger()->debug(sprintf('%s wait to be connected', $this->getName()));
-
-        // synchronize the application startup
-        $this->synchronized(function ($self) {
-
-            // start the application
-            $self->start();
-
-            while ($self->connected === false) {
-                // wait until we've been connected (classloaders and managers has been initialized)
-                $self->wait(1000000 * Application::TIME_TO_LIVE);
-            }
-
-        }, $this);
-
-        // log a message that we has successfully been connected now
-        $this->getInitialContext()->getSystemLogger()->debug(sprintf('%s has successfully been connected', $this->getName()));
+    /**
+     * TRUE if the application has been connected, else FALSE.
+     *
+     * @return boolean Returns TRUE if the application has been connected, else FALSE
+     */
+    public function isConnected()
+    {
+        return $this->connected;
     }
 
     /**
@@ -717,6 +710,16 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
     }
 
     /**
+     * Stops the application.
+     *
+     * @return void
+     */
+    public function stop()
+    {
+        $this->run = false;
+    }
+
+    /**
      * This is the threads main() method that initializes the application with the autoloader and
      * instantiates all the necessary manager instances.
      *
@@ -728,6 +731,12 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
 
         // register shutdown handler
         register_shutdown_function(array(&$this, "shutdown"));
+
+        // we want to start working now
+        $this->run = true;
+
+        // log a message that we now start to connect the application
+        $this->getInitialContext()->getSystemLogger()->debug(sprintf('%s wait to be connected', $this->getName()));
 
         // create the applications 'env' directory the beans will be bound to
         $appEnvDir = $this->createSubdirectory('env');
@@ -753,8 +762,11 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
         // we're connected now
         $this->connected = true;
 
+        // log a message that we has successfully been connected now
+        $this->getInitialContext()->getSystemLogger()->debug(sprintf('%s has successfully been connected', $this->getName()));
+
         // we do nothing here
-        while (true) {
+        while ($this->run) {
             // wait a second to lower system load
             $this->synchronized(function ($self) {
                 $self->wait(1000000 * Application::TIME_TO_LIVE);
@@ -775,13 +787,15 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
      */
     public function shutdown()
     {
-        // check if there was a fatal error caused shutdown
-        $lastError = error_get_last();
 
-        // query whether we found an error
-        if ($lastError['type'] === E_ERROR || $lastError['type'] === E_USER_ERROR) {
-            // log the last found error
-            $this->getInitialContext()->getSystemLogger()->critical($lastError['message']);
+        // check if there was a fatal error caused shutdown
+        if ($lastError = error_get_last()) {
+            // extract the last error values
+            extract($lastError);
+            // query whether we've a fatal/user error
+            if ($type === E_ERROR || $type === E_USER_ERROR) {
+                $this->getInitialContext()->getSystemLogger()->critical($message);
+            }
         }
     }
 }

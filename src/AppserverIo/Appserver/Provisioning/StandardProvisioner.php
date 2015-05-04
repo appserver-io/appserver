@@ -52,19 +52,24 @@ class StandardProvisioner extends AbstractProvisioner
     /**
      * Provisions all web applications.
      *
+     * @param \AppserverIo\Psr\Application\ApplicationInterface $application The application instance
+     *
      * @return void
      */
     public function provision(ApplicationInterface $application)
     {
 
         // check if the webapps directory exists
-        if (is_dir($webappsPath = $this->getWebappsDir())) {
+        if (is_dir($webappPath = $application->getWebappPath())) {
             // load the service instance
             $service = $this->getService();
 
+            // prepare the glob expression with the application's directories to parse
+            $applicationDirectories = sprintf('%s/{WEB-INF,META-INF}/provision.xml', $webappPath);
+
             // iterate through all provisioning files (provision.xml), validate them and attach them to the configuration
             $configurationService = $this->getInitialContext()->newService('AppserverIo\Appserver\Core\Api\ConfigurationService');
-            foreach ($service->globDir($webappsPath . '/*/{WEB-INF,META-INF}/provision.xml', GLOB_BRACE) as $provisionFile) {
+            foreach ($service->globDir($applicationDirectories, GLOB_BRACE) as $provisionFile) {
                 // validate the file, but skip it if validation fails
                 if (!$configurationService->validateFile($provisionFile, null)) {
                     $errorMessages = $configurationService->getErrorMessages();
@@ -101,7 +106,7 @@ class StandardProvisioner extends AbstractProvisioner
                 $provisionNode->reprovision($provisionFile);
 
                 // execute the provisioning workflow
-                $this->executeProvision($provisionNode, $webappPath);
+                $this->executeProvision($application, $provisionNode, $webappPath);
             }
         }
     }
@@ -109,12 +114,14 @@ class StandardProvisioner extends AbstractProvisioner
     /**
      * Executes the passed applications provisioning workflow.
      *
+     *
+     * @param \AppserverIo\Psr\Application\ApplicationInterface  $application   The application instance
      * @param \AppserverIo\Appserver\Core\Api\Node\ProvisionNode $provisionNode The file with the provisioning information
      * @param \SplFileInfo                                       $webappPath    The path to the webapp folder
      *
      * @return void
      */
-    protected function executeProvision(ProvisionNode $provisionNode, \SplFileInfo $webappPath)
+    protected function executeProvision(ApplicationInterface $application, ProvisionNode $provisionNode, \SplFileInfo $webappPath)
     {
 
         // load the steps from the configuration
@@ -134,6 +141,7 @@ class StandardProvisioner extends AbstractProvisioner
 
                 // inject all other information
                 $step->injectStepNode($stepNode);
+                $step->injectApplication($application);
                 $step->injectService($this->getService());
                 $step->injectWebappPath($webappPath->getPathname());
                 $step->injectInitialContext($this->getInitialContext());

@@ -52,7 +52,7 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
             <!--
              ! This is an example of how to configure upstream backends for proxy usage.
              -->
-            <!-- 
+            <!--
             <upstreams>
                 <upstream name="exampleBackend" type="\AppserverIo\WebServer\Upstreams\DefaultUpstream">
                     <servers xmlns="">
@@ -114,6 +114,7 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
                         <param name="workerNumber" type="integer"><?php echo Setup::getValue(SetupKeys::CONTAINER_MESSAGE_QUEUE_WORKER_NUMBER) ?></param>
                         <param name="workerAcceptMin" type="integer"><?php echo Setup::getValue(SetupKeys::CONTAINER_SERVER_WORKER_ACCEPT_MIN) ?></param>
                         <param name="workerAcceptMax" type="integer"><?php echo Setup::getValue(SetupKeys::CONTAINER_SERVER_WORKER_ACCEPT_MAX) ?></param>
+                        <param name="documentRoot" type="string">webapps</param>
                         <param name="directoryIndex" type="string">index.mq</param>
                         <param name="keepAliveMax" type="integer">64</param>
                         <param name="keepAliveTimeout" type="integer">5</param>
@@ -196,7 +197,7 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
                         </location>
                     </locations>
                     -->
-                    
+
                     <!-- An example how to activate the proxy module to use an upstream backend -->
                     <!--
                     <locations>
@@ -212,7 +213,7 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
                         </location>
                     </locations>
                     -->
-                    
+
                     <environmentVariables>
                         <environmentVariable condition="" definition="LOGGER_ACCESS=Access" />
                     </environmentVariables>

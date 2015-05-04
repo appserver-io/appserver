@@ -1,7 +1,7 @@
 <?php
 
 /**
- * \AppserverIo\Appserver\Core\Provisioning\StepInterface
+ * AppserverIo\Appserver\Provisioning\Steps\StepInterface
  *
  * NOTICE OF LICENSE
  *
@@ -18,7 +18,7 @@
  * @link      http://www.appserver.io
  */
 
-namespace AppserverIo\Appserver\Core\Provisioning;
+namespace AppserverIo\Appserver\Provisioning\Steps;
 
 use AppserverIo\Appserver\Core\Api\Node\StepNode;
 use AppserverIo\Appserver\Core\Api\Node\DatasourceNode;

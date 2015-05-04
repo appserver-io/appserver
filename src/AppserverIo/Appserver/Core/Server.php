@@ -62,13 +62,6 @@ class Server
     protected $extractors = array();
 
     /**
-     * The registered provisioners.
-     *
-     * @var array
-     */
-    protected $provisioners = array();
-
-    /**
      * The system configuration.
      *
      * @var \AppserverIo\Configuration\Interfaces\NodeInterface
@@ -120,8 +113,6 @@ class Server
         $this->initExtractors();
         // init the containers
         $this->initContainers();
-        // init the provisioners
-        $this->initProvisioners();
     }
 
     /**
@@ -260,26 +251,6 @@ class Server
     }
 
     /**
-     * Initializes the provisioners and provides the provisioning steps
-     * defined for the applciation.
-     *
-     * @return void
-     */
-    protected function initProvisioners()
-    {
-
-        // add the configured extractors to the internal array
-        foreach ($this->getSystemConfiguration()->getProvisioners() as $provisionerNode) {
-
-            // initialize parameters for the constructor
-            $params = array($this->getInitialContext(), $provisionerNode);
-
-            // create a new instance and add it to the internal array
-            $this->addProvisioner($this->newInstance($provisionerNode->getType(), $params));
-        }
-    }
-
-    /**
      * Initialize the container threads.
      *
      * @return void
@@ -397,28 +368,6 @@ class Server
     }
 
     /**
-     * Adds the passed provisioner to the server.
-     *
-     * @param \AppserverIo\Appserver\Core\Interfaces\ProvisionerInterface $provisioner The provisioner instance to add
-     *
-     * @return array
-     */
-    public function addProvisioner(ProvisionerInterface $provisioner)
-    {
-        return $this->provisioners[$provisioner->getProvisionerNode()->getName()] = $provisioner;
-    }
-
-    /**
-     * Returns all registered provisioners.
-     *
-     * @return array The provisioners
-     */
-    public function getProvisioners()
-    {
-        return $this->provisioners;
-    }
-
-    /**
      * Start the container threads.
      *
      * @return void
@@ -435,17 +384,17 @@ class Server
             )
         );
 
-        // extract the application archives
-        $this->extract();
-
         // start the container threads
         $this->startContainers();
 
         // Switch to the configured user (if any)
         $this->switchProcessUser();
 
-        // provision the applications
-        $this->provision();
+        // extract the application archives
+        $this->extract();
+
+        // deploy the applications
+        $this->deploy();
     }
 
     /**
@@ -618,22 +567,23 @@ class Server
     }
 
     /**
-     * Provision the applications.
+     * Deploys the applications.
      *
      * @return void
      */
-    protected function provision()
+    protected function deploy()
     {
 
-        // invoke the provisioners and provision the web applications
-        /** @var \AppserverIo\Appserver\Core\Interfaces\ProvisionerInterface $provisioner */
-        foreach ($this->getProvisioners() as $name => $provisioner) {
+        // deploy the applications for all containers
+        /** @var \AppserverIo\Appserver\Core\Interfaces\ContainerInterface $container */
+        foreach ($this->getContainers() as $container) {
 
-            // execute the provisioning steps
-            $provisioner->provision();
+            // load the containers deployment
+            $deployment = $container->getDeployment();
+            $deployment->injectContainer($container);
 
-            // log that the provisioner has successfully been initialized and executed
-            $this->getSystemLogger()->info(sprintf('Provisioner %s successfully initialized and executed', $name));
+            // deploy and initialize the container's applications
+            $deployment->deploy();
         }
     }
 

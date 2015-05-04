@@ -138,7 +138,6 @@
                 <xs:element ref="appserver:baseDirectory" minOccurs="0"/>
                 <xs:element ref="appserver:initialContext" minOccurs="0"/>
                 <xs:element ref="appserver:extractors" minOccurs="0"/>
-                <xs:element ref="appserver:provisioners" minOccurs="0"/>
                 <xs:element ref="appserver:loggers" minOccurs="0"/>
                 <xs:element ref="appserver:scanners" minOccurs="0"/>
                 <xs:element ref="appserver:containers"/>
@@ -319,6 +318,7 @@
                 <xs:element ref="appserver:params"/>
                 <xs:element ref="appserver:classLoaders"/>
                 <xs:element ref="appserver:managers"/>
+                <xs:element ref="appserver:provisioners"/>
             </xs:choice>
             <xs:attribute name="name" type="xs:string" use="required"/>
             <xs:attribute name="type" type="xs:string" use="optional"/>
@@ -936,6 +936,7 @@
         <xs:complexType>
             <xs:attribute name="name" type="xs:string" use="required"/>
             <xs:attribute name="type" type="xs:string" use="required"/>
+            <xs:attribute name="factory" type="xs:string"/>
             <xs:attribute name="uuid" type="xs:string"/>
             <xs:attribute ref="xml:base"/>
         </xs:complexType>

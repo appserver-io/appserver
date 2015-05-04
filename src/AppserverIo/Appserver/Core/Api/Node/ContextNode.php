@@ -51,6 +51,13 @@ class ContextNode extends AbstractNode
     use ManagersNodeTrait;
 
     /**
+     * A managers node trait.
+     *
+     * @var \AppserverIo\Appserver\Core\Api\Node\ProvisionersNodeTrait
+     */
+    use ProvisionersNodeTrait;
+
+    /**
      * A params node trait.
      *
      * @var \AppserverIo\Appserver\Core\Api\Node\ParamsNodeTrait

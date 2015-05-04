@@ -1,7 +1,7 @@
 <?php
 
 /**
- * \AppserverIo\Appserver\Core\Provisioning\DummyStep
+ * AppserverIo\Appserver\Provisioning\Steps\DummyStep
  *
  * NOTICE OF LICENSE
  *
@@ -18,7 +18,7 @@
  * @link      http://www.appserver.io
  */
 
-namespace AppserverIo\Appserver\Core\Provisioning;
+namespace AppserverIo\Appserver\Provisioning\Steps;
 
 /**
  * A dummy step implementation.

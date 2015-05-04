@@ -49,12 +49,21 @@ class ProvisionerNode extends AbstractNode implements ProvisionerNodeInterface
     protected $type;
 
     /**
+     * The managers factory class name.
+     *
+     * @var string
+     * @AS\Mapping(nodeType="string")
+     */
+    protected $factory;
+
+    /**
      * Initializes the provisioner node with the necessary data.
      *
-     * @param string $name The provisioner name
-     * @param string $type The provisioner type
+     * @param string $name    The provisioner name
+     * @param string $type    The provisioner type
+     * @param string $factory The provisioners factory class name
      */
-    public function __construct($name = '', $type = '')
+    public function __construct($name = '', $type = '', $factory = '')
     {
 
         // initialize the UUID
@@ -63,6 +72,7 @@ class ProvisionerNode extends AbstractNode implements ProvisionerNodeInterface
         // set the data
         $this->name = $name;
         $this->type = $type;
+        $this->factory = $factory;
     }
 
     /**
@@ -94,5 +104,15 @@ class ProvisionerNode extends AbstractNode implements ProvisionerNodeInterface
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * Returns the factory class name.
+     *
+     * @return string The factory class name
+     */
+    public function getFactory()
+    {
+        return $this->factory;
     }
 }

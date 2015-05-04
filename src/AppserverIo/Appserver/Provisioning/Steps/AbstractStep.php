@@ -1,7 +1,7 @@
 <?php
 
 /**
- * \AppserverIo\Appserver\Core\Provisioning\AbstractStep
+ * AppserverIo\Appserver\Provisioning\Steps\AbstractStep
  *
  * NOTICE OF LICENSE
  *
@@ -18,8 +18,9 @@
  * @link      http://www.appserver.io
  */
 
-namespace AppserverIo\Appserver\Core\Provisioning;
+namespace AppserverIo\Appserver\Provisioning\Steps;
 
+use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\Core\Api\Node\StepNode;
 use AppserverIo\Appserver\Core\Api\Node\DatasourceNode;
 use AppserverIo\Appserver\Core\Api\ServiceInterface;
@@ -78,6 +79,13 @@ abstract class AbstractStep extends \Thread implements StepInterface
      * @var string
      */
     protected $webappPath;
+
+    /**
+     * The application instance.
+     *
+     * @var \AppserverIo\Psr\Application\ApplicationInterface
+     */
+    protected $application;
 
     /**
      * Injects the provisioning service.
@@ -152,6 +160,18 @@ abstract class AbstractStep extends \Thread implements StepInterface
     }
 
     /**
+     * Injects the application instance.
+     *
+     * @param \AppserverIo\Psr\Application\ApplicationInterface $application The application instance
+     *
+     * @return void
+     */
+    public function injectApplication(ApplicationInterface $application)
+    {
+        $this->application = $application;
+    }
+
+    /**
      * Returns the provisioning service.
      *
      * @return \AppserverIo\Appserver\Core\Api\ServiceInterface The provisioning service
@@ -209,6 +229,16 @@ abstract class AbstractStep extends \Thread implements StepInterface
     public function getWebappPath()
     {
         return $this->webappPath;
+    }
+
+    /**
+     * Returns the application instance.
+     *
+     * @return \AppserverIo\Psr\Application\ApplicationInterface The application instance
+     */
+    public function getApplication()
+    {
+        return $this->application;
     }
 
     /**

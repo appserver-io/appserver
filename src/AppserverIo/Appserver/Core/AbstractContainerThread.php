@@ -127,16 +127,6 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
         // initialize instance that contains the applications
         $this->applications = new GenericStackable();
 
-        // load the containers deployment
-        $deployment = $this->getDeployment();
-        $deployment->injectContainer($this);
-
-        // deploy and initialize the container's applications
-        $deployment->deploy();
-
-        // deployment has been successful
-        $this->containerState = ContainerStateKeys::get(ContainerStateKeys::DEPLOYMENT_SUCCESSFUL);
-
         // initialize the profile logger and the thread context
         if ($profileLogger = $this->getInitialContext()->getLogger(LoggerUtils::PROFILE)) {
             $profileLogger->appendThreadContext($this->getContainerNode()->getName());
