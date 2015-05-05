@@ -243,7 +243,7 @@ RewriteRule ^ index.php [L]
 It contains two directives (`RewriteCond` and `RewriteRule`) which do have a different syntax on their own and build up a stack of conditions ending with the actual condition of the `RewriteRule` directive at the end of the stack.
 The additional `RewriteCond` directive allows for the usage of backreferences, making server variables accessibly for rewrite queries.
 
-´´´bash
+```bash
 rewrite ^(/download/.*)/media/(.*)\..*$ $1/mp3/$2.mp3 last;
 rewrite ^(/download/.*)/audio/(.*)\..*$ $1/mp3/$2.ra  last;
 return  403;
@@ -252,11 +252,11 @@ return  403;
 The appserver.io rewrite engine does offer the same power and flexibility as apache rewites togehter with the simplicity of the nginx rewrites.
 The same rewrite 
 
-´´´xml
+```xml
 <rewrites>
     <rewrite condition="!-d{AND}!-f{AND}!^/favicon.ico" flag="L" target="/index.php"/>
 </rewrites>
-´´´
+```
 
 > Configuration changes do as always require a restart of the server
 
