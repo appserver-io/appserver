@@ -90,7 +90,6 @@ class CreateDatabaseStep extends AbstractStep
     {
 
         try {
-
             // register the class loader again, because in a Thread the context has been lost maybe
             $application = $this->getApplication();
             $application->registerClassLoaders();

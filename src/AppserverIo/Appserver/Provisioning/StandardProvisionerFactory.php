@@ -38,8 +38,8 @@ class StandardProvisionerFactory
     /**
      * The main method that creates a new provisioner instance.
      *
-     * @param \AppserverIo\Psr\Application\ApplicationInterface             $application          The application instance to register the provisioner with
-     * @param \AppserverIo\Appserver\Core\Api\Node\ProvisionerNodeInterface $managerConfiguration The provisioner configuration
+     * @param \AppserverIo\Psr\Application\ApplicationInterface             $application              The application instance to register the provisioner with
+     * @param \AppserverIo\Appserver\Core\Api\Node\ProvisionerNodeInterface $provisionerConfiguration The provisioner configuration
      *
      * @return void
      */

@@ -135,7 +135,6 @@ class ServerTest extends AbstractTest
                 'getSystemConfiguration',
                 'switchProcessUser',
                 'startContainers',
-                'provision',
                 'extract'
             ),
             array(),
@@ -146,7 +145,6 @@ class ServerTest extends AbstractTest
         // mock the servers startContainers() and the initConstructors() method
         $server->expects($this->once())->method('startContainers');
         $server->expects($this->once())->method('switchProcessUser');
-        $server->expects($this->once())->method('provision');
         $server->expects($this->once())->method('extract');
         $server->expects($this->once())
             ->method('getSystemLogger')
