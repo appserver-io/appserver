@@ -154,7 +154,7 @@ Below are two examples of virtual hosts as configured for the most common webser
 First up is apache:
 ```bash
 <VirtualHost *:80>
-    DocumentRoot /www/example1
+    DocumentRoot /www/myapp
     ServerName myapp.dev
     ServerAlias www.myapp.dev
 </VirtualHost>
@@ -172,7 +172,7 @@ A basic nginy configuration does contain similar elments.
 ```bash
  server {
     listen   80;
-    root /var/www/example.com/public_html;
+    root /var/www/myapp;
     index index.html index.htm;
     server_name myapp.dev www.myapp.dev;
 }
@@ -238,7 +238,6 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_URI} !=/favicon.ico
 RewriteRule ^ index.php [L]
-
 ```
 
 It contains two directives (`RewriteCond` and `RewriteRule`) which do have a different syntax on their own and build up a stack of conditions ending with the actual condition of the `RewriteRule` directive at the end of the stack.
@@ -265,7 +264,14 @@ The same rewrite
 
 ## Development tools
 
+### Xdebug
 
+If you are using the appserver.io runtime then you are already provided with a very common debugging tool: [`Xdebug`](http://xdebug.org/)
+The Xdebug extension is already installed within the appserver.io runtime and can be enabled by simply editing the `etc/conf.d/xdebug.ini` file to make it look like the following:
+
+```bash
+zend_extension = /opt/appserver/lib/php/extensions/no-debug-zts-20131226/xdebug.so
+```
 
 ## PHP configuration
 
@@ -291,7 +297,8 @@ This duplication does result in the presence of two separate `php.ini` files:
 
 ## Done!
 
-Congratulations on successfully making the switch to appserver.io as you webserver of choice!
+Congratulations on successfully making the switch to appserver.io as your webserver of choice!
+We know there is a lot more to it but there also is a lot [more to learn about our webserver]({{ "/get-started/documentation/webserver.html" | prepend: site.baseurl }}), so keep at it. :)
 We hope you enjoyed this tutorial and keep on using appserver.io components.
 
 Every feedback is appreciated so please do not hesitate to share experiences or any issue you may encounter with us.
