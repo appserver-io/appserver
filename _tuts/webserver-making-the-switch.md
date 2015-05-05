@@ -247,7 +247,7 @@ The additional `RewriteCond` directive allows for the usage of backreferences, m
 rewrite ^(/download/.*)/media/(.*)\..*$ $1/mp3/$2.mp3 last;
 rewrite ^(/download/.*)/audio/(.*)\..*$ $1/mp3/$2.ra  last;
 return  403;
-´´´
+```
 
 The appserver.io rewrite engine does offer the same power and flexibility as apache rewites togehter with the simplicity of the nginx rewrites.
 The same rewrite 
