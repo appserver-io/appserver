@@ -295,7 +295,9 @@ class MessageQueue extends \Thread implements QueueInterface
         // query whether we keep running
         while ($this->run) {
             // wait for the configured timeout
-            $this->wait(MessageQueue::TTL);
+            $this->synchronized(function ($self) {
+                $self->wait(MessageQueue::TTL);
+            }, $this);
 
             // profile the message queue
             if ($profileLogger) {
