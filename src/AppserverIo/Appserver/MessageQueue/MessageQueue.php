@@ -231,12 +231,38 @@ class MessageQueue extends \Thread implements QueueInterface
     }
 
     /**
+     * Does shutdown logic for request handler if something went wrong and
+     * produces a fatal error for example.
+     *
+     * @return void
+     */
+    public function shutdown()
+    {
+
+        // check if there was a fatal error caused shutdown
+        if ($lastError = error_get_last()) {
+            // initialize type + message
+            $type = 0;
+            $message = '';
+            // extract the last error values
+            extract($lastError);
+            // query whether we've a fatal/user error
+            if ($type === E_ERROR || $type === E_USER_ERROR) {
+                $this->getApplication()->getInitialContex()->getSystemLogger()->error($message);
+            }
+        }
+    }
+
+    /**
      * We process the messages/jobs here.
      *
      * @return void
      */
     public function run()
     {
+
+        // register shutdown handler
+        register_shutdown_function(array(&$this, "shutdown"));
 
         // create a local instance of application and storage
         $application = $this->application;
@@ -295,7 +321,9 @@ class MessageQueue extends \Thread implements QueueInterface
         // query whether we keep running
         while ($this->run) {
             // wait for the configured timeout
-            $this->wait(MessageQueue::TTL);
+            $this->synchronized(function ($self) {
+                $self->wait(MessageQueue::TTL);
+            }, $this);
 
             // profile the message queue
             if ($profileLogger) {

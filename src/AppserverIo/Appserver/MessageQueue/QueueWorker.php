@@ -160,8 +160,8 @@ class QueueWorker extends \Thread
         $this->synchronized(function (QueueWorker $self, \stdClass $jw) {
 
             // attach the job wrapper
-            $this->jobsToExecute[$jw->jobId] = $jw;
-            $this->messageStates[$jw->jobId] = StateActive::KEY;
+            $self->jobsToExecute[$jw->jobId] = $jw;
+            $self->messageStates[$jw->jobId] = StateActive::KEY;
 
         }, $this, $jobWrapper);
     }
