@@ -1,3 +1,13 @@
+# Version 1.0.5
+
+## Bugfixes
+
+* Fixed [#784](https://github.com/appserver-io/appserver/issues/784) - Application Deployment after switching to safe user
+
+## Features
+
+* Closed [#758](https://github.com/appserver-io/appserver/issues/758) - Update to latest PHP 5.5.24
+
 # Version 1.0.4
 
 ## Bugfixes
