@@ -1,7 +1,7 @@
 <?php
 
 /**
- * \AppserverIo\Appserver\Core\Provisioning\CreateDatabaseStep
+ * AppserverIo\Appserver\Provisioning\Steps\CreateDatabaseStep
  *
  * NOTICE OF LICENSE
  *
@@ -18,7 +18,7 @@
  * @link      http://www.appserver.io
  */
 
-namespace AppserverIo\Appserver\Core\Provisioning;
+namespace AppserverIo\Appserver\Provisioning\Steps;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\Setup;
@@ -90,6 +90,10 @@ class CreateDatabaseStep extends AbstractStep
     {
 
         try {
+            // register the class loader again, because in a Thread the context has been lost maybe
+            $application = $this->getApplication();
+            $application->registerClassLoaders();
+
             // check if we have a valid datasource node
             if ($this->getDatasourceNode() == null) {
                 return;
@@ -105,9 +109,6 @@ class CreateDatabaseStep extends AbstractStep
 
             // load the database connection parameters
             $connectionParameters = $this->getConnectionParameters();
-
-            // register the class loader again, because in a Thread the context has been lost maybe
-            require SERVER_AUTOLOADER;
 
             // initialize and load the entity manager and the schema tool
             $metadataConfiguration = Setup::createAnnotationMetadataConfiguration($absolutePaths, true);

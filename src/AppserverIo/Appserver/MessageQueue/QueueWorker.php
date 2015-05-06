@@ -54,6 +54,17 @@ class QueueWorker extends \Thread
 {
 
     /**
+     * Initializes the message queue with the necessary data.
+     */
+    public function __construct()
+    {
+
+        // initialize the flags for start/stop handling
+        $this->run = true;
+        $this->running = false;
+    }
+
+    /**
      * Injects the priority of the queue worker.
      *
      * @param \AppserverIo\Psr\Pms\PriorityKeyInterface $priorityKey The priority of this queue worker
@@ -63,6 +74,30 @@ class QueueWorker extends \Thread
     public function injectPriorityKey(PriorityKeyInterface $priorityKey)
     {
         $this->priorityKey = $priorityKey;
+    }
+
+    /**
+     * Inject the storage for the messages.
+     *
+     * @param \AppserverIo\Storage\GenericStackable $messages The storage for the messages
+     *
+     * @return void
+     */
+    public function injectMessages(GenericStackable $messages)
+    {
+        $this->messages = $messages;
+    }
+
+    /**
+     * Inject the application instance the worker is bound to.
+     *
+     * @param \AppserverIo\Psr\Application\ApplicationInterface $application The application instance
+     *
+     * @return void
+     */
+    public function injectApplication(ApplicationInterface $application)
+    {
+        $this->application = $application;
     }
 
     /**
@@ -102,30 +137,6 @@ class QueueWorker extends \Thread
     }
 
     /**
-     * Inject the storage for the messages.
-     *
-     * @param \AppserverIo\Storage\GenericStackable $messages The storage for the messages
-     *
-     * @return void
-     */
-    public function injectMessages(GenericStackable $messages)
-    {
-        $this->messages = $messages;
-    }
-
-    /**
-     * Inject the application instance the worker is bound to.
-     *
-     * @param \AppserverIo\Psr\Application\ApplicationInterface $application The application instance
-     *
-     * @return void
-     */
-    public function injectApplication(ApplicationInterface $application)
-    {
-        $this->application = $application;
-    }
-
-    /**
      * Returns the application instance the worker is bound to.
      *
      * @return \AppserverIo\Psr\Application\ApplicationInterface The application instance
@@ -136,28 +147,23 @@ class QueueWorker extends \Thread
     }
 
     /**
-     * Attach a new message to the queue.
+     * Attaches a job for the passed wrapper to the worker instance.
      *
-     * @param \AppserverIo\Psr\Pms\MessageInterface $message The messsage to be attached to the queue
+     * @param \stdClass $jobWrapper The job wrapper to attach the job for
      *
      * @return void
      */
-    public function attach(MessageInterface $message)
+    public function attach(\stdClass $jobWrapper)
     {
 
         // force handling the timer tasks now
-        $this->synchronized(function (QueueWorker $self, MessageInterface $m) {
-
-            // store the job-ID and the PK of the message => necessary to load the message later
-            $jobWrapper = new \stdClass();
-            $jobWrapper->jobId = $m->getMessageId();
-            $jobWrapper->messageId = $m->getMessageId();
+        $this->synchronized(function (QueueWorker $self, \stdClass $jw) {
 
             // attach the job wrapper
-            $self->jobsToExecute[$jobWrapper->jobId] = $jobWrapper;
-            $this->messageStates[$jobWrapper->jobId] = StateActive::KEY;
+            $self->jobsToExecute[$jw->jobId] = $jw;
+            $self->messageStates[$jw->jobId] = StateActive::KEY;
 
-        }, $this, $message);
+        }, $this, $jobWrapper);
     }
 
     /**
@@ -174,7 +180,7 @@ class QueueWorker extends \Thread
     }
 
     /**
-     * Process a message with the state `StateActive.
+     * Process a message with the state 'StateActive'.
      *
      * @param \AppserverIo\Psr\Pms\MessageInterface $message The message to be processed
      *
@@ -182,13 +188,11 @@ class QueueWorker extends \Thread
      */
     public function processActive(MessageInterface $message)
     {
-
-        // set new state
         $this->messageStates[$message->getMessageId()] = StateToProcess::KEY;
     }
 
     /**
-     * Process a message with the state `StateInProgress.
+     * Process a message with the state 'StateInProgress'.
      *
      * @param \AppserverIo\Psr\Pms\MessageInterface $message The message to be processed
      *
@@ -221,9 +225,8 @@ class QueueWorker extends \Thread
         }
     }
 
-
     /**
-     * Process a message with the state `StateProcessed.
+     * Process a message with the state 'StateProcessed'.
      *
      * @param \AppserverIo\Psr\Pms\MessageInterface $message The message to be processed
      *
@@ -238,7 +241,7 @@ class QueueWorker extends \Thread
     }
 
     /**
-     * Process a message with the state `StateToProcess.
+     * Process a message with the state 'StateToProcess'.
      *
      * @param \AppserverIo\Psr\Pms\MessageInterface $message The message to be processed
      *
@@ -270,7 +273,7 @@ class QueueWorker extends \Thread
     }
 
     /**
-     * Process a message with the state `StateUnknown.
+     * Process a message with the state 'StateUnknown'.
      *
      * @param \AppserverIo\Psr\Pms\MessageInterface $message The message to be processed
      *
@@ -308,14 +311,38 @@ class QueueWorker extends \Thread
     }
 
     /**
+     * Does shutdown logic for request handler if something went wrong and
+     * produces a fatal error for example.
+     *
+     * @return void
+     */
+    public function shutdown()
+    {
+
+        // check if there was a fatal error caused shutdown
+        if ($lastError = error_get_last()) {
+            // initialize type + message
+            $type = 0;
+            $message = '';
+            // extract the last error values
+            extract($lastError);
+            // query whether we've a fatal/user error
+            if ($type === E_ERROR || $type === E_USER_ERROR) {
+                $this->getApplication()->getInitialContex()->getSystemLogger()->error($message);
+            }
+        }
+    }
+
+    /**
      * We process the messages/jobs here.
      *
      * @return void
-     *
-     * @throws \Exception
      */
     public function run()
     {
+
+        // register shutdown handler
+        register_shutdown_function(array(&$this, "shutdown"));
 
         // create a local instance of application and storage
         $application = $this->application;
@@ -345,6 +372,7 @@ class QueueWorker extends \Thread
                 try {
                     // load the message
                     $message = $this->messages[$jobWrapper->jobId];
+
                     // check if we've a message found
                     if ($message instanceof MessageInterface) {
                         // check the message state

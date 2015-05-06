@@ -26,6 +26,7 @@ use AppserverIo\Storage\StorageInterface;
 use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
 use AppserverIo\Appserver\Core\Api\Node\ContextNode;
 use AppserverIo\Appserver\Core\Api\Node\ManagerNodeInterface;
+use AppserverIo\Appserver\Core\Api\Node\ProvisionerNodeInterface;
 use AppserverIo\Appserver\Core\Api\Node\ClassLoaderNodeInterface;
 use AppserverIo\Appserver\Core\Interfaces\ClassLoaderInterface;
 use AppserverIo\Appserver\Naming\BindingTrait;
@@ -34,6 +35,7 @@ use AppserverIo\Psr\Naming\NamingException;
 use AppserverIo\Psr\Naming\NamingDirectoryInterface;
 use AppserverIo\Psr\Application\ManagerInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
+use AppserverIo\Psr\Application\ProvisionerInterface;
 use AppserverIo\Psr\Application\DirectoryAwareInterface;
 use AppserverIo\Psr\Application\FilesystemAwareInterface;
 use AppserverIo\Appserver\Application\Interfaces\ContextInterface;
@@ -77,6 +79,7 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
      */
     public function __construct()
     {
+        $this->run = false;
         $this->connected = false;
     }
 
@@ -174,6 +177,18 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
     public function injectClassLoaders(GenericStackable $classLoaders)
     {
         $this->classLoaders = $classLoaders;
+    }
+
+    /**
+     * Injects the storage for the provisioners.
+     *
+     * @param \AppserverIo\Storage\GenericStackable $provisioners The storage for the provisioners
+     *
+     * @return void
+     */
+    public function injectProvisioners(GenericStackable $provisioners)
+    {
+        $this->provisioners = $provisioners;
     }
 
     /**
@@ -475,6 +490,30 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
     }
 
     /**
+     * Returns the provisioner instances.
+     *
+     * @return \AppserverIo\Storage\GenericStackable The provisioner instances
+     */
+    public function getProvisioners()
+    {
+        return $this->provisioners;
+    }
+
+    /**
+     * Return the requested provisioner instance.
+     *
+     * @param string $identifier The unique identifier of the requested provisioner
+     *
+     * @return \AppserverIo\Psr\Application\ProvisionerInterface The provisioner instance
+     */
+    public function getProvisioner($identifier)
+    {
+        if (isset($this->provisioners[$identifier])) {
+            return $this->provisioners[$identifier];
+        }
+    }
+
+    /**
      * Injects an additional class loader.
      *
      * @param \AppserverIo\Appserver\Core\Interfaces\ClassLoaderInterface   $classLoader   A class loader to put on the class loader stack
@@ -508,6 +547,24 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
 
         // add the manager instance to the application
         $this->managers[$configuration->getName()] = $manager;
+    }
+
+    /**
+     * Injects the provisioner instance and the configuration.
+     *
+     * @param \AppserverIo\Psr\Application\ProvisionerInterface             $provisioner   A provisioner instance
+     * @param \AppserverIo\Appserver\Core\Api\Node\ProvisionerNodeInterface $configuration The provisioner configuration
+     *
+     * @return void
+     */
+    public function addProvisioner(ProvisionerInterface $provisioner, ProvisionerNodeInterface $configuration)
+    {
+
+        // bind the provisioner callback to the naming directory => the application itself
+        $this->bind($configuration->getName(), array(&$this, 'getProvisioner'), array($configuration->getName()));
+
+        // add the provisioner instance to the application
+        $this->provisioners[$configuration->getName()] = $provisioner;
     }
 
     /**
@@ -557,25 +614,43 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
      */
     public function connect()
     {
+        $this->start();
+    }
 
-        // log a message that we now start to connect the application
-        $this->getInitialContext()->getSystemLogger()->debug(sprintf('%s wait to be connected', $this->getName()));
+    /**
+     * TRUE if the application has been connected, else FALSE.
+     *
+     * @return boolean Returns TRUE if the application has been connected, else FALSE
+     */
+    public function isConnected()
+    {
+        return $this->connected;
+    }
 
-        // synchronize the application startup
-        $this->synchronized(function ($self) {
+    /**
+     * Provisions the initialized application.
+     *
+     * @return void
+     */
+    public function provision()
+    {
 
-            // start the application
-            $self->start();
+        // invoke the provisioners and provision the application
+        /** @var \AppserverIo\Psr\Application\ProvisionerInterface $provisioner */
+        foreach ($this->getProvisioners() as $provisioner) {
+            // log the manager we want to initialize
+            $this->getInitialContext()->getSystemLogger()->debug(
+                sprintf('Now invoking provisioner %s for application %s', get_class($provisioner), $this->getName())
+            );
 
-            while ($self->connected === false) {
-                // wait until we've been connected (classloaders and managers has been initialized)
-                $self->wait(1000000 * Application::TIME_TO_LIVE);
-            }
+            // execute the provisioning steps
+            $provisioner->provision($this);
 
-        }, $this);
-
-        // log a message that we has successfully been connected now
-        $this->getInitialContext()->getSystemLogger()->debug(sprintf('%s has successfully been connected', $this->getName()));
+            // log the manager we've successfully registered
+            $this->getInitialContext()->getSystemLogger()->debug(
+                sprintf('Successfully invoked provisioner %s for application %s', get_class($provisioner), $this->getName())
+            );
+        }
     }
 
     /**
@@ -617,6 +692,7 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
     {
 
         // initialize the registered managers
+        /** @var \AppserverIo\Psr\Application\ManagerInterface $manager */
         foreach ($this->getManagers() as $manager) {
             // log the manager we want to initialize
             $this->getInitialContext()->getSystemLogger()->debug(
@@ -634,6 +710,16 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
     }
 
     /**
+     * Stops the application.
+     *
+     * @return void
+     */
+    public function stop()
+    {
+        $this->run = false;
+    }
+
+    /**
      * This is the threads main() method that initializes the application with the autoloader and
      * instantiates all the necessary manager instances.
      *
@@ -642,8 +728,15 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
      */
     public function run()
     {
+
         // register shutdown handler
         register_shutdown_function(array(&$this, "shutdown"));
+
+        // we want to start working now
+        $this->run = true;
+
+        // log a message that we now start to connect the application
+        $this->getInitialContext()->getSystemLogger()->debug(sprintf('%s wait to be connected', $this->getName()));
 
         // create the applications 'env' directory the beans will be bound to
         $appEnvDir = $this->createSubdirectory('env');
@@ -657,6 +750,9 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
         // initialize the managers
         $this->initializeManagers();
 
+        // provision the application
+        $this->provision();
+
         // initialize the profile logger and the thread context
         $profileLogger = null;
         if ($profileLogger = $this->getInitialContext()->getLogger(LoggerUtils::PROFILE)) {
@@ -666,8 +762,11 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
         // we're connected now
         $this->connected = true;
 
+        // log a message that we has successfully been connected now
+        $this->getInitialContext()->getSystemLogger()->debug(sprintf('%s has successfully been connected', $this->getName()));
+
         // we do nothing here
-        while (true) {
+        while ($this->run) {
             // wait a second to lower system load
             $this->synchronized(function ($self) {
                 $self->wait(1000000 * Application::TIME_TO_LIVE);
@@ -688,13 +787,15 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
      */
     public function shutdown()
     {
-        // check if there was a fatal error caused shutdown
-        $lastError = error_get_last();
 
-        // query whether we found an error
-        if ($lastError['type'] === E_ERROR || $lastError['type'] === E_USER_ERROR) {
-            // log the last found error
-            $this->getInitialContext()->getSystemLogger()->critical($lastError['message']);
+        // check if there was a fatal error caused shutdown
+        if ($lastError = error_get_last()) {
+            // extract the last error values
+            extract($lastError);
+            // query whether we've a fatal/user error
+            if ($type === E_ERROR || $type === E_USER_ERROR) {
+                $this->getInitialContext()->getSystemLogger()->critical($message);
+            }
         }
     }
 }

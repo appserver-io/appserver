@@ -73,4 +73,8 @@
         <manager name="AspectManagerInterface" type="AppserverIo\Appserver\AspectContainer\AspectManager" factory="AppserverIo\Appserver\AspectContainer\AspectManagerFactory"/>
     </managers>
 
+    <provisioners>
+        <provisioner name="standard" factory="AppserverIo\Appserver\Provisioning\StandardProvisionerFactory" type="AppserverIo\Appserver\Provisioning\StandardProvisioner" />
+    </provisioners>
+
 </context>

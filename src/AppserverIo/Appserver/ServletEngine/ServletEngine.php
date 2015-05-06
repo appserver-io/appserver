@@ -122,12 +122,17 @@ class ServletEngine extends AbstractServletEngine
             return;
         }
 
+        // load the application associated with this request
+        $application = $this->findRequestedApplication($requestContext);
+
+        // check if the application has already been connected
+        if ($application->isConnected() === false) {
+            throw new \Exception(sprintf('Application %s has not connected yet', $application->getName()), 503);
+        }
+
         // create a copy of the valve instances
         $valves = $this->valves;
         $handlers = $this->handlers;
-
-        // load the application associated with this request
-        $application = $this->findRequestedApplication($requestContext);
 
         // create a new request instance from the HTTP request
         $servletRequest = new Request();

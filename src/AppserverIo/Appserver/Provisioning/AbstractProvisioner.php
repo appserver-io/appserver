@@ -1,7 +1,7 @@
 <?php
 
 /**
- * \AppserverIo\Appserver\Core\AbstractProvisioner
+ * \AppserverIo\Appserver\Provisioning\AbstractProvisioner
  *
  * NOTICE OF LICENSE
  *
@@ -18,10 +18,10 @@
  * @link      http://www.appserver.io
  */
 
-namespace AppserverIo\Appserver\Core;
+namespace AppserverIo\Appserver\Provisioning;
 
+use AppserverIo\Psr\Application\ProvisionerInterface;
 use AppserverIo\Appserver\Application\Interfaces\ContextInterface;
-use AppserverIo\Appserver\Core\Interfaces\ProvisionerInterface;
 use AppserverIo\Appserver\Core\Api\Node\ProvisionerNodeInterface;
 
 /**

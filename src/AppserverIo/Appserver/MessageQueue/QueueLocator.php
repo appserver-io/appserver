@@ -39,6 +39,29 @@ class QueueLocator implements ResourceLocatorInterface
 {
 
     /**
+     * Runs a lookup for the message queue with the passed lookup name and
+     * session ID.
+     *
+     * @param \AppserverIo\Psr\Pms\QueueContextInterface $queueManager The queue manager instance
+     * @param string                                     $lookupName   The queue lookup name
+     * @param string                                     $sessionId    The session ID
+     * @param array                                      $args         The arguments passed to the queue
+     *
+     * @return \AppserverIo\Psr\Pms\QueueInterface The requested queue instance
+     */
+    public function lookup(QueueContextInterface $queueManager, $lookupName, $sessionId = null, array $args = array())
+    {
+
+        // load registered queues
+        $queues = $queueManager->getQueues();
+
+        // return the requested message queue for the passed priority key, if available
+        if (isset($queues[$lookupName])) {
+            return $queues[$lookupName];
+        }
+    }
+
+    /**
      * Tries to locate the queue that handles the request and returns the instance
      * if one can be found.
      *
@@ -54,7 +77,7 @@ class QueueLocator implements ResourceLocatorInterface
         // load registered queues and requested queue name
         $queues = $queueManager->getQueues();
 
-        // return the listener of requested queue if available
+        // return the requested message queue for the passed priority key, if available
         if (array_key_exists($queueName = $queue->getName(), $queues)) {
             return $queues[$queueName];
         }

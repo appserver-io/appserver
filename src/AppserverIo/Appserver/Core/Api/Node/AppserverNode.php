@@ -66,13 +66,6 @@ class AppserverNode extends AbstractNode implements SystemConfigurationInterface
     protected $extractors = array();
 
     /**
-     * Array with nodes for the registered provisioners.
-     *
-     * @var array @AS\Mapping(nodeName="provisioners/provisioner", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\ProvisionerNode")
-     */
-    protected $provisioners = array();
-
-    /**
      * Array with nodes for the registered containers.
      *
      * @var array @AS\Mapping(nodeName="containers/container", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\ContainerNode")
@@ -110,7 +103,6 @@ class AppserverNode extends AbstractNode implements SystemConfigurationInterface
         $this->initDefaultLoggers();
         $this->initDefaultScanners();
         $this->initDefaultExtractors();
-        $this->initDefaultProvisioners();
         $this->initDefaultInitialContext();
     }
 
@@ -201,21 +193,6 @@ class AppserverNode extends AbstractNode implements SystemConfigurationInterface
 
         // add extractor to the appserver node
         $this->extractors[$pharExtractor->getPrimaryKey()] = $pharExtractor;
-    }
-
-    /**
-     * Initializes the default provisioners.
-     *
-     * @return void
-     */
-    protected function initDefaultProvisioners()
-    {
-
-        // initialize the provisioners
-        $standardProvisioner = new ProvisionerNode('standard', 'AppserverIo\Appserver\Core\StandardProvisioner');
-
-        // add the provisioners to the appserver node
-        $this->provisioners[$standardProvisioner->getPrimaryKey()] = $standardProvisioner;
     }
 
     /**

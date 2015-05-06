@@ -1,7 +1,7 @@
 <?php
 
 /**
- * \AppserverIo\Appserver\Core\Provisioning\ExecCliStep
+ * AppserverIo\Appserver\Provisioning\Steps\ExecCliStep
  *
  * NOTICE OF LICENSE
  *
@@ -18,7 +18,7 @@
  * @link      http://www.appserver.io
  */
 
-namespace AppserverIo\Appserver\Core\Provisioning;
+namespace AppserverIo\Appserver\Provisioning\Steps;
 
 /**
  * An step implementation that executes a PHP script defined in configuration.
