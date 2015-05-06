@@ -1,3 +1,15 @@
+# Version 1.1.0-beta1
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Closed [#759](https://github.com/appserver-io/appserver/issues/759) - Update to latest PHP 5.6.8
+* Closed [#760](https://github.com/appserver-io/appserver/issues/760) - Asynchronous Deployment of Applications
+* Closed [#684](https://github.com/appserver-io/appserver/issues/684) - Update to latest pthreads version
+
 # Version 1.1.0-alpha3
 
 ## Bugfixes
