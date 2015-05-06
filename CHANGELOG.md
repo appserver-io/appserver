@@ -6,7 +6,7 @@
 
 ## Features
 
-* None
+* Closed [#758](https://github.com/appserver-io/appserver/issues/758) - Update to latest PHP 5.5.24
 
 # Version 1.0.4
 
