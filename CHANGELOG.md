@@ -3,9 +3,11 @@
 ## Bugfixes
 
 * Fixed [#784](https://github.com/appserver-io/appserver/issues/784) - Application Deployment after switching to safe user
+* Fixed [#790](https://github.com/appserver-io/appserver/issues/790) - Long running messages in Message Queue blocks other messages
 
 ## Features
 
+* Remove [#777](https://github.com/appserver-io/appserver/issues/777) - Remove remote http://www.w3.org/2001/03/xml.xsd from schemas and configurations
 * Closed [#758](https://github.com/appserver-io/appserver/issues/758) - Update to latest PHP 5.5.24
 
 # Version 1.0.4
