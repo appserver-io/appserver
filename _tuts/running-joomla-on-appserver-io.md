@@ -2,7 +2,7 @@
 layout: tutorial
 title: Running Joomla
 meta_title: Running Joomla on appserver.io
-meta_description: This guide shows you how easy it is to install appserver.io on a Mac and run Joomla on the most powerful PHP infrastructure on the planet.
+meta_description: This guide shows you how easy it is to install appserver.io on a Mac and run joomla on the most powerful PHP infrastructure on the planet.
 description: It shows you how easy it is to install Joomla on appserver.io.
 position: 80
 group: Tutorials
@@ -11,7 +11,7 @@ permalink: /get-started/tutorials/running-joomla-on-appserver-io.html
 
 
 Appserver.io is a cool and sophiscated infrastructure fully built upon the PHP stack. This makes it truely easy
-to develop and extend the platform. Appserver.io comes with an built in webserver module with PHP-FPM therefore it is
+to develop and extend the platform. Appserver.io comes with a built in webserver module with PHP-FPM therefore it is
 possible to install any PHP-App and run it on that platform. The following guide shows how easy it is to
 install appserver.io on a Mac and run Wordpress.
 
@@ -50,12 +50,12 @@ Of course there is no need to change the port if you only want to check out the 
 In order to run the application on appserver.io, download the latest joomla release from joomla.org.
 
 To install joomla there are now two options. The easiest way is to install joomla without creating a
-vhost. Therefore just unpack the joomla source into your Webrootfolder which in case of the appserver is always
+vhost. Therefore just unpack the joomla source into your webrootfolder which in case of the appserver is always
 the webapps folder underneath /opt/appserver/webapps/. In that folder you will still find the already installed example
 app and of course the welcome page. Just create a folder named „joomla“ and unpack the source there.
 
 After successfully unpacking the joomla sources you are able to use the joomla webinstaller just by open a
-browser and calling the URL http://127.0.0.1:9080/joomla/. Before you you start the installation it is necessary
+browser and calling the URL http://127.0.0.1:9080/joomla/. Before you start the installation it is necessary
 to correct the rights of the joomla folder to ensure joomla is able to write the configuration.
 
 ```bash
@@ -96,7 +96,7 @@ Add the following lines:
 ```bash
 127.0.0.1 joomla.local
 ::1 joomla.local
-fe80::1%lo0 jomla.local
+fe80::1%lo0 joomla.local
 ```
 
 Afterwards add the vhost to the webserver config of the appserver which you also find in
@@ -112,7 +112,7 @@ available. Add the following configuration within the <virtualHosts> tag.
 </virtualHost>
 ```
 
-After adding the Vhost, restart the appserver and start with the Installation as described at
+After adding the vhost, restart the appserver and start with the Installation as described at
 the beginning of this tutorial
 
 ```bash
