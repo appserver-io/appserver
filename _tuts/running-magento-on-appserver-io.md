@@ -254,7 +254,7 @@ Then add a virtual host node to the webserver configuration that you will find i
 </virtualHost>
 ```
 
-After adding the virtual host [restart]((<{{"/get-started/documentation/basic-usage.html#start-and-stop-scripts" | prepend: site.baseurl }}">)) the application server.
+After adding the virtual host [restart](<{{"/get-started/documentation/basic-usage.html#start-and-stop-scripts" | prepend: site.baseurl }}>) the application server.
 
 As Magento stores the base URL of the shop in the database, you  **MUST** change these URLs in the database. Again, login to the `MySQL` command line with 
 
