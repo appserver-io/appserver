@@ -215,7 +215,7 @@ Adding rewrite funtionality for your Magento installation is a very similar proc
 </rewrites>
 ```
 
-[Restart]((<{{"/get-started/documentation/basic-usage.html#start-and-stop-scripts" | prepend: site.baseurl }}">)) the application server and proceed to activate the Magento Rewrite functionality in the `admin` panel.
+[Restart](<{{"/get-started/documentation/basic-usage.html#start-and-stop-scripts" | prepend: site.baseurl }}>) the application server and proceed to activate the Magento Rewrite functionality in the `admin` panel.
 
 ## Virtual Host Configuration
 
