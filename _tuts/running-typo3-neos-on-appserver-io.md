@@ -11,7 +11,7 @@ permalink: /get-started/tutorials/running-typo3-neos-on-appserver-io.html
 
 
 Appserver.io is a pretty cool and sophiscated infrastructure fully built upon the PHP stack. This makes it truely easy
-to develop and extend the platform. Appserver.io comes with an built in webserver module with PHP-FPM therefore it is
+to develop and extend the platform. Appserver.io comes with a built in webserver module with PHP-FPM therefore it is
 possible to install any PHP-App you like and run it on that platform. The following guide shows you how easy it is to
 install appserver.io on a Mac and run TYPO3 Neos on it.
 
