@@ -50,7 +50,7 @@ Of course there is no need to change the port if you only want to check out the 
 Download the latest TYPO3 Release from typo3.org.
 
 To install TYPO3 we have now two options. The easiest way is to install TYPO3 without creating a vhost.
-Therefore you just unpack the TYPO3 source into your Webrootfolder which in case of the appserver is always the webapps
+Therefore you just unpack the TYPO3 source into your webrootfolder which in case of the appserver is always the webapps
 folder underneath /opt/appserver/webapps/. In that folder you will still find the already installed example app and of
 course the welcome page. We are just creating a folder with name „newtypo3“
 
