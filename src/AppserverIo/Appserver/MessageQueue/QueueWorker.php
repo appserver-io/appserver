@@ -238,8 +238,8 @@ class QueueWorker extends \Thread
          */
         $sleepFor = pow(10, $priorityKey->getPriority() * 2);
 
-        // run forever
-        while (true) {
+        // run until we've to stop
+        while ($this->run) {
             // iterate over all job wrappers
             foreach ($jobsToExecute as $jobWrapper) {
                 try {
@@ -296,8 +296,8 @@ class QueueWorker extends \Thread
                                 unset($jobsToExecute[$message->getMessageId()]);
 
                                 // remove the message from the queue
-                                unset($messages[$message->getMessageId()]);
                                 unset($messageStates[$message->getMessageId()]);
+                                unset($messages[$message->getMessageId()]);
 
                                 break;
 
