@@ -358,4 +358,3 @@ class QueueWorker extends \Thread
         }
     }
 }
-

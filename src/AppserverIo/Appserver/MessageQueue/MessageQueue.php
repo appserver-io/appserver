@@ -319,10 +319,10 @@ class MessageQueue extends \Thread implements QueueInterface
                 $self->wait(MessageQueue::TTL);
             }, $this);
 
-                // profile the message queue
-                if ($profileLogger) {
-                    $profileLogger->debug(sprintf('Process message queue %s', $this->getName()));
-                }
+            // profile the message queue
+            if ($profileLogger) {
+                $profileLogger->debug(sprintf('Process message queue %s', $this->getName()));
+            }
         }
 
         // set to FALSE, because message queue has been stopped
