@@ -87,7 +87,7 @@ mysql> grant all on magento.* to "magento"@"localhost" identified by "magento";
 mysql> flush privileges;
 ```
 
-Optional you can use another database administration tool like `phpMyAdmin` to create the database. Of course you can also install [phpMyAdmin](<{{"/get-started/tutorials/running-phpmyadmin-on-appserver-io.html" | prepend: site.baseurl }}">) on appserver.io.
+Optional you can use another database administration tool like `phpMyAdmin` to create the database. Of course you can also install [phpMyAdmin](<{{"/get-started/tutorials/running-phpmyadmin-on-appserver-io.html" | prepend: site.baseurl }}>) on appserver.io.
 
 Now, as you are prepared to step through the Magento installer, start your favorite browser and open 
 `http://127.0.0.1:9080/magento`.
@@ -110,7 +110,7 @@ Proceed to step 3 by clicking on the button `Continue`.
 
 ![Magento Installation Wizard - Step 3]({{ "/assets/img/posts/magento_installation_step_03.png" | prepend: site.baseurl }} "Create Admin Account")
 
-The final step of the installation wizard allows to create an admin account. This is necessary to login to the the `admin` panel. Enter your personal data and the user credentials here. The `Encryption Key` is optional, so you do not have to enter any data here.
+The final step of the installation wizard allows to create an admin account. This is necessary to login to the `admin` panel. Enter your personal data and the user credentials here. The `Encryption Key` is optional, so you do not have to enter any data here.
 
 Finish the installation wizard by clicking on the button `Continue`.
 
@@ -202,7 +202,7 @@ Now the `appserver.xml` file should look like this
 </appserver>
 ```
 
-[Restart]((<{{"/get-started/documentation/basic-usage.html#start-and-stop-scripts" | prepend: site.baseurl }}">)) the application server and open the dashboard again. The security warning should have been gone!
+[Restart](<{{"/get-started/documentation/basic-usage.html#start-and-stop-scripts" | prepend: site.baseurl }}>) the application server and open the dashboard again. The security warning should have been gone!
 
 ## Adding Rewrites
 
@@ -215,7 +215,7 @@ Adding rewrite funtionality for your Magento installation is a very similar proc
 </rewrites>
 ```
 
-[Restart]((<{{"/get-started/documentation/basic-usage.html#start-and-stop-scripts" | prepend: site.baseurl }}">)) the application server and proceed to activate the Magento Rewrite functionality in the `admin` panel.
+[Restart](<{{"/get-started/documentation/basic-usage.html#start-and-stop-scripts" | prepend: site.baseurl }}>) the application server and proceed to activate the Magento Rewrite functionality in the `admin` panel.
 
 ## Virtual Host Configuration
 
@@ -254,7 +254,7 @@ Then add a virtual host node to the webserver configuration that you will find i
 </virtualHost>
 ```
 
-After adding the virtual host [restart]((<{{"/get-started/documentation/basic-usage.html#start-and-stop-scripts" | prepend: site.baseurl }}">)) the application server.
+After adding the virtual host [restart](<{{"/get-started/documentation/basic-usage.html#start-and-stop-scripts" | prepend: site.baseurl }}>) the application server.
 
 As Magento stores the base URL of the shop in the database, you  **MUST** change these URLs in the database. Again, login to the `MySQL` command line with 
 
@@ -310,7 +310,7 @@ Rotating the Magento Logfiles can also be activated by adding the following line
 
 > Keep in mind, that the directory `webapps/magento/var/log` has to be relative from the application servers base directory. You can also add multiple `<directory>` nodes pointing to directories containing files to be rotated.
 
-After [restarting]((<{{"/get-started/documentation/basic-usage.html#start-and-stop-scripts" | prepend: site.baseurl }}">)) the application server, your Magento log files will be rotated every day, or if they reached 1 MB.
+After [restarting](<{{"/get-started/documentation/basic-usage.html#start-and-stop-scripts" | prepend: site.baseurl }}>) the application server, your Magento log files will be rotated every day, or if they reached 1 MB.
 
 ## Executing Magento CRON Jobs
 
@@ -488,7 +488,7 @@ class CronSessionBean implements TimedObjectInterface
 
 You have the choice. Either, save the PHP code from above into your Magento application folder `/opt/appserver/webapps/magento` under `META-INF/classes/AppserverIo/Apps/Magento/Cron/SessionBeans/CronSessionBean.php` or read the [installation](https://github.com/appserver-io-apps/magento-cron#installation) instructions of the repository.
 
-After [restarting]((<{{"/get-started/documentation/basic-usage.html#start-and-stop-scripts" | prepend: site.baseurl }}">)) the application server, your Magento CRON jobs will be executed every minute.
+After [restarting](<{{"/get-started/documentation/basic-usage.html#start-and-stop-scripts" | prepend: site.baseurl }}>) the application server, your Magento CRON jobs will be executed every minute.
 
 ## Summary
 
