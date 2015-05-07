@@ -40,7 +40,7 @@ system correctly.
 
 You will need a running installation of **appserver.io** *(>= Version 1.0.1)*. If you are new to this
 project you can easily [download](<{{ "/get-started/downloads.html" | prepend: site.baseurl }}>) and follow the
-[installation guide](<{{ "get-started/documentation/installation.html" | prepend: site.baseurl }}>) for your specific OS.
+[installation guide](<{{ "/get-started/documentation/installation.html" | prepend: site.baseurl }}>) for your specific OS.
 
 
 <br/>
