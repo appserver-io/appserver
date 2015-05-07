@@ -98,12 +98,12 @@ available there. Put the following configuration within the <virtualHosts> tag.
 </virtualHost>
 ```
 
-After adding the Vhost you have to restart the appserver and if everything was correct you you can go ahead directly
+After adding the vhost you have to restart the appserver and if everything was correct you can go ahead directly
 with the Neos installation itself.
 
 `sudo /opt/appserver/sbin/appserverctl restart`
 
-Therefore you just unpack the TYPO3 Neos source into your Webrootfolder which in case of the appserver is always the
+Therefore you just unpack the TYPO3 Neos source into your webrootfolder which in case of the appserver is always the
 webapps folder underneath `/opt/appserver/webapps/`. In that folder you will still find the already installed example app
 and of course the welcome page. We are just creating a folder with name „neos“ and unpacking the source there.
 Now you have to change the rights so Neos is able to create folders and files below.
@@ -111,7 +111,7 @@ Now you have to change the rights so Neos is able to create folders and files be
 `chmod -R 775 /opt/appserver/webapps/neos/`
 
 After that you are able to use the TYPO3 Neos installer just by opening a browser and calling the URL
-http://neos.local:9080/setup. If you do so TYPO3 Neos let you go thorugh the installation easily. At the first page
+http://neos.local:9080/setup. If you do so TYPO3 Neos let you go throught the installation easily. At the first page
 Neos is asking for the initial installation password which you can find in
 
 `/opt/appserver/webapps/neos/Data/SetupPassword.txt`
