@@ -287,7 +287,6 @@ class MessageQueue extends \Thread implements QueueInterface
 
         // create a separate queue for each priority
         foreach (PriorityKeys::getAll() as $priorityKey) {
-
             // create the containers for the worker
             $jobsToExceute[$counter] = new GenericStackable();
 
