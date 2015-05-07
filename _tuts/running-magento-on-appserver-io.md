@@ -110,7 +110,7 @@ Proceed to step 3 by clicking on the button `Continue`.
 
 ![Magento Installation Wizard - Step 3]({{ "/assets/img/posts/magento_installation_step_03.png" | prepend: site.baseurl }} "Create Admin Account")
 
-The final step of the installation wizard allows to create an admin account. This is necessary to login to the the `admin` panel. Enter your personal data and the user credentials here. The `Encryption Key` is optional, so you do not have to enter any data here.
+The final step of the installation wizard allows to create an admin account. This is necessary to login to the `admin` panel. Enter your personal data and the user credentials here. The `Encryption Key` is optional, so you do not have to enter any data here.
 
 Finish the installation wizard by clicking on the button `Continue`.
 
@@ -202,7 +202,7 @@ Now the `appserver.xml` file should look like this
 </appserver>
 ```
 
-[Restart]((<{{"/get-started/documentation/basic-usage.html#start-and-stop-scripts" | prepend: site.baseurl }}">)) the application server and open the dashboard again. The security warning should have been gone!
+[Restart]((<{{"/get-started/documentation/basic-usage.html#start-and-stop-scripts" | prepend: site.baseurl }}>)) the application server and open the dashboard again. The security warning should have been gone!
 
 ## Adding Rewrites
 
