@@ -222,7 +222,6 @@ class QueueWorker extends \Thread
                     if ($message instanceof MessageInterface) {
                         // set the inital message state if not done
                         if (isset($messageStates[$jobWrapper->jobId]) === false) {
-
                             // initialize the default message state
                             if ($state = $message->getState()) {
                                 $messageStates[$jobWrapper->jobId] = $state->getState();
@@ -295,7 +294,6 @@ class QueueWorker extends \Thread
 
                                 // we only process 50 jobs in parallel
                                 if ($inQueue < 50) {
-
                                     // start the job and add it to the internal array
                                     $jobsExecuting[$message->getMessageId()] = new Job(clone $message, $application);
 
