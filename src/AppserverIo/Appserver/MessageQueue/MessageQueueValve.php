@@ -59,9 +59,6 @@ class MessageQueueValve implements ValveInterface
         // unpack the message
         $message = MessageQueueProtocol::unpack($servletRequest->getBodyContent());
 
-        // @todo Not sure if we need that!!!!!!
-        $message->setState(StateActive::get());
-
         // load message queue name and priority key
         $queueName = $message->getDestination()->getName();
         $priorityKey = $message->getPriority();
