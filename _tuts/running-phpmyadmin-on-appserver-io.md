@@ -2,7 +2,7 @@
 layout: tutorial
 title: Running phpMyAdmin
 meta_title: Running phpMyAdmin on appserver.io
-meta_description: appserver.io comes with an built in webserver module with PHP-FPM therefore it is possible to install any PHP-App you like and run it on that platform.
+meta_description: appserver.io comes with a built in webserver module with PHP-FPM therefore it is possible to install any PHP-App you like and run it on that platform.
 description: It shows you how easy it is installing phpMyAdmin on appserver.io
 position: 40
 group: Tutorials
@@ -11,9 +11,9 @@ permalink: /get-started/tutorials/running-phpmyadmin-on-appserver-io.html
 
 
 Appserver.io is a pretty cool and sophiscated infrastructure fully built upon the PHP stack. This makes it truely easy
-to develop and extend the platform. Appserver.io comes with an built in webserver module with PHP-FPM therefore it is
+to develop and extend the platform. Appserver.io comes with a built in webserver module with PHP-FPM therefore it is
 possible to install any PHP-App you like and run it on that platform. The following guide shows you how easy it is to
-install appserver.io on a Mac and run Wordpress on it.
+install appserver.io on a Mac and run wordpress on it.
 
 
 **Prerequisite**: *Up and running installation of MySQL*
@@ -49,7 +49,7 @@ Of course there is no need to change the port if you only want ot check out the 
 
 Download the latest phpMyAdmin release from [http://phpmyadmin.net](<http://phpmyadmin.net>).
 
-After successfully unpacking the phpmyadmin sources into the webapps folder within the your appserver installation you 
+After successfully unpacking the phpmyadmin sources into the webapps folder within your appserver installation you 
 should correct the rights of the phpmyadmin folder to ensure phpmyadmin is able to write to the configuration. 
 
 ```bash
