@@ -87,7 +87,7 @@ mysql> grant all on magento.* to "magento"@"localhost" identified by "magento";
 mysql> flush privileges;
 ```
 
-Optional you can use another database administration tool like `phpMyAdmin` to create the database. Of course you can also install [phpMyAdmin](<{{"/get-started/tutorials/running-phpmyadmin-on-appserver-io.html" | prepend: site.baseurl }}">) on appserver.io.
+Optional you can use another database administration tool like `phpMyAdmin` to create the database. Of course you can also install [phpMyAdmin](<{{"/get-started/tutorials/running-phpmyadmin-on-appserver-io.html" | prepend: site.baseurl }}>) on appserver.io.
 
 Now, as you are prepared to step through the Magento installer, start your favorite browser and open 
 `http://127.0.0.1:9080/magento`.
