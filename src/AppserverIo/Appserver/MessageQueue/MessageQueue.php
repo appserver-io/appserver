@@ -231,12 +231,38 @@ class MessageQueue extends \Thread implements QueueInterface
     }
 
     /**
+     * Does shutdown logic for request handler if something went wrong and
+     * produces a fatal error for example.
+     *
+     * @return void
+     */
+    public function shutdown()
+    {
+
+        // check if there was a fatal error caused shutdown
+        if ($lastError = error_get_last()) {
+            // initialize type + message
+            $type = 0;
+            $message = '';
+            // extract the last error values
+            extract($lastError);
+            // query whether we've a fatal/user error
+            if ($type === E_ERROR || $type === E_USER_ERROR) {
+                $this->getApplication()->getInitialContext()->getSystemLogger()->error($message);
+            }
+        }
+    }
+
+    /**
      * We process the messages/jobs here.
      *
      * @return void
      */
     public function run()
     {
+
+        // register shutdown handler
+        register_shutdown_function(array(&$this, "shutdown"));
 
         // create a local instance of application and storage
         $application = $this->application;
@@ -254,22 +280,16 @@ class MessageQueue extends \Thread implements QueueInterface
         $messages = $this->messages;
 
         // prepare the storages
-        $jobsExecuting = array();
         $jobsToExceute = array();
-        $messageStates = array();
 
         // initialize the counter for the storages
         $counter = 0;
 
         // create a separate queue for each priority
         foreach (PriorityKeys::getAll() as $priorityKey) {
-            // ATTENTION: We use an array for the jobs (threads) that are executing acutually.
-            //            Using stackables leads to random segfaults on Windows!
-            $jobsExecuting[$counter] = array();
 
             // create the containers for the worker
             $jobsToExceute[$counter] = new GenericStackable();
-            $messageStates[$counter] = new GenericStackable();
 
             // initialize and start the queue worker
             $queueWorker = new QueueWorker();
@@ -278,9 +298,7 @@ class MessageQueue extends \Thread implements QueueInterface
             $queueWorker->injectApplication($application);
 
             // attach the storages
-            $queueWorker->injectJobsExecuting($jobsExecuting[$counter]);
             $queueWorker->injectJobsToExecute($jobsToExceute[$counter]);
-            $queueWorker->injectMessageStates($messageStates[$counter]);
 
             // start the worker instance
             $queueWorker->start();

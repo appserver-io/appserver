@@ -45,10 +45,8 @@ use AppserverIo\Messaging\Utils\StateUnknown;
  *
  * @property boolean                                           $run           Flag to start/stop the worker
  * @property \AppserverIo\Psr\Application\ApplicationInterface $application   The application instance with the queue manager/locator
- * @property \AppserverIo\Storage\GenericStackable             $jobsExecuting The storage for the jobs currently executing
  * @property \AppserverIo\Storage\GenericStackable             $jobsToExecute The storage for the jobs to be executed
  * @property \AppserverIo\Storage\GenericStackable             $messages      The storage for the messages
- * @property \AppserverIo\Storage\GenericStackable             $messageStates The storage for the messages' states
  * @property \AppserverIo\Psr\Pms\PriorityKeyInterface         $priorityKey   The priority of this queue worker
  */
 class QueueWorker extends \Thread
@@ -87,18 +85,6 @@ class QueueWorker extends \Thread
     }
 
     /**
-     * Inject the application instance the worker is bound to.
-     *
-     * @param \AppserverIo\Psr\Application\ApplicationInterface $application The application instance
-     *
-     * @return void
-     */
-    public function injectApplication(ApplicationInterface $application)
-    {
-        $this->application = $application;
-    }
-
-    /**
      * Inject the storage for the jobs to be executed.
      *
      * @param \AppserverIo\Storage\GenericStackable $jobsToExecute The storage for the jobs to be executed
@@ -111,27 +97,15 @@ class QueueWorker extends \Thread
     }
 
     /**
-     * Inject the storage for the message states.
+     * Inject the application instance the worker is bound to.
      *
-     * @param \AppserverIo\Storage\GenericStackable $messageStates The storage for the message states
-     *
-     * @return void
-     */
-    public function injectMessageStates(GenericStackable $messageStates)
-    {
-        $this->messageStates = $messageStates;
-    }
-
-    /**
-     * Inject the storage for the executing jobs.
-     *
-     * @param array $jobsExecuting The storage for the executing jobs
+     * @param \AppserverIo\Psr\Application\ApplicationInterface $application The application instance
      *
      * @return void
      */
-    public function injectJobsExecuting(array $jobsExecuting)
+    public function injectApplication(ApplicationInterface $application)
     {
-        $this->jobsExecuting = $jobsExecuting;
+        $this->application = $application;
     }
 
     /**
@@ -154,13 +128,9 @@ class QueueWorker extends \Thread
     public function attach(\stdClass $jobWrapper)
     {
 
-        // force handling the timer tasks now
+        // attach the job wrapper
         $this->synchronized(function (QueueWorker $self, \stdClass $jw) {
-
-            // attach the job wrapper
             $self->jobsToExecute[$jw->jobId] = $jw;
-            $self->messageStates[$jw->jobId] = StateActive::KEY;
-
         }, $this, $jobWrapper);
     }
 
@@ -216,9 +186,11 @@ class QueueWorker extends \Thread
         // create local instances of the storages
         $messages = $this->messages;
         $priorityKey = $this->priorityKey;
-        $messageStates = $this->messageStates;
         $jobsToExecute = $this->jobsToExecute;
-        $jobsExecuting = $this->jobsExecuting;
+
+        // initialize the arrays for the message states and the jobs executing
+        $messageStates = array();
+        $jobsExecuting = array();
 
         // register the class loader again, because each thread has its own context
         $application->registerClassLoaders();
@@ -238,8 +210,8 @@ class QueueWorker extends \Thread
          */
         $sleepFor = pow(10, $priorityKey->getPriority() * 2);
 
-        // run forever
-        while (true) {
+        // run until we've to stop
+        while ($this->run) {
             // iterate over all job wrappers
             foreach ($jobsToExecute as $jobWrapper) {
                 try {
@@ -248,6 +220,17 @@ class QueueWorker extends \Thread
 
                     // check if we've a message found
                     if ($message instanceof MessageInterface) {
+                        // set the inital message state if not done
+                        if (isset($messageStates[$jobWrapper->jobId]) === false) {
+
+                            // initialize the default message state
+                            if ($state = $message->getState()) {
+                                $messageStates[$jobWrapper->jobId] = $state->getState();
+                            } else {
+                                $messageStates[$jobWrapper->jobId] = StateUnknown::KEY;
+                            }
+                        }
+
                         // check the message state
                         switch ($messageStates[$jobWrapper->jobId]) {
 
@@ -273,9 +256,6 @@ class QueueWorker extends \Thread
                                         sprintf('Job %s has been finished, remove it from job queue now', $message->getMessageId())
                                     );
 
-                                    // we also remove the job
-                                    unset($jobsExecuting[$message->getMessageId()]);
-
                                     // set the new state now
                                     $messageStates[$message->getMessageId()] = StateProcessed::KEY;
 
@@ -292,12 +272,18 @@ class QueueWorker extends \Thread
                             case StateFailed::KEY:
                             case StateProcessed::KEY:
 
-                                // remove the job from the queue with jobs that has to be executed
-                                unset($jobsToExecute[$message->getMessageId()]);
+                                // load the unique message-ID
+                                $messageId = $message->getMessageId();
 
-                                // remove the message from the queue
-                                unset($messages[$message->getMessageId()]);
-                                unset($messageStates[$message->getMessageId()]);
+                                // remove the job from the queue with jobs that has to be executed
+                                unset($jobsToExecute[$messageId]);
+
+                                // also remove the job
+                                unset($jobsExecuting[$messageId]);
+
+                                // finally, remove the message states and the message from the queue
+                                unset($messageStates[$messageId]);
+                                unset($messages[$messageId]);
 
                                 break;
 
@@ -311,7 +297,7 @@ class QueueWorker extends \Thread
                                 if ($inQueue < 50) {
 
                                     // start the job and add it to the internal array
-                                    $jobsExecuting[$message->getMessageId()] = new Job($message, $application);
+                                    $jobsExecuting[$message->getMessageId()] = new Job(clone $message, $application);
 
                                     // set the new state now
                                     $messageStates[$message->getMessageId()] = StateInProgress::KEY;
@@ -341,7 +327,7 @@ class QueueWorker extends \Thread
                             // we don't know the message state -> this is weired and should never happen!
                             default:
 
-                                // set new state
+                                // set the failed message state
                                 $messageStates[$message->getMessageId()] = StateFailed::KEY;
 
                                 // log a message that we've a message with an invalid state
