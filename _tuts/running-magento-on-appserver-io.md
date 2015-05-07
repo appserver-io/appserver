@@ -310,7 +310,7 @@ Rotating the Magento Logfiles can also be activated by adding the following line
 
 > Keep in mind, that the directory `webapps/magento/var/log` has to be relative from the application servers base directory. You can also add multiple `<directory>` nodes pointing to directories containing files to be rotated.
 
-After [restarting]((<{{"/get-started/documentation/basic-usage.html#start-and-stop-scripts" | prepend: site.baseurl }}">)) the application server, your Magento log files will be rotated every day, or if they reached 1 MB.
+After [restarting](<{{"/get-started/documentation/basic-usage.html#start-and-stop-scripts" | prepend: site.baseurl }}>) the application server, your Magento log files will be rotated every day, or if they reached 1 MB.
 
 ## Executing Magento CRON Jobs
 
