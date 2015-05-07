@@ -202,7 +202,7 @@ Now the `appserver.xml` file should look like this
 </appserver>
 ```
 
-[Restart]((<{{"/get-started/documentation/basic-usage.html#start-and-stop-scripts" | prepend: site.baseurl }}>)) the application server and open the dashboard again. The security warning should have been gone!
+[Restart](<{{"/get-started/documentation/basic-usage.html#start-and-stop-scripts" | prepend: site.baseurl }}>) the application server and open the dashboard again. The security warning should have been gone!
 
 ## Adding Rewrites
 
