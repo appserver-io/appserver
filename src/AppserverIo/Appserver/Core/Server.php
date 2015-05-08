@@ -543,17 +543,20 @@ class Server
             }
         }
 
-        // As we should only change user and group AFTER we made all chown and chgrp changes we will do it here
-        // after collecting if we are able to
-        if ($userChangeable) {
+        // As we should only change user and group AFTER we made all chown and chgrp
+        // changes we will do it here after collecting if we are able to.
 
-            // change the user ID
-            posix_setuid($userId);
-        }
+        // ATTENTION: We first need to change the group, because we need to be root
+        //            to do that. After that we can change the user also!!!!!!!!!!!
         if ($groupChangeable) {
 
             // change the group ID
             posix_setgid($groupId);
+        }
+        if ($userChangeable) {
+
+            // change the user ID
+            posix_setuid($userId);
         }
 
         // log a message with the time needed for restart
