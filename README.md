@@ -17,7 +17,7 @@ appserver.io includes great features like...
 -Its own performant Web Server and HTTP foundation.
 -A powerful Servlet Engine, with true multi-threading
 -A Dependency Injection Container, for building modern, modular and testable code
--A Multiple Persistence Containers, for sessions and other stateful components
+-Multiple Persistence Containers, for sessions and other stateful components
 -A Message Queue System, for contolling the execution of long running tasks
 -A Timer Service, for running scheduled tasks
 
