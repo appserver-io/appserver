@@ -7,59 +7,63 @@
 
 This is the main repository for the [appserver.io](http://www.appserver.io/) project.
 
-The objective of the project is to develop a multithreaded application server for PHP, written 
-in PHP. Yes, pure PHP! You think we aren't serious? Maybe! But we think, in order to enable as 
-many developers in our great community, this will be the one and only way. So with your help we 
-hopefully establish a solution as the standard for enterprise applications in PHP environments.
+appserver.io is a multithreaded application server for PHP, written
+in PHP. Yes, pure PHP! If you know anything about PHP, you're probably thinking we might be crazy. Well, we aren't. We are dead serious (but we most certainly still love having fun!).
 
-> Beside a blazing fast and rock solid infrastructure, we also provide functionality that you can
-> find in nearly all of the well known frameworks out there. The application server intends NOT to
-> be a framework, but it enables you to write a software without the need to use one of these 
-> frameworks. If you start developing your first software you'll recognize, because PHP lacks of
-> the needed functionality, they provide stuff they should not responsible for. Best example therefore
-> is, that nearly all of them are shipped with a own HTTP foundation library, but it would make
-> much more sense if the infrastructure will provide it and all frameworks can be implemented
-> against it, imagine reusability frameworks and libraries will gain from that approach!
+appserver.io overcomes some of the biggest overhead issues most PHP (CGI) programs have in common, through a blazingly fast and rock solid infrastructure and with concepts new to PHP. At the same time, appserver.io offers PHP developers the fundamental core features found in most popular frameworks today, yet not intending to be a framework at all. It is a suprizingly fun infrastructure for PHP development, allowing you to build powerful applications without needing the bulk of a PHP framework.
+
+appserver.io includes great features like...
+
+-Its own performant Web Server and HTTP foundation.
+-A powerful Servlet Engine, with true multi-threading
+-A Dependency Injection Container, for building modern, modular and testable code
+-Multiple Persistence Containers, for sessions and other stateful components
+-A Message Queue System, for contolling the execution of long running tasks
+-A Timer Service, for running scheduled tasks
+
+and much more.
+
+appserver.io also supports [Aspect Oriented Programming](http://en.wikipedia.org/wiki/Aspect-oriented_programming)(AOP), which is a programming paradigm also found in the most popular frameworks today, like Laravel. AOP allows the separation of cross-cutting concerns within a program, allowing developers to create even more modular systems.
+
+With appserver.io is our goal to establish a solution as the next standard for enterprise applications written in PHP. With your help, we can reach this goal.
 
 Give it a try!
 
-# Semantic versioning
-
-appserver.io follows semantic versioning. For the purpose of defining a public API we introduced [appserver.io specific `PSRs`](http://appserver.io/get-started/psrs.html).
-They build up appserver.io's public API within their own definition and versioning.
-This means that **semantic versioning applies to these PSRs, not the appserver package itself**.
 
 #### Table of Contents
 
+[Semantic Versioning](#semantic-versioning)
 [Installation](#installation)
-[Basic Usage](#basic-usage)  
-[HTTP Server](#https-server)  
-[Servlet-Engine](#servlet-engine)  
-[Annotations](#annotations)  
-[Dependency Injection](#dependency-injection)  
-[Persistence-Container](#persistence-container)  
-[Message-Queue](#message-queue)  
-[Timer-Service](#timer-service)  
-[AOP](#aop)  
-[Design-by-Contract](#design-by-contract)  
-[Runtime Environment](#runtime-environment)  
-[Configuration](#configuration)  
-[Deployment](#deployment)  
-[Uninstall](#uninstall)  
+[Basic Usage](#basic-usage)
+[HTTP Server](#https-server)
+[Servlet-Engine](#servlet-engine)
+[Annotations](#annotations)
+[Dependency Injection](#dependency-injection)
+[Persistence-Container](#persistence-container)
+[Message-Queue](#message-queue)
+[Timer-Service](#timer-service)
+[AOP](#aop)
+[Design-by-Contract](#design-by-contract)
+[Runtime Environment](#runtime-environment)
+[Configuration](#configuration)
+[Deployment](#deployment)
+[Uninstall](#uninstall)
+
+# Semantic Versioning
+
+appserver.io follows semantic versioning. For the purpose of defining a public API we introduced [appserver.io specific `PSRs`](http://appserver.io/get-started/psrs.html). These PSRs are the core to appserver.io's public API, but within their own definition and versioning, meaning that **semantic versioning applies to these PSRs and not the appserver package itself**.
 
 # Installation
 
-Besides supporting several operating systems and their specific ways of installing software, we 
-also support several ways of getting this software. So to get your appserver.io package you might
-do any of the following:
+appserver.io can be installed on several operating systems. It also supports several methods of acquiring the software. To get your appserver.io package you can do one of the following:
 
-* Download one of our [**releases**](<https://github.com/appserver-io/appserver/releases>) 
+* Download one of our [**releases**](<https://github.com/appserver-io/appserver/releases>)
   right from this repository which provide tested install packages
 
-* Grab any of our [**nightlies**](<http://builds.appserver.io/>) from our project page to get 
-  bleeding edge install packages which still might have some bugs
+* Grab any of our [**nightlies**](<http://builds.appserver.io/>) from our project page to get
+  bleeding edge install packages, (and may also containg bugs - only for testing and not for production use!!)
 
-* Build your own package using [ANT](<http://ant.apache.org/>)! To do so clone the [runtime](<https://github.com/appserver-io-php/runtime>) first. Then update at least the `os.family` and `os.distribution` build properties according to your environment and build the appserver with the ANT `build` and `create-package` target
+* Build your own package using [ANT](<http://ant.apache.org/>)! To do so clone the [runtime](<https://github.com/appserver-io-php/runtime>) first. Then update at least the `os.family` and `os.distribution` build properties according to your environment and build the appserver with the ANT `build` and `create-package` target.
 
 The package will install with these basic default characteristics:
 
@@ -79,9 +83,9 @@ For Mac OS X > 10.8.x we provide a `.pkg` file for [download](http://appserver.i
 
 > Runs and tested on Windows 7 (32-bit) and higher!
 
-As we deliver the Windows appserver as a .jar file you can [download](http://appserver.io/get-started/downloads.html#windows), a installed Java Runtime Environment (or JDK 
-that is) is a vital requirement for using it. If the JRE/JDK is not installed you have to do so 
-first. You might get it from [Oracle's download page](<http://www.oracle.com/technetwork/java/javase/downloads/jre7-downloads-1880261.html>).
+As we deliver the Windows appserver as a .jar file you can [download](http://appserver.io/get-started/downloads.html#windows), a installed Java Runtime Environment (or JDK
+that is) is a vital requirement for using it. If the JRE/JDK is not installed, you have to do so
+first. You can get the JRE from [Oracle's download page](<http://www.oracle.com/technetwork/java/javase/downloads/jre7-downloads-1880261.html>).
 If this requirement is met you can start the installation by simply double-clicking the .jar archive.
 
 ## Debian
@@ -109,48 +113,47 @@ We  also provide `.rpm` [files](http://appserver.io/get-started/downloads.html#f
 
 > Runs and tested on CentOS 6.5 (64-bit) and higher!
 
-Installation and basic usage is the same as on Fedora but we provide different [packages](http://appserver.io/get-started/downloads.html#cent-os). CentOS requires additional repositories
-like [remi](<http://rpms.famillecollet.com/>) or [EPEL](<http://fedoraproject.org/wiki/EPEL>) to 
+Installation and basic usage is the same as on Fedora, but we provide different [packages](http://appserver.io/get-started/downloads.html#cent-os). CentOS requires additional repositories
+like [remi](<http://rpms.famillecollet.com/>) or [EPEL](<http://fedoraproject.org/wiki/EPEL>) to
 satisfy additional dependencies.
 
 ## Raspbian
 
-As an experiment we offer Raspbian and brought the appserver to an ARM environment. What should 
-we say, it worked! :D With `os.distribution` = raspbian you might give it a try to build it 
-yourself (plan at least 5 hours) as we currently do not offer prepared install packages.
+As an experiment we offer a Raspbian and brought the appserver to an ARM environment. What should
+we say, it worked! :D With `os.distribution` = raspbian you might give it a try and build it
+yourself. Plan for at least 5 hours though, as we currently do not offer prepared install package.
 
 # Basic Usage
 
 The appserver will automatically start after your installation wizard (or package manager) finishes
-the setup. You can use it without limitations from now on.
+the setup. You can use it without limitations after installation is completed..
 
 Below you can find basic instructions on how to make use of the appserver. After the installation
-you might want to have a look and some apps. We got a showcase example bundled with the installation
+you might want to have a look at some apps. We included a showcase example appliation with the installation
 which you can reach at `http://127.0.0.1:9080/example`
 
-Start your favorite browser and have a look at what we can do. :) To pass the password barriers use
+Start your favorite browser and have a look at what appserver can do. :) To enter the site, use
 the default login `appserver/appserver.i0`.
 
 ## Start and Stop Scripts
 
-Together with the appserver we deliver several standalone processes which we need for proper 
+Together with the appserver, there are several standalone processes which are needed for the proper
 functioning of different features.
 
-For these processes we provide start and stop scripts for all *nix like operating systems.
-These work the way they normally would on the regarding system. They are:
+For these processes, there are start and stop scripts for all *nix like operating systems.
+These work the same as on any other *nix systems. They are:
 
 * `appserver`: The main process which will start the appserver itself
 
-* `appserver-php5-fpm`: php-fpm + appserver configuration. Our default FastCGI backend. Others might
-  be added the same way
+* `appserver-php5-fpm`: php-fpm + appserver configuration. Our default FastCGI backend. Other FCGI system can be added the same way.
 
 * `appserver-watcher`: A watchdog which monitors filesystem changes and manages appserver restarts
 
-On a normal system all three of these processes should run to enable the full feature set. To 
-ultimately run the appserver only the appserver process is needed but you will miss simple on-the-fly 
+On a normal system all three of these processes should run to enable the full feature set. To
+ultimately run the appserver only the appserver process is needed but you will miss simple on-the-fly
 deployment (`appserver-watcher`) and might have problems with legacy applications.
 
-Depending on the FastCGI Backend you want to use you might ditch `appserver-php5-fpm` for other 
+Depending on the FastCGI Backend you want to use you might ditch `appserver-php5-fpm` for other
 processes e.g. supplying you with a [hhvm](http://hhvm.com/) backend.
 
 Currently we support three different types of init scripts which support the commands `start`, `stop`,
@@ -161,7 +164,7 @@ The LAUNCHD launch daemons are located within the appserver installation at `/op
 They can be used with the schema `/opt/appserver/sbin/<DAEMON> <COMMAND>`
 
 **Debian, Raspbian, CentOS, ...(SystemV)**
-Commonly known and located in `/etc/init.d/` they too support the commands mentioned above provided 
+Commonly known and located in `/etc/init.d/` they too support the commands mentioned above provided
 in the form `/etc/init.d/<DAEMON> <COMMAND>`.
 
 **Fedora, ... (systemd)**
@@ -169,7 +172,7 @@ systemd init scripts can be used using the `systemctl` command with the syntax `
 
 **Windows**
 
-On Windows we sadly do not offer any of these scripts. After the installation you can start the 
+On Windows we sadly do not offer any of these scripts. After the installation you can start the
 Application Server with the ``server.bat`` file located within the root directory of your installation.
 Best thing to do would be starting a command prompt as an administrator and run the following commands
 (assuming default installation path):
@@ -182,7 +185,7 @@ C:\Program Files\appserver>server.bat
 # HTTP(S) Server
 
 The configuration itself is mostly self-explanatory so just have a look to the preferred config
-file and try to change settings. 
+file and try to change settings.
 Please make sure you restart the appserver after making changes. :)
 A detailed overview of all configuration settings will follow ...
 
@@ -212,7 +215,7 @@ the example for a XML based configuration below:
 The above configuration sits within the server element and opens up the virtual host `example.local`
 which has a different document root than the global configuration has. The virtual host is born. :-)
 
-The `virtualHost` element can hold params, rewrite rules or environment variables which are only 
+The `virtualHost` element can hold params, rewrite rules or environment variables which are only
 available for the host specifically.
 
 ## Configure your Environment Variables
@@ -222,37 +225,37 @@ The example below shows a basic usage of environment variables in XML format.
 
 ```xml
 <environmentVariables>
-  <environmentVariable 
-    condition="" 
+  <environmentVariable
+    condition=""
     definition="EXAMPLE_VAR=example" />
-  <environmentVariable 
-    condition="Apple@$HTTP_USER_AGENT" 
+  <environmentVariable
+    condition="Apple@$HTTP_USER_AGENT"
     definition="USER_HAS_APPLE=true" />
 </environmentVariables>
 ```
 
-There are several ways in which this feature is used. You can get a rough idea when having a 
-look at Apache modules [mod_env](<http://httpd.apache.org/docs/2.2/mod/mod_env.html>) and 
+There are several ways in which this feature is used. You can get a rough idea when having a
+look at Apache modules [mod_env](<http://httpd.apache.org/docs/2.2/mod/mod_env.html>) and
 [mod_setenvif](<http://httpd.apache.org/docs/2.2/mod/mod_setenvif.html>) which we adopted.
 
 You can make definitions of environment variables dependent on REGEX based conditions which will
 be performed on so called backreferences. These backreferences are request related server variables
 like `HTTP_USER_AGENT`.
 
-A condition has the format `<REGEX_CONDITION>@$<BACKREFERENCE>`. If the condition is empty the 
+A condition has the format `<REGEX_CONDITION>@$<BACKREFERENCE>`. If the condition is empty the
 environment variable will be set every time.
 
-The definition you can use has the form `<NAME_OF_VAR>=<THE_VALUE_TO_SET>`. The definition has 
+The definition you can use has the form `<NAME_OF_VAR>=<THE_VALUE_TO_SET>`. The definition has
 some specialities too:
 
 - Setting a var to `null` will unset the variable if it existed before
-- You can use backreferences for the value you want to set as well. But those are limited to 
+- You can use backreferences for the value you want to set as well. But those are limited to
   environment variables of the PHP process
 - Values will be treated as strings
 
 # Servlet-Engine
 
-Originally Servlets are the Java counterpart to other dynamic web technologies like PHP or the 
+Originally Servlets are the Java counterpart to other dynamic web technologies like PHP or the
 Microsoft .NET plattform. In contrast to PHP, a Servlet written in Java is not a script that'll
 be interpreted per request, instead it is a class instantiated when the Servlet Engine starts up
 process requests be invoking one of its methods.
@@ -260,14 +263,14 @@ process requests be invoking one of its methods.
 > In most cases, this is a major advantage against the common PHP way to load the script on each
 > request again. Sinces PHP applications, mostly based on frameworks like Yii or Symfony growed
 > immensly during the last years, reload all the script filest, required by the application again
-> and again slows down performance in a critical manner. This is one of the reasons, why caching 
-> is meanwhile a major part of nearly all frameworks. On the one hand, caching takes care, that 
-> the application responds to the request in an acceptable time, on the other hand it is the 
+> and again slows down performance in a critical manner. This is one of the reasons, why caching
+> is meanwhile a major part of nearly all frameworks. On the one hand, caching takes care, that
+> the application responds to the request in an acceptable time, on the other hand it is the
 > origin of many problems, such as how to invalidate parts of the cache during a applications
 > runtime.
 
 Using a Servlet Engine and, as a consequence of that, Servlets enables you to implement your
-application logic as you are used to, without the need to take care about the expensive 
+application logic as you are used to, without the need to take care about the expensive
 bootstrapping process that came together with common legacy frameworks. A Servlet is a super
 fast and simple way to implement an entry point to handle HTTP requests that allows you to
 execute all performance critical tasks, like bootstrapping, in a method called `init()`, when
@@ -313,7 +316,7 @@ class HelloWorldServlet extends HttpServlet
   /**
    * Initializes the servlet with the passed configuration.
    *
-   * @param \AppserverIo\Psr\Servlet\ServletConfigInterface $config 
+   * @param \AppserverIo\Psr\Servlet\ServletConfigInterface $config
    *   The configuration to initialize the servlet with
    *
    * @return void
@@ -334,9 +337,9 @@ class HelloWorldServlet extends HttpServlet
   /**
    * Handles a HTTP GET request.
    *
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface  $servletRequest  
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface  $servletRequest
    *   The request instance
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse 
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse
    *   The response instance
    *
    * @return void
@@ -353,7 +356,7 @@ class HelloWorldServlet extends HttpServlet
 
 and save it as `/opt/appserver/webapps/myapp/WEB-INF/classes/Namespace/Module/HelloWorldServlet.php`.
 
-Is that all? Yes! [Restart](#start-and-stop-scripts) the application server and open 
+Is that all? Yes! [Restart](#start-and-stop-scripts) the application server and open
 `http://127.0.0.1:9080/myapp/helloWorld.do` in your favorite browser, and ... vóila :)
 
 > A restart is always required since you changed code in your Servlet, because the Servlet
@@ -366,7 +369,7 @@ As one of our main targets is to make configuration as simple as possible we dec
 annotations wherever possible. As annotations are not supported natively by PHP, we provide
 annotation support over our [lang](https://github.com/appserver-io/lang) package.
 
-Beside the usage in our application server components, it'll also possible to extend your 
+Beside the usage in our application server components, it'll also possible to extend your
 application with annotations by using the functionality we deliver out-of-the-box.
 
 If you, for example, think about extending the actions of the controller component in your
@@ -398,7 +401,7 @@ class IndexController
 
   /**
    * Default action implementation.
-   * 
+   *
    * @return void
    * @Route(pattern="/index/index")
    */
@@ -408,7 +411,7 @@ class IndexController
   }
 }
 
-// create a reflection class to load the methods annotation 
+// create a reflection class to load the methods annotation
 $reflectionClass = new ReflectionClass('IndexController');
 $reflectionMethod = $reflectionClass->getMethod('indexAction');
 $reflectionAnnotation = $reflectionMethod->getAnnotation('Route');
@@ -423,7 +426,7 @@ are based on that annotation implementation.
 
 Dependency Injection, furthermore DI, enables developers to write cleaner, reusable and maintainable
 code with less coupling by injecting necessary instances at runtime instead of instantiating them in
-the class itself. Within the application server, each application has it's own scope and therefore a 
+the class itself. Within the application server, each application has it's own scope and therefore a
 own dependency injection container. This prevents your application from fatal errors like `Cannot redeclare class ...`.
 
 ## What can be injected
@@ -446,16 +449,16 @@ class MyStatefulSessionBean
 ```
 
 When the application server starts, it parses the `META-INF/classes` and `WEB-INF/classes` folder
-classes with supported annotations. If a class is found, the class will be registered in the 
+classes with supported annotations. If a class is found, the class will be registered in the
 application servers naming directory under the name you specify in the annotations `name` Attribute,
-in this example `MyStatefulSessionBean`. 
+in this example `MyStatefulSessionBean`.
 
 ## How to inject an instance
 
-Basically DI can be a manual process where you `inject` an instance, needed by another class by 
+Basically DI can be a manual process where you `inject` an instance, needed by another class by
 passing it to the constructor. Inside the application server, the injection is an process you can't
 see, it's more a kind of magic which happens behind the scenes. So instead of manually pass the
-necessary instances to a classes constructor, the DI container will do that for you. 
+necessary instances to a classes constructor, the DI container will do that for you.
 
 You simple has to tell the DI container what you need, let's have a look at the details.
 
@@ -485,7 +488,7 @@ class HelloWorldServlet extends HttpServlet
    * @EnterpriseBean(name="MyStatefulSessionBean")
    */
   protected $myStatefulSessionBean;
-  
+
   /**
    * The text to be rendered.
    *
@@ -496,7 +499,7 @@ class HelloWorldServlet extends HttpServlet
   /**
    * Initializes the servlet with the passed configuration.
    *
-   * @param \AppserverIo\Psr\Servlet\ServletConfigInterface $config 
+   * @param \AppserverIo\Psr\Servlet\ServletConfigInterface $config
    *   The configuration to initialize the servlet with
    *
    * @return void
@@ -517,9 +520,9 @@ class HelloWorldServlet extends HttpServlet
   /**
    * Handles a HTTP GET request.
    *
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface  $servletRequest  
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface  $servletRequest
    *   The request instance
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse 
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse
    *   The response instance
    *
    * @return void
@@ -535,7 +538,7 @@ class HelloWorldServlet extends HttpServlet
 ```
 
 With the `name` attribute of the `@EnterpriseBean`annotation you have the possibility to specify the
-name of the bean, you registered before by annotating it. A more detailed description about the 
+name of the bean, you registered before by annotating it. A more detailed description about the
 available annotations will be part of the [Persistence-Container](#persistence-container).
 
 ### Setter Injection
@@ -563,7 +566,7 @@ class HelloWorldServlet extends HttpServlet
    * @var \Namespace\Modulename\MyStatefulSessionBean
    */
   protected $myStatefulSessionBean;
-  
+
   /**
    * The text to be rendered.
    *
@@ -574,7 +577,7 @@ class HelloWorldServlet extends HttpServlet
   /**
    * Initializes the servlet with the passed configuration.
    *
-   * @param \AppserverIo\Psr\Servlet\ServletConfigInterface $config 
+   * @param \AppserverIo\Psr\Servlet\ServletConfigInterface $config
    *   The configuration to initialize the servlet with
    *
    * @return void
@@ -595,9 +598,9 @@ class HelloWorldServlet extends HttpServlet
   /**
    * Handles a HTTP GET request.
    *
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface  $servletRequest  
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface  $servletRequest
    *   The request instance
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse 
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse
    *   The response instance
    *
    * @return void
@@ -609,11 +612,11 @@ class HelloWorldServlet extends HttpServlet
   {
     $servletResponse->appendBodyStream($this->helloWorld);
   }
-  
+
   /**
    * Injects the session bean by its setter method.
    *
-   * @param \Namespace\Modulename\MyStatefulSessionBean $myStatefulSessionBean 
+   * @param \Namespace\Modulename\MyStatefulSessionBean $myStatefulSessionBean
    *   The instance to inject
    * @EnterpriseBean(name="MyStatefulSessionBean")
    */
@@ -630,25 +633,25 @@ class HelloWorldServlet extends HttpServlet
 # Persistence-Container
 
 As described in the introduction the application is designed inside a runtime environment like
-an application server as appserver.io is. The following example gives you a short introduction 
+an application server as appserver.io is. The following example gives you a short introduction
 how you can create a stateful session bean and the way you can invoke it's method on client side.
 
 First thing you've to do is to create your SessionBean. What is a SessionBean? It's not simple
 to describe it in only a few words, but I'll try. A SessionBean basically is a plain PHP class.
 You MUST not instantiate it directly, because the application server takes care of its complete
-lifecycle. Therefore, if you need an instance of a SessionBean, you'll ask the application server 
+lifecycle. Therefore, if you need an instance of a SessionBean, you'll ask the application server
 to give you an instance.
 
 The persistence container will give you a proxy to the session bean that allows you to
 invoke all methods the SessionBean provides as you can do if you would have a real instance. But
-the proxy also allows you to call this method over a network as remote method call. Using the 
-persistence container client makes it obvious for you if your SessionBean is on the same 
+the proxy also allows you to call this method over a network as remote method call. Using the
+persistence container client makes it obvious for you if your SessionBean is on the same
 application server instance or on another one in your network. This gives you the possibility
 to distribute the components of your application over your network what includes a great and
 seamless scalability.
 
-You have to tell the persistence container of the type the SessionBean should have. This MUST 
-be done by simply add an annotation to the class doc block. The possible annotations therefore 
+You have to tell the persistence container of the type the SessionBean should have. This MUST
+be done by simply add an annotation to the class doc block. The possible annotations therefore
 are
 
 * @Singleton
@@ -673,8 +676,8 @@ it.
 ## @Stateful SessionBean
 
 The @Stateful SessionBean is something between the other types. It is stateful for the session
-with the ID you pass to the client when you request the instance. A stateful SessionBean is 
-useful if you want to implement something like a shopping cart. If you declare the shopping cart 
+with the ID you pass to the client when you request the instance. A stateful SessionBean is
+useful if you want to implement something like a shopping cart. If you declare the shopping cart
 instance a class member of your SessionBean makes it persistent for your session lifetime.
 
 ## Example
@@ -720,7 +723,7 @@ you MUST use the persistence container client. With the `lookup()` method you'll
 your SessionBean, on that you can invoke the methods as you can do with a real instance.
 
 To develop our HelloWorldServlet further, let's raise the counter with each request to the servlet. To
-do this, we've to refactor the `doGet()` method 
+do this, we've to refactor the `doGet()` method
 
 ```php
 
@@ -754,7 +757,7 @@ class HelloWorldServlet extends HttpServlet
   /**
    * Initializes the servlet with the passed configuration.
    *
-   * @param \AppserverIo\Psr\Servlet\ServletConfigInterface $config 
+   * @param \AppserverIo\Psr\Servlet\ServletConfigInterface $config
    *   The configuration to initialize the servlet with
    *
    * @return void
@@ -775,9 +778,9 @@ class HelloWorldServlet extends HttpServlet
   /**
    * Handles a HTTP GET request.
    *
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface  $servletRequest  
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface  $servletRequest
    *   The request instance
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse 
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse
    *   The response instance
    *
    * @return void
@@ -792,7 +795,7 @@ class HelloWorldServlet extends HttpServlet
     // needs thesession-ID to bound to
     $servletRequest->getSession()->start(true);
 
-    // render 'Hello World! (has been invoked 1 times)' 
+    // render 'Hello World! (has been invoked 1 times)'
     // for example - after the first request
     $servletResponse->appendBodyStream(
       sprintf($this->helloWorld, $this->myStatefulSessionBean->raiseMe())
@@ -802,7 +805,7 @@ class HelloWorldServlet extends HttpServlet
   /**
    * Injects the session bean by its setter method.
    *
-   * @param \Namespace\Modulename\MyStatefulSessionBean $myStatefulSessionBean 
+   * @param \Namespace\Modulename\MyStatefulSessionBean $myStatefulSessionBean
    *   The instance to inject
    * @EnterpriseBean(name="MyStatefulSessionBean")
    */
@@ -817,7 +820,7 @@ That's it!
 
 > As we use a @Stateful SessionBean in this example, we MUST start a session the container can
 > bind the SessionBean to. If you would use a @Singleton SessionBean, the effect would be the
-> same, but it will not be necessary to start the session. In consequence, each Servlet that 
+> same, but it will not be necessary to start the session. In consequence, each Servlet that
 > invokes the `raiseMe()` method on the SessionBean would raise the counter.
 
 # Message-Queue
@@ -885,7 +888,7 @@ class ImportReceiver extends AbstractReceiver
 }
 ```
 
-> The important stuff here, beside the functionality you have to implement in the `onMessage()` 
+> The important stuff here, beside the functionality you have to implement in the `onMessage()`
 > message is the annotation `@MessageDriven`. You MUST annotate the MessageBean, for the container
 > to know about and register it on startup.
 
@@ -897,7 +900,7 @@ this `Queue`?
 Messages are POPOs that can be sent over the network. So if you want to send a message you have
 to initialize the Message-Queue Client and specify which `Queue` you want to send the message to.
 
-Again, we will extend our `Servlet` to start an import process on a POST request 
+Again, we will extend our `Servlet` to start an import process on a POST request
 
 ```php
 
@@ -916,7 +919,7 @@ class HelloWorldServlet extends HttpServlet
 {
 
   /**
-   * The name of the request parameter with the name of the CSV 
+   * The name of the request parameter with the name of the CSV
    * file containing the data to be imported.
    *
    * @var string
@@ -955,7 +958,7 @@ class HelloWorldServlet extends HttpServlet
   /**
    * Initializes the servlet with the passed configuration.
    *
-   * @param \AppserverIo\Psr\Servlet\ServletConfigInterface $config 
+   * @param \AppserverIo\Psr\Servlet\ServletConfigInterface $config
    *   The configuration to initialize the servlet with
    *
    * @return void
@@ -976,9 +979,9 @@ class HelloWorldServlet extends HttpServlet
   /**
    * Handles a HTTP GET request.
    *
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface  $servletRequest  
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface  $servletRequest
    *   The request instance
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse 
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse
    *   The response instance
    *
    * @return void
@@ -993,7 +996,7 @@ class HelloWorldServlet extends HttpServlet
     // needs thesession-ID to bound to
     $servletRequest->getSession()->start(true);
 
-    // render 'Hello World! (has been invoked 1 times)' 
+    // render 'Hello World! (has been invoked 1 times)'
     // for example - after the first request
     $servletResponse->appendBodyStream(
       sprintf($this->helloWorld, $this->myStatefulSessionBean->raiseMe())
@@ -1013,7 +1016,7 @@ class HelloWorldServlet extends HttpServlet
    *
    * @return void
    * @see \AppserverIo\Psr\Servlet\Http\HttpServlet::doPost()
-   * @throws \AppserverIo\Psr\Servlet\ServletException 
+   * @throws \AppserverIo\Psr\Servlet\ServletException
    *   Is thrown because the request method is not implemented yet
    */
   public function doPost(
@@ -1033,7 +1036,7 @@ class HelloWorldServlet extends HttpServlet
   /**
    * Injects the session bean by its setter method.
    *
-   * @param \Namespace\Modulename\MyStatefulSessionBean $myStatefulSessionBean 
+   * @param \Namespace\Modulename\MyStatefulSessionBean $myStatefulSessionBean
    *   The instance to inject
    * @EnterpriseBean(name="MyStatefulSessionBean")
    */
@@ -1111,7 +1114,7 @@ because of its nature, AOP needs to be deeply weaved into your code. Most of the
 available for PHP solve that by generating so called `proxy classes` that wrap the original
 methods and allow to weave the advices before, after or around the original implementation.
 
-As we're in a multithreaded environment, and performance is one of our main goals, we were not 
+As we're in a multithreaded environment, and performance is one of our main goals, we were not
 able to use on of the available solutions. As we also need to generate proxy classes, we decided
 to do that triggered by the autoloader. As the autoloader is part of the appserver.io distribution, you
 don't have to configure anything to use AOP in your code.
@@ -1119,7 +1122,7 @@ don't have to configure anything to use AOP in your code.
 ## How to add an Advice
 
 Integrating AOP in your app can be done in two ways. The first one is to define the pointcuts (and also
-advices if you like) in the same class they will get woven into, the second one is to separate them. Here we want to describe 
+advices if you like) in the same class they will get woven into, the second one is to separate them. Here we want to describe
 the second approach.
 
 Let's say we simply want to log all GET requests on our HelloWorldServlet without adding any
@@ -1148,7 +1151,7 @@ class LoggerAspect
   /**
    * Advice used to log the call to any advised method.
    *
-   * @param \AppserverIo\Doppelgaenger\Interfaces\MethodInvocationInterface $methodInvocation 
+   * @param \AppserverIo\Doppelgaenger\Interfaces\MethodInvocationInterface $methodInvocation
    *   Initially invoked method
    *
    * @return null
@@ -1187,7 +1190,7 @@ Then open `http://127.0.0.1:9080/myapp/helloWorld.do` in your favorite browser, 
 at the console.
 
 > AOP is a very powerful instrument to enrich your application with functionality with coupling.
-> But as in most cases, great power comes together with great responsibility. So it is really 
+> But as in most cases, great power comes together with great responsibility. So it is really
 > necessary to keep in mind, where your Aspect classes are and what they do. If not, someone
 > will wonder what happens and maybe need a long time to figure out problems. To avoid this, we'll
 > provide a XML based advice declaration in future versions.
@@ -1214,7 +1217,7 @@ your applications more robust and easier to debug. This contains basic features 
 - Use your basic `DocBlock` annotations `@param` and `@return` as type hints (scalar and class/interface
   based), including special features like `typed arrays` using e. g. `array<int>` (collections for
   complex types only yet)
-- Specify complex method contracts in PHP syntax using `@requires` as precondition and `@ensures` as 
+- Specify complex method contracts in PHP syntax using `@requires` as precondition and `@ensures` as
   postcondition
 - Specify a state of validity for your classes (e.g. `$this->attribute !== null`) which will be true
   all times using `@invariant`
@@ -1236,7 +1239,7 @@ This features a 4 step process:
 
 ## Usage
 
-Supposed, we want to make sure, that the counter in our stateful SessionBean will always be an integer, we can 
+Supposed, we want to make sure, that the counter in our stateful SessionBean will always be an integer, we can
 define a simple contract therefor
 
 ```php
@@ -1272,7 +1275,7 @@ class MyStatefulSessionBean
 ```
 
 Depending on your configuration, if a method would try to set a string on the counter variable, the
-Design-by-Contract implementation would either throw an exception or write an error message to our 
+Design-by-Contract implementation would either throw an exception or write an error message to our
 log file under `/opt/appserver/var/log/appserver-errors.log`.
 
 # Runtime Environment
@@ -1286,25 +1289,25 @@ extensions:
 * [appserver](https://github.com/appserver-io/php-ext-appserver) (contains some replacement functions
   which behave badly in a multithreaded environment)
 
-Additionally the PECL extensions [XDebug](http://pecl.php.net/package/xdebug) and [ev](http://pecl.php.net/package/ev) 
-are compiled as shared modules. `XDebug` is necessary to render detailed code coverage reports when 
+Additionally the PECL extensions [XDebug](http://pecl.php.net/package/xdebug) and [ev](http://pecl.php.net/package/ev)
+are compiled as shared modules. `XDebug` is necessary to render detailed code coverage reports when
 running unit and integration tests. `ev` will be used to integrate a timer service in one of the future
 versions.
 
 # Configuration
 
-We believe that the appserver should be highly configurable, so anyone interested can fiddle 
+We believe that the appserver should be highly configurable, so anyone interested can fiddle
 around with it. Therefor we provide a central configuration file located at `/opt/appserver/etc/appserver.xml`.
 
 This file contains the complete [architecture](#the-architecture) as an XML structure.
 
 So if you want to change used components, introduce new services or scale the system by adding
-additional servers you can do so with some lines of XML.You might have a look at a basic 
+additional servers you can do so with some lines of XML.You might have a look at a basic
 `appserver.xml`.
 
 ## The Architecture
 
-In this example we have a shortened piece of the `appserver.xml` file to understand how the 
+In this example we have a shortened piece of the `appserver.xml` file to understand how the
 architecture is driven by configuration.
 
 ```xml
@@ -1324,7 +1327,7 @@ architecture is driven by configuration.
     <container name="combined-appserver" type="AppserverIo\Core\GenericContainer">
       <description>
         <![CDATA[
-          This is an example of a webserver container 
+          This is an example of a webserver container
           that handles http requests in common way
         ]]>
       </description>
@@ -1336,7 +1339,7 @@ architecture is driven by configuration.
         serverSoftware="appserver/1.0.0-beta (mac) PHP/5.5.16" />
 
         <servers>
-        
+
           <!-- this is the default configuration for the HTTP server -->
           <server
             name="http"
@@ -1372,13 +1375,13 @@ architecture is driven by configuration.
 
             <!-- define the environment variables -->
             <environmentVariables>
-              <environmentVariable 
+              <environmentVariable
                 condition="" definition="LOGGER_ACCESS=Access" />
             </environmentVariables>
 
             <!-- define the connection handler(s) -->
             <connectionHandlers>
-              <connectionHandler 
+              <connectionHandler
                 type="\AppserverIo\WebServer\ConnectionHandlers\HttpConnectionHandler" />
             </connectionHandlers>
 
@@ -1421,35 +1424,35 @@ architecture is driven by configuration.
                 </params>
               </virtualHost>
             </virtualHosts>
-            
+
             <!-- the webserver modules we want to load -->
             <modules>
               <!-- REQUEST_POST hook -->
-              <module 
+              <module
                 type="\AppserverIo\WebServer\Modules\VirtualHostModule"/>
-              <module 
+              <module
                 type="\AppserverIo\WebServer\Modules\AuthenticationModule"/>
-              <module 
+              <module
                 type="\AppserverIo\WebServer\Modules\EnvironmentVariableModule" />
-              <module 
+              <module
                 type="\AppserverIo\WebServer\Modules\RewriteModule"/>
-              <module 
+              <module
                 type="\AppserverIo\WebServer\Modules\DirectoryModule"/>
-              <module 
+              <module
                 type="\AppserverIo\WebServer\Modules\AccessModule"/>
-              <module 
+              <module
                 type="\AppserverIo\WebServer\Modules\CoreModule"/>
-              <module 
+              <module
                 type="\AppserverIo\WebServer\Modules\PhpModule"/>
-              <module 
+              <module
                 type="\AppserverIo\WebServer\Modules\FastCgiModule"/>
-              <module 
+              <module
                 type="\AppserverIo\Appserver\ServletEngine\ServletEngine" />
               <!-- RESPONSE_PRE hook -->
-              <module 
+              <module
                 type="\AppserverIo\WebServer\Modules\DeflateModule"/>
               <!-- RESPONSE_POST hook -->
-              <module 
+              <module
                 type="\AppserverIo\Appserver\Core\Modules\ProfileModule"/>
             </modules>
 
@@ -1463,59 +1466,59 @@ architecture is driven by configuration.
                 </params>
               </fileHandler>
             </fileHandlers>
-    
+
         </server>
-    
+
         <!-- Here, additional servers might be added -->
-    
+
       </servers>
     </container>
   </containers>
 </appserver>
-``` 
+```
 
-In the above example you can see three important components of the appserver architecture being 
-used. The [*container*](docs/docs/architecture.md#container>), [*server*](docs/docs/architecture.md#server) and a 
-[*protocol*](docs/docs/architecture.md#protocol>) (if you did not read about our basic [architecture](docs/docs/architecture.md) 
-you should now). We are basically building up a container which holds a server using the websocket 
+In the above example you can see three important components of the appserver architecture being
+used. The [*container*](docs/docs/architecture.md#container>), [*server*](docs/docs/architecture.md#server) and a
+[*protocol*](docs/docs/architecture.md#protocol>) (if you did not read about our basic [architecture](docs/docs/architecture.md)
+you should now). We are basically building up a container which holds a server using the websocket
 protocol to handle incoming requests.
 
 ### Container Configuration
 
-A *container* is created by using the `container` element within the `containers` collection 
-of the `appserver` document element. Two things make this element in a specific container 
+A *container* is created by using the `container` element within the `containers` collection
+of the `appserver` document element. Two things make this element in a specific container
 being built up by the system on startup:
 
-* The `type` attribute states a class extending our `AbstractContainerThread` which makes a 
+* The `type` attribute states a class extending our `AbstractContainerThread` which makes a
   container into a certain kind of container.
 
-* The `deployment` element states a class containing preparations for starting up the container. 
+* The `deployment` element states a class containing preparations for starting up the container.
   It can be considered a hook which will be invoked before the container will be available.
 
-That is basically everything there is to do to create a new container. To make use of it, it has 
+That is basically everything there is to do to create a new container. To make use of it, it has
 to contain at least one *server* within its `servers` collection.
 
 ### Server Configuration
 
-The *servers* contained by our *container* can also be loosely drafted by the XML configuration and 
-will be instantiated on container bootup. To enable a *server* you have to mention three basic 
+The *servers* contained by our *container* can also be loosely drafted by the XML configuration and
+will be instantiated on container bootup. To enable a *server* you have to mention three basic
 attributes of the element:
 
-* The `type` specifies a class implementing the `ServerInterface` which implements the basic 
+* The `type` specifies a class implementing the `ServerInterface` which implements the basic
   behaviour of the server on receiving a connection and how it will handle it.
 
-* The `socket` attribute specifies the type of socket the server should open. E.g. a stream or 
+* The `socket` attribute specifies the type of socket the server should open. E.g. a stream or
   asynchronious socket
-* The `serverContext` specifies the server's source of configuration and container for runtime 
+* The `serverContext` specifies the server's source of configuration and container for runtime
   information e.g. ServerVariables like `DOCUMENT_ROOT`
 
 So we have our specific server which will open a certain port and operate in a defined context. But
 to make the server handle a certain type of requests it needs to know which *protocol* to speak.
 
 This can be done using the `connectionHandler` element. Certain server wrappers can handle certain
-protocols. Therefor we can use the protocols which a server wrapper, e.g. `WebServer` supports in 
+protocols. Therefor we can use the protocols which a server wrapper, e.g. `WebServer` supports in
 form of connection handlers. [WebServer](<https://github.com/appserver.io/webserver>)
-offers a `HttpConnectionHandler` class. By using it, the server is able to understand the HTTP 
+offers a `HttpConnectionHandler` class. By using it, the server is able to understand the HTTP
 protocol.
 
 ### Application Configuration
@@ -1527,10 +1530,10 @@ in `/opt/appserver/etc/appserver/conf.d/context.xml`
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
-<context 
-  name="globalBaseContext" 
-  factory="AppserverIo\Appserver\Application\ApplicationFactory" 
-  type="AppserverIo\Appserver\Application\Application" 
+<context
+  name="globalBaseContext"
+  factory="AppserverIo\Appserver\Application\ApplicationFactory"
+  type="AppserverIo\Appserver\Application\Application"
   xmlns="http://www.appserver.io/appserver">
 
   <!--
@@ -1541,7 +1544,7 @@ in `/opt/appserver/etc/appserver/conf.d/context.xml`
   -->
 
   <classLoaders>
-        
+
     <!-- necessary to load files from the vendor directory of your application -->
     <classLoader
       name="ComposerClassLoader"
@@ -1552,7 +1555,7 @@ in `/opt/appserver/etc/appserver/conf.d/context.xml`
         <directory>/vendor</directory>
       </directories>
     </classLoader>
-        
+
     <!-- necessary to load files from WEB-INF/classes and META-INF/classes, also -->
     <!-- provides the functionality for Design-by-Contract and AOP               -->
     <classLoader
@@ -1575,11 +1578,11 @@ in `/opt/appserver/etc/appserver/conf.d/context.xml`
   </classLoaders>
 
   <managers>
-  
+
     <!-- provides object management services -->
-    <manager 
+    <manager
       name="ObjectManagerInterface"
-      type="AppserverIo\Appserver\DependencyInjectionContainer\ObjectManager" 
+      type="AppserverIo\Appserver\DependencyInjectionContainer\ObjectManager"
       factory="AppserverIo\Appserver\DependencyInjectionContainer\ObjectManagerFactory">
       <descriptors>
         <descriptor>AppserverIo\Appserver\DependencyInjectionContainer\Description\ServletDescriptor</descriptor>
@@ -1589,17 +1592,17 @@ in `/opt/appserver/etc/appserver/conf.d/context.xml`
         <descriptor>AppserverIo\Appserver\DependencyInjectionContainer\Description\MessageDrivenBeanDescriptor</descriptor>
       </descriptors>
     </manager>
-    
+
     <!-- provides services necessary for DI -->
-    <manager 
-      name="ProviderInterface" 
-      type="AppserverIo\Appserver\DependencyInjectionContainer\Provider" 
+    <manager
+      name="ProviderInterface"
+      type="AppserverIo\Appserver\DependencyInjectionContainer\Provider"
       factory="AppserverIo\Appserver\DependencyInjectionContainer\ProviderFactory"/>
-      
+
     <!-- provides the services necessary to handle Session- and MessageBeans -->
-    <manager 
-      name="BeanContextInterface" 
-      type="AppserverIo\Appserver\PersistenceContainer\BeanManager" 
+    <manager
+      name="BeanContextInterface"
+      type="AppserverIo\Appserver\PersistenceContainer\BeanManager"
       factory="AppserverIo\Appserver\PersistenceContainer\BeanManagerFactory">
         <!-- params>
           <param name="lifetime" type="integer">1440</param>
@@ -1609,45 +1612,45 @@ in `/opt/appserver/etc/appserver/conf.d/context.xml`
           <directory>/META-INF/classes</directory>
         </directories>
       </manager>
-      
+
       <!-- provides the functionality to define and run a Queue -->
-      <manager 
-        name="QueueContextInterface" 
-        type="AppserverIo\Appserver\MessageQueue\QueueManager" 
+      <manager
+        name="QueueContextInterface"
+        type="AppserverIo\Appserver\MessageQueue\QueueManager"
         factory="AppserverIo\Appserver\MessageQueue\QueueManagerFactory"/>
-        
+
       <!-- provides the functionality to define Servlets handling HTTP request -->
-      <manager 
-        name="ServletContextInterface" 
-        type="AppserverIo\Appserver\ServletEngine\ServletManager" 
+      <manager
+        name="ServletContextInterface"
+        type="AppserverIo\Appserver\ServletEngine\ServletManager"
         factory="AppserverIo\Appserver\ServletEngine\ServletManagerFactory">
         <directories>
           <directory>/WEB-INF/classes</directory>
         </directories>
       </manager>
-      
+
       <!-- provides functionality to handle HTTP sessions -->
-      <manager 
-        name="SessionManagerInterface" 
-        type="AppserverIo\Appserver\ServletEngine\StandardSessionManager" 
+      <manager
+        name="SessionManagerInterface"
+        type="AppserverIo\Appserver\ServletEngine\StandardSessionManager"
         factory="AppserverIo\Appserver\ServletEngine\StandardSessionManagerFactory"/>
-        
+
       <!-- provides functionality to handle Timers -->
-      <manager 
-        name="TimerServiceContextInterface" 
-        type="AppserverIo\Appserver\PersistenceContainer\TimerServiceRegistry" 
+      <manager
+        name="TimerServiceContextInterface"
+        type="AppserverIo\Appserver\PersistenceContainer\TimerServiceRegistry"
         factory="AppserverIo\Appserver\PersistenceContainer\TimerServiceRegistryFactory"/>
-    
+
       <!-- provides functionality to handle HTTP basic/digest authentication -->
-      <manager 
-        name="AuthenticationManagerInterface" 
-        type="AppserverIo\Appserver\ServletEngine\Authentication\StandardAuthenticationManager" 
+      <manager
+        name="AuthenticationManagerInterface"
+        type="AppserverIo\Appserver\ServletEngine\Authentication\StandardAuthenticationManager"
         factory="AppserverIo\Appserver\ServletEngine\Authentication\StandardAuthenticationManagerFactory"/>
-    
+
       <!-- provides functionality to preload Advices found in WEB-INF/classes or META-INF/classes -->
-      <manager 
-        name="AspectManagerInterface" 
-        type="AppserverIo\Appserver\AspectContainer\AspectManager" 
+      <manager
+        name="AspectManagerInterface"
+        type="AppserverIo\Appserver\AspectContainer\AspectManager"
         factory="AppserverIo\Appserver\AspectContainer\AspectManagerFactory"/>
   </managers>
 </context>
@@ -1677,37 +1680,37 @@ project as it offers all needed infrastructure.
 
 ##### Rules
 
-Most important part of the module is the way in which it can perform rewrites. All rewrites are 
+Most important part of the module is the way in which it can perform rewrites. All rewrites are
 based on rewrite rules which consist of three important parts:
 
-- *condition string* : Conditions which have to be met in order for the rule to take effect. 
+- *condition string* : Conditions which have to be met in order for the rule to take effect.
   See more [down here](#condition-syntax)
 
-- *target string* : The target to rewrite the requested URI to. Within this string you can use 
+- *target string* : The target to rewrite the requested URI to. Within this string you can use
   backreferences similar
   to the Apache mod_rewrite module with the difference that you have to use the `$ syntax`
   (instead of the `$/%/%{} syntax` of Apache).
-  
+
   Matching rule conditions which you specifically pick out via regex are also part of available backreferences
   as well as server and environment variables.
 
-  *Simple example* : A condition like `(.+)@$X_REQUEST_URI` would produce a back reference `$1` 
+  *Simple example* : A condition like `(.+)@$X_REQUEST_URI` would produce a back reference `$1`
   with the value `/index` for a requested URI `/index`. The target string `$1/welcome.html` would
   therefore result in a rewrite to `/index/welcome.html`
 
-- *flag string* : You can use flags similar to mod_rewrite which are used to make rules react in a 
+- *flag string* : You can use flags similar to mod_rewrite which are used to make rules react in a
   certain way or influence further processing. See more [down here](#flags)
 
 ##### Condition Syntax
 
-The Syntax of possible conditions is roughly based on the possibilities of Apache's RewriteCondition 
+The Syntax of possible conditions is roughly based on the possibilities of Apache's RewriteCondition
 and RewriteRule combined.
 
-To make use of such a combination you can chain conditions together using the `{OR}` symbol for 
+To make use of such a combination you can chain conditions together using the `{OR}` symbol for
 OR-combined, and the `{AND}` symbol for AND-combined conditions.
 
-Please be aware that AND takes precedence over OR! Conditions can either be PCRE regex or certain fixed 
-expressions. So a condition string of `([A-Z]+\.txt){OR}^/([0-9]+){AND}-f` would match only real files 
+Please be aware that AND takes precedence over OR! Conditions can either be PCRE regex or certain fixed
+expressions. So a condition string of `([A-Z]+\.txt){OR}^/([0-9]+){AND}-f` would match only real files
 (through `-f`) which either begin with numbers or end with capital letters and the extension .txt.
 
 As you might have noticed: Backslashes do **not have to be escaped**.
@@ -1725,20 +1728,20 @@ We also support several other expressions to regex based conditions which are:
  - *-x* : Is the operand an executable file?
 
 If you are wondering what the `operand` might be: it is **whatever you want it to be**! You can specify
-any operand you like using the `@` symbol. All conditions within a rule will use the next operand to 
+any operand you like using the `@` symbol. All conditions within a rule will use the next operand to
 their right and if none is given the requested URI. For example:
 
 - *`([A-Z]+\.txt){OR}^/([0-9]+)`* Will take the requested URI for both conditions (note the `{OR}` symbol)
 - *`([A-Z]+\.txt){OR}^/([0-9]+)@$DOCUMENT_ROOT`* Will test both conditions against the document root
-- *`([A-Z]+\.txt)@$DOCUMENT_ROOT{OR}^/([0-9]+)`* Will only test the first one against the document root 
+- *`([A-Z]+\.txt)@$DOCUMENT_ROOT{OR}^/([0-9]+)`* Will only test the first one against the document root
   and the second against the requested URI
 
-You might have noted the `$` symbol before `DOCUMENT_ROOT` and remembered it from the backreference 
+You might have noted the `$` symbol before `DOCUMENT_ROOT` and remembered it from the backreference
 syntax. That's because all Apache common server vars can be explicitly used as backreferences too!
 
 That does not work for you? Need the exact opposite? No problem!
 
-All conditions, weather regex or expression based can be negated using the `!` symbol in front of 
+All conditions, weather regex or expression based can be negated using the `!` symbol in front of
 them! So `!^([0-9]+)` would match all strings which do NOT begin with a number and `!-d` would match
 all non-directories.
 
@@ -1749,27 +1752,27 @@ but be aware of their impact! Syntax for several flags is simple: just separate 
 Flags which might accept a parameter can be assigned one by using the `=` symbol. Currently supported
 flags are:
 
-- *L* : As rules are normally processed one after the other, the `L` flag will make the flagged rule 
+- *L* : As rules are normally processed one after the other, the `L` flag will make the flagged rule
   the last one processed if matched.
 
-- *R* : If this flag is set we will redirect the client to the URL specified in the `target string`. 
-   If this is just an URI we will redirect to the same host. You might also specify a custom status 
-   code between 300 and 399 to indicate the reason for/kind of the redirect. Default is `301` aka 
+- *R* : If this flag is set we will redirect the client to the URL specified in the `target string`.
+   If this is just an URI we will redirect to the same host. You might also specify a custom status
+   code between 300 and 399 to indicate the reason for/kind of the redirect. Default is `301` aka
    `permanent`
 
 - *M* : Stands for map. Using this flag you can specify an external source (have a look at the Injector
-  classes of the WebServer project) of a target map. With `M=<MY_BACKREFERENCE>` you can specify what 
-  the map's index has to match. This matching is done **only** if the rewrite condition matches and will 
+  classes of the WebServer project) of a target map. With `M=<MY_BACKREFERENCE>` you can specify what
+  the map's index has to match. This matching is done **only** if the rewrite condition matches and will
   behave as another condition
 
 #### Virtual-Host Module
 
 The module can be used according to the `\AppserverIo\WebServer\Interfaces\HttpModuleInterface`
-interface. It needs an initial call of the `init` method and will process any request offered to 
+interface. It needs an initial call of the `init` method and will process any request offered to
 the `process` method. The module is best used within the [webserver](<https://github.com/appserver-io/webserver>)
 project as it offers all needed infrastructure.
 
-If you need to configure a virtual host, it should look like the 
+If you need to configure a virtual host, it should look like the
 following example, that would enable a Magento installation under `http://magento.dev:9080`.
 
 ```xml
@@ -1799,11 +1802,11 @@ following example, that would enable a Magento installation under `http://magent
 ## Configuration Defaults
 
 You will see that we provide basic frontend implementations of services the appserver runtime
-provides. If you want to use these services yourself you should have a look into the code of our 
+provides. If you want to use these services yourself you should have a look into the code of our
 apps and read about [app development](#deployment).
 
-You might be curious about the different ports we use. Per default the appserver will open several 
-ports at which it's services are available. As we do not want to block (or be blocked by) other 
+You might be curious about the different ports we use. Per default the appserver will open several
+ports at which it's services are available. As we do not want to block (or be blocked by) other
 services we use ports of a higher range.
 
 As a default we use the following ports:
@@ -1812,30 +1815,30 @@ As a default we use the following ports:
 
     - HTTP Server: `9080`
     - HTTPS Server: `9443`
-    
+
 * Persistence-MQ-Container
 
     - Persistence-Container: `8585`
     - Message-Queue: `8587`
 
 You can change this default port mapping by using the [configuration file](#the-architecture).
-If you are interested in our naming, you can see our container->server pattern, you might want to 
+If you are interested in our naming, you can see our container->server pattern, you might want to
 have a deeper look into our [architecture](docs/docs/architecture.md)
 
 # Deployment
 
-The deploy directory in the appserver.io Application Server distribution is the location end users can place their 
+The deploy directory in the appserver.io Application Server distribution is the location end users can place their
 deployment content (e. g. phar files) to have it deployed into the server runtime.
 
-Users, particularly those running production systems, are encouraged to use the appserver.io AS management APIs to 
+Users, particularly those running production systems, are encouraged to use the appserver.io AS management APIs to
 upload and deploy deployment content.
 
 ## Deployment Modes
 
-The scanner actually only suports manual deployment mode which means that you have to restart the server to process 
-deployment of your content. In this mode, the scanner will not attempt to directly monitor the deployment content and 
-decide if or when the end user wishes the content to be deployed or undeployed. Instead, the scanner relies on a system 
-of marker files, with the user's addition or removal of a marker file serving as a sort of command telling the scanner 
+The scanner actually only suports manual deployment mode which means that you have to restart the server to process
+deployment of your content. In this mode, the scanner will not attempt to directly monitor the deployment content and
+decide if or when the end user wishes the content to be deployed or undeployed. Instead, the scanner relies on a system
+of marker files, with the user's addition or removal of a marker file serving as a sort of command telling the scanner
 to deploy, undeploy or redeploy content.
 
 It is also possible to copy your unzipped content directly into the webapps folder. After restarting the webserver
@@ -1844,8 +1847,8 @@ content will be recognized.
 
 ## Marker Files
 
-The marker files always have the same name as the deployment content to which they relate, but with an additional file 
-suffix appended. For example, the marker file to indicate the example.phar file should be deployed is named 
+The marker files always have the same name as the deployment content to which they relate, but with an additional file
+suffix appended. For example, the marker file to indicate the example.phar file should be deployed is named
 example.phar.dodeploy. Different marker file suffixes have different meanings.
 
 The relevant marker file types are:
@@ -1896,13 +1899,13 @@ The above examples use UNIX shell commands. Windows equivalents are:
 | rm afile       | del afile               |
 | touch afile    | echo >> afile           |
 
-Note that the behavior of ```touch``` and ```echo``` are different but thedifferences are not relevant to the usages 
+Note that the behavior of ```touch``` and ```echo``` are different but thedifferences are not relevant to the usages
 
 # Uninstall
 
 Before uninstalling you should stop all services which are still running (rpm-based packages will see to that themselves), otherwise there might be problems with existing pid-files on Linux and Mac for the next time you install it. You can have a look how to do so [here](#start-and-stop-scripts).
 
-To uninstall the appserver on Linux you might rely on your package management system. 
+To uninstall the appserver on Linux you might rely on your package management system.
 On Windows you can use the normal uninstall process provided by the operating system.
 
 Under Mac OS X you can simply delete the `/opt/appserver` folder that containers all installed files.
