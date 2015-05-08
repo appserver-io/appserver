@@ -14,12 +14,12 @@ appserver.io overcomes some of the biggest overhead issues most PHP (CGI) progra
 
 appserver.io includes great features like...
 
--Its own performant Web Server and HTTP foundation.
--A powerful Servlet Engine, with true multi-threading
--A Dependency Injection Container, for building modern, modular and testable code
--Multiple Persistence Containers, for sessions and other stateful components
--A Message Queue System, for contolling the execution of long running tasks
--A Timer Service, for running scheduled tasks
+ - Its own performant Web Server and HTTP foundation.
+ - A powerful Servlet Engine, with true multi-threading
+ - A Dependency Injection Container, for building modern, modular and testable code
+ - Multiple Persistence Containers, for sessions and other stateful components
+ - A Message Queue System, for contolling the execution of long running tasks
+ - A Timer Service, for running scheduled tasks
 
 and much more.
 
@@ -32,22 +32,22 @@ Give it a try!
 
 #### Table of Contents
 
-[Semantic Versioning](#semantic-versioning)
-[Installation](#installation)
-[Basic Usage](#basic-usage)
-[HTTP Server](#https-server)
-[Servlet-Engine](#servlet-engine)
-[Annotations](#annotations)
-[Dependency Injection](#dependency-injection)
-[Persistence-Container](#persistence-container)
-[Message-Queue](#message-queue)
-[Timer-Service](#timer-service)
-[AOP](#aop)
-[Design-by-Contract](#design-by-contract)
-[Runtime Environment](#runtime-environment)
-[Configuration](#configuration)
-[Deployment](#deployment)
-[Uninstall](#uninstall)
+* [Semantic Versioning](#semantic-versioning)
+* [Installation](#installation)
+* [Basic Usage](#basic-usage)
+* [HTTP Server](#https-server)
+* [Servlet-Engine](#servlet-engine)
+* [Annotations](#annotations)
+* [Dependency Injection](#dependency-injection)
+* [Persistence-Container](#persistence-container)
+* [Message-Queue](#message-queue)
+* [Timer-Service](#timer-service)
+* [AOP](#aop)
+* [Design-by-Contract](#design-by-contract)
+* [Runtime Environment](#runtime-environment)
+* [Configuration](#configuration)
+* [Deployment](#deployment)
+* [Uninstall](#uninstall)
 
 # Semantic Versioning
 
