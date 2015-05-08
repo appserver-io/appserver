@@ -7,38 +7,32 @@
 
 This is the main repository for the [appserver.io](http://www.appserver.io/) project.
 
-Appserver.io is a multithreaded application server for PHP, written
+appserver.io is a multithreaded application server for PHP, written
 in PHP. Yes, pure PHP! If you know anything about PHP, you're probably thinking we might be crazy. Well, we aren't. We are dead serious (but we most certainly still love having fun!).
 
-One of the biggest issues with PHP as a language, even today, is the fact it is an interpreted language. When you call up a PHP web page, the  application to create that page must be invoked on every call, which means the interpreter must load the necessary files into memory, interpret the language to operation code (opcode), run it and output the resulting page. Although computers today are very powerful, this is still a very combursome and time consuming method to run an application. This type of application is normally called a common-gateway-interface or CGI.
+appserver.io overcomes some of the biggest overhead issues most PHP (CGI) programs have in common, through a blazingly fast and rock solid infrastructure and with concepts new to PHP. At the same time, appserver.io offers PHP developers the fundamental core features found in most popular frameworks today, yet not intending to be a framework at all. It is a suprizingly fun infrastructure for PHP development, allowing you to build powerful applications without needing the bulk of a PHP framework.
 
-The next issue with CGI applications is, they have to deal with the incoming HTTP requests directly. That means, a layer of the application, which should be general across the whole application and for every page call, must also be loaded with each request. This represents a huge overhead, which means performance of the application is decreased dramatically and unnecessarily.
+appserver.io includes great features like...
 
-If you have worked with any of the popular and well written PHP framework available today, you will notice they all have some sort of HTTP foundation library in them, which handles the HTTP requests coming into the application. This layer of the application should actually be handled by the infrastructure and not the application itself. It is a layer of unnecessary overhead both for the developer and the application itself.
+-Its own performant Web Server and HTTP foundation.
+-A powerful Servlet Engine, with true multi-threading
+-A Dependency Injection Container, for building modern, modular and testable code
+-A Multiple Persistence Containers, for sessions and other stateful components
+-A Message Queue System, for contolling the execution of long running tasks
+-A Timer Service, for running scheduled tasks
 
-One more issue with CGI applications is the initialization phase of the application. Just like the code to handle HTTP requests, the same goes for code to initalize the application. This code is usually quite static and only rarely changes. However, with a CGI application, this code must also be loaded and interpreted and ran for each and every request, adding even another layer of overhead, making it even slower to run.
+and much more.
 
-The current solution to all of this for PHP is found in so called "opcode caches" like APC or Zend Opcache, which is now actually integrated into the PHP language interpreter (as of PHP5.5). Opcode caches save on the conversion of often used code to operation code. However, the overhead of having to call on the HTTP foundation code and initialization code, run it and then kill or destroy it with each reaquest, is still there.
+appserver.io also supports [Aspect Oriented Programming](http://en.wikipedia.org/wiki/Aspect-oriented_programming)(AOP), which is a programming paradigm also found in the most popular frameworks today, like Laravel. AOP allows the separation of cross-cutting concerns within a program, allowing developers to create even more modular systems.
 
-Another solution to this problem was created by Facebook and is called HHVM (or Hip Hop Virtual Machine), which is an interpreter and JIT compiler rolled into one. The advantage of a JIT compiler is it reduces opcode down even further to machine language, which allows the server to perform even better.
-
-When you boil all of this down to the real issue, CGI applications simply aren't built for large scale (enterprise) web applications. Such applications written in PHP are very slow compared to other languages, such as Java, which don't use the CGI architecture.
-
-This is where AppServer.io changes the PHP game.
-
-We feel Appserver.io is the next great step towards a much better PHP development ecosystem. So with your help, we will
-work on establishing a new paradigm for enterprise applications written in PHP.
+With appserver.io is our goal to establish a solution as the next standard for enterprise applications written in PHP. With your help, we can reach this goal.
 
 Give it a try!
 
-# Semantic versioning
-
-appserver.io follows semantic versioning. For the purpose of defining a public API we introduced [appserver.io specific `PSRs`](http://appserver.io/get-started/psrs.html).
-They build up appserver.io's public API within their own definition and versioning.
-This means that **semantic versioning applies to these PSRs, not the appserver package itself**.
 
 #### Table of Contents
 
+[Semantic Versioning](#semantic-versioning)
 [Installation](#installation)
 [Basic Usage](#basic-usage)
 [HTTP Server](#https-server)
@@ -55,19 +49,21 @@ This means that **semantic versioning applies to these PSRs, not the appserver p
 [Deployment](#deployment)
 [Uninstall](#uninstall)
 
+# Semantic Versioning
+
+appserver.io follows semantic versioning. For the purpose of defining a public API we introduced [appserver.io specific `PSRs`](http://appserver.io/get-started/psrs.html). These PSRs are the core to appserver.io's public API, but within their own definition and versioning, meaning that **semantic versioning applies to these PSRs and not the appserver package itself**.
+
 # Installation
 
-Besides supporting several operating systems and their specific ways of installing software, we
-also support several ways of getting this software. So to get your appserver.io package you might
-do any of the following:
+appserver.io can be installed on several operating systems. It also supports several methods of acquiring the software. To get your appserver.io package you can do one of the following:
 
 * Download one of our [**releases**](<https://github.com/appserver-io/appserver/releases>)
   right from this repository which provide tested install packages
 
 * Grab any of our [**nightlies**](<http://builds.appserver.io/>) from our project page to get
-  bleeding edge install packages which still might have some bugs
+  bleeding edge install packages, (and may also containg bugs - only for testing and not for production use!!)
 
-* Build your own package using [ANT](<http://ant.apache.org/>)! To do so clone the [runtime](<https://github.com/appserver-io-php/runtime>) first. Then update at least the `os.family` and `os.distribution` build properties according to your environment and build the appserver with the ANT `build` and `create-package` target
+* Build your own package using [ANT](<http://ant.apache.org/>)! To do so clone the [runtime](<https://github.com/appserver-io-php/runtime>) first. Then update at least the `os.family` and `os.distribution` build properties according to your environment and build the appserver with the ANT `build` and `create-package` target.
 
 The package will install with these basic default characteristics:
 
@@ -88,8 +84,8 @@ For Mac OS X > 10.8.x we provide a `.pkg` file for [download](http://appserver.i
 > Runs and tested on Windows 7 (32-bit) and higher!
 
 As we deliver the Windows appserver as a .jar file you can [download](http://appserver.io/get-started/downloads.html#windows), a installed Java Runtime Environment (or JDK
-that is) is a vital requirement for using it. If the JRE/JDK is not installed you have to do so
-first. You might get it from [Oracle's download page](<http://www.oracle.com/technetwork/java/javase/downloads/jre7-downloads-1880261.html>).
+that is) is a vital requirement for using it. If the JRE/JDK is not installed, you have to do so
+first. You can get the JRE from [Oracle's download page](<http://www.oracle.com/technetwork/java/javase/downloads/jre7-downloads-1880261.html>).
 If this requirement is met you can start the installation by simply double-clicking the .jar archive.
 
 ## Debian
@@ -117,40 +113,39 @@ We  also provide `.rpm` [files](http://appserver.io/get-started/downloads.html#f
 
 > Runs and tested on CentOS 6.5 (64-bit) and higher!
 
-Installation and basic usage is the same as on Fedora but we provide different [packages](http://appserver.io/get-started/downloads.html#cent-os). CentOS requires additional repositories
+Installation and basic usage is the same as on Fedora, but we provide different [packages](http://appserver.io/get-started/downloads.html#cent-os). CentOS requires additional repositories
 like [remi](<http://rpms.famillecollet.com/>) or [EPEL](<http://fedoraproject.org/wiki/EPEL>) to
 satisfy additional dependencies.
 
 ## Raspbian
 
-As an experiment we offer Raspbian and brought the appserver to an ARM environment. What should
-we say, it worked! :D With `os.distribution` = raspbian you might give it a try to build it
-yourself (plan at least 5 hours) as we currently do not offer prepared install packages.
+As an experiment we offer a Raspbian and brought the appserver to an ARM environment. What should
+we say, it worked! :D With `os.distribution` = raspbian you might give it a try and build it
+yourself. Plan for at least 5 hours though, as we currently do not offer prepared install package.
 
 # Basic Usage
 
 The appserver will automatically start after your installation wizard (or package manager) finishes
-the setup. You can use it without limitations from now on.
+the setup. You can use it without limitations after installation is completed..
 
 Below you can find basic instructions on how to make use of the appserver. After the installation
-you might want to have a look and some apps. We got a showcase example bundled with the installation
+you might want to have a look at some apps. We included a showcase example appliation with the installation
 which you can reach at `http://127.0.0.1:9080/example`
 
-Start your favorite browser and have a look at what we can do. :) To pass the password barriers use
+Start your favorite browser and have a look at what appserver can do. :) To enter the site, use
 the default login `appserver/appserver.i0`.
 
 ## Start and Stop Scripts
 
-Together with the appserver we deliver several standalone processes which we need for proper
+Together with the appserver, there are several standalone processes which are needed for the proper
 functioning of different features.
 
-For these processes we provide start and stop scripts for all *nix like operating systems.
-These work the way they normally would on the regarding system. They are:
+For these processes, there are start and stop scripts for all *nix like operating systems.
+These work the same as on any other *nix systems. They are:
 
 * `appserver`: The main process which will start the appserver itself
 
-* `appserver-php5-fpm`: php-fpm + appserver configuration. Our default FastCGI backend. Others might
-  be added the same way
+* `appserver-php5-fpm`: php-fpm + appserver configuration. Our default FastCGI backend. Other FCGI system can be added the same way.
 
 * `appserver-watcher`: A watchdog which monitors filesystem changes and manages appserver restarts
 
