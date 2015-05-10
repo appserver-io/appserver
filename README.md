@@ -25,7 +25,7 @@ and much more.
 
 appserver.io also supports [Aspect Oriented Programming](http://en.wikipedia.org/wiki/Aspect-oriented_programming)(AOP), which is a programming paradigm also found in the most popular frameworks today, like Laravel. AOP allows the separation of cross-cutting concerns within a program, allowing developers to create even more modular systems.
 
-With appserver.io it is our goal to establish a solution as the next standard for enterprise applications written in PHP. With your help, we can reach this goal.
+With appserver.io, it is our goal to establish a solution as the next standard for enterprise applications written in PHP. With your help, we can reach this goal.
 
 Give it a try!
 
@@ -128,16 +128,15 @@ yourself. Plan for at least 5 hours though, as we currently do not offer prepare
 The appserver will automatically start after your installation wizard (or package manager) finishes
 the setup. You can use it without limitations after installation is completed..
 
-Below you can find basic instructions on how to make use of the appserver. After the installation
-you might want to have a look at some apps. We included a showcase example appliation with the installation
-which you can reach at `http://127.0.0.1:9080/example`
+Below you can find basic instructions on how to make use of the appserver. After the installation,
+you might want to have a look at the example application, which is also included with the installation. You can reach the app at `http://127.0.0.1:9080/example`
 
 Start your favorite browser and have a look at what appserver can do. :) To enter the site, use
 the default login `appserver/appserver.i0`.
 
 ## Start and Stop Scripts
 
-There are several standalone processes which are needed for the proper
+There are several standalone processes, which are needed for the proper
 functioning of different features within appserver.
 
 There are start and stop scripts included in appserver for all *nix like operating systems.
@@ -150,13 +149,13 @@ These work the same as on any other *nix systems. They are:
 * `appserver-watcher`: A watchdog which monitors filesystem changes and manages appserver restarts
 
 On a normal system, all three of these processes should run to enable the full feature set. To
-ultimately run the appserver only the appserver process is needed, but you will miss simple on-the-fly
+ultimately run the appserver, only the appserver process is needed. However, you will miss simple on-the-fly
 deployment (`appserver-watcher`) and might have problems with legacy applications.
 
-Depending on the FastCGI Backend you want to use you might ditch `appserver-php5-fpm` for other
-processes e.g. supplying you with a [hhvm](http://hhvm.com/) backend.
+Depending on the FastCGI backend you want to use, you might ditch `appserver-php5-fpm` for other
+processes e.g. you could also use an [hhvm](http://hhvm.com/) backend.
 
-Currently we support three different types of init scripts which support the commands `start`, `stop`,
+Currently we support three different types of init scripts, which support the commands `start`, `stop`,
 `status` and `restart` (additional commands might be available on other systems).
 
 **Mac OS X (LAUNCHD)**
@@ -172,7 +171,7 @@ systemd init scripts can be used using the `systemctl` command with the syntax `
 
 **Windows**
 
-On Windows we sadly do not offer any of these scripts. After the installation you can start the
+On Windows we sadly do not offer any of these scripts. After the installation, you can start the
 Application Server with the ``server.bat`` file located within the root directory of your installation.
 Best thing to do would be starting a command prompt as an administrator and run the following commands
 (assuming default installation path):
@@ -184,9 +183,9 @@ C:\Program Files\appserver>server.bat
 
 # HTTP(S) Server
 
-The configuration itself is mostly self-explanatory, so just have a look to the preferred config
-file and try to change settings.
-Please make sure you restart the appserver after making changes. :)
+The configuration of the HTTP(S) Server itself is mostly self-explanatory, so just have a look at the default config
+file and, if you'd like, try to change the settings.
+Please make sure you restart the appserver after making any changes. :)
 A detailed overview of all configuration settings will follow ...
 
 ## Configure a Virtual Host
