@@ -25,7 +25,7 @@ and much more.
 
 appserver.io also supports [Aspect Oriented Programming](http://en.wikipedia.org/wiki/Aspect-oriented_programming)(AOP), which is a programming paradigm also found in the most popular frameworks today, like Laravel. AOP allows the separation of cross-cutting concerns within a program, allowing developers to create even more modular systems.
 
-With appserver.io is our goal to establish a solution as the next standard for enterprise applications written in PHP. With your help, we can reach this goal.
+With appserver.io it is our goal to establish a solution as the next standard for enterprise applications written in PHP. With your help, we can reach this goal.
 
 Give it a try!
 
@@ -150,7 +150,7 @@ These work the same as on any other *nix systems. They are:
 * `appserver-watcher`: A watchdog which monitors filesystem changes and manages appserver restarts
 
 On a normal system, all three of these processes should run to enable the full feature set. To
-ultimately run the appserver only the appserver process is needed but you will miss simple on-the-fly
+ultimately run the appserver only the appserver process is needed, but you will miss simple on-the-fly
 deployment (`appserver-watcher`) and might have problems with legacy applications.
 
 Depending on the FastCGI Backend you want to use you might ditch `appserver-php5-fpm` for other
