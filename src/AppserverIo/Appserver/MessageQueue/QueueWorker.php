@@ -292,8 +292,8 @@ class QueueWorker extends \Thread
                                 // count messages in queue
                                 $inQueue = sizeof($jobsExecuting);
 
-                                // we only process 50 jobs in parallel
-                                if ($inQueue < 50) {
+                                // we only process 200 jobs in parallel
+                                if ($inQueue < 200) {
                                     // start the job and add it to the internal array
                                     $jobsExecuting[$message->getMessageId()] = new Job(clone $message, $application);
 
