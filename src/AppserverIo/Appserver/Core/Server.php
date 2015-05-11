@@ -534,8 +534,7 @@ class Server
         // if we're on a OS (not Windows) that supports POSIX we have
         // to change the configured user/group for security reasons.
         if (!extension_loaded('posix')) {
-
-            // Log that we were not able to change the user
+            // log that we were not able to change the user
             $this->getSystemLogger()->info(
                 "Could not change user due to missing POSIX extension"
             );
@@ -543,59 +542,34 @@ class Server
         }
 
         // init API service to use
-        $service = $this->newService('AppserverIo\Appserver\Core\Api\ContainerService');
+        $containerService = $this->newService('AppserverIo\Appserver\Core\Api\ContainerService');
 
-        // Check for the existence of a user
+        // check for the existence of a user
         $user = $this->getSystemConfiguration()->getParam('user');
         $userChangeable = false;
         if (!empty($user)) {
-
-            // Get the user id and set it accordingly
+            // get the user id, set it accordingly and check if it is usable for a user switch
             $userId = posix_getpwnam($user)['uid'];
-
-            // Did we get something useful?
             if (is_int($userId)) {
-
-                // check if deploy dir exists
-                if (is_dir(new \DirectoryIterator($logDir = $service->getLogDir()))) {
-                    // init file iterator on deployment directory
-                    $fileIterator = new \FilesystemIterator($logDir);
-                    // Iterate through all phar files and extract them to tmp dir
-                    foreach (new \RegexIterator($fileIterator, '/^.*\\.log$/') as $logFile) {
-                        chown($logFile, $userId);
-                    }
-                }
-
-                // Tell them that we are able to change the user
+                // tell them that we are able to change the user
                 $userChangeable = true;
             }
         }
 
-        // Check for the existence of a group
+        // check for the existence of a group
         $group = $this->getSystemConfiguration()->getParam('group');
         $groupChangeable = false;
         if (!empty($group)) {
-
-            // Get the user id and set it accordingly
+            // get the user id, set it accordingly and check if it is usable for a group switch
             $groupId = posix_getgrnam($group)['gid'];
-
-            // Did we get something useful?
             if (is_int($groupId)) {
-
-                // check if deploy dir exists
-                if (is_dir(new \DirectoryIterator($logDir = $service->getLogDir()))) {
-                    // init file iterator on deployment directory
-                    $fileIterator = new \FilesystemIterator($logDir);
-                    // Iterate through all phar files and extract them to tmp dir
-                    foreach (new \RegexIterator($fileIterator, '/^.*\\.log$/') as $logFile) {
-                        chgrp($logFile, $groupId);
-                    }
-                }
-
-                // Tell them we are able to change the group
+                // tell them we are able to change the group
                 $groupChangeable = true;
             }
         }
+
+        // do the actual file permission switching
+        $containerService->setUserRights(new \SplFileInfo($containerService->getLogDir()));
 
         // As we should only change user and group AFTER we made all chown and chgrp
         // changes we will do it here after collecting if we are able to.
@@ -603,12 +577,10 @@ class Server
         // ATTENTION: We first need to change the group, because we need to be root
         //            to do that. After that we can change the user also!!!!!!!!!!!
         if ($groupChangeable) {
-
             // change the group ID
             posix_setgid($groupId);
         }
         if ($userChangeable) {
-
             // change the user ID
             posix_setuid($userId);
         }
