@@ -302,7 +302,7 @@ class QueueWorker extends \Thread
 
                                 } else {
                                     // log a message that queue is actually full
-                                    $application->getInitialContext()->getSystemLogger()->debug(
+                                    $application->getInitialContext()->getSystemLogger()->info(
                                         sprintf('Job queue full - (%d jobs/%d msg wait)', $inQueue, sizeof($messages))
                                     );
                                 }
