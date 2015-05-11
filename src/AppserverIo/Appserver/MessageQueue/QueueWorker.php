@@ -293,7 +293,7 @@ class QueueWorker extends \Thread
                                 $inQueue = sizeof($jobsExecuting);
 
                                 // we only process 50 jobs in parallel
-                                if ($inQueue < 50) {
+                                if ($inQueue < 200) {
                                     // start the job and add it to the internal array
                                     $jobsExecuting[$message->getMessageId()] = new Job(clone $message, $application);
 
@@ -302,7 +302,7 @@ class QueueWorker extends \Thread
 
                                 } else {
                                     // log a message that queue is actually full
-                                    $application->getInitialContext()->getSystemLogger()->debug(
+                                    $application->getInitialContext()->getSystemLogger()->info(
                                         sprintf('Job queue full - (%d jobs/%d msg wait)', $inQueue, sizeof($messages))
                                     );
                                 }
