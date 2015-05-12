@@ -248,6 +248,12 @@ abstract class AbstractStep extends \Thread implements StepInterface
      */
     public function run()
     {
+
+        // register the class loader again, because in a Thread the context has been lost maybe
+        $application = $this->getApplication();
+        $application->registerClassLoaders();
+
+        // execute the step functionality
         $this->execute();
     }
 }

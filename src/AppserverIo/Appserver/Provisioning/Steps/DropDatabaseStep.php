@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Provisioning\Steps\CreateDatabaseStep
+ * AppserverIo\Appserver\Provisioning\Steps\DropDatabaseStep
  *
  * NOTICE OF LICENSE
  *
@@ -20,12 +20,10 @@
 
 namespace AppserverIo\Appserver\Provisioning\Steps;
 
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Tools\Setup;
 use Doctrine\ORM\Tools\SchemaTool;
 
 /**
- * An step implementation that creates a database based on the specified datasource.
+ * An step implementation that drops a database based on the specified datasource.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -33,7 +31,7 @@ use Doctrine\ORM\Tools\SchemaTool;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class CreateDatabaseStep extends AbstractDatabaseStep
+class DropDatabaseStep extends AbstractDatabaseStep
 {
 
     /**
@@ -51,8 +49,8 @@ class CreateDatabaseStep extends AbstractDatabaseStep
             // load the class definitions
             $classes = $this->getEntityManager()->getMetadataFactory()->getAllMetadata();
 
-            // create a new database instance
-            $this->getSchemaTool()->createSchema($classes);
+            // drop the schema if it already exist
+            $this->getSchemaTool()->dropSchema($classes);
 
         } catch (\Exception $e) {
             $this->getApplication()->getInitialContext()->getSystemLogger()->error($e->__toString());
