@@ -139,6 +139,10 @@ class RequestHandler extends \Thread
             }
 
         } catch (\Exception $e) {
+
+            // log the exception
+            $application->getInitialContext()->getSystemLogger()->error($e->__toString());
+
             // bind the exception in the respsonse
             $this->exception = $e;
         }
