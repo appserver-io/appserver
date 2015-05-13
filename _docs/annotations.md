@@ -9,7 +9,7 @@ permalink: /get-started/documentation/annotations.html
 ---
 
 Since one of our main goals is making the configuration of appserver as simple as possible, we have decided to use
-annotations wherever we cann. Annotations are not supported natively by PHP. Therefore, we provide
+annotations wherever we can. Annotations are not supported natively by PHP. Therefore, we provide
 annotation support via the [lang](https://github.com/appserver-io/lang) package.
 
 In addition to the usage of the application server's components, it is possible to extend your

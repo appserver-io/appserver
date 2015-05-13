@@ -40,7 +40,7 @@ This leaves us with the solution of building highly specialized proxy classes, w
 
 The configuration's details are described further below. For now, it is important to know that there are alternative classes that wrap around the original classes and execute cross-cutting logic.
 
-We don't want to do is force a certain way to instantiate objects. We have to ensure that the proxy and the original implementation can be swapped externally, without using a factory or entity manager. Therefore, we are working with the original definition of a structure (class, trait, or in another context interface).
+What we don't want to do is force a certain way to instantiate objects. We have to ensure that the proxy and the original implementation can be swapped externally, without using a factory or entity manager. Therefore, we are working with the original definition of a structure (class, trait, or in another context interface).
 
 As we still want to switch between original and proxy, we simply generate another implementation of the original class, we call it `ExampleClass`. It contains method stubs that wrap around the original methods. Since proxy generation is very expensive, these new definitions will be stored in the file system for later re-use.
 
@@ -140,7 +140,7 @@ It is hopefully clear to you now that AOP is about the insertion (one speaks of 
 | Keyword      | Type       | Description                                                     |
 | -------------| -----------| ----------------------------------------------------------------|
 | `call`       | standalone | The call of a method being static or dynamic.                   |
-| `execute`    | addition   | An addition to other join points. Describes that a certain join point has to be in the context of an execution stack. E.g. a call to `methodB` will only be carried out, if it was made from within `methodA` |
+| `execute`    | addition   | An addition to other join points. Describes that a certain join point has to be in the context of an execution stack. E.g. when a call to methodB is made from within methodA, then the execute join point is a match and the woven advice will be carried out. |
 
 ### Pointcuts
 A pointcut is used to define an explicit event in the flow of a running program by combining a `join point` with a point within your application's code, such as a method of a certain class.
@@ -258,7 +258,7 @@ class AnExampleAspect
 
 Aspect classes have to be implemented within your webapp, namely within the `META-INF`, `WEB-INF` or `common` directory.
 
-> Please note that aspects CANNOT contain a constructor requiring parameters.
+> Please note that the constructor of aspect classes MUST NOT require parameters.
 
 ### Generic annotations within aspects
 
