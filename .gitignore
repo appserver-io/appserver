@@ -1,0 +1,14 @@
+/.sass-cache
+/.idea
+/_site
+/target
+/.buildpath
+/.project
+/.settings
+.DS_Store
+/webapps
+/composer.lock
+jmeter.log
+/bin
+/etc
+/vendor
