@@ -70,7 +70,6 @@ class BeanLocator implements ResourceLocatorInterface
         if ($descriptor instanceof StatefulSessionBeanDescriptorInterface) {
             // try to load the stateful session bean from the bean manager
             if ($instance = $beanManager->lookupStatefulSessionBean($sessionId, $className)) {
-
                 // we've to check for post-detach callbacks
                 foreach ($descriptor->getPostDetachCallbacks() as $postDetachCallback) {
                     $instance->$postDetachCallback();
