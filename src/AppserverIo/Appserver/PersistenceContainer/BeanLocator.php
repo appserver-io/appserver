@@ -70,13 +70,20 @@ class BeanLocator implements ResourceLocatorInterface
         if ($descriptor instanceof StatefulSessionBeanDescriptorInterface) {
             // try to load the stateful session bean from the bean manager
             if ($instance = $beanManager->lookupStatefulSessionBean($sessionId, $className)) {
+
+                // we've to check for post-detach callbacks
+                foreach ($descriptor->getPostDetachCallbacks() as $postDetachCallback) {
+                    $instance->$postDetachCallback();
+                }
+
+                // return the instance
                 return $instance;
             }
 
             // if not create a new instance and return it
             $instance = $beanManager->newInstance($className, $sessionId, $args);
 
-            // we've to check for post-construct callback
+            // we've to check for post-construct callbacks
             foreach ($descriptor->getPostConstructCallbacks() as $postConstructCallback) {
                 $instance->$postConstructCallback();
             }
@@ -112,8 +119,9 @@ class BeanLocator implements ResourceLocatorInterface
             return $instance;
         }
 
-        // query if we've a Stateless session bean
-        if ($descriptor instanceof StatelessSessionBeanDescriptorInterface) {
+        // query if we've a Stateless session bean or a MessageDriven bean
+        if ($descriptor instanceof StatelessSessionBeanDescriptorInterface ||
+            $descriptor instanceof MessageDrivenBeanDescriptorInterface) {
             // if not create a new instance and return it
             $instance = $beanManager->newInstance($className, $sessionId, $args);
 
@@ -124,12 +132,6 @@ class BeanLocator implements ResourceLocatorInterface
 
             // return the instance
             return $instance;
-        }
-
-        //  query if we've a MessageDriven bean
-        if ($descriptor instanceof MessageDrivenBeanDescriptorInterface) {
-            // create a new instance and return it
-            return $beanManager->newInstance($className, $sessionId, $args);
         }
 
         // we've an unknown bean type => throw an exception

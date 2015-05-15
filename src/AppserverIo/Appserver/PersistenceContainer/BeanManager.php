@@ -512,6 +512,11 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface
             // load the session bean map instance
             $sessions = $this->getStatefulSessionBeans()->get($sessionId);
 
+            // we've to check for pre-attach callbacks
+            foreach ($descriptor->getPreAttachCallbacks() as $preAttachCallback) {
+                $instance->$preAttachCallback();
+            }
+
             // add the stateful session bean to the map
             $sessions->add($descriptor->getClassName(), $instance, $lifetime);
 
