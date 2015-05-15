@@ -66,7 +66,7 @@ class BeanLocator implements ResourceLocatorInterface
         // load the bean descriptor
         $descriptor = $objectManager->getObjectDescriptors()->get($className);
 
-        // query if we've a Stateful session bean
+        // query whether we've a SFSB
         if ($descriptor instanceof StatefulSessionBeanDescriptorInterface) {
             // try to load the stateful session bean from the bean manager
             if ($instance = $beanManager->lookupStatefulSessionBean($sessionId, $className)) {
@@ -91,7 +91,7 @@ class BeanLocator implements ResourceLocatorInterface
             return $instance;
         }
 
-        // query if we've a Singleton session bean
+        // query whether we've a SSB
         if ($descriptor instanceof SingletonSessionBeanDescriptorInterface) {
             // try to load the singleton session bean from the bean manager
             if ($instance = $beanManager->lookupSingletonSessionBean($className)) {
@@ -118,9 +118,8 @@ class BeanLocator implements ResourceLocatorInterface
             return $instance;
         }
 
-        // query if we've a Stateless session bean or a MessageDriven bean
-        if ($descriptor instanceof StatelessSessionBeanDescriptorInterface ||
-            $descriptor instanceof MessageDrivenBeanDescriptorInterface) {
+        // query whether we've a SLSB
+        if ($descriptor instanceof StatelessSessionBeanDescriptorInterface) {
             // if not create a new instance and return it
             $instance = $beanManager->newInstance($className, $sessionId, $args);
 
@@ -131,6 +130,12 @@ class BeanLocator implements ResourceLocatorInterface
 
             // return the instance
             return $instance;
+        }
+
+        //  query whether we've a MDB
+        if ($descriptor instanceof MessageDrivenBeanDescriptorInterface) {
+            // create a new instance and return it
+            return $beanManager->newInstance($className, $sessionId, $args);
         }
 
         // we've an unknown bean type => throw an exception
