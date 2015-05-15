@@ -1217,6 +1217,8 @@
                 <xs:element ref="appserver:init-on-startup" minOccurs="0"/>
                 <xs:element ref="appserver:post-construct" minOccurs="0"/>
                 <xs:element ref="appserver:pre-destroy" minOccurs="0"/>
+                <xs:element ref="appserver:post-detach" minOccurs="0"/>
+                <xs:element ref="appserver:pre-attach" minOccurs="0"/>
                 <xs:element ref="appserver:epb-ref" minOccurs="0"/>
                 <xs:element ref="appserver:res-ref" minOccurs="0"/>
             </xs:all>
@@ -1397,6 +1399,24 @@
         </xs:complexType>
     </xs:element>
     <xs:element name="pre-destroy">
+        <xs:complexType>
+            <xs:choice>
+                <xs:element ref="appserver:lifecycle-callback-method" maxOccurs="unbounded"/>
+            </xs:choice>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="post-detach">
+        <xs:complexType>
+            <xs:choice>
+                <xs:element ref="appserver:lifecycle-callback-method" maxOccurs="unbounded"/>
+            </xs:choice>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="pre-attach">
         <xs:complexType>
             <xs:choice>
                 <xs:element ref="appserver:lifecycle-callback-method" maxOccurs="unbounded"/>
