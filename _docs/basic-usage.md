@@ -17,14 +17,14 @@ permalink: /get-started/documentation/basic-usage.html
 
 After the installation wizard (or package manager) has finished, the application server starts automatically. You can now use it without limitations.
 
-Below you find basic instructions on how to make use of appserver.io. After the installation, you might want to look at some apps. A showcase example, whcih is accessible via `http://127.0.0.1:9080/example`, is bundled with appserver.io.
+Below you will find basic instructions on how to make use of appserver.io. After the installation, you might want to look at some apps. An example application is accessible via `http://127.0.0.1:9080/example`, which is bundled with appserver.io installation.
 
-Start your preferred browser and check out various possibilities. To pass the password barriers use
-the default login `appserver/appserver.i0`.
+Start your preferred browser and check out various possibilities. To enter through the login use
+the default user credentials `appserver/appserver.i0`.
 
 ## Service availability
 
-appserver.io does expose several [servers]({{ "/get-started/documentation/configuration.html#server-configuration" | prepend: site.baseurl }}) that are reachable using their respective address and port.
+appserver.io does expose several [servers]({{ "/get-started/documentation/configuration.html#server-configuration" | prepend: site.baseurl }}) which are reachable using their respective address and port.
 Per default, we only allow for local access using the `localhost` address `127.0.0.1`.
 
 If the servers' availability has to be changed, it can be done using the appropriate configuration file as [described here]({{ "/get-started/documentation/configuration.html#server-configuration" | prepend: site.baseurl }}) by altering the `address` param.
@@ -36,11 +36,11 @@ On a successful request, a response should be given. The configured [access log]
 
 ## Start and Stop Scripts
 
-In combination with the application server we deliver several standalone processes that are needed for proper 
+In combination with the application server we deliver several other standalone processes that are needed for proper
 functioning of different features.
 
 For these processes, we provide the following start and stop scripts for all nix like operating systems.
-They work the way they normally do based on the regarding system.
+The scripts work the same way, as any others do, in regards to the OS.
 
 | Script    | Description |
 | ----------| ----------- |
@@ -48,14 +48,14 @@ They work the way they normally do based on the regarding system.
 | `appserver-php5-fpm`    | PHP-fpm + appserver configuration. Our default FastCGI backend. Others might be added the same way. |
 | `appserver-watcher`     | SA watchdog that monitors filesystem changes and manages application server restarts. |
 
-Using a typical setup all three of these processes should run to enable the full feature set. To 
-ultimately execute appserver.io only the appication server process is needed but you will miss simple on-the-fly 
+Using a typical setup, all three of these processes should run, in order to enable appserver's full feature set. To
+ultimately execute appserver.io, only the application server process is really needed. However, you will miss simple on-the-fly
 deployment (`appserver-watcher`) and might have problems with legacy applications.
 
-Depending on the FastCGI Backend you want to use you might ditch `appserver-php5-fpm` for other 
+Depending on the FastCGI Backend, you may want to use `appserver-php5-fpm` for other
 processes e.g. supplying you with a [hhvm](http://hhvm.com/) backend.
 
-Currently, we support three different types of init scripts that support the commands `start`, `stop`,
+Currently, we support three different types of init scripts, which support the commands `start`, `stop`,
 `status` and `restart` (additional commands might be available on other systems).
 
  * **Mac OS X (LAUNCHD)**:
@@ -63,7 +63,7 @@ The LAUNCHD launch daemons are located within the application server's installat
 They can be used with the schema `/opt/appserver/sbin/<DAEMON> <COMMAND>`
 
 * **Debian, Raspbian, CentOS, ...(SystemV)**:
-They are commonly known and located in `/etc/init.d/` and support the commands mentioned above provided 
+They are commonly known and located in `/etc/init.d/` and support the commands mentioned above provided
 in the form `/etc/init.d/<DAEMON> <COMMAND>`
 
 * **Fedora, ... (systemd)**:
@@ -74,7 +74,7 @@ Windows users will find the same three daemons as services within their Windows 
 
 ## Setup Script
 
-appserver.io comes with a simple setup mechanism that sets the correct filesystem permissions for your environment needs.
+appserver.io comes with a simple setup mechanism that sets the correct file system permissions for your environment needs.
 
 ```bash
 sudo /opt/appserver/server.php -s <MODE>
