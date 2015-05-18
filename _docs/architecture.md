@@ -215,7 +215,7 @@ The system logger initialization is necessary to log the start-up process giving
 
 #### 6. Create an SSL Certificate (if necessary)
 
-As the application server also provide an HTTPS server, it is necessary that at least a self-signed SSL certifcate is available, to which the default HTTPS server socket can be bound. On every start-up, the application server queries whether an SSL certificate `etc/appserver/server.pem` is available, if not, a new self-signed certificate will be created.
+As the application server also provides an HTTPS server, it is necessary that at least a self-signed SSL certificate is available, to which the default HTTPS server socket can be bound. On every start-up, the application server queries whether an SSL certificate `etc/appserver/server.pem` is available, if not, a new self-signed certificate will be created.
 
 > The SSL certificate creation is necessary before the server context starts, because it is necessary that at least one certificate is available, in order to bind it to the HTTPS server socket.
 
