@@ -17,11 +17,11 @@ subNav:
 permalink: /get-started/documentation/architecture.html
 ---
 
-appserver.io makes heavy use of threads and their context to inherit instances, configuration values, constants, functions, class definitions and comments in a selective way. Beside inheritance purposes, threads and their context also allows a separation concerns where necessary. In opposite to a processes threads allows separation on the one hand, but gives developers the possiblity to share data whenever needed.
+appserver.io makes heavy use of threads and their context to inherit instances, configuration values, constants, functions, class definitions and comments in a selective way. In addition to making good use of inheritance, appserver also takes advantage of threads and their context to also allow a separation of concerns where necessary. As opposed to processes, threads allow separation, yet gives developers the possibility to share data whenever needed.
 
 ## What is a Context
 
-The context can be defined the runtime environment of a thread. This includes that **EACH** thread has its own context. When a thread is created, depending on the options passed to the `start()` method, the complete context including configuration values as well as declared constants, functions, classes and comments of the actual environment are copied into the new threads context.
+The context can be defined as the runtime environment of a thread. This includes that **EACH** thread has its own context. When a thread is created, depending on the options passed to the `start()` method, the complete context including configuration values, as well as declared constants, functions, classes and comments of the actual environment, are copied into the new threads context.
 
 For example, if you declare a constant like
 
@@ -29,7 +29,7 @@ For example, if you declare a constant like
 define('SERVER_AUTOLOADER', 'vendor/autoloader.php');
 ```
 
-it is possible to use these constant in a threads `run()` method
+it is possible to use this constant in a threads `run()` method
 
 ```php
 /**
@@ -43,9 +43,9 @@ class MyThread
      */
     public function run()
     {
-        
+
         require SERVER_AUTOLOADER;
-        
+
         /*
          * you now can create instances of classes the autoloader is aware of
          */
@@ -56,17 +56,17 @@ $myThread = new MyThread()
 $myThread->start(PTHREADS_INHERIT_NONE|PTHREADS_INHERIT_CONSTANTS);
 ```
 
-as it will be copied into the new thread's context when you start the thread by invoking the `start()` method, because we allow that by passing the `PTHREADS_INHERIT_CONSTANTS` option.
+as it will be copied into the new thread's context, when you start the thread by invoking the `start()` method. This is possible, through the use of the `PTHREADS_INHERIT_CONSTANTS` option.
 
-This would also be possible if the thread's `start()` method will be invoked without any option or the `PTHREADS_INHERIT_ALL`, which is the default value. In that case all class definitions that has been declared before the thread has been started, will also be copied into the thread's context.
+Passing of constants would also be possible, if the thread's `start()` method would be invoked without any options or with the `PTHREADS_INHERIT_ALL`, which is the default value. In that case, all class definitions that have been declared before the thread has been started, will also be copied into the thread's context.
 
-In some cases this will be desired, but it is necessary to keep in mind, that copying everything into each threads context will also require, and, in most cases wasts, a whole lot of memory. So the recommended way will be, to start each thread with `PTHREADS_INHERIT_NONE` and exactly define what has to be copied by passing additional options.
+In some cases, this will be desired, but it is necessary to keep in mind, that copying everything into each threads context will also require, and, in most cases waste, a whole lot of memory. So the recommended way will be, to start each thread with `PTHREADS_INHERIT_NONE` and exactly define what has to be copied by passing additional options.
 
-> Please be aware, that the context we're talking about here, **MUST** not be mixed up with a [function, method or class scope](http://php.net/manual/en/language.variables.scope.php), where you are also able to define variables or constants that can be either accessed in function, method or class scope.
+> Please be aware that the context we're talking about here **MUST** not be mixed up with a [function, method or class scope](http://php.net/manual/en/language.variables.scope.php), where you are also able to define variables or constants that can be either accessed in function, method or class scope.
 
 ## How to handle Errors and Exceptions
 
-As there is the possiblity, that a fatal error occours while processing a request, it is necessary to shutdown it in a controlled way. Therefore, using PHP's `register_shutdown_function` allows a developer to catch fatal errors inside the thread's/context's `run()` method to implement a controlled shutdown.
+As there are possibilities for fatal errors to occur while processing a request, it is necessary to shutdown the thread in a controlled manner. Therefore, using PHP's `register_shutdown_function` allows a developer to catch fatal errors inside the thread's/context's `run()` method to implement a controlled shutdown.
 
 ```php
 /**
@@ -116,7 +116,7 @@ As each thread has it's own context, the context hierarchy describes when and ho
 
 ### Root Context
 
-The root context is, as the name already said, the context, the application server is started. To start the application server, generally it is necessary to invoke the `server.php` script. This script defines some necessary constants, includes the `var/scripts/bootstrap.php`, parses the main configuration file `etc/appserver/appserver.xml`, creates a new instance of the main `Server` class and finally invokes the `start()` method. The process that'll be executed by the `start()` method is defined in section [Start-Up](#start-up).
+The root context is, as the name already implies, the context created, when the application server is started. To start the application server, it is generally necessary to invoke the `server.php` script. This script defines some mandatory constants, includes the `var/scripts/bootstrap.php`, parses the main configuration file `etc/appserver/appserver.xml`, creates a new instance of the main `Server` class and finally invokes the `start()` method. The process that'll be executed by the `start()` method is defined in section [Start-Up](#start-up).
 
 ### Container Context
 
@@ -126,31 +126,31 @@ The first context level is the container context, which is a child context of th
 
 ### Server Context
 
-Usually the main server functionality will be implemented on this context level. In most cases, a server context opens a server socket, possible supporting SSL connections, and creates the configured numbers of [worker contexts](#worker-context) which will then listen for client connections.
+Usually the main server functionality will be implemented on this context level. In most cases, a server context opens a server socket, possibly supporting SSL connections, and creates the configured numbers of [worker contexts](#worker-context) which will then listen for client connections.
 
 > The server context usually will be a container context's child and therefore it'll inherit the root and the container context's environment it has been created in.
 
 ### Worker Context
 
-The last context level, when using the webserver only, is the worker context. As described before, the workers accept the client connections and handles the request by looking up the requested file and send the content back to the client. In most cases, a worker context uses a connection handler that knows how to handle the request by implementing the request protocol which can be HTTP 1.1 for example.
+The last context level, when using the webserver only, is the worker context. As described before, the workers accept the client connections and handles the request by looking up the requested file and sending the content back to the client. In most cases, a worker context uses a connection handler and handles the request by implementing a request protocol, which can be HTTP 1.1, for example.
 
-> The worker context will be a server context's child and therefore it'll inherit the root, the container and the server context's environment it has been created in.
+> The worker context will be a server context's child and therefore it will inherit the root, the container and the server context's environment, which it had been created in.
 
 ### Application Context
 
-Beside the contexts that results out of the webserver functionality, the application server requires additional contexts to handle requests. In opposite to a webserver, an application server has to be aware of the deployed applications and their state. This makes things a bit more complicated, as it is possible that different applications want to load a class with the same fully qualified class name. In a usual PHP environment, this would result in a `Can not redeclare class ...` fatal error. To avoid this, an application server provides a separate context for each application to protect classes from namespace conflicts.
+In addition to the contexts, which results out of the webserver functionality, the application server also requires contexts to handle requests. Complementary to a webserver, an application server must also be aware of the deployed applications and their state. This makes the system a bit more complicated, since different applications may want to load a class with the same fully qualified class name. In a standard PHP environment, this would result in a `Can not redeclare class ...` fatal error. To avoid this, an application server provides a separate context for each application to protect classes from namespace conflicts.
 
-> The application context will be a container's child and therefore it'll inherit the root and the container context's environment it has been created in.
+> The application context will be a container's child and therefore it will inherit the root and the container context's environment, in which it was created.
 
 ### Request Context
 
-The application context is not enough to handle concurrent requests, because of race conditions, it would be necessary to execute them serialized. To allow parallel execution, each request will be processed in a separate context called request context. This is the only context that will be created just in time the a request to the application has to be handled.
+The application context is not enough to handle concurrent requests. Because of race conditions, it would be necessary to execute them serialized. To allow parallel execution, each request will be processed in a separate context called request context. This is the only context that will be created just-in-time for each request the application has to handle.
 
-> The request context will be a worker's child and therefore it'll inherit the root, the container, the server and the worker context's environment it has been created in.
+> The request context will be a worker's child and therefore it will inherit the root, the container, the server and the worker context's environment, in which it was created.
 
 ## Start-Up
 
-The following sections describes the application servers start-up process. The start-up process is complicated, because it is composed of several tasks that depends on other ones. For example, it is necessary to create the servers log directory before start logging.
+The following sections describes the application servers start-up process. The start-up process is complicated, because it is composed of several tasks that depends each other. For example, it is necessary to create the servers log directory, before logging can start.
 
 The process is separated into two steps. The first step initializes the necessary instances in the required order.
 
@@ -159,12 +159,12 @@ The process is separated into two steps. The first step initializes the necessar
 * Initialize the InitialContext
 * Initialize the Filesystem
 * Initialize the Loggers
-* Create a SSL Certificate (if necessary)
+* Create an SSL Certificate (if necessary)
 * Initialize the Extractors
 * Initialize the Containers
 * Initialize the Provisioners
 
-In the second step the applications are extracted from their PHAR archives. Then the configured containers, servers and applications boots. After the server sockets has been opened, because of security reasons, the ownership of the process is switched from root to the user configured in `etc/appserver.xm`.
+In the second step, the applications are extracted from their PHAR archives. Then the configured containers, servers and applications boot. After the server sockets have been opened, in order to uphold utmost security, the ownership of the process is switched from root to the user configured in `etc/appserver.xm`.
 
 * Process the Extractors
 * Start the Containers
@@ -175,7 +175,7 @@ In the second step the applications are extracted from their PHAR archives. Then
 
 ### Sequence Diagram
 
-The following sequence diagram roughly describes the start-up workflow for version 1.0.x. 
+The following sequence diagram roughly describes the start-up workflow for version 1.0.x.
 
 ![Start-Up Sequence Diagram]({{ "/assets/img/server_start-up_sequence_diagram.jpg" | prepend: site.baseurl }} "Start-Up Sequence Diagram")
 
@@ -183,7 +183,7 @@ The following sequence diagram roughly describes the start-up workflow for versi
 
 ### Step 1 - Initialization
 
-Following sections describe the workflow that'll be executed during application server start-up. It is important to execute the steps in the order described above, because each step is a precondition for the next one.
+Following sections describe the workflow that will be executed during the application server's start-up. It is important to execute the steps in the order described above, because each step is a precondition for the following one.
 
 #### 1. Normalize the System Configuration
 
@@ -191,49 +191,49 @@ As the system configuration is passed to the server's constructor, the first ste
 
 #### 2. Set the Umask
 
-Next step is to set the umask for files and directories that will be created during the start-up process and later when handling requests. The umask will be inherited from all child contexts and doesn't need to be set again.
+The next step is to set the umask for files and directories that will be created during the start-up process and later, when handling requests. The umask will be inherited from all child contexts and doesn't need to be set again.
 
 > The umask will be loaded from the system configuration initailized in the prior step [Normalize the System Configuration](#normalize-the-system-configuration).
 
 #### 3. Initialize the InitialContext
 
-After setting the [umask](#set-the-umask), the next step is the initialization of the InitialContext instance. The InitialContext instance is the primary context that is passed through to the created threads containing the necessary data like system configuration and loggers. 
+After setting the [umask](#set-the-umask), the next step is the initialization of the InitialContext instance. The InitialContext instance is the primary context that is passed through to the created threads containing the necessary data like system configuration and loggers.
 
-> As the the InitialContext is necessary to use the service instances, it is a precondition for the next step, even the filesystem initialization.
+> As the the InitialContext is necessary for the use of any service instances, it is also a precondition for the next step, the file system initialization.
 
-#### 4. Initialize the Filesystem
+#### 4. Initialize the File System
 
-After creating the InitialContext instance, the system is ready to prepare the filesystem. When the application server will be installed the first time, folders like `var/log` are **NOT** created. Instead, they will be created at the application server's first start-up. Additionally, on each start-up, the application server verifies, that all necessary folders are available, or one of these folders have to be cleaned-up. This is the case for the applications temporary directory, usually located at `var/tmp/<application-name>/tmp`, for example.
+After creating the InitialContext instance, the system is ready to prepare the file system. When the application server will be installed the first time, folders like `var/log` are **NOT** created. Instead, they will be created during the application server's first start-up. Additionally, on each start-up, the application server verifies that all necessary folders are available, or if one of the folders have to be cleaned-up. This is the case for the applications temporary directory, usually located at `var/tmp/<application-name>/tmp`, for example.
 
 > The next step, [initialize the loggers](#initialize-the-loggers) requires that the umask has been set, the InitialContext is available and the folder structure has been prepared.
 
 #### 5. Initialize the Loggers
 
-The system logger initialization is necessary to log the start-up process giving the administrator or developer valuable information about the deployed applications or listenting server sockets.
+The system logger initialization is necessary to log the start-up process giving the administrator or developer valuable information about the deployed applications or listening server sockets.
 
-> The loggers can be initialized as soon as the umask has been set (which influences the permissions of the log files that will be created), the system configuration is available and the filesystem has been prepared (because the folders where the logfiles are located in, has to be created on first start-up).
+> The loggers can be initialized as soon as the umask has been set (which influences the permissions of the log files that will be created), the system configuration is available and the filesystem has been prepared (because the folders, where the logfiles are located, have to be created during the start-up procedure).
 
-#### 6. Create a SSL Certificate (if necessary)
+#### 6. Create an SSL Certificate (if necessary)
 
-As the application server also provide a HTTPS server, it is necessary that at least a self-signed SSL certifcate is available, the default HTTPS server socket can be bound to. On every start-up, the application server queries whether a SSL certificate `etc/appserver/server.pem` is available, if not, a new self-signed certificate will be created.
+As the application server also provide an HTTPS server, it is necessary that at least a self-signed SSL certifcate is available, to which the default HTTPS server socket can be bound. On every start-up, the application server queries whether an SSL certificate `etc/appserver/server.pem` is available, if not, a new self-signed certificate will be created.
 
-> The SSL certificate create is necessary before the server context starts, because it is necessary that at least one certificate is available the HTTPS server socket can be bound to.
+> The SSL certificate creation is necessary before the server context starts, because it is necessary that at least one certificate is available, in order to bind it to the HTTPS server socket.
 
 #### 7. Initialize the Extractors
 
-The extractors provide functionality to extract the application archives, like PHAR archives, that will be extracted to the container's default document root.
+The extractors provide functionality to extract the application archives, like PHAR archives, which will be extracted to the container's default document root.
 
 > As the extractors needs access to the application server's configuration and services, it is necessary to make sure these instances are available before the extractors are initialized.
 
 #### 8. Initialize the Containers
 
-A container is the root context for a random number of server the for applications. Beside that, each container has a separate naming directory to store environment variables and references to the application itself, as well as the application specific class loaders and managers.
+A container is the root context for a random number of servers for the applications. In addition, each container has a separate naming directory to store environment variables and references to the application itself, as well as the application specific class loaders and managers.
 
 > As the containers need access to the application server's configuration and services, it is necessary to make sure these instances are available before the containers are initialized.
 
 #### 9. Initialize the Provisioners
 
-The provisioners allows an application developer to execute custom steps after the application has been deployed, the server sockets are listening and the user has been switched. Provisioning steps are configured by a XML file, that has to be located either in the applications `META-INF` or `WEB-INF` directory.
+The provisioners allow an application developer to execute custom steps after the application has been deployed, the server sockets are listening and the user has been switched. Provisioning steps are configured by an XML file, which has to be located either in the applications `META-INF` or `WEB-INF` directory.
 
 > As the containers need access to the application server's configuration and services, it is necessary to make sure these instances are available before the containers are initialized.
 
@@ -249,14 +249,14 @@ Before the containers and the servers can be started, it is necessary, that the 
 
 #### 2. Start the Containers
 
-When all applications have been extracted, the containers are prepared. The next step is the initialization of the container's naming directory, followed by the datasource and application deployment and finshes with starting the servers. 
+When all applications have been extracted, the containers are prepared. The next step is the initialization of the container's naming directory, followed by the datasource and application deployment and finishes with starting the servers.
 
-> This process has to be executed step-by-step, to make sure that datasources are deployed **BEFORE** the applications, and the applications **BEFORE** the servers and their modules.
+> This process has to be executed step-by-step, to make sure that data sources are deployed **BEFORE** the applications, and the applications **BEFORE** the servers and their modules.
 
 #### 3. Switch the User
 
-After the server sockets has been started, the user can be switched from `root` to the user configured in the system configuration. This step is necessary to make sure, that application provisioning will **NOT** be executed as `root`.
+After the server sockets have been started, the user can be switched from `root` to the user configured in the system configuration. This step is necessary to make sure that application provisioning will **NOT** be executed as `root`.
 
 #### 4. Provision the Applications
 
-The last step in the application server's start-up process is the application provisioning. Application provisioning allows an application vendor to create a SQLite database or execute a commandline script for example. 
+The last step in the application server's start-up process is the application provisioning. Application provisioning allows an application vendor to create an SQLite database or execute a command line script for example.

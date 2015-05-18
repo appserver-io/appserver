@@ -2,7 +2,7 @@
 layout: docs
 title: Configuration
 meta_title: appserver.io configuration
-meta_description: appserver.io is highly configurable giving you the flexibility you need. Therefore we provide a central and very powerful configuration file.
+meta_description: appserver.io is a highly configurable php application server, giving you the flexibility you need. Therefore we provide a central and very powerful configuration file.
 position: 150
 group: Docs
 subNav:
@@ -23,11 +23,11 @@ subNav:
 permalink: /get-started/documentation/configuration.html
 ---
 
-We fancy that appserver should be highly configurable, so that anyone who is interested can give it a shot. Therefore we provide a central configuration file located at `/opt/appserver/etc/appserver/appserver.xml`.
+We fancy the fact that we made appserver highly configurable. We've provided a centralized configuration file located at `/opt/appserver/etc/appserver/appserver.xml`.
 
 This file contains the complete architecture as an XML structure.
 
-To change used components, introduce new services or scale the system by adding additional servers you can do so with some lines of XML.
+To change used components, introduce new services or scale the system by adding additional servers, you can do so with some lines of XML.
 
 ## Basic Architecture
 
@@ -50,7 +50,7 @@ In this example, we use a shortened piece of the `appserver.xml` file to underst
     <container name="combined-appserver" type="AppserverIo\Core\GenericContainer">
       <description>
         <![CDATA[
-          This is an example of a webserver container 
+          This is an example of a webserver container
           that handles http requests in common way
         ]]>
       </description>
@@ -62,7 +62,7 @@ In this example, we use a shortened piece of the `appserver.xml` file to underst
         serverSoftware="appserver/1.0.0.0 (darwin) PHP/5.5.21" />
 
         <servers>
-        
+
           <!-- this is the default configuration for the HTTP server -->
           <server
             name="http"
@@ -98,13 +98,13 @@ In this example, we use a shortened piece of the `appserver.xml` file to underst
 
             <!-- define the environment variables -->
             <environmentVariables>
-              <environmentVariable 
+              <environmentVariable
                 condition="" definition="LOGGER_ACCESS=Access" />
             </environmentVariables>
 
             <!-- define the connection handler(s) -->
             <connectionHandlers>
-              <connectionHandler 
+              <connectionHandler
                 type="\AppserverIo\WebServer\ConnectionHandlers\HttpConnectionHandler" />
             </connectionHandlers>
 
@@ -147,35 +147,35 @@ In this example, we use a shortened piece of the `appserver.xml` file to underst
                 </params>
               </virtualHost>
             </virtualHosts>
-            
+
             <!-- the webserver modules we want to load -->
             <modules>
               <!-- REQUEST_POST hook -->
-              <module 
+              <module
                 type="\AppserverIo\WebServer\Modules\VirtualHostModule"/>
-              <module 
+              <module
                 type="\AppserverIo\WebServer\Modules\AuthenticationModule"/>
-              <module 
+              <module
                 type="\AppserverIo\WebServer\Modules\EnvironmentVariableModule" />
-              <module 
+              <module
                 type="\AppserverIo\WebServer\Modules\RewriteModule"/>
-              <module 
+              <module
                 type="\AppserverIo\WebServer\Modules\DirectoryModule"/>
-              <module 
+              <module
                 type="\AppserverIo\WebServer\Modules\AccessModule"/>
-              <module 
+              <module
                 type="\AppserverIo\WebServer\Modules\CoreModule"/>
-              <module 
+              <module
                 type="\AppserverIo\WebServer\Modules\PhpModule"/>
-              <module 
+              <module
                 type="\AppserverIo\WebServer\Modules\FastCgiModule"/>
-              <module 
+              <module
                 type="\AppserverIo\Appserver\ServletEngine\ServletEngine" />
               <!-- RESPONSE_PRE hook -->
-              <module 
+              <module
                 type="\AppserverIo\WebServer\Modules\DeflateModule"/>
               <!-- RESPONSE_POST hook -->
-              <module 
+              <module
                 type="\AppserverIo\Appserver\Core\Modules\ProfileModule"/>
             </modules>
 
@@ -189,27 +189,27 @@ In this example, we use a shortened piece of the `appserver.xml` file to underst
                 </params>
               </fileHandler>
             </fileHandlers>
-    
+
         </server>
-    
+
         <!-- Here, additional servers might be added -->
-    
+
       </servers>
     </container>
   </containers>
 </appserver>
-``` 
+```
 
-In the above example, you can see three important components of the appserver architecture being 
-used. The [*container*](#container-configuration), [*server*](#server-configuration) and some
-[*modules*](#module-configuration). We are basically building up a container which holds a server that uses different modules 
+In the above example, you can see three important components of the appserver architecture in
+use. The [*container*](#container-configuration), [*server*](#server-configuration) and some
+[*modules*](#module-configuration). We are basically building up a container, which holds a server that uses different modules
 to process incoming HTTP (have a look at the `connectionHandler`) requests.
 
-When looking at the configuration file of a current installation it will become visible that certain structures are handled differently on a live system.
+When looking at the configuration file of a current installation, it will become visible that certain structures are handled differently on a live system.
 The most obvious is the usage of the separation of different aspects of the configuration.
 
 The `appserver.xml` configuration supports the [XInclude](http://en.wikipedia.org/wiki/XInclude) mechanism to allow for re-usability.
-Following example (which is actually used) shows how the virtual host configuration is separated into an extra file.
+The following example (which is actually used) shows how the virtual host configuration is separated into an extra file.
 
 ```xml
 <!-- include of virtual host configurations -->
@@ -220,41 +220,41 @@ This makes virtual hosts re-usable within several servers with just one line wit
 
 ## Container Configuration
 
-A *container* is created by using the `container` element within the `containers` collection 
-of the `appserver` document element. Two things make this element into a specific container 
+A *container* is created by using the `container` element within the `containers` collection
+of the `appserver` document element. Two things make this element into a specific container
 being built up by the system on startup:
 
-* The `type` attribute states a class extending our `AbstractContainerThread` which makes a 
+* The `type` attribute states a class extending our `AbstractContainerThread` which makes a
   container into a certain kind of container.
 
-* The `deployment` element states a class containing preparations for starting up the container. 
+* The `deployment` element states a class containing preparations for starting up the container.
   It can be considered a hook which will be invoked before the container will be available.
 
 That is basically everything to create a new container. To make use of it, it has to contain at least one *server* within its `servers` collection.
 
 ## Server Configuration
 
-The *servers* contained by our *container* can also be loosely drafted by the XML configuration and 
-will be instantiated on container boot-up. To enable a *server* you have to mention three basic 
+The *servers* contained by our *container* can also be loosely drafted by the XML configuration and
+will be instantiated on container boot-up. To enable a *server* you have to mention three basic
 attributes of the element:
 
-* The `type` specifies a class implementing the `ServerInterface` which implements the basic 
+* The `type` specifies a class implementing the `ServerInterface` which implements the basic
   behavior of the server on receiving a connection and how it will handle it.
-* The `socket` attribute specifies the type of socket the server should open. E.g. a stream or 
+* The `socket` attribute specifies the type of socket the server should open. E.g. a stream or
   asynchronous socket
-* The `serverContext` specifies the server's source of configuration and container for runtime 
+* The `serverContext` specifies the server's source of configuration and container for runtime
   information e.g. ServerVariables like `DOCUMENT_ROOT`
 
-So we have the specific server which will open a certain port and operate in a defined context. But
-to make the server handle a certain type of requests it needs to know which protocol to speak.
+So we have the specific server, which will open a certain port and operate in a defined context. But,
+to make the server handle a certain type of requests, it needs to know which protocol to speak.
 
 This can be done using the `connectionHandler` element. Certain server wrappers can handle certain
-protocols. Therefor we can use the protocols which a server wrapper, e.g. [`WebServer`]({{ "/get-started/documentation/webserver.html" | prepend: site.baseurl }}) supports in 
+protocols. Therefore, we can use the protocols, which a server wrapper, e.g. [`WebServer`]({{ "/get-started/documentation/webserver.html" | prepend: site.baseurl }}) supports in
 form of connection handlers. [WebServer](<https://github.com/appserver-io/webserver>)
-offers a `HttpConnectionHandler` class. By using it, the server is able to understand the HTTP 
+offers an `HttpConnectionHandler` class. By using it, the server is able to understand the HTTP
 protocol.
 
-The server configuration makes heavy use of the `param` element which is used to apply some of the most important configuration values to a server instance.
+The server configuration makes heavy use of the `param` element, which is used to apply some of the most important configuration values to a server instance.
 An example of the params a server can take can be found in the example below.
 
 ```xml
@@ -277,14 +277,14 @@ Some of these params do speak for themselves, but others don't. You can find a c
 
 | Param name           | Type     | Description                                                    |
 | ---------------------| ---------| ---------------------------------------------------------------|
-| `admin`              | string   | The email address of the administrator who is responsible for. |
-| `software`           | string   |  The software signature as shown in the response header for example. |
+| `admin`              | string   | The email address of the administrator who is responsible for the server. |
+| `software`           | string   |  The software signature, as shown in the response header for example. |
 | `transport`          | string   |  The transport layer. In ssl mode `ssl` will be used instead of plain `tcp`. |
-| `address`            | string   |  The address the server-socket should be bind and listen to. If you want to allow only connection on local loopback define `127.0.0.1` as in the example above shown. This will be good enough for local development and testing purpose. If you want to allow connections to your external ethernet interfaces just define `0.0.0.0` or if you want to allow connection only on a specific interface just define the ip of your interface `192.168.1.100`. |
+| `address`            | string   |  The address the server-socket should bind and listen to. If you want to allow only connection on local loopback define `127.0.0.1` as in the example above shown. This will be good enough for local development and testing purpose. If you want to allow connections to your external ethernet interfaces, just define `0.0.0.0` or if you want to allow connection only on a specific interface, just define the ip of your interface `192.168.1.100`. |
 | `port`               | integer  |  The port for the server-socket to accept connections to. This can be any [common port number](http://en.wikipedia.org/wiki/Port_%28computer_networking%29#Common_port_numbers). Make sure there is no other server installed blocking the default ports.|
 | `workerNumber`       | integer  |  Defines the number of worker-queues to be started waiting for requests to process. |
-| `workerAcceptMin`    | integer  |  Describes the minimum number of requests for the worker to be accepted for randomize its lifetime. |
-| `workerAcceptMax`    | integer  |  Describes the maximum number of requests for the worker to be accepted for randomize its lifetime. |
+| `workerAcceptMin`    | integer  |  Describes the minimum number of requests for the worker to be accepted to randomize its lifetime. |
+| `workerAcceptMax`    | integer  |  Describes the maximum number of requests for the worker to be accepted tor randomize its lifetime. |
 
 All params listed above are common to servers using the `HttpConnectionHandler`.
 
@@ -292,14 +292,14 @@ All params listed above are common to servers using the `HttpConnectionHandler`.
 
 ## Application Configuration
 
-Beside Container and Server, it is also possible to configure the application. Each application
+In addition to the Container and Server configurations, it is also possible to configure the applications. Each application
 can have its own autoloaders and managers. By default, each application found in the application
 server's webapp directory `/opt/appserver/webapps` will be initialized with the defaults, defined
 in `/opt/appserver/etc/appserver/conf.d/context.xml`
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
-<context 
+<context
   type="AppserverIo\Appserver\Application\Application">
 
   <classLoaders>
@@ -339,14 +339,14 @@ in `/opt/appserver/etc/appserver/conf.d/context.xml`
   <managers>
 
     <!-- provides services necessary for DI -->
-    <manager 
-      name="Provider" 
-      beanInterface="ProviderInterface" 
-      type="AppserverIo\Appserver\DependencyInjectionContainer\Provider" 
+    <manager
+      name="Provider"
+      beanInterface="ProviderInterface"
+      type="AppserverIo\Appserver\DependencyInjectionContainer\Provider"
       factory="AppserverIo\Appserver\DependencyInjectionContainer\ProviderFactory"/>
 
     <!-- provides the services necessary to handle Session- and MessageBeans -->
-    <manager 
+    <manager
       name="BeanManager"
       beanInterface="BeanContextInterface"
       type="AppserverIo\Appserver\PersistenceContainer\BeanManager"
@@ -365,7 +365,7 @@ in `/opt/appserver/etc/appserver/conf.d/context.xml`
       factory="AppserverIo\Appserver\MessageQueue\QueueManagerFactory"/>
 
     <!-- provides the functionality to define Servlets handling HTTP request -->
-    <manager 
+    <manager
       name="ServletManager"
       beanInterface="ServletContextInterface"
       type="AppserverIo\Appserver\ServletEngine\ServletManager"
@@ -377,21 +377,21 @@ in `/opt/appserver/etc/appserver/conf.d/context.xml`
     </manager>
 
     <!-- provides functionality to handle HTTP sessions -->
-    <manager 
+    <manager
       name="StandardSessionManager"
       beanInterface="SessionManagerInterface"
       type="AppserverIo\Appserver\ServletEngine\StandardSessionManager"
       factory="AppserverIo\Appserver\ServletEngine\StandardSessionManagerFactory"/>
 
     <!-- provides functionality to handle Timers -->
-    <manager 
+    <manager
       name="TimerServiceRegistry"
       beanInterface="TimerServiceContextInterface"
       type="AppserverIo\Appserver\PersistenceContainer\TimerServiceRegistry"
       factory="AppserverIo\Appserver\PersistenceContainer\TimerServiceRegistryFactory"/>
 
     <!-- provides functionality to handle HTTP basic/digest authentication -->
-    <manager 
+    <manager
       name="StandardAuthenticationManager"
       beanInterface="AuthenticationManagerInterface"
       type="AppserverIo\Appserver\ServletEngine\Authentication\StandardAuthenticationManager"
@@ -411,7 +411,7 @@ in `/opt/appserver/etc/appserver/conf.d/context.xml`
 
 If your application does not use any of the defined class loaders or managers, or you want to implement
 your own managers, you can define them in a `context.xml` file, that you have to deliver with your
-application. Your own, customized file, has to be stored in `META-INF/context.xml`. When the application
+application. Your own, customized file has to be stored in `META-INF/context.xml`. When the application
 server starts, this file will be parsed and your application will be initialized with the defined class loaders
 and managers.
 
@@ -420,55 +420,55 @@ and managers.
 
 ## Module Configuration
 
-The web server comes with a package of default modules. The functionality that allows to configure
-a virtual host or environment variables, for example, is also provided by two, maybe the most important,
+The web server comes with a package of default modules. The functionality that allows you to configure
+a virtual host or environment variables, for example, is also provided by two of, probably the most, important
 modules.
 
 ### Rewrite Module
 
-The module can be used according to the `\AppserverIo\WebServer\Interfaces\HttpModuleInterface` interface.
+This module can be used according to the `\AppserverIo\WebServer\Interfaces\HttpModuleInterface` interface.
 It needs an initial call of the `init` method and will process any request offered to the `process` method.
 The module is best used within the [`webserver`](<https://github.com/appserver-io/webserver>)
-project as it offers all needed infrastructure.
+project, as it offers all needed infrastructure.
 
 #### Rules
 
-Most important part of the module is the way it can perform rewrites. All rewrites are based on rewrite rules which consist of three important parts:
+One of the most important parts of the module is the way it can perform rewrites. All rewrites are based on rewrite rules, which consist of three important parts:
 
-- *condition string* : Conditions to be met in order for the rule to take effect. 
+- *condition string* : Conditions to be met in order for the rule to take effect.
   See more [down here](#condition-syntax)
 
-- *target string* : The target to rewrite the requested URI to. Within this string, you can use 
+- *target string* : The target to rewrite the requested URI to. Within this string, you can use
   backreferences similar
   to the Apache mod_rewrite module with the difference that you have to use the `$ syntax`
   (instead of the `$/%/%{} syntax` of Apache).
-  
-  Matching rule conditions to pick out specifically via regex are also part of available backreferences
+
+  Matching rule conditions via regex are also part of available backreferences,
   as well as server and environment variables.
 
-  *Simple example* : A condition like `(.+)@$X_REQUEST_URI` would produce a back reference `$1` 
-  with the value `/index` for a requested URI `/index`. The target string `$1/welcome.html` would
+  *Simple example* : A condition like `(.+)@$X_REQUEST_URI` would produce a back reference `$1`
+  with the value `/index` for a requested URI `/index`. The target string `$1/welcome.html` would,
   therefore, result in a rewrite to `/index/welcome.html`
 
-- *flag string* : Use flags similar to mod_rewrite which are used to make rules react in a 
-  certain way or influence further processing. See more [down here](#flags)
+- *flag string* : Use flags, similar to mod_rewrite, to make rules, which react in a
+  certain way or influence further processing. Learn more [about flags below](#flags).
 
 #### Condition Syntax
 
-The Syntax of possible conditions is roughly based on the possibilities of Apache's RewriteCondition 
-and RewriteRule combined.
+The Syntax of conditions is roughly based on the combination of Apache's RewriteCondition
+and RewriteRule syntax.
 
-To make use of such a combination, you can chain conditions together using the `{OR}` symbol for 
+To make use of such a combination, you can chain conditions together using the `{OR}` symbol for
 OR-combined and the `{AND}` symbol for AND-combined conditions.
 
-Please be aware that AND takes precedence over OR! Conditions can either be PCRE regex or certain fixed 
-expressions. So a condition string of `([A-Z]+\.txt){OR}^/([0-9]+){AND}-f` would match only real files 
-(through `-f`) which either begins with numbers or end with capital letters and the extension .txt.
+Please be aware that AND takes precedence over OR! Conditions can either be PCRE regex or certain fixed
+expressions. So a condition string of `([A-Z]+\.txt){OR}^/([0-9]+){AND}-f` would match only real files
+(through `-f`), which either begins with numbers or end with capital letters and the extension .txt.
 
 As you might have noticed: Backslashes do **not have to be escaped**.
 
 You might also be curious about the `-f` condition. This is a direct copy of Apaches -f RewriteCondition.
-We also support several other expressions to regex based conditions which are:
+We also support several other expressions of regex based conditions which are:
 
  - *<<COMPARE_STRING>* : Is the operand lexically preceding `<COMPARE_STRING>`?
  - *><COMPARE_STRING>* : Is the operand lexically following `<COMPARE_STRING>`?
@@ -480,52 +480,52 @@ We also support several other expressions to regex based conditions which are:
  - *-x* : Is the operand an executable file?
 
 If you are wondering what the `operand` might be: it is **whatever you want it to be**! You can specify
-any operand you like using the `@` symbol. All conditions of a rule will use the next operand to 
-their right and if none is given the requested URI. For example:
+any operand you'd like using the `@` symbol. All conditions of a rule will use the next operand to
+their right, and if no operand is given, the module will simply use the requested URI. For example:
 
 - *`([A-Z]+\.txt){OR}^/([0-9]+)`* Will take the requested URI for both conditions (note the `{OR}` symbol)
 - *`([A-Z]+\.txt){OR}^/([0-9]+)@$DOCUMENT_ROOT`* Will test both conditions against the document root
-- *`([A-Z]+\.txt)@$DOCUMENT_ROOT{OR}^/([0-9]+)`* Will only test the first one against the document root 
+- *`([A-Z]+\.txt)@$DOCUMENT_ROOT{OR}^/([0-9]+)`* Will only test the first one against the document root
   and the second against the requested URI
 
-You might have noted the `$` symbol before `DOCUMENT_ROOT` and remembered it from the backreference 
+You might have noted the `$` symbol before `DOCUMENT_ROOT` and remembered it from the backreference
 syntax. That is because all Apache common server vars can be explicitly used as backreferences too!
 
-That does not work for you? Need the exact opposite? No problem!
+This doesn't work for you? Need the exact opposite? No problem!
 
-All conditions, regex or expression based can be negated using the `!` symbol in front of 
+All conditions, regex or expression based, can be negated using the `!` symbol in front of
 them! So `!^([0-9]+)` would match all strings which do NOT begin with a number and `!-d` would match
 all non-directories.
 
 #### Flags
 
-Flags are used to further influence processing. You can specify as many flags per rewrite as you like,
+Flags are used to further influence processing. You can specify as many flags per rewrite as you'd like,
 but be aware of their impact! Syntax for several flags is simple: just separate them with a `,` symbol.
-Flags which might accept a parameter can be assigned one by using the `=` symbol. Currently supported
+Flags, which might accept a parameter, can be assigned one by using the `=` symbol. Currently supported
 flags are:
 
-- *L* : As rules are normally processed one after the other, the `L` flag will make the flagged rule 
-  the last one processed if matched.
+- *L* : As rules are normally processed one after the other, the `L` flag will make the flagged rule
+  the last one processed, if matched.
 
-- *R* : If this flag is set we will redirect the client to the URL specified in the `target string`. 
-   If this is just an URI we will redirect to the same host. You might also specify a custom status 
-   code between 300 and 399 to indicate the reason for/kind of the redirect. Default is `301` aka 
+- *R* : If this flag is set, we will redirect the client to the URL specified in the `target string`.
+   If this is just a URI, we will redirect to the same host. You might also specify a custom status
+   code between 300 and 399, to indicate the reason for or the kind of the redirect. Default is `301` aka
    `permanent`
 
 - *M* : Stands for map. Using this flag you can specify an external source (have a look at the Injector
-  classes of the WebServer project) of a target map. With `M=<MY_BACKREFERENCE>` you can specify what 
-  the map's index has to match. This matching is done **only** if the rewrite condition matches and will 
-  behave as another condition
+  classes of the WebServer project) of a target map. With `M=<MY_BACKREFERENCE>` you can specify what
+  the map's index has to match. This matching is done **only** if the rewrite condition matches and will
+  behave as another condition.
 
 ### Virtual-Host Module
 
-The module can be used according to the `\AppserverIo\WebServer\Interfaces\HttpModuleInterface`
-interface. It needs an initial call of the `init` method and will process any request offered to 
+This module can be used according to the `\AppserverIo\WebServer\Interfaces\HttpModuleInterface`
+interface. It needs an initial call of the `init` method and will process any request offered to
 the `process` method. The module is best used within the [webserver](https://github.com/appserver-io/webserver)
-project as it offers all needed infrastructure.
+project, as it offers all the needed infrastructure.
 
-If you need to configure a virtual host, it should look like the 
-following example, that would enable a Magento installation under `http://magento.dev:9080`.
+If you need to configure a virtual host, it should look like the
+following example, which would enable a Magento installation under `http://magento.dev:9080`.
 
 ```xml
 <virtualHosts>
@@ -553,8 +553,8 @@ following example, that would enable a Magento installation under `http://magent
 
 ## Configuration Defaults
 
-You might be curious about the different ports we use. Per default the appserver will open several 
-ports where its services are available. As we do not want to block (or be blocked by) other 
+You might be curious about the different ports we use. Per default the appserver will open several
+ports where its services are available. As we do not want to block (or be blocked by) other
 services we use ports of a higher range.
 
 As a default we use the following ports:
@@ -563,7 +563,7 @@ As a default we use the following ports:
 
     - HTTP Server: `9080`
     - HTTPS Server: `9443`
-    
+
 * Persistence-MQ-Container
 
     - Persistence-Container: `8585`
@@ -573,15 +573,15 @@ You can change this default port mapping by using the [server configuration](#se
 
 ## Optional Configuration
 
-Simplicity has always been in our main focus. Therefore we do provide several configuration defaults which are not even shown in the configuration file, 
+Simplicity has always been in our main focus. Therefore we do provide several configuration defaults, which are not even shown in the configuration file,
 as their default setup works very well out of the box.
 You might change these values and we do not want to stand in your way.
-So following are some configurable components which are already configured implicitly but can be explicitly set up in the configuration files.
+So following are some configurable components, which are already configured implicitly, but can be explicitly set up in the configuration files.
 
 ### Extractors
 
 Extractors are used to process any form of archive in an ETL like manner.
-The example shown below is used to un-pack webapps which are provided as `phar` archives upon deployment. 
+The example shown below is used to un-pack webapps, which are provided as `phar` archives upon deployment.
 
 ```xml
 <extractors>
@@ -591,8 +591,8 @@ The example shown below is used to un-pack webapps which are provided as `phar` 
 
 ### Initial Context
 
-The initial context is the configurational heart of the running appserver instance and manages instance creation on a low level.
-If really needed for any custom core functionality you are able to change its composition here.
+The initial context is the configurational heart of the running appserver instance and manages instance creation at a low level.
+If really needed for any custom core functionality, you are able to change its composition here.
 
 ```xml
 <initialContext type="AppserverIo\Appserver\Core\InitialContext">
@@ -680,8 +680,8 @@ The shown example creates data sources configured within the application.
 ### Scanners
 
 Scanners are classes reacting to file system changes and can be configured within the `appserver` node.
-You might want to use this feature to tightly integrate a deployment scanner like used in the `appserver-watcher` process using the first example configuration below, or
-add a scanner to restart the appserver upon changes to your webapp's code as in the second example.
+You might want to use this feature to tightly integrate a deployment scanner, like used in the `appserver-watcher` process using the first example configuration below, or
+add a scanner to restart the appserver upon changes to your webapp's code, as in the second example.
 Implementing your own scanners is possible as well.
 
 ```xml
@@ -720,7 +720,7 @@ Implementing your own scanners is possible as well.
 
 ### Persistence-Container (Remote)
 
-The [Persistence-Container](<{{ "/get-started/documentation/persistence-container.html" | prepend: site.baseurl }}>) can also be used remote. This allows you, to distribute the components of your application across a network. Therefore you need to configure an own server for the Persistence-Container that allows to connect over a streaming socket.
+The [Persistence-Container](<{{ "/get-started/documentation/persistence-container.html" | prepend: site.baseurl }}>) can also be used remotely. This allows you to distribute the components of your application across a network. Therefore, you need to configure a dedicated server thread for the Persistence-Container, which allows it connect over a streaming socket.
 
 ```xml
 <server
