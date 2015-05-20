@@ -1596,6 +1596,69 @@
             <xs:attribute ref="xml:base"/>
         </xs:complexType>
     </xs:element>
+    <xs:element name="persistence">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="appserver:persistenceUnits"/>
+            </xs:choice>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="persistenceUnits">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="appserver:persistenceUnit"/>
+            </xs:choice>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="persistenceUnit">
+        <xs:complexType>
+            <xs:all>
+                <xs:element ref="appserver:datasource"/>
+                <xs:element ref="appserver:metadataConfiguration"/>
+                <xs:element ref="appserver:annotationRegistries"/>
+            </xs:all>
+            <xs:attribute name="name" type="xs:string" use="required"/>
+            <xs:attribute name="interface" type="xs:string" use="required"/>
+            <xs:attribute name="type" type="xs:string" use="required"/>
+            <xs:attribute name="factory" type="xs:string" use="required"/>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="metadataConfiguration">
+        <xs:complexType>
+            <xs:all>
+                <xs:element ref="appserver:params" minOccurs="0"/>
+                <xs:element ref="appserver:directories"/>
+            </xs:all>
+            <xs:attribute name="type" type="xs:string" use="required"/>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="annotationRegistries">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="appserver:annotationRegistry"/>
+            </xs:choice>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="annotationRegistry">
+        <xs:complexType>
+            <xs:all>
+                <xs:element ref="appserver:directories"/>
+            </xs:all>
+            <xs:attribute name="namespace" type="xs:string" use="required"/>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
     <xs:element name="namespace">
         <xs:complexType>
             <xs:simpleContent>

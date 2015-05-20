@@ -118,7 +118,7 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
 
         // register the loggers in the naming directory
         foreach ($this->getInitialContext()->getLoggers() as $name => $logger) {
-            $logDir->bind($name, $logger);
+             $this->namingDirectory->bind(sprintf('php:global/log/%s', $name), $logger);
         }
 
         // initialize the container state

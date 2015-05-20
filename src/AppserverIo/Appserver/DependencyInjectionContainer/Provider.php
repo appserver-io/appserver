@@ -28,6 +28,8 @@ use AppserverIo\Lang\Reflection\AnnotationInterface;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\MessageDriven;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\PreDestroy;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\PostConstruct;
+use AppserverIo\Psr\EnterpriseBeans\Annotations\PreAttach;
+use AppserverIo\Psr\EnterpriseBeans\Annotations\PostDetach;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Singleton;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Startup;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Stateful;
@@ -36,6 +38,7 @@ use AppserverIo\Psr\EnterpriseBeans\Annotations\Schedule;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Timeout;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\EnterpriseBean;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Resource;
+use AppserverIo\Psr\EnterpriseBeans\Annotations\PersistenceUnit;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\ProviderInterface;
 use AppserverIo\Psr\Servlet\Annotations\Route;
@@ -200,18 +203,21 @@ class Provider extends GenericStackable implements ProviderInterface
 
         // initialize the array with the aliases for the enterprise bean annotations
         $annotationAliases = array(
-            EnterpriseBean::ANNOTATION => EnterpriseBean::__getClass(),
-            MessageDriven::ANNOTATION  => MessageDriven::__getClass(),
-            PostConstruct::ANNOTATION  => PostConstruct::__getClass(),
-            PreDestroy::ANNOTATION     => PreDestroy::__getClass(),
-            Schedule::ANNOTATION       => Schedule::__getClass(),
-            Singleton::ANNOTATION      => Singleton::__getClass(),
-            Startup::ANNOTATION        => Startup::__getClass(),
-            Stateful::ANNOTATION       => Stateful::__getClass(),
-            Stateless::ANNOTATION      => Stateless::__getClass(),
-            Timeout::ANNOTATION        => Timeout::__getClass(),
-            Resource::ANNOTATION       => Resource::__getClass(),
-            Route::ANNOTATION          => Route::__getClass()
+            PersistenceUnit::ANNOTATION => PersistenceUnit::__getClass(),
+            EnterpriseBean::ANNOTATION  => EnterpriseBean::__getClass(),
+            MessageDriven::ANNOTATION   => MessageDriven::__getClass(),
+            PostConstruct::ANNOTATION   => PostConstruct::__getClass(),
+            PreDestroy::ANNOTATION      => PreDestroy::__getClass(),
+            PostDetach::ANNOTATION      => PostDetach::__getClass(),
+            PreAttach::ANNOTATION       => PreAttach::__getClass(),
+            Schedule::ANNOTATION        => Schedule::__getClass(),
+            Singleton::ANNOTATION       => Singleton::__getClass(),
+            Startup::ANNOTATION         => Startup::__getClass(),
+            Stateful::ANNOTATION        => Stateful::__getClass(),
+            Stateless::ANNOTATION       => Stateless::__getClass(),
+            Timeout::ANNOTATION         => Timeout::__getClass(),
+            Resource::ANNOTATION        => Resource::__getClass(),
+            Route::ANNOTATION           => Route::__getClass()
         );
 
         // return the reflection class instance

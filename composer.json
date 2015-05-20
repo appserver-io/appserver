@@ -6,7 +6,7 @@
 	"require" : {
 		"php" : ">=5.4.0",
 		"rhumsaa/uuid" : "~2.4",
-		"doctrine/orm" : "2.4.*",
+		"doctrine/orm" : "2.5.*",
 		"appserver-io-psr/epb" : "~1.0",
 		"appserver-io-psr/pms" : "~1.0",
 		"appserver-io-psr/mop" : "~1.0",
