@@ -1,3 +1,15 @@
+# Version 1.1.0-beta2
+
+## Bugfixes
+
+* Fixed [#805](https://github.com/appserver-io/appserver/issues/805) - Constructs like <CLASSNAME>::class break parsing 
+* Fixed [#778](https://github.com/appserver-io/appserver/issues/778) - CreateDatabaseStep provisioning step does delete schema
+* Fixed [#811](https://github.com/appserver-io/appserver/issues/811) - Endless recursion on parent::<METHOD> call
+
+## Features
+
+* Closed [#819](https://github.com/appserver-io/appserver/issues/819) - Seamless Doctrine integration
+
 # Version 1.1.0-beta1
 
 ## Bugfixes
