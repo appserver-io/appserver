@@ -129,9 +129,6 @@ class PharExtractor extends AbstractExtractor
                 // restore backup if available
                 $this->restoreBackup($archive);
 
-                // We have to set the user rights to the user:group configured within the system configuration
-                $this->setUserRights($webappFolderName);
-
                 // flag webapp as deployed
                 $this->flagArchive($archive, ExtractorInterface::FLAG_DEPLOYED);
             }
