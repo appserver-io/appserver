@@ -203,21 +203,21 @@ class Provider extends GenericStackable implements ProviderInterface
 
         // initialize the array with the aliases for the enterprise bean annotations
         $annotationAliases = array(
-            PersistenceUnit::ANNOTATION => PersistenceUnit::__getClass(),
-            EnterpriseBean::ANNOTATION  => EnterpriseBean::__getClass(),
-            MessageDriven::ANNOTATION   => MessageDriven::__getClass(),
-            PostConstruct::ANNOTATION   => PostConstruct::__getClass(),
-            PreDestroy::ANNOTATION      => PreDestroy::__getClass(),
-            PostDetach::ANNOTATION      => PostDetach::__getClass(),
-            PreAttach::ANNOTATION       => PreAttach::__getClass(),
-            Schedule::ANNOTATION        => Schedule::__getClass(),
-            Singleton::ANNOTATION       => Singleton::__getClass(),
-            Startup::ANNOTATION         => Startup::__getClass(),
-            Stateful::ANNOTATION        => Stateful::__getClass(),
-            Stateless::ANNOTATION       => Stateless::__getClass(),
-            Timeout::ANNOTATION         => Timeout::__getClass(),
+            Route::ANNOTATION           => Route::__getClass(),
             Resource::ANNOTATION        => Resource::__getClass(),
-            Route::ANNOTATION           => Route::__getClass()
+            Timeout::ANNOTATION         => Timeout::__getClass(),
+            Stateless::ANNOTATION       => Stateless::__getClass(),
+            Stateful::ANNOTATION        => Stateful::__getClass(),
+            Startup::ANNOTATION         => Startup::__getClass(),
+            Singleton::ANNOTATION       => Singleton::__getClass(),
+            Schedule::ANNOTATION        => Schedule::__getClass(),
+            PreAttach::ANNOTATION       => PreAttach::__getClass(),
+            PostDetach::ANNOTATION      => PostDetach::__getClass(),
+            PreDestroy::ANNOTATION      => PreDestroy::__getClass(),
+            PostConstruct::ANNOTATION   => PostConstruct::__getClass(),
+            MessageDriven::ANNOTATION   => MessageDriven::__getClass(),
+            EnterpriseBean::ANNOTATION  => EnterpriseBean::__getClass(),
+            PersistenceUnit::ANNOTATION => PersistenceUnit::__getClass()
         );
 
         // return the reflection class instance
