@@ -24,6 +24,7 @@ use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Storage\StackableStorage;
 use AppserverIo\Psr\Naming\NamingException;
 use AppserverIo\Psr\Naming\NamingDirectoryInterface;
+use AppserverIo\Storage\AppserverIo\Storage;
 
 /**
  * Naming directory implementation.
@@ -58,6 +59,9 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
         // initialize the members
         $this->parent = $parent;
         $this->name = $name;
+
+        // initialize the array for the attributes
+        $this->data = array();
     }
 
     /**
@@ -110,32 +114,6 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
     }
 
     /**
-     * The unique identifier of this directory. That'll be build up
-     * recursive from the scheme and the root directory.
-     *
-     * @return string The unique identifier
-     * @see \AppserverIo\Storage\StorageInterface::getIdentifier()
-     *
-     * @throws \AppserverIo\Psr\Naming\NamingException
-     */
-    public function getIdentifier()
-    {
-
-        // check if we've a parent directory
-        if ($parent = $this->getParent()) {
-            return $parent->getIdentifier() . '/' . $this->getName();
-        }
-
-        // if not, we MUST have a scheme, because we're root
-        if ($scheme = $this->getScheme()) {
-            return $scheme . ':' . $this->getName();
-        }
-
-        // the root node needs a scheme
-        throw new NamingException(sprintf('Missing scheme for naming directory', $this->getName()));
-    }
-
-    /**
      * Returns the value with the passed name from the context.
      *
      * @param string $key The key of the value to return from the context.
@@ -145,7 +123,17 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
      */
     public function getAttribute($key)
     {
-        return $this[$key];
+        return $this->data[$key];
+    }
+
+    /**
+     * All values registered in the context.
+     *
+     * @return array The context data
+     */
+    public function getAttributes()
+    {
+        return $this->data;
     }
 
     /**
@@ -157,7 +145,7 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
      */
     public function hasAttribute($key)
     {
-        return isset($this[$key]);
+        return isset($this->data[$key]);
     }
 
     /**
@@ -170,7 +158,11 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
      */
     public function setAttribute($key, $value)
     {
-        $this[$key] = $value;
+
+        // a bit complicated, but we're in a multithreaded environment
+        $data = $this->data;
+        $data[$key] = $value;
+        $this->data = $data;
     }
 
     /**
@@ -180,7 +172,7 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
      */
     public function getAllKeys()
     {
-        return array_keys((array) $this);
+        return array_keys($this->getAttributes());
     }
 
     /**

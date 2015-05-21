@@ -141,6 +141,9 @@ class TimerServiceRegistry extends ServiceRegistry implements TimerServiceContex
     public function initialize(ApplicationInterface $application)
     {
 
+        // register the default autoloader
+        require SERVER_AUTOLOADER;
+
         // register the class loader again, because each thread has its own context
         $application->registerClassLoaders();
 
@@ -194,7 +197,7 @@ class TimerServiceRegistry extends ServiceRegistry implements TimerServiceContex
                 $timedObjectInvoker->injectApplication($application);
                 $timedObjectInvoker->injectTimedObject($timedObject);
                 $timedObjectInvoker->injectTimeoutMethods($timeoutMethods);
-                $timedObjectInvoker->start();
+                $timedObjectInvoker->start(PTHREADS_INHERIT_NONE|PTHREADS_INHERIT_CONSTANTS);
 
                 // initialize the stackable for the timers
                 $timers = new StackableStorage();
@@ -206,7 +209,7 @@ class TimerServiceRegistry extends ServiceRegistry implements TimerServiceContex
                 $timerService->injectTimedObjectInvoker($timedObjectInvoker);
                 $timerService->injectCalendarTimerFactory($calendarTimerFactory);
                 $timerService->injectTimerServiceExecutor($timerServiceExecutor);
-                $timerService->start();
+                $timerService->start(PTHREADS_INHERIT_NONE|PTHREADS_INHERIT_CONSTANTS);
 
                 // register the initialized timer service
                 $this->register($timerService);

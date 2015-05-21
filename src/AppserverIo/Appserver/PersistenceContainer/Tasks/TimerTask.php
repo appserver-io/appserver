@@ -65,7 +65,7 @@ class TimerTask extends \Thread
         $this->application = $application;
 
         // start the timer task
-        $this->start();
+        $this->start(PTHREADS_INHERIT_NONE|PTHREADS_INHERIT_CONSTANTS);
     }
 
     /**
@@ -86,12 +86,15 @@ class TimerTask extends \Thread
     public function run()
     {
 
-        // load application and timer instance
-        $application = $this->application;
-        $timer = $this->timer;
+        // register the default autoloader
+        require SERVER_AUTOLOADER;
 
-        // we need to register the class loaders again
+        // synchronize the application instance and register the class loaders
+        $application = $this->application;
         $application->registerClassLoaders();
+
+        // sychronize timer instance
+        $timer = $this->timer;
 
         // we lock the timer for this check, because if a cancel is in progress then we do not want to
         // do the isActive check, but wait for the cancelling transaction to finish one way or another

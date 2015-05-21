@@ -161,8 +161,6 @@ class PharExtractor extends AbstractExtractor
             return;
         }
 
-        error_log(__METHOD__ . ':' . __LINE__);
-
         // load the PHAR archive's pathname
         $pharPathname = $archive->getPathname();
 

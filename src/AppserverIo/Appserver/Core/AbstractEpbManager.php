@@ -27,9 +27,10 @@ use AppserverIo\Psr\Naming\NamingException;
 use AppserverIo\Lang\Reflection\ReflectionClass;
 use AppserverIo\Psr\EnterpriseBeans\Description\EpbReferenceDescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\ResReferenceDescriptorInterface;
+use AppserverIo\Psr\EnterpriseBeans\Description\PersistenceUnitReferenceDescriptorInterface;
 
 /**
- * Abstract manager which is able to handle EPB and resource registrations
+ * Abstract manager which is able to handle EPB, resource and persistence unit registrations.
  *
  * @category   Server
  * @package    Appserver
@@ -136,7 +137,7 @@ abstract class AbstractEpbManager extends AbstractManager
                 return;
             }
 
-            // catch the NamingException if the ref name is not bound yet
+        // catch the NamingException if the ref name is not bound yet
         } catch (NamingException $e) {
             // log a message that we've to register the resource reference now
             $application->getInitialContext()->getSystemLogger()->debug(
@@ -152,17 +153,69 @@ abstract class AbstractEpbManager extends AbstractManager
 
             // try to bind the reference by the specified type
             } elseif ($type = $resReference->getType()) {
-                // the reflection class for the passed type
-                $reflectionClass = new ReflectionClass($resReference->getType());
-
                 // bind a reference to the resource shortname
-                $application->bindReference($name, $reflectionClass->getShortName());
+                $application->bindReference($name, $type);
 
             // log a critical message that we can't bind the reference
             } else {
                 $application->getInitialContext()->getSystemLogger()->critical(
                     sprintf(
                         'Can\'t bind reference php:global/%s/%s to naming directory, because of missing source bean definition',
+                        $application->getName(),
+                        $name
+                    )
+                );
+            }
+
+        // catch all other exceptions
+        } catch (\Exception $e) {
+            $application->getInitialContext()->getSystemLogger()->critical($e->__toString());
+        }
+    }
+
+    /**
+     * Registers the passed persistence unit reference in the applications directory.
+     *
+     * @param \AppserverIo\Psr\EnterpriseBeans\Description\PersistenceUnitReferenceDescriptorInterface $persistenceUnitReference The persistence unit reference to register
+     *
+     * @return void
+     */
+    public function registerPersistenceUnitReference(PersistenceUnitReferenceDescriptorInterface $persistenceUnitReference)
+    {
+        try {
+            // load the application instance and reference name
+            $application = $this->getApplication();
+
+            // query whether the reference has already been bound to the application
+            if ($application->search($name = $persistenceUnitReference->getName())) {
+                // log a message that the reference has already been bound
+                $application->getInitialContext()->getSystemLogger()->debug(
+                    sprintf('Reference php:global/%s/%s has already been bound to naming directory', $application->getName(), $name)
+                );
+
+                // return immediately
+                return;
+            }
+
+        // catch the NamingException if the ref name is not bound yet
+        } catch (NamingException $e) {
+            // log a message that we've to register the resource reference now
+            $application->getInitialContext()->getSystemLogger()->info(
+                sprintf('Reference php:global/%s/%s has not been bound to naming directory', $application->getName(), $name)
+            );
+        }
+
+        try {
+            // try to use the unit name to bind the reference to
+            if ($unitName = $persistenceUnitReference->getUnitName()) {
+                // create a reference to a persistence unit in the global directory
+                $application->bindReference($name, $unitName);
+
+            // log a critical message that we can't bind the reference
+            } else {
+                $application->getInitialContext()->getSystemLogger()->critical(
+                    sprintf(
+                        'Can\'t bind reference php:global/%s/%s to naming directory, because of missing unit name definition',
                         $application->getName(),
                         $name
                     )

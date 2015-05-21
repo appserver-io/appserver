@@ -97,6 +97,16 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
     }
 
     /**
+     * All values registered in the context.
+     *
+     * @return \AppserverIo\Storage\GenericStackable The context data
+     */
+    public function getAttributes()
+    {
+        return $this->data;
+    }
+
+    /**
      * Queries if the attribute with the passed key is bound.
      *
      * @param string $key The key of the attribute to query
@@ -256,32 +266,6 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
 
         // return the instance
         return $subdirectory;
-    }
-
-    /**
-     * The unique identifier of this directory. That'll be build up
-     * recursive from the scheme and the root directory.
-     *
-     * @return string The unique identifier
-     *
-     * @throws \AppserverIo\Psr\Naming\NamingException
-     * @see \AppserverIo\Storage\StorageInterface::getIdentifier()
-     */
-    public function getIdentifier()
-    {
-
-        // check if we've a parent directory
-        if ($parent = $this->getParent()) {
-            return $parent->getIdentifier() . '/' . $this->getName();
-        }
-
-        // if not, we MUST have a scheme, because we're root
-        if ($scheme = $this->getScheme()) {
-            return $scheme . ':' . $this->getName();
-        }
-
-        // the root node needs a scheme
-        throw new NamingException(sprintf('Missing scheme for naming directory', $this->getName()));
     }
 
     /**
@@ -583,17 +567,16 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
         $namingDirectory = $this->getNamingDirectory();
 
         // bind the application (which is also a naming directory)
-        $globalDir = $namingDirectory->search('php:global');
-        $globalDir->bind($applicationName, $this);
+        $namingDirectory->bind($applicationName, $this);
 
         // prepare the application specific directories
-        $webappPath = sprintf('%s/%s', $namingDirectory->search('env/appBase'), $applicationName);
-        $tmpDirectory = sprintf('%s/%s', $namingDirectory->search('env/tmpDirectory'), $applicationName);
+        $webappPath = sprintf('%s/%s', $namingDirectory->search('php:env/appBase'), $applicationName);
+        $tmpDirectory = sprintf('%s/%s', $namingDirectory->search('php:env/tmpDirectory'), $applicationName);
         $cacheDirectory = sprintf('%s/%s', $tmpDirectory, ltrim($context->getParam(DirectoryKeys::CACHE), '/'));
         $sessionDirectory = sprintf('%s/%s', $tmpDirectory, ltrim($context->getParam(DirectoryKeys::SESSION), '/'));
 
         // register the applications temporary directory in the naming directory
-        list ($envDir, ) = $namingDirectory->getAttribute('env');
+        $envDir = $namingDirectory->search('php:env');
 
         // ATTENTION: This is necessary to avoid segfaults, resulting out of loosing the
         //            reference to the naming directory which is a \Stackable instance!
@@ -662,9 +645,6 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
     public function registerClassLoaders()
     {
 
-        // register the default autoloader
-        require SERVER_AUTOLOADER;
-
         // initialize the registered managers
         /** @var \AppserverIo\Appserver\Core\Interfaces\ClassLoaderInterface $classLoader */
         foreach ($this->getClassLoaders() as $classLoader) {
@@ -729,6 +709,9 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
     public function run()
     {
 
+        // register the default autoloader
+        require SERVER_AUTOLOADER;
+
         // register shutdown handler
         register_shutdown_function(array(&$this, "shutdown"));
 
@@ -738,8 +721,9 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
         // log a message that we now start to connect the application
         $this->getInitialContext()->getSystemLogger()->debug(sprintf('%s wait to be connected', $this->getName()));
 
-        // create the applications 'env' directory the beans will be bound to
+        // create the applications 'env' + 'env/persistence' directory the beans + persistence units will be bound to
         $appEnvDir = $this->createSubdirectory('env');
+        $appEnvPersistenceDir = $appEnvDir->createSubdirectory('persistence');
 
         // bind the interface as reference to the application
         $appEnvDir->bindReference('ApplicationInterface', sprintf('php:global/%s', $this->getName()));
@@ -763,7 +747,10 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
         $this->connected = true;
 
         // log a message that we has successfully been connected now
-        $this->getInitialContext()->getSystemLogger()->debug(sprintf('%s has successfully been connected', $this->getName()));
+        $this->getInitialContext()->getSystemLogger()->info(sprintf('%s has successfully been connected', $this->getName()));
+
+        // log the naming directory
+        $this->getInitialContext()->getSystemLogger()->debug($this->__toString());
 
         // we do nothing here
         while ($this->run) {
@@ -790,6 +777,9 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
 
         // check if there was a fatal error caused shutdown
         if ($lastError = error_get_last()) {
+            // initialize error type and message
+            $type = 0;
+            $message = '';
             // extract the last error values
             extract($lastError);
             // query whether we've a fatal/user error

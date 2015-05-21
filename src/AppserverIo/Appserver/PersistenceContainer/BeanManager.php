@@ -252,6 +252,11 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface
                 $this->registerResReference($resReference);
             }
 
+            // register the persistence unit references
+            foreach ($descriptor->getPersistenceUnitReferences() as $persistenceUnitReference) {
+                $this->registerPersistenceUnitReference($persistenceUnitReference);
+            }
+
         } catch (\Exception $e) {
             // log the exception
             $this->getApplication()->getInitialContext()->getSystemLogger()->critical($e->__toString());

@@ -54,7 +54,17 @@ class StandardGarbageCollector extends \Thread
         $this->application = $application;
 
         // start the worker
-        $this->start();
+        $this->start(PTHREADS_INHERIT_NONE|PTHREADS_INHERIT_CONSTANTS);
+    }
+
+    /**
+     * Returns the application instance.
+     *
+     * @return \AppserverIo\Psr\Application\ApplicationInterface The application instance
+     */
+    public function getApplication()
+    {
+        return $this->application;
     }
 
     /**
@@ -65,10 +75,14 @@ class StandardGarbageCollector extends \Thread
     public function run()
     {
 
-        // create a local instance of application and storage
-        $application = $this->application;
+        // register the default autoloader
+        require SERVER_AUTOLOADER;
 
-        // register the class loader again, because each thread has its own context
+        // register shutdown handler
+        register_shutdown_function(array(&$this, "shutdown"));
+
+        // synchronize the application instance and register the class loaders
+        $application = $this->getApplication();
         $application->registerClassLoaders();
 
         // try to load the profile logger
@@ -111,6 +125,29 @@ class StandardGarbageCollector extends \Thread
                 $profileLogger->debug(
                     sprintf('Processed standard garbage collector, handling %d SFSBs', sizeof($statefulSessionBeans))
                 );
+            }
+        }
+    }
+
+    /**
+     * Shutdown function to log unexpected errors.
+     *
+     * @return void
+     * @see http://php.net/register_shutdown_function
+     */
+    public function shutdown()
+    {
+
+        // check if there was a fatal error caused shutdown
+        if ($lastError = error_get_last()) {
+            // initialize error type and message
+            $type = 0;
+            $message = '';
+            // extract the last error values
+            extract($lastError);
+            // query whether we've a fatal/user error
+            if ($type === E_ERROR || $type === E_USER_ERROR) {
+                $this->getApplication()->getInitialContext()->getSystemLogger()->critical($message);
             }
         }
     }

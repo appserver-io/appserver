@@ -261,13 +261,14 @@ class MessageQueue extends \Thread implements QueueInterface
     public function run()
     {
 
+        // register the default autoloader
+        require SERVER_AUTOLOADER;
+
         // register shutdown handler
         register_shutdown_function(array(&$this, "shutdown"));
 
-        // create a local instance of application and storage
+        // synchronize the application instance and register the class loaders
         $application = $this->application;
-
-        // register the class loader again, because each thread has its own context
         $application->registerClassLoaders();
 
         // try to load the profile logger

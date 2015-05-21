@@ -440,7 +440,7 @@ class Server
 
         // start all scanners
         foreach ($scanners as $scanner) {
-            $scanner->start();
+            $scanner->start(PTHREADS_INHERIT_NONE|PTHREADS_INHERIT_CONSTANTS);
         }
     }
 
@@ -456,7 +456,7 @@ class Server
         foreach ($this->getContainers() as $container) {
 
             // start the container
-            $container->start();
+            $container->start(PTHREADS_INHERIT_NONE|PTHREADS_INHERIT_CONSTANTS);
 
             // wait for the container to be started
             $waitForContainer = true;

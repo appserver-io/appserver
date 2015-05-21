@@ -128,7 +128,7 @@ class ServletEngine extends AbstractServletEngine
                 $requestHandler->injectMutex($mutex);
                 $requestHandler->injectValves($this->valves);
                 $requestHandler->injectApplication($application);
-                $requestHandler->start();
+                $requestHandler->start(PTHREADS_INHERIT_NONE|PTHREADS_INHERIT_CONSTANTS);
 
                 // add it to the pool
                 $pool[] = $requestHandler;

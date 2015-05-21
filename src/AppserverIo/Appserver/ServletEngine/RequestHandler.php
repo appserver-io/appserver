@@ -91,13 +91,14 @@ class RequestHandler extends \Thread
     {
 
         try {
+            // register the default autoloader
+            require SERVER_AUTOLOADER;
+
             // register shutdown handler
             register_shutdown_function(array(&$this, "shutdown"));
 
-            // synchronize the application instance
+            // synchronize the application instance and register the class loaders
             $application = $this->application;
-
-            // register class loaders
             $application->registerClassLoaders();
 
             // synchronize the valves, servlet request/response
@@ -142,8 +143,10 @@ class RequestHandler extends \Thread
             // log the exception
             $application->getInitialContext()->getSystemLogger()->error($e->__toString());
 
-            // bind the exception in the respsonse
-            $this->exception = $e;
+            // ATTENTION: We MUST wrap the exception, because it's possible that
+            //            the exception contains not serializable data that will
+            //            lead to a white page!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            $this->exception = new ServletException($e);
         }
 
         // copy the the response values
@@ -204,9 +207,11 @@ class RequestHandler extends \Thread
 
         // check if there was a fatal error caused shutdown
         if ($lastError = error_get_last()) {
+            // initialize type + message
+            $type = 0;
+            $message = '';
             // extract the last error values
             extract($lastError);
-
             // query whether we've a fatal/user error
             if ($type === E_ERROR || $type === E_USER_ERROR) {
                 $this->exception = new ServletException($message, 500);

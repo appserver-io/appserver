@@ -52,6 +52,7 @@
             </descriptors>
         </manager>
         <manager name="ProviderInterface" type="AppserverIo\Appserver\DependencyInjectionContainer\Provider" factory="AppserverIo\Appserver\DependencyInjectionContainer\ProviderFactory"/>
+        <manager name="PersistenceContextInterface" type="AppserverIo\Appserver\PersistenceContainer\PersistenceManager" factory="AppserverIo\Appserver\PersistenceContainer\PersistenceManagerFactory"/>
         <manager name="BeanContextInterface" type="AppserverIo\Appserver\PersistenceContainer\BeanManager" factory="AppserverIo\Appserver\PersistenceContainer\BeanManagerFactory">
             <!-- params>
                 <param name="lifetime" type="integer">1440</param>

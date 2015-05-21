@@ -63,7 +63,7 @@ class ApplicationFactory
 
         // load the naming directory + initial context
         $initialContext = $container->getInitialContext();
-        $namingDirectory = $container->getNamingDirectory();
+        $namingDirectory = $container->getNamingDirectory()->search('php:global');
 
         // load the application service
         $appService = $container->newService('AppserverIo\Appserver\Core\Api\AppService');

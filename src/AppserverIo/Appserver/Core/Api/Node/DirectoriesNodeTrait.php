@@ -61,4 +61,21 @@ trait DirectoriesNodeTrait
     {
         return $this->directories;
     }
+
+    /**
+     * Returns an array with the directories as string value, each
+     * prepended with the passed value.
+     *
+     * @param string $prepend Prepend to each directory
+     *
+     * @return The array with the directories as string
+     */
+    public function getDirectoriesAsArray($prepend = null)
+    {
+        $directories = array();
+        foreach ($this->getDirectories() as $directory) {
+            $directories[] = sprintf('%s%s', $prepend, $directory->getNodeValue()->__toString());
+        }
+        return $directories;
+    }
 }

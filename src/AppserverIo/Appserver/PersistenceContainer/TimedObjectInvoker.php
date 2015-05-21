@@ -139,10 +139,8 @@ class TimedObjectInvoker extends GenericStackable implements TimedObjectInvokerI
     public function callTimeout(TimerInterface $timer, MethodInterface $timeoutMethod = null)
     {
 
-        // initialize the application instance
+        // synchronize the application instance and register the class loaders
         $application = $this->getApplication();
-
-        // register the class loader for the pre-loaded timeout methods
         $application->registerClassLoaders();
 
         // initialize the initial context instance

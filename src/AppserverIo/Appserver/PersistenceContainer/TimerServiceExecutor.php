@@ -164,15 +164,18 @@ class TimerServiceExecutor extends \Thread implements ServiceExecutorInterface
     public function run()
     {
 
+        // register the default autoloader
+        require SERVER_AUTOLOADER;
+
         // register a shutdown function
         register_shutdown_function(array($this, 'shutdown'));
-
-        // the array with the timer tasks which will be executed actually
-        $timerTasksExecuting = array();
 
         // make the application available and register the class loaders
         $application = $this->getApplication();
         $application->registerClassLoaders();
+
+        // the array with the timer tasks which will be executed actually
+        $timerTasksExecuting = array();
 
         // try to load the profile logger
         if ($profileLogger = $application->getInitialContext()->getLogger(LoggerUtils::PROFILE)) {
@@ -239,15 +242,25 @@ class TimerServiceExecutor extends \Thread implements ServiceExecutorInterface
     }
 
     /**
-     * Shutdown method that will be invoked when the timer service executor
-     * stopped unexpected, by a fatal error or a exception for example.
+     * Shutdown function to log unexpected errors.
      *
      * @return void
+     * @see http://php.net/register_shutdown_function
      */
     public function shutdown()
     {
-        $this->getApplication()->getInitialContext()->getSystemLogger()->critical(
-            'Timer-Service-Executor stopped unexpected, please contact system administrator immediately!'
-        );
+
+        // check if there was a fatal error caused shutdown
+        if ($lastError = error_get_last()) {
+            // initialize error type and message
+            $type = 0;
+            $message = '';
+            // extract the last error values
+            extract($lastError);
+            // query whether we've a fatal/user error
+            if ($type === E_ERROR || $type === E_USER_ERROR) {
+                $this->getApplication()->getInitialContext()->getSystemLogger()->critical($message);
+            }
+        }
     }
 }

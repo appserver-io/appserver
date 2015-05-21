@@ -66,8 +66,8 @@ class GeneratorThread extends \Thread
     public function run()
     {
 
-        // require the composer autoloader
-        require APPSERVER_BP . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
+        // register the default autoloader
+        require SERVER_AUTOLOADER;
 
         // iterate over all structures and generate them
         foreach ($this->structures as $structure) {
