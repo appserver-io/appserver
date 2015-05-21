@@ -194,10 +194,10 @@ if (array_key_exists($setup, $arguments)) {
                 // get defined user and group from configuration
                 $user = Setup::getValue(SetupKeys::USER);
                 $group = Setup::getValue(SetupKeys::GROUP);
-                // replace user to be same as group in configuration file
+                // replace user to be same as user in configuration file
                 file_put_contents($configurationFileName, preg_replace(
                     $configurationUserReplacePattern,
-                    '${1}' . $group,
+                    '${1}' . $user,
                     file_get_contents($configurationFileName)
                 ));
                 // set correct file permissions for configurations
