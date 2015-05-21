@@ -43,7 +43,7 @@ class PersistenceNode extends AbstractNode
     /**
      * Sets the application's entity manager configuration.
      *
-     * @param array $annotationRegistries The application's entity manager configuration
+     * @param array $persistenceUnits The application's entity manager configuration
      *
      * @return void
      */

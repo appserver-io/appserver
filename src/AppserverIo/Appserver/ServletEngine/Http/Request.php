@@ -783,6 +783,7 @@ class Request implements HttpServletRequestInterface, ContextInterface
         $id = $this->getRequestedSessionId();
 
         // try to load session ID from session cookie of request/response
+        $cookieFound = null;
         if ($id == null && $this->getResponse()->hasCookie($sessionName)) {
             $cookieFound = $this->getResponse()->getCookie($sessionName);
         } elseif ($id == null && $this->hasCookie($sessionName)) {

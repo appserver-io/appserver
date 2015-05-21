@@ -151,6 +151,12 @@ class CalendarTimerFactory extends \Thread implements CalendarTimerFactoryInterf
     public function run()
     {
 
+        // register the default autoloader
+        require SERVER_AUTOLOADER;
+
+        // register shutdown handler
+        register_shutdown_function(array(&$this, "shutdown"));
+
         // make the application available and register the class loaders
         $application = $this->getApplication();
         $application->registerClassLoaders();
@@ -186,6 +192,29 @@ class CalendarTimerFactory extends \Thread implements CalendarTimerFactoryInterf
 
             // we're dispatched now
             $this->dispatched = true;
+        }
+    }
+
+    /**
+     * Shutdown function to log unexpected errors.
+     *
+     * @return void
+     * @see http://php.net/register_shutdown_function
+     */
+    public function shutdown()
+    {
+
+        // check if there was a fatal error caused shutdown
+        if ($lastError = error_get_last()) {
+            // initialize error type and message
+            $type = 0;
+            $message = '';
+            // extract the last error values
+            extract($lastError);
+            // query whether we've a fatal/user error
+            if ($type === E_ERROR || $type === E_USER_ERROR) {
+                $this->getApplication()->getInitialContext()->getSystemLogger()->critical($message);
+            }
         }
     }
 }

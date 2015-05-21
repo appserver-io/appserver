@@ -20,24 +20,22 @@
 
 namespace AppserverIo\Appserver\PersistenceContainer;
 
+use Doctrine\ORM\Tools\Setup;
+use Doctrine\ORM\ORMException;
+use Doctrine\ORM\EntityManager;
+use Doctrine\Common\EventManager;
+use Doctrine\Common\Annotations\AnnotationRegistry;
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Configuration\Configuration;
 use AppserverIo\Appserver\Core\AbstractManager;
 use AppserverIo\Appserver\Core\Api\Node\PersistenceNode;
-use AppserverIo\Appserver\Core\Api\Node\PersistenceUnitNode;
 use AppserverIo\Description\PersistenceUnitReferenceDescriptor;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Psr\EnterpriseBeans\PersistenceContextInterface;
 use AppserverIo\Psr\EnterpriseBeans\EntityManagerLookupException;
-
-
-use Doctrine\ORM\Tools\Setup;
-use Doctrine\ORM\EntityManager;
-use Doctrine\Common\Annotations\AnnotationRegistry;
 use AppserverIo\Appserver\Core\Api\Node\MetadataConfigurationNode;
+use AppserverIo\Appserver\Core\Api\Node\PersistenceUnitNodeInterface;
 use AppserverIo\Appserver\PersistenceContainer\Doctrine\EntityManagerFactory;
-use Doctrine\ORM\ORMException;
-use Doctrine\Common\EventManager;
 
 /**
  * The persistence manager handles the entity managers registered for the application.
@@ -143,18 +141,16 @@ class PersistenceManager extends AbstractManager implements PersistenceContextIn
     /**
      * Deploys the entity manager described by the passed XML node.
      *
-     * @param \AppserverIo\Psr\Application\ApplicationInterface   $application The application instance
-     * @param \AppserverIo\Appserver\Core\Api\PersistenceUnitNode $node The XML node that describes the entity manager
+     * @param \AppserverIo\Psr\Application\ApplicationInterface            $application         The application instance
+     * @param \AppserverIo\Appserver\Core\Api\PersistenceUnitNodeInterface $persistenceUnitNode The XML node that describes the entity manager
      *
      * @return void
      */
-    protected function registerEntityManager(ApplicationInterface $application, PersistenceUnitNode $persistenceUnitNode)
+    protected function registerEntityManager(ApplicationInterface $application, PersistenceUnitNodeInterface $persistenceUnitNode)
     {
 
         // initialize the the entity manager instance
         $this->entityManagers[$lookupName = $persistenceUnitNode->getName()] = $persistenceUnitNode;
-
-        error_log("Successfully registered callback for entity manager with lookup name $lookupName");
 
         // bind the callback for the entity manager instance to the naming directory => necessary for DI provider
         $application->bindCallback($lookupName, array(&$this, 'lookup'), array($lookupName));
@@ -176,7 +172,6 @@ class PersistenceManager extends AbstractManager implements PersistenceContextIn
 
         // query whether the entity manager has been registered or not
         if (isset($this->entityManagers[$lookupName])) {
-
             // load the entity manager configuration
             $persistenceUnitNode = $this->entityManagers[$lookupName];
 

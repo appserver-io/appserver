@@ -208,7 +208,7 @@ class QueueManager extends AbstractManager implements QueueContextInterface
         $messageQueue->start();
 
         // initialize the queues storage for the priorities
-        $this->queues[$queueName = $messageQueue->getName()] = $messageQueue;
+        $this->queues[$messageQueue->getName()] = $messageQueue;
 
         // prepare the naming directory to bind the callback to
         $path = explode('/', $destination);

@@ -61,7 +61,6 @@ trait BindingTrait
         while ($token !== false) {
             // check if we can find something
             if ($this->hasAttribute($token)) {
-
                 // load the data bound to the token
                 $data = $this->getAttribute($token);
 
@@ -241,6 +240,8 @@ trait BindingTrait
      * directory tree.
      *
      * @param string $buffer The string to append to
+     *
+     * @return string The buffer append with the string representation
      */
     public function renderRecursive(&$buffer = PHP_EOL)
     {

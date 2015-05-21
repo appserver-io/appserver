@@ -259,7 +259,7 @@ class AppserverNode extends AbstractNode implements SystemConfigurationInterface
      */
     public function getUser()
     {
-        $this->getParam('user');
+        return $this->getParam('user');
     }
 
     /**
@@ -269,7 +269,7 @@ class AppserverNode extends AbstractNode implements SystemConfigurationInterface
      */
     public function getGroup()
     {
-        $this->getParam('group');
+        return $this->getParam('group');
     }
 
     /**
@@ -279,7 +279,7 @@ class AppserverNode extends AbstractNode implements SystemConfigurationInterface
      */
     public function getUmask()
     {
-        $this->getParam('umask');
+        return $this->getParam('umask');
     }
 
     /**

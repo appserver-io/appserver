@@ -91,13 +91,14 @@ class RequestHandler extends \Thread
     {
 
         try {
+            // register the default autoloader
+            require SERVER_AUTOLOADER;
+
             // register shutdown handler
             register_shutdown_function(array(&$this, "shutdown"));
 
-            // synchronize the application instance
+            // synchronize the application instance and register the class loaders
             $application = $this->application;
-
-            // register class loaders
             $application->registerClassLoaders();
 
             // synchronize the valves, servlet request/response

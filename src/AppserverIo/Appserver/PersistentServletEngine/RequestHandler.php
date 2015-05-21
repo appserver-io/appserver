@@ -146,6 +146,9 @@ class RequestHandler extends \Thread
     public function run()
     {
 
+        // register the default autoloader
+        require SERVER_AUTOLOADER;
+
         // register shutdown handler
         register_shutdown_function(array(&$this, "shutdown"));
 
@@ -188,7 +191,7 @@ class RequestHandler extends \Thread
                 }
 
             } catch (\Exception $e) {
-                error_log($e->__toString());
+                $application->getInitialContext()->getSystemLogger()->error($e->__toString());
                 $servletResponse->appendBodyStream($e->__toString());
                 $servletResponse->setStatusCode(500);
             }

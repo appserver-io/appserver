@@ -51,6 +51,19 @@ class DoctrineEntityManagerDecorator extends EntityManagerDecorator
     }
 
     /**
+     * Closes the Doctrine connection if a wrapped
+     * instance is available
+     */
+    public function __destruct()
+    {
+
+        // query whether we've a wrapped instance
+        if ($wrapped = $this->getWrapped()) {
+            $this->getWrapped()->getConnection()->close();
+        }
+    }
+
+    /**
      * Returns the wrapped entity manager instance.
      *
      * @return \Doctrine\ORM\EntityManagerInterface The wrapped entity manager instance

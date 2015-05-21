@@ -24,8 +24,8 @@ use Doctrine\ORM\Tools\Setup;
 use Doctrine\ORM\EntityManager;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use Doctrine\Common\Annotations\AnnotationRegistry;
-use AppserverIo\Appserver\Core\Api\Node\PersistenceUnitNode;
 use AppserverIo\Appserver\Core\Api\Node\MetadataConfigurationNode;
+use AppserverIo\Appserver\Core\Api\Node\PersistenceUnitNodeInterface;
 
 /**
  * Factory implementation for a Doctrin EntityManager instance.
@@ -53,12 +53,12 @@ class EntityManagerFactory
     /**
      * Creates a new entity manager instance based on the passed configuration.
      *
-     * @param
-     * @param object $persistenceUnitNode The datasource configuration
+     * @param \AppserverIo\Psr\Application\ApplicationInterface                 $application         The application instance to create the entity manager for
+     * @param \AppserverIo\Appserver\Core\Api\Node\PersistenceUnitNodeInterface $persistenceUnitNode The datasource configuration
      *
      * @return object The entity manager instance
      */
-    public static function factory($application, $persistenceUnitNode)
+    public static function factory(ApplicationInterface $application, PersistenceUnitNodeInterface $persistenceUnitNode)
     {
 
         // register additional annotation libraries
@@ -72,11 +72,8 @@ class EntityManagerFactory
         // load the metadata configuration
         $metadataConfiguration = $persistenceUnitNode->getMetadataConfiguration();
 
-        // prepare the path to the entities
+        // prepare the setup properties
         $absolutePaths = $metadataConfiguration->getDirectoriesAsArray($application->getWebappPath());
-
-        error_log(print_r($absolutePaths, true));
-
         $proxyDir = $metadataConfiguration->getParam(MetadataConfigurationNode::PARAM_PROXY_DIR);
         $isDevMode = $metadataConfiguration->getParam(MetadataConfigurationNode::PARAM_IS_DEV_MODE);
         $useSimpleAnnotationReader = $metadataConfiguration->getParam(MetadataConfigurationNode::PARAM_USE_SIMPLE_ANNOTATION_READER);
@@ -85,9 +82,7 @@ class EntityManagerFactory
         $factoryMethod = EntityManagerFactory::$metadataMapping[$metadataConfiguration->getType()];
 
         // create the database configuration and initialize the entity manager
-        $configuration = Setup::$factoryMethod(
-            $absolutePaths, $isDevMode, $proxyDir, null, $useSimpleAnnotationReader
-        );
+        $configuration = Setup::$factoryMethod($absolutePaths, $isDevMode, $proxyDir, null, $useSimpleAnnotationReader);
 
         // load the datasource
         foreach ($application->getInitialContext()->getSystemConfiguration()->getDatasources() as $datasourceNode) {

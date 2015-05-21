@@ -77,8 +77,6 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
      */
     public function __construct($initialContext, $containerNode)
     {
-
-        // initialize the initial context + the container node
         $this->initialContext = $initialContext;
         $this->containerNode = $containerNode;
     }
@@ -90,6 +88,12 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
      */
     public function main()
     {
+
+        // register the default autoloader
+        require SERVER_AUTOLOADER;
+
+        // register shutdown handler
+        register_shutdown_function(array(&$this, "shutdown"));
 
         // initialize the container state
         $this->containerState = ContainerStateKeys::get(ContainerStateKeys::WAITING_FOR_INITIALIZATION);
@@ -417,5 +421,28 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
         $this->getInitialContext()->getSystemLogger()->debug(
             sprintf('Successfully initialized and deployed app %s', $application->getName())
         );
+    }
+
+    /**
+     * Does shutdown logic for request handler if something went wrong and
+     * produces a fatal error for example.
+     *
+     * @return void
+     */
+    public function shutdown()
+    {
+
+        // check if there was a fatal error caused shutdown
+        if ($lastError = error_get_last()) {
+            // initialize type + message
+            $type = 0;
+            $message = '';
+            // extract the last error values
+            extract($lastError);
+            // query whether we've a fatal/user error
+            if ($type === E_ERROR || $type === E_USER_ERROR) {
+                $this->getInitialContext()->getSystemLogger()->critical($message);
+            }
+        }
     }
 }

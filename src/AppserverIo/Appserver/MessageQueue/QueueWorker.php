@@ -177,11 +177,15 @@ class QueueWorker extends \Thread
     public function run()
     {
 
+        // register the default autoloader
+        require SERVER_AUTOLOADER;
+
         // register shutdown handler
         register_shutdown_function(array(&$this, "shutdown"));
 
-        // create a local instance of application and storage
+        // synchronize the application instance and register the class loaders
         $application = $this->application;
+        $application->registerClassLoaders();
 
         // create local instances of the storages
         $messages = $this->messages;
@@ -191,9 +195,6 @@ class QueueWorker extends \Thread
         // initialize the arrays for the message states and the jobs executing
         $messageStates = array();
         $jobsExecuting = array();
-
-        // register the class loader again, because each thread has its own context
-        $application->registerClassLoaders();
 
         // try to load the profile logger
         if ($profileLogger = $application->getInitialContext()->getLogger(LoggerUtils::PROFILE)) {

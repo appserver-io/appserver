@@ -70,7 +70,6 @@ class BeanLocator implements ResourceLocatorInterface
         if ($descriptor instanceof StatefulSessionBeanDescriptorInterface) {
             // try to load the stateful session bean from the bean manager
             if ($instance = $beanManager->lookupStatefulSessionBean($sessionId, $className)) {
-
                 // load the object manager and re-inject the dependencies
                 /** @var \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\ProviderrInterface $provider */
                 $provider = $beanManager->getApplication()->search('ProviderInterface');

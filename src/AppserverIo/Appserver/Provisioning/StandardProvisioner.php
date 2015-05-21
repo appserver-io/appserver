@@ -148,7 +148,7 @@ class StandardProvisioner extends AbstractProvisioner
                 $step->injectPhpExecutable($this->getAbsolutPathToPhpExecutable());
 
                 // execute the step finally
-                $step->start();
+                $step->start(PTHREADS_INHERIT_NONE|PTHREADS_INHERIT_CONSTANTS);
                 $step->join();
 
             } catch (\Exception $e) {

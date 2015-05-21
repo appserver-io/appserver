@@ -529,8 +529,6 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
         // bind the manager callback to the naming directory => the application itself
         $this->bind($configuration->getName(), array(&$this, 'getManager'), array($configuration->getName()));
 
-        error_log("Successfully bound manager " . $configuration->getName() . " to application " . $this->getName());
-
         // add the manager instance to the application
         $this->managers[$configuration->getName()] = $manager;
     }
@@ -647,9 +645,6 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
     public function registerClassLoaders()
     {
 
-        // register the default autoloader
-        require SERVER_AUTOLOADER;
-
         // initialize the registered managers
         /** @var \AppserverIo\Appserver\Core\Interfaces\ClassLoaderInterface $classLoader */
         foreach ($this->getClassLoaders() as $classLoader) {
@@ -714,6 +709,9 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
     public function run()
     {
 
+        // register the default autoloader
+        require SERVER_AUTOLOADER;
+
         // register shutdown handler
         register_shutdown_function(array(&$this, "shutdown"));
 
@@ -739,8 +737,6 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
         // provision the application
         $this->provision();
 
-        error_log($this->__toString());
-
         // initialize the profile logger and the thread context
         $profileLogger = null;
         if ($profileLogger = $this->getInitialContext()->getLogger(LoggerUtils::PROFILE)) {
@@ -751,7 +747,10 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
         $this->connected = true;
 
         // log a message that we has successfully been connected now
-        $this->getInitialContext()->getSystemLogger()->debug(sprintf('%s has successfully been connected', $this->getName()));
+        $this->getInitialContext()->getSystemLogger()->info(sprintf('%s has successfully been connected', $this->getName()));
+
+        // log the naming directory
+        $this->getInitialContext()->getSystemLogger()->debug($this->__toString());
 
         // we do nothing here
         while ($this->run) {

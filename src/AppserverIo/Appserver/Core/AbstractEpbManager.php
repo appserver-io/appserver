@@ -153,7 +153,6 @@ abstract class AbstractEpbManager extends AbstractManager
 
             // try to bind the reference by the specified type
             } elseif ($type = $resReference->getType()) {
-
                 // bind a reference to the resource shortname
                 $application->bindReference($name, $type);
 
