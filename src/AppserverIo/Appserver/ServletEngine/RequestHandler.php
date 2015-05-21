@@ -27,6 +27,7 @@ use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Psr\Servlet\ServletException;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
+use AppserverIo\Server\Exceptions\ModuleException;
 
 /**
  * This is a request handler that is necessary to process each request of an
@@ -146,7 +147,7 @@ class RequestHandler extends \Thread
             // ATTENTION: We MUST wrap the exception, because it's possible that
             //            the exception contains not serializable data that will
             //            lead to a white page!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            $this->exception = new ServletException($e);
+            $this->exception = new ServletException($e, $e->getCode());
         }
 
         // copy the the response values
