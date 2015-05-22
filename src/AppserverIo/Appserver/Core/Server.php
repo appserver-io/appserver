@@ -440,7 +440,7 @@ class Server
 
         // start all scanners
         foreach ($scanners as $scanner) {
-            $scanner->start(PTHREADS_INHERIT_NONE|PTHREADS_INHERIT_CONSTANTS);
+            $scanner->start();
         }
     }
 
