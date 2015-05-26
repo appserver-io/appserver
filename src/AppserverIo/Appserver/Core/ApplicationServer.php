@@ -20,7 +20,7 @@
 
 namespace AppserverIo\Appserver\Core;
 
-use AppserverIo\Concurrency\ExecutorService;
+use AppserverIo\Concurrency\ExecutorService\Core as ExecutorService;
 
 /**
  * This is the main server class that starts the application server
@@ -77,9 +77,9 @@ class ApplicationServer extends \Thread
         $this->switching = true;
 
         // initialize the members
-        $this->childs = ExecutorService::__getEntity('childs');
-        $this->services = ExecutorService::__getEntity('services');
-        $this->logger = ExecutorService::__getEntity('logger');
+        $this->childs = ExecutorService::getEntity('childs');
+        $this->services = ExecutorService::getEntity('services');
+        $this->logger = ExecutorService::getEntity('logger');
         $this->runlevel = ApplicationServer::ADMINISTRATION;
 
         // by default, we want to log to the STDOUT
@@ -132,9 +132,12 @@ class ApplicationServer extends \Thread
      */
     public function keepRunning()
     {
-        return $this->synchronized(funtion ($self) {
-            return $self->runlevel > ApplicationServer::SHUTDOWN
-        }, $this);
+        return $this->synchronized(
+            function ($self) {
+                return $self->runlevel > ApplicationServer::SHUTDOWN;
+            },
+            $this
+        );
     }
 
     /**
@@ -287,10 +290,10 @@ class ApplicationServer extends \Thread
                  */
                 if ($actualRunlevel < $newRunlevel && $this->runlevel >= $newRunlevel) {
                     // create an instance for each of the management consoles
-                    $console = $this->services->get('\AppserverIo\Lab\Bootstrap\Console', $this);
+                    $console = $this->services->get('AppserverIo\Appserver\Core\Console\Telnet', $this);
                     $this->childs->set($newRunlevel, $console, $console->getName());
                     /*
-                    $sshConsole = $this->services->get('\AppserverIo\Lab\Bootstrap\SshConsole', $this);
+                    $sshConsole = $this->services->get('AppserverIo\Appserver\Core\Console\Ssh', $this);
                     $this->childs->set($newRunlevel, $sshConsole, $sshConsole->getName());
                     */
                 }

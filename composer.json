@@ -6,6 +6,7 @@
 	"require" : {
 		"php" : ">=5.4.0",
 		"rhumsaa/uuid" : "~2.4",
+        "react/socket" : "~0.4",
 		"doctrine/orm" : "2.5.*",
 		"appserver-io-psr/epb" : "~1.0",
 		"appserver-io-psr/pms" : "~1.0",
@@ -24,7 +25,7 @@
 		"appserver-io/microcron" : "~1.0",
 		"appserver-io/webserver" : "~3.0",
 		"appserver-io/properties" : "~1.0",
-        "appserver-io/concurrency" : "0.2.*",
+		"appserver-io/concurrency" : "0.2.*",
 		"appserver-io/description" : "~1.0",
 		"appserver-io/configuration" : "~2.0",
 		"appserver-io/doppelgaenger" : "~1.0",

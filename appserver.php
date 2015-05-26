@@ -32,6 +32,8 @@ use AppserverIo\Appserver\Core\Utilities\FileSystem;
 use AppserverIo\Appserver\Meta\Composer\Script\Setup;
 use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
 
+use AppserverIo\Concurrency\ExecutorService\Core as ExecutorService;
+
 declare (ticks = 1);
 
 error_reporting(~E_NOTICE);
@@ -274,12 +276,12 @@ if (array_key_exists($setup, $arguments)) {
 }
 
 // init executor service
-ExecutorService::__init(SERVER_AUTOLOADER);
+ExecutorService::init(SERVER_AUTOLOADER);
 
 // init simple userland stackable like storage object, service factory + logger
-$childs = ExecutorService::__newFromEntity('\AppserverIo\Lab\Bootstrap\Storage', 'childs');
-ExecutorService::__newFromEntity('\AppserverIo\Lab\Bootstrap\ServiceFactory', 'services');
-ExecutorService::__newFromEntity('\AppserverIo\Lab\Bootstrap\Logger', 'logger');
+$childs = ExecutorService::newFromEntity('\AppserverIo\Appserver\Core\Storage', 'childs');
+ExecutorService::newFromEntity('\AppserverIo\Appserver\Core\ServiceFactory', 'services');
+ExecutorService::newFromEntity('\AppserverIo\Appserver\Core\Logger', 'logger');
 
 // add the storeage containers for the runlevels
 foreach (ApplicationServer::$runlevels as $runlevel) {
