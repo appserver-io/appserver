@@ -74,6 +74,11 @@ class GenericDeployment extends AbstractDeployment
                 // store the datasource in the system configuration
                 foreach ($datasourceNodes as $datasourceNode) {
                     $this->getDatasourceService()->persist($datasourceNode);
+
+                    // log a message that the datasource has been deployed
+                    $this->getInitialContext()->getSystemLogger()->info(
+                        sprintf('Successfully deployed datasource %s', $datasourceNode->getName())
+                    );
                 }
             }
         }
@@ -104,6 +109,11 @@ class GenericDeployment extends AbstractDeployment
                 $applicationType = $context->getType();
                 $container->addApplication(new $applicationType($context));
             }
+
+            // log a message that the application has been initialized and started
+            $this->getInitialContext()->getSystemLogger()->info(
+                sprintf('Successfully initialized and started application %s', $context->getName())
+            );
         }
     }
 }
