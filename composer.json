@@ -24,6 +24,7 @@
 		"appserver-io/microcron" : "~1.0",
 		"appserver-io/webserver" : "~3.0",
 		"appserver-io/properties" : "~1.0",
+        "appserver-io/concurrency" : "0.2.*",
 		"appserver-io/description" : "~1.0",
 		"appserver-io/configuration" : "~2.0",
 		"appserver-io/doppelgaenger" : "~1.0",

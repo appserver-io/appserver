@@ -419,6 +419,18 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
     }
 
     /**
+     * Stops the container instance.
+     *
+     * @return void
+     */
+    public function stop()
+    {
+        $this->synchronized(function ($self) {
+            $self->containerState = ContainerStateKeys::HALT;
+        }, $this);
+    }
+
+    /**
      * Does shutdown logic for request handler if something went wrong and
      * produces a fatal error for example.
      *
