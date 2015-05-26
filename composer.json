@@ -66,11 +66,9 @@
 	"keywords" : [
 		"php application server"
 	],
-	"repositories": [
-    {
-         "type": "composer",
-         "url": "http://packagist.org"
-    },
-    { "packagist": false }
-]
+	"scripts" : {
+		"post-install-cmd" : [
+			"AppserverIo\\Appserver\\Meta\\Composer\\Script\\Setup::postInstall"
+		]
+	}
 }
