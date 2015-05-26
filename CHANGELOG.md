@@ -1,3 +1,14 @@
+# Version 1.0.6
+
+## Bugfixes
+
+* Fixed [#828](https://github.com/appserver-io/appserver/issues/828) - Unknown application causes 500 instead of 404
+* Fixed [#829](https://github.com/appserver-io/appserver/issues/829) - Setup with parameter -s=dev set's invalid user on Mac OS X
+
+## Features
+
+* None
+
 # Version 1.0.5
 
 ## Bugfixes
