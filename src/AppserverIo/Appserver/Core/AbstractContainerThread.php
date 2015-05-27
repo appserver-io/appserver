@@ -416,11 +416,6 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
 
         // adds the application to the system configuration
         $this->addApplicationToSystemConfiguration($application);
-
-        // log a message that the app has been started
-        $this->getInitialContext()->getSystemLogger()->debug(
-            sprintf('Successfully initialized and deployed app %s', $application->getName())
-        );
     }
 
     /**
