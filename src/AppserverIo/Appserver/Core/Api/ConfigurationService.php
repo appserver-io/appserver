@@ -21,6 +21,8 @@
 namespace AppserverIo\Appserver\Core\Api;
 
 use AppserverIo\Appserver\Core\InitialContext;
+use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
+use AppserverIo\Appserver\Core\Api\Node\ParamNode;
 
 /**
  * This class can be used to validate configuration files against known schemas.

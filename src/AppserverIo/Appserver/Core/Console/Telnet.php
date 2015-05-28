@@ -20,6 +20,9 @@
 
 namespace AppserverIo\Appserver\Core\Console;
 
+use AppserverIo\Appserver\Core\Commands\CommandFactory;
+use AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface;
+
 /**
  * A Telnet based management console implementation using a React PHP socket server.
  *
@@ -29,7 +32,7 @@ namespace AppserverIo\Appserver\Core\Console;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class Telnet extends \Thread
+class Telnet extends \Thread implements ConsoleInterface
 {
 
     /**
@@ -49,11 +52,11 @@ class Telnet extends \Thread
     /**
      * Initialize and start the management console.
      *
-     * @param \AppserverIo\Lab\Bootstrap\ApplicationServer The reference to the server
+     * @param \AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface The reference to the server
      *
      * @return void
      */
-    public function __construct($applicationServer)
+    public function __construct(ApplicationServerInterface $applicationServer)
     {
         $this->applicationServer = $applicationServer;
         $this->start();
@@ -131,17 +134,24 @@ class Telnet extends \Thread
             // wait for user input => usually a command
             $conn->on('data', function ($data) use ($conn, $applicationServer) {
 
-                // extract command name and parameters
-                list ($methodName, ) = explode(' ', $data);
-                $params = explode(' ', trim(substr($data, strlen($methodName))));
+                try {
 
-                // check if command is available => MUST be a server's method name
-                if (method_exists($applicationServer, $methodName)) {
-                    call_user_func_array(array($applicationServer, $methodName), $params);
-                    $conn->write("$ ");
-                } else {
-                    $conn->write("Unknown command $methodName");
+                    // extract command name and parameters
+                    list ($commandName, ) = explode(' ', $data);
+                    $params = explode(' ', trim(substr($data, strlen($commandName))));
+
+                    // initialize and execute the command
+                    $command = CommandFactory::factory($commandName, array($applicationServer));
+                    $command->execute($params);
+
+                } catch (\ReflectionException $re) {
+                    $conn->write("Unknown command $commandName");
+                } catch (\Exception $e) {
+                    $conn->write($e->__getMessage());
                 }
+
+                // write the command prompt
+                $conn->write("$ ");
             });
         });
 

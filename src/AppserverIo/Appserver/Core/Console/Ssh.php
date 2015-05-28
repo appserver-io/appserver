@@ -18,7 +18,7 @@
  * @link      http://www.appserver.io
  */
 
-namespace AppserverIo\Lab\Bootstrap;
+namespace AppserverIo\Appserver\Core\Console;
 
 /**
  * A SSH based management console implementation using a React PHP socket server.
@@ -29,7 +29,7 @@ namespace AppserverIo\Lab\Bootstrap;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class Ssh extends \Thread
+class Ssh extends \Thread implements ConsoleInterface
 {
 
     /**

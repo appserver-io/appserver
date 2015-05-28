@@ -116,12 +116,15 @@ abstract class AbstractFileOperationService extends AbstractService
     }
 
     /**
-     * Init the umask to use creating files/directories.
+     * Init the umask to use creating files/directories, either with
+     * the passed value or the one found in the configuration.
+     *
+     * @param integer $umask The new umask to set
      *
      * @return void
      * @throws \Exception Is thrown if the umask can not be set
      */
-    public function initUmask()
+    public function initUmask($umask = null)
     {
 
         // don't do anything under Windows
@@ -129,13 +132,18 @@ abstract class AbstractFileOperationService extends AbstractService
             return;
         }
 
-        // set the configured umask to use
-        umask($newUmask = $this->getInitialContext()->getSystemConfiguration()->getParam('umask'));
+        // check if a umask has been passed
+        if ($umask == null) {
+            $umask = $this->getInitialContext()->getSystemConfiguration()->getParam('umask');
 
-        // check if we have successfully set the umask
-        if (umask() != $newUmask) {
-            // check if set, throw an exception if not
-            throw new \Exception(sprintf('Can\'t set configured umask \'%s\' found \'%\' instead', $newUmask, umask()));
+        }
+
+        // set new umask to use
+        umask($umask);
+
+        // query whether the new umask has been set or not
+        if (umask() != $umask) {
+            throw new \Exception(sprintf('Can\'t set umask \'%s\' found \'%\' instead', $umask, umask()));
         }
     }
 
