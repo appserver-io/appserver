@@ -21,6 +21,7 @@
 namespace AppserverIo\Appserver\Core;
 
 use League\Event\Emitter;
+use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Configuration\Configuration;
 use AppserverIo\Appserver\Core\Console\Telnet;
 use AppserverIo\Appserver\Core\Api\Node\ParamNode;
@@ -72,11 +73,13 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
      * Initialize and start the application server.
      *
      * @param \AppserverIo\Psr\Naming\NamingDirectoryInterface $configurationFilename The default naming directory
+     * @param \AppserverIo\Storage\GenericStackable            $services              The storage for the services
      */
-    public function __construct(NamingDirectoryInterface $namingDirectory)
+    public function __construct(NamingDirectoryInterface $namingDirectory, GenericStackable $services)
     {
 
-        // set the naming directory
+        // set the services and the naming directory
+        $this->services = $services;
         $this->namingDirectory = $namingDirectory;
 
         // initialize the default runlevel
@@ -88,8 +91,6 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
         // initialize command/params
         $this->command = null;
         $this->params = null;
-
-        $this->services = array();
     }
 
     /**
@@ -339,8 +340,13 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
     public function firstListenerTest($event)
     {
         $this->log('EMITTED EVENT');
-        $this->log(print_r($event, true));
-        $this->log("Found " . sizeof($services) . ' registered');
+
+        try {
+            $console = $this->getNamingDirectory()->search('php:services/administration/console');
+            $this->log("Found console class " . get_class($console));
+        } catch (\Exception $e) {
+            $this->log($e->__toString());
+        }
     }
 
     /**
@@ -357,19 +363,10 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
         // we need the autloader again
         require SERVER_AUTOLOADER;
 
-
         $emitter = new Emitter();
         $emitter->addListener('do.switch.runlevel.up', array($this, 'firstListenerTest'));
 
         $this->emitter = $emitter;
-
-        // array containing all service instances
-        $services = $this->services;
-
-        // add the storeage containers for the runlevels
-        foreach (ApplicationServer::$runlevels as $runlevel) {
-            $services[$runlevel] = array();
-        }
 
         // flag to keep the server running or to stop it
         $keepRunning = true;
@@ -398,12 +395,12 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
 
                             // shutdown the application server
                             for ($i = $actualRunlevel; $i >= ApplicationServerInterface::SHUTDOWN; $i--) {
-                                $this->doSwitchRunlevelDown($services, $i);
+                                $this->doSwitchRunlevelDown($i);
                             }
 
                             // switch back to the runlevel we backed up before
                             for ($z = ApplicationServerInterface::SHUTDOWN; $z <= $backupRunlevel; $z++) {
-                                $this->doSwitchRunlevelUp($services, $z, $namingDirectory);
+                                $this->doSwitchRunlevelUp($z);
                             }
 
                             // set the runlevel to the one before we restart
@@ -421,8 +418,8 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
 
                             // switch to the requested runlevel
                             for ($i = $actualRunlevel + 1; $i <= $this->runlevel; $i++) {
-                                $this->doSwitchRunlevelUp($services, $i, $namingDirectory);
-                                // $this->emitter->emit('do.switch.runlevel.up');
+                                $this->doSwitchRunlevelUp($i);
+                                $this->emitter->emit('do.switch.runlevel.up');
                             }
 
                             // set the new runlevel
@@ -432,7 +429,7 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
 
                             // switch down to the requested runlevel
                             for ($i = $actualRunlevel; $i >= $this->runlevel; $i--) {
-                                $this->doSwitchRunlevelDown($services, $i);
+                                $this->doSwitchRunlevelDown($i);
                             }
 
                             // set the new runlevel
@@ -487,8 +484,6 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
                         break;
                 }
 
-                $this->services = $services;
-
             } catch (\Exception $e) {
                 $this->log($e->getMessage());
             }
@@ -503,15 +498,15 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
      *
      * @return void
      */
-    protected function doStopServices(&$services, $runlevel)
+    protected function doStopServices($runlevel)
     {
         // iterate over all services and stop them
-        foreach (array_keys($services[$runlevel]) as $name) {
+        foreach ($this->services[$runlevel] as $name => $service) {
             // stop the service instance
-            $services[$runlevel][$name]->stop();
+            $this->services[$runlevel][$name]->stop();
 
             // unset the service instance
-            unset($services[$runlevel][$name]);
+            unset($this->services[$runlevel][$name]);
 
             // print a message that the service has been stopped
             $this->log("Successfully stopped service $name");
@@ -532,7 +527,7 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
      *
      * @throws \Exception Is thrown if an unknown runlevel has been requested
      */
-    protected function doSwitchRunlevelUp(&$services, $actualRunlevel)
+    protected function doSwitchRunlevelUp($actualRunlevel)
     {
 
         // query the new runlevel
@@ -547,29 +542,21 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
 
             case ApplicationServerInterface::ADMINISTRATION:
 
+                // create a new console instance and start it
+                $console = TelnetFactory::factory($this);
 
-                try {
-                    // create a new console instance and start it
-                    $console = TelnetFactory::factory($this);
+                // register the container as service
+                $this->services[$actualRunlevel][$console->getName()] = $console;
 
-                    // register the container as service
-                    $services[$actualRunlevel][$console->getName()] = $console;
-
-                    $this->getNamingDirectory()->bindCallback(
-                        sprintf('php:services/administration/%s', $console->getName()),
-                        array($this, 'getService'),
-                        array($actualRunlevel, $console->getName())
-                    );
-
-                } catch (\Exception $e) {
-                    $this->log($e->__toString());
-                }
+                $this->getNamingDirectory()->bindCallback(
+                    sprintf('php:services/administration/%s', $console->getName()),
+                    array($this, 'getService'),
+                    array($actualRunlevel, $console->getName())
+                );
 
                 break;
 
             case ApplicationServerInterface::DAEMON:
-
-                error_log("Found console class " . get_class($this->getNamingDirectory()->search('php:services/administration/console')));
 
                 break;
 
@@ -589,7 +576,7 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
             case ApplicationServerInterface::FULL:
 
                 $this->doExtract();
-                $this->doDeploy($services);
+                $this->doDeploy();
 
                 break;
 
@@ -604,7 +591,7 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
     }
 
 
-    protected function doStartContainers(&$services)
+    protected function doStartContainers()
     {
 
         // and initialize a container thread for each container
@@ -616,7 +603,7 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
             $container->start(PTHREADS_INHERIT_ALL);
 
             // register the container as service
-            $services[ApplicationServerInterface::NETWORK][$containerNode->getName()] = $container;
+            $this->services[ApplicationServerInterface::NETWORK][$containerNode->getName()] = $container;
         }
     }
 
@@ -638,7 +625,7 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
         }
     }
 
-    protected function doDeploy(&$services)
+    protected function doDeploy()
     {
 
         // deploy the applications for all containers
@@ -646,7 +633,7 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
         foreach ($this->getSystemConfiguration()->getContainers() as $containerNode) {
 
             // load the container instance to deploy the applications for
-            $container = $services[ApplicationServerInterface::NETWORK][$containerNode->getName()];
+            $container = $this->services[ApplicationServerInterface::NETWORK][$containerNode->getName()];
 
             // load the containers deployment
             $deployment = $container->getDeployment();
@@ -666,11 +653,11 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
      *
      * @throws \Exception Is thrown if an unknown runlevel has been requested
      */
-    protected function doSwitchRunlevelDown(&$services, $actualRunlevel)
+    protected function doSwitchRunlevelDown($actualRunlevel)
     {
 
         // stop all services for this runlevel
-        $this->doStopServices($services, $actualRunlevel + 1);
+        $this->doStopServices($actualRunlevel + 1);
 
         // query the new runlevel
         switch ($actualRunlevel) {
