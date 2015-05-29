@@ -158,7 +158,6 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
      */
     public function setAttribute($key, $value)
     {
-
         // a bit complicated, but we're in a multithreaded environment
         $data = $this->data;
         $data[$key] = $value;
@@ -200,6 +199,9 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
                 }
             }
         }
+
+        // stack the subdirectory on the globals => to avoid segfaults
+        $GLOBALS[$subdirectory->getIdentifier()] = $subdirectory;
 
         // bind it the directory
         $this->bind($name, $subdirectory);

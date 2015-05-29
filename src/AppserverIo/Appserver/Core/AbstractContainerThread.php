@@ -224,6 +224,7 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
 
         // wait for shutdown signal
         while ($this->containerState->equals(ContainerStateKeys::get(ContainerStateKeys::SERVERS_STARTED_SUCCESSFUL))) {
+
             // profile the worker shutdown beeing processed
             if ($profileLogger) {
                 $profileLogger->debug(sprintf('Container %s still waiting for shutdown', $this->getContainerNode()->getName()));
@@ -233,10 +234,18 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
             sleep(1);
         }
 
-        // wait till all servers has been shutdown
+        // stop all servers
         foreach ($servers as $server) {
-            $server->join();
+            $server->stop();
         }
+
+        // mark the container as successfully shutdown
+        $this->containerState = ContainerStateKeys::get(ContainerStateKeys::SHUTDOWN);
+
+        // send log message that the container has been shutdown
+        $this->getInitialContext()->getSystemLogger()->info(
+            sprintf('Successfully shutdown container %s', $this->getContainerNode()->getName())
+        );
     }
 
     /**
@@ -426,7 +435,13 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
     public function stop()
     {
         $this->synchronized(function ($self) {
-            $self->containerState = ContainerStateKeys::HALT;
+            $self->containerState = ContainerStateKeys::get(ContainerStateKeys::HALT);
+            while (!$self->containerState->equals(ContainerStateKeys::get(ContainerStateKeys::SHUTDOWN))) {
+                $this->getInitialContext()->getSystemLogger()->info(
+                    sprintf('Wait till container %s has been shutdown', $this->getContainerNode()->getName())
+                );
+                sleep(1);
+            }
         }, $this);
     }
 

@@ -56,7 +56,7 @@ class Ssh extends \Thread implements ConsoleInterface
     public function __construct($applicationServer)
     {
         $this->applicationServer = $applicationServer;
-        $this->start();
+        $this->start(PTHREADS_INHERIT_ALL);
     }
 
     /**

@@ -119,6 +119,7 @@ class AppserverNode extends AbstractNode implements SystemConfigurationInterface
         $this->setParam(DirectoryKeys::VAR_LOG, ParamNode::TYPE_STRING, '/var/log');
         $this->setParam(DirectoryKeys::VAR_RUN, ParamNode::TYPE_STRING, '/var/run');
         $this->setParam(DirectoryKeys::VAR_TMP, ParamNode::TYPE_STRING, '/var/tmp');
+        $this->setParam(DirectoryKeys::ETC, ParamNode::TYPE_STRING, '/etc');
         $this->setParam(DirectoryKeys::ETC_APPSERVER, ParamNode::TYPE_STRING, '/etc/appserver');
         $this->setParam(DirectoryKeys::ETC_APPSERVER_CONFD, ParamNode::TYPE_STRING, '/etc/appserver/conf.d');
     }

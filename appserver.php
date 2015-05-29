@@ -23,14 +23,8 @@
 
 namespace AppserverIo\Appserver\Core;
 
-use AppserverIo\Appserver\Core\Api\ConfigurationService;
-use AppserverIo\Appserver\Core\Api\Node\AppserverNode;
-use AppserverIo\Appserver\Core\Api\Node\ParamNode;
-use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
-use AppserverIo\Appserver\Core\InitialContext;
-use AppserverIo\Appserver\Core\Utilities\FileSystem;
-use AppserverIo\Appserver\Meta\Composer\Script\Setup;
-use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
+use AppserverIo\Storage\GenericStackable;
+use AppserverIo\Appserver\Naming\NamingDirectory;
 
 declare (ticks = 1);
 
@@ -57,13 +51,6 @@ $arguments = getopt("$watch::$configTest::$setup:", array("$config::"));
 // define a all constants appserver base directory
 define('APPSERVER_BP', __DIR__);
 
-// define install flag for setup mode install to check
-define(
-'IS_INSTALLED_FILE',
-    __DIR__ . DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'appserver' . DIRECTORY_SEPARATOR . '.is-installed'
-);
-define('IS_INSTALLED', is_file(IS_INSTALLED_FILE));
-
 // bootstrap the application
 require __DIR__ . DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR . 'scripts' . DIRECTORY_SEPARATOR . 'bootstrap.php';
 
@@ -79,8 +66,29 @@ if (array_key_exists($config, $arguments) && file_exists($arguments[$config])) {
     throw new \Exception('Can\'t find a configuration file');
 }
 
+// create and initialize the naming directory
+$namingDirectory = new NamingDirectory();
+$namingDirectory->setScheme('php');
+
+// create a directory for the services
+$namingDirectory->createSubdirectory('env');
+$namingDirectory->createSubdirectory('global');
+$namingDirectory->createSubdirectory('services');
+
+foreach (array_keys(ApplicationServer::$runlevels) as $runlevel) {
+    $namingDirectory->createSubdirectory(sprintf('php:services/%s', $runlevel));
+}
+
+$namingDirectory->bind('php:env/configurationFilename', $filename);
+
+$services = new GenericStackable();
+// add the storeage containers for the runlevels
+foreach (ApplicationServer::$runlevels as $runlevel) {
+    $services[$runlevel] = new GenericStackable();
+}
+
 // initialize and start the application server
-$applicationServer = new ApplicationServer($filename);
+$applicationServer = new ApplicationServer($namingDirectory, $services);
 $applicationServer->start();
 
 // we've to wait for shutdown

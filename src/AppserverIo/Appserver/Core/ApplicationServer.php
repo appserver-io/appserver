@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\Core;
 
+use League\Event\Emitter;
 use AppserverIo\Configuration\Configuration;
 use AppserverIo\Appserver\Core\Console\Telnet;
 use AppserverIo\Appserver\Core\Api\Node\ParamNode;
@@ -32,6 +33,11 @@ use AppserverIo\Appserver\Meta\Composer\Script\Setup;
 use AppserverIo\Appserver\Core\Utilities\FileSystem;
 use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
 use AppserverIo\Appserver\Core\Console\TelnetFactory;
+use AppserverIo\Appserver\Core\Api\ContainerService;
+use AppserverIo\Appserver\Core\Extractors\PharExtractorFactory;
+use AppserverIo\Appserver\Core\Commands\ModeCommand;
+use AppserverIo\Appserver\Core\Commands\InitCommand;
+use AppserverIo\Psr\Naming\NamingDirectoryInterface;
 
 /**
  * This is the main server class that starts the application server
@@ -65,13 +71,13 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
     /**
      * Initialize and start the application server.
      *
-     * @param string $configurationFilename The default configuration file
+     * @param \AppserverIo\Psr\Naming\NamingDirectoryInterface $configurationFilename The default naming directory
      */
-    public function __construct($configurationFilename = 'etc/appserver/appserver.xml')
+    public function __construct(NamingDirectoryInterface $namingDirectory)
     {
 
-        // initialize the default configuration filename
-        $this->configurationFilename = $configurationFilename;
+        // set the naming directory
+        $this->namingDirectory = $namingDirectory;
 
         // initialize the default runlevel
         $this->runlevel = ApplicationServerInterface::ADMINISTRATION;
@@ -82,6 +88,18 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
         // initialize command/params
         $this->command = null;
         $this->params = null;
+
+        $this->services = array();
+    }
+
+    /**
+     * Returns the naming directory instance.
+     *
+     * @return NamingDirectoryInterface $namingDirectory The default naming directory
+     */
+    public function getNamingDirectory()
+    {
+        return $this->namingDirectory;
     }
 
     /**
@@ -119,7 +137,7 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
     }
 
     /**
-     * Returns the initial context instance.
+     * Return's the initial context instance.
      *
      * @return \AppserverIo\Appserver\Core\InitialContext The initial context instance
      */
@@ -128,18 +146,28 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
         return $this->initialContext;
     }
 
+    /**
+     * Set's the logger instances.
+     *
+     * @param array $loggers The logger instances to set
+     */
     public function setLoggers(array $loggers)
     {
         $this->loggers = $loggers;
     }
 
+    /**
+     * Returns the logger instances.
+     *
+     * @return array The logger instances
+     */
     public function getLoggers()
     {
         return $this->loggers;
     }
 
     /**
-     * Returns the system logger instance.
+     * Return's the system logger instance.
      *
      * @return \Psr\Log\LoggerInterface
      */
@@ -155,7 +183,7 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
      */
     public function getConfigurationFilename()
     {
-        return $this->configurationFilename;
+        return $this->getNamingDirectory()->search('php:env/configurationFilename');
     }
 
     /**
@@ -201,7 +229,8 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
                 sleep(1);
             }
 
-            $self->command = 'init';
+            // set the command name
+            $self->command = InitCommand::COMMAND;
 
             // lock process
             $self->locked = true;
@@ -230,7 +259,8 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
                 sleep(1);
             }
 
-            $self->command = 'mode';
+            // set the command name
+            $self->command = ModeCommand::COMMAND;
 
             // lock process
             $self->locked = true;
@@ -283,22 +313,34 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
      *
      * @return void
      */
-    protected function bootstrap()
+    protected function doBootstrap()
     {
 
         // load the system configuration
-        $this->loadConfiguration($this->getConfigurationFilename());
+        $this->doLoadConfiguration($this->getConfigurationFilename());
 
-        // load loggers and initial context
-        $systemConfiguration = $this->getSystemConfiguration();
-        $this->loadLoggers($systemConfiguration);
-        $this->loadInitialContext($systemConfiguration);
+        // load the system loggers and the initial context
+        $this->doLoadLoggers($this->getSystemConfiguration());
+        $this->doLoadInitialContext($this->getSystemConfiguration());
 
         // switch the default umask
-        $this->switchUmask($this->getSystemConfiguration()->getUmask());
+        $this->doSwitchUmask($this->getSystemConfiguration()->getUmask());
+
+        // check that the application server has been installed properly
+        $this->doSwitchSetupMode(ContainerService::SETUP_MODE_INSTALL, $this->getConfigurationFilename());
+
+        // prepare the file system
+        $this->doPrepareFileSystem();
 
         // create a SSL certificate if not already available
-        $this->createSslCertificate();
+        $this->doCreateSslCertificate();
+    }
+
+    public function firstListenerTest($event)
+    {
+        $this->log('EMITTED EVENT');
+        $this->log(print_r($event, true));
+        $this->log("Found " . sizeof($services) . ' registered');
     }
 
     /**
@@ -315,8 +357,14 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
         // we need the autloader again
         require SERVER_AUTOLOADER;
 
+
+        $emitter = new Emitter();
+        $emitter->addListener('do.switch.runlevel.up', array($this, 'firstListenerTest'));
+
+        $this->emitter = $emitter;
+
         // array containing all service instances
-        $services = array();
+        $services = $this->services;
 
         // add the storeage containers for the runlevels
         foreach (ApplicationServer::$runlevels as $runlevel) {
@@ -338,7 +386,7 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
 
                 switch ($this->command) {
 
-                    case 'init':
+                    case InitCommand::COMMAND:
 
                         // copy command params -> the requested runlevel in that case
                         $this->runlevel = $this->params;
@@ -350,12 +398,12 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
 
                             // shutdown the application server
                             for ($i = $actualRunlevel; $i >= ApplicationServerInterface::SHUTDOWN; $i--) {
-                                $this->switchRunlevelDown($services, $i);
+                                $this->doSwitchRunlevelDown($services, $i);
                             }
 
                             // switch back to the runlevel we backed up before
                             for ($z = ApplicationServerInterface::SHUTDOWN; $z <= $backupRunlevel; $z++) {
-                                $this->switchRunlevelUp($services, $z);
+                                $this->doSwitchRunlevelUp($services, $z, $namingDirectory);
                             }
 
                             // set the runlevel to the one before we restart
@@ -373,7 +421,8 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
 
                             // switch to the requested runlevel
                             for ($i = $actualRunlevel + 1; $i <= $this->runlevel; $i++) {
-                                $this->switchRunlevelUp($services, $i);
+                                $this->doSwitchRunlevelUp($services, $i, $namingDirectory);
+                                // $this->emitter->emit('do.switch.runlevel.up');
                             }
 
                             // set the new runlevel
@@ -383,7 +432,7 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
 
                             // switch down to the requested runlevel
                             for ($i = $actualRunlevel; $i >= $this->runlevel; $i--) {
-                                $this->switchRunlevelDown($services, $i);
+                                $this->doSwitchRunlevelDown($services, $i);
                             }
 
                             // set the new runlevel
@@ -406,14 +455,14 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
 
                         break;
 
-                    case 'mode':
+                    case ModeCommand::COMMAND:
 
                         // singal that we've finished setting umask and wait
                         $this->locked = false;
                         $this->command = null;
 
                         // switch the application server mode
-                        $this->switchMode($this->params);
+                        $this->doSwitchSetupMode($this->params, $this->getConfigurationFilename());
 
                         // wait for a new command
                         $this->synchronized(function ($self) {
@@ -438,6 +487,8 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
                         break;
                 }
 
+                $this->services = $services;
+
             } catch (\Exception $e) {
                 $this->log($e->getMessage());
             }
@@ -452,18 +503,24 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
      *
      * @return void
      */
-    protected function stopAllServicesForRunlevel(&$services, $runlevel)
+    protected function doStopServices(&$services, $runlevel)
     {
         // iterate over all services and stop them
         foreach (array_keys($services[$runlevel]) as $name) {
-            // stop, kill and unset the service instance
+            // stop the service instance
             $services[$runlevel][$name]->stop();
-            $services[$runlevel][$name]->kill();
+
+            // unset the service instance
             unset($services[$runlevel][$name]);
 
             // print a message that the service has been stopped
             $this->log("Successfully stopped service $name");
         }
+    }
+
+    public function getService($runlevel, $name)
+    {
+        return $this->services[$runlevel][$name];
     }
 
     /**
@@ -475,7 +532,7 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
      *
      * @throws \Exception Is thrown if an unknown runlevel has been requested
      */
-    protected function switchRunlevelUp(&$services, $actualRunlevel)
+    protected function doSwitchRunlevelUp(&$services, $actualRunlevel)
     {
 
         // query the new runlevel
@@ -484,34 +541,55 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
             case ApplicationServerInterface::SHUTDOWN:
 
                 // bootstrap the application server
-                $this->bootstrap();
+                $this->doBootstrap();
 
                 break;
 
             case ApplicationServerInterface::ADMINISTRATION:
 
-                // create and register the Telnet console instance
-                $console = TelnetFactory::factory($this);
-                $services[$actualRunlevel][$console->getName()] = $console;
+
+                try {
+                    // create a new console instance and start it
+                    $console = TelnetFactory::factory($this);
+
+                    // register the container as service
+                    $services[$actualRunlevel][$console->getName()] = $console;
+
+                    $this->getNamingDirectory()->bindCallback(
+                        sprintf('php:services/administration/%s', $console->getName()),
+                        array($this, 'getService'),
+                        array($actualRunlevel, $console->getName())
+                    );
+
+                } catch (\Exception $e) {
+                    $this->log($e->__toString());
+                }
 
                 break;
 
             case ApplicationServerInterface::DAEMON:
 
+                error_log("Found console class " . get_class($this->getNamingDirectory()->search('php:services/administration/console')));
+
                 break;
 
             case ApplicationServerInterface::NETWORK:
+
+                $this->doStartContainers($services);
 
                 break;
 
             case ApplicationServerInterface::SECURE:
 
                 // switch the user and group
-                $this->switchUser($this->getSystemConfiguration()->getUser(), $this->getSystemConfiguration()->getGroup());
+                $this->doSwitchUser($this->getSystemConfiguration()->getUser(), $this->getSystemConfiguration()->getGroup());
 
                 break;
 
             case ApplicationServerInterface::FULL:
+
+                $this->doExtract();
+                $this->doDeploy($services);
 
                 break;
 
@@ -525,6 +603,60 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
         }
     }
 
+
+    protected function doStartContainers(&$services)
+    {
+
+        // and initialize a container thread for each container
+        /** @var \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode */
+        foreach ($this->getSystemConfiguration()->getContainers() as $containerNode) {
+
+            // create a new container instance and start it
+            $container = GenericContainerFactory::factory($this, $containerNode);
+            $container->start(PTHREADS_INHERIT_ALL);
+
+            // register the container as service
+            $services[ApplicationServerInterface::NETWORK][$containerNode->getName()] = $container;
+        }
+    }
+
+    protected function doExtract()
+    {
+
+        // add the configured extractors to the internal array
+        /** @var \AppserverIo\Appserver\Core\Api\Node\ExtractorNodeInterface $extractorNode */
+        foreach ($this->getSystemConfiguration()->getExtractors() as $extractorNode) {
+
+            // create a new extractor instance
+            $extractor = PharExtractorFactory::factory($this, $extractorNode);
+
+            // deploy the found archives
+            $extractor->deployWebapps();
+
+            // log that the extractor has successfully been initialized and executed
+            $this->getSystemLogger()->debug(sprintf('Extractor %s successfully initialized and executed', $extractorNode->getName()));
+        }
+    }
+
+    protected function doDeploy(&$services)
+    {
+
+        // deploy the applications for all containers
+        /** @var \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode */
+        foreach ($this->getSystemConfiguration()->getContainers() as $containerNode) {
+
+            // load the container instance to deploy the applications for
+            $container = $services[ApplicationServerInterface::NETWORK][$containerNode->getName()];
+
+            // load the containers deployment
+            $deployment = $container->getDeployment();
+            $deployment->injectContainer($container);
+
+            // deploy and initialize the container's applications
+            $deployment->deploy();
+        }
+    }
+
     /**
      * This is main method to switch between the runlevels.
      *
@@ -534,10 +666,11 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
      *
      * @throws \Exception Is thrown if an unknown runlevel has been requested
      */
-    protected function switchRunlevelDown(&$services, $actualRunlevel)
+    protected function doSwitchRunlevelDown(&$services, $actualRunlevel)
     {
 
-        $this->stopAllServicesForRunlevel($services, $actualRunlevel + 1);
+        // stop all services for this runlevel
+        $this->doStopServices($services, $actualRunlevel + 1);
 
         // query the new runlevel
         switch ($actualRunlevel) {
@@ -560,7 +693,7 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
 
             case ApplicationServerInterface::SECURE:
 
-                $this->switchUser('root', 'root');
+                $this->doSwitchUser('root', 'root');
 
                 break;
 
@@ -586,13 +719,14 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
      *
      * @return void
      */
-    protected function switchUser($user, $group = null)
+    protected function doSwitchUser($user, $group = null)
     {
 
         // print a message with the old UID/EUID
         $this->log("Running as " . posix_getuid() . "/" . posix_geteuid());
 
         // extract the variables
+        $uid = 0;
         extract(posix_getpwnam($user));
 
         // switcht the effective UID to the passed user
@@ -605,140 +739,13 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
     }
 
     /**
-     * Switches the running setup mode to the passed value.
-     *
-     * @param string $newMode The mode to switch to
-     *
-     * @return void
-     * @throws \Exception Is thrown for an invalid setup mode passed
-     */
-    protected function switchMode($newMode)
-    {
-
-        $this->log(sprintf('Now switch mode to %s!!!', $newMode));
-
-        // init setup context
-        Setup::prepareContext(APPSERVER_BP);
-
-        // init user and group vars
-        $user = null;
-        $group = null;
-
-        $configurationUserReplacePattern = '/(<appserver[^>]+>[^<]+<params>.*<param name="user[^>]+>)([^<]+)/s';
-
-        $configurationFilename = $this->getConfigurationFilename();
-
-        // check setup modes
-        switch ($newMode) {
-
-            // prepares everything for developer mode
-            case 'dev':
-                // set current user
-                $user = get_current_user();
-                // check if script is called via sudo
-                if (array_key_exists('SUDO_USER', $_SERVER)) {
-                    // set current sudo user
-                    $user = $_SERVER['SUDO_USER'];
-                }
-                // get defined group from configuration
-                $group = Setup::getValue(SetupKeys::GROUP);
-                // replace user in configuration file
-                file_put_contents($configurationFilename, preg_replace(
-                    $configurationUserReplacePattern,
-                    '${1}' . $user,
-                    file_get_contents($configurationFilename)
-                ));
-                // add everyone write access to configuration files for dev mode
-                FileSystem::recursiveChmod(APPSERVER_BP . DIRECTORY_SEPARATOR . 'etc', 0777, 0777);
-
-                break;
-
-                // prepares everything for production mode
-            case 'prod':
-                // get defined user and group from configuration
-                $user = Setup::getValue(SetupKeys::USER);
-                $group = Setup::getValue(SetupKeys::GROUP);
-                // replace user to be same as user in configuration file
-                file_put_contents($configurationFilename, preg_replace(
-                    $configurationUserReplacePattern,
-                    '${1}' . $user,
-                    file_get_contents($configurationFilename)
-                ));
-                // set correct file permissions for configurations
-                FileSystem::recursiveChmod(APPSERVER_BP . DIRECTORY_SEPARATOR . 'etc');
-
-                break;
-
-                // prepares everything for first installation which is default mode
-            case 'install':
-                // first check if it is a fresh installation
-                if (!IS_INSTALLED) {
-                    // set example app dodeploy flag to be deployed for a fresh installation
-                    touch(APPSERVER_BP . DIRECTORY_SEPARATOR . 'deploy' . DIRECTORY_SEPARATOR . 'example.phar.dodeploy');
-                }
-
-                // create is installed flag for prevent further setup install mode calls
-                touch(IS_INSTALLED_FILE);
-
-                // get defined user and group from configuration
-                $user = Setup::getValue(SetupKeys::USER);
-                $group = Setup::getValue(SetupKeys::GROUP);
-
-                // set correct file permissions for configurations
-                FileSystem::recursiveChmod(APPSERVER_BP . DIRECTORY_SEPARATOR . 'etc');
-
-                break;
-            default:
-                throw new \Exception('No valid setup mode given');
-        }
-
-        // check if user and group is set
-        if (!is_null($user) && !is_null($group)) {
-            // get needed files as accessable for all root files remove "." and ".." from the list
-            $rootFiles = scandir(APPSERVER_BP);
-            // iterate all files
-            foreach ($rootFiles as $rootFile) {
-                // we want just files on root dir
-                if (is_file($rootFile) && !in_array($rootFile, array('.', '..'))) {
-                    FileSystem::chmod($rootFile, 0644);
-                    FileSystem::chown($rootFile, $user, $group);
-                }
-            }
-            // ... and change own and mod of following directories
-            FileSystem::chown(APPSERVER_BP, $user, $group);
-            FileSystem::chown(APPSERVER_BP . DIRECTORY_SEPARATOR . 'webapps', $user, $group);
-            FileSystem::recursiveChown(APPSERVER_BP . DIRECTORY_SEPARATOR . 'resources', $user, $group);
-            FileSystem::recursiveChmod(APPSERVER_BP . DIRECTORY_SEPARATOR . 'resources');
-            FileSystem::recursiveChown(APPSERVER_BP . DIRECTORY_SEPARATOR . 'deploy', $user, $group);
-            FileSystem::recursiveChmod(APPSERVER_BP . DIRECTORY_SEPARATOR . 'deploy');
-            FileSystem::recursiveChown(APPSERVER_BP . DIRECTORY_SEPARATOR . 'src', $user, $group);
-            FileSystem::recursiveChmod(APPSERVER_BP . DIRECTORY_SEPARATOR . 'src');
-            FileSystem::recursiveChown(APPSERVER_BP . DIRECTORY_SEPARATOR . 'var', $user, $group);
-            FileSystem::recursiveChmod(APPSERVER_BP . DIRECTORY_SEPARATOR . 'var');
-            FileSystem::recursiveChown(APPSERVER_BP . DIRECTORY_SEPARATOR . 'tests', $user, $group);
-            FileSystem::recursiveChmod(APPSERVER_BP . DIRECTORY_SEPARATOR . 'tests');
-            FileSystem::recursiveChown(APPSERVER_BP . DIRECTORY_SEPARATOR . 'vendor', $user, $group);
-            FileSystem::recursiveChmod(APPSERVER_BP . DIRECTORY_SEPARATOR . 'vendor');
-            FileSystem::recursiveChown(APPSERVER_BP . DIRECTORY_SEPARATOR . 'tmp', $user, $group);
-            FileSystem::recursiveChmod(APPSERVER_BP . DIRECTORY_SEPARATOR . 'tmp');
-            // make server.php executable
-            FileSystem::chmod(APPSERVER_BP . DIRECTORY_SEPARATOR . 'server.php', 0755);
-
-            $this->log("Setup for mode '$newMode' done successfully!");
-
-        } else {
-            throw new \Exception('No user or group given');
-        }
-    }
-
-    /**
      * Loads the system configuration from passed configuration file.
      *
      * @param string $filename The path and name of the file to load the configuration for
      *
      * @throws \Exception Is thrown if the configuration can't be parsed
      */
-    protected function loadConfiguration($filename)
+    protected function doLoadConfiguration($filename)
     {
 
         // initialize configuration and schema file name
@@ -808,7 +815,7 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
      *
      * @return void
      */
-    protected function loadInitialContext(SystemConfigurationInterface $systemConfiguration)
+    protected function doLoadInitialContext(SystemConfigurationInterface $systemConfiguration)
     {
 
         // load the initial context configuration
@@ -825,13 +832,33 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
     }
 
     /**
+     * Initialize all loggers.
+     *
+     * @param \AppserverIo\Appserver\Core\Interfaces\SystemConfigurationInterface $systemConfiguration The system configuration
+     *
+     * @return void
+     */
+    protected function doLoadLoggers(SystemConfigurationInterface $systemConfiguration)
+    {
+
+        // initialize the loggers
+        $loggers = array();
+        foreach ($systemConfiguration->getLoggers() as $loggerNode) {
+            $loggers[$loggerNode->getName()] = LoggerFactory::factory($loggerNode);
+        }
+
+        // set the initialized loggers finally
+        $this->setLoggers($loggers);
+    }
+
+    /**
      * Switches the umask to the passed value.
      *
      * @param integer $newUmask The umask to set
      *
      * @return void
      */
-    protected function switchUmask($newUmask)
+    protected function doSwitchUmask($newUmask)
     {
         // load the service instance and switch the umask
         /** @var \AppserverIo\Appserver\Core\Api\DeploymentService $service */
@@ -846,7 +873,7 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
      *
      * @return void
      */
-    protected function createSslCertificate($certificateName = 'server.pem')
+    protected function doCreateSslCertificate($certificateName = 'server.pem')
     {
         // load the service instance and create the SSL file if not available
         /** @var \AppserverIo\Appserver\Core\Api\ContainerService $service */
@@ -855,22 +882,33 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
     }
 
     /**
-     * Initialize all loggers.
-     *
-     * @param \AppserverIo\Appserver\Core\Interfaces\SystemConfigurationInterface $systemConfiguration The system configuration
+     * Prepares filesystem to be sure that everything is on place as expected
      *
      * @return void
+     * @throws \Exception Is thrown if a server directory can't be created
      */
-    protected function loadLoggers(SystemConfigurationInterface $systemConfiguration)
+    protected function doPrepareFileSystem()
     {
+        // load the service instance and prepare the filesystem
+        /** @var \AppserverIo\Appserver\Core\Api\ContainerService $service */
+        $service = $this->newService('AppserverIo\Appserver\Core\Api\ContainerService');
+        $service->prepareFileSystem();
+    }
 
-        // initialize the loggers
-        $loggers = array();
-        foreach ($systemConfiguration->getLoggers() as $loggerNode) {
-            $loggers[$loggerNode->getName()] = LoggerFactory::factory($loggerNode);
-        }
-
-        // set the initialized loggers finally
-        $this->setLoggers($loggers);
+    /**
+     * Switches the running setup mode to the passed value.
+     *
+     * @param string $newMode               The mode to switch to
+     * @param string $configurationFilename The path of the configuration filename
+     *
+     * @return void
+     * @throws \Exception Is thrown for an invalid setup mode passed
+     */
+    protected function doSwitchSetupMode($newMode, $configurationFilename)
+    {
+        // load the service instance and switch to the new setup mode
+        /** @var \AppserverIo\Appserver\Core\Api\ContainerService $service */
+        $service = $this->newService('AppserverIo\Appserver\Core\Api\ContainerService');
+        $service->switchSetupMode($newMode, $configurationFilename);
     }
 }

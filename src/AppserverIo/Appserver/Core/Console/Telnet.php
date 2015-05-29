@@ -59,7 +59,7 @@ class Telnet extends \Thread implements ConsoleInterface
     public function __construct(ApplicationServerInterface $applicationServer)
     {
         $this->applicationServer = $applicationServer;
-        $this->start();
+        $this->start(PTHREADS_INHERIT_ALL);
     }
 
     /**

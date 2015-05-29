@@ -31,7 +31,7 @@ namespace AppserverIo\Appserver\Core\Api\Node;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class ContainerNode extends AbstractNode
+class ContainerNode extends AbstractNode implements ContainerNodeInterface
 {
 
     /**
@@ -81,7 +81,7 @@ class ContainerNode extends AbstractNode
      * @AS\Mapping(nodeName="upstreams/upstream", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\UpstreamNode")
      */
     protected $upstreams;
-    
+
     /**
      * The servers used in container
      *
@@ -175,7 +175,7 @@ class ContainerNode extends AbstractNode
     {
         return $this->servers;
     }
-    
+
     /**
      * Return's all upstream nodes
      *

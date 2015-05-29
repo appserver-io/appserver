@@ -83,6 +83,13 @@ class DirectoryKeys
     const VAR_RUN = 'var.run.dir';
 
     /**
+     * Path the to base configuration directory.
+     *
+     * @var string
+     */
+    const ETC = 'etc.dir';
+
+    /**
      * Path the to main configuration directory.
      *
      * @var string
@@ -142,6 +149,7 @@ class DirectoryKeys
             DirectoryKeys::VAR_TMP,
             DirectoryKeys::VAR_LOG,
             DirectoryKeys::VAR_RUN,
+            DirectoryKeys::ETC,
             DirectoryKeys::ETC_APPSERVER,
             DirectoryKeys::ETC_APPSERVER_CONFD
         );
@@ -173,6 +181,7 @@ class DirectoryKeys
             DirectoryKeys::VAR_TMP,
             DirectoryKeys::VAR_LOG,
             DirectoryKeys::VAR_RUN,
+            DirectoryKeys::ETC,
             DirectoryKeys::ETC_APPSERVER,
             DirectoryKeys::ETC_APPSERVER_CONFD
         );

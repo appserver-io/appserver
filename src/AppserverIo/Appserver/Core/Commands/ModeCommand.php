@@ -34,6 +34,8 @@ use AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface;
 class ModeCommand implements CommandInterface
 {
 
+    const COMMAND = 'mode';
+
     public function __construct(ApplicationServerInterface $applicationServer)
     {
         $this->applicationServer = $applicationServer;

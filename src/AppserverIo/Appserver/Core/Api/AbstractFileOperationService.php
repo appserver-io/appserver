@@ -23,6 +23,7 @@
 namespace AppserverIo\Appserver\Core\Api;
 
 use AppserverIo\Appserver\Core\InitialContext;
+use AppserverIo\Appserver\Core\Utilities\FileSystem;
 
 /**
  * Abstract service implementation.
@@ -38,81 +39,64 @@ use AppserverIo\Appserver\Core\InitialContext;
  */
 abstract class AbstractFileOperationService extends AbstractService
 {
+
     /**
      * Sets the configured user/group settings on the passed file.
      *
      * @param \SplFileInfo $fileInfo The file to set user/group for
+     * @param string       $user     The user that has to own the passed file
+     * @param string       $group    The group that has to own the passed file
      *
      * @return void
      */
-    public function setUserRight(\SplFileInfo $fileInfo)
+    public function setUserRight(\SplFileInfo $fileInfo, $user = null, $group = null)
     {
-
-        // don't do anything under windows
-        if ($this->getOsIdentifier() === 'WIN') {
-            return;
-        }
 
         // Get our system configuration as it contains the user and group to set
         $systemConfiguration = $this->getInitialContext()->getSystemConfiguration();
 
         // Check for the existence of a user
-        $user = $systemConfiguration->getParam('user');
-        if (!empty($user)) {
-            chown($fileInfo, $user);
+        if ($user == null) {
+            $user = $systemConfiguration->getParam('user');
         }
 
         // Check for the existence of a group
-        $group = $systemConfiguration->getParam('group');
-        if (!empty($group)) {
-            chgrp($fileInfo, $group);
+        if ($group == null) {
+            $group = $systemConfiguration->getParam('group');
         }
+
+        // change the owner for the passed file/directory
+        FileSystem::chown($fileInfo, $user, $group);
+
     }
 
     /**
-     * Will set the owner and group on the passed directory.
+     * Will set the owner and group on the passed directory recursively.
      *
      * @param \SplFileInfo $targetDir The directory to set the rights for
+     * @param string       $user      The user that has to own the passed directory
+     * @param string       $group     The group that has to own the passed directory
      *
      * @return void
      */
-    public function setUserRights(\SplFileInfo $targetDir)
+    public function setUserRights(\SplFileInfo $targetDir, $user = null, $group = null)
     {
-        // we don't do anything under Windows
-        if ($this->getOsIdentifier() === 'WIN') {
-            return;
-        }
-
-        // we don't have a directory to change the user/group permissions for
-        if ($targetDir->isDir() === false) {
-            return;
-        }
 
         // Get our system configuration as it contains the user and group to set
         $systemConfiguration = $this->getInitialContext()->getSystemConfiguration();
 
-        // get all the files recursively
-        $files = $this->globDir($targetDir . '/*');
-
-        // Check for the existence of a user
-        $user = $systemConfiguration->getParam('user');
-        if (!empty($user)) {
-            // Change the rights of everything within the defined dirs
-            foreach ($files as $file) {
-                chown($file, $user);
-            }
-            chown($targetDir, $user);
+        // check for the existence of a user
+        if ($user == null) {
+            $user = $systemConfiguration->getParam('user');
         }
 
-        // Check for the existence of a group
-        $group = $systemConfiguration->getParam('group');
-        if (!empty($group)) {
-            // Change the rights of everything within the defined dirs
-            foreach ($files as $file) {
-                chgrp($file, $group);
-            }
-            chgrp($targetDir, $group);
+        // check for the existence of a group
+        if ($group == null) {
+            $group = $systemConfiguration->getParam('group');
         }
+
+        // change the owner for the passed directory
+        FileSystem::recursiveChown($targetDir, $user, $group);
     }
 
     /**
@@ -127,51 +111,40 @@ abstract class AbstractFileOperationService extends AbstractService
     public function initUmask($umask = null)
     {
 
-        // don't do anything under Windows
-        if ($this->getOsIdentifier() === 'WIN') {
-            return;
-        }
-
         // check if a umask has been passed
         if ($umask == null) {
             $umask = $this->getInitialContext()->getSystemConfiguration()->getParam('umask');
-
         }
 
-        // set new umask to use
-        umask($umask);
-
-        // query whether the new umask has been set or not
-        if (umask() != $umask) {
-            throw new \Exception(sprintf('Can\'t set umask \'%s\' found \'%\' instead', $umask, umask()));
-        }
+        // initialize the umask
+        FileSystem::initUmask($umask);
     }
 
     /**
-     * Creates the passed directory with the umask specified in the system
+     * Creates the passed directory recursively with the umask specified in the system
      * configuration and sets the user permissions.
      *
      * @param \SplFileInfo $directoryToCreate The directory that should be created
+     * @param integer      $mode              The mode to create the directory with
+     * @param boolean      $recursive         TRUE if the directory has to be created recursively, else FALSE
+     * @param string       $user              The user that has to own the passed directory
+     * @param string       $group             The group that has to own the passed directory
+     * @param integer      $umask             The new umask to set
      *
      * @return void
      * @throws \Exception Is thrown if the directory can't be created
      */
-    public function createDirectory(\SplFileInfo $directoryToCreate)
+    public function createDirectory(\SplFileInfo $directoryToCreate, $mode = 0775, $recursively = true, $user = null, $group = null, $umask = null)
     {
 
         // set the umask that is necessary to create the directory
-        $this->initUmask();
+        $this->initUmask($umask);
 
-        // we don't have a directory to change the user/group permissions for
-        if ($directoryToCreate->isDir() === false) {
-            // create the directory if necessary
-            if (mkdir($directoryToCreate->getPathname()) === false) {
-                throw new \Exception(sprintf('Directory %s can\'t be created', $directoryToCreate->getPathname()));
-            }
-        }
+        // create the directory itself
+        FileSystem::createDirectory($directoryToCreate, $mode, $recursively);
 
         // load the deployment service
-        $this->setUserRights($directoryToCreate);
+        $this->setUserRights($directoryToCreate, $user, $group);
     }
 
     /**
@@ -184,31 +157,7 @@ abstract class AbstractFileOperationService extends AbstractService
      */
     public function cleanUpDir(\SplFileInfo $dir, $alsoRemoveFiles = true)
     {
-
-        // first check if the directory exists, if not return immediately
-        if ($dir->isDir() === false) {
-            return;
-        }
-
-        // remove old archive from webapps folder recursively
-        $files = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator($dir->getPathname()),
-            \RecursiveIteratorIterator::CHILD_FIRST
-        );
-
-        foreach ($files as $file) {
-            // skip . and .. dirs
-            if ($file->getFilename() === '.' || $file->getFilename() === '..') {
-                continue;
-            }
-            if ($file->isDir()) {
-                @rmdir($file->getRealPath());
-            } elseif ($file->isFile() && $alsoRemoveFiles) {
-                unlink($file->getRealPath());
-            } else {
-                // do nothing, because file should NOT be deleted obviously
-            }
-        }
+        FileSystem::cleanUpDir($dir, $alsoRemoveFiles);
     }
 
     /**
@@ -221,23 +170,6 @@ abstract class AbstractFileOperationService extends AbstractService
      */
     public function copyDir($src, $dst)
     {
-        if (is_link($src)) {
-            symlink(readlink($src), $dst);
-        } elseif (is_dir($src)) {
-            if (is_dir($dst) === false) {
-                mkdir($dst, 0775, true);
-            }
-            // copy files recursive
-            foreach (scandir($src) as $file) {
-                if ($file != '.' && $file != '..') {
-                    $this->copyDir("$src/$file", "$dst/$file");
-                }
-            }
-
-        } elseif (is_file($src)) {
-            copy($src, $dst);
-        } else {
-            // do nothing, we didn't have a directory to copy
-        }
+        FileSystem::copyDir($src, $dst);
     }
 }

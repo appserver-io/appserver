@@ -68,6 +68,13 @@ class ContainerStateKeys
     const SERVERS_STARTED_SUCCESSFUL = 4;
 
     /**
+     * Servers has been shutdown successful.
+     *
+     * @var integer
+     */
+    const SHUTDOWN = 5;
+
+    /**
      * The actual container state.
      *
      * @var integer
@@ -123,10 +130,12 @@ class ContainerStateKeys
     public static function getContainerStates()
     {
         return array(
+            ContainerStateKeys::HALT,
             ContainerStateKeys::WAITING_FOR_INITIALIZATION,
             ContainerStateKeys::INITIALIZATION_SUCCESSFUL,
             ContainerStateKeys::DEPLOYMENT_SUCCESSFUL,
-            ContainerStateKeys::SERVERS_STARTED_SUCCESSFUL
+            ContainerStateKeys::SERVERS_STARTED_SUCCESSFUL,
+            ContainerStateKeys::SHUTDOWN
         );
     }
 

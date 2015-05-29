@@ -34,6 +34,8 @@ use AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface;
 class InitCommand implements CommandInterface
 {
 
+    const COMMAND = 'init';
+
     public function __construct(ApplicationServerInterface $applicationServer)
     {
         $this->applicationServer = $applicationServer;
