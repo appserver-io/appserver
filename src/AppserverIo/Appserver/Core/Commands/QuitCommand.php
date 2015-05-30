@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Commands\InitCommand
+ * AppserverIo\Appserver\Core\Commands\QuitCommand
  *
  * NOTICE OF LICENSE
  *
@@ -24,7 +24,7 @@ use React\Socket\ConnectionInterface;
 use AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface;
 
 /**
- * The init command implementation.
+ * The quit command implementation.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -32,7 +32,7 @@ use AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class InitCommand implements CommandInterface
+class QuitCommand implements CommandInterface
 {
 
     /**
@@ -40,7 +40,7 @@ class InitCommand implements CommandInterface
      *
      * @var string
      */
-    const COMMAND = 'init';
+    const COMMAND = 'quit';
 
     /**
      * Initializes the command with the connection and the application server
@@ -65,6 +65,6 @@ class InitCommand implements CommandInterface
      */
     public function execute(array $params = array())
     {
-        $this->applicationServer->init(array_shift($params));
+        $this->connection->close();
     }
 }

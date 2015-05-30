@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Commands\InitCommand
+ * AppserverIo\Appserver\Core\Commands\CommandFactory
  *
  * NOTICE OF LICENSE
  *
@@ -20,8 +20,6 @@
 
 namespace AppserverIo\Appserver\Core\Commands;
 
-use AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface;
-
 /**
  * Factory to create new command instances.
  *
@@ -31,9 +29,17 @@ use AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class CommandFactory
+class CommandFactory implements CommandFactoryInterface
 {
 
+    /**
+     * Creates and returns a new command instance of the command with the passed name.
+     *
+     * @param string $name            The name of the command to create the instance for
+     * @param array  $constructorArgs The arguments passed to the constructor
+     *
+     * @return \AppserverIo\Appserver\Core\Commands\CommandInterface The command instance
+     */
     public static function factory($name, array $constructorArgs = array())
     {
         $reflectionClass = new \ReflectionClass(sprintf('AppserverIo\Appserver\Core\Commands\%sCommand', ucfirst($name)));

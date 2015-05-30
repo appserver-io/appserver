@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\Core\Commands;
 
+use React\Socket\ConnectionInterface;
 use AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface;
 
 /**
@@ -34,13 +35,34 @@ use AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface;
 class ModeCommand implements CommandInterface
 {
 
+    /**
+     * The unique command name.
+     *
+     * @var string
+     */
     const COMMAND = 'mode';
 
-    public function __construct(ApplicationServerInterface $applicationServer)
+    /**
+     * Initializes the command with the connection and the application server
+     * instance to execute the command on.
+     *
+     * @param \React\Socket\ConnectionInterface                                $connection        The connection instance
+     * @param AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface $applicationServer The application server instance
+     */
+    public function __construct(ConnectionInterface $connection, ApplicationServerInterface $applicationServer)
     {
+        $this->connection = $connection;
         $this->applicationServer = $applicationServer;
     }
 
+    /**
+     * Executes the command.
+     *
+     * @param array $params The arguments passed to the command
+     *
+     * @return mixed|null The result of the command
+     * @see \AppserverIo\Appserver\Core\Commands\CommandInterface::execute()
+     */
     public function execute(array $params = array())
     {
         $this->applicationServer->mode(array_shift($params));

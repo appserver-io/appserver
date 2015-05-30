@@ -178,7 +178,7 @@ class Telnet extends \Thread implements ConsoleInterface
                     $params = explode(' ', trim(substr($data, strlen($commandName))));
 
                     // initialize and execute the command
-                    $command = CommandFactory::factory($commandName, array($applicationServer));
+                    $command = CommandFactory::factory(trim($commandName), array($conn, $applicationServer));
                     $command->execute($params);
 
                 } catch (\ReflectionException $re) {

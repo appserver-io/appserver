@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Commands\CommandInterface
+ * AppserverIo\Appserver\Core\Commands\CommandFactoryInterface
  *
  * NOTICE OF LICENSE
  *
@@ -21,7 +21,7 @@
 namespace AppserverIo\Appserver\Core\Commands;
 
 /**
- * A command interface.
+ * Factory to create new command instances.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -29,15 +29,16 @@ namespace AppserverIo\Appserver\Core\Commands;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-interface CommandInterface
+interface CommandFactoryInterface
 {
 
     /**
-     * Executes the command.
+     * Creates and returns a new command instance of the command with the passed name.
      *
-     * @param array $params The arguments passed to the command
+     * @param string $name            The name of the command to create the instance for
+     * @param array  $constructorArgs The arguments passed to the constructor
      *
-     * @return mixed|null The result of the command
+     * @return \AppserverIo\Appserver\Core\Commands\CommandInterface The command instance
      */
-    public function execute(array $params = array());
+    public static function factory($name, array $constructorArgs = array());
 }

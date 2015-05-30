@@ -93,7 +93,7 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
         $this->namingDirectory = $namingDirectory;
 
         // initialize the default runlevel
-        $this->runlevel = ApplicationServerInterface::ADMINISTRATION;
+        $this->runlevel = ApplicationServerInterface::FULL;
 
         // set to TRUE, because we switch to runlevel 1 immediately
         $this->locked = false;
