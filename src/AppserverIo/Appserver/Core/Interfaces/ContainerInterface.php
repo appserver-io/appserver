@@ -35,6 +35,20 @@ interface ContainerInterface
 {
 
     /**
+     * Returns the unique container name from the configuration.
+     *
+     * @return string The unique container name
+     */
+    public function getName();
+
+    /**
+     * Stops the container and all servers.
+     *
+     * @return void
+     */
+    public function stop();
+
+    /**
      * Append the deployed application to the deployment instance
      * and registers it in the system configuration.
      *

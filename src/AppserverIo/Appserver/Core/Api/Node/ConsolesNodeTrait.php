@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Console\ConsoleInterface
+ * \AppserverIo\Appserver\Core\Api\Node\ConsolesNodeTrait
  *
  * NOTICE OF LICENSE
  *
@@ -18,10 +18,11 @@
  * @link      http://www.appserver.io
  */
 
-namespace AppserverIo\Appserver\Core\Console;
+namespace AppserverIo\Appserver\Core\Api\Node;
 
 /**
- * Interface for all console implementations.
+ *
+ * Trait that provides functionality to handle console nodes.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -29,27 +30,36 @@ namespace AppserverIo\Appserver\Core\Console;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-interface ConsoleInterface
+trait ConsolesNodeTrait
 {
 
     /**
-     * Start the console.
+     * The application servers console configuration.
      *
-     * @return void
+     * @var array
+     * @AS\Mapping(nodeName="consoles/console", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\ConsoleNode")
      */
-    public function start();
+    protected $consoles = array();
 
     /**
-     * Stop the console and closes all connections.
+     * Sets the application servers console configuration.
+     *
+     * @param array $consoles The console configuration
      *
      * @return void
      */
-    public function stop();
+    public function setConsoles($consoles)
+    {
+        $this->consoles = $consoles;
+    }
 
     /**
-     * Forces the referenced console to terminate.
+     * Returns the application servers console configuration.
      *
-     * @return void
+     * @return array The application server console configuration
      */
-    public function kill();
+    public function getConsoles()
+    {
+        return $this->consoles;
+    }
 }

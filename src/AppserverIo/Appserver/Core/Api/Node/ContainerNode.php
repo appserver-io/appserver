@@ -51,6 +51,14 @@ class ContainerNode extends AbstractNode implements ContainerNodeInterface
     protected $type;
 
     /**
+     * The container's factory class name.
+     *
+     * @var string
+     * @AS\Mapping(nodeType="string")
+     */
+    protected $factory;
+
+    /**
      * The thread class name that start's the container.
      *
      * @var string
@@ -124,6 +132,16 @@ class ContainerNode extends AbstractNode implements ContainerNodeInterface
     public function getType()
     {
         return $this->type;
+    }
+
+    /**
+     * Returns the container's factory class name.
+     *
+     * @return string The container's factory class name
+     */
+    public function getFactory()
+    {
+        return $this->factory;
     }
 
     /**

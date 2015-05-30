@@ -135,6 +135,7 @@
         <xs:complexType>
             <xs:all>
                 <xs:element ref="appserver:params"/>
+                <xs:element ref="appserver:consoles" minOccurs="0"/>
                 <xs:element ref="appserver:baseDirectory" minOccurs="0"/>
                 <xs:element ref="appserver:initialContext" minOccurs="0"/>
                 <xs:element ref="appserver:extractors" minOccurs="0"/>
@@ -142,6 +143,29 @@
                 <xs:element ref="appserver:scanners" minOccurs="0"/>
                 <xs:element ref="appserver:containers"/>
             </xs:all>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="consoles">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="appserver:console"/>
+            </xs:choice>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="console">
+        <xs:complexType>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element ref="appserver:params"/>
+            </xs:choice>
+            <xs:attribute name="name" type="xs:string" use="required"/>
+            <xs:attribute name="type" type="xs:string" use="required"/>
+            <xs:attribute name="factory" type="xs:string" use="required"/>
+            <xs:attribute name="createBackups" type="xs:boolean"/>
+            <xs:attribute name="restoreBackups" type="xs:boolean"/>
             <xs:attribute name="uuid" type="xs:string"/>
             <xs:attribute ref="xml:base"/>
         </xs:complexType>
@@ -285,6 +309,7 @@
             </xs:all>
             <xs:attribute name="name" type="xs:string" use="required"/>
             <xs:attribute name="type" type="xs:string" use="required"/>
+            <xs:attribute name="factory" type="xs:string" use="required"/>
             <xs:attribute name="uuid" type="xs:string"/>
             <xs:attribute ref="xml:base"/>
         </xs:complexType>
@@ -915,9 +940,9 @@
     </xs:element>
     <xs:element name="extractor">
         <xs:complexType>
-            <xs:choice maxOccurs="unbounded">
-                <xs:element ref="appserver:extractor"/>
-            </xs:choice>
+            <xs:attribute name="name" type="xs:string" use="required"/>
+            <xs:attribute name="type" type="xs:string" use="required"/>
+            <xs:attribute name="factory" type="xs:string" use="required"/>
             <xs:attribute name="uuid" type="xs:string"/>
             <xs:attribute ref="xml:base"/>
         </xs:complexType>

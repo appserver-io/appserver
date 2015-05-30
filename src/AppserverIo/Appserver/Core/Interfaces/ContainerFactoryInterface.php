@@ -1,7 +1,7 @@
 <?php
 
 /**
- * \AppserverIo\Appserver\Core\GenericContainerFactory
+ * \AppserverIo\Appserver\Core\Interfaces\ContainerFactoryInterface
  *
  * NOTICE OF LICENSE
  *
@@ -18,14 +18,13 @@
  * @link      http://www.appserver.io
  */
 
-namespace AppserverIo\Appserver\Core;
+namespace AppserverIo\Appserver\Core\Interfaces;
 
 use AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface;
-use AppserverIo\Appserver\Core\Interfaces\ContainerFactoryInterface;
 use AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface;
 
 /**
- * A factory for the container instances.
+ * Interface for a factory to create new container instances.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -33,7 +32,7 @@ use AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class GenericContainerFactory implements ContainerFactoryInterface
+interface ContainerFactoryInterface
 {
 
     /**
@@ -44,16 +43,5 @@ class GenericContainerFactory implements ContainerFactoryInterface
      *
      * @return void
      */
-    public static function factory(ApplicationServerInterface $applicationServer, ContainerNodeInterface $configuration)
-    {
-
-        // create a new reflection class instance
-        $reflectionClass = new \ReflectionClass($configuration->getType());
-
-        // initialize the container configuration with the base directory and pass it to the thread
-        $params = array($applicationServer->getInitialContext(), $configuration);
-
-        // create and append the thread instance to the internal array
-        return $reflectionClass->newInstanceArgs($params);
-    }
+    public static function factory(ApplicationServerInterface $applicationServer, ContainerNodeInterface $configuration);
 }

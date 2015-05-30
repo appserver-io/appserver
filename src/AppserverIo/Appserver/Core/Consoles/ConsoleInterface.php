@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Console\TelnetFactory
+ * AppserverIo\Appserver\Core\Consoles\ConsoleInterface
  *
  * NOTICE OF LICENSE
  *
@@ -18,12 +18,10 @@
  * @link      http://www.appserver.io
  */
 
-namespace AppserverIo\Appserver\Core\Console;
-
-use AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface;
+namespace AppserverIo\Appserver\Core\Consoles;
 
 /**
- * Factory to create new telnet instances.
+ * Interface for all console implementations.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -31,18 +29,27 @@ use AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class TelnetFactory
+interface ConsoleInterface
 {
 
     /**
-     * Factory method to create new telnet console instances.
+     * Start the console.
      *
-     * @param \AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface $applicationServer The application server instance
-     *
-     * @return AppserverIo\Appserver\Core\Console\ConsoleInterface The telnet console instance
+     * @return void
      */
-    public static function factory(ApplicationServerInterface $applicationServer)
-    {
-        return new Telnet($applicationServer);
-    }
+    public function start();
+
+    /**
+     * Stop the console and closes all connections.
+     *
+     * @return void
+     */
+    public function stop();
+
+    /**
+     * Forces the referenced console to terminate.
+     *
+     * @return void
+     */
+    public function kill();
 }

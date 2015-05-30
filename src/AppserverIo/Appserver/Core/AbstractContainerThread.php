@@ -82,6 +82,17 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
     }
 
     /**
+     * Returns the unique container name from the configuration.
+     *
+     * @return string The unique container name
+     * @see \AppserverIo\Appserver\Core\Interfaces\ContainerInterface::getName()
+     */
+    public function getName()
+    {
+        return $this->getContainerNode()->getName();
+    }
+
+    /**
      * Run the containers logic
      *
      * @return void

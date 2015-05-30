@@ -30,6 +30,24 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
     </params>
 
     <!--
+     ! This is the management console that allows you to start/stop the application server and
+     | switch the setup mode. Do never bind it to a public IP, because Telnet is NOT secure!!!
+     -->
+    <consoles>
+
+        <console
+            name="telnet"
+            type="AppserverIo\Appserver\Core\Consoles\Telnet"
+            factory="AppserverIo\Appserver\Core\Consoles\TelnetFactory">
+
+            <params>
+                <param name="address" type="string">127.0.0.1</param>
+                <param name="port" type="integer">9023</param>
+            </params>
+        </console>
+    </consoles>
+
+    <!--
      ! You might add optional configuration for implicitly configured components here.
      !
      ! http://appserver.io/get-started/documentation/configuration.html#optional-configuration
@@ -39,7 +57,8 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
 
         <container
                 name="combined-appserver"
-                type="AppserverIo\Appserver\Core\GenericContainer">
+                type="AppserverIo\Appserver\Core\GenericContainer"
+                factory="AppserverIo\Appserver\Core\GenericContainerFactory">
 
             <description>
                 <![CDATA[This is an example of a webserver container that handles http requests in common way]]>

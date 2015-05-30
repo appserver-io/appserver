@@ -39,6 +39,11 @@ use AppserverIo\Appserver\Core\Extractors\PharExtractorFactory;
 use AppserverIo\Appserver\Core\Commands\ModeCommand;
 use AppserverIo\Appserver\Core\Commands\InitCommand;
 use AppserverIo\Psr\Naming\NamingDirectoryInterface;
+use AppserverIo\Appserver\Core\Listeners\StartConsolesListener;
+use AppserverIo\Appserver\Core\Listeners\StartContainersListener;
+use AppserverIo\Appserver\Core\Listeners\ExtractArchivesListener;
+use AppserverIo\Appserver\Core\Listeners\DeployApplicationsListener;
+use AppserverIo\Appserver\Core\Listeners\ApplicationServerAwareListenerInterface;
 
 /**
  * This is the main server class that starts the application server
@@ -91,6 +96,28 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
         // initialize command/params
         $this->command = null;
         $this->params = null;
+    }
+
+    /**
+     * Translates and returns a string representation of the passed runlevel.
+     *
+     * @param integer $runlevel The runlevel to return the string representation for
+     *
+     * @return string The string representation for the passed runlevel
+     *
+     * @throws \Exception Is thrown if the passed runlevel is not available
+     */
+    public function runlevelToString($runlevel)
+    {
+
+        // flip the array with the string => integer runlevel definitions
+        $runlevels = array_flip(ApplicationServer::$runlevels);
+        if (isset($runlevels[$runlevel])) {
+            return $runlevels[$runlevel];
+        }
+
+        // throw an exception if the runlevel is unknown
+        throw new \Exception(sprintf('Request invalid runlevel to string conversion for %s', $runlevel));
     }
 
     /**
@@ -304,7 +331,7 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
             extract($lastError);
             // query whether we've a fatal/user error
             if ($type === E_ERROR || $type === E_USER_ERROR) {
-                $this->log($message);
+                error_log($message);
             }
         }
     }
@@ -337,18 +364,6 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
         $this->doCreateSslCertificate();
     }
 
-    public function firstListenerTest($event)
-    {
-        $this->log('EMITTED EVENT');
-
-        try {
-            $console = $this->getNamingDirectory()->search('php:services/administration/console');
-            $this->log("Found console class " . get_class($console));
-        } catch (\Exception $e) {
-            $this->log($e->__toString());
-        }
-    }
-
     /**
      * The thread's run() method that runs asynchronously.
      *
@@ -363,8 +378,63 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
         // we need the autloader again
         require SERVER_AUTOLOADER;
 
+        /**
+         * Available Events:
+         *
+         * - enter.setup-mode.install
+         * - enter.setup-mode.dev
+         * - enter.setup-mode.prod
+         *
+         * - leave.setup-mode.install
+         * - leave.setup-mode.dev
+         * - leave.setup-mode.prod
+         *
+         * - enter.runlevel.administration
+         * - enter.runlevel.daemon
+         * - enter.runlevel.full
+         * - enter.runlevel.network
+         * - enter.runlevel.secure
+         * - enter.runlevel.shutdown
+         * - enter.runlevel.reboot
+         *
+         * - leave.runlevel.administration
+         * - leave.runlevel.daemon
+         * - leave.runlevel.full
+         * - leave.runlevel.network
+         * - leave.runlevel.secure
+         * - leave.runlevel.shutdown
+         * - leave.runlevel.reboot
+         */
+
+        $startConsolesListener = new StartConsolesListener();
+
+        if ($startConsolesListener instanceof ApplicationServerAwareListenerInterface) {
+            $startConsolesListener->injectApplicationServer($this);
+        }
+
+        $startContainersListener = new StartContainersListener();
+
+        if ($startContainersListener instanceof ApplicationServerAwareListenerInterface) {
+            $startContainersListener->injectApplicationServer($this);
+        }
+
+        $extractArchivesListener = new ExtractArchivesListener();
+
+        if ($extractArchivesListener instanceof ApplicationServerAwareListenerInterface) {
+            $extractArchivesListener->injectApplicationServer($this);
+        }
+
+        $deployApplicationsListener = new DeployApplicationsListener();
+
+        if ($deployApplicationsListener instanceof ApplicationServerAwareListenerInterface) {
+            $deployApplicationsListener->injectApplicationServer($this);
+        }
+
         $emitter = new Emitter();
-        $emitter->addListener('do.switch.runlevel.up', array($this, 'firstListenerTest'));
+        $emitter->addListener('enter.runlevel.administration', $startConsolesListener);
+        $emitter->addListener('enter.runlevel.network', $startContainersListener);
+        $emitter->addListener('enter.runlevel.full', $extractArchivesListener);
+        $emitter->addListener('enter.runlevel.full', $deployApplicationsListener);
 
         $this->emitter = $emitter;
 
@@ -419,7 +489,6 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
                             // switch to the requested runlevel
                             for ($i = $actualRunlevel + 1; $i <= $this->runlevel; $i++) {
                                 $this->doSwitchRunlevelUp($i);
-                                $this->emitter->emit('do.switch.runlevel.up');
                             }
 
                             // set the new runlevel
@@ -440,7 +509,7 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
                             // print a message and wait
                             $this->log("Switched to runlevel $actualRunlevel!!!");
 
-                            // singal that we've finished switching the runlevels and wait
+                            // signal that we've finished switching the runlevels and wait
                             $this->locked = false;
                             $this->command = null;
 
@@ -518,6 +587,30 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
         return $this->services[$runlevel][$name];
     }
 
+    public function unbindService($runlevel, $name)
+    {
+
+        // stop the service instance
+        $this->services[$runlevel][$name]->stop();
+
+        // unset the service instance
+        unset($this->services[$runlevel][$name]);
+    }
+
+    public function bindService($runlevel, $service)
+    {
+
+        $this->services[$runlevel][$service->getName()] = $service;
+
+        $runlevels = array_flip(ApplicationServer::$runlevels);
+
+        $this->getNamingDirectory()->bindCallback(
+            sprintf('php:services/%s/%s', $this->runlevelToString($runlevel), $service->getName()),
+            array($this, 'getService'),
+            array($runlevel, $service->getName())
+        );
+    }
+
     /**
      * This is main method to switch between the runlevels.
      *
@@ -542,17 +635,7 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
 
             case ApplicationServerInterface::ADMINISTRATION:
 
-                // create a new console instance and start it
-                $console = TelnetFactory::factory($this);
-
-                // register the container as service
-                $this->services[$actualRunlevel][$console->getName()] = $console;
-
-                $this->getNamingDirectory()->bindCallback(
-                    sprintf('php:services/administration/%s', $console->getName()),
-                    array($this, 'getService'),
-                    array($actualRunlevel, $console->getName())
-                );
+                $this->emitter->emit('enter.runlevel.administration', $this->getNamingDirectory());
 
                 break;
 
@@ -562,7 +645,7 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
 
             case ApplicationServerInterface::NETWORK:
 
-                $this->doStartContainers($services);
+                $this->emitter->emit('enter.runlevel.network', $this->getNamingDirectory());
 
                 break;
 
@@ -575,8 +658,7 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
 
             case ApplicationServerInterface::FULL:
 
-                $this->doExtract();
-                $this->doDeploy();
+                $this->emitter->emit('enter.runlevel.full', $this->getNamingDirectory());
 
                 break;
 
@@ -587,60 +669,6 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
             default:
                 throw new \Exception("Invalid runlevel $actualRunlevel requested");
                 break;
-        }
-    }
-
-
-    protected function doStartContainers()
-    {
-
-        // and initialize a container thread for each container
-        /** @var \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode */
-        foreach ($this->getSystemConfiguration()->getContainers() as $containerNode) {
-
-            // create a new container instance and start it
-            $container = GenericContainerFactory::factory($this, $containerNode);
-            $container->start(PTHREADS_INHERIT_ALL);
-
-            // register the container as service
-            $this->services[ApplicationServerInterface::NETWORK][$containerNode->getName()] = $container;
-        }
-    }
-
-    protected function doExtract()
-    {
-
-        // add the configured extractors to the internal array
-        /** @var \AppserverIo\Appserver\Core\Api\Node\ExtractorNodeInterface $extractorNode */
-        foreach ($this->getSystemConfiguration()->getExtractors() as $extractorNode) {
-
-            // create a new extractor instance
-            $extractor = PharExtractorFactory::factory($this, $extractorNode);
-
-            // deploy the found archives
-            $extractor->deployWebapps();
-
-            // log that the extractor has successfully been initialized and executed
-            $this->getSystemLogger()->debug(sprintf('Extractor %s successfully initialized and executed', $extractorNode->getName()));
-        }
-    }
-
-    protected function doDeploy()
-    {
-
-        // deploy the applications for all containers
-        /** @var \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode */
-        foreach ($this->getSystemConfiguration()->getContainers() as $containerNode) {
-
-            // load the container instance to deploy the applications for
-            $container = $this->services[ApplicationServerInterface::NETWORK][$containerNode->getName()];
-
-            // load the containers deployment
-            $deployment = $container->getDeployment();
-            $deployment->injectContainer($container);
-
-            // deploy and initialize the container's applications
-            $deployment->deploy();
         }
     }
 
@@ -668,6 +696,8 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
 
             case ApplicationServerInterface::ADMINISTRATION:
 
+                $this->emitter->emit('leave.runlevel.administration', $this->getNamingDirectory());
+
                 break;
 
             case ApplicationServerInterface::DAEMON:
@@ -675,6 +705,8 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
                 break;
 
             case ApplicationServerInterface::NETWORK:
+
+                $this->emitter->emit('leave.runlevel.network', $this->getNamingDirectory());
 
                 break;
 
@@ -685,6 +717,8 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
                 break;
 
             case ApplicationServerInterface::FULL:
+
+                $this->emitter->emit('leave.runlevel.full', $this->getNamingDirectory());
 
                 break;
 
@@ -735,63 +769,69 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
     protected function doLoadConfiguration($filename)
     {
 
-        // initialize configuration and schema file name
-        $configurationFileName = DirectoryKeys::realpath($filename);
+        try {
 
-        // initialize the DOMDocument with the configuration file to be validated
-        $configurationFile = new \DOMDocument();
-        $configurationFile->load($configurationFileName);
+            // initialize configuration and schema file name
+            $configurationFileName = DirectoryKeys::realpath($filename);
 
-        // substitute xincludes
-        $configurationFile->xinclude(LIBXML_SCHEMA_CREATE);
+            // initialize the DOMDocument with the configuration file to be validated
+            $configurationFile = new \DOMDocument();
+            $configurationFile->load($configurationFileName);
 
-        // create a DOMElement with the base.dir configuration
-        $paramElement = $configurationFile->createElement('param', APPSERVER_BP);
-        $paramElement->setAttribute('name', DirectoryKeys::BASE);
-        $paramElement->setAttribute('type', ParamNode::TYPE_STRING);
+            // substitute xincludes
+            $configurationFile->xinclude(LIBXML_SCHEMA_CREATE);
 
-        // create an XPath instance
-        $xpath = new \DOMXpath($configurationFile);
-        $xpath->registerNamespace('a', 'http://www.appserver.io/appserver');
+            // create a DOMElement with the base.dir configuration
+            $paramElement = $configurationFile->createElement('param', APPSERVER_BP);
+            $paramElement->setAttribute('name', DirectoryKeys::BASE);
+            $paramElement->setAttribute('type', ParamNode::TYPE_STRING);
 
-        // for node data in a selected id
-        $baseDirParam = $xpath->query(sprintf('/a:appserver/a:params/a:param[@name="%s"]', DirectoryKeys::BASE));
-        if ($baseDirParam->length === 0) {
+            // create an XPath instance
+            $xpath = new \DOMXpath($configurationFile);
+            $xpath->registerNamespace('a', 'http://www.appserver.io/appserver');
 
-            // load the <params> node
-            $paramNodes = $xpath->query('/a:appserver/a:params');
+            // for node data in a selected id
+            $baseDirParam = $xpath->query(sprintf('/a:appserver/a:params/a:param[@name="%s"]', DirectoryKeys::BASE));
+            if ($baseDirParam->length === 0) {
 
-            // load the first item => the node itself
-            if ($paramsNode = $paramNodes->item(0)) {
-                // append the base.dir DOMElement
-                $paramsNode->appendChild($paramElement);
-            } else {
-                // throw an exception, because we can't find a mandatory node
-                throw new \Exception('Can\'t find /appserver/params node');
+                // load the <params> node
+                $paramNodes = $xpath->query('/a:appserver/a:params');
+
+                // load the first item => the node itself
+                if ($paramsNode = $paramNodes->item(0)) {
+                    // append the base.dir DOMElement
+                    $paramsNode->appendChild($paramElement);
+                } else {
+                    // throw an exception, because we can't find a mandatory node
+                    throw new \Exception('Can\'t find /appserver/params node');
+                }
             }
+
+            // create a new DOMDocument with the merge content => necessary because else, schema validation fails!!
+            $mergeDoc = new \DOMDocument();
+            $mergeDoc->loadXML($configurationFile->saveXML());
+
+            // get an instance of our configuration tester
+            $configurationService = new ConfigurationService(new InitialContext(new AppserverNode()));
+
+            // validate the configuration file with the schema
+            if ($configurationService->validateXml($mergeDoc) === false) {
+                error_log(print_r($configurationService->getErrorMessages(), true));
+                throw new \Exception('Can\'t parse configuration file');
+            }
+
+            // initialize the SimpleXMLElement with the content XML configuration file
+            $configuration = new Configuration();
+            $configuration->initFromString($mergeDoc->saveXML());
+
+            // initialize the configuration and the base directory
+            $systemConfiguration = new AppserverNode();
+            $systemConfiguration->initFromConfiguration($configuration);
+            $this->setSystemConfiguration($systemConfiguration);
+
+        } catch (\Exception $e) {
+            error_log($e->__toString());
         }
-
-        // create a new DOMDocument with the merge content => necessary because else, schema validation fails!!
-        $mergeDoc = new \DOMDocument();
-        $mergeDoc->loadXML($configurationFile->saveXML());
-
-        // get an instance of our configuration tester
-        $configurationService = new ConfigurationService(new InitialContext(new AppserverNode()));
-
-        // validate the configuration file with the schema
-        if ($configurationService->validateXml($mergeDoc) === false) {
-            $this->log(print_r($configurationService->getErrorMessages(), true));
-            throw new \Exception('Can\'t parse configuration file');
-        }
-
-        // initialize the SimpleXMLElement with the content XML configuration file
-        $configuration = new Configuration();
-        $configuration->initFromString($mergeDoc->saveXML());
-
-        // initialize the configuration and the base directory
-        $systemConfiguration = new AppserverNode();
-        $systemConfiguration->initFromConfiguration($configuration);
-        $this->setSystemConfiguration($systemConfiguration);
     }
 
     /**
@@ -832,6 +872,11 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
         $loggers = array();
         foreach ($systemConfiguration->getLoggers() as $loggerNode) {
             $loggers[$loggerNode->getName()] = LoggerFactory::factory($loggerNode);
+        }
+
+        // register the loggers in the naming directory
+        foreach ($loggers as $name => $logger) {
+            $this->namingDirectory->bind(sprintf('php:global/log/%s', $name), $logger);
         }
 
         // set the initialized loggers finally

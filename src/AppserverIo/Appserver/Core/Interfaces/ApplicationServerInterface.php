@@ -46,6 +46,17 @@ interface ApplicationServerInterface
     const REBOOT         = 6;
 
     /**
+     * Translates and returns a string representation of the passed runlevel.
+     *
+     * @param integer $runlevel The runlevel to return the string representation for
+     *
+     * @return string The string representation for the passed runlevel
+     *
+     * @throws \Exception Is thrown if the passed runlevel is not available
+     */
+    public function runlevelToString($runlevel);
+
+    /**
      * The runlevel to switch to.
      *
      * @param integer $runlevel The new runlevel to switch to

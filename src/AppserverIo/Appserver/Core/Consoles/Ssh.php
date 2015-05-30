@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Console\Telnet
+ * AppserverIo\Appserver\Core\Consoles\SshConsole
  *
  * NOTICE OF LICENSE
  *
@@ -18,13 +18,10 @@
  * @link      http://www.appserver.io
  */
 
-namespace AppserverIo\Appserver\Core\Console;
-
-use AppserverIo\Appserver\Core\Commands\CommandFactory;
-use AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface;
+namespace AppserverIo\Appserver\Core\Consoles;
 
 /**
- * A Telnet based management console implementation using a React PHP socket server.
+ * A SSH based management console implementation using a React PHP socket server.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -32,11 +29,11 @@ use AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class Telnet extends \Thread implements ConsoleInterface
+class Ssh extends \Thread implements ConsoleInterface
 {
 
     /**
-     * appserver.io written in ASCII art.
+     * appserver.io written in ASCI art.
      *
      * @var string
      */
@@ -52,11 +49,11 @@ class Telnet extends \Thread implements ConsoleInterface
     /**
      * Initialize and start the management console.
      *
-     * @param \AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface The reference to the server
+     * @param \AppserverIo\Lab\Bootstrap\ApplicationServer The reference to the server
      *
      * @return void
      */
-    public function __construct(ApplicationServerInterface $applicationServer)
+    public function __construct($applicationServer)
     {
         $this->applicationServer = $applicationServer;
         $this->start(PTHREADS_INHERIT_ALL);
@@ -67,7 +64,7 @@ class Telnet extends \Thread implements ConsoleInterface
      *
      * @return string The service name
      */
-    public static function getName()
+    public function getName()
     {
         return 'console';
     }
@@ -88,7 +85,7 @@ class Telnet extends \Thread implements ConsoleInterface
             extract($lastError);
             // query whether we've a fatal/user error
             if ($type === E_ERROR || $type === E_USER_ERROR) {
-                echo $message . PHP_EOL;
+               echo $message . PHP_EOL;
             }
         }
     }
@@ -120,45 +117,8 @@ class Telnet extends \Thread implements ConsoleInterface
         // create a reference to the application server instance
         $applicationServer = $this->applicationServer;
 
-        // initialize the event loop and the socket server
-        $loop = \React\EventLoop\Factory::create();
-        $socket = new \React\Socket\Server($loop);
+        require_once 'vendor/fpoirotte/pssht/src/CLI.php';
 
-        // wait for connections
-        $socket->on('connection', function ($conn) use ($applicationServer) {
-
-            // write the appserver.io logo to the console
-            $conn->write(Telnet::$logo);
-            $conn->write("$ ");
-
-            // wait for user input => usually a command
-            $conn->on('data', function ($data) use ($conn, $applicationServer) {
-
-                try {
-
-                    // extract command name and parameters
-                    list ($commandName, ) = explode(' ', $data);
-                    $params = explode(' ', trim(substr($data, strlen($commandName))));
-
-                    // initialize and execute the command
-                    $command = CommandFactory::factory($commandName, array($applicationServer));
-                    $command->execute($params);
-
-                } catch (\ReflectionException $re) {
-                    $conn->write("Unknown command $commandName");
-                } catch (\Exception $e) {
-                    $conn->write($e->__getMessage());
-                }
-
-                // write the command prompt
-                $conn->write("$ ");
-            });
-        });
-
-        // list the the management socket
-        $socket->listen(1337);
-
-        // start the event loop and the socket server
-        $loop->run();
+        main();
     }
 }

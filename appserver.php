@@ -71,9 +71,10 @@ $namingDirectory = new NamingDirectory();
 $namingDirectory->setScheme('php');
 
 // create a directory for the services
-$namingDirectory->createSubdirectory('env');
-$namingDirectory->createSubdirectory('global');
-$namingDirectory->createSubdirectory('services');
+$namingDirectory->createSubdirectory('php:env');
+$namingDirectory->createSubdirectory('php:global');
+$namingDirectory->createSubdirectory('php:global/log');
+$namingDirectory->createSubdirectory('php:services');
 
 foreach (array_keys(ApplicationServer::$runlevels) as $runlevel) {
     $namingDirectory->createSubdirectory(sprintf('php:services/%s', $runlevel));
