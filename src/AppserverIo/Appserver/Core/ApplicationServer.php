@@ -22,28 +22,12 @@ namespace AppserverIo\Appserver\Core;
 
 use League\Event\Emitter;
 use AppserverIo\Storage\GenericStackable;
-use AppserverIo\Configuration\Configuration;
-use AppserverIo\Appserver\Core\Console\Telnet;
-use AppserverIo\Appserver\Core\Api\Node\ParamNode;
-use AppserverIo\Appserver\Core\Api\Node\AppserverNode;
-use AppserverIo\Appserver\Core\Api\ConfigurationService;
-use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
-use AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface;
-use AppserverIo\Appserver\Core\Interfaces\SystemConfigurationInterface;
-use AppserverIo\Appserver\Meta\Composer\Script\Setup;
-use AppserverIo\Appserver\Core\Utilities\FileSystem;
-use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
-use AppserverIo\Appserver\Core\Console\TelnetFactory;
-use AppserverIo\Appserver\Core\Api\ContainerService;
-use AppserverIo\Appserver\Core\Extractors\PharExtractorFactory;
+use AppserverIo\Psr\Naming\NamingDirectoryInterface;
 use AppserverIo\Appserver\Core\Commands\ModeCommand;
 use AppserverIo\Appserver\Core\Commands\InitCommand;
-use AppserverIo\Psr\Naming\NamingDirectoryInterface;
-use AppserverIo\Appserver\Core\Listeners\StartConsolesListener;
-use AppserverIo\Appserver\Core\Listeners\StartContainersListener;
-use AppserverIo\Appserver\Core\Listeners\ExtractArchivesListener;
-use AppserverIo\Appserver\Core\Listeners\DeployApplicationsListener;
 use AppserverIo\Appserver\Core\Listeners\ApplicationServerAwareListenerInterface;
+use AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface;
+use AppserverIo\Appserver\Core\Interfaces\SystemConfigurationInterface;
 
 /**
  * This is the main server class that starts the application server
@@ -72,6 +56,27 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
         'secure'         => ApplicationServerInterface::SECURE,
         'full'           => ApplicationServerInterface::FULL,
         'reboot'         => ApplicationServerInterface::REBOOT
+    );
+
+    /**
+     * Temporary array with event => listener mapping (has to be replaced with a XML configuration).
+     *
+     * @var array
+     */
+    public static $listeners = array(
+        array('enter.runlevel.shutdown',       'AppserverIo\Appserver\Core\Listeners\LoadConfigurationListener'),
+        array('enter.runlevel.shutdown',       'AppserverIo\Appserver\Core\Listeners\LoadLoggersListener'),
+        array('enter.runlevel.shutdown',       'AppserverIo\Appserver\Core\Listeners\LoadInitialContextListener'),
+        array('enter.runlevel.shutdown',       'AppserverIo\Appserver\Core\Listeners\SwitchUmaskListener'),
+        array('enter.runlevel.shutdown',       'AppserverIo\Appserver\Core\Listeners\SwitchSetupModeListener'),
+        array('enter.runlevel.shutdown',       'AppserverIo\Appserver\Core\Listeners\PrepareFileSystemListener'),
+        array('enter.runlevel.shutdown',       'AppserverIo\Appserver\Core\Listeners\CreateSslCertificateListener'),
+        array('enter.runlevel.network',        'AppserverIo\Appserver\Core\Listeners\StartContainersListener'),
+        array('enter.runlevel.secure',         'AppserverIo\Appserver\Core\Listeners\SwitchUserListener'),
+        array('leave.runlevel.secure',         'AppserverIo\Appserver\Core\Listeners\SwitchRootListener'),
+        array('enter.runlevel.full',           'AppserverIo\Appserver\Core\Listeners\ExtractArchivesListener'),
+        array('enter.runlevel.full',           'AppserverIo\Appserver\Core\Listeners\DeployApplicationsListener'),
+        array('enter.runlevel.administration', 'AppserverIo\Appserver\Core\Listeners\StartConsolesListener')
     );
 
     /**
@@ -228,19 +233,6 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
     }
 
     /**
-     * Simple logger method that writes the passed log messages.
-     * to a stream.
-     *
-     * @param string $message The message to log
-     *
-     * @return void
-     */
-    protected function log($message)
-    {
-        $this->getSystemLogger()->info($message);
-    }
-
-    /**
      * The runlevel to switch to.
      *
      * @param integer $runlevel The new runlevel to switch to
@@ -337,34 +329,6 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
     }
 
     /**
-     * Do all the bootstrapping stuff necessary to start services etc.
-     *
-     * @return void
-     */
-    protected function doBootstrap()
-    {
-
-        // load the system configuration
-        $this->doLoadConfiguration($this->getConfigurationFilename());
-
-        // load the system loggers and the initial context
-        $this->doLoadLoggers($this->getSystemConfiguration());
-        $this->doLoadInitialContext($this->getSystemConfiguration());
-
-        // switch the default umask
-        $this->doSwitchUmask($this->getSystemConfiguration()->getUmask());
-
-        // check that the application server has been installed properly
-        $this->doSwitchSetupMode(ContainerService::SETUP_MODE_INSTALL, $this->getConfigurationFilename());
-
-        // prepare the file system
-        $this->doPrepareFileSystem();
-
-        // create a SSL certificate if not already available
-        $this->doCreateSslCertificate();
-    }
-
-    /**
      * The thread's run() method that runs asynchronously.
      *
      * @link http://www.php.net/manual/en/thread.run.php
@@ -378,64 +342,26 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
         // we need the autloader again
         require SERVER_AUTOLOADER;
 
-        /**
-         * Available Events:
-         *
-         * - enter.setup-mode.install
-         * - enter.setup-mode.dev
-         * - enter.setup-mode.prod
-         *
-         * - leave.setup-mode.install
-         * - leave.setup-mode.dev
-         * - leave.setup-mode.prod
-         *
-         * - enter.runlevel.administration
-         * - enter.runlevel.daemon
-         * - enter.runlevel.full
-         * - enter.runlevel.network
-         * - enter.runlevel.secure
-         * - enter.runlevel.shutdown
-         * - enter.runlevel.reboot
-         *
-         * - leave.runlevel.administration
-         * - leave.runlevel.daemon
-         * - leave.runlevel.full
-         * - leave.runlevel.network
-         * - leave.runlevel.secure
-         * - leave.runlevel.shutdown
-         * - leave.runlevel.reboot
-         */
-
-        $startConsolesListener = new StartConsolesListener();
-
-        if ($startConsolesListener instanceof ApplicationServerAwareListenerInterface) {
-            $startConsolesListener->injectApplicationServer($this);
-        }
-
-        $startContainersListener = new StartContainersListener();
-
-        if ($startContainersListener instanceof ApplicationServerAwareListenerInterface) {
-            $startContainersListener->injectApplicationServer($this);
-        }
-
-        $extractArchivesListener = new ExtractArchivesListener();
-
-        if ($extractArchivesListener instanceof ApplicationServerAwareListenerInterface) {
-            $extractArchivesListener->injectApplicationServer($this);
-        }
-
-        $deployApplicationsListener = new DeployApplicationsListener();
-
-        if ($deployApplicationsListener instanceof ApplicationServerAwareListenerInterface) {
-            $deployApplicationsListener->injectApplicationServer($this);
-        }
-
+        // create the service emitter
         $emitter = new Emitter();
-        $emitter->addListener('enter.runlevel.administration', $startConsolesListener);
-        $emitter->addListener('enter.runlevel.network', $startContainersListener);
-        $emitter->addListener('enter.runlevel.full', $extractArchivesListener);
-        $emitter->addListener('enter.runlevel.full', $deployApplicationsListener);
 
+        foreach (ApplicationServer::$listeners as $listener) {
+            // extract even name and listener class name
+            list ($event, $listenerClassName) = $listener;
+
+            // create a new instance of the listener class
+            $listenerInstance = new $listenerClassName();
+
+            // query whether we've to inject the application server instance or not
+            if ($listenerInstance instanceof ApplicationServerAwareListenerInterface) {
+                $listenerInstance->injectApplicationServer($this);
+            }
+
+            // add the listeners
+            $emitter->addListener($event, $listenerInstance);
+        }
+
+        // synchronize the emitter
         $this->emitter = $emitter;
 
         // flag to keep the server running or to stop it
@@ -459,18 +385,18 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
                         $this->runlevel = $this->params;
 
                         if ($this->runlevel == ApplicationServerInterface::REBOOT) {
-
                             // backup the runlevel
                             $backupRunlevel = $actualRunlevel;
 
                             // shutdown the application server
                             for ($i = $actualRunlevel; $i >= ApplicationServerInterface::SHUTDOWN; $i--) {
-                                $this->doSwitchRunlevelDown($i);
+                                $this->doStopServices($i);
+                                $this->emitter->emit(sprintf('leave.runlevel.%s', $this->runlevelToString($i)), $this->getNamingDirectory());
                             }
 
                             // switch back to the runlevel we backed up before
                             for ($z = ApplicationServerInterface::SHUTDOWN; $z <= $backupRunlevel; $z++) {
-                                $this->doSwitchRunlevelUp($z);
+                                $this->emitter->emit(sprintf('enter.runlevel.%s', $this->runlevelToString($z)), $this->getNamingDirectory());
                             }
 
                             // set the runlevel to the one before we restart
@@ -480,25 +406,23 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
                             $this->runlevel = $this->params = $actualRunlevel;
 
                         } elseif ($actualRunlevel == ApplicationServerInterface::SHUTDOWN) {
-
                             // we want to shudown the application server
                             $keepRunning = false;
 
                         } elseif ($actualRunlevel < $this->runlevel) {
-
                             // switch to the requested runlevel
                             for ($i = $actualRunlevel + 1; $i <= $this->runlevel; $i++) {
-                                $this->doSwitchRunlevelUp($i);
+                                $this->emitter->emit(sprintf('enter.runlevel.%s', $this->runlevelToString($i)), $this->getNamingDirectory());
                             }
 
                             // set the new runlevel
                             $actualRunlevel = $this->runlevel;
 
                         } elseif ($actualRunlevel > $this->runlevel) {
-
                             // switch down to the requested runlevel
                             for ($i = $actualRunlevel; $i >= $this->runlevel; $i--) {
-                                $this->doSwitchRunlevelDown($i);
+                                $this->doStopServices($i);
+                                $this->emitter->emit(sprintf('leave.runlevel.%s', $this->runlevelToString($i)), $this->getNamingDirectory());
                             }
 
                             // set the new runlevel
@@ -507,7 +431,7 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
                         } else {
 
                             // print a message and wait
-                            $this->log("Switched to runlevel $actualRunlevel!!!");
+                            $this->getNamingDirectory()->search('php:global/log/System')->info(sprintf('Switched to runlevel %s!!!', $actualRunlevel));
 
                             // signal that we've finished switching the runlevels and wait
                             $this->locked = false;
@@ -540,7 +464,7 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
                     default:
 
                         // print a message and wait
-                        $this->log('Can\'t find any command!!!');
+                         $this->getNamingDirectory()->search('php:global/log/System')->info('Can\'t find any command!!!');
 
                         // singal that we've finished setting umask and wait
                         $this->locked = false;
@@ -554,10 +478,64 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
                 }
 
             } catch (\Exception $e) {
-                $this->log($e->getMessage());
+                $this->getNamingDirectory()->search('php:global/log/System')->error($e->getMessage());
             }
 
         } while ($keepRunning);
+    }
+
+    /**
+     * Returns the service for the passed runlevel and name.
+     *
+     * @param integer $runlevel The runlevel of the requested service
+     * @param string  $name     The name of the requested service
+     */
+    public function getService($runlevel, $name)
+    {
+        return $this->services[$runlevel][$name];
+    }
+
+    /**
+     * Unbind the service with the passed name and runlevel.
+     *
+     * @param integer $runlevel The runlevel of the service
+     * @param string  $name     The name of the service
+     *
+     * @return void
+     */
+    public function unbindService($runlevel, $name)
+    {
+
+        // stop the service instance
+        $this->services[$runlevel][$name]->stop();
+
+        // unset the service instance
+        unset($this->services[$runlevel][$name]);
+
+        // print a message that the service has been stopped
+        $this->getNamingDirectory()->search('php:global/log/System')->error(sprintf('Successfully stopped service %s', $name));
+    }
+
+    /**
+     * Binds the passed service to the runlevel.
+     *
+     * @param integer $runlevel The runlevel to bound the service to
+     * @param object  $service  The service to bound
+     *
+     * @return void
+     */
+    public function bindService($runlevel, $service)
+    {
+
+        // bind the service to the runlevel
+        $this->services[$runlevel][$service->getName()] = $service;
+
+        // bind the service callback to the naming directory
+        $this->getNamingDirectory()->bindCallback(
+            sprintf('php:services/%s/%s', $this->runlevelToString($runlevel), $service->getName()),
+            array($this, 'getService'),
+            array($runlevel, $service->getName())
+        );
     }
 
     /**
@@ -571,360 +549,8 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
     {
         // iterate over all services and stop them
         foreach ($this->services[$runlevel] as $name => $service) {
-            // stop the service instance
-            $this->services[$runlevel][$name]->stop();
-
-            // unset the service instance
-            unset($this->services[$runlevel][$name]);
-
-            // print a message that the service has been stopped
-            $this->log("Successfully stopped service $name");
+            $this->unbindService($unlevel, $name);
         }
-    }
-
-    public function getService($runlevel, $name)
-    {
-        return $this->services[$runlevel][$name];
-    }
-
-    public function unbindService($runlevel, $name)
-    {
-
-        // stop the service instance
-        $this->services[$runlevel][$name]->stop();
-
-        // unset the service instance
-        unset($this->services[$runlevel][$name]);
-    }
-
-    public function bindService($runlevel, $service)
-    {
-
-        $this->services[$runlevel][$service->getName()] = $service;
-
-        $runlevels = array_flip(ApplicationServer::$runlevels);
-
-        $this->getNamingDirectory()->bindCallback(
-            sprintf('php:services/%s/%s', $this->runlevelToString($runlevel), $service->getName()),
-            array($this, 'getService'),
-            array($runlevel, $service->getName())
-        );
-    }
-
-    /**
-     * This is main method to switch between the runlevels.
-     *
-     * @param integer $actualRunlevel The runlevel the application server actual has
-     *
-     * @return void
-     *
-     * @throws \Exception Is thrown if an unknown runlevel has been requested
-     */
-    protected function doSwitchRunlevelUp($actualRunlevel)
-    {
-
-        // query the new runlevel
-        switch ($actualRunlevel) {
-
-            case ApplicationServerInterface::SHUTDOWN:
-
-                // bootstrap the application server
-                $this->doBootstrap();
-
-                break;
-
-            case ApplicationServerInterface::ADMINISTRATION:
-
-                $this->emitter->emit('enter.runlevel.administration', $this->getNamingDirectory());
-
-                break;
-
-            case ApplicationServerInterface::DAEMON:
-
-                break;
-
-            case ApplicationServerInterface::NETWORK:
-
-                $this->emitter->emit('enter.runlevel.network', $this->getNamingDirectory());
-
-                break;
-
-            case ApplicationServerInterface::SECURE:
-
-                // switch the user and group
-                $this->doSwitchUser($this->getSystemConfiguration()->getUser(), $this->getSystemConfiguration()->getGroup());
-
-                break;
-
-            case ApplicationServerInterface::FULL:
-
-                $this->emitter->emit('enter.runlevel.full', $this->getNamingDirectory());
-
-                break;
-
-            case ApplicationServerInterface::REBOOT:
-
-                break;
-
-            default:
-                throw new \Exception("Invalid runlevel $actualRunlevel requested");
-                break;
-        }
-    }
-
-    /**
-     * This is main method to switch between the runlevels.
-     *
-     * @param integer $actualRunlevel The runlevel the application server actual has
-     *
-     * @return void
-     *
-     * @throws \Exception Is thrown if an unknown runlevel has been requested
-     */
-    protected function doSwitchRunlevelDown($actualRunlevel)
-    {
-
-        // stop all services for this runlevel
-        $this->doStopServices($actualRunlevel + 1);
-
-        // query the new runlevel
-        switch ($actualRunlevel) {
-
-            case ApplicationServerInterface::SHUTDOWN:
-
-                break;
-
-            case ApplicationServerInterface::ADMINISTRATION:
-
-                $this->emitter->emit('leave.runlevel.administration', $this->getNamingDirectory());
-
-                break;
-
-            case ApplicationServerInterface::DAEMON:
-
-                break;
-
-            case ApplicationServerInterface::NETWORK:
-
-                $this->emitter->emit('leave.runlevel.network', $this->getNamingDirectory());
-
-                break;
-
-            case ApplicationServerInterface::SECURE:
-
-                $this->doSwitchUser('root', 'root');
-
-                break;
-
-            case ApplicationServerInterface::FULL:
-
-                $this->emitter->emit('leave.runlevel.full', $this->getNamingDirectory());
-
-                break;
-
-            case ApplicationServerInterface::REBOOT:
-
-                break;
-
-            default:
-                throw new \Exception("Invalid runlevel $actualRunlevel requested");
-                break;
-        }
-    }
-
-    /**
-     * Switch user and group to the passed values.
-     *
-     * @param string $user  The user to switch to
-     * @param string $group The group to switch to
-     *
-     * @return void
-     */
-    protected function doSwitchUser($user, $group = null)
-    {
-
-        // print a message with the old UID/EUID
-        $this->log("Running as " . posix_getuid() . "/" . posix_geteuid());
-
-        // extract the variables
-        $uid = 0;
-        extract(posix_getpwnam($user));
-
-        // switcht the effective UID to the passed user
-        if (posix_seteuid($uid) === false) {
-            $this->log(sprintf('Can\'t switch UID to \'%s\'', $uid));
-        }
-
-        // print a message with the new UID/EUID
-        $this->log("Running as " . posix_getuid() . "/" . posix_geteuid());
-    }
-
-    /**
-     * Loads the system configuration from passed configuration file.
-     *
-     * @param string $filename The path and name of the file to load the configuration for
-     *
-     * @throws \Exception Is thrown if the configuration can't be parsed
-     */
-    protected function doLoadConfiguration($filename)
-    {
-
-        try {
-
-            // initialize configuration and schema file name
-            $configurationFileName = DirectoryKeys::realpath($filename);
-
-            // initialize the DOMDocument with the configuration file to be validated
-            $configurationFile = new \DOMDocument();
-            $configurationFile->load($configurationFileName);
-
-            // substitute xincludes
-            $configurationFile->xinclude(LIBXML_SCHEMA_CREATE);
-
-            // create a DOMElement with the base.dir configuration
-            $paramElement = $configurationFile->createElement('param', APPSERVER_BP);
-            $paramElement->setAttribute('name', DirectoryKeys::BASE);
-            $paramElement->setAttribute('type', ParamNode::TYPE_STRING);
-
-            // create an XPath instance
-            $xpath = new \DOMXpath($configurationFile);
-            $xpath->registerNamespace('a', 'http://www.appserver.io/appserver');
-
-            // for node data in a selected id
-            $baseDirParam = $xpath->query(sprintf('/a:appserver/a:params/a:param[@name="%s"]', DirectoryKeys::BASE));
-            if ($baseDirParam->length === 0) {
-
-                // load the <params> node
-                $paramNodes = $xpath->query('/a:appserver/a:params');
-
-                // load the first item => the node itself
-                if ($paramsNode = $paramNodes->item(0)) {
-                    // append the base.dir DOMElement
-                    $paramsNode->appendChild($paramElement);
-                } else {
-                    // throw an exception, because we can't find a mandatory node
-                    throw new \Exception('Can\'t find /appserver/params node');
-                }
-            }
-
-            // create a new DOMDocument with the merge content => necessary because else, schema validation fails!!
-            $mergeDoc = new \DOMDocument();
-            $mergeDoc->loadXML($configurationFile->saveXML());
-
-            // get an instance of our configuration tester
-            $configurationService = new ConfigurationService(new InitialContext(new AppserverNode()));
-
-            // validate the configuration file with the schema
-            if ($configurationService->validateXml($mergeDoc) === false) {
-                error_log(print_r($configurationService->getErrorMessages(), true));
-                throw new \Exception('Can\'t parse configuration file');
-            }
-
-            // initialize the SimpleXMLElement with the content XML configuration file
-            $configuration = new Configuration();
-            $configuration->initFromString($mergeDoc->saveXML());
-
-            // initialize the configuration and the base directory
-            $systemConfiguration = new AppserverNode();
-            $systemConfiguration->initFromConfiguration($configuration);
-            $this->setSystemConfiguration($systemConfiguration);
-
-        } catch (\Exception $e) {
-            error_log($e->__toString());
-        }
-    }
-
-    /**
-     * Loads the initial context instance defined in the passed
-     * system configuration.
-     *
-     * @param \AppserverIo\Appserver\Core\Interfaces\SystemConfigurationInterface $systemConfiguration The system configuration with the loggers
-     *
-     * @return void
-     */
-    protected function doLoadInitialContext(SystemConfigurationInterface $systemConfiguration)
-    {
-
-        // load the initial context configuration
-        $initialContextNode = $systemConfiguration->getInitialContext();
-        $reflectionClass = new \ReflectionClass($initialContextNode->getType());
-        $initialContext = $reflectionClass->newInstanceArgs(array($this->getSystemConfiguration()));
-
-        // attach the registered loggers to the initial context
-        $initialContext->setLoggers($this->getLoggers());
-        $initialContext->setSystemLogger($this->getSystemLogger());
-
-        // set the initial context and flush it initially
-        $this->setInitialContext($initialContext);
-    }
-
-    /**
-     * Initialize all loggers.
-     *
-     * @param \AppserverIo\Appserver\Core\Interfaces\SystemConfigurationInterface $systemConfiguration The system configuration
-     *
-     * @return void
-     */
-    protected function doLoadLoggers(SystemConfigurationInterface $systemConfiguration)
-    {
-
-        // initialize the loggers
-        $loggers = array();
-        foreach ($systemConfiguration->getLoggers() as $loggerNode) {
-            $loggers[$loggerNode->getName()] = LoggerFactory::factory($loggerNode);
-        }
-
-        // register the loggers in the naming directory
-        foreach ($loggers as $name => $logger) {
-            $this->namingDirectory->bind(sprintf('php:global/log/%s', $name), $logger);
-        }
-
-        // set the initialized loggers finally
-        $this->setLoggers($loggers);
-    }
-
-    /**
-     * Switches the umask to the passed value.
-     *
-     * @param integer $newUmask The umask to set
-     *
-     * @return void
-     */
-    protected function doSwitchUmask($newUmask)
-    {
-        // load the service instance and switch the umask
-        /** @var \AppserverIo\Appserver\Core\Api\DeploymentService $service */
-        $service = $this->newService('AppserverIo\Appserver\Core\Api\DeploymentService');
-        $service->initUmask($newUmask);
-    }
-
-    /**
-     * Creates a new SSL certificate on first system start.
-     *
-     * @param string $certificateName The name of the certificate to be generated, e. g. server.pem
-     *
-     * @return void
-     */
-    protected function doCreateSslCertificate($certificateName = 'server.pem')
-    {
-        // load the service instance and create the SSL file if not available
-        /** @var \AppserverIo\Appserver\Core\Api\ContainerService $service */
-        $service = $this->newService('AppserverIo\Appserver\Core\Api\ContainerService');
-        $service->createSslCertificate(new \SplFileInfo($service->getConfDir($certificateName)));
-    }
-
-    /**
-     * Prepares filesystem to be sure that everything is on place as expected
-     *
-     * @return void
-     * @throws \Exception Is thrown if a server directory can't be created
-     */
-    protected function doPrepareFileSystem()
-    {
-        // load the service instance and prepare the filesystem
-        /** @var \AppserverIo\Appserver\Core\Api\ContainerService $service */
-        $service = $this->newService('AppserverIo\Appserver\Core\Api\ContainerService');
-        $service->prepareFileSystem();
     }
 
     /**
