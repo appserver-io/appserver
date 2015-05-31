@@ -26,12 +26,14 @@ The context can be defined as the runtime environment of a thread. This includes
 For example, if you declare a constant like
 
 ```php
+<?php
 define('SERVER_AUTOLOADER', 'vendor/autoloader.php');
 ```
 
 it is possible to use this constant in a threads `run()` method
 
 ```php
+<?php
 /**
  * A very simple thread that loads and registers an autoloader in the threads main method.
  */
@@ -69,6 +71,7 @@ In some cases, this will be desired, but it is necessary to keep in mind, that c
 As there are possibilities for fatal errors to occur while processing a request, it is necessary to shutdown the thread in a controlled manner. Therefore, using PHP's `register_shutdown_function` allows a developer to catch fatal errors inside the thread's/context's `run()` method to implement a controlled shutdown.
 
 ```php
+<?php
 /**
  * A very simple thread that registers a shutdown function and an
  * exception handler to catch uncaught exceptions.
