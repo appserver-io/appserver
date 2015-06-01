@@ -25,6 +25,7 @@ use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Psr\Naming\NamingDirectoryInterface;
 use AppserverIo\Appserver\Core\Commands\ModeCommand;
 use AppserverIo\Appserver\Core\Commands\InitCommand;
+use AppserverIo\Appserver\Core\Api\Node\BootstrapNode;
 use AppserverIo\Appserver\Core\Listeners\ApplicationServerAwareListenerInterface;
 use AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface;
 use AppserverIo\Appserver\Core\Interfaces\SystemConfigurationInterface;
@@ -59,41 +60,20 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
     );
 
     /**
-     * Temporary array with event => listener mapping (has to be replaced with a XML configuration).
-     *
-     * @var array
-     */
-    public static $listeners = array(
-        array('enter.runlevel.shutdown',       'AppserverIo\Appserver\Core\Listeners\LoadConfigurationListener'),
-        array('enter.runlevel.shutdown',       'AppserverIo\Appserver\Core\Listeners\LoadLoggersListener'),
-        array('enter.runlevel.shutdown',       'AppserverIo\Appserver\Core\Listeners\LoadInitialContextListener'),
-        array('enter.runlevel.shutdown',       'AppserverIo\Appserver\Core\Listeners\SwitchUmaskListener'),
-        array('enter.runlevel.shutdown',       'AppserverIo\Appserver\Core\Listeners\SwitchSetupModeListener'),
-        array('enter.runlevel.shutdown',       'AppserverIo\Appserver\Core\Listeners\PrepareFileSystemListener'),
-        array('enter.runlevel.shutdown',       'AppserverIo\Appserver\Core\Listeners\CreateSslCertificateListener'),
-        array('enter.runlevel.network',        'AppserverIo\Appserver\Core\Listeners\StartContainersListener'),
-        array('enter.runlevel.secure',         'AppserverIo\Appserver\Core\Listeners\SwitchUserListener'),
-        array('leave.runlevel.secure',         'AppserverIo\Appserver\Core\Listeners\SwitchRootListener'),
-        array('enter.runlevel.full',           'AppserverIo\Appserver\Core\Listeners\ExtractArchivesListener'),
-        array('enter.runlevel.full',           'AppserverIo\Appserver\Core\Listeners\DeployApplicationsListener'),
-        array('enter.runlevel.administration', 'AppserverIo\Appserver\Core\Listeners\StartConsolesListener')
-    );
-
-    /**
      * Initialize and start the application server.
      *
      * @param \AppserverIo\Psr\Naming\NamingDirectoryInterface $configurationFilename The default naming directory
-     * @param \AppserverIo\Storage\GenericStackable            $services              The storage for the services
+     * @param \AppserverIo\Storage\GenericStackable            $runlevels             The storage for the services
      */
-    public function __construct(NamingDirectoryInterface $namingDirectory, GenericStackable $services)
+    public function __construct(NamingDirectoryInterface $namingDirectory, GenericStackable $runlevels)
     {
 
         // set the services and the naming directory
-        $this->services = $services;
+        $this->runlevels = $runlevels;
         $this->namingDirectory = $namingDirectory;
 
         // initialize the default runlevel
-        $this->runlevel = ApplicationServerInterface::FULL;
+        $this->runlevel = ApplicationServerInterface::ADMINISTRATION;
 
         // set to TRUE, because we switch to runlevel 1 immediately
         $this->locked = false;
@@ -119,6 +99,27 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
         $runlevels = array_flip(ApplicationServer::$runlevels);
         if (isset($runlevels[$runlevel])) {
             return $runlevels[$runlevel];
+        }
+
+        // throw an exception if the runlevel is unknown
+        throw new \Exception(sprintf('Request invalid runlevel to string conversion for %s', $runlevel));
+    }
+
+    /**
+     * Translates and returns the runlevel of the passed a string representation.
+     *
+     * @param string $runlevel The string representation of the runlevel to return
+     *
+     * @return integer The runlevel of the passed string representation
+     *
+     * @throws \Exception Is thrown if the passed string representation is not a valid runlevel
+     */
+    public function runlevelFromString($runlevel)
+    {
+
+        // query whether the passed string representation is a valid runlevel
+        if (isset(ApplicationServer::$runlevels[$runlevel])) {
+            return ApplicationServer::$runlevels[$runlevel];
         }
 
         // throw an exception if the runlevel is unknown
@@ -217,6 +218,16 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
     public function getConfigurationFilename()
     {
         return $this->getNamingDirectory()->search('php:env/configurationFilename');
+    }
+
+    /**
+     * Returns the name and the path of the bootstrap configuration file.
+     *
+     * @return string
+     */
+    public function getBootstrapConfigurationFilename()
+    {
+        return $this->getNamingDirectory()->search('php:env/bootstrapConfigurationFilename');
     }
 
     /**
@@ -345,11 +356,18 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
         // create the service emitter
         $emitter = new Emitter();
 
-        foreach (ApplicationServer::$listeners as $listener) {
-            // extract even name and listener class name
-            list ($event, $listenerClassName) = $listener;
+        // load the bootstrap configuration
+        /** @var \AppserverIo\Appserver\Core\Api\Node\BootstrapNodeInterface $bootstrapNode */
+        $bootstrapNode = $this->doLoadBootstrap($this->getBootstrapConfigurationFilename());
+
+        // iterate over the listeners and add them to the emitter
+        /** @var \AppserverIo\Appserver\Core\Api\Node\ListenerNodeInterface $listener */
+        foreach ($bootstrapNode->getListeners() as $listener) {
+            // load the listener class name
+            $listenerClassName = $listener->getType();
 
             // create a new instance of the listener class
+            /** @var \League\Event\ListenerInterface $listenerInstance */
             $listenerInstance = new $listenerClassName();
 
             // query whether we've to inject the application server instance or not
@@ -358,11 +376,14 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
             }
 
             // add the listeners
-            $emitter->addListener($event, $listenerInstance);
+            $emitter->addListener($listener->getEvent(), $listenerInstance);
         }
 
         // synchronize the emitter
         $this->emitter = $emitter;
+
+        // override the default runlevel with the value found in the bootstrap configuration
+        $this->runlevel = $this->runlevelFromString($bootstrapNode->getDefaultRunlevel());
 
         // flag to keep the server running or to stop it
         $keepRunning = true;
@@ -390,7 +411,7 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
 
                             // shutdown the application server
                             for ($i = $actualRunlevel; $i >= ApplicationServerInterface::SHUTDOWN; $i--) {
-                                $this->doStopServices($i);
+                                $this->doStopServices($i + 1);
                                 $this->emitter->emit(sprintf('leave.runlevel.%s', $this->runlevelToString($i)), $this->getNamingDirectory());
                             }
 
@@ -421,7 +442,7 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
                         } elseif ($actualRunlevel > $this->runlevel) {
                             // switch down to the requested runlevel
                             for ($i = $actualRunlevel; $i >= $this->runlevel; $i--) {
-                                $this->doStopServices($i);
+                                $this->doStopServices($i + 1);
                                 $this->emitter->emit(sprintf('leave.runlevel.%s', $this->runlevelToString($i)), $this->getNamingDirectory());
                             }
 
@@ -492,7 +513,7 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
      */
     public function getService($runlevel, $name)
     {
-        return $this->services[$runlevel][$name];
+        return $this->runlevels[$runlevel][$name];
     }
 
     /**
@@ -507,10 +528,10 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
     {
 
         // stop the service instance
-        $this->services[$runlevel][$name]->stop();
+        $this->runlevels[$runlevel][$name]->stop();
 
         // unset the service instance
-        unset($this->services[$runlevel][$name]);
+        unset($this->runlevels[$runlevel][$name]);
 
         // print a message that the service has been stopped
         $this->getNamingDirectory()->search('php:global/log/System')->error(sprintf('Successfully stopped service %s', $name));
@@ -528,7 +549,7 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
     {
 
         // bind the service to the runlevel
-        $this->services[$runlevel][$service->getName()] = $service;
+        $this->runlevels[$runlevel][$service->getName()] = $service;
 
         // bind the service callback to the naming directory
         $this->getNamingDirectory()->bindCallback(
@@ -536,6 +557,22 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
             array($this, 'getService'),
             array($runlevel, $service->getName())
         );
+    }
+
+    /**
+     * Loads the bootstrap configuration from the XML file.
+     *
+     * @return \AppserverIo\Appserver\Core\Api\Node\BootstrapNode The boostrap configuration
+     */
+    protected function doLoadBootstrap($bootstrapConfigurationFilename)
+    {
+
+        // initialize the bootstrap configuration
+        $bootstrapNode = new BootstrapNode();
+        $bootstrapNode->initFromFile($bootstrapConfigurationFilename);
+
+        // return the bootstrap configuration
+        return $bootstrapNode;
     }
 
     /**
@@ -548,8 +585,8 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
     protected function doStopServices($runlevel)
     {
         // iterate over all services and stop them
-        foreach ($this->services[$runlevel] as $name => $service) {
-            $this->unbindService($unlevel, $name);
+        foreach ($this->runlevels[$runlevel] as $name => $service) {
+            $this->unbindService($runlevel, $name);
         }
     }
 

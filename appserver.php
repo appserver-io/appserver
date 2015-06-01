@@ -25,6 +25,7 @@ namespace AppserverIo\Appserver\Core;
 
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Appserver\Naming\NamingDirectory;
+use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
 
 declare (ticks = 1);
 
@@ -76,20 +77,26 @@ $namingDirectory->createSubdirectory('php:global');
 $namingDirectory->createSubdirectory('php:global/log');
 $namingDirectory->createSubdirectory('php:services');
 
+// create the default subdirectories
 foreach (array_keys(ApplicationServer::$runlevels) as $runlevel) {
     $namingDirectory->createSubdirectory(sprintf('php:services/%s', $runlevel));
 }
 
-$namingDirectory->bind('php:env/configurationFilename', $filename);
+// set the path to the default configuration filenames
+$namingDirectory->bind('php:env/configurationFilename', DirectoryKeys::realpath($filename));
+$namingDirectory->bind(
+    'php:env/bootstrapConfigurationFilename',
+    DirectoryKeys::realpath(sprintf('%s/etc/appserver/conf.d/bootstrap.xml', APPSERVER_BP))
+);
 
-$services = new GenericStackable();
 // add the storeage containers for the runlevels
+$runlevels = new GenericStackable();
 foreach (ApplicationServer::$runlevels as $runlevel) {
-    $services[$runlevel] = new GenericStackable();
+    $runlevels[$runlevel] = new GenericStackable();
 }
 
 // initialize and start the application server
-$applicationServer = new ApplicationServer($namingDirectory, $services);
+$applicationServer = new ApplicationServer($namingDirectory, $runlevels);
 $applicationServer->start();
 
 // we've to wait for shutdown
