@@ -152,6 +152,18 @@ class ContainerStateKeys
     }
 
     /**
+     * Returns TRUE if the passed container state NOT equals the actual one, else FALSE.
+     *
+     * @param \AppserverIo\Appserver\Core\Utilities\ContainerStateKeys $containerState The container state to check NOT to be equal
+     *
+     * @return boolean TRUE if NOT equal, else FALSE
+     */
+    public function notEquals(ContainerStateKeys $containerState)
+    {
+        return $this->containerState !== $containerState->getContainerState();
+    }
+
+    /**
      * Returns TRUE if the passed container state equals the actual one, else FALSE.
      *
      * @param \AppserverIo\Appserver\Core\Utilities\ContainerStateKeys $containerState The container state to check

@@ -26,6 +26,8 @@
             type="AppserverIo\Appserver\Core\Listeners\ExtractArchivesListener" />
         <listener event="enter.runlevel.full" priority="0"
             type="AppserverIo\Appserver\Core\Listeners\DeployApplicationsListener" />
+        <listener event="leave.runlevel.full" priority="0"
+            type="AppserverIo\Appserver\Core\Listeners\ShutdownApplicationsListener" />
         <listener event="enter.runlevel.administration" priority="0"
             type="AppserverIo\Appserver\Core\Listeners\StartConsolesListener" />
     </listeners>

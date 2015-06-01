@@ -50,14 +50,15 @@ use AppserverIo\Appserver\Application\Interfaces\ContextInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  *
- * @property \AppserverIo\Storage\StorageInterface                          $data            Application's data storage
- * @property \AppserverIo\Storage\GenericStackable                          $classLoaders    Stackable holding all class loaders this application has registered
- * @property \AppserverIo\Appserver\Application\Interfaces\ContextInterface $initialContext  The initial context instance
- * @property \AppserverIo\Storage\GenericStackable                          $managers        Stackable of managers for this application
- * @property string                                                         $name            Name of the application
- * @property \AppserverIo\Psr\Naming\NamingDirectoryInterface               $namingDirectory The naming directory instance
- * @property \AppserverIo\Psr\Naming\NamingDirectoryInterface               $envAppDir       A reference to the application specific environment naming directory instance
- * @property string                                                         $scheme          The scheme specific to this application
+ * @property \AppserverIo\Appserver\Application\ApplicationStateKeys        $applicationState The application state
+ * @property \AppserverIo\Storage\StorageInterface                          $data             Application's data storage
+ * @property \AppserverIo\Storage\GenericStackable                          $classLoaders     Stackable holding all class loaders this application has registered
+ * @property \AppserverIo\Appserver\Application\Interfaces\ContextInterface $initialContext   The initial context instance
+ * @property \AppserverIo\Storage\GenericStackable                          $managers         Stackable of managers for this application
+ * @property string                                                         $name             Name of the application
+ * @property \AppserverIo\Psr\Naming\NamingDirectoryInterface               $namingDirectory  The naming directory instance
+ * @property \AppserverIo\Psr\Naming\NamingDirectoryInterface               $envAppDir        A reference to the application specific environment naming directory instance
+ * @property string                                                         $scheme           The scheme specific to this application
  */
 class Application extends \Thread implements ApplicationInterface, NamingDirectoryInterface, DirectoryAwareInterface, FilesystemAwareInterface
 {
@@ -73,15 +74,6 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
      * @var integer
      */
     const TIME_TO_LIVE = 1;
-
-    /**
-     * Initializes the application context.
-     */
-    public function __construct()
-    {
-        $this->run = false;
-        $this->connected = false;
-    }
 
     /**
      * Returns the value with the passed name from the context.
@@ -578,13 +570,12 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
         // register the applications temporary directory in the naming directory
         $envDir = $namingDirectory->search('php:env');
 
-        // ATTENTION: This is necessary to avoid segfaults, resulting out of loosing the
-        //            reference to the naming directory which is a \Stackable instance!
-        $this->envAppDir = $envDir->createSubdirectory($applicationName);
-        $this->envAppDir->bind('webappPath', $webappPath);
-        $this->envAppDir->bind('tmpDirectory', $tmpDirectory);
-        $this->envAppDir->bind('cacheDirectory', $cacheDirectory);
-        $this->envAppDir->bind('sessionDirectory', $sessionDirectory);
+        // prepare the application specific environment variables
+        $envDir->createSubdirectory($applicationName);
+        $envDir->bind(sprintf('%s/webappPath', $applicationName), $webappPath);
+        $envDir->bind(sprintf('%s/tmpDirectory', $applicationName), $tmpDirectory);
+        $envDir->bind(sprintf('%s/cacheDirectory', $applicationName), $cacheDirectory);
+        $envDir->bind(sprintf('%s/sessionDirectory', $applicationName), $sessionDirectory);
     }
 
     /**
@@ -607,7 +598,9 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
      */
     public function isConnected()
     {
-        return $this->connected;
+        return $this->synchronized(function ($self) {
+            return $self->applicationState->equals(ApplicationStateKeys::get(ApplicationStateKeys::INITIALIZATION_SUCCESSFUL));
+        }, $this);
     }
 
     /**
@@ -690,13 +683,33 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
     }
 
     /**
-     * Stops the application.
+     * Stops the application instance.
      *
      * @return void
      */
     public function stop()
     {
-        $this->run = false;
+
+        // start application shutdown
+        $this->synchronized(function ($self) {
+            $self->applicationState = ApplicationStateKeys::get(ApplicationStateKeys::HALT);
+        }, $this);
+
+        do {
+            // log a message that we'll wait till application has been shutdown
+            $this->getInitialContext()->getSystemLogger()->info(
+                sprintf('Wait for application %s to be shutdown', $this->getName())
+            );
+
+            // query whether application state key is SHUTDOWN or not
+            $waitForShutdown = $this->synchronized(function ($self) {
+                return $self->applicationState->notEquals(ApplicationStateKeys::get(ApplicationStateKeys::SHUTDOWN));
+            }, $this);
+
+            // wait one second more
+            sleep(1);
+
+        } while ($waitForShutdown);
     }
 
     /**
@@ -709,60 +722,88 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
     public function run()
     {
 
-        // register the default autoloader
-        require SERVER_AUTOLOADER;
+        try {
+            // register the default autoloader
+            require SERVER_AUTOLOADER;
 
-        // register shutdown handler
-        register_shutdown_function(array(&$this, "shutdown"));
+            // register shutdown handler
+            register_shutdown_function(array(&$this, "shutdown"));
 
-        // we want to start working now
-        $this->run = true;
+            // log a message that we now start to connect the application
+            $this->getInitialContext()->getSystemLogger()->debug(sprintf('%s wait to be connected', $this->getName()));
 
-        // log a message that we now start to connect the application
-        $this->getInitialContext()->getSystemLogger()->debug(sprintf('%s wait to be connected', $this->getName()));
+            // create the applications 'env' + 'env/persistence' directory the beans + persistence units will be bound to
+            $appEnvDir = $this->createSubdirectory('env');
+            $appEnvPersistenceDir = $appEnvDir->createSubdirectory('persistence');
 
-        // create the applications 'env' + 'env/persistence' directory the beans + persistence units will be bound to
-        $appEnvDir = $this->createSubdirectory('env');
-        $appEnvPersistenceDir = $appEnvDir->createSubdirectory('persistence');
+            // bind the interface as reference to the application
+            $appEnvDir->bindReference('ApplicationInterface', sprintf('php:global/%s', $this->getName()));
 
-        // bind the interface as reference to the application
-        $appEnvDir->bindReference('ApplicationInterface', sprintf('php:global/%s', $this->getName()));
+            // register the class loaders
+            $this->registerClassLoaders();
 
-        // register the class loaders
-        $this->registerClassLoaders();
+            // initialize the managers
+            $this->initializeManagers();
 
-        // initialize the managers
-        $this->initializeManagers();
+            // provision the application
+            $this->provision();
 
-        // provision the application
-        $this->provision();
-
-        // initialize the profile logger and the thread context
-        $profileLogger = null;
-        if ($profileLogger = $this->getInitialContext()->getLogger(LoggerUtils::PROFILE)) {
-            $profileLogger->appendThreadContext('application');
-        }
-
-        // we're connected now
-        $this->connected = true;
-
-        // log a message that we has successfully been connected now
-        $this->getInitialContext()->getSystemLogger()->info(sprintf('%s has successfully been connected', $this->getName()));
-
-        // log the naming directory
-        $this->getInitialContext()->getSystemLogger()->debug($this->__toString());
-
-        // we do nothing here
-        while ($this->run) {
-            // wait a second to lower system load
-            $this->synchronized(function ($self) {
-                $self->wait(1000000 * Application::TIME_TO_LIVE);
-            }, $this);
-            // if we've a profile logger, log resource usage
-            if ($profileLogger) {
-                // profile the application context
-                $profileLogger->debug(sprintf('Application %s is running', $this->getName()));
+            // initialize the profile logger and the thread context
+            $profileLogger = null;
+            if ($profileLogger = $this->getInitialContext()->getLogger(LoggerUtils::PROFILE)) {
+                $profileLogger->appendThreadContext('application');
             }
+
+            // log a message that we has successfully been connected now
+            $this->getInitialContext()->getSystemLogger()->info(sprintf('%s has successfully been connected', $this->getName()));
+
+            // log the naming directory
+            $this->getInitialContext()->getSystemLogger()->debug($this->__toString());
+
+            // the application has successfully been initialized
+            $this->synchronized(function ($self) {
+                $self->applicationState = ApplicationStateKeys::get(ApplicationStateKeys::INITIALIZATION_SUCCESSFUL);
+            }, $this);
+
+            // initialize the flag to keep the application running
+            $keepRunning = true;
+
+            // wait till application will be shutdown
+            while ($keepRunning) {
+
+                // query whether we've a profile logger, log resource usage
+                if ($profileLogger) {
+                    $profileLogger->debug(sprintf('Application %s is running', $this->getName()));
+                }
+
+                // wait a second to lower system load
+                $keepRunning = $this->synchronized(function ($self) {
+                    $self->wait(1000000 * Application::TIME_TO_LIVE);
+                    return $self->applicationState->equals(ApplicationStateKeys::get(ApplicationStateKeys::INITIALIZATION_SUCCESSFUL));
+                }, $this);
+            }
+
+            // log a message that we has successfully been shutdown now
+            $this->getInitialContext()->getSystemLogger()->info(sprintf('%s start to shutdown managers', $this->getName()));
+
+            // we need to stop all managers, because they've probably running threads
+            /** @var \AppserverIo\Psr\Application\ManagerInterface $manager */
+            foreach ($this->getManagers() as $manager) {
+                $this->getInitialContext()->getSystemLogger()->info(
+                    sprintf('Found manager %s in application %s to shutdown', $manager->getIdentifier(), $this->getName())
+                );
+            }
+
+            // the application has been shutdown successfully
+            $this->synchronized(function ($self) {
+                $self->applicationState = ApplicationStateKeys::get(ApplicationStateKeys::SHUTDOWN);
+            }, $this);
+
+            // log a message that we has successfully been shutdown now
+            $this->getInitialContext()->getSystemLogger()->info(sprintf('%s has successfully been shutdown', $this->getName()));
+
+        } catch (\Exception $e) {
+            $this->getInitialContext()->getSystemLogger()->error($e->__toString());
         }
     }
 

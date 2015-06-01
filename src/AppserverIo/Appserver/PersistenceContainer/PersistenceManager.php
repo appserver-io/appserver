@@ -196,6 +196,6 @@ class PersistenceManager extends AbstractManager implements PersistenceContextIn
      */
     public function getIdentifier()
     {
-        return EntityManagerInterface::IDENTIFIER;
+        return PersistenceContextInterface::IDENTIFIER;
     }
 }

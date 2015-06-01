@@ -48,6 +48,13 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
 {
 
     /**
+     * The time we wait after each loop.
+     *
+     * @var integer
+     */
+    const TIME_TO_LIVE = 1;
+
+    /**
      * The container node information.
      *
      * @var \AppserverIo\Appserver\Core\Api\Node\ContainerNode
@@ -230,28 +237,39 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
             $waitForServers = false;
         }
 
-        // the servers has been started and we wait for the servers to finish work now
-        $this->containerState = ContainerStateKeys::get(ContainerStateKeys::SERVERS_STARTED_SUCCESSFUL);
+        // the container has successfully been initialized
+        $this->synchronized(function ($self) {
+            $self->containerState = ContainerStateKeys::get(ContainerStateKeys::INITIALIZATION_SUCCESSFUL);
+        }, $this);
 
-        // wait for shutdown signal
-        while ($this->containerState->equals(ContainerStateKeys::get(ContainerStateKeys::SERVERS_STARTED_SUCCESSFUL))) {
+        // initialize the flag to keep the application running
+        $keepRunning = true;
 
-            // profile the worker shutdown beeing processed
+        // wait till container will be shutdown
+        while ($keepRunning) {
+
+            // query whether we've a profile logger, log resource usage
             if ($profileLogger) {
                 $profileLogger->debug(sprintf('Container %s still waiting for shutdown', $this->getContainerNode()->getName()));
             }
 
-            // wait a second
-            sleep(1);
+            // wait a second to lower system load
+            $keepRunning = $this->synchronized(function ($self) {
+                $self->wait(1000000 * AbstractContainerThread::TIME_TO_LIVE);
+                return $self->containerState->equals(ContainerStateKeys::get(ContainerStateKeys::INITIALIZATION_SUCCESSFUL));
+            }, $this);
         }
 
-        // stop all servers
+        // we need to stop all servers before we can shutdown the container
+        /** @var \AppserverIo\Server\Interfaces\ServerInterface $server */
         foreach ($servers as $server) {
             $server->stop();
         }
 
         // mark the container as successfully shutdown
-        $this->containerState = ContainerStateKeys::get(ContainerStateKeys::SHUTDOWN);
+        $this->synchronized(function ($self) {
+            $self->containerState = ContainerStateKeys::get(ContainerStateKeys::SHUTDOWN);
+        }, $this);
 
         // send log message that the container has been shutdown
         $this->getInitialContext()->getSystemLogger()->info(
@@ -445,15 +463,27 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
      */
     public function stop()
     {
+
+        // start container shutdown
         $this->synchronized(function ($self) {
             $self->containerState = ContainerStateKeys::get(ContainerStateKeys::HALT);
-            while (!$self->containerState->equals(ContainerStateKeys::get(ContainerStateKeys::SHUTDOWN))) {
-                $this->getInitialContext()->getSystemLogger()->info(
-                    sprintf('Wait till container %s has been shutdown', $this->getContainerNode()->getName())
-                );
-                sleep(1);
-            }
         }, $this);
+
+        do {
+            // log a message that we'll wait till application has been shutdown
+            $this->getInitialContext()->getSystemLogger()->info(
+                sprintf('Wait for container %s to be shutdown', $this->getContainerNode()->getName())
+            );
+
+            // query whether application state key is SHUTDOWN or not
+            $waitForShutdown = $this->synchronized(function ($self) {
+                return $self->containerState->notEquals(ContainerStateKeys::get(ContainerStateKeys::SHUTDOWN));
+            }, $this);
+
+            // wait one second more
+            sleep(1);
+
+        } while ($waitForShutdown);
     }
 
     /**
