@@ -20,13 +20,13 @@
 
 namespace AppserverIo\Appserver\Core;
 
+use Psr\Log\LogLevel;
+use AppserverIo\Appserver\Core\Utilities\EnumState;
+
 /**
- * An abstraction layer for Threads
+ * An abstraction implementation for daemon threads.
  *
- * The major change vs. a normal Thread is that you have to use a main() method instead of a run() method.
- * You can use init() method to get and process args passed in constructor.
- *
- * @author    Johann Zelger <jz@appserver.io>
+ * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
@@ -36,13 +36,6 @@ abstract class AbstractDaemonThread extends \Thread
 {
 
     /**
-     * The default timeout to wait inside the daemon's while() loop.
-     *
-     * @var integer
-     */
-    const TIME_TO_LIVE = 1000000;
-
-    /**
      * The name of the daemon's default shutdown method.
      *
      * @var string
@@ -50,20 +43,46 @@ abstract class AbstractDaemonThread extends \Thread
     const DEFAULT_SHUTDOWN_METHOD = 'defaultShutdown';
 
     /**
-     * The thread implementation main method which will be called from run in abstractness
+     * The default timeout to wait inside the daemon's while() loop.
      *
-     * @return void
+     * @var integer
      */
-    abstract public function main();
+    const DEFAULT_TIMEOUT = 1000000;
 
     /**
-     * The thread implementation main method which will be called from run in abstractness
+     * The default timeout to re-check state during shutdown process.
+     *
+     * @var integer
+     */
+    const DEFAULT_SHUTDOWN_TIMEOUT = 500000;
+
+    /**
+     * The default format for log messages.
+     *
+     * @var string
+     */
+    const LOG_FORMAT = '[%s] - %s (%s): %s [%s]';
+
+    /**
+     * This method will be invoked before the while() loop starts and can be used
+     * to implement some bootstrap functionality.
      *
      * @return void
      */
-    public function cleanup()
+    public function bootstrap()
     {
-        // do nothing, we've nothing to cleanup
+        // override this to implement functionality that has to be executed before the while() loop starts.
+    }
+
+    /**
+     * This method will be invoked, after the while() loop has been finished and
+     * can be used to implement clean up functionality.
+     *
+     * @return void
+     */
+    public function cleanUp()
+    {
+        // override this to implement functionality that has to be executed after the while() loop finished.
     }
 
     /**
@@ -74,26 +93,32 @@ abstract class AbstractDaemonThread extends \Thread
     public function stop()
     {
 
-        // start daemon shutdown
+        // log a message that we're waiting for shutdown
+        $this->log(LogLevel::INFO, sprintf('Now start to shutdown daemon %s', get_class($this)));
+
+        // load the default timeout to wait for daemon shutdown
+        $shutdownTimeout = $this->getDefaultShutdownTimeout();
+
+        // start shutdown process
         $this->synchronized(function ($self) {
-            $self->applicationState = ApplicationStateKeys::get(ApplicationStateKeys::HALT);
+            $self->state = EnumState::get(EnumState::HALT);
         }, $this);
 
         do {
-            // log a message that we'll wait till application has been shutdown
-            $this->getInitialContext()->getSystemLogger()->info(
-                sprintf('Wait for application %s to be shutdown', $this->getName())
-            );
 
-            // query whether application state key is SHUTDOWN or not
-            $waitForShutdown = $this->synchronized(function ($self) {
-                return $self->applicationState->notEquals(ApplicationStateKeys::get(ApplicationStateKeys::SHUTDOWN));
-            }, $this);
+            // log a message that we're waiting for shutdown
+            $this->log(LogLevel::INFO, sprintf('Wait for shutdown daemon %s', get_class($this)));
 
-            // wait one second more
-            sleep(1);
+            // query whether state key is SHUTDOWN or not
+            $waitForShutdown = $this->state->notEquals(EnumState::get(EnumState::SHUTDOWN));
+
+            // sleep and wait for successfull daemon shutdown
+            $this->sleep($shutdownTimeout);
 
         } while ($waitForShutdown);
+
+        // log a message that we're waiting for shutdown
+        $this->log(LogLevel::INFO, sprintf('Successfully shutdown daemon %s', get_class($this)));
     }
 
     /**
@@ -101,21 +126,33 @@ abstract class AbstractDaemonThread extends \Thread
      *
      * @return boolean TRUE to keep the daemon running, else FALSE
      */
-    protected function keepRunning()
+    public function keepRunning()
     {
-        return true;
+        return $this->state->equals(EnumState::get(EnumState::RUNNING));
     }
 
     /**
      * This is invoked on every iteration of the daemons while() loop.
      *
-     * @param integer $timeout The default timeout is 1 second
+     * @param integer $timeout The timeout before the daemon wakes up
      *
      * @return void
      */
-    protected function iterate($timeout = AbstractDaemonThread::TIME_TO_LIVE)
+    public function iterate($timeout)
     {
         $this->sleep($timeout);
+    }
+
+    /**
+     * Let the daemon sleep for the passed value of miroseconds.
+     *
+     * @param integer $timeout The number of microseconds to sleep
+     *
+     * @return void
+     */
+    public function sleep($timeout)
+    {
+        usleep($timeout);
     }
 
     /**
@@ -134,29 +171,54 @@ abstract class AbstractDaemonThread extends \Thread
             // register shutdown handler
             register_shutdown_function($this->getDefaultShutdownMethod());
 
-            $this->main();
+            // bootstrap the daemon
+            $this->bootstrap();
 
+            // mark the daemon as successfully shutdown
+            $this->synchronized(function ($self) {
+                $self->state = EnumState::get(EnumState::RUNNING);
+            }, $this);
+
+            // keep the daemon running
             while ($this->keepRunning()) {
-                $this->iterate();
+                $this->iterate($this->getDefaultTimeout());
             }
 
-            $this->cleanup();
+            // clean up the instances and free memory
+            $this->cleanUp();
+
+            // mark the daemon as successfully shutdown
+            $this->synchronized(function ($self) {
+                $self->state = EnumState::get(EnumState::SHUTDOWN);
+            }, $this);
 
         } catch (\Exception $e) {
-            $this->logError($e->__toString());
+            $this->log(LogLevel::ERROR, $e->__toString());
         }
     }
 
     /**
-     * Default method to log errors.
+     * This is a very basic method to log some stuff by using the error_log() method of PHP.
      *
-     * @param string $message The message to log
+     * @param mixed  $level   The log level to use
+     * @param string $message The message we want to log
+     * @param array  $context The context we of the message
      *
      * @return void
      */
-    protected function logError($message)
+    public function log($level, $message, array $context = array())
     {
-        error_log($message);
+        error_log(sprintf($this->getDefaultLogFormat(), date('Y-m-d H:i:s'), gethostname(), $level, $message, json_encode($context)));
+    }
+
+    /**
+     * Returns the default timeout.
+     *
+     * @return integer The default timeout in microseconds
+     */
+    public function getDefaultTimeout()
+    {
+        return AbstractDaemonThread::DEFAULT_TIMEOUT;
     }
 
     /**
@@ -164,9 +226,29 @@ abstract class AbstractDaemonThread extends \Thread
      *
      * @return callable The daemon's default shutdown method
      */
-    protected function getDefaultShutdownMethod()
+    public function getDefaultShutdownMethod()
     {
         return array(&$this, AbstractDaemonThread::DEFAULT_SHUTDOWN_METHOD);
+    }
+
+    /**
+     * Returns the default shutdown timeout.
+     *
+     * @return integer The default shutdown timeout in microseconds
+     */
+    public function getDefaultShutdownTimeout()
+    {
+        return AbstractDaemonThread::DEFAULT_SHUTDOWN_TIMEOUT;
+    }
+
+    /**
+     * Returns the default format for log messages.
+     *
+     * @return string The default log message format
+     */
+    public function getDefaultLogFormat()
+    {
+        return AbstractDaemonThread::LOG_FORMAT;
     }
 
     /**
@@ -184,7 +266,7 @@ abstract class AbstractDaemonThread extends \Thread
             extract($lastError);
             // query whether we've a fatal/user error
             if ($type === E_ERROR || $type === E_USER_ERROR) {
-                $this->logError($message);
+                $this->log(LogLevel::ERROR, $message);
             }
         }
     }

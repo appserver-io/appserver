@@ -332,4 +332,25 @@ class QueueManager extends AbstractManager implements QueueContextInterface
     {
         return QueueContextInterface::IDENTIFIER;
     }
+
+    /**
+     * Shutdown the session manager instance.
+     *
+     * @return void
+     * \AppserverIo\Psr\Application\ManagerInterface::stop()
+     */
+    public function stop()
+    {
+
+        $queueKeys = get_object_vars($this->getQueues());
+
+        // iterate over the queues and shut them down
+        /** @var AppserverIo\Psr\Pms\QueueInterface $queue */
+        foreach ($queueKeys as $queueKey => $queue) {
+
+            error_log("Now stop queue with key $queueKey");
+
+            $queue->stop();
+        }
+    }
 }

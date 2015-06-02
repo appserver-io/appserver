@@ -23,6 +23,7 @@ namespace AppserverIo\Appserver\ServletEngine;
 use AppserverIo\Logger\LoggerUtils;
 use AppserverIo\Appserver\ServletEngine\Http\Session;
 use AppserverIo\Psr\Servlet\ServletSessionInterface;
+use AppserverIo\Appserver\Core\AbstractDaemonThread;
 
 /**
  * A thread which pre-initializes session instances and adds them to the
@@ -42,15 +43,8 @@ use AppserverIo\Psr\Servlet\ServletSessionInterface;
  * @property \AppserverIo\Storage\GenericStackable $sessionPool      The session pool
  * @property string|null                           $uniqueId         Unique session id
  */
-class SessionFactory extends \Thread
+class SessionFactory extends AbstractDaemonThread
 {
-
-    /**
-     * The time we wait after each loop.
-     *
-     * @var integer
-     */
-    const TIME_TO_LIVE = 1;
 
     /**
      * Key for invocation of method 'removeBySessionId()'.
@@ -75,11 +69,9 @@ class SessionFactory extends \Thread
     {
 
         // initialize the members
-        $this->run = true;
-        $this->sessionAvailable = false;
-
-        $this->uniqueId = null;
         $this->action = null;
+        $this->uniqueId = null;
+        $this->sessionAvailable = false;
 
         // set the session pool storage
         $this->sessionPool = $sessionPool;
@@ -95,18 +87,6 @@ class SessionFactory extends \Thread
     public function injectLoggers(array $loggers)
     {
         $this->loggers = $loggers;
-    }
-
-    /**
-     * Stops the session factory.
-     *
-     * @return void
-     */
-    public function stop()
-    {
-        $this->synchronized(function (SessionFactory $self) {
-            $self->run = false;
-        }, $this);
     }
 
     /**
@@ -170,68 +150,95 @@ class SessionFactory extends \Thread
     }
 
     /**
-     * This is the main factory method that creates the new
-     * session instances and adds them to the session pool.
+     * Let the daemon sleep for the passed value of miroseconds.
+     *
+     * @param integer $timeout The number of microseconds to sleep
      *
      * @return void
      */
-    public function run()
+    public function sleep($timeout)
+    {
+        $this->synchronized(function ($self) use ($timeout) {
+            $self->wait($timeout);
+        }, $this);
+    }
+
+    /**
+     * This method will be invoked before the while() loop starts and can be used
+     * to implement some bootstrap functionality.
+     *
+     * @return void
+     */
+    public function bootstrap()
     {
 
         // setup autoloader
         require SERVER_AUTOLOADER;
 
         // try to load the profile logger
-        $profileLogger = null;
         if (isset($this->loggers[LoggerUtils::PROFILE])) {
-            $profileLogger = $this->loggers[LoggerUtils::PROFILE];
-            $profileLogger->appendThreadContext('session-factory');
+            $this->profileLogger = $this->loggers[LoggerUtils::PROFILE];
+            $this->profileLogger->appendThreadContext('session-factory');
         }
+    }
 
-        // while we should create threads, to it
-        while ($this->run) {
-            $this->synchronized(function ($self) {
+    /**
+     * This is invoked on every iteration of the daemons while() loop.
+     *
+     * @param integer $timeout The timeout before the daemon wakes up
+     *
+     * @return void
+     */
+    public function iterate($timeout)
+    {
 
-                // wait until we receive a notification for a method invocation
-                $self->wait(1000000 * SessionFactory::TIME_TO_LIVE);
+        // call parent method and sleep for the default timeout
+        parent::iterate($timeout);
 
-                switch ($self->action) { // check the method we want to invoke
+        // create sessions and add them to the pool
+        $this->synchronized(function ($self) {
+            // check the method we want to invoke
+            switch ($self->action) {
 
-                    case SessionFactory::ACTION_NEXT_FROM_POOL: // we want to create a new session instance
+                // we want to create a new session instance
+                case SessionFactory::ACTION_NEXT_FROM_POOL:
 
-                        $self->uniqueId = uniqid();
-                        $self->sessionPool->set($self->uniqueId, Session::emptyInstance());
-                        $self->sessionAvailable = true;
+                    $self->uniqueId = uniqid();
+                    $self->sessionPool->set($self->uniqueId, Session::emptyInstance());
+                    $self->sessionAvailable = true;
 
-                        // send a notification that method invocation has been processed
-                        $self->notify();
+                    // send a notification that method invocation has been processed
+                    $self->notify();
 
-                        break;
+                    break;
 
-                    case SessionFactory::ACTION_REMOVE_BY_SESSION_ID: // we want to remove a session instance from the pool
+                // we want to remove a session instance from the pool
+                case SessionFactory::ACTION_REMOVE_BY_SESSION_ID:
 
-                        foreach ($self->sessionPool as $uniqueId => $session) {
-                            if ($session instanceof ServletSessionInterface && $session->getId() === $self->sessionId) {
-                                $self->sessionPool->remove($uniqueId);
-                            }
+                    foreach ($self->sessionPool as $uniqueId => $session) {
+                        if ($session instanceof ServletSessionInterface && $session->getId() === $self->sessionId) {
+                            $self->sessionPool->remove($uniqueId);
                         }
+                    }
 
-                        break;
+                    break;
 
-                    default: // do nothing, because we've an unknown action
+                // do nothing, because we've an unknown action
+                default:
 
-                        break;
-                }
-
-                // reset the action
-                $self->action = null;
-
-            }, $this);
-
-            if ($profileLogger) {
-                // profile the size of the session pool
-                $profileLogger->debug(sprintf('Size of session pool is: %d', sizeof($this->sessionPool)));
+                    break;
             }
+
+            // reset the action
+            $self->action = null;
+
+        }, $this);
+
+        // profile the size of the sessions
+        if ($this->profileLogger) {
+            $this->profileLogger->debug(
+                sprintf('Size of session pool is: %d', sizeof($this->sessionPool))
+            );
         }
     }
 }
