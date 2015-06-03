@@ -181,7 +181,11 @@ abstract class AbstractDaemonThread extends \Thread
 
             // keep the daemon running
             while ($this->keepRunning()) {
-                $this->iterate($this->getDefaultTimeout());
+                try {
+                    $this->iterate($this->getDefaultTimeout());
+                } catch (\Exception $e) {
+                    $this->log(LogLevel::ERROR, $e->__toString());
+                }
             }
 
             // clean up the instances and free memory

@@ -144,6 +144,18 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface
     }
 
     /**
+     * Injects the garbage collector.
+     *
+     * @param \AppserverIo\Appserver\PersistenceContainer\StandardGarbageCollector $garbageCollector The garbage collector
+     *
+     * @return void
+     */
+    public function injectGarbageCollector(StandardGarbageCollector $garbageCollector)
+    {
+        $this->garbageCollector = $garbageCollector;
+    }
+
+    /**
      * Has been automatically invoked by the container after the application
      * instance has been created.
      *
@@ -356,6 +368,16 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface
     }
 
     /**
+     * Returns the garbage collector instance.
+     *
+     * @return \AppserverIo\Appserver\PersistenceContainer\StandardGarbageCollector The garbage collector instance
+     */
+    public function getGarbageCollector()
+    {
+        return $this->garbageCollector;
+    }
+
+    /**
      * Runs a lookup for the session bean with the passed class name and
      * session ID.
      *
@@ -558,5 +580,18 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface
     public function getIdentifier()
     {
         return BeanContextInterface::IDENTIFIER;
+    }
+
+    /**
+     * Shutdown the session manager instance.
+     *
+     * @return void
+     * \AppserverIo\Psr\Application\ManagerInterface::stop()
+     */
+    public function stop()
+    {
+        $this->getGarbageCollector()->stop();
+        $this->getStatefulSessionBeanMapFactory()->stop();
+        $this->getObjectFactory()->stop();
     }
 }

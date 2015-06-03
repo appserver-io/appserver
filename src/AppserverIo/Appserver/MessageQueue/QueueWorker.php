@@ -45,7 +45,6 @@ use AppserverIo\Appserver\Core\Utilities\EnumState;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  *
- * @property boolean                                           $run           Flag to start/stop the worker
  * @property \AppserverIo\Psr\Application\ApplicationInterface $application   The application instance with the queue manager/locator
  * @property \AppserverIo\Storage\GenericStackable             $jobsToExecute The storage for the jobs to be executed
  * @property \AppserverIo\Storage\GenericStackable             $messages      The storage for the messages
@@ -177,7 +176,7 @@ class QueueWorker extends AbstractDaemonThread
      * @return integer The default timeout in microseconds
      * @see \AppserverIo\Appserver\Core\AbstractDaemonThread::getDefaultTimeout()
      */
-    public function getDefaultTimeout()
+    public function getQueueTimeout()
     {
         return pow(10, $this->priorityKey->getPriority() * 2);
     }
@@ -349,8 +348,11 @@ class QueueWorker extends AbstractDaemonThread
                     }
 
                     // reduce CPU load depending on queue priority
-                    $this->iterate($this->getDefaultTimeout());
+                    $this->iterate($this->getQueueTimeout());
                 }
+
+                // reduce CPU load after each iteration
+                $this->iterate($this->getDefaultTimeout());
 
                 // profile the size of the session pool
                 if ($this->profileLogger) {

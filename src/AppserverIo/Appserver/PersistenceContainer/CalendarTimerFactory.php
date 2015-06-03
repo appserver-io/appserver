@@ -21,10 +21,12 @@
 namespace AppserverIo\Appserver\PersistenceContainer;
 
 use Rhumsaa\Uuid\Uuid;
+use AppserverIo\Logger\LoggerUtils;
 use AppserverIo\Lang\Reflection\MethodInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Psr\EnterpriseBeans\ScheduleExpression;
 use AppserverIo\Psr\EnterpriseBeans\TimerServiceInterface;
+use AppserverIo\Appserver\Core\AbstractDaemonThread;
 use AppserverIo\Appserver\PersistenceContainer\Utils\TimerState;
 
 /**
@@ -39,12 +41,12 @@ use AppserverIo\Appserver\PersistenceContainer\Utils\TimerState;
  * @property \AppserverIo\Psr\Application\ApplicationInterface                $application   The application instance
  * @property \Serializable                                                    $info          The serializable info passed to the timer
  * @property boolean                                                          $persistent    TRUE if we want to create a persistent timer, else FALSE
- * @property $schedule
+ * @property \AppserverIo\Psr\EnterpriseBeans\ScheduleExpression              $schedule      The scheduled expression containing the calendar timer data
  * @property \AppserverIo\Appserver\PersistenceContainer\CalendarTimerBuilder $timer         The timer instance to be created
  * @property \AppserverIo\Lang\Reflection\MethodInterface                     $timeoutMethod The timeout method instance
  * @property \AppserverIo\Psr\EnterpriseBeans\TimerServiceInterface           $timerService  The timer service
  */
-class CalendarTimerFactory extends \Thread implements CalendarTimerFactoryInterface
+class CalendarTimerFactory extends AbstractDaemonThread implements CalendarTimerFactoryInterface
 {
 
     /**
@@ -52,9 +54,7 @@ class CalendarTimerFactory extends \Thread implements CalendarTimerFactoryInterf
      */
     public function __construct()
     {
-
-        // initialize the member variables
-        $this->dispatched = false;
+        $this->dispatched = true;
         $this->mutex = \Mutex::create();
     }
 
@@ -99,41 +99,23 @@ class CalendarTimerFactory extends \Thread implements CalendarTimerFactoryInterf
         // lock the method
         \Mutex::lock($this->mutex);
 
-        do {
-            // create a counter
-            $counter = 0;
+        // we're not dispatched
+        $this->dispatched = false;
 
-            // if this is the first loop
-            if ($counter === 0) {
-                // we're not dispatched
-                $this->dispatched = false;
+        // initialize the data
+        $this->info = $info;
+        $this->schedule = $schedule;
+        $this->persistent = $persistent;
+        $this->timerService = $timerService;
+        $this->timeoutMethod = $timeoutMethod;
 
-                // initialize the data
-                $this->info = $info;
-                $this->schedule = $schedule;
-                $this->persistent = $persistent;
-                $this->timerService = $timerService;
-                $this->timeoutMethod = $timeoutMethod;
+        // notify the thread
+        $this->notify();
 
-                // notify the thread
-                $this->synchronized(function ($self) {
-                    $self->notify();
-                }, $this);
-
-            }
-
-            // raise the counter
-            $counter++;
-
-            // we wait for 100 iterations
-            if ($counter > 100) {
-                throw new \Exception('Can\'t create timer');
-            }
-
-            // lower system load a bit
+        // wait till we've dispatched the request
+        while ($this->dispatched === false) {
             usleep(100);
-
-        } while ($this->dispatched === false);
+        }
 
         // unlock the method
         \Mutex::unlock($this->mutex);
@@ -143,78 +125,106 @@ class CalendarTimerFactory extends \Thread implements CalendarTimerFactoryInterf
     }
 
     /**
-     * Invoked when the thread starts.
+     * This method will be invoked before the while() loop starts and can be used
+     * to implement some bootstrap functionality.
      *
      * @return void
-     * @see Stackable::run()
      */
-    public function run()
+    public function bootstrap()
     {
 
-        // register the default autoloader
+        // setup autoloader
         require SERVER_AUTOLOADER;
-
-        // register shutdown handler
-        register_shutdown_function(array(&$this, "shutdown"));
 
         // make the application available and register the class loaders
         $application = $this->getApplication();
         $application->registerClassLoaders();
 
-        // run forever
-        while (true) {
-            // wait until we've been notified
-            $this->synchronized(function (CalendarTimerFactory $self) {
-                $self->wait();
-            }, $this);
-
-            // create the timer
-            $this->timer = CalendarTimer::builder()
-                ->setAutoTimer($this->timeoutMethod != null)
-                ->setScheduleExprSecond($this->schedule->getSecond())
-                ->setScheduleExprMinute($this->schedule->getMinute())
-                ->setScheduleExprHour($this->schedule->getHour())
-                ->setScheduleExprDayOfWeek($this->schedule->getDayOfWeek())
-                ->setScheduleExprDayOfMonth($this->schedule->getDayOfMonth())
-                ->setScheduleExprMonth($this->schedule->getMonth())
-                ->setScheduleExprYear($this->schedule->getYear())
-                ->setScheduleExprStartDate($this->schedule->getStart())
-                ->setScheduleExprEndDate($this->schedule->getEnd())
-                ->setScheduleExprTimezone($this->schedule->getTimezone())
-                ->setTimeoutMethod($this->timeoutMethod)
-                ->setTimerState(TimerState::CREATED)
-                ->setId(Uuid::uuid4()->__toString())
-                ->setPersistent($this->persistent)
-                ->setTimedObjectId($this->timerService->getTimedObjectInvoker()->getTimedObjectId())
-                ->setInfo($this->info)
-                ->setNewTimer(true)
-                ->build($this->timerService);
-
-            // we're dispatched now
-            $this->dispatched = true;
+        // try to load the profile logger
+        if (isset($this->loggers[LoggerUtils::PROFILE])) {
+            $this->profileLogger = $this->loggers[LoggerUtils::PROFILE];
+            $this->profileLogger->appendThreadContext('calendar-timer-factory');
         }
     }
 
     /**
-     * Shutdown function to log unexpected errors.
+     * This is invoked on every iteration of the daemons while() loop.
+     *
+     * @param integer $timeout The timeout before the daemon wakes up
      *
      * @return void
-     * @see http://php.net/register_shutdown_function
      */
-    public function shutdown()
+    public function iterate($timeout)
     {
 
-        // check if there was a fatal error caused shutdown
-        if ($lastError = error_get_last()) {
-            // initialize error type and message
-            $type = 0;
-            $message = '';
-            // extract the last error values
-            extract($lastError);
-            // query whether we've a fatal/user error
-            if ($type === E_ERROR || $type === E_USER_ERROR) {
-                $this->getApplication()->getInitialContext()->getSystemLogger()->critical($message);
+        // call parent method and sleep for the default timeout
+        parent::iterate($timeout);
+
+        // create the requested timer instance
+        $this->synchronized(function ($self) {
+
+            // create the calendar timer, only if we're NOT dispatched
+            if ($self->dispatched === false) {
+                $self->timer = CalendarTimer::builder()
+                    ->setAutoTimer($self->timeoutMethod != null)
+                    ->setScheduleExprSecond($self->schedule->getSecond())
+                    ->setScheduleExprMinute($self->schedule->getMinute())
+                    ->setScheduleExprHour($self->schedule->getHour())
+                    ->setScheduleExprDayOfWeek($self->schedule->getDayOfWeek())
+                    ->setScheduleExprDayOfMonth($self->schedule->getDayOfMonth())
+                    ->setScheduleExprMonth($self->schedule->getMonth())
+                    ->setScheduleExprYear($self->schedule->getYear())
+                    ->setScheduleExprStartDate($self->schedule->getStart())
+                    ->setScheduleExprEndDate($self->schedule->getEnd())
+                    ->setScheduleExprTimezone($self->schedule->getTimezone())
+                    ->setTimeoutMethod($self->timeoutMethod)
+                    ->setTimerState(TimerState::CREATED)
+                    ->setId(Uuid::uuid4()->__toString())
+                    ->setPersistent($self->persistent)
+                    ->setTimedObjectId($self->timerService->getTimedObjectInvoker()->getTimedObjectId())
+                    ->setInfo($self->info)
+                    ->setNewTimer(true)
+                    ->build($self->timerService);
+
+                // we're dispatched now
+                $self->dispatched = true;
             }
+
+        }, $this);
+
+        // profile the size of the sessions
+        if ($this->profileLogger) {
+            $this->profileLogger->debug(
+                sprintf('Size of session pool is: %d', sizeof($this->sessionPool))
+            );
         }
+    }
+
+    /**
+     * Let the daemon sleep for the passed value of miroseconds.
+     *
+     * @param integer $timeout The number of microseconds to sleep
+     *
+     * @return void
+     */
+    public function sleep($timeout)
+    {
+        $this->synchronized(function ($self) use ($timeout) {
+            $self->wait($timeout);
+        }, $this);
+    }
+
+    /**
+     * This is a very basic method to log some stuff by using the error_log() method of PHP.
+     *
+     * @param mixed  $level   The log level to use
+     * @param string $message The message we want to log
+     * @param array  $context The context we of the message
+     *
+     * @return void
+     */
+    public function log($level, $message, array $context = array())
+    {
+        $this->getApplication()->getInitialContext()->getSystemLogger()->log($level, $message, $context);
     }
 }

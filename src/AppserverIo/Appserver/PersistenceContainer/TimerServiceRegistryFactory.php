@@ -79,9 +79,9 @@ class TimerServiceRegistryFactory implements ManagerFactoryInterface
         $serviceRegistry = new TimerServiceRegistry();
         $serviceRegistry->injectData($data);
         $serviceRegistry->injectServices($services);
+        $serviceRegistry->injectApplication($application);
         $serviceRegistry->injectTimerFactory($timerFactory);
         $serviceRegistry->injectServiceLocator($serviceLocator);
-        $serviceRegistry->injectWebappPath($application->getWebappPath());
         $serviceRegistry->injectCalendarTimerFactory($calendarTimerFactory);
         $serviceRegistry->injectTimerServiceExecutor($timerServiceExecutor);
 
