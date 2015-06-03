@@ -411,8 +411,8 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
 
                             // shutdown the application server
                             for ($i = $actualRunlevel; $i >= ApplicationServerInterface::SHUTDOWN; $i--) {
-                                $this->doStopServices($i + 1);
                                 $this->emitter->emit(sprintf('leave.runlevel.%s', $this->runlevelToString($i)), $this->getNamingDirectory());
+                                $this->doStopServices($i + 1);
                             }
 
                             // switch back to the runlevel we backed up before
@@ -442,8 +442,8 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
                         } elseif ($actualRunlevel > $this->runlevel) {
                             // switch down to the requested runlevel
                             for ($i = $actualRunlevel; $i >= $this->runlevel; $i--) {
-                                $this->doStopServices($i + 1);
                                 $this->emitter->emit(sprintf('leave.runlevel.%s', $this->runlevelToString($i)), $this->getNamingDirectory());
+                                $this->doStopServices($i + 1);
                             }
 
                             // set the new runlevel
@@ -530,6 +530,9 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
         // stop the service instance
         $this->runlevels[$runlevel][$name]->stop();
 
+        // unbind the service from the naming directory
+        // $this->getNamingDirectory()->unbind(sprintf('php:services/%s/%s', $this->runlevelToString($runlevel), $name));
+
         // unset the service instance
         unset($this->runlevels[$runlevel][$name]);
 
@@ -557,6 +560,18 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
             array($this, 'getService'),
             array($runlevel, $service->getName())
         );
+    }
+
+    /**
+     * Stops all services of the passed runlevel.
+     *
+     * @param integer $runlevel The runlevel to stop all services for
+     *
+     * @return void
+     */
+    public function stopServices($runlevel)
+    {
+        $this->doStopServices($runlevel);
     }
 
     /**

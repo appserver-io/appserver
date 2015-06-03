@@ -175,6 +175,20 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
     }
 
     /**
+     * Removes the attribute with the passed key.
+     *
+     * @param string $key The key of the attribute to remove
+     *
+     * @return void
+     */
+    public function removeAttribute($key)
+    {
+        $data = $this->data;
+        unset($data[$key]);
+        $this->data = $data;
+    }
+
+    /**
      * Create and return a new naming subdirectory with the attributes
      * of this one.
      *

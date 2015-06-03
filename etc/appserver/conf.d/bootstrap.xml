@@ -2,6 +2,10 @@
 <bootstrap xmlns="http://www.appserver.io/appserver"
     defaultRunlevel="administration">
     <listeners>
+    
+        <listener event="leave.runlevel.shutdown" priority="0"
+            type="AppserverIo\Appserver\Core\Listeners\StopServicesListener"/>
+    
         <listener event="enter.runlevel.shutdown" priority="0"
             type="AppserverIo\Appserver\Core\Listeners\LoadConfigurationListener" />
         <listener event="enter.runlevel.shutdown" priority="0"

@@ -118,6 +118,56 @@ trait BindingTrait
     }
 
     /**
+     * Unbinds the named object.
+     *
+     * @param string $name The name of the object to unbind
+     *
+     * @return void
+     */
+    public function unbind($name)
+    {
+        // delegate the search request to the parent directory
+        if (strpos($name, sprintf('%s:', $this->getScheme())) === 0 && $this->getParent()) {
+            return $this->findRoot()->search($name, $args);
+        }
+
+        // strip off the schema
+        $name = str_replace(sprintf('%s:', $this->getScheme()), '', $name);
+
+        // tokenize the name
+        $token = strtok($name, '/');
+
+        // while we've tokens, try to find a value bound to the token
+        while ($token !== false) {
+            // check if we can find something
+            if ($this->hasAttribute($token)) {
+                // load the value
+                $found = $this->getAttribute($token);
+
+                // load the binded value/args
+                list ($value, $bindArgs) = $found;
+
+                // search recursive
+                if ($value instanceof NamingDirectoryInterface) {
+                    if ($value->getName() !== $name) {
+                        // if $value is NOT what we're searching for
+                        return $value->unbind(str_replace($token . '/', '', $name), $args);
+                    }
+                }
+
+                // if not, simply remove the value/object
+                $this->removeAttribute($token);
+            }
+
+            // load the next token
+            $token = strtok('/');
+        }
+
+        // throw an exception if we can't unbind the name
+        throw new NamingException(sprintf('Cant\'t unbind %s from naming directory %s', ltrim($name, '/'), $this->getIdentifier()));
+    }
+
+    /**
      * Queries the naming directory for the requested name and returns the value
      * or invokes the bound callback.
      *

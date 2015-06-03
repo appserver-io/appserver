@@ -54,7 +54,7 @@ abstract class AbstractDaemonThread extends \Thread
      *
      * @var integer
      */
-    const DEFAULT_SHUTDOWN_TIMEOUT = 500000;
+    const DEFAULT_SHUTDOWN_TIMEOUT = 50000;
 
     /**
      * The default format for log messages.

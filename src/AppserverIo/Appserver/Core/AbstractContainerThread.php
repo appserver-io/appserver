@@ -470,6 +470,9 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
         }, $this);
 
         do {
+            // wait for 0.5 seconds
+            usleep(500000);
+
             // log a message that we'll wait till application has been shutdown
             $this->getInitialContext()->getSystemLogger()->info(
                 sprintf('Wait for container %s to be shutdown', $this->getContainerNode()->getName())
@@ -479,9 +482,6 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
             $waitForShutdown = $this->synchronized(function ($self) {
                 return $self->containerState->notEquals(ContainerStateKeys::get(ContainerStateKeys::SHUTDOWN));
             }, $this);
-
-            // wait one second more
-            sleep(1);
 
         } while ($waitForShutdown);
     }
