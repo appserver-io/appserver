@@ -6,6 +6,11 @@
 /target
 /instance-src
 /vendor
+/webapps
+/deploy/example.phar
+/deploy/example.phar.deployed
+/var/log
+/var/tmp/example
 /build.properties
 /composer.lock
 /composer.phar
@@ -16,7 +21,7 @@
 /bin
 /sbin
 /etc/appserver/appserver.xml
-/etc/appserver/.is-installed
+/etc/appserver/conf.d/.is-installed
 /etc/appserver/server.pem
 /var/tmp/opcache-blacklist.txt
 /webapps/index.html

@@ -25,7 +25,7 @@ use AppserverIo\Appserver\Core\LoggerFactory;
 use AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface;
 
 /**
- * Listener that unloads the system logger instances.
+ * Listener that stops all services for the runlevel passed to the handle() method.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -46,23 +46,10 @@ class StopServicesListener extends AbstractSystemListener
      */
     public function handle(EventInterface $event)
     {
-
         try {
-
-
-            // write a log message that the event has been invoked
-            $this->getApplicationServer()->getNamingDirectory()->search('php:global/log/System')->info($event->getName());
-
-            // error_log(print_r(func_get_args(), true));
-
-            /*
-            // load the application server, naming directory and system configuration instance
-            $applicationServer = $this->getApplicationServer();
-            $applicationServer->stopServices($runlevel);
-            */
-
+            $this->getApplicationServer()->getSystemLogger()->info($event->getName());
         } catch (\Exception $e) {
-             $this->getApplicationServer()->getNamingDirectory()->search('php:global/log/System')->error($e->__toString());
+             $this->getApplicationServer()->getSystemLogger()->error($e->__toString());
         }
     }
 }

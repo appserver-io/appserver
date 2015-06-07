@@ -23,6 +23,7 @@ namespace AppserverIo\Appserver\Core\Listeners;
 use League\Event\EventInterface;
 use AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface;
 use AppserverIo\Appserver\Core\LoggerFactory;
+use AppserverIo\Psr\Naming\NamingException;
 
 /**
  * Listener that loads and initializes the system logger instances.
@@ -59,16 +60,16 @@ class LoadLoggersListener extends AbstractSystemListener
                 $loggers[$loggerNode->getName()] = LoggerFactory::factory($loggerNode);
             }
 
-            // register the loggers in the naming directory
+            // register the logger callbacks in the naming directory
             foreach ($loggers as $name => $logger) {
-                $namingDirectory->bind(sprintf('php:global/log/%s', $name), $logger);
+                $namingDirectory->bindCallback(sprintf('php:global/log/%s', $name), array($applicationServer, 'getLogger'), array($name));
             }
 
             // set the initialized loggers finally
             $applicationServer->setLoggers($loggers);
 
         } catch (\Exception $e) {
-            $namingDirectory->search('php:global/log/System')->error($e->__toString());
+            $applicationServer->getSystemLogger()->error($e->__toString());
         }
     }
 }

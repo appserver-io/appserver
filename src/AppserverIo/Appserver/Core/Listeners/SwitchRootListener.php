@@ -52,10 +52,10 @@ class SwitchRootListener extends AbstractSystemListener
             $namingDirectory = $applicationServer->getNamingDirectory();
 
             // write a log message that the event has been invoked
-            $namingDirectory->search('php:global/log/System')->info($event->getName());
+            $applicationServer->getSystemLogger()->info($event->getName());
 
             // print a message with the old UID/EUID
-            $namingDirectory->search('php:global/log/System')->info("Running as " . posix_getuid() . "/" . posix_geteuid());
+            $applicationServer->getSystemLogger()->info("Running as " . posix_getuid() . "/" . posix_geteuid());
 
             // extract the variables
             $uid = 0;
@@ -63,16 +63,16 @@ class SwitchRootListener extends AbstractSystemListener
 
             // switcht the effective UID to the passed user
             if (posix_seteuid($uid) === false) {
-                $namingDirectory->search('php:global/log/System')->error(sprintf('Can\'t switch UID to \'%s\'', $uid));
+                $applicationServer->getSystemLogger()->error(sprintf('Can\'t switch UID to \'%s\'', $uid));
             }
 
             // print a message with the new UID/EUID
-            $namingDirectory->search('php:global/log/System')->info("Running as " . posix_getuid() . "/" . posix_geteuid());
+            $applicationServer->getSystemLogger()->info("Running as " . posix_getuid() . "/" . posix_geteuid());
 
             // @TODO Switch group also!!!!
 
         } catch (\Exception $e) {
-            $namingDirectory->search('php:global/log/System')->error($e->__toString());
+            $applicationServer->getSystemLogger()->error($e->__toString());
         }
     }
 }

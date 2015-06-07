@@ -52,7 +52,7 @@ class StartConsolesListener extends AbstractSystemListener
             $namingDirectory = $applicationServer->getNamingDirectory();
 
             // write a log message that the event has been invoked
-            $namingDirectory->search('php:global/log/System')->info($event->getName());
+            $applicationServer->getSystemLogger()->info($event->getName());
 
             // and initialize a console for each node found in the configuration
             /** @var \AppserverIo\Appserver\Core\Api\Node\ConsoleNodeInterface $consoleNode */
@@ -70,7 +70,7 @@ class StartConsolesListener extends AbstractSystemListener
             }
 
         } catch (\Exception $e) {
-            $namingDirectory->search('php:global/log/System')->error($e->__toString());
+            $applicationServer->getSystemLogger()->error($e->__toString());
         }
     }
 }

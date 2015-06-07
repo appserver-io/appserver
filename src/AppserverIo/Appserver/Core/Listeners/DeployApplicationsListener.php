@@ -52,7 +52,7 @@ class DeployApplicationsListener extends AbstractSystemListener
             $namingDirectory = $applicationServer->getNamingDirectory();
 
             // write a log message that the event has been invoked
-            $namingDirectory->search('php:global/log/System')->info($event->getName());
+            $applicationServer->getSystemLogger()->info($event->getName());
 
             // deploy the applications for all containers
             /** @var \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode */
@@ -78,7 +78,7 @@ class DeployApplicationsListener extends AbstractSystemListener
             }
 
         } catch (\Exception $e) {
-            $namingDirectory->search('php:global/log/System')->error($e->__toString());
+            $applicationServer->getSystemLogger()->error($e->__toString());
         }
     }
 }

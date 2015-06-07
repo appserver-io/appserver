@@ -59,7 +59,7 @@ class CreateSslCertificateListener extends AbstractSystemListener
             $namingDirectory = $applicationServer->getNamingDirectory();
 
             // write a log message that the event has been invoked
-            $namingDirectory->search('php:global/log/System')->info($event->getName());
+            $applicationServer->getSystemLogger()->info($event->getName());
 
             // load the service instance and create the SSL file if not available
             /** @var \AppserverIo\Appserver\Core\Api\ContainerService $service */
@@ -67,7 +67,7 @@ class CreateSslCertificateListener extends AbstractSystemListener
             $service->createSslCertificate(new \SplFileInfo($service->getConfDir(CreateSslCertificateListener::DEFAULT_CERTIFICATE_NAME)));
 
         } catch (\Exception $e) {
-            $namingDirectory->search('php:global/log/System')->error($e->__toString());
+            $applicationServer->getSystemLogger()->error($e->__toString());
         }
     }
 }

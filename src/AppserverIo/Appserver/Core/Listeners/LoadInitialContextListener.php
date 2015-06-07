@@ -65,7 +65,7 @@ class LoadInitialContextListener extends AbstractSystemListener
             $applicationServer->setInitialContext($initialContext);
 
         } catch (\Exception $e) {
-            $namingDirectory->search('php:global/log/System')->error($e->__toString());
+            $applicationServer->getSystemLogger()->error($e->__toString());
         }
     }
 }

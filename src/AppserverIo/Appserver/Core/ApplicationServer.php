@@ -21,7 +21,9 @@
 namespace AppserverIo\Appserver\Core;
 
 use League\Event\Emitter;
+use AppserverIo\Logger\Logger;
 use AppserverIo\Storage\GenericStackable;
+use AppserverIo\Psr\Naming\NamingException;
 use AppserverIo\Psr\Naming\NamingDirectoryInterface;
 use AppserverIo\Appserver\Core\Commands\ModeCommand;
 use AppserverIo\Appserver\Core\Commands\InitCommand;
@@ -201,19 +203,38 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
     }
 
     /**
+     * Returns the requested logger instance.
+     *
+     * @param string $name Name of the requested logger instance
+     *
+     * @return \Psr\Log\LoggerInterface|null The requested logger instance
+     */
+    public function getLogger($name)
+    {
+        if (isset($this->loggers[$name])) {
+            return $this->loggers[$name];
+        }
+    }
+
+    /**
      * Return's the system logger instance.
      *
-     * @return \Psr\Log\LoggerInterface
+     * @return \Psr\Log\LoggerInterface The system logger instance
      */
     public function getSystemLogger()
     {
-        return $this->loggers['System'];
+
+        try {
+            return $this->getNamingDirectory()->search('php:global/log/System');
+        } catch (NamingException $ne) {
+            return new Logger('System');
+        }
     }
 
     /**
      * Returns the name and the path of the system configuration file.
      *
-     * @return string
+     * @return string Name and path of the sytsem configuration file
      */
     public function getConfigurationFilename()
     {
@@ -223,7 +244,7 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
     /**
      * Returns the name and the path of the bootstrap configuration file.
      *
-     * @return string
+     * @return string Name and path of the bootstrap configuraiton file
      */
     public function getBootstrapConfigurationFilename()
     {
@@ -412,6 +433,7 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
                             // shutdown the application server
                             for ($i = $actualRunlevel; $i >= ApplicationServerInterface::SHUTDOWN; $i--) {
                                 $this->emitter->emit(sprintf('leave.runlevel.%s', $this->runlevelToString($i)), $this->getNamingDirectory());
+                                // stop the services of the PREVIOUS runlevel
                                 $this->doStopServices($i + 1);
                             }
 
@@ -443,6 +465,7 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
                             // switch down to the requested runlevel
                             for ($i = $actualRunlevel; $i >= $this->runlevel; $i--) {
                                 $this->emitter->emit(sprintf('leave.runlevel.%s', $this->runlevelToString($i)), $this->getNamingDirectory());
+                                // stop the services of the PREVIOUS runlevel
                                 $this->doStopServices($i + 1);
                             }
 
@@ -452,7 +475,7 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
                         } else {
 
                             // print a message and wait
-                            $this->getNamingDirectory()->search('php:global/log/System')->info(sprintf('Switched to runlevel %s!!!', $actualRunlevel));
+                            $this->getSystemLogger()->info(sprintf('Switched to runlevel %s!!!', $actualRunlevel));
 
                             // signal that we've finished switching the runlevels and wait
                             $this->locked = false;
@@ -485,7 +508,7 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
                     default:
 
                         // print a message and wait
-                         $this->getNamingDirectory()->search('php:global/log/System')->info('Can\'t find any command!!!');
+                         $this->getSystemLogger()->info('Can\'t find any command!!!');
 
                         // singal that we've finished setting umask and wait
                         $this->locked = false;
@@ -499,7 +522,7 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
                 }
 
             } catch (\Exception $e) {
-                $this->getNamingDirectory()->search('php:global/log/System')->error($e->getMessage());
+                $this->getSystemLogger()->error($e->getMessage());
             }
 
         } while ($keepRunning);
@@ -531,13 +554,13 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
         $this->runlevels[$runlevel][$name]->stop();
 
         // unbind the service from the naming directory
-        // $this->getNamingDirectory()->unbind(sprintf('php:services/%s/%s', $this->runlevelToString($runlevel), $name));
+        $this->getNamingDirectory()->unbind(sprintf('php:services/%s/%s', $this->runlevelToString($runlevel), $name));
 
         // unset the service instance
         unset($this->runlevels[$runlevel][$name]);
 
         // print a message that the service has been stopped
-        $this->getNamingDirectory()->search('php:global/log/System')->error(sprintf('Successfully stopped service %s', $name));
+        $this->getSystemLogger()->info(sprintf('Successfully stopped service %s', $name));
     }
 
     /**

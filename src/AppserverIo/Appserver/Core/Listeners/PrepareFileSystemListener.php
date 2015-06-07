@@ -52,7 +52,7 @@ class PrepareFileSystemListener extends AbstractSystemListener
             $namingDirectory = $applicationServer->getNamingDirectory();
 
             // write a log message that the event has been invoked
-            $namingDirectory->search('php:global/log/System')->info($event->getName());
+            $applicationServer->getSystemLogger()->info($event->getName());
 
             // load the service instance and prepare the filesystem
             /** @var \AppserverIo\Appserver\Core\Api\ContainerService $service */
@@ -60,7 +60,7 @@ class PrepareFileSystemListener extends AbstractSystemListener
             $service->prepareFileSystem();
 
         } catch (\Exception $e) {
-            $namingDirectory->search('php:global/log/System')->error($e->__toString());
+            $applicationServer->getSystemLogger()->error($e->__toString());
         }
     }
 }

@@ -52,7 +52,7 @@ class ExtractArchivesListener extends AbstractSystemListener
             $namingDirectory = $applicationServer->getNamingDirectory();
 
             // write a log message that the event has been invoked
-            $namingDirectory->search('php:global/log/System')->info($event->getName());
+            $applicationServer->getSystemLogger()->info($event->getName());
 
             // add the configured extractors to the internal array
             /** @var \AppserverIo\Appserver\Core\Api\Node\ExtractorNodeInterface $extractorNode */
@@ -69,13 +69,13 @@ class ExtractArchivesListener extends AbstractSystemListener
                 $extractor->deployWebapps();
 
                 // log that the extractor has successfully been initialized and executed
-                $namingDirectory->search('php:global/log/System')->debug(
+                $applicationServer->getSystemLogger()->debug(
                     sprintf('Extractor %s successfully initialized and executed', $extractorNode->getName())
                 );
             }
 
         } catch (\Exception $e) {
-            $namingDirectory->search('php:global/log/System')->error($e->__toString());
+            $applicationServer->getSystemLogger()->error($e->__toString());
         }
     }
 }

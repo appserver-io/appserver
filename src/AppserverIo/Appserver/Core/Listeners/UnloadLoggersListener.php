@@ -51,18 +51,17 @@ class UnloadLoggersListener extends AbstractSystemListener
             // load the application server, naming directory and system configuration instance
             $applicationServer = $this->getApplicationServer();
             $namingDirectory = $applicationServer->getNamingDirectory();
-            $systemConfiguration = $applicationServer->getSystemConfiguration();
 
             // unbind the loggers from the naming directory
-            foreach (array_keys($applicationServer->getLoggers()) as $name) {
-                $namingDirectory->unbind(sprintf('php:global/log/%s', $name));
+            foreach ($applicationServer->getLoggers() as $name => $logger) {
+                $applicationServer->getNamingDirectory()->unbind(sprintf('php:global/log/%s', $name));
             }
 
             // set the initialized loggers finally
             $applicationServer->setLoggers(array());
 
         } catch (\Exception $e) {
-            $namingDirectory->search('php:global/log/System')->error($e->__toString());
+            error_log($e->__toString());
         }
     }
 }

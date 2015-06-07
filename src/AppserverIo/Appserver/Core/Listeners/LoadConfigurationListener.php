@@ -103,7 +103,6 @@ class LoadConfigurationListener extends AbstractSystemListener
 
             // validate the configuration file with the schema
             if ($configurationService->validateXml($mergeDoc) === false) {
-                error_log(print_r($configurationService->getErrorMessages(), true));
                 throw new \Exception('Can\'t parse configuration file');
             }
 
@@ -117,7 +116,7 @@ class LoadConfigurationListener extends AbstractSystemListener
             $applicationServer->setSystemConfiguration($systemConfiguration);
 
         } catch (\Exception $e) {
-            $namingDirectory->search('php:global/log/System')->error($e->__toString());
+            $applicationServer->getSystemLogger()->error($e->__toString());
         }
     }
 }
