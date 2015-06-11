@@ -1,3 +1,13 @@
+# Version 1.1.0-beta3
+
+## Bugfixes
+
+* Fixed [#834](https://github.com/appserver-io/appserver/issues/834) - Check for existing datasource node in StandardProvisioner
+
+## Features
+
+* None
+
 # Version 1.1.0-beta2
 
 ## Bugfixes
