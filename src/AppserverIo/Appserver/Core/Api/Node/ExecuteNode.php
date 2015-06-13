@@ -41,12 +41,56 @@ class ExecuteNode extends AbstractArgsNode
     protected $script;
 
     /**
-     * Returns the step type
+     * The directory to execute the script from.
      *
-     * @return string The step type
+     * @var string
+     * @AS\Mapping(nodeType="string")
+     */
+    protected $directory;
+
+    /**
+     * Returns the script to be executed
+     *
+     * @return string The script
      */
     public function getScript()
     {
         return $this->script;
+    }
+
+    /**
+     * Returns the directory to execute the script from
+     *
+     * @return string The directory
+     */
+    public function getDirectory()
+    {
+        return $this->directory;
+    }
+    /**
+     * Prepares the command to be excuted based on the script and
+     * the arguments.
+     *
+     * @return string The command to execute
+     */
+    public function __toString()
+    {
+
+        // initialize the command with the script name
+        $command = $this->script;
+
+        // append the arguments
+        /** @var \AppserverIo\Appserver\Core\Api\Node\ArgNode $arg */
+        foreach ($this->getArgs() as $arg) {
+            if ($name = $arg->getName()) {
+                $command .=  ' ' . $name;
+            }
+            if ($value = $arg->castToType()) {
+                $command .= ' ' . $value;
+            }
+        }
+
+        // return the initialized command
+        return $command;
     }
 }

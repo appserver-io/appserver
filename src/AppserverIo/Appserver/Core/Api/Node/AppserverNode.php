@@ -158,7 +158,13 @@ class AppserverNode extends AbstractNode implements SystemConfigurationInterface
         $directories = array(new DirectoryNode(new NodeValue('deploy')));
 
         // initialize the deployment scanner
-        $deploymentScanner = new ScannerNode('deployment', 'AppserverIo\Appserver\Core\Scanner\DeploymentScanner', $scannerParams, $directories);
+        $deploymentScanner = new ScannerNode(
+            'deployment',
+            'AppserverIo\Appserver\Core\Scanner\DeploymentScanner',
+            'AppserverIo\Appserver\Core\Scanner\DirectoryScannerFactory',
+            $scannerParams,
+            $directories
+        );
 
         // add scanner to the appserver node
         $this->scanners[$deploymentScanner->getPrimaryKey()] = $deploymentScanner;
@@ -174,10 +180,34 @@ class AppserverNode extends AbstractNode implements SystemConfigurationInterface
         $directories = array(new DirectoryNode(new NodeValue('var/log')));
 
         // initialize the logrotate scanner
-        $logrotateScanner = new ScannerNode('logrotate', 'AppserverIo\Appserver\Core\Scanner\LogrotateScanner', $scannerParams, $directories);
+        $logrotateScanner = new ScannerNode(
+            'logrotate',
+            'AppserverIo\Appserver\Core\Scanner\LogrotateScanner',
+            'AppserverIo\Appserver\Core\Scanner\DirectoryScannerFactory',
+            $scannerParams,
+            $directories
+        );
 
         // add scanner to the appserver node
         $this->scanners[$logrotateScanner->getPrimaryKey()] = $logrotateScanner;
+
+        // initialize the params for the CRON scanner
+        $scannerParams = array();
+        $intervalParam = new ParamNode('interval', 'integer', new NodeValue(1));
+        $configurationFileParam = new ParamNode('configurationFile', 'string', new NodeValue('etc/appserver/conf.d/cron.xml'));
+        $scannerParams[$configurationFileParam->getPrimaryKey()] = $configurationFileParam;
+        $scannerParams[$intervalParam->getPrimaryKey()] = $intervalParam;
+
+        // initialize the CRON scanner
+        $cronScanner = new ScannerNode(
+            'cron',
+            'AppserverIo\Appserver\Core\Scanner\CronScanner',
+            'AppserverIo\Appserver\Core\Scanner\StandardScannerFactory',
+            $scannerParams
+        );
+
+        // add scanner to the appserver node
+        $this->scanners[$cronScanner->getPrimaryKey()] = $cronScanner;
     }
 
     /**

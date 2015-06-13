@@ -1000,6 +1000,7 @@
             </xs:choice>
             <xs:attribute name="type" type="xs:string"/>
             <xs:attribute name="name" type="xs:string"/>
+            <xs:attribute name="factory" type="xs:string"/>
             <xs:attribute name="uuid" type="xs:string"/>
             <xs:attribute ref="xml:base"/>
         </xs:complexType>
