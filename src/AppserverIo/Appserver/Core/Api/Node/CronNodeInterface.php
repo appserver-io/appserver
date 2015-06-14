@@ -1,7 +1,7 @@
 <?php
 
 /**
- * \AppserverIo\Appserver\Core\Api\Node\JobsNodeTrait
+ * AppserverIo\Appserver\Core\Api\Node\CronNodeInterface
  *
  * NOTICE OF LICENSE
  *
@@ -12,7 +12,7 @@
  * PHP version 5
  *
  * @author    Tim Wagner <tw@appserver.io>
- * @author    Bernhard Wick <bw@appserver.io>
+ * @author    Johann Zelger <jz@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
@@ -22,45 +22,31 @@
 namespace AppserverIo\Appserver\Core\Api\Node;
 
 /**
- * Abstract node that serves nodes having a jobs/job child.
+ * Interface for a CRON node implementation.
  *
  * @author    Tim Wagner <tw@appserver.io>
- * @author    Bernhard Wick <bw@appserver.io>
+ * @author    Johann Zelger <jz@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-trait JobsNodeTrait
+interface CronNodeInterface
 {
-
-    /**
-     * The jobs.
-     *
-     * @var array
-     * @AS\Mapping(nodeName="jobs/job", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\JobNode")
-     */
-    protected $jobs = array();
 
     /**
      * Array with the jobs to set.
      *
      * @param array $jobs The jobs to set
      */
-    public function setJobs($jobs)
-    {
-    	$this->jobs = $jobs;
-    }
+    public function setJobs($jobs);
 
     /**
      * Array with the jobs.
      *
      * @return array
      */
-    public function getJobs()
-    {
-        return $this->jobs;
-    }
+    public function getJobs();
 
     /**
      * Returns the job with the passed name.
@@ -69,12 +55,14 @@ trait JobsNodeTrait
      *
      * @return mixed The requested job
      */
-    public function getJob($name)
-    {
-        foreach ($this->getJobs() as $job) {
-	        if ($job->getName() === $name) {
-	            return $job;
-	        }
-        }
-    }
+    public function getJob($name);
+
+    /**
+     * This method merges the passed CRON node with this one
+     *
+     * @param \AppserverIo\Appserver\Core\Api\Node\CronNodeInterface $cronNode The node to merge
+     *
+     * @return void
+     */
+    public function merge(CronNode $cronNode);
 }

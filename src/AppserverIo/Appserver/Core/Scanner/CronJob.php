@@ -70,13 +70,13 @@ class CronJob extends \Thread
 
             // try to load the script from the configuration
             if ($script = $executeNode->getScript()) {
+                // change the working directory
+                if ($execDir = $executeNode->getDirectory()) {
+                	chdir($execDir);
+                }
+
                 // check if the configured script is a file
                 if (is_file($script) && is_executable($script)) {
-                    // change the working directory
-                    if ($execDir = $executeNode->getDirectory()) {
-                        chdir($execDir);
-                    }
-
                     // initialize the exec params
                     $output = array();
                     $returnVar = 0;
@@ -99,6 +99,9 @@ class CronJob extends \Thread
                 } else {
                     throw new \Exception(sprintf('Script %s is not a file or not executable', $script));
                 }
+
+            } else {
+            	throw new \Exception(sprintf('Can\t find a script configured in job', $this->jobNode->getName()));
             }
 
         } catch (\Exception $e) {

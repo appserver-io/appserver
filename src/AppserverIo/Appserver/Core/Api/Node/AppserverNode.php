@@ -194,8 +194,6 @@ class AppserverNode extends AbstractNode implements SystemConfigurationInterface
         // initialize the params for the CRON scanner
         $scannerParams = array();
         $intervalParam = new ParamNode('interval', 'integer', new NodeValue(1));
-        $configurationFileParam = new ParamNode('configurationFile', 'string', new NodeValue('etc/appserver/conf.d/cron.xml'));
-        $scannerParams[$configurationFileParam->getPrimaryKey()] = $configurationFileParam;
         $scannerParams[$intervalParam->getPrimaryKey()] = $intervalParam;
 
         // initialize the CRON scanner

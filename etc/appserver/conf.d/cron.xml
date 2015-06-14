@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<cron>
+<cron xmlns="http://www.appserver.io/appserver">
     <jobs>
         <!--job name="test-01">
             <schedule>* * * * * *</schedule>
@@ -10,7 +10,7 @@
                     <arg type="string">local</arg>
                 </args>
             </execute>
-        </job>
+        </job-->
         <job name="test-02">
             <schedule>0 * * * * *</schedule>
             <execute directory="/opt/appserver" script="bin/php">
@@ -18,6 +18,6 @@
                     <arg type="string">-v</arg>
                 </args>
             </execute>
-        </job-->
+        </job>
     </jobs>
 </cron>

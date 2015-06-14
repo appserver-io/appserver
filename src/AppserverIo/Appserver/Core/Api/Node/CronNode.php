@@ -21,8 +21,6 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
-use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
-
 /**
  * DTO to transfer CRON information.
  *
@@ -33,13 +31,25 @@ use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class CronNode extends AbstractNode
+class CronNode extends AbstractNode implements CronNodeInterface
 {
 
     /**
-     * A class loader trait.
+     * A jobs trait.
      *
-     * @var \AppserverIo\Appserver\Core\Api\Node\ClassLoadersNodeTrait
+     * @var \AppserverIo\Appserver\Core\Api\Node\JobsNodeTrait
      */
     use JobsNodeTrait;
+
+    /**
+     * This method merges the passed CRON node with this one
+     *
+     * @param \AppserverIo\Appserver\Core\Api\Node\CronNodeInterface $cronNode The node to merge
+     *
+     * @return void
+     */
+    public function merge(CronNode $cronNode)
+    {
+        $this->setJobs(array_merge($this->getJobs(), $cronNode->getJobs()));
+    }
 }

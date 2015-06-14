@@ -45,21 +45,13 @@ class CronScanner extends AbstractScanner
     protected $interval;
 
     /**
-     * The configuration file to use.
-     *
-     * @var array
-     */
-    protected $configurationFile;
-
-    /**
      * Constructor sets initialContext object per default and calls
      * init function to pass other args.
      *
-     * @param \AppserverIo\Appserver\Application\Interfaces\ContextInterface $initialContext    The initial context instance
-     * @param string                                                         $configurationFile The configuration file we want to use
-     * @param integer                                                        $interval          The interval in seconds we want to execute the configured jobs
+     * @param \AppserverIo\Appserver\Application\Interfaces\ContextInterface $initialContext The initial context instance
+     * @param integer                                                        $interval       The interval in seconds we want to execute the configured jobs
      */
-    public function __construct($initialContext, $configurationFile, $interval = 1)
+    public function __construct($initialContext, $interval = 1)
     {
 
         // call parent constructor
@@ -67,7 +59,6 @@ class CronScanner extends AbstractScanner
 
         // initialize the members
         $this->interval = $interval;
-        $this->configurationFile = $configurationFile;
     }
 
     /**
@@ -78,16 +69,6 @@ class CronScanner extends AbstractScanner
     public function getInterval()
     {
         return $this->interval;
-    }
-
-    /**
-     * Returns the configuration file.
-     *
-     * @return \SplFileInfo The configuration file
-     */
-    public function getConfigurationFile()
-    {
-        return $this->getService()->getBaseDirectory($this->configurationFile);
     }
 
     /**
@@ -102,37 +83,37 @@ class CronScanner extends AbstractScanner
     }
 
     /**
-     * Start's the deployment scanner that restarts the server
-     * when a PHAR should be deployed or undeployed.
+     * Start's the CRON scanner and executes the jobs configured in the systems
+     * etc/appserver/conf.d/cron.xml and in the applications META-INF/cron.xml files.
      *
      * @return void
      * @see \AppserverIo\Appserver\Core\AbstractThread::main()
      */
     public function main()
     {
-
-        // load the configuration file with the jobs
-        $configurationFile = $this->getConfigurationFile();
-
         // log the configured deployment directory
-        $this->getSystemLogger()->info(sprintf('Start CRON with configuration file %s', $this->getConfigurationFile()));
+        $this->getSystemLogger()->info('Now start CRON scanner');
 
-        // load the configured CRON jobs
-        $cronNode = new CronNode();
-        $cronNode->initFromFile($configurationFile);
+        // load the validated and merged CRON jobs
+        /** \AppserverIo\Appserver\Core\Api\Node\CronNodeInterface $cronNode */
+        $cronNodes = $this->newService('AppserverIo\Appserver\Core\Api\ScannerService')->findAll();
 
         // execute all the registered CRON jobs
         while (true) {
             // execute each of the jobs found in the configuration file
-            /** @var \AppserverIo\Appserver\Core\Api\Node\JobNodeInterface $jobNode */
-            foreach ($cronNode->getJobs() as $jobNode) {
-				// load the scheduled expression from the job definition
-            	$schedule = $jobNode->getSchedule()->getNodeValue()->__toString();
+            /** @var \AppserverIo\Appserver\Core\Api\Node\CronNodeInterface $cronNode */
+            foreach ($cronNodes as $cronNode) {
+	            // execute each of the jobs found in the configuration file
+	            /** @var \AppserverIo\Appserver\Core\Api\Node\JobNodeInterface $jobNode */
+	            foreach ($cronNode->getJobs() as $jobNode) {
+					// load the scheduled expression from the job definition
+	            	$schedule = $jobNode->getSchedule()->getNodeValue()->__toString();
 
-				// query whether the job has to be scheduled or not
-            	if (CronExpression::factory($schedule)->isDue()) {
-                	$this->getCronJob($jobNode);
-            	}
+					// query whether the job has to be scheduled or not
+	            	if (CronExpression::factory($schedule)->isDue()) {
+	                	$this->getCronJob($jobNode);
+	            	}
+	            }
             }
 
             // sleep for the configured interval
