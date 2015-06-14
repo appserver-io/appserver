@@ -20,12 +20,13 @@
 
 namespace AppserverIo\Appserver\Core\Scanner;
 
+use AppserverIo\Microcron\CronExpression;
 use AppserverIo\Appserver\Core\Api\Node\CronNode;
 use AppserverIo\Appserver\Core\Api\Node\JobNodeInterface;
 
 /**
- * This is a scanner that watches the configured remote targets for new
- * application archives that has to be downloaded and deployed.
+ * This is a simple CRON scanner implementation configured by one or more
+ * XML configuration files.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -110,9 +111,6 @@ class CronScanner extends AbstractScanner
     public function main()
     {
 
-        // load the interval we want to scan the directory
-        $interval = $this->getInterval();
-
         // load the configuration file with the jobs
         $configurationFile = $this->getConfigurationFile();
 
@@ -128,7 +126,13 @@ class CronScanner extends AbstractScanner
             // execute each of the jobs found in the configuration file
             /** @var \AppserverIo\Appserver\Core\Api\Node\JobNodeInterface $jobNode */
             foreach ($cronNode->getJobs() as $jobNode) {
-                $this->getCronJob($jobNode);
+				// load the scheduled expression from the job definition
+            	$schedule = $jobNode->getSchedule()->getNodeValue()->__toString();
+
+				// query whether the job has to be scheduled or not
+            	if (CronExpression::factory($schedule)->isDue()) {
+                	$this->getCronJob($jobNode);
+            	}
             }
 
             // sleep for the configured interval

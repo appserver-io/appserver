@@ -29,6 +29,6 @@ namespace AppserverIo\Appserver\Core\Api\Node;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class ScheduleNode extends ParamNode
+class ScheduleNode extends AbstractValueNode
 {
 }

@@ -10,6 +10,14 @@
                     <arg type="string">local</arg>
                 </args>
             </execute>
-        </job  -->
+        </job>
+        <job name="test-02">
+            <schedule>0 * * * * *</schedule>
+            <execute directory="/opt/appserver" script="bin/php">
+                <args>
+                    <arg type="string">-v</arg>
+                </args>
+            </execute>
+        </job-->
     </jobs>
 </cron>

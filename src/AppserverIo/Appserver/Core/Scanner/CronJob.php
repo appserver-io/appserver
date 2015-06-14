@@ -77,6 +77,10 @@ class CronJob extends \Thread
                         chdir($execDir);
                     }
 
+                    // initialize the exec params
+                    $output = array();
+                    $returnVar = 0;
+
                     // execute the script on the command line
                     exec($executeNode, $output, $returnVar);
 

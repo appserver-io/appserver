@@ -44,7 +44,7 @@ class JobNode extends AbstractNode implements JobNodeInterface
      * The node containing the schedule information for the job.
      *
      * @var \AppserverIo\Appserver\Core\Api\Node\ScheduleNode
-     * @AS\Mapping(nodeName="execute", nodeType="AppserverIo\Appserver\Core\Api\Node\ScheduleNode")
+     * @AS\Mapping(nodeName="schedule", nodeType="AppserverIo\Appserver\Core\Api\Node\ScheduleNode")
      */
     protected $schedule;
 
