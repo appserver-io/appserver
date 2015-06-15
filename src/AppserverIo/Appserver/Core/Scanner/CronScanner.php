@@ -103,17 +103,17 @@ class CronScanner extends AbstractScanner
             // execute each of the jobs found in the configuration file
             /** @var \AppserverIo\Appserver\Core\Api\Node\CronNodeInterface $cronNode */
             foreach ($cronNodes as $cronNode) {
-	            // execute each of the jobs found in the configuration file
-	            /** @var \AppserverIo\Appserver\Core\Api\Node\JobNodeInterface $jobNode */
-	            foreach ($cronNode->getJobs() as $jobNode) {
-					// load the scheduled expression from the job definition
-	            	$schedule = $jobNode->getSchedule()->getNodeValue()->__toString();
+                // execute each of the jobs found in the configuration file
+                /** @var \AppserverIo\Appserver\Core\Api\Node\JobNodeInterface $jobNode */
+                foreach ($cronNode->getJobs() as $jobNode) {
+                    // load the scheduled expression from the job definition
+                    $schedule = $jobNode->getSchedule()->getNodeValue()->__toString();
 
-					// query whether the job has to be scheduled or not
-	            	if (CronExpression::factory($schedule)->isDue()) {
-	                	$this->getCronJob($jobNode);
-	            	}
-	            }
+                    // query whether the job has to be scheduled or not
+                    if (CronExpression::factory($schedule)->isDue()) {
+                        $this->getCronJob($jobNode);
+                    }
+                }
             }
 
             // sleep for the configured interval

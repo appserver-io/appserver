@@ -53,7 +53,6 @@ class DirectoryScannerFactory implements ScannerFactoryInterface
         // iterate over the configured directories and create a scanner instance for each of them
         /** @var \AppserverIo\Appserver\Core\Api\Node\DirectoryNodeInterface $directoryNode */
         foreach ($scannerNode->getDirectories() as $directoryNode) {
-
             // load the reflection class for the scanner type
             $reflectionClass = new \ReflectionClass($scannerNode->getType());
 

@@ -112,7 +112,7 @@ interface ServerInterface
     /**
      * Adds the passed scanner to the server.
      *
-     * @param \AppserverIo\Appserver\Core\Interfaces\ScannerInterface $extractor The scanner instance to add
+     * @param \AppserverIo\Appserver\Core\Interfaces\ScannerInterface $scanner The scanner instance to add
      *
      * @return void
      */

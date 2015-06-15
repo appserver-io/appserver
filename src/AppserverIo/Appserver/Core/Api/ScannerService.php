@@ -17,14 +17,13 @@
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-
 namespace AppserverIo\Appserver\Core\Api;
 
 use AppserverIo\Psr\Application\ApplicationInterface;
+use AppserverIo\Appserver\Core\Api\Node\CronNode;
 use AppserverIo\Appserver\Core\Api\Node\ContextNode;
 use AppserverIo\Appserver\Core\Api\Node\DeploymentNode;
 use AppserverIo\Appserver\Core\Interfaces\ContainerInterface;
-use AppserverIo\Appserver\Core\Api\Node\CronNode;
 
 /**
  * A service that handles scanner configuration data.
@@ -45,10 +44,10 @@ class ScannerService extends AbstractFileOperationService
      *
      * @return \AppserverIo\Configuration\Interfaces\NodeInterface The node with the UUID passed as parameter
      */
-	public function load($uuid)
-	{
-		// not implemented yet
-	}
+    public function load($uuid)
+    {
+        // not implemented yet
+    }
 
     /**
      * Initializes the available CRON configurations and returns them.
@@ -58,8 +57,8 @@ class ScannerService extends AbstractFileOperationService
     public function findAll()
     {
 
-    	// initialize the array with the CRON instances
-    	$cronInstances = array();
+        // initialize the array with the CRON instances
+        $cronInstances = array();
 
         // we will need to test our CRON configuration files
         $configurationTester = new ConfigurationService($this->getInitialContext());
@@ -67,27 +66,26 @@ class ScannerService extends AbstractFileOperationService
 
         // validate the base CRON file and load it as default if validation succeeds
         $cronInstance = new CronNode();
-        if (!$configurationTester->validateFile($baseCronPath, null)) {
+        if (! $configurationTester->validateFile($baseCronPath, null)) {
             $errorMessages = $configurationTester->getErrorMessages();
             $systemLogger = $this->getInitialContext()->getSystemLogger();
             $systemLogger->error(reset($errorMessages));
             $systemLogger->critical(sprintf('Problems validating base CRON file %s, this might affect app configurations badly.', $baseCronPath));
-
         } else {
             $cronInstance->initFromFile($baseCronPath);
         }
 
         // iterate over all jobs to configure the directory where they has to be executed
-	    /** @var \AppserverIo\Appserver\Core\Api\Node\JobNodeInterface $jobNode */
+        /** @var \AppserverIo\Appserver\Core\Api\Node\JobNodeInterface $jobNode */
         foreach ($cronInstance->getJobs() as $job) {
-        	// load the execution information
-        	$execute = $job->getExecute();
-        	// query whether or not a base directory has been specified
+            // load the execution information
+            $execute = $job->getExecute();
+            // query whether or not a base directory has been specified
             if ($execute && $execute->getDirectory() == null) {
-            	// set the directory where the cron.xml file located as base directory, if not
+                // set the directory where the cron.xml file located as base directory, if not
                 $execute->setDirectory(dirname($baseCronPath));
             }
-    	}
+        }
 
         // add the default CRON configuration
         $cronInstances[] = $cronInstance;
@@ -97,7 +95,7 @@ class ScannerService extends AbstractFileOperationService
             // iterate through all CRON configurations (cron.xml), validate and merge them
             foreach ($this->globDir($webappPath . '/META-INF/cron.xml') as $cronFile) {
                 // validate the file, but skip it if validation fails
-                if (!$configurationTester->validateFile($cronFile, null)) {
+                if (! $configurationTester->validateFile($cronFile, null)) {
                     $errorMessages = $configurationTester->getErrorMessages();
                     $systemLogger = $this->getInitialContext()->getSystemLogger();
                     $systemLogger->error(reset($errorMessages));
@@ -110,15 +108,15 @@ class ScannerService extends AbstractFileOperationService
                 $cronInstance->initFromFile($cronFile);
 
                 // iterate over all jobs to configure the directory where they has to be executed
-	            /** @var \AppserverIo\Appserver\Core\Api\Node\JobNodeInterface $jobNode */
+                /** @var \AppserverIo\Appserver\Core\Api\Node\JobNodeInterface $jobNode */
                 foreach ($cronInstance->getJobs() as $job) {
-		        	// load the execution information
-		        	$execute = $job->getExecute();
-                	// query whether or not a base directory has been specified
-                	if ($execute && $execute->getDirectory() == null) {
-                		// set the directory where the cron.xml file located as base directory, if not
-                		$execute->setDirectory($webappPath);
-                	}
+                    // load the execution information
+                    $execute = $job->getExecute();
+                    // query whether or not a base directory has been specified
+                    if ($execute && $execute->getDirectory() == null) {
+                        // set the directory where the cron.xml file located as base directory, if not
+                        $execute->setDirectory($webappPath);
+                    }
                 }
 
                 // merge it into the default configuration

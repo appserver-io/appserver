@@ -46,10 +46,12 @@ trait JobsNodeTrait
      * Array with the jobs to set.
      *
      * @param array $jobs The jobs to set
+     *
+     * @return void
      */
     public function setJobs($jobs)
     {
-    	$this->jobs = $jobs;
+        $this->jobs = $jobs;
     }
 
     /**
@@ -72,9 +74,9 @@ trait JobsNodeTrait
     public function getJob($name)
     {
         foreach ($this->getJobs() as $job) {
-	        if ($job->getName() === $name) {
-	            return $job;
-	        }
+            if ($job->getName() === $name) {
+                return $job;
+            }
         }
     }
 }

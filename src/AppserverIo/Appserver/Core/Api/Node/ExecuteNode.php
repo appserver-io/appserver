@@ -67,7 +67,7 @@ class ExecuteNode extends AbstractArgsNode
      */
     public function setDirectory($directory)
     {
-    	$this->directory = $directory;
+        $this->directory = $directory;
     }
 
     /**

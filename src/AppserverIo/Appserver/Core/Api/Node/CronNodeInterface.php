@@ -38,6 +38,8 @@ interface CronNodeInterface
      * Array with the jobs to set.
      *
      * @param array $jobs The jobs to set
+     *
+     * @return void
      */
     public function setJobs($jobs);
 

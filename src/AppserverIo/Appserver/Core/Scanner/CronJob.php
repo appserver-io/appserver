@@ -58,7 +58,6 @@ class CronJob extends \Thread
     {
 
         try {
-
             // register shutdown handler
             register_shutdown_function(array(&$this, "shutdown"));
 
@@ -72,7 +71,7 @@ class CronJob extends \Thread
             if ($script = $executeNode->getScript()) {
                 // change the working directory
                 if ($execDir = $executeNode->getDirectory()) {
-                	chdir($execDir);
+                    chdir($execDir);
                 }
 
                 // check if the configured script is a file
@@ -101,7 +100,7 @@ class CronJob extends \Thread
                 }
 
             } else {
-            	throw new \Exception(sprintf('Can\t find a script configured in job', $this->jobNode->getName()));
+                throw new \Exception(sprintf('Can\t find a script configured in job', $this->jobNode->getName()));
             }
 
         } catch (\Exception $e) {
