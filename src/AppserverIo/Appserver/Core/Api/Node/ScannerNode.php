@@ -63,14 +63,23 @@ class ScannerNode extends AbstractNode implements ScannerNodeInterface
     protected $type;
 
     /**
+     * The scanner factory class name.
+     *
+     * @var string
+     * @AS\Mapping(nodeType="string")
+     */
+    protected $factory;
+
+    /**
      * Initializes the scanner node with the necessary data.
      *
      * @param string $name        The scanner name
      * @param string $type        The scanner type
+     * @param string $factory     The scanner type
      * @param array  $params      The scanner params
      * @param array  $directories The scanner directories
      */
-    public function __construct($name = '', $type = '', array $params = array(), array $directories = array())
+    public function __construct($name = '', $type = '', $factory = '', array $params = array(), array $directories = array())
     {
 
         // initialize the UUID
@@ -79,6 +88,7 @@ class ScannerNode extends AbstractNode implements ScannerNodeInterface
         // set the data
         $this->name = $name;
         $this->type = $type;
+        $this->factory = $factory;
         $this->params = $params;
         $this->directories = $directories;
     }
@@ -95,13 +105,23 @@ class ScannerNode extends AbstractNode implements ScannerNodeInterface
     }
 
     /**
-     * Returns the provisioner type.
+     * Returns the scanner type.
      *
-     * @return string The provisioner type
+     * @return string The scanner type
      */
     public function getType()
     {
         return $this->type;
+    }
+
+    /**
+     * Returns the scanner factory class.
+     *
+     * @return string The scanner factory class
+     */
+    public function getFactory()
+    {
+        return $this->factory;
     }
 
     /**

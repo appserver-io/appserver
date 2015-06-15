@@ -41,3 +41,46 @@ to
 ```
 
 Only change is the type declaration for the provisioning steps, that changed from `AppserverIo\Appserver\Core\Provisioning` to `AppserverIo\Appserver\Provisioning\Steps\CreateDatabaseStep`.
+
+## Scanner Initialization
+
+The scanner initialization now needs a factory class to instanciate the apropriate scanner instance.
+
+Instead to specify the scanner type only
+
+```xml
+  <scanner name="logrotate" 
+           type="AppserverIo\Appserver\Core\Scanner\LogrotateScanner">
+    <params>
+      <param name="interval" type="integer">1</param>
+      <param name="extensionsToWatch" type="string">log</param>
+      <param name="maxFiles" type="integer">10</param>
+      <param name="maxSize" type="integer">1048576</param>
+    </params>
+    <directories>
+      <directory>var/log</directory>
+    </directories>
+  </scanner>
+</scanners>
+```
+
+now the factory attribute is necessary to create a new scanner instance
+
+```xml
+<scanner name="logrotate" 
+         type="AppserverIo\Appserver\Core\Scanner\LogrotateScanner"
+         factory="AppserverIo\Appserver\Core\Scanner\DirectoryScannerFactory">
+    <params>
+      <param name="interval" type="integer">1</param>
+      <param name="extensionsToWatch" type="string">log</param>
+      <param name="maxFiles" type="integer">10</param>
+      <param name="maxSize" type="integer">1048576</param>
+    </params>
+    <directories>
+      <directory>var/log</directory>
+    </directories>
+  </scanner>
+</scanners>
+```
+
+Actually two default factories are provided. The `DirectoryScannerFactory` expects a `<directories/>` node, whereas the `StandardScannerFactory` does not. If you use the `DirectoryScannerFactory`, behind the scenes a separate scanner instance for each directory will be created. As each scanner is a thread, keep in mind, that this could lead to a massive CPU usage.

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cron xmlns="http://www.appserver.io/appserver">
+    <jobs>
+        <!--job name="test-01">
+            <schedule>* * * * * *</schedule>
+            <execute directory="/opt/appserver" script="bin/php">
+                <args>
+                    <arg type="string">vendor/bin/shunt</arg>
+                    <arg type="string">read_home_dir</arg>
+                    <arg type="string">local</arg>
+                </args>
+            </execute>
+        </job>
+        <job name="test-02">
+            <schedule>0 * * * * *</schedule>
+            <execute directory="/opt/appserver" script="bin/php">
+                <args>
+                    <arg type="string">-v</arg>
+                </args>
+            </execute>
+        </job-->
+    </jobs>
+</cron>
