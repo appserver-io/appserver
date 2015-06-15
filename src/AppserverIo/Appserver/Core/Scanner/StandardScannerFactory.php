@@ -57,8 +57,6 @@ class StandardScannerFactory implements ScannerFactoryInterface
         $scannerParams = array($initialContext);
         $scannerParams = array_merge($scannerParams, $scannerNode->getParamsAsArray());
 
-        error_log(print_r($scannerParams, true));
-
         // create and return a new instance
         $server->addScanner($reflectionClass->newInstanceArgs($scannerParams));
     }
