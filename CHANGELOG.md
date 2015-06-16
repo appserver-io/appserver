@@ -1,3 +1,15 @@
+# Version 1.1.0-beta4
+
+## Bugfixes
+
+* Fixed [#836](https://github.com/appserver-io/appserver/issues/842) - Cannot use Traits
+* Fixed [#839](https://github.com/appserver-io/appserver/issues/839) - appserver and appserver-watcher Provides collision
+* Fixed [#836](https://github.com/appserver-io/appserver/issues/836) - Appserver.xml does contain invalid host attributes
+
+## Features
+
+* Closed [#844](https://github.com/appserver-io/appserver/issues/844) - Default server reachability should be all IPs
+
 # Version 1.1.0-beta3
 
 ## Bugfixes

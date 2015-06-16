@@ -571,7 +571,7 @@
     </xs:element>
     <xs:element name="steps">
         <xs:complexType>
-            <xs:choice>
+            <xs:choice minOccurs="0">
                 <xs:element ref="appserver:step" maxOccurs="unbounded"/>
             </xs:choice>
             <xs:attribute name="uuid" type="xs:string"/>
