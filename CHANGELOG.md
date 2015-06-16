@@ -7,7 +7,7 @@
 
 ## Features
 
-* None
+* Closed [#844](https://github.com/appserver-io/appserver/issues/844) - Default server reachability should be all IPs
 
 # Version 1.0.5
 
