@@ -131,6 +131,11 @@ class PharExtractor extends AbstractExtractor
 
                 // flag webapp as deployed
                 $this->flagArchive($archive, ExtractorInterface::FLAG_DEPLOYED);
+
+                // log a message that the application has successfully been deployed
+                $this->getInitialContext()->getSystemLogger()->info(
+                    sprintf('Application archive %s has succussfully been deployed', $archive->getBasename($this->getExtensionSuffix()))
+                );
             }
 
         } catch (\Exception $e) {
@@ -181,5 +186,10 @@ class PharExtractor extends AbstractExtractor
 
         // we have to set the user rights to the user:group configured within the system configuration
         $this->setUserRights(new \SplFileInfo($tmpFolderName));
+
+        // log a message that the application has successfully been deployed
+        $this->getInitialContext()->getSystemLogger()->info(
+            sprintf('Application archive %s has succussfully been backed up', $archive->getBasename($this->getExtensionSuffix()))
+        );
     }
 }

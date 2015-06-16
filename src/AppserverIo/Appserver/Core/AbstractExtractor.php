@@ -251,6 +251,11 @@ abstract class AbstractExtractor implements ExtractorInterface
 
                 // flag webapp as undeployed
                 $this->flagArchive($archive, ExtractorInterface::FLAG_UNDEPLOYED);
+
+                // log a message that the application has successfully been deployed
+                $this->getInitialContext()->getSystemLogger()->info(
+                    sprintf('Application archive %s has succussfully been undeployed', $archive->getBasename($this->getExtensionSuffix()))
+                );
             }
 
         } catch (\Exception $e) {

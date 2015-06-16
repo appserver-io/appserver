@@ -1,7 +1,7 @@
 <?php
 
 /**
- * \AppserverIo\Appserver\Core\Scanner\ScannerFactory
+ * \AppserverIo\Appserver\Core\Scanner\StandardScannerFactory
  *
  * NOTICE OF LICENSE
  *
@@ -20,12 +20,11 @@
 
 namespace AppserverIo\Appserver\Core\Scanner;
 
+use AppserverIo\Appserver\Core\Interfaces\ServerInterface;
 use AppserverIo\Appserver\Core\Api\Node\ScannerNodeInterface;
-use AppserverIo\Appserver\Core\Api\Node\DirectoryNodeInterface;
-use AppserverIo\Appserver\Application\Interfaces\ContextInterface;
 
 /**
- * Scanner factory implementation.
+ * Standard scanner factory implementation.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -33,29 +32,32 @@ use AppserverIo\Appserver\Application\Interfaces\ContextInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class ScannerFactory
+class StandardScannerFactory implements ScannerFactoryInterface
 {
 
     /**
-     * Creates a new scanner instance based on the passed configuration.
+     * Creates a new scanner instance and attaches it to the passed server instance.
      *
-     * @param \AppserverIo\Appserver\Application\Interfaces\ContextInterface $initialContext The initial context instance
-     * @param \AppserverIo\Appserver\Core\Api\Node\DirectoryNodeInterface    $directoryNode  The directory node configuration
-     * @param \AppserverIo\Appserver\Core\Api\Node\ScannerNodeInterface      $scannerNode    The scanner configuration
+     * @param \AppserverIo\Appserver\Core\ServerInterface               $server      The server instance to add the scanner to
+     * @param \AppserverIo\Appserver\Core\Api\Node\ScannerNodeInterface $scannerNode The scanner configuration
      *
      * @return object The scanner instance
      */
-    public static function factory(ContextInterface $initialContext, DirectoryNodeInterface $directoryNode, ScannerNodeInterface $scannerNode)
+    public static function visit(ServerInterface $server, ScannerNodeInterface $scannerNode)
     {
+
+        // load the initial context instance
+        /** @var \AppserverIo\Appserver\Application\Interfaces\ContextInterface $initialContext */
+        $initialContext = $server->getInitialContext();
 
         // load the reflection class for the scanner type
         $reflectionClass = new \ReflectionClass($scannerNode->getType());
 
         // prepare the scanner params
-        $scannerParams = array($initialContext, $directoryNode->getNodeValue()->__toString());
+        $scannerParams = array($initialContext);
         $scannerParams = array_merge($scannerParams, $scannerNode->getParamsAsArray());
 
         // create and return a new instance
-        return $reflectionClass->newInstanceArgs($scannerParams);
+        $server->addScanner($reflectionClass->newInstanceArgs($scannerParams));
     }
 }

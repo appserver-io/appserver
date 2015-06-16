@@ -1,3 +1,13 @@
+# Version 1.1.0-beta3
+
+## Bugfixes
+
+* Fixed [#834](https://github.com/appserver-io/appserver/issues/834) - Check for existing datasource node in StandardProvisioner
+
+## Features
+
+* None
+
 # Version 1.1.0-beta2
 
 ## Bugfixes
@@ -60,6 +70,29 @@
 ## Features
 
 * Closed [#683](https://github.com/appserver-io/appserver/issues/683) - Update PHP to 5.6
+
+# Version 1.0.6
+
+## Bugfixes
+
+* Fixed [#828](https://github.com/appserver-io/appserver/issues/828) - Unknown application causes 500 instead of 404
+* Fixed [#829](https://github.com/appserver-io/appserver/issues/829) - Setup with parameter -s=dev set's invalid user on Mac OS X
+
+## Features
+
+* None
+
+# Version 1.0.5
+
+## Bugfixes
+
+* Fixed [#784](https://github.com/appserver-io/appserver/issues/784) - Application Deployment after switching to safe user
+* Fixed [#790](https://github.com/appserver-io/appserver/issues/790) - Long running messages in Message Queue blocks other messages
+
+## Features
+
+* Remove [#777](https://github.com/appserver-io/appserver/issues/777) - Remove remote http://www.w3.org/2001/03/xml.xsd from schemas and configurations
+* Closed [#758](https://github.com/appserver-io/appserver/issues/758) - Update to latest PHP 5.5.24
 
 # Version 1.0.4
 

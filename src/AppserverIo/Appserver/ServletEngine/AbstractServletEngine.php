@@ -96,7 +96,14 @@ abstract class AbstractServletEngine implements HttpModuleInterface
         }
 
         // if we did not find anything we should throw a bad request exception
-        throw new BadRequestException(sprintf('Can\'t find application for URL %s%s', $requestContext->getServerVar(ServerVars::HTTP_HOST), $requestContext->getServerVar(ServerVars::X_REQUEST_URI)));
+        throw new BadRequestException(
+            sprintf(
+                'Can\'t find application for URL %s%s',
+                $requestContext->getServerVar(ServerVars::HTTP_HOST),
+                $requestContext->getServerVar(ServerVars::X_REQUEST_URI)
+            ),
+            404
+        );
     }
 
     /**

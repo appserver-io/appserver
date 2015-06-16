@@ -42,6 +42,13 @@ interface ScannerNodeInterface extends NodeInterface
     public function getType();
 
     /**
+     * Returns the scanner factory class.
+     *
+     * @return string The scanner factory class
+     */
+    public function getFactory();
+
+    /**
      * Returns the provisioner name.
      *
      * @return string The provisioner name
