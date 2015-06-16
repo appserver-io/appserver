@@ -126,6 +126,9 @@ class StandardProvisioner extends AbstractProvisioner
 
         // load the steps from the configuration
         $stepNodes = $provisionNode->getInstallation()->getSteps();
+        if (!is_array($stepNodes)) {
+            return;
+        }
 
         // execute all steps found in the configuration
         foreach ($stepNodes as $stepNode) {
