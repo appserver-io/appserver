@@ -1685,7 +1685,7 @@
         <xs:complexType>
             <xs:all>
                 <xs:element ref="appserver:datasource"/>
-                <xs:element ref="appserver:metadataConfiguration"/>
+                <xs:element ref="appserver:metadataConfiguration" minOccurs="0"/>
                 <xs:element ref="appserver:annotationRegistries" minOccurs="0"/>
             </xs:all>
             <xs:attribute name="name" type="xs:string" use="required"/>
