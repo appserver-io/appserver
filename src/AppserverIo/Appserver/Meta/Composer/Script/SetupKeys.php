@@ -152,6 +152,13 @@ class SetupKeys
     const DEFAULT_HOST = '127.0.0.1';
 
     /**
+     * Host values which allow an open access to the server.
+     *
+     * @var string
+     */
+    const OPEN_HOST = '0.0.0.0';
+
+    /**
      * Configuration key for 'appserver.php.version'.
      *
      * @var string
