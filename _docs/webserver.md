@@ -249,7 +249,7 @@ Here is an example of how to configure basic or digest auth.
     <authentication uri="^\/auth\/basic\/.*">
         <params>
             <param name="type" type="string">
-                \AppserverIo\WebServer\Authentication\BasicAuthentication
+                \AppserverIo\Http\Authentication\BasicAuthentication
             </param>
             <param name="realm" type="string">
                 PhpWebServer Basic Authentication System
@@ -262,7 +262,7 @@ Here is an example of how to configure basic or digest auth.
     <authentication uri="^\/auth\/digest\/.*">
         <params>
             <param name="type" type="string">
-                \AppserverIo\WebServer\Authentication\DigestAuthentication
+                \AppserverIo\Http\Authentication\DigestAuthentication
             </param>
             <param name="realm" type="string">
                 appserver.io Digest Authentication System
