@@ -305,7 +305,11 @@ abstract class AbstractNode implements NodeInterface
                 $newNode->setParentUuid($this->getUuid());
 
                 // add the value to the node
-                $this->{$reflectionProperty->getName()}[$newNode->getPrimaryKey()] = $newNode;
+                if ($pk = $newNode->getPrimaryKey()) {
+                    $this->{$reflectionProperty->getName()}[$pk] = $newNode;
+                } else {
+                    $this->{$reflectionProperty->getName()}[] = $newNode;
+                }
             }
 
             return;

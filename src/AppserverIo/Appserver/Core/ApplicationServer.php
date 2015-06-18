@@ -36,7 +36,7 @@ use AppserverIo\Appserver\Core\Interfaces\SystemConfigurationInterface;
  * This is the main server class that starts the application server
  * and creates a separate thread for each container found in the
  * configuration file.
-
+ *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
