@@ -69,8 +69,8 @@ class StandardProvisioner extends AbstractProvisioner
             /** @var AppserverIo\Appserver\Core\Api\ProvisioningService $service */
             $service = $this->getService();
 
-            // load the configuration service instance
             /** @var AppserverIo\Appserver\Core\Api\ConfigurationService $configurationService */
+            // load the configuration service instance
             $configurationService = $this->getInitialContext()->newService('AppserverIo\Appserver\Core\Api\ConfigurationService');
 
             // iterate through all provisioning files (provision.xml), validate them and attach them to the configuration
