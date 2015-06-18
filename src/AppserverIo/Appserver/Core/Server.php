@@ -27,6 +27,8 @@ use AppserverIo\Appserver\Core\Scanner\ScannerFactory;
 use AppserverIo\Appserver\Core\Scanner\HeartbeatScanner;
 use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
 use AppserverIo\Appserver\Core\Utilities\ContainerStateKeys;
+use AppserverIo\Appserver\Core\Interfaces\ServerInterface;
+use AppserverIo\Appserver\Core\Interfaces\ScannerInterface;
 use AppserverIo\Appserver\Core\Interfaces\ExtractorInterface;
 use AppserverIo\Appserver\Core\Interfaces\ContainerInterface;
 use AppserverIo\Appserver\Core\Interfaces\ProvisionerInterface;
@@ -44,7 +46,7 @@ use AppserverIo\Configuration\Interfaces\ConfigurationInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class Server
+class Server implements ServerInterface
 {
 
     /**
@@ -60,6 +62,13 @@ class Server
      * @var array
      */
     protected $extractors = array();
+
+    /**
+     * The registred scanners.
+     *
+     * @var array
+     */
+    protected $scanners = array();
 
     /**
      * The system configuration.
@@ -368,6 +377,28 @@ class Server
     }
 
     /**
+     * Adds the passed scanner to the server.
+     *
+     * @param \AppserverIo\Appserver\Core\Interfaces\ScannerInterface $extractor The scanner instance to add
+     *
+     * @return void
+     */
+    public function addScanner(ScannerInterface $scanner)
+    {
+        $this->scanners[] = $scanner;
+    }
+
+    /**
+     * Returns all registered scanners.
+     *
+     * @return array The array with the scanners
+     */
+    public function getScanners()
+    {
+        return $this->scanners;
+    }
+
+    /**
      * Start the container threads.
      *
      * @return void
@@ -425,21 +456,20 @@ class Server
     public function watch()
     {
 
-        // load the initial context instance
-        $initialContext = $this->getInitialContext();
-
-        // initialize the default monitor for the deployment directory
-        $scanners = array();
-
         // add the configured extractors to the internal array
+        /** @var \AppserverIo\Appserver\Core\Api\Node\ScannerNodeInterface $scannerNode */
         foreach ($this->getSystemConfiguration()->getScanners() as $scannerNode) {
-            foreach ($scannerNode->getDirectories() as $directoryNode) {
-                $scanners[] = ScannerFactory::factory($initialContext, $directoryNode, $scannerNode);
-            }
+            // load the factory class name
+            $factoryClass = $scannerNode->getFactory();
+
+            // invoke the visit method of the factory class
+            /** @var \AppserverIo\Appserver\Core\Scanner\ScannerFactoryInterface $factory */
+            $factoryClass::visit($this, $scannerNode);
         }
 
-        // start all scanners
-        foreach ($scanners as $scanner) {
+        // start all the scanners
+        /** @var \AppserverIo\Appserver\Core\Interfaces\ScannerInterface $scanner */
+        foreach ($this->getScanners() as $scanner) {
             $scanner->start();
         }
     }

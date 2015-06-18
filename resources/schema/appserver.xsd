@@ -114,6 +114,72 @@
             <xs:attribute ref="xml:base"/>
         </xs:complexType>
     </xs:element>
+    <xs:element name="cron">
+        <xs:complexType>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element ref="appserver:jobs"/>
+            </xs:choice>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="jobs">
+        <xs:complexType>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element ref="appserver:job"/>
+            </xs:choice>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="job">
+        <xs:complexType>
+            <xs:all>
+                <xs:element ref="appserver:schedule"/>
+                <xs:element ref="appserver:execute"/>
+            </xs:all>
+            <xs:attribute name="name" type="xs:string" use="required"/>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="schedule">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string"/>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="execute">
+        <xs:complexType>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element ref="appserver:args"/>
+            </xs:choice>
+            <xs:attribute name="directory" type="xs:string" use="optional"/>
+            <xs:attribute name="script" type="xs:string" use="required"/>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="args">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="appserver:arg"/>
+            </xs:choice>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="arg">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="name" type="xs:string" use="optional"/>
+                    <xs:attribute name="type" type="xs:string" use="required"/>
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
     <xs:element name="app">
         <xs:complexType>
             <xs:attribute name="name" type="xs:string" use="required"/>
@@ -530,7 +596,7 @@
     </xs:element>
     <xs:element name="steps">
         <xs:complexType>
-            <xs:choice>
+            <xs:choice minOccurs="0">
                 <xs:element ref="appserver:step" maxOccurs="unbounded"/>
             </xs:choice>
             <xs:attribute name="uuid" type="xs:string"/>
@@ -1025,6 +1091,7 @@
             </xs:choice>
             <xs:attribute name="type" type="xs:string"/>
             <xs:attribute name="name" type="xs:string"/>
+            <xs:attribute name="factory" type="xs:string"/>
             <xs:attribute name="uuid" type="xs:string"/>
             <xs:attribute ref="xml:base"/>
         </xs:complexType>
@@ -1643,7 +1710,7 @@
         <xs:complexType>
             <xs:all>
                 <xs:element ref="appserver:datasource"/>
-                <xs:element ref="appserver:metadataConfiguration"/>
+                <xs:element ref="appserver:metadataConfiguration" minOccurs="0"/>
                 <xs:element ref="appserver:annotationRegistries" minOccurs="0"/>
             </xs:all>
             <xs:attribute name="name" type="xs:string" use="required"/>

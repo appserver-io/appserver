@@ -21,6 +21,7 @@
 namespace AppserverIo\Appserver\Core\Scanner;
 
 use AppserverIo\Appserver\Core\AbstractContextThread;
+use AppserverIo\Appserver\Core\Interfaces\ScannerInterface;
 
 /**
  * Abstract scanner which provides basic functionality to its children.
@@ -31,7 +32,7 @@ use AppserverIo\Appserver\Core\AbstractContextThread;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.techdivision.com/
  */
-abstract class AbstractScanner extends AbstractContextThread
+abstract class AbstractScanner extends AbstractContextThread implements ScannerInterface
 {
     /**
      * OS signature when calling php_uname('s') on Mac OS x 10.8.x/10.9.x.

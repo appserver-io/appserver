@@ -86,14 +86,14 @@ class StandardProvisioner extends AbstractProvisioner
                 $provisionNode = new ProvisionNode();
                 $provisionNode->initFromFile($provisionFile);
 
-                // try to load the datasource from the system configuration
-                $datasourceNode = $service->findByName(
-                    $provisionNode->getDatasource()->getName()
-                );
-
-                // try to inject the datasource node if available
-                if ($datasourceNode != null) {
-                    $provisionNode->injectDatasource($datasourceNode);
+                // query whether we've a datasource configured or not
+                if ($datasource = $provisionNode->getDatasource()) {
+                    // try to load the datasource from the system configuration
+                    $datasourceNode = $service->findByName($datasource->getName());
+                    // try to inject the datasource node if available
+                    if ($datasourceNode != null) {
+                        $provisionNode->injectDatasource($datasourceNode);
+                    }
                 }
 
                 /* Re-provision the provision.xml (reinitialize).
@@ -126,6 +126,9 @@ class StandardProvisioner extends AbstractProvisioner
 
         // load the steps from the configuration
         $stepNodes = $provisionNode->getInstallation()->getSteps();
+        if (!is_array($stepNodes)) {
+            return;
+        }
 
         // execute all steps found in the configuration
         foreach ($stepNodes as $stepNode) {

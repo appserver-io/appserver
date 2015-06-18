@@ -171,8 +171,8 @@ class GenericObjectFactory extends AbstractDaemonThread implements ObjectFactory
         // create the instance and stack it
         $this->synchronized(function ($self) {
 
-            // create the calendar timer, only if we're NOT dispatched
-            if ($self->dispatched === false) {
+            // create the instance only if we're NOT dispatched and a class name is available
+            if ($self->dispatched === false && $self->className) {
                 // create the instance
                 $instance = $self->getApplication()->search('ProviderInterface')
                                                    ->newInstance(

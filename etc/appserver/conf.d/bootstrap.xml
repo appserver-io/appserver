@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bootstrap xmlns="http://www.appserver.io/appserver"
-    defaultRunlevel="administration">
+    defaultRunlevel="full">
     <listeners>
     
         <listener event="leave.runlevel.shutdown" priority="0"
