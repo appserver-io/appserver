@@ -786,23 +786,17 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
             // log a message that we has successfully been shutdown now
             $this->getInitialContext()->getSystemLogger()->info(sprintf('%s start to shutdown managers', $this->getName()));
 
+            // array for the manager shutdown threads
+            $shutdownThreads = array();
+
             // we need to stop all managers, because they've probably running threads
             /** @var \AppserverIo\Psr\Application\ManagerInterface $manager */
-            $shutdownThreads = array();
             foreach ($this->getManagers() as $manager) {
-
                 $shutdownThreads[] = new ManagerShutdownThread($manager);
-
-                /*
-                if (method_exists($manager, 'stop')) {
-                    $manager->stop();
-                } else {
-                    $this->getInitialContext()->getSystemLogger()->info(
-                        sprintf('Found manager %s in application %s to shutdown', $manager->getIdentifier(), $this->getName())
-                    );
-                }*/
             }
 
+            /** @var \AppserverIo\Appserver\Application\ManagerShutdownThread $shutdownThread */
+            // wait till all managers have been shutdown
             foreach ($shutdownThreads as $shutdownThread) {
                 $shutdownThread->join();
             }
