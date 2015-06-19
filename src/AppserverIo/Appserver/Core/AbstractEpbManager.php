@@ -189,7 +189,7 @@ abstract class AbstractEpbManager extends AbstractManager
             // query whether the reference has already been bound to the application
             if ($application->search($name = $persistenceUnitReference->getName())) {
                 // log a message that the reference has already been bound
-                $application->getInitialContext()->getSystemLogger()->debug(
+                $application->getInitialContext()->getSystemLogger()->info(
                     sprintf('Reference php:global/%s/%s has already been bound to naming directory', $application->getName(), $name)
                 );
 

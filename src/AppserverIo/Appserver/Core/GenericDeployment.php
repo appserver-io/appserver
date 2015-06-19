@@ -59,7 +59,7 @@ class GenericDeployment extends AbstractDeployment
             // load the datasource files
             $datasourceFiles = $this->getDeploymentService()->globDir($directory . DIRECTORY_SEPARATOR . '*-ds.xml');
 
-            // iterate through all provisioning files (provision.xml), validate them and attach them to the configuration
+            // iterate through all provisioning files (*-ds.xml), validate them and attach them to the configuration
             /** @var AppserverIo\Appserver\Core\Api\ConfigurationService $configurationService */
             $configurationService = $this->getConfigurationService();
             foreach ($datasourceFiles as $datasourceFile) {

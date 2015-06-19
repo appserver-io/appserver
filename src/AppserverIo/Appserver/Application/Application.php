@@ -76,6 +76,14 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
     const TIME_TO_LIVE = 1;
 
     /**
+     * Initialize the internal members.
+     */
+    public function __construct()
+    {
+        $this->data = array();
+    }
+
+    /**
      * Returns the value with the passed name from the context.
      *
      * @param string $key The key of the value to return from the context.
@@ -85,13 +93,13 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
      */
     public function getAttribute($key)
     {
-        return $this->data->get($key);
+        return $this->data[$key];
     }
 
     /**
      * All values registered in the context.
      *
-     * @return \AppserverIo\Storage\GenericStackable The context data
+     * @return array The context data
      */
     public function getAttributes()
     {
@@ -107,7 +115,7 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
      */
     public function hasAttribute($key)
     {
-        return $this->data->has($key);
+        return isset($this->data[$key]);
     }
 
     /**
@@ -120,7 +128,10 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
      */
     public function setAttribute($key, $value)
     {
-        $this->data->set($key, $value);
+        // a bit complicated, but we're in a multithreaded environment
+        $data = $this->data;
+        $data[$key] = $value;
+        $this->data = $data;
     }
 
     /**
@@ -130,18 +141,20 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
      */
     public function getAllKeys()
     {
-        return $this->data->getAllKeys();
+        return array_keys($this->getAttributes());
     }
 
     /**
-     * Injects the storage for the naming directory data.
+     * Removes the attribute with the passed key.
      *
-     * @param \AppserverIo\Storage\StorageInterface $data The naming directory data
+     * @param string $key The key of the attribute to remove
      *
      * @return void
      */
-    public function injectData(StorageInterface $data)
+    public function removeAttribute($key)
     {
+        $data = $this->data;
+        unset($data[$key]);
         $this->data = $data;
     }
 
@@ -252,6 +265,9 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
                 }
             }
         }
+
+        // stack the subdirectory on the globals => to avoid segfaults
+        $GLOBALS[$subdirectory->getIdentifier()] = $subdirectory;
 
         // bind it the directory
         $this->bind($name, $subdirectory);
@@ -791,12 +807,12 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
 
             // we need to stop all managers, because they've probably running threads
             /** @var \AppserverIo\Psr\Application\ManagerInterface $manager */
-            foreach ($this->getManagers() as $manager) {
+            foreach ($this->getManagers() as $identifier => $manager) {
                 $shutdownThreads[] = new ManagerShutdownThread($manager);
             }
 
-            /** @var \AppserverIo\Appserver\Application\ManagerShutdownThread $shutdownThread */
             // wait till all managers have been shutdown
+            /** @var \AppserverIo\Appserver\Application\ManagerShutdownThread $shutdownThread */
             foreach ($shutdownThreads as $shutdownThread) {
                 $shutdownThread->join();
             }
@@ -805,6 +821,10 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
             $this->synchronized(function ($self) {
                 $self->applicationState = ApplicationStateKeys::get(ApplicationStateKeys::SHUTDOWN);
             }, $this);
+
+            // cleanup the naming directory with the application entries
+            $this->getNamingDirectory()->search('php:env')->removeAttribute($this->getName());
+            $this->getNamingDirectory()->search('php:global')->removeAttribute($this->getName());
 
             // log a message that we has successfully been shutdown now
             $this->getInitialContext()->getSystemLogger()->info(sprintf('%s has successfully been shutdown', $this->getName()));

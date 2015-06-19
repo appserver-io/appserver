@@ -60,8 +60,8 @@ class ManagerShutdownThread extends \Thread
         $manager = $this->manager;
 
         // query whether the manager has an application with class loaders to be registered
-        if (method_exists($manager, 'getApplication')) {
-            $manager->getApplication()->registerClassLoaders();
+        if (method_exists($manager, 'getApplication') && $application = $manager->getApplication()) {
+            $application->registerClassLoaders();
         }
 
         // stop the manager if an apropriate method exists
