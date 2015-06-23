@@ -67,6 +67,9 @@ if (array_key_exists($config, $arguments) && file_exists($arguments[$config])) {
     throw new \Exception('Can\'t find a configuration file');
 }
 
+// create a stack for the naming directories
+$directories = new GenericStackable();
+
 // create and initialize the naming directory
 $namingDirectory = new NamingDirectory();
 $namingDirectory->setScheme('php');
@@ -97,7 +100,7 @@ foreach (ApplicationServer::$runlevels as $runlevel) {
 
 // initialize and start the application server
 $applicationServer = new ApplicationServer($namingDirectory, $runlevels);
-$applicationServer->start();
+$applicationServer->start(PTHREADS_INHERIT_ALL|PTHREADS_ALLOW_GLOBALS);
 
 // we've to wait for shutdown
 while ($applicationServer->keepRunning()) {

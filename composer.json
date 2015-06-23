@@ -73,5 +73,15 @@
 		"post-install-cmd" : [
 			"AppserverIo\\Appserver\\Meta\\Composer\\Script\\Setup::postInstall"
 		]
-	}
+	},
+	"repositories" : [{
+			"type" : "git",
+			"url" : "https://github.com/wagnert/server",
+			"name" : "appserver-io/server"
+		}, {
+			"type" : "git",
+			"url" : "https://github.com/wagnert/webserver",
+			"name" : "appserver-io/webserver"
+		}
+	]
 }

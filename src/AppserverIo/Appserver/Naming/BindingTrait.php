@@ -51,6 +51,11 @@ trait BindingTrait
     public function bind($name, $value, array $args = array())
     {
 
+        // delegate the bind request to the parent directory
+        if (strpos($name, sprintf('%s:', $this->getScheme())) === 0 && $this->getParent()) {
+            return $this->findRoot()->bind($name, $value, $args);
+        }
+
         // strip off the schema
         $name = str_replace(sprintf('%s:', $this->getScheme()), '', $name);
 
@@ -132,8 +137,6 @@ trait BindingTrait
 
         // tokenize the name
         $token = strtok($name, '/');
-
-        // error_log(sprintf('Now try to unbind %s from naming directory %s', $name, $this->getIdentifier()));
 
         // while we've tokens, try to find the appropriate subdirectory
         while ($token !== false) {
@@ -244,7 +247,7 @@ trait BindingTrait
             return $parent->getIdentifier() . $this->getName() . '/';
         }
 
-        // if not, we MUST have a scheme, because we're root
+
         if ($scheme = $this->getScheme()) {
             return $scheme . ':' . $this->getName();
         }
@@ -268,7 +271,7 @@ trait BindingTrait
      *
      * @return \AppserverIo\Psr\Naming\NamingDirectoryInterface The root node
      */
-    public function findRoot()
+    protected function findRoot()
     {
 
         // query whether we've a parent or not
@@ -334,5 +337,72 @@ trait BindingTrait
 
         // return the buffer
         return $buffer;
+    }
+
+    /**
+     * Create and return a new naming subdirectory with the attributes
+     * of this one.
+     *
+     * @param string $name   The name of the new subdirectory
+     * @param array  $filter Array with filters that will be applied when copy the attributes
+     *
+     * @return \AppserverIo\Appserver\Naming\NamingDirectory The new naming subdirectory
+     */
+    public function createSubdirectory($name, array $filter = array())
+    {
+
+        try {
+            // cut off append slashes
+            $name = rtrim($name, '/');
+
+            // query whether we found a slash AND a prepended scheme
+            if (strpos($name, sprintf('%s:', $this->getScheme())) === 0 && ($found = strrpos($name, '/')) !== false) {
+                // cut off the last directory
+                $parentDirectory = substr($name, 0, $found);
+
+                // prepare the name of the subdirectory to create
+                $newDirectory = ltrim(str_replace($parentDirectory, '', $name), '/');
+
+                // load the parent directory and create the new subdirectory
+                return $this->search($parentDirectory)->createSubdirectory($newDirectory, $filter);
+            }
+
+            // strip off the schema
+            $name = str_replace(sprintf('%s:', $this->getScheme()), '', $name);
+
+            // copy the attributes specified by the filter
+            if (sizeof($filter) > 0) {
+                foreach ($this->getAllKeys() as $key => $value) {
+                    foreach ($filter as $pattern) {
+                        if (fnmatch($pattern, $key)) {
+                            $subdirectory->bind($key, $value);
+                        }
+                    }
+                }
+            }
+
+            // create a new subdirectory instance
+            $subdirectory = new NamingDirectory($name, $this);
+
+            // create a local copy of the naming directory stack
+            global $directories;
+
+            // query whether the subdirectory already exists or not
+            if (isset($directories[$subdirectory->getIdentifier()])) {
+                throw new \Exception(sprintf('A naming directory with identifier %s already exists', $subdirectory->getIdentifier()));
+            }
+
+            // add the subdirectory to the global stack
+            $directories[$subdirectory->getIdentifier()] = $subdirectory;
+
+            // bind it the directory
+            $this->bind($name, $subdirectory);
+
+            // return the instance
+            return $subdirectory;
+
+        } catch (\Exception $e) {
+            error_log($e->__toString());
+        }
     }
 }

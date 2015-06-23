@@ -24,7 +24,6 @@ use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Storage\StackableStorage;
 use AppserverIo\Psr\Naming\NamingException;
 use AppserverIo\Psr\Naming\NamingDirectoryInterface;
-use AppserverIo\Storage\AppserverIo\Storage;
 
 /**
  * Naming directory implementation.
@@ -158,7 +157,13 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
      */
     public function setAttribute($key, $value)
     {
+
         // a bit complicated, but we're in a multithreaded environment
+        if (isset($this->data[$key])) {
+            throw new NamingException(sprintf('Attribute %s can\'t be overwritten', $key));
+        }
+
+        // set the key/value pair
         $data = $this->data;
         $data[$key] = $value;
         $this->data = $data;
@@ -186,41 +191,5 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
         $data = $this->data;
         unset($data[$key]);
         $this->data = $data;
-    }
-
-    /**
-     * Create and return a new naming subdirectory with the attributes
-     * of this one.
-     *
-     * @param string $name   The name of the new subdirectory
-     * @param array  $filter Array with filters that will be applied when copy the attributes
-     *
-     * @return \AppserverIo\Appserver\Naming\NamingDirectory The new naming subdirectory
-     */
-    public function createSubdirectory($name, array $filter = array())
-    {
-
-        // create a new subdirectory instance
-        $subdirectory = new NamingDirectory($name, $this);
-
-        // copy the attributes specified by the filter
-        if (sizeof($filter) > 0) {
-            foreach ($this->getAllKeys() as $key => $value) {
-                foreach ($filter as $pattern) {
-                    if (fnmatch($pattern, $key)) {
-                        $subdirectory->bind($key, $value);
-                    }
-                }
-            }
-        }
-
-        // stack the subdirectory on the globals => to avoid segfaults
-        $GLOBALS[$subdirectory->getIdentifier()] = $subdirectory;
-
-        // bind it the directory
-        $this->bind($name, $subdirectory);
-
-        // return the instance
-        return $subdirectory;
     }
 }

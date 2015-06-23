@@ -41,8 +41,11 @@ use AppserverIo\Appserver\Core\Api\Node\ParamNode;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  *
- * @property \AppserverIo\Psr\Naming\NamingDirectoryInterface $namingDirectory Naming directory used for binding various information to
- * @property \AppserverIo\Appserver\Core\Api\AppService       $service         The app service used to bind applications to the configuration
+ * @property \AppserverIo\Psr\Naming\NamingDirectoryInterface         $namingDirectory Naming directory used for binding various information to
+ * @property \AppserverIo\Appserver\Core\Api\AppService               $service         The app service used to bind applications to the configuration
+ * @property \AppserverIo\Appserver\Core\Api\Node\ContainerNode       $containerNode   The container node information
+ * @property \AppserverIo\Storage\GenericStackable                    $applications    The initialized applications
+ * @property \AppserverIo\Appserver\Core\Utilities\ContainerStateKeys $containerState  The actual container state
  */
 abstract class AbstractContainerThread extends AbstractContextThread implements ContainerInterface
 {
@@ -55,36 +58,17 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
     const TIME_TO_LIVE = 1;
 
     /**
-     * The container node information.
-     *
-     * @var \AppserverIo\Appserver\Core\Api\Node\ContainerNode
-     */
-    protected $containerNode;
-
-    /**
-     * The initialized applications.
-     *
-     * @var \AppserverIo\Storage\GenericStackable
-     */
-    protected $applications;
-
-    /**
-     * The actual container state.
-     *
-     * @var \AppserverIo\Appserver\Core\Utilities\ContainerStateKeys
-     */
-    protected $containerState;
-
-    /**
      * Initializes the container with the initial context, the unique container ID
      * and the deployed applications.
      *
-     * @param \AppserverIo\Appserver\Core\InitialContext         $initialContext The initial context
-     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerNode $containerNode  The container node
+     * @param \AppserverIo\Appserver\Core\InitialContext         $initialContext  The initial context
+     * @param \AppserverIo\Psr\Naming\NamingDirectoryInterface   $namingDirectory The naming directory
+     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerNode $containerNode   The container node
      */
-    public function __construct($initialContext, $containerNode)
+    public function __construct($initialContext, $namingDirectory, $containerNode)
     {
         $this->initialContext = $initialContext;
+        $this->namingDirectory = $namingDirectory;
         $this->containerNode = $containerNode;
     }
 
@@ -119,14 +103,6 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
         // create a new API app service instance
         $this->service = $this->newService('AppserverIo\Appserver\Core\Api\AppService');
 
-        // create and initialize the naming directory
-        $this->namingDirectory = new NamingDirectory();
-        $this->namingDirectory->setScheme('php');
-
-        // create global/env and global/log naming directories
-        $globalDir = $this->namingDirectory->createSubdirectory('global');
-        $envDir = $this->namingDirectory->createSubdirectory('env');
-
         // initialize the naming directory with the environment data
         $this->namingDirectory->bind('php:env/appBase', $this->getAppBase());
         $this->namingDirectory->bind('php:env/tmpDirectory', $this->getTmpDir());
@@ -134,14 +110,6 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
         $this->namingDirectory->bind('php:env/umask', $this->getInitialContext()->getSystemConfiguration()->getUmask());
         $this->namingDirectory->bind('php:env/user', $this->getInitialContext()->getSystemConfiguration()->getUser());
         $this->namingDirectory->bind('php:env/group', $this->getInitialContext()->getSystemConfiguration()->getGroup());
-
-        // create the directory the loggers will be bound to
-        $logDir = $globalDir->createSubdirectory('log');
-
-        // register the loggers in the naming directory
-        foreach ($this->getInitialContext()->getLoggers() as $name => $logger) {
-             $this->namingDirectory->bind(sprintf('php:global/log/%s', $name), $logger);
-        }
 
         // initialize the container state
         $this->containerState = ContainerStateKeys::get(ContainerStateKeys::INITIALIZATION_SUCCESSFUL);

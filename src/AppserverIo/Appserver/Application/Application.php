@@ -80,7 +80,10 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
      */
     public function __construct()
     {
+
         $this->data = array();
+
+        $this->applicationState = ApplicationStateKeys::get(ApplicationStateKeys::WAITING_FOR_INITIALIZATION);
     }
 
     /**
@@ -128,6 +131,12 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
      */
     public function setAttribute($key, $value)
     {
+
+        // a bit complicated, but we're in a multithreaded environment
+        if (isset($this->data[$key])) {
+            throw new NamingException(sprintf('Attribute %s can\'t be overwritten', $key));
+        }
+
         // a bit complicated, but we're in a multithreaded environment
         $data = $this->data;
         $data[$key] = $value;
@@ -238,42 +247,6 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
     public function getName()
     {
         return $this->name;
-    }
-
-    /**
-     * Create and return a new naming subdirectory with the attributes
-     * of this one.
-     *
-     * @param string $name   The name of the new subdirectory
-     * @param array  $filter Array with filters that will be applied when copy the attributes
-     *
-     * @return \AppserverIo\Appserver\Naming\NamingDirectory The new naming subdirectory
-     */
-    public function createSubdirectory($name, array $filter = array())
-    {
-
-        // create a new subdirectory instance
-        $subdirectory = new NamingDirectory($name, $this);
-
-        // copy the attributes specified by the filter
-        if (sizeof($filter) > 0) {
-            foreach ($this->getAllKeys() as $key => $value) {
-                foreach ($filter as $pattern) {
-                    if (fnmatch($pattern, $key)) {
-                        $subdirectory->bind($key, $value);
-                    }
-                }
-            }
-        }
-
-        // stack the subdirectory on the globals => to avoid segfaults
-        $GLOBALS[$subdirectory->getIdentifier()] = $subdirectory;
-
-        // bind it the directory
-        $this->bind($name, $subdirectory);
-
-        // return the instance
-        return $subdirectory;
     }
 
     /**
@@ -575,7 +548,7 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
         $namingDirectory = $this->getNamingDirectory();
 
         // bind the application (which is also a naming directory)
-        $namingDirectory->bind($applicationName, $this);
+        $namingDirectory->bind(sprintf('php:global/%s', $applicationName), $this);
 
         // prepare the application specific directories
         $webappPath = sprintf('%s/%s', $namingDirectory->search('php:env/appBase'), $applicationName);
@@ -583,15 +556,12 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
         $cacheDirectory = sprintf('%s/%s', $tmpDirectory, ltrim($context->getParam(DirectoryKeys::CACHE), '/'));
         $sessionDirectory = sprintf('%s/%s', $tmpDirectory, ltrim($context->getParam(DirectoryKeys::SESSION), '/'));
 
-        // register the applications temporary directory in the naming directory
-        $envDir = $namingDirectory->search('php:env');
-
         // prepare the application specific environment variables
-        $envDir->createSubdirectory($applicationName);
-        $envDir->bind(sprintf('%s/webappPath', $applicationName), $webappPath);
-        $envDir->bind(sprintf('%s/tmpDirectory', $applicationName), $tmpDirectory);
-        $envDir->bind(sprintf('%s/cacheDirectory', $applicationName), $cacheDirectory);
-        $envDir->bind(sprintf('%s/sessionDirectory', $applicationName), $sessionDirectory);
+        $namingDirectory->createSubdirectory(sprintf('php:env/%s', $applicationName));
+        $namingDirectory->bind(sprintf('php:env/%s/webappPath', $applicationName), $webappPath);
+        $namingDirectory->bind(sprintf('php:env/%s/tmpDirectory', $applicationName), $tmpDirectory);
+        $namingDirectory->bind(sprintf('php:env/%s/cacheDirectory', $applicationName), $cacheDirectory);
+        $namingDirectory->bind(sprintf('php:env/%s/sessionDirectory', $applicationName), $sessionDirectory);
     }
 
     /**
@@ -749,11 +719,11 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
             $this->getInitialContext()->getSystemLogger()->debug(sprintf('%s wait to be connected', $this->getName()));
 
             // create the applications 'env' + 'env/persistence' directory the beans + persistence units will be bound to
-            $appEnvDir = $this->createSubdirectory('env');
-            $appEnvPersistenceDir = $appEnvDir->createSubdirectory('persistence');
+            $this->createSubdirectory('env');
+            $this->createSubdirectory('env/persistence');
 
             // bind the interface as reference to the application
-            $appEnvDir->bindReference('ApplicationInterface', sprintf('php:global/%s', $this->getName()));
+            $this->bindReference('env/ApplicationInterface', sprintf('php:global/%s', $this->getName()));
 
             // register the class loaders
             $this->registerClassLoaders();

@@ -51,7 +51,7 @@ class GenericContainerFactory implements ContainerFactoryInterface
         $reflectionClass = new \ReflectionClass($configuration->getType());
 
         // initialize the container configuration with the base directory and pass it to the thread
-        $params = array($applicationServer->getInitialContext(), $configuration);
+        $params = array($applicationServer->getInitialContext(), $applicationServer->getNamingDirectory(), $configuration);
 
         // create and append the thread instance to the internal array
         return $reflectionClass->newInstanceArgs($params);

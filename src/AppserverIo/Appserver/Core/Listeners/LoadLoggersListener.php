@@ -69,6 +69,7 @@ class LoadLoggersListener extends AbstractSystemListener
             $applicationServer->setLoggers($loggers);
 
         } catch (\Exception $e) {
+            error_log($e->__toString());
             $applicationServer->getSystemLogger()->error($e->__toString());
         }
     }
