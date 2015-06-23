@@ -17,21 +17,21 @@ subNav:
 permalink: /get-started/documentation/deployment.html
 ---
 
-The deploy directory in appserver.io distribution is the location where end users can place their deployment content (e. g. phar files) to have it deployed into the server runtime.
+The deploy directory in an appserver.io distribution is the location where end users can place their deployment content (e.g. phar files) to have it deployed into the server runtime.
 
-Users, particularly those running production systems, are encouraged to use the appserver.io AS management APIs to upload and deploy content.
+Users, particularly those running production systems, are encouraged to use the appserver.io application server (AS) management APIs to upload and deploy content.
 
 ## Deployment Modes
 
-The scanner only supports manual deployment mode, which means that you have to restart the server to process the deployment of your content. In this mode, the scanner will not attempt to directly monitor the deployment content and decide if or when the end user wishes the content to be deployed or undeployed. Instead, the scanner relies on a system of marker files, with the users addition or removal of a marker file serving as a sort of command telling the scanner to deploy, undeploy or redeploy content.
+The scanner only supports manual deployment mode, which means that you have to restart the server to process the deployment of your content. In this mode, the scanner will not attempt to directly monitor the deployment content and decide if or when the end user wishes the content to be deployed or undeployed. Instead, the scanner relies on a system of marker files, where the user's addition or removal of a marker file serves as a sort of command telling the scanner to deploy, undeploy or redeploy content.
 
-It is also possible to copy your unzipped content directly into the webapps folder. After restarting the web server your content will then be deployed without having any impact on the deployment scanner because only zipped (.phar) content will be recognized.
+It is also possible to copy your unzipped content directly into the webapps folder. After restarting the web server, your content will then be deployed without having any impact on the deployment scanner, because only zipped (.phar) content will be recognized.
 
 ## Marker Files
 
-The marker files always have the same name as the deployment content they relate to, with an additional file suffix. For example, the marker file, to indicate the example.phar file, should be deployed as `example.phar.dodeploy`. Different marker file suffixes have different meanings.
+The marker files always have the same name as the deployment content they relate to, but with an additional file suffix. For example, the marker file to indicate a deployment of the example.phar file, would be saved as `example.phar.dodeploy`. When appserver is started, the file suffix triggers the deployment. 
 
-The relevant marker file types are:
+Different marker file suffixes have different meanings. The relevant marker file types are:
 
 | Marker       | Description                                                     |
 | -------------| ----------------------------------------------------------------|
@@ -79,4 +79,4 @@ The above examples use UNIX shell commands. Windows equivalents are the followin
 | rm afile       | del afile               |
 | touch afile    | echo >> afile           |
 
-Note that the behavior of ```touch``` and ```echo``` are different but the differences are not relevant for the usage. 
+Note that the behavior of ```touch``` and ```echo``` are different, but the differences are not relevant for the usage. 
