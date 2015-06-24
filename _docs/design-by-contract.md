@@ -207,13 +207,14 @@ heavy modifications it requires for structure definitions and the applied cachin
 
 > To change any Design by Contract behavior, the change must be made within the class loader configuration.
 
-The class loader configuration can be found within any `context.xml` file, and are only relevant to the part of the application the changes should be applied.
-These might be:
+The class loader configuration can be found within any `context.xml` file. Any changes made to any `context.xml` file will have a global affect on every application.
 
-* Globally, in the `etc/appserver/conf.d/context.xml` file, which means changes are relevant to all applications
+The files can be found:
+
+* Globally, in the `etc/appserver/conf.d/context.xml` file.
 * Locally, in the webapp specific file located within the webapp's `META-INF` directory.
 
-So choose wisely, when you make changes to the configuration.
+So choose wisely, when you make changes to the configuration. 
 
 ### Configuration options
 

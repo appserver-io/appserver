@@ -25,7 +25,7 @@ Users, particularly those running production systems, are encouraged to use the 
 
 The scanner only supports manual deployment mode, which means that you have to restart the server to process the deployment of your content. In this mode, the scanner will not attempt to directly monitor the deployment content and decide if or when the end user wishes the content to be deployed or undeployed. Instead, the scanner relies on a system of marker files, where the user's addition or removal of a marker file serves as a sort of command telling the scanner to deploy, undeploy or redeploy content.
 
-It is also possible to copy your unzipped content directly into the webapps folder. After restarting the web server, your content will then be deployed without having any impact on the deployment scanner, because only zipped (.phar) content will be recognized.
+It is also possible to copy your unzipped content directly into the webapps folder. After restarting the appserver, your content will then be deployed without having any impact on the deployment scanner, because only zipped (.phar) content will be recognized.
 
 ## Marker Files
 
