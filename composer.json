@@ -26,8 +26,8 @@
 		"appserver-io/microcron" : "~1.0",
 		"appserver-io/webserver" : "dev-master as 3.2.3",
 		"appserver-io/properties" : "~1.0",
+		"appserver-io/concurrency" : "0.3.*",
 		"appserver-io/description" : "~1.0",
-        "appserver-io/concurrency" : "0.3.*",
 		"appserver-io/configuration" : "~2.0",
 		"appserver-io/doppelgaenger" : "~1.0",
 		"appserver-io/routlt-project" : "~1.0"
@@ -73,18 +73,6 @@
 		"post-install-cmd" : [
 			"AppserverIo\\Appserver\\Meta\\Composer\\Script\\Setup::postInstall"
 		]
-	},
-	"repositories" : [{
-			"type" : "git",
-			"url" : "https://github.com/wagnert/server",
-			"name" : "appserver-io/server"
-		}, {
-			"type" : "git",
-			"url" : "https://github.com/wagnert/webserver",
-			"name" : "appserver-io/webserver"
-		}
-	]
-}
 	},
 	"repositories" : [{
 			"type" : "git",
