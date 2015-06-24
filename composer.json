@@ -19,12 +19,12 @@
 		"appserver-io/rmi" : "~1.0",
 		"appserver-io/http" : "~1.0",
 		"appserver-io/lang" : "~1.0",
-		"appserver-io/server" : "~3.0",
+		"appserver-io/server" : "dev-master as 3.1.0",
 		"appserver-io/logger" : "~1.0",
 		"appserver-io/storage" : "~2.0",
 		"appserver-io/messaging" : "~1.0",
 		"appserver-io/microcron" : "~1.0",
-		"appserver-io/webserver" : "~3.0",
+		"appserver-io/webserver" : "dev-master as 3.2.3",
 		"appserver-io/properties" : "~1.0",
 		"appserver-io/description" : "~1.0",
         "appserver-io/concurrency" : "0.3.*",
@@ -82,6 +82,18 @@
 			"type" : "git",
 			"url" : "https://github.com/wagnert/webserver",
 			"name" : "appserver-io/webserver"
+		}
+	]
+}
+	},
+	"repositories" : [{
+			"type" : "git",
+			"url" : "https://github.com/wagnert/webserver",
+			"name" : "appserver-io/webserver"
+		}, {
+			"type" : "git",
+			"url" : "https://github.com/wagnert/server",
+			"name" : "appserver-io/server"
 		}
 	]
 }
