@@ -271,7 +271,6 @@ abstract class AbstractStep extends \Thread implements StepInterface
      */
     public function shutdown()
     {
-
         // check if there was a fatal error caused shutdown
         if ($lastError = error_get_last()) {
             // initialize error type and message

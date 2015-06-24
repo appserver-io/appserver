@@ -29,10 +29,9 @@ use AppserverIo\Appserver\Core\Api\Node\ManagerNodeInterface;
 use AppserverIo\Appserver\Core\Api\Node\ProvisionerNodeInterface;
 use AppserverIo\Appserver\Core\Api\Node\ClassLoaderNodeInterface;
 use AppserverIo\Appserver\Core\Interfaces\ClassLoaderInterface;
-use AppserverIo\Appserver\Naming\BindingTrait;
-use AppserverIo\Appserver\Naming\NamingDirectory;
 use AppserverIo\Psr\Naming\NamingException;
 use AppserverIo\Psr\Naming\NamingDirectoryInterface;
+use AppserverIo\Psr\Context\ContextInterface as Context;
 use AppserverIo\Psr\Application\ManagerInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Psr\Application\ProvisionerInterface;
@@ -57,16 +56,9 @@ use AppserverIo\Appserver\Application\Interfaces\ContextInterface;
  * @property \AppserverIo\Storage\GenericStackable                          $managers         Stackable of managers for this application
  * @property string                                                         $name             Name of the application
  * @property \AppserverIo\Psr\Naming\NamingDirectoryInterface               $namingDirectory  The naming directory instance
- * @property \AppserverIo\Psr\Naming\NamingDirectoryInterface               $envAppDir        A reference to the application specific environment naming directory instance
- * @property string                                                         $scheme           The scheme specific to this application
  */
-class Application extends \Thread implements ApplicationInterface, NamingDirectoryInterface, DirectoryAwareInterface, FilesystemAwareInterface
+class Application extends \Thread implements ApplicationInterface, DirectoryAwareInterface, FilesystemAwareInterface, Context
 {
-
-    /**
-     * Trait which allows to bind instances and callbacks to the application
-     */
-    use BindingTrait;
 
     /**
      * The time we wait after each loop.
@@ -80,9 +72,6 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
      */
     public function __construct()
     {
-
-        $this->data = array();
-
         $this->applicationState = ApplicationStateKeys::get(ApplicationStateKeys::WAITING_FOR_INITIALIZATION);
     }
 
@@ -96,29 +85,6 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
      */
     public function getAttribute($key)
     {
-        return $this->data[$key];
-    }
-
-    /**
-     * All values registered in the context.
-     *
-     * @return array The context data
-     */
-    public function getAttributes()
-    {
-        return $this->data;
-    }
-
-    /**
-     * Queries if the attribute with the passed key is bound.
-     *
-     * @param string $key The key of the attribute to query
-     *
-     * @return boolean TRUE if the attribute is bound, else FALSE
-     */
-    public function hasAttribute($key)
-    {
-        return isset($this->data[$key]);
     }
 
     /**
@@ -131,40 +97,6 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
      */
     public function setAttribute($key, $value)
     {
-
-        // a bit complicated, but we're in a multithreaded environment
-        if (isset($this->data[$key])) {
-            throw new NamingException(sprintf('Attribute %s can\'t be overwritten', $key));
-        }
-
-        // a bit complicated, but we're in a multithreaded environment
-        $data = $this->data;
-        $data[$key] = $value;
-        $this->data = $data;
-    }
-
-    /**
-     * Returns the keys of the bound attributes.
-     *
-     * @return array The keys of the bound attributes
-     */
-    public function getAllKeys()
-    {
-        return array_keys($this->getAttributes());
-    }
-
-    /**
-     * Removes the attribute with the passed key.
-     *
-     * @param string $key The key of the attribute to remove
-     *
-     * @return void
-     */
-    public function removeAttribute($key)
-    {
-        $data = $this->data;
-        unset($data[$key]);
-        $this->data = $data;
     }
 
     /**
@@ -174,7 +106,7 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
      *
      * @return void
      */
-    public function injectNamingDirectory(NamingDirectoryInterface $namingDirectory)
+    public function injectNamingDirectory($namingDirectory)
     {
         $this->namingDirectory = $namingDirectory;
     }
@@ -257,34 +189,6 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
     public function getNamingDirectory()
     {
         return $this->namingDirectory;
-    }
-
-    /**
-     * Returns the applications naming directory.
-     *
-     * @return \AppserverIo\Psr\Naming\NamingDirectoryInterface The applications naming directory interface
-     * @see \AppserverIo\Appserver\Application\Application::getNamingDirectory()
-     */
-    public function getParent()
-    {
-        return $this->getNamingDirectory();
-    }
-
-    /**
-     * Returns the scheme.
-     *
-     * @return string The scheme we want to use
-     */
-    public function getScheme()
-    {
-
-        // if the parent directory has a schema, return this one
-        if ($parent = $this->getParent()) {
-            return $parent->getScheme();
-        }
-
-        // return our own schema
-        return $this->scheme;
     }
 
     /**
@@ -490,7 +394,7 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
     {
 
         // bind the class loader callback to the naming directory => the application itself
-        $this->bind($configuration->getName(), array(&$this, 'getClassLoader'), array($configuration->getName()));
+        $this->getNamingDirectory()->bind(sprintf('php:global/%s/%s', $this->getName(), $configuration->getName()), array(&$this, 'getClassLoader'), array($configuration->getName()));
 
         // add the class loader instance to the application
         $this->classLoaders[$configuration->getName()] = $classLoader;
@@ -508,7 +412,7 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
     {
 
         // bind the manager callback to the naming directory => the application itself
-        $this->bind($configuration->getName(), array(&$this, 'getManager'), array($configuration->getName()));
+        $this->getNamingDirectory()->bind(sprintf('php:global/%s/%s', $this->getName(), $configuration->getName()), array(&$this, 'getManager'), array($configuration->getName()));
 
         // add the manager instance to the application
         $this->managers[$configuration->getName()] = $manager;
@@ -526,7 +430,7 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
     {
 
         // bind the provisioner callback to the naming directory => the application itself
-        $this->bind($configuration->getName(), array(&$this, 'getProvisioner'), array($configuration->getName()));
+        $this->getNamingDirectory()->bind(sprintf('php:global/%s/%s', $this->getName(), $configuration->getName()), array(&$this, 'getProvisioner'), array($configuration->getName()));
 
         // add the provisioner instance to the application
         $this->provisioners[$configuration->getName()] = $provisioner;
@@ -548,7 +452,11 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
         $namingDirectory = $this->getNamingDirectory();
 
         // bind the application (which is also a naming directory)
-        $namingDirectory->bind(sprintf('php:global/%s', $applicationName), $this);
+        $namingDirectory->createSubdirectory(sprintf('php:global/%s', $applicationName));
+
+        // create the applications 'env' + 'env/persistence' directory the beans + persistence units will be bound to
+        $namingDirectory->createSubdirectory(sprintf('php:global/%s/env', $this->getName()));
+        $namingDirectory->createSubdirectory(sprintf('php:global/%s/env/persistence', $this->getName()));
 
         // prepare the application specific directories
         $webappPath = sprintf('%s/%s', $namingDirectory->search('php:env/appBase'), $applicationName);
@@ -562,6 +470,9 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
         $namingDirectory->bind(sprintf('php:env/%s/tmpDirectory', $applicationName), $tmpDirectory);
         $namingDirectory->bind(sprintf('php:env/%s/cacheDirectory', $applicationName), $cacheDirectory);
         $namingDirectory->bind(sprintf('php:env/%s/sessionDirectory', $applicationName), $sessionDirectory);
+
+        // bind the interface as reference to the application
+        $namingDirectory->bind(sprintf('php:global/%s/env/ApplicationInterface', $this->getName()), $this);
     }
 
     /**
@@ -574,7 +485,7 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
      */
     public function connect()
     {
-        $this->start();
+        $this->start(/* PTHREADS_INHERIT_ALL|PTHREADS_ALLOW_GLOBALS */);
     }
 
     /**
@@ -601,7 +512,7 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
         /** @var \AppserverIo\Psr\Application\ProvisionerInterface $provisioner */
         foreach ($this->getProvisioners() as $provisioner) {
             // log the manager we want to initialize
-            $this->getInitialContext()->getSystemLogger()->debug(
+            $this->getInitialContext()->getSystemLogger()->info(
                 sprintf('Now invoking provisioner %s for application %s', get_class($provisioner), $this->getName())
             );
 
@@ -609,7 +520,7 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
             $provisioner->provision($this);
 
             // log the manager we've successfully registered
-            $this->getInitialContext()->getSystemLogger()->debug(
+            $this->getInitialContext()->getSystemLogger()->info(
                 sprintf('Successfully invoked provisioner %s for application %s', get_class($provisioner), $this->getName())
             );
         }
@@ -654,7 +565,7 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
         /** @var \AppserverIo\Psr\Application\ManagerInterface $manager */
         foreach ($this->getManagers() as $manager) {
             // log the manager we want to initialize
-            $this->getInitialContext()->getSystemLogger()->debug(
+            $this->getInitialContext()->getSystemLogger()->info(
                 sprintf('Now register manager %s for application %s', get_class($manager), $this->getName())
             );
 
@@ -662,7 +573,7 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
             $manager->initialize($this);
 
             // log the manager we've successfully registered
-            $this->getInitialContext()->getSystemLogger()->debug(
+            $this->getInitialContext()->getSystemLogger()->info(
                 sprintf('Now registered manager %s for application %s', get_class($manager), $this->getName())
             );
         }
@@ -699,6 +610,21 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
     }
 
     /**
+     * Queries the naming directory for the requested name and returns the value
+     * or invokes the bound callback.
+     *
+     * @param string $name The name of the requested value
+     * @param array  $args The arguments to pass to the callback
+     *
+     * @return mixed The requested value
+     * @see \AppserverIo\Appserver\Naming\NamingDirectoryImpl::search()
+     */
+    public function search($name, array $args = array())
+    {
+        return $this->getNamingDirectory()->search(sprintf('php:global/%s/%s', $this->getName(), $name), $args);
+    }
+
+    /**
      * This is the threads main() method that initializes the application with the autoloader and
      * instantiates all the necessary manager instances.
      *
@@ -709,6 +635,7 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
     {
 
         try {
+
             // register the default autoloader
             require SERVER_AUTOLOADER;
 
@@ -717,13 +644,6 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
 
             // log a message that we now start to connect the application
             $this->getInitialContext()->getSystemLogger()->debug(sprintf('%s wait to be connected', $this->getName()));
-
-            // create the applications 'env' + 'env/persistence' directory the beans + persistence units will be bound to
-            $this->createSubdirectory('env');
-            $this->createSubdirectory('env/persistence');
-
-            // bind the interface as reference to the application
-            $this->bindReference('env/ApplicationInterface', sprintf('php:global/%s', $this->getName()));
 
             // register the class loaders
             $this->registerClassLoaders();
@@ -741,10 +661,7 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
             }
 
             // log a message that we has successfully been connected now
-            $this->getInitialContext()->getSystemLogger()->info(sprintf('%s has successfully been connected', $this->getName()));
-
-            // log the naming directory
-            $this->getInitialContext()->getSystemLogger()->debug($this->__toString());
+            $this->getNamingDirectory()->search('php:global/log/System')->info(sprintf('%s has successfully been connected', $this->getName()));
 
             // the application has successfully been initialized
             $this->synchronized(function ($self) {
@@ -764,13 +681,13 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
 
                 // wait a second to lower system load
                 $keepRunning = $this->synchronized(function ($self) {
-                    $self->wait(1000000 * Application::TIME_TO_LIVE);
+                    $self->wait(100000 * Application::TIME_TO_LIVE);
                     return $self->applicationState->equals(ApplicationStateKeys::get(ApplicationStateKeys::INITIALIZATION_SUCCESSFUL));
                 }, $this);
             }
 
             // log a message that we has successfully been shutdown now
-            $this->getInitialContext()->getSystemLogger()->info(sprintf('%s start to shutdown managers', $this->getName()));
+            $this->getNamingDirectory()->search('php:global/log/System')->info(sprintf('%s start to shutdown managers', $this->getName()));
 
             // array for the manager shutdown threads
             $shutdownThreads = array();
@@ -797,10 +714,10 @@ class Application extends \Thread implements ApplicationInterface, NamingDirecto
             $this->getNamingDirectory()->search('php:global')->removeAttribute($this->getName());
 
             // log a message that we has successfully been shutdown now
-            $this->getInitialContext()->getSystemLogger()->info(sprintf('%s has successfully been shutdown', $this->getName()));
+            $this->getNamingDirectory()->search('php:global/log/System')->info(sprintf('%s has successfully been shutdown', $this->getName()));
 
         } catch (\Exception $e) {
-            $this->getInitialContext()->getSystemLogger()->error($e->__toString());
+            $this->getNamingDirectory()->search('php:global/log/System')->error($e->__toString());
         }
     }
 

@@ -67,7 +67,7 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
      * @param \AppserverIo\Psr\Naming\NamingDirectoryInterface $configurationFilename The default naming directory
      * @param \AppserverIo\Storage\GenericStackable            $runlevels             The storage for the services
      */
-    public function __construct(NamingDirectoryInterface $namingDirectory, GenericStackable $runlevels)
+    public function __construct($namingDirectory, GenericStackable $runlevels)
     {
 
         // set the services and the naming directory
@@ -449,7 +449,7 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
                             $this->runlevel = $this->params = $actualRunlevel;
 
                         } elseif ($actualRunlevel == ApplicationServerInterface::SHUTDOWN) {
-                            // we want to shudown the application server
+                            // we want to shutdown the application server
                             $keepRunning = false;
 
                         } elseif ($actualRunlevel < $this->runlevel) {

@@ -62,14 +62,13 @@ class LoadLoggersListener extends AbstractSystemListener
 
             // register the logger callbacks in the naming directory
             foreach ($loggers as $name => $logger) {
-                $namingDirectory->bindCallback(sprintf('php:global/log/%s', $name), array($applicationServer, 'getLogger'), array($name));
+                $namingDirectory->bind(sprintf('php:global/log/%s', $name), $logger);
             }
 
             // set the initialized loggers finally
             $applicationServer->setLoggers($loggers);
 
         } catch (\Exception $e) {
-            error_log($e->__toString());
             $applicationServer->getSystemLogger()->error($e->__toString());
         }
     }

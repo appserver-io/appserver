@@ -26,6 +26,7 @@ namespace AppserverIo\Appserver\Core;
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Appserver\Naming\NamingDirectory;
 use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
+use AppserverIo\Concurrency\ExecutorService\Core;
 
 declare (ticks = 1);
 
@@ -67,11 +68,11 @@ if (array_key_exists($config, $arguments) && file_exists($arguments[$config])) {
     throw new \Exception('Can\'t find a configuration file');
 }
 
-// create a stack for the naming directories
-$directories = new GenericStackable();
+// initialize the executor service
+Core::init(SERVER_AUTOLOADER);
 
 // create and initialize the naming directory
-$namingDirectory = new NamingDirectory();
+$namingDirectory = Core::newFromEntity('AppserverIo\Appserver\Naming\NamingDirectory', 'namingDirectory');
 $namingDirectory->setScheme('php');
 
 // create a directory for the services
