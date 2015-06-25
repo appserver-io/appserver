@@ -22,7 +22,7 @@ Since DI in combination with application state is a complex issue, it is worthwh
 
 The application server does not use DI. Instead, it provides DI as a service for the applications running in apperserver.io. All session and message-driven beans, the application instance and all managers can be injected.  But, before the DI container can inject an instance to your class, you have to register it. Registering beans is either done by annotations or a deployment descriptor.
 
-The following example shows you how to annotated a `SLSB` and make it available for DI.
+The following example shows you how to annotate an `SLSB` and make it available for DI.
 
 ```php
 <?php
@@ -49,17 +49,17 @@ class AStatelessSessionBean
 }
 ```
 
-After having registered your beans, what is pretty straigthforward when using annotations, you are ready to inject them.
+After having registered your beans, a pretty straigthforward process when using annotations, you are ready to inject them.
 
 ## How to inject an instance
 
-DI can be a manual process where you `inject` an instance, needed by another class, by passing it to the constructor, for example. Inside the `Persistence-Container`, the injection is a process you cannot pursue. Thus, it seems like magic happening behind the scenes. So, instead of manually passing the necessary instances to a classes constructor, the DI container will do that for you.
+DI can be a manual process, where you `inject` an instance needed by another class by passing it to the constructor, for example. Inside the `Persistence-Container`, the injection is a process, which can be hard to follow. Thus, it seems like magic happening behind the scenes. So, instead of manually passing the necessary instances to a class' constructor, the DI container will do that for you.
 
-A developer simply has to tell the DI container what instance has to be injected at runtime. The following section describes the two otpions he has.
+A developer simply has to tell the DI container which instance needs to be injected at runtime. The following section describes the two available options.
 
 ### Property Injection
 
-The first option is to annotate a class property using the `@EnterpriseBean` annotation. The annotation accepts a `name` attribute that allows you to specify the name of a bean you have registered before. The following example shows you how to annotate a class property and initiate appserver.io to inject an instance of `AStatelessSessionBean` at runtime.
+The first option is to annotate a class property using the `@EnterpriseBean` annotation. The annotation accepts a `name` attribute, which allows you to specify the name of a registered bean, like the one we registered above. The following code snippet shows you how to annotate a class property and initiate appserver.io to inject the instance of `AStatelessSessionBean` at runtime.
 
 ```php
 <?php
@@ -102,11 +102,12 @@ class AStatefulSessionBean
 
 As the `@EnterpriseBean` annotation with the `name` attribute is not the only option to inject instances, a more detailed description about the available annotations will follow later.
 
-> Property injection is preferred, because of massive performance improvements.
+> Property injection is the recommended method, because it allows for greater performance.
+> 
 
 ### Setter Injection
 
-The second possibility to inject an instance is the setter injection. Setter injection allows developers to inject instances by using methods. 
+The second possibility to inject an instance is through setter injection. Setter injection allows developers to inject instances by using methods. 
 
 ```php
 <?php
@@ -160,6 +161,6 @@ class AStatefulSessionBean
 }
 ```
 
-In that example, the container injects an instance of `AStatelessSessionBean` at runtime by invoking the `injectAStatelessSessionBean` method passing the instance as argument.
+In the above example, the container injects an instance of `AStatelessSessionBean` at runtime by invoking the `injectAStatelessSessionBean` method passing the instance as an argument.
 
-> Method injection only works on methods that have exactly one argument. As described above, the container does not inject a real instance of the bean. Instead, it injects a proxy. That proxy not extends the class or, if given, implements the interfaces of your bean. So, do NOT type hint the argument with the class or an interface name.
+> Method injection only works on methods that have exactly one argument. As described above, the container does not inject a real instance of the bean. Instead, it injects a proxy. That proxy does not extend the class or, if given, does not implement the interfaces of your bean. So, do NOT type hint the argument with the class or an interface name.
