@@ -13,16 +13,16 @@ subNav:
 permalink: /get-started/documentation/message-queue.html
 ---
 
-A Message-Queue provides the possibility to process long running tasks in a encapsulated context.
+A Message-Queue provides a means to process long running tasks in an encapsulated context.
 For example, if you want to import a lot of products in your online shop, you can send a
-message to the Message-Queue that starts the import process in the background without
+message to the Message-Queue, which starts the import process in the background, without
 preventing the calling process to continue.
 
 > Using a Message-Queue gives you the power to use threads without taking care of the pitfalls.
 
 ## Got mail!
 
-Before sending a message, you have to specify what has to happen when you received one. The
+Before sending a message, you have to specify what has to happen, when you received one. The
 Message-Queue allows you to specify so-called `Queues`. Each `Queue` can have a receiver that
 has to be a `MessageBean`. A `MessageBean` is very similar to a [@Stateless SessionBean](#@stateless-session-bean)
 but has only one single point of entry, the `onMessage()` message method. Whenever a message
@@ -42,7 +42,7 @@ The following example shows how to create a simple `Queue`.
 ```
 
 Save this in a file called `/opt/appserver/myapp/META-INF/message-queues.xml`. The next thing
-needed is the `MessageBean` that allows us to receive and process a message in a separate thread.
+needed is the `MessageBean`, which will allows us to receive and process a message in a separate thread.
 
 ```php
 <?php
@@ -77,9 +77,7 @@ class ImportReceiver extends AbstractReceiver
 }
 ```
 
-> In addition to the functionality you have to implement in the `onMessage()` 
-> message the annotation `@MessageDriven` is important. You MUST annotate the MessageBean, for the container
-> to know about and register it on startup.
+> In addition to the functionality you implement in the `onMessage()` message method, it is import you use the annotation `@MessageDriven` to register the class as a `MessageBean`. This allows the persistence container to be aware of your bean and to register and initialize it during startup of the appserver.
 
 Running your import in a separate thread is pretty simple. The next sections demonstrates how to send a message to the `Queue`.
 
@@ -148,7 +146,7 @@ class HelloWorldServlet extends HttpServlet
    * Initializes the servlet with the passed configuration.
    *
    * @param \AppserverIo\Psr\Servlet\ServletConfig $config 
-   *   The configuration to initialize the servlet with
+   *   The configuration used for servlet initialization
    *
    * @return void
    */
@@ -162,7 +160,7 @@ class HelloWorldServlet extends HttpServlet
     $this->helloWorld = 'Hello World! (has been invoked %d times)';
 
     // @todo Do all the bootstrapping here, because this method will
-    //       be invoked only once when the Servlet Engines starts up
+    //       be invoked only once, when the Servlet Engines starts up
   }
 
   /**
@@ -248,5 +246,5 @@ class HelloWorldServlet extends HttpServlet
 }
 ```
 
-> To make it easy, we can use the `@Resource` annotation. Thus, the container injects a sender
-> instance, which can be used to send the name of the file.
+> To make it simpler, as shown above, you can use the `@Resource` annotation. With this annotation, the container will inject a sender
+> instance, which will send the name of the file.
