@@ -207,14 +207,14 @@ heavy modifications it requires for structure definitions and the applied cachin
 
 > To change any Design by Contract behavior, the change must be made within the class loader configuration.
 
-The class loader configuration can be found within any `context.xml` file. Any changes made to any `context.xml` file will have a global affect on every application.
+The class loader configuration can be found within any `context.xml` file. 
 
-The files can be found:
+A `context.xml` file can be found:
 
 * Globally, in the `etc/appserver/conf.d/context.xml` file.
 * Locally, in the webapp specific file located within the webapp's `META-INF` directory.
 
-So choose wisely, when you make changes to the configuration. 
+The local file can override or extend the global file's configuration, so be certain of where you make any changes or additions. Any changes made to a context.xml file will either have a global effect or will only affect the webapp it is located in.
 
 ### Configuration options
 
@@ -257,4 +257,4 @@ This is common configuration for every class loader type.
 A feature of the appserver class loader is ability to toggle the enforcement of Design by Contract for each one of the defined directories.
 
 
-If the attribute `enforced` is set to FALSE,  no enforcement will take place for the mentioned directory. 
+If the attribute `enforced` is set to FALSE,  no enforcement will take place for the mentioned directory.
