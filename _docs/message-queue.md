@@ -42,7 +42,7 @@ The following example shows how to create a simple `Queue`.
 ```
 
 Save this in a file called `/opt/appserver/myapp/META-INF/message-queues.xml`. The next thing
-needed is the `MessageBean`, which will allows us to receive and process a message in a separate thread.
+needed is the `MessageBean`, which will allow us to receive and process a message in a separate thread.
 
 ```php
 <?php
