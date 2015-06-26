@@ -114,7 +114,7 @@ It contains information about the environment, about the dependencies appserver.
 > Build properties can be overwritten locally within a `build.properties` file in the package root.
 
 For our Raspbian example, we provide additional meta-information within the `buildfiles` directory. 
-To use it, the `os.distribution` property of our default build properties need to be overwritten, as it is shown below:
+To use it, the `os.distribution` property of our default build properties needs to be overwritten, as it is shown below:
 
 ```
 # ---- Default Operating System -------------------------------------------------
