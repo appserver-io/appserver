@@ -476,6 +476,31 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
     }
 
     /**
+     * Cleanup the naming directory from the application entries.
+     *
+     * @return void
+     */
+    public function unload()
+    {
+
+        // load the naming directory
+        $namingDirectory = $this->getNamingDirectory();
+
+        // unbind the environment references of the application
+        $namingDirectory->unbind(sprintf('php:env/%s/webappPath', $this->getName()));
+        $namingDirectory->unbind(sprintf('php:env/%s/tmpDirectory', $this->getName()));
+        $namingDirectory->unbind(sprintf('php:env/%s/cacheDirectory', $this->getName()));
+        $namingDirectory->unbind(sprintf('php:env/%s/sessionDirectory', $this->getName()));
+        $namingDirectory->unbind(sprintf('php:env/%s', $this->getName()));
+
+        // unbind the global references of the application
+        $namingDirectory->unbind(sprintf('php:global/%s/env/ApplicationInterface', $this->getName()));
+        $namingDirectory->unbind(sprintf('php:global/%s/env/persistence', $this->getName()));
+        $namingDirectory->unbind(sprintf('php:global/%s/env', $this->getName()));
+        $namingDirectory->unbind(sprintf('php:global/%s', $this->getName()));
+    }
+
+    /**
      * Has been automatically invoked by the container after the application
      * instance has been created.
      *
@@ -485,7 +510,7 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
      */
     public function connect()
     {
-        $this->start(/* PTHREADS_INHERIT_ALL|PTHREADS_ALLOW_GLOBALS */);
+        $this->start();
     }
 
     /**
@@ -694,7 +719,7 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
 
             // we need to stop all managers, because they've probably running threads
             /** @var \AppserverIo\Psr\Application\ManagerInterface $manager */
-            foreach ($this->getManagers() as $identifier => $manager) {
+            foreach ($this->getManagers() as $manager) {
                 $shutdownThreads[] = new ManagerShutdownThread($manager);
             }
 
@@ -710,8 +735,7 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
             }, $this);
 
             // cleanup the naming directory with the application entries
-            $this->getNamingDirectory()->search('php:env')->removeAttribute($this->getName());
-            $this->getNamingDirectory()->search('php:global')->removeAttribute($this->getName());
+            $this->unload();
 
             // log a message that we has successfully been shutdown now
             $this->getNamingDirectory()->search('php:global/log/System')->info(sprintf('%s has successfully been shutdown', $this->getName()));

@@ -276,6 +276,39 @@ class NamingDirectory implements NamingDirectoryInterface
     }
 
     /**
+     * Binds a reference with the passed name to the naming directory.
+     *
+     * @param string $name      The name to bind the reference with
+     * @param string $reference The name of the reference
+     *
+     * @return void
+     * @see \AppserverIo\Appserver\Naming\NamingDirectory::bind()
+     *
+     * @Synchronized
+     */
+    public function bindReference($name, $reference)
+    {
+        $this->bindCallback($name, array(&$this, 'search'), array($reference, array()));
+    }
+
+    /**
+     * Binds the passed callback with the name to the naming directory.
+     *
+     * @param string   $name     The name to bind the callback with
+     * @param callable $callback The callback to be invoked when searching for
+     * @param array    $args     The array with the arguments passed to the callback when executed
+     *
+     * @return void
+     * @see \AppserverIo\Appserver\Naming\NamingDirectory::bind()
+     *
+     * @Synchronized
+     */
+    public function bindCallback($name, callable $callback, array $args = array())
+    {
+        $this->bind($name, $callback, $args);
+    }
+
+    /**
      * Binds the passed instance with the name to the naming directory.
      *
      * @param string $name  The name to bind the value with
@@ -333,39 +366,6 @@ class NamingDirectory implements NamingDirectoryInterface
     }
 
     /**
-     * Binds the passed callback with the name to the naming directory.
-     *
-     * @param string   $name     The name to bind the callback with
-     * @param callable $callback The callback to be invoked when searching for
-     * @param array    $args     The array with the arguments passed to the callback when executed
-     *
-     * @return void
-     * @see \AppserverIo\Appserver\Naming\NamingDirectory::bind()
-     *
-     * @Synchronized
-     */
-    public function bindCallback($name, callable $callback, array $args = array())
-    {
-        $this->bind($name, $callback, $args);
-    }
-
-    /**
-     * Binds a reference with the passed name to the naming directory.
-     *
-     * @param string $name      The name to bind the reference with
-     * @param string $reference The name of the reference
-     *
-     * @return void
-     * @see \AppserverIo\Appserver\Naming\NamingDirectory::bind()
-     *
-     * @Synchronized
-     */
-    public function bindReference($name, $reference)
-    {
-        $this->bindCallback($name, array(&$this, 'search'), array($reference, array()));
-    }
-
-    /**
      * Unbinds the named object from the naming directory.
      *
      * @param string $name The name of the object to unbind
@@ -376,6 +376,11 @@ class NamingDirectory implements NamingDirectoryInterface
      */
     public function unbind($name)
     {
+
+        // delegate the bind request to the parent directory
+        if (strpos($name, sprintf('%s:', $this->getScheme())) === 0 && $this->getParent()) {
+            return $this->findRoot()->bind($name, $value, $args);
+        }
 
         // strip off the schema
         $name = str_replace(sprintf('%s:', $this->getScheme()), '', $name);
@@ -394,8 +399,10 @@ class NamingDirectory implements NamingDirectoryInterface
                 list ($valueFound, ) = $data;
 
                 // try to bind it to the subdirectory
-                if ($valueFound instanceof NamingDirectoryInterface) {
-                    return $valueFound->unbind(str_replace($token . '/', '', $name), $value, $args);
+                if ($valueFound instanceof NamingDirectory) {
+                    if ($valueFound->getName() !== $name) {
+                        return $valueFound->unbind(str_replace($token . '/', '', $name));
+                    }
                 }
 
                 // remove the attribute if we find the requested value

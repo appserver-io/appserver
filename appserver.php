@@ -101,12 +101,15 @@ foreach (ApplicationServer::$runlevels as $runlevel) {
 
 // initialize and start the application server
 $applicationServer = new ApplicationServer($namingDirectory, $runlevels);
-$applicationServer->start(PTHREADS_INHERIT_ALL|PTHREADS_ALLOW_GLOBALS);
+$applicationServer->start();
 
 // we've to wait for shutdown
 while ($applicationServer->keepRunning()) {
     sleep(1);
 }
+
+// stop the executor service
+Core::shutdown();
 
 // wait until all threads have been stopped
 $applicationServer->join();
