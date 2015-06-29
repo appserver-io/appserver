@@ -31,7 +31,19 @@ namespace AppserverIo\Appserver\Core\Interfaces;
  */
 interface ScannerInterface
 {
+
+    /**
+     * Returns the unique scanner name.
+     *
+     * @return string The scanner name
+     */
     public function getName();
 
+
+    /**
+     * Stop's the scanner.
+     *
+     * @return void
+     */
     public function stop();
 }
