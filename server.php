@@ -53,6 +53,13 @@ if (extension_loaded('appserver') === false) {
     throw new \Exception('Extension appserver (https://github.com/appserver-io-php/php-ext-appserver) > 1.0.1 has to be loaded');
 }
 
+
+// define a all constants appserver base directory
+define('APPSERVER_BP', __DIR__);
+
+// bootstrap the application
+require __DIR__ . DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR . 'scripts' . DIRECTORY_SEPARATOR . 'bootstrap.php';
+
 // define the available options
 $watch = 'w'; // compatibility mode for old server version
 $config = 'c';
@@ -60,12 +67,6 @@ $bootstrap = 'b';
 
 // check if server.php has been started with -c or -b option
 $arguments = getopt("$watch::$config::$bootstrap::");
-
-// define a all constants appserver base directory
-define('APPSERVER_BP', __DIR__);
-
-// bootstrap the application
-require __DIR__ . DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR . 'scripts' . DIRECTORY_SEPARATOR . 'bootstrap.php';
 
 // query whether a configuration file has been specified or not
 if (array_key_exists($config, $arguments) && file_exists($arguments[$config])) {
@@ -98,7 +99,8 @@ if (array_key_exists($bootstrap, $arguments) && file_exists($arguments[$bootstra
 Core::init(SERVER_AUTOLOADER);
 
 // create and initialize the naming directory
-$namingDirectory = Core::newFromEntity('AppserverIo\Appserver\Naming\NamingDirectory', 'namingDirectory');
+$namingDirectory = Core::newFromEntity('AppserverIo\Appserver\Naming\NamingDirectoryImpl', 'namingDirectory');
+// $namingDirectory = new NamingDirectory();
 $namingDirectory->setScheme('php');
 
 // create a directory for the services

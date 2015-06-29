@@ -1,7 +1,7 @@
 <?php
 
 /**
- * \AppserverIo\Appserver\Naming\NamingDirectory
+ * AppserverIo\Appserver\Naming\NamingDirectoryImpl
  *
  * NOTICE OF LICENSE
  *
@@ -20,24 +20,42 @@
 
 namespace AppserverIo\Appserver\Naming;
 
-use Rhumsaa\Uuid\Uuid;
-use AppserverIo\Storage\GenericStackable;
+use AppserverIo\Collections\HashMap;
 use AppserverIo\Psr\Naming\NamingException;
 use AppserverIo\Psr\Naming\NamingDirectoryInterface;
 
 /**
- * Naming directory implementation.
+ * Naming directory implementation for running inside the executor service.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
- *
- * @property string $scheme The binding string scheme
  */
-class NamingDirectory extends GenericStackable implements NamingDirectoryInterface
+class NamingDirectoryImpl implements NamingDirectoryInterface
 {
+
+    /**
+     * The naming directory's name.
+     *
+     * @var string
+     */
+    protected $name;
+
+    /**
+     * The map containing the naming directory's data.
+     *
+     * @var \AppserverIo\Collections\HashMap
+     */
+    protected $data;
+
+    /**
+     * The parent naming directory.
+     *
+     * @var \AppserverIo\Psr\Naming\NamingDirectoryInterface
+     */
+    protected $parent;
 
     /**
      * Initialize the directory with a name and the parent one.
@@ -53,13 +71,15 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
         $this->name = $name;
 
         // initialize the array for the attributes
-        $this->data = array();
+        $this->data = new HashMap();
     }
 
     /**
      * Returns the directory name.
      *
      * @return string The directory name
+     *
+     * @Synchronized
      */
     public function getName()
     {
@@ -70,6 +90,8 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
      * Returns the parend directory.
      *
      * @return \AppserverIo\Psr\Naming\NamingDirectoryInterface
+     *
+     * @Synchronized
      */
     public function getParent()
     {
@@ -82,6 +104,8 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
      * @param string $scheme The scheme we want to use
      *
      * @return void
+     *
+     * @Synchronized
      */
     public function setScheme($scheme)
     {
@@ -92,6 +116,8 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
      * Returns the scheme.
      *
      * @return string The scheme we want to use
+     *
+     * @Synchronized
      */
     public function getScheme()
     {
@@ -112,16 +138,22 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
      *
      * @return mixed The requested attribute
      * @see \AppserverIo\Psr\Context\ContextInterface::getAttribute()
+     *
+     * @Synchronized
      */
     public function getAttribute($key)
     {
-        return $this->data[$key];
+        if ($this->hasAttribute($key)) {
+            return $this->getAttributes()->get($key);
+        }
     }
 
     /**
      * All values registered in the context.
      *
-     * @return array The context data
+     * @return \AppserverIo\Collections\HashMap The context data
+     *
+     * @Synchronized
      */
     public function getAttributes()
     {
@@ -137,7 +169,7 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
      */
     public function hasAttribute($key)
     {
-        return isset($this->data[$key]);
+        return $this->getAttributes()->exists($key);
     }
 
     /**
@@ -147,29 +179,31 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
      * @param mixed  $value Tha attribute to be bound
      *
      * @return void
+     *
+     * @Synchronized
      */
     public function setAttribute($key, $value)
     {
 
         // a bit complicated, but we're in a multithreaded environment
-        if (isset($this->data[$key])) {
+        if ($this->hasAttribute($key)) {
             throw new NamingException(sprintf('Attribute %s can\'t be overwritten', $key));
         }
 
         // set the key/value pair
-        $data = $this->data;
-        $data[$key] = $value;
-        $this->data = $data;
+        $this->getAttributes()->add($key, $value);
     }
 
     /**
      * Returns the keys of the bound attributes.
      *
      * @return array The keys of the bound attributes
+     *
+     * @Synchronized
      */
     public function getAllKeys()
     {
-        return array_keys($this->getAttributes());
+        return array_keys($this->getAttributes()->getIndexedArray());
     }
 
     /**
@@ -178,12 +212,100 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
      * @param string $key The key of the attribute to remove
      *
      * @return void
+     *
+     * @Synchronized
      */
     public function removeAttribute($key)
     {
-        $data = $this->data;
-        unset($data[$key]);
-        $this->data = $data;
+        if ($this->hasAttribute($key)) {
+            $this->getAttributes()->remove($key);
+        }
+    }
+
+    /**
+     * Create and return a new naming subdirectory with the attributes
+     * of this one.
+     *
+     * @param string $name   The name of the new subdirectory
+     * @param array  $filter Array with filters that will be applied when copy the attributes
+     *
+     * @return \AppserverIo\Appserver\Naming\NamingDirectory The new naming subdirectory
+     *
+     * @Synchronized
+     */
+    public function createSubdirectory($name, array $filter = array())
+    {
+
+        // cut off append slashes
+        $name = rtrim($name, '/');
+
+        // query whether we found a slash AND a prepended scheme
+        if (strpos($name, sprintf('%s:', $this->getScheme())) === 0 && ($found = strrpos($name, '/')) !== false) {
+            // cut off the last directory
+            $parentDirectory = substr($name, 0, $found);
+
+            // prepare the name of the subdirectory to create
+            $newDirectory = ltrim(str_replace($parentDirectory, '', $name), '/');
+
+            // load the parent directory and create the new subdirectory
+            return $this->search($parentDirectory)->createSubdirectory($newDirectory, $filter);
+        }
+
+        // strip off the schema
+        $name = str_replace(sprintf('%s:', $this->getScheme()), '', $name);
+
+        // copy the attributes specified by the filter
+        if (sizeof($filter) > 0) {
+            foreach ($this->getAllKeys() as $key => $value) {
+                foreach ($filter as $pattern) {
+                    if (fnmatch($pattern, $key)) {
+                        $subdirectory->bind($key, $value);
+                    }
+                }
+            }
+        }
+
+        // create a new subdirectory instance
+        $subdirectory = new NamingDirectoryImpl($name, $this);
+
+        // bind it the directory
+        $this->bind($name, $subdirectory);
+
+        // return the instance
+        return clone $subdirectory;
+    }
+
+    /**
+     * Binds a reference with the passed name to the naming directory.
+     *
+     * @param string $name      The name to bind the reference with
+     * @param string $reference The name of the reference
+     *
+     * @return void
+     * @see \AppserverIo\Appserver\Naming\NamingDirectory::bind()
+     *
+     * @Synchronized
+     */
+    public function bindReference($name, $reference)
+    {
+        $this->bindCallback($name, array(&$this, 'search'), array($reference, array()));
+    }
+
+    /**
+     * Binds the passed callback with the name to the naming directory.
+     *
+     * @param string   $name     The name to bind the callback with
+     * @param callable $callback The callback to be invoked when searching for
+     * @param array    $args     The array with the arguments passed to the callback when executed
+     *
+     * @return void
+     * @see \AppserverIo\Appserver\Naming\NamingDirectory::bind()
+     *
+     * @Synchronized
+     */
+    public function bindCallback($name, callable $callback, array $args = array())
+    {
+        $this->bind($name, $callback, $args);
     }
 
     /**
@@ -195,6 +317,8 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
      *
      * @return void
      * @throws \AppserverIo\Psr\Naming\NamingException Is thrown if the value can't be bound ot the directory
+     *
+     * @Synchronized
      */
     public function bind($name, $value, array $args = array())
     {
@@ -242,47 +366,20 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
     }
 
     /**
-     * Binds the passed callback with the name to the naming directory.
-     *
-     * @param string   $name     The name to bind the callback with
-     * @param callable $callback The callback to be invoked when searching for
-     * @param array    $args     The array with the arguments passed to the callback when executed
-     *
-     * @return void
-     * @see \AppserverIo\Appserver\Naming\NamingDirectory::bind()
-     */
-    public function bindCallback($name, callable $callback, array $args = array())
-    {
-        $this->bind($name, $callback, $args);
-    }
-
-    /**
-     * Binds a reference with the passed name to the naming directory.
-     *
-     * @param string $name      The name to bind the reference with
-     * @param string $reference The name of the reference
-     *
-     * @return void
-     * @see \AppserverIo\Appserver\Naming\NamingDirectory::bind()
-     */
-    public function bindReference($name, $reference)
-    {
-        $this->bindCallback($name, array(&$this, 'search'), array($reference, array()));
-    }
-
-    /**
      * Unbinds the named object from the naming directory.
      *
      * @param string $name The name of the object to unbind
      *
      * @return void
+     *
+     * @Synchronized
      */
     public function unbind($name)
     {
 
         // delegate the bind request to the parent directory
         if (strpos($name, sprintf('%s:', $this->getScheme())) === 0 && $this->getParent()) {
-            return $this->findRoot()->unbind($name);
+            return $this->findRoot()->bind($name);
         }
 
         // strip off the schema
@@ -301,8 +398,8 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
                 // load the bound value/args
                 list ($valueFound, ) = $data;
 
-                // try to unbind it from the subdirectory
-                if ($valueFound instanceof NamingDirectoryInterface) {
+                // try to bind it to the subdirectory
+                if ($valueFound instanceof NamingDirectoryImpl) {
                     if ($valueFound->getName() !== $name) {
                         return $valueFound->unbind(str_replace($token . '/', '', $name));
                     }
@@ -329,10 +426,11 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
      *
      * @return mixed The requested value
      * @throws \AppserverIo\Psr\Naming\NamingException Is thrown if the requested name can't be resolved in the directory
+     *
+     * @Direct
      */
     public function search($name, array $args = array())
     {
-
         // delegate the search request to the parent directory
         if (strpos($name, sprintf('%s:', $this->getScheme())) === 0 && $this->getParent()) {
             return $this->findRoot()->search($name, $args);
@@ -346,6 +444,7 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
 
         // while we've tokens, try to find a value bound to the token
         while ($token !== false) {
+
             // check if we can find something
             if ($this->hasAttribute($token)) {
                 // load the value
@@ -365,10 +464,9 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
                     return call_user_func_array($value, $bindArgs);
                 }
 
-                // search recursive
+                // search recursive, and query whether the value is NOT what we're searching for
                 if ($value instanceof NamingDirectoryInterface) {
                     if ($value->getName() !== $name) {
-                        // if $value is NOT what we're searching for
                         return $value->search(str_replace($token . '/', '', $name), $args);
                     }
                 }
@@ -382,7 +480,7 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
         }
 
         // throw an exception if we can't resolve the name
-        throw new NamingException(sprintf('Cant\'t resolve %s in naming directory %s', ltrim($name, '/'), $this->getIdentifier()));
+        throw new NamingException(sprintf('Cant\'t resolve %s in naming directory', ltrim($name, '/')));
     }
 
     /**
@@ -393,6 +491,8 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
      * @see \AppserverIo\Storage\StorageInterface::getIdentifier()
      *
      * @throws \AppserverIo\Psr\Naming\NamingException
+     *
+     * @Synchronized
      */
     public function getIdentifier()
     {
@@ -415,6 +515,8 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
      * Returns a string presentation of the naming directory tree.
      *
      * @return string The naming directory as string
+     *
+     * @Synchronized
      */
     public function __toString()
     {
@@ -425,6 +527,8 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
      * Returns the root node of the naming directory tree.
      *
      * @return \AppserverIo\Psr\Naming\NamingDirectoryInterface The root node
+     *
+     * @Synchronized
      */
     public function findRoot()
     {
@@ -445,6 +549,8 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
      * @param string $buffer The string to append to
      *
      * @return string The buffer append with the string representation
+     *
+     * @Synchronized
      */
     public function renderRecursive(&$buffer = PHP_EOL)
     {
@@ -492,64 +598,5 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
 
         // return the buffer
         return $buffer;
-    }
-
-    /**
-     * Create and return a new naming subdirectory with the attributes
-     * of this one.
-     *
-     * @param string $name   The name of the new subdirectory
-     * @param array  $filter Array with filters that will be applied when copy the attributes
-     *
-     * @return \AppserverIo\Appserver\Naming\NamingDirectory The new naming subdirectory
-     */
-    public function createSubdirectory($name, array $filter = array())
-    {
-
-        try {
-            // cut off append slashes
-            $name = rtrim($name, '/');
-
-            // query whether we found a slash AND a prepended scheme
-            if (strpos($name, sprintf('%s:', $this->getScheme())) === 0 && ($found = strrpos($name, '/')) !== false) {
-                // cut off the last directory
-                $parentDirectory = substr($name, 0, $found);
-
-                // prepare the name of the subdirectory to create
-                $newDirectory = ltrim(str_replace($parentDirectory, '', $name), '/');
-
-                // load the parent directory and create the new subdirectory
-                return $this->search($parentDirectory)->createSubdirectory($newDirectory, $filter);
-            }
-
-            // strip off the schema
-            $name = str_replace(sprintf('%s:', $this->getScheme()), '', $name);
-
-            // copy the attributes specified by the filter
-            if (sizeof($filter) > 0) {
-                foreach ($this->getAllKeys() as $key => $value) {
-                    foreach ($filter as $pattern) {
-                        if (fnmatch($pattern, $key)) {
-                            $subdirectory->bind($key, $value);
-                        }
-                    }
-                }
-            }
-
-            // create a local copy of the naming directory stack
-            global $directories;
-
-            // create a new subdirectory instance
-            $directories[$id = Uuid::uuid4()->__toString()] = new NamingDirectory($name, $this);
-
-            // bind it the directory
-            $this->bind($name, $directories[$id]);
-
-            // return the instance
-            return $directories[$id];
-
-        } catch (\Exception $e) {
-            error_log($e->__toString());
-        }
     }
 }
