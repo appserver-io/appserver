@@ -54,11 +54,12 @@ if (extension_loaded('appserver') === false) {
 }
 
 // define the available options
+$watch = 'w'; // compatibility mode for old server version
 $config = 'c';
 $bootstrap = 'b';
 
 // check if server.php has been started with -c or -b option
-$arguments = getopt("$config::$bootstrap::");
+$arguments = getopt("$watch::$config::$bootstrap::");
 
 // define a all constants appserver base directory
 define('APPSERVER_BP', __DIR__);
@@ -82,6 +83,9 @@ if (array_key_exists($config, $arguments) && file_exists($arguments[$config])) {
 if (array_key_exists($bootstrap, $arguments) && file_exists($arguments[$bootstrap])) {
     // set the file passed as parameter
     $bootstrapFilename = $arguments[$bootstrap];
+} elseif (array_key_exists($watch, $arguments) && file_exists(sprintf('%s/etc/appserver/conf.d/bootstrap-watcher.xml', APPSERVER_BP))) {
+    // set the default watcher boostrap file
+    $bootstrapFilename = sprintf('%s/etc/appserver/conf.d/bootstrap-watcher.xml', APPSERVER_BP);
 } elseif (file_exists(sprintf('%s/etc/appserver/conf.d/bootstrap.xml', APPSERVER_BP))) {
     // try to load the default bootstrap file
     $bootstrapFilename = sprintf('%s/etc/appserver/conf.d/bootstrap.xml', APPSERVER_BP);
