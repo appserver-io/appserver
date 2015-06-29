@@ -96,11 +96,11 @@ if (array_key_exists($bootstrap, $arguments) && file_exists($arguments[$bootstra
 }
 
 // initialize the executor service
-Core::init(SERVER_AUTOLOADER);
+// Core::init(SERVER_AUTOLOADER);
 
 // create and initialize the naming directory
-$namingDirectory = Core::newFromEntity('AppserverIo\Appserver\Naming\NamingDirectoryImpl', 'namingDirectory');
-// $namingDirectory = new NamingDirectory();
+// $namingDirectory = Core::newFromEntity('AppserverIo\Appserver\Naming\NamingDirectoryImpl', 'namingDirectory');
+$namingDirectory = new NamingDirectory();
 $namingDirectory->setScheme('php');
 
 // create a directory for the services
