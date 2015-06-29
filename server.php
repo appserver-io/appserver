@@ -23,14 +23,10 @@
 
 namespace AppserverIo\Appserver\Core;
 
-use AppserverIo\Appserver\Core\Api\ConfigurationService;
-use AppserverIo\Appserver\Core\Api\Node\AppserverNode;
-use AppserverIo\Appserver\Core\Api\Node\ParamNode;
+use AppserverIo\Storage\GenericStackable;
+use AppserverIo\Concurrency\ExecutorService\Core;
+use AppserverIo\Appserver\Naming\NamingDirectory;
 use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
-use AppserverIo\Appserver\Core\InitialContext;
-use AppserverIo\Appserver\Core\Utilities\FileSystem;
-use AppserverIo\Appserver\Meta\Composer\Script\Setup;
-use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
 
 declare (ticks = 1);
 
@@ -42,27 +38,30 @@ ini_set('session.gc_maxlifetime', 0);
 ini_set('zend.enable_gc', 0);
 ini_set('max_execution_time', 0);
 
-// set environmental variables in $_ENV globals per default
-$_ENV = appserver_get_envs();
+// query whether the sockets extension is available or not
+if (extension_loaded('sockets') === false) {
+    throw new \Exception('Extension sockets has to be loaded');
+}
+
+// query whether the pthreads extension is available or not
+if (extension_loaded('pthreads') === false) {
+    throw new \Exception('Extension pthreads (https://github.com/appserver-io-php/pthreads) > 2.0.10 has to be loaded');
+}
+
+// query whether the appserver extension is available or not
+if (extension_loaded('appserver') === false) {
+    throw new \Exception('Extension appserver (https://github.com/appserver-io-php/php-ext-appserver) > 1.0.1 has to be loaded');
+}
 
 // define the available options
-$watch = 'w';
 $config = 'c';
-$configTest = 't';
-$setup = 's';
+$bootstrap = 'b';
 
-// check if server.php has been started with -w , -s and/or -c option
-$arguments = getopt("$watch::$configTest::$setup:", array("$config::"));
+// check if server.php has been started with -c or -b option
+$arguments = getopt("$config::$bootstrap::");
 
 // define a all constants appserver base directory
 define('APPSERVER_BP', __DIR__);
-
-// define install flag for setup mode install to check
-define(
-'IS_INSTALLED_FILE',
-    __DIR__ . DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR . 'appserver' . DIRECTORY_SEPARATOR . '.is-installed'
-);
-define('IS_INSTALLED', is_file(IS_INSTALLED_FILE));
 
 // bootstrap the application
 require __DIR__ . DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR . 'scripts' . DIRECTORY_SEPARATOR . 'bootstrap.php';
@@ -79,209 +78,57 @@ if (array_key_exists($config, $arguments) && file_exists($arguments[$config])) {
     throw new \Exception('Can\'t find a configuration file');
 }
 
-// initialize configuration and schema file name
-$configurationFileName = DirectoryKeys::realpath($filename);
-
-// initialize the DOMDocument with the configuration file to be validated
-$configurationFile = new \DOMDocument();
-$configurationFile->load($configurationFileName);
-
-// substitute xincludes
-$configurationFile->xinclude(LIBXML_SCHEMA_CREATE);
-
-// create a DOMElement with the base.dir configuration
-$paramElement = $configurationFile->createElement('param', APPSERVER_BP);
-$paramElement->setAttribute('name', DirectoryKeys::BASE);
-$paramElement->setAttribute('type', ParamNode::TYPE_STRING);
-
-// create an XPath instance
-$xpath = new \DOMXpath($configurationFile);
-$xpath->registerNamespace('a', 'http://www.appserver.io/appserver');
-
-// for node data in a selected id
-$baseDirParam = $xpath->query(sprintf('/a:appserver/a:params/a:param[@name="%s"]', DirectoryKeys::BASE));
-if ($baseDirParam->length === 0) {
-
-    // load the <params> node
-    $paramNodes = $xpath->query('/a:appserver/a:params');
-
-    // load the first item => the node itself
-    if ($paramsNode = $paramNodes->item(0)) {
-        // append the base.dir DOMElement
-        $paramsNode->appendChild($paramElement);
-    } else {
-        // throw an exception, because we can't find a mandatory node
-        throw \Exception('Can\'t find /appserver/params node');
-    }
-}
-
-// create a new DOMDocument with the merge content => necessary because else, schema validation fails!!
-$mergeDoc = new \DOMDocument();
-$mergeDoc->loadXML($configurationFile->saveXML());
-
-// get an instance of our configuration tester
-$configurationService = new ConfigurationService(new InitialContext(new AppserverNode()));
-
-// validate the configuration file with the schema
-if ($configurationService->validateXml($mergeDoc) === false) {
-
-    foreach ($configurationService->getErrorMessages() as $message) {
-
-        // if we are here to test we will make a sane output instead of throwing an exception
-        if (array_key_exists($configTest, $arguments)) {
-
-            echo $message;
-            exit(1);
-        }
-        throw new \Exception($message);
-    }
-
-} elseif (array_key_exists($configTest, $arguments)) {
-
-    echo "Syntax OK\n";
-    exit(0);
-}
-
-// initialize the SimpleXMLElement with the content XML configuration file
-$configuration = new \AppserverIo\Configuration\Configuration();
-$configuration->initFromString($mergeDoc->saveXML());
-
-// create the server instance
-$server = new Server($configuration);
-
-// check if server.php -s is called for doing setup process
-if (array_key_exists($setup, $arguments)) {
-    try {
-        // get setup mode from arguments
-        $setupMode = $arguments[$setup];
-
-        // init setup context
-        Setup::prepareContext(APPSERVER_BP);
-
-        // init user and group vars
-        $user = null;
-        $group = null;
-
-        $configurationUserReplacePattern = '/(<appserver[^>]+>[^<]+<params>.*<param name="user[^>]+>)([^<]+)/s';
-
-        // check setup modes
-        switch ($setupMode) {
-
-            // prepares everything for developer mode
-            case 'dev':
-                // set current user
-                $user = get_current_user();
-                // check if script is called via sudo
-                if (array_key_exists('SUDO_USER', $_SERVER)) {
-                    // set current sudo user
-                    $user = $_SERVER['SUDO_USER'];
-                }
-                // get defined group from configuration
-                $group = Setup::getValue(SetupKeys::GROUP);
-                // replace user in configuration file
-                file_put_contents($configurationFileName, preg_replace(
-                    $configurationUserReplacePattern,
-                    '${1}' . $user,
-                    file_get_contents($configurationFileName)
-                ));
-                // add everyone write access to configuration files for dev mode
-                FileSystem::recursiveChmod(APPSERVER_BP . DIRECTORY_SEPARATOR . 'etc', 0777, 0777);
-
-                break;
-
-            // prepares everything for production mode
-            case 'prod':
-                // get defined user and group from configuration
-                $user = Setup::getValue(SetupKeys::USER);
-                $group = Setup::getValue(SetupKeys::GROUP);
-                // replace user to be same as user in configuration file
-                file_put_contents($configurationFileName, preg_replace(
-                    $configurationUserReplacePattern,
-                    '${1}' . $user,
-                    file_get_contents($configurationFileName)
-                ));
-                // set correct file permissions for configurations
-                FileSystem::recursiveChmod(APPSERVER_BP . DIRECTORY_SEPARATOR . 'etc');
-
-                break;
-
-            // prepares everything for first installation which is default mode
-            case 'install':
-                // first check if it is a fresh installation
-                if (!IS_INSTALLED) {
-                    // set example app dodeploy flag to be deployed for a fresh installation
-                    touch(APPSERVER_BP . DIRECTORY_SEPARATOR . 'deploy' . DIRECTORY_SEPARATOR . 'example.phar.dodeploy');
-                }
-
-                // create is installed flag for prevent further setup install mode calls
-                touch(IS_INSTALLED_FILE);
-
-                // get defined user and group from configuration
-                $user = Setup::getValue(SetupKeys::USER);
-                $group = Setup::getValue(SetupKeys::GROUP);
-
-                // set correct file permissions for configurations
-                FileSystem::recursiveChmod(APPSERVER_BP . DIRECTORY_SEPARATOR . 'etc');
-
-                break;
-            default:
-                throw new \Exception('No valid setup mode given');
-
-        }
-
-        // check if user and group is set
-        if (!is_null($user) && !is_null($group)) {
-            // get needed files as accessable for all root files remove "." and ".." from the list
-            $rootFiles = scandir(APPSERVER_BP);
-            // iterate all files
-            foreach ($rootFiles as $rootFile) {
-                // we want just files on root dir
-                if (is_file($rootFile) && !in_array($rootFile, array('.', '..'))) {
-                    FileSystem::chmod($rootFile, 0644);
-                    FileSystem::chown($rootFile, $user, $group);
-                }
-            }
-            // ... and change own and mod of following directories
-            FileSystem::chown(APPSERVER_BP, $user, $group);
-            FileSystem::chown(APPSERVER_BP . DIRECTORY_SEPARATOR . 'webapps', $user, $group);
-            FileSystem::recursiveChown(APPSERVER_BP . DIRECTORY_SEPARATOR . 'resources', $user, $group);
-            FileSystem::recursiveChmod(APPSERVER_BP . DIRECTORY_SEPARATOR . 'resources');
-            FileSystem::recursiveChown(APPSERVER_BP . DIRECTORY_SEPARATOR . 'deploy', $user, $group);
-            FileSystem::recursiveChmod(APPSERVER_BP . DIRECTORY_SEPARATOR . 'deploy');
-            FileSystem::recursiveChown(APPSERVER_BP . DIRECTORY_SEPARATOR . 'src', $user, $group);
-            FileSystem::recursiveChmod(APPSERVER_BP . DIRECTORY_SEPARATOR . 'src');
-            FileSystem::recursiveChown(APPSERVER_BP . DIRECTORY_SEPARATOR . 'var', $user, $group);
-            FileSystem::recursiveChmod(APPSERVER_BP . DIRECTORY_SEPARATOR . 'var');
-            FileSystem::recursiveChown(APPSERVER_BP . DIRECTORY_SEPARATOR . 'tests', $user, $group);
-            FileSystem::recursiveChmod(APPSERVER_BP . DIRECTORY_SEPARATOR . 'tests');
-            FileSystem::recursiveChown(APPSERVER_BP . DIRECTORY_SEPARATOR . 'vendor', $user, $group);
-            FileSystem::recursiveChmod(APPSERVER_BP . DIRECTORY_SEPARATOR . 'vendor');
-            FileSystem::recursiveChown(APPSERVER_BP . DIRECTORY_SEPARATOR . 'tmp', $user, $group);
-            FileSystem::recursiveChmod(APPSERVER_BP . DIRECTORY_SEPARATOR . 'tmp');
-            // make server.php executable
-            FileSystem::chmod(APPSERVER_BP . DIRECTORY_SEPARATOR . 'server.php', 0755);
-
-            echo "Setup for mode '$setupMode' done successfully!" . PHP_EOL;
-
-        } else {
-            throw new \Exception('No user or group given');
-        }
-
-        // exit normally
-        exit(0);
-
-    } catch (\Exception $e) {
-        echo $e . PHP_EOL;
-        exit($e->getCode());
-    }
-}
-
-// if -w option has been passed, watch deployment directory only
-if (array_key_exists($watch, $arguments)) {
-
-    $server->watch();
-
+// query whether a bootstrap file has been specified or not
+if (array_key_exists($bootstrap, $arguments) && file_exists($arguments[$bootstrap])) {
+    // set the file passed as parameter
+    $bootstrapFilename = $arguments[$bootstrap];
+} elseif (file_exists(sprintf('%s/etc/appserver/conf.d/bootstrap.xml', APPSERVER_BP))) {
+    // try to load the default bootstrap file
+    $bootstrapFilename = sprintf('%s/etc/appserver/conf.d/bootstrap.xml', APPSERVER_BP);
 } else {
-    $server->start();
-    $server->profile();
+    // throw an exception if we don't have a bootstrap file
+    throw new \Exception('Can\'t find a bootstrap file');
 }
+
+// initialize the executor service
+Core::init(SERVER_AUTOLOADER);
+
+// create and initialize the naming directory
+$namingDirectory = Core::newFromEntity('AppserverIo\Appserver\Naming\NamingDirectory', 'namingDirectory');
+$namingDirectory->setScheme('php');
+
+// create a directory for the services
+$namingDirectory->createSubdirectory('php:env');
+$namingDirectory->createSubdirectory('php:global');
+$namingDirectory->createSubdirectory('php:global/log');
+$namingDirectory->createSubdirectory('php:services');
+
+// create the default subdirectories
+foreach (array_keys(ApplicationServer::$runlevels) as $runlevel) {
+    $namingDirectory->createSubdirectory(sprintf('php:services/%s', $runlevel));
+}
+
+// set the path to the default configuration and bootstrap filenames
+$namingDirectory->bind('php:env/configurationFilename', DirectoryKeys::realpath($filename));
+$namingDirectory->bind('php:env/bootstrapConfigurationFilename', DirectoryKeys::realpath($bootstrapFilename));
+
+// add the storeage containers for the runlevels
+$runlevels = new GenericStackable();
+foreach (ApplicationServer::$runlevels as $runlevel) {
+    $runlevels[$runlevel] = new GenericStackable();
+}
+
+// initialize and start the application server
+$applicationServer = new ApplicationServer($namingDirectory, $runlevels);
+$applicationServer->start();
+
+// we've to wait for shutdown
+while ($applicationServer->keepRunning()) {
+    sleep(1);
+}
+
+// stop the executor service
+Core::shutdown();
+
+// wait until all threads have been stopped
+$applicationServer->join();

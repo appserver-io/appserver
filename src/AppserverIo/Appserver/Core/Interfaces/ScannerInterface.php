@@ -31,4 +31,7 @@ namespace AppserverIo\Appserver\Core\Interfaces;
  */
 interface ScannerInterface
 {
+    public function getName();
+
+    public function stop();
 }

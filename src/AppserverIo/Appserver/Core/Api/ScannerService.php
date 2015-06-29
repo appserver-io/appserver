@@ -65,11 +65,12 @@ class ScannerService extends AbstractFileOperationService
             // validate the base context file
             /** @var AppserverIo\Appserver\Core\Api\ConfigurationService $configurationService */
             $configurationService = $this->newService('AppserverIo\Appserver\Core\Api\ConfigurationService');
-            $configurationService->validateFile($baseCronPath, null);
+
+            // load the base CRON configuration file
+            $baseCronPath = $this->getConfdDir('cron.xml');
 
             // we will need to test our CRON configuration files
-            $configurationTester = new ConfigurationService($this->getInitialContext());
-            $baseCronPath = $this->getConfdDir('cron.xml');
+            $configurationService->validateFile($baseCronPath, null);
 
             // validate the base CRON file and load it as default if validation succeeds
             $cronInstance = new CronNode();

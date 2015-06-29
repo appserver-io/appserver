@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Listeners\StartContainersListener
+ * AppserverIo\Appserver\Core\Listeners\StartScannersListener
  *
  * NOTICE OF LICENSE
  *
@@ -24,7 +24,7 @@ use League\Event\EventInterface;
 use AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface;
 
 /**
- * Listener that initializes and binds the containers found in the system configuration.
+ * Listener that initializes and binds the scanners found in the system configuration.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -32,7 +32,7 @@ use AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class StartContainersListener extends AbstractSystemListener
+class StartScannersListener extends AbstractSystemListener
 {
 
     /**
@@ -47,26 +47,21 @@ class StartContainersListener extends AbstractSystemListener
     {
 
         try {
-            // load the application server instance
+            // load the application server and the naming directory instance
             $applicationServer = $this->getApplicationServer();
 
             // write a log message that the event has been invoked
             $applicationServer->getSystemLogger()->info($event->getName());
 
-            // and initialize a container thread for each container
-            /** @var \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode */
-            foreach ($applicationServer->getSystemConfiguration()->getContainers() as $containerNode) {
+            // add the configured extractors to the internal array
+            /** @var \AppserverIo\Appserver\Core\Api\Node\ScannerNodeInterface $scannerNode */
+            foreach ($applicationServer->getSystemConfiguration()->getScanners() as $scannerNode) {
+                // load the factory class name
+                $factoryClass = $scannerNode->getFactory();
 
-                /** @var \AppserverIo\Appserver\Core\Interfaces\ContainerFactoryInterface $containerFactory */
-                $containerFactory = $containerNode->getFactory();
-
-                // use the factory if available
-                /** @var \AppserverIo\Appserver\Core\Interfaces\ContainerInterface $container */
-                $container = $containerFactory::factory($applicationServer, $containerNode);
-                $container->start();
-
-                // register the container as service
-                $applicationServer->bindService(ApplicationServerInterface::NETWORK, $container);
+                // invoke the visit method of the factory class
+                /** @var \AppserverIo\Appserver\Core\Scanner\ScannerFactoryInterface $factory */
+                $factoryClass::visit($applicationServer, $scannerNode);
             }
 
         } catch (\Exception $e) {

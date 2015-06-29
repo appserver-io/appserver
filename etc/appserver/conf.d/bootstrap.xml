@@ -2,13 +2,10 @@
 <bootstrap xmlns="http://www.appserver.io/appserver"
     defaultRunlevel="full">
     <listeners>
-    
         <listener event="leave.runlevel.shutdown" priority="0"
             type="AppserverIo\Appserver\Core\Listeners\StopServicesListener"/>
-    
         <listener event="leave.runlevel.shutdown" priority="0"
             type="AppserverIo\Appserver\Core\Listeners\UnloadLoggersListener"/>
-    
         <listener event="enter.runlevel.shutdown" priority="0"
             type="AppserverIo\Appserver\Core\Listeners\LoadConfigurationListener" />
         <listener event="enter.runlevel.shutdown" priority="0"
@@ -17,8 +14,8 @@
             type="AppserverIo\Appserver\Core\Listeners\LoadInitialContextListener" />
         <listener event="enter.runlevel.shutdown" priority="0"
             type="AppserverIo\Appserver\Core\Listeners\SwitchUmaskListener" />
-        <!-- listener event="enter.runlevel.shutdown" priority="0"
-            type="AppserverIo\Appserver\Core\Listeners\SwitchSetupModeListener" / -->
+        <listener event="enter.runlevel.shutdown" priority="0"
+            type="AppserverIo\Appserver\Core\Listeners\SwitchSetupModeListener" />
         <listener event="enter.runlevel.shutdown" priority="0"
             type="AppserverIo\Appserver\Core\Listeners\PrepareFileSystemListener" />
         <listener event="enter.runlevel.shutdown" priority="0"
