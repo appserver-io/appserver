@@ -48,9 +48,8 @@ class SwitchSetupModeListener extends AbstractSystemListener
     {
 
         try {
-            // load the application server and the naming directory instance
+            // load the application server instance
             $applicationServer = $this->getApplicationServer();
-            $namingDirectory = $applicationServer->getNamingDirectory();
 
             // write a log message that the event has been invoked
             $applicationServer->getSystemLogger()->info($event->getName());

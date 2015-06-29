@@ -54,9 +54,8 @@ class LoadConfigurationListener extends AbstractSystemListener
     {
 
         try {
-            // load the application server, naming directory and system configuration instance
+            // load the application server instance
             $applicationServer = $this->getApplicationServer();
-            $namingDirectory = $applicationServer->getNamingDirectory();
 
             // initialize configuration and schema file name
             $configurationFileName = $applicationServer->getConfigurationFilename();

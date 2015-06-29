@@ -47,9 +47,8 @@ class LoadInitialContextListener extends AbstractSystemListener
     {
 
         try {
-            // load the application server, naming directory and system configuration instance
+            // load the application server and system configuration instance
             $applicationServer = $this->getApplicationServer();
-            $namingDirectory = $applicationServer->getNamingDirectory();
             $systemConfiguration = $applicationServer->getSystemConfiguration();
 
             // load the initial context configuration
