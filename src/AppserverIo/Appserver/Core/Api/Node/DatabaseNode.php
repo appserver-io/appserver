@@ -73,12 +73,44 @@ class DatabaseNode extends AbstractNode
     protected $path;
 
     /**
-     * The database host information
+     * The flag to run Sqlite in memory (mutually exclusive with the path option).
+     *
+     * @var \AppserverIo\Appserver\Core\Api\Node\MemoryNode
+     * @AS\Mapping(nodeName="memory", nodeType="AppserverIo\Appserver\Core\Api\Node\MemoryNode")
+     */
+    protected $memory;
+
+    /**
+     * The database host information.
      *
      * @var \AppserverIo\Appserver\Core\Api\Node\DatabaseHostNode
      * @AS\Mapping(nodeName="databaseHost", nodeType="AppserverIo\Appserver\Core\Api\Node\DatabaseHostNode")
      */
     protected $databaseHost;
+
+    /**
+     * The database charset information.
+     *
+     * @var \AppserverIo\Appserver\Core\Api\Node\CharsetNode
+     * @AS\Mapping(nodeName="charset", nodeType="AppserverIo\Appserver\Core\Api\Node\CharsetNode")
+     */
+    protected $charset;
+
+    /**
+     * The database driver options.
+     *
+     * @var \AppserverIo\Appserver\Core\Api\Node\DriverOptionsNode
+     * @AS\Mapping(nodeName="driverOptions", nodeType="AppserverIo\Appserver\Core\Api\Node\DriverOptionsNode")
+     */
+    protected $driverOptions;
+
+    /**
+     * The name of the socket used to connect to the database.
+     *
+     * @var \AppserverIo\Appserver\Core\Api\Node\UnixSocketNode
+     * @AS\Mapping(nodeName="unixSocket", nodeType="AppserverIo\Appserver\Core\Api\Node\UnixSocketNode")
+     */
+    protected $unixSocket;
 
     /**
      * Returns the database driver information.
@@ -131,12 +163,52 @@ class DatabaseNode extends AbstractNode
     }
 
     /**
-     * Returns the database host information
+     * Returns the flag to run Sqlite in memory (mutually exclusive with the path option).
+     *
+     * @return \AppserverIo\Appserver\Core\Api\Node\PathNode The flag to run Sqlite in memory
+     */
+    public function getMemory()
+    {
+        return $this->memory;
+    }
+
+    /**
+     * Returns the database host information.
      *
      * @return \AppserverIo\Appserver\Core\Api\Node\DatabaseHostNode The database host information
      */
     public function getDatabaseHost()
     {
         return $this->databaseHost;
+    }
+
+    /**
+     * Returns the database charset to use.
+     *
+     * @return \AppserverIo\Appserver\Core\Api\Node\CharsetNode The database charset
+     */
+    public function getCharset()
+    {
+        return $this->charset;
+    }
+
+    /**
+     * Returns the database driver options.
+     *
+     * @return \AppserverIo\Appserver\Core\Api\Node\CharsetNode The database driver options
+     */
+    public function getDriverOptions()
+    {
+        return $this->driverOptions;
+    }
+
+    /**
+     * Returns the name of the socket used to connect to the database.
+     *
+     * @return \AppserverIo\Appserver\Core\Api\Node\CharsetNode The name of the socket
+     */
+    public function getUnixSocket()
+    {
+        return $this->unixSocket;
     }
 }
