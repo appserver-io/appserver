@@ -1,3 +1,13 @@
+# Version 1.1.0-beta5
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Closed [#850](https://github.com/appserver-io/appserver/issues/850) - Datasource configuration lacks driver specific options
+
 # Version 1.1.0-beta4
 
 ## Bugfixes

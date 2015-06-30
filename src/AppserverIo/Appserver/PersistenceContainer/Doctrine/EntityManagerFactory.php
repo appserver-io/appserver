@@ -20,6 +20,8 @@
 
 namespace AppserverIo\Appserver\PersistenceContainer\Doctrine;
 
+use AppserverIo\Lang\String;
+use AppserverIo\Lang\Boolean;
 use Doctrine\ORM\Tools\Setup;
 use Doctrine\ORM\EntityManager;
 use AppserverIo\Psr\Application\ApplicationInterface;
@@ -84,7 +86,7 @@ class EntityManagerFactory
         // create the database configuration and initialize the entity manager
         $configuration = Setup::$factoryMethod($absolutePaths, $isDevMode, $proxyDir, null, $useSimpleAnnotationReader);
 
-        // load the datasource
+        // load the datasource node
         $datasourceNode = null;
         foreach ($application->getInitialContext()->getSystemConfiguration()->getDatasources() as $datasourceNode) {
             if ($datasourceNode->getName() === $persistenceUnitNode->getDatasource()->getName()) {
@@ -97,38 +99,95 @@ class EntityManagerFactory
             throw new \Exception(
                 sprintf(
                     'Can\'t find a datasource node for persistence unit %s',
-                    $persistenceUnitNode->getDatasource()->getName()
+                    $persistenceUnitNode->getName()
                 )
             );
         }
 
-        // initialize the database node
+        // load the database node
         $databaseNode = $datasourceNode->getDatabase();
 
-        // initialize the connection parameters
+        // throw an exception if the configured database is NOT available
+        if ($databaseNode == null) {
+            throw new \Exception(
+                sprintf(
+                    'Can\'t find database node for persistence unit %s',
+                    $persistenceUnitNode->getName()
+                )
+            );
+        }
+
+        // load the driver node
+        $driverNode = $databaseNode->getDriver();
+
+        // throw an exception if the configured driver is NOT available
+        if ($driverNode == null) {
+            throw new \Exception(
+                sprintf(
+                    'Can\'t find driver node for persistence unit %s',
+                    $persistenceUnitNode->getName()
+                )
+            );
+        }
+
+        // initialize the connection parameters with the mandatory driver
         $connectionParameters = array(
-            'driver'   => $databaseNode->getDriver()->getNodeValue()->__toString(),
-            'user'     => $databaseNode->getUser()->getNodeValue()->__toString(),
-            'password' => $databaseNode->getPassword()->getNodeValue()->__toString()
+            'driver' => $databaseNode->getDriver()->getNodeValue()->__toString()
         );
 
-        // initialize the path to the database when we use sqlite for example
-        if ($databaseNode->getPath()) {
-            if ($path = $databaseNode->getPath()->getNodeValue()->__toString()) {
-                $connectionParameters['path'] = $application->getWebappPath() . DIRECTORY_SEPARATOR . $path;
-            }
+        // initialize the path/memory to the database when we use sqlite for example
+        if ($pathNode = $databaseNode->getPath()) {
+            $connectionParameters['path'] = $application->getWebappPath() . DIRECTORY_SEPARATOR . $pathNode->getNodeValue()->__toString();
+        } elseif ($memoryNode = $databaseNode->getMemory()) {
+            $connectionParameters['memory'] = Boolean::valueOf(new String($memoryNode->getNodeValue()->__toString()))->booleanValue();
+        } else {
+            // do nothing here, because there is NO option
+        }
+
+        // add username, if specified
+        if ($userNode = $databaseNode->getUser()) {
+            $connectionParameters['user'] = $userNode->getNodeValue()->__toString();
+        }
+
+        // add password, if specified
+        if ($passwordNode = $databaseNode->getPassword()) {
+            $connectionParameters['password'] = $passwordNode->getNodeValue()->__toString();
         }
 
         // add database name if using another PDO driver than sqlite
-        if ($databaseNode->getDatabaseName()) {
-            $databaseName = $databaseNode->getDatabaseName()->getNodeValue()->__toString();
-            $connectionParameters['dbname'] = $databaseName;
+        if ($databaseNameNode = $databaseNode->getDatabaseName()) {
+            $connectionParameters['dbname'] = $databaseNameNode->getNodeValue()->__toString();
         }
 
         // add database host if using another PDO driver than sqlite
-        if ($databaseNode->getDatabaseHost()) {
-            $databaseHost = $databaseNode->getDatabaseHost()->getNodeValue()->__toString();
-            $connectionParameters['host'] = $databaseHost;
+        if ($databaseHostNode = $databaseNode->getDatabaseHost()) {
+            $connectionParameters['host'] = $databaseHostNode->getNodeValue()->__toString();
+        }
+
+        // add charset, if specified
+        if ($charsetNode = $databaseNode->getCharset()) {
+            $connectionParameters['charset'] = $charsetNode->getNodeValue()->__toString();
+        }
+
+        // add driver options, if specified
+        if ($driverOptionsNode = $databaseNode->getDriverOptions()) {
+            // explode the raw options separated with a semicolon
+            $rawOptions = explode(';', $driverOptionsNode->getNodeValue()->__toString());
+
+            // prepare the array with the driver options key/value pair (separated with a =)
+            $options = array();
+            foreach ($rawOptions as $rawOption) {
+                list ($key, $value) = explode('=', $rawOption);
+                $options[$key] = $value;
+            }
+
+            // set the driver options
+            $connectionParameters['driverOptions'] = $options;
+        }
+
+        // add driver options, if specified
+        if ($unixSocketNode = $databaseNode->getUnixSocket()) {
+            $connectionParameters['unix_socket'] = $unixSocketNode->getNodeValue()->__toString();
         }
 
         // initialize and return a entity manager decorator instance
