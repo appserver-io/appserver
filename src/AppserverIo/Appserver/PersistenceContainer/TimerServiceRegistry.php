@@ -269,4 +269,17 @@ class TimerServiceRegistry extends ServiceRegistry implements TimerServiceContex
     {
         return TimerServiceContextInterface::IDENTIFIER;
     }
+
+    /**
+     * Shutdown the session manager instance.
+     *
+     * @return void
+     * \AppserverIo\Psr\Application\ManagerInterface::stop()
+     */
+    public function stop()
+    {
+        $this->getTimerServiceExecutor()->stop();
+        $this->getCalendarTimerFactory()->stop();
+        $this->getTimerFactory()->stop();
+    }
 }

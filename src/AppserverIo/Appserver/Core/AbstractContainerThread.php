@@ -41,44 +41,46 @@ use AppserverIo\Appserver\Core\Api\Node\ParamNode;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  *
- * @property \AppserverIo\Psr\Naming\NamingDirectoryInterface $namingDirectory Naming directory used for binding various information to
- * @property \AppserverIo\Appserver\Core\Api\AppService       $service         The app service used to bind applications to the configuration
+ * @property \AppserverIo\Psr\Naming\NamingDirectoryInterface         $namingDirectory Naming directory used for binding various information to
+ * @property \AppserverIo\Appserver\Core\Api\AppService               $service         The app service used to bind applications to the configuration
+ * @property \AppserverIo\Appserver\Core\Api\Node\ContainerNode       $containerNode   The container node information
+ * @property \AppserverIo\Storage\GenericStackable                    $applications    The initialized applications
+ * @property \AppserverIo\Appserver\Core\Utilities\ContainerStateKeys $containerState  The actual container state
  */
 abstract class AbstractContainerThread extends AbstractContextThread implements ContainerInterface
 {
 
     /**
-     * The container node information.
+     * The time we wait after each loop.
      *
-     * @var \AppserverIo\Appserver\Core\Api\Node\ContainerNode
+     * @var integer
      */
-    protected $containerNode;
-
-    /**
-     * The initialized applications.
-     *
-     * @var \AppserverIo\Storage\GenericStackable
-     */
-    protected $applications;
-
-    /**
-     * The actual container state.
-     *
-     * @var \AppserverIo\Appserver\Core\Utilities\ContainerStateKeys
-     */
-    protected $containerState;
+    const TIME_TO_LIVE = 1;
 
     /**
      * Initializes the container with the initial context, the unique container ID
      * and the deployed applications.
      *
-     * @param \AppserverIo\Appserver\Core\InitialContext         $initialContext The initial context
-     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerNode $containerNode  The container node
+     * @param \AppserverIo\Appserver\Core\InitialContext         $initialContext  The initial context
+     * @param \AppserverIo\Psr\Naming\NamingDirectoryInterface   $namingDirectory The naming directory
+     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerNode $containerNode   The container node
      */
-    public function __construct($initialContext, $containerNode)
+    public function __construct($initialContext, $namingDirectory, $containerNode)
     {
         $this->initialContext = $initialContext;
+        $this->namingDirectory = $namingDirectory;
         $this->containerNode = $containerNode;
+    }
+
+    /**
+     * Returns the unique container name from the configuration.
+     *
+     * @return string The unique container name
+     * @see \AppserverIo\Appserver\Core\Interfaces\ContainerInterface::getName()
+     */
+    public function getName()
+    {
+        return $this->getContainerNode()->getName();
     }
 
     /**
@@ -101,14 +103,6 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
         // create a new API app service instance
         $this->service = $this->newService('AppserverIo\Appserver\Core\Api\AppService');
 
-        // create and initialize the naming directory
-        $this->namingDirectory = new NamingDirectory();
-        $this->namingDirectory->setScheme('php');
-
-        // create global/env and global/log naming directories
-        $globalDir = $this->namingDirectory->createSubdirectory('global');
-        $envDir = $this->namingDirectory->createSubdirectory('env');
-
         // initialize the naming directory with the environment data
         $this->namingDirectory->bind('php:env/appBase', $this->getAppBase());
         $this->namingDirectory->bind('php:env/tmpDirectory', $this->getTmpDir());
@@ -116,14 +110,6 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
         $this->namingDirectory->bind('php:env/umask', $this->getInitialContext()->getSystemConfiguration()->getUmask());
         $this->namingDirectory->bind('php:env/user', $this->getInitialContext()->getSystemConfiguration()->getUser());
         $this->namingDirectory->bind('php:env/group', $this->getInitialContext()->getSystemConfiguration()->getGroup());
-
-        // create the directory the loggers will be bound to
-        $logDir = $globalDir->createSubdirectory('log');
-
-        // register the loggers in the naming directory
-        foreach ($this->getInitialContext()->getLoggers() as $name => $logger) {
-             $this->namingDirectory->bind(sprintf('php:global/log/%s', $name), $logger);
-        }
 
         // initialize the container state
         $this->containerState = ContainerStateKeys::get(ContainerStateKeys::INITIALIZATION_SUCCESSFUL);
@@ -219,24 +205,43 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
             $waitForServers = false;
         }
 
-        // the servers has been started and we wait for the servers to finish work now
-        $this->containerState = ContainerStateKeys::get(ContainerStateKeys::SERVERS_STARTED_SUCCESSFUL);
+        // the container has successfully been initialized
+        $this->synchronized(function ($self) {
+            $self->containerState = ContainerStateKeys::get(ContainerStateKeys::INITIALIZATION_SUCCESSFUL);
+        }, $this);
 
-        // wait for shutdown signal
-        while ($this->containerState->equals(ContainerStateKeys::get(ContainerStateKeys::SERVERS_STARTED_SUCCESSFUL))) {
-            // profile the worker shutdown beeing processed
+        // initialize the flag to keep the application running
+        $keepRunning = true;
+
+        // wait till container will be shutdown
+        while ($keepRunning) {
+            // query whether we've a profile logger, log resource usage
             if ($profileLogger) {
                 $profileLogger->debug(sprintf('Container %s still waiting for shutdown', $this->getContainerNode()->getName()));
             }
 
-            // wait a second
-            sleep(1);
+            // wait a second to lower system load
+            $keepRunning = $this->synchronized(function ($self) {
+                $self->wait(1000000 * AbstractContainerThread::TIME_TO_LIVE);
+                return $self->containerState->equals(ContainerStateKeys::get(ContainerStateKeys::INITIALIZATION_SUCCESSFUL));
+            }, $this);
         }
 
-        // wait till all servers has been shutdown
+        // we need to stop all servers before we can shutdown the container
+        /** @var \AppserverIo\Server\Interfaces\ServerInterface $server */
         foreach ($servers as $server) {
-            $server->join();
+            $server->stop();
         }
+
+        // mark the container as successfully shutdown
+        $this->synchronized(function ($self) {
+            $self->containerState = ContainerStateKeys::get(ContainerStateKeys::SHUTDOWN);
+        }, $this);
+
+        // send log message that the container has been shutdown
+        $this->getInitialContext()->getSystemLogger()->info(
+            sprintf('Successfully shutdown container %s', $this->getContainerNode()->getName())
+        );
     }
 
     /**
@@ -416,6 +421,36 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
 
         // adds the application to the system configuration
         $this->addApplicationToSystemConfiguration($application);
+    }
+
+    /**
+     * Stops the container instance.
+     *
+     * @return void
+     */
+    public function stop()
+    {
+
+        // start container shutdown
+        $this->synchronized(function ($self) {
+            $self->containerState = ContainerStateKeys::get(ContainerStateKeys::HALT);
+        }, $this);
+
+        do {
+            // wait for 0.5 seconds
+            usleep(500000);
+
+            // log a message that we'll wait till application has been shutdown
+            $this->getInitialContext()->getSystemLogger()->info(
+                sprintf('Wait for container %s to be shutdown', $this->getContainerNode()->getName())
+            );
+
+            // query whether application state key is SHUTDOWN or not
+            $waitForShutdown = $this->synchronized(function ($self) {
+                return $self->containerState->notEquals(ContainerStateKeys::get(ContainerStateKeys::SHUTDOWN));
+            }, $this);
+
+        } while ($waitForShutdown);
     }
 
     /**

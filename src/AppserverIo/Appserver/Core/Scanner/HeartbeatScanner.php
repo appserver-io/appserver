@@ -61,6 +61,23 @@ class HeartbeatScanner extends AbstractScanner
     protected $heartbeatFile;
 
     /**
+     * Constructor sets initialContext object per default and calls
+     * init function to pass other args.
+     *
+     * @param \AppserverIo\Appserver\Application\Interfaces\ContextInterface $initialContext The initial context instance
+     * @param string                                                         $name           The unique scanner name from the configuration
+     */
+    public function __construct($initialContext, $name)
+    {
+
+        // call parent constructor
+        parent::__construct($initialContext, $name);
+
+        // immediately start the scanner
+        $this->start();
+    }
+
+    /**
      * Initializes the scanner
      *
      * @return void

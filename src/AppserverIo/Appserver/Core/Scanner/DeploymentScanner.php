@@ -61,15 +61,16 @@ class DeploymentScanner extends AbstractScanner
      * init function to pass other args.
      *
      * @param \AppserverIo\Appserver\Application\Interfaces\ContextInterface $initialContext    The initial context instance
+     * @param string                                                         $name              The unique scanner name from the configuration
      * @param string                                                         $directory         The directory we want to scan
      * @param integer                                                        $interval          The interval in seconds we want scan the directory
      * @param string                                                         $extensionsToWatch The comma separated list with extensions of files we want to watch
      */
-    public function __construct($initialContext, $directory, $interval = 1, $extensionsToWatch = '')
+    public function __construct($initialContext, $name, $directory, $interval = 1, $extensionsToWatch = '')
     {
 
         // call parent constructor
-        parent::__construct($initialContext);
+        parent::__construct($initialContext, $name);
 
         // initialize the members
         $this->interval = $interval;
@@ -77,6 +78,9 @@ class DeploymentScanner extends AbstractScanner
 
         // explode the comma separated list of file extensions
         $this->extensionsToWatch = explode(',', str_replace(' ', '', $extensionsToWatch));
+
+        // immediately start the scanner
+        $this->start();
     }
 
     /**

@@ -34,6 +34,26 @@ class RecursiveDirectoryScanner extends DeploymentScanner
 {
 
     /**
+     * Constructor sets initialContext object per default and calls
+     * init function to pass other args.
+     *
+     * @param \AppserverIo\Appserver\Application\Interfaces\ContextInterface $initialContext    The initial context instance
+     * @param string                                                         $name              The unique scanner name from the configuration
+     * @param string                                                         $directory         The directory we want to scan
+     * @param integer                                                        $interval          The interval in seconds we want scan the directory
+     * @param string                                                         $extensionsToWatch The comma separated list with extensions of files we want to watch
+     */
+    public function __construct($initialContext, $name, $directory, $interval = 1, $extensionsToWatch = '')
+    {
+
+        // call parent constructor
+        parent::__construct($initialContext, $name, $directory, $interval, $extensionsToWatch);
+
+        // immediately start the scanner
+        $this->start();
+    }
+
+    /**
      * Calculates an hash value for all files with certain extensions.
      * This is used to test if the hash value changed, so if
      * it changed, the appserver can react accordingly.

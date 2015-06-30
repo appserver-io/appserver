@@ -49,6 +49,14 @@ class ExtractorNode extends AbstractNode implements ExtractorNodeInterface
     protected $type;
 
     /**
+     * The extractors factory class name.
+     *
+     * @var string
+     * @AS\Mapping(nodeType="string")
+     */
+    protected $factory;
+
+    /**
      * The flag to create backups before deleting the application folder.
      *
      * @var string
@@ -67,12 +75,13 @@ class ExtractorNode extends AbstractNode implements ExtractorNodeInterface
     /**
      * Initializes the extractor node with the necessary data.
      *
-     * @param string  $name           The extractor name
-     * @param string  $type           The extractor type
+     * @param string  $name           The extractor's name
+     * @param string  $type           The extractor's type
+     * @param string  $factory        The extractor's factory class name
      * @param boolean $createBackups  The flag to create backups
      * @param boolean $restoreBackups The flag to restore backups
      */
-    public function __construct($name = '', $type = '', $createBackups = false, $restoreBackups = false)
+    public function __construct($name = '', $type = '', $factory = '', $createBackups = false, $restoreBackups = false)
     {
 
         // initialize the UUID
@@ -81,6 +90,7 @@ class ExtractorNode extends AbstractNode implements ExtractorNodeInterface
         // set the data
         $this->name = $name;
         $this->type = $type;
+        $this->factory = $factory;
         $this->createBackups = $createBackups;
         $this->restoreBackups = $restoreBackups;
     }
@@ -97,9 +107,9 @@ class ExtractorNode extends AbstractNode implements ExtractorNodeInterface
     }
 
     /**
-     * Returns the extractor type.
+     * Returns the extractor's type.
      *
-     * @return string The extractor type
+     * @return string The extractor's type
      */
     public function getType()
     {
@@ -107,13 +117,23 @@ class ExtractorNode extends AbstractNode implements ExtractorNodeInterface
     }
 
     /**
-     * Returns the extractor name.
+     * Returns the extractor's name.
      *
-     * @return string The extractor name
+     * @return string The extractor's name
      */
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * Returns the extractor's factory class name.
+     *
+     * @return string The extractor's factory class name
+     */
+    public function getFactory()
+    {
+        return $this->factory;
     }
 
     /**

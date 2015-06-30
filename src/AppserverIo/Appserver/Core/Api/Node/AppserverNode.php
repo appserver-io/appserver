@@ -20,10 +20,10 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
-use AppserverIo\Appserver\Core\Interfaces\SystemConfigurationInterface;
 use Psr\Log\LogLevel;
 use AppserverIo\Logger\LoggerUtils;
 use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
+use AppserverIo\Appserver\Core\Interfaces\SystemConfigurationInterface;
 
 /**
  * DTO to transfer the application server's complete configuration.
@@ -43,6 +43,13 @@ class AppserverNode extends AbstractNode implements SystemConfigurationInterface
      * @var \AppserverIo\Appserver\Core\Api\Node\ParamsNodeTrait
      */
     use ParamsNodeTrait;
+
+    /**
+     * A params node trait.
+     *
+     * @var \AppserverIo\Appserver\Core\Api\Node\ConsolesNodeTrait
+     */
+    use ConsolesNodeTrait;
 
     /**
      * The node containing information about the initial context.
@@ -119,6 +126,7 @@ class AppserverNode extends AbstractNode implements SystemConfigurationInterface
         $this->setParam(DirectoryKeys::VAR_LOG, ParamNode::TYPE_STRING, '/var/log');
         $this->setParam(DirectoryKeys::VAR_RUN, ParamNode::TYPE_STRING, '/var/run');
         $this->setParam(DirectoryKeys::VAR_TMP, ParamNode::TYPE_STRING, '/var/tmp');
+        $this->setParam(DirectoryKeys::ETC, ParamNode::TYPE_STRING, '/etc');
         $this->setParam(DirectoryKeys::ETC_APPSERVER, ParamNode::TYPE_STRING, '/etc/appserver');
         $this->setParam(DirectoryKeys::ETC_APPSERVER_CONFD, ParamNode::TYPE_STRING, '/etc/appserver/conf.d');
     }
@@ -217,7 +225,11 @@ class AppserverNode extends AbstractNode implements SystemConfigurationInterface
     {
 
         // initialize the extractor
-        $pharExtractor = new ExtractorNode('phar', 'AppserverIo\Appserver\Core\Extractors\PharExtractor');
+        $pharExtractor = new ExtractorNode(
+            'phar',
+            'AppserverIo\Appserver\Core\Extractors\PharExtractor',
+            'AppserverIo\Appserver\Core\Extractors\PharExtractorFactory'
+        );
 
         // add extractor to the appserver node
         $this->extractors[$pharExtractor->getPrimaryKey()] = $pharExtractor;

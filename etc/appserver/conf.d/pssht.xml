@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <parameters>
+        <!-- GENERAL SETTINGS -->
+
+        <!--
+            String or collection of strings specifying the addresses/ports
+            the server should listen on, in the form "address:port".
+            Use brackets for IPv6 addresses (eg. "[::1]:0").
+            If 0 is used as the port, a random port will be selected.
+        -->
+        <parameter key="listen">[::]:22222</parameter>
+
+        <!--
+            Application to run after a connection has been accepted.
+            This class' constructor will be called with the following
+            arguments:
+            *   \fpoirotte\Pssht\Transport (transport layer for the session)
+            *   \fpoirotte\Pssht\Connection (connection layer for the session)
+            *   \fpoirotte\Pssht\MessageInterface (SSH message which caused
+                a new instance of the application to be created; usually
+                an instance of \fpoirotte\Pssht\Messages\CHANNEL\REQUEST\Exec
+                or \fpoirotte\Pssht\Messages\CHANNEL\REQUEST\Shell)
+
+            Alternatively, you may modify the "client" or "applicationFactory"
+            services to set another application factory.
+        -->
+        <parameter key="application">\fpoirotte\Pssht\Application\EchoService</parameter>
+
+        <!--
+            A banner (eg. legal disclaimer) to display upon connection.
+            Do not forget to add a trailing carriage return / linefeed
+            if needed (using "&#13;" or "&#10;" respectively).
+        -->
+        <parameter key="banner">Hello world!&#10;</parameter>
+
+        <!--
+            Server's private keys (PEM-encoded).
+            You may provide several keys here, one per supported key type.
+        -->
+        <parameter key="server_keys" type="collection">
+            <parameter key="ssh-rsa" type="collection">
+                <parameter key="file">file://%pssht.base_dir%/tests/data/plaintext/rsa/4096</parameter>
+                <parameter key="passphrase"></parameter>
+            </parameter>
+
+            <parameter key="ssh-dss" type="collection">
+                <parameter key="file">file://%pssht.base_dir%/tests/data/plaintext/dsa/1024</parameter>
+                <parameter key="passphrase"/>
+            </parameter>
+
+            <parameter key="ecdsa-sha2-nistp256" type="collection">
+                <parameter key="file">file://%pssht.base_dir%/tests/data/plaintext/ecdsa/256</parameter>
+                <parameter key="passphrase"/>
+            </parameter>
+
+<!--            <parameter key="ecdsa-sha2-nistp384" type="collection">-->
+<!--                <parameter key="file">file://%pssht.base_dir%/tests/data/plaintext/ecdsa/384</parameter>-->
+<!--                <parameter key="passphrase"/>-->
+<!--            </parameter>-->
+
+<!--            <parameter key="ecdsa-sha2-nistp521" type="collection">-->
+<!--                <parameter key="file">file://%pssht.base_dir%/tests/data/plaintext/ecdsa/521</parameter>-->
+<!--                <parameter key="passphrase"/>-->
+<!--            </parameter>-->
+        </parameter>
+
+
+        <!-- AUTHENTICATION SETTINGS -->
+
+        <!-- Allows user "clicky" to log in with password "pssht". -->
+        <parameter key="auth.passwords" type="collection">
+            <parameter key="clicky">pssht</parameter>
+        </parameter>
+
+        <!--
+            Allows user "clicky" to log in using one of the public keys
+            authorized to access the account the server was started under.
+        -->
+        <parameter key="auth.pubkeys" type="collection">
+            <parameter key="clicky" type="collection">
+                <parameter>%HOME%/.ssh/authorized_keys</parameter>
+            </parameter>
+        </parameter>
+
+        <!--
+            Allows user "clicky" to log in using the server's public key.
+            Note:   this configuration does not really make sense,
+                    but shows just how easy it is to configure the server
+                    for varying needs.
+        -->
+        <parameter key="auth.hostbased" type="collection">
+            <parameter key="clicky" type="collection">
+                <parameter></parameter>
+            </parameter>
+        </parameter>
+
+        <!--
+            Controls the frequency of key re-exchange (aka. rekeying).
+            *   "rekeying.size" specifies how many bytes may be sent
+                before rekeying is requested.
+                The default is one gigabyte as recommended in RFC 4253.
+            *   "rekeying.time" specifies how many seconds may pass
+                before rekeying is requested.
+                The default is one hour as recommended in RFC 4253.
+        -->
+        <parameter key="rekeying.size">1073741824</parameter>
+        <parameter key="rekeying.time">3600</parameter>
+    </parameters>
+
+
+    <!--
+        SERVICE DEFINITIONS.
+        Skip to the "authMethods" service if you want to disable
+        some of the default authentication methods.
+    -->
+
+    <services>
+        <!-- The "client" service is used to handle new clients. -->
+        <service id="client" scope="prototype" class="\fpoirotte\Pssht\Transport">
+            <argument>%server_keys%</argument>
+            <argument type="service" id="authMethods"/>
+
+            <!-- Encoder -->
+            <argument type="constant">null</argument>
+
+            <!-- Decoder -->
+            <argument type="constant">null</argument>
+
+            <argument>%rekeying.size%</argument>
+            <argument>%rekeying.time%</argument>
+
+            <call method="setApplicationFactory">
+                <argument type="collection">
+                    <argument type="service" id="applicationFactory"/>
+                    <argument>newInstance</argument>
+                </argument>
+            </call>
+
+            <call method="setBanner">
+                <argument>%banner%</argument>
+            </call>
+        </service>
+        <!-- End of "client" service. -->
+
+        <!-- The "logging" service is used to log messages. -->
+        <service id="logging" factory-class="\Plop\Plop" factory-method="getInstance">
+            <call method="addLogger">
+                <argument type="service">
+                    <service class="\Plop\Logger">
+                        <argument type="constant">NULL</argument>
+                        <argument type="constant">NULL</argument>
+                        <argument type="constant">NULL</argument>
+                        <argument type="service">
+                            <service class="\Plop\HandlersCollection">
+                                <call method="offsetSet">
+                                    <argument type="constant">NULL</argument>
+                                    <argument type="service">
+                                        <service class="\Plop\Handler\Stream">
+                                            <argument type="constant">STDERR</argument>
+                                            <call method="setFormatter">
+                                                <argument type="service">
+                                                    <service class="\Plop\Formatter">
+                                                        <argument>[%%(asctime)s] %%(levelname)s: %%(message)s</argument>
+                                                        <argument>r</argument>
+                                                    </service>
+                                                </argument>
+                                            </call>
+                                        </service>
+                                    </argument>
+                                </call>
+                            </service>
+                        </argument>
+                        <call method="setLevel">
+                            <argument>DEBUG</argument>
+                        </call>
+                    </service>
+                </argument>
+            </call>
+        </service>
+        <!-- End of "logging" service. -->
+
+        <!--
+            The "authMethods" service is used to indicate
+            which authentication methods are allowed.
+        -->
+        <service id="authMethods" scope="prototype" public="false"
+            class="\fpoirotte\Pssht\Handlers\SERVICE\REQUEST">
+            <argument type="service">
+                <service scope="prototype"
+                    class="\fpoirotte\Pssht\Handlers\USERAUTH\REQUEST">
+                    <argument type="collection">
+
+                        <!--
+                            Password-based authentication.
+                            Remove or comment the following XML block
+                            to disable password-based authentication.
+                        -->
+                        <argument type="service">
+                            <service class="\fpoirotte\Pssht\Authentication\Password">
+                                <argument>%auth.passwords%</argument>
+                            </service>
+                        </argument>
+                        <!-- End of password-based authentication. -->
+
+                        <!--
+                            Public key-based authentication.
+                            Remove or comment the following XML block
+                            to disable public key-based authentication.
+                        -->
+                        <argument type="service">
+                            <service class="\fpoirotte\Pssht\Authentication\PublicKey">
+                                <argument type="service">
+                                    <service public="false"
+                                        factory-service="authPublicKeysLoader"
+                                        factory-method="getStore"/>
+                                </argument>
+                            </service>
+                        </argument>
+                        <!-- End of public key-based authentication. -->
+
+                        <!--
+                            Host-based authentication.
+                            Remove or comment the following XML block
+                            to disable host-based authentication.
+                        -->
+                        <argument type="service">
+                            <service class="\fpoirotte\Pssht\Authentication\HostBased">
+                                <argument type="service">
+                                    <service public="false"
+                                        factory-service="authPublicKeysLoader"
+                                        factory-method="getStore"/>
+                                </argument>
+                            </service>
+                        </argument>
+                        <!-- End of host-based authentication. -->
+
+                    </argument>
+                </service>
+            </argument>
+        </service>
+        <!-- End of "authMethods" service. -->
+
+
+        <!-- The following services are factories used by other services. -->
+        <service id="authPublicKeysLoader" public="false"
+            class="\fpoirotte\Pssht\KeyStoreLoader\File">
+            <call method="loadBulk">
+                <argument>%auth.pubkeys%</argument>
+            </call>
+        </service>
+        <service id="authHostBasedLoader" public="false"
+            class="\fpoirotte\Pssht\KeyStoreLoader\File">
+            <call method="loadBulk">
+                <argument>%auth.hostbased%</argument>
+            </call>
+        </service>
+        <service id="applicationFactory" public="false" class="ReflectionClass">
+            <argument>%application%</argument>
+        </service>
+        <!-- End of factory services. -->
+    </services>
+</container>

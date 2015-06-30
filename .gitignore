@@ -7,8 +7,7 @@
 /instance-src
 /vendor
 /webapps
-/deploy/example.phar
-/deploy/example.phar.deployed
+/deploy/*.phar*
 /var/log
 /var/tmp/example
 /build.properties
@@ -23,6 +22,8 @@
 /etc/appserver/appserver.xml
 /etc/appserver/conf.d/.is-installed
 /etc/appserver/server.pem
+/var/tmp/example
+/var/tmp/proffile
 /var/tmp/opcache-blacklist.txt
 /webapps/index.html
 /.vagrant

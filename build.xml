@@ -103,6 +103,7 @@
                 <include name="webapps/**/*" />
                 <include name="resources/**/*" />
                 <include name="server.php" />
+                <include name="appserver.php" />
                 <include name="composer.json" />
             </fileset>
         </copy>

@@ -20,10 +20,11 @@
 
 namespace AppserverIo\Appserver\Core\Api;
 
-use AppserverIo\Psr\Application\ApplicationInterface;
+use AppserverIo\Configuration\ConfigurationException;
 use AppserverIo\Appserver\Core\Api\Node\ContextNode;
 use AppserverIo\Appserver\Core\Api\Node\DeploymentNode;
 use AppserverIo\Appserver\Core\Interfaces\ContainerInterface;
+use AppserverIo\Psr\Application\ApplicationInterface;
 
 /**
  * A service that handles deployment configuration data.
@@ -79,23 +80,28 @@ class DeploymentService extends AbstractFileOperationService
     public function loadContextInstancesByContainer(ContainerInterface $container)
     {
 
-        // initialize the array for the context instances
-        $contextInstances = array();
+        try {
+            // initialize the array for the context instances
+            $contextInstances = array();
 
-        // we will need to test our configuration files
-        $configurationTester = new ConfigurationService($this->getInitialContext());
-        $baseContextPath = $this->getConfdDir('context.xml');
+            // validate the base context file
+            /** @var AppserverIo\Appserver\Core\Api\ConfigurationService $configurationService */
+            $configurationService = $this->newService('AppserverIo\Appserver\Core\Api\ConfigurationService');
+            $configurationService->validateFile($baseContextPath = $this->getConfdDir('context.xml'), null);
 
-        // validate the base context file and load it as default if validation succeeds
-        $baseContext = new ContextNode();
-        if (!$configurationTester->validateFile($baseContextPath, null)) {
-            $errorMessages = $configurationTester->getErrorMessages();
-            $systemLogger = $this->getInitialContext()->getSystemLogger();
-            $systemLogger->error(reset($errorMessages));
-            $systemLogger->critical(sprintf('Problems validating base context file %s, this might affect app configurations badly.', $baseContextPath));
-
-        } else {
+            //load it as default if validation succeeds
+            $baseContext = new ContextNode();
             $baseContext->initFromFile($baseContextPath);
+
+        } catch (ConfigurationException $ce) {
+            // load the logger and log the XML validation errors
+            $systemLogger = $this->getInitialContext()->getSystemLogger();
+            $systemLogger->error($ce->__toString());
+
+            // additionally log a message that DS will be missing
+            $systemLogger->critical(
+                sprintf('Problems validating base context file %s, this might affect app configurations badly.', $baseContextPath)
+            );
         }
 
         // iterate over all applications and create the context configuration
@@ -113,21 +119,27 @@ class DeploymentService extends AbstractFileOperationService
 
             // iterate through all context configurations (context.xml), validate and merge them
             foreach ($this->globDir($webappPath . '/META-INF/context.xml') as $contextFile) {
-                // validate the file, but skip it if validation fails
-                if (!$configurationTester->validateFile($contextFile, null)) {
-                    $errorMessages = $configurationTester->getErrorMessages();
+                try {
+                    // validate the application specific context
+                    $configurationService->validateFile($contextFile, null);
+
+                    // create a new context node instance
+                    $contextInstance = new ContextNode();
+                    $contextInstance->initFromFile($contextFile);
+
+                    // merge it into the default configuration
+                    $context->merge($contextInstance);
+
+                } catch (ConfigurationException $ce) {
+                    // load the logger and log the XML validation errors
                     $systemLogger = $this->getInitialContext()->getSystemLogger();
-                    $systemLogger->error(reset($errorMessages));
-                    $systemLogger->alert(sprintf('Will skip app specific context file %s, configuration might be faulty.', $contextFile));
-                    continue;
+                    $systemLogger->error($ce->__toString());
+
+                    // additionally log a message that DS will be missing
+                    $systemLogger->critical(
+                        sprintf('Will skip app specific context file %s, configuration might be faulty.', $contextFile)
+                    );
                 }
-
-                // create a new context node instance
-                $contextInstance = new ContextNode();
-                $contextInstance->initFromFile($contextFile);
-
-                // merge it into the default configuration
-                $context->merge($contextInstance);
             }
 
             // set the real context name

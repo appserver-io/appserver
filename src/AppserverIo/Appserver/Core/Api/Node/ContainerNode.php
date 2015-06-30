@@ -31,7 +31,7 @@ namespace AppserverIo\Appserver\Core\Api\Node;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class ContainerNode extends AbstractNode
+class ContainerNode extends AbstractNode implements ContainerNodeInterface
 {
 
     /**
@@ -49,6 +49,14 @@ class ContainerNode extends AbstractNode
      * @AS\Mapping(nodeType="string")
      */
     protected $type;
+
+    /**
+     * The container's factory class name.
+     *
+     * @var string
+     * @AS\Mapping(nodeType="string")
+     */
+    protected $factory;
 
     /**
      * The thread class name that start's the container.
@@ -81,7 +89,7 @@ class ContainerNode extends AbstractNode
      * @AS\Mapping(nodeName="upstreams/upstream", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\UpstreamNode")
      */
     protected $upstreams;
-    
+
     /**
      * The servers used in container
      *
@@ -124,6 +132,16 @@ class ContainerNode extends AbstractNode
     public function getType()
     {
         return $this->type;
+    }
+
+    /**
+     * Returns the container's factory class name.
+     *
+     * @return string The container's factory class name
+     */
+    public function getFactory()
+    {
+        return $this->factory;
     }
 
     /**
@@ -175,7 +193,7 @@ class ContainerNode extends AbstractNode
     {
         return $this->servers;
     }
-    
+
     /**
      * Return's all upstream nodes
      *

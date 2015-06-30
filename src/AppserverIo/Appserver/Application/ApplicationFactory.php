@@ -63,7 +63,7 @@ class ApplicationFactory
 
         // load the naming directory + initial context
         $initialContext = $container->getInitialContext();
-        $namingDirectory = $container->getNamingDirectory()->search('php:global');
+        $namingDirectory = $container->getNamingDirectory();
 
         // load the application service
         $appService = $container->newService('AppserverIo\Appserver\Core\Api\AppService');
@@ -77,13 +77,11 @@ class ApplicationFactory
         $application = new $contextType();
 
         // initialize the storage for managers, virtual hosts an class loaders
-        $data = new StackableStorage();
         $managers = new GenericStackable();
         $provisioners = new GenericStackable();
         $classLoaders = new GenericStackable();
 
         // initialize the generic instances and information
-        $application->injectData($data);
         $application->injectManagers($managers);
         $application->injectName($applicationName);
         $application->injectProvisioners($provisioners);

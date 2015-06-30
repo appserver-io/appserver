@@ -89,6 +89,30 @@ abstract class AbstractScanner extends AbstractContextThread implements ScannerI
     protected $restartCommands;
 
     /**
+     * The unique scanner name.
+     *
+     * @var string
+     */
+    protected $name;
+
+    /**
+     * Constructor sets initialContext object per default and calls
+     * init function to pass other args.
+     *
+     * @param \AppserverIo\Appserver\Application\Interfaces\ContextInterface $initialContext The initial context instance
+     * @param string                                                         $name           The unique scanner name from the configuration
+     */
+    public function __construct($initialContext, $name)
+    {
+
+        // invoke parent constructor
+        parent::__construct($initialContext);
+
+        // set the unique scanner name
+        $this->name = $name;
+    }
+
+    /**
      * Initalizes the scanner with the necessary service instance.
      *
      * @return void
@@ -358,5 +382,27 @@ abstract class AbstractScanner extends AbstractContextThread implements ScannerI
 
         // calculate and return the hash value for the array
         return md5($files->serialize());
+    }
+
+    /**
+     * Returns the unique scanner name.
+     *
+     * @return string The scanner name
+     * @see \AppserverIo\Appserver\Core\Interfaces\ScannerInterface::getName()
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * Stop's the scanner.
+     *
+     * @return void
+     * @see \AppserverIo\Appserver\Core\Interfaces\ScannerInterface::stop()
+     */
+    public function stop()
+    {
+        throw new \Exception(sprintf('%s not implemented yet', __METHOD__));
     }
 }

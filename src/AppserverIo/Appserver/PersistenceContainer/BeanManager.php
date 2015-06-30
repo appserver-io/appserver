@@ -144,6 +144,18 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface
     }
 
     /**
+     * Injects the garbage collector.
+     *
+     * @param \AppserverIo\Appserver\PersistenceContainer\StandardGarbageCollector $garbageCollector The garbage collector
+     *
+     * @return void
+     */
+    public function injectGarbageCollector(StandardGarbageCollector $garbageCollector)
+    {
+        $this->garbageCollector = $garbageCollector;
+    }
+
+    /**
      * Has been automatically invoked by the container after the application
      * instance has been created.
      *
@@ -239,8 +251,16 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface
     {
 
         try {
+            // load the application instance
+            $application = $this->getApplication();
             // register the bean with the default name/short class name
-            $this->getApplication()->bind($descriptor->getName(), array(&$this, 'lookup'), array($descriptor->getClassName()));
+            $application
+                ->getNamingDirectory()
+                ->bind(
+                    sprintf('php:global/%s/%s', $application->getName(), $descriptor->getName()),
+                    array(&$this, 'lookup'),
+                    array($descriptor->getClassName())
+                );
 
             //  register the EPB references
             foreach ($descriptor->getEpbReferences() as $epbReference) {
@@ -353,6 +373,16 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface
     public function getObjectFactory()
     {
         return $this->objectFactory;
+    }
+
+    /**
+     * Returns the garbage collector instance.
+     *
+     * @return \AppserverIo\Appserver\PersistenceContainer\StandardGarbageCollector The garbage collector instance
+     */
+    public function getGarbageCollector()
+    {
+        return $this->garbageCollector;
     }
 
     /**
@@ -558,5 +588,18 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface
     public function getIdentifier()
     {
         return BeanContextInterface::IDENTIFIER;
+    }
+
+    /**
+     * Shutdown the session manager instance.
+     *
+     * @return void
+     * \AppserverIo\Psr\Application\ManagerInterface::stop()
+     */
+    public function stop()
+    {
+        $this->getGarbageCollector()->stop();
+        $this->getStatefulSessionBeanMapFactory()->stop();
+        $this->getObjectFactory()->stop();
     }
 }

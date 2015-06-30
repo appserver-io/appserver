@@ -21,7 +21,7 @@
 namespace AppserverIo\Appserver\PersistenceContainer;
 
 use AppserverIo\Storage\StorageInterface;
-use AppserverIo\Storage\GenericStackable;
+use AppserverIo\Appserver\Core\AbstractManager;
 use AppserverIo\Psr\Application\ManagerInterface;
 use AppserverIo\Psr\EnterpriseBeans\ServiceContextInterface;
 use AppserverIo\Psr\EnterpriseBeans\ServiceResourceLocatorInterface;
@@ -40,32 +40,8 @@ use AppserverIo\Psr\EnterpriseBeans\ServiceResourceLocatorInterface;
  * @property \AppserverIo\Storage\StorageInterface                            $services       The storage for the services
  * @property string                                                           $webappPath     The absolute path to this web application
  */
-abstract class ServiceRegistry extends GenericStackable implements ServiceContextInterface, ManagerInterface
+abstract class ServiceRegistry extends AbstractManager implements ServiceContextInterface, ManagerInterface
 {
-
-    /**
-     * Inject the data storage.
-     *
-     * @param \AppserverIo\Storage\StorageInterface $data The data storage to use
-     *
-     * @return void
-     */
-    public function injectData(StorageInterface $data)
-    {
-        $this->data = $data;
-    }
-
-    /**
-     * Injects the absolute path to the web application.
-     *
-     * @param string $webappPath The absolute path to this web application
-     *
-     * @return void
-     */
-    public function injectWebappPath($webappPath)
-    {
-        $this->webappPath = $webappPath;
-    }
 
     /**
      * Injects the service locator to lookup the service.
@@ -89,16 +65,6 @@ abstract class ServiceRegistry extends GenericStackable implements ServiceContex
     public function injectServices(StorageInterface $services)
     {
         $this->services = $services;
-    }
-
-    /**
-     * Returns the absolute path to the web application.
-     *
-     * @return string The absolute path
-     */
-    public function getWebappPath()
-    {
-        return $this->webappPath;
     }
 
     /**
@@ -132,58 +98,5 @@ abstract class ServiceRegistry extends GenericStackable implements ServiceContex
     public function lookup($serviceName, array $args = array())
     {
         return $this->getServiceLocator()->lookup($this, $serviceName, $args);
-    }
-
-    /**
-     * Registers the value with the passed key in the container.
-     *
-     * @param string $key   The key to register the value with
-     * @param object $value The value to register
-     *
-     * @return void
-     */
-    public function setAttribute($key, $value)
-    {
-        $this->data->set($key, $value);
-    }
-
-    /**
-     * Returns the attribute with the passed key from the container.
-     *
-     * @param string $key The key the requested value is registered with
-     *
-     * @return mixed|null The requested value if available
-     */
-    public function getAttribute($key)
-    {
-        if ($this->data->has($key)) {
-            return $this->data->get($key);
-        }
-    }
-
-    /**
-     * Returns a reflection class intance for the passed class name.
-     *
-     * @param string $className The class name to return the reflection instance for
-     *
-     * @return \ReflectionClass The reflection instance
-     */
-    public function newReflectionClass($className)
-    {
-        return new \ReflectionClass($className);
-    }
-
-    /**
-     * Returns a new instance of the passed class name.
-     *
-     * @param string $className The fully qualified class name to return the instance for
-     * @param array  $args      Arguments to pass to the constructor of the instance
-     *
-     * @return object The instance itself
-     */
-    public function newInstance($className, array $args = array())
-    {
-        $reflectionClass = $this->newReflectionClass($className);
-        return $reflectionClass->newInstanceArgs($args);
     }
 }

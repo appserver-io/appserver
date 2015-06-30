@@ -20,7 +20,7 @@
 
 namespace AppserverIo\Appserver\ServletEngine;
 
-use AppserverIo\Storage\GenericStackable;
+use AppserverIo\Appserver\Core\AbstractManager;
 use AppserverIo\Psr\Servlet\ServletSessionInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
 
@@ -41,7 +41,7 @@ use AppserverIo\Psr\Application\ApplicationInterface;
  * @property \AppserverIo\Storage\StorageInterface                            $sessions           The sessions
  * @property \AppserverIo\Appserver\ServletEngine\SessionSettingsInterface    $sessionSettings    Settings for the session handling
  */
-class StandardSessionManager extends GenericStackable implements SessionManagerInterface
+class StandardSessionManager extends AbstractManager implements SessionManagerInterface
 {
 
     /**
@@ -223,12 +223,7 @@ class StandardSessionManager extends GenericStackable implements SessionManagerI
 
         // copy the default session configuration for lifetime from the settings
         if ($lifetime == null) {
-            // create a the actual date and add the cookie lifetime
-            $dateTime = new \DateTime();
-            $dateTime->modify("+{$this->getSessionSettings()->getSessionCookieLifetime()} second");
-
-            // set the cookie lifetime as UNIX timestamp
-            $lifetime = $dateTime->getTimestamp();
+            $lifetime = time() + $this->getSessionSettings()->getSessionCookieLifetime();
         }
 
         // copy the default session configuration for maximum from the settings
@@ -325,14 +320,15 @@ class StandardSessionManager extends GenericStackable implements SessionManagerI
     }
 
     /**
-     * Returns the value with the passed name from the context.
+     * Shutdown the session manager instance.
      *
-     * @param string $key The key of the value to return from the context.
-     *
-     * @return mixed The requested attribute
+     * @return void
+     * \AppserverIo\Psr\Application\ManagerInterface::stop()
      */
-    public function getAttribute($key)
+    public function stop()
     {
-        throw new \Exception(sprintf('%s is not implemented yes', __METHOD__));
+        $this->getPersistenceManager()->stop();
+        $this->getGarbageCollector()->stop();
+        $this->getSessionFactory()->stop();
     }
 }

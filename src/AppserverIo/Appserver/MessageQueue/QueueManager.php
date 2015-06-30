@@ -138,7 +138,7 @@ class QueueManager extends AbstractManager implements QueueContextInterface
 
         // initialize the array for the creating the subdirectories
         $this->directories = new GenericStackable();
-        $this->directories[] = $application;
+        $this->directories[] = $application->getNamingDirectory();
 
         // gather all the deployed web applications
         foreach ($xmlFiles as $file) {
@@ -214,14 +214,14 @@ class QueueManager extends AbstractManager implements QueueContextInterface
         $path = explode('/', $destination);
         for ($i = 0; $i < sizeof($path) - 1; $i++) {
             try {
-                $this->directories[$i]->search($path[$i]);
+                $this->directories[$i]->search(sprintf('php:global/%s/%s', $this->getApplication()->getName(), $path[$i]));
             } catch (NamingException $ne) {
-                $this->directories[$i + 1] = $this->directories[$i]->createSubdirectory($path[$i]);
+                $this->directories[$i + 1] = $this->directories[$i]->createSubdirectory(sprintf('php:global/%s/%s', $this->getApplication()->getName(), $path[$i]));
             }
         }
 
         // bind the callback for creating a new MQ sender instance to the naming directory => necessary for DI provider
-        $this->getApplication()->bindCallback($destination, array(&$this, 'createSenderForQueue'), array($destination));
+        $this->getApplication()->getNamingDirectory()->bindCallback(sprintf('php:global/%s/%s', $this->getApplication()->getName(), $destination), array(&$this, 'createSenderForQueue'), array($destination));
     }
 
     /**
@@ -331,5 +331,24 @@ class QueueManager extends AbstractManager implements QueueContextInterface
     public function getIdentifier()
     {
         return QueueContextInterface::IDENTIFIER;
+    }
+
+    /**
+     * Shutdown the session manager instance.
+     *
+     * @return void
+     * \AppserverIo\Psr\Application\ManagerInterface::stop()
+     */
+    public function stop()
+    {
+
+        // load the queue keys
+        $queues = get_object_vars($this->getQueues());
+
+        // iterate over the queues and shut them down
+        /** @var AppserverIo\Psr\Pms\QueueInterface $queue */
+        foreach ($queues as $queue) {
+            $queue->stop();
+        }
     }
 }

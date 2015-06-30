@@ -24,6 +24,7 @@ use AppserverIo\Appserver\Core\Mock\MockAbstractContainerThread;
 use AppserverIo\Appserver\Core\Mock\MockContainerThread;
 use AppserverIo\Appserver\Core\InitialContext;
 use AppserverIo\Appserver\Core\Api\Node\ContainerNode;
+use AppserverIo\Appserver\Naming\NamingDirectory;
 
 /**
  * Test for the container thread class.
@@ -51,7 +52,11 @@ class ContainerThreadTest extends AbstractTest
      */
     public function setUp()
     {
-        $this->containerThread = new MockAbstractContainerThread($this->getMockInitialContext(), $this->getContainerNode());
+        $this->containerThread = new MockAbstractContainerThread(
+            $this->getMockInitialContext(),
+            $this->getNamingDirectory(),
+            $this->getContainerNode()
+        );
     }
 
     /**
