@@ -49,16 +49,20 @@ class CronScanner extends AbstractScanner
      * init function to pass other args.
      *
      * @param \AppserverIo\Appserver\Application\Interfaces\ContextInterface $initialContext The initial context instance
+     * @param string                                                         $name           The unique scanner name from the configuration
      * @param integer                                                        $interval       The interval in seconds we want to execute the configured jobs
      */
-    public function __construct($initialContext, $interval = 1)
+    public function __construct($initialContext, $name, $interval = 1)
     {
 
         // call parent constructor
-        parent::__construct($initialContext);
+        parent::__construct($initialContext, $name);
 
         // initialize the members
         $this->interval = $interval;
+
+        // immediately start the scanner
+        $this->start();
     }
 
     /**

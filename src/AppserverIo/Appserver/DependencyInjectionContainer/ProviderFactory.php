@@ -61,7 +61,7 @@ class ProviderFactory implements ManagerFactoryInterface
 
         // create and initialize the DI provider instance
         $provider = new Provider();
-        $provider->injectNamingDirectory($application);
+        $provider->injectApplication($application);
         $provider->injectInitialContext($initialContext);
         $provider->injectReflectionClasses($reflectionClasses);
         $provider->injectNamingDirectoryAliases($namingDirectoryAliases);

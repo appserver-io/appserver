@@ -84,6 +84,11 @@ class BeanManagerFactory implements ManagerFactoryInterface
         $objectFactory->injectApplication($application);
         $objectFactory->start();
 
+        // add a garbage collector and timer service workers for each application
+        $garbageCollector = new StandardGarbageCollector();
+        $garbageCollector->injectApplication($application);
+        $garbageCollector->start();
+
         // initialize the bean manager
         $beanManager = new BeanManager();
         $beanManager->injectData($data);
@@ -91,6 +96,7 @@ class BeanManagerFactory implements ManagerFactoryInterface
         $beanManager->injectResourceLocator($beanLocator);
         $beanManager->injectObjectFactory($objectFactory);
         $beanManager->injectInitialContext($initialContext);
+        $beanManager->injectGarbageCollector($garbageCollector);
         $beanManager->injectStatefulSessionBeans($statefulSessionBeans);
         $beanManager->injectSingletonSessionBeans($singletonSessionBeans);
         $beanManager->injectDirectories($managerConfiguration->getDirectories());

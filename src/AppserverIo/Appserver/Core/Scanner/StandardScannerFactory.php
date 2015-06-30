@@ -20,8 +20,8 @@
 
 namespace AppserverIo\Appserver\Core\Scanner;
 
-use AppserverIo\Appserver\Core\Interfaces\ServerInterface;
 use AppserverIo\Appserver\Core\Api\Node\ScannerNodeInterface;
+use AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface;
 
 /**
  * Standard scanner factory implementation.
@@ -38,12 +38,12 @@ class StandardScannerFactory implements ScannerFactoryInterface
     /**
      * Creates a new scanner instance and attaches it to the passed server instance.
      *
-     * @param \AppserverIo\Appserver\Core\ServerInterface               $server      The server instance to add the scanner to
-     * @param \AppserverIo\Appserver\Core\Api\Node\ScannerNodeInterface $scannerNode The scanner configuration
+     * @param \AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface $server      The server instance to add the scanner to
+     * @param \AppserverIo\Appserver\Core\Api\Node\ScannerNodeInterface         $scannerNode The scanner configuration
      *
      * @return object The scanner instance
      */
-    public static function visit(ServerInterface $server, ScannerNodeInterface $scannerNode)
+    public static function visit(ApplicationServerInterface $server, ScannerNodeInterface $scannerNode)
     {
 
         // load the initial context instance
@@ -54,10 +54,10 @@ class StandardScannerFactory implements ScannerFactoryInterface
         $reflectionClass = new \ReflectionClass($scannerNode->getType());
 
         // prepare the scanner params
-        $scannerParams = array($initialContext);
+        $scannerParams = array($initialContext, $scannerNode->getName());
         $scannerParams = array_merge($scannerParams, $scannerNode->getParamsAsArray());
 
-        // create and return a new instance
-        $server->addScanner($reflectionClass->newInstanceArgs($scannerParams));
+        // register and start the scanner as daemon
+        $server->bindService(ApplicationServerInterface::DAEMON, $reflectionClass->newInstanceArgs($scannerParams));
     }
 }

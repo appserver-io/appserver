@@ -68,6 +68,13 @@ class ContainerStateKeys
     const SERVERS_STARTED_SUCCESSFUL = 4;
 
     /**
+     * Servers has been shutdown successful.
+     *
+     * @var integer
+     */
+    const SHUTDOWN = 5;
+
+    /**
      * The actual container state.
      *
      * @var integer
@@ -123,10 +130,12 @@ class ContainerStateKeys
     public static function getContainerStates()
     {
         return array(
+            ContainerStateKeys::HALT,
             ContainerStateKeys::WAITING_FOR_INITIALIZATION,
             ContainerStateKeys::INITIALIZATION_SUCCESSFUL,
             ContainerStateKeys::DEPLOYMENT_SUCCESSFUL,
-            ContainerStateKeys::SERVERS_STARTED_SUCCESSFUL
+            ContainerStateKeys::SERVERS_STARTED_SUCCESSFUL,
+            ContainerStateKeys::SHUTDOWN
         );
     }
 
@@ -140,6 +149,18 @@ class ContainerStateKeys
     public function greaterOrEqualThan(ContainerStateKeys $containerState)
     {
         return $this->containerState >= $containerState->getContainerState();
+    }
+
+    /**
+     * Returns TRUE if the passed container state NOT equals the actual one, else FALSE.
+     *
+     * @param \AppserverIo\Appserver\Core\Utilities\ContainerStateKeys $containerState The container state to check NOT to be equal
+     *
+     * @return boolean TRUE if NOT equal, else FALSE
+     */
+    public function notEquals(ContainerStateKeys $containerState)
+    {
+        return $this->containerState !== $containerState->getContainerState();
     }
 
     /**

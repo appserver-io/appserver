@@ -22,8 +22,9 @@ namespace AppserverIo\Appserver\PersistenceContainer;
 
 use AppserverIo\Logger\LoggerUtils;
 use AppserverIo\Storage\GenericStackable;
-use AppserverIo\Psr\EnterpriseBeans\TimerInterface;
+use AppserverIo\Appserver\Core\AbstractDaemonThread;
 use AppserverIo\Psr\Application\ApplicationInterface;
+use AppserverIo\Psr\EnterpriseBeans\TimerInterface;
 use AppserverIo\Psr\EnterpriseBeans\ServiceExecutorInterface;
 
 /**
@@ -35,7 +36,7 @@ use AppserverIo\Psr\EnterpriseBeans\ServiceExecutorInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class TimerServiceExecutor extends \Thread implements ServiceExecutorInterface
+class TimerServiceExecutor extends AbstractDaemonThread implements ServiceExecutorInterface
 {
 
     /**
@@ -157,110 +158,111 @@ class TimerServiceExecutor extends \Thread implements ServiceExecutorInterface
     }
 
     /**
-     * Only wait for executing timer tasks.
+     * This method will be invoked before the while() loop starts and can be used
+     * to implement some bootstrap functionality.
      *
      * @return void
      */
-    public function run()
+    public function bootstrap()
     {
 
-        // register the default autoloader
+        // setup autoloader
         require SERVER_AUTOLOADER;
-
-        // register a shutdown function
-        register_shutdown_function(array($this, 'shutdown'));
 
         // make the application available and register the class loaders
         $application = $this->getApplication();
         $application->registerClassLoaders();
 
-        // the array with the timer tasks which will be executed actually
-        $timerTasksExecuting = array();
-
         // try to load the profile logger
-        if ($profileLogger = $application->getInitialContext()->getLogger(LoggerUtils::PROFILE)) {
-            $profileLogger->appendThreadContext('timer-service-executor');
-        }
-
-        // handle the timer events
-        while (true) {
-            // wait 1 second or till we've been notified
-            $this->synchronized(function ($self) {
-                $self->wait(1000000);
-            }, $this);
-
-            try {
-                // iterate over the timer tasks that has to be executed
-                foreach ($this->tasksToExecute as $taskId => $timerTaskWrapper) {
-                    // this should never happen
-                    if (!$timerTaskWrapper instanceof \stdClass) {
-                        // log an error message because we task wrapper has wrong type
-                        $this->getApplication()->getInitialContext()->getSystemLogger()->error(
-                            sprintf('Timer-Task-Wrapper %s has wrong type %s', $taskId, get_class($timerTaskWrapper))
-                        );
-
-                        continue;
-                    }
-
-                    // query if the task has to be executed now
-                    if ($timerTaskWrapper->executeAt < microtime(true)) {
-                        // load the timer task wrapper we want to execute
-                        if ($pk = $this->scheduledTimers[$timerId = $timerTaskWrapper->timerId]) {
-                            // load the timer service registry
-                            $timerServiceRegistry = $this->getApplication()->search('TimerServiceContextInterface');
-
-                            // lookup the timer from the timer service
-                            $timer = $timerServiceRegistry->lookup($pk)->getTimers()->get($timerId);
-
-                            // create the timer task to be executed
-                            $timer->getTimerTask($application);
-
-                            // remove the key from the list of tasks to be executed
-                            unset($this->tasksToExecute[$taskId]);
-
-                        } else {
-                            // log an error message because we can't find the timer instance
-                            $this->getApplication()->getInitialContext()->getSystemLogger()->error(
-                                sprintf('Can\'t find timer %s to create timer task %s', $timerTaskWrapper->timerId, $taskId)
-                            );
-                        }
-                    }
-                }
-
-                // profile the size of the timer tasks to be executed
-                if ($profileLogger) {
-                    $profileLogger->debug(
-                        sprintf('Processed timer service executor, executing %d timer tasks', sizeof($timerTasksExecuting))
-                    );
-                }
-
-            } catch (\Exception $e) {
-                // log a critical error message
-                $this->getApplication()->getInitialContext()->getSystemLogger()->critical($e->__toString());
-            }
+        if (isset($this->loggers[LoggerUtils::PROFILE])) {
+            $this->profileLogger = $this->loggers[LoggerUtils::PROFILE];
+            $this->profileLogger->appendThreadContext('timer-service-executor');
         }
     }
 
     /**
-     * Shutdown function to log unexpected errors.
+     * This is invoked on every iteration of the daemons while() loop.
+     *
+     * @param integer $timeout The timeout before the daemon wakes up
      *
      * @return void
-     * @see http://php.net/register_shutdown_function
      */
-    public function shutdown()
+    public function iterate($timeout)
     {
 
-        // check if there was a fatal error caused shutdown
-        if ($lastError = error_get_last()) {
-            // initialize error type and message
-            $type = 0;
-            $message = '';
-            // extract the last error values
-            extract($lastError);
-            // query whether we've a fatal/user error
-            if ($type === E_ERROR || $type === E_USER_ERROR) {
-                $this->getApplication()->getInitialContext()->getSystemLogger()->critical($message);
+        // call parent method and sleep for the default timeout
+        parent::iterate($timeout);
+
+        // iterate over the timer tasks that has to be executed
+        foreach ($this->tasksToExecute as $taskId => $timerTaskWrapper) {
+            // this should never happen
+            if (!$timerTaskWrapper instanceof \stdClass) {
+                // log an error message because we task wrapper has wrong type
+                $this->getApplication()->getInitialContext()->getSystemLogger()->error(
+                    sprintf('Timer-Task-Wrapper %s has wrong type %s', $taskId, get_class($timerTaskWrapper))
+                );
+                // we didn't foud a timer task ignore this
+                continue;
+            }
+
+            // query if the task has to be executed now
+            if ($timerTaskWrapper->executeAt < microtime(true)) {
+                // load the timer task wrapper we want to execute
+                if ($pk = $this->scheduledTimers[$timerId = $timerTaskWrapper->timerId]) {
+                    // load the timer service registry
+                    $timerServiceRegistry = $this->getApplication()->search('TimerServiceContextInterface');
+
+                    // lookup the timer from the timer service
+                    $timer = $timerServiceRegistry->lookup($pk)->getTimers()->get($timerId);
+
+                    // create the timer task to be executed
+                    $timer->getTimerTask($this->getApplication());
+
+                    // remove the key from the list of tasks to be executed
+                    unset($this->tasksToExecute[$taskId]);
+
+                } else {
+                    // log an error message because we can't find the timer instance
+                    $this->getApplication()->getInitialContext()->getSystemLogger()->error(
+                        sprintf('Can\'t find timer %s to create timer task %s', $timerTaskWrapper->timerId, $taskId)
+                    );
+                }
             }
         }
+
+        // profile the size of the timer tasks to be executed
+        if ($this->profileLogger) {
+            $this->profileLogger->debug(
+                sprintf('Processed timer service executor, executing %d timer tasks', sizeof($this->tasksToExecute))
+            );
+        }
+    }
+
+    /**
+     * This is a very basic method to log some stuff by using the error_log() method of PHP.
+     *
+     * @param mixed  $level   The log level to use
+     * @param string $message The message we want to log
+     * @param array  $context The context we of the message
+     *
+     * @return void
+     */
+    public function log($level, $message, array $context = array())
+    {
+        $this->getApplication()->getInitialContext()->getSystemLogger()->log($level, $message, $context);
+    }
+
+    /**
+     * Let the daemon sleep for the passed value of miroseconds.
+     *
+     * @param integer $timeout The number of microseconds to sleep
+     *
+     * @return void
+     */
+    public function sleep($timeout)
+    {
+        $this->synchronized(function ($self) use ($timeout) {
+            $self->wait($timeout);
+        }, $this);
     }
 }

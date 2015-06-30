@@ -20,6 +20,8 @@
 
 namespace AppserverIo\Appserver\Core;
 
+use AppserverIo\Configuration\ConfigurationException;
+
 /**
  * Generic deployment implementation for web applications.
  *
@@ -56,28 +58,40 @@ class GenericDeployment extends AbstractDeployment
         if (is_dir($directory = $this->getDeploymentService()->getWebappsDir())) {
             // load the datasource files
             $datasourceFiles = $this->getDeploymentService()->globDir($directory . DIRECTORY_SEPARATOR . '*-ds.xml');
-            // iterate through all provisioning files (provision.xml), validate them and attach them to the configuration
+
+            // iterate through all provisioning files (*-ds.xml), validate them and attach them to the configuration
+            /** @var AppserverIo\Appserver\Core\Api\ConfigurationService $configurationService */
             $configurationService = $this->getConfigurationService();
             foreach ($datasourceFiles as $datasourceFile) {
-                // validate the file, but skip it if validation fails
-                if ($configurationService->validateFile($datasourceFile) === false) {
-                    $errorMessages = $configurationService->getErrorMessages();
+
+                try {
+
+                    // validate the file, but skip it if validation fails
+                    $configurationService->validateFile($datasourceFile);
+
+                    // load the database configuration
+                    $datasourceNodes = $this->getDatasourceService()->initFromFile($datasourceFile);
+
+                    // store the datasource in the system configuration
+                    foreach ($datasourceNodes as $datasourceNode) {
+                        $this->getDatasourceService()->persist($datasourceNode);
+
+                        // log a message that the datasource has been deployed
+                        $this->getInitialContext()->getSystemLogger()->info(
+                            sprintf('Successfully deployed datasource %s', $datasourceNode->getName())
+                        );
+                    }
+
+                // log a message and continue with the next datasource node
+                } catch (ConfigurationException $ce) {
+
+                    // load the logger and log the XML validation errors
                     $systemLogger = $this->getInitialContext()->getSystemLogger();
-                    $systemLogger->error(reset($errorMessages));
-                    $systemLogger->critical(sprintf('Will skip reading configuration in %s, datasources might be missing.', $datasourceFile));
-                    continue;
-                }
+                    $systemLogger->error($ce->__toString());
 
-                // load the database configuration
-                $datasourceNodes = $this->getDatasourceService()->initFromFile($datasourceFile);
-
-                // store the datasource in the system configuration
-                foreach ($datasourceNodes as $datasourceNode) {
-                    $this->getDatasourceService()->persist($datasourceNode);
-
-                    // log a message that the datasource has been deployed
-                    $this->getInitialContext()->getSystemLogger()->info(
-                        sprintf('Successfully deployed datasource %s', $datasourceNode->getName())
+                    // additionally log a message that DS will be missing
+                    $systemLogger->critical(
+                        sprintf('Will skip reading configuration in %s, datasources might be missing.', $datasourceFile)
                     );
                 }
             }

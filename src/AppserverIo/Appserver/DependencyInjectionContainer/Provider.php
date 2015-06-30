@@ -57,6 +57,7 @@ use AppserverIo\Psr\Naming\InitialContext as NamingContext;
  *
  * @property \AppserverIo\Psr\Naming\InitialContext           $initialContext  The naming context instance
  * @property \AppserverIo\Psr\Naming\NamingDirectoryInterface $namingDirectory The applications naming directory interface
+ * @property \AppserverIo\Psr\Application\ApplicationInterfac $application     The application instance
  */
 class Provider extends GenericStackable implements ProviderInterface
 {
@@ -135,15 +136,15 @@ class Provider extends GenericStackable implements ProviderInterface
     }
 
     /**
-     * Injects the naming directory.
+     * The application instance.
      *
-     * @param \AppserverIo\Psr\Naming\NamingDirectoryInterface $namingDirectory The naming directory instance
+     * @param \AppserverIo\Psr\Application\ApplicationInterface $application The application instance
      *
      * @return void
      */
-    public function injectNamingDirectory(NamingDirectoryInterface $namingDirectory)
+    public function injectApplication(ApplicationInterface $application)
     {
-        $this->namingDirectory = $namingDirectory;
+        $this->application = $application;
     }
 
     /**
@@ -157,13 +158,23 @@ class Provider extends GenericStackable implements ProviderInterface
     }
 
     /**
+     * Returns the application instance.
+     *
+     * @return \AppserverIo\Psr\Application\ApplicationInterface The application instance
+     */
+    public function getApplication()
+    {
+        return $this->application;
+    }
+
+    /**
      * Returns the applications naming directory.
      *
      * @return \AppserverIo\Psr\Naming\NamingDirectoryInterface The applications naming directory interface
      */
     public function getNamingDirectory()
     {
-        return $this->namingDirectory;
+        return $this->getApplication()->getNamingDirectory();
     }
 
     /**
@@ -282,7 +293,7 @@ class Provider extends GenericStackable implements ProviderInterface
 
         // load the object manager instance
         /** @var \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\ObjectManagerInterface $objectManager */
-        $objectManager = $this->getNamingDirectory()->search('ObjectManagerInterface');
+        $objectManager = $this->getNamingDirectory()->search(sprintf('php:global/%s/ObjectManagerInterface', $this->getApplication()->getName()));
 
         // load the object descriptor for the instance from the the object manager
         if ($objectManager->hasObjectDescriptor($className = get_class($instance))) {
@@ -297,7 +308,7 @@ class Provider extends GenericStackable implements ProviderInterface
                 // check if we've a reflection target defined
                 if ($injectionTarget = $reference->getInjectionTarget()) {
                     // load the instance to inject by lookup the initial context
-                    $toInject = $this->getNamingDirectory()->search($reference->getName(), array($sessionId));
+                    $toInject = $this->getNamingDirectory()->search(sprintf('php:global/%s/%s', $this->getApplication()->getName(), $reference->getName()), array($sessionId));
 
                     // query for method injection
                     if (method_exists($instance, $targetName = $injectionTarget->getTargetMethod())) {

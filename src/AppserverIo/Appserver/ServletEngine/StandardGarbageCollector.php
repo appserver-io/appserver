@@ -21,6 +21,7 @@
 namespace AppserverIo\Appserver\ServletEngine;
 
 use AppserverIo\Logger\LoggerUtils;
+use AppserverIo\Appserver\Core\AbstractDaemonThread;
 use AppserverIo\Psr\Servlet\ServletSessionInterface;
 
 /**
@@ -38,24 +39,8 @@ use AppserverIo\Psr\Servlet\ServletSessionInterface;
  * @property \AppserverIo\Storage\StorageInterface                         $sessions        The sessions
  * @property \AppserverIo\Appserver\ServletEngine\SessionSettingsInterface $sessionSettings Settings for the session handling
  */
-class StandardGarbageCollector extends \Thread implements GarbageCollectorInterface
+class StandardGarbageCollector extends AbstractDaemonThread implements GarbageCollectorInterface
 {
-
-    /**
-     * The time we wait after each persistence loop.
-     *
-     * @var integer
-     */
-    const TIME_TO_LIVE = 5;
-
-    /**
-     * Initializes the session persistence manager with the session manager instance
-     * we want to handle garbage collection for.
-     */
-    public function __construct()
-    {
-        $this->run = true;
-    }
 
     /**
      * Injects the available logger instances.
@@ -145,11 +130,12 @@ class StandardGarbageCollector extends \Thread implements GarbageCollectorInterf
     }
 
     /**
-     * This is the main method that invokes the garbage collector.
+     * This method will be invoked before the while() loop starts and can be used
+     * to implement some bootstrap functionality.
      *
      * @return void
      */
-    public function run()
+    public function bootstrap()
     {
 
         // setup autoloader
@@ -157,23 +143,32 @@ class StandardGarbageCollector extends \Thread implements GarbageCollectorInterf
 
         // try to load the profile logger
         if (isset($this->loggers[LoggerUtils::PROFILE])) {
-            $profileLogger = $this->loggers[LoggerUtils::PROFILE];
-            $profileLogger->appendThreadContext('servlet-engine-garbage-collector');
+            $this->profileLogger = $this->loggers[LoggerUtils::PROFILE];
+            $this->profileLogger->appendThreadContext('servlet-engine-garbage-collector');
         }
+    }
 
-        while ($this->run) {
-            // collect the session garbage
-            $this->collectGarbage();
+    /**
+     * This is invoked on every iteration of the daemons while() loop.
+     *
+     * @param integer $timeout The timeout before the daemon wakes up
+     *
+     * @return void
+     */
+    public function iterate($timeout)
+    {
 
-            if ($profileLogger) {
-                // profile the size of the sessions
-                $profileLogger->debug(sprintf('Collect garbage for session pool with size: %d', sizeof($this->getSessions())));
-            }
+        // call parent method and sleep for the default timeout
+        parent::iterate($timeout);
 
-            // wait for the configured time of seconds
-            $this->synchronized(function ($self) {
-                $self->wait(1000000 * StandardGarbageCollector::TIME_TO_LIVE);
-            }, $this);
+        // collect the session garbage
+        $this->collectGarbage();
+
+        // profile the size of the sessions
+        if ($this->profileLogger) {
+            $this->profileLogger->debug(
+                sprintf('Collect garbage for session pool with size: %d', sizeof($this->getSessions()))
+            );
         }
     }
 
@@ -267,15 +262,5 @@ class StandardGarbageCollector extends \Thread implements GarbageCollectorInterf
                 }
             }
         }
-    }
-
-    /**
-     * Stops the garbage collector.
-     *
-     * @return void
-     */
-    public function stop()
-    {
-        $this->run = false;
     }
 }

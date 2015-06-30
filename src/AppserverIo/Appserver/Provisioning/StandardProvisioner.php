@@ -20,8 +20,9 @@
 
 namespace AppserverIo\Appserver\Provisioning;
 
-use AppserverIo\Appserver\Core\Api\Node\ProvisionNode;
+use AppserverIo\Configuration\ConfigurationException;
 use AppserverIo\Psr\Application\ApplicationInterface;
+use AppserverIo\Appserver\Core\Api\Node\ProvisionNode;
 
 /**
  * Standard provisioning functionality.
@@ -61,52 +62,63 @@ class StandardProvisioner extends AbstractProvisioner
 
         // check if the webapps directory exists
         if (is_dir($webappPath = $application->getWebappPath())) {
-            // load the service instance
-            $service = $this->getService();
-
             // prepare the glob expression with the application's directories to parse
             $applicationDirectories = sprintf('%s/{WEB-INF,META-INF}/provision.xml', $webappPath);
 
-            // iterate through all provisioning files (provision.xml), validate them and attach them to the configuration
+            // load the service instance
+            /** @var AppserverIo\Appserver\Core\Api\ProvisioningService $service */
+            $service = $this->getService();
+
+            /** @var AppserverIo\Appserver\Core\Api\ConfigurationService $configurationService */
+            // load the configuration service instance
             $configurationService = $this->getInitialContext()->newService('AppserverIo\Appserver\Core\Api\ConfigurationService');
+
+            // iterate through all provisioning files (provision.xml), validate them and attach them to the configuration
             foreach ($service->globDir($applicationDirectories, GLOB_BRACE) as $provisionFile) {
-                // validate the file, but skip it if validation fails
-                if (!$configurationService->validateFile($provisionFile, null)) {
-                    $errorMessages = $configurationService->getErrorMessages();
-                    $systemLogger = $this->getInitialContext()->getSystemLogger();
-                    $systemLogger->error(reset($errorMessages));
-                    $systemLogger->critical(sprintf('Will skip reading provisioning steps in %s, provisioning might not have been done.', $provisionFile));
-                    continue;
-                }
+                try {
+                    // validate the file, but skip it if validation fails
+                    $configurationService->validateFile($provisionFile, null);
 
-                // load the path of web application
-                $webappPath = new \SplFileInfo(dirname(dirname($provisionFile)));
+                    // load the path of web application
+                    $webappPath = new \SplFileInfo(dirname(dirname($provisionFile)));
 
-                // load the provisioning configuration
-                $provisionNode = new ProvisionNode();
-                $provisionNode->initFromFile($provisionFile);
+                    // load the provisioning configuration
+                    $provisionNode = new ProvisionNode();
+                    $provisionNode->initFromFile($provisionFile);
 
-                // query whether we've a datasource configured or not
-                if ($datasource = $provisionNode->getDatasource()) {
-                    // try to load the datasource from the system configuration
-                    $datasourceNode = $service->findByName($datasource->getName());
-                    // try to inject the datasource node if available
-                    if ($datasourceNode != null) {
-                        $provisionNode->injectDatasource($datasourceNode);
+                    // query whether we've a datasource configured or not
+                    if ($datasource = $provisionNode->getDatasource()) {
+                        // try to load the datasource from the system configuration
+                        $datasourceNode = $service->findByName($datasource->getName());
+                        // try to inject the datasource node if available
+                        if ($datasourceNode != null) {
+                            $provisionNode->injectDatasource($datasourceNode);
+                        }
                     }
+
+                    /* Re-provision the provision.xml (reinitialize).
+                     *
+                     * ATTENTION: The re-provisioning is extremely important, because
+                     * this allows dynamic replacement of placeholders by using the
+                     * XML file as a template that will reinterpreted with the PHP
+                     * interpreter!
+                     */
+                    $provisionNode->reprovision($provisionFile);
+
+                    // execute the provisioning workflow
+                    $this->executeProvision($application, $provisionNode, $webappPath);
+
+                } catch (ConfigurationException $ce) {
+
+                    // load the logger and log the XML validation errors
+                    $systemLogger = $this->getInitialContext()->getSystemLogger();
+                    $systemLogger->error($ce->__toString());
+
+                    // additionally log a message that DS will be missing
+                    $systemLogger->critical(
+                        sprintf('Will skip reading provisioning steps in %s, provisioning might not have been done.', $provisionFile)
+                    );
                 }
-
-                /* Re-provision the provision.xml (reinitialize).
-                 *
-                 * ATTENTION: The re-provisioning is extremely important, because
-                 * this allows dynamic replacement of placeholders by using the
-                 * XML file as a template that will reinterpreted with the PHP
-                 * interpreter!
-                 */
-                $provisionNode->reprovision($provisionFile);
-
-                // execute the provisioning workflow
-                $this->executeProvision($application, $provisionNode, $webappPath);
             }
         }
     }

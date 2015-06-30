@@ -20,7 +20,9 @@
 
 namespace AppserverIo\Appserver\PersistenceContainer;
 
+use AppserverIo\Logger\LoggerUtils;
 use AppserverIo\Storage\GenericStackable;
+use AppserverIo\Appserver\Core\AbstractDaemonThread;
 use AppserverIo\Psr\Application\ApplicationInterface;
 
 /**
@@ -38,7 +40,7 @@ use AppserverIo\Psr\Application\ApplicationInterface;
  * @property string|null                                       $sessionId   The session-ID, necessary to inject stateful session beans (SFBs)
  * @property array                                             $args        Arguments to pass to the constructor of the instance
  */
-class GenericObjectFactory extends \Thread implements ObjectFactoryInterface
+class GenericObjectFactory extends AbstractDaemonThread implements ObjectFactoryInterface
 {
 
     /**
@@ -46,7 +48,6 @@ class GenericObjectFactory extends \Thread implements ObjectFactoryInterface
      */
     public function __construct()
     {
-        // initialize the member variables
         $this->dispatched = false;
         $this->mutex = \Mutex::create();
     }
@@ -102,38 +103,21 @@ class GenericObjectFactory extends \Thread implements ObjectFactoryInterface
         // lock the method
         \Mutex::lock($this->mutex);
 
-        do {
-            // create a counter
-            $counter = 0;
+        // we're not dispatched
+        $this->dispatched = false;
 
-            // if this is the first loop
-            if ($counter === 0) {
-                // we're not dispatched
-                $this->dispatched = false;
+        // initialize the data
+        $this->args = $args;
+        $this->sessionId = $sessionId;
+        $this->className = $className;
 
-                // initialize the data
-                $this->args = $args;
-                $this->sessionId = $sessionId;
-                $this->className = $className;
+        // notify the thread
+        $this->notify();
 
-                // notify the thread
-                $this->synchronized(function ($self) {
-                    $self->notify();
-                }, $this);
-            }
-
-            // raise the counter
-            $counter++;
-
-            // we wait for 100 iterations
-            if ($counter > 100) {
-                throw new \Exception('Requested instance can\'t be created');
-            }
-
-            // lower system load a bit
+        // wait till we've dispatched the request
+        while ($this->dispatched === false) {
             usleep(100);
-
-        } while ($this->dispatched === false);
+        }
 
         // try to load the last created instance
         if (isset($this->instances[$last = sizeof($this->instances) - 1])) {
@@ -150,67 +134,88 @@ class GenericObjectFactory extends \Thread implements ObjectFactoryInterface
     }
 
     /**
-     * Invoked when the thread starts.
+     * This method will be invoked before the while() loop starts and can be used
+     * to implement some bootstrap functionality.
      *
      * @return void
-     * @see Stackable::run()
      */
-    public function run()
+    public function bootstrap()
     {
 
-        // register the default autoloader
+        // setup autoloader
         require SERVER_AUTOLOADER;
 
-        // register shutdown handler
-        register_shutdown_function(array(&$this, "shutdown"));
-
-        // make the application available and register the class loaders
+        // synchronize the application instance and register the class loaders
         $application = $this->getApplication();
         $application->registerClassLoaders();
 
-        // run forever
-        while (true) {
-            // wait until we've been notified
-            $this->synchronized(function ($self) {
-                $self->wait();
-            }, $this);
-
-            // create the instance
-            $instance = $application->search('ProviderInterface')
-                                    ->newInstance(
-                                        $this->className,
-                                        $this->sessionId,
-                                        $this->args
-                                    );
-
-            // stack the instance
-            $this->instances[] = $instance;
-
-            // we're dispatched now
-            $this->dispatched = true;
+        // try to load the profile logger
+        if ($this->profileLogger = $this->getApplication()->getInitialContext()->getLogger(LoggerUtils::PROFILE)) {
+            $this->profileLogger->appendThreadContext('generic-object-factory');
         }
     }
 
     /**
-     * Shutdown function to log unexpected errors.
+     * This is invoked on every iteration of the daemons while() loop.
+     *
+     * @param integer $timeout The timeout before the daemon wakes up
      *
      * @return void
-     * @see http://php.net/register_shutdown_function
      */
-    public function shutdown()
+    public function iterate($timeout)
     {
 
-        // check if there was a fatal error caused shutdown
-        if ($lastError = error_get_last()) {
-            // initialize error type and message
-            $type = 0;
-            $message = '';
-            // extract the last error values
-            extract($lastError);
-            // query whether we've a fatal/user error
-            if ($type === E_ERROR || $type === E_USER_ERROR) {
-                $this->getApplication()->getInitialContext()->getSystemLogger()->critical($message);
+        // call parent method and sleep for the default timeout
+        parent::iterate($timeout);
+
+        // create the instance and stack it
+        $this->synchronized(function ($self) {
+
+            // create the instance only if we're NOT dispatched and a class name is available
+            if ($self->dispatched === false && $self->className) {
+                // create the instance
+                $instance = $self->getApplication()->search('ProviderInterface')
+                                                   ->newInstance(
+                                                       $self->className,
+                                                       $self->sessionId,
+                                                       $self->args
+                                                   );
+
+                // stack the instance
+                $self->instances[] = $instance;
+
+                // we're dispatched now
+                $self->dispatched = true;
             }
-        }
+
+        }, $this);
+    }
+
+    /**
+     * This is a very basic method to log some stuff by using the error_log() method of PHP.
+     *
+     * @param mixed  $level   The log level to use
+     * @param string $message The message we want to log
+     * @param array  $context The context we of the message
+     *
+     * @return void
+     */
+    public function log($level, $message, array $context = array())
+    {
+        $this->getApplication()->getInitialContext()->getSystemLogger()->log($level, $message, $context);
+    }
+
+    /**
+     * Let the daemon sleep for the passed value of miroseconds.
+     *
+     * @param integer $timeout The number of microseconds to sleep
+     *
+     * @return void
+     */
+    public function sleep($timeout)
+    {
+        $this->synchronized(function ($self) use ($timeout) {
+            $self->wait($timeout);
+        }, $this);
     }
 }

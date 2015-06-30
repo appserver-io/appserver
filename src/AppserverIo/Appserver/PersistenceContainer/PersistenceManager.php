@@ -153,7 +153,7 @@ class PersistenceManager extends AbstractManager implements PersistenceContextIn
         $this->entityManagers[$lookupName = $persistenceUnitNode->getName()] = $persistenceUnitNode;
 
         // bind the callback for the entity manager instance to the naming directory => necessary for DI provider
-        $application->bindCallback($lookupName, array(&$this, 'lookup'), array($lookupName));
+        $application->getNamingDirectory()->bindCallback(sprintf('php:global/%s/%s', $application->getName(), $lookupName), array(&$this, 'lookup'), array($lookupName));
     }
 
     /**
@@ -196,6 +196,6 @@ class PersistenceManager extends AbstractManager implements PersistenceContextIn
      */
     public function getIdentifier()
     {
-        return EntityManagerInterface::IDENTIFIER;
+        return PersistenceContextInterface::IDENTIFIER;
     }
 }

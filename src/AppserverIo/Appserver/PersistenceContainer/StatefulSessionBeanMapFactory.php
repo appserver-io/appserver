@@ -20,8 +20,9 @@
 
 namespace AppserverIo\Appserver\PersistenceContainer;
 
-use AppserverIo\Collections\MapInterface;
 use AppserverIo\Logger\LoggerUtils;
+use AppserverIo\Collections\MapInterface;
+use AppserverIo\Appserver\Core\AbstractDaemonThread;
 
 /**
  * A thread that pre-initializes session instances and adds them to the session pool.
@@ -34,15 +35,8 @@ use AppserverIo\Logger\LoggerUtils;
  *
  * @property array $loggers The logger instances
  */
-class StatefulSessionBeanMapFactory extends \Thread
+class StatefulSessionBeanMapFactory extends AbstractDaemonThread
 {
-
-    /**
-     * The time we wait after each loop.
-     *
-     * @var integer
-     */
-    const TIME_TO_LIVE = 1;
 
     /**
      * Key for invocation of method 'removeBySessionId()'.
@@ -67,10 +61,7 @@ class StatefulSessionBeanMapFactory extends \Thread
     {
 
         // initialize the members
-        $this->run = true;
-
         $this->createSession = false;
-
         $this->sessionId = null;
         $this->action = null;
 
@@ -88,18 +79,6 @@ class StatefulSessionBeanMapFactory extends \Thread
     public function injectLoggers(array $loggers)
     {
         $this->loggers = $loggers;
-    }
-
-    /**
-     * Stops the session factory.
-     *
-     * @return void
-     */
-    public function stop()
-    {
-        $this->synchronized(function ($self) {
-            $self->run = false;
-        }, $this);
     }
 
     /**
@@ -123,6 +102,8 @@ class StatefulSessionBeanMapFactory extends \Thread
      */
     protected function removeBySessionId($sessionId)
     {
+
+        // remove all SFSBs for the session with the passed ID
         $this->synchronized(function ($self, $id) {
 
             // set the action and the session-ID
@@ -146,6 +127,8 @@ class StatefulSessionBeanMapFactory extends \Thread
     {
 
         do {
+
+            // create a new SFSB instance and return it
             $this->synchronized(function ($self, $id) {
 
                 // set action and session-ID
@@ -164,93 +147,87 @@ class StatefulSessionBeanMapFactory extends \Thread
     }
 
     /**
-     * This is the main factory method that creates the new
-     * session instances and adds them to the session pool.
+     * This method will be invoked before the while() loop starts and can be used
+     * to implement some bootstrap functionality.
      *
      * @return void
      */
-    public function run()
+    public function bootstrap()
     {
 
         // setup autoloader
         require SERVER_AUTOLOADER;
 
-        // register shutdown handler
-        register_shutdown_function(array(&$this, "shutdown"));
-
         // try to load the profile logger
         if (isset($this->loggers[LoggerUtils::PROFILE])) {
-            $profileLogger = $this->loggers[LoggerUtils::PROFILE];
-            $profileLogger->appendThreadContext('stateful-session-bean-map-factory');
-        }
-
-        // while we should create threads, to it
-        while ($this->run) {
-            // wait until we receive a notification for a method invocation
-            $this->synchronized(function ($self) {
-                $self->wait(1000000 * StatefulSessionBeanMapFactory::TIME_TO_LIVE);
-            }, $this);
-
-            // check the method we want to invoke
-            switch ($this->action) {
-
-                // we want to create a new session instance
-                case StatefulSessionBeanMapFactory::ACTION_NEW_INSTANCE:
-
-                    $this->sessionPool->set($this->sessionId, new StatefulSessionBeanMap());
-
-                    break;
-
-                // we want to remove a session instance from the pool
-                case StatefulSessionBeanMapFactory::ACTION_REMOVE_BY_SESSION_ID:
-
-                    foreach ($this->sessionPool as $sessionId => $session) {
-                        if ($session instanceof MapInterface && $sessionId === $this->sessionId) {
-                            $this->sessionPool->remove($sessionId);
-                        }
-                    }
-
-                    break;
-
-                // do nothing, because we've an unknown action
-                default:
-
-                    break;
-            }
-
-            // reset the action and session-ID
-            $this->action = null;
-            $this->sessionId = null;
-
-            if ($profileLogger) {
-                // profile the size of the session pool
-                $profileLogger->debug(
-                    sprintf('Size of session pool is: %d', sizeof($this->sessionPool))
-                );
-            }
+            $this->profileLogger = $this->loggers[LoggerUtils::PROFILE];
+            $this->profileLogger->appendThreadContext('stateful-session-bean-map-factory');
         }
     }
 
     /**
-     * Shutdown function to log unexpected errors.
+     * This is invoked on every iteration of the daemons while() loop.
+     *
+     * @param integer $timeout The timeout before the daemon wakes up
      *
      * @return void
-     * @see http://php.net/register_shutdown_function
      */
-    public function shutdown()
+    public function iterate($timeout)
     {
 
-        // check if there was a fatal error caused shutdown
-        if ($lastError = error_get_last()) {
-            // initialize error type and message
-            $type = 0;
-            $message = '';
-            // extract the last error values
-            extract($lastError);
-            // query whether we've a fatal/user error
-            if ($type === E_ERROR || $type === E_USER_ERROR) {
-                error_log($message);
-            }
+        // call parent method and sleep for the default timeout
+        parent::iterate($timeout);
+
+        // check the method we want to invoke
+        switch ($this->action) {
+
+            // we want to create a new session instance
+            case StatefulSessionBeanMapFactory::ACTION_NEW_INSTANCE:
+
+                $this->sessionPool->set($this->sessionId, new StatefulSessionBeanMap());
+
+                break;
+
+                // we want to remove a session instance from the pool
+            case StatefulSessionBeanMapFactory::ACTION_REMOVE_BY_SESSION_ID:
+
+                foreach ($this->sessionPool as $sessionId => $session) {
+                    if ($session instanceof MapInterface && $sessionId === $this->sessionId) {
+                        $this->sessionPool->remove($sessionId);
+                    }
+                }
+
+                break;
+
+                // do nothing, because we've an unknown action
+            default:
+
+                break;
         }
+
+        // reset the action and session-ID
+        $this->action = null;
+        $this->sessionId = null;
+
+        // profile the size of the session pool
+        if ($this->profileLogger) {
+            $this->profileLogger->debug(
+                sprintf('Size of session pool is: %d', sizeof($this->sessionPool))
+            );
+        }
+    }
+
+    /**
+     * Let the daemon sleep for the passed value of miroseconds.
+     *
+     * @param integer $timeout The number of microseconds to sleep
+     *
+     * @return void
+     */
+    public function sleep($timeout)
+    {
+        $this->synchronized(function ($self) use ($timeout) {
+            $self->wait($timeout);
+        }, $this);
     }
 }

@@ -202,4 +202,15 @@ abstract class AbstractManager extends GenericStackable implements ManagerInterf
     {
         return $this->getApplication()->search('ProviderInterface')->newInstance($className, $sessionId, $args);
     }
+
+    /**
+     * A dummy functionality to implement the stop functionality.
+     *
+     * @return void
+     * \AppserverIo\Psr\Application\ManagerInterface::stop()
+     */
+    public function stop()
+    {
+        error_log(sprintf('Now shutdown manager %s', $this->getIdentifier()));
+    }
 }

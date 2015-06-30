@@ -85,10 +85,21 @@ class EntityManagerFactory
         $configuration = Setup::$factoryMethod($absolutePaths, $isDevMode, $proxyDir, null, $useSimpleAnnotationReader);
 
         // load the datasource
+        $datasourceNode = null;
         foreach ($application->getInitialContext()->getSystemConfiguration()->getDatasources() as $datasourceNode) {
             if ($datasourceNode->getName() === $persistenceUnitNode->getDatasource()->getName()) {
                 break;
             }
+        }
+
+        // throw a exception if the configured datasource is NOT available
+        if ($datasourceNode == null) {
+            throw new \Exception(
+                sprintf(
+                    'Can\'t find a datasource node for persistence unit %s',
+                    $persistenceUnitNode->getDatasource()->getName()
+                )
+            );
         }
 
         // initialize the database node

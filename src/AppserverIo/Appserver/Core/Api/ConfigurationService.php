@@ -1,7 +1,7 @@
 <?php
 
 /**
- * \AppserverIo\Appserver\Core\Api\ConfigurationTester
+ * \AppserverIo\Appserver\Core\Api\ConfigurationService
  *
  * NOTICE OF LICENSE
  *
@@ -20,7 +20,10 @@
 
 namespace AppserverIo\Appserver\Core\Api;
 
+use AppserverIo\Configuration\ConfigurationUtils;
 use AppserverIo\Appserver\Core\InitialContext;
+use AppserverIo\Appserver\Core\Api\Node\ParamNode;
+use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
 
 /**
  * This class can be used to validate configuration files against known schemas.
@@ -41,13 +44,6 @@ class ConfigurationService extends AbstractService
      * @var string DEFAULT_XML_SCHEMA
      */
     const DEFAULT_XML_SCHEMA = 'resources/schema/appserver.xsd';
-
-    /**
-     * Array of schema files indexed with the configuration file name they can validate
-     *
-     * @var array $schemaFiles
-     */
-    protected $errors = array();
 
     /**
      * The path of the schema file to use for the validation
@@ -103,37 +99,6 @@ class ConfigurationService extends AbstractService
     }
 
     /**
-     * Will return recently found errors already formatted for output
-     *
-     * @return array
-     */
-    public function getErrorMessages()
-    {
-        $errorMessages = array();
-        foreach ($this->getErrors() as $error) {
-            $errorMessages[] = sprintf(
-                "Found a schema validation error on line %s with code %s and message %s when validating configuration file %s, see error dump below: %s",
-                $error->line,
-                $error->code,
-                $error->message,
-                $error->file,
-                var_export($error, true)
-            );
-        }
-        return $errorMessages;
-    }
-
-    /**
-     * Getter for the errors produced in the last run
-     *
-     * @return array
-     */
-    public function getErrors()
-    {
-        return $this->errors;
-    }
-
-    /**
      * Initializes the configuration tester.
      * Will reset traces of any former usage
      *
@@ -186,32 +151,17 @@ class ConfigurationService extends AbstractService
      */
     public function validateFile($fileName, $schemaFile = null, $failOnErrors = false)
     {
+
         // if we did not get a schema file we have to check if we know which one to use
         if (is_null($schemaFile)) {
             $this->findSchemaFile($fileName);
             $schemaFile = $this->schemaFile;
         }
 
-        // check by the files extension
-        $extension = pathinfo($fileName, PATHINFO_EXTENSION);
+        // validate the passed configuration file
+        ConfigurationUtils::singleton()->validateFile($fileName, $schemaFile, $failOnErrors);
 
-        // are we able to validate the file?
-        $result = null;
-        switch ($extension)
-        {
-            case 'xml':
-
-                $domDocument = new \DOMDocument();
-                $domDocument->load($fileName);
-                $result = $this->validateXml($domDocument, $schemaFile, $failOnErrors);
-                break;
-
-            default:
-
-                throw new \Exception(sprintf('Could not find a validation method for file %s as the extension %s is not supported.', $fileName, $extension));
-                break;
-        }
-
+        // return TRUE if validation has been successfull
         return $result;
     }
 
@@ -236,23 +186,10 @@ class ConfigurationService extends AbstractService
             $schemaFileName = $schemaFile;
         }
 
-        // activate internal error handling, necessary to catch errors with libxml_get_errors()
-        libxml_use_internal_errors(true);
+        // validate the passed DOM document
+        ConfigurationUtils::singleton()->validateXml($domDocument, $schemaFileName, $failOnErrors);
 
-        // validate the configuration file with the schema
-        $result = true;
-        if ($domDocument->schemaValidate($schemaFileName) === false) {
-            // collect the errors and return as a failure
-            $this->errors = libxml_get_errors();
-            $result = false;
-        }
-
-        // if we have to fail on errors we might do so here
-        if ($failOnErrors && !$result) {
-            $errorMessages = $this->getErrorMessages();
-            throw new InvalidConfigurationException(reset($errorMessages));
-        }
-
-        return $result;
+        // return TRUE if validation has been successfull
+        return true;
     }
 }

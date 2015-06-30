@@ -68,24 +68,4 @@ class PersistenceContainerModule extends ServletEngine
     {
         $this->valves[] = new PersistenceContainerValve();
     }
-
-    /**
-     * Initializes the module.
-     *
-     * @param \AppserverIo\Server\Interfaces\ServerContextInterface $serverContext The servers context instance
-     *
-     * @return void
-     * @throws \AppserverIo\Server\Exceptions\ModuleException
-     */
-    public function init(ServerContextInterface $serverContext)
-    {
-
-        // call parent init() method
-        parent::init($serverContext);
-
-        // add a garbage collector and timer service workers for each application
-        foreach ($this->getApplications() as $application) {
-            $this->garbageCollectors[] = new StandardGarbageCollector($application);
-        }
-    }
 }

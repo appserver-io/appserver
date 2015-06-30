@@ -25,9 +25,11 @@ use AppserverIo\Logger\LoggerUtils;
 use AppserverIo\Psr\Pms\QueueInterface;
 use AppserverIo\Psr\Pms\MessageInterface;
 use AppserverIo\Psr\Pms\PriorityKeyInterface;
+use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Messaging\Utils\StateActive;
 use AppserverIo\Messaging\Utils\PriorityKeys;
-use AppserverIo\Psr\Application\ApplicationInterface;
+use AppserverIo\Appserver\Core\AbstractDaemonThread;
+use Psr\Log\LogLevel;
 
 /**
  * A message queue wrapper implementation.
@@ -38,26 +40,8 @@ use AppserverIo\Psr\Application\ApplicationInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class MessageQueue extends \Thread implements QueueInterface
+class MessageQueue extends AbstractDaemonThread implements QueueInterface
 {
-
-    /**
-     * Timeout to sleep while waiting for messages.
-     *
-     * @var integer
-     */
-    const TTL = 1000000;
-
-    /**
-     * Initializes the message queue with the necessary data.
-     */
-    public function __construct()
-    {
-
-        // initialize the flags for start/stop handling
-        $this->run = true;
-        $this->running = false;
-    }
 
     /**
      * Initializes the queue with the name to use.
@@ -202,23 +186,6 @@ class MessageQueue extends \Thread implements QueueInterface
     }
 
     /**
-     * Stops the message queues workers and the message queue itself.
-     *
-     * @return void
-     */
-    public function stop()
-    {
-
-        // stop all workers
-        foreach ($this->workers as $worker) {
-            $worker->stop();
-        }
-
-        // stop the message queue itself
-        $this->run = false;
-    }
-
-    /**
      * Creates a unique name to register the worker with the passed priority.
      *
      * @param \AppserverIo\Psr\Pms\PriorityKeyInterface $priorityKey The priority key to create a unique name for
@@ -231,54 +198,43 @@ class MessageQueue extends \Thread implements QueueInterface
     }
 
     /**
-     * Does shutdown logic for request handler if something went wrong and
-     * produces a fatal error for example.
+     * This is a very basic method to log some stuff by using the error_log() method of PHP.
+     *
+     * @param mixed  $level   The log level to use
+     * @param string $message The message we want to log
+     * @param array  $context The context we of the message
      *
      * @return void
      */
-    public function shutdown()
+    public function log($level, $message, array $context = array())
     {
-
-        // check if there was a fatal error caused shutdown
-        if ($lastError = error_get_last()) {
-            // initialize type + message
-            $type = 0;
-            $message = '';
-            // extract the last error values
-            extract($lastError);
-            // query whether we've a fatal/user error
-            if ($type === E_ERROR || $type === E_USER_ERROR) {
-                $this->getApplication()->getInitialContext()->getSystemLogger()->error($message);
-            }
-        }
+        $this->getApplication()->getInitialContext()->getSystemLogger()->log($level, $message, $context);
     }
 
     /**
-     * We process the messages/jobs here.
+     * This method will be invoked before the while() loop starts and can be used
+     * to implement some bootstrap functionality.
      *
      * @return void
      */
-    public function run()
+    public function bootstrap()
     {
 
         // register the default autoloader
         require SERVER_AUTOLOADER;
 
-        // register shutdown handler
-        register_shutdown_function(array(&$this, "shutdown"));
-
         // synchronize the application instance and register the class loaders
         $application = $this->application;
         $application->registerClassLoaders();
 
-        // try to load the profile logger
-        if ($profileLogger = $application->getInitialContext()->getLogger(LoggerUtils::PROFILE)) {
-            $profileLogger->appendThreadContext(sprintf('message-queue-%s', $this->getName()));
-        }
-
         // create a reference to the workers/messages
         $workers = $this->workers;
         $messages = $this->messages;
+
+        // try to load the profile logger
+        if ($this->profileLogger = $application->getInitialContext()->getLogger(LoggerUtils::PROFILE)) {
+            $this->profileLogger->appendThreadContext(sprintf('message-queue-%s', $this->getName()));
+        }
 
         // prepare the storages
         $jobsToExceute = array();
@@ -309,24 +265,19 @@ class MessageQueue extends \Thread implements QueueInterface
             // raise the counter
             $counter++;
         }
+    }
 
-        // set to TRUE, because message queue is running
-        $this->running = true;
-
-        // query whether we keep running
-        while ($this->run) {
-            // wait for the configured timeout
-            $this->synchronized(function ($self) {
-                $self->wait(MessageQueue::TTL);
-            }, $this);
-
-            // profile the message queue
-            if ($profileLogger) {
-                $profileLogger->debug(sprintf('Process message queue %s', $this->getName()));
-            }
+    /**
+     * This method will be invoked, after the while() loop has been finished and
+     * can be used to implement clean up functionality.
+     *
+     * @return void
+     */
+    public function cleanUp()
+    {
+        // create a separate queue for each priority
+        foreach (PriorityKeys::getAll() as $priorityKey) {
+            $this->workers[$this->uniqueWorkerName($priorityKey)]->stop();
         }
-
-        // set to FALSE, because message queue has been stopped
-        $this->running = false;
     }
 }

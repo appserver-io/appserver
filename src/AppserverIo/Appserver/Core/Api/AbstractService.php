@@ -25,6 +25,7 @@ use AppserverIo\Configuration\Interfaces\NodeInterface;
 use AppserverIo\Appserver\Core\InitialContext;
 use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
 use AppserverIo\Lang\NotImplementedException;
+use AppserverIo\Appserver\Core\Utilities\FileSystem;
 
 /**
  * Abstract service implementation.
@@ -266,7 +267,23 @@ abstract class AbstractService implements ServiceInterface
      */
     public function getOsIdentifier()
     {
-        return strtoupper(substr(PHP_OS, 0, 3));
+        return FileSystem::getOsIdentifier();
+    }
+
+    /**
+     * Returns the servers base configuration directory.
+     *
+     * @param string $relativePathToAppend A relative path to append
+     *
+     * @return string
+     */
+    public function getEtcDir($relativePathToAppend = '')
+    {
+        return $this->realpath(
+            $this->makePathAbsolute(
+                $this->getSystemConfiguration()->getParam(DirectoryKeys::ETC) . $this->makePathAbsolute($relativePathToAppend)
+            )
+        );
     }
 
     /**
@@ -340,17 +357,7 @@ abstract class AbstractService implements ServiceInterface
      */
     public function globDir($pattern, $flags = 0)
     {
-
-        // parse the first directory
-        $files = glob($pattern, $flags);
-
-        // parse all subdirectories
-        foreach (glob(dirname($pattern). DIRECTORY_SEPARATOR . '*', GLOB_ONLYDIR|GLOB_NOSORT|GLOB_BRACE) as $dir) {
-            $files = array_merge($files, $this->globDir($dir . DIRECTORY_SEPARATOR . basename($pattern), $flags));
-        }
-
-        // return the array with the files matching the glob pattern
-        return $files;
+        return FileSystem::globDir($pattern, $flags);
     }
 
     /**

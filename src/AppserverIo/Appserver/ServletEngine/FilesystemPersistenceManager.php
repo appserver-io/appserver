@@ -21,6 +21,7 @@
 namespace AppserverIo\Appserver\ServletEngine;
 
 use AppserverIo\Logger\LoggerUtils;
+use AppserverIo\Appserver\Core\AbstractDaemonThread;
 use AppserverIo\Psr\Servlet\ServletSessionInterface;
 
 /**
@@ -43,15 +44,8 @@ use AppserverIo\Psr\Servlet\ServletSessionInterface;
  * @property string                                                          $group             The user group used for file system interactions
  * @property string                                                          $umask             The umask used for file system interactions
  */
-class FilesystemPersistenceManager extends \Thread implements PersistenceManagerInterface
+class FilesystemPersistenceManager extends AbstractDaemonThread implements PersistenceManagerInterface
 {
-
-    /**
-     * The time we wait after each persistence loop.
-     *
-     * @var integer
-     */
-    const TIME_TO_LIVE = 5;
 
     /**
      * Initializes the session persistence manager.
@@ -70,7 +64,6 @@ class FilesystemPersistenceManager extends \Thread implements PersistenceManager
         $this->user = 'nobody';
         $this->group = 'nobody';
         $this->umask = 0002;
-        $this->run = true;
     }
 
     /**
@@ -262,37 +255,55 @@ class FilesystemPersistenceManager extends \Thread implements PersistenceManager
     }
 
     /**
-     * This is the main method that handles session persistence.
+     * This method will be invoked before the while() loop starts and can be used
+     * to implement some bootstrap functionality.
      *
      * @return void
      */
-    public function run()
+    public function bootstrap()
     {
 
         // setup autoloader
         require SERVER_AUTOLOADER;
 
         // try to load the profile logger
-        $profileLogger = null;
         if (isset($this->loggers[LoggerUtils::PROFILE])) {
-            $profileLogger = $this->loggers[LoggerUtils::PROFILE];
-            $profileLogger->appendThreadContext('filesystem-persistence-manager');
+            $this->profileLogger = $this->loggers[LoggerUtils::PROFILE];
+            $this->profileLogger->appendThreadContext('filesystem-persistence-manager');
         }
+    }
 
-        // we run forever
-        while ($this->run) {
-            // now persist inactive sessions
-            $this->persist();
+    /**
+     * Returns the default timeout.
+     *
+     * @return integer The default timeout in microseconds
+     */
+    public function getDefaultTimeout()
+    {
+        return parent::getDefaultTimeout() * 5;
+    }
 
-            if ($profileLogger) {
-                // profile the size of the sessions
-                $profileLogger->debug(sprintf('Persisted sessions to filesystem for sessions size: %d', sizeof($this->getSessions())));
-            }
+    /**
+     * This is invoked on every iteration of the daemons while() loop.
+     *
+     * @param integer $timeout The timeout before the daemon wakes up
+     *
+     * @return void
+     */
+    public function iterate($timeout)
+    {
 
-            // wait for the configured time of seconds
-            $this->synchronized(function ($self) {
-                $self->wait(1000000 * FilesystemPersistenceManager::TIME_TO_LIVE);
-            }, $this);
+        // call parent method and sleep for the default timeout
+        parent::iterate($timeout);
+
+        // now persist inactive sessions
+        $this->persist();
+
+        // profile the size of the sessions
+        if ($this->profileLogger) {
+            $this->profileLogger->debug(
+                sprintf('Persisted sessions to filesystem for sessions size: %d', sizeof($this->getSessions()))
+            );
         }
     }
 
@@ -548,15 +559,5 @@ class FilesystemPersistenceManager extends \Thread implements PersistenceManager
     public function marshall(ServletSessionInterface $servletSession)
     {
         return $this->getSessionMarshaller()->marshall($servletSession);
-    }
-
-    /**
-     * Stops the persistence manager.
-     *
-     * @return void
-     */
-    public function stop()
-    {
-        $this->run = false;
     }
 }

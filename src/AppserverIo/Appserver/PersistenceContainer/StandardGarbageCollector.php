@@ -21,6 +21,7 @@
 namespace AppserverIo\Appserver\PersistenceContainer;
 
 use AppserverIo\Logger\LoggerUtils;
+use AppserverIo\Appserver\Core\AbstractDaemonThread;
 use AppserverIo\Psr\Application\ApplicationInterface;
 
 /**
@@ -32,29 +33,19 @@ use AppserverIo\Psr\Application\ApplicationInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class StandardGarbageCollector extends \Thread
+class StandardGarbageCollector extends AbstractDaemonThread
 {
 
     /**
-     * The time we wait after each loop.
+     * Injects the application instance.
      *
-     * @var integer
-     */
-    const TIME_TO_LIVE = 1;
-
-    /**
-     * Initializes the queue worker with the application and the storage it should work on.
+     * @param \AppserverIo\Psr\Application\ApplicationInterface $application The application instance
      *
-     * @param \AppserverIo\Psr\Application\ApplicationInterface $application The application instance with the queue manager/locator
+     * @return void
      */
-    public function __construct(ApplicationInterface $application)
+    public function injectApplication(ApplicationInterface $application)
     {
-
-        // bind the gc to the application
         $this->application = $application;
-
-        // start the worker
-        $this->start(PTHREADS_INHERIT_NONE|PTHREADS_INHERIT_CONSTANTS);
     }
 
     /**
@@ -68,87 +59,96 @@ class StandardGarbageCollector extends \Thread
     }
 
     /**
-     * We process the messages here.
+     * This method will be invoked before the while() loop starts and can be used
+     * to implement some bootstrap functionality.
      *
      * @return void
      */
-    public function run()
+    public function bootstrap()
     {
 
-        // register the default autoloader
+        // setup autoloader
         require SERVER_AUTOLOADER;
-
-        // register shutdown handler
-        register_shutdown_function(array(&$this, "shutdown"));
 
         // synchronize the application instance and register the class loaders
         $application = $this->getApplication();
         $application->registerClassLoaders();
 
         // try to load the profile logger
-        if ($profileLogger = $application->getInitialContext()->getLogger(LoggerUtils::PROFILE)) {
-            $profileLogger->appendThreadContext('persistence-container-garbage-collector');
-        }
-
-        while (true) {
-            // wait one second
-            $this->synchronized(function () {
-                $this->wait(1000000 * StandardGarbageCollector::TIME_TO_LIVE);
-            });
-
-            // we need the bean manager that handles all the beans
-            /** @var \AppserverIo\Psr\EnterpriseBeans\BeanContextInterface $beanManager */
-            $beanManager = $application->search('BeanContextInterface');
-
-            // load the map with the stateful session beans
-            $statefulSessionBeans = $beanManager->getStatefulSessionBeans();
-
-            // iterate over the applications sessions with stateful session beans
-            foreach ($statefulSessionBeans as $sessionId => $sessions) {
-                // query if we've a map with stateful session beans
-                if ($sessions instanceof StatefulSessionBeanMap) {
-                    // initialize the timestamp with the actual time
-                    $actualTime = time();
-
-                    // check the lifetime of the stateful session beans
-                    foreach ($sessions->getLifetime() as $className => $lifetime) {
-                        if ($lifetime < $actualTime) {
-                            // if the stateful session bean has timed out, remove it
-                            $beanManager->removeStatefulSessionBean($sessionId, $className);
-                        }
-                    }
-                }
-            }
-
-            if ($profileLogger) {
-                // profile the stateful session bean map size
-                $profileLogger->debug(
-                    sprintf('Processed standard garbage collector, handling %d SFSBs', sizeof($statefulSessionBeans))
-                );
-            }
+        if ($this->profileLogger = $this->getApplication()->getInitialContext()->getLogger(LoggerUtils::PROFILE)) {
+            $this->profileLogger->appendThreadContext('persistence-container-garbage-collector');
         }
     }
 
     /**
-     * Shutdown function to log unexpected errors.
+     * This is invoked on every iteration of the daemons while() loop.
+     *
+     * @param integer $timeout The timeout before the daemon wakes up
      *
      * @return void
-     * @see http://php.net/register_shutdown_function
      */
-    public function shutdown()
+    public function iterate($timeout)
     {
 
-        // check if there was a fatal error caused shutdown
-        if ($lastError = error_get_last()) {
-            // initialize error type and message
-            $type = 0;
-            $message = '';
-            // extract the last error values
-            extract($lastError);
-            // query whether we've a fatal/user error
-            if ($type === E_ERROR || $type === E_USER_ERROR) {
-                $this->getApplication()->getInitialContext()->getSystemLogger()->critical($message);
+        // call parent method and sleep for the default timeout
+        parent::iterate($timeout);
+
+        // collect the SFSBs that timed out
+        $this->collectGarbage();
+    }
+
+    /**
+     * Collects the SFSBs that has been timed out
+     *
+     * @return void
+     */
+    protected function collectGarbage()
+    {
+
+        // we need the bean manager that handles all the beans
+        /** @var \AppserverIo\Psr\EnterpriseBeans\BeanContextInterface $beanManager */
+        $beanManager = $this->getApplication()->search('BeanContextInterface');
+
+        // load the map with the stateful session beans
+        /** @var \AppserverIo\Storage\StorageInterface $statefulSessionBeans */
+        $statefulSessionBeans = $beanManager->getStatefulSessionBeans();
+
+        // iterate over the applications sessions with stateful session beans
+        foreach ($statefulSessionBeans as $sessionId => $sessions) {
+            // query if we've a map with stateful session beans
+            if ($sessions instanceof StatefulSessionBeanMap) {
+                // initialize the timestamp with the actual time
+                $actualTime = time();
+
+                // check the lifetime of the stateful session beans
+                foreach ($sessions->getLifetime() as $className => $lifetime) {
+                    if ($lifetime < $actualTime) {
+                        // if the stateful session bean has timed out, remove it
+                        $beanManager->removeStatefulSessionBean($sessionId, $className);
+                    }
+                }
             }
         }
+
+        // profile the size of the sessions
+        if ($this->profileLogger) {
+            $this->profileLogger->debug(
+                sprintf('Processed standard garbage collector, handling %d SFSBs', sizeof($statefulSessionBeans))
+            );
+        }
+    }
+
+    /**
+     * This is a very basic method to log some stuff by using the error_log() method of PHP.
+     *
+     * @param mixed  $level   The log level to use
+     * @param string $message The message we want to log
+     * @param array  $context The context we of the message
+     *
+     * @return void
+     */
+    public function log($level, $message, array $context = array())
+    {
+        $this->getApplication()->getInitialContext()->getSystemLogger()->log($level, $message, $context);
     }
 }
