@@ -44,11 +44,13 @@ class ContainerService extends AbstractFileOperationService
      */
     const FLAG_IS_INSTALLED = '.is-installed';
 
-
+    /**
+     * The available setup modes.
+     *
+     * @var string
+     */
     const SETUP_MODE_PROD = 'prod';
-
     const SETUP_MODE_DEV = 'dev';
-
     const SETUP_MODE_INSTALL = 'install';
 
     /**
@@ -213,7 +215,7 @@ class ContainerService extends AbstractFileOperationService
             // prepare the directory name and check if the directory already exists
             if (is_dir($toBeCreated) === false) {
                 // if not, try to create it
-                if (mkdir($toBeCreated, 0755, true) === false)  {
+                if (mkdir($toBeCreated, 0755, true) === false) {
                     throw new \Exception(
                         sprintf('Can\'t create necessary directory %s while starting application server', $toBeCreated)
                     );

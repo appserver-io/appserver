@@ -45,7 +45,7 @@ class LoadConfigurationListener extends AbstractSystemListener
     /**
      * Handle an event.
      *
-     * @param EventInterface $event
+     * @param \League\Event\EventInterface $event The triggering event
      *
      * @return void
      * @see \League\Event\ListenerInterface::handle()
@@ -79,7 +79,6 @@ class LoadConfigurationListener extends AbstractSystemListener
             // for node data in a selected id
             $baseDirParam = $xpath->query(sprintf('/a:appserver/a:params/a:param[@name="%s"]', DirectoryKeys::BASE));
             if ($baseDirParam->length === 0) {
-
                 // load the <params> node
                 $paramNodes = $xpath->query('/a:appserver/a:params');
 

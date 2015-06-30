@@ -38,7 +38,7 @@ class StartConsolesListener extends AbstractSystemListener
     /**
      * Handle an event.
      *
-     * @param EventInterface $event
+     * @param \League\Event\EventInterface $event The triggering event
      *
      * @return void
      * @see \League\Event\ListenerInterface::handle()
@@ -56,7 +56,6 @@ class StartConsolesListener extends AbstractSystemListener
             // and initialize a console for each node found in the configuration
             /** @var \AppserverIo\Appserver\Core\Api\Node\ConsoleNodeInterface $consoleNode */
             foreach ($applicationServer->getSystemConfiguration()->getConsoles() as $consoleNode) {
-
                 /** @var \AppserverIo\Appserver\Core\Interfaces\ConsoleFactoryInterface $consoleFactory */
                 $consoleFactory = $consoleNode->getFactory();
 

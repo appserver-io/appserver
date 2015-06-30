@@ -66,9 +66,9 @@ interface ApplicationServerInterface
     public function init($runlevel = ApplicationServerInterface::FULL);
 
     /**
-     * Switch to the passed mode, which can either be 'dev' or 'prod'.
+     * Switch to the passed mode, which can either be 'dev', 'prod' or 'install'.
      *
-     * @throws \Exception
+     * @param string $mode The setup mode to switch to
      *
      * @return void
      */

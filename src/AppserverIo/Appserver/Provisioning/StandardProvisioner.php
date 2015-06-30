@@ -109,7 +109,6 @@ class StandardProvisioner extends AbstractProvisioner
                     $this->executeProvision($application, $provisionNode, $webappPath);
 
                 } catch (ConfigurationException $ce) {
-
                     // load the logger and log the XML validation errors
                     $systemLogger = $this->getInitialContext()->getSystemLogger();
                     $systemLogger->error($ce->__toString());

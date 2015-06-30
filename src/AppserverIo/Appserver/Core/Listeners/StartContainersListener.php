@@ -38,7 +38,7 @@ class StartContainersListener extends AbstractSystemListener
     /**
      * Handle an event.
      *
-     * @param EventInterface $event
+     * @param \League\Event\EventInterface $event The triggering event
      *
      * @return void
      * @see \League\Event\ListenerInterface::handle()
@@ -56,7 +56,6 @@ class StartContainersListener extends AbstractSystemListener
             // and initialize a container thread for each container
             /** @var \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode */
             foreach ($applicationServer->getSystemConfiguration()->getContainers() as $containerNode) {
-
                 /** @var \AppserverIo\Appserver\Core\Interfaces\ContainerFactoryInterface $containerFactory */
                 $containerFactory = $containerNode->getFactory();
 

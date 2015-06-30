@@ -38,7 +38,7 @@ class ExtractArchivesListener extends AbstractSystemListener
     /**
      * Handle an event.
      *
-     * @param EventInterface $event
+     * @param \League\Event\EventInterface $event The triggering event
      *
      * @return void
      * @see \League\Event\ListenerInterface::handle()
@@ -56,7 +56,6 @@ class ExtractArchivesListener extends AbstractSystemListener
             // add the configured extractors to the internal array
             /** @var \AppserverIo\Appserver\Core\Api\Node\ExtractorNodeInterface $extractorNode */
             foreach ($applicationServer->getSystemConfiguration()->getExtractors() as $extractorNode) {
-
                 /** @var \AppserverIo\Appserver\Core\Extractors\ExtractorFactoryInterface $extractorFactory */
                 $extractorFactory = $extractorNode->getFactory();
 

@@ -45,7 +45,7 @@ class CreateSslCertificateListener extends AbstractSystemListener
     /**
      * Handle an event.
      *
-     * @param EventInterface $event
+     * @param \League\Event\EventInterface $event The triggering event
      *
      * @return void
      * @see \League\Event\ListenerInterface::handle()

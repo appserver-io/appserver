@@ -660,7 +660,6 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
     {
 
         try {
-
             // register the default autoloader
             require SERVER_AUTOLOADER;
 
@@ -698,7 +697,6 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
 
             // wait till application will be shutdown
             while ($keepRunning) {
-
                 // query whether we've a profile logger, log resource usage
                 if ($profileLogger) {
                     $profileLogger->debug(sprintf('Application %s is running', $this->getName()));

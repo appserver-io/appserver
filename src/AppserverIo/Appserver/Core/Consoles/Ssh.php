@@ -49,7 +49,7 @@ class Ssh extends \Thread implements ConsoleInterface
     /**
      * Initialize and start the management console.
      *
-     * @param \AppserverIo\Lab\Bootstrap\ApplicationServer The reference to the server
+     * @param \AppserverIo\Lab\Bootstrap\ApplicationServer $applicationServer The reference to the server
      *
      * @return void
      */
@@ -85,7 +85,7 @@ class Ssh extends \Thread implements ConsoleInterface
             extract($lastError);
             // query whether we've a fatal/user error
             if ($type === E_ERROR || $type === E_USER_ERROR) {
-               echo $message . PHP_EOL;
+                echo $message . PHP_EOL;
             }
         }
     }
@@ -103,6 +103,7 @@ class Ssh extends \Thread implements ConsoleInterface
     /**
      * The thread's run() method that runs asynchronously.
      *
+     * @return void
      * @link http://www.php.net/manual/en/thread.run.php
      */
     public function run()

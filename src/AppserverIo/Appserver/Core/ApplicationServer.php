@@ -295,9 +295,9 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
     }
 
     /**
-     * Switch to the passed mode, which can either be 'dev' or 'prod'.
+     * Switch to the passed mode, which can either be 'dev', 'prod' or 'install'.
      *
-     * @throws \Exception
+     * @param string $mode The setup mode to switch to
      *
      * @return void
      */

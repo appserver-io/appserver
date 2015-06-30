@@ -143,6 +143,7 @@ class Telnet extends \Thread implements ConsoleInterface
     /**
      * The thread's run() method that runs asynchronously.
      *
+     * @return void
      * @link http://www.php.net/manual/en/thread.run.php
      */
     public function run()
@@ -172,7 +173,6 @@ class Telnet extends \Thread implements ConsoleInterface
             $conn->on('data', function ($data) use ($conn, $applicationServer) {
 
                 try {
-
                     // extract command name and parameters
                     list ($commandName, ) = explode(' ', $data);
                     $params = explode(' ', trim(substr($data, strlen($commandName))));

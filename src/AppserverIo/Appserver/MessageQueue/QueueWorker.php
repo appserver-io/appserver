@@ -190,7 +190,6 @@ class QueueWorker extends AbstractDaemonThread
     {
 
         try {
-
             // register shutdown handler
             register_shutdown_function($this->getDefaultShutdownMethod());
 
@@ -216,7 +215,6 @@ class QueueWorker extends AbstractDaemonThread
 
             // keep the daemon running
             while ($this->keepRunning()) {
-
                 // iterate over all job wrappers
                 foreach ($jobsToExecute as $jobWrapper) {
                     try {

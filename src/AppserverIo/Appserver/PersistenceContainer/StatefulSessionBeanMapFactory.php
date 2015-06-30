@@ -127,7 +127,6 @@ class StatefulSessionBeanMapFactory extends AbstractDaemonThread
     {
 
         do {
-
             // create a new SFSB instance and return it
             $this->synchronized(function ($self, $id) {
 

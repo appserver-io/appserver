@@ -126,7 +126,7 @@ abstract class AbstractFileOperationService extends AbstractService
      *
      * @param \SplFileInfo $directoryToCreate The directory that should be created
      * @param integer      $mode              The mode to create the directory with
-     * @param boolean      $recursive         TRUE if the directory has to be created recursively, else FALSE
+     * @param boolean      $recursively       TRUE if the directory has to be created recursively, else FALSE
      * @param string       $user              The user that has to own the passed directory
      * @param string       $group             The group that has to own the passed directory
      * @param integer      $umask             The new umask to set

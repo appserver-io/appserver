@@ -23,6 +23,7 @@ namespace AppserverIo\Appserver\ServletEngine;
 use AppserverIo\Appserver\Core\AbstractManager;
 use AppserverIo\Psr\Servlet\ServletSessionInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
+
 /**
  * A standard session manager implementation that provides session
  * persistence while server has not been restarted.

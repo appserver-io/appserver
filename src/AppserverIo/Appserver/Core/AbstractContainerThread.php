@@ -215,7 +215,6 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
 
         // wait till container will be shutdown
         while ($keepRunning) {
-
             // query whether we've a profile logger, log resource usage
             if ($profileLogger) {
                 $profileLogger->debug(sprintf('Container %s still waiting for shutdown', $this->getContainerNode()->getName()));

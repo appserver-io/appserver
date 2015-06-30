@@ -38,7 +38,7 @@ class DeployApplicationsListener extends AbstractSystemListener
     /**
      * Handle an event.
      *
-     * @param EventInterface $event
+     * @param \League\Event\EventInterface $event The triggering event
      *
      * @return void
      * @see \League\Event\ListenerInterface::handle()
@@ -57,7 +57,6 @@ class DeployApplicationsListener extends AbstractSystemListener
             // deploy the applications for all containers
             /** @var \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode */
             foreach ($applicationServer->getSystemConfiguration()->getContainers() as $containerNode) {
-
                 // load the container instance to deploy the applications for
                 /** @var \AppserverIo\Appserver\Core\Interfaces\ContainerInterface $container */
                 $container = $namingDirectory->search(

@@ -58,7 +58,6 @@ class ScannerService extends AbstractFileOperationService
     public function findAll()
     {
         try {
-
             // initialize the array with the CRON instances
             $cronInstances = array();
 
@@ -119,7 +118,6 @@ class ScannerService extends AbstractFileOperationService
                         $cronInstances[] = $cronInstance;
 
                     } catch (ConfigurationException $ce) {
-
                         // load the logger and log the XML validation errors
                         $systemLogger = $this->getInitialContext()->getSystemLogger();
                         $systemLogger->error($ce->__toString());
@@ -133,7 +131,6 @@ class ScannerService extends AbstractFileOperationService
             }
 
         } catch (ConfigurationException $ce) {
-
             // load the logger and log the XML validation errors
             $systemLogger = $this->getInitialContext()->getSystemLogger();
             $systemLogger->error($ce->__toString());

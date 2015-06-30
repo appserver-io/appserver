@@ -63,9 +63,7 @@ class GenericDeployment extends AbstractDeployment
             /** @var AppserverIo\Appserver\Core\Api\ConfigurationService $configurationService */
             $configurationService = $this->getConfigurationService();
             foreach ($datasourceFiles as $datasourceFile) {
-
                 try {
-
                     // validate the file, but skip it if validation fails
                     $configurationService->validateFile($datasourceFile);
 
@@ -84,7 +82,6 @@ class GenericDeployment extends AbstractDeployment
 
                 // log a message and continue with the next datasource node
                 } catch (ConfigurationException $ce) {
-
                     // load the logger and log the XML validation errors
                     $systemLogger = $this->getInitialContext()->getSystemLogger();
                     $systemLogger->error($ce->__toString());

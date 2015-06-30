@@ -105,7 +105,6 @@ abstract class AbstractDaemonThread extends \Thread
         }, $this);
 
         do {
-
             // log a message that we're waiting for shutdown
             $this->log(LogLevel::INFO, sprintf('Wait for shutdown daemon %s', get_class($this)));
 
@@ -167,7 +166,6 @@ abstract class AbstractDaemonThread extends \Thread
     {
 
         try {
-
             // register shutdown handler
             register_shutdown_function($this->getDefaultShutdownMethod());
 
@@ -256,7 +254,9 @@ abstract class AbstractDaemonThread extends \Thread
     }
 
     /**
-     * This is the default shutdown
+     * This is the default shutdown method.
+     *
+     * @return void
      */
     public function defaultShutdown()
     {

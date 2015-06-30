@@ -81,7 +81,6 @@ class DeploymentService extends AbstractFileOperationService
     {
 
         try {
-
             // initialize the array for the context instances
             $contextInstances = array();
 
@@ -95,7 +94,6 @@ class DeploymentService extends AbstractFileOperationService
             $baseContext->initFromFile($baseContextPath);
 
         } catch (ConfigurationException $ce) {
-
             // load the logger and log the XML validation errors
             $systemLogger = $this->getInitialContext()->getSystemLogger();
             $systemLogger->error($ce->__toString());
@@ -121,9 +119,7 @@ class DeploymentService extends AbstractFileOperationService
 
             // iterate through all context configurations (context.xml), validate and merge them
             foreach ($this->globDir($webappPath . '/META-INF/context.xml') as $contextFile) {
-
                 try {
-
                     // validate the application specific context
                     $configurationService->validateFile($contextFile, null);
 
@@ -135,7 +131,6 @@ class DeploymentService extends AbstractFileOperationService
                     $context->merge($contextInstance);
 
                 } catch (ConfigurationException $ce) {
-
                     // load the logger and log the XML validation errors
                     $systemLogger = $this->getInitialContext()->getSystemLogger();
                     $systemLogger->error($ce->__toString());

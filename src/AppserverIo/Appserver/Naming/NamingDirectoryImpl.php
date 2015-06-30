@@ -448,7 +448,6 @@ class NamingDirectoryImpl implements NamingDirectoryInterface
 
         // while we've tokens, try to find a value bound to the token
         while ($token !== false) {
-
             // check if we can find something
             if ($this->hasAttribute($token)) {
                 // load the value
