@@ -145,7 +145,7 @@ class ConfigurationService extends AbstractService
      * @param string|null $schemaFile   The specific schema file to validate against (optional)
      * @param boolean     $failOnErrors If the validation should fail on error (optional)
      *
-     * @return boolean
+     * @return void
      *
      * @throws \Exception If aren't able to validate this file type
      */
@@ -160,9 +160,6 @@ class ConfigurationService extends AbstractService
 
         // validate the passed configuration file
         ConfigurationUtils::singleton()->validateFile($fileName, $schemaFile, $failOnErrors);
-
-        // return TRUE if validation has been successfull
-        return $result;
     }
 
     /**

@@ -41,6 +41,13 @@ class NamingDirectoryImpl implements NamingDirectoryInterface
 {
 
     /**
+     * The scheme, 'php' or 'http' for example.
+     *
+     * @var string
+     */
+    protected $scheme;
+
+    /**
      * The naming directory's name.
      *
      * @var string
@@ -258,6 +265,9 @@ class NamingDirectoryImpl implements NamingDirectoryInterface
         // strip off the schema
         $name = str_replace(sprintf('%s:', $this->getScheme()), '', $name);
 
+        // create a new subdirectory instance
+        $subdirectory = new NamingDirectoryImpl($name, $this);
+
         // copy the attributes specified by the filter
         if (sizeof($filter) > 0) {
             foreach ($this->getAllKeys() as $key => $value) {
@@ -268,9 +278,6 @@ class NamingDirectoryImpl implements NamingDirectoryInterface
                 }
             }
         }
-
-        // create a new subdirectory instance
-        $subdirectory = new NamingDirectoryImpl($name, $this);
 
         // bind it the directory
         $this->bind($name, $subdirectory);
@@ -564,7 +571,7 @@ class NamingDirectoryImpl implements NamingDirectoryInterface
             foreach ($attributes as $key => $found) {
                 // extract the binded value/args if necessary
                 if (is_array($found)) {
-                    list ($value, $bindArgs) = $found;
+                    list ($value, ) = $found;
                 } else {
                     $value = $found;
                 }

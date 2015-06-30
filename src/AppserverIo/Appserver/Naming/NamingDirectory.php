@@ -24,6 +24,7 @@ use Rhumsaa\Uuid\Uuid;
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Psr\Naming\NamingException;
 use AppserverIo\Psr\Naming\NamingDirectoryInterface;
+use AppserverIo\Appserver\Core\Traits\ThreadedContextTrait;
 
 /**
  * Naming directory implementation.
@@ -34,10 +35,20 @@ use AppserverIo\Psr\Naming\NamingDirectoryInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  *
- * @property string $scheme The binding string scheme
+ * @property \AppserverIo\Psr\Naming\NamingDirectoryInterface $parent The parent directory
+ * @property string                                           $scheme The binding string scheme
+ * @property string                                           $name   The directory name
+ * @property string                                           $serial The instance unique serial number
  */
 class NamingDirectory extends GenericStackable implements NamingDirectoryInterface
 {
+
+    /**
+     * Trait that provides threaded context functionality.
+     *
+     * @var AppserverIo\Appserver\Core\Traits\ThreadedContextTrait
+     */
+    use ThreadedContextTrait;
 
     /**
      * Initialize the directory with a name and the parent one.
@@ -52,8 +63,8 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
         $this->parent = $parent;
         $this->name = $name;
 
-        // initialize the array for the attributes
-        $this->data = array();
+        // create a UUID as prefix for dynamic object properties
+        $this->serial = Uuid::uuid4()->toString();
     }
 
     /**
@@ -103,87 +114,6 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
 
         // return our own schema
         return $this->scheme;
-    }
-
-    /**
-     * Returns the value with the passed name from the context.
-     *
-     * @param string $key The key of the value to return from the context.
-     *
-     * @return mixed The requested attribute
-     * @see \AppserverIo\Psr\Context\ContextInterface::getAttribute()
-     */
-    public function getAttribute($key)
-    {
-        return $this->data[$key];
-    }
-
-    /**
-     * All values registered in the context.
-     *
-     * @return array The context data
-     */
-    public function getAttributes()
-    {
-        return $this->data;
-    }
-
-    /**
-     * Queries if the attribute with the passed key is bound.
-     *
-     * @param string $key The key of the attribute to query
-     *
-     * @return boolean TRUE if the attribute is bound, else FALSE
-     */
-    public function hasAttribute($key)
-    {
-        return isset($this->data[$key]);
-    }
-
-    /**
-     * Sets the passed key/value pair in the directory.
-     *
-     * @param string $key   The attributes key
-     * @param mixed  $value Tha attribute to be bound
-     *
-     * @return void
-     */
-    public function setAttribute($key, $value)
-    {
-
-        // a bit complicated, but we're in a multithreaded environment
-        if (isset($this->data[$key])) {
-            throw new NamingException(sprintf('Attribute %s can\'t be overwritten', $key));
-        }
-
-        // set the key/value pair
-        $data = $this->data;
-        $data[$key] = $value;
-        $this->data = $data;
-    }
-
-    /**
-     * Returns the keys of the bound attributes.
-     *
-     * @return array The keys of the bound attributes
-     */
-    public function getAllKeys()
-    {
-        return array_keys($this->getAttributes());
-    }
-
-    /**
-     * Removes the attribute with the passed key.
-     *
-     * @param string $key The key of the attribute to remove
-     *
-     * @return void
-     */
-    public function removeAttribute($key)
-    {
-        $data = $this->data;
-        unset($data[$key]);
-        $this->data = $data;
     }
 
     /**
@@ -455,7 +385,7 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
             foreach ($attributes as $key => $found) {
                 // extract the binded value/args if necessary
                 if (is_array($found)) {
-                    list ($value, $bindArgs) = $found;
+                    list ($value, ) = $found;
                 } else {
                     $value = $found;
                 }
@@ -525,22 +455,22 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
             // strip off the schema
             $name = str_replace(sprintf('%s:', $this->getScheme()), '', $name);
 
-            // copy the attributes specified by the filter
-            if (sizeof($filter) > 0) {
-                foreach ($this->getAllKeys() as $key => $value) {
-                    foreach ($filter as $pattern) {
-                        if (fnmatch($pattern, $key)) {
-                            $subdirectory->bind($key, $value);
-                        }
-                    }
-                }
-            }
-
             // create a local copy of the naming directory stack
             global $directories;
 
             // create a new subdirectory instance
             $directories[$id = Uuid::uuid4()->__toString()] = new NamingDirectory($name, $this);
+
+            // copy the attributes specified by the filter
+            if (sizeof($filter) > 0) {
+                foreach ($this->getAllKeys() as $key => $value) {
+                    foreach ($filter as $pattern) {
+                        if (fnmatch($pattern, $key)) {
+                            $directories[$id]->bind($key, $value);
+                        }
+                    }
+                }
+            }
 
             // bind it the directory
             $this->bind($name, $directories[$id]);

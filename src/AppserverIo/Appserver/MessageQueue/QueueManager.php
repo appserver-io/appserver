@@ -343,11 +343,11 @@ class QueueManager extends AbstractManager implements QueueContextInterface
     {
 
         // load the queue keys
-        $queueKeys = get_object_vars($this->getQueues());
+        $queues = get_object_vars($this->getQueues());
 
         // iterate over the queues and shut them down
         /** @var AppserverIo\Psr\Pms\QueueInterface $queue */
-        foreach ($queueKeys as $queueKey => $queue) {
+        foreach ($queues as $queue) {
             $queue->stop();
         }
     }

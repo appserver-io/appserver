@@ -165,17 +165,17 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
         $this->application = new Application();
 
         // create a generic stackable for the necessary storages
-        $this->data = new StackableStorage();
         $this->managers = new GenericStackable();
         $this->classLoaders = new GenericStackable();
 
         // create a mock instance of the naming directory
         $this->namingDirectory = new NamingDirectory();
         $this->namingDirectory->setScheme('php');
-        $this->envDir = $this->namingDirectory->createSubdirectory('env');
-        $this->appDir = $this->envDir->createSubdirectory('foo');
+        $this->namingDirectory->createSubdirectory('php:env');
+        $this->namingDirectory->createSubdirectory('php:env/foo');
+        $this->namingDirectory->createSubdirectory('php:global');
+        $this->namingDirectory->createSubdirectory('php:global/foo');
 
-        $this->namingDirectory->bind('php:global/foo', $this->application);
         $this->namingDirectory->bind('php:env/user', ApplicationTest::USER);
         $this->namingDirectory->bind('php:env/group', ApplicationTest::GROUP);
         $this->namingDirectory->bind('php:env/umask', ApplicationTest::UMASK);
@@ -189,7 +189,6 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
 
         // inject the storages
         $this->application->injectName(ApplicationTest::NAME);
-        $this->application->injectData($this->data);
         $this->application->injectManagers($this->managers);
         $this->application->injectClassLoaders($this->classLoaders);
         $this->application->injectNamingDirectory($this->namingDirectory);

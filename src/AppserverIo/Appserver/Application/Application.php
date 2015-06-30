@@ -20,15 +20,18 @@
 
 namespace AppserverIo\Appserver\Application;
 
+use Rhumsaa\Uuid\Uuid;
 use AppserverIo\Logger\LoggerUtils;
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Storage\StorageInterface;
 use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
+use AppserverIo\Appserver\Core\Traits\ThreadedContextTrait;
+use AppserverIo\Appserver\Core\Interfaces\ClassLoaderInterface;
 use AppserverIo\Appserver\Core\Api\Node\ContextNode;
 use AppserverIo\Appserver\Core\Api\Node\ManagerNodeInterface;
 use AppserverIo\Appserver\Core\Api\Node\ProvisionerNodeInterface;
 use AppserverIo\Appserver\Core\Api\Node\ClassLoaderNodeInterface;
-use AppserverIo\Appserver\Core\Interfaces\ClassLoaderInterface;
+use AppserverIo\Appserver\Application\Interfaces\ContextInterface;
 use AppserverIo\Psr\Naming\NamingException;
 use AppserverIo\Psr\Naming\NamingDirectoryInterface;
 use AppserverIo\Psr\Context\ContextInterface as Context;
@@ -37,7 +40,6 @@ use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Psr\Application\ProvisionerInterface;
 use AppserverIo\Psr\Application\DirectoryAwareInterface;
 use AppserverIo\Psr\Application\FilesystemAwareInterface;
-use AppserverIo\Appserver\Application\Interfaces\ContextInterface;
 
 /**
  * The application instance holds all information about the deployed application
@@ -55,6 +57,7 @@ use AppserverIo\Appserver\Application\Interfaces\ContextInterface;
  * @property \AppserverIo\Appserver\Application\Interfaces\ContextInterface $initialContext   The initial context instance
  * @property \AppserverIo\Storage\GenericStackable                          $managers         Stackable of managers for this application
  * @property string                                                         $name             Name of the application
+ * @property string                                                         $serial           The instance unique serial number
  * @property \AppserverIo\Psr\Naming\NamingDirectoryInterface               $namingDirectory  The naming directory instance
  */
 class Application extends \Thread implements ApplicationInterface, DirectoryAwareInterface, FilesystemAwareInterface, Context
@@ -68,35 +71,23 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
     const TIME_TO_LIVE = 1;
 
     /**
+     * Trait that provides threaded context functionality.
+     *
+     * @var AppserverIo\Appserver\Core\Traits\ThreadedContextTrait
+     */
+    use ThreadedContextTrait;
+
+    /**
      * Initialize the internal members.
      */
     public function __construct()
     {
+
+        // create a UUID as prefix for dynamic object properties
+        $this->serial = Uuid::uuid4()->toString();
+
+        // initialize the application state
         $this->applicationState = ApplicationStateKeys::get(ApplicationStateKeys::WAITING_FOR_INITIALIZATION);
-    }
-
-    /**
-     * Returns the value with the passed name from the context.
-     *
-     * @param string $key The key of the value to return from the context.
-     *
-     * @return mixed The requested attribute
-     * @see \AppserverIo\Psr\Context\ContextInterface::getAttribute()
-     */
-    public function getAttribute($key)
-    {
-    }
-
-    /**
-     * Sets the passed key/value pair in the directory.
-     *
-     * @param string $key   The attributes key
-     * @param mixed  $value Tha attribute to be bound
-     *
-     * @return void
-     */
-    public function setAttribute($key, $value)
-    {
     }
 
     /**

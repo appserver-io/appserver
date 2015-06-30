@@ -26,6 +26,7 @@ use AppserverIo\Appserver\Core\Api\Node\ContainerNode;
 use AppserverIo\Appserver\Core\Api\Node\DeploymentNode;
 use AppserverIo\Appserver\Core\Mock\MockInitialContext;
 use org\bovigo\vfs\vfsStream;
+use AppserverIo\Appserver\Naming\NamingDirectory;
 
 /**
  * Abstract base class for appserver related tests
@@ -124,6 +125,20 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
         $containerNode = new ContainerNode();
         $containerNode->initFromConfiguration($this->getContainerConfiguration());
         return $containerNode;
+    }
+
+    /**
+     * Returns a new naming directory instance.
+     *
+     * @param string $scheme The directory scheme
+     *
+     * @return \AppserverIo\Psr\Naming\NamingDirectoryInterface The new directory instance
+     */
+    public function getNamingDirectory($scheme = 'php')
+    {
+        $namingDirectory = new NamingDirectory();
+        $namingDirectory->setScheme($scheme);
+        return $namingDirectory;
     }
 
     /**
