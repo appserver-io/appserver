@@ -21,6 +21,7 @@
 namespace AppserverIo\Appserver\Core\Listeners;
 
 use League\Event\EventInterface;
+use AppserverIo\Appserver\Core\Utilities\FileSystem;
 use AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface;
 
 /**
@@ -52,6 +53,17 @@ class SwitchUserListener extends AbstractSystemListener
 
             // write a log message that the event has been invoked
             $applicationServer->getSystemLogger()->info($event->getName());
+
+            // don't do anything under Windows
+            if (FileSystem::getOsIdentifier() === 'WIN') {
+                $applicationServer->getSystemLogger()->info('Don\'t switch UID to \'%s\' because OS is Windows');
+                return;
+            }
+
+            // throw an exception if the POSIX extension is not available
+            if (extension_loaded('posix') === false) {
+                throw new \Exception('Can\'t switch user, because POSIX extension is not available');
+            }
 
             // print a message with the old UID/EUID
             $applicationServer->getSystemLogger()->info("Running as " . posix_getuid() . "/" . posix_geteuid());
