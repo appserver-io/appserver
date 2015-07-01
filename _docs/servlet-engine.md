@@ -48,8 +48,8 @@ As with many other frameworks, our Servlet Engine uses a URL path to map a reque
 namespace AppserverIo\Example\Servlets;
 
 use AppserverIo\Psr\Servlet\Http\HttpServlet;
-use AppserverIo\Psr\Servlet\Http\HttpServletRequest;
-use AppserverIo\Psr\Servlet\Http\HttpServletResponse;
+use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
+use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
 
 /**
  * This is the famous 'Hello World' as servlet implementation.
@@ -63,17 +63,17 @@ class HelloWorldServlet extends HttpServlet
   /**
    * Handles a HTTP GET request.
    *
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest  $servletRequest
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface  $servletRequest
    *   The request instance
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponse $servletResponse
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse
    *   The response instance
    *
    * @return void
    * @see \AppserverIo\Psr\Servlet\Http\HttpServlet::doGet()
    */
   public function doGet(
-    HttpServletRequest $servletRequest,
-    HttpServletResponse $servletResponse)
+    HttpServletRequestInterface $servletRequest,
+    HttpServletResponseInterface $servletResponse)
   {
     $servletResponse->appendBodyStream('Hello World!');
   }
@@ -110,8 +110,8 @@ namespace AppserverIo\Example\Servlets;
 
 use AppserverIo\Psr\Servlet\ServletConfig;
 use AppserverIo\Psr\Servlet\Http\HttpServlet;
-use AppserverIo\Psr\Servlet\Http\HttpServletRequest;
-use AppserverIo\Psr\Servlet\Http\HttpServletResponse;
+use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
+use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
 
 /**
  * This is the famous 'Hello World' as servlet implementation.
@@ -152,17 +152,17 @@ class HelloWorldServlet extends HttpServlet
   /**
    * Handles a HTTP GET request.
    *
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest  $servletRequest
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface  $servletRequest
    *   The request instance
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponse $servletResponse
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse
    *   The response instance
    *
    * @return void
    * @see \AppserverIo\Psr\Servlet\Http\HttpServlet::doGet()
    */
   public function doGet(
-    HttpServletRequest $servletRequest,
-    HttpServletResponse $servletResponse)
+    HttpServletRequestInterface $servletRequest,
+    HttpServletResponseInterface $servletResponse)
   {
     $servletResponse->appendBodyStream($this->resources['hello-world.en_US.key']);
   }
@@ -191,8 +191,8 @@ namespace AppserverIo\Example\Servlets;
 
 use AppserverIo\Psr\Servlet\ServletConfig;
 use AppserverIo\Psr\Servlet\Http\HttpServlet;
-use AppserverIo\Psr\Servlet\Http\HttpServletRequest;
-use AppserverIo\Psr\Servlet\Http\HttpServletResponse;
+use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
+use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
 
 /**
  * This is the famous 'Hello World' as servlet implementation.
@@ -234,17 +234,17 @@ class HelloWorldServlet extends HttpServlet
   /**
    * Handles a HTTP GET request.
    *
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest  $servletRequest
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface  $servletRequest
    *   The request instance
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponse $servletResponse
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse
    *   The response instance
    *
    * @return void
    * @see \AppserverIo\Psr\Servlet\Http\HttpServlet::doGet()
    */
   public function doGet(
-    HttpServletRequest $servletRequest,
-    HttpServletResponse $servletResponse)
+    HttpServletRequestInterface $servletRequest,
+    HttpServletResponseInterface $servletResponse)
   {
     $servletResponse->appendBodyStream($this->resources['hello-world.en_US.key']);
   }
@@ -270,8 +270,8 @@ namespace AppserverIo\Example\Servlets;
 
 use AppserverIo\Psr\Servlet\ServletConfig;
 use AppserverIo\Psr\Servlet\Http\HttpServlet;
-use AppserverIo\Psr\Servlet\Http\HttpServletRequest;
-use AppserverIo\Psr\Servlet\Http\HttpServletResponse;
+use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
+use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
 
 /**
  * This is the famous 'Hello World' as servlet implementation.
@@ -313,17 +313,17 @@ class HelloWorldServlet extends HttpServlet
   /**
    * Handles a HTTP GET request.
    *
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest  $servletRequest
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface  $servletRequest
    *   The request instance
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponse $servletResponse
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse
    *   The response instance
    *
    * @return void
    * @see \AppserverIo\Psr\Servlet\Http\HttpServlet::doGet()
    */
   public function doGet(
-    HttpServletRequest $servletRequest,
-    HttpServletResponse $servletResponse)
+    HttpServletRequestInterface $servletRequest,
+    HttpServletResponseInterface $servletResponse)
   {
 
     // try to load the username from the session
@@ -346,17 +346,17 @@ class HelloWorldServlet extends HttpServlet
    * This is a very simple example that shows how to start a new session, adding
    * the username passed with the POST data to the session.
    *
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest  $servletRequest
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface  $servletRequest
    *   The request instance
-   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponse $servletResponse
+   * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse
    *   The response instance
    *
    * @return void
    * @see \AppserverIo\Psr\Servlet\Http\HttpServlet::doGet()
    */
   public function doPost(
-    HttpServletRequest $servletRequest,
-    HttpServletResponse $servletResponse)
+    HttpServletRequestInterface $servletRequest,
+    HttpServletResponseInterface $servletResponse)
   {
 
     // create a new session, if not available
