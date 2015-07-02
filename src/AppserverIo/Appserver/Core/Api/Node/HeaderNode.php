@@ -81,7 +81,7 @@ class HeaderNode extends AbstractNode
 
     /**
      * Returns header type
-     * 
+     *
      * @return string
      */
     public function getType()
