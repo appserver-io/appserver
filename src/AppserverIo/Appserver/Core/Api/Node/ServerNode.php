@@ -96,6 +96,13 @@ class ServerNode extends AbstractNode implements ServerNodeInterface
      * @var \AppserverIo\Appserver\Core\Api\Node\FileHandlersNodeTrait
      */
     use FileHandlersNodeTrait;
+    
+    /**
+     * The trait for the server headers.
+     *
+     * @var \AppserverIo\Appserver\Core\Api\Node\HeadersNodeTrait
+     */
+    use HeadersNodeTrait;
 
     /**
      * The trait for the server connection handlers.

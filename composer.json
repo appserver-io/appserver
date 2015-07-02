@@ -19,7 +19,7 @@
 		"appserver-io/rmi" : "~1.0",
 		"appserver-io/http" : "~1.0",
 		"appserver-io/lang" : "~1.0",
-		"appserver-io/server" : "~4.0",
+		"appserver-io/server" : "~5.0",
 		"appserver-io/logger" : "~1.0",
 		"appserver-io/storage" : "~2.0",
 		"appserver-io/messaging" : "~1.0",

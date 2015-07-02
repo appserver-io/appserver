@@ -50,6 +50,13 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     protected $analytics;
 
     /**
+     * The headers array.
+     *
+     * @var array
+     */
+    protected $headers;
+    
+    /**
      * The handlers array.
      *
      * @var array
@@ -134,6 +141,7 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
         $this->analytics = $node->getAnalyticsAsArray();
         $this->virtualHosts = $node->getVirtualHostsAsArray();
         $this->handlers = $node->getFileHandlersAsArray();
+        $this->headers = $node->getHeadersAsArray();
         $this->connectionHandlers = $node->getConnectionHandlersAsArray();
         $this->authentications = $node->getAuthenticationsAsArray();
         $this->modules = $node->getModulesAsArray();
@@ -433,6 +441,16 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     public function getHandlers()
     {
         return $this->handlers;
+    }
+
+    /**
+     * Returns headers
+     *
+     * @return array
+     */
+    public function getHeaders()
+    {
+        return $this->headers;
     }
 
     /**
