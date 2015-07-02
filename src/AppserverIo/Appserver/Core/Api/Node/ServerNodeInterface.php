@@ -26,6 +26,7 @@ use AppserverIo\Configuration\Interfaces\NodeInterface;
  * Interface for the server node information.
  *
  * @author    Tim Wagner <tw@appserver.io>
+ * @author    Johann Zelger <jz@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
@@ -110,6 +111,13 @@ interface ServerNodeInterface extends NodeInterface
      * @return array
      */
     public function getFileHandlers();
+    
+    /**
+     * Returns the headers nodes.
+     *
+     * @return array
+     */
+    public function getHeaders();
 
     /**
      * Returns the module nodes.

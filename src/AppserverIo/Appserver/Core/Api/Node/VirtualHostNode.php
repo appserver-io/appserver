@@ -44,6 +44,13 @@ class VirtualHostNode extends AbstractNode
     use EnvironmentVariablesNodeTrait;
 
     /**
+     * The trait for the headers.
+     *
+     * @var \AppserverIo\Appserver\Core\Api\Node\HeadersNodeTrait
+     */
+    use HeadersNodeTrait;
+    
+    /**
      * The trait for the virtual host params.
      *
      * @var \AppserverIo\Appserver\Core\Api\Node\ParamsNodeTrait

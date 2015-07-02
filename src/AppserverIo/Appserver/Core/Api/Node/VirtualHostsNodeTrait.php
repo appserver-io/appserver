@@ -24,6 +24,7 @@ namespace AppserverIo\Appserver\Core\Api\Node;
  * Trait which allows for the management of analytic nodes within another node.
  *
  * @author    Bernhard Wick <bw@appserver.io>
+ * @author    Johann Zelger <jz@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
@@ -77,6 +78,7 @@ trait VirtualHostsNodeTrait
                 // set all virtual hosts params per key for faster matching later on
                 $virtualHosts[trim($virtualHostName)] = array(
                     'params' => $virtualHost->getParamsAsArray(),
+                    'headers' => $virtualHost->getHeadersAsArray(),
                     'rewriteMaps' => $virtualHost->getRewriteMapsAsArray(),
                     'rewrites' => $virtualHost->getRewritesAsArray(),
                     'environmentVariables' => $virtualHost->getEnvironmentVariablesAsArray(),

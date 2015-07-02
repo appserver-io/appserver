@@ -556,6 +556,28 @@
             </xs:simpleContent>
         </xs:complexType>
     </xs:element>
+    <xs:element name="headers">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="appserver:header"/>
+            </xs:choice>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="header">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="type" type="xs:string"/>
+                    <xs:attribute name="name" type="xs:string"/>
+                    <xs:attribute name="value" type="xs:string"/>
+                    <xs:attribute name="uri" type="xs:string"/>
+                    <xs:attribute name="override" type="xs:boolean"/>
+                    <xs:attribute name="append" type="xs:boolean"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
     <xs:element name="directories">
         <xs:complexType>
             <xs:choice maxOccurs="unbounded">
@@ -757,6 +779,7 @@
             <xs:all minOccurs="1">
                 <xs:element ref="appserver:params" minOccurs="0"/>
                 <xs:element ref="appserver:fileHandlers" minOccurs="0"/>
+                <xs:element ref="appserver:headers" minOccurs="0"/>
             </xs:all>
             <xs:attribute name="condition" type="xs:string" use="required"/>
             <xs:attribute name="uuid" type="xs:string"/>
@@ -804,6 +827,7 @@
             <xs:all>
                 <xs:element ref="appserver:analytics" minOccurs="0"/>
                 <xs:element ref="appserver:params"/>
+                <xs:element ref="appserver:headers" minOccurs="0"/>
                 <xs:element ref="appserver:rewrites" minOccurs="0"/>
                 <xs:element ref="appserver:authentications" minOccurs="0"/>
                 <xs:element ref="appserver:environmentVariables" minOccurs="0"/>
@@ -1129,6 +1153,7 @@
                 <xs:element ref="appserver:rewrites"/>
                 <xs:element ref="appserver:environmentVariables"/>
                 <xs:element ref="appserver:modules"/>
+                <xs:element ref="appserver:headers"/>
                 <xs:element ref="appserver:fileHandlers"/>
                 <xs:element ref="appserver:locations"/>
                 <xs:element ref="appserver:certificates"/>

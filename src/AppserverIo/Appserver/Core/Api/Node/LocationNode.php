@@ -24,6 +24,7 @@ namespace AppserverIo\Appserver\Core\Api\Node;
  * DTO to transfer location information.
  *
  * @author    Tim Wagner <tw@appserver.io>
+ * @author    Johann Zelger <jz@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
@@ -45,6 +46,13 @@ class LocationNode extends AbstractNode
      * @var \AppserverIo\Appserver\Core\Api\Node\ParamsNodeTrait
      */
     use ParamsNodeTrait;
+    
+    /**
+     * The headers node trait.
+     *
+     * @var \AppserverIo\Appserver\Core\Api\Node\HeadersNodeTrait
+     */
+    use HeadersNodeTrait;
 
     /**
      * The condition to match for.
@@ -75,7 +83,8 @@ class LocationNode extends AbstractNode
         return array(
             'condition' => $this->getCondition(),
             'params'    => $this->getParamsAsArray(),
-            'handlers'  => $this->getFileHandlersAsArray()
+            'handlers'  => $this->getFileHandlersAsArray(),
+            'headers'   => $this->getHeadersAsArray()
         );
     }
 }

@@ -205,11 +205,22 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
                         <param name="welcomePageTemplatePath" type="string">resources/templates/www/welcome.phtml</param>
                         <param name="autoIndexTemplatePath" type="string">resources/templates/www/auto_index.phtml</param>
                     </params>
+                    
+                    <!-- An example how to modify response headers -->
+                    <!--
+                    <headers>
+                        <header type="response" name="Server" value="My Own Server" override="true"/>
+                        <header type="response" name="X-Powered-By" value="appserver"/>
+                    </headers>
+                    -->
 
                     <!-- An example to activate a the auto index functionality on a custom directory -->
                     <!--
                     <locations>
                         <location condition="^\/example\/META-INF\/.*">
+                            <headers>
+                                <header type="response" name="X-Powered-By" value="autoIndex" append="true"/>
+                            </headers>
                             <params>
                                 <param name="autoIndex" type="boolean">true</param>
                             </params>
@@ -291,6 +302,7 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
                         <module type="\AppserverIo\Appserver\ServletEngine\ServletEngine"/>
                         <module type="\AppserverIo\WebServer\Modules\ProxyModule"/>
                         <!-- RESPONSE_PRE hook -->
+                        <module type="\AppserverIo\WebServer\Modules\HeaderModule"/>
                         <module type="\AppserverIo\WebServer\Modules\DeflateModule"/>
                         <!-- RESPONSE_POST hook -->
                         <module type="\AppserverIo\Appserver\Core\Modules\ProfileModule"/>
@@ -419,6 +431,7 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
                         <module type="\AppserverIo\Appserver\ServletEngine\ServletEngine"/>
                         <module type="\AppserverIo\WebServer\Modules\ProxyModule"/>
                         <!-- RESPONSE_PRE hook -->
+                        <module type="\AppserverIo\WebServer\Modules\HeaderModule"/>
                         <module type="\AppserverIo\WebServer\Modules\DeflateModule"/>
                         <!-- RESPONSE_POST hook -->
                         <module type="\AppserverIo\Appserver\Core\Modules\ProfileModule"/>

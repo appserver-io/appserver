@@ -22,10 +22,22 @@
                 </params>
             </access>
         </accesses>
+        
+        <!-- An example how to modify response headers -->
+        <!--
+        <headers>
+            <header type="response" name="Server" value="My Own Server" override="true"/>
+            <header type="response" name="X-Powered-By" value="example.local"/>
+        </headers>
+        -->
+        
         <!-- An example to activate a the auto index functionality on a custom directory -->
         <!--
         <locations>
             <location condition="^\/META-INF\/.*">
+                <headers>
+                    <header type="response" name="X-Powered-By" value="autoIndex" append="true"/>
+                </headers>
                 <params>
                     <param name="autoIndex" type="boolean">true</param>
                 </params>
