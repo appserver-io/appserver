@@ -23,7 +23,7 @@
             </access>
         </accesses>
         
-        <!-- An example how to modify respone headers -->
+        <!-- An example how to modify response headers -->
         <!--
         <headers>
             <header type="response" name="Server" value="My Own Server" override="true"/>
