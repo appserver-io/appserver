@@ -16,9 +16,13 @@ baseurl: ""
 url: "http://appserver.io"
 
 collections:
-  redirects:
+  docs_1_0:
     output: true
-  docs:
+  docs_1_1:
+    output: true
+  docs_2_0:
+    output: true
+  redirects:
     output: true
   faq:
     output: true

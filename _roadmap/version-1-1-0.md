@@ -1,5 +1,5 @@
 ---
-layout: docs
+layout: default
 title: Annotations
 position: 60
 group: Roadmap

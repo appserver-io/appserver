@@ -34,6 +34,19 @@
   }
 }
 
+// docs version styling
+div.docs_version {
+  margin-top: 21px;
+  margin-bottom: 10.5px;
+
+  .dropdown-menu {
+    right: 0;
+    padding-top: 10px;
+    min-width: inherit;
+  }
+
+}
+
 // docs content styling
 .docs-content {
 
@@ -71,4 +84,3 @@
   }
 
 }
-
