@@ -81,7 +81,7 @@ class ContainerService extends AbstractFileOperationService
             default: // on all other use a standard configuration
 
                 $configargs = array(
-                    'digest_alg' => 'md5',
+                    'digest_alg' => 'sha256',
                     'x509_extensions' => 'v3_ca',
                     'req_extensions'   => 'v3_req',
                     'private_key_bits' => 2048,
