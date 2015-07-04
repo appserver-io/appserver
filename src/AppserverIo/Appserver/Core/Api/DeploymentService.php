@@ -25,6 +25,9 @@ use AppserverIo\Appserver\Core\Api\Node\ContextNode;
 use AppserverIo\Appserver\Core\Api\Node\DeploymentNode;
 use AppserverIo\Appserver\Core\Interfaces\ContainerInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
+use AppserverIo\Appserver\Core\Api\Node\ServerNode;
+use AppserverIo\Appserver\Core\Api\Node\ContainersNode;
+use AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface;
 
 /**
  * A service that handles deployment configuration data.
@@ -151,5 +154,67 @@ class DeploymentService extends AbstractFileOperationService
 
         // return the array with the context instances
         return $contextInstances;
+    }
+
+    /**
+     * Loads the containers, defined by the applications, merges them into
+     * the system configuration and returns the merged system configuration.
+     *
+     * @return \AppserverIo\Appserver\Core\Interfaces\SystemConfigurationInterface The merged system configuration
+     */
+    public function loadContainerInstances()
+    {
+
+        // load the system configuration
+        /** @var AppserverIo\Appserver\Core\Interfaces\SystemConfigurationInterface $systemConfiguration */
+        $systemConfiguration = $this->getSystemConfiguration();
+
+        // load the service to validate the files
+        /** @var AppserverIo\Appserver\Core\Api\ConfigurationService $configurationService */
+        $configurationService = $this->newService('AppserverIo\Appserver\Core\Api\ConfigurationService');
+
+        /** @var AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNodeInstance */
+        foreach ($systemConfiguration->getContainers() as $containerName => $containerNodeInstance) {
+            // load the containers application base directory
+            $containerAppBase = $this->getBaseDirectory($containerNodeInstance->getHost()->getAppBase());
+
+            // iterate over all applications and create the server configuration
+            foreach (glob($containerAppBase . '/*', GLOB_ONLYDIR) as $webappPath) {
+                // iterate through all server configurations (servers.xml), validate and merge them
+                foreach ($this->globDir($webappPath . '/META-INF/containers.xml') as $containersConfigurationFile) {
+                    try {
+                        // validate the application specific container configurations
+                        $configurationService->validateFile($containersConfigurationFile, null);
+
+                        // create a new containers node instance
+                        $containersNodeInstance = new ContainersNode();
+                        $containersNodeInstance->initFromFile($containersConfigurationFile);
+
+                        /** @var AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNodeInstance */
+                        foreach ($containersNodeInstance->getContainers() as $containerNodeInstance) {
+                            // query whether we've to merge or append the server node instance
+                            if ($container = $systemConfiguration->getContainer($containerNodeInstance->getName())) {
+                                $container->merge($containerNodeInstance);
+                            } else {
+                                $systemConfiguration->attachContainer($containerNodeInstance);
+                            }
+                        }
+
+                    } catch (ConfigurationException $ce) {
+                        // load the logger and log the XML validation errors
+                        $systemLogger = $this->getInitialContext()->getSystemLogger();
+                        $systemLogger->error($ce->__toString());
+
+                        // additionally log a message that server configuration will be missing
+                        $systemLogger->critical(
+                            sprintf('Will skip app specific server configuration file %s, configuration might be faulty.', $serverConfigurationFile)
+                        );
+                    }
+                }
+            }
+        }
+
+        // returns the merged system configuration
+        return $systemConfiguration;
     }
 }

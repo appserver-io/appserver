@@ -83,7 +83,7 @@ interface ServerNodeInterface extends NodeInterface
      * @return string The request context type
      */
     public function getRequestContext();
-    
+
     /**
      * Returns the stream context to use.
      *
@@ -111,7 +111,7 @@ interface ServerNodeInterface extends NodeInterface
      * @return array
      */
     public function getFileHandlers();
-    
+
     /**
      * Returns the headers nodes.
      *
@@ -344,4 +344,18 @@ interface ServerNodeInterface extends NodeInterface
      * @return array The array with the sorted analytics
      */
     public function getAnalyticsAsArray();
+
+    /**
+     * Will return the certificates array.
+     *
+     * @return array The array with the certificate nodes
+     */
+    public function getCertificates();
+
+    /**
+     * Returns the certificates as an associative array.
+     *
+     * @return array The array with certificates
+     */
+    public function getCertificatesAsArray();
 }

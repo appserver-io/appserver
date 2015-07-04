@@ -122,8 +122,11 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
             $profileLogger->appendThreadContext($this->getContainerNode()->getName());
         }
 
-        // setup configurations
+        // initialize the array for the server configurations
         $serverConfigurations = array();
+
+        // load the server configurations and query whether a server signatures has been set
+        /** @var \AppserverIo\Appserver\Core\Api\Node\ServerNodeInterface $serverNode */
         foreach ($this->getContainerNode()->getServers() as $serverNode) {
             // query whether a server signature (software) has been configured
             if ($serverNode->getParam('software') == null) {
@@ -161,7 +164,7 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
         // init server array
         $servers = array();
         // start servers by given configurations
-        /** @var \AppserverIo\Server\Interfaces\ServerConfigurationInterface $serveConfig */
+        /** @var \AppserverIo\Server\Interfaces\ServerConfigurationInterface $serverConfig */
         foreach ($serverConfigurations as $serverConfig) {
             // get type definitions
             $serverType = $serverConfig->getType();
