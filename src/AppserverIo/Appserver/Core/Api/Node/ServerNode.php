@@ -96,7 +96,7 @@ class ServerNode extends AbstractNode implements ServerNodeInterface
      * @var \AppserverIo\Appserver\Core\Api\Node\FileHandlersNodeTrait
      */
     use FileHandlersNodeTrait;
-    
+
     /**
      * The trait for the server headers.
      *
@@ -124,7 +124,7 @@ class ServerNode extends AbstractNode implements ServerNodeInterface
      * @var \AppserverIo\Appserver\Core\Api\Node\VirtualHostsNodeTrait
      */
     use VirtualHostsNodeTrait;
-    
+
     /**
      * The trait for the certificates.
      *
@@ -187,7 +187,7 @@ class ServerNode extends AbstractNode implements ServerNodeInterface
      * @AS\Mapping(nodeType="string")
      */
     protected $requestContext;
-    
+
     /**
      * The stream context to use.
      *
@@ -265,7 +265,7 @@ class ServerNode extends AbstractNode implements ServerNodeInterface
     {
         return $this->requestContext;
     }
-    
+
     /**
      * Returns the stream context to use.
      *
@@ -274,5 +274,26 @@ class ServerNode extends AbstractNode implements ServerNodeInterface
     public function getStreamContext()
     {
         return $this->streamContext;
+    }
+
+    /**
+     *This method merges the passed server node into this one.
+     *
+     * @param \AppserverIo\Appserver\Core\Api\Node\ServerNodeInterface $serverNode The server node to merge
+     *
+     * @return void
+     */
+    public function merge(ServerNodeInterface $serverNode)
+    {
+        // append the certificate nodes found in the passed server node
+        /** @var \AppserverIo\Appserver\Core\Api\Node\CertificateNode $certificate */
+        foreach ($serverNode->getCertificates() as $certificate) {
+            $this->certificates[] = $certificate;
+        }
+        // append the virtual host nodes found in the passed server node
+        /** @var \AppserverIo\Appserver\Core\Api\Node\VirtualHostNode $virtualHost */
+        foreach ($serverNode->getVirtualHosts() as $virtualHost) {
+            $this->virtualHosts[] = $virtualHost;
+        }
     }
 }

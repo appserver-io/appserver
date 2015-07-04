@@ -383,6 +383,56 @@ class AppserverNode extends AbstractNode implements SystemConfigurationInterface
     }
 
     /**
+     * Returns the container with the passed name.
+     *
+     * @param string $name The name of the container to return
+     *
+     * @return \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface The container node matching the passed name
+     */
+    public function getContainer($name)
+    {
+        /** @var \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $server */
+        foreach ($this->getContainers() as $container) {
+            if ($container->getName() === $name) {
+                return $container;
+            }
+        }
+    }
+
+    /**
+     * Returns the containers as array with the container name as key.
+     *
+     * @return array The array with the containers
+     */
+    public function getContainersAsArray()
+    {
+
+        // initialize the array for the containers
+        $containers = array();
+
+        // iterate over all found containers and assemble the array
+        /** @var \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $container */
+        foreach ($this->getContainers() as $container) {
+            $containers[$container->getName()] = $container;
+        }
+
+        // return the array with the containers
+        return $containers;
+    }
+
+    /**
+     * Attaches the passed container node.
+     *
+     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $container The container node to attach
+     *
+     * @return void
+     */
+    public function attachContainer(ContainerNodeInterface $container)
+    {
+        $this->containers[$container->getPrimaryKey()] = $container;
+    }
+
+    /**
      * Returns an array with the information about the deployed applications.
      *
      * @return array The array with the information about the deployed applications

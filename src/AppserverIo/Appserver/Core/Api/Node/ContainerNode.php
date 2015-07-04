@@ -195,6 +195,56 @@ class ContainerNode extends AbstractNode implements ContainerNodeInterface
     }
 
     /**
+     * Returns the servers as array with the server name as key.
+     *
+     * @return array The array with the servers
+     */
+    public function getServersAsArray()
+    {
+
+        // initialize the array for the servers
+        $servers = array();
+
+        // iterate over all found servers and assemble the array
+        /** @var \AppserverIo\Appserver\Core\Api\Node\ServerNodeInterface $server */
+        foreach ($this->getServers() as $server) {
+            $servers[$server->getName()] = $server;
+        }
+
+        // return the array with the servers
+        return $servers;
+    }
+
+    /**
+     * Returns the server with the passed name.
+     *
+     * @param string $name The name of the server to return
+     *
+     * @return \AppserverIo\Appserver\Core\Api\Node\ServerNodeInterface The server node matching the passed name
+     */
+    public function getServer($name)
+    {
+        /** @var \AppserverIo\Appserver\Core\Api\Node\ServerNodeInterface $server */
+        foreach ($this->getServers() as $server) {
+            if ($server->getName() === $name) {
+                return $server;
+            }
+        }
+    }
+
+    /**
+     * Attaches the passed server node.
+     *
+     * @param \AppserverIo\Appserver\Core\Api\Node\ServerNodeInterface $server The server node to attach
+     *
+     * @return void
+     */
+    public function attachServer(ServerNodeInterface $server)
+    {
+        $this->servers[$server->getPrimaryKey()] = $server;
+    }
+
+    /**
      * Return's all upstream nodes
      *
      * @return array
@@ -202,5 +252,25 @@ class ContainerNode extends AbstractNode implements ContainerNodeInterface
     public function getUpstreams()
     {
         return $this->upstreams;
+    }
+
+    /**
+     *This method merges the passed container node into this one.
+     *
+     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode The container node to merge
+     *
+     * @return void
+     */
+    public function merge(ContainerNodeInterface $containerNode)
+    {
+        // merge the server nodes
+        /** @var \AppserverIo\Appserver\Core\Api\Node\ServerNodeInterface $serverNode */
+        foreach ($containerNode->getServers() as $serverNode) {
+            if ($serverNodeToMerge = $this->getServer($serverNode->getName())) {
+                $serverNodeToMerge->merge($serverNode);
+            } else {
+                $this->attachServer($serverNode);
+            }
+        }
     }
 }

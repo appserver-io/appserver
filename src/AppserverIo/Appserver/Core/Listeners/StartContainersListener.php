@@ -53,6 +53,10 @@ class StartContainersListener extends AbstractSystemListener
             // write a log message that the event has been invoked
             $applicationServer->getSystemLogger()->info($event->getName());
 
+            // initialize the service to load the container configurations
+            $deploymentService = $applicationServer->newService('AppserverIo\Appserver\Core\Api\DeploymentService');
+            $applicationServer->setSystemConfiguration($deploymentService->loadContainerInstances());
+
             // and initialize a container thread for each container
             /** @var \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode */
             foreach ($applicationServer->getSystemConfiguration()->getContainers() as $containerNode) {
