@@ -169,6 +169,11 @@ class DeploymentService extends AbstractFileOperationService
         /** @var AppserverIo\Appserver\Core\Interfaces\SystemConfigurationInterface $systemConfiguration */
         $systemConfiguration = $this->getSystemConfiguration();
 
+        // if applications are NOT allowed to override the system configuration
+        if ($systemConfiguration->getAllowApplicationConfiguration() === false) {
+            return $systemConfiguration;
+        }
+
         // load the service to validate the files
         /** @var AppserverIo\Appserver\Core\Api\ConfigurationService $configurationService */
         $configurationService = $this->newService('AppserverIo\Appserver\Core\Api\ConfigurationService');

@@ -323,6 +323,17 @@ class AppserverNode extends AbstractNode implements SystemConfigurationInterface
     }
 
     /**
+     * Queries whether application configuration for container, server and virtual host
+     * is allowed or not.
+     *
+     * @return boolean TRUE if applications can provide additional configuration, else FALSE
+     */
+    public function getAllowApplicationConfiguration()
+    {
+        return $this->getParam('allowApplicationConfiguration');
+    }
+
+    /**
      * Returns the node with the base directory information.
      *
      * @return string The base directory information
