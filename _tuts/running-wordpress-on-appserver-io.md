@@ -11,7 +11,7 @@ permalink: /get-started/tutorials/running-wordpress-on-appserver-io.html
 
 
 Appserver.io is a pretty cool and sophiscated infrastructure fully built upon the PHP stack. This makes it truely easy
-to develop and extend the platform. Appserver.io comes with an built in webserver module with PHP-FPM therefore it is
+to develop and extend the platform. Appserver.io comes with a built in webserver module with PHP-FPM therefore it is
 possible to install any PHP-App you like and run it on that platform. The following guide shows you how easy it is to
 install appserver.io on a Mac and run Wordpress on it.
 
@@ -52,7 +52,7 @@ You are now set to install and run your application on appserver.io. For that we
 from wordpress.org.
 
 To go ahead and install wordpress we have now two options. The easiest way is to install wordpress without creating a
-vhost. Therefore you just unpack the wordpress source into your Webrootfolder which in case of the appserver is always
+vhost. Therefore you just unpack the wordpress source into your webrootfolder which in case of the appserver is always
 the webapps folder underneath /opt/appserver/webapps/. In that folder you will still find the already installed example
 app and of course the welcome page. We are just creating a folder with name „wordpress“ and unpacking the source there.
 
@@ -82,7 +82,7 @@ Now you are on the MySQL command line and it is pretty easy to create an empty d
 CREATE DATABASE wordpress;
 ```
 
-Now you are ready to install wordpress. Just follow to steps on the install wizard.
+Now you are ready to install wordpress. Just follow steps on the install wizard.
 
 If you want to use a virtual host to run wordpress simply follow the steps below. As with any other Webserver using a
 vhost you first have to add the domain you'd like to use in your hosts file.

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+{% include head.html %}
+<body role="document">
+    {% include header.html %}
+    <!-- Page Content -->
+    <div class="container-page">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3" id="leftCol">
+                    {% assign items = site.docs_1_0 | sort: 'position' %}
+                    {% include sub_nav.html %}
+                </div>
+                <!-- Content Section -->
+                <div class="col-md-9 content">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <h1><i class="fa fa-book"></i> {% if page.group and page.group != "Get Started" %}<small>{{ page.group }} / </small>{% endif %}{{ page.title }}</h1>
+                        </div>
+                        <div class="col-md-4 text-right docs_version">
+                          <div class="btn-group">
+                            <button type="button" class="btn btn-default">Version 1.0</button>
+                            <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                              <span class="caret"></span>
+                              <span class="sr-only">Toggle Dropdown</span>
+                            </button>
+                            <!--
+                            <ul class="dropdown-menu list-unstyled">
+                              <li><a href="{{ page.url | replace:'/1.0','/1.1' }}">Version 1.1</a></li>
+                              <li><a href="{{ page.url | replace:'/1.0','/1.2' }}">Version 2.0</a></li>
+                            </ul>
+                            -->
+                          </div>
+                        </div>
+                    </div>
+                    <hr/>
+                    <div class="docs-content">
+                        {{ content }}
+                    </div>
+                </div>
+            </div>
+            <!-- /.row -->
+        </div>
+    </div>
+    <!-- /.container -->
+    {% include footer.html %}
+</body>
+</html>

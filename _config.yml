@@ -16,9 +16,13 @@ baseurl: ""
 url: "http://appserver.io"
 
 collections:
-  redirects:
+  docs_1_0:
     output: true
-  docs:
+  docs_1_1:
+    output: true
+  docs_2_0:
+    output: true
+  redirects:
     output: true
   faq:
     output: true
@@ -38,8 +42,8 @@ github_issue: https://github.com/appserver-io/appserver/issues/
 
 google_analytics_id: UA-42386171-1
 
-appserver_version: 1.0.3
-appserver_runtime_version: 1.0.5
+appserver_version: 1.0.5
+appserver_runtime_version: 1.0.6
 
 appserver_download_baseurl: https://github.com/appserver-io/appserver/releases/download/
 appserver_download_dist_prefix: appserver-dist

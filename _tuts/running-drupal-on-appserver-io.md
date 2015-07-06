@@ -11,9 +11,9 @@ permalink: /get-started/tutorials/running-drupal-on-appserver-io.html
 
 
 Appserver.io is a cool and sophiscated infrastructure fully built upon the PHP stack. This makes it truely easy
-to develop and extend the platform. Appserver.io comes with an built in webserver module with PHP-FPM therefore it is
+to develop and extend the platform. Appserver.io comes with a built in webserver module with PHP-FPM therefore it is
 possible to install any PHP-App and run it on that platform. The following guide shows how easy it is to
-install appserver.io on a Mac and run Wordpress.
+install appserver.io on a Mac and run wordpress.
 
 
 **Prerequisite**: *Up and running installation of MySQL*
@@ -50,12 +50,12 @@ Of course there is no need to change the port if you only want to check out the 
 In order to run the application on appserver.io, download the latest drupal release from drupal.org.
 
 To install drupal there are now two options. The easiest way is to install drupal without creating a
-vhost. Therefore just unpack the drupal source into your Webrootfolder which in case of the appserver is always
+vhost. Therefore just unpack the drupal source into your webrootfolder which in case of the appserver is always
 the webapps folder underneath /opt/appserver/webapps/. In that folder you will still find the already installed example
 app and of course the welcome page. Just create a folder named „drupal“ and unpack the source there.
 
 After successfully unpacking the drupal sources you are able to use the drupal webinstaller just by open a
-browser and calling the URL http://127.0.0.1:9080/drupal/. Before you you start the installation it is necessary
+browser and calling the URL http://127.0.0.1:9080/drupal/. Before you start the installation it is necessary
 to create a settings.php file. Copy the default settings
 
 ```bash
@@ -115,10 +115,13 @@ available. Add the following configuration within the <virtualHosts> tag.
         <param name="admin" type="string">info@appserver.io</param>
         <param name="documentRoot" type="string">webapps/drupal</param>
     </params>
+    <rewrites>
+        <rewrite condition="!-d{AND}!-f{AND}!^/favicon.ico" flag="L" target="/index.php"/>
+    </rewrites>
 </virtualHost>
 ```
 
-After adding the Vhost, restart the appserver and start with the Installation as described at
+After adding the vhost, restart the appserver and start with the Installation as described at
 the beginning of this tutorial
 
 ```bash
