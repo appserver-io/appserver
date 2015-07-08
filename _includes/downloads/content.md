@@ -1,5 +1,9 @@
 {% if download.id == "osx" %}{% include downloads/osx.md %}{% endif %}
 {% if download.id == "win" %}{% include downloads/win.md %}{% endif %}
-{% if download.id == "debian" %}{% include downloads/debian.md %}{% endif %}
-{% if download.id == "fedora" %}{% include downloads/fedora.md %}{% endif %}
-{% if download.id == "centos" %}{% include downloads/centos.md %}{% endif %}
+{% if download.id == "debian7" %}{% include downloads/debian.md %}{% endif %}
+{% if download.id == "debian8" %}{% include downloads/debian.md %}{% endif %}
+{% if download.id == "fedora20" %}{% include downloads/fedora.md %}{% endif %}
+{% if download.id == "fedora21" %}{% include downloads/fedora.md %}{% endif %}
+{% if download.id == "fedora22" %}{% include downloads/fedora.md %}{% endif %}
+{% if download.id == "centos6" %}{% include downloads/centos.md %}{% endif %}
+{% if download.id == "centos7" %}{% include downloads/centos.md %}{% endif %}
