@@ -1,5 +1,3 @@
-**Runs and tested on Debian Squeeze (64-bit) and higher!**
-
 For non desktop environments or via ssh type:
 
 ```bash
