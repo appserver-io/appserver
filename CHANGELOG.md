@@ -2,8 +2,13 @@
 
 ## Bugfixes
 
+* Fixed [#798](https://github.com/appserver-io/appserver/issues/798) - Installation on Ubuntu Gnome 15.04 not possible
 * Fixed [#828](https://github.com/appserver-io/appserver/issues/828) - Unknown application causes 500 instead of 404
 * Fixed [#829](https://github.com/appserver-io/appserver/issues/829) - Setup with parameter -s=dev set's invalid user on Mac OS X
+* Fixes [#836](https://github.com/appserver-io/appserver/issues/836) - Appserver.xml does contain invalid host attributes
+* Fixed [#839](https://github.com/appserver-io/appserver/issues/839) - appserver and appserver-watcher Provides collision
+* Fixed [#842](https://github.com/appserver-io/appserver/issues/842) - Cannot use Traits
+* Fixed [#847](https://github.com/appserver-io/appserver/issues/847) - Webserver based authentication is missing "realm"
 
 ## Features
 
