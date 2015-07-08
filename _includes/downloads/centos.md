@@ -1,4 +1,4 @@
-**Runs and tested on CentOS 6 (64-bit)!**
+**Runs and tested on CentOS 6 (64-bit) and higher!**
 
 Installation and basic usage is the same as on Fedora but we provide different packages for runtime
 and distribution. CentOS requires additional repositories like
