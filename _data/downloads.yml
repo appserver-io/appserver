@@ -1,32 +1,60 @@
 - os: Mac OS X
   id: osx
   icon: fa-apple
-  dist-suffix: -14_x86_64.pkg
+  dist-suffix: -21_x86_64.pkg
   separator: "_"
-  
+
 - os: Windows
   id: win
   icon: fa-windows   
-  dist-suffix: -27_x86.exe
+  dist-suffix: -34_x86.exe
   separator: "_"
 
-- os: Debian
-  id: debian
+- os: Debian 7
+  id: debian7
   icon: fa-linux
-  dist-suffix: -25_amd64.deb
-  runtime-suffix: -68_amd64.deb
+  dist-suffix: -37.deb7_amd64.deb
+  runtime-suffix: -74.deb7_amd64.deb
   separator: "_"
 
-- os: Fedora
-  id: fedora
+- os: Debian 8
+  id: debian8
   icon: fa-linux
-  dist-suffix: -22.fc20.x86_64.rpm
-  runtime-suffix: -60.fc20.x86_64.rpm
+  dist-suffix: -13.deb8_amd64.deb
+  runtime-suffix: -27.deb8_amd64.deb
+  separator: "_"
+
+- os: Fedora 20
+  id: fedora20
+  icon: fa-linux
+  dist-suffix: -26.fc20.x86_64.rpm
+  runtime-suffix: -63.fc20.x86_64.rpm
   separator: "-"
 
-- os: Cent OS
-  id: centos
+- os: Fedora 21
+  id: fedora21
   icon: fa-linux
-  dist-suffix: -18.el6.x86_64.rpm
-  runtime-suffix: -72.el6.x86_64.rpm
+  dist-suffix: -9.fc21.x86_64.rpm
+  runtime-suffix: -47.fc21.x86_64.rpm
+  separator: "-"
+
+- os: Fedora 22
+  id: fedora22
+  icon: fa-linux
+  dist-suffix: -9.fc22.x86_64.rpm
+  runtime-suffix: -12.fc22.x86_64.rpm
+  separator: "-"
+
+- os: CentOS 6
+  id: centos6
+  icon: fa-linux
+  dist-suffix: -24.el6.x86_64.rpm
+  runtime-suffix: -75.el6.x86_64.rpm
+  separator: "-"
+
+- os: CentOS 7
+  id: centos7
+  icon: fa-linux
+  dist-suffix: -12.el7.centos.x86_64.rpm
+  runtime-suffix: -21.el7.centos.x86_64.rpm
   separator: "-"

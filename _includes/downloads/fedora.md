@@ -1,4 +1,4 @@
-**Runs and tested on version Fedora 20 (64-bit)!**
+**Runs and tested on version Fedora 20 (64-bit) and higher!**
 
 We also provide .rpm files for Fedora, one for runtime and distribution,
 that you can download and start the installation process by double-clicking on it.
