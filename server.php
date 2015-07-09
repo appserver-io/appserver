@@ -52,7 +52,6 @@ if (extension_loaded('appserver') === false) {
     throw new \Exception('Extension appserver (https://github.com/appserver-io-php/php-ext-appserver) > 1.0.1 has to be loaded');
 }
 
-
 // define a all constants appserver base directory
 define('APPSERVER_BP', __DIR__);
 
@@ -60,12 +59,14 @@ define('APPSERVER_BP', __DIR__);
 require __DIR__ . DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR . 'scripts' . DIRECTORY_SEPARATOR . 'bootstrap.php';
 
 // define the available options
+$setup = 's';
 $watch = 'w'; // compatibility mode for old server version
 $config = 'c';
 $bootstrap = 'b';
+$configTest = 't';
 
-// check if server.php has been started with -c or -b option
-$arguments = getopt("$watch::$config::$bootstrap::");
+// check if server.php has been started with -s, -w, -c or -b option
+$arguments = getopt("$setup:$configTest::$watch::$config::$bootstrap::");
 
 // query whether a configuration file has been specified or not
 if (array_key_exists($config, $arguments) && file_exists($arguments[$config])) {
@@ -83,6 +84,9 @@ if (array_key_exists($config, $arguments) && file_exists($arguments[$config])) {
 if (array_key_exists($bootstrap, $arguments) && file_exists($arguments[$bootstrap])) {
     // set the file passed as parameter
     $bootstrapFilename = $arguments[$bootstrap];
+} elseif ((array_key_exists($setup, $arguments) || array_key_exists($configTest, $arguments)) && file_exists(sprintf('%s/etc/appserver/conf.d/bootstrap-commands.xml', APPSERVER_BP))) {
+    // set the default commands boostrap file
+    $bootstrapFilename = sprintf('%s/etc/appserver/conf.d/bootstrap-commands.xml', APPSERVER_BP);
 } elseif (array_key_exists($watch, $arguments) && file_exists(sprintf('%s/etc/appserver/conf.d/bootstrap-watcher.xml', APPSERVER_BP))) {
     // set the default watcher boostrap file
     $bootstrapFilename = sprintf('%s/etc/appserver/conf.d/bootstrap-watcher.xml', APPSERVER_BP);
@@ -100,6 +104,7 @@ $namingDirectory->setScheme('php');
 
 // create a directory for the services
 $namingDirectory->createSubdirectory('php:env');
+$namingDirectory->createSubdirectory('php:env/args');
 $namingDirectory->createSubdirectory('php:global');
 $namingDirectory->createSubdirectory('php:global/log');
 $namingDirectory->createSubdirectory('php:services');
@@ -109,7 +114,15 @@ foreach (array_keys(ApplicationServer::$runlevels) as $runlevel) {
     $namingDirectory->createSubdirectory(sprintf('php:services/%s', $runlevel));
 }
 
-// set the path to the default configuration and bootstrap filenames
+// bind the command line arguments to the naming directory
+foreach ($arguments as $name => $value) {
+    $namingDirectory->bind(sprintf('php:env/args/%s', $name), empty($value) ? true : $value);
+}
+
+// bind the current user to the naming directory
+$namingDirectory->bind('php:env/currentUser', isset($_SERVER['SUDO_USER']) ? $_SERVER['SUDO_USER'] : get_current_user());
+
+// bind the path to the default configuration and bootstrap filenames
 $namingDirectory->bind('php:env/configurationFilename', DirectoryKeys::realpath($filename));
 $namingDirectory->bind('php:env/bootstrapConfigurationFilename', DirectoryKeys::realpath($bootstrapFilename));
 

@@ -20,9 +20,11 @@
 
 namespace AppserverIo\Appserver\Core\Api;
 
+use AppserverIo\Configuration\Configuration;
 use AppserverIo\Configuration\ConfigurationUtils;
 use AppserverIo\Appserver\Core\InitialContext;
 use AppserverIo\Appserver\Core\Api\Node\ParamNode;
+use AppserverIo\Appserver\Core\Api\Node\AppserverNode;
 use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
 
 /**
@@ -121,6 +123,57 @@ class ConfigurationService extends AbstractService
     public function load($uuid)
     {
         // TODO: Implement load() method.
+    }
+
+    /**
+     * Loads the configuration from the passed filename.
+     *
+     * @param string $filename The filename to load the configuration from
+     *
+     * @return \DOMDocument The parsed Configuration
+     * @throws \Exception
+     */
+    public function loadConfigurationByFilename($filename)
+    {
+
+        // initialize the DOMDocument with the configuration file to be validated
+        $configurationFile = new \DOMDocument();
+        $configurationFile->load($filename);
+
+        // substitute xincludes
+        $configurationFile->xinclude(LIBXML_SCHEMA_CREATE);
+
+        // create a DOMElement with the base.dir configuration
+        $paramElement = $configurationFile->createElement('param', APPSERVER_BP);
+        $paramElement->setAttribute('name', DirectoryKeys::BASE);
+        $paramElement->setAttribute('type', ParamNode::TYPE_STRING);
+
+        // create an XPath instance
+        $xpath = new \DOMXpath($configurationFile);
+        $xpath->registerNamespace('a', 'http://www.appserver.io/appserver');
+
+        // for node data in a selected id
+        $baseDirParam = $xpath->query(sprintf('/a:appserver/a:params/a:param[@name="%s"]', DirectoryKeys::BASE));
+        if ($baseDirParam->length === 0) {
+            // load the <params> node
+            $paramNodes = $xpath->query('/a:appserver/a:params');
+
+            // load the first item => the node itself
+            if ($paramsNode = $paramNodes->item(0)) {
+                // append the base.dir DOMElement
+                $paramsNode->appendChild($paramElement);
+            } else {
+                // throw an exception, because we can't find a mandatory node
+                throw new \Exception('Can\'t find /appserver/params node');
+            }
+        }
+
+        // create a new DOMDocument with the merge content => necessary because else, schema validation fails!!
+        $doc = new \DOMDocument();
+        $doc->loadXML($configurationFile->saveXML());
+
+        // return the XML document
+        return $doc;
     }
 
     /**

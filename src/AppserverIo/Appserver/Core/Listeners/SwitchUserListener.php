@@ -49,6 +49,7 @@ class SwitchUserListener extends AbstractSystemListener
 
         try {
             // load the application server instance
+            /** @var \AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface $applicationServer */
             $applicationServer = $this->getApplicationServer();
 
             // write a log message that the event has been invoked
@@ -60,6 +61,10 @@ class SwitchUserListener extends AbstractSystemListener
                 return;
             }
 
+            // initialize the variable for user/group
+            $uid = 0;
+            $gid = 0;
+
             // throw an exception if the POSIX extension is not available
             if (extension_loaded('posix') === false) {
                 throw new \Exception('Can\'t switch user, because POSIX extension is not available');
@@ -68,19 +73,25 @@ class SwitchUserListener extends AbstractSystemListener
             // print a message with the old UID/EUID
             $applicationServer->getSystemLogger()->info("Running as " . posix_getuid() . "/" . posix_geteuid());
 
-            // extract the variables
-            $uid = 0;
+            // extract the user and group name as variables
             extract(posix_getpwnam($applicationServer->getSystemConfiguration()->getUser()));
+            extract(posix_getgrnam($applicationServer->getSystemConfiguration()->getGroup()));
 
-            // switcht the effective UID to the passed user
+            // switch the effective UID to the passed user
             if (posix_seteuid($uid) === false) {
                 $applicationServer->getSystemLogger()->error(sprintf('Can\'t switch UID to \'%s\'', $uid));
             }
 
             // print a message with the new UID/EUID
-            $applicationServer->getSystemLogger()->info("Running as " . posix_getuid() . "/" . posix_geteuid());
+            $applicationServer->getSystemLogger()->info("Running as user " . posix_getuid() . "/" . posix_geteuid());
 
-            // @TODO Switch group also!!!! $applicationServer->getSystemConfiguration()->getGroup()
+            // switch the effective GID to the passed group
+            if (posix_setegid($gid) === false) {
+                $applicationServer->getSystemLogger()->error(sprintf('Can\'t switch GID to \'%s\'', $gid));
+            }
+
+            // print a message with the new GID/EGID
+            $applicationServer->getSystemLogger()->info("Running as group" . posix_getgid() . "/" . posix_getegid());
 
         } catch (\Exception $e) {
             $applicationServer->getSystemLogger()->error($e->__toString());

@@ -14,13 +14,13 @@
 /composer.lock
 /composer.phar
 /*.iml
+.is-installed
 .appserver-last-successfull-deployment
 /tests/TechDivision/ApplicationServer/etc
 /docs/site
 /bin
 /sbin
 /etc/appserver/appserver.xml
-/etc/appserver/conf.d/.is-installed
 /etc/appserver/server.pem
 /var/tmp/example
 /var/tmp/proffile

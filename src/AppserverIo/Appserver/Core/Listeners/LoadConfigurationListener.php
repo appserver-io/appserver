@@ -23,12 +23,13 @@ namespace AppserverIo\Appserver\Core\Listeners;
 use League\Event\EventInterface;
 use AppserverIo\Configuration\Configuration;
 use AppserverIo\Appserver\Core\LoggerFactory;
+use AppserverIo\Appserver\Core\InitialContext;
+use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
 use AppserverIo\Appserver\Core\Api\Node\ParamNode;
 use AppserverIo\Appserver\Core\Api\Node\AppserverNode;
 use AppserverIo\Appserver\Core\Api\ConfigurationService;
-use AppserverIo\Appserver\Core\InitialContext;
-use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
 use AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface;
+use AppserverIo\Psr\Naming\NamingException;
 
 /**
  * Listener that loads and initializes the system configuration from the XML file.
@@ -54,59 +55,39 @@ class LoadConfigurationListener extends AbstractSystemListener
     {
 
         try {
-            // load the application server instance
+            // load the application server and the naming directory instance
+            /** @var \AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface $applicationServer */
             $applicationServer = $this->getApplicationServer();
+            /** @var \AppserverIo\Psr\Naming\NamingDirectoryInterface $namingDirectory */
+            $namingDirectory = $applicationServer->getNamingDirectory();
 
             // initialize configuration and schema file name
             $configurationFileName = $applicationServer->getConfigurationFilename();
 
-            // initialize the DOMDocument with the configuration file to be validated
-            $configurationFile = new \DOMDocument();
-            $configurationFile->load($configurationFileName);
-
-            // substitute xincludes
-            $configurationFile->xinclude(LIBXML_SCHEMA_CREATE);
-
-            // create a DOMElement with the base.dir configuration
-            $paramElement = $configurationFile->createElement('param', APPSERVER_BP);
-            $paramElement->setAttribute('name', DirectoryKeys::BASE);
-            $paramElement->setAttribute('type', ParamNode::TYPE_STRING);
-
-            // create an XPath instance
-            $xpath = new \DOMXpath($configurationFile);
-            $xpath->registerNamespace('a', 'http://www.appserver.io/appserver');
-
-            // for node data in a selected id
-            $baseDirParam = $xpath->query(sprintf('/a:appserver/a:params/a:param[@name="%s"]', DirectoryKeys::BASE));
-            if ($baseDirParam->length === 0) {
-                // load the <params> node
-                $paramNodes = $xpath->query('/a:appserver/a:params');
-
-                // load the first item => the node itself
-                if ($paramsNode = $paramNodes->item(0)) {
-                    // append the base.dir DOMElement
-                    $paramsNode->appendChild($paramElement);
-                } else {
-                    // throw an exception, because we can't find a mandatory node
-                    throw new \Exception('Can\'t find /appserver/params node');
-                }
-            }
-
-            // create a new DOMDocument with the merge content => necessary because else, schema validation fails!!
-            $mergeDoc = new \DOMDocument();
-            $mergeDoc->loadXML($configurationFile->saveXML());
-
             // get an instance of our configuration tester
             $configurationService = new ConfigurationService(new InitialContext(new AppserverNode()));
 
+            // load the parsed system configuration
+            /** @var \DOMDocument $doc */
+            $doc = $configurationService->loadConfigurationByFilename($configurationFileName);
+
             // validate the configuration file with the schema
-            if ($configurationService->validateXml($mergeDoc) === false) {
-                throw new \Exception('Can\'t parse configuration file');
+            $configurationService->validateXml($doc, null, true);
+
+            try {
+                // query whether we're in configuration test mode or not
+                if ($namingDirectory->search('php:env/args/t')) {
+                    echo 'Syntax OK' . PHP_EOL;
+                    exit(0);
+                }
+
+            } catch (NamingException $ne) {
+                // do nothing, because we're NOT in configuration test mode
             }
 
             // initialize the SimpleXMLElement with the content XML configuration file
             $configuration = new Configuration();
-            $configuration->initFromString($mergeDoc->saveXML());
+            $configuration->initFromString($doc->saveXML());
 
             // initialize the configuration and the base directory
             $systemConfiguration = new AppserverNode();
@@ -114,7 +95,9 @@ class LoadConfigurationListener extends AbstractSystemListener
             $applicationServer->setSystemConfiguration($systemConfiguration);
 
         } catch (\Exception $e) {
-            $applicationServer->getSystemLogger()->error($e->__toString());
+            // render the validation errors and exit immediately
+            echo $e . PHP_EOL;
+            exit(0);
         }
     }
 }
