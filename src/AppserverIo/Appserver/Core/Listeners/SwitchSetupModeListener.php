@@ -21,6 +21,8 @@
 namespace AppserverIo\Appserver\Core\Listeners;
 
 use League\Event\EventInterface;
+use AppserverIo\Psr\Naming\NamingException;
+use AppserverIo\Appserver\Naming\NamingDirectory;
 use AppserverIo\Appserver\Core\Api\ContainerService;
 use AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface;
 
@@ -48,17 +50,29 @@ class SwitchSetupModeListener extends AbstractSystemListener
     {
 
         try {
-            // load the application server instance
+            // load the application server and the naming directory instance
+            /** @var \AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface $applicationServer */
             $applicationServer = $this->getApplicationServer();
+            /** @var \AppserverIo\Psr\Naming\NamingDirectoryInterface $namingDirectory */
+            $namingDirectory = $applicationServer->getNamingDirectory();
+
+            // load the configuration filename
+            $configurationFilename = $applicationServer->getConfigurationFilename();
 
             // write a log message that the event has been invoked
             $applicationServer->getSystemLogger()->info($event->getName());
 
+            // load the setup mode from the naming directory
+            $setupMode = $namingDirectory->search('php:env/args/s');
+            $currentUser = $namingDirectory->search('php:env/currentUser');
+
             // load the service instance and switch to the new setup mode
             /** @var \AppserverIo\Appserver\Core\Api\ContainerService $service */
             $service = $applicationServer->newService('AppserverIo\Appserver\Core\Api\ContainerService');
-            $service->switchSetupMode(ContainerService::SETUP_MODE_INSTALL, $applicationServer->getConfigurationFilename());
+            $service->switchSetupMode($setupMode, $configurationFilename, $currentUser);
 
+        } catch (NamingException $ne) {
+            $applicationServer->getSystemLogger()->error('Please specify a setup mode, e. g. \'./server.php -s prod\'');
         } catch (\Exception $e) {
             $applicationServer->getSystemLogger()->error($e->__toString());
         }

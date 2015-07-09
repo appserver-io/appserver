@@ -273,7 +273,9 @@ class FileSystem
         if (empty($group) === false) {
             // Change the rights of everything within the defined dirs
             foreach ($files as $file) {
-                chgrp($file, $group);
+                if (chgrp($file, $group) === false) {
+                    error_log(sprintf('Can\'t change group to %s for file/dir %s', $group, $file));
+                }
             }
             chgrp($path, $group);
         }

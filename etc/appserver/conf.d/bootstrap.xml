@@ -15,8 +15,6 @@
         <listener event="enter.runlevel.shutdown" priority="0"
             type="AppserverIo\Appserver\Core\Listeners\SwitchUmaskListener" />
         <listener event="enter.runlevel.shutdown" priority="0"
-            type="AppserverIo\Appserver\Core\Listeners\SwitchSetupModeListener" />
-        <listener event="enter.runlevel.shutdown" priority="0"
             type="AppserverIo\Appserver\Core\Listeners\PrepareFileSystemListener" />
         <listener event="enter.runlevel.shutdown" priority="0"
             type="AppserverIo\Appserver\Core\Listeners\CreateSslCertificateListener" />

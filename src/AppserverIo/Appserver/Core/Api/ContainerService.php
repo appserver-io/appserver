@@ -250,11 +250,12 @@ class ContainerService extends AbstractFileOperationService
      *
      * @param string $newMode               The mode to switch to
      * @param string $configurationFilename The path of the configuration filename
+     * @param string $user                  The name of the user who started the application server
      *
      * @return void
      * @throws \Exception Is thrown for an invalid setup mode passed
      */
-    public function switchSetupMode($newMode, $configurationFilename)
+    public function switchSetupMode($newMode, $configurationFilename, $user)
     {
 
         // log a message that we switch setup mode now
@@ -263,8 +264,7 @@ class ContainerService extends AbstractFileOperationService
         // init setup context
         Setup::prepareContext($this->getBaseDirectory());
 
-        // init user and group vars
-        $user = null;
+        // init variable for the group
         $group = null;
 
         // pattern to replace the user in the etc/appserver/appserver.xml file
@@ -275,13 +275,6 @@ class ContainerService extends AbstractFileOperationService
 
             // prepares everything for developer mode
             case ContainerService::SETUP_MODE_DEV:
-                // set current user
-                $user = get_current_user();
-                // check if script is called via sudo
-                if (array_key_exists('SUDO_USER', $_SERVER)) {
-                    // set current sudo user
-                    $user = $_SERVER['SUDO_USER'];
-                }
                 // get defined group from configuration
                 $group = Setup::getValue(SetupKeys::GROUP);
                 // replace user in configuration file
@@ -334,7 +327,7 @@ class ContainerService extends AbstractFileOperationService
 
                 break;
             default:
-                throw new \Exception('No valid setup mode given');
+                throw new \Exception(sprintf('Invalid setup mode %s given', $newMode));
         }
 
         // check if user and group is set

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bootstrap xmlns="http://www.appserver.io/appserver"
-    defaultRunlevel="daemon">
+    defaultRunlevel="shutdown">
     <listeners>
         <listener event="enter.runlevel.shutdown" priority="0"
             type="AppserverIo\Appserver\Core\Listeners\LoadConfigurationListener" />
@@ -11,6 +11,6 @@
         <listener event="enter.runlevel.shutdown" priority="0"
             type="AppserverIo\Appserver\Core\Listeners\SwitchUmaskListener" />
         <listener event="enter.runlevel.shutdown" priority="0"
-            type="AppserverIo\Appserver\Core\Listeners\StartScannersListener"/>
+            type="AppserverIo\Appserver\Core\Listeners\SwitchSetupModeListener" />
     </listeners>
 </bootstrap>

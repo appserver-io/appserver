@@ -48,12 +48,16 @@ class LoadInitialContextListener extends AbstractSystemListener
 
         try {
             // load the application server and system configuration instance
+            /** @var \AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface $applicationServer */
             $applicationServer = $this->getApplicationServer();
+            /** @var \AppserverIo\Appserver\Core\Interfaces\SystemConfigurationInterface $systemConfiguration */
             $systemConfiguration = $applicationServer->getSystemConfiguration();
 
             // load the initial context configuration
+            /** @var \AppserverIo\Appserver\Core\Api\Node\InitialContextNode $initialContextNode */
             $initialContextNode = $systemConfiguration->getInitialContext();
             $reflectionClass = new \ReflectionClass($initialContextNode->getType());
+            /** @var \AppserverIo\Appserver\Application\Interfaces\ContextInterface $initialContext */
             $initialContext = $reflectionClass->newInstanceArgs(array($systemConfiguration));
 
             // attach the registered loggers to the initial context

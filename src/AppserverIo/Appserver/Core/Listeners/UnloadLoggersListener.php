@@ -49,6 +49,7 @@ class UnloadLoggersListener extends AbstractSystemListener
 
         try {
             // load the application server instance
+            /** @var \AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface $applicationServer */
             $applicationServer = $this->getApplicationServer();
 
             // unbind the loggers from the naming directory

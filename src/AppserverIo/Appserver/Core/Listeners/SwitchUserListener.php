@@ -49,6 +49,7 @@ class SwitchUserListener extends AbstractSystemListener
 
         try {
             // load the application server instance
+            /** @var \AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface $applicationServer */
             $applicationServer = $this->getApplicationServer();
 
             // write a log message that the event has been invoked
@@ -72,15 +73,24 @@ class SwitchUserListener extends AbstractSystemListener
             $uid = 0;
             extract(posix_getpwnam($applicationServer->getSystemConfiguration()->getUser()));
 
-            // switcht the effective UID to the passed user
+            // switch the effective UID to the passed user
             if (posix_seteuid($uid) === false) {
                 $applicationServer->getSystemLogger()->error(sprintf('Can\'t switch UID to \'%s\'', $uid));
             }
 
             // print a message with the new UID/EUID
-            $applicationServer->getSystemLogger()->info("Running as " . posix_getuid() . "/" . posix_geteuid());
+            $applicationServer->getSystemLogger()->info("Running as user " . posix_getuid() . "/" . posix_geteuid());
 
-            // @TODO Switch group also!!!! $applicationServer->getSystemConfiguration()->getGroup()
+            $gid = 0;
+            extract(posix_getpwnam($applicationServer->getSystemConfiguration()->getGroup()));
+
+            // switch the effective GID to the passed group
+            if (posix_setegid($gid) === false) {
+                $applicationServer->getSystemLogger()->error(sprintf('Can\'t switch GID to \'%s\'', $gid));
+            }
+
+            // print a message with the new GID/EGID
+            $applicationServer->getSystemLogger()->info("Running as group" . posix_getgid() . "/" . posix_getegid());
 
         } catch (\Exception $e) {
             $applicationServer->getSystemLogger()->error($e->__toString());

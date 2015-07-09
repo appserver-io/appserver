@@ -639,9 +639,12 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
      */
     protected function doSwitchSetupMode($newMode, $configurationFilename)
     {
+        // load the current user from the naming directory
+        $currentUser = $this->getNamingDirectory()->search('php:env/currentUser');
+
         // load the service instance and switch to the new setup mode
         /** @var \AppserverIo\Appserver\Core\Api\ContainerService $service */
         $service = $this->newService('AppserverIo\Appserver\Core\Api\ContainerService');
-        $service->switchSetupMode($newMode, $configurationFilename);
+        $service->switchSetupMode($newMode, $configurationFilename, $currentUser);
     }
 }

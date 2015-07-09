@@ -48,6 +48,7 @@ class StartScannersListener extends AbstractSystemListener
 
         try {
             // load the application server and the naming directory instance
+            /** @var \AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface $applicationServer */
             $applicationServer = $this->getApplicationServer();
 
             // write a log message that the event has been invoked
