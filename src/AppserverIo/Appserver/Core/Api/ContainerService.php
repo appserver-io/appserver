@@ -207,6 +207,10 @@ class ContainerService extends AbstractFileOperationService
         // load the directories
         $directories = $this->getDirectories();
 
+        // load user and group from system configuration
+        $user = $this->getSystemConfiguration()->getUser();
+        $group = $this->getSystemConfiguration()->getGroup();
+
         // check if the necessary directories already exists, if not, create them
         foreach (DirectoryKeys::getServerDirectoryKeysToBeCreated() as $directoryKey) {
             // prepare the path to the directory to be created
@@ -218,6 +222,13 @@ class ContainerService extends AbstractFileOperationService
                 if (mkdir($toBeCreated, 0755, true) === false) {
                     throw new \Exception(
                         sprintf('Can\'t create necessary directory %s while starting application server', $toBeCreated)
+                    );
+                }
+
+                // set user/group specified in the system configuration
+                if ($this->setUserRights(new \SplFileInfo($toBeCreated), $user, $group) === false) {
+                    throw new \Exception(
+                        sprintf('Can\'t switch user/group to %s/% for directory %s while starting application server', $user, $group, $toBeCreated)
                     );
                 }
             }
