@@ -2,7 +2,7 @@
 
 ## Bugfixes
 
-* None
+* Fixed [#853](https://github.com/appserver-io/appserver/issues/853) - /opt/appserver/tmp gets created as user root
 
 ## Features
 
