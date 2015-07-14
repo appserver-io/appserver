@@ -33,6 +33,20 @@ class FileSystem
 {
 
     /**
+     * OS identifier strings as returned by FileSystem::getOsIdentifier().
+     * There are a lot more possible values, but these are the most used ones
+     * @see http://stackoverflow.com/questions/738823/possible-values-for-php-os
+     * @see https://en.wikipedia.org/wiki/Uname#Table_of_standard_uname_output
+     *
+     * @var string OS_IDENTIFIER_LIN
+     * @var string OS_IDENTIFIER_DARWIN
+     * @var string OS_IDENTIFIER_WIN
+     */
+    const OS_IDENTIFIER_LINUX = 'LIN';
+    const OS_IDENTIFIER_DARWIN = 'DAR';
+    const OS_IDENTIFIER_WIN = 'WIN';
+
+    /**
      * Chmod function
      *
      * @param string $path Relative or absolute path to a file or directory which should be processed.
@@ -44,7 +58,7 @@ class FileSystem
     {
 
         // don't do anything under Windows
-        if (FileSystem::getOsIdentifier() === 'WIN') {
+        if (FileSystem::getOsIdentifier() === self::OS_IDENTIFIER_WIN) {
             return;
         }
 
@@ -65,7 +79,7 @@ class FileSystem
     {
 
         // don't do anything under Windows
-        if (FileSystem::getOsIdentifier() === 'WIN') {
+        if (FileSystem::getOsIdentifier() === self::OS_IDENTIFIER_WIN) {
             return;
         }
 
@@ -187,7 +201,7 @@ class FileSystem
     {
 
         // don't do anything under Windows
-        if (FileSystem::getOsIdentifier() === 'WIN') {
+        if (FileSystem::getOsIdentifier() === self::OS_IDENTIFIER_WIN) {
             return;
         }
 
@@ -248,7 +262,7 @@ class FileSystem
     {
 
         // we don't do anything under Windows
-        if (FileSystem::getOsIdentifier() === 'WIN') {
+        if (FileSystem::getOsIdentifier() === self::OS_IDENTIFIER_WIN) {
             return;
         }
 
@@ -298,7 +312,7 @@ class FileSystem
     {
 
         // don't do anything under Windows
-        if (FileSystem::getOsIdentifier() === 'WIN') {
+        if (FileSystem::getOsIdentifier() === self::OS_IDENTIFIER_WIN) {
             return;
         }
 
