@@ -74,16 +74,8 @@ class SwitchUserListener extends AbstractSystemListener
             $applicationServer->getSystemLogger()->info("Running as " . posix_getuid() . "/" . posix_geteuid());
 
             // extract the user and group name as variables
-            extract(posix_getpwnam($applicationServer->getSystemConfiguration()->getUser()));
             extract(posix_getgrnam($applicationServer->getSystemConfiguration()->getGroup()));
-
-            // switch the effective UID to the passed user
-            if (posix_seteuid($uid) === false) {
-                $applicationServer->getSystemLogger()->error(sprintf('Can\'t switch UID to \'%s\'', $uid));
-            }
-
-            // print a message with the new UID/EUID
-            $applicationServer->getSystemLogger()->info("Running as user " . posix_getuid() . "/" . posix_geteuid());
+            extract(posix_getpwnam($applicationServer->getSystemConfiguration()->getUser()));
 
             // switch the effective GID to the passed group
             if (posix_setegid($gid) === false) {
@@ -92,6 +84,14 @@ class SwitchUserListener extends AbstractSystemListener
 
             // print a message with the new GID/EGID
             $applicationServer->getSystemLogger()->info("Running as group" . posix_getgid() . "/" . posix_getegid());
+
+            // switch the effective UID to the passed user
+            if (posix_seteuid($uid) === false) {
+                $applicationServer->getSystemLogger()->error(sprintf('Can\'t switch UID to \'%s\'', $uid));
+            }
+
+            // print a message with the new UID/EUID
+            $applicationServer->getSystemLogger()->info("Running as user " . posix_getuid() . "/" . posix_geteuid());
 
         } catch (\Exception $e) {
             $applicationServer->getSystemLogger()->error($e->__toString());
