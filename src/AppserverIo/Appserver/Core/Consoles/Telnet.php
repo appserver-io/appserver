@@ -195,7 +195,14 @@ class Telnet extends \Thread implements ConsoleInterface
         // listen to the management socket
         $socket->listen($this->getPort(), $this->getAddress());
 
-        // start the event loop and the socket server
+        // start the event loop and the socket server, but disable warnings as some React warnings cannot (or won't) be dealt with.
+        // Specifically the warning if a client disconnects unexpectedly or does not even connect to begin with ("Interrupted system call") is unevitable
+        // @see https://github.com/reactphp/react/pull/297
+        // @see https://github.com/reactphp/react/issues/296
+        // @see http://php.net/manual/de/function.stream-select.php
+        $currentReportingLevel = error_reporting();
+        error_reporting(E_ALL ^ E_WARNING);
         $loop->run();
+        error_reporting($currentReportingLevel);
     }
 }
