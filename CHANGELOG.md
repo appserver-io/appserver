@@ -2,11 +2,19 @@
 
 ## Bugfixes
 
+* Fixed [#855](https://github.com/appserver-io/appserver/issues/855) - Call to a protected method errors due to context mismatch
+* Fixed [#854](https://github.com/appserver-io/appserver/issues/854) - Problems with systemctl enable/disable
 * Fixed [#853](https://github.com/appserver-io/appserver/issues/853) - /opt/appserver/tmp gets created as user root
+* Fixed [#847](https://github.com/appserver-io/appserver/issues/847) - Webserver based authentication is missing "realm"
+* Fixed [#829](https://github.com/appserver-io/appserver/issues/829) - Setup with parameter -s=dev set's invalid user on Mac OS X
+* Fixed [#828](https://github.com/appserver-io/appserver/issues/828) - Unknown application causes 500 instead of 404
+* Fixed [#824](https://github.com/appserver-io/appserver/issues/824) - Several comment blocks break docBlock assignment
+* Fixed [#815](https://github.com/appserver-io/appserver/issues/815) - Local processing does not support "none" value
 
 ## Features
 
 * Closed [#850](https://github.com/appserver-io/appserver/issues/850) - Datasource configuration lacks driver specific options
+* Closed [#849](https://github.com/appserver-io/appserver/issues/849) - Webapp based virtual host configuration
 
 # Version 1.1.0-beta4
 
