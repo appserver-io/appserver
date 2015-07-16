@@ -69,7 +69,7 @@ class StartContainersListener extends AbstractSystemListener
                 $container->start();
 
                 // wait until all servers has been bound to their ports and addresses
-                while($container->hasServersStarted() === false) {
+                while ($container->hasServersStarted() === false) {
                     // sleep to avoid cpu load
                     usleep(10000);
                 }

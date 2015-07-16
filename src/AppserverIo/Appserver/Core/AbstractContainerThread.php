@@ -458,10 +458,11 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
 
     /**
      * Returns boolean wheather the servers has been started yet or not
-     * 
+     *
      * @return boolean
      */
-    public function hasServersStarted() {
+    public function hasServersStarted()
+    {
         return $this->containerState->equals(ContainerStateKeys::get(ContainerStateKeys::SERVERS_STARTED_SUCCESSFUL));
     }
 
