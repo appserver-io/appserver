@@ -29,6 +29,7 @@ use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\Core\Interfaces\ContainerInterface;
 use AppserverIo\Appserver\Core\Utilities\ContainerStateKeys;
 use AppserverIo\Appserver\Core\Api\Node\ParamNode;
+use AppserverIo\Server\Dictionaries\ServerStateKeys;
 
 /**
  * Abstract container implementation.
@@ -70,6 +71,7 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
         $this->initialContext = $initialContext;
         $this->namingDirectory = $namingDirectory;
         $this->containerNode = $containerNode;
+        $this->containerState = ContainerStateKeys::get(ContainerStateKeys::WAITING_FOR_INITIALIZATION);
     }
 
     /**
@@ -194,23 +196,21 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
 
         // wait for all servers to be started
         $waitForServers = true;
-        while ($waitForServers) {
+        while ($waitForServers === true) {
             // iterate over all servers to check the state
             foreach ($servers as $server) {
-                if ($server->state === 0) {
-                    // if the server has not been started
-                    sleep(1);
-                    continue 2;
+                if ($server->serverState === ServerStateKeys::SERVER_SOCKET_STARTED) {
+                    $waitForServers = false;
+                } else {
+                    $waitForServers = true;
                 }
             }
-
-            // if all servers has been started, stop waiting
-            $waitForServers = false;
+            usleep(10000);
         }
 
         // the container has successfully been initialized
         $this->synchronized(function ($self) {
-            $self->containerState = ContainerStateKeys::get(ContainerStateKeys::INITIALIZATION_SUCCESSFUL);
+            $self->containerState = ContainerStateKeys::get(ContainerStateKeys::SERVERS_STARTED_SUCCESSFUL);
         }, $this);
 
         // initialize the flag to keep the application running
@@ -226,7 +226,7 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
             // wait a second to lower system load
             $keepRunning = $this->synchronized(function ($self) {
                 $self->wait(1000000 * AbstractContainerThread::TIME_TO_LIVE);
-                return $self->containerState->equals(ContainerStateKeys::get(ContainerStateKeys::INITIALIZATION_SUCCESSFUL));
+                return $self->containerState->equals(ContainerStateKeys::get(ContainerStateKeys::SERVERS_STARTED_SUCCESSFUL));
             }, $this);
         }
 
@@ -457,6 +457,15 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
     }
 
     /**
+     * Returns boolean wheather the servers has been started yet or not
+     * 
+     * @return boolean
+     */
+    public function hasServersStarted() {
+        return $this->containerState->equals(ContainerStateKeys::get(ContainerStateKeys::SERVERS_STARTED_SUCCESSFUL));
+    }
+
+    /**
      * Does shutdown logic for request handler if something went wrong and
      * produces a fatal error for example.
      *
@@ -464,7 +473,6 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
      */
     public function shutdown()
     {
-
         // check if there was a fatal error caused shutdown
         if ($lastError = error_get_last()) {
             // initialize type + message
