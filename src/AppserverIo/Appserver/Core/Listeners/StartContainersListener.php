@@ -45,7 +45,6 @@ class StartContainersListener extends AbstractSystemListener
      */
     public function handle(EventInterface $event)
     {
-
         try {
             // load the application server instance
             /** @var \AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface $applicationServer */
@@ -68,6 +67,12 @@ class StartContainersListener extends AbstractSystemListener
                 /** @var \AppserverIo\Appserver\Core\Interfaces\ContainerInterface $container */
                 $container = $containerFactory::factory($applicationServer, $containerNode);
                 $container->start();
+
+                // wait until all servers has been bound to their ports and addresses
+                while ($container->hasServersStarted() === false) {
+                    // sleep to avoid cpu load
+                    usleep(10000);
+                }
 
                 // register the container as service
                 $applicationServer->bindService(ApplicationServerInterface::NETWORK, $container);
