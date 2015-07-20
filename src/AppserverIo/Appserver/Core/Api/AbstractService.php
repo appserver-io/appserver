@@ -24,6 +24,7 @@ use AppserverIo\Appserver\Core\Interfaces\SystemConfigurationInterface;
 use AppserverIo\Configuration\Interfaces\NodeInterface;
 use AppserverIo\Appserver\Core\InitialContext;
 use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
+use AppserverIo\Appserver\Core\Utilities\FileKeys;
 use AppserverIo\Lang\NotImplementedException;
 use AppserverIo\Appserver\Core\Utilities\FileSystem;
 
@@ -180,6 +181,26 @@ abstract class AbstractService implements ServiceInterface
 
         // return the array with the directories
         return $directories;
+    }
+
+    /**
+     * Returns the files to be created at first start.
+     *
+     * @return array The files to be created if necessary
+     */
+    public function getFiles()
+    {
+
+        // initialize the array with the files
+        $files = array();
+
+        // iterate over the file keys and read the configuration values
+        foreach (FileKeys::getServerFileKeys() as $fileKey) {
+            $files[$fileKey] = $this->getSystemConfiguration()->getParam($fileKey);
+        }
+
+        // return the array with the files
+        return $files;
     }
 
     /**
