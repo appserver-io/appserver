@@ -340,7 +340,7 @@ class DgClassLoader extends \Stackable implements ClassLoaderInterface
         }
 
         // If we are loading something of our own library we can skip to composer
-        if (strpos($className, 'AppserverIo\Doppelgaenger') === 0 || strpos($className, 'PHP') === 0) {
+        if (strpos($className, 'AppserverIo\Doppelgaenger') === 0 || strpos($className, 'AppserverIo\Appserver\Core\StackableStructureMap') !== false) {
             return;
         }
 
