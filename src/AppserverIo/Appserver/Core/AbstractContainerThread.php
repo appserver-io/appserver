@@ -371,7 +371,14 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
      */
     public function getAppBase()
     {
-        return $this->getBaseDirectory($this->getContainerNode()->getHost()->getAppBase());
+        $appBase = $this->getContainerNode()->getHost()->getAppBase();
+        // check if appBase is absolute
+        if (strpos($appBase, '/', 0) === 0) {
+            // return absolute appBase
+            return $appBase;
+        }
+        // resolve relative appbase against base directory
+        return $this->getBaseDirectory($appBase);
     }
 
     /**
