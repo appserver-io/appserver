@@ -24,6 +24,7 @@ use AppserverIo\Appserver\Core\Utilities\FileSystem;
 use AppserverIo\Appserver\Meta\Composer\Script\Setup;
 use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
 use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
+use AppserverIo\Appserver\Core\Utilities\FileKeys;
 
 /**
  * A service that handles container configuration data.
@@ -225,7 +226,7 @@ class ContainerService extends AbstractFileOperationService
                     );
                 }
 
-                // set user/group specified in the system configuration
+                // set user/group specified from the system configuration
                 if ($this->setUserRights(new \SplFileInfo($toBeCreated), $user, $group) === false) {
                     throw new \Exception(
                         sprintf('Can\'t switch user/group to %s/% for directory %s while starting application server', $user, $group, $toBeCreated)
@@ -242,6 +243,29 @@ class ContainerService extends AbstractFileOperationService
             // if the directory exists, clean it up
             if (is_dir($toBeCleanedUp)) {
                 $this->cleanUpDir(new \SplFileInfo($toBeCleanedUp));
+            }
+        }
+
+        // check if needed files do exist and have the correct user rights
+        $files = $this->getFiles();
+        foreach (FileKeys::getServerFileKeysToBeCreated() as $fileKeys) {
+            // prepare the path to the file to be created
+            $toBeCreated = $this->realpath($files[$fileKeys]);
+
+            // touch the file (will lead to its creation if it does not exist by now)
+            if (touch($toBeCreated) === false) {
+                throw new \Exception(
+                    sprintf('Can\'t create necessary file %s while starting application server', $toBeCreated)
+                );
+            } else {
+                chmod($toBeCreated, 0755);
+            }
+
+            // set user/group specified from the system configuration
+            if ($this->setUserRight(new \SplFileInfo($toBeCreated), $user, $group) === false) {
+                throw new \Exception(
+                    sprintf('Can\'t switch user/group to %s/% for file %s while starting application server', $user, $group, $toBeCreated)
+                );
             }
         }
     }

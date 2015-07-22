@@ -23,6 +23,7 @@ namespace AppserverIo\Appserver\Core\Api\Node;
 use Psr\Log\LogLevel;
 use AppserverIo\Logger\LoggerUtils;
 use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
+use AppserverIo\Appserver\Core\Utilities\FileKeys;
 use AppserverIo\Appserver\Core\Interfaces\SystemConfigurationInterface;
 
 /**
@@ -107,6 +108,7 @@ class AppserverNode extends AbstractNode implements SystemConfigurationInterface
     {
         // initialize the default configuration
         $this->initDefaultDirectories();
+        $this->initDefaultFiles();
         $this->initDefaultLoggers();
         $this->initDefaultScanners();
         $this->initDefaultExtractors();
@@ -129,6 +131,18 @@ class AppserverNode extends AbstractNode implements SystemConfigurationInterface
         $this->setParam(DirectoryKeys::ETC, ParamNode::TYPE_STRING, '/etc');
         $this->setParam(DirectoryKeys::ETC_APPSERVER, ParamNode::TYPE_STRING, '/etc/appserver');
         $this->setParam(DirectoryKeys::ETC_APPSERVER_CONFD, ParamNode::TYPE_STRING, '/etc/appserver/conf.d');
+    }
+
+    /**
+     * Initialize the default files.
+     *
+     * @return void
+     */
+    public function initDefaultFiles()
+    {
+        $logDir = $this->getParam(DirectoryKeys::VAR_LOG) . DIRECTORY_SEPARATOR;
+        $this->setParam(FileKeys::APPSERVER_ERRORS_LOG, ParamNode::TYPE_STRING, $logDir . 'appserver-errors.log');
+        $this->setParam(FileKeys::APPSERVER_ACCESS_LOG, ParamNode::TYPE_STRING, $logDir . 'appserver-access.log');
     }
 
     /**

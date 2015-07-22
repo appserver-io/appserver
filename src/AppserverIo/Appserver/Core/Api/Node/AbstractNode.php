@@ -265,8 +265,11 @@ abstract class AbstractNode implements NodeInterface
         $nodeType = $mapping->getNodeType();
         $configurationNodeName = $this->getConfigurationNodeName($configuration, $mapping);
 
+        // get our valid simple node types
+        $simpleTypes = array_flip(array('string', 'integer', 'float', 'boolean', 'double', 'array'));
+
         // initialize a new value configuration node
-        if (class_exists($nodeType) && $this->isValueClass($nodeType)) {
+        if ((!isset($simpleTypes[$nodeType]) && class_exists($nodeType)) && $this->isValueClass($nodeType)) {
             // initialize the new node type
             /** @var \AppserverIo\Appserver\Core\Api\Node\AbstractNode $newNode */
             $newNode = new $nodeType();
@@ -276,7 +279,7 @@ abstract class AbstractNode implements NodeInterface
             return $this->{$reflectionProperty->getName()} = $newNode;
 
         // initialize a new configuration node from the found child data
-        } elseif (class_exists($nodeType)) {
+        } elseif (!isset($simpleTypes[$nodeType]) && class_exists($nodeType)) {
             // first we've to check if the child has data
             if ($child = $configuration->getChild($configurationNodeName)) {
                 // initialize the new node type
