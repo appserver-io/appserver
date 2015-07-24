@@ -121,12 +121,34 @@ class ObjectManager extends AbstractManager implements ObjectManagerInterface
         if ($this->hasObjectDescriptor($objectDescriptor->getClassName()) && $merge) {
             // load the existing descriptor
             $existingDescriptor = $this->getObjectDescriptor($objectDescriptor->getClassName());
+            $existingDescriptorType = get_class($existingDescriptor);
+            // log on info level to make overwriting more obvious
+            $this->getApplication()->getInitialContext()->getSystemLogger()->info(
+                sprintf(
+                    'Overwriting descriptor %s of webapp %s from XML configuration.',
+                    $existingDescriptor->getName(),
+                    $this->getApplication()->getName()
+                )
+            );
 
-            // merge the descriptor => XML configuration overrides values from annotation
-            $existingDescriptor->merge($objectDescriptor);
+            // Merge the descriptors. XML configuration overrides values from annotation but we have to make sure
+            // that the descriptors are of the same type. If not we have to take the XML descriptor as our new base descriptor
+            // and merge the annotations (but XML still has to be dominant)
+            $mergedDescriptor = null;
+            if (!$objectDescriptor instanceof $existingDescriptorType) {
+                // create a temporary clone of the object (XML) descriptor to merge the existing descriptor into an instance with the same type
+                $mergedDescriptor = clone $objectDescriptor;
+                $mergedDescriptor->merge($existingDescriptor);
+                $mergedDescriptor->merge($objectDescriptor);
+
+            } else {
+                // merge the object descriptor into the existing one
+                $mergedDescriptor = $existingDescriptor;
+                $mergedDescriptor->merge($objectDescriptor);
+            }
 
             // re-register the merged descriptor
-            $this->setObjectDescriptor($existingDescriptor);
+            $this->setObjectDescriptor($mergedDescriptor);
 
         } else {
             // register the object descriptor
