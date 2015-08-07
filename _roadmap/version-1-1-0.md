@@ -6,7 +6,8 @@ group: Roadmap
 permalink: /products/roadmap/version-1-1-0.html
 ---
 
-## Version 1.1.0 "Iron Knight"
+## Version 1.1.0 **Iron Knight**
+***
 * Update PHP to version 5.6
 * Upgrade to latest pthreads version
 * Integration STOMP protocol to send messages
