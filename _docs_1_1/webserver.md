@@ -438,6 +438,8 @@ Currently supported flags are:
 - *L* : As rules are normally processed one after the other, the `L` flag will make the flagged rule the last one processed
    if matched.
 
+- *NC* : Will force regex conditions to be tested case-insensitive.
+
 - *R* : If this flag is set, we redirect the client to the URL specified in the `target string`. If this is just a URI, we redirect to the same host.
     You might also specify a custom status code between 300 and 399 to indicate the reason for/ the kind of the redirect. Default is `301` aka `permanent`
 
