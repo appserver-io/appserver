@@ -14,7 +14,7 @@ author: all
 
 The roadmap only covers functionality of upcomming [CE](<{{ "/products/community-edition.html" | prepend: site.baseurl }}>) minor releases. If you wanna have more detailed information (including bugfix releases), please check the issue list of our public <a href="{{ site.github_repository }}"><i class="fa fa-github"></i> GitHub</a> repository.
 
-The next minor release 1.1.0 aka **Iron Knight** will probably released on **05/2015**. As we actually have no verified timetable for our [EE](<{{ "/products/enterprise-edition.html" | prepend: site.baseurl }}>), this date can change, due to customer needs for EE features.
+The next minor release 1.1.0 aka **Iron Knight** will probably be released on **08/2015**. As we actually have no verified timetable for our [EE](<{{ "/products/enterprise-edition.html" | prepend: site.baseurl }}>), this date can change, due to customer needs for EE features.
 
 ## Version 1.1.0 **Iron Knight**
 ***
