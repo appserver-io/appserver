@@ -55,7 +55,7 @@ use AppserverIo\Messaging\AbstractMessageListener;
 /**
  * @MessageDriven
  */
-class ImportReceiver extends AbstractReceiver
+class ImportReceiver extends AbstractMessageListener
 {
 
     /**
@@ -137,7 +137,7 @@ class HelloWorldServlet extends HttpServlet
   /**
    * The queue session to send a message with.
    *
-   * @var \AppserverIo\MessageQueueClient\QueueSession
+   * @var \AppserverIo\Messaging\QueueSession
    * @Resource(name="pms/import")
    */
   protected $queueSender;
