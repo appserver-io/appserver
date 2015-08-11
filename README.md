@@ -1193,7 +1193,7 @@ Beside AOP, [Design-by-Contract](http://en.wikipedia.org/wiki/Design_by_contract
 interesting approach we support out-of-the-box, when you think about the architecture of your
 software.
 
-First introduced by Bertram Meyer in connection with his design of the Eiffel programming language,
+First introduced by Bertrand Meyer in connection with his design of the Eiffel programming language,
 Design-by-Contract allows you to define formal, precise and verifiable interface specifications of
 software components.
 
