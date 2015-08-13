@@ -432,7 +432,7 @@ So `!^([0-9]+)` matches all strings, which do NOT begin with a number and `!-d` 
 Flags are used to further influence processing.
 You can specify as many flags per rewrite as you like, but be aware of their impact.
 Syntax for several flags is simple: just separate them with a `,` symbol.
-Flags, which might accept a parameter, can be assigned one by one using the `=` symbol.
+Flags, which might accept a parameter, can be assigned one by using the `=` symbol.
 Currently supported flags are:
 
 - *L* : As rules are normally processed one after the other, the `L` flag will make the flagged rule the last one processed
@@ -445,6 +445,8 @@ Currently supported flags are:
 
 - *M* : Stands for map. Using this flag, you can specify an external source (have a look at the Injector classes of the Webserver project) of a target map.
     With `M=<MY_BACKREFERENCE>` you specify what the map's index has to match to. This matching is done **only** if the rewrite condition matches and will behave like another condition.
+
+- *NC* : Stands for "no case". The given condition will be checked in a case insensitive manner
 
 ## VirtualHost Examples
 
