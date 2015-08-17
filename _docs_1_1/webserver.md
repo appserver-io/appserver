@@ -203,39 +203,6 @@ which has a different document root than the global configuration. The virtual h
 The `virtualHost` element can hold params, rewrite rules or environment variables which are only
 available for the specific host.
 
-## Environment Variables
-
-You can set environment variables using either the global or the virtual host based configuration.
-The example below shows the basic usage of environment variables in XML format.
-
-```xml
-<environmentVariables>
-  <environmentVariable
-    condition=""
-    definition="EXAMPLE_VAR=example" />
-  <environmentVariable
-    condition="Apple@$HTTP_USER_AGENT"
-    definition="USER_HAS_APPLE=true" />
-</environmentVariables>
-```
-
-There are several ways of using this feature. You can get a rough idea by having a
-look at Apache modules [mod_env](<http://httpd.apache.org/docs/2.2/mod/mod_env.html>) and
-[mod_setenvif](<http://httpd.apache.org/docs/2.2/mod/mod_setenvif.html>) which we adopted.
-
-You can make definitions of environment variables dependent on REGEX based conditions, which are performed on so called backreferences. These backreferences are request related server variables
-like `HTTP_USER_AGENT`.
-
-A condition has the format `<REGEX_CONDITION>@$<BACKREFERENCE>`. If the condition is empty the
-environment variable will be set every time.
-
-The definition is `<NAME_OF_VAR>=<THE_VALUE_TO_SET>`. It has
-the following conditions:
-
-- Setting a var to `null` will unset the variable if it existed before
-- You can use backreferences for the value you want to set as well. They are limited to
-  environment variables of the PHP process
-- Values will be treated as strings
 
 The following examples should help you to configure your legacy application with default settings usually
 provided with the applications .htaccess files.
@@ -318,6 +285,39 @@ provided with the applications .htaccess files.
 </virtualHost>
 ```
 
+## Environment Variables
+
+You can set environment variables using either the global or the virtual host based configuration.
+The example below shows the basic usage of environment variables in XML format.
+
+```xml
+<environmentVariables>
+  <environmentVariable
+    condition=""
+    definition="EXAMPLE_VAR=example" />
+  <environmentVariable
+    condition="Apple@$HTTP_USER_AGENT"
+    definition="USER_HAS_APPLE=true" />
+</environmentVariables>
+```
+
+There are several ways of using this feature. You can get a rough idea by having a
+look at Apache modules [mod_env](<http://httpd.apache.org/docs/2.2/mod/mod_env.html>) and
+[mod_setenvif](<http://httpd.apache.org/docs/2.2/mod/mod_setenvif.html>) which we adopted.
+
+You can make definitions of environment variables dependent on REGEX based conditions, which are performed on so called backreferences. These backreferences are request related server variables
+like `HTTP_USER_AGENT`.
+
+A condition has the format `<REGEX_CONDITION>@$<BACKREFERENCE>`. If the condition is empty the
+environment variable will be set every time.
+
+The definition is `<NAME_OF_VAR>=<THE_VALUE_TO_SET>`. It has
+the following conditions:
+
+- Setting a var to `null` will unset the variable if it existed before
+- You can use backreferences for the value you want to set as well. They are limited to
+  environment variables of the PHP process
+- Values will be treated as strings
 
 ## Authentications
 
