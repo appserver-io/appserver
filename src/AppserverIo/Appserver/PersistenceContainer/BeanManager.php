@@ -37,6 +37,7 @@ use AppserverIo\Psr\EnterpriseBeans\Description\SingletonSessionBeanDescriptorIn
 use AppserverIo\Psr\EnterpriseBeans\Description\StatefulSessionBeanDescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\StatelessSessionBeanDescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\MessageDrivenBeanDescriptorInterface;
+use AppserverIo\Appserver\PersistenceContainer\Utils\SessionBeanUtil;
 
 /**
  * The bean manager handles the message and session beans registered for the application.
@@ -90,7 +91,7 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface
      *
      * @return void
      */
-    public function injectStatefulSessionBeans(StorageInterface $statefulSessionBeans)
+    public function injectStatefulSessionBeans($statefulSessionBeans)
     {
         $this->statefulSessionBeans = $statefulSessionBeans;
     }
@@ -415,14 +416,15 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface
     public function lookupStatefulSessionBean($sessionId, $className)
     {
 
-        // check if the session has already been initialized
-        if ($this->getStatefulSessionBeans()->has($sessionId) === false) {
-            return;
-        }
+        // create a unique SFSB identifier
+        $identifier = SessionBeanUtil::createIdentifier($sessionId, $className);
 
-        // check if the stateful session bean has already been initialized
-        if ($this->getStatefulSessionBeans()->get($sessionId)->exists($className) === true) {
-            return $this->getStatefulSessionBeans()->get($sessionId)->get($className);
+        // load the map with the SFSBs
+        $sessionBeans = $this->getStatefulSessionBeans();
+
+        // if the SFSB exists, return it
+        if ($sessionBeans->exists($identifier)) {
+            return $sessionBeans->get($identifier);
         }
     }
 
@@ -438,23 +440,12 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface
     public function removeStatefulSessionBean($sessionId, $className)
     {
 
-        // check if the session has already been initialized
-        if ($this->getStatefulSessionBeans()->has($sessionId) === false) {
-            return;
-        }
+        // create a unique SFSB identifier
+        $identifier = SessionBeanUtil::createIdentifier($sessionId, $className);
 
-        // check if the stateful session bean has already been initialized
-        if ($this->getStatefulSessionBeans()->get($sessionId)->exists($className) === true) {
-            // remove the stateful session bean from the sessions
-            $sessions = $this->getStatefulSessionBeans()->get($sessionId);
-
-            // remove the instance from the sessions
-            $sessions->remove($className, array($this, 'destroyBeanInstance'));
-
-            // check if we've to remove the SFB map
-            if ($sessions->size() === 0) {
-                $this->getStatefulSessionBeans()->remove($sessionId);
-            }
+        // query whether the SFSB with the passed identifier exists
+        if ($sessionBeans->exists($identifier)) {
+            $sessionBeans->remove($identifier, array($this, 'destroyBeanInstance'));
         }
     }
 
@@ -530,6 +521,7 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface
 
         // query if we've stateful session bean
         if ($descriptor instanceof StatefulSessionBeanDescriptorInterface) {
+
             // check if we've a session-ID available
             if ($sessionId == null) {
                 throw new \Exception('Can\'t find a session-ID to attach stateful session bean');
@@ -538,22 +530,24 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface
             // load the lifetime from the session bean settings
             $lifetime = $this->getStatefulSessionBeanSettings()->getLifetime();
 
-            // initialize the map for the stateful session beans
-            if ($this->getStatefulSessionBeans()->has($sessionId) === false) {
-                // create a new session bean map instance
-                $this->getStatefulSessionBeanMapFactory()->newInstance($sessionId);
-            }
-
-            // load the session bean map instance
-            $sessions = $this->getStatefulSessionBeans()->get($sessionId);
-
             // we've to check for pre-attach callbacks
             foreach ($descriptor->getPreAttachCallbacks() as $preAttachCallback) {
                 $instance->$preAttachCallback();
             }
 
+            // create a unique SFSB identifier
+            $identifier = SessionBeanUtil::createIdentifier($sessionId, $descriptor->getClassName());
+
+            // load the map with the SFSBs
+            $sessionBeans = $this->getStatefulSessionBeans();
+
+            // query whether the SFSB already exists, if yes remove it
+            if ($sessionBeans->exists($identifier)) {
+                $sessionBeans->remove($identifier);
+            }
+
             // add the stateful session bean to the map
-            $sessions->add($descriptor->getClassName(), $instance, $lifetime);
+            $sessionBeans->add($identifier, $instance, $lifetime);
 
             // stop processing here
             return;
@@ -599,7 +593,6 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface
     public function stop()
     {
         $this->getGarbageCollector()->stop();
-        $this->getStatefulSessionBeanMapFactory()->stop();
         $this->getObjectFactory()->stop();
     }
 }

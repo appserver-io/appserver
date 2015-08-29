@@ -133,8 +133,7 @@ foreach (ApplicationServer::$runlevels as $runlevel) {
 }
 
 // initialize and start the application server
-$applicationServer = new ApplicationServer($namingDirectory, $runlevels);
-$applicationServer->start();
+$applicationServer = ApplicationServer::singleton($namingDirectory, $runlevels);
 
 // we've to wait for shutdown
 while ($applicationServer->keepRunning()) {

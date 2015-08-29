@@ -92,6 +92,10 @@ class RequestHandler extends \Thread
     {
 
         try {
+
+            // enable garbage collection
+            gc_enable();
+
             // register the default autoloader
             require SERVER_AUTOLOADER;
 

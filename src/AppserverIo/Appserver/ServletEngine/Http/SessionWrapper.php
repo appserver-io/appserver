@@ -22,8 +22,8 @@ namespace AppserverIo\Appserver\ServletEngine\Http;
 
 use AppserverIo\Http\HttpCookie;
 use AppserverIo\Psr\Servlet\SessionUtils;
-use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
 use AppserverIo\Psr\Servlet\Http\HttpSessionWrapper;
+use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
 
 /**
  * A wrapper to simplify session handling.
