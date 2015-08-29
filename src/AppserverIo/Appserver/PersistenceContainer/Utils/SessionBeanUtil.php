@@ -48,6 +48,6 @@ class SessionBeanUtil
      */
     public static function createIdentifier($sessionId, $className)
     {
-        return sprintf('%s%s%s', SessionBeanUtil::$tie, $sessionId, $className);
+        return sprintf('%s%s%s', $sessionId, SessionBeanUtil::$tie, $className);
     }
 }
