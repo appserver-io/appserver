@@ -1,4 +1,5 @@
 <?php
+
 /**
  * \AppserverIo\Appserver\PersistenceContainer\Utils\SessionBeanUtil
  *
@@ -36,7 +37,7 @@ class SessionBeanUtil
      *
      * @var string
      */
-    protected static $tie = '_';
+    protected static $tie = '\\';
 
     /**
      * Creates a unqiue identifier for the passed session-ID and class name
