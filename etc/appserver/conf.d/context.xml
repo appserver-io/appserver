@@ -54,10 +54,10 @@
         <manager name="ProviderInterface" type="AppserverIo\Appserver\DependencyInjectionContainer\Provider" factory="AppserverIo\Appserver\DependencyInjectionContainer\ProviderFactory"/>
         <manager name="PersistenceContextInterface" type="AppserverIo\Appserver\PersistenceContainer\PersistenceManager" factory="AppserverIo\Appserver\PersistenceContainer\PersistenceManagerFactory"/>
         <manager name="BeanContextInterface" type="AppserverIo\Appserver\PersistenceContainer\BeanManager" factory="AppserverIo\Appserver\PersistenceContainer\BeanManagerFactory">
-            <params>
-                <param name="lifetime" type="integer">10</param>
-                <param name="garbageCollectionProbability" type="float">0.5</param>
-            </params>
+            <!-- params>
+                <param name="lifetime" type="integer">1440</param>
+                <param name="garbageCollectionProbability" type="float">0.1</param>
+            </params -->
             <directories>
                 <directory>/META-INF/classes</directory>
             </directories>

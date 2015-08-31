@@ -70,6 +70,9 @@ class StandardGarbageCollector extends AbstractDaemonThread
         // setup autoloader
         require SERVER_AUTOLOADER;
 
+        // enable garbage collection
+        gc_enable();
+
         // synchronize the application instance and register the class loaders
         $application = $this->getApplication();
         $application->registerClassLoaders();
