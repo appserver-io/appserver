@@ -102,7 +102,7 @@ class StandardGarbageCollector extends AbstractDaemonThread
      *
      * @return void
      */
-    protected function collectGarbage()
+    public function collectGarbage()
     {
 
         // we need the bean manager that handles all the beans
@@ -126,11 +126,9 @@ class StandardGarbageCollector extends AbstractDaemonThread
                 $this->getApplication()
                      ->getNamingDirectory()
                      ->search('php:global/log/System')
-                     ->info(sprintf('Successfully removed SFSB %s', $identifier));
+                     ->debug(sprintf('Successfully removed SFSB %s', $identifier));
                 // reduce CPU load
                 usleep(1000);
-                // collect garbage
-                gc_collect_cycles();
             }
         }
 
