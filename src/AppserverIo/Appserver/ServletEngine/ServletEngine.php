@@ -152,6 +152,9 @@ class ServletEngine extends AbstractServletEngine
         // copy values to the HTTP response
         $requestHandler->copyToHttpResponse($response);
 
+        // explicitly shutdown the request handler thread
+        $requestHandler->shutdown();
+
         // set response state to be dispatched after this without calling other modules process
         $response->setState(HttpResponseStates::DISPATCH);
     }
