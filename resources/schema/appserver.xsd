@@ -596,6 +596,23 @@
             </xs:simpleContent>
         </xs:complexType>
     </xs:element>
+    <xs:element name="ignoredAnnotations">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="appserver:ignoredAnnotation"/>
+            </xs:choice>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="ignoredAnnotation">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
     <xs:element name="display-name">
         <xs:complexType>
             <xs:simpleContent>
@@ -1770,6 +1787,7 @@
                 <xs:element ref="appserver:datasource"/>
                 <xs:element ref="appserver:metadataConfiguration" minOccurs="0"/>
                 <xs:element ref="appserver:annotationRegistries" minOccurs="0"/>
+                <xs:element ref="appserver:ignoredAnnotations" minOccurs="0"/>
             </xs:all>
             <xs:attribute name="name" type="xs:string" use="required"/>
             <xs:attribute name="interface" type="xs:string" use="required"/>
