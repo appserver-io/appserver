@@ -146,7 +146,7 @@ class ServletEngine extends AbstractServletEngine
         $requestHandler->injectValves($valves);
         $requestHandler->injectApplication($application);
         $requestHandler->injectRequest($servletRequest);
-        $requestHandler->start(PTHREADS_INHERIT_NONE|PTHREADS_INHERIT_CONSTANTS);
+        $requestHandler->start();
         $requestHandler->join();
 
         // copy values to the HTTP response
