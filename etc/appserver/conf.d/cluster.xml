@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<cluster>
-    <buddies>
-        <buddy name="test">
-            <params name="address" type="string">127.0.0.1</params>
-            <params name="port" type="integer">8585</params>
-        </buddy>
-    </buddies>
-</cluster>
