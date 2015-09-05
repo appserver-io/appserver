@@ -92,7 +92,6 @@ class RequestHandler extends \Thread
     {
 
         try {
-
             // register the default autoloader
             require SERVER_AUTOLOADER;
 

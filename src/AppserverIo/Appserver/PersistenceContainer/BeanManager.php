@@ -521,7 +521,6 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface
 
         // query if we've stateful session bean
         if ($descriptor instanceof StatefulSessionBeanDescriptorInterface) {
-
             // check if we've a session-ID available
             if ($sessionId == null) {
                 throw new \Exception('Can\'t find a session-ID to attach stateful session bean');
