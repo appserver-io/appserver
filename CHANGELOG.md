@@ -2,7 +2,7 @@
 
 ## Bugfixes
 
-* None
+* Refactoring SFSB management implementation to solve memory leak
 
 ## Features
 
