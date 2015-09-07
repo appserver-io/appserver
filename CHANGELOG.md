@@ -15,6 +15,7 @@
 
 * Closed [#850](https://github.com/appserver-io/appserver/issues/850) - Datasource configuration lacks driver specific options
 * Closed [#849](https://github.com/appserver-io/appserver/issues/849) - Webapp based virtual host configuration
+* Closed [#898](https://github.com/appserver-io/appserver/issues/898) - Ignore annotations within persistence unit config
 
 # Version 1.1.0-beta4
 
