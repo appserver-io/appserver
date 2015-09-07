@@ -70,6 +70,9 @@ class StandardGarbageCollector extends AbstractDaemonThread
         // setup autoloader
         require SERVER_AUTOLOADER;
 
+        // enable garbage collection
+        gc_enable();
+
         // synchronize the application instance and register the class loaders
         $application = $this->getApplication();
         $application->registerClassLoaders();
@@ -102,7 +105,7 @@ class StandardGarbageCollector extends AbstractDaemonThread
      *
      * @return void
      */
-    protected function collectGarbage()
+    public function collectGarbage()
     {
 
         // we need the bean manager that handles all the beans
@@ -113,20 +116,22 @@ class StandardGarbageCollector extends AbstractDaemonThread
         /** @var \AppserverIo\Storage\StorageInterface $statefulSessionBeans */
         $statefulSessionBeans = $beanManager->getStatefulSessionBeans();
 
-        // iterate over the applications sessions with stateful session beans
-        foreach ($statefulSessionBeans as $sessionId => $sessions) {
-            // query if we've a map with stateful session beans
-            if ($sessions instanceof StatefulSessionBeanMap) {
-                // initialize the timestamp with the actual time
-                $actualTime = time();
+        // initialize the timestamp with the actual time
+        $actualTime = time();
 
-                // check the lifetime of the stateful session beans
-                foreach ($sessions->getLifetime() as $className => $lifetime) {
-                    if ($lifetime < $actualTime) {
-                        // if the stateful session bean has timed out, remove it
-                        $beanManager->removeStatefulSessionBean($sessionId, $className);
-                    }
-                }
+        // iterate over the applications sessions with stateful session beans
+        foreach ($statefulSessionBeans->getLifetime() as $identifier => $lifetime) {
+            // check the lifetime of the stateful session beans
+            if ($lifetime < $actualTime) {
+                // if the stateful session bean has timed out, remove it
+                $statefulSessionBeans->remove($identifier, array($beanManager, 'destroyBeanInstance'));
+                // write a log message
+                $this->getApplication()
+                     ->getNamingDirectory()
+                     ->search('php:global/log/System')
+                     ->debug(sprintf('Successfully removed SFSB %s', $identifier));
+                // reduce CPU load
+                usleep(1000);
             }
         }
 

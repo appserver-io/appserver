@@ -26,7 +26,6 @@ use AppserverIo\Storage\StackableStorage;
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\Core\Api\Node\ManagerNodeInterface;
-
 use AppserverIo\Psr\Naming\InitialContext as NamingContext;
 
 /**
@@ -66,17 +65,12 @@ class BeanManagerFactory implements ManagerFactoryInterface
         // initialize the stackable for the data, the stateful + singleton session beans and the naming directory
         $data = new StackableStorage();
         $instances = new GenericStackable();
-        $statefulSessionBeans = new StackableStorage();
         $singletonSessionBeans = new StackableStorage();
+        $statefulSessionBeans = new StatefulSessionBeanMap();
 
         // initialize the default settings for the stateful session beans
         $statefulSessionBeanSettings = new DefaultStatefulSessionBeanSettings();
         $statefulSessionBeanSettings->mergeWithParams($managerConfiguration->getParamsAsArray());
-
-        // we need a factory instance for the stateful session bean instances
-        $statefulSessionBeanMapFactory = new StatefulSessionBeanMapFactory($statefulSessionBeans);
-        $statefulSessionBeanMapFactory->injectLoggers($loggers);
-        $statefulSessionBeanMapFactory->start();
 
         // create an instance of the object factory
         $objectFactory = new GenericObjectFactory();
@@ -101,7 +95,6 @@ class BeanManagerFactory implements ManagerFactoryInterface
         $beanManager->injectSingletonSessionBeans($singletonSessionBeans);
         $beanManager->injectDirectories($managerConfiguration->getDirectories());
         $beanManager->injectStatefulSessionBeanSettings($statefulSessionBeanSettings);
-        $beanManager->injectStatefulSessionBeanMapFactory($statefulSessionBeanMapFactory);
 
         // attach the instance
         $application->addManager($beanManager, $managerConfiguration);

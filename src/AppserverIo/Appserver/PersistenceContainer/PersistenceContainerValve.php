@@ -24,6 +24,7 @@ use AppserverIo\Appserver\ServletEngine\ValveInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
 use AppserverIo\RemoteMethodInvocation\RemoteMethodProtocol;
+use AppserverIo\RemoteMethodInvocation\RemoteExceptionWrapper;
 
 /**
  * Valve implementation that will be executed by the servlet engine to handle
@@ -65,7 +66,6 @@ class PersistenceContainerValve implements ValveInterface
             $sessionId = $remoteMethod->getSessionId();
 
             // load the bean manager and the bean instance
-            $beanManager = $application->search('BeanContextInterface');
             $instance = $application->search($className, array($sessionId, array($application)));
 
             // invoke the remote method call on the local instance
@@ -74,12 +74,14 @@ class PersistenceContainerValve implements ValveInterface
             // serialize the remote method and write it to the socket
             $servletResponse->appendBodyStream(RemoteMethodProtocol::pack($response));
 
-            // reattach the bean instance in the container and unlock it
-            $beanManager->attach($instance, $sessionId);
+            // re-attach the bean instance in the container and unlock it
+            $application->search('BeanContextInterface')->attach($instance, $sessionId);
 
         } catch (\Exception $e) {
             // catch the exception and append it to the body stream
-            $servletResponse->appendBodyStream(RemoteMethodProtocol::pack($e));
+            $servletResponse->appendBodyStream(
+                RemoteMethodProtocol::pack(RemoteExceptionWrapper::factory($e))
+            );
         }
 
         // finally dispatch this request, because we have finished processing it

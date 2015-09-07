@@ -62,12 +62,19 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
     );
 
     /**
+     * The application server instance itself.
+     *
+     * @var \AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface
+     */
+    protected static $instance;
+
+    /**
      * Initialize and start the application server.
      *
      * @param \AppserverIo\Psr\Naming\NamingDirectoryInterface $configurationFilename The default naming directory
      * @param \AppserverIo\Storage\GenericStackable            $runlevels             The storage for the services
      */
-    public function __construct($namingDirectory, GenericStackable $runlevels)
+    protected function __construct(NamingDirectoryInterface $namingDirectory, GenericStackable $runlevels)
     {
 
         // set the services and the naming directory
@@ -83,6 +90,29 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
         // initialize command/params
         $this->command = null;
         $this->params = null;
+    }
+
+    /**
+     * Creates a new singleton application server instance.
+     *
+     * @param \AppserverIo\Psr\Naming\NamingDirectoryInterface $configurationFilename The default naming directory
+     * @param \AppserverIo\Storage\GenericStackable            $runlevels             The storage for the services
+     *
+     * @return \AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface The singleton application instance
+     */
+    public static function singleton(NamingDirectoryInterface $namingDirectory, GenericStackable $runlevels)
+    {
+
+        // query whether we already have an instance or not
+        if (ApplicationServer::$instance == null) {
+
+            // initialize and start the application server
+            ApplicationServer::$instance = new ApplicationServer($namingDirectory, $runlevels);
+            ApplicationServer::$instance->start();
+        }
+
+        // return the instance
+        return ApplicationServer::$instance;
     }
 
     /**
