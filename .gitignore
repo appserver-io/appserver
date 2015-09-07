@@ -21,6 +21,7 @@
 /bin
 /sbin
 /etc/appserver/appserver.xml
+/etc/appserver/appserver-failover.xml
 /etc/appserver/server.pem
 /var/tmp/example
 /var/tmp/proffile

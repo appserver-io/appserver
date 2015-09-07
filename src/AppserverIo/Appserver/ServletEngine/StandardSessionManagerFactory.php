@@ -87,10 +87,10 @@ class StandardSessionManagerFactory implements ManagerFactoryInterface
         // and finally we need the session manager instance
         $sessionManager = new StandardSessionManager();
         $sessionManager->injectSessions($sessions);
-        $sessionManager->injectSessionSettings($sessionSettings);
         $sessionManager->injectSessionFactory($sessionFactory);
-        $sessionManager->injectPersistenceManager($persistenceManager);
+        $sessionManager->injectSessionSettings($sessionSettings);
         $sessionManager->injectGarbageCollector($garbageCollector);
+        $sessionManager->injectPersistenceManager($persistenceManager);
 
         // attach the instance
         $application->addManager($sessionManager, $managerConfiguration);

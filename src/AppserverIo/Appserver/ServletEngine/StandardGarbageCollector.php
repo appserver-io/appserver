@@ -179,7 +179,7 @@ class StandardGarbageCollector extends AbstractDaemonThread implements GarbageCo
      *
      * @return string The default path to persist session
      */
-    private function getSessionSavePath($toAppend = null)
+    public function getSessionSavePath($toAppend = null)
     {
         // load the default path
         $sessionSavePath = $this->getSessionSettings()->getSessionSavePath();
@@ -198,7 +198,7 @@ class StandardGarbageCollector extends AbstractDaemonThread implements GarbageCo
      *
      * @return integer The number of expired and removed sessions
      */
-    protected function collectGarbage()
+    public function collectGarbage()
     {
 
         // counter to store the number of removed sessions
@@ -259,6 +259,8 @@ class StandardGarbageCollector extends AbstractDaemonThread implements GarbageCo
                             $sessionRemovalCount++;
                         }
                     }
+                    // reduce CPU load
+                    usleep(1000);
                 }
             }
         }
