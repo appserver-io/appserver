@@ -26,6 +26,7 @@ use Doctrine\ORM\Tools\Setup;
 use Doctrine\ORM\EntityManager;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use Doctrine\Common\Annotations\AnnotationRegistry;
+use Doctrine\Common\Annotations\AnnotationReader;
 use AppserverIo\Appserver\Core\Api\Node\MetadataConfigurationNode;
 use AppserverIo\Appserver\Core\Api\Node\PersistenceUnitNodeInterface;
 
@@ -69,6 +70,11 @@ class EntityManagerFactory
                 $annotationRegistry->getNamespace(),
                 $annotationRegistry->getDirectoriesAsArray($application->getWebappPath())
             );
+        }
+
+        // globally ignore configured annotations to ignore
+        foreach ($persistenceUnitNode->getIgnoredAnnotations() as $ignoredAnnotation) {
+            AnnotationReader::addGlobalIgnoredName($ignoredAnnotation->getNodeValue()->__toString());
         }
 
         // load the metadata configuration

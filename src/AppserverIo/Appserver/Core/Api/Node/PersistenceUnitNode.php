@@ -12,6 +12,7 @@
  * PHP version 5
  *
  * @author    Tim Wagner <tw@appserver.io>
+ * @author    Bernhard Wick <bw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
@@ -24,6 +25,7 @@ namespace AppserverIo\Appserver\Core\Api\Node;
  * DTO to transfer a applications persistence unit configuration.
  *
  * @author    Tim Wagner <tw@appserver.io>
+ * @author    Bernhard Wick <bw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
@@ -52,6 +54,13 @@ class PersistenceUnitNode extends AbstractNode implements PersistenceUnitNodeInt
      * @var \AppserverIo\Appserver\Core\Api\Node\AnnotationRegistriesNodeTrait
      */
     use AnnotationRegistriesNodeTrait;
+
+    /**
+     * A ignored annotations node trait.
+     *
+     * @var \AppserverIo\Appserver\Core\Api\Node\IgnoredAnnotationsNodeTrait
+     */
+    use IgnoredAnnotationsNodeTrait;
 
     /**
      * The interface name the class loader has.
