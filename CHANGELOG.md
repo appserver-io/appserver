@@ -6,6 +6,7 @@
 
 ## Features
 
+* Closed [#901](https://github.com/appserver-io/appserver/issues/901) - Allow re-attaching of SFSBs to current user sessions
 * Closed [#898](https://github.com/appserver-io/appserver/issues/898) - Ignore annotations within persistence unit config
 
 # Version 1.1.0-beta5

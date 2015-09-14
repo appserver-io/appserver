@@ -21,13 +21,13 @@
 namespace AppserverIo\Appserver\ServletEngine;
 
 use AppserverIo\Logger\LoggerUtils;
-use AppserverIo\Appserver\ServletEngine\Http\Response;
+use AppserverIo\Server\Exceptions\ModuleException;
 use AppserverIo\Psr\HttpMessage\ResponseInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
+use AppserverIo\Appserver\ServletEngine\Http\Response;
 use AppserverIo\Psr\Servlet\ServletException;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
-use AppserverIo\Server\Exceptions\ModuleException;
 
 /**
  * This is a request handler that is necessary to process each request of an
@@ -46,6 +46,20 @@ use AppserverIo\Server\Exceptions\ModuleException;
  */
 class RequestHandler extends \Thread
 {
+
+    /**
+     * The prepared application context.
+     *
+     * @var \AppserverIo\Psr\Application\ApplicationInterface
+     */
+    public static $applicationContext;
+
+    /**
+     * The prepared request context.
+     *
+     * @var \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface
+     */
+    public static $requestContext;
 
     /**
      * Injects the valves to be processed.
@@ -125,6 +139,10 @@ class RequestHandler extends \Thread
 
             // prepare the request instance
             $servletRequest->prepare();
+
+            // initialize static request and application context
+            RequestHandler::$requestContext = $servletRequest;
+            RequestHandler::$applicationContext = $application;
 
             // process the valves
             foreach ($valves as $valve) {
@@ -218,5 +236,27 @@ class RequestHandler extends \Thread
                 $this->exception = new ServletException($message, 500);
             }
         }
+    }
+
+    /**
+     * Returns the actual servlet request instance that has been prepared to
+     * handle the actual request and represents the context of this request.
+     *
+     * @return \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface The prepared request context
+     */
+    public static function getRequestContext()
+    {
+        return RequestHandler::$requestContext;
+    }
+
+    /**
+     * Returns the actual application instance thatrepresents the application
+     * context of this request.
+     *
+     * @return \AppserverIo\Psr\Application\ApplicationInterface The actual application context
+     */
+    public static function getApplicationContext()
+    {
+        return RequestHandler::$applicationContext;
     }
 }
