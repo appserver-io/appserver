@@ -228,12 +228,17 @@ class RequestHandler extends \Thread
         if ($lastError = error_get_last()) {
             // initialize type + message
             $type = 0;
+            $line = 0;
             $message = '';
+            $file = '';
             // extract the last error values
             extract($lastError);
             // query whether we've a fatal/user error
             if ($type === E_ERROR || $type === E_USER_ERROR) {
-                $this->exception = new ServletException($message, 500);
+                $this->exception = new ServletException(
+                    sprintf("PHP Fatal error: %s in %s on line %d", $message, $file, $line),
+                    500
+                );
             }
         }
     }

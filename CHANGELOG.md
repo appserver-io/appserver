@@ -1,3 +1,13 @@
+# Version 1.1.0-beta7
+
+## Bugfixes
+
+* Extend exception message when catching fatal errors in RequestHandler
+
+## Features
+
+* None
+
 # Version 1.1.0-beta6
 
 ## Bugfixes
