@@ -671,7 +671,7 @@ it.
 
 ## @Stateful SessionBean
 
-The @Stateful SessionBean is a comprimise between the two other types. It is stateful for the session
+The @Stateful SessionBean is a compromise between the two other types. It is stateful for the session
 with the ID you pass to the client, when you request the instance. A stateful SessionBean is
 useful, for instance, if you want to implement something like a shopping cart. If you declare the shopping cart
 instance, a class member of your SessionBean makes it persistent for your session lifetime.
