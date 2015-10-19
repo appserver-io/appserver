@@ -179,7 +179,7 @@ class DeploymentService extends AbstractFileOperationService
         $configurationService = $this->newService('AppserverIo\Appserver\Core\Api\ConfigurationService');
 
         /** @var AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNodeInstance */
-        foreach ($systemConfiguration->getContainers() as $containerName => $containerNodeInstance) {
+        foreach ($systemConfiguration->getContainers() as $containerNodeInstance) {
             // load the containers application base directory
             $containerAppBase = $this->getBaseDirectory($containerNodeInstance->getHost()->getAppBase());
 
@@ -212,7 +212,7 @@ class DeploymentService extends AbstractFileOperationService
 
                         // additionally log a message that server configuration will be missing
                         $systemLogger->critical(
-                            sprintf('Will skip app specific server configuration file %s, configuration might be faulty.', $serverConfigurationFile)
+                            sprintf('Will skip app specific server configuration file %s, configuration might be faulty.', $containersConfigurationFile)
                         );
                     }
                 }

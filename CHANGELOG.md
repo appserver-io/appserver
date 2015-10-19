@@ -6,7 +6,8 @@
 
 ## Features
 
-* None
+* Allow application configuration by default
+* Default virtual host now points to application server's root directory
 
 # Version 1.1.0-beta6
 
