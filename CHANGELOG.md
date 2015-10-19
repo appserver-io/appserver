@@ -1,3 +1,14 @@
+# Version 1.1.0-beta7
+
+## Bugfixes
+
+* Extend exception message when catching fatal errors in RequestHandler
+
+## Features
+
+* Allow application configuration by default
+* Default virtual host now points to application server's root directory
+
 # Version 1.1.0-beta6
 
 ## Bugfixes

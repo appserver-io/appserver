@@ -6,10 +6,10 @@
  ! http://appserver.io/get-started/documentation/webserver.html#virtualhost-examples
  -->
 <virtualHosts xmlns="http://www.appserver.io/appserver">
-    <virtualHost name="example.local www.example.local">
+    <virtualHost name="appserver.local www.appserver.local">
         <params>
             <param name="admin" type="string">info@appserver.io</param>
-            <param name="documentRoot" type="string">webapps/example</param>
+            <param name="documentRoot" type="string">webapps</param>
         </params>
         <rewrites>
             <rewrite condition="-d{OR}-f{OR}-l" target="" flag="L" />
