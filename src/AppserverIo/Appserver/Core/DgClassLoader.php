@@ -20,13 +20,12 @@
 
 namespace AppserverIo\Appserver\Core;
 
-use AppserverIo\Appserver\Core\Interfaces\ClassLoaderInterface;
-use AppserverIo\Doppelgaenger\AspectRegister;
-use AppserverIo\Doppelgaenger\CacheMap;
-use AppserverIo\Doppelgaenger\Entities\Definitions\Structure;
-use AppserverIo\Doppelgaenger\Generator;
 use AppserverIo\Doppelgaenger\Config;
-use AppserverIo\Appserver\Core\InitialContext;
+use AppserverIo\Doppelgaenger\CacheMap;
+use AppserverIo\Doppelgaenger\Generator;
+use AppserverIo\Doppelgaenger\AspectRegister;
+use AppserverIo\Doppelgaenger\Entities\Definitions\Structure;
+use AppserverIo\Appserver\Core\Interfaces\ClassLoaderInterface;
 
 /**
  * This class is used to delegate to doppelgaenger's autoloader. This is needed as our
