@@ -43,10 +43,11 @@ use AppserverIo\Appserver\Core\Api\InvalidConfigurationException;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  *
- * @property \AppserverIo\Psr\Application\ApplicationInterface $application     The application to manage queues for
- * @property array                                             $directories     Our directories
- * @property \AppserverIo\Psr\Pms\ResourceLocatorInterface     $resourceLocator Locator for the requested queues
- * @property \AppserverIo\Storage\GenericStackable             $queues          Queues to manage
+ * @property \AppserverIo\Psr\Application\ApplicationInterface          $application     The application to manage queues for
+ * @property array                                                      $directories     Our directories
+ * @property \AppserverIo\Psr\Pms\ResourceLocatorInterface              $resourceLocator Locator for the requested queues
+ * @property \AppserverIo\Storage\GenericStackable                      $queues          Queues to manage
+ * @property \AppserverIo\Appserver\MessageQueue\QueueSettingsInterface $queueSettings   The queue settings
  */
 class QueueManager extends AbstractManager implements QueueContextInterface
 {
@@ -97,6 +98,18 @@ class QueueManager extends AbstractManager implements QueueContextInterface
     public function injectResourceLocator(ResourceLocatorInterface $resourceLocator)
     {
         $this->resourceLocator = $resourceLocator;
+    }
+
+    /**
+     * Injects the queue settings.
+     *
+     * @param \AppserverIo\Appserver\MessageQueue\QueueSettingsInterface $queueSettings The queue settings
+     *
+     * @return void
+     */
+    public function injectQueueSettings(QueueSettingsInterface $queueSettings)
+    {
+        $this->queueSettings = $queueSettings;
     }
 
     /**
@@ -205,6 +218,7 @@ class QueueManager extends AbstractManager implements QueueContextInterface
         $messageQueue->injectWorkers($this->workers);
         $messageQueue->injectMessages($this->messages);
         $messageQueue->injectApplication($this->application);
+        $messageQueue->injectQueueSettings($this->queueSettings);
         $messageQueue->start();
 
         // initialize the queues storage for the priorities
@@ -243,6 +257,16 @@ class QueueManager extends AbstractManager implements QueueContextInterface
     public function getResourceLocator()
     {
         return $this->resourceLocator;
+    }
+
+    /**
+     * Return's the queue settings.
+     *
+     * @return \AppserverIo\Appserver\MessageQueue\QueueSettingsInterface The queue settings
+     */
+    public function getQueueSettings()
+    {
+        return $this->queueSettings;
     }
 
     /**
