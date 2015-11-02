@@ -39,6 +39,13 @@ use Psr\Log\LogLevel;
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
+ *
+ * @property string                                                     $name            The queue name to use
+ * @property string                                                     $type            The message bean type that has to handle the messages
+ * @property \AppserverIo\Psr\Application\ApplicationInterface          $application     The application to manage queues for
+ * @property \AppserverIo\Storage\GenericStackable                      $workers         The storage for the workers
+ * @property \AppserverIo\Storage\GenericStackable                      $messages        The storage for the messages
+ * @property \AppserverIo\Appserver\MessageQueue\QueueSettingsInterface $queueSettings   The queue settings
  */
 class MessageQueue extends AbstractDaemonThread implements QueueInterface
 {
@@ -104,6 +111,18 @@ class MessageQueue extends AbstractDaemonThread implements QueueInterface
     }
 
     /**
+     * Injects the queue settings.
+     *
+     * @param \AppserverIo\Appserver\MessageQueue\QueueSettingsInterface $queueSettings The queue settings
+     *
+     * @return void
+     */
+    public function injectQueueSettings(QueueSettingsInterface $queueSettings)
+    {
+        $this->queueSettings = $queueSettings;
+    }
+
+    /**
      * Returns the queue name.
      *
      * @return string The queue name
@@ -151,6 +170,16 @@ class MessageQueue extends AbstractDaemonThread implements QueueInterface
     public function getWorkers()
     {
         return $this->workers;
+    }
+
+    /**
+     * Return's the queue settings.
+     *
+     * @return \AppserverIo\Appserver\MessageQueue\QueueSettingsInterface The queue settings
+     */
+    public function getQueueSettings()
+    {
+        return $this->queueSettings;
     }
 
     /**
@@ -230,6 +259,7 @@ class MessageQueue extends AbstractDaemonThread implements QueueInterface
         // create a reference to the workers/messages
         $workers = $this->workers;
         $messages = $this->messages;
+        $queueSettings = $this->queueSettings;
 
         // try to load the profile logger
         if ($this->profileLogger = $application->getInitialContext()->getLogger(LoggerUtils::PROFILE)) {
@@ -250,8 +280,9 @@ class MessageQueue extends AbstractDaemonThread implements QueueInterface
             // initialize and start the queue worker
             $queueWorker = new QueueWorker();
             $queueWorker->injectMessages($messages);
-            $queueWorker->injectPriorityKey($priorityKey);
             $queueWorker->injectApplication($application);
+            $queueWorker->injectPriorityKey($priorityKey);
+            $queueWorker->injectQueueSettings($queueSettings);
 
             // attach the storages
             $queueWorker->injectJobsToExecute($jobsToExceute[$counter]);

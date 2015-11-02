@@ -62,7 +62,11 @@
                 <directory>/META-INF/classes</directory>
             </directories>
         </manager>
-        <manager name="QueueContextInterface" type="AppserverIo\Appserver\MessageQueue\QueueManager" factory="AppserverIo\Appserver\MessageQueue\QueueManagerFactory"/>
+        <manager name="QueueContextInterface" type="AppserverIo\Appserver\MessageQueue\QueueManager" factory="AppserverIo\Appserver\MessageQueue\QueueManagerFactory">
+            <params>
+                <param name="maximumJobsToProcess" type="integer">200</param>
+            </params>
+        </manager>
         <manager name="ServletContextInterface" type="AppserverIo\Appserver\ServletEngine\ServletManager" factory="AppserverIo\Appserver\ServletEngine\ServletManagerFactory">
             <directories>
                 <directory>/WEB-INF/classes</directory>

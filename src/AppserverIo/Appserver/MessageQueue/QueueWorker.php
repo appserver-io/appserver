@@ -45,10 +45,11 @@ use AppserverIo\Appserver\Core\Utilities\EnumState;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  *
- * @property \AppserverIo\Psr\Application\ApplicationInterface $application   The application instance with the queue manager/locator
- * @property \AppserverIo\Storage\GenericStackable             $jobsToExecute The storage for the jobs to be executed
- * @property \AppserverIo\Storage\GenericStackable             $messages      The storage for the messages
- * @property \AppserverIo\Psr\Pms\PriorityKeyInterface         $priorityKey   The priority of this queue worker
+ * @property \AppserverIo\Psr\Application\ApplicationInterface          $application   The application instance with the queue manager/locator
+ * @property \AppserverIo\Storage\GenericStackable                      $jobsToExecute The storage for the jobs to be executed
+ * @property \AppserverIo\Storage\GenericStackable                      $messages      The storage for the messages
+ * @property \AppserverIo\Psr\Pms\PriorityKeyInterface                  $priorityKey   The priority of this queue worker
+ * @property \AppserverIo\Appserver\MessageQueue\QueueSettingsInterface $queueSettings The queue settings
  */
 class QueueWorker extends AbstractDaemonThread
 {
@@ -102,6 +103,18 @@ class QueueWorker extends AbstractDaemonThread
     }
 
     /**
+     * Injects the queue settings.
+     *
+     * @param \AppserverIo\Appserver\MessageQueue\QueueSettingsInterface $queueSettings The queue settings
+     *
+     * @return void
+     */
+    public function injectQueueSettings(QueueSettingsInterface $queueSettings)
+    {
+        $this->queueSettings = $queueSettings;
+    }
+
+    /**
      * Returns the application instance the worker is bound to.
      *
      * @return \AppserverIo\Psr\Application\ApplicationInterface The application instance
@@ -109,6 +122,34 @@ class QueueWorker extends AbstractDaemonThread
     public function getApplication()
     {
         return $this->application;
+    }
+
+    /**
+     * Return's the queue settings.
+     *
+     * @return \AppserverIo\Appserver\MessageQueue\QueueSettingsInterface The queue settings
+     */
+    public function getQueueSettings()
+    {
+        return $this->queueSettings;
+    }
+
+    /**
+     * Returns the default timeout.
+     *
+     * Reduce CPU load depending on the queues priority, whereas priority
+     * can be 1, 2 or 3 actually, so possible values for usleep are:
+     *
+     * PriorityHigh:         100 === 0.0001 s
+     * PriorityMedium:    10.000 === 0.01 s
+     * PriorityLow:    1.000.000 === 1 s
+     *
+     * @return integer The default timeout in microseconds
+     * @see \AppserverIo\Appserver\Core\AbstractDaemonThread::getDefaultTimeout()
+     */
+    public function getQueueTimeout()
+    {
+        return pow(10, $this->priorityKey->getPriority() * 2);
     }
 
     /**
@@ -159,26 +200,8 @@ class QueueWorker extends AbstractDaemonThread
 
         // try to load the profile logger
         if ($this->profileLogger = $application->getInitialContext()->getLogger(LoggerUtils::PROFILE)) {
-            $this->profileLogger->appendThreadContext(sprintf('queue-worker-%s', $priorityKey));
+            $this->profileLogger->appendThreadContext(sprintf('queue-worker-%s', $this->priorityKey));
         }
-    }
-
-    /**
-     * Returns the default timeout.
-     *
-     * Reduce CPU load depending on the queues priority, whereas priority
-     * can be 1, 2 or 3 actually, so possible values for usleep are:
-     *
-     * PriorityHigh:         100 === 0.0001 s
-     * PriorityMedium:    10.000 === 0.01 s
-     * PriorityLow:    1.000.000 === 1 s
-     *
-     * @return integer The default timeout in microseconds
-     * @see \AppserverIo\Appserver\Core\AbstractDaemonThread::getDefaultTimeout()
-     */
-    public function getQueueTimeout()
-    {
-        return pow(10, $this->priorityKey->getPriority() * 2);
     }
 
     /**
@@ -208,6 +231,9 @@ class QueueWorker extends AbstractDaemonThread
             $messages = $this->messages;
             $priorityKey = $this->priorityKey;
             $jobsToExecute = $this->jobsToExecute;
+
+            // load the maximum number of jobs to process in parallel
+            $maximumJobsToProcess = $this->getQueueSettings()->getMaximumJobsToProcess();
 
             // initialize the arrays for the message states and the jobs executing
             $messageStates = array();
@@ -244,7 +270,7 @@ class QueueWorker extends AbstractDaemonThread
 
                                     break;
 
-                                    // message is paused or in progress
+                                // message is paused or in progress
                                 case StatePaused::KEY:
                                 case StateInProgress::KEY:
 
@@ -270,7 +296,7 @@ class QueueWorker extends AbstractDaemonThread
 
                                     break;
 
-                                    // message processing failed or has been successfully processed
+                                // message processing failed or has been successfully processed
                                 case StateFailed::KEY:
                                 case StateProcessed::KEY:
 
@@ -289,14 +315,14 @@ class QueueWorker extends AbstractDaemonThread
 
                                     break;
 
-                                    // message has to be processed now
+                                // message has to be processed now
                                 case StateToProcess::KEY:
 
                                     // count messages in queue
                                     $inQueue = sizeof($jobsExecuting);
 
                                     // we only process 200 jobs in parallel
-                                    if ($inQueue < 200) {
+                                    if ($inQueue < $maximumJobsToProcess) {
                                         // start the job and add it to the internal array
                                         $jobsExecuting[$message->getMessageId()] = new Job(clone $message, $application);
 
@@ -308,11 +334,14 @@ class QueueWorker extends AbstractDaemonThread
                                         $application->getInitialContext()->getSystemLogger()->info(
                                             sprintf('Job queue full - (%d jobs/%d msg wait)', $inQueue, sizeof($messages))
                                         );
+
+                                        // if the job queue is full, restart iteration to remove processed jobs from queue first
+                                        continue 2;
                                     }
 
                                     break;
 
-                                    // message is in an unknown state -> this is weired and should never happen!
+                                // message is in an unknown state -> this is weired and should never happen!
                                 case StateUnknown::KEY:
 
                                     // set new state now
@@ -325,7 +354,7 @@ class QueueWorker extends AbstractDaemonThread
 
                                     break;
 
-                                    // we don't know the message state -> this is weired and should never happen!
+                                // we don't know the message state -> this is weired and should never happen!
                                 default:
 
                                     // set the failed message state

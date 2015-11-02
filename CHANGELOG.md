@@ -1,3 +1,13 @@
+# Version 1.1.0-rc1
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Optimize MQ and enable configuration through context.xml file
+
 # Version 1.1.0-beta7
 
 ## Bugfixes
@@ -8,6 +18,7 @@
 
 * Allow application configuration by default
 * Default virtual host now points to application server's root directory
+* Optimize MQ and enable configuration through context.xml file
 
 # Version 1.1.0-beta6
 
