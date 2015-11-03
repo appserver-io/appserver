@@ -1,0 +1,7 @@
+dist:
+  image: appserver/runtime:1.1.0
+  ports:
+    - "9080:9080"
+    - "9443:9443"
+  volumes:
+    - .:/root/appserver
