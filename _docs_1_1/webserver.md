@@ -95,7 +95,7 @@ If you want to setup an HTTPS Webserver, you have to configure two more params.
 | `certPath`    | string   | The path to your certificate file, which has to be a combined PEM file of private key and certificate. The path will be relative to the server's root directory, if there is no beginning slash "/". |
 | `passphrase`  | string   | The passphrase you have created your SSL private key file with. It can be optional. |
 
-
+For a more detailed configuration with multiple SSL certificates bound to one IP have a look at our [configuration documentation]({{ "/get-started/documentation/configuration.html#server-configuration" | prepend: site.baseurl }}).
 
 ## Connection Handler
 
