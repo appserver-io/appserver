@@ -198,6 +198,19 @@ In the simplest case, no attribute is needed. If so, the member or parameter nam
 | `name`                      | `string`    | Name of the reference will be registered in the `Naming Directory`.|
 | `type`                      | `string`    | The `name` of the resource we want to reference.                   |
 
+### Persistence Unit (@PersistenceUnit)
+
+This annotation is used to inject a [Persistence Unit](<{{ "/get-started/documentation/persistence-container.html#persistence-unit" | prepend: site.baseurl }}>) into components.
+
+Similar to the resources, a real Entity Manager instance will be injected instead of a proxy.
+
+In the simplest case, you have to specify the `unitName` attribute, which has to reference a `Persistence Unit`, you have declared in your application's `META-INF/persistence.xml` file. If you do not specify the `name` attribute the name of the member, the annotation is defined for, will be used for registration in the `Naming Directory`.
+
+| Node Name                   | Type        | Description                                                        |
+| --------------------------- | ----------- | -------------------------------------------------------------------|
+| `name`                      | `string`    | Name of the reference will be registered in the `Naming Directory`.|
+| `unitName`                  | `string`    | The `name` of the `Persistence Unit` we want to reference.                   |
+
 ### Example
 
 The following example implementation of a `Singleton` session bean contains nearly all annotations and demonstrates their application.
@@ -225,6 +238,14 @@ class ASingletonSessionBean
    * @Resource(name="ApplicationInterface")
    */
   protected $application;
+  
+  /**
+   * The Doctrine EntityManager instance.
+   *
+   * @var \Doctrine\ORM\EntityManagerInterface
+   * @PersistenceUnit(unitName="ExampleEntityManager")
+   */
+  protected $entityManager;
 
   /**
    * A stateless session bean instance that uses property injection.
@@ -335,6 +356,14 @@ The following example is a simplified copy of the deployment descriptor of our [
           <injection-target-method>injectApplication</injection-target-method>
         </injection-target>
       </res-ref>
+      <persistence-unit-ref>
+        <description>Reference to a persistence unit</description>
+        <persistence-unit-res-ref-name>ExampleEntityManager</persistence-unit-ref-name>
+        <injection-target>
+          <injection-target-class>Doctrine\ORM\EntityManagerInterface</injection-target-class>
+          <injection-target-property>entityManager</injection-target-method>
+        </injection-target>
+      </persistence-unit-ref>
     </session>
   </enterprise-beans>
 </epb>
@@ -392,9 +421,18 @@ creates a reference to the defined resource in the naming directory in `php:glob
 | --------------------------- | ----------- | -------------------------------------------------------------------|
 | `description`               | `string`    | A short description of the reference that will be created.         |
 | `res-ref-name`              | `string`    | The name of the reference created in the naming directory.         |
-| `res-ref-type`              | `string`    | The type of the reference resource.                                |
+| `res-ref-type`              | `string`    | The name of the referenced 'Persistence Unit`.                                |
 
-`/epb/enterprise-beans/[session or message-driven]/[ebp-ref or res-ref]/injection-target`
+`/epb/enterprise-beans/[session or message-driven]/persistence-unit-ref`
+creates a reference to the defined `Persistence Unit` in the naming directory in `php:global/example/env/[persistence-unit-ref-name]`. This reference can be used by other components or for Dependency Injection purposes.
+
+| Node Name                   | Type        | Description                                                        |
+| --------------------------- | ----------- | -------------------------------------------------------------------|
+| `description`               | `string`    | A short description of the reference that will be created.         |
+| `persistence-unit-ref-name` | `string`    | The name of the reference created in the naming directory.         |
+| `persistence-unit-name`     | `string`    | The type of the reference resource.                                |
+
+`/epb/enterprise-beans/[session or message-driven]/[ebp-ref or res-ref or persistence-unit-ref]/injection-target`
 injects the reference by either using the method or property defined. The class name is of interest, if there is a hierarchy and the target class has to be specified explictly.
 
 | Node Name                   | Type        | Description                                                        |

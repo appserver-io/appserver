@@ -15,11 +15,137 @@ permalink: /get-started/documentation/1.1/persistence-container.html
 
 In addition to the `Servlet-Engine`, the Persistence Container is one of the main services appserver.io provides. The name `Persistence-Container` might lead to some misunderstanding, as many people think that it mostly refers to database persistence. In Java, there are EJB-Containers that provide a broad set of functionalities like [Bean- or Container-Managed-Persistence](http://en.wikipedia.org/wiki/Enterprise_JavaBeans), whereas appserver.io only provides a small subset of the functionality similar to platforms like [Wildfly](http://en.wikipedia.org/wiki/WildFly). In the following, the possibilities of the `Persistence-Container` and its usage for writing enterprise-ready applications, are described in detail.
 
-## Persistence-Container Options
+## Persistence Manager
 
-Although providing persisting data to a database is one functionality of the `Persistence-Container`, it is not the most important one. The following reasons support the usage of the `Persistence-Container`. Since PHP is used as a scripting language, it lacks the possibility of having objects, we call them components, persistent in memory. The `Persistence-Container` enables you to do exactly this. It provides performance and many other possibilities you would not benefit from if working with the well-known LAMP stack.
+Since version 1.1 we've an integrated Persistence Manager, based on Doctrine 2.5. The Persistence Manager is responsible to handle the Entity Managers defined by the deployed applications. Each Entity Manager itself simply is a wrapped Doctrine Entity Manager instance and enables you to access all the functionality, Doctrine is delivered with.
+
+### Datasource
+
+A Datasource specifies the connection to all kind of databases. As the application server uses Doctrine to handle database connections, the configuration parameters are very close to the one, you have to specify if you're using Doctrine in a usual project with one of the frameworks out there.
+
+As all other configuration parameters, the Datasource configuration, also has to be done in a XML configuration file. In contrast to other application specific configuration, Datasource's can come with your application or can be defined globally, e. g. in the webroot folder of the application server. In that case, the application doesn't need to have to specify a datasource. Instead, the Persistence Unit, that will be explained in the next chapter, can reference one. If your application provides it's own Datasource, what will be the common case, it has to be specified in a file within the `META-INF` folder and has to end with `-ds.xml`, for example `appserver-ds.xml`.
+
+In the following example, you can see the configuration for two Datasource's.
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<datasources xmlns="http://www.appserver.io/appserver">
+
+    <datasource name="appserver.io-example-mysql">
+        <database>
+            <driver>pdo_mysql</driver>
+            <user>appserver</user>
+            <password>appserver.i0</password>
+            <databaseName>appserver_ApplicationServer</databaseName>
+            <databaseHost>127.0.0.1</databaseHost>
+        </database>
+    </datasource>
+
+    <datasource name="appserver.io-example-sqlite">
+        <database>
+            <driver>pdo_sqlite</driver>
+            <user>appserver</user>
+            <password>appserver</password>
+            <path>META-INF/data/appserver_ApplicationServer.sqlite</path>
+            <memory>false</memory>
+        </database>
+    </datasource>
+
+</datasources>
+```
+
+The first example defines the Datasource for a MySQL database, the second one for a SQLite database that will be created in the `META-INF/data` folder.
+
+| Param name           | Type    | Description                                                    |
+| ---------------------| --------| ---------------------------------------------------------------|
+| `driver`             | string  | The driver specifies the actual implementations of the DBAL interfaces to use. |
+| `user`               | string  | Username to use when connecting to the database. |
+| `password`           | string  | Password to use when connecting to the database. |
+| `databaseHost`       | string  | Hostname of the database to connect to. |
+| `databasePort`       | integer | Port of the database to connect to. |
+| `databaseName`       | string  | Name of the database/schema to connect to. |
+| `path`               | string  | The filesystem path to the database file. Mutually exclusive with memory. path takes precedence. |
+| `memory`             | boolean | True if the SQLite database should be in-memory (non-persistent). Mutually exclusive with path. path takes precedence. |
+| `unixSocket`         | string  | Name of the socket used to connect to the database. |
+| `driverOptions`      | string  | Any supported additional flags. |
+| `charset`            | string  | The charset used when connecting to the database. |
+
+You'll find a more detailed description about the possible driver/parameter options in the [Doctring DBAL configuration](http://doctrine-orm.readthedocs.org/projects/doctrine-dbal/en/latest/reference/configuration.html).
+
+> Please be aware, a Datasource doesn't specify a Doctrine Entity Manager, it simply specifies a connection. To specify a Doctrine Entity Manager, what usually is what you want to do, you also need a Persistence Unit.
+
+### Persistence Unit
+
+A Persistence Unit declares the Enity Manager that should be initialized by the application server and will be injected into your application's components when requested. Persistence Unit's can be configured by a XML file named `META-INF/persistence.xml` inside your application. Each Persistence Unit references a datasource that can be defined as described in section [Datasource](#datasource).
+
+The following example is a Persistence Unit configuration and give you a brief introduction about what configuration options are available.
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://www.appserver.io/appserver">
+
+    <persistenceUnits>
+
+        <persistenceUnit name="ExampleEntityManager"
+            interface="Doctrine\ORM\EntityManagerInterface"
+            type="Doctrine\ORM\EntityManager"
+            factory="AppserverIo\Appserver\PersistenceContainer\Doctrine\EntityManagerFactory">
+            
+            <metadataConfiguration type="annotation">
+            
+                <directories>
+                    <directory>/common/classes/AppserverIo/Apps/Example/Entities/Impl</directory>
+                </directories>
+
+                <params>
+                    <param name="isDevMode" type="boolean">true</param>
+                    <param name="useSimpleAnnotationReader" type="boolean">false</param>
+                    <param name="proxyDir" type="string">false</param>
+                </params>
+
+            </metadataConfiguration>
+
+            <datasource name="appserver.io-example-mysql"/>
+
+            <annotationRegistries>
+                <annotationRegistry namespace="JMS\Serializer\Annotation">
+                    <directories>
+                        <directory>/vendor/jms/serializer/src</directory>
+                    </directories>
+                </annotationRegistry>
+            </annotationRegistries>
+
+        </persistenceUnit>
+
+    </persistenceUnits>
+
+</persistence>
+```
+
+Each Persistence Unit needs at least the `<metadataConfiguration/>` and the `<datasource/>` nodes work properly. The `<annotationRegistries/>` node is optional.
+
+The `<persistenceUnit/>` node has for mandatory attributes:
+
+* The `name` attribute, which needs a unique name that will be used to reference the Persistence Unit for DI in your components
+* The `interface` attribute specifies the interface of the Entity Manager, that has to be `Doctrine\ORM\EntityManagerInterface` unless you wrote your own custom Entity Manager
+* The `type` attribute, that specifies the Entity Manager class to use, unless your wrote your own custom this has to be `Doctrine\ORM\EntityManager`
+* The `factory` class that creates the Entity Manager instance, by default `AppserverIo\Appserver\PersistenceContainer\Doctrine\EntityManagerFactory` unless you write your own factory class
+
+The subnode `<metadataConfiguration/>` has only one, even the `type` attribute. Theses attribute can have one of the three values
+
+* `xml`: For a setup based on XML files
+* `yaml`: For a YAML based setup
+* `annotation`: For an annotation based setup
+
+Depending on the values the factory either invokes the apropriate method on the `Setup` class to create the Entity Manager, e. g. if you choose `annotation`, the factory will invoke `Setup::createAnnotationMetadataConfiguration()`.
+
+The last mandatory subnode is `<datasource/>`. The value of the `name` attribute must also be a valid Datasource `name`. In that way, you can relate the Persistence Unit with the Datasource with the same name you've entered here.
+
+Finally we've the `<annotationRegistries/>` subnode, that allows you to specify additional annotation libraries, such `JMS`. You can register as many annotation libraries as necessary by specifying the details in a separate `<annotationRegistry/>` node. This node only supports the `namespace` attribute, that has to contain the annotation libraries namespace. Additionally you've to specifiy the directories to be parsed for the classes containing the annotation specification. Therefore you can define a `<directories/>` subnode that contains several `<directory/>` nodes with the path to a directory that has to be parsed.
 
 ## Server-Side Component Types
+
+Although providing persisting data to a database is one functionality of the `Persistence-Container`, it is not the most important one. The following reasons support the usage of the `Persistence-Container`. Since PHP is used as a scripting language, it lacks the possibility of having objects, we call them components, persistent in memory. The `Persistence-Container` enables you to do exactly this. It provides performance and many other possibilities you would not benefit from if working with the well-known LAMP stack.
 
 One may wonder how it is possible to have a component persistent in memory using PHP, a scripting language. Usually after every request the instance will be destroyed. The simple answer is: As appserver.io provides containers that run as daemons. You can specify components that are loaded when the application server starts and are in memory until the server shuts down. For simplicity reasons, the classes are called [Beans](http://en.wikipedia.org/wiki/Enterprise_JavaBeans), as it is done in Java.
 
@@ -51,18 +177,30 @@ With each request, a new `SLSB` instance will be created. The instance is destro
 
 ##### Example
 
-The following example demonstrates the implementation of a `SLSB` that provides functionality to create a user from the arguments passed to the `createUser()` method. The `SLSB` is registered with the name `AStatelessSessionBean` in the application servers `Naming Directory`. Registering a bean in the [Naming Directory](<{{ "/get-started/documentation/naming-directory.html" | prepend: site.baseurl }}>) is necessary to use it for [Dependency Injection](<{{ "/get-started/documentation/dependency-injection.html" | prepend: site.baseurl }}>) as explained in the documentation.
+The following example demonstrates the implementation of a `SLSB` that provides functionality to create a user from the arguments passed to the `createUser()` method. The `SLSB` is registered with the name `AStatelessSessionBean` in the application servers `Naming Directory`. Additionally, we register a reference to the Persistence Unit `ExampleEntityManager `, we've described in the section [Persistence Unit](#persistence-unit). We use the injected Entity Manager to store the created user entity in the database.
+
+Registering a bean and a Persistence Unit in the [Naming Directory](<{{ "/get-started/documentation/naming-directory.html" | prepend: site.baseurl }}>) is necessary to use it for [Dependency Injection](<{{ "/get-started/documentation/dependency-injection.html" | prepend: site.baseurl }}>) as explained in the documentation.
 
 ```php
 <?php
 
 namespace AppserverIo\Example\SessionBeans;
 
+use AppserverIo\Example\Entities\User;
+
 /**
  * @Stateless(name="AStatelessSessionBean")
  */
 class AStatelessSessionBean
 {
+
+  /**
+   * The Doctrine EntityManager instance.
+   *
+   * @var \Doctrine\ORM\EntityManagerInterface
+   * @PersistenceUnit(unitName="ExampleEntityManager")
+   */
+  protected $entityManager;
 
   /**
    * Creates and returns a new md5 hash for the passed password.
@@ -89,9 +227,13 @@ class AStatelessSessionBean
     // hash the password
     $hashedPassword = $this->hashPassword($password);
 
-    /*
-     * Implement functionality to create user in DB
-     */
+    // create the new user
+    $user = new User();
+    $user->setUsername($username);
+    $user->setPassword($this->hashPassword($password));
+    
+    // save the user to the database
+    $this->entityManager->persist($entity);
   }
 }
 ```
@@ -795,4 +937,4 @@ class AStatefulSessionBean
 }
 ```
 
-The `AclSessionBean` is NOT implemented in this example because this description only gives a rough indication on how to implement such a functionality and how an `Interceptor` can be used.
+The `AclSessionBean` is NOT implemented in this example because this description only gives a rough indication on how to implement such a functionality and how an `Interceptor` can be used.  

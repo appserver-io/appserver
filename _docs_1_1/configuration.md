@@ -789,3 +789,36 @@ The [Persistence-Container](<{{ "/get-started/documentation/persistence-containe
 
 </server>
 ```
+
+## CRON
+
+Since version 1.1 appserver.io also provides a real CRON implementation that can replace your system's CRON daemon. The jobs can be configured in a separate XML configuration file, located under `etc/appserver/conf.d/cron.xml`.
+
+The following example shows the configuration for a simple CRON job that writes the application servers PHP version to the `var/log/php_errors.log` file every minute.
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<cron xmlns="http://www.appserver.io/appserver">
+    <jobs>
+        <job name="test-02">
+            <schedule>0 * * * * *</schedule>
+            <execute directory="/opt/appserver" script="bin/php">
+                <args>
+                    <arg type="string">-v</arg>
+                </args>
+            </execute>
+        </job>
+    </jobs>
+</cron>
+```
+
+The configuration of a job will need the `name` attribute.
+
+* The `name` attribute has to contain a unique job name, as well as `<schedule/>` and `<execute/>` subnodes
+
+The `<schedule/>` node's value must be a valid [CRON expression](https://en.wikipedia.org/wiki/Cron), whereas the `<execute/>` node has the two attributes `directory` and `script`.
+
+* `directory` has to contain the working directory the job will be executed in
+* `script` the name of the script or binary that has to be executed
+
+Both values can contain an absolute or a relativ path. If the path is relative, the CRON job assumes that the root is the application server's base directory. Optionally, the `<execute/>` node can have a subnode `<args/>` that can have numerous `<arg/>` nodes containing the parameters that has to be passed to the script, when it'll be executed.
