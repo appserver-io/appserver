@@ -20,6 +20,8 @@ subNav:
     href: configuration-defaults
   - title: Optional Configuration
     href: optional-configuration
+  - title: CRON
+    href: cron
 permalink: /get-started/documentation/1.1/configuration.html
 ---
 

@@ -6,6 +6,8 @@ meta_description: The Persistence Container is one of the main services appserve
 position: 80
 group: Docs
 subNav:
+  - title: Persistence Manager
+    href: persistence-manager
   - title: Persistence-Container Options
     href: persistence-container-options
   - title: Server-Side Component Types
