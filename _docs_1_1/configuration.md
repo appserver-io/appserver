@@ -280,17 +280,33 @@ Some of these params do speak for themselves, but others don't. You can find a c
 | Param name           | Type     | Description                                                    |
 | ---------------------| ---------| ---------------------------------------------------------------|
 | `admin`              | string   | The email address of the administrator who is responsible for the server. |
-| `software`           | string   |  The software signature, as shown in the response header for example. |
-| `transport`          | string   |  The transport layer. In ssl mode `ssl` will be used instead of plain `tcp`. |
-| `address`            | string   |  The address the server-socket should bind and listen to. If you want to allow only connection on local loopback define `127.0.0.1` as in the example above shown. This will be good enough for local development and testing purpose. If you want to allow connections to your external ethernet interfaces, just define `0.0.0.0` or if you want to allow connection only on a specific interface, just define the ip of your interface `192.168.1.100`. |
-| `port`               | integer  |  The port for the server-socket to accept connections to. This can be any [common port number](http://en.wikipedia.org/wiki/Port_%28computer_networking%29#Common_port_numbers). Make sure there is no other server installed blocking the default ports.|
-| `workerNumber`       | integer  |  Defines the number of worker-queues to be started waiting for requests to process. |
-| `workerAcceptMin`    | integer  |  Describes the minimum number of requests for the worker to be accepted to randomize its lifetime. |
-| `workerAcceptMax`    | integer  |  Describes the maximum number of requests for the worker to be accepted tor randomize its lifetime. |
+| `software`           | string   | The software signature, as shown in the response header for example. |
+| `transport`          | string   | The transport layer. In ssl mode `ssl` will be used instead of plain `tcp`. |
+| `address`            | string   | The address the server-socket should bind and listen to. If you want to allow only connection on local loopback define `127.0.0.1` as in the example above shown. This will be good enough for local development and testing purpose. If you want to allow connections to your external ethernet interfaces, just define `0.0.0.0` or if you want to allow connection only on a specific interface, just define the ip of your interface `192.168.1.100`. |
+| `port`               | integer  | The port for the server-socket to accept connections to. This can be any [common port number](http://en.wikipedia.org/wiki/Port_%28computer_networking%29#Common_port_numbers). Make sure there is no other server installed blocking the default ports.|
+| `workerNumber`       | integer  | Defines the number of worker-queues to be started waiting for requests to process. |
+| `workerAcceptMin`    | integer  | Describes the minimum number of requests for the worker to be accepted to randomize its lifetime. |
+| `workerAcceptMax`    | integer  | Describes the maximum number of requests for the worker to be accepted tor randomize its lifetime. |
 
 All params listed above are common to servers using the `HttpConnectionHandler`.
 
 > The param composition may vary depending on the server implementation.
+
+Since version 1.1 you've the possibility to define multiple SSL certificates. Multiple certificates can be enabled on server level by adding a `<certificates/>` node containing a `<certificate/>` node for each certificate you want to add. For example, if you want to add a wildcard certificate for `appserver.local` and `appserver.dev`, the following configuration will be appropriate
+
+```xml
+<certificates>
+    <certificate domain="*.appserver.local" certPath="etc/appserver/appserver-local.pem" />
+    <certificate domain="*.appserver.dev" certPath="etc/appserver/appserver-dev.pem" />
+</certificates>
+```
+
+The `<certificate/>` node has two attributes that has to be specified:
+
+* The value of the `domain` attribute has to be the fully qualified domain name (FQDN)
+* The value of the `certPath` attribute has to be the relative path to the certificate that should be bound, assumed the base directory is the appserver's root directory
+
+> Do not forget to restart the server after adding the certificates.
 
 ## Application Configuration
 
