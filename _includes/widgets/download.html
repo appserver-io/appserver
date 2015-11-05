@@ -1,9 +1,10 @@
 <p><br/></p>
 
 <ul class="nav nav-tabs nav-justified list-unstyled downloads">
-{% for download in site.data.downloads %}
+{% assign download_tabs = site.data.downloads | group_by: "family" %}
+{% for download_group in download_tabs %}
     <li class="{% if forloop.first %}active{% endif %}">
-        <a href="#{{ download.id }}" data-toggle="tab"><i class="fa {{ download.icon }}"></i>&nbsp;&nbsp;{{ download.os }}</a>
+        <a href="#{{ download_group.name }}" data-toggle="tab"><i class="fa {{ download_group.items[0].icon }}"></i>&nbsp;&nbsp;{{ download_group.name }}</a>
     </li>
 {% endfor %}
 </ul>
@@ -12,26 +13,49 @@
 
 <div class="col-lg-12">
     <div class="tab-content">
-        {% for download in site.data.downloads %}
-            <div class="tab-pane fade {% if forloop.first %}active in{% endif %}" id="{{ download.id }}">
+        {% for download_group in download_tabs %}
+        <div class="tab-pane fade {% if forloop.first %}active in{% endif %}" id="{{ download_group.name }}">
+            <div class="panel-group" id="accordeon-{{ download_group.name }}" role="tablist" aria-multiselectable="true">
+
+                {% for download in download_group.items %}
                 {% capture distname %}{{ site.appserver_download_dist_prefix }}{{ download.separator }}{{ site.appserver_version }}{{ download.dist-suffix }}{% endcapture %}
                 {% capture runtimename %}{{ site.appserver_download_runtime_prefix }}{{ download.separator }}{{ site.appserver_runtime_version }}{{ download.runtime-suffix }}{% endcapture %}
                 {% capture downloadcontent %}{% include downloads/content.md %}{% endcapture %}
-                {{ downloadcontent | markdownify }}
-                <hr>
-                {% if download.dist-suffix %}
-                    <a id="btn-download-{{ download.id }}" class="btn btn-info btn-lg"
-                       href="{{ site.appserver_download_baseurl }}{{ site.appserver_version }}/{{ distname }}">
-                        <i class="fa fa-download"></i>&nbsp;&nbsp;{{ distname }}
-                    </a>
-                {% endif %}
-                {% if download.runtime-suffix %}
-                    <a class="btn btn-info btn-lg"
-                       href="{{ site.appserver_download_baseurl }}{{ site.appserver_version }}/{{ runtimename }}">
-                        <i class="fa fa-download"></i>&nbsp;&nbsp;{{ runtimename }}
-                    </a>
-                {% endif %}
+
+                <div class="panel panel-default">
+                  <div class="panel-heading" role="tab">
+                    <h4 class="panel-title">
+                      <a role="button" data-toggle="collapse" data-parent="#accordeon-{{ download_group.name }}" href="#{{ download.id }}" aria-expanded="true" aria-controls="{{ download.id }}">
+                          {{ download.os }}
+                      </a>
+                    </h4>
+                  </div>
+                  <div id="{{ download.id }}" class="panel-collapse collapse {% if forloop.length == 1 %}in{% endif %}" role="tabpanel" aria-labelledby="{{ download.id }}">
+                    <div class="panel-body">
+                        {{ downloadcontent | markdownify }}
+                        <hr>
+                        {% if download.dist-suffix %}
+                            <a id="btn-download-{{ download.id }}" class="btn btn-info btn-lg"
+                               href="{{ site.appserver_download_baseurl }}{{ site.appserver_version }}/{{ distname }}">
+                                <i class="fa fa-download"></i>&nbsp;&nbsp;{{ distname }}
+                            </a>
+                        {% endif %}
+                        {% if download.runtime-suffix %}
+                            <a class="btn btn-info btn-lg"
+                               href="{{ site.appserver_download_baseurl }}{{ site.appserver_version }}/{{ runtimename }}">
+                                <i class="fa fa-download"></i>&nbsp;&nbsp;{{ runtimename }}
+                            </a>
+                        {% endif %}
+                    </div>
+                  </div>
+                </div>
+
+                <p><br/></p>
+
+                {% endfor %}
+
             </div>
+        </div>
         {% endfor %}
     </div>
 </div>

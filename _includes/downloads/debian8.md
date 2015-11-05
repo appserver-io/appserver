@@ -1,5 +1,3 @@
-**Runs and tested on Debian Squeeze (64-bit) and higher!**
-
 For non desktop environments or via ssh type:
 
 ```bash
@@ -13,7 +11,7 @@ You might also try our .deb repository:
 
 ```bash
 sudo su
-echo "deb http://deb.appserver.io/ wheezy main" > /etc/apt/sources.list.d/appserver.list
+echo "deb http://deb.appserver.io/ jessie main" > /etc/apt/sources.list.d/appserver.list
 wget http://deb.appserver.io/appserver.gpg -O - | apt-key add -
 aptitude update
 aptitude install appserver-dist

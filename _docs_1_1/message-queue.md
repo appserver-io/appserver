@@ -18,7 +18,7 @@ For example, if you want to import a lot of products in your online shop, you ca
 message to the Message-Queue, which starts the import process in the background, without
 preventing the calling process to continue.
 
-> Using a Message-Queue gives you the power to use threads without taking care of the pitfalls.
+> Using a Message-Queue gives you the power to use threads, and it will take care of all the pitfalls for you.
 
 ## Got mail!
 
@@ -55,7 +55,7 @@ use AppserverIo\Messaging\AbstractMessageListener;
 /**
  * @MessageDriven
  */
-class ImportReceiver extends AbstractReceiver
+class ImportReceiver extends AbstractMessageListener
 {
 
     /**
@@ -137,7 +137,7 @@ class HelloWorldServlet extends HttpServlet
   /**
    * The queue session to send a message with.
    *
-   * @var \AppserverIo\MessageQueueClient\QueueSession
+   * @var \AppserverIo\Messaging\QueueSession
    * @Resource(name="pms/import")
    */
   protected $queueSender;

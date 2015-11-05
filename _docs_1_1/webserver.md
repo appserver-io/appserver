@@ -24,8 +24,6 @@ subNav:
     href: locations
   - title: Rewrites
     href: rewrites
-  - title: VirtualHost Examples
-    href: virtualhost-examples
 permalink: /get-started/documentation/1.1/webserver.html
 ---
 
@@ -204,6 +202,88 @@ which has a different document root than the global configuration. The virtual h
 
 The `virtualHost` element can hold params, rewrite rules or environment variables which are only
 available for the specific host.
+
+
+The following examples should help you to configure your legacy application with default settings usually
+provided with the applications .htaccess files.
+
+### Magento
+
+```xml
+<virtualHost name="magento.dev magento.local">
+    <params>
+        <param name="documentRoot" type="string">webapps/magento</param>
+    </params>
+    <rewrites>
+        <rewrite condition="-d{OR}-f{OR}-l" target="" flag="L" />
+        <rewrite condition="(.*)" target="index.php/$1" flag="L" />
+    </rewrites>
+    <accesses>
+        <access type="allow">
+            <params>
+                <param name="X_REQUEST_URI" type="string">
+                    ^\/([^\/]+\/)?(media|skin|js|index\.php).*
+                </param>
+            </params>
+        </access>
+    </accesses>
+</virtualHost>
+```
+
+### TYPO3 Neos
+
+```xml
+<virtualHost name="neos.dev neos.local">
+    <params>
+        <param name="documentRoot" type="string">webapps/neos-1.0.2/Web</param>
+    </params>
+    <rewrites>
+        <rewrite
+            condition="^/(_Resources/Packages/|robots\.txt|favicon\.ico){OR}-d{OR}-f{OR}-l"
+            target="" flag="L" />
+        <rewrite
+            condition="^/(_Resources/Persistent/[a-z0-9]+/(.+/)?[a-f0-9]{40})/.+(\..+)"
+            target="$1$3" flag="L" />
+        <rewrite condition="^/(_Resources/Persistent/.{40})/.+(\..+)"
+            target="$1$2" flag="L" />
+        <rewrite condition="^/_Resources/.*" target="" flag="L" />
+        <rewrite condition="(.*)" target="index.php" flag="L" />
+    </rewrites>
+    <environmentVariables>
+        <environmentVariable condition=""
+            definition="FLOW_REWRITEURLS=1" />
+        <environmentVariable condition=""
+            definition="FLOW_CONTEXT=Production" />
+        <environmentVariable condition="Basic ([a-zA-Z0-9\+/=]+)@$Authorization"
+            definition="REMOTE_AUTHORIZATION=$1" />
+    </environmentVariables>
+</virtualHost>
+```
+
+### ORO CRM
+
+```xml
+<virtualHost name="oro-crm.dev oro-crm.local">
+    <params>
+        <param name="documentRoot" type="string">webapps/crm-application/web
+        </param>
+    </params>
+    <rewrites>
+        <rewrite condition="-f" target="" flag="L" />
+        <rewrite condition="^/(.*)$" target="app.php" flag="L" />
+    </rewrites>
+</virtualHost>
+```
+
+### Wordpress
+
+```xml
+<virtualHost name="wordpress.local">
+    <params>
+        <param name="documentRoot" type="string">webapps/wordpress</param>
+    </params>
+</virtualHost>
+```
 
 ## Environment Variables
 
@@ -432,11 +512,13 @@ So `!^([0-9]+)` matches all strings, which do NOT begin with a number and `!-d` 
 Flags are used to further influence processing.
 You can specify as many flags per rewrite as you like, but be aware of their impact.
 Syntax for several flags is simple: just separate them with a `,` symbol.
-Flags, which might accept a parameter, can be assigned one by one using the `=` symbol.
+Flags, which might accept a parameter, can be assigned one by using the `=` symbol.
 Currently supported flags are:
 
 - *L* : As rules are normally processed one after the other, the `L` flag will make the flagged rule the last one processed
    if matched.
+
+- *NC* : Will force regex conditions to be tested case-insensitive.
 
 - *R* : If this flag is set, we redirect the client to the URL specified in the `target string`. If this is just a URI, we redirect to the same host.
     You might also specify a custom status code between 300 and 399 to indicate the reason for/ the kind of the redirect. Default is `301` aka `permanent`
@@ -444,85 +526,45 @@ Currently supported flags are:
 - *M* : Stands for map. Using this flag, you can specify an external source (have a look at the Injector classes of the Webserver project) of a target map.
     With `M=<MY_BACKREFERENCE>` you specify what the map's index has to match to. This matching is done **only** if the rewrite condition matches and will behave like another condition.
 
-## VirtualHost Examples
+- *NC* : Stands for "no case". The given condition will be checked in a case insensitive manner
 
-The following examples should help you to configure your legacy application with default settings usually
-provided with the applications .htaccess files.
+### Common examples
 
-### Magento
+The following examples give a solution to some often asked for use cases:
+
+To let every request for actual existing files through, place the following rewrite up front:
 
 ```xml
-<virtualHost name="magento.dev magento.local">
-    <params>
-        <param name="documentRoot" type="string">webapps/magento</param>
-    </params>
-    <rewrites>
-        <rewrite condition="-d{OR}-f{OR}-l" target="" flag="L" />
-        <rewrite condition="(.*)" target="index.php/$1" flag="L" />
-    </rewrites>
-    <accesses>
-        <access type="allow">
-            <params>
-                <param name="X_REQUEST_URI" type="string">
-                    ^\/([^\/]+\/)?(media|skin|js|index\.php).*
-                </param>
-            </params>
-        </access>
-    </accesses>
-</virtualHost>
+<rewrite condition="-d{OR}-f{OR}-l" target="" flag="L" />
 ```
 
-### TYPO3 Neos
+Block access to files from other sites aka. hotlinking:
 
 ```xml
-<virtualHost name="neos.dev neos.local">
-    <params>
-        <param name="documentRoot" type="string">webapps/neos-1.0.2/Web</param>
-    </params>
-    <rewrites>
-        <rewrite
-            condition="^/(_Resources/Packages/|robots\.txt|favicon\.ico){OR}-d{OR}-f{OR}-l"
-            target="" flag="L" />
-        <rewrite
-            condition="^/(_Resources/Persistent/[a-z0-9]+/(.+/)?[a-f0-9]{40})/.+(\..+)"
-            target="$1$3" flag="L" />
-        <rewrite condition="^/(_Resources/Persistent/.{40})/.+(\..+)"
-            target="$1$2" flag="L" />
-        <rewrite condition="^/_Resources/.*" target="" flag="L" />
-        <rewrite condition="(.*)" target="index.php" flag="L" />
-    </rewrites>
-    <environmentVariables>
-        <environmentVariable condition=""
-            definition="FLOW_REWRITEURLS=1" />
-        <environmentVariable condition=""
-            definition="FLOW_CONTEXT=Production" />
-        <environmentVariable condition="Basic ([a-zA-Z0-9\+/=]+)@$Authorization"
-            definition="REMOTE_AUTHORIZATION=$1" />
-    </environmentVariables>
-</virtualHost>
+<rewrite condition="!mydomain@$HTTP_REFERER${AND}\.(gif|jpg|png)" target="/no_hotlinking.html" flag="L" />
 ```
 
-### ORO CRM
+Simple renaming of directories or URI segments:
 
 ```xml
-<virtualHost name="oro-crm.dev oro-crm.local">
-    <params>
-        <param name="documentRoot" type="string">webapps/crm-application/web
-        </param>
-    </params>
-    <rewrites>
-        <rewrite condition="-f" target="" flag="L" />
-        <rewrite condition="^/(.*)$" target="app.php" flag="L" />
-    </rewrites>
-</virtualHost>
+<rewrite condition="^/old-dir/(.*)$" target="/new-dir/$1" flag="L" />
 ```
 
-### Wordpress
+Integrating e.g. an `index.php` into your URIs:
 
 ```xml
-<virtualHost name="wordpress.local">
-    <params>
-        <param name="documentRoot" type="string">webapps/wordpress</param>
-    </params>
-</virtualHost>
+<rewrite condition="(.*){AND}!index\.php" target="/index.php/$1" flag="L" />
+```
+
+Redirect from a host starting with `www` to the non-`www` version of the same host.
+Note: If not used within a virtual host the conditions should check for the domain name as well.
+
+```xml
+<rewrite condition="^www\.@$HTTP_HOST" target="http://mydomain.com$X_REQUEST_URI" flag="R,L" />
+```
+
+To redirect all HTTP requests to HTTPS add the following redirect to your HTTP server's configuration:
+
+```xml
+<rewrite condition="" target="https://$SERVER_NAME$X_REQUEST_URI" flag="L,R" />
 ```
