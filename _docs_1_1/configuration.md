@@ -310,7 +310,11 @@ The `<certificate/>` node has two attributes that has to be specified:
 
 ## Application Configuration
 
-In addition to the Container and Server configurations, it is also possible to configure the applications. Each application
+In addition to the Container and Server configurations, it is also possible to configure the applications. 
+
+### Context
+
+Each application
 can have its own autoloaders and managers. By default, each application found in the application
 server's webapp directory `/opt/appserver/webapps` will be initialized with the defaults, defined
 in `/opt/appserver/etc/appserver/conf.d/context.xml`
@@ -435,6 +439,68 @@ and managers.
 
 > Please be aware, that the default class loaders and managers provide most of the functionality
 > described above. If you remove them from the `context.xml` you have to anticipate unexpected behavior.
+
+### Create/Override/Extend Server Configuration
+
+Since version 1.1 you have the possiblity to create a new server as well as override or extend parts of the 
+existing server configuration, assumed you have activated that functionality. This functionality will be
+activated by default. If not, you can set the `param` with the name `allowApplicationConfiguration` 
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<appserver xmlns="http://www.appserver.io/appserver"  xmlns:xi="http://www.w3.org/2001/XInclude">
+    <params>
+        <param name="user" type="string">_www</param>
+        <param name="group" type="string">staff</param>
+        <param name="umask" type="string">0002</param>
+        <param name="allowApplicationConfiguration" type="boolean">true</param>
+    </params>
+   ...
+```
+
+in `etc/appserver/appserver.xml` to `true`.
+
+If that flag is activated, you can deliver a completely separate container configuration with servers, virtual hosts
+and all allowed configuration parameters. The configuration file has to be located in the `META-INF` directory of
+your application and named `containers.xml`.
+
+For example, if you want to deliver your own virtual host configuration with your application, your configuration
+file would look like this.
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<containers xmlns="http://www.appserver.io/appserver">
+    <container name="combined-appserver">
+        <servers>
+            <server name="http">
+                <virtualHosts>
+                    <virtualHost name="reports.local www.reports.local">
+                        <params>
+                            <param name="admin" type="string">info@appserver.io</param>
+                            <param name="documentRoot" type="string">webapps/example</param>
+                        </params>
+                        <rewrites>
+                            <rewrite condition="-d{OR}-f{OR}-l" target="" flag="L" />
+                        </rewrites>
+                        <accesses>
+                            <access type="allow">
+                                <params>
+                                    <param name="X_REQUEST_URI" type="string">^.*
+                                    </param>
+                                </params>
+                            </access>
+                        </accesses>
+                    </virtualHost>
+                </virtualHosts>
+            </server>
+        </servers>
+    </container>
+</containers>
+```
+
+> To extend or override an existing configuration, it is necessary to use the same container/server names as the ones
+> you want to extend or override. If not, you probably create a new container or server, what probably is not what you
+> want to do. So it'll be a real good idea to have a look at the application server's default configuration.
 
 ## Module Configuration
 
