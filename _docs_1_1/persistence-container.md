@@ -697,7 +697,7 @@ As `MDBs` are mostly used in context of a [Message-Queue](<{{ "/get-started/docu
 
 ### Lifecycle Callbacks
 
-`Lifecycle Callbacks` enable a developer to declare callback methods depending on the bean's lifecycle.  We support `post-construct` and `pre-destroy` callbacks. `Lifecycle Callbacks` can be configured either by annotations or the deployment descriptor. Declaring `Lifecycle Callbacks` by annotations is more intuitive, as you easily add the annotation to the methods DocBlock. Therefore, we go with the annotations here.
+`Lifecycle Callbacks` enable a developer to declare callback methods depending on the bean's lifecycle. We support `post-construct` and `pre-destroy` callbacks for all types of beans, as well as `post-attach` and `pre-detach` for SFSBs. `Lifecycle Callbacks` can be configured either by annotations or the deployment descriptor. Declaring `Lifecycle Callbacks` by annotations is more intuitive, as you easily add the annotation to the methods DocBlock. Therefore, we go with the annotations here.
 
 > Keep in mind that `Lifecycle Callbacks` are optional, MUST be `public`, MUST NOT have any arguments and CAN NOT deliver checked exceptions. Exceptions are handled by the container and result in a `critical` log message.
 
@@ -710,6 +710,16 @@ As the bean's lifecycle is controlled by the container and `Dependency Injection
 #### Pre-Destroy Callback
 
 The second callback is the `Pre-Destroy` callback. This is fired before the container destroys the instance of the bean.
+
+#### Post-Attach Callback (SFSB only)
+
+These callback will be invoked by the container, before a SFSB will be re-attached. Re-attached means, that the class instance will be stored in an internal Stackable instance, until another bean tries to load it from the container by DI.
+
+> This callback is the right place to destroy resources or instances of classes that can **NOT** be serialzed. Think of the Doctrine Entity Manager, that has a PDO database connection inside which can not be persisted by the application server between requests. Internally PHP serializes the SFSB, which makes it impossible to hold resources or PHP class instances.
+
+#### Pre-Detach Callback (SFSB only)
+
+This is the reverse callback for `post-attach` and will be invoked by the container after the SFSB has been loaded from the internal Stackable instance. If you've destroyed a resource in the `post-attach` callback this will be the right place to restore it.
 
 #### Example
 
