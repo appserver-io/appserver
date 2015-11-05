@@ -166,6 +166,14 @@ The `@PostConstruct` annotation marks a method as `post-construct` lifecycle cal
 
 The `@PreDestroy` annotation marks a method as `pre-destroy` lifecycle callback and has to be set at the methods DocBlock. The annotation can be used on all `Server-Side Component Types` and doesn't accept any attributes.
 
+### Pre-Attach Callback (@PreAttach)
+
+The `@PreAttach` annotation marks a method as `pre-attach` lifecycle callback and has to be set at the methods DocBlock. The annotation can be used on `SFSBs` only and doesn't accept any attributes.
+
+### Post-Detach Callback (@PostDetach)
+
+The `@PostDetach` annotation marks a method as `post-detach` lifecycle callback and has to be set at the methods DocBlock. The annotation can be used on `SFSBs` only and doesn't accept any attributes.
+
 ### Enterprise Beans (@EnterpriseBean)
 
 The `@EnterpriseBean` annotation is used to inject components into other components.
