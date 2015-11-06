@@ -501,7 +501,7 @@ file would look like this.
 > In order to extend or override an existing configuration, it is necessary to use the sames names of the container or 
 > server you wish to extend. If you do not use the same container or server names, you will end up creating a **NEW** 
 > container or server, which is probably not the outcome you expected. To find the container or server names, please 
-> refer to the application server's default configuration.
+> refer to the application server's default configuration in `etc/appserver/appserver.xml`.
 
 ## Module Configuration
 
