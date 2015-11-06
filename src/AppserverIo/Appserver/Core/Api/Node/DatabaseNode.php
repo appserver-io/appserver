@@ -89,6 +89,14 @@ class DatabaseNode extends AbstractNode
     protected $databaseHost;
 
     /**
+     * The database port information.
+     *
+     * @var \AppserverIo\Appserver\Core\Api\Node\DatabasePortNode
+     * @AS\Mapping(nodeName="databasePort", nodeType="AppserverIo\Appserver\Core\Api\Node\DatabasePortNode")
+     */
+    protected $databasePort;
+
+    /**
      * The database charset information.
      *
      * @var \AppserverIo\Appserver\Core\Api\Node\CharsetNode
@@ -180,6 +188,16 @@ class DatabaseNode extends AbstractNode
     public function getDatabaseHost()
     {
         return $this->databaseHost;
+    }
+
+    /**
+     * Returns the database port information.
+     *
+     * @return \AppserverIo\Appserver\Core\Api\Node\DatabasePortNode The database port information
+     */
+    public function getDatabasePort()
+    {
+        return $this->databasePort;
     }
 
     /**

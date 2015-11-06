@@ -7,6 +7,7 @@
 ## Features
 
 * Optimize MQ and enable configuration through context.xml file
+* Make Persistence Unit database port configurable
 
 # Version 1.1.0-beta7
 
