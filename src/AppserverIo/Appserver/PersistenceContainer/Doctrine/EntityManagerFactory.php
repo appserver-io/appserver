@@ -170,6 +170,11 @@ class EntityManagerFactory
             $connectionParameters['host'] = $databaseHostNode->getNodeValue()->__toString();
         }
 
+        // add database port if using another PDO driver than sqlite
+        if ($databasePortNode = $databaseNode->getDatabasePort()) {
+            $connectionParameters['port'] = $databasePortNode->getNodeValue()->__toString();
+        }
+
         // add charset, if specified
         if ($charsetNode = $databaseNode->getCharset()) {
             $connectionParameters['charset'] = $charsetNode->getNodeValue()->__toString();

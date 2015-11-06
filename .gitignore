@@ -8,6 +8,7 @@
 /vendor
 /webapps
 /deploy/*.phar*
+/tmp
 /var/log
 /var/tmp/example
 /build.properties
