@@ -21,7 +21,6 @@
 namespace AppserverIo\Appserver\ServletEngine;
 
 use AppserverIo\Logger\LoggerUtils;
-use AppserverIo\Server\Exceptions\ModuleException;
 use AppserverIo\Psr\HttpMessage\ResponseInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\ServletEngine\Http\Response;

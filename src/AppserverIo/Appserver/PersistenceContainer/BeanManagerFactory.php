@@ -52,9 +52,6 @@ class BeanManagerFactory implements ManagerFactoryInterface
     public static function visit(ApplicationInterface $application, ManagerNodeInterface $managerConfiguration)
     {
 
-        // load the registered loggers
-        $loggers = $application->getInitialContext()->getLoggers();
-
         // initialize the bean locator
         $beanLocator = new BeanLocator();
 

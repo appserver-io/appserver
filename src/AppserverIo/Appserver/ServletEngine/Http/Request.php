@@ -21,7 +21,6 @@
 namespace AppserverIo\Appserver\ServletEngine\Http;
 
 use AppserverIo\Http\HttpProtocol;
-use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Server\Dictionaries\ServerVars;
 use AppserverIo\Psr\Context\ContextInterface;
 use AppserverIo\Psr\HttpMessage\PartInterface;

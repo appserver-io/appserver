@@ -20,7 +20,6 @@
 
 namespace AppserverIo\Appserver\MessageQueue;
 
-use AppserverIo\Messaging\Utils\StateActive;
 use AppserverIo\Messaging\MessageQueueProtocol;
 use AppserverIo\Appserver\ServletEngine\ValveInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
@@ -59,9 +58,8 @@ class MessageQueueValve implements ValveInterface
         // unpack the message
         $message = MessageQueueProtocol::unpack($servletRequest->getBodyContent());
 
-        // load message queue name and priority key
+        // load message queue name
         $queueName = $message->getDestination()->getName();
-        $priorityKey = $message->getPriority();
 
         // lookup the message queue manager and attach the message
         $queueManager = $application->search('QueueContextInterface');

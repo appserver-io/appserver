@@ -20,16 +20,14 @@
 
 namespace AppserverIo\Appserver\MessageQueue;
 
-use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Logger\LoggerUtils;
+use AppserverIo\Storage\GenericStackable;
+use AppserverIo\Messaging\Utils\PriorityKeys;
+use AppserverIo\Appserver\Core\AbstractDaemonThread;
 use AppserverIo\Psr\Pms\QueueInterface;
 use AppserverIo\Psr\Pms\MessageInterface;
 use AppserverIo\Psr\Pms\PriorityKeyInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
-use AppserverIo\Messaging\Utils\StateActive;
-use AppserverIo\Messaging\Utils\PriorityKeys;
-use AppserverIo\Appserver\Core\AbstractDaemonThread;
-use Psr\Log\LogLevel;
 
 /**
  * A message queue wrapper implementation.

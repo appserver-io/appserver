@@ -291,7 +291,7 @@ class AspectManager implements AspectManagerInterface, ManagerInterface
                 $aspect->setName($xmlPath);
 
                 // check if we got some pointcuts
-                foreach ($config->xpath('/a:pointcuts/a:pointcut') as $key => $pointcutConfiguration) {
+                foreach ($config->xpath('/a:pointcuts/a:pointcut') as $pointcutConfiguration) {
                     // build up the pointcut and add it to the collection
                     $pointcut = new Pointcut();
                     $pointcut->setAspectName($aspect->getName());
@@ -303,7 +303,7 @@ class AspectManager implements AspectManagerInterface, ManagerInterface
                 }
 
                 // check if we got some advices
-                foreach ($config->xpath('/a:pointcuts/a:advice') as $key => $adviceConfiguration) {
+                foreach ($config->xpath('/a:pointcuts/a:advice') as $adviceConfiguration) {
                     // build up the advice and add it to the aspect
                     $advice = new Advice();
                     $advice->setAspectName((string)$adviceConfiguration->{'advice-aspect'});

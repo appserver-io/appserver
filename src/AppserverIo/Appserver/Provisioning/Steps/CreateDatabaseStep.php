@@ -20,10 +20,6 @@
 
 namespace AppserverIo\Appserver\Provisioning\Steps;
 
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Tools\Setup;
-use Doctrine\ORM\Tools\SchemaTool;
-
 /**
  * An step implementation that creates a database based on the specified datasource.
  *

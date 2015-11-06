@@ -24,7 +24,6 @@
 namespace AppserverIo\Appserver\Core;
 
 use AppserverIo\Psr\Naming\NamingException;
-use AppserverIo\Lang\Reflection\ReflectionClass;
 use AppserverIo\Psr\EnterpriseBeans\Description\EpbReferenceDescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\ResReferenceDescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\PersistenceUnitReferenceDescriptorInterface;
@@ -70,14 +69,14 @@ abstract class AbstractEpbManager extends AbstractManager
             // prepare the bean name
             if ($beanName = $epbReference->getBeanName()) {
                 // query whether we've a local business interface
-                if ($epbReference->getBeanInterface() === ($regName = sprintf('%sLocal', $beanName))) {
+                if ($epbReference->getBeanInterface() === sprintf('%sLocal', $beanName)) {
                     // bind the local business interface of the bean to the appliations naming directory
-                    $application->getNamingDirectory()->bind($uri, array(&$this, 'lookupProxy'), array($regName = sprintf('%s/local', $beanName)));
+                    $application->getNamingDirectory()->bind($uri, array(&$this, 'lookupProxy'), array(sprintf('%s/local', $beanName)));
 
                 // query whether we've a remote business interface
-                } elseif ($epbReference->getBeanInterface() === ($regName = sprintf('%sRemote', $beanName))) {
+                } elseif ($epbReference->getBeanInterface() === (sprintf('%sRemote', $beanName))) {
                     // bind the remote business interface of the bean to the applications naming directory
-                    $application->getNamingDirectory()->bind($uri, array(&$this, 'lookupProxy'), array($regName = sprintf('%s/remote', $beanName)));
+                    $application->getNamingDirectory()->bind($uri, array(&$this, 'lookupProxy'), array(sprintf('%s/remote', $beanName)));
 
                 // at least, we need a business interface
                 } else {

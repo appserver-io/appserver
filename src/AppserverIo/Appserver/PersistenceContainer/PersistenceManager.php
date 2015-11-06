@@ -20,22 +20,14 @@
 
 namespace AppserverIo\Appserver\PersistenceContainer;
 
-use Doctrine\ORM\Tools\Setup;
-use Doctrine\ORM\ORMException;
-use Doctrine\ORM\EntityManager;
-use Doctrine\Common\EventManager;
-use Doctrine\Common\Annotations\AnnotationRegistry;
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Configuration\Configuration;
 use AppserverIo\Appserver\Core\AbstractManager;
 use AppserverIo\Appserver\Core\Api\Node\PersistenceNode;
-use AppserverIo\Description\PersistenceUnitReferenceDescriptor;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Psr\EnterpriseBeans\PersistenceContextInterface;
 use AppserverIo\Psr\EnterpriseBeans\EntityManagerLookupException;
-use AppserverIo\Appserver\Core\Api\Node\MetadataConfigurationNode;
 use AppserverIo\Appserver\Core\Api\Node\PersistenceUnitNodeInterface;
-use AppserverIo\Appserver\PersistenceContainer\Doctrine\EntityManagerFactory;
 
 /**
  * The persistence manager handles the entity managers registered for the application.

@@ -20,7 +20,6 @@
 
 namespace AppserverIo\Appserver\Core\Api\Mock;
 
-use AppserverIo\Appserver\Core\InitialContext;
 use AppserverIo\Configuration\Interfaces\NodeInterface;
 
 /**

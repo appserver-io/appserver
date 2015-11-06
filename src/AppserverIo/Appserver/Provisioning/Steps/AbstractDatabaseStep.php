@@ -23,8 +23,6 @@ namespace AppserverIo\Appserver\Provisioning\Steps;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\Setup;
 use Doctrine\ORM\Tools\SchemaTool;
-use Doctrine\ORM\Tools\Doctrine\ORM\Tools;
-use Doctrine\Common\Annotations\AnnotationRegistry;
 
 /**
  * An abstract database step implementation.

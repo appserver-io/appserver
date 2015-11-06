@@ -115,9 +115,6 @@ class Ssh extends \Thread implements ConsoleInterface
         // we need the autloader again
         require SERVER_AUTOLOADER;
 
-        // create a reference to the application server instance
-        $applicationServer = $this->applicationServer;
-
         require_once 'vendor/fpoirotte/pssht/src/CLI.php';
 
         main();

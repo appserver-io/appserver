@@ -22,12 +22,9 @@ namespace AppserverIo\Appserver\Core\Api;
 
 use AppserverIo\Configuration\ConfigurationException;
 use AppserverIo\Appserver\Core\Api\Node\ContextNode;
+use AppserverIo\Appserver\Core\Api\Node\ContainersNode;
 use AppserverIo\Appserver\Core\Api\Node\DeploymentNode;
 use AppserverIo\Appserver\Core\Interfaces\ContainerInterface;
-use AppserverIo\Psr\Application\ApplicationInterface;
-use AppserverIo\Appserver\Core\Api\Node\ServerNode;
-use AppserverIo\Appserver\Core\Api\Node\ContainersNode;
-use AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface;
 
 /**
  * A service that handles deployment configuration data.

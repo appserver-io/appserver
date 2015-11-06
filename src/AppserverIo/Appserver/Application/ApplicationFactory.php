@@ -20,7 +20,6 @@
 
 namespace AppserverIo\Appserver\Application;
 
-use AppserverIo\Storage\StackableStorage;
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Appserver\Core\Api\Node\ContextNode;
 use AppserverIo\Appserver\Core\Interfaces\ContainerInterface;

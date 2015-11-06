@@ -23,8 +23,6 @@ namespace AppserverIo\Appserver\Core\Api;
 
 use AppserverIo\Appserver\Core\Api\Mock\MockInitialContext;
 use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
-use org\bovigo\vfs\vfsStream;
-
 /**
  * Unit tests for our abstract service implementation.
  *
