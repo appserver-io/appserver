@@ -498,9 +498,10 @@ file would look like this.
 </containers>
 ```
 
-> To extend or override an existing configuration, it is necessary to use the same container/server names as the ones
-> you want to extend or override. If not, you will create a **NEW** container or server, what probably is not what you
-> want to do. So it'll be a real good idea to have a look at the application server's default configuration.
+> In order to extend or override an existing configuration, it is necessary to use the sames names of the container or 
+> server you wish to extend. If you do not use the same container or server names, you will end up creating a **NEW** 
+> container or server, which is probably not the outcome you expected. To find the container or server names, please 
+> refer to the application server's default configuration.
 
 ## Module Configuration
 
