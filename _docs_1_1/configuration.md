@@ -499,7 +499,7 @@ file would look like this.
 ```
 
 > To extend or override an existing configuration, it is necessary to use the same container/server names as the ones
-> you want to extend or override. If not, you probably create a new container or server, what probably is not what you
+> you want to extend or override. If not, you will create a **NEW** container or server, what probably is not what you
 > want to do. So it'll be a real good idea to have a look at the application server's default configuration.
 
 ## Module Configuration
