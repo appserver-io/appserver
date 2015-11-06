@@ -21,7 +21,6 @@
 
 namespace AppserverIo\Appserver\Core\Api;
 
-use AppserverIo\Appserver\Core\AbstractTest;
 use AppserverIo\Appserver\Core\Api\Node\AppNode;
 
 /**
@@ -226,7 +225,7 @@ class AppServiceTest extends AbstractServicesTest
             ->method('flagArchive');
         $this->appService->injectExtractor($mockExtractor);
 
-        $this->appService->deploy($appNode = new AppNode(__METHOD__, '/opt/appserver/targetwebapp'));
+        $this->appService->deploy(new AppNode(__METHOD__, '/opt/appserver/targetwebapp'));
     }
 
     /**

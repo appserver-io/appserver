@@ -20,8 +20,6 @@
 
 namespace AppserverIo\Appserver\Provisioning\Steps;
 
-use Doctrine\ORM\Tools\SchemaTool;
-
 /**
  * An step implementation that drops a database based on the specified datasource.
  *

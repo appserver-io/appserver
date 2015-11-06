@@ -21,8 +21,6 @@
 namespace AppserverIo\Appserver\Core\Listeners;
 
 use League\Event\EventInterface;
-use AppserverIo\Appserver\Core\LoggerFactory;
-use AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface;
 
 /**
  * Listener that stops all services for the runlevel passed to the handle() method.

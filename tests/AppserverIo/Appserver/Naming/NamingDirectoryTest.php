@@ -88,7 +88,7 @@ class NamingDirectoryTest extends \PHPUnit_Framework_TestCase
     {
 
         // create the one level tree
-        $level1 = $this->namingDirectory->createSubdirectory('level1');
+        $this->namingDirectory->createSubdirectory('level1');
 
         // bind a value and search recursive
         $this->namingDirectory->bind($name = 'php:level1/test', $value = 'testValue');
@@ -106,7 +106,7 @@ class NamingDirectoryTest extends \PHPUnit_Framework_TestCase
 
         // create the two level tree
         $level1 = $this->namingDirectory->createSubdirectory('level1');
-        $level2 = $level1->createSubdirectory('level2');
+        $level1->createSubdirectory('level2');
 
         // bind a value and search recursive
         $this->namingDirectory->bind($name = 'php:level1/level2/test', $value = 'testValue');
@@ -125,7 +125,7 @@ class NamingDirectoryTest extends \PHPUnit_Framework_TestCase
         // create the three level tree
         $level1 = $this->namingDirectory->createSubdirectory('level1');
         $level2 = $level1->createSubdirectory('level2');
-        $level3 = $level2->createSubdirectory('level3');
+        $level2->createSubdirectory('level3');
 
         // bind a value and search recursive
         $this->namingDirectory->bind($name = 'php:level1/level2/level3/test', $value = 'testValue');
@@ -143,7 +143,7 @@ class NamingDirectoryTest extends \PHPUnit_Framework_TestCase
         // create a three level directory
         $level1 = $this->namingDirectory->createSubdirectory('level1');
         $level2 = $level1->createSubdirectory('level2');
-        $level3 = $level2->createSubdirectory('level3');
+        $level2->createSubdirectory('level3');
 
         // search for the last created subdirectory
         $this->assertInstanceOf('AppserverIo\Psr\Naming\NamingDirectoryInterface', $this->namingDirectory->search('php:level1/level2/level3'));

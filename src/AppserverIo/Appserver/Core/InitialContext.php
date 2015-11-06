@@ -22,7 +22,6 @@ namespace AppserverIo\Appserver\Core;
 use AppserverIo\Appserver\Core\Interfaces\SystemConfigurationInterface;
 use AppserverIo\Storage\StorageInterface;
 use AppserverIo\Appserver\Core\InitialContext\ContextKeys;
-use AppserverIo\Appserver\Core\Interfaces\ClassLoaderInterface;
 use AppserverIo\Appserver\Application\Interfaces\ContextInterface;
 
 /**

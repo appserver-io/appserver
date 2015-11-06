@@ -59,7 +59,7 @@ class DoctrineEntityManagerDecorator extends EntityManagerDecorator
 
         // query whether we've a wrapped instance
         if ($wrapped = $this->getWrapped()) {
-            $this->getWrapped()->getConnection()->close();
+            $wrapped->getConnection()->close();
         }
     }
 

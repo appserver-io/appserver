@@ -21,15 +21,12 @@
 namespace AppserverIo\Appserver\Core\Listeners;
 
 use League\Event\EventInterface;
+use AppserverIo\Psr\Naming\NamingException;
 use AppserverIo\Configuration\Configuration;
-use AppserverIo\Appserver\Core\LoggerFactory;
 use AppserverIo\Appserver\Core\InitialContext;
-use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
-use AppserverIo\Appserver\Core\Api\Node\ParamNode;
 use AppserverIo\Appserver\Core\Api\Node\AppserverNode;
 use AppserverIo\Appserver\Core\Api\ConfigurationService;
 use AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface;
-use AppserverIo\Psr\Naming\NamingException;
 
 /**
  * Listener that loads and initializes the system configuration from the XML file.

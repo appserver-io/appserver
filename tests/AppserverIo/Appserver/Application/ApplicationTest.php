@@ -25,9 +25,6 @@ use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Storage\StackableStorage;
 use AppserverIo\Appserver\Application\Mock\MockManager;
 use AppserverIo\Appserver\Application\Mock\MockClassLoader;
-use AppserverIo\Appserver\Application\Mock\MockSystemConfiguration;
-use AppserverIo\Psr\Application\ApplicationInterface;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\AnnotationKeys;
 
 /**
  * Test implementation for the threaded application implementation.

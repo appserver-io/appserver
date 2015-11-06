@@ -67,6 +67,10 @@ class ExecCliStep extends AbstractStep
             // prepare the PHP executable, the script and the arguments
             $toExecute = $this->getPhpExecutable() . ' -f ' . $script . $args;
 
+            // initialize exec() output and return var
+            $output = array();
+            $returnVar = 0;
+
             // execute the script on the command line
             exec($toExecute, $output, $returnVar);
 

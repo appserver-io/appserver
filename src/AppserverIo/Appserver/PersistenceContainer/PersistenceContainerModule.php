@@ -21,7 +21,6 @@
 namespace AppserverIo\Appserver\PersistenceContainer;
 
 use AppserverIo\Appserver\ServletEngine\ServletEngine;
-use AppserverIo\Server\Interfaces\ServerContextInterface;
 
 /**
  * A persistence container module implementation.

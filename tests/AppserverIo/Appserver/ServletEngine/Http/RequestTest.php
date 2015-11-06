@@ -22,8 +22,6 @@
 
 namespace AppserverIo\Appserver\ServletEngine\Http;
 
-use AppserverIo\Http\HttpProtocol;
-
 /**
  * Test for the request implementation.
  *

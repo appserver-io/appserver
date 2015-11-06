@@ -21,9 +21,8 @@
 namespace AppserverIo\Appserver\Core\Listeners;
 
 use League\Event\EventInterface;
-use AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface;
 use AppserverIo\Appserver\Core\LoggerFactory;
-use AppserverIo\Psr\Naming\NamingException;
+use AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface;
 
 /**
  * Listener that loads and initializes the system logger instances.

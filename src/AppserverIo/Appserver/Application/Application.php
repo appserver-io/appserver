@@ -32,7 +32,6 @@ use AppserverIo\Appserver\Core\Api\Node\ManagerNodeInterface;
 use AppserverIo\Appserver\Core\Api\Node\ProvisionerNodeInterface;
 use AppserverIo\Appserver\Core\Api\Node\ClassLoaderNodeInterface;
 use AppserverIo\Appserver\Application\Interfaces\ContextInterface;
-use AppserverIo\Psr\Naming\NamingException;
 use AppserverIo\Psr\Naming\NamingDirectoryInterface;
 use AppserverIo\Psr\Context\ContextInterface as Context;
 use AppserverIo\Psr\Application\ManagerInterface;

@@ -19,8 +19,6 @@
  */
 namespace AppserverIo\Appserver\Core;
 
-use AppserverIo\Appserver\Core\Mock\MockDeployment;
-
 /**
  * Test for the abstract deployment class.
  *

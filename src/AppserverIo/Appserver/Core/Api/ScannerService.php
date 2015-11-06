@@ -19,12 +19,8 @@
  */
 namespace AppserverIo\Appserver\Core\Api;
 
-use AppserverIo\Configuration\ConfigurationException;
-use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\Core\Api\Node\CronNode;
-use AppserverIo\Appserver\Core\Api\Node\ContextNode;
-use AppserverIo\Appserver\Core\Api\Node\DeploymentNode;
-use AppserverIo\Appserver\Core\Interfaces\ContainerInterface;
+use AppserverIo\Configuration\ConfigurationException;
 
 /**
  * A service that handles scanner configuration data.

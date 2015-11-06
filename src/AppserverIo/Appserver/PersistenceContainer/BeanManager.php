@@ -121,18 +121,6 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface
     }
 
     /**
-     * Injects the stateful session bean map factory.
-     *
-     * @param \AppserverIo\Appserver\PersistenceContainer\StatefulSessionBeanMapFactory $statefulSessionBeanMapFactory The factory instance
-     *
-     * @return void
-     */
-    public function injectStatefulSessionBeanMapFactory(StatefulSessionBeanMapFactory $statefulSessionBeanMapFactory)
-    {
-        $this->statefulSessionBeanMapFactory = $statefulSessionBeanMapFactory;
-    }
-
-    /**
      * Injects the object factory instance.
      *
      * @param \AppserverIo\Appserver\PersistenceContainer\ObjectFactoryInterface $objectFactory The object factory instance
@@ -357,16 +345,6 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface
     }
 
     /**
-     * Returns the stateful session bean map factory.
-     *
-     * @return \AppserverIo\Appserver\PersistenceContainer\StatefulSessionBeanMapFactory The factory instance
-     */
-    public function getStatefulSessionBeanMapFactory()
-    {
-        return $this->statefulSessionBeanMapFactory;
-    }
-
-    /**
      * Returns the object factory instance.
      *
      * @return \AppserverIo\Appserver\PersistenceContainer\ObjectFactoryInterface The object factory instance
@@ -442,6 +420,9 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface
 
         // create a unique SFSB identifier
         $identifier = SessionBeanUtil::createIdentifier($sessionId, $className);
+
+        // load the map with the SFSBs
+        $sessionBeans = $this->getStatefulSessionBeans();
 
         // query whether the SFSB with the passed identifier exists
         if ($sessionBeans->exists($identifier)) {
