@@ -14,6 +14,8 @@ subNav:
     href: virtual-hosts
   - title: Environment Variables
     href: environment-variables
+  - title: Headers
+    href: headers
   - title: Authentications
     href: authentications
   - title: Accesses
@@ -26,6 +28,8 @@ subNav:
     href: rewrites
   - title: Auto Index
     href: auto-index
+  - title: Proxy
+    href: proxy
 permalink: /get-started/documentation/1.1/webserver.html
 ---
 
