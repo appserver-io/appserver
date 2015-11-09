@@ -12,7 +12,7 @@ timezone: Europe/Berlin
 future: false
 port: 4000
 host: 0.0.0.0
-baseurl: "appserver-io.appserver"
+baseurl: "/appserver-io.appserver/"
 url: "http://appserver.io"
 
 collections:
