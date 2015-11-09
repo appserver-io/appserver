@@ -58,6 +58,15 @@ appserver.io and PHP and you´re done!
 </div>
 </section>
 
+
+<section class="text-center">
+<div class="container">
+<h2><i class="fa fa-dot-circle-o"></i>&nbsp;&nbsp;Learn more about our target groups</h2>
+<p><br/></p>
+{% include widgets/boxes.html boxes = page.boxes-targetgroups %}
+</div>
+</section>
+
 <section class="grey">
 <div class="container">
 
@@ -150,14 +159,6 @@ appserver.io and PHP and you´re done!
 </tbody>
 </table>
 </div>
-</div>
-</section>
-
-<section class="text-center">
-<div class="container">
-<h2><i class="fa fa-dot-circle-o"></i>&nbsp;&nbsp;Learn more about our target groups</h2>
-<p><br/></p>
-{% include widgets/boxes.html boxes = page.boxes-targetgroups %}
 </div>
 </section>
 
