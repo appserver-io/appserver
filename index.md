@@ -9,7 +9,7 @@ slider:
   - title: The Iron-Knight has arrived!<br/><small>Get the Version 1.1.0 NOW!</small>
     link-href: /downloads.html
     link-label: Download
-    img: /assets/img/appserver-header-image-iron-knight-logo.png
+    img: /assets/img/appserver-header-image-iron-knight.jpg
     countdown: false
   - title: Apply for a <br>revolutionarypartnership
     link-href: /partners.html
