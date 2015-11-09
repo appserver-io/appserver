@@ -18,10 +18,10 @@
             <div class="fill" style="background-image: url('{{ slide.img | prepend: site.baseurl }}');opacity:.75;"></div>
             <div class="carousel-caption">
                 <div class="row">
-                    <div class="col-md-3">
-                        <img class="img-responsive img-hover" src="https://raw.githubusercontent.com/zelgerj/appserver-io-apps.welcome-page/master/logo_iron-knight_darwin_x86_64.png">
+                    <div class="col-md-6">
+                        <img src="https://raw.githubusercontent.com/zelgerj/appserver-io-apps.welcome-page/master/logo_iron-knight_darwin_x86_64.png">
                     </div>
-                    <div class="col-md-9">
+                    <div class="col-md-6">
                         <h1>{{ slide.title }}</h1>
                         {% if slide.countdown %} {% include widgets/countdown.html %} {% endif %}
                         {% if slide.link-label %}<a href="{{ slide.link-href | prepend: site.baseurl }}" class="btn btn-lg btn-info-highlight"><i class="fa fa-download fa-lg"></i>&nbsp;&nbsp;{{ slide.link-label }} Version {{ site.appserver_version }}</a>{% endif %}
