@@ -134,18 +134,22 @@ The next section elaborates on the list of modules provided for the Webserver by
 ```xml
 <modules>
     <!-- REQUEST_POST hook -->
-    <module type="\AppserverIo\WebServer\Modules\VirtualHostModule"/>
-    <module type="\AppserverIo\WebServer\Modules\AuthenticationModule"/>
+    <module type="\AppserverIo\WebServer\Modules\AuthenticationModule" />
+    <module type="\AppserverIo\WebServer\Modules\VirtualHostModule" />
     <module type="\AppserverIo\WebServer\Modules\EnvironmentVariableModule" />
-    <module type="\AppserverIo\WebServer\Modules\RewriteModule"/>
-    <module type="\AppserverIo\WebServer\Modules\DirectoryModule"/>
-    <module type="\AppserverIo\WebServer\Modules\AccessModule"/>
-    <module type="\AppserverIo\WebServer\Modules\CoreModule"/>
-    <module type="\AppserverIo\WebServer\Modules\PhpModule"/>
-    <module type="\AppserverIo\WebServer\Modules\FastCgiModule"/>
-    <module type="\AppserverIo\Appserver\ServletEngine\ServletEngine" />
+    <module type="\AppserverIo\WebServer\Modules\RewriteMapModule" />
+    <module type="\AppserverIo\WebServer\Modules\RewriteModule" />
+    <module type="\AppserverIo\WebServer\Modules\DirectoryModule" />
+    <module type="\AppserverIo\WebServer\Modules\AccessModule" />
+    <module type="\AppserverIo\WebServer\Modules\LocationModule" />
+    <module type="\AppserverIo\WebServer\Modules\AutoIndexModule" />
+    <module type="\AppserverIo\WebServer\Modules\CoreModule" />
+    <module type="\AppserverIo\WebServer\Modules\PhpModule" />
+    <module type="\AppserverIo\WebServer\Modules\FastCgiModule" />
+    <module type="\AppserverIo\WebServer\Modules\ProxyModule" />
     <!-- RESPONSE_PRE hook -->
-    <module type="\AppserverIo\WebServer\Modules\DeflateModule"/>
+    <module type="\AppserverIo\WebServer\Modules\HeaderModule" />
+    <module type="\AppserverIo\WebServer\Modules\DeflateModule" />
     <!-- RESPONSE_POST hook -->
     <module type="\AppserverIo\Appserver\Core\Modules\ProfileModule"/>
 </modules>
