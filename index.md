@@ -161,16 +161,6 @@ appserver.io and PHP and you´re done!
 </div>
 </section>
 
-<section class="grey text-center">
-<div class="container">
-<h2><i class="fa fa-video-camera"></i>&nbsp;&nbsp;Watch the Video from the Imagine Conference</h2>
-<p><br/></p>
-<div class="elastic-video">
-<iframe width="854" height="510" src="//www.youtube.com/embed/D5rkJ1bznKo#t=10" frameborder="0" allowfullscreen></iframe>
-</div>
-</div>
-</section>
-
 <!--
 ## <i class="fa fa-hand-o-right"></i> Lightning speed is only one part of the benefits of appserver.io...
 <p><br/></p>
