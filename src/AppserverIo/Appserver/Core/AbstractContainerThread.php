@@ -105,6 +105,9 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
         // create a new API app service instance
         $this->service = $this->newService('AppserverIo\Appserver\Core\Api\AppService');
 
+        // query whether the container's directories exists and are readable
+        $this->validateDirectories();
+
         // initialize the naming directory with the environment data
         $this->namingDirectory->bind('php:env/appBase', $this->getAppBase());
         $this->namingDirectory->bind('php:env/tmpDirectory', $this->getTmpDir());
@@ -492,6 +495,39 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
             if ($type === E_ERROR || $type === E_USER_ERROR) {
                 $this->getInitialContext()->getSystemLogger()->critical($message);
             }
+        }
+    }
+
+    /**
+     * Validates that the container's application and temporary directory is available.
+     *
+     * @return void
+     */
+    protected function validateDirectories()
+    {
+
+        // query whether the container's application directory is available and readable
+        $appBase = $this->getAppBase();
+        if (!is_dir($appBase) || !is_readable($appBase)) {
+            $this->getInitialContext()->getSystemLogger()->critical(
+                sprintf(
+                    'Base directory (appBase) %s of container %s is no directory or not readable, can\'t deploy applications',
+                    $appBase,
+                    $this->getName()
+                )
+            );
+        }
+
+        // query whether the container's temporary directory is available and readable
+        $tmpDir = $this->getTmpDir();
+        if (!is_dir($tmpDir) || !is_readable($tmpDir)) {
+            $this->getInitialContext()->getSystemLogger()->critical(
+                sprintf(
+                    'Temporary directory (tmpDir) %s of container %s is no directory or not readable!',
+                    $tmpDir,
+                    $this->getName()
+                )
+            );
         }
     }
 }
