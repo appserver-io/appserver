@@ -1,3 +1,13 @@
+# Version 1.1.0
+
+## Bugfixes
+
+* None
+
+## Features
+
+* None
+
 # Version 1.1.0-rc1
 
 ## Bugfixes
