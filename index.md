@@ -11,7 +11,7 @@ slider:
     link-label: Download
     img: /assets/img/appserver-header-image-iron-knight.jpg
     countdown: false
-  - title: Apply for a <br>revolutionarypartnership
+  - title: Apply for a <br>partnership
     link-href: /partners.html
     link-label: Apply now
     img: assets/img/slider_partnership-01.png
