@@ -24,9 +24,9 @@
                     <div class="col-md-9">
                         <h1>{{ slide.title }}</h1>
                         {% if slide.countdown %} {% include widgets/countdown.html %} {% endif %}
-                        {% if slide.link-label %}<a href="{{ slide.link-href | prepend: site.baseurl }}" class="btn btn-lg btn-info-highlight"><i class="fa fa-download fa-lg"></i>&nbsp;&nbsp;{{ slide.link-label }}</a>{% endif %}
+                        {% if slide.link-label %}<a href="{{ slide.link-href | prepend: site.baseurl }}" class="btn btn-lg btn-info-highlight"><i class="fa fa-download fa-lg"></i>&nbsp;&nbsp;{{ slide.link-label }} Version {{ site.appserver_version }}</a>{% endif %}
                         <br/><br/>
-                        <p class="carousel-info">Version {{ site.appserver_version }}</p>
+                        <p class="carousel-info"></p>
                     </div>
                 </div>
             </div>
