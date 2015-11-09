@@ -6,12 +6,12 @@ meta_description: Next-generation PHP infrastructure consisting of a lightning f
 position: 0
 permalink: /
 slider:
-  - title: Stable version 1.0.6 is OUT!<br/><small>Get the revolution NOW!</small>
+  - title: The Iron-Knight has arrived!<br/><small>Get the Version 1.1.0 NOW!</small>
     link-href: /downloads.html
     link-label: Download
-    img: /assets/img/appserver-header-image.jpg
+    img: /assets/img/appserver-header-image-iron-knight.jpg
     countdown: false
-  - title: Apply for a<br>revolutionary<br>partnership
+  - title: Apply for a <br>revolutionarypartnership
     link-href: /partners.html
     link-label: Apply now
     img: assets/img/slider_partnership-01.png
