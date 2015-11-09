@@ -169,7 +169,9 @@ All modules are described in the overview below.
 | `CoreModule`                | HTTP server features, which are always available, such as serving static resources and finding defined file handlers. |
 | `PhpModule`                 | Acts like a classic PHP Webserver module (such as `mod_php` for apache) which calls and runs your requested PHP scripts in an isolated context with all globals (such as `$_SERVER`, `$_GET`, `$_POST` etc.) prepared in the common way. |
 | `FastCgiModule`             | The Module allows you to connect several FastCGI backends (such as `php-fpm` or `hhvm`) based on configured file-handlers. |
+| `ProxyModule`               | A classic proxy module that allows to make indirect network connections to other network services using userdefined upstream logic. |
 | `ServletEngine`             | The ServletEngine introduces a super fast and simple way to implement an entry point to handle HTTP requests, which allows you to execute all performance critical tasks. Please see [Servlet Engine](<{{ "/get-started/documentation/servlet-engine.html" | prepend: site.baseurl }}>) for full documentation. |
+| `HeaderModule`              | Overrides response headers via configuration |
 | `DeflateModule`             | It provides the `deflate` output filter that enables output from your server to be compressed before being sent to the client via the network. |
 | `ProfileModule`             | Allows request based realtime profiling using external tools like logstash and kibana. |
 
@@ -204,7 +206,6 @@ which has a different document root than the global configuration. The virtual h
 
 The `virtualHost` element can hold params, rewrite rules or environment variables which are only
 available for the specific host.
-
 
 The following examples should help you to configure your legacy application with default settings usually
 provided with the applications .htaccess files.
@@ -321,6 +322,26 @@ the following conditions:
   environment variables of the PHP process
 - Values will be treated as strings
 
+## Headers
+
+It's possible to override response headers by using the headers module configuration which can be used server-wide,
+in virtual-hosts or location based.
+
+```xml
+<headers>
+    <header type="response" name="Server" value="My Own Server" override="true"/>
+    <header type="response" name="X-Powered-By" value="appserver" append="true"/>
+</headers>
+```
+
+| Param      | Description |
+| ---------- | ----------- |
+| `type`     | The type represents either the request or the response header. It's only possible to modify the response headers at the moment.  |
+| `name`     | The name of the header to modify. |
+| `value`    | The value to set for the header given in param name. |
+| `override` | If the header should be set even if it exists before modifying it. |
+| `append`   | If the header should be appended if the same header exists before modifying it. |
+
 ## Authentications
 
 You can setup request URI based basic or digest authentication with regular expression support using authentications.
@@ -359,7 +380,7 @@ Here is an example of how to configure basic or digest auth.
 
 As you can see, every `authentication` node has its `URI` attribute. You can use a regular expressions in the attribute to match the request URI. The `URI` attribute also has some params, which are described below.
 
-| Module  | Description |
+| Param   | Description |
 | ------- | ----------- |
 | `type`  | The type represents an implementation of the `\AppserverIo\WebServer\Interfaces\AuthenticationInterface`, which provides specific auth mechanism. You can use the predelivered classes `\AppserverIo\WebServer\Authentication\BasicAuthentication` and `\AppserverIo\WebServer\Authentication\BasicAuthentication` for basic and digest authentication. |
 | `realm` | The string assigned by the server to identify the protection space of the request URI. |
@@ -600,3 +621,84 @@ We've two options, the index of a directory can come from:
 The two functions are separated so that you can completely remove (or replace) automatic index generation should you want to.
 
 Automatic index generation is enabled with using the `autoIndex` param on a location directive. See the [Locations](#locations) directive for more details.
+
+### Proxy
+
+The proxy module provides full proxy functionality by supporting userdefined logic in upstream types which can be
+used for implementing custom behaviour (e.g. load-balancing, round-roubin etc.).
+
+Any usage of proxy mechanism needs an upstream configuration at servers-level first. This is an example of how to configure an
+upstream backend for proxy usage with default upstream implementation ```\AppserverIo\WebServer\Upstreams\DefaultUpstream```
+which means simple randomized behaviour between all upstream backend nodes.
+
+```xml
+<servers>
+    <upstreams>
+        <upstream name="exampleBackend" type="\AppserverIo\WebServer\Upstreams\DefaultUpstream">
+            <servers xmlns="">
+                <server name="local-apache" type="\AppserverIo\WebServer\Upstreams\Servers\DefaultServer">
+                    <params xmlns="http://www.appserver.io/appserver">
+                        <param name="address" type="string">127.0.0.1</param>
+                        <param name="port" type="integer">80</param>
+                        <param name="weight" type="integer">1</param>
+                        <param name="maxFails" type="integer">10</param>
+                        <param name="failTimeout" type="integer">30</param>
+                        <param name="maxConns" type="integer">64</param>
+                        <param name="backup" type="boolean">false</param>
+                        <param name="down" type="boolean">false</param>
+                        <param name="resolve" type="boolean">false</param>
+                    </params>
+                </server>
+                <server name="local-nginx" type="\AppserverIo\WebServer\Upstreams\Servers\DefaultServer">
+                    <params xmlns="http://www.appserver.io/appserver">
+                        <param name="address" type="string">127.0.0.1</param>
+                        <param name="port" type="integer">8080</param>
+                        <param name="weight" type="integer">1</param>
+                        <param name="maxFails" type="integer">10</param>
+                        <param name="failTimeout" type="integer">30</param>
+                        <param name="maxConns" type="integer">64</param>
+                        <param name="backup" type="boolean">false</param>
+                        <param name="down" type="boolean">false</param>
+                        <param name="resolve" type="boolean">false</param>
+                    </params>
+                </server>
+            </servers>
+        </upstream>
+    </upstreams>
+    <server ...
+</servers>
+```
+
+There are several parameters available for each upstream backend server as you can see in the example configuration.
+
+| Param         | Description |
+| ------------- | ----------- |
+| `address`     | The ip address to the backend service. |
+| `port`        | The port to the the backend service. |
+| `weight`      | The weight of an upstream server as value for sorting etc. |
+| `maxFails`    | The max number of fails to accept from upstream server backend. |
+| `failTimeout` | The max timeout duration to accept when trying to connect to upstream server backend. |
+| `maxConns`    | The max connections to an upstream server backend. |
+| `backup`      | Defines the upstream server as backend which will be used when all other backends are down. |
+| `down`        | Defines the upstream server to be down per default. |
+| `resolve`     | If the upstream logic should resolve dns entries every time a request is processed. |
+
+As the proxy module acts like another file-handler within the server framework we have to use ```locations``` to
+make use of those configured upstreams. This examples shows how to activate the proxy module to use the upstream
+backend named ```exampleBackend``` given as upstream configuration example above. It'll be trigged by requests to urls
+like ```http://localhost/test/test.html```.
+
+```xml
+<locations>
+    <location condition="\/test\/.*">
+        <fileHandlers>
+            <fileHandler name="proxy" extension=".*">
+                <params>
+                    <param name="transport" type="string">tcp</param>
+                    <param name="upstream" type="string">exampleBackend</param>
+                </params>
+            </fileHandler>
+        </fileHandlers>
+    </location>
+</locations>
+```

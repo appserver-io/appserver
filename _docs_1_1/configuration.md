@@ -63,6 +63,42 @@ In this example, we use a shortened piece of the `appserver.xml` file to underst
         serverAdmin="info@appserver.io"
         serverSoftware="appserver/1.0.0.0 (darwin) PHP/5.5.21" />
 
+        <!-- This is an example of how to configure upstream backends for proxy usage. -->
+        <!--
+        <upstreams>
+            <upstream name="exampleBackend" type="\AppserverIo\WebServer\Upstreams\DefaultUpstream">
+                <servers xmlns="">
+                    <server name="local-apache" type="\AppserverIo\WebServer\Upstreams\Servers\DefaultServer">
+                        <params xmlns="http://www.appserver.io/appserver">
+                            <param name="address" type="string">127.0.0.1</param>
+                            <param name="port" type="integer">80</param>
+                            <param name="weight" type="integer">1</param>
+                            <param name="maxFails" type="integer">10</param>
+                            <param name="failTimeout" type="integer">30</param>
+                            <param name="maxConns" type="integer">64</param>
+                            <param name="backup" type="boolean">false</param>
+                            <param name="down" type="boolean">false</param>
+                            <param name="resolve" type="boolean">false</param>
+                        </params>
+                    </server>
+                    <server name="local-nginx" type="\AppserverIo\WebServer\Upstreams\Servers\DefaultServer">
+                        <params xmlns="http://www.appserver.io/appserver">
+                            <param name="address" type="string">127.0.0.1</param>
+                            <param name="port" type="integer">8080</param>
+                            <param name="weight" type="integer">1</param>
+                            <param name="maxFails" type="integer">10</param>
+                            <param name="failTimeout" type="integer">30</param>
+                            <param name="maxConns" type="integer">64</param>
+                            <param name="backup" type="boolean">false</param>
+                            <param name="down" type="boolean">false</param>
+                            <param name="resolve" type="boolean">false</param>
+                        </params>
+                    </server>
+                </servers>
+            </upstream>
+        </upstreams>
+        -->
+
         <servers>
 
           <!-- this is the default configuration for the HTTP server -->
@@ -97,6 +133,44 @@ In this example, we use a shortened piece of the `appserver.xml` file to underst
                     var/www/errors/error.phtml
                 </param>
             </params>
+
+            <!-- An example how to modify response headers -->
+            <!--
+            <headers>
+                <header type="response" name="Server" value="My Own Server" override="true"/>
+                <header type="response" name="X-Powered-By" value="appserver"/>
+            </headers>
+            -->
+
+            <!-- An example to activate a the auto index functionality on a custom directory -->
+            <!--
+            <locations>
+                <location condition="^\/example\/META-INF\/.*">
+                    <headers>
+                        <header type="response" name="X-Powered-By" value="autoIndex" append="true"/>
+                    </headers>
+                    <params>
+                        <param name="autoIndex" type="boolean">true</param>
+                    </params>
+                </location>
+            </locations>
+            -->
+
+            <!-- An example how to activate the proxy module to use an upstream backend -->
+            <!--
+            <locations>
+                <location condition="\/test\/.*">
+                    <fileHandlers>
+                        <fileHandler name="proxy" extension=".*">
+                            <params>
+                                <param name="transport" type="string">tcp</param>
+                                <param name="upstream" type="string">exampleBackend</param>
+                            </params>
+                        </fileHandler>
+                    </fileHandlers>
+                </location>
+            </locations>
+            -->
 
             <!-- define the environment variables -->
             <environmentVariables>
@@ -172,8 +246,12 @@ In this example, we use a shortened piece of the `appserver.xml` file to underst
               <module
                 type="\AppserverIo\WebServer\Modules\FastCgiModule"/>
               <module
+                type="\AppserverIo\WebServer\Modules\ProxyModule" />
+              <module
                 type="\AppserverIo\Appserver\ServletEngine\ServletEngine" />
               <!-- RESPONSE_PRE hook -->
+              <module
+                type="\AppserverIo\WebServer\Modules\HeaderModule" />
               <module
                 type="\AppserverIo\WebServer\Modules\DeflateModule"/>
               <!-- RESPONSE_POST hook -->
