@@ -6,7 +6,7 @@ meta_description: Next-generation PHP infrastructure consisting of a lightning f
 position: 0
 permalink: /
 slider:
-  - title: The Iron-Knight has arrived!<br/><small>Get the Version 1.1.0 NOW!</small>
+  - title: Get the Version 1.1.0 NOW!<br/><small>The Iron-Knight has arrived!</small>
     link-href: /downloads.html
     link-label: Download
     img: /assets/img/appserver-header-image-iron-knight.jpg
