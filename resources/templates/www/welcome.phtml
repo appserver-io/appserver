@@ -69,7 +69,7 @@ Setup::prepareContext();
         <div class="cover-container">
             <div class="masthead"><br/></div>
             <div class="inner cover">
-                <img class="appserver-logo" src="http://cdn.appserver.io/welcome-page/logo_iron-horse_debian_x86_64.png">
+                <img class="appserver-logo" src="http://cdn.appserver.io/welcome-page/logo_<?php echo str_replace(" ", "-", strtolower(Setup::getValue(SetupKeys::RELEASE_NAME))) . '_' . Setup::getLinuxDistro() . '_' . Setup::getValue(SetupKeys::OS_ARCHITECTURE) ?>.png">
                 <h1 class="cover-heading">Congratulations!</h1>
                 <p>
                 <h4><b>appserver.io <i><?php echo Setup::getValue(SetupKeys::RELEASE_NAME) ?></i></b> is up and running...</h4>
