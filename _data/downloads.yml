@@ -56,6 +56,6 @@
   id: centos7
   family: CentOS
   icon: fa-linux
-  dist-suffix: -15.el7.centos.x86_64.rpm
+  dist-suffix: -3.el7.centos.x86_64.rpm
   runtime-suffix: -26.el7.centos.x86_64.rpm
   separator: "-"
