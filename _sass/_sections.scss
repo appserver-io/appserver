@@ -52,6 +52,9 @@ section.midsizefont {
 section.black {
   @extend section.inverted;
   background-color: #000000;
+  i {
+    color: #FFFFFF;
+  }
 }
 
 section.blue {
