@@ -1,4 +1,4 @@
-**Runs and tested on Windows 7 (32-bit) and higher!**
+Works for Windows 7 (32-bit) and higher!
 
 As we deliver the Windows appserver as a .jar file you can download, a installed Java Runtime
 Environment (or JDK that is) is a vital requirement for using it. If the JRE/JDK is not installed
