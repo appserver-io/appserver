@@ -6,15 +6,11 @@ meta_description: Next-generation PHP infrastructure consisting of a lightning f
 position: 0
 permalink: /
 slider:
-  - title: Stable version 1.0.6 is OUT!<br/><small>Get the revolution NOW!</small>
+  - title: Iron-Knight has arrived!
     link-href: /downloads.html
+    link-detail-href: /release/2015/11/11/1.1.0-released.html
     link-label: Download
-    img: /assets/img/appserver-header-image.jpg
-    countdown: false
-  - title: Apply for a<br>revolutionary<br>partnership
-    link-href: /partners.html
-    link-label: Apply now
-    img: assets/img/slider_partnership-01.png
+    img: /assets/img/appserver-header-image-iron-knight.jpg
     countdown: false
 
 boxes-targetgroups:
@@ -36,12 +32,11 @@ boxes-targetgroups:
     link-label  : Learn more
 ---
 
-
-<section class="blue small midsizefont text-center">
+<section class="black small midsizefont text-center">
 <div class="container">
-<a href="{{ "/get-started/documentation.html" | prepend: site.baseurl }}" class="white"><i class="fa fa-book"></i> Documentation</a>&nbsp;&nbsp;·&nbsp;&nbsp;
-<a href="{{ site.github_repository }}"><i class="fa fa-github"></i> Github Project</a>&nbsp;&nbsp;·&nbsp;&nbsp;
-<a href="{{ site.github_gitter }}"><i class="fa fa-weixin"></i> Gitter Support Chat</a>
+<a href="{{ "/get-started/documentation.html" | prepend: site.baseurl }}" class="white"><i class="fa fa-book"></i>&nbsp;&nbsp;&nbsp;Documentation</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="{{ site.github_repository }}"><i class="fa fa-github"></i>&nbsp;&nbsp;&nbsp;Github Project</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="{{ site.github_gitter }}"><i class="fa fa-weixin"></i>&nbsp;&nbsp;&nbsp;Gitter Support Chat</a>
 </div>
 </section>
 
@@ -153,21 +148,12 @@ appserver.io and PHP and you´re done!
 </div>
 </section>
 
+
 <section class="text-center">
 <div class="container">
 <h2><i class="fa fa-dot-circle-o"></i>&nbsp;&nbsp;Learn more about our target groups</h2>
 <p><br/></p>
 {% include widgets/boxes.html boxes = page.boxes-targetgroups %}
-</div>
-</section>
-
-<section class="grey text-center">
-<div class="container">
-<h2><i class="fa fa-video-camera"></i>&nbsp;&nbsp;Watch the Video from the Imagine Conference</h2>
-<p><br/></p>
-<div class="elastic-video">
-<iframe width="854" height="510" src="//www.youtube.com/embed/D5rkJ1bznKo#t=10" frameborder="0" allowfullscreen></iframe>
-</div>
 </div>
 </section>
 
