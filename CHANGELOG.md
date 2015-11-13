@@ -1,3 +1,13 @@
+# Version 1.1.1
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Log a critical error message, if container's application and temporary directory are not available
+
 # Version 1.1.0
 
 ## Bugfixes
