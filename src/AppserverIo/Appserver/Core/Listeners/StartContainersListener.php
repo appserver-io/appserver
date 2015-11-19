@@ -46,6 +46,7 @@ class StartContainersListener extends AbstractSystemListener
     public function handle(EventInterface $event)
     {
         try {
+
             // load the application server instance
             /** @var \AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface $applicationServer */
             $applicationServer = $this->getApplicationServer();
@@ -54,8 +55,20 @@ class StartContainersListener extends AbstractSystemListener
             $applicationServer->getSystemLogger()->info($event->getName());
 
             // initialize the service to load the container configurations
+            /** @var \AppserverIo\Appserver\Core\Api\DeploymentService $deploymentService */
             $deploymentService = $applicationServer->newService('AppserverIo\Appserver\Core\Api\DeploymentService');
             $applicationServer->setSystemConfiguration($deploymentService->loadContainerInstances());
+
+            // load the naming directory
+            /** @var \AppserverIo\Appserver\Naming\NamingDirectory $namingDirectory */
+            $namingDirectory = $applicationServer->getNamingDirectory();
+
+            // initialize the environment variables
+            $namingDirectory->bind('php:env/tmpDirectory', $deploymentService->getTmpDir());
+            $namingDirectory->bind('php:env/baseDirectory', $deploymentService->getBaseDirectory());
+            $namingDirectory->bind('php:env/umask', $applicationServer->getSystemConfiguration()->getUmask());
+            $namingDirectory->bind('php:env/user', $applicationServer->getSystemConfiguration()->getUser());
+            $namingDirectory->bind('php:env/group', $applicationServer->getSystemConfiguration()->getGroup());
 
             // and initialize a container thread for each container
             /** @var \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode */

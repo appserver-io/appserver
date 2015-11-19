@@ -2,7 +2,7 @@
 
 ## Bugfixes
 
-* None
+* Fixed [#938](https://github.com/appserver-io/appserver/issues/938) - Only one container can be configured
 
 ## Features
 

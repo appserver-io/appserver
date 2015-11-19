@@ -90,7 +90,7 @@ class ApplicationFactory
         $application->injectNamingDirectory($namingDirectory);
 
         // prepare the application instance
-        $application->prepare($context);
+        $application->prepare($container, $context);
 
         // create the applications temporary folders and cleans the folders up
         /** @var \AppserverIo\Appserver\Core\Api\AppService $appService */
