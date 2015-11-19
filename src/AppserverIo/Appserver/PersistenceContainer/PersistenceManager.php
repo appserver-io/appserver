@@ -44,15 +44,25 @@ class PersistenceManager extends AbstractManager implements PersistenceContextIn
 {
 
     /**
-     * Injects the storage for the entity manager instances.
+     * Injects the storage for the entity manager configurations.
      *
-     * @param \AppserverIo\Storage\GenericStackable $entityManagers The storage for the entity manager instances
+     * @param \AppserverIo\Storage\GenericStackable $entityManagers The storage for the entity manager configurations
      *
      * @return void
      */
     public function injectEntityManagers(GenericStackable $entityManagers)
     {
         $this->entityManagers = $entityManagers;
+    }
+
+    /**
+     * Returns the storage with the registered entity manager configurations.
+     *
+     * @return \AppserverIo\Storage\GenericStackable The storage with the entity manager configurations
+     */
+    public function getEntityManagers()
+    {
+        return $this->entityManagers;
     }
 
     /**
