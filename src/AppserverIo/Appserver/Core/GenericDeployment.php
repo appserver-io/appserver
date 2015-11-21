@@ -59,6 +59,13 @@ class GenericDeployment extends AbstractDeployment
             // load the datasource files
             $datasourceFiles = $this->getDeploymentService()->globDir($directory . DIRECTORY_SEPARATOR . '*-ds.xml');
 
+            // load container and naming directory instances
+            $container = $this->getContainer();
+            $namingDirectory = $container->getNamingDirectory();
+
+            // create a subdirectory for the container's datasoruces
+            $namingDirectory->createSubdirectory(sprintf('php:env/%s/ds', $this->getContainer()->getName()));
+
             // iterate through all provisioning files (*-ds.xml), validate them and attach them to the configuration
             /** @var AppserverIo\Appserver\Core\Api\ConfigurationService $configurationService */
             $configurationService = $this->getConfigurationService();
@@ -72,7 +79,11 @@ class GenericDeployment extends AbstractDeployment
 
                     // store the datasource in the system configuration
                     foreach ($datasourceNodes as $datasourceNode) {
+                        // add the datasource to the system configuration
                         $this->getDatasourceService()->persist($datasourceNode);
+
+                        // bind the datasource to the naming directory
+                        $namingDirectory->bind(sprintf('php:env/%s/ds/%s', $container->getName(), $datasourceNode->getName()), $datasourceNode);
 
                         // log a message that the datasource has been deployed
                         $this->getInitialContext()->getSystemLogger()->info(
