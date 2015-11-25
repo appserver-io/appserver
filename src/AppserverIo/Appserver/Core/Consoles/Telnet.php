@@ -184,7 +184,7 @@ class Telnet extends \Thread implements ConsoleInterface
                 } catch (\ReflectionException $re) {
                     $conn->write("Unknown command $commandName");
                 } catch (\Exception $e) {
-                    $conn->write($e->__getMessage());
+                    $conn->write($e->__toString());
                 }
 
                 // write the command prompt

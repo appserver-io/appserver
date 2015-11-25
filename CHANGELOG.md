@@ -6,6 +6,7 @@
 
 ## Features
 
+* Add command to execute Doctrine CLI commands via Telnet console
 * Register datasources in naming directory
 * Add internal container with HTTP server to allow access to appserver.io RESTFul API
 * Log a critical error message, if container's application and temporary directory are not available

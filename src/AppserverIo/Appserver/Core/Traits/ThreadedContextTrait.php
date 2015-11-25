@@ -54,6 +54,13 @@ trait ThreadedContextTrait
         return sprintf('%s-%s', $this->getSerial(), $key);
     }
 
+    /**
+     * Umasks the unique key.
+     *
+     * @param string $key The unique key to unmask
+     *
+     * @return string The unmasked key
+     */
     protected function unmaskKey($key)
     {
         return str_replace(sprintf('%s-', $this->getSerial()), '', $key);

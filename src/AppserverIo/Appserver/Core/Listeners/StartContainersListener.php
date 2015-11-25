@@ -45,8 +45,8 @@ class StartContainersListener extends AbstractSystemListener
      */
     public function handle(EventInterface $event)
     {
-        try {
 
+        try {
             // load the application server instance
             /** @var \AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface $applicationServer */
             $applicationServer = $this->getApplicationServer();
