@@ -749,39 +749,68 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
         $service->switchSetupMode($newMode, $configurationFilename, $currentUser);
     }
 
-    protected function doDoctrine($command)
+    /**
+     * Execute the Doctrine CLI tool.
+     *
+     * @param array $command The Doctrine command to be executed
+     *
+     * @return string The commands output
+     */
+    protected function doDoctrine(array $command = array())
     {
 
         try {
+            // create a local naming directory instance
+            /** \AppserverIo\Psr\Naming\NamingDirectoryInterface $namingDirectory */
+            $namingDirectory = $this->getNamingDirectory();
 
+            // the first arguement has to be the application name
             $applicationName = array_shift($command);
 
-            $argv = array('doctrine');
-            $argv = array_merge($argv, $command);
-
-            $argvInput = new \Symfony\Component\Console\Input\ArgvInput($argv);
-
-            // create a local naming directory instance
-            $namingDirectory = $this->getNamingDirectory();
             // try to load the application
+            /** \AppserverIo\Psr\Application\ApplicationInterface $application */
             $application = $namingDirectory->search(sprintf('php:global/%s/env/ApplicationInterface', $applicationName));
 
-            // replace with mechanism to retrieve EntityManager in your app
-            $entityManager = $application->search('ExampleEntityManager');
+            // the second arguement has to be the persistence unit name
+            $persistenUnitName = array_shift($command);
 
+            // try to load the application's entity manager
+            /** \Doctrine\ORM\EntityManagerInterface $entityManager */
+            $entityManager = $application->search($persistenUnitName);
+
+            // initialize the helper set with the entity manager instance
+            /** \Symfony\Component\Console\Helper\HelperSet $helperSet */
             $helperSet = ConsoleRunner::createHelperSet($entityManager);
 
+            // create the Symfony Console application
+            /** \Symfony\Component\Console\Application $app */
             $app = \Doctrine\ORM\Tools\Console\ConsoleRunner::createApplication($helperSet);
             $app->setAutoExit(false);
 
+            // register the applications class loaders
             $application->registerClassLoaders();
 
+            // as Doctrine CLI uses Symfony Console component, we've to simulate the commandline args
+            $argv = array('doctrine');
+            $argv = array_merge($argv, $command);
+
+            // create a new instance of the commandline args
+            $argvInput = new \Symfony\Component\Console\Input\ArgvInput($argv);
+
+            // run the Symfony Console application
             $app->run($argvInput, $buffer = new BufferedOutput());
 
-            return $buffer->fetch();
+            // log a debug message with the output
+            $this->getSystemLogger()->debug($result = $buffer->fetch());
+
+            // return the output
+            return $result;
 
         } catch (\Exception $e) {
-            error_log($e->__toString());
+            // log the exception
+            $this->getSystemLogger()->error($e->__toString());
+            // return the stack trace
+            return $e->getMessage() . PHP_EOL;
         }
     }
 }
