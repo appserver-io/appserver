@@ -33,7 +33,7 @@ use AppserverIo\Appserver\Core\Api\ExtensionInjectorParameterTrait;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class VirtualHostNode extends AbstractNode
+class VirtualHostNode extends AbstractNode implements VirtualHostNodeInterface
 {
 
     /**
@@ -49,7 +49,7 @@ class VirtualHostNode extends AbstractNode
      * @var \AppserverIo\Appserver\Core\Api\Node\HeadersNodeTrait
      */
     use HeadersNodeTrait;
-    
+
     /**
      * The trait for the virtual host params.
      *
