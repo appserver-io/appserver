@@ -555,12 +555,12 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
 
                         } else {
 
-                            // print a message and wait
-                            $this->getSystemLogger()->info(sprintf('Switched to runlevel %s!!!', $actualRunlevel));
-
                             // signal that we've finished switching the runlevels and wait
                             $this->locked = false;
                             $this->command = null;
+
+                            // print a message and wait
+                            $this->getSystemLogger()->info(sprintf('Switched to runlevel %s!!!', $actualRunlevel));
 
                             // wait for a new command
                             $this->synchronized(function ($self) {
@@ -572,12 +572,12 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
 
                     case ModeCommand::COMMAND:
 
+                        // switch the application server mode
+                        $this->doSwitchSetupMode($this->params, $this->getConfigurationFilename());
+
                         // singal that we've finished setting umask and wait
                         $this->locked = false;
                         $this->command = null;
-
-                        // switch the application server mode
-                        $this->doSwitchSetupMode($this->params, $this->getConfigurationFilename());
 
                         // wait for a new command
                         $this->synchronized(function ($self) {
@@ -588,19 +588,15 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
 
                     case DoctrineCommand::COMMAND:
 
+                        // execute the Doctrine command
+                        $this->result = $this->doDoctrine($this->params);
+
                         // singal that we've finished setting umask and wait
                         $this->locked = false;
                         $this->command = null;
-                        $this->result = null;
-
-                        // execute the Doctrine command
-                        // $this->result = $this->doDoctrine($this->params);
 
                         // wait for a new command
                         $this->synchronized(function ($self) {
-
-                            $self->result = $self->doDoctrine($self->params);
-
                             $self->wait();
                         }, $this);
 

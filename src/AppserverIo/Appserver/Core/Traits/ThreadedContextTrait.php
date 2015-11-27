@@ -37,7 +37,7 @@ trait ThreadedContextTrait
      *
      * @return string The serial
      */
-    protected function getSerial()
+    public function getSerial()
     {
         return $this->serial;
     }
