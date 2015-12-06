@@ -290,10 +290,17 @@ class ServerNode extends AbstractNode implements ServerNodeInterface
         foreach ($serverNode->getCertificates() as $certificate) {
             $this->certificates[] = $certificate;
         }
+
         // append the virtual host nodes found in the passed server node
         /** @var \AppserverIo\Appserver\Core\Api\Node\VirtualHostNode $virtualHost */
         foreach ($serverNode->getVirtualHosts() as $virtualHost) {
             $this->virtualHosts[] = $virtualHost;
+        }
+
+        // append the location nodes found in the passed server node
+        /** @var \AppserverIo\Appserver\Core\Api\Node\LocationNode $location */
+        foreach ($serverNode->getLocations() as $location) {
+            $this->locations[] = $location;
         }
     }
 }

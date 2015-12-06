@@ -101,6 +101,7 @@
                 <include name="var/**/*" />
                 <include name="tests/**/*" />
                 <include name="webapps/**/*" />
+                <include name="internal/**/*" />
                 <include name="resources/**/*" />
                 <include name="server.php" />
                 <include name="appserver.php" />
