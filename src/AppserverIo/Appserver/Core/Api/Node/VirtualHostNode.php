@@ -123,4 +123,17 @@ class VirtualHostNode extends AbstractNode implements VirtualHostNodeInterface
     {
         return $this->name;
     }
+
+    /**
+     * Converts the virtual host node into an associative array
+     * and returns it.
+     *
+     * @return array The array with the virtual host node data
+     */
+    public function toArray()
+    {
+        return array(
+            'name' => $this->name
+        );
+    }
 }
