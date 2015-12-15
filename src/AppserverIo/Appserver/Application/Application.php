@@ -57,7 +57,7 @@ use AppserverIo\Psr\Application\FilesystemAwareInterface;
  * @property \AppserverIo\Appserver\Application\Interfaces\ContextInterface $initialContext   The initial context instance
  * @property \AppserverIo\Storage\GenericStackable                          $managers         Stackable of managers for this application
  * @property string                                                         $name             Name of the application
- * @property string                                                         $serial           The instance unique serial number
+ * @property string                                                         $serial           The application's UUID
  * @property \AppserverIo\Psr\Naming\NamingDirectoryInterface               $namingDirectory  The naming directory instance
  */
 class Application extends \Thread implements ApplicationInterface, DirectoryAwareInterface, FilesystemAwareInterface, Context
@@ -276,6 +276,16 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
     public function getUmask()
     {
         return $this->getNamingDirectory()->search('php:env/umask');
+    }
+
+    /**
+     * Return's the application's UUID.
+     *
+     * @return string The application's UUID
+     */
+    public function getSerial()
+    {
+        return $this->serial;
     }
 
     /**

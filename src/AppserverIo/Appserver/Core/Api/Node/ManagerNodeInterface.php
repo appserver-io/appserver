@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Configuration\Interfaces\NodeInterface;
 use AppserverIo\Psr\Application\ManagerConfigurationInterface;
 
 /**
@@ -31,7 +32,7 @@ use AppserverIo\Psr\Application\ManagerConfigurationInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-interface ManagerNodeInterface extends ManagerConfigurationInterface
+interface ManagerNodeInterface extends ManagerConfigurationInterface, NodeInterface
 {
 
     /**

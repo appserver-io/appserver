@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Api\Node\CronNodeInterface
+ * \AppserverIo\Appserver\Core\Api\Node\AppNodeInterface
  *
  * NOTICE OF LICENSE
  *
@@ -12,7 +12,6 @@
  * PHP version 5
  *
  * @author    Tim Wagner <tw@appserver.io>
- * @author    Johann Zelger <jz@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
@@ -24,49 +23,28 @@ namespace AppserverIo\Appserver\Core\Api\Node;
 use AppserverIo\Configuration\Interfaces\NodeInterface;
 
 /**
- * Interface for a CRON node implementation.
+ * Interface for all app node implementations.
  *
  * @author    Tim Wagner <tw@appserver.io>
- * @author    Johann Zelger <jz@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-interface CronNodeInterface extends NodeInterface
+interface AppNodeInterface extends NodeInterface
 {
 
     /**
-     * Array with the jobs to set.
+     * Returns the application name.
      *
-     * @param array $jobs The jobs to set
-     *
-     * @return void
+     * @return string The unique application name
      */
-    public function setJobs($jobs);
+    public function getName();
 
     /**
-     * Array with the jobs.
+     * Returns the application's path.
      *
-     * @return array
+     * @return string The application's path
      */
-    public function getJobs();
-
-    /**
-     * Returns the job with the passed name.
-     *
-     * @param string $name The name of the job to be returned
-     *
-     * @return mixed The requested job
-     */
-    public function getJob($name);
-
-    /**
-     * This method merges the passed CRON node with this one
-     *
-     * @param \AppserverIo\Appserver\Core\Api\Node\CronNodeInterface $cronNode The node to merge
-     *
-     * @return void
-     */
-    public function merge(CronNode $cronNode);
+    public function getWebappPath();
 }

@@ -21,6 +21,8 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Configuration\Interfaces\NodeInterface;
+
 /**
  * Interface for virtual host node implementations.
  *
@@ -31,7 +33,7 @@ namespace AppserverIo\Appserver\Core\Api\Node;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-interface VirtualHostNodeInterface
+interface VirtualHostNodeInterface extends NodeInterface
 {
 
     /**
