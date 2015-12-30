@@ -1216,6 +1216,11 @@ class Request implements HttpServletRequestInterface, ContextInterface
 
         // load the authentication manager and try to authenticate this request
         /** @var \AppserverIo\Appserver\ServletEngine\Authentication\AuthenticationManagerInterface $authenticationManager */
-        return $this->getContext()->search('AuthenticationManagerInterface')->handleRequest($this, $servletResponse);
+        if ($authenticationManager = $this->getContext()->search('AuthenticationManagerInterface')) {
+            return $authenticationManager->handleRequest($this, $servletResponse);
+        }
+
+        // also return TRUE if we can't find an authentication manager
+        return true;
     }
 }

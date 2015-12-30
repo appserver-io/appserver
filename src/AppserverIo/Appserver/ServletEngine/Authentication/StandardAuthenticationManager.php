@@ -73,10 +73,10 @@ class StandardAuthenticationManager extends AbstractManager implements Authentic
         return true;
     }
 
-    protected function authenticate(HttpServletRequestInterface $servletRequest, HttpServletResponseInterface $servletResponse, AuthenticationInterface $authentication)
+    protected function authenticate(HttpServletRequestInterface $servletRequest, HttpServletResponseInterface $servletResponse, AuthenticationInterface $authenticationAdapter)
     {
 
-        switch($authentication::getType()) {
+        switch($authenticationAdapter->getType()) {
 
             case "Basic":
             case "Digest":
@@ -87,6 +87,7 @@ class StandardAuthenticationManager extends AbstractManager implements Authentic
                     $servletResponse->addHeader(HttpProtocol::HEADER_WWW_AUTHENTICATE, $authenticationAdapter->getAuthenticateHeader());
                 }
 
+                // initialize the authentication adapter
                 $authenticationAdapter->init($servletRequest->getHeader(HttpProtocol::HEADER_AUTHORIZATION), $servletRequest->getMethod());
 
                 // try to authenticate the request and set the remote username
@@ -96,6 +97,7 @@ class StandardAuthenticationManager extends AbstractManager implements Authentic
                     $servletResponse->addHeader(HttpProtocol::HEADER_WWW_AUTHENTICATE, $authenticationAdapter->getAuthenticateHeader());
                 }
 
+                // return the flag
                 return $authenticated;
 
                 break;
