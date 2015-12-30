@@ -48,12 +48,8 @@ class AuthenticationValve implements ValveInterface
     public function invoke(HttpServletRequestInterface $servletRequest, HttpServletResponseInterface $servletResponse)
     {
 
-        // load the authentication manager
-        /** @var \AppserverIo\Appserver\ServletEngine\Authentication\AuthenticationManagerInterface $authenticationManager */
-        $authenticationManager = $servletRequest->getContext()->search('AuthenticationManagerInterface');
-
-        // authenticate the request
-        if ($authenticationManager->handleRequest($servletRequest, $servletResponse) === false) {
+        // try to authenticate the request
+        if ($servletRequest->authenticate($servletResponse) === false) {
             // throw exception for auth required
             throw new ModuleException(null, 401);
         }

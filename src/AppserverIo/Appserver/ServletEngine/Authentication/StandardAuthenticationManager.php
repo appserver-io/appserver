@@ -23,6 +23,7 @@ namespace AppserverIo\Appserver\ServletEngine\Authentication;
 
 use AppserverIo\Appserver\Core\AbstractManager;
 use AppserverIo\Http\HttpProtocol;
+use AppserverIo\Http\Authentication\AuthenticationInterface;
 use AppserverIo\Psr\HttpMessage\Protocol;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
@@ -63,32 +64,56 @@ class StandardAuthenticationManager extends AbstractManager implements Authentic
          */
         foreach ($this->authenticationAdapters as $urlPattern => $authenticationAdapter) {
             // we'll match our URI against the URL pattern
-
             if (fnmatch($urlPattern, $servletRequest->getServletPath() . $servletRequest->getPathInfo())) {
-                // the URI pattern matches, init the adapter and try to authenticate
-
-                // check if auth header is not set in coming request headers
-                if (! $servletRequest->hasHeader(Protocol::HEADER_AUTHORIZATION)) {
-                    // send header for challenge authentication against client
-                    $servletResponse->addHeader(HttpProtocol::HEADER_WWW_AUTHENTICATE, $authenticationAdapter->getAuthenticateHeader());
-                }
-
-                // initialize the adapter with the current request
-                $authenticationAdapter->init($servletRequest->getHeader(HttpProtocol::HEADER_AUTHORIZATION), $servletRequest->getMethod());
-
-                // try to authenticate the request
-                $authenticated = $authenticationAdapter->authenticate();
-                if (!$authenticated) {
-                    // send header for challenge authentication against client
-                    $servletResponse->addHeader(HttpProtocol::HEADER_WWW_AUTHENTICATE, $authenticationAdapter->getAuthenticateHeader());
-                }
-
-                return $authenticated;
+                return $this->authenticate($servletRequest, $servletResponse, $authenticationAdapter);
             }
         }
 
         // we did not find an adapter for that URI pattern, no authentication required then
         return true;
+    }
+
+    protected function authenticate(HttpServletRequestInterface $servletRequest, HttpServletResponseInterface $servletResponse, AuthenticationInterface $authentication)
+    {
+
+        switch($authentication::getType()) {
+
+            case "Basic":
+            case "Digest":
+
+                // check if auth header is not set in coming request headers
+                if ($servletRequest->hasHeader(Protocol::HEADER_AUTHORIZATION) === false) {
+                    // send header for challenge authentication against client
+                    $servletResponse->addHeader(HttpProtocol::HEADER_WWW_AUTHENTICATE, $authenticationAdapter->getAuthenticateHeader());
+                }
+
+                $authenticationAdapter->init($servletRequest->getHeader(HttpProtocol::HEADER_AUTHORIZATION), $servletRequest->getMethod());
+
+                // try to authenticate the request and set the remote username
+                if ($authenticated = $authenticationAdapter->authenticate()) {
+                    $servletRequest->setRemoteUser($authenticationAdapter->getUsername());
+                } else {
+                    $servletResponse->addHeader(HttpProtocol::HEADER_WWW_AUTHENTICATE, $authenticationAdapter->getAuthenticateHeader());
+                }
+
+                return $authenticated;
+
+                break;
+
+            case "Form":
+
+                $username = $servletRequest->getParameter('username');
+                $password = $servletRequest->getParameter('password');
+
+                $authenticationAdapter->init(base64_encode("$username:$password"), $servletRequest->getMethod());
+
+                return $authenticationAdapter->authenticate();
+
+                break;
+
+            default:
+                break;
+        }
     }
 
     /**
@@ -135,6 +160,9 @@ class StandardAuthenticationManager extends AbstractManager implements Authentic
                     break;
                 case "Digest":
                     $authImplementation =  '\AppserverIo\Http\Authentication\DigestAuthentication';
+                    break;
+                case "Form":
+                    $authImplementation =  '\AppserverIo\Appserver\ServletEngine\Authentication\FormAuthentication';
                     break;
                 default:
                     throw new \Exception(sprintf('Unknown authentication type %s', $configuredAuthType));

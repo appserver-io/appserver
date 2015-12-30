@@ -190,6 +190,14 @@ class Request implements HttpServletRequestInterface, ContextInterface
     protected $attributes = array();
 
     /**
+     * The login of the user making this request, if the user has been authenticated,
+     * or null if the user has not been authenticated.
+     *
+     * @var string
+     */
+    protected $remoteUser;
+
+    /**
      * Initializes the request object with the default properties.
      *
      * @return void
@@ -208,6 +216,9 @@ class Request implements HttpServletRequestInterface, ContextInterface
         $this->response = null;
         $this->httpRequest = null;
         $this->requestHandler = null;
+
+        // initialize the remote user
+        $this->remoteUser = null;
 
         // initialize the strings
         $this->pathInfo = '';
@@ -1166,5 +1177,45 @@ class Request implements HttpServletRequestInterface, ContextInterface
         if (array_key_exists($name, $serverVars = $this->getServerVars())) {
             return $serverVars[$name];
         }
+    }
+
+    /**
+     * Set's the login of the user making this request, if the user has been authenticated.
+     *
+     * @param string $remoteUser A string specifying the login of the user making this request
+     *
+     * @return void
+     */
+    public function setRemoteUser($remoteUser)
+    {
+        $this->remoteUser = $remoteUser;
+    }
+
+    /**
+     * Return's the login of the user making this request, if the user has been authenticated, or null if the
+     * user has not been authenticated. Whether the user name is sent with each subsequent request depends on
+     * the browser and type of authentication. Same as the value of the CGI variable REMOTE_USER.
+     *
+     * @return string A string specifying the login of the user making this request, or null if the user login is not known
+     */
+    public function getRemoteUser()
+    {
+        return $this->remoteUser;
+    }
+
+    /**
+     * Use the container login mechanism configured for the servlet context to authenticate the user making this
+     * request. This method may modify and commit the passed servlet response.
+     *
+     * @param AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse The servlet response
+     *
+     * @return boolean TRUE when non-null values were or have been established as the values returned by getRemoteUser, else FALSE
+     */
+    public function authenticate(HttpServletResponseInterface $servletResponse)
+    {
+
+        // load the authentication manager and try to authenticate this request
+        /** @var \AppserverIo\Appserver\ServletEngine\Authentication\AuthenticationManagerInterface $authenticationManager */
+        return $this->getContext()->search('AuthenticationManagerInterface')->handleRequest($this, $servletResponse);
     }
 }
