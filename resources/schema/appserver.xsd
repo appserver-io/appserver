@@ -5,7 +5,6 @@
            elementFormDefault="unqualified"
            attributeFormDefault="unqualified">
     <xs:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="xml.xsd"/>
-
     <xs:complexType name="simpleElement">
         <xs:simpleContent>
             <xs:extension base="xs:string">
@@ -14,7 +13,6 @@
             </xs:extension>
         </xs:simpleContent>
     </xs:complexType>
-
     <xs:element name="access">
         <xs:complexType>
             <xs:choice minOccurs="0" maxOccurs="unbounded">
@@ -1344,7 +1342,7 @@
     </xs:element>
     <xs:element name="session">
         <xs:complexType>
-            <xs:all>
+            <xs:choice maxOccurs="unbounded">
                 <xs:element ref="appserver:session-type"/>
                 <xs:element ref="appserver:epb-name"/>
                 <xs:element ref="appserver:epb-class"/>
@@ -1355,7 +1353,8 @@
                 <xs:element ref="appserver:pre-attach" minOccurs="0"/>
                 <xs:element ref="appserver:epb-ref" minOccurs="0"/>
                 <xs:element ref="appserver:res-ref" minOccurs="0"/>
-            </xs:all>
+                <xs:element ref="appserver:persistence-unit-ref" minOccurs="0"/>
+            </xs:choice>
             <xs:attribute name="uuid" type="xs:string"/>
             <xs:attribute ref="xml:base"/>
         </xs:complexType>
@@ -1736,10 +1735,13 @@
     </xs:element>
     <xs:element name="message-driven">
         <xs:complexType>
-            <xs:all>
+            <xs:choice maxOccurs="unbounded">
                 <xs:element ref="appserver:epb-name"/>
                 <xs:element ref="appserver:epb-class"/>
-            </xs:all>
+                <xs:element ref="appserver:epb-ref" minOccurs="0"/>
+                <xs:element ref="appserver:res-ref" minOccurs="0"/>
+                <xs:element ref="appserver:persistence-unit-ref" minOccurs="0"/>
+            </xs:choice>
             <xs:attribute name="uuid" type="xs:string"/>
             <xs:attribute ref="xml:base"/>
         </xs:complexType>
@@ -1881,6 +1883,38 @@
             <xs:attribute name="type" type="xs:string" use="required"/>
             <xs:attribute name="uuid" type="xs:string"/>
             <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="persistence-unit-ref">
+        <xs:complexType>
+            <xs:all>
+                <xs:element ref="appserver:persistence-unit-ref-name"/>
+                <xs:element ref="appserver:persistence-unit-name" minOccurs="0"/>
+                <xs:element ref="appserver:injection-target" minOccurs="0"/>
+                <xs:element ref="appserver:description" minOccurs="0"/>
+            </xs:all>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="persistence-unit-ref-name">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="persistence-unit-name">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
         </xs:complexType>
     </xs:element>
 </xs:schema>

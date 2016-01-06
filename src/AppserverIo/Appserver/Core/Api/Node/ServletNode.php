@@ -35,8 +35,8 @@ class ServletNode extends AbstractNode implements ServletNodeInterface
     /**
      * The initialization parameter of the servlet.
      *
-     * @var \AppserverIo\Appserver\Core\Api\Node\DescriptionNode
-     * @AS\Mapping(nodeName="init-param", type="array", nodeType="AppserverIo\Appserver\Core\Api\Node\InitParamNode")
+     * @var array
+     * @AS\Mapping(nodeName="init-param", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\InitParamNode")
      */
     protected $initParams;
 
@@ -115,7 +115,7 @@ class ServletNode extends AbstractNode implements ServletNodeInterface
     /**
      * Return's the servlet's initialization parameters.
      *
-     * @return \AppserverIo\Appserver\Core\Api\Node\InitParamNode The initialization parameters
+     * @return array The initialization parameters
      */
     public function getInitParams()
     {
