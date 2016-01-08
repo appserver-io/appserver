@@ -38,7 +38,7 @@ class ServletNode extends AbstractNode implements ServletNodeInterface
      * @var array
      * @AS\Mapping(nodeName="init-param", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\InitParamNode")
      */
-    protected $initParams;
+    protected $initParams = array();
 
     /**
      * The description of the servlet.
@@ -71,6 +71,30 @@ class ServletNode extends AbstractNode implements ServletNodeInterface
      * @AS\Mapping(nodeName="servlet-class", nodeType="AppserverIo\Appserver\Core\Api\Node\ServletClassNode")
      */
     protected $servletClass;
+
+    /**
+     * The enterprise bean reference information.
+     *
+     * @var array
+     * @AS\Mapping(nodeName="epb-ref", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\EpbRefNode")
+     */
+    protected $epbRefs = array();
+
+    /**
+     * The resource reference information.
+     *
+     * @var array
+     * @AS\Mapping(nodeName="res-ref", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\ResRefNode")
+     */
+    protected $resRefs = array();
+
+    /**
+     * The persistence unit reference information.
+     *
+     * @var array
+     * @AS\Mapping(nodeName="persistence-unit-ref", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\PersistenceUnitRefNode")
+     */
+    protected $persistenceUnitRefs = array();
 
     /**
      * Return's the description of the servlet.
@@ -120,5 +144,35 @@ class ServletNode extends AbstractNode implements ServletNodeInterface
     public function getInitParams()
     {
         return $this->initParams;
+    }
+
+    /**
+     * Return's the enterprise bean reference information.
+     *
+     * @return array The enterprise bean reference information
+     */
+    public function getEpbRefs()
+    {
+        return $this->epbRefs;
+    }
+
+    /**
+     * Return's the resource reference information.
+     *
+     * @return array The resource reference information
+     */
+    public function getResRefs()
+    {
+        return $this->resRefs;
+    }
+
+    /**
+     * Return's the persistence unit reference information.
+     *
+     * @return array The persistence unit reference information
+     */
+    public function getPersistenceUnitRefs()
+    {
+        return $this->persistenceUnitRefs;
     }
 }

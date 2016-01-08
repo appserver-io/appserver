@@ -95,19 +95,19 @@ interface SessionNodeInterface extends NodeInterface
      *
      * @return array The enterprise bean reference information
      */
-    public function getEpbRef();
+    public function getEpbRefs();
 
     /**
      * Return's the resource reference information.
      *
      * @return array The resource reference information
      */
-    public function getResRef();
+    public function getResRefs();
 
     /**
      * Return's the persistence unit reference information.
      *
      * @return array The persistence unit reference information
      */
-    public function getPersistenceUnitRef();
+    public function getPersistenceUnitRefs();
 }

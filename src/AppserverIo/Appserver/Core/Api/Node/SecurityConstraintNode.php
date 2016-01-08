@@ -1,0 +1,88 @@
+<?php
+
+/**
+ * \AppserverIo\Appserver\Core\Api\Node\SecurityConstraintNode
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Open Software License (OSL 3.0)
+ * that is available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/osl-3.0.php
+ *
+ * PHP version 5
+ *
+ * @author    Tim Wagner <tw@appserver.io>
+ * @copyright 2015 TechDivision GmbH <info@appserver.io>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      https://github.com/appserver-io/appserver
+ * @link      http://www.appserver.io
+ */
+
+namespace AppserverIo\Appserver\Core\Api\Node;
+
+/**
+ * DTO to transfer a security constraint.
+ *
+ * @author    Tim Wagner <tw@appserver.io>
+ * @copyright 2015 TechDivision GmbH <info@appserver.io>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      https://github.com/appserver-io/appserver
+ * @link      http://www.appserver.io
+ */
+class SecurityConstraintNode extends AbstractNode implements SecurityConstraintNodeInterface
+{
+
+    /**
+     * The display name information.
+     *
+     * @var \AppserverIo\Appserver\Core\Api\Node\DisplayNameNode
+     * @AS\Mapping(nodeName="display-name", nodeType="AppserverIo\Appserver\Core\Api\Node\DisplayNameNode")
+     */
+    protected $displayName;
+
+    /**
+     * The web resource collection information.
+     *
+     * @var array
+     * @AS\Mapping(nodeName="web-resource-collection", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\WebResourceCollectionNode")
+     */
+    protected $webResourceCollections;
+
+    /**
+     * The auth constraint information.
+     *
+     * @var \AppserverIo\Appserver\Core\Api\Node\AuthConstraintNode
+     * @AS\Mapping(nodeName="auth-constraint", nodeType="AppserverIo\Appserver\Core\Api\Node\AuthConstraintNode")
+     */
+    protected $authConstraint;
+
+    /**
+     * Return's the display name of the security constraint.
+     *
+     * @return \AppserverIo\Appserver\Core\Api\Node\DisplayNameNode The display name
+     */
+    public function getDisplayName()
+    {
+        return $this->displayName;
+    }
+
+    /**
+     * Return's the web resource collections information.
+     *
+     * @return array The web resource collections information
+     */
+    public function getWebResourceCollections()
+    {
+        return $this->webResourceCollections;
+    }
+
+    /**
+     * Return's the auth constraint information.
+     *
+     * @return \AppserverIo\Appserver\Core\Api\Node\AuthConstraintNode The auth constraint information
+     */
+    public function getAuthConstraint()
+    {
+        return $this->authConstraint;
+    }
+}

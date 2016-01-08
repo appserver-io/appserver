@@ -256,6 +256,151 @@
             <xs:attribute ref="xml:base"/>
         </xs:complexType>
     </xs:element>
+    <xs:element name="login-config">
+        <xs:complexType>
+            <xs:all>
+                <xs:element ref="appserver:auth-method"/>
+                <xs:element ref="appserver:realm-name"/>
+                <xs:element ref="appserver:form-login-config" minOccurs="0"/>
+            </xs:all>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="auth-method">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="realm-name">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="form-login-config">
+        <xs:complexType>
+            <xs:all>
+                <xs:element ref="appserver:form-login-page"/>
+                <xs:element ref="appserver:form-error-page"/>
+            </xs:all>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="form-login-page">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="form-error-page">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="security-role">
+        <xs:complexType>
+            <xs:all>
+                <xs:element ref="appserver:role-name"/>
+                <xs:element ref="appserver:description"/>
+            </xs:all>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="role-name">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="security-constraint">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="appserver:web-resource-collection" minOccurs="1" maxOccurs="1"/>
+                <xs:element ref="appserver:display-name" minOccurs="0"/>
+                <xs:element ref="appserver:auth-constraint" minOccurs="0"/>
+            </xs:choice>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="web-resource-collection">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="appserver:web-resource-name" minOccurs="1" maxOccurs="1"/>
+                <xs:element ref="appserver:url-pattern" minOccurs="1" maxOccurs="1"/>
+                <xs:element ref="appserver:description" minOccurs="0"/>
+                <xs:element ref="appserver:http-method" minOccurs="0"/>
+                <xs:element ref="appserver:http-method-omission" minOccurs="0"/>
+            </xs:choice>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="auth-constraint">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="appserver:role-name" minOccurs="1"/>
+                <xs:element ref="appserver:description" minOccurs="0" maxOccurs="1"/>
+            </xs:choice>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="web-resource-name">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="http-method">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="http-method-omission">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
     <xs:element name="authentication">
         <xs:complexType>
             <xs:choice minOccurs="0" maxOccurs="unbounded">
@@ -889,6 +1034,16 @@
             </xs:simpleContent>
         </xs:complexType>
     </xs:element>
+    <xs:element name="local">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
     <xs:element name="res-ref">
         <xs:complexType>
             <xs:all>
@@ -1005,6 +1160,7 @@
                 <xs:element ref="appserver:lookup-name" minOccurs="0"/>
                 <xs:element ref="appserver:epb-link" minOccurs="0"/>
                 <xs:element ref="appserver:remote" minOccurs="0"/>
+                <xs:element ref="appserver:local" minOccurs="0"/>
                 <xs:element ref="appserver:injection-target" minOccurs="0"/>
             </xs:all>
             <xs:attribute name="uuid" type="xs:string"/>
@@ -1346,6 +1502,8 @@
                 <xs:element ref="appserver:session-type"/>
                 <xs:element ref="appserver:epb-name"/>
                 <xs:element ref="appserver:epb-class"/>
+                <xs:element ref="appserver:local"/>
+                <xs:element ref="appserver:remote"/>
                 <xs:element ref="appserver:init-on-startup" minOccurs="0"/>
                 <xs:element ref="appserver:post-construct" minOccurs="0"/>
                 <xs:element ref="appserver:pre-destroy" minOccurs="0"/>
@@ -1873,6 +2031,9 @@
                 <xs:element ref="appserver:servlet" minOccurs="0"/>
                 <xs:element ref="appserver:servlet-mapping" minOccurs="0"/>
                 <xs:element ref="appserver:security" minOccurs="0"/>
+                <xs:element ref="appserver:security-constraint" minOccurs="0"/>
+                <xs:element ref="appserver:login-config" minOccurs="0"/>
+                <xs:element ref="appserver:security-role" minOccurs="0"/>
             </xs:choice>
             <xs:attribute name="uuid" type="xs:string"/>
             <xs:attribute ref="xml:base"/>

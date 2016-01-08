@@ -1,7 +1,7 @@
 <?php
 
 /**
- * \AppserverIo\Appserver\Core\Api\Node\SessionHttpOnlyNode
+ * \AppserverIo\Appserver\Core\Api\Node\RealmNameNode
  *
  * NOTICE OF LICENSE
  *
@@ -23,7 +23,7 @@ namespace AppserverIo\Appserver\Core\Api\Node;
 use AppserverIo\Configuration\Interfaces\ValueInterface;
 
 /**
- * DTO to transfer a session HTTP only node.
+ * DTO to transfer a realm name node.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -31,7 +31,7 @@ use AppserverIo\Configuration\Interfaces\ValueInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class SessionHttpOnlyNode extends AbstractValueNode
+class RealmNameNode extends AbstractValueNode
 {
 
     /**

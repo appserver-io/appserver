@@ -54,7 +54,7 @@ class MessageDrivenNode extends AbstractNode implements MessageDrivenNodeInterfa
      * @var array
      * @AS\Mapping(nodeName="epb-ref", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\EpbRefNode")
      */
-    protected $epbRef;
+    protected $epbRefs = array();
 
     /**
      * The resource reference information.
@@ -62,7 +62,7 @@ class MessageDrivenNode extends AbstractNode implements MessageDrivenNodeInterfa
      * @var array
      * @AS\Mapping(nodeName="res-ref", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\ResRefNode")
      */
-    protected $resRef;
+    protected $resRefs = array();
 
     /**
      * The persistence unit reference information.
@@ -70,7 +70,7 @@ class MessageDrivenNode extends AbstractNode implements MessageDrivenNodeInterfa
      * @var array
      * @AS\Mapping(nodeName="persistence-unit-ref", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\PersistenceUnitRefNode")
      */
-    protected $persistenceUnitRef;
+    protected $persistenceUnitRefs = array();
 
     /**
      * Return's the enterprise bean name information.
@@ -97,9 +97,9 @@ class MessageDrivenNode extends AbstractNode implements MessageDrivenNodeInterfa
      *
      * @return array The enterprise bean reference information
      */
-    public function getEpbRef()
+    public function getEpbRefs()
     {
-        return $this->epbRef;
+        return $this->epbRefs;
     }
 
     /**
@@ -107,9 +107,9 @@ class MessageDrivenNode extends AbstractNode implements MessageDrivenNodeInterfa
      *
      * @return array The resource reference information
      */
-    public function getResRef()
+    public function getResRefs()
     {
-        return $this->resRef;
+        return $this->resRefs;
     }
 
     /**
@@ -117,8 +117,8 @@ class MessageDrivenNode extends AbstractNode implements MessageDrivenNodeInterfa
      *
      * @return array The persistence unit reference information
      */
-    public function getPersistenceUnitRef()
+    public function getPersistenceUnitRefs()
     {
-        return $this->persistenceUnitRef;
+        return $this->persistenceUnitRefs;
     }
 }

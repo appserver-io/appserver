@@ -20,6 +20,8 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Psr\Servlet\ServletSessionInterface;
+
 /**
  * DTO to transfer a session configuration.
  *
@@ -115,10 +117,10 @@ class SessionConfigNode extends AbstractNode implements SessionConfigNodeInterfa
     /**
      * The session HTTP only information.
      *
-     * @var \AppserverIo\Appserver\Core\Api\Node\SessionHttpOnlyNode
-     * @AS\Mapping(nodeName="session-http-only", nodeType="AppserverIo\Appserver\Core\Api\Node\SessionHttpOnlyNode")
+     * @var \AppserverIo\Appserver\Core\Api\Node\SessionCookieHttpOnlyNode
+     * @AS\Mapping(nodeName="session-cookie-http-only", nodeType="AppserverIo\Appserver\Core\Api\Node\SessionCookieHttpOnlyNode")
      */
-    protected $sessionHttpOnly;
+    protected $sessionCookieHttpOnly;
 
     /**
      * Return's the session name information.
@@ -221,12 +223,62 @@ class SessionConfigNode extends AbstractNode implements SessionConfigNodeInterfa
     }
 
     /**
-     * Return's the session HTTP only information.
+     * Return's the session cookie HTTP only information.
      *
-     * @return \AppserverIo\Appserver\Core\Api\Node\SessionHttpOnlyNode The session HTTP only information
+     * @return \AppserverIo\Appserver\Core\Api\Node\SessionCookieHttpOnlyNode The session cookie HTTP only information
      */
-    public function getSessionHttpOnly()
+    public function getSessionCookieHttpOnly()
     {
         return $this->sessionHttpOnly;
+    }
+
+    /**
+     * Returns the session configuration as associative array.
+     *
+     * @return array The array with the session configuration
+     */
+    public function toArray()
+    {
+
+        // initialize the array with the session configuration
+        $sessionConfiguration = array();
+
+        // query whether or not a value has been available in the deployment descriptor
+        if ($sessionName = $this->getSessionName()) {
+            $sessionConfiguration[ServletSessionInterface::SESSION_NAME] = (string) $sessionName;
+        }
+        if ($sessionSavePath = $this->getSessionSavePath()) {
+            $sessionConfiguration[ServletSessionInterface::SESSION_SAVE_PATH] = (string) $sessionSavePath;
+        }
+        if ($sessionMaximumAge = $this->getSessionMaximumAge()) {
+            $sessionConfiguration[ServletSessionInterface::SESSION_MAXIMUM_AGE] = (string) $sessionMaximumAge;
+        }
+        if ($sessionInactivityTimeout = $this->getSessionInactivityTimeout()) {
+            $sessionConfiguration[ServletSessionInterface::SESSION_INACTIVITY_TIMEOUT] = (string) $sessionInactivityTimeout;
+        }
+        if ($sessionFilePrefix = $this->getSessionFilePrefix()) {
+            $sessionConfiguration[ServletSessionInterface::SESSION_FILE_PREFIX] = (string) $sessionFilePrefix;
+        }
+        if ($sessionCookieSecure = $this->getSessionCookieSecure()) {
+            $sessionConfiguration[ServletSessionInterface::SESSION_COOKIE_SECURE] = (string) $sessionCookieSecure;
+        }
+        if ($sessionCookiePath = $this->getSessionCookiePath()) {
+            $sessionConfiguration[ServletSessionInterface::SESSION_COOKIE_PATH] = (string) $sessionCookiePath;
+        }
+        if ($sessionCookieLifetime = $this->getSessionCookieLifetime()) {
+            $sessionConfiguration[ServletSessionInterface::SESSION_COOKIE_LIFETIME] = (string) $sessionCookieLifetime;
+        }
+        if ($sessionCookieHttpOnly = $this->getSessionCookieHttpOnly()) {
+            $sessionConfiguration[ServletSessionInterface::SESSION_COOKIE_HTTP_ONLY] = (string) $sessionCookieHttpOnly;
+        }
+        if ($sessionCookieDomain = $this->getSessionCookieDomain()) {
+            $sessionConfiguration[ServletSessionInterface::SESSION_COOKIE_DOMAIN] = (string) $sessionCookieDomain;
+        }
+        if ($garbageCollectionProbability = $this->getGarbageCollectionProbability()) {
+            $sessionConfiguration[ServletSessionInterface::GARBAGE_COLLECTION_PROBABILITY] = (string) $garbageCollectionProbability;
+        }
+
+        // return the array with the session configuration
+        return $sessionConfiguration;
     }
 }

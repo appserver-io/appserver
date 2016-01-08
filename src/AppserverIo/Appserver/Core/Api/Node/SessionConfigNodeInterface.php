@@ -105,9 +105,9 @@ interface SessionConfigNodeInterface extends NodeInterface
     public function getSessionCookieSecure();
 
     /**
-     * Return's the session HTTP only information.
+     * Return's the session cookie HTTP only information.
      *
-     * @return \AppserverIo\Appserver\Core\Api\Node\SessionHttpOnlyNode The session HTTP only information
+     * @return \AppserverIo\Appserver\Core\Api\Node\SessionCookieHttpOnlyNode The session cookie HTTP only information
      */
-    public function getSessionHttpOnly();
+    public function getSessionCookieHttpOnly();
 }

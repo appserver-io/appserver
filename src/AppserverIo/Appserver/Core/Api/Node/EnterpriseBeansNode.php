@@ -38,7 +38,7 @@ class EnterpriseBeansNode extends AbstractNode implements EnterpriseBeansNodeInt
      * @var array
      * @AS\Mapping(nodeName="session", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\SessionNode")
      */
-    protected $sessions;
+    protected $sessions = array();
 
     /**
      * The message driven beans information.
@@ -46,7 +46,7 @@ class EnterpriseBeansNode extends AbstractNode implements EnterpriseBeansNodeInt
      * @var array
      * @AS\Mapping(nodeName="message-driven", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\MessageDrivenNode")
      */
-    protected $messageDrivens;
+    protected $messageDrivens = array();
 
     /**
      * Return's the session beans information.

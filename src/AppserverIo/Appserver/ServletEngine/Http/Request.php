@@ -669,6 +669,19 @@ class Request implements HttpServletRequestInterface, ContextInterface
      * Returns the parameter with the passed name if available or null
      * if the parameter not exists.
      *
+     * @param string $name The name of the parameter to return
+     *
+     * @return string|null The requested value
+     */
+    public function getParam($name)
+    {
+        return $this->getHttpRequest()->getParam($name);
+    }
+
+    /**
+     * Returns the parameter with the passed name if available or null
+     * if the parameter not exists.
+     *
      * @param string  $name   The name of the parameter to return
      * @param integer $filter The filter to use
      *
@@ -677,7 +690,7 @@ class Request implements HttpServletRequestInterface, ContextInterface
     public function getParameter($name, $filter = FILTER_SANITIZE_STRING)
     {
         $parameterMap = $this->getParameterMap();
-        if (array_key_exists($name, $parameterMap)) {
+        if (isset($parameterMap[$name])) {
             return filter_var($parameterMap[$name], $filter);
         }
     }

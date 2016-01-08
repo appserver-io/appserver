@@ -35,15 +35,15 @@ class EpbNode extends AbstractNode implements EpbNodeInterface
     /**
      * The enterprise beans information.
      *
-     * @var array
-     * @AS\Mapping(nodeName="enterprise-beans", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\EnterpriseBeansNode")
+     * @var \AppserverIo\Appserver\Core\Api\Node\EnterpriseBeansNode
+     * @AS\Mapping(nodeName="enterprise-beans", nodeType="AppserverIo\Appserver\Core\Api\Node\EnterpriseBeansNode")
      */
     protected $enterpriseBeans;
 
     /**
      * Return's the enterprise beans information.
      *
-     * @return array The enterprise beans information
+     * @return \AppserverIo\Appserver\Core\Api\Node\EnterpriseBeansNode The enterprise beans information
      */
     public function getEnterpriseBeans()
     {

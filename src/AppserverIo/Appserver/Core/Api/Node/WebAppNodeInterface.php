@@ -53,7 +53,7 @@ interface WebAppNodeInterface extends NodeInterface
      *
      * @return \AppserverIo\Appserver\Core\Api\Node\DisplayNameNode The session configuration
      */
-    public function geSessionConfig();
+    public function getSessionConfig();
 
     /**
      * Return's the servlet informations.
@@ -61,4 +61,40 @@ interface WebAppNodeInterface extends NodeInterface
      * @return array The servlet informations
      */
     public function getServlets();
+
+    /**
+     * Return's the login configuration information.
+     *
+     * @return \AppserverIo\Appserver\Core\Api\Node\LoginConfigNode The login configuration information
+     */
+    public function getLoginConfig();
+
+    /**
+     * Return's the security informations.
+     *
+     * @return array The security informations
+     * @deprecated Since 1.2.0
+     */
+    public function getSecurities();
+
+    /**
+     * Return's the security constraint informations.
+     *
+     * @return array The security constraint informations
+     */
+    public function getSecurityConstraints();
+
+    /**
+     * Return's the security role informations.
+     *
+     * @return array The security role informations
+     */
+    public function getSecurityRoles();
+
+    /**
+     * Return's the web application's context parameters.
+     *
+     * @return array The context parameters
+     */
+    public function getContextParams();
 }

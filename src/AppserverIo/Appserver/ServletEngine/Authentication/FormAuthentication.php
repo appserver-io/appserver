@@ -1,7 +1,7 @@
 <?php
 
 /**
- * \AppserverIo\Appserver\ServletEngine\Authentication\FormAuthentication
+ * AppserverIo\Appserver\ServletEngine\Authentication\FormAuthentication
  *
  * NOTICE OF LICENSE
  *
@@ -20,7 +20,10 @@
 
 namespace AppserverIo\Appserver\ServletEngine\Authentication;
 
-use AppserverIo\Http\Authentication\AbstractAuthentication;
+use AppserverIo\Psr\HttpMessage\Protocol;
+use AppserverIo\Psr\HttpMessage\RequestInterface;
+use AppserverIo\Psr\HttpMessage\ResponseInterface;
+use AppserverIo\Http\Authentication\AuthenticationException;
 use AppserverIo\Http\Authentication\Adapters\HtpasswdAdapter;
 
 /**
@@ -50,24 +53,43 @@ class FormAuthentication extends AbstractAuthentication
     const DEFAULT_ADAPTER = HtpasswdAdapter::ADAPTER_TYPE;
 
     /**
-     * Parses the given header content
+     * Constructs the authentication type
      *
-     * @param string $rawAuthData The raw authentication data coming from the client
-     *
-     * @return boolean If parsing was successful
+     * @param array $configData The configuration data for auth type instance
      */
-    protected function parse($rawAuthData)
+    public function __construct($configData)
     {
-        // set auth hash got from auth data request header
-        $authHash = trim(strstr($rawAuthData, " "));
 
-        // check if username and password has been passed
-        if (strstr($credentials = base64_decode($authHash), ':') === false) {
-            return false;
-        }
+        // initialize the supported adapter types
+        $this->addSupportedAdapter(HtpasswdAdapter::getType());
 
-        // get out username and password
-        list ($username, $password) = explode(':', $credentials);
+        // initialize the instance
+        parent::__construct($configData);
+    }
+
+    /**
+     * Returns the authentication header for response to set
+     *
+     * @return string
+     */
+    public function getAuthenticateHeader()
+    {
+        return '';
+    }
+
+    /**
+     * Parses the request for the necessary, authentication adapter specific, login credentials.
+     *
+     * @param \AppserverIo\Psr\HttpMessage\RequestInterface $request The request with the content of authentication data sent by client
+     *
+     * @return void
+     */
+    protected function parse(RequestInterface $request)
+    {
+
+        // load username and password from the request
+        $username = $request->getParam('username');
+        $password = $request->getParam('password');
 
         // check if either username or password was not found and return false
         if (($password === null) || ($username === null)) {
@@ -81,13 +103,27 @@ class FormAuthentication extends AbstractAuthentication
     }
 
     /**
-     * Returns the authentication header for response to set
+     * Try to authenticate against the configured adapter.
      *
-     * @return string
+     * @param \AppserverIo\Psr\HttpMessage\ResponseInterface $response The response sent back to the client
+     *
+     * @return void
+     * @throws \AppserverIo\Http\Authentication\AuthenticationException Is thrown if the request can't be authenticated
      */
-    public function getAuthenticateHeader()
+    public function authenticate(ResponseInterface $response)
     {
-        return $this->getType() . ' realm="' . $this->configData["realm"] . '"';
+
+        // verify everything to be ready for auth if not return false
+        if ($this->verify() === false) {
+            throw new AuthenticationException('Invalid username or password', 401);
+        }
+
+        // do actual authentication check
+        if ($this->getAuthAdapter()->authenticate($this->getAuthData()) === false) {
+            throw new AuthenticationException('Password doesn\'t match username', 401);
+        }
+
+        // $response->addHeader(Protocol::HEADER_LOCATION, $this->configData['form-error-page']);
     }
 
     /**

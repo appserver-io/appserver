@@ -52,6 +52,22 @@ interface ManagerNodeInterface extends ManagerConfigurationInterface, NodeInterf
     public function getDirectories();
 
     /**
+     * Sets the security domain configuration.
+     *
+     * @param array $securityDomains The security domain configuration
+     *
+     * @return void
+     */
+    public function setSecurityDomains($securityDomains);
+
+    /**
+     * Returns the security domain configuration.
+     *
+     * @return array The security domain configuration
+     */
+    public function getSecurityDomains();
+
+    /**
      * Array with the descriptors.
      *
      * @param array $descriptors The descriptors

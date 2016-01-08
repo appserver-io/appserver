@@ -22,12 +22,13 @@
 namespace AppserverIo\Appserver\ServletEngine\Authentication;
 
 use AppserverIo\Appserver\Core\AbstractManager;
-use AppserverIo\Http\HttpProtocol;
-use AppserverIo\Http\Authentication\AuthenticationInterface;
-use AppserverIo\Psr\HttpMessage\Protocol;
+use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
-use AppserverIo\Psr\Application\ApplicationInterface;
+use AppserverIo\Appserver\ServletEngine\Authentication\DependencyInjection\DeploymentDescriptorParser;
+use AppserverIo\Storage\StorageInterface;
+use AppserverIo\Collections\HashMap;
+use AppserverIo\Http\Authentication\AuthenticationException;
 
 /**
  * The authentication manager handles request which need Http authentication.
@@ -39,10 +40,124 @@ use AppserverIo\Psr\Application\ApplicationInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  *
- * @property \AppserverIo\WebServer\Interfaces\AuthenticationInterface[] $authenticationAdapters Contains all registered authentication adapters sorted by URI pattern
+ * @property array                                 $securityDomains                          Contains the security domains
+ * @property \AppserverIo\Storage\StorageInterface $authenticationMethods                    Contains all registered authentication methods
+ * @property \AppserverIo\Storage\StorageInterface $urlPatternToAuthenticationMethodMappings Contains the URL pattern to authentication method mapping
  */
 class StandardAuthenticationManager extends AbstractManager implements AuthenticationManagerInterface
 {
+
+    /**
+     * Inject the storage for the authentication methods.
+     *
+     * @param \AppserverIo\Storage\StorageInterface $authenticationMethods The storage instance
+     *
+     * @return void
+     */
+    public function injectAuthenticationMethods(StorageInterface $authenticationMethods)
+    {
+        $this->authenticationMethods = $authenticationMethods;
+    }
+
+    /**
+     * Inject the array with the security domains.
+     *
+     * @param array $securityDomains The security domains
+     */
+    public function injectSecurityDomains(array $securityDomains)
+    {
+        $this->securityDomains = $securityDomains;
+    }
+
+    /**
+     * Inject the storage for the URL pattern to authentication method mappings.
+     *
+     * @param \AppserverIo\Storage\StorageInterface $urlPatternToAuthenticationMethodMappings The storage instance
+     *
+     * @return void
+     */
+    public function injectUrlPatternToAuthenticationMethodMappings(StorageInterface $urlPatternToAuthenticationMethodMappings)
+    {
+        $this->urlPatternToAuthenticationMethodMappings = $urlPatternToAuthenticationMethodMappings;
+    }
+
+    /**
+     * Returns the array with the security domains.
+     *
+     * @return array The security domains
+     */
+    public function getSecurityDomains()
+    {
+        return $this->securityDomains;
+    }
+
+    /**
+     * Register's the authentication method with the passed URL pattern.
+     *
+     * @param string $key                   The key to register the authentication method with
+     * @param string $authenticationAdapter The authentication method
+     *
+     * @return void
+     */
+    public function addAuthenticationMethod($key, $authenticationMethodKey)
+    {
+        $this->authenticationMethods->set($key, $authenticationMethodKey);
+    }
+
+    /**
+     * Returns the configured authentication method for the passed URL pattern authentication method mapping.
+     *
+     * @param \AppserverIo\Appserver\ServletEngine\Authentication\UrlPatternToAuthenticationMethodMapping $urlPatternToAuthenticationMethodMapping The URL pattern to authentication method mapping
+     *
+     * @return \AppserverIo\Storage\StorageInterface The storage with the authentication methods
+     * @throws \AppserverIo\Http\Authentication\AuthenticationException Is thrown if the authentication method with the passed key is not available
+     */
+    public function getAuthenticationMethod(UrlPatternToAuthenticationMethodMapping $urlPatternToAuthenticationMethodMapping)
+    {
+
+        // query whether or not we've an authentication manager with the passed key
+        if (isset($this->authenticationMethods[$authenticationMethodKey = $urlPatternToAuthenticationMethodMapping->getAuthenticationMethodKey()])) {
+            return $this->authenticationMethods[$authenticationMethodKey];
+        }
+
+        // throw an exception if not
+        throw new AuthenticationException(sprintf('Can\'t find authentication method for key %s', $authenticationMethodKey));
+    }
+
+    /**
+     * Returns the configured authentication methods.
+     *
+     * @return \AppserverIo\Storage\StorageInterface The storage with the authentication methods
+     */
+    public function getAuthenticationMethods()
+    {
+        return $this->authenticationMethods;
+    }
+
+    /**
+     * Register's a new URL pattern to authentication method mapping.
+     *
+     * @param \AppserverIo\Appserver\ServletEngine\Authentication\UrlPatternToAuthenticationMethodMapping $urlPatternToAuthenticationMethodMapping The URL pattern to authentication method mapping
+     *
+     * @return void
+     */
+    public function addUrlPatternToAuthenticationMethodMapping(UrlPatternToAuthenticationMethodMapping $urlPatternToAuthenticationMethodMapping)
+    {
+        $this->urlPatternToAuthenticationMethodMappings->set(
+            $urlPatternToAuthenticationMethodMapping->getUrlPattern(),
+            $urlPatternToAuthenticationMethodMapping
+        );
+    }
+
+    /**
+     * Return's the storage for the URL pattern to authentication method mappings.
+     *
+     * @return \AppserverIo\Storage\StorageInterface The storage instance
+     */
+    public function getUrlPatternToAuthenticationMethodMappings()
+    {
+        return $this->urlPatternToAuthenticationMethodMappings;
+    }
 
     /**
      * Handles request in order to authenticate.
@@ -58,64 +173,38 @@ class StandardAuthenticationManager extends AbstractManager implements Authentic
     {
 
         // iterate over all servlets and return the matching one
-        /**
-         * @var string $urlPattern
-         * @var \AppserverIo\Http\Authentication\AuthenticationInterface $authenticationAdapter
-         */
-        foreach ($this->authenticationAdapters as $urlPattern => $authenticationAdapter) {
-            // we'll match our URI against the URL pattern
-            if (fnmatch($urlPattern, $servletRequest->getServletPath() . $servletRequest->getPathInfo())) {
-                return $this->authenticate($servletRequest, $servletResponse, $authenticationAdapter);
+        /** @var \AppserverIo\Appserver\ServletEngine\Authentication\UrlPatternToAuthenticationMethodMapping $urlPatternToAuthenticationMethodMapping */
+        foreach ($this->getUrlPatternToAuthenticationMethodMappings() as $urlPatternToAuthenticationMethodMapping) {
+            try {
+                // query whether or not the URI matches against the URL pattern
+                if ($urlPatternToAuthenticationMethodMapping->match($servletRequest)) {
+                    // load the authentication method
+                    $authenticationMethod = $this->getAuthenticationMethod($urlPatternToAuthenticationMethodMapping);
+
+                    // initialize and authenticate the request
+                    $authenticationMethod->init($servletRequest, $servletResponse);
+                    $authenticationMethod->authenticate($servletResponse);
+
+                    // set authenticated username as a server var
+                    $servletRequest->setRemoteUser($authenticationMethod->getUsername());
+
+                    // stop processing, because we're already authenticated
+                    break;
+                }
+
+            } catch (\Exception $e) {
+                // load the system logger and debug log the exception
+                if ($systemLogger = $this->getApplication()->getNamingDirectory()->search('php:global/log/System')) {
+                    $systemLogger->debug($e->__toString());
+                }
+
+                // stop processing, because authentication failed for some reason
+                return false;
             }
         }
 
         // we did not find an adapter for that URI pattern, no authentication required then
         return true;
-    }
-
-    protected function authenticate(HttpServletRequestInterface $servletRequest, HttpServletResponseInterface $servletResponse, AuthenticationInterface $authenticationAdapter)
-    {
-
-        switch($authenticationAdapter->getType()) {
-
-            case "Basic":
-            case "Digest":
-
-                // check if auth header is not set in coming request headers
-                if ($servletRequest->hasHeader(Protocol::HEADER_AUTHORIZATION) === false) {
-                    // send header for challenge authentication against client
-                    $servletResponse->addHeader(HttpProtocol::HEADER_WWW_AUTHENTICATE, $authenticationAdapter->getAuthenticateHeader());
-                }
-
-                // initialize the authentication adapter
-                $authenticationAdapter->init($servletRequest->getHeader(HttpProtocol::HEADER_AUTHORIZATION), $servletRequest->getMethod());
-
-                // try to authenticate the request and set the remote username
-                if ($authenticated = $authenticationAdapter->authenticate()) {
-                    $servletRequest->setRemoteUser($authenticationAdapter->getUsername());
-                } else {
-                    $servletResponse->addHeader(HttpProtocol::HEADER_WWW_AUTHENTICATE, $authenticationAdapter->getAuthenticateHeader());
-                }
-
-                // return the flag
-                return $authenticated;
-
-                break;
-
-            case "Form":
-
-                $username = $servletRequest->getParameter('username');
-                $password = $servletRequest->getParameter('password');
-
-                $authenticationAdapter->init(base64_encode("$username:$password"), $servletRequest->getMethod());
-
-                return $authenticationAdapter->authenticate();
-
-                break;
-
-            default:
-                break;
-        }
     }
 
     /**
@@ -142,58 +231,34 @@ class StandardAuthenticationManager extends AbstractManager implements Authentic
     public function initialize(ApplicationInterface $application)
     {
 
-        // iterate over all servlets and return the matching one
-        $authenticationAdapters = array();
-        foreach ($application->search('ServletContextInterface')->getSecuredUrlConfigs() as $securedUrlConfig) {
-            // continue if the can't find a config
-            if ($securedUrlConfig == null) {
-                continue;
-            }
-
-            // extract URL pattern and authentication configuration
-            list ($urlPattern, $auth) = array_values($securedUrlConfig);
-            // load security configuration
-            $configuredAuthType = $securedUrlConfig['auth']['auth-type'];
-
-            // check the authentication type
-            switch ($configuredAuthType) {
-                case "Basic":
-                    $authImplementation =  '\AppserverIo\Http\Authentication\BasicAuthentication';
-                    break;
-                case "Digest":
-                    $authImplementation =  '\AppserverIo\Http\Authentication\DigestAuthentication';
-                    break;
-                case "Form":
-                    $authImplementation =  '\AppserverIo\Appserver\ServletEngine\Authentication\FormAuthentication';
-                    break;
-                default:
-                    throw new \Exception(sprintf('Unknown authentication type %s', $configuredAuthType));
-            }
-
-            // in preparation we have to flatten the configuration structure
-            $config = $securedUrlConfig['auth'];
-            array_shift($config);
-            $options = $config['options'];
-            unset($config['options']);
-
-            // we do need to make some alterations
-            if (isset($options['file'])) {
-                $options['file'] = $application->getWebappPath() . DIRECTORY_SEPARATOR . $options['file'];
-            }
-
-            // initialize the authentication manager
-            /** @var \AppserverIo\Http\Authentication\AuthenticationInterface $auth */
-            $auth = new $authImplementation(
-                array_merge(
-                    array('type' => $authImplementation),
-                    $config,
-                    $options
-                )
-            );
-            $authenticationAdapters[$urlPattern] = $auth;
+        // query whether or not the web application folder exists
+        if (is_dir($this->getWebappPath()) === false) {
+            return;
         }
 
-        $this->authenticationAdapters = $authenticationAdapters;
+        $loginModules = new HashMap();
+
+        /** @var \AppserverIo\Appserver\Core\Api\Node\SecurityDomainNode $securityDomainNode */
+        foreach ($this->getSecurityDomains() as $securityDomainNode) {
+
+            /** @var \AppserverIo\Appserver\Core\Api\Node\AuthConfigNode $authConfigNode */
+            foreach ($securityDomainNode->getAuthConfigs() as $authConfigNode) {
+
+                /** @var \AppserverIo\Appserver\Core\Api\Node\LoginModuleNode $loginModuleNode */
+                foreach ($authConfigNode->getLoginModules() as $loginModuleNode) {
+
+                    $loginModuleType = $loginModuleNode->getType();
+                    $securityDomainName = $securityDomainNode->getName()->__toString();
+
+                    $loginModules->add($securityDomainName, new $loginModuleType($loginModuleNode->getParamsAsArray()));
+                }
+            }
+        }
+
+        // initialize the deployment descriptor parser and parse the web application's deployment descriptor for servlets
+        $deploymentDescriptorParser = new DeploymentDescriptorParser();
+        $deploymentDescriptorParser->injectAuthenticationContext($this);
+        $deploymentDescriptorParser->parse();
     }
 
     /**

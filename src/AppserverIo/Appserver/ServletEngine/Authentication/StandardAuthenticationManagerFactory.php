@@ -23,6 +23,7 @@ namespace AppserverIo\Appserver\ServletEngine\Authentication;
 use AppserverIo\Appserver\Core\Interfaces\ManagerFactoryInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\Core\Api\Node\ManagerNodeInterface;
+use AppserverIo\Storage\StackableStorage;
 
 /**
  * A factory for the standard session authentication manager instances.
@@ -47,8 +48,19 @@ class StandardAuthenticationManagerFactory implements ManagerFactoryInterface
     public static function visit(ApplicationInterface $application, ManagerNodeInterface $managerConfiguration)
     {
 
+        // initialize the storage instances
+        $authenticationMethods = new StackableStorage();
+        $urlPatternToAuthenticationMethodMappings = new StackableStorage();
+
+        // load the authentication managers security domains
+        $securityDomains = $managerConfiguration->getSecurityDomains();
+
         // initialize the authentication manager
         $authenticationManager = new StandardAuthenticationManager();
+        $authenticationManager->injectApplication($application);
+        $authenticationManager->injectSecurityDomains($securityDomains);
+        $authenticationManager->injectAuthenticationMethods($authenticationMethods);
+        $authenticationManager->injectUrlPatternToAuthenticationMethodMappings($urlPatternToAuthenticationMethodMappings);
 
         // attach the instance
         $application->addManager($authenticationManager, $managerConfiguration);

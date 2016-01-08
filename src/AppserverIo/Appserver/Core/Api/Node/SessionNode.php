@@ -97,12 +97,28 @@ class SessionNode extends AbstractNode implements SessionNodeInterface
     protected $preAttach;
 
     /**
+     * The enterprise bean remote interface information.
+     *
+     * @var \AppserverIo\Appserver\Core\Api\Node\RemoteNode
+     * @AS\Mapping(nodeName="remote", nodeType="AppserverIo\Appserver\Core\Api\Node\RemoteNode")
+     */
+    protected $remote;
+
+    /**
+     * The enterprise bean local interface information.
+     *
+     * @var \AppserverIo\Appserver\Core\Api\Node\LocalNode
+     * @AS\Mapping(nodeName="local", nodeType="AppserverIo\Appserver\Core\Api\Node\LocalNode")
+     */
+    protected $local;
+
+    /**
      * The enterprise bean reference information.
      *
      * @var array
      * @AS\Mapping(nodeName="epb-ref", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\EpbRefNode")
      */
-    protected $epbRef;
+    protected $epbRefs = array();
 
     /**
      * The resource reference information.
@@ -110,7 +126,7 @@ class SessionNode extends AbstractNode implements SessionNodeInterface
      * @var array
      * @AS\Mapping(nodeName="res-ref", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\ResRefNode")
      */
-    protected $resRef;
+    protected $resRefs = array();
 
     /**
      * The persistence unit reference information.
@@ -118,7 +134,7 @@ class SessionNode extends AbstractNode implements SessionNodeInterface
      * @var array
      * @AS\Mapping(nodeName="persistence-unit-ref", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\PersistenceUnitRefNode")
      */
-    protected $persistenceUnitRef;
+    protected $persistenceUnitRefs = array();
 
     /**
      * Return's the session bean type information.
@@ -201,13 +217,33 @@ class SessionNode extends AbstractNode implements SessionNodeInterface
     }
 
     /**
+     * Return's the enterprise bean remote interface information.
+     *
+     * @return \AppserverIo\Appserver\Core\Api\Node\RemoteNode The enterprise bean remote interface information
+     */
+    public function getRemote()
+    {
+        return $this->remote;
+    }
+
+    /**
+     * Return's the enterprise bean local interface information.
+     *
+     * @return \AppserverIo\Appserver\Core\Api\Node\LocalNode The enterprise bean local interface information
+     */
+    public function getLocal()
+    {
+        return $this->local;
+    }
+
+    /**
      * Return's the enterprise bean reference information.
      *
      * @return array The enterprise bean reference information
      */
-    public function getEpbRef()
+    public function getEpbRefs()
     {
-        return $this->epbRef;
+        return $this->epbRefs;
     }
 
     /**
@@ -215,9 +251,9 @@ class SessionNode extends AbstractNode implements SessionNodeInterface
      *
      * @return array The resource reference information
      */
-    public function getResRef()
+    public function getResRefs()
     {
-        return $this->resRef;
+        return $this->resRefs;
     }
 
     /**
@@ -225,8 +261,8 @@ class SessionNode extends AbstractNode implements SessionNodeInterface
      *
      * @return array The persistence unit reference information
      */
-    public function getPersistenceUnitRef()
+    public function getPersistenceUnitRefs()
     {
-        return $this->persistenceUnitRef;
+        return $this->persistenceUnitRefs;
     }
 }

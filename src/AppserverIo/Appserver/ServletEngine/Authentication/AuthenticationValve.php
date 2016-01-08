@@ -20,10 +20,10 @@
 
 namespace AppserverIo\Appserver\ServletEngine\Authentication;
 
+use AppserverIo\Server\Exceptions\ModuleException;
 use AppserverIo\Appserver\ServletEngine\ValveInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
-use AppserverIo\Server\Exceptions\ModuleException;
 
 /**
  * This valve will check if the actual request needs authentication.
@@ -38,7 +38,7 @@ class AuthenticationValve implements ValveInterface
 {
 
     /**
-     * Processes this valve (authenticate this request if necessary).
+     * Tries to authenticate the request and throw an exception if authentication is required,
      *
      * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface  $servletRequest  The request instance
      * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse The response instance
@@ -47,10 +47,7 @@ class AuthenticationValve implements ValveInterface
      */
     public function invoke(HttpServletRequestInterface $servletRequest, HttpServletResponseInterface $servletResponse)
     {
-
-        // try to authenticate the request
         if ($servletRequest->authenticate($servletResponse) === false) {
-            // throw exception for auth required
             throw new ModuleException(null, 401);
         }
     }

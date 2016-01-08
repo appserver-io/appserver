@@ -47,4 +47,46 @@ interface ServletNodeInterface extends NodeInterface
      * @return \AppserverIo\Appserver\Core\Api\Node\DisplayNameNode The display name
      */
     public function getDisplayName();
+
+    /**
+     * Return's the name of the servlet.
+     *
+     * @return \AppserverIo\Appserver\Core\Api\Node\DisplayNameNode The servlet name
+     */
+    public function getServletName();
+
+    /**
+     * Return's the servlet class.
+     *
+     * @return \AppserverIo\Appserver\Core\Api\Node\DisplayNameNode The servlet class
+     */
+    public function getServletClass();
+
+    /**
+     * Return's the servlet's initialization parameters.
+     *
+     * @return array The initialization parameters
+     */
+    public function getInitParams();
+
+    /**
+     * Return's the enterprise bean reference information.
+     *
+     * @return array The enterprise bean reference information
+     */
+    public function getEpbRefs();
+
+    /**
+     * Return's the resource reference information.
+     *
+     * @return array The resource reference information
+     */
+    public function getResRefs();
+
+    /**
+     * Return's the persistence unit reference information.
+     *
+     * @return array The persistence unit reference information
+     */
+    public function getPersistenceUnitRefs();
 }
