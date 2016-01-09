@@ -21,6 +21,7 @@
 namespace AppserverIo\Appserver\ServletEngine\Authentication\LoginModules;
 
 use AppserverIo\Collections\MapInterface;
+use AppserverIo\Appserver\ServletEngine\Authentication\Callback\CallbackHandlerInterface;
 
 /**
  * Interface for all login module implementations.
@@ -47,14 +48,22 @@ interface LoginModuleInterface
      * principalClass:          A Principal implementation that support a constructor taking a string argument for the princpal name
      * unauthenticatedIdentity: The name of the principal to asssign and authenticate when a null username and password are seen
      *
-     * @param \AppserverIo\Collections\MapInterface $sharedState A Map shared between all configured login module instances
-     * @param \AppserverIo\Collections\MapInterface $params      The parameters passed to the login module
+     * @param \AppserverIo\Appserver\ServletEngine\Authentication\Callback\CallbackHandlerInterface $callbackHandler The callback handler that will be used to obtain the user identity and credentials
+     * @param \AppserverIo\Collections\MapInterface                                                 $sharedState     A map shared between all configured login module instances
+     * @param \AppserverIo\Collections\MapInterface                                                 $params          The parameters passed to the login module
      */
-    public function initialize(MapInterface $sharedState, MapInterface $params);
+    public function initialize(CallbackHandlerInterface $callbackHandler, MapInterface $sharedState, MapInterface $params);
 
     /**
-     * Perform the authentication of username and password.
+     * Looks for servlet_engine.authentication.login_module.login_name and servlet_engine.authentication.login_module.login_password
+     * values in the sharedState map if the useFirstPass option was true and returns TRUE if they exist. If they do not or are NULL
+     * this method returns FALSE.
      *
+     * Note that subclasses that override the login method must set the loginOk var to TRUE if the login succeeds in order for the
+     * commit phase to populate the Subject. This implementation sets loginOk to TRUE if the login() method returns TRUE, otherwise,
+     * it sets loginOk to FALSE. Perform the authentication of username and password.
+     *
+     * @return boolean TRUE if the login credentials are available in the sharedMap, else FALSE
      * @throws \AppserverIo\Appserver\ServletEngine\Authentication\LoginModules\LoginException Is thrown if an error during login occured
      */
     public function login();

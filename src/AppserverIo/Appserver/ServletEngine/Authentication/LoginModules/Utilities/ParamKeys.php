@@ -54,6 +54,41 @@ class ParamKeys
     const ROLES_QUERY = 'rolesQuery';
 
     /**
+     * The key for the "passwordStacking" parameter.
+     *
+     * @var string
+     */
+    const PASSWORD_STACKING = 'passwordStacking';
+
+    /**
+     * The key for the "hashAlgorithm" parameter.
+     *
+     * @var string
+     */
+    const HASH_ALGORITHM = 'hashAlgorithm';
+
+    /**
+     * The key for the "hashEncoding" parameter.
+     *
+     * @var string
+     */
+    const HASH_ENCODING = 'hashEncoding';
+
+    /**
+     * The key for the "hashCharset" parameter.
+     *
+     * @var string
+     */
+    const HASH_CHARSET = 'hashCharset';
+
+    /**
+     * The key for the "ignorePasswordCase" parameter.
+     *
+     * @var string
+     */
+    const IGNORE_PASSWORD_CASE = 'ignorePasswordCase';
+
+    /**
      * This is a utility class, so protect it against direct instantiation.
      */
     private function __construct()

@@ -20,11 +20,12 @@
 
 namespace AppserverIo\Appserver\ServletEngine\Authentication\LoginModules;
 
+use Doctrine\DBAL\DriverManager;
 use AppserverIo\Collections\MapInterface;
-use AppserverIo\Appserver\ServletEngine\Authentication\LoginModules\Utilities\ParamKeys;
 use AppserverIo\Appserver\ServletEngine\RequestHandler;
 use AppserverIo\Appserver\Doctrine\Utils\ConnectionUtil;
-use Doctrine\DBAL\DriverManager;
+use AppserverIo\Appserver\ServletEngine\Authentication\LoginModules\Utilities\ParamKeys;
+use AppserverIo\Appserver\ServletEngine\Authentication\Callback\CallbackHandlerInterface;
 use AppserverIo\Appserver\ServletEngine\Authentication\LoginModules\Utilities\SharedStateKeys;
 
 /**
@@ -36,7 +37,7 @@ use AppserverIo\Appserver\ServletEngine\Authentication\LoginModules\Utilities\Sh
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class DatabasePDOLoginModule extends AbstractLoginModule
+class DatabasePDOLoginModule extends UsernamePasswordLoginModule
 {
 
     /**
@@ -71,14 +72,15 @@ class DatabasePDOLoginModule extends AbstractLoginModule
      * rolesQuery:      The database query used to load the user's roles
      * principalsQuery: The database query used to load the user
      *
-     * @param \AppserverIo\Collections\MapInterface $sharedState A Map shared between all configured login module instances
-     * @param \AppserverIo\Collections\MapInterface $params      The parameters passed to the login module
+     * @param \AppserverIo\Appserver\ServletEngine\Authentication\Callback\CallbackHandlerInterface $callbackHandler The callback handler that will be used to obtain the user identity and credentials
+     * @param \AppserverIo\Collections\MapInterface                                                 $sharedState     A map shared between all configured login module instances
+     * @param \AppserverIo\Collections\MapInterface                                                 $params          The parameters passed to the login module
      */
-    public function initialize(MapInterface $sharedState, MapInterface $params)
+    public function initialize(CallbackHandlerInterface $callbackHandler, MapInterface $sharedState, MapInterface $params)
     {
 
         // call the parent method
-        parent::initialize($sharedState, $params);
+        parent::initialize($callbackHandler, $sharedState, $params);
 
         // load the parameters from the map
         $this->lookupName = $params->get(ParamKeys::LOOKUP_NAME);
@@ -87,11 +89,10 @@ class DatabasePDOLoginModule extends AbstractLoginModule
     }
 
     /**
-     * Called by login() to acquire the username and password strings for
-     * authentication. This method does no validation of either.
+     * Returns the password for the user from the sharedMap data.
      *
      * @return array Array with username and password, e. g. array(0 => $username, 1 => $password)
-     * @throws \AppserverIo\Appserver\ServletEngine\Authentication\LoginModules\LoginException Is thrown if username and password can't be loaded
+     * @throws \AppserverIo\Appserver\ServletEngine\Authentication\LoginModules\LoginException Is thrown if password can't be loaded
      */
     public function getUsersPassword()
     {
@@ -110,7 +111,7 @@ class DatabasePDOLoginModule extends AbstractLoginModule
         $statement->execute();
 
         if ($password = $statement->fetch()) {
-            // do something here
+            return $password;
         } else {
             throw new LoginException('No matching username found in principals');
         }
