@@ -20,13 +20,12 @@
 
 namespace AppserverIo\Appserver\PersistenceContainer\Doctrine;
 
-use AppserverIo\Lang\String;
-use AppserverIo\Lang\Boolean;
 use Doctrine\ORM\Tools\Setup;
 use Doctrine\ORM\EntityManager;
-use AppserverIo\Psr\Application\ApplicationInterface;
-use Doctrine\Common\Annotations\AnnotationRegistry;
 use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\Common\Annotations\AnnotationRegistry;
+use AppserverIo\Psr\Application\ApplicationInterface;
+use AppserverIo\Appserver\Doctrine\Utils\ConnectionUtil;
 use AppserverIo\Appserver\Core\Api\Node\MetadataConfigurationNode;
 use AppserverIo\Appserver\Core\Api\Node\PersistenceUnitNodeInterface;
 
@@ -136,74 +135,9 @@ class EntityManagerFactory
             );
         }
 
-        // initialize the connection parameters with the mandatory driver
-        $connectionParameters = array(
-            'driver' => $databaseNode->getDriver()->getNodeValue()->__toString()
-        );
-
-        // initialize the path/memory to the database when we use sqlite for example
-        if ($pathNode = $databaseNode->getPath()) {
-            $connectionParameters['path'] = $application->getWebappPath() . DIRECTORY_SEPARATOR . $pathNode->getNodeValue()->__toString();
-        } elseif ($memoryNode = $databaseNode->getMemory()) {
-            $connectionParameters['memory'] = Boolean::valueOf(new String($memoryNode->getNodeValue()->__toString()))->booleanValue();
-        } else {
-            // do nothing here, because there is NO option
-        }
-
-        // add username, if specified
-        if ($userNode = $databaseNode->getUser()) {
-            $connectionParameters['user'] = $userNode->getNodeValue()->__toString();
-        }
-
-        // add password, if specified
-        if ($passwordNode = $databaseNode->getPassword()) {
-            $connectionParameters['password'] = $passwordNode->getNodeValue()->__toString();
-        }
-
-        // add database name if using another PDO driver than sqlite
-        if ($databaseNameNode = $databaseNode->getDatabaseName()) {
-            $connectionParameters['dbname'] = $databaseNameNode->getNodeValue()->__toString();
-        }
-
-        // add database host if using another PDO driver than sqlite
-        if ($databaseHostNode = $databaseNode->getDatabaseHost()) {
-            $connectionParameters['host'] = $databaseHostNode->getNodeValue()->__toString();
-        }
-
-        // add database port if using another PDO driver than sqlite
-        if ($databasePortNode = $databaseNode->getDatabasePort()) {
-            $connectionParameters['port'] = $databasePortNode->getNodeValue()->__toString();
-        }
-
-        // add charset, if specified
-        if ($charsetNode = $databaseNode->getCharset()) {
-            $connectionParameters['charset'] = $charsetNode->getNodeValue()->__toString();
-        }
-
-        // add driver options, if specified
-        if ($driverOptionsNode = $databaseNode->getDriverOptions()) {
-            // explode the raw options separated with a semicolon
-            $rawOptions = explode(';', $driverOptionsNode->getNodeValue()->__toString());
-
-            // prepare the array with the driver options key/value pair (separated with a =)
-            $options = array();
-            foreach ($rawOptions as $rawOption) {
-                list ($key, $value) = explode('=', $rawOption);
-                $options[$key] = $value;
-            }
-
-            // set the driver options
-            $connectionParameters['driverOptions'] = $options;
-        }
-
-        // add driver options, if specified
-        if ($unixSocketNode = $databaseNode->getUnixSocket()) {
-            $connectionParameters['unix_socket'] = $unixSocketNode->getNodeValue()->__toString();
-        }
-
         // initialize and return a entity manager decorator instance
         return new DoctrineEntityManagerDecorator(
-            EntityManager::create($connectionParameters, $configuration)
+            EntityManager::create(ConnectionUtil::get($application)->fromDatabaseNode($databaseNode), $configuration)
         );
     }
 }
