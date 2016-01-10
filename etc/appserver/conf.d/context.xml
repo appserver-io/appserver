@@ -77,28 +77,26 @@
         <manager name="AuthenticationManagerInterface" type="AppserverIo\Appserver\ServletEngine\Authentication\StandardAuthenticationManager" factory="AppserverIo\Appserver\ServletEngine\Authentication\StandardAuthenticationManagerFactory">
             <!-- security-domains>  
                 <security-domain name="example-realm">
-                    <auth-configs>
-                        <auth-config>
-                            <login-modules>
-                                <login-module code="AppserverIo\Appserver\ServletEngine\Authentication\LoginModule\HtpasswdFile" flag="required">
-                                    <params>
-                                        <param name="filename" type="string">WEB-INF/htpasswd</param>
-                                        <param name="password-stacking" type="string">useFirstPass</param>
-                                    </params>
-                                </login-module>
-                                <login-module code="AppserverIo\Appserver\ServletEngine\Authentication\LoginModule\Database" flag="required">
-                                    <params>
-                                        <param name="lookupName" type="string">php:env/combined-appserver/appserver.io-example-application</param>
-                                        <param name="principalsQuery" type="string">select encode(password, 'hex') from principal where username=?</param>
-                                        <param name="rolesQuery" type="string">select r.role, r.role_group from role r inner join principal p on r.role = p.role where p.username=?</param>
-                                        <param name="hashAlgorithm" type="string">SHA-512</param>
-                                        <param name="hashEncoding" type="string">hex</param>
-                                        <param name="password-stacking" type="string">useFirstPass</param>
-                                    </params>
-                                </login-module>
-                            </login-modules>
-                        </auth-config>
-                    </auth-configs>
+                    <auth-config>
+                        <login-modules>
+                            <login-module code="AppserverIo\Appserver\ServletEngine\Authentication\LoginModule\HtpasswdFile" flag="required">
+                                <params>
+                                    <param name="filename" type="string">WEB-INF/htpasswd</param>
+                                    <param name="password-stacking" type="string">useFirstPass</param>
+                                </params>
+                            </login-module>
+                            <login-module code="AppserverIo\Appserver\ServletEngine\Authentication\LoginModule\Database" flag="required">
+                                <params>
+                                    <param name="lookupName" type="string">php:env/combined-appserver/appserver.io-example-application</param>
+                                    <param name="principalsQuery" type="string">select encode(password, 'hex') from principal where username=?</param>
+                                    <param name="rolesQuery" type="string">select r.role, r.role_group from role r inner join principal p on r.role = p.role where p.username=?</param>
+                                    <param name="hashAlgorithm" type="string">SHA-512</param>
+                                    <param name="hashEncoding" type="string">hex</param>
+                                    <param name="password-stacking" type="string">useFirstPass</param>
+                                </params>
+                            </login-module>
+                        </login-modules>
+                    </auth-config>
                 </security-domain>
             </security-domains -->
         </manager>

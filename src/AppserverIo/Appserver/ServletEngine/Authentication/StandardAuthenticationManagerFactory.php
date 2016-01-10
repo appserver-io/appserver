@@ -49,6 +49,7 @@ class StandardAuthenticationManagerFactory implements ManagerFactoryInterface
     {
 
         // initialize the storage instances
+        $securityDomains = new StackableStorage();
         $authenticationMethods = new StackableStorage();
         $urlPatternToAuthenticationMethodMappings = new StackableStorage();
 
@@ -59,6 +60,7 @@ class StandardAuthenticationManagerFactory implements ManagerFactoryInterface
         $authenticationManager = new StandardAuthenticationManager();
         $authenticationManager->injectApplication($application);
         $authenticationManager->injectSecurityDomains($securityDomains);
+        $authenticationManager->injectManagerConfiguration($managerConfiguration);
         $authenticationManager->injectAuthenticationMethods($authenticationMethods);
         $authenticationManager->injectUrlPatternToAuthenticationMethodMappings($urlPatternToAuthenticationMethodMappings);
 

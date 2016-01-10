@@ -33,19 +33,19 @@ class SecurityDomainNode extends AbstractNode implements SecurityDomainNodeInter
 {
 
     /**
-     * Trait to handle the authorization configuration.
-     *
-     * @var \AppserverIo\Appserver\Core\Api\Node\AuthConfigsNodeTrait
-     */
-    use AuthConfigsNodeTrait;
-
-    /**
      * The security domain name.
      *
      * @var string
      * @AS\Mapping(nodeType="string")
      */
     protected $name;
+    /**
+     * The display name information.
+     *
+     * @var \AppserverIo\Appserver\Core\Api\Node\AuthConfigNode
+     * @AS\Mapping(nodeName="display-name", nodeType="AppserverIo\Appserver\Core\Api\Node\AuthConfigNode")
+     */
+    protected $authConfig;
 
     /**
      * Return's the security domain name.
@@ -55,5 +55,15 @@ class SecurityDomainNode extends AbstractNode implements SecurityDomainNodeInter
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * Return's the authentication configuration.
+     *
+     * @return \AppserverIo\Appserver\Core\Api\Node\AuthConfigNode The authentication configuration
+     */
+    public function getAuthConfig()
+    {
+        return $this->getAuthConfig;
     }
 }

@@ -21,14 +21,16 @@
 
 namespace AppserverIo\Appserver\ServletEngine\Authentication;
 
+use AppserverIo\Collections\HashMap;
+use AppserverIo\Storage\StorageInterface;
+use AppserverIo\Lang\Reflection\ReflectionClass;
 use AppserverIo\Appserver\Core\AbstractManager;
+use AppserverIo\Http\Authentication\AuthenticationException;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
 use AppserverIo\Appserver\ServletEngine\Authentication\DependencyInjection\DeploymentDescriptorParser;
-use AppserverIo\Storage\StorageInterface;
-use AppserverIo\Collections\HashMap;
-use AppserverIo\Http\Authentication\AuthenticationException;
+use AppserverIo\Appserver\ServletEngine\Authentication\Callback\SecurityAssociationHandler;
 
 /**
  * The authentication manager handles request which need Http authentication.
@@ -40,7 +42,7 @@ use AppserverIo\Http\Authentication\AuthenticationException;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  *
- * @property array                                 $securityDomains                          Contains the security domains
+ * @property \AppserverIo\Storage\StorageInterface $securityDomains                          Contains the security domains
  * @property \AppserverIo\Storage\StorageInterface $authenticationMethods                    Contains all registered authentication methods
  * @property \AppserverIo\Storage\StorageInterface $urlPatternToAuthenticationMethodMappings Contains the URL pattern to authentication method mapping
  */
@@ -60,9 +62,9 @@ class StandardAuthenticationManager extends AbstractManager implements Authentic
     }
 
     /**
-     * Inject the array with the security domains.
+     * Inject the container with the security domains.
      *
-     * @param array $securityDomains The security domains
+     * @param \AppserverIo\Storage\StorageInterface $securityDomains The security domains
      */
     public function injectSecurityDomains(array $securityDomains)
     {
@@ -82,9 +84,21 @@ class StandardAuthenticationManager extends AbstractManager implements Authentic
     }
 
     /**
-     * Returns the array with the security domains.
+     * Add's the passed security domain the the authentication manager.
      *
-     * @return array The security domains
+     * @param \AppserverIo\Appserver\ServletEngine\Authentication\SecurityDomainInterface $securityDomain The security domain to add
+     *
+     * @return void
+     */
+    public function addSecurityDomain(SecurityDomainInterface $securityDomain)
+    {
+        $this->securityDomains->set($securityDomain->getName(), $securityDomain);
+    }
+
+    /**
+     * Returns the container with the security domains.
+     *
+     * @return \AppserverIo\Storage\StorageInterface The security domains
      */
     public function getSecurityDomains()
     {
@@ -236,23 +250,27 @@ class StandardAuthenticationManager extends AbstractManager implements Authentic
             return;
         }
 
-        $loginModules = new HashMap();
-
         /** @var \AppserverIo\Appserver\Core\Api\Node\SecurityDomainNode $securityDomainNode */
         foreach ($this->getSecurityDomains() as $securityDomainNode) {
 
+            // create the security domain instance
+            $securityDomain = new SecurityDomain($securityDomainNode->getName()->__toString());
+
+            // load the security domains authentication configuration
             /** @var \AppserverIo\Appserver\Core\Api\Node\AuthConfigNode $authConfigNode */
-            foreach ($securityDomainNode->getAuthConfigs() as $authConfigNode) {
+            $authConfigNode = $securityDomainNode->getAuthConfig();
 
-                /** @var \AppserverIo\Appserver\Core\Api\Node\LoginModuleNode $loginModuleNode */
-                foreach ($authConfigNode->getLoginModules() as $loginModuleNode) {
+            // prepare the login modules of the security domain
+            /** @var \AppserverIo\Appserver\Core\Api\Node\LoginModuleNode $loginModuleNode */
+            foreach ($authConfigNode->getLoginModules() as $loginModuleNode) {
 
-                    $loginModuleType = $loginModuleNode->getType();
-                    $securityDomainName = $securityDomainNode->getName()->__toString();
-
-                    $loginModules->add($securityDomainName, new $loginModuleType($loginModuleNode->getParamsAsArray()));
-                }
+                // create a new instance of the login module and add it to the array list
+                $reflectionClass = new ReflectionClass($loginModuleNode->getType());
+                $securityDomain->addLoginModule($reflectionClass->newInstance());
             }
+
+            // add the initialized security domain
+            $this->addSecurityDomain($securityDomain);
         }
 
         // initialize the deployment descriptor parser and parse the web application's deployment descriptor for servlets

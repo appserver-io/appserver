@@ -1,7 +1,7 @@
 <?php
 
 /**
- * \AppserverIo\Appserver\Core\Api\Node\SecurityDomainNodeInterface
+ * AppserverIo\Appserver\ServletEngine\Authentication\SecurityDomainInterface
  *
  * NOTICE OF LICENSE
  *
@@ -18,12 +18,12 @@
  * @link      http://www.appserver.io
  */
 
-namespace AppserverIo\Appserver\Core\Api\Node;
+namespace AppserverIo\Appserver\ServletEngine\Authentication;
 
-use AppserverIo\Configuration\Interfaces\NodeInterface;
+use AppserverIo\Appserver\ServletEngine\Authentication\LoginModules\LoginModuleInterface;
 
 /**
- * Interface for a security domain DTO implementation.
+ * Interface for a security domain implementation.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -31,20 +31,22 @@ use AppserverIo\Configuration\Interfaces\NodeInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-interface SecurityDomainNodeInterface extends NodeInterface
+interface SecurityDomainInterface
 {
 
     /**
-     * Return's the security domain name.
+     * Return's the name of the security domain.
      *
-     * @return string The security domain name
+     * @return string The security domain's name
      */
     public function getName();
 
     /**
-     * Return's the authentication configuration.
+     * Add's the passed login module to the security domain.
      *
-     * @return \AppserverIo\Appserver\Core\Api\Node\AuthConfigNode The authentication configuration
+     * @param \AppserverIo\Appserver\ServletEngine\Authentication\LoginModules\LoginModuleInterface $loginModule The login module to add
+     *
+     * @return void
      */
-    public function getAuthConfig();
+    public function addLoginModule(LoginModuleInterface $loginModule);
 }
