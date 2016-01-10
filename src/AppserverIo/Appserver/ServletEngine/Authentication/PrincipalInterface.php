@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\Authentication\Callback\CallbackHandlerInterface
+ * AppserverIo\Appserver\ServletEngine\Authentication\PrincipalInterface
  *
  * NOTICE OF LICENSE
  *
@@ -18,12 +18,10 @@
  * @link      http://www.appserver.io
  */
 
-namespace AppserverIo\Appserver\ServletEngine\Authentication\Callback;
-
-use AppserverIo\Collections\CollectionInterface;
+namespace AppserverIo\Appserver\ServletEngine\Authentication;
 
 /**
- * Interface for all callback handler implementations.
+ * Interface for all principals.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -31,17 +29,29 @@ use AppserverIo\Collections\CollectionInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-interface CallbackHandlerInterface
+interface PrincipalInterface
 {
 
     /**
-     * Handles UsernameCallback and PasswordCallback types. A UsernameCallback name property is set to the
-     * Prinicpal->getName() value. A PasswordCallback password property is set to the credential value.
+     * Compare this SimplePrincipal's name against another Principal.
      *
-     * @param \AppserverIo\Collections\CollectionInterface $callbacks The collection with the callbacks
+     * @param \xAppserverIo\Appserver\ServletEngine\Authentication\PrincipalInterface $another The other principal to compare to
      *
-     * @return void
-     * @throws UnsupportedCallbackException Is thrown if any callback of type other than NameCallback or PasswordCallback has been passed
+     * @return boolean TRUE If name equals $another->getName();
      */
-    public function handle(CollectionInterface $callbacks);
+    public function equals(PrincipalInterface $another);
+
+    /**
+     * Returns the principals name as string.
+     *
+     * @return string The principal's name
+     */
+    public function __toString();
+
+    /**
+     * Return's the principals name as String.
+     *
+     * @return \AppserverIo\Lang\String The principal's name
+     */
+    public function getName();
 }

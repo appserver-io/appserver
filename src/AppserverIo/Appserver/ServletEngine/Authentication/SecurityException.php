@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\Authentication\Callback\PasswordCallback
+ * AppserverIo\Appserver\ServletEngine\Authentication\SecurityException
  *
  * NOTICE OF LICENSE
  *
@@ -18,12 +18,10 @@
  * @link      http://www.appserver.io
  */
 
-namespace AppserverIo\Appserver\ServletEngine\Authentication\Callback;
-
-use AppserverIo\Lang\String;
+namespace AppserverIo\Appserver\ServletEngine\Authentication;
 
 /**
- * A password callback implementation.
+ * Exception that is thrown if authentication has not been successfull.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -31,33 +29,6 @@ use AppserverIo\Lang\String;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class PasswordCallback implements CallbackInterface
+class SecurityException extends \Exception
 {
-
-    /**
-     * The user's password.
-     *
-     * @var \AppserverIo\Lang\String
-     */
-    protected $password;
-
-    /**
-     * Set's the passed password.
-     *
-     * @param \AppserverIo\Lang\String $password The password to set
-     */
-    public function setPassword(String $password)
-    {
-        $this->password = $password;
-    }
-
-    /**
-     * Return's the user's password.
-     *
-     * @return \AppserverIo\Lang\String The user's password
-     */
-    public function getPassword()
-    {
-        return $this->password;
-    }
 }

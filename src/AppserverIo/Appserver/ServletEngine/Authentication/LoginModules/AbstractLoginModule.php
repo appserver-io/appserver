@@ -20,14 +20,16 @@
 
 namespace AppserverIo\Appserver\ServletEngine\Authentication\LoginModules;
 
+use AppserverIo\Lang\String;
+use AppserverIo\Lang\Reflection\ReflectionClass;
+use AppserverIo\Collections\ArrayList;
 use AppserverIo\Collections\MapInterface;
+use AppserverIo\Appserver\ServletEngine\Authentication\SimplePrincipal;
+use AppserverIo\Appserver\ServletEngine\Authentication\Callback\NameCallback;
+use AppserverIo\Appserver\ServletEngine\Authentication\Callback\PasswordCallback;
 use AppserverIo\Appserver\ServletEngine\Authentication\Callback\CallbackHandlerInterface;
 use AppserverIo\Appserver\ServletEngine\Authentication\LoginModules\Utilities\ParamKeys;
 use AppserverIo\Appserver\ServletEngine\Authentication\LoginModules\Utilities\SharedStateKeys;
-use AppserverIo\Collections\ArrayList;
-use AppserverIo\Appserver\ServletEngine\Authentication\Callback\UsernameCallback;
-use AppserverIo\Appserver\ServletEngine\Authentication\Callback\PasswordCallback;
-use AppserverIo\Lang\Reflection\ReflectionClass;
 
 /**
  * An abstract login module implementation.
@@ -44,14 +46,14 @@ abstract class AbstractLoginModule implements LoginModuleInterface
     /**
      * The user identity.
      *
-     * @var \AppserverIo\Appserver\ServletEngine\Authentication\Principal
+     * @var \AppserverIo\Appserver\ServletEngine\Authentication\PrincipalInterface
      */
     protected $identity;
 
     /**
      * The user's password credential.
      *
-     * @var string
+     * @var \AppserverIo\Lang\String
      */
     protected $credential;
 
@@ -147,18 +149,22 @@ abstract class AbstractLoginModule implements LoginModuleInterface
     public function login()
     {
 
+        // initialize the login state
         $this->loginOk = false;
 
+        // query whether or not we should use the shared state
         if ($this->useFirstPass) {
-            $username = $this->sharedState->get(SharedStateKeys::LOGIN_NAME);
+            $name = $this->sharedState->get(SharedStateKeys::LOGIN_NAME);
             $password = $this->sharedState->get(SharedStateKeys::LOGIN_PASSWORD);
 
-            if ($username && $password) {
+            // if we've a username and a password login has been successful
+            if ($name && $password) {
                 $this->loginOk = true;
                 return true;
             }
         }
 
+        // return FALSE if login has not been successful
         return false;
     }
 
@@ -166,19 +172,22 @@ abstract class AbstractLoginModule implements LoginModuleInterface
      * Called by login() to acquire the username and password strings for
      * authentication. This method does no validation of either.
      *
-     * @return array Array with username and password, e. g. array(0 => $username, 1 => $password)
-     * @throws \AppserverIo\Appserver\ServletEngine\Authentication\LoginModules\LoginException Is thrown if username and password can't be loaded
+     * @return array Array with name and password, e. g. array(0 => $name, 1 => $password)
+     * @throws \AppserverIo\Appserver\ServletEngine\Authentication\LoginModules\LoginException Is thrown if name and password can't be loaded
      */
     public function getUsernameAndPassword()
     {
 
+        // create and initialize an ArrayList for the callback handlers
         $list = new ArrayList();
-        $list->add($usernameCallback = new UsernameCallback());
+        $list->add($nameCallback = new NameCallback());
         $list->add($passwordCallback = new PasswordCallback());
 
+        // handle the callbacks
         $this->callbackHandler->handle($list);
 
-        return array($usernameCallback->getUsername(), $passwordCallback->getPassword());
+        // return an array with the username and callback
+        return array($nameCallback->getName(), $passwordCallback->getPassword());
     }
 
     /**
@@ -187,23 +196,26 @@ abstract class AbstractLoginModule implements LoginModuleInterface
      * specified. If principalClassName was not specified, a SimplePrincipal
      * is created.
      *
-     * @param string $username The name of the principal
+     * @param \AppserverIo\Lang\String $name The name of the principal
      *
      * @return Principal The principal instance
      * @throws \Exception Is thrown if the custom principal type cannot be created
      */
-    protected createIdentity($username)
+    protected function createIdentity(String $name)
     {
 
-        $p = null;
+        //initialize the principal
+        $principal = null;
 
+        // query whether or not a principal class name has been specified
         if ($this->principalClassName == null) {
-            $p = new SimplePrincipal($username);
+            $principal = new SimplePrincipal($name);
         } else {
             $reflectionClass = new ReflectionClass($this->principalClassName);
-            $p = $reflectionClass->newInstanceArgs(array($username));
+            $principal = $reflectionClass->newInstanceArgs(array($name));
         }
 
-        return p;
+        // return the principal instance
+        return $principal;
     }
 }

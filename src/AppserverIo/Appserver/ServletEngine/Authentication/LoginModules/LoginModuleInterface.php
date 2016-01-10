@@ -79,8 +79,8 @@ interface LoginModuleInterface
      * Called by login() to acquire the username and password strings for
      * authentication. This method does no validation of either.
      *
-     * @return array Array with username and password, e. g. array(0 => $username, 1 => $password)
-     * @throws \AppserverIo\Appserver\ServletEngine\Authentication\LoginModules\LoginException Is thrown if username and password can't be loaded
+     * @return array Array with username and password, e. g. array(0 => $name, 1 => $password)
+     * @throws \AppserverIo\Appserver\ServletEngine\Authentication\LoginModules\LoginException Is thrown if name and password can't be loaded
      */
     public function getUsernameAndPassword();
 }

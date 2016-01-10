@@ -20,8 +20,7 @@
 
 namespace AppserverIo\Appserver\ServletEngine\Authentication\Callback;
 
-use AppserverIo\Collections\CollectionInterface;
-
+use AppserverIo\Lang\String;
 /**
  * An abstract login module implementation.
  *
@@ -31,18 +30,26 @@ use AppserverIo\Collections\CollectionInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class UsernameCallback implements CallbackInterface
+class NameCallback implements CallbackInterface
 {
 
+    /**
+     * The default username.
+     *
+     * @var string
+     */
     const DEFAULT_NAME = 'guest';
 
-    protected $username;
+    protected $name;
 
     protected $defaultName;
 
-    public function __construct($defaultName = UsernameCallback::DEFAULT_NAME)
+    /**
+     * Initialize the username callback.
+     */
+    public function __construct()
     {
-        $this->setDefaultName($defaultName);
+        $this->setDefaultName(new String(NameCallback::DEFAULT_NAME));
     }
 
     public function setDefaultName($defaultName)
@@ -55,13 +62,13 @@ class UsernameCallback implements CallbackInterface
         return $this->defaultName;
     }
 
-    public function setUsername($username)
+    public function setName($name)
     {
-        $this->username = $username;
+        $this->name = $name;
     }
 
-    public function getUsername()
+    public function getName()
     {
-        return $this->username;
+        return $this->name;
     }
 }

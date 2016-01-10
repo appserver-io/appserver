@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\Authentication\Callback\CallbackHandlerInterface
+ * AppserverIo\Appserver\ServletEngine\Authentication\Callback\UnsupporedCallbackException
  *
  * NOTICE OF LICENSE
  *
@@ -20,10 +20,8 @@
 
 namespace AppserverIo\Appserver\ServletEngine\Authentication\Callback;
 
-use AppserverIo\Collections\CollectionInterface;
-
 /**
- * Interface for all callback handler implementations.
+ * Exception that is thrown if an unsupported callback class has been found.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -31,17 +29,6 @@ use AppserverIo\Collections\CollectionInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-interface CallbackHandlerInterface
+class UnsupporedCallbackException extends \Exception
 {
-
-    /**
-     * Handles UsernameCallback and PasswordCallback types. A UsernameCallback name property is set to the
-     * Prinicpal->getName() value. A PasswordCallback password property is set to the credential value.
-     *
-     * @param \AppserverIo\Collections\CollectionInterface $callbacks The collection with the callbacks
-     *
-     * @return void
-     * @throws UnsupportedCallbackException Is thrown if any callback of type other than NameCallback or PasswordCallback has been passed
-     */
-    public function handle(CollectionInterface $callbacks);
 }

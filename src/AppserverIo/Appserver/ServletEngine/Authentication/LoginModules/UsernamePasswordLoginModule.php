@@ -20,14 +20,14 @@
 
 namespace AppserverIo\Appserver\ServletEngine\Authentication\LoginModules;
 
-use Doctrine\DBAL\DriverManager;
+use AppserverIo\Lang\String;
+use AppserverIo\Lang\Boolean;
 use AppserverIo\Collections\MapInterface;
-use AppserverIo\Appserver\ServletEngine\RequestHandler;
-use AppserverIo\Appserver\Doctrine\Utils\ConnectionUtil;
 use AppserverIo\Appserver\ServletEngine\Authentication\LoginModules\Utilities\ParamKeys;
 use AppserverIo\Appserver\ServletEngine\Authentication\Callback\CallbackHandlerInterface;
 use AppserverIo\Appserver\ServletEngine\Authentication\LoginModules\Utilities\SharedStateKeys;
-use AppserverIo\Lang\Boolean;
+use AppserverIo\Collections\HashMap;
+use AppserverIo\Appserver\ServletEngine\Authentication\SecurityException;
 
 /**
  * This valve will check if the actual request needs authentication.
@@ -41,21 +41,47 @@ use AppserverIo\Lang\Boolean;
 class UsernamePasswordLoginModule extends AbstractLoginModule
 {
 
-    /** The login identity */
-    private Principal identity;
-    /** The proof of login identity */
-    private char[] credential;
-    /** the message digest algorithm used to hash passwords. If null then
-     plain passwords will be used. */
-    private String hashAlgorithm = null;
-   /** the name of the charset/encoding to use when converting the password
-    String to a byte array. Default is the platform's default encoding.
+    /**
+     * The login identity.
+     *
+     * @var \AppserverIo\Appserver\ServletEngine\Authentication\PrincipalInterface
+     */
+    private $identity;
+
+    /**
+     * The proof of login identity.
+     *
+     * @var \AppserverIo\Lang\String
+     */
+    private $credential;
+
+    /**
+     * The message digest algorithm used to hash passwords. If null then plain passwords will be used.
+     *
+     * @var string
+     */
+    private $hashAlgorithm = null;
+
+   /**
+    * The name of the charset/encoding to use when converting the password String to a byte array. Default is the platform's default encoding.
+    *
+    * @var string
     */
-    private String hashCharset = null;
-    /** the string encoding format to use. Defaults to base64. */
-    private String hashEncoding = null;
-    /** A flag indicating if the password comparison should ignore case */
-    private boolean ignorePasswordCase;
+    private $hashCharset = null;
+
+    /**
+     * The string encoding format to use. Defaults to base64.
+     *
+     * @var string
+     */
+    private $hashEncoding = null;
+
+    /**
+     * A flag indicating if the password comparison should ignore case
+     *
+     * @var boolean
+     */
+    private $ignorePasswordCase;
 
     /**
      * Initialize the login module. This stores the subject, callbackHandler and sharedState and options
@@ -80,14 +106,14 @@ class UsernamePasswordLoginModule extends AbstractLoginModule
 
         // Check to see if password hashing has been enabled.
         // If an algorithm is set, check for a format and charset.
-        $hashAlgorithm = new String($params->get(ParamKeys::HASH_ALGORITHM));
+        $this->hashAlgorithm = new String($params->get(ParamKeys::HASH_ALGORITHM));
 
-        if ($hashAlgorithm != null ) {
-            $hashEncoding = new String($params->get(ParamKeys::HASH_ENCODING));
+        if ($this->hashAlgorithm != null ) {
+            $this->hashEncoding = new String($params->get(ParamKeys::HASH_ENCODING));
 
-            if ($hashEncoding == null) {
-                $hashEncoding = Util::BASE64_ENCODING;
-                $hashCharset = new String($params->get(ParamKeys::HASH_CHARSET));
+            if ($this->hashEncoding == null) {
+                $this->hashEncoding = Util::BASE64_ENCODING;
+                $this->hashCharset = new String($params->get(ParamKeys::HASH_CHARSET));
 
                 /* if (log.isTraceEnabled()) {
                     log.trace("Password hashing activated: algorithm = " + hashAlgorithm
@@ -106,7 +132,7 @@ class UsernamePasswordLoginModule extends AbstractLoginModule
     /**
      * Returns the password for the user from the sharedMap data.
      *
-     * @return array Array with username and password, e. g. array(0 => $username, 1 => $password)
+     * @return array Array with username and password, e. g. array(0 => $name, 1 => $password)
      * @throws \AppserverIo\Appserver\ServletEngine\Authentication\LoginModules\LoginException Is thrown if password can't be loaded
      */
     abstract public function getUsersPassword();
@@ -122,14 +148,14 @@ class UsernamePasswordLoginModule extends AbstractLoginModule
         if (parent::login()) {
 
             // Setup our view of the user
-            $username = new String($this->sharedState->get(SharedStateKeys::LOGIN_NAME));
+            $name = new String($this->sharedState->get(SharedStateKeys::LOGIN_NAME));
 
-            if ($username instanceof Principal) {
-                $identity = username;
+            if ($name instanceof Principal) {
+                $this->identity = username;
             } else {
-                $name = $username->__toString();
+                $name = $name->__toString();
                 try {
-                    $identity = $this->createIdentity($name);
+                    $this->identity = $this->createIdentity($name);
                 } catch(\Exception $e) {
                     // log.debug("Failed to create principal", e);
                     throw new LoginException(sprintf('Failed to create principal: %s', $e->getMessage()));
@@ -151,17 +177,16 @@ class UsernamePasswordLoginModule extends AbstractLoginModule
         $this->loginOk = false;
 
         // array containing the username and password from the user's input
-        $list ($username, $password) = extract($this->getUsernameAndPassword());
+        list ($name, $password) = extract($this->getUsernameAndPassword());
 
-        if ($username == null && $password == null) {
+        if ($name == null && $password == null) {
             $this->identity = $this->unauthenticatedIdentity;
             // super.log.trace("Authenticating as unauthenticatedIdentity="+identity);
         }
 
         if ($this->identity == null) {
             try {
-                $this->identity = $this->createIdentity($username);
-
+                $this->identity = $this->createIdentity($name);
             } catch(\Exception $e) {
                 // log.debug("Failed to create principal", e);
                 throw new LoginException(sprintf('Failed to create principal: %s', $e->getMessage()));
@@ -169,7 +194,7 @@ class UsernamePasswordLoginModule extends AbstractLoginModule
 
             // hash the user entered password if password hashing is in use
             if ($this->hashAlgorithm != null)
-                $password = $this->createPasswordHash($username, $password);
+                $password = $this->createPasswordHash($name, $password);
                 // validate the password supplied by the subclass
                 $expectedPassword = $this->getUsersPassword();
 
@@ -181,8 +206,8 @@ class UsernamePasswordLoginModule extends AbstractLoginModule
 
         if ($this->getUseFirstPass()) {
             // add the username and password to the shared state map
-            $this->sharedState->add(SharedStateKeys::LOGIN_NAME, $username);
-            $this->sharedState->add(SharedStateKeys::LOGIN_PASSWORD, $credential);
+            $this->sharedState->add(SharedStateKeys::LOGIN_NAME, $name);
+            $this->sharedState->add(SharedStateKeys::LOGIN_PASSWORD, $this->credential);
         }
 
         $this->loginOk = true;
@@ -191,36 +216,41 @@ class UsernamePasswordLoginModule extends AbstractLoginModule
     }
 
     /**
-     * If hashing is enabled, this method is called from <code>login()</code>
-     * prior to password validation.
-     * <p>
-     * Subclasses may override it to provide customized password hashing,
-     * for example by adding user-specific information or salting.
-     * <p>
-     * The default version calculates the hash based on the following options:
-     * <ul>
-     * <li><em>hashAlgorithm</em>: The digest algorithm to use.
-     * <li><em>hashEncoding</em>: The format used to store the hashes (base64 or hex)
-     * <li><em>hashCharset</em>: The encoding used to convert the password to bytes
-     * for hashing.
-     * <li><em>digestCallback</em>: The class name of the
-     * org.jboss.security.auth.spi.DigestCallback implementation that includes
-     * pre/post digest content like salts.
-     * </ul>
-     * It will return null if the hash fails for any reason, which will in turn
-     * cause <code>validatePassword()</code> to fail.
+     * If hashing is enabled, this method is called from login() prior to password validation.
      *
-     * @param username ignored in default version
-     * @param password the password string to be hashed
+     * Subclasses may override it to provide customized password hashing, for example by adding
+     * user-specific information or salting.
+     *
+     * The default version calculates the hash based on the following options:
+     *
+     * hashAlgorithm: The digest algorithm to use.
+     * hashEncoding: The format used to store the hashes (base64 or hex)
+     * hashCharset: The encoding used to convert the password to bytes
+     *
+     * for hashing.
+     *
+     * digestCallback: The class name of the digest callback implementation that includes
+     * pre/post digest content like salts.
+     *
+     * It will return null if the hash fails for any reason, which will in turn
+     * cause validatePassword() to fail.
+     *
+     * @param \AppserverIo\Lang\String $name     Ignored in default version
+     * @param \AppserverIo\Lang\String $password The password string to be hashed
+     *
+     * @return \AppserverIo\Lang\String The hashed password
      * @throws SecurityException - thrown if there is a failure to load the digestCallback
      */
-    protected function createPasswordHash($username, $password)
+    protected function createPasswordHash(String $name, String $password)
     {
 
+        // initialize the callback
         $callback = null;
 
+        // try to load the callback class name
         $callbackClassName = $this->params->get("digestCallback");
 
+        // query whether or not we've a callback configured
         if ($callbackClassName != null) {
             try {
                 $callback = new $callbackClassName();
@@ -236,13 +266,15 @@ class UsernamePasswordLoginModule extends AbstractLoginModule
                 throw new SecurityException("Failed to load DigestCallback");
             }
 
+            // initialize the callback
             $tmp = new HashMap($this->params->toIndexedArray());
-            $tmp->add(SharedStateKeys::LOGIN_NAME, $username);
+            $tmp->add(SharedStateKeys::LOGIN_NAME, $name);
             $tmp->add(SharedStateKeys::LOGIN_PASSWORD, $password);
             $callback->init($tmp);
         }
 
-        return Util::createPasswordHash($hashAlgorithm, $hashEncoding, $hashCharset, $username, $password, $callback);
+        // hash and return the password
+        return Util::createPasswordHash($this->hashAlgorithm, $this->hashEncoding, $this->hashCharset, $name, $password, $callback);
     }
 
     /**
@@ -251,51 +283,78 @@ class UsernamePasswordLoginModule extends AbstractLoginModule
      * neither inputPassword or expectedPassword are null that that
      * inputPassword.equals(expectedPassword) is true;
      *
-     * @param \AppserverIo\Lang\String $inputPassword
-     * @param \AppserverIo\Lang\String $expectedPassword
+     * @param \AppserverIo\Lang\String $inputPassword    The specified password
+     * @param \AppserverIo\Lang\String $expectedPassword The expected password
      *
      * @return boolean TRUE if the inputPassword is valid, FALSE otherwise
      */
-    protected function validatePassword($inputPassword, $expectedPassword)
+    protected function validatePassword(String $inputPassword, String $expectedPassword)
     {
 
+       // if username or password is NULL, return immediately
        if ($inputPassword == null || $expectedPassword == null) {
            return false;
        }
 
+       // initialize the valid login flag
        $valid = false;
 
+       // query whether or not we've to ignore the case
        if ($this->ignorePasswordCase == true) {
            $valid = $inputPassword->equalsIgnoreCase($expectedPassword);
        } else {
            $valid = $inputPassword->equals($expectedPassword);
        }
 
+       // return the flag
        return $valid;
     }
 
     /**
-     * @return Principal The user identity
+     * Return's the authenticated user identity.
+     *
+     * @return \AppserverIo\Appserver\ServletEngine\Authentication\PrincipalInterface The user identity
      */
     protected function getIdentity()
     {
         return $this->identity;
     }
 
+    /**
+     * Return's the unauthenticated user identity.
+     *
+     * @return  \AppserverIo\Appserver\ServletEngine\Authentication\PrincipalInterface The unauthenticated user identity
+     */
     protected function getUnauthenticatedIdentity()
     {
         return $this->unauthenticatedIdentity;
     }
 
+    /**
+     * Return's the principal's username.
+     *
+     * @return \AppserverIo\Lang\String The username
+     */
     protected function getUsername()
     {
-        $username = null;
-        if ($identity $this->getIdentity()) {
-            $username = $identity->getUsername();
+
+        // initialize the name
+        $name = null;
+
+        // query whether or not we've an principal or not
+        if ($identity = $this->getIdentity()) {
+            $name = $identity->getUsername();
         }
-        return $username;
+
+        // return the name
+        return $name;
     }
 
+    /**
+     * Return's the proof of login identity.
+     *
+     * @return \AppserverIo\Lang\String The proof of login identity
+     */
     protected function getCredentials()
     {
         return $this->credential;

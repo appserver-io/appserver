@@ -20,7 +20,10 @@
 
 namespace AppserverIo\Appserver\ServletEngine\Authentication\Callback;
 
+use AppserverIo\Lang\String;
 use AppserverIo\Collections\CollectionInterface;
+use AppserverIo\Appserver\ServletEngine\Authentication\PrincipalInterface;
+use AppserverIo\Appserver\ServletEngine\Authentication\Callback\UnsupporedCallbackException;
 
 /**
  * An abstract login module implementation.
@@ -35,23 +38,25 @@ class SecurityAssociationHandler implements CallbackHandlerInterface
 {
 
     /**
+     * The principal instance.
      *
-     * @var unknown
+     * @var \AppserverIo\Appserver\ServletEngine\Authentication\PrincipalInterface
      */
     protected $principal;
 
     /**
+     * The principal's credential.
      *
-     * @var unknown
+     * @var \AppserverIo\Lang\String
      */
     protected $credential;
 
     /**
      *
-     * @param unknown $principal
-     * @param unknown $credential
+     * @param \AppserverIo\Appserver\ServletEngine\Authentication\PrincipalInterface $principal  The principal instance
+     * @param \AppserverIo\Lang\String                                               $credential The principal's credential
      */
-    public function __construct(Principal $principal, $credential)
+    public function __construct(PrincipalInterface $principal, String $credential)
     {
         $this->principal = $principal;
         $this->credential = $credential;
@@ -61,10 +66,12 @@ class SecurityAssociationHandler implements CallbackHandlerInterface
      * Handles UsernameCallback and PasswordCallback types. A UsernameCallback name property is set to the
      * Prinicpal->getName() value. A PasswordCallback password property is set to the credential value.
      *
+     * @param \AppserverIo\Collections\CollectionInterface $callbacks The collection with the callbacks
+     *
      * @return void
-     * @throws UnsupportedCallbackException Is thrown if any callback of type other than NameCallback or PasswordCallback has been passed
+     * @throws AppserverIo\Appserver\ServletEngine\Authentication\Callback\UnsupporedCallbackException Is thrown if any callback of type other than NameCallback or PasswordCallback has been passed
      */
-    public function handle(CollectionInterface callbacks)
+    public function handle(CollectionInterface $callbacks)
     {
 
         foreach ($callbacks as $callback) {
@@ -74,7 +81,7 @@ class SecurityAssociationHandler implements CallbackHandlerInterface
             } elseif ($callback instanceof PasswordCallback) {
                 $callback->setPassword($this->credential);
             } else {
-                throw new UnsupportedCallbackException("Unrecognized Callback");
+                throw new UnsupporedCallbackException("Unrecognized Callback");
             }
         }
     }

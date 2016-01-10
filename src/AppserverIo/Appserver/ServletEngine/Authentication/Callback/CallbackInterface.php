@@ -20,10 +20,8 @@
 
 namespace AppserverIo\Appserver\ServletEngine\Authentication\Callback;
 
-use AppserverIo\Collections\CollectionInterface;
-
 /**
- * An abstract login module implementation.
+ * Interface for all security callbacks.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
