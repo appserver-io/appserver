@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\Authentication\Callback\UsernameCallback
+ * AppserverIo\Appserver\ServletEngine\Authentication\Callback\NameCallback
  *
  * NOTICE OF LICENSE
  *
@@ -40,8 +40,18 @@ class NameCallback implements CallbackInterface
      */
     const DEFAULT_NAME = 'guest';
 
+    /**
+     * The login name.
+     *
+     * @var \AppserverIo\Lang\String
+     */
     protected $name;
 
+    /**
+     * The default login name to use.
+     *
+     * @var \AppserverIo\Lang\String
+     */
     protected $defaultName;
 
     /**
@@ -52,21 +62,45 @@ class NameCallback implements CallbackInterface
         $this->setDefaultName(new String(NameCallback::DEFAULT_NAME));
     }
 
-    public function setDefaultName($defaultName)
+    /**
+     * Set's the default login name.
+     *
+     * @param \AppserverIo\Lang\String $defaultName The default name
+     *
+     * @return void
+     */
+    public function setDefaultName(String $defaultName)
     {
         $this->defaultName = $defaultName;
     }
 
+    /**
+     * Return's the default name.
+     *
+     * @return \AppserverIo\Lang\String The default name
+     */
     public function getDefaultName()
     {
         return $this->defaultName;
     }
 
-    public function setName($name)
+    /**
+     * Set's the login name.
+     *
+     * @param \AppserverIo\Lang\String $name The login name to set
+     *
+     * @return void
+     */
+    public function setName(String $name)
     {
         $this->name = $name;
     }
 
+    /**
+     * Return's the login name.
+     *
+     * @return \AppserverIo\Lang\String The login name
+     */
     public function getName()
     {
         return $this->name;

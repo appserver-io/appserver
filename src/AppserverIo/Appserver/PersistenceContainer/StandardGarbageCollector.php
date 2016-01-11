@@ -23,6 +23,7 @@ namespace AppserverIo\Appserver\PersistenceContainer;
 use AppserverIo\Logger\LoggerUtils;
 use AppserverIo\Appserver\Core\AbstractDaemonThread;
 use AppserverIo\Psr\Application\ApplicationInterface;
+use AppserverIo\Appserver\Naming\Utils\NamingDirectoryKeys;
 
 /**
  * The garbage collector for the stateful session beans.
@@ -128,7 +129,7 @@ class StandardGarbageCollector extends AbstractDaemonThread
                 // write a log message
                 $this->getApplication()
                      ->getNamingDirectory()
-                     ->search('php:global/log/System')
+                     ->search(NamingDirectoryKeys::SYSTEM_LOGGER)
                      ->debug(sprintf('Successfully removed SFSB %s', $identifier));
                 // reduce CPU load
                 usleep(1000);
@@ -136,6 +137,7 @@ class StandardGarbageCollector extends AbstractDaemonThread
         }
 
         // profile the size of the sessions
+        /** @var \Psr\Log\LoggerInterface $this->profileLogger */
         if ($this->profileLogger) {
             $this->profileLogger->debug(
                 sprintf('Processed standard garbage collector, handling %d SFSBs', sizeof($statefulSessionBeans))

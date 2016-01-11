@@ -23,7 +23,6 @@ namespace AppserverIo\Appserver\ServletEngine\Authentication\Callback;
 use AppserverIo\Lang\String;
 use AppserverIo\Collections\CollectionInterface;
 use AppserverIo\Appserver\ServletEngine\Authentication\PrincipalInterface;
-use AppserverIo\Appserver\ServletEngine\Authentication\Callback\UnsupporedCallbackException;
 
 /**
  * An abstract login module implementation.
@@ -76,12 +75,12 @@ class SecurityAssociationHandler implements CallbackHandlerInterface
 
         foreach ($callbacks as $callback) {
 
-            if ($callback instanceof UsernameCallback) {
-                $callback->setUsername($this->principal->getName());
+            if ($callback instanceof NameCallback) {
+                $callback->setName($this->principal->getName());
             } elseif ($callback instanceof PasswordCallback) {
                 $callback->setPassword($this->credential);
             } else {
-                throw new UnsupporedCallbackException("Unrecognized Callback");
+                throw new UnsupportedCallbackException("Unrecognized Callback");
             }
         }
     }

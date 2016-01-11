@@ -43,7 +43,7 @@ class SecurityDomainNode extends AbstractNode implements SecurityDomainNodeInter
      * The display name information.
      *
      * @var \AppserverIo\Appserver\Core\Api\Node\AuthConfigNode
-     * @AS\Mapping(nodeName="display-name", nodeType="AppserverIo\Appserver\Core\Api\Node\AuthConfigNode")
+     * @AS\Mapping(nodeName="authConfig", nodeType="AppserverIo\Appserver\Core\Api\Node\AuthConfigNode")
      */
     protected $authConfig;
 
@@ -64,6 +64,6 @@ class SecurityDomainNode extends AbstractNode implements SecurityDomainNodeInter
      */
     public function getAuthConfig()
     {
-        return $this->getAuthConfig;
+        return $this->authConfig;
     }
 }

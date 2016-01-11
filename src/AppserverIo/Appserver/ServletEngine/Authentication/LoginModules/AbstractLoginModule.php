@@ -44,20 +44,6 @@ abstract class AbstractLoginModule implements LoginModuleInterface
 {
 
     /**
-     * The user identity.
-     *
-     * @var \AppserverIo\Appserver\ServletEngine\Authentication\PrincipalInterface
-     */
-    protected $identity;
-
-    /**
-     * The user's password credential.
-     *
-     * @var \AppserverIo\Lang\String
-     */
-    protected $credential;
-
-    /**
      * The callback handler to obtain username and password.
      *
      * @var AppserverIo\Appserver\ServletEngine\Authentication\Callback\CallbackHandlerInterface
@@ -94,6 +80,20 @@ abstract class AbstractLoginModule implements LoginModuleInterface
     protected $loginOk = false;
 
     /**
+     * The unauthenticated login identity.
+     *
+     * @var \AppserverIo\Appserver\ServletEngine\Authentication\PrincipalInterface
+     */
+    protected $unauthenticatedIdentity;
+
+    /**
+     * The class name used to create a principal.
+     *
+     * @var \AppserverIo\Lang\String
+     */
+    protected $principalClassName;
+
+    /**
      * Initialize the login module. This stores the subject, callbackHandler and sharedState and options
      * for the login session. Subclasses should override if they need to process their own options. A call
      * to parent::initialize() must be made in the case of an override.
@@ -119,8 +119,18 @@ abstract class AbstractLoginModule implements LoginModuleInterface
         $this->callbackHandler = $callbackHandler;
 
         // query whether or not we have password stacking activated or not
-        if ($params->get(ParamKeys::PASSWORD_STACKING) === 'useFirstPass') {
+        if ($params->exists(ParamKeys::PASSWORD_STACKING) && $params->get(ParamKeys::PASSWORD_STACKING) === 'useFirstPass') {
             $this->useFirstPass = true;
+        }
+
+        // check for a custom principal implementation
+        if ($params->exists(ParamKeys::PRINCIPAL_CLASS)) {
+            $this->principalClassName = new String($params->get(ParamKeys::PRINCIPAL_CLASS));
+        }
+
+        // check for unauthenticatedIdentity option.
+        if ($params->exists(ParamKeys::UNAUTHENTICATED_IDENTITY)) {
+            $this->unauthenticatedIdentity = $this->createIdentity($params->get(ParamKeys::UNAUTHENTICATED_IDENTITY));
         }
     }
 
@@ -201,7 +211,7 @@ abstract class AbstractLoginModule implements LoginModuleInterface
      * @return Principal The principal instance
      * @throws \Exception Is thrown if the custom principal type cannot be created
      */
-    protected function createIdentity(String $name)
+    public function createIdentity(String $name)
     {
 
         //initialize the principal

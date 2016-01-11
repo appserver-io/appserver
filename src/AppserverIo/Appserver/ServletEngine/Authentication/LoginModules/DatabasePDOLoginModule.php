@@ -20,13 +20,13 @@
 
 namespace AppserverIo\Appserver\ServletEngine\Authentication\LoginModules;
 
+use AppserverIo\Lang\String;
 use Doctrine\DBAL\DriverManager;
 use AppserverIo\Collections\MapInterface;
 use AppserverIo\Appserver\ServletEngine\RequestHandler;
 use AppserverIo\Appserver\Doctrine\Utils\ConnectionUtil;
 use AppserverIo\Appserver\ServletEngine\Authentication\LoginModules\Utilities\ParamKeys;
 use AppserverIo\Appserver\ServletEngine\Authentication\Callback\CallbackHandlerInterface;
-use AppserverIo\Appserver\ServletEngine\Authentication\LoginModules\Utilities\SharedStateKeys;
 
 /**
  * This valve will check if the actual request needs authentication.
@@ -101,19 +101,29 @@ class DatabasePDOLoginModule extends UsernamePasswordLoginModule
         $application = RequestHandler::getApplicationContext();
 
         /** @var \AppserverIo\Appserver\Core\Api\Node\DatabaseNode $databaseNode */
-        $databaseNode = $application->search($this->lookupName)->getDatasourceNode()->getDatabaseNode();
+        $databaseNode = $application->getNamingDirectory()->search($this->lookupName)->getDatabase();
 
         // prepare the connection parameters and create the DBAL connection
-        $connection = DriverManager::getConnection(ConnectionUtil::get($application)->fromDatasourceNode($databaseNode));
+        $connection = DriverManager::getConnection(ConnectionUtil::get($application)->fromDatabaseNode($databaseNode));
 
         $statement = $connection->prepare($this->principalsQuery);
-        $statement->bindParam(1, $this->sharedState->get(SharedStateKeys::LOGIN_NAME));
+        $statement->bindParam(1, $this->getUsername());
         $statement->execute();
 
-        if ($password = $statement->fetch()) {
-            return $password;
+        if ($row = $statement->fetch(\PDO::FETCH_OBJ)) {
+            return new String($row->password);
         } else {
             throw new LoginException('No matching username found in principals');
         }
+    }
+
+    /**
+     * Performs the user logout.
+     *
+     * @throws \AppserverIo\Appserver\ServletEngine\Authentication\LoginModules\LoginException Is thrown if an error during logout occured
+     */
+    public function logout()
+    {
+        // @TODO Still to implement
     }
 }

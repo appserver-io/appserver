@@ -150,7 +150,7 @@ class DeploymentDescriptorParser
 
             // create the authentication method instance
             $reflectionClass = new ReflectionClass($this->mapAuthenticationType($loginConfig->getAuthMethod()->__toString()));
-            $authenticationMethod = $reflectionClass->newInstanceArgs(array($loginConfig));
+            $authenticationMethod = $reflectionClass->newInstanceArgs(array($loginConfig, $this->getAuthenticationContext()));
 
             // add the authentication method itself
             $this->getAuthenticationContext()->addAuthenticationMethod($loginConfig->getPrimaryKey(), $authenticationMethod);

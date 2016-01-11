@@ -38,7 +38,7 @@ trait LoginModulesNodeTrait
      * The login modules configuration.
      *
      * @var array
-     * @AS\Mapping(nodeName="authConfigs/authConfig", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\LoginModuleNode")
+     * @AS\Mapping(nodeName="loginModules/loginModule", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\LoginModuleNode")
      */
     protected $loginModules = array();
 

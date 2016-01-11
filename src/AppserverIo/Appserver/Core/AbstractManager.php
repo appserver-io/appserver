@@ -25,6 +25,7 @@ use AppserverIo\Storage\StorageInterface;
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Psr\Application\ManagerInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
+use AppserverIo\Psr\Application\ManagerConfigurationInterface;
 use AppserverIo\Psr\Naming\InitialContext as NamingDirectory;
 use AppserverIo\Appserver\ServletEngine\RequestHandler;
 
@@ -38,12 +39,25 @@ use AppserverIo\Appserver\ServletEngine\RequestHandler;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  *
- * @property \AppserverIo\Psr\Application\ApplicationInterface $application    The application to manage
- * @property \AppserverIo\Storage\StorageInterface             $data           Storage container for arbitrary data
- * @property \AppserverIo\Psr\Naming\InitialContext            $initialContext The initial context of our naming directory
+ * @property \AppserverIo\Storage\StorageInterface                      $data                 Storage container for arbitrary data
+ * @property \AppserverIo\Psr\Naming\InitialContext                     $initialContext       The initial context of our naming directory
+ * @property \AppserverIo\Psr\Application\ApplicationInterface          $application          The application to manage
+ * @property \AppserverIo\Psr\Application\ManagerConfigurationInterface $managerConfiguration The application to manage
  */
 abstract class AbstractManager extends GenericStackable implements ManagerInterface
 {
+
+    /**
+     * Inject the configuration for this manager.
+     *
+     * @param \AppserverIo\Psr\Application\ManagerConfigurationInterface $managerConfiguration The managers configuration
+     *
+     * @return void
+     */
+    public function injectManagerConfiguration(ManagerConfigurationInterface $managerConfiguration)
+    {
+        $this->managerConfiguration = $managerConfiguration;
+    }
 
     /**
      * Inject the data storage.
@@ -172,6 +186,16 @@ abstract class AbstractManager extends GenericStackable implements ManagerInterf
 
         // lookup the proxy by the name and session ID if available
         return $initialContext->lookup($lookupName, $sessionId);
+    }
+
+    /**
+     * Return's the manager configuration.
+     *
+     * @return \AppserverIo\Psr\Application\ManagerConfigurationInterface The manager configuration
+     */
+    public function getManagerConfiguration()
+    {
+        return $this->managerConfiguration;
     }
 
     /**

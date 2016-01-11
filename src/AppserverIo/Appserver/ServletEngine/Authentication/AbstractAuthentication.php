@@ -22,6 +22,7 @@ namespace AppserverIo\Appserver\ServletEngine\Authentication;
 
 use AppserverIo\Psr\HttpMessage\RequestInterface;
 use AppserverIo\Psr\HttpMessage\ResponseInterface;
+use AppserverIo\Configuration\Interfaces\NodeInterface;
 use AppserverIo\Http\Authentication\AuthenticationInterface;
 
 /**
@@ -60,9 +61,16 @@ abstract class AbstractAuthentication implements AuthenticationInterface
     /**
      * Holds the configuration data given for authentication type.
      *
-     * @var object $configData
+     * @var \AppserverIo\Configuration\NodeInterface
      */
     protected $configData;
+
+    /**
+     * The authentication manager instance.
+     *
+     * @var \AppserverIo\Appserver\ServletEngine\Authentication\AuthenticationManagerInterface
+     */
+    protected $authenticationManager;
 
     /**
      * Array with the supported adapter types.
@@ -72,14 +80,16 @@ abstract class AbstractAuthentication implements AuthenticationInterface
     protected $supportedAdapters = array();
 
     /**
-     * Constructs the authentication type
+     * Constructs the authentication type.
      *
-     * @param object $configData The configuration data for auth type instance
+     * @param \AppserverIo\Configuration\NodeInterface                                           $configData            The configuration data for auth type instance
+     * @param \AppserverIo\Appserver\ServletEngine\Authentication\AuthenticationManagerInterface $authenticationManager The authentication manager instance
      */
-    public function __construct($configData)
+    public function __construct(NodeInterface $configData, AuthenticationManagerInterface $authenticationManager)
     {
         // set vars internally
         $this->configData = $configData;
+        $this->authenticationManager = $authenticationManager;
 
         // verify the configuration
         $this->verifyConfig();
@@ -119,6 +129,16 @@ abstract class AbstractAuthentication implements AuthenticationInterface
     }
 
     /**
+     * Return's the authentication manager instance.
+     *
+     * @return \AppserverIo\Appserver\ServletEngine\Authentication\AuthenticationManagerInterface The authentication manager instance
+     */
+    public function getAuthenticationManager()
+    {
+        return $this->authenticationManager;
+    }
+
+    /**
      * Returns the request method.
      *
      * @return string The request method
@@ -136,6 +156,16 @@ abstract class AbstractAuthentication implements AuthenticationInterface
     public function getType()
     {
         return static::AUTH_TYPE;
+    }
+
+    /**
+     * Return's the realm name.
+     *
+     * @return string The realm name
+     */
+    public function getRealmName()
+    {
+        return $this->getConfigData()->getRealmName();
     }
 
     /**
@@ -185,6 +215,7 @@ abstract class AbstractAuthentication implements AuthenticationInterface
      */
     protected function prepareAdapter()
     {
+        $this->securityDomain = $this->getAuthenticationManager()->lookup($this->getRealmName());
     }
 
     /**

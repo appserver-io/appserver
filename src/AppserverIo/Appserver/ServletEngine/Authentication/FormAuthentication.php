@@ -20,11 +20,16 @@
 
 namespace AppserverIo\Appserver\ServletEngine\Authentication;
 
-use AppserverIo\Psr\HttpMessage\Protocol;
+use AppserverIo\Lang\String;
+use AppserverIo\Lang\Reflection\ReflectionClass;
+use AppserverIo\Collections\HashMap;
 use AppserverIo\Psr\HttpMessage\RequestInterface;
 use AppserverIo\Psr\HttpMessage\ResponseInterface;
+use AppserverIo\Configuration\Interfaces\NodeInterface;
+use AppserverIo\Appserver\Naming\Utils\NamingDirectoryKeys;
 use AppserverIo\Http\Authentication\AuthenticationException;
 use AppserverIo\Http\Authentication\Adapters\HtpasswdAdapter;
+use AppserverIo\Appserver\ServletEngine\Authentication\Callback\SecurityAssociationHandler;
 
 /**
  * This valve will check if the actual request needs authentication.
@@ -53,18 +58,19 @@ class FormAuthentication extends AbstractAuthentication
     const DEFAULT_ADAPTER = HtpasswdAdapter::ADAPTER_TYPE;
 
     /**
-     * Constructs the authentication type
+     * Constructs the authentication type.
      *
-     * @param array $configData The configuration data for auth type instance
+     * @param \AppserverIo\Configuration\NodeInterface                                           $configData            The configuration data for auth type instance
+     * @param \AppserverIo\Appserver\ServletEngine\Authentication\AuthenticationManagerInterface $authenticationManager The authentication manager instance
      */
-    public function __construct($configData)
+    public function __construct(NodeInterface $configData, AuthenticationManagerInterface $authenticationManager)
     {
 
         // initialize the supported adapter types
         $this->addSupportedAdapter(HtpasswdAdapter::getType());
 
         // initialize the instance
-        parent::__construct($configData);
+        parent::__construct($configData, $authenticationManager);
     }
 
     /**
@@ -113,17 +119,45 @@ class FormAuthentication extends AbstractAuthentication
     public function authenticate(ResponseInterface $response)
     {
 
-        // verify everything to be ready for auth if not return false
-        if ($this->verify() === false) {
-            throw new AuthenticationException('Invalid username or password', 401);
-        }
+        try {
+            // verify everything to be ready for auth if not return false
+            if ($this->verify() === false) {
+                throw new \Exception('Invalid username or password');
+            }
 
-        // do actual authentication check
-        if ($this->getAuthAdapter()->authenticate($this->getAuthData()) === false) {
-            throw new AuthenticationException('Password doesn\'t match username', 401);
-        }
+            // load the security domains authentication configuration
+            /** @var \AppserverIo\Appserver\Core\Api\Node\AuthConfigNodeInterface $authConfigNode */
+            if ($authConfigNode = $this->securityDomain->getConfiguration()->getAuthConfig()) {
+                // prepare the map for the shared state data
+                $sharedState = new HashMap();
+                // prepare the login modules of the security domain
+                /** @var \AppserverIo\Appserver\Core\Api\Node\LoginModuleNodeInterface $loginModuleNode */
+                foreach ($authConfigNode->getLoginModules() as $loginModuleNode) {
+                    // create a new instance of the login module and add it to the array list
+                    $reflectionClass = new ReflectionClass($loginModuleNode->getType());
 
-        // $response->addHeader(Protocol::HEADER_LOCATION, $this->configData['form-error-page']);
+                    // initialize the login module instance
+                    /** @var \AppserverIo\Appserver\ServletEngine\Authentication\LoginModules\LoginModuleInterface $loginModule */
+                    $loginModule = $reflectionClass->newInstance();
+
+                    // initialize the principal instance with the username found in the request
+                    $principal = $loginModule->createIdentity(new String($this->getUsername()));
+
+                    // initialize the callback handler with the principal and the credential
+                    $callbackHandler = new SecurityAssociationHandler($principal, new String($this->getPassword()));
+
+                    // initialize the login module and
+                    $loginModule->initialize($callbackHandler, $sharedState, new HashMap($loginModuleNode->getParamsAsArray()));
+                    $loginModule->login();
+                }
+            }
+
+        } catch (\Exception $e) {
+            // log the exception
+            $this->getAuthenticationManager()->getApplication()->search(NamingDirectoryKeys::SYSTEM_LOGGER)->error($e);
+            // throw an authentication exception
+            throw new AuthenticationException($e->getMessage(), 401);
+        }
     }
 
     /**

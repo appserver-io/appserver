@@ -32,6 +32,7 @@ use AppserverIo\Appserver\Core\Api\Node\ContextNode;
 use AppserverIo\Appserver\Core\Api\Node\ManagerNodeInterface;
 use AppserverIo\Appserver\Core\Api\Node\ProvisionerNodeInterface;
 use AppserverIo\Appserver\Core\Api\Node\ClassLoaderNodeInterface;
+use AppserverIo\Appserver\Naming\Utils\NamingDirectoryKeys;
 use AppserverIo\Appserver\Application\Interfaces\ContextInterface;
 use AppserverIo\Psr\Naming\NamingDirectoryInterface;
 use AppserverIo\Psr\Context\ContextInterface as Context;
@@ -689,7 +690,7 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
             }
 
             // log a message that we has successfully been connected now
-            $this->getNamingDirectory()->search('php:global/log/System')->info(sprintf('%s has successfully been connected', $this->getName()));
+            $this->getNamingDirectory()->search(NamingDirectoryKeys::SYSTEM_LOGGER)->info(sprintf('%s has successfully been connected', $this->getName()));
 
             // the application has successfully been initialized
             $this->synchronized(function ($self) {
@@ -714,7 +715,7 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
             }
 
             // log a message that we has successfully been shutdown now
-            $this->getNamingDirectory()->search('php:global/log/System')->info(sprintf('%s start to shutdown managers', $this->getName()));
+            $this->getNamingDirectory()->search(NamingDirectoryKeys::SYSTEM_LOGGER)->info(sprintf('%s start to shutdown managers', $this->getName()));
 
             // array for the manager shutdown threads
             $shutdownThreads = array();
@@ -740,10 +741,10 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
             $this->unload();
 
             // log a message that we has successfully been shutdown now
-            $this->getNamingDirectory()->search('php:global/log/System')->info(sprintf('%s has successfully been shutdown', $this->getName()));
+            $this->getNamingDirectory()->search(NamingDirectoryKeys::SYSTEM_LOGGER)->info(sprintf('%s has successfully been shutdown', $this->getName()));
 
         } catch (\Exception $e) {
-            $this->getNamingDirectory()->search('php:global/log/System')->error($e->__toString());
+            $this->getNamingDirectory()->search(NamingDirectoryKeys::SYSTEM_LOGGER)->error($e->__toString());
         }
     }
 

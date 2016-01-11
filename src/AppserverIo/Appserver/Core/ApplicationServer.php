@@ -28,6 +28,7 @@ use AppserverIo\Psr\Naming\NamingDirectoryInterface;
 use AppserverIo\Appserver\Core\Commands\ModeCommand;
 use AppserverIo\Appserver\Core\Commands\InitCommand;
 use AppserverIo\Appserver\Core\Api\Node\BootstrapNode;
+use AppserverIo\Appserver\Naming\Utils\NamingDirectoryKeys;
 use AppserverIo\Appserver\Core\Listeners\ApplicationServerAwareListenerInterface;
 use AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface;
 use AppserverIo\Appserver\Core\Interfaces\SystemConfigurationInterface;
@@ -261,7 +262,7 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
     {
 
         try {
-            return $this->getNamingDirectory()->search('php:global/log/System');
+            return $this->getNamingDirectory()->search(NamingDirectoryKeys::SYSTEM_LOGGER);
         } catch (NamingException $ne) {
             return new Logger('System');
         }
@@ -720,7 +721,7 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
     protected function doStopServices($runlevel)
     {
         // iterate over all services and stop them
-        foreach ($this->runlevels[$runlevel] as $name => $service) {
+        foreach (array_flip($this->runlevels[$runlevel]) as $name) {
             $this->unbindService($runlevel, $name);
         }
     }

@@ -23,14 +23,14 @@ namespace AppserverIo\Appserver\ServletEngine\Authentication;
 
 use AppserverIo\Collections\HashMap;
 use AppserverIo\Storage\StorageInterface;
-use AppserverIo\Lang\Reflection\ReflectionClass;
 use AppserverIo\Appserver\Core\AbstractManager;
-use AppserverIo\Http\Authentication\AuthenticationException;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
+use AppserverIo\Http\Authentication\AuthenticationException;
 use AppserverIo\Appserver\ServletEngine\Authentication\DependencyInjection\DeploymentDescriptorParser;
-use AppserverIo\Appserver\ServletEngine\Authentication\Callback\SecurityAssociationHandler;
+use AppserverIo\Appserver\Naming\Utils\NamingDirectoryKeys;
+use Psr\Log\LoggerInterface;
 
 /**
  * The authentication manager handles request which need Http authentication.
@@ -42,7 +42,7 @@ use AppserverIo\Appserver\ServletEngine\Authentication\Callback\SecurityAssociat
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  *
- * @property \AppserverIo\Storage\StorageInterface $securityDomains                          Contains the security domains
+ * @property \AppserverIo\Collections\MapInterface $securityDomains                          Contains the security domains
  * @property \AppserverIo\Storage\StorageInterface $authenticationMethods                    Contains all registered authentication methods
  * @property \AppserverIo\Storage\StorageInterface $urlPatternToAuthenticationMethodMappings Contains the URL pattern to authentication method mapping
  */
@@ -62,11 +62,11 @@ class StandardAuthenticationManager extends AbstractManager implements Authentic
     }
 
     /**
-     * Inject the container with the security domains.
+     * Inject the map with the security domains.
      *
-     * @param \AppserverIo\Storage\StorageInterface $securityDomains The security domains
+     * @param \AppserverIo\Collections\MapInterface $securityDomains The security domains
      */
-    public function injectSecurityDomains(array $securityDomains)
+    public function injectSecurityDomains($securityDomains)
     {
         $this->securityDomains = $securityDomains;
     }
@@ -96,9 +96,9 @@ class StandardAuthenticationManager extends AbstractManager implements Authentic
     }
 
     /**
-     * Returns the container with the security domains.
+     * Returns the map with the security domains.
      *
-     * @return \AppserverIo\Storage\StorageInterface The security domains
+     * @return \AppserverIo\Collections\MapInterface The security domains
      */
     public function getSecurityDomains()
     {
@@ -192,6 +192,7 @@ class StandardAuthenticationManager extends AbstractManager implements Authentic
             try {
                 // query whether or not the URI matches against the URL pattern
                 if ($urlPatternToAuthenticationMethodMapping->match($servletRequest)) {
+
                     // load the authentication method
                     $authenticationMethod = $this->getAuthenticationMethod($urlPatternToAuthenticationMethodMapping);
 
@@ -207,8 +208,10 @@ class StandardAuthenticationManager extends AbstractManager implements Authentic
                 }
 
             } catch (\Exception $e) {
+
                 // load the system logger and debug log the exception
-                if ($systemLogger = $this->getApplication()->getNamingDirectory()->search('php:global/log/System')) {
+                /** @var \Psr\Log\LoggerInterface $systemLogger */
+                if ($systemLogger = $this->getApplication()->getNamingDirectory()->search(NamingDirectoryKeys::SYSTEM_LOGGER)) {
                     $systemLogger->debug($e->__toString());
                 }
 
@@ -250,33 +253,46 @@ class StandardAuthenticationManager extends AbstractManager implements Authentic
             return;
         }
 
-        /** @var \AppserverIo\Appserver\Core\Api\Node\SecurityDomainNode $securityDomainNode */
-        foreach ($this->getSecurityDomains() as $securityDomainNode) {
+        // initialize the map for the security domains
+        $securityDomains = new HashMap();
 
-            // create the security domain instance
-            $securityDomain = new SecurityDomain($securityDomainNode->getName()->__toString());
+        // query whether or not we've manager configuration found
+        /** @var \AppserverIo\Appserver\Core\Api\Node\ManagerNodeInterface $managerNode */
+        if ($managerNode = $this->getManagerConfiguration()) {
+            // initialize the security domains found in the manager configuration
+            /** @var \AppserverIo\Appserver\Core\Api\Node\SecurityDomainNodeInterface $securityDomainNode */
+            foreach ($this->getManagerConfiguration()->getSecurityDomains() as $securityDomainNode) {
+                // create the security domain instance
+                $securityDomain = new SecurityDomain($securityDomainNode->getName());
+                $securityDomain->injectConfiguration($securityDomainNode);
 
-            // load the security domains authentication configuration
-            /** @var \AppserverIo\Appserver\Core\Api\Node\AuthConfigNode $authConfigNode */
-            $authConfigNode = $securityDomainNode->getAuthConfig();
+                // add the initialized security domain to the map
+                $securityDomains->add($securityDomain->getName(), $securityDomain);
 
-            // prepare the login modules of the security domain
-            /** @var \AppserverIo\Appserver\Core\Api\Node\LoginModuleNode $loginModuleNode */
-            foreach ($authConfigNode->getLoginModules() as $loginModuleNode) {
-
-                // create a new instance of the login module and add it to the array list
-                $reflectionClass = new ReflectionClass($loginModuleNode->getType());
-                $securityDomain->addLoginModule($reflectionClass->newInstance());
+                // register the security domain in the naming directory
+                $this->getApplication()->getNamingDirectory()->bindCallback(sprintf('php:aas/%s/%s', $application->getName(), $securityDomain->getName()), array(&$this, 'lookup'));
             }
-
-            // add the initialized security domain
-            $this->addSecurityDomain($securityDomain);
         }
+
+        // inject the map with the security domains
+        $this->injectSecurityDomains($securityDomains);
 
         // initialize the deployment descriptor parser and parse the web application's deployment descriptor for servlets
         $deploymentDescriptorParser = new DeploymentDescriptorParser();
         $deploymentDescriptorParser->injectAuthenticationContext($this);
         $deploymentDescriptorParser->parse();
+    }
+
+    /**
+     * Returns the security domain with the passed name.
+     *
+     * @param string $lookupName The name of the session bean's class
+     *
+     * @return object The requested security domain instance
+     */
+    public function lookup($lookupName)
+    {
+        return $this->getSecurityDomains()->get($lookupName);
     }
 
     /**

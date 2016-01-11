@@ -31,7 +31,7 @@ use AppserverIo\Configuration\Interfaces\NodeInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-interface LoginModuleNode extends NodeInterface
+interface LoginModuleNodeInterface extends NodeInterface
 {
 
     /**

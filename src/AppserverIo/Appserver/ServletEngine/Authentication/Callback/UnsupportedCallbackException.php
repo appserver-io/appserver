@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\Authentication\Callback\UnsupporedCallbackException
+ * AppserverIo\Appserver\ServletEngine\Authentication\Callback\UnsupportedCallbackException
  *
  * NOTICE OF LICENSE
  *
@@ -29,6 +29,6 @@ namespace AppserverIo\Appserver\ServletEngine\Authentication\Callback;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class UnsupporedCallbackException extends \Exception
+class UnsupportedCallbackException extends \Exception
 {
 }

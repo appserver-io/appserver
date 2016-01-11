@@ -20,8 +20,8 @@
 
 namespace AppserverIo\Appserver\ServletEngine\Authentication;
 
-use AppserverIo\Collections\ArrayList;
-use AppserverIo\Appserver\ServletEngine\Authentication\LoginModules\LoginModuleInterface;
+use AppserverIo\Configuration\Configuration;
+use AppserverIo\Appserver\Core\Api\Node\SecurityDomainNodeInterface;
 
 /**
  * Security domain implementation.
@@ -32,7 +32,7 @@ use AppserverIo\Appserver\ServletEngine\Authentication\LoginModules\LoginModuleI
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class SecurityDomain
+class SecurityDomain implements SecurityDomainInterface
 {
 
     /**
@@ -45,9 +45,9 @@ class SecurityDomain
     /**
      * The security domain's login modules.
      *
-     * @var \AppserverIo\Collections\ArrayList
+     * @var \AppserverIo\Appserver\Core\Api\Node\SecurityDomainNodeInterface
      */
-    protected $loginModules;
+    protected $configruation;
 
     /**
      * Initialize the security domain with the passed name.
@@ -59,9 +59,6 @@ class SecurityDomain
 
         // set the passed name
         $this->name = $name;
-
-        // initialize the array list for the login modules
-        $this->loginModules = new ArrayList();
     }
 
     /**
@@ -75,14 +72,24 @@ class SecurityDomain
     }
 
     /**
-     * Add's the passed login module to the security domain.
+     * Inject the security domain's configuration.
      *
-     * @param \AppserverIo\Appserver\ServletEngine\Authentication\LoginModules\LoginModuleInterface $loginModule The login module to add
+     * @param \AppserverIo\Appserver\Core\Api\Node\SecurityDomainNodeInterface $configuration The security domain's configuration
      *
      * @return void
      */
-    public function addLoginModule(LoginModuleInterface $loginModule)
+    public function injectConfiguration(SecurityDomainNodeInterface $configuration)
     {
-        $this->loginModules->add($loginModule);
+        $this->configruation = $configuration;
+    }
+
+    /**
+     * Return's the security domain's configuration.
+     *
+     * @return \AppserverIo\Appserver\Core\Api\Node\SecurityDomainNodeInterface The security domain's configuration
+     */
+    public function getConfiguration()
+    {
+        return $this->configruation;
     }
 }

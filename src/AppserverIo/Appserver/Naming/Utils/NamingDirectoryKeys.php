@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\Authentication\PrincipalInterface
+ * \AppserverIo\Appserver\Naming\Utils\NamingDirectoryKeys
  *
  * NOTICE OF LICENSE
  *
@@ -18,40 +18,41 @@
  * @link      http://www.appserver.io
  */
 
-namespace AppserverIo\Appserver\ServletEngine\Authentication;
+namespace AppserverIo\Appserver\Naming\Utils;
 
 /**
- * Interface for all principals.
+ * Utility class that contains some helpful naming directory keys.
  *
- * @author    Tim Wagner <tw@appserver.io>
+ * @author    Bernhard Wick <bw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-interface PrincipalInterface
+class NamingDirectoryKeys
 {
 
     /**
-     * Compare this SimplePrincipal's name against another Principal.
+     * Naming Directory lookup name for the sytsem logger.
      *
-     * @param \AppserverIo\Appserver\ServletEngine\Authentication\PrincipalInterface $another The other principal to compare to
-     *
-     * @return boolean TRUE If name equals $another->getName();
+     * @var string
      */
-    public function equals(PrincipalInterface $another);
+    const SYSTEM_LOGGER = 'php:global/log/System';
 
     /**
-     * Returns the principals name as string.
-     *
-     * @return string The principal's name
+     * This is a utility class, so protect it against direct
+     * instantiation.
      */
-    public function __toString();
+    private function __construct()
+    {
+    }
 
     /**
-     * Return's the principals name as String.
+     * This is a utility class, so protect it against cloning.
      *
-     * @return \AppserverIo\Lang\String The principal's name
+     * @return void
      */
-    public function getName();
+    private function __clone()
+    {
+    }
 }

@@ -89,6 +89,27 @@ class ParamKeys
     const IGNORE_PASSWORD_CASE = 'ignorePasswordCase';
 
     /**
+     * The key for the "principalClass" parameter.
+     *
+     * @var string
+     */
+    const PRINCIPAL_CLASS = 'principalClass';
+
+    /**
+     * The key for the "unauthenticatedIdentity" parameter.
+     *
+     * @var string
+     */
+    const UNAUTHENTICATED_IDENTITY = 'unauthenticatedIdentity';
+
+    /**
+     * The key for the "digestCallback" parameter.
+     *
+     * @var string
+     */
+    const DIGEST_CALLBACK = 'digestCallback';
+
+    /**
      * This is a utility class, so protect it against direct instantiation.
      */
     private function __construct()

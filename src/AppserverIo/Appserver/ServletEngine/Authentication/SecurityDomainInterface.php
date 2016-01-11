@@ -20,8 +20,6 @@
 
 namespace AppserverIo\Appserver\ServletEngine\Authentication;
 
-use AppserverIo\Appserver\ServletEngine\Authentication\LoginModules\LoginModuleInterface;
-
 /**
  * Interface for a security domain implementation.
  *
@@ -42,11 +40,9 @@ interface SecurityDomainInterface
     public function getName();
 
     /**
-     * Add's the passed login module to the security domain.
+     * Return's the security domain's configuration.
      *
-     * @param \AppserverIo\Appserver\ServletEngine\Authentication\LoginModules\LoginModuleInterface $loginModule The login module to add
-     *
-     * @return void
+     * @return \AppserverIo\Appserver\Core\Api\Node\SecurityDomainNodeInterface The security domain's configuration
      */
-    public function addLoginModule(LoginModuleInterface $loginModule);
+    public function getConfiguration();
 }

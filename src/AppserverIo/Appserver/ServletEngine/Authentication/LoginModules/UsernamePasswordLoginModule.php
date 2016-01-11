@@ -28,6 +28,7 @@ use AppserverIo\Appserver\ServletEngine\Authentication\Callback\CallbackHandlerI
 use AppserverIo\Appserver\ServletEngine\Authentication\LoginModules\Utilities\SharedStateKeys;
 use AppserverIo\Collections\HashMap;
 use AppserverIo\Appserver\ServletEngine\Authentication\SecurityException;
+use AppserverIo\Appserver\ServletEngine\Authentication\LoginModules\Utilities\Util;
 
 /**
  * This valve will check if the actual request needs authentication.
@@ -38,7 +39,7 @@ use AppserverIo\Appserver\ServletEngine\Authentication\SecurityException;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class UsernamePasswordLoginModule extends AbstractLoginModule
+abstract class UsernamePasswordLoginModule extends AbstractLoginModule
 {
 
     /**
@@ -104,11 +105,10 @@ class UsernamePasswordLoginModule extends AbstractLoginModule
         // call the parent method
         parent::initialize($callbackHandler, $sharedState, $params);
 
-        // Check to see if password hashing has been enabled.
-        // If an algorithm is set, check for a format and charset.
+        // check to see if password hashing has been enabled, if an algorithm is set, check for a format and charset
         $this->hashAlgorithm = new String($params->get(ParamKeys::HASH_ALGORITHM));
 
-        if ($this->hashAlgorithm != null ) {
+        if ($this->hashAlgorithm != null) {
             $this->hashEncoding = new String($params->get(ParamKeys::HASH_ENCODING));
 
             if ($this->hashEncoding == null) {
@@ -125,8 +125,12 @@ class UsernamePasswordLoginModule extends AbstractLoginModule
             }
         }
 
-        $flag = new String($params->get(ParamKeys::IGNORE_PASSWORD_CASE));
-        $this->ignorePasswordCase = Boolean::valueOf($flag)->booleanValue();
+        if ($params->exists(ParamKeys::IGNORE_PASSWORD_CASE)) {
+            $flag = new String($params->get(ParamKeys::IGNORE_PASSWORD_CASE));
+            $this->ignorePasswordCase = Boolean::valueOf($flag)->booleanValue();
+        } else {
+            $this->ignorePasswordCase = false;
+        }
     }
 
     /**
@@ -151,7 +155,7 @@ class UsernamePasswordLoginModule extends AbstractLoginModule
             $name = new String($this->sharedState->get(SharedStateKeys::LOGIN_NAME));
 
             if ($name instanceof Principal) {
-                $this->identity = username;
+                $this->identity = name;
             } else {
                 $name = $name->__toString();
                 try {
@@ -177,7 +181,7 @@ class UsernamePasswordLoginModule extends AbstractLoginModule
         $this->loginOk = false;
 
         // array containing the username and password from the user's input
-        list ($name, $password) = extract($this->getUsernameAndPassword());
+        list ($name, $password) = $this->getUsernameAndPassword();
 
         if ($name == null && $password == null) {
             $this->identity = $this->unauthenticatedIdentity;
@@ -247,12 +251,14 @@ class UsernamePasswordLoginModule extends AbstractLoginModule
         // initialize the callback
         $callback = null;
 
-        // try to load the callback class name
-        $callbackClassName = $this->params->get("digestCallback");
-
         // query whether or not we've a callback configured
-        if ($callbackClassName != null) {
+        if ($this->params->exists(ParamKeys::DIGEST_CALLBACK)) {
+
             try {
+
+                // try to load the callback class name
+                $callbackClassName = $this->params->get(ParamKeys::DIGEST_CALLBACK);
+
                 $callback = new $callbackClassName();
                 /* if (log.isTraceEnabled()) {
                     log.trace("Created DigestCallback: "+callback);
@@ -300,7 +306,7 @@ class UsernamePasswordLoginModule extends AbstractLoginModule
        $valid = false;
 
        // query whether or not we've to ignore the case
-       if ($this->ignorePasswordCase == true) {
+       if ($this->ignorePasswordCase === true) {
            $valid = $inputPassword->equalsIgnoreCase($expectedPassword);
        } else {
            $valid = $inputPassword->equals($expectedPassword);
@@ -343,7 +349,7 @@ class UsernamePasswordLoginModule extends AbstractLoginModule
 
         // query whether or not we've an principal or not
         if ($identity = $this->getIdentity()) {
-            $name = $identity->getUsername();
+            $name = $identity->getName();
         }
 
         // return the name
