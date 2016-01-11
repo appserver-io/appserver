@@ -110,6 +110,20 @@ class ParamKeys
     const DIGEST_CALLBACK = 'digestCallback';
 
     /**
+     * The key for the "userPathPrefix" parameter.
+     *
+     * @var string
+     */
+    const USER_PATH_PREFIX = 'userPathPrefix';
+
+    /**
+     * The key for the "rolesPathPrefix" parameter.
+     *
+     * @var string
+     */
+    const ROLES_PATH_PREFIX = 'rolesPathPrefix';
+
+    /**
      * This is a utility class, so protect it against direct instantiation.
      */
     private function __construct()

@@ -136,7 +136,7 @@ abstract class UsernamePasswordLoginModule extends AbstractLoginModule
     /**
      * Returns the password for the user from the sharedMap data.
      *
-     * @return array Array with username and password, e. g. array(0 => $name, 1 => $password)
+     * @return \AppserverIo\Lang\String The user's password
      * @throws \AppserverIo\Appserver\ServletEngine\Authentication\LoginModules\LoginException Is thrown if password can't be loaded
      */
     abstract public function getUsersPassword();

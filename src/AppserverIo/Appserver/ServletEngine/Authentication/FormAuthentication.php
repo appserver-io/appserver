@@ -154,7 +154,11 @@ class FormAuthentication extends AbstractAuthentication
 
         } catch (\Exception $e) {
             // log the exception
-            $this->getAuthenticationManager()->getApplication()->search(NamingDirectoryKeys::SYSTEM_LOGGER)->error($e);
+            $this->getAuthenticationManager()
+                 ->getApplication()
+                 ->getNamingDirectory()
+                 ->search(NamingDirectoryKeys::SYSTEM_LOGGER)->error($e->__toString());
+
             // throw an authentication exception
             throw new AuthenticationException($e->getMessage(), 401);
         }

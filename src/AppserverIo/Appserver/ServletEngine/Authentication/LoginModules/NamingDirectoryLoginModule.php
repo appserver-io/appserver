@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\Authentication\LoginModules\DatabasePDOLoginModule
+ * AppserverIo\Appserver\ServletEngine\Authentication\LoginModules\NamingDirectoryLoginModule
  *
  * NOTICE OF LICENSE
  *
@@ -21,15 +21,13 @@
 namespace AppserverIo\Appserver\ServletEngine\Authentication\LoginModules;
 
 use AppserverIo\Lang\String;
-use Doctrine\DBAL\DriverManager;
 use AppserverIo\Collections\MapInterface;
 use AppserverIo\Appserver\ServletEngine\RequestHandler;
-use AppserverIo\Appserver\Doctrine\Utils\ConnectionUtil;
 use AppserverIo\Appserver\ServletEngine\Authentication\LoginModules\Utilities\ParamKeys;
 use AppserverIo\Appserver\ServletEngine\Authentication\Callback\CallbackHandlerInterface;
 
 /**
- * This valve will check if the actual request needs authentication.
+ * Login module that uses the naming directory to load a user and his roles from.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -37,29 +35,22 @@ use AppserverIo\Appserver\ServletEngine\Authentication\Callback\CallbackHandlerI
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class DatabasePDOLoginModule extends UsernamePasswordLoginModule
+class NamingDirectoryLoginModule extends UsernamePasswordLoginModule
 {
 
     /**
-     * The datasource name used to lookup in the naming directory.
+     * The naming directory name prefix used to load the user's roles.
      *
      * @var string
      */
-    protected $lookupName;
+    protected $rolesPathPrefix;
 
     /**
-     * The database query used to load the user's roles.
+     * The naming directroy name prefix used to load the user.
      *
      * @var string
      */
-    protected $rolesQuery;
-
-    /**
-     * The database query used to load the user.
-     *
-     * @var string
-     */
-    protected $principalsQuery;
+    protected $userPathPrefix;
 
     /**
      * Initialize the login module. This stores the subject, callbackHandler and sharedState and options
@@ -68,9 +59,8 @@ class DatabasePDOLoginModule extends UsernamePasswordLoginModule
      *
      * The following parameters can by default be passed from the configuration.
      *
-     * lookupName:      The datasource name used to lookup in the naming directory
-     * rolesQuery:      The database query used to load the user's roles
-     * principalsQuery: The database query used to load the user
+     * rolesPathPrefix: The naming directory prefix used to load the user's roles
+     * userPathPrefix:  The naming directory prefix used to load the user
      *
      * @param \AppserverIo\Appserver\ServletEngine\Authentication\Callback\CallbackHandlerInterface $callbackHandler The callback handler that will be used to obtain the user identity and credentials
      * @param \AppserverIo\Collections\MapInterface                                                 $sharedState     A map shared between all configured login module instances
@@ -83,13 +73,12 @@ class DatabasePDOLoginModule extends UsernamePasswordLoginModule
         parent::initialize($callbackHandler, $sharedState, $params);
 
         // load the parameters from the map
-        $this->lookupName = $params->get(ParamKeys::LOOKUP_NAME);
-        $this->rolesQuery = $params->get(ParamKeys::ROLES_QUERY);
-        $this->principalsQuery = $params->get(ParamKeys::PRINCIPALS_QUERY);
+        $this->userPathPrefix = $params->get(ParamKeys::USER_PATH_PREFIX);
+        $this->rolesPathPrefix = $params->get(ParamKeys::ROLES_PATH_PREFIX);
     }
 
     /**
-     * Returns the password for the user from the sharedMap data.
+     * Returns the password for the user from the naming directory.
      *
      * @return \AppserverIo\Lang\String The user's password
      * @throws \AppserverIo\Appserver\ServletEngine\Authentication\LoginModules\LoginException Is thrown if password can't be loaded
@@ -97,25 +86,15 @@ class DatabasePDOLoginModule extends UsernamePasswordLoginModule
     public function getUsersPassword()
     {
 
-        // load the application context
-        $application = RequestHandler::getApplicationContext();
+        try {
+            // load the application context
+            $application = RequestHandler::getApplicationContext();
 
-        /** @var \AppserverIo\Appserver\Core\Api\Node\DatabaseNode $databaseNode */
-        $databaseNode = $application->getNamingDirectory()->search($this->lookupName)->getDatabase();
+            // load and return the user's password or throw an exception
+            return new String($application->getNamingDirectory()->search(sprintf('%s/%s', $this->userPathPrefix, $this->getUsername())));
 
-        // prepare the connection parameters and create the DBAL connection
-        $connection = DriverManager::getConnection(ConnectionUtil::get($application)->fromDatabaseNode($databaseNode));
-
-        // try to load the principal's credential from the database
-        $statement = $connection->prepare($this->principalsQuery);
-        $statement->bindParam(1, $this->getUsername());
-        $statement->execute();
-
-        // query whether or not we've a password found or not
-        if ($row = $statement->fetch(\PDO::FETCH_OBJ)) {
-            return new String($row->password);
-        } else {
-            throw new LoginException('No matching username found in principals');
+        } catch (\Exception $e) {
+            throw new LoginException('No matching username found in naming directory');
         }
     }
 
