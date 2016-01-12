@@ -23,7 +23,7 @@ namespace AppserverIo\Appserver\ServletEngine\Authentication;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
 
 /**
- * This valve will check if the actual request needs authentication.
+ * The mapping class to map an URL pattern to an authentication method.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -34,6 +34,14 @@ use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
 class UrlPatternToAuthenticationMethodMapping
 {
 
+    /**
+     * Initialize the mapping with the passed values.
+     *
+     * @param string $urlPattern              The URL pattern
+     * @param string $authenticationMethodKey The authentication method's key
+     * @param array  $httpMethods             The array with the HTTP methods that has to be authenticated
+     * @param array  $httpMethodOmissions     The array with the HTTP methods that has to be omissed from authentication
+     */
     public function __construct($urlPattern, $authenticationMethodKey, array $httpMethods = array(), array $httpMethodOmissions = array())
     {
         $this->urlPattern = $urlPattern;
@@ -42,26 +50,53 @@ class UrlPatternToAuthenticationMethodMapping
         $this->httpMethodOmissions = $httpMethodOmissions;
     }
 
+    /**
+     * Return's the URL pattern.
+     *
+     * @return string The URL pattern
+     */
     public function getUrlPattern()
     {
         return $this->urlPattern;
     }
 
+    /**
+     * Return's the authentication method's key.
+     *
+     * @return string The key
+     */
     public function getAuthenticationMethodKey()
     {
         return $this->authenticationMethodKey;
     }
 
+    /**
+     * Return's the HTTP methods that has to be authenticated.
+     *
+     * @return array The HTTP methods
+     */
     public function getHttpMethods()
     {
         return $this->httpMethods;
     }
 
+    /**
+     * Return's the HTTP methods that has to b omissed from authentication
+     *
+     * @return array The HTTP methods
+     */
     public function getHttpMethodOmissions()
     {
         return $this->httpMethodOmissions;
     }
 
+    /**
+     * Return's TRUE if the passed request matches the mappings URL patter.
+     *
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface $servletRequest The request to match
+     *
+     * @return boolean TRUE if the request matches, else FALSE
+     */
     public function match(HttpServletRequestInterface $servletRequest)
     {
         return fnmatch($this->getUrlPattern(), $servletRequest->getServletPath() . $servletRequest->getPathInfo());

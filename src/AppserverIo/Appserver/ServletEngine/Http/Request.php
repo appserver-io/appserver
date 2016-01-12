@@ -29,6 +29,12 @@ use AppserverIo\Psr\HttpMessage\RequestInterface;
 use AppserverIo\Psr\Servlet\SessionUtils;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
+use AppserverIo\Appserver\ServletEngine\Authentication\PrincipalInterface;
+use AppserverIo\Appserver\ServletEngine\Authentication\Subject;
+use AppserverIo\Lang\String;
+use AppserverIo\Appserver\ServletEngine\Authentication\GroupInterface;
+use AppserverIo\Appserver\ServletEngine\Authentication\SimpleGroup;
+use AppserverIo\Appserver\ServletEngine\Authentication\LoginModules\Utilities\Util;
 
 /**
  * A Http servlet request implementation.
@@ -190,12 +196,18 @@ class Request implements HttpServletRequestInterface, ContextInterface
     protected $attributes = array();
 
     /**
-     * The login of the user making this request, if the user has been authenticated,
-     * or null if the user has not been authenticated.
+     * The user subject.
      *
-     * @var string
+     * @var \AppserverIo\Appserver\ServletEngine\Authentication\Subject
      */
-    protected $remoteUser;
+    protected $subject;
+
+    /**
+     * The user principal of the authenticated user or NULL if the user has not been authenticated.
+     *
+     * @var \AppserverIo\Appserver\ServletEngine\Authentication\PrincipalInterface
+     */
+    protected $userPrincipal;
 
     /**
      * Initializes the request object with the default properties.
@@ -217,8 +229,9 @@ class Request implements HttpServletRequestInterface, ContextInterface
         $this->httpRequest = null;
         $this->requestHandler = null;
 
-        // initialize the remote user
-        $this->remoteUser = null;
+        // initialize the subject and the user principal
+        $this->subject = null;
+        $this->userPrincipal = null;
 
         // initialize the strings
         $this->pathInfo = '';
@@ -1193,15 +1206,43 @@ class Request implements HttpServletRequestInterface, ContextInterface
     }
 
     /**
-     * Set's the login of the user making this request, if the user has been authenticated.
+     * Set's the user subject for this request.
      *
-     * @param string $remoteUser A string specifying the login of the user making this request
+     * @param \AppserverIo\Appserver\ServletEngine\Authentication\Subject $subject The user subject
      *
      * @return void
      */
-    public function setRemoteUser($remoteUser)
+    public function setSubject(Subject $subject)
     {
-        $this->remoteUser = $remoteUser;
+        $this->subject = $subject;
+    }
+
+    /**
+     * Return's the user subject for this request.
+     *
+     * @return \AppserverIo\Appserver\ServletEngine\Authentication\Subject $subject The user subject
+     */
+    protected function getSubject()
+    {
+        return $this->subject;
+    }
+
+    /**
+     * Return's a PrincipalInterface object containing the name of the current authenticated user.
+     *
+     * @return \AppserverIo\Appserver\ServletEngine\Authentication\PrincipalInterface|null The user principal
+     */
+    public function getUserPrincipal()
+    {
+
+        // query whether or not we've a subject
+        if ($subject = $this->getSubject()) {
+            foreach ($subject->getPrincipals() as $principal) {
+                if ($principal instanceof PrincipalInterface) {
+                    return $principal;
+                }
+            }
+        }
     }
 
     /**
@@ -1209,11 +1250,36 @@ class Request implements HttpServletRequestInterface, ContextInterface
      * user has not been authenticated. Whether the user name is sent with each subsequent request depends on
      * the browser and type of authentication. Same as the value of the CGI variable REMOTE_USER.
      *
-     * @return string A string specifying the login of the user making this request, or null if the user login is not known
+     * @return \AppserverIo\Lang\String|null A string specifying the login of the user making this request, or null if the user login is not known
      */
     public function getRemoteUser()
     {
-        return $this->remoteUser;
+        if ($userPrincipal = $this->getUserPrincipal()) {
+            return $userPrincipal->getName();
+        }
+    }
+
+    /**
+     * Return_s a boolean indicating whether the authenticated user is included in the specified logical "role".
+     *
+     * @param \AppserverIo\Lang\String $role The role we want to test for
+     *
+     * @return boolean TRUE if the user has the passed role, else FALSE
+     */
+    public function isUserInRole(String $role)
+    {
+
+        // query whether or not we've a subject
+        if ($subject = $this->getSubject()) {
+            foreach ($subject->getPrincipals() as $principal) {
+                if ($principal instanceof GroupInterface && $principal->getName()->equals(new String(Util::DEFAULT_GROUP_NAME))) {
+                    return $principal->isMember(new SimpleGroup($role));
+                }
+            }
+        }
+
+        // user is not in passed role
+        return false;
     }
 
     /**

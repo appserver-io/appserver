@@ -22,13 +22,14 @@ namespace AppserverIo\Appserver\ServletEngine\Authentication\LoginModules;
 
 use AppserverIo\Lang\String;
 use AppserverIo\Lang\Boolean;
+use AppserverIo\Collections\HashMap;
 use AppserverIo\Collections\MapInterface;
+use AppserverIo\Appserver\ServletEngine\Authentication\Subject;
+use AppserverIo\Appserver\ServletEngine\Authentication\SecurityException;
+use AppserverIo\Appserver\ServletEngine\Authentication\LoginModules\Utilities\Util;
 use AppserverIo\Appserver\ServletEngine\Authentication\LoginModules\Utilities\ParamKeys;
 use AppserverIo\Appserver\ServletEngine\Authentication\Callback\CallbackHandlerInterface;
 use AppserverIo\Appserver\ServletEngine\Authentication\LoginModules\Utilities\SharedStateKeys;
-use AppserverIo\Collections\HashMap;
-use AppserverIo\Appserver\ServletEngine\Authentication\SecurityException;
-use AppserverIo\Appserver\ServletEngine\Authentication\LoginModules\Utilities\Util;
 
 /**
  * This valve will check if the actual request needs authentication.
@@ -95,15 +96,16 @@ abstract class UsernamePasswordLoginModule extends AbstractLoginModule
      * rolesQuery:      The database query used to load the user's roles
      * principalsQuery: The database query used to load the user
      *
+     * @param \AppserverIo\Appserver\ServletEngine\Authentication\Subject                           $subject         The Subject to update after a successful login
      * @param \AppserverIo\Appserver\ServletEngine\Authentication\Callback\CallbackHandlerInterface $callbackHandler The callback handler that will be used to obtain the user identity and credentials
      * @param \AppserverIo\Collections\MapInterface                                                 $sharedState     A map shared between all configured login module instances
      * @param \AppserverIo\Collections\MapInterface                                                 $params          The parameters passed to the login module
      */
-    public function initialize(CallbackHandlerInterface $callbackHandler, MapInterface $sharedState, MapInterface $params)
+    public function initialize(Subject $subject, CallbackHandlerInterface $callbackHandler, MapInterface $sharedState, MapInterface $params)
     {
 
         // call the parent method
-        parent::initialize($callbackHandler, $sharedState, $params);
+        parent::initialize($subject, $callbackHandler, $sharedState, $params);
 
         // check to see if password hashing has been enabled, if an algorithm is set, check for a format and charset
         $this->hashAlgorithm = new String($params->get(ParamKeys::HASH_ALGORITHM));
@@ -139,7 +141,7 @@ abstract class UsernamePasswordLoginModule extends AbstractLoginModule
      * @return \AppserverIo\Lang\String The user's password
      * @throws \AppserverIo\Appserver\ServletEngine\Authentication\LoginModules\LoginException Is thrown if password can't be loaded
      */
-    abstract public function getUsersPassword();
+    abstract protected function getUsersPassword();
 
     /**
      * Perform the authentication of username and password.
@@ -327,16 +329,6 @@ abstract class UsernamePasswordLoginModule extends AbstractLoginModule
     }
 
     /**
-     * Return's the unauthenticated user identity.
-     *
-     * @return  \AppserverIo\Appserver\ServletEngine\Authentication\PrincipalInterface The unauthenticated user identity
-     */
-    protected function getUnauthenticatedIdentity()
-    {
-        return $this->unauthenticatedIdentity;
-    }
-
-    /**
      * Return's the principal's username.
      *
      * @return \AppserverIo\Lang\String The username
@@ -347,7 +339,7 @@ abstract class UsernamePasswordLoginModule extends AbstractLoginModule
         // initialize the name
         $name = null;
 
-        // query whether or not we've an principal or not
+        // query whether or not we've an principal
         if ($identity = $this->getIdentity()) {
             $name = $identity->getName();
         }

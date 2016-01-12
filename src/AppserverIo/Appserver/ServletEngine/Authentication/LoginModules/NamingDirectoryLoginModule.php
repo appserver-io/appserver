@@ -25,6 +25,8 @@ use AppserverIo\Collections\MapInterface;
 use AppserverIo\Appserver\ServletEngine\RequestHandler;
 use AppserverIo\Appserver\ServletEngine\Authentication\LoginModules\Utilities\ParamKeys;
 use AppserverIo\Appserver\ServletEngine\Authentication\Callback\CallbackHandlerInterface;
+use AppserverIo\Psr\Naming\NamingException;
+use AppserverIo\Appserver\ServletEngine\Authentication\Subject;
 
 /**
  * Login module that uses the naming directory to load a user and his roles from.
@@ -62,15 +64,16 @@ class NamingDirectoryLoginModule extends UsernamePasswordLoginModule
      * rolesPathPrefix: The naming directory prefix used to load the user's roles
      * userPathPrefix:  The naming directory prefix used to load the user
      *
+     * @param \AppserverIo\Appserver\ServletEngine\Authentication\Subject                           $subject         The Subject to update after a successful login
      * @param \AppserverIo\Appserver\ServletEngine\Authentication\Callback\CallbackHandlerInterface $callbackHandler The callback handler that will be used to obtain the user identity and credentials
      * @param \AppserverIo\Collections\MapInterface                                                 $sharedState     A map shared between all configured login module instances
      * @param \AppserverIo\Collections\MapInterface                                                 $params          The parameters passed to the login module
      */
-    public function initialize(CallbackHandlerInterface $callbackHandler, MapInterface $sharedState, MapInterface $params)
+    public function initialize(Subject $subject, CallbackHandlerInterface $callbackHandler, MapInterface $sharedState, MapInterface $params)
     {
 
         // call the parent method
-        parent::initialize($callbackHandler, $sharedState, $params);
+        parent::initialize($subject, $callbackHandler, $sharedState, $params);
 
         // load the parameters from the map
         $this->userPathPrefix = $params->get(ParamKeys::USER_PATH_PREFIX);
@@ -83,7 +86,7 @@ class NamingDirectoryLoginModule extends UsernamePasswordLoginModule
      * @return \AppserverIo\Lang\String The user's password
      * @throws \AppserverIo\Appserver\ServletEngine\Authentication\LoginModules\LoginException Is thrown if password can't be loaded
      */
-    public function getUsersPassword()
+    protected function getUsersPassword()
     {
 
         try {
@@ -91,10 +94,33 @@ class NamingDirectoryLoginModule extends UsernamePasswordLoginModule
             $application = RequestHandler::getApplicationContext();
 
             // load and return the user's password or throw an exception
-            return new String($application->getNamingDirectory()->search(sprintf('%s/%s', $this->userPathPrefix, $this->getUsername())));
+            return new String($application->search(sprintf('%s/%s', $this->userPathPrefix, $this->getUsername())));
 
         } catch (\Exception $e) {
             throw new LoginException('No matching username found in naming directory');
+        }
+    }
+
+    /**
+     * Get the roles the current user belongs to by querying the
+     * rolesPathPrefix + '/' + super.getUsername() JNDI location.
+     *
+     * @return array The roles the user is assigned to
+     * @throws \AppserverIo\Appserver\ServletEngine\Authentication\LoginModules\LoginException Is thrown if password can't be loaded
+     */
+    protected function getRoleSets()
+    {
+
+        try {
+
+            return array();
+
+        } catch(NamingException $ne) {
+
+            // log.error("Failed to obtain groups for user="+super.getUsername(), e);
+
+            throw new LoginException($ne->__toString());
+
         }
     }
 

@@ -25,6 +25,8 @@ use Doctrine\DBAL\DriverManager;
 use AppserverIo\Collections\MapInterface;
 use AppserverIo\Appserver\ServletEngine\RequestHandler;
 use AppserverIo\Appserver\Doctrine\Utils\ConnectionUtil;
+use AppserverIo\Appserver\ServletEngine\Authentication\Subject;
+use AppserverIo\Appserver\ServletEngine\Authentication\LoginModules\Utilities\Util;
 use AppserverIo\Appserver\ServletEngine\Authentication\LoginModules\Utilities\ParamKeys;
 use AppserverIo\Appserver\ServletEngine\Authentication\Callback\CallbackHandlerInterface;
 
@@ -43,21 +45,21 @@ class DatabasePDOLoginModule extends UsernamePasswordLoginModule
     /**
      * The datasource name used to lookup in the naming directory.
      *
-     * @var string
+     * @var \AppserverIo\Lang\String
      */
     protected $lookupName;
 
     /**
      * The database query used to load the user's roles.
      *
-     * @var string
+     * @var \AppserverIo\Lang\String
      */
     protected $rolesQuery;
 
     /**
      * The database query used to load the user.
      *
-     * @var string
+     * @var \AppserverIo\Lang\String
      */
     protected $principalsQuery;
 
@@ -72,20 +74,21 @@ class DatabasePDOLoginModule extends UsernamePasswordLoginModule
      * rolesQuery:      The database query used to load the user's roles
      * principalsQuery: The database query used to load the user
      *
+     * @param \AppserverIo\Appserver\ServletEngine\Authentication\Subject                           $subject         The Subject to update after a successful login
      * @param \AppserverIo\Appserver\ServletEngine\Authentication\Callback\CallbackHandlerInterface $callbackHandler The callback handler that will be used to obtain the user identity and credentials
      * @param \AppserverIo\Collections\MapInterface                                                 $sharedState     A map shared between all configured login module instances
      * @param \AppserverIo\Collections\MapInterface                                                 $params          The parameters passed to the login module
      */
-    public function initialize(CallbackHandlerInterface $callbackHandler, MapInterface $sharedState, MapInterface $params)
+    public function initialize(Subject $subject, CallbackHandlerInterface $callbackHandler, MapInterface $sharedState, MapInterface $params)
     {
 
         // call the parent method
-        parent::initialize($callbackHandler, $sharedState, $params);
+        parent::initialize($subject, $callbackHandler, $sharedState, $params);
 
         // load the parameters from the map
-        $this->lookupName = $params->get(ParamKeys::LOOKUP_NAME);
-        $this->rolesQuery = $params->get(ParamKeys::ROLES_QUERY);
-        $this->principalsQuery = $params->get(ParamKeys::PRINCIPALS_QUERY);
+        $this->lookupName = new String($params->get(ParamKeys::LOOKUP_NAME));
+        $this->rolesQuery = new String($params->get(ParamKeys::ROLES_QUERY));
+        $this->principalsQuery = new String($params->get(ParamKeys::PRINCIPALS_QUERY));
     }
 
     /**
@@ -94,7 +97,7 @@ class DatabasePDOLoginModule extends UsernamePasswordLoginModule
      * @return \AppserverIo\Lang\String The user's password
      * @throws \AppserverIo\Appserver\ServletEngine\Authentication\LoginModules\LoginException Is thrown if password can't be loaded
      */
-    public function getUsersPassword()
+    protected function getUsersPassword()
     {
 
         // load the application context
@@ -112,11 +115,22 @@ class DatabasePDOLoginModule extends UsernamePasswordLoginModule
         $statement->execute();
 
         // query whether or not we've a password found or not
-        if ($row = $statement->fetch(\PDO::FETCH_OBJ)) {
-            return new String($row->password);
+        if ($row = $statement->fetch(\PDO::FETCH_NUM)) {
+            return new String($row[0]);
         } else {
             throw new LoginException('No matching username found in principals');
         }
+    }
+
+    /**
+     * Execute the rolesQuery against the lookupName to obtain the roles for the authenticated user.
+     *
+     * @return array Array containing the sets of roles
+     * @throws \AppserverIo\Appserver\ServletEngine\Authentication\LoginModules\LoginException Is thrown if password can't be loaded
+     */
+    protected function getRoleSets()
+    {
+        return Util::getRoleSets($this->getUsername(), new String($this->lookupName), new String($this->rolesQuery), $this);
     }
 
     /**

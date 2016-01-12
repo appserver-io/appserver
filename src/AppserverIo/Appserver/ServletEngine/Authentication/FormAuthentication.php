@@ -20,15 +20,13 @@
 
 namespace AppserverIo\Appserver\ServletEngine\Authentication;
 
+use AppserverIo\Collections\HashMap;
 use AppserverIo\Lang\String;
 use AppserverIo\Lang\Reflection\ReflectionClass;
-use AppserverIo\Collections\HashMap;
-use AppserverIo\Psr\HttpMessage\RequestInterface;
-use AppserverIo\Psr\HttpMessage\ResponseInterface;
-use AppserverIo\Configuration\Interfaces\NodeInterface;
 use AppserverIo\Appserver\Naming\Utils\NamingDirectoryKeys;
 use AppserverIo\Http\Authentication\AuthenticationException;
-use AppserverIo\Http\Authentication\Adapters\HtpasswdAdapter;
+use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
+use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
 use AppserverIo\Appserver\ServletEngine\Authentication\Callback\SecurityAssociationHandler;
 
 /**
@@ -51,29 +49,6 @@ class FormAuthentication extends AbstractAuthentication
     const AUTH_TYPE = 'Form';
 
     /**
-     * Defines the default authentication adapter used if none was specified
-     *
-     * @var string DEFAULT_ADAPTER
-     */
-    const DEFAULT_ADAPTER = HtpasswdAdapter::ADAPTER_TYPE;
-
-    /**
-     * Constructs the authentication type.
-     *
-     * @param \AppserverIo\Configuration\NodeInterface                                           $configData            The configuration data for auth type instance
-     * @param \AppserverIo\Appserver\ServletEngine\Authentication\AuthenticationManagerInterface $authenticationManager The authentication manager instance
-     */
-    public function __construct(NodeInterface $configData, AuthenticationManagerInterface $authenticationManager)
-    {
-
-        // initialize the supported adapter types
-        $this->addSupportedAdapter(HtpasswdAdapter::getType());
-
-        // initialize the instance
-        parent::__construct($configData, $authenticationManager);
-    }
-
-    /**
      * Returns the authentication header for response to set
      *
      * @return string
@@ -86,16 +61,17 @@ class FormAuthentication extends AbstractAuthentication
     /**
      * Parses the request for the necessary, authentication adapter specific, login credentials.
      *
-     * @param \AppserverIo\Psr\HttpMessage\RequestInterface $request The request with the content of authentication data sent by client
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface  $servletRequest  The servlet request instance
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse The servlet response instance
      *
      * @return void
      */
-    protected function parse(RequestInterface $request)
+    protected function parse(HttpServletRequestInterface $servletRequest, HttpServletResponseInterface $servletResponse)
     {
 
         // load username and password from the request
-        $username = $request->getParam('username');
-        $password = $request->getParam('password');
+        $username = $servletRequest->getParam('username');
+        $password = $servletRequest->getParam('password');
 
         // check if either username or password was not found and return false
         if (($password === null) || ($username === null)) {
@@ -111,15 +87,19 @@ class FormAuthentication extends AbstractAuthentication
     /**
      * Try to authenticate against the configured adapter.
      *
-     * @param \AppserverIo\Psr\HttpMessage\ResponseInterface $response The response sent back to the client
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface  $servletRequest  The servlet request instance
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse The servlet response instance
      *
      * @return void
      * @throws \AppserverIo\Http\Authentication\AuthenticationException Is thrown if the request can't be authenticated
      */
-    public function authenticate(ResponseInterface $response)
+    public function authenticate(HttpServletRequestInterface $servletRequest, HttpServletResponseInterface $servletResponse)
     {
 
         try {
+            // parse authentication data from the servlet request
+            $this->parse($servletRequest, $servletResponse);
+
             // verify everything to be ready for auth if not return false
             if ($this->verify() === false) {
                 throw new \Exception('Invalid username or password');
@@ -140,15 +120,19 @@ class FormAuthentication extends AbstractAuthentication
                     /** @var \AppserverIo\Appserver\ServletEngine\Authentication\LoginModules\LoginModuleInterface $loginModule */
                     $loginModule = $reflectionClass->newInstance();
 
-                    // initialize the principal instance with the username found in the request
+                    // initialize initialize subject, callback handler and params
+                    $subject = new Subject();
                     $principal = $loginModule->createIdentity(new String($this->getUsername()));
-
-                    // initialize the callback handler with the principal and the credential
                     $callbackHandler = new SecurityAssociationHandler($principal, new String($this->getPassword()));
+                    $params = new HashMap($loginModuleNode->getParamsAsArray());
 
-                    // initialize the login module and
-                    $loginModule->initialize($callbackHandler, $sharedState, new HashMap($loginModuleNode->getParamsAsArray()));
+                    // initialize the login module, try to login and commit
+                    $loginModule->initialize($subject, $callbackHandler, $sharedState, $params);
                     $loginModule->login();
+                    $loginModule->commit();
+
+                    // finally add the the subject to the request
+                    $servletRequest->setSubject($subject);
                 }
             }
 

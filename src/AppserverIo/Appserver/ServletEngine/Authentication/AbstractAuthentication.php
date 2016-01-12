@@ -20,10 +20,9 @@
 
 namespace AppserverIo\Appserver\ServletEngine\Authentication;
 
-use AppserverIo\Psr\HttpMessage\RequestInterface;
-use AppserverIo\Psr\HttpMessage\ResponseInterface;
 use AppserverIo\Configuration\Interfaces\NodeInterface;
-use AppserverIo\Http\Authentication\AuthenticationInterface;
+use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
+use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
 
 /**
  * Class AbstractAuthentication
@@ -50,13 +49,6 @@ abstract class AbstractAuthentication implements AuthenticationInterface
      * @var string $authData
      */
     protected $authData;
-
-    /**
-     * Holds the requests method.
-     *
-     * @var string $reqMethod
-     */
-    protected $reqMethod;
 
     /**
      * Holds the configuration data given for authentication type.
@@ -139,16 +131,6 @@ abstract class AbstractAuthentication implements AuthenticationInterface
     }
 
     /**
-     * Returns the request method.
-     *
-     * @return string The request method
-     */
-    public function getRequestMethod()
-    {
-        return $this->reqMethod;
-    }
-
-    /**
      * Returns the authentication type token.
      *
      * @return string
@@ -180,31 +162,14 @@ abstract class AbstractAuthentication implements AuthenticationInterface
     }
 
     /**
-     * Initialize by the authentication type with the data from the request.
-     *
-     * @param \AppserverIo\Psr\HttpMessage\RequestInterface  $request  The request with the content of authentication data sent by client
-     * @param \AppserverIo\Psr\HttpMessage\ResponseInterface $response The response sent back to the client
-     *
-     * @return void
-     * @throws \AppserverIo\Http\Authentication\AuthenticationException If the authentication type can't be initialized
-     */
-    public function init(RequestInterface $request, ResponseInterface $response)
-    {
-        // set vars internally
-        $this->reqMethod = $request->getMethod();
-
-        // parse auth data
-        $this->parse($request, $response);
-    }
-
-    /**
      * Parses the request for the necessary, authentication adapter specific, login credentials.
      *
-     * @param \AppserverIo\Psr\HttpMessage\RequestInterface $request The request with the content of authentication data sent by client
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface  $servletRequest  The servlet request instance
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse The servlet response instance
      *
      * @return void
      */
-    abstract protected function parse(RequestInterface $request);
+    abstract protected function parse(HttpServletRequestInterface $servletRequest, HttpServletResponseInterface $servletResponse);
 
     /**
      * Will prepare the authentication class's authentication adapter based on its configuration.
@@ -247,29 +212,5 @@ abstract class AbstractAuthentication implements AuthenticationInterface
      */
     protected function verifyConfig()
     {
-    }
-
-    /**
-     * Add's a new adapter type to this authentication type.
-     *
-     * @param string $adapterType The supported adapter type
-     *
-     * @return void
-     */
-    public function addSupportedAdapter($adapterType)
-    {
-        $this->supportedAdapters[] = $adapterType;
-    }
-
-    /**
-     * Whether or not the adapter is supported with a this authentication type.
-     *
-     * @param string $adapterType The adapter type
-     *
-     * @return boolean
-     */
-    public function isAdapterSupported($adapterType)
-    {
-        return in_array($adapterType, $this->supportedAdapters);
     }
 }

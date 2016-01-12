@@ -30,6 +30,11 @@ use AppserverIo\Appserver\ServletEngine\Authentication\Callback\PasswordCallback
 use AppserverIo\Appserver\ServletEngine\Authentication\Callback\CallbackHandlerInterface;
 use AppserverIo\Appserver\ServletEngine\Authentication\LoginModules\Utilities\ParamKeys;
 use AppserverIo\Appserver\ServletEngine\Authentication\LoginModules\Utilities\SharedStateKeys;
+use AppserverIo\Appserver\ServletEngine\Authentication\PrincipalInterface;
+use AppserverIo\Appserver\ServletEngine\Authentication\Subject;
+use AppserverIo\Appserver\ServletEngine\Authentication\SimpleGroup;
+use AppserverIo\Appserver\ServletEngine\Authentication\GroupInterface;
+use AppserverIo\Collections\CollectionInterface;
 
 /**
  * An abstract login module implementation.
@@ -42,6 +47,13 @@ use AppserverIo\Appserver\ServletEngine\Authentication\LoginModules\Utilities\Sh
  */
 abstract class AbstractLoginModule implements LoginModuleInterface
 {
+
+    /**
+     * The Subject to update after a successful login.
+     *
+     * @var \AppserverIo\Appserver\ServletEngine\Authentication\Subject
+     */
+    protected $subject;
 
     /**
      * The callback handler to obtain username and password.
@@ -106,15 +118,17 @@ abstract class AbstractLoginModule implements LoginModuleInterface
      * principalClass:          A Principal implementation that support a constructor taking a string argument for the princpal name
      * unauthenticatedIdentity: The name of the principal to asssign and authenticate when a null username and password are seen
      *
+     * @param \AppserverIo\Appserver\ServletEngine\Authentication\Subject                           $subject         The Subject to update after a successful login
      * @param \AppserverIo\Appserver\ServletEngine\Authentication\Callback\CallbackHandlerInterface $callbackHandler The callback handler that will be used to obtain the user identity and credentials
      * @param \AppserverIo\Collections\MapInterface                                                 $sharedState     A map shared between all configured login module instances
      * @param \AppserverIo\Collections\MapInterface                                                 $params          The parameters passed to the login module
      */
-    public function initialize(CallbackHandlerInterface $callbackHandler, MapInterface $sharedState, MapInterface $params)
+    public function initialize(Subject $subject, CallbackHandlerInterface $callbackHandler, MapInterface $sharedState, MapInterface $params)
     {
 
         // initialize the passed parameters
         $this->params = $params;
+        $this->subject = $subject;
         $this->sharedState = $sharedState;
         $this->callbackHandler = $callbackHandler;
 
@@ -179,6 +193,69 @@ abstract class AbstractLoginModule implements LoginModuleInterface
     }
 
     /**
+     * Method to commit the authentication process (phase 2). If the login
+     * method completed successfully as indicated by loginOk == true, this
+     * method adds the getIdentity() value to the subject getPrincipals() Set.
+     * It also adds the members of each Group returned by getRoleSets()
+     * to the subject getPrincipals() Set.
+     *
+     * @see javax.security.auth.Subject;
+     * @see java.security.acl.Group;
+     * @return true always.
+     * @throws \AppserverIo\Appserver\ServletEngine\Authentication\LoginModules\LoginException If login can't be committed'
+     */
+    public function commit()
+    {
+
+        // we can only commit if the login has been successful
+        if ($this->loginOk === false) {
+            return false;
+        }
+
+        // add the identity to the subject's principals
+        $principals = $this->subject->getPrincipals();
+        $principals->add($this->getIdentity());
+
+        // load the groups
+        $roleSets = $this->getRoleSets();
+
+        // iterate over the groups and add them to the subject
+        for ($g = 0; $g < sizeof($roleSets); $g++) {
+            // initialize group, name and subject group
+            $group = $roleSets[$g];
+            $name = $group->getName();
+            $subjectGroup = $this->createGroup($name, $principals);
+
+            /* if ($subjectGroup instanceof NestableGroup) {
+                // a NestableGroup only allows Groups to be added to it so we need to add a SimpleGroup to subjectRoles to contain the roles
+                $tmp = new SimpleGroup('Roles');
+                $subjectGroup->addMember($tmp);
+                $subjectGroup = $tmp;
+            } */
+
+            // copy the group members to the Subject group
+            foreach ($group->getMembers() as $member) {
+                $subjectGroup->addMember($member);
+            }
+        }
+
+        // return TRUE if we succeed
+        return true;
+    }
+
+    /**
+     * Method to abort the authentication process (phase 2).
+     *
+     * @return boolean Alaways TRUE
+     * @throws \AppserverIo\Appserver\ServletEngine\Authentication\LoginModules\LoginException Is thrown if abort has not been successfully
+     */
+    public function abort()
+    {
+       // log.trace("abort");
+       return true;
+    }
+
+    /**
      * Called by login() to acquire the username and password strings for
      * authentication. This method does no validation of either.
      *
@@ -228,4 +305,77 @@ abstract class AbstractLoginModule implements LoginModuleInterface
         // return the principal instance
         return $principal;
     }
+
+    /**
+     * Find or create a Group with the given name. Subclasses should use this
+     * method to locate the 'Roles' group or create additional types of groups.
+     *
+     * @param \AppserverIo\Lang\String                     $name       The name of the group to create
+     * @param \AppserverIo\Collections\CollectionInterface $principals The list of principals
+     *
+     * @return \AppserverIo\Appserver\ServletEngine\Authentication\GroupInterface A named group from the principals set
+     */
+    protected function createGroup(String $name, CollectionInterface $principals)
+    {
+
+        // initialize the group
+        /** \AppserverIo\Appserver\ServletEngine\Authentication\GroupInterface $roles */
+        $roles = null;
+
+        // iterate over the passed principals
+        foreach ($principals as $principal) {
+            // query whether we found a group or not, proceed if not
+            if (($principal instanceof GroupInterface) == false) {
+                continue;
+            }
+
+            // the principal is a group
+            $grp = $principal;
+
+            // if the group already exists, stop searching
+            if ($grp->getName()->equals($name)){
+                $roles = $grp;
+                break;
+            }
+        }
+
+        // if we did not find a group create one
+        if ($roles == null ) {
+            $roles = new SimpleGroup($name);
+            $principals->add($roles);
+        }
+
+        // return the group
+        return $roles;
+    }
+
+    /**
+     * Return's the unauthenticated identity.
+     *
+     * @return \AppserverIo\Appserver\ServletEngine\Authentication\PrincipalInterface The identity instance
+     */
+    public function getUnauthenticatedIdentity()
+    {
+        return $this->unauthenticatedIdentity;
+    }
+
+    /**
+     * Overriden by subclasses to return the Principal that corresponds to
+     * the user primary identity.
+     *
+     * @return \AppserverIo\Appserver\ServletEngine\Authentication\PrincipalInterface The user identity
+     */
+    abstract protected function getIdentity();
+
+    /**
+     * Overriden by subclasses to return the Groups that correspond to the
+     * to the role sets assigned to the user. Subclasses should create at
+     * least a Group named "Roles" that contains the roles assigned to the user.
+     * A second common group is "CallerPrincipal" that provides the application
+     * identity of the user rather than the security domain identity.
+     *
+     * @return array Array containing the sets of roles
+     * @throws \AppserverIo\Appserver\ServletEngine\Authentication\LoginModules\LoginException Is thrown if password can't be loaded
+     */
+    abstract protected function getRoleSets();
 }

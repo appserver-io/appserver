@@ -54,13 +54,15 @@ class GenericDeployment extends AbstractDeployment
     protected function deployDatasources()
     {
 
-        // check if deploy dir exists
-        if (is_dir($directory = $this->getDeploymentService()->getWebappsDir())) {
+        // load the container
+        $container = $this->getContainer();
+
+        // load the container and check if application base directory exists
+        if (is_dir($directory = $container->getAppBase())) {
             // load the datasource files
             $datasourceFiles = $this->getDeploymentService()->globDir($directory . DIRECTORY_SEPARATOR . '*-ds.xml');
 
-            // load container and naming directory instances
-            $container = $this->getContainer();
+            // load the naming directory instance
             $namingDirectory = $container->getNamingDirectory();
 
             // create a subdirectory for the container's datasoruces

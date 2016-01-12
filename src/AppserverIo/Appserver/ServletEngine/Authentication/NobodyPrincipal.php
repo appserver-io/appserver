@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\Authentication\SimplePrincipal
+ * AppserverIo\Appserver\ServletEngine\Authentication\NobodyPrincipal
  *
  * NOTICE OF LICENSE
  *
@@ -23,8 +23,10 @@ namespace AppserverIo\Appserver\ServletEngine\Authentication;
 use AppserverIo\Lang\String;
 
 /**
- * A simple String based implementation of Principal. Typically a SimplePrincipal is
- * created given a userID which is used as the Principal name.
+ * An implementation of Principal and Comparable that represents any role.
+ * Any Principal or name of a Principal when compared to an NobodyPrincipal
+ * using {@link #equals(PrincipleInterface) equals} will always be found
+ * not equal to the NobodyPrincipal.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -32,7 +34,7 @@ use AppserverIo\Lang\String;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class SimplePrincipal implements PrincipalInterface
+class NobodyPrincipal implements PrincipalInterface
 {
 
     /**
@@ -40,43 +42,17 @@ class SimplePrincipal implements PrincipalInterface
      *
      * @var \AppserverIo\Lang\String
      */
-    private $name;
+    const NOBODY = '<NOBODY>';
 
     /**
-     * Initialize the principal with the passed name.
-     *
-     * @param \AppserverIo\Lang\String $name The principal's name
-     */
-    public function __construct(String $name)
-    {
-        $this->name = $name;
-    }
-
-    /**
-     * Compare this SimplePrincipal's name against another Principal.
+     * Compare this NobodyPrincipal's name against another Principal.
      *
      * @param PrincipalInterface $another The other principal to compare to
      *
-     * @return boolean TRUE if name equals $another->getName();
+     * @return boolean Will always return FALSE, because this is nobody
      */
     public function equals(PrincipalInterface $another)
     {
-
-        // query whether or not another principal has been passed
-        if ($another instanceof PrincipalInterface) {
-            $anotherName = $another->getName();
-            $equals = false;
-            if ($this->name == null) {
-                $equals = $anotherName == null;
-            } else {
-                $equals = $this->name->equals($anotherName);
-            }
-
-            // return the flag if the both are equal
-            return $equals;
-        }
-
-        // return FALSE if they are not equal
         return false;
     }
 
@@ -87,7 +63,7 @@ class SimplePrincipal implements PrincipalInterface
      */
     public function __toString()
     {
-        return $this->name->__toString();
+        return $this->getName();
     }
 
     /**
@@ -97,6 +73,6 @@ class SimplePrincipal implements PrincipalInterface
      */
     public function getName()
     {
-        return $this->name;
+        return new String(NobodyPrincipal::NOBODY);
     }
 }

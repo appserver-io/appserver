@@ -1,7 +1,7 @@
 <?php
 
 /**
- * \AppserverIo\Appserver\ServletEngine\Authentication\AuthenticationManager
+ * \AppserverIo\Appserver\ServletEngine\Authentication\StandardAuthenticationManager
  *
  * NOTICE OF LICENSE
  *
@@ -193,15 +193,9 @@ class StandardAuthenticationManager extends AbstractManager implements Authentic
                 // query whether or not the URI matches against the URL pattern
                 if ($urlPatternToAuthenticationMethodMapping->match($servletRequest)) {
 
-                    // load the authentication method
+                    // load the authentication method and authenticate the request
                     $authenticationMethod = $this->getAuthenticationMethod($urlPatternToAuthenticationMethodMapping);
-
-                    // initialize and authenticate the request
-                    $authenticationMethod->init($servletRequest, $servletResponse);
-                    $authenticationMethod->authenticate($servletResponse);
-
-                    // set authenticated username as a server var
-                    $servletRequest->setRemoteUser($authenticationMethod->getUsername());
+                    $authenticationMethod->authenticate($servletRequest, $servletResponse);
 
                     // stop processing, because we're already authenticated
                     break;

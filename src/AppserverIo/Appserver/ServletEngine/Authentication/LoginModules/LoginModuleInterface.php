@@ -21,6 +21,7 @@
 namespace AppserverIo\Appserver\ServletEngine\Authentication\LoginModules;
 
 use AppserverIo\Collections\MapInterface;
+use AppserverIo\Appserver\ServletEngine\Authentication\Subject;
 use AppserverIo\Appserver\ServletEngine\Authentication\Callback\CallbackHandlerInterface;
 
 /**
@@ -48,11 +49,12 @@ interface LoginModuleInterface
      * principalClass:          A Principal implementation that support a constructor taking a string argument for the princpal name
      * unauthenticatedIdentity: The name of the principal to asssign and authenticate when a null username and password are seen
      *
+     * @param \AppserverIo\Appserver\ServletEngine\Authentication\Subject                           $subject         The Subject to update after a successful login
      * @param \AppserverIo\Appserver\ServletEngine\Authentication\Callback\CallbackHandlerInterface $callbackHandler The callback handler that will be used to obtain the user identity and credentials
      * @param \AppserverIo\Collections\MapInterface                                                 $sharedState     A map shared between all configured login module instances
      * @param \AppserverIo\Collections\MapInterface                                                 $params          The parameters passed to the login module
      */
-    public function initialize(CallbackHandlerInterface $callbackHandler, MapInterface $sharedState, MapInterface $params);
+    public function initialize(Subject $subject, CallbackHandlerInterface $callbackHandler, MapInterface $sharedState, MapInterface $params);
 
     /**
      * Looks for servlet_engine.authentication.login_module.login_name and servlet_engine.authentication.login_module.login_password
