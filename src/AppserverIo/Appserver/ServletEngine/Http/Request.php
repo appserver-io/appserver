@@ -20,21 +20,21 @@
 
 namespace AppserverIo\Appserver\ServletEngine\Http;
 
+use AppserverIo\Lang\String;
 use AppserverIo\Http\HttpProtocol;
 use AppserverIo\Server\Dictionaries\ServerVars;
 use AppserverIo\Psr\Context\ContextInterface;
 use AppserverIo\Psr\HttpMessage\PartInterface;
 use AppserverIo\Psr\HttpMessage\CookieInterface;
 use AppserverIo\Psr\HttpMessage\RequestInterface;
+use AppserverIo\Psr\Security\PrincipalInterface;
+use AppserverIo\Psr\Security\Auth\Subject;
+use AppserverIo\Psr\Security\Acl\GroupInterface;
+use AppserverIo\Appserver\ServletEngine\Security\Utils\Util;
+use AppserverIo\Appserver\ServletEngine\Security\SimpleGroup;
 use AppserverIo\Psr\Servlet\SessionUtils;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
-use AppserverIo\Appserver\ServletEngine\Authentication\PrincipalInterface;
-use AppserverIo\Appserver\ServletEngine\Authentication\Subject;
-use AppserverIo\Lang\String;
-use AppserverIo\Appserver\ServletEngine\Authentication\GroupInterface;
-use AppserverIo\Appserver\ServletEngine\Authentication\SimpleGroup;
-use AppserverIo\Appserver\ServletEngine\Authentication\LoginModules\Utilities\Util;
 
 /**
  * A Http servlet request implementation.

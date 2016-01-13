@@ -25,7 +25,7 @@ use AppserverIo\Logger\LoggerUtils;
 use AppserverIo\Server\Dictionaries\ServerVars;
 use AppserverIo\Server\Interfaces\RequestContextInterface;
 use AppserverIo\WebServer\Interfaces\HttpModuleInterface;
-use AppserverIo\Appserver\ServletEngine\Authentication\AuthenticationValve;
+use AppserverIo\Appserver\ServletEngine\Security\AuthenticationValve;
 
 /**
  * Abstract servlet engine which provides basic functionality for child implementations
