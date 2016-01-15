@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\Security\Auth\Login\AuthenticationInterface
+ * AppserverIo\Appserver\ServletEngine\Authenticator\AuthenticatorInterface
  *
  * NOTICE OF LICENSE
  *
@@ -18,7 +18,7 @@
  * @link      http://www.appserver.io
  */
 
-namespace AppserverIo\Appserver\ServletEngine\Security\Auth\Login;
+namespace AppserverIo\Appserver\ServletEngine\Authenticator;
 
 use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
@@ -32,7 +32,7 @@ use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-interface AuthenticationInterface
+interface AuthenticatorInterface
 {
 
     /**

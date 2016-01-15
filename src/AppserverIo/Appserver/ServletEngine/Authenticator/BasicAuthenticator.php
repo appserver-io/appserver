@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\Security\Auth\Login\BasicAuthentication
+ * AppserverIo\Appserver\ServletEngine\Authenticator\BasicAuthenticator
  *
  * NOTICE OF LICENSE
  *
@@ -20,12 +20,11 @@
  * @link      http://www.appserver.io
  */
 
-namespace AppserverIo\Appserver\ServletEngine\Security\Auth\Login;
+namespace AppserverIo\Appserver\ServletEngine\Authenticator;
 
 use AppserverIo\Psr\HttpMessage\Protocol;
 use AppserverIo\Psr\HttpMessage\RequestInterface;
 use AppserverIo\Psr\HttpMessage\ResponseInterface;
-use AppserverIo\Http\Authentication\AbstractAuthentication;
 use AppserverIo\Http\Authentication\AuthenticationException;
 use AppserverIo\Http\Authentication\Adapters\HtpasswdAdapter;
 
@@ -40,7 +39,7 @@ use AppserverIo\Http\Authentication\Adapters\HtpasswdAdapter;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class BasicAuthentication extends AbstractAuthentication
+class BasicAuthenticator extends AbstractAuthenticator
 {
 
     /**

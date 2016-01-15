@@ -1,7 +1,7 @@
 <?php
 
 /**
- * \AppserverIo\Appserver\ServletEngine\Security\Auth\Login\DigestAuthentication
+ * \AppserverIo\Appserver\ServletEngine\Authenticator\DigestAuthentication
  *
  * NOTICE OF LICENSE
  *
@@ -19,7 +19,7 @@
  * @link      http://www.appserver.io
  */
 
-namespace AppserverIo\Appserver\ServletEngine\Security\Auth\Login;
+namespace AppserverIo\Appserver\ServletEngine\Authenticator;
 
 use AppserverIo\Psr\HttpMessage\Protocol;
 use AppserverIo\Psr\HttpMessage\RequestInterface;
@@ -35,7 +35,7 @@ use AppserverIo\Http\Authentication\Adapters\HtdigestAdapter;
  * @link      https://github.com/appserver-io/http
  * @link      http://www.appserver.io
  */
-class DigestAuthentication extends BasicAuthentication
+class DigestAuthenticator extends BasicAuthenticator
 {
 
     /**

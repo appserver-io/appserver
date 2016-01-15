@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\Security\Auth\Login\FormAuthentication
+ * AppserverIo\Appserver\ServletEngine\Authenticator\FormAuthenticator
  *
  * NOTICE OF LICENSE
  *
@@ -18,7 +18,7 @@
  * @link      http://www.appserver.io
  */
 
-namespace AppserverIo\Appserver\ServletEngine\Security\Auth\Login;
+namespace AppserverIo\Appserver\ServletEngine\Authenticator;
 
 use AppserverIo\Lang\String;
 use AppserverIo\Lang\Reflection\ReflectionClass;
@@ -29,6 +29,7 @@ use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
 use AppserverIo\Appserver\Naming\Utils\NamingDirectoryKeys;
 use AppserverIo\Http\Authentication\AuthenticationException;
 use AppserverIo\Appserver\ServletEngine\Security\Auth\Callback\SecurityAssociationHandler;
+use AppserverIo\Appserver\ServletEngine\Security\SimplePrincipal;
 
 /**
  * This valve will check if the actual request needs authentication.
@@ -39,7 +40,7 @@ use AppserverIo\Appserver\ServletEngine\Security\Auth\Callback\SecurityAssociati
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class FormAuthentication extends AbstractAuthentication
+class FormAuthenticator extends AbstractAuthenticator
 {
 
     /**
@@ -106,36 +107,9 @@ class FormAuthentication extends AbstractAuthentication
                 throw new \Exception('Invalid username or password');
             }
 
-            // load the security domains authentication configuration
-            /** @var \AppserverIo\Appserver\Core\Api\Node\AuthConfigNodeInterface $authConfigNode */
-            if ($authConfigNode = $this->securityDomain->getConfiguration()->getAuthConfig()) {
-                // prepare the map for the shared state data
-                $sharedState = new HashMap();
-                // prepare the login modules of the security domain
-                /** @var \AppserverIo\Appserver\Core\Api\Node\LoginModuleNodeInterface $loginModuleNode */
-                foreach ($authConfigNode->getLoginModules() as $loginModuleNode) {
-                    // create a new instance of the login module and add it to the array list
-                    $reflectionClass = new ReflectionClass($loginModuleNode->getType());
+            $callbackHandler = new SecurityAssociationHandler(new SimplePrincipal($this->getUsername()), $this->getPassword());
 
-                    // initialize the login module instance
-                    /** @var \AppserverIo\Psr\Security\Auth\Spi\LoginModuleInterface $loginModule */
-                    $loginModule = $reflectionClass->newInstance();
-
-                    // initialize initialize subject, callback handler and params
-                    $subject = new Subject();
-                    $principal = $loginModule->createIdentity(new String($this->getUsername()));
-                    $callbackHandler = new SecurityAssociationHandler($principal, new String($this->getPassword()));
-                    $params = new HashMap($loginModuleNode->getParamsAsArray());
-
-                    // initialize the login module, try to login and commit
-                    $loginModule->initialize($subject, $callbackHandler, $sharedState, $params);
-                    $loginModule->login();
-                    $loginModule->commit();
-
-                    // finally add the the subject to the request
-                    $servletRequest->setSubject($subject);
-                }
-            }
+            $this->getAuthenticationManager()->getRealm($this->getRealmName())->authenticate($this->getUsername(), $callbackHandler);
 
         } catch (\Exception $e) {
             // log the exception

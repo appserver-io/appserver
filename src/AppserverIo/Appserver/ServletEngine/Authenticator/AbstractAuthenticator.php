@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\Security\Auth\Login\AbstractAuthentication
+ * AppserverIo\Appserver\ServletEngine\Authenticator\AbstractAuthenticator
  *
  * NOTICE OF LICENSE
  *
@@ -18,7 +18,7 @@
  * @link      http://www.appserver.io
  */
 
-namespace AppserverIo\Appserver\ServletEngine\Security\Auth\Login;
+namespace AppserverIo\Appserver\ServletEngine\Authenticator;
 
 use AppserverIo\Configuration\Interfaces\NodeInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
@@ -34,7 +34,7 @@ use AppserverIo\Appserver\ServletEngine\Security\AuthenticationManagerInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-abstract class AbstractAuthentication implements AuthenticationInterface
+abstract class AbstractAuthenticator implements AuthenticatorInterface
 {
 
     /**

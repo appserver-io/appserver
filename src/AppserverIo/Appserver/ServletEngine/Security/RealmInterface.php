@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\Security\SecurityDomainInterface
+ * AppserverIo\Appserver\ServletEngine\Security\RealmInterface
  *
  * NOTICE OF LICENSE
  *
@@ -21,7 +21,7 @@
 namespace AppserverIo\Appserver\ServletEngine\Security;
 
 /**
- * Interface for a security domain implementation.
+ * Interface for a realm implementation.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -29,20 +29,20 @@ namespace AppserverIo\Appserver\ServletEngine\Security;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-interface SecurityDomainInterface
+interface RealmInterface
 {
 
     /**
-     * Return's the name of the security domain.
+     * Return's the name of the realm.
      *
-     * @return string The security domain's name
+     * @return string The realm's name
      */
     public function getName();
 
     /**
-     * Return's the security domain's configuration.
+     * Return's the realm's configuration.
      *
-     * @return \AppserverIo\Appserver\Core\Api\Node\SecurityDomainNodeInterface The security domain's configuration
+     * @return \AppserverIo\Appserver\Core\Api\Node\SecurityDomainNodeInterface The realm's configuration
      */
     public function getConfiguration();
 }

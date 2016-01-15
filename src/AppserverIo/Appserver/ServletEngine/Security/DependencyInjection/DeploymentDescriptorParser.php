@@ -24,9 +24,9 @@ use AppserverIo\Lang\Reflection\ReflectionClass;
 use AppserverIo\Http\Authentication\AuthenticationException;
 use AppserverIo\Appserver\Core\Api\Node\WebAppNode;
 use AppserverIo\Appserver\Core\Api\Node\WebAppNodeInterface;
-use AppserverIo\Appserver\ServletEngine\Security\Auth\Login\FormAuthentication;
-use AppserverIo\Appserver\ServletEngine\Security\Auth\Login\BasicAuthentication;
-use AppserverIo\Appserver\ServletEngine\Security\Auth\Login\DigestAuthentication;
+use AppserverIo\Appserver\ServletEngine\Authenticator\FormAuthenticator;
+use AppserverIo\Appserver\ServletEngine\Authenticator\BasicAuthenticator;
+use AppserverIo\Appserver\ServletEngine\Authenticator\DigestAuthenticator;
 use AppserverIo\Appserver\ServletEngine\Security\AuthenticationManagerInterface;
 use AppserverIo\Appserver\ServletEngine\Security\UrlPatternToAuthenticationMethodMapping;
 
@@ -45,12 +45,12 @@ class DeploymentDescriptorParser
     /**
      * The available authentication types.
      *
-     * @var string
+     * @var array
      */
     protected $authenticationTypes = array(
-        'Form'   => '\AppserverIo\Appserver\ServletEngine\Security\Auth\Login\FormAuthentication',
-        'Basic'  => '\AppserverIo\Appserver\ServletEngine\Security\Auth\Login\BasicAuthentication',
-        'Digest' => '\AppserverIo\Appserver\ServletEngine\Security\Auth\Login\DigestAuthentication'
+        'Form'   => '\AppserverIo\Appserver\ServletEngine\Authenticator\FormAuthentication',
+        'Basic'  => '\AppserverIo\Appserver\ServletEngine\Authenticator\BasicAuthentication',
+        'Digest' => '\AppserverIo\Appserver\ServletEngine\Authenticator\DigestAuthentication'
     );
 
     /**

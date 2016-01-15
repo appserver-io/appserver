@@ -31,6 +31,7 @@ use AppserverIo\Http\Authentication\AuthenticationException;
 use AppserverIo\Appserver\Core\AbstractManager;
 use AppserverIo\Appserver\Naming\Utils\NamingDirectoryKeys;
 use AppserverIo\Appserver\ServletEngine\Security\DependencyInjection\DeploymentDescriptorParser;
+use AppserverIo\Collections\MapInterface;
 
 /**
  * The authentication manager handles request which need Http authentication.
@@ -42,7 +43,7 @@ use AppserverIo\Appserver\ServletEngine\Security\DependencyInjection\DeploymentD
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  *
- * @property \AppserverIo\Collections\MapInterface $securityDomains                          Contains the security domains
+ * @property \AppserverIo\Collections\MapInterface $realms                                   Contains the realms
  * @property \AppserverIo\Storage\StorageInterface $authenticationMethods                    Contains all registered authentication methods
  * @property \AppserverIo\Storage\StorageInterface $urlPatternToAuthenticationMethodMappings Contains the URL pattern to authentication method mapping
  */
@@ -62,13 +63,13 @@ class StandardAuthenticationManager extends AbstractManager implements Authentic
     }
 
     /**
-     * Inject the map with the security domains.
+     * Inject the map with the realms.
      *
-     * @param \AppserverIo\Collections\MapInterface $securityDomains The security domains
+     * @param \AppserverIo\Collections\MapInterface $realms The realms
      */
-    public function injectSecurityDomains($securityDomains)
+    public function injectRealms(MapInterface $realms)
     {
-        $this->securityDomains = $securityDomains;
+        $this->realms = $realms;
     }
 
     /**
@@ -84,15 +85,15 @@ class StandardAuthenticationManager extends AbstractManager implements Authentic
     }
 
     /**
-     * Add's the passed security domain the the authentication manager.
+     * Add's the passed realm the the authentication manager.
      *
-     * @param \AppserverIo\Appserver\ServletEngine\Security\SecurityDomainInterface $securityDomain The security domain to add
+     * @param \AppserverIo\Appserver\ServletEngine\Security\RealmInterface $realm The realm to add
      *
      * @return void
      */
-    public function addSecurityDomain(SecurityDomainInterface $securityDomain)
+    public function addRealm(RealmInterface $realm)
     {
-        $this->securityDomains->set($securityDomain->getName(), $securityDomain);
+        $this->realms->set($realm->getName(), $realm);
     }
 
     /**
@@ -100,9 +101,9 @@ class StandardAuthenticationManager extends AbstractManager implements Authentic
      *
      * @return \AppserverIo\Collections\MapInterface The security domains
      */
-    public function getSecurityDomains()
+    public function getRealms()
     {
-        return $this->securityDomains;
+        return $this->realms;
     }
 
     /**
@@ -247,8 +248,8 @@ class StandardAuthenticationManager extends AbstractManager implements Authentic
             return;
         }
 
-        // initialize the map for the security domains
-        $securityDomains = new HashMap();
+        // initialize the map for the realms
+        $realms = new HashMap();
 
         // query whether or not we've manager configuration found
         /** @var \AppserverIo\Appserver\Core\Api\Node\ManagerNodeInterface $managerNode */
@@ -256,20 +257,20 @@ class StandardAuthenticationManager extends AbstractManager implements Authentic
             // initialize the security domains found in the manager configuration
             /** @var \AppserverIo\Appserver\Core\Api\Node\SecurityDomainNodeInterface $securityDomainNode */
             foreach ($this->getManagerConfiguration()->getSecurityDomains() as $securityDomainNode) {
-                // create the security domain instance
-                $securityDomain = new SecurityDomain($securityDomainNode->getName());
-                $securityDomain->injectConfiguration($securityDomainNode);
+                // create the realm instance
+                $realm = new Realm($securityDomainNode->getName());
+                $realm->injectConfiguration($securityDomainNode);
 
                 // add the initialized security domain to the map
-                $securityDomains->add($securityDomain->getName(), $securityDomain);
+                $realms->add($realm->getName(), $realm);
 
                 // register the security domain in the naming directory
-                $this->getApplication()->getNamingDirectory()->bindCallback(sprintf('php:aas/%s/%s', $application->getName(), $securityDomain->getName()), array(&$this, 'lookup'));
+                $this->getApplication()->getNamingDirectory()->bindCallback(sprintf('php:aas/%s/%s', $application->getName(), $realm->getName()), array(&$this, 'lookup'));
             }
         }
 
-        // inject the map with the security domains
-        $this->injectSecurityDomains($securityDomains);
+        // inject the map with the realms
+        $this->injectRealms($realm);
 
         // initialize the deployment descriptor parser and parse the web application's deployment descriptor for servlets
         $deploymentDescriptorParser = new DeploymentDescriptorParser();
@@ -278,15 +279,15 @@ class StandardAuthenticationManager extends AbstractManager implements Authentic
     }
 
     /**
-     * Returns the security domain with the passed name.
+     * Returns the realm with the passed name.
      *
-     * @param string $lookupName The name of the session bean's class
+     * @param string $realmNam The name of the requested realm
      *
-     * @return object The requested security domain instance
+     * @return object The requested realm instance
      */
-    public function lookup($lookupName)
+    public function getRealm($realm)
     {
-        return $this->getSecurityDomains()->get($lookupName);
+        return $this->getRealms()->get($realm);
     }
 
     /**
