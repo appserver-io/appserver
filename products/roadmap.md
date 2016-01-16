@@ -12,7 +12,7 @@ author: all
 #<i class="fa fa-road"></i> Roadmap
 ***
 
-The roadmap only covers functionality of upcomming minor releases. If you wanna have more detailed information (including bugfix releases), please check the issue list of our public <a href="{{ site.github_repository }}"><i class="fa fa-github"></i> GitHub</a> repository.
+The roadmap only covers functionality of upcomming minor releases. If you wanna have more detailed information (including bugfix releases), please check the issues list grouped by releases of our public <a href="{{ site.github_milestones }}"><i class="fa fa-github"></i> GitHub</a> repository.
 
 The next minor release 1.2.0 aka **Iron ?** will probably be released on **06/2016**.
 
