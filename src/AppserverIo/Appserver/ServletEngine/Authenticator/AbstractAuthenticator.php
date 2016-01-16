@@ -181,7 +181,6 @@ abstract class AbstractAuthenticator implements AuthenticatorInterface
      */
     protected function prepareAdapter()
     {
-        $this->securityDomain = $this->getAuthenticationManager()->lookup($this->getRealmName());
     }
 
     /**

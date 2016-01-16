@@ -21,6 +21,7 @@
 namespace AppserverIo\Appserver\Core\Api\Node;
 
 use AppserverIo\Configuration\Interfaces\NodeInterface;
+use AppserverIo\Psr\Security\Auth\Login\SecurityDomainConfigurationInterface;
 
 /**
  * Interface for a security domain DTO implementation.
@@ -31,20 +32,6 @@ use AppserverIo\Configuration\Interfaces\NodeInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-interface SecurityDomainNodeInterface extends NodeInterface
+interface SecurityDomainNodeInterface extends NodeInterface, SecurityDomainConfigurationInterface
 {
-
-    /**
-     * Return's the security domain name.
-     *
-     * @return string The security domain name
-     */
-    public function getName();
-
-    /**
-     * Return's the authentication configuration.
-     *
-     * @return \AppserverIo\Appserver\Core\Api\Node\AuthConfigNode The authentication configuration
-     */
-    public function getAuthConfig();
 }

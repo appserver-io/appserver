@@ -21,15 +21,13 @@
 namespace AppserverIo\Appserver\ServletEngine\Authenticator;
 
 use AppserverIo\Lang\String;
-use AppserverIo\Lang\Reflection\ReflectionClass;
-use AppserverIo\Collections\HashMap;
 use AppserverIo\Psr\Security\Auth\Subject;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
 use AppserverIo\Appserver\Naming\Utils\NamingDirectoryKeys;
 use AppserverIo\Http\Authentication\AuthenticationException;
-use AppserverIo\Appserver\ServletEngine\Security\Auth\Callback\SecurityAssociationHandler;
 use AppserverIo\Appserver\ServletEngine\Security\SimplePrincipal;
+use AppserverIo\Appserver\ServletEngine\Security\Auth\Callback\SecurityAssociationHandler;
 
 /**
  * This valve will check if the actual request needs authentication.
@@ -107,9 +105,15 @@ class FormAuthenticator extends AbstractAuthenticator
                 throw new \Exception('Invalid username or password');
             }
 
-            $callbackHandler = new SecurityAssociationHandler(new SimplePrincipal($this->getUsername()), $this->getPassword());
+            // prepare username and password
+            $username = new String($this->getUsername());
+            $password = new String($this->getPassword());
 
-            $this->getAuthenticationManager()->getRealm($this->getRealmName())->authenticate($this->getUsername(), $callbackHandler);
+            // prepare the callback handler
+            $callbackHandler = new SecurityAssociationHandler(new SimplePrincipal($username), $password);
+
+            // load the realm and try to authenticate the user
+            $this->getAuthenticationManager()->getRealm($this->getRealmName())->authenticate($username, $callbackHandler);
 
         } catch (\Exception $e) {
             // log the exception

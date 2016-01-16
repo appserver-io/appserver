@@ -76,9 +76,8 @@ class SecurityAssociationHandler implements CallbackHandlerInterface
      */
     public function handle(CollectionInterface $callbacks)
     {
-
+        // handle the registered callbacks
         foreach ($callbacks as $callback) {
-
             if ($callback instanceof NameCallback) {
                 $callback->setName($this->principal->getName());
             } elseif ($callback instanceof PasswordCallback) {

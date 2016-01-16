@@ -48,9 +48,9 @@ class DeploymentDescriptorParser
      * @var array
      */
     protected $authenticationTypes = array(
-        'Form'   => '\AppserverIo\Appserver\ServletEngine\Authenticator\FormAuthentication',
-        'Basic'  => '\AppserverIo\Appserver\ServletEngine\Authenticator\BasicAuthentication',
-        'Digest' => '\AppserverIo\Appserver\ServletEngine\Authenticator\DigestAuthentication'
+        'Form'   => '\AppserverIo\Appserver\ServletEngine\Authenticator\FormAuthenticator',
+        'Basic'  => '\AppserverIo\Appserver\ServletEngine\Authenticator\BasicAuthenticator',
+        'Digest' => '\AppserverIo\Appserver\ServletEngine\Authenticator\DigestAuthenticator'
     );
 
     /**

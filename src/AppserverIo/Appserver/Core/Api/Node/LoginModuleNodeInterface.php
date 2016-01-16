@@ -21,6 +21,7 @@
 namespace AppserverIo\Appserver\Core\Api\Node;
 
 use AppserverIo\Configuration\Interfaces\NodeInterface;
+use AppserverIo\Psr\Security\Auth\Login\LoginModuleConfigurationInterface;
 
 /**
  * Interface for a login module DTO implementation.
@@ -31,45 +32,6 @@ use AppserverIo\Configuration\Interfaces\NodeInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-interface LoginModuleNodeInterface extends NodeInterface
+interface LoginModuleNodeInterface extends NodeInterface, LoginModuleConfigurationInterface
 {
-
-    /**
-     * Returns's the login module type.
-     *
-     * @return string The login module type
-     */
-    public function getType();
-
-    /**
-     * Return's the login module flag.
-     *
-     * @return string The login module flag
-     */
-    public function getFlag();
-
-    /**
-     * Array with the handler params to use.
-     *
-     * @return array The params
-     */
-    public function getParams();
-
-    /**
-     * Returns the param with the passed name casted to
-     * the specified type.
-     *
-     * @param string $name The name of the param to be returned
-     *
-     * @return mixed The requested param casted to the specified type
-     */
-    public function getParam($name);
-
-    /**
-     * Returns the params casted to the defined type
-     * as associative array.
-     *
-     * @return array The array with the casted params
-     */
-    public function getParamsAsArray();
 }

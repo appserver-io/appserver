@@ -265,12 +265,12 @@ class StandardAuthenticationManager extends AbstractManager implements Authentic
                 $realms->add($realm->getName(), $realm);
 
                 // register the security domain in the naming directory
-                $this->getApplication()->getNamingDirectory()->bindCallback(sprintf('php:aas/%s/%s', $application->getName(), $realm->getName()), array(&$this, 'lookup'));
+                // $this->getApplication()->getNamingDirectory()->bindCallback(sprintf('php:aas/%s/%s', $application->getName(), $realm->getName()), array(&$this, 'lookup'));
             }
         }
 
         // inject the map with the realms
-        $this->injectRealms($realm);
+        $this->injectRealms($realms);
 
         // initialize the deployment descriptor parser and parse the web application's deployment descriptor for servlets
         $deploymentDescriptorParser = new DeploymentDescriptorParser();

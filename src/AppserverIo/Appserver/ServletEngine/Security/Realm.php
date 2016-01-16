@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\Security\SecurityDomain
+ * AppserverIo\Appserver\ServletEngine\Security\Realm
  *
  * NOTICE OF LICENSE
  *
@@ -20,13 +20,14 @@
 
 namespace AppserverIo\Appserver\ServletEngine\Security;
 
-use AppserverIo\Configuration\Configuration;
-use AppserverIo\Appserver\Core\Api\Node\SecurityDomainNodeInterface;
-use AppserverIo\Appserver\ServletEngine\Security\Auth\Callback\SecurityAssociationHandler;
-use AppserverIo\Psr\Security\Auth\Subject;
-use AppserverIo\Psr\Security\Auth\Login\LoginContextInterface;
 use AppserverIo\Lang\String;
+use AppserverIo\Configuration\Configuration;
+use AppserverIo\Psr\Security\Auth\Subject;
+use AppserverIo\Psr\Security\PrincipalInterface;
+use AppserverIo\Psr\Security\Auth\Login\LoginContext;
+use AppserverIo\Psr\Security\Auth\Login\LoginContextInterface;
 use AppserverIo\Psr\Security\Auth\Callback\CallbackHandlerInterface;
+use AppserverIo\Appserver\Core\Api\Node\SecurityDomainNodeInterface;
 
 /**
  * Security domain implementation.
@@ -96,32 +97,41 @@ class Realm implements RealmInterface
         return $this->configruation;
     }
 
+    /**
+     * Finally tries to authenticate the user with the passed name.
+     *
+     * @param \AppserverIo\Lang\String                                         $username        The name of the user to authenticate
+     * @param \AppserverIo\Psr\Security\Auth\Callback\CallbackHandlerInterface $callbackHandler The callback handler used to load the credentials
+     *
+     * @return \AppserverIo\Security\PrincipalInterface The authenticated user principal
+     */
     public function authenticate(String $username, CallbackHandlerInterface $callbackHandler)
     {
 
+        // initialize the subject and the configuration
         $subject = new Subject();
         $configuration = $this->getConfiguration();
 
+        // initialize the LoginContext and try to login the user
         $loginContext = new LoginContext($subject, $callbackHandler, $configuration);
         $loginContext->login();
 
+        // create and return a new Principal of the authenticated user
         return $this->createPrincipal($username, $loginContext->getSubject(), $loginContext);
     }
 
     /**
-     * Identify and return a <code>java.security.Principal</code> instance
-     * representing the authenticated user for the specified <code>Subject</code>.
-     * The Principal is constructed by scanning the list of Principals returned
-     * by the JAASLoginModule. The first <code>Principal</code> object that matches
-     * one of the class names supplied as a "user class" is the user Principal.
-     * This object is returned to the caller.
-     * Any remaining principal objects returned by the LoginModules are mapped to
-     * roles, but only if their respective classes match one of the "role class" classes.
-     * If a user Principal cannot be constructed, return <code>null</code>.
+     * Identify and return an instance implementing the PrincipalInterface that represens the
+     * authenticated user for the specified Subject. The Principal is constructed by scanning
+     * the list of Principals returned by the LoginModule. The first Principal object that
+     * matches one of the class names supplied as a "user class" is the user Principal. This
+     * object is returned to the caller. Any remaining principal objects returned by the
+     * LoginModules are mapped to roles, but only if their respective classes match one of the
+     * "role class" classes. If a user Principal cannot be constructed, return NULL.
      *
-     * @param username The associated user name
-     * @param subject The <code>Subject</code> representing the logged-in user
-     * @param loginContext Associated with the Principal so {@link LoginContext#logout()} can be called later
+     * @param \AppserverIo\Lang\String                                   $username     The associated user name
+     * @param \AppserverIo\Psr\Security\Auth\Subject                     $subject      The Subject representing the logged-in user
+     * @param \AppserverIo\Psr\Security\Auth\Login\LoginContextInterface $loginContext Associated with the Principal so {@link LoginContext#logout()} can be called later
      *
      * @return \AppserverIo\Security\PrincipalInterface the principal object
      */

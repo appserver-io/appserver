@@ -21,6 +21,7 @@
 namespace AppserverIo\Appserver\Core\Api\Node;
 
 use AppserverIo\Configuration\Interfaces\NodeInterface;
+use AppserverIo\Psr\Security\Auth\Login\AuthConfigurationInterface;
 
 /**
  * Interface for a authentication configuration DTO implementation.
@@ -31,13 +32,6 @@ use AppserverIo\Configuration\Interfaces\NodeInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-interface AuthConfigNodeInterface extends NodeInterface
+interface AuthConfigNodeInterface extends NodeInterface, AuthConfigurationInterface
 {
-
-    /**
-     * Returns the login modules configuration.
-     *
-     * @return array The login modules configuration
-     */
-    public function getLoginModules();
 }
