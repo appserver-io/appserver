@@ -16,7 +16,7 @@ The roadmap only covers functionality of upcomming minor releases. If you wanna 
 
 The next minor release 1.2.0 aka **Iron ?** will probably be released on **06/2016**.
 
-## Version 1.2.0 **Iron ?**
+## Version 1.2.0 **Iron Dragon**
 ***
 * Update PHP to version 7
 * Upgrade to latest pthreads version
