@@ -20,5 +20,5 @@ The next minor release 1.2.0 aka **Iron ?** will probably be released on **06/20
 ***
 * Update PHP to version 7
 * Upgrade to latest pthreads version
-* Integrate own socket php extension
+* Integrate own socket php extension (fixes seg-faults caused by heavy ssl usage)
 * more to come...
