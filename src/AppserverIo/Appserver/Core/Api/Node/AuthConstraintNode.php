@@ -67,4 +67,25 @@ class AuthConstraintNode extends AbstractNode implements AuthConstraintNodeInter
     {
         return $this->description;
     }
+
+    /**
+     * Return's the role names as array.
+     *
+     * @return array The role names as array
+     */
+    public function getRoleNamesAsArray()
+    {
+
+        // initialize the array for the role names
+        $roleNames = array();
+
+        // prepare the role names
+        /** @var AppserverIo\Appserver\Core\Api\Node\RoleNameNode $roleName */
+        foreach ($this->getRoleNames() as $roleName) {
+            $roleNames[] = $roleName->__toString();
+        }
+
+        // return the array with the role names
+        return $roleNames;
+    }
 }

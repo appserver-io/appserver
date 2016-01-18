@@ -192,15 +192,6 @@ abstract class AbstractAuthenticator implements AuthenticatorInterface
      */
     public function verify()
     {
-        // set internal var refs
-        $authData = $this->getAuthData();
-
-        // check if credentials are empty
-        if (empty($authData)) {
-            return false;
-        }
-
-        return true;
     }
 
     /**

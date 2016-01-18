@@ -257,30 +257,20 @@ abstract class UsernamePasswordLoginModule extends AbstractLoginModule
 
         // query whether or not we've a callback configured
         if ($this->params->exists(ParamKeys::DIGEST_CALLBACK)) {
-
             try {
-
-                // try to load the callback class name
+                // load the callback class name and create a new callback instance
                 $callbackClassName = $this->params->get(ParamKeys::DIGEST_CALLBACK);
-
                 $callback = new $callbackClassName();
-                /* if (log.isTraceEnabled()) {
-                    log.trace("Created DigestCallback: "+callback);
-                } */
+
+                // initialize the callback
+                $tmp = new HashMap($this->params->toIndexedArray());
+                $tmp->add(SharedStateKeys::LOGIN_NAME, $name);
+                $tmp->add(SharedStateKeys::LOGIN_PASSWORD, $password);
+                $callback->init($tmp);
 
             } catch (\Exception $e) {
-                /* if (log.isTraceEnabled()) {
-                    log.trace("Failed to load DigestCallback", e);
-                } */
-
                 throw new SecurityException("Failed to load DigestCallback");
             }
-
-            // initialize the callback
-            $tmp = new HashMap($this->params->toIndexedArray());
-            $tmp->add(SharedStateKeys::LOGIN_NAME, $name);
-            $tmp->add(SharedStateKeys::LOGIN_PASSWORD, $password);
-            $callback->init($tmp);
         }
 
         // hash and return the password

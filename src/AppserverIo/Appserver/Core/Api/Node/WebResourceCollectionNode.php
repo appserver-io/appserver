@@ -144,7 +144,9 @@ class WebResourceCollectionNode extends AbstractNode implements WebResourceColle
     }
 
     /**
-     * Returns the HTTP methods as an associative array
+     * Returns the HTTP methods as an associative array.
+     *
+     * The HTTP methods will be converted to upper case when using this method.
      *
      * @return array The array with the HTTP methods
      */
@@ -157,7 +159,7 @@ class WebResourceCollectionNode extends AbstractNode implements WebResourceColle
         // prepare the HTTP methods
         /** @var \AppserverIo\Appserver\Core\Api\Node\HttpMethodNode $httpMethodNode */
         foreach ($this->getHttpMethods() as $httpMethodNode) {
-            $httpMethods[] = $httpMethodNode->__toString();
+            $httpMethods[] = strtoupper($httpMethodNode->__toString());
         }
 
         // return the array with the HTTP methods
@@ -165,7 +167,9 @@ class WebResourceCollectionNode extends AbstractNode implements WebResourceColle
     }
 
     /**
-     * Returns the HTTP method omissions as an associative array
+     * Returns the HTTP method omissions as an associative array.
+     *
+     * The HTTP methods will be converted to upper case when using this method.
      *
      * @return array The array with the HTTP method omissions
      */
@@ -178,7 +182,7 @@ class WebResourceCollectionNode extends AbstractNode implements WebResourceColle
         // prepare the HTTP method omissions
         /** @var \AppserverIo\Appserver\Core\Api\Node\HttpMethodOmissionNode $httpMethodOmissionNode */
         foreach ($this->getHttpMethodOmissions() as $httpMethodOmissionNode) {
-            $httpMethodOmissions[] = $httpMethodOmissionNode->__toString();
+            $httpMethodOmissions[] = strtoupper($httpMethodOmissionNode->__toString());
         }
 
         // return the array with the HTTP method omissions

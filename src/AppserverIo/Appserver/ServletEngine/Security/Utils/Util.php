@@ -71,7 +71,8 @@ class Util
      */
     public static function createPasswordHash($hashAlgorithm, $hashEncoding, $hashCharset, String $name, String $password, $callback)
     {
-        return $password->md5();
+        $newPassword = clone $password;
+        return $newPassword->md5();
     }
 
     /**

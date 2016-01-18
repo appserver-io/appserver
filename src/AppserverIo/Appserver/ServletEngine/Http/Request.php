@@ -196,18 +196,18 @@ class Request implements HttpServletRequestInterface, ContextInterface
     protected $attributes = array();
 
     /**
-     * The user subject.
-     *
-     * @var \AppserverIo\Appserver\ServletEngine\Authentication\Subject
-     */
-    protected $subject;
-
-    /**
      * The user principal of the authenticated user or NULL if the user has not been authenticated.
      *
-     * @var \AppserverIo\Appserver\ServletEngine\Authentication\PrincipalInterface
+     * @var \AppserverIo\Psr\Security\PrincipalInterface
      */
     protected $userPrincipal;
+
+    /**
+     * The request's authentication type.
+     *
+     * @var string
+     */
+    protected $authType;
 
     /**
      * Initializes the request object with the default properties.
@@ -227,11 +227,8 @@ class Request implements HttpServletRequestInterface, ContextInterface
         $this->context = null;
         $this->response = null;
         $this->httpRequest = null;
-        $this->requestHandler = null;
-
-        // initialize the subject and the user principal
-        $this->subject = null;
         $this->userPrincipal = null;
+        $this->requestHandler = null;
 
         // initialize the strings
         $this->pathInfo = '';
@@ -1206,43 +1203,47 @@ class Request implements HttpServletRequestInterface, ContextInterface
     }
 
     /**
-     * Set's the user subject for this request.
+     * Set's the passed authentication type.
      *
-     * @param \AppserverIo\Appserver\ServletEngine\Authentication\Subject $subject The user subject
+     * @param string $authType The authentication type
      *
      * @return void
      */
-    public function setSubject(Subject $subject)
+    public function setAuthType($authType)
     {
-        $this->subject = $subject;
+        $this->authType = $authType;
     }
 
     /**
-     * Return's the user subject for this request.
+     * Return's the authentication type.
      *
-     * @return \AppserverIo\Appserver\ServletEngine\Authentication\Subject $subject The user subject
+     * @return string The authentication type
      */
-    protected function getSubject()
+    public function getAuthType()
     {
-        return $this->subject;
+        return $this->authType;
+    }
+
+    /**
+     * Set's the user principal for this request.
+     *
+     * @param \AppserverIo\Psr\Security\PrincipalInterface $userPrincipal The user principal
+     *
+     * @return void
+     */
+    public function setUserPrincipal(PrincipalInterface $userPrincipal)
+    {
+        $this->userPrincipal = $userPrincipal;
     }
 
     /**
      * Return's a PrincipalInterface object containing the name of the current authenticated user.
      *
-     * @return \AppserverIo\Appserver\ServletEngine\Authentication\PrincipalInterface|null The user principal
+     * @return \AppserverIo\Psr\Security\PrincipalInterface|null The user principal
      */
     public function getUserPrincipal()
     {
-
-        // query whether or not we've a subject
-        if ($subject = $this->getSubject()) {
-            foreach ($subject->getPrincipals() as $principal) {
-                if ($principal instanceof PrincipalInterface) {
-                    return $principal;
-                }
-            }
-        }
+        return $this->userPrincipal;
     }
 
     /**
@@ -1269,13 +1270,9 @@ class Request implements HttpServletRequestInterface, ContextInterface
     public function isUserInRole(String $role)
     {
 
-        // query whether or not we've a subject
-        if ($subject = $this->getSubject()) {
-            foreach ($subject->getPrincipals() as $principal) {
-                if ($principal instanceof GroupInterface && $principal->getName()->equals(new String(Util::DEFAULT_GROUP_NAME))) {
-                    return $principal->isMember(new SimpleGroup($role));
-                }
-            }
+        // query whether or not we've an user principal
+        if ($principal = $this->getUserPrincipal()) {
+            return $principal->getRoles()->contains($role);
         }
 
         // user is not in passed role

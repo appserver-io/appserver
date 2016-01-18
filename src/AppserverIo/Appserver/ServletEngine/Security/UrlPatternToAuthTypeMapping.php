@@ -1,7 +1,7 @@
 <?php
 
 /**
- * \AppserverIo\Appserver\ServletEngine\Security\UrlPatternToAuthenticationMethodMapping
+ * \AppserverIo\Appserver\ServletEngine\Security\UrlPatternToAuthTypeMapping
  *
  * NOTICE OF LICENSE
  *
@@ -31,21 +31,63 @@ use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class UrlPatternToAuthenticationMethodMapping
+class UrlPatternToAuthTypeMapping
 {
+
+    /**
+     * The URL pattern.
+     *
+     * @var string
+     */
+    protected $urlPattern;
+
+    /**
+     * The authentication type key.
+     *
+     * @var string
+     */
+    protected $authTypeKey;
+
+    /**
+     * The array with the role names.
+     *
+     * @var array
+     */
+    protected $roleNames;
+
+    /**
+     * The array with the HTTP methods that has to be authenticated.
+     *
+     * @var array
+     */
+    protected $httpMethods;
+
+    /**
+     * The array with the HTTP methods that has to be omissed from authentication.
+     *
+     * @var array
+     */
+    protected $httpMethodOmissions;
 
     /**
      * Initialize the mapping with the passed values.
      *
-     * @param string $urlPattern              The URL pattern
-     * @param string $authenticationMethodKey The authentication method's key
-     * @param array  $httpMethods             The array with the HTTP methods that has to be authenticated
-     * @param array  $httpMethodOmissions     The array with the HTTP methods that has to be omissed from authentication
+     * @param string $urlPattern          The URL pattern
+     * @param string $authTypeKey         The authentication type key
+     * @param array  $roleNames           The array with the role names
+     * @param array  $httpMethods         The array with the HTTP methods that has to be authenticated
+     * @param array  $httpMethodOmissions The array with the HTTP methods that has to be omissed from authentication
      */
-    public function __construct($urlPattern, $authenticationMethodKey, array $httpMethods = array(), array $httpMethodOmissions = array())
-    {
+    public function __construct(
+        $urlPattern,
+        $authTypeKey,
+        array $roleNames = array(),
+        array $httpMethods = array(),
+        array $httpMethodOmissions = array()
+    ) {
         $this->urlPattern = $urlPattern;
-        $this->authenticationMethodKey = $authenticationMethodKey;
+        $this->authTypeKey = $authTypeKey;
+        $this->roleNames = $roleNames;
         $this->httpMethods = $httpMethods;
         $this->httpMethodOmissions = $httpMethodOmissions;
     }
@@ -61,13 +103,23 @@ class UrlPatternToAuthenticationMethodMapping
     }
 
     /**
-     * Return's the authentication method's key.
+     * Return's the authentication type key.
      *
-     * @return string The key
+     * @return string The authentication type key
      */
-    public function getAuthenticationMethodKey()
+    public function getAuthTypeKey()
     {
-        return $this->authenticationMethodKey;
+        return $this->authTypeKey;
+    }
+
+    /**
+     * Return's the role names.
+     *
+     * @return array The role names
+     */
+    public function getRoleNames()
+    {
+        return $this->roleNames;
     }
 
     /**

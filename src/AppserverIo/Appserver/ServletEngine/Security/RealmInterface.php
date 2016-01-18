@@ -20,6 +20,9 @@
 
 namespace AppserverIo\Appserver\ServletEngine\Security;
 
+use AppserverIo\Lang\String;
+use AppserverIo\Psr\Security\Auth\Callback\CallbackHandlerInterface;
+
 /**
  * Interface for a realm implementation.
  *
@@ -45,4 +48,14 @@ interface RealmInterface
      * @return \AppserverIo\Appserver\Core\Api\Node\SecurityDomainNodeInterface The realm's configuration
      */
     public function getConfiguration();
+
+    /**
+     * Finally tries to authenticate the user with the passed name.
+     *
+     * @param \AppserverIo\Lang\String                                         $username        The name of the user to authenticate
+     * @param \AppserverIo\Psr\Security\Auth\Callback\CallbackHandlerInterface $callbackHandler The callback handler used to load the credentials
+     *
+     * @return \AppserverIo\Security\PrincipalInterface The authenticated user principal
+     */
+    public function authenticate(String $username, CallbackHandlerInterface $callbackHandler);
 }

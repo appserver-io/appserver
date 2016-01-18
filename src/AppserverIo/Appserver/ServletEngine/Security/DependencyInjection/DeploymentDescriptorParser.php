@@ -27,8 +27,8 @@ use AppserverIo\Appserver\Core\Api\Node\WebAppNodeInterface;
 use AppserverIo\Appserver\ServletEngine\Authenticator\FormAuthenticator;
 use AppserverIo\Appserver\ServletEngine\Authenticator\BasicAuthenticator;
 use AppserverIo\Appserver\ServletEngine\Authenticator\DigestAuthenticator;
+use AppserverIo\Appserver\ServletEngine\Security\UrlPatternToAuthTypeMapping;
 use AppserverIo\Appserver\ServletEngine\Security\AuthenticationManagerInterface;
-use AppserverIo\Appserver\ServletEngine\Security\UrlPatternToAuthenticationMethodMapping;
 
 /**
  * Parser implementation to parse a web application deployment descriptor (WEB-INF/web.xml).
@@ -150,10 +150,10 @@ class DeploymentDescriptorParser
 
             // create the authentication method instance
             $reflectionClass = new ReflectionClass($this->mapAuthenticationType($loginConfig->getAuthMethod()->__toString()));
-            $authenticationMethod = $reflectionClass->newInstanceArgs(array($loginConfig, $this->getAuthenticationContext()));
+            $authenticationType = $reflectionClass->newInstanceArgs(array($loginConfig, $this->getAuthenticationContext()));
 
             // add the authentication method itself
-            $this->getAuthenticationContext()->addAuthenticationMethod($loginConfig->getPrimaryKey(), $authenticationMethod);
+            $this->getAuthenticationContext()->addAuthenticationType($loginConfig->getPrimaryKey(), $authenticationType);
 
             // initialize the security roles, that are part of the new security subsystem
             /** @var \AppserverIo\Appserver\Core\Api\Node\SecurityRoleNode $securityRoleNode */
@@ -164,20 +164,28 @@ class DeploymentDescriptorParser
             // initialize the security roles, that are part of the new security subsystem
             /** @var \AppserverIo\Appserver\Core\Api\Node\SecurityConstraintNode $securityContstraintNode */
             foreach ($webAppNode->getSecurityConstraints() as $securityContstraintNode) {
+                // prepare the array with the authentication constraint role names
+                $roleNames = array();
+                if ($authConstraint = $securityContstraintNode->getAuthConstraint()) {
+                    $roleNames = $authConstraint->getRoleNamesAsArray();
+                }
                 /** @var \AppserverIo\Appserver\Core\Api\Node\WebResourceCollectionNode $webResourceCollectionNode */
                 foreach ($securityContstraintNode->getWebResourceCollections() as $webResourceCollectionNode) {
+                    // prepare the arrays for the HTTP methods and the method omissions
+                    $httpMethods = $webResourceCollectionNode->getHttpMethodsAsArray();
+                    $httpMethodOmissions = $webResourceCollectionNode->getHttpMethodOmissionsAsArray();
                     /** @var \AppserverIo\Appserver\Core\Api\Node\UrlPatternNode $urlPatternNode */
                     foreach ($webResourceCollectionNode->getUrlPatterns() as $urlPatternNode) {
-                        // prepare the URL pattern to authentication method mapping with the necessary data
-                        $urlPatternToAuthenticationMethodMapping = new UrlPatternToAuthenticationMethodMapping(
+                        // prepare the URL pattern to authentication type mapping with the necessary data
+                        $urlPatternToAuthTypeMapping = new UrlPatternToAuthTypeMapping(
                             $urlPatternNode->__toString(),
                             $loginConfig->getPrimaryKey(),
-                            $webResourceCollectionNode->getHttpMethodsAsArray(),
-                            $webResourceCollectionNode->getHttpMethodOmissionsAsArray()
+                            $roleNames,
+                            $httpMethods,
+                            $httpMethodOmissions
                         );
-
-                        // add the URL pattern to authentication method mapping
-                        $this->getAuthenticationContext()->addUrlPatternToAuthenticationMethodMapping($urlPatternToAuthenticationMethodMapping);
+                        // add the URL pattern to authentication type mapping
+                        $this->getAuthenticationContext()->addUrlPatternToAuthTypeMapping($urlPatternToAuthTypeMapping);
                     }
                 }
             }
@@ -205,14 +213,14 @@ class DeploymentDescriptorParser
 
             // initialize the authentication manager
             /** @var \AppserverIo\Http\Authentication\AuthenticationInterface $auth */
-            $authenticationMethod = new $authImplementation($securityNode->getOptionsAsArray($this->getAuthenticationContext()->getWebappPath()));
+            $authenticatioType = new $authImplementation($securityNode->getOptionsAsArray($this->getAuthenticationContext()->getWebappPath()));
 
-            // prepare the URL pattern to authentication method mapping with the necessary data
-            $urlPatternToAuthenticationMethodMapping = new UrlPatternToAuthenticationMethodMapping($urlPattern, $securityNode->getPrimaryKey());
+            // prepare the URL pattern to authentication type mapping with the necessary data
+            $urlPatternToAuthTypeMapping = new UrlPatternToAuthTypeMapping($urlPattern, $securityNode->getPrimaryKey());
 
             // add the authentication method and URL pattern mapping
-            $this->getAuthenticationContext()->addAuthenticationMethod($securityNode->getPrimaryKey(), $authenticationMethod);
-            $this->getAuthenticationContext()->addUrlPatternToAuthenticationMethodMapping($urlPatternToAuthenticationMethodMapping);
+            $this->getAuthenticationContext()->addAuthenticationType($securityNode->getPrimaryKey(), $authenticatioType);
+            $this->getAuthenticationContext()->addUrlPatternToAuthTypeMapping($urlPatternToAuthTypeMapping);
         }
     }
 }

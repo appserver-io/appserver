@@ -1,7 +1,7 @@
 <?php
 
 /**
- * \AppserverIo\Appserver\Core\Api\Node\AuthConstraintNodeInterface
+ * AppserverIo\Appserver\ServletEngine\Authenticator\Utils\SessionKeys
  *
  * NOTICE OF LICENSE
  *
@@ -18,12 +18,10 @@
  * @link      http://www.appserver.io
  */
 
-namespace AppserverIo\Appserver\Core\Api\Node;
-
-use AppserverIo\Configuration\Interfaces\NodeInterface;
+namespace AppserverIo\Appserver\ServletEngine\Authenticator\Utils;
 
 /**
- * Interface for a auth constraint DTO implementation.
+ * Utility class that contains the session keys.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -31,27 +29,36 @@ use AppserverIo\Configuration\Interfaces\NodeInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-interface AuthConstraintNodeInterface extends NodeInterface
+class SessionKeys
 {
 
     /**
-     * Return's the role names information.
+     * The key for the username stored in the session.
      *
-     * @return \AppserverIo\Appserver\Core\Api\Node\RoleNameNode The role names information
+     * @var string
      */
-    public function getRoleNames();
+    const USERNAME = 'appserver_io.appserver.servlet_engine.security.utils.username';
 
     /**
-     * Return's the role names as array.
+     * The key for the username stored in the session.
      *
-     * @return array The role names as array
+     * @var string
      */
-    public function getRoleNamesAsArray();
+    const PASSWORD = 'appserver_io.appserver.servlet_engine.security.utils.password';
 
     /**
-     * Return's the description information.
-     *
-     * @return \AppserverIo\Appserver\Core\Api\Node\DescriptionNode The description information
+     * This is a utility class, so protect it against direct instantiation.
      */
-    public function getDescription();
+    private function __construct()
+    {
+    }
+
+    /**
+     * This is a utility class, so protect it against cloning.
+     *
+     * @return void
+     */
+    private function __clone()
+    {
+    }
 }

@@ -21,13 +21,16 @@
 namespace AppserverIo\Appserver\ServletEngine\Authenticator;
 
 use AppserverIo\Lang\String;
+use AppserverIo\Psr\HttpMessage\Protocol;
 use AppserverIo\Psr\Security\Auth\Subject;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
 use AppserverIo\Appserver\Naming\Utils\NamingDirectoryKeys;
 use AppserverIo\Http\Authentication\AuthenticationException;
+use AppserverIo\Appserver\ServletEngine\Authenticator\Utils\SessionKeys;
 use AppserverIo\Appserver\ServletEngine\Security\SimplePrincipal;
 use AppserverIo\Appserver\ServletEngine\Security\Auth\Callback\SecurityAssociationHandler;
+use AppserverIo\Psr\Security\Auth\Login\LoginException;
 
 /**
  * This valve will check if the actual request needs authentication.
@@ -55,7 +58,6 @@ class FormAuthenticator extends AbstractAuthenticator
      */
     public function getAuthenticateHeader()
     {
-        return '';
     }
 
     /**
@@ -69,19 +71,37 @@ class FormAuthenticator extends AbstractAuthenticator
     protected function parse(HttpServletRequestInterface $servletRequest, HttpServletResponseInterface $servletResponse)
     {
 
-        // load username and password from the request
-        $username = $servletRequest->getParam('username');
-        $password = $servletRequest->getParam('password');
+        // start the session, if not already done
+        /** @var \AppserverIo\Psr\Servlet\Http\HttpSessionInterface $session */
+        $session = $servletRequest->getSession(true);
+        $session->start();
 
-        // check if either username or password was not found and return false
-        if (($password === null) || ($username === null)) {
-            return false;
+        // try to load username and password from the request instead
+        if ($servletRequest->hasParameter('username') &&
+            $servletRequest->hasParameter('password')
+        ) {
+            $this->username = new String($servletRequest->getParameter('username'));
+            $this->password = new String($servletRequest->getParameter('password'));
+
+            error_log(sprintf('Found %s/%s in request', $this->username, $this->password));
+
+            return true;
         }
 
-        // fill the auth data array
-        $this->authData['username'] = $username;
-        $this->authData['password'] = $password;
-        return true;
+        // try to load username/password from the session if available
+        if ($session->hasKey(SessionKeys::USERNAME) &&
+            $session->hasKey(SessionKeys::PASSWORD)
+        ) {
+            $this->username = $session->getData(SessionKeys::USERNAME);
+            $this->password = $session->getData(SessionKeys::PASSWORD);
+
+            error_log(sprintf('Found %s/%s in session %s', $this->username, $this->password, $session->getId()));
+
+            return true;
+        }
+
+        // we can't find username/password in session or request
+        return false;
     }
 
     /**
@@ -98,43 +118,63 @@ class FormAuthenticator extends AbstractAuthenticator
 
         try {
             // parse authentication data from the servlet request
-            $this->parse($servletRequest, $servletResponse);
-
-            // verify everything to be ready for auth if not return false
-            if ($this->verify() === false) {
+            if ($this->parse($servletRequest, $servletResponse) === false) {
                 throw new \Exception('Invalid username or password');
             }
 
-            // prepare username and password
-            $username = new String($this->getUsername());
-            $password = new String($this->getPassword());
-
             // prepare the callback handler
-            $callbackHandler = new SecurityAssociationHandler(new SimplePrincipal($username), $password);
+            $callbackHandler = new SecurityAssociationHandler(new SimplePrincipal($this->username), $this->password);
 
-            // load the realm and try to authenticate the user
-            $this->getAuthenticationManager()->getRealm($this->getRealmName())->authenticate($username, $callbackHandler);
+            // load the realm to authenticate this request for
+            /** @var AppserverIo\Appserver\ServletEngine\Security\RealmInterface $realm */
+            $realm = $this->getAuthenticationManager()->getRealm($this->getRealmName());
+
+            // authenticate the request and initialize the user principal
+            $userPrincipal = $realm->authenticate($this->username, $callbackHandler);
+
+            // authenticate/re-authenticate the user and set the principal in the request
+            $servletRequest->setUserPrincipal($userPrincipal);
+            $servletRequest->setAuthType(FormAuthenticator::AUTH_TYPE);
+
+            // set username and password in the session
+            if ($session = $servletRequest->getSession()) {
+                $session->putData(SessionKeys::USERNAME, $this->username);
+                $session->putData(SessionKeys::PASSWORD, $this->password);
+            }
+
+        } catch (LoginException $le) {
+            // query whether or not we've a valid form login configuration
+            if ($formLoginConfig = $this->getConfigData()->getFormLoginConfig()) {
+                // load the configured error page
+                $formErrorPage = $formLoginConfig->getFormErrorPage()->__toString();
+                // redirect to the configured error page
+                $servletResponse->addHeader(Protocol::HEADER_LOCATION, $formErrorPage);
+            }
+
+            // re-throw the exception
+            throw $le;
 
         } catch (\Exception $e) {
-            // log the exception
-            $this->getAuthenticationManager()
-                 ->getApplication()
-                 ->getNamingDirectory()
-                 ->search(NamingDirectoryKeys::SYSTEM_LOGGER)->error($e->__toString());
+            // query whether or not we've a valid form login configuration
+            if ($formLoginConfig = $this->getConfigData()->getFormLoginConfig()) {
+                // load the configured error page
+                $formLoginPage = $formLoginConfig->getFormLoginPage()->__toString();
+                // redirect to the configured login page
+                $servletResponse->addHeader(Protocol::HEADER_LOCATION, $formLoginPage);
+            }
 
-            // throw an authentication exception
-            throw new AuthenticationException($e->getMessage(), 401);
+            // re-throw the exception
+            throw $e;
         }
     }
 
     /**
-     * Returns the parsed password
+     * Returns the parsed password.
      *
-     * @return string
+     * @return \AppserverIo\Lang\String The password
      */
     public function getPassword()
     {
-        $authData = $this->getAuthData();
-        return isset($authData['password']) ? $authData['password'] : null;
+        return $this->password ? $this->password : null;
     }
 }

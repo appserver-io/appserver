@@ -28,6 +28,9 @@ use AppserverIo\Psr\Security\Auth\Login\LoginContext;
 use AppserverIo\Psr\Security\Auth\Login\LoginContextInterface;
 use AppserverIo\Psr\Security\Auth\Callback\CallbackHandlerInterface;
 use AppserverIo\Appserver\Core\Api\Node\SecurityDomainNodeInterface;
+use AppserverIo\Collections\ArrayList;
+use AppserverIo\Psr\Security\Auth\Login\LoginException;
+use AppserverIo\Appserver\ServletEngine\Security\Utils\Util;
 
 /**
  * Security domain implementation.
@@ -56,13 +59,33 @@ class Realm implements RealmInterface
     protected $configruation;
 
     /**
+     * An ArrayList with class that represents users.
+     *
+     * @var \AppserverIo\Collections\ArrayList
+     */
+    protected $userClasses;
+
+    /**
+     * An ArrayList with class that represents roles.
+     *
+     * @var \AppserverIo\Collections\ArrayList
+     */
+    protected $roleClasses;
+
+    /**
      * Initialize the security domain with the passed name.
      *
      * @param string $name The security domain's name
      */
     public function __construct($name)
     {
+
+        // set the passed realm name
         $this->name = $name;
+
+        // initialize the ArrayLists with the role/user class names
+        $this->roleClasses = new ArrayList(array('AppserverIo\Appserver\ServletEngine\Security\SimpleGroup'));
+        $this->userClasses = new ArrayList(array('AppserverIo\Appserver\ServletEngine\Security\SimplePrincipal'));
     }
 
     /**
@@ -73,6 +96,26 @@ class Realm implements RealmInterface
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * Return's the ArrayList with class that represents roles.
+     *
+     * @return \AppserverIo\Collections\ArrayList The allowed role class names
+     */
+    protected function getRoleClasses()
+    {
+        return $this->roleClasses;
+    }
+
+    /**
+     * Return's the ArrayList with class that represents users.
+     *
+     * @return \AppserverIo\Collections\ArrayList The allowed user class names
+     */
+    protected function getUserClasses()
+    {
+        return $this->userClasses;
     }
 
     /**
@@ -138,46 +181,34 @@ class Realm implements RealmInterface
     protected function createPrincipal(String $username, Subject $subject, LoginContextInterface $loginContext)
     {
 
-        /*
+        // initialize the roles and the user principal
         $roles = new ArrayList();
         $userPrincipal = null;
 
-        // Scan the Principals for this Subject
+        // load allowed user/role class names
+        $userClasses = $this->getUserClasses();
+        $roleClasses = $this->getRoleClasses();
+
+        // scan the Principals for this Subject
         foreach ($subject->getPrincipals() as $principal) {
 
-            $principalClass = principal.getClass().getName();
+            // load the principal's class name
+            $principalClass = get_class($principal);
 
-            if (userPrincipal == null && userClasses.contains(principalClass)) {
-                userPrincipal = principal;
-                if( log.isDebugEnabled() ) {
-                    log.debug(sm.getString("jaasRealm.userPrincipalSuccess", principal.getName()));
-                }
+            // query whether or not the principal found is a user principal
+            if ($userPrincipal == null && $userClasses->contains($principalClass)) {
+                $userPrincipal = $principal;
             }
 
-            if (roleClasses.contains(principalClass)) {
-                roles.add(principal.getName());
-                if( log.isDebugEnabled() ) {
-                    log.debug(sm.getString("jaasRealm.rolePrincipalAdd", principal.getName()));
-                }
-            }
-        }
-
-        // Print failure message if needed
-        if (userPrincipal == null) {
-            if (log.isDebugEnabled()) {
-                log.debug(sm.getString("jaasRealm.userPrincipalFailure"));
-                log.debug(sm.getString("jaasRealm.rolePrincipalFailure"));
-            }
-        } else {
-            if (roles.size() == 0) {
-                if (log.isDebugEnabled()) {
-                    log.debug(sm.getString("jaasRealm.rolePrincipalFailure"));
+            // query whether or not the principal found is a group principal
+            if ($roleClasses->contains($principalClass) && $principal->getName()->equals(new String(Util::DEFAULT_GROUP_NAME))) {
+                foreach ($principal->getMembers() as $role) {
+                    $roles->add($role->getName());
                 }
             }
         }
 
-        // Return the resulting Principal for our authenticated user
-        return new GenericPrincipal(username, null, roles, userPrincipal, loginContext);
-        */
+        // return the resulting Principal for our authenticated user
+        return new GenericPrincipal($username, null, $roles, $userPrincipal, $loginContext);
     }
 }
