@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\Authenticator\Utils\SessionKeys
+ * AppserverIo\Appserver\ServletEngine\Authenticator\Utils\FormKeys
  *
  * NOTICE OF LICENSE
  *
@@ -21,7 +21,7 @@
 namespace AppserverIo\Appserver\ServletEngine\Authenticator\Utils;
 
 /**
- * Utility class that contains the session keys.
+ * Utility class that contains the form keys.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -29,29 +29,29 @@ namespace AppserverIo\Appserver\ServletEngine\Authenticator\Utils;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class SessionKeys
+class FormKeys
 {
 
     /**
-     * The key for the username stored in the session.
+     * The key for the username specified in the login form.
      *
      * @var string
      */
-    const USERNAME = 'appserver_io.appserver.servlet_engine.security.utils.username';
+    const USERNAME = 'p_username';
 
     /**
-     * The key for the password stored in the session.
+     * The key for the password specified in the login in the form.
      *
      * @var string
      */
-    const PASSWORD = 'appserver_io.appserver.servlet_engine.security.utils.password';
+    const PASSWORD = 'p_password';
 
     /**
-     * The key for a complete form request stored in the session.
+     * The key for a login form name.
      *
      * @var string
      */
-    const FORM_REQUEST = 'appserver_io.appserver.servlet_engine.security.utils.form_request';
+    const FORM_ACTION = '/p_security_check';
 
     /**
      * This is a utility class, so protect it against direct instantiation.

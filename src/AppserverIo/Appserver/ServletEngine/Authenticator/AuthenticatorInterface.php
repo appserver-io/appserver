@@ -35,6 +35,28 @@ use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
 interface AuthenticatorInterface
 {
 
+
+    /**
+     * Returns the configuration data given for authentication type.
+     *
+     * @return object The configuration data
+     */
+    public function getConfigData();
+
+    /**
+     * Return's the authentication manager instance.
+     *
+     * @return \AppserverIo\Appserver\ServletEngine\Security\AuthenticationManagerInterface The authentication manager instance
+     */
+    public function getAuthenticationManager();
+
+    /**
+     * Returns the authentication type token.
+     *
+     * @return string
+     */
+    public function getAuthType();
+
     /**
      * Try to authenticate against the configured adapter.
      *
@@ -47,9 +69,30 @@ interface AuthenticatorInterface
     public function authenticate(HttpServletRequestInterface $servletRequest, HttpServletResponseInterface $servletResponse);
 
     /**
-     * Returns the parsed password
+     * Returns the password parsed from the request.
      *
-     * @return string
+     * @return string|null The password
      */
     public function getPassword();
+
+    /**
+     * Returns the username parsed from the request.
+     *
+     * @return string|null The username
+     */
+    public function getUsername();
+
+    /**
+     * Mark's the authenticator as the default one.
+     *
+     * @return void
+     */
+    public function setDefaultAuthenticator();
+
+    /**
+     * Query whether or not this is the default authenticator.
+     *
+     * @return boolean TRUE if this is the default authenticator, else FALSE
+     */
+    public function isDefaultAuthenticator();
 }

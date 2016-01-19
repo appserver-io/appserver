@@ -22,7 +22,9 @@
 namespace AppserverIo\Appserver\ServletEngine\Security;
 
 use Psr\Log\LoggerInterface;
+use AppserverIo\Lang\String;
 use AppserverIo\Collections\HashMap;
+use AppserverIo\Collections\MapInterface;
 use AppserverIo\Storage\StorageInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
@@ -30,9 +32,8 @@ use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
 use AppserverIo\Http\Authentication\AuthenticationException;
 use AppserverIo\Appserver\Core\AbstractManager;
 use AppserverIo\Appserver\Naming\Utils\NamingDirectoryKeys;
+use AppserverIo\Appserver\ServletEngine\Authenticator\AuthenticatorInterface;
 use AppserverIo\Appserver\ServletEngine\Security\DependencyInjection\DeploymentDescriptorParser;
-use AppserverIo\Collections\MapInterface;
-use AppserverIo\Lang\String;
 
 /**
  * The authentication manager handles request which need Http authentication.
@@ -44,23 +45,23 @@ use AppserverIo\Lang\String;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  *
- * @property \AppserverIo\Collections\MapInterface $realms                       Contains the realms
- * @property \AppserverIo\Storage\StorageInterface $authenticationTypes          Contains all registered authentication types
- * @property \AppserverIo\Storage\StorageInterface $urlPatternToAuthTypeMappings Contains the URL pattern to authentication type mapping
+ * @property \AppserverIo\Collections\MapInterface $realms         Contains the realms
+ * @property \AppserverIo\Storage\StorageInterface $authenticators Contains all registered authenticators
+ * @property \AppserverIo\Storage\StorageInterface $mappings       Contains the URL pattern to authenticator mapping
  */
 class StandardAuthenticationManager extends AbstractManager implements AuthenticationManagerInterface
 {
 
     /**
-     * Inject the storage for the authentication types.
+     * Inject the storage for the authenticators.
      *
-     * @param \AppserverIo\Storage\StorageInterface $authenticationTypes The storage instance
+     * @param \AppserverIo\Storage\StorageInterface $authenticators The storage instance
      *
      * @return void
      */
-    public function injectAuthenticationTypes(StorageInterface $authenticationTypes)
+    public function injectAuthenticators(StorageInterface $authenticators)
     {
-        $this->authenticationTypes = $authenticationTypes;
+        $this->authenticators = $authenticators;
     }
 
     /**
@@ -74,15 +75,15 @@ class StandardAuthenticationManager extends AbstractManager implements Authentic
     }
 
     /**
-     * Inject the storage for the URL pattern to authentication type mappings.
+     * Inject the storage for the URL pattern to authenticator mappings.
      *
-     * @param \AppserverIo\Storage\StorageInterface $urlPatternToAuthTypeMappings The storage instance
+     * @param \AppserverIo\Storage\StorageInterface $mappings The storage instance
      *
      * @return void
      */
-    public function injectUrlPatternToAuthTypeMappings(StorageInterface $urlPatternToAuthTypeMappings)
+    public function injectMappings(StorageInterface $mappings)
     {
-        $this->urlPatternToAuthTypeMappings = $urlPatternToAuthTypeMappings;
+        $this->mappings = $mappings;
     }
 
     /**
@@ -108,36 +109,48 @@ class StandardAuthenticationManager extends AbstractManager implements Authentic
     }
 
     /**
-     * Register's the authentication type with the passed URL pattern.
+     * Register's the passed authenticator.
      *
-     * @param string $key                   The key to register the authentication type with
-     * @param string $authenticationAdapter The authentication type
+     * @param \AppserverIo\Appserver\ServletEngine\Authenticator\AuthenticatorInterface The authenticator to add
      *
      * @return void
      */
-    public function addAuthenticationType($key, $authTypeKey)
+    public function addAuthenticator(AuthenticatorInterface $authenticator)
     {
-        $this->authenticationTypes->set($key, $authTypeKey);
+        $this->authenticators->set($authenticator->getSerial(), $authenticator);
     }
 
     /**
-     * Returns the configured authentication type for the passed URL pattern authentication type mapping.
+     * Returns the configured authenticator for the passed URL pattern authenticator mapping.
      *
-     * @param \AppserverIo\Appserver\ServletEngine\Security\UrlPatternToAuthTypeMapping $urlPatternToAuthTypeMapping The URL pattern to authentication type mapping
+     * @param \AppserverIo\Appserver\ServletEngine\Security\MappingInterface|null $mapping The URL pattern to authenticator mapping
      *
      * @return \AppserverIo\Storage\StorageInterface The storage with the authentication types
-     * @throws \AppserverIo\Http\Authentication\AuthenticationException Is thrown if the authentication type with the passed key is not available
+     * @throws \AppserverIo\Http\Authentication\AuthenticationException Is thrown if the authenticator with the passed key is not available
      */
-    public function getAuthenticationType(UrlPatternToAuthTypeMapping $urlPatternToAuthTypeMapping)
+    public function getAuthenticator(MappingInterface $mapping = null)
     {
 
-        // query whether or not we've an authentication manager with the passed key
-        if (isset($this->authenticationTypes[$authTypeKey = $urlPatternToAuthTypeMapping->getAuthTypeKey()])) {
-            return $this->authenticationTypes[$authTypeKey];
+        // query whether or not a mapping has been passed
+        if ($mapping != null) {
+            // query whether or not we've an authentication manager with the passed key
+            if (isset($this->authenticators[$authenticatorSerial = $mapping->getAuthenticatorSerial()])) {
+                return $this->authenticators[$authenticatorSerial];
+            }
+
+            // throw an exception if not
+            throw new AuthenticationException(sprintf('Can\'t find authenticator serial %s', $authenticatorSerial));
         }
 
-        // throw an exception if not
-        throw new AuthenticationException(sprintf('Can\'t find authentication type for key %s', $authTypeKey));
+        // try to find the default authenticator instead
+        foreach ($this->authenticators as $authenticator) {
+            if ($authenticator->isDefaultAuthenticator()) {
+                return $authenticator;
+            }
+        }
+
+        // throw an exception if we can't find a default authenticator also
+        throw new AuthenticationException('Can\'t find a default authenticator');
     }
 
     /**
@@ -145,34 +158,31 @@ class StandardAuthenticationManager extends AbstractManager implements Authentic
      *
      * @return \AppserverIo\Storage\StorageInterface The storage with the authentication types
      */
-    public function getAuthenticationTypes()
+    public function getAuthenticators()
     {
-        return $this->authenticationTypes;
+        return $this->authenticators;
     }
 
     /**
      * Register's a new URL pattern to authentication type mapping.
      *
-     * @param \AppserverIo\Appserver\ServletEngine\Security\UrlPatternToAuthTypeMapping $urlPatternToAuthTypeMapping The URL pattern to authentication type mapping
+     * @param \AppserverIo\Appserver\ServletEngine\Security\MappingInterface $mapping The URL pattern to authenticator mapping
      *
      * @return void
      */
-    public function addUrlPatternToAuthTypeMapping(UrlPatternToAuthTypeMapping $urlPatternToAuthTypeMapping)
+    public function addMapping(MappingInterface $mapping)
     {
-        $this->urlPatternToAuthTypeMappings->set(
-            $urlPatternToAuthTypeMapping->getUrlPattern(),
-            $urlPatternToAuthTypeMapping
-        );
+        $this->mappings->set($mapping->getUrlPattern(), $mapping);
     }
 
     /**
-     * Return's the storage for the URL pattern to authentication type mappings.
+     * Return's the storage for the URL pattern to authenticator mappings.
      *
      * @return \AppserverIo\Storage\StorageInterface The storage instance
      */
-    public function getUrlPatternToAuthTypeMappings()
+    public function getMappings()
     {
-        return $this->urlPatternToAuthTypeMappings;
+        return $this->mappings;
     }
 
     /**
@@ -192,38 +202,43 @@ class StandardAuthenticationManager extends AbstractManager implements Authentic
         $authenticated = true;
 
         // iterate over all servlets and return the matching one
-        /** @var \AppserverIo\Appserver\ServletEngine\Security\UrlPatternToAuthTypeMapping $urlPatternToAuthTypeMapping */
-        foreach ($this->getUrlPatternToAuthTypeMappings() as $urlPatternToAuthTypeMapping) {
+        /** @var \AppserverIo\Appserver\ServletEngine\Security\MappingInterface $mapping */
+        foreach ($this->getMappings() as $mapping) {
             try {
                 // query whether or not the URI matches against the URL pattern
-                if ($urlPatternToAuthTypeMapping->match($servletRequest)) {
+                if ($mapping->match($servletRequest)) {
                     // query whether or not the the HTTP method has to be denied or authenticated
-                    if (in_array($servletRequest->getMethod(), $urlPatternToAuthTypeMapping->getHttpMethodOmissions())) {
+                    if (in_array($servletRequest->getMethod(), $mapping->getHttpMethodOmissions())) {
                         // this resource has to be omitted
                         $authenticated = false;
-                    } elseif (in_array($servletRequest->getMethod(), $urlPatternToAuthTypeMapping->getHttpMethods())) {
+
+                    } elseif (in_array($servletRequest->getMethod(), $mapping->getHttpMethods())) {
                         // load the authentication method and authenticate the request
-                        $authenticationMethod = $this->getAuthenticationType($urlPatternToAuthTypeMapping);
-                        $authenticationMethod->authenticate($servletRequest, $servletResponse);
+                        $authenticator = $this->getAuthenticator($mapping);
+                        $authenticator->authenticate($servletRequest, $servletResponse);
 
-                        // initialize the roles flag
-                        $inRole = false;
+                        // if we've an user principal, query the roles
+                        if ($servletRequest->getUserPrincipal()) {
 
-                        // query whether or not the user has at least one of the requested roles
-                        foreach ($urlPatternToAuthTypeMapping->getRoleNames() as $role) {
-                            if ($servletRequest->isUserInRole(new String($role))) {
-                                $inRole = true;
-                                break;
+                            // initialize the roles flag
+                            $inRole = false;
+
+                            // query whether or not the user has at least one of the requested roles
+                            foreach ($mapping->getRoleNames() as $role) {
+                                if ($servletRequest->isUserInRole(new String($role))) {
+                                    $inRole = true;
+                                    break;
+                                }
                             }
-                        }
 
-                        // if not, throw an SecurityException
-                        if ($inRole === false) {
-                            throw new SecurityException('User doesn\'t have necessary privileges');
+                            // if not, throw an SecurityException
+                            if ($inRole === false) {
+                                throw new SecurityException('User doesn\'t have necessary privileges');
+                            }
                         }
                     }
 
-                    // stop processing, because we processed authenticated
+                    // stop processing, because we're authenticated
                     break;
                 }
 
@@ -282,7 +297,7 @@ class StandardAuthenticationManager extends AbstractManager implements Authentic
             /** @var \AppserverIo\Appserver\Core\Api\Node\SecurityDomainNodeInterface $securityDomainNode */
             foreach ($this->getManagerConfiguration()->getSecurityDomains() as $securityDomainNode) {
                 // create the realm instance
-                $realm = new Realm($securityDomainNode->getName());
+                $realm = new Realm($this, $securityDomainNode->getName());
                 $realm->injectConfiguration($securityDomainNode);
                 // add the initialized security domain to the map
                 $realms->add($realm->getName(), $realm);

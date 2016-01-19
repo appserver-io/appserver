@@ -35,6 +35,7 @@ use AppserverIo\Appserver\ServletEngine\Security\SimpleGroup;
 use AppserverIo\Psr\Servlet\SessionUtils;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
+use AppserverIo\Psr\Servlet\ServletException;
 
 /**
  * A Http servlet request implementation.
@@ -960,6 +961,16 @@ class Request implements HttpServletRequestInterface, ContextInterface
     }
 
     /**
+     * Return's the array with cookies.
+     *
+     * @return array The array with cookies
+     */
+    public function getCookies()
+    {
+        return $this->getHttpRequest()->getCookies();
+    }
+
+    /**
      * Returns header info by given name
      *
      * @param string $name The header key to name
@@ -1298,5 +1309,59 @@ class Request implements HttpServletRequestInterface, ContextInterface
 
         // also return TRUE if we can't find an authentication manager
         return true;
+    }
+
+    /**
+     * Validate the provided username and password in the password validation realm used by the web
+     * container login mechanism configured for the ServletContext.
+     *
+     * @param \AppserverIo\Lang\String $username The username to login
+     * @param \AppserverIo\Lang\String $password The password used to authenticate the user
+     *
+     * @return void
+     * @throws \AppserverIo\Psr\Servlet\ServletException Is thrown if no default authenticator can be found
+     */
+    public function login(String $username, String $password)
+    {
+
+        // query whether or not we're already authenticated or not
+        if ($this->getAuthType() != null || $this->getRemoteUser() != null || $this->getUserPrincipal() != null) {
+            throw new ServletException('Already authenticated');
+        }
+
+        // load the authentication manager and try to authenticate this request
+        /** @var \AppserverIo\Appserver\ServletEngine\Authentication\AuthenticationManagerInterface $authenticationManager */
+        $authenticationManager = $this->getContext()->search('AuthenticationManagerInterface');
+
+        // try to load the authentication managers default authenticator
+        if ($authenticator = $authenticationManager->getAuthenticator()) {
+            throw new ServletException('Can\'t find default authenticator');
+        }
+
+        // authenticate the passed username/password combination
+        $authenticator->login($username, $password, $this);
+    }
+
+    /**
+     * Establish null as the value returned when getUserPrincipal, getRemoteUser, and getAuthType is
+     * called on the request.
+     *
+     * @return void
+     * @throws \AppserverIo\Psr\Servlet\ServletException Is thrown if no default authenticator can be found
+     */
+    public function logout()
+    {
+
+        // load the authentication manager and try to authenticate this request
+        /** @var \AppserverIo\Appserver\ServletEngine\Authentication\AuthenticationManagerInterface $authenticationManager */
+        $authenticationManager = $this->getContext()->search('AuthenticationManagerInterface');
+
+        // try to load the authentication managers default authenticator
+        if ($authenticator = $authenticationManager->getAuthenticator()) {
+            throw new ServletException("no authenticator");
+        }
+
+        // logout the actual user
+        $authenticator->logout($this);
     }
 }

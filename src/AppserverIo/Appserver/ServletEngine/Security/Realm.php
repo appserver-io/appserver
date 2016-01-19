@@ -21,16 +21,17 @@
 namespace AppserverIo\Appserver\ServletEngine\Security;
 
 use AppserverIo\Lang\String;
+use AppserverIo\Collections\ArrayList;
 use AppserverIo\Configuration\Configuration;
 use AppserverIo\Psr\Security\Auth\Subject;
 use AppserverIo\Psr\Security\PrincipalInterface;
 use AppserverIo\Psr\Security\Auth\Login\LoginContext;
 use AppserverIo\Psr\Security\Auth\Login\LoginContextInterface;
 use AppserverIo\Psr\Security\Auth\Callback\CallbackHandlerInterface;
-use AppserverIo\Appserver\Core\Api\Node\SecurityDomainNodeInterface;
-use AppserverIo\Collections\ArrayList;
-use AppserverIo\Psr\Security\Auth\Login\LoginException;
+use AppserverIo\Appserver\Naming\Utils\NamingDirectoryKeys;
 use AppserverIo\Appserver\ServletEngine\Security\Utils\Util;
+use AppserverIo\Appserver\Core\Api\Node\SecurityDomainNodeInterface;
+use AppserverIo\Appserver\ServletEngine\Security\Auth\Callback\SecurityAssociationHandler;
 
 /**
  * Security domain implementation.
@@ -73,15 +74,24 @@ class Realm implements RealmInterface
     protected $roleClasses;
 
     /**
+     * The authentication manager instance.
+     *
+     * @var \AppserverIo\Appserver\ServletEngine\Security\AuthenticationManagerInterface
+     */
+    protected $authenticationManager;
+
+    /**
      * Initialize the security domain with the passed name.
      *
-     * @param string $name The security domain's name
+     * @param \AppserverIo\Appserver\ServletEngine\Security\AuthenticationManagerInterface $authenticationManager The authentication manager instance
+     * @param string                                                                       $name                  The security domain's name
      */
-    public function __construct($name)
+    public function __construct(AuthenticationManagerInterface $authenticationManager, $name)
     {
 
         // set the passed realm name
         $this->name = $name;
+        $this->authenticationManager = $authenticationManager;
 
         // initialize the ArrayLists with the role/user class names
         $this->roleClasses = new ArrayList(array('AppserverIo\Appserver\ServletEngine\Security\SimpleGroup'));
@@ -141,26 +151,63 @@ class Realm implements RealmInterface
     }
 
     /**
+     * Return's the authentication manager instance.
+     *
+     * @return \AppserverIo\Appserver\ServletEngine\Security\AuthenticationManagerInterface The authentication manager instance
+     */
+    public function getAuthenticationManager()
+    {
+        return $this->authenticationManager;
+    }
+
+    /**
      * Finally tries to authenticate the user with the passed name.
      *
      * @param \AppserverIo\Lang\String                                         $username        The name of the user to authenticate
      * @param \AppserverIo\Psr\Security\Auth\Callback\CallbackHandlerInterface $callbackHandler The callback handler used to load the credentials
      *
-     * @return \AppserverIo\Security\PrincipalInterface The authenticated user principal
+     * @return \AppserverIo\Security\PrincipalInterface|null The authenticated user principal
      */
-    public function authenticate(String $username, CallbackHandlerInterface $callbackHandler)
+    public function authenticateByUsernameAndCallbackHandler(String $username, CallbackHandlerInterface $callbackHandler)
     {
 
-        // initialize the subject and the configuration
-        $subject = new Subject();
-        $configuration = $this->getConfiguration();
+        try {
+            // initialize the subject and the configuration
+            $subject = new Subject();
+            $configuration = $this->getConfiguration();
 
-        // initialize the LoginContext and try to login the user
-        $loginContext = new LoginContext($subject, $callbackHandler, $configuration);
-        $loginContext->login();
+            // initialize the LoginContext and try to login the user
+            $loginContext = new LoginContext($subject, $callbackHandler, $configuration);
+            $loginContext->login();
 
-        // create and return a new Principal of the authenticated user
-        return $this->createPrincipal($username, $loginContext->getSubject(), $loginContext);
+            // create and return a new Principal of the authenticated user
+            return $this->createPrincipal($username, $loginContext->getSubject(), $loginContext);
+
+        } catch (\Exception $e) {
+            // load the system logger and debug log the exception
+            /** @var \Psr\Log\LoggerInterface $systemLogger */
+            if ($systemLogger = $this->getApplication()->getNamingDirectory()->search(NamingDirectoryKeys::SYSTEM_LOGGER)) {
+                $systemLogger->error($e->__toString());
+            }
+        }
+    }
+
+    /**
+     * Finally tries to authenticate the user with the passed name.
+     *
+     * @param \AppserverIo\Lang\String $username The name of the user to authenticate
+     * @param \AppserverIo\Lang\String $password The password used for authentication
+     *
+     * @return \AppserverIo\Security\PrincipalInterface|null The authenticated user principal
+     */
+    public function authenticate(String $username, String $password)
+    {
+
+        // prepare the callback handler
+        $callbackHandler = new SecurityAssociationHandler(new SimplePrincipal($username), $password);
+
+        // authenticate the passed username/password combination
+        return $this->authenticateByUsernameAndCallbackHandler($username, $callbackHandler);
     }
 
     /**

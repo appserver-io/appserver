@@ -50,12 +50,22 @@ interface RealmInterface
     public function getConfiguration();
 
     /**
-     * Finally tries to authenticate the user with the passed name.
+     * Tries to authenticate the user with the passed username and password.
+     *
+     * @param \AppserverIo\Lang\String $username The name of the user to authenticate
+     * @param \AppserverIo\Lang\String $password The password used for authentication
+     *
+     * @return \AppserverIo\Security\PrincipalInterface|null The authenticated user principal
+     */
+    public function authenticate(String $username, String $password);
+
+    /**
+     * Tries to authenticate the user with the passed username and callback handler.
      *
      * @param \AppserverIo\Lang\String                                         $username        The name of the user to authenticate
      * @param \AppserverIo\Psr\Security\Auth\Callback\CallbackHandlerInterface $callbackHandler The callback handler used to load the credentials
      *
-     * @return \AppserverIo\Security\PrincipalInterface The authenticated user principal
+     * @return \AppserverIo\Security\PrincipalInterface|null The authenticated user principal
      */
-    public function authenticate(String $username, CallbackHandlerInterface $callbackHandler);
+    public function authenticateByUsernameAndCallbackHandler(String $username, CallbackHandlerInterface $callbackHandler);
 }

@@ -20,10 +20,10 @@
 
 namespace AppserverIo\Appserver\ServletEngine\Authenticator;
 
+use AppserverIo\Lang\Boolean;
 use AppserverIo\Configuration\Interfaces\NodeInterface;
-use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
-use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
 use AppserverIo\Appserver\ServletEngine\Security\AuthenticationManagerInterface;
+use Rhumsaa\Uuid\Uuid;
 
 /**
  * Class AbstractAuthentication
@@ -38,18 +38,18 @@ abstract class AbstractAuthenticator implements AuthenticatorInterface
 {
 
     /**
-     * Holds the auth data got from http authentication header.
+     * The UUID of the authenticator.
      *
-     * @var \AppserverIo\Http\Authentication\Adapters\AdapterInterface $authAdapter
+     * @var string
      */
-    protected $authAdapter;
+    protected $serial;
 
     /**
-     * Holds the auth data got from http authentication header.
+     * Mark's the authenticator as the default one.
      *
-     * @var string $authData
+     * @var \AppserverIo\Lang\Boolean
      */
-    protected $authData;
+    protected $defaultAuthenticator;
 
     /**
      * Holds the configuration data given for authentication type.
@@ -66,49 +66,38 @@ abstract class AbstractAuthenticator implements AuthenticatorInterface
     protected $authenticationManager;
 
     /**
-     * Array with the supported adapter types.
-     *
-     * @var array
-     */
-    protected $supportedAdapters = array();
-
-    /**
      * Constructs the authentication type.
      *
      * @param \AppserverIo\Configuration\NodeInterface                                     $configData            The configuration data for auth type instance
      * @param \AppserverIo\Appserver\ServletEngine\Security\AuthenticationManagerInterface $authenticationManager The authentication manager instance
+     * @param \AppserverIo\Lang\Boolean                                                    $defaultAuthenticator  The flag for the default authenticator
      */
-    public function __construct(NodeInterface $configData, AuthenticationManagerInterface $authenticationManager)
+    public function __construct(NodeInterface $configData, AuthenticationManagerInterface $authenticationManager, Boolean $defaultAuthenticator = null)
     {
-        // set vars internally
+
+        // create a UUID serial for the authenticator
+        $this->serial = Uuid::uuid4()->__toString();
+
+        // initialize the authenticator with the passed values
         $this->configData = $configData;
         $this->authenticationManager = $authenticationManager;
 
-        // verify the configuration
-        $this->verifyConfig();
-
-        // prepare our chosen adapter
-        $this->prepareAdapter();
+        // query whether or not the default flag has been passed
+        if ($defaultAuthenticator == null) {
+            $this->defaultAuthenticator = new Boolean(false);
+        } else {
+            $this->defaultAuthenticator = $defaultAuthenticator;
+        }
     }
 
     /**
-     * Return's the auth data got from http authentication header.
+     * Return's the authenticator's UUID.
      *
-     * @return \AppserverIo\Http\Authentication\Adapters\AdapterInterface The authentication adapter to use
+     * @return string The UUID
      */
-    public function getAuthAdapter()
+    public function getSerial()
     {
-        return $this->authAdapter;
-    }
-
-    /**
-     * Returns the authentication data content.
-     *
-     * @return string The authentication data content
-     */
-    public function getAuthData()
-    {
-        return $this->authData;
+        return $this->serial;
     }
 
     /**
@@ -136,7 +125,7 @@ abstract class AbstractAuthenticator implements AuthenticatorInterface
      *
      * @return string
      */
-    public function getType()
+    public function getAuthType()
     {
         return static::AUTH_TYPE;
     }
@@ -154,54 +143,30 @@ abstract class AbstractAuthenticator implements AuthenticatorInterface
     /**
      * Returns the parsed username.
      *
-     * @return string|null
+     * @return string|null The username
      */
     public function getUsername()
     {
-        $authData = $this->getAuthData();
-        return isset($authData['username']) ? $authData['username'] : null;
+        return isset($this->username) ? $this->username : null;
     }
 
     /**
-     * Parses the request for the necessary, authentication adapter specific, login credentials.
-     *
-     * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface  $servletRequest  The servlet request instance
-     * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse The servlet response instance
+     * Mark's the authenticator as the default one.
      *
      * @return void
      */
-    abstract protected function parse(HttpServletRequestInterface $servletRequest, HttpServletResponseInterface $servletResponse);
-
-    /**
-     * Will prepare the authentication class's authentication adapter based on its configuration.
-     *
-     * @return void
-     *
-     * @throws \AppserverIo\Http\Authentication\AuthenticationException
-     */
-    protected function prepareAdapter()
+    public function setDefaultAuthenticator()
     {
+        $this->defaultAuthenticator = new Boolean(true);
     }
 
     /**
-     * Verifies everything to be ready for authenticate for specific type.
+     * Query whether or not this is the default authenticator.
      *
-     * @return boolean
-     *
-     * @throws \AppserverIo\Http\Authentication\AuthenticationException
+     * @return boolean TRUE if this is the default authenticator, else FALSE
      */
-    public function verify()
+    public function isDefaultAuthenticator()
     {
-    }
-
-    /**
-     * Verifies configuration setting and throws exception.
-     *
-     * @return void
-     *
-     * @throws \AppserverIo\Http\Authentication\AuthenticationException
-     */
-    protected function verifyConfig()
-    {
+        return $this->defaultAuthenticator->booleanValue();
     }
 }

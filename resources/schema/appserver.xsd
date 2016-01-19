@@ -32,16 +32,6 @@
             <xs:attribute ref="xml:base"/>
         </xs:complexType>
     </xs:element>
-    <xs:element name="adapter-type">
-        <xs:complexType>
-            <xs:simpleContent>
-                <xs:extension base="xs:string">
-                    <xs:attribute name="uuid" type="xs:string"/>
-                    <xs:attribute ref="xml:base"/>
-                </xs:extension>
-            </xs:simpleContent>
-        </xs:complexType>
-    </xs:element>
     <xs:element name="advice-aspect">
         <xs:complexType>
             <xs:simpleContent>
@@ -230,28 +220,6 @@
             <xs:attribute name="factory" type="xs:string" use="required"/>
             <xs:attribute name="createBackups" type="xs:boolean"/>
             <xs:attribute name="restoreBackups" type="xs:boolean"/>
-            <xs:attribute name="uuid" type="xs:string"/>
-            <xs:attribute ref="xml:base"/>
-        </xs:complexType>
-    </xs:element>
-    <xs:element name="auth-type">
-        <xs:complexType>
-            <xs:simpleContent>
-                <xs:extension base="xs:string">
-                    <xs:attribute name="uuid" type="xs:string"/>
-                    <xs:attribute ref="xml:base"/>
-                </xs:extension>
-            </xs:simpleContent>
-        </xs:complexType>
-    </xs:element>
-    <xs:element name="auth">
-        <xs:complexType>
-            <xs:all>
-                <xs:element ref="appserver:adapter-type"/>
-                <xs:element ref="appserver:auth-type"/>
-                <xs:element ref="appserver:options" minOccurs="0"/>
-                <xs:element ref="appserver:realm" minOccurs="0"/>
-            </xs:all>
             <xs:attribute name="uuid" type="xs:string"/>
             <xs:attribute ref="xml:base"/>
         </xs:complexType>
@@ -1014,16 +982,6 @@
             <xs:field xpath="@name" />
         </xs:unique>
     </xs:element>
-    <xs:element name="realm">
-        <xs:complexType>
-            <xs:simpleContent>
-                <xs:extension base="xs:string">
-                    <xs:attribute name="uuid" type="xs:string"/>
-                    <xs:attribute ref="xml:base"/>
-                </xs:extension>
-            </xs:simpleContent>
-        </xs:complexType>
-    </xs:element>
     <xs:element name="remote">
         <xs:complexType>
             <xs:simpleContent>
@@ -1301,16 +1259,6 @@
             <xs:selector xpath="appserver:scanner" />
             <xs:field xpath="@name" />
         </xs:unique>
-    </xs:element>
-    <xs:element name="security">
-        <xs:complexType>
-            <xs:all>
-                <xs:element ref="appserver:url-pattern"/>
-                <xs:element ref="appserver:auth"/>
-            </xs:all>
-            <xs:attribute name="uuid" type="xs:string"/>
-            <xs:attribute ref="xml:base"/>
-        </xs:complexType>
     </xs:element>
     <xs:element name="server">
         <xs:complexType>
@@ -2012,15 +1960,6 @@
             <xs:field xpath="value" />
         </xs:unique>
     </xs:element>
-    <xs:element name="options">
-        <xs:complexType>
-            <xs:choice maxOccurs="unbounded">
-                <xs:element ref="appserver:file" minOccurs="0"/>
-            </xs:choice>
-            <xs:attribute name="uuid" type="xs:string"/>
-            <xs:attribute ref="xml:base"/>
-        </xs:complexType>
-    </xs:element>
     <xs:element name="web-app">
         <xs:complexType>
             <xs:choice maxOccurs="unbounded">
@@ -2030,7 +1969,6 @@
                 <xs:element ref="appserver:context-param" minOccurs="0"/>
                 <xs:element ref="appserver:servlet" minOccurs="0"/>
                 <xs:element ref="appserver:servlet-mapping" minOccurs="0"/>
-                <xs:element ref="appserver:security" minOccurs="0"/>
                 <xs:element ref="appserver:security-constraint" minOccurs="0"/>
                 <xs:element ref="appserver:login-config" minOccurs="0"/>
                 <xs:element ref="appserver:security-role" minOccurs="0"/>

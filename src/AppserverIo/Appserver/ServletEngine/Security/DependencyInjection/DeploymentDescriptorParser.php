@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\ServletEngine\Security\DependencyInjection;
 
+use AppserverIo\Lang\Boolean;
 use AppserverIo\Lang\Reflection\ReflectionClass;
 use AppserverIo\Http\Authentication\AuthenticationException;
 use AppserverIo\Appserver\Core\Api\Node\WebAppNode;
@@ -27,7 +28,7 @@ use AppserverIo\Appserver\Core\Api\Node\WebAppNodeInterface;
 use AppserverIo\Appserver\ServletEngine\Authenticator\FormAuthenticator;
 use AppserverIo\Appserver\ServletEngine\Authenticator\BasicAuthenticator;
 use AppserverIo\Appserver\ServletEngine\Authenticator\DigestAuthenticator;
-use AppserverIo\Appserver\ServletEngine\Security\UrlPatternToAuthTypeMapping;
+use AppserverIo\Appserver\ServletEngine\Security\Mapping;
 use AppserverIo\Appserver\ServletEngine\Security\AuthenticationManagerInterface;
 
 /**
@@ -43,11 +44,11 @@ class DeploymentDescriptorParser
 {
 
     /**
-     * The available authentication types.
+     * The available authenticators.
      *
      * @var array
      */
-    protected $authenticationTypes = array(
+    protected $authenticators = array(
         'Form'   => '\AppserverIo\Appserver\ServletEngine\Authenticator\FormAuthenticator',
         'Basic'  => '\AppserverIo\Appserver\ServletEngine\Authenticator\BasicAuthenticator',
         'Digest' => '\AppserverIo\Appserver\ServletEngine\Authenticator\DigestAuthenticator'
@@ -93,23 +94,23 @@ class DeploymentDescriptorParser
     }
 
     /**
-     * Returns the authentication type class name for the passed shortname.
+     * Returns the authenticator class name for the passed shortname.
      *
-     * @param string $shortname The shortname of the requested authentication type class name
+     * @param string $shortname The shortname of the requested authenticator class name
      *
-     * @return string The requested authentication type class name
-     * @throws \AppserverIo\Http\Authentication\AuthenticationException Is thrown if the authentication type is not available
+     * @return string The requested authenticator class name
+     * @throws \AppserverIo\Http\Authentication\AuthenticationException Is thrown if no mapping for the requested authenticator is not available
      */
-    public function mapAuthenticationType($shortname)
+    public function mapAuthenticator($shortname)
     {
 
-        // query whether or not an authentication type is available or not
-        if (isset($this->authenticationTypes[$shortname])) {
-            return $this->authenticationTypes[$shortname];
+        // query whether or not an authenticator class name is available or not
+        if (isset($this->authenticators[$shortname])) {
+            return $this->authenticators[$shortname];
         }
 
-        // throw an exception if the can't find an matching authentication type
-        throw new AuthenticationException(sprintf('Can\t find authentication type %s', $shortname));
+        // throw an exception if the can't find an matching authenticator class name
+        throw new AuthenticationException(sprintf('Can\t find authenticator %s', $shortname));
     }
 
     /**
@@ -141,19 +142,16 @@ class DeploymentDescriptorParser
         $webAppNode = new WebAppNode();
         $webAppNode->initFromFile($deploymentDescriptor);
 
-        // initialize the old security subsystem
-        $this->processSecurities($webAppNode);
-
         // query whether or not we've a login configuration
             /** @var \AppserverIo\Appserver\Core\Api\Node\LoginConfigNode $loginConfig */
         if ($loginConfig = $webAppNode->getLoginConfig()) {
 
             // create the authentication method instance
-            $reflectionClass = new ReflectionClass($this->mapAuthenticationType($loginConfig->getAuthMethod()->__toString()));
-            $authenticationType = $reflectionClass->newInstanceArgs(array($loginConfig, $this->getAuthenticationContext()));
+            $reflectionClass = new ReflectionClass($this->mapAuthenticator($loginConfig->getAuthMethod()->__toString()));
+            $authenticator = $reflectionClass->newInstanceArgs(array($loginConfig, $this->getAuthenticationContext(), new Boolean(true)));
 
             // add the authentication method itself
-            $this->getAuthenticationContext()->addAuthenticationType($loginConfig->getPrimaryKey(), $authenticationType);
+            $this->getAuthenticationContext()->addAuthenticator($authenticator);
 
             // initialize the security roles, that are part of the new security subsystem
             /** @var \AppserverIo\Appserver\Core\Api\Node\SecurityRoleNode $securityRoleNode */
@@ -176,51 +174,19 @@ class DeploymentDescriptorParser
                     $httpMethodOmissions = $webResourceCollectionNode->getHttpMethodOmissionsAsArray();
                     /** @var \AppserverIo\Appserver\Core\Api\Node\UrlPatternNode $urlPatternNode */
                     foreach ($webResourceCollectionNode->getUrlPatterns() as $urlPatternNode) {
-                        // prepare the URL pattern to authentication type mapping with the necessary data
-                        $urlPatternToAuthTypeMapping = new UrlPatternToAuthTypeMapping(
+                        // prepare the URL pattern to authenticator mapping with the necessary data
+                        $mapping = new Mapping(
                             $urlPatternNode->__toString(),
-                            $loginConfig->getPrimaryKey(),
+                            $authenticator->getSerial(),
                             $roleNames,
                             $httpMethods,
                             $httpMethodOmissions
                         );
-                        // add the URL pattern to authentication type mapping
-                        $this->getAuthenticationContext()->addUrlPatternToAuthTypeMapping($urlPatternToAuthTypeMapping);
+                        // add the URL pattern to authenticator mapping
+                        $this->getAuthenticationContext()->addMapping($mapping);
                     }
                 }
             }
-        }
-    }
-
-    /**
-     * Process the old security subsystem configuration and adds the authentication adapters
-     * to the authentication manager.
-     *
-     * @param AppserverIo\Appserver\Core\Api\Node\WebAppNodeInterface $webAppNode The configuration node
-     *
-     * @return void
-     */
-    public function processSecurities(WebAppNodeInterface $webAppNode)
-    {
-
-        // initialize the old security system, this will be deprecated up from version 1.2
-        /** @var \AppserverIo\Appserver\Core\Api\Node\SecurityNode $securityNode */
-        foreach ($webAppNode->getSecurities() as $securityNode) {
-            // load the authentication type informations
-            $urlPattern = $securityNode->getUrlPattern()->__toString();
-            $configuredAuthType = $securityNode->getAuth()->getAuthType()->__toString();
-            $authImplementation = $securityNode->mapAuthenticationType($configuredAuthType);
-
-            // initialize the authentication manager
-            /** @var \AppserverIo\Http\Authentication\AuthenticationInterface $auth */
-            $authenticatioType = new $authImplementation($securityNode->getOptionsAsArray($this->getAuthenticationContext()->getWebappPath()));
-
-            // prepare the URL pattern to authentication type mapping with the necessary data
-            $urlPatternToAuthTypeMapping = new UrlPatternToAuthTypeMapping($urlPattern, $securityNode->getPrimaryKey());
-
-            // add the authentication method and URL pattern mapping
-            $this->getAuthenticationContext()->addAuthenticationType($securityNode->getPrimaryKey(), $authenticatioType);
-            $this->getAuthenticationContext()->addUrlPatternToAuthTypeMapping($urlPatternToAuthTypeMapping);
         }
     }
 }

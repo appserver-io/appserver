@@ -1,7 +1,7 @@
 <?php
 
 /**
- * \AppserverIo\Appserver\ServletEngine\Security\UrlPatternToAuthTypeMapping
+ * \AppserverIo\Appserver\ServletEngine\Security\Mapping
  *
  * NOTICE OF LICENSE
  *
@@ -23,7 +23,7 @@ namespace AppserverIo\Appserver\ServletEngine\Security;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
 
 /**
- * The mapping class to map an URL pattern to an authentication method.
+ * The mapping class to map an URL pattern to an authenticator.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -31,7 +31,7 @@ use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class UrlPatternToAuthTypeMapping
+class Mapping implements MappingInterface
 {
 
     /**
@@ -42,11 +42,11 @@ class UrlPatternToAuthTypeMapping
     protected $urlPattern;
 
     /**
-     * The authentication type key.
+     * The authenticator serial.
      *
      * @var string
      */
-    protected $authTypeKey;
+    protected $authenticatorSerial;
 
     /**
      * The array with the role names.
@@ -73,20 +73,20 @@ class UrlPatternToAuthTypeMapping
      * Initialize the mapping with the passed values.
      *
      * @param string $urlPattern          The URL pattern
-     * @param string $authTypeKey         The authentication type key
+     * @param string $authenticatorSerial The authenticator serial
      * @param array  $roleNames           The array with the role names
      * @param array  $httpMethods         The array with the HTTP methods that has to be authenticated
      * @param array  $httpMethodOmissions The array with the HTTP methods that has to be omissed from authentication
      */
     public function __construct(
         $urlPattern,
-        $authTypeKey,
+        $authenticatorSerial,
         array $roleNames = array(),
         array $httpMethods = array(),
         array $httpMethodOmissions = array()
     ) {
         $this->urlPattern = $urlPattern;
-        $this->authTypeKey = $authTypeKey;
+        $this->authenticatorSerial = $authenticatorSerial;
         $this->roleNames = $roleNames;
         $this->httpMethods = $httpMethods;
         $this->httpMethodOmissions = $httpMethodOmissions;
@@ -103,13 +103,13 @@ class UrlPatternToAuthTypeMapping
     }
 
     /**
-     * Return's the authentication type key.
+     * Return's the authenticator serial.
      *
-     * @return string The authentication type key
+     * @return string The authenticator serial
      */
-    public function getAuthTypeKey()
+    public function getAuthenticatorSerial()
     {
-        return $this->authTypeKey;
+        return $this->authenticatorSerial;
     }
 
     /**

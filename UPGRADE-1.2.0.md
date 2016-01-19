@@ -33,3 +33,35 @@ to
     ...
 </managers>
 ```
+
+## Security Subsystem
+
+Up with this version we removed the old security subsystem that allows you to configure Basic and Digest authentication based on a URL pattern in the `web.xml` file like
+
+```xml
+<security>
+    <url-pattern>/dhtml/basic.dhtml*</url-pattern>
+    <auth>
+        <auth-type>Basic</auth-type>
+        <realm>test</realm>
+        <adapter-type>htpasswd</adapter-type>
+        <options>
+            <file>WEB-INF/htpasswd</file>
+        </options>
+    </auth>
+</security>
+```
+
+As a replacement, use the webserver authentication a server or a virtual host node of your applications `META-INF/containers.xml`, file like
+
+```xml
+<authentications>
+    <authentication uri="^\/dhtml\/basic.dhtml.*">
+        <params>
+            <param name="type" type="string">\AppserverIo\Http\Authentication\BasicAuthentication</param>
+            <param name="realm" type="string">PhpWebServer Basic Authentication System</param>
+            <param name="file" type="string">WEB-INF/htpasswd</param>
+        </params>
+    </authentication>
+</authentications>
+```

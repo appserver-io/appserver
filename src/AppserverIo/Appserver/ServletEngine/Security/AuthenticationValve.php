@@ -20,7 +20,6 @@
 
 namespace AppserverIo\Appserver\ServletEngine\Security;
 
-use AppserverIo\Server\Exceptions\ModuleException;
 use AppserverIo\Appserver\ServletEngine\ValveInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
@@ -47,8 +46,6 @@ class AuthenticationValve implements ValveInterface
      */
     public function invoke(HttpServletRequestInterface $servletRequest, HttpServletResponseInterface $servletResponse)
     {
-        if ($servletRequest->authenticate($servletResponse) === false) {
-            throw new ModuleException(null, 401);
-        }
+        $servletRequest->authenticate($servletResponse);
     }
 }
