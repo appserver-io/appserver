@@ -60,7 +60,7 @@ class WebAppNode extends AbstractNode implements WebAppNodeInterface
      * The servlet informations.
      *
      * @var array
-     * @AS\Mapping(nodeName="servlet", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\ServletNode")
+     * @AS\Mapping(nodeName="servlet", nodeType="array", elementType="AppserverIo\Description\Api\Node\ServletNode")
      */
     protected $servlets = array();
 

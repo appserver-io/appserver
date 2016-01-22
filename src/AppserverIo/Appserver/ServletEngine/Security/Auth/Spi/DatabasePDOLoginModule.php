@@ -133,14 +133,4 @@ class DatabasePDOLoginModule extends UsernamePasswordLoginModule
     {
         return Util::getRoleSets($this->getUsername(), new String($this->lookupName), new String($this->rolesQuery), $this);
     }
-
-    /**
-     * Performs the user logout.
-     *
-     * @throws \AppserverIo\Psr\Security\Auth\Login\LoginException Is thrown if an error during logout occured
-     */
-    public function logout()
-    {
-        // @TODO Still to implement
-    }
 }

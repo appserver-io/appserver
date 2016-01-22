@@ -36,6 +36,7 @@ use AppserverIo\Appserver\ServletEngine\Security\SimpleGroup;
 use AppserverIo\Appserver\ServletEngine\Security\SimplePrincipal;
 use AppserverIo\Appserver\ServletEngine\Security\Utils\ParamKeys;
 use AppserverIo\Appserver\ServletEngine\Security\Utils\SharedStateKeys;
+use AppserverIo\Psr\Security\Auth\Login\LoginException;
 
 /**
  * An abstract login module implementation.
@@ -113,7 +114,7 @@ abstract class AbstractLoginModule implements LoginModuleInterface
      *
      * The following parameters can by default be passed from the configuration.
      *
-     * password-stacking:       If this is set to "useFirstPass", the login identity will be taken from the
+     * passwordStacking:        If this is set to "useFirstPass", the login identity will be taken from the
      *                          appserver.security.auth.login.name value of the sharedState map, and the proof
      *                          of identity from the appserver.security.auth.login.password value of the sharedState map
      * principalClass:          A Principal implementation that support a constructor taking a string argument for the princpal name
@@ -194,6 +195,30 @@ abstract class AbstractLoginModule implements LoginModuleInterface
     }
 
     /**
+     * Remove the user identity and roles added to the Subject during commit.
+     *
+     * @return boolean Always TRUE
+     * @throws \AppserverIo\Appserver\Psr\Security\Auth\Login\LoginException Is thrown if an error during login occured
+     */
+    public function logout()
+    {
+
+        // load the user identity and the subject's principals
+        $identity = $this->getIdentity();
+        $principals = $this->subject->getPrincipals();
+
+        // remove the user identity from the subject
+        foreach ($principals as $key => $principal) {
+            if ($identity->equals($principal)) {
+                $principals->remove($key);
+            }
+        }
+
+        // return TRUE on success
+        return true;
+    }
+
+    /**
      * Method to commit the authentication process (phase 2). If the login
      * method completed successfully as indicated by loginOk == true, this
      * method adds the getIdentity() value to the subject getPrincipals() Set.
@@ -252,8 +277,7 @@ abstract class AbstractLoginModule implements LoginModuleInterface
      */
     public function abort()
     {
-       // log.trace("abort");
-       return true;
+        return true;
     }
 
     /**
@@ -299,7 +323,7 @@ abstract class AbstractLoginModule implements LoginModuleInterface
         if ($this->principalClassName == null) {
             $principal = new SimplePrincipal($name);
         } else {
-            $reflectionClass = new ReflectionClass($this->principalClassName);
+            $reflectionClass = new ReflectionClass($this->principalClassName->__toString());
             $principal = $reflectionClass->newInstanceArgs(array($name));
         }
 

@@ -32,6 +32,7 @@ use AppserverIo\Appserver\Naming\Utils\NamingDirectoryKeys;
 use AppserverIo\Appserver\ServletEngine\Security\Utils\Util;
 use AppserverIo\Appserver\Core\Api\Node\SecurityDomainNodeInterface;
 use AppserverIo\Appserver\ServletEngine\Security\Auth\Callback\SecurityAssociationHandler;
+use AppserverIo\Psr\Security\Acl\GroupInterface;
 
 /**
  * Security domain implementation.
@@ -60,20 +61,6 @@ class Realm implements RealmInterface
     protected $configruation;
 
     /**
-     * An ArrayList with class that represents users.
-     *
-     * @var \AppserverIo\Collections\ArrayList
-     */
-    protected $userClasses;
-
-    /**
-     * An ArrayList with class that represents roles.
-     *
-     * @var \AppserverIo\Collections\ArrayList
-     */
-    protected $roleClasses;
-
-    /**
      * The authentication manager instance.
      *
      * @var \AppserverIo\Appserver\ServletEngine\Security\AuthenticationManagerInterface
@@ -88,14 +75,8 @@ class Realm implements RealmInterface
      */
     public function __construct(AuthenticationManagerInterface $authenticationManager, $name)
     {
-
-        // set the passed realm name
         $this->name = $name;
         $this->authenticationManager = $authenticationManager;
-
-        // initialize the ArrayLists with the role/user class names
-        $this->roleClasses = new ArrayList(array('AppserverIo\Appserver\ServletEngine\Security\SimpleGroup'));
-        $this->userClasses = new ArrayList(array('AppserverIo\Appserver\ServletEngine\Security\SimplePrincipal'));
     }
 
     /**
@@ -106,26 +87,6 @@ class Realm implements RealmInterface
     public function getName()
     {
         return $this->name;
-    }
-
-    /**
-     * Return's the ArrayList with class that represents roles.
-     *
-     * @return \AppserverIo\Collections\ArrayList The allowed role class names
-     */
-    protected function getRoleClasses()
-    {
-        return $this->roleClasses;
-    }
-
-    /**
-     * Return's the ArrayList with class that represents users.
-     *
-     * @return \AppserverIo\Collections\ArrayList The allowed user class names
-     */
-    protected function getUserClasses()
-    {
-        return $this->userClasses;
     }
 
     /**
@@ -186,7 +147,7 @@ class Realm implements RealmInterface
         } catch (\Exception $e) {
             // load the system logger and debug log the exception
             /** @var \Psr\Log\LoggerInterface $systemLogger */
-            if ($systemLogger = $this->getApplication()->getNamingDirectory()->search(NamingDirectoryKeys::SYSTEM_LOGGER)) {
+            if ($systemLogger = $this->getAuthenticationManager()->getApplication()->getNamingDirectory()->search(NamingDirectoryKeys::SYSTEM_LOGGER)) {
                 $systemLogger->error($e->__toString());
             }
         }
@@ -232,26 +193,21 @@ class Realm implements RealmInterface
         $roles = new ArrayList();
         $userPrincipal = null;
 
-        // load allowed user/role class names
-        $userClasses = $this->getUserClasses();
-        $roleClasses = $this->getRoleClasses();
-
         // scan the Principals for this Subject
         foreach ($subject->getPrincipals() as $principal) {
 
-            // load the principal's class name
-            $principalClass = get_class($principal);
-
-            // query whether or not the principal found is a user principal
-            if ($userPrincipal == null && $userClasses->contains($principalClass)) {
-                $userPrincipal = $principal;
-            }
-
             // query whether or not the principal found is a group principal
-            if ($roleClasses->contains($principalClass) && $principal->getName()->equals(new String(Util::DEFAULT_GROUP_NAME))) {
+            if ($principal instanceof GroupInterface && $principal->getName()->equals(new String(Util::DEFAULT_GROUP_NAME))) {
+                // if yes, add the role name
                 foreach ($principal->getMembers() as $role) {
                     $roles->add($role->getName());
                 }
+
+            // query whether or not the principal found is a user principal
+            } elseif ($userPrincipal == null && $principal instanceof PrincipalInterface) {
+                $userPrincipal = $principal;
+            } else {
+                // do nothing, because we've no principal or group to deal with
             }
         }
 
