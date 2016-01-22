@@ -1605,6 +1605,7 @@
             <xs:choice minOccurs="0" maxOccurs="unbounded">
                 <xs:element ref="appserver:contexts"/>
             </xs:choice>
+            <xs:attribute name="deployBase" type="xs:string" use="required"/>
             <xs:attribute name="appBase" type="xs:string" use="required"/>
             <xs:attribute name="name" type="xs:string" use="required"/>
             <xs:attribute name="uuid" type="xs:string"/>

@@ -56,6 +56,27 @@ class HostNode extends AbstractNode
     protected $appBase;
 
     /**
+     * The deployment base directory.
+     *
+     * @var string
+     * @AS\Mapping(nodeType="string")
+     */
+    protected $deloyBase;
+
+    /**
+     * Initializes the node with the passed data
+     * @param string $name       The host name
+     * @param string $deployBase The applications base directory
+     * @param string $appBase    The deployment base directory
+     */
+    public function __construct($name = '', $appBase = '', $deployBase = '')
+    {
+        $this->name = $name;
+        $this->appBase = $appBase;
+        $this->deployBase = $deployBase;
+    }
+
+    /**
      * Returns the host name.
      *
      * @return string The host name
@@ -73,5 +94,15 @@ class HostNode extends AbstractNode
     public function getAppBase()
     {
         return $this->appBase;
+    }
+
+    /**
+     * Returns the deployment base directory.
+     *
+     * @return string The deployment base directory
+     */
+    public function getDeployBase()
+    {
+        return $this->deployBase;
     }
 }
