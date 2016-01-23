@@ -67,7 +67,7 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
 
             <deployment type="AppserverIo\Appserver\Core\GenericDeployment" />
 
-            <host name="internal" appBase="internal" deployBase="tmp" />
+            <host name="internal" appBase="internal" deployBase="var/deploy" tmpBase="var/tmp/internal" />
 
             <servers>
 
@@ -154,7 +154,7 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
 
             <deployment type="AppserverIo\Appserver\Core\GenericDeployment" />
 
-            <host name="localhost" appBase="webapps" deployBase="deploy" />
+            <host name="localhost" appBase="webapps" deployBase="deploy" tmpBase="var/tmp/localhost" />
 
             <!--
              ! This is an example of how to configure upstream backends for proxy usage.

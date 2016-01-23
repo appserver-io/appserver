@@ -20,6 +20,8 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Api\Node\AbstractNode;
+
 /**
  * Node which represents the configuration of a connector to a certain service.
  *

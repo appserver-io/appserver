@@ -20,6 +20,8 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Api\Node\AbstractNode;
+
 /**
  * DTO to transfer location information.
  *
@@ -46,7 +48,7 @@ class LocationNode extends AbstractNode
      * @var \AppserverIo\Appserver\Core\Api\Node\ParamsNodeTrait
      */
     use ParamsNodeTrait;
-    
+
     /**
      * The headers node trait.
      *

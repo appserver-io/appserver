@@ -21,6 +21,8 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Api\Node\AbstractNode;
+
 /**
  * DTO to transfer server information.
  *

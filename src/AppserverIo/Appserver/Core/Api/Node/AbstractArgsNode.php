@@ -20,6 +20,8 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Api\Node\AbstractNode;
+
 /**
  * Abstract node that serves nodes having a args/arg child.
  *

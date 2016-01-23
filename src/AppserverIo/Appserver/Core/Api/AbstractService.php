@@ -20,13 +20,14 @@
 
 namespace AppserverIo\Appserver\Core\Api;
 
-use AppserverIo\Appserver\Core\Interfaces\SystemConfigurationInterface;
+use AppserverIo\Lang\NotImplementedException;
 use AppserverIo\Configuration\Interfaces\NodeInterface;
 use AppserverIo\Appserver\Core\InitialContext;
-use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
 use AppserverIo\Appserver\Core\Utilities\FileKeys;
-use AppserverIo\Lang\NotImplementedException;
 use AppserverIo\Appserver\Core\Utilities\FileSystem;
+use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
+use AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface;
+use AppserverIo\Appserver\Core\Interfaces\SystemConfigurationInterface;
 
 /**
  * Abstract service implementation.
@@ -210,7 +211,7 @@ abstract class AbstractService implements ServiceInterface
      *
      * @return string The absolute path
      */
-    protected function makePathAbsolute($path = '')
+    public function makePathAbsolute($path = '')
     {
         if (empty($path) === false) {
             return DIRECTORY_SEPARATOR . trim(DirectoryKeys::realpath($path), DIRECTORY_SEPARATOR);
@@ -220,15 +221,16 @@ abstract class AbstractService implements ServiceInterface
     /**
      * Returns the servers tmp directory, append with the passed directory.
      *
-     * @param string $relativePathToAppend A relative path to append
+     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerInterface $containerNode The container to return the temporary directory for
+     * @param string                                                  $relativePathToAppend A relative path to append
      *
      * @return string
      */
-    public function getTmpDir($relativePathToAppend = '')
+    public function getTmpDir(ContainerNodeInterface $containerNode, $relativePathToAppend = '')
     {
         return $this->realpath(
             $this->makePathAbsolute(
-                $this->getSystemConfiguration()->getParam(DirectoryKeys::VAR_TMP) . $this->makePathAbsolute($relativePathToAppend)
+                $containerNode->getHost()->getTmpBase() . $this->makePathAbsolute($relativePathToAppend)
             )
         );
     }
@@ -236,15 +238,16 @@ abstract class AbstractService implements ServiceInterface
     /**
      * Returns the servers deploy directory.
      *
-     * @param string $relativePathToAppend A relative path to append
+     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerInterface $containerNode       The container to return the deployment directory for
+     * @param string                                                  $relativePathToAppend A relative path to append
      *
      * @return string
      */
-    public function getDeployDir($relativePathToAppend = '')
+    public function getDeployDir(ContainerNodeInterface $containerNode, $relativePathToAppend = '')
     {
         return $this->realpath(
             $this->makePathAbsolute(
-                $this->getSystemConfiguration()->getParam(DirectoryKeys::DEPLOY) . $this->makePathAbsolute($relativePathToAppend)
+                $containerNode->getHost()->getDeployBase() . $this->makePathAbsolute($relativePathToAppend)
             )
         );
     }
@@ -252,15 +255,16 @@ abstract class AbstractService implements ServiceInterface
     /**
      * Returns the servers webapps directory.
      *
-     * @param string $relativePathToAppend A relative path to append
+     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerInterface $containerNode        The container to return the temporary directory for
+     * @param string                                                  $relativePathToAppend A relative path to append
      *
      * @return string
      */
-    public function getWebappsDir($relativePathToAppend = '')
+    public function getWebappsDir(ContainerNodeInterface $containerNode, $relativePathToAppend = '')
     {
         return $this->realpath(
             $this->makePathAbsolute(
-                $this->getSystemConfiguration()->getParam(DirectoryKeys::WEBAPPS) . $this->makePathAbsolute($relativePathToAppend)
+                $containerNode->getHost()->getAppBase() . $this->makePathAbsolute($relativePathToAppend)
             )
         );
     }

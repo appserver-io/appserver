@@ -21,6 +21,8 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Api\Node\NodeValue;
+
 /**
  * Abstract node that serves nodes having a params/param child.
  *

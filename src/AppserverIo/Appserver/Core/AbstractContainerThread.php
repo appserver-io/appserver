@@ -370,14 +370,7 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
      */
     public function getAppBase()
     {
-        $appBase = $this->getContainerNode()->getHost()->getAppBase();
-        // check if appBase is absolute
-        if (strpos($appBase, '/', 0) === 0) {
-            // return absolute appBase
-            return $appBase;
-        }
-        // resolve relative appbase against base directory
-        return $this->getBaseDirectory($appBase);
+        return $this->getService()->getWebappsDir($this->getContainerNode());
     }
 
     /**
@@ -389,7 +382,7 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
      */
     public function getTmpDir($directoryToAppend = null)
     {
-        return $this->getService()->getTmpDir($directoryToAppend);
+        return $this->getService()->getTmpDir($this->getContainerNode(), $directoryToAppend);
     }
 
     /**

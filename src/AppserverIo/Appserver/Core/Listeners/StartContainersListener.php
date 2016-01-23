@@ -22,6 +22,7 @@ namespace AppserverIo\Appserver\Core\Listeners;
 
 use League\Event\EventInterface;
 use AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface;
+use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
 
 /**
  * Listener that initializes and binds the containers found in the system configuration.
@@ -64,7 +65,7 @@ class StartContainersListener extends AbstractSystemListener
             $namingDirectory = $applicationServer->getNamingDirectory();
 
             // initialize the environment variables
-            $namingDirectory->bind('php:env/tmpDirectory', $deploymentService->getTmpDir());
+            $namingDirectory->bind('php:env/tmpDirectory', $deploymentService->getBaseDirectory(DirectoryKeys::TMP));
             $namingDirectory->bind('php:env/baseDirectory', $deploymentService->getBaseDirectory());
             $namingDirectory->bind('php:env/umask', $applicationServer->getSystemConfiguration()->getUmask());
             $namingDirectory->bind('php:env/user', $applicationServer->getSystemConfiguration()->getUser());

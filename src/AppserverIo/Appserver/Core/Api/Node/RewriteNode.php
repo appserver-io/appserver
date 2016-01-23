@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Api\Node\AbstractNode;
 use AppserverIo\Appserver\Core\Api\ExtensionInjectorParameterTrait;
 
 /**

@@ -20,6 +20,8 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Api\Node\AbstractValueNode;
+
 /**
  * DTO to transfer the namespace information.
  *
