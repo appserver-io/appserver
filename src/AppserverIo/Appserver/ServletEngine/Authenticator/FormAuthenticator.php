@@ -82,7 +82,6 @@ class FormAuthenticator extends AbstractAuthenticator
 
             // authenticate the request and initialize the user principal
             if ($userPrincipal = $realm->authenticate($this->getUsername(), $this->getPassword())) {
-
                 // set the the principal and the authentication method in the request
                 $servletRequest->setUserPrincipal($userPrincipal);
                 $servletRequest->setAuthType($this->getAuthType());
@@ -108,7 +107,6 @@ class FormAuthenticator extends AbstractAuthenticator
 
         // Is this the action request from the login page?
         if (!preg_match(sprintf('/.*\%s/', FormKeys::FORM_ACTION), $servletRequest->getRequestUri())) {
-
             // save the request so we can redirect after a successful login
             $this->saveRequest($servletRequest, $session);
 
@@ -164,7 +162,6 @@ class FormAuthenticator extends AbstractAuthenticator
 
         // query whether or not we found the original request to redirect to
         if ($session->hasKey(SessionKeys::FORM_REQUEST)) {
-
             // load the original request
             $req = $session->getData(SessionKeys::FORM_REQUEST);
 
@@ -256,7 +253,6 @@ class FormAuthenticator extends AbstractAuthenticator
 
         // if yes, compare the request URI and check for a valid princial
         if ($req = $session->getData(SessionKeys::FORM_REQUEST)) {
-
             // query whether or not we've a valid princial
             if (isset($req->principal) === false) {
                 return false;
@@ -272,8 +268,8 @@ class FormAuthenticator extends AbstractAuthenticator
     /**
      * Stores the data of the passed request in the also passed session.
      *
-     * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface $servletRequestThe servlet request instance
-     * @param \AppserverIo\Psr\Servlet\Http\HttpSessionInterface        $session
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface $servletRequest The servlet request instance
+     * @param \AppserverIo\Psr\Servlet\Http\HttpSessionInterface        $session        The session instance
      *
      * @return void
      */
@@ -304,7 +300,7 @@ class FormAuthenticator extends AbstractAuthenticator
      * found in the also passed session.
      *
      * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface $servletRequest The servlet request instance
-     * @param \AppserverIo\Psr\Servlet\Http\HttpSessionInterface        $session
+     * @param \AppserverIo\Psr\Servlet\Http\HttpSessionInterface        $session        The session instance
      *
      * @return void
      */

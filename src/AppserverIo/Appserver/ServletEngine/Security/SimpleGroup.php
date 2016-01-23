@@ -85,7 +85,7 @@ class SimpleGroup extends SimplePrincipal implements GroupInterface
     /**
      * Removes the passed principal from the group.
      *
-     * @param \AppserverIo\Psr\Security\PrincipalInterface $pricipal The principal to remove
+     * @param \AppserverIo\Psr\Security\PrincipalInterface $principal The principal to remove
      *
      * @return boolean TRUE if the member was successfully removed, FALSE if the principal was not a member
      */
@@ -112,7 +112,7 @@ class SimpleGroup extends SimplePrincipal implements GroupInterface
      * AnybodyPrincipal or NobodyPrincipal since these classes do not
      * hash to meaningful values.
      *
-     * @param \AppserverIo\Psr\Security\PrincipalInterface $pricipal The principal to query membership for
+     * @param \AppserverIo\Psr\Security\PrincipalInterface $principal The principal to query membership for
      *
      * @return boolean TRUE if the principal is a member of this group, FALSE otherwise
      */
@@ -125,9 +125,10 @@ class SimpleGroup extends SimplePrincipal implements GroupInterface
         if ($isMember === false) {
             // check the AnybodyPrincipal & NobodyPrincipal special cases
             $isMember = ($principal instanceof AnybodyPrincipal);
-            if ($isMember === false ) {
-                if ($principal instanceof NobodyPrincipal )
+            if ($isMember === false) {
+                if ($principal instanceof NobodyPrincipal) {
                     return false;
+                }
             }
         }
 

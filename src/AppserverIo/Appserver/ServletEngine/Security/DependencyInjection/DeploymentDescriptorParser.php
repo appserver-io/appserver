@@ -24,7 +24,6 @@ use AppserverIo\Lang\Boolean;
 use AppserverIo\Lang\Reflection\ReflectionClass;
 use AppserverIo\Http\Authentication\AuthenticationException;
 use AppserverIo\Appserver\Core\Api\Node\WebAppNode;
-use AppserverIo\Appserver\Core\Api\Node\WebAppNodeInterface;
 use AppserverIo\Appserver\ServletEngine\Authenticator\FormAuthenticator;
 use AppserverIo\Appserver\ServletEngine\Authenticator\BasicAuthenticator;
 use AppserverIo\Appserver\ServletEngine\Authenticator\DigestAuthenticator;
@@ -145,7 +144,6 @@ class DeploymentDescriptorParser
         // query whether or not we've a login configuration
             /** @var \AppserverIo\Appserver\Core\Api\Node\LoginConfigNode $loginConfig */
         if ($loginConfig = $webAppNode->getLoginConfig()) {
-
             // create the authentication method instance
             $reflectionClass = new ReflectionClass($this->mapAuthenticator($loginConfig->getAuthMethod()->__toString()));
             $authenticator = $reflectionClass->newInstanceArgs(array($loginConfig, $this->getAuthenticationContext(), new Boolean(true)));

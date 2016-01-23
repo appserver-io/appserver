@@ -68,6 +68,8 @@ class StandardAuthenticationManager extends AbstractManager implements Authentic
      * Inject the map with the realms.
      *
      * @param \AppserverIo\Collections\MapInterface $realms The realms
+     *
+     * @return void
      */
     public function injectRealms(MapInterface $realms)
     {
@@ -111,7 +113,7 @@ class StandardAuthenticationManager extends AbstractManager implements Authentic
     /**
      * Register's the passed authenticator.
      *
-     * @param \AppserverIo\Appserver\ServletEngine\Authenticator\AuthenticatorInterface The authenticator to add
+     * @param \AppserverIo\Appserver\ServletEngine\Authenticator\AuthenticatorInterface $authenticator The authenticator to add
      *
      * @return void
      */
@@ -219,7 +221,6 @@ class StandardAuthenticationManager extends AbstractManager implements Authentic
 
                         // if we've an user principal, query the roles
                         if ($servletRequest->getUserPrincipal()) {
-
                             // initialize the roles flag
                             $inRole = false;
 
@@ -316,13 +317,13 @@ class StandardAuthenticationManager extends AbstractManager implements Authentic
     /**
      * Returns the realm with the passed name.
      *
-     * @param string $realmNam The name of the requested realm
+     * @param string $realmName The name of the requested realm
      *
      * @return object The requested realm instance
      */
-    public function getRealm($realm)
+    public function getRealm($realmName)
     {
-        return $this->getRealms()->get($realm);
+        return $this->getRealms()->get($realmName);
     }
 
     /**

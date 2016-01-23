@@ -78,19 +78,18 @@ class Util
     /**
      * Execute the rolesQuery against the dsJndiName to obtain the roles for the authenticated user.
      *
-     * @param \AppserverIo\Lang\String $username        The username to load the roles for
-     * @param \AppserverIo\Lang\String $lookupName      The lookup name for the datasource
-     * @param \AppserverIo\Lang\String $rolesQuery      The query to load the roles
-     * @param \AppserverIo\Psr\Spi\LoginModuleInterface The login module to add the roles to
+     * @param \AppserverIo\Lang\String                  $username   The username to load the roles for
+     * @param \AppserverIo\Lang\String                  $lookupName The lookup name for the datasource
+     * @param \AppserverIo\Lang\String                  $rolesQuery The query to load the roles
+     * @param \AppserverIo\Psr\Spi\LoginModuleInterface $aslm       The login module to add the roles to
      *
      * @return array An array of groups containing the sets of roles
      * @throws \AppserverIo\Appserver\ServletEngine\Security\Logi\LoginException Is thrown if an error during login occured
      */
-    static function getRoleSets(String $username, String $lookupName, String $rolesQuery, LoginModuleInterface $aslm)
+    public static function getRoleSets(String $username, String $lookupName, String $rolesQuery, LoginModuleInterface $aslm)
     {
 
         try {
-
             // initialize the map for the groups
             $setsMap = new HashMap();
 
@@ -148,7 +147,7 @@ class Util
                         ->getNamingDirectory()
                         ->search(NamingDirectoryKeys::SYSTEM_LOGGER)
                         ->debug(sprintf('Assign user to role: %s', $name));
-                } catch(\Exception $e) {
+                } catch (\Exception $e) {
                     $application
                         ->getNamingDirectory()
                         ->search(NamingDirectoryKeys::SYSTEM_LOGGER)
@@ -168,7 +167,7 @@ class Util
         if ($statement != null) {
             try {
                 $statement->closeCursor();
-            } catch(\PDOException $pdoe) {
+            } catch (\PDOException $pdoe) {
                 $application
                     ->getNamingDirectory()
                     ->search(NamingDirectoryKeys::SYSTEM_LOGGER)

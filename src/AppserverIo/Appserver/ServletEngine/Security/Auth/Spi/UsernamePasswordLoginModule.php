@@ -102,6 +102,8 @@ abstract class UsernamePasswordLoginModule extends AbstractLoginModule
      * @param \AppserverIo\Psr\Security\Auth\Callback\CallbackHandlerInterface $callbackHandler The callback handler that will be used to obtain the user identity and credentials
      * @param \AppserverIo\Collections\MapInterface                            $sharedState     A map shared between all configured login module instances
      * @param \AppserverIo\Collections\MapInterface                            $params          The parameters passed to the login module
+     *
+     * @return void
      */
     public function initialize(Subject $subject, CallbackHandlerInterface $callbackHandler, MapInterface $sharedState, MapInterface $params)
     {
@@ -148,13 +150,13 @@ abstract class UsernamePasswordLoginModule extends AbstractLoginModule
     /**
      * Perform the authentication of username and password.
      *
+     * @return boolean TRUE when login has been successfull, else FALSE
      * @throws \AppserverIo\Psr\Security\Auth\Login\LoginException Is thrown if an error during login occured
      */
     public function login()
     {
 
         if (parent::login()) {
-
             // Setup our view of the user
             $name = new String($this->sharedState->get(SharedStateKeys::LOGIN_NAME));
 
@@ -164,7 +166,7 @@ abstract class UsernamePasswordLoginModule extends AbstractLoginModule
                 $name = $name->__toString();
                 try {
                     $this->identity = $this->createIdentity($name);
-                } catch(\Exception $e) {
+                } catch (\Exception $e) {
                     // log.debug("Failed to create principal", e);
                     throw new LoginException(sprintf('Failed to create principal: %s', $e->getMessage()));
                 }
@@ -195,23 +197,26 @@ abstract class UsernamePasswordLoginModule extends AbstractLoginModule
         if ($this->identity == null) {
             try {
                 $this->identity = $this->createIdentity($name);
-            } catch(\Exception $e) {
+            } catch (\Exception $e) {
                 // log.debug("Failed to create principal", e);
                 throw new LoginException(sprintf('Failed to create principal: %s', $e->getMessage()));
             }
 
             // hash the user entered password if password hashing is in use
-            if ($this->hashAlgorithm != null)
+            if ($this->hashAlgorithm != null) {
                 $password = $this->createPasswordHash($name, $password);
                 // validate the password supplied by the subclass
                 $expectedPassword = $this->getUsersPassword();
+            }
 
-                if ($this->validatePassword($password, $expectedPassword) === false) {
-                    // super.log.debug("Bad password for username="+username);
-                    throw new FailedLoginException('Password Incorrect/Password Required');
-                }
+            // validate the password
+            if ($this->validatePassword($password, $expectedPassword) === false) {
+                // super.log.debug("Bad password for username="+username);
+                throw new FailedLoginException('Password Incorrect/Password Required');
+            }
         }
 
+        // query whether or not password stacking has been activated
         if ($this->getUseFirstPass()) {
             // add the username and password to the shared state map
             $this->sharedState->add(SharedStateKeys::LOGIN_NAME, $name);
@@ -291,23 +296,23 @@ abstract class UsernamePasswordLoginModule extends AbstractLoginModule
     protected function validatePassword(String $inputPassword, String $expectedPassword)
     {
 
-       // if username or password is NULL, return immediately
-       if ($inputPassword == null || $expectedPassword == null) {
-           return false;
-       }
+        // if username or password is NULL, return immediately
+        if ($inputPassword == null || $expectedPassword == null) {
+            return false;
+        }
 
-       // initialize the valid login flag
-       $valid = false;
+        // initialize the valid login flag
+        $valid = false;
 
-       // query whether or not we've to ignore the case
-       if ($this->ignorePasswordCase === true) {
-           $valid = $inputPassword->equalsIgnoreCase($expectedPassword);
-       } else {
-           $valid = $inputPassword->equals($expectedPassword);
-       }
+        // query whether or not we've to ignore the case
+        if ($this->ignorePasswordCase === true) {
+            $valid = $inputPassword->equalsIgnoreCase($expectedPassword);
+        } else {
+            $valid = $inputPassword->equals($expectedPassword);
+        }
 
-       // return the flag
-       return $valid;
+        // return the flag
+        return $valid;
     }
 
     /**

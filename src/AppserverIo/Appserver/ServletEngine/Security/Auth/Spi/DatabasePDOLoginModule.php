@@ -79,6 +79,8 @@ class DatabasePDOLoginModule extends UsernamePasswordLoginModule
      * @param \AppserverIo\Psr\Security\Auth\Callback\CallbackHandlerInterface $callbackHandler The callback handler that will be used to obtain the user identity and credentials
      * @param \AppserverIo\Collections\MapInterface                            $sharedState     A map shared between all configured login module instances
      * @param \AppserverIo\Collections\MapInterface                            $params          The parameters passed to the login module
+     *
+     * @return void
      */
     public function initialize(Subject $subject, CallbackHandlerInterface $callbackHandler, MapInterface $sharedState, MapInterface $params)
     {

@@ -124,6 +124,8 @@ abstract class AbstractLoginModule implements LoginModuleInterface
      * @param \AppserverIo\Psr\Security\Auth\Callback\CallbackHandlerInterface $callbackHandler The callback handler that will be used to obtain the user identity and credentials
      * @param \AppserverIo\Collections\MapInterface                            $sharedState     A map shared between all configured login module instances
      * @param \AppserverIo\Collections\MapInterface                            $params          The parameters passed to the login module
+     *
+     * @return void
      */
     public function initialize(Subject $subject, CallbackHandlerInterface $callbackHandler, MapInterface $sharedState, MapInterface $params)
     {
@@ -358,14 +360,14 @@ abstract class AbstractLoginModule implements LoginModuleInterface
             $grp = $principal;
 
             // if the group already exists, stop searching
-            if ($grp->getName()->equals($name)){
+            if ($grp->getName()->equals($name)) {
                 $roles = $grp;
                 break;
             }
         }
 
         // if we did not find a group create one
-        if ($roles == null ) {
+        if ($roles == null) {
             $roles = new SimpleGroup($name);
             $principals->add($roles);
         }

@@ -195,7 +195,6 @@ class Realm implements RealmInterface
 
         // scan the Principals for this Subject
         foreach ($subject->getPrincipals() as $principal) {
-
             // query whether or not the principal found is a group principal
             if ($principal instanceof GroupInterface && $principal->getName()->equals(new String(Util::DEFAULT_GROUP_NAME))) {
                 // if yes, add the role name
