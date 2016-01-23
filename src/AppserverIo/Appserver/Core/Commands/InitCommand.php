@@ -65,6 +65,6 @@ class InitCommand implements CommandInterface
      */
     public function execute(array $params = array())
     {
-        $this->applicationServer->init(array_shift($params));
+        $this->applicationServer->init($this->connection, array_shift($params));
     }
 }

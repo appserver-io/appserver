@@ -57,6 +57,93 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
     <containers>
 
         <container
+                name="api-container"
+                type="AppserverIo\Appserver\Core\GenericContainer"
+                factory="AppserverIo\Appserver\Core\GenericContainerFactory">
+
+            <description>
+                <![CDATA[This is the API containery]]>
+            </description>
+
+            <deployment type="AppserverIo\Appserver\Core\GenericDeployment" />
+
+            <host name="internal" appBase="internal" deployBase="tmp" />
+
+            <servers>
+
+                <server
+                        name="api"
+                        type="\AppserverIo\Server\Servers\MultiThreadedServer"
+                        worker="\AppserverIo\Server\Workers\ThreadWorker"
+                        socket="\AppserverIo\Server\Sockets\StreamSocket"
+                        requestContext="\AppserverIo\Server\Contexts\RequestContext"
+                        serverContext="\AppserverIo\Server\Contexts\ServerContext"
+                        streamContext="\AppserverIo\Server\Contexts\StreamContext"
+                        loggerName="System">
+
+                    <params>
+                        <param name="admin" type="string">info@appserver.io</param>
+                        <param name="transport" type="string">tcp</param>
+                        <param name="address" type="string">127.0.0.1</param>
+                        <param name="port" type="integer">9024</param>
+                        <param name="workerNumber" type="integer">4</param>
+                        <param name="workerAcceptMin" type="integer">3</param>
+                        <param name="workerAcceptMax" type="integer">8</param>
+                        <param name="documentRoot" type="string">internal</param>
+                        <param name="directoryIndex" type="string">index.do index.html</param>
+                        <param name="keepAliveMax" type="integer">64</param>
+                        <param name="keepAliveTimeout" type="integer">5</param>
+                        <param name="errorsPageTemplatePath" type="string">resources/templates/www/error.phtml</param>
+                    </params>
+
+                    <environmentVariables>
+                        <environmentVariable condition="" definition="LOGGER_ACCESS=Access" />
+                    </environmentVariables>
+
+                    <connectionHandlers>
+                        <connectionHandler type="\AppserverIo\WebServer\ConnectionHandlers\HttpConnectionHandler" />
+                    </connectionHandlers>
+
+                    <accesses>
+                        <!-- per default allow everything -->
+                        <access type="allow">
+                            <params>
+                                <param name="X_REQUEST_URI" type="string">.*</param>
+                            </params>
+                        </access>
+                    </accesses>
+
+                    <modules>
+                        <!-- REQUEST_POST hook -->
+                        <module type="\AppserverIo\WebServer\Modules\VirtualHostModule"/>
+                        <module type="\AppserverIo\WebServer\Modules\AuthenticationModule"/>
+                        <module type="\AppserverIo\WebServer\Modules\EnvironmentVariableModule" />
+                        <module type="\AppserverIo\WebServer\Modules\RewriteModule"/>
+                        <module type="\AppserverIo\WebServer\Modules\DirectoryModule"/>
+                        <module type="\AppserverIo\WebServer\Modules\AccessModule"/>
+                        <module type="\AppserverIo\WebServer\Modules\LocationModule"/>
+                        <!-- FileHandler Modules -->
+                        <module type="\AppserverIo\WebServer\Modules\CoreModule"/>
+                        <module type="\AppserverIo\Appserver\ServletEngine\ServletEngine"/>
+                        <module type="\AppserverIo\WebServer\Modules\ProxyModule"/>
+                        <!-- RESPONSE_PRE hook -->
+                        <module type="\AppserverIo\WebServer\Modules\HeaderModule"/>
+                        <module type="\AppserverIo\WebServer\Modules\DeflateModule"/>
+                        <!-- RESPONSE_POST hook -->
+                        <module type="\AppserverIo\Appserver\Core\Modules\ProfileModule"/>
+                    </modules>
+
+                    <fileHandlers>
+                        <fileHandler name="servlet" extension=".do" />
+                    </fileHandlers>
+
+                </server>
+
+            </servers>
+
+        </container>
+
+        <container
                 name="combined-appserver"
                 type="AppserverIo\Appserver\Core\GenericContainer"
                 factory="AppserverIo\Appserver\Core\GenericContainerFactory">
@@ -67,7 +154,7 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
 
             <deployment type="AppserverIo\Appserver\Core\GenericDeployment" />
 
-            <host name="localhost" appBase="webapps" />
+            <host name="localhost" appBase="webapps" deployBase="deploy" />
 
             <!--
              ! This is an example of how to configure upstream backends for proxy usage.

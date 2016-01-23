@@ -65,6 +65,6 @@ class ModeCommand implements CommandInterface
      */
     public function execute(array $params = array())
     {
-        $this->applicationServer->mode(array_shift($params));
+        $this->applicationServer->mode($this->connection, array_shift($params));
     }
 }

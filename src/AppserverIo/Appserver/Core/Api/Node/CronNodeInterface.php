@@ -21,6 +21,8 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Configuration\Interfaces\NodeInterface;
+
 /**
  * Interface for a CRON node implementation.
  *
@@ -31,7 +33,7 @@ namespace AppserverIo\Appserver\Core\Api\Node;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-interface CronNodeInterface
+interface CronNodeInterface extends NodeInterface
 {
 
     /**

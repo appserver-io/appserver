@@ -37,7 +37,7 @@ trait ThreadedContextTrait
      *
      * @return string The serial
      */
-    protected function getSerial()
+    public function getSerial()
     {
         return $this->serial;
     }
@@ -49,9 +49,21 @@ trait ThreadedContextTrait
      *
      * @return string The unique identifier
      */
-    protected function getUniqueIdentifier($key)
+    protected function maskKey($key)
     {
-        return sprintf('%s-%s', $this->getSerial(), md5($key));
+        return sprintf('%s-%s', $this->getSerial(), $key);
+    }
+
+    /**
+     * Umasks the unique key.
+     *
+     * @param string $key The unique key to unmask
+     *
+     * @return string The unmasked key
+     */
+    protected function unmaskKey($key)
+    {
+        return str_replace(sprintf('%s-', $this->getSerial()), '', $key);
     }
 
     /**
@@ -96,7 +108,7 @@ trait ThreadedContextTrait
         // prepare the array with the attribute keys
         foreach ($this as $key => $value) {
             if (fnmatch($pattern, $key)) {
-                $keys[] = $key;
+                $keys[] = $this->unmaskKey($key);
             }
         }
 
@@ -116,7 +128,7 @@ trait ThreadedContextTrait
     {
 
         // query whether the identifier exists or not
-        if (isset($this[$uid = $this->getUniqueIdentifier($key)])) {
+        if (isset($this[$uid = $this->maskKey($key)])) {
             return $this[$uid];
         }
     }
@@ -134,7 +146,7 @@ trait ThreadedContextTrait
     {
 
         // if the value is already set, throw an exception
-        if (isset($this[$uid = $this->getUniqueIdentifier($key)])) {
+        if (isset($this[$uid = $this->maskKey($key)])) {
             throw new \Exception(
                 sprintf('A value with key %s has already been set in application %s', $key, $this->getName())
             );
@@ -153,7 +165,7 @@ trait ThreadedContextTrait
      */
     public function hasAttribute($key)
     {
-        return isset($this[$this->getUniqueIdentifier($key)]);
+        return isset($this[$this->maskKey($key)]);
     }
 
     /**
@@ -165,7 +177,7 @@ trait ThreadedContextTrait
      */
     public function removeAttribute($key)
     {
-        if (isset($this[$uid = $this->getUniqueIdentifier($key)])) {
+        if (isset($this[$uid = $this->maskKey($key)])) {
             unset($this[$uid]);
         }
     }

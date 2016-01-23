@@ -182,7 +182,7 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
         $this->namingDirectory->bind('php:env/foo/cacheDirectory', ApplicationTest::CACHE_DIR);
         $this->namingDirectory->bind('php:env/foo/sessionDirectory', ApplicationTest::SESSION_DIR);
         $this->namingDirectory->bind('php:env/baseDirectory', ApplicationTest::BASE_DIRECTORY);
-        $this->namingDirectory->bind('php:env/appBase', ApplicationTest::APP_BASE);
+        $this->namingDirectory->bind(sprintf('php:env/%s/appBase', ApplicationTest::NAME), ApplicationTest::APP_BASE);
 
         // inject the storages
         $this->application->injectName(ApplicationTest::NAME);

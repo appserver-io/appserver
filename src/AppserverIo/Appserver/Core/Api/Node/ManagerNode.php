@@ -53,6 +53,13 @@ class ManagerNode extends AbstractNode implements ManagerNodeInterface
     use DescriptorsNodeTrait;
 
     /**
+     * A security domains node trait.
+     *
+     * @var \AppserverIo\Appserver\Core\Api\Node\SecurityDomainsNodeTrait
+     */
+    use SecurityDomainsNodeTrait;
+
+    /**
      * The unique manager name.
      *
      * @var string

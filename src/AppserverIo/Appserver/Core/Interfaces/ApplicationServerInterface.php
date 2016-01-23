@@ -20,6 +20,8 @@
 
 namespace AppserverIo\Appserver\Core\Interfaces;
 
+use React\Socket\ConnectionInterface;
+
 /**
  * Interface for the application server instance.
 
@@ -59,20 +61,22 @@ interface ApplicationServerInterface
     /**
      * The runlevel to switch to.
      *
-     * @param integer $runlevel The new runlevel to switch to
+     * @param \React\Socket\ConnectionInterface $conn     The connection resource
+     * @param integer                           $runlevel The new runlevel to switch to
      *
      * @return void
      */
-    public function init($runlevel = ApplicationServerInterface::FULL);
+    public function init(ConnectionInterface $conn = null, $runlevel = ApplicationServerInterface::FULL);
 
     /**
      * Switch to the passed mode, which can either be 'dev', 'prod' or 'install'.
      *
-     * @param string $mode The setup mode to switch to
+     * @param \React\Socket\ConnectionInterface $conn The connection resource
+     * @param string                            $mode The setup mode to switch to
      *
      * @return void
      */
-    public function mode($mode);
+    public function mode(ConnectionInterface $conn, $mode);
 
     /**
      * Query whether the application server should keep running or not.

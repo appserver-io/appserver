@@ -20,15 +20,22 @@
 
 namespace AppserverIo\Appserver\ServletEngine\Http;
 
+use AppserverIo\Lang\String;
 use AppserverIo\Http\HttpProtocol;
 use AppserverIo\Server\Dictionaries\ServerVars;
 use AppserverIo\Psr\Context\ContextInterface;
 use AppserverIo\Psr\HttpMessage\PartInterface;
 use AppserverIo\Psr\HttpMessage\CookieInterface;
 use AppserverIo\Psr\HttpMessage\RequestInterface;
+use AppserverIo\Psr\Security\PrincipalInterface;
+use AppserverIo\Psr\Security\Auth\Subject;
+use AppserverIo\Psr\Security\Acl\GroupInterface;
+use AppserverIo\Appserver\ServletEngine\Security\Utils\Util;
+use AppserverIo\Appserver\ServletEngine\Security\SimpleGroup;
 use AppserverIo\Psr\Servlet\SessionUtils;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
+use AppserverIo\Psr\Servlet\ServletException;
 
 /**
  * A Http servlet request implementation.
@@ -190,6 +197,20 @@ class Request implements HttpServletRequestInterface, ContextInterface
     protected $attributes = array();
 
     /**
+     * The user principal of the authenticated user or NULL if the user has not been authenticated.
+     *
+     * @var \AppserverIo\Psr\Security\PrincipalInterface
+     */
+    protected $userPrincipal;
+
+    /**
+     * The request's authentication type.
+     *
+     * @var string
+     */
+    protected $authType;
+
+    /**
      * Initializes the request object with the default properties.
      *
      * @return void
@@ -207,6 +228,7 @@ class Request implements HttpServletRequestInterface, ContextInterface
         $this->context = null;
         $this->response = null;
         $this->httpRequest = null;
+        $this->userPrincipal = null;
         $this->requestHandler = null;
 
         // initialize the strings
@@ -658,6 +680,19 @@ class Request implements HttpServletRequestInterface, ContextInterface
      * Returns the parameter with the passed name if available or null
      * if the parameter not exists.
      *
+     * @param string $name The name of the parameter to return
+     *
+     * @return string|null The requested value
+     */
+    public function getParam($name)
+    {
+        return $this->getHttpRequest()->getParam($name);
+    }
+
+    /**
+     * Returns the parameter with the passed name if available or null
+     * if the parameter not exists.
+     *
      * @param string  $name   The name of the parameter to return
      * @param integer $filter The filter to use
      *
@@ -666,7 +701,7 @@ class Request implements HttpServletRequestInterface, ContextInterface
     public function getParameter($name, $filter = FILTER_SANITIZE_STRING)
     {
         $parameterMap = $this->getParameterMap();
-        if (array_key_exists($name, $parameterMap)) {
+        if (isset($parameterMap[$name])) {
             return filter_var($parameterMap[$name], $filter);
         }
     }
@@ -926,6 +961,16 @@ class Request implements HttpServletRequestInterface, ContextInterface
     }
 
     /**
+     * Return's the array with cookies.
+     *
+     * @return array The array with cookies
+     */
+    public function getCookies()
+    {
+        return $this->getHttpRequest()->getCookies();
+    }
+
+    /**
      * Returns header info by given name
      *
      * @param string $name The header key to name
@@ -1166,5 +1211,157 @@ class Request implements HttpServletRequestInterface, ContextInterface
         if (array_key_exists($name, $serverVars = $this->getServerVars())) {
             return $serverVars[$name];
         }
+    }
+
+    /**
+     * Set's the passed authentication type.
+     *
+     * @param string $authType The authentication type
+     *
+     * @return void
+     */
+    public function setAuthType($authType)
+    {
+        $this->authType = $authType;
+    }
+
+    /**
+     * Return's the authentication type.
+     *
+     * @return string The authentication type
+     */
+    public function getAuthType()
+    {
+        return $this->authType;
+    }
+
+    /**
+     * Set's the user principal for this request.
+     *
+     * @param \AppserverIo\Psr\Security\PrincipalInterface $userPrincipal The user principal
+     *
+     * @return void
+     */
+    public function setUserPrincipal(PrincipalInterface $userPrincipal)
+    {
+        $this->userPrincipal = $userPrincipal;
+    }
+
+    /**
+     * Return's a PrincipalInterface object containing the name of the current authenticated user.
+     *
+     * @return \AppserverIo\Psr\Security\PrincipalInterface|null The user principal
+     */
+    public function getUserPrincipal()
+    {
+        return $this->userPrincipal;
+    }
+
+    /**
+     * Return's the login of the user making this request, if the user has been authenticated, or null if the
+     * user has not been authenticated. Whether the user name is sent with each subsequent request depends on
+     * the browser and type of authentication. Same as the value of the CGI variable REMOTE_USER.
+     *
+     * @return \AppserverIo\Lang\String|null A string specifying the login of the user making this request, or null if the user login is not known
+     */
+    public function getRemoteUser()
+    {
+        if ($userPrincipal = $this->getUserPrincipal()) {
+            return $userPrincipal->getName();
+        }
+    }
+
+    /**
+     * Return_s a boolean indicating whether the authenticated user is included in the specified logical "role".
+     *
+     * @param \AppserverIo\Lang\String $role The role we want to test for
+     *
+     * @return boolean TRUE if the user has the passed role, else FALSE
+     */
+    public function isUserInRole(String $role)
+    {
+
+        // query whether or not we've an user principal
+        if ($principal = $this->getUserPrincipal()) {
+            return $principal->getRoles()->contains($role);
+        }
+
+        // user is not in passed role
+        return false;
+    }
+
+    /**
+     * Use the container login mechanism configured for the servlet context to authenticate the user making this
+     * request. This method may modify and commit the passed servlet response.
+     *
+     * @param AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse The servlet response
+     *
+     * @return boolean TRUE when non-null values were or have been established as the values returned by getRemoteUser, else FALSE
+     */
+    public function authenticate(HttpServletResponseInterface $servletResponse)
+    {
+
+        // load the authentication manager and try to authenticate this request
+        /** @var \AppserverIo\Appserver\ServletEngine\Authentication\AuthenticationManagerInterface $authenticationManager */
+        if ($authenticationManager = $this->getContext()->search('AuthenticationManagerInterface')) {
+            return $authenticationManager->handleRequest($this, $servletResponse);
+        }
+
+        // also return TRUE if we can't find an authentication manager
+        return true;
+    }
+
+    /**
+     * Validate the provided username and password in the password validation realm used by the web
+     * container login mechanism configured for the ServletContext.
+     *
+     * @param \AppserverIo\Lang\String $username The username to login
+     * @param \AppserverIo\Lang\String $password The password used to authenticate the user
+     *
+     * @return void
+     * @throws \AppserverIo\Psr\Servlet\ServletException Is thrown if no default authenticator can be found
+     */
+    public function login(String $username, String $password)
+    {
+
+        // query whether or not we're already authenticated or not
+        if ($this->getAuthType() != null || $this->getRemoteUser() != null || $this->getUserPrincipal() != null) {
+            throw new ServletException('Already authenticated');
+        }
+
+        // load the authentication manager and try to authenticate this request
+        /** @var \AppserverIo\Appserver\ServletEngine\Authentication\AuthenticationManagerInterface $authenticationManager */
+        $authenticationManager = $this->getContext()->search('AuthenticationManagerInterface');
+
+        // try to load the authentication managers default authenticator
+        if ($authenticator = $authenticationManager->getAuthenticator()) {
+            throw new ServletException('Can\'t find default authenticator');
+        }
+
+        // authenticate the passed username/password combination
+        $authenticator->login($username, $password, $this);
+    }
+
+    /**
+     * Establish null as the value returned when getUserPrincipal, getRemoteUser, and getAuthType is
+     * called on the request.
+     *
+     * @return void
+     * @throws \AppserverIo\Psr\Servlet\ServletException Is thrown if no default authenticator can be found
+     */
+    public function logout()
+    {
+
+        // load the authentication manager and try to authenticate this request
+        /** @var \AppserverIo\Appserver\ServletEngine\Authentication\AuthenticationManagerInterface $authenticationManager */
+        $authenticationManager = $this->getContext()->search('AuthenticationManagerInterface');
+
+        // try to load the authentication managers default authenticator
+        if ($authenticator = $authenticationManager->getAuthenticator()) {
+            throw new ServletException("no authenticator");
+        }
+
+        // logout the actual user
+        $authenticator->logout($this);
     }
 }

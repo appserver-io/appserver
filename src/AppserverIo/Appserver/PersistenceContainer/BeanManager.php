@@ -23,14 +23,11 @@ namespace AppserverIo\Appserver\PersistenceContainer;
 
 use AppserverIo\Appserver\Core\AbstractEpbManager;
 use AppserverIo\Storage\StorageInterface;
-use AppserverIo\Appserver\Core\Api\InvalidConfigurationException;
 use AppserverIo\Lang\Reflection\AnnotationInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Psr\EnterpriseBeans\BeanContextInterface;
 use AppserverIo\Psr\EnterpriseBeans\ResourceLocatorInterface;
 use AppserverIo\Psr\EnterpriseBeans\InvalidBeanTypeException;
-use AppserverIo\Appserver\DependencyInjectionContainer\DirectoryParser;
-use AppserverIo\Appserver\DependencyInjectionContainer\DeploymentDescriptorParser;
 use AppserverIo\Psr\EnterpriseBeans\Description\BeanDescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\SessionBeanDescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\SingletonSessionBeanDescriptorInterface;
@@ -38,6 +35,8 @@ use AppserverIo\Psr\EnterpriseBeans\Description\StatefulSessionBeanDescriptorInt
 use AppserverIo\Psr\EnterpriseBeans\Description\StatelessSessionBeanDescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\MessageDrivenBeanDescriptorInterface;
 use AppserverIo\Appserver\PersistenceContainer\Utils\SessionBeanUtil;
+use AppserverIo\Appserver\PersistenceContainer\DependencyInjection\DirectoryParser;
+use AppserverIo\Appserver\PersistenceContainer\DependencyInjection\DeploymentDescriptorParser;
 
 /**
  * The bean manager handles the message and session beans registered for the application.
@@ -165,66 +164,39 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface
      *
      * @return void
      */
-    protected function registerBeans(ApplicationInterface $application)
+    public function registerBeans(ApplicationInterface $application)
     {
 
-        // query if the web application folder exists
-        if (is_dir($folder = $this->getWebappPath()) === false) {
-            // if not, do nothing
+        // query whether or not the web application folder exists
+        if (is_dir($this->getWebappPath()) === false) {
             return;
         }
 
-        // load the directories to be parsed
-        $directories = array();
-
-        // append the directory found in the servlet managers configuration
-        foreach ($this->getDirectories() as $directoryNode) {
-            // prepare the custom directory defined in the servlet managers configuration
-            $customDir = $folder . DIRECTORY_SEPARATOR . ltrim($directoryNode->getNodeValue()->getValue(), DIRECTORY_SEPARATOR);
-
-            // check if the directory exists
-            if (is_dir($customDir)) {
-                $directories[] = $customDir;
-            }
-        }
-
-        // parse the directory for annotated beans
+        // initialize the directory parser and parse the web application's base directory for annotated beans
         $directoryParser = new DirectoryParser();
-        $directoryParser->injectApplication($application);
+        $directoryParser->injectBeanContext($this);
+        $directoryParser->parse();
 
-        // parse the directories for annotated servlets
-        foreach ($directories as $directory) {
-            $directoryParser->parse($directory);
-        }
-
-        // it's no valid application without at least the epb.xml file
-        if (file_exists($deploymentDescriptor = $folder . DIRECTORY_SEPARATOR . 'META-INF' . DIRECTORY_SEPARATOR . 'epb.xml')) {
-            try {
-                // parse the deployment descriptor for registered beans
-                $deploymentDescriptorParser = new DeploymentDescriptorParser();
-                $deploymentDescriptorParser->injectApplication($application);
-                $deploymentDescriptorParser->parse($deploymentDescriptor, '/a:epb/a:enterprise-beans/a:session');
-                $deploymentDescriptorParser->parse($deploymentDescriptor, '/a:epb/a:enterprise-beans/a:message-driven');
-
-            } catch (InvalidConfigurationException $e) {
-                $application->getInitialContext()->getSystemLogger()->critical($e->getMessage());
-            }
-        }
+        // initialize the deployment descriptor parser and parse the web application's deployment descriptor for beans
+        $deploymentDescriptorParser = new DeploymentDescriptorParser();
+        $deploymentDescriptorParser->injectBeanContext($this);
+        $deploymentDescriptorParser->parse();
 
         // load the object manager
+        /** @var \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\ObjectManagerInterface $objectManager */
         $objectManager = $this->getApplication()->search('ObjectManagerInterface');
 
         // register the beans found by annotations and the XML configuration
+        /** \AppserverIo\Psr\Deployment\DescriptorInterface $objectDescriptor */
         foreach ($objectManager->getObjectDescriptors() as $descriptor) {
-            // check if we've found a bean descriptor
+            // check if we've found a bean descriptor and register the bean
             if ($descriptor instanceof BeanDescriptorInterface) {
-                // register the bean
                 $this->registerBean($descriptor);
             }
 
             // if we found a singleton session bean with a startup callback
             if ($descriptor instanceof SingletonSessionBeanDescriptorInterface && $descriptor->isInitOnStartup()) {
-                $this->getApplication()->search($descriptor->getName(), array($sessionId = null, array($application)));
+                $this->getApplication()->search($descriptor->getName(), array(null, array($application)));
             }
         }
     }
@@ -236,7 +208,7 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface
      *
      * @return void
      */
-    protected function registerBean(BeanDescriptorInterface $descriptor)
+    public function registerBean(BeanDescriptorInterface $descriptor)
     {
 
         try {

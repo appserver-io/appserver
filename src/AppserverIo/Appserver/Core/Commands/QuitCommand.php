@@ -57,7 +57,7 @@ class QuitCommand implements CommandInterface
 
     /**
      * Executes the command.
-     *
+
      * @param array $params The arguments passed to the command
      *
      * @return mixed|null The result of the command

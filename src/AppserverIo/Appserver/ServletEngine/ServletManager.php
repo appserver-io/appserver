@@ -20,18 +20,17 @@
 
 namespace AppserverIo\Appserver\ServletEngine;
 
-use AppserverIo\Storage\StorageInterface;
 use AppserverIo\Storage\GenericStackable;
+use AppserverIo\Storage\StorageInterface;
 use AppserverIo\Lang\Reflection\ReflectionClass;
+use AppserverIo\Appserver\Core\AbstractEpbManager;
+use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Psr\Servlet\ServletInterface;
 use AppserverIo\Psr\Servlet\ServletContextInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
 use AppserverIo\Psr\Servlet\Description\ServletDescriptorInterface;
-use AppserverIo\Psr\Application\ApplicationInterface;
-use AppserverIo\Appserver\Core\AbstractEpbManager;
-use AppserverIo\Appserver\Core\Api\InvalidConfigurationException;
-use AppserverIo\Appserver\DependencyInjectionContainer\DirectoryParser;
-use AppserverIo\Appserver\DependencyInjectionContainer\DeploymentDescriptorParser;
+use AppserverIo\Appserver\ServletEngine\DependencyInjection\DirectoryParser;
+use AppserverIo\Appserver\ServletEngine\DependencyInjection\DeploymentDescriptorParser;
 
 /**
  * The servlet manager handles the servlets registered for the application.
@@ -45,7 +44,6 @@ use AppserverIo\Appserver\DependencyInjectionContainer\DeploymentDescriptorParse
  * @property array                                                         $directories       The additional directories to be parsed
  * @property \AppserverIo\Storage\StorageInterface                         $initParameters    The container for the init parameters
  * @property \AppserverIo\Appserver\ServletEngine\ResourceLocatorInterface $resourceLocator   The resource locator for requested servlets
- * @property \AppserverIo\Storage\StorageInterface                         $securedUrlConfigs The container for the secured URL configurations
  * @property \AppserverIo\Appserver\ServletEngine\ResourceLocatorInterface $servletLocator    The resource locator for the servlets
  * @property \AppserverIo\Storage\GenericStackable                         $servletMappings   The container for the servlet mappings
  * @property \AppserverIo\Storage\StorageInterface                         $servlets          The container for the servlets
@@ -161,116 +159,33 @@ class ServletManager extends AbstractEpbManager implements ServletContextInterfa
      *
      * @throws \AppserverIo\Appserver\ServletEngine\InvalidServletMappingException
      */
-    protected function registerServlets(ApplicationInterface $application)
+    public function registerServlets(ApplicationInterface $application)
     {
 
-        // query if the web application folder exists
-        if (is_dir($folder = $this->getWebappPath()) === false) {
-            // if not, do nothing
+        // query whether or not the web application folder exists
+        if (is_dir($this->getWebappPath()) === false) {
             return;
         }
 
-        // load the object manager
+        // initialize the directory parser and parse the web application's base directory for annotated servlets
+        $directoryParser = new DirectoryParser();
+        $directoryParser->injectServletContext($this);
+        $directoryParser->parse();
+
+        // initialize the deployment descriptor parser and parse the web application's deployment descriptor for servlets
+        $deploymentDescriptorParser = new DeploymentDescriptorParser();
+        $deploymentDescriptorParser->injectServletContext($this);
+        $deploymentDescriptorParser->parse();
+
+        // load the object manager instance
+        /** @var \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\ObjectManagerInterface $objectManager */
         $objectManager = $this->getApplication()->search('ObjectManagerInterface');
 
-        // load the directories to be parsed
-        $directories = array();
-
-        // append the directory found in the servlet managers configuration
-        /** @var \AppserverIo\Appserver\Core\Api\Node\DirectoryNode $directoryNode */
-        foreach ($this->getDirectories() as $directoryNode) {
-            // prepare the custom directory defined in the servlet managers configuration
-            $customDir = $folder . DIRECTORY_SEPARATOR . ltrim($directoryNode->getNodeValue()->getValue(), DIRECTORY_SEPARATOR);
-
-            // check if the directory exists
-            if (is_dir($customDir)) {
-                $directories[] = $customDir;
-            }
-        }
-
-        // initialize the directory parser
-        $directoryParser = new DirectoryParser();
-        $directoryParser->injectApplication($application);
-
-        // parse the directories for annotated servlets
-        foreach ($directories as $directory) {
-            $directoryParser->parse($directory);
-        }
-
-        // it's no valid application without at least the web.xml file
-        if (file_exists($deploymentDescriptor = $folder . DIRECTORY_SEPARATOR . 'WEB-INF' . DIRECTORY_SEPARATOR . 'web.xml')) {
-            try {
-                // parse the deployment descriptor for registered servlets
-                $deploymentDescriptorParser = new DeploymentDescriptorParser();
-                $deploymentDescriptorParser->injectApplication($application);
-                $deploymentDescriptorParser->parse($deploymentDescriptor, '/a:web-app/a:servlet');
-
-            } catch (InvalidConfigurationException $e) {
-                $application->getInitialContext()->getSystemLogger()->critical($e->getMessage());
-                return;
-            }
-
-            // load the application config
-            $config = new \SimpleXMLElement(file_get_contents($deploymentDescriptor));
-            $config->registerXPathNamespace('a', 'http://www.appserver.io/appserver');
-
-            // initialize the servlets by parsing the servlet-mapping nodes
-            foreach ($config->xpath('/a:web-app/a:servlet-mapping') as $mapping) {
-                // load the url pattern and the servlet name
-                $urlPattern = (string) $mapping->{'url-pattern'};
-                $servletName = (string) $mapping->{'servlet-name'};
-
-                // try to find the servlet with the configured name
-                /** @var \AppserverIo\Psr\Servlet\Description\ServletDescriptorInterface $descriptor */
-                foreach ($objectManager->getObjectDescriptors() as $descriptor) {
-                    // query if we've a servlet and the name matches the mapped servlet name
-                    if ($descriptor instanceof ServletDescriptorInterface &&
-                        $descriptor->getName() === $servletName) {
-                        // add the URL pattern
-                        $descriptor->addUrlPattern($urlPattern);
-
-                        // override the descriptor with the URL pattern
-                        $objectManager->setObjectDescriptor($descriptor);
-
-                        // proceed the next mapping
-                        continue 2;
-                    }
-                }
-
-                // the servlet is added to the dictionary using the complete request path as the key
-                throw new InvalidServletMappingException(
-                    sprintf('Can\'t find servlet %s for url-pattern %s', $servletName, $urlPattern)
-                );
-            }
-
-            // initialize the security configuration by parsing the security nodes
-            foreach ($config->xpath('/a:web-app/a:security') as $key => $securityParam) {
-                // prepare the URL config in JSON format
-                $securedUrlConfig = json_decode(json_encode($securityParam), 1);
-                // add the web app path to the security config (to resolve relative filenames)
-                $securedUrlConfig['webapp-path'] = $folder;
-                // add the configuration to the array
-                $this->securedUrlConfigs->set($key, $securedUrlConfig);
-            }
-
-            // initialize the context by parsing the context-param nodes
-            foreach ($config->xpath('/a:web-app/a:context-param') as $contextParam) {
-                $this->addInitParameter((string) $contextParam->{'param-name'}, (string) $contextParam->{'param-value'});
-            }
-
-            // initialize the session configuration by parsing the session-config children
-            foreach ($config->xpath('/a:web-app/a:session-config') as $sessionConfig) {
-                foreach ($sessionConfig as $key => $value) {
-                    $this->addSessionParameter(str_replace(' ', '', ucwords(str_replace('-', ' ', (string) $key))), (string) $value);
-                }
-            }
-        }
-
         // register the beans located by annotations and the XML configuration
+        /** \AppserverIo\Psr\Deployment\DescriptorInterface $objectDescriptor */
         foreach ($objectManager->getObjectDescriptors() as $descriptor) {
-            // check if we've found a servlet descriptor
+            // check if we've found a servlet descriptor and register the servlet
             if ($descriptor instanceof ServletDescriptorInterface) {
-                // register the servlet
                 $this->registerServlet($descriptor);
             }
         }
@@ -283,7 +198,7 @@ class ServletManager extends AbstractEpbManager implements ServletContextInterfa
      *
      * @return void
      */
-    protected function registerServlet(ServletDescriptorInterface $descriptor)
+    public function registerServlet(ServletDescriptorInterface $descriptor)
     {
 
         try {
@@ -474,10 +389,11 @@ class ServletManager extends AbstractEpbManager implements ServletContextInterfa
      * Returns the webapps security context configurations.
      *
      * @return array The security context configurations
+     * @throws \AppserverIo\Appserver\ServletEngine\OperationNotSupportedException Is thrown if this method has been invoked
      */
     public function getSecuredUrlConfigs()
     {
-        return $this->securedUrlConfigs;
+        throw new OperationNotSupportedException(sprintf('%s not yet implemented', __METHOD__));
     }
 
     /**

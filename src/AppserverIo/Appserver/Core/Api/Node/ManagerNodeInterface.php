@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Configuration\Interfaces\NodeInterface;
 use AppserverIo\Psr\Application\ManagerConfigurationInterface;
 
 /**
@@ -31,7 +32,7 @@ use AppserverIo\Psr\Application\ManagerConfigurationInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-interface ManagerNodeInterface extends ManagerConfigurationInterface
+interface ManagerNodeInterface extends ManagerConfigurationInterface, NodeInterface
 {
 
     /**
@@ -49,6 +50,22 @@ interface ManagerNodeInterface extends ManagerConfigurationInterface
      * @return \AppserverIo\Appserver\Core\Api\Node\DirectoryNode[]
      */
     public function getDirectories();
+
+    /**
+     * Sets the security domain configuration.
+     *
+     * @param array $securityDomains The security domain configuration
+     *
+     * @return void
+     */
+    public function setSecurityDomains($securityDomains);
+
+    /**
+     * Returns the security domain configuration.
+     *
+     * @return array The security domain configuration
+     */
+    public function getSecurityDomains();
 
     /**
      * Array with the descriptors.

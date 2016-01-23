@@ -97,22 +97,26 @@ abstract class AbstractExtractor implements ExtractorInterface
      */
     public function deployWebapps()
     {
-        // check if deploy dir exists
-        if (is_dir($this->getDeployDir())) {
-            // init file iterator on deployment directory
-            $fileIterator = new \FilesystemIterator($this->getDeployDir());
-            // Iterate through all phar files and extract them to tmp dir
-            foreach (new \RegexIterator($fileIterator, '/^.*\\' . $this->getExtensionSuffix() . '$/') as $archive) {
-                $this->undeployArchive($archive);
-                $this->deployArchive($archive);
+
+        // iterate over the deploy directories and deploy all archives
+        foreach ($this->getDeployDirs() as $deployDir) {
+            // check if deploy dir exists
+            if (is_dir($deployDir)) {
+                // init file iterator on deployment directory
+                $fileIterator = new \FilesystemIterator($deployDir);
+                // Iterate through all phar files and extract them to tmp dir
+                foreach (new \RegexIterator($fileIterator, '/^.*\\' . $this->getExtensionSuffix() . '$/') as $archive) {
+                    // $this->undeployArchive($archive);
+                    $this->deployArchive($archive);
+                }
             }
+
+            // prepare the filename for the file with the last successful deployment timestamp
+            $successFile = sprintf('%s/%s', $deployDir, ExtractorInterface::FILE_DEPLOYMENT_SUCCESSFULL);
+
+            // create a flag file with date of the last successful deployment
+            touch($successFile);
         }
-
-        // prepare the filename for the file with the last successful deployment timestamp
-        $successFile = $this->getService()->getDeployDir(ExtractorInterface::FILE_DEPLOYMENT_SUCCESSFULL);
-
-        // create a flag file with date of the last successful deployment
-        touch($successFile);
     }
 
     /**
@@ -127,12 +131,10 @@ abstract class AbstractExtractor implements ExtractorInterface
     {
         // delete all old flags
         $this->unflagArchive($archive);
-        // get archives folder name from deploy dir
-        $deployFolderName = $this->getDeployDir($archive->getFilename());
-        // flag archive
-        file_put_contents($deployFolderName . $flag, $archive->getFilename());
+        // flag the passed archive
+        file_put_contents($archive->getPathname() . $flag, $archive->getPathname());
         // set correct user/group for the flag file
-        $this->setUserRight(new \SplFileInfo($deployFolderName . $flag));
+        $this->setUserRight(new \SplFileInfo($archive->getPathname() . $flag));
     }
 
     /**
@@ -163,11 +165,8 @@ abstract class AbstractExtractor implements ExtractorInterface
     public function isDeployable(\SplFileInfo $archive)
     {
 
-        // prepare the deploy folder
-        $deployFolderName = $this->getDeployDir($archive->getFilename());
-
         // check if the .dodeploy flag file exists
-        if (file_exists($deployFolderName . ExtractorInterface::FLAG_DODEPLOY)) {
+        if (file_exists($archive->getPathname() . ExtractorInterface::FLAG_DODEPLOY)) {
             return true;
         }
 
@@ -186,12 +185,9 @@ abstract class AbstractExtractor implements ExtractorInterface
     public function isUndeployable(\SplFileInfo $archive)
     {
 
-        // prepare the deploy folder
-        $deployFolderName = $this->getDeployDir($archive->getFilename());
-
         // make sure that NO flag for the archive is available
         foreach ($this->getFlags() as $flag) {
-            if (file_exists($deployFolderName . $flag)) {
+            if (file_exists($archive->getPathname() . $flag)) {
                 return false;
             }
         }
@@ -311,6 +307,27 @@ abstract class AbstractExtractor implements ExtractorInterface
 
         // delete the directory itself if empty
         @rmdir($dir->getPathname());
+    }
+
+    /**
+     * Load's the containers deploy directories.
+     *
+     * @return array The array with the deploy directories
+     */
+    public function getDeployDirs()
+    {
+
+        // initialize the array
+        $deployDirs = array();
+
+        // iterate over all containers and load the deploy directories
+        /** @var \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode */
+        foreach ($this->getService()->getSystemConfiguration()->getContainers() as $containerNode) {
+            $deployDirs[] = $this->getService()->getBaseDirectory($containerNode->getHost()->getDeployBase());
+        }
+
+        // return the array
+        return $deployDirs;
     }
 
     /**

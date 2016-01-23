@@ -28,9 +28,16 @@ use AppserverIo\Psr\Naming\NamingDirectoryInterface;
 use AppserverIo\Appserver\Core\Commands\ModeCommand;
 use AppserverIo\Appserver\Core\Commands\InitCommand;
 use AppserverIo\Appserver\Core\Api\Node\BootstrapNode;
+use AppserverIo\Appserver\Naming\Utils\NamingDirectoryKeys;
 use AppserverIo\Appserver\Core\Listeners\ApplicationServerAwareListenerInterface;
 use AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface;
 use AppserverIo\Appserver\Core\Interfaces\SystemConfigurationInterface;
+
+use Doctrine\ORM\Tools\Console\ConsoleRunner;
+use Symfony\Component\Console\Output\BufferedOutput;
+use AppserverIo\Appserver\Core\Commands\DoctrineCommand;
+use React\Socket\ConnectionInterface;
+use React\Socket\Connection;
 
 /**
  * This is the main server class that starts the application server
@@ -255,7 +262,7 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
     {
 
         try {
-            return $this->getNamingDirectory()->search('php:global/log/System');
+            return $this->getNamingDirectory()->search(NamingDirectoryKeys::SYSTEM_LOGGER);
         } catch (NamingException $ne) {
             return new Logger('System');
         }
@@ -297,11 +304,12 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
     /**
      * The runlevel to switch to.
      *
-     * @param integer $runlevel The new runlevel to switch to
+     * @param \React\Socket\ConnectionInterface $conn     The connection resource
+     * @param integer                           $runlevel The new runlevel to switch to
      *
      * @return void
      */
-    public function init($runlevel = ApplicationServerInterface::FULL)
+    public function init(ConnectionInterface $conn = null, $runlevel = ApplicationServerInterface::FULL)
     {
 
         // switch to the new runlevel
@@ -325,13 +333,57 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
     }
 
     /**
-     * Switch to the passed mode, which can either be 'dev', 'prod' or 'install'.
+     * Executes a Doctrine command.
      *
-     * @param string $mode The setup mode to switch to
+     * @param \React\Socket\ConnectionInterface $conn    The connection resource
+     * @param array                             $command The array with the command elements to execute
      *
      * @return void
      */
-    public function mode($mode)
+    public function doctrine($conn, $command)
+    {
+
+        // switch to the new runlevel
+        $result = $this->synchronized(function ($self, $cmd) {
+            // wait till the previous commands has been finished
+            while ($self->locked === true) {
+                sleep(1);
+            }
+
+            // set connection and command name
+            $self->command = DoctrineCommand::COMMAND;
+
+            // lock process
+            $self->locked = true;
+            $self->params = $cmd;
+            $self->result = null;
+
+            // notify the AS to execute the command
+            $self->notify();
+
+            // wait for the result of the command
+            while ($self->result == null) {
+                $self->wait(10000);
+            }
+
+            // return the result
+            return $self->result;
+
+        }, $this, $command);
+
+        // write the result to the output
+        $conn->write($result);
+    }
+
+    /**
+     * Switch to the passed mode, which can either be 'dev', 'prod' or 'install'.
+     *
+     * @param \React\Socket\ConnectionInterface $conn The connection resource
+     * @param string                            $mode The setup mode to switch to
+     *
+     * @return void
+     */
+    public function mode(ConnectionInterface $conn, $mode)
     {
 
         // switch to the new runlevel
@@ -443,7 +495,7 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
         $actualRunlevel = -1;
 
         // start with the default runlevel
-        $this->init($this->runlevel);
+        $this->init(null, $this->runlevel);
 
         do {
 
@@ -504,12 +556,12 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
 
                         } else {
 
-                            // print a message and wait
-                            $this->getSystemLogger()->info(sprintf('Switched to runlevel %s!!!', $actualRunlevel));
-
                             // signal that we've finished switching the runlevels and wait
                             $this->locked = false;
                             $this->command = null;
+
+                            // print a message and wait
+                            $this->getSystemLogger()->info(sprintf('Switched to runlevel %s!!!', $actualRunlevel));
 
                             // wait for a new command
                             $this->synchronized(function ($self) {
@@ -521,12 +573,28 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
 
                     case ModeCommand::COMMAND:
 
+                        // switch the application server mode
+                        $this->doSwitchSetupMode($this->params, $this->getConfigurationFilename());
+
                         // singal that we've finished setting umask and wait
                         $this->locked = false;
                         $this->command = null;
 
-                        // switch the application server mode
-                        $this->doSwitchSetupMode($this->params, $this->getConfigurationFilename());
+                        // wait for a new command
+                        $this->synchronized(function ($self) {
+                            $self->wait();
+                        }, $this);
+
+                        break;
+
+                    case DoctrineCommand::COMMAND:
+
+                        // execute the Doctrine command
+                        $this->result = $this->doDoctrine($this->params);
+
+                        // singal that we've finished setting umask and wait
+                        $this->locked = false;
+                        $this->command = null;
 
                         // wait for a new command
                         $this->synchronized(function ($self) {
@@ -653,7 +721,7 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
     protected function doStopServices($runlevel)
     {
         // iterate over all services and stop them
-        foreach ($this->runlevels[$runlevel] as $name => $service) {
+        foreach (array_flip($this->runlevels[$runlevel]) as $name) {
             $this->unbindService($runlevel, $name);
         }
     }
@@ -676,5 +744,70 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
         /** @var \AppserverIo\Appserver\Core\Api\ContainerService $service */
         $service = $this->newService('AppserverIo\Appserver\Core\Api\ContainerService');
         $service->switchSetupMode($newMode, $configurationFilename, $currentUser);
+    }
+
+    /**
+     * Execute the Doctrine CLI tool.
+     *
+     * @param array $command The Doctrine command to be executed
+     *
+     * @return string The commands output
+     */
+    protected function doDoctrine(array $command = array())
+    {
+
+        try {
+            // create a local naming directory instance
+            /** \AppserverIo\Psr\Naming\NamingDirectoryInterface $namingDirectory */
+            $namingDirectory = $this->getNamingDirectory();
+
+            // the first arguement has to be the application name
+            $applicationName = array_shift($command);
+
+            // try to load the application
+            /** \AppserverIo\Psr\Application\ApplicationInterface $application */
+            $application = $namingDirectory->search(sprintf('php:global/%s/env/ApplicationInterface', $applicationName));
+
+            // the second arguement has to be the persistence unit name
+            $persistenUnitName = array_shift($command);
+
+            // try to load the application's entity manager
+            /** \Doctrine\ORM\EntityManagerInterface $entityManager */
+            $entityManager = $application->search($persistenUnitName);
+
+            // initialize the helper set with the entity manager instance
+            /** \Symfony\Component\Console\Helper\HelperSet $helperSet */
+            $helperSet = ConsoleRunner::createHelperSet($entityManager);
+
+            // create the Symfony Console application
+            /** \Symfony\Component\Console\Application $app */
+            $app = \Doctrine\ORM\Tools\Console\ConsoleRunner::createApplication($helperSet);
+            $app->setAutoExit(false);
+
+            // register the applications class loaders
+            $application->registerClassLoaders();
+
+            // as Doctrine CLI uses Symfony Console component, we've to simulate the commandline args
+            $argv = array('doctrine');
+            $argv = array_merge($argv, $command);
+
+            // create a new instance of the commandline args
+            $argvInput = new \Symfony\Component\Console\Input\ArgvInput($argv);
+
+            // run the Symfony Console application
+            $app->run($argvInput, $buffer = new BufferedOutput());
+
+            // log a debug message with the output
+            $this->getSystemLogger()->debug($result = $buffer->fetch());
+
+            // return the output
+            return $result;
+
+        } catch (\Exception $e) {
+            // log the exception
+            $this->getSystemLogger()->error($e->__toString());
+            // return the stack trace
+            return $e->getMessage() . PHP_EOL;
+        }
     }
 }

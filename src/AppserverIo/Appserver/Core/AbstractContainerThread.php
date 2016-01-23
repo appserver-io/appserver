@@ -109,12 +109,8 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
         $this->validateDirectories();
 
         // initialize the naming directory with the environment data
-        $this->namingDirectory->bind('php:env/appBase', $this->getAppBase());
-        $this->namingDirectory->bind('php:env/tmpDirectory', $this->getTmpDir());
-        $this->namingDirectory->bind('php:env/baseDirectory', $this->getBaseDirectory());
-        $this->namingDirectory->bind('php:env/umask', $this->getInitialContext()->getSystemConfiguration()->getUmask());
-        $this->namingDirectory->bind('php:env/user', $this->getInitialContext()->getSystemConfiguration()->getUser());
-        $this->namingDirectory->bind('php:env/group', $this->getInitialContext()->getSystemConfiguration()->getGroup());
+        $this->namingDirectory->createSubdirectory(sprintf('php:env/%s', $this->getName()));
+        $this->namingDirectory->bind(sprintf('php:env/%s/appBase', $this->getName()), $this->getAppBase());
 
         // initialize the container state
         $this->containerState = ContainerStateKeys::get(ContainerStateKeys::INITIALIZATION_SUCCESSFUL);

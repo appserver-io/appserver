@@ -1,12 +1,17 @@
-# Version 1.1.1
+# Version 1.2.0-alpha1
 
 ## Bugfixes
 
-* None
+* Fixed [#938](https://github.com/appserver-io/appserver/issues/938) - Only one container can be configured
 
 ## Features
 
+* Add command to execute Doctrine CLI commands via Telnet console
+* Register datasources in naming directory
+* Add internal container with HTTP server to allow access to appserver.io RESTFul API
 * Log a critical error message, if container's application and temporary directory are not available
+* Add VirtualHostNodeInterface and DatasourceNodeInterfaces classes
+* Add missing NodeInterface to some API nodes
 
 # Version 1.1.0
 

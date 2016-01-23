@@ -74,7 +74,32 @@
         </manager>
         <manager name="SessionManagerInterface" type="AppserverIo\Appserver\ServletEngine\StandardSessionManager" factory="AppserverIo\Appserver\ServletEngine\StandardSessionManagerFactory"/>
         <manager name="TimerServiceContextInterface" type="AppserverIo\Appserver\PersistenceContainer\TimerServiceRegistry" factory="AppserverIo\Appserver\PersistenceContainer\TimerServiceRegistryFactory"/>
-        <manager name="AuthenticationManagerInterface" type="AppserverIo\Appserver\ServletEngine\Authentication\StandardAuthenticationManager" factory="AppserverIo\Appserver\ServletEngine\Authentication\StandardAuthenticationManagerFactory"/>
+        <manager name="AuthenticationManagerInterface" type="AppserverIo\Appserver\ServletEngine\Security\StandardAuthenticationManager" factory="AppserverIo\Appserver\ServletEngine\Security\StandardAuthenticationManagerFactory">
+            <!-- securityDomains>  
+                <securityDomain name="api-realm">
+                    <authConfig>
+                        <loginModules>
+                            <loginModule type="AppserverIo\Appserver\ServletEngine\Security\Auth\Spi\HtpasswdFileLoginModule" flag="required">
+                                <params>
+                                    <param name="filename" type="string">WEB-INF/htpasswd</param>
+                                    <param name="password-stacking" type="string">useFirstPass</param>
+                                </params>
+                            </loginModule>
+                            <loginModule type="AppserverIo\Appserver\ServletEngine\Security\Auth\Spi\DatabasePDOLoginModule" flag="required">
+                                <params>
+                                    <param name="lookupName" type="string">php:env/combined-appserver/appserver.io-example-application</param>
+                                    <param name="principalsQuery" type="string">select encode(password, 'hex') from principal where username=?</param>
+                                    <param name="rolesQuery" type="string">select r.role, r.role_group from role r inner join principal p on r.role = p.role where p.username=?</param>
+                                    <param name="hashAlgorithm" type="string">SHA-512</param>
+                                    <param name="hashEncoding" type="string">hex</param>
+                                    <param name="password-stacking" type="string">useFirstPass</param>
+                                </params>
+                            </loginModule>
+                        </loginModules>
+                    </authConfig>
+                </securityDomain>
+            </securityDomains -->
+        </manager>
         <manager name="AspectManagerInterface" type="AppserverIo\Appserver\AspectContainer\AspectManager" factory="AppserverIo\Appserver\AspectContainer\AspectManagerFactory"/>
     </managers>
 

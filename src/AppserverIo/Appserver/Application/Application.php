@@ -26,11 +26,13 @@ use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Storage\StorageInterface;
 use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
 use AppserverIo\Appserver\Core\Traits\ThreadedContextTrait;
+use AppserverIo\Appserver\Core\Interfaces\ContainerInterface;
 use AppserverIo\Appserver\Core\Interfaces\ClassLoaderInterface;
 use AppserverIo\Appserver\Core\Api\Node\ContextNode;
 use AppserverIo\Appserver\Core\Api\Node\ManagerNodeInterface;
 use AppserverIo\Appserver\Core\Api\Node\ProvisionerNodeInterface;
 use AppserverIo\Appserver\Core\Api\Node\ClassLoaderNodeInterface;
+use AppserverIo\Appserver\Naming\Utils\NamingDirectoryKeys;
 use AppserverIo\Appserver\Application\Interfaces\ContextInterface;
 use AppserverIo\Psr\Naming\NamingDirectoryInterface;
 use AppserverIo\Psr\Context\ContextInterface as Context;
@@ -56,7 +58,7 @@ use AppserverIo\Psr\Application\FilesystemAwareInterface;
  * @property \AppserverIo\Appserver\Application\Interfaces\ContextInterface $initialContext   The initial context instance
  * @property \AppserverIo\Storage\GenericStackable                          $managers         Stackable of managers for this application
  * @property string                                                         $name             Name of the application
- * @property string                                                         $serial           The instance unique serial number
+ * @property string                                                         $serial           The application's UUID
  * @property \AppserverIo\Psr\Naming\NamingDirectoryInterface               $namingDirectory  The naming directory instance
  */
 class Application extends \Thread implements ApplicationInterface, DirectoryAwareInterface, FilesystemAwareInterface, Context
@@ -204,7 +206,7 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
      */
     public function getAppBase()
     {
-        return $this->getNamingDirectory()->search('php:env/appBase');
+        return $this->getNamingDirectory()->search(sprintf('php:env/%s/appBase', $this->getName()));
     }
 
     /**
@@ -275,6 +277,16 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
     public function getUmask()
     {
         return $this->getNamingDirectory()->search('php:env/umask');
+    }
+
+    /**
+     * Return's the application's UUID.
+     *
+     * @return string The application's UUID
+     */
+    public function getSerial()
+    {
+        return $this->serial;
     }
 
     /**
@@ -430,11 +442,12 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
      * Prepares the application with the specific data found in the
      * passed context node.
      *
-     * @param \AppserverIo\Appserver\Core\Api\Node\ContextNode $context The application configuration
+     * @param \AppserverIo\Appserver\Core\Interfaces\ContainerInterface $container The container instance bind the application to
+     * @param \AppserverIo\Appserver\Core\Api\Node\ContextNode          $context   The application configuration
      *
      * @return void
      */
-    public function prepare(ContextNode $context)
+    public function prepare(ContainerInterface $container, ContextNode $context)
     {
 
         // load application name + naming directory
@@ -445,17 +458,19 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
         $namingDirectory->createSubdirectory(sprintf('php:global/%s', $applicationName));
 
         // create the applications 'env' + 'env/persistence' directory the beans + persistence units will be bound to
+        $namingDirectory->createSubdirectory(sprintf('php:env/%s', $applicationName));
         $namingDirectory->createSubdirectory(sprintf('php:global/%s/env', $this->getName()));
         $namingDirectory->createSubdirectory(sprintf('php:global/%s/env/persistence', $this->getName()));
 
+        $namingDirectory->bind(sprintf('php:env/%s/appBase', $this->getName()), $container->getAppBase());
+
         // prepare the application specific directories
-        $webappPath = sprintf('%s/%s', $namingDirectory->search('php:env/appBase'), $applicationName);
-        $tmpDirectory = sprintf('%s/%s', $namingDirectory->search('php:env/tmpDirectory'), $applicationName);
+        $webappPath = sprintf('%s/%s', $this->getAppBase(), $applicationName);
+        $tmpDirectory = sprintf('%s/%s', $container->getTmpDir(), $applicationName);
         $cacheDirectory = sprintf('%s/%s', $tmpDirectory, ltrim($context->getParam(DirectoryKeys::CACHE), '/'));
         $sessionDirectory = sprintf('%s/%s', $tmpDirectory, ltrim($context->getParam(DirectoryKeys::SESSION), '/'));
 
         // prepare the application specific environment variables
-        $namingDirectory->createSubdirectory(sprintf('php:env/%s', $applicationName));
         $namingDirectory->bind(sprintf('php:env/%s/webappPath', $applicationName), $webappPath);
         $namingDirectory->bind(sprintf('php:env/%s/tmpDirectory', $applicationName), $tmpDirectory);
         $namingDirectory->bind(sprintf('php:env/%s/cacheDirectory', $applicationName), $cacheDirectory);
@@ -675,7 +690,7 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
             }
 
             // log a message that we has successfully been connected now
-            $this->getNamingDirectory()->search('php:global/log/System')->info(sprintf('%s has successfully been connected', $this->getName()));
+            $this->getNamingDirectory()->search(NamingDirectoryKeys::SYSTEM_LOGGER)->info(sprintf('%s has successfully been connected', $this->getName()));
 
             // the application has successfully been initialized
             $this->synchronized(function ($self) {
@@ -700,7 +715,7 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
             }
 
             // log a message that we has successfully been shutdown now
-            $this->getNamingDirectory()->search('php:global/log/System')->info(sprintf('%s start to shutdown managers', $this->getName()));
+            $this->getNamingDirectory()->search(NamingDirectoryKeys::SYSTEM_LOGGER)->info(sprintf('%s start to shutdown managers', $this->getName()));
 
             // array for the manager shutdown threads
             $shutdownThreads = array();
@@ -726,10 +741,10 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
             $this->unload();
 
             // log a message that we has successfully been shutdown now
-            $this->getNamingDirectory()->search('php:global/log/System')->info(sprintf('%s has successfully been shutdown', $this->getName()));
+            $this->getNamingDirectory()->search(NamingDirectoryKeys::SYSTEM_LOGGER)->info(sprintf('%s has successfully been shutdown', $this->getName()));
 
         } catch (\Exception $e) {
-            $this->getNamingDirectory()->search('php:global/log/System')->error($e->__toString());
+            $this->getNamingDirectory()->search(NamingDirectoryKeys::SYSTEM_LOGGER)->error($e->__toString());
         }
     }
 

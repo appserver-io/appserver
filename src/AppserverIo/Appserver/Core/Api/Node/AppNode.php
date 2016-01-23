@@ -31,7 +31,7 @@ use AppserverIo\Psr\Application\ApplicationInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class AppNode extends AbstractNode
+class AppNode extends AbstractNode implements AppNodeInterface
 {
 
     /**

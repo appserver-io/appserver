@@ -64,4 +64,15 @@ abstract class AbstractValueNode extends AbstractNode implements NodeValueInterf
     {
         return $this->nodeValue;
     }
+
+    /**
+     * Returns the node value.
+     *
+     * @return \AppserverIo\Configuration\Interfaces\ValueInterface The node's value
+     * @see \AppserverIo\Appserver\Core\Api\Node\NodeValue::__toString()
+     */
+    public function __toString()
+    {
+        return $this->getNodeValue()->__toString();
+    }
 }

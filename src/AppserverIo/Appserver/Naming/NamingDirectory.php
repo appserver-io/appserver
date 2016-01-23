@@ -342,16 +342,6 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
     }
 
     /**
-     * Returns a string presentation of the naming directory tree.
-     *
-     * @return string The naming directory as string
-     */
-    public function __toString()
-    {
-        return PHP_EOL ."{" . $this->findRoot()->renderRecursive() . "}";
-    }
-
-    /**
      * Returns the root node of the naming directory tree.
      *
      * @return \AppserverIo\Psr\Naming\NamingDirectoryInterface The root node
@@ -369,14 +359,14 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
     }
 
     /**
-     * Appends a string representation to the passed buffer of the passed naming
-     * directory tree.
+     * Builds an array with a string representation of the naming
+     * directories content.
      *
-     * @param string $buffer The string to append to
+     * @param array $buffer The array to append the values to
      *
-     * @return string The buffer append with the string representation
+     * @return array The array with the naming directories string representation
      */
-    public function renderRecursive(&$buffer = PHP_EOL)
+    public function toArray(array &$buffer = array())
     {
 
         // query whether we've attributes or not
@@ -411,17 +401,27 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
                 }
 
                 // append type and value string representations to the buffer
-                $buffer .= sprintf('    "%s%s" %s => %s', $this->getIdentifier(), $key, $type, $val) . PHP_EOL;
+                $buffer[sprintf('%s%s', $this->getIdentifier(), $this->unmaskKey($key))] = sprintf('(%s) %s', $type, $val);
 
                 // if the value is a naming directory also, append it recursive
                 if ($value instanceof NamingDirectoryInterface) {
-                    $value->renderRecursive($buffer);
+                    $value->toArray($buffer);
                 }
             }
         }
 
         // return the buffer
         return $buffer;
+    }
+
+    /**
+     * Returns a string representation of the naming directory
+     *
+     * @return string The string representation of the naming directory
+     */
+    public function __toString()
+    {
+        return implode(PHP_EOL, $this->toArray());
     }
 
     /**

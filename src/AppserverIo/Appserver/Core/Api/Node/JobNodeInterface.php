@@ -20,6 +20,8 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Configuration\Interfaces\NodeInterface;
+
 /**
  * Interface for a CRON job definition.
  *
@@ -29,7 +31,7 @@ namespace AppserverIo\Appserver\Core\Api\Node;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-interface JobNodeInterface
+interface JobNodeInterface extends NodeInterface
 {
 
     /**

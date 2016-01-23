@@ -29,7 +29,7 @@ namespace AppserverIo\Appserver\Core\Api\Node;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class DatabaseNode extends AbstractNode
+class DatabaseNode extends AbstractNode implements DatabaseNodeInterface
 {
 
     /**
