@@ -1,4 +1,4 @@
-# <i class="fa fa-code"></i> 1ST APPSERVER.IO HACKATHON
+# <i class="fa fa-gamepad"></i> 1ST APPSERVER.IO HACKATHON
 ***
 appserver.io is a next-generation PHP infrastructure consisting of a lightning fast webserver completely written in PHP
 including additional frequently needed services like a rewrite engine, a Message Queue, a Timer Service and more in one
