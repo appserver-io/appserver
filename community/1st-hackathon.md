@@ -37,7 +37,7 @@ slider:
 </div>
 </section>
 
-<section class="black">
+<section class="black text-center">
 <div class="container"
 {% capture sectioncontent %}{% include sections/1st-hackathon/outro.md %}{% endcapture %}{{ sectioncontent | markdownify }}
 </div>
