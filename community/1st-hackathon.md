@@ -8,7 +8,7 @@ position: 5
 group: Community
 permalink: /community/1st-hackathon.html
 slider:
-  - img: /assets/img/appserver-header-image-iron-knight.jpg
+  - img: /assets/img/appserver-header-image-hackathon.jpg
     countdown: false
 ---
 
