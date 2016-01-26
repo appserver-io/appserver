@@ -9,7 +9,7 @@ group: Community
 permalink: /community/1st-hackathon.html
 slider:
   - img: /assets/img/appserver-header-image-hackathon.jpg
-    countdown: false
+    img_opacity: .25
 ---
 
 <section class="grey">
