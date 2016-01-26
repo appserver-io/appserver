@@ -12,7 +12,7 @@ slider:
     img_opacity: .75
 ---
 
-<section class="darkgrey text-center">
+<section class="bluegrey">
 <div class="container">
 {% capture sectioncontent %}{% include sections/1st-hackathon/intro.md %}{% endcapture %}
 {{ sectioncontent | markdownify }}
@@ -26,7 +26,7 @@ slider:
 </div>
 </section>
 
-<section class="grey">
+<section class="grey text-center">
 <div class="container">
 {% capture sectioncontent %}{% include sections/1st-hackathon/ticket.md %}{% endcapture %}
 {{ sectioncontent | markdownify }}
@@ -34,7 +34,7 @@ slider:
 </div>
 </section>
 
-<section class="darkgrey">
+<section class="darkgrey text-center">
 <div class="container">
 {% capture sectioncontent %}{% include sections/1st-hackathon/goals.md %}{% endcapture %}
 {{ sectioncontent | markdownify }}
