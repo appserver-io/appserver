@@ -41,4 +41,9 @@ slider:
 </div>
 </section>
 
-<section class="black"></section>
+<section class="black">
+<div class="container"
+If you´ve further questions concerning appserver.io and/or the hackathon just use our
+[gitter chat!](<{{ github_gitter }}>)
+</div>
+</section>
