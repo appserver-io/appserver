@@ -1,4 +1,4 @@
-# OUR GOAL(S)
+# <i class="fa fa-heart"></i> OUR GOAL(S)
 ***
 
 We want to get in contact with passionate web developers building the most powerful open source PHP infrastructure and a
