@@ -13,12 +13,12 @@ PHP in the world.
 But now we need you!!! Join us at the 1st appserver.io hackathon, meet cool people and help us to build really cool and helpful stuff
 based on or within appserver.io.
 
-* Date: Saturday, 23.04. & Sunday, 24.04.16
-* Time: from 9 am to 5 pm (or later ;-))
-* Location: Spinnereiinsel 3a, 83059 Kolbermoor, Germany
-* Food & Drinks: Free and healthy food, snacks and drinks
-* Accomodation: http://www.hotel-heider-kolbermoor.de/ or http://www.sanktgeorg.com/
-* Requirements: Curiosity and passion in development and web technologies, advanced skills in PHP are welcome ;-)
-* Costs: EUR 49.- (special conditions for students available, just contact us!)
+* **Date**: Saturday, 23.04. & Sunday, 24.04.16
+* **Time**: from 9 am to 5 pm (or later ;-))
+* **Location**: Spinnereiinsel 3a, 83059 Kolbermoor, Germany
+* **Food & Drinks**: Free and healthy food, snacks and drinks
+* **Accomodation**: http://www.hotel-heider-kolbermoor.de/ or http://www.sanktgeorg.com/
+* **Requirements**: Curiosity and passion in development and web technologies, advanced skills in PHP are welcome ;-)
+* **Costs**: EUR 49.- (special conditions for students available, [just contact us!](<{{ {{ "{{ appserver_site_contact }} | prepend: site.baseurl }}>))
 
 Further questions? Just use our [Gitter Support Chat!](<{{ github_gitter }}>)
