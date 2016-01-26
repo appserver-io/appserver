@@ -9,12 +9,33 @@ group: Community
 permalink: /community/1st-hackathon.html
 slider:
   - img: /assets/img/appserver-header-image-hackathon.jpg
-    img_opacity: .25
+    img_opacity: .75
 ---
 
 <section class="grey">
 <div class="container">
-{% capture sectioncontent %}{% include sections/1st-hackathon/01.md %}{% endcapture %}
+{% capture sectioncontent %}{% include sections/1st-hackathon/intro.md %}{% endcapture %}
+{{ sectioncontent | markdownify }}
+</div>
+</section>
+
+<section class="grey">
+<div class="container">
+{% capture sectioncontent %}{% include sections/1st-hackathon/ideas.md %}{% endcapture %}
+{{ sectioncontent | markdownify }}
+</div>
+</section>
+
+<section class="grey">
+<div class="container">
+{% capture sectioncontent %}{% include sections/1st-hackathon/ticket.md %}{% endcapture %}
+{{ sectioncontent | markdownify }}
+</div>
+</section>
+
+<section class="grey">
+<div class="container">
+{% capture sectioncontent %}{% include sections/1st-hackathon/goals.md %}{% endcapture %}
 {{ sectioncontent | markdownify }}
 </div>
 </section>
