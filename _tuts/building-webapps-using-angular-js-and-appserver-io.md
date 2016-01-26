@@ -87,7 +87,7 @@ yo angular
 ```
 
 Before you can open our webapp in the browser please add some Virtual-Hosts to the **appserver** configuration. Do so
-by opening `/opt/appserver/et/conf.d/virtual-hosts.xml` with your favorite editor and add this:
+by opening `/opt/appserver/etc/conf.d/virtual-hosts.xml` with your favorite editor and add this:
 
 ```xml
 <virtualHost name="myapp.dist">

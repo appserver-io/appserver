@@ -25,7 +25,7 @@ appserver.io installations. The appserver.io partnership programs differentiate 
             </div>
             <div class="panel-body">
                 <span class="price">30%</span>
-                <span class="period">lifetime commsion on sales</span>
+                <span class="period">lifetime commission on sales</span>
             </div>
             <ul class="list-group list-unstyled">
                 <li>right of sale</li>
@@ -82,6 +82,6 @@ appserver.io installations. The appserver.io partnership programs differentiate 
  
 
 <p><br/></p>
-### <i class="icon-ci fa fa-info-circle"></i> Interessted? Just click [here](http://techdivision.us1.list-manage.com/subscribe/?u=e6acb2703beadfd670dfc87f3&id=74e80f6488) and fill out the form - we´ll contact you shortly
+### <i class="icon-ci fa fa-info-circle"></i> Interested? Just click [here](http://techdivision.us1.list-manage.com/subscribe/?u=e6acb2703beadfd670dfc87f3&id=74e80f6488) and fill out the form - we´ll contact you shortly
 
 

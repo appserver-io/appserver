@@ -124,7 +124,7 @@ os.distribution = debian
 
 So, creating a file `build.properties` containing the line `os.distribution = raspbian` is sufficient for setting up the Raspbian build environment.
 
-> The actual build process can be started by issuing `sudo ant build` on the command line.
+> The actual build process can be started by issuing `sudo ant local-build` on the command line.
 
 But, what about environments without prepared properties?
 

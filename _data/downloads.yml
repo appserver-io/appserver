@@ -40,7 +40,7 @@
   id: fedora21
   family: Fedora
   icon: fa-linux
-  dist-suffix: -31.fc21.x86_64.rpm
+  dist-suffix: -32.fc21.x86_64.rpm
   runtime-suffix: -51.fc21.x86_64.rpm
   separator: "-"
 
