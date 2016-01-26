@@ -7,12 +7,6 @@ group: Community
 permalink: /community/1st-hackathon.html
 ---
 
-<section class="hackathon">
-<div class="container">
-<br/><br/><br/><br/><br/><br/><br/>
-</div>
-</section>
-
 # 1ST APPSERVER.IO HACKATHON
 ***
 appserver.io is a next-generation PHP infrastructure consisting of a lightning fast webserver completely written in PHP
