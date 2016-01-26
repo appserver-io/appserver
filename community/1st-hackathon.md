@@ -43,7 +43,7 @@ slider:
 
 <section class="black">
 <div class="container"
-If you´ve further questions concerning appserver.io and/or the hackathon just use our
-[gitter chat!](<{{ github_gitter }}>)
+{% capture sectioncontent %}{% include sections/1st-hackathon/outro.md %}{% endcapture %}
+{{ sectioncontent | markdownify }}
 </div>
 </section>
