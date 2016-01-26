@@ -19,6 +19,6 @@ based on or within appserver.io.
 * **Food & Drinks**: Free and healthy food, snacks and drinks
 * **Accomodation**: http://www.hotel-heider-kolbermoor.de/ or http://www.sanktgeorg.com/
 * **Requirements**: Curiosity and passion in development and web technologies, advanced skills in PHP are welcome ;-)
-* **Costs**: EUR 49.- (special conditions for students available, [just contact us!](<{{ {{ "{{ appserver_site_contact }} | prepend: site.baseurl }}>))
+* **Costs**: EUR 49.- (special conditions for students available, [just contact us!](<{{ appserver_site_contact | prepend: site.baseurl }}>))
 
 Further questions? Just use our [Gitter Support Chat!](<{{ github_gitter }}>)
