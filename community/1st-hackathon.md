@@ -1,5 +1,5 @@
 ---
-layout: sections
+layout: default
 title: 1st Hackathon
 meta_title: 1st appserver.io Hackathon - next-generation PHP infrastructure
 position: 5
