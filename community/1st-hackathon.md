@@ -8,7 +8,7 @@ position: 5
 group: Community
 permalink: /community/1st-hackathon.html
 slider:
-  - title: 1st appserver.io Hackathon
+  - img: /assets/img/appserver-header-image-iron-knight.jpg
     countdown: false
 ---
 
