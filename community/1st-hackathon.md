@@ -8,19 +8,9 @@ position: 5
 group: Community
 permalink: /community/1st-hackathon.html
 slider:
-  - title: Iron-Knight has arrived!
-    link-href: /downloads.html
-    link-detail-href: /release/2015/11/11/1.1.0-released.html
-    link-label: Download
-    img: /assets/img/appserver-header-image-iron-knight.jpg
+  - title: 1st appserver.io Hackathon
     countdown: false
 ---
-
-<section class="hackathon">
-<div class="container">
-<br/><br/><br/><br/><br/><br/><br/>
-</div>
-</section>
 
 <section class="grey">
 <div class="container">
