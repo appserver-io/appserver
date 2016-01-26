@@ -1,4 +1,4 @@
-# IDEAS FOR THE HACKATHON
+# <i class="fa fa-toggle-on"></i> IDEAS FOR THE HACKATHON
 ***
 
 ## Implementing an application based on appserver.io
