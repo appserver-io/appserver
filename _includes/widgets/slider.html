@@ -13,9 +13,9 @@
     <div class="carousel-inner">
 
         {% for slide in page.slider %}
-        {% if slide.title %}
         <div class="item {% if forloop.first %}active{% endif %}">
             <div class="fill" style="background-image: url('{{ slide.img | prepend: site.baseurl }}');opacity:.5;"></div>
+            {% if slide.title %}
             <div class="carousel-caption">
                 <div class="row">
                     <div class="col-md-6">
@@ -32,8 +32,8 @@
                     </div>
                 </div>
             </div>
+            {% endif %}
         </div>
-        {% endif %}
         {% endfor %}
 
     </div>
