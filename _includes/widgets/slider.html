@@ -17,7 +17,7 @@
             {% if slide.img %}
             <div class="fill" style="background-image: url('{{ slide.img | prepend: site.baseurl }}');{% if slide.opacity %}opacity:{{ slide.opacity }}{% endif %};"></div>
             {% if slide.title %}
-            <div class="carousel-caption">
+            <div class="carousel-caption slider-image">
                 <div class="row">
                     <div class="col-md-6">
                         <img src="https://raw.githubusercontent.com/appserver-io-apps/welcome-page/master/logo_iron-knight_debian_x86_64.png">
@@ -46,7 +46,7 @@
 		</div>
         	<!-- <div class="video-overlay"></div> -->
         	{% if slide.title %}
-            	<div class="carousel-caption">
+            	<div class="carousel-caption slider-video">
                     <div class="row">
 	                <div class="col-md-12">
                             <h1>{{ slide.title }}</h1>
