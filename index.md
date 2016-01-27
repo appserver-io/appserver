@@ -13,7 +13,7 @@ slider:
     img: /assets/img/appserver-header-image-iron-knight.jpg
     img_opacity: .5
     countdown: false
-  - title: 1st Hackathon
+  - title: Join us on our 1st appserver.io Hackathon!
     link-href: /community/1st-hackathon.html
     poster: /assets/vid/programming-ide.jpg
     videos:
