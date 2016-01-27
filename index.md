@@ -15,7 +15,7 @@ slider:
     countdown: false
   - title: 1st Hackathon
     link-href: /community/1st-hackathon.html
-    poster: /assets/video/programming-ide.jpg
+    poster: /assets/vid/programming-ide.jpg
     videos:
       - src: /assets/vid/programming-ide.mp4
         type: video/mp4
