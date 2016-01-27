@@ -19,7 +19,7 @@
  */
 namespace AppserverIo\Appserver\Core\Api\Node\Mock;
 
-use AppserverIo\Appserver\Core\Api\Node\AbstractNode;
+use AppserverIo\Description\Api\Node\AbstractNode;
 use AppserverIo\Appserver\Core\Api\Node\ParamsNodeTrait;
 
 /**

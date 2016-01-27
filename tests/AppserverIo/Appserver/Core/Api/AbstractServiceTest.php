@@ -177,10 +177,24 @@ class AbstractServiceTest extends AbstractServicesTest
     public function testGetTmpDirDirectoryAppended()
     {
 
-        $appendedDirectory = '/test/directory';
-        $result = $this->service->getTmpDir($appendedDirectory);
+        $mockHost = $this->getMockBuilder('\AppserverIo\Appserver\Core\Api\Node\HostNodeInterface')
+            ->setMethods(get_class_methods('\AppserverIo\Appserver\Core\Api\Node\HostNodeInterface'))
+            ->getMock();
+        $mockHost->expects($this->exactly(2))
+            ->method('getTmpBase')
+            ->willReturn('var/tmp');
 
-        $this->assertEquals($this->service->getTmpDir() . $appendedDirectory, $result);
+        $mockContainer = $this->getMockBuilder('\AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface')
+            ->setMethods(get_class_methods('\AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface'))
+            ->getMock();
+        $mockContainer->expects($this->exactly(2))
+            ->method('getHost')
+            ->willReturn($mockHost);
+
+        $appendedDirectory = '/test/directory';
+        $result = $this->service->getTmpDir($mockContainer, $appendedDirectory);
+
+        $this->assertEquals($this->service->getTmpDir($mockContainer) . $appendedDirectory, $result);
     }
 
     /**
@@ -190,7 +204,22 @@ class AbstractServiceTest extends AbstractServicesTest
      */
     public function testGetTmpDirNothingToAppend()
     {
-        $tmpDir = $this->service->getTmpDir();
+
+        $mockHost = $this->getMockBuilder('\AppserverIo\Appserver\Core\Api\Node\HostNodeInterface')
+            ->setMethods(get_class_methods('\AppserverIo\Appserver\Core\Api\Node\HostNodeInterface'))
+            ->getMock();
+        $mockHost->expects($this->once())
+            ->method('getTmpBase')
+            ->willReturn('var/tmp');
+
+        $mockContainer = $this->getMockBuilder('\AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface')
+            ->setMethods(get_class_methods('\AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface'))
+            ->getMock();
+        $mockContainer->expects($this->once())
+            ->method('getHost')
+            ->willReturn($mockHost);
+
+        $tmpDir = $this->service->getTmpDir($mockContainer);
 
         $this->assertEquals('/opt/appserver/var/tmp', $tmpDir);
         $this->assertNotEquals('/opt/appserver/var/tmp/test/directory', $tmpDir);
@@ -203,10 +232,25 @@ class AbstractServiceTest extends AbstractServicesTest
      */
     public function testGetDeployDirDirectoryAppended()
     {
-        $appendedDirectory = '/test/directory';
-        $result = $this->service->getDeployDir($appendedDirectory);
 
-        $this->assertEquals($this->service->getDeployDir() . $appendedDirectory, $result);
+        $mockHost = $this->getMockBuilder('\AppserverIo\Appserver\Core\Api\Node\HostNodeInterface')
+            ->setMethods(get_class_methods('\AppserverIo\Appserver\Core\Api\Node\HostNodeInterface'))
+            ->getMock();
+        $mockHost->expects($this->exactly(2))
+            ->method('getDeployBase')
+            ->willReturn('deploy');
+
+        $mockContainer = $this->getMockBuilder('\AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface')
+            ->setMethods(get_class_methods('\AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface'))
+            ->getMock();
+        $mockContainer->expects($this->exactly(2))
+            ->method('getHost')
+            ->willReturn($mockHost);
+
+        $appendedDirectory = '/test/directory';
+        $result = $this->service->getDeployDir($mockContainer, $appendedDirectory);
+
+        $this->assertEquals($this->service->getDeployDir($mockContainer) . $appendedDirectory, $result);
     }
 
     /**
@@ -216,7 +260,22 @@ class AbstractServiceTest extends AbstractServicesTest
      */
     public function testGetDeployDirNothingToAppend()
     {
-        $deployDir = $this->service->getDeployDir();
+
+        $mockHost = $this->getMockBuilder('\AppserverIo\Appserver\Core\Api\Node\HostNodeInterface')
+            ->setMethods(get_class_methods('\AppserverIo\Appserver\Core\Api\Node\HostNodeInterface'))
+            ->getMock();
+        $mockHost->expects($this->once())
+            ->method('getDeployBase')
+            ->willReturn('deploy');
+
+        $mockContainer = $this->getMockBuilder('\AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface')
+            ->setMethods(get_class_methods('\AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface'))
+            ->getMock();
+        $mockContainer->expects($this->once())
+            ->method('getHost')
+            ->willReturn($mockHost);
+
+        $deployDir = $this->service->getDeployDir($mockContainer);
 
         $this->assertEquals('/opt/appserver/deploy', $deployDir);
         $this->assertNotEquals('/opt/appserver/deploy/test/directory', $deployDir);
@@ -230,10 +289,25 @@ class AbstractServiceTest extends AbstractServicesTest
      */
     public function testGetWebappsDirDirectoryAppended()
     {
-        $appendedDirectory = '/test/directory';
-        $result = $this->service->getWebappsDir($appendedDirectory);
 
-        $this->assertEquals($this->service->getWebappsDir() . $appendedDirectory, $result);
+        $mockHost = $this->getMockBuilder('\AppserverIo\Appserver\Core\Api\Node\HostNodeInterface')
+            ->setMethods(get_class_methods('\AppserverIo\Appserver\Core\Api\Node\HostNodeInterface'))
+            ->getMock();
+        $mockHost->expects($this->exactly(2))
+            ->method('getAppBase')
+            ->willReturn('webapps');
+
+        $mockContainer = $this->getMockBuilder('\AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface')
+            ->setMethods(get_class_methods('\AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface'))
+            ->getMock();
+        $mockContainer->expects($this->exactly(2))
+            ->method('getHost')
+            ->willReturn($mockHost);
+
+        $appendedDirectory = '/test/directory';
+        $result = $this->service->getWebappsDir($mockContainer, $appendedDirectory);
+
+        $this->assertEquals($this->service->getWebappsDir($mockContainer) . $appendedDirectory, $result);
     }
 
     /**
@@ -243,7 +317,22 @@ class AbstractServiceTest extends AbstractServicesTest
      */
     public function testGetWebappsDirNothingToAppend()
     {
-        $webappsDir = $this->service->getWebappsDir();
+
+        $mockHost = $this->getMockBuilder('\AppserverIo\Appserver\Core\Api\Node\HostNodeInterface')
+            ->setMethods(get_class_methods('\AppserverIo\Appserver\Core\Api\Node\HostNodeInterface'))
+            ->getMock();
+        $mockHost->expects($this->once())
+            ->method('getAppBase')
+            ->willReturn('webapps');
+
+        $mockContainer = $this->getMockBuilder('\AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface')
+            ->setMethods(get_class_methods('\AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface'))
+            ->getMock();
+        $mockContainer->expects($this->once())
+            ->method('getHost')
+            ->willReturn($mockHost);
+
+        $webappsDir = $this->service->getWebappsDir($mockContainer);
 
         $this->assertEquals('/opt/appserver/webapps', $webappsDir);
         $this->assertNotEquals('/opt/appserver/webapps/test/directory', $webappsDir);

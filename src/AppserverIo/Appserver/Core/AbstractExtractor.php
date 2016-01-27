@@ -233,7 +233,6 @@ abstract class AbstractExtractor implements ExtractorInterface
     public function undeployArchive(ContainerNodeInterface $containerNode, \SplFileInfo $archive)
     {
         try {
-
             // create webapp folder name based on the archive's basename
             $webappFolderName = new \SplFileInfo(
                 $this->getWebappsDir($containerNode, basename($archive->getFilename(), $this->getExtensionSuffix()))

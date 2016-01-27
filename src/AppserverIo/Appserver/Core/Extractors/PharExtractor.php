@@ -154,7 +154,7 @@ class PharExtractor extends AbstractExtractor
      * passed archive.
      *
      * @param \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode The container the archive belongs to
-     * @param \SplFileInfo                                                 $archive      Backup files that are NOT part of this archive
+     * @param \SplFileInfo                                                $archive       Backup files that are NOT part of this archive
      *
      * @return void
      */

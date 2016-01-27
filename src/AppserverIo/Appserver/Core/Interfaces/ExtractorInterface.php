@@ -21,6 +21,7 @@
 namespace AppserverIo\Appserver\Core\Interfaces;
 
 use AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface;
+
 /**
  * Interface for extractor implementations.
  *

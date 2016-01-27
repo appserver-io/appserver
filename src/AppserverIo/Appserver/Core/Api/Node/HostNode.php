@@ -32,7 +32,7 @@ use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class HostNode extends AbstractNode
+class HostNode extends AbstractNode implements HostNodeInterface
 {
 
     /**
