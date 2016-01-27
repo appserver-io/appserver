@@ -21,4 +21,4 @@ based on or within appserver.io.
 * **Requirements**: Curiosity and passion in development and web technologies, advanced skills in PHP are welcome ;-)
 * **Costs**: EUR 49.- (special conditions for students available, [just contact us!](<{{ site.appserver_site_contact | prepend: site.baseurl }}>))
 
-Further questions? Just use our [Gitter Support Chat!](<{{ github_gitter }}>)
+Further questions? Just use our [Gitter Support Chat!](<{{ site.github_gitter }}>)
