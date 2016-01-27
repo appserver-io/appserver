@@ -29,7 +29,7 @@
 			// media player when clicked
 			var iOS = /iPad|iPhone|iPod/.test(navigator.platform) || /iPad|iPhone|iPod/.test(navigator.userAgent);
 			if( iOS ) {
-				$('video').remove();
+				$('video source').remove();
 			}
 
 		});
