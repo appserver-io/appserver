@@ -37,6 +37,7 @@
         {% endfor %}
 
     </div>
+    {% if page.slider.size > 1  %}
     <!-- Controls -->
     <a class="left carousel-control" href="#myCarousel" data-slide="prev">
         <span class="icon-prev"></span>
@@ -44,5 +45,6 @@
     <a class="right carousel-control" href="#myCarousel" data-slide="next">
         <span class="icon-next"></span>
     </a>
+    {% endif %}
 </div>
 {% endif %}
