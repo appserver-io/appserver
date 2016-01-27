@@ -14,7 +14,8 @@ slider:
     img_opacity: .5
     countdown: false
   - title: Join us on our 1st appserver.io Hackathon!
-    link-href: /community/1st-hackathon.html
+    link-detail-href: /community/1st-hackathon.html
+    link-label: <i class="fa fa-ticket"></i> Get your ticket now!
     poster: /assets/vid/programming-ide.jpg
     videos:
       - src: /assets/vid/programming-ide.mp4
