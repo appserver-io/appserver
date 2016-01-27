@@ -13,6 +13,18 @@ slider:
     img: /assets/img/appserver-header-image-iron-knight.jpg
     img_opacity: .5
     countdown: false
+  - title: 1st Hackathon
+    link-href: /community/1st-hackathon.html
+    poster: /assets/video/programming-ide.jpg
+    videos:
+      - src: /assets/video/programming-ide.mp4
+        type: video/mp4
+      - src: /assets/video/programming-ide.webm
+        type: video/webm
+      - src: /assets/video/programming-ide.ogv
+        type: video/ogg
+    img_opacity: .5
+    countdown: false
 
 boxes-targetgroups:
   - title       : For Developers
