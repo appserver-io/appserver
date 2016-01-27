@@ -15,7 +15,7 @@
         {% for slide in page.slider %}
         <div class="item {% if forloop.first %}active{% endif %}">
             {% if slide.img %}
-            <div class="fill" style="background-image: url('{{ slide.img | prepend: site.baseurl }}');opacity:{% if slide.img_opacity %}{{ slide.img_opacity }}{% endif %};"></div>
+            <div class="fill" style="background-image: url('{{ slide.img | prepend: site.baseurl }}');{% if slide.opacity %}opacity:{{ slide.opacity }}{% endif %};"></div>
             {% if slide.title %}
             <div class="carousel-caption">
                 <div class="row">
@@ -37,7 +37,7 @@
             {% endif %}
             
             {% if slide.videos %}
-    		<div>
+    		<div style="{% if slide.opacity %}opacity:{{ slide.opacity }}{% endif %};">
     		    <video autoplay muted loop poster="{{ slide.poster }}">
 	    	    {% for video in slide.videos %}
 	    		<source src="{{ video.src }}" type="{{ video.type }}">
