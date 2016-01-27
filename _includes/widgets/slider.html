@@ -36,13 +36,13 @@
             {% endif %}
             {% endif %}
             
-            {% if slide.video %}
+            {% if slide.videos %}
             <div class="video-hero">
 	            <div class="video-bg demo-video">
-            		<video autoplay muted loop poster="files/programming-ide.jpg">
-            			<source src="files/programming-ide.mp4" type="video/mp4">
-            			<source src="files/programming-ide.webm" type="video/webm">
-            			<source src="files/programming-ide.ogv" type="video/ogg">
+			<video autoplay muted loop poster="{{ slide.poster }}">
+            			{% for video in slide.videos %}
+            			<source src="{{ video.src }}" type="{{ video.type }}">
+            			{% endfor %}
             		</video>
             	</div>
             	<div class="video-overlay"></div>
