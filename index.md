@@ -17,12 +17,13 @@ slider:
         type: video/webm
       - src: /assets/vid/programming-ide.ogv
         type: video/ogg
+    opacity: .8
   - title: Iron-Knight has arrived!
     link-href: /downloads.html
     link-detail-href: /release/2015/11/11/1.1.0-released.html
     link-label: Download
     img: /assets/img/appserver-header-image-iron-knight.jpg
-    img_opacity: .5
+    opacity: .5
     countdown: false
 
 boxes-targetgroups:
