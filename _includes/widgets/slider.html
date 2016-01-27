@@ -14,6 +14,7 @@
 
         {% for slide in page.slider %}
         <div class="item {% if forloop.first %}active{% endif %}">
+            {% if slide.img %}
             <div class="fill" style="background-image: url('{{ slide.img | prepend: site.baseurl }}');opacity:{% if slide.img_opacity %}{{ slide.img_opacity }}{% endif %};"></div>
             {% if slide.title %}
             <div class="carousel-caption">
@@ -33,6 +34,29 @@
                 </div>
             </div>
             {% endif %}
+            {% endif %}
+            
+            {% if slide.video %}
+            <div class="video-hero">
+	            <div class="video-bg demo-video">
+            		<video autoplay muted loop poster="files/programming-ide.jpg">
+            			<source src="files/programming-ide.mp4" type="video/mp4">
+            			<source src="files/programming-ide.webm" type="video/webm">
+            			<source src="files/programming-ide.ogv" type="video/ogg">
+            		</video>
+            	</div>
+            	<div class="video-overlay"></div>
+            	 {% if slide.title %}
+            	<div class="page-width">
+            		<div class="video-hero--content">
+            			<h2>{{ slide.title }}</h2>
+                        <a href="{{ slide.link-detail-href | prepend: site.baseurl }}" class="btn btn-default"><i class="fa fa-file-text-o fa-lg"></i>&nbsp;&nbsp;More details...</a>
+            		</div>
+            	</div>
+            	{% endif %}
+            </div>
+            {% endif %}
+            
         </div>
         {% endfor %}
 
