@@ -70,7 +70,7 @@ appserver.io and PHP and you´re done!
 <div class="container">
 
 <div class="bs-example" data-example-id="simple-table">
-  <table class="table">
+  <table class="table table-responsive">
       <thead>
           <tr>
               <th class="col-md-3"><h4>Feature</h4></th>
