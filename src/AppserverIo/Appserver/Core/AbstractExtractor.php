@@ -23,6 +23,7 @@ namespace AppserverIo\Appserver\Core;
 use AppserverIo\Appserver\Application\Interfaces\ContextInterface;
 use AppserverIo\Appserver\Core\Interfaces\ExtractorInterface;
 use AppserverIo\Appserver\Core\Api\Node\ExtractorNodeInterface;
+use AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface;
 
 /**
  * Abstract extractor functionality.
@@ -99,15 +100,16 @@ abstract class AbstractExtractor implements ExtractorInterface
     {
 
         // iterate over the deploy directories and deploy all archives
-        foreach ($this->getDeployDirs() as $deployDir) {
+        /** @var \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode */
+        foreach ($this->getService()->getSystemConfiguration()->getContainers() as $containerNode) {
             // check if deploy dir exists
-            if (is_dir($deployDir)) {
+            if (is_dir($deployDir = $this->getService()->getBaseDirectory($containerNode->getHost()->getDeployBase()))) {
                 // init file iterator on deployment directory
                 $fileIterator = new \FilesystemIterator($deployDir);
                 // Iterate through all phar files and extract them to tmp dir
                 foreach (new \RegexIterator($fileIterator, '/^.*\\' . $this->getExtensionSuffix() . '$/') as $archive) {
-                    // $this->undeployArchive($archive);
-                    $this->deployArchive($archive);
+                    $this->undeployArchive($containerNode, $archive);
+                    $this->deployArchive($containerNode, $archive);
                 }
             }
 
@@ -199,16 +201,17 @@ abstract class AbstractExtractor implements ExtractorInterface
     /**
      * (non-PHPdoc)
      *
-     * @param \SplFileInfo $archive The archive to be soaked
+     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode The container the archive belongs to
+     * @param \SplFileInfo                                                $archive       The archive to be soaked
      *
      * @return void
      * @see \AppserverIo\Appserver\Core\Interfaces\ExtractorInterface::soakArchive()
      */
-    public function soakArchive(\SplFileInfo $archive)
+    public function soakArchive(ContainerNodeInterface $containerNode, \SplFileInfo $archive)
     {
 
         // prepare the upload target in the deploy directory
-        $target = $this->getDeployDir($archive->getFilename());
+        $target = $this->getDeployDir($containerNode, $archive->getFilename());
 
         // move the uploaded file from the tmp to the deploy directory
         rename($archive->getPathname(), $target);
@@ -220,18 +223,19 @@ abstract class AbstractExtractor implements ExtractorInterface
     /**
      * (non-PHPdoc)
      *
-     * @param \SplFileInfo $archive The archive file to be undeployed
+     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode The container the archive belongs to
+     * @param \SplFileInfo                                                $archive       The archive file to be undeployed
      *
      * @throws \Exception
      * @return void
      * @see \AppserverIo\Appserver\Core\Interfaces\ExtractorInterface::undeployArchive()
      */
-    public function undeployArchive(\SplFileInfo $archive)
+    public function undeployArchive(ContainerNodeInterface $containerNode, \SplFileInfo $archive)
     {
         try {
             // create webapp folder name based on the archive's basename
             $webappFolderName = new \SplFileInfo(
-                $this->getWebappsDir(basename($archive->getFilename(), $this->getExtensionSuffix()))
+                $this->getWebappsDir($containerNode, basename($archive->getFilename(), $this->getExtensionSuffix()))
             );
 
             // check if app has to be undeployed
@@ -240,7 +244,7 @@ abstract class AbstractExtractor implements ExtractorInterface
                 $this->flagArchive($archive, ExtractorInterface::FLAG_UNDEPLOYING);
 
                 // backup files that are NOT part of the archive
-                $this->backupArchive($archive);
+                $this->backupArchive($containerNode, $archive);
 
                 // delete directories previously backed up
                 $this->removeDir($webappFolderName);
@@ -266,11 +270,12 @@ abstract class AbstractExtractor implements ExtractorInterface
     /**
      * Restores the backup files from the backup directory.
      *
-     * @param \SplFileInfo $archive To restore the files for
+     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode The container the archive belongs to
+     * @param \SplFileInfo                                                $archive       To restore the files for
      *
      * @return void
      */
-    public function restoreBackup(\SplFileInfo $archive)
+    public function restoreBackup(ContainerNodeInterface $containerNode, \SplFileInfo $archive)
     {
 
         // if we don't want create backups we can't restore them, so do nothing
@@ -279,8 +284,8 @@ abstract class AbstractExtractor implements ExtractorInterface
         }
 
         // create tmp & webapp folder name based on the archive's basename
-        $webappFolderName = $this->getWebappsDir(basename($archive->getFilename(), $this->getExtensionSuffix()));
-        $tmpFolderName = $this->getTmpDir(md5(basename($archive->getFilename(), $this->getExtensionSuffix())));
+        $webappFolderName = $this->getWebappsDir($containerNode, basename($archive->getFilename(), $this->getExtensionSuffix()));
+        $tmpFolderName = $this->getTmpDir($containerNode, md5(basename($archive->getFilename(), $this->getExtensionSuffix())));
 
         // copy backup to webapp directory
         $this->copyDir($tmpFolderName, $webappFolderName);
@@ -307,27 +312,6 @@ abstract class AbstractExtractor implements ExtractorInterface
 
         // delete the directory itself if empty
         @rmdir($dir->getPathname());
-    }
-
-    /**
-     * Load's the containers deploy directories.
-     *
-     * @return array The array with the deploy directories
-     */
-    public function getDeployDirs()
-    {
-
-        // initialize the array
-        $deployDirs = array();
-
-        // iterate over all containers and load the deploy directories
-        /** @var \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode */
-        foreach ($this->getService()->getSystemConfiguration()->getContainers() as $containerNode) {
-            $deployDirs[] = $this->getService()->getBaseDirectory($containerNode->getHost()->getDeployBase());
-        }
-
-        // return the array
-        return $deployDirs;
     }
 
     /**
@@ -374,39 +358,54 @@ abstract class AbstractExtractor implements ExtractorInterface
     }
 
     /**
-     * Returns the servers tmp directory.
+     * Returns the container's tmp directory.
      *
-     * @param string $relativePathToAppend A relative path to append
-     *
-     * @return string
-     */
-    public function getTmpDir($relativePathToAppend = '')
-    {
-        return $this->getService()->getTmpDir($relativePathToAppend);
-    }
-
-    /**
-     * Returns the servers deploy directory.
-     *
-     * @param string $relativePathToAppend A relative path to append
+     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerInterface $containerNode        The container to return the temporary directory for
+     * @param string                                                  $relativePathToAppend A relative path to append
      *
      * @return string
      */
-    public function getDeployDir($relativePathToAppend = '')
+    public function getTmpDir(ContainerNodeInterface $containerNode, $relativePathToAppend = '')
     {
-        return $this->getService()->getDeployDir($relativePathToAppend);
+        return $this->getService()->realpath(
+            $this->getService()->makePathAbsolute(
+                $containerNode->getHost()->getTmpBase() . $this->getService()->makePathAbsolute($relativePathToAppend)
+            )
+        );
     }
 
     /**
-     * Returns the servers webapps directory.
+     * Returns the container's deploy directory.
      *
-     * @param string $relativePathToAppend A relative path to append
+     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerInterface $containerNode        The container to return the temporary directory for
+     * @param string                                                  $relativePathToAppend A relative path to append
+     *
+     * @return string
+     */
+    public function getDeployDir(ContainerNodeInterface $containerNode, $relativePathToAppend = '')
+    {
+        return $this->getService()->realpath(
+            $this->getService()->makePathAbsolute(
+                $containerNode->getHost()->getDeployBase() . $this->getService()->makePathAbsolute($relativePathToAppend)
+            )
+        );
+    }
+
+    /**
+     * Returns the container's webapps directory.
+     *
+     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerInterface $containerNode        The container to return the temporary directory for
+     * @param string                                                  $relativePathToAppend A relative path to append
      *
      * @return string The web application directory
      */
-    public function getWebappsDir($relativePathToAppend = '')
+    public function getWebappsDir(ContainerNodeInterface $containerNode, $relativePathToAppend = '')
     {
-        return $this->getService()->getWebappsDir($relativePathToAppend);
+        return $this->getService()->realpath(
+            $this->getService()->makePathAbsolute(
+                $containerNode->getHost()->getAppBase() . $this->getService()->makePathAbsolute($relativePathToAppend)
+            )
+        );
     }
 
     /**

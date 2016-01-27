@@ -20,9 +20,10 @@
 
 namespace AppserverIo\Appserver\Core\Api;
 
-use AppserverIo\Configuration\Interfaces\NodeInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
+use AppserverIo\Configuration\Interfaces\NodeInterface;
 use AppserverIo\Appserver\Core\Api\Node\AppNode;
+use AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface;
 use AppserverIo\Appserver\Core\Interfaces\ExtractorInterface;
 use AppserverIo\Appserver\Core\Extractors\PharExtractor;
 
@@ -194,32 +195,34 @@ class AppService extends AbstractFileOperationService
      * Soaks the passed archive into from a location in the filesystem
      * to the deploy directory.
      *
-     * @param \SplFileInfo $archive The archive to soak
+     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerInterface $containerNode The container the archive is bound to
+     * @param \SplFileInfo                                            $archive       The archive to soak
      *
      * @return void
      */
-    public function soak(\SplFileInfo $archive)
+    public function soak(ContainerNodeInterface $containerNode, \SplFileInfo $archive)
     {
         $extractor = $this->getExtractor();
-        $extractor->soakArchive($archive);
+        $extractor->soakArchive($containerNode, $archive);
     }
 
     /**
      * Adds the .dodeploy flag file in the deploy folder, therefore the
      * app will be deployed with the next restart.
      *
-     * @param \AppserverIo\Configuration\Interfaces\NodeInterface $appNode The application node object
+     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerInterface $containerNode The container the app is bound to
+     * @param \AppserverIo\Configuration\Interfaces\NodeInterface     $appNode       The application node object
      *
      * @return void
      */
-    public function deploy(NodeInterface $appNode)
+    public function deploy(ContainerNodeInterface $containerNode, NodeInterface $appNode)
     {
         // prepare file name
         $extractor = $this->getExtractor();
         $fileName = $appNode->getName() . $extractor->getExtensionSuffix();
 
         // load the file info
-        $archive = new \SplFileInfo($this->getDeployDir() . DIRECTORY_SEPARATOR . $fileName);
+        $archive = new \SplFileInfo($this->getDeployDir($containerNode) . DIRECTORY_SEPARATOR . $fileName);
 
         // flag the archive => deploy it with the next restart
         $extractor->flagArchive($archive, ExtractorInterface::FLAG_DODEPLOY);
@@ -229,12 +232,13 @@ class AppService extends AbstractFileOperationService
      * Removes the .deployed flag file from the deploy folder, therefore the
      * app will be undeployed with the next restart.
      *
-     * @param string $uuid UUID of the application to delete
+     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerInterface $containerNode The container the app is bound to
+     * @param string                                                  $uuid          UUID of the application to delete
      *
      * @return void
      * @todo Add functionality to delete the deployed app
      */
-    public function undeploy($uuid)
+    public function undeploy(ContainerNodeInterface $containerNode, $uuid)
     {
 
         // try to load the app node with the passe UUID
@@ -244,7 +248,7 @@ class AppService extends AbstractFileOperationService
             $fileName = $appNode->getName() . $extractor->getExtensionSuffix();
 
             // load the file info
-            $archive = new \SplFileInfo($this->getDeployDir() . DIRECTORY_SEPARATOR . $fileName);
+            $archive = new \SplFileInfo($this->getDeployDir($containerNode) . DIRECTORY_SEPARATOR . $fileName);
 
             // un-flag the archiv => un-deploy it with the next restart
             $extractor->unflagArchive($archive);

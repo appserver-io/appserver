@@ -20,6 +20,8 @@
 
 namespace AppserverIo\Appserver\Core\Interfaces;
 
+use AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface;
+
 /**
  * Interface for extractor implementations.
  *
@@ -63,33 +65,36 @@ interface ExtractorInterface
      * into the deploy directory and prepares it for the next
      * restart by setting the appropriate flag.
      *
-     * @param \SplFileInfo $archive The archive to be soaked
+     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode The container the archive belongs to
+     * @param \SplFileInfo                                                $archive       The archive to be soaked
      *
      * @return void
      */
-    public function soakArchive(\SplFileInfo $archive);
+    public function soakArchive(ContainerNodeInterface $containerNode, \SplFileInfo $archive);
 
     /**
      * Extracts the passed archive to a folder with the
      * basename of the archive file.
      *
-     * @param \SplFileInfo $archive The archive file to be deployed
+     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode The container the archive belongs to
+     * @param \SplFileInfo                                                $archive       The archive file to be deployed
      *
      * @throws \Exception
      * @return void
      */
-    public function deployArchive(\SplFileInfo $archive);
+    public function deployArchive(ContainerNodeInterface $containerNode, \SplFileInfo $archive);
 
     /**
      * Un-deploys the passed archive after backing up
      * files that are NOT part of the archive.
      *
-     * @param \SplFileInfo $archive The archive file to be un-deployed
+     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode The container the archive belongs to
+     * @param \SplFileInfo                                                $archive       The archive file to be un-deployed
      *
      * @throws \Exception
      * @return void
      */
-    public function undeployArchive(\SplFileInfo $archive);
+    public function undeployArchive(ContainerNodeInterface $containerNode, \SplFileInfo $archive);
 
     /**
      * Checks if archive is deployable.

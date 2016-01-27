@@ -235,6 +235,33 @@ class ContainerService extends AbstractFileOperationService
             }
         }
 
+        // create the container specific directories
+        /** @var \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode */
+        foreach ($this->getSystemConfiguration()->getContainers() as $containerNode) {
+            // iterate over the container host's directories
+            foreach ($containerNode->getHost()->getDirectories() as $directory) {
+                // prepare the path to the directory to be created
+                $toBeCreated = $this->realpath($directory);
+
+                // prepare the directory name and check if the directory already exists
+                if (is_dir($toBeCreated) === false) {
+                    // if not, try to create it
+                    if (mkdir($toBeCreated, 0755, true) === false) {
+                        throw new \Exception(
+                            sprintf('Can\'t create necessary directory %s while starting application server', $toBeCreated)
+                        );
+                    }
+
+                    // set user/group specified from the system configuration
+                    if ($this->setUserRights(new \SplFileInfo($toBeCreated), $user, $group) === false) {
+                        throw new \Exception(
+                            sprintf('Can\'t switch user/group to %s/% for directory %s while starting application server', $user, $group, $toBeCreated)
+                        );
+                    }
+                }
+            }
+        }
+
         // check if specific directories has to be cleaned up on startup
         foreach (DirectoryKeys::getServerDirectoryKeysToBeCleanedUp() as $directoryKey) {
             // prepare the path to the directory to be cleaned up
@@ -346,8 +373,14 @@ class ContainerService extends AbstractFileOperationService
 
                 // first check if it is a fresh installation
                 if ($isInstalledFlag->isReadable() === false) {
-                    // set example app dodeploy flag to be deployed for a fresh installation
-                    touch($this->getDeployDir('example.phar.dodeploy'));
+                     // first iterate over all containers deploy directories and look for application archives
+                     /** @var \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode */
+                    foreach ($this->getSystemConfiguration()->getContainers() as $containerNode) {
+                        // iterate over all found application archives and create the .dodeploy flag file
+                        foreach (glob($this->getDeployDir($containerNode, '/*.phar')) as $archive) {
+                            touch(sprintf('%s.dodeploy', $archive));
+                        }
+                    }
                 }
 
                 // create is installed flag for prevent further setup install mode calls
@@ -377,13 +410,9 @@ class ContainerService extends AbstractFileOperationService
                     FileSystem::chown($rootFile, $user, $group);
                 }
             }
+
             // ... and change own and mod of following directories
             FileSystem::chown($this->getBaseDirectory(), $user, $group);
-            FileSystem::chown($this->getWebappsDir(), $user, $group);
-            FileSystem::recursiveChown($this->getTmpDir(), $user, $group);
-            FileSystem::recursiveChmod($this->getTmpDir());
-            FileSystem::recursiveChown($this->getDeployDir(), $user, $group);
-            FileSystem::recursiveChmod($this->getDeployDir());
             FileSystem::recursiveChown($this->getBaseDirectory('resources'), $user, $group);
             FileSystem::recursiveChmod($this->getBaseDirectory('resources'));
             FileSystem::recursiveChown($this->getBaseDirectory('src'), $user, $group);
@@ -394,6 +423,17 @@ class ContainerService extends AbstractFileOperationService
             FileSystem::recursiveChmod($this->getBaseDirectory('tests'));
             FileSystem::recursiveChown($this->getBaseDirectory('vendor'), $user, $group);
             FileSystem::recursiveChmod($this->getBaseDirectory('vendor'));
+
+            // ... and change own and mod for the container specific directories
+            /** @var \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode */
+            foreach ($this->getSystemConfiguration()->getContainers() as $containerNode) {
+                FileSystem::chown($this->getWebappsDir($containerNode), $user, $group);
+                FileSystem::recursiveChown($this->getTmpDir($containerNode), $user, $group);
+                FileSystem::recursiveChmod($this->getTmpDir($containerNode));
+                FileSystem::recursiveChown($this->getDeployDir($containerNode), $user, $group);
+                FileSystem::recursiveChmod($this->getDeployDir($containerNode));
+            }
+
             // make server.php executable
             FileSystem::chmod($this->getBaseDirectory('server.php'), 0755);
 

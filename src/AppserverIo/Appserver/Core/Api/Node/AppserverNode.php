@@ -22,6 +22,8 @@ namespace AppserverIo\Appserver\Core\Api\Node;
 
 use Psr\Log\LogLevel;
 use AppserverIo\Logger\LoggerUtils;
+use AppserverIo\Description\Api\Node\NodeValue;
+use AppserverIo\Description\Api\Node\AbstractNode;
 use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
 use AppserverIo\Appserver\Core\Utilities\FileKeys;
 use AppserverIo\Appserver\Core\Interfaces\SystemConfigurationInterface;
@@ -116,6 +118,21 @@ class AppserverNode extends AbstractNode implements SystemConfigurationInterface
     }
 
     /**
+     * Will be invoked after the node will be initialized from
+     * the configuration values.
+     *
+     * @return void
+     */
+    protected function postInit()
+    {
+        // call parent method
+        parent::postInit();
+
+        // initialize the containers deployment scanners
+        $this->initDeploymentScanners();
+    }
+
+    /**
      * Initialize the default directories.
      *
      * @return void
@@ -162,34 +179,55 @@ class AppserverNode extends AbstractNode implements SystemConfigurationInterface
     }
 
     /**
-     * Initializes the default scanners for archive based deployment.
+     * Initializes the default deployment scanners for archive based deployment.
+     *
+     * @return void
+     */
+    protected function initDeploymentScanners()
+    {
+
+        // iterate over the containers and initialize the default deployment scanners
+        /** @var \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode */
+        foreach ($this->getContainers() as $containerNode) {
+            // prepare the scanner's name
+            $scannerName = sprintf('deployment-%s', $containerNode->getName());
+
+            // if the scanner has already been registered, do NOT override it
+            if (isset($this->scanners[$scannerName])) {
+                continue;
+            }
+
+            // initialize the params for the deployment scanner
+            $scannerParams = array();
+            $intervalParam = new ParamNode('interval', 'integer', new NodeValue(1));
+            $extensionsToWatchParam = new ParamNode('extensionsToWatch', 'string', new NodeValue('dodeploy, deployed'));
+            $scannerParams[$intervalParam->getPrimaryKey()] = $intervalParam;
+            $scannerParams[$extensionsToWatchParam->getPrimaryKey()] = $extensionsToWatchParam;
+
+            // initialize the directories to scan
+            $directories = array(new DirectoryNode(new NodeValue($containerNode->getHost()->getDeployBase())));
+
+            // initialize the deployment scanner for the container
+            $deploymentScanner = new ScannerNode(
+                $scannerName,
+                'AppserverIo\Appserver\Core\Scanner\DeploymentScanner',
+                'AppserverIo\Appserver\Core\Scanner\DirectoryScannerFactory',
+                $scannerParams,
+                $directories
+            );
+
+            // add scanner to the appserver node
+            $this->scanners[$scannerName] = $deploymentScanner;
+        }
+    }
+
+    /**
+     * Initializes the default logrotate and CRON scanners.
      *
      * @return void
      */
     protected function initDefaultScanners()
     {
-
-        // initialize the params for the deployment scanner
-        $scannerParams = array();
-        $intervalParam = new ParamNode('interval', 'integer', new NodeValue(1));
-        $extensionsToWatchParam = new ParamNode('extensionsToWatch', 'string', new NodeValue('dodeploy, deployed'));
-        $scannerParams[$intervalParam->getPrimaryKey()] = $intervalParam;
-        $scannerParams[$extensionsToWatchParam->getPrimaryKey()] = $extensionsToWatchParam;
-
-        // initialize the directories to scan
-        $directories = array(new DirectoryNode(new NodeValue('deploy')));
-
-        // initialize the deployment scanner
-        $deploymentScanner = new ScannerNode(
-            'deployment',
-            'AppserverIo\Appserver\Core\Scanner\DeploymentScanner',
-            'AppserverIo\Appserver\Core\Scanner\DirectoryScannerFactory',
-            $scannerParams,
-            $directories
-        );
-
-        // add scanner to the appserver node
-        $this->scanners[$deploymentScanner->getPrimaryKey()] = $deploymentScanner;
 
         // initialize the params for the logrotate scanner
         $scannerParams = array();

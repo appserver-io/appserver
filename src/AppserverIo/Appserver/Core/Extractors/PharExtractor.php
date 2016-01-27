@@ -21,6 +21,7 @@ namespace AppserverIo\Appserver\Core\Extractors;
 
 use AppserverIo\Appserver\Core\AbstractExtractor;
 use AppserverIo\Appserver\Core\Interfaces\ExtractorInterface;
+use AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface;
 
 /**
  * An extractor implementation for phar files.
@@ -66,18 +67,19 @@ class PharExtractor extends AbstractExtractor
     /**
      * (non-PHPdoc)
      *
-     * @param \SplFileInfo $archive The archive file to be deployed
+     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode The container the archive belongs to
+     * @param \SplFileInfo                                                $archive       The archive file to be deployed
      *
      * @return void
      * @see \AppserverIo\Appserver\Core\AbstractExtractor::deployArchive()
      */
-    public function deployArchive(\SplFileInfo $archive)
+    public function deployArchive(ContainerNodeInterface $containerNode, \SplFileInfo $archive)
     {
 
         try {
             // create folder names based on the archive's basename
-            $tmpFolderName = new \SplFileInfo($this->getTmpDir() . DIRECTORY_SEPARATOR . $archive->getFilename());
-            $webappFolderName = new \SplFileInfo($this->getWebappsDir() . DIRECTORY_SEPARATOR . basename($archive->getFilename(), $this->getExtensionSuffix()));
+            $tmpFolderName = new \SplFileInfo($this->getTmpDir($containerNode) . DIRECTORY_SEPARATOR . $archive->getFilename());
+            $webappFolderName = new \SplFileInfo($this->getWebappsDir($containerNode) . DIRECTORY_SEPARATOR . basename($archive->getFilename(), $this->getExtensionSuffix()));
 
             // check if archive has not been deployed yet or failed sometime
             if ($this->isDeployable($archive)) {
@@ -87,7 +89,7 @@ class PharExtractor extends AbstractExtractor
                 // backup actual webapp folder, if available
                 if ($webappFolderName->isDir()) {
                     // backup files that are NOT part of the archive
-                    $this->backupArchive($archive);
+                    $this->backupArchive($containerNode, $archive);
 
                     // delete directories previously backed up
                     $this->removeDir($webappFolderName);
@@ -127,7 +129,7 @@ class PharExtractor extends AbstractExtractor
                 rename($tmpFolderName->getPathname(), $webappFolderName->getPathname());
 
                 // restore backup if available
-                $this->restoreBackup($archive);
+                $this->restoreBackup($containerNode, $archive);
 
                 // flag webapp as deployed
                 $this->flagArchive($archive, ExtractorInterface::FLAG_DEPLOYED);
@@ -151,11 +153,12 @@ class PharExtractor extends AbstractExtractor
      * Creates a backup of files that are NOT part of the
      * passed archive.
      *
-     * @param \SplFileInfo $archive Backup files that are NOT part of this archive
+     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode The container the archive belongs to
+     * @param \SplFileInfo                                                $archive       Backup files that are NOT part of this archive
      *
      * @return void
      */
-    public function backupArchive(\SplFileInfo $archive)
+    public function backupArchive(ContainerNodeInterface $containerNode, \SplFileInfo $archive)
     {
 
         // if we don't want to create backups, to nothing
@@ -167,8 +170,8 @@ class PharExtractor extends AbstractExtractor
         $pharPathname = $archive->getPathname();
 
         // create tmp & webapp folder name based on the archive's basename
-        $webappFolderName = $this->getWebappsDir() . DIRECTORY_SEPARATOR . basename($archive->getFilename(), $this->getExtensionSuffix());
-        $tmpFolderName = $this->getTmpDir() . DIRECTORY_SEPARATOR . md5(basename($archive->getFilename(), $this->getExtensionSuffix()));
+        $webappFolderName = $this->getWebappsDir($containerNode) . DIRECTORY_SEPARATOR . basename($archive->getFilename(), $this->getExtensionSuffix());
+        $tmpFolderName = $this->getTmpDir($containerNode) . DIRECTORY_SEPARATOR . md5(basename($archive->getFilename(), $this->getExtensionSuffix()));
 
         // initialize PHAR archive
         $p = new \Phar($archive);

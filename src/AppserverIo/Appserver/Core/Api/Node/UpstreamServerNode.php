@@ -20,6 +20,8 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Api\Node\AbstractNode;
+
 /**
  * DTO to transfer upstream server information.
  *
@@ -37,7 +39,7 @@ class UpstreamServerNode extends AbstractNode
      * @var \AppserverIo\Appserver\Core\Api\Node\ParamsNodeTrait
      */
     use ParamsNodeTrait;
-    
+
     /**
      * The servers type.
      *
@@ -45,7 +47,7 @@ class UpstreamServerNode extends AbstractNode
      * @AS\Mapping(nodeType="string")
      */
     protected $type;
-    
+
     /**
      * The servers name.
      *
@@ -53,7 +55,7 @@ class UpstreamServerNode extends AbstractNode
      * @AS\Mapping(nodeType="string")
      */
     protected $name;
-    
+
     /**
      * Returns the servers type.
      *
@@ -63,7 +65,7 @@ class UpstreamServerNode extends AbstractNode
     {
         return $this->type;
     }
-    
+
     /**
      * Returns the server name.
      *

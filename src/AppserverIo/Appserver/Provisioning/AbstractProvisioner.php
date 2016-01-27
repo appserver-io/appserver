@@ -75,16 +75,6 @@ abstract class AbstractProvisioner implements ProvisionerInterface
     }
 
     /**
-     * Returns the servers web application directory.
-     *
-     * @return string The web application directory
-     */
-    public function getWebappsDir()
-    {
-        return $this->getService()->getWebappsDir();
-    }
-
-    /**
      * (non-PHPdoc)
      *
      * @param string $className The API service class name to return the instance for

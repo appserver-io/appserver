@@ -1,3 +1,13 @@
+# Version 1.2.0-alpha2
+
+## Bugfixes
+
+* Fixed [#938](https://github.com/appserver-io/appserver/issues/938) - Only one container can be configured
+
+## Features
+
+* Move servlet/enterprise bean descriptor/configuration functionality to description library
+
 # Version 1.2.0-alpha1
 
 ## Bugfixes

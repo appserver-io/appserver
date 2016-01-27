@@ -110,7 +110,7 @@ class DeploymentScanner extends AbstractScanner
      */
     public function getDeploymentFlag()
     {
-        return new \SplFileInfo($this->getService()->getDeployDir() . DIRECTORY_SEPARATOR . ExtractorInterface::FILE_DEPLOYMENT_SUCCESSFULL);
+        return new \SplFileInfo($this->getDirectory(). DIRECTORY_SEPARATOR . ExtractorInterface::FILE_DEPLOYMENT_SUCCESSFULL);
     }
 
     /**

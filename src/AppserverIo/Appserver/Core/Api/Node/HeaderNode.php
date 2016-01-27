@@ -20,6 +20,8 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Api\Node\AbstractNode;
+
 /**
  * DTO to transfer header information.
  *
@@ -38,7 +40,7 @@ class HeaderNode extends AbstractNode
      * @AS\Mapping(nodeType="string")
      */
     protected $type;
-    
+
     /**
      * The header name.
      *
@@ -54,7 +56,7 @@ class HeaderNode extends AbstractNode
      * @AS\Mapping(nodeType="string")
      */
     protected $value;
-    
+
     /**
      * The header override flag.
      *
@@ -62,7 +64,7 @@ class HeaderNode extends AbstractNode
      * @AS\Mapping(nodeType="boolean")
      */
     protected $override;
-    
+
     /**
      * The header append flag.
      *
@@ -70,7 +72,7 @@ class HeaderNode extends AbstractNode
      * @AS\Mapping(nodeType="boolean")
      */
     protected $append;
-    
+
     /**
      * The header uri
      *

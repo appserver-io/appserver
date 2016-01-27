@@ -20,6 +20,9 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Api\Node\AbstractNode;
+use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
+
 /**
  * DTO to transfer a host.
  *
@@ -29,7 +32,7 @@ namespace AppserverIo\Appserver\Core\Api\Node;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class HostNode extends AbstractNode
+class HostNode extends AbstractNode implements HostNodeInterface
 {
 
     /**
@@ -48,12 +51,20 @@ class HostNode extends AbstractNode
     protected $name;
 
     /**
-     * The applications base directory.
+     * The application base directory.
      *
      * @var string
      * @AS\Mapping(nodeType="string")
      */
     protected $appBase;
+
+    /**
+     * The temporary base directory.
+     *
+     * @var string
+     * @AS\Mapping(nodeType="string")
+     */
+    protected $tmpBase;
 
     /**
      * The deployment base directory.
@@ -67,13 +78,15 @@ class HostNode extends AbstractNode
      * Initializes the node with the passed data.
      *
      * @param string $name       The host name
-     * @param string $appBase    The deployment base directory
-     * @param string $deployBase The applications base directory
+     * @param string $appBase    The application base directory
+     * @param string $tmpBase    The temporary base directory
+     * @param string $deployBase The deployment base directory
      */
-    public function __construct($name = '', $appBase = '', $deployBase = 'deploy')
+    public function __construct($name = '', $appBase = 'webapps', $tmpBase = 'var/tmp', $deployBase = 'deploy')
     {
         $this->name = $name;
         $this->appBase = $appBase;
+        $this->tmpBase = $tmpBase;
         $this->deployBase = $deployBase;
     }
 
@@ -88,13 +101,23 @@ class HostNode extends AbstractNode
     }
 
     /**
-     * Returns the applications base directory.
+     * Returns the application base directory.
      *
-     * @return string The applications base directory
+     * @return string The application base directory
      */
     public function getAppBase()
     {
         return $this->appBase;
+    }
+
+    /**
+     * Returns the temporary base directory.
+     *
+     * @return string The temporary base directory
+     */
+    public function getTmpBase()
+    {
+        return $this->tmpBase;
     }
 
     /**
@@ -105,5 +128,19 @@ class HostNode extends AbstractNode
     public function getDeployBase()
     {
         return $this->deployBase;
+    }
+
+    /**
+     * Return's the host's directories, e. g. to be created.
+     *
+     * @return array The array with the host's directories
+     */
+    public function getDirectories()
+    {
+        return array(
+            DirectoryKeys::TMP     => $this->getTmpBase(),
+            DirectoryKeys::DEPLOY  => $this->getDeployBase(),
+            DirectoryKeys::WEBAPPS => $this->getAppBase()
+        );
     }
 }

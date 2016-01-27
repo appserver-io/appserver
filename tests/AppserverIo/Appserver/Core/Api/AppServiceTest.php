@@ -205,12 +205,15 @@ class AppServiceTest extends AbstractServicesTest
      */
     public function testSoak()
     {
+
+        $mockContainer = $this->getMock('\AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface');
+
         $mockExtractor = $this->getMock('\AppserverIo\Appserver\Core\Interfaces\ExtractorInterface');
         $mockExtractor->expects($this->once())
             ->method('soakArchive');
 
         $this->appService->injectExtractor($mockExtractor);
-        $this->appService->soak($this->getMockBuilder('\SplFileInfo')->setConstructorArgs(array(__FILE__))->getMock());
+        $this->appService->soak($mockContainer, $this->getMockBuilder('\SplFileInfo')->setConstructorArgs(array(__FILE__))->getMock());
     }
 
     /**
@@ -220,12 +223,27 @@ class AppServiceTest extends AbstractServicesTest
      */
     public function testDeploy()
     {
+
+        $mockHost = $this->getMockBuilder('\AppserverIo\Appserver\Core\Api\Node\HostNodeInterface')
+            ->setMethods(get_class_methods('\AppserverIo\Appserver\Core\Api\Node\HostNodeInterface'))
+            ->getMock();
+        $mockHost->expects($this->once())
+            ->method('getDeployBase')
+            ->willReturn('webapps');
+
+        $mockContainer = $this->getMockBuilder('\AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface')
+            ->setMethods(get_class_methods('\AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface'))
+            ->getMock();
+        $mockContainer->expects($this->once())
+            ->method('getHost')
+            ->willReturn($mockHost);
+
         $mockExtractor = $this->getMock('\AppserverIo\Appserver\Core\Interfaces\ExtractorInterface');
         $mockExtractor->expects($this->once())
             ->method('flagArchive');
         $this->appService->injectExtractor($mockExtractor);
 
-        $this->appService->deploy(new AppNode(__METHOD__, '/opt/appserver/targetwebapp'));
+        $this->appService->deploy($mockContainer, new AppNode(__METHOD__, '/opt/appserver/targetwebapp'));
     }
 
     /**
@@ -235,6 +253,21 @@ class AppServiceTest extends AbstractServicesTest
      */
     public function testUndeploy()
     {
+
+        $mockHost = $this->getMockBuilder('\AppserverIo\Appserver\Core\Api\Node\HostNodeInterface')
+            ->setMethods(get_class_methods('\AppserverIo\Appserver\Core\Api\Node\HostNodeInterface'))
+            ->getMock();
+        $mockHost->expects($this->once())
+            ->method('getDeployBase')
+            ->willReturn('webapps');
+
+        $mockContainer = $this->getMockBuilder('\AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface')
+            ->setMethods(get_class_methods('\AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface'))
+            ->getMock();
+        $mockContainer->expects($this->once())
+            ->method('getHost')
+            ->willReturn($mockHost);
+
         $mockExtractor = $this->getMock('\AppserverIo\Appserver\Core\Interfaces\ExtractorInterface');
         $mockExtractor->expects($this->once())
             ->method('unflagArchive');
@@ -243,7 +276,7 @@ class AppServiceTest extends AbstractServicesTest
         $appNode = new AppNode(__METHOD__, '/opt/appserver/targetwebapp');
         $this->appService->persist($appNode);
 
-        $this->appService->undeploy($appNode->getUuid());
+        $this->appService->undeploy($mockContainer, $appNode->getUuid());
     }
 
     /**
@@ -253,6 +286,9 @@ class AppServiceTest extends AbstractServicesTest
      */
     public function testUndeployInvalidUuid()
     {
+
+        $mockContainer = $this->getMock('\AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface');
+
         $mockExtractor = $this->getMock('\AppserverIo\Appserver\Core\Interfaces\ExtractorInterface');
         $mockExtractor->expects($this->never())
             ->method('unflagArchive');
@@ -260,7 +296,7 @@ class AppServiceTest extends AbstractServicesTest
 
         $appNode = new AppNode(__METHOD__, '/opt/appserver/targetwebapp');
 
-        $this->appService->undeploy($appNode->getUuid());
+        $this->appService->undeploy($mockContainer, $appNode->getUuid());
     }
 
     /**

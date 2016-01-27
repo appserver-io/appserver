@@ -22,6 +22,7 @@ namespace AppserverIo\Appserver\Core\Api\Node;
 
 use AppserverIo\Lang\String;
 use AppserverIo\Lang\Boolean;
+use AppserverIo\Description\Api\Node\AbstractValueNode;
 use AppserverIo\Configuration\Interfaces\ValueInterface;
 
 /**
