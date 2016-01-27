@@ -17,11 +17,11 @@ slider:
     link-href: /community/1st-hackathon.html
     poster: /assets/video/programming-ide.jpg
     videos:
-      - src: /assets/video/programming-ide.mp4
+      - src: /assets/vid/programming-ide.mp4
         type: video/mp4
-      - src: /assets/video/programming-ide.webm
+      - src: /assets/vid/programming-ide.webm
         type: video/webm
-      - src: /assets/video/programming-ide.ogv
+      - src: /assets/vid/programming-ide.ogv
         type: video/ogg
     img_opacity: .5
     countdown: false
