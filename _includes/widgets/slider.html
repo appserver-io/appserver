@@ -37,24 +37,28 @@
             {% endif %}
             
             {% if slide.videos %}
-            <div class="video-hero">
-	            <div class="video-bg demo-video">
-			<video autoplay muted loop poster="{{ slide.poster }}">
-            			{% for video in slide.videos %}
-            			<source src="{{ video.src }}" type="{{ video.type }}">
-            			{% endfor %}
-            		</video>
-            	</div>
-            	<div class="video-overlay"></div>
-            	 {% if slide.title %}
-            	<div class="page-width">
-            		<div class="video-hero--content">
-            			<h2>{{ slide.title }}</h2>
+    		<div class="fill">
+    		    <video autoplay muted loop poster="{{ slide.poster }}">
+	    	    {% for video in slide.videos %}
+	    			<source src="{{ video.src }}" type="{{ video.type }}">
+	    	    {% endfor %}
+                </video>
+		    </div>
+        	<!-- <div class="video-overlay"></div> -->
+        	{% if slide.title %}
+            <div class="carousel-caption">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h1>{{ slide.title }}</h1>
+                        {% if slide.link-label %}<a href="{{ slide.link-href | prepend: site.baseurl }}" class="btn btn-lg btn-info-highlight"><i class="fa fa-download fa-lg"></i>&nbsp;&nbsp;{{ slide.link-label }} Version {{ site.appserver_version }}</a>{% endif %}
+                        <br/><br/>
                         <a href="{{ slide.link-detail-href | prepend: site.baseurl }}" class="btn btn-default"><i class="fa fa-file-text-o fa-lg"></i>&nbsp;&nbsp;More details...</a>
-            		</div>
-            	</div>
-            	{% endif %}
+                        <br/><br/>
+                        <p class="carousel-info"></p>
+                    </div>
+                </div>
             </div>
+	      	{% endif %}
             {% endif %}
             
         </div>
