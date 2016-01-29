@@ -19,13 +19,13 @@
         <listener event="enter.runlevel.shutdown" priority="0"
             type="AppserverIo\Appserver\Core\Listeners\CreateSslCertificateListener" />
         <listener event="enter.runlevel.network" priority="0"
+            type="AppserverIo\Appserver\Core\Listeners\ExtractArchivesListener" />
+        <listener event="enter.runlevel.network" priority="0"
             type="AppserverIo\Appserver\Core\Listeners\StartContainersListener" />
         <listener event="enter.runlevel.secure" priority="0"
             type="AppserverIo\Appserver\Core\Listeners\SwitchUserListener" />
         <listener event="leave.runlevel.secure" priority="0"
             type="AppserverIo\Appserver\Core\Listeners\SwitchRootListener" />
-        <listener event="enter.runlevel.full" priority="0"
-            type="AppserverIo\Appserver\Core\Listeners\ExtractArchivesListener" />
         <listener event="enter.runlevel.full" priority="0"
             type="AppserverIo\Appserver\Core\Listeners\DeployApplicationsListener" />
         <listener event="leave.runlevel.full" priority="0"

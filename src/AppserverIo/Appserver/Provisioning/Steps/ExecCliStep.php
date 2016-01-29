@@ -60,7 +60,12 @@ class ExecCliStep extends AbstractStep
             if ($params = $this->getStepNode()->getExecute()->getArgs()) {
                 $args .= ' -- ';
                 foreach ($params as $param) {
-                    $args .= ' --' . $param->getName() . ' ' . $param->castToType();
+                    // query whether or not the argument has a name
+                    if ($name = $param->getName()) {
+                        $args .= ' --' . $name;
+                    }
+                    // append the value finally
+                    $args .= ' ' . $param->castToType();
                 }
             }
 
@@ -70,6 +75,9 @@ class ExecCliStep extends AbstractStep
             // initialize exec() output and return var
             $output = array();
             $returnVar = 0;
+
+
+            $this->getInitialContext()->getSystemLogger()->info("Now execute: $toExecute");
 
             // execute the script on the command line
             exec($toExecute, $output, $returnVar);

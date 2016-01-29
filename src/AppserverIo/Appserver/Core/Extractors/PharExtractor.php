@@ -128,6 +128,9 @@ class PharExtractor extends AbstractExtractor
                 // move extracted content to webapps folder
                 rename($tmpFolderName->getPathname(), $webappFolderName->getPathname());
 
+                // we need to set the user/rights for the extracted folder
+                $this->setUserRights($webappFolderName);
+
                 // restore backup if available
                 $this->restoreBackup($containerNode, $archive);
 

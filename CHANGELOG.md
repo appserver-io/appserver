@@ -1,3 +1,14 @@
+# Version 1.2.0-alpha3
+
+## Bugfixes
+
+* Fixed invalid order for application exctraction => results in invalid application configuration
+
+## Features
+
+* Allow step args without name in provision.xml
+* Remove PHP 5.4 from Travis-CI configuration file
+
 # Version 1.2.0-alpha2
 
 ## Bugfixes
