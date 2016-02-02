@@ -23,10 +23,11 @@ namespace AppserverIo\Appserver\ServletEngine;
 use AppserverIo\Logger\LoggerUtils;
 use AppserverIo\Psr\HttpMessage\ResponseInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
-use AppserverIo\Appserver\ServletEngine\Http\Response;
-use AppserverIo\Psr\Servlet\ServletException;
+use AppserverIo\Psr\Servlet\ServletContextInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
+use AppserverIo\Appserver\ServletEngine\Http\Response;
+use AppserverIo\Appserver\ServletEngine\Utils\RequestHandlerKeys;
 
 /**
  * This is a request handler that is necessary to process each request of an
@@ -97,6 +98,18 @@ class RequestHandler extends \Thread
     }
 
     /**
+     * Inject the actual servlet response.
+     *
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse The actual response instance
+     *
+     * @return void
+     */
+    public function injectResponse(HttpServletResponseInterface $servletResponse)
+    {
+        $this->servletResponse = $servletResponse;
+    }
+
+    /**
      * The main method that handles the thread in a separate context.
      *
      * @return void
@@ -118,10 +131,7 @@ class RequestHandler extends \Thread
             // synchronize the valves, servlet request/response
             $valves = $this->valves;
             $servletRequest = $this->servletRequest;
-
-            // initialize servlet session, request + response
-            $servletResponse = new Response();
-            $servletResponse->init();
+            $servletResponse = $this->servletResponse;
 
             // we initialize this with a 500 to handle 'Fatal Error' case
             $this->statusCode = 500;
@@ -158,27 +168,16 @@ class RequestHandler extends \Thread
             }
 
         } catch (\Exception $e) {
-            // log the exception
-            $application->getInitialContext()->getSystemLogger()->error($e->__toString());
-
-            // ATTENTION: We MUST wrap the exception, because it's possible that
-            //            the exception contains not serializable data that will
-            //            lead to a white page!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            $this->exception = new ServletException($e, $e->getCode());
+            // log the exception message
+            $application->getInitialContext()->getSystemLogger()->error($e->getMessage());
+            // set the status code and add the servlet exception to the servlet request attributes
+            $servletResponse->setStatusCode($e->getCode());
+            $servletRequest->setAttribute(RequestHandlerKeys::ERROR_MESSAGE, $e->getMessage());
         }
 
-        // copy the the response values
-        $this->statusCode = $servletResponse->getStatusCode();
-        $this->statusReasonPhrase = $servletResponse->getStatusReasonPhrase();
-        $this->version = $servletResponse->getVersion();
-        $this->state = $servletResponse->getState();
-
-        // copy the content of the body stream
-        $this->bodyStream = $servletResponse->getBodyStream();
-
-        // copy headers and cookies
-        $this->headers = $servletResponse->getHeaders();
-        $this->cookies = $servletResponse->getCookies();
+        // re-attach request and response instances
+        $this->servletRequest = $servletRequest;
+        $this->servletResponse = $servletResponse;
     }
 
     /**
@@ -191,27 +190,25 @@ class RequestHandler extends \Thread
     public function copyToHttpResponse(ResponseInterface $httpResponse)
     {
 
+        // create a local copy of the response
+        $servletResponse = $this->servletResponse;
+
         // copy response values to the HTTP response
-        $httpResponse->setStatusCode($this->statusCode);
-        $httpResponse->setStatusReasonPhrase($this->statusReasonPhrase);
-        $httpResponse->setVersion($this->version);
-        $httpResponse->setState($this->state);
+        $httpResponse->setStatusCode($servletResponse->getStatusCode());
+        $httpResponse->setStatusReasonPhrase($servletResponse->getStatusReasonPhrase());
+        $httpResponse->setVersion($servletResponse->getVersion());
+        $httpResponse->setState($servletResponse->getState());
 
         // copy the body content to the HTTP response
-        $httpResponse->appendBodyStream($this->bodyStream);
+        $httpResponse->appendBodyStream($servletResponse->getBodyStream());
 
         // copy headers to the HTTP response
-        foreach ($this->headers as $headerName => $headerValue) {
+        foreach ($servletResponse->getHeaders() as $headerName => $headerValue) {
             $httpResponse->addHeader($headerName, $headerValue);
         }
 
         // copy cookies to the HTTP response
-        $httpResponse->setCookies($this->cookies);
-
-        // query whether an exception has been thrown, if yes, re-throw it
-        if ($this->exception instanceof \Exception) {
-            throw $this->exception;
-        }
+        $httpResponse->setCookies($servletResponse->getCookies());
     }
 
     /**
@@ -222,6 +219,10 @@ class RequestHandler extends \Thread
      */
     public function shutdown()
     {
+
+        // create a local copy of the request/response
+        $servletRequest = $this->servletRequest;
+        $servletResponse = $this->servletResponse;
 
         // check if there was a fatal error caused shutdown
         if ($lastError = error_get_last()) {
@@ -234,12 +235,60 @@ class RequestHandler extends \Thread
             extract($lastError);
             // query whether we've a fatal/user error
             if ($type === E_ERROR || $type === E_USER_ERROR) {
-                $this->exception = new ServletException(
-                    sprintf("PHP Fatal error: %s in %s on line %d", $message, $file, $line),
-                    500
+                // set the apropriate status code
+                $servletResponse->setStatusCode(500);
+                // add the fatal error to the servlet request attributes
+                $servletRequest->setAttribute(
+                    RequestHandlerKeys::ERROR_MESSAGE,
+                    sprintf("PHP Fatal error: %s in %s on line %d", $message, $file, $line)
                 );
             }
         }
+
+        // query whether or not we've a client or an server error
+        if ($servletResponse->getStatusCode() > 399) {
+            try {
+                // create a local copy of the application
+                $application = $this->application;
+
+                // inject the application and servlet response
+                $servletRequest->injectResponse($servletResponse);
+                $servletRequest->injectContext($application);
+
+                // load the servlet context instance
+                $servletManager = $application->search(ServletContextInterface::IDENTIFIER);
+
+                // initialize the request URI for the error page to be rendered
+                $requestUri = '';
+
+                // iterate over the configured error pages to find a matching one
+                foreach ($servletManager->getErrorPages() as $errorCodePattern => $errorPage) {
+                    // query whether or not we found an error page configured for the actual status code
+                    if (fnmatch($errorCodePattern, $servletResponse->getStatusCode())) {
+                        $requestUri = $errorPage;
+                        break;
+                    }
+                }
+
+                // initialize the request URI
+                $servletRequest->setRequestUri($requestUri);
+                // prepare the request with the new data
+                $servletRequest->prepare();
+                // load the servlet path and session-ID
+                $servletPath = $servletRequest->getServletPath();
+                $sessionId = $servletRequest->getProposedSessionId();
+                // load and process the servlet
+                $servlet = $servletManager->lookup($servletPath, $sessionId);
+                $servlet->service($servletRequest, $servletResponse);
+
+            } catch (\Exception $e) {
+                $application->getInitialContext()->getSystemLogger()->error($e->__toString());
+            }
+        }
+
+        // copy request/respons back to the thread context
+        $this->servletRequest = $servletRequest;
+        $this->servletResponse = $servletResponse;
     }
 
     /**

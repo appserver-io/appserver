@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Api\Node\LoginConfigNodeInterface
+ * \AppserverIo\Appserver\Core\Api\Node\ErrorPageNodeInterface
  *
  * NOTICE OF LICENSE
  *
@@ -20,10 +20,8 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
-use AppserverIo\Configuration\Interfaces\NodeInterface;
-
 /**
- * Interface for a login configuration DTO implementation.
+ * The interface for error page configuration DTO implementation.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -31,27 +29,34 @@ use AppserverIo\Configuration\Interfaces\NodeInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-interface LoginConfigNodeInterface extends NodeInterface
+interface ErrorPageNodeInterface
 {
 
     /**
-     * Return's the authentication method information.
+     * The default error code pattern, matches all 400 + 500 error codes.
      *
-     * @return \AppserverIo\Appserver\Core\Api\Node\AuthMethodNode The authentication method information
+     * @var string
      */
-    public function getAuthMethod();
+    const DEFAULT_ERROR_CODE_PATTERN = '[45]*';
 
     /**
-     * Return's the realm name information.
+     * The default error location.
      *
-     * @return \AppserverIo\Appserver\Core\Api\Node\RealmNameNode The realm name information
+     * @var string
      */
-    public function getRealmName();
+    const DEFAULT_ERROR_LOCATION = '/resources/templates/www/dhtml/error.dhtml';
 
     /**
-     * Return's the login form configuration information.
+     * Return's the HTTP response code pattern the error page is defined for.
      *
-     * @return \AppserverIo\Appserver\Core\Api\Node\FormLoginConfigNode The login form configuration information
+     * @return \AppserverIo\Appserver\Core\Api\Node\ValueNode The HTTP response code pattern
      */
-    public function getFormLoginConfig();
+    public function getErrorCodePattern();
+
+    /**
+     * Return's the location to redirect to.
+     *
+     * @return \AppserverIo\Appserver\Core\Api\Node\ValueNode The location
+     */
+    public function getErrorLocation();
 }

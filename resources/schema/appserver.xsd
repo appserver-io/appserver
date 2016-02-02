@@ -295,6 +295,36 @@
             <xs:attribute ref="xml:base"/>
         </xs:complexType>
     </xs:element>
+    <xs:element name="error-page">
+        <xs:complexType>
+            <xs:all>
+                <xs:element ref="appserver:error-code-pattern" minOccurs="0"/>
+                <xs:element ref="appserver:error-location"/>
+            </xs:all>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="error-code-pattern">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="error-location">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
     <xs:element name="role-name">
         <xs:complexType>
             <xs:simpleContent>
@@ -435,6 +465,9 @@
     </xs:element>
     <xs:element name="module">
         <xs:complexType>
+            <xs:choice minOccurs="0" maxOccurs="1">
+                <xs:element ref="appserver:params"/>
+            </xs:choice>
             <xs:attribute name="type" type="xs:string" use="required"/>
             <xs:attribute name="uuid" type="xs:string"/>
             <xs:attribute ref="xml:base"/>
@@ -1974,6 +2007,7 @@
                 <xs:element ref="appserver:security-constraint" minOccurs="0"/>
                 <xs:element ref="appserver:login-config" minOccurs="0"/>
                 <xs:element ref="appserver:security-role" minOccurs="0"/>
+                <xs:element ref="appserver:error-page" minOccurs="0"/>
             </xs:choice>
             <xs:attribute name="uuid" type="xs:string"/>
             <xs:attribute ref="xml:base"/>

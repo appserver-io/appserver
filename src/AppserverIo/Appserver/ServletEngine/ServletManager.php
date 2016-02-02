@@ -137,6 +137,18 @@ class ServletManager extends AbstractEpbManager implements ServletContextInterfa
     }
 
     /**
+     * Injects the container for the error page configuration.
+     *
+     * @param \AppserverIo\Storage\StorageInterface $errorPages The container for the error page configuration
+     *
+     * @return void
+     */
+    public function injectErrorPages(StorageInterface $errorPages)
+    {
+        $this->errorPages = $errorPages;
+    }
+
+    /**
      * Has been automatically invoked by the container after the application
      * instance has been created.
      *
@@ -383,6 +395,29 @@ class ServletManager extends AbstractEpbManager implements ServletContextInterfa
         if ($this->initParameters->has($name)) {
             return $this->initParameters->get($name);
         }
+    }
+
+    /**
+     * Registers the error page under the passed error code.
+     *
+     * @param string $errorCodePattern The error code for the page
+     * @param string $errorLocation    The error page location
+     *
+     * @return void
+     */
+    public function addErrorPage($errorCodePattern, $errorLocation)
+    {
+        $this->errorPages->set($errorCodePattern, $errorLocation);
+    }
+
+    /**
+     * Returns the container with the error page configuration.
+     *
+     * @return \AppserverIo\Storage\StorageInterface The container with the error page configuration
+     */
+    public function getErrorPages()
+    {
+        return $this->errorPages;
     }
 
     /**

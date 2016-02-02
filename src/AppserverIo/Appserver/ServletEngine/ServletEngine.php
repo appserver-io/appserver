@@ -30,6 +30,7 @@ use AppserverIo\Server\Interfaces\RequestContextInterface;
 use AppserverIo\Server\Interfaces\ServerContextInterface;
 use AppserverIo\Server\Exceptions\ModuleException;
 use AppserverIo\Appserver\ServletEngine\Http\Request;
+use AppserverIo\Appserver\ServletEngine\Http\Response;
 
 /**
  * A servlet engine implementation.
@@ -141,11 +142,16 @@ class ServletEngine extends AbstractServletEngine
         $servletRequest->injectServerVars($requestContext->getServerVars());
         $servletRequest->init();
 
+        // initialize servlet response
+        $servletResponse = new Response();
+        $servletResponse->init();
+
         // initialize the request handler instance
         $requestHandler = new RequestHandler();
         $requestHandler->injectValves($valves);
         $requestHandler->injectApplication($application);
         $requestHandler->injectRequest($servletRequest);
+        $requestHandler->injectResponse($servletResponse);
         $requestHandler->start(PTHREADS_INHERIT_NONE|PTHREADS_INHERIT_CONSTANTS);
         $requestHandler->join();
 
@@ -154,32 +160,5 @@ class ServletEngine extends AbstractServletEngine
 
         // set response state to be dispatched after this without calling other modules process
         $response->setState(HttpResponseStates::DISPATCH);
-    }
-
-    /**
-     * Tries to find a request handler that matches the actual request and injects it into the request.
-     *
-     * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface $servletRequest The servlet request we need a request handler to handle for
-     *
-     * @return string The application name of the application to handle the request
-     * @deprecated This method is deprecated since 0.8.0
-     */
-    protected function requestHandlerFromPool(HttpServletRequestInterface $servletRequest)
-    {
-        // nothing to do here
-    }
-
-    /**
-     * After a request has been processed by the injected request handler we remove
-     * the thread ID of the request handler from the array with the working handlers.
-     *
-     * @param \AppserverIo\Appserver\ServletEngine\RequestHandler $requestHandler The request handler instance we want to re-attach to the pool
-     *
-     * @return void
-     * @deprecated This method is deprecated since 0.8.0
-     */
-    protected function requestHandlerToPool($requestHandler)
-    {
-        // nothing to do here
     }
 }

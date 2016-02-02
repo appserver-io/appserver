@@ -58,6 +58,7 @@ class ServletManagerFactory implements ManagerFactoryInterface
         // initialize the stackable storage
         $data = new StackableStorage();
         $servlets = new StackableStorage();
+        $errorPages = new StackableStorage();
         $initParameters = new StackableStorage();
         $servletMappings = new GenericStackable();
         $securedUrlConfigs = new StackableStorage();
@@ -70,6 +71,7 @@ class ServletManagerFactory implements ManagerFactoryInterface
         $servletManager = new ServletManager();
         $servletManager->injectData($data);
         $servletManager->injectServlets($servlets);
+        $servletManager->injectErrorPages($errorPages);
         $servletManager->injectApplication($application);
         $servletManager->injectInitialContext($initialContext);
         $servletManager->injectInitParameters($initParameters);

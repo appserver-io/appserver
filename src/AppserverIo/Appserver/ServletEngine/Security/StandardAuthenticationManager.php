@@ -251,6 +251,7 @@ class StandardAuthenticationManager extends AbstractManager implements Authentic
                 }
 
                 // stop processing, because authentication failed for some reason
+                $servletRequest->setDispatched(true);
                 return false;
             }
         }

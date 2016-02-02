@@ -32,7 +32,7 @@ use AppserverIo\Appserver\ServletEngine\Authenticator\Utils\SessionKeys;
 use AppserverIo\Appserver\ServletEngine\Authenticator\Utils\FormKeys;
 
 /**
- * This valve will check if the actual request needs authentication.
+ * A form based authenticator implementation.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -49,6 +49,13 @@ class FormAuthenticator extends AbstractAuthenticator
      * @var string AUTH_TYPE
      */
     const AUTH_TYPE = 'Form';
+
+    /**
+     * The password to authenticate the user with.
+     *
+     * @var string
+     */
+    protected $password;
 
     /**
      * Try to authenticate the user making this request, based on the specified login configuration.
@@ -115,6 +122,7 @@ class FormAuthenticator extends AbstractAuthenticator
                 // load the configured error page
                 $formLoginPage = $formLoginConfig->getFormLoginPage()->__toString();
                 // redirect to the configured login page
+                $servletRequest->setDispatched(true);
                 $servletResponse->setStatusCode(307);
                 $servletResponse->addHeader(Protocol::HEADER_LOCATION, $formLoginPage);
             }
@@ -143,6 +151,7 @@ class FormAuthenticator extends AbstractAuthenticator
                 // load the configured error page
                 $formErrorPage = $formLoginConfig->getFormErrorPage()->__toString();
                 // redirect to the configured error page
+                $servletRequest->setDispatched(true);
                 $servletResponse->setStatusCode(307);
                 $servletResponse->addHeader(Protocol::HEADER_LOCATION, $formErrorPage);
             }
@@ -172,6 +181,7 @@ class FormAuthenticator extends AbstractAuthenticator
             }
 
             // redirect to the original location
+            $servletRequest->setDispatched(true);
             $servletResponse->setStatusCode(307);
             $servletResponse->addHeader(Protocol::HEADER_LOCATION, $location);
         }

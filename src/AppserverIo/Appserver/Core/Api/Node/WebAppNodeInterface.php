@@ -97,4 +97,11 @@ interface WebAppNodeInterface extends NodeInterface
      * @return array The context parameters
      */
     public function getContextParams();
+
+    /**
+     * Return's the error page informations.
+     *
+     * @return array The error page informations
+     */
+    public function getErrorPages();
 }

@@ -153,6 +153,12 @@ class DeploymentDescriptorParser
             }
         }
 
+        // initialize the error page configuration if available
+        /** @var \AppserverIo\Appserver\Core\Api\Node\ErrorPageNode $errorPageNode */
+        foreach ($webAppNode->getErrorPages() as $errorPageNode) {
+            $this->getServletContext()->addErrorPage((string) $errorPageNode->getErrorCodePattern(), (string) $errorPageNode->getErrorLocation());
+        }
+
         // initialize the context with the context parameters
         /** @var \AppserverIo\Appserver\Core\Api\Node\ContextParamNode $contextParamNode */
         foreach ($webAppNode->getContextParams() as $contextParamNode) {

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Api\Node\LoginConfigNodeInterface
+ * AppserverIo\Appserver\ServletEngine\Security\Auth\Callback\SecurityAssociationHandler
  *
  * NOTICE OF LICENSE
  *
@@ -18,12 +18,12 @@
  * @link      http://www.appserver.io
  */
 
-namespace AppserverIo\Appserver\Core\Api\Node;
+namespace AppserverIo\Appserver\ServletEngine\Security\Auth\Callback;
 
-use AppserverIo\Configuration\Interfaces\NodeInterface;
+use AppserverIo\Collections\HashMap;
 
 /**
- * Interface for a login configuration DTO implementation.
+ * A digest callback implementation that allows to customize the digest processing.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -31,27 +31,40 @@ use AppserverIo\Configuration\Interfaces\NodeInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-interface LoginConfigNodeInterface extends NodeInterface
+class DigestCallback
 {
 
     /**
-     * Return's the authentication method information.
+     * Initializes the callback with the configuration params.
      *
-     * @return \AppserverIo\Appserver\Core\Api\Node\AuthMethodNode The authentication method information
+     * @param AppserverIo\Collections\HashMap $params The configuration params
+     *
+     * @return void
      */
-    public function getAuthMethod();
+    public function init(HashMap $params)
+    {
+        $this->params = $params;
+    }
 
     /**
-     * Return's the realm name information.
+     * @TODO
      *
-     * @return \AppserverIo\Appserver\Core\Api\Node\RealmNameNode The realm name information
+     * @param object $messageDigest The message digest to handle
+     *
+     * @return void
      */
-    public function getRealmName();
+    public function preDigest($messageDigest)
+    {
+    }
 
     /**
-     * Return's the login form configuration information.
+     * @TODO
      *
-     * @return \AppserverIo\Appserver\Core\Api\Node\FormLoginConfigNode The login form configuration information
+     * @param object $messageDigest The message digest to handle
+     *
+     * @return void
      */
-    public function getFormLoginConfig();
+    public function postDigest($messageDigest)
+    {
+    }
 }

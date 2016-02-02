@@ -23,13 +23,13 @@
 namespace AppserverIo\Appserver\ServletEngine\Authenticator;
 
 use AppserverIo\Psr\HttpMessage\Protocol;
-use AppserverIo\Psr\HttpMessage\RequestInterface;
-use AppserverIo\Psr\HttpMessage\ResponseInterface;
 use AppserverIo\Http\Authentication\AuthenticationException;
-use AppserverIo\Http\Authentication\Adapters\HtpasswdAdapter;
+use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
+use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
+use AppserverIo\Lang\String;
 
 /**
- * Class BasicAuthentication
+ * An authenticator implementation providing HTTP basic authentication.
  *
  * @author    Johann Zelger <jz@appserver.io>
  * @author    Bernhard Wick <bw@appserver.io>
@@ -50,108 +50,84 @@ class BasicAuthenticator extends AbstractAuthenticator
     const AUTH_TYPE = 'Basic';
 
     /**
-     * Defines the default authentication adapter used if none was specified
+     * The password to authenticate the user with.
      *
-     * @var string DEFAULT_ADAPTER
+     * @var string
      */
-    const DEFAULT_ADAPTER = HtpasswdAdapter::ADAPTER_TYPE;
+    protected $password;
 
     /**
-     * Constructs the authentication type
+     * Try to authenticate the user making this request, based on the specified login configuration.
      *
-     * @param array $configData The configuration data for auth type instance
-     */
-    public function __construct(array $configData = array())
-    {
-
-        // initialize the supported adapter types
-        $this->addSupportedAdapter(HtpasswdAdapter::getType());
-
-        // initialize the instance
-        parent::__construct($configData);
-    }
-
-    /**
-     * Initialize by the authentication type with the data from the request.
+     * Return TRUE if any specified constraint has been satisfied, or FALSE if we have created a response
+     * challenge already.
      *
-     * @param \AppserverIo\Psr\HttpMessage\RequestInterface  $request  The request with the content of authentication data sent by client
-     * @param \AppserverIo\Psr\HttpMessage\ResponseInterface $response The response sent back to the client
-     *
-     * @return void
-     * @throws \AppserverIo\Http\Authentication\AuthenticationException If the authentication type can't be initialized
-     */
-    public function init(RequestInterface $request, ResponseInterface $response)
-    {
-
-        // check if auth header is not set in coming request headers
-        if ($request->hasHeader(Protocol::HEADER_AUTHORIZATION) === false) {
-            // send header for challenge authentication against client
-            $response->addHeader(Protocol::HEADER_WWW_AUTHENTICATE, $this->getAuthenticateHeader());
-            // throw exception for auth required
-            throw new AuthenticationException('Request is not authorized', 401);
-        }
-
-        // initialize the authentication adapter
-        parent::init($request, $response);
-    }
-
-    /**
-     * Try to authenticate against the configured adapter.
-     *
-     * @param \AppserverIo\Psr\HttpMessage\ResponseInterface $response The response sent back to the client
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface  $servletRequest  The servlet request instance
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse The servlet response instance
      *
      * @return void
      * @throws \AppserverIo\Http\Authentication\AuthenticationException Is thrown if the request can't be authenticated
      */
-    public function authenticate(ResponseInterface $response)
+    public function authenticate(HttpServletRequestInterface $servletRequest, HttpServletResponseInterface $servletResponse)
     {
 
-        // verify everything to be ready for auth if not return false
-        if ($this->verify() === false) {
-            $response->addHeader(Protocol::HEADER_WWW_AUTHENTICATE, $this->getAuthenticateHeader());
-            throw new AuthenticationException('Invalid or missing username and/or password', 401);
+        // check if auth header is not set in coming request headers
+        if ($servletRequest->hasHeader(Protocol::HEADER_AUTHORIZATION) === false) {
+            // stop processing immediately
+            $servletRequest->setDispatched(true);
+            $servletResponse->setStatusCode(401);
+            $servletResponse->addHeader(Protocol::HEADER_WWW_AUTHENTICATE, $this->getAuthenticateHeader());
+            return false;
         }
-
-        // do actual authentication check
-        if ($this->getAuthAdapter()->authenticate($this->getAuthData()) === false) {
-            $response->addHeader(Protocol::HEADER_WWW_AUTHENTICATE, $this->getAuthenticateHeader());
-            throw new AuthenticationException('Password doesn\'t match username', 401);
-        }
-    }
-
-    /**
-     * Parses the request for the necessary, authentication adapter specific, login credentials.
-     *
-     * @param \AppserverIo\Psr\HttpMessage\RequestInterface $request The request with the content of authentication data sent by client
-     *
-     * @return void
-     */
-    protected function parse(RequestInterface $request)
-    {
 
         // load the raw login credentials
-        $rawAuthData = $request->getHeader(Protocol::HEADER_AUTHORIZATION);
+        $rawAuthData = $servletRequest->getHeader(Protocol::HEADER_AUTHORIZATION);
 
-        // set auth hash got from auth data request header
-        $authHash = trim(strstr($rawAuthData, " "));
-
-        // check if username and password has been passed
-        if (strstr($credentials = base64_decode($authHash), ':') === false) {
+        // set auth hash got from auth data request header and check if username and password has been passed
+        if (strstr($credentials = base64_decode(trim(strstr($rawAuthData, " "))), ':') === false) {
+            // stop processing immediately
+            $servletRequest->setDispatched(true);
+            $servletResponse->setStatusCode(401);
+            $servletResponse->addHeader(Protocol::HEADER_WWW_AUTHENTICATE, $this->getAuthenticateHeader());
             return false;
         }
 
         // get out username and password
         list ($username, $password) = explode(':', $credentials);
 
-        // check if either username or password was not found and return false
+        // query whether or not a username and a password has been passed
         if (($password === null) || ($username === null)) {
+            // stop processing immediately
+            $servletRequest->setDispatched(true);
+            $servletResponse->setStatusCode(401);
+            $servletResponse->addHeader(Protocol::HEADER_WWW_AUTHENTICATE, $this->getAuthenticateHeader());
             return false;
         }
 
-        // fill the auth data array
-        $this->authData['username'] = $username;
-        $this->authData['password'] = $password;
-        return true;
+        // set username and password
+        $this->username = new String($username);
+        $this->password = new String($password);
+
+        // load the realm to authenticate this request for
+        /** @var AppserverIo\Appserver\ServletEngine\Security\RealmInterface $realm */
+        $realm = $this->getAuthenticationManager()->getRealm($this->getRealmName());
+
+        // authenticate the request and initialize the user principal
+        $userPrincipal = $realm->authenticate($this->getUsername(), $this->getPassword());
+
+        // query whether or not the realm returned an authenticated user principal
+        if ($userPrincipal == null) {
+            // stop processing immediately
+            $servletRequest->setDispatched(true);
+            $servletResponse->setStatusCode(401);
+            $servletResponse->setBodyStream('Unauthorized');
+            $servletResponse->addHeader(Protocol::HEADER_WWW_AUTHENTICATE, $this->getAuthenticateHeader());
+            return false;
+        }
+
+        // add the user principal and the authentication type to the request
+        $servletRequest->setUserPrincipal($userPrincipal);
+        $servletRequest->setAuthType($this->getAuthType());
     }
 
     /**
@@ -161,7 +137,7 @@ class BasicAuthenticator extends AbstractAuthenticator
      */
     public function getAuthenticateHeader()
     {
-        return $this->getType() . ' realm="' . $this->configData["realm"] . '"';
+        return sprintf('%s realm="%s"', $this->getAuthType(), $this->getRealmName());
     }
 
     /**
@@ -171,7 +147,6 @@ class BasicAuthenticator extends AbstractAuthenticator
      */
     public function getPassword()
     {
-        $authData = $this->getAuthData();
-        return isset($authData['password']) ? $authData['password'] : null;
+        return isset($this->password) ? $this->password : null;
     }
 }
