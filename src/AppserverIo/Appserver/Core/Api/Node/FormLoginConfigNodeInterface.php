@@ -35,11 +35,25 @@ interface FormLoginConfigNodeInterface extends NodeInterface
 {
 
     /**
+     * The default login error handler callback class name.
+     *
+     * @var string
+     */
+    const DEFAULT_LOGIN_CALLBACK = 'AppserverIo\Appserver\ServletEngine\Authenticator\Callback\LoginErrorCallback';
+
+    /**
      * Return's the form login page information.
      *
      * @return \AppserverIo\Appserver\Core\Api\Node\FormLoginPageNode The form login page information
      */
     public function getFormLoginPage();
+
+    /**
+     * Return's the form login callback information.
+     *
+     * @return \AppserverIo\Appserver\Core\Api\Node\FormLoginCallbackNode The form login callback information
+     */
+    public function getFormLoginCallback();
 
     /**
      * Return's the form error page information.

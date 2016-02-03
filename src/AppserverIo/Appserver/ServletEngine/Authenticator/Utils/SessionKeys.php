@@ -33,18 +33,11 @@ class SessionKeys
 {
 
     /**
-     * The key for the username stored in the session.
+     * The key for the principal stored in the session.
      *
      * @var string
      */
-    const USERNAME = 'appserver_io.appserver.servlet_engine.security.utils.username';
-
-    /**
-     * The key for the password stored in the session.
-     *
-     * @var string
-     */
-    const PASSWORD = 'appserver_io.appserver.servlet_engine.security.utils.password';
+    const PRINCIPAL = 'appserver_io.appserver.servlet_engine.security.utils.principal';
 
     /**
      * The key for a complete form request stored in the session.
@@ -52,6 +45,13 @@ class SessionKeys
      * @var string
      */
     const FORM_REQUEST = 'appserver_io.appserver.servlet_engine.security.utils.form_request';
+
+    /**
+     * The key for the form errors stored in the session.
+     *
+     * @var string
+     */
+    const FORM_ERRORS = 'appserver_io.appserver.servlet_engine.security.utils.form_errors';
 
     /**
      * This is a utility class, so protect it against direct instantiation.

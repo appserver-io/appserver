@@ -50,6 +50,13 @@ interface RealmInterface
     public function getConfiguration();
 
     /**
+     * Return's the exception stack.
+     *
+     * @return \AppserverIo\Collections\ArrayList The exception stack
+     */
+    public function getExceptionStack();
+
+    /**
      * Tries to authenticate the user with the passed username and password.
      *
      * @param \AppserverIo\Lang\String $username The name of the user to authenticate

@@ -34,6 +34,7 @@ use AppserverIo\Appserver\Core\AbstractManager;
 use AppserverIo\Appserver\Naming\Utils\NamingDirectoryKeys;
 use AppserverIo\Appserver\ServletEngine\Authenticator\AuthenticatorInterface;
 use AppserverIo\Appserver\ServletEngine\Security\DependencyInjection\DeploymentDescriptorParser;
+use AppserverIo\Appserver\ServletEngine\Authenticator\Utils\SessionKeys;
 
 /**
  * The authentication manager handles request which need Http authentication.
@@ -234,7 +235,16 @@ class StandardAuthenticationManager extends AbstractManager implements Authentic
 
                             // if not, throw an SecurityException
                             if ($inRole === false) {
-                                throw new SecurityException('User doesn\'t have necessary privileges');
+                                throw new SecurityException('User doesn\'t have necessary privileges', 403);
+                            }
+                        }
+
+                    } else {
+                        // try to load the session
+                        if ($session = $servletRequest->getSession()) {
+                            // and query whether or not the session contains a user principal
+                            if ($session->hasKey(SessionKeys::PRINCIPAL)) {
+                                $servletRequest->setUserPrincipal($session->getData(SessionKeys::PRINCIPAL));
                             }
                         }
                     }
@@ -242,6 +252,18 @@ class StandardAuthenticationManager extends AbstractManager implements Authentic
                     // stop processing, because we're authenticated
                     break;
                 }
+
+            } catch (SecurityException $se) {
+                // load the system logger and debug log the exception
+                /** @var \Psr\Log\LoggerInterface $systemLogger */
+                if ($systemLogger = $this->getApplication()->getNamingDirectory()->search(NamingDirectoryKeys::SYSTEM_LOGGER)) {
+                    $systemLogger->error($se->__toString());
+                }
+
+                // stop processing, because authentication failed for some reason
+                $servletResponse->setStatusCode($se->getCode());
+                $servletRequest->setDispatched(true);
+                return false;
 
             } catch (\Exception $e) {
                 // load the system logger and debug log the exception
@@ -251,6 +273,7 @@ class StandardAuthenticationManager extends AbstractManager implements Authentic
                 }
 
                 // stop processing, because authentication failed for some reason
+                $servletResponse->setStatusCode(500);
                 $servletRequest->setDispatched(true);
                 return false;
             }

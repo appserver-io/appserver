@@ -1213,11 +1213,11 @@ class Request implements HttpServletRequestInterface, ContextInterface
     /**
      * Set's the passed authentication type.
      *
-     * @param string $authType The authentication type
+     * @param string|null $authType The authentication type
      *
      * @return void
      */
-    public function setAuthType($authType)
+    public function setAuthType($authType = null)
     {
         $this->authType = $authType;
     }
@@ -1225,7 +1225,7 @@ class Request implements HttpServletRequestInterface, ContextInterface
     /**
      * Return's the authentication type.
      *
-     * @return string The authentication type
+     * @return string|null The authentication type
      */
     public function getAuthType()
     {
@@ -1235,11 +1235,11 @@ class Request implements HttpServletRequestInterface, ContextInterface
     /**
      * Set's the user principal for this request.
      *
-     * @param \AppserverIo\Psr\Security\PrincipalInterface $userPrincipal The user principal
+     * @param \AppserverIo\Psr\Security\PrincipalInterface|null $userPrincipal The user principal
      *
      * @return void
      */
-    public function setUserPrincipal(PrincipalInterface $userPrincipal)
+    public function setUserPrincipal(PrincipalInterface $userPrincipal = null)
     {
         $this->userPrincipal = $userPrincipal;
     }
@@ -1331,7 +1331,7 @@ class Request implements HttpServletRequestInterface, ContextInterface
         $authenticationManager = $this->getContext()->search('AuthenticationManagerInterface');
 
         // try to load the authentication managers default authenticator
-        if ($authenticator = $authenticationManager->getAuthenticator()) {
+        if (($authenticator = $authenticationManager->getAuthenticator()) == null) {
             throw new ServletException('Can\'t find default authenticator');
         }
 
@@ -1354,8 +1354,8 @@ class Request implements HttpServletRequestInterface, ContextInterface
         $authenticationManager = $this->getContext()->search('AuthenticationManagerInterface');
 
         // try to load the authentication managers default authenticator
-        if ($authenticator = $authenticationManager->getAuthenticator()) {
-            throw new ServletException("no authenticator");
+        if (($authenticator = $authenticationManager->getAuthenticator()) == null) {
+            throw new ServletException('Can\'t find default authenticator');
         }
 
         // logout the actual user

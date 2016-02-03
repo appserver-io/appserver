@@ -68,6 +68,13 @@ class Realm implements RealmInterface
     protected $authenticationManager;
 
     /**
+     * A stack with the exception throwed during authentication.
+     *
+     * @var \AppserverIo\Collections\ArrayList
+     */
+    protected $exceptionStack;
+
+    /**
      * Initialize the security domain with the passed name.
      *
      * @param \AppserverIo\Appserver\ServletEngine\Security\AuthenticationManagerInterface $authenticationManager The authentication manager instance
@@ -75,8 +82,13 @@ class Realm implements RealmInterface
      */
     public function __construct(AuthenticationManagerInterface $authenticationManager, $name)
     {
+
+        // set the passed parameters
         $this->name = $name;
         $this->authenticationManager = $authenticationManager;
+
+        // initialize the exception stack
+        $this->exceptionStack = new ArrayList();
     }
 
     /**
@@ -122,6 +134,16 @@ class Realm implements RealmInterface
     }
 
     /**
+     * Return's the exception stack.
+     *
+     * @return \AppserverIo\Collections\ArrayList The exception stack
+     */
+    public function getExceptionStack()
+    {
+        return $this->exceptionStack;
+    }
+
+    /**
      * Finally tries to authenticate the user with the passed name.
      *
      * @param \AppserverIo\Lang\String                                         $username        The name of the user to authenticate
@@ -142,9 +164,11 @@ class Realm implements RealmInterface
             $loginContext->login();
 
             // create and return a new Principal of the authenticated user
-            return $this->createPrincipal($username, $loginContext->getSubject(), $loginContext);
+            return $this->createPrincipal($username, $subject, $loginContext);
 
         } catch (\Exception $e) {
+            // add the exception to the stack
+            $this->getExceptionStack()->add($e);
             // load the system logger and debug log the exception
             /** @var \Psr\Log\LoggerInterface $systemLogger */
             if ($systemLogger = $this->getAuthenticationManager()->getApplication()->getNamingDirectory()->search(NamingDirectoryKeys::SYSTEM_LOGGER)) {
