@@ -21,8 +21,6 @@
 namespace AppserverIo\Appserver\Core\Api\Node;
 
 use AppserverIo\Description\Api\Node\AbstractNode;
-use AppserverIo\Description\Api\Node\ValueNode;
-use AppserverIo\Description\Api\Node\NodeValue;
 
 /**
  * DTO to transfer a login form configuration.
@@ -45,28 +43,12 @@ class FormLoginConfigNode extends AbstractNode implements FormLoginConfigNodeInt
     protected $formLoginPage;
 
     /**
-     * The form login callback information.
-     *
-     * @var \AppserverIo\Appserver\Core\Api\Node\FormLoginPageNode
-     * @AS\Mapping(nodeName="form-login-callback", nodeType="AppserverIo\Appserver\Core\Api\Node\FormLoginCallbackNode")
-     */
-    protected $formLoginCallback;
-
-    /**
      * The form error page information.
      *
      * @var \AppserverIo\Appserver\Core\Api\Node\FormErrorPageNode
      * @AS\Mapping(nodeName="form-error-page", nodeType="AppserverIo\Appserver\Core\Api\Node\FormErrorPageNode")
      */
     protected $formErrorPage;
-
-    /**
-     * Initialize the node with the default values.
-     */
-    public function __construct()
-    {
-        $this->formLoginCallback = new ValueNode(new NodeValue(FormLoginConfigNodeInterface::DEFAULT_LOGIN_CALLBACK));
-    }
 
     /**
      * Return's the form login page information.
@@ -76,16 +58,6 @@ class FormLoginConfigNode extends AbstractNode implements FormLoginConfigNodeInt
     public function getFormLoginPage()
     {
         return $this->formLoginPage;
-    }
-
-    /**
-     * Return's the form login callback information.
-     *
-     * @return \AppserverIo\Appserver\Core\Api\Node\FormLoginCallbackNode The form login callback information
-     */
-    public function getFormLoginCallback()
-    {
-        return $this->formLoginCallback;
     }
 
     /**

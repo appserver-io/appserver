@@ -75,7 +75,12 @@
         <manager name="SessionManagerInterface" type="AppserverIo\Appserver\ServletEngine\StandardSessionManager" factory="AppserverIo\Appserver\ServletEngine\StandardSessionManagerFactory"/>
         <manager name="TimerServiceContextInterface" type="AppserverIo\Appserver\PersistenceContainer\TimerServiceRegistry" factory="AppserverIo\Appserver\PersistenceContainer\TimerServiceRegistryFactory"/>
         <manager name="AuthenticationManagerInterface" type="AppserverIo\Appserver\ServletEngine\Security\StandardAuthenticationManager" factory="AppserverIo\Appserver\ServletEngine\Security\StandardAuthenticationManagerFactory">
-            <!-- securityDomains>  
+            <authenticators>
+                <authenticator name="Form" type="AppserverIo\Appserver\ServletEngine\Authenticator\FormAuthenticator" />
+                <authenticator name="Basic" type="AppserverIo\Appserver\ServletEngine\Authenticator\BasicAuthenticator" />
+                <authenticator name="Digest" type="AppserverIo\Appserver\ServletEngine\Authenticator\DigestAuthenticator" />
+            </authenticators>
+            <!-- securityDomains>
                 <securityDomain name="api-realm">
                     <authConfig>
                         <loginModules>

@@ -23,7 +23,6 @@ namespace AppserverIo\Appserver\ServletEngine;
 use AppserverIo\Http\HttpResponseStates;
 use AppserverIo\Psr\HttpMessage\RequestInterface;
 use AppserverIo\Psr\HttpMessage\ResponseInterface;
-use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
 use AppserverIo\Server\Dictionaries\ModuleHooks;
 use AppserverIo\Server\Dictionaries\ServerVars;
 use AppserverIo\Server\Interfaces\RequestContextInterface;

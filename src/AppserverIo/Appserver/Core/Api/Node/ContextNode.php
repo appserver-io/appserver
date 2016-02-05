@@ -45,6 +45,13 @@ class ContextNode extends AbstractNode
     use ClassLoadersNodeTrait;
 
     /**
+     * The logger trait.
+     *
+     * @var \AppserverIo\Appserver\Core\Api\Node\LoggersNodeTrait
+     */
+    use LoggersNodeTrait;
+
+    /**
      * A managers node trait.
      *
      * @var \AppserverIo\Appserver\Core\Api\Node\ManagersNodeTrait
@@ -240,7 +247,8 @@ class ContextNode extends AbstractNode
             /** @var \AppserverIo\Appserver\Core\Api\Node\ManagerNode $manager */
             foreach ($localManagers as $key => $manager) {
                 if ($manager->getName() === $managerToMerge->getName()) {
-                    $localManagers[$key] = $managerToMerge;
+                    $manager->merge($managerToMerge);
+                    $localManagers[$key] = $manager;
                     $isMerged = true;
                 }
             }
@@ -273,5 +281,19 @@ class ContextNode extends AbstractNode
 
         // set the class loaders back to the context
         $this->setClassLoaders($localClassLoaders);
+
+        // load the loggers of this context
+        $localLoggers = $this->getLoggers();
+
+        // merge them with the passed ones (do NOT override already registered loggers)
+        /** @var \AppserverIo\Appserver\Core\Api\Node\LoggerNode $loggerToMerge */
+        foreach ($contextNode->getLoggers() as $loggerToMerge) {
+            if (isset($localLoggers[$loggerToMerge->getName()]) === false) {
+                $localLoggers[$loggerToMerge->getName()] = $loggerToMerge;
+            }
+        }
+
+        // set the loggers back to the context
+        $this->setLoggers($localLoggers);
     }
 }

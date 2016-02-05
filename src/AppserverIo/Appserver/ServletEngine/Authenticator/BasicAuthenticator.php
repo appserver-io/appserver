@@ -65,7 +65,7 @@ class BasicAuthenticator extends AbstractAuthenticator
      * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface  $servletRequest  The servlet request instance
      * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse The servlet response instance
      *
-     * @return void
+     * @return boolean TRUE if authentication has already been processed on a request before, else FALSE
      * @throws \AppserverIo\Http\Authentication\AuthenticationException Is thrown if the request can't be authenticated
      */
     public function authenticate(HttpServletRequestInterface $servletRequest, HttpServletResponseInterface $servletResponse)
@@ -128,6 +128,7 @@ class BasicAuthenticator extends AbstractAuthenticator
         // add the user principal and the authentication type to the request
         $servletRequest->setUserPrincipal($userPrincipal);
         $servletRequest->setAuthType($this->getAuthType());
+        return true;
     }
 
     /**

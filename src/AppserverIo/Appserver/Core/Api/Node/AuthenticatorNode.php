@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\Authenticator\Utils\FormKeys
+ * \AppserverIo\Appserver\Core\Api\Node\AuthenticatorNode
  *
  * NOTICE OF LICENSE
  *
@@ -11,61 +11,62 @@
  *
  * PHP version 5
  *
- * @author    Tim Wagner <tw@appserver.io>
+ * @author    Johann Zelger <jz@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
 
-namespace AppserverIo\Appserver\ServletEngine\Authenticator\Utils;
+namespace AppserverIo\Appserver\Core\Api\Node;
+
+use AppserverIo\Description\Api\Node\AbstractNode;
 
 /**
- * Utility class that contains the form keys.
+ * DTO to transfer authenticator information.
  *
- * @author    Tim Wagner <tw@appserver.io>
+ * @author    Johann Zelger <jz@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class FormKeys
+class AuthenticatorNode extends AbstractNode implements AuthenticatorNodeInterface
 {
 
     /**
-     * The key for the username specified in the login form.
+     * The authenticator name.
      *
      * @var string
+     * @AS\Mapping(nodeType="string")
      */
-    const USERNAME = 'p_username';
+    protected $name;
 
     /**
-     * The key for the password specified in the login in the form.
+     * The authenticator type.
      *
      * @var string
+     * @AS\Mapping(nodeType="string")
      */
-    const PASSWORD = 'p_password';
+    protected $type;
 
     /**
-     * The key for a login form name.
+     * Return's the authenticator name.
      *
-     * @var string
+     * @return string The authenticator name
      */
-    const FORM_ACTION = 'p_security_check';
-
-    /**
-     * This is a utility class, so protect it against direct instantiation.
-     */
-    private function __construct()
+    public function getName()
     {
+        return $this->name;
     }
 
     /**
-     * This is a utility class, so protect it against cloning.
+     * Return's the authenticator type.
      *
-     * @return void
+     * @return string The authenticator type
      */
-    private function __clone()
+    public function getType()
     {
+        return $this->type;
     }
 }

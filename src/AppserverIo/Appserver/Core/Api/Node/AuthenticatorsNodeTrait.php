@@ -1,7 +1,7 @@
 <?php
 
 /**
- * \AppserverIo\Appserver\Core\Api\Node\ManagersNodeTrait
+ * \AppserverIo\Appserver\Core\Api\Node\AuthenticatorsNodeTrait
  *
  * NOTICE OF LICENSE
  *
@@ -22,7 +22,7 @@
 namespace AppserverIo\Appserver\Core\Api\Node;
 
 /**
- * Abstract node that a contexts manager nodes.
+ * Trait to handle authenticator nodes.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @author    Bernhard Wick <bw@appserver.io>
@@ -31,36 +31,36 @@ namespace AppserverIo\Appserver\Core\Api\Node;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-trait ManagersNodeTrait
+trait AuthenticatorsNodeTrait
 {
 
     /**
-     * The contexts manager configuration.
+     * The authenticator configuration.
      *
      * @var array
-     * @AS\Mapping(nodeName="managers/manager", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\ManagerNode")
+     * @AS\Mapping(nodeName="authenticators/authenticator", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\AuthenticatorNode")
      */
-    protected $managers = array();
+    protected $authenticators = array();
 
     /**
-     * Sets the contexts manager configuration.
+     * Sets the authenticator configuration.
      *
-     * @param array $managers The contexts manager configuration
+     * @param array $authenticators The authenticator configuration
      *
      * @return void
      */
-    public function setManagers($managers)
+    public function setAuthenticators($authenticators)
     {
-        $this->managers = $managers;
+        $this->authenticators = $authenticators;
     }
 
     /**
-     * Returns the contexts manager configuration.
+     * Returns the authenticator configuration.
      *
-     * @return array The contexts manager configuration
+     * @return array The authenticator configuration
      */
-    public function getManagers()
+    public function getAuthenticators()
     {
-        return $this->managers;
+        return $this->authenticators;
     }
 }

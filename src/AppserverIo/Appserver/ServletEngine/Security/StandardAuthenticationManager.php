@@ -26,6 +26,7 @@ use AppserverIo\Lang\String;
 use AppserverIo\Collections\HashMap;
 use AppserverIo\Collections\MapInterface;
 use AppserverIo\Storage\StorageInterface;
+use AppserverIo\Psr\Security\Utils\Constants;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
@@ -34,7 +35,7 @@ use AppserverIo\Appserver\Core\AbstractManager;
 use AppserverIo\Appserver\Naming\Utils\NamingDirectoryKeys;
 use AppserverIo\Appserver\ServletEngine\Authenticator\AuthenticatorInterface;
 use AppserverIo\Appserver\ServletEngine\Security\DependencyInjection\DeploymentDescriptorParser;
-use AppserverIo\Appserver\ServletEngine\Authenticator\Utils\SessionKeys;
+use AppserverIo\Appserver\ServletEngine\Utils\RequestHandlerKeys;
 
 /**
  * The authentication manager handles request which need Http authentication.
@@ -218,10 +219,9 @@ class StandardAuthenticationManager extends AbstractManager implements Authentic
                     } elseif (in_array($servletRequest->getMethod(), $mapping->getHttpMethods())) {
                         // load the authentication method and authenticate the request
                         $authenticator = $this->getAuthenticator($mapping);
-                        $authenticator->authenticate($servletRequest, $servletResponse);
 
                         // if we've an user principal, query the roles
-                        if ($servletRequest->getUserPrincipal()) {
+                        if ($authenticator->authenticate($servletRequest, $servletResponse)) {
                             // initialize the roles flag
                             $inRole = false;
 
@@ -243,8 +243,8 @@ class StandardAuthenticationManager extends AbstractManager implements Authentic
                         // try to load the session
                         if ($session = $servletRequest->getSession()) {
                             // and query whether or not the session contains a user principal
-                            if ($session->hasKey(SessionKeys::PRINCIPAL)) {
-                                $servletRequest->setUserPrincipal($session->getData(SessionKeys::PRINCIPAL));
+                            if ($session->hasKey(Constants::PRINCIPAL)) {
+                                $servletRequest->setUserPrincipal($session->getData(Constants::PRINCIPAL));
                             }
                         }
                     }
@@ -262,6 +262,7 @@ class StandardAuthenticationManager extends AbstractManager implements Authentic
 
                 // stop processing, because authentication failed for some reason
                 $servletResponse->setStatusCode($se->getCode());
+                $servletRequest->setAttribute(RequestHandlerKeys::ERROR_MESSAGE, $se->__toString());
                 $servletRequest->setDispatched(true);
                 return false;
 
@@ -274,6 +275,7 @@ class StandardAuthenticationManager extends AbstractManager implements Authentic
 
                 // stop processing, because authentication failed for some reason
                 $servletResponse->setStatusCode(500);
+                $servletRequest->setAttribute(RequestHandlerKeys::ERROR_MESSAGE, $e->__toString());
                 $servletRequest->setDispatched(true);
                 return false;
             }

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * \AppserverIo\Appserver\Core\Api\Node\ManagerNodeInterface
+ * \AppserverIo\Appserver\Core\Api\Node\LoggerNodeInterface
  *
  * NOTICE OF LICENSE
  *
@@ -11,7 +11,7 @@
  *
  * PHP version 5
  *
- * @author    Tim Wagner <tw@appserver.io>
+ * @author    Johann Zelger <jz@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
@@ -20,98 +20,60 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
-use AppserverIo\Configuration\Interfaces\NodeInterface;
-use AppserverIo\Psr\Application\ManagerConfigurationInterface;
-
 /**
- * Interface for the manager configuration node.
+ * Interface for a logger DTO implementation.
  *
- * @author    Tim Wagner <tw@appserver.io>
+ * @author    Johann Zelger <jz@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-interface ManagerNodeInterface extends ManagerConfigurationInterface, NodeInterface
+interface LoggerNodeInterface
 {
 
     /**
-     * Array with the directories.
+     * Returns the nodes primary key, the name by default.
      *
-     * @param array $directories The directories
-     *
-     * @return void
+     * @return string The nodes primary key
+     * @see \AppserverIo\Appserver\Core\Api\Node\AbstractNode::getPrimaryKey()
      */
-    public function setDirectories(array $directories);
+    public function getPrimaryKey();
 
     /**
-     * Array with the directories.
+     * Returns information about the system loggers class name.
      *
-     * @return \AppserverIo\Appserver\Core\Api\Node\DirectoryNode[]
-     */
-    public function getDirectories();
-
-    /**
-     * Sets the security domain configuration.
-     *
-     * @param array $securityDomains The security domain configuration
-     *
-     * @return void
-     */
-    public function setSecurityDomains($securityDomains);
-
-    /**
-     * Returns the security domain configuration.
-     *
-     * @return array The security domain configuration
-     */
-    public function getSecurityDomains();
-
-    /**
-     * Array with the descriptors.
-     *
-     * @param array $descriptors The descriptors
-     *
-     * @return void
-     */
-    public function setDescriptors(array $descriptors);
-
-    /**
-     * Array with the descriptors.
-     *
-     * @return array
-     */
-    public function getDescriptors();
-
-    /**
-     * Sets the authenticator configuration.
-     *
-     * @param array $authenticators The authenticator configuration
-     *
-     * @return void
-     */
-    public function setAuthenticators($authenticators);
-
-    /**
-     * Returns the authenticator configuration.
-     *
-     * @return array The authenticator configuration
-     */
-    public function getAuthenticators();
-
-    /**
-     * Returns the class name.
-     *
-     * @return string The class name
+     * @return string The system loggers class name
      */
     public function getType();
 
     /**
-     * Returns the factory class name.
+     * Returns loggers name
      *
-     * @return string The factory class name
+     * @return string The loggers name
      */
-    public function getFactory();
+    public function getName();
+
+    /**
+     * Returns information about the system loggers channel name.
+     *
+     * @return string The system loggers channel name
+     */
+    public function getChannelName();
+
+    /**
+     * Returns the array with all registered processors.
+     *
+     * @return array The registered processors
+     */
+    public function getProcessors();
+
+    /**
+     * Returns the array with all registered handlers.
+     *
+     * @return array The registered handlers
+     */
+    public function getHandlers();
 
     /**
      * Array with the handler params to use.

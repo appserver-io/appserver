@@ -41,6 +41,8 @@ use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Psr\Application\ProvisionerInterface;
 use AppserverIo\Psr\Application\DirectoryAwareInterface;
 use AppserverIo\Psr\Application\FilesystemAwareInterface;
+use Psr\Log\LoggerInterface;
+use AppserverIo\Appserver\Core\Api\Node\LoggerNodeInterface;
 
 /**
  * The application instance holds all information about the deployed application
@@ -55,6 +57,8 @@ use AppserverIo\Psr\Application\FilesystemAwareInterface;
  * @property \AppserverIo\Appserver\Application\ApplicationStateKeys        $applicationState The application state
  * @property \AppserverIo\Storage\StorageInterface                          $data             Application's data storage
  * @property \AppserverIo\Storage\GenericStackable                          $classLoaders     Stackable holding all class loaders this application has registered
+ * @property \AppserverIo\Storage\GenericStackable                          $provisioners     Stackable holding all provisioners this application has registered
+ * @property \AppserverIo\Storage\GenericStackable                          $loggers          Stackable holding all loggers this application has registered
  * @property \AppserverIo\Appserver\Application\Interfaces\ContextInterface $initialContext   The initial context instance
  * @property \AppserverIo\Storage\GenericStackable                          $managers         Stackable of managers for this application
  * @property string                                                         $name             Name of the application
@@ -137,6 +141,18 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
     public function injectProvisioners(GenericStackable $provisioners)
     {
         $this->provisioners = $provisioners;
+    }
+
+    /**
+     * Injects the storage for the loggers.
+     *
+     * @param \AppserverIo\Storage\GenericStackable $loggers The storage for the loggers
+     *
+     * @return void
+     */
+    public function injectLoggers(GenericStackable $loggers)
+    {
+        $this->loggers = $loggers;
     }
 
     /**
@@ -385,6 +401,30 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
     }
 
     /**
+     * Returns the logger instances.
+     *
+     * @return \AppserverIo\Storage\GenericStackable The logger instances
+     */
+    public function getLoggers()
+    {
+        return $this->loggers;
+    }
+
+    /**
+     * Return the requested logger instance.
+     *
+     * @param string $logger The name of the requested logger
+     *
+     * @return \Psr\Log\LoggerInterface The logger instance
+     */
+    public function getLogger($name)
+    {
+        if (isset($this->loggers[$name])) {
+            return $this->loggers[$name];
+        }
+    }
+
+    /**
      * Injects an additional class loader.
      *
      * @param \AppserverIo\Appserver\Core\Interfaces\ClassLoaderInterface   $classLoader   A class loader to put on the class loader stack
@@ -436,6 +476,24 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
 
         // add the provisioner instance to the application
         $this->provisioners[$configuration->getName()] = $provisioner;
+    }
+
+    /**
+     * Injects the logger instance and the configuration.
+     *
+     * @param \Psr\Log\LoggerInterface                                 $logger        A provisioner instance
+     * @param \AppserverIo\Appserver\Core\Api\Node\LoggerNodeInterface $configuration The provisioner configuration
+     *
+     * @return void
+     */
+    public function addLogger(LoggerInterface $logger, LoggerNodeInterface $configuration)
+    {
+
+        // bind the logger callback to the naming directory => the application itself
+        $this->getNamingDirectory()->bind(sprintf('php:global/log/%s/%s', $this->getName(), $configuration->getName()), array(&$this, 'getLogger'), array($configuration->getName()));
+
+        // add the logger instance to the application
+        $this->loggers[$configuration->getName()] = $logger;
     }
 
     /**

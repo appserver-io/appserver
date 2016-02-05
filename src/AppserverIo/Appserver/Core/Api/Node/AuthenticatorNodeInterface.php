@@ -1,7 +1,7 @@
 <?php
 
 /**
- * \AppserverIo\Appserver\Core\Api\Node\FormLoginCallbackNode
+ * \AppserverIo\Appserver\Core\Api\Node\AuthenticatorNodeInterface
  *
  * NOTICE OF LICENSE
  *
@@ -11,7 +11,7 @@
  *
  * PHP version 5
  *
- * @author    Tim Wagner <tw@appserver.io>
+ * @author    Johann Zelger <jz@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
@@ -20,33 +20,29 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
-use AppserverIo\Description\Api\Node\AbstractValueNode;
-use AppserverIo\Configuration\Interfaces\ValueInterface;
-
 /**
- * DTO to transfer a form login callback node.
+ * Interface for a authenticator DTO implementation.
  *
- * @author    Tim Wagner <tw@appserver.io>
+ * @author    Johann Zelger <jz@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class FormLoginCallbackNode extends AbstractValueNode
+interface AuthenticatorNodeInterface
 {
 
     /**
-     * Initializes the display name node with the necessary data.
+     * Return's the authenticator name.
      *
-     * @param \AppserverIo\Configuration\Interfaces\ValueInterface $nodeValue The params initial value
+     * @return string The authenticator name
      */
-    public function __construct(ValueInterface $nodeValue = null)
-    {
+    public function getName();
 
-        // initialize the UUID
-        $this->setUuid($this->newUuid());
-
-        // set the data
-        $this->nodeValue = $nodeValue;
-    }
+    /**
+     * Return's the authenticator type.
+     *
+     * @return string The authenticator type
+     */
+    public function getType();
 }
