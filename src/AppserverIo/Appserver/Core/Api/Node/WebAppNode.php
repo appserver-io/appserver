@@ -24,6 +24,9 @@ use AppserverIo\Description\Api\Node\NodeValue;
 use AppserverIo\Description\Api\Node\ValueNode;
 use AppserverIo\Description\Api\Node\AbstractNode;
 use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
+use phpDocumentor\Reflection\DocBlock\Description;
+use AppserverIo\Appserver\ServletEngine\Authenticator\Utils\FormKeys;
+use AppserverIo\Psr\HttpMessage\Protocol;
 
 /**
  * DTO to transfer a web application.
@@ -125,6 +128,36 @@ class WebAppNode extends AbstractNode implements WebAppNodeInterface
      * @AS\Mapping(nodeName="context-param", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\ContextParamNode")
      */
     protected $contextParams = array();
+
+    /**
+     * Initializes the web application node with default values.
+     */
+    public function __construct()
+    {
+
+        // initialize the default configuration for the security check p_security_check form
+        $displayName = new ValueNode(new NodeValue('Security Check'));
+        $webResourceName = new WebResourceNameNode(new NodeValue('Security Check'));
+        $description = new DescriptionNode(new NodeValue('Default Security Check Configuration'));
+        $urlPatterns = array(new UrlPatternNode(new NodeValue(sprintf('/%s.*', FormKeys::FORM_ACTION))));
+        $httpMethods = array(new HttpMethodNode(new NodeValue(Protocol::METHOD_POST)));
+
+        // prepare the web collection configuration
+        $webResourceCollections = array(
+            new WebResourceCollectionNode(
+                $webResourceName,
+                $description,
+                $urlPatterns,
+                $httpMethods
+            )
+        );
+
+        // finally prepare the security constraint
+        $this->securityConstraints[] =  new SecurityConstraintNode(
+            $displayName,
+            $webResourceCollections
+        );
+    }
 
     /**
      * Will be invoked after the node will be initialized from

@@ -21,6 +21,7 @@
 namespace AppserverIo\Appserver\Core\Api\Node;
 
 use AppserverIo\Description\Api\Node\AbstractNode;
+use AppserverIo\Configuration\Interfaces\NodeValueInterface;
 
 /**
  * DTO to transfer a security constraint.
@@ -73,6 +74,29 @@ class WebResourceCollectionNode extends AbstractNode implements WebResourceColle
      * @AS\Mapping(nodeName="http-method-omission", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\HttpMethodOmissionNode")
      */
     protected $httpMethodOmissions = array();
+
+    /**
+     * Initializes the node with the passed values.
+     *
+     * @param \AppserverIo\Appserver\Core\Api\Node\NodeValueInterface $webResourceName     The web resource name information
+     * @param \AppserverIo\Appserver\Core\Api\Node\NodeValueInterface $description         The description information
+     * @param array                                                   $urlPatterns         The array with the URL pattern information
+     * @param array                                                   $httpMethods         The array with the HTTP method information
+     * @param array                                                   $httpMethodOmissions The array with the HTTP method omission information
+     */
+    public function __construct(
+        NodeValueInterface $webResourceName = null,
+        NodeValueInterface $description = null,
+        array $urlPatterns = array(),
+        array $httpMethods = array(),
+        array $httpMethodOmissions = array()
+    ) {
+        $this->webResourceName = $webResourceName;
+        $this->description = $description;
+        $this->urlPatterns = $urlPatterns;
+        $this->httpMethods = $httpMethods;
+        $this->httpMethodOmissions = $httpMethodOmissions;
+    }
 
     /**
      * Return's the web resource name information.

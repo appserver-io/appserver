@@ -79,7 +79,10 @@ class FormAuthenticator extends AbstractAuthenticator
         // start the session, if not already done
         /** @var \AppserverIo\Psr\Servlet\Http\HttpSessionInterface $session */
         $session = $servletRequest->getSession(true);
-        $session->start();
+        // start the session if not already done
+        if ($session->isStarted() === false) {
+            $session->start();
+        }
 
         // try to load the principal from the session if available
         if ($session->hasKey(Constants::PRINCIPAL)) {
@@ -435,8 +438,8 @@ class FormAuthenticator extends AbstractAuthenticator
     /**
      * Will be invoked to load the credentials from the request.
      *
-     * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface    $servletRequest  The servlet request instance
-     * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface   $servletResponse The servlet response instance
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface  $servletRequest  The servlet request instance
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse The servlet response instance
      *
      * @return void
      */
@@ -458,8 +461,8 @@ class FormAuthenticator extends AbstractAuthenticator
     /**
      * Will be invoked to handle a cached authentication request.
      *
-     * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface    $servletRequest  The servlet request instance
-     * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface   $servletResponse The servlet response instance
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface  $servletRequest  The servlet request instance
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse The servlet response instance
      *
      * @return void
      */

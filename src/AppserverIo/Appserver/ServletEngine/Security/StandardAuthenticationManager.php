@@ -240,8 +240,13 @@ class StandardAuthenticationManager extends AbstractManager implements Authentic
                         }
 
                     } else {
-                        // try to load the session
-                        if ($session = $servletRequest->getSession()) {
+                        // load the session
+                        if ($session = $servletRequest->getSession(true)) {
+                            //  start it, if not already done
+                            if ($session->isStarted() === false) {
+                                $session->start();
+                            }
+
                             // and query whether or not the session contains a user principal
                             if ($session->hasKey(Constants::PRINCIPAL)) {
                                 $servletRequest->setUserPrincipal($session->getData(Constants::PRINCIPAL));

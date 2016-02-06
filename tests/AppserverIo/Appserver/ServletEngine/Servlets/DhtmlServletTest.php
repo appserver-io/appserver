@@ -42,6 +42,19 @@ class DhtmlServletTest extends \PHPUnit_Framework_TestCase
     public function testInit()
     {
 
+        // create a servlet context mock instance
+        $mockServletContext = $this->getMockBuilder($servletContextInterface = 'AppserverIo\Appserver\ServletEngine\Servlets\Mock\MockServletContextInterface')
+            ->setMethods(get_class_methods($servletContextInterface))
+            ->getMock();
+
+        // mock the necessary method
+        $mockServletContext->expects($this->once())
+            ->method('getAppBase')
+            ->will($this->returnValue($webappPath = '/opt/appserver/webapps'));
+        $mockServletContext->expects($this->once())
+            ->method('getBaseDirectory')
+            ->will($this->returnValue($webappPath = '/opt/appserver'));
+
         // create a servlet config mock instance
         $mockServletConfig = $this->getMockBuilder($servletConfigInterface = 'AppserverIo\Psr\Servlet\ServletConfigInterface')
             ->setMethods(get_class_methods($servletConfigInterface))
@@ -51,6 +64,9 @@ class DhtmlServletTest extends \PHPUnit_Framework_TestCase
         $mockServletConfig->expects($this->once())
             ->method('getWebappPath')
             ->will($this->returnValue($webappPath = '/opt/appserver/webapps/test'));
+        $mockServletConfig->expects($this->exactly(2))
+            ->method('getServletContext')
+            ->will($this->returnValue($mockServletContext));
 
         // create and initialize a servlet instance
         $servlet = new DhtmlServlet();
@@ -123,7 +139,7 @@ class DhtmlServletTest extends \PHPUnit_Framework_TestCase
      * @return void
      *
      * @expectedException AppserverIo\Psr\Servlet\ServletException
-     * @expectedExceptionMessage Requested template '/_files/not_existing_template.dhtml' is not available
+     * @expectedExceptionMessage Can't load requested template '/_files/not_existing_template.dhtml'
      */
     public function testServiceWithMissingPhtmlFile()
     {

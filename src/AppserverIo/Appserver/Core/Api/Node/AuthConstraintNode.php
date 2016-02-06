@@ -21,6 +21,7 @@
 namespace AppserverIo\Appserver\Core\Api\Node;
 
 use AppserverIo\Description\Api\Node\AbstractNode;
+use AppserverIo\Configuration\Interfaces\NodeValueInterface;
 
 /**
  * DTO to transfer a auth constraint.
@@ -35,6 +36,14 @@ class AuthConstraintNode extends AbstractNode implements AuthConstraintNodeInter
 {
 
     /**
+     * The description information.
+     *
+     * @var \AppserverIo\Appserver\Core\Api\Node\DescriptionNode
+     * @AS\Mapping(nodeName="description", nodeType="AppserverIo\Appserver\Core\Api\Node\DescriptionNode")
+     */
+    protected $description;
+
+    /**
      * The role name information.
      *
      * @var array
@@ -43,12 +52,18 @@ class AuthConstraintNode extends AbstractNode implements AuthConstraintNodeInter
     protected $roleNames;
 
     /**
-     * The description information.
+     * Initializes the node with the passed values.
      *
-     * @var \AppserverIo\Appserver\Core\Api\Node\DescriptionNode
-     * @AS\Mapping(nodeName="description", nodeType="AppserverIo\Appserver\Core\Api\Node\DescriptionNode")
+     * @param \AppserverIo\Appserver\Core\Api\Node\NodeValueInterface $description The description information
+     * @param array                                                   $roleNames   The array with the role names
      */
-    protected $description;
+    public function __construct(
+        NodeValueInterface $description = null,
+        array $roleNames = array()
+    ) {
+        $this->roleNames = $roleNames;
+        $this->description = $description;
+    }
 
     /**
      * Return's the role name information.

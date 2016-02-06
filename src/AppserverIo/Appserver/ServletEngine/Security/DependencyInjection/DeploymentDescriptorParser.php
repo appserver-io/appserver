@@ -26,6 +26,8 @@ use AppserverIo\Http\Authentication\AuthenticationException;
 use AppserverIo\Appserver\Core\Api\Node\WebAppNode;
 use AppserverIo\Appserver\ServletEngine\Security\Mapping;
 use AppserverIo\Appserver\ServletEngine\Security\AuthenticationManagerInterface;
+use AppserverIo\Appserver\ServletEngine\Authenticator\Utils\FormKeys;
+use AppserverIo\Psr\HttpMessage\Protocol;
 
 /**
  * Parser implementation to parse a web application deployment descriptor (WEB-INF/web.xml).

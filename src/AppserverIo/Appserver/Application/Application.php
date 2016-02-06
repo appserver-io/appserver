@@ -413,7 +413,7 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
     /**
      * Return the requested logger instance.
      *
-     * @param string $logger The name of the requested logger
+     * @param string $name The name of the requested logger
      *
      * @return \Psr\Log\LoggerInterface The logger instance
      */
