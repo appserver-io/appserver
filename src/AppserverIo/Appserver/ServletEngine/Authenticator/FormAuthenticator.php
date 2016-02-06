@@ -21,18 +21,22 @@
 namespace AppserverIo\Appserver\ServletEngine\Authenticator;
 
 use AppserverIo\Lang\String;
+use AppserverIo\Collections\ArrayList;
 use AppserverIo\Psr\HttpMessage\Protocol;
 use AppserverIo\Psr\Security\Auth\Subject;
+use AppserverIo\Psr\Servlet\ServletException;
+use AppserverIo\Psr\Security\Utils\Constants;
+use AppserverIo\Psr\Security\PrincipalInterface;
+use AppserverIo\Psr\Servlet\Http\HttpSessionInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
-use AppserverIo\Psr\Servlet\ServletException;
-use AppserverIo\Psr\Servlet\Http\HttpSessionInterface;
 use AppserverIo\Http\Authentication\AuthenticationException;
-use AppserverIo\Appserver\ServletEngine\Authenticator\Utils\SessionKeys;
+use AppserverIo\Appserver\ServletEngine\Security\RealmInterface;
+use AppserverIo\Appserver\ServletEngine\Utils\RequestHandlerKeys;
 use AppserverIo\Appserver\ServletEngine\Authenticator\Utils\FormKeys;
 
 /**
- * This valve will check if the actual request needs authentication.
+ * A form based authenticator implementation.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -51,6 +55,13 @@ class FormAuthenticator extends AbstractAuthenticator
     const AUTH_TYPE = 'Form';
 
     /**
+     * The password to authenticate the user with.
+     *
+     * @var string
+     */
+    protected $password;
+
+    /**
      * Try to authenticate the user making this request, based on the specified login configuration.
      *
      * Return TRUE if any specified constraint has been satisfied, or FALSE if we have created a response
@@ -59,7 +70,7 @@ class FormAuthenticator extends AbstractAuthenticator
      * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface  $servletRequest  The servlet request instance
      * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse The servlet response instance
      *
-     * @return void
+     * @return boolean TRUE if authentication has already been processed on a request before, else FALSE
      * @throws \AppserverIo\Http\Authentication\AuthenticationException Is thrown if the request can't be authenticated
      */
     public function authenticate(HttpServletRequestInterface $servletRequest, HttpServletResponseInterface $servletResponse)
@@ -68,66 +79,35 @@ class FormAuthenticator extends AbstractAuthenticator
         // start the session, if not already done
         /** @var \AppserverIo\Psr\Servlet\Http\HttpSessionInterface $session */
         $session = $servletRequest->getSession(true);
-        $session->start();
+        // start the session if not already done
+        if ($session->isStarted() === false) {
+            $session->start();
+        }
 
-        // try to load username/password from the session if available
-        if ($session->hasKey(SessionKeys::USERNAME) && $session->hasKey(SessionKeys::PASSWORD)) {
-            // load username/password from the session
-            $this->username = $session->getData(SessionKeys::USERNAME);
-            $this->password = $session->getData(SessionKeys::PASSWORD);
-
-            // load the realm to authenticate this request for
-            /** @var AppserverIo\Appserver\ServletEngine\Security\RealmInterface $realm */
-            $realm = $this->getAuthenticationManager()->getRealm($this->getRealmName());
-
-            // authenticate the request and initialize the user principal
-            if ($userPrincipal = $realm->authenticate($this->getUsername(), $this->getPassword())) {
-                // set the the principal and the authentication method in the request
-                $servletRequest->setUserPrincipal($userPrincipal);
-                $servletRequest->setAuthType($this->getAuthType());
-
-                // set username and password in the session
-                if ($session = $servletRequest->getSession()) {
-                    $session->putData(SessionKeys::USERNAME, $this->getUsername());
-                    $session->putData(SessionKeys::PASSWORD, $this->getPassword());
-                }
-
-                return true;
-            }
+        // try to load the principal from the session if available
+        if ($session->hasKey(Constants::PRINCIPAL)) {
+            // invoke the onCache callback and return
+            $this->onCache($servletRequest, $servletResponse);
+            return true;
         }
 
         // is this the re-submit of the original request URI after successful
         // authentication? If so, forward the *original* request instead
         if ($this->matchRequest($servletRequest)) {
-            // restore the old request from the session
-            $this->restoreRequest($servletRequest, $session);
-
+            // invoke the onRestore callback and return
+            $this->onResubmit($servletRequest, $servletResponse);
             return true;
         }
 
-        // Is this the action request from the login page?
-        if (!preg_match(sprintf('/.*\%s/', FormKeys::FORM_ACTION), $servletRequest->getRequestUri())) {
-            // save the request so we can redirect after a successful login
-            $this->saveRequest($servletRequest, $session);
-
-            // query whether or not we've a valid form login configuration
-            if ($formLoginConfig = $this->getConfigData()->getFormLoginConfig()) {
-                // load the configured error page
-                $formLoginPage = $formLoginConfig->getFormLoginPage()->__toString();
-                // redirect to the configured login page
-                $servletResponse->setStatusCode(307);
-                $servletResponse->addHeader(Protocol::HEADER_LOCATION, $formLoginPage);
-            }
-
+        // is this the action request from the login page?
+        if (FormKeys::FORM_ACTION !== pathinfo($servletRequest->getRequestUri(), PATHINFO_FILENAME)) {
+            // invoke the onLogin callback and redirect to the login page
+            $this->onLogin($servletRequest, $servletResponse);
             return false;
         }
 
-        // try to load username and password from the request instead
-        if ($servletRequest->hasParameter(FormKeys::USERNAME) && $servletRequest->hasParameter(FormKeys::PASSWORD)) {
-            // load username/password from the request
-            $this->username = new String($servletRequest->getParameter(FormKeys::USERNAME));
-            $this->password = new String($servletRequest->getParameter(FormKeys::PASSWORD));
-        }
+        // invoke the onCredentials callback to load the credentials from the request
+        $this->onCredentials($servletRequest, $servletResponse);
 
         // load the realm to authenticate this request for
         /** @var AppserverIo\Appserver\ServletEngine\Security\RealmInterface $realm */
@@ -138,17 +118,30 @@ class FormAuthenticator extends AbstractAuthenticator
 
         // query whether or not the realm returned an authenticated user principal
         if ($userPrincipal == null) {
-            // query whether or not we've a valid form login configuration
-            if ($formLoginConfig = $this->getConfigData()->getFormLoginConfig()) {
-                // load the configured error page
-                $formErrorPage = $formLoginConfig->getFormErrorPage()->__toString();
-                // redirect to the configured error page
-                $servletResponse->setStatusCode(307);
-                $servletResponse->addHeader(Protocol::HEADER_LOCATION, $formErrorPage);
-            }
-
+            // invoke the onFailure callback and forward the user to the error page
+            $this->onFailure($realm, $servletRequest, $servletResponse);
             return false;
         }
+
+        // invoke the onSuccess callback and redirect the user to the original page
+        $this->onSuccess($userPrincipal, $servletRequest, $servletResponse);
+        return false;
+    }
+
+    /**
+     * Register's the user principal and the authenticytion in the request and session.
+     *
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface  $servletRequest  The servlet request instance
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse The servlet response instance
+     * @param \AppserverIo\Psr\Security\PrincipalInterface               $userPrincipal   The actual user principal
+     *
+     * @return void
+     */
+    protected function register(
+        HttpServletRequestInterface $servletRequest,
+        HttpServletResponseInterface $servletResponse,
+        PrincipalInterface $userPrincipal
+    ) {
 
         // add the user principal and the authentication type to the request
         $servletRequest->setUserPrincipal($userPrincipal);
@@ -156,27 +149,133 @@ class FormAuthenticator extends AbstractAuthenticator
 
         // set username and password in the session
         if ($session = $servletRequest->getSession()) {
-            $session->putData(SessionKeys::USERNAME, $this->getUsername());
-            $session->putData(SessionKeys::PASSWORD, $this->getPassword());
+            if ($session->hasKey(Constants::PRINCIPAL) === false) {
+                $session->putData(Constants::PRINCIPAL, $userPrincipal);
+            }
+        }
+    }
+
+    /**
+     * Forward's the request to the stored one or, if the user has not been on
+     * any page before, the application's base URL.
+     *
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface  $servletRequest  The servlet request instance
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse The servlet response instance
+     *
+     * @return void
+     */
+    protected function forwardToFormRequest(
+        HttpServletRequestInterface $servletRequest,
+        HttpServletResponseInterface $servletResponse
+    ) {
+
+        // load the session from the request
+        $session = $servletRequest->getSession();
+
+        // initialize the location to redirect to
+        $location = '';
+
+        // prepend the base modifier if available
+        if ($baseModifier = $servletRequest->getBaseModifier()) {
+            $location .= $baseModifier;
         }
 
         // query whether or not we found the original request to redirect to
-        if ($session->hasKey(SessionKeys::FORM_REQUEST)) {
+        if ($session && $session->hasKey(Constants::FORM_REQUEST)) {
             // load the original request
-            $req = $session->getData(SessionKeys::FORM_REQUEST);
+            $req = $session->getData(Constants::FORM_REQUEST);
+
+            // initialize the location to redirect to
+            $location .= $req->requestUri;
 
             // prepare URI + query string to redirect to
-            $location = $req->requestUri;
             if ($queryString = $req->queryString) {
                 $location .= '?' . $queryString;
             }
-
-            // redirect to the original location
-            $servletResponse->setStatusCode(307);
-            $servletResponse->addHeader(Protocol::HEADER_LOCATION, $location);
         }
 
-        return false;
+        // redirect to the original location
+        $servletRequest->setDispatched(true);
+        $servletResponse->setStatusCode(303);
+        $servletResponse->addHeader(Protocol::HEADER_LOCATION, $location);
+    }
+
+    /**
+     * Forward's the request to the configured login page.
+     *
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface  $servletRequest  The servlet request instance
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse The servlet response instance
+     *
+     * @return void
+     */
+    protected function forwardToLoginPage(
+        HttpServletRequestInterface $servletRequest,
+        HttpServletResponseInterface $servletResponse
+    ) {
+
+        // query whether or not we've a valid form login configuration
+        if ($formLoginConfig = $this->getConfigData()->getFormLoginConfig()) {
+            if ($formLoginPage = $formLoginConfig->getFormLoginPage()) {
+                // initialize the location to redirect to
+                $location = $formLoginPage->__toString();
+                if ($baseModifier = $servletRequest->getBaseModifier()) {
+                    $location = $baseModifier . $location;
+                }
+
+                // redirect to the configured login page
+                $servletRequest->setDispatched(true);
+                $servletResponse->setStatusCode(307);
+                $servletResponse->addHeader(Protocol::HEADER_LOCATION, $location);
+                return;
+            }
+        }
+
+        // redirect to the default error page
+        $servletRequest->setAttribute(
+            RequestHandlerKeys::ERROR_MESSAGE,
+            'Please configure a form-login-page when using auth-method \'Form\' in the login-config of your application\'s web.xml'
+        );
+        $servletRequest->setDispatched(true);
+        $servletResponse->setStatusCode(500);
+    }
+
+    /**
+     * Forward's the request to the configured error page.
+     *
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface  $servletRequest  The servlet request instance
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse The servlet response instance
+     *
+     * @return void
+     */
+    protected function forwardToErrorPage(
+        HttpServletRequestInterface $servletRequest,
+        HttpServletResponseInterface $servletResponse
+    ) {
+
+        // query whether or not we've an error page configured
+        if ($formLoginConfig = $this->getConfigData()->getFormLoginConfig()) {
+            if ($formErrorPage = $formLoginConfig->getFormErrorPage()) {
+                // initialize the location to redirect to
+                $location = $formErrorPage->__toString();
+                if ($baseModifier = $servletRequest->getBaseModifier()) {
+                    $location = $baseModifier . $location;
+                }
+
+                // redirect to the configured error page
+                $servletRequest->setDispatched(true);
+                $servletResponse->setStatusCode(307);
+                $servletResponse->addHeader(Protocol::HEADER_LOCATION, $location);
+                return;
+            }
+        }
+
+        // redirect to the default error page
+        $servletRequest->setAttribute(
+            RequestHandlerKeys::ERROR_MESSAGE,
+            'Please configure a form-error-page when using auth-method \'Form\' in the login-config of your application\'s web.xml'
+        );
+        $servletRequest->setDispatched(true);
+        $servletResponse->setStatusCode(500);
     }
 
     /**
@@ -188,8 +287,11 @@ class FormAuthenticator extends AbstractAuthenticator
      *
      * @return \AppserverIo\Psr\Security\PrincipalInterface The authenticated user principal
      */
-    public function login(String $username, String $password, HttpServletRequestInterface $servletRequest)
-    {
+    public function login(
+        String $username,
+        String $password,
+        HttpServletRequestInterface $servletRequest
+    ) {
 
         // load the realm to authenticate this request for
         /** @var AppserverIo\Appserver\ServletEngine\Security\RealmInterface $realm */
@@ -217,9 +319,9 @@ class FormAuthenticator extends AbstractAuthenticator
     public function logout(HttpServletRequestInterface $servletRequest)
     {
 
-        // remove user principal and authenticatio method from request
-        $servletRequest->setUserPrincipal(null);
-        $servletRequest->setAuthMethod(null);
+        // remove user principal and authentication method from request
+        $servletRequest->setUserPrincipal();
+        $servletRequest->setAuthType();
 
         // destroy the session explicit
         if ($session = $servletRequest->getSession()) {
@@ -247,21 +349,21 @@ class FormAuthenticator extends AbstractAuthenticator
         }
 
         // query whether or not we can find the original request data
-        if ($session->hasKey(SessionKeys::FORM_REQUEST) === false) {
+        if ($session->hasKey(Constants::FORM_REQUEST) === false) {
             return false;
         }
 
         // if yes, compare the request URI and check for a valid princial
-        if ($req = $session->getData(SessionKeys::FORM_REQUEST)) {
+        if ($req = $session->getData(Constants::FORM_REQUEST)) {
             // query whether or not we've a valid princial
             if (isset($req->principal) === false) {
                 return false;
             }
-
             // compare the request URI
             return $servletRequest->getRequestUri() === $req->requestUri;
         }
 
+        // return FALSE if the request doesn't match
         return false;
     }
 
@@ -273,8 +375,10 @@ class FormAuthenticator extends AbstractAuthenticator
      *
      * @return void
      */
-    protected function saveRequest(HttpServletRequestInterface $servletRequest, HttpSessionInterface $session)
-    {
+    protected function saveRequest(
+        HttpServletRequestInterface $servletRequest,
+        HttpSessionInterface $session
+    ) {
 
         // initialize an empyt instance
         $req = new \stdClass();
@@ -292,7 +396,7 @@ class FormAuthenticator extends AbstractAuthenticator
         $req->requestUrl = $servletRequest->getRequestUrl();
 
         // store the data in the session
-        $session->putData(SessionKeys::FORM_REQUEST, $req);
+        $session->putData(Constants::FORM_REQUEST, $req);
     }
 
     /**
@@ -304,13 +408,15 @@ class FormAuthenticator extends AbstractAuthenticator
      *
      * @return void
      */
-    protected function restoreRequest(HttpServletRequestInterface $servletRequest, HttpSessionInterface $session)
-    {
+    protected function restoreRequest(
+        HttpServletRequestInterface $servletRequest,
+        HttpSessionInterface $session
+    ) {
 
         // query whether or not we can find the original request in the session
-        if ($session->hasKey(SessionKeys::FORM_REQUEST)) {
+        if ($session->hasKey(Constants::FORM_REQUEST)) {
             // load the origin request from the session
-            $req = $session->getData(SessionKeys::FORM_REQUEST);
+            $req = $session->getData(Constants::FORM_REQUEST);
 
             // restore the original request data
             $servletRequest->setHeaders($req->headers);
@@ -326,6 +432,147 @@ class FormAuthenticator extends AbstractAuthenticator
             if ($servletRequest->getHeader(Protocol::HEADER_CONTENT_LENGTH) > 0) {
                 $servletRequest->setBodyStream($req->bodyContent);
             }
+        }
+    }
+
+    /**
+     * Will be invoked to load the credentials from the request.
+     *
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface  $servletRequest  The servlet request instance
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse The servlet response instance
+     *
+     * @return void
+     */
+    protected function onCredentials(
+        HttpServletRequestInterface $servletRequest,
+        HttpServletResponseInterface $servletResponse
+    ) {
+
+        // try to load username and password from the request instead
+        if ($servletRequest->hasParameter(FormKeys::USERNAME) &&
+            $servletRequest->hasParameter(FormKeys::PASSWORD)
+        ) {
+            // load username/password from the request
+            $this->username = new String($servletRequest->getParameter(FormKeys::USERNAME));
+            $this->password = new String($servletRequest->getParameter(FormKeys::PASSWORD));
+        }
+    }
+
+    /**
+     * Will be invoked to handle a cached authentication request.
+     *
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface  $servletRequest  The servlet request instance
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse The servlet response instance
+     *
+     * @return void
+     */
+    protected function onCache(
+        HttpServletRequestInterface $servletRequest,
+        HttpServletResponseInterface $servletResponse
+    ) {
+
+        // load the session from the request
+        if ($session = $servletRequest->getSession()) {
+            // add the user principal and the authentication type to the request
+            $this->register($servletRequest, $servletResponse, $session->getData(Constants::PRINCIPAL));
+        }
+    }
+
+    /**
+     * Will be invoked when login fails for some reasons.
+     *
+     * @param \AppserverIo\Appserver\ServletEngine\Security\RealmInterface $realm           The realm instance containing the exception stack
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface    $servletRequest  The servlet request instance
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface   $servletResponse The servlet response instance
+     *
+     * @return void
+     */
+    protected function onFailure(
+        RealmInterface $realm,
+        HttpServletRequestInterface $servletRequest,
+        HttpServletResponseInterface $servletResponse
+    ) {
+
+        // load the session from the request
+        if ($session = $servletRequest->getSession()) {
+            // prepare the ArrayList for the login errors
+            $formErrors = new ArrayList();
+
+            // transform the realm's exception stack into simple error messages
+            foreach ($realm->getExceptionStack() as $e) {
+                $formErrors->add($e->getMessage());
+            }
+
+            // add the error messages to the session
+            $session->putData(Constants::FORM_ERRORS, $formErrors);
+        }
+
+        // forward to the configured error page
+        $this->forwardToErrorPage($servletRequest, $servletResponse);
+    }
+
+    /**
+     * Will be invoked on a successfull login.
+     *
+     * @param \AppserverIo\Psr\Security\PrincipalInterface               $userPrincipal   The user principal logged into the system
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface  $servletRequest  The servlet request instance
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse The servlet response instance
+     *
+     * @return void
+     */
+    protected function onSuccess(
+        PrincipalInterface $userPrincipal,
+        HttpServletRequestInterface $servletRequest,
+        HttpServletResponseInterface $servletResponse
+    ) {
+
+        // add the user principal and the authentication type to the request
+        $this->register($servletRequest, $servletResponse, $userPrincipal);
+
+        // forward to the stored request
+        $this->forwardToFormRequest($servletRequest, $servletResponse);
+    }
+
+    /**
+     * Will be invoked to request authentication.
+     *
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface  $servletRequest  The servlet request instance
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse The servlet response instance
+     *
+     * @return void
+     */
+    protected function onLogin(
+        HttpServletRequestInterface $servletRequest,
+        HttpServletResponseInterface $servletResponse
+    ) {
+
+        // load the session from the request
+        if ($session = $servletRequest->getSession()) {
+            // save the request (to redirect after a successful login)
+            $this->saveRequest($servletRequest, $session);
+        }
+
+        // forward the user to the login page
+        $this->forwardToLoginPage($servletRequest, $servletResponse);
+    }
+
+    /**
+     * Will be invoked when login will be re-submitted.
+     *
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface  $servletRequest  The servlet request instance
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse The servlet response instance
+     *
+     * @return void
+     */
+    protected function onResubmit(
+        HttpServletRequestInterface $servletRequest,
+        HttpServletResponseInterface $servletResponse
+    ) {
+
+        // load the session from the request
+        if ($session = $servletRequest->getSession()) {
+            // restore the old request from the session
+            $this->restoreRequest($servletRequest, $session);
         }
     }
 

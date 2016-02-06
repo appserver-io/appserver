@@ -1,7 +1,7 @@
 <?php
 
 /**
- * \AppserverIo\Appserver\Core\Api\Node\ModuleNode
+ * AppserverIo\Appserver\ServletEngine\Utils\RequestHandlerKeys
  *
  * NOTICE OF LICENSE
  *
@@ -11,51 +11,47 @@
  *
  * PHP version 5
  *
- * @author    Johann Zelger <jz@appserver.io>
+ * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
 
-namespace AppserverIo\Appserver\Core\Api\Node;
-
-use AppserverIo\Description\Api\Node\AbstractNode;
+namespace AppserverIo\Appserver\ServletEngine\Utils;
 
 /**
- * DTO to transfer module information.
+ * Utility class that contains the request handler keys.
  *
- * @author    Johann Zelger <jz@appserver.io>
+ * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class ModuleNode extends AbstractNode
+class RequestHandlerKeys
 {
 
     /**
-     * Trait to handle the params.
-     *
-     * @var \AppserverIo\Appserver\Core\Api\Node\ParamsNodeTrait
-     */
-    use ParamsNodeTrait;
-
-    /**
-     * The storage class name.
+     * The key for the an error message.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
      */
-    protected $type;
+    const ERROR_MESSAGE = 'appserver-io.appserver.servlet-engine.utils.request-handler-keys.error-message';
 
     /**
-     * Returns the class name.
-     *
-     * @return string The class name
+     * This is a utility class, so protect it against direct instantiation.
      */
-    public function getType()
+    private function __construct()
     {
-        return $this->type;
+    }
+
+    /**
+     * This is a utility class, so protect it against cloning.
+     *
+     * @return void
+     */
+    private function __clone()
+    {
     }
 }

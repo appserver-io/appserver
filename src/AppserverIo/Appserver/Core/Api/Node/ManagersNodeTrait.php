@@ -22,7 +22,6 @@
 namespace AppserverIo\Appserver\Core\Api\Node;
 
 /**
- *
  * Abstract node that a contexts manager nodes.
  *
  * @author    Tim Wagner <tw@appserver.io>

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\Authenticator\Utils\SessionKeys
+ * \AppserverIo\Appserver\Core\Api\Node\ErrorPageNodeInterface
  *
  * NOTICE OF LICENSE
  *
@@ -18,10 +18,10 @@
  * @link      http://www.appserver.io
  */
 
-namespace AppserverIo\Appserver\ServletEngine\Authenticator\Utils;
+namespace AppserverIo\Appserver\Core\Api\Node;
 
 /**
- * Utility class that contains the session keys.
+ * The interface for error page configuration DTO implementation.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -29,43 +29,34 @@ namespace AppserverIo\Appserver\ServletEngine\Authenticator\Utils;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class SessionKeys
+interface ErrorPageNodeInterface
 {
 
     /**
-     * The key for the username stored in the session.
+     * The default error code pattern, matches all 400 + 500 error codes.
      *
      * @var string
      */
-    const USERNAME = 'appserver_io.appserver.servlet_engine.security.utils.username';
+    const DEFAULT_ERROR_CODE_PATTERN = '[45]*';
 
     /**
-     * The key for the password stored in the session.
+     * The default error location.
      *
      * @var string
      */
-    const PASSWORD = 'appserver_io.appserver.servlet_engine.security.utils.password';
+    const DEFAULT_ERROR_LOCATION = '/resources/templates/www/dhtml/error.dhtml';
 
     /**
-     * The key for a complete form request stored in the session.
+     * Return's the HTTP response code pattern the error page is defined for.
      *
-     * @var string
+     * @return \AppserverIo\Appserver\Core\Api\Node\ValueNode The HTTP response code pattern
      */
-    const FORM_REQUEST = 'appserver_io.appserver.servlet_engine.security.utils.form_request';
+    public function getErrorCodePattern();
 
     /**
-     * This is a utility class, so protect it against direct instantiation.
-     */
-    private function __construct()
-    {
-    }
-
-    /**
-     * This is a utility class, so protect it against cloning.
+     * Return's the location to redirect to.
      *
-     * @return void
+     * @return \AppserverIo\Appserver\Core\Api\Node\ValueNode The location
      */
-    private function __clone()
-    {
-    }
+    public function getErrorLocation();
 }

@@ -163,7 +163,8 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
         }
 
         // init server array
-        $servers = array();
+        $this->servers = new GenericStackable();
+
         // start servers by given configurations
         /** @var \AppserverIo\Server\Interfaces\ServerConfigurationInterface $serverConfig */
         foreach ($serverConfigurations as $serverConfig) {
@@ -187,17 +188,18 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
             // inject loggers
             $serverContext->injectLoggers($this->getInitialContext()->getLoggers());
 
-            // Create the server (which should start it automatically)
+            // create the server (which should start it automatically)
+            /** @var AppserverIo\Server\Interfaces\ServerInterface $server */
             $server = new $serverType($serverContext);
-            // Collect the servers we started
-            $servers[] = $server;
+            // collect the servers we started
+            $this->servers[$serverConfig->getName()] = $server;
         }
 
         // wait for all servers to be started
         $waitForServers = true;
         while ($waitForServers === true) {
             // iterate over all servers to check the state
-            foreach ($servers as $server) {
+            foreach ($this->servers as $server) {
                 if ($server->serverState === ServerStateKeys::SERVER_SOCKET_STARTED) {
                     $waitForServers = false;
                 } else {
@@ -231,7 +233,7 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
 
         // we need to stop all servers before we can shutdown the container
         /** @var \AppserverIo\Server\Interfaces\ServerInterface $server */
-        foreach ($servers as $server) {
+        foreach ($this->servers as $server) {
             $server->stop();
         }
 
@@ -257,9 +259,33 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
     }
 
     /**
+     * Returns the deployed servers.
+     *
+     * @return \AppserverIo\Storage\GenericStackable The servers
+     */
+    public function getServers()
+    {
+        return $this->servers;
+    }
+
+    /**
+     * Returns the sever instance with the passed name.
+     *
+     * @param string $name The name of the server to return
+     *
+     * @return \AppserverIo\Server\Interfaces\ServerInterface The server instance
+     */
+    public function getServer($name)
+    {
+        if (isset($this->servers[$name])) {
+            return $this->servers[$name];
+        }
+    }
+
+    /**
      * Returns the deployed applications.
      *
-     * @return \AppserverIo\Storage\GenericStackable The with applications
+     * @return \AppserverIo\Storage\GenericStackable The applications
      */
     public function getApplications()
     {

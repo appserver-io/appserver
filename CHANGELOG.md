@@ -1,38 +1,23 @@
-# Version 1.2.0-alpha3
+# Version 1.1.1-alpha1
 
 ## Bugfixes
 
 * Fixed invalid order for application exctraction => results in invalid application configuration
+* Fixed [#938](https://github.com/appserver-io/appserver/issues/938) - Only one container can be configured
 
 ## Features
 
+* Switch to PHP 5.6.17
+* Register datasources in naming directory
+* Add missing NodeInterface to some API nodes
 * Allow step args without name in provision.xml
 * Remove PHP 5.4 from Travis-CI configuration file
-
-# Version 1.2.0-alpha2
-
-## Bugfixes
-
-* Fixed [#938](https://github.com/appserver-io/appserver/issues/938) - Only one container can be configured
-
-## Features
-
-* Move servlet/enterprise bean descriptor/configuration functionality to description library
-
-# Version 1.2.0-alpha1
-
-## Bugfixes
-
-* Fixed [#938](https://github.com/appserver-io/appserver/issues/938) - Only one container can be configured
-
-## Features
-
 * Add command to execute Doctrine CLI commands via Telnet console
-* Register datasources in naming directory
-* Add internal container with HTTP server to allow access to appserver.io RESTFul API
-* Log a critical error message, if container's application and temporary directory are not available
 * Add VirtualHostNodeInterface and DatasourceNodeInterfaces classes
-* Add missing NodeInterface to some API nodes
+* Add internal container with HTTP server to allow access to appserver.io RESTFul API
+* Move servlet/enterprise bean descriptor/configuration functionality to description library
+* Log a critical error message, if container's application and temporary directory are not available
+* Add error-page configuration in web.xml to allow application specific error pages bound to HTTP response code
 
 # Version 1.1.0
 

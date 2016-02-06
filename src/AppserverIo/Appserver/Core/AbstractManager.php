@@ -126,6 +126,28 @@ abstract class AbstractManager extends GenericStackable implements ManagerInterf
     }
 
     /**
+     * Returns the absolute path to the application directory.
+     *
+     * @return string The absolute path to the application directory
+     */
+    public function getAppBase()
+    {
+        return $this->getApplication()->getAppBase();
+    }
+
+    /**
+     * Returns the absolute path to the application server's base directory.
+     *
+     * @param string $directoryToAppend A directory to append to the base directory
+     *
+     * @return string The absolute path the application server's base directory
+     */
+    public function getBaseDirectory($directoryToAppend = null)
+    {
+        return $this->getApplication()->getBaseDirectory($directoryToAppend);
+    }
+
+    /**
      * Registers the value with the passed key in the container.
      *
      * @param string $key   The key to register the value with

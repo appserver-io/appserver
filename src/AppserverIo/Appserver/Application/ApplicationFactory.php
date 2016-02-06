@@ -24,6 +24,7 @@ use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Appserver\Core\Api\Node\ContextNode;
 use AppserverIo\Appserver\Core\Interfaces\ContainerInterface;
 use AppserverIo\Appserver\Core\Utilities\PermissionHelper;
+use AppserverIo\Appserver\Core\LoggerFactory;
 
 /**
  * Application factory implementation.
@@ -77,11 +78,13 @@ class ApplicationFactory
         $application = new $contextType();
 
         // initialize the storage for managers, virtual hosts an class loaders
+        $loggers = new GenericStackable();
         $managers = new GenericStackable();
         $provisioners = new GenericStackable();
         $classLoaders = new GenericStackable();
 
         // initialize the generic instances and information
+        $application->injectLoggers($loggers);
         $application->injectManagers($managers);
         $application->injectName($applicationName);
         $application->injectProvisioners($provisioners);
@@ -96,6 +99,12 @@ class ApplicationFactory
         /** @var \AppserverIo\Appserver\Core\Api\AppService $appService */
         PermissionHelper::sudo(array($appService, 'createTmpFolders'), array($application));
         $appService->cleanUpFolders($application);
+
+        // add the configured loggers
+        /** @var \AppserverIo\Appserver\Core\Api\Node\LoggerNode $loggerNode */
+        foreach ($context->getLoggers() as $loggerNode) {
+            $application->addLogger(LoggerFactory::factory($loggerNode), $loggerNode);
+        }
 
         // add the configured class loaders
         /** @var \AppserverIo\Appserver\Core\Api\Node\ClassLoaderNode $classLoader */

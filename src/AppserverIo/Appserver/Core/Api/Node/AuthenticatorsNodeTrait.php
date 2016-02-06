@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Api\Node\LoginConfigNodeInterface
+ * \AppserverIo\Appserver\Core\Api\Node\AuthenticatorsNodeTrait
  *
  * NOTICE OF LICENSE
  *
@@ -12,6 +12,7 @@
  * PHP version 5
  *
  * @author    Tim Wagner <tw@appserver.io>
+ * @author    Bernhard Wick <bw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
@@ -20,38 +21,46 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
-use AppserverIo\Configuration\Interfaces\NodeInterface;
-
 /**
- * Interface for a login configuration DTO implementation.
+ * Trait to handle authenticator nodes.
  *
  * @author    Tim Wagner <tw@appserver.io>
+ * @author    Bernhard Wick <bw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-interface LoginConfigNodeInterface extends NodeInterface
+trait AuthenticatorsNodeTrait
 {
 
     /**
-     * Return's the authentication method information.
+     * The authenticator configuration.
      *
-     * @return \AppserverIo\Appserver\Core\Api\Node\AuthMethodNode The authentication method information
+     * @var array
+     * @AS\Mapping(nodeName="authenticators/authenticator", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\AuthenticatorNode")
      */
-    public function getAuthMethod();
+    protected $authenticators = array();
 
     /**
-     * Return's the realm name information.
+     * Sets the authenticator configuration.
      *
-     * @return \AppserverIo\Appserver\Core\Api\Node\RealmNameNode The realm name information
+     * @param array $authenticators The authenticator configuration
+     *
+     * @return void
      */
-    public function getRealmName();
+    public function setAuthenticators($authenticators)
+    {
+        $this->authenticators = $authenticators;
+    }
 
     /**
-     * Return's the login form configuration information.
+     * Returns the authenticator configuration.
      *
-     * @return \AppserverIo\Appserver\Core\Api\Node\FormLoginConfigNode The login form configuration information
+     * @return array The authenticator configuration
      */
-    public function getFormLoginConfig();
+    public function getAuthenticators()
+    {
+        return $this->authenticators;
+    }
 }

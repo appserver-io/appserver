@@ -31,7 +31,7 @@ use AppserverIo\Description\Api\Node\AbstractNode;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class LoggerNode extends AbstractNode
+class LoggerNode extends AbstractNode implements LoggerNodeInterface
 {
 
     /**

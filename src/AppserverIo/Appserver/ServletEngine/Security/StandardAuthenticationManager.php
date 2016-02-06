@@ -26,6 +26,7 @@ use AppserverIo\Lang\String;
 use AppserverIo\Collections\HashMap;
 use AppserverIo\Collections\MapInterface;
 use AppserverIo\Storage\StorageInterface;
+use AppserverIo\Psr\Security\Utils\Constants;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
@@ -34,6 +35,7 @@ use AppserverIo\Appserver\Core\AbstractManager;
 use AppserverIo\Appserver\Naming\Utils\NamingDirectoryKeys;
 use AppserverIo\Appserver\ServletEngine\Authenticator\AuthenticatorInterface;
 use AppserverIo\Appserver\ServletEngine\Security\DependencyInjection\DeploymentDescriptorParser;
+use AppserverIo\Appserver\ServletEngine\Utils\RequestHandlerKeys;
 
 /**
  * The authentication manager handles request which need Http authentication.
@@ -217,10 +219,9 @@ class StandardAuthenticationManager extends AbstractManager implements Authentic
                     } elseif (in_array($servletRequest->getMethod(), $mapping->getHttpMethods())) {
                         // load the authentication method and authenticate the request
                         $authenticator = $this->getAuthenticator($mapping);
-                        $authenticator->authenticate($servletRequest, $servletResponse);
 
                         // if we've an user principal, query the roles
-                        if ($servletRequest->getUserPrincipal()) {
+                        if ($authenticator->authenticate($servletRequest, $servletResponse)) {
                             // initialize the roles flag
                             $inRole = false;
 
@@ -234,7 +235,21 @@ class StandardAuthenticationManager extends AbstractManager implements Authentic
 
                             // if not, throw an SecurityException
                             if ($inRole === false) {
-                                throw new SecurityException('User doesn\'t have necessary privileges');
+                                throw new SecurityException('User doesn\'t have necessary privileges', 403);
+                            }
+                        }
+
+                    } else {
+                        // load the session
+                        if ($session = $servletRequest->getSession(true)) {
+                            //  start it, if not already done
+                            if ($session->isStarted() === false) {
+                                $session->start();
+                            }
+
+                            // and query whether or not the session contains a user principal
+                            if ($session->hasKey(Constants::PRINCIPAL)) {
+                                $servletRequest->setUserPrincipal($session->getData(Constants::PRINCIPAL));
                             }
                         }
                     }
@@ -242,6 +257,19 @@ class StandardAuthenticationManager extends AbstractManager implements Authentic
                     // stop processing, because we're authenticated
                     break;
                 }
+
+            } catch (SecurityException $se) {
+                // load the system logger and debug log the exception
+                /** @var \Psr\Log\LoggerInterface $systemLogger */
+                if ($systemLogger = $this->getApplication()->getNamingDirectory()->search(NamingDirectoryKeys::SYSTEM_LOGGER)) {
+                    $systemLogger->error($se->__toString());
+                }
+
+                // stop processing, because authentication failed for some reason
+                $servletResponse->setStatusCode($se->getCode());
+                $servletRequest->setAttribute(RequestHandlerKeys::ERROR_MESSAGE, $se->__toString());
+                $servletRequest->setDispatched(true);
+                return false;
 
             } catch (\Exception $e) {
                 // load the system logger and debug log the exception
@@ -251,6 +279,9 @@ class StandardAuthenticationManager extends AbstractManager implements Authentic
                 }
 
                 // stop processing, because authentication failed for some reason
+                $servletResponse->setStatusCode(500);
+                $servletRequest->setAttribute(RequestHandlerKeys::ERROR_MESSAGE, $e->__toString());
+                $servletRequest->setDispatched(true);
                 return false;
             }
         }

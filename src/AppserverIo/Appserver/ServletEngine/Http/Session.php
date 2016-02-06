@@ -357,6 +357,18 @@ class Session extends GenericStackable implements ServletSessionInterface
     }
 
     /**
+     * Removes the session data entry $key from the session.
+     *
+     * @param string $key Entry identifier of the session data to remove
+     *
+     * @return void
+     */
+    public function removeData($key)
+    {
+        $this->data->remove($key);
+    }
+
+    /**
      * Tags this session with the given tag.
      *
      * Note that third-party libraries might also tag your session. Therefore it is

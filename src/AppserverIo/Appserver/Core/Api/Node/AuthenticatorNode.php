@@ -1,7 +1,7 @@
 <?php
 
 /**
- * \AppserverIo\Appserver\Core\Api\Node\ModuleNode
+ * \AppserverIo\Appserver\Core\Api\Node\AuthenticatorNode
  *
  * NOTICE OF LICENSE
  *
@@ -23,7 +23,7 @@ namespace AppserverIo\Appserver\Core\Api\Node;
 use AppserverIo\Description\Api\Node\AbstractNode;
 
 /**
- * DTO to transfer module information.
+ * DTO to transfer authenticator information.
  *
  * @author    Johann Zelger <jz@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -31,18 +31,19 @@ use AppserverIo\Description\Api\Node\AbstractNode;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class ModuleNode extends AbstractNode
+class AuthenticatorNode extends AbstractNode implements AuthenticatorNodeInterface
 {
 
     /**
-     * Trait to handle the params.
+     * The authenticator name.
      *
-     * @var \AppserverIo\Appserver\Core\Api\Node\ParamsNodeTrait
+     * @var string
+     * @AS\Mapping(nodeType="string")
      */
-    use ParamsNodeTrait;
+    protected $name;
 
     /**
-     * The storage class name.
+     * The authenticator type.
      *
      * @var string
      * @AS\Mapping(nodeType="string")
@@ -50,9 +51,19 @@ class ModuleNode extends AbstractNode
     protected $type;
 
     /**
-     * Returns the class name.
+     * Return's the authenticator name.
      *
-     * @return string The class name
+     * @return string The authenticator name
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * Return's the authenticator type.
+     *
+     * @return string The authenticator type
      */
     public function getType()
     {

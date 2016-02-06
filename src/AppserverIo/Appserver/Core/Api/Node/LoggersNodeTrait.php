@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\Authenticator\Utils\FormKeys
+ * \AppserverIo\Appserver\Core\Api\Node\LoggersNodeTrait
  *
  * NOTICE OF LICENSE
  *
@@ -12,60 +12,55 @@
  * PHP version 5
  *
  * @author    Tim Wagner <tw@appserver.io>
+ * @author    Bernhard Wick <bw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
 
-namespace AppserverIo\Appserver\ServletEngine\Authenticator\Utils;
+namespace AppserverIo\Appserver\Core\Api\Node;
 
 /**
- * Utility class that contains the form keys.
+ * Abstract node that a contexts logger nodes.
  *
  * @author    Tim Wagner <tw@appserver.io>
+ * @author    Bernhard Wick <bw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class FormKeys
+trait LoggersNodeTrait
 {
 
     /**
-     * The key for the username specified in the login form.
+     * The context's logger configuration.
      *
-     * @var string
+     * @var array
+     * @AS\Mapping(nodeName="loggers/logger", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\LoggerNode")
      */
-    const USERNAME = 'p_username';
+    protected $loggers = array();
 
     /**
-     * The key for the password specified in the login in the form.
+     * Sets the context's logger configuration.
      *
-     * @var string
-     */
-    const PASSWORD = 'p_password';
-
-    /**
-     * The key for a login form name.
-     *
-     * @var string
-     */
-    const FORM_ACTION = 'p_security_check';
-
-    /**
-     * This is a utility class, so protect it against direct instantiation.
-     */
-    private function __construct()
-    {
-    }
-
-    /**
-     * This is a utility class, so protect it against cloning.
+     * @param array $loggers The context's logger configuration
      *
      * @return void
      */
-    private function __clone()
+    public function setLoggers($loggers)
     {
+        $this->loggers = $loggers;
+    }
+
+    /**
+     * Returns the context's logger configuration.
+     *
+     * @return array The context's logger configuration
+     */
+    public function getLoggers()
+    {
+        return $this->loggers;
     }
 }

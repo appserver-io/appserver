@@ -114,23 +114,21 @@ abstract class UsernamePasswordLoginModule extends AbstractLoginModule
         // check to see if password hashing has been enabled, if an algorithm is set, check for a format and charset
         $this->hashAlgorithm = new String($params->get(ParamKeys::HASH_ALGORITHM));
 
+        // query whether or not a hash algorithm has been specified
         if ($this->hashAlgorithm != null) {
-            $this->hashEncoding = new String($params->get(ParamKeys::HASH_ENCODING));
-
-            if ($this->hashEncoding == null) {
-                $this->hashEncoding = Util::BASE64_ENCODING;
+            // initialize the hash encoding to use
+            if ($params->exists(ParamKeys::HASH_ENCODING)) {
+                $this->hashEncoding = new String($params->get(ParamKeys::HASH_ENCODING));
+            } else {
+                $this->hashEncoding = new String(Util::BASE64_ENCODING);
+            }
+            // initialize the hash charset if specified
+            if ($params->exists(ParamKeys::HASH_CHARSET)) {
                 $this->hashCharset = new String($params->get(ParamKeys::HASH_CHARSET));
-
-                /* if (log.isTraceEnabled()) {
-                    log.trace("Password hashing activated: algorithm = " + hashAlgorithm
-                        + ", encoding = " + hashEncoding
-                        + ", charset = " + (hashCharset == null ? "{default}" : hashCharset)
-                        + ", callback = " + options.get("digestCallback")
-                    );
-                }*/
             }
         }
 
+        // query whether or not we should ignor case when comparing passwords
         if ($params->exists(ParamKeys::IGNORE_PASSWORD_CASE)) {
             $flag = new String($params->get(ParamKeys::IGNORE_PASSWORD_CASE));
             $this->ignorePasswordCase = Boolean::valueOf($flag)->booleanValue();

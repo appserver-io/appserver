@@ -188,6 +188,18 @@ class SessionWrapper extends HttpSessionWrapper
     }
 
     /**
+     * Removes the session data entry $key from the session.
+     *
+     * @param string $key Entry identifier of the session data to remove
+     *
+     * @return void
+     */
+    public function removeData($key)
+    {
+        $this->getSession()->removeData($key);
+    }
+
+    /**
      * Shuts down this session
      *
      * This method must not be called manually – it is invoked by Flow's object

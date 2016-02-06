@@ -39,33 +39,11 @@ class DigestAuthenticator extends BasicAuthenticator
 {
 
     /**
-     * Defines the default authentication adapter used if none was specified
-     *
-     * @var string
-     */
-    const DEFAULT_ADAPTER = HtdigestAdapter::ADAPTER_TYPE;
-
-    /**
      * Defines the auth type which should match the client request type definition
      *
      * @var string
      */
     const AUTH_TYPE = 'Digest';
-
-    /**
-     * Constructs the authentication type
-     *
-     * @param array $configData The configuration data for auth type instance
-     */
-    public function __construct(array $configData = array())
-    {
-
-        // initialize the supported adapter types
-        $this->addSupportedAdapter(HtdigestAdapter::getType());
-
-        // initialize the instance
-        parent::__construct($configData);
-    }
 
     /**
      * Parses the request for the necessary, authentication adapter specific, login credentials.

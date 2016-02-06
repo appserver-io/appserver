@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\Authenticator\Utils\FormKeys
+ * AppserverIo\Appserver\ServletEngine\Security\Auth\Callback\SecurityAssociationHandler
  *
  * NOTICE OF LICENSE
  *
@@ -18,10 +18,12 @@
  * @link      http://www.appserver.io
  */
 
-namespace AppserverIo\Appserver\ServletEngine\Authenticator\Utils;
+namespace AppserverIo\Appserver\ServletEngine\Security\Auth\Callback;
+
+use AppserverIo\Collections\HashMap;
 
 /**
- * Utility class that contains the form keys.
+ * A digest callback implementation that allows to customize the digest processing.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -29,43 +31,40 @@ namespace AppserverIo\Appserver\ServletEngine\Authenticator\Utils;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class FormKeys
+class DigestCallback
 {
 
     /**
-     * The key for the username specified in the login form.
+     * Initializes the callback with the configuration params.
      *
-     * @var string
+     * @param AppserverIo\Collections\HashMap $params The configuration params
+     *
+     * @return void
      */
-    const USERNAME = 'p_username';
+    public function init(HashMap $params)
+    {
+        $this->params = $params;
+    }
 
     /**
-     * The key for the password specified in the login in the form.
+     * @TODO
      *
-     * @var string
-     */
-    const PASSWORD = 'p_password';
-
-    /**
-     * The key for a login form name.
+     * @param object $messageDigest The message digest to handle
      *
-     * @var string
+     * @return void
      */
-    const FORM_ACTION = 'p_security_check';
-
-    /**
-     * This is a utility class, so protect it against direct instantiation.
-     */
-    private function __construct()
+    public function preDigest($messageDigest)
     {
     }
 
     /**
-     * This is a utility class, so protect it against cloning.
+     * @TODO
+     *
+     * @param object $messageDigest The message digest to handle
      *
      * @return void
      */
-    private function __clone()
+    public function postDigest($messageDigest)
     {
     }
 }

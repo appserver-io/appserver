@@ -59,6 +59,20 @@ class DhtmlServlet extends HttpServlet
     protected $webappPath;
 
     /**
+     * The path to the application base directory.
+     *
+     * @var string
+     */
+    protected $appBase;
+
+    /**
+     * The path to the application server's base directory.
+     *
+     * @var string
+     */
+    protected $baseDirectory;
+
+    /**
      * Returns the string for the X-POWERED-BY header.
      *
      * @return string The X-POWERED-BY header
@@ -79,6 +93,26 @@ class DhtmlServlet extends HttpServlet
     }
 
     /**
+     * Returns the path to the application base directory.
+     *
+     * @return string The application base directory
+     */
+    public function getAppBase()
+    {
+        return $this->appBase;
+    }
+
+    /**
+     * Returns the absolute path to the base directory.
+     *
+     * @return string The base directory
+     */
+    public function getBaseDirectory()
+    {
+        return $this->baseDirectory;
+    }
+
+    /**
      * Initializes the servlet with the passed configuration.
      *
      * @param \AppserverIo\Psr\Servlet\ServletConfigInterface $servletConfig The configuration to initialize the servlet with
@@ -91,8 +125,10 @@ class DhtmlServlet extends HttpServlet
         // pre-initialize the X-POWERED-BY header
         $this->poweredBy = get_class($this);
 
-        // pre-initialize the path to the web application
+        // pre-initialize the possible DHTML template paths
         $this->webappPath = $servletConfig->getWebappPath();
+        $this->appBase = $servletConfig->getServletContext()->getAppBase();
+        $this->baseDirectory = $servletConfig->getServletContext()->getBaseDirectory();
     }
 
     /**
@@ -123,8 +159,12 @@ class DhtmlServlet extends HttpServlet
         $template = $servletRequest->getServletPath();
 
         // check if the template is available
-        if (file_exists($pathToTemplate = $this->getWebappPath() . $template) === false) {
-            throw new ServletException(sprintf('Requested template \'%s\' is not available', $template));
+        if (!file_exists($pathToTemplate = $this->getWebappPath() . $template)) {
+            if (!file_exists($pathToTemplate = $this->getAppBase() . $template)) {
+                if (!file_exists($pathToTemplate = $this->getBaseDirectory() . $template)) {
+                    throw new ServletException(sprintf('Can\'t load requested template \'%s\'', $template));
+                }
+            }
         }
 
         // process the template

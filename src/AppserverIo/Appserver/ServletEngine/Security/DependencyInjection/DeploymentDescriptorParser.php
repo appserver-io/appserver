@@ -24,11 +24,10 @@ use AppserverIo\Lang\Boolean;
 use AppserverIo\Lang\Reflection\ReflectionClass;
 use AppserverIo\Http\Authentication\AuthenticationException;
 use AppserverIo\Appserver\Core\Api\Node\WebAppNode;
-use AppserverIo\Appserver\ServletEngine\Authenticator\FormAuthenticator;
-use AppserverIo\Appserver\ServletEngine\Authenticator\BasicAuthenticator;
-use AppserverIo\Appserver\ServletEngine\Authenticator\DigestAuthenticator;
 use AppserverIo\Appserver\ServletEngine\Security\Mapping;
 use AppserverIo\Appserver\ServletEngine\Security\AuthenticationManagerInterface;
+use AppserverIo\Appserver\ServletEngine\Authenticator\Utils\FormKeys;
+use AppserverIo\Psr\HttpMessage\Protocol;
 
 /**
  * Parser implementation to parse a web application deployment descriptor (WEB-INF/web.xml).
@@ -41,17 +40,6 @@ use AppserverIo\Appserver\ServletEngine\Security\AuthenticationManagerInterface;
  */
 class DeploymentDescriptorParser
 {
-
-    /**
-     * The available authenticators.
-     *
-     * @var array
-     */
-    protected $authenticators = array(
-        'Form'   => '\AppserverIo\Appserver\ServletEngine\Authenticator\FormAuthenticator',
-        'Basic'  => '\AppserverIo\Appserver\ServletEngine\Authenticator\BasicAuthenticator',
-        'Digest' => '\AppserverIo\Appserver\ServletEngine\Authenticator\DigestAuthenticator'
-    );
 
     /**
      * The servlet context we want to parse the deployment descriptor for.
@@ -103,13 +91,21 @@ class DeploymentDescriptorParser
     public function mapAuthenticator($shortname)
     {
 
-        // query whether or not an authenticator class name is available or not
-        if (isset($this->authenticators[$shortname])) {
-            return $this->authenticators[$shortname];
+        // query whether or not we've manager configuration found
+        /** @var \AppserverIo\Appserver\Core\Api\Node\ManagerNodeInterface $managerNode */
+        if ($managerNode = $this->getAuthenticationContext()->getManagerConfiguration()) {
+            // initialize the authenticator configurations found in the manager configuration
+            /** @var \AppserverIo\Appserver\Core\Api\Node\AuthenticatorNodeInterface $authenticatorNode */
+            foreach ($managerNode->getAuthenticators() as $authenticatorNode) {
+                // query whether or not the shortname matches
+                if (strcasecmp($authenticatorNode->getName(), $shortname) === 0) {
+                    return $authenticatorNode->getType();
+                }
+            }
         }
 
         // throw an exception if the can't find an matching authenticator class name
-        throw new AuthenticationException(sprintf('Can\t find authenticator %s', $shortname));
+        throw new AuthenticationException(sprintf('Can\t find authenticator configuration for %s', $shortname));
     }
 
     /**

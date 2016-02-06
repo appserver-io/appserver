@@ -20,13 +20,13 @@
 
 namespace AppserverIo\Appserver\ServletEngine\Authenticator;
 
-use AppserverIo\Lang\Boolean;
-use AppserverIo\Configuration\Interfaces\NodeInterface;
-use AppserverIo\Appserver\ServletEngine\Security\AuthenticationManagerInterface;
 use Rhumsaa\Uuid\Uuid;
+use AppserverIo\Lang\Boolean;
+use AppserverIo\Appserver\Core\Api\Node\LoginConfigNodeInterface;
+use AppserverIo\Appserver\ServletEngine\Security\AuthenticationManagerInterface;
 
 /**
- * Class AbstractAuthentication
+ * Abstract authenticator base class providing generic functionality.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -54,7 +54,7 @@ abstract class AbstractAuthenticator implements AuthenticatorInterface
     /**
      * Holds the configuration data given for authentication type.
      *
-     * @var \AppserverIo\Configuration\NodeInterface
+     * @var \AppserverIo\Appserver\Core\Api\Node\LoginConfigNodeInterface
      */
     protected $configData;
 
@@ -66,14 +66,24 @@ abstract class AbstractAuthenticator implements AuthenticatorInterface
     protected $authenticationManager;
 
     /**
+     * The name of the user to authenticate.
+     *
+     * @var string
+     */
+    protected $username;
+
+    /**
      * Constructs the authentication type.
      *
-     * @param \AppserverIo\Configuration\NodeInterface                                     $configData            The configuration data for auth type instance
+     * @param \AppserverIo\Appserver\Core\Api\Node\LoginConfigNodeInterface                $configData            The configuration data for auth type instance
      * @param \AppserverIo\Appserver\ServletEngine\Security\AuthenticationManagerInterface $authenticationManager The authentication manager instance
      * @param \AppserverIo\Lang\Boolean                                                    $defaultAuthenticator  The flag for the default authenticator
      */
-    public function __construct(NodeInterface $configData, AuthenticationManagerInterface $authenticationManager, Boolean $defaultAuthenticator = null)
-    {
+    public function __construct(
+        LoginConfigNodeInterface $configData,
+        AuthenticationManagerInterface $authenticationManager,
+        Boolean $defaultAuthenticator = null
+    ) {
 
         // create a UUID serial for the authenticator
         $this->serial = Uuid::uuid4()->__toString();
