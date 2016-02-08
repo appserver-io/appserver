@@ -21,12 +21,10 @@
 
 namespace AppserverIo\Appserver\PersistentServletEngine;
 
-use AppserverIo\Http\HttpProtocol;
 use AppserverIo\Http\HttpResponseStates;
 use AppserverIo\Psr\HttpMessage\RequestInterface;
 use AppserverIo\Psr\HttpMessage\ResponseInterface;
 use AppserverIo\Storage\GenericStackable;
-use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
 use AppserverIo\Server\Dictionaries\ModuleHooks;
 use AppserverIo\Server\Dictionaries\ServerVars;
 use AppserverIo\Server\Interfaces\RequestContextInterface;
@@ -34,8 +32,8 @@ use AppserverIo\Server\Interfaces\ServerContextInterface;
 use AppserverIo\Server\Exceptions\ModuleException;
 use AppserverIo\Appserver\ServletEngine\Http\Request;
 use AppserverIo\Appserver\ServletEngine\Http\Response;
-use AppserverIo\Appserver\ServletEngine\Http\Part;
 use AppserverIo\Appserver\ServletEngine\AbstractServletEngine;
+use AppserverIo\Psr\Application\ApplicationInterface;
 
 /**
  * A servlet engine implementation.
@@ -109,34 +107,53 @@ class ServletEngine extends AbstractServletEngine
      */
     public function initRequestHandlers()
     {
+        $this->requestHandlers = array();
+    }
 
-        // initialize the storage for the request handlers
-        $this->requestHandlers = new GenericStackable();
+    /**
+     * Return's the application's request handler pool.
+     *
+     * @param \AppserverIo\Psr\Application\ApplicationInterface $application The application to return the request handler pool for
+     *
+     * @return array The array with the request handler pool
+     */
+    public function loadRequestHandlersForApplication(ApplicationInterface $application)
+    {
 
-        // iterate over the applications and initialize a pool of request handlers for each
-        foreach ($this->applications as $application) {
-            // initialize the pool
-            $pool = new GenericStackable();
+        // load the application name
+        $applicationName = $application->getName();
 
+        // query whether or not the application's request handlers has already been initialized
+        if (isset($this->requestHandlers[$applicationName]) === false) {
             // initialize 10 request handlers per for each application
             for ($i = 0; $i < 10; $i++) {
-                // create a mutex
-                $mutex = \Mutex::create();
-
                 // initialize the request handler
-                $requestHandler = new RequestHandler();
-                $requestHandler->injectMutex($mutex);
-                $requestHandler->injectValves($this->valves);
-                $requestHandler->injectApplication($application);
-                $requestHandler->start(PTHREADS_INHERIT_NONE|PTHREADS_INHERIT_CONSTANTS);
-
-                // add it to the pool
-                $pool[] = $requestHandler;
+                $this->requestHandlers[$applicationName][$i] = new RequestHandler();
+                $this->requestHandlers[$applicationName][$i]->injectValves($this->getValves());
+                $this->requestHandlers[$applicationName][$i]->injectApplication($application);
+                $this->requestHandlers[$applicationName][$i]->start();
             }
 
-            // add the pool to the pool of request handlers
-            $this->requestHandlers[$application->getName()] = $pool;
+        } else {
+            // re-initialize the finished request handlers
+            for ($i = 0; $i < 10; $i++) {
+                // query whether or not, the request handler has been finished or not
+                if ($this->requestHandlers[$applicationName][$i]->finished === true) {
+                    // if yes, join and unset it
+                    $this->requestHandlers[$applicationName][$i]->join();
+                    unset($this->requestHandlers[$applicationName][$i]);
+
+                    // initialize a new request handler
+                    $this->requestHandlers[$applicationName][$i] = new RequestHandler();
+                    $this->requestHandlers[$applicationName][$i]->injectValves($this->getValves());
+                    $this->requestHandlers[$applicationName][$i]->injectApplication($application);
+                    $this->requestHandlers[$applicationName][$i]->start();
+                }
+            }
         }
+
+        // return the application's request handler pool
+        return $this->requestHandlers[$applicationName];
     }
 
     /**
@@ -157,124 +174,66 @@ class ServletEngine extends AbstractServletEngine
         $hook
     ) {
 
-        try {
-            // if false hook is coming do nothing
-            if (ModuleHooks::REQUEST_POST !== $hook) {
-                return;
-            }
-
-            // check if we are the handler that has to process this request
-            if ($requestContext->getServerVar(ServerVars::SERVER_HANDLER) !== $this->getModuleName()) {
-                return;
-            }
-
-            // initialize servlet session, request + response
-            $servletRequest = new Request();
-            $servletRequest->injectHttpRequest($request);
-            $servletRequest->injectServerVars($requestContext->getServerVars());
-
-            // initialize the parts
-            foreach ($request->getParts() as $part) {
-                $servletRequest->addPart(Part::fromHttpRequest($part));
-            }
-
-            // set the body content if we can find one
-            if ($request->getHeader(HttpProtocol::HEADER_CONTENT_LENGTH) > 0) {
-                $servletRequest->setBodyStream($request->getBodyContent());
-            }
-
-            // prepare the servlet request
-            $this->prepareServletRequest($servletRequest);
-
-            // initialize the servlet response with the Http response values
-            $servletResponse = new Response();
-            $servletRequest->injectResponse($servletResponse);
-
-            // load the application associated with this request
-            $application = $this->findRequestedApplication($requestContext);
-
-            // prepare and set the applications context path
-            $servletRequest->setContextPath($contextPath = '/' . $application->getName());
-            $servletRequest->setServletPath(str_replace($contextPath, '', $servletRequest->getServletPath()));
-
-            // prepare the base modifier which allows our apps to provide a base URL
-            $webappsDir = $this->getServerContext()->getServerConfig()->getDocumentRoot();
-            $relativeRequestPath = strstr($servletRequest->getServerVar(ServerVars::DOCUMENT_ROOT), $webappsDir);
-            $proposedBaseModifier = str_replace($webappsDir, '', $relativeRequestPath);
-            if (strpos($proposedBaseModifier, $contextPath) === 0) {
-                $servletRequest->setBaseModifier('');
-            } else {
-                $servletRequest->setBaseModifier($contextPath);
-            }
-
-            // initialize the request handler instance
-            $dispatched = false;
-            $applicationName = $application->getName();
-            while ($dispatched === false) {
-                if ($this->requestHandlers[$applicationName][$i = rand(0, 9)]->isWaiting()) {
-                    $this->requestHandlers[$applicationName][$i]->handleRequest($servletRequest, $servletResponse);
-                    $dispatched = true;
-                    break;
-                }
-            }
-
-            // copy the values from the servlet response back to the HTTP response
-            $response->setStatusCode($servletResponse->getStatusCode());
-            $response->setStatusReasonPhrase($servletResponse->getStatusReasonPhrase());
-            $response->setVersion($servletResponse->getVersion());
-            $response->setState($servletResponse->getState());
-
-            // append the content to the body stream
-            $response->appendBodyStream($servletResponse->getBodyStream());
-
-            // transform the servlet headers back into HTTP headers
-            $headers = array();
-            foreach ($servletResponse->getHeaders() as $name => $header) {
-                $headers[$name] = $header;
-            }
-
-            // set the headers as array (because we don't know if we have to use the append flag)
-            $response->setHeaders($headers);
-
-            // copy the servlet response cookies back to the HTTP response
-            foreach ($servletResponse->getCookies() as $cookie) {
-                $response->addCookie(unserialize($cookie));
-            }
-
-            // set response state to be dispatched after this without calling other modules process
-            $response->setState(HttpResponseStates::DISPATCH);
-
-        } catch (ModuleException $me) {
-            throw $me;
-        } catch (\Exception $e) {
-            throw new ModuleException($e, 500);
+        // if false hook is coming do nothing
+        if (ModuleHooks::REQUEST_POST !== $hook) {
+            return;
         }
-    }
 
-    /**
-     * Tries to find a request handler that matches the actual request and injects it into the request.
-     *
-     * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface $servletRequest The servlet request we need a request handler to handle for
-     *
-     * @return string The application name of the application to handle the request
-     * @deprecated This method is deprecated since 0.8.0
-     */
-    protected function requestHandlerFromPool(HttpServletRequestInterface $servletRequest)
-    {
-        // nothing to do here
-    }
+        // check if we are the handler that has to process this request
+        if ($requestContext->getServerVar(ServerVars::SERVER_HANDLER) !== $this->getModuleName()) {
+            return;
+        }
 
-    /**
-     * After a request has been processed by the injected request handler we remove
-     * the thread ID of the request handler from the array with the working handlers.
-     *
-     * @param \AppserverIo\Appserver\ServletEngine\RequestHandler $requestHandler The request handler instance we want to re-attach to the pool
-     *
-     * @return void
-     * @deprecated This method is deprecated since 0.8.0
-     */
-    protected function requestHandlerToPool($requestHandler)
-    {
-        // nothing to do here
+        // load the application associated with this request
+        $application = $this->findRequestedApplication($requestContext);
+
+        // check if the application has already been connected
+        if ($application->isConnected() === false) {
+            throw new \Exception(sprintf('Application %s has not connected yet', $application->getName()), 503);
+        }
+
+        // create a copy of the valve instances
+        $handlers = $this->handlers;
+
+        // create a new request instance from the HTTP request
+        $servletRequest = new Request();
+        $servletRequest->injectHandlers($handlers);
+        $servletRequest->injectHttpRequest($request);
+        $servletRequest->injectServerVars($requestContext->getServerVars());
+        $servletRequest->init();
+
+        // initialize servlet response
+        $servletResponse = new Response();
+        $servletResponse->init();
+
+        // initialize the request handler instance
+        $dispatched = false;
+
+        // load the application's request handlers
+        $requestHandlers = $this->loadRequestHandlersForApplication($application);
+
+        // initialize a counter to avoid an endless loop
+        $counter = 0;
+
+        // try to dispatch the request with one of the handlers
+        while (sizeof($requestHandlers) > 0 && $dispatched === false) {
+            // try to load a
+            if ($requestHandlers[$i = rand(0, sizeof($requestHandlers) - 1)]->isWaiting()) {
+                $requestHandlers[$i]->handleRequest($servletRequest, $servletResponse);
+                $requestHandlers[$i]->copyToHttpResponse($response);
+
+                // mark the request dispatched
+                $dispatched = true;
+                break;
+            }
+
+            // stop processing after 100 iterations
+            if ($counter > 100) {
+                throw new \Exception('Can\'t find a request handler to process request!');
+            }
+        }
+
+        // set response state to be dispatched after this without calling other modules process
+        $response->setState(HttpResponseStates::DISPATCH);
     }
 }

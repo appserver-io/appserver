@@ -22,10 +22,12 @@
 namespace AppserverIo\Appserver\PersistentServletEngine;
 
 use AppserverIo\Logger\LoggerUtils;
-use AppserverIo\Storage\GenericStackable;
+use AppserverIo\Psr\HttpMessage\ResponseInterface;
+use AppserverIo\Psr\Servlet\ServletContextInterface;
+use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
-use AppserverIo\Psr\Application\ApplicationInterface;
+use AppserverIo\Appserver\ServletEngine\Utils\RequestHandlerKeys;
 
 /**
  * This is a request handler that is necessary to process each request of an
@@ -39,36 +41,45 @@ use AppserverIo\Psr\Application\ApplicationInterface;
  * @link      http://www.appserver.io
  *
  * @property \AppserverIo\Psr\Application\ApplicationInterface          $application     The application instance
- * @property boolean                                                    $dispatched      Whether or not the request has been dispatched
+ * @property boolean                                                    $finished        Whether or not the request handler can be shutdown or not
  * @property integer                                                    $mutex           The mutex for lock/unlock request handler
  * @property \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface  $servletRequest  The actual request instance
  * @property \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse The actual response instance
- * @property \AppserverIo\Storage\GenericStackable                      $valves          The valves to process
+ * @property array                                                      $valves          The valves to process
  */
 class RequestHandler extends \Thread
 {
 
     /**
-     * Injects the mutex necessary to lock/unlock request handler during
-     * request processing.
+     * The prepared application context.
      *
-     * @param integer $mutex The mutex for lock/unlock request handler
-     *
-     * @return void
+     * @var \AppserverIo\Psr\Application\ApplicationInterface
      */
-    public function injectMutex($mutex)
+    public static $applicationContext;
+
+    /**
+     * The prepared request context.
+     *
+     * @var \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface
+     */
+    public static $requestContext;
+
+    /**
+     * Initialize the request handler.
+     */
+    public function __construct()
     {
-        $this->mutex = $mutex;
+        $this->finished = false;
     }
 
     /**
      * Injects the valves to be processed.
      *
-     * @param \AppserverIo\Storage\GenericStackable $valves The valves to process
+     * @param array $valves The valves to process
      *
      * @return void
      */
-    public function injectValves(GenericStackable $valves)
+    public function injectValves(array $valves)
     {
         $this->valves = $valves;
     }
@@ -98,18 +109,12 @@ class RequestHandler extends \Thread
     public function handleRequest(HttpServletRequestInterface $servletRequest, HttpServletResponseInterface $servletResponse)
     {
 
-        // lock the method
-        \Mutex::lock($this->mutex);
+        // create a counter
+        $counter = 0;
 
         do {
-            // create a counter
-            $counter = 0;
-
             // if this is the first loop
             if ($counter === 0) {
-                // we're not dispatched
-                $this->dispatched = false;
-
                 // synchronize request/response
                 $this->servletRequest = $servletRequest;
                 $this->servletResponse = $servletResponse;
@@ -118,24 +123,15 @@ class RequestHandler extends \Thread
                 $this->synchronized(function ($self) {
                     $self->notify();
                 }, $this);
-
             }
+
+            // wait a bit, to lower system load
+            usleep(100);
 
             // raise the counter
             $counter++;
 
-            // we wait for 100 iterations
-            if ($counter > 100) {
-                throw new \Exception('Can\'t handle request');
-            }
-
-            // lower system load a bit
-            usleep(100);
-
-        } while ($this->dispatched === false);
-
-        // unlock the method
-        \Mutex::unlock($this->mutex);
+        } while ($this->servletRequest->isDispatched() === false);
     }
 
     /**
@@ -152,29 +148,36 @@ class RequestHandler extends \Thread
         // register shutdown handler
         register_shutdown_function(array(&$this, "shutdown"));
 
-        // reset request/response instance
+        // synchronize the application instance and register the class loaders
         $application = $this->application;
-
-        // register class loaders
         $application->registerClassLoaders();
 
-        // synchronize the valves
-        $valves = $this->valves;
+        // initialize the counter for the handled requests
+        $counter = 0;
 
         // run forever
-        while (true) {
+        while ($counter < 1) {
             try {
                 // wait until we've been notified
                 $this->synchronized(function ($self) {
                     $self->wait();
                 }, $this);
 
-                // servlet request/response
+                // synchronize the valves, servlet request/response
+                $valves = $this->valves;
                 $servletRequest = $this->servletRequest;
                 $servletResponse = $this->servletResponse;
 
-                // inject the found application into the servlet request
+                // inject the sapplication and servlet response
+                $servletRequest->injectResponse($servletResponse);
                 $servletRequest->injectContext($application);
+
+                // prepare the request instance
+                $servletRequest->prepare();
+
+                // initialize static request and application context
+                RequestHandler::$requestContext = $servletRequest;
+                RequestHandler::$applicationContext = $application;
 
                 // process the valves
                 foreach ($valves as $valve) {
@@ -191,52 +194,172 @@ class RequestHandler extends \Thread
                 }
 
             } catch (\Exception $e) {
-                $application->getInitialContext()->getSystemLogger()->error($e->__toString());
-                $servletResponse->appendBodyStream($e->__toString());
-                $servletResponse->setStatusCode(500);
+                // log the exception message
+                $application->getInitialContext()->getSystemLogger()->error($e->getMessage());
+                // set the status code and add the servlet exception to the servlet request attributes
+                $servletResponse->setStatusCode($e->getCode());
+                $servletRequest->setAttribute(RequestHandlerKeys::ERROR_MESSAGE, $e->getMessage());
             }
 
-            // we're dispatched now
-            $this->dispatched = true;
+            // clean-up request processing
+            $this->cleanUp($servletRequest, $servletResponse);
+
+            // raise counter for handled requests
+            $counter++;
         }
 
-        // shutdown the thread
-        $this->__shutdown();
+        // mark request handler as finished
+        $this->finished = true;
     }
 
+
     /**
-     * Thread shutdown function that allows you to cleanup
-     * garbage.
+     * Copies the values from the request handler back to the passed HTTP response instance.
+     *
+     * @param \AppserverIo\Psr\HttpMessage\ResponseInterface $httpResponse A HTTP response object
      *
      * @return void
-     * @since appserver.io/pthreads >= 1.0.2
      */
-    public function __shutdown()
+    public function copyToHttpResponse(ResponseInterface $httpResponse)
     {
-        $this->servletRequest->__cleanup();
+
+        // create a local copy of the response
+        $servletResponse = $this->servletResponse;
+
+        // copy response values to the HTTP response
+        $httpResponse->setStatusCode($servletResponse->getStatusCode());
+        $httpResponse->setStatusReasonPhrase($servletResponse->getStatusReasonPhrase());
+        $httpResponse->setVersion($servletResponse->getVersion());
+        $httpResponse->setState($servletResponse->getState());
+
+        // copy the body content to the HTTP response
+        $httpResponse->appendBodyStream($servletResponse->getBodyStream());
+
+        // copy headers to the HTTP response
+        foreach ($servletResponse->getHeaders() as $headerName => $headerValue) {
+            $httpResponse->addHeader($headerName, $headerValue);
+        }
+
+        // copy cookies to the HTTP response
+        $httpResponse->setCookies($servletResponse->getCookies());
     }
 
     /**
-     * Does shutdown logic for request handler if something went wrong and produces
-     * a fatal error for example.
+     * Clean up the handler after processing the request.
+     *
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface  $servletRequest  The actual request instance
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse The actual response instance
+     *
+     * @return void
+     */
+    public function cleanUp(
+        HttpServletRequestInterface $servletRequest,
+        HttpServletResponseInterface $servletResponse
+    ) {
+
+        // check if there was a fatal error caused shutdown
+        if ($lastError = error_get_last()) {
+            // initialize type + message
+            $type = 0;
+            $line = 0;
+            $message = '';
+            $file = '';
+            // extract the last error values
+            extract($lastError);
+            // query whether we've a fatal/user error
+            if ($type === E_ERROR || $type === E_USER_ERROR) {
+                // set the apropriate status code
+                $servletResponse->setStatusCode(500);
+                // add the fatal error to the servlet request attributes
+                $servletRequest->setAttribute(
+                    RequestHandlerKeys::ERROR_MESSAGE,
+                    sprintf("PHP Fatal error: %s in %s on line %d", $message, $file, $line)
+                );
+            }
+        }
+
+        // query whether or not we've a client or an server error
+        if ($servletResponse->getStatusCode() > 399) {
+            try {
+                // create a local copy of the application
+                $application = $this->application;
+
+                // inject the application and servlet response
+                $servletRequest->injectResponse($servletResponse);
+                $servletRequest->injectContext($application);
+
+                // load the servlet context instance
+                $servletManager = $application->search(ServletContextInterface::IDENTIFIER);
+
+                // initialize the request URI for the error page to be rendered
+                $requestUri = '';
+
+                // iterate over the configured error pages to find a matching one
+                foreach ($servletManager->getErrorPages() as $errorCodePattern => $errorPage) {
+                    // query whether or not we found an error page configured for the actual status code
+                    if (fnmatch($errorCodePattern, $servletResponse->getStatusCode())) {
+                        $requestUri = $errorPage;
+                        break;
+                    }
+                }
+
+                // initialize the request URI
+                $servletRequest->setRequestUri($requestUri);
+                // prepare the request with the new data
+                $servletRequest->prepare();
+                // load the servlet path and session-ID
+                $servletPath = $servletRequest->getServletPath();
+                $sessionId = $servletRequest->getProposedSessionId();
+                // load and process the servlet
+                $servlet = $servletManager->lookup($servletPath, $sessionId);
+                $servlet->service($servletRequest, $servletResponse);
+
+            } catch (\Exception $e) {
+                $application->getInitialContext()->getSystemLogger()->error($e->__toString());
+            }
+        }
+
+        // copy request/respons back to the thread context
+        $this->servletRequest = $servletRequest;
+        $this->servletResponse = $servletResponse;
+    }
+
+    /**
+     * Does shutdown logic for request handler if something went wrong and
+     * produces a fatal error for example.
      *
      * @return void
      */
     public function shutdown()
     {
 
-        // check if there was a fatal error caused shutdown
-        $lastError = error_get_last();
-        if ($lastError['type'] === E_ERROR || $lastError['type'] === E_USER_ERROR) {
-            // synchronize the servlet response
-            $servletResponse = $this->servletResponse;
+        // create a local copy of servlet request/response
+        $servletRequest = $this->servletRequest;
+        $servletResponse = $this->servletResponse;
 
-            // set the status code and append the error message to the body
-            $servletResponse->setStatusCode(500);
-            $servletResponse->appendBodyStream($lastError['message']);
-        }
+        // clean-up request processing
+        $this->cleanUp($servletRequest, $servletResponse);
+    }
 
-        // shutdown the thread
-        $this->__shutdown();
+    /**
+     * Returns the actual servlet request instance that has been prepared to
+     * handle the actual request and represents the context of this request.
+     *
+     * @return \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface The prepared request context
+     */
+    public static function getRequestContext()
+    {
+        return RequestHandler::$requestContext;
+    }
+
+    /**
+     * Returns the actual application instance thatrepresents the application
+     * context of this request.
+     *
+     * @return \AppserverIo\Psr\Application\ApplicationInterface The actual application context
+     */
+    public static function getApplicationContext()
+    {
+        return RequestHandler::$applicationContext;
     }
 }

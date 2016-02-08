@@ -133,15 +133,6 @@ class RequestHandler extends \Thread
             $servletRequest = $this->servletRequest;
             $servletResponse = $this->servletResponse;
 
-            // we initialize this with a 500 to handle 'Fatal Error' case
-            $this->statusCode = 500;
-
-            // initialize arrays for header and cookies
-            $this->state = $servletResponse->getState();
-            $this->version = $servletResponse->getVersion();
-            $this->headers = $servletResponse->getHeaders();
-            $this->cookies = $servletResponse->getCookies();
-
             // inject the sapplication and servlet response
             $servletRequest->injectResponse($servletResponse);
             $servletRequest->injectContext($application);
