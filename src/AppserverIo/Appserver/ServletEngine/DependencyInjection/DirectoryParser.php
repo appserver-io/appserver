@@ -151,8 +151,10 @@ class DirectoryParser
 
                     // load the object descriptor and add it to the object manager
                     /** \AppserverIo\Psr\Deployment\DescriptorInterface $objectDescriptor */
-                    if ($objectDescriptor = $descriptorClass::newDescriptorInstance()->fromReflectionClass($reflectionClass)) {
-                        $objectManager->addObjectDescriptor($objectDescriptor);
+                    if (class_exists($descriptorClass)) {
+                        if ($objectDescriptor = $descriptorClass::newDescriptorInstance()->fromReflectionClass($reflectionClass)) {
+                            $objectManager->addObjectDescriptor($objectDescriptor);
+                        }
                     }
 
                 // if class can not be reflected continue with next class
