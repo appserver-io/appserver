@@ -28,6 +28,7 @@ use AppserverIo\Appserver\Doctrine\Utils\ConnectionUtil;
 use AppserverIo\Psr\Security\Auth\Subject;
 use AppserverIo\Psr\Security\Auth\Login\LoginException;
 use AppserverIo\Psr\Security\Auth\Callback\CallbackHandlerInterface;
+use AppserverIo\Appserver\Naming\Utils\NamingDirectoryKeys;
 use AppserverIo\Appserver\ServletEngine\Security\Utils\Util;
 use AppserverIo\Appserver\ServletEngine\Security\Utils\ParamKeys;
 
@@ -116,6 +117,18 @@ class DatabasePDOLoginModule extends UsernamePasswordLoginModule
         $statement = $connection->prepare($this->principalsQuery);
         $statement->bindParam(1, $this->getUsername());
         $statement->execute();
+
+        // close the PDO connection
+        if ($connection != null) {
+            try {
+                $connection->close();
+            } catch (\Exception $e) {
+                $application
+                    ->getNamingDirectory()
+                    ->search(NamingDirectoryKeys::SYSTEM_LOGGER)
+                    ->error($e->__toString());
+            }
+        }
 
         // query whether or not we've a password found or not
         if ($row = $statement->fetch(\PDO::FETCH_NUM)) {

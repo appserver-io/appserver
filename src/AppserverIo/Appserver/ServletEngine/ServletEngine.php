@@ -30,6 +30,7 @@ use AppserverIo\Server\Interfaces\ServerContextInterface;
 use AppserverIo\Server\Exceptions\ModuleException;
 use AppserverIo\Appserver\ServletEngine\Http\Request;
 use AppserverIo\Appserver\ServletEngine\Http\Response;
+use AppserverIo\Psr\HttpMessage\Protocol;
 
 /**
  * A servlet engine implementation.
@@ -156,6 +157,9 @@ class ServletEngine extends AbstractServletEngine
 
         // copy values to the HTTP response
         $requestHandler->copyToHttpResponse($response);
+
+        // append the servlet engine's signature
+        $response->addHeader(Protocol::HEADER_X_POWERED_BY, get_class($this), true);
 
         // set response state to be dispatched after this without calling other modules process
         $response->setState(HttpResponseStates::DISPATCH);
