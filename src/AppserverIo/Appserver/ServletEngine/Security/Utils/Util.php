@@ -167,18 +167,18 @@ class Util
         if ($statement != null) {
             try {
                 $statement->closeCursor();
-            } catch (\PDOException $pdoe) {
+            } catch (\Exception $e) {
                 $application
                     ->getNamingDirectory()
                     ->search(NamingDirectoryKeys::SYSTEM_LOGGER)
-                    ->error($pdoe->__toString());
+                    ->error($e->__toString());
             }
         }
 
-        // close the connection
+        // close the DBAL connection
         if ($connection != null) {
             try {
-                $connection = null;
+                $connection->close();
             } catch (\Exception $e) {
                 $application
                     ->getNamingDirectory()

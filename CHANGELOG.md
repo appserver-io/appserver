@@ -1,3 +1,14 @@
+# Version 1.1.1-alpha2
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add X-Powered-By Header with ServletEngine signature for debugging purposes
+* Closing database connection after loading users and roles when using DatabasePDOLoginModule
+
 # Version 1.1.1-alpha1
 
 ## Bugfixes
