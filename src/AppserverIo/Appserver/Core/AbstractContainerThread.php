@@ -172,8 +172,6 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
             $serverType = $serverConfig->getType();
             $serverContextType = $serverConfig->getServerContextType();
 
-            error_log("found server context type: $serverContextType");
-
             // create a new instance server context
             /** @var \AppserverIo\Server\Interfaces\ServerContextInterface $serverContext */
             $serverContext = new $serverContextType();
