@@ -6,6 +6,7 @@
 
 ## Features
 
+* Enable application based logger configuration by META-INF/context.xml
 * Add X-Powered-By Header with ServletEngine signature for debugging purposes
 * Closing database connection after loading users and roles when using DatabasePDOLoginModule
 

@@ -512,14 +512,16 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
         $applicationName = $context->getName();
         $namingDirectory = $this->getNamingDirectory();
 
-        // bind the application (which is also a naming directory)
+        // create subdirectories for the application and the logger
         $namingDirectory->createSubdirectory(sprintf('php:global/%s', $applicationName));
+        $namingDirectory->createSubdirectory(sprintf('php:global/log/%s', $applicationName));
 
         // create the applications 'env' + 'env/persistence' directory the beans + persistence units will be bound to
         $namingDirectory->createSubdirectory(sprintf('php:env/%s', $applicationName));
         $namingDirectory->createSubdirectory(sprintf('php:global/%s/env', $this->getName()));
         $namingDirectory->createSubdirectory(sprintf('php:global/%s/env/persistence', $this->getName()));
 
+        // bind the directory containing the applications
         $namingDirectory->bind(sprintf('php:env/%s/appBase', $this->getName()), $container->getAppBase());
 
         // prepare the application specific directories
