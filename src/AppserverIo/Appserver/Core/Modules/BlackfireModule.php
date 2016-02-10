@@ -119,7 +119,7 @@ class BlackfireModule implements HttpModuleInterface
     /**
      * Set's the system logger instance.
      *
-     * @return \Psr\Log\LoggerInterface|null The logger instance
+     * @param \Psr\Log\LoggerInterface|null $systemLogger The logger instance
      *
      * @return void
      */
