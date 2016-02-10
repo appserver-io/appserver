@@ -96,7 +96,6 @@
         <!-- copy all files to the target directory -->
         <copy todir="${php-target.dir}/appserver" preservelastmodified="true" overwrite="true">
             <fileset dir="${basedir}">
-                <include name="etc/**/*" />
                 <include name="src/**/*" />
                 <include name="var/**/*" />
                 <include name="tests/**/*" />
@@ -107,6 +106,15 @@
                 <include name="appserver.php" />
                 <include name="composer.json" />
             </fileset>
+        </copy>
+        <!-- copy all files to the target directory -->
+        <copy todir="${php-target.dir}/appserver" preservelastmodified="true" overwrite="true">
+            <fileset dir="${basedir}">
+                <include name="etc/**/*" />
+            </fileset>
+            <filterchain>
+                <expandproperties/>
+            </filterchain>
         </copy>
         <!-- create the file with the version number -->
         <echo file="${php-target.dir}/appserver/etc/appserver/.release-version" message="dev-master.${build.number}" />
