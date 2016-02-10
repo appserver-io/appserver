@@ -849,7 +849,10 @@ Implementing your own scanners is possible as well.
 
 ```xml
 <scanners>
-  <scanner name="deployment" type="AppserverIo\Appserver\Core\Scanner\DeploymentScanner">
+  <scanner 
+    name="deployment" 
+    type="AppserverIo\Appserver\Core\Scanner\DeploymentScanner"
+    factory="AppserverIo\Appserver\Core\Scanner\DirectoryScannerFactory">
     <params>
       <param name="interval" type="integer">1</param>
       <param name="extensionsToWatch" type="string">dodeploy, deployed</param>
@@ -858,7 +861,10 @@ Implementing your own scanners is possible as well.
       <directory>deploy</directory>
     </directories>
   </scanner>
-  <scanner name="webapps" type="AppserverIo\Appserver\Core\Scanner\RecursiveDirectoryScanner">
+  <scanner 
+    name="webapps" 
+    type="AppserverIo\Appserver\Core\Scanner\RecursiveDirectoryScanner"
+    factory="AppserverIo\Appserver\Core\Scanner\DirectoryScannerFactory">
     <params>
        <param name="interval" type="integer">1</param>
        <param name="extensionsToWatch" type="string">php</param>
@@ -867,7 +873,10 @@ Implementing your own scanners is possible as well.
       <directory>webapps</directory>
     </directories>
   </scanner>
-  <scanner name="logrotate" type="AppserverIo\Appserver\Core\Scanner\LogrotateScanner">
+  <scanner 
+    name="logrotate" 
+    type="AppserverIo\Appserver\Core\Scanner\LogrotateScanner"
+    factory="AppserverIo\Appserver\Core\Scanner\StandardScannerFactory">
     <params>
       <param name="interval" type="integer">1</param>
       <param name="extensionsToWatch" type="string">log</param>
