@@ -1,3 +1,13 @@
+# Version 1.1.1-alpha3
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add blackfire.io profiling module 
+
 # Version 1.1.1-alpha2
 
 ## Bugfixes
