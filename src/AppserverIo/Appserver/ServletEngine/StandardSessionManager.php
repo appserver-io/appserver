@@ -320,6 +320,16 @@ class StandardSessionManager extends AbstractManager implements SessionManagerIn
     }
 
     /**
+     * Flushes the session storage and persists all sessions.
+     *
+     * @return void
+     */
+    public function flush()
+    {
+        // do nothing, because persistence manager takes care about the sessions
+    }
+
+    /**
      * Shutdown the session manager instance.
      *
      * @return void

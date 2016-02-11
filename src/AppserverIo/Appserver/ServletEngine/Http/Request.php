@@ -209,8 +209,6 @@ class Request implements HttpServletRequestInterface, ContextInterface
 
     /**
      * Initializes the request object with the default properties.
-     *
-     * @return void
      */
     public function __construct()
     {
@@ -245,6 +243,27 @@ class Request implements HttpServletRequestInterface, ContextInterface
         $this->handlers = array();
         $this->serverVars = array();
         $this->attributes = array();
+
+        $this->sessions = array();
+    }
+
+    /**
+     * Shutdown the request and persists all sessions.
+     */
+    public function __destruct()
+    {
+        // flush the session manager (persist all sessions)
+        /** @var \AppserverIo\Psr\Application\ApplicationInterface $context */
+        if ($context = $this->getContext()) {
+            /** @var \AppserverIo\Appserver\ServletEngine\SessionManagerInterface $manager */
+            if ($manager = $context->search('SessionManagerInterface')) {
+                foreach ($this->sessions as $session) {
+                    $manager->save($session->getSession());
+                }
+            }
+        }
+
+        $this->sessions = array();
     }
 
     /**
@@ -851,6 +870,16 @@ class Request implements HttpServletRequestInterface, ContextInterface
     public function getSession($create = false)
     {
 
+        // load the proposed session-ID and name
+        $id = $this->getProposedSessionId();
+        $sessionName = $this->getRequestedSessionName();
+
+        foreach ($this->sessions as $session) {
+            if ($session->getId() === $id && $session->getName() === $sessionName) {
+                return $session;
+            }
+        }
+
         // if no session has already been load, initialize the session manager
         /** @var \AppserverIo\Appserver\ServletEngine\SessionManagerInterface $manager */
         $manager = $this->getContext()->search('SessionManagerInterface');
@@ -859,10 +888,6 @@ class Request implements HttpServletRequestInterface, ContextInterface
         if ($manager == null) {
             return;
         }
-
-        // load the proposed session-ID and name
-        $id = $this->getProposedSessionId();
-        $sessionName = $this->getRequestedSessionName();
 
         // find or create a new session (if flag has been set)
         $session = $manager->find($id);
@@ -893,6 +918,8 @@ class Request implements HttpServletRequestInterface, ContextInterface
         $wrapper = new SessionWrapper();
         $wrapper->injectSession($session);
         $wrapper->injectRequest($this);
+
+        $this->sessions[] = $wrapper;
 
         // return the found session
         return $wrapper;

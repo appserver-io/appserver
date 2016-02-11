@@ -72,7 +72,7 @@
                 <directory>/WEB-INF/classes</directory>
             </directories>
         </manager>
-        <manager name="SessionManagerInterface" type="AppserverIo\Appserver\ServletEngine\StandardSessionManager" factory="AppserverIo\Appserver\ServletEngine\StandardSessionManagerFactory"/>
+        <manager name="SessionManagerInterface" type="AppserverIo\Appserver\ServletEngine\SimpleSessionManager" factory="AppserverIo\Appserver\ServletEngine\SimpleSessionManagerFactory"/>
         <manager name="TimerServiceContextInterface" type="AppserverIo\Appserver\PersistenceContainer\TimerServiceRegistry" factory="AppserverIo\Appserver\PersistenceContainer\TimerServiceRegistryFactory"/>
         <manager name="AuthenticationManagerInterface" type="AppserverIo\Appserver\ServletEngine\Security\StandardAuthenticationManager" factory="AppserverIo\Appserver\ServletEngine\Security\StandardAuthenticationManagerFactory">
             <authenticators>

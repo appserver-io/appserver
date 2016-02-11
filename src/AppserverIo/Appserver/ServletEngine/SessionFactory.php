@@ -135,7 +135,7 @@ class SessionFactory extends AbstractDaemonThread
      *
      * @return void
      */
-    protected function removeBySessionId($sessionId)
+    public function removeBySessionId($sessionId)
     {
         $this->synchronized(function (SessionFactory $self, $id) {
 
@@ -221,10 +221,16 @@ class SessionFactory extends AbstractDaemonThread
                         }
                     }
 
+                    // send a notification that method invocation has been processed
+                    $self->notify();
+
                     break;
 
                 // do nothing, because we've an unknown action
                 default:
+
+                    // send a notification that method invocation has been processed
+                    $self->notify();
 
                     break;
             }

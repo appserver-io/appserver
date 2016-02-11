@@ -63,7 +63,7 @@ class StandardSessionMarshaller implements SessionMarshallerInterface
         $stdClass->data = array();
 
         // append the session data
-        foreach (get_object_vars($servletSession->data) as $key => $value) {
+        foreach ($servletSession->data as $key => $value) {
             $stdClass->data[$key] = serialize($value);
         }
 
