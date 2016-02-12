@@ -20,8 +20,6 @@
 
 namespace AppserverIo\Appserver\ServletEngine\Http;
 
-use AppserverIo\Storage\StackableStorage;
-use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Psr\Servlet\ServletSessionInterface;
 
 /**
@@ -51,7 +49,7 @@ use AppserverIo\Psr\Servlet\ServletSessionInterface;
  * @property boolean           $httpOnly             If this cookie should only be used through the HTTP protocol
  * @property integer           lastActivityTimestamp The UNIX timestamp where the last action on this session happens
  */
-class Session extends GenericStackable implements ServletSessionInterface
+class Session implements ServletSessionInterface
 {
 
     /**
@@ -76,24 +74,25 @@ class Session extends GenericStackable implements ServletSessionInterface
         $this->init($id, $name, $lifetime, $maximumAge, $domain, $path, $secure, $httpOnly);
 
         // initialize the storage for the session data
-        $this->data = new StackableStorage();
+        $this->data = array();
     }
 
     /**
      * Initializes the session with the passed data.
      *
-     * @param mixed             $id         The session ID
-     * @param string            $name       The session name
-     * @param integer|\DateTime $lifetime   Date and time after the session expires
-     * @param integer|null      $maximumAge Number of seconds until the session expires
-     * @param string|null       $domain     The host to which the user agent will send this cookie
-     * @param string            $path       The path describing the scope of this cookie
-     * @param boolean           $secure     If this cookie should only be sent through a "secure" channel by the user agent
-     * @param boolean           $httpOnly   If this cookie should only be used through the HTTP protocol
+     * @param mixed             $id                    The session ID
+     * @param string            $name                  The session name
+     * @param integer|\DateTime $lifetime              Date and time after the session expires
+     * @param integer|null      $maximumAge            Number of seconds until the session expires
+     * @param string|null       $domain                The host to which the user agent will send this cookie
+     * @param string            $path                  The path describing the scope of this cookie
+     * @param boolean           $secure                If this cookie should only be sent through a "secure" channel by the user agent
+     * @param boolean           $httpOnly              If this cookie should only be used through the HTTP protocol
+     * @param integer|null      $lastActivityTimestamp The timestamp when the session has been touched the last time
      *
      * @return void
      */
-    public function init($id, $name, $lifetime, $maximumAge, $domain, $path, $secure, $httpOnly)
+    public function init($id, $name, $lifetime, $maximumAge, $domain, $path, $secure, $httpOnly, $lastActivityTimestamp = null)
     {
         // initialize the session
         $this->id = $id;
@@ -106,7 +105,11 @@ class Session extends GenericStackable implements ServletSessionInterface
         $this->httpOnly = $httpOnly;
 
         // the UNIX timestamp where the last action on this session happens
-        $this->lastActivityTimestamp = time();
+        if ($lastActivityTimestamp == null) {
+            $this->lastActivityTimestamp = time();
+        } else {
+            $this->lastActivityTimestamp = $lastActivityTimestamp;
+        }
     }
 
     /**
@@ -328,7 +331,7 @@ class Session extends GenericStackable implements ServletSessionInterface
      */
     public function getData($key)
     {
-        return $this->data->get($key);
+        return $this->data[$key];
     }
 
     /**
@@ -340,7 +343,7 @@ class Session extends GenericStackable implements ServletSessionInterface
      */
     public function hasKey($key)
     {
-        return $this->data->has($key);
+        return isset($this->data[$key]);
     }
 
     /**
@@ -353,7 +356,7 @@ class Session extends GenericStackable implements ServletSessionInterface
      */
     public function putData($key, $data)
     {
-        $this->data->set($key, $data);
+        $this->data[$key] = $data;
     }
 
     /**
@@ -365,7 +368,7 @@ class Session extends GenericStackable implements ServletSessionInterface
      */
     public function removeData($key)
     {
-        $this->data->remove($key);
+        unset($this->data[$key]);
     }
 
     /**

@@ -86,9 +86,11 @@ class FormAuthenticator extends AbstractAuthenticator
 
         // try to load the principal from the session if available
         if ($session->hasKey(Constants::PRINCIPAL)) {
-            // invoke the onCache callback and return
-            $this->onCache($servletRequest, $servletResponse);
-            return true;
+            if ($session->getData(Constants::PRINCIPAL) instanceof PrincipalInterface) {
+                // invoke the onCache callback and return
+                $this->onCache($servletRequest, $servletResponse);
+                return true;
+            }
         }
 
         // is this the re-submit of the original request URI after successful
@@ -149,9 +151,7 @@ class FormAuthenticator extends AbstractAuthenticator
 
         // set username and password in the session
         if ($session = $servletRequest->getSession()) {
-            if ($session->hasKey(Constants::PRINCIPAL) === false) {
-                $session->putData(Constants::PRINCIPAL, $userPrincipal);
-            }
+            $session->putData(Constants::PRINCIPAL, $userPrincipal);
         }
     }
 

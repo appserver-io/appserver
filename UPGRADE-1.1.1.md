@@ -12,6 +12,8 @@ The X-Content-Type-Options header with the Nosniff values forces you or your app
 
 ## Authentication Manager
 
+If you don't deliver a custom `META-INF/context.xml` file with your application, you don't have to change anything here.
+
 Because of a massive refactoring of the security subsystem, we've refactored the servlet engine's authentication package, whereas the namespace has been switched from `AppserverIo\Appserver\ServletEngine\Authentication\` to `AppserverIo\Appserver\ServletEngine\Security`. Therefore, you've to customize the `META-INF/context.xml` file (if available) by changing
 
 ```xml
@@ -34,9 +36,29 @@ to
 </managers>
 ```
 
+## Session Manager
+
+If you don't deliver a custom `META-INF/context.xml` file with your application, you don't have to change anything here.
+
+Because of a massive refactoring of the session handling, you have to replace the following line in the file `META-INF/context.xml` 
+
+```xml
+<manager name="SessionManagerInterface" type="AppserverIo\Appserver\ServletEngine\SimpleSessionManager" factory="AppserverIo\Appserver\ServletEngine\SimpleSessionManagerFactory"/>
+```
+
+with
+
+```xml
+<manager name="SessionManagerInterface" type="AppserverIo\Appserver\ServletEngine\StandardSessionManager" factory="AppserverIo\Appserver\ServletEngine\StandardSessionManagerFactory">
+    <sessionHandlers>
+        <sessionHandler name="filesystem" type="AppserverIo\Appserver\ServletEngine\Session\FilesystemSessionHandler" factory="AppserverIo\Appserver\ServletEngine\Session\SessionHandlerFactory"/>
+    </sessionHandlers>
+</manager>
+```
+
 ## Security Subsystem
 
-Up with this version we removed the old security subsystem that allows you to configure Basic and Digest authentication based on a URL pattern in the `web.xml` file like
+Up with this version we removed the old security subsystem that allows you to configure Basic and Digest authentication based on a URL pattern in the `WEB-INF/web.xml` file like
 
 ```xml
 <security>

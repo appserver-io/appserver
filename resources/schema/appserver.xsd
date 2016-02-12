@@ -801,6 +801,25 @@
             </xs:simpleContent>
         </xs:complexType>
     </xs:element>
+    <xs:element name="sessionHandlers">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="appserver:sessionHandler"/>
+            </xs:choice>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="sessionHandler">
+        <xs:complexType>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element ref="appserver:params"/>
+            </xs:choice>
+             <xs:attribute name="name" type="xs:string"/>
+             <xs:attribute name="type" type="xs:string"/>
+             <xs:attribute name="factory" type="xs:string"/>
+             <xs:attribute name="uuid" type="xs:string"/>
+             <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
     <xs:element name="ignoredAnnotations">
         <xs:complexType>
             <xs:choice maxOccurs="unbounded">
@@ -1902,6 +1921,7 @@
                 <xs:element ref="appserver:params" minOccurs="0"/>
                 <xs:element ref="appserver:directories" minOccurs="0"/>
                 <xs:element ref="appserver:authenticators" minOccurs="0"/>
+                <xs:element ref="appserver:sessionHandlers" minOccurs="0"/>
             </xs:all>
             <xs:attribute name="name" type="xs:string" use="required"/>
             <xs:attribute name="beanName" type="xs:string"/>

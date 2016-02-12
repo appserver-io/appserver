@@ -20,52 +20,116 @@
 
 namespace AppserverIo\Appserver\ServletEngine;
 
-use AppserverIo\Appserver\Core\AbstractManager;
+use AppserverIo\Logger\LoggerUtils;
+use AppserverIo\Collections\HashMap;
+use AppserverIo\Collections\CollectionInterface;
+use AppserverIo\Psr\Naming\NamingException;
+use AppserverIo\Psr\Servlet\ServletContextInterface;
 use AppserverIo\Psr\Servlet\ServletSessionInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
+use AppserverIo\Psr\Application\ManagerConfigurationInterface;
+use AppserverIo\Appserver\ServletEngine\Http\Session;
+use AppserverIo\Appserver\ServletEngine\Session\FilesystemSessionHandler;
 
 /**
- * A standard session manager implementation that provides session
- * persistence while server has not been restarted.
+ * A simple session manager implementation implementation using
+ * session handlers to persist the sessions.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
- *
- * @property \AppserverIo\Appserver\ServletEngine\GarbageCollectorInterface   $garbageCollector   The garbage collector
- * @property \AppserverIo\Appserver\ServletEngine\PersistenceManagerInterface $persistenceManager The persistence manager
- * @property \AppserverIo\Psr\Servlet\ServletContextInterface                 $servletManager     The servlet manager instance
- * @property \AppserverIo\Appserver\ServletEngine\SessionFactory              $sessionFactory     The session factory
- * @property \AppserverIo\Storage\StorageInterface                            $sessions           The sessions
- * @property \AppserverIo\Appserver\ServletEngine\SessionSettingsInterface    $sessionSettings    Settings for the session handling
  */
-class StandardSessionManager extends AbstractManager implements SessionManagerInterface
+class StandardSessionManager implements SessionManagerInterface
 {
 
     /**
-     * Injects the sessions.
+     * The HashMap containing the sessions.
      *
-     * @param \AppserverIo\Storage\StorageInterface $sessions The sessions
-     *
-     * @return void
+     * @var \AppserverIo\Collections\HashMap
      */
-    public function injectSessions($sessions)
+    protected $sessions;
+
+    /**
+     * The HashMap containing the session handlers.
+     *
+     * @var \AppserverIo\Collections\HashMap
+     */
+    protected $sessionHandlers;
+
+    /**
+     * The application instance.
+     *
+     * @var \AppserverIo\Psr\Application\ApplicationInterface
+     */
+    protected $application;
+
+    /**
+     * The settings for the session handling.
+     *
+     * @var \AppserverIo\Appserver\ServletEngine\SessionSettingsInterface
+     */
+    protected $sessionSettings;
+
+    /**
+     * The session marshaller instance.
+     *
+     * @var \AppserverIo\Appserver\ServletEngine\SessionMarshallerInterface
+     */
+    protected $sessionMarshaller;
+
+    /**
+     * The manager configuration instance.
+     *
+     * @var  \AppserverIo\Psr\Application\ManagerConfigurationInterface
+     */
+    protected $managerConfiguration;
+
+    /**
+     * The garbage collector instance.
+     *
+     * @var \AppserverIo\Appserver\ServletEngine\GarbageCollectorInterface
+     */
+    protected $garbageCollector;
+
+    /**
+     * Initialize the session manager.
+     */
+    public function __construct()
     {
-        $this->sessions = $sessions;
+        $this->sessions = new HashMap();
+        $this->sessionHandlers = new HashMap();
     }
 
     /**
-     * Injects the session factory.
+     * Save the sessions back to the persistence layer.
+     */
+    public function __destruct()
+    {
+        $this->flush();
+    }
+
+    /**
+     * Inject the application instance.
      *
-     * @param \AppserverIo\Appserver\ServletEngine\SessionFactory $sessionFactory The session factory
+     * @param \AppserverIo\Psr\Application\ApplicationInterface $application The application instance
      *
      * @return void
      */
-    public function injectSessionFactory($sessionFactory)
+    public function injectApplication(ApplicationInterface $application)
     {
-        $this->sessionFactory = $sessionFactory;
+        $this->application = $application;
+    }
+
+    /**
+     * Returns the application instance.
+     *
+     * @return \AppserverIo\Psr\Application\ApplicationInterface|\AppserverIo\Psr\Naming\NamingDirectoryInterface The application instance
+     */
+    public function getApplication()
+    {
+        return $this->application;
     }
 
     /**
@@ -81,15 +145,79 @@ class StandardSessionManager extends AbstractManager implements SessionManagerIn
     }
 
     /**
-     * Injects the persistence manager.
+     * Returns the session settings.
      *
-     * @param \AppserverIo\Appserver\ServletEngine\PersistenceManagerInterface $persistenceManager The persistence manager
+     * @return \AppserverIo\Appserver\ServletEngine\SessionSettingsInterface The session settings
+     */
+    public function getSessionSettings()
+    {
+        return $this->sessionSettings;
+    }
+
+    /**
+     * Injects the session marshaller.
+     *
+     * @param \AppserverIo\Appserver\ServletEngine\SessionMarshallerInterface $sessionMarshaller The session marshaller instance
      *
      * @return void
      */
-    public function injectPersistenceManager(PersistenceManagerInterface $persistenceManager)
+    public function injectSessionMarshaller($sessionMarshaller)
     {
-        $this->persistenceManager = $persistenceManager;
+        $this->sessionMarshaller = $sessionMarshaller;
+    }
+
+    /**
+     * Returns the session marshaller.
+     *
+     * @return \AppserverIo\Appserver\ServletEngine\SessionMarshallerInterface The session marshaller
+     */
+    public function getSessionMarshaller()
+    {
+        return $this->sessionMarshaller;
+    }
+
+    /**
+     * Inject the configuration for this manager.
+     *
+     * @param \AppserverIo\Psr\Application\ManagerConfigurationInterface $managerConfiguration The managers configuration
+     *
+     * @return void
+     */
+    public function injectManagerConfiguration(ManagerConfigurationInterface $managerConfiguration)
+    {
+        $this->managerConfiguration = $managerConfiguration;
+    }
+
+    /**
+     * Return's the manager configuration.
+     *
+     * @return \AppserverIo\Psr\Application\ManagerConfigurationInterface The manager configuration
+     */
+    public function getManagerConfiguration()
+    {
+        return $this->managerConfiguration;
+    }
+
+    /**
+     * Inject the session handlers.
+     *
+     * @param \AppserverIo\Collections\CollectionInterface $sessionHandlers The session handlers
+     *
+     * @return void
+     */
+    public function injectSessionHandlers(CollectionInterface $sessionHandlers)
+    {
+        $this->sessionHandlers = $sessionHandlers;
+    }
+
+    /**
+     * Returns all registered session handlers.
+     *
+     * @return \AppserverIo\Collections\ArrayList The session handlers
+     */
+    public function getSessionHandlers()
+    {
+        return $this->sessionHandlers;
     }
 
     /**
@@ -105,39 +233,19 @@ class StandardSessionManager extends AbstractManager implements SessionManagerIn
     }
 
     /**
-     * Initializes the session manager.
+     * Returns the garbage collector instance.
      *
-     * @param \AppserverIo\Psr\Application\ApplicationInterface $application The application instance
-     *
-     * @return void
-     * @see \AppserverIo\Psr\Application\ManagerInterface::initialize()
+     * @return \AppserverIo\Appserver\ServletEngine\GarbageCollectorInterface The garbage collector instance
      */
-    public function initialize(ApplicationInterface $application)
+    public function getGarbageCollector()
     {
-
-        // load the servlet manager with the session settings configured in web.xml
-        /** @var \AppserverIo\Psr\Servlet\ServletContextInterface|\AppserverIo\Psr\Application\ManagerInterface $servletManager */
-        $servletManager = $application->search('ServletContextInterface');
-
-        // load the settings, set the default session save path
-        $sessionSettings = $this->getSessionSettings();
-        $sessionSettings->setSessionSavePath($application->getSessionDir());
-
-        // if we've session parameters defined in our servlet context
-        if ($servletManager->hasSessionParameters()) {
-            // we want to merge the session settings from the servlet context
-            $sessionSettings->mergeServletContext($servletManager);
-        }
-
-        // initialize the garbage collector and the persistence manager
-        $this->getGarbageCollector()->initialize();
-        $this->getPersistenceManager()->initialize();
+        return $this->garbageCollector;
     }
 
     /**
      * Returns all sessions actually attached to the session manager.
      *
-     * @return \AppserverIo\Storage\StorageInterface The container with sessions
+     * @return \AppserverIo\Collections\HashMap The container with sessions
      */
     public function getSessions()
     {
@@ -145,13 +253,15 @@ class StandardSessionManager extends AbstractManager implements SessionManagerIn
     }
 
     /**
-     * Returns the session settings.
+     * Returns the attribute with the passed key from the container.
      *
-     * @return \AppserverIo\Appserver\ServletEngine\SessionSettingsInterface The session settings
+     * @param string $key The key the requested value is registered with
+     *
+     * @return mixed|null The requested value if available
      */
-    public function getSessionSettings()
+    public function getAttribute($key)
     {
-        return $this->sessionSettings;
+        // do nothing here
     }
 
     /**
@@ -161,7 +271,17 @@ class StandardSessionManager extends AbstractManager implements SessionManagerIn
      */
     public function getSessionFactory()
     {
-        return $this->sessionFactory;
+        // do nothing here
+    }
+
+    /**
+     * Returns the servlet manager instance.
+     *
+     * @return \AppserverIo\Psr\Servlet\ServletContextInterface The servlet manager instance
+     */
+    public function getServletManager()
+    {
+        // do nothing here
     }
 
     /**
@@ -181,27 +301,33 @@ class StandardSessionManager extends AbstractManager implements SessionManagerIn
      */
     public function getPersistenceManager()
     {
-        return $this->persistenceManager;
+        // do nothing here
     }
 
     /**
-     * Returns the garbage collector instance.
+     * Initializes the session manager.
      *
-     * @return \AppserverIo\Appserver\ServletEngine\GarbageCollectorInterface The garbage collector instance
+     * @param \AppserverIo\Psr\Application\ApplicationInterface $application The application instance
+     *
+     * @return void
+     * @see \AppserverIo\Psr\Application\ManagerInterface::initialize()
      */
-    public function getGarbageCollector()
+    public function initialize(ApplicationInterface $application)
     {
-        return $this->garbageCollector;
-    }
 
-    /**
-     * Returns the servlet manager instance.
-     *
-     * @return \AppserverIo\Psr\Servlet\ServletContextInterface The servlet manager instance
-     */
-    public function getServletManager()
-    {
-        return $this->servletManager;
+        // load the servlet manager with the session settings configured in web.xml
+        /** @var \AppserverIo\Psr\Servlet\ServletContextInterface|\AppserverIo\Psr\Application\ManagerInterface $servletManager */
+        $servletManager = $application->search(ServletContextInterface::IDENTIFIER);
+
+        // load the settings, set the default session save path
+        $sessionSettings = $this->getSessionSettings();
+        $sessionSettings->setSessionSavePath($application->getSessionDir());
+
+        // if we've session parameters defined in our servlet context
+        if ($servletManager->hasSessionParameters()) {
+            // we want to merge the session settings from the servlet context
+            $sessionSettings->mergeServletContext($servletManager);
+        }
     }
 
     /**
@@ -218,8 +344,16 @@ class StandardSessionManager extends AbstractManager implements SessionManagerIn
      *
      * @return \AppserverIo\Psr\Servlet\ServletSessionInterface The requested session
      */
-    public function create($id, $name, $lifetime = null, $maximumAge = null, $domain = null, $path = null, $secure = null, $httpOnly = null)
-    {
+    public function create(
+        $id,
+        $name,
+        $lifetime = null,
+        $maximumAge = null,
+        $domain = null,
+        $path = null,
+        $secure = null,
+        $httpOnly = null
+    ) {
 
         // copy the default session configuration for lifetime from the settings
         if ($lifetime == null) {
@@ -252,10 +386,10 @@ class StandardSessionManager extends AbstractManager implements SessionManagerIn
         }
 
         // initialize and return the session instance
-        $session = $this->getSessionFactory()->nextFromPool();
+        $session = Session::emptyInstance();
         $session->init($id, $name, $lifetime, $maximumAge, $domain, $path, $secure, $httpOnly);
 
-        // attach the session with a random
+        // attach the session to the manager
         $this->attach($session);
 
         // return the session
@@ -273,12 +407,7 @@ class StandardSessionManager extends AbstractManager implements SessionManagerIn
      */
     public function attach(ServletSessionInterface $session)
     {
-
-        // load session ID
-        $id = $session->getId();
-
-        // register checksum + session
-        $this->getSessions()->set($id, $session);
+        $this->getSessions()->add($session->getId(), $session);
     }
 
     /**
@@ -290,20 +419,73 @@ class StandardSessionManager extends AbstractManager implements SessionManagerIn
      *
      * @param string $id The unique session ID to that has to be returned
      *
-     * @return \AppserverIo\Psr\Servlet\Http\HttpSessionInterface The requested session
+     * @return \AppserverIo\Psr\Servlet\Http\ServletSessionInterface|null The requested session
      */
     public function find($id)
     {
 
-        // check if the session has already been loaded, if not try to un-persist it
-        $this->getPersistenceManager()->unpersist($id);
+        // return immediately if the requested session ID is empty
+        if (empty($id)) {
+            return;
+        }
 
-        // load the session with the passed ID
-        if ($session = $this->getSessions()->get($id)) {
-            // if we find a session, we've to check if it can be resumed
+        // declare the session variable
+        $session = null;
+
+        // query whether or not the session with the passed ID exists
+        if ($this->getSessions()->exists($id)) {
+            $session = $this->getSessions()->get($id);
+
+        } else {
+            // iterate over the session handlers and try to un-persist the session
+            /** @var \AppserverIo\Appserver\ServletEngine\Session\SessionHandlerInterface $sessionHandler */
+            foreach ($this->getSessionHandlers() as $sessionHandler) {
+                try {
+                    if ($session = $sessionHandler->load($id)) {
+                        $this->attach($session);
+                        break;
+                    }
+
+                } catch (\Exception $e) {
+                    // log the exception if a system logger is available
+                    if ($logger = $this->getLogger(LoggerUtils::SYSTEM)) {
+                        $logger->error($e->__toString());
+                    }
+                }
+            }
+        }
+
+        // if we found a session, we've to check if it can be resumed
+        if ($session instanceof ServletSessionInterface) {
             if ($session->canBeResumed()) {
                 $session->resume();
                 return $session;
+            }
+        }
+    }
+
+    /**
+     * Flushes the session storage and persists all sessions.
+     *
+     * @return void
+     */
+    public function flush()
+    {
+
+        // persist all sessions
+        /** @var \AppserverIo\Psr\Servlet\ServletSessionInterface $session */
+        foreach ($this->getSessions() as $session) {
+            // iterate over the session handlers and persist the sessions
+            /** @var \AppserverIo\Appserver\ServletEngine\Session\SessionHandlerInterface $sessionHandler */
+            foreach ($this->getSessionHandlers() as $sessionHandler) {
+                try {
+                    $sessionHandler->save($session);
+                } catch (\Exception $e) {
+                    // log the exception if a system logger is available
+                    if ($logger = $this->getLogger(LoggerUtils::SYSTEM)) {
+                        $logger->error($e->__toString());
+                    }
+                }
             }
         }
     }
@@ -327,8 +509,31 @@ class StandardSessionManager extends AbstractManager implements SessionManagerIn
      */
     public function stop()
     {
-        $this->getPersistenceManager()->stop();
         $this->getGarbageCollector()->stop();
-        $this->getSessionFactory()->stop();
+    }
+
+    /**
+     * Return's the logger with the requested name. First we look in the
+     * application and then in the system itself.
+     *
+     * @param string $loggerName The name of the logger to return
+     *
+     * @return \Psr\Log\LoggerInterface The logger with the requested name
+     */
+    protected function getLogger($loggerName)
+    {
+
+        try {
+            // first let's see if we've an application logger registered
+            if ($logger = $this->getApplication()->getLogger($loggerName)) {
+                return $logger;
+            }
+
+            // then try to load the global logger instance if available
+            return $this->getApplication()->getNamingDirectory()->search(sprintf('php:global/log/%s', $loggerName));
+
+        } catch (NamingException $ne) {
+            // do nothing, we simply have no logger with the requested name
+        }
     }
 }
