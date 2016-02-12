@@ -28,6 +28,7 @@ use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
 use AppserverIo\Appserver\ServletEngine\Http\Response;
 use AppserverIo\Appserver\ServletEngine\Utils\RequestHandlerKeys;
+use AppserverIo\Appserver\ServletEngine\Security\AuthenticationManagerInterface;
 
 /**
  * This is a request handler that is necessary to process each request of an
@@ -133,9 +134,15 @@ class RequestHandler extends \Thread
             $servletRequest = $this->servletRequest;
             $servletResponse = $this->servletResponse;
 
+            // load the session manager
+            $sessionManager = $application->search(SessionManagerInterface::IDENTIFIER);
+            $authenticationManager = $application->search(AuthenticationManagerInterface::IDENTIFIER);
+
             // inject the sapplication and servlet response
-            $servletRequest->injectResponse($servletResponse);
             $servletRequest->injectContext($application);
+            $servletRequest->injectResponse($servletResponse);
+            $servletRequest->injectSessionManager($sessionManager);
+            $servletRequest->injectAuthenticationManager($authenticationManager);
 
             // prepare the request instance
             $servletRequest->prepare();

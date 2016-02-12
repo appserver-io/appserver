@@ -58,6 +58,7 @@ class StandardSessionMarshaller implements SessionMarshallerInterface
         $stdClass->path = $servletSession->getPath();
         $stdClass->secure = $servletSession->isSecure();
         $stdClass->httpOnly = $servletSession->isHttpOnly();
+        $stdClass->lastActivityTimestamp = $servletSession->getLastActivityTimestamp();
 
         // initialize the array for the session data
         $stdClass->data = array();
@@ -98,9 +99,10 @@ class StandardSessionMarshaller implements SessionMarshallerInterface
         $secure = $decodedSession->secure;
         $httpOnly = $decodedSession->httpOnly;
         $data = $decodedSession->data;
+        $lastActivityTimestamp = $decodedSession->lastActivityTimestamp;
 
         // initialize the instance
-        $servletSession->init($id, $name, $lifetime, $maximumAge, $domain, $path, $secure, $httpOnly);
+        $servletSession->init($id, $name, $lifetime, $maximumAge, $domain, $path, $secure, $httpOnly, $lastActivityTimestamp);
 
         // append the session data
         foreach ($data as $key => $value) {

@@ -1,3 +1,13 @@
+# Version 1.1.1-alpha4
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Refactor session handling to make it more generic and customizable
+
 # Version 1.1.1-alpha3
 
 ## Bugfixes

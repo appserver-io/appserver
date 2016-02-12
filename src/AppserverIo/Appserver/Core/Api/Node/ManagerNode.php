@@ -69,6 +69,13 @@ class ManagerNode extends AbstractNode implements ManagerNodeInterface
     use AuthenticatorsNodeTrait;
 
     /**
+     * A session handlers node trait.
+     *
+     * @var \AppserverIo\Appserver\Core\Api\Node\SessionHandlersNodeTrait
+     */
+    use SessionHandlersNodeTrait;
+
+    /**
      * The unique manager name.
      *
      * @var string
