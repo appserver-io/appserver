@@ -22,11 +22,14 @@ namespace AppserverIo\Appserver\ServletEngine;
 
 use AppserverIo\Logger\LoggerUtils;
 use AppserverIo\Appserver\Core\AbstractDaemonThread;
+use AppserverIo\Psr\Naming\NamingException;
 use AppserverIo\Psr\Servlet\ServletSessionInterface;
+use AppserverIo\Psr\Application\ApplicationInterface;
+use AppserverIo\Psr\Servlet\ServletContextInterface;
 
 /**
- * A thread which pre-initializes session instances and adds them to the
- * the session pool.
+ * A thread that loads the session managers session handlers
+ * and invokes their collectGarbage() method.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -34,48 +37,34 @@ use AppserverIo\Psr\Servlet\ServletSessionInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  *
- * @property \Psr\Log\loggerInterface[]                                    $loggers         The logger instances
- * @property \AppserverIo\Appserver\ServletEngine\SessionFactory           $sessionFactory  The session factory
- * @property \AppserverIo\Storage\StorageInterface                         $sessions        The sessions
+ * @property \Psr\Log\LoggerInterface                                      $systemLogger    The system logger instance
+ * @property \Psr\Log\LoggerInterface                                      $profileLogger   The profile logger instance
+ * @property \AppserverIo\Psr\Application\ApplicationInterface             $application     The application instance
  * @property \AppserverIo\Appserver\ServletEngine\SessionSettingsInterface $sessionSettings Settings for the session handling
  */
 class StandardGarbageCollector extends AbstractDaemonThread implements GarbageCollectorInterface
 {
 
     /**
-     * Injects the available logger instances.
+     * Injects the application instance.
      *
-     * @param array $loggers The logger instances
+     * @param \AppserverIo\Psr\Application\ApplicationInterface $application The application instance
      *
      * @return void
      */
-    public function injectLoggers(array $loggers)
+    public function injectApplication(ApplicationInterface $application)
     {
-        $this->loggers = $loggers;
+        $this->application = $application;
     }
 
     /**
-     * Injects the sessions.
+     * Return's the application instance.
      *
-     * @param \AppserverIo\Storage\StorageInterface $sessions The sessions
-     *
-     * @return void
+     * @return \AppserverIo\Psr\Application\ApplicationInterface The application instance
      */
-    public function injectSessions($sessions)
+    public function getApplication()
     {
-        $this->sessions = $sessions;
-    }
-
-    /**
-     * Injects the session factory.
-     *
-     * @param \AppserverIo\Appserver\ServletEngine\SessionFactory $sessionFactory The session factory
-     *
-     * @return void
-     */
-    public function injectSessionFactory($sessionFactory)
-    {
-        $this->sessionFactory = $sessionFactory;
+        return $this->application;
     }
 
     /**
@@ -88,26 +77,6 @@ class StandardGarbageCollector extends AbstractDaemonThread implements GarbageCo
     public function injectSessionSettings($sessionSettings)
     {
         $this->sessionSettings = $sessionSettings;
-    }
-
-    /**
-     * Returns all sessions actually attached to the session manager.
-     *
-     * @return \AppserverIo\Storage\StorageInterface The container with sessions
-     */
-    public function getSessions()
-    {
-        return $this->sessions;
-    }
-
-    /**
-     * Returns the session factory instance.
-     *
-     * @return \AppserverIo\Appserver\ServletEngine\SessionFactory The session factory instance
-     */
-    public function getSessionFactory()
-    {
-        return $this->sessionFactory;
     }
 
     /**
@@ -141,11 +110,27 @@ class StandardGarbageCollector extends AbstractDaemonThread implements GarbageCo
         // setup autoloader
         require SERVER_AUTOLOADER;
 
+        // register the application's class loaders
+        $application = $this->getApplication();
+        $application->registerClassLoaders();
+
+        // try to load the system logger
+        $this->systemLogger = $this->getLogger(LoggerUtils::SYSTEM);
+
         // try to load the profile logger
-        if (isset($this->loggers[LoggerUtils::PROFILE])) {
-            $this->profileLogger = $this->loggers[LoggerUtils::PROFILE];
+        if ($this->profileLogger = $this->getLogger(LoggerUtils::PROFILE)) {
             $this->profileLogger->appendThreadContext('servlet-engine-garbage-collector');
         }
+    }
+
+    /**
+     * Returns the default timeout.
+     *
+     * @return integer The default timeout in microseconds
+     */
+    public function getDefaultTimeout()
+    {
+        return parent::getDefaultTimeout() * 2;
     }
 
     /**
@@ -165,32 +150,9 @@ class StandardGarbageCollector extends AbstractDaemonThread implements GarbageCo
         $this->collectGarbage();
 
         // profile the size of the sessions
-        if ($this->profileLogger) {
-            $this->profileLogger->debug(
-                sprintf('Collect garbage for session pool with size: %d', sizeof($this->getSessions()))
-            );
+        if ($profileLogger = $this->getProfileLogger()) {
+            $profileLogger->info('Successfull collect garbage for the servlet engine\'s session manager');
         }
-    }
-
-    /**
-     * Returns the default path to persist sessions.
-     *
-     * @param string $toAppend A relative path to append to the session save path
-     *
-     * @return string The default path to persist session
-     */
-    public function getSessionSavePath($toAppend = null)
-    {
-        // load the default path
-        $sessionSavePath = $this->getSessionSettings()->getSessionSavePath();
-
-        // check if we've something to append
-        if ($toAppend != null) {
-            $sessionSavePath = $sessionSavePath . DIRECTORY_SEPARATOR . $toAppend;
-        }
-
-        // return the session save path
-        return $sessionSavePath;
     }
 
     /**
@@ -200,9 +162,6 @@ class StandardGarbageCollector extends AbstractDaemonThread implements GarbageCo
      */
     public function collectGarbage()
     {
-
-        // counter to store the number of removed sessions
-        $sessionRemovalCount = 0;
 
         // the probability that we want to collect the garbage (float <= 1.0)
         $garbageCollectionProbability = $this->getSessionSettings()->getGarbageCollectionProbability();
@@ -215,54 +174,81 @@ class StandardGarbageCollector extends AbstractDaemonThread implements GarbageCo
         if (rand(0, 100 * $factor) <= ($garbageCollectionProbability * $factor)) {
             // we want to know what inactivity timeout we've to check the sessions for
             $inactivityTimeout = $this->getSessionSettings()->getInactivityTimeout();
+            // debug log the inactivity timeout we collect the garbage for
+            if ($systemLogger = $this->getSystemLogger()) {
+                $systemLogger->debug(
+                    sprintf(
+                        'Now collect garbage for probability %f and inactivity timeout %d',
+                        $garbageCollectionProbability,
+                        $inactivityTimeout
+                    )
+                );
+            }
+
             // iterate over all session and collect the session garbage
             if ($inactivityTimeout !== 0) {
-                // iterate over all sessions and remove the expired ones
-                foreach ($this->getSessions() as $session) {
-                    // check if we've a session instance
-                    if ($session instanceof ServletSessionInterface) {
-                        // load the sessions last activity timestamp
-                        $lastActivitySecondsAgo = time() - $session->getLastActivityTimestamp();
+                // load the session manager instance
+                /** @var \AppserverIo\Appserver\ServletEngine\SessionManagerInterface $sessionManager */
+                $sessionManager = $this->getApplication()->search(SessionManagerInterface::IDENTIFIER);
 
-                        // if session has been expired, destroy and remove it
-                        if ($lastActivitySecondsAgo > $inactivityTimeout) {
-                            // load the session-ID
-                            $sessionId = $session->getId();
-
-                            // first remove the session from the session factory
-                            $this->getSessionFactory()->removeBySessionId($sessionId);
-
-                            // then remove the session from the session manager
-                            $this->getSessions()->remove($sessionId);
-
-                            // destroy the session if not already done
-                            if ($sessionId != null) {
-                                $session->destroy(
-                                    sprintf(
-                                        'Session %s was inactive for %s seconds, more than the configured timeout of %s seconds.',
-                                        $sessionId,
-                                        $lastActivitySecondsAgo,
-                                        $inactivityTimeout
-                                    )
-                                );
-                            }
-
-                            // prepare the session filename
-                            $sessionFilename = $this->getSessionSavePath($this->getSessionSettings()->getSessionFilePrefix() . $sessionId);
-
-                            // delete the file containing the session data if available
-                            if (file_exists($sessionFilename)) {
-                                unlink($sessionFilename);
-                            }
-
-                            // raise the counter of expired session
-                            $sessionRemovalCount++;
-                        }
+                // iterate over all session managers and remove the expired sessions
+                foreach ($sessionManager->getSessionHandlers() as $sessionHandlerName => $sessionHandler) {
+                    if ($systemLogger && ($sessionRemovalCount = $sessionHandler->collectGarbage() > 0)) {
+                        $systemLogger->debug(
+                            sprintf(
+                                'Successfully removed %d session(s) by session handler \'%s\'',
+                                $sessionRemovalCount,
+                                $sessionHandlerName
+                            )
+                        );
                     }
-                    // reduce CPU load
-                    usleep(1000);
                 }
             }
+        }
+    }
+
+    /**
+     * Return's the system logger instance.
+     *
+     * @return \Psr\Log\LoggerInterface|null The system logger insatnce
+     */
+    protected function getSystemLogger()
+    {
+        return $this->systemLogger;
+    }
+
+    /**
+     * Return's the profile logger instance.
+     *
+     * @return \Psr\Log\LoggerInterface|null The profile logger insatnce
+     */
+    protected function getProfileLogger()
+    {
+        return $this->profileLogger;
+    }
+
+    /**
+     * Return's the logger with the requested name. First we look in the
+     * application and then in the system itself.
+     *
+     * @param string $loggerName The name of the logger to return
+     *
+     * @return \Psr\Log\LoggerInterface|null The logger with the requested name
+     */
+    protected function getLogger($loggerName)
+    {
+
+        try {
+            // first let's see if we've an application logger registered
+            if ($logger = $this->getApplication()->getLogger($loggerName)) {
+                return $logger;
+            }
+
+            // then try to load the global logger instance if available
+            return $this->getApplication()->getNamingDirectory()->search(sprintf('php:global/log/%s', $loggerName));
+
+        } catch (NamingException $ne) {
+            // do nothing, we simply have no logger with the requested name
         }
     }
 }

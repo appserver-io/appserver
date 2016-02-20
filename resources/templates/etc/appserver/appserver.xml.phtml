@@ -49,6 +49,24 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
     </consoles>
 
     <!--
+     ! If you need more and detailed logging information, you can deactivate this. The logLevel attribute can be one
+     ! of https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-3-logger-interface.md#5-psrlogloglevel.
+     -->
+    <!-- loggers>
+        <logger channelName="system" name="System" type="\AppserverIo\Logger\Logger">
+            <handlers>
+                <handler type="\AppserverIo\Logger\Handlers\CustomFileHandler">
+                    <formatter type="\AppserverIo\Logger\Formatters\StandardFormatter"/>
+                    <params>
+                        <param name="logFile" type="string">var/log/appserver-errors.log</param>
+                        <param name="logLevel" type="string">debug</param>
+                   </params>
+               </handler>
+           </handlers>
+        </logger>
+   </loggers -->
+
+    <!--
      ! You might add optional configuration for implicitly configured components here.
      !
      ! http://appserver.io/get-started/documentation/configuration.html#optional-configuration

@@ -30,9 +30,11 @@ use AppserverIo\Psr\HttpMessage\RequestInterface;
 use AppserverIo\Psr\Security\PrincipalInterface;
 use AppserverIo\Psr\Security\Auth\Subject;
 use AppserverIo\Psr\Servlet\SessionUtils;
+use AppserverIo\Psr\Servlet\ServletException;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
-use AppserverIo\Psr\Servlet\ServletException;
+use AppserverIo\Appserver\ServletEngine\SessionManagerInterface;
+use AppserverIo\Appserver\ServletEngine\Security\AuthenticationManagerInterface;
 
 /**
  * A Http servlet request implementation.
@@ -208,9 +210,21 @@ class Request implements HttpServletRequestInterface, ContextInterface
     protected $authType;
 
     /**
-     * Initializes the request object with the default properties.
+     * The session manager instance.
      *
-     * @return void
+     * @var \AppserverIo\Appserver\ServletEngine\SessionManagerInterface
+     */
+    protected $sessionManager;
+
+    /**
+     * The session manager instance.
+     *
+     * @var \AppserverIo\Appserver\ServletEngine\Security\AuthenticationManagerInterface
+     */
+    protected $authenticationManager;
+
+    /**
+     * Initializes the request object with the default properties.
      */
     public function __construct()
     {
@@ -227,6 +241,8 @@ class Request implements HttpServletRequestInterface, ContextInterface
         $this->httpRequest = null;
         $this->userPrincipal = null;
         $this->requestHandler = null;
+        $this->sessionManager = null;
+        $this->authenticationManager = null;
 
         // initialize the strings
         $this->pathInfo = '';
@@ -410,6 +426,50 @@ class Request implements HttpServletRequestInterface, ContextInterface
     public function injectHttpRequest(RequestInterface $httpRequest)
     {
         $this->httpRequest = $httpRequest;
+    }
+
+    /**
+     * Injects the session manager instance.
+     *
+     * @param \AppserverIo\Appserver\ServletEngine\SessionManagerInterface $sessionManager The session manager instance
+     *
+     * @return void
+     */
+    public function injectSessionManager(SessionManagerInterface $sessionManager)
+    {
+        $this->sessionManager = $sessionManager;
+    }
+
+    /**
+     * Return's the session manager instance.
+     *
+     * @return \AppserverIo\Appserver\ServletEngine\SessionManagerInterface The session manager instance
+     */
+    public function getSessionManager()
+    {
+        return $this->sessionManager;
+    }
+
+    /**
+     * Injects the authentication manager instance.
+     *
+     * @param \AppserverIo\Appserver\ServletEngine\Security\AuthenticationManagerInterface $authenticationManager The authentication manager instance
+     *
+     * @return void
+     */
+    public function injectAuthenticationManager(AuthenticationManagerInterface $authenticationManager)
+    {
+        $this->authenticationManager = $authenticationManager;
+    }
+
+    /**
+     * Return's the authentication manager instance.
+     *
+     * @return \AppserverIo\Appserver\ServletEngine\Security\AuthenticationManagerInterface The authentication manager instance
+     */
+    public function getAuthenticationManager()
+    {
+        return $this->authenticationManager;
     }
 
     /**
@@ -851,18 +911,18 @@ class Request implements HttpServletRequestInterface, ContextInterface
     public function getSession($create = false)
     {
 
+        // load the proposed session-ID and name
+        $id = $this->getProposedSessionId();
+        $sessionName = $this->getRequestedSessionName();
+
         // if no session has already been load, initialize the session manager
         /** @var \AppserverIo\Appserver\ServletEngine\SessionManagerInterface $manager */
-        $manager = $this->getContext()->search('SessionManagerInterface');
+        $manager = $this->getSessionManager();
 
         // if no session manager was found, we don't support sessions
         if ($manager == null) {
             return;
         }
-
-        // load the proposed session-ID and name
-        $id = $this->getProposedSessionId();
-        $sessionName = $this->getRequestedSessionName();
 
         // find or create a new session (if flag has been set)
         $session = $manager->find($id);
@@ -1300,7 +1360,7 @@ class Request implements HttpServletRequestInterface, ContextInterface
 
         // load the authentication manager and try to authenticate this request
         /** @var \AppserverIo\Appserver\ServletEngine\Authentication\AuthenticationManagerInterface $authenticationManager */
-        if ($authenticationManager = $this->getContext()->search('AuthenticationManagerInterface')) {
+        if ($authenticationManager = $this->getAuthenticationManager()) {
             return $authenticationManager->handleRequest($this, $servletResponse);
         }
 
@@ -1328,15 +1388,15 @@ class Request implements HttpServletRequestInterface, ContextInterface
 
         // load the authentication manager and try to authenticate this request
         /** @var \AppserverIo\Appserver\ServletEngine\Authentication\AuthenticationManagerInterface $authenticationManager */
-        $authenticationManager = $this->getContext()->search('AuthenticationManagerInterface');
+        if ($authenticationManager = $this->getAuthenticationManager()) {
+            // try to load the authentication managers default authenticator
+            if (($authenticator = $authenticationManager->getAuthenticator()) == null) {
+                throw new ServletException('Can\'t find default authenticator');
+            }
 
-        // try to load the authentication managers default authenticator
-        if (($authenticator = $authenticationManager->getAuthenticator()) == null) {
-            throw new ServletException('Can\'t find default authenticator');
+            // authenticate the passed username/password combination
+            $authenticator->login($username, $password, $this);
         }
-
-        // authenticate the passed username/password combination
-        $authenticator->login($username, $password, $this);
     }
 
     /**
@@ -1351,14 +1411,14 @@ class Request implements HttpServletRequestInterface, ContextInterface
 
         // load the authentication manager and try to authenticate this request
         /** @var \AppserverIo\Appserver\ServletEngine\Authentication\AuthenticationManagerInterface $authenticationManager */
-        $authenticationManager = $this->getContext()->search('AuthenticationManagerInterface');
+        if ($authenticationManager = $this->getAuthenticationManager()) {
+            // try to load the authentication managers default authenticator
+            if (($authenticator = $authenticationManager->getAuthenticator()) == null) {
+                throw new ServletException('Can\'t find default authenticator');
+            }
 
-        // try to load the authentication managers default authenticator
-        if (($authenticator = $authenticationManager->getAuthenticator()) == null) {
-            throw new ServletException('Can\'t find default authenticator');
+            // logout the actual user
+            $authenticator->logout($this);
         }
-
-        // logout the actual user
-        $authenticator->logout($this);
     }
 }

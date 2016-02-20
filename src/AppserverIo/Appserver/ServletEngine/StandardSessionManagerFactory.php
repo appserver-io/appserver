@@ -20,10 +20,11 @@
 
 namespace AppserverIo\Appserver\ServletEngine;
 
-use AppserverIo\Appserver\Core\Interfaces\ManagerFactoryInterface;
-use AppserverIo\Storage\StackableStorage;
+use AppserverIo\Collections\HashMap;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\Core\Api\Node\ManagerNodeInterface;
+use AppserverIo\Appserver\Core\Interfaces\ManagerFactoryInterface;
+use AppserverIo\Appserver\ServletEngine\Session\FilesystemSessionHandler;
 
 /**
  * A factory for the standard session manager instances.
@@ -48,49 +49,36 @@ class StandardSessionManagerFactory implements ManagerFactoryInterface
     public static function visit(ApplicationInterface $application, ManagerNodeInterface $managerConfiguration)
     {
 
-        // load the registered loggers
-        $loggers = $application->getInitialContext()->getLoggers();
-
-        // initialize the session pool
-        $sessions = new StackableStorage();
-        $checksums = new StackableStorage();
-        $sessionPool = new StackableStorage();
+        // initialize the sessions and the session settings
+        $sessionHandlers = new HashMap();
         $sessionSettings = new DefaultSessionSettings();
         $sessionMarshaller = new StandardSessionMarshaller();
 
-        // we need a session factory instance
-        $sessionFactory = new SessionFactory($sessionPool);
-        $sessionFactory->injectLoggers($loggers);
-        $sessionFactory->start();
-
-        // we need a persistence manager and garbage collector
-        $persistenceManager = new FilesystemPersistenceManager();
-        $persistenceManager->injectLoggers($loggers);
-        $persistenceManager->injectSessions($sessions);
-        $persistenceManager->injectChecksums($checksums);
-        $persistenceManager->injectSessionSettings($sessionSettings);
-        $persistenceManager->injectSessionMarshaller($sessionMarshaller);
-        $persistenceManager->injectSessionFactory($sessionFactory);
-        $persistenceManager->injectUser($application->getUser());
-        $persistenceManager->injectGroup($application->getGroup());
-        $persistenceManager->injectUmask($application->getUmask());
-        $persistenceManager->start();
+        // add the configured session handlers
+        /** @var \AppserverIo\Appserver\Core\Api\Node\SessionHandlerNode $sessionHandlerNode */
+        foreach ($managerConfiguration->getSessionHandlers() as $sessionHandlerNode) {
+            if ($factory = $sessionHandlerNode->getFactory()) {
+                $sessionHandlers->add(
+                    $sessionHandlerNode->getName(),
+                    $factory::create($sessionHandlerNode, $sessionSettings, $sessionMarshaller)
+                );
+            }
+        }
 
         // we need a garbage collector
         $garbageCollector = new StandardGarbageCollector();
-        $garbageCollector->injectLoggers($loggers);
-        $garbageCollector->injectSessions($sessions);
-        $garbageCollector->injectSessionFactory($sessionFactory);
+        $garbageCollector->injectApplication($application);
         $garbageCollector->injectSessionSettings($sessionSettings);
         $garbageCollector->start();
 
         // and finally we need the session manager instance
         $sessionManager = new StandardSessionManager();
-        $sessionManager->injectSessions($sessions);
-        $sessionManager->injectSessionFactory($sessionFactory);
+        $sessionManager->injectApplication($application);
         $sessionManager->injectSessionSettings($sessionSettings);
+        $sessionManager->injectSessionHandlers($sessionHandlers);
         $sessionManager->injectGarbageCollector($garbageCollector);
-        $sessionManager->injectPersistenceManager($persistenceManager);
+        $sessionManager->injectSessionMarshaller($sessionMarshaller);
+        $sessionManager->injectManagerConfiguration($managerConfiguration);
 
         // attach the instance
         $application->addManager($sessionManager, $managerConfiguration);
