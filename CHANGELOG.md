@@ -1,3 +1,13 @@
+# Version 1.1.1-alpha5
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add functionality to use variables in configuration files
+
 # Version 1.1.1-alpha4
 
 ## Bugfixes
