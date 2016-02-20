@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\Core\Api;
 
+use AppserverIo\Properties\Properties;
 use AppserverIo\Lang\NotImplementedException;
 use AppserverIo\Configuration\Interfaces\NodeInterface;
 use AppserverIo\Appserver\Core\InitialContext;
@@ -28,6 +29,7 @@ use AppserverIo\Appserver\Core\Utilities\FileSystem;
 use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
 use AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface;
 use AppserverIo\Appserver\Core\Interfaces\SystemConfigurationInterface;
+use AppserverIo\Appserver\Core\Utilities\SystemPropertyKeys;
 
 /**
  * Abstract service implementation.
@@ -409,5 +411,45 @@ abstract class AbstractService implements ServiceInterface
 
         // prepare and return the server signature
         return sprintf('appserver/%s (%s) PHP/%s', $version, $os, PHP_VERSION);
+    }
+
+    /**
+     * Returns the system proprties. If a container node has been passed,
+     * the container properties will also be appended.
+     *
+     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerInterface|null $containerNode The container to return the system properties for
+     *
+     * @return \AppserverIo\Properties\Properties The system properties
+     */
+    public function getSystemProperties(ContainerNodeInterface $containerNode = null)
+    {
+
+        // initialize the properties
+        $properties = Properties::create();
+
+        // append the system properties
+        $properties->add(SystemPropertyKeys::BASE, $this->getBaseDirectory());
+        $properties->add(SystemPropertyKeys::VAR_LOG, $this->getLogDir());
+        $properties->add(SystemPropertyKeys::ETC, $this->getEtcDir());
+        $properties->add(SystemPropertyKeys::ETC_APPSERVER, $this->getConfDir());
+        $properties->add(SystemPropertyKeys::ETC_APPSERVER_CONFD, $this->getConfdDir());
+
+        // query whether or not a container node has been passed
+        if ($containerNode != null) {
+            // append the container specific properties
+            $properties->add(SystemPropertyKeys::TMP, $this->getTmpDir($containerNode));
+            $properties->add(SystemPropertyKeys::CONTAINER_NAME, $containerNode->getName());
+            $properties->add(SystemPropertyKeys::WEBAPPS, $this->getWebappsDir($containerNode));
+
+            // append the host specific system properties
+            if ($host = $containerNode->getHost()) {
+                $properties->add(SystemPropertyKeys::HOST_APP_BASE, $host->getAppBase());
+                $properties->add(SystemPropertyKeys::HOST_TMP_BASE, $host->getTmpBase());
+                $properties->add(SystemPropertyKeys::HOST_DEPLOY_BASE, $host->getDeployBase());
+            }
+        }
+
+        // return the properties
+        return $properties;
     }
 }

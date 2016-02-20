@@ -35,28 +35,37 @@ interface DatasourceNodeInterface extends NodeInterface
 {
 
     /**
-     * Returns the unique datasource name.
+     * Return's the unique datasource name.
      *
      * @return string|null The unique datasource name
      */
     public function getName();
 
     /**
-     * Returns the datasource's type.
+     * Return's the datasource's type.
      *
      * @return string|null The datasource type
      */
     public function getType();
 
     /**
-     * Returns the database connection information.
+     * Return's the database connection information.
      *
      * @return \AppserverIo\Appserver\Core\Api\Node\DatabaseNode The database connection information
      */
     public function getDatabase();
 
     /**
-     * Returns the name of the container which can use this datasource
+     * Set's the name of the container which can use this datasource.
+     *
+     * @param string|null $containerName The name of the container
+     *
+     * @return void
+     */
+    public function setContainerName($containerName);
+
+    /**
+     * Return's the name of the container which can use this datasource
      *
      * @return string
      */

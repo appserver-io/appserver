@@ -226,9 +226,11 @@ class ContainerNode extends AbstractNode implements ContainerNodeInterface
      */
     public function getServer($name)
     {
+
+        // try to match one of the server names with the passed name
         /** @var \AppserverIo\Appserver\Core\Api\Node\ServerNodeInterface $server */
         foreach ($this->getServers() as $server) {
-            if ($server->getName() === $name) {
+            if (fnmatch($name, $server->getName())) {
                 return $server;
             }
         }

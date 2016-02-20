@@ -21,6 +21,7 @@
 namespace AppserverIo\Appserver\Core;
 
 use AppserverIo\Configuration\ConfigurationException;
+use AppserverIo\Appserver\Core\Api\Node\DatasourcesNode;
 
 /**
  * Generic deployment implementation for web applications.
@@ -76,11 +77,16 @@ class GenericDeployment extends AbstractDeployment
                     // validate the file, but skip it if validation fails
                     $configurationService->validateFile($datasourceFile);
 
-                    // load the database configuration
-                    $datasourceNodes = $this->getDatasourceService()->initFromFile($datasourceFile);
+                    // load the system properties
+                    $systemProperties = $this->getDatasourceService()->getSystemProperties($container->getContainerNode());
+
+                    // load the datasources from the file and replace the properties
+                    $datasourcesNode = new DatasourcesNode();
+                    $datasourcesNode->initFromFile($datasourceFile);
+                    $datasourcesNode->replaceProperties($systemProperties);
 
                     // store the datasource in the system configuration
-                    foreach ($datasourceNodes as $datasourceNode) {
+                    foreach ($datasourcesNode->getDatasources() as $datasourceNode) {
                         // add the datasource to the system configuration
                         $this->getDatasourceService()->persist($datasourceNode);
 

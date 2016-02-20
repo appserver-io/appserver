@@ -49,7 +49,19 @@ class ExecuteNode extends AbstractArgsNode
     protected $directory;
 
     /**
-     * Return's the script to be executed
+     * Set's the script to be executed.
+     *
+     * @param string $script The script
+     *
+     * @return void
+     */
+    public function setScript($script)
+    {
+        $this->script = $script;
+    }
+
+    /**
+     * Return's the script to be executed.
      *
      * @return string The script
      */
@@ -59,7 +71,7 @@ class ExecuteNode extends AbstractArgsNode
     }
 
     /**
-     * Set's the directory to execute the script from
+     * Set's the directory to execute the script from.
      *
      * @param string $directory The directory
      *
@@ -71,7 +83,7 @@ class ExecuteNode extends AbstractArgsNode
     }
 
     /**
-     * Return's the directory to execute the script from
+     * Return's the directory to execute the script from.
      *
      * @return string The directory
      */
@@ -79,6 +91,7 @@ class ExecuteNode extends AbstractArgsNode
     {
         return $this->directory;
     }
+
     /**
      * Prepares the command to be excuted based on the script and
      * the arguments.

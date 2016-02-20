@@ -24,6 +24,7 @@ use AppserverIo\Configuration\ConfigurationException;
 use AppserverIo\Appserver\Core\Api\Node\ContextNode;
 use AppserverIo\Appserver\Core\Api\Node\ContainersNode;
 use AppserverIo\Appserver\Core\Api\Node\DeploymentNode;
+use AppserverIo\Appserver\Core\Utilities\SystemPropertyKeys;
 use AppserverIo\Appserver\Core\Interfaces\ContainerInterface;
 
 /**
@@ -123,9 +124,17 @@ class DeploymentService extends AbstractFileOperationService
                     // validate the application specific context
                     $configurationService->validateFile($contextFile, null);
 
-                    // create a new context node instance
+                    // load the system properties
+                    $properties = $this->getSystemProperties($container->getContainerNode());
+
+                    // append the application specific properties
+                    $properties->add(SystemPropertyKeys::WEBAPP, $webappPath);
+                    $properties->add(SystemPropertyKeys::WEBAPP_NAME, basename($webappPath));
+
+                    // create a new context node instance and replace the properties
                     $contextInstance = new ContextNode();
                     $contextInstance->initFromFile($contextFile);
+                    $contextInstance->replaceProperties($properties);
 
                     // merge it into the default configuration
                     $context->merge($contextInstance);
@@ -176,9 +185,9 @@ class DeploymentService extends AbstractFileOperationService
         $configurationService = $this->newService('AppserverIo\Appserver\Core\Api\ConfigurationService');
 
         /** @var AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNodeInstance */
-        foreach ($systemConfiguration->getContainers() as $containerNodeInstance) {
+        foreach ($systemConfiguration->getContainers() as $containerNode) {
             // load the containers application base directory
-            $containerAppBase = $this->getBaseDirectory($containerNodeInstance->getHost()->getAppBase());
+            $containerAppBase = $this->getBaseDirectory($containerNode->getHost()->getAppBase());
 
             // iterate over all applications and create the server configuration
             foreach (glob($containerAppBase . '/*', GLOB_ONLYDIR) as $webappPath) {
@@ -192,8 +201,17 @@ class DeploymentService extends AbstractFileOperationService
                         $containersNodeInstance = new ContainersNode();
                         $containersNodeInstance->initFromFile($containersConfigurationFile);
 
+                        // load the system properties
+                        $properties = $this->getSystemProperties($containerNode);
+
+                        // append the application specific properties and replace the properties
+                        $properties->add(SystemPropertyKeys::WEBAPP, $webappPath);
+                        $properties->add(SystemPropertyKeys::WEBAPP_NAME, basename($webappPath));
+
                         /** @var AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNodeInstance */
                         foreach ($containersNodeInstance->getContainers() as $containerNodeInstance) {
+                            // replace the properties for the found container node instance
+                            $containerNodeInstance->replaceProperties($properties);
                             // query whether we've to merge or append the server node instance
                             if ($container = $systemConfiguration->getContainer($containerNodeInstance->getName())) {
                                 $container->merge($containerNodeInstance);
@@ -209,7 +227,10 @@ class DeploymentService extends AbstractFileOperationService
 
                         // additionally log a message that server configuration will be missing
                         $systemLogger->critical(
-                            sprintf('Will skip app specific server configuration file %s, configuration might be faulty.', $containersConfigurationFile)
+                            sprintf(
+                                'Will skip app specific server configuration because of invalid file %s',
+                                $containersConfigurationFile
+                            )
                         );
                     }
                 }

@@ -105,37 +105,6 @@ class DatasourceService extends AbstractService
     }
 
     /**
-     * Creates an array with datasources found in the configuration
-     * file with the passed name.
-     *
-     * @param string $filename      The filename to initialize the datasources from
-     * @param string $containerName The name of the container the datasource can be used in
-     *
-     * @return array
-     */
-    public function initFromFile($filename, $containerName = '')
-    {
-
-        // initialize the configuration and load the data from the passed file
-        $configuration = new Configuration();
-        $configuration->initFromFile($filename);
-
-        // iterate over the found datasources, append them to the array and return the array
-        $datasourceNodes = array();
-        foreach ($configuration->getChilds('/datasources/datasource') as $datasourceConfiguration) {
-            // Add the information about the container name here
-            $datasourceConfiguration->appendData(array('containerName' => $containerName));
-
-            // Instantiate the datasource node using the configuration
-            $datasourceNode = $this->newInstance('\AppserverIo\Appserver\Core\Api\Node\DatasourceNode');
-            $datasourceNode->initFromConfiguration($datasourceConfiguration);
-            $datasourceNodes[$datasourceNode->getPrimaryKey()] = $datasourceNode;
-        }
-
-        return $datasourceNodes;
-    }
-
-    /**
      * Persists the passed datasource.
      *
      * @param \AppserverIo\Configuration\Interfaces\NodeInterface $datasourceNode The datasource to persist
