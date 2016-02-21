@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\Session\FilesystemSessionHandler
+ * AppserverIo\Appserver\ServletEngine\Session\ApcSessionHandler
  *
  * NOTICE OF LICENSE
  *
@@ -29,7 +29,7 @@ use AppserverIo\Appserver\ServletEngine\SessionCanNotBeSavedException;
 use AppserverIo\Appserver\ServletEngine\SessionCanNotBeDeletedException;
 
 /**
- * A session handler implementation that uses the filesystem
+ * A session handler implementation that uses the PECL APCu PHP extension
  * to persist sessions.
  *
  * @author    Tim Wagner <tw@appserver.io>
@@ -38,8 +38,15 @@ use AppserverIo\Appserver\ServletEngine\SessionCanNotBeDeletedException;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class FilesystemSessionHandler extends AbstractSessionHandler
+class ApcSessionHandler extends AbstractSessionHandler
 {
+
+    /**
+     * The APCu cache type to use.
+     *
+     * @var string
+     */
+    const APCU_CACHE_TYPE_USER = 'user';
 
     /**
      * Loads the session with the passed ID from the persistence layer and
@@ -53,13 +60,7 @@ class FilesystemSessionHandler extends AbstractSessionHandler
     {
 
         try {
-            // prepare the pathname to the file containing the session data
-            $filename = $this->getSessionSettings()->getSessionFilePrefix() . $id;
-            $pathname = $this->getSessionSavePath($filename);
-
-            // unpersist and return the session from the file system
-            return $this->unpersist($pathname);
-
+            return $this->unpersist($id);
         } catch (SessionDataNotReadableException $sdnre) {
             $this->delete($id);
         }
@@ -75,13 +76,7 @@ class FilesystemSessionHandler extends AbstractSessionHandler
      */
     public function delete($id)
     {
-
-        // prepare the pathname to the file containing the session data
-        $filename = $this->getSessionSettings()->getSessionFilePrefix() . $id;
-        $pathname = $this->getSessionSavePath($filename);
-
-        // remove the session from the file system
-        if ($this->removeSessionFile($pathname) === false) {
+        if (apc_delete($id) === false) {
             throw new SessionCanNotBeDeletedException(
                 sprintf('Session with ID %s can not be deleted', $id)
             );
@@ -104,11 +99,8 @@ class FilesystemSessionHandler extends AbstractSessionHandler
             return;
         }
 
-        // prepare the session filename
-        $sessionFilename = $this->getSessionSavePath($this->getSessionSettings()->getSessionFilePrefix() . $session->getId());
-
         // update the checksum and the file that stores the session data
-        if (file_put_contents($sessionFilename, $this->marshall($session)) === false) {
+        if (apc_store($session->getId(), $this->marshall($session)) === false) {
             throw new SessionCanNotBeSavedException(
                 sprintf('Session with ID %s can\'t be saved')
             );
@@ -129,21 +121,19 @@ class FilesystemSessionHandler extends AbstractSessionHandler
         // we want to know what inactivity timeout we've to check the sessions for
         $inactivityTimeout = $this->getSessionSettings()->getInactivityTimeout();
 
-        // prepare the expression to select the session files
-        $globExpression = sprintf('%s*', $this->getSessionSavePath($this->getSessionSettings()->getSessionFilePrefix()));
-
-        // iterate over the found session files
-        foreach (glob($globExpression) as $pathname) {
+        // iterate over the found session items
+        foreach (new \ApcIterator(ApcSessionHandler::APCU_CACHE_TYPE_USER) as $item) {
+            // explode the APC item
+            extract($item);
             // unpersist the session
-            $session = $this->unpersist($pathname);
-
+            $session = $this->unpersist($key);
             // load the sessions last activity timestamp
             $lastActivitySecondsAgo = time() - $session->getLastActivityTimestamp();
 
             // query whether or not the session has been expired
             if ($lastActivitySecondsAgo > $inactivityTimeout) {
-                // if yes, delete the session + raise the session removal count
-                $this->delete($session->getId());
+                // if yes, delete the file + raise the session removal count
+                $this->delete($key);
                 $sessionRemovalCount++;
             }
         }
@@ -153,75 +143,27 @@ class FilesystemSessionHandler extends AbstractSessionHandler
     }
 
     /**
-     * Tries to load the session data from the passed filename.
+     * Tries to load the session data with the passed ID.
      *
-     * @param string $pathname The path of the file to load the session data from
+     * @param string $id The ID of the session to load
      *
      * @return \AppserverIo\Psr\Servlet\Http\HttpSessionInterface The unmarshalled session
      * @throws \AppserverIo\Appserver\ServletEngine\SessionDataNotReadableException Is thrown if the file containing the session data is not readable
      */
-    protected function unpersist($pathname)
+    protected function unpersist($id)
     {
 
         // the requested session file is not a valid file
-        if ($this->sessionFileExists($pathname) === false) {
+        if (apc_exists($id) === false) {
             return;
         }
 
         // decode the session from the filesystem
-        if (($marshalled = file_get_contents($pathname)) === false) {
-            throw new SessionDataNotReadableException(sprintf('Can\'t load session data from file %s', $pathname));
+        if (($marshalled = apc_fetch($id)) === false) {
+            throw new SessionDataNotReadableException(sprintf('Can\'t load session with ID %s', $id));
         }
 
         // create a new session instance from the marshaled object representation
         return $this->unmarshall($marshalled);
-    }
-
-    /**
-     * Checks if a file with the passed name containing session data exists.
-     *
-     * @param string $pathname The path of the file to check
-     *
-     * @return boolean TRUE if the file exists, else FALSE
-     */
-    protected function sessionFileExists($pathname)
-    {
-        return file_exists($pathname);
-    }
-
-    /**
-     * Removes the session file with the passed name containing session data.
-     *
-     * @param string $pathname The path of the file to remove
-     *
-     * @return boolean TRUE if the file has successfully been removed, else FALSE
-     */
-    protected function removeSessionFile($pathname)
-    {
-        if (file_exists($pathname)) {
-            return unlink($pathname);
-        }
-        return false;
-    }
-
-    /**
-     * Returns the default path to persist sessions.
-     *
-     * @param string $toAppend A relative path to append to the session save path
-     *
-     * @return string The default path to persist session
-     */
-    protected function getSessionSavePath($toAppend = null)
-    {
-        // load the default path
-        $sessionSavePath = $this->getSessionSettings()->getSessionSavePath();
-
-        // check if we've something to append
-        if ($toAppend != null) {
-            $sessionSavePath = $sessionSavePath . DIRECTORY_SEPARATOR . $toAppend;
-        }
-
-        // return the session save path
-        return $sessionSavePath;
     }
 }

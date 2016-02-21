@@ -193,14 +193,21 @@ class StandardGarbageCollector extends AbstractDaemonThread implements GarbageCo
 
                 // iterate over all session managers and remove the expired sessions
                 foreach ($sessionManager->getSessionHandlers() as $sessionHandlerName => $sessionHandler) {
-                    if ($systemLogger && ($sessionRemovalCount = $sessionHandler->collectGarbage() > 0)) {
-                        $systemLogger->debug(
-                            sprintf(
-                                'Successfully removed %d session(s) by session handler \'%s\'',
-                                $sessionRemovalCount,
-                                $sessionHandlerName
-                            )
-                        );
+                    try {
+                        if ($systemLogger && ($sessionRemovalCount = $sessionHandler->collectGarbage()) > 0) {
+                            $systemLogger->debug(
+                                sprintf(
+                                    'Successfully removed %d session(s) by session handler \'%s\'',
+                                    $sessionRemovalCount,
+                                    $sessionHandlerName
+                                )
+                            );
+                        }
+
+                    } catch (\Exception $e) {
+                        if ($systemLogger) {
+                            $systemLogger->error($e->__toString());
+                        }
                     }
                 }
             }
