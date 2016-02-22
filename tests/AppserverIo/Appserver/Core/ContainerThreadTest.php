@@ -21,6 +21,7 @@ namespace AppserverIo\Appserver\Core;
 
 use AppserverIo\Configuration\Configuration;
 use AppserverIo\Appserver\Core\Mock\MockAbstractContainerThread;
+use AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface;
 
 /**
  * Test for the container thread class.
@@ -51,7 +52,8 @@ class ContainerThreadTest extends AbstractTest
         $this->containerThread = new MockAbstractContainerThread(
             $this->getMockInitialContext(),
             $this->getNamingDirectory(),
-            $this->getContainerNode()
+            $this->getContainerNode(),
+            ApplicationServerInterface::NETWORK
         );
     }
 

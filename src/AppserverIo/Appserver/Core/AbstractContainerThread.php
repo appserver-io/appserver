@@ -30,6 +30,9 @@ use AppserverIo\Appserver\Core\Interfaces\ContainerInterface;
 use AppserverIo\Appserver\Core\Utilities\ContainerStateKeys;
 use AppserverIo\Appserver\Core\Api\Node\ParamNode;
 use AppserverIo\Server\Dictionaries\ServerStateKeys;
+use AppserverIo\Psr\Naming\NamingDirectoryInterface;
+use AppserverIo\Appserver\Application\Interfaces\ContextInterface;
+use AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface;
 
 /**
  * Abstract container implementation.
@@ -47,6 +50,7 @@ use AppserverIo\Server\Dictionaries\ServerStateKeys;
  * @property \AppserverIo\Appserver\Core\Api\Node\ContainerNode       $containerNode   The container node information
  * @property \AppserverIo\Storage\GenericStackable                    $applications    The initialized applications
  * @property \AppserverIo\Appserver\Core\Utilities\ContainerStateKeys $containerState  The actual container state
+ * @property string                                                   $runlevel        The runlevel the container has been started in
  */
 abstract class AbstractContainerThread extends AbstractContextThread implements ContainerInterface
 {
@@ -62,15 +66,21 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
      * Initializes the container with the initial context, the unique container ID
      * and the deployed applications.
      *
-     * @param \AppserverIo\Appserver\Core\InitialContext         $initialContext  The initial context
-     * @param \AppserverIo\Psr\Naming\NamingDirectoryInterface   $namingDirectory The naming directory
-     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerNode $containerNode   The container node
+     * @param \AppserverIo\Appserver\Core\InitialContext                  $initialContext  The initial context
+     * @param \AppserverIo\Psr\Naming\NamingDirectoryInterface            $namingDirectory The naming directory
+     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode   The container node
+     * @param string                                                      $runlevel        The runlevel the container has been started in
      */
-    public function __construct($initialContext, $namingDirectory, $containerNode)
-    {
+    public function __construct(
+        ContextInterface $initialContext,
+        NamingDirectoryInterface $namingDirectory,
+        ContainerNodeInterface $containerNode,
+        $runlevel
+    ) {
         $this->initialContext = $initialContext;
         $this->namingDirectory = $namingDirectory;
         $this->containerNode = $containerNode;
+        $this->runlevel = $runlevel;
         $this->containerState = ContainerStateKeys::get(ContainerStateKeys::WAITING_FOR_INITIALIZATION);
     }
 
@@ -83,6 +93,16 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
     public function getName()
     {
         return $this->getContainerNode()->getName();
+    }
+
+    /**
+     * Returns the runlevel the container has been started in.
+     *
+     * @return string The runlevel
+     */
+    public function getRunlevel()
+    {
+        return $this->runlevel;
     }
 
     /**
@@ -110,7 +130,10 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
 
         // initialize the naming directory with the environment data
         $this->namingDirectory->createSubdirectory(sprintf('php:env/%s', $this->getName()));
+        $this->namingDirectory->createSubdirectory(sprintf('php:global/%s', $this->getName()));
+        $this->namingDirectory->createSubdirectory(sprintf('php:global/log/%s', $this->getName()));
         $this->namingDirectory->bind(sprintf('php:env/%s/appBase', $this->getName()), $this->getAppBase());
+        $this->namingDirectory->bind(sprintf('php:global/%s/runlevel', $this->getName()), $this->getRunlevel());
 
         // initialize the container state
         $this->containerState = ContainerStateKeys::get(ContainerStateKeys::INITIALIZATION_SUCCESSFUL);

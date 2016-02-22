@@ -22,7 +22,6 @@
 
 namespace AppserverIo\Appserver\MessageQueue;
 
-use AppserverIo\Appserver\Core\AbstractManager;
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Psr\Pms\QueueContextInterface;
 use AppserverIo\Psr\Pms\ResourceLocatorInterface;
@@ -30,7 +29,11 @@ use AppserverIo\Psr\Pms\QueueInterface;
 use AppserverIo\Psr\Pms\MessageInterface;
 use AppserverIo\Psr\Naming\NamingException;
 use AppserverIo\Psr\Application\ApplicationInterface;
+use AppserverIo\Appserver\Core\AbstractManager;
+use AppserverIo\Appserver\Core\Utilities\SystemPropertyKeys;
 use AppserverIo\Appserver\Core\Api\InvalidConfigurationException;
+use AppserverIo\Appserver\Core\Api\Node\MessageQueuesNode;
+use AppserverIo\Appserver\Core\Api\Node\MessageQueueNodeInterface;
 
 /**
  * The queue manager handles the queues and message beans registered for the application.
@@ -144,72 +147,77 @@ class QueueManager extends AbstractManager implements QueueContextInterface
             return;
         }
 
+        // initialize the array for the creating the subdirectories
+        $this->directories = new GenericStackable();
+        $this->directories[] = $application->getNamingDirectory();
+
         // check META-INF + subdirectories for XML files with MQ definitions
         /** @var \AppserverIo\Appserver\Core\Api\DeploymentService $service */
         $service = $application->newService('AppserverIo\Appserver\Core\Api\DeploymentService');
         $xmlFiles = $service->globDir($metaInfDir . DIRECTORY_SEPARATOR . 'message-queues.xml');
 
-        // initialize the array for the creating the subdirectories
-        $this->directories = new GenericStackable();
-        $this->directories[] = $application->getNamingDirectory();
+        // load the configuration service instance
+        /** @var \AppserverIo\Appserver\Core\Api\ConfigurationService $configurationService */
+        $configurationService = $application->newService('AppserverIo\Appserver\Core\Api\ConfigurationService');
+
+        // load the container node to initialize the system properties
+        /** @var \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode */
+        $containerNode = $application->getContainer()->getContainerNode();
 
         // gather all the deployed web applications
         foreach ($xmlFiles as $file) {
             try {
-                // try to initialize a SimpleXMLElement
-                $sxe = new \SimpleXMLElement($file, null, true);
-                $sxe->registerXPathNamespace('a', 'http://www.appserver.io/appserver');
+                // validate the file here, but skip if the validation fails
+                $configurationService->validateFile($file, null, true);
 
-                // lookup the MessageQueue's defined in the passed XML node
-                if (($nodes = $sxe->xpath('/a:message-queues/a:message-queue')) === false) {
-                    continue;
+                // load the system properties
+                $properties = $service->getSystemProperties($containerNode);
+
+                // append the application specific properties
+                $properties->add(SystemPropertyKeys::WEBAPP, $webappPath = $application->getWebappPath());
+                $properties->add(SystemPropertyKeys::WEBAPP_NAME, basename($webappPath));
+
+                // create a new message queue node instance and replace the properties
+                $messageQueuesNode = new MessageQueuesNode();
+                $messageQueuesNode->initFromFile($file);
+                $messageQueuesNode->replaceProperties($properties);
+
+                // register the entity managers found in the configuration
+                foreach ($messageQueuesNode->getMessageQueues() as $messageQueueNode) {
+                    $this->registeMessageQueue($messageQueueNode);
                 }
 
-                // validate the file here, if it is not valid we can skip further steps
-                try {
-                    /** @var \AppserverIo\Appserver\Core\Api\ConfigurationService $configurationService */
-                    $configurationService = $application->newService('AppserverIo\Appserver\Core\Api\ConfigurationService');
-                    $configurationService->validateFile($file, null, true);
-
-                } catch (InvalidConfigurationException $e) {
-                    /** @var \Psr\Log\LoggerInterface $systemLogger */
-                    $systemLogger = $this->getApplication()->getInitialContext()->getSystemLogger();
+            } catch (InvalidConfigurationException $e) {
+                // try to load the system logger instance
+                /** @var \Psr\Log\LoggerInterface $systemLogger */
+                if ($systemLogger = $this->getApplication()->getInitialContext()->getSystemLogger()) {
                     $systemLogger->error($e->getMessage());
-                    $systemLogger->critical(sprintf('Message queue configuration file %s is invalid, needed queues might be missing.', $file));
-                    return;
+                    $systemLogger->critical(sprintf('Persistence configuration file %s is invalid, needed queues might be missing.', $file));
                 }
 
-                // iterate over all found queues and initialize them
-                foreach ($nodes as $node) {
-                    $this->registeMessageQueue($node);
-                }
-
-            // if class can not be reflected continue with next class
             } catch (\Exception $e) {
-                // log an error message
-                $application->getInitialContext()->getSystemLogger()->error($e->__toString());
-                // proceed with the next queue
-                continue;
+                // try to load the system logger instance
+                /** @var \Psr\Log\LoggerInterface $systemLogger */
+                if ($systemLogger = $this->getApplication()->getInitialContext()->getSystemLogger()) {
+                    $systemLogger->error($e->__toString());
+                }
             }
         }
     }
 
     /**
-     * Deploys the message queue described by the passed XML node.
+     * Deploys the message queue described by the passed node.
      *
-     * @param \SimpleXMLElement $node The XML node that describes the message queue
+     * @param \AppserverIo\Appserver\Core\Api\Nodes\MessageQueueNodeInterface $messageQueueNode The node that describes the message queue
      *
      * @return void
      */
-    protected function registeMessageQueue(\SimpleXMLElement $node)
+    protected function registeMessageQueue(MessageQueueNodeInterface $messageQueueNode)
     {
 
-        // load the nodes attributes
-        $attributes = $node->attributes();
-
         // load destination queue and receiver type
-        $destination = (string) $node->destination;
-        $type = (string) $attributes['type'];
+        $type = $messageQueueNode->getType();
+        $destination = $messageQueueNode->getDestination()->__toString();
 
         // initialize the message queue
         $messageQueue = new MessageQueue();
@@ -228,14 +236,14 @@ class QueueManager extends AbstractManager implements QueueContextInterface
         $path = explode('/', $destination);
         for ($i = 0; $i < sizeof($path) - 1; $i++) {
             try {
-                $this->directories[$i]->search(sprintf('php:global/%s/%s', $this->getApplication()->getName(), $path[$i]));
+                $this->directories[$i]->search(sprintf('php:global/%s/%s', $this->getApplication()->getUniqueName(), $path[$i]));
             } catch (NamingException $ne) {
-                $this->directories[$i + 1] = $this->directories[$i]->createSubdirectory(sprintf('php:global/%s/%s', $this->getApplication()->getName(), $path[$i]));
+                $this->directories[$i + 1] = $this->directories[$i]->createSubdirectory(sprintf('php:global/%s/%s', $this->getApplication()->getUniqueName(), $path[$i]));
             }
         }
 
         // bind the callback for creating a new MQ sender instance to the naming directory => necessary for DI provider
-        $this->getApplication()->getNamingDirectory()->bindCallback(sprintf('php:global/%s/%s', $this->getApplication()->getName(), $destination), array(&$this, 'createSenderForQueue'), array($destination));
+        $this->getApplication()->getNamingDirectory()->bindCallback(sprintf('php:global/%s/%s', $this->getApplication()->getUniqueName(), $destination), array(&$this, 'createSenderForQueue'), array($destination));
     }
 
     /**

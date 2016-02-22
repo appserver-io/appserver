@@ -293,7 +293,7 @@ class Provider extends GenericStackable implements ProviderInterface
 
         // load the object manager instance
         /** @var \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\ObjectManagerInterface $objectManager */
-        $objectManager = $this->getNamingDirectory()->search(sprintf('php:global/%s/ObjectManagerInterface', $this->getApplication()->getName()));
+        $objectManager = $this->getNamingDirectory()->search(sprintf('php:global/%s/ObjectManagerInterface', $this->getApplication()->getUniqueName()));
 
         // load the object descriptor for the instance from the the object manager
         if ($objectManager->hasObjectDescriptor($className = get_class($instance))) {
@@ -308,7 +308,10 @@ class Provider extends GenericStackable implements ProviderInterface
                 // check if we've a reflection target defined
                 if ($injectionTarget = $reference->getInjectionTarget()) {
                     // load the instance to inject by lookup the initial context
-                    $toInject = $this->getNamingDirectory()->search(sprintf('php:global/%s/%s', $this->getApplication()->getName(), $reference->getName()), array($sessionId));
+                    $toInject = $this->getNamingDirectory()->search(
+                        sprintf('php:global/%s/%s', $this->getApplication()->getUniqueName(), $reference->getName()),
+                        array($sessionId)
+                    );
 
                     // query for method injection
                     if (method_exists($instance, $targetName = $injectionTarget->getTargetMethod())) {

@@ -41,19 +41,23 @@ class GenericContainerFactory implements ContainerFactoryInterface
      *
      * @param \AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface $applicationServer The application instance to register the class loader with
      * @param \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface       $configuration     The class loader configuration
+     * @param integer                                                           $runlevel          The runlevel the container has been started in
      *
      * @return void
      */
-    public static function factory(ApplicationServerInterface $applicationServer, ContainerNodeInterface $configuration)
-    {
+    public static function factory(
+        ApplicationServerInterface $applicationServer,
+        ContainerNodeInterface $configuration,
+        $runlevel = ApplicationServerInterface::NETWORK
+    ) {
 
         // create a new reflection class instance
         $reflectionClass = new \ReflectionClass($configuration->getType());
 
         // initialize the container configuration with the base directory and pass it to the thread
-        $params = array($applicationServer->getInitialContext(), $applicationServer->getNamingDirectory(), $configuration);
+        $params = array($applicationServer->getInitialContext(), $applicationServer->getNamingDirectory(), $configuration, $applicationServer->runlevelToString($runlevel));
 
-        // create and append the thread instance to the internal array
+        // create, initialize and return the container instance
         return $reflectionClass->newInstanceArgs($params);
     }
 }

@@ -514,14 +514,14 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
 
                             // shutdown the application server
                             for ($i = $actualRunlevel; $i >= ApplicationServerInterface::SHUTDOWN; $i--) {
-                                $this->emitter->emit(sprintf('leave.runlevel.%s', $this->runlevelToString($i)), $this->getNamingDirectory());
+                                $this->emitter->emit(sprintf('leave.runlevel.%s', $this->runlevelToString($i)), $i);
                                 // stop the services of the PREVIOUS runlevel
                                 $this->doStopServices($i + 1);
                             }
 
                             // switch back to the runlevel we backed up before
                             for ($z = ApplicationServerInterface::SHUTDOWN; $z <= $backupRunlevel; $z++) {
-                                $this->emitter->emit(sprintf('enter.runlevel.%s', $this->runlevelToString($z)), $this->getNamingDirectory());
+                                $this->emitter->emit(sprintf('enter.runlevel.%s', $this->runlevelToString($z)), $z);
                             }
 
                             // set the runlevel to the one before we restart
@@ -537,7 +537,7 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
                         } elseif ($actualRunlevel < $this->runlevel) {
                             // switch to the requested runlevel
                             for ($i = $actualRunlevel + 1; $i <= $this->runlevel; $i++) {
-                                $this->emitter->emit(sprintf('enter.runlevel.%s', $this->runlevelToString($i)), $this->getNamingDirectory());
+                                $this->emitter->emit(sprintf('enter.runlevel.%s', $this->runlevelToString($i)), $i);
                             }
 
                             // set the new runlevel
@@ -546,7 +546,7 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
                         } elseif ($actualRunlevel > $this->runlevel) {
                             // switch down to the requested runlevel
                             for ($i = $actualRunlevel; $i >= $this->runlevel; $i--) {
-                                $this->emitter->emit(sprintf('leave.runlevel.%s', $this->runlevelToString($i)), $this->getNamingDirectory());
+                                $this->emitter->emit(sprintf('leave.runlevel.%s', $this->runlevelToString($i)), $i);
                                 // stop the services of the PREVIOUS runlevel
                                 $this->doStopServices($i + 1);
                             }

@@ -23,6 +23,7 @@ namespace AppserverIo\Appserver\Provisioning;
 use AppserverIo\Configuration\ConfigurationException;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\Core\Api\Node\ProvisionNode;
+use AppserverIo\Appserver\Core\Utilities\SystemPropertyKeys;
 
 /**
  * Standard provisioning functionality.
@@ -69,22 +70,31 @@ class StandardProvisioner extends AbstractProvisioner
             /** @var AppserverIo\Appserver\Core\Api\ProvisioningService $service */
             $service = $this->getService();
 
-            /** @var AppserverIo\Appserver\Core\Api\ConfigurationService $configurationService */
             // load the configuration service instance
+            /** @var AppserverIo\Appserver\Core\Api\ConfigurationService $configurationService */
             $configurationService = $this->getInitialContext()->newService('AppserverIo\Appserver\Core\Api\ConfigurationService');
+
+            // load the container node to initialize the system properties
+            /** @var \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode */
+            $containerNode = $application->getContainer()->getContainerNode();
 
             // iterate through all provisioning files (provision.xml), validate them and attach them to the configuration
             foreach ($service->globDir($applicationDirectories, GLOB_BRACE) as $provisionFile) {
                 try {
-                    // validate the file, but skip it if validation fails
+                    // validate the file, but skip it if the validation fails
                     $configurationService->validateFile($provisionFile, null);
 
-                    // load the path of web application
-                    $webappPath = new \SplFileInfo(dirname(dirname($provisionFile)));
+                    // load the system properties
+                    $properties = $service->getSystemProperties($containerNode);
 
-                    // load the provisioning configuration
+                    // append the application specific properties
+                    $properties->add(SystemPropertyKeys::WEBAPP, $webappPath);
+                    $properties->add(SystemPropertyKeys::WEBAPP_NAME, basename($webappPath));
+
+                    // create a new provision node instance and replace the properties
                     $provisionNode = new ProvisionNode();
                     $provisionNode->initFromFile($provisionFile);
+                    $provisionNode->replaceProperties($properties);
 
                     // query whether we've a datasource configured or not
                     if ($datasource = $provisionNode->getDatasource()) {
@@ -106,7 +116,7 @@ class StandardProvisioner extends AbstractProvisioner
                     $provisionNode->reprovision($provisionFile);
 
                     // execute the provisioning workflow
-                    $this->executeProvision($application, $provisionNode, $webappPath);
+                    $this->executeProvision($application, $provisionNode, new \SplFileInfo($webappPath));
 
                 } catch (ConfigurationException $ce) {
                     // load the logger and log the XML validation errors
