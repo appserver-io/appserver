@@ -287,6 +287,7 @@ class ServerNode extends AbstractNode implements ServerNodeInterface
      */
     public function merge(ServerNodeInterface $serverNode)
     {
+
         // append the certificate nodes found in the passed server node
         /** @var \AppserverIo\Appserver\Core\Api\Node\CertificateNode $certificate */
         foreach ($serverNode->getCertificates() as $certificate) {
@@ -303,6 +304,12 @@ class ServerNode extends AbstractNode implements ServerNodeInterface
         /** @var \AppserverIo\Appserver\Core\Api\Node\LocationNode $location */
         foreach ($serverNode->getLocations() as $location) {
             $this->locations[] = $location;
+        }
+
+        // append the environment variable nodes found in the passed server node
+        /** @var \AppserverIo\Appserver\Core\Api\Node\EnvironmentVariableNode $environmentVariable */
+        foreach ($serverNode->getEnvironmentVariables() as $environmentVariable) {
+            $this->environmentVariables[] = $environmentVariable;
         }
     }
 }

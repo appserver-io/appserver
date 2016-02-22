@@ -81,9 +81,20 @@ class DeploymentService extends AbstractFileOperationService
     public function loadContextInstancesByContainer(ContainerInterface $container)
     {
 
-        try {
-            // initialize the array for the context instances
-            $contextInstances = array();
+        // initialize the array for the context instances
+        $contextInstances = array();
+
+        // iterate over all applications and create the context configuration
+        foreach (glob($container->getAppBase() . '/*', GLOB_ONLYDIR) as $webappPath) {
+            // prepare the context path
+            $contextPath = basename($webappPath);
+
+            // load the system properties
+            $properties = $this->getSystemProperties($container->getContainerNode());
+
+            // append the application specific properties
+            $properties->add(SystemPropertyKeys::WEBAPP, $webappPath);
+            $properties->add(SystemPropertyKeys::WEBAPP_NAME, basename($webappPath));
 
             // validate the base context file
             /** @var AppserverIo\Appserver\Core\Api\ConfigurationService $configurationService */
@@ -91,30 +102,13 @@ class DeploymentService extends AbstractFileOperationService
             $configurationService->validateFile($baseContextPath = $this->getConfdDir('context.xml'), null);
 
             //load it as default if validation succeeds
-            $baseContext = new ContextNode();
-            $baseContext->initFromFile($baseContextPath);
-
-        } catch (ConfigurationException $ce) {
-            // load the logger and log the XML validation errors
-            $systemLogger = $this->getInitialContext()->getSystemLogger();
-            $systemLogger->error($ce->__toString());
-
-            // additionally log a message that DS will be missing
-            $systemLogger->critical(
-                sprintf('Problems validating base context file %s, this might affect app configurations badly.', $baseContextPath)
-            );
-        }
-
-        // iterate over all applications and create the context configuration
-        foreach (glob($container->getAppBase() . '/*', GLOB_ONLYDIR) as $webappPath) {
-            // prepare the context path
-            $contextPath = basename($webappPath);
-
-            // start with a fresh clone of the base context configuration
-            $context = clone $baseContext;
+            $context = new ContextNode();
+            $context->initFromFile($baseContextPath);
+            $context->replaceProperties($properties);
 
             // try to load a context configuration (from appserver.xml) for the context path
             if ($contextToMerge = $container->getContainerNode()->getHost()->getContext($contextPath)) {
+                $contextToMerge->replaceProperties($properties);
                 $context->merge($contextToMerge);
             }
 
@@ -123,13 +117,6 @@ class DeploymentService extends AbstractFileOperationService
                 try {
                     // validate the application specific context
                     $configurationService->validateFile($contextFile, null);
-
-                    // load the system properties
-                    $properties = $this->getSystemProperties($container->getContainerNode());
-
-                    // append the application specific properties
-                    $properties->add(SystemPropertyKeys::WEBAPP, $webappPath);
-                    $properties->add(SystemPropertyKeys::WEBAPP_NAME, basename($webappPath));
 
                     // create a new context node instance and replace the properties
                     $contextInstance = new ContextNode();

@@ -29,7 +29,7 @@
 		"appserver-io/webserver" : "~4.0",
 		"appserver-io/properties" : "~1.0",
 		"appserver-io/concurrency" : "0.3.*",
-		"appserver-io/description" : "~4.0",
+		"appserver-io/description" : "~5.0",
 		"appserver-io/configuration" : "~2.0",
 		"appserver-io/doppelgaenger" : "~1.0",
 		"appserver-io/routlt-project" : "~1.0"
