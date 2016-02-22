@@ -105,23 +105,10 @@ class PersistenceManager extends AbstractManager implements PersistenceContextIn
         // gather all the deployed web applications
         foreach ($xmlFiles as $file) {
             try {
-                // try to initialize a SimpleXMLElement
-                $sxe = new \SimpleXMLElement($file, null, true);
-                $sxe->registerXPathNamespace('a', 'http://www.appserver.io/appserver');
-
                 // validate the file here, if it is not valid we can skip further steps
-                try {
-                    /** @var \AppserverIo\Appserver\Core\Api\ConfigurationService $configurationService */
-                    $configurationService = $application->newService('AppserverIo\Appserver\Core\Api\ConfigurationService');
-                    $configurationService->validateFile($file, null, true);
-
-                } catch (InvalidConfigurationException $e) {
-                    /** @var \Psr\Log\LoggerInterface $systemLogger */
-                    $systemLogger = $this->getApplication()->getInitialContext()->getSystemLogger();
-                    $systemLogger->error($e->getMessage());
-                    $systemLogger->critical(sprintf('Message queue configuration file %s is invalid, needed queues might be missing.', $file));
-                    return;
-                }
+                /** @var \AppserverIo\Appserver\Core\Api\ConfigurationService $configurationService */
+                $configurationService = $application->newService('AppserverIo\Appserver\Core\Api\ConfigurationService');
+                $configurationService->validateFile($file, null, true);
 
                 // initialize the entity managers found in the deployment descriptor
                 $persistenceNode = new PersistenceNode();
@@ -130,12 +117,20 @@ class PersistenceManager extends AbstractManager implements PersistenceContextIn
                     $this->registerEntityManager($application, $persistenceUnitNode);
                 }
 
-            // if class can not be reflected continue with next class
+            } catch (InvalidConfigurationException $e) {
+                // try to load the system logger instance
+                /** @var \Psr\Log\LoggerInterface $systemLogger */
+                if ($systemLogger = $this->getApplication()->getInitialContext()->getSystemLogger()) {
+                    $systemLogger->error($e->getMessage());
+                    $systemLogger->critical(sprintf('Persistence configuration file %s is invalid, needed queues might be missing.', $file));
+                }
+
             } catch (\Exception $e) {
-                // log an error message
-                $application->getInitialContext()->getSystemLogger()->error($e->__toString());
-                // proceed with the next queue
-                continue;
+                // try to load the system logger instance
+                /** @var \Psr\Log\LoggerInterface $systemLogger */
+                if ($systemLogger = $this->getApplication()->getInitialContext()->getSystemLogger()) {
+                    $systemLogger->error($e->__toString());
+                }
             }
         }
     }
