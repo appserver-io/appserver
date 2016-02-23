@@ -23,11 +23,11 @@ namespace AppserverIo\Appserver\ServletEngine;
 use AppserverIo\Logger\LoggerUtils;
 use AppserverIo\Psr\HttpMessage\ResponseInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
-use AppserverIo\Psr\Servlet\ServletContextInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
+use AppserverIo\Appserver\ServletEngine\Utils\Error;
 use AppserverIo\Appserver\ServletEngine\Http\Response;
-use AppserverIo\Appserver\ServletEngine\Utils\RequestHandlerKeys;
+use AppserverIo\Appserver\ServletEngine\Utils\ErrorUtil;
 use AppserverIo\Appserver\ServletEngine\Security\AuthenticationManagerInterface;
 
 /**
@@ -40,6 +40,7 @@ use AppserverIo\Appserver\ServletEngine\Security\AuthenticationManagerInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  *
+ * @property array                                                      $errors          The array with the request handler's error stack
  * @property \AppserverIo\Psr\Application\ApplicationInterface          $application     The application instance
  * @property \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface  $servletRequest  The actual request instance
  * @property \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse The actual response instance
@@ -123,7 +124,11 @@ class RequestHandler extends \Thread
             require SERVER_AUTOLOADER;
 
             // register shutdown handler
-            register_shutdown_function(array(&$this, "shutdown"));
+            set_error_handler(array(&$this, 'errorHandler'));
+            register_shutdown_function(array(&$this, 'shutdown'));
+
+            // initialize the array for the errors
+            $this->errors = array();
 
             // synchronize the application instance and register the class loaders
             $application = $this->application;
@@ -134,7 +139,7 @@ class RequestHandler extends \Thread
             $servletRequest = $this->servletRequest;
             $servletResponse = $this->servletResponse;
 
-            // load the session manager
+            // load the session and the authentication manager
             $sessionManager = $application->search(SessionManagerInterface::IDENTIFIER);
             $authenticationManager = $application->search(AuthenticationManagerInterface::IDENTIFIER);
 
@@ -166,11 +171,7 @@ class RequestHandler extends \Thread
             }
 
         } catch (\Exception $e) {
-            // log the exception message
-            $application->getInitialContext()->getSystemLogger()->error($e->getMessage());
-            // set the status code and add the servlet exception to the servlet request attributes
-            $servletResponse->setStatusCode($e->getCode());
-            $servletRequest->setAttribute(RequestHandlerKeys::ERROR_MESSAGE, $e->getMessage());
+            $this->addError(ErrorUtil::singleton()->fromException($e));
         }
 
         // re-attach request and response instances
@@ -210,6 +211,33 @@ class RequestHandler extends \Thread
     }
 
     /**
+     * PHP error handler implemenation that replaces the defaulf PHP error handling.
+     *
+     * As this method will NOT handle Fatal Errors with code E_ERROR or E_USER, so
+     * these have to be processed by the shutdown handler itself.
+     *
+     * @param integer $errno   The intern PHP error number
+     * @param string  $errstr  The error message itself
+     * @param string  $errfile The file where the error occurs
+     * @param integer $errline The line where the error occurs
+     *
+     * @return boolean Always return TRUE, because we want to disable default PHP error handling
+     * @link http://docs.php.net/manual/en/function.set-error-handler.php
+     */
+    public function errorHandler($errno, $errstr, $errfile, $errline)
+    {
+
+        // query whether or not we've to handle the passed error
+        if ($errno < error_reporting()) {
+            return true;
+        }
+
+        // add the passed error information to the array with the errors
+        $this->addError(new Error($errno, $errstr, $errfile, $errline));
+        return true;
+    }
+
+    /**
      * Does shutdown logic for request handler if something went wrong and
      * produces a fatal error for example.
      *
@@ -222,71 +250,46 @@ class RequestHandler extends \Thread
         $servletRequest = $this->servletRequest;
         $servletResponse = $this->servletResponse;
 
-        // check if there was a fatal error caused shutdown
+        // check if we had a fatal error that caused the shutdown
         if ($lastError = error_get_last()) {
-            // initialize type + message
-            $type = 0;
-            $line = 0;
-            $message = '';
-            $file = '';
-            // extract the last error values
-            extract($lastError);
-            // query whether we've a fatal/user error
-            if ($type === E_ERROR || $type === E_USER_ERROR) {
-                // set the apropriate status code
-                $servletResponse->setStatusCode(500);
-                // add the fatal error to the servlet request attributes
-                $servletRequest->setAttribute(
-                    RequestHandlerKeys::ERROR_MESSAGE,
-                    sprintf("PHP Fatal error: %s in %s on line %d", $message, $file, $line)
-                );
-            }
+            $this->addError(ErrorUtil::singleton()->fromArray($lastError));
         }
 
-        // query whether or not we've a client or an server error
-        if ($servletResponse->getStatusCode() > 399) {
-            try {
-                // create a local copy of the application
-                $application = $this->application;
+        // handle the errors if necessary
+        ErrorUtil::singleton()->handleErrors($this, $servletRequest, $servletResponse);
 
-                // inject the application and servlet response
-                $servletRequest->injectResponse($servletResponse);
-                $servletRequest->injectContext($application);
-
-                // load the servlet context instance
-                $servletManager = $application->search(ServletContextInterface::IDENTIFIER);
-
-                // initialize the request URI for the error page to be rendered
-                $requestUri = '';
-
-                // iterate over the configured error pages to find a matching one
-                foreach ($servletManager->getErrorPages() as $errorCodePattern => $errorPage) {
-                    // query whether or not we found an error page configured for the actual status code
-                    if (fnmatch($errorCodePattern, $servletResponse->getStatusCode())) {
-                        $requestUri = $errorPage;
-                        break;
-                    }
-                }
-
-                // initialize the request URI
-                $servletRequest->setRequestUri($requestUri);
-                // prepare the request with the new data
-                $servletRequest->prepare();
-                // load the servlet path and session-ID
-                $servletPath = $servletRequest->getServletPath();
-                $sessionId = $servletRequest->getProposedSessionId();
-                // load and process the servlet
-                $servlet = $servletManager->lookup($servletPath, $sessionId);
-                $servlet->service($servletRequest, $servletResponse);
-
-            } catch (\Exception $e) {
-                $application->getInitialContext()->getSystemLogger()->error($e->__toString());
-            }
-        }
-
-        // copy request/respons back to the thread context
+        // copy request/response back to the thread context
         $this->servletRequest = $servletRequest;
         $this->servletResponse = $servletResponse;
+    }
+
+    /**
+     * Append the passed error to the request handler's stack.
+     *
+     * @param \AppserverIo\Appserver\ServletEngine\Utils\Error $error The error to append
+     *
+     * @return void
+     */
+    public function addError(Error $error)
+    {
+        // create a local copy of the error stack
+        $errors = $this->errors;
+
+        // append the error to the stack
+        $errors[] = $error;
+
+        // copy the error stack back to the thread context
+        $this->errors = $errors;
+    }
+
+    /**
+     * Return's the array with the request handler's error stack.
+     *
+     * @return array The stack with the request handler's errors
+     */
+    public function getErrors()
+    {
+        return $this->errors;
     }
 
     /**

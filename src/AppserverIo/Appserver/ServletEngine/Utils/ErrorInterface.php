@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\Utils\RequestHandlerKeys
+ * AppserverIo\Appserver\ServletEngine\Utils\ErrorInterface
  *
  * NOTICE OF LICENSE
  *
@@ -21,7 +21,7 @@
 namespace AppserverIo\Appserver\ServletEngine\Utils;
 
 /**
- * Utility class that contains the request handler keys.
+ * Interface for wrapper implementations of errors triggered by PHP's default error handling.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -29,36 +29,41 @@ namespace AppserverIo\Appserver\ServletEngine\Utils;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class RequestHandlerKeys
+interface ErrorInterface
 {
 
     /**
-     * The key for the an error message.
+     * Return's the error type.
      *
-     * @var string
+     * @return integer The error type
      */
-    const ERROR_MESSAGE = 'appserver-io.appserver.servlet-engine.utils.request-handler-keys.error-message';
+    public function getType();
 
     /**
-     * The key for the an array of error messages.
+     * Return's the error message.
      *
-     * @var string
+     * @return integer The error message
      */
-    const ERROR_MESSAGES = 'appserver-io.appserver.servlet-engine.utils.request-handler-keys.error-messages';
+    public function getMessage();
 
     /**
-     * This is a utility class, so protect it against direct instantiation.
+     * Return's the name of the file where the error has been triggered.
+     *
+     * @return integer The filename
      */
-    private function __construct()
-    {
-    }
+    public function getFile();
 
     /**
-     * This is a utility class, so protect it against cloning.
+     * Return's the line in the file where the error has been triggered.
      *
-     * @return void
+     * @return integer The line number
      */
-    private function __clone()
-    {
-    }
+    public function getLine();
+
+    /**
+     * Return's the HTTP status code that has to be send back with the response.
+     *
+     * @return integer The HTTP status code
+     */
+    public function getStatusCode();
 }
