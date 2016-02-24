@@ -55,7 +55,7 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
      * @var array
      */
     protected $headers;
-    
+
     /**
      * The handlers array.
      *
@@ -181,6 +181,16 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     public function getGroup()
     {
         return $this->node->getParam('group');
+    }
+
+    /**
+     * Returns the server socket flags.
+     *
+     * @return string
+     */
+    public function getFlags()
+    {
+        return $this->node->getParam('flags');
     }
 
     /**
