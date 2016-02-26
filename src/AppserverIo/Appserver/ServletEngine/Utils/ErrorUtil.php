@@ -146,7 +146,7 @@ class ErrorUtil
                 $logLevel = LogLevel::NOTICE;
                 break;
 
-            default :
+            default:
                 break;
         }
 
@@ -202,7 +202,7 @@ class ErrorUtil
                 $wrapped = 'Deprecated';
                 break;
 
-            default :
+            default:
                 break;
         }
 

@@ -21,6 +21,7 @@
 namespace AppserverIo\Appserver\Core;
 
 use AppserverIo\Appserver\Core\AbstractTest;
+use AppserverIo\Appserver\Core\Api\Node\ModuleNode;
 
 /**
  * Test for the server node configuration implementation.
@@ -582,12 +583,12 @@ class ServerNodeConfigurationTest extends AbstractTest
     {
 
         // initialize the array with expected result
-        $modules = json_decode(file_get_contents(__DIR__ . '/Api/Node/_files/prepareModules.json'));
+        $modules = array(new ModuleNode());
 
         // create a mock configuration instance
-        $mockNode = $this->getMock('AppserverIo\Appserver\Core\Api\Node\ServerNode', array('getModulesAsArray'));
+        $mockNode = $this->getMock('AppserverIo\Appserver\Core\Api\Node\ServerNode', array('getModules'));
         $mockNode->expects($this->once())
-            ->method('getModulesAsArray')
+            ->method('getModules')
             ->will($this->returnValue($modules));
 
         // initialize the server node
