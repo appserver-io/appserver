@@ -21,6 +21,7 @@
 namespace AppserverIo\Appserver\Core\Api\Node;
 
 use AppserverIo\Description\Api\Node\AbstractNode;
+use AppserverIo\Server\Interfaces\ModuleConfigurationInterface;
 
 /**
  * DTO to transfer module information.
@@ -31,7 +32,7 @@ use AppserverIo\Description\Api\Node\AbstractNode;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class ModuleNode extends AbstractNode
+class ModuleNode extends AbstractNode implements ModuleConfigurationInterface
 {
 
     /**

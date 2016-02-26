@@ -7,6 +7,7 @@
 ## Features
 
 * Add functionality to use variables in configuration files
+* Add internal DNS server that automatically resolves registered virtual hosts
 
 # Version 1.1.1-alpha4
 

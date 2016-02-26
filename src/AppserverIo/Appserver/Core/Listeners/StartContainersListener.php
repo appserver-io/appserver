@@ -59,7 +59,13 @@ class StartContainersListener extends AbstractSystemListener
             // initialize the service to load the container configurations
             /** @var \AppserverIo\Appserver\Core\Api\DeploymentService $deploymentService */
             $deploymentService = $applicationServer->newService('AppserverIo\Appserver\Core\Api\DeploymentService');
-            $applicationServer->setSystemConfiguration($deploymentService->loadContainerInstances());
+            $applicationServer->setSystemConfiguration($systemConfiguration = $deploymentService->loadContainerInstances());
+
+            // we also have to re-attach the system configuration to the initial context, because it's not a \Stackable
+            /** @var \AppserverIo\Appserver\Application\Interfaces\ContextInterface */
+            $initialContext = $applicationServer->getInitialContext();
+            $initialContext->setSystemConfiguration($systemConfiguration);
+            $applicationServer->setInitialContext($initialContext);
 
             // load the naming directory
             /** @var \AppserverIo\Appserver\Naming\NamingDirectory $namingDirectory */
