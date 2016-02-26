@@ -54,16 +54,18 @@ use AppserverIo\Appserver\Core\Api\Node\LoggerNodeInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  *
- * @property \AppserverIo\Appserver\Application\ApplicationStateKeys        $applicationState The application state
- * @property \AppserverIo\Storage\StorageInterface                          $data             Application's data storage
- * @property \AppserverIo\Storage\GenericStackable                          $classLoaders     Stackable holding all class loaders this application has registered
- * @property \AppserverIo\Storage\GenericStackable                          $provisioners     Stackable holding all provisioners this application has registered
- * @property \AppserverIo\Storage\GenericStackable                          $loggers          Stackable holding all loggers this application has registered
- * @property \AppserverIo\Appserver\Application\Interfaces\ContextInterface $initialContext   The initial context instance
- * @property \AppserverIo\Storage\GenericStackable                          $managers         Stackable of managers for this application
- * @property string                                                         $name             Name of the application
- * @property string                                                         $serial           The application's UUID
- * @property \AppserverIo\Psr\Naming\NamingDirectoryInterface               $namingDirectory  The naming directory instance
+ * @property \AppserverIo\Appserver\Application\ApplicationStateKeys        $applicationState  The application state
+ * @property \AppserverIo\Storage\StorageInterface                          $data              Application's data storage
+ * @property \AppserverIo\Storage\GenericStackable                          $classLoaders      Stackable holding all class loaders this application has registered
+ * @property \AppserverIo\Storage\GenericStackable                          $provisioners      Stackable holding all provisioners this application has registered
+ * @property \AppserverIo\Storage\GenericStackable                          $loggers           Stackable holding all loggers this application has registered
+ * @property \AppserverIo\Appserver\Application\Interfaces\ContextInterface $initialContext    The initial context instance
+ * @property \AppserverIo\Storage\GenericStackable                          $managers          Stackable of managers for this application
+ * @property string                                                         $name              Name of the application
+ * @property string                                                         $serial            The application's UUID
+ * @property string                                                         $containerName     Name of the container the application is bound to
+ * @property string                                                         $containerRunlevel Runlevel of the container the application is bound to
+ * @property \AppserverIo\Psr\Naming\NamingDirectoryInterface               $namingDirectory   The naming directory instance
  */
 class Application extends \Thread implements ApplicationInterface, DirectoryAwareInterface, FilesystemAwareInterface, Context
 {
@@ -190,6 +192,50 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
     }
 
     /**
+     * Injects the name of the container the application is bound to.
+     *
+     * @param string $containerName The container's name
+     *
+     * @return void
+     */
+    public function injectContainerName($containerName)
+    {
+        $this->containerName = $containerName;
+    }
+
+    /**
+     * Returns the name of the container the application is bound to.
+     *
+     * @return string The container's name
+     */
+    public function getContainerName()
+    {
+        return $this->containerName;
+    }
+
+    /**
+     * Injects the runlevel of the container the application is bound to.
+     *
+     * @param string $containerRunlevel The container's runlevel
+     *
+     * @return void
+     */
+    public function injectContainerRunlevel($containerRunlevel)
+    {
+        $this->containerRunlevel = $containerRunlevel;
+    }
+
+    /**
+     * Returns the runlevel of the container the application is bound to.
+     *
+     * @return string The container's runlevel
+     */
+    public function getContainerRunlevel()
+    {
+        return $this->containerRunlevel;
+    }
+
+    /**
      * Returns the applications naming directory.
      *
      * @return \AppserverIo\Psr\Naming\NamingDirectoryInterface The applications naming directory interface
@@ -222,7 +268,7 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
      */
     public function getAppBase()
     {
-        return $this->getNamingDirectory()->search(sprintf('php:env/%s/appBase', $this->getName()));
+        return $this->getNamingDirectory()->search(sprintf('php:env/%s/appBase', $this->getUniqueName()));
     }
 
     /**
@@ -232,7 +278,7 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
      */
     public function getWebappPath()
     {
-        return $this->getNamingDirectory()->search(sprintf('php:env/%s/webappPath', $this->getName()));
+        return $this->getNamingDirectory()->search(sprintf('php:env/%s/webappPath', $this->getUniqueName()));
     }
 
     /**
@@ -242,7 +288,7 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
      */
     public function getTmpDir()
     {
-        return $this->getNamingDirectory()->search(sprintf('php:env/%s/tmpDirectory', $this->getName()));
+        return $this->getNamingDirectory()->search(sprintf('php:env/%s/tmpDirectory', $this->getUniqueName()));
     }
 
     /**
@@ -252,7 +298,7 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
      */
     public function getSessionDir()
     {
-        return $this->getNamingDirectory()->search(sprintf('php:env/%s/sessionDirectory', $this->getName()));
+        return $this->getNamingDirectory()->search(sprintf('php:env/%s/sessionDirectory', $this->getUniqueName()));
     }
 
     /**
@@ -262,7 +308,7 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
      */
     public function getCacheDir()
     {
-        return $this->getNamingDirectory()->search(sprintf('php:env/%s/cacheDirectory', $this->getName()));
+        return $this->getNamingDirectory()->search(sprintf('php:env/%s/cacheDirectory', $this->getUniqueName()));
     }
 
     /**
@@ -296,6 +342,16 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
     }
 
     /**
+     * Return's the container instance the application is bound to.
+     *
+     * @return \AppserverIo\Appserver\Core\Interfaces\ContainerInterface The container instance
+     */
+    public function getContainer()
+    {
+        return $this->getNamingDirectory()->search(sprintf('php:services/%s/%s', $this->getContainerRunlevel(), $this->getContainerName()));
+    }
+
+    /**
      * Return's the application's UUID.
      *
      * @return string The application's UUID
@@ -303,6 +359,17 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
     public function getSerial()
     {
         return $this->serial;
+    }
+
+    /**
+     * Return's the unique application name that is the container + application name
+     * separated with a slash, e. g. combined-appserver/example.
+     *
+     * @return string
+     */
+    public function getUniqueName()
+    {
+        return sprintf('%s/%s', $this->getContainerName(), $this->getName());
     }
 
     /**
@@ -436,7 +503,7 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
     {
 
         // bind the class loader callback to the naming directory => the application itself
-        $this->getNamingDirectory()->bind(sprintf('php:global/%s/%s', $this->getName(), $configuration->getName()), array(&$this, 'getClassLoader'), array($configuration->getName()));
+        $this->getNamingDirectory()->bind(sprintf('php:global/%s/%s', $this->getUniqueName(), $configuration->getName()), array(&$this, 'getClassLoader'), array($configuration->getName()));
 
         // add the class loader instance to the application
         $this->classLoaders[$configuration->getName()] = $classLoader;
@@ -454,7 +521,7 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
     {
 
         // bind the manager callback to the naming directory => the application itself
-        $this->getNamingDirectory()->bind(sprintf('php:global/%s/%s', $this->getName(), $configuration->getName()), array(&$this, 'getManager'), array($configuration->getName()));
+        $this->getNamingDirectory()->bind(sprintf('php:global/%s/%s', $this->getUniqueName(), $configuration->getName()), array(&$this, 'getManager'), array($configuration->getName()));
 
         // add the manager instance to the application
         $this->managers[$configuration->getName()] = $manager;
@@ -472,7 +539,7 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
     {
 
         // bind the provisioner callback to the naming directory => the application itself
-        $this->getNamingDirectory()->bind(sprintf('php:global/%s/%s', $this->getName(), $configuration->getName()), array(&$this, 'getProvisioner'), array($configuration->getName()));
+        $this->getNamingDirectory()->bind(sprintf('php:global/%s/%s', $this->getUniqueName(), $configuration->getName()), array(&$this, 'getProvisioner'), array($configuration->getName()));
 
         // add the provisioner instance to the application
         $this->provisioners[$configuration->getName()] = $provisioner;
@@ -490,7 +557,7 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
     {
 
         // bind the logger callback to the naming directory => the application itself
-        $this->getNamingDirectory()->bind(sprintf('php:global/log/%s/%s', $this->getName(), $configuration->getName()), array(&$this, 'getLogger'), array($configuration->getName()));
+        $this->getNamingDirectory()->bind(sprintf('php:global/log/%s/%s', $this->getUniqueName(), $configuration->getName()), array(&$this, 'getLogger'), array($configuration->getName()));
 
         // add the logger instance to the application
         $this->loggers[$configuration->getName()] = $logger;
@@ -508,36 +575,36 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
     public function prepare(ContainerInterface $container, ContextNode $context)
     {
 
-        // load application name + naming directory
-        $applicationName = $context->getName();
+        // load the unique application name + the naming directory
+        $uniqueName = $this->getUniqueName();
         $namingDirectory = $this->getNamingDirectory();
 
         // create subdirectories for the application and the logger
-        $namingDirectory->createSubdirectory(sprintf('php:global/%s', $applicationName));
-        $namingDirectory->createSubdirectory(sprintf('php:global/log/%s', $applicationName));
+        $namingDirectory->createSubdirectory(sprintf('php:global/%s', $uniqueName));
+        $namingDirectory->createSubdirectory(sprintf('php:global/log/%s', $uniqueName));
 
         // create the applications 'env' + 'env/persistence' directory the beans + persistence units will be bound to
-        $namingDirectory->createSubdirectory(sprintf('php:env/%s', $applicationName));
-        $namingDirectory->createSubdirectory(sprintf('php:global/%s/env', $this->getName()));
-        $namingDirectory->createSubdirectory(sprintf('php:global/%s/env/persistence', $this->getName()));
+        $namingDirectory->createSubdirectory(sprintf('php:env/%s', $uniqueName));
+        $namingDirectory->createSubdirectory(sprintf('php:global/%s/env', $uniqueName));
+        $namingDirectory->createSubdirectory(sprintf('php:global/%s/env/persistence', $uniqueName));
 
         // bind the directory containing the applications
-        $namingDirectory->bind(sprintf('php:env/%s/appBase', $this->getName()), $container->getAppBase());
+        $namingDirectory->bind(sprintf('php:env/%s/appBase', $uniqueName), $container->getAppBase());
 
         // prepare the application specific directories
-        $webappPath = sprintf('%s/%s', $this->getAppBase(), $applicationName);
-        $tmpDirectory = sprintf('%s/%s', $container->getTmpDir(), $applicationName);
+        $webappPath = sprintf('%s/%s', $this->getAppBase(), $this->getName());
+        $tmpDirectory = sprintf('%s/%s', $container->getTmpDir(), $this->getName());
         $cacheDirectory = sprintf('%s/%s', $tmpDirectory, ltrim($context->getParam(DirectoryKeys::CACHE), '/'));
         $sessionDirectory = sprintf('%s/%s', $tmpDirectory, ltrim($context->getParam(DirectoryKeys::SESSION), '/'));
 
         // prepare the application specific environment variables
-        $namingDirectory->bind(sprintf('php:env/%s/webappPath', $applicationName), $webappPath);
-        $namingDirectory->bind(sprintf('php:env/%s/tmpDirectory', $applicationName), $tmpDirectory);
-        $namingDirectory->bind(sprintf('php:env/%s/cacheDirectory', $applicationName), $cacheDirectory);
-        $namingDirectory->bind(sprintf('php:env/%s/sessionDirectory', $applicationName), $sessionDirectory);
+        $namingDirectory->bind(sprintf('php:env/%s/webappPath', $uniqueName), $webappPath);
+        $namingDirectory->bind(sprintf('php:env/%s/tmpDirectory', $uniqueName), $tmpDirectory);
+        $namingDirectory->bind(sprintf('php:env/%s/cacheDirectory', $uniqueName), $cacheDirectory);
+        $namingDirectory->bind(sprintf('php:env/%s/sessionDirectory', $uniqueName), $sessionDirectory);
 
         // bind the interface as reference to the application
-        $namingDirectory->bind(sprintf('php:global/%s/env/ApplicationInterface', $this->getName()), $this);
+        $namingDirectory->bind(sprintf('php:global/%s/env/ApplicationInterface', $uniqueName), $this);
     }
 
     /**
@@ -548,21 +615,22 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
     public function unload()
     {
 
-        // load the naming directory
+        // load the unique application name + the naming directory
+        $uniqueName = $this->getUniqueName();
         $namingDirectory = $this->getNamingDirectory();
 
         // unbind the environment references of the application
-        $namingDirectory->unbind(sprintf('php:env/%s/webappPath', $this->getName()));
-        $namingDirectory->unbind(sprintf('php:env/%s/tmpDirectory', $this->getName()));
-        $namingDirectory->unbind(sprintf('php:env/%s/cacheDirectory', $this->getName()));
-        $namingDirectory->unbind(sprintf('php:env/%s/sessionDirectory', $this->getName()));
-        $namingDirectory->unbind(sprintf('php:env/%s', $this->getName()));
+        $namingDirectory->unbind(sprintf('php:env/%s/webappPath', $uniqueName));
+        $namingDirectory->unbind(sprintf('php:env/%s/tmpDirectory', $uniqueName));
+        $namingDirectory->unbind(sprintf('php:env/%s/cacheDirectory', $uniqueName));
+        $namingDirectory->unbind(sprintf('php:env/%s/sessionDirectory', $uniqueName));
+        $namingDirectory->unbind(sprintf('php:env/%s', $uniqueName));
 
         // unbind the global references of the application
-        $namingDirectory->unbind(sprintf('php:global/%s/env/ApplicationInterface', $this->getName()));
-        $namingDirectory->unbind(sprintf('php:global/%s/env/persistence', $this->getName()));
-        $namingDirectory->unbind(sprintf('php:global/%s/env', $this->getName()));
-        $namingDirectory->unbind(sprintf('php:global/%s', $this->getName()));
+        $namingDirectory->unbind(sprintf('php:global/%s/env/ApplicationInterface', $uniqueName));
+        $namingDirectory->unbind(sprintf('php:global/%s/env/persistence', $uniqueName));
+        $namingDirectory->unbind(sprintf('php:global/%s/env', $uniqueName));
+        $namingDirectory->unbind(sprintf('php:global/%s', $uniqueName));
     }
 
     /**
@@ -711,7 +779,7 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
      */
     public function search($name, array $args = array())
     {
-        return $this->getNamingDirectory()->search(sprintf('php:global/%s/%s', $this->getName(), $name), $args);
+        return $this->getNamingDirectory()->search(sprintf('php:global/%s/%s', $this->getUniqueName(), $name), $args);
     }
 
     /**

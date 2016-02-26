@@ -218,7 +218,7 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface
             $application
                 ->getNamingDirectory()
                 ->bind(
-                    sprintf('php:global/%s/%s', $application->getName(), $descriptor->getName()),
+                    sprintf('php:global/%s/%s', $application->getUniqueName(), $descriptor->getName()),
                     array(&$this, 'lookup'),
                     array($descriptor->getClassName())
                 );

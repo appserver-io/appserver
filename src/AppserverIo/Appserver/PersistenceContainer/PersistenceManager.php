@@ -24,10 +24,11 @@ use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Configuration\Configuration;
 use AppserverIo\Appserver\Core\AbstractManager;
 use AppserverIo\Appserver\Core\Api\Node\PersistenceNode;
+use AppserverIo\Appserver\Core\Api\Node\PersistenceUnitNodeInterface;
+use AppserverIo\Appserver\Core\Utilities\SystemPropertyKeys;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Psr\EnterpriseBeans\PersistenceContextInterface;
 use AppserverIo\Psr\EnterpriseBeans\EntityManagerLookupException;
-use AppserverIo\Appserver\Core\Api\Node\PersistenceUnitNodeInterface;
 
 /**
  * The persistence manager handles the entity managers registered for the application.
@@ -102,40 +103,51 @@ class PersistenceManager extends AbstractManager implements PersistenceContextIn
         $service = $application->newService('AppserverIo\Appserver\Core\Api\DeploymentService');
         $xmlFiles = $service->globDir($metaInfDir . DIRECTORY_SEPARATOR . 'persistence.xml');
 
+        // load the configuration service instance
+        /** @var \AppserverIo\Appserver\Core\Api\ConfigurationService $configurationService */
+        $configurationService = $application->newService('AppserverIo\Appserver\Core\Api\ConfigurationService');
+
+        // load the container node to initialize the system properties
+        /** @var \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode */
+        $containerNode = $application->getContainer()->getContainerNode();
+
         // gather all the deployed web applications
         foreach ($xmlFiles as $file) {
             try {
-                // try to initialize a SimpleXMLElement
-                $sxe = new \SimpleXMLElement($file, null, true);
-                $sxe->registerXPathNamespace('a', 'http://www.appserver.io/appserver');
+                // validate the file here, but skip if the validation fails
+                $configurationService->validateFile($file, null, true);
 
-                // validate the file here, if it is not valid we can skip further steps
-                try {
-                    /** @var \AppserverIo\Appserver\Core\Api\ConfigurationService $configurationService */
-                    $configurationService = $application->newService('AppserverIo\Appserver\Core\Api\ConfigurationService');
-                    $configurationService->validateFile($file, null, true);
+                // load the system properties
+                $properties = $service->getSystemProperties($containerNode);
 
-                } catch (InvalidConfigurationException $e) {
-                    /** @var \Psr\Log\LoggerInterface $systemLogger */
-                    $systemLogger = $this->getApplication()->getInitialContext()->getSystemLogger();
-                    $systemLogger->error($e->getMessage());
-                    $systemLogger->critical(sprintf('Message queue configuration file %s is invalid, needed queues might be missing.', $file));
-                    return;
-                }
+                // append the application specific properties
+                $properties->add(SystemPropertyKeys::WEBAPP, $webappPath = $application->getWebappPath());
+                $properties->add(SystemPropertyKeys::WEBAPP_NAME, basename($webappPath));
 
-                // initialize the entity managers found in the deployment descriptor
+                // create a new persistence manager node instance and replace the properties
                 $persistenceNode = new PersistenceNode();
                 $persistenceNode->initFromFile($file);
+                $persistenceNode->replaceProperties($properties);
+
+                // register the entity managers found in the configuration
                 foreach ($persistenceNode->getPersistenceUnits() as $persistenceUnitNode) {
                     $this->registerEntityManager($application, $persistenceUnitNode);
                 }
 
-            // if class can not be reflected continue with next class
+            } catch (InvalidConfigurationException $e) {
+                // try to load the system logger instance
+                /** @var \Psr\Log\LoggerInterface $systemLogger */
+                if ($systemLogger = $this->getApplication()->getInitialContext()->getSystemLogger()) {
+                    $systemLogger->error($e->getMessage());
+                    $systemLogger->critical(sprintf('Persistence configuration file %s is invalid, needed entity managers might be missing.', $file));
+                }
+
             } catch (\Exception $e) {
-                // log an error message
-                $application->getInitialContext()->getSystemLogger()->error($e->__toString());
-                // proceed with the next queue
-                continue;
+                // try to load the system logger instance
+                /** @var \Psr\Log\LoggerInterface $systemLogger */
+                if ($systemLogger = $this->getApplication()->getInitialContext()->getSystemLogger()) {
+                    $systemLogger->error($e->__toString());
+                }
             }
         }
     }
@@ -155,7 +167,7 @@ class PersistenceManager extends AbstractManager implements PersistenceContextIn
         $this->entityManagers[$lookupName = $persistenceUnitNode->getName()] = $persistenceUnitNode;
 
         // bind the callback for the entity manager instance to the naming directory => necessary for DI provider
-        $application->getNamingDirectory()->bindCallback(sprintf('php:global/%s/%s', $application->getName(), $lookupName), array(&$this, 'lookup'), array($lookupName));
+        $application->getNamingDirectory()->bindCallback(sprintf('php:global/%s/%s', $application->getUniqueName(), $lookupName), array(&$this, 'lookup'), array($lookupName));
     }
 
     /**

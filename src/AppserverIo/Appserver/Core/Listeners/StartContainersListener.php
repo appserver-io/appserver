@@ -21,8 +21,8 @@
 namespace AppserverIo\Appserver\Core\Listeners;
 
 use League\Event\EventInterface;
-use AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface;
 use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
+use AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface;
 
 /**
  * Listener that initializes and binds the containers found in the system configuration.
@@ -39,12 +39,13 @@ class StartContainersListener extends AbstractSystemListener
     /**
      * Handle an event.
      *
-     * @param \League\Event\EventInterface $event The triggering event
+     * @param \League\Event\EventInterface $event    The triggering event
+     * @param integer                      $runlevel The actual runlevel
      *
      * @return void
      * @see \League\Event\ListenerInterface::handle()
      */
-    public function handle(EventInterface $event)
+    public function handle(EventInterface $event, $runlevel = ApplicationServerInterface::NETWORK)
     {
 
         try {
@@ -58,7 +59,13 @@ class StartContainersListener extends AbstractSystemListener
             // initialize the service to load the container configurations
             /** @var \AppserverIo\Appserver\Core\Api\DeploymentService $deploymentService */
             $deploymentService = $applicationServer->newService('AppserverIo\Appserver\Core\Api\DeploymentService');
-            $applicationServer->setSystemConfiguration($deploymentService->loadContainerInstances());
+            $applicationServer->setSystemConfiguration($systemConfiguration = $deploymentService->loadContainerInstances());
+
+            // we also have to re-attach the system configuration to the initial context, because it's not a \Stackable
+            /** @var \AppserverIo\Appserver\Application\Interfaces\ContextInterface */
+            $initialContext = $applicationServer->getInitialContext();
+            $initialContext->setSystemConfiguration($systemConfiguration);
+            $applicationServer->setInitialContext($initialContext);
 
             // load the naming directory
             /** @var \AppserverIo\Appserver\Naming\NamingDirectory $namingDirectory */
@@ -74,12 +81,12 @@ class StartContainersListener extends AbstractSystemListener
             // and initialize a container thread for each container
             /** @var \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode */
             foreach ($applicationServer->getSystemConfiguration()->getContainers() as $containerNode) {
+                // load the factory class name
                 /** @var \AppserverIo\Appserver\Core\Interfaces\ContainerFactoryInterface $containerFactory */
                 $containerFactory = $containerNode->getFactory();
-
-                // use the factory if available
+                // use the factory to create a new container instance
                 /** @var \AppserverIo\Appserver\Core\Interfaces\ContainerInterface $container */
-                $container = $containerFactory::factory($applicationServer, $containerNode);
+                $container = $containerFactory::factory($applicationServer, $containerNode, $runlevel);
                 $container->start();
 
                 // wait until all servers has been bound to their ports and addresses
@@ -89,7 +96,7 @@ class StartContainersListener extends AbstractSystemListener
                 }
 
                 // register the container as service
-                $applicationServer->bindService(ApplicationServerInterface::NETWORK, $container);
+                $applicationServer->bindService($runlevel, $container);
             }
 
         } catch (\Exception $e) {

@@ -71,7 +71,9 @@ class ApplicationFactory
 
         // load the application type
         $contextType = $context->getType();
+        $containerName = $container->getName();
         $applicationName = $context->getName();
+        $containerRunlevel = $container->getRunlevel();
 
         // create a new application instance
         /** @var \AppserverIo\Appserver\Application\Application $application */
@@ -89,8 +91,10 @@ class ApplicationFactory
         $application->injectName($applicationName);
         $application->injectProvisioners($provisioners);
         $application->injectClassLoaders($classLoaders);
+        $application->injectContainerName($containerName);
         $application->injectInitialContext($initialContext);
         $application->injectNamingDirectory($namingDirectory);
+        $application->injectContainerRunlevel($containerRunlevel);
 
         // prepare the application instance
         $application->prepare($container, $context);

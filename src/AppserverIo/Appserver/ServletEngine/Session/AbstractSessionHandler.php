@@ -21,6 +21,7 @@
 namespace AppserverIo\Appserver\ServletEngine\Session;
 
 use AppserverIo\Lang\Reflection\ReflectionClass;
+use AppserverIo\Psr\Servlet\ServletSessionInterface;
 use AppserverIo\Appserver\ServletEngine\Http\Session;
 use AppserverIo\Appserver\ServletEngine\SessionSettingsInterface;
 use AppserverIo\Appserver\ServletEngine\SessionMarshallerInterface;
@@ -111,5 +112,40 @@ abstract class AbstractSessionHandler implements SessionHandlerInterface
     public function getSessionMarshaller()
     {
         return $this->sessionMarshaller;
+    }
+
+    /**
+     * Transforms the passed session instance into a JSON encoded string. If the data contains
+     * objects, each of them will be serialized before store them to the persistence layer.
+     *
+     * @param \AppserverIo\Psr\Servlet\ServletSessionInterface $servletSession The servlet session to be transformed
+     *
+     * @return string The marshalled servlet session representation
+     */
+    protected function marshall(ServletSessionInterface $servletSession)
+    {
+        return $this->getSessionMarshaller()->marshall($servletSession);
+    }
+
+    /**
+     * Initializes the session instance from the passed JSON string. If the encoded
+     * data contains objects, they will be unserialized before reattached to the
+     * session instance.
+     *
+     * @param string $marshalled The marshaled session representation
+     *
+     * @return \AppserverIo\Psr\Servlet\ServletSessionInterface The un-marshaled servlet session instance
+     */
+    protected function unmarshall($marshalled)
+    {
+
+        // create a new and empty servlet session instance
+        $servletSession = Session::emptyInstance();
+
+        // unmarshall the session data
+        $this->getSessionMarshaller()->unmarshall($servletSession, $marshalled);
+
+        // returns the initialized servlet session instance
+        return $servletSession;
     }
 }

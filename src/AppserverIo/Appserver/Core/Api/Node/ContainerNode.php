@@ -226,9 +226,11 @@ class ContainerNode extends AbstractNode implements ContainerNodeInterface
      */
     public function getServer($name)
     {
+
+        // try to match one of the server names with the passed name
         /** @var \AppserverIo\Appserver\Core\Api\Node\ServerNodeInterface $server */
         foreach ($this->getServers() as $server) {
-            if ($server->getName() === $name) {
+            if ($name === $server->getName()) {
                 return $server;
             }
         }
@@ -265,13 +267,17 @@ class ContainerNode extends AbstractNode implements ContainerNodeInterface
      */
     public function merge(ContainerNodeInterface $containerNode)
     {
-        // merge the server nodes
+        // iterate over this container server nodes
         /** @var \AppserverIo\Appserver\Core\Api\Node\ServerNodeInterface $serverNode */
-        foreach ($containerNode->getServers() as $serverNode) {
-            if ($serverNodeToMerge = $this->getServer($serverNode->getName())) {
-                $serverNodeToMerge->merge($serverNode);
-            } else {
-                $this->attachServer($serverNode);
+        foreach ($this->getServers() as $serverNode) {
+            // try to match with the server names of the passed container
+            /** @var \AppserverIo\Appserver\Core\Api\Node\ServerNodeInterface $serverNodeToMerge */
+            foreach ($containerNode->getServers() as $serverNodeToMerge) {
+                if (fnmatch($serverNodeToMerge->getName(), $serverNode->getName())) {
+                    $serverNode->merge($serverNodeToMerge);
+                } else {
+                    $this->attachServer($serverNode);
+                }
             }
         }
     }

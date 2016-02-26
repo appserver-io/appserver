@@ -454,9 +454,10 @@ class AppserverNode extends AbstractNode implements SystemConfigurationInterface
      */
     public function getContainer($name)
     {
-        /** @var \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $server */
+        // try to match one of the container names with the passed name
+        /** @var \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $container */
         foreach ($this->getContainers() as $container) {
-            if ($container->getName() === $name) {
+            if (fnmatch($name, $container->getName())) {
                 return $container;
             }
         }

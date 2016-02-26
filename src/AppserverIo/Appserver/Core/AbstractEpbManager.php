@@ -60,7 +60,7 @@ abstract class AbstractEpbManager extends AbstractManager
             $name = $epbReference->getName();
 
             // initialize the bean's URI
-            $uri = sprintf('php:global/%s/%s', $application->getName(), $name);
+            $uri = sprintf('php:global/%s/%s', $application->getUniqueName(), $name);
 
             // this has to be refactored, because it'll be quite faster to inject either
             // the remote/local proxy instance as injection a callback that creates the
@@ -125,7 +125,7 @@ abstract class AbstractEpbManager extends AbstractManager
             $application = $this->getApplication();
 
             // initialize the resource URI
-            $uri = sprintf('php:global/%s/%s', $application->getName(), $resReference->getName());
+            $uri = sprintf('php:global/%s/%s', $application->getUniqueName(), $resReference->getName());
 
             // query whether the reference has already been bound to the application
             if ($application->getNamingDirectory()->search($uri)) {
@@ -155,7 +155,7 @@ abstract class AbstractEpbManager extends AbstractManager
             // try to bind the reference by the specified type
             } elseif ($type = $resReference->getType()) {
                 // bind a reference to the resource shortname
-                $application->getNamingDirectory()->bindReference($uri, sprintf('php:global/%s/%s', $application->getName(), $type));
+                $application->getNamingDirectory()->bindReference($uri, sprintf('php:global/%s/%s', $application->getUniqueName(), $type));
 
             // log a critical message that we can't bind the reference
             } else {
@@ -184,7 +184,7 @@ abstract class AbstractEpbManager extends AbstractManager
             $application = $this->getApplication();
 
             // initialize the persistence unit URI
-            $uri = sprintf('php:global/%s/%s', $application->getName(), $persistenceUnitReference->getName());
+            $uri = sprintf('php:global/%s/%s', $application->getUniqueName(), $persistenceUnitReference->getName());
 
             // query whether the reference has already been bound to the application
             if ($application->getNamingDirectory()->search($uri)) {
@@ -209,7 +209,7 @@ abstract class AbstractEpbManager extends AbstractManager
             // try to use the unit name to bind the reference to
             if ($unitName = $persistenceUnitReference->getUnitName()) {
                 // create a reference to a persistence unit in the global directory
-                $application->getNamingDirectory()->bindReference($uri, sprintf('php:global/%s/%s', $application->getName(), $unitName));
+                $application->getNamingDirectory()->bindReference($uri, sprintf('php:global/%s/%s', $application->getUniqueName(), $unitName));
 
             // log a critical message that we can't bind the reference
             } else {

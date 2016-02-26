@@ -1,7 +1,7 @@
 <?php
 
 /**
- * \AppserverIo\Appserver\Core\Api\Node\ModuleNode
+ * \AppserverIo\Appserver\Core\Api\Node\MessageQueueNodeInterface
  *
  * NOTICE OF LICENSE
  *
@@ -11,7 +11,7 @@
  *
  * PHP version 5
  *
- * @author    Johann Zelger <jz@appserver.io>
+ * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
@@ -20,43 +20,31 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
-use AppserverIo\Description\Api\Node\AbstractNode;
-use AppserverIo\Server\Interfaces\ModuleConfigurationInterface;
+use AppserverIo\Configuration\Interfaces\NodeInterface;
 
 /**
- * DTO to transfer module information.
+ * Interface for a message queue DTO implementation.
  *
- * @author    Johann Zelger <jz@appserver.io>
+ * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class ModuleNode extends AbstractNode implements ModuleConfigurationInterface
+interface MessageQueueNodeInterface extends NodeInterface
 {
 
     /**
-     * Trait to handle the params.
+     * Return's the message queue's receiver type.
      *
-     * @var \AppserverIo\Appserver\Core\Api\Node\ParamsNodeTrait
+     * @return string|null The receiver type
      */
-    use ParamsNodeTrait;
+    public function getType();
 
     /**
-     * The storage class name.
+     * Return's the message queue's destination information.
      *
-     * @var string
-     * @AS\Mapping(nodeType="string")
+     * @return \AppserverIo\Appserver\Core\Api\Node\ValueNode The message queue destination information
      */
-    protected $type;
-
-    /**
-     * Returns the class name.
-     *
-     * @return string The class name
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
+    public function getDestination();
 }

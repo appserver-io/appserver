@@ -21,6 +21,8 @@ namespace AppserverIo\Appserver\Core\Api;
 
 use AppserverIo\Appserver\Core\Api\Node\CronNode;
 use AppserverIo\Configuration\ConfigurationException;
+use AppserverIo\Properties\Properties;
+use AppserverIo\Appserver\Core\Utilities\SystemPropertyKeys;
 
 /**
  * A service that handles scanner configuration data.
@@ -97,21 +99,17 @@ class ScannerService extends AbstractFileOperationService
                             // validate the file, but skip it if validation fails
                             $configurationService->validateFile($cronFile, null);
 
-                            // create a new CRON node instance
+                            // load the system properties
+                            $properties = $this->getSystemProperties($containerNode);
+
+                            // append the application specific properties
+                            $properties->add(SystemPropertyKeys::WEBAPP, $webappPath);
+                            $properties->add(SystemPropertyKeys::WEBAPP_NAME, basename($webappPath));
+
+                            // create a new CRON node instance and replace the properties
                             $cronInstance = new CronNode();
                             $cronInstance->initFromFile($cronFile);
-
-                            // iterate over all jobs to configure the directory where they has to be executed
-                            /** @var \AppserverIo\Appserver\Core\Api\Node\JobNodeInterface $jobNode */
-                            foreach ($cronInstance->getJobs() as $job) {
-                                // load the execution information
-                                $execute = $job->getExecute();
-                                // query whether or not a base directory has been specified
-                                if ($execute && $execute->getDirectory() == null) {
-                                    // set the directory where the cron.xml file located as base directory, if not
-                                    $execute->setDirectory($webappPath);
-                                }
-                            }
+                            $cronInstance->replaceProperties($properties);
 
                             // append it to the other CRON configurations
                             $cronInstances[] = $cronInstance;
@@ -143,5 +141,33 @@ class ScannerService extends AbstractFileOperationService
 
         // return the array with the CRON instances
         return $cronInstances;
+    }
+
+    /**
+     * Resolves the passed path. If the passed path is NULL, the webapp path is
+     * used, if the passed path is relative, the webapp path is prepended.
+     *
+     * @param string $webappPath The absolute path to the webapp
+     * @param string $path       The path to be resolved
+     *
+     * @return string The resolved path
+     */
+    protected function resolvePath($webappPath, $path = null)
+    {
+
+        // query whether or not a base directory has been specified
+        if ($path == null) {
+            // set the directory where the cron.xml file located as base directory
+            $path = $webappPath;
+
+        // query whether or not we found an absolute path or not
+        } elseif ($path != null) {
+            if (strpos($path, '/') > 0) {
+                $path = sprintf('%s/%s', $webappPath, $path);
+            }
+        }
+
+        // return the resolved path
+        return $path;
     }
 }

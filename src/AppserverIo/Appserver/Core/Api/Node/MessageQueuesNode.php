@@ -1,7 +1,7 @@
 <?php
 
 /**
- * \AppserverIo\Appserver\Core\Api\Node\ModuleNode
+ * \AppserverIo\Appserver\Core\Api\Node\MessageQueuesNode
  *
  * NOTICE OF LICENSE
  *
@@ -11,7 +11,7 @@
  *
  * PHP version 5
  *
- * @author    Johann Zelger <jz@appserver.io>
+ * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
@@ -21,42 +21,34 @@
 namespace AppserverIo\Appserver\Core\Api\Node;
 
 use AppserverIo\Description\Api\Node\AbstractNode;
-use AppserverIo\Server\Interfaces\ModuleConfigurationInterface;
 
 /**
- * DTO to transfer module information.
+ * DTO to transfer MQs information.
  *
- * @author    Johann Zelger <jz@appserver.io>
+ * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class ModuleNode extends AbstractNode implements ModuleConfigurationInterface
+class MessageQueuesNode extends AbstractNode
 {
 
     /**
-     * Trait to handle the params.
+     * The datasources.
      *
-     * @var \AppserverIo\Appserver\Core\Api\Node\ParamsNodeTrait
+     * @var array
+     * @AS\Mapping(nodeName="message-queue", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\MessageQueueNode")
      */
-    use ParamsNodeTrait;
+    protected $messageQueues;
 
     /**
-     * The storage class name.
+     * Return's the array with the MQs.
      *
-     * @var string
-     * @AS\Mapping(nodeType="string")
+     * @return array The MQs
      */
-    protected $type;
-
-    /**
-     * Returns the class name.
-     *
-     * @return string The class name
-     */
-    public function getType()
+    public function getMessageQueues()
     {
-        return $this->type;
+        return $this->messageQueues;
     }
 }

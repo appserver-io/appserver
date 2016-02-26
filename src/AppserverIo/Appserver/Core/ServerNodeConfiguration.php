@@ -55,7 +55,7 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
      * @var array
      */
     protected $headers;
-    
+
     /**
      * The handlers array.
      *
@@ -134,6 +134,7 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
      */
     public function __construct(ServerNodeInterface $node)
     {
+
         // set the node itself
         $this->node = $node;
 
@@ -144,13 +145,15 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
         $this->headers = $node->getHeadersAsArray();
         $this->connectionHandlers = $node->getConnectionHandlersAsArray();
         $this->authentications = $node->getAuthenticationsAsArray();
-        $this->modules = $node->getModulesAsArray();
         $this->rewrites = $node->getRewritesAsArray();
         $this->rewriteMaps = $node->getRewriteMapsAsArray();
         $this->accesses = $node->getAccessesAsArray();
         $this->environmentVariables = $node->getEnvironmentVariablesAsArray();
         $this->locations = $node->getLocationsAsArray();
         $this->certificates = $node->getCertificatesAsArray();
+
+        // modules can have params, so not make them flat
+        $this->modules = $node->getModules();
     }
 
     /**
@@ -181,6 +184,16 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     public function getGroup()
     {
         return $this->node->getParam('group');
+    }
+
+    /**
+     * Returns the server socket flags.
+     *
+     * @return string
+     */
+    public function getFlags()
+    {
+        return $this->node->getParam('flags');
     }
 
     /**

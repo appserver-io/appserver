@@ -67,7 +67,7 @@ class DatasourceNode extends AbstractNode implements DatasourceNodeInterface
     protected $containerName;
 
     /**
-     * Returns the unique datasource name.
+     * Return's the unique datasource name.
      *
      * @return string|null The unique datasource name
      */
@@ -77,7 +77,7 @@ class DatasourceNode extends AbstractNode implements DatasourceNodeInterface
     }
 
     /**
-     * Returns the datasource's type.
+     * Return's the datasource's type.
      *
      * @return string|null The datasource type
      */
@@ -87,7 +87,7 @@ class DatasourceNode extends AbstractNode implements DatasourceNodeInterface
     }
 
     /**
-     * Returns the database connection information.
+     * Return's the database connection information.
      *
      * @return \AppserverIo\Appserver\Core\Api\Node\DatabaseNode The database connection information
      */
@@ -97,9 +97,20 @@ class DatasourceNode extends AbstractNode implements DatasourceNodeInterface
     }
 
     /**
-     * Returns the name of the container which can use this datasource
+     * Set's the name of the container which can use this datasource.
      *
-     * @return string
+     * @param string|null $containerName The name of the container
+     *
+     * @return void
+     */
+    public function setContainerName($containerName)
+    {
+        $this->containerName = $containerName;
+    }
+    /**
+     * Return's the name of the container which can use this datasource
+     *
+     * @return string The name of the container
      */
     public function getContainerName()
     {
