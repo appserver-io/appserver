@@ -67,7 +67,9 @@ class SystemConfigurationStorageProvider extends JsonStorageProvider
                 foreach ($serverNode->getVirtualHosts() as $virtualHost) {
                     if (sizeof($dnsNames = explode(' ', $virtualHost->getName())) > 0) {
                         foreach ($dnsNames as $dnsName) {
+                            // add the IPv4 + IPv6 address for localhost
                             $dnsRecords[$dnsName]['A'] = array('127.0.0.1');
+                            $dnsRecords[$dnsName]['AAAA'] = array('::1');
                         }
                     }
                 }
