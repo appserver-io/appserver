@@ -1,3 +1,13 @@
+# Version 1.1.1-alpha6
+
+## Bugfixes
+
+* Switch to appserver-io/dnsserver 2.0.1 to fix segfault because of closing server socket in worker
+
+## Features
+
+* Add IPv6 address to DNS server configuration
+
 # Version 1.1.1-alpha5
 
 ## Bugfixes
