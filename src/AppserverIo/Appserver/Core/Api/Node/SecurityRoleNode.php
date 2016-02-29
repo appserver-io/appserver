@@ -38,7 +38,7 @@ class SecurityRoleNode extends AbstractNode implements SecurityRoleNodeInterface
      * The role name information.
      *
      * @var \AppserverIo\Appserver\Core\Api\Node\RoleNameNode
-     * @AS\Mapping(nodeName="web-resource-name", nodeType="AppserverIo\Appserver\Core\Api\Node\RoleNameNode")
+     * @AS\Mapping(nodeName="role-name", nodeType="AppserverIo\Appserver\Core\Api\Node\RoleNameNode")
      */
     protected $roleName;
 

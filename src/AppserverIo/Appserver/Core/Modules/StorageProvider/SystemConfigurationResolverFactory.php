@@ -40,8 +40,8 @@ class SystemConfigurationResolverFactory
     /**
      * Factory method to create a new DNS resolver instance.
      *
-     * @param \AppserverIo\Server\Interfaces\ServerContextInterface       The server context for the resolver
-     * @param \AppserverIo\Server\Interfaces\ModuleConfigurationInterface The module configuration with the initialization parameters
+     * @param \AppserverIo\Server\Interfaces\ServerContextInterface       $serverContext       The server context for the resolver
+     * @param \AppserverIo\Server\Interfaces\ModuleConfigurationInterface $moduleConfiguration The module configuration with the initialization parameters
      *
      * @return \AppserverIo\DnsServer\StorageProvider\StorageProviderInterface The initialized DNS resolver
      */
