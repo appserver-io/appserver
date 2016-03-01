@@ -394,6 +394,10 @@ As you can see, every `authentication` node has its `URI` attribute. You can use
 | `realm` | The string assigned by the server to identify the protection space of the request URI. |
 | `file`  | The path to your .htpasswd credential file. The path is relative to the server's root directory, if there is no beginning slash "/". |
 
+User credentials can be created with the tool [htpasswd](http://httpd.apache.org/docs/2.2/programs/htpasswd.html), which will work on all supported OSes, except Windows. On Windows there are optional tools available. For example, you can use [.Htaccesstools](http://www.htaccesstools.com/htpasswd-generator-windows/) online to create a ile.
+
+To create a file for HTTP digest authentication, you can use the tool [htdigest](http://httpd.apache.org/docs/2.2/programs/htdigest.html). Again, there is an online [website](http://jesin.tk/tools/htdigest-generator-tool/), which allows you to generate a file that will work on Windows also.
+
 ## Accesses
 
 You can easily allow or deny access to resources based on client's HTTP request headers, by setting up accesses within
