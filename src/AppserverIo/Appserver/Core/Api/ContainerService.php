@@ -340,11 +340,23 @@ class ContainerService extends AbstractFileOperationService
                 // get defined group from configuration
                 $group = Setup::getValue(SetupKeys::GROUP);
                 // replace user in configuration file
-                file_put_contents($configurationFilename, preg_replace(
-                    $configurationUserReplacePattern,
-                    '${1}' . $user,
-                    file_get_contents($configurationFilename)
-                ));
+                file_put_contents(
+                    $configurationFilename,
+                    preg_replace(
+                        $configurationUserReplacePattern,
+                        '${1}' . $user,
+                        file_get_contents($configurationFilename)
+                    )
+                );
+                // replace the user in the PHP-FPM configuration file
+                file_put_contents(
+                    $this->getEtcDir('php-fpm.conf'),
+                    preg_replace(
+                        '/user = (.*)/',
+                        'user = ' . $user,
+                        file_get_contents($this->getEtcDir('php-fpm.conf'))
+                    )
+                );
                 // add everyone write access to configuration files for dev mode
                 FileSystem::recursiveChmod($this->getEtcDir(), 0777, 0777);
 
@@ -356,11 +368,24 @@ class ContainerService extends AbstractFileOperationService
                 $user = Setup::getValue(SetupKeys::USER);
                 $group = Setup::getValue(SetupKeys::GROUP);
                 // replace user to be same as user in configuration file
-                file_put_contents($configurationFilename, preg_replace(
-                    $configurationUserReplacePattern,
-                    '${1}' . $user,
-                    file_get_contents($configurationFilename)
-                ));
+                file_put_contents(
+                    $configurationFilename,
+                    preg_replace(
+                        $configurationUserReplacePattern,
+                        '${1}' . $user,
+                        file_get_contents($configurationFilename)
+                    )
+                );
+                // replace the user in the PHP-FPM configuration file
+                file_put_contents(
+                    $this->getEtcDir('php-fpm.conf'),
+                    preg_replace(
+                        '/user = (.*)/',
+                        'user = ' . $user,
+                        file_get_contents($this->getEtcDir('php-fpm.conf'))
+                    )
+                );
+
                 // set correct file permissions for configurations
                 FileSystem::recursiveChmod($this->getEtcDir());
 
@@ -394,6 +419,7 @@ class ContainerService extends AbstractFileOperationService
                 FileSystem::recursiveChmod($this->getEtcDir());
 
                 break;
+
             default:
                 throw new \Exception(sprintf('Invalid setup mode %s given', $newMode));
         }
@@ -424,10 +450,15 @@ class ContainerService extends AbstractFileOperationService
             FileSystem::recursiveChown($this->getBaseDirectory('vendor'), $user, $group);
             FileSystem::recursiveChmod($this->getBaseDirectory('vendor'));
 
+            // ... and the change own and mod for the system's temporary directory
+            FileSystem::recursiveChown($this->getSystemTmpDir(), $user, $group);
+            FileSystem::recursiveChmod($this->getSystemTmpDir());
+
             // ... and change own and mod for the container specific directories
             /** @var \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode */
             foreach ($this->getSystemConfiguration()->getContainers() as $containerNode) {
-                FileSystem::chown($this->getWebappsDir($containerNode), $user, $group);
+                FileSystem::recursiveChown($this->getWebappsDir($containerNode), $user, $group);
+                FileSystem::recursiveChmod($this->getWebappsDir($containerNode));
                 FileSystem::recursiveChown($this->getTmpDir($containerNode), $user, $group);
                 FileSystem::recursiveChmod($this->getTmpDir($containerNode));
                 FileSystem::recursiveChown($this->getDeployDir($containerNode), $user, $group);

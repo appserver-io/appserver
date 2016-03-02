@@ -298,11 +298,27 @@ abstract class AbstractService implements ServiceInterface
     }
 
     /**
-     * Returns the servers base configuration directory.
+     * Return's the system's temporary directory.
      *
      * @param string $relativePathToAppend A relative path to append
      *
-     * @return string
+     * @return string The system's temporary directory
+     */
+    public function getSystemTmpDir($relativePathToAppend = '')
+    {
+        return $this->realpath(
+            $this->makePathAbsolute(
+                $this->getSystemConfiguration()->getParam(DirectoryKeys::TMP) . $this->makePathAbsolute($relativePathToAppend)
+            )
+        );
+    }
+
+    /**
+     * Return's the server's base configuration directory.
+     *
+     * @param string $relativePathToAppend A relative path to append
+     *
+     * @return string The server's base configuration directory
      */
     public function getEtcDir($relativePathToAppend = '')
     {
@@ -314,11 +330,11 @@ abstract class AbstractService implements ServiceInterface
     }
 
     /**
-     * Returns the servers main configuration directory.
+     * Return's the server's main configuration directory.
      *
      * @param string $relativePathToAppend A relative path to append
      *
-     * @return string
+     * @return string The server's main configuration directory
      */
     public function getConfDir($relativePathToAppend = '')
     {
@@ -330,11 +346,11 @@ abstract class AbstractService implements ServiceInterface
     }
 
     /**
-     * Returns the servers configuration subdirectory.
+     * Return's the server's configuration subdirectory.
      *
      * @param string $relativePathToAppend A relative path to append
      *
-     * @return string
+     * @return string The server's configuration subdirectory
      */
     public function getConfdDir($relativePathToAppend = '')
     {
