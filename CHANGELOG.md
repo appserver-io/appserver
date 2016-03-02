@@ -1,3 +1,13 @@
+# Version 1.1.1-alpha7
+
+## Bugfixes
+
+* Fixed missing recursive owner/mode change on webapps directory when switching between setup modes
+
+## Features
+
+* Also switching user for PHP-FPM when switching between setup modes
+
 # Version 1.1.1-alpha6
 
 ## Bugfixes

@@ -21,6 +21,7 @@
 namespace AppserverIo\Appserver\Application;
 
 use Rhumsaa\Uuid\Uuid;
+use Psr\Log\LoggerInterface;
 use AppserverIo\Logger\LoggerUtils;
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Storage\StorageInterface;
@@ -29,6 +30,7 @@ use AppserverIo\Appserver\Core\Traits\ThreadedContextTrait;
 use AppserverIo\Appserver\Core\Interfaces\ContainerInterface;
 use AppserverIo\Appserver\Core\Interfaces\ClassLoaderInterface;
 use AppserverIo\Appserver\Core\Api\Node\ContextNode;
+use AppserverIo\Appserver\Core\Api\Node\LoggerNodeInterface;
 use AppserverIo\Appserver\Core\Api\Node\ManagerNodeInterface;
 use AppserverIo\Appserver\Core\Api\Node\ProvisionerNodeInterface;
 use AppserverIo\Appserver\Core\Api\Node\ClassLoaderNodeInterface;
@@ -41,8 +43,6 @@ use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Psr\Application\ProvisionerInterface;
 use AppserverIo\Psr\Application\DirectoryAwareInterface;
 use AppserverIo\Psr\Application\FilesystemAwareInterface;
-use Psr\Log\LoggerInterface;
-use AppserverIo\Appserver\Core\Api\Node\LoggerNodeInterface;
 
 /**
  * The application instance holds all information about the deployed application
@@ -478,13 +478,13 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
     }
 
     /**
-     * Return the requested logger instance.
+     * Return the requested logger instance, by default the application's system logger.
      *
      * @param string $name The name of the requested logger
      *
      * @return \Psr\Log\LoggerInterface The logger instance
      */
-    public function getLogger($name)
+    public function getLogger($name = LoggerUtils::SYSTEM)
     {
         if (isset($this->loggers[$name])) {
             return $this->loggers[$name];
