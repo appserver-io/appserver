@@ -41,9 +41,15 @@ RUN ln -s /usr/local/bin/composer.phar /usr/local/bin/composer
 
 ################################################################################
 
-COPY * /opt/appserver
-RUN cd /opt/appserver
-RUN composer install --prefer-dist --no-dev -no
+COPY src/ /opt/appserver/src/
+COPY deploy/ /opt/appserver/deploy
+COPY etc/ /opt/appserver/etc/
+COPY internal/ /opt/appserver/internal/
+COPY resources/ /opt/appserver/resources/
+COPY var/ /opt/appserver/var/
+COPY composer.json /opt/appserver/
+COPY server.php /opt/appserver/
+RUN cd /opt/appserver && ls -l && composer install --prefer-dist --no-dev -no
 
 ################################################################################
 
