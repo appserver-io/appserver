@@ -10,6 +10,8 @@ MAINTAINER Tim Wagner <tw@appserver.io>
 
 ################################################################################
 
+RUN env
+
 # define versions
 ENV APPSERVER_RUNTIME_BUILD_VERSION 1.1.1-39
 ENV APPSERVER_SOURCE_VERSION 1.1.1-alpha7
