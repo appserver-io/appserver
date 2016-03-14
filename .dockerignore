@@ -1,0 +1,17 @@
+.buildpath
+.git
+.gitignore
+.project
+.settings
+.travis.yml
+build.default.properties
+build.properties
+composer.lock
+composer.phar
+Dockerfile
+docker-compose.yml
+phpunit.xml
+Vagrantfile
+instance-src
+target
+vendor
