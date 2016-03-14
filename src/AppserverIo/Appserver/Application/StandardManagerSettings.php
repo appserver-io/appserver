@@ -38,6 +38,13 @@ class StandardManagerSettings extends GenericStackable implements ManagerSetting
 {
 
     /**
+     * The base directory which may contain additional configuration informations.
+     *
+     * @var string
+     */
+    protected $baseDirectory;
+
+    /**
      * Set's the base directory which may contain additional configuration informations.
      *
      * @param string $baseDirectory The base directory
