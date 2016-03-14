@@ -24,7 +24,6 @@ use AppserverIo\Collections\HashMap;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\Core\Api\Node\ManagerNodeInterface;
 use AppserverIo\Appserver\Core\Interfaces\ManagerFactoryInterface;
-use AppserverIo\Appserver\ServletEngine\Session\FilesystemSessionHandler;
 
 /**
  * A factory for the standard session manager instances.

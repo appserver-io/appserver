@@ -21,11 +21,9 @@
 namespace AppserverIo\Appserver\ServletEngine;
 
 use AppserverIo\Logger\LoggerUtils;
-use AppserverIo\Appserver\Core\AbstractDaemonThread;
 use AppserverIo\Psr\Naming\NamingException;
-use AppserverIo\Psr\Servlet\ServletSessionInterface;
+use AppserverIo\Appserver\Core\AbstractDaemonThread;
 use AppserverIo\Psr\Application\ApplicationInterface;
-use AppserverIo\Psr\Servlet\ServletContextInterface;
 
 /**
  * A thread that loads the session managers session handlers

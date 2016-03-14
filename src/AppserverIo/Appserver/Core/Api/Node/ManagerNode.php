@@ -33,6 +33,7 @@ use AppserverIo\Description\Api\Node\AbstractNode;
  */
 class ManagerNode extends AbstractNode implements ManagerNodeInterface
 {
+
     /**
      * The param node trait.
      *
@@ -100,17 +101,27 @@ class ManagerNode extends AbstractNode implements ManagerNodeInterface
     protected $factory;
 
     /**
+     * The context factory class name.
+     *
+     * @var string
+     * @AS\Mapping(nodeType="string")
+     */
+    protected $contextFactory;
+
+    /**
      * Initializes the manager configuration with the passed values.
      *
-     * @param string $name    The unique manager name
-     * @param string $type    The manager class name
-     * @param string $factory The managers factory class name
+     * @param string $name           The unique manager name
+     * @param string $type           The manager class name
+     * @param string $factory        The managers factory class name
+     * @param string $contextFactory The context factory class name
      */
-    public function __construct($name = '', $type = '', $factory = '')
+    public function __construct($name = '', $type = '', $factory = '', $contextFactory = '')
     {
         $this->name = $name;
         $this->type = $type;
         $this->factory = $factory;
+        $this->contextFactory = $contextFactory;
     }
 
     /**
@@ -144,6 +155,16 @@ class ManagerNode extends AbstractNode implements ManagerNodeInterface
     }
 
     /**
+     * Returns the context factory class name.
+     *
+     * @return string The context factory class name
+     */
+    public function getContextFactory()
+    {
+        return $this->contextFactory;
+    }
+
+    /**
      * This method merges the configuration of the passed manager node
      * into this one.
      *
@@ -162,6 +183,7 @@ class ManagerNode extends AbstractNode implements ManagerNodeInterface
         // override type and factory attributes
         $this->type = $managerNode->getType();
         $this->factory = $managerNode->getFactory();
+        $this->contextFactory = $managerNode->getContextFactory();
 
         // load the authenticators of this manager node
         $localAuthenticators = $this->getAuthenticators();

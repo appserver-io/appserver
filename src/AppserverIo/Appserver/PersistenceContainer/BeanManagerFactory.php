@@ -21,12 +21,11 @@
 
 namespace AppserverIo\Appserver\PersistenceContainer;
 
-use AppserverIo\Appserver\Core\Interfaces\ManagerFactoryInterface;
 use AppserverIo\Storage\StackableStorage;
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\Core\Api\Node\ManagerNodeInterface;
-use AppserverIo\Psr\Naming\InitialContext as NamingContext;
+use AppserverIo\Appserver\Core\Interfaces\ManagerFactoryInterface;
 
 /**
  * The bean manager handles the message and session beans registered for the application.
@@ -55,10 +54,6 @@ class BeanManagerFactory implements ManagerFactoryInterface
         // initialize the bean locator
         $beanLocator = new BeanLocator();
 
-        // create the initial context instance
-        $initialContext = new NamingContext();
-        $initialContext->injectApplication($application);
-
         // initialize the stackable for the data, the stateful + singleton session beans and the naming directory
         $data = new StackableStorage();
         $instances = new GenericStackable();
@@ -66,8 +61,8 @@ class BeanManagerFactory implements ManagerFactoryInterface
         $statefulSessionBeans = new StatefulSessionBeanMap();
 
         // initialize the default settings for the stateful session beans
-        $statefulSessionBeanSettings = new DefaultStatefulSessionBeanSettings();
-        $statefulSessionBeanSettings->mergeWithParams($managerConfiguration->getParamsAsArray());
+        $beanManagerSettings = new BeanManagerSettings();
+        $beanManagerSettings->mergeWithParams($managerConfiguration->getParamsAsArray());
 
         // create an instance of the object factory
         $objectFactory = new GenericObjectFactory();
@@ -86,12 +81,15 @@ class BeanManagerFactory implements ManagerFactoryInterface
         $beanManager->injectApplication($application);
         $beanManager->injectResourceLocator($beanLocator);
         $beanManager->injectObjectFactory($objectFactory);
-        $beanManager->injectInitialContext($initialContext);
         $beanManager->injectGarbageCollector($garbageCollector);
+        $beanManager->injectManagerSettings($beanManagerSettings);
         $beanManager->injectStatefulSessionBeans($statefulSessionBeans);
         $beanManager->injectSingletonSessionBeans($singletonSessionBeans);
         $beanManager->injectDirectories($managerConfiguration->getDirectories());
-        $beanManager->injectStatefulSessionBeanSettings($statefulSessionBeanSettings);
+
+        // create the naming context and add it the manager
+        $contextFactory = $managerConfiguration->getContextFactory();
+        $contextFactory::visit($beanManager);
 
         // attach the instance
         $application->addManager($beanManager, $managerConfiguration);

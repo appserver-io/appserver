@@ -34,9 +34,11 @@ use AppserverIo\Psr\EnterpriseBeans\Description\SingletonSessionBeanDescriptorIn
 use AppserverIo\Psr\EnterpriseBeans\Description\StatefulSessionBeanDescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\StatelessSessionBeanDescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\MessageDrivenBeanDescriptorInterface;
+use AppserverIo\Appserver\Application\Interfaces\ManagerSettingsAwareInterface;
 use AppserverIo\Appserver\PersistenceContainer\Utils\SessionBeanUtil;
 use AppserverIo\Appserver\PersistenceContainer\DependencyInjection\DirectoryParser;
 use AppserverIo\Appserver\PersistenceContainer\DependencyInjection\DeploymentDescriptorParser;
+use AppserverIo\Appserver\Application\Interfaces\ManagerSettingsInterface;
 
 /**
  * The bean manager handles the message and session beans registered for the application.
@@ -48,15 +50,15 @@ use AppserverIo\Appserver\PersistenceContainer\DependencyInjection\DeploymentDes
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  *
- * @property array                                                                            $directories                   The additional directories to be parsed
- * @property \AppserverIo\Psr\EnterpriseBeans\ResourceLocatorInterface                        $resourceLocator               The resource locator
- * @property \AppserverIo\Storage\StorageInterface                                            $statefulSessionBeans          The storage for the stateful session beans
- * @property \AppserverIo\Storage\StorageInterface                                            $singletonSessionBeans         The storage for the singleton session beans
- * @property \AppserverIo\Appserver\PersistenceContainer\StatefulSessionBeanSettingsInterface $statefulSessionBeanSettings   Settings for the stateful session beans
- * @property \AppserverIo\Appserver\PersistenceContainer\StatefulSessionBeanMapFactory        $statefulSessionBeanMapFactory The factory instance
- * @property \AppserverIo\Appserver\PersistenceContainer\ObjectFactoryInterface               $objectFactory                 The object factory instance
+ * @property array                                                                     $directories                   The additional directories to be parsed
+ * @property \AppserverIo\Psr\EnterpriseBeans\ResourceLocatorInterface                 $resourceLocator               The resource locator
+ * @property \AppserverIo\Storage\StorageInterface                                     $statefulSessionBeans          The storage for the stateful session beans
+ * @property \AppserverIo\Storage\StorageInterface                                     $singletonSessionBeans         The storage for the singleton session beans
+ * @property \AppserverIo\Appserver\PersistenceContainer\BeanManagerSettingsInterface  $managerSettings               Settings for the bean manager
+ * @property \AppserverIo\Appserver\PersistenceContainer\StatefulSessionBeanMapFactory $statefulSessionBeanMapFactory The factory instance
+ * @property \AppserverIo\Appserver\PersistenceContainer\ObjectFactoryInterface        $objectFactory                 The object factory instance
  */
-class BeanManager extends AbstractEpbManager implements BeanContextInterface
+class BeanManager extends AbstractEpbManager implements BeanContextInterface, ManagerSettingsAwareInterface
 {
 
     /**
@@ -108,15 +110,15 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface
     }
 
     /**
-     * Injects the stateful session bean settings.
+     * Injects the bean manager settings.
      *
-     * @param \AppserverIo\Appserver\PersistenceContainer\StatefulSessionBeanSettingsInterface $statefulSessionBeanSettings Settings for the stateful session beans
+     * @param \AppserverIo\Appserver\PersistenceContainer\BeanManagerSettingsInterface $managerSettings The bean manager settings
      *
      * @return void
      */
-    public function injectStatefulSessionBeanSettings(StatefulSessionBeanSettingsInterface $statefulSessionBeanSettings)
+    public function injectManagerSettings(ManagerSettingsInterface $managerSettings)
     {
-        $this->statefulSessionBeanSettings = $statefulSessionBeanSettings;
+        $this->managerSettings = $managerSettings;
     }
 
     /**
@@ -307,13 +309,13 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface
     }
 
     /**
-     * Returns the stateful session bean settings.
+     * Return's the bean manager settings.
      *
-     * @return \AppserverIo\Appserver\PersistenceContainer\StatefulSessionBeanSettingsInterface The stateful session bean settings
+     * @return \AppserverIo\Appserver\PersistenceContainer\PersistenceContainerSettingsInterface The bean manager settings
      */
-    public function getStatefulSessionBeanSettings()
+    public function getManagerSettings()
     {
-        return $this->statefulSessionBeanSettings;
+        return $this->managerSettings;
     }
 
     /**
@@ -480,7 +482,7 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface
             }
 
             // load the lifetime from the session bean settings
-            $lifetime = $this->getStatefulSessionBeanSettings()->getLifetime();
+            $lifetime = $this->getManagerSettings()->getLifetime();
 
             // we've to check for pre-attach callbacks
             foreach ($descriptor->getPreAttachCallbacks() as $preAttachCallback) {

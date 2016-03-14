@@ -59,8 +59,8 @@ class QueueManagerFactory implements ManagerFactoryInterface
         $queueLocator = new QueueLocator();
 
         // initialize the default settings for message queue
-        $queueSettings = new DefaultQueueSettings();
-        $queueSettings->mergeWithParams($managerConfiguration->getParamsAsArray());
+        $queueManagerSettings = new QueueManagerSettings();
+        $queueManagerSettings->mergeWithParams($managerConfiguration->getParamsAsArray());
 
         // initialize the queue manager
         $queueManager = new QueueManager();
@@ -68,8 +68,8 @@ class QueueManagerFactory implements ManagerFactoryInterface
         $queueManager->injectWorkers($workers);
         $queueManager->injectMessages($messages);
         $queueManager->injectApplication($application);
-        $queueManager->injectQueueSettings($queueSettings);
         $queueManager->injectResourceLocator($queueLocator);
+        $queueManager->injectManagerSettings($queueManagerSettings);
 
         // attach the instance
         $application->addManager($queueManager, $managerConfiguration);

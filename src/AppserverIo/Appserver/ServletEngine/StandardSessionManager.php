@@ -23,13 +23,12 @@ namespace AppserverIo\Appserver\ServletEngine;
 use AppserverIo\Logger\LoggerUtils;
 use AppserverIo\Collections\HashMap;
 use AppserverIo\Collections\CollectionInterface;
+use AppserverIo\Appserver\ServletEngine\Http\Session;
 use AppserverIo\Psr\Naming\NamingException;
 use AppserverIo\Psr\Servlet\ServletContextInterface;
 use AppserverIo\Psr\Servlet\ServletSessionInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Psr\Application\ManagerConfigurationInterface;
-use AppserverIo\Appserver\ServletEngine\Http\Session;
-use AppserverIo\Appserver\ServletEngine\Session\FilesystemSessionHandler;
 
 /**
  * A simple session manager implementation implementation using

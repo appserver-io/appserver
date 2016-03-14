@@ -114,6 +114,13 @@ interface ManagerNodeInterface extends ManagerConfigurationInterface, NodeInterf
     public function getFactory();
 
     /**
+     * Returns the context factory class name.
+     *
+     * @return string The context factory class name
+     */
+    public function getContextFactory();
+
+    /**
      * Array with the handler params to use.
      *
      * @return array

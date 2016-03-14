@@ -20,13 +20,10 @@
 
 namespace AppserverIo\Appserver\DependencyInjectionContainer;
 
-use AppserverIo\Appserver\Core\Interfaces\ManagerFactoryInterface;
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\Core\Api\Node\ManagerNodeInterface;
-
-// ATTENTION: this is necessary for Windows
-use AppserverIo\Psr\Naming\InitialContext as NamingContext;
+use AppserverIo\Appserver\Core\Interfaces\ManagerFactoryInterface;
 
 /**
  * The factory for the dependency injection provider.
@@ -51,10 +48,6 @@ class ProviderFactory implements ManagerFactoryInterface
     public static function visit(ApplicationInterface $application, ManagerNodeInterface $managerConfiguration)
     {
 
-        // create the initial context instance
-        $initialContext = new NamingContext();
-        $initialContext->injectApplication($application);
-
         // create the storage for the reflection classes and the application specific aliases
         $reflectionClasses = new GenericStackable();
         $namingDirectoryAliases = new GenericStackable();
@@ -62,7 +55,6 @@ class ProviderFactory implements ManagerFactoryInterface
         // create and initialize the DI provider instance
         $provider = new Provider();
         $provider->injectApplication($application);
-        $provider->injectInitialContext($initialContext);
         $provider->injectReflectionClasses($reflectionClasses);
         $provider->injectNamingDirectoryAliases($namingDirectoryAliases);
 
