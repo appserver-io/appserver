@@ -1,7 +1,7 @@
 <?php
 
 /**
- * \AppserverIo\Appserver\PersistenceContainer\StatefulSessionBeanSettingsInterface
+ * \AppserverIo\Appserver\PersistenceContainer\BeanManagerSettingsInterface
  *
  * NOTICE OF LICENSE
  *
@@ -20,8 +20,10 @@
 
 namespace AppserverIo\Appserver\PersistenceContainer;
 
+use AppserverIo\Appserver\Application\Interfaces\ManagerSettingsInterface;
+
 /**
- * Interface for the stateful session bean settings.
+ * Interface for the bean manager settings.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -29,7 +31,7 @@ namespace AppserverIo\Appserver\PersistenceContainer;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-interface StatefulSessionBeanSettingsInterface
+interface BeanManagerSettingsInterface extends ManagerSettingsInterface
 {
 
     /**

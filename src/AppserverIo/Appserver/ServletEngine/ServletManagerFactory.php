@@ -20,13 +20,12 @@
 
 namespace AppserverIo\Appserver\ServletEngine;
 
-use AppserverIo\Appserver\Core\Interfaces\ManagerFactoryInterface;
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Storage\StackableStorage;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\Core\Api\Node\ManagerNodeInterface;
-
-use AppserverIo\Psr\Naming\InitialContext as NamingContext;
+use AppserverIo\Appserver\Core\Interfaces\ManagerFactoryInterface;
+use AppserverIo\Appserver\Application\StandardManagerSettings;
 
 /**
  * The servlet manager handles the servlets registered for the application.
@@ -51,10 +50,6 @@ class ServletManagerFactory implements ManagerFactoryInterface
     public static function visit(ApplicationInterface $application, ManagerNodeInterface $managerConfiguration)
     {
 
-        // create the initial context instance
-        $initialContext = new NamingContext();
-        $initialContext->injectApplication($application);
-
         // initialize the stackable storage
         $data = new StackableStorage();
         $servlets = new StackableStorage();
@@ -63,6 +58,10 @@ class ServletManagerFactory implements ManagerFactoryInterface
         $servletMappings = new GenericStackable();
         $securedUrlConfigs = new StackableStorage();
         $sessionParameters = new StackableStorage();
+
+        // initialize the default settings for the stateful session beans
+        $servletManagerSettings = new StandardManagerSettings();
+        $servletManagerSettings->mergeWithParams($managerConfiguration->getParamsAsArray());
 
         // initialize the servlet locator
         $servletLocator = new ServletLocator();
@@ -73,13 +72,17 @@ class ServletManagerFactory implements ManagerFactoryInterface
         $servletManager->injectServlets($servlets);
         $servletManager->injectErrorPages($errorPages);
         $servletManager->injectApplication($application);
-        $servletManager->injectInitialContext($initialContext);
         $servletManager->injectInitParameters($initParameters);
         $servletManager->injectResourceLocator($servletLocator);
         $servletManager->injectServletMappings($servletMappings);
         $servletManager->injectSecuredUrlConfigs($securedUrlConfigs);
         $servletManager->injectSessionParameters($sessionParameters);
+        $servletManager->injectManagerSettings($servletManagerSettings);
         $servletManager->injectDirectories($managerConfiguration->getDirectories());
+
+        // create the naming context and add it the manager
+        $contextFactory = $managerConfiguration->getContextFactory();
+        $contextFactory::visit($servletManager);
 
         // attach the instance
         $application->addManager($servletManager, $managerConfiguration);

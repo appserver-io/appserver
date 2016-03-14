@@ -1,7 +1,7 @@
 <?php
 
 /**
- * \AppserverIo\Appserver\PersistenceContainer\DefaultStatefulSessionBeanSettings
+ * \AppserverIo\Appserver\PersistenceContainer\BeanManagerSettings
  *
  * NOTICE OF LICENSE
  *
@@ -20,10 +20,10 @@
 
 namespace AppserverIo\Appserver\PersistenceContainer;
 
-use AppserverIo\Storage\GenericStackable;
+use AppserverIo\Appserver\Application\StandardManagerSettings;
 
 /**
- * Interface for all session storage implementation.
+ * Default settings for the persistence container implementation.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -34,8 +34,15 @@ use AppserverIo\Storage\GenericStackable;
  * @property integer $lifetime                     The stateful session bean lifetime
  * @property float   $garbageCollectionProbability The garbage collector probability
  */
-class DefaultStatefulSessionBeanSettings extends GenericStackable implements StatefulSessionBeanSettingsInterface
+class BeanManagerSettings extends StandardManagerSettings implements BeanManagerSettingsInterface
 {
+
+    /**
+     * The default base directory containing additional configuration information.
+     *
+     * @var string
+     */
+    const BASE_DIRECTORY = 'META-INF';
 
     /**
      * The default lifetime in seconds.
@@ -56,9 +63,9 @@ class DefaultStatefulSessionBeanSettings extends GenericStackable implements Sta
      */
     public function __construct()
     {
-        // initialize the default values
-        $this->setLifetime(DefaultStatefulSessionBeanSettings::DEFAULT_LIFETIME);
-        $this->setGarbageCollectionProbability(DefaultStatefulSessionBeanSettings::DEFAULT_GARBAGE_COLLECTION_PROBABILITY);
+        $this->setBaseDirectory(BeanManagerSettings::BASE_DIRECTORY);
+        $this->setLifetime(BeanManagerSettings::DEFAULT_LIFETIME);
+        $this->setGarbageCollectionProbability(BeanManagerSettings::DEFAULT_GARBAGE_COLLECTION_PROBABILITY);
     }
 
     /**
@@ -103,22 +110,5 @@ class DefaultStatefulSessionBeanSettings extends GenericStackable implements Sta
     public function getGarbageCollectionProbability()
     {
         return $this->garbageCollectionProbability;
-    }
-
-    /**
-     * Merge the passed params with the default settings.
-     *
-     * @param array $params The associative array with the params to merge
-     *
-     * @return void
-     */
-    public function mergeWithParams(array $params)
-    {
-        // merge the passed properties with the default settings for the stateful session beans
-        foreach (array_keys(get_object_vars($this)) as $propertyName) {
-            if (array_key_exists($propertyName, $params)) {
-                $this->$propertyName = $params[$propertyName];
-            }
-        }
     }
 }

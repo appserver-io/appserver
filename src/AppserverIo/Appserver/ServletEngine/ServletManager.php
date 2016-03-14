@@ -31,6 +31,8 @@ use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
 use AppserverIo\Psr\Servlet\Description\ServletDescriptorInterface;
 use AppserverIo\Appserver\ServletEngine\DependencyInjection\DirectoryParser;
 use AppserverIo\Appserver\ServletEngine\DependencyInjection\DeploymentDescriptorParser;
+use AppserverIo\Appserver\Application\Interfaces\ManagerSettingsInterface;
+use AppserverIo\Appserver\Application\Interfaces\ManagerSettingsAwareInterface;
 
 /**
  * The servlet manager handles the servlets registered for the application.
@@ -41,15 +43,16 @@ use AppserverIo\Appserver\ServletEngine\DependencyInjection\DeploymentDescriptor
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  *
- * @property array                                                         $directories       The additional directories to be parsed
- * @property \AppserverIo\Storage\StorageInterface                         $initParameters    The container for the init parameters
- * @property \AppserverIo\Appserver\ServletEngine\ResourceLocatorInterface $resourceLocator   The resource locator for requested servlets
- * @property \AppserverIo\Appserver\ServletEngine\ResourceLocatorInterface $servletLocator    The resource locator for the servlets
- * @property \AppserverIo\Storage\GenericStackable                         $servletMappings   The container for the servlet mappings
- * @property \AppserverIo\Storage\StorageInterface                         $servlets          The container for the servlets
- * @property \AppserverIo\Storage\StorageInterface                         $sessionParameters The container for the session parameters
+ * @property array                                                                  $directories       The additional directories to be parsed
+ * @property \AppserverIo\Storage\StorageInterface                                  $initParameters    The container for the init parameters
+ * @property \AppserverIo\Appserver\ServletEngine\ResourceLocatorInterface          $resourceLocator   The resource locator for requested servlets
+ * @property \AppserverIo\Appserver\ServletEngine\ResourceLocatorInterface          $servletLocator    The resource locator for the servlets
+ * @property \AppserverIo\Storage\GenericStackable                                  $servletMappings   The container for the servlet mappings
+ * @property \AppserverIo\Storage\StorageInterface                                  $servlets          The container for the servlets
+ * @property \AppserverIo\Storage\StorageInterface                                  $sessionParameters The container for the session parameters
+ * @property \AppserverIo\Appserver\Application\Interfaces\ManagerSettingsInterface $managerSettings   Settings for the servlet manager
  */
-class ServletManager extends AbstractEpbManager implements ServletContextInterface
+class ServletManager extends AbstractEpbManager implements ServletContextInterface, ManagerSettingsAwareInterface
 {
 
     /**
@@ -146,6 +149,18 @@ class ServletManager extends AbstractEpbManager implements ServletContextInterfa
     public function injectErrorPages(StorageInterface $errorPages)
     {
         $this->errorPages = $errorPages;
+    }
+
+    /**
+     * Injects the servlet manager settings.
+     *
+     * @param \AppserverIo\Appserver\Application\Interfaces\ManagerSettingsInterface $managerSettings The servlet manager settings
+     *
+     * @return void
+     */
+    public function injectManagerSettings(ManagerSettingsInterface $managerSettings)
+    {
+        $this->managerSettings = $managerSettings;
     }
 
     /**
@@ -466,6 +481,16 @@ class ServletManager extends AbstractEpbManager implements ServletContextInterfa
     public function hasSessionParameters()
     {
         return sizeof($this->sessionParameters) > 0;
+    }
+
+    /**
+     * Return's the servlet manager settings.
+     *
+     * @return \AppserverIo\Appserver\Application\Interfaces\ManagerSettingsInterface The servlet manager settings
+     */
+    public function getManagerSettings()
+    {
+        return $this->managerSettings;
     }
 
     /**

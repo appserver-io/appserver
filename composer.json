@@ -24,7 +24,7 @@
 		"appserver-io/server" : "~6.0",
 		"appserver-io/logger" : "~1.0",
 		"appserver-io/storage" : "~2.0",
-		"appserver-io/messaging" : "~1.0",
+		"appserver-io/messaging" : "~2.0",
 		"appserver-io/microcron" : "~1.0",
 		"appserver-io/webserver" : "~4.0",
 		"appserver-io/dnsserver" : "~2.0",

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * \AppserverIo\Appserver\MessageQueue\DefaultQueueSettings
+ * \AppserverIo\Appserver\Application\StandardManagerSettings
  *
  * NOTICE OF LICENSE
  *
@@ -18,12 +18,13 @@
  * @link      http://www.appserver.io
  */
 
-namespace AppserverIo\Appserver\MessageQueue;
+namespace AppserverIo\Appserver\Application;
 
 use AppserverIo\Storage\GenericStackable;
+use AppserverIo\Appserver\Application\Interfaces\ManagerSettingsInterface;
 
 /**
- * Default MQ configuration settings.
+ * Utility class that contains the application state keys.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -31,47 +32,38 @@ use AppserverIo\Storage\GenericStackable;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  *
- * @property integer $maximumJobsToProcess The maximum number of jobs to process in prallel
+ * @property string $baseDirectory The base directory which may contain additional configuration informations
  */
-class DefaultQueueSettings extends GenericStackable implements QueueSettingsInterface
+class StandardManagerSettings extends GenericStackable implements ManagerSettingsInterface
 {
 
     /**
-     * The default maximum number of jobs to process in parallel.
+     * The base directory which may contain additional configuration informations.
      *
      * @var string
      */
-    const DEFAULT_MAXIMUM_JOBS_TO_PROCESS = 200;
+    protected $baseDirectory;
 
     /**
-     * Initialize the default MQ settings.
-     */
-    public function __construct()
-    {
-        // initialize the default values
-        $this->setMaximumJobsToProcess(DefaultQueueSettings::DEFAULT_MAXIMUM_JOBS_TO_PROCESS);
-    }
-
-    /**
-     * Set's the maximum number of jobs to process in prallel.
+     * Set's the base directory which may contain additional configuration informations.
      *
-     * @param integer $maximumJobsToProcess The maximum number of jobs
+     * @param string $baseDirectory The base directory
      *
      * @return void
      */
-    public function setMaximumJobsToProcess($maximumJobsToProcess)
+    public function setBaseDirectory($baseDirectory)
     {
-        $this->maximumJobsToProcess = $maximumJobsToProcess;
+        $this->baseDirectory = $baseDirectory;
     }
 
     /**
-     * Return's the maximum number of jobs to process in prallel.
+     * Return's the base directory which may contain additional configuration informations.
      *
-     * @return integer The the maximum number of jobs
+     * @return string The base directory
      */
-    public function getMaximumJobsToProcess()
+    public function getBaseDirectory()
     {
-        return $this->maximumJobsToProcess;
+        return $this->baseDirectory;
     }
 
     /**

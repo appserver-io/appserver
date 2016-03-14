@@ -1,7 +1,7 @@
 <?php
 
 /**
- * \AppserverIo\Appserver\MessageQueue\QueueSettingsInterface
+ * \AppserverIo\Appserver\MessageQueue\QueueManagerSettingsInterface
  *
  * NOTICE OF LICENSE
  *
@@ -20,6 +20,8 @@
 
 namespace AppserverIo\Appserver\MessageQueue;
 
+use AppserverIo\Appserver\Application\Interfaces\ManagerSettingsInterface;
+
 /**
  * Interface MQ configuration settings.
  *
@@ -29,8 +31,15 @@ namespace AppserverIo\Appserver\MessageQueue;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-interface QueueSettingsInterface
+interface QueueManagerSettingsInterface extends ManagerSettingsInterface
 {
+
+    /**
+     * The name of the PMS client configuration properties file.
+     *
+     * @var string
+     */
+    const CONFIGURATION_FILE = 'pms-client.properties';
 
     /**
      * Returns the maximum number of jobs to process in parallel.

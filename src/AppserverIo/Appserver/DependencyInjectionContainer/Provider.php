@@ -25,6 +25,7 @@ use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Lang\Reflection\ClassInterface;
 use AppserverIo\Lang\Reflection\ReflectionClass;
 use AppserverIo\Lang\Reflection\AnnotationInterface;
+use AppserverIo\Psr\Servlet\Annotations\Route;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\MessageDriven;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\PreDestroy;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\PostConstruct;
@@ -41,10 +42,6 @@ use AppserverIo\Psr\EnterpriseBeans\Annotations\Resource;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\PersistenceUnit;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\ProviderInterface;
-use AppserverIo\Psr\Servlet\Annotations\Route;
-
-// ATTENTION: this is necessary for Windows
-use AppserverIo\Psr\Naming\InitialContext as NamingContext;
 
 /**
  * A basic dependency injection provider implementation.
@@ -55,7 +52,6 @@ use AppserverIo\Psr\Naming\InitialContext as NamingContext;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  *
- * @property \AppserverIo\Psr\Naming\InitialContext           $initialContext  The naming context instance
  * @property \AppserverIo\Psr\Naming\NamingDirectoryInterface $namingDirectory The applications naming directory interface
  * @property \AppserverIo\Psr\Application\ApplicationInterfac $application     The application instance
  */
@@ -112,18 +108,6 @@ class Provider extends GenericStackable implements ProviderInterface
     }
 
     /**
-     * Injects the naming context.
-     *
-     * @param \AppserverIo\Psr\Naming\InitialContext $initialContext The naming context
-     *
-     * @return void
-     */
-    public function injectInitialContext(NamingContext $initialContext)
-    {
-        $this->initialContext = $initialContext;
-    }
-
-    /**
      * Injects the naming directory aliases.
      *
      * @param \AppserverIo\Storage\GenericStackable $namingDirectoryAliases The naming directory aliases
@@ -154,7 +138,7 @@ class Provider extends GenericStackable implements ProviderInterface
      */
     public function getInitialContext()
     {
-        return $this->initialContext;
+        throw new \Exception(sprintf('%s not implemented yet', __METHOD__));
     }
 
     /**

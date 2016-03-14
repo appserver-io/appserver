@@ -21,10 +21,10 @@
 namespace AppserverIo\Appserver\Application;
 
 use AppserverIo\Storage\GenericStackable;
-use AppserverIo\Appserver\Core\Api\Node\ContextNode;
-use AppserverIo\Appserver\Core\Interfaces\ContainerInterface;
-use AppserverIo\Appserver\Core\Utilities\PermissionHelper;
 use AppserverIo\Appserver\Core\LoggerFactory;
+use AppserverIo\Appserver\Core\Api\Node\ContextNode;
+use AppserverIo\Appserver\Core\Utilities\PermissionHelper;
+use AppserverIo\Appserver\Core\Interfaces\ContainerInterface;
 
 /**
  * Application factory implementation.

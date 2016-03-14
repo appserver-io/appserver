@@ -22,6 +22,7 @@
 
 namespace AppserverIo\Appserver\MessageQueue;
 
+use AppserverIo\Properties\Properties;
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Psr\Pms\QueueContextInterface;
 use AppserverIo\Psr\Pms\ResourceLocatorInterface;
@@ -30,10 +31,13 @@ use AppserverIo\Psr\Pms\MessageInterface;
 use AppserverIo\Psr\Naming\NamingException;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\Core\AbstractManager;
+use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
 use AppserverIo\Appserver\Core\Utilities\SystemPropertyKeys;
 use AppserverIo\Appserver\Core\Api\InvalidConfigurationException;
 use AppserverIo\Appserver\Core\Api\Node\MessageQueuesNode;
 use AppserverIo\Appserver\Core\Api\Node\MessageQueueNodeInterface;
+use AppserverIo\Appserver\Application\Interfaces\ManagerSettingsAwareInterface;
+use AppserverIo\Appserver\Application\Interfaces\ManagerSettingsInterface;
 
 /**
  * The queue manager handles the queues and message beans registered for the application.
@@ -46,13 +50,13 @@ use AppserverIo\Appserver\Core\Api\Node\MessageQueueNodeInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  *
- * @property \AppserverIo\Psr\Application\ApplicationInterface          $application     The application to manage queues for
- * @property array                                                      $directories     Our directories
- * @property \AppserverIo\Psr\Pms\ResourceLocatorInterface              $resourceLocator Locator for the requested queues
- * @property \AppserverIo\Storage\GenericStackable                      $queues          Queues to manage
- * @property \AppserverIo\Appserver\MessageQueue\QueueSettingsInterface $queueSettings   The queue settings
+ * @property \AppserverIo\Psr\Application\ApplicationInterface                 $application     The application to manage queues for
+ * @property array                                                             $directories     Our directories
+ * @property \AppserverIo\Psr\Pms\ResourceLocatorInterface                     $resourceLocator Locator for the requested queues
+ * @property \AppserverIo\Storage\GenericStackable                             $queues          Queues to manage
+ * @property \AppserverIo\Appserver\MessageQueue\QueueManagerSettingsInterface $managerSettings The queue settings
  */
-class QueueManager extends AbstractManager implements QueueContextInterface
+class QueueManager extends AbstractManager implements QueueContextInterface, ManagerSettingsAwareInterface
 {
 
     /**
@@ -106,13 +110,13 @@ class QueueManager extends AbstractManager implements QueueContextInterface
     /**
      * Injects the queue settings.
      *
-     * @param \AppserverIo\Appserver\MessageQueue\QueueSettingsInterface $queueSettings The queue settings
+     * @param \AppserverIo\Appserver\MessageQueue\QueueManagerSettingsInterface $managerSettings The queue settings
      *
      * @return void
      */
-    public function injectQueueSettings(QueueSettingsInterface $queueSettings)
+    public function injectManagerSettings(ManagerSettingsInterface $managerSettings)
     {
-        $this->queueSettings = $queueSettings;
+        $this->managerSettings = $managerSettings;
     }
 
     /**
@@ -226,7 +230,7 @@ class QueueManager extends AbstractManager implements QueueContextInterface
         $messageQueue->injectWorkers($this->workers);
         $messageQueue->injectMessages($this->messages);
         $messageQueue->injectApplication($this->application);
-        $messageQueue->injectQueueSettings($this->queueSettings);
+        $messageQueue->injectManagerSettings($this->managerSettings);
         $messageQueue->start();
 
         // initialize the queues storage for the priorities
@@ -270,11 +274,11 @@ class QueueManager extends AbstractManager implements QueueContextInterface
     /**
      * Return's the queue settings.
      *
-     * @return \AppserverIo\Appserver\MessageQueue\QueueSettingsInterface The queue settings
+     * @return \AppserverIo\Appserver\MessageQueue\QueueManagerSettingsInterface The queue settings
      */
-    public function getQueueSettings()
+    public function getManagerSettings()
     {
-        return $this->queueSettings;
+        return $this->managerSettings;
     }
 
     /**
@@ -331,11 +335,29 @@ class QueueManager extends AbstractManager implements QueueContextInterface
     {
 
         // load the application name
-        $applicationName = $this->getApplication()->getName();
+        $application = $this->getApplication();
+        $applicationName = $application->getName();
+        $webappPath = $application->getWebappPath();
+
+        // initialize the variable for the properties
+        $properties = null;
+
+        // load the configuration base directory
+        if ($baseDirectory = $this->getManagerSettings()->getBaseDirectory()) {
+            // look for naming context properties in the manager's base directory
+            $propertiesFile = DirectoryKeys::realpath(
+                sprintf('%s/%s/%s', $webappPath, $baseDirectory, QueueManagerSettingsInterface::CONFIGURATION_FILE)
+            );
+
+            // load the properties from the configuration file
+            if (file_exists($propertiesFile)) {
+                $properties = Properties::create()->load($propertiesFile);
+            }
+        }
 
         // initialize and return the sender
         $queue = \AppserverIo\Messaging\MessageQueue::createQueue($lookupName);
-        $connection = \AppserverIo\Messaging\QueueConnectionFactory::createQueueConnection($applicationName);
+        $connection = \AppserverIo\Messaging\QueueConnectionFactory::createQueueConnection($applicationName, $properties);
         $session = $connection->createQueueSession();
         return $session->createSender($queue);
     }

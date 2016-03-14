@@ -38,12 +38,12 @@ use AppserverIo\Psr\Application\ApplicationInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  *
- * @property string                                                     $name            The queue name to use
- * @property string                                                     $type            The message bean type that has to handle the messages
- * @property \AppserverIo\Psr\Application\ApplicationInterface          $application     The application to manage queues for
- * @property \AppserverIo\Storage\GenericStackable                      $workers         The storage for the workers
- * @property \AppserverIo\Storage\GenericStackable                      $messages        The storage for the messages
- * @property \AppserverIo\Appserver\MessageQueue\QueueSettingsInterface $queueSettings   The queue settings
+ * @property string                                                            $name            The queue name to use
+ * @property string                                                            $type            The message bean type that has to handle the messages
+ * @property \AppserverIo\Psr\Application\ApplicationInterface                 $application     The application to manage queues for
+ * @property \AppserverIo\Storage\GenericStackable                             $workers         The storage for the workers
+ * @property \AppserverIo\Storage\GenericStackable                             $messages        The storage for the messages
+ * @property \AppserverIo\Appserver\MessageQueue\QueueManagerSettingsInterface $managerSettings The queue manager settings
  */
 class MessageQueue extends AbstractDaemonThread implements QueueInterface
 {
@@ -109,15 +109,15 @@ class MessageQueue extends AbstractDaemonThread implements QueueInterface
     }
 
     /**
-     * Injects the queue settings.
+     * Injects the queue manager settings.
      *
-     * @param \AppserverIo\Appserver\MessageQueue\QueueSettingsInterface $queueSettings The queue settings
+     * @param \AppserverIo\Appserver\MessageQueue\QueueManagerSettingsInterface $managerSettings The queue manager settings
      *
      * @return void
      */
-    public function injectQueueSettings(QueueSettingsInterface $queueSettings)
+    public function injectManagerSettings(QueueManagerSettingsInterface $managerSettings)
     {
-        $this->queueSettings = $queueSettings;
+        $this->managerSettings = $managerSettings;
     }
 
     /**
@@ -171,13 +171,13 @@ class MessageQueue extends AbstractDaemonThread implements QueueInterface
     }
 
     /**
-     * Return's the queue settings.
+     * Return's the queue manager settings.
      *
-     * @return \AppserverIo\Appserver\MessageQueue\QueueSettingsInterface The queue settings
+     * @return \AppserverIo\Appserver\MessageQueue\QueueManagerSettingsInterface The queue manager settings
      */
-    public function getQueueSettings()
+    public function getManagerSettings()
     {
-        return $this->queueSettings;
+        return $this->managerSettings;
     }
 
     /**
@@ -257,7 +257,7 @@ class MessageQueue extends AbstractDaemonThread implements QueueInterface
         // create a reference to the workers/messages
         $workers = $this->workers;
         $messages = $this->messages;
-        $queueSettings = $this->queueSettings;
+        $managerSettings = $this->managerSettings;
 
         // try to load the profile logger
         if ($this->profileLogger = $application->getInitialContext()->getLogger(LoggerUtils::PROFILE)) {
@@ -280,7 +280,7 @@ class MessageQueue extends AbstractDaemonThread implements QueueInterface
             $queueWorker->injectMessages($messages);
             $queueWorker->injectApplication($application);
             $queueWorker->injectPriorityKey($priorityKey);
-            $queueWorker->injectQueueSettings($queueSettings);
+            $queueWorker->injectManagerSettings($managerSettings);
 
             // attach the storages
             $queueWorker->injectJobsToExecute($jobsToExceute[$counter]);

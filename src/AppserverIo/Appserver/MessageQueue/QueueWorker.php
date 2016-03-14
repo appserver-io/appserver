@@ -45,11 +45,11 @@ use AppserverIo\Appserver\Core\Utilities\EnumState;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  *
- * @property \AppserverIo\Psr\Application\ApplicationInterface          $application   The application instance with the queue manager/locator
- * @property \AppserverIo\Storage\GenericStackable                      $jobsToExecute The storage for the jobs to be executed
- * @property \AppserverIo\Storage\GenericStackable                      $messages      The storage for the messages
- * @property \AppserverIo\Psr\Pms\PriorityKeyInterface                  $priorityKey   The priority of this queue worker
- * @property \AppserverIo\Appserver\MessageQueue\QueueSettingsInterface $queueSettings The queue settings
+ * @property \AppserverIo\Psr\Application\ApplicationInterface                 $application     The application instance with the queue manager/locator
+ * @property \AppserverIo\Storage\GenericStackable                             $jobsToExecute   The storage for the jobs to be executed
+ * @property \AppserverIo\Storage\GenericStackable                             $messages        The storage for the messages
+ * @property \AppserverIo\Psr\Pms\PriorityKeyInterface                         $priorityKey     The priority of this queue worker
+ * @property \AppserverIo\Appserver\MessageQueue\QueueManagerSettingsInterface $managerSettings The queue settings
  */
 class QueueWorker extends AbstractDaemonThread
 {
@@ -103,15 +103,15 @@ class QueueWorker extends AbstractDaemonThread
     }
 
     /**
-     * Injects the queue settings.
+     * Injects the queue manager settings.
      *
-     * @param \AppserverIo\Appserver\MessageQueue\QueueSettingsInterface $queueSettings The queue settings
+     * @param \AppserverIo\Appserver\MessageQueue\QueueManagerSettingsInterface $managerSettings The queue manager settings
      *
      * @return void
      */
-    public function injectQueueSettings(QueueSettingsInterface $queueSettings)
+    public function injectManagerSettings(QueueManagerSettingsInterface $managerSettings)
     {
-        $this->queueSettings = $queueSettings;
+        $this->managerSettings = $managerSettings;
     }
 
     /**
@@ -125,13 +125,13 @@ class QueueWorker extends AbstractDaemonThread
     }
 
     /**
-     * Return's the queue settings.
+     * Return's the queue manager settings.
      *
-     * @return \AppserverIo\Appserver\MessageQueue\QueueSettingsInterface The queue settings
+     * @return \AppserverIo\Appserver\MessageQueue\QueueManagerSettingsInterface The queue manager settings
      */
-    public function getQueueSettings()
+    public function getManagerSettings()
     {
-        return $this->queueSettings;
+        return $this->managerSettings;
     }
 
     /**
@@ -233,7 +233,7 @@ class QueueWorker extends AbstractDaemonThread
             $jobsToExecute = $this->jobsToExecute;
 
             // load the maximum number of jobs to process in parallel
-            $maximumJobsToProcess = $this->getQueueSettings()->getMaximumJobsToProcess();
+            $maximumJobsToProcess = $this->getManagerSettings()->getMaximumJobsToProcess();
 
             // initialize the arrays for the message states and the jobs executing
             $messageStates = array();

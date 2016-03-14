@@ -1,3 +1,14 @@
+# Version 1.1.1-alpha8
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add possibility to declare a factory to initialize a the naming context with a epb-client.properties file
+* Add possibility to initialize MQ client with a pms-client.properties file within the META-INF directory
+
 # Version 1.1.1-alpha7
 
 ## Bugfixes
