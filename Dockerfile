@@ -58,6 +58,9 @@ WORKDIR /opt/appserver
 # install Composer dependencies
 RUN composer install --prefer-dist --no-dev --no-interaction --optimize-autoloader \
 
+    # execute the post-install-cmd manually
+    && composer run-script post-install-cmd \
+
     # modify user-rights in configuration
     &&  sed -i "s/www-data/root/g" etc/appserver/appserver.xml \
 
