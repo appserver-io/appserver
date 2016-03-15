@@ -58,6 +58,13 @@ interface ContainerNodeInterface extends NodeInterface
     public function getThreadType();
 
     /**
+     * Returns TRUE if application provisioning for the container is enabled, else FALSE.
+     *
+     * @return boolean TRUE if application provisioning is enabled, else FALSE
+     */
+    public function getProvisioning();
+
+    /**
      * Returns the receiver description.
      *
      * @return \AppserverIo\Appserver\Core\Api\Node\DescriptionNode The receiver description

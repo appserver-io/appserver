@@ -520,6 +520,7 @@
             <xs:attribute name="name" type="xs:string" use="required"/>
             <xs:attribute name="type" type="xs:string" use="required"/>
             <xs:attribute name="factory" type="xs:string" use="required"/>
+            <xs:attribute name="provisioning" type="xs:boolean" use="optional"/>
             <xs:attribute name="uuid" type="xs:string"/>
             <xs:attribute ref="xml:base"/>
         </xs:complexType>
