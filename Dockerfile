@@ -37,14 +37,6 @@ RUN ln -s /opt/appserver/bin/php /usr/local/bin/php
 
 ################################################################################
 
-# install composer
-RUN cd /usr/local/bin && php -r "readfile('https://getcomposer.org/installer');" | php \
-
-    # create a symlink for the appserver.io Composer binary
-    && ln -s /usr/local/bin/composer.phar /usr/local/bin/composer
-
-################################################################################
-
 # copy the appserver sources
 ADD . /opt/appserver
 
@@ -55,11 +47,11 @@ WORKDIR /opt/appserver
 
 ################################################################################
 
-# install Composer dependencies
-RUN composer install --prefer-dist --no-dev --no-interaction --optimize-autoloader \
+# create a symlink for the appserver.io Composer binary
+RUN ln -s /opt/appserver/bin/composer.phar /usr/local/bin/composer \
 
-    # execute the post-install-cmd manually
-    && composer run-script post-install-cmd \
+    # install composer dependencies
+    &&  composer install --prefer-dist --no-dev --no-interaction --optimize-autoloader \
 
     # modify user-rights in configuration
     &&  sed -i "s/www-data/root/g" etc/appserver/appserver.xml \
