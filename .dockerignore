@@ -6,7 +6,6 @@
 .travis.yml
 build.default.properties
 build.properties
-composer.lock
 composer.phar
 Dockerfile
 docker-compose.yml
