@@ -66,6 +66,13 @@ interface ContainerInterface
     public function getAppBase();
 
     /**
+     * Returns TRUE if application provisioning for the container is enabled, else FALSE.
+     *
+     * @return boolean TRUE if application provisioning is enabled, else FALSE
+     */
+    public function hasProvisioningEnabled();
+
+    /**
      * Returns the containers configuration node.
      *
      * @return \AppserverIo\Appserver\Core\Api\Node\ContainerNode The configuration node

@@ -809,7 +809,9 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
             $this->initializeManagers();
 
             // provision the application
-            $this->provision();
+            if ($this->getContainer()->hasProvisioningEnabled()) {
+                $this->provision();
+            }
 
             // initialize the profile logger and the thread context
             $profileLogger = null;

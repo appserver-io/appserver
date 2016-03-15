@@ -69,6 +69,14 @@ class ContainerNode extends AbstractNode implements ContainerNodeInterface
     protected $threadType;
 
     /**
+     * En-/Disables application application provisioning.
+     *
+     * @var boolean
+     * @AS\Mapping(nodeType="boolean")
+     */
+    protected $provisioning = true;
+
+    /**
      * Container description
      *
      * @var \AppserverIo\Appserver\Core\Api\Node\DescriptionNode
@@ -154,6 +162,16 @@ class ContainerNode extends AbstractNode implements ContainerNodeInterface
     public function getThreadType()
     {
         return $this->threadType;
+    }
+
+    /**
+     * Returns TRUE if application provisioning for the container is enabled, else FALSE.
+     *
+     * @return boolean TRUE if application provisioning is enabled, else FALSE
+     */
+    public function getProvisioning()
+    {
+        return $this->provisioning;
     }
 
     /**

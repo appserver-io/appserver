@@ -1,3 +1,13 @@
+# Version 1.1.1-alpha9
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Extend container configuration to en-/disable application provisioning
+
 # Version 1.1.1-alpha8
 
 ## Bugfixes

@@ -515,6 +515,16 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
     }
 
     /**
+     * Returns TRUE if application provisioning for the container is enabled, else FALSE.
+     *
+     * @return boolean TRUE if application provisioning is enabled, else FALSE
+     */
+    public function hasProvisioningEnabled()
+    {
+        return $this->getContainerNode()->getProvisioning();
+    }
+
+    /**
      * Does shutdown logic for request handler if something went wrong and
      * produces a fatal error for example.
      *
