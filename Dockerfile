@@ -21,19 +21,19 @@ RUN apt-get update && \
 
 # download runtime in specific version
 RUN wget -O /tmp/appserver-runtime.deb \
-    http://builds.appserver.io/linux/debian/8/appserver-runtime_${APPSERVER_RUNTIME_BUILD_VERSION}~deb8_amd64.deb
+    http://builds.appserver.io/linux/debian/8/appserver-runtime_${APPSERVER_RUNTIME_BUILD_VERSION}~deb8_amd64.deb \
 
-# install runtime
-RUN dpkg -i /tmp/appserver-runtime.deb; exit 0
+    # install runtime
+    && dpkg -i /tmp/appserver-runtime.deb; exit 0
 
 # install missing runtime dependencies
-RUN apt-get install -yf
-    
-# remove the unnecessary .deb file
-RUN rm -f /tmp/appserver-runtime.deb
-    
-# create a symlink for the appserver.io PHP binary
-RUN ln -s /opt/appserver/bin/php /usr/local/bin/php
+RUN apt-get install -yf \
+
+    # remove the unnecessary .deb file
+    && rm -f /tmp/appserver-runtime.deb \
+
+    # create a symlink for the appserver.io PHP binary
+    && ln -s /opt/appserver/bin/php /usr/local/bin/php
 
 ################################################################################
 
@@ -51,10 +51,10 @@ WORKDIR /opt/appserver
 RUN ln -s /opt/appserver/bin/composer.phar /usr/local/bin/composer \
 
     # install composer dependencies
-    &&  composer install --prefer-dist --no-dev --no-interaction --optimize-autoloader \
+    && composer install --prefer-dist --no-dev --no-interaction --optimize-autoloader \
 
     # modify user-rights in configuration
-    &&  sed -i "s/www-data/root/g" etc/appserver/appserver.xml \
+    && sed -i "s/www-data/root/g" etc/appserver/appserver.xml \
 
     # create a symlink to the supervisord configuration file
     && ln -s /opt/appserver/etc/supervisor/conf.d/supervisord.conf /etc/supervisor/conf.d/supervisord.conf

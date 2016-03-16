@@ -1,3 +1,13 @@
+# Version 1.1.1-alpha10
+
+## Bugfixes
+
+* Fix for change in Composer workflow, referenced by issue [#5070](composer/composer#5070)
+
+## Features
+
+* None
+
 # Version 1.1.1-alpha9
 
 ## Bugfixes
