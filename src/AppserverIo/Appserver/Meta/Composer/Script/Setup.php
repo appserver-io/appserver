@@ -273,6 +273,19 @@ class Setup
     }
 
     /**
+     * This method will be invoked by composer after a successful update and creates
+     * the application server configuration file under etc/appserver/appserver.xml.
+     *
+     * @param \Composer\Script\Event $event The event that invokes this method
+     *
+     * @return void
+     */
+    public static function postUpdate(Event $event)
+    {
+        Setup::postInstall($event);
+    }
+
+    /**
      * This method will be invoked by composer after a successful installation and creates
      * the application server configuration file under etc/appserver/appserver.xml.
      *

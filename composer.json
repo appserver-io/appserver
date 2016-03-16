@@ -75,6 +75,9 @@
 	"scripts" : {
 		"post-install-cmd" : [
 			"AppserverIo\\Appserver\\Meta\\Composer\\Script\\Setup::postInstall"
+		],
+		"post-update-cmd" : [
+			"AppserverIo\\Appserver\\Meta\\Composer\\Script\\Setup::postUpdate"
 		]
 	}
 }
