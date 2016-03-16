@@ -11,7 +11,7 @@ MAINTAINER Tim Wagner <tw@appserver.io>
 ################################################################################
 
 # define versions
-ENV APPSERVER_RUNTIME_BUILD_VERSION 1.1.1-39
+ENV APPSERVER_RUNTIME_BUILD_VERSION 1.1.2-40
 
 # install packages
 RUN apt-get update && \
