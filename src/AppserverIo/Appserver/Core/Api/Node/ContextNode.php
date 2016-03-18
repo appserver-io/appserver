@@ -97,14 +97,23 @@ class ContextNode extends AbstractNode
     protected $factory;
 
     /**
+     * The path to the web application.
+     *
+     * @var string
+     * @AS\Mapping(nodeType="string")
+     */
+    protected $webappPath;
+
+    /**
      * Initializes the context configuration with the passed values.
      *
-     * @param string $name    The context name
-     * @param string $type    The context class name
-     * @param string $factory The context factory class name
-     * @param array  $params  The context params
+     * @param string $name       The context name
+     * @param string $type       The context class name
+     * @param string $factory    The context factory class name
+     * @param array  $params     The context params
+     * @param string $webappPath The path to the web application
      */
-    public function __construct($name = '', $type = '', $factory = '', array $params = array())
+    public function __construct($name = '', $type = '', $factory = '', array $params = array(), $webappPath = '')
     {
 
         // set name, type and factory
@@ -112,6 +121,7 @@ class ContextNode extends AbstractNode
         $this->type = $type;
         $this->factory = $factory;
         $this->params = $params;
+        $this->webappPath = $webappPath;
 
         // initialize the default directories
         $this->initDefaultDirectories();
@@ -195,6 +205,28 @@ class ContextNode extends AbstractNode
     }
 
     /**
+     * Set's the path to the web application.
+     *
+     * @param string $webappPath The path to the web application
+     *
+     * @return void
+     */
+    public function setWebappPath($webappPath)
+    {
+        $this->webappPath = $webappPath;
+    }
+
+    /**
+     * Returns the path to the web application.
+     *
+     * @return string
+     */
+    public function getWebappPath()
+    {
+        return $this->webappPath;
+    }
+
+    /**
      * This method merges the installation steps of the passed provisioning node into the steps of
      * this instance. If a installation node with the same type already exists, the one of this
      * instance will be overwritten.
@@ -214,6 +246,11 @@ class ContextNode extends AbstractNode
         // merge the application factory class name
         if ($factory = $contextNode->getFactory()) {
             $this->setFactory($factory);
+        }
+
+        // merge the application webapp path
+        if ($webappPath = $contextNode->getWebappPath()) {
+            $this->setWebappPath($webappPath);
         }
 
         // load the params defined in this context

@@ -72,6 +72,79 @@ class DeploymentService extends AbstractFileOperationService
     }
 
     /**
+     * Initializes the context instance for the passed webapp path.
+     *
+     * @param \AppserverIo\Appserver\Core\Interfaces\ContainerInterface $container  The container to load the context for
+     * @param string                                                    $webappPath The path to the web application
+     *
+     * @return \AppserverIo\Appserver\Core\Api\Node\ContextNode The initialized context instance
+     */
+    public function loadContextInstance(ContainerInterface $container, $webappPath)
+    {
+
+        // prepare the context path
+        $contextPath = basename($webappPath);
+
+        // load the system properties
+        $properties = $this->getSystemProperties($container->getContainerNode());
+
+        // append the application specific properties
+        $properties->add(SystemPropertyKeys::WEBAPP, $webappPath);
+        $properties->add(SystemPropertyKeys::WEBAPP_NAME, $contextPath);
+
+        // validate the base context file
+        /** @var AppserverIo\Appserver\Core\Api\ConfigurationService $configurationService */
+        $configurationService = $this->newService('AppserverIo\Appserver\Core\Api\ConfigurationService');
+        $configurationService->validateFile($baseContextPath = $this->getConfdDir('context.xml'), null);
+
+        //load it as default if validation succeeds
+        $context = new ContextNode();
+        $context->initFromFile($baseContextPath);
+        $context->replaceProperties($properties);
+
+        // set the context webapp path
+        $context->setWebappPath($webappPath);
+
+        // try to load a context configuration (from appserver.xml) for the context path
+        if ($contextToMerge = $container->getContainerNode()->getHost()->getContext($contextPath)) {
+            $contextToMerge->replaceProperties($properties);
+            $context->merge($contextToMerge);
+        }
+
+        // iterate through all context configurations (context.xml), validate and merge them
+        foreach ($this->globDir($webappPath . '/META-INF/context.xml') as $contextFile) {
+            try {
+                // validate the application specific context
+                $configurationService->validateFile($contextFile, null);
+
+                // create a new context node instance and replace the properties
+                $contextInstance = new ContextNode();
+                $contextInstance->initFromFile($contextFile);
+                $contextInstance->replaceProperties($properties);
+
+                // merge it into the default configuration
+                $context->merge($contextInstance);
+
+            } catch (ConfigurationException $ce) {
+                // load the logger and log the XML validation errors
+                $systemLogger = $this->getInitialContext()->getSystemLogger();
+                $systemLogger->error($ce->__toString());
+
+                // additionally log a message that DS will be missing
+                $systemLogger->critical(
+                    sprintf('Will skip app specific context file %s, configuration might be faulty.', $contextFile)
+                );
+            }
+        }
+
+        // set the real context name
+        $context->setName($contextPath);
+
+        // return the initialized context instance
+        return $context;
+    }
+
+    /**
      * Initializes the available application contexts and returns them.
      *
      * @param \AppserverIo\Appserver\Core\Interfaces\ContainerInterface $container The container we want to add the applications to
@@ -86,63 +159,8 @@ class DeploymentService extends AbstractFileOperationService
 
         // iterate over all applications and create the context configuration
         foreach (glob($container->getAppBase() . '/*', GLOB_ONLYDIR) as $webappPath) {
-            // prepare the context path
-            $contextPath = basename($webappPath);
-
-            // load the system properties
-            $properties = $this->getSystemProperties($container->getContainerNode());
-
-            // append the application specific properties
-            $properties->add(SystemPropertyKeys::WEBAPP, $webappPath);
-            $properties->add(SystemPropertyKeys::WEBAPP_NAME, basename($webappPath));
-
-            // validate the base context file
-            /** @var AppserverIo\Appserver\Core\Api\ConfigurationService $configurationService */
-            $configurationService = $this->newService('AppserverIo\Appserver\Core\Api\ConfigurationService');
-            $configurationService->validateFile($baseContextPath = $this->getConfdDir('context.xml'), null);
-
-            //load it as default if validation succeeds
-            $context = new ContextNode();
-            $context->initFromFile($baseContextPath);
-            $context->replaceProperties($properties);
-
-            // try to load a context configuration (from appserver.xml) for the context path
-            if ($contextToMerge = $container->getContainerNode()->getHost()->getContext($contextPath)) {
-                $contextToMerge->replaceProperties($properties);
-                $context->merge($contextToMerge);
-            }
-
-            // iterate through all context configurations (context.xml), validate and merge them
-            foreach ($this->globDir($webappPath . '/META-INF/context.xml') as $contextFile) {
-                try {
-                    // validate the application specific context
-                    $configurationService->validateFile($contextFile, null);
-
-                    // create a new context node instance and replace the properties
-                    $contextInstance = new ContextNode();
-                    $contextInstance->initFromFile($contextFile);
-                    $contextInstance->replaceProperties($properties);
-
-                    // merge it into the default configuration
-                    $context->merge($contextInstance);
-
-                } catch (ConfigurationException $ce) {
-                    // load the logger and log the XML validation errors
-                    $systemLogger = $this->getInitialContext()->getSystemLogger();
-                    $systemLogger->error($ce->__toString());
-
-                    // additionally log a message that DS will be missing
-                    $systemLogger->critical(
-                        sprintf('Will skip app specific context file %s, configuration might be faulty.', $contextFile)
-                    );
-                }
-            }
-
-            // set the real context name
-            $context->setName($contextPath);
-
-            // attach the context to the context instance
-            $contextInstances[$contextPath] = $context;
+            $context = $this->loadContextInstance($container, $webappPath);
+            $contextInstances[$context->getName()] = $context;
         }
 
         // return the array with the context instances

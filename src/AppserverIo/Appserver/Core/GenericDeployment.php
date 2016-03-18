@@ -48,6 +48,26 @@ class GenericDeployment extends AbstractDeployment
     }
 
     /**
+     * Return's the container's directory with applications to be deployed.
+     *
+     * @return string The container's application base directory
+     */
+    protected function getAppBase()
+    {
+        return $this->getContainer()->getAppBase();
+    }
+
+    /**
+     * Load's and return's the context instances for the container.
+     *
+     * @return array The array with the container's context instances
+     */
+    protected function loadContextInstances()
+    {
+        return $this->getDeploymentService()->loadContextInstancesByContainer($this->getContainer());
+    }
+
+    /**
      * Deploys the available datasources.
      *
      * @return void
@@ -59,7 +79,7 @@ class GenericDeployment extends AbstractDeployment
         $container = $this->getContainer();
 
         // load the container and check if application base directory exists
-        if (is_dir($directory = $container->getAppBase())) {
+        if (is_dir($directory = $this->getAppBase())) {
             // load the datasource files
             $datasourceFiles = $this->getDeploymentService()->globDir($directory . DIRECTORY_SEPARATOR . '*-ds.xml');
 
@@ -126,7 +146,7 @@ class GenericDeployment extends AbstractDeployment
         $container = $this->getContainer();
 
         // load the context instances for this container
-        $contextInstances = $this->getDeploymentService()->loadContextInstancesByContainer($container);
+        $contextInstances = $this->loadContextInstances();
 
         // gather all the deployed web applications
         foreach ($contextInstances as $context) {

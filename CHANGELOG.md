@@ -6,6 +6,7 @@
 
 ## Features
 
+* Add runner mode enabling a node.JS style usability
 * Add log configuration to appserver.xml to allow modfiying it in Dockerfile
 * [Docker] supervisord log output will now be redirected to Docker stdout/stderr
 
