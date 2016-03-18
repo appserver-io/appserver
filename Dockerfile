@@ -13,9 +13,14 @@ MAINTAINER Tim Wagner <tw@appserver.io>
 # define versions
 ENV APPSERVER_RUNTIME_BUILD_VERSION 1.1.2-40
 
-# install packages
-RUN apt-get update && \
-    DEBIAN_FRONTEND=noninteractive apt-get install supervisor wget git -y
+# update the sources list
+RUN apt-get update \
+
+    # install the necessary packages
+    && DEBIAN_FRONTEND=noninteractive apt-get install supervisor wget git -y python-pip \
+
+    # install the Python package to redirect the supervisord output
+    && pip install supervisor-stdout
 
 ################################################################################
 
@@ -56,20 +61,34 @@ RUN ln -s /opt/appserver/bin/composer.phar /usr/local/bin/composer \
     # modify user-rights in configuration
     && sed -i "s/www-data/root/g" etc/appserver/appserver.xml \
 
+    # modify system logger configuration
+    && sed -i "s/var\/log\/appserver-errors.log/php:\/\/stderr/g" etc/appserver/appserver.xml \
+
+    # modify access logger configuration
+    && sed -i "s/var\/log\/appserver-access.log/php:\/\/stdout/g" etc/appserver/appserver.xml \
+
+    # modify default HTTP server port configuration
+    && sed -i "s/9080/80/g" etc/appserver/appserver.xml \
+
+    # modify default HTTPS server port configuration
+    && sed -i "s/9443/443/g" etc/appserver/appserver.xml \
+
+    # modify the error_log of PHP-FPM configuration to /dev/stderr
+    && sed -i "s/;error_log = log\/php-fpm.log/error_log = \/proc\/self\/fd\/2/g" etc/php-fpm.conf \
+
+    # modify the error_log of PHP php.ini to /dev/stderr
+    && sed -i "s/\/opt\/appserver\/var\/log\/php_errors.log/\/proc\/self\/fd\/2/g" etc/php.ini \
+
+    # modify the error_log of PHP-FPM php.ini to /dev/stderr
+    && sed -i "s/\/opt\/appserver\/var\/log\/php-fpm-fcgi_errors.log/\/proc\/self\/fd\/2/g" etc/php-fpm-fcgi.ini \
+
     # create a symlink to the supervisord configuration file
     && ln -s /opt/appserver/etc/supervisor/conf.d/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 ################################################################################
 
-# forward request and error logs to docker log collector
-RUN ln -sf /dev/stderr /opt/appserver/var/log/php_errors.log \
-    && ln -sf /dev/stdout /opt/appserver/var/log/appserver-access.log \
-    && ln -sf /dev/stderr /opt/appserver/var/log/appserver-errors.log
-
-################################################################################
-
 # expose ports
-EXPOSE 9080 9443
+EXPOSE 80 443
 
 # supervisord needs this
 CMD []

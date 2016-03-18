@@ -111,7 +111,6 @@ class AppserverNode extends AbstractNode implements SystemConfigurationInterface
         // initialize the default configuration
         $this->initDefaultDirectories();
         $this->initDefaultFiles();
-        $this->initDefaultLoggers();
         $this->initDefaultScanners();
         $this->initDefaultExtractors();
         $this->initDefaultInitialContext();
@@ -137,7 +136,7 @@ class AppserverNode extends AbstractNode implements SystemConfigurationInterface
      *
      * @return void
      */
-    public function initDefaultDirectories()
+    protected function initDefaultDirectories()
     {
         $this->setParam(DirectoryKeys::TMP, ParamNode::TYPE_STRING, '/tmp');
         $this->setParam(DirectoryKeys::DEPLOY, ParamNode::TYPE_STRING, '/deploy');
@@ -155,7 +154,7 @@ class AppserverNode extends AbstractNode implements SystemConfigurationInterface
      *
      * @return void
      */
-    public function initDefaultFiles()
+    protected function initDefaultFiles()
     {
         $logDir = $this->getParam(DirectoryKeys::VAR_LOG) . DIRECTORY_SEPARATOR;
         $this->setParam(FileKeys::APPSERVER_ERRORS_LOG, ParamNode::TYPE_STRING, $logDir . 'appserver-errors.log');
@@ -285,63 +284,6 @@ class AppserverNode extends AbstractNode implements SystemConfigurationInterface
 
         // add extractor to the appserver node
         $this->extractors[$pharExtractor->getPrimaryKey()] = $pharExtractor;
-    }
-
-    /**
-     * Initializes the default logger configuration.
-     *
-     * @return void
-     */
-    protected function initDefaultLoggers()
-    {
-
-        // we dont need any processors
-        $processors = array();
-
-        // initialize the params for the system logger handler
-        $handlerParams = array();
-        $logLevelParam = new ParamNode('logLevel', 'string', new NodeValue(LogLevel::INFO));
-        $logFileParam = new ParamNode('logFile', 'string', new NodeValue('var/log/appserver-errors.log'));
-        $handlerParams[$logFileParam->getPrimaryKey()] = $logFileParam;
-        $handlerParams[$logLevelParam->getPrimaryKey()] = $logLevelParam;
-
-        // initialize the handler
-        $handlers = array();
-        $handler = new HandlerNode('\AppserverIo\Logger\Handlers\CustomFileHandler', null, $handlerParams);
-        $handlers[$handler->getPrimaryKey()] = $handler;
-
-        // initialize the system logger with the processor and the handlers
-        $systemLogger = new LoggerNode(LoggerUtils::SYSTEM, '\AppserverIo\Logger\Logger', 'system', $processors, $handlers);
-
-        // we dont need any processors
-        $processors = array();
-
-        // initialize the params for the access logger formatter
-        $formatterParams = array();
-        $messageFormatParam = new ParamNode('format', 'string', new NodeValue('%4$s'));
-        $formatterParams[$messageFormatParam->getPrimaryKey()] = $messageFormatParam;
-
-        // initialize the formatter for the access logger
-        $formatter = new FormatterNode('\AppserverIo\Logger\Formatters\StandardFormatter', $formatterParams);
-
-        // initialize the params for the system logger handler
-        $handlerParams = array();
-        $logLevelParam = new ParamNode('logLevel', 'string', new NodeValue(LogLevel::DEBUG));
-        $logFileParam = new ParamNode('logFile', 'string', new NodeValue('var/log/appserver-access.log'));
-        $handlerParams[$logFileParam->getPrimaryKey()] = $logFileParam;
-        $handlerParams[$logLevelParam->getPrimaryKey()] = $logLevelParam;
-
-        // initialize the handler
-        $handlers = array();
-        $handler = new HandlerNode('\AppserverIo\Logger\Handlers\CustomFileHandler', $formatter, $handlerParams);
-        $handlers[$handler->getPrimaryKey()] = $handler;
-
-        // initialize the system logger with the processor and the handlers
-        $accessLogger = new LoggerNode(LoggerUtils::ACCESS, '\AppserverIo\Logger\Logger', 'access', $processors, $handlers);
-
-        // add the loggers to the default logger configuration
-        $this->loggers[$systemLogger->getPrimaryKey()] = $systemLogger;
-        $this->loggers[$accessLogger->getPrimaryKey()] = $accessLogger;
     }
 
     /**

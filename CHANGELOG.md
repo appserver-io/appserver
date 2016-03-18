@@ -1,3 +1,15 @@
+# Version 1.1.1-alpha11
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add runner mode enabling a node.JS style usability
+* Add log configuration to appserver.xml to allow modfiying it in Dockerfile
+* [Docker] supervisord log output will now be redirected to Docker stdout/stderr
+
 # Version 1.1.1-alpha10
 
 ## Bugfixes

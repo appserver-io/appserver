@@ -49,12 +49,12 @@ class ApplicationFactory
     public static function visit(ContainerInterface $container, ContextNode $context)
     {
 
-        // prepare the path to the applications base directory
-        $folder = $container->getAppBase() . DIRECTORY_SEPARATOR . $context->getName();
+        // load the applications base directory
+        $webappPath = $context->getWebappPath();
 
         // declare META-INF and WEB-INF directory
-        $webInfDir = $folder . DIRECTORY_SEPARATOR . 'WEB-INF';
-        $metaInfDir = $folder . DIRECTORY_SEPARATOR . 'META-INF';
+        $webInfDir = $webappPath . DIRECTORY_SEPARATOR . 'WEB-INF';
+        $metaInfDir = $webappPath . DIRECTORY_SEPARATOR . 'META-INF';
 
         // check if we've a directory containing a valid application,
         // at least a WEB-INF or META-INF folder has to be available

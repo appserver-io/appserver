@@ -329,7 +329,7 @@ class ContainerService extends AbstractFileOperationService
         // init variable for the group
         $group = null;
 
-        // pattern to replace the user in the etc/appserver/appserver.xml file
+        // pattern to replace the user in the etc/appserver/appserver.xml/appserver-single-app.xml file
         $configurationUserReplacePattern = '/(<appserver[^>]+>[^<]+<params>.*<param name="user[^>]+>)([^<]+)/s';
 
         // check setup modes

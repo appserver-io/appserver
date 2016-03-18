@@ -317,6 +317,7 @@ class Setup
 
         // process and move the configuration files their target directory
         Setup::processTemplate('etc/appserver/appserver.xml', $override);
+        Setup::processTemplate('etc/appserver/appserver-runner.xml', $override);
 
         // write a message to the console
         $event->getIo()->write(

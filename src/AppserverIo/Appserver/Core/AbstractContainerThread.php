@@ -33,6 +33,7 @@ use AppserverIo\Server\Dictionaries\ServerStateKeys;
 use AppserverIo\Psr\Naming\NamingDirectoryInterface;
 use AppserverIo\Appserver\Application\Interfaces\ContextInterface;
 use AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface;
+use AppserverIo\Appserver\Core\Api\Node\ServerNodeInterface;
 
 /**
  * Abstract container implementation.
@@ -106,6 +107,25 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
     }
 
     /**
+     * Return's the prepared server node configuration.
+     *
+     * @param \AppserverIo\Appserver\Core\Api\Node\ServerNodeInterface $serverNode The server node
+     *
+     * @return \AppserverIo\Appserver\Core\ServerNodeConfiguration The server node configuration
+     */
+    protected function getServerNodeConfiguration(ServerNodeInterface $serverNode)
+    {
+
+        // query whether a server signature (software) has been configured
+        if ($serverNode->getParam('software') == null) {
+            $serverNode->setParam('software', ParamNode::TYPE_STRING, $this->getService()->getServerSignature());
+        }
+
+        // add the server node configuration
+        return new ServerNodeConfiguration($serverNode);
+    }
+
+    /**
      * Run the containers logic
      *
      * @return void
@@ -152,13 +172,7 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
         // load the server configurations and query whether a server signatures has been set
         /** @var \AppserverIo\Appserver\Core\Api\Node\ServerNodeInterface $serverNode */
         foreach ($this->getContainerNode()->getServers() as $serverNode) {
-            // query whether a server signature (software) has been configured
-            if ($serverNode->getParam('software') == null) {
-                $serverNode->setParam('software', ParamNode::TYPE_STRING, $this->getService()->getServerSignature());
-            }
-
-            // add the server node configuration
-            $serverConfigurations[] = new ServerNodeConfiguration($serverNode);
+            $serverConfigurations[] = $this->getServerNodeConfiguration($serverNode);
         }
 
         // init upstreams
