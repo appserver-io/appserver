@@ -116,4 +116,4 @@ $ cd example/src
 $ appserver-runner
 ```
 
-> Using the runner mode restricts appserver.io to deploy exactly one application, even the one that has been found in the actual working directory. 
+> Using the runner mode restricts appserver.io to deploy exactly one application, even the one that has been found in the actual working directory. Beside that, the log output will be redirected to the actual terminal window, which makes debugging quite more comfortable.
