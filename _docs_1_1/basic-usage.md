@@ -12,6 +12,8 @@ subNav:
     href: start-and-stop-scripts
   - title: Setup script
     href: setup-script
+  - title: Runner
+    href: runner
 permalink: /get-started/documentation/1.1/basic-usage.html
 ---
 
@@ -77,7 +79,7 @@ Windows users will find the same three daemons as services within their Windows 
 appserver.io comes with a simple setup mechanism that sets the correct file system permissions for your environment needs.
 
 ```bash
-sudo /opt/appserver/server.php -s <MODE>
+sudo /opt/appserver/bin/appserver-<MODE>-mode
 ```
 
 There are three modes you can use to setup appserver.io to your environment needs.
@@ -91,6 +93,27 @@ There are three modes you can use to setup appserver.io to your environment need
 This is how it should be executed to be ready for local development.
 
 ```bash
-sudo /opt/appserver/server.php -s dev
-# Should return: Setup for mode 'dev' done successfully.
+$ sudo appserver-dev-mode
+# var/log/appserver-errors.log should now contain something like: Setup for mode 'dev' done successfully.
 ```
+
+## Runner
+
+Another option is the possiblity to use the appserver.io `runner`. In contrast to the default behaviour, which starts appserver.io as a daemon like `nginx` or `Apache`, the `runner` starts appserver.io on demand and expects the application that has to be started in the actual working directory. This is more a `nodejs` like behaviour.
+
+To use the `runner`, it is necessary that the appserver.io `runner` environment has been switched to `dev` mode like described [before](#setup-script).
+
+After switching to `dev` mode and assumed the example application has been cloned with
+
+```sh
+$ git clone https://github.com/appserver-io-apps/example
+```
+
+the runner can be started with
+
+```sh
+$ cd example/src
+$ appserver-runner
+```
+
+> Using the runner mode restricts appserver.io to deploy exactly one application, even the one that has been found in the actual working directory. 
