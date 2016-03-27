@@ -1,3 +1,13 @@
+# Version 1.1.1-alpha12
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Remove blackfire.io support because of segfault caused by pthreads
+
 # Version 1.1.1-alpha11
 
 ## Bugfixes
