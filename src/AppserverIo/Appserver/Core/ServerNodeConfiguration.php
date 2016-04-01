@@ -20,8 +20,9 @@
 
 namespace AppserverIo\Appserver\Core;
 
-use AppserverIo\Server\Interfaces\ServerConfigurationInterface;
+use AppserverIo\Appserver\Core\Utilities\SslOptionKeys;
 use AppserverIo\Appserver\Core\Api\Node\ServerNodeInterface;
+use AppserverIo\Server\Interfaces\ServerConfigurationInterface;
 
 /**
  * Wrapper for the sever node passed from the appserver-io-psr/server package.
@@ -427,6 +428,146 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     }
 
     /**
+     * Returns cert path
+     *
+     * @return string
+     */
+    public function getCertPath()
+    {
+        return $this->node->getParam(SslOptionKeys::CERT_PATH);
+    }
+
+    /**
+     * Returns passphrase
+     *
+     * @return string
+     */
+    public function getPassphrase()
+    {
+        return $this->node->getParam(SslOptionKeys::PASSPHRASE);
+    }
+
+    /**
+     * Returns DH param path
+     *
+     * @return string
+     */
+    public function getDhParamPath()
+    {
+        return $this->node->getParam(SslOptionKeys::DH_PARAM_PATH);
+    }
+
+    /**
+     * Return's private key path
+     *
+     * @return string
+     */
+    public function getPrivateKeyPath()
+    {
+        return $this->node->getParam(SslOptionKeys::PRIVATE_KEY_PATH);
+    }
+
+    /**
+     * Return's the crypto method to use
+     *
+     * @return string
+     */
+    public function getCryptoMethod()
+    {
+        return $this->node->getParam(SslOptionKeys::CRYPTO_METHOD);
+    }
+
+    /**
+     * Return's the peer name to be used, if this value is not set, then the name is guessed based on the hostname used when opening the stream
+     *
+     * @return string
+     */
+    public function getPeerName()
+    {
+        return $this->node->getParam(SslOptionKeys::PEER_NAME);
+    }
+
+    /**
+     * Return's TRUE it the verification of use SSL certificate has to be required
+     *
+     * @return boolean
+     */
+    public function getVerifyPeer()
+    {
+        return $this->node->getParam(SslOptionKeys::VERIFY_PEER);
+    }
+
+    /**
+     * Return's TRUE it the peer name has to be verified
+     *
+     * @return boolean
+     */
+    public function getVerifyPeerName()
+    {
+        return $this->node->getParam(SslOptionKeys::VERIFY_PEER_NAME);
+    }
+
+    /**
+     * Return's TRUE to disable TLS compression. This can help mitigate the CRIME attack vector
+     *
+     * @return boolean
+     */
+    public function getDisableCompression()
+    {
+        return $this->node->getParam(SslOptionKeys::DISABLE_COMPRESSION);
+    }
+
+    /**
+     * Return's TRUE if self-signed certificates has to be allowed, but requires verify_peer to be FALSE
+     *
+     * @return boolean
+     */
+    public function getAllowSelfSigned()
+    {
+        return $this->node->getParam(SslOptionKeys::ALLOW_SELF_SIGNED);
+    }
+
+    /**
+     * Return's TRUE if control cipher ordering preferences during negotiation has to be allowed
+     *
+     * @return boolean
+     */
+    public function getHonorCipherOrder()
+    {
+        return $this->node->getParam(SslOptionKeys::HONOR_CIPHER_ORDER);
+    }
+
+    /**
+     * Return's the curve to use with ECDH ciphers, if not specified prime256v1 will be used
+     *
+     * @return string
+     */
+    public function getEcdhCurve()
+    {
+        return $this->node->getParam(SslOptionKeys::ECDH_CURVE);
+    }
+
+    /**
+     * Return's TRUE if a new key pair has to be created in scenarios where ECDH cipher suites are negotiated (instead of the preferred ECDHE ciphers)
+     *
+     * @return boolean
+     */
+    public function getSingleEcdhUse()
+    {
+        return $this->node->getParam(SslOptionKeys::SINGLE_ECDH_USE);
+    }
+
+    /**
+     * Return's TRUE if new key pair has to be created created when using DH parameters (improves forward secrecy)
+     *
+     * @return boolean
+     */
+    public function getSingleDhUse()
+    {
+        return $this->node->getParam(SslOptionKeys::SINGLE_DH_USE);
+    }
+
+    /**
      * Returns connection handlers
      *
      * @return array
@@ -484,26 +625,6 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     public function getAuthentications()
     {
         return $this->authentications;
-    }
-
-    /**
-     * Returns cert path
-     *
-     * @return string
-     */
-    public function getCertPath()
-    {
-        return $this->node->getParam('certPath');
-    }
-
-    /**
-     * Returns passphrase
-     *
-     * @return string
-     */
-    public function getPassphrase()
-    {
-        return $this->node->getParam('passphrase');
     }
 
     /**

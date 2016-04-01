@@ -1,3 +1,13 @@
+# Version 1.1.1-alpha13
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Switch to latest appserver-io/webserver and appserver-io/dnsserver version with extended SSL configuration options
+
 # Version 1.1.1-alpha12
 
 ## Bugfixes
