@@ -22,6 +22,7 @@
 namespace AppserverIo\Appserver\Core\Api\Node;
 
 use AppserverIo\Description\Api\Node\AbstractNode;
+use AppserverIo\Appserver\Core\Utilities\SslOptionKeys;
 
 /**
  * DTO to transfer server information.
@@ -133,6 +134,21 @@ class ServerNode extends AbstractNode implements ServerNodeInterface
      * @var \AppserverIo\Appserver\Core\Api\Node\CertificatesNodeTrait
      */
     use CertificatesNodeTrait;
+
+    /**
+     * Initialize the server node with default values.
+     */
+    public function __construct()
+    {
+        // set the default SSL options
+        $this->setParam(SslOptionKeys::VERIFY_PEER, 'boolean', false);
+        $this->setParam(SslOptionKeys::VERIFY_PEER_NAME, 'boolean', false);
+        $this->setParam(SslOptionKeys::ALLOW_SELF_SIGNED, 'boolean', true);
+        $this->setParam(SslOptionKeys::DISABLE_COMPRESSION, 'boolean', true);
+        $this->setParam(SslOptionKeys::HONOR_CIPHER_ORDER, 'boolean', false);
+        $this->setParam(SslOptionKeys::SINGLE_ECDH_USE, 'boolean', false);
+        $this->setParam(SslOptionKeys::SINGLE_DH_USE, 'boolean', false);
+    }
 
     /**
      * The servers type.

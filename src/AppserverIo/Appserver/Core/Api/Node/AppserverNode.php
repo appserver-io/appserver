@@ -20,8 +20,6 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
-use Psr\Log\LogLevel;
-use AppserverIo\Logger\LoggerUtils;
 use AppserverIo\Description\Api\Node\NodeValue;
 use AppserverIo\Description\Api\Node\AbstractNode;
 use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
