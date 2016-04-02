@@ -119,7 +119,7 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
                         <param name="admin" type="string"><?php echo Setup::getValue(SetupKeys::ADMIN_EMAIL) ?></param>
                         <param name="transport" type="string">udp</param>
                         <param name="address" type="string">127.0.0.1</param>
-                        <param name="port" type="integer">53</param>
+                        <param name="port" type="integer">9053</param>
                         <param name="flags" type="string">STREAM_SERVER_BIND</param>
                         <param name="workerNumber" type="integer">4</param>
                         <param name="workerAcceptMin" type="integer">3</param>
@@ -525,6 +525,11 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
                         <param name="singleEcdhUse" type="boolean">true</param>
                         <param name="singleDhUse" type="boolean">true</param>
                     </params>
+
+                    <!-- By default, we want to send additional response headers to improve HTTPS security -->
+                    <headers>
+                        <header type="response" name="Strict-Transport-Security" value="max-age=31536000; includeSubDomains; preload" />
+                    </headers>
 
                     <!-- An example to activate a the auto index functionality on a custom directory -->
                     <!--

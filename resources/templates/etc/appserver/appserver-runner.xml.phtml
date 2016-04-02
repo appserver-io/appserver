@@ -286,6 +286,11 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
                         <param name="singleDhUse" type="boolean">true</param>
                     </params>
 
+                    <!-- By default, we want to send additional response headers to improve HTTPS security -->
+                    <headers>
+                        <header type="response" name="Strict-Transport-Security" value="max-age=31536000; includeSubDomains; preload" />
+                    </headers>
+
                     <environmentVariables>
                         <environmentVariable condition="" definition="LOGGER_ACCESS=Access" />
                     </environmentVariables>

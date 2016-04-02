@@ -1,3 +1,14 @@
+# Version 1.1.1-beta1
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Switch to default port 9053 for DNS server
+* Add Strict-Transport-Security header to enable HTTPS Strict Transport Security (HSTS)
+
 # Version 1.1.1-alpha13
 
 ## Bugfixes
