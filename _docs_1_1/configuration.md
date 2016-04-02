@@ -358,23 +358,6 @@ All params listed above are common to servers using the `HttpConnectionHandler`.
 
 > The param composition may vary depending on the server implementation.
 
-Since version 1.1 you've the possibility to define multiple SSL certificates. Multiple certificates can be enabled on server level by adding a `<certificates/>` node containing a `<certificate/>` node for each certificate you want to add. For example, if you want to add a wildcard certificate for `appserver.local` and `appserver.dev`, the following configuration will be appropriate
-
-```xml
-<certificates>
-    <certificate domain="*.appserver.local" certPath="etc/appserver/appserver-local.pem" />
-    <certificate domain="*.appserver.dev" certPath="etc/appserver/appserver-dev.pem" />
-</certificates>
-```
-
-The `<certificate/>` node has two attributes that has to be specified:
-
-* The value of the `domain` attribute has to be the fully qualified domain name (FQDN)
-* The value of the `certPath` attribute has to be the relative path to the certificate that should be bound, 
-  assumed the base directory is the appserver's root directory
-
-> Do not forget to restart the server after adding the certificates.
-
 ## System CRON
 
 Since version 1.1 appserver.io also provides a real CRON implementation that can replace your system's CRON daemon. The jobs can be configured in a separate XML configuration file, located under `etc/appserver/conf.d/cron.xml`.
