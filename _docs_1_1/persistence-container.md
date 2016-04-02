@@ -687,6 +687,87 @@ class LoginServlet extends HttpServlet
 }
 ```
 
+#### Local and Remote Invocation
+
+Session beans can be distributed over the network. That means, if the application has been deployed on two appserver.io instances on different machines, the application is able to invoke the method of a session bean on the other instance. This can be interesting when the application has to be scaled out, or something like an import functionality must have no impact on the instance that run's the webserver.
+
+> The good news are: There is nothing that has to be changed in the source code, as appserver.io comes with build-in functionality to handle local/remote method invocation.
+
+By default, method invocation on session beans will **ALWAYS** be local. To change that default behaviour three steps are necessary
+
+1. Activate the persistence container configuration as described in the appserver.io's [configuration chapter](<{{ "/get-started/documentation/1.1/configuration.html#persistence-container-remote" | prepend: site.baseurl }}>)
+
+2. Create/use a deployment descriptor, e. g. `META-INF/epb.xml` to specify the session beans remote interface
+
+   ```xml
+   <session>
+     <session-type>Stateless</session-type>
+     <epb-name>SampleProcessor</epb-name>
+     <epb-class>AppserverIo\Apps\Example\Services\SampleProcessor</epb-class>
+     <post-construct>
+       <lifecycle-callback-method>initialize</lifecycle-callback-method>
+     </post-construct>
+     <epb-ref>
+       <epb-ref-name>UserProcessor</epb-ref-name>
+       <remote>**UserProcessorRemote**</remote>
+       <epb-link>UserProcessor</epb-link>
+       <injection-target>
+         <injection-target-class>AppserverIo\Apps\Example\Services\SampleProcessor</injection-target-class>
+         <injection-target-property>userProcessor</injection-target-property>
+       </injection-target>
+     </epb-ref>
+   </session>
+   ```
+3. Create a `META-INF/epb-client.properties` file with the remote instance configuration
+
+   ```ini
+   transport  = http
+   scheme     = php
+   user       = appserver
+   pass       = appserver.i0
+   host       = 127.0.0.2
+   port       = 8585
+   scope      = app
+   indexFile  = index.pc
+   interface  = remote
+   ```
+
+The configuration from above uses the remote instance of the `UserProcessor` instance, located on an appserver.io instance running on IP `127.0.0.2`, whenever the `SampleProcessor` invokes a method on it, like
+
+```php
+<?php
+
+/**
+ * @Stateless
+ */
+class SampleProcessor
+{
+
+    /**
+     * The user processor instance.
+     *
+     * @var \AppserverIo\Apps\Example\Services\UserProcessor
+     * @EnterpriseBean(name="UserProcessor")
+     */
+    protected $userProcessor;
+    
+    /**
+     * A dummy method.
+     *
+     * @return object The result object
+     */
+    public function doSomething()
+    {
+        // will invoke the UserProcessor instance on appserver.io instance on IP 127.0.0.2 and return the result
+        return $this->userProcessor->doSomething();
+    }
+}
+```
+
+Without these configuration settings, the local instance will be invoked. The sourcecode has **NOT** to be changed in both cases.
+
+> Using the remote interface of session beans is seamless and declarative.
+
 ### Message Beans (MDBs)
 
 Other than session beans, `MDBs` are **NOT** invoked by a proxy, but are sent to a `Message Broker` as receiver of the messages. The `Message Broker` adds them to a queue until they are collected and proccessed in a separate thread.
@@ -949,4 +1030,5 @@ class AStatefulSessionBean
 }
 ```
 
-The `AclSessionBean` is NOT implemented in this example because this description only gives a rough indication on how to implement such a functionality and how an `Interceptor` can be used.  
+The `AclSessionBean` is NOT implemented in this example because this description only gives a rough indication on how to implement such a functionality and how an `Interceptor` can be used.
+

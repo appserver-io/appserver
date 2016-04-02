@@ -10,25 +10,18 @@ subNav:
     href: got-mail
   - title: Send a message
     href: send-a-message
+  - title: Working remote
+    href: working-remote
 permalink: /get-started/documentation/1.1/message-queue.html
 ---
 
-A Message-Queue provides a means to process long running tasks in an encapsulated context.
-For example, if you want to import a lot of products in your online shop, you can send a
-message to the Message-Queue, which starts the import process in the background, without
-preventing the calling process to continue.
+A Message-Queue provides a means to process long running tasks in an encapsulated context. For example, if you want to import a lot of products in your online shop, you can send a message to the Message-Queue, which starts the import process in the background, without preventing the calling process to continue.
 
 > Using a Message-Queue gives you the power to use threads, and it will take care of all the pitfalls for you.
 
 ## Got mail!
 
-Before sending a message, you have to specify what has to happen, when you received one. The
-Message-Queue allows you to specify so-called `Queues`. Each `Queue` can have a receiver that
-has to be a `MessageBean`. A `MessageBean` is very similar to a [@Stateless SessionBean](#@stateless-session-bean)
-but has only one single point of entry, the `onMessage()` message method. Whenever a message
-is sent to the queue, the Message-Queue simple pushes it on the stack. In the background a
-`QueueWorker` is running in another context and queries the stack for new messages. If a new
-message is available, it will be instantiated and processed.
+Before sending a message, you have to specify what has to happen, when you received one. The Message-Queue allows you to specify so-called `Queues`. Each `Queue` can have a receiver that has to be a `MessageBean`. A `MessageBean` is very similar to that of [stateless session beans](<{{ "/get-started/documentation/1.1/persistence-container.html#stateless-session-beans-slsbs" | prepend: site.baseurl }}>) but has only one single point of entry, the `onMessage()` message method. Whenever a message is sent to the queue, the Message-Queue simple pushes it on the stack. In the background a `QueueWorker` is running in another context and queries the stack for new messages. If a new message is available, it will be instantiated and processed.
 
 The following example shows how to create a simple `Queue`.
 
@@ -83,8 +76,7 @@ Running your import in a separate thread is pretty simple. The next sections dem
 
 ## Send a message
 
-Messages are POPOs that can be sent over the network. If you want to send a message, you have
-to initialize the Message-Queue Client and specify which `Queue` you want to send the message to.
+Messages are POPOs that can be sent over the network. If you want to send a message, you have to initialize the Message-Queue Client and specify which `Queue` you want to send the message to.
 
 Again, we will extend the `Servlet` to start an import process on a POST request.
 
@@ -246,5 +238,17 @@ class HelloWorldServlet extends HttpServlet
 }
 ```
 
-> To make it simpler, as shown above, you can use the `@Resource` annotation. With this annotation, the container will inject a sender
-> instance, which will send the name of the file.
+> To make it simpler, as shown above, you can use the `@Resource` annotation. With this annotation, the container will inject a sender instance, which will send the name of the file.
+
+## Working remote
+
+Maybe there is a case, where the Message-Queue needs to be installed on another machine. So it is necessary to have a possiblity to configure where to send a message. This can be done with a properties file `META-INF/pms-client.properties` with the following content
+
+```ini
+transport  = http
+address    = 127.0.0.2
+port       = 8587
+indexFile  = index.mq
+```
+
+The example from above assumes, that the Message-Queue instance is running on a appserver.io installation with the IP `127.0.0.2` listening on port `8587`.

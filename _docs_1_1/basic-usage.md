@@ -94,8 +94,9 @@ This is how it should be executed to be ready for local development.
 
 ```bash
 $ sudo appserver-dev-mode
-# var/log/appserver-errors.log should now contain something like: Setup for mode 'dev' done successfully.
 ```
+
+> The log file `var/log/appserver-errors.log` should now contain something like: Setup for mode 'dev' done successfully.
 
 ## Runner
 
@@ -113,7 +114,7 @@ the runner can be started with
 
 ```sh
 $ cd example/src
-$ appserver-runner
+$ sudo appserver-runner
 ```
 
 > Using the runner mode restricts appserver.io to deploy exactly one application, even the one that has been found in the actual working directory. Beside that, the log output will be redirected to the actual terminal window, which makes debugging quite more comfortable.
