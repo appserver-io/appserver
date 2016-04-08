@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bootstrap xmlns="http://www.appserver.io/appserver"
+    defaultRunlevel="full">
+    <listeners>
+        <listener event="leave.runlevel.shutdown" priority="0"
+            type="AppserverIo\Appserver\Core\Listeners\StopServicesListener"/>
+        <listener event="leave.runlevel.shutdown" priority="0"
+            type="AppserverIo\Appserver\Core\Listeners\UnloadLoggersListener"/>
+        <listener event="enter.runlevel.shutdown" priority="0"
+            type="AppserverIo\Appserver\Core\Listeners\LoadConfigurationListener" />
+        <listener event="enter.runlevel.shutdown" priority="0"
+            type="AppserverIo\Appserver\Core\Listeners\LoadLoggersListener" />
+        <listener event="enter.runlevel.shutdown" priority="0"
+            type="AppserverIo\Appserver\Core\Listeners\LoadInitialContextListener" />
+        <listener event="enter.runlevel.shutdown" priority="0"
+            type="AppserverIo\Appserver\Core\Listeners\SwitchUmaskListener" />
+        <listener event="enter.runlevel.shutdown" priority="0"
+            type="AppserverIo\Appserver\Core\Listeners\PrepareFileSystemListener" />
+        <listener event="enter.runlevel.shutdown" priority="0"
+            type="AppserverIo\Appserver\Core\Listeners\CreateSslCertificateListener" />
+        <listener event="enter.runlevel.network" priority="0"
+            type="AppserverIo\Appserver\Core\Listeners\ExtractArchivesListener" />
+        <listener event="enter.runlevel.network" priority="0"
+            type="AppserverIo\SingleApp\Core\Listeners\StartSimpleContainersListener" />
+        <listener event="enter.runlevel.secure" priority="0"
+            type="AppserverIo\Appserver\Core\Listeners\SwitchUserListener" />
+        <listener event="leave.runlevel.secure" priority="0"
+            type="AppserverIo\Appserver\Core\Listeners\SwitchRootListener" />
+        <listener event="enter.runlevel.full" priority="0"
+            type="AppserverIo\Appserver\Core\Listeners\DeployApplicationsListener" />
+        <listener event="leave.runlevel.full" priority="0"
+            type="AppserverIo\Appserver\Core\Listeners\ShutdownApplicationsListener" />
+        <listener event="enter.runlevel.administration" priority="0"
+            type="AppserverIo\Appserver\Core\Listeners\StartConsolesListener" />
+    </listeners>
+</bootstrap>

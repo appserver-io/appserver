@@ -73,6 +73,61 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
     <containers>
 
         <container
+                name="system-container"
+                type="AppserverIo\Appserver\Core\GenericContainer"
+                factory="AppserverIo\Appserver\Core\GenericContainerFactory">
+
+            <description>
+                <![CDATA[Container for appserver.io internal functionality]]>
+            </description>
+
+            <deployment type="AppserverIo\Appserver\Core\GenericDeployment" />
+
+            <host name="internal" appBase="internal" deployBase="var/deploy" tmpBase="var/tmp/internal" />
+
+            <servers>
+
+                <server
+                    name="dns"
+                    type="\AppserverIo\Server\Servers\MultiThreadedServer"
+                    worker="\AppserverIo\DnsServer\Workers\UdpThreadWorker"
+                    socket="\AppserverIo\Server\Sockets\StreamSocket"
+                    streamContext="\AppserverIo\Server\Contexts\StreamContext"
+                    serverContext="\AppserverIo\Server\Contexts\ServerContext"
+                    requestContext="\AppserverIo\Server\Contexts\RequestContext"
+                    loggerName="System">
+
+                    <params>
+                        <param name="admin" type="string"><?php echo Setup::getValue(SetupKeys::ADMIN_EMAIL) ?></param>
+                        <param name="transport" type="string">udp</param>
+                        <param name="address" type="string">127.0.0.1</param>
+                        <param name="port" type="integer">9053</param>
+                        <param name="flags" type="string">STREAM_SERVER_BIND</param>
+                        <param name="workerNumber" type="integer">4</param>
+                        <param name="workerAcceptMin" type="integer">3</param>
+                        <param name="workerAcceptMax" type="integer">8</param>
+                    </params>
+
+                    <connectionHandlers>
+                        <connectionHandler type="\AppserverIo\DnsServer\ConnectionHandlers\DnsConnectionHandler" />
+                    </connectionHandlers>
+
+                    <modules>
+                        <module type="\AppserverIo\DnsServer\Modules\CoreModule" >
+                            <params>
+                                <param name="resolverFactory" type="string">\AppserverIo\Appserver\Core\Modules\StorageProvider\SystemConfigurationResolverFactory</param>
+                                <param name="defaultTTL" type="integer">300</param>
+                            </params>
+                        </module>
+                    </modules>
+
+                </server>
+
+            </servers>
+
+        </container>
+
+        <container
                 name="combined-appserver"
                 type="AppserverIo\SingleApp\Core\SimpleContainer"
                 factory="AppserverIo\Appserver\Core\GenericContainerFactory">
@@ -201,9 +256,6 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
                         </access>
                     </accesses>
 
-                    <!-- include of virtual host configurations -->
-                    <xi:include href="conf.d/virtual-hosts.xml"/>
-
                     <modules>
                         <!-- REQUEST_POST hook -->
                         <module type="\AppserverIo\WebServer\Modules\VirtualHostModule"/>
@@ -307,9 +359,6 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
                             </params>
                         </access>
                     </accesses>
-
-                    <!-- include of virtual host configurations -->
-                    <xi:include href="conf.d/virtual-hosts.xml"/>
 
                     <modules>
                         <!-- REQUEST_POST hook -->

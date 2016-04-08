@@ -58,7 +58,7 @@ class StartContainersListener extends AbstractSystemListener
 
             // initialize the service to load the container configurations
             /** @var \AppserverIo\Appserver\Core\Api\DeploymentService $deploymentService */
-            $deploymentService = $applicationServer->newService('AppserverIo\Appserver\Core\Api\DeploymentService');
+            $deploymentService = $this->getDeploymentService();
             $applicationServer->setSystemConfiguration($systemConfiguration = $deploymentService->loadContainerInstances());
 
             // we also have to re-attach the system configuration to the initial context, because it's not a \Stackable
@@ -102,5 +102,16 @@ class StartContainersListener extends AbstractSystemListener
         } catch (\Exception $e) {
             $applicationServer->getSystemLogger()->error($e->__toString());
         }
+    }
+
+    /**
+     * Return's the system configuration with the initialized container
+     * node instances.
+     *
+     * @return \AppserverIo\Appserver\Core\Api\DeploymentService The deployment service
+     */
+    protected function getDeploymentService()
+    {
+        return $this->getApplicationServer()->newService('AppserverIo\Appserver\Core\Api\DeploymentService');
     }
 }
