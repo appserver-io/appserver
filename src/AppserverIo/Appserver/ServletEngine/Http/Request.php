@@ -324,6 +324,7 @@ class Request implements HttpServletRequestInterface, ContextInterface
      * Prepares the request instance.
      *
      * @return void
+     * @throws \AppserverIo\Psr\Servlet\ServletException Is thrown if the request can't be prepared, because no file handle exists
      */
     public function prepare()
     {
@@ -368,6 +369,13 @@ class Request implements HttpServletRequestInterface, ContextInterface
 
                 // we've found what we were looking for, so break here
                 break;
+            }
+
+            // break if we finally can't find a servlet to handle the request
+            if ($dirname === '/') {
+                throw new ServletException(
+                    sprintf('Can\'t find a handler for URI %s, either ', $uri)
+                );
             }
 
             // descend down the directory tree

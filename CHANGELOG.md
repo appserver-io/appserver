@@ -1,3 +1,15 @@
+# Version 1.1.1-beta2
+
+## Bugfixes
+
+* Fixed endless loop in \AppserverIo\Appserver\ServletEngine\Http\Request when no filehandler has been registered to handle DHTML template
+
+## Features
+
+* Add functionality to use virtual host configuration in runner mode also
+* Enable DHTML filehandler for API container
+* Enable DNS server when using runner mode
+
 # Version 1.1.1-beta1
 
 ## Bugfixes

@@ -20,12 +20,15 @@
 
 namespace AppserverIo\Appserver\Core\Api;
 
+use AppserverIo\Properties\PropertiesInterface;
 use AppserverIo\Configuration\ConfigurationException;
 use AppserverIo\Appserver\Core\Api\Node\ContextNode;
 use AppserverIo\Appserver\Core\Api\Node\ContainersNode;
 use AppserverIo\Appserver\Core\Api\Node\DeploymentNode;
 use AppserverIo\Appserver\Core\Utilities\SystemPropertyKeys;
 use AppserverIo\Appserver\Core\Interfaces\ContainerInterface;
+use AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface;
+use AppserverIo\Appserver\Core\Interfaces\SystemConfigurationInterface;
 
 /**
  * A service that handles deployment configuration data.
@@ -168,6 +171,85 @@ class DeploymentService extends AbstractFileOperationService
     }
 
     /**
+     * Prepare's the system properties for the actual mode.
+     *
+     * @param \AppserverIo\Properties\PropertiesInterface $properties The properties to prepare
+     * @param string                                      $webappPath The path of the web application to prepare the properties with
+     *
+     * @return void
+     */
+    protected function prepareSystemProperties(PropertiesInterface $properties, $webappPath)
+    {
+        // append the application specific properties and replace the properties
+        $properties->add(SystemPropertyKeys::WEBAPP, $webappPath);
+        $properties->add(SystemPropertyKeys::WEBAPP_NAME, basename($webappPath));
+    }
+
+    /**
+     * Load's the container instances from the META-INF/containers.xml configuration file of the
+     * passed web application path and add/merge them to/with the system configuration.
+     *
+     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface         $containerNode       The container node used for property replacement
+     * @param \AppserverIo\Appserver\Core\Interfaces\SystemConfigurationInterface $systemConfiguration The system configuration to add/merge the found containers to/with
+     * @param string                                                              $webappPath          The path to the web application to search for a META-INF/containers.xml file
+     *
+     * @return void
+     */
+    public function loadContainerInstance(
+        ContainerNodeInterface $containerNode,
+        SystemConfigurationInterface $systemConfiguration,
+        $webappPath
+    ) {
+
+        // load the service to validate the files
+        /** @var AppserverIo\Appserver\Core\Api\ConfigurationService $configurationService */
+        $configurationService = $this->newService('AppserverIo\Appserver\Core\Api\ConfigurationService');
+
+        // iterate through all server configurations (servers.xml), validate and merge them
+        foreach ($this->globDir($webappPath . '/META-INF/containers.xml') as $containersConfigurationFile) {
+            try {
+                // validate the application specific container configurations
+                $configurationService->validateFile($containersConfigurationFile, null);
+
+                // create a new containers node instance
+                $containersNodeInstance = new ContainersNode();
+                $containersNodeInstance->initFromFile($containersConfigurationFile);
+
+                // load the system properties
+                $properties = $this->getSystemProperties($containerNode);
+
+                // prepare the sytsem properties
+                $this->prepareSystemProperties($properties, $webappPath);
+
+                /** @var AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNodeInstance */
+                foreach ($containersNodeInstance->getContainers() as $containerNodeInstance) {
+                    // replace the properties for the found container node instance
+                    $containerNodeInstance->replaceProperties($properties);
+                    // query whether we've to merge or append the server node instance
+                    if ($container = $systemConfiguration->getContainer($containerNodeInstance->getName())) {
+                        $container->merge($containerNodeInstance);
+                    } else {
+                        $systemConfiguration->attachContainer($containerNodeInstance);
+                    }
+                }
+
+            } catch (ConfigurationException $ce) {
+                // load the logger and log the XML validation errors
+                $systemLogger = $this->getInitialContext()->getSystemLogger();
+                $systemLogger->error($ce->__toString());
+
+                // additionally log a message that server configuration will be missing
+                $systemLogger->critical(
+                    sprintf(
+                        'Will skip app specific server configuration because of invalid file %s',
+                        $containersConfigurationFile
+                    )
+                );
+            }
+        }
+    }
+
+    /**
      * Loads the containers, defined by the applications, merges them into
      * the system configuration and returns the merged system configuration.
      *
@@ -185,10 +267,6 @@ class DeploymentService extends AbstractFileOperationService
             return $systemConfiguration;
         }
 
-        // load the service to validate the files
-        /** @var AppserverIo\Appserver\Core\Api\ConfigurationService $configurationService */
-        $configurationService = $this->newService('AppserverIo\Appserver\Core\Api\ConfigurationService');
-
         /** @var AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNodeInstance */
         foreach ($systemConfiguration->getContainers() as $containerNode) {
             // load the containers application base directory
@@ -196,49 +274,7 @@ class DeploymentService extends AbstractFileOperationService
 
             // iterate over all applications and create the server configuration
             foreach (glob($containerAppBase . '/*', GLOB_ONLYDIR) as $webappPath) {
-                // iterate through all server configurations (servers.xml), validate and merge them
-                foreach ($this->globDir($webappPath . '/META-INF/containers.xml') as $containersConfigurationFile) {
-                    try {
-                        // validate the application specific container configurations
-                        $configurationService->validateFile($containersConfigurationFile, null);
-
-                        // create a new containers node instance
-                        $containersNodeInstance = new ContainersNode();
-                        $containersNodeInstance->initFromFile($containersConfigurationFile);
-
-                        // load the system properties
-                        $properties = $this->getSystemProperties($containerNode);
-
-                        // append the application specific properties and replace the properties
-                        $properties->add(SystemPropertyKeys::WEBAPP, $webappPath);
-                        $properties->add(SystemPropertyKeys::WEBAPP_NAME, basename($webappPath));
-
-                        /** @var AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNodeInstance */
-                        foreach ($containersNodeInstance->getContainers() as $containerNodeInstance) {
-                            // replace the properties for the found container node instance
-                            $containerNodeInstance->replaceProperties($properties);
-                            // query whether we've to merge or append the server node instance
-                            if ($container = $systemConfiguration->getContainer($containerNodeInstance->getName())) {
-                                $container->merge($containerNodeInstance);
-                            } else {
-                                $systemConfiguration->attachContainer($containerNodeInstance);
-                            }
-                        }
-
-                    } catch (ConfigurationException $ce) {
-                        // load the logger and log the XML validation errors
-                        $systemLogger = $this->getInitialContext()->getSystemLogger();
-                        $systemLogger->error($ce->__toString());
-
-                        // additionally log a message that server configuration will be missing
-                        $systemLogger->critical(
-                            sprintf(
-                                'Will skip app specific server configuration because of invalid file %s',
-                                $containersConfigurationFile
-                            )
-                        );
-                    }
-                }
+                $this->loadContainerInstance($containerNode, $systemConfiguration, $webappPath);
             }
         }
 
