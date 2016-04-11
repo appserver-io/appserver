@@ -516,6 +516,7 @@
                 <xs:element ref="appserver:servers"/>
                 <xs:element ref="appserver:deployment"/>
                 <xs:element ref="appserver:host"/>
+                <xs:element ref="appserver:classLoaders" minOccurs="0"/>
             </xs:all>
             <xs:attribute name="name" type="xs:string" use="required"/>
             <xs:attribute name="type" type="xs:string" use="required"/>

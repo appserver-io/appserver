@@ -98,4 +98,20 @@ interface ContainerNodeInterface extends NodeInterface
      * @return array
      */
     public function getUpstreams();
+
+    /**
+     * Sets the contexts class loader configuration.
+     *
+     * @param array $classLoaders The contexts class loader configuration
+     *
+     * @return void
+     */
+    public function setClassLoaders($classLoaders);
+
+    /**
+     * Returns the contexts class loader configuration.
+     *
+     * @return array The contexts class loader configuration
+     */
+    public function getClassLoaders();
 }

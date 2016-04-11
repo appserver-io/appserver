@@ -1,3 +1,13 @@
+# Version 1.1.1-beta3
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add possibility to define container class loaders in appserver.xml and application META-INF/containers.xml
+
 # Version 1.1.1-beta2
 
 ## Bugfixes

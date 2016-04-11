@@ -136,6 +136,12 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
         // register the default autoloader
         require SERVER_AUTOLOADER;
 
+        // initialize the container for the configured class laoders
+        $classLoaders = new GenericStackable();
+
+        // register the configured class loaders
+        $this->registerClassLoaders($classLoaders);
+
         // register shutdown handler
         register_shutdown_function(array(&$this, "shutdown"));
 
@@ -590,6 +596,39 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
                     $this->getName()
                 )
             );
+        }
+    }
+
+    /**
+     * Register's the class loaders configured for this container.
+     *
+     * @param \AppserverIo\Storage\GenericStackable $classLoaders The container for the class loader instances
+     *
+     * @return void
+     */
+    protected function registerClassLoaders(GenericStackable $classLoaders)
+    {
+
+        // intialize the additional container class loaders
+        foreach ($this->getContainerNode()->getClassLoaders() as $classLoaderNode) {
+            // initialize the storage for the include path
+            $includePath = array();
+
+            // load the application base directory
+            $appBase = $this->getAppBase();
+
+            // load the composer class loader for the configured directories
+            foreach ($classLoaderNode->getDirectories() as $directory) {
+                // we prepare the directories to include scripts AFTER registering (in application context)
+                $includePath[] = $appBase . $directory->getNodeValue();
+            }
+
+            // load the class loader type
+            $className = $classLoaderNode->getType();
+
+            // initialize and register the class loader instance
+            $classLoaders[$classLoaderNode->getName()] = new $className(new GenericStackable(), $includePath);
+            $classLoaders[$classLoaderNode->getName()]->register(true, true);
         }
     }
 }

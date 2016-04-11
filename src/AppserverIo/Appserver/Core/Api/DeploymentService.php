@@ -77,19 +77,19 @@ class DeploymentService extends AbstractFileOperationService
     /**
      * Initializes the context instance for the passed webapp path.
      *
-     * @param \AppserverIo\Appserver\Core\Interfaces\ContainerInterface $container  The container to load the context for
-     * @param string                                                    $webappPath The path to the web application
+     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode The container to load the context for
+     * @param string                                                      $webappPath    The path to the web application
      *
      * @return \AppserverIo\Appserver\Core\Api\Node\ContextNode The initialized context instance
      */
-    public function loadContextInstance(ContainerInterface $container, $webappPath)
+    public function loadContextInstance(ContainerNodeInterface $containerNode, $webappPath)
     {
 
         // prepare the context path
         $contextPath = basename($webappPath);
 
         // load the system properties
-        $properties = $this->getSystemProperties($container->getContainerNode());
+        $properties = $this->getSystemProperties($containerNode);
 
         // append the application specific properties
         $properties->add(SystemPropertyKeys::WEBAPP, $webappPath);
@@ -109,7 +109,7 @@ class DeploymentService extends AbstractFileOperationService
         $context->setWebappPath($webappPath);
 
         // try to load a context configuration (from appserver.xml) for the context path
-        if ($contextToMerge = $container->getContainerNode()->getHost()->getContext($contextPath)) {
+        if ($contextToMerge = $containerNode->getHost()->getContext($contextPath)) {
             $contextToMerge->replaceProperties($properties);
             $context->merge($contextToMerge);
         }
@@ -162,7 +162,7 @@ class DeploymentService extends AbstractFileOperationService
 
         // iterate over all applications and create the context configuration
         foreach (glob($container->getAppBase() . '/*', GLOB_ONLYDIR) as $webappPath) {
-            $context = $this->loadContextInstance($container, $webappPath);
+            $context = $this->loadContextInstance($container->getContainerNode(), $webappPath);
             $contextInstances[$context->getName()] = $context;
         }
 
