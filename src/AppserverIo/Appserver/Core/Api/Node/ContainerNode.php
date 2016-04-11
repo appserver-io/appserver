@@ -37,6 +37,13 @@ class ContainerNode extends AbstractNode implements ContainerNodeInterface
 {
 
     /**
+     * A class loader trait.
+     *
+     * @var \AppserverIo\Appserver\Core\Api\Node\ClassLoadersNodeTrait
+     */
+    use ClassLoadersNodeTrait;
+
+    /**
      * The container's name.
      *
      * @var string
