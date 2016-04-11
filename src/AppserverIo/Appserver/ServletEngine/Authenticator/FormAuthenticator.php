@@ -173,11 +173,11 @@ class FormAuthenticator extends AbstractAuthenticator
         $session = $servletRequest->getSession();
 
         // initialize the location to redirect to
-        $location = '';
+        $location = '/';
 
         // prepend the base modifier if available
         if ($baseModifier = $servletRequest->getBaseModifier()) {
-            $location .= $baseModifier;
+            $location = $baseModifier;
         }
 
         // query whether or not we found the original request to redirect to
@@ -186,7 +186,7 @@ class FormAuthenticator extends AbstractAuthenticator
             $req = $session->getData(Constants::FORM_REQUEST);
 
             // initialize the location to redirect to
-            $location .= $req->requestUri;
+            $location = $req->requestUri;
 
             // prepare URI + query string to redirect to
             if ($queryString = $req->queryString) {
@@ -380,7 +380,7 @@ class FormAuthenticator extends AbstractAuthenticator
         HttpSessionInterface $session
     ) {
 
-        // initialize an empyt instance
+        // initialize an empty instance
         $req = new \stdClass();
 
         // set the data of the passed request

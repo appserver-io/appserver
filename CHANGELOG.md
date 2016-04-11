@@ -2,7 +2,7 @@
 
 ## Bugfixes
 
-* None
+* Fixed invalid FormAuthenticator forward on successfull login
 
 ## Features
 
