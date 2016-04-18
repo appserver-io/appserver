@@ -1,3 +1,13 @@
+# Version 1.1.1-beta5
+
+## Bugfixes
+
+* Fixed rename() issue while deployin in a Docker environment using a mounted webapps directory
+
+## Features
+
+* Update Dockerfile to latest Debian runtime
+
 # Version 1.1.1-beta4
 
 ## Bugfixes
