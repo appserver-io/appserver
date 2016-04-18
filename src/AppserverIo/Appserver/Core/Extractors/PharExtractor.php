@@ -22,6 +22,8 @@ namespace AppserverIo\Appserver\Core\Extractors;
 use AppserverIo\Appserver\Core\AbstractExtractor;
 use AppserverIo\Appserver\Core\Interfaces\ExtractorInterface;
 use AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface;
+use PDepend\Util\FileUtil;
+use AppserverIo\Appserver\Core\Utilities\FileSystem;
 
 /**
  * An extractor implementation for phar files.
@@ -125,8 +127,9 @@ class PharExtractor extends AbstractExtractor
                     }
                 }
 
-                // move extracted content to webapps folder
-                rename($tmpFolderName->getPathname(), $webappFolderName->getPathname());
+                // move extracted content to webapps folder and remove temporary directory
+                FileSystem::copyDir($tmpFolderName->getPathname(), $webappFolderName->getPathname());
+                FileSystem::removeDir($tmpFolderName->getPathname());
 
                 // we need to set the user/rights for the extracted folder
                 $this->setUserRights($webappFolderName);
