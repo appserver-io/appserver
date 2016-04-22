@@ -1,3 +1,14 @@
+# Version 1.1.1-beta6
+
+## Bugfixes
+
+* Update Dockerfile for using Supervisor restart command instead of systemd
+* Closed [#960](https://github.com/appserver-io/appserver/issues/960) - Wrong restart commands for newer Linux distributions
+
+## Features
+
+* None
+
 # Version 1.1.1-beta5
 
 ## Bugfixes

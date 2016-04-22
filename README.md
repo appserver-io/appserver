@@ -35,7 +35,7 @@ Give it a try!
 * [Semantic Versioning](#semantic-versioning)
 * [Installation](#installation)
 * [Basic Usage](#basic-usage)
-* [HTTP Server](#https-server)
+* [HTTP(S) Server](#http-s-server)
 * [Servlet-Engine](#servlet-engine)
 * [Annotations](#annotations)
 * [Dependency Injection](#dependency-injection)
@@ -832,7 +832,7 @@ preventing the calling process to continue.
 
 Before we can send a message, we have to specify what should happen, when we receive one! The
 Message-Queue allows you to specify so called `Queues`. Each `Queue` can have a receiver, which
-must be a so called `MessageBean`. A `MessageBean` is very similar to a [@Stateless SessionBean](#@stateless-session-bean),
+must be a so called `MessageBean`. A `MessageBean` is very similar to a [@Stateless SessionBean](#stateless-sessionbean),
 but has only a single point of entry, the `onMessage()` message method. Whenever a message
 is sent to the queue, the Message-Queue simply pushes it onto the stack. In the background, a
 `QueueWorker` is running in another context and queries the stack for new messages. If a new
