@@ -139,9 +139,22 @@ abstract class AbstractScanner extends AbstractContextThread implements ScannerI
         $this->restartCommands = array(
             DeploymentScanner::DARWIN => DeploymentScanner::LAUNCHD_INIT_STRING,
             DeploymentScanner::WINDOWS_NT => DeploymentScanner::WIN_NT_INIT_STRING,
-            'Debian' . DeploymentScanner::LINUX => DeploymentScanner::SYSTEMV_INIT_STRING,
-            'Ubuntu' . DeploymentScanner::LINUX => DeploymentScanner::SYSTEMV_INIT_STRING,
-            'CentOS' . DeploymentScanner::LINUX => DeploymentScanner::SYSTEMV_INIT_STRING,
+            'Debian' . DeploymentScanner::LINUX => array(
+                6 => DeploymentScanner::SYSTEMV_INIT_STRING,
+                7 => DeploymentScanner::SYSTEMV_INIT_STRING,
+                'default' => DeploymentScanner::SYSTEMD_INIT_STRING
+            ),
+            'Ubuntu' . DeploymentScanner::LINUX => array(
+                12 => DeploymentScanner::SYSTEMV_INIT_STRING,
+                13 => DeploymentScanner::SYSTEMV_INIT_STRING,
+                14 => DeploymentScanner::SYSTEMV_INIT_STRING,
+                'default' => DeploymentScanner::SYSTEMD_INIT_STRING
+            ),
+            'CentOS' . DeploymentScanner::LINUX => array(
+                5 => DeploymentScanner::SYSTEMV_INIT_STRING,
+                6 => DeploymentScanner::SYSTEMV_INIT_STRING,
+                'default' => DeploymentScanner::SYSTEMD_INIT_STRING
+            ),
             'Fedora' . DeploymentScanner::LINUX => DeploymentScanner::SYSTEMD_INIT_STRING
         );
     }
@@ -183,18 +196,37 @@ abstract class AbstractScanner extends AbstractContextThread implements ScannerI
      * Returns the restart command for the passed OS
      * if available.
      *
-     * @param string $os The OS to return the restart command for
+     * @param string      $os          The OS to return the restart command for
+     * @param string|null $distVersion Version of the operating system to get the restart command for
      *
      * @return string The restart command
      * @throws \Exception Is thrown if the restart command for the passed OS is can't found
      */
-    public function getRestartCommand($os)
+    public function getRestartCommand($os, $distVersion = null)
     {
 
         // check if the restart command is registered
         if (array_key_exists($os, $this->restartCommands)) {
-            // load the command
+            // check whether or not we got an array, if so we have to check for the version
             $command = $this->restartCommands[$os];
+            if (is_array($command)) {
+                // if we do have a certain version we have to determine the command
+                if (!is_null($distVersion)) {
+                    // floor the dist version for comparison
+                    $distVersion = (int) floor((float) $distVersion);
+                    foreach ($command as $version => $potentialCommand) {
+                        if ($distVersion === $version) {
+                            $command = $potentialCommand;
+                            break;
+                        }
+                    }
+                }
+
+                // if we did not find anything we have to take the default command
+                if (is_array($command)) {
+                    $command = $command['default'];
+                }
+            }
 
             // for Mac OS X the base directory has to be appended
             if ($os === DeploymentScanner::DARWIN) {
@@ -233,7 +265,6 @@ abstract class AbstractScanner extends AbstractContextThread implements ScannerI
 
                 // Get the distribution
                 $distribution = $this->getLinuxDistribution();
-
                 // If we did not get anything
                 if (!$distribution) {
                     // Log the error
@@ -245,13 +276,16 @@ abstract class AbstractScanner extends AbstractContextThread implements ScannerI
                     return;
                 }
 
+                // determine the version of the found distribution
+                $distVersion = $this->getDistributionVersion($distribution);
+
                 // log the found distribution
                 $this->getSystemLogger()->debug(
                     "Found Linux distribution: $distribution"
                 );
 
                 // Execute the restart command for the distribution
-                exec($this->getRestartCommand($distribution . $os));
+                exec($this->getRestartCommand($distribution . $os, $distVersion));
                 break;
 
             // Restart with the Mac or Windows command
@@ -313,6 +347,66 @@ abstract class AbstractScanner extends AbstractContextThread implements ScannerI
 
         // Recursively filter the found files
         return $this->getLinuxDistribution($distributionCandidates);
+    }
+
+    /**
+     * Returns the systems configuration root directory aka "etc"
+     *
+     * @return string
+     */
+    protected function getEtcDir()
+    {
+        return '/etc';
+    }
+
+    /**
+     * This method will check for the Linux release file normally stored in /etc and will return
+     * the version of the distribution
+     *
+     * @param string|null $distribution Distribution to search a version for
+     * @param array       $etcList      List of already collected AND flipped release files we need to filter
+     *
+     * @return string|boolean
+     */
+    protected function getDistributionVersion($distribution = null, $etcList = array())
+    {
+        // Get everything from /etc directory and flip the result for faster search,
+        // but only if there is no list provided already
+        $etcDir = $this->getEtcDir();
+        if (empty($etcList)) {
+            $etcList = scandir($etcDir);
+            $etcList = array_flip($etcList);
+        }
+
+        // check if we got a distribution to specifically look for, if not determine it first
+        if (is_null($distribution)) {
+            $distribution = $this->getLinuxDistribution($etcList);
+        }
+
+        // check if the distribution was properly provided/found, if not return FALSE
+        if (!isset($this->distroMapping[$distribution])) {
+            return false;
+        }
+
+        // loop through our mapping and look if we have a match
+        $releaseFile = $this->distroMapping[$distribution];
+
+        // do we have a match which is not just a soft link on the actual file? If so collect the file content
+        $potentialVersion = '';
+        if (isset($etcList[$releaseFile]) && !is_link($etcDir . DIRECTORY_SEPARATOR . $releaseFile)) {
+            // retrieve the version string and try to determine the actual version from it
+            $potentialVersion = file_get_contents($etcDir . DIRECTORY_SEPARATOR . $releaseFile);
+            $matches = array();
+            preg_match('/(\d+\.*)+/', $potentialVersion, $matches);
+            // filter our findings
+            if (!isset($matches[0])) {
+                return false;
+            }
+            $potentialVersion = $matches[0];
+        }
+
+        // return what we got
+        return $potentialVersion;
     }
 
     /**
