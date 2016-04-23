@@ -81,6 +81,13 @@ class ContextNode extends AbstractNode
     protected $name;
 
     /**
+     * The application environment
+     *
+     * @var string
+     */
+    protected $environmentName;
+
+    /**
      * The context type.
      *
      * @var string
@@ -158,6 +165,16 @@ class ContextNode extends AbstractNode
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * Returns the environment name of the application
+     *
+     * @return string
+     */
+    public function getEnvironmentName()
+    {
+        return $this->environmentName;
     }
 
     /**

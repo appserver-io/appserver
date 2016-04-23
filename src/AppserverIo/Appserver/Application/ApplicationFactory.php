@@ -72,6 +72,7 @@ class ApplicationFactory
         // load the application type
         $contextType = $context->getType();
         $containerName = $container->getName();
+        $environmentName = $context->getEnvironmentName();
         $applicationName = $context->getName();
         $containerRunlevel = $container->getRunlevel();
 
@@ -89,6 +90,7 @@ class ApplicationFactory
         $application->injectLoggers($loggers);
         $application->injectManagers($managers);
         $application->injectName($applicationName);
+        $application->injectEnvironmentName($environmentName);
         $application->injectProvisioners($provisioners);
         $application->injectClassLoaders($classLoaders);
         $application->injectContainerName($containerName);
