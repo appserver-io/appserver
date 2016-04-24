@@ -1,19 +1,19 @@
 ---
 layout: tutorial
-title: Running TYPO3 Neos
-meta_title: Running TYPO3 Neos on appserver.io
-meta_description: This guide shows you how easy it is to install appserver.io on a Mac and run TYPO3 Neos on the most powerful PHP infrastructure on the planet.
-description: It shows you how easy it is to install appserver.io on a Mac and run TYPO3 Neos on it.
+title: Running Neos
+meta_title: Running Neos on appserver.io
+meta_description: This guide shows you how easy it is to install appserver.io on a Mac and run Neos on the most powerful PHP infrastructure on the planet.
+description: It shows you how easy it is to install appserver.io on a Mac and run Neos on it.
 position: 20
 group: Tutorials
-permalink: /get-started/tutorials/running-typo3-neos-on-appserver-io.html
+permalink: /get-started/tutorials/running-neos-on-appserver-io.html
 ---
 
 
 Appserver.io is a pretty cool and sophiscated infrastructure fully built upon the PHP stack. This makes it truely easy
 to develop and extend the platform. Appserver.io comes with a built in webserver module with PHP-FPM therefore it is
 possible to install any PHP-App you like and run it on that platform. The following guide shows you how easy it is to
-install appserver.io on a Mac and run TYPO3 Neos on it.
+install appserver.io on a Mac and run Neos on it.
 
 
 **Prerequirements**: *Up and running installation of MySQL*
@@ -48,7 +48,7 @@ Of course there is no need to change the port if you only want to check out the 
 
 ## Installation:
 
-Download the latest TYPO3 Neos Release from neos.typo3.org. To go ahead and install TYPO3 Neos first you have to create a virtual host.
+Download the latest Neos Release from www.neos.io. To go ahead and install Neos first you have to create a virtual host.
 
 As with any other Webserver using a vhost you first have to add the domain you like to use in your hosts file.
 
@@ -103,15 +103,15 @@ with the Neos installation itself.
 
 `sudo /opt/appserver/sbin/appserverctl restart`
 
-Therefore you just unpack the TYPO3 Neos source into your webrootfolder which in case of the appserver is always the
+Therefore you just unpack the Neos source into your webrootfolder which in case of the appserver is always the
 webapps folder underneath `/opt/appserver/webapps/`. In that folder you will still find the already installed example app
 and of course the welcome page. We are just creating a folder with name „neos“ and unpacking the source there.
 Now you have to change the rights so Neos is able to create folders and files below.
 
 `chmod -R 775 /opt/appserver/webapps/neos/`
 
-After that you are able to use the TYPO3 Neos installer just by opening a browser and calling the URL
-http://neos.local:9080/setup. If you do so TYPO3 Neos let you go throught the installation easily. At the first page
+After that you are able to use the Neos installer just by opening a browser and calling the URL
+http://neos.local:9080/setup. If you do so Neos let you go throught the installation easily. At the first page
 Neos is asking for the initial installation password which you can find in
 
 `/opt/appserver/webapps/neos/Data/SetupPassword.txt`
@@ -120,4 +120,4 @@ Now you just have to type in your database credentials and select if you want to
 create a new one. The second last step is creating an user account. Finally you are able to import the Demo site
 package or if you already have developed your own site packege you can import that as well.
 
-Now you are all set and can enjoy the power TYPO3 Neos.
+Now you are all set and can enjoy the power Neos.

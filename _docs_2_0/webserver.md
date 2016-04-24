@@ -472,7 +472,7 @@ provided with the applications .htaccess files.
 </virtualHost>
 ```
 
-### TYPO3 Neos
+### Neos
 
 ```xml
 <virtualHost name="neos.dev neos.local">
