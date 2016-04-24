@@ -62,7 +62,7 @@ class AppEnvironmentHelper
      * @throws \AppserverIo\Properties\PropertyFileNotFoundException
      * @throws \AppserverIo\Properties\PropertyFileParseException
      */
-    protected static function getEnvironmentModifier($appBase)
+    public static function getEnvironmentModifier($appBase)
     {
         // check if we got the properties cached already, if not load them anew
         $properties = null;

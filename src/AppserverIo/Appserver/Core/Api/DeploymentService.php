@@ -143,6 +143,7 @@ class DeploymentService extends AbstractFileOperationService
 
         // set the real context name
         $context->setName($contextPath);
+        $context->setEnvironmentName(AppEnvironmentHelper::getEnvironmentModifier($webappPath));
 
         // return the initialized context instance
         return $context;

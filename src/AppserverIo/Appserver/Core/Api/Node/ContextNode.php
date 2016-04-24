@@ -178,6 +178,15 @@ class ContextNode extends AbstractNode
     }
 
     /**
+     * @param string $environmentName
+     * @return void
+     */
+    public function setEnvironmentName($environmentName)
+    {
+        $this->environmentName = $environmentName;
+    }
+
+    /**
      * Sets the context type.
      *
      * @param string $type The context type
