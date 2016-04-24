@@ -87,6 +87,10 @@ class AppEnvironmentHelper
         if (!is_null($properties) && $properties->exists(ConfigurationKeys::APP_ENVIRONMENT)) {
             $result = $properties->get(ConfigurationKeys::APP_ENVIRONMENT);
         }
+        // ENV variable always wins
+        if (defined(ConfigurationKeys::APP_ENVIRONMENT)) {
+            $result = getenv(ConfigurationKeys::APP_ENVIRONMENT);
+        }
 
         return $result;
     }
