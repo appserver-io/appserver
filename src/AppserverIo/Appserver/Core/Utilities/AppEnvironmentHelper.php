@@ -108,10 +108,17 @@ class AppEnvironmentHelper
         $modifier = self::getEnvironmentModifier($appBase);
 
         // as we default to a not modified path we have to be careful about the "two dots" schema .$modifier.$extension
+        $defaultFilePath = $appBase . DIRECTORY_SEPARATOR . $fileGlob . '.' . $fileExtension;
         if (empty($modifier)) {
-            return $appBase . DIRECTORY_SEPARATOR . $fileGlob . '.' . $fileExtension;
+            // if we do not have a modifier we do not need to act upon anything, so we return the default
+            return $defaultFilePath;
         } else {
-            return $appBase . DIRECTORY_SEPARATOR . $fileGlob . '.' . $modifier . '.' . $fileExtension;
+            // we got a modifier we have to check if there is something reachable under the modified path, if not we will also return the default
+            $modifiedPath = $appBase . DIRECTORY_SEPARATOR . $fileGlob . '.' . $modifier . '.' . $fileExtension;
+            $potentialFiles = FileSystem::globDir($modifiedPath);
+            if (!empty($potentialFiles)) {
+                return $modifiedPath;
+            }
         }
     }
 }
