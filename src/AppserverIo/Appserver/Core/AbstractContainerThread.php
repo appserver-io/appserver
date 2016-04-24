@@ -136,6 +136,12 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
         // register the default autoloader
         require SERVER_AUTOLOADER;
 
+        // initialize the container state
+        $this->containerState = ContainerStateKeys::get(ContainerStateKeys::WAITING_FOR_INITIALIZATION);
+
+        // create a new API app service instance
+        $this->service = $this->newService('AppserverIo\Appserver\Core\Api\AppService');
+
         // initialize the container for the configured class laoders
         $classLoaders = new GenericStackable();
 
@@ -144,12 +150,6 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
 
         // register shutdown handler
         register_shutdown_function(array(&$this, "shutdown"));
-
-        // initialize the container state
-        $this->containerState = ContainerStateKeys::get(ContainerStateKeys::WAITING_FOR_INITIALIZATION);
-
-        // create a new API app service instance
-        $this->service = $this->newService('AppserverIo\Appserver\Core\Api\AppService');
 
         // query whether the container's directories exists and are readable
         $this->validateDirectories();
