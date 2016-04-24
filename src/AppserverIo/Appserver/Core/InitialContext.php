@@ -73,9 +73,11 @@ class InitialContext implements ContextInterface
         $reflectionClass = $this->newReflectionClass($storageNode->getType());
 
         // create the storage instance
+        /** @var StorageInterface $storage */
         $storage = $reflectionClass->newInstance();
 
         // append the storage servers registered in system configuration
+        /** @var \AppserverIo\Appserver\Core\Api\Node\StorageServerNode $storageServer */
         foreach ($storageNode->getStorageServers() as $storageServer) {
             $storage->addServer($storageServer->getAddress(), $storageServer->getPort(), $storageServer->getWeight());
         }

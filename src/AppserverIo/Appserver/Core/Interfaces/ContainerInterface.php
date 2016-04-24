@@ -117,4 +117,18 @@ interface ContainerInterface
      * @return \AppserverIo\Appserver\Core\Api\ServiceInterface The service instance
      */
     public function newService($className);
+
+    /**
+     * @return string
+     */
+    public function getRunlevel();
+
+    /**
+     * Returns the servers tmp directory, append with the passed directory.
+     *
+     * @param string|null $directoryToAppend The directory to append
+     *
+     * @return string
+     */
+    public function getTmpDir($directoryToAppend = null);
 }

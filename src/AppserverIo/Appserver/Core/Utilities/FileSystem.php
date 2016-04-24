@@ -137,6 +137,36 @@ class FileSystem
     }
 
     /**
+     * Removes a directory recursively.
+     *
+     * @param string $src The source directory to be removed
+     *
+     * @return void
+     */
+    public static function removeDir($src)
+    {
+
+        // open the directory
+        $dir = opendir($src);
+
+        // remove files/folders recursively
+        while (false !== ($file = readdir($dir))) {
+            if (($file != '.') && ($file != '..')) {
+                $full = $src . '/' . $file;
+                if (is_dir($full)) {
+                    FileSystem::removeDir($full);
+                } else {
+                    unlink($full);
+                }
+            }
+        }
+
+        // close handle and remove directory itself
+        closedir($dir);
+        rmdir($src);
+    }
+
+    /**
      * Copies a directory recursively.
      *
      * @param string $src The source directory to copy

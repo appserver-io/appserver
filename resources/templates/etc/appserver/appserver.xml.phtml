@@ -83,6 +83,62 @@ use AppserverIo\Appserver\Meta\Composer\Script\SetupKeys;
     </loggers>
 
     <!--
+     ! Customize to add/remove scanners as needed
+     ! http://appserver.io/get-started/documentation/1.0/configuration.html#scanner
+     -->
+     <scanners>
+         <scanner
+             name="deployment-system-container"
+             type="AppserverIo\Appserver\Core\Scanner\DeploymentScanner"
+             factory="AppserverIo\Appserver\Core\Scanner\DirectoryScannerFactory">
+             <params>
+                 <param name="interval" type="integer">1</param>
+                 <param name="extensionsToWatch" type="string">dodeploy, deployed</param>
+             </params>
+             <directories>
+                 <directory>var/deploy</directory>
+             </directories>
+         </scanner>
+         <scanner
+             name="deployment-combined-appserver"
+             type="AppserverIo\Appserver\Core\Scanner\DeploymentScanner"
+             factory="AppserverIo\Appserver\Core\Scanner\DirectoryScannerFactory">
+             <params>
+                 <param name="interval" type="integer">1</param>
+                 <param name="extensionsToWatch" type="string">dodeploy, deployed</param>
+             </params>
+             <directories>
+                 <directory>deploy</directory>
+             </directories>
+         </scanner>
+         <scanner
+             name="cron"
+             type="AppserverIo\Appserver\Core\Scanner\CronScanner"
+             factory="AppserverIo\Appserver\Core\Scanner\StandardScannerFactory">
+             <params>
+                 <param name="interval" type="integer">1</param>
+             </params>
+             <directories>
+                 <directory>var/log</directory>
+             </directories>
+         </scanner>
+         <scanner
+             name="logrotate"
+             type="AppserverIo\Appserver\Core\Scanner\LogrotateScanner"
+             factory="AppserverIo\Appserver\Core\Scanner\DirectoryScannerFactory">
+             <params>
+                 <param name="interval" type="integer">1</param>
+                 <param name="extensionsToWatch" type="string">log</param>
+                 <param name="maxFiles" type="integer">10</param>
+                 <param name="maxSize" type="integer">1048576</param>
+             </params>
+             <directories>
+                 <directory>var/log</directory>
+             </directories>
+         </scanner>
+    </scanners>
+
+    <!--
      ! You might add optional configuration for implicitly configured components here.
      !
      ! http://appserver.io/get-started/documentation/configuration.html#optional-configuration

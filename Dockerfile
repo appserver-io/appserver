@@ -11,7 +11,7 @@ MAINTAINER Tim Wagner <tw@appserver.io>
 ################################################################################
 
 # define versions
-ENV APPSERVER_RUNTIME_BUILD_VERSION 1.1.2-40
+ENV APPSERVER_RUNTIME_BUILD_VERSION 1.1.4-42
 
 # update the sources list
 RUN apt-get update \
@@ -72,6 +72,9 @@ RUN ln -s /opt/appserver/bin/composer.phar /usr/local/bin/composer \
 
     # modify default HTTPS server port configuration
     && sed -i "s/9443/443/g" etc/appserver/appserver.xml \
+
+    # modify the deployment scanners for usage with Supervisor
+    && sed -i "s/DeploymentScanner/SupervisorDeploymentScanner/g" etc/appserver/appserver.xml \
 
     # modify the error_log of PHP-FPM configuration to /dev/stderr
     && sed -i "s/;error_log = log\/php-fpm.log/error_log = \/proc\/self\/fd\/2/g" etc/php-fpm.conf \

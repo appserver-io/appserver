@@ -109,24 +109,8 @@ class AppserverNode extends AbstractNode implements SystemConfigurationInterface
         // initialize the default configuration
         $this->initDefaultDirectories();
         $this->initDefaultFiles();
-        $this->initDefaultScanners();
         $this->initDefaultExtractors();
         $this->initDefaultInitialContext();
-    }
-
-    /**
-     * Will be invoked after the node will be initialized from
-     * the configuration values.
-     *
-     * @return void
-     */
-    protected function postInit()
-    {
-        // call parent method
-        parent::postInit();
-
-        // initialize the containers deployment scanners
-        $this->initDeploymentScanners();
     }
 
     /**
@@ -173,96 +157,6 @@ class AppserverNode extends AbstractNode implements SystemConfigurationInterface
 
         // set the default initial context configuration
         $this->initialContext = new InitialContextNode('AppserverIo\Appserver\Core\InitialContext', $description, $storage);
-    }
-
-    /**
-     * Initializes the default deployment scanners for archive based deployment.
-     *
-     * @return void
-     */
-    protected function initDeploymentScanners()
-    {
-
-        // iterate over the containers and initialize the default deployment scanners
-        /** @var \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode */
-        foreach ($this->getContainers() as $containerNode) {
-            // prepare the scanner's name
-            $scannerName = sprintf('deployment-%s', $containerNode->getName());
-
-            // if the scanner has already been registered, do NOT override it
-            if (isset($this->scanners[$scannerName])) {
-                continue;
-            }
-
-            // initialize the params for the deployment scanner
-            $scannerParams = array();
-            $intervalParam = new ParamNode('interval', 'integer', new NodeValue(1));
-            $extensionsToWatchParam = new ParamNode('extensionsToWatch', 'string', new NodeValue('dodeploy, deployed'));
-            $scannerParams[$intervalParam->getPrimaryKey()] = $intervalParam;
-            $scannerParams[$extensionsToWatchParam->getPrimaryKey()] = $extensionsToWatchParam;
-
-            // initialize the directories to scan
-            $directories = array(new DirectoryNode(new NodeValue($containerNode->getHost()->getDeployBase())));
-
-            // initialize the deployment scanner for the container
-            $deploymentScanner = new ScannerNode(
-                $scannerName,
-                'AppserverIo\Appserver\Core\Scanner\DeploymentScanner',
-                'AppserverIo\Appserver\Core\Scanner\DirectoryScannerFactory',
-                $scannerParams,
-                $directories
-            );
-
-            // add scanner to the appserver node
-            $this->scanners[$scannerName] = $deploymentScanner;
-        }
-    }
-
-    /**
-     * Initializes the default logrotate and CRON scanners.
-     *
-     * @return void
-     */
-    protected function initDefaultScanners()
-    {
-
-        // initialize the params for the logrotate scanner
-        $scannerParams = array();
-        $intervalParam = new ParamNode('interval', 'integer', new NodeValue(1));
-        $extensionsToWatchParam = new ParamNode('extensionsToWatch', 'string', new NodeValue('log'));
-        $scannerParams[$intervalParam->getPrimaryKey()] = $intervalParam;
-        $scannerParams[$extensionsToWatchParam->getPrimaryKey()] = $extensionsToWatchParam;
-
-        // initialize the directories to scan
-        $directories = array(new DirectoryNode(new NodeValue('var/log')));
-
-        // initialize the logrotate scanner
-        $logrotateScanner = new ScannerNode(
-            'logrotate',
-            'AppserverIo\Appserver\Core\Scanner\LogrotateScanner',
-            'AppserverIo\Appserver\Core\Scanner\DirectoryScannerFactory',
-            $scannerParams,
-            $directories
-        );
-
-        // add scanner to the appserver node
-        $this->scanners[$logrotateScanner->getPrimaryKey()] = $logrotateScanner;
-
-        // initialize the params for the CRON scanner
-        $scannerParams = array();
-        $intervalParam = new ParamNode('interval', 'integer', new NodeValue(1));
-        $scannerParams[$intervalParam->getPrimaryKey()] = $intervalParam;
-
-        // initialize the CRON scanner
-        $cronScanner = new ScannerNode(
-            'cron',
-            'AppserverIo\Appserver\Core\Scanner\CronScanner',
-            'AppserverIo\Appserver\Core\Scanner\StandardScannerFactory',
-            $scannerParams
-        );
-
-        // add scanner to the appserver node
-        $this->scanners[$cronScanner->getPrimaryKey()] = $cronScanner;
     }
 
     /**

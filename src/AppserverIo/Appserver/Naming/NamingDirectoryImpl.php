@@ -157,6 +157,7 @@ class NamingDirectoryImpl implements NamingDirectoryInterface
         if ($this->hasAttribute($key)) {
             return $this->getAttributes()->get($key);
         }
+        return null;
     }
 
     /**
@@ -189,8 +190,10 @@ class NamingDirectoryImpl implements NamingDirectoryInterface
      * @param string $key   The attributes key
      * @param mixed  $value Tha attribute to be bound
      *
+     * @throws NamingException
+     * @throws \AppserverIo\Collections\InvalidKeyException
+     * @throws \AppserverIo\Lang\NullPointerException
      * @return void
-     *
      * @Synchronized
      */
     public function setAttribute($key, $value)
@@ -214,7 +217,7 @@ class NamingDirectoryImpl implements NamingDirectoryInterface
      */
     public function getAllKeys()
     {
-        return array_keys($this->getAttributes()->getIndexedArray());
+        return array_keys($this->getAttributes()->toIndexedArray());
     }
 
     /**
