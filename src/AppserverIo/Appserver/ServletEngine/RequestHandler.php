@@ -252,7 +252,11 @@ class RequestHandler extends \Thread
 
         // check if we had a fatal error that caused the shutdown
         if ($lastError = error_get_last()) {
+            // add the fatal error
             $this->addError(ErrorUtil::singleton()->fromArray($lastError));
+            // in case of fatal errors, we need to override request with perpared
+            // instances because error handling needs application access
+            $servletRequest = RequestHandler::$requestContext;
         }
 
         // handle the errors if necessary
