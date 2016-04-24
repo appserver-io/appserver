@@ -127,6 +127,7 @@ class ApplicationFactory
         // add the configured managers
         /** @var \AppserverIo\Appserver\Core\Api\Node\ManagerNode $manager */
         foreach ($context->getManagers() as $manager) {
+            /** @var \AppserverIo\Appserver\Core\Interfaces\ManagerFactoryInterface $managerFactory */
             if ($managerFactory = $manager->getFactory()) {
                 // use the factory if available
                 $managerFactory::visit($application, $manager);
@@ -140,6 +141,7 @@ class ApplicationFactory
         // add the configured provisioners
         /** @var \AppserverIo\Appserver\Core\Api\Node\ProvisionerNode $provisioner */
         foreach ($context->getProvisioners() as $provisioner) {
+            /** @var \AppserverIo\Appserver\Provisioning\StandardProvisionerFactory $provisionerFactory */
             if ($provisionerFactory = $provisioner->getFactory()) {
                 // use the factory if available
                 $provisionerFactory::visit($application, $provisioner);

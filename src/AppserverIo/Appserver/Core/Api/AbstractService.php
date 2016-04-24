@@ -223,7 +223,7 @@ abstract class AbstractService implements ServiceInterface
     /**
      * Returns the servers tmp directory, append with the passed directory.
      *
-     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerInterface $containerNode        The container to return the temporary directory for
+     * @param ContainerNodeInterface $containerNode        The container to return the temporary directory for
      * @param string                                                  $relativePathToAppend A relative path to append
      *
      * @return string
@@ -240,7 +240,7 @@ abstract class AbstractService implements ServiceInterface
     /**
      * Returns the servers deploy directory.
      *
-     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerInterface $containerNode        The container to return the deployment directory for
+     * @param ContainerNodeInterface $containerNode        The container to return the deployment directory for
      * @param string                                                  $relativePathToAppend A relative path to append
      *
      * @return string
@@ -257,7 +257,7 @@ abstract class AbstractService implements ServiceInterface
     /**
      * Returns the servers webapps directory.
      *
-     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerInterface $containerNode        The container to return the temporary directory for
+     * @param ContainerNodeInterface $containerNode        The container to return the temporary directory for
      * @param string                                                  $relativePathToAppend A relative path to append
      *
      * @return string
@@ -433,7 +433,7 @@ abstract class AbstractService implements ServiceInterface
      * Returns the system proprties. If a container node has been passed,
      * the container properties will also be appended.
      *
-     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerInterface|null $containerNode The container to return the system properties for
+     * @param ContainerNodeInterface|null $containerNode The container to return the system properties for
      *
      * @return \AppserverIo\Properties\Properties The system properties
      */

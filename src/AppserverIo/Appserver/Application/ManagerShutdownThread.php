@@ -25,6 +25,7 @@ use AppserverIo\Psr\Application\ManagerInterface;
 /**
  * Utility class that contains the application state keys.
  *
+ * @property  ManagerInterface manager
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)

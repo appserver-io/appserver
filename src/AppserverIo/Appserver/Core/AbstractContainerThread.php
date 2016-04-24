@@ -24,7 +24,6 @@ namespace AppserverIo\Appserver\Core;
 
 use AppserverIo\Logger\LoggerUtils;
 use AppserverIo\Storage\GenericStackable;
-use AppserverIo\Appserver\Naming\NamingDirectory;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\Core\Interfaces\ContainerInterface;
 use AppserverIo\Appserver\Core\Utilities\ContainerStateKeys;
@@ -232,7 +231,7 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
             $serverContext->injectLoggers($this->getInitialContext()->getLoggers());
 
             // create the server (which should start it automatically)
-            /** @var AppserverIo\Server\Interfaces\ServerInterface $server */
+            /** @var \AppserverIo\Server\Interfaces\ServerInterface $server */
             $server = new $serverType($serverContext);
             // collect the servers we started
             $this->servers[$serverConfig->getName()] = $server;

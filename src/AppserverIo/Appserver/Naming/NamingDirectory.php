@@ -45,8 +45,6 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
 
     /**
      * Trait that provides threaded context functionality.
-     *
-     * @var AppserverIo\Appserver\Core\Traits\ThreadedContextTrait
      */
     use ThreadedContextTrait;
 
