@@ -115,10 +115,25 @@ class AppEnvironmentHelper
         } else {
             // we got a modifier we have to check if there is something reachable under the modified path, if not we will also return the default
             $modifiedPath = $appBase . DIRECTORY_SEPARATOR . $fileGlob . '.' . $modifier . '.' . $fileExtension;
-            $potentialFiles = FileSystem::globDir($modifiedPath);
+            $potentialFiles = self::globDir($modifiedPath);
             if (!empty($potentialFiles)) {
                 return $modifiedPath;
             }
         }
+    }
+
+    /**
+     * Recursively parses and returns the directories that matches the passed
+     * glob pattern.
+     *
+     * @param string  $pattern The glob pattern used to parse the directories
+     * @param integer $flags   The flags passed to the glob function
+     *
+     * @return array The directories matches the passed glob pattern
+     * @link http://php.net/glob
+     */
+    protected static function globDir($pattern, $flags = 0)
+    {
+        return FileSystem::globDir($pattern, $flags);
     }
 }
