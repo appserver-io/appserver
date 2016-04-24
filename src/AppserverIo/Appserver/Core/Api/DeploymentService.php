@@ -116,7 +116,7 @@ class DeploymentService extends AbstractFileOperationService
         }
 
         // iterate through all context configurations (context.xml), validate and merge them
-        foreach ($this->globDir(AppEnvironmentHelper::getEnvironmentAwareFilePath($webappPath, '/META-INF/context')) as $contextFile) {
+        foreach ($this->globDir(AppEnvironmentHelper::getEnvironmentAwareFilePath($webappPath, 'META-INF/context')) as $contextFile) {
             try {
                 // validate the application specific context
                 $configurationService->validateFile($contextFile, null);
@@ -208,7 +208,7 @@ class DeploymentService extends AbstractFileOperationService
         $configurationService = $this->newService('AppserverIo\Appserver\Core\Api\ConfigurationService');
 
         // iterate through all server configurations (servers.xml), validate and merge them
-        foreach ($this->globDir(AppEnvironmentHelper::getEnvironmentAwareFilePath($webappPath, '/META-INF/containers')) as $containersConfigurationFile) {
+        foreach ($this->globDir(AppEnvironmentHelper::getEnvironmentAwareFilePath($webappPath, 'META-INF/containers')) as $containersConfigurationFile) {
             try {
                 // validate the application specific container configurations
                 $configurationService->validateFile($containersConfigurationFile, null);
