@@ -774,7 +774,7 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
      * @param array  $args The arguments to pass to the callback
      *
      * @return mixed The requested value
-     * @see \AppserverIo\Appserver\Naming\NamingDirectoryImpl::search()
+     * @see \AppserverIo\Appserver\Naming\NamingDirectory::search()
      */
     public function search($name, array $args = array())
     {
