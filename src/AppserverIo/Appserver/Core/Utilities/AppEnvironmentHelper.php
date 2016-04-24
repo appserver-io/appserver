@@ -105,7 +105,7 @@ class AppEnvironmentHelper
     public static function getEnvironmentAwareFilePath($appBase, $fileGlob, $fileExtension = 'xml')
     {
         // get the file path modifier
-        $modifier = self::getEnvironmentModifier($appBase);
+        $modifier = static::getEnvironmentModifier($appBase);
 
         // as we default to a not modified path we have to be careful about the "two dots" schema .$modifier.$extension
         $defaultFilePath = $appBase . DIRECTORY_SEPARATOR . $fileGlob . '.' . $fileExtension;
@@ -115,10 +115,11 @@ class AppEnvironmentHelper
         } else {
             // we got a modifier we have to check if there is something reachable under the modified path, if not we will also return the default
             $modifiedPath = $appBase . DIRECTORY_SEPARATOR . $fileGlob . '.' . $modifier . '.' . $fileExtension;
-            $potentialFiles = self::globDir($modifiedPath);
+            $potentialFiles = static::globDir($modifiedPath);
             if (!empty($potentialFiles)) {
                 return $modifiedPath;
             }
+            return $defaultFilePath;
         }
     }
 
