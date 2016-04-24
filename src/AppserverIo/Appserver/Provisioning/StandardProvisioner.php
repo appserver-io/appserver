@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\Provisioning;
 
+use AppserverIo\Appserver\Core\Utilities\AppEnvironmentHelper;
 use AppserverIo\Configuration\ConfigurationException;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\Core\Api\Node\ProvisionNode;
@@ -64,14 +65,14 @@ class StandardProvisioner extends AbstractProvisioner
         // check if the webapps directory exists
         if (is_dir($webappPath = $application->getWebappPath())) {
             // prepare the glob expression with the application's directories to parse
-            $applicationDirectories = sprintf('%s/{WEB-INF,META-INF}/provision.xml', $webappPath);
+            $applicationDirectories = AppEnvironmentHelper::getEnvironmentAwareFilePath($webappPath, '{WEB-INF,META-INF}/provision');
 
             // load the service instance
-            /** @var AppserverIo\Appserver\Core\Api\ProvisioningService $service */
+            /** @var \AppserverIo\Appserver\Core\Api\ProvisioningService $service */
             $service = $this->getService();
 
             // load the configuration service instance
-            /** @var AppserverIo\Appserver\Core\Api\ConfigurationService $configurationService */
+            /** @var \AppserverIo\Appserver\Core\Api\ConfigurationService $configurationService */
             $configurationService = $this->getInitialContext()->newService('AppserverIo\Appserver\Core\Api\ConfigurationService');
 
             // load the container node to initialize the system properties

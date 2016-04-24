@@ -81,7 +81,7 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
     /**
      * Trait that provides threaded context functionality.
      *
-     * @var AppserverIo\Appserver\Core\Traits\ThreadedContextTrait
+     * @var \AppserverIo\Appserver\Core\Traits\ThreadedContextTrait
      */
     use ThreadedContextTrait;
 

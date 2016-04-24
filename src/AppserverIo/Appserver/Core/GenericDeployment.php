@@ -12,6 +12,8 @@
  * PHP version 5
  *
  * @author    Tim Wagner <tw@appserver.io>
+ * @author    Bernhard Wick <bw@appserver.io>
+ * @author    Hans Höchtl <hhoechtl@1drop.de>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
@@ -20,6 +22,7 @@
 
 namespace AppserverIo\Appserver\Core;
 
+use AppserverIo\Appserver\Core\Utilities\AppEnvironmentHelper;
 use AppserverIo\Configuration\ConfigurationException;
 use AppserverIo\Appserver\Core\Api\Node\DatasourcesNode;
 
@@ -27,6 +30,8 @@ use AppserverIo\Appserver\Core\Api\Node\DatasourcesNode;
  * Generic deployment implementation for web applications.
  *
  * @author    Tim Wagner <tw@appserver.io>
+ * @author    Bernhard Wick <bw@appserver.io>
+ * @author    Hans Höchtl <hhoechtl@1drop.de>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
@@ -34,6 +39,19 @@ use AppserverIo\Appserver\Core\Api\Node\DatasourcesNode;
  */
 class GenericDeployment extends AbstractDeployment
 {
+
+    /**
+     * Returns all datasource files we potentially use
+     *
+     * @return array
+     */
+    protected function getDatasourceFiles()
+    {
+        if (is_dir($directory = $this->getAppBase())) {
+            return $this->getDeploymentService()->globDir(AppEnvironmentHelper::getEnvironmentAwareFilePath($directory, '*-ds'));
+        }
+        return array();
+    }
 
     /**
      * Initializes the available applications and adds them to the container.
@@ -78,11 +96,8 @@ class GenericDeployment extends AbstractDeployment
         // load the container
         $container = $this->getContainer();
 
-        // load the container and check if application base directory exists
-        if (is_dir($directory = $this->getAppBase())) {
-            // load the datasource files
-            $datasourceFiles = $this->getDeploymentService()->globDir($directory . DIRECTORY_SEPARATOR . '*-ds.xml');
-
+        // load the container and check if we actually have datasource files to work with
+        if ($datasourceFiles = $this->getDatasourceFiles()) {
             // load the naming directory instance
             $namingDirectory = $container->getNamingDirectory();
 
@@ -90,7 +105,7 @@ class GenericDeployment extends AbstractDeployment
             $namingDirectory->createSubdirectory(sprintf('php:env/%s/ds', $this->getContainer()->getName()));
 
             // iterate through all provisioning files (*-ds.xml), validate them and attach them to the configuration
-            /** @var AppserverIo\Appserver\Core\Api\ConfigurationService $configurationService */
+            /** @var \AppserverIo\Appserver\Core\Api\ConfigurationService $configurationService */
             $configurationService = $this->getConfigurationService();
             foreach ($datasourceFiles as $datasourceFile) {
                 try {

@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\PersistenceContainer;
 
+use AppserverIo\Appserver\Core\Utilities\AppEnvironmentHelper;
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Configuration\Configuration;
 use AppserverIo\Appserver\Core\AbstractManager;
@@ -101,7 +102,7 @@ class PersistenceManager extends AbstractManager implements PersistenceContextIn
         // check META-INF + subdirectories for XML files with MQ definitions
         /** @var \AppserverIo\Appserver\Core\Api\DeploymentService $service */
         $service = $application->newService('AppserverIo\Appserver\Core\Api\DeploymentService');
-        $xmlFiles = $service->globDir($metaInfDir . DIRECTORY_SEPARATOR . 'persistence.xml');
+        $xmlFiles = $service->globDir(AppEnvironmentHelper::getEnvironmentAwareFilePath($this->getWebappPath(), 'META_INF' . DIRECTORY_SEPARATOR . 'persistence'));
 
         // load the configuration service instance
         /** @var \AppserverIo\Appserver\Core\Api\ConfigurationService $configurationService */

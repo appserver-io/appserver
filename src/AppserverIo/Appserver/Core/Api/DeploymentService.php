@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\Core\Api;
 
+use AppserverIo\Appserver\Core\Utilities\AppEnvironmentHelper;
 use AppserverIo\Properties\PropertiesInterface;
 use AppserverIo\Configuration\ConfigurationException;
 use AppserverIo\Appserver\Core\Api\Node\ContextNode;
@@ -43,7 +44,7 @@ class DeploymentService extends AbstractFileOperationService
 {
 
     /**
-     * Return's all deployment configurations.
+     * Returns all deployment configurations.
      *
      * @return array An array with all deployment configurations
      * @see \AppserverIo\Appserver\Core\Api\ServiceInterface::findAll()
@@ -96,7 +97,7 @@ class DeploymentService extends AbstractFileOperationService
         $properties->add(SystemPropertyKeys::WEBAPP_NAME, $contextPath);
 
         // validate the base context file
-        /** @var AppserverIo\Appserver\Core\Api\ConfigurationService $configurationService */
+        /** @var \AppserverIo\Appserver\Core\Api\ConfigurationService $configurationService */
         $configurationService = $this->newService('AppserverIo\Appserver\Core\Api\ConfigurationService');
         $configurationService->validateFile($baseContextPath = $this->getConfdDir('context.xml'), null);
 
@@ -115,7 +116,7 @@ class DeploymentService extends AbstractFileOperationService
         }
 
         // iterate through all context configurations (context.xml), validate and merge them
-        foreach ($this->globDir($webappPath . '/META-INF/context.xml') as $contextFile) {
+        foreach ($this->globDir(AppEnvironmentHelper::getEnvironmentAwareFilePath($webappPath, '/META-INF/context')) as $contextFile) {
             try {
                 // validate the application specific context
                 $configurationService->validateFile($contextFile, null);
@@ -171,7 +172,7 @@ class DeploymentService extends AbstractFileOperationService
     }
 
     /**
-     * Prepare's the system properties for the actual mode.
+     * Prepares the system properties for the actual mode.
      *
      * @param \AppserverIo\Properties\PropertiesInterface $properties The properties to prepare
      * @param string                                      $webappPath The path of the web application to prepare the properties with
@@ -186,7 +187,7 @@ class DeploymentService extends AbstractFileOperationService
     }
 
     /**
-     * Load's the container instances from the META-INF/containers.xml configuration file of the
+     * Loads the container instances from the META-INF/containers.xml configuration file of the
      * passed web application path and add/merge them to/with the system configuration.
      *
      * @param \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface         $containerNode       The container node used for property replacement
@@ -202,11 +203,11 @@ class DeploymentService extends AbstractFileOperationService
     ) {
 
         // load the service to validate the files
-        /** @var AppserverIo\Appserver\Core\Api\ConfigurationService $configurationService */
+        /** @var \AppserverIo\Appserver\Core\Api\ConfigurationService $configurationService */
         $configurationService = $this->newService('AppserverIo\Appserver\Core\Api\ConfigurationService');
 
         // iterate through all server configurations (servers.xml), validate and merge them
-        foreach ($this->globDir($webappPath . '/META-INF/containers.xml') as $containersConfigurationFile) {
+        foreach ($this->globDir(AppEnvironmentHelper::getEnvironmentAwareFilePath($webappPath, '/META-INF/containers')) as $containersConfigurationFile) {
             try {
                 // validate the application specific container configurations
                 $configurationService->validateFile($containersConfigurationFile, null);
@@ -221,7 +222,7 @@ class DeploymentService extends AbstractFileOperationService
                 // prepare the sytsem properties
                 $this->prepareSystemProperties($properties, $webappPath);
 
-                /** @var AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNodeInstance */
+                /** @var \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNodeInstance */
                 foreach ($containersNodeInstance->getContainers() as $containerNodeInstance) {
                     // replace the properties for the found container node instance
                     $containerNodeInstance->replaceProperties($properties);
@@ -259,7 +260,7 @@ class DeploymentService extends AbstractFileOperationService
     {
 
         // load the system configuration
-        /** @var AppserverIo\Appserver\Core\Interfaces\SystemConfigurationInterface $systemConfiguration */
+        /** @var \AppserverIo\Appserver\Core\Interfaces\SystemConfigurationInterface $systemConfiguration */
         $systemConfiguration = $this->getSystemConfiguration();
 
         // if applications are NOT allowed to override the system configuration
@@ -267,7 +268,7 @@ class DeploymentService extends AbstractFileOperationService
             return $systemConfiguration;
         }
 
-        /** @var AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNodeInstance */
+        /** @var \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNodeInstance */
         foreach ($systemConfiguration->getContainers() as $containerNode) {
             // load the containers application base directory
             $containerAppBase = $this->getBaseDirectory($containerNode->getHost()->getAppBase());

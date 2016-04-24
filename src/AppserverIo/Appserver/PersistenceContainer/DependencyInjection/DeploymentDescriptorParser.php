@@ -21,6 +21,7 @@
 namespace AppserverIo\Appserver\PersistenceContainer\DependencyInjection;
 
 use AppserverIo\Appserver\Core\Api\Node\EpbNode;
+use AppserverIo\Appserver\Core\Utilities\AppEnvironmentHelper;
 use AppserverIo\Configuration\Interfaces\NodeInterface;
 use AppserverIo\Psr\EnterpriseBeans\BeanContextInterface;
 
@@ -88,7 +89,7 @@ class DeploymentDescriptorParser
         $webappPath = $this->getBeanContext()->getWebappPath();
 
         // prepare the deployment descriptor
-        $deploymentDescriptor = $webappPath . DIRECTORY_SEPARATOR . 'META-INF' . DIRECTORY_SEPARATOR . 'epb.xml';
+        $deploymentDescriptor = AppEnvironmentHelper::getEnvironmentAwareFilePath($webappPath, 'META-INF' . DIRECTORY_SEPARATOR . 'epb');
 
         // query whether we found epb.xml deployment descriptor file
         if (file_exists($deploymentDescriptor) === false) {
