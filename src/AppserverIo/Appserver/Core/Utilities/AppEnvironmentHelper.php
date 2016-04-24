@@ -62,7 +62,7 @@ class AppEnvironmentHelper
      * @throws \AppserverIo\Properties\PropertyFileNotFoundException
      * @throws \AppserverIo\Properties\PropertyFileParseException
      */
-    protected static function getEnvironmentModifier($appBase)
+    public static function getEnvironmentModifier($appBase)
     {
         // check if we got the properties cached already, if not load them anew
         $properties = null;
@@ -86,6 +86,10 @@ class AppEnvironmentHelper
         // get the actual property if it exists
         if (!is_null($properties) && $properties->exists(ConfigurationKeys::APP_ENVIRONMENT)) {
             $result = $properties->get(ConfigurationKeys::APP_ENVIRONMENT);
+        }
+        // ENV variable always wins
+        if (defined(ConfigurationKeys::APP_ENVIRONMENT)) {
+            $result = getenv(ConfigurationKeys::APP_ENVIRONMENT);
         }
 
         return $result;
