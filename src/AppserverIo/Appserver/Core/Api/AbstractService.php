@@ -224,7 +224,7 @@ abstract class AbstractService implements ServiceInterface
      * Returns the servers tmp directory, append with the passed directory.
      *
      * @param ContainerNodeInterface $containerNode        The container to return the temporary directory for
-     * @param string                                                  $relativePathToAppend A relative path to append
+     * @param string                 $relativePathToAppend A relative path to append
      *
      * @return string
      */
@@ -240,8 +240,8 @@ abstract class AbstractService implements ServiceInterface
     /**
      * Returns the servers deploy directory.
      *
-     * @param ContainerNodeInterface $containerNode        The container to return the deployment directory for
-     * @param string                                                  $relativePathToAppend A relative path to append
+     * @param ContainerNodeInterface $containerNode       The container to return the deployment directory for
+     * @param string                $relativePathToAppend A relative path to append
      *
      * @return string
      */
@@ -258,7 +258,7 @@ abstract class AbstractService implements ServiceInterface
      * Returns the servers webapps directory.
      *
      * @param ContainerNodeInterface $containerNode        The container to return the temporary directory for
-     * @param string                                                  $relativePathToAppend A relative path to append
+     * @param string                 $relativePathToAppend A relative path to append
      *
      * @return string
      */

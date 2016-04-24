@@ -1,3 +1,15 @@
+# Version 1.1.1-beta7
+
+## Bugfixes
+
+* Fixed invalid class loader initialization in AbstractContainerThread
+* Coding Guide Lines (CGL) corrections (Hans Höchtl)
+* Removing unnecessary NamingDirectoryImpl class
+
+## Features
+
+* None
+
 # Version 1.1.1-beta6
 
 ## Bugfixes
