@@ -1,3 +1,13 @@
+# Version 1.1.1-beta8
+
+## Bugfixes
+
+* Fixed fatal error when try to access application in ErrorUtil on fatal error handling
+
+## Features
+
+* None
+
 # Version 1.1.1-beta7
 
 ## Bugfixes
