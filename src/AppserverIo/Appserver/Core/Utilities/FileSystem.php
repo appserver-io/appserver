@@ -255,24 +255,27 @@ class FileSystem
     }
 
     /**
-     * Recursively parses and returns the directories and files that matches
-     * the passed glob pattern.
+     * Parses and returns the directories and files that matches
+     * the passed glob pattern in a recursive way (if wanted).
      *
-     * @param string  $pattern The glob pattern used to parse the directories
-     * @param integer $flags   The flags passed to the glob function
+     * @param string  $pattern   The glob pattern used to parse the directories
+     * @param integer $flags     The flags passed to the glob function
+     * @param boolean $recursive Whether or not to parse directories recursively
      *
      * @return array The directories matches the passed glob pattern
      * @link http://php.net/glob
      */
-    public static function globDir($pattern, $flags = 0)
+    public static function globDir($pattern, $flags = 0, $recursive = true)
     {
 
         // parse the first directory
         $files = glob($pattern, $flags);
 
-        // parse all subdirectories
-        foreach (glob(dirname($pattern). DIRECTORY_SEPARATOR . '*', GLOB_ONLYDIR|GLOB_NOSORT|GLOB_BRACE) as $dir) {
-            $files = array_merge($files, FileSystem::globDir($dir . DIRECTORY_SEPARATOR . basename($pattern), $flags));
+        // parse all subdirectories, if recursive parsing is wanted
+        if ($recursive !== false) {
+            foreach (glob(dirname($pattern). DIRECTORY_SEPARATOR . '*', GLOB_ONLYDIR|GLOB_NOSORT|GLOB_BRACE) as $dir) {
+                $files = array_merge($files, FileSystem::globDir($dir . DIRECTORY_SEPARATOR . basename($pattern), $flags));
+            }
         }
 
         // return the array with the files matching the glob pattern

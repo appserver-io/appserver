@@ -48,7 +48,7 @@ class GenericDeployment extends AbstractDeployment
     protected function getDatasourceFiles()
     {
         if (is_dir($directory = $this->getAppBase())) {
-            return $this->getDeploymentService()->globDir(AppEnvironmentHelper::getEnvironmentAwareFilePath($directory, '*-ds'));
+            return $this->getDeploymentService()->globDir(AppEnvironmentHelper::getEnvironmentAwareFilePath($directory, '*-ds'), 0, false);
         }
         return array();
     }
