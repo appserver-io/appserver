@@ -1,3 +1,13 @@
+# Version 1.1.1-beta9
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Switch to latest DNS server/Webserver version to improve SSL security
+
 # Version 1.1.1-beta8
 
 ## Bugfixes
