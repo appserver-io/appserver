@@ -111,6 +111,7 @@ If you want to setup a HTTPS Webserver, you have to configure some more params.
 | `ecdhCurve`          | string   | The curve to use with ECDH ciphers, if not specified prime256v1 will be used. |
 | `singleEcdhUse`      | boolean  | The flag to enable/disable generation of a new key pair in scenarios where ECDH cipher suites are negotiated (instead of the preferred ECDHE ciphers), default's to `TRUE`. |
 | `singleDhUse`        | boolean  | The flag to enable/disable generation of a new key pair when using DH parameters (improves forward secrecy), default's to `TRUE`. |
+| `ciphers`            | string   | Sets the list of available ciphers. The format of the string is described in [ciphers](https://www.openssl.org/docs/manmaster/apps/ciphers.html#CIPHER_LIST_FORMAT) and defaults to `DEFAULT` |
 
 Since version 1.1 there is the possibility to define multiple SSL certificates. Multiple certificates can be enabled on server level by adding a `<certificates/>` node containing a `<certificate/>` node for each certificate you want to add. For example, if you want to add a wildcard certificate for `appserver.local` and `appserver.dev`, the following configuration will be appropriate
 
