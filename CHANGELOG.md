@@ -1,3 +1,35 @@
+# Version 1.1.1-beta9
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Switch to latest DNS server/Webserver version to improve SSL security
+
+# Version 1.1.1-beta8
+
+## Bugfixes
+
+* Fixed fatal error when try to access application in ErrorUtil on fatal error handling
+
+## Features
+
+* None
+
+# Version 1.1.1-beta7
+
+## Bugfixes
+
+* Fixed invalid class loader initialization in AbstractContainerThread
+* Coding Guide Lines (CGL) corrections (Hans Höchtl)
+* Removing unnecessary NamingDirectoryImpl class
+
+## Features
+
+* None
+
 # Version 1.1.1-beta6
 
 ## Bugfixes

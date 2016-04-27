@@ -154,7 +154,7 @@ class DeploymentService extends AbstractFileOperationService
      *
      * @param \AppserverIo\Appserver\Core\Interfaces\ContainerInterface $container The container we want to add the applications to
      *
-     * @return array The array with the application contexts
+     * @return ContextNode[] The array with the application contexts
      */
     public function loadContextInstancesByContainer(ContainerInterface $container)
     {

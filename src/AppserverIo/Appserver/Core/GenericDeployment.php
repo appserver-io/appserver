@@ -78,7 +78,7 @@ class GenericDeployment extends AbstractDeployment
     /**
      * Load's and return's the context instances for the container.
      *
-     * @return array The array with the container's context instances
+     * @return \AppserverIo\Appserver\Core\Api\Node\ContextNode[] The array with the container's context instances
      */
     protected function loadContextInstances()
     {
@@ -121,6 +121,7 @@ class GenericDeployment extends AbstractDeployment
                     $datasourcesNode->replaceProperties($systemProperties);
 
                     // store the datasource in the system configuration
+                    /** @var \AppserverIo\Appserver\Core\Api\Node\DatasourceNode $datasourceNode */
                     foreach ($datasourcesNode->getDatasources() as $datasourceNode) {
                         // add the datasource to the system configuration
                         $this->getDatasourceService()->persist($datasourceNode);

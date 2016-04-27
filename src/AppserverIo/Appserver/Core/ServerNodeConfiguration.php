@@ -568,6 +568,18 @@ class ServerNodeConfiguration implements ServerConfigurationInterface
     }
 
     /**
+     * Return's the list of available ciphers.
+     *
+     * @return string
+     * @link http://php.net/manual/en/context.ssl.php#context.ssl.ciphers
+     * @link https://www.openssl.org/docs/manmaster/apps/ciphers.html#CIPHER_LIST_FORMAT
+     */
+    public function getCiphers()
+    {
+        return $this->node->getParam(SslOptionKeys::CIPHERS);
+    }
+
+    /**
      * Returns connection handlers
      *
      * @return array

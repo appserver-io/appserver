@@ -37,7 +37,7 @@ class LoggerFactory
      *
      * @param object $loggerNode The logger configuration
      *
-     * @return object The logger instance
+     * @return \Psr\Log\LoggerInterface The logger instance
      */
     public static function factory($loggerNode)
     {

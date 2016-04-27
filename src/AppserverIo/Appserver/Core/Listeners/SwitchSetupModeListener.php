@@ -22,9 +22,6 @@ namespace AppserverIo\Appserver\Core\Listeners;
 
 use League\Event\EventInterface;
 use AppserverIo\Psr\Naming\NamingException;
-use AppserverIo\Appserver\Naming\NamingDirectory;
-use AppserverIo\Appserver\Core\Api\ContainerService;
-use AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface;
 
 /**
  * Listener that switches the setup mode.

@@ -223,7 +223,7 @@ class ContextNode extends AbstractNode
     /**
      * Returns the context factory class name.
      *
-     * @return mixed
+     * @return \AppserverIo\Appserver\Application\ApplicationFactory
      */
     public function getFactory()
     {

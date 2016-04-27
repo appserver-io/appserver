@@ -142,7 +142,7 @@ class ApplicationStateKeys
     /**
      * Returns TRUE if the container state is greater than the passed one, else FALSE.
      *
-     * @param \AppserverIo\Appserver\Core\Utilities\ApplicationStateKeys $containerState The container state to be greater than
+     * @param ApplicationStateKeys $containerState The container state to be greater than
      *
      * @return boolean TRUE if equal, else FALSE
      */
@@ -154,7 +154,7 @@ class ApplicationStateKeys
     /**
      * Returns TRUE if the passed application state equals the actual one, else FALSE.
      *
-     * @param \AppserverIo\Appserver\Core\Utilities\ApplicationStateKeys $applicationState The container state to check
+     * @param ApplicationStateKeys $applicationState The container state to check
      *
      * @return boolean TRUE if equal, else FALSE
      */

@@ -24,7 +24,6 @@ use Rhumsaa\Uuid\Uuid;
 use Psr\Log\LoggerInterface;
 use AppserverIo\Logger\LoggerUtils;
 use AppserverIo\Storage\GenericStackable;
-use AppserverIo\Storage\StorageInterface;
 use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
 use AppserverIo\Appserver\Core\Traits\ThreadedContextTrait;
 use AppserverIo\Appserver\Core\Interfaces\ContainerInterface;
@@ -36,7 +35,6 @@ use AppserverIo\Appserver\Core\Api\Node\ProvisionerNodeInterface;
 use AppserverIo\Appserver\Core\Api\Node\ClassLoaderNodeInterface;
 use AppserverIo\Appserver\Naming\Utils\NamingDirectoryKeys;
 use AppserverIo\Appserver\Application\Interfaces\ContextInterface;
-use AppserverIo\Psr\Naming\NamingDirectoryInterface;
 use AppserverIo\Psr\Context\ContextInterface as Context;
 use AppserverIo\Psr\Application\ManagerInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
@@ -505,13 +503,14 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
      *
      * @param string $name The name of the requested logger
      *
-     * @return \Psr\Log\LoggerInterface The logger instance
+     * @return \Psr\Log\LoggerInterface|null The logger instance
      */
     public function getLogger($name = LoggerUtils::SYSTEM)
     {
         if (isset($this->loggers[$name])) {
             return $this->loggers[$name];
         }
+        return null;
     }
 
     /**
@@ -798,7 +797,7 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
      * @param array  $args The arguments to pass to the callback
      *
      * @return mixed The requested value
-     * @see \AppserverIo\Appserver\Naming\NamingDirectoryImpl::search()
+     * @see \AppserverIo\Appserver\Naming\NamingDirectory::search()
      */
     public function search($name, array $args = array())
     {
@@ -838,6 +837,7 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
 
             // initialize the profile logger and the thread context
             $profileLogger = null;
+            /** @var \AppserverIo\Logger\ThreadSafeLoggerInterface $profileLogger */
             if ($profileLogger = $this->getInitialContext()->getLogger(LoggerUtils::PROFILE)) {
                 $profileLogger->appendThreadContext('application');
             }

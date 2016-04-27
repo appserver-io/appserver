@@ -87,3 +87,23 @@ As a replacement, use the webserver authentication a server or a virtual host no
     </authentication>
 </authentications>
 ```
+
+## DHTML Servlet **IS** necessary
+
+As of version 1.1.1 allows to specify custom error pages, the DHTML servlet **NEEDS** to available. If not, instead of an error page, a blank page will be rendered.
+
+To add the DHTML servlet to the `WEB-INF/web.xml` file, add the following lines
+
+```xml
+<servlet>
+    <description>A servlet that handles DHTML files.</description>
+    <display-name>The DHTML servlet</display-name>
+    <servlet-name>dhtml</servlet-name>
+    <servlet-class>AppserverIo\Appserver\ServletEngine\Servlets\DhtmlServlet</servlet-class>
+</servlet>
+
+<servlet-mapping>
+    <servlet-name>dhtml</servlet-name>
+    <url-pattern>*.dhtml</url-pattern>
+</servlet-mapping>
+```

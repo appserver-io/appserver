@@ -24,7 +24,6 @@ namespace AppserverIo\Appserver\Core;
 
 use AppserverIo\Logger\LoggerUtils;
 use AppserverIo\Storage\GenericStackable;
-use AppserverIo\Appserver\Naming\NamingDirectory;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\Core\Interfaces\ContainerInterface;
 use AppserverIo\Appserver\Core\Utilities\ContainerStateKeys;
@@ -136,6 +135,12 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
         // register the default autoloader
         require SERVER_AUTOLOADER;
 
+        // initialize the container state
+        $this->containerState = ContainerStateKeys::get(ContainerStateKeys::WAITING_FOR_INITIALIZATION);
+
+        // create a new API app service instance
+        $this->service = $this->newService('AppserverIo\Appserver\Core\Api\AppService');
+
         // initialize the container for the configured class laoders
         $classLoaders = new GenericStackable();
 
@@ -144,12 +149,6 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
 
         // register shutdown handler
         register_shutdown_function(array(&$this, "shutdown"));
-
-        // initialize the container state
-        $this->containerState = ContainerStateKeys::get(ContainerStateKeys::WAITING_FOR_INITIALIZATION);
-
-        // create a new API app service instance
-        $this->service = $this->newService('AppserverIo\Appserver\Core\Api\AppService');
 
         // query whether the container's directories exists and are readable
         $this->validateDirectories();
@@ -232,7 +231,7 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
             $serverContext->injectLoggers($this->getInitialContext()->getLoggers());
 
             // create the server (which should start it automatically)
-            /** @var AppserverIo\Server\Interfaces\ServerInterface $server */
+            /** @var \AppserverIo\Server\Interfaces\ServerInterface $server */
             $server = new $serverType($serverContext);
             // collect the servers we started
             $this->servers[$serverConfig->getName()] = $server;
