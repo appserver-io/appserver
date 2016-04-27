@@ -131,6 +131,13 @@ class SslOptionKeys
     const SINGLE_DH_USE = 'singleDhUse';
 
     /**
+     * Key for the 'ciphers'.
+     *
+     * @var string
+     */
+    const CIPHERS = 'ciphers';
+
+    /**
      * This is a utility class, so protect it against direct
      * instantiation.
      */

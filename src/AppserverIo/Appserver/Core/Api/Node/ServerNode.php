@@ -148,6 +148,7 @@ class ServerNode extends AbstractNode implements ServerNodeInterface
         $this->setParam(SslOptionKeys::HONOR_CIPHER_ORDER, 'boolean', false);
         $this->setParam(SslOptionKeys::SINGLE_ECDH_USE, 'boolean', false);
         $this->setParam(SslOptionKeys::SINGLE_DH_USE, 'boolean', false);
+        $this->setParam(SslOptionKeys::CIPHERS, 'string', 'DEFAULT');
     }
 
     /**
