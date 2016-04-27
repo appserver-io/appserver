@@ -115,17 +115,14 @@ class AppEnvironmentHelper
         $defaultFilePath = $appBase . DIRECTORY_SEPARATOR . $fileGlob . '.' . $fileExtension;
         if (empty($modifier)) {
             // if we do not have a modifier we do not need to act upon anything, so we return the default
-            error_log($defaultFilePath);
             return $defaultFilePath;
         } else {
             // we got a modifier we have to check if there is something reachable under the modified path, if not we will also return the default
             $modifiedPath = $appBase . DIRECTORY_SEPARATOR . $fileGlob . '.' . $modifier . '.' . $fileExtension;
             $potentialFiles = static::globDir($modifiedPath);
             if (!empty($potentialFiles)) {
-                error_log($modifiedPath);
                 return $modifiedPath;
             }
-            error_log($defaultFilePath);
             return $defaultFilePath;
         }
     }

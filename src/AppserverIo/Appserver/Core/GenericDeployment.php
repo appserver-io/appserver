@@ -47,10 +47,18 @@ class GenericDeployment extends AbstractDeployment
      */
     protected function getDatasourceFiles()
     {
-        if (is_dir($directory = $this->getAppBase())) {
-            return $this->getDeploymentService()->globDir(AppEnvironmentHelper::getEnvironmentAwareFilePath($directory, '*-ds'), 0, false);
-        }
-        return array();
+        // if we have a valid app base we will collect all datasources
+        $datasourceFiles = array();
+        if (is_dir($appBase = $this->getAppBase())) {
+            // get all the global datasource files first
+            $datasourceFiles = $this->getDeploymentService()->globDir($appBase . DIRECTORY_SEPARATOR . '*-ds.xml', 0, false);
+
+            // iterate over all applications and collect the environment specific datasources
+            foreach (glob($appBase . '/*', GLOB_ONLYDIR) as $webappPath) {
+                array_merge($datasourceFiles, $this->getDeploymentService()->globDir(AppEnvironmentHelper::getEnvironmentAwareFilePath($webappPath, '*-ds')));
+            }
+        }error_log('datasources: ' . var_export($datasourceFiles, true));
+        return $datasourceFiles;
     }
 
     /**
@@ -66,7 +74,7 @@ class GenericDeployment extends AbstractDeployment
     }
 
     /**
-     * Return's the container's directory with applications to be deployed.
+     * Returns the container's directory with applications to be deployed.
      *
      * @return string The container's application base directory
      */
@@ -76,7 +84,7 @@ class GenericDeployment extends AbstractDeployment
     }
 
     /**
-     * Load's and return's the context instances for the container.
+     * Loads and return's the context instances for the container.
      *
      * @return \AppserverIo\Appserver\Core\Api\Node\ContextNode[] The array with the container's context instances
      */
@@ -86,7 +94,7 @@ class GenericDeployment extends AbstractDeployment
     }
 
     /**
-     * Deploys the available datasources.
+     * Deploys the available root directory datasources.
      *
      * @return void
      */
