@@ -6,7 +6,7 @@
 
 ## Features
 
-* Added application context to load different configurations based on an environment such as "dev"
+* Closed [#940](https://github.com/appserver-io/appserver/issues/940) - Allow different environments aka stages with corresponding configuration
 
 # Version 1.1.1-beta9
 
