@@ -43,8 +43,10 @@ class DoctrineEntityManagerDecorator extends EntityManagerDecorator
     public function __sleep()
     {
 
-        // close the connection
-        $this->getWrapped()->getConnection()->close();
+        // query whether we've a wrapped instance
+        if ($wrapped = $this->getWrapped()) {
+            $this->getWrapped()->getConnection()->close();
+        }
 
         // we want to serialize NOTHING
         return array();
@@ -60,6 +62,18 @@ class DoctrineEntityManagerDecorator extends EntityManagerDecorator
         // query whether we've a wrapped instance
         if ($wrapped = $this->getWrapped()) {
             $wrapped->getConnection()->close();
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getConnection()
+    {
+
+        // query whether we've a wrapped instance
+        if ($wrapped = $this->getWrapped()) {
+            return $wrapped->getConnection();
         }
     }
 

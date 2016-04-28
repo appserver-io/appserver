@@ -24,6 +24,7 @@ use AppserverIo\Logger\LoggerUtils;
 use AppserverIo\Appserver\Core\AbstractDaemonThread;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\Naming\Utils\NamingDirectoryKeys;
+use Psr\Log\LogLevel;
 
 /**
  * The garbage collector for the stateful session beans.
@@ -120,19 +121,25 @@ class StandardGarbageCollector extends AbstractDaemonThread
         // initialize the timestamp with the actual time
         $actualTime = time();
 
+        // load the map with the SFSB lifetime data
+        $lifetimeMap = $statefulSessionBeans->getLifetime();
+
+        // write a log message with size of SFSBs to be garbage collected
+        $this->log(LogLevel::DEBUG, sprintf('Found %d SFSBs be garbage collected', sizeof($lifetimeMap)));
+
         // iterate over the applications sessions with stateful session beans
-        foreach ($statefulSessionBeans->getLifetime() as $identifier => $lifetime) {
+        foreach ($lifetimeMap as $identifier => $lifetime) {
             // check the lifetime of the stateful session beans
             if ($lifetime < $actualTime) {
                 // if the stateful session bean has timed out, remove it
                 $statefulSessionBeans->remove($identifier, array($beanManager, 'destroyBeanInstance'));
                 // write a log message
-                $this->getApplication()
-                     ->getNamingDirectory()
-                     ->search(NamingDirectoryKeys::SYSTEM_LOGGER)
-                     ->debug(sprintf('Successfully removed SFSB %s', $identifier));
+                $this->log(LogLevel::DEBUG, sprintf('Successfully removed SFSB %s', $identifier));
                 // reduce CPU load
                 usleep(1000);
+            } else {
+                // write a log message
+                $this->log(LogLevel::DEBUG, sprintf('Lifetime %s of SFSB %s is > %s', $lifetime, $identifier, $actualTime));
             }
         }
 

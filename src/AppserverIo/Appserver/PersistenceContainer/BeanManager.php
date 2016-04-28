@@ -514,7 +514,7 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface, Ma
         if ($descriptor instanceof StatefulSessionBeanDescriptorInterface) {
             // remove the SFSB instance if a remove method has been called
             if ($descriptor->isRemoveMethod($methodName)) {
-                $this->removeStatefulSessionBean($sessionId, $className);
+                $this->removeStatefulSessionBean($sessionId, $descriptor->getClassName());
                 $session->remove($className);
                 $attach = false;
             }
