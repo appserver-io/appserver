@@ -17,9 +17,11 @@
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
+
 namespace AppserverIo\Appserver\Core\Api;
 
 use AppserverIo\Appserver\Core\Api\Node\CronNode;
+use AppserverIo\Appserver\Core\Utilities\AppEnvironmentHelper;
 use AppserverIo\Configuration\ConfigurationException;
 use AppserverIo\Properties\Properties;
 use AppserverIo\Appserver\Core\Utilities\SystemPropertyKeys;
@@ -60,7 +62,7 @@ class ScannerService extends AbstractFileOperationService
             $cronInstances = array();
 
             // load the service necessary to validate CRON configuration files
-            /** @var AppserverIo\Appserver\Core\Api\ConfigurationService $configurationService */
+            /** @var \AppserverIo\Appserver\Core\Api\ConfigurationService $configurationService */
             $configurationService = $this->newService('AppserverIo\Appserver\Core\Api\ConfigurationService');
 
             // load the base CRON configuration file
@@ -94,7 +96,7 @@ class ScannerService extends AbstractFileOperationService
                 // iterate over all applications and create the CRON configuration
                 foreach (glob($this->getWebappsDir($containerNode) . '/*', GLOB_ONLYDIR) as $webappPath) {
                     // iterate through all CRON configurations (cron.xml), validate and merge them
-                    foreach ($this->globDir($webappPath . '/META-INF/cron.xml') as $cronFile) {
+                    foreach ($this->globDir(AppEnvironmentHelper::getEnvironmentAwareGlobPattern($webappPath, 'META-INF/cron')) as $cronFile) {
                         try {
                             // validate the file, but skip it if validation fails
                             $configurationService->validateFile($cronFile, null);

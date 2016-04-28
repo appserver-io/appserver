@@ -1,3 +1,13 @@
+# Version 1.1.1-beta10
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Closed [#940](https://github.com/appserver-io/appserver/issues/940) - Allow different environments aka stages with corresponding configuration
+
 # Version 1.1.1-beta9
 
 ## Bugfixes

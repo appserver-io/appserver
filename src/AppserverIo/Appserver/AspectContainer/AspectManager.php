@@ -23,6 +23,7 @@ namespace AppserverIo\Appserver\AspectContainer;
 use AppserverIo\Appserver\AspectContainer\Interfaces\AspectManagerInterface;
 use AppserverIo\Appserver\Core\Api\InvalidConfigurationException;
 use AppserverIo\Appserver\Core\DgClassLoader;
+use AppserverIo\Appserver\Core\Utilities\AppEnvironmentHelper;
 use AppserverIo\Doppelgaenger\AspectRegister;
 use AppserverIo\Doppelgaenger\Config;
 use AppserverIo\Doppelgaenger\Entities\Definitions\Advice;
@@ -56,7 +57,7 @@ class AspectManager implements AspectManagerInterface, ManagerInterface
      *
      * @var string
      */
-    const CONFIG_FILE = 'pointcuts.xml';
+    const CONFIG_FILE_GLOB = 'pointcuts';
 
     /**
      * Getter for the $aspectRegister property
@@ -260,8 +261,10 @@ class AspectManager implements AspectManagerInterface, ManagerInterface
         $configurationService = $application->newService('AppserverIo\Appserver\Core\Api\ConfigurationService');
 
         // check if we even have a XMl file to read from
-        $xmlPaths = $configurationService->globDir($this->getWebappPath() . DIRECTORY_SEPARATOR . '{WEB-INF,META-INF,common}' .
-            DIRECTORY_SEPARATOR . self::CONFIG_FILE, GLOB_BRACE);
+        $xmlPaths = $configurationService->globDir(
+            AppEnvironmentHelper::getEnvironmentAwareGlobPattern($this->getWebappPath(), '{WEB-INF,META-INF,common}' . DIRECTORY_SEPARATOR . self::CONFIG_FILE_GLOB, GLOB_BRACE),
+            GLOB_BRACE
+        );
         foreach ($xmlPaths as $xmlPath) {
             // iterate all XML configuration files we found
             if (is_readable($xmlPath)) {

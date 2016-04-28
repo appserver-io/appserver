@@ -60,6 +60,7 @@ use AppserverIo\Psr\Application\FilesystemAwareInterface;
  * @property \AppserverIo\Appserver\Application\Interfaces\ContextInterface $initialContext    The initial context instance
  * @property \AppserverIo\Storage\GenericStackable                          $managers          Stackable of managers for this application
  * @property string                                                         $name              Name of the application
+ * @property string                                                         $environmentName   Name of the environment the application currently runs in (build.properties)
  * @property string                                                         $serial            The application's UUID
  * @property string                                                         $containerName     Name of the container the application is bound to
  * @property string                                                         $containerRunlevel Runlevel of the container the application is bound to
@@ -93,6 +94,18 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
 
         // initialize the application state
         $this->applicationState = ApplicationStateKeys::get(ApplicationStateKeys::WAITING_FOR_INITIALIZATION);
+    }
+
+    /**
+     * Inject the environment name
+     *
+     * @param string $environmentName The environment name to inject
+     *
+     * @return void
+     */
+    public function injectEnvironmentName($environmentName)
+    {
+        $this->environmentName = $environmentName;
     }
 
     /**
@@ -187,6 +200,16 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * Returns the applications environment name
+     *
+     * @return string The applications environment name
+     */
+    public function getEnvironmentName()
+    {
+        return $this->environmentName;
     }
 
     /**

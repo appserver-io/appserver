@@ -12,6 +12,8 @@
  * PHP version 5
  *
  * @author    Tim Wagner <tw@appserver.io>
+ * @author    Bernhard Wick <bw@appserver.io>
+ * @author    Hans Höchtl <hhoechtl@1drop.de>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
@@ -20,7 +22,7 @@
 
 namespace AppserverIo\Appserver\Core;
 
-use AppserverIo\Appserver\Core\Api\Node\DatasourceNode;
+use AppserverIo\Appserver\Core\Utilities\AppEnvironmentHelper;
 use AppserverIo\Configuration\ConfigurationException;
 use AppserverIo\Appserver\Core\Api\Node\DatasourcesNode;
 
@@ -28,6 +30,8 @@ use AppserverIo\Appserver\Core\Api\Node\DatasourcesNode;
  * Generic deployment implementation for web applications.
  *
  * @author    Tim Wagner <tw@appserver.io>
+ * @author    Bernhard Wick <bw@appserver.io>
+ * @author    Hans Höchtl <hhoechtl@1drop.de>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
@@ -35,6 +39,27 @@ use AppserverIo\Appserver\Core\Api\Node\DatasourcesNode;
  */
 class GenericDeployment extends AbstractDeployment
 {
+
+    /**
+     * Returns all datasource files we potentially use
+     *
+     * @return array
+     */
+    protected function getDatasourceFiles()
+    {
+        // if we have a valid app base we will collect all datasources
+        $datasourceFiles = array();
+        if (is_dir($appBase = $this->getAppBase())) {
+            // get all the global datasource files first
+            $datasourceFiles = $this->getDeploymentService()->globDir($appBase . DIRECTORY_SEPARATOR . '*-ds.xml', 0, false);
+
+            // iterate over all applications and collect the environment specific datasources
+            foreach (glob($appBase . '/*', GLOB_ONLYDIR) as $webappPath) {
+                $datasourceFiles = array_merge($datasourceFiles, $this->getDeploymentService()->globDir(AppEnvironmentHelper::getEnvironmentAwareGlobPattern($webappPath, '*-ds')));
+            }
+        }
+        return $datasourceFiles;
+    }
 
     /**
      * Initializes the available applications and adds them to the container.
@@ -49,7 +74,7 @@ class GenericDeployment extends AbstractDeployment
     }
 
     /**
-     * Return's the container's directory with applications to be deployed.
+     * Returns the container's directory with applications to be deployed.
      *
      * @return string The container's application base directory
      */
@@ -59,7 +84,7 @@ class GenericDeployment extends AbstractDeployment
     }
 
     /**
-     * Load's and return's the context instances for the container.
+     * Loads and return's the context instances for the container.
      *
      * @return \AppserverIo\Appserver\Core\Api\Node\ContextNode[] The array with the container's context instances
      */
@@ -69,7 +94,7 @@ class GenericDeployment extends AbstractDeployment
     }
 
     /**
-     * Deploys the available datasources.
+     * Deploys the available root directory datasources.
      *
      * @return void
      */
@@ -79,11 +104,8 @@ class GenericDeployment extends AbstractDeployment
         // load the container
         $container = $this->getContainer();
 
-        // load the container and check if application base directory exists
-        if (is_dir($directory = $this->getAppBase())) {
-            // load the datasource files
-            $datasourceFiles = $this->getDeploymentService()->globDir($directory . DIRECTORY_SEPARATOR . '*-ds.xml');
-
+        // load the container and check if we actually have datasource files to work with
+        if ($datasourceFiles = $this->getDatasourceFiles()) {
             // load the naming directory instance
             $namingDirectory = $container->getNamingDirectory();
 
@@ -107,7 +129,7 @@ class GenericDeployment extends AbstractDeployment
                     $datasourcesNode->replaceProperties($systemProperties);
 
                     // store the datasource in the system configuration
-                    /** @var DatasourceNode $datasourceNode */
+                    /** @var \AppserverIo\Appserver\Core\Api\Node\DatasourceNode $datasourceNode */
                     foreach ($datasourcesNode->getDatasources() as $datasourceNode) {
                         // add the datasource to the system configuration
                         $this->getDatasourceService()->persist($datasourceNode);

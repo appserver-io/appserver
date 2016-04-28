@@ -22,6 +22,7 @@
 
 namespace AppserverIo\Appserver\MessageQueue;
 
+use AppserverIo\Appserver\Core\Utilities\AppEnvironmentHelper;
 use AppserverIo\Properties\Properties;
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Psr\Pms\QueueContextInterface;
@@ -158,7 +159,7 @@ class QueueManager extends AbstractManager implements QueueContextInterface, Man
         // check META-INF + subdirectories for XML files with MQ definitions
         /** @var \AppserverIo\Appserver\Core\Api\DeploymentService $service */
         $service = $application->newService('AppserverIo\Appserver\Core\Api\DeploymentService');
-        $xmlFiles = $service->globDir($metaInfDir . DIRECTORY_SEPARATOR . 'message-queues.xml');
+        $xmlFiles = $service->globDir(AppEnvironmentHelper::getEnvironmentAwareGlobPattern($this->getWebappPath(), 'META-INF' . DIRECTORY_SEPARATOR . 'message-queues'));
 
         // load the configuration service instance
         /** @var \AppserverIo\Appserver\Core\Api\ConfigurationService $configurationService */
@@ -212,7 +213,7 @@ class QueueManager extends AbstractManager implements QueueContextInterface, Man
     /**
      * Deploys the message queue described by the passed node.
      *
-     * @param \AppserverIo\Appserver\Core\Api\Nodes\MessageQueueNodeInterface $messageQueueNode The node that describes the message queue
+     * @param \AppserverIo\Appserver\Core\Api\Node\MessageQueueNodeInterface $messageQueueNode The node that describes the message queue
      *
      * @return void
      */
