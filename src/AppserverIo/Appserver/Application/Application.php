@@ -99,7 +99,7 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
     /**
      * Inject the environment name
      *
-     * @param string $environmentName
+     * @param string $environmentName The environment name to inject
      *
      * @return void
      */

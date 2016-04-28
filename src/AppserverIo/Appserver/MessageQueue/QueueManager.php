@@ -159,7 +159,7 @@ class QueueManager extends AbstractManager implements QueueContextInterface, Man
         // check META-INF + subdirectories for XML files with MQ definitions
         /** @var \AppserverIo\Appserver\Core\Api\DeploymentService $service */
         $service = $application->newService('AppserverIo\Appserver\Core\Api\DeploymentService');
-        $xmlFiles = $service->globDir(AppEnvironmentHelper::getEnvironmentAwareFilePath($this->getWebappPath(), 'META-INF' . DIRECTORY_SEPARATOR . 'message-queues'));
+        $xmlFiles = $service->globDir(AppEnvironmentHelper::getEnvironmentAwareGlobPattern($this->getWebappPath(), 'META-INF' . DIRECTORY_SEPARATOR . 'message-queues'));
 
         // load the configuration service instance
         /** @var \AppserverIo\Appserver\Core\Api\ConfigurationService $configurationService */

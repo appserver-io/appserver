@@ -262,7 +262,7 @@ class AspectManager implements AspectManagerInterface, ManagerInterface
 
         // check if we even have a XMl file to read from
         $xmlPaths = $configurationService->globDir(
-            AppEnvironmentHelper::getEnvironmentAwareFilePath($this->getWebappPath(), '{WEB-INF,META-INF,common}' . DIRECTORY_SEPARATOR . self::CONFIG_FILE_GLOB),
+            AppEnvironmentHelper::getEnvironmentAwareGlobPattern($this->getWebappPath(), '{WEB-INF,META-INF,common}' . DIRECTORY_SEPARATOR . self::CONFIG_FILE_GLOB, GLOB_BRACE),
             GLOB_BRACE
         );
         foreach ($xmlPaths as $xmlPath) {

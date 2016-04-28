@@ -34,11 +34,11 @@ class AppEnvironmentHelperTest extends AbstractTest
 {
 
     /**
-     * Data provider for the getEnvironmentAwareFile test
+     * Data provider for the getEnvironmentAwareGlobPattern test
      *
      * @return array
      */
-    public function getEnvironmentAwareFilePathDataProvider()
+    public function getEnvironmentAwareGlobPatternDataProvider()
     {
         $testAppBase = '/webapps/test';
         return array(
@@ -94,7 +94,7 @@ class AppEnvironmentHelperTest extends AbstractTest
     }
 
     /**
-     * Checks if the getEnvironmentAwareFilePath() method works as expected.
+     * Checks if the getEnvironmentAwareGlobPattern() method works as expected.
      *
      * @param string $appBase       The base file path to the application
      * @param string $fileGlob      The intermediate path (or glob pattern) from app base path to file extension
@@ -105,14 +105,14 @@ class AppEnvironmentHelperTest extends AbstractTest
      *
      * @return void
      *
-     * @dataProvider getEnvironmentAwareFilePathDataProvider
+     * @dataProvider getEnvironmentAwareGlobPatternDataProvider
      */
-    public function testGetEnvironmentAwareFilePath($appBase, $fileGlob, $fileExtension, $globDirResult, $modifier, $result)
+    public function testGetEnvironmentAwareGlobPattern($appBase, $fileGlob, $fileExtension, $globDirResult, $modifier, $result)
     {
         // set the needed result of the internal globDir() method
         AppEnvironmentHelperMock::setGlobDirResult($globDirResult);
         // set the modifier as we need it
         AppEnvironmentHelperMock::setEnvironmentProperty($modifier);
-        $this->assertSame($result, AppEnvironmentHelperMock::getEnvironmentAwareFilePath($appBase, $fileGlob, $fileExtension));
+        $this->assertSame($result, AppEnvironmentHelperMock::getEnvironmentAwareGlobPattern($appBase, $fileGlob, 0, $fileExtension));
     }
 }

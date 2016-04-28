@@ -100,13 +100,14 @@ class AppEnvironmentHelper
      * E.g.
      * AppEnvironmentHelper::getEnvironmentAwareFilePath('webapps/example', 'META-INF/*-ds') => 'webapps/example/META-INF/*-ds.dev.xml'
      *
-     * @param string $appBase       The base file path to the application
-     * @param string $fileGlob      The intermediate path (or glob pattern) from app base path to file extension
-     * @param string $fileExtension The extension of the file, will default to 'xml'
+     * @param string  $appBase       The base file path to the application
+     * @param string  $fileGlob      The intermediate path (or glob pattern) from app base path to file extension
+     * @param integer $flags         The flags passed to the glob function
+     * @param string  $fileExtension The extension of the file, will default to 'xml'
      *
      * @return string
      */
-    public static function getEnvironmentAwareFilePath($appBase, $fileGlob, $fileExtension = 'xml')
+    public static function getEnvironmentAwareGlobPattern($appBase, $fileGlob, $flags = 0, $fileExtension = 'xml')
     {
         // get the file path modifier
         $modifier = static::getEnvironmentModifier($appBase);
@@ -119,7 +120,7 @@ class AppEnvironmentHelper
         } else {
             // we got a modifier we have to check if there is something reachable under the modified path, if not we will also return the default
             $modifiedPath = $appBase . DIRECTORY_SEPARATOR . $fileGlob . '.' . $modifier . '.' . $fileExtension;
-            $potentialFiles = static::globDir($modifiedPath);
+            $potentialFiles = static::globDir($modifiedPath, $flags);
             if (!empty($potentialFiles)) {
                 return $modifiedPath;
             }
@@ -138,7 +139,7 @@ class AppEnvironmentHelper
      * @return array The directories matches the passed glob pattern
      * @link http://php.net/glob
      */
-    public static function globDir($pattern, $flags = 0, $recursive = true)
+    protected static function globDir($pattern, $flags = 0, $recursive = true)
     {
         return FileSystem::globDir($pattern, $flags, $recursive);
     }

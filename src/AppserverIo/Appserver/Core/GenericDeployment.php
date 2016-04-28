@@ -55,7 +55,7 @@ class GenericDeployment extends AbstractDeployment
 
             // iterate over all applications and collect the environment specific datasources
             foreach (glob($appBase . '/*', GLOB_ONLYDIR) as $webappPath) {
-                $datasourceFiles = array_merge($datasourceFiles, $this->getDeploymentService()->globDir(AppEnvironmentHelper::getEnvironmentAwareFilePath($webappPath, '*-ds')));
+                $datasourceFiles = array_merge($datasourceFiles, $this->getDeploymentService()->globDir(AppEnvironmentHelper::getEnvironmentAwareGlobPattern($webappPath, '*-ds')));
             }
         }
         return $datasourceFiles;

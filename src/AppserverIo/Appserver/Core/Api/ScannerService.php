@@ -96,7 +96,7 @@ class ScannerService extends AbstractFileOperationService
                 // iterate over all applications and create the CRON configuration
                 foreach (glob($this->getWebappsDir($containerNode) . '/*', GLOB_ONLYDIR) as $webappPath) {
                     // iterate through all CRON configurations (cron.xml), validate and merge them
-                    foreach ($this->globDir(AppEnvironmentHelper::getEnvironmentAwareFilePath($webappPath, 'META-INF/cron')) as $cronFile) {
+                    foreach ($this->globDir(AppEnvironmentHelper::getEnvironmentAwareGlobPattern($webappPath, 'META-INF/cron')) as $cronFile) {
                         try {
                             // validate the file, but skip it if validation fails
                             $configurationService->validateFile($cronFile, null);

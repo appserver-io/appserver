@@ -65,7 +65,7 @@ class StandardProvisioner extends AbstractProvisioner
         // check if the webapps directory exists
         if (is_dir($webappPath = $application->getWebappPath())) {
             // prepare the glob expression with the application's directories to parse
-            $applicationDirectories = AppEnvironmentHelper::getEnvironmentAwareFilePath($webappPath, '{WEB-INF,META-INF}/provision');
+            $applicationDirectories = AppEnvironmentHelper::getEnvironmentAwareGlobPattern($webappPath, '{WEB-INF,META-INF}/provision', GLOB_BRACE);
 
             // load the service instance
             /** @var \AppserverIo\Appserver\Core\Api\ProvisioningService $service */

@@ -1,3 +1,13 @@
+# Version 1.1.1-beta10
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Added application context to load different configurations based on an environment such as "dev"
+
 # Version 1.1.1-beta9
 
 ## Bugfixes

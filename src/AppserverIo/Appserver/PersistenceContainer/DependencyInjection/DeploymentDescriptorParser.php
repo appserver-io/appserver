@@ -89,7 +89,7 @@ class DeploymentDescriptorParser
         $webappPath = $this->getBeanContext()->getWebappPath();
 
         // prepare the deployment descriptor
-        $deploymentDescriptor = AppEnvironmentHelper::getEnvironmentAwareFilePath($webappPath, 'META-INF' . DIRECTORY_SEPARATOR . 'epb');
+        $deploymentDescriptor = AppEnvironmentHelper::getEnvironmentAwareGlobPattern($webappPath, 'META-INF' . DIRECTORY_SEPARATOR . 'epb');
 
         // query whether we found epb.xml deployment descriptor file
         if (file_exists($deploymentDescriptor) === false) {
