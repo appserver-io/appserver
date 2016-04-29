@@ -28,6 +28,7 @@
 ## Features
 
 * Switch to latest DNS server/Webserver version to improve SSL security
+* Closed [#893](https://github.com/appserver-io/appserver/issues/893) - Implement mechanics for Forward Secrecy
 
 # Version 1.1.1-beta8
 
