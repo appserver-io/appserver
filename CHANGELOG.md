@@ -2,10 +2,11 @@
 
 ## Bugfixes
 
-* None
+* Closed [#859](https://github.com/appserver-io/appserver/issues/859) - Memory Leaks in Session Beans
 
 ## Features
 
+* Add @Remove annotation to allow explicit desctruction of SFSBs
 * Closed [#940](https://github.com/appserver-io/appserver/issues/940) - Allow different environments aka stages with corresponding configuration
 
 # Version 1.1.1-beta9

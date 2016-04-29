@@ -21,8 +21,10 @@
 
 namespace AppserverIo\Appserver\PersistenceContainer;
 
-use AppserverIo\Appserver\Core\AbstractEpbManager;
+use AppserverIo\Collections\CollectionUtils;
+use AppserverIo\Collections\CollectionInterface;
 use AppserverIo\Storage\StorageInterface;
+use AppserverIo\Appserver\Core\AbstractEpbManager;
 use AppserverIo\Lang\Reflection\AnnotationInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Psr\EnterpriseBeans\BeanContextInterface;
@@ -34,11 +36,14 @@ use AppserverIo\Psr\EnterpriseBeans\Description\SingletonSessionBeanDescriptorIn
 use AppserverIo\Psr\EnterpriseBeans\Description\StatefulSessionBeanDescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\StatelessSessionBeanDescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\MessageDrivenBeanDescriptorInterface;
+use AppserverIo\Appserver\Application\Interfaces\ManagerSettingsInterface;
 use AppserverIo\Appserver\Application\Interfaces\ManagerSettingsAwareInterface;
 use AppserverIo\Appserver\PersistenceContainer\Utils\SessionBeanUtil;
 use AppserverIo\Appserver\PersistenceContainer\DependencyInjection\DirectoryParser;
 use AppserverIo\Appserver\PersistenceContainer\DependencyInjection\DeploymentDescriptorParser;
-use AppserverIo\Appserver\Application\Interfaces\ManagerSettingsInterface;
+use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\ObjectManagerInterface;
+use AppserverIo\RemoteMethodInvocation\RemoteMethodInterface;
+use AppserverIo\RemoteMethodInvocation\FilterSessionPredicate;
 
 /**
  * The bean manager handles the message and session beans registered for the application.
@@ -443,7 +448,7 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface, Ma
     {
 
         // load the object manager
-        $objectManager = $this->getApplication()->search('ObjectManagerInterface');
+        $objectManager = $this->getApplication()->search(ObjectManagerInterface::IDENTIFIER);
 
         // load the bean descriptor
         $descriptor = $objectManager->getObjectDescriptors()->get(get_class($instance));
@@ -454,6 +459,74 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface, Ma
                 $instance->$preDestroyCallback();
             }
         }
+    }
+
+    /**
+     * Invoke the passed remote method on the described session bean and return the result.
+     *
+     * @param \AppserverIo\RemoteMethodInvocation\RemoteMethodInterface $remoteMethod The remote method description
+     * @param \AppserverIo\Collections\CollectionInterface              $sessions     The collection with the sessions
+     *
+     * @return mixed The result of the remote method invocation
+     */
+    public function invoke(RemoteMethodInterface $remoteMethod, CollectionInterface $sessions)
+    {
+
+        // prepare method name and parameters and invoke method
+        $className  = $remoteMethod->getClassName();
+        $methodName = $remoteMethod->getMethodName();
+        $parameters = $remoteMethod->getParameters();
+        $sessionId  = $remoteMethod->getSessionId();
+
+        // load the application instance
+        $application = $this->getApplication();
+
+        // try to load the session with the ID passed in the remote method
+        $session = CollectionUtils::find($sessions, new FilterSessionPredicate($sessionId));
+
+        // query whether the session is available or not
+        if ($session instanceof CollectionInterface) {
+            // query whether we already have an instance in the session container
+            if ($instance = $session->exists($className)) {
+                $instance = $session->get($className);
+            }
+        }
+
+        // load a fresh bean instance and add it to the session container
+        if ($instance == null) {
+            $instance = $application->search($className, array($sessionId, array($application)));
+            $session->add($className, $instance);
+        }
+
+        // invoke the remote method call on the local instance
+        $response = call_user_func_array(array($instance, $methodName), $parameters);
+
+        // load the object manager
+        $objectManager = $application->search(ObjectManagerInterface::IDENTIFIER);
+
+        // load the bean descriptor
+        $descriptor = $objectManager->getObjectDescriptors()->get(get_class($instance));
+
+        // initialize the flag to mark the instance to be re-attached
+        $attach = true;
+
+        // query if we've stateful session bean
+        if ($descriptor instanceof StatefulSessionBeanDescriptorInterface) {
+            // remove the SFSB instance if a remove method has been called
+            if ($descriptor->isRemoveMethod($methodName)) {
+                $this->removeStatefulSessionBean($sessionId, $descriptor->getClassName());
+                $session->remove($className);
+                $attach = false;
+            }
+        }
+
+        // re-attach the bean instance if necessary
+        if ($attach === true) {
+            $this->attach($instance, $sessionId);
+        }
+
+        // return the remote method call result
+        return $response;
     }
 
     /**
@@ -469,7 +542,7 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface, Ma
     {
 
         // load the object manager
-        $objectManager = $this->getApplication()->search('ObjectManagerInterface');
+        $objectManager = $this->getApplication()->search(ObjectManagerInterface::IDENTIFIER);
 
         // load the bean descriptor
         $descriptor = $objectManager->getObjectDescriptors()->get(get_class($instance));

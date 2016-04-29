@@ -1007,6 +1007,16 @@
             <xs:field xpath="@extension" />
         </xs:unique>
     </xs:element>
+    <xs:element name="method-name">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
     <xs:element name="lifecycle-callback-method">
         <xs:complexType>
             <xs:simpleContent>
@@ -1568,6 +1578,7 @@
                 <xs:element ref="appserver:local"/>
                 <xs:element ref="appserver:remote"/>
                 <xs:element ref="appserver:init-on-startup" minOccurs="0"/>
+                <xs:element ref="appserver:remove-method" minOccurs="0"/>
                 <xs:element ref="appserver:post-construct" minOccurs="0"/>
                 <xs:element ref="appserver:pre-destroy" minOccurs="0"/>
                 <xs:element ref="appserver:post-detach" minOccurs="0"/>
@@ -1773,6 +1784,15 @@
             <xs:choice maxOccurs="unbounded">
                 <xs:element ref="appserver:advice"/>
                 <xs:element ref="appserver:pointcut"/>
+            </xs:choice>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="remove-method">
+        <xs:complexType>
+            <xs:choice>
+                <xs:element ref="appserver:method-name" maxOccurs="unbounded"/>
             </xs:choice>
             <xs:attribute name="uuid" type="xs:string"/>
             <xs:attribute ref="xml:base"/>

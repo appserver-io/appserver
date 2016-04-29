@@ -25,6 +25,8 @@ use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
 use AppserverIo\RemoteMethodInvocation\RemoteMethodProtocol;
 use AppserverIo\RemoteMethodInvocation\RemoteExceptionWrapper;
+use AppserverIo\Collections\HashMap;
+use AppserverIo\Psr\EnterpriseBeans\BeanContextInterface;
 
 /**
  * Valve implementation that will be executed by the servlet engine to handle
@@ -59,29 +61,15 @@ class PersistenceContainerValve implements ValveInterface
             /** @var \AppserverIo\Appserver\Application\Application $application */
             $application = $servletRequest->getContext();
 
-            // prepare method name and parameters and invoke method
-            $className = $remoteMethod->getClassName();
-            $methodName = $remoteMethod->getMethodName();
-            $parameters = $remoteMethod->getParameters();
-            $sessionId = $remoteMethod->getSessionId();
-
-            // load the bean manager and the bean instance
-            $instance = $application->search($className, array($sessionId, array($application)));
-
-            // invoke the remote method call on the local instance
-            $response = call_user_func_array(array($instance, $methodName), $parameters);
+            // invoke the remote method and re-attach the bean instance to the container
+            $response = $application->search(BeanContextInterface::IDENTIFIER)->invoke($remoteMethod, new HashMap());
 
             // serialize the remote method and write it to the socket
             $servletResponse->appendBodyStream(RemoteMethodProtocol::pack($response));
 
-            // re-attach the bean instance in the container and unlock it
-            $application->search('BeanContextInterface')->attach($instance, $sessionId);
-
         } catch (\Exception $e) {
             // catch the exception and append it to the body stream
-            $servletResponse->appendBodyStream(
-                RemoteMethodProtocol::pack(RemoteExceptionWrapper::factory($e))
-            );
+            $servletResponse->appendBodyStream(RemoteMethodProtocol::pack(RemoteExceptionWrapper::factory($e)));
         }
 
         // finally dispatch this request, because we have finished processing it

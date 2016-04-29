@@ -215,12 +215,11 @@ class StatefulSessionBeanMap extends GenericStackable implements MapInterface
                 }
                 // remove the item
                 unset($this->items[$key]);
-                // return the lifetime is set
+                // remove the lifetime if set
                 if (isset($this->lifetime[$key])) {
                     unset($this->lifetime[$key]);
                 }
-                // return the instance
-                return $this;
+                return;
             } else {
                 throw new IndexOutOfBoundsException('Index ' . $key . ' out of bounds');
             }
@@ -247,12 +246,11 @@ class StatefulSessionBeanMap extends GenericStackable implements MapInterface
                 }
                 // remove the item
                 unset($this->items[$newKey]);
-                // return the lifetime is set
+                // remove the lifetime if set
                 if (isset($this->lifetime[$newKey])) {
                     unset($this->lifetime[$newKey]);
                 }
-                // returns the instance
-                return $this;
+                return;
             } else {
                 throw new IndexOutOfBoundsException('Index ' . $newKey . ' out of bounds');
             }
