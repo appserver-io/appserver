@@ -45,7 +45,7 @@ class DoctrineEntityManagerDecorator extends EntityManagerDecorator
 
         // query whether we've a wrapped instance
         if ($wrapped = $this->getWrapped()) {
-            $this->getWrapped()->getConnection()->close();
+            $wrapped->getConnection()->close();
         }
 
         // we want to serialize NOTHING
@@ -66,7 +66,9 @@ class DoctrineEntityManagerDecorator extends EntityManagerDecorator
     }
 
     /**
-     * {@inheritdoc}
+     * Returns the entity manager's connection instance.
+     *
+     * @return \Doctrine\DBAL\Connection The connection instance
      */
     public function getConnection()
     {
