@@ -20,13 +20,13 @@
 
 namespace AppserverIo\Appserver\PersistenceContainer;
 
+use AppserverIo\Collections\ArrayList;
 use AppserverIo\Appserver\ServletEngine\ValveInterface;
+use AppserverIo\Psr\EnterpriseBeans\BeanContextInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
 use AppserverIo\RemoteMethodInvocation\RemoteMethodProtocol;
 use AppserverIo\RemoteMethodInvocation\RemoteExceptionWrapper;
-use AppserverIo\Collections\HashMap;
-use AppserverIo\Psr\EnterpriseBeans\BeanContextInterface;
 
 /**
  * Valve implementation that will be executed by the servlet engine to handle
@@ -62,7 +62,7 @@ class PersistenceContainerValve implements ValveInterface
             $application = $servletRequest->getContext();
 
             // invoke the remote method and re-attach the bean instance to the container
-            $response = $application->search(BeanContextInterface::IDENTIFIER)->invoke($remoteMethod, new HashMap());
+            $response = $application->search(BeanContextInterface::IDENTIFIER)->invoke($remoteMethod, new ArrayList());
 
             // serialize the remote method and write it to the socket
             $servletResponse->appendBodyStream(RemoteMethodProtocol::pack($response));

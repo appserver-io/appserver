@@ -495,6 +495,10 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface, Ma
         // load a fresh bean instance and add it to the session container
         if ($instance == null) {
             $instance = $application->search($className, array($sessionId, array($application)));
+        }
+
+        // query whether we already have an instance in the session container
+        if ($session instanceof CollectionInterface) {
             $session->add($className, $instance);
         }
 
@@ -515,8 +519,11 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface, Ma
             // remove the SFSB instance if a remove method has been called
             if ($descriptor->isRemoveMethod($methodName)) {
                 $this->removeStatefulSessionBean($sessionId, $descriptor->getClassName());
-                $session->remove($className);
                 $attach = false;
+                // query whether the session is available or not
+                if ($session instanceof CollectionInterface) {
+                    $session->remove($className);
+                }
             }
         }
 

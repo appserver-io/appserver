@@ -1,3 +1,13 @@
+# Version 1.1.1-beta11
+
+## Bugfixes
+
+* Fixed invalid access on ContextSession instance on remote call on persistence container
+
+## Features
+
+* None
+
 # Version 1.1.1-beta10
 
 ## Bugfixes
