@@ -1,7 +1,7 @@
 <?php
 
 /**
- * \AppserverIo\Appserver\PersistenceContainer\Doctrine\DoctrineEntityManagerDecorator
+ * \AppserverIo\Appserver\PersistenceContainer\Doctrine\DoctrineEntityManagerProxy
  *
  * NOTICE OF LICENSE
  *
@@ -20,14 +20,12 @@
 
 namespace AppserverIo\Appserver\PersistenceContainer\Doctrine;
 
-use Doctrine\ORM\Decorator\EntityManagerDecorator;
-use AppserverIo\RemoteMethodInvocation\RemoteObjectInterface;
+use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\ORM\EntityManagerInterface;
 use AppserverIo\RemoteMethodInvocation\SessionInterface;
-use AppserverIo\RemoteMethodInvocation\RemoteMethodInterface;
 use AppserverIo\RemoteMethodInvocation\RemoteMethodCall;
-use Doctrine\ORM\Query\ResultSetMapping;
-use Doctrine\Common\Persistence\ObjectManager;
+use AppserverIo\RemoteMethodInvocation\RemoteMethodInterface;
+use AppserverIo\RemoteMethodInvocation\RemoteObjectInterface;
 
 /**
  * Decorator for the Doctrine entity manager instance.
@@ -38,7 +36,7 @@ use Doctrine\Common\Persistence\ObjectManager;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class DoctrineEntityManagerDecorator implements RemoteObjectInterface, EntityManagerInterface
+class DoctrineEntityManagerProxy implements RemoteObjectInterface, EntityManagerInterface
 {
 
     /**
@@ -139,7 +137,7 @@ class DoctrineEntityManagerDecorator implements RemoteObjectInterface, EntityMan
      */
     public static function __create($className)
     {
-        return new DoctrineEntityManagerDecorator($className);
+        return new DoctrineEntityManagerProxy($className);
     }
 
     /**

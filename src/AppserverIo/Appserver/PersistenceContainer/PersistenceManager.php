@@ -20,26 +20,26 @@
 
 namespace AppserverIo\Appserver\PersistenceContainer;
 
-use AppserverIo\Appserver\Core\Api\InvalidConfigurationException;
-use AppserverIo\Appserver\Core\Utilities\AppEnvironmentHelper;
+use AppserverIo\Collections\ArrayList;
+use AppserverIo\Collections\CollectionUtils;
+use AppserverIo\Collections\CollectionInterface;
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Configuration\Configuration;
 use AppserverIo\Appserver\Core\AbstractManager;
 use AppserverIo\Appserver\Core\Api\Node\PersistenceNode;
+use AppserverIo\Appserver\Core\Api\InvalidConfigurationException;
 use AppserverIo\Appserver\Core\Api\Node\PersistenceUnitNodeInterface;
 use AppserverIo\Appserver\Core\Utilities\SystemPropertyKeys;
+use AppserverIo\Appserver\Core\Utilities\AppEnvironmentHelper;
+use AppserverIo\Psr\Servlet\SessionUtils;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Psr\EnterpriseBeans\PersistenceContextInterface;
 use AppserverIo\Psr\EnterpriseBeans\EntityManagerLookupException;
 use AppserverIo\Appserver\Application\Interfaces\ManagerSettingsAwareInterface;
 use AppserverIo\Appserver\Application\Interfaces\ManagerSettingsInterface;
-use AppserverIo\Psr\Servlet\SessionUtils;
 use AppserverIo\RemoteMethodInvocation\RemoteMethodInterface;
-use AppserverIo\Collections\CollectionInterface;
-use AppserverIo\Appserver\PersistenceContainer\Doctrine\LocalContextConnection;
-use AppserverIo\Collections\ArrayList;
-use AppserverIo\Collections\CollectionUtils;
 use AppserverIo\RemoteMethodInvocation\FilterSessionPredicate;
+use AppserverIo\Appserver\PersistenceContainer\Doctrine\DoctrineLocalContextConnection;
 
 /**
  * The persistence manager handles the entity managers registered for the application.
@@ -200,8 +200,14 @@ class PersistenceManager extends AbstractManager implements PersistenceContextIn
         // initialize the the entity manager instance
         $this->entityManagers[$lookupName = $persistenceUnitNode->getName()] = $persistenceUnitNode;
 
-        // bind the callback for the entity manager instance to the naming directory => necessary for DI provider
-        $application->getNamingDirectory()->bindCallback(sprintf('php:global/%s/%s', $application->getUniqueName(), $lookupName), array(&$this, 'lookupProxy'), array($lookupName));
+        // bind the callback for the entity manager instance to the
+        // naming directory => necessary for DI provider
+        $application->getNamingDirectory()
+                    ->bind(
+                        sprintf('php:global/%s/%s', $application->getUniqueName(), $lookupName),
+                        array(&$this, 'lookup'),
+                        array($lookupName)
+                    );
     }
 
     /**
@@ -251,7 +257,7 @@ class PersistenceManager extends AbstractManager implements PersistenceContextIn
         $sessions = new ArrayList();
 
         // initialize the local context connection
-        $connection = new LocalContextConnection();
+        $connection = new DoctrineLocalContextConnection();
         $connection->injectSessions($sessions);
         $connection->injectApplication($this->getApplication());
 
@@ -268,7 +274,7 @@ class PersistenceManager extends AbstractManager implements PersistenceContextIn
         }
 
         // lookup and return the requested remote bean instance
-        return $session->createInitialContext()->lookup($lookupName, 'AppserverIo\Appserver\PersistenceContainer\Doctrine\DoctrineEntityManagerDecorator');
+        return $session->createInitialContext()->lookup($lookupName, 'AppserverIo\Appserver\PersistenceContainer\Doctrine\DoctrineEntityManagerProxy');
     }
 
     /**
@@ -304,7 +310,7 @@ class PersistenceManager extends AbstractManager implements PersistenceContextIn
 
         // load a fresh bean instance and add it to the session container
         if ($instance == null) {
-            $instance = $this->lookup($className);
+            $instance = $application->search($className);
         }
 
         // query whether we already have an instance in the session container
