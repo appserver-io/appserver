@@ -424,37 +424,34 @@ As you might need an environment switch for your application, to handle things d
 or use different database connections, you can specify as many environments as you like by following this naming convention:
 
 `META-INF/context.production.xml` or `META-INF/context.development.xml` would cause your application to have 2 different environments 
-`production` and `development` that you can use by specifying either an environment variable `APP_ENV` in your build properties or
-when deploying your application use `ant deploy production`.
+`production` and `development` which you can use to switch configurations as you wish.
 
-In your application code you can check which environment is currently injecting the application and checking its environment:
+In your application code you can check which environment is currently active by injecting the application and checking its environment:
 
 ```php
-	/**
-	 * @var \AppserverIo\Appserver\Application\Application
-	 * @Resource(name="ApplicationInterface")
-	 */
-	protected $application;
-    
-    public function doSomething()
-    {
-        if ($this->application->getEnvironmentName() === 'production') {
-            // do something different
-        }
+/**
+ * @var \AppserverIo\Appserver\Application\Application
+ * @Resource(name="ApplicationInterface")
+ */
+protected $application;
+
+public function doSomething()
+{
+    if ($this->application->getEnvironmentName() === 'production') {
+        // do something different
     }
+}
 ```  
 
-To specify the variable, set it in `build.properties`:
+To specify the variable, set it in a `build.properties` file which resides in your [application's root directory](webapps.md#structure):
 
 ```ini
 appserver.webapp.environment = development
 ```
 
-For tests you can specify your configuration in your `bootstrap.php`:
+This will result in a preference for all XML configuration containing the `.development.xml` suffix over their non-suffixed counterpart.
+If no suffixed file exists, the default file will be loaded instead.
 
-```php
-define('appserver.webapp.environment', 'testing');
-```
 
 ## Module Configuration
 
