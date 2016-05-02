@@ -52,6 +52,5 @@ appserver_download_runtime_prefix: appserver-runtime
 
 appserver_site_contact: /about/contact.html
 
-markdown: redcarpet
 redcarpet:
   extensions: ["no_intra_emphasis", "fenced_code_blocks", "autolink", "tables", "with_toc_data"]
