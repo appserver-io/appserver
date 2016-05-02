@@ -415,7 +415,7 @@ public function doSomething()
 }
 ```  
 
-To specify the variable, set it in a `build.properties` file which resides in your [application's root directory](webapps.md#structure):
+To specify the variable, set it in a `build.properties` file which resides in your [application's root directory](webapps.html#structure):
 
 ```ini
 appserver.webapp.environment = development
