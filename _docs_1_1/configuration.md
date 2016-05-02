@@ -390,6 +390,44 @@ The `<certificate/>` node has two attributes that has to be specified:
 
 In addition to the Container and Server configurations, it is also possible to configure the applications. 
 
+### Environment
+
+As you might need an environment switch for your application, to handle things differently e.g. turn of authentication in development mode 
+or use different database connections, you can specify as many environments as you like by following this naming convention:
+
+`META-INF/context.production.xml` or `META-INF/context.development.xml` would cause your application to have 2 different environments 
+`production` and `development` that you can use by specifying either an environment variable `APP_ENV` in your build properties or
+when deploying your application use `ant deploy production`.
+
+In your application code you can check which environment is currently injecting the application and checking its environment:
+
+```php
+	/**
+	 * @var \AppserverIo\Appserver\Application\Application
+	 * @Resource(name="ApplicationInterface")
+	 */
+	protected $application;
+    
+    public function doSomething()
+    {
+        if ($this->application->getEnvironmentName() === 'production') {
+            // do something different
+        }
+    }
+```  
+
+To specify the variable, set it in `build.properties`:
+
+```ini
+appserver.webapp.environment = development
+```
+
+For tests you can specify your configuration in your `bootstrap.php`:
+
+```php
+define('appserver.webapp.environment', 'testing');
+```
+
 ### Context
 
 Each application
