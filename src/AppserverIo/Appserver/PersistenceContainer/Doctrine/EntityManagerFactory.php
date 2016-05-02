@@ -136,8 +136,6 @@ class EntityManagerFactory
         }
 
         // initialize and return a entity manager decorator instance
-        // return new DoctrineEntityManagerDecorator(
-            return EntityManager::create(ConnectionUtil::get($application)->fromDatabaseNode($databaseNode), $configuration);
-        // );
+        return EntityManager::create(ConnectionUtil::get($application)->fromDatabaseNode($databaseNode), $configuration);
     }
 }
