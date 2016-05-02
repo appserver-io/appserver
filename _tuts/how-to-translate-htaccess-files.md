@@ -1,5 +1,18 @@
-
-# How to translate .htaccess files
+---
+layout: tutorial
+title: Translate .htaccess files
+meta_title: How to translate .htaccess files for appserver.io
+meta_description: A basic tutorial on how to translate real life .htaccess files based on a given example
+description: A basic tutorial on how to translate real life `.htaccess` files based on a given example.
+position: 15
+group: Tutorials
+subNav:
+  - title: A general note on configuration
+    href: a-general-note-on-configuration
+  - title: Rewrites and redirects
+    href: rewrites-and-redirects
+permalink: /get-started/tutorials/how-to-translate-htaccess-files.html
+---
 
 A basic tutorial on how to translate real life `.htaccess` files based on a given example.
 At the end of this tutorial one should be able to understand the differences in between `.htaccess` files and the appserver configuration and be able to translate one into another.
@@ -160,7 +173,7 @@ See the below example for the `.htaccess` files within the [Magento 2 eCommerce 
 
 The Magento 2 `.htaccess` file looks like this:
 
-```
+```bash
 ############################################
 ## enable rewrites
 
