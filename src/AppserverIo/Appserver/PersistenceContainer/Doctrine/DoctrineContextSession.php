@@ -45,4 +45,17 @@ class DoctrineContextSession extends ContextSession
     {
         // we don't want to clean up anything here
     }
+
+    /**
+     * Creates a remote initial context instance.
+     *
+     * @return \AppserverIo\RemoteMethodInvocation\RemoteObjectInterface The proxy for the initial context
+     * @see \AppserverIo\RemoteMethodInvocation\SessionInterface::createInitialContext()
+     */
+    public function createInitialContext()
+    {
+        $initialContext = new DoctrineInitialContextProxy();
+        $initialContext->__setSession($this);
+        return $initialContext;
+    }
 }
