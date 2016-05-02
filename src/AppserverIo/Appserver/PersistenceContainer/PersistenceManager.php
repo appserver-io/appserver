@@ -31,6 +31,15 @@ use AppserverIo\Appserver\Core\Utilities\SystemPropertyKeys;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Psr\EnterpriseBeans\PersistenceContextInterface;
 use AppserverIo\Psr\EnterpriseBeans\EntityManagerLookupException;
+use AppserverIo\Appserver\Application\Interfaces\ManagerSettingsAwareInterface;
+use AppserverIo\Appserver\Application\Interfaces\ManagerSettingsInterface;
+use AppserverIo\Psr\Servlet\SessionUtils;
+use AppserverIo\RemoteMethodInvocation\RemoteMethodInterface;
+use AppserverIo\Collections\CollectionInterface;
+use AppserverIo\Appserver\PersistenceContainer\Doctrine\LocalContextConnection;
+use AppserverIo\Collections\ArrayList;
+use AppserverIo\Collections\CollectionUtils;
+use AppserverIo\RemoteMethodInvocation\FilterSessionPredicate;
 
 /**
  * The persistence manager handles the entity managers registered for the application.
@@ -41,9 +50,10 @@ use AppserverIo\Psr\EnterpriseBeans\EntityManagerLookupException;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  *
- * @property \AppserverIo\Storage\GenericStackable $entityManagers The the storage for the entity manager instances
+ * @property \AppserverIo\Appserver\PersistenceContainer\BeanManagerSettingsInterface  $managerSettings Settings for the bean manager
+ * @property \AppserverIo\Storage\GenericStackable                                     $entityManagers  The the storage for the entity manager instances
  */
-class PersistenceManager extends AbstractManager implements PersistenceContextInterface
+class PersistenceManager extends AbstractManager implements PersistenceContextInterface, ManagerSettingsAwareInterface
 {
 
     /**
@@ -66,6 +76,28 @@ class PersistenceManager extends AbstractManager implements PersistenceContextIn
     public function getEntityManagers()
     {
         return $this->entityManagers;
+    }
+
+    /**
+     * Injects the bean manager settings.
+     *
+     * @param \AppserverIo\Appserver\PersistenceContainer\BeanManagerSettingsInterface $managerSettings The bean manager settings
+     *
+     * @return void
+     */
+    public function injectManagerSettings(ManagerSettingsInterface $managerSettings)
+    {
+        $this->managerSettings = $managerSettings;
+    }
+
+    /**
+     * Return's the bean manager settings.
+     *
+     * @return \AppserverIo\Appserver\PersistenceContainer\PersistenceContainerSettingsInterface The bean manager settings
+     */
+    public function getManagerSettings()
+    {
+        return $this->managerSettings;
     }
 
     /**
@@ -169,7 +201,7 @@ class PersistenceManager extends AbstractManager implements PersistenceContextIn
         $this->entityManagers[$lookupName = $persistenceUnitNode->getName()] = $persistenceUnitNode;
 
         // bind the callback for the entity manager instance to the naming directory => necessary for DI provider
-        $application->getNamingDirectory()->bindCallback(sprintf('php:global/%s/%s', $application->getUniqueName(), $lookupName), array(&$this, 'lookup'), array($lookupName));
+        $application->getNamingDirectory()->bindCallback(sprintf('php:global/%s/%s', $application->getUniqueName(), $lookupName), array(&$this, 'lookupProxy'), array($lookupName));
     }
 
     /**
@@ -202,6 +234,86 @@ class PersistenceManager extends AbstractManager implements PersistenceContextIn
         throw new EntityManagerLookupException(
             sprintf('Entity Manager with lookup name %s has not been registered in application %s', $lookupName, $this->getApplication()->getName())
         );
+    }
+
+    /**
+     * This returns a proxy to the requested session bean.
+     *
+     * @param string $lookupName The lookup name for the requested session bean
+     * @param string $sessionId  The session-ID if available
+     *
+     * @return \AppserverIo\RemoteMethodInvocation\RemoteObjectInterface The proxy instance
+     */
+    public function lookupProxy($lookupName, $sessionId = null)
+    {
+
+        // initialize the remote method call parser and the session storage
+        $sessions = new ArrayList();
+
+        // initialize the local context connection
+        $connection = new LocalContextConnection();
+        $connection->injectSessions($sessions);
+        $connection->injectApplication($this->getApplication());
+
+        // initialize the context session
+        $session = $connection->createContextSession();
+
+        // check if we've a HTTP session ID passed
+        if ($sessionId == null) {
+            // simulate a unique session ID
+            $session->setSessionId(SessionUtils::generateRandomString());
+        } else {
+            // else, set the passed session ID
+            $session->setSessionId($sessionId);
+        }
+
+        // lookup and return the requested remote bean instance
+        return $session->createInitialContext()->lookup($lookupName, 'AppserverIo\Appserver\PersistenceContainer\Doctrine\DoctrineEntityManagerDecorator');
+    }
+
+    /**
+     * Invoke the passed remote method on the described session bean and return the result.
+     *
+     * @param \AppserverIo\RemoteMethodInvocation\RemoteMethodInterface $remoteMethod The remote method description
+     * @param \AppserverIo\Collections\CollectionInterface              $sessions     The collection with the sessions
+     *
+     * @return mixed The result of the remote method invocation
+     */
+    public function invoke(RemoteMethodInterface $remoteMethod, CollectionInterface $sessions)
+    {
+
+        // prepare method name and parameters and invoke method
+        $className  = $remoteMethod->getClassName();
+        $methodName = $remoteMethod->getMethodName();
+        $parameters = $remoteMethod->getParameters();
+        $sessionId  = $remoteMethod->getSessionId();
+
+        // load the application instance
+        $application = $this->getApplication();
+
+        // try to load the session with the ID passed in the remote method
+        $session = CollectionUtils::find($sessions, new FilterSessionPredicate($sessionId));
+
+        // query whether the session is available or not
+        if ($session instanceof CollectionInterface) {
+            // query whether we already have an instance in the session container
+            if ($instance = $session->exists($className)) {
+                $instance = $session->get($className);
+            }
+        }
+
+        // load a fresh bean instance and add it to the session container
+        if ($instance == null) {
+            $instance = $this->lookup($className);
+        }
+
+        // query whether we already have an instance in the session container
+        if ($session instanceof CollectionInterface) {
+            $session->add($className, $instance);
+        }
+
+        // invoke the remote method call on the local instance
+        return call_user_func_array(array($instance, $methodName), $parameters);
     }
 
     /**

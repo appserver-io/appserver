@@ -53,10 +53,19 @@ class PersistenceManagerFactory implements ManagerFactoryInterface
         // initialize the stackable for the entity managers
         $entityManagers = new GenericStackable();
 
+        // initialize the default settings for the persistence units
+        $persistenceManagerSettings = new PersistenceManagerSettings();
+        $persistenceManagerSettings->mergeWithParams($managerConfiguration->getParamsAsArray());
+
         // initialize the persistence manager instance
         $persistenceManager = new PersistenceManager();
         $persistenceManager->injectApplication($application);
         $persistenceManager->injectEntityManagers($entityManagers);
+        $persistenceManager->injectManagerSettings($persistenceManagerSettings);
+
+        // create the naming context and add it the manager
+        $contextFactory = $managerConfiguration->getContextFactory();
+        $contextFactory::visit($persistenceManager);
 
         // attach the instance
         $application->addManager($persistenceManager, $managerConfiguration);
