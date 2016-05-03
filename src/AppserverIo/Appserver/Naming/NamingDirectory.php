@@ -122,12 +122,17 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
     {
 
         try {
-
-            error_log("Now try to bind $name");
-
-            // strip off the schema and bind the value
+            // strip off the schema
             $key = str_replace(sprintf('%s:', $this->getScheme()), '', $name);
-            $this->setAttribute($key, array($value, $args));
+
+            // bind the value, if possible
+            if ($this->hasAttribute($key) === false) {
+                $this->setAttribute($key, array($value, $args));
+                return;
+            }
+
+            // throw an exeception if the name has already been bound
+            throw new \Exception(sprintf('A value with name %s has already been bound to naming directory %s', $name, $this->getIdentifier()));
 
         } catch (\Exception $e) {
             throw new NamingException(sprintf('Cant\'t bind %s to naming directory %s', $name, $this->getIdentifier()), null, $e);
@@ -174,9 +179,6 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
     {
 
         try {
-
-            error_log("Now try to unbind $name");
-
             // strip off the schema and unbind the value
             $key = str_replace(sprintf('%s:', $this->getScheme()), '', $name);
             $this->removeAttribute($key);
@@ -200,14 +202,16 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
     {
 
         try {
-
-            error_log("Now try to search for $name");
-
             // strip off the schema and try to load the value
             $key = str_replace(sprintf('%s:', $this->getScheme()), '', $name);
 
             // load the value
             $found = $this->getAttribute($key);
+
+            // throw an exception if we can't find a value
+            if ($found == null) {
+                throw new \Exception(sprintf('Requested value %s has not been bound to naming directory %s', $name, $this->getIdentifier()));
+            }
 
             // load the binded value/args
             list ($value, $bindArgs) = $found;
@@ -221,14 +225,13 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
 
                 // invoke the callback
                 return call_user_func_array($value, $bindArgs);
-
-            } else {
-                // simply return the value
-                return $value;
             }
 
+            // simply return the value
+            return $value;
+
         } catch (\Exception $e) {
-            throw new NamingException(sprintf('Cant\'t resolve %s in naming directory %s', ltrim($name, '/'), $this->getIdentifier()), null, $e);
+            throw new NamingException(sprintf('Cant\'t resolve %s in naming directory %s', $name, $this->getIdentifier()), null, $e);
         }
     }
 
@@ -307,7 +310,6 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
 
         try {
             return $this;
-
         } catch (\Exception $e) {
             throw new NamingException(sprintf('Can\'t create subdirectory %s', $name), null, $e);
         }

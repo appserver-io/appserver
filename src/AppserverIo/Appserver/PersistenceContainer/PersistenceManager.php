@@ -310,7 +310,7 @@ class PersistenceManager extends AbstractManager implements PersistenceContextIn
 
         // load a fresh bean instance and add it to the session container
         if ($instance == null) {
-            $instance = $application->search($className);
+            $instance = $application->getNamingDirectory()->search($className);
         }
 
         // query whether we already have an instance in the session container
