@@ -274,7 +274,7 @@ class PersistenceManager extends AbstractManager implements PersistenceContextIn
         }
 
         // lookup and return the requested remote bean instance
-        return $session->createInitialContext()->lookup($lookupName, 'AppserverIo\Appserver\PersistenceContainer\Doctrine\DoctrineEntityManagerProxy');
+        return $session->createInitialContext()->lookup($lookupName);
     }
 
     /**
