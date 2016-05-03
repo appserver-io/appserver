@@ -141,7 +141,9 @@ class DoctrineEntityManagerProxy implements RemoteObjectInterface, EntityManager
     }
 
     /**
-     * {@inheritdoc}
+     * Gets the database connection object used by the EntityManager.
+     *
+     * @return \Doctrine\DBAL\Connection
      */
     public function getConnection()
     {
@@ -149,7 +151,18 @@ class DoctrineEntityManagerProxy implements RemoteObjectInterface, EntityManager
     }
 
     /**
-     * {@inheritdoc}
+     * Gets an ExpressionBuilder used for object-oriented construction of query expressions.
+     *
+     * Example:
+     *
+     * <code>
+     *     $qb = $em->createQueryBuilder();
+     *     $expr = $em->getExpressionBuilder();
+     *     $qb->select('u')->from('User', 'u')
+     *         ->where($expr->orX($expr->eq('u.id', 1), $expr->eq('u.id', 2)));
+     * </code>
+     *
+     * @return \Doctrine\ORM\Query\Expr
      */
     public function getExpressionBuilder()
     {
@@ -157,7 +170,9 @@ class DoctrineEntityManagerProxy implements RemoteObjectInterface, EntityManager
     }
 
     /**
-     * {@inheritdoc}
+     * Starts a transaction on the underlying database connection.
+     *
+     * @return void
      */
     public function beginTransaction()
     {
@@ -165,7 +180,18 @@ class DoctrineEntityManagerProxy implements RemoteObjectInterface, EntityManager
     }
 
     /**
-     * {@inheritdoc}
+     * Executes a function in a transaction.
+     *
+     * The function gets passed this EntityManager instance as an (optional) parameter.
+     *
+     * {@link flush} is invoked prior to transaction commit.
+     *
+     * If an exception occurs during execution of the function or flushing or transaction commit,
+     * the transaction is rolled back, the EntityManager closed and the exception re-thrown.
+     *
+     * @param callable $func The function to execute transactionally.
+     *
+     * @return mixed The non-empty value returned from the closure or true instead.
      */
     public function transactional($func)
     {
@@ -173,7 +199,9 @@ class DoctrineEntityManagerProxy implements RemoteObjectInterface, EntityManager
     }
 
     /**
-     * {@inheritdoc}
+     * Commits a transaction on the underlying database connection.
+     *
+     * @return void
      */
     public function commit()
     {
@@ -181,7 +209,9 @@ class DoctrineEntityManagerProxy implements RemoteObjectInterface, EntityManager
     }
 
     /**
-     * {@inheritdoc}
+     * Performs a rollback on the underlying database connection.
+     *
+     * @return void
      */
     public function rollback()
     {
@@ -189,7 +219,11 @@ class DoctrineEntityManagerProxy implements RemoteObjectInterface, EntityManager
     }
 
     /**
-     * {@inheritdoc}
+     * Creates a new Query object.
+     *
+     * @param string $dql The DQL string.
+     *
+     * @return Query
      */
     public function createQuery($dql = '')
     {
@@ -197,7 +231,11 @@ class DoctrineEntityManagerProxy implements RemoteObjectInterface, EntityManager
     }
 
     /**
-     * {@inheritdoc}
+     * Creates a Query from a named query.
+     *
+     * @param string $name The query name
+     *
+     * @return \Doctrine\ORM\Query
      */
     public function createNamedQuery($name)
     {
@@ -205,7 +243,12 @@ class DoctrineEntityManagerProxy implements RemoteObjectInterface, EntityManager
     }
 
     /**
-     * {@inheritdoc}
+     * Creates a native SQL query.
+     *
+     * @param string           $sql The SQL command
+     * @param ResultSetMapping $rsm The ResultSetMapping to use
+     *
+     * @return \Doctrine\ORM\NativeQuery The query instance
      */
     public function createNativeQuery($sql, ResultSetMapping $rsm)
     {
@@ -213,7 +256,11 @@ class DoctrineEntityManagerProxy implements RemoteObjectInterface, EntityManager
     }
 
     /**
-     * {@inheritdoc}
+     * Creates a NativeQuery from a named native query.
+     *
+     * @param string $name The query name
+     *
+     * @return \Doctrine\ORM\NativeQuery The query instance
      */
     public function createNamedNativeQuery($name)
     {
@@ -221,7 +268,9 @@ class DoctrineEntityManagerProxy implements RemoteObjectInterface, EntityManager
     }
 
     /**
-     * {@inheritdoc}
+     * Create a QueryBuilder instance
+     *
+     * @return \Doctrine\ORM\QueryBuilder The query builder instance
      */
     public function createQueryBuilder()
     {
@@ -229,7 +278,15 @@ class DoctrineEntityManagerProxy implements RemoteObjectInterface, EntityManager
     }
 
     /**
-     * {@inheritdoc}
+     * Gets a reference to the entity identified by the given type and identifier
+     * without actually loading it, if the entity is not yet loaded.
+     *
+     * @param string $entityName The name of the entity type.
+     * @param mixed  $id         The entity identifier.
+     *
+     * @return object The entity reference.
+     *
+     * @throws \Doctrine\ORM\ORMException
      */
     public function getReference($entityName, $id)
     {
@@ -237,7 +294,24 @@ class DoctrineEntityManagerProxy implements RemoteObjectInterface, EntityManager
     }
 
     /**
-     * {@inheritdoc}
+     * Gets a partial reference to the entity identified by the given type and identifier
+     * without actually loading it, if the entity is not yet loaded.
+     *
+     * The returned reference may be a partial object if the entity is not yet loaded/managed.
+     * If it is a partial object it will not initialize the rest of the entity state on access.
+     * Thus you can only ever safely access the identifier of an entity obtained through
+     * this method.
+     *
+     * The use-cases for partial references involve maintaining bidirectional associations
+     * without loading one side of the association or to update an entity without loading it.
+     * Note, however, that in the latter case the original (persistent) entity data will
+     * never be visible to the application (especially not event listeners) as it will
+     * never be loaded in the first place.
+     *
+     * @param string $entityName The name of the entity type.
+     * @param mixed  $identifier The entity identifier.
+     *
+     * @return object The (partial) entity reference.
      */
     public function getPartialReference($entityName, $identifier)
     {
@@ -245,7 +319,11 @@ class DoctrineEntityManagerProxy implements RemoteObjectInterface, EntityManager
     }
 
     /**
-     * {@inheritdoc}
+     * Closes the EntityManager. All entities that are currently managed
+     * by this EntityManager become detached. The EntityManager may no longer
+     * be used after it is closed.
+     *
+     * @return void
      */
     public function close()
     {
@@ -253,7 +331,14 @@ class DoctrineEntityManagerProxy implements RemoteObjectInterface, EntityManager
     }
 
     /**
-     * {@inheritdoc}
+     * Creates a copy of the given entity. Can create a shallow or a deep copy.
+     *
+     * @param object  $entity The entity to copy.
+     * @param boolean $deep   FALSE for a shallow copy, TRUE for a deep copy.
+     *
+     * @return object The new entity.
+     *
+     * @throws \BadMethodCallException
      */
     public function copy($entity, $deep = false)
     {
@@ -261,7 +346,16 @@ class DoctrineEntityManagerProxy implements RemoteObjectInterface, EntityManager
     }
 
     /**
-     * {@inheritdoc}
+     * Acquire a lock on the given entity.
+     *
+     * @param object       $entity      The entity to be locked
+     * @param integer      $lockMode    The lock mode
+     * @param integer|null $lockVersion The lock version
+     *
+     * @return void
+     *
+     * @throws OptimisticLockException
+     * @throws PessimisticLockException
      */
     public function lock($entity, $lockMode, $lockVersion = null)
     {
@@ -269,7 +363,22 @@ class DoctrineEntityManagerProxy implements RemoteObjectInterface, EntityManager
     }
 
     /**
-     * {@inheritdoc}
+     * Finds an Entity by its identifier.
+     *
+     * @param string       $entityName  The class name of the entity to find.
+     * @param mixed        $id          The identity of the entity to find.
+     * @param integer|null $lockMode    One of the \Doctrine\DBAL\LockMode::* constants
+     *                                  or NULL if no specific lock mode should be used
+     *                                  during the search.
+     * @param integer|null $lockVersion The version of the entity to find when using
+     *                                  optimistic locking.
+     *
+     * @return object|null The entity instance or NULL if the entity can not be found.
+     *
+     * @throws OptimisticLockException
+     * @throws ORMInvalidArgumentException
+     * @throws TransactionRequiredException
+     * @throws ORMException
      */
     public function find($entityName, $id, $lockMode = null, $lockVersion = null)
     {
@@ -277,7 +386,19 @@ class DoctrineEntityManagerProxy implements RemoteObjectInterface, EntityManager
     }
 
     /**
-     * {@inheritdoc}
+     * Flushes all changes to objects that have been queued up to now to the database.
+     * This effectively synchronizes the in-memory state of managed objects with the
+     * database.
+     *
+     * If an entity is explicitly passed to this method only this entity and
+     * the cascade-persist semantics + scheduled inserts/removals are synchronized.
+     *
+     * @param null|object|array $entity The entity to be synchronized
+     *
+     * @return void
+     *
+     * @throws \Doctrine\ORM\OptimisticLockException If a version check on an entity that
+     *         makes use of optimistic locking fails.
      */
     public function flush($entity = null)
     {
@@ -285,7 +406,9 @@ class DoctrineEntityManagerProxy implements RemoteObjectInterface, EntityManager
     }
 
     /**
-     * {@inheritdoc}
+     * Gets the EventManager used by the EntityManager.
+     *
+     * @return \Doctrine\Common\EventManager The event manager
      */
     public function getEventManager()
     {
@@ -293,7 +416,9 @@ class DoctrineEntityManagerProxy implements RemoteObjectInterface, EntityManager
     }
 
     /**
-     * {@inheritdoc}
+     * Gets the Configuration used by the EntityManager.
+     *
+     * @return \Doctrine\ORM\Configuration The configuration
      */
     public function getConfiguration()
     {
@@ -301,7 +426,9 @@ class DoctrineEntityManagerProxy implements RemoteObjectInterface, EntityManager
     }
 
     /**
-     * {@inheritdoc}
+     * Check if the Entity manager is open or closed.
+     *
+     * @return boolean TRUE if the EM is open
      */
     public function isOpen()
     {
@@ -309,7 +436,9 @@ class DoctrineEntityManagerProxy implements RemoteObjectInterface, EntityManager
     }
 
     /**
-     * {@inheritdoc}
+     * Gets the UnitOfWork used by the EntityManager to coordinate operations.
+     *
+     * @return \Doctrine\ORM\UnitOfWork The unit of work
      */
     public function getUnitOfWork()
     {
@@ -317,15 +446,28 @@ class DoctrineEntityManagerProxy implements RemoteObjectInterface, EntityManager
     }
 
     /**
-     * {@inheritdoc}
-     */
+    * Gets a hydrator for the given hydration mode.
+    *
+    * This method caches the hydrator instances which is used for all queries that don't
+    * selectively iterate over the result.
+    *
+    * @param int $hydrationMode The hydration mode to use
+    *
+    * @return \Doctrine\ORM\Internal\Hydration\AbstractHydrator
+    * @deprecated
+    */
     public function getHydrator($hydrationMode)
     {
         return $this->__call('getHydrator', array($hydrationMode));
     }
 
     /**
-     * {@inheritdoc}
+     * Create a new instance for the given hydration mode.
+     *
+    * @param integer $hydrationMode The hydration mode to use
+     *
+     * @return \Doctrine\ORM\Internal\Hydration\AbstractHydrator
+     * @throws ORMException
      */
     public function newHydrator($hydrationMode)
     {
@@ -333,7 +475,9 @@ class DoctrineEntityManagerProxy implements RemoteObjectInterface, EntityManager
     }
 
     /**
-     * {@inheritdoc}
+     * Gets the proxy factory used by the EntityManager to create entity proxies.
+     *
+     * @return \Doctrine\ORM\Proxy\ProxyFactory The proxy factory
      */
     public function getProxyFactory()
     {
@@ -341,7 +485,9 @@ class DoctrineEntityManagerProxy implements RemoteObjectInterface, EntityManager
     }
 
     /**
-     * {@inheritdoc}
+     * Gets the enabled filters.
+     *
+     * @return \Doctrine\ORM\Query\FilterCollection The active filter collection
      */
     public function getFilters()
     {
@@ -349,7 +495,9 @@ class DoctrineEntityManagerProxy implements RemoteObjectInterface, EntityManager
     }
 
     /**
-     * {@inheritdoc}
+     * Checks whether the state of the filter collection is clean.
+     *
+     * @return boolean TRUE, if the filter collection is clean
      */
     public function isFiltersStateClean()
     {
@@ -357,7 +505,9 @@ class DoctrineEntityManagerProxy implements RemoteObjectInterface, EntityManager
     }
 
     /**
-     * {@inheritdoc}
+     * Checks whether the Entity Manager has filters.
+     *
+     * @return boolean TRUE, if the EM has a filter collection
      */
     public function hasFilters()
     {
@@ -365,7 +515,9 @@ class DoctrineEntityManagerProxy implements RemoteObjectInterface, EntityManager
     }
 
     /**
-     * {@inheritdoc}
+     * Returns the cache API for managing the second level cache regions or NULL if the cache is not enabled.
+     *
+     * @return \Doctrine\ORM\Cache|null
      */
     public function getCache()
     {
@@ -373,7 +525,16 @@ class DoctrineEntityManagerProxy implements RemoteObjectInterface, EntityManager
     }
 
     /**
-     * {@inheritdoc}
+     * Tells the ObjectManager to make an instance managed and persistent.
+     *
+     * The object will be entered into the database as a result of the flush operation.
+     *
+     * NOTE: The persist operation always considers objects that are not yet known to
+     * this ObjectManager as NEW. Do not pass detached objects to the persist operation.
+     *
+     * @param object $object The instance to make managed and persistent.
+     *
+     * @return void
      */
     public function persist($object)
     {
@@ -381,7 +542,13 @@ class DoctrineEntityManagerProxy implements RemoteObjectInterface, EntityManager
     }
 
     /**
-     * {@inheritdoc}
+     * Removes an object instance.
+     *
+     * A removed object will be removed from the database as a result of the flush operation.
+     *
+     * @param object $object The object instance to remove.
+     *
+     * @return void
      */
     public function remove($object)
     {
@@ -389,7 +556,13 @@ class DoctrineEntityManagerProxy implements RemoteObjectInterface, EntityManager
     }
 
     /**
-     * {@inheritdoc}
+     * Merges the state of a detached object into the persistence context
+     * of this ObjectManager and returns the managed copy of the object.
+     * The object passed to merge will not become associated/managed with this ObjectManager.
+     *
+     * @param object $object The object to be merged
+     *
+     * @return object The merge instance
      */
     public function merge($object)
     {
@@ -397,7 +570,12 @@ class DoctrineEntityManagerProxy implements RemoteObjectInterface, EntityManager
     }
 
     /**
-     * {@inheritdoc}
+     * Clears the ObjectManager. All objects that are currently managed
+     * by this ObjectManager become detached.
+     *
+     * @param string|null $objectName if given, only objects of this type will get detached.
+     *
+     * @return void
      */
     public function clear($objectName = null)
     {
@@ -405,7 +583,15 @@ class DoctrineEntityManagerProxy implements RemoteObjectInterface, EntityManager
     }
 
     /**
-     * {@inheritdoc}
+     * Detaches an object from the ObjectManager, causing a managed object to
+     * become detached. Unflushed changes made to the object if any
+     * (including removal of the object), will not be synchronized to the database.
+     * Objects which previously referenced the detached object will continue to
+     * reference it.
+     *
+     * @param object $object The object to detach.
+     *
+     * @return void
      */
     public function detach($object)
     {
@@ -413,7 +599,12 @@ class DoctrineEntityManagerProxy implements RemoteObjectInterface, EntityManager
     }
 
     /**
-     * {@inheritdoc}
+     * Refreshes the persistent state of an object from the database,
+     * overriding any local changes that have not yet been persisted.
+     *
+     * @param object $object The object to refresh.
+     *
+     * @return void
      */
     public function refresh($object)
     {
@@ -421,7 +612,11 @@ class DoctrineEntityManagerProxy implements RemoteObjectInterface, EntityManager
     }
 
     /**
-     * {@inheritdoc}
+     * Gets the repository for a class.
+     *
+     * @param string $className The class name to return the repository for
+     *
+     * @return \Doctrine\Common\Persistence\ObjectRepository
      */
     public function getRepository($className)
     {
@@ -429,7 +624,14 @@ class DoctrineEntityManagerProxy implements RemoteObjectInterface, EntityManager
     }
 
     /**
-     * {@inheritdoc}
+     * Returns the ClassMetadata descriptor for a class.
+     *
+     * The class name must be the fully-qualified class name without a leading backslash
+     * (as it is returned by get_class($obj)).
+     *
+     * @param string $className The class name to return the metadata for
+     *
+     * @return \Doctrine\Common\Persistence\Mapping\ClassMetadata
      */
     public function getClassMetadata($className)
     {
@@ -437,7 +639,9 @@ class DoctrineEntityManagerProxy implements RemoteObjectInterface, EntityManager
     }
 
     /**
-     * {@inheritdoc}
+     * Gets the metadata factory used to gather the metadata of classes.
+     *
+     * @return \Doctrine\Common\Persistence\Mapping\ClassMetadataFactory
      */
     public function getMetadataFactory()
     {
@@ -445,7 +649,13 @@ class DoctrineEntityManagerProxy implements RemoteObjectInterface, EntityManager
     }
 
     /**
-     * {@inheritdoc}
+     * Helper method to initialize a lazy loading proxy or persistent collection.
+     *
+     * This method is a no-op for other objects.
+     *
+     * @param object $obj The object to be initialized
+     *
+     * @return void
      */
     public function initializeObject($obj)
     {
@@ -453,7 +663,11 @@ class DoctrineEntityManagerProxy implements RemoteObjectInterface, EntityManager
     }
 
     /**
-     * {@inheritdoc}
+     * Checks if the object is part of the current UnitOfWork and therefore managed.
+     *
+     * @param object $object The object to check
+     *
+     * @return bool
      */
     public function contains($object)
     {
