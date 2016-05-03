@@ -160,9 +160,6 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
                 // bind the value
                 return $this->setAttribute($token, array($value, $args));
             }
-
-            // load the next token
-            $token = strtok('/');
         }
 
         // throw an exception if we can't resolve the name
@@ -330,7 +327,7 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
             return $parent->getIdentifier() . $this->getName() . '/';
         }
 
-
+        // load the scheme to prerpare the identifier with
         if ($scheme = $this->getScheme()) {
             return $scheme . ':' . $this->getName();
         }
