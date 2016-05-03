@@ -409,7 +409,7 @@ class DoctrineEntityManagerProxy implements RemoteObjectInterface, EntityManager
      */
     public function detach($object)
     {
-        return $this->__call('detach', $object);
+        return $this->__call('detach', array($object));
     }
 
     /**
