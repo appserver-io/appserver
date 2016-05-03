@@ -79,6 +79,7 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
      * Returns the parend directory.
      *
      * @return \AppserverIo\Psr\Naming\NamingDirectoryInterface
+     * @deprecated
      */
     public function getParent()
     {
@@ -104,13 +105,6 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
      */
     public function getScheme()
     {
-
-        // if the parent directory has a schema, return this one
-        if ($parent = $this->getParent()) {
-            return $parent->getScheme();
-        }
-
-        // return our own schema
         return $this->scheme;
     }
 
@@ -127,43 +121,17 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
     public function bind($name, $value, array $args = array())
     {
 
-        // delegate the bind request to the parent directory
-        if (strpos($name, sprintf('%s:', $this->getScheme())) === 0 && $this->getParent()) {
-            return $this->findRoot()->bind($name, $value, $args);
+        try {
+
+            error_log("Now try to bind $name");
+
+            // strip off the schema and bind the value
+            $key = str_replace(sprintf('%s:', $this->getScheme()), '', $name);
+            $this->setAttribute($key, array($value, $args));
+
+        } catch (\Exception $e) {
+            throw new NamingException(sprintf('Cant\'t bind %s to naming directory %s', $name, $this->getIdentifier()), null, $e);
         }
-
-        // strip off the schema
-        $name = str_replace(sprintf('%s:', $this->getScheme()), '', $name);
-
-        // tokenize the name
-        $token = strtok($name, '/');
-
-        // while we've tokens, try to find the appropriate subdirectory
-        while ($token !== false) {
-            // check if we can find something
-            if ($this->hasAttribute($token)) {
-                // load the data bound to the token
-                $data = $this->getAttribute($token);
-
-                // load the bound value/args
-                list ($valueFound, ) = $data;
-
-                // try to bind it to the subdirectory
-                if ($valueFound instanceof NamingDirectoryInterface) {
-                    return $valueFound->bind(str_replace($token . '/', '', $name), $value, $args);
-                }
-
-                // throw an exception if we can't resolve the name
-                throw new NamingException(sprintf('Cant\'t bind %s to value of naming directory %s', $token, $this->getIdentifier()));
-
-            } else {
-                // bind the value
-                return $this->setAttribute($token, array($value, $args));
-            }
-        }
-
-        // throw an exception if we can't resolve the name
-        throw new NamingException(sprintf('Cant\'t bind %s to naming directory %s', $token, $this->getIdentifier()));
     }
 
     /**
@@ -205,44 +173,17 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
     public function unbind($name)
     {
 
-        // delegate the bind request to the parent directory
-        if (strpos($name, sprintf('%s:', $this->getScheme())) === 0 && $this->getParent()) {
-            return $this->findRoot()->unbind($name);
+        try {
+
+            error_log("Now try to unbind $name");
+
+            // strip off the schema and unbind the value
+            $key = str_replace(sprintf('%s:', $this->getScheme()), '', $name);
+            $this->removeAttribute($key);
+
+        } catch (\Exception $e) {
+            throw new NamingException(sprintf('Cant\'t unbind %s from naming directory %s', $name, $this->getIdentifier()), null, $e);
         }
-
-        // strip off the schema
-        $name = str_replace(sprintf('%s:', $this->getScheme()), '', $name);
-
-        // tokenize the name
-        $token = strtok($name, '/');
-
-        // while we've tokens, try to find the appropriate subdirectory
-        while ($token !== false) {
-            // check if we can find something
-            if ($this->hasAttribute($token)) {
-                // load the data bound to the token
-                $data = $this->getAttribute($token);
-
-                // load the bound value/args
-                list ($valueFound, ) = $data;
-
-                // try to unbind it from the subdirectory
-                if ($valueFound instanceof NamingDirectoryInterface) {
-                    if ($valueFound->getName() !== $name) {
-                        return $valueFound->unbind(str_replace($token . '/', '', $name));
-                    }
-                }
-
-                // remove the attribute if we find the requested value
-                return $this->removeAttribute($token);
-            }
-
-            // load the next token
-            $token = strtok('/');
-        }
-
-        // throw an exception if we can't resolve the name
-        throw new NamingException(sprintf('Cant\'t unbind %s from naming directory %s', $name, $this->getIdentifier()));
     }
 
     /**
@@ -258,56 +199,37 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
     public function search($name, array $args = array())
     {
 
-        // delegate the search request to the parent directory
-        if (strpos($name, sprintf('%s:', $this->getScheme())) === 0 && $this->getParent()) {
-            return $this->findRoot()->search($name, $args);
-        }
+        try {
 
-        // strip off the schema
-        $name = str_replace(sprintf('%s:', $this->getScheme()), '', $name);
+            error_log("Now try to search for $name");
 
-        // tokenize the name
-        $token = strtok($name, '/');
+            // strip off the schema and try to load the value
+            $key = str_replace(sprintf('%s:', $this->getScheme()), '', $name);
 
-        // while we've tokens, try to find a value bound to the token
-        while ($token !== false) {
-            // check if we can find something
-            if ($this->hasAttribute($token)) {
-                // load the value
-                $found = $this->getAttribute($token);
+            // load the value
+            $found = $this->getAttribute($key);
 
-                // load the binded value/args
-                list ($value, $bindArgs) = $found;
+            // load the binded value/args
+            list ($value, $bindArgs) = $found;
 
-                // check if we've a callback method
-                if (is_callable($value)) {
-                    // if yes, merge the params and invoke the callback
-                    foreach ($args as $arg) {
-                        $bindArgs[] = $arg;
-                    }
-
-                    // invoke the callback
-                    return call_user_func_array($value, $bindArgs);
+            // check if we've a callback method
+            if (is_callable($value)) {
+                // if yes, merge the params and invoke the callback
+                foreach ($args as $arg) {
+                    $bindArgs[] = $arg;
                 }
 
-                // search recursive
-                if ($value instanceof NamingDirectoryInterface) {
-                    if ($value->getName() !== $name) {
-                        // if $value is NOT what we're searching for
-                        return $value->search(str_replace($token . '/', '', $name), $args);
-                    }
-                }
+                // invoke the callback
+                return call_user_func_array($value, $bindArgs);
 
-                // if not, simply return the value/object
+            } else {
+                // simply return the value
                 return $value;
             }
 
-            // load the next token
-            $token = strtok('/');
+        } catch (\Exception $e) {
+            throw new NamingException(sprintf('Cant\'t resolve %s in naming directory %s', ltrim($name, '/'), $this->getIdentifier()), null, $e);
         }
-
-        // throw an exception if we can't resolve the name
-        throw new NamingException(sprintf('Cant\'t resolve %s in naming directory %s', ltrim($name, '/'), $this->getIdentifier()));
     }
 
     /**
@@ -340,16 +262,10 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
      * Returns the root node of the naming directory tree.
      *
      * @return \AppserverIo\Psr\Naming\NamingDirectoryInterface The root node
+     * @deprecated
      */
     public function findRoot()
     {
-
-        // query whether we've a parent or not
-        if ($parent = $this->getParent()) {
-            return $parent->findRoot();
-        }
-
-        // return the node itself if we're root
         return $this;
     }
 
@@ -364,49 +280,7 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
     public function toArray(array &$buffer = array())
     {
 
-        // query whether we've attributes or not
-        if ($attributes = $this->getAttributes()) {
-            // iterate over the attributes
-            foreach ($attributes as $key => $found) {
-                // extract the binded value/args if necessary
-                if (is_array($found)) {
-                    list ($value, ) = $found;
-                } else {
-                    $value = $found;
-                }
-
-                // initialize the strings for node value and type
-                $val = 'n/a';
-                $type = 'unknown';
-
-                // set value and type strings based on the found value
-                if (is_null($value)) {
-                    $val = 'NULL';
-                } elseif (is_object($value)) {
-                    $type = get_class($value);
-                } elseif (is_callable($value)) {
-                    $type = 'callback';
-                } elseif (is_array($value)) {
-                    $type = 'array';
-                } elseif (is_scalar($value)) {
-                    $type = gettype($value);
-                    $val = $value;
-                } elseif (is_resource($value)) {
-                    $type = 'resource';
-                }
-
-                // append type and value string representations to the buffer
-                $buffer[sprintf('%s%s', $this->getIdentifier(), $this->unmaskKey($key))] = sprintf('(%s) %s', $type, $val);
-
-                // if the value is a naming directory also, append it recursive
-                if ($value instanceof NamingDirectoryInterface) {
-                    $value->toArray($buffer);
-                }
-            }
-        }
-
-        // return the buffer
-        return $buffer;
+        return (array) $this;
     }
 
     /**
@@ -432,49 +306,10 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
     {
 
         try {
-            // cut off append slashes
-            $name = rtrim($name, '/');
-
-            // query whether we found a slash AND a prepended scheme
-            if (strpos($name, sprintf('%s:', $this->getScheme())) === 0 && ($found = strrpos($name, '/')) !== false) {
-                // cut off the last directory
-                $parentDirectory = substr($name, 0, $found);
-
-                // prepare the name of the subdirectory to create
-                $newDirectory = ltrim(str_replace($parentDirectory, '', $name), '/');
-
-                // load the parent directory and create the new subdirectory
-                return $this->search($parentDirectory)->createSubdirectory($newDirectory, $filter);
-            }
-
-            // strip off the schema
-            $name = str_replace(sprintf('%s:', $this->getScheme()), '', $name);
-
-            // create a local copy of the naming directory stack
-            global $directories;
-
-            // create a new subdirectory instance
-            $directories[$id = Uuid::uuid4()->__toString()] = new NamingDirectory($name, $this);
-
-            // copy the attributes specified by the filter
-            if (sizeof($filter) > 0) {
-                foreach ($this->getAllKeys() as $key => $value) {
-                    foreach ($filter as $pattern) {
-                        if (fnmatch($pattern, $key)) {
-                            $directories[$id]->bind($key, $value);
-                        }
-                    }
-                }
-            }
-
-            // bind it the directory
-            $this->bind($name, $directories[$id]);
-
-            // return the instance
-            return $directories[$id];
+            return $this;
 
         } catch (\Exception $e) {
-            error_log($e->__toString());
+            throw new NamingException(sprintf('Can\'t create subdirectory %s', $name), null, $e);
         }
     }
 }
