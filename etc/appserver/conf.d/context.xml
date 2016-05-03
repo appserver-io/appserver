@@ -81,7 +81,7 @@
             </descriptors>
         </manager>
         <manager name="ProviderInterface" type="AppserverIo\Appserver\DependencyInjectionContainer\Provider" factory="AppserverIo\Appserver\DependencyInjectionContainer\ProviderFactory"/>
-        <manager name="PersistenceContextInterface" type="AppserverIo\Appserver\PersistenceContainer\PersistenceManager" factory="AppserverIo\Appserver\PersistenceContainer\PersistenceManagerFactory"/>
+        <manager name="PersistenceContextInterface" type="AppserverIo\Appserver\PersistenceContainer\PersistenceManager" factory="AppserverIo\Appserver\PersistenceContainer\PersistenceManagerFactory" contextFactory="AppserverIo\Appserver\Naming\NamingContextFactory"/>
         <manager name="BeanContextInterface" type="AppserverIo\Appserver\PersistenceContainer\BeanManager" factory="AppserverIo\Appserver\PersistenceContainer\BeanManagerFactory" contextFactory="AppserverIo\Appserver\Naming\NamingContextFactory">
             <params>
                 <param name="baseDirectory" type="string">META-INF</param>

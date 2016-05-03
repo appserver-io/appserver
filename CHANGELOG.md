@@ -1,3 +1,13 @@
+# Version 1.1.1-beta12
+
+## Bugfixes
+
+* Fixed issue that prevents using Doctrine Entity Manager in Singleton Session Beans
+
+## Features
+
+* None
+
 # Version 1.1.1-beta11
 
 ## Bugfixes

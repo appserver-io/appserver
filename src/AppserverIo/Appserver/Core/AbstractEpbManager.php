@@ -11,12 +11,9 @@
  *
  * PHP version 5
  *
- * @category   Server
- * @package    Appserver
- * @subpackage Core
  * @author     Tim Wagner <tw@appserver.io>
  * @author     Bernhard Wick <bw@appserver.io>
- * @copyright  2014 TechDivision GmbH - <info@appserver.io>
+ * @copyright  2016 TechDivision GmbH - <info@appserver.io>
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       http://www.appserver.io/
  */
@@ -24,6 +21,7 @@
 namespace AppserverIo\Appserver\Core;
 
 use AppserverIo\Psr\Naming\NamingException;
+use AppserverIo\Psr\EnterpriseBeans\PersistenceContextInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\EpbReferenceDescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\ResReferenceDescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\PersistenceUnitReferenceDescriptorInterface;
@@ -31,12 +29,9 @@ use AppserverIo\Psr\EnterpriseBeans\Description\PersistenceUnitReferenceDescript
 /**
  * Abstract manager which is able to handle EPB, resource and persistence unit registrations.
  *
- * @category   Server
- * @package    Appserver
- * @subpackage Core
  * @author     Tim Wagner <tw@appserver.io>
  * @author     Bernhard Wick <bw@appserver.io>
- * @copyright  2014 TechDivision GmbH - <info@appserver.io>
+ * @copyright  2016 TechDivision GmbH - <info@appserver.io>
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       http://www.appserver.io/
  */
@@ -71,12 +66,22 @@ abstract class AbstractEpbManager extends AbstractManager
                 // query whether we've a local business interface
                 if ($epbReference->getBeanInterface() === sprintf('%sLocal', $beanName)) {
                     // bind the local business interface of the bean to the appliations naming directory
-                    $application->getNamingDirectory()->bind($uri, array(&$this, 'lookupProxy'), array(sprintf('%s/local', $beanName)));
+                    $application->getNamingDirectory()
+                                ->bind(
+                                    $uri,
+                                    array(&$this, 'lookupProxy'),
+                                    array(sprintf('%s/local', $beanName))
+                                );
 
                 // query whether we've a remote business interface
                 } elseif ($epbReference->getBeanInterface() === (sprintf('%sRemote', $beanName))) {
                     // bind the remote business interface of the bean to the applications naming directory
-                    $application->getNamingDirectory()->bind($uri, array(&$this, 'lookupProxy'), array(sprintf('%s/remote', $beanName)));
+                    $application->getNamingDirectory()
+                                ->bind(
+                                    $uri,
+                                    array(&$this, 'lookupProxy'),
+                                    array(sprintf('%s/remote', $beanName))
+                                );
 
                 // at least, we need a business interface
                 } else {
@@ -155,7 +160,11 @@ abstract class AbstractEpbManager extends AbstractManager
             // try to bind the reference by the specified type
             } elseif ($type = $resReference->getType()) {
                 // bind a reference to the resource shortname
-                $application->getNamingDirectory()->bindReference($uri, sprintf('php:global/%s/%s', $application->getUniqueName(), $type));
+                $application->getNamingDirectory()
+                            ->bindReference(
+                                $uri,
+                                sprintf('php:global/%s/%s', $application->getUniqueName(), $type)
+                            );
 
             // log a critical message that we can't bind the reference
             } else {
@@ -208,8 +217,15 @@ abstract class AbstractEpbManager extends AbstractManager
         try {
             // try to use the unit name to bind the reference to
             if ($unitName = $persistenceUnitReference->getUnitName()) {
+                // load the persistenc manager to bind the callback to
+                $persistenceManager = $application->search(PersistenceContextInterface::IDENTIFIER);
                 // create a reference to a persistence unit in the global directory
-                $application->getNamingDirectory()->bindReference($uri, sprintf('php:global/%s/%s', $application->getUniqueName(), $unitName));
+                $application->getNamingDirectory()
+                            ->bind(
+                                $uri,
+                                array(&$persistenceManager, 'lookupProxy'),
+                                array(sprintf('php:global/%s/%s', $application->getUniqueName(), $unitName))
+                            );
 
             // log a critical message that we can't bind the reference
             } else {
