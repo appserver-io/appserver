@@ -46,6 +46,13 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
     const NAME = 'foo';
 
     /**
+     * The container name for testing purposes.
+     *
+     * @var  string
+     */
+    const CONTAINER_NAME = 'combined-container';
+
+    /**
      * The user for testing purposes.
      *
      * @var string
@@ -177,15 +184,16 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
         $this->namingDirectory->bind('php:env/group', ApplicationTest::GROUP);
         $this->namingDirectory->bind('php:env/umask', ApplicationTest::UMASK);
         $this->namingDirectory->bind('php:env/tmpDirectory', ApplicationTest::GLOBAL_TMP_DIR);
-        $this->namingDirectory->bind('php:env/foo/webappPath', ApplicationTest::WEBAPP_PATH);
-        $this->namingDirectory->bind('php:env/foo/tmpDirectory', ApplicationTest::TMP_DIR);
-        $this->namingDirectory->bind('php:env/foo/cacheDirectory', ApplicationTest::CACHE_DIR);
-        $this->namingDirectory->bind('php:env/foo/sessionDirectory', ApplicationTest::SESSION_DIR);
         $this->namingDirectory->bind('php:env/baseDirectory', ApplicationTest::BASE_DIRECTORY);
-        $this->namingDirectory->bind(sprintf('php:env/%s/appBase', ApplicationTest::NAME), ApplicationTest::APP_BASE);
+        $this->namingDirectory->bind(sprintf('php:env/%s/%s/webappPath', ApplicationTest::CONTAINER_NAME, ApplicationTest::NAME), ApplicationTest::WEBAPP_PATH);
+        $this->namingDirectory->bind(sprintf('php:env/%s/%s/tmpDirectory', ApplicationTest::CONTAINER_NAME, ApplicationTest::NAME), ApplicationTest::TMP_DIR);
+        $this->namingDirectory->bind(sprintf('php:env/%s/%s/cacheDirectory', ApplicationTest::CONTAINER_NAME, ApplicationTest::NAME), ApplicationTest::CACHE_DIR);
+        $this->namingDirectory->bind(sprintf('php:env/%s/%s/sessionDirectory', ApplicationTest::CONTAINER_NAME, ApplicationTest::NAME), ApplicationTest::SESSION_DIR);
+        $this->namingDirectory->bind(sprintf('php:env/%s/%s/appBase', ApplicationTest::CONTAINER_NAME, ApplicationTest::NAME), ApplicationTest::APP_BASE);
 
         // inject the storages
         $this->application->injectName(ApplicationTest::NAME);
+        $this->application->injectContainerName(ApplicationTest::CONTAINER_NAME);
         $this->application->injectManagers($this->managers);
         $this->application->injectClassLoaders($this->classLoaders);
         $this->application->injectNamingDirectory($this->namingDirectory);

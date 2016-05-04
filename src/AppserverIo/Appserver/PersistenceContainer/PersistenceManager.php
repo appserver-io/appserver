@@ -121,7 +121,7 @@ class PersistenceManager extends AbstractManager implements PersistenceContextIn
      *
      * @return void
      */
-    protected function registerEntityManagers(ApplicationInterface $application)
+    public function registerEntityManagers(ApplicationInterface $application)
     {
 
         // build up META-INF directory var
@@ -194,7 +194,7 @@ class PersistenceManager extends AbstractManager implements PersistenceContextIn
      *
      * @return void
      */
-    protected function registerEntityManager(ApplicationInterface $application, PersistenceUnitNodeInterface $persistenceUnitNode)
+    public function registerEntityManager(ApplicationInterface $application, PersistenceUnitNodeInterface $persistenceUnitNode)
     {
 
         // initialize the the entity manager instance
@@ -310,7 +310,7 @@ class PersistenceManager extends AbstractManager implements PersistenceContextIn
 
         // load a fresh bean instance and add it to the session container
         if ($instance == null) {
-            $instance = $application->search($className);
+            $instance = $application->getNamingDirectory()->search($className);
         }
 
         // query whether we already have an instance in the session container

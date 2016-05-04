@@ -258,7 +258,7 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface, Ma
      *
      * @return \AppserverIo\Lang\Reflection\AnnotationInterface The real annotation instance
      */
-    protected function newAnnotationInstance(AnnotationInterface $annotation)
+    public function newAnnotationInstance(AnnotationInterface $annotation)
     {
         return $this->getApplication()->search('ProviderInterface')->newAnnotationInstance($annotation);
     }

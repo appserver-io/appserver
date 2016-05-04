@@ -49,7 +49,7 @@ trait ThreadedContextTrait
      *
      * @return string The unique identifier
      */
-    protected function maskKey($key)
+    public function maskKey($key)
     {
         return sprintf('%s-%s', $this->getSerial(), $key);
     }
@@ -61,7 +61,7 @@ trait ThreadedContextTrait
      *
      * @return string The unmasked key
      */
-    protected function unmaskKey($key)
+    public function unmaskKey($key)
     {
         return str_replace(sprintf('%s-', $this->getSerial()), '', $key);
     }
@@ -106,7 +106,7 @@ trait ThreadedContextTrait
         $pattern = sprintf('%s-*', $this->getSerial());
 
         // prepare the array with the attribute keys
-        foreach ($this as $key => $value) {
+        foreach (array_keys((array) $this) as $key) {
             if (fnmatch($pattern, $key)) {
                 $keys[] = $this->unmaskKey($key);
             }

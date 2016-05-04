@@ -146,6 +146,6 @@ class NamingDirectoryTest extends \PHPUnit_Framework_TestCase
         $level2->createSubdirectory('level3');
 
         // search for the last created subdirectory
-        $this->assertInstanceOf('AppserverIo\Psr\Naming\NamingDirectoryInterface', $this->namingDirectory->search('php:level1/level2/level3'));
+        $this->assertSame('.', $this->namingDirectory->search('php:level1/level2/level3'));
     }
 }
