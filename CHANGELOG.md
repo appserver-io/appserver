@@ -1,3 +1,13 @@
+# Version 1.1.1-beta13
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Refactoring NamingDirectory implementation to improve performance
+
 # Version 1.1.1-beta12
 
 ## Bugfixes
