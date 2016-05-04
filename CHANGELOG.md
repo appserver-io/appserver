@@ -1,3 +1,13 @@
+# Version 1.1.1-beta14
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Optimizing Doctrine Entity Manager integration to optimize performance
+
 # Version 1.1.1-beta13
 
 ## Bugfixes
