@@ -519,7 +519,7 @@ class StandardSessionManager implements SessionManagerInterface
      *
      * @return \Psr\Log\LoggerInterface The logger with the requested name
      */
-    protected function getLogger($loggerName)
+    public function getLogger($loggerName)
     {
 
         try {

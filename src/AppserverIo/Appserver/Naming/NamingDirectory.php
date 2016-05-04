@@ -35,10 +35,11 @@ use AppserverIo\Appserver\Core\Traits\ThreadedContextTrait;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  *
- * @property \AppserverIo\Psr\Naming\NamingDirectoryInterface $parent The parent directory
- * @property string                                           $scheme The binding string scheme
- * @property string                                           $name   The directory name
- * @property string                                           $serial The instance unique serial number
+ * @property \AppserverIo\Psr\Naming\NamingDirectoryInterface $parent    The parent directory
+ * @property string                                           $scheme    The binding string scheme
+ * @property string                                           $name      The directory name
+ * @property string                                           $serial    The instance unique serial number
+ * @property string                                           $directory The actual directory
  */
 class NamingDirectory extends GenericStackable implements NamingDirectoryInterface
 {
@@ -339,7 +340,7 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
      *
      * @return string The directory
      */
-    protected function getDirectory()
+    public function getDirectory()
     {
         return $this->directory;
     }
@@ -351,7 +352,7 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
      *
      * @return void
      */
-    protected function setDirectory($name)
+    public function setDirectory($name)
     {
         $this->directory = $name;
     }
@@ -364,7 +365,7 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
      *
      * @return The prepared path
      */
-    protected function prepareDirectory($name)
+    public function prepareDirectory($name)
     {
 
         // query whether or not the passed name is a absolute directory
@@ -383,7 +384,7 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
      *
      * @return string The new path, with the name appended
      */
-    protected function appendDirectory($name)
+    public function appendDirectory($name)
     {
         return $this->directory .= sprintf('/%s', $name);
     }
@@ -395,7 +396,7 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
      *
      * @return boolean TRUE if the name contains the scheme, else FALSE
      */
-    protected function containsScheme($name)
+    public function containsScheme($name)
     {
         return (strpos($name, sprintf('%s:', $this->getScheme())) === 0);
     }
@@ -407,7 +408,7 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
      *
      * @return string The directory without the scheme
      */
-    protected function stripSchema($name)
+    public function stripSchema($name)
     {
         return str_replace(sprintf('%s:', $this->getScheme()), '', $name);
     }

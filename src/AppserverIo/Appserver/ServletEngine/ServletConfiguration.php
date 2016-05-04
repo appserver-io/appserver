@@ -142,7 +142,7 @@ class ServletConfiguration implements ServletConfigInterface
      */
     public function getInitParameter($name)
     {
-        if (array_key_exists($name, $this->initParameter)) {
+        if (isset($this->initParameter[$name])) {
             return $this->initParameter[$name];
         }
     }

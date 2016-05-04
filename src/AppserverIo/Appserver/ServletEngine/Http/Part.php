@@ -285,10 +285,9 @@ class Part implements PartInterface
      */
     public function getHeader($name)
     {
-        if (array_key_exists($name, $this->headers)) {
+        if (isset($this->headers[$name])) {
             return $this->headers[$name];
         }
-
         return '';
     }
 

@@ -217,7 +217,7 @@ class StandardGarbageCollector extends AbstractDaemonThread implements GarbageCo
      *
      * @return \Psr\Log\LoggerInterface|null The system logger insatnce
      */
-    protected function getSystemLogger()
+    public function getSystemLogger()
     {
         return $this->systemLogger;
     }
@@ -227,7 +227,7 @@ class StandardGarbageCollector extends AbstractDaemonThread implements GarbageCo
      *
      * @return \Psr\Log\LoggerInterface|null The profile logger insatnce
      */
-    protected function getProfileLogger()
+    public function getProfileLogger()
     {
         return $this->profileLogger;
     }
@@ -240,7 +240,7 @@ class StandardGarbageCollector extends AbstractDaemonThread implements GarbageCo
      *
      * @return \Psr\Log\LoggerInterface|null The logger with the requested name
      */
-    protected function getLogger($loggerName)
+    public function getLogger($loggerName)
     {
 
         try {

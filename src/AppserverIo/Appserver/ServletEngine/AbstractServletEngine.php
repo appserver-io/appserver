@@ -80,7 +80,7 @@ abstract class AbstractServletEngine implements HttpModuleInterface
      *
      * @throws \AppserverIo\Appserver\ServletEngine\BadRequestException
      */
-    protected function findRequestedApplication(RequestContextInterface $requestContext)
+    public function findRequestedApplication(RequestContextInterface $requestContext)
     {
 
         // prepare the request URL we want to match
@@ -216,7 +216,7 @@ abstract class AbstractServletEngine implements HttpModuleInterface
      *
      * @return void
      */
-    protected function logDebugException(\Exception $e)
+    public function logDebugException(\Exception $e)
     {
         if ($this->getServerContext()->hasLogger(LoggerUtils::SYSTEM)) {
             $this->getServerContext()->getLogger(LoggerUtils::SYSTEM)->debug($e->__toString());
@@ -231,7 +231,7 @@ abstract class AbstractServletEngine implements HttpModuleInterface
      *
      * @return void
      */
-    protected function logErrorException(\Exception $e)
+    public function logErrorException(\Exception $e)
     {
         if ($this->getServerContext()->hasLogger(LoggerUtils::SYSTEM)) {
             $this->getServerContext()->getLogger(LoggerUtils::SYSTEM)->error($e->__toString());
@@ -246,7 +246,7 @@ abstract class AbstractServletEngine implements HttpModuleInterface
      *
      * @return void
      */
-    protected function logCriticalException(\Exception $e)
+    public function logCriticalException(\Exception $e)
     {
         if ($this->getServerContext()->hasLogger(LoggerUtils::SYSTEM)) {
             $this->getServerContext()->getLogger(LoggerUtils::SYSTEM)->critical($e->__toString());

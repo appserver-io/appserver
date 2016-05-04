@@ -286,7 +286,7 @@ class Request implements HttpServletRequestInterface, ContextInterface
      */
     public function getAttribute($key)
     {
-        if (array_key_exists($key, $this->attributes)) {
+        if (isset($this->attributes[$key])) {
             return $this->attributes[$key];
         }
     }
@@ -780,7 +780,7 @@ class Request implements HttpServletRequestInterface, ContextInterface
      */
     public function getPart($name)
     {
-        if (array_key_exists($name, $this->parts)) {
+        if (isset($this->parts[$name])) {
             return $this->parts[$name];
         }
     }
@@ -1273,8 +1273,8 @@ class Request implements HttpServletRequestInterface, ContextInterface
      */
     public function getServerVar($name)
     {
-        if (array_key_exists($name, $serverVars = $this->getServerVars())) {
-            return $serverVars[$name];
+        if (isset($this->serverVars[$name])) {
+            return $this->serverVars[$name];
         }
     }
 
