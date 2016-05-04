@@ -61,6 +61,8 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
         $this->parent = $parent;
         $this->name = $name;
 
+        $this->directory = null;
+
         // create a UUID as prefix for dynamic object properties
         $this->serial = Uuid::uuid4()->toString();
     }
@@ -123,7 +125,7 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
 
         try {
             // strip off the schema
-            $key = str_replace(sprintf('%s:', $this->getScheme()), '', $name);
+            $key = $this->stripSchema($name);
 
             // bind the value, if possible
             if ($this->hasAttribute($key) === false) {
@@ -179,8 +181,8 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
     {
 
         try {
-            // strip off the schema and unbind the value
-            $key = str_replace(sprintf('%s:', $this->getScheme()), '', $name);
+            // strip off the schema
+            $key = $this->stripSchema($name);
             $this->removeAttribute($key);
 
         } catch (\Exception $e) {
@@ -202,15 +204,17 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
     {
 
         try {
-            // strip off the schema and try to load the value
-            $key = str_replace(sprintf('%s:', $this->getScheme()), '', $name);
-
-            // load the value
-            $found = $this->getAttribute($key);
+            // strip off the schema
+            $key = $this->stripSchema($name);
 
             // throw an exception if we can't find a value
-            if ($found == null) {
+            if ($this->hasAttribute($key) === false) {
                 throw new \Exception(sprintf('Requested value %s has not been bound to naming directory %s', $name, $this->getIdentifier()));
+            }
+
+            // try to load the value, which may also be NULL
+            if (($found = $this->getAttribute($key)) == null) {
+                return;
             }
 
             // load the binded value/args
@@ -282,7 +286,6 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
      */
     public function toArray(array &$buffer = array())
     {
-
         return (array) $this;
     }
 
@@ -309,9 +312,103 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
     {
 
         try {
+            // query whether or not the passed directory is relative or absolute
+            if ($this->containsScheme($name)) {
+                $this->setAttribute($this->stripSchema($name), '.');
+            } else {
+                // if the directory is relative, append it
+                if ($directory = $this->getDirectory()) {
+                    $directory = $this->appendDirectory($name);
+                } else {
+                    $this->setDirectory($directory = $name);
+                }
+                // bind the default value
+                $this->bind($directory, '.');
+            }
+
+            // return the instance itself
             return $this;
+
         } catch (\Exception $e) {
             throw new NamingException(sprintf('Can\'t create subdirectory %s', $name), null, $e);
         }
+    }
+
+    /**
+     * Return's the directory.
+     *
+     * @return string The directory
+     */
+    protected function getDirectory()
+    {
+        return $this->directory;
+    }
+
+    /**
+     * Set's the passed directory.
+     *
+     * @param string $name The directory to set
+     *
+     * @return void
+     */
+    protected function setDirectory($name)
+    {
+        $this->directory = $name;
+    }
+
+    /**
+     * Prepare's and return's the path either by stripping of the scheme
+     * if it is absolute or append the name, if it is relative.
+     *
+     * @param string $name The name to prepare the directory with
+     *
+     * @return The prepared path
+     */
+    protected function prepareDirectory($name)
+    {
+
+        // query whether or not the passed name is a absolute directory
+        if ($this->containsScheme($name)) {
+            return $this->stripSchema($name);
+        }
+
+        // if not, only append it and return the new path
+        return $this->appendDirectory($name);
+    }
+
+    /**
+     * Append's the passed name to the actual path and return's the new path.
+     *
+     * @param string $name The name to append to the path
+     *
+     * @return string The new path, with the name appended
+     */
+    protected function appendDirectory($name)
+    {
+        return $this->directory .= sprintf('/%s', $name);
+    }
+
+    /**
+     * Query whether the passed name contains the scheme or not.
+     *
+     * @param string $name The name to query for a scheme
+     *
+     * @return boolean TRUE if the name contains the scheme, else FALSE
+     */
+    protected function containsScheme($name)
+    {
+        return (strpos($name, sprintf('%s:', $this->getScheme())) === 0);
+    }
+
+    /**
+     * Strip off the schema and return the directory part only.
+     *
+     * @param string $name The directory, maybe containing the scheme
+     *
+     * @return string The directory without the scheme
+     */
+    protected function stripSchema($name)
+    {
+        return str_replace(sprintf('%s:', $this->getScheme()), '', $name);
     }
 }

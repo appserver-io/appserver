@@ -106,7 +106,7 @@ trait ThreadedContextTrait
         $pattern = sprintf('%s-*', $this->getSerial());
 
         // prepare the array with the attribute keys
-        foreach ($this as $key => $value) {
+        foreach (array_keys((array) $this) as $key) {
             if (fnmatch($pattern, $key)) {
                 $keys[] = $this->unmaskKey($key);
             }
@@ -128,7 +128,7 @@ trait ThreadedContextTrait
     {
 
         // query whether the identifier exists or not
-        if (isset($this[$uid = $this->maskKey($key)])) {
+        if (array_key_exists($uid = $this->maskKey($key), $this)) {
             return $this[$uid];
         }
     }
@@ -146,7 +146,7 @@ trait ThreadedContextTrait
     {
 
         // if the value is already set, throw an exception
-        if (isset($this[$uid = $this->maskKey($key)])) {
+        if (array_key_exists($uid = $this->maskKey($key), $this)) {
             throw new \Exception(
                 sprintf('A value with key %s has already been set in application %s', $key, $this->getName())
             );
@@ -165,7 +165,7 @@ trait ThreadedContextTrait
      */
     public function hasAttribute($key)
     {
-        return isset($this[$this->maskKey($key)]);
+        return array_key_exists($this->maskKey($key), $this);
     }
 
     /**
@@ -177,7 +177,7 @@ trait ThreadedContextTrait
      */
     public function removeAttribute($key)
     {
-        if (isset($this[$uid = $this->maskKey($key)])) {
+        if (array_key_exists($uid = $this->maskKey($key), $this)) {
             unset($this[$uid]);
         }
     }
