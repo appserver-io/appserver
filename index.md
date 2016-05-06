@@ -6,18 +6,6 @@ meta_description: Next-generation PHP infrastructure consisting of a lightning f
 position: 0
 permalink: /
 slider:
-  - title: Join us on our 1st appserver.io Hackathon!
-    link-href: /community/1st-hackathon.html
-    link-label: <i class="fa fa-ticket"></i> Get your ticket now!
-    poster: /assets/vid/programming-ide.jpg
-    videos:
-      - src: /assets/vid/programming-ide.mp4
-        type: video/mp4
-      - src: /assets/vid/programming-ide.webm
-        type: video/webm
-      - src: /assets/vid/programming-ide.ogv
-        type: video/ogg
-    opacity: .8
   - title: Iron-Knight has arrived!
     link-href: /downloads.html
     link-detail-href: /release/2015/11/11/1.1.0-released.html

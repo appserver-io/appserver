@@ -397,9 +397,40 @@ In addition to the Container and Server configurations, it is also possible to c
 
 As each application is running in a separat thread, which is necessary to avoid the unavoidable `Can't redeclare class ...` errors.
 
+### Environment
+
+As you might need an environment switch for your application, to handle things differently e.g. turn of authentication in development mode or use different database connections, you can specify as many environments as you like by following this naming convention:
+
+`META-INF/context.production.xml` or `META-INF/context.development.xml` would cause your application to have 2 different environments `production` and `development` which you can use to switch configurations as you wish.
+
+In your application code you can check which environment is currently active by injecting the application and checking its environment:
+
+```php
+/**
+ * @var \AppserverIo\Appserver\Application\Application
+ * @Resource(name="ApplicationInterface")
+ */
+protected $application;
+
+public function doSomething()
+{
+    if ($this->application->getEnvironmentName() === 'production') {
+        // do something different
+    }
+}
+```  
+
+To specify the variable, set it in a `build.properties` file which resides in your [application's root directory](webapps.html#structure):
+
+```ini
+appserver.webapp.environment = development
+```
+
+This will result in a preference for all XML configuration containing the `.development.xml` suffix over their non-suffixed counterpart. If no suffixed file exists, the default file will be loaded instead.
+
 ### The META-INF and WEB-INF Directories
 
-The application itself has provides many configuration options. To make things more comfortable, we provide a default configuration, that should fit most of the common requirements. These default options can be overwritten, but **NOT** removed, in the application specific configuration files that resides in the `META-INF` and `WEB-INF` directories. These directories are intended to be the default directories for the application specific configuration and it's classes.
+The application itself allows many configuration options. To make things more comfortable, we provide a default configuration, that should fit most of the common requirements. These default options can be overwritten, but **NOT** removed, in the application specific configuration files that resides in the `META-INF` and `WEB-INF` directories. These directories are intended to be the default directories for the application specific configuration and it's classes.
 
 ### Configuration Variables
 
