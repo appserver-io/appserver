@@ -1,3 +1,13 @@
+# Version 1.1.1-beta15
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Switch to latest v3.0.0 of appserver-io/single-app
+
 # Version 1.1.1-beta14
 
 ## Bugfixes
