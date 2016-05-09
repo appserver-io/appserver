@@ -172,9 +172,7 @@ class WebAppNode extends AbstractNode implements WebAppNodeInterface
 
         // initialize the node values for the default error page
         $errorCodePattern = new ValueNode(new NodeValue(ErrorPageNodeInterface::DEFAULT_ERROR_CODE_PATTERN));
-        $errorLocation = new ValueNode(
-            new NodeValue(DirectoryKeys::realpath(ErrorPageNodeInterface::DEFAULT_ERROR_LOCATION))
-        );
+        $errorLocation = new ValueNode(new NodeValue(ErrorPageNodeInterface::DEFAULT_ERROR_LOCATION));
 
         // add the default error page
         $this->errorPages[] = new ErrorPageNode($errorCodePattern, $errorLocation);
