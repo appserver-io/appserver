@@ -354,8 +354,9 @@ class Request implements HttpServletRequestInterface, ContextInterface
         do {
             // bingo we found a (again: almost virtual) servlet file
             if (isset($handlers[".$extension"])) {
-                // prepare the servlet path
-                if ($dirname === '/') {
+                // prepare the servlet path (we've to take care, because the
+                // pathinfo() function converts / to \ on Windows OS
+                if ($dirname === DIRECTORY_SEPARATOR) {
                     $servletPath = '/' . $basename;
                 } else {
                     $servletPath = $dirname . '/' . $basename;
@@ -389,7 +390,7 @@ class Request implements HttpServletRequestInterface, ContextInterface
         // prepare the base modifier which allows our apps to provide a base URL
         $webappsDir = str_replace($this->getContext()->getBaseDirectory(), '', $this->getContext()->getAppBase());
         $relativeRequestPath = strstr($this->getDocumentRoot(), $webappsDir);
-        $proposedBaseModifier = str_replace($webappsDir, '', $relativeRequestPath);
+        $proposedBaseModifier = str_replace(DIRECTORY_SEPARATOR, '/', str_replace($webappsDir, '', $relativeRequestPath));
 
         //  prepare the base modifier
         if (strpos($proposedBaseModifier, $contextPath) === 0) {

@@ -1,3 +1,13 @@
+# Version 1.1.1-beta16
+
+## Bugfixes
+
+* Fixed servlet path issue when using virtual host or appserver-runner on Windows OS
+
+## Features
+
+* None
+
 # Version 1.1.1-beta15
 
 ## Bugfixes
