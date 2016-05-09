@@ -96,7 +96,9 @@ This is how it should be executed to be ready for local development.
 $ sudo appserver-dev-mode
 ```
 
-> The log file `var/log/appserver-errors.log` should now contain something like: Setup for mode 'dev' done successfully.
+The log file `var/log/appserver-errors.log` should now contain something like: Setup for mode 'dev' done successfully.
+
+> On Windows OS we doesn't find a solutions to switch between users, so thre are no scripts available to to this.
 
 ## Runner
 
