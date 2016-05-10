@@ -9,7 +9,7 @@
 		"react/socket" : "~0.4",
 		"doctrine/orm" : "2.5.*",
 		"league/event" : "2.1.*",
-		"appserver-io-psr/epb" : "~1.0",
+		"appserver-io-psr/epb" : "~2.0",
 		"appserver-io-psr/pms" : "~1.0",
 		"appserver-io-psr/mop" : "~1.0",
 		"appserver-io-psr/naming" : "~1.0",
