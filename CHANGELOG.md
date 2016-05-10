@@ -1,3 +1,13 @@
+# Version 1.1.1
+
+## Bugfixes
+
+* None
+
+## Features
+
+* None
+
 # Version 1.1.1-beta16
 
 ## Bugfixes
