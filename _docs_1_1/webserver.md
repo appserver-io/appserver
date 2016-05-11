@@ -64,7 +64,7 @@ In the following section, the server params are discussed.
 ```xml
 <params>
     <param name="admin" type="string">info@appserver.io</param>
-    <param name="software" type="string">appserver/1.0.0-beta4.19 (linux) PHP/5.5.19</param>
+    <param name="software" type="string">appserver/1.1.1 (linux) PHP/5.5.19</param>
     <param name="transport" type="string">tcp</param>
     <param name="address" type="string">127.0.0.1</param>
     <param name="port" type="integer">9080</param>
@@ -76,30 +76,61 @@ In the following section, the server params are discussed.
     <param name="keepAliveMax" type="integer">64</param>
     <param name="keepAliveTimeout" type="integer">5</param>
     <param name="errorsPageTemplatePath" type="string">var/www/errors/error.phtml</param>
+    <param name="welcomePageTemplatePath" type="string">resources/templates/www/welcome.phtml</param>
 </params>
 ```
 
-They are used to define several key/value pairs for the Webserver implementation. Some of them are common to all HTTP servers.
-Their descriptions can be found [within the server configuration documentation]({{ "/get-started/documentation/configuration.html#server-configuration" | prepend: site.baseurl }})
+They are used to define several key/value pairs for the Webserver implementation. Some of them are common to all HTTP servers. Their descriptions can be found [within the server configuration documentation]({{ "/get-started/documentation/configuration.html#server-configuration" | prepend: site.baseurl }})
 
 Descriptions for webserver specific params are available below.
 
-| Param                    | Type     | Description                                                    |
-| -------------------------| ---------| ---------------------------------------------------------------|
-| `documentRoot`           | string   | Defines the root directory for the server to append the URI to and search for the requested file or directory. The document root path is relative to the servers root directory, if there is no beginning slash "/" |
-| `directoryIndex`         | string   | Whitespace separated list of index resources to look up the requested directory. The server will return the first one that is found. If none of the resources exist, the server will respond with a 404 Not Found. |
-| `keepAliveMax`           | integer  | The number of requests allowed per connection when keep-alive is on. If it is set to 0 keep-alive feature will be deactivated. |
-| `keepAliveTimeout`       | integer  | The number of seconds waiting for a subsequent request while in keep-alive loop, before closing the connection. |
-| `errorsPageTemplatePath` | string   | The path to the errors page template. The path is relative to the server's root directory if there is no beginning slash "/". |
+| Param                     | Type     | Description                                                    |
+| ------------------------- | ---------| ---------------------------------------------------------------|
+| `documentRoot`            | string   | Defines the root directory for the server to append the URI to and search for the requested file or directory. The document root path is relative to the servers root directory, if there is no beginning slash "/" |
+| `directoryIndex`          | string   | Whitespace separated list of index resources to look up the requested directory. The server will return the first one that is found. If none of the resources exist, the server will respond with a 404 Not Found. |
+| `keepAliveMax`            | integer  | The number of requests allowed per connection when keep-alive is on. If it is set to 0 keep-alive feature will be deactivated. |
+| `keepAliveTimeout`        | integer  | The number of seconds waiting for a subsequent request while in keep-alive loop, before closing the connection. |
+| `errorsPageTemplatePath`  | string   | The path to the errors page template. The path is relative to the server's root directory if there is no beginning slash "/". |
+| `welcomePageTemplatePath` | string   | The path to the welcome page template. The path is relative to the server's root directory if there is no beginning slash "/". |
 
-If you want to setup an HTTPS Webserver, you have to configure two more params.
+If you want to setup a HTTPS Webserver, you have to configure some more params.
 
-| Param         | Type     | Description |
-| --------------| ---------| ------------|
-| `certPath`    | string   | The path to your certificate file, which has to be a combined PEM file of private key and certificate. The path will be relative to the server's root directory, if there is no beginning slash "/". |
-| `passphrase`  | string   | The passphrase you have created your SSL private key file with. It can be optional. |
+| Param                | Type     | Description |
+| -------------------- | ---------| ------------|
+| `certPath`           | string   | The absolute/relative (to the server's root directory) path to your certificate file, which has to be a combined PEM file of private key and certificate. |
+| `privateKeyPath`     | string   | The absolute/relative (to the server's root directory) path to the SSL certificate's private key file. |
+| `dhParamPath`        | string   | The absolute/relative (to the server's root directory) path to the Diffie Hellmann param file. |
+| `passphrase`         | string   | The passphrase you have created your SSL private key file with. It can be optional. |
+| `cryptoMethod`       | string   | The crypto method(s) to use., default's to TLS 1.0, 1.1 + 1.2 |
+| `peerName`           | string   | Peer name to be used. If this value is not set, then the name is guessed based on the hostname used when opening the stream. |
+| `verifyPeer`         | boolean  | Flag to enable/disable peer verification, default's to `FALSE`, because appserver.io is coming with a self signed SSL certificate. |
+| `verifyPeerName`     | boolean  | The flag to enable/disable peer name verification, default's to `FALSE`, because appserver.io is coming with a self signed SSL certificate. |
+| `allowSelfSigned`    | boolean  | Flag to allow/disallow self signed SSL certificates, default's to `TRUE` to support appserver.io's self signed SSL certificate. |
+| `disableCompression` | boolean  | The flag to disable TLS compression, default's to `TRUE`. This can help mitigate the CRIME attack vector. |
+| `honorCipherOrder`   | boolean  | The flag to control cipher ordering preferences during negotiation has to be allowed, default's to `TRUE`. |
+| `ecdhCurve`          | string   | The curve to use with ECDH ciphers, if not specified prime256v1 will be used. |
+| `singleEcdhUse`      | boolean  | The flag to enable/disable generation of a new key pair in scenarios where ECDH cipher suites are negotiated (instead of the preferred ECDHE ciphers), default's to `TRUE`. |
+| `singleDhUse`        | boolean  | The flag to enable/disable generation of a new key pair when using DH parameters (improves forward secrecy), default's to `TRUE`. |
+| `ciphers`            | string   | Sets the list of available ciphers. The format of the string is described in [ciphers](https://www.openssl.org/docs/manmaster/apps/ciphers.html#CIPHER_LIST_FORMAT) and defaults to `DEFAULT` |
 
-For a more detailed configuration with multiple SSL certificates bound to one IP have a look at our [configuration documentation]({{ "/get-started/documentation/configuration.html#server-configuration" | prepend: site.baseurl }}).
+Since version 1.1 there is the possibility to define multiple SSL certificates. Multiple certificates can be enabled on server level by adding a `<certificates/>` node containing a `<certificate/>` node for each certificate you want to add. For example, if you want to add a wildcard certificate for `appserver.local` and `appserver.dev`, the following configuration will be appropriate
+
+```xml
+<certificates>
+    <certificate domain="*.appserver.local" certPath="etc/appserver/appserver-local.pem" />
+    <certificate domain="*.appserver.dev" certPath="etc/appserver/appserver-dev.pem" />
+</certificates>
+```
+
+The `<certificate/>` node has two attributes that has to be specified:
+
+* The value of the `domain` attribute has to be the fully qualified domain name (FQDN)
+* The value of the `certPath` attribute has to be the relative path to the certificate that should be bound, 
+  assumed the base directory is the appserver's root directory
+
+Do not forget to restart the server after adding the certificates.
+
+> appserver.io comes with a default HTTPS server enabled. Beside the self signed SSL certificate, that will be generated during the first startup, we've tried to configure the HTTPS server for a maximum of security. But there are additional configuration options that allow to improve security, like using a Diffie Hellman parameter and a trusted certificate. To get a free trusted certificate, have a look at [Let's Encrypt](https://letsencrypt.org/), a free, automated and open Certificate Authority.
 
 ## Connection Handler
 
@@ -394,6 +425,10 @@ As you can see, every `authentication` node has its `URI` attribute. You can use
 | `realm` | The string assigned by the server to identify the protection space of the request URI. |
 | `file`  | The path to your .htpasswd credential file. The path is relative to the server's root directory, if there is no beginning slash "/". |
 
+User credentials can be created with the tool [htpasswd](http://httpd.apache.org/docs/2.2/programs/htpasswd.html), which will work on all supported OSes, except Windows. On Windows there are optional tools available. For example, you can use [.Htaccesstools](http://www.htaccesstools.com/htpasswd-generator-windows/) online to create a ile.
+
+To create a file for HTTP digest authentication, you can use the tool [htdigest](http://httpd.apache.org/docs/2.2/programs/htdigest.html). Again, there is an online [website](http://jesin.tk/tools/htdigest-generator-tool/), which allows you to generate a file that will work on Windows also.
+
 ## Accesses
 
 You can easily allow or deny access to resources based on client's HTTP request headers, by setting up accesses within
@@ -602,9 +637,14 @@ To redirect all HTTP requests to HTTPS add the following redirect to your HTTP s
 
 ## Auto Index
 
-In some cases, you might need a autogenerated directory index on specific folders, like Apache's mod_autoindex provides. Since version 1.1, we've a similar functionality, that allows to enable that on specific directories.
+In some cases, you might need a autogenerated directory index on specific folders, like Apache's mod_autoindex provides. Since version 1.1, we've a similar functionality, that allows to enable that on specific directories. The enable the auto index functionality, the following params has to be added to the server configuration
 
-You can enable an auto index by using the location directive in a virtual host configuration for example, on a folder named `static` in the root directory of your application:
+| Param                     | Type     | Description                                                    |
+| ------------------------- | ---------| ---------------------------------------------------------------|
+| `autoIndex`               | boolean  | Enable auto index module by setting the value to `TRUE`. |
+| `autoIndexTemplatePath`   | string   | Defines the root directory for the server to append the URI to and search for the requested file or directory. The document root path is relative to the servers root directory, if there is no beginning slash "/" |
+
+Additionally it is neccessary to specify the location the auto index functionality has to be activated. This can be done by adding a location directive to a virtual host configuration. For example, to activate the auto index functionality on a folder named `static` in the root directory of an application, the following `location` directive has to be added to the virtual host configuration
 
 ```xml
 <locations>
@@ -619,18 +659,16 @@ You can enable an auto index by using the location directive in a virtual host c
 </locations>
 ```
 
-Additionally you've the possiblity to specify one or more headers that will be sent with the response to the client when the directory index will be requested.
+See the [Locations](#locations) directive for more details. Additionally you've the possiblity to specify one or more headers that will be sent with the response to the client when the directory index will be requested.
 
 We've two options, the index of a directory can come from:
 
-* A file located in that directory, typically called index.html. The directoryIndex param in the server configuration sets the name of the file or files to be used. This is controlled by the directory module.
-* Otherwise, a listing generated by the server, whereas the fileextension decides the icon that will be rendered. This is controlled by the auto index module.
+* A file located in that directory, typically called index.html. The `directoryIndex` param in the server configuration sets the name of the file or files to be used. This is controlled by the directory module.
+* Otherwise, a listing generated by the server, whereas the file extension decides the icon that will be rendered. This is controlled by the auto index module.
 
-The two functions are separated so that you can completely remove (or replace) automatic index generation should you want to.
+The two functions are separated so that you can completely remove (or replace) automatic index generation, if you want to.
 
-Automatic index generation is enabled with using the `autoIndex` param on a location directive. See the [Locations](#locations) directive for more details.
-
-### Proxy
+## Proxy
 
 The proxy module provides full proxy functionality by supporting userdefined logic in upstream types which can be
 used for implementing custom behaviour (e.g. load-balancing, round-roubin etc.).

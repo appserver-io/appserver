@@ -196,11 +196,11 @@ As the system configuration is passed to the server's constructor, the first ste
 
 The next step is to set the umask for files and directories that will be created during the start-up process and later, when handling requests. The umask will be inherited from all child contexts and doesn't need to be set again.
 
-> The umask will be loaded from the system configuration initailized in the prior step [Normalize the System Configuration](#normalize-the-system-configuration).
+> The umask will be loaded from the system configuration initailized in the prior step Normalize the System Configuration.
 
 #### 3. Initialize the InitialContext
 
-After setting the [umask](#set-the-umask), the next step is the initialization of the InitialContext instance. The InitialContext instance is the primary context that is passed through to the created threads containing the necessary data like system configuration and loggers.
+After setting the umask, the next step is the initialization of the InitialContext instance. The InitialContext instance is the primary context that is passed through to the created threads containing the necessary data like system configuration and loggers.
 
 > As the the InitialContext is necessary for the use of any service instances, it is also a precondition for the next step, the file system initialization.
 
@@ -208,7 +208,7 @@ After setting the [umask](#set-the-umask), the next step is the initialization o
 
 After creating the InitialContext instance, the system is ready to prepare the file system. When the application server will be installed the first time, folders like `var/log` are **NOT** created. Instead, they will be created during the application server's first start-up. Additionally, on each start-up, the application server verifies that all necessary folders are available, or if one of the folders have to be cleaned-up. This is the case for the applications temporary directory, usually located at `var/tmp/<application-name>/tmp`, for example.
 
-> The next step, [initialize the loggers](#initialize-the-loggers) requires that the umask has been set, the InitialContext is available and the folder structure has been prepared.
+> The next step, initialize the loggers requires that the umask has been set, the InitialContext is available and the folder structure has been prepared.
 
 #### 5. Initialize the Loggers
 
