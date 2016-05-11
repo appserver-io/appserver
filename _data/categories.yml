@@ -41,3 +41,7 @@
 - slug: security
   name: Security
   title: Security News
+
+- slug: community
+  name: Community
+  title: Community News
