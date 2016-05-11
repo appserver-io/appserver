@@ -443,8 +443,9 @@ You can override the default configuration values in a simple XML file called `w
 At first glance, the XML configuration might seem a bit complicated. No worries, we'll go through it node by node and give a brief introduction to the configuration opportunities.
 
 ### Meta-Data Configuration
+
 | Configuration | Data Type | Description |
-| ----------| ----------- | ----------- |
+| --------------| --------- | ----------- |
 |`/web-app/display-name` | *string* | This node does not have any functionality. You can use it to give your application a name. In later versions, this name will be displayed in the admin UI, where all applications are listed.|
 |`/web-app/description` | *string* | This node does not have any functionality. You can add a short description about your application's functionality. In later versions, this description will be displayed in application details in the admin UI. |
 
