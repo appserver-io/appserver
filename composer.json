@@ -21,6 +21,7 @@
 		"appserver-io/http" : "~2.0",
 		"appserver-io/lang" : "~1.0",
 		"appserver-io/logger" : "~1.0",
+		"appserver-io/routlt" : "~2.0",
 		"appserver-io/storage" : "~2.0",
 		"appserver-io/messaging" : "~2.0",
 		"appserver-io/microcron" : "~1.0",
