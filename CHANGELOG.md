@@ -1,3 +1,13 @@
+# Version 1.1.2
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add Rout.Lt package to appserver.io distribution
+
 # Version 1.1.1
 
 ## Bugfixes
