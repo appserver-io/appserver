@@ -1813,7 +1813,7 @@ As a default, we use the following ports:
 
 You can change the default port mapping by using the [configuration file](#the-architecture).
 If you are interested in our naming, you can see our container->server pattern, you might want to
-have a deeper look into our [architecture](docs/docs/architecture.md)
+have a deeper look into our [architecture](http://appserver.io/get-started/documentation/1.1/architecture.html)
 
 # Deployment
 
