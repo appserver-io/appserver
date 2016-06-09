@@ -242,7 +242,7 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
         while ($waitForServers === true) {
             // iterate over all servers to check the state
             foreach ($this->servers as $server) {
-                if ($server->serverState === ServerStateKeys::SERVER_SOCKET_STARTED) {
+                if ($server->serverState === ServerStateKeys::WORKERS_INITIALIZED) {
                     $waitForServers = false;
                 } else {
                     $waitForServers = true;
