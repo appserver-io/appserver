@@ -1,3 +1,13 @@
+# Version 1.1.2-beta2
+
+## Bugfixes
+
+* Removed PhpModule from appserver configuration files
+
+## Features
+
+* None
+
 # Version 1.1.2-beta1
 
 ## Bugfixes
