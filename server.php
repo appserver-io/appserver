@@ -26,6 +26,7 @@ namespace AppserverIo\Appserver\Core;
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Appserver\Naming\NamingDirectory;
 use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
+use AppserverIo\Appserver\Core\Utilities\Runlevels;
 
 declare (ticks = 1);
 
@@ -48,7 +49,7 @@ if (extension_loaded('pthreads') === false) {
 }
 
 // query whether the appserver extension is available or not
-if (extension_loaded('appserver') === false) {
+if (version_compare(PHP_VERSION, '7.0.0', '<') && extension_loaded('appserver') === false) {
     throw new \Exception('Extension appserver (https://github.com/appserver-io-php/php-ext-appserver) > 1.0.1 has to be loaded');
 }
 
@@ -110,7 +111,7 @@ $namingDirectory->createSubdirectory('php:global/log');
 $namingDirectory->createSubdirectory('php:services');
 
 // create the default subdirectories
-foreach (array_keys(ApplicationServer::$runlevels) as $runlevel) {
+foreach (array_keys(Runlevels::singleton()->getRunlevels()) as $runlevel) {
     $namingDirectory->createSubdirectory(sprintf('php:services/%s', $runlevel));
 }
 
@@ -128,7 +129,7 @@ $namingDirectory->bind('php:env/bootstrapConfigurationFilename', DirectoryKeys::
 
 // add the storeage containers for the runlevels
 $runlevels = new GenericStackable();
-foreach (ApplicationServer::$runlevels as $runlevel) {
+foreach (Runlevels::singleton()->getRunlevels() as $runlevel) {
     $runlevels[$runlevel] = new GenericStackable();
 }
 

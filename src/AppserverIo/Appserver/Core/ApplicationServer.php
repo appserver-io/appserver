@@ -38,6 +38,7 @@ use Symfony\Component\Console\Output\BufferedOutput;
 use AppserverIo\Appserver\Core\Commands\DoctrineCommand;
 use React\Socket\ConnectionInterface;
 use React\Socket\Connection;
+use AppserverIo\Appserver\Core\Utilities\Runlevels;
 
 /**
  * This is the main server class that starts the application server
@@ -52,21 +53,6 @@ use React\Socket\Connection;
  */
 class ApplicationServer extends \Thread implements ApplicationServerInterface
 {
-
-    /**
-     * String mappings for the runlevels.
-     *
-     * @var array
-     */
-    public static $runlevels = array(
-        'shutdown'       => ApplicationServerInterface::SHUTDOWN,
-        'administration' => ApplicationServerInterface::ADMINISTRATION,
-        'daemon'         => ApplicationServerInterface::DAEMON,
-        'network'        => ApplicationServerInterface::NETWORK,
-        'secure'         => ApplicationServerInterface::SECURE,
-        'full'           => ApplicationServerInterface::FULL,
-        'reboot'         => ApplicationServerInterface::REBOOT
-    );
 
     /**
      * The application server instance itself.
@@ -112,7 +98,6 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
 
         // query whether we already have an instance or not
         if (ApplicationServer::$instance == null) {
-
             // initialize and start the application server
             ApplicationServer::$instance = new ApplicationServer($namingDirectory, $runlevels);
             ApplicationServer::$instance->start();
@@ -135,7 +120,7 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
     {
 
         // flip the array with the string => integer runlevel definitions
-        $runlevels = array_flip(ApplicationServer::$runlevels);
+        $runlevels = array_flip(Runlevels::singleton()->getRunlevels());
         if (isset($runlevels[$runlevel])) {
             return $runlevels[$runlevel];
         }
@@ -157,8 +142,8 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
     {
 
         // query whether the passed string representation is a valid runlevel
-        if (isset(ApplicationServer::$runlevels[$runlevel])) {
-            return ApplicationServer::$runlevels[$runlevel];
+        if (Runlevels::singleton()->isRunlevel($runlevel)) {
+            return Runlevels::singleton()->getRunlevel($runlevel);
         }
 
         // throw an exception if the runlevel is unknown
@@ -678,7 +663,7 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
         // bind the service callback to the naming directory
         $this->getNamingDirectory()->bindCallback(
             sprintf('php:services/%s/%s', $this->runlevelToString($runlevel), $service->getName()),
-            array($this, 'getService'),
+            array(&$this, 'getService'),
             array($runlevel, $service->getName())
         );
     }
