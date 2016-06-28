@@ -1,12 +1,14 @@
-# Version 1.1.2
+# Version 1.1.2-beta1
 
 ## Bugfixes
 
-* None
+* Fixed random startup problems, occuring when container start's faster than configured servers
 
 ## Features
 
 * Add Rout.Lt package to appserver.io distribution
+* Refactoring Runlevel integration to work with PHP 7 and pthreads 3.x
+* Switched to runtime 1.1.5 with PHP 5.6.23 and always_populate_raw_post_data to -1 in all PHP ini files
 
 # Version 1.1.1
 
