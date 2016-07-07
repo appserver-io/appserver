@@ -8,7 +8,7 @@ permalink: /
 slider:
   - title: Iron-Knight has arrived!
     link-href: /downloads.html
-    link-detail-href: /release/2016/05/11/1.1.1-released.html
+    link-detail-href: /release/2016/07/07/1.1.2-released.html
     link-label: Download
     img: /assets/img/appserver-header-image-iron-knight.jpg
     opacity: .5

@@ -2,52 +2,52 @@
   id: osx
   family: OSX
   icon: fa-apple
-  dist-suffix: -180_x86_64.pkg
+  dist-suffix: -188_x86_64.pkg
   separator: "_"
 
 - os: Windows
   id: win
   family: Windows
   icon: fa-windows
-  dist-suffix: -118_x86.exe
+  dist-suffix: -127_x86.exe
   separator: "_"
 
 - os: Debian 8 Jessie 64-bit
   id: debian8
   family: Debian
   icon: fa-linux
-  dist-suffix: -56-deb8_amd64.deb
-  runtime-suffix: -42-deb8_amd64.deb
+  dist-suffix: -59-deb8_amd64.deb
+  runtime-suffix: -43-deb8_amd64.deb
   separator: "_"
 
 - os: Debian 7 Wheezy 64-bit
   id: debian7
   family: Debian
   icon: fa-linux
-  dist-suffix: -119-deb7_amd64.deb
-  runtime-suffix: -93-deb7_amd64.deb
+  dist-suffix: -122-deb7_amd64.deb
+  runtime-suffix: -95-deb7_amd64.deb
   separator: "_"
 
 - os: Fedora 22 64-bit
   id: fedora22
   family: Fedora
   icon: fa-linux
-  dist-suffix: -15.fc22.x86_64.rpm
-  runtime-suffix: -21.fc22.x86_64.rpm
+  dist-suffix: -18.fc22.x86_64.rpm
+  runtime-suffix: -22.fc22.x86_64.rpm
   separator: "-"
 
 - os: Fedora 21 64-bit
   id: fedora21
   family: Fedora
   icon: fa-linux
-  dist-suffix: -42.fc21.x86_64.rpm
-  runtime-suffix: -54.fc21.x86_64.rpm
+  dist-suffix: -45.fc21.x86_64.rpm
+  runtime-suffix: -55.fc21.x86_64.rpm
   separator: "-"
 
 - os: CentOS 7 64-bit
   id: centos7
   family: CentOS
   icon: fa-linux
-  dist-suffix: -15.el7.centos.x86_64.rpm
-  runtime-suffix: -31.el7.centos.x86_64.rpm
+  dist-suffix: -20.el7.centos.x86_64.rpm
+  runtime-suffix: -32.el7.centos.x86_64.rpm
   separator: "-"
