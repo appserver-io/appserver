@@ -229,40 +229,57 @@ class AmqpConnectionHandler implements ConnectionHandlerInterface
         $this->connection = $connection;
         $this->worker = $worker;
 
+        // load the server configuration
+        $serverConfig = $this->getServerConfig();
+
         // create a local reference to the request context
         $requestContext = $this->getRequestContext();
+
+        // reset connection info to server vars
+        $requestContext->setServerVar(ServerVars::REMOTE_ADDR, $connection->getAddress());
+        $requestContext->setServerVar(ServerVars::REMOTE_PORT, $connection->getPort());
+
+        // init keep alive settings
+        $keepAliveTimeout = (int) $serverConfig->getKeepAliveTimeout();
 
         // init keep alive connection flag
         $keepAliveConnection = true;
 
+        // time settings
+        $requestContext->setServerVar(ServerVars::REQUEST_TIME, time());
+
+        $this->getServerContext()->getLogger()->error("Now try to read AMQP header sent by client");
+
+        // set first line from connection
+        $line = $connection->readLine(9, $keepAliveTimeout);
+
+        $this->getServerContext()->getLogger()->error($line);
+
+        $version = '';
+        foreach (unpack('C*', $line) as $chr) {
+            $version .= chr($chr);
+        }
+
+        $this->getServerContext()->getLogger()->error("Found requested version: $version");
+
+        $str = 'AMQP0091';
+        $result = '';
+        for ($i = 0; $i < strlen($str); $i++) {
+            $result .= pack('C*', ord($str[$i]));
+        }
+
+        $connection->write($result);
+
         do {
             // try to handle request if its a http request
             try {
-                // reset connection info to server vars
-                $requestContext->setServerVar(ServerVars::REMOTE_ADDR, $connection->getAddress());
-                $requestContext->setServerVar(ServerVars::REMOTE_PORT, $connection->getPort());
 
-                // start time measurement for keep-alive timeout
-                $keepaliveStartTime = microtime(true);
-
-                // time settings
-                $requestContext->setServerVar(ServerVars::REQUEST_TIME, time());
-
-                $this->getServerContext()->getLogger()->error("Now try to read AMQP header sent by client");
+                $this->getServerContext()->getLogger()->error("Now try to read line");
 
                 // set first line from connection
-                $line = $connection->readLine(9, $keepAliveTimeout);
+                $line = $connection->readLine(2048, $keepAliveTimeout);
 
-                $this->getServerContext()->getLogger()->error($line);
-
-                $version = '';
-                foreach (unpack('C*', $line) as $chr) {
-                    $version .= chr($chr);
-                }
-
-                $this->getServerContext()->getLogger()->error("Found requested version: $version");
-
-                $connection->write('AMQP\x00\x01\x00\x00');
+                $this->getServerContext()->getLogger()->error("Found line: $line");
 
             } catch (SocketReadTimeoutException $e) {
                 // break the request processing due to client timeout
