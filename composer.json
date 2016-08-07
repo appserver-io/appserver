@@ -9,6 +9,7 @@
 		"react/socket" : "~0.4",
 		"doctrine/orm" : "2.5.*",
 		"league/event" : "2.1.*",
+		"php-amqplib/php-amqplib" : "~2.0",
 		"appserver-io-psr/epb" : "~2.0",
 		"appserver-io-psr/pms" : "~1.0",
 		"appserver-io-psr/mop" : "~1.0",
