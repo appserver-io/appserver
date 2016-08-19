@@ -56,6 +56,13 @@ class MetadataConfigurationNode extends AbstractNode
     const PARAM_USE_SIMPLE_ANNOTATION_READER = 'useSimpleAnnotationReader';
 
     /**
+     * Constant for the parameter 'autoGenerateProxyClasses'.
+     *
+     * @var string
+     */
+    const PARAM_AUTO_GENERATE_PROXY_CLASSES = 'autoGenerateProxyClasses';
+
+    /**
      * A directories node trait.
      *
      * @var \AppserverIo\Appserver\Core\Api\Node\DirectoriesNodeTrait
