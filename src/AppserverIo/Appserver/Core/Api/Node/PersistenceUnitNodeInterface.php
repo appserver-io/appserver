@@ -124,4 +124,25 @@ interface PersistenceUnitNodeInterface extends NodeInterface
      * @return AppserverIo\Appserver\Core\Api\Node\MetadataConfigurationNode The entity manager's metadata configuration
      */
     public function getMetadataConfiguration();
+
+    /**
+     * Returns the entity manager's query cache configuration.
+     *
+     * @return AppserverIo\Appserver\Core\Api\Node\MetadataConfigurationNode The entity manager's query cache configuration
+     */
+    public function getQueryCacheConfiguration();
+
+    /**
+     * Returns the entity manager's result cache configuration.
+     *
+     * @return AppserverIo\Appserver\Core\Api\Node\MetadataConfigurationNode The entity manager's result cache configuration
+     */
+    public function getResultCacheConfiguration();
+
+    /**
+     * Returns the entity manager's metadata cache configuration.
+     *
+     * @return AppserverIo\Appserver\Core\Api\Node\MetadataCacheConfigurationNode The entity manager's metadata cache configuration
+     */
+    public function getMetadataCacheConfiguration();
 }

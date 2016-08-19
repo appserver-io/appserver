@@ -107,10 +107,34 @@ class PersistenceUnitNode extends AbstractNode implements PersistenceUnitNodeInt
     /**
      * The node containing the metadata configuration information.
      *
-     * @var \AppserverIo\Appserver\Core\Api\Node\DatasourceNode
+     * @var \AppserverIo\Appserver\Core\Api\Node\MetadataConfigurationNode
      * @AS\Mapping(nodeName="metadataConfiguration", nodeType="AppserverIo\Appserver\Core\Api\Node\MetadataConfigurationNode")
      */
     protected $metadataConfiguration;
+
+    /**
+     * The node containing the query cache configuration information.
+     *
+     * @var \AppserverIo\Appserver\Core\Api\Node\QueryCacheConfigurationNode
+     * @AS\Mapping(nodeName="queryCacheConfiguration", nodeType="AppserverIo\Appserver\Core\Api\Node\QueryCacheConfigurationNode")
+     */
+    protected $queryCacheConfiguration;
+
+    /**
+     * The node containing the result cache configuration information.
+     *
+     * @var \AppserverIo\Appserver\Core\Api\Node\ResultCacheConfigurationNode
+     * @AS\Mapping(nodeName="resultCacheConfiguration", nodeType="AppserverIo\Appserver\Core\Api\Node\ResultCacheConfigurationNode")
+     */
+    protected $resultCacheConfiguration;
+
+    /**
+     * The node containing the metadata cache configuration information.
+     *
+     * @var \AppserverIo\Appserver\Core\Api\Node\MetadataCacheConfigurationNode
+     * @AS\Mapping(nodeName="metadataCacheConfiguration", nodeType="AppserverIo\Appserver\Core\Api\Node\MetadataCacheConfigurationNode")
+     */
+    protected $metadataCacheConfiguration;
 
     /**
      * Returns the entity manager's interface.
@@ -170,5 +194,35 @@ class PersistenceUnitNode extends AbstractNode implements PersistenceUnitNodeInt
     public function getMetadataConfiguration()
     {
         return $this->metadataConfiguration;
+    }
+
+    /**
+     * Returns the entity manager's query cache configuration.
+     *
+     * @return AppserverIo\Appserver\Core\Api\Node\MetadataConfigurationNode The entity manager's query cache configuration
+     */
+    public function getQueryCacheConfiguration()
+    {
+        return $this->queryCacheConfiguration;
+    }
+
+    /**
+     * Returns the entity manager's result cache configuration.
+     *
+     * @return AppserverIo\Appserver\Core\Api\Node\MetadataConfigurationNode The entity manager's result cache configuration
+     */
+    public function getResultCacheConfiguration()
+    {
+        return $this->resultCacheConfiguration;
+    }
+
+    /**
+     * Returns the entity manager's metadata cache configuration.
+     *
+     * @return AppserverIo\Appserver\Core\Api\Node\MetadataCacheConfigurationNode The entity manager's metadata cache configuration
+     */
+    public function getMetadataCacheConfiguration()
+    {
+        return $this->metadataCacheConfiguration;
     }
 }

@@ -2033,6 +2033,9 @@
             <xs:all>
                 <xs:element ref="appserver:datasource"/>
                 <xs:element ref="appserver:metadataConfiguration" minOccurs="0"/>
+                <xs:element ref="appserver:metadataCacheConfiguration" minOccurs="0"/>
+                <xs:element ref="appserver:resultCacheConfiguration" minOccurs="0"/>
+                <xs:element ref="appserver:queryCacheConfiguration" minOccurs="0"/>
                 <xs:element ref="appserver:annotationRegistries" minOccurs="0"/>
                 <xs:element ref="appserver:ignoredAnnotations" minOccurs="0"/>
             </xs:all>
@@ -2051,6 +2054,36 @@
                 <xs:element ref="appserver:directories"/>
             </xs:all>
             <xs:attribute name="type" type="xs:string" use="required"/>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="metadataCacheConfiguration">
+        <xs:complexType>
+            <xs:all>
+                <xs:element ref="appserver:params" minOccurs="0"/>
+            </xs:all>
+            <xs:attribute name="factory" type="xs:string" use="required"/>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="queryCacheConfiguration">
+        <xs:complexType>
+            <xs:all>
+                <xs:element ref="appserver:params" minOccurs="0"/>
+            </xs:all>
+            <xs:attribute name="factory" type="xs:string" use="required"/>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="resultCacheConfiguration">
+        <xs:complexType>
+            <xs:all>
+                <xs:element ref="appserver:params" minOccurs="0"/>
+            </xs:all>
+            <xs:attribute name="factory" type="xs:string" use="required"/>
             <xs:attribute name="uuid" type="xs:string"/>
             <xs:attribute ref="xml:base"/>
         </xs:complexType>

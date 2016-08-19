@@ -22,12 +22,14 @@ namespace AppserverIo\Appserver\PersistenceContainer\Doctrine;
 
 use Doctrine\ORM\Tools\Setup;
 use Doctrine\ORM\EntityManager;
+use Doctrine\Common\Cache\CacheProvider;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\AnnotationRegistry;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\Doctrine\Utils\ConnectionUtil;
 use AppserverIo\Appserver\Core\Api\Node\MetadataConfigurationNode;
 use AppserverIo\Appserver\Core\Api\Node\PersistenceUnitNodeInterface;
+use AppserverIo\Appserver\PersistenceContainer\Doctrine\CacheFactory\CacheConfigurationNodeInterface;
 
 /**
  * Factory implementation for a Doctrin EntityManager instance.
@@ -67,7 +69,7 @@ class EntityManagerFactory
         foreach ($persistenceUnitNode->getAnnotationRegistries() as $annotationRegistry) {
             AnnotationRegistry::registerAutoloadNamespace(
                 $annotationRegistry->getNamespace(),
-                $annotationRegistry->getDirectoriesAsArray($application->getWebappPath())
+                $annotationRegistry->getDirectoriesAsArray()
             );
         }
 
@@ -80,16 +82,48 @@ class EntityManagerFactory
         $metadataConfiguration = $persistenceUnitNode->getMetadataConfiguration();
 
         // prepare the setup properties
-        $absolutePaths = $metadataConfiguration->getDirectoriesAsArray($application->getWebappPath());
-        $proxyDir = $metadataConfiguration->getParam(MetadataConfigurationNode::PARAM_PROXY_DIR);
+        $absolutePaths = $metadataConfiguration->getDirectoriesAsArray();
         $isDevMode = $metadataConfiguration->getParam(MetadataConfigurationNode::PARAM_IS_DEV_MODE);
+        $proxyDir = $metadataConfiguration->getParam(MetadataConfigurationNode::PARAM_PROXY_DIR);
+        $proxyNamespace = $metadataConfiguration->getParam(MetadataConfigurationNode::PARAM_PROXY_NAMESPACE);
+        $autoGenerateProxyClasses = $metadataConfiguration->getParam(MetadataConfigurationNode::PARAM_AUTO_GENERATE_PROXY_CLASSES);
         $useSimpleAnnotationReader = $metadataConfiguration->getParam(MetadataConfigurationNode::PARAM_USE_SIMPLE_ANNOTATION_READER);
 
         // load the factory method from the available mappings
         $factoryMethod = EntityManagerFactory::$metadataMapping[$metadataConfiguration->getType()];
 
         // create the database configuration and initialize the entity manager
+        /** @var \Doctrine\DBAL\Configuration $configuration */
         $configuration = Setup::$factoryMethod($absolutePaths, $isDevMode, $proxyDir, null, $useSimpleAnnotationReader);
+
+        // initialize the metadata cache configuration
+        $configuration->setMetadataCacheImpl(
+            EntityManagerFactory::getCacheImpl(
+                $persistenceUnitNode,
+                $persistenceUnitNode->getMetadataCacheConfiguration()
+            )
+        );
+
+        // initialize the query cache configuration
+        $configuration->setQueryCacheImpl(
+            EntityManagerFactory::getCacheImpl(
+                $persistenceUnitNode,
+                $persistenceUnitNode->getQueryCacheConfiguration()
+            )
+        );
+
+        // initialize the result cache configuration
+        $configuration->setResultCacheImpl(
+            EntityManagerFactory::getCacheImpl(
+                $persistenceUnitNode,
+                $persistenceUnitNode->getResultCacheConfiguration()
+            )
+        );
+
+        // proxy configuration
+        $configuration->setProxyDir($proxyDir);
+        $configuration->setProxyNamespace($proxyNamespace);
+        $configuration->setAutoGenerateProxyClasses($autoGenerateProxyClasses);
 
         // load the datasource node
         $datasourceNode = null;
@@ -139,5 +173,29 @@ class EntityManagerFactory
         return new DoctrineEntityManagerDecorator(
             EntityManager::create(ConnectionUtil::get($application)->fromDatabaseNode($databaseNode), $configuration)
         );
+    }
+
+    /**
+     * Factory method to create a new cache instance from the passed configuration.
+     *
+     * @param \AppserverIo\Appserver\Core\Api\Node\PersistenceUnitNodeInterface                                 $persistenceUnit    The persistence unit node
+     * @param \AppserverIo\Appserver\PersistenceContainer\Doctrine\CacheFactory\CacheConfigurationNodeInterface $cacheConfiguration The cache configuration
+     *
+     * @return \Doctrine\Common\Cache\CacheProvider The cache instance
+     */
+    public static function getCacheImpl(
+        PersistenceUnitNodeInterface $persistenceUnit,
+        CacheConfigurationNodeInterface $cacheConfiguration
+    ) {
+
+        // load the factory class
+        $factory = $cacheConfiguration->getFactory();
+
+        // create a cache instance
+        $cache = $factory::get($cacheConfiguration->getParams());
+        $cache->setNamespace(sprintf('dc2_%s_', md5($persistenceUnit->getName())));
+
+        // return the cache instance
+        return $cache;
     }
 }

@@ -49,6 +49,13 @@ class MetadataConfigurationNode extends AbstractNode
     const PARAM_PROXY_DIR = 'proxyDir';
 
     /**
+     * Constant for the parameter 'proxyNamespace'.
+     *
+     * @var string
+     */
+    const PARAM_PROXY_NAMESPACE = 'proxyNamespace';
+
+    /**
      * Constant for the parameter 'useSimpleAnnotationReader'.
      *
      * @var string
