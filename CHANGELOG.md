@@ -1,3 +1,13 @@
+# Version 1.1.3
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Adding functionality to activate Doctrine production mode and allow cache configuration
+
 # Version 1.1.2
 
 ## Bugfixes
