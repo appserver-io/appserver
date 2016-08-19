@@ -97,33 +97,30 @@ class EntityManagerFactory
         $configuration = Setup::$factoryMethod($absolutePaths, $isDevMode, $proxyDir, null, $useSimpleAnnotationReader);
 
         // initialize the metadata cache configuration
-        $configuration->setMetadataCacheImpl(
-            EntityManagerFactory::getCacheImpl(
-                $persistenceUnitNode,
-                $persistenceUnitNode->getMetadataCacheConfiguration()
-            )
-        );
+        if ($metadataCacheConfiguration = $persistenceUnitNode->getMetadataCacheConfiguration()) {
+            $configuration->setMetadataCacheImpl(
+                EntityManagerFactory::getCacheImpl($persistenceUnitNode, $metadataCacheConfiguration)
+            );
+        }
 
         // initialize the query cache configuration
-        $configuration->setQueryCacheImpl(
-            EntityManagerFactory::getCacheImpl(
-                $persistenceUnitNode,
-                $persistenceUnitNode->getQueryCacheConfiguration()
-            )
-        );
+        if ($queryCacheConfiguration = $persistenceUnitNode->getQueryCacheConfiguration()) {
+            $configuration->setQueryCacheImpl(
+                EntityManagerFactory::getCacheImpl($persistenceUnitNode, $queryCacheConfiguration)
+            );
+        }
 
         // initialize the result cache configuration
-        $configuration->setResultCacheImpl(
-            EntityManagerFactory::getCacheImpl(
-                $persistenceUnitNode,
-                $persistenceUnitNode->getResultCacheConfiguration()
-            )
-        );
+        if ($resultCacheConfiguration = $persistenceUnitNode->getResultCacheConfiguration()) {
+            $configuration->setResultCacheImpl(
+                EntityManagerFactory::getCacheImpl($persistenceUnitNode, $resultCacheConfiguration)
+            );
+        }
 
         // proxy configuration
-        $configuration->setProxyDir($proxyDir);
-        $configuration->setProxyNamespace($proxyNamespace);
-        $configuration->setAutoGenerateProxyClasses($autoGenerateProxyClasses);
+        $configuration->setProxyDir($proxyDir = $proxyDir ?: sys_get_temp_dir());
+        $configuration->setProxyNamespace($proxyNamespace = $proxyNamespace ?: 'Doctrine\Proxy');
+        $configuration->setAutoGenerateProxyClasses($autoGenerateProxyClasses = $autoGenerateProxyClasses ?: true);
 
         // load the datasource node
         $datasourceNode = null;

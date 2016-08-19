@@ -8,6 +8,10 @@ So far, in context of appserver.io, running Doctrine in production mode requires
 
 Additionally it's possible to specify the namespace for the generated proxy classes. Therefor pass a valid namespace as value for the parameter `proxyNamespace`.
 
+### Use variables for path concatenation
+
+Up to version 1.1.3, the directories specified for the nodes `<metadataConfiguration/>` and the `<annotationRegistries/>` have been prefixed with the path to the webapp directory. This has been changed now, because it should be possible to specify a path outside the application's webapp directory to. To specify a relative path, use the configuration variables that are available since version [1.1.1](https://github.com/appserver-io/appserver/releases/tag/1.1.1).
+
 ### Cache Configuration
 
 Another configuration option allows to specify a separate cache implementation for each available Doctrine cache type, which are
