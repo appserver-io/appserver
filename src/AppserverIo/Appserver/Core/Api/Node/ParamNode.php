@@ -75,13 +75,22 @@ class ParamNode extends AbstractValueNode
     protected $type;
 
     /**
+     * TRUE if the value is a constant.
+     *
+     * @var string
+     * @AS\Mapping(nodeType="boolean")
+     */
+    protected $constant;
+
+    /**
      * Initializes the param node with the necessary data.
      *
      * @param string                                               $name      The params name
      * @param string                                               $type      The params data type
      * @param \AppserverIo\Configuration\Interfaces\ValueInterface $nodeValue The params initial value
+     * @param boolean                                              $constant  TRUE if the value is a constant, else FALSE
      */
-    public function __construct($name = '', $type = '', ValueInterface $nodeValue = null)
+    public function __construct($name = '', $type = '', ValueInterface $nodeValue = null, $constant = false)
     {
 
         // initialize the UUID
@@ -91,6 +100,7 @@ class ParamNode extends AbstractValueNode
         $this->name = $name;
         $this->type = $type;
         $this->nodeValue = $nodeValue;
+        $this->constant = $constant;
     }
 
     /**
@@ -125,6 +135,16 @@ class ParamNode extends AbstractValueNode
     }
 
     /**
+     * Returns the TRUE if the value is a constant, else FALSE.
+     *
+     * @return boolean TRUE if the value is a constant, else FALSE
+     */
+    public function isConstant()
+    {
+        return $this->constant;
+    }
+
+    /**
      * Casts the params value to the defined type and returns it.
      *
      * @return mixed The casted value
@@ -144,6 +164,7 @@ class ParamNode extends AbstractValueNode
                 break;
             default:
                 // all other can go the same way
+                $this->isConstant() ? $value = constant($value) : $value;
                 settype($value, $type);
         }
 

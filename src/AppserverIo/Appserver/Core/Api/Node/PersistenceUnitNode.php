@@ -137,6 +137,16 @@ class PersistenceUnitNode extends AbstractNode implements PersistenceUnitNodeInt
     protected $metadataCacheConfiguration;
 
     /**
+     * Initialize the node with the default cache configuration.
+     */
+    public function __construct()
+    {
+        $this->queryCacheConfiguration = new QueryCacheConfigurationNode();
+        $this->resultCacheConfiguration = new ResultCacheConfigurationNode();
+        $this->metadataCacheConfiguration = new MetadataCacheConfigurationNode();
+    }
+
+    /**
      * Returns the entity manager's interface.
      *
      * @return string The entity manager's interface

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\PersistenceContainer\Doctrine\CacheFactory\ApcCacheFactory
+ * AppserverIo\Appserver\PersistenceContainer\Doctrine\CacheFactories\XcacheCacheFactory
  *
  * NOTICE OF LICENSE
  *
@@ -17,13 +17,12 @@
  * @link      https://github.com/appserver-io/rmi
  * @link      http://www.appserver.io
  */
+namespace AppserverIo\Appserver\PersistenceContainer\Doctrine\CacheFactories;
 
-namespace AppserverIo\Appserver\PersistenceContainer\Doctrine\CacheFactory;
-
-use Doctrine\Common\Cache\ApcCache;
+use Doctrine\Common\Cache\XcacheCache;
 
 /**
- * The factory implementation for an ApcCache cache instance.
+ * The factory implementation for a XcacheCache cache instance.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @author    Bernhard Wick <bw@appserver.io>
@@ -32,7 +31,7 @@ use Doctrine\Common\Cache\ApcCache;
  * @link      https://github.com/appserver-io/rmi
  * @link      http://www.appserver.io
  */
-class ApcCacheFactory implements CacheFactoryInterface
+class XcacheCacheFactory implements CacheFactoryInterface
 {
 
     /**
@@ -44,8 +43,8 @@ class ApcCacheFactory implements CacheFactoryInterface
      */
     public static function get(array $configuration = array())
     {
-        if (extension_loaded('apc')) {
-            return new ApcCache();
+        if (extension_loaded('xcache')) {
+            return new XcacheCache();
         }
     }
 }

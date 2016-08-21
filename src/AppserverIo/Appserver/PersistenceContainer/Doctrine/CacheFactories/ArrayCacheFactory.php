@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\PersistenceContainer\Doctrine\CacheFactory\MemcacheCacheFactory
+ * AppserverIo\Appserver\PersistenceContainer\Doctrine\CacheFactories\ArrayCacheFactory
  *
  * NOTICE OF LICENSE
  *
@@ -18,12 +18,12 @@
  * @link      http://www.appserver.io
  */
 
-namespace AppserverIo\Appserver\PersistenceContainer\Doctrine\CacheFactory;
+namespace AppserverIo\Appserver\PersistenceContainer\Doctrine\CacheFactories;
 
-use Doctrine\Common\Cache\RedisCache;
+use Doctrine\Common\Cache\ArrayCache;
 
 /**
- * The factory implementation for a RedisCache cache instance.
+ * The factory implementation for an ArrayCache cache instance.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @author    Bernhard Wick <bw@appserver.io>
@@ -32,7 +32,7 @@ use Doctrine\Common\Cache\RedisCache;
  * @link      https://github.com/appserver-io/rmi
  * @link      http://www.appserver.io
  */
-class MemcacheCacheFactory implements CacheFactoryInterface
+class ArrayCacheFactory implements CacheFactoryInterface
 {
 
     /**
@@ -44,12 +44,6 @@ class MemcacheCacheFactory implements CacheFactoryInterface
      */
     public static function get(array $configuration = array())
     {
-        if (extension_loaded('redis')) {
-            $redis = new \Redis();
-            $redis->connect($configuration[CacheKeys::HOST]);
-            $cache = new RedisCache();
-            $cache->setRedis($redis);
-            return $cache;
-        }
+        return new ArrayCache();
     }
 }

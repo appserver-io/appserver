@@ -21,7 +21,7 @@
 namespace AppserverIo\Appserver\Core\Api\Node;
 
 use AppserverIo\Description\Api\Node\AbstractNode;
-use AppserverIo\Appserver\PersistenceContainer\Doctrine\CacheFactory\CacheConfigurationNodeInterface;
+use AppserverIo\Appserver\PersistenceContainer\Doctrine\CacheFactories\CacheConfigurationNodeInterface;
 
 /**
  * DTO to transfer a metadata cache configuration.
@@ -49,6 +49,16 @@ class MetadataCacheConfigurationNode extends AbstractNode implements CacheConfig
      * @AS\Mapping(nodeType="string")
      */
     protected $factory;
+
+    /**
+     * Initialize the node with the passed factory class name.
+     *
+     * @param string $factory The factory class name to use
+     */
+    public function __construct($factory = 'AppserverIo\Appserver\PersistenceContainer\Doctrine\CacheFactories\ArrayCacheFactory')
+    {
+        $this->factory = $factory;
+    }
 
     /**
      * Return's the Doctrine query cache factory class.

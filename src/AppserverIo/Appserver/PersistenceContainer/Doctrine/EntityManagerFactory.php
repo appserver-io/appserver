@@ -20,7 +20,7 @@
 
 namespace AppserverIo\Appserver\PersistenceContainer\Doctrine;
 
-use Doctrine\ORM\Tools\Setup;
+use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\Common\Cache\CacheProvider;
 use Doctrine\Common\Annotations\AnnotationReader;
@@ -30,6 +30,8 @@ use AppserverIo\Appserver\Doctrine\Utils\ConnectionUtil;
 use AppserverIo\Appserver\Core\Api\Node\MetadataConfigurationNode;
 use AppserverIo\Appserver\Core\Api\Node\PersistenceUnitNodeInterface;
 use AppserverIo\Appserver\PersistenceContainer\Doctrine\CacheFactory\CacheConfigurationNodeInterface;
+use AppserverIo\Appserver\Core\Api\Node\AnnotationRegistryNode;
+use AppserverIo\Appserver\PersistenceContainer\Doctrine\DriverFactory\DriverKeys;
 
 /**
  * Factory implementation for a Doctrin EntityManager instance.
@@ -44,17 +46,6 @@ class EntityManagerFactory
 {
 
     /**
-     * Mapping metadata type to factory method.
-     *
-     * @var array
-     */
-    protected static $metadataMapping = array(
-        'xml' => 'createXMLMetadataConfiguration',
-        'yaml' => 'createYAMLMetadataConfiguration',
-        'annotation' => 'createAnnotationMetadataConfiguration'
-    );
-
-    /**
      * Creates a new entity manager instance based on the passed configuration.
      *
      * @param \AppserverIo\Psr\Application\ApplicationInterface                 $application         The application instance to create the entity manager for
@@ -65,110 +56,127 @@ class EntityManagerFactory
     public static function factory(ApplicationInterface $application, PersistenceUnitNodeInterface $persistenceUnitNode)
     {
 
-        // register additional annotation libraries
-        foreach ($persistenceUnitNode->getAnnotationRegistries() as $annotationRegistry) {
-            AnnotationRegistry::registerAutoloadNamespace(
-                $annotationRegistry->getNamespace(),
-                $annotationRegistry->getDirectoriesAsArray()
-            );
-        }
+        // query whether or not an initialize EM configuration is available
+        if ($application->hasAttribute($persistenceUnitNode->getName()) === false) {
+            // register additional annotation libraries
+            foreach ($persistenceUnitNode->getAnnotationRegistries() as $annotationRegistry) {
+                if ($annotationRegistry->isOfType(AnnotationRegistryNode::TYPE_FILE)) {
+                    AnnotationRegistry::registerFile($annotationRegistry->getFile());
+                }
+                if ($annotationRegistry->isOfType(AnnotationRegistryNode::TYPE_NAMESPACE)) {
+                    AnnotationRegistry::registerAutoloadNamespace(
+                        $annotationRegistry->getNamespace(),
+                        $annotationRegistry->getDirectoriesAsArray()
+                    );
+                }
+            }
 
-        // globally ignore configured annotations to ignore
-        foreach ($persistenceUnitNode->getIgnoredAnnotations() as $ignoredAnnotation) {
-            AnnotationReader::addGlobalIgnoredName($ignoredAnnotation->getNodeValue()->__toString());
-        }
+            // globally ignore configured annotations to ignore
+            foreach ($persistenceUnitNode->getIgnoredAnnotations() as $ignoredAnnotation) {
+                AnnotationReader::addGlobalIgnoredName($ignoredAnnotation->getNodeValue()->__toString());
+            }
 
-        // load the metadata configuration
-        $metadataConfiguration = $persistenceUnitNode->getMetadataConfiguration();
+            // load the metadata configuration
+            $metadataConfiguration = $persistenceUnitNode->getMetadataConfiguration();
 
-        // prepare the setup properties
-        $absolutePaths = $metadataConfiguration->getDirectoriesAsArray();
-        $isDevMode = $metadataConfiguration->getParam(MetadataConfigurationNode::PARAM_IS_DEV_MODE);
-        $proxyDir = $metadataConfiguration->getParam(MetadataConfigurationNode::PARAM_PROXY_DIR);
-        $proxyNamespace = $metadataConfiguration->getParam(MetadataConfigurationNode::PARAM_PROXY_NAMESPACE);
-        $autoGenerateProxyClasses = $metadataConfiguration->getParam(MetadataConfigurationNode::PARAM_AUTO_GENERATE_PROXY_CLASSES);
-        $useSimpleAnnotationReader = $metadataConfiguration->getParam(MetadataConfigurationNode::PARAM_USE_SIMPLE_ANNOTATION_READER);
+            // prepare the setup properties
+            $absolutePaths = $metadataConfiguration->getDirectoriesAsArray();
+            $proxyDir = $metadataConfiguration->getParam(MetadataConfigurationNode::PARAM_PROXY_DIR);
+            $proxyNamespace = $metadataConfiguration->getParam(MetadataConfigurationNode::PARAM_PROXY_NAMESPACE);
+            $autoGenerateProxyClasses = $metadataConfiguration->getParam(MetadataConfigurationNode::PARAM_AUTO_GENERATE_PROXY_CLASSES);
+            $useSimpleAnnotationReader = $metadataConfiguration->getParam(MetadataConfigurationNode::PARAM_USE_SIMPLE_ANNOTATION_READER);
 
-        // load the factory method from the available mappings
-        $factoryMethod = EntityManagerFactory::$metadataMapping[$metadataConfiguration->getType()];
+            // load the metadata driver factory class name
+            $metadataDriverFactory = $metadataConfiguration->getFactory();
 
-        // create the database configuration and initialize the entity manager
-        /** @var \Doctrine\DBAL\Configuration $configuration */
-        $configuration = Setup::$factoryMethod($absolutePaths, $isDevMode, $proxyDir, null, $useSimpleAnnotationReader);
+            // initialize the params to be passed to the factory
+            $metadataDriverParams = array(DriverKeys::USE_SIMPLE_ANNOTATION_READER => $useSimpleAnnotationReader);
 
-        // initialize the metadata cache configuration
-        if ($metadataCacheConfiguration = $persistenceUnitNode->getMetadataCacheConfiguration()) {
+            // create the database configuration and initialize the entity manager
+            /** @var \Doctrine\DBAL\Configuration $configuration */
+            $configuration = new Configuration();
+            $configuration->setMetadataDriverImpl($metadataDriverFactory::get($absolutePaths, $metadataDriverParams));
+
+            // initialize the metadata cache configuration
+            $metadataCacheConfiguration = $persistenceUnitNode->getMetadataCacheConfiguration();
             $configuration->setMetadataCacheImpl(
                 EntityManagerFactory::getCacheImpl($persistenceUnitNode, $metadataCacheConfiguration)
             );
-        }
 
-        // initialize the query cache configuration
-        if ($queryCacheConfiguration = $persistenceUnitNode->getQueryCacheConfiguration()) {
+            // initialize the query cache configuration
+            $queryCacheConfiguration = $persistenceUnitNode->getQueryCacheConfiguration();
             $configuration->setQueryCacheImpl(
                 EntityManagerFactory::getCacheImpl($persistenceUnitNode, $queryCacheConfiguration)
             );
-        }
 
-        // initialize the result cache configuration
-        if ($resultCacheConfiguration = $persistenceUnitNode->getResultCacheConfiguration()) {
+            // initialize the result cache configuration
+            $resultCacheConfiguration = $persistenceUnitNode->getResultCacheConfiguration();
             $configuration->setResultCacheImpl(
                 EntityManagerFactory::getCacheImpl($persistenceUnitNode, $resultCacheConfiguration)
             );
-        }
 
-        // proxy configuration
-        $configuration->setProxyDir($proxyDir = $proxyDir ?: sys_get_temp_dir());
-        $configuration->setProxyNamespace($proxyNamespace = $proxyNamespace ?: 'Doctrine\Proxy');
-        $configuration->setAutoGenerateProxyClasses($autoGenerateProxyClasses = $autoGenerateProxyClasses ?: true);
+            // proxy configuration
+            $configuration->setProxyDir($proxyDir = $proxyDir ?: sys_get_temp_dir());
+            $configuration->setProxyNamespace($proxyNamespace = $proxyNamespace ?: 'Doctrine\Proxy');
+            $configuration->setAutoGenerateProxyClasses($autoGenerateProxyClasses = $autoGenerateProxyClasses ?: true);
 
-        // load the datasource node
-        $datasourceNode = null;
-        foreach ($application->getInitialContext()->getSystemConfiguration()->getDatasources() as $datasourceNode) {
-            if ($datasourceNode->getName() === $persistenceUnitNode->getDatasource()->getName()) {
-                break;
+            // load the datasource node
+            $datasourceNode = null;
+            foreach ($application->getInitialContext()->getSystemConfiguration()->getDatasources() as $datasourceNode) {
+                if ($datasourceNode->getName() === $persistenceUnitNode->getDatasource()->getName()) {
+                    break;
+                }
             }
+
+            // throw a exception if the configured datasource is NOT available
+            if ($datasourceNode == null) {
+                throw new \Exception(
+                    sprintf(
+                        'Can\'t find a datasource node for persistence unit %s',
+                        $persistenceUnitNode->getName()
+                    )
+                );
+            }
+
+            // load the database node
+            $databaseNode = $datasourceNode->getDatabase();
+
+            // throw an exception if the configured database is NOT available
+            if ($databaseNode == null) {
+                throw new \Exception(
+                    sprintf(
+                        'Can\'t find database node for persistence unit %s',
+                        $persistenceUnitNode->getName()
+                    )
+                );
+            }
+
+            // load the driver node
+            $driverNode = $databaseNode->getDriver();
+
+            // throw an exception if the configured driver is NOT available
+            if ($driverNode == null) {
+                throw new \Exception(
+                    sprintf(
+                        'Can\'t find driver node for persistence unit %s',
+                        $persistenceUnitNode->getName()
+                    )
+                );
+            }
+
+            // load the connection parameters
+            $connectionParameters = ConnectionUtil::get($application)->fromDatabaseNode($databaseNode);
+
+            // append the initialized EM configuration to the application
+            $application->setAttribute($persistenceUnitNode->getName(), array($connectionParameters, $configuration));
         }
 
-        // throw a exception if the configured datasource is NOT available
-        if ($datasourceNode == null) {
-            throw new \Exception(
-                sprintf(
-                    'Can\'t find a datasource node for persistence unit %s',
-                    $persistenceUnitNode->getName()
-                )
-            );
-        }
-
-        // load the database node
-        $databaseNode = $datasourceNode->getDatabase();
-
-        // throw an exception if the configured database is NOT available
-        if ($databaseNode == null) {
-            throw new \Exception(
-                sprintf(
-                    'Can\'t find database node for persistence unit %s',
-                    $persistenceUnitNode->getName()
-                )
-            );
-        }
-
-        // load the driver node
-        $driverNode = $databaseNode->getDriver();
-
-        // throw an exception if the configured driver is NOT available
-        if ($driverNode == null) {
-            throw new \Exception(
-                sprintf(
-                    'Can\'t find driver node for persistence unit %s',
-                    $persistenceUnitNode->getName()
-                )
-            );
-        }
+        // load the initialized EM configuration from the application
+        list ($connectionParameters, $configuration) = explode($application->getAttribute($persistenceUnitNode->getName()));
 
         // initialize and return a entity manager decorator instance
         return new DoctrineEntityManagerDecorator(
-            EntityManager::create(ConnectionUtil::get($application)->fromDatabaseNode($databaseNode), $configuration)
+            EntityManager::create($connectionParameters, $configuration)
         );
     }
 

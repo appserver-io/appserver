@@ -84,20 +84,20 @@ class MetadataConfigurationNode extends AbstractNode
     use ParamsNodeTrait;
 
     /**
-     * The metadata configuration type, either one of 'annotation', 'xml' or 'yaml'.
+     * The factory class name for the metadata configuration driver.
      *
      * @var string
      * @AS\Mapping(nodeType="string")
      */
-    protected $type;
+    protected $factory;
 
     /**
-     * Returns metadata configuration type, either one of 'annotation', 'xml' or 'yaml'.
+     * Returns the factory class name for the metadata configuration driver.
      *
-     * @return string The metadata configuration type
+     * @return string The factory class name for the metadata configuration driver
      */
-    public function getType()
+    public function getFactory()
     {
-        return $this->type;
+        return $this->factory;
     }
 }

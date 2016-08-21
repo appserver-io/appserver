@@ -1909,6 +1909,7 @@
                 <xs:extension base="xs:string">
                     <xs:attribute name="name" type="xs:string" use="required"/>
                     <xs:attribute name="type" type="xs:string" use="required"/>
+                    <xs:attribute name="constant" type="xs:boolean"/>
                     <xs:attribute name="uuid" type="xs:string"/>
                     <xs:attribute ref="xml:base"/>
                 </xs:extension>
@@ -2053,7 +2054,7 @@
                 <xs:element ref="appserver:params" minOccurs="0"/>
                 <xs:element ref="appserver:directories"/>
             </xs:all>
-            <xs:attribute name="type" type="xs:string" use="required"/>
+            <xs:attribute name="factory" type="xs:string" use="required"/>
             <xs:attribute name="uuid" type="xs:string"/>
             <xs:attribute ref="xml:base"/>
         </xs:complexType>
@@ -2102,7 +2103,9 @@
             <xs:all>
                 <xs:element ref="appserver:directories"/>
             </xs:all>
-            <xs:attribute name="namespace" type="xs:string" use="required"/>
+            <xs:attribute name="type" type="xs:string" use="required"/>
+            <xs:attribute name="file" type="xs:string" use="optional"/>
+            <xs:attribute name="namespace" type="xs:string" use="optional"/>
             <xs:attribute name="uuid" type="xs:string"/>
             <xs:attribute ref="xml:base"/>
         </xs:complexType>

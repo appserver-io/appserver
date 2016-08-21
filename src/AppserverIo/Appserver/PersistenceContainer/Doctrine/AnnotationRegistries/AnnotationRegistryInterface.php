@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\PersistenceContainer\Doctrine\CacheFactory\MemcacheCacheFactory
+ * AppserverIo\Appserver\PersistenceContainer\Doctrine\AnnotationRegistryFactory\AnnotationRegistryFactoryInterface
  *
  * NOTICE OF LICENSE
  *
@@ -18,12 +18,12 @@
  * @link      http://www.appserver.io
  */
 
-namespace AppserverIo\Appserver\PersistenceContainer\Doctrine\CacheFactory;
+namespace AppserverIo\Appserver\PersistenceContainer\Doctrine\AnnotationRegistryFactory;
 
-use Doctrine\Common\Cache\MemcacheCache;
+use AppserverIo\Appserver\Core\Api\Node\AnnotationRegistryNodeInterface;
 
 /**
- * The factory implementation for a MemcacheCache cache instance.
+ * The interface all Doctrine annotation registries.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @author    Bernhard Wick <bw@appserver.io>
@@ -32,24 +32,15 @@ use Doctrine\Common\Cache\MemcacheCache;
  * @link      https://github.com/appserver-io/rmi
  * @link      http://www.appserver.io
  */
-class MemcacheCacheFactory implements CacheFactoryInterface
+interface AnnotationRegistryFactoryInterface
 {
 
     /**
-     * Return's the new cache instance.
+     * Register's the annotation driver for the passed configuration.
      *
-     * @param array $configuration The cache configuration
+     * @param \AppserverIo\Appserver\Core\Api\Node\AnnotationRegistryNodeInterface $annotationRegistry The configuration node
      *
-     * @return \Doctrine\Common\Cache\CacheProvider The cache instance
+     * @return void
      */
-    public static function get(array $configuration = array())
-    {
-        if (extension_loaded('memcache')) {
-            $memcache = new \Memcache();
-            $memcache->connect($configuration[CacheKeys::HOST]);
-            $cache = new MemcacheCache();
-            $cache->setMemcache($memcache);
-            return $cache;
-        }
-    }
+    public function register(AnnotationRegistryNodeInterface $annotationRegistry);
 }

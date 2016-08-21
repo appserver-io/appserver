@@ -1,6 +1,6 @@
 <?php
 /**
- * AppserverIo\Appserver\PersistenceContainer\Doctrine\CacheKeys
+ * AppserverIo\Appserver\PersistenceContainer\Doctrine\CacheFactories\CacheKeys
  *
  * NOTICE OF LICENSE
  *
@@ -17,7 +17,7 @@
  * @link      http://www.appserver.io
  */
 
-namespace AppserverIo\Appserver\PersistenceContainer\Doctrine\CacheFactory;
+namespace AppserverIo\Appserver\PersistenceContainer\Doctrine\CacheFactories;
 
 /**
  * Utility class with the cache key.

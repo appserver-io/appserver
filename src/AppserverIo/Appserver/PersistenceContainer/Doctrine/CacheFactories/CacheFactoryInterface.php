@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\PersistenceContainer\Doctrine\CacheFactory\XcacheCacheFactory
+ * AppserverIo\Appserver\PersistenceContainer\Doctrine\CacheFactories\CacheFactoryInterface
  *
  * NOTICE OF LICENSE
  *
@@ -17,12 +17,11 @@
  * @link      https://github.com/appserver-io/rmi
  * @link      http://www.appserver.io
  */
-namespace AppserverIo\Appserver\PersistenceContainer\Doctrine\CacheFactory;
 
-use Doctrine\Common\Cache\XcacheCache;
+namespace AppserverIo\Appserver\PersistenceContainer\Doctrine\CacheFactories;
 
 /**
- * The factory implementation for a XcacheCache cache instance.
+ * The interface for the factories of all Doctrine cache implementations.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @author    Bernhard Wick <bw@appserver.io>
@@ -31,7 +30,7 @@ use Doctrine\Common\Cache\XcacheCache;
  * @link      https://github.com/appserver-io/rmi
  * @link      http://www.appserver.io
  */
-class XcacheCacheFactory implements CacheFactoryInterface
+interface CacheFactoryInterface
 {
 
     /**
@@ -41,10 +40,5 @@ class XcacheCacheFactory implements CacheFactoryInterface
      *
      * @return \Doctrine\Common\Cache\CacheProvider The cache instance
      */
-    public static function get(array $configuration = array())
-    {
-        if (extension_loaded('xcache')) {
-            return new XcacheCache();
-        }
-    }
+    public static function get(array $configuration = array());
 }

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\PersistenceContainer\Doctrine\CacheFactory\CacheConfigurationNodeInterface
+ * AppserverIo\Appserver\PersistenceContainer\Doctrine\CacheFactories\CacheConfigurationNodeInterface
  *
  * NOTICE OF LICENSE
  *
@@ -18,7 +18,7 @@
  * @link      http://www.appserver.io
  */
 
-namespace  AppserverIo\Appserver\PersistenceContainer\Doctrine\CacheFactory;
+namespace  AppserverIo\Appserver\PersistenceContainer\Doctrine\CacheFactories;
 
 /**
  * The interface for a Doctrine cache configuration.

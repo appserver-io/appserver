@@ -328,5 +328,17 @@ class ServerNode extends AbstractNode implements ServerNodeInterface
         foreach ($serverNode->getEnvironmentVariables() as $environmentVariable) {
             $this->environmentVariables[] = $environmentVariable;
         }
+
+        // append the rewrite nodes found in the passed server node
+        /** @var \AppserverIo\Appserver\Core\Api\Node\RewriteNode $rewrite */
+        foreach ($serverNode->getRewrites() as $rewrite) {
+            $this->rewrites[] = $rewrite;
+        }
+
+        // append the access nodes found in the passed server node
+        /** @var \AppserverIo\Appserver\Core\Api\Node\AccessNode $access */
+        foreach ($serverNode->getAccesses() as $access) {
+            $this->accesses[] = $access;
+        }
     }
 }
