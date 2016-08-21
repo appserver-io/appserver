@@ -30,9 +30,9 @@ use AppserverIo\Appserver\Doctrine\Utils\ConnectionUtil;
 use AppserverIo\Appserver\Core\Api\Node\AnnotationRegistryNode;
 use AppserverIo\Appserver\Core\Api\Node\MetadataConfigurationNode;
 use AppserverIo\Appserver\Core\Api\Node\PersistenceUnitNodeInterface;
-use AppserverIo\Appserver\PersistenceContainer\Doctrine\V2\DriverFactories\DriverKeys;
 use AppserverIo\Appserver\PersistenceContainer\Doctrine\DoctrineEntityManagerDecorator;
-use AppserverIo\Appserver\PersistenceContainer\Doctrine\CacheFactory\CacheConfigurationNodeInterface;
+use AppserverIo\Appserver\PersistenceContainer\Doctrine\V2\DriverFactories\DriverKeys;
+use AppserverIo\Appserver\PersistenceContainer\Doctrine\V2\CacheFactories\CacheConfigurationNodeInterface;
 
 /**
  * Factory implementation for a Doctrin EntityManager instance.
@@ -179,8 +179,8 @@ class EntityManagerFactory
     /**
      * Factory method to create a new cache instance from the passed configuration.
      *
-     * @param \AppserverIo\Appserver\Core\Api\Node\PersistenceUnitNodeInterface                                 $persistenceUnit    The persistence unit node
-     * @param \AppserverIo\Appserver\PersistenceContainer\Doctrine\CacheFactory\CacheConfigurationNodeInterface $cacheConfiguration The cache configuration
+     * @param \AppserverIo\Appserver\Core\Api\Node\PersistenceUnitNodeInterface                                    $persistenceUnit    The persistence unit node
+     * @param \AppserverIo\Appserver\PersistenceContainer\Doctrine\V2\CacheFactory\CacheConfigurationNodeInterface $cacheConfiguration The cache configuration
      *
      * @return \Doctrine\Common\Cache\CacheProvider The cache instance
      */

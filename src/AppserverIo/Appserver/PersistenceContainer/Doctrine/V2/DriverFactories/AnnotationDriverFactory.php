@@ -54,6 +54,6 @@ class AnnotationDriverFactory implements DriverFactoryInterface
         }
 
         // create and return the driver instance
-        $configuration->newDefaultAnnotationDriver($paths, $useSimpleAnnotationReader);
+        return $configuration->newDefaultAnnotationDriver($paths, $useSimpleAnnotationReader);
     }
 }
