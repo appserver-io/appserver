@@ -84,12 +84,30 @@ class MetadataConfigurationNode extends AbstractNode
     use ParamsNodeTrait;
 
     /**
+     * The class name for the metadata configuration driver.
+     *
+     * @var string
+     * @AS\Mapping(nodeType="string")
+     */
+    protected $type;
+
+    /**
      * The factory class name for the metadata configuration driver.
      *
      * @var string
      * @AS\Mapping(nodeType="string")
      */
     protected $factory;
+
+    /**
+     * Returns the class name for the metadata configuration driver.
+     *
+     * @return string The class name for the metadata configuration driver
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
 
     /**
      * Returns the factory class name for the metadata configuration driver.

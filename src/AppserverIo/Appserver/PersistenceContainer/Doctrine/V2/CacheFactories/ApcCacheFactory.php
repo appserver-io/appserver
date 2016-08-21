@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\PersistenceContainer\Doctrine\AnnotationRegistryFactory\AnnotationRegistryFactoryInterface
+ * AppserverIo\Appserver\PersistenceContainer\Doctrine\V2\CacheFactories\ApcCacheFactory
  *
  * NOTICE OF LICENSE
  *
@@ -18,12 +18,12 @@
  * @link      http://www.appserver.io
  */
 
-namespace AppserverIo\Appserver\PersistenceContainer\Doctrine\AnnotationRegistryFactory;
+namespace AppserverIo\Appserver\PersistenceContainer\Doctrine\V2\CacheFactories;
 
-use AppserverIo\Appserver\Core\Api\Node\AnnotationRegistryNodeInterface;
+use Doctrine\Common\Cache\ApcCache;
 
 /**
- * The interface all Doctrine annotation registries.
+ * The factory implementation for an ApcCache cache instance.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @author    Bernhard Wick <bw@appserver.io>
@@ -32,15 +32,20 @@ use AppserverIo\Appserver\Core\Api\Node\AnnotationRegistryNodeInterface;
  * @link      https://github.com/appserver-io/rmi
  * @link      http://www.appserver.io
  */
-interface AnnotationRegistryFactoryInterface
+class ApcCacheFactory implements CacheFactoryInterface
 {
 
     /**
-     * Register's the annotation driver for the passed configuration.
+     * Return's the new cache instance.
      *
-     * @param \AppserverIo\Appserver\Core\Api\Node\AnnotationRegistryNodeInterface $annotationRegistry The configuration node
+     * @param array $configuration The cache configuration
      *
-     * @return void
+     * @return \Doctrine\Common\Cache\CacheProvider The cache instance
      */
-    public function register(AnnotationRegistryNodeInterface $annotationRegistry);
+    public static function get(array $configuration = array())
+    {
+        if (extension_loaded('apc')) {
+            return new ApcCache();
+        }
+    }
 }

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\PersistenceContainer\Doctrine\CacheFactories\ArrayCacheFactory
+ * AppserverIo\Appserver\PersistenceContainer\Doctrine\V2\AnnotationRegistries\FileAnnotationRegistry
  *
  * NOTICE OF LICENSE
  *
@@ -18,12 +18,13 @@
  * @link      http://www.appserver.io
  */
 
-namespace AppserverIo\Appserver\PersistenceContainer\Doctrine\CacheFactories;
+namespace AppserverIo\Appserver\PersistenceContainer\Doctrine\V2\AnnotationRegistries;
 
-use Doctrine\Common\Cache\ArrayCache;
+use Doctrine\Common\Annotations\AnnotationRegistry;
+use AppserverIo\Appserver\Core\Api\Node\AnnotationRegistryNodeInterface;
 
 /**
- * The factory implementation for an ArrayCache cache instance.
+ * An annotation registry using exactly one file to register annotation classes.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @author    Bernhard Wick <bw@appserver.io>
@@ -32,18 +33,18 @@ use Doctrine\Common\Cache\ArrayCache;
  * @link      https://github.com/appserver-io/rmi
  * @link      http://www.appserver.io
  */
-class ArrayCacheFactory implements CacheFactoryInterface
+class FileAnnotationRegistry implements AnnotationRegistryInterface
 {
 
     /**
-     * Return's the new cache instance.
+     * Register's the annotation driver for the passed configuration.
      *
-     * @param array $configuration The cache configuration
+     * @param \AppserverIo\Appserver\Core\Api\Node\AnnotationRegistryNodeInterface $annotationRegistry The configuration node
      *
-     * @return \Doctrine\Common\Cache\CacheProvider The cache instance
+     * @return void
      */
-    public static function get(array $configuration = array())
+    public function register(AnnotationRegistryNodeInterface $annotationRegistry)
     {
-        return new ArrayCache();
+        AnnotationRegistry::registerFile($annotationRegistry->getFile());
     }
 }

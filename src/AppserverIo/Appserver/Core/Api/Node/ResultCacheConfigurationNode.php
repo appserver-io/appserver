@@ -21,7 +21,7 @@
 namespace AppserverIo\Appserver\Core\Api\Node;
 
 use AppserverIo\Description\Api\Node\AbstractNode;
-use AppserverIo\Appserver\PersistenceContainer\Doctrine\CacheFactories\CacheConfigurationNodeInterface;
+use AppserverIo\Appserver\PersistenceContainer\Doctrine\V2\CacheFactories\CacheConfigurationNodeInterface;
 
 /**
  * DTO to transfer a result cache configuration.
@@ -55,7 +55,7 @@ class ResultCacheConfigurationNode extends AbstractNode implements CacheConfigur
      *
      * @param string $factory The factory class name to use
      */
-    public function __construct($factory = 'AppserverIo\Appserver\PersistenceContainer\Doctrine\CacheFactories\ArrayCacheFactory')
+    public function __construct($factory = 'AppserverIo\Appserver\PersistenceContainer\Doctrine\V2\CacheFactories\ArrayCacheFactory')
     {
         $this->factory = $factory;
     }

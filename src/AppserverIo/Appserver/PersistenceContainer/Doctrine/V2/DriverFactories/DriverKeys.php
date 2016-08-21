@@ -1,6 +1,6 @@
 <?php
 /**
- * AppserverIo\Appserver\PersistenceContainer\Doctrine\CacheFactories\CacheKeys
+ * AppserverIo\Appserver\PersistenceContainer\Doctrine\V2\DriverFactories\DriverKeys
  *
  * NOTICE OF LICENSE
  *
@@ -17,10 +17,10 @@
  * @link      http://www.appserver.io
  */
 
-namespace AppserverIo\Appserver\PersistenceContainer\Doctrine\CacheFactories;
+namespace AppserverIo\Appserver\PersistenceContainer\Doctrine\V2\DriverFactories;
 
 /**
- * Utility class with the cache key.
+ * Utility class with the driver keys.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -28,13 +28,13 @@ namespace AppserverIo\Appserver\PersistenceContainer\Doctrine\CacheFactories;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class CacheKeys
+class DriverKeys
 {
 
     /**
-     * The key for the host value.
+     * The key with the value to use the simple annotation reader or not.
      *
      * @var string
      */
-    const HOST = 'host';
+    const USE_SIMPLE_ANNOTATION_READER = 'useSimpleAnnotationReader';
 }

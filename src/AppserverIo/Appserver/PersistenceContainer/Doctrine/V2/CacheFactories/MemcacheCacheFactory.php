@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\PersistenceContainer\Doctrine\CacheFactories\XcacheCacheFactory
+ * AppserverIo\Appserver\PersistenceContainer\Doctrine\V2\CacheFactories\MemcacheCacheFactory
  *
  * NOTICE OF LICENSE
  *
@@ -17,12 +17,13 @@
  * @link      https://github.com/appserver-io/rmi
  * @link      http://www.appserver.io
  */
-namespace AppserverIo\Appserver\PersistenceContainer\Doctrine\CacheFactories;
 
-use Doctrine\Common\Cache\XcacheCache;
+namespace AppserverIo\Appserver\PersistenceContainer\Doctrine\V2\CacheFactories;
+
+use Doctrine\Common\Cache\MemcacheCache;
 
 /**
- * The factory implementation for a XcacheCache cache instance.
+ * The factory implementation for a MemcacheCache cache instance.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @author    Bernhard Wick <bw@appserver.io>
@@ -31,7 +32,7 @@ use Doctrine\Common\Cache\XcacheCache;
  * @link      https://github.com/appserver-io/rmi
  * @link      http://www.appserver.io
  */
-class XcacheCacheFactory implements CacheFactoryInterface
+class MemcacheCacheFactory implements CacheFactoryInterface
 {
 
     /**
@@ -43,8 +44,12 @@ class XcacheCacheFactory implements CacheFactoryInterface
      */
     public static function get(array $configuration = array())
     {
-        if (extension_loaded('xcache')) {
-            return new XcacheCache();
+        if (extension_loaded('memcache')) {
+            $memcache = new \Memcache();
+            $memcache->connect($configuration[CacheKeys::HOST]);
+            $cache = new MemcacheCache();
+            $cache->setMemcache($memcache);
+            return $cache;
         }
     }
 }

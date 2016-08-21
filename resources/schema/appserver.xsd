@@ -2054,7 +2054,8 @@
                 <xs:element ref="appserver:params" minOccurs="0"/>
                 <xs:element ref="appserver:directories"/>
             </xs:all>
-            <xs:attribute name="factory" type="xs:string" use="required"/>
+            <xs:attribute name="type" type="xs:string" use="optional"/>
+            <xs:attribute name="factory" type="xs:string" use="optional"/>
             <xs:attribute name="uuid" type="xs:string"/>
             <xs:attribute ref="xml:base"/>
         </xs:complexType>
@@ -2101,9 +2102,9 @@
     <xs:element name="annotationRegistry">
         <xs:complexType>
             <xs:all>
-                <xs:element ref="appserver:directories"/>
+                <xs:element ref="appserver:directories" minOccurs="0"/>
             </xs:all>
-            <xs:attribute name="type" type="xs:string" use="required"/>
+            <xs:attribute name="type" type="xs:string" use="optional"/>
             <xs:attribute name="file" type="xs:string" use="optional"/>
             <xs:attribute name="namespace" type="xs:string" use="optional"/>
             <xs:attribute name="uuid" type="xs:string"/>

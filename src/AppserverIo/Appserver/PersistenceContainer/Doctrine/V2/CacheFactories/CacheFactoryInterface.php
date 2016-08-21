@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\PersistenceContainer\Doctrine\CacheFactories\MemcacheCacheFactory
+ * AppserverIo\Appserver\PersistenceContainer\Doctrine\V2\CacheFactories\CacheFactoryInterface
  *
  * NOTICE OF LICENSE
  *
@@ -18,12 +18,10 @@
  * @link      http://www.appserver.io
  */
 
-namespace AppserverIo\Appserver\PersistenceContainer\Doctrine\CacheFactories;
-
-use Doctrine\Common\Cache\MemcacheCache;
+namespace AppserverIo\Appserver\PersistenceContainer\Doctrine\V2\CacheFactories;
 
 /**
- * The factory implementation for a MemcacheCache cache instance.
+ * The interface for the factories of all Doctrine cache implementations.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @author    Bernhard Wick <bw@appserver.io>
@@ -32,7 +30,7 @@ use Doctrine\Common\Cache\MemcacheCache;
  * @link      https://github.com/appserver-io/rmi
  * @link      http://www.appserver.io
  */
-class MemcacheCacheFactory implements CacheFactoryInterface
+interface CacheFactoryInterface
 {
 
     /**
@@ -42,14 +40,5 @@ class MemcacheCacheFactory implements CacheFactoryInterface
      *
      * @return \Doctrine\Common\Cache\CacheProvider The cache instance
      */
-    public static function get(array $configuration = array())
-    {
-        if (extension_loaded('memcache')) {
-            $memcache = new \Memcache();
-            $memcache->connect($configuration[CacheKeys::HOST]);
-            $cache = new MemcacheCache();
-            $cache->setMemcache($memcache);
-            return $cache;
-        }
-    }
+    public static function get(array $configuration = array());
 }

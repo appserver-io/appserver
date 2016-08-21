@@ -1,7 +1,6 @@
 <?php
-
 /**
- * AppserverIo\Appserver\PersistenceContainer\Doctrine\CacheFactories\CacheFactoryInterface
+ * AppserverIo\Appserver\PersistenceContainer\Doctrine\V2\CacheFactories\CacheKeys
  *
  * NOTICE OF LICENSE
  *
@@ -14,31 +13,28 @@
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link      https://github.com/appserver-io/rmi
+ * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
 
-namespace AppserverIo\Appserver\PersistenceContainer\Doctrine\CacheFactories;
+namespace AppserverIo\Appserver\PersistenceContainer\Doctrine\V2\CacheFactories;
 
 /**
- * The interface for the factories of all Doctrine cache implementations.
+ * Utility class with the cache key.
  *
  * @author    Tim Wagner <tw@appserver.io>
- * @author    Bernhard Wick <bw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link      https://github.com/appserver-io/rmi
+ * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-interface CacheFactoryInterface
+class CacheKeys
 {
 
     /**
-     * Return's the new cache instance.
+     * The key for the host value.
      *
-     * @param array $configuration The cache configuration
-     *
-     * @return \Doctrine\Common\Cache\CacheProvider The cache instance
+     * @var string
      */
-    public static function get(array $configuration = array());
+    const HOST = 'host';
 }

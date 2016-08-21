@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\PersistenceContainer\Doctrine\DriverFactories\XmlDriverFactory
+ * AppserverIo\Appserver\PersistenceContainer\Doctrine\V2\DriverFactories\DriverFactoryInterface
  *
  * NOTICE OF LICENSE
  *
@@ -18,13 +18,12 @@
  * @link      http://www.appserver.io
  */
 
-namespace AppserverIo\Appserver\PersistenceContainer\Doctrine\DriverFactories;
+namespace AppserverIo\Appserver\PersistenceContainer\Doctrine\V2\DriverFactories;
 
 use Doctrine\ORM\Configuration;
-use Doctrine\ORM\Mapping\Driver\XmlDriver;
 
 /**
- * The factory class for a new Doctrine XML mapping driver instance.
+ * The interface for the factories of all Doctrine driver implementations.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @author    Bernhard Wick <bw@appserver.io>
@@ -33,11 +32,11 @@ use Doctrine\ORM\Mapping\Driver\XmlDriver;
  * @link      https://github.com/appserver-io/rmi
  * @link      http://www.appserver.io
  */
-class XmlDriverFactory implements DriverFactoryInterface
+interface DriverFactoryInterface
 {
 
     /**
-     * Return's the new driver instance.
+     * Return's the new cache instance.
      *
      * @param Doctrine\ORM\Configuration $configuration The DBAL configuration to create the driver for
      * @param array                      $paths         The path to the driver configuration
@@ -45,8 +44,5 @@ class XmlDriverFactory implements DriverFactoryInterface
      *
      * @return Doctrine\Common\Persistence\Mapping\Driver\MappingDriver The driver instance
      */
-    public static function get(Configuration $configuration, array $paths = array(), array $params = array())
-    {
-        return new XmlDriver($paths);
-    }
+    public static function get(Configuration $configuration, array $paths = array(), array $params = array());
 }

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\PersistenceContainer\Doctrine\DriverFactories\YamlDriverFactory
+ * AppserverIo\Appserver\PersistenceContainer\Doctrine\V2\DriverFactories\YamlDriverFactory
  *
  * NOTICE OF LICENSE
  *
@@ -18,7 +18,7 @@
  * @link      http://www.appserver.io
  */
 
-namespace AppserverIo\Appserver\PersistenceContainer\Doctrine\DriverFactories;
+namespace AppserverIo\Appserver\PersistenceContainer\Doctrine\V2\DriverFactories;
 
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\Mapping\Driver\YamlDriver;
