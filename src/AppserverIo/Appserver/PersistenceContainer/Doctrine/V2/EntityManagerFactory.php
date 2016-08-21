@@ -57,16 +57,16 @@ class EntityManagerFactory
     public static function factory(ApplicationInterface $application, PersistenceUnitNodeInterface $persistenceUnitNode)
     {
 
+        // register additional annotation libraries
+        foreach ($persistenceUnitNode->getAnnotationRegistries() as $annotationRegistry) {
+            // register the annotations specified by the annotation registery
+            $annotationRegistryType = $annotationRegistry->getType();
+            $registry = new $annotationRegistryType();
+            $registry->register($annotationRegistry);
+        }
+
         // query whether or not an initialize EM configuration is available
         if ($application->hasAttribute($persistenceUnitNode->getName()) === false) {
-            // register additional annotation libraries
-            foreach ($persistenceUnitNode->getAnnotationRegistries() as $annotationRegistry) {
-                // register the annotations specified by the annotation registery
-                $annotationRegistryType = $annotationRegistry->getType();
-                $registry = new $annotationRegistryType();
-                $registry->register($annotationRegistry);
-            }
-
             // globally ignore configured annotations to ignore
             foreach ($persistenceUnitNode->getIgnoredAnnotations() as $ignoredAnnotation) {
                 AnnotationReader::addGlobalIgnoredName($ignoredAnnotation->getNodeValue()->__toString());
