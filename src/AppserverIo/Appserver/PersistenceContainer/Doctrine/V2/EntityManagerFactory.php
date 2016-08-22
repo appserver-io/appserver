@@ -27,7 +27,6 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\AnnotationRegistry;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\Doctrine\Utils\ConnectionUtil;
-use AppserverIo\Appserver\Core\Api\Node\AnnotationRegistryNode;
 use AppserverIo\Appserver\Core\Api\Node\MetadataConfigurationNode;
 use AppserverIo\Appserver\Core\Api\Node\PersistenceUnitNodeInterface;
 use AppserverIo\Appserver\PersistenceContainer\Doctrine\DoctrineEntityManagerDecorator;
