@@ -6,6 +6,7 @@
 
 ## Features
 
+* Closed [#840](https://github.com/appserver-io/appserver/issues/840) - URL Routes according to REST defacto standard
 * Adding functionality to activate Doctrine production mode and allow cache configuration
 
 # Version 1.1.2
