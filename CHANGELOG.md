@@ -2,7 +2,7 @@
 
 ## Bugfixes
 
-* None
+* Closed [#1029](https://github.com/appserver-io/appserver/issues/1029) - Servlet Engine not starting, when an application registers the same datasource twice
 
 ## Features
 

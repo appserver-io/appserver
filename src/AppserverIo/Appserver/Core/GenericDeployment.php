@@ -22,9 +22,8 @@
 
 namespace AppserverIo\Appserver\Core;
 
-use AppserverIo\Appserver\Core\Utilities\AppEnvironmentHelper;
-use AppserverIo\Configuration\ConfigurationException;
 use AppserverIo\Appserver\Core\Api\Node\DatasourcesNode;
+use AppserverIo\Appserver\Core\Utilities\AppEnvironmentHelper;
 
 /**
  * Generic deployment implementation for web applications.
@@ -144,10 +143,10 @@ class GenericDeployment extends AbstractDeployment
                     }
 
                 // log a message and continue with the next datasource node
-                } catch (ConfigurationException $ce) {
+                } catch (\Exception $e) {
                     // load the logger and log the XML validation errors
                     $systemLogger = $this->getInitialContext()->getSystemLogger();
-                    $systemLogger->error($ce->__toString());
+                    $systemLogger->error($e->__toString());
 
                     // additionally log a message that DS will be missing
                     $systemLogger->critical(
