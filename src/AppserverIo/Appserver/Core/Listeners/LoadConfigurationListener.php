@@ -89,6 +89,15 @@ class LoadConfigurationListener extends AbstractSystemListener
             // initialize the configuration and the base directory
             $systemConfiguration = new AppserverNode();
             $systemConfiguration->initFromConfiguration($configuration);
+
+            // re-initialize the container service with the real system configuration
+            $configurationService->setSystemConfiguration($systemConfiguration);
+
+            // then we can replace the system properties
+            $properties = $configurationService->getSystemProperties();
+            $systemConfiguration->replaceProperties($properties);
+
+            // set the system configuration in the application server instance
             $applicationServer->setSystemConfiguration($systemConfiguration);
 
         } catch (\Exception $e) {

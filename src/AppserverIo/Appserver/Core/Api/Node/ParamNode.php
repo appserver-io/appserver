@@ -83,14 +83,23 @@ class ParamNode extends AbstractValueNode
     protected $constant;
 
     /**
+     * TRUE if the value is an environment variable.
+     *
+     * @var string
+     * @AS\Mapping(nodeType="boolean")
+     */
+    protected $env;
+
+    /**
      * Initializes the param node with the necessary data.
      *
      * @param string                                               $name      The params name
      * @param string                                               $type      The params data type
      * @param \AppserverIo\Configuration\Interfaces\ValueInterface $nodeValue The params initial value
      * @param boolean                                              $constant  TRUE if the value is a constant, else FALSE
+     * @param boolean                                              $env       TRUE if the value is an environment variable, else FALSE
      */
-    public function __construct($name = '', $type = '', ValueInterface $nodeValue = null, $constant = false)
+    public function __construct($name = '', $type = '', ValueInterface $nodeValue = null, $constant = false, $env = false)
     {
 
         // initialize the UUID
@@ -101,6 +110,7 @@ class ParamNode extends AbstractValueNode
         $this->type = $type;
         $this->nodeValue = $nodeValue;
         $this->constant = $constant;
+        $this->env = $env;
     }
 
     /**
@@ -145,6 +155,16 @@ class ParamNode extends AbstractValueNode
     }
 
     /**
+     * Returns the TRUE if the value is an environment variable, else FALSE.
+     *
+     * @return boolean TRUE if the value is an environment variable, else FALSE
+     */
+    public function isEnv()
+    {
+        return $this->env;
+    }
+
+    /**
      * Casts the params value to the defined type and returns it.
      *
      * @return mixed The casted value
@@ -155,6 +175,10 @@ class ParamNode extends AbstractValueNode
         // load the params value
         $value = $this->getNodeValue()->__toString();
 
+        // query whether or not we've an environment variable and/or a constant
+        $this->isEnv() ? $value = getenv($value) : $value;
+        $this->isConstant() ? $value = constant($value) : $value;
+
         // query the parameters type
         switch ($type = $this->getType()) {
             case 'bool':
@@ -164,7 +188,6 @@ class ParamNode extends AbstractValueNode
                 break;
             default:
                 // all other can go the same way
-                $this->isConstant() ? $value = constant($value) : $value;
                 settype($value, $type);
         }
 
