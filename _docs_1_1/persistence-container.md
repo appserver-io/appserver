@@ -768,6 +768,112 @@ Without these configuration settings, the local instance will be invoked. The so
 
 > Using the remote interface of session beans is seamless and declarative.
 
+### Access Session Beans from a legacy application (PHP-FPM)
+
+As Session Beans exists as real PHP objects inside the persistence container it is not possible to access them from e. g. a legacy application executed by PHP-FPM. To do so, we've implemented a client, that returns a proxy to the Session Bean and allows to execute it's methods. Additional it is necessary to configure the persistence container itself, because by default,  remote connections are deactivated for security reasons.
+
+So, the first thing to do, is to install the `appserver-io/rmi` package as Composer requirement in your project, e. g.
+
+```sh
+$ composer install appserver-io/rmi
+```
+
+after that, you've to configure a server, that allows remote access to the persistence container, e. g. you can add the following XML snippet to the `etc/appserver/appserver.xml` file
+
+```xml
+<server
+    name="persistence-container"
+    type="\AppserverIo\Server\Servers\MultiThreadedServer"
+    worker="\AppserverIo\Server\Workers\ThreadWorker"
+    socket="\AppserverIo\Server\Sockets\StreamSocket"
+    requestContext="\AppserverIo\Server\Contexts\RequestContext"
+    serverContext="\AppserverIo\Appserver\Server\Contexts\StandardServerContext"
+    streamContext="\AppserverIo\Server\Contexts\StreamContext"
+    loggerName="System">
+
+    <params>
+        <param name="admin" type="string">info@appserver.io</param>
+        <param name="transport" type="string">tcp</param>
+        <param name="address" type="string">127.0.0.1</param>
+        <param name="port" type="integer">8585</param>
+        <param name="workerNumber" type="integer">4</param>
+        <param name="workerAcceptMin" type="integer">3</param>
+        <param name="workerAcceptMax" type="integer">8</param>
+        <param name="documentRoot" type="string">webapps</param>
+        <param name="directoryIndex" type="string">index.pc</param>
+        <param name="keepAliveMax" type="integer">64</param>
+        <param name="keepAliveTimeout" type="integer">5</param>
+        <param name="errorsPageTemplatePath" type="string">resources/templates/www/error.phtml</param>
+    </params>
+    
+    <environmentVariables>
+        <environmentVariable condition="" definition="LOGGER_ACCESS=Access" />
+    </environmentVariables>
+    
+    <connectionHandlers>
+        <connectionHandler type="\AppserverIo\WebServer\ConnectionHandlers\HttpConnectionHandler" />
+        <!-- connectionHandler type="\AppserverIo\Appserver\MessageQueue\ConnectionHandlers\AmqpConnectionHandler" / -->
+    </connectionHandlers>
+    
+    <accesses>
+        <!-- per default allow everything -->
+        <access type="allow">
+            <params>
+                <param name="X_REQUEST_URI" type="string">.*</param>
+            </params>
+        </access>
+    </accesses>
+    
+    <modules>
+        <!-- REQUEST_POST hook -->
+        <module type="\AppserverIo\WebServer\Modules\AuthenticationModule"/>
+        <module type="\AppserverIo\WebServer\Modules\VirtualHostModule"/>
+        <module type="\AppserverIo\WebServer\Modules\EnvironmentVariableModule" />
+        <module type="\AppserverIo\WebServer\Modules\RewriteModule"/>
+        <module type="\AppserverIo\WebServer\Modules\DirectoryModule"/>
+        <module type="\AppserverIo\WebServer\Modules\AccessModule"/>
+        <module type="\AppserverIo\WebServer\Modules\CoreModule"/>
+        <module type="\AppserverIo\Appserver\PersistenceContainer\PersistenceContainerModule" />
+        <!-- RESPONSE_PRE hook -->
+        <module type="\AppserverIo\WebServer\Modules\DeflateModule"/>
+        <!-- RESPONSE_POST hook -->
+        <!-- module type="\AppserverIo\Appserver\Core\Modules\ProfileModule"/ -->
+    </modules>
+    
+    <fileHandlers>
+        <fileHandler name="persistence-container" extension=".pc" />
+    </fileHandlers>
+
+</server>
+```
+
+below the `message-queue` server configuration.
+
+Finally you can connect to the persistence container and call all methods of the Session Bean, e. g. in the exampel the `raiseCounter()` method of the ASingletonProcessor SessionBean of the example application. The code therefore will look something like that
+
+```php
+<?php
+
+use AppserverIo\RemoteMethodInvocation\RemoteConnectionFactory;
+
+require_once __DIR__ . '/vendor/autoload.php';
+
+$connection = RemoteConnectionFactory::createContextConnection();
+$connection->injectPort(8585);
+$connection->injectAddress('127.0.0.1');
+$connection->injectTransport('http');
+$connection->injectAppName('example');
+
+$session = $connection->createContextSession();
+$session->setSessionId(md5('test'));
+$proxy = $session->createInitialContext()->lookup('ASingletonProcessor');
+``
+
+echo $proxy->raiseCounter() . PHP_EOL;
+```
+
+The example uses a dummy Session-ID generated with `md5('test)` which is for testing purposes only. In a real life application the default PHP Session-ID can be used instead.
+
 ### Message Beans (MDBs)
 
 Other than session beans, `MDBs` are **NOT** invoked by a proxy, but are sent to a `Message Broker` as receiver of the messages. The `Message Broker` adds them to a queue until they are collected and proccessed in a separate thread.
