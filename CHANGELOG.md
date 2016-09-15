@@ -8,6 +8,7 @@
 
 * Closed [#1018](https://github.com/appserver-io/appserver/issues/1018) - Pass environment variable to virtual-hosts.xml
 * Closed [#840](https://github.com/appserver-io/appserver/issues/840) - URL Routes according to REST defacto standard
+* Closed [#771](https://github.com/appserver-io/appserver/issues/771) - Include a .editorconfing file to help enforce coding standards
 * Adding functionality to activate Doctrine production mode and allow cache configuration
 
 # Version 1.1.2
