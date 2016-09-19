@@ -157,6 +157,8 @@ class PersistenceManager extends AbstractManager implements PersistenceContextIn
                 // append the application specific properties
                 $properties->add(SystemPropertyKeys::WEBAPP, $webappPath = $application->getWebappPath());
                 $properties->add(SystemPropertyKeys::WEBAPP_NAME, basename($webappPath));
+                $properties->add(SystemPropertyKeys::WEBAPP_CACHE, $application->getCacheDir());
+                $properties->add(SystemPropertyKeys::WEBAPP_SESSION, $application->getSessionDir());
 
                 // create a new persistence manager node instance and replace the properties
                 $persistenceNode = new PersistenceNode();

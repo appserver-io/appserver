@@ -1,3 +1,17 @@
+# Version 1.1.3
+
+## Bugfixes
+
+* Closed [#881](https://github.com/appserver-io/appserver/issues/881) - EntityManager instance gets nulled
+* Closed [#1029](https://github.com/appserver-io/appserver/issues/1029) - Servlet Engine not starting, when an application registers the same datasource twice
+
+## Features
+
+* Closed [#1018](https://github.com/appserver-io/appserver/issues/1018) - Pass environment variable to virtual-hosts.xml
+* Closed [#840](https://github.com/appserver-io/appserver/issues/840) - URL Routes according to REST defacto standard
+* Closed [#771](https://github.com/appserver-io/appserver/issues/771) - Include a .editorconfing file to help enforce coding standards
+* Adding functionality to activate Doctrine production mode and allow cache configuration
+
 # Version 1.1.2
 
 ## Bugfixes

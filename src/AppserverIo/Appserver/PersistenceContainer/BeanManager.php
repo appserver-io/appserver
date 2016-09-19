@@ -575,11 +575,6 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface, Ma
             // load the map with the SFSBs
             $sessionBeans = $this->getStatefulSessionBeans();
 
-            // query whether the SFSB already exists, if yes remove it
-            if ($sessionBeans->exists($identifier)) {
-                $sessionBeans->remove($identifier);
-            }
-
             // add the stateful session bean to the map
             $sessionBeans->add($identifier, $instance, $lifetime);
 

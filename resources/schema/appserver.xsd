@@ -189,6 +189,7 @@
         <xs:complexType>
             <xs:all>
                 <xs:element ref="appserver:params"/>
+                <xs:element ref="appserver:systemProperties" minOccurs="0"/>
                 <xs:element ref="appserver:consoles" minOccurs="0"/>
                 <xs:element ref="appserver:baseDirectory" minOccurs="0"/>
                 <xs:element ref="appserver:initialContext" minOccurs="0"/>
@@ -1909,6 +1910,8 @@
                 <xs:extension base="xs:string">
                     <xs:attribute name="name" type="xs:string" use="required"/>
                     <xs:attribute name="type" type="xs:string" use="required"/>
+                    <xs:attribute name="constant" type="xs:boolean"/>
+                    <xs:attribute name="env" type="xs:boolean"/>
                     <xs:attribute name="uuid" type="xs:string"/>
                     <xs:attribute ref="xml:base"/>
                 </xs:extension>
@@ -1923,6 +1926,31 @@
         </xs:complexType>
         <xs:unique name="uniqueParamName">
             <xs:selector xpath="appserver:param" />
+            <xs:field xpath="@name" />
+        </xs:unique>
+    </xs:element>
+    <xs:element name="systemProperty">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="name" type="xs:string" use="required"/>
+                    <xs:attribute name="type" type="xs:string" use="required"/>
+                    <xs:attribute name="constant" type="xs:boolean"/>
+                    <xs:attribute name="env" type="xs:boolean"/>
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="systemProperties">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="appserver:systemProperty"/>
+            </xs:choice>
+        </xs:complexType>
+        <xs:unique name="uniqueSystemPropertyName">
+            <xs:selector xpath="appserver:systemProperty" />
             <xs:field xpath="@name" />
         </xs:unique>
     </xs:element>
@@ -2033,6 +2061,9 @@
             <xs:all>
                 <xs:element ref="appserver:datasource"/>
                 <xs:element ref="appserver:metadataConfiguration" minOccurs="0"/>
+                <xs:element ref="appserver:metadataCacheConfiguration" minOccurs="0"/>
+                <xs:element ref="appserver:resultCacheConfiguration" minOccurs="0"/>
+                <xs:element ref="appserver:queryCacheConfiguration" minOccurs="0"/>
                 <xs:element ref="appserver:annotationRegistries" minOccurs="0"/>
                 <xs:element ref="appserver:ignoredAnnotations" minOccurs="0"/>
             </xs:all>
@@ -2050,7 +2081,38 @@
                 <xs:element ref="appserver:params" minOccurs="0"/>
                 <xs:element ref="appserver:directories"/>
             </xs:all>
-            <xs:attribute name="type" type="xs:string" use="required"/>
+            <xs:attribute name="type" type="xs:string" use="optional"/>
+            <xs:attribute name="factory" type="xs:string" use="optional"/>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="metadataCacheConfiguration">
+        <xs:complexType>
+            <xs:all>
+                <xs:element ref="appserver:params" minOccurs="0"/>
+            </xs:all>
+            <xs:attribute name="factory" type="xs:string" use="required"/>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="queryCacheConfiguration">
+        <xs:complexType>
+            <xs:all>
+                <xs:element ref="appserver:params" minOccurs="0"/>
+            </xs:all>
+            <xs:attribute name="factory" type="xs:string" use="required"/>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="resultCacheConfiguration">
+        <xs:complexType>
+            <xs:all>
+                <xs:element ref="appserver:params" minOccurs="0"/>
+            </xs:all>
+            <xs:attribute name="factory" type="xs:string" use="required"/>
             <xs:attribute name="uuid" type="xs:string"/>
             <xs:attribute ref="xml:base"/>
         </xs:complexType>
@@ -2067,9 +2129,11 @@
     <xs:element name="annotationRegistry">
         <xs:complexType>
             <xs:all>
-                <xs:element ref="appserver:directories"/>
+                <xs:element ref="appserver:directories" minOccurs="0"/>
             </xs:all>
-            <xs:attribute name="namespace" type="xs:string" use="required"/>
+            <xs:attribute name="type" type="xs:string" use="optional"/>
+            <xs:attribute name="file" type="xs:string" use="optional"/>
+            <xs:attribute name="namespace" type="xs:string" use="optional"/>
             <xs:attribute name="uuid" type="xs:string"/>
             <xs:attribute ref="xml:base"/>
         </xs:complexType>

@@ -48,6 +48,13 @@ class AppserverNode extends AbstractNode implements SystemConfigurationInterface
     /**
      * A params node trait.
      *
+     * @var \AppserverIo\Appserver\Core\Api\Node\SystemPropertiesNodeTrait
+     */
+    use SystemPropertiesNodeTrait;
+
+    /**
+     * A params node trait.
+     *
      * @var \AppserverIo\Appserver\Core\Api\Node\ConsolesNodeTrait
      */
     use ConsolesNodeTrait;
