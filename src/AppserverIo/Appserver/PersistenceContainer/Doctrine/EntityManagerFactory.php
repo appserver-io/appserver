@@ -68,7 +68,7 @@ class EntityManagerFactory
             AnnotationRegistry::registerAutoloadNamespace(
                 $annotationRegistry->getNamespace(),
                 $annotationRegistry->getDirectoriesAsArray($application->getWebappPath())
-                );
+            );
         }
 
         // globally ignore configured annotations to ignore
@@ -105,8 +105,8 @@ class EntityManagerFactory
                 sprintf(
                     'Can\'t find a datasource node for persistence unit %s',
                     $persistenceUnitNode->getName()
-                    )
-                );
+                )
+            );
         }
 
         // load the database node
@@ -118,8 +118,8 @@ class EntityManagerFactory
                 sprintf(
                     'Can\'t find database node for persistence unit %s',
                     $persistenceUnitNode->getName()
-                    )
-                );
+                )
+            );
         }
 
         // load the driver node
@@ -131,8 +131,8 @@ class EntityManagerFactory
                 sprintf(
                     'Can\'t find driver node for persistence unit %s',
                     $persistenceUnitNode->getName()
-                    )
-                );
+                )
+            );
         }
 
         // initialize and return a entity manager decorator instance

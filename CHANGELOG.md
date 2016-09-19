@@ -2,6 +2,7 @@
 
 ## Bugfixes
 
+* Closed [#881](https://github.com/appserver-io/appserver/issues/881) - EntityManager instance gets nulled
 * Closed [#1029](https://github.com/appserver-io/appserver/issues/1029) - Servlet Engine not starting, when an application registers the same datasource twice
 
 ## Features
