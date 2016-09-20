@@ -63,7 +63,9 @@ class FileSystem
         }
 
         // change the mode
-        return chmod($path, $perm);
+        if (chmod($path, $perm) === false) {
+            error_log(sprintf('Can\'t change mode for directory %s to %s', $path, $perm));
+        }
     }
 
     /**
