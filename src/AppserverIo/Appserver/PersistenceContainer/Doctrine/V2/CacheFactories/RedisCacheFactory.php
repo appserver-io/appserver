@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\PersistenceContainer\Doctrine\V2\CacheFactories\MemcacheCacheFactory
+ * AppserverIo\Appserver\PersistenceContainer\Doctrine\V2\CacheFactories\RedisCacheFactory
  *
  * NOTICE OF LICENSE
  *
@@ -32,7 +32,7 @@ use Doctrine\Common\Cache\RedisCache;
  * @link      https://github.com/appserver-io/rmi
  * @link      http://www.appserver.io
  */
-class MemcacheCacheFactory implements CacheFactoryInterface
+class RedisCacheFactory implements CacheFactoryInterface
 {
 
     /**
