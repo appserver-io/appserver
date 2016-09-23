@@ -91,11 +91,15 @@ class FileSystem
         }
 
         // change the owner
-        chown($path, $user);
+        if (chown($path, $user) === false) {
+            error_log(sprintf('Can\'t change owner for directory/flie %s to %s', $path, $user));
+        }
 
         // check if group is given too
         if (!is_null($group)) {
-            chgrp($path, $group);
+            if (chgrp($path, $group) === false) {
+                error_log(sprintf('Can\'t change group for directory/flie %s to %s', $path, $group));
+            }
         }
 
         return true;
