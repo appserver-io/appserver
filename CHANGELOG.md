@@ -1,3 +1,13 @@
+# Version 1.1.3-beta2
+
+## Bugfixes
+
+* Fixed invalid class name in RedisCacheFactory
+
+## Features
+
+* Adding error_log if chmod/chown/chgrp fails
+
 # Version 1.1.3-beta1
 
 ## Bugfixes
