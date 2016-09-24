@@ -1,3 +1,15 @@
+# Version 1.1.3-beta3
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add crunch/fastcgi 2.x branch as Composer dependency
+* Replace error_log with exceptions in FileSystem::chown() method
+* Refactor FileSystem utility to use internal FileSystem::chown() method instead of \chown()
+
 # Version 1.1.3-beta2
 
 ## Bugfixes
