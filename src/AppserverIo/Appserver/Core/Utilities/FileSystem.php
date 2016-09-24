@@ -64,7 +64,7 @@ class FileSystem
 
         // change the mode
         if (chmod($path, $perm) === false) {
-            error_log(sprintf('Can\'t change mode for directory %s to %s', $path, $perm));
+            throw new \Exception(sprintf('Can\'t change mode for directory %s to %s', $path, $perm));
         }
     }
 
@@ -92,13 +92,13 @@ class FileSystem
 
         // change the owner
         if (chown($path, $user) === false) {
-            error_log(sprintf('Can\'t change owner for directory/flie %s to %s', $path, $user));
+            throw new \Exception(sprintf('Can\'t change owner for directory/flie %s to %s', $path, $user));
         }
 
         // check if group is given too
         if (!is_null($group)) {
             if (chgrp($path, $group) === false) {
-                error_log(sprintf('Can\'t change group for directory/flie %s to %s', $path, $group));
+                throw new \Exception(sprintf('Can\'t change group for directory/flie %s to %s', $path, $group));
             }
         }
 
@@ -317,20 +317,9 @@ class FileSystem
         if (empty($user) === false) {
             // Change the rights of everything within the defined dirs
             foreach ($files as $file) {
-                chown($file, $user);
+                FileSystem::chown($file, $user, $group);
             }
-            chown($path, $user);
-        }
-
-        // query whether we've a group passed
-        if (empty($group) === false) {
-            // Change the rights of everything within the defined dirs
-            foreach ($files as $file) {
-                if (chgrp($file, $group) === false) {
-                    error_log(sprintf('Can\'t change group to %s for file/dir %s', $group, $file));
-                }
-            }
-            chgrp($path, $group);
+            FileSystem::chown($path, $user, $group);
         }
     }
 
