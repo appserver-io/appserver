@@ -1628,6 +1628,8 @@
                 <xs:element ref="appserver:unixSocket" minOccurs="0"/>
                 <xs:element ref="appserver:driverOptions" minOccurs="0"/>
                 <xs:element ref="appserver:charset" minOccurs="0"/>
+                <xs:element ref="appserver:serverVersion" minOccurs="0"/>
+                <xs:element ref="appserver:platform" minOccurs="0"/>
             </xs:all>
             <xs:attribute name="uuid" type="xs:string"/>
             <xs:attribute ref="xml:base"/>

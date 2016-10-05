@@ -110,4 +110,18 @@ interface DatabaseNodeInterface extends NodeInterface
      * @return \AppserverIo\Appserver\Core\Api\Node\CharsetNode The name of the socket
      */
     public function getUnixSocket();
+
+    /**
+     * Returns the server version we want to connect to.
+     *
+     * @return \AppserverIo\Appserver\Core\Api\Node\CharsetNode The server version to connect to
+     */
+    public function getServerVersion();
+
+    /**
+     * Returns the DB platform.
+     *
+     * @return \AppserverIo\Appserver\Core\Api\Node\PlatformNode The DB platform
+     */
+    public function getPlatform();
 }

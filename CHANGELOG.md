@@ -1,3 +1,14 @@
+# Version 1.1.3
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add serverVersion and platform parameters to Doctrine configuration
+* Do override loggers defined in etc/appserver/conf.d/context.xml with loggers defined in META-INF/context.xml
+
 # Version 1.1.3-beta3
 
 ## Bugfixes

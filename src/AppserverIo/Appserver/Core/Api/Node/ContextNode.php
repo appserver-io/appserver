@@ -351,12 +351,10 @@ class ContextNode extends AbstractNode
         // load the loggers of this context
         $localLoggers = $this->getLoggers();
 
-        // merge them with the passed ones (do NOT override already registered loggers)
+        // merge them with the passed ones (DO override already registered loggers)
         /** @var \AppserverIo\Appserver\Core\Api\Node\LoggerNode $loggerToMerge */
         foreach ($contextNode->getLoggers() as $loggerToMerge) {
-            if (isset($localLoggers[$loggerToMerge->getName()]) === false) {
-                $localLoggers[$loggerToMerge->getName()] = $loggerToMerge;
-            }
+            $localLoggers[$loggerToMerge->getName()] = $loggerToMerge;
         }
 
         // set the loggers back to the context
