@@ -46,6 +46,11 @@ In this example, we use a shortened piece of the `appserver.xml` file to underst
     <param name="umask" type="string">0002</param>
   </params>
 
+  <!-- pass a environment variable to the system properties to allow usage in XML configuration files -->
+  <systemProperties>
+    <systemProperty name="my.domain" type="string" env="true">MY_DOMAIN</systemProperty>
+  </systemProperties>
+
   <containers>
 
     <!-- by default we combine all servers in one container -->
@@ -503,6 +508,33 @@ The variables can be referenced with the default properties file notation `${VAR
 ```
 
 This example also uses the wildcard pattern `http*` for the server name, that will be described in chapter [Create/Override/Extends Server Configuration](#create-override-extend-server-configuration) later on.
+
+### System Properties
+
+Additional to the hard coded configuration variables, that can be used in the system configuration, it is possible to declare additions system properties that can also be used in the same way as variables in the system configuration.
+
+For example, if an environment variable `MY_DOMAIN`, passed by Docker to the OS, should be used as domain for a virtual host, it can be declared as system property with
+
+```xml
+<systemProperties>
+  <systemProperty name="my.domain" type="string" env="true">MY_DOMAIN</systemProperty>
+</systemProperties>
+```
+
+Then it is possible to use the system property `my.domain` in the `etc/appserver/conf.d/virtual-hosts.xml` like
+
+```xml
+<virtualHosts xmlns="http://www.appserver.io/appserver">
+    <virtualHost name="${my.domain}">
+        <params>
+            <param name="admin" type="string">info@appserver.io</param>
+            <param name="documentRoot" type="string">webapps</param>
+        </params>
+    </virtualHosts>
+</virtualHosts>
+```
+
+This allows a very generic system configuration, especially when using appserver.io with Docker or similar technologies.
 
 ### Context
 
