@@ -8,7 +8,7 @@ permalink: /
 slider:
   - title: Iron-Knight has arrived!
     link-href: /downloads.html
-    link-detail-href: /release/2016/07/07/1.1.2-released.html
+    link-detail-href: /release/2016/10/08/1.1.3-released.html
     link-label: Download
     img: /assets/img/appserver-header-image-iron-knight.jpg
     opacity: .5
@@ -56,7 +56,6 @@ appserver.io and PHP and you´re done!
 
 <section class="grey">
 <div class="container">
-
 <div class="bs-example" data-example-id="simple-table">
   <table class="table table-responsive">
       <thead>
@@ -142,38 +141,19 @@ appserver.io and PHP and you´re done!
               <td class="text-center"><i class="icon-ok fa fa-check"></i></td>
               <td class="text-center"><i class="icon-ok fa fa-check"></i></td>
           </tr>
-
-</tbody>
-</table>
+      </tbody>
+    </table>
 </div>
 </div>
 </section>
-
 
 <section class="text-center">
-<div class="container">
-<h2><i class="fa fa-dot-circle-o"></i>&nbsp;&nbsp;Learn more about our target groups</h2>
-<p><br/></p>
-{% include widgets/boxes.html boxes = page.boxes-targetgroups %}
-</div>
-</section>
-
-<!--
-## <i class="fa fa-hand-o-right"></i> Lightning speed is only one part of the benefits of appserver.io...
-<p><br/></p>
-<div class="row">
-    <div class="col-md-6">With the appserver.io plattform an increase in performance of your application is not to far away. If you use the services the infrastructure is offering a tremendous boost is absolutely possible and it comes along with an improvement for different parts of your software. 
-    <p><br/></p>
-    <a class="btn btn-info btn-lg"
-                   href="{{ "/products/features.html" | prepend: site.baseurl }}">
-                    <i class="fa fa-bars"></i>&nbsp;&nbsp;learn more about the possibilies
-                </a>
-
+    <div class="container">
+        <h2><i class="fa fa-dot-circle-o"></i>&nbsp;&nbsp;Learn more about our target groups</h2>
+        <p><br/></p>
+        {% include widgets/boxes.html boxes = page.boxes-targetgroups %}
     </div>
-    <div class="col-md-6"><img class="img-responsive img-hover" src="http://placehold.it/700x400" alt="">     </div>
-</div>
-<p><br/></p>
--->
+</section>
 
 <section class="black text-center">
     <div class="container">
