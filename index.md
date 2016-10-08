@@ -95,7 +95,7 @@ appserver.io and PHP and you´re done!
           </tr>
           <tr>
           <td>Rewrite Map</td>
-              <td class="text-center"><i class="icon-ok fa fa-check"></td>
+              <td class="text-center"><i class="icon-ok fa fa-check"></i></td>
               <td class="text-center"><i class="icon-ok fa fa-check"></i></td>
               <td class="text-center"><i class="icon-ok fa fa-check"></i></td>
               <td class="text-center"><i class="icon-ok fa fa-check"></i></td>
