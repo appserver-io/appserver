@@ -1,3 +1,13 @@
+# Version 1.1.4-beta1
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Append system properties webapp and webapp.name when parsing datasource XML files
+
 # Version 1.1.3
 
 ## Bugfixes
