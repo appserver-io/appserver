@@ -60,23 +60,40 @@ class Util
     /**
      * Creates and returns a hashed version of the passed password.
      *
+     *
      * @param string                   $hashAlgorithm The hash algorithm to use
      * @param string                   $hashEncoding  The hash encoding to use
      * @param string                   $hashCharset   The hash charset to use
      * @param \AppserverIo\Lang\String $name          The login name
      * @param \AppserverIo\Lang\String $password      The password credential
      * @param mixed                    $callback      The callback providing some additional hashing functionality
+     * @param string                   $hashSalt      The hash salt to use
      *
      * @return \AppserverIo\Lang\String The hashed password
      */
-    public static function createPasswordHash($hashAlgorithm, $hashEncoding, $hashCharset, String $name, String $password, $callback)
+    public static function createPasswordHash($hashAlgorithm, $hashEncoding, $hashCharset, String $name, String $password, $callback, $hashSalt = null)
     {
         $newPassword = clone $password;
-        return $newPassword->md5();
+        switch ($hashAlgorithm) {
+            case HashKeys::MD5:
+                return $newPassword->md5($hashSalt);
+            case HashKeys::SHA1:
+                return $newPassword->sha1($hashSalt);
+            case HashKeys::SHA256:
+                return $newPassword->sha256($hashSalt);
+            case HashKeys::SHA512:
+                return $newPassword->sha512($hashSalt);
+            case PASSWORD_BCRYPT:
+                return $newPassword;
+            case PASSWORD_DEFAULT:
+                return $newPassword;
+            case 'default':
+                return $newPassword;
+        }
     }
 
     /**
-     * Execute the rolesQuery against the dsJndiName to obtain the roles for the authenticated user.
+     * Execute the rolesQuery against the UserName to obtain the roles for the authenticated user.
      *
      * @param \AppserverIo\Lang\String                  $username   The username to load the roles for
      * @param \AppserverIo\Lang\String                  $lookupName The lookup name for the datasource
@@ -156,7 +173,6 @@ class Util
 
             // load one group after another
             } while ($row = $statement->fetch(\PDO::FETCH_OBJ));
-
         } catch (NamingException $ne) {
             throw new LoginException($ne->__toString());
         } catch (\PDOException $pdoe) {

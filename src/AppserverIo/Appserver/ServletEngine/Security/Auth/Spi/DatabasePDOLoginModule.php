@@ -162,7 +162,6 @@ class DatabasePDOLoginModule extends UsernamePasswordLoginModule
      * Returns the salt for the user from the sharedMap data.
      *
      * @return \AppserverIo\Lang\String The user's salt
-     * @throws \AppserverIo\Psr\Security\Auth\Login\LoginException Is thrown if password can't be loaded
      */
     protected function getUsersSalt()
     {
@@ -193,11 +192,11 @@ class DatabasePDOLoginModule extends UsernamePasswordLoginModule
             }
         }
 
-        // query whether or not we've a password found or not
+        // query whether or not we've found a salt or not
         if ($row = $statement->fetch(\PDO::FETCH_NUM)) {
             return new String($row[0]);
         } else {
-            throw new LoginException('No matching username found in principals');
+            return null;
         }
     }
 }
