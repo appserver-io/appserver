@@ -54,6 +54,13 @@ class ParamKeys
     const ROLES_QUERY = 'rolesQuery';
 
     /**
+     * The key for the "saltQuery" parameter.
+     *
+     * @var string
+     */
+    const SALT_QUERY = 'saltQuery';
+
+    /**
      * The key for the "passwordStacking" parameter.
      *
      * @var string
