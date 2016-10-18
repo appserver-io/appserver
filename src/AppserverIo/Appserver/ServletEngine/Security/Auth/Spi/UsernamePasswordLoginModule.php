@@ -146,6 +146,14 @@ abstract class UsernamePasswordLoginModule extends AbstractLoginModule
     abstract protected function getUsersPassword();
 
     /**
+     * Returns the salt for the user from the sharedMap data.
+     *
+     * @return \AppserverIo\Lang\String The user's salt
+     * @throws \AppserverIo\Psr\Security\Auth\Login\LoginException Is thrown if salt can't be loaded
+     */
+    abstract protected function getUsersSalt();
+
+    /**
      * Perform the authentication of username and password.
      *
      * @return boolean TRUE when login has been successfull, else FALSE

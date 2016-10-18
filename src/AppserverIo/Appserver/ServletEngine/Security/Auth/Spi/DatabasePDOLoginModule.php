@@ -66,6 +66,13 @@ class DatabasePDOLoginModule extends UsernamePasswordLoginModule
     protected $principalsQuery;
 
     /**
+     * The database query used to load the password salt for the user.
+     *
+     * @var \AppserverIo\Lang\String
+     */
+    protected $saltQuery;
+
+    /**
      * Initialize the login module. This stores the subject, callbackHandler and sharedState and options
      * for the login session. Subclasses should override if they need to process their own options. A call
      * to parent::initialize() must be made in the case of an override.
@@ -75,6 +82,7 @@ class DatabasePDOLoginModule extends UsernamePasswordLoginModule
      * lookupName:      The datasource name used to lookup in the naming directory
      * rolesQuery:      The database query used to load the user's roles
      * principalsQuery: The database query used to load the user
+     * saltQuery:       The database query used to load the password salt for the user
      *
      * @param \AppserverIo\Psr\Security\Auth\Subject                           $subject         The Subject to update after a successful login
      * @param \AppserverIo\Psr\Security\Auth\Callback\CallbackHandlerInterface $callbackHandler The callback handler that will be used to obtain the user identity and credentials
@@ -93,6 +101,7 @@ class DatabasePDOLoginModule extends UsernamePasswordLoginModule
         $this->lookupName = new String($params->get(ParamKeys::LOOKUP_NAME));
         $this->rolesQuery = new String($params->get(ParamKeys::ROLES_QUERY));
         $this->principalsQuery = new String($params->get(ParamKeys::PRINCIPALS_QUERY));
+        $this->saltQuery = new String($params->get(ParamKeys::SALT_QUERY));
     }
 
     /**
@@ -147,5 +156,48 @@ class DatabasePDOLoginModule extends UsernamePasswordLoginModule
     protected function getRoleSets()
     {
         return Util::getRoleSets($this->getUsername(), new String($this->lookupName), new String($this->rolesQuery), $this);
+    }
+
+    /**
+     * Returns the salt for the user from the sharedMap data.
+     *
+     * @return \AppserverIo\Lang\String The user's salt
+     * @throws \AppserverIo\Psr\Security\Auth\Login\LoginException Is thrown if password can't be loaded
+     */
+    protected function getUsersSalt()
+    {
+
+        // load the application context
+        $application = RequestHandler::getApplicationContext();
+
+        /** @var \AppserverIo\Appserver\Core\Api\Node\DatabaseNode $databaseNode */
+        $databaseNode = $application->getNamingDirectory()->search($this->lookupName)->getDatabase();
+
+        // prepare the connection parameters and create the DBAL connection
+        $connection = DriverManager::getConnection(ConnectionUtil::get($application)->fromDatabaseNode($databaseNode));
+
+        // try to load the principal's credential from the database
+        $statement = $connection->prepare($this->saltQuery);
+        $statement->bindParam(1, $this->getUsername());
+        $statement->execute();
+
+        // close the PDO connection
+        if ($connection != null) {
+            try {
+                $connection->close();
+            } catch (\Exception $e) {
+                $application
+                    ->getNamingDirectory()
+                    ->search(NamingDirectoryKeys::SYSTEM_LOGGER)
+                    ->error($e->__toString());
+            }
+        }
+
+        // query whether or not we've a password found or not
+        if ($row = $statement->fetch(\PDO::FETCH_NUM)) {
+            return new String($row[0]);
+        } else {
+            throw new LoginException('No matching username found in principals');
+        }
     }
 }
