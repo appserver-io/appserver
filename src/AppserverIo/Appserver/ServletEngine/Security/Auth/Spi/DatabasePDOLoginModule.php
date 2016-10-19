@@ -166,6 +166,10 @@ class DatabasePDOLoginModule extends UsernamePasswordLoginModule
     protected function getUsersSalt()
     {
 
+        if ($this->saltQuery->stringValue() == 0) {
+            return null;
+        }
+
         // load the application context
         $application = RequestHandler::getApplicationContext();
 
@@ -196,7 +200,7 @@ class DatabasePDOLoginModule extends UsernamePasswordLoginModule
         if ($row = $statement->fetch(\PDO::FETCH_NUM)) {
             return new String($row[0]);
         } else {
-            return null;
+            throw new LoginException('No matching salt found in principals');
         }
     }
 }
