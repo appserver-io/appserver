@@ -1,3 +1,13 @@
+# Version 1.1.4-beta2
+
+## Bugfixes
+
+* Remove invalid class loader re-registration from TimerServiceRegistry::initialize() method
+
+## Features
+
+* Invoke @PreAttach + @PostDetach lifecycle callbacks on SSB
+
 # Version 1.1.4-beta1
 
 ## Bugfixes

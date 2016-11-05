@@ -594,7 +594,12 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface, Ma
 
         // query if we've singleton session bean
         if ($descriptor instanceof SingletonSessionBeanDescriptorInterface) {
-            // do nothing here
+            // we've to check for pre-attach callbacks
+            foreach ($descriptor->getPreAttachCallbacks() as $preAttachCallback) {
+                $instance->$preAttachCallback();
+            }
+
+            // stop processing here
             return;
         }
 
