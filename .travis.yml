@@ -10,7 +10,8 @@ matrix:
     - php: 7.0
 
 before_install:
-  - pecl install pthreads-2.0.10
+  - if [[ "$TRAVIS_PHP_VERSION" < "7.0" ]]; then pecl install pthreads-2.0.10; fi
+  - if [[ "$TRAVIS_PHP_VERSION" = "7.0" ]] || [[ "$TRAVIS_PHP_VERSION" > "7.0" ]]; then pecl install pthreads-3.1.6; fi
   - pecl install xdebug
   - phpenv rehash
   - wget https://scrutinizer-ci.com/ocular.phar
