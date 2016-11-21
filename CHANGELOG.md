@@ -1,3 +1,14 @@
+# Version 1.1.4-beta2
+
+## Bugfixes
+
+* Remove invalid class loader re-registration from TimerServiceRegistry::initialize() method
+
+## Features
+
+* Invoke @PreAttach + @PostDetach lifecycle callbacks on SSB
+* Add Doctrine Psr4AnnotationRegistry implementation with support for PSR-4 class loading
+
 # Version 1.1.4-beta1
 
 ## Bugfixes

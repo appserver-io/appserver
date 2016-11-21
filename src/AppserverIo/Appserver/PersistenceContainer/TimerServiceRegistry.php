@@ -141,12 +141,6 @@ class TimerServiceRegistry extends ServiceRegistry implements TimerServiceContex
     public function initialize(ApplicationInterface $application)
     {
 
-        // register the default autoloader
-        require SERVER_AUTOLOADER;
-
-        // register the class loader again, because each thread has its own context
-        $application->registerClassLoaders();
-
         // build up META-INF directory var
         $metaInfDir = $application->getWebappPath() . DIRECTORY_SEPARATOR .'META-INF';
 
