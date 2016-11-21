@@ -7,6 +7,7 @@
 ## Features
 
 * Invoke @PreAttach + @PostDetach lifecycle callbacks on SSB
+* Add Doctrine Psr4AnnotationRegistry implementation with support for PSR-4 class loading
 
 # Version 1.1.4-beta1
 

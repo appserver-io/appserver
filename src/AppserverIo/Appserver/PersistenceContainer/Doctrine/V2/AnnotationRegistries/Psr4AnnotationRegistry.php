@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\PersistenceContainer\Doctrine\V2\AnnotationRegistries\AnnotationRegistryInterface
+ * AppserverIo\Appserver\PersistenceContainer\Doctrine\V2\AnnotationRegistries\Psr4AnnotationRegistry
  *
  * NOTICE OF LICENSE
  *
@@ -20,10 +20,12 @@
 
 namespace AppserverIo\Appserver\PersistenceContainer\Doctrine\V2\AnnotationRegistries;
 
+use Composer\Autoload\ClassLoader;
+use Doctrine\Common\Annotations\AnnotationRegistry;
 use AppserverIo\Appserver\Core\Api\Node\AnnotationRegistryNodeInterface;
 
 /**
- * The interface all Doctrine annotation registries.
+ * An annotation registry to register PSR-4 annotation classes.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @author    Bernhard Wick <bw@appserver.io>
@@ -32,7 +34,7 @@ use AppserverIo\Appserver\Core\Api\Node\AnnotationRegistryNodeInterface;
  * @link      https://github.com/appserver-io/rmi
  * @link      http://www.appserver.io
  */
-interface AnnotationRegistryInterface
+class Psr4AnnotationRegistry implements AnnotationRegistryInterface
 {
 
     /**
@@ -42,5 +44,17 @@ interface AnnotationRegistryInterface
      *
      * @return void
      */
-    public function register(AnnotationRegistryNodeInterface $annotationRegistry);
+    public function register(AnnotationRegistryNodeInterface $annotationRegistry)
+    {
+
+        // initialize the composer class loader
+        $classLoader = new ClassLoader();
+        $classLoader->addPsr4(
+            $annotationRegistry->getNamespace(),
+            $annotationRegistry->getDirectoriesAsArray()
+        );
+
+        // register the class loader to load annotations
+        AnnotationRegistry::registerLoader(array($classLoader, 'loadClass'));
+    }
 }
