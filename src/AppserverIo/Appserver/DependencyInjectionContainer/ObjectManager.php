@@ -23,9 +23,9 @@ namespace AppserverIo\Appserver\DependencyInjectionContainer;
 
 use AppserverIo\Storage\StorageInterface;
 use AppserverIo\Appserver\Core\AbstractManager;
+use AppserverIo\Psr\Di\ObjectManagerInterface;
 use AppserverIo\Psr\Deployment\DescriptorInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
-use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\ObjectManagerInterface;
 
 /**
  * The object manager is necessary to load and provides information about all
