@@ -153,7 +153,7 @@ class Response implements HttpServletResponseInterface
     /**
      * Returns the cookies.
      *
-     * @return \ArrayAccess The cookies
+     * @return array The cookies
      */
     public function getCookies()
     {
