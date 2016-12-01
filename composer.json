@@ -14,7 +14,7 @@
         "appserver-io-psr/pms": "~1.0",
         "appserver-io-psr/mop": "~1.0",
         "appserver-io-psr/naming": "~1.0",
-        "appserver-io-psr/servlet": "~1.0",
+        "appserver-io-psr/servlet": "~2.0",
         "appserver-io-psr/deployment": "~1.0",
         "appserver-io-psr/application": "~1.0",
         "appserver-io-psr/security": "~1.0",

@@ -1,3 +1,13 @@
+# Version 1.1.4-beta3
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Switch to latest appserver-io-psr/servlet version 2.0.0
+
 # Version 1.1.4-beta2
 
 ## Bugfixes
