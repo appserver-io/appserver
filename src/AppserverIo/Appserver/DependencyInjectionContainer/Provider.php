@@ -26,6 +26,7 @@ use AppserverIo\Lang\Reflection\ClassInterface;
 use AppserverIo\Lang\Reflection\ReflectionClass;
 use AppserverIo\Lang\Reflection\AnnotationInterface;
 use AppserverIo\Psr\Di\ProviderInterface;
+use AppserverIo\Psr\Di\DependencyInjectionException;
 use AppserverIo\Psr\Servlet\Annotations\Route;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\MessageDriven;

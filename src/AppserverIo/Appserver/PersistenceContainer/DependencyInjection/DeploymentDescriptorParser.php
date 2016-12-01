@@ -133,7 +133,7 @@ class DeploymentDescriptorParser
     {
 
         // load the object manager instance
-        /** @var \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\ObjectManagerInterface $objectManager */
+        /** @var \AppserverIo\Psr\Di\ObjectManagerInterface $objectManager */
         $objectManager = $this->getApplication()->search('ObjectManagerInterface');
 
         // iterate over all configured descriptors and try to load object description

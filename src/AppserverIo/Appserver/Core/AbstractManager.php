@@ -226,7 +226,7 @@ abstract class AbstractManager extends GenericStackable implements ManagerInterf
      * @param string $className The class name to return the reflection class instance for
      *
      * @return \AppserverIo\Lang\Reflection\ReflectionClass The reflection instance
-     * @see \DependencyInjectionContainer\Interfaces\ProviderInterface::getReflectionClass()
+     * @see \AppserverIo\Psr\Di\ProviderInterface::getReflectionClass()
      */
     public function getReflectionClass($className)
     {
@@ -239,8 +239,8 @@ abstract class AbstractManager extends GenericStackable implements ManagerInterf
      * @param object $instance The instance to return the reflection class instance for
      *
      * @return \AppserverIo\Lang\Reflection\ReflectionClass The reflection instance
-     * @see \DependencyInjectionContainer\Interfaces\ProviderInterface::newReflectionClass()
-     * @see \DependencyInjectionContainer\Interfaces\ProviderInterface::getReflectionClass()
+     * @see \AppserverIo\Psr\Di\ProviderInterface::newReflectionClass()
+     * @see \AppserverIo\Psr\Di\ProviderInterface::getReflectionClass()
      */
     public function getReflectionClassForObject($instance)
     {
