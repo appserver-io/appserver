@@ -1,3 +1,13 @@
+# Version 1.1.4-beta5
+
+## Bugfixes
+
+* Fixed invalid references to old DI interfaces/exceptions
+
+## Features
+
+* None
+
 # Version 1.1.4-beta4
 
 ## Bugfixes
