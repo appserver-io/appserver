@@ -118,9 +118,9 @@
         <manager name="TimerServiceContextInterface" type="AppserverIo\Appserver\PersistenceContainer\TimerServiceRegistry" factory="AppserverIo\Appserver\PersistenceContainer\TimerServiceRegistryFactory"/>
         <manager name="AuthenticationManagerInterface" type="AppserverIo\Appserver\ServletEngine\Security\StandardAuthenticationManager" factory="AppserverIo\Appserver\ServletEngine\Security\StandardAuthenticationManagerFactory">
             <authenticators>
-                <authenticator name="Form" type="AppserverIo\Appserver\ServletEngine\Authenticator\FormAuthenticator" />
-                <authenticator name="Basic" type="AppserverIo\Appserver\ServletEngine\Authenticator\BasicAuthenticator" />
-                <authenticator name="Digest" type="AppserverIo\Appserver\ServletEngine\Authenticator\DigestAuthenticator" />
+                <authenticator name="Form" type="AppserverIo\Authenticator\FormAuthenticator" />
+                <authenticator name="Basic" type="AppserverIo\Authenticator\BasicAuthenticator" />
+                <authenticator name="Digest" type="AppserverIo\Authenticator\DigestAuthenticator" />
             </authenticators>
             <!-- securityDomains>
                 <securityDomain name="api-realm">

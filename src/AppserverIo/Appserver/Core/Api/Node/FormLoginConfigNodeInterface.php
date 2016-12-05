@@ -21,6 +21,7 @@
 namespace AppserverIo\Appserver\Core\Api\Node;
 
 use AppserverIo\Configuration\Interfaces\NodeInterface;
+use AppserverIo\Psr\Auth\FormLoginConfigurationInterface;
 
 /**
  * Interface for a login form configuration DTO implementation.
@@ -31,7 +32,7 @@ use AppserverIo\Configuration\Interfaces\NodeInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-interface FormLoginConfigNodeInterface extends NodeInterface
+interface FormLoginConfigNodeInterface extends NodeInterface, FormLoginConfigurationInterface
 {
 
     /**

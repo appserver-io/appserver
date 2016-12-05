@@ -15,6 +15,7 @@
         "appserver-io-psr/epb": "~3.0",
         "appserver-io-psr/pms": "~1.0",
         "appserver-io-psr/mop": "~1.0",
+        "appserver-io-psr/auth": "~2.0",
         "appserver-io-psr/naming": "~1.0",
         "appserver-io-psr/servlet": "~3.0",
         "appserver-io-psr/deployment": "~1.0",
@@ -34,6 +35,7 @@
         "appserver-io/properties": "~2.0",
         "appserver-io/concurrency": "0.3.*",
         "appserver-io/description": "~7.0",
+        "appserver-io/authenticator": "~1.0",
         "appserver-io/configuration": "~2.0",
         "appserver-io/doppelgaenger": "~1.0",
         "appserver-io/routlt-project": "~1.0"

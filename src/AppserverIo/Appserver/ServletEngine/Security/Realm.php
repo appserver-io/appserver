@@ -23,8 +23,10 @@ namespace AppserverIo\Appserver\ServletEngine\Security;
 use AppserverIo\Lang\String;
 use AppserverIo\Collections\ArrayList;
 use AppserverIo\Configuration\Configuration;
+use AppserverIo\Psr\Auth\RealmInterface;
 use AppserverIo\Psr\Security\Auth\Subject;
 use AppserverIo\Psr\Security\PrincipalInterface;
+use AppserverIo\Psr\Security\Acl\GroupInterface;
 use AppserverIo\Psr\Security\Auth\Login\LoginContext;
 use AppserverIo\Psr\Security\Auth\Login\LoginContextInterface;
 use AppserverIo\Psr\Security\Auth\Callback\CallbackHandlerInterface;
@@ -32,7 +34,7 @@ use AppserverIo\Appserver\Naming\Utils\NamingDirectoryKeys;
 use AppserverIo\Appserver\ServletEngine\Security\Utils\Util;
 use AppserverIo\Appserver\Core\Api\Node\SecurityDomainNodeInterface;
 use AppserverIo\Appserver\ServletEngine\Security\Auth\Callback\SecurityAssociationHandler;
-use AppserverIo\Psr\Security\Acl\GroupInterface;
+use AppserverIo\Psr\Auth\AuthenticationManagerInterface;
 
 /**
  * Security domain implementation.
@@ -77,8 +79,8 @@ class Realm implements RealmInterface
     /**
      * Initialize the security domain with the passed name.
      *
-     * @param \AppserverIo\Appserver\ServletEngine\Security\AuthenticationManagerInterface $authenticationManager The authentication manager instance
-     * @param string                                                                       $name                  The security domain's name
+     * @param \AppserverIo\Psr\Auth\AuthenticationManagerInterface $authenticationManager The authentication manager instance
+     * @param string                                               $name                  The security domain's name
      */
     public function __construct(AuthenticationManagerInterface $authenticationManager, $name)
     {

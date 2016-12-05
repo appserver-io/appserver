@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Psr\Auth\LoginConfigurationInterface;
 use AppserverIo\Configuration\Interfaces\NodeInterface;
 
 /**
@@ -31,7 +32,7 @@ use AppserverIo\Configuration\Interfaces\NodeInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-interface LoginConfigNodeInterface extends NodeInterface
+interface LoginConfigNodeInterface extends NodeInterface, LoginConfigurationInterface
 {
 
     /**

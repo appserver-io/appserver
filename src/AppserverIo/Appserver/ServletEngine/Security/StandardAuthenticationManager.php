@@ -27,15 +27,18 @@ use AppserverIo\Collections\HashMap;
 use AppserverIo\Collections\MapInterface;
 use AppserverIo\Storage\StorageInterface;
 use AppserverIo\Psr\Security\Utils\Constants;
+use AppserverIo\Psr\Auth\AuthenticatorInterface;
+use AppserverIo\Psr\Auth\AuthenticationManagerInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
+use AppserverIo\Psr\Servlet\Utils\RequestHandlerKeys;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
 use AppserverIo\Http\Authentication\AuthenticationException;
 use AppserverIo\Appserver\Core\AbstractManager;
 use AppserverIo\Appserver\Naming\Utils\NamingDirectoryKeys;
-use AppserverIo\Appserver\ServletEngine\Authenticator\AuthenticatorInterface;
 use AppserverIo\Appserver\ServletEngine\Security\DependencyInjection\DeploymentDescriptorParser;
-use AppserverIo\Appserver\ServletEngine\Utils\RequestHandlerKeys;
+use AppserverIo\Psr\Auth\RealmInterface;
+use AppserverIo\Psr\Auth\MappingInterface;
 
 /**
  * The authentication manager handles request which need Http authentication.
@@ -93,7 +96,7 @@ class StandardAuthenticationManager extends AbstractManager implements Authentic
     /**
      * Add's the passed realm the the authentication manager.
      *
-     * @param \AppserverIo\Appserver\ServletEngine\Security\RealmInterface $realm The realm to add
+     * @param \AppserverIo\Psr\Auth\RealmInterface $realm The realm to add
      *
      * @return void
      */
@@ -115,7 +118,7 @@ class StandardAuthenticationManager extends AbstractManager implements Authentic
     /**
      * Register's the passed authenticator.
      *
-     * @param \AppserverIo\Appserver\ServletEngine\Authenticator\AuthenticatorInterface $authenticator The authenticator to add
+     * @param \AppserverIo\Psr\Auth\AuthenticatorInterface $authenticator The authenticator to add
      *
      * @return void
      */
@@ -127,7 +130,7 @@ class StandardAuthenticationManager extends AbstractManager implements Authentic
     /**
      * Returns the configured authenticator for the passed URL pattern authenticator mapping.
      *
-     * @param \AppserverIo\Appserver\ServletEngine\Security\MappingInterface|null $mapping The URL pattern to authenticator mapping
+     * @param \AppserverIo\Psr\Auth\MappingInterface|null $mapping The URL pattern to authenticator mapping
      *
      * @return \AppserverIo\Storage\StorageInterface The storage with the authentication types
      * @throws \AppserverIo\Http\Authentication\AuthenticationException Is thrown if the authenticator with the passed key is not available
@@ -170,7 +173,7 @@ class StandardAuthenticationManager extends AbstractManager implements Authentic
     /**
      * Register's a new URL pattern to authentication type mapping.
      *
-     * @param \AppserverIo\Appserver\ServletEngine\Security\MappingInterface $mapping The URL pattern to authenticator mapping
+     * @param \AppserverIo\Psr\Auth\MappingInterface $mapping The URL pattern to authenticator mapping
      *
      * @return void
      */
@@ -222,6 +225,12 @@ class StandardAuthenticationManager extends AbstractManager implements Authentic
 
                         // if we've an user principal, query the roles
                         if ($authenticator->authenticate($servletRequest, $servletResponse)) {
+                            // query whether or not the mapping has roles the user has to be assigned to
+                            if (sizeof($mapping->getRoleNames()) === 0) {
+                                // if not, we're authenticated
+                                return $authenticated;
+                            }
+
                             // initialize the roles flag
                             $inRole = false;
 
@@ -235,7 +244,7 @@ class StandardAuthenticationManager extends AbstractManager implements Authentic
 
                             // if not, throw an SecurityException
                             if ($inRole === false) {
-                                throw new SecurityException('User doesn\'t have necessary privileges', 403);
+                                throw new SecurityException(sprintf('User doesn\'t have necessary privileges for resource %s', $servletRequest->getUri()), 403);
                             }
                         }
 
