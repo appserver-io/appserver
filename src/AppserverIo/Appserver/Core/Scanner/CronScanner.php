@@ -104,6 +104,8 @@ class CronScanner extends AbstractScanner
 
         // execute all the registered CRON jobs
         while (true) {
+            // initialize an instance with the current date/time
+            $currentTime = new \DateTime();
             // execute each of the jobs found in the configuration file
             /** @var \AppserverIo\Appserver\Core\Api\Node\CronNodeInterface $cronNode */
             foreach ($cronNodes as $cronNode) {
@@ -114,7 +116,7 @@ class CronScanner extends AbstractScanner
                     $schedule = $jobNode->getSchedule()->getNodeValue()->__toString();
 
                     // query whether the job has to be scheduled or not
-                    if (CronExpression::factory($schedule)->isDue()) {
+                    if (CronExpression::factory($schedule)->isDue($currentTime)) {
                         $this->getCronJob($jobNode);
                     }
                 }

@@ -22,12 +22,10 @@ namespace AppserverIo\Appserver\ServletEngine\Security\DependencyInjection;
 
 use AppserverIo\Lang\Boolean;
 use AppserverIo\Lang\Reflection\ReflectionClass;
-use AppserverIo\Http\Authentication\AuthenticationException;
 use AppserverIo\Appserver\Core\Api\Node\WebAppNode;
 use AppserverIo\Appserver\ServletEngine\Security\Mapping;
-use AppserverIo\Appserver\ServletEngine\Security\AuthenticationManagerInterface;
-use AppserverIo\Appserver\ServletEngine\Authenticator\Utils\FormKeys;
-use AppserverIo\Psr\HttpMessage\Protocol;
+use AppserverIo\Psr\Auth\AuthenticationManagerInterface;
+use AppserverIo\Http\Authentication\AuthenticationException;
 
 /**
  * Parser implementation to parse a web application deployment descriptor (WEB-INF/web.xml).
@@ -51,7 +49,7 @@ class DeploymentDescriptorParser
     /**
      * Inject the authentication context instance.
      *
-     * @param \AppserverIo\Appserver\ServletEngine\Security\AuthenticationManagerInterface $authenticationContext The authentication context instance
+     * @param \AppserverIo\Psr\Auth\AuthenticationManagerInterface $authenticationContext The authentication context instance
      *
      * @return void
      */

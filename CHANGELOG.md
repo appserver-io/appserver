@@ -1,3 +1,13 @@
+# Version 1.1.4-beta6
+
+## Bugfixes
+
+* Fixed issue in CronScanner that prevents running multiple jobs within the same schedule
+
+## Features
+
+* Switched to new security/authentication libraries
+
 # Version 1.1.4-beta5
 
 ## Bugfixes

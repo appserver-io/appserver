@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\ServletEngine\Security;
 
+use AppserverIo\Psr\Auth\MappingInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
 
 /**
