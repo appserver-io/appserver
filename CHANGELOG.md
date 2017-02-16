@@ -1,3 +1,13 @@
+# Version 1.1.4-beta7
+
+## Bugfixes
+
+* Explictly define react/socket version 0.4.*
+
+## Features
+
+* None
+
 # Version 1.1.4-beta6
 
 ## Bugfixes
