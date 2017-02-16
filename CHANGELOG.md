@@ -2,7 +2,7 @@
 
 ## Bugfixes
 
-* None
+* Fixed issue in CronScanner that prevents running multiple jobs within the same schedule
 
 ## Features
 
