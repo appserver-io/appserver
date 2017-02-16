@@ -1,3 +1,13 @@
+# Version 1.1.4-beta6
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Switched to new security/authentication libraries
+
 # Version 1.1.4-beta5
 
 ## Bugfixes
