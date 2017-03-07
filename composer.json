@@ -6,6 +6,7 @@
     "require": {
         "php": ">=5.4.0",
         "rhumsaa/uuid": "~2.4",
+        "react/dns": "0.4.4",
         "react/socket": "0.4.*",
         "react/socket-client": "0.5.0",
         "doctrine/orm": "2.5.*",

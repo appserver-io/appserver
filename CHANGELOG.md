@@ -2,6 +2,7 @@
 
 ## Bugfixes
 
+* Explictly define react/dns version 0.4.4 to avoid Cannot redeclare React\Promise\Timer\timeout()
 * Explictly define react/socket version 0.4.*
 
 ## Features
