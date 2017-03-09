@@ -35,7 +35,7 @@ Give it a try!
 * [Semantic Versioning](#semantic-versioning)
 * [Installation](#installation)
 * [Basic Usage](#basic-usage)
-* [HTTP(S) Server](#http-s-server)
+* [HTTP(S) Server](#https-server)
 * [Servlet-Engine](#servlet-engine)
 * [Annotations](#annotations)
 * [Dependency Injection](#dependency-injection)
