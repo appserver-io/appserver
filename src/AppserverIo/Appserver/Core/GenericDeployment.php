@@ -63,7 +63,7 @@ class GenericDeployment extends AbstractDeployment
                 $datasourceFiles = array_merge(
                     $datasourceFiles,
                     $this->prepareDatasourceFiles(
-                        $this->getDeploymentService()->globDir(AppEnvironmentHelper::getEnvironmentAwareGlobPattern($webappPath, 'META-INF/*-ds'))
+                        $this->getDeploymentService()->globDir(AppEnvironmentHelper::getEnvironmentAwareGlobPattern($webappPath, 'META-INF' . DIRECTORY_SEPARATOR . '*-ds'))
                     )
                 );
             }
