@@ -1,3 +1,14 @@
+# Version 1.1.4-beta8
+
+## Bugfixes
+
+* Fixed invalid user/group for PHP-FPM in Dockerfile
+
+## Features
+
+* Allow PHP-FPM execution via supervicsor as root
+* Add MySQL installation to Dockerfile
+
 # Version 1.1.4-beta7
 
 ## Bugfixes
