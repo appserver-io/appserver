@@ -14,10 +14,16 @@ MAINTAINER Tim Wagner <tw@appserver.io>
 ENV APPSERVER_RUNTIME_BUILD_VERSION 1.1.6-44
 
 # update the sources list
-RUN apt-get update \
+RUN apt-key adv --keyserver pgp.mit.edu --recv-keys 5072E1F5 \
+
+    # add the MySQL repository to the sources list
+    && echo "deb http://repo.mysql.com/apt/debian/ jessie mysql-5.6" >> /etc/apt/sources.list.d/mysql.list \
+
+    # update the sources list
+    && apt-get update \
 
     # install the necessary packages
-    && DEBIAN_FRONTEND=noninteractive apt-get install supervisor wget git -y python-pip \
+    && DEBIAN_FRONTEND=noninteractive apt-get install supervisor wget git mysql-server -y python-pip \
 
     # install the Python package to redirect the supervisord output
     && pip install supervisor-stdout
@@ -61,6 +67,10 @@ RUN ln -s /opt/appserver/bin/composer.phar /usr/local/bin/composer \
     # modify user-rights in configuration
     && sed -i "s/www-data/root/g" etc/appserver/appserver.xml \
 
+    # replace the default user/group for the PHP-FPM configuration
+    && sed -i "s/user = www-data/user = root/g" etc/php-fpm.conf \
+    && sed -i "s/group = www-data/group = root/g" etc/php-fpm.conf \
+
     # modify system logger configuration
     && sed -i "s/var\/log\/appserver-errors.log/php:\/\/stderr/g" etc/appserver/appserver.xml \
 
@@ -84,6 +94,7 @@ RUN ln -s /opt/appserver/bin/composer.phar /usr/local/bin/composer \
 
     # modify the error_log of PHP-FPM php.ini to /dev/stderr
     && sed -i "s/\/opt\/appserver\/var\/log\/php-fpm-fcgi_errors.log/\/proc\/self\/fd\/2/g" etc/php-fpm-fcgi.ini \
+    && sed -i "s/;always_populate_raw_post_data = On/always_populate_raw_post_data = -1/g" etc/php-fpm-fcgi.ini \
 
     # create a symlink to the supervisord configuration file
     && ln -s /opt/appserver/etc/supervisor/conf.d/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
