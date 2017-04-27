@@ -6,6 +6,7 @@
 
 ## Features
 
+* Allow PHP-FPM execution via supervicsor as root
 * Add MySQL installation to Dockerfile
 
 # Version 1.1.4-beta7
