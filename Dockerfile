@@ -14,16 +14,10 @@ MAINTAINER Tim Wagner <tw@appserver.io>
 ENV APPSERVER_RUNTIME_BUILD_VERSION 1.1.6-44
 
 # update the sources list
-RUN apt-key adv --keyserver pgp.mit.edu --recv-keys 5072E1F5 \
-
-    # add the MySQL repository to the sources list
-    && echo "deb http://repo.mysql.com/apt/debian/ jessie mysql-5.6" >> /etc/apt/sources.list.d/mysql.list \
-
-    # update the sources list
-    && apt-get update \
+RUN apt-get update \
 
     # install the necessary packages
-    && DEBIAN_FRONTEND=noninteractive apt-get install supervisor wget git mysql-server -y python-pip \
+    && DEBIAN_FRONTEND=noninteractive apt-get install supervisor wget git vim -y python-pip \
 
     # install the Python package to redirect the supervisord output
     && pip install supervisor-stdout
