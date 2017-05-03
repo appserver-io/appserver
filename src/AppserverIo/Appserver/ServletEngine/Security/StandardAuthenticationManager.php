@@ -39,6 +39,7 @@ use AppserverIo\Appserver\Naming\Utils\NamingDirectoryKeys;
 use AppserverIo\Appserver\ServletEngine\Security\DependencyInjection\DeploymentDescriptorParser;
 use AppserverIo\Psr\Auth\RealmInterface;
 use AppserverIo\Psr\Auth\MappingInterface;
+use AppserverIo\Psr\Security\SecurityException;
 
 /**
  * The authentication manager handles request which need Http authentication.
