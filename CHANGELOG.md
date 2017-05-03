@@ -7,7 +7,7 @@
 
 ## Features
 
-* Remove MySQL installation from Dockerfile
+* None
 
 # Version 1.1.4-beta9
 
