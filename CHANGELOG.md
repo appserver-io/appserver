@@ -1,3 +1,14 @@
+# Version 1.1.4-beta10
+
+## Bugfixes
+
+* Remove invalid MySQL configuration from supervisor configuration file
+* Add necessary use statement for SecurityException
+
+## Features
+
+* Remove MySQL installation from Dockerfile
+
 # Version 1.1.4-beta9
 
 ## Bugfixes
