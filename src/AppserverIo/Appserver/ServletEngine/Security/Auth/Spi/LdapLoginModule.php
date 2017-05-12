@@ -8,7 +8,6 @@
  * This source file is subject to the Open Software License (OSL 3.0)
  * that is available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
-    }
  *
  * PHP version 5
  *
@@ -224,14 +223,15 @@ class LdapLoginmodule extends UsernamePasswordLoginModule
                 throw new LoginException(sprintf('Failed to create principal: %s', $e->getMessage()));
             }
         }
-        $ldap_connection = $this->ldapConnect();
-        if ($ldap_connection) {
+
+        $ldapConnection = $this->ldapConnect();
+        if ($ldapConnection) {
             // Replace the placeholder  with the actual username of the user
             $this->baseFilter = preg_replace('/\{0\}/', "$name", $this->baseFilter);
 
-            $search = ldap_search($ldap_connection, $this->baseDN, $this->baseFilter);
-            $entry = ldap_first_entry($ldap_connection, $search);
-            $userDN = ldap_get_dn($ldap_connection, $entry);
+            $search = ldap_search($ldapConnection, $this->baseDN, $this->baseFilter);
+            $entry = ldap_first_entry($ldapConnection, $search);
+            $userDN = ldap_get_dn($ldapConnection, $entry);
 
             if (!(isset($userDN))) {
                 throw new LoginException(sprintf('User not found in LDAP directory'));
@@ -240,8 +240,8 @@ class LdapLoginmodule extends UsernamePasswordLoginModule
             throw new LoginException(sprintf('Couldn\'t connect to LDAP server'));
         }
 
-        //Bind the authenticating user to the LDAP directory
-        $bind = ldap_bind($ldap_connection, $userDN, $password);
+        // bind the authenticating user to the LDAP directory
+        $bind = ldap_bind($ldapConnection, $userDN, $password);
         if ($bind === false) {
             throw new LoginException(sprintf('Username or password wrong'));
         }
@@ -299,6 +299,10 @@ class LdapLoginmodule extends UsernamePasswordLoginModule
         try {
             $group->addMember($this->createIdentity(new String($name)));
         } catch (\Exception $e) {
+            $application
+                ->getNamingDirectory()
+                ->search(NamingDirectoryKeys::SYSTEM_LOGGER)
+                ->error($e->__toString());
         }
     }
 
@@ -340,19 +344,19 @@ class LdapLoginmodule extends UsernamePasswordLoginModule
     protected function ldapConnect()
     {
 
-        $ldap_connection = ldap_connect($this->ldapUrl, $this->ldapPort);
+        $ldapConnection = ldap_connect($this->ldapUrl, $this->ldapPort);
 
-        if ($ldap_connection) {
+        if ($ldapConnection) {
             if ($this->ldapStartTls === 'true') {
-                ldap_start_tls($ldap_connection);
+                ldap_start_tls($ldapConnection);
             }
-            ldap_set_option($ldap_connection, LDAP_OPT_PROTOCOL_VERSION, 3);
+            ldap_set_option($ldapConnection, LDAP_OPT_PROTOCOL_VERSION, 3);
 
             //anonymous login
             if ($this->allowEmptyPasswords === 'true') {
-                $bind = ldap_bind($ldap_connection);
+                $bind = ldap_bind($ldapConnection);
             } else {
-                $bind = ldap_bind($ldap_connection, $this->bindDN, $this->bindCredential);
+                $bind = ldap_bind($ldapConnection, $this->bindDN, $this->bindCredential);
             }
             if (!$bind) {
                 throw new LoginException('Bind to server failed');
@@ -360,7 +364,7 @@ class LdapLoginmodule extends UsernamePasswordLoginModule
         } else {
             return false;
         }
-        return $ldap_connection;
+        return $ldapConnection;
     }
 
     /**
@@ -378,17 +382,26 @@ class LdapLoginmodule extends UsernamePasswordLoginModule
         }
 
         $groupName = Util::DEFAULT_GROUP_NAME;
-        $ldap_connection = $this->ldapConnect();
+        $ldapConnection = $this->ldapConnect();
+
+        // replace the {0} placeholder with the username of the user
         $this->roleFilter = preg_replace("/\{0\}/", "$user", $this->roleFilter);
+        // replace the {1} placeholder with the distiniguished name of the user
         $this->roleFilter = preg_replace("/\{1\}/", "$userDN", $this->roleFilter);
-        $search = ldap_search($ldap_connection, $this->rolesDN, $this->roleFilter);
-        $entry = ldap_first_entry($ldap_connection, $search);
+
+        // search for the roles using the roleFilter and get the first entry
+        $search = ldap_search($ldapConnection, $this->rolesDN, $this->roleFilter);
+        $entry = ldap_first_entry($ldapConnection, $search);
+
         do {
-            $dn = ldap_get_dn($ldap_connection, $entry);
+            // get the distinguished name of the entry and extract the common names out of it
+            $dn = ldap_get_dn($ldapConnection, $entry);
             $roleArray = $this->extractCNFromDN($dn);
+            // add every returned CN to the roles
             foreach ($roleArray as $role) {
                 $this->addRole($groupName, $role);
             }
-        } while ($entry = ldap_next_entry($ldap_connection, $entry));
+            // continue as long as there are entries still left from the search
+        } while ($entry = ldap_next_entry($ldapConnection, $entry));
     }
 }
