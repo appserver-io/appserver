@@ -306,6 +306,8 @@ class LdapLoginmodule extends UsernamePasswordLoginModule
      */
     protected function addRole($groupName, $name)
     {
+        $application = RequestHandler::getApplicationContext();
+
         if ($this->setsMap->exists($groupName) === false) {
             $group = new SimpleGroup(new String($groupName));
             $this->setsMap->add($groupName, $group);
