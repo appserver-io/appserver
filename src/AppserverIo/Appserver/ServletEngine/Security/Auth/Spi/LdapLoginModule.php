@@ -134,6 +134,20 @@ class LdapLoginmodule extends UsernamePasswordLoginModule
     protected $setsMap = null;
 
     /**
+     * The username of the user
+     *
+     * @var string
+     */
+    protected $username = null;
+
+    /**
+     * The distinguished name of the user
+     *
+     * @var string
+     */
+    protected $userDN = null;
+
+    /**
      * Initialize the login module. This stores the subject, callbackHandler and sharedState and options
      * for the login session. Subclasses should override if they need to process their own options. A call
      * to parent::initialize() must be made in the case of an override.
@@ -210,15 +224,15 @@ class LdapLoginmodule extends UsernamePasswordLoginModule
         $this->loginOk = false;
 
         // array containing the username and password from the user's input
-        list ($name, $password) = $this->getUsernameAndPassword();
+        list ($this->username, $password) = $this->getUsernameAndPassword();
 
-        if ($name === null && $password === null) {
+        if ($this->username === null && $password === null) {
             $this->identity = $this->unauthenticatedIdentity;
         }
 
         if ($this->identity === null) {
             try {
-                $this->identity = $this->createIdentity($name);
+                $this->identity = $this->createIdentity($this->username);
             } catch (\Exception $e) {
                 throw new LoginException(sprintf('Failed to create principal: %s', $e->getMessage()));
             }
@@ -227,13 +241,14 @@ class LdapLoginmodule extends UsernamePasswordLoginModule
         $ldapConnection = $this->ldapConnect();
         if ($ldapConnection) {
             // Replace the placeholder  with the actual username of the user
-            $this->baseFilter = preg_replace('/\{0\}/', "$name", $this->baseFilter);
+            $this->baseFilter = preg_replace('/\{0\}/', "$this->username", $this->baseFilter);
 
+            var_dump($this->username);
             $search = ldap_search($ldapConnection, $this->baseDN, $this->baseFilter);
             $entry = ldap_first_entry($ldapConnection, $search);
-            $userDN = ldap_get_dn($ldapConnection, $entry);
+            $this->userDN = ldap_get_dn($ldapConnection, $entry);
 
-            if (!(isset($userDN))) {
+            if (!(isset($this->userDN))) {
                 throw new LoginException(sprintf('User not found in LDAP directory'));
             }
         } else {
@@ -241,7 +256,7 @@ class LdapLoginmodule extends UsernamePasswordLoginModule
         }
 
         // bind the authenticating user to the LDAP directory
-        $bind = ldap_bind($ldapConnection, $userDN, $password);
+        $bind = ldap_bind($ldapConnection, $this->userDN, $password);
         if ($bind === false) {
             throw new LoginException(sprintf('Username or password wrong'));
         }
@@ -249,10 +264,9 @@ class LdapLoginmodule extends UsernamePasswordLoginModule
         // query whether or not password stacking has been activated
         if ($this->getUseFirstPass()) {
             // add the username and password to the shared state map
-            $this->sharedState->add(SharedStateKeys::LOGIN_NAME, $name);
+            $this->sharedState->add(SharedStateKeys::LOGIN_NAME, $this->username);
             $this->sharedState->add(SharedStateKeys::LOGIN_PASSWORD, $this->credential);
         }
-        $this->rolesSearch($name);
 
         $this->loginOk = true;
         return true;
@@ -278,6 +292,8 @@ class LdapLoginmodule extends UsernamePasswordLoginModule
      */
     protected function getRoleSets()
     {
+        // search and add the roles of the current user
+        $this->rolesSearch($this->username, $this->userDN);
         return $this->setsMap->toArray();
     }
 
