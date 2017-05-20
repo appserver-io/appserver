@@ -26,14 +26,12 @@ use AppserverIo\Collections\HashMap;
 use AppserverIo\Collections\MapInterface;
 use AppserverIo\Psr\Security\Auth\Subject;
 use AppserverIo\Psr\Security\Auth\Login\LoginException;
-use AppserverIo\Psr\Security\Auth\Login\FailedLoginException;
 use AppserverIo\Psr\Security\Auth\Callback\CallbackHandlerInterface;
-use AppserverIo\Appserver\ServletEngine\Security\SecurityException;
+use AppserverIo\Appserver\ServletEngine\RequestHandler;
+use AppserverIo\Appserver\ServletEngine\Security\SimpleGroup;
 use AppserverIo\Appserver\ServletEngine\Security\Utils\Util;
 use AppserverIo\Appserver\ServletEngine\Security\Utils\ParamKeys;
 use AppserverIo\Appserver\ServletEngine\Security\Utils\SharedStateKeys;
-use AppserverIo\Appserver\ServletEngine\RequestHandler;
-use AppserverIo\Appserver\ServletEngine\Security\SimpleGroup;
 
 /**
  * This class provides LDAP login functionality to an openldap server.
@@ -46,6 +44,13 @@ use AppserverIo\Appserver\ServletEngine\Security\SimpleGroup;
  */
 class LdapLoginmodule extends UsernamePasswordLoginModule
 {
+
+    /**
+     * The key for the CN in a DN.
+     *
+     * @var string
+     */
+    const CN = 'cn';
 
     /**
      * The LDAP url of the LDAP server
@@ -183,33 +188,57 @@ class LdapLoginmodule extends UsernamePasswordLoginModule
         if ($params->exists(ParamKeys::URL)) {
             $this->ldapUrl = $params->get(ParamKeys::URL);
         }
+
+        // initialize the port of the LDAP server
         if ($params->exists(ParamKeys::PORT)) {
             $this->ldapPort = $params->get(ParamKeys::PORT);
         }
+
+        // initialize the DN for th users
         if ($params->exists(ParamKeys::BASE_DN)) {
             $this->baseDN = $params->get(ParamKeys::BASE_DN);
         }
+
+        // initialize the bind DN
         if ($params->exists(ParamKeys::BIND_DN)) {
             $this->bindDN= $params->get(ParamKeys::BIND_DN);
         }
+
+        // initialize the credentials for the LDAP bind
         if ($params->exists(ParamKeys::BIND_CREDENTIAL)) {
             $this->bindCredential = $params->get(ParamKeys::BIND_CREDENTIAL);
         }
+
+        // initialize the filter for the users
         if ($params->exists(ParamKeys::BASE_FILTER)) {
             $this->baseFilter = $params->get(ParamKeys::BASE_FILTER);
         }
+
+        // initialize the DN for the roles
         if ($params->exists(ParamKeys::ROLES_DN)) {
             $this->rolesDN = $params->get(ParamKeys::ROLES_DN);
         }
+
+        // initialize the filter for the roles
         if ($params->exists(ParamKeys::ROLE_FILTER)) {
             $this->roleFilter = $params->get(ParamKeys::ROLE_FILTER);
         }
+
+        // initialize the flag to use START TLS or not
         if ($params->exists(ParamKeys::START_TLS)) {
-            $this->ldapStartTls = $params->get(ParamKeys::START_TLS);
+            $this->ldapStartTls = Boolean::valueOf(
+                new String($params->get(ParamKeys::START_TLS))
+            )->booleanValue();
         }
+
+        // initialize the flag to allow empty passwords or not
         if ($params->exists(ParamKeys::ALLOW_EMPTY_PASSWORDS)) {
-            $this->allowEmptyPasswords = $params->get(ParamKeys::ALLOW_EMPTY_PASSWORDS);
+            $this->allowEmptyPasswords = Boolean::valueOf(
+                new String($params->get(ParamKeys::ALLOW_EMPTY_PASSWORDS))
+            )->booleanValue();
         }
+
+        // initialialize the hash map for the roles
         $this->setsMap = new HashMap();
     }
 
@@ -221,44 +250,48 @@ class LdapLoginmodule extends UsernamePasswordLoginModule
      */
     public function login()
     {
+
+        // initialize the flag for the successfull login
         $this->loginOk = false;
 
         // array containing the username and password from the user's input
         list ($this->username, $password) = $this->getUsernameAndPassword();
 
+        // query whether or not password AND username are set
         if ($this->username === null && $password === null) {
             $this->identity = $this->unauthenticatedIdentity;
         }
 
+        // try to create a identity based on the given username
         if ($this->identity === null) {
             try {
                 $this->identity = $this->createIdentity($this->username);
             } catch (\Exception $e) {
-                throw new LoginException(sprintf('Failed to create principal: %s', $e->getMessage()));
+                throw new LoginException(
+                    sprintf('Failed to create principal: %s', $e->getMessage())
+                );
             }
         }
 
+        // connect to the LDAP server
         $ldapConnection = $this->ldapConnect();
-        if ($ldapConnection) {
-            // Replace the placeholder  with the actual username of the user
-            $this->baseFilter = preg_replace('/\{0\}/', "$this->username", $this->baseFilter);
 
-            var_dump($this->username);
-            $search = ldap_search($ldapConnection, $this->baseDN, $this->baseFilter);
-            $entry = ldap_first_entry($ldapConnection, $search);
-            $this->userDN = ldap_get_dn($ldapConnection, $entry);
+        // replace the placeholder  with the actual username of the user
+        $this->baseFilter = preg_replace('/\{0\}/', "$this->username", $this->baseFilter);
 
-            if (!(isset($this->userDN))) {
-                throw new LoginException(sprintf('User not found in LDAP directory'));
-            }
-        } else {
-            throw new LoginException(sprintf('Couldn\'t connect to LDAP server'));
+        // try to load the user from the LDAP server
+        $search = ldap_search($ldapConnection, $this->baseDN, $this->baseFilter);
+        $entry = ldap_first_entry($ldapConnection, $search);
+        $this->userDN = ldap_get_dn($ldapConnection, $entry);
+
+        // query whether or not the user is available
+        if (!isset($this->userDN)) {
+            throw new LoginException('User not found in LDAP directory');
         }
 
         // bind the authenticating user to the LDAP directory
-        $bind = ldap_bind($ldapConnection, $this->userDN, $password);
-        if ($bind === false) {
-            throw new LoginException(sprintf('Username or password wrong'));
+        if (($bind = ldap_bind($ldapConnection, $this->userDN, $password)) === false) {
+            throw new LoginException('Username or password wrong');
         }
 
         // query whether or not password stacking has been activated
@@ -268,8 +301,8 @@ class LdapLoginmodule extends UsernamePasswordLoginModule
             $this->sharedState->add(SharedStateKeys::LOGIN_PASSWORD, $this->credential);
         }
 
-        $this->loginOk = true;
-        return true;
+        // set the login flag to TRUE and return
+        return $this->loginOk = true;
     }
 
     /**
@@ -298,56 +331,67 @@ class LdapLoginmodule extends UsernamePasswordLoginModule
     }
 
     /**
-     * Adds a role to the setsMap
+     * Adds a role to the hash map with the roles.
      *
      * @param string $groupName The name of the group
      * @param string $name      The name of the role to be added to the group
+     *
      * @return void
      */
     protected function addRole($groupName, $name)
     {
+
+        // load the application
         $application = RequestHandler::getApplicationContext();
 
+        // query whether or not, the group already exists
         if ($this->setsMap->exists($groupName) === false) {
             $group = new SimpleGroup(new String($groupName));
             $this->setsMap->add($groupName, $group);
         } else {
             $group = $this->setsMap->get($groupName);
         }
+
         try {
+            // finally add the identity to the group
             $group->addMember($this->createIdentity(new String($name)));
+
         } catch (\Exception $e) {
-            $application
-                ->getNamingDirectory()
-                ->search(NamingDirectoryKeys::SYSTEM_LOGGER)
-                ->error($e->__toString());
+            $application->getNamingDirectory()
+                        ->search(NamingDirectoryKeys::SYSTEM_LOGGER)
+                        ->error($e->__toString());
         }
     }
 
     /**
-     * Extracts the common name from a Distinguished name
+     * Extracts the common name from a distinguished name.
      *
      * @param string $dn The distinguished name of the authenticating user
-     * @return array
      *
+     * @return array
      */
     protected function extractCNFromDN($dn)
     {
+
+        // explode the DN
         $splitArray = explode(',', $dn);
         $keyValue = array();
+
+        // iterate over all elements
         foreach ($splitArray as $value) {
             $tempArray  = explode('=', $value);
             $keyValue[$tempArray[0]] = array();
             $keyValue[$tempArray[0]][] = $tempArray[1];
         }
 
-        return $keyValue['cn'];
+        // return the CN
+        return $keyValue[LdapLoginmodule::CN];
     }
 
     /**
-    * return's the authenticated user identity.
+    * Return's the authenticated user identity.
     *
-    * @return \appserverio\psr\security\principalinterface the user identity
+    * @return \AppserverIo\Psr\Security\PrincipalInterface the user identity
     */
     protected function getIdentity()
     {
@@ -355,55 +399,81 @@ class LdapLoginmodule extends UsernamePasswordLoginModule
     }
 
     /**
-     * Creates a new connection to the ldap server, binds to the ldap server and returns the connection
+     * Creates a new connection to the ldap server, binds to the LDAP server and returns the connection
      *
-     * @return resource|false
+     * @return resource The LDAP connection
+     * @throws \AppserverIo\Psr\Security\Auth\Login\LoginException Is thrown if the connection or the bind to the LDAP server failed
      */
     protected function ldapConnect()
     {
 
-        $ldapConnection = ldap_connect($this->ldapUrl, $this->ldapPort);
-
-        if ($ldapConnection) {
-            if ($this->ldapStartTls === 'true') {
+        // try to connect to the LDAP server
+        if ($ldapConnection = ldap_connect($this->ldapUrl, $this->ldapPort)) {
+            // query whether or no we want to use START TLS
+            if ($this->ldapStartTls) {
                 ldap_start_tls($ldapConnection);
             }
+
+            // set the LDAP protocol version
             ldap_set_option($ldapConnection, LDAP_OPT_PROTOCOL_VERSION, 3);
 
-            //anonymous login
-            if ($this->allowEmptyPasswords === 'true') {
+            // query whether or not we want a anonymous login
+            if ($this->allowEmptyPasswords) {
                 $bind = ldap_bind($ldapConnection);
             } else {
                 $bind = ldap_bind($ldapConnection, $this->bindDN, $this->bindCredential);
             }
-            if (!$bind) {
-                throw new LoginException('Bind to server failed');
+
+            // query whether or not the bind succeeded
+            if ($bind) {
+                return $ldapConnection;
             }
-        } else {
-            return false;
+
+            // throw an exception if we can't bind using the DN
+            throw new LoginException(
+                sprintf(
+                    'Can\'t bind %s on LDAP server %s:%d',
+                    $this->bindDN,
+                    $this->ldapUrl,
+                    $this->ldapPort
+                )
+            );
         }
-        return $ldapConnection;
+
+        // throw an exception if we can't connect
+        throw new LoginException(
+            sprintf(
+                'Can\'t connect to the LDAP server %s:%d',
+                $this->ldapUrl,
+                $this->ldapPort
+            )
+        );
     }
 
     /**
-     * Search the authenticated user for his user groups/roles
-     * The found roles are then added to the setsMap hashmap
+     * Search the authenticated user for his user groups/roles and add
+     * their roles to the hash map with the roles.
      *
      * @param string $user   the authenticated user
      * @param string $userDN the DN of the authenticated user
+     *
      * @return void
      */
     protected function rolesSearch($user, $userDN)
     {
+
+        // query whether or not roles DN or filter has been set
         if ($this->rolesDN === null || $this->roleFilter === null) {
             return;
         }
 
+        // load the default group name and the LDAP connection
         $groupName = Util::DEFAULT_GROUP_NAME;
         $ldapConnection = $this->ldapConnect();
 
         // replace the {0} placeholder with the username of the user
         $this->roleFilter = preg_replace("/\{0\}/", "$user", $this->roleFilter);
+
         // replace the {1} placeholder with the distiniguished name of the user
         $this->roleFilter = preg_replace("/\{1\}/", "$userDN", $this->roleFilter);
 
@@ -415,10 +485,12 @@ class LdapLoginmodule extends UsernamePasswordLoginModule
             // get the distinguished name of the entry and extract the common names out of it
             $dn = ldap_get_dn($ldapConnection, $entry);
             $roleArray = $this->extractCNFromDN($dn);
+
             // add every returned CN to the roles
             foreach ($roleArray as $role) {
                 $this->addRole($groupName, $role);
             }
+
             // continue as long as there are entries still left from the search
         } while ($entry = ldap_next_entry($ldapConnection, $entry));
     }
