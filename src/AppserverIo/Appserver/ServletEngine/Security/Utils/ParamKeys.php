@@ -124,6 +124,76 @@ class ParamKeys
     const ROLES_PATH_PREFIX = 'rolesPathPrefix';
 
     /**
+     * The key for the "url" parameter.
+     *
+     * @var string
+     */
+    const URL = 'url';
+
+    /**
+     * The key for the "port" parameter.
+     *
+     * @var string
+     */
+    const PORT = 'port';
+
+    /**
+     * The key for the "bindDistinguishedName" parameter.
+     *
+     * @var string
+     */
+    const BIND_DN = 'bindDN';
+
+    /**
+     * The key for the "bindCredential" parameter.
+     *
+     * @var string
+     */
+    const BIND_CREDENTIAL = 'bindCredential';
+
+    /**
+     * The key for the "baseDN" parameter.
+     *
+     * @var string
+     */
+    const BASE_DN = 'baseDN';
+
+    /**
+     * The key for the "baseFilter" parameter.
+     *
+     * @var string
+     */
+    const BASE_FILTER = 'baseFilter';
+
+    /**
+     * The key for the "rolesCtxDN" parameter.
+     *
+     * @var string
+     */
+    const ROLES_DN = 'rolesDN';
+
+    /**
+     * The key for the "roleFilter" parameter.
+     *
+     * @var string
+     */
+    const ROLE_FILTER = 'roleFilter';
+
+    /**
+     * The key for the "StartTls";
+     */
+    const START_TLS = 'startTls';
+
+    /**
+     * The key for the "allowEmptyPasswords" parameter.
+     *
+     * @var string
+     */
+    const ALLOW_EMPTY_PASSWORDS = 'allowEmptyPasswords';
+
+
+
+    /**
      * This is a utility class, so protect it against direct instantiation.
      */
     private function __construct()
