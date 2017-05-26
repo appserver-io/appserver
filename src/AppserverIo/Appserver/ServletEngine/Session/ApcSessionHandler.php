@@ -20,11 +20,8 @@
 
 namespace AppserverIo\Appserver\ServletEngine\Session;
 
-use AppserverIo\Lang\Reflection\ReflectionClass;
 use AppserverIo\Psr\Servlet\ServletSessionInterface;
 use AppserverIo\Appserver\ServletEngine\Http\Session;
-use AppserverIo\Appserver\ServletEngine\SessionSettingsInterface;
-use AppserverIo\Appserver\ServletEngine\SessionMarshallerInterface;
 use AppserverIo\Appserver\ServletEngine\SessionCanNotBeSavedException;
 use AppserverIo\Appserver\ServletEngine\SessionCanNotBeDeletedException;
 

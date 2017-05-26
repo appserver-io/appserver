@@ -1,3 +1,16 @@
+# Version 1.1.4-beta11
+
+## Bugfixes
+
+* Fixed invalid use statement for RequestHandlerKeys in error.dhtml template
+* Fixed that conditions based on per-request operands do not get cached aggressively anymore
+* Fixed that rewrite rules do not forward their result to the next rule in the stack
+
+## Features
+
+* Add new LdapLoginModule to allow authentication against an OpenLdap server
+* Improve session bean performance by replacing remote proxy with a lightweight local implementation
+
 # Version 1.1.4-beta10
 
 ## Bugfixes

@@ -20,10 +20,9 @@
 namespace AppserverIo\Appserver\Core\Extractors;
 
 use AppserverIo\Appserver\Core\AbstractExtractor;
+use AppserverIo\Appserver\Core\Utilities\FileSystem;
 use AppserverIo\Appserver\Core\Interfaces\ExtractorInterface;
 use AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface;
-use PDepend\Util\FileUtil;
-use AppserverIo\Appserver\Core\Utilities\FileSystem;
 
 /**
  * An extractor implementation for phar files.
