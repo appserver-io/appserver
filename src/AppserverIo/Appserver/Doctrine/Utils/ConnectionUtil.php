@@ -24,8 +24,6 @@ use AppserverIo\Lang\String;
 use AppserverIo\Lang\Boolean;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\Core\Api\Node\DatabaseNodeInterface;
-use Doctrine\DBAL\Platforms\MySQL57Platform;
-use Doctrine\DBAL\Platforms\MySqlPlatform;
 
 /**
  * Utility class that helps to prepare the Doctrine DBAL connections.
