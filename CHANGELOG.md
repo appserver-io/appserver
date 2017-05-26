@@ -9,7 +9,6 @@
 ## Features
 
 * Add new LdapLoginModule to allow authentication against an OpenLdap server
-* Improve session bean performance by replacing remote proxy with a lightweight local implementation
 
 # Version 1.1.4-beta10
 

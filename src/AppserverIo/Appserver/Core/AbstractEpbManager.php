@@ -72,7 +72,7 @@ abstract class AbstractEpbManager extends AbstractManager
                     $application->getNamingDirectory()
                                 ->bind(
                                     $uri,
-                                    array(&$this, 'lookupLocalProxy'),
+                                    array(&$this, 'lookupProxy'),
                                     array(sprintf('%s/local', $beanName))
                                 );
 
