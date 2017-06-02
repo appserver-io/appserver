@@ -17,8 +17,8 @@ before_install:
   - wget https://scrutinizer-ci.com/ocular.phar
 
 script:
-  - ant composer-init
-  - ant build
+  - composer install
+  - vendor/bin/robo build
   - php ocular.phar code-coverage:upload --format=php-clover $TRAVIS_BUILD_DIR/target/reports/unit/clover.xml
 
 notifications:
