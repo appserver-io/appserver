@@ -1,3 +1,13 @@
+# Version 1.1.4-beta12
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Use Robo for build process
+
 # Version 1.1.4-beta11
 
 ## Bugfixes

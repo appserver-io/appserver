@@ -64,8 +64,8 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
     /**
      * Initialize and start the application server.
      *
-     * @param \AppserverIo\Psr\Naming\NamingDirectoryInterface $configurationFilename The default naming directory
-     * @param \AppserverIo\Storage\GenericStackable            $runlevels             The storage for the services
+     * @param \AppserverIo\Psr\Naming\NamingDirectoryInterface $namingDirectory The default naming directory
+     * @param \AppserverIo\Storage\GenericStackable            $runlevels       The storage for the services
      */
     protected function __construct(NamingDirectoryInterface $namingDirectory, GenericStackable $runlevels)
     {
@@ -88,8 +88,8 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
     /**
      * Creates a new singleton application server instance.
      *
-     * @param \AppserverIo\Psr\Naming\NamingDirectoryInterface $configurationFilename The default naming directory
-     * @param \AppserverIo\Storage\GenericStackable            $runlevels             The storage for the services
+     * @param \AppserverIo\Psr\Naming\NamingDirectoryInterface $namingDirectory The default naming directory
+     * @param \AppserverIo\Storage\GenericStackable            $runlevels       The storage for the services
      *
      * @return \AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface The singleton application instance
      */
@@ -208,6 +208,8 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
      * Set's the logger instances.
      *
      * @param array $loggers The logger instances to set
+     *
+     * @return void
      */
     public function setLoggers(array $loggers)
     {
@@ -430,6 +432,7 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
     /**
      * The thread's run() method that runs asynchronously.
      *
+     * @return void
      * @link http://www.php.net/manual/en/thread.run.php
      */
     public function run()
@@ -483,13 +486,9 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
         $this->init(null, $this->runlevel);
 
         do {
-
             try {
-
                 switch ($this->command) {
-
                     case InitCommand::COMMAND:
-
                         // copy command params -> the requested runlevel in that case
                         $this->runlevel = $this->params;
 
@@ -540,7 +539,6 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
                             $actualRunlevel = $this->runlevel;
 
                         } else {
-
                             // signal that we've finished switching the runlevels and wait
                             $this->locked = false;
                             $this->command = null;
@@ -616,6 +614,8 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
      *
      * @param integer $runlevel The runlevel of the requested service
      * @param string  $name     The name of the requested service
+     *
+     * @return mixed The service instance
      */
     public function getService($runlevel, $name)
     {
@@ -682,6 +682,8 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
 
     /**
      * Loads the bootstrap configuration from the XML file.
+     *
+     * @param string $bootstrapConfigurationFilename The boostrap configuration file
      *
      * @return \AppserverIo\Appserver\Core\Api\Node\BootstrapNode The boostrap configuration
      */

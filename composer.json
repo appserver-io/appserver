@@ -36,6 +36,7 @@
         "appserver-io/single-app": "~3.0",
         "appserver-io/properties": "~2.0",
         "appserver-io/concurrency": "0.3.*",
+        "appserver-io/robo-tasks": "~0.1",
         "appserver-io/description": "~7.0",
         "appserver-io/authenticator": "~1.0",
         "appserver-io/configuration": "~2.0",
@@ -44,7 +45,10 @@
     },
     "require-dev": {
         "mikey179/vfsStream": "1.*",
-        "appserver-io/build": "~1.0"
+        "appserver-io/build": "~1.0",
+        "consolidation/robo": "~1.0",
+        "henrikbjorn/lurker" : "~1.0",
+        "appserver-io/pthreads-polyfill": "~1.0"
     },
     "autoload": {
         "psr-0": {
