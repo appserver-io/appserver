@@ -43,6 +43,7 @@ use AppserverIo\Psr\EnterpriseBeans\Annotations\Timeout;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\EnterpriseBean;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Resource;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\PersistenceUnit;
+use AppserverIo\Psr\Di\ObjectManagerInterface;
 
 /**
  * A basic dependency injection provider implementation.
@@ -268,17 +269,18 @@ class Provider extends GenericStackable implements ProviderInterface
     /**
      * Injects the dependencies of the passed instance.
      *
-     * @param object      $instance  The instance to inject the dependencies for
-     * @param string|null $sessionId The session-ID, necessary to inject stateful session beans (SFBs)
+     * @param object $instance The instance to inject the dependencies for
      *
      * @return void
      */
-    public function injectDependencies($instance, $sessionId = null)
+    public function injectDependencies($instance)
     {
 
         // load the object manager instance
         /** @var \AppserverIo\Psr\Di\ObjectManagerInterface $objectManager */
-        $objectManager = $this->getNamingDirectory()->search(sprintf('php:global/%s/ObjectManagerInterface', $this->getApplication()->getUniqueName()));
+        $objectManager = $this->getNamingDirectory()->search(
+            sprintf('php:global/%s/%s', $this->getApplication()->getUniqueName(), ObjectManagerInterface::IDENTIFIER)
+        );
 
         // load the object descriptor for the instance from the the object manager
         if ($objectManager->hasObjectDescriptor($className = get_class($instance))) {
@@ -294,8 +296,7 @@ class Provider extends GenericStackable implements ProviderInterface
                 if ($injectionTarget = $reference->getInjectionTarget()) {
                     // load the instance to inject by lookup the initial context
                     $toInject = $this->getNamingDirectory()->search(
-                        sprintf('php:global/%s/%s', $this->getApplication()->getUniqueName(), $reference->getName()),
-                        array($sessionId)
+                        sprintf('php:global/%s/%s', $this->getApplication()->getUniqueName(), $reference->getName())
                     );
 
                     // query for method injection
@@ -327,27 +328,21 @@ class Provider extends GenericStackable implements ProviderInterface
     /**
      * Returns a new instance of the passed class name.
      *
-     * @param string      $className The fully qualified class name to return the instance for
-     * @param string|null $sessionId The session-ID, necessary to inject stateful session beans (SFBs)
-     * @param array       $args      Arguments to pass to the constructor of the instance
+     * @param string $className The fully qualified class name to return the instance for
      *
      * @return object The instance itself
      */
-    public function newInstance($className, $sessionId = null, array $args = array())
+    public function newInstance($className)
     {
 
         // load/create and return a new instance
         $reflectionClass = $this->getReflectionClass($className);
 
-        // check if we've a constructor
-        if ($reflectionClass->hasMethod('__construct')) {
-            $instance = $reflectionClass->newInstanceArgs($args);
-        } else {
-            $instance = $reflectionClass->newInstance();
-        }
+        // create a new instance
+        $instance = $reflectionClass->newInstance();
 
         // inject the dependencies
-        $this->injectDependencies($instance, $sessionId);
+        $this->injectDependencies($instance);
 
         // return the instance here
         return $instance;

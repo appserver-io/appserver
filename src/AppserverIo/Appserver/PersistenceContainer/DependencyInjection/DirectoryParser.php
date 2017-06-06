@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\PersistenceContainer\DependencyInjection;
 
+use AppserverIo\Psr\Di\ObjectManagerInterface;
 use AppserverIo\Psr\EnterpriseBeans\BeanContextInterface;
 
 /**
@@ -124,7 +125,7 @@ class DirectoryParser
 
         // load the object manager instance
         /** @var \AppserverIo\Psr\Di\ObjectManagerInterface $objectManager */
-        $objectManager = $this->getApplication()->search('ObjectManagerInterface');
+        $objectManager = $this->getApplication()->search(ObjectManagerInterface::IDENTIFIER);
 
         // check directory for classes we want to register
         /** @var \AppserverIo\Appserver\Core\Api\DeploymentService $service */

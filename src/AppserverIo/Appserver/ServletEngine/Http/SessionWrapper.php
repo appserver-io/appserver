@@ -24,6 +24,7 @@ use AppserverIo\Http\HttpCookie;
 use AppserverIo\Psr\Servlet\SessionUtils;
 use AppserverIo\Psr\Servlet\Http\HttpSessionWrapper;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
+use AppserverIo\Appserver\ServletEngine\SessionManagerInterface;
 
 /**
  * A wrapper to simplify session handling.
@@ -162,7 +163,7 @@ class SessionWrapper extends HttpSessionWrapper
         $this->setId(SessionUtils::generateRandomString());
 
         // load the session manager
-        $sessionManager = $this->getContext()->search('SessionManagerInterface');
+        $sessionManager = $this->getContext()->search(SessionManagerInterface::IDENTIFIER);
 
         // attach this session with the new ID
         $sessionManager->attach($this->getSession());

@@ -1,3 +1,13 @@
+# Version 1.1.5-alpha1
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Refactor DI integration for basic compatibility with psr/container
+
 # Version 1.1.4-beta12
 
 ## Bugfixes

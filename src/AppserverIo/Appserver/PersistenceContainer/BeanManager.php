@@ -191,7 +191,7 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface, Ma
 
         // load the object manager
         /** @var \AppserverIo\Psr\Di\ObjectManagerInterface $objectManager */
-        $objectManager = $this->getApplication()->search('ObjectManagerInterface');
+        $objectManager = $this->getApplication()->search(ObjectManagerInterface::IDENTIFIER);
 
         // register the beans found by annotations and the XML configuration
         /** \AppserverIo\Psr\Deployment\DescriptorInterface $objectDescriptor */
@@ -203,7 +203,7 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface, Ma
 
             // if we found a singleton session bean with a startup callback
             if ($descriptor instanceof SingletonSessionBeanDescriptorInterface && $descriptor->isInitOnStartup()) {
-                $this->getApplication()->search($descriptor->getName(), array(null, array($application)));
+                $this->getApplication()->search($descriptor->getName());
             }
         }
     }
@@ -412,15 +412,13 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface, Ma
     /**
      * Returns a new instance of the SSB with the passed class name.
      *
-     * @param string      $className The fully qualified class name to return the instance for
-     * @param string|null $sessionId The session-ID, necessary to inject stateful session beans (SFBs)
-     * @param array       $args      Arguments to pass to the constructor of the instance
+     * @param string $className The fully qualified class name to return the instance for
      *
      * @return object The instance itself
      */
-    public function newSingletonSessionBeanInstance($className, $sessionId = null, array $args = array())
+    public function newSingletonSessionBeanInstance($className)
     {
-        return $this->getObjectFactory()->newInstance($className, $sessionId, $args);
+        return $this->getObjectFactory()->newInstance($className);
     }
 
     /**
@@ -494,7 +492,7 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface, Ma
 
         // load a fresh bean instance and add it to the session container
         if ($instance == null) {
-            $instance = $application->search($className, array($sessionId, array($application)));
+            $instance = $application->search($className, array($sessionId, array()));
         }
 
         // query whether we already have an instance in the session container

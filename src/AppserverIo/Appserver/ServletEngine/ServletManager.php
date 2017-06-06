@@ -24,6 +24,8 @@ use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Storage\StorageInterface;
 use AppserverIo\Lang\Reflection\ReflectionClass;
 use AppserverIo\Appserver\Core\AbstractEpbManager;
+use AppserverIo\Psr\Di\ProviderInterface;
+use AppserverIo\Psr\Di\ObjectManagerInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Psr\Servlet\ServletInterface;
 use AppserverIo\Psr\Servlet\ServletContextInterface;
@@ -206,7 +208,7 @@ class ServletManager extends AbstractEpbManager implements ServletContextInterfa
 
         // load the object manager instance
         /** @var \AppserverIo\Psr\Di\ObjectManagerInterface $objectManager */
-        $objectManager = $this->getApplication()->search('ObjectManagerInterface');
+        $objectManager = $this->getApplication()->search(ObjectManagerInterface::IDENTIFIER);
 
         // register the beans located by annotations and the XML configuration
         /** \AppserverIo\Psr\Deployment\DescriptorInterface $objectDescriptor */
@@ -512,7 +514,7 @@ class ServletManager extends AbstractEpbManager implements ServletContextInterfa
         $sessionId = null;
 
         // if no session has already been load, initialize the session manager
-        if ($manager = $this->getApplication()->search('SessionManagerInterface')) {
+        if ($manager = $this->getApplication()->search(SessionManagerInterface::IDENTIFIER)) {
             $requestedSessionName = $manager->getSessionSettings()->getSessionName();
             if ($servletRequest->hasCookie($requestedSessionName)) {
                 $sessionId = $servletRequest->getCookie($requestedSessionName)->getValue();
@@ -537,11 +539,11 @@ class ServletManager extends AbstractEpbManager implements ServletContextInterfa
     {
 
         // load the servlet instance
-        $instance = $this->getResourceLocator()->locate($this, $servletPath, $sessionId, $args);
+        $instance = $this->getResourceLocator()->locate($this, $servletPath);
 
         // inject the dependencies
-        $dependencyInjectionContainer = $this->getApplication()->search('ProviderInterface');
-        $dependencyInjectionContainer->injectDependencies($instance, $sessionId);
+        $dependencyInjectionContainer = $this->getApplication()->search(ProviderInterface::IDENTIFIER);
+        $dependencyInjectionContainer->injectDependencies($instance);
 
         // return the instance
         return $instance;

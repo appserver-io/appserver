@@ -866,7 +866,7 @@ class Request implements HttpServletRequestInterface, ContextInterface
 
         // if no session has already been load, initialize the session manager
         /** @var \AppserverIo\Appserver\ServletEngine\SessionManagerInterface $manager */
-        $manager = $this->getContext()->search('SessionManagerInterface');
+        $manager = $this->getContext()->search(SessionManagerInterface::IDENTIFIER);
 
         // if no session manager was found, we don't support sessions
         if ($manager == null) {

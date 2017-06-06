@@ -20,6 +20,8 @@
 
 namespace AppserverIo\Appserver\PersistenceContainer;
 
+use AppserverIo\Psr\Di\ProviderInterface;
+use AppserverIo\Psr\Di\ObjectManagerInterface;
 use AppserverIo\Psr\EnterpriseBeans\BeanContextInterface;
 use AppserverIo\Psr\EnterpriseBeans\ResourceLocatorInterface;
 use AppserverIo\Psr\EnterpriseBeans\InvalidBeanTypeException;
@@ -61,7 +63,7 @@ class BeanLocator implements ResourceLocatorInterface
 
         // load the object manager
         /** @var \AppserverIo\Psr\Di\ObjectManagerInterface $objectManager */
-        $objectManager = $beanManager->getApplication()->search('ObjectManagerInterface');
+        $objectManager = $beanManager->getApplication()->search(ObjectManagerInterface::IDENTIFIER);
 
         // load the bean descriptor
         $descriptor = $objectManager->getObjectDescriptors()->get($className);
@@ -72,8 +74,8 @@ class BeanLocator implements ResourceLocatorInterface
             if ($instance = $beanManager->lookupStatefulSessionBean($sessionId, $className)) {
                 // load the object manager and re-inject the dependencies
                 /** @var \AppserverIo\Psr\Di\ProviderInterface $provider */
-                $provider = $beanManager->getApplication()->search('ProviderInterface');
-                $provider->injectDependencies($instance, $sessionId);
+                $provider = $beanManager->getApplication()->search(ProviderInterface::IDENTIFIER);
+                $provider->injectDependencies($instance);
 
                 // we've to check for post-detach callbacks
                 foreach ($descriptor->getPostDetachCallbacks() as $postDetachCallback) {
@@ -85,7 +87,7 @@ class BeanLocator implements ResourceLocatorInterface
             }
 
             // if not create a new instance and return it
-            $instance = $beanManager->newInstance($className, $sessionId, $args);
+            $instance = $beanManager->newInstance($className);
 
             // we've to check for post-construct callbacks
             foreach ($descriptor->getPostConstructCallbacks() as $postConstructCallback) {
@@ -102,8 +104,8 @@ class BeanLocator implements ResourceLocatorInterface
             if ($instance = $beanManager->lookupSingletonSessionBean($className)) {
                 // load the object manager and re-inject the dependencies
                 /** @var \AppserverIo\Psr\Di\ProviderInterface $provider */
-                $provider = $beanManager->getApplication()->search('ProviderInterface');
-                $provider->injectDependencies($instance, $sessionId);
+                $provider = $beanManager->getApplication()->search(ProviderInterface::IDENTIFIER);
+                $provider->injectDependencies($instance);
 
                 // we've to check for post-detach callbacks
                 foreach ($descriptor->getPostDetachCallbacks() as $postDetachCallback) {
@@ -120,7 +122,7 @@ class BeanLocator implements ResourceLocatorInterface
             }
 
             // if not create a new instance and return it
-            $instance = $beanManager->newSingletonSessionBeanInstance($className, $sessionId, $args);
+            $instance = $beanManager->newSingletonSessionBeanInstance($className);
 
             // add the singleton session bean to the container
             $beanManager->getSingletonSessionBeans()->set($className, $instance);
@@ -137,7 +139,7 @@ class BeanLocator implements ResourceLocatorInterface
         // query whether we've a SLSB
         if ($descriptor instanceof StatelessSessionBeanDescriptorInterface) {
             // if not create a new instance and return it
-            $instance = $beanManager->newInstance($className, $sessionId, $args);
+            $instance = $beanManager->newInstance($className);
 
             // we've to check for post-construct callback
             foreach ($descriptor->getPostConstructCallbacks() as $postConstructCallback) {
@@ -151,7 +153,7 @@ class BeanLocator implements ResourceLocatorInterface
         //  query whether we've a MDB
         if ($descriptor instanceof MessageDrivenBeanDescriptorInterface) {
             // create a new instance and return it
-            return $beanManager->newInstance($className, $sessionId, $args);
+            return $beanManager->newInstance($className);
         }
 
         // we've an unknown bean type => throw an exception

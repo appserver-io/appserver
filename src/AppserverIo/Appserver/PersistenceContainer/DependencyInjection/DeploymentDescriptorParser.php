@@ -23,6 +23,7 @@ namespace AppserverIo\Appserver\PersistenceContainer\DependencyInjection;
 use AppserverIo\Appserver\Core\Api\Node\EpbNode;
 use AppserverIo\Appserver\Core\Utilities\AppEnvironmentHelper;
 use AppserverIo\Configuration\Interfaces\NodeInterface;
+use AppserverIo\Psr\Di\ObjectManagerInterface;
 use AppserverIo\Psr\EnterpriseBeans\BeanContextInterface;
 
 /**
@@ -134,7 +135,7 @@ class DeploymentDescriptorParser
 
         // load the object manager instance
         /** @var \AppserverIo\Psr\Di\ObjectManagerInterface $objectManager */
-        $objectManager = $this->getApplication()->search('ObjectManagerInterface');
+        $objectManager = $this->getApplication()->search(ObjectManagerInterface::IDENTIFIER);
 
         // iterate over all configured descriptors and try to load object description
         /** \AppserverIo\Appserver\Core\Api\Node\DescriptorNode $descriptor */

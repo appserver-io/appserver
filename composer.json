@@ -5,6 +5,7 @@
     "license": "OSL-3.0",
     "require": {
         "php": ">=5.4.0",
+        "psr/container": "1.0.0",
         "rhumsaa/uuid": "~2.4",
         "react/dns": "0.4.4",
         "react/socket": "0.4.*",
@@ -12,9 +13,8 @@
         "doctrine/orm": "2.5.*",
         "league/event": "2.1.*",
         "crunch/fastcgi" : "2.x-dev",
-        "zendframework/zend-diactoros" : "~1.0",
-        "appserver-io-psr/di": "~2.0",
-        "appserver-io-psr/epb": "~3.0",
+        "appserver-io-psr/di": "dev-di as 2.0.0",
+        "appserver-io-psr/epb": "dev-di as 3.0.0",
         "appserver-io-psr/pms": "~1.0",
         "appserver-io-psr/mop": "~1.0",
         "appserver-io-psr/auth": "~2.0",
@@ -29,7 +29,7 @@
         "appserver-io/logger": "~1.0",
         "appserver-io/routlt": "2.2.0-beta3",
         "appserver-io/storage": "~2.0",
-        "appserver-io/messaging": "~2.0",
+        "appserver-io/messaging": "dev-di",
         "appserver-io/microcron": "~1.0",
         "appserver-io/webserver": "~5.0",
         "appserver-io/dnsserver": "~2.0",
@@ -41,7 +41,8 @@
         "appserver-io/authenticator": "~1.0",
         "appserver-io/configuration": "~2.0",
         "appserver-io/doppelgaenger": "~1.0",
-        "appserver-io/routlt-project": "~1.0"
+        "appserver-io/routlt-project": "~1.0",
+        "zendframework/zend-diactoros" : "~1.0"
     },
     "require-dev": {
         "mikey179/vfsStream": "1.*",

@@ -22,6 +22,7 @@ namespace AppserverIo\Appserver\MessageQueue;
 
 use AppserverIo\Messaging\MessageQueueProtocol;
 use AppserverIo\Appserver\ServletEngine\ValveInterface;
+use AppserverIo\Psr\Pms\QueueContextInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
 
@@ -62,7 +63,7 @@ class MessageQueueValve implements ValveInterface
         $queueName = $message->getDestination()->getName();
 
         // lookup the message queue manager and attach the message
-        $queueManager = $application->search('QueueContextInterface');
+        $queueManager = $application->search(QueueContextInterface::IDENTIFIER);
         if ($messageQueue = $queueManager->lookup($queueName)) {
             $messageQueue->attach($message);
         } else {

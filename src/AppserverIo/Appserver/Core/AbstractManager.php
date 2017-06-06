@@ -23,6 +23,7 @@ namespace AppserverIo\Appserver\Core;
 
 use AppserverIo\Storage\StorageInterface;
 use AppserverIo\Storage\GenericStackable;
+use AppserverIo\Psr\Di\ProviderInterface;
 use AppserverIo\Psr\Application\ManagerInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Psr\Application\ManagerConfigurationInterface;
@@ -182,7 +183,7 @@ abstract class AbstractManager extends GenericStackable implements ManagerInterf
      */
     public function newReflectionClass($className)
     {
-        return $this->getApplication()->search('ProviderInterface')->newReflectionClass($className);
+        return $this->getApplication()->search(ProviderInterface::IDENTIFIER)->newReflectionClass($className);
     }
 
     /**
@@ -205,7 +206,7 @@ abstract class AbstractManager extends GenericStackable implements ManagerInterf
      */
     public function getReflectionClass($className)
     {
-        return $this->getApplication()->search('ProviderInterface')->getReflectionClass($className);
+        return $this->getApplication()->search(ProviderInterface::IDENTIFIER)->getReflectionClass($className);
     }
 
     /**
@@ -219,21 +220,19 @@ abstract class AbstractManager extends GenericStackable implements ManagerInterf
      */
     public function getReflectionClassForObject($instance)
     {
-        return $this->getApplication()->search('ProviderInterface')->getReflectionClassForObject($instance);
+        return $this->getApplication()->search(ProviderInterface::IDENTIFIER)->getReflectionClassForObject($instance);
     }
 
     /**
      * Returns a new instance of the passed class name.
      *
-     * @param string      $className The fully qualified class name to return the instance for
-     * @param string|null $sessionId The session-ID, necessary to inject stateful session beans (SFBs)
-     * @param array       $args      Arguments to pass to the constructor of the instance
+     * @param string $className The fully qualified class name to return the instance for
      *
      * @return object The instance itself
      */
-    public function newInstance($className, $sessionId = null, array $args = array())
+    public function newInstance($className)
     {
-        return $this->getApplication()->search('ProviderInterface')->newInstance($className, $sessionId, $args);
+        return $this->getApplication()->search(ProviderInterface::IDENTIFIER)->newInstance($className);
     }
 
     /**

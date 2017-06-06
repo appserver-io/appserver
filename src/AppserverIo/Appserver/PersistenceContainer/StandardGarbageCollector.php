@@ -24,6 +24,7 @@ use Psr\Log\LogLevel;
 use AppserverIo\Logger\LoggerUtils;
 use AppserverIo\Appserver\Core\AbstractDaemonThread;
 use AppserverIo\Psr\Application\ApplicationInterface;
+use AppserverIo\Psr\EnterpriseBeans\BeanContextInterface;
 
 /**
  * The garbage collector for the stateful session beans.
@@ -111,7 +112,7 @@ class StandardGarbageCollector extends AbstractDaemonThread
 
         // we need the bean manager that handles all the beans
         /** @var \AppserverIo\Psr\EnterpriseBeans\BeanContextInterface $beanManager */
-        $beanManager = $this->getApplication()->search('BeanContextInterface');
+        $beanManager = $this->getApplication()->search(BeanContextInterface::IDENTIFIER);
 
         // load the map with the stateful session beans
         /** @var \AppserverIo\Storage\StorageInterface $statefulSessionBeans */

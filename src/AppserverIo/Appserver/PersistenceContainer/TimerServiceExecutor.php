@@ -26,6 +26,7 @@ use AppserverIo\Appserver\Core\AbstractDaemonThread;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Psr\EnterpriseBeans\TimerInterface;
 use AppserverIo\Psr\EnterpriseBeans\ServiceExecutorInterface;
+use AppserverIo\Psr\EnterpriseBeans\TimerServiceContextInterface;
 
 /**
  * The executor thread for the timers.
@@ -210,7 +211,7 @@ class TimerServiceExecutor extends AbstractDaemonThread implements ServiceExecut
                 // load the timer task wrapper we want to execute
                 if ($pk = $this->scheduledTimers[$timerId = $timerTaskWrapper->timerId]) {
                     // load the timer service registry
-                    $timerServiceRegistry = $this->getApplication()->search('TimerServiceContextInterface');
+                    $timerServiceRegistry = $this->getApplication()->search(TimerServiceContextInterface::IDENTIFIER);
 
                     // lookup the timer from the timer service
                     $timer = $timerServiceRegistry->lookup($pk)->getTimers()->get($timerId);
