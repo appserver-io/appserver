@@ -22,6 +22,7 @@ namespace AppserverIo\Appserver\Core;
 
 use AppserverIo\Psr\Naming\NamingException;
 use AppserverIo\Psr\Di\ObjectManagerInterface;
+use AppserverIo\Psr\Di\Description\ClassReferenceDescriptorInterface;
 use AppserverIo\RemoteMethodInvocation\LocalProxy;
 use AppserverIo\Appserver\ServletEngine\RequestHandler;
 use AppserverIo\Psr\EnterpriseBeans\BeanContextInterface;
@@ -177,6 +178,65 @@ abstract class AbstractEpbManager extends AbstractManager
             }
 
         // catch all other exceptions
+        } catch (\Exception $e) {
+            $application->getInitialContext()->getSystemLogger()->critical($e->__toString());
+        }
+    }
+
+    /**
+     * Registers the passed class reference in the applications directory.
+     *
+     * @param \AppserverIo\Psr\EnterpriseBeans\Description\ClassReferenceDescriptorInterface $classReference The class reference to register
+     *
+     * @return void
+     */
+    public function registerClassReference(ClassReferenceDescriptorInterface $classReference)
+    {
+        try {
+            // load the application instance and reference name
+            $application = $this->getApplication();
+
+            // initialize the class URI
+            $uri = sprintf('php:global/%s/%s', $application->getUniqueName(), $classReference->getName());
+
+            // query whether the reference has already been bound to the application
+            if ($application->getNamingDirectory()->search($uri)) {
+                // log a message that the reference has already been bound
+                $application->getInitialContext()->getSystemLogger()->info(
+                    sprintf('Class reference %s has already been bound to naming directory', $uri)
+                );
+
+                // return immediately
+                return;
+            }
+
+        // catch the NamingException if the ref name is not bound yet
+        } catch (NamingException $e) {
+            // log a message that we've to register the resource reference now
+            $application->getInitialContext()->getSystemLogger()->debug(
+                sprintf('Class reference %s has not been bound to naming directory', $uri)
+            );
+        }
+
+        try {
+            // try to bind the class by the specified type
+            if ($type = $classReference->getType()) {
+                // bind a reference to the class type
+                $application->getNamingDirectory()
+                            ->bind(
+                                $uri,
+                                array(&$this, 'newInstance'),
+                                array($type)
+                            );
+
+            // log a critical message that we can't bind the reference
+            } else {
+                $application->getInitialContext()->getSystemLogger()->critical(
+                    sprintf('Can\'t bind class reference %s to naming directory, because of missing source bean definition', $uri)
+                );
+            }
+
+            // catch all other exceptions
         } catch (\Exception $e) {
             $application->getInitialContext()->getSystemLogger()->critical($e->__toString());
         }

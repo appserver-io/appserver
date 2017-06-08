@@ -20,14 +20,16 @@
 
 namespace AppserverIo\Appserver\DependencyInjectionContainer;
 
-use AppserverIo\Psr\Naming\NamingDirectoryInterface;
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Lang\Reflection\ClassInterface;
 use AppserverIo\Lang\Reflection\ReflectionClass;
 use AppserverIo\Lang\Reflection\AnnotationInterface;
 use AppserverIo\Psr\Di\ProviderInterface;
+use AppserverIo\Psr\Di\Annotations\Inject;
+use AppserverIo\Psr\Di\ObjectManagerInterface;
 use AppserverIo\Psr\Di\DependencyInjectionException;
 use AppserverIo\Psr\Servlet\Annotations\Route;
+use AppserverIo\Psr\Naming\NamingDirectoryInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\MessageDriven;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\PreDestroy;
@@ -43,7 +45,6 @@ use AppserverIo\Psr\EnterpriseBeans\Annotations\Timeout;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\EnterpriseBean;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Resource;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\PersistenceUnit;
-use AppserverIo\Psr\Di\ObjectManagerInterface;
 
 /**
  * A basic dependency injection provider implementation.
@@ -59,6 +60,13 @@ use AppserverIo\Psr\Di\ObjectManagerInterface;
  */
 class Provider extends GenericStackable implements ProviderInterface
 {
+
+    /**
+     * Dependencies for the actual injection target.
+     *
+     * @var array
+     */
+    protected $dependencies = array();
 
     /**
      * The managers unique identifier.
@@ -201,6 +209,7 @@ class Provider extends GenericStackable implements ProviderInterface
         // initialize the array with the aliases for the enterprise bean annotations
         $annotationAliases = array(
             Route::ANNOTATION           => Route::__getClass(),
+            Inject::ANNOTATION          => Inject::__getClass(),
             Resource::ANNOTATION        => Resource::__getClass(),
             Timeout::ANNOTATION         => Timeout::__getClass(),
             Stateless::ANNOTATION       => Stateless::__getClass(),
@@ -267,14 +276,23 @@ class Provider extends GenericStackable implements ProviderInterface
     }
 
     /**
-     * Injects the dependencies of the passed instance.
+     * Loads the dependencies for the passed class name.
      *
-     * @param object $instance The instance to inject the dependencies for
+     * @param string $className The class name to load the dependencies for
      *
-     * @return void
+     * @throws DependencyInjectionException
+     * @return array The
      */
-    public function injectDependencies($instance)
+    protected function loadDependencies($className)
     {
+
+        // query whether or not the dependencies have been loaded
+        if (isset($this->dependencies[$className])) {
+            return $this->dependencies[$className];
+        }
+
+        // initialize the array with the dependencies
+        $dependencies = array('method' =>  array(),  'property' => array(), 'constructor' => array());
 
         // load the object manager instance
         /** @var \AppserverIo\Psr\Di\ObjectManagerInterface $objectManager */
@@ -283,12 +301,12 @@ class Provider extends GenericStackable implements ProviderInterface
         );
 
         // load the object descriptor for the instance from the the object manager
-        if ($objectManager->hasObjectDescriptor($className = get_class($instance))) {
+        if ($objectManager->hasObjectDescriptor($className)) {
             // load the object descriptor
             $objectDescriptor = $objectManager->getObjectDescriptor($className);
 
             // check if a reflection class instance has been passed or is already available
-            $reflectionClass = $this->getReflectionClassForObject($instance);
+            $reflectionClass = $this->getReflectionClass($className);
 
             // check for declared EPB and resource references
             foreach ($objectDescriptor->getReferences() as $reference) {
@@ -299,21 +317,11 @@ class Provider extends GenericStackable implements ProviderInterface
                         sprintf('php:global/%s/%s', $this->getApplication()->getUniqueName(), $reference->getName())
                     );
 
-                    // query for method injection
-                    if (method_exists($instance, $targetName = $injectionTarget->getTargetMethod())) {
-                        // inject the target by invoking the method
-                        $instance->$targetName($toInject);
-
-                    // query if we've a reflection property with the target name - this is the faster method!
-                    } elseif (property_exists($instance, $targetName = $injectionTarget->getTargetProperty())) {
-                        // load the reflection property
-                        $reflectionProperty = $reflectionClass->getProperty($targetName);
-
-                        // load the PHP ReflectionProperty instance to inject the bean instance
-                        $phpReflectionProperty = $reflectionProperty->toPhpReflectionProperty();
-                        $phpReflectionProperty->setAccessible(true);
-                        $phpReflectionProperty->setValue($instance, $toInject);
-
+                    // add the dependency to the array
+                    if ($targetName = $injectionTarget->getTargetMethod()) {
+                        $dependencies['method'][$targetName] = $toInject;
+                    } elseif ($targetName = $injectionTarget->getTargetProperty()) {
+                        $dependencies['property'][$targetName] = $toInject;
                     } else {
                         // throw an exception
                         throw new DependencyInjectionException(
@@ -321,6 +329,63 @@ class Provider extends GenericStackable implements ProviderInterface
                         );
                     }
                 }
+            }
+
+        } else {
+            // check if a reflection class instance has been passed or is already available
+            $reflectionClass = $this->getReflectionClass($className);
+            // query whether or not, we've a constructor
+            if ($reflectionClass->hasMethod('__construct')) {
+                // load the reflection method for the constructor
+                $reflectionMethod = $reflectionClass->getMethod('__construct');
+                // iterate over the constructor parameters
+                /** @var \AppserverIo\Lang\Reflection\ParameterInterface $reflectionParameter */
+                foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
+                    $dependencies['constructor'][] = $this->get($reflectionParameter->getType());
+                }
+            }
+        }
+
+        // return the array with the loaded dependencies
+        return $this->dependencies[$className] = $dependencies;
+    }
+
+    /**
+     * Injects the dependencies of the passed instance.
+     *
+     * @param object $instance The instance to inject the dependencies for
+     *
+     * @return void
+     */
+    public function injectDependencies($instance)
+    {
+
+        // load the reflection class
+        $reflectionClass = $this->getReflectionClassForObject($instance);
+
+        // load the dependencies for the passed instance
+        $dependencies = $this->loadDependencies($reflectionClass->getName());
+
+        // inject dependencies by method
+        foreach ($dependencies['method'] as $methodName => $toInject) {
+            // query whether or not the method exists
+            if ($reflectionClass->hasMethod($methodName)) {
+                // inject the target by invoking the method
+                $instance->$methodName($toInject);
+            }
+        }
+
+        // inject dependencies by property
+        foreach ($dependencies['property'] as $propertyName => $toInject) {
+            // query whether or not the property exists
+            if ($reflectionClass->hasProperty($propertyName)) {
+                // load the reflection property
+                $reflectionProperty = $reflectionClass->getProperty($propertyName);
+
+                // load the PHP ReflectionProperty instance to inject the bean instance
+                $phpReflectionProperty = $reflectionProperty->toPhpReflectionProperty();
+                $phpReflectionProperty->setAccessible(true);
+                $phpReflectionProperty->setValue($instance, $toInject);
             }
         }
     }
@@ -331,20 +396,59 @@ class Provider extends GenericStackable implements ProviderInterface
      * @param string $className The fully qualified class name to return the instance for
      *
      * @return object The instance itself
+     * @deprecated Since 1.1.5 Use \Psr\Container\ContainerInterface::get() instead
      */
     public function newInstance($className)
     {
+        return $this->get($className);
+    }
+
+    /**
+     * Finds an entry of the container by its identifier and returns it.
+     *
+     * @param string $id Identifier of the entry to look for
+     *
+     * @throws \Psr\Container\NotFoundExceptionInterface  No entry was found for **this** identifier.
+     * @throws \Psr\Container\ContainerExceptionInterface Error while retrieving the entry.
+     *
+     * @return mixed Entry.
+     */
+    public function get($id)
+    {
 
         // load/create and return a new instance
-        $reflectionClass = $this->getReflectionClass($className);
+        $reflectionClass = $this->getReflectionClass($id);
 
-        // create a new instance
-        $instance = $reflectionClass->newInstance();
+        // load the dependencies for the passed class
+        $dependencies = $this->loadDependencies($reflectionClass->getName());
 
-        // inject the dependencies
+        // check if we've a constructor
+        if ($reflectionClass->hasMethod('__construct')) {
+            $instance = $reflectionClass->newInstanceArgs($dependencies['constructor']);
+        } else {
+            $instance = $reflectionClass->newInstance();
+        }
+
+        // inject the property/method dependencies
         $this->injectDependencies($instance);
 
-        // return the instance here
+        // finally return the instance
         return $instance;
+    }
+
+    /**
+     * Returns true if the container can return an entry for the given identifier.
+     * Returns false otherwise.
+     *
+     * `has($id)` returning TRUE does not mean that `get($id)` will not throw an exception.
+     * It does however mean that `get($id)` will not throw a `NotFoundExceptionInterface`.
+     *
+     * @param string $id Identifier of the entry to look for.
+     *
+     * @return boolean TRUE if an entroy for the given identifier exists, else FALSE
+     */
+    public function has($id)
+    {
+        return class_exists($id, true);
     }
 }
