@@ -8,6 +8,16 @@
 
 * Refactor DI integration for basic compatibility with psr/container
 
+# Version 1.1.4
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Set appserver-io + appserver-io-psr dependencies to patch level
+
 # Version 1.1.4-beta12
 
 ## Bugfixes
