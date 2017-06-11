@@ -9,15 +9,15 @@ position: 1
 group: Tutorials
 subNav:
   - title: Step 1 - Docker Installation
-    href: step-1-docker-installation
+    href: step-1---docker-installation
   - title: Step 2 - Starting a MySQL Docker container
-    href: step-2-starting-a-mysql-docker-container
+    href: step-2---starting-a-mysql-docker-container
   - title: Step 3 - Starting a appserver.io Docker container
-    href: step-3-starting-a-appserver-io-docker-container
+    href: step-3---starting-a-appserver-io-docker-container
   - title: Step 4 - Download and deploy Magento 2 as PHAR archive
-    href: step-4-download-and-deploy-magento-2-as-phar-rchive
+    href: step-4---download-and-deploy-magento-2-as-phar-rchive
   - title: Step 5 - Magento 2 Setup
-    href: step-5-magento-2-setup
+    href: step-5---magento-2-setup
 permalink: /get-started/tutorials/running-magento2-in-an-appserver-io-docker-container.html
 ---
 
