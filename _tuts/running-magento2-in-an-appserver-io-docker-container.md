@@ -130,6 +130,8 @@ MacBook-Pro:~ docker exec appserver-1.1.4-magento bash -c \
 MacBook-Pro:~ docker exec mysql-5.6 bash -c "supervisorctl restart appserver-watcher'"
 ```
 
-Finally, open the installed [Magento 2](http://127.0.0.1/magento2-ce-2.1.7/) instance with your browser.
+Finally, user your browser to open the Magento 2 [frontend](http://127.0.0.1/magento2-ce-2.1.7/) or 
+[backend](http://127.0.0.1/magento2-ce-2.1.7/admin/) logging in with username `appserver` and 
+password `appserver.i0`.
 
 That's it - have fun!
