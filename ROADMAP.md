@@ -67,6 +67,7 @@ implemented features have a look in the CHANGELOG.md or visit our [github](https
 - [x] Optimise naming directory for performance
 - [x] Authentication- and Authorization services
 - [ ] Extend Dependency Injection to support simple beans
+- [ ] Clean-Up Manager Interfaces and Managers
 
 ## Version 1.2.x
 - [ ] PHP 7
