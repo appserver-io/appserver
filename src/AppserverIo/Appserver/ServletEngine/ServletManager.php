@@ -271,9 +271,9 @@ class ServletManager extends AbstractEpbManager implements ServletContextInterfa
                 $this->registerResReference($resReference);
             }
 
-            // register the class references
-            foreach ($descriptor->getClassReferences() as $classReference) {
-                $this->registerClassReference($classReference);
+            // register the bean references
+            foreach ($descriptor->getBeanReferences() as $beanReference) {
+                $this->registerBeanReference($beanReference);
             }
 
             // register the persistence unit references
