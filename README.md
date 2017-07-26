@@ -1,6 +1,6 @@
 # appserver.io, a PHP application server
 
-[![Gitter chat](https://badges.gitter.im/appserver-io/appserver.png)](https://badges.gitter.im/appserver-io/appserver.png)
+[![Gitter chat](https://badges.gitter.im/appserver-io/appserver.png)]
  [![Build Status](https://img.shields.io/travis/appserver-io/appserver/master.svg?style=flat-square)](http://travis-ci.org/appserver-io/appserver)
  [![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/appserver-io/appserver/master.svg?style=flat-square)](https://scrutinizer-ci.com/g/appserver-io/appserver/?branch=master)
  [![Code Coverage](https://img.shields.io/scrutinizer/coverage/g/appserver-io/appserver/master.svg?style=flat-square)](https://scrutinizer-ci.com/g/appserver-io/appserver/?branch=master)
