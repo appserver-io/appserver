@@ -1161,6 +1161,37 @@
             </xs:simpleContent>
         </xs:complexType>
     </xs:element>
+    <xs:element name="bean-ref">
+        <xs:complexType>
+            <xs:all>
+                <xs:element ref="appserver:bean-ref-name"/>
+                <xs:element ref="appserver:bean-ref-type" minOccurs="0"/>
+                <xs:element ref="appserver:injection-target" minOccurs="0"/>
+            </xs:all>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="bean-ref-name">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="bean-ref-type">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
     <xs:element name="rewrites">
         <xs:complexType>
             <xs:choice maxOccurs="unbounded">
@@ -1587,6 +1618,7 @@
                 <xs:element ref="appserver:epb-ref" minOccurs="0"/>
                 <xs:element ref="appserver:res-ref" minOccurs="0"/>
                 <xs:element ref="appserver:persistence-unit-ref" minOccurs="0"/>
+                <xs:element ref="appserver:bean-ref" minOccurs="0"/>
             </xs:choice>
             <xs:attribute name="uuid" type="xs:string"/>
             <xs:attribute ref="xml:base"/>
@@ -2036,6 +2068,7 @@
                 <xs:element ref="appserver:epb-ref" minOccurs="0"/>
                 <xs:element ref="appserver:res-ref" minOccurs="0"/>
                 <xs:element ref="appserver:persistence-unit-ref" minOccurs="0"/>
+                <xs:element ref="appserver:bean-ref" minOccurs="0"/>
             </xs:choice>
             <xs:attribute name="uuid" type="xs:string"/>
             <xs:attribute ref="xml:base"/>
