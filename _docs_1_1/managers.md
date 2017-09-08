@@ -24,7 +24,7 @@ subNav:
     href: session-manager
   - title: Authentication Manager
     href: authentication-manager
-permalink: /get-started/documentation/1.1/configuration.html
+permalink: /get-started/documentation/1.1/managers.html
 ---
 
 The default managers implements the main part of the functionality appserver.io provides when writing applications.
