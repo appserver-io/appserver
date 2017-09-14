@@ -1,3 +1,13 @@
+# Version 1.1.5
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Bugfix some libraries
+
 # Version 1.1.4
 
 ## Bugfixes
