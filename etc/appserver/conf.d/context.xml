@@ -73,8 +73,8 @@
     <managers>
         <manager name="ObjectManagerInterface" type="AppserverIo\Appserver\DependencyInjectionContainer\ObjectManager" factory="AppserverIo\Appserver\DependencyInjectionContainer\ObjectManagerFactory">
             <descriptors>
-                <!-- descriptor>AppserverIo\Description\PreferenceDescriptor</descriptor>
-                <descriptor>AppserverIo\Description\BeanDescriptor</descriptor -->
+                <descriptor>AppserverIo\Description\PreferenceDescriptor</descriptor>
+                <descriptor>AppserverIo\Description\BeanDescriptor</descriptor>
                 <descriptor>AppserverIo\Description\ServletDescriptor</descriptor>
                 <descriptor>AppserverIo\Description\MessageDrivenBeanDescriptor</descriptor>
                 <descriptor>AppserverIo\Description\StatefulSessionBeanDescriptor</descriptor>

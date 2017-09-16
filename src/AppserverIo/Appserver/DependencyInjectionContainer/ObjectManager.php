@@ -27,6 +27,7 @@ use AppserverIo\Psr\Di\ObjectManagerInterface;
 use AppserverIo\Psr\Di\UnknownObjectDescriptorException;
 use AppserverIo\Psr\Deployment\DescriptorInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
+use Symfony\Component\Config\Definition\Exception\ForbiddenOverwriteException;
 
 /**
  * The object manager is necessary to load and provides information about all
@@ -125,6 +126,25 @@ class ObjectManager extends AbstractManager implements ObjectManagerInterface
 
         // add the new preference
         $this->setAttribute($interface, $objectDescriptor->getClassName());
+    }
+
+    /**
+     * Return's the preference for the passed class name.
+     *
+     * @param string $className The class name to return the preference for
+     *
+     * @return string The preference or the original class name
+     */
+    public function getPreference($className)
+    {
+
+        // query whether or not we've a preference
+        if ($this->hasAttribute($className)) {
+            return $this->getAttribute($className);
+        }
+
+        // if not, return the original class name
+        return $className;
     }
 
     /**

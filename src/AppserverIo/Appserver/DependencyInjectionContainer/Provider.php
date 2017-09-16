@@ -344,7 +344,7 @@ class Provider extends GenericStackable implements ProviderInterface
                 // iterate over the constructor parameters
                 /** @var \AppserverIo\Lang\Reflection\ParameterInterface $reflectionParameter */
                 foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
-                    $dependencies['constructor'][] = $this->get($reflectionParameter->getType());
+                    $dependencies['constructor'][] = $this->get($objectManager->getPreference($reflectionParameter->getType()));
                 }
             }
         }
