@@ -148,6 +148,18 @@ abstract class AbstractManager extends GenericStackable implements ManagerInterf
     }
 
     /**
+     * Query's whether or not the attribute is available.
+     *
+     * @param string $key The key of the attribute to query for
+     *
+     * @return boolean TRUE if the attribute is set, else FALSE
+     */
+    public function hasAttribute($key)
+    {
+        return $this->data->has($key);
+    }
+
+    /**
      * Registers the value with the passed key in the container.
      *
      * @param string $key   The key to register the value with

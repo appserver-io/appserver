@@ -28,7 +28,6 @@ use AppserverIo\Psr\Di\ProviderInterface;
 use AppserverIo\Psr\Di\ObjectManagerInterface;
 use AppserverIo\Psr\Di\DependencyInjectionException;
 use AppserverIo\Psr\Servlet\Annotations\Route;
-use AppserverIo\Psr\Naming\NamingDirectoryInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Inject;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\MessageDriven;
@@ -90,7 +89,11 @@ class Provider extends GenericStackable implements ProviderInterface
      */
     public function initialize(ApplicationInterface $application)
     {
-        // do nothing here
+
+        // initialize the deployment descriptor parser and parse the web application's deployment descriptor for beans
+        $deploymentDescriptorParser = new DeploymentDescriptorParser();
+        $deploymentDescriptorParser->injectProviderContext($this);
+        $deploymentDescriptorParser->parse();
     }
 
     /**

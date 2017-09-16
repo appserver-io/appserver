@@ -40,7 +40,7 @@ use AppserverIo\Psr\Application\ApplicationInterface;
  * @link      http://www.appserver.io
  *
  * @property array                                 $configuredDescriptors Descriptors used to parse deployment descriptors and annotations from the managers configuration
- * @property \AppserverIo\Storage\StorageInterface $objectDescriptors     Storage for our collected descriptors
+ * @property \AppserverIo\Storage\StorageInterface $objectDescriptors     Storage for our collected object descriptors
  */
 class ObjectManager extends AbstractManager implements ObjectManagerInterface
 {
@@ -115,6 +115,30 @@ class ObjectManager extends AbstractManager implements ObjectManagerInterface
      *
      * @return void
      */
+    public function addPreference(DescriptorInterface $objectDescriptor, $merge = false)
+    {
+
+        // query whether or not an existing preference has to be overwritten
+        if ($this->hasAttribute($interface = $objectDescriptor->getInterface()) && !$merge) {
+            return;
+        }
+
+        // add the new preference
+        $this->setAttribute($interface, $objectDescriptor->getClassName());
+    }
+
+    /**
+     * Adds the passed object descriptor to the object manager. If the merge flag is TRUE, then
+     * we check if already an object descriptor for the class exists before they will be merged.
+     *
+     * When we merge object descriptors this means, that the values of the passed descriptor
+     * will override the existing ones.
+     *
+     * @param \AppserverIo\Psr\Deployment\DescriptorInterface $objectDescriptor The object descriptor to add
+     * @param boolean                                         $merge            TRUE if we want to merge with an existing object descriptor
+     *
+     * @return void
+     */
     public function addObjectDescriptor(DescriptorInterface $objectDescriptor, $merge = false)
     {
 
@@ -126,7 +150,7 @@ class ObjectManager extends AbstractManager implements ObjectManagerInterface
             // log on info level to make overwriting more obvious
             $this->getApplication()->getInitialContext()->getSystemLogger()->info(
                 sprintf(
-                    'Overwriting descriptor %s of webapp %s from XML configuration.',
+                    'Overriding descriptor %s of webapp %s from XML configuration.',
                     $existingDescriptor->getName(),
                     $this->getApplication()->getName()
                 )
@@ -178,6 +202,13 @@ class ObjectManager extends AbstractManager implements ObjectManagerInterface
      */
     public function hasObjectDescriptor($className)
     {
+
+        // map the class name if a preference exists
+        if ($preferredClassName = $this->getAttribute($className)) {
+            $className = $preferredClassName;
+        }
+
+        // try to find the requested object descriptor
         return $this->objectDescriptors->has($className);
     }
 
