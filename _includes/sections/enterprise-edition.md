@@ -1,5 +1,4 @@
-#<i class="fa fa-th-large"></i> Enterprise Edition (EE)
-***
+<i class="fa fa-th-large"></i> Enterprise Edition (EE)
 
 We had many, interesting, discussions with experienced PHP core developers about the possibilities and pitfalls that multithreading in a language like PHP comes along with. Most of them thought, that it still will **not** be possible to provide a stable and high performant server implementation as base for an application server. Months later, we think, we can refute that: You do not believe it? Have a look at our [CE](<{{ "/products/community-edition.html" | prepend: site.baseurl }}>)!
 
