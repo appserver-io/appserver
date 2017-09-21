@@ -21,24 +21,22 @@
 namespace AppserverIo\Appserver\Core;
 
 use League\Event\Emitter;
+use React\Socket\ConnectionInterface;
+use Doctrine\ORM\Tools\Console\ConsoleRunner;
+use Symfony\Component\Console\Output\BufferedOutput;
 use AppserverIo\Logger\Logger;
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Psr\Naming\NamingException;
 use AppserverIo\Psr\Naming\NamingDirectoryInterface;
 use AppserverIo\Appserver\Core\Commands\ModeCommand;
 use AppserverIo\Appserver\Core\Commands\InitCommand;
+use AppserverIo\Appserver\Core\Commands\DoctrineCommand;
 use AppserverIo\Appserver\Core\Api\Node\BootstrapNode;
+use AppserverIo\Appserver\Core\Utilities\Runlevels;
 use AppserverIo\Appserver\Naming\Utils\NamingDirectoryKeys;
 use AppserverIo\Appserver\Core\Listeners\ApplicationServerAwareListenerInterface;
 use AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface;
 use AppserverIo\Appserver\Core\Interfaces\SystemConfigurationInterface;
-
-use Doctrine\ORM\Tools\Console\ConsoleRunner;
-use Symfony\Component\Console\Output\BufferedOutput;
-use AppserverIo\Appserver\Core\Commands\DoctrineCommand;
-use React\Socket\ConnectionInterface;
-use React\Socket\Connection;
-use AppserverIo\Appserver\Core\Utilities\Runlevels;
 
 /**
  * This is the main server class that starts the application server
@@ -208,8 +206,6 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
      * Set's the logger instances.
      *
      * @param array $loggers The logger instances to set
-     *
-     * @return void
      *
      * @return void
      */
@@ -435,7 +431,6 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
      * The thread's run() method that runs asynchronously.
      *
      * @return void
-     * @return void
      * @link http://www.php.net/manual/en/thread.run.php
      */
     public function run()
@@ -619,8 +614,6 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
      * @param string  $name     The name of the requested service
      *
      * @return mixed The service instance
-     *
-     * @return mixed The service instance
      */
     public function getService($runlevel, $name)
     {
@@ -687,8 +680,6 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
 
     /**
      * Loads the bootstrap configuration from the XML file.
-     *
-     * @param string $bootstrapConfigurationFilename The boostrap configuration file
      *
      * @param string $bootstrapConfigurationFilename The boostrap configuration file
      *
