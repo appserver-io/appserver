@@ -19,9 +19,6 @@
 /webapps
 /deploy/*.phar*
 /tmp
-/var/log
-/var/run
-/var/tmp/localhost
 /build.properties
 /composer.lock
 /composer.phar
@@ -36,9 +33,9 @@
 /etc/appserver/appserver-runner.xml
 /etc/appserver/appserver-failover.xml
 /etc/appserver/server.pem
-/var/tmp/example
-/var/tmp/proffile
-/var/tmp/opcache-blacklist.txt
+/var/log
+/var/run
+/var/tmp
 /webapps/index.html
 /.vagrant
 *.log
