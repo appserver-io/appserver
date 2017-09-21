@@ -1,5 +1,4 @@
-#<i class="fa fa-cubes"></i> Community Edition (CE)
-***
+<i class="fa fa-cubes"></i> Community Edition (CE)
 
 appserver.io 1.0.0 CE aka **Iron Horse**, is the first PHP [Application Server](http://en.wikipedia.org/wiki/Application_server), fully written in PHP. appserver.io is the first player in the market segment of infrastructure solutions, previously covered only by non PHP language tools. The LAMP stack, together with countless 3rd party tools, has, by now, been the backbone of millions of low and midrange web applications, e-commerce solutions and websites. With the growing market demand for making PHP ready for real enterprise solutions, the LAMP stack reaches its limits. Especially areas like maintainability and scalability are, compared to common solutions, bottlenecks the PHP ecosystem is responsible for finding working solutions for.
 
