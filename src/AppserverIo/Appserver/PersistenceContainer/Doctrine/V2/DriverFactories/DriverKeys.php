@@ -1,7 +1,6 @@
 <?php
-
 /**
- * AppserverIo\Appserver\ServletEngine\Utils\RequestHandlerKeys
+ * AppserverIo\Appserver\PersistenceContainer\Doctrine\V2\DriverFactories\DriverKeys
  *
  * NOTICE OF LICENSE
  *
@@ -18,10 +17,10 @@
  * @link      http://www.appserver.io
  */
 
-namespace AppserverIo\Appserver\ServletEngine\Utils;
+namespace AppserverIo\Appserver\PersistenceContainer\Doctrine\V2\DriverFactories;
 
 /**
- * Utility class that contains the request handler keys.
+ * Utility class with the driver keys.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -29,36 +28,13 @@ namespace AppserverIo\Appserver\ServletEngine\Utils;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class RequestHandlerKeys
+class DriverKeys
 {
 
     /**
-     * The key for the an error message.
+     * The key with the value to use the simple annotation reader or not.
      *
      * @var string
      */
-    const ERROR_MESSAGE = 'appserver-io.appserver.servlet-engine.utils.request-handler-keys.error-message';
-
-    /**
-     * The key for the an array of error messages.
-     *
-     * @var string
-     */
-    const ERROR_MESSAGES = 'appserver-io.appserver.servlet-engine.utils.request-handler-keys.error-messages';
-
-    /**
-     * This is a utility class, so protect it against direct instantiation.
-     */
-    private function __construct()
-    {
-    }
-
-    /**
-     * This is a utility class, so protect it against cloning.
-     *
-     * @return void
-     */
-    private function __clone()
-    {
-    }
+    const USE_SIMPLE_ANNOTATION_READER = 'useSimpleAnnotationReader';
 }

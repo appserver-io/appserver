@@ -20,11 +20,10 @@
 
 namespace AppserverIo\Appserver\PersistenceContainer;
 
+use Psr\Log\LogLevel;
 use AppserverIo\Logger\LoggerUtils;
 use AppserverIo\Appserver\Core\AbstractDaemonThread;
 use AppserverIo\Psr\Application\ApplicationInterface;
-use AppserverIo\Appserver\Naming\Utils\NamingDirectoryKeys;
-use Psr\Log\LogLevel;
 
 /**
  * The garbage collector for the stateful session beans.

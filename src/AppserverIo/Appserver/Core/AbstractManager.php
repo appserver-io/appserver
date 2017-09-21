@@ -27,7 +27,6 @@ use AppserverIo\Psr\Application\ManagerInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Psr\Application\ManagerConfigurationInterface;
 use AppserverIo\Psr\Naming\InitialContext as NamingDirectory;
-use AppserverIo\Appserver\ServletEngine\RequestHandler;
 
 /**
  * Abstract manager implementation.
@@ -187,30 +186,6 @@ abstract class AbstractManager extends GenericStackable implements ManagerInterf
     }
 
     /**
-     * This returns a proxy to the requested session bean.
-     *
-     * @param string $lookupName The lookup name for the requested session bean
-     * @param string $sessionId  The session-ID if available
-     *
-     * @return \AppserverIo\RemoteMethodInvocation\RemoteObjectInterface The proxy instance
-     */
-    public function lookupProxy($lookupName, $sessionId = null)
-    {
-
-        // load the initial context instance
-        $initialContext = $this->getInitialContext();
-
-        // query whether a request context is available
-        if ($servletRequest = RequestHandler::getRequestContext()) {
-            // inject the servlet request to handle SFSBs correctly
-            $initialContext->injectServletRequest($servletRequest);
-        }
-
-        // lookup the proxy by the name and session ID if available
-        return $initialContext->lookup($lookupName, $sessionId);
-    }
-
-    /**
      * Return's the manager configuration.
      *
      * @return \AppserverIo\Psr\Application\ManagerConfigurationInterface The manager configuration
@@ -226,7 +201,7 @@ abstract class AbstractManager extends GenericStackable implements ManagerInterf
      * @param string $className The class name to return the reflection class instance for
      *
      * @return \AppserverIo\Lang\Reflection\ReflectionClass The reflection instance
-     * @see \DependencyInjectionContainer\Interfaces\ProviderInterface::getReflectionClass()
+     * @see \AppserverIo\Psr\Di\ProviderInterface::getReflectionClass()
      */
     public function getReflectionClass($className)
     {
@@ -239,8 +214,8 @@ abstract class AbstractManager extends GenericStackable implements ManagerInterf
      * @param object $instance The instance to return the reflection class instance for
      *
      * @return \AppserverIo\Lang\Reflection\ReflectionClass The reflection instance
-     * @see \DependencyInjectionContainer\Interfaces\ProviderInterface::newReflectionClass()
-     * @see \DependencyInjectionContainer\Interfaces\ProviderInterface::getReflectionClass()
+     * @see \AppserverIo\Psr\Di\ProviderInterface::newReflectionClass()
+     * @see \AppserverIo\Psr\Di\ProviderInterface::getReflectionClass()
      */
     public function getReflectionClassForObject($instance)
     {

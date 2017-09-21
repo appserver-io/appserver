@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\Security\SecurityException
+ * \AppserverIo\Appserver\Core\Api\Node\PlatformNode
  *
  * NOTICE OF LICENSE
  *
@@ -11,24 +11,26 @@
  *
  * PHP version 5
  *
- * @author    Tim Wagner <tw@appserver.io>
- * @copyright 2015 TechDivision GmbH <info@appserver.io>
+ * @author    Tim Wagner <tw@techdivision.com>
+ * @copyright 2016 TechDivision GmbH <info@appserver.io>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
 
-namespace AppserverIo\Appserver\ServletEngine\Security;
+namespace AppserverIo\Appserver\Core\Api\Node;
+
+use AppserverIo\Description\Api\Node\AbstractValueNode;
 
 /**
- * Exception that is thrown if authentication has not been successfull.
+ * DTO to transfer the DB platform information.
  *
- * @author    Tim Wagner <tw@appserver.io>
- * @copyright 2015 TechDivision GmbH <info@appserver.io>
+ * @author    Tim Wagner <tw@techdivision.com>
+ * @copyright 2016 TechDivision GmbH <info@appserver.io>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class SecurityException extends \Exception
+class PlatformNode extends AbstractValueNode
 {
 }

@@ -1,7 +1,6 @@
 <?php
-
 /**
- * AppserverIo\Appserver\ServletEngine\Authenticator\Utils\FormKeys
+ * AppserverIo\Appserver\PersistenceContainer\Doctrine\V2\CacheFactories\CacheKeys
  *
  * NOTICE OF LICENSE
  *
@@ -18,10 +17,10 @@
  * @link      http://www.appserver.io
  */
 
-namespace AppserverIo\Appserver\ServletEngine\Authenticator\Utils;
+namespace AppserverIo\Appserver\PersistenceContainer\Doctrine\V2\CacheFactories;
 
 /**
- * Utility class that contains the form keys.
+ * Utility class with the cache key.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -29,43 +28,13 @@ namespace AppserverIo\Appserver\ServletEngine\Authenticator\Utils;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class FormKeys
+class CacheKeys
 {
 
     /**
-     * The key for the username specified in the login form.
+     * The key for the host value.
      *
      * @var string
      */
-    const USERNAME = 'p_username';
-
-    /**
-     * The key for the password specified in the login in the form.
-     *
-     * @var string
-     */
-    const PASSWORD = 'p_password';
-
-    /**
-     * The key for a login form name.
-     *
-     * @var string
-     */
-    const FORM_ACTION = 'p_security_check';
-
-    /**
-     * This is a utility class, so protect it against direct instantiation.
-     */
-    private function __construct()
-    {
-    }
-
-    /**
-     * This is a utility class, so protect it against cloning.
-     *
-     * @return void
-     */
-    private function __clone()
-    {
-    }
+    const HOST = 'host';
 }

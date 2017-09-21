@@ -23,9 +23,10 @@ namespace AppserverIo\Appserver\DependencyInjectionContainer;
 
 use AppserverIo\Storage\StorageInterface;
 use AppserverIo\Appserver\Core\AbstractManager;
+use AppserverIo\Psr\Di\ObjectManagerInterface;
+use AppserverIo\Psr\Di\UnknownObjectDescriptorException;
 use AppserverIo\Psr\Deployment\DescriptorInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
-use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\ObjectManagerInterface;
 
 /**
  * The object manager is necessary to load and provides information about all
@@ -186,7 +187,7 @@ class ObjectManager extends AbstractManager implements ObjectManagerInterface
      * @param string $className The class name we want to return the object descriptor for
      *
      * @return \AppserverIo\Psr\Deployment\DescriptorInterface|null The requested object descriptor instance
-     * @throws \AppserverIo\Appserver\DependencyInjectionContainer\UnknownObjectDescriptorException Is thrown if someone tries to access an unknown object desciptor
+     * @throws \AppserverIo\Psr\Di\UnknownObjectDescriptorException Is thrown if someone tries to access an unknown object desciptor
      */
     public function getObjectDescriptor($className)
     {

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * \AppserverIo\Appserver\DependencyInjectionContainer\DependencyInjectionException
+ * \AppserverIo\Appserver\Core\Api\Node\ServerVersionNode
  *
  * NOTICE OF LICENSE
  *
@@ -11,26 +11,26 @@
  *
  * PHP version 5
  *
- * @author    Tim Wagner <tw@appserver.io>
- * @copyright 2015 TechDivision GmbH <info@appserver.io>
+ * @author    Tim Wagner <tw@techdivision.com>
+ * @copyright 2016 TechDivision GmbH <info@appserver.io>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
 
-namespace AppserverIo\Appserver\DependencyInjectionContainer;
+namespace AppserverIo\Appserver\Core\Api\Node;
 
-use AppserverIo\Psr\EnterpriseBeans\EnterpriseBeansException;
+use AppserverIo\Description\Api\Node\AbstractValueNode;
 
 /**
- * This is the exception that is thrown if a DI error occurs.
+ * DTO to transfer the server version to be connected.
  *
- * @author    Tim Wagner <tw@appserver.io>
- * @copyright 2015 TechDivision GmbH <info@appserver.io>
+ * @author    Tim Wagner <tw@techdivision.com>
+ * @copyright 2016 TechDivision GmbH <info@appserver.io>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class DependencyInjectionException extends EnterpriseBeansException
+class ServerVersionNode extends AbstractValueNode
 {
 }

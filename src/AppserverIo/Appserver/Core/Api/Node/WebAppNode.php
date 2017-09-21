@@ -20,13 +20,12 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Psr\HttpMessage\Protocol;
+use AppserverIo\Authenticator\Utils\FormKeys;
 use AppserverIo\Description\Api\Node\NodeValue;
 use AppserverIo\Description\Api\Node\ValueNode;
 use AppserverIo\Description\Api\Node\AbstractNode;
-use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
 use phpDocumentor\Reflection\DocBlock\Description;
-use AppserverIo\Appserver\ServletEngine\Authenticator\Utils\FormKeys;
-use AppserverIo\Psr\HttpMessage\Protocol;
 
 /**
  * DTO to transfer a web application.

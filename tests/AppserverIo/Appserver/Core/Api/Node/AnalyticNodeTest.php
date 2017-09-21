@@ -21,7 +21,6 @@
 namespace AppserverIo\Appserver\Core\Api\Node;
 
 use AppserverIo\Appserver\Core\AbstractTest;
-use AppserverIo\Configuration\Configuration;
 
 /**
  * Test for the analytic node implementation.

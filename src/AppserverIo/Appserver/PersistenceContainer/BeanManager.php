@@ -26,6 +26,7 @@ use AppserverIo\Collections\CollectionInterface;
 use AppserverIo\Storage\StorageInterface;
 use AppserverIo\Appserver\Core\AbstractEpbManager;
 use AppserverIo\Lang\Reflection\AnnotationInterface;
+use AppserverIo\Psr\Di\ObjectManagerInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Psr\EnterpriseBeans\BeanContextInterface;
 use AppserverIo\Psr\EnterpriseBeans\ResourceLocatorInterface;
@@ -41,7 +42,6 @@ use AppserverIo\Appserver\Application\Interfaces\ManagerSettingsAwareInterface;
 use AppserverIo\Appserver\PersistenceContainer\Utils\SessionBeanUtil;
 use AppserverIo\Appserver\PersistenceContainer\DependencyInjection\DirectoryParser;
 use AppserverIo\Appserver\PersistenceContainer\DependencyInjection\DeploymentDescriptorParser;
-use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\ObjectManagerInterface;
 use AppserverIo\RemoteMethodInvocation\RemoteMethodInterface;
 use AppserverIo\RemoteMethodInvocation\FilterSessionPredicate;
 
@@ -190,7 +190,7 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface, Ma
         $deploymentDescriptorParser->parse();
 
         // load the object manager
-        /** @var \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\ObjectManagerInterface $objectManager */
+        /** @var \AppserverIo\Psr\Di\ObjectManagerInterface $objectManager */
         $objectManager = $this->getApplication()->search('ObjectManagerInterface');
 
         // register the beans found by annotations and the XML configuration
@@ -575,11 +575,6 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface, Ma
             // load the map with the SFSBs
             $sessionBeans = $this->getStatefulSessionBeans();
 
-            // query whether the SFSB already exists, if yes remove it
-            if ($sessionBeans->exists($identifier)) {
-                $sessionBeans->remove($identifier);
-            }
-
             // add the stateful session bean to the map
             $sessionBeans->add($identifier, $instance, $lifetime);
 
@@ -599,7 +594,12 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface, Ma
 
         // query if we've singleton session bean
         if ($descriptor instanceof SingletonSessionBeanDescriptorInterface) {
-            // do nothing here
+            // we've to check for pre-attach callbacks
+            foreach ($descriptor->getPreAttachCallbacks() as $preAttachCallback) {
+                $instance->$preAttachCallback();
+            }
+
+            // stop processing here
             return;
         }
 

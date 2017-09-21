@@ -205,7 +205,7 @@ class ServletManager extends AbstractEpbManager implements ServletContextInterfa
         $deploymentDescriptorParser->parse();
 
         // load the object manager instance
-        /** @var \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\ObjectManagerInterface $objectManager */
+        /** @var \AppserverIo\Psr\Di\ObjectManagerInterface $objectManager */
         $objectManager = $this->getApplication()->search('ObjectManagerInterface');
 
         // register the beans located by annotations and the XML configuration

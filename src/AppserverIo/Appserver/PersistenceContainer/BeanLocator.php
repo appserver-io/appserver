@@ -60,7 +60,7 @@ class BeanLocator implements ResourceLocatorInterface
     {
 
         // load the object manager
-        /** @var \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\ObjectManagerInterface $objectManager */
+        /** @var \AppserverIo\Psr\Di\ObjectManagerInterface $objectManager */
         $objectManager = $beanManager->getApplication()->search('ObjectManagerInterface');
 
         // load the bean descriptor
@@ -71,7 +71,7 @@ class BeanLocator implements ResourceLocatorInterface
             // try to load the stateful session bean from the bean manager
             if ($instance = $beanManager->lookupStatefulSessionBean($sessionId, $className)) {
                 // load the object manager and re-inject the dependencies
-                /** @var \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\ProviderrInterface $provider */
+                /** @var \AppserverIo\Psr\Di\ProviderInterface $provider */
                 $provider = $beanManager->getApplication()->search('ProviderInterface');
                 $provider->injectDependencies($instance, $sessionId);
 
@@ -100,6 +100,17 @@ class BeanLocator implements ResourceLocatorInterface
         if ($descriptor instanceof SingletonSessionBeanDescriptorInterface) {
             // try to load the singleton session bean from the bean manager
             if ($instance = $beanManager->lookupSingletonSessionBean($className)) {
+                // load the object manager and re-inject the dependencies
+                /** @var \AppserverIo\Psr\Di\ProviderInterface $provider */
+                $provider = $beanManager->getApplication()->search('ProviderInterface');
+                $provider->injectDependencies($instance, $sessionId);
+
+                // we've to check for post-detach callbacks
+                foreach ($descriptor->getPostDetachCallbacks() as $postDetachCallback) {
+                    $instance->$postDetachCallback();
+                }
+
+                // return the instance
                 return $instance;
             }
 

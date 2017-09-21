@@ -451,6 +451,12 @@ abstract class AbstractService implements ServiceInterface
         $properties->add(SystemPropertyKeys::ETC_APPSERVER, $this->getConfDir());
         $properties->add(SystemPropertyKeys::ETC_APPSERVER_CONFD, $this->getConfdDir());
 
+        // append the declared system propertie
+        /** @var \AppserverIo\Appserver\Core\Api\Node\SystemPropertyNode $systemProperty */
+        foreach ($this->getSystemConfiguration()->getSystemProperties() as $systemProperty) {
+            $properties->add($systemProperty->getName(), $systemProperty->castToType());
+        }
+
         // query whether or not a container node has been passed
         if ($containerNode != null) {
             // append the container specific properties

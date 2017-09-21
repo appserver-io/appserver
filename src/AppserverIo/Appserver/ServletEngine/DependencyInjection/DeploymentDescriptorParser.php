@@ -100,7 +100,7 @@ class DeploymentDescriptorParser
         $configurationService->validateFile($deploymentDescriptor, null, true);
 
         // load the object manager instance
-        /** @var \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\ObjectManagerInterface $objectManager */
+        /** @var \AppserverIo\Psr\Di\ObjectManagerInterface $objectManager */
         $objectManager = $this->getApplication()->search('ObjectManagerInterface');
 
         // prepare and initialize the configuration node

@@ -49,11 +49,25 @@ class MetadataConfigurationNode extends AbstractNode
     const PARAM_PROXY_DIR = 'proxyDir';
 
     /**
+     * Constant for the parameter 'proxyNamespace'.
+     *
+     * @var string
+     */
+    const PARAM_PROXY_NAMESPACE = 'proxyNamespace';
+
+    /**
      * Constant for the parameter 'useSimpleAnnotationReader'.
      *
      * @var string
      */
     const PARAM_USE_SIMPLE_ANNOTATION_READER = 'useSimpleAnnotationReader';
+
+    /**
+     * Constant for the parameter 'autoGenerateProxyClasses'.
+     *
+     * @var string
+     */
+    const PARAM_AUTO_GENERATE_PROXY_CLASSES = 'autoGenerateProxyClasses';
 
     /**
      * A directories node trait.
@@ -70,7 +84,7 @@ class MetadataConfigurationNode extends AbstractNode
     use ParamsNodeTrait;
 
     /**
-     * The metadata configuration type, either one of 'annotation', 'xml' or 'yaml'.
+     * The class name for the metadata configuration driver.
      *
      * @var string
      * @AS\Mapping(nodeType="string")
@@ -78,12 +92,30 @@ class MetadataConfigurationNode extends AbstractNode
     protected $type;
 
     /**
-     * Returns metadata configuration type, either one of 'annotation', 'xml' or 'yaml'.
+     * The factory class name for the metadata configuration driver.
      *
-     * @return string The metadata configuration type
+     * @var string
+     * @AS\Mapping(nodeType="string")
+     */
+    protected $factory;
+
+    /**
+     * Returns the class name for the metadata configuration driver.
+     *
+     * @return string The class name for the metadata configuration driver
      */
     public function getType()
     {
         return $this->type;
+    }
+
+    /**
+     * Returns the factory class name for the metadata configuration driver.
+     *
+     * @return string The factory class name for the metadata configuration driver
+     */
+    public function getFactory()
+    {
+        return $this->factory;
     }
 }

@@ -21,6 +21,10 @@
 namespace AppserverIo\Appserver\Core;
 
 use AppserverIo\Psr\Naming\NamingException;
+use AppserverIo\Psr\Di\ObjectManagerInterface;
+use AppserverIo\RemoteMethodInvocation\LocalProxy;
+use AppserverIo\Appserver\ServletEngine\RequestHandler;
+use AppserverIo\Psr\EnterpriseBeans\BeanContextInterface;
 use AppserverIo\Psr\EnterpriseBeans\PersistenceContextInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\EpbReferenceDescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\ResReferenceDescriptorInterface;
@@ -44,7 +48,6 @@ abstract class AbstractEpbManager extends AbstractManager
      * @param \AppserverIo\Psr\EnterpriseBeans\Description\EpbReferenceDescriptorInterface $epbReference The EPB reference to register
      *
      * @return void
-     * @todo Replace lookupProxy callback with real proxy instance
      */
     public function registerEpbReference(EpbReferenceDescriptorInterface $epbReference)
     {
@@ -238,5 +241,65 @@ abstract class AbstractEpbManager extends AbstractManager
         } catch (\Exception $e) {
             $application->getInitialContext()->getSystemLogger()->critical($e->__toString());
         }
+    }
+
+    /**
+     * This returns a proxy to the requested session bean.
+     *
+     * @param string $lookupName The lookup name for the requested session bean
+     * @param string $sessionId  The session-ID if available
+     *
+     * @return \AppserverIo\RemoteMethodInvocation\RemoteObjectInterface The proxy instance
+     */
+    public function lookupProxy($lookupName, $sessionId = null)
+    {
+
+        // load the initial context instance
+        $initialContext = $this->getInitialContext();
+
+        // query whether a request context is available
+        if ($servletRequest = RequestHandler::getRequestContext()) {
+            // inject the servlet request to handle SFSBs correctly
+            $initialContext->injectServletRequest($servletRequest);
+        }
+
+        // lookup the proxy by the name and session ID if available
+        return $initialContext->lookup($lookupName, $sessionId);
+    }
+
+    /**
+     * This returns a local proxy to the requested session bean.
+     *
+     * @param string $lookupName The lookup name for the requested session bean
+     * @param string $sessionId  The session-ID if available
+     *
+     * @return \AppserverIo\RemoteMethodInvocation\RemoteObjectInterface The proxy instance
+     */
+    public function lookupLocalProxy($lookupName, $sessionId = null)
+    {
+
+        // extract the session bean name from the lookup name
+        $beanName = str_replace('/local', '', $lookupName);
+
+        // load the application
+        $application = $this->getApplication();
+
+        // load bean and object manager
+        $beanManager = $application->search(BeanContextInterface::IDENTIFIER);
+        $objectManager = $application->search(ObjectManagerInterface::IDENTIFIER);
+
+        // load the requested session bean
+        $sessionBean = $application->search($beanName, array($sessionId));
+
+        // load the bean descriptor
+        $sessionBeanDescriptor = $objectManager->getObjectDescriptors()->get(get_class($sessionBean));
+
+        // initialize the local proxy instance
+        return new LocalProxy(
+            $beanManager,
+            $sessionBeanDescriptor,
+            $sessionBean,
+            $sessionId
+        );
     }
 }

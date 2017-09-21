@@ -23,12 +23,12 @@ namespace AppserverIo\Appserver\ServletEngine;
 use AppserverIo\Logger\LoggerUtils;
 use AppserverIo\Psr\HttpMessage\ResponseInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
+use AppserverIo\Psr\Auth\AuthenticationManagerInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
 use AppserverIo\Appserver\ServletEngine\Utils\Error;
 use AppserverIo\Appserver\ServletEngine\Http\Response;
 use AppserverIo\Appserver\ServletEngine\Utils\ErrorUtil;
-use AppserverIo\Appserver\ServletEngine\Security\AuthenticationManagerInterface;
 
 /**
  * This is a request handler that is necessary to process each request of an

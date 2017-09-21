@@ -19,7 +19,7 @@
  * @link      http://www.appserver.io
  */
 
-use AppserverIo\Appserver\ServletEngine\Utils\RequestHandlerKeys;
+use AppserverIo\Psr\Servlet\Utils\RequestHandlerKeys;
 use AppserverIo\Appserver\ServletEngine\Utils\ErrorUtil;
 
 ?>

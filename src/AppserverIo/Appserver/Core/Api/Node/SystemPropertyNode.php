@@ -1,7 +1,7 @@
 <?php
 
 /**
- * \AppserverIo\Appserver\DependencyInjectionContainer\UnknownObjectDescriptorException
+ * \AppserverIo\Appserver\Core\Api\Node\SystemPropertyNode
  *
  * NOTICE OF LICENSE
  *
@@ -18,12 +18,10 @@
  * @link      http://www.appserver.io
  */
 
-namespace AppserverIo\Appserver\DependencyInjectionContainer;
-
-use AppserverIo\Psr\EnterpriseBeans\EnterpriseBeansException;
+namespace AppserverIo\Appserver\Core\Api\Node;
 
 /**
- * This is the exception that is thrown if someone tries to access an unknown object descriptor.
+ * DTO to transfer a system property.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -31,6 +29,6 @@ use AppserverIo\Psr\EnterpriseBeans\EnterpriseBeansException;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class UnknownObjectDescriptorException extends EnterpriseBeansException
+class SystemPropertyNode extends ParamNode
 {
 }

@@ -33,7 +33,7 @@ use AppserverIo\Appserver\ServletEngine\Security\Utils\Util;
 use AppserverIo\Appserver\ServletEngine\Security\Utils\ParamKeys;
 
 /**
- * This valve will check if the actual request needs authentication.
+ * This value will check if the actual request needs authentication.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>

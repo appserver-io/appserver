@@ -22,9 +22,9 @@
 
 namespace AppserverIo\Appserver\Core;
 
-use AppserverIo\Appserver\Core\Utilities\AppEnvironmentHelper;
-use AppserverIo\Configuration\ConfigurationException;
 use AppserverIo\Appserver\Core\Api\Node\DatasourcesNode;
+use AppserverIo\Appserver\Core\Utilities\AppEnvironmentHelper;
+use AppserverIo\Appserver\Core\Utilities\SystemPropertyKeys;
 
 /**
  * Generic deployment implementation for web applications.
@@ -51,14 +51,55 @@ class GenericDeployment extends AbstractDeployment
         $datasourceFiles = array();
         if (is_dir($appBase = $this->getAppBase())) {
             // get all the global datasource files first
-            $datasourceFiles = $this->getDeploymentService()->globDir($appBase . DIRECTORY_SEPARATOR . '*-ds.xml', 0, false);
-
+            $datasourceFiles = array_merge(
+                $datasourceFiles,
+                $this->prepareDatasourceFiles(
+                    $this->getDeploymentService()->globDir($appBase . DIRECTORY_SEPARATOR . '*-ds.xml', 0, false)
+                )
+            );
             // iterate over all applications and collect the environment specific datasources
             foreach (glob($appBase . '/*', GLOB_ONLYDIR) as $webappPath) {
-                $datasourceFiles = array_merge($datasourceFiles, $this->getDeploymentService()->globDir(AppEnvironmentHelper::getEnvironmentAwareGlobPattern($webappPath, '*-ds')));
+                // append the datasource files of the webapp
+                $datasourceFiles = array_merge(
+                    $datasourceFiles,
+                    $this->prepareDatasourceFiles(
+                        $this->getDeploymentService()->globDir(AppEnvironmentHelper::getEnvironmentAwareGlobPattern($webappPath, 'META-INF' . DIRECTORY_SEPARATOR . '*-ds'))
+                    )
+                );
             }
         }
+        // return the found datasource files
         return $datasourceFiles;
+    }
+
+    /**
+     * Prepares the datasource files by adding the found context name
+     * and the webapp path, if available.
+     *
+     * @param array $datasourceFiles The array with the datasource files to prepare
+     *
+     * @return array The prepared array
+     */
+    protected function prepareDatasourceFiles(array $datasourceFiles)
+    {
+
+        // initialize the array for the prepared datasources
+        $ds = array();
+
+        // prepare the datasources
+        foreach ($datasourceFiles as $datasourceFile) {
+            // explode the directoriy names from the app base path
+            $contextPath = explode(DIRECTORY_SEPARATOR, ltrim(str_replace(sprintf('%s', $this->getAppBase()), '', $datasourceFile), DIRECTORY_SEPARATOR));
+            // the first element IS the context name
+            $contextName = reset($contextPath);
+            // create the path to the web application
+            $webappPath = $this->getDatasourceService()->getWebappsDir($this->getContainer()->getContainerNode(), $contextName);
+            // append it to the array with the prepared datasources
+            $ds[] = array($datasourceFile, $webappPath, $contextName);
+        }
+
+        // return the array with the prepared datasources
+        return $ds;
     }
 
     /**
@@ -117,15 +158,22 @@ class GenericDeployment extends AbstractDeployment
             $configurationService = $this->getConfigurationService();
             foreach ($datasourceFiles as $datasourceFile) {
                 try {
+                    // explode the filename, context name and webapp path
+                    list ($filename, $webappPath, $contextName) = $datasourceFile;
+
                     // validate the file, but skip it if validation fails
-                    $configurationService->validateFile($datasourceFile);
+                    $configurationService->validateFile($filename);
 
                     // load the system properties
                     $systemProperties = $this->getDatasourceService()->getSystemProperties($container->getContainerNode());
 
+                    // append the application specific properties
+                    $systemProperties->add(SystemPropertyKeys::WEBAPP, $webappPath);
+                    $systemProperties->add(SystemPropertyKeys::WEBAPP_NAME, $contextName);
+
                     // load the datasources from the file and replace the properties
                     $datasourcesNode = new DatasourcesNode();
-                    $datasourcesNode->initFromFile($datasourceFile);
+                    $datasourcesNode->initFromFile($filename);
                     $datasourcesNode->replaceProperties($systemProperties);
 
                     // store the datasource in the system configuration
@@ -144,14 +192,14 @@ class GenericDeployment extends AbstractDeployment
                     }
 
                 // log a message and continue with the next datasource node
-                } catch (ConfigurationException $ce) {
+                } catch (\Exception $e) {
                     // load the logger and log the XML validation errors
                     $systemLogger = $this->getInitialContext()->getSystemLogger();
-                    $systemLogger->error($ce->__toString());
+                    $systemLogger->error($e->__toString());
 
                     // additionally log a message that DS will be missing
                     $systemLogger->critical(
-                        sprintf('Will skip reading configuration in %s, datasources might be missing.', $datasourceFile)
+                        sprintf('Will skip reading configuration in %s, datasources might be missing.', $filename)
                     );
                 }
             }

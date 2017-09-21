@@ -141,6 +141,22 @@ class ConnectionUtil
         }
 
         // add driver options, if specified
+        if ($unixSocketNode = $databaseNode->getUnixSocket()) {
+            $connectionParameters['unix_socket'] = $unixSocketNode->getNodeValue()->__toString();
+        }
+
+        // add server version, if specified
+        if ($serverVersionNode = $databaseNode->getServerVersion()) {
+            $connectionParameters['server_version'] = $serverVersionNode->getNodeValue()->__toString();
+        }
+
+        // set platform, if specified
+        if ($platformNode = $databaseNode->getPlatform()) {
+            $platform = $platformNode->getNodeValue()->__toString();
+            $connectionParameters['platform'] = new $platform();
+        }
+
+        // add driver options, if specified
         if ($driverOptionsNode = $databaseNode->getDriverOptions()) {
             // explode the raw options separated with a semicolon
             $rawOptions = explode(';', $driverOptionsNode->getNodeValue()->__toString());
@@ -154,11 +170,6 @@ class ConnectionUtil
 
             // set the driver options
             $connectionParameters['driverOptions'] = $options;
-        }
-
-        // add driver options, if specified
-        if ($unixSocketNode = $databaseNode->getUnixSocket()) {
-            $connectionParameters['unix_socket'] = $unixSocketNode->getNodeValue()->__toString();
         }
 
         // returns the connection parameters

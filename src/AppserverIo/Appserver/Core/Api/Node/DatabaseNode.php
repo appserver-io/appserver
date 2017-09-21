@@ -123,6 +123,22 @@ class DatabaseNode extends AbstractNode implements DatabaseNodeInterface
     protected $unixSocket;
 
     /**
+     * The DB platform.
+     *
+     * @var \AppserverIo\Appserver\Core\Api\Node\PlatformNode
+     * @AS\Mapping(nodeName="platform", nodeType="AppserverIo\Appserver\Core\Api\Node\PlatformNode")
+     */
+    protected $platform;
+
+    /**
+     * The server version we want to connect to.
+     *
+     * @var \AppserverIo\Appserver\Core\Api\Node\ServerVersionNode
+     * @AS\Mapping(nodeName="serverVersion", nodeType="AppserverIo\Appserver\Core\Api\Node\ServerVersionNode")
+     */
+    protected $serverVersion;
+
+    /**
      * Returns the database driver information.
      *
      * @return \AppserverIo\Appserver\Core\Api\Node\DriverNode The database driver information
@@ -215,7 +231,7 @@ class DatabaseNode extends AbstractNode implements DatabaseNodeInterface
     /**
      * Returns the database driver options.
      *
-     * @return \AppserverIo\Appserver\Core\Api\Node\CharsetNode The database driver options
+     * @return \AppserverIo\Appserver\Core\Api\Node\DriverOpionsNode The database driver options
      */
     public function getDriverOptions()
     {
@@ -225,10 +241,30 @@ class DatabaseNode extends AbstractNode implements DatabaseNodeInterface
     /**
      * Returns the name of the socket used to connect to the database.
      *
-     * @return \AppserverIo\Appserver\Core\Api\Node\CharsetNode The name of the socket
+     * @return \AppserverIo\Appserver\Core\Api\Node\UnixSocketNode The name of the socket
      */
     public function getUnixSocket()
     {
         return $this->unixSocket;
+    }
+
+    /**
+     * Returns the server version we want to connect to.
+     *
+     * @return \AppserverIo\Appserver\Core\Api\Node\ServerVersionNode The server version to connect to
+     */
+    public function getServerVersion()
+    {
+        return $this->serverVersion;
+    }
+
+    /**
+     * Returns the DB platform.
+     *
+     * @return \AppserverIo\Appserver\Core\Api\Node\PlatformNode The DB platform
+     */
+    public function getPlatform()
+    {
+        return $this->platform;
     }
 }

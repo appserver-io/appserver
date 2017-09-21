@@ -95,7 +95,7 @@ class AspectManager implements AspectManagerInterface, ManagerInterface
      * @param string $className The class name to return the reflection class instance for
      *
      * @return \AppserverIo\Lang\Reflection\ReflectionClass The reflection instance
-     * @see \DependencyInjectionContainer\Interfaces\ProviderInterface::getReflectionClass()
+     * @see \AppserverIo\Psr\Di\ProviderInterface::getReflectionClass()
      */
     public function getReflectionClass($className)
     {

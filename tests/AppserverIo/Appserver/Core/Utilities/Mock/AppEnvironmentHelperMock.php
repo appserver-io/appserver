@@ -20,10 +20,9 @@
 
 namespace AppserverIo\Appserver\Core\Utilities\Mock;
 
-use AppserverIo\Appserver\Core\Utilities\AppEnvironmentHelper;
-use AppserverIo\Appserver\Core\Utilities\ConfigurationKeys;
-use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
 use AppserverIo\Properties\Properties;
+use AppserverIo\Appserver\Core\Utilities\ConfigurationKeys;
+use AppserverIo\Appserver\Core\Utilities\AppEnvironmentHelper;
 
 /**
  * Helper which provides static methods for handling different application environment settings

@@ -25,7 +25,10 @@ use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Lang\Reflection\ClassInterface;
 use AppserverIo\Lang\Reflection\ReflectionClass;
 use AppserverIo\Lang\Reflection\AnnotationInterface;
+use AppserverIo\Psr\Di\ProviderInterface;
+use AppserverIo\Psr\Di\DependencyInjectionException;
 use AppserverIo\Psr\Servlet\Annotations\Route;
+use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\MessageDriven;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\PreDestroy;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\PostConstruct;
@@ -40,8 +43,6 @@ use AppserverIo\Psr\EnterpriseBeans\Annotations\Timeout;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\EnterpriseBean;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Resource;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\PersistenceUnit;
-use AppserverIo\Psr\Application\ApplicationInterface;
-use AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\ProviderInterface;
 
 /**
  * A basic dependency injection provider implementation.
@@ -244,8 +245,8 @@ class Provider extends GenericStackable implements ProviderInterface
      * @param object $instance The instance to return the reflection class instance for
      *
      * @return \AppserverIo\Lang\Reflection\ReflectionClass The reflection instance
-     * @see \DependencyInjectionContainer\Interfaces\ProviderInterface::newReflectionClass()
-     * @see \DependencyInjectionContainer\Interfaces\ProviderInterface::getReflectionClass()
+     * @see \AppserverIo\Psr\Di\ProviderInterface::newReflectionClass()
+     * @see \AppserverIo\Psr\Di\ProviderInterface::getReflectionClass()
      */
     public function getReflectionClassForObject($instance)
     {
@@ -276,7 +277,7 @@ class Provider extends GenericStackable implements ProviderInterface
     {
 
         // load the object manager instance
-        /** @var \AppserverIo\Appserver\DependencyInjectionContainer\Interfaces\ObjectManagerInterface $objectManager */
+        /** @var \AppserverIo\Psr\Di\ObjectManagerInterface $objectManager */
         $objectManager = $this->getNamingDirectory()->search(sprintf('php:global/%s/ObjectManagerInterface', $this->getApplication()->getUniqueName()));
 
         // load the object descriptor for the instance from the the object manager

@@ -1,6 +1,6 @@
 # appserver.io, a PHP application server
 
-[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/appserver-io/appserver?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Gitter chat](https://badges.gitter.im/appserver-io/appserver.png)](https://gitter.im/appserver-io/appserver)
  [![Build Status](https://img.shields.io/travis/appserver-io/appserver/master.svg?style=flat-square)](http://travis-ci.org/appserver-io/appserver)
  [![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/appserver-io/appserver/master.svg?style=flat-square)](https://scrutinizer-ci.com/g/appserver-io/appserver/?branch=master)
  [![Code Coverage](https://img.shields.io/scrutinizer/coverage/g/appserver-io/appserver/master.svg?style=flat-square)](https://scrutinizer-ci.com/g/appserver-io/appserver/?branch=master)
@@ -35,7 +35,7 @@ Give it a try!
 * [Semantic Versioning](#semantic-versioning)
 * [Installation](#installation)
 * [Basic Usage](#basic-usage)
-* [HTTP(S) Server](#http-s-server)
+* [HTTP(S) Server](#https-server)
 * [Servlet-Engine](#servlet-engine)
 * [Annotations](#annotations)
 * [Dependency Injection](#dependency-injection)

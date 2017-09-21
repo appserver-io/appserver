@@ -33,8 +33,8 @@ use AppserverIo\Psr\Servlet\SessionUtils;
 use AppserverIo\Psr\Servlet\ServletException;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
+use AppserverIo\Psr\Auth\AuthenticationManagerInterface;
 use AppserverIo\Appserver\ServletEngine\SessionManagerInterface;
-use AppserverIo\Appserver\ServletEngine\Security\AuthenticationManagerInterface;
 
 /**
  * A Http servlet request implementation.
@@ -219,7 +219,7 @@ class Request implements HttpServletRequestInterface, ContextInterface
     /**
      * The session manager instance.
      *
-     * @var \AppserverIo\Appserver\ServletEngine\Security\AuthenticationManagerInterface
+     * @var \AppserverIo\Psr\Auth\AuthenticationManagerInterface
      */
     protected $authenticationManager;
 
@@ -462,7 +462,7 @@ class Request implements HttpServletRequestInterface, ContextInterface
     /**
      * Injects the authentication manager instance.
      *
-     * @param \AppserverIo\Appserver\ServletEngine\Security\AuthenticationManagerInterface $authenticationManager The authentication manager instance
+     * @param \AppserverIo\Psr\Auth\AuthenticationManagerInterface $authenticationManager The authentication manager instance
      *
      * @return void
      */
@@ -474,7 +474,7 @@ class Request implements HttpServletRequestInterface, ContextInterface
     /**
      * Return's the authentication manager instance.
      *
-     * @return \AppserverIo\Appserver\ServletEngine\Security\AuthenticationManagerInterface The authentication manager instance
+     * @return \AppserverIo\Psr\Auth\AuthenticationManagerInterface The authentication manager instance
      */
     public function getAuthenticationManager()
     {
@@ -1368,7 +1368,7 @@ class Request implements HttpServletRequestInterface, ContextInterface
     {
 
         // load the authentication manager and try to authenticate this request
-        /** @var \AppserverIo\Appserver\ServletEngine\Authentication\AuthenticationManagerInterface $authenticationManager */
+        /** @var \AppserverIo\Psr\Auth\AuthenticationManagerInterface $authenticationManager */
         if ($authenticationManager = $this->getAuthenticationManager()) {
             return $authenticationManager->handleRequest($this, $servletResponse);
         }
@@ -1396,7 +1396,7 @@ class Request implements HttpServletRequestInterface, ContextInterface
         }
 
         // load the authentication manager and try to authenticate this request
-        /** @var \AppserverIo\Appserver\ServletEngine\Authentication\AuthenticationManagerInterface $authenticationManager */
+        /** @var \AppserverIo\Psr\Auth\AuthenticationManagerInterface $authenticationManager */
         if ($authenticationManager = $this->getAuthenticationManager()) {
             // try to load the authentication managers default authenticator
             if (($authenticator = $authenticationManager->getAuthenticator()) == null) {
@@ -1419,7 +1419,7 @@ class Request implements HttpServletRequestInterface, ContextInterface
     {
 
         // load the authentication manager and try to authenticate this request
-        /** @var \AppserverIo\Appserver\ServletEngine\Authentication\AuthenticationManagerInterface $authenticationManager */
+        /** @var \AppserverIo\Psr\Auth\AuthenticationManagerInterface $authenticationManager */
         if ($authenticationManager = $this->getAuthenticationManager()) {
             // try to load the authentication managers default authenticator
             if (($authenticator = $authenticationManager->getAuthenticator()) == null) {
