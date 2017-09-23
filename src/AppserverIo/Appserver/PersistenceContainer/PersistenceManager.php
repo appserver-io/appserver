@@ -24,7 +24,6 @@ use AppserverIo\Collections\ArrayList;
 use AppserverIo\Collections\CollectionUtils;
 use AppserverIo\Collections\CollectionInterface;
 use AppserverIo\Storage\GenericStackable;
-use AppserverIo\Configuration\Configuration;
 use AppserverIo\Appserver\Core\AbstractManager;
 use AppserverIo\Appserver\Core\Api\Node\PersistenceNode;
 use AppserverIo\Appserver\Core\Api\InvalidConfigurationException;
@@ -93,7 +92,7 @@ class PersistenceManager extends AbstractManager implements PersistenceContextIn
     /**
      * Return's the bean manager settings.
      *
-     * @return \AppserverIo\Appserver\PersistenceContainer\PersistenceContainerSettingsInterface The bean manager settings
+     * @return \AppserverIo\Appserver\PersistenceContainer\BeanManagerSettingsInterface The bean manager settings
      */
     public function getManagerSettings()
     {
@@ -191,8 +190,8 @@ class PersistenceManager extends AbstractManager implements PersistenceContextIn
     /**
      * Deploys the entity manager described by the passed XML node.
      *
-     * @param \AppserverIo\Psr\Application\ApplicationInterface            $application         The application instance
-     * @param \AppserverIo\Appserver\Core\Api\PersistenceUnitNodeInterface $persistenceUnitNode The XML node that describes the entity manager
+     * @param \AppserverIo\Psr\Application\ApplicationInterface                 $application         The application instance
+     * @param \AppserverIo\Appserver\Core\Api\Node\PersistenceUnitNodeInterface $persistenceUnitNode The XML node that describes the entity manager
      *
      * @return void
      */

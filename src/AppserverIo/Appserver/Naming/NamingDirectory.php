@@ -363,7 +363,7 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
      *
      * @param string $name The name to prepare the directory with
      *
-     * @return The prepared path
+     * @return string The prepared path
      */
     public function prepareDirectory($name)
     {

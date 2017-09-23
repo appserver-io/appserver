@@ -321,7 +321,7 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface, Ma
     /**
      * Return's the bean manager settings.
      *
-     * @return \AppserverIo\Appserver\PersistenceContainer\PersistenceContainerSettingsInterface The bean manager settings
+     * @return \AppserverIo\Appserver\PersistenceContainer\BeanManagerSettingsInterface The bean manager settings
      */
     public function getManagerSettings()
     {

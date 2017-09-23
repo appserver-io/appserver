@@ -41,7 +41,7 @@ class StandardSessionMarshaller implements SessionMarshallerInterface
      * @param \AppserverIo\Psr\Servlet\ServletSessionInterface $servletSession The session to be transformed
      *
      * @return string The JSON encoded session representation
-     * @see \AppserverIo\Appserver\ServletEngine\SessionMarshaller::marshall()
+     * @see \AppserverIo\Appserver\ServletEngine\SessionMarshallerInterface::marshall()
      */
     public function marshall(ServletSessionInterface $servletSession)
     {
@@ -81,7 +81,7 @@ class StandardSessionMarshaller implements SessionMarshallerInterface
      * @param string                                           $marshalled     The marshaled session representation
      *
      * @return \AppserverIo\Psr\Servlet\ServletSessionInterface The decoded session instance
-     * @see \AppserverIo\Appserver\ServletEngine\SessionMarshaller::unmarshall()
+     * @see \AppserverIo\Appserver\ServletEngine\SessionMarshallerInterface::unmarshall()
      */
     public function unmarshall(ServletSessionInterface $servletSession, $marshalled)
     {

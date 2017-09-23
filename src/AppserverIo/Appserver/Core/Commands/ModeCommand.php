@@ -46,8 +46,8 @@ class ModeCommand implements CommandInterface
      * Initializes the command with the connection and the application server
      * instance to execute the command on.
      *
-     * @param \React\Socket\ConnectionInterface                                $connection        The connection instance
-     * @param AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface $applicationServer The application server instance
+     * @param \React\Socket\ConnectionInterface                                 $connection        The connection instance
+     * @param \AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface $applicationServer The application server instance
      */
     public function __construct(ConnectionInterface $connection, ApplicationServerInterface $applicationServer)
     {

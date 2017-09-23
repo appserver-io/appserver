@@ -21,7 +21,6 @@
 namespace AppserverIo\Appserver\Core\Interfaces;
 
 use AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface;
-use AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface;
 
 /**
  * Interface for a factory to create new container instances.

@@ -22,7 +22,6 @@ namespace AppserverIo\Appserver\Core\Listeners;
 
 use League\Event\EventInterface;
 use AppserverIo\Appserver\Core\Utilities\FileSystem;
-use AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface;
 
 /**
  * Listener that switches user/group to the values configured in system configuration.

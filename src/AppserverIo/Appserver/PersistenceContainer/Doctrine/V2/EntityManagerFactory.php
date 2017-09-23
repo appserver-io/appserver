@@ -22,9 +22,7 @@ namespace AppserverIo\Appserver\PersistenceContainer\Doctrine\V2;
 
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
-use Doctrine\Common\Cache\CacheProvider;
 use Doctrine\Common\Annotations\AnnotationReader;
-use Doctrine\Common\Annotations\AnnotationRegistry;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\Doctrine\Utils\ConnectionUtil;
 use AppserverIo\Appserver\Core\Api\Node\MetadataConfigurationNode;
@@ -178,8 +176,8 @@ class EntityManagerFactory
     /**
      * Factory method to create a new cache instance from the passed configuration.
      *
-     * @param \AppserverIo\Appserver\Core\Api\Node\PersistenceUnitNodeInterface                                    $persistenceUnit    The persistence unit node
-     * @param \AppserverIo\Appserver\PersistenceContainer\Doctrine\V2\CacheFactory\CacheConfigurationNodeInterface $cacheConfiguration The cache configuration
+     * @param \AppserverIo\Appserver\Core\Api\Node\PersistenceUnitNodeInterface                                      $persistenceUnit    The persistence unit node
+     * @param \AppserverIo\Appserver\PersistenceContainer\Doctrine\V2\CacheFactories\CacheConfigurationNodeInterface $cacheConfiguration The cache configuration
      *
      * @return \Doctrine\Common\Cache\CacheProvider The cache instance
      */

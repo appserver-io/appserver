@@ -38,7 +38,7 @@ class CreateDatabaseStep extends AbstractDatabaseStep
      *
      * @return void
      * @throws \Exception Is thrown if the script can't be executed
-     * @see \AppserverIo\Appserver\Core\Provisioning\StepInterface::execute()
+     * @see \AppserverIo\Appserver\Provisioning\Steps\StepInterface::execute()
      */
     public function execute()
     {

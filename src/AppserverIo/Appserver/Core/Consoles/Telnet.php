@@ -68,7 +68,7 @@ class Telnet extends \Thread implements ConsoleInterface
      * Initialize and start the management console.
      *
      * @param \AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface $applicationServer The reference to the server
-     * @param \AppserverIo\Appserver\Api\Node\ConsoleNodeInterface              $consoleNode       The console configuration
+     * @param \AppserverIo\Appserver\Core\Api\Node\ConsoleNodeInterface         $consoleNode       The console configuration
      *
      * @return void
      */

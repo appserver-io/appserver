@@ -49,7 +49,7 @@ class Ssh extends \Thread implements ConsoleInterface
     /**
      * Initialize and start the management console.
      *
-     * @param \AppserverIo\Lab\Bootstrap\ApplicationServer $applicationServer The reference to the server
+     * @param \AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface $applicationServer The reference to the server
      *
      * @return void
      */

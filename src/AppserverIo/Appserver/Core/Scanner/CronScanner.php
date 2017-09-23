@@ -21,7 +21,6 @@
 namespace AppserverIo\Appserver\Core\Scanner;
 
 use AppserverIo\Microcron\CronExpression;
-use AppserverIo\Appserver\Core\Api\Node\CronNode;
 use AppserverIo\Appserver\Core\Api\Node\JobNodeInterface;
 
 /**

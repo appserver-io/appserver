@@ -41,7 +41,7 @@ interface ConsoleFactoryInterface
      * @param \AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface $applicationServer The application server instance
      * @param \AppserverIo\Appserver\Core\Api\Node\ConsoleNodeInterface         $consoleNode       The console configuration
      *
-     * @return AppserverIo\Appserver\Core\Console\ConsoleInterface The telnet console instance
+     * @return \AppserverIo\Appserver\Core\Consoles\ConsoleInterface The telnet console instance
      */
     public static function factory(ApplicationServerInterface $applicationServer, ConsoleNodeInterface $consoleNode);
 }

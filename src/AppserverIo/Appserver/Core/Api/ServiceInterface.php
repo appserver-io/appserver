@@ -47,8 +47,8 @@ interface ServiceInterface
     /**
      * Returns the servers tmp directory, append with the passed directory.
      *
-     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerInterface $containerNode        The container to return the temporary directory for
-     * @param string                                                  $relativePathToAppend A relative path to append
+     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode        The container to return the temporary directory for
+     * @param string                                                      $relativePathToAppend A relative path to append
      *
      * @return string
      */
@@ -57,8 +57,8 @@ interface ServiceInterface
     /**
      * Returns the servers deploy directory.
      *
-     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerInterface $containerNode        The container to return the deployment directory for
-     * @param string                                                  $relativePathToAppend A relative path to append
+     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode        The container to return the deployment directory for
+     * @param string                                                      $relativePathToAppend A relative path to append
      *
      * @return string
      */
@@ -67,8 +67,8 @@ interface ServiceInterface
     /**
      * Returns the servers webapps directory.
      *
-     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerInterface $containerNode        The container to return the temporary directory for
-     * @param string                                                  $relativePathToAppend A relative path to append
+     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode        The container to return the temporary directory for
+     * @param string                                                      $relativePathToAppend A relative path to append
      *
      * @return string
      */

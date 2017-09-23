@@ -27,7 +27,6 @@ use AppserverIo\Psr\Auth\AuthenticationManagerInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
 use AppserverIo\Appserver\ServletEngine\Utils\Error;
-use AppserverIo\Appserver\ServletEngine\Http\Response;
 use AppserverIo\Appserver\ServletEngine\Utils\ErrorUtil;
 
 /**

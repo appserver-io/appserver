@@ -54,8 +54,8 @@ class AuthConstraintNode extends AbstractNode implements AuthConstraintNodeInter
     /**
      * Initializes the node with the passed values.
      *
-     * @param \AppserverIo\Appserver\Core\Api\Node\NodeValueInterface $description The description information
-     * @param array                                                   $roleNames   The array with the role names
+     * @param \AppserverIo\Configuration\Interfaces\NodeValueInterface $description The description information
+     * @param array                                                    $roleNames   The array with the role names
      */
     public function __construct(
         NodeValueInterface $description = null,

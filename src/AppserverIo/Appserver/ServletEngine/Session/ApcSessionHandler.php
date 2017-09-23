@@ -21,9 +21,9 @@
 namespace AppserverIo\Appserver\ServletEngine\Session;
 
 use AppserverIo\Psr\Servlet\ServletSessionInterface;
-use AppserverIo\Appserver\ServletEngine\Http\Session;
 use AppserverIo\Appserver\ServletEngine\SessionCanNotBeSavedException;
 use AppserverIo\Appserver\ServletEngine\SessionCanNotBeDeletedException;
+use AppserverIo\Appserver\ServletEngine\SessionDataNotReadableException;
 
 /**
  * A session handler implementation that uses the PECL APCu PHP extension
@@ -69,7 +69,7 @@ class ApcSessionHandler extends AbstractSessionHandler
      * @param string $id The ID of the session we want to delete
      *
      * @return void
-     * @throws AppserverIo\Appserver\ServletEngine\SessionCanNotBeDeletedException Is thrown if the session can't be deleted
+     * @throws \AppserverIo\Appserver\ServletEngine\SessionCanNotBeDeletedException Is thrown if the session can't be deleted
      */
     public function delete($id)
     {
@@ -86,7 +86,7 @@ class ApcSessionHandler extends AbstractSessionHandler
      * @param \AppserverIo\Psr\Servlet\ServletSessionInterface $session The session to save
      *
      * @return void
-     * @throws AppserverIo\Appserver\ServletEngine\SessionCanNotBeSavedException Is thrown if the session can't be saved
+     * @throws \AppserverIo\Appserver\ServletEngine\SessionCanNotBeSavedException Is thrown if the session can't be saved
      */
     public function save(ServletSessionInterface $session)
     {
@@ -120,6 +120,8 @@ class ApcSessionHandler extends AbstractSessionHandler
 
         // iterate over the found session items
         foreach (new \ApcIterator(ApcSessionHandler::APCU_CACHE_TYPE_USER) as $item) {
+            // initialize the key
+            $key = null;
             // explode the APC item
             extract($item);
             // unpersist the session

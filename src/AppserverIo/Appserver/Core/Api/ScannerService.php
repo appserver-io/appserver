@@ -20,10 +20,9 @@
 
 namespace AppserverIo\Appserver\Core\Api;
 
+use AppserverIo\Configuration\ConfigurationException;
 use AppserverIo\Appserver\Core\Api\Node\CronNode;
 use AppserverIo\Appserver\Core\Utilities\AppEnvironmentHelper;
-use AppserverIo\Configuration\ConfigurationException;
-use AppserverIo\Properties\Properties;
 use AppserverIo\Appserver\Core\Utilities\SystemPropertyKeys;
 
 /**

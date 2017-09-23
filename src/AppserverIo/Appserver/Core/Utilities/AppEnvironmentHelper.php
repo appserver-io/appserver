@@ -21,8 +21,6 @@
 
 namespace AppserverIo\Appserver\Core\Utilities;
 
-use AppserverIo\Appserver\Core\Utilities\ConfigurationKeys;
-use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
 use AppserverIo\Properties\Properties;
 
 /**
