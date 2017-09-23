@@ -21,9 +21,9 @@
 namespace AppserverIo\Appserver\ServletEngine\Session;
 
 use AppserverIo\Psr\Servlet\ServletSessionInterface;
-use AppserverIo\Appserver\ServletEngine\Http\Session;
 use AppserverIo\Appserver\ServletEngine\SessionCanNotBeSavedException;
 use AppserverIo\Appserver\ServletEngine\SessionCanNotBeDeletedException;
+use AppserverIo\Appserver\ServletEngine\SessionDataNotReadableException;
 
 /**
  * A session handler implementation that uses the filesystem
@@ -68,7 +68,7 @@ class FilesystemSessionHandler extends AbstractSessionHandler
      * @param string $id The ID of the session we want to delete
      *
      * @return void
-     * @throws AppserverIo\Appserver\ServletEngine\SessionCanNotBeDeletedException Is thrown if the session can't be deleted
+     * @throws \AppserverIo\Appserver\ServletEngine\SessionCanNotBeDeletedException Is thrown if the session can't be deleted
      */
     public function delete($id)
     {
@@ -91,7 +91,7 @@ class FilesystemSessionHandler extends AbstractSessionHandler
      * @param \AppserverIo\Psr\Servlet\ServletSessionInterface $session The session to save
      *
      * @return void
-     * @throws AppserverIo\Appserver\ServletEngine\SessionCanNotBeSavedException Is thrown if the session can't be saved
+     * @throws \AppserverIo\Appserver\ServletEngine\SessionCanNotBeSavedException Is thrown if the session can't be saved
      */
     public function save(ServletSessionInterface $session)
     {

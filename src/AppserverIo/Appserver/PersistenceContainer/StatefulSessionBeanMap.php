@@ -135,7 +135,7 @@ class StatefulSessionBeanMap extends GenericStackable implements MapInterface
      * @throws \AppserverIo\Collections\InvalidKeyException Is thrown if the passed key is NOT an integer
      * @throws \AppserverIo\Lang\NullPointerException Is thrown if the passed key OR value are NULL
      * @throws \AppserverIo\Collections\IndexOutOfBoundsException Is thrown if no element with the passed key exists in the Collection
-     * @see \AppserverIo\Collections\Collection::get($key)
+     * @see \AppserverIo\Collections\CollectionInterface::get($key)
      */
     public function get($key)
     {
@@ -291,7 +291,7 @@ class StatefulSessionBeanMap extends GenericStackable implements MapInterface
      * with the keys and the related values.
      *
      * @return array Holds the array with keys and values
-     * @see \AppserverIo\Collections\Map::toIndexedArray()
+     * @see \AppserverIo\Collections\MapInterface::toIndexedArray()
      */
     public function toIndexedArray()
     {

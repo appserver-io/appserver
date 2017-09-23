@@ -20,7 +20,6 @@
 
 namespace AppserverIo\Appserver\Core\Api;
 
-use AppserverIo\Configuration\Configuration;
 use AppserverIo\Configuration\ConfigurationUtils;
 use AppserverIo\Appserver\Core\InitialContext;
 use AppserverIo\Appserver\Core\Api\Node\ParamNode;

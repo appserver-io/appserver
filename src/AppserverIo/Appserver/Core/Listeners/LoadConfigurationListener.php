@@ -26,7 +26,6 @@ use AppserverIo\Configuration\Configuration;
 use AppserverIo\Appserver\Core\InitialContext;
 use AppserverIo\Appserver\Core\Api\Node\AppserverNode;
 use AppserverIo\Appserver\Core\Api\ConfigurationService;
-use AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface;
 
 /**
  * Listener that loads and initializes the system configuration from the XML file.

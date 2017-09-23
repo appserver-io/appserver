@@ -30,6 +30,7 @@ use AppserverIo\Appserver\ServletEngine\Security\SimpleGroup;
 use AppserverIo\Psr\Security\Auth\Spi\LoginModuleInterface;
 use AppserverIo\Psr\Security\Auth\Login\LoginException;
 use AppserverIo\Psr\Security\Auth\Login\FailedLoginException;
+use AppserverIo\Psr\Naming\NamingException;
 
 /**
  * Utility class for security purposes.
@@ -78,13 +79,13 @@ class Util
     /**
      * Execute the rolesQuery against the dsJndiName to obtain the roles for the authenticated user.
      *
-     * @param \AppserverIo\Lang\String                  $username   The username to load the roles for
-     * @param \AppserverIo\Lang\String                  $lookupName The lookup name for the datasource
-     * @param \AppserverIo\Lang\String                  $rolesQuery The query to load the roles
-     * @param \AppserverIo\Psr\Spi\LoginModuleInterface $aslm       The login module to add the roles to
+     * @param \AppserverIo\Lang\String                                $username   The username to load the roles for
+     * @param \AppserverIo\Lang\String                                $lookupName The lookup name for the datasource
+     * @param \AppserverIo\Lang\String                                $rolesQuery The query to load the roles
+     * @param \AppserverIo\Psr\Security\Auth\Spi\LoginModuleInterface $aslm       The login module to add the roles to
      *
      * @return array An array of groups containing the sets of roles
-     * @throws \AppserverIo\Appserver\ServletEngine\Security\Logi\LoginException Is thrown if an error during login occured
+     * @throws \AppserverIo\Psr\Security\Auth\Login\LoginException Is thrown if an error during login occured
      */
     public static function getRoleSets(String $username, String $lookupName, String $rolesQuery, LoginModuleInterface $aslm)
     {

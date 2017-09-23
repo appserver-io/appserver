@@ -21,7 +21,6 @@
 namespace AppserverIo\Appserver\ServletEngine\Session;
 
 use AppserverIo\Psr\Servlet\ServletSessionInterface;
-use AppserverIo\Appserver\ServletEngine\SessionSettingsInterface;
 
 /**
  * Interface for all session handlers.

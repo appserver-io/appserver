@@ -87,7 +87,7 @@ class NamingDirectoryLoginModule extends UsernamePasswordLoginModule
      * Returns the password for the user from the naming directory.
      *
      * @return \AppserverIo\Lang\String The user's password
-     * @throws \AppserverIo\Appserver\Psr\Security\Auth\Login\LoginException Is thrown if password can't be loaded
+     * @throws \AppserverIo\Psr\Security\Auth\Login\LoginException Is thrown if password can't be loaded
      */
     protected function getUsersPassword()
     {
@@ -109,7 +109,7 @@ class NamingDirectoryLoginModule extends UsernamePasswordLoginModule
      * rolesPathPrefix + '/' + super.getUsername() JNDI location.
      *
      * @return array The roles the user is assigned to
-     * @throws \AppserverIo\Appserver\Psr\Security\Auth\Login\LoginException Is thrown if password can't be loaded
+     * @throws \AppserverIo\Psr\Security\Auth\Login\LoginException Is thrown if password can't be loaded
      */
     protected function getRoleSets()
     {
@@ -126,7 +126,7 @@ class NamingDirectoryLoginModule extends UsernamePasswordLoginModule
     /**
      * Performs the user logout.
      *
-     * @throws \AppserverIo\Appserver\Psr\Security\Auth\Login\LoginException Is thrown if an error during logout occured
+     * @throws \AppserverIo\Psr\Security\Auth\Login\LoginException Is thrown if an error during logout occured
      *
      * @return boolean Always TRUE
      */

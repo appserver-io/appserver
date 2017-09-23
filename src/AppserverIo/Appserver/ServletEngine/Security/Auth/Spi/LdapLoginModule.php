@@ -27,6 +27,7 @@ use AppserverIo\Collections\MapInterface;
 use AppserverIo\Psr\Security\Auth\Subject;
 use AppserverIo\Psr\Security\Auth\Login\LoginException;
 use AppserverIo\Psr\Security\Auth\Callback\CallbackHandlerInterface;
+use AppserverIo\Appserver\Naming\Utils\NamingDirectoryKeys;
 use AppserverIo\Appserver\ServletEngine\RequestHandler;
 use AppserverIo\Appserver\ServletEngine\Security\SimpleGroup;
 use AppserverIo\Appserver\ServletEngine\Security\Utils\Util;
@@ -290,7 +291,7 @@ class LdapLoginmodule extends UsernamePasswordLoginModule
         }
 
         // bind the authenticating user to the LDAP directory
-        if (($bind = ldap_bind($ldapConnection, $this->userDN, $password)) === false) {
+        if ((ldap_bind($ldapConnection, $this->userDN, $password)) === false) {
             throw new LoginException('Username or password wrong');
         }
 

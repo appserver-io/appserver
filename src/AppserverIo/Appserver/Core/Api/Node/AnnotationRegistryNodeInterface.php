@@ -54,7 +54,7 @@ interface AnnotationRegistryNodeInterface
      *
      * @param string $prepend Prepend to each directory
      *
-     * @return The array with the directories as string
+     * @return array The array with the directories as string
      */
     public function getDirectoriesAsArray($prepend = null);
 

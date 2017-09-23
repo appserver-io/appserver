@@ -43,7 +43,7 @@ class SystemConfigurationResolverFactory
      * @param \AppserverIo\Server\Interfaces\ServerContextInterface       $serverContext       The server context for the resolver
      * @param \AppserverIo\Server\Interfaces\ModuleConfigurationInterface $moduleConfiguration The module configuration with the initialization parameters
      *
-     * @return \AppserverIo\DnsServer\StorageProvider\StorageProviderInterface The initialized DNS resolver
+     * @return \AppserverIo\DnsServer\Interfaces\StorageProviderInterface The initialized DNS resolver
      */
     public static function factory(ServerContextInterface $serverContext, ModuleConfigurationInterface $moduleConfiguration)
     {

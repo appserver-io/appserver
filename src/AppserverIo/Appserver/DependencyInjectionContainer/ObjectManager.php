@@ -27,7 +27,6 @@ use AppserverIo\Psr\Di\ObjectManagerInterface;
 use AppserverIo\Psr\Di\UnknownObjectDescriptorException;
 use AppserverIo\Psr\Deployment\DescriptorInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
-use Symfony\Component\Config\Definition\Exception\ForbiddenOverwriteException;
 
 /**
  * The object manager is necessary to load and provides information about all
