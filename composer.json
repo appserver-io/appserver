@@ -10,7 +10,6 @@
         "react/socket": "0.4.*",
         "react/socket-client": "0.5.0",
         "doctrine/orm": "2.5.*",
-        "gedmo/doctrine-extensions": "2.4.*",
         "league/event": "2.1.*",
         "crunch/fastcgi" : "2.x-dev",
         "zendframework/zend-diactoros" : "~1.0",

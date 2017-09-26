@@ -49,7 +49,7 @@ class EntityManagerFactory
      * @param \AppserverIo\Psr\Application\ApplicationInterface                 $application         The application instance to create the entity manager for
      * @param \AppserverIo\Appserver\Core\Api\Node\PersistenceUnitNodeInterface $persistenceUnitNode The datasource configuration
      *
-     * @return object The entity manager instance
+     * @return \Doctrine\ORM\EntityManagerInterface The entity manager instance
      */
     public static function factory(ApplicationInterface $application, PersistenceUnitNodeInterface $persistenceUnitNode)
     {
