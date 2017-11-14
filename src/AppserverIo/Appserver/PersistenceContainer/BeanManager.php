@@ -42,6 +42,7 @@ use AppserverIo\Appserver\Application\Interfaces\ManagerSettingsAwareInterface;
 use AppserverIo\Appserver\PersistenceContainer\Utils\SessionBeanUtil;
 use AppserverIo\Appserver\PersistenceContainer\DependencyInjection\DirectoryParser;
 use AppserverIo\Appserver\PersistenceContainer\DependencyInjection\DeploymentDescriptorParser;
+use AppserverIo\Appserver\PersistenceContainer\RemoteMethodInvocation\ProxyGeneratorInterface;
 use AppserverIo\RemoteMethodInvocation\RemoteMethodInterface;
 use AppserverIo\RemoteMethodInvocation\FilterSessionPredicate;
 
@@ -55,16 +56,29 @@ use AppserverIo\RemoteMethodInvocation\FilterSessionPredicate;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  *
- * @property array                                                                     $directories                   The additional directories to be parsed
- * @property \AppserverIo\Psr\EnterpriseBeans\ResourceLocatorInterface                 $resourceLocator               The resource locator
- * @property \AppserverIo\Storage\StorageInterface                                     $statefulSessionBeans          The storage for the stateful session beans
- * @property \AppserverIo\Storage\StorageInterface                                     $singletonSessionBeans         The storage for the singleton session beans
- * @property \AppserverIo\Appserver\PersistenceContainer\BeanManagerSettingsInterface  $managerSettings               Settings for the bean manager
- * @property \AppserverIo\Appserver\PersistenceContainer\StatefulSessionBeanMapFactory $statefulSessionBeanMapFactory The factory instance
- * @property \AppserverIo\Appserver\PersistenceContainer\ObjectFactoryInterface        $objectFactory                 The object factory instance
+ * @property array                                                                                      $directories                   The additional directories to be parsed
+ * @property \AppserverIo\Psr\EnterpriseBeans\ResourceLocatorInterface                                  $resourceLocator               The resource locator
+ * @property \AppserverIo\Storage\StorageInterface                                                      $statefulSessionBeans          The storage for the stateful session beans
+ * @property \AppserverIo\Storage\StorageInterface                                                      $singletonSessionBeans         The storage for the singleton session beans
+ * @property \AppserverIo\Appserver\PersistenceContainer\BeanManagerSettingsInterface                   $managerSettings               Settings for the bean manager
+ * @property \AppserverIo\Appserver\PersistenceContainer\StatefulSessionBeanMapFactory                  $statefulSessionBeanMapFactory The factory instance
+ * @property \AppserverIo\Appserver\PersistenceContainer\ObjectFactoryInterface                         $objectFactory                 The object factory instance
+ * @property \AppserverIo\Appserver\PersistenceContainer\RemoteMethodInvocation\ProxyGeneratorInterface $remoteProxyGenerator          The remote proxy generator
  */
 class BeanManager extends AbstractEpbManager implements BeanContextInterface, ManagerSettingsAwareInterface
 {
+
+    /**
+     * Injects the request context to cache the beans.
+     *
+     * @param array $requestContext The request context
+     *
+     * @return void
+     */
+    public function injectRequestContext(array $requestContext)
+    {
+        $this->requestContext = $requestContext;
+    }
 
     /**
      * Injects the additional directories to be parsed when looking for servlets.
@@ -151,6 +165,16 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface, Ma
     }
 
     /**
+     * Injects the remote proxy generator.
+     *
+     * @param \AppserverIo\Appserver\PersistenceContainer\RemoteMethodInvocation\ProxyGeneratorInterface $remoteProxyGenerator The remote proxy generator
+     */
+    public function injectRemoteProxyGenerator(ProxyGeneratorInterface $remoteProxyGenerator)
+    {
+        $this->remoteProxyGenerator = $remoteProxyGenerator;
+    }
+
+    /**
      * Has been automatically invoked by the container after the application
      * instance has been created.
      *
@@ -203,7 +227,7 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface, Ma
 
             // if we found a singleton session bean with a startup callback
             if ($descriptor instanceof SingletonSessionBeanDescriptorInterface && $descriptor->isInitOnStartup()) {
-                $this->getApplication()->search($descriptor->getName());
+                $this->getApplication()->search($descriptor->getName(), array(null, array($application)));
             }
         }
     }
@@ -221,14 +245,14 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface, Ma
         try {
             // load the application instance
             $application = $this->getApplication();
+
             // register the bean with the default name/short class name
-            $application
-                ->getNamingDirectory()
-                ->bind(
-                    sprintf('php:global/%s/%s', $application->getUniqueName(), $descriptor->getName()),
-                    array(&$this, 'lookup'),
-                    array($descriptor->getClassName())
-                );
+            $application->getNamingDirectory()
+                        ->bind(
+                            sprintf('php:global/%s/%s', $application->getUniqueName(), $descriptor->getName()),
+                            array(&$this, 'lookup'),
+                            array($descriptor->getClassName())
+                        );
 
             //  register the EPB references
             foreach ($descriptor->getEpbReferences() as $epbReference) {
@@ -249,6 +273,9 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface, Ma
             foreach ($descriptor->getPersistenceUnitReferences() as $persistenceUnitReference) {
                 $this->registerPersistenceUnitReference($persistenceUnitReference);
             }
+
+            // generate the remote proxy and register it in the naming directory
+            $this->getRemoteProxyGenerator()->generate($descriptor);
 
         } catch (\Exception $e) {
             // log the exception
@@ -349,6 +376,16 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface, Ma
     }
 
     /**
+     * Return's the remote proxy generator instance.
+     *
+     * @return \AppserverIo\Appserver\PersistenceContainer\RemoteMethodInvocation\ProxyGeneratorInterface The remote proxy generator instance
+     */
+    public function getRemoteProxyGenerator()
+    {
+        return $this->remoteProxyGenerator;
+    }
+
+    /**
      * Runs a lookup for the session bean with the passed class name and
      * session ID.
      *
@@ -360,7 +397,6 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface, Ma
      * @param array  $args      The arguments passed to the session beans constructor
      *
      * @return object The requested bean instance
-     * @throws \AppserverIo\Psr\EnterpriseBeans\InvalidBeanTypeException Is thrown if passed class name is no session bean or is a entity bean (not implmented yet)
      */
     public function lookup($className, $sessionId = null, array $args = array())
     {
@@ -417,13 +453,15 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface, Ma
     /**
      * Returns a new instance of the SSB with the passed class name.
      *
-     * @param string $className The fully qualified class name to return the instance for
+     * @param string      $className The fully qualified class name to return the instance for
+     * @param string|null $sessionId The session-ID, necessary to inject stateful session beans (SFBs)
+     * @param array       $args      Arguments to pass to the constructor of the instance
      *
      * @return object The instance itself
      */
-    public function newSingletonSessionBeanInstance($className)
+    public function newSingletonSessionBeanInstance($className, $sessionId = null, array $args = array())
     {
-        return $this->getObjectFactory()->newInstance($className);
+        return $this->getObjectFactory()->newInstance($className, $sessionId, $args);
     }
 
     /**
@@ -497,7 +535,7 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface, Ma
 
         // load a fresh bean instance and add it to the session container
         if ($instance == null) {
-            $instance = $application->search($className, array($sessionId, array()));
+            $instance = $application->search($className, array($sessionId, array($application)));
         }
 
         // query whether we already have an instance in the session container

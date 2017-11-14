@@ -34,6 +34,8 @@ use AppserverIo\Psr\Servlet\ServletException;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
 use AppserverIo\Psr\Auth\AuthenticationManagerInterface;
+use AppserverIo\Appserver\Core\Environment;
+use AppserverIo\Appserver\Core\Utilities\EnvironmentKeys;
 use AppserverIo\Appserver\ServletEngine\SessionManagerInterface;
 
 /**
@@ -962,6 +964,9 @@ class Request implements HttpServletRequestInterface, ContextInterface
         $wrapper = new SessionWrapper();
         $wrapper->injectSession($session);
         $wrapper->injectRequest($this);
+
+        // set the session ID in the execution environment
+        Environment::singleton()->setAttribute(EnvironmentKeys::SESSION_ID, $id);
 
         // return the found session
         return $wrapper;

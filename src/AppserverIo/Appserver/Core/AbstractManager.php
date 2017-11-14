@@ -238,13 +238,15 @@ abstract class AbstractManager extends GenericStackable implements ManagerInterf
     /**
      * Returns a new instance of the passed class name.
      *
-     * @param string $className The fully qualified class name to return the instance for
+     * @param string      $className The fully qualified class name to return the instance for
+     * @param string|null $sessionId The session-ID, necessary to inject stateful session beans (SFBs)
+     * @param array       $args      Arguments to pass to the constructor of the instance
      *
      * @return object The instance itself
      */
-    public function newInstance($className)
+    public function newInstance($className, $sessionId = null, array $args = array())
     {
-        return $this->getApplication()->search(ProviderInterface::IDENTIFIER)->newInstance($className);
+        return $this->getApplication()->search(ProviderInterface::IDENTIFIER)->newInstance($className, $sessionId, $args);
     }
 
     /**

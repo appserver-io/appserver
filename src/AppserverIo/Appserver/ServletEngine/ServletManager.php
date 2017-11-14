@@ -507,7 +507,7 @@ class ServletManager extends AbstractEpbManager implements ServletContextInterfa
      * @param array                                                     $args           The arguments passed to the servlet constructor
      *
      * @return \AppserverIo\Psr\Servlet\ServletInterface The requested servlet
-     * @see \AppserverIo\Appserver\ServletEngine\ResourceLocator::locate()
+     * @see \AppserverIo\Appserver\ServletEngine\ServletLocator::locate()
      */
     public function locate(HttpServletRequestInterface $servletRequest, array $args = array())
     {
@@ -544,11 +544,11 @@ class ServletManager extends AbstractEpbManager implements ServletContextInterfa
     {
 
         // load the servlet instance
-        $instance = $this->getResourceLocator()->locate($this, $servletPath);
+        $instance = $this->getResourceLocator()->locate($this, $servletPath, $sessionId, $args);
 
         // inject the dependencies
         $dependencyInjectionContainer = $this->getApplication()->search(ProviderInterface::IDENTIFIER);
-        $dependencyInjectionContainer->injectDependencies($instance);
+        $dependencyInjectionContainer->injectDependencies($instance, $sessionId);
 
         // return the instance
         return $instance;

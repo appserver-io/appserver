@@ -19,6 +19,7 @@
 
 namespace AppserverIo\Appserver\PersistenceContainer;
 
+use AppserverIo\Psr\Servlet\SessionUtils;
 use AppserverIo\Storage\StorageInterface;
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Lang\Reflection\ClassInterface;
@@ -30,6 +31,8 @@ use AppserverIo\Psr\EnterpriseBeans\TimedObjectInvokerInterface;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Timeout;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Schedule;
 use AppserverIo\Psr\Application\ApplicationInterface;
+use AppserverIo\Appserver\Core\Environment;
+use AppserverIo\Appserver\Core\Utilities\EnvironmentKeys;
 
 /**
  * Timed object invoker for an enterprise bean.
@@ -47,6 +50,13 @@ use AppserverIo\Psr\Application\ApplicationInterface;
  */
 class TimedObjectInvoker extends GenericStackable implements TimedObjectInvokerInterface
 {
+
+    /**
+     * The execution environment.
+     *
+     * @var \AppserverIo\Appserver\Core\Environment
+     */
+    public static $environment;
 
     /**
      * Injects the timed object instance.
@@ -139,31 +149,46 @@ class TimedObjectInvoker extends GenericStackable implements TimedObjectInvokerI
     public function callTimeout(TimerInterface $timer, MethodInterface $timeoutMethod = null)
     {
 
-        // synchronize the application instance and register the class loaders
-        $application = $this->getApplication();
-        $application->registerClassLoaders();
+        try {
+            // synchronize the application instance and register the class loaders
+            $application = $this->getApplication();
+            $application->registerClassLoaders();
 
-        // initialize the initial context instance
-        $initialContext = new InitialContext();
-        $initialContext->injectApplication($application);
+            // initialize the initial context instance
+            $initialContext = new InitialContext();
+            $initialContext->injectApplication($application);
 
-        // lookup the enterprise bean using the initial context
-        $instance = $initialContext->lookup($this->getTimedObjectId());
+            // create s simulated request/session ID whereas session equals request ID
+            Environment::singleton()->setAttribute(EnvironmentKeys::SESSION_ID, $sessionId = SessionUtils::generateRandomString());
+            Environment::singleton()->setAttribute(EnvironmentKeys::REQUEST_ID, $sessionId);
 
-        // check if the timeout method has been passed
-        if ($timeoutMethod != null) {
-            // if yes, invoke it on the proxy
-            $callback = array($instance, $timeoutMethod->getMethodName());
-            call_user_func_array($callback, array($timer));
-            return;
-        }
+            // log a message with the timed object information
+            $this->getApplication()
+                 ->getNamingDirectory()
+                 ->search('php:global/log/System')
+                 ->info(sprintf('Now invoke timed object "%s" with session ID "%s"', $this->getTimedObjectId(), $sessionId));
 
-        // check if we've a default timeout method
-        if ($this->defaultTimeoutMethod != null) {
-            // if yes, invoke it on the proxy
-            $callback = array($instance, $this->defaultTimeoutMethod->getMethodName());
-            call_user_func_array($callback, array($timer));
-            return;
+            // lookup the enterprise bean using the initial context
+            $instance = $initialContext->lookup($this->getTimedObjectId(), $sessionId);
+
+            // check if the timeout method has been passed
+            if ($timeoutMethod != null) {
+                // if yes, invoke it on the proxy
+                $callback = array($instance, $timeoutMethod->getMethodName());
+                call_user_func_array($callback, array($timer));
+                return;
+            }
+
+            // check if we've a default timeout method
+            if ($this->defaultTimeoutMethod != null) {
+                // if yes, invoke it on the proxy
+                $callback = array($instance, $this->defaultTimeoutMethod->getMethodName());
+                call_user_func_array($callback, array($timer));
+                return;
+            }
+
+        } catch (\Exception $e) {
+            error_log($e->__toString());
         }
     }
 

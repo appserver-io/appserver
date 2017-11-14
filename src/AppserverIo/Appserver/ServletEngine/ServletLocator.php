@@ -41,7 +41,7 @@ class ServletLocator implements ResourceLocatorInterface
      * @param string                                           $servletPath    The servlet path to return the servlet for
      *
      * @return \AppserverIo\Psr\Servlet\ServletInterface The requested servlet
-     * @see \AppserverIo\Appserver\ServletEngine\ResourceLocator::locate()
+     * @see \AppserverIo\Appserver\ServletEngine\ServletLocator::locate()
      * @throws \AppserverIo\Appserver\ServletEngine\ServletNotFoundException Is thrown if no servlet can be found for the passed request
      */
     public function locate(ServletContextInterface $servletContext, $servletPath)

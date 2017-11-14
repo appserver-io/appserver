@@ -88,7 +88,9 @@ class GenericObjectFactory extends AbstractDaemonThread implements ObjectFactory
     /**
      * Create a new instance with the passed data.
      *
-     * @param string $className The fully qualified class name to return the instance for
+     * @param string      $className The fully qualified class name to return the instance for
+     * @param string|null $sessionId The session-ID, necessary to inject stateful session beans (SFBs)
+     * @param array       $args      Arguments to pass to the constructor of the instance
      *
      * @return object The instance itself
      *
@@ -104,6 +106,8 @@ class GenericObjectFactory extends AbstractDaemonThread implements ObjectFactory
         $this->dispatched = false;
 
         // initialize the data
+        $this->args = $args;
+        $this->sessionId = $sessionId;
         $this->className = $className;
 
         // notify the thread
@@ -170,7 +174,11 @@ class GenericObjectFactory extends AbstractDaemonThread implements ObjectFactory
             if ($self->dispatched === false && $self->className) {
                 // create the instance
                 $instance = $self->getApplication()->search(ProviderInterface::IDENTIFIER)
-                                                   ->newInstance($self->className);
+                                                   ->newInstance(
+                                                       $self->className,
+                                                       $self->sessionId,
+                                                       $self->args
+                                                   );
 
                 // stack the instance
                 $self->instances[] = $instance;

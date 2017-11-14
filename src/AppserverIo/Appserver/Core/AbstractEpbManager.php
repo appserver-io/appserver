@@ -56,7 +56,7 @@ abstract class AbstractEpbManager extends AbstractManager
         try {
             // load the application instance and reference name
             $application = $this->getApplication();
-            $name = $epbReference->getName();
+            $name = $epbReference->getRefName();
 
             // initialize the bean's URI
             $uri = sprintf('php:global/%s/%s', $application->getUniqueName(), $name);
@@ -134,7 +134,7 @@ abstract class AbstractEpbManager extends AbstractManager
             $application = $this->getApplication();
 
             // initialize the resource URI
-            $uri = sprintf('php:global/%s/%s', $application->getUniqueName(), $resReference->getName());
+            $uri = sprintf('php:global/%s/%s', $application->getUniqueName(), $resReference->getRefName());
 
             // query whether the reference has already been bound to the application
             if ($application->getNamingDirectory()->search($uri)) {
@@ -197,7 +197,7 @@ abstract class AbstractEpbManager extends AbstractManager
             $application = $this->getApplication();
 
             // initialize the class URI
-            $uri = sprintf('php:global/%s/%s', $application->getUniqueName(), $beanReference->getName());
+            $uri = sprintf('php:global/%s/%s', $application->getUniqueName(), $beanReference->getRefName());
 
             // query whether the reference has already been bound to the application
             if ($application->getNamingDirectory()->search($uri)) {
@@ -219,14 +219,14 @@ abstract class AbstractEpbManager extends AbstractManager
         }
 
         try {
-            // try to bind the bean by the specified type
-            if ($type = $beanReference->getType()) {
+            // try to bind the bean by the specified name
+            if ($name = $beanReference->getName()) {
                 // bind a reference to the class type
                 $application->getNamingDirectory()
                             ->bind(
                                 $uri,
-                                array(&$this, 'newInstance'),
-                                array($type)
+                                array(&$this, 'lookupBean'),
+                                array($name)
                             );
 
             // log a critical message that we can't bind the reference
@@ -256,7 +256,7 @@ abstract class AbstractEpbManager extends AbstractManager
             $application = $this->getApplication();
 
             // initialize the persistence unit URI
-            $uri = sprintf('php:global/%s/%s', $application->getUniqueName(), $persistenceUnitReference->getName());
+            $uri = sprintf('php:global/%s/%s', $application->getUniqueName(), $persistenceUnitReference->getRefName());
 
             // query whether the reference has already been bound to the application
             if ($application->getNamingDirectory()->search($uri)) {
@@ -304,7 +304,21 @@ abstract class AbstractEpbManager extends AbstractManager
     }
 
     /**
-     * This returns a proxy to the requested session bean.
+     * This returns an instance of the requested bean.
+     *
+     * @param string $lookupName The lookup name for the requested bean
+     * @param string $sessionId  The session-ID if available
+     *
+     * @return object The bean instance
+     */
+    public function lookupBean($lookupName, $sessionId = null)
+    {
+        return $this->getApplication()->search($lookupName, array($sessionId, array($this->getApplication())));
+    }
+
+    /**
+     * This returns a proxy to the requested session bean. If the proxy has already been
+     * instanciated for the actual request, the existing instance will be returned.
      *
      * @param string $lookupName The lookup name for the requested session bean
      * @param string $sessionId  The session-ID if available
@@ -314,17 +328,23 @@ abstract class AbstractEpbManager extends AbstractManager
     public function lookupProxy($lookupName, $sessionId = null)
     {
 
-        // load the initial context instance
-        $initialContext = $this->getInitialContext();
+        // query whether or not a proxy has already been loaded for the actual execution environment (request)
+        if (!Environment::singleton()->hasAttribute($lookupName)) {
+            // load the initial context instance
+            $initialContext = $this->getInitialContext();
 
-        // query whether a request context is available
-        if ($servletRequest = RequestHandler::getRequestContext()) {
-            // inject the servlet request to handle SFSBs correctly
-            $initialContext->injectServletRequest($servletRequest);
+            // query whether a request context is available
+            if ($servletRequest = RequestHandler::getRequestContext()) {
+                // inject the servlet request to handle SFSBs correctly
+                $initialContext->injectServletRequest($servletRequest);
+            }
+
+            // lookup the proxy by the name and session ID if available
+            Environment::singleton()->setAttribute($lookupName, $initialContext->lookup($lookupName, $sessionId));
         }
 
-        // lookup the proxy by the name and session ID if available
-        return $initialContext->lookup($lookupName, $sessionId);
+        // return the proxy from the actual execution environment (request)
+        return Environment::singleton()->getAttribute($lookupName);
     }
 
     /**
