@@ -630,6 +630,16 @@
             </xs:simpleContent>
         </xs:complexType>
     </xs:element>
+    <xs:element name="injection-target-method-parameter-name">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
     <xs:element name="injection-target-property">
         <xs:complexType>
             <xs:simpleContent>
@@ -644,7 +654,9 @@
         <xs:complexType>
             <xs:all>
                 <xs:element ref="appserver:injection-target-class"/>
+                <xs:element ref="appserver:description" minOccurs="0"/>
                 <xs:element ref="appserver:injection-target-method" minOccurs="0"/>
+                <xs:element ref="appserver:injection-target-method-parameter-name" minOccurs="0"/>
                 <xs:element ref="appserver:injection-target-property" minOccurs="0"/>
             </xs:all>
             <xs:attribute name="uuid" type="xs:string"/>

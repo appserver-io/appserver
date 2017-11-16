@@ -49,6 +49,7 @@ use AppserverIo\Psr\EnterpriseBeans\Annotations\Timeout;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\EnterpriseBean;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Resource;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\PersistenceUnit;
+use AppserverIo\Description\ReferenceDescriptorInterface;
 
 /**
  * A basic dependency injection provider implementation.
@@ -323,21 +324,35 @@ class Provider extends GenericStackable implements ProviderInterface
                 // check if we've a reflection target defined
                 if ($injectionTarget = $reference->getInjectionTarget()) {
                     // add the dependency to the array
-                    if ($targetName = $injectionTarget->getTargetMethod()) {
-                        $dependencies['method'][$targetName] = $this->loadDependency($reference);
-                    } elseif ($targetName = $injectionTarget->getTargetProperty()) {
+                    if ($targetName = $injectionTarget->getTargetProperty()) {
+                        // append the property dependency
                         $dependencies['property'][$targetName] = $this->loadDependency($reference);
+                    } elseif ($targetName = $injectionTarget->getTargetMethod()) {
+                        // load the reflection method instance
+                        $reflectionMethod = $reflectionClass->getMethod($targetName);
+
+                        // prepare the array with the method dependencies
+                        if (!isset($dependencies['method'][$targetName])) {
+                            $dependencies['method'][$targetName] = array();
+                        }
+
+                        // iterate over the method's parameters and try to find the one that matches the reference
+                        foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
+                            // query whether the reflection parameter name equals the inject target method parameter name
+                            if ($reference->equals($reflectionParameter)) {
+                                // append the method/constructor dependency
+                                $dependencies['method'][$targetName][$reflectionParameter->getPosition()] = $this->loadDependency($reference);
+                            }
+                        }
+
+                        // finally sort them them by their key
+                        ksort($dependencies['method'][$targetName]);
+
                     } else {
                         // throw an exception
                         throw new DependencyInjectionException(
                             sprintf('Can\'t find property or method %s in class %s', $targetName, $className)
                         );
-                    }
-
-                } else {
-                    // if not, it's a constructor parameter
-                    if ($reflectionClass->hasMethod('__construct')) {
-                        $dependencies['constructor'][] = $this->loadDependency($reference);
                     }
                 }
             }
@@ -350,7 +365,7 @@ class Provider extends GenericStackable implements ProviderInterface
                 // load the reflection method for the constructor
                 $reflectionMethod = $reflectionClass->getMethod('__construct');
                 // iterate over the constructor parameters
-                $dependencies['constructor'] = $this->loadDependenciesByReflectionMethod($reflectionMethod);
+                $dependencies['method'][$reflectionMethod->getMethodName()] = $this->loadDependenciesByReflectionMethod($reflectionMethod);
             }
         }
 
@@ -394,7 +409,7 @@ class Provider extends GenericStackable implements ProviderInterface
      *
      * @return object The reference instance
      */
-    protected function loadDependency($reference)
+    protected function loadDependency(ReferenceDescriptorInterface $reference)
     {
 
         try {
@@ -502,10 +517,9 @@ class Provider extends GenericStackable implements ProviderInterface
             if ($reflectionClass->hasMethod('__construct')) {
                 // load the dependencies for the passed class
                 $dependencies = $this->loadDependencies($reflectionClass->getName());
-                // sort the construtor args
-                ksort($dependencies['constructor']);
+
                 // pass the constructor args and create a new instance
-                return $reflectionClass->newInstanceArgs($dependencies['constructor']);
+                return $reflectionClass->newInstanceArgs($dependencies['method']['__construct']);
             }
 
             // create a new instance and inject the dependencies
