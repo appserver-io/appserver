@@ -210,8 +210,6 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
      * @param array $loggers The logger instances to set
      *
      * @return void
-     *
-     * @return void
      */
     public function setLoggers(array $loggers)
     {
@@ -435,7 +433,6 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
      * The thread's run() method that runs asynchronously.
      *
      * @return void
-     * @return void
      * @link http://www.php.net/manual/en/thread.run.php
      */
     public function run()
@@ -619,8 +616,6 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
      * @param string  $name     The name of the requested service
      *
      * @return mixed The service instance
-     *
-     * @return mixed The service instance
      */
     public function getService($runlevel, $name)
     {
@@ -687,8 +682,6 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
 
     /**
      * Loads the bootstrap configuration from the XML file.
-     *
-     * @param string $bootstrapConfigurationFilename The boostrap configuration file
      *
      * @param string $bootstrapConfigurationFilename The boostrap configuration file
      *
