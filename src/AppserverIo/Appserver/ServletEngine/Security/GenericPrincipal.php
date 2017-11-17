@@ -68,10 +68,10 @@ class GenericPrincipal extends SimplePrincipal
     /**
      * Initializes the principal with the data from the passed objects.
      *
-     * @param \AppserverIo\Lang\String                                   $username      The principal's username
-     * @param \AppserverIo\Lang\String                                   $password      The principal's password
-     * @param \AppserverIo\Collection\ArrayList                          $roles         The principal's roles
-     * @param \AppserverIo\Psr\Security\PrincipalInterface               $userPrincipal The user principal instance that will be returned from the request
+     * @param \AppserverIo\Lang\String                     $username      The principal's username
+     * @param \AppserverIo\Lang\String                     $password      The principal's password
+     * @param \AppserverIo\Collection\ArrayList            $roles         The principal's roles
+     * @param \AppserverIo\Psr\Security\PrincipalInterface $userPrincipal The user principal instance that will be returned from the request
      */
     public function __construct(
         String $username = null,
