@@ -103,7 +103,7 @@ abstract class AbstractEpbManager extends AbstractManager
             // log a critical message that we can't bind the reference
             } else {
                 $application->getInitialContext()->getSystemLogger()->critical(
-                    sprintf('Can\'t bind bean reference %s to naming directory, because of missing source bean definition', $uri)
+                    sprintf('Can\'t bind enterprise bean reference %s to naming directory, because of missing source bean definition', $uri)
                 );
             }
 

@@ -413,12 +413,6 @@ class Provider extends GenericStackable implements ProviderInterface
     {
 
         try {
-            // load the object manager instance
-            /** @var \AppserverIo\Psr\Di\ObjectManagerInterface $objectManager */
-            $objectManager = $this->getNamingDirectory()->search(
-                sprintf('php:global/%s/%s', $this->getApplication()->getUniqueName(), ObjectManagerInterface::IDENTIFIER)
-            );
-
             // load the session ID from the execution environment
             $sessionId = Environment::singleton()->getAttribute(EnvironmentKeys::SESSION_ID);
 
@@ -431,6 +425,12 @@ class Provider extends GenericStackable implements ProviderInterface
         } catch (\Exception $e) {
             $this->getApplication()->getNamingDirectory()->search(NamingDirectoryKeys::SYSTEM_LOGGER)->debug($e->__toString());
         }
+
+        // load the object manager instance
+        /** @var \AppserverIo\Psr\Di\ObjectManagerInterface $objectManager */
+        $objectManager = $this->getNamingDirectory()->search(
+            sprintf('php:global/%s/%s', $this->getApplication()->getUniqueName(), ObjectManagerInterface::IDENTIFIER)
+        );
 
         // try to instanciate the class by the defined type
         return $this->get($objectManager->getPreference($reference->getType()), $sessionId);
@@ -504,34 +504,32 @@ class Provider extends GenericStackable implements ProviderInterface
 
         // query whether or not the instance can be created
         if ($this->has($id)) {
-            // load the object manager instance
-            /** @var \AppserverIo\Psr\Di\ObjectManagerInterface $objectManager */
-            $objectManager = $this->getNamingDirectory()->search(
-                sprintf('php:global/%s/%s', $this->getApplication()->getUniqueName(), ObjectManagerInterface::IDENTIFIER)
-            );
+            try {
+                // load/create and return a new instance
+                $reflectionClass = $this->getReflectionClass($id);
 
-            // load/create and return a new instance
-            $reflectionClass = $this->getReflectionClass($id);
+                // check if we've a constructor
+                if ($reflectionClass->hasMethod('__construct') && $reflectionClass->getMethod('__construct')->getParameters()) {
+                    // load the dependencies for the passed class
+                    $dependencies = $this->loadDependencies($reflectionClass->getName());
+                    // pass the constructor args and create a new instance
+                    return $reflectionClass->newInstanceArgs($dependencies['method']['__construct']);
+                }
 
-            // check if we've a constructor
-            if ($reflectionClass->hasMethod('__construct')) {
-                // load the dependencies for the passed class
-                $dependencies = $this->loadDependencies($reflectionClass->getName());
+                // create a new instance and inject the dependencies
+                $instance = $reflectionClass->newInstance();
+                $this->injectDependencies($instance);
 
-                // pass the constructor args and create a new instance
-                return $reflectionClass->newInstanceArgs($dependencies['method']['__construct']);
+                // return the initialized instance
+                return $instance;
+
+            } catch(\Exception $e) {
+                throw new NotFoundException(sprintf('DI error when try to inject dependencies for identifier "%s"', $id), null, $e);
             }
-
-            // create a new instance and inject the dependencies
-            $instance = $reflectionClass->newInstance();
-            $this->injectDependencies($instance);
-
-            // return the initialized instance
-            return $instance;
         }
 
         // throw an exception if no entry was found for **this** identifier
-        throw new NotFoundException(sprintf('Can\'t find DI definition for identifier "%s"', $id));
+        throw new NotFoundException(sprintf('DI definition for identifier "%s" is not available', $id));
     }
 
     /**
