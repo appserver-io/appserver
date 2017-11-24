@@ -150,8 +150,17 @@ class RemoteProxyGenerator implements ProxyGeneratorInterface
                     case 'string':
                         $param .= sprintf(' = "%s"', $defaultValue);
                         break;
-                    default:
+                    case 'array':
+                        $param .= sprintf(' = %s()', $defaultValue);
+                        break;
+                    case 'boolean':
+                        $param .= sprintf(' = %s', $defaultValue ? 'true' : 'false');
+                        break;
+                    case 'number':
                         $param .= sprintf(' = %s', $defaultValue);
+                        break;
+                    default:
+                        $param .= sprintf(' = null');
 
                 }
             }
