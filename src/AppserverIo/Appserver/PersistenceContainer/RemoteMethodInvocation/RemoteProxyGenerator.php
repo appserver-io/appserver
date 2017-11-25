@@ -79,7 +79,7 @@ class RemoteProxyGenerator implements ProxyGeneratorInterface
 
         // start generating the proxy
         ob_start();
-        require __DIR__ . '/Proxy/RemoteProxy.dhtml';
+        require __DIR__ . DIRECTORY_SEPARATOR . 'Proxy' . DIRECTORY_SEPARATOR . 'RemoteProxy.dhtml';
         $content = ob_get_clean();
 
         // prepare the proxy's filename
@@ -239,11 +239,11 @@ class RemoteProxyGenerator implements ProxyGeneratorInterface
     /**
      * Return's the remote proxy's filename.
      *
-     * @param \ReflectionClass $reflectionClass The reflection class to return the remote proxy's filename for
+     * @param \AppserverIo\Psr\Deployment\DescriptorInterface $descriptor The reflection class to return the remote proxy's filename for
      *
      * @return string The remote proxy's filename
      */
-    protected function generateRemoteProxyFilename($descriptor)
+    protected function generateRemoteProxyFilename(DescriptorInterface $descriptor)
     {
         return sprintf('%sRemoteProxy.php', str_replace('\\', '/', $descriptor->getClassName()));
     }

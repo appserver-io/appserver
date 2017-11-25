@@ -19,6 +19,7 @@
  */
 
 namespace AppserverIo\Appserver\Core\Utilities;
+
 /**
  * Helper utility which is used to manage permission related issues
  *

@@ -24,6 +24,7 @@ use AppserverIo\Psr\Naming\NamingException;
 use AppserverIo\Psr\Di\ObjectManagerInterface;
 use AppserverIo\RemoteMethodInvocation\LocalProxy;
 use AppserverIo\Appserver\ServletEngine\RequestHandler;
+use AppserverIo\Psr\Deployment\DescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\BeanContextInterface;
 use AppserverIo\Psr\EnterpriseBeans\PersistenceContextInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\EpbReferenceDescriptorInterface;
@@ -42,6 +43,37 @@ use AppserverIo\Psr\EnterpriseBeans\Description\PersistenceUnitReferenceDescript
  */
 abstract class AbstractEpbManager extends AbstractManager
 {
+
+    /**
+     * Register's the references of the passed descriptor.
+     *
+     * @param \AppserverIo\Psr\Deployment\DescriptorInterface $descriptor The descriptor to register the references for
+     *
+     * @return void
+     */
+    public function registerReferences(DescriptorInterface $descriptor)
+    {
+
+        //  register the EPB references
+        foreach ($descriptor->getEpbReferences() as $epbReference) {
+            $this->registerEpbReference($epbReference);
+        }
+
+        // register the resource references
+        foreach ($descriptor->getResReferences() as $resReference) {
+            $this->registerResReference($resReference);
+        }
+
+        // register the bean references
+        foreach ($descriptor->getBeanReferences() as $beanReference) {
+            $this->registerBeanReference($beanReference);
+        }
+
+        // register the persistence unit references
+        foreach ($descriptor->getPersistenceUnitReferences() as $persistenceUnitReference) {
+            $this->registerPersistenceUnitReference($persistenceUnitReference);
+        }
+    }
 
     /**
      * Registers the passed EPB reference in the applications directory.

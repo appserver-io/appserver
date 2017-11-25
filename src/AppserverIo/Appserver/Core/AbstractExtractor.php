@@ -360,8 +360,8 @@ abstract class AbstractExtractor implements ExtractorInterface
     /**
      * Returns the container's tmp directory.
      *
-     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerInterface $containerNode        The container to return the temporary directory for
-     * @param string                                                  $relativePathToAppend A relative path to append
+     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode        The container to return the temporary directory for
+     * @param string                                                      $relativePathToAppend A relative path to append
      *
      * @return string
      */
@@ -377,8 +377,8 @@ abstract class AbstractExtractor implements ExtractorInterface
     /**
      * Returns the container's deploy directory.
      *
-     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerInterface $containerNode        The container to return the temporary directory for
-     * @param string                                                  $relativePathToAppend A relative path to append
+     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode        The container to return the temporary directory for
+     * @param string                                                      $relativePathToAppend A relative path to append
      *
      * @return string
      */
@@ -394,8 +394,8 @@ abstract class AbstractExtractor implements ExtractorInterface
     /**
      * Returns the container's webapps directory.
      *
-     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerInterface $containerNode        The container to return the temporary directory for
-     * @param string                                                  $relativePathToAppend A relative path to append
+     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode        The container to return the temporary directory for
+     * @param string                                                      $relativePathToAppend A relative path to append
      *
      * @return string The web application directory
      */

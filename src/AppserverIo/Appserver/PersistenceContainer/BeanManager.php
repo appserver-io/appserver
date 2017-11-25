@@ -168,6 +168,8 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface, Ma
      * Injects the remote proxy generator.
      *
      * @param \AppserverIo\Appserver\PersistenceContainer\RemoteMethodInvocation\ProxyGeneratorInterface $remoteProxyGenerator The remote proxy generator
+     *
+     * @return void
      */
     public function injectRemoteProxyGenerator(ProxyGeneratorInterface $remoteProxyGenerator)
     {
@@ -254,25 +256,8 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface, Ma
                             array($descriptor->getClassName())
                         );
 
-            //  register the EPB references
-            foreach ($descriptor->getEpbReferences() as $epbReference) {
-                $this->registerEpbReference($epbReference);
-            }
-
-            // register the resource references
-            foreach ($descriptor->getResReferences() as $resReference) {
-                $this->registerResReference($resReference);
-            }
-
-            // register the bean references
-            foreach ($descriptor->getBeanReferences() as $beanReference) {
-                $this->registerBeanReference($beanReference);
-            }
-
-            // register the persistence unit references
-            foreach ($descriptor->getPersistenceUnitReferences() as $persistenceUnitReference) {
-                $this->registerPersistenceUnitReference($persistenceUnitReference);
-            }
+            // register's the bean's references
+            $this->registerReferences($descriptor);
 
             // generate the remote proxy and register it in the naming directory
             $this->getRemoteProxyGenerator()->generate($descriptor);

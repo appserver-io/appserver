@@ -523,7 +523,7 @@ class Provider extends GenericStackable implements ProviderInterface
                 // return the initialized instance
                 return $instance;
 
-            } catch(\Exception $e) {
+            } catch (\Exception $e) {
                 throw new NotFoundException(sprintf('DI error when try to inject dependencies for identifier "%s"', $id), null, $e);
             }
         }
