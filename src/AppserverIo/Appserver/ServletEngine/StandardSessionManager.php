@@ -266,7 +266,7 @@ class StandardSessionManager implements SessionManagerInterface
     /**
      * Returns the session factory.
      *
-     * @return \AppserverIo\Appserver\ServletEngine\SessionFactory The session factory instance
+     * @return \AppserverIo\Appserver\ServletEngine\Session\SessionHandlerFactory The session factory instance
      */
     public function getSessionFactory()
     {
@@ -296,7 +296,7 @@ class StandardSessionManager implements SessionManagerInterface
     /**
      * Returns the persistence manager instance.
      *
-     * @return \AppserverIo\Appserver\ServletEngine\FilesystemPersistenceManager The persistence manager instance
+     * @return \AppserverIo\Appserver\ServletEngine\Session\SessionHandlerInterface The persistence manager instance
      */
     public function getPersistenceManager()
     {
@@ -418,7 +418,7 @@ class StandardSessionManager implements SessionManagerInterface
      *
      * @param string $id The unique session ID to that has to be returned
      *
-     * @return \AppserverIo\Psr\Servlet\Http\ServletSessionInterface|null The requested session
+     * @return \AppserverIo\Psr\Servlet\ServletSessionInterface|null The requested session
      */
     public function find($id)
     {

@@ -28,7 +28,6 @@ use AppserverIo\Psr\HttpMessage\PartInterface;
 use AppserverIo\Psr\HttpMessage\CookieInterface;
 use AppserverIo\Psr\HttpMessage\RequestInterface;
 use AppserverIo\Psr\Security\PrincipalInterface;
-use AppserverIo\Psr\Security\Auth\Subject;
 use AppserverIo\Psr\Servlet\SessionUtils;
 use AppserverIo\Psr\Servlet\ServletException;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
@@ -284,7 +283,7 @@ class Request implements HttpServletRequestInterface, ContextInterface
      * @param string $key The key of the value to return from the context.
      *
      * @return mixed The requested attribute
-     * @see \AppserverIo\Psr\Context\Context::getAttribute($key)
+     * @see \AppserverIo\Psr\Context\ContextInterface::getAttribute($key)
      */
     public function getAttribute($key)
     {
@@ -1365,7 +1364,7 @@ class Request implements HttpServletRequestInterface, ContextInterface
      * Use the container login mechanism configured for the servlet context to authenticate the user making this
      * request. This method may modify and commit the passed servlet response.
      *
-     * @param AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse The servlet response
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse The servlet response
      *
      * @return boolean TRUE when non-null values were or have been established as the values returned by getRemoteUser, else FALSE
      */

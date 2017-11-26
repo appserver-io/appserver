@@ -98,7 +98,7 @@ interface SessionManagerInterface extends ManagerInterface
     /**
      * Returns the session factory.
      *
-     * @return \AppserverIo\Appserver\ServletEngine\SessionFactory The session factory instance
+     * @return \AppserverIo\Appserver\ServletEngine\Session\SessionHandlerFactory The session factory instance
      */
     public function getSessionFactory();
 
@@ -112,7 +112,7 @@ interface SessionManagerInterface extends ManagerInterface
     /**
      * Returns the persistence manager instance.
      *
-     * @return \AppserverIo\Appserver\ServletEngine\FilesystemPersistenceManager The persistence manager instance
+     * @return \AppserverIo\Appserver\ServletEngine\Session\SessionHandlerInterface The persistence manager instance
      */
     public function getPersistenceManager();
 
