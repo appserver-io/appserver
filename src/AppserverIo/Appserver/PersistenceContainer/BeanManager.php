@@ -45,6 +45,8 @@ use AppserverIo\Appserver\PersistenceContainer\DependencyInjection\DeploymentDes
 use AppserverIo\Appserver\PersistenceContainer\RemoteMethodInvocation\ProxyGeneratorInterface;
 use AppserverIo\RemoteMethodInvocation\RemoteMethodInterface;
 use AppserverIo\RemoteMethodInvocation\FilterSessionPredicate;
+use AppserverIo\Appserver\Core\Environment;
+use AppserverIo\Appserver\Core\Utilities\EnvironmentKeys;
 
 /**
  * The bean manager handles the message and session beans registered for the application.
@@ -502,13 +504,22 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface, Ma
         $className  = $remoteMethod->getClassName();
         $methodName = $remoteMethod->getMethodName();
         $parameters = $remoteMethod->getParameters();
-        $sessionId  = $remoteMethod->getSessionId();
+        $sessionId = $remoteMethod->getSessionId();
+
+        // override session ID with the one from context if it differs, which can be the case, if proxy
+        // has been injected on system start-up where only a temporary session ID was available
+        if (Environment::singleton()->getAttribute(EnvironmentKeys::SESSION_ID) !== $sessionId) {
+            $sessionId = Environment::singleton()->getAttribute(EnvironmentKeys::SESSION_ID);
+        }
 
         // load the application instance
         $application = $this->getApplication();
 
         // try to load the session with the ID passed in the remote method
         $session = CollectionUtils::find($sessions, new FilterSessionPredicate($sessionId));
+
+        // initialize the instance
+        $instance = null;
 
         // query whether the session is available or not
         if ($session instanceof CollectionInterface) {
@@ -520,7 +531,7 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface, Ma
 
         // load a fresh bean instance and add it to the session container
         if ($instance == null) {
-            $instance = $application->search($className, array($sessionId, array($application)));
+            $instance = $application->search($className, array($sessionId));
         }
 
         // query whether we already have an instance in the session container
