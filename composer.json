@@ -20,7 +20,7 @@
         "appserver-io-psr/auth": "2.0.*",
         "appserver-io-psr/naming": "dev-di as 1.1.0",
         "appserver-io-psr/servlet": "dev-di as 3.0.0",
-        "appserver-io-psr/deployment": "1.1.*",
+        "appserver-io-psr/deployment": "dev-di as 1.1.0",
         "appserver-io-psr/application": "1.3.*",
         "appserver-io-psr/security": "1.4.*",
         "appserver-io/rmi": "dev-di as 3.1.2",

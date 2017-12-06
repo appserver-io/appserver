@@ -169,7 +169,7 @@ class ObjectManager extends AbstractManager implements ObjectManagerInterface
             // log on info level to make overwriting more obvious
             $this->getApplication()->getInitialContext()->getSystemLogger()->info(
                 sprintf(
-                    'Overriding descriptor %s of webapp %s from XML configuration.',
+                    'Overriding descriptor "%s" of webapp "%s" from XML configuration.',
                     $existingDescriptor->getName(),
                     $this->getApplication()->getName()
                 )

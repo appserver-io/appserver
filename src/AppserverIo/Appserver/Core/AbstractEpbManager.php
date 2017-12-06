@@ -97,8 +97,13 @@ abstract class AbstractEpbManager extends AbstractManager
             // the remote/local proxy instance as injection a callback that creates the
             // proxy on-the-fly!
 
-            // prepare the bean name
-            if ($beanName = $epbReference->getBeanName()) {
+            // query whether or not we've a lookup name specified
+            if ($lookup = $epbReference->getLookup()) {
+                // create a reference to a bean in the global directory
+                $application->getNamingDirectory()->bind($uri, array(&$this, 'lookup'), array($lookup));
+
+            // try to load the bean name, if no lookup name has been specified
+            } elseif ($beanName = $epbReference->getBeanName()) {
                 // query whether we've a local business interface
                 if ($epbReference->getBeanInterface() === sprintf('%sLocal', $beanName)) {
                     // bind the local business interface of the bean to the appliations naming directory
@@ -127,15 +132,9 @@ abstract class AbstractEpbManager extends AbstractManager
                     );
                 }
 
-            // try to use the lookup, if we don't have the beanName
-            } elseif ($lookup = $epbReference->getLookup()) {
-                // create a reference to a bean in the global directory
-                $application->getNamingDirectory()->bind($uri, array(&$this, 'lookup'), array($lookup));
-
-            // log a critical message that we can't bind the reference
             } else {
                 $application->getInitialContext()->getSystemLogger()->critical(
-                    sprintf('Can\'t bind enterprise bean reference %s to naming directory, because of missing bean name', $uri)
+                    sprintf('Can\'t bind enterprise bean reference %s to naming directory, because of missing lookup/bean name', $uri)
                 );
             }
 
@@ -205,7 +204,7 @@ abstract class AbstractEpbManager extends AbstractManager
             // log a critical message that we can't bind the reference
             } else {
                 $application->getInitialContext()->getSystemLogger()->critical(
-                    sprintf('Can\'t bind resource reference %s to naming directory, because of missing source bean definition', $uri)
+                    sprintf('Can\'t bind resource reference %s to naming directory, because of missing source bean/lookup name', $uri)
                 );
             }
 
@@ -251,20 +250,20 @@ abstract class AbstractEpbManager extends AbstractManager
         }
 
         try {
-            // try to bind the bean by the specified name
-            if ($name = $beanReference->getName()) {
+            // try to bind the bean by the specified bean name
+            if ($beanName = $beanReference->getBeanName()) {
                 // bind a reference to the class type
                 $application->getNamingDirectory()
                             ->bind(
                                 $uri,
                                 array(&$this, 'lookupBean'),
-                                array($name)
+                                array($beanName)
                             );
 
             // log a critical message that we can't bind the reference
             } else {
                 $application->getInitialContext()->getSystemLogger()->critical(
-                    sprintf('Can\'t bind bean reference %s to naming directory, because of missing source bean definition', $uri)
+                    sprintf('Can\'t bind bean reference %s to naming directory, because of missing source bean name', $uri)
                 );
             }
 

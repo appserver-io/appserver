@@ -1177,6 +1177,7 @@
         <xs:complexType>
             <xs:all>
                 <xs:element ref="appserver:bean-ref-name"/>
+                <xs:element ref="appserver:bean-link" minOccurs="0"/>
                 <xs:element ref="appserver:bean-ref-type" minOccurs="0"/>
                 <xs:element ref="appserver:injection-target" minOccurs="0"/>
             </xs:all>
@@ -1185,6 +1186,16 @@
         </xs:complexType>
     </xs:element>
     <xs:element name="bean-ref-name">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="bean-link">
         <xs:complexType>
             <xs:simpleContent>
                 <xs:extension base="xs:string">

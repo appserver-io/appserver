@@ -518,6 +518,7 @@ class Provider extends GenericStackable implements ProviderInterface
                     if ($reflectionClass->hasMethod($methodName = '__construct') &&
                         $reflectionClass->getMethod($methodName)->getParameters()
                     ) {
+
                         // load the dependencies for the passed class
                         $dependencies = $this->loadDependencies($reflectionClass->getName());
 
