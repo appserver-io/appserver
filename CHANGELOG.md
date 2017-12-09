@@ -6,7 +6,7 @@ Version 1.1.5-beta2
 
 ## Features
 
-* Refactor DI integration for basic compatibility with psr/container
+* Refactor DI integration for compatibility with psr/container
 
 Version 1.1.5-beta1
 

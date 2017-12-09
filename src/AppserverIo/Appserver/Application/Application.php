@@ -626,7 +626,11 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
         $namingDirectory->bind(sprintf('php:env/%s/sessionDirectory', $uniqueName), $sessionDirectory);
 
         // bind the interface as reference to the application
-        $namingDirectory->bind(sprintf('php:global/%s/env/ApplicationInterface', $uniqueName), $this);
+        $namingDirectory->bind($uri = sprintf('php:global/%s/%s', $uniqueName, ApplicationInterface::IDENTIFIER), $this);
+
+        // also bind an alias to the application
+        /** @deprecated Also bind an alias to the application to ensure backwards compatibility */
+        $namingDirectory->bindReference(sprintf('php:global/%s/Application', $uniqueName), $uri);
     }
 
     /**

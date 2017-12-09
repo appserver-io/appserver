@@ -575,4 +575,15 @@ class Provider extends GenericStackable implements ProviderInterface
     {
         return class_exists($id, true);
     }
+
+    /**
+     * Stops the manager instance.
+     *
+     * @return void
+     * @see \AppserverIo\Psr\Application\ManagerInterface::stop()
+     */
+    public function stop()
+    {
+        // Still not implemented yet
+    }
 }
