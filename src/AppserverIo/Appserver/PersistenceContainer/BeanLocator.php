@@ -30,6 +30,8 @@ use AppserverIo\Psr\EnterpriseBeans\Description\StatefulSessionBeanDescriptorInt
 use AppserverIo\Psr\EnterpriseBeans\Description\SingletonSessionBeanDescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\StatelessSessionBeanDescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\BeanDescriptorInterface;
+use AppserverIo\Appserver\Core\Environment;
+use AppserverIo\Appserver\Core\Utilities\EnvironmentKeys;
 
 /**
  * The bean resource locator implementation.
@@ -44,30 +46,31 @@ class BeanLocator implements ResourceLocatorInterface
 {
 
     /**
-     * Runs a lookup for the session bean with the passed class name and
-     * session ID.
+     * Runs a lookup for the session bean with the passed class name
      *
      * If the passed class name is a session bean an instance
      * will be returned.
      *
      * @param \AppserverIo\Psr\EnterpriseBeans\BeanContextInterface $beanManager The bean manager instance
      * @param string                                                $className   The name of the session bean's class
-     * @param string                                                $sessionId   The session ID
      * @param array                                                 $args        The arguments passed to the session beans constructor
      *
      * @return object The requested session bean
      */
-    public function lookup(BeanContextInterface $beanManager, $className, $sessionId = null, array $args = array())
+    public function lookup(BeanContextInterface $beanManager, $className, array $args = array())
     {
 
         // load the object manager
         /** @var \AppserverIo\Psr\Di\ObjectManagerInterface $objectManager */
         $objectManager = $beanManager->getApplication()->search(ObjectManagerInterface::IDENTIFIER);
 
+        // load the session ID from the environment
+        $sessionId = Environment::singleton()->getAttribute(EnvironmentKeys::SESSION_ID);
+
         // query whether or not an object descriptor is available
-        if ($objectManager->getObjectDescriptors()->has($className)) {
+        if ($objectManager->hasObjectDescriptor($className)) {
             // load the bean descriptor
-            $descriptor = $objectManager->getObjectDescriptors()->get($className);
+            $descriptor = $objectManager->getObjectDescriptor($className);
 
             // query whether we've a SFSB
             if ($descriptor instanceof StatefulSessionBeanDescriptorInterface) {
@@ -76,7 +79,7 @@ class BeanLocator implements ResourceLocatorInterface
                     // load the object manager and re-inject the dependencies
                     /** @var \AppserverIo\Psr\Di\ProviderInterface $provider */
                     $provider = $beanManager->getApplication()->search(ProviderInterface::IDENTIFIER);
-                    $provider->injectDependencies($instance, $sessionId);
+                    $provider->injectDependencies($descriptor, $instance);
 
                     // we've to check for post-detach callbacks
                     foreach ($descriptor->getPostDetachCallbacks() as $postDetachCallback) {
@@ -88,7 +91,7 @@ class BeanLocator implements ResourceLocatorInterface
                 }
 
                 // if not create a new instance and return it
-                $instance = $beanManager->newInstance($className, $sessionId, $args);
+                $instance = $beanManager->get($className);
 
                 // we've to check for post-construct callbacks
                 foreach ($descriptor->getPostConstructCallbacks() as $postConstructCallback) {
@@ -106,7 +109,7 @@ class BeanLocator implements ResourceLocatorInterface
                     // load the object manager and re-inject the dependencies
                     /** @var \AppserverIo\Psr\Di\ProviderInterface $provider */
                     $provider = $beanManager->getApplication()->search(ProviderInterface::IDENTIFIER);
-                    $provider->injectDependencies($instance, $sessionId);
+                    $provider->injectDependencies($descriptor, $instance);
 
                     // we've to check for post-detach callbacks
                     foreach ($descriptor->getPostDetachCallbacks() as $postDetachCallback) {
@@ -118,12 +121,12 @@ class BeanLocator implements ResourceLocatorInterface
                 }
 
                 // singleton session beans MUST extends \Stackable
-                if (is_subclass_of($className, '\Stackable') === false) {
-                    throw new EnterpriseBeansException(sprintf('Singleton session bean %s MUST extend \Stackable', $className));
+                if (is_subclass_of($descriptor->getClassName(), '\Stackable') === false) {
+                    throw new EnterpriseBeansException(sprintf('Singleton session bean %s MUST extend \Stackable', $descriptor->getClassName()));
                 }
 
                 // if not create a new instance and return it
-                $instance = $beanManager->newSingletonSessionBeanInstance($className, $sessionId, $args);
+                $instance = $beanManager->newSingletonSessionBeanInstance($className);
 
                 // add the singleton session bean to the container
                 $beanManager->getSingletonSessionBeans()->set($className, $instance);
@@ -140,7 +143,7 @@ class BeanLocator implements ResourceLocatorInterface
             // query whether we've a SLSB
             if ($descriptor instanceof StatelessSessionBeanDescriptorInterface) {
                 // if not create a new instance and return it
-                $instance = $beanManager->newInstance($className, $sessionId, $args);
+                $instance = $beanManager->get($className);
 
                 // we've to check for post-construct callback
                 foreach ($descriptor->getPostConstructCallbacks() as $postConstructCallback) {
@@ -154,7 +157,7 @@ class BeanLocator implements ResourceLocatorInterface
             //  query whether we've a MDB
             if ($descriptor instanceof MessageDrivenBeanDescriptorInterface) {
                 // create a new instance and return it
-                return $beanManager->newInstance($className, $sessionId, $args);
+                return $beanManager->get($className);
             }
 
             // query whether we simply have a bean
@@ -163,9 +166,9 @@ class BeanLocator implements ResourceLocatorInterface
                 if ($factory = $descriptor->getFactory()) {
                     // query whether or not the factory is a simple class or a bean
                     if ($className = $factory->getClassName()) {
-                        $factoryInstance = $beanManager->newInstance($className, $sessionId);
+                        $factoryInstance = $beanManager->get($className);
                     } else {
-                        $factoryInstance = $beanManager->getApplication()->search($factory->getName(), array($sessionId));
+                        $factoryInstance = $beanManager->get($factory->getName());
                     }
 
                     // create the bean instance by invoking the factory method
@@ -173,11 +176,11 @@ class BeanLocator implements ResourceLocatorInterface
                 }
 
                 // create the bean instance without the factory
-                return $beanManager->newInstance($descriptor->getClassName(), $sessionId, $args);
+                return $beanManager->get($className);
             }
         }
 
         // finally try to let the container create a new instance of the bean
-        return $beanManager->newInstance($className, $sessionId, $args);
+        return $beanManager->newInstance($className);
     }
 }

@@ -115,7 +115,7 @@ class ApplicationStateKeys
      * Returns the application state representation as string.
      *
      * @return string The string representation of the application state
-     * @see \AppserverIo\Appserver\Core\Utilities\ApplicationStateKeys::getApplicationState()
+     * @see \AppserverIo\Appserver\Application\ApplicationStateKeys::getApplicationState()
      */
     public function __toString()
     {

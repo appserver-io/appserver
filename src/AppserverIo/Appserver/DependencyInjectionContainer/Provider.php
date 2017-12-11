@@ -25,11 +25,13 @@ use AppserverIo\Lang\Reflection\ClassInterface;
 use AppserverIo\Lang\Reflection\ReflectionClass;
 use AppserverIo\Lang\Reflection\ReflectionMethod;
 use AppserverIo\Lang\Reflection\AnnotationInterface;
+use AppserverIo\Description\NameAwareDescriptorInterface;
 use AppserverIo\Description\ReferenceDescriptorInterface;
 use AppserverIo\Appserver\Core\Environment;
 use AppserverIo\Appserver\Core\Utilities\EnvironmentKeys;
 use AppserverIo\Psr\Servlet\Annotations\Route;
 use AppserverIo\Psr\Application\ApplicationInterface;
+use AppserverIo\Psr\Deployment\DescriptorInterface;
 use AppserverIo\Psr\Di\ProviderInterface;
 use AppserverIo\Psr\Di\ObjectManagerInterface;
 use AppserverIo\Psr\Di\DependencyInjectionException;
@@ -286,91 +288,106 @@ class Provider extends GenericStackable implements ProviderInterface
     }
 
     /**
-     * Loads the dependencies for the passed class name.
+     * Loads the dependencies for the passed object descriptor.
      *
-     * @param string $className The class name to load the dependencies for
+     * @param \AppserverIo\Description\NameAwareDescriptorInterface $objectDescriptor The object descriptor to load the dependencies for
      *
      * @throws \AppserverIo\Psr\Di\DependencyInjectionException Is thrown, if the dependencies can not be loaded
      * @return array The array with the initialized dependencies
      */
-    protected function loadDependencies($className)
+    protected function loadDependencies(NameAwareDescriptorInterface $objectDescriptor)
     {
 
         // query whether or not the dependencies have been loaded
-        if (isset($this->dependencies[$className])) {
-            return $this->dependencies[$className];
+        if (isset($this->dependencies[$name = $objectDescriptor->getName()])) {
+            return $this->dependencies[$name];
         }
 
         // initialize the array with the dependencies
         $dependencies = array('method' =>  array(), 'property' => array(), 'constructor' => array());
 
-        // load the object manager instance
-        /** @var \AppserverIo\Psr\Di\ObjectManagerInterface $objectManager */
-        $objectManager = $this->getNamingDirectory()->search(
-            sprintf('php:global/%s/%s', $this->getApplication()->getUniqueName(), ObjectManagerInterface::IDENTIFIER)
-        );
+        // check if a reflection class instance has been passed or is already available
+        $reflectionClass = $this->getReflectionClass($objectDescriptor->getClassName());
 
-        // load the object descriptor for the instance from the the object manager
-        if ($objectManager->hasObjectDescriptor($className)) {
-            // load the object descriptor
-            $objectDescriptor = $objectManager->getObjectDescriptor($className);
+        // check for declared EPB and resource references
+        /** @var \AppserverIo\Description\ReferenceDescriptorInterface $reference */
+        foreach ($objectDescriptor->getReferences() as $reference) {
+            // check if we've a reflection target defined
+            if ($injectionTarget = $reference->getInjectionTarget()) {
+                // add the dependency to the array
+                if ($targetName = $injectionTarget->getTargetProperty()) {
+                    // append the property dependency
+                    $dependencies['property'][$targetName] = $this->loadDependency($reference);
+                } elseif ($targetName = $injectionTarget->getTargetMethod()) {
+                    // load the reflection method instance
+                    $reflectionMethod = $reflectionClass->getMethod($targetName);
 
-            // check if a reflection class instance has been passed or is already available
-            $reflectionClass = $this->getReflectionClass($className);
-
-            // check for declared EPB and resource references
-            /** @var \AppserverIo\Description\ReferenceDescriptorInterface $reference */
-            foreach ($objectDescriptor->getReferences() as $reference) {
-                // check if we've a reflection target defined
-                if ($injectionTarget = $reference->getInjectionTarget()) {
-                    // add the dependency to the array
-                    if ($targetName = $injectionTarget->getTargetProperty()) {
-                        // append the property dependency
-                        $dependencies['property'][$targetName] = $this->loadDependency($reference);
-                    } elseif ($targetName = $injectionTarget->getTargetMethod()) {
-                        // load the reflection method instance
-                        $reflectionMethod = $reflectionClass->getMethod($targetName);
-
-                        // prepare the array with the method dependencies
-                        if (!isset($dependencies['method'][$targetName])) {
-                            $dependencies['method'][$targetName] = array();
-                        }
-
-                        // iterate over the method's parameters and try to find the one that matches the reference
-                        foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
-                            // query whether the reflection parameter name equals the inject target method parameter name
-                            if ($reference->equals($reflectionParameter)) {
-                                // append the method/constructor dependency
-                                $dependencies['method'][$targetName][$reflectionParameter->getPosition()] = $this->loadDependency($reference);
-                            }
-                        }
-
-                        // finally sort them them by their position
-                        ksort($dependencies['method'][$targetName]);
-
-                    } else {
-                        // throw an exception
-                        throw new DependencyInjectionException(
-                            sprintf('Can\'t find property or method %s in class %s', $targetName, $className)
-                        );
+                    // prepare the array with the method dependencies
+                    if (!isset($dependencies['method'][$targetName])) {
+                        $dependencies['method'][$targetName] = array();
                     }
-                }
-            }
 
-        } else {
-            // check if a reflection class instance has been passed or is already available
-            $reflectionClass = $this->getReflectionClass($className);
-            // query whether or not, we've a constructor
-            if ($reflectionClass->hasMethod($methodName = '__construct')) {
-                // load the reflection method for the constructor
-                $reflectionMethod = $reflectionClass->getMethod($methodName);
-                // iterate over the constructor parameters
-                $dependencies['method'][$methodName] = $this->loadDependenciesByReflectionMethod($reflectionMethod);
+                    // iterate over the method's parameters and try to find the one that matches the reference
+                    foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
+                        // query whether the reflection parameter name equals the inject target method parameter name
+                        if ($reference->equals($reflectionParameter)) {
+                            // append the method/constructor dependency
+                            $dependencies['method'][$targetName][$reflectionParameter->getPosition()] = $this->loadDependency($reference);
+                        }
+                    }
+
+                    // finally sort them them by their position
+                    ksort($dependencies['method'][$targetName]);
+
+                } else {
+                    // throw an exception
+                    throw new DependencyInjectionException(
+                        sprintf('Can\'t find property or method %s in class "%s"', $targetName, $name)
+                    );
+                }
             }
         }
 
         // return the array with the loaded dependencies
-        return $this->dependencies[$className] = $dependencies;
+        return $this->dependencies[$name] = $dependencies;
+    }
+
+    /**
+     * Load's and return's the dependency instance for the passed reference.
+     *
+     * @param \AppserverIo\Description\ReferenceDescriptorInterface $referenceDescriptor The reference descriptor
+     *
+     * @return object The reference instance
+     * @throws \Exception Is thrown, if no DI type definition for the passed reference is available
+     */
+    protected function loadDependency(ReferenceDescriptorInterface $referenceDescriptor)
+    {
+
+        // load the session ID from the execution environment
+        $sessionId = Environment::singleton()->getAttribute(EnvironmentKeys::SESSION_ID);
+
+        // prepare the lookup name
+        $lookupName = sprintf('php:global/%s/%s', $this->getApplication()->getUniqueName(), $referenceDescriptor->getRefName());
+
+        // at least we need a type for instanciation, if we've a bean reference
+        if ($referenceDescriptor instanceof BeanReferenceDescriptorInterface && $type = $referenceDescriptor->getType()) {
+            // load the object manager instance
+            /** @var \AppserverIo\Psr\Di\ObjectManagerInterface $objectManager */
+            $objectManager = $this->getNamingDirectory()->search(
+                sprintf('php:global/%s/%s', $this->getApplication()->getUniqueName(), ObjectManagerInterface::IDENTIFIER)
+            );
+
+            // try to directly instanciate the class by its defined type
+            return $this->get($objectManager->getPreference($type), $sessionId);
+        }
+
+        // query if the instance is available, if yes load the instance by lookup the initial context
+        if ($this->getNamingDirectory()->isBound($lookupName)) {
+            return $this->getNamingDirectory()->search($lookupName, array($sessionId));
+        }
+
+        // throw an exception if the dependency can't be instanciated
+        throw new \Exception(sprintf('Can\'t lookup bean "%s" nor find a DI type definition', $lookupName));
     }
 
     /**
@@ -403,58 +420,59 @@ class Provider extends GenericStackable implements ProviderInterface
     }
 
     /**
-     * Load's and return's the dependency instance for the passed reference.
+     * Creates a new instance with the dependencies defined by the passed descriptor.
      *
-     * @param \AppserverIo\Description\ReferenceDescriptorInterface $reference The reference descriptor
+     * @param \AppserverIo\Description\NameAwareDescriptorInterface $objectDescriptor The object descriptor with the dependencies
      *
-     * @return object The reference instance
-     * @throws \Exception Is thrown, if no DI type definition for the passed reference is available
+     * @return object The instance
      */
-    protected function loadDependency(ReferenceDescriptorInterface $reference)
+    protected function createInstance(NameAwareDescriptorInterface $objectDescriptor)
     {
 
-        // load the session ID from the execution environment
-        $sessionId = Environment::singleton()->getAttribute(EnvironmentKeys::SESSION_ID);
+        // try to load the reflection class
+        $reflectionClass = $this->getReflectionClass($objectDescriptor->getClassName());
 
-        // prepare the lookup name
-        $lookupName = sprintf('php:global/%s/%s', $this->getApplication()->getUniqueName(), $reference->getRefName());
+        // load the dependencies for the passed descriptor
+        $dependencies = $this->loadDependencies($objectDescriptor);
 
-        // at least we need a type for instanciation, if we've a bean reference
-        if ($reference instanceof BeanReferenceDescriptorInterface && $type = $reference->getType()) {
-            // load the object manager instance
-            /** @var \AppserverIo\Psr\Di\ObjectManagerInterface $objectManager */
-            $objectManager = $this->getNamingDirectory()->search(
-                sprintf('php:global/%s/%s', $this->getApplication()->getUniqueName(), ObjectManagerInterface::IDENTIFIER)
-            );
-
-            // try to directly instanciate the class by its defined type
-            return $this->get($objectManager->getPreference($type), $sessionId);
+        // check if we've a constructor
+        if ($reflectionClass->hasMethod($methodName = '__construct') &&
+            $reflectionClass->getMethod($methodName)->getParameters()
+        ) {
+            // query whether or not constructor parameters are available
+            if (isset($dependencies['method'][$methodName])) {
+                // create a new instance and pass the constructor args
+                return $reflectionClass->newInstanceArgs($dependencies['method'][$methodName]);
+            }
         }
 
-        // query if the instance is available, if yes load the instance by lookup the initial context
-        if ($this->getNamingDirectory()->isBound($lookupName)) {
-            return $this->getNamingDirectory()->search($lookupName, array($sessionId));
-        }
+        // create a new instance
+        $instance = $reflectionClass->newInstance();
 
-        // throw an exception if the dependency can't be instanciated
-        throw new \Exception(sprintf('Can\'t lookup bean "%s" nor find a DI type definition', $lookupName));
+        // inject the dependencies using properties/methods
+        $this->injectDependencies($objectDescriptor, $instance);
+
+        // return the initialized instance
+        return $instance;
     }
 
     /**
-     * Injects the dependencies of the passed instance.
+     * Injects the dependencies of the passed instance defined in the object descriptor.
      *
-     * @param object $instance The instance to inject the dependencies for
+     *
+     * @param \AppserverIo\Psr\Deployment\DescriptorInterface $objectDescriptor The object descriptor with the dependencies
+     * @param object                                          $instance         The instance to inject the dependencies for
      *
      * @return void
      */
-    public function injectDependencies($instance)
+    public function injectDependencies(DescriptorInterface $objectDescriptor, $instance)
     {
 
-        // load the reflection class
-        $reflectionClass = $this->getReflectionClassForObject($instance);
+        // try to load the reflection class
+        $reflectionClass = $this->getReflectionClass($objectDescriptor->getClassName());
 
-        // load the dependencies for the passed instance
-        $dependencies = $this->loadDependencies($reflectionClass->getName());
+        // load the dependencies for the passed descriptor
+        $dependencies = $this->loadDependencies($objectDescriptor);
 
         // inject dependencies by method
         foreach ($dependencies['method'] as $methodName => $toInject) {
@@ -483,14 +501,27 @@ class Provider extends GenericStackable implements ProviderInterface
     /**
      * Returns a new instance of the passed class name.
      *
-     * @param string $className The fully qualified class name to return the instance for
+     * @param string      $className The fully qualified class name to return the instance for
+     * @param array       $args      Arguments to pass to the constructor of the instance
      *
      * @return object The instance itself
-     * @deprecated Since 1.1.5 Use \Psr\Container\ContainerInterface::get() instead
      */
-    public function newInstance($className)
+    public function newInstance($className, array $args = array())
     {
-        return $this->get($className);
+
+        // load the reflection data for the passed class name
+        $reflectionClass = $this->getReflectionClass($className);
+
+        // query whether or not the class has a constructor
+        if ($reflectionClass->hasMethod($methodName = '__construct') &&
+            $reflectionClass->getMethod($methodName)->getParameters() &&
+            sizeof($args) > 0
+        ) {
+            return $reflectionClass->newInstanceArgs($args);
+        }
+
+        // return the instance without calling the constructor
+        return $reflectionClass->newInstance();
     }
 
     /**
@@ -509,51 +540,48 @@ class Provider extends GenericStackable implements ProviderInterface
         // query whether or not the instance can be created
         if ($this->has($id)) {
             // query the request context whether or not an instance has already been loaded
-            if (!Environment::singleton()->hasAttribute($id)) {
-                try {
-                    // load/create and return a new instance
+            if (Environment::singleton()->hasAttribute($id)) {
+                return Environment::singleton()->getAttribute($id);
+            }
+
+            try {
+                // load the object manager instance
+                /** @var \AppserverIo\Psr\Di\ObjectManagerInterface $objectManager */
+                $objectManager = $this->getNamingDirectory()->search(
+                    sprintf('php:global/%s/%s', $this->getApplication()->getUniqueName(), ObjectManagerInterface::IDENTIFIER)
+                );
+
+                // query whether or not the passed ID has a descriptor
+                if ($objectManager->hasObjectDescriptor($id)) {
+                    // create the instance and inject the dependencies
+                    $instance = $this->createInstance($objectManager->getObjectDescriptor($id));
+                } else {
+                    // initialize the array for the dependencies
+                    $dependencies = array();
+                    // assume, that the passed ID is a FQCN
                     $reflectionClass = $this->getReflectionClass($id);
 
-                    // check if we've a constructor
+                    // query whether or not the class has a constructor that expects parameters
                     if ($reflectionClass->hasMethod($methodName = '__construct') &&
                         $reflectionClass->getMethod($methodName)->getParameters()
                     ) {
-
-                        // load the dependencies for the passed class
-                        $dependencies = $this->loadDependencies($reflectionClass->getName());
-
-                        // query whether or not constructor parameters are available
-                        if (isset($dependencies['method'][$methodName])) {
-                            // pass the constructor args and create a new instance
-
-                            $instance = $reflectionClass->newInstanceArgs($dependencies['method'][$methodName]);
-                            // add the initialized instance to the request context
-                            Environment::singleton()->setAttribute($id, $instance);
-
-                            // immediately return the instance
-                            return $instance;
-                        }
-
+                        // if yes, load them by the the reflection method
+                        $dependencies = $this->loadDependenciesByReflectionMethod($reflectionClass->getMethod($methodName));
                     }
 
-                    // create a new instance and inject the dependencies
-                    $instance = $reflectionClass->newInstance();
-                    $this->injectDependencies($instance);
-
-                    // add the initialized instance to the request context
-                    Environment::singleton()->setAttribute($id, $instance);
-
-                    // immediately return the instance
-                    return $instance;
-
-                } catch (\Exception $e) {
-                    throw new NotFoundException(sprintf('DI error when try to inject dependencies for identifier "%s"', $id), null, $e);
+                    // create a new instance and pass the loaded dependencies
+                    $instance = $this->newInstance($id, $dependencies);
                 }
 
-            }
+                // add the initialized instance to the request context
+                Environment::singleton()->setAttribute($id, $instance);
 
-            // return the instance from the request context
-            return Environment::singleton()->getAttribute($id);
+                // immediately return the instance
+                return $instance;
+
+            } catch (\Exception $e) {
+                throw new NotFoundException(sprintf('DI error when try to inject dependencies for identifier "%s"', $id), null, $e);
+            }
         }
 
         // throw an exception if no entry was found for **this** identifier
@@ -561,19 +589,27 @@ class Provider extends GenericStackable implements ProviderInterface
     }
 
     /**
-     * Returns true if the container can return an entry for the given identifier.
-     * Returns false otherwise.
+     * Returns TRUE if the container can return an entry for the given identifier.
+     * Returns FALSE otherwise.
      *
      * `has($id)` returning TRUE does not mean that `get($id)` will not throw an exception.
      * It does however mean that `get($id)` will not throw a `NotFoundExceptionInterface`.
      *
      * @param string $id Identifier of the entry to look for.
      *
-     * @return boolean TRUE if an entroy for the given identifier exists, else FALSE
+     * @return boolean TRUE if an entry for the given identifier exists, else FALSE
      */
     public function has($id)
     {
-        return class_exists($id, true);
+
+        // load the object manager instance
+        /** @var \AppserverIo\Psr\Di\ObjectManagerInterface $objectManager */
+        $objectManager = $this->getNamingDirectory()->search(
+            sprintf('php:global/%s/%s', $this->getApplication()->getUniqueName(), ObjectManagerInterface::IDENTIFIER)
+        );
+
+        // query whether or not a object descriptor or the class definition exists
+        return class_exists($id) || $objectManager->hasObjectDescriptor($id);
     }
 
     /**

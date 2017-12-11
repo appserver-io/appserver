@@ -21,6 +21,7 @@
 
 namespace AppserverIo\Appserver\Core;
 
+use Psr\Container\ContainerInterface;
 use AppserverIo\Storage\StorageInterface;
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Psr\Di\ProviderInterface;
@@ -44,7 +45,7 @@ use AppserverIo\Psr\Naming\InitialContext as NamingDirectory;
  * @property \AppserverIo\Psr\Application\ApplicationInterface          $application          The application to manage
  * @property \AppserverIo\Psr\Application\ManagerConfigurationInterface $managerConfiguration The application to manage
  */
-abstract class AbstractManager extends GenericStackable implements ManagerInterface
+abstract class AbstractManager extends GenericStackable implements ManagerInterface, ContainerInterface
 {
 
     /**
@@ -239,14 +240,44 @@ abstract class AbstractManager extends GenericStackable implements ManagerInterf
      * Returns a new instance of the passed class name.
      *
      * @param string      $className The fully qualified class name to return the instance for
-     * @param string|null $sessionId The session-ID, necessary to inject stateful session beans (SFBs)
      * @param array       $args      Arguments to pass to the constructor of the instance
      *
      * @return object The instance itself
      */
-    public function newInstance($className, $sessionId = null, array $args = array())
+    public function newInstance($className, array $args = array())
     {
-        return $this->getApplication()->search(ProviderInterface::IDENTIFIER)->newInstance($className, $sessionId, $args);
+        return $this->getApplication()->search(ProviderInterface::IDENTIFIER)->newInstance($className, $args);
+    }
+
+    /**
+     * Finds an entry of the container by its identifier and returns it.
+     *
+     * @param string $id Identifier of the entry to look for
+     *
+     * @throws \Psr\Container\NotFoundExceptionInterface  No entry was found for **this** identifier.
+     * @throws \Psr\Container\ContainerExceptionInterface Error while retrieving the entry.
+     *
+     * @return mixed Entry.
+     */
+    public function get($id)
+    {
+        return $this->getApplication()->search(ProviderInterface::IDENTIFIER)->get($id);
+    }
+
+    /**
+     * Returns true if the container can return an entry for the given identifier.
+     * Returns false otherwise.
+     *
+     * `has($id)` returning TRUE does not mean that `get($id)` will not throw an exception.
+     * It does however mean that `get($id)` will not throw a `NotFoundExceptionInterface`.
+     *
+     * @param string $id Identifier of the entry to look for.
+     *
+     * @return boolean TRUE if an entroy for the given identifier exists, else FALSE
+     */
+    public function has($id)
+    {
+        return $this->getApplication()->search(ProviderInterface::IDENTIFIER)->has($id);
     }
 
     /**

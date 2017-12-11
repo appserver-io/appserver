@@ -967,8 +967,6 @@ class Request implements HttpServletRequestInterface, ContextInterface
         // set the session ID in the execution environment
         Environment::singleton()->setAttribute(EnvironmentKeys::SESSION_ID, $id);
 
-        error_log(sprintf('UPDATE SESSION ID TO "%s"', $id));
-
         // return the found session
         return $wrapper;
     }

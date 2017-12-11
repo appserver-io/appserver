@@ -162,9 +162,9 @@ class ObjectManager extends AbstractManager implements ObjectManagerInterface
     {
 
         // query whether we've to merge the configuration found in annotations
-        if ($this->hasObjectDescriptor($objectDescriptor->getClassName()) && $merge) {
+        if ($this->hasObjectDescriptor($objectDescriptor->getName()) && $merge) {
             // load the existing descriptor
-            $existingDescriptor = $this->getObjectDescriptor($objectDescriptor->getClassName());
+            $existingDescriptor = $this->getObjectDescriptor($objectDescriptor->getName());
             $existingDescriptorType = get_class($existingDescriptor);
             // log on info level to make overwriting more obvious
             $this->getApplication()->getInitialContext()->getSystemLogger()->info(
@@ -209,47 +209,40 @@ class ObjectManager extends AbstractManager implements ObjectManagerInterface
      */
     public function setObjectDescriptor(DescriptorInterface $objectDescriptor)
     {
-        $this->objectDescriptors->set($objectDescriptor->getClassName(), $objectDescriptor);
+        $this->objectDescriptors->set($objectDescriptor->getName(), $objectDescriptor);
     }
 
     /**
-     * Query if we've an object descriptor for the passed class name.
+     * Query if we've an object descriptor for the passed name.
      *
-     * @param string $className The class name we query for a object descriptor
+     * @param string $name The name we query for a object descriptor
      *
      * @return boolean TRUE if an object descriptor has been registered, else FALSE
      */
-    public function hasObjectDescriptor($className)
+    public function hasObjectDescriptor($name)
     {
-
-        // map the class name if a preference exists
-        if ($preferredClassName = $this->getAttribute($className)) {
-            $className = $preferredClassName;
-        }
-
-        // try to find the requested object descriptor
-        return $this->objectDescriptors->has($className);
+        return $this->objectDescriptors->has($name);
     }
 
     /**
      * Returns the object descriptor if we've registered it.
      *
-     * @param string $className The class name we want to return the object descriptor for
+     * @param string $name The name we want to return the object descriptor for
      *
      * @return \AppserverIo\Psr\Deployment\DescriptorInterface|null The requested object descriptor instance
      * @throws \AppserverIo\Psr\Di\UnknownObjectDescriptorException Is thrown if someone tries to access an unknown object desciptor
      */
-    public function getObjectDescriptor($className)
+    public function getObjectDescriptor($name)
     {
 
         // query if we've an object descriptor registered
-        if ($this->hasObjectDescriptor($className)) {
+        if ($this->hasObjectDescriptor($name)) {
             // return the object descriptor
-            return $this->objectDescriptors->get($className);
+            return $this->objectDescriptors->get($name);
         }
 
         // throw an exception is object descriptor has not been registered
-        throw new UnknownObjectDescriptorException(sprintf('Object Descriptor for class %s has not been registered', $className));
+        throw new UnknownObjectDescriptorException(sprintf('Object Descriptor with name "%s" has not been registered', $name));
     }
 
     /**

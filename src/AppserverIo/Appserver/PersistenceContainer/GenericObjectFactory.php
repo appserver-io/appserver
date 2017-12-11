@@ -88,15 +88,13 @@ class GenericObjectFactory extends AbstractDaemonThread implements ObjectFactory
     /**
      * Create a new instance with the passed data.
      *
-     * @param string      $className The fully qualified class name to return the instance for
-     * @param string|null $sessionId The session-ID, necessary to inject stateful session beans (SFBs)
-     * @param array       $args      Arguments to pass to the constructor of the instance
+     * @param string $className The fully qualified class name to return the instance for
      *
      * @return object The instance itself
      *
      * @throws \Exception
      */
-    public function newInstance($className, $sessionId = null, array $args = array())
+    public function newInstance($className)
     {
 
         // lock the method
@@ -106,8 +104,6 @@ class GenericObjectFactory extends AbstractDaemonThread implements ObjectFactory
         $this->dispatched = false;
 
         // initialize the data
-        $this->args = $args;
-        $this->sessionId = $sessionId;
         $this->className = $className;
 
         // notify the thread
@@ -173,12 +169,7 @@ class GenericObjectFactory extends AbstractDaemonThread implements ObjectFactory
             // create the instance only if we're NOT dispatched and a class name is available
             if ($self->dispatched === false && $self->className) {
                 // create the instance
-                $instance = $self->getApplication()->search(ProviderInterface::IDENTIFIER)
-                                                   ->newInstance(
-                                                       $self->className,
-                                                       $self->sessionId,
-                                                       $self->args
-                                                   );
+                $instance = $self->getApplication()->search(ProviderInterface::IDENTIFIER)->get($self->className);
 
                 // stack the instance
                 $self->instances[] = $instance;

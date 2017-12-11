@@ -169,7 +169,7 @@ class TimedObjectInvoker extends GenericStackable implements TimedObjectInvokerI
                  ->info(sprintf('Now invoke timed object "%s" with session ID "%s"', $this->getTimedObjectId(), $sessionId));
 
             // lookup the enterprise bean using the initial context
-            $instance = $initialContext->lookup($this->getTimedObjectId(), $sessionId);
+            $instance = $initialContext->lookup($this->getTimedObjectId());
 
             // check if the timeout method has been passed
             if ($timeoutMethod != null) {

@@ -338,13 +338,12 @@ abstract class AbstractEpbManager extends AbstractManager
      * This returns an instance of the requested bean.
      *
      * @param string $lookupName The lookup name for the requested bean
-     * @param string $sessionId  The session-ID if available
      *
      * @return object The bean instance
      */
-    public function lookupBean($lookupName, $sessionId = null)
+    public function lookupBean($lookupName)
     {
-        return $this->getApplication()->search($lookupName, array($sessionId));
+        return $this->getApplication()->search($lookupName);
     }
 
     /**
@@ -352,11 +351,10 @@ abstract class AbstractEpbManager extends AbstractManager
      * instanciated for the actual request, the existing instance will be returned.
      *
      * @param string $lookupName The lookup name for the requested session bean
-     * @param string $sessionId  The session-ID if available
      *
      * @return \AppserverIo\RemoteMethodInvocation\RemoteObjectInterface The proxy instance
      */
-    public function lookupProxy($lookupName, $sessionId = null)
+    public function lookupProxy($lookupName)
     {
 
         // load the initial context instance
@@ -369,18 +367,17 @@ abstract class AbstractEpbManager extends AbstractManager
         }
 
         // return the proxy instance
-        return $initialContext->lookup($lookupName, $sessionId);
+        return $initialContext->lookup($lookupName);
     }
 
     /**
      * This returns a local proxy to the requested session bean.
      *
      * @param string $lookupName The lookup name for the requested session bean
-     * @param string $sessionId  The session-ID if available
      *
      * @return \AppserverIo\RemoteMethodInvocation\RemoteObjectInterface The proxy instance
      */
-    public function lookupLocalProxy($lookupName, $sessionId = null)
+    public function lookupLocalProxy($lookupName)
     {
 
         // extract the session bean name from the lookup name
@@ -394,7 +391,7 @@ abstract class AbstractEpbManager extends AbstractManager
         $objectManager = $application->search(ObjectManagerInterface::IDENTIFIER);
 
         // load the requested session bean
-        $sessionBean = $application->search($beanName, array($sessionId));
+        $sessionBean = $application->search($beanName);
 
         // load the bean descriptor
         $sessionBeanDescriptor = $objectManager->getObjectDescriptors()->get(get_class($sessionBean));
@@ -403,8 +400,7 @@ abstract class AbstractEpbManager extends AbstractManager
         return new LocalProxy(
             $beanManager,
             $sessionBeanDescriptor,
-            $sessionBean,
-            $sessionId
+            $sessionBean
         );
     }
 }
