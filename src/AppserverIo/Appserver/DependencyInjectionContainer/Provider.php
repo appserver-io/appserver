@@ -501,8 +501,8 @@ class Provider extends GenericStackable implements ProviderInterface
     /**
      * Returns a new instance of the passed class name.
      *
-     * @param string      $className The fully qualified class name to return the instance for
-     * @param array       $args      Arguments to pass to the constructor of the instance
+     * @param string $className The fully qualified class name to return the instance for
+     * @param array  $args      Arguments to pass to the constructor of the instance
      *
      * @return object The instance itself
      */
@@ -574,7 +574,7 @@ class Provider extends GenericStackable implements ProviderInterface
                 }
 
                 // add the initialized instance to the request context
-                Environment::singleton()->setAttribute($id, $instance);
+                $this->set($id, $instance);
 
                 // immediately return the instance
                 return $instance;
@@ -610,6 +610,27 @@ class Provider extends GenericStackable implements ProviderInterface
 
         // query whether or not a object descriptor or the class definition exists
         return class_exists($id) || $objectManager->hasObjectDescriptor($id);
+    }
+
+    /**
+     * Register's the passed value with the passed ID.
+     *
+     * @param string $id    The ID of the value to add
+     * @param string $value The value to add
+     *
+     * @return void
+     * @throws \AppserverIo\Appserver\DependencyInjectionContainer\ContainerException Is thrown, if a value with the passed key has already been added
+     */
+    public function set($id, $value)
+    {
+
+        // query whether or not a value with the passed ID already exists
+        if (Environment::singleton()->hasAttribute($id)) {
+            throw new ContainerException(sprintf('A value for identifier "%s" has already been added to the DI container', $id));
+        }
+
+        // add the value to the environment
+        Environment::singleton()->setAttribute($id, $value);
     }
 
     /**
