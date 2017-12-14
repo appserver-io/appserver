@@ -1632,6 +1632,7 @@
                 <xs:element ref="appserver:epb-class"/>
                 <xs:element ref="appserver:local"/>
                 <xs:element ref="appserver:remote"/>
+                <xs:element ref="appserver:shared" minOccurs="0"/>
                 <xs:element ref="appserver:epb-ref" minOccurs="0"/>
                 <xs:element ref="appserver:res-ref" minOccurs="0"/>
                 <xs:element ref="appserver:bean-ref" minOccurs="0"/>
@@ -2088,6 +2089,7 @@
             <xs:choice maxOccurs="unbounded">
                 <xs:element ref="appserver:epb-name"/>
                 <xs:element ref="appserver:epb-class"/>
+                <xs:element ref="appserver:shared" minOccurs="0"/>
                 <xs:element ref="appserver:epb-ref" minOccurs="0"/>
                 <xs:element ref="appserver:res-ref" minOccurs="0"/>
                 <xs:element ref="appserver:bean-ref" minOccurs="0"/>
@@ -2308,6 +2310,16 @@
             </xs:simpleContent>
         </xs:complexType>
     </xs:element>
+    <xs:element name="shared">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:boolean">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
     <xs:element name="class">
         <xs:complexType>
             <xs:simpleContent>
@@ -2393,7 +2405,8 @@
             <xs:choice maxOccurs="unbounded">
                 <xs:element ref="appserver:name"/>
                 <xs:element ref="appserver:class"/>
-                <xs:element ref="appserver:factory"/>
+                <xs:element ref="appserver:factory" minOccurs="0"/>
+                <xs:element ref="appserver:shared" minOccurs="0"/>
                 <xs:element ref="appserver:epb-ref" minOccurs="0"/>
                 <xs:element ref="appserver:res-ref" minOccurs="0"/>
                 <xs:element ref="appserver:bean-ref" minOccurs="0"/>

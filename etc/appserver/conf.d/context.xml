@@ -86,6 +86,7 @@
                 <descriptor>AppserverIo\Description\SingletonSessionBeanDescriptor</descriptor>
                 <descriptor>AppserverIo\Description\StatelessSessionBeanDescriptor</descriptor>
                 <descriptor>AppserverIo\Routlt\Description\PathDescriptor</descriptor>
+                <descriptor>AppserverIo\Routlt\Description\ResultDescriptor</descriptor>
             </descriptors>
         </manager>
         <manager name="ProviderInterface" type="AppserverIo\Appserver\DependencyInjectionContainer\Provider" factory="AppserverIo\Appserver\DependencyInjectionContainer\ProviderFactory"/>

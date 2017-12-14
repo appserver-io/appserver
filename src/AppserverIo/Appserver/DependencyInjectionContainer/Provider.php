@@ -554,29 +554,35 @@ class Provider extends GenericStackable implements ProviderInterface
                 // query whether or not the passed ID has a descriptor
                 if ($objectManager->hasObjectDescriptor($id)) {
                     // create the instance and inject the dependencies
-                    $instance = $this->createInstance($objectManager->getObjectDescriptor($id));
-                } else {
-                    // initialize the array for the dependencies
-                    $dependencies = array();
-                    // assume, that the passed ID is a FQCN
-                    $reflectionClass = $this->getReflectionClass($id);
+                    $instance = $this->createInstance($objectDescriptor = $objectManager->getObjectDescriptor($id));
 
-                    // query whether or not the class has a constructor that expects parameters
-                    if ($reflectionClass->hasMethod($methodName = '__construct') &&
-                        $reflectionClass->getMethod($methodName)->getParameters()
-                    ) {
-                        // if yes, load them by the the reflection method
-                        $dependencies = $this->loadDependenciesByReflectionMethod($reflectionClass->getMethod($methodName));
+                    // add the initialized instance to the request context if has to be shared
+                    if ($objectDescriptor->isShared()) {
+                        $this->set($id, $instance);
                     }
 
-                    // create a new instance and pass the loaded dependencies
-                    $instance = $this->newInstance($id, $dependencies);
+                    // immediately return the instance
+                    return $instance;
                 }
 
-                // add the initialized instance to the request context
-                $this->set($id, $instance);
+                // initialize the array for the dependencies
+                $dependencies = array();
 
-                // immediately return the instance
+                // assume, that the passed ID is a FQCN
+                $reflectionClass = $this->getReflectionClass($id);
+
+                // query whether or not the class has a constructor that expects parameters
+                if ($reflectionClass->hasMethod($methodName = '__construct') &&
+                    $reflectionClass->getMethod($methodName)->getParameters()
+                ) {
+                    // if yes, load them by the the reflection method
+                    $dependencies = $this->loadDependenciesByReflectionMethod($reflectionClass->getMethod($methodName));
+                }
+
+                // create and ddd the initialized instance to the request context
+                $this->set($id, $instance = $this->newInstance($id, $dependencies));
+
+                // finally return the instance
                 return $instance;
 
             } catch (\Exception $e) {

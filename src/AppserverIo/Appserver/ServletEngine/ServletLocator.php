@@ -20,6 +20,8 @@
 
 namespace AppserverIo\Appserver\ServletEngine;
 
+use AppserverIo\Psr\Di\ProviderInterface;
+use AppserverIo\Psr\Di\ObjectManagerInterface;
 use AppserverIo\Psr\Servlet\ServletContextInterface;
 
 /**
@@ -50,7 +52,22 @@ class ServletLocator implements ResourceLocatorInterface
         // iterate over all servlets and return the matching one
         foreach ($servletContext->getServletMappings() as $urlPattern => $servletName) {
             if (fnmatch($urlPattern, $servletPath)) {
-                return $servletContext->getServlet($servletName);
+                // load the object manager instance
+                /** @var \AppserverIo\Psr\Di\ObjectManagerInterface $objectManager */
+                $objectManager = $servletContext->getApplication()->search(ObjectManagerInterface::IDENTIFIER);
+
+                // load the provider instance
+                /** @var \AppserverIo\Psr\Di\ProviderInterface $provider */
+                $provider = $servletContext->getApplication()->search(ProviderInterface::IDENTIFIER);
+
+                // load the object descriptor and re-inject the dependencies
+                $provider->injectDependencies(
+                    $objectManager->getObjectDescriptor($servletName),
+                    $instance = $servletContext->getServlet($servletName)
+                );
+
+                // finally return the instance
+                return $instance;
             }
         }
 
