@@ -298,6 +298,22 @@ abstract class AbstractService implements ServiceInterface
     }
 
     /**
+     * Return's the system's vendor directory.
+     *
+     * @param string $relativePathToAppend A relative path to append
+     *
+     * @return string The system's vendor directory
+     */
+    public function getVendorDir($relativePathToAppend = '')
+    {
+        return $this->realpath(
+            $this->makePathAbsolute(
+                $this->getSystemConfiguration()->getParam(DirectoryKeys::VENDOR) . $this->makePathAbsolute($relativePathToAppend)
+            )
+        );
+    }
+
+    /**
      * Return's the system's temporary directory.
      *
      * @param string $relativePathToAppend A relative path to append
@@ -448,6 +464,7 @@ abstract class AbstractService implements ServiceInterface
         $properties->add(SystemPropertyKeys::BASE, $this->getBaseDirectory());
         $properties->add(SystemPropertyKeys::VAR_LOG, $this->getLogDir());
         $properties->add(SystemPropertyKeys::ETC, $this->getEtcDir());
+        $properties->add(SystemPropertyKeys::VENDOR, $this->getVendorDir());
         $properties->add(SystemPropertyKeys::ETC_APPSERVER, $this->getConfDir());
         $properties->add(SystemPropertyKeys::ETC_APPSERVER_CONFD, $this->getConfdDir());
 

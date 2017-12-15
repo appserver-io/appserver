@@ -304,16 +304,6 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface, Ma
     }
 
     /**
-     * Return the storage with the naming directory.
-     *
-     * @return \AppserverIo\Storage\StorageInterface The storage with the naming directory
-     */
-    public function getNamingDirectory()
-    {
-        return $this->getApplication()->getNamingDirectory();
-    }
-
-    /**
      * Return the storage with the singleton session beans.
      *
      * @return \AppserverIo\Storage\StorageInterface The storage with the singleton session beans

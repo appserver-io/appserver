@@ -62,6 +62,13 @@ class DirectoryKeys
     const WEBAPPS = 'webapps.dir';
 
     /**
+     * Key for the vendor directory.
+     *
+     * @var string
+     */
+    const VENDOR = 'vendor.dir';
+
+    /**
      * Key for the var/tmp directory.
      *
      * @var string

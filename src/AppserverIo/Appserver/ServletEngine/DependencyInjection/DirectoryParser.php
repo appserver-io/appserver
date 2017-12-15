@@ -22,6 +22,7 @@ namespace AppserverIo\Appserver\ServletEngine\DependencyInjection;
 
 use AppserverIo\Psr\Di\ObjectManagerInterface;
 use AppserverIo\Psr\Servlet\ServletContextInterface;
+use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
 
 /**
  * Parser to parse a directory for annotated beans or servlets.
@@ -83,27 +84,11 @@ class DirectoryParser
     public function parse()
     {
 
-        // load the web application base directory
-        $webappPath = $this->getServletContext()->getWebappPath();
-
-        // load the directories to be parsed
-        $directories = array();
-
-        // append the directory found in the servlet managers configuration
+        // parse the directories from the servlet managers configuration
         /** @var \AppserverIo\Appserver\Core\Api\Node\DirectoryNode $directoryNode */
         foreach ($this->getServletContext()->getDirectories() as $directoryNode) {
-            // prepare the custom directory defined in the servlet managers configuration
-            $customDir = $webappPath . DIRECTORY_SEPARATOR . ltrim($directoryNode->getNodeValue()->getValue(), DIRECTORY_SEPARATOR);
-
-            // check if the directory exists
-            if (is_dir($customDir)) {
-                $directories[] = $customDir;
-            }
-        }
-
-        // parse the directories for annotated servlets
-        foreach ($directories as $directory) {
-            $this->parseDirectory($directory);
+            // parse the directories for annotated servlets
+            $this->parseDirectory(DirectoryKeys::realpath($directoryNode->getNodeValue()->getValue()));
         }
     }
 

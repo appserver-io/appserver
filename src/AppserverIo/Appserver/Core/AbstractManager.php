@@ -95,6 +95,16 @@ abstract class AbstractManager extends GenericStackable implements ManagerInterf
     }
 
     /**
+     * Return the storage with the naming directory.
+     *
+     * @return \AppserverIo\Storage\StorageInterface The storage with the naming directory
+     */
+    public function getNamingDirectory()
+    {
+        return $this->getApplication()->getNamingDirectory();
+    }
+
+    /**
      * The global naming directory.
      *
      * @param \AppserverIo\Psr\Naming\InitialContext $initialContext The global naming directory

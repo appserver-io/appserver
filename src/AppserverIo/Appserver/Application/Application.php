@@ -579,7 +579,10 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
     {
 
         // bind the logger callback to the naming directory => the application itself
-        $this->getNamingDirectory()->bind(sprintf('php:global/log/%s/%s', $this->getUniqueName(), $configuration->getName()), array(&$this, 'getLogger'), array($configuration->getName()));
+        $this->getNamingDirectory()->bind($name = sprintf('php:global/log/%s/%s', $this->getUniqueName(), $configuration->getName()), array(&$this, 'getLogger'), array($configuration->getName()));
+
+        // alos bind a reference from the application to the logger scope (to make DI more comfortable)
+        $this->getNamingDirectory()->bindReference(sprintf('php:global/%s/%s', $this->getUniqueName(), $configuration->getName()), $name);
 
         // add the logger instance to the application
         $this->loggers[$configuration->getName()] = $logger;
