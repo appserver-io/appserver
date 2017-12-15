@@ -589,7 +589,7 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface, Ma
             }
 
             // create a unique SFSB identifier
-            $identifier = SessionBeanUtil::createIdentifier($sessionId, $objectDescriptor->getClassName());
+            $identifier = SessionBeanUtil::createIdentifier($sessionId, $objectDescriptor->getName());
 
             // load the map with the SFSBs
             $sessionBeans = $this->getStatefulSessionBeans();
