@@ -162,19 +162,6 @@ class BeanLocator implements ResourceLocatorInterface
 
             // query whether we simply have a bean
             if ($descriptor instanceof BeanDescriptorInterface) {
-                // query if the simple bean has to be initialized by a factory
-                if ($factory = $descriptor->getFactory()) {
-                    // query whether or not the factory is a simple class or a bean
-                    if ($className = $factory->getClassName()) {
-                        $factoryInstance = $beanManager->get($className);
-                    } else {
-                        $factoryInstance = $beanManager->get($factory->getName());
-                    }
-
-                    // create the bean instance by invoking the factory method
-                    return call_user_func_array(array($factoryInstance, $factory->getMethod()), $args);
-                }
-
                 // create the bean instance without the factory
                 return $beanManager->get($className);
             }

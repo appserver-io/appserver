@@ -27,6 +27,7 @@ use AppserverIo\Lang\Reflection\ReflectionMethod;
 use AppserverIo\Lang\Reflection\AnnotationInterface;
 use AppserverIo\Description\NameAwareDescriptorInterface;
 use AppserverIo\Description\ReferenceDescriptorInterface;
+use AppserverIo\Description\FactoryAwareDescriptorInterface;
 use AppserverIo\Appserver\Core\Environment;
 use AppserverIo\Appserver\Core\Utilities\EnvironmentKeys;
 use AppserverIo\Psr\Servlet\Annotations\Route;
@@ -553,8 +554,25 @@ class Provider extends GenericStackable implements ProviderInterface
 
                 // query whether or not the passed ID has a descriptor
                 if ($objectManager->hasObjectDescriptor($id)) {
-                    // create the instance and inject the dependencies
-                    $instance = $this->createInstance($objectDescriptor = $objectManager->getObjectDescriptor($id));
+                    // load the object descriptor instance
+                    $objectDescriptor = $objectManager->getObjectDescriptor($id);
+
+                    // query if the simple bean has to be initialized by a factory
+                    if ($objectDescriptor instanceof FactoryAwareDescriptorInterface && $factory = $objectDescriptor->getFactory()) {
+                        // query whether or not the factory is a simple class or a bean
+                        if ($className = $factory->getClassName()) {
+                            $factoryInstance = $this->get($className);
+                        } else {
+                            $factoryInstance = $this->get($factory->getName());
+                        }
+
+                        // create the instance by invoking the factory method
+                        $instance = call_user_func(array($factoryInstance, $factory->getMethod()));
+
+                    } else {
+                        // create the instance and inject the dependencies
+                        $instance = $this->createInstance($objectDescriptor);
+                    }
 
                     // add the initialized instance to the request context if has to be shared
                     if ($objectDescriptor->isShared()) {
@@ -637,6 +655,18 @@ class Provider extends GenericStackable implements ProviderInterface
 
         // add the value to the environment
         Environment::singleton()->setAttribute($id, $value);
+    }
+
+    /**
+     * Query's whether or not an instance of the passed already exists.
+     *
+     * @param string $id Identifier of the entry to look for
+     *
+     * @return boolean TRUE if an instance exists, else FALSE
+     */
+    public function exists($id)
+    {
+        return Environment::singleton()->hasAttribute($id);
     }
 
     /**

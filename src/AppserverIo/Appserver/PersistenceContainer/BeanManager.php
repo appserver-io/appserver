@@ -21,12 +21,15 @@
 
 namespace AppserverIo\Appserver\PersistenceContainer;
 
-use AppserverIo\Collections\CollectionUtils;
-use AppserverIo\Collections\CollectionInterface;
 use AppserverIo\Storage\StorageInterface;
-use AppserverIo\Appserver\Core\AbstractEpbManager;
+use AppserverIo\Collections\CollectionInterface;
 use AppserverIo\Lang\Reflection\AnnotationInterface;
+use AppserverIo\RemoteMethodInvocation\RemoteMethodInterface;
+use AppserverIo\Appserver\Core\Environment;
+use AppserverIo\Appserver\Core\AbstractEpbManager;
+use AppserverIo\Appserver\Core\Utilities\EnvironmentKeys;
 use AppserverIo\Psr\Di\ObjectManagerInterface;
+use AppserverIo\Psr\Deployment\DescriptorInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Psr\EnterpriseBeans\BeanContextInterface;
 use AppserverIo\Psr\EnterpriseBeans\ResourceLocatorInterface;
@@ -43,11 +46,6 @@ use AppserverIo\Appserver\PersistenceContainer\Utils\SessionBeanUtil;
 use AppserverIo\Appserver\PersistenceContainer\DependencyInjection\DirectoryParser;
 use AppserverIo\Appserver\PersistenceContainer\DependencyInjection\DeploymentDescriptorParser;
 use AppserverIo\Appserver\PersistenceContainer\RemoteMethodInvocation\ProxyGeneratorInterface;
-use AppserverIo\RemoteMethodInvocation\RemoteMethodInterface;
-use AppserverIo\RemoteMethodInvocation\FilterSessionPredicate;
-use AppserverIo\Appserver\Core\Environment;
-use AppserverIo\Appserver\Core\Utilities\EnvironmentKeys;
-use AppserverIo\Psr\Deployment\DescriptorInterface;
 
 /**
  * The bean manager handles the message and session beans registered for the application.
@@ -500,29 +498,8 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface, Ma
         // load the application instance
         $application = $this->getApplication();
 
-        // try to load the session with the ID passed in the remote method
-        $session = CollectionUtils::find($sessions, new FilterSessionPredicate($sessionId));
-
-        // initialize the instance
-        $instance = null;
-
-        // query whether the session is available or not
-        if ($session instanceof CollectionInterface) {
-            // query whether we already have an instance in the session container
-            if ($instance = $session->exists($className)) {
-                $instance = $session->get($className);
-            }
-        }
-
         // load a fresh bean instance and add it to the session container
-        if ($instance == null) {
-            $instance = $application->search($className);
-        }
-
-        // query whether we already have an instance in the session container
-        if ($session instanceof CollectionInterface) {
-            $session->add($className, $instance);
-        }
+        $instance = $this->lookup($className);
 
         // invoke the remote method call on the local instance
         $response = call_user_func_array(array($instance, $methodName), $parameters);
@@ -531,21 +508,17 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface, Ma
         $objectManager = $application->search(ObjectManagerInterface::IDENTIFIER);
 
         // load the bean descriptor
-        $objectDescriptor = $objectManager->getObjectDescriptors()->get($className);
+        $objectDescriptor = $objectManager->getObjectDescriptor($className);
 
         // initialize the flag to mark the instance to be re-attached
         $attach = true;
 
-        // query if we've stateful session bean
+        // query if we've SFSB
         if ($objectDescriptor instanceof StatefulSessionBeanDescriptorInterface) {
             // remove the SFSB instance if a remove method has been called
             if ($objectDescriptor->isRemoveMethod($methodName)) {
                 $this->removeStatefulSessionBean($sessionId, $objectDescriptor->getClassName());
                 $attach = false;
-                // query whether the session is available or not
-                if ($session instanceof CollectionInterface) {
-                    $session->remove($className);
-                }
             }
         }
 

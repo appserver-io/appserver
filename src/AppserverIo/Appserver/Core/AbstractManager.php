@@ -291,6 +291,32 @@ abstract class AbstractManager extends GenericStackable implements ManagerInterf
     }
 
     /**
+     * Register's the passed value with the passed ID.
+     *
+     * @param string $id    The ID of the value to add
+     * @param string $value The value to add
+     *
+     * @return void
+     * @throws \AppserverIo\Appserver\DependencyInjectionContainer\ContainerException Is thrown, if a value with the passed key has already been added
+     */
+    public function set($id, $value)
+    {
+        return $this->getApplication()->search(ProviderInterface::IDENTIFIER)->set($id, $value);
+    }
+
+    /**
+     * Query's whether or not an instance of the passed already exists.
+     *
+     * @param string $id Identifier of the entry to look for
+     *
+     * @return boolean TRUE if an instance exists, else FALSE
+     */
+    public function exists($id)
+    {
+        return $this->getApplication()->search(ProviderInterface::IDENTIFIER)->exists($id);
+    }
+
+    /**
      * A dummy functionality to implement the stop functionality.
      *
      * @return void
