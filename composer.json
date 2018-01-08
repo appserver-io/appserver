@@ -16,7 +16,7 @@
         "appserver-io-psr/di": "dev-di as 2.0.0",
         "appserver-io-psr/epb": "dev-di as 4.0.0",
         "appserver-io-psr/pms": "1.0.*",
-        "appserver-io-psr/mop": "dev-di as 1.1.0",
+        "appserver-io-psr/mop": "dev-di as 1.2.0",
         "appserver-io-psr/auth": "2.0.*",
         "appserver-io-psr/naming": "dev-di as 1.1.0",
         "appserver-io-psr/servlet": "dev-di as 3.0.0",
@@ -40,7 +40,7 @@
         "appserver-io/description": "dev-di as 7.0.1",
         "appserver-io/authenticator": "1.0.*",
         "appserver-io/configuration": "2.0.*",
-        "appserver-io/doppelgaenger": "1.5.*",
+        "appserver-io/doppelgaenger": "1.7.*",
         "appserver-io/routlt-project": "1.2.*"
     },
     "require-dev": {

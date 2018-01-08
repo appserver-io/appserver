@@ -37,7 +37,6 @@ use AppserverIo\Psr\Di\ProviderInterface;
 use AppserverIo\Psr\Di\ObjectManagerInterface;
 use AppserverIo\Psr\Di\DependencyInjectionException;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Inject;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\Factory;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\MessageDriven;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\PreDestroy;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\PostConstruct;
@@ -222,7 +221,6 @@ class Provider extends GenericStackable implements ProviderInterface
         $annotationAliases = array(
             Route::ANNOTATION           => Route::__getClass(),
             Inject::ANNOTATION          => Inject::__getClass(),
-            Factory::ANNOTATION         => Factory::__getClass(),
             Resource::ANNOTATION        => Resource::__getClass(),
             Timeout::ANNOTATION         => Timeout::__getClass(),
             Stateless::ANNOTATION       => Stateless::__getClass(),
@@ -298,6 +296,10 @@ class Provider extends GenericStackable implements ProviderInterface
      */
     protected function loadDependencies(NameAwareDescriptorInterface $objectDescriptor)
     {
+
+        if ($objectDescriptor instanceof \AppserverIo\Description\FactoryDescriptor) {
+            throw new \Exception(print_r($objectDescriptor, true));
+        }
 
         // query whether or not the dependencies have been loaded
         if (isset($this->dependencies[$name = $objectDescriptor->getName()])) {
