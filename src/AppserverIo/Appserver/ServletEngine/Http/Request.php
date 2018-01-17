@@ -293,6 +293,16 @@ class Request implements HttpServletRequestInterface, ContextInterface
     }
 
     /**
+     * Returns the attributes from the context.
+     *
+     * @return array The array with the attributes
+     */
+    public function getAttributes()
+    {
+        return $this->attributes;
+    }
+
+    /**
      * Initializes the servlet request with the data from the injected HTTP request instance.
      *
      * @return void
