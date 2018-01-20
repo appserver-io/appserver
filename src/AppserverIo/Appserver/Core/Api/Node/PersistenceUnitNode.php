@@ -105,6 +105,14 @@ class PersistenceUnitNode extends AbstractNode implements PersistenceUnitNodeInt
     protected $datasource;
 
     /**
+     * The bean shared information.
+     *
+     * @var \AppserverIo\Description\Api\Node\ValueNode
+     * @AS\Mapping(nodeName="shared", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     */
+    protected $shared;
+
+    /**
      * The node containing the metadata configuration information.
      *
      * @var \AppserverIo\Appserver\Core\Api\Node\MetadataConfigurationNode
@@ -189,7 +197,7 @@ class PersistenceUnitNode extends AbstractNode implements PersistenceUnitNodeInt
     /**
      * Returns the entity manager's datasource configuration.
      *
-     * @return AppserverIo\Appserver\Core\Api\Node\DatasourceNode The entity manager's datasource configuration
+     * @return \AppserverIo\Appserver\Core\Api\Node\DatasourceNode The entity manager's datasource configuration
      */
     public function getDatasource()
     {
@@ -197,9 +205,19 @@ class PersistenceUnitNode extends AbstractNode implements PersistenceUnitNodeInt
     }
 
     /**
+     * Return's the bean shared information.
+     *
+     * @return \AppserverIo\Configuration\Interfaces\NodeValueInterface
+     */
+    public function getShared()
+    {
+        return $this->shared;
+    }
+
+    /**
      * Returns the entity manager's metadata configuration.
      *
-     * @return AppserverIo\Appserver\Core\Api\Node\MetadataConfigurationNode The entity manager's metadata configuration
+     * @return \AppserverIo\Appserver\Core\Api\Node\MetadataConfigurationNode The entity manager's metadata configuration
      */
     public function getMetadataConfiguration()
     {
@@ -209,7 +227,7 @@ class PersistenceUnitNode extends AbstractNode implements PersistenceUnitNodeInt
     /**
      * Returns the entity manager's query cache configuration.
      *
-     * @return AppserverIo\Appserver\Core\Api\Node\MetadataConfigurationNode The entity manager's query cache configuration
+     * @return \AppserverIo\Appserver\Core\Api\Node\MetadataConfigurationNode The entity manager's query cache configuration
      */
     public function getQueryCacheConfiguration()
     {
@@ -219,7 +237,7 @@ class PersistenceUnitNode extends AbstractNode implements PersistenceUnitNodeInt
     /**
      * Returns the entity manager's result cache configuration.
      *
-     * @return AppserverIo\Appserver\Core\Api\Node\MetadataConfigurationNode The entity manager's result cache configuration
+     * @return \AppserverIo\Appserver\Core\Api\Node\MetadataConfigurationNode The entity manager's result cache configuration
      */
     public function getResultCacheConfiguration()
     {
@@ -229,7 +247,7 @@ class PersistenceUnitNode extends AbstractNode implements PersistenceUnitNodeInt
     /**
      * Returns the entity manager's metadata cache configuration.
      *
-     * @return AppserverIo\Appserver\Core\Api\Node\MetadataCacheConfigurationNode The entity manager's metadata cache configuration
+     * @return \AppserverIo\Appserver\Core\Api\Node\MetadataCacheConfigurationNode The entity manager's metadata cache configuration
      */
     public function getMetadataCacheConfiguration()
     {

@@ -21,6 +21,7 @@
 namespace AppserverIo\Appserver\Core\Api\Node;
 
 use AppserverIo\Configuration\Interfaces\NodeInterface;
+use AppserverIo\Description\Configuration\ConfigurationInterface;
 
 /**
  * Interface for the persistence unit node information.
@@ -31,7 +32,7 @@ use AppserverIo\Configuration\Interfaces\NodeInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-interface PersistenceUnitNodeInterface extends NodeInterface
+interface PersistenceUnitNodeInterface extends NodeInterface, ConfigurationInterface
 {
 
     /**
@@ -47,7 +48,7 @@ interface PersistenceUnitNodeInterface extends NodeInterface
      *
      * @param string $prepend Prepend to each directory
      *
-     * @return The array with the directories as string
+     * @return array The array with the directories as string
      */
     public function getDirectoriesAsArray($prepend = null);
 
@@ -114,35 +115,35 @@ interface PersistenceUnitNodeInterface extends NodeInterface
     /**
      * Returns the entity manager's datasource configuration.
      *
-     * @return AppserverIo\Appserver\Core\Api\Node\DatasourceNode The entity manager's datasource configuration
+     * @return \AppserverIo\Appserver\Core\Api\Node\DatasourceNode The entity manager's datasource configuration
      */
     public function getDatasource();
 
     /**
      * Returns the entity manager's metadata configuration.
      *
-     * @return AppserverIo\Appserver\Core\Api\Node\MetadataConfigurationNode The entity manager's metadata configuration
+     * @return \AppserverIo\Appserver\Core\Api\Node\MetadataConfigurationNode The entity manager's metadata configuration
      */
     public function getMetadataConfiguration();
 
     /**
      * Returns the entity manager's query cache configuration.
      *
-     * @return AppserverIo\Appserver\Core\Api\Node\MetadataConfigurationNode The entity manager's query cache configuration
+     * @return \AppserverIo\Appserver\Core\Api\Node\MetadataConfigurationNode The entity manager's query cache configuration
      */
     public function getQueryCacheConfiguration();
 
     /**
      * Returns the entity manager's result cache configuration.
      *
-     * @return AppserverIo\Appserver\Core\Api\Node\MetadataConfigurationNode The entity manager's result cache configuration
+     * @return \AppserverIo\Appserver\Core\Api\Node\MetadataConfigurationNode The entity manager's result cache configuration
      */
     public function getResultCacheConfiguration();
 
     /**
      * Returns the entity manager's metadata cache configuration.
      *
-     * @return AppserverIo\Appserver\Core\Api\Node\MetadataCacheConfigurationNode The entity manager's metadata cache configuration
+     * @return \AppserverIo\Appserver\Core\Api\Node\MetadataCacheConfigurationNode The entity manager's metadata cache configuration
      */
     public function getMetadataCacheConfiguration();
 }

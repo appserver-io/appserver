@@ -318,7 +318,7 @@ abstract class AbstractEpbManager extends AbstractManager
                             ->bind(
                                 $uri,
                                 array(&$persistenceManager, 'lookupProxy'),
-                                array(sprintf('php:global/%s/%s', $application->getUniqueName(), $unitName))
+                                array($unitName)
                             );
 
             // log a critical message that we can't bind the reference
