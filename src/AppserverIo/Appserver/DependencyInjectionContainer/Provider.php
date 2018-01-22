@@ -635,7 +635,7 @@ class Provider extends GenericStackable implements ProviderInterface
         );
 
         // query whether or not a object descriptor or the class definition exists
-        return class_exists($id) || $objectManager->hasObjectDescriptor($id);
+        return class_exists($id) || $objectManager->hasObjectDescriptor($id) || Environment::singleton()->hasAttribute($id);
     }
 
     /**
