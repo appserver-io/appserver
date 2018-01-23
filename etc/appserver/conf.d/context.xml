@@ -98,6 +98,7 @@
                 <param name="garbageCollectionProbability" type="float">0.1</param>
             </params>
             <directories>
+                <directory>${webapp.dir}/common/classes</directory>
                 <directory>${webapp.dir}/WEB-INF/classes</directory>
                 <directory>${webapp.dir}/META-INF/classes</directory>
             </directories>
