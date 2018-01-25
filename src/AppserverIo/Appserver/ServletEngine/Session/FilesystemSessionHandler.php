@@ -59,6 +59,7 @@ class FilesystemSessionHandler extends AbstractSessionHandler
 
         } catch (SessionDataNotReadableException $sdnre) {
             $this->delete($id);
+            throw $sdnre;
         }
     }
 

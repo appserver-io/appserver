@@ -448,7 +448,10 @@ class StandardSessionManager implements SessionManagerInterface
                 } catch (\Exception $e) {
                     // log the exception if a system logger is available
                     if ($logger = $this->getLogger(LoggerUtils::SYSTEM)) {
-                        $logger->error($e->__toString());
+                        // log the error message
+                        $logger->error(sprintf('Can\'t load session data for session with ID "%s" because of: "%s"', $id, $e->getMessage()));
+                        // log the stack trace in debug log level
+                        $logger->debug($e->__toString());
                     }
                 }
             }

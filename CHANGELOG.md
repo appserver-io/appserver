@@ -2,7 +2,7 @@ Version 1.1.5-beta2
 
 ## Bugfixes
 
-* None
+* Fixed bug with invalid session data leading to a 500 without error page rendered
 
 ## Features
 
