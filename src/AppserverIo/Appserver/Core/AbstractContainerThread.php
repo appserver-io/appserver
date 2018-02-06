@@ -112,7 +112,7 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
      *
      * @return \AppserverIo\Appserver\Core\ServerNodeConfiguration The server node configuration
      */
-    protected function getServerNodeConfiguration(ServerNodeInterface $serverNode)
+    public function getServerNodeConfiguration(ServerNodeInterface $serverNode)
     {
 
         // query whether a server signature (software) has been configured

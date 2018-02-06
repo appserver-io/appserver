@@ -219,7 +219,7 @@ class MessageQueue extends AbstractDaemonThread implements QueueInterface
      *
      * @return string The unique name
      */
-    protected function uniqueWorkerName(PriorityKeyInterface $priorityKey)
+    public function uniqueWorkerName(PriorityKeyInterface $priorityKey)
     {
         return sprintf('%s-%s', $this->getName(), $priorityKey);
     }

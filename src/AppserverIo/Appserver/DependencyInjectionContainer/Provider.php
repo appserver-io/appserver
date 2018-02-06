@@ -64,16 +64,10 @@ use AppserverIo\Psr\EnterpriseBeans\Description\BeanReferenceDescriptorInterface
  *
  * @property \AppserverIo\Psr\Naming\NamingDirectoryInterface $namingDirectory The applications naming directory interface
  * @property \AppserverIo\Psr\Application\ApplicationInterfac $application     The application instance
+ * @property array                                            $dependencies    Dependencies for the actual injection target
  */
 class Provider extends GenericStackable implements ProviderInterface
 {
-
-    /**
-     * Dependencies for the actual injection target.
-     *
-     * @var array
-     */
-    protected $dependencies = array();
 
     /**
      * The managers unique identifier.
@@ -97,6 +91,9 @@ class Provider extends GenericStackable implements ProviderInterface
      */
     public function initialize(ApplicationInterface $application)
     {
+
+        // the array with injection target dependencies
+        $this->dependencies = array();
 
         // initialize the deployment descriptor parser and parse the web application's deployment descriptor for beans
         $deploymentDescriptorParser = new DeploymentDescriptorParser();
@@ -294,7 +291,7 @@ class Provider extends GenericStackable implements ProviderInterface
      * @throws \AppserverIo\Psr\Di\DependencyInjectionException Is thrown, if the dependencies can not be loaded
      * @return array The array with the initialized dependencies
      */
-    protected function loadDependencies(NameAwareDescriptorInterface $objectDescriptor)
+    public function loadDependencies(NameAwareDescriptorInterface $objectDescriptor)
     {
 
         if ($objectDescriptor instanceof \AppserverIo\Description\FactoryDescriptor) {
@@ -363,7 +360,7 @@ class Provider extends GenericStackable implements ProviderInterface
      * @return object The reference instance
      * @throws \Exception Is thrown, if no DI type definition for the passed reference is available
      */
-    protected function loadDependency(ReferenceDescriptorInterface $referenceDescriptor)
+    public function loadDependency(ReferenceDescriptorInterface $referenceDescriptor)
     {
 
         // load the session ID from the execution environment
@@ -400,7 +397,7 @@ class Provider extends GenericStackable implements ProviderInterface
      *
      * @return array The array with the initialized dependencies
      */
-    protected function loadDependenciesByReflectionMethod(ReflectionMethod $reflectionMethod)
+    public function loadDependenciesByReflectionMethod(ReflectionMethod $reflectionMethod)
     {
 
         // initialize the array for the dependencies
@@ -429,7 +426,7 @@ class Provider extends GenericStackable implements ProviderInterface
      *
      * @return object The instance
      */
-    protected function createInstance(NameAwareDescriptorInterface $objectDescriptor)
+    public function createInstance(NameAwareDescriptorInterface $objectDescriptor)
     {
 
         // try to load the reflection class

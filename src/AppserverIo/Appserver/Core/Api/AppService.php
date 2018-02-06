@@ -268,6 +268,7 @@ class AppService extends AbstractFileOperationService
         // create the directory we want to store the sessions in
         $tmpFolders = array(
             new \SplFileInfo($application->getTmpDir()),
+            new \SplFileInfo($application->getDataDir()),
             new \SplFileInfo($application->getCacheDir()),
             new \SplFileInfo($application->getSessionDir())
         );
@@ -289,10 +290,10 @@ class AppService extends AbstractFileOperationService
     public function cleanUpFolders(ApplicationInterface $application)
     {
 
-        // create the directory we want to store the sessions in
+        // load the directories we want to clean-up on appserver restart
         $cleanUpFolders = array(new \SplFileInfo($application->getCacheDir()));
 
-        // create the applications temporary directories
+        // clean-up the directories
         foreach ($cleanUpFolders as $cleanUpFolder) {
             $this->cleanUpDir($cleanUpFolder);
         }

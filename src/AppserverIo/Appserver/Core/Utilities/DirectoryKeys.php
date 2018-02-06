@@ -125,6 +125,13 @@ class DirectoryKeys
     const SESSION = 'session.dir';
 
     /**
+     * Path the to the application specific data directory.
+     *
+     * @var string
+     */
+    const DATA = 'data.dir';
+
+    /**
      * This is a utility class, so protect it against direct
      * instantiation.
      */
@@ -202,6 +209,7 @@ class DirectoryKeys
     public static function getApplicationDirectoryKeys()
     {
         return array(
+            DirectoryKeys::DATA,
             DirectoryKeys::CACHE,
             DirectoryKeys::SESSION
         );

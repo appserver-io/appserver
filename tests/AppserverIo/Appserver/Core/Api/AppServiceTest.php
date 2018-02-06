@@ -317,13 +317,14 @@ class AppServiceTest extends AbstractServicesTest
         $service->expects($this->any())
             ->method('load')
             ->will($this->returnValue(null));
-        $service->expects($this->exactly(3))
+        $service->expects($this->exactly(4))
             ->method('initUmask');
-        $service->expects($this->exactly(3))
+        $service->expects($this->exactly(4))
             ->method('setUserRights');
 
         $tmp = $this->getTmpDir() . DIRECTORY_SEPARATOR;
         $tmpDir = $tmp . 'tmp';
+        $dataDir = $tmp . 'data';
         $cacheDir = $tmp . 'cache';
         $sessionDir = $tmp . 'session';
 
@@ -334,6 +335,9 @@ class AppServiceTest extends AbstractServicesTest
             ->method('getTmpDir')
             ->will($this->returnValue($tmpDir));
         $mockApplication->expects($this->once())
+            ->method('getDataDir')
+            ->will($this->returnValue($dataDir));
+        $mockApplication->expects($this->once())
             ->method('getCacheDir')
             ->will($this->returnValue($cacheDir));
         $mockApplication->expects($this->once())
@@ -343,6 +347,7 @@ class AppServiceTest extends AbstractServicesTest
         $service->createTmpFolders($mockApplication);
 
         $this->assertTrue(is_dir($tmpDir));
+        $this->assertTrue(is_dir($dataDir));
         $this->assertTrue(is_dir($cacheDir));
         $this->assertTrue(is_dir($sessionDir));
     }

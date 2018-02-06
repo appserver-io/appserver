@@ -93,6 +93,17 @@ abstract class AbstractEpbManager extends AbstractManager
             // initialize the bean's URI
             $uri = sprintf('php:global/%s/%s', $application->getUniqueName(), $name);
 
+            // query whether the reference has already been bound to the application
+            if ($application->getNamingDirectory()->isBound($uri)) {
+                // log a message that the reference has already been bound
+                $application->getInitialContext()->getSystemLogger()->debug(
+                    sprintf('Enterprise bean reference %s has already been bound to naming directory', $uri)
+                );
+
+                // return immediately
+                return;
+            }
+
             // this has to be refactored, because it'll be quite faster to inject either
             // the remote/local proxy instance as injection a callback that creates the
             // proxy on-the-fly!
@@ -138,13 +149,6 @@ abstract class AbstractEpbManager extends AbstractManager
                 );
             }
 
-        // catch the the exception that occures if a reference has already been created
-        } catch (NamingException $e) {
-            // log a warning that the reference has already been registered
-            $application->getInitialContext()->getSystemLogger()->warning(
-                sprintf('Bean reference %s already exists', $uri)
-            );
-
         // catch all other exceptions
         } catch (\Exception $e) {
             $application->getInitialContext()->getSystemLogger()->critical($e->__toString());
@@ -170,7 +174,7 @@ abstract class AbstractEpbManager extends AbstractManager
             // query whether the reference has already been bound to the application
             if ($application->getNamingDirectory()->isBound($uri)) {
                 // log a message that the reference has already been bound
-                $application->getInitialContext()->getSystemLogger()->info(
+                $application->getInitialContext()->getSystemLogger()->debug(
                     sprintf('Resource reference %s has already been bound to naming directory', $uri)
                 );
 
@@ -233,7 +237,7 @@ abstract class AbstractEpbManager extends AbstractManager
             // query whether the reference has already been bound to the application
             if ($application->getNamingDirectory()->isBound($uri)) {
                 // log a message that the reference has already been bound
-                $application->getInitialContext()->getSystemLogger()->info(
+                $application->getInitialContext()->getSystemLogger()->debug(
                     sprintf('Bean reference %s has already been bound to naming directory', $uri)
                 );
 
@@ -292,7 +296,7 @@ abstract class AbstractEpbManager extends AbstractManager
             // query whether the reference has already been bound to the application
             if ($application->getNamingDirectory()->isBound($uri)) {
                 // log a message that the reference has already been bound
-                $application->getInitialContext()->getSystemLogger()->info(
+                $application->getInitialContext()->getSystemLogger()->debug(
                     sprintf('Persistence unit reference %s has already been bound to naming directory', $uri)
                 );
 
@@ -303,7 +307,7 @@ abstract class AbstractEpbManager extends AbstractManager
         // catch the NamingException if the ref name is not bound yet
         } catch (NamingException $e) {
             // log a message that we've to register the resource reference now
-            $application->getInitialContext()->getSystemLogger()->info(
+            $application->getInitialContext()->getSystemLogger()->debug(
                 sprintf('Persistence unit reference %s has not been bound to naming directory', $uri)
             );
         }

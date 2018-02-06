@@ -209,7 +209,7 @@ class TimerServiceRegistry extends ServiceRegistry implements TimerServiceContex
                 $this->register($timerService);
 
                 // log a message that the timer service has been registered
-                $application->getInitialContext()->getSystemLogger()->info(
+                $application->getInitialContext()->getSystemLogger()->debug(
                     sprintf(
                         'Successfully registered timer service for bean %s',
                         $reflectionClass->getName()

@@ -313,6 +313,16 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
     }
 
     /**
+     * Returns the absolute path to the applications data directory.
+     *
+     * @return string The app data directory
+     */
+    public function getDataDir()
+    {
+        return $this->getNamingDirectory()->search(sprintf('php:env/%s/dataDirectory', $this->getUniqueName()));
+    }
+
+    /**
      * Returns the absolute path to the applications session directory.
      *
      * @return string The app session directory
@@ -619,12 +629,14 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
         // prepare the application specific directories
         $webappPath = sprintf('%s/%s', $this->getAppBase(), $this->getName());
         $tmpDirectory = sprintf('%s/%s', $container->getTmpDir(), $this->getName());
+        $dataDirectory = sprintf('%s/%s', $tmpDirectory, ltrim($context->getParam(DirectoryKeys::DATA), '/'));
         $cacheDirectory = sprintf('%s/%s', $tmpDirectory, ltrim($context->getParam(DirectoryKeys::CACHE), '/'));
         $sessionDirectory = sprintf('%s/%s', $tmpDirectory, ltrim($context->getParam(DirectoryKeys::SESSION), '/'));
 
         // prepare the application specific environment variables
         $namingDirectory->bind(sprintf('php:env/%s/webappPath', $uniqueName), $webappPath);
         $namingDirectory->bind(sprintf('php:env/%s/tmpDirectory', $uniqueName), $tmpDirectory);
+        $namingDirectory->bind(sprintf('php:env/%s/dataDirectory', $uniqueName), $dataDirectory);
         $namingDirectory->bind(sprintf('php:env/%s/cacheDirectory', $uniqueName), $cacheDirectory);
         $namingDirectory->bind(sprintf('php:env/%s/sessionDirectory', $uniqueName), $sessionDirectory);
 
@@ -651,6 +663,7 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
         // unbind the environment references of the application
         $namingDirectory->unbind(sprintf('php:env/%s/webappPath', $uniqueName));
         $namingDirectory->unbind(sprintf('php:env/%s/tmpDirectory', $uniqueName));
+        $namingDirectory->unbind(sprintf('php:env/%s/dataDirectory', $uniqueName));
         $namingDirectory->unbind(sprintf('php:env/%s/cacheDirectory', $uniqueName));
         $namingDirectory->unbind(sprintf('php:env/%s/sessionDirectory', $uniqueName));
         $namingDirectory->unbind(sprintf('php:env/%s', $uniqueName));
@@ -699,7 +712,7 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
         /** @var \AppserverIo\Psr\Application\ProvisionerInterface $provisioner */
         foreach ($this->getProvisioners() as $provisioner) {
             // log the manager we want to initialize
-            $this->getInitialContext()->getSystemLogger()->info(
+            $this->getInitialContext()->getSystemLogger()->debug(
                 sprintf('Now invoking provisioner %s for application %s', get_class($provisioner), $this->getName())
             );
 
@@ -707,7 +720,7 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
             $provisioner->provision($this);
 
             // log the manager we've successfully registered
-            $this->getInitialContext()->getSystemLogger()->info(
+            $this->getInitialContext()->getSystemLogger()->debug(
                 sprintf('Successfully invoked provisioner %s for application %s', get_class($provisioner), $this->getName())
             );
         }
@@ -752,7 +765,7 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
         /** @var \AppserverIo\Psr\Application\ManagerInterface $manager */
         foreach ($this->getManagers() as $manager) {
             // log the manager we want to initialize
-            $this->getInitialContext()->getSystemLogger()->info(
+            $this->getInitialContext()->getSystemLogger()->debug(
                 sprintf('Now register manager %s for application %s', get_class($manager), $this->getName())
             );
 
@@ -760,7 +773,7 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
             $manager->initialize($this);
 
             // log the manager we've successfully registered
-            $this->getInitialContext()->getSystemLogger()->info(
+            $this->getInitialContext()->getSystemLogger()->debug(
                 sprintf('Now registered manager %s for application %s', get_class($manager), $this->getName())
             );
         }

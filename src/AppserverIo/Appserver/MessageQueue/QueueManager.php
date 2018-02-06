@@ -140,7 +140,7 @@ class QueueManager extends AbstractManager implements QueueContextInterface, Man
      *
      * @return void
      */
-    protected function registerMessageQueues(ApplicationInterface $application)
+    public function registerMessageQueues(ApplicationInterface $application)
     {
 
         // build up META-INF directory var
@@ -180,6 +180,7 @@ class QueueManager extends AbstractManager implements QueueContextInterface, Man
                 // append the application specific properties
                 $properties->add(SystemPropertyKeys::WEBAPP, $webappPath = $application->getWebappPath());
                 $properties->add(SystemPropertyKeys::WEBAPP_NAME, basename($webappPath));
+                $properties->add(SystemPropertyKeys::WEBAPP_DATA, $application->getDataDir());
                 $properties->add(SystemPropertyKeys::WEBAPP_CACHE, $application->getCacheDir());
                 $properties->add(SystemPropertyKeys::WEBAPP_SESSION, $application->getSessionDir());
 
@@ -218,7 +219,7 @@ class QueueManager extends AbstractManager implements QueueContextInterface, Man
      *
      * @return void
      */
-    protected function registeMessageQueue(MessageQueueNodeInterface $messageQueueNode)
+    public function registeMessageQueue(MessageQueueNodeInterface $messageQueueNode)
     {
 
         // load destination queue and receiver type

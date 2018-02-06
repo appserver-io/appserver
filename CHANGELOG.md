@@ -3,10 +3,12 @@ Version 1.1.5-beta2
 ## Bugfixes
 
 * Fixed bug with invalid session data leading to a 500 without error page rendered
+* Make protected function in Threads/Stackables public to avoid unnecessary locking
 
 ## Features
 
 * Refactor DI integration for compatibility with psr/container
+* Clean-Up log messages during appserver/application bootstrap process
 
 Version 1.1.5-beta1
 

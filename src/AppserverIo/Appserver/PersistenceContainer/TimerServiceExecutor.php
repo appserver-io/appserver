@@ -36,30 +36,13 @@ use AppserverIo\Psr\EnterpriseBeans\TimerServiceContextInterface;
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
+ *
+ * @property \AppserverIo\Psr\Application\ApplicationInterface $application     The application instance
+ * @property \AppserverIo\Storage\GenericStackable             $scheduledTimers Contains the scheduled timers
+ * @property \AppserverIo\Storage\GenericStackable             $tasksToExecute  Contains the ID's of the tasks to be executed
  */
 class TimerServiceExecutor extends AbstractDaemonThread implements ServiceExecutorInterface
 {
-
-    /**
-     * The application instance.
-     *
-     * @var \AppserverIo\Psr\Application\ApplicationInterface
-     */
-    protected $application;
-
-    /**
-     * Contains the scheduled timers.
-     *
-     * @var \AppserverIo\Storage\GenericStackable
-     */
-    protected $scheduledTimers;
-
-    /**
-     * Contains the ID's of the tasks to be executed.
-     *
-     * @var \AppserverIo\Storage\GenericStackable
-     */
-    protected $tasksToExecute;
 
     /**
      * Injects the application instance.

@@ -40,6 +40,13 @@ class SystemPropertyKeys extends DirectoryKeys
     const WEBAPP_NAME = 'webapp.name';
 
     /**
+     * The key of the system property containing the name of the web application's data directory.
+     *
+     * @var string
+     */
+    const WEBAPP_DATA = 'webapp.data.dir';
+
+    /**
      * The key of the system property containing the name of the web application's cache directory.
      *
      * @var string
