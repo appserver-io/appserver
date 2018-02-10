@@ -24,7 +24,9 @@ use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\Core\Api\Node\StepNode;
 use AppserverIo\Appserver\Core\Api\Node\DatasourceNode;
 use AppserverIo\Appserver\Core\Api\ServiceInterface;
+use AppserverIo\Appserver\Core\Environment;
 use AppserverIo\Appserver\Core\InitialContext;
+use AppserverIo\Appserver\Core\Utilities\EnvironmentKeys;
 
 /**
  * Abstract base class for a step implementation.
@@ -258,6 +260,9 @@ abstract class AbstractStep extends \Thread implements StepInterface
         // synchronize the application instance and register the class loaders
         $application = $this->getApplication();
         $application->registerClassLoaders();
+
+        // add the application instance to the environment
+        Environment::singleton()->setAttribute(EnvironmentKeys::APPLICATION, $application);
 
         // execute the step functionality
         $this->execute();

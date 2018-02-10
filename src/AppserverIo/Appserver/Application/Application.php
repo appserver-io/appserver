@@ -22,8 +22,8 @@ namespace AppserverIo\Appserver\Application;
 
 use Rhumsaa\Uuid\Uuid;
 use Psr\Log\LoggerInterface;
-use AppserverIo\Logger\LoggerUtils;
 use AppserverIo\Storage\GenericStackable;
+use AppserverIo\Appserver\Core\Utilities\LoggerUtils;
 use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
 use AppserverIo\Appserver\Core\Traits\ThreadedContextTrait;
 use AppserverIo\Appserver\Core\Interfaces\ContainerInterface;
@@ -515,7 +515,7 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
      *
      * @return \Psr\Log\LoggerInterface|null The logger instance
      */
-    public function getLogger($name = LoggerUtils::SYSTEM)
+    public function getLogger($name = LoggerUtils::SYSTEM_LOGGER)
     {
         if (isset($this->loggers[$name])) {
             return $this->loggers[$name];

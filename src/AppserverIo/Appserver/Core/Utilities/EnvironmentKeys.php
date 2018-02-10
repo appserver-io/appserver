@@ -45,4 +45,11 @@ class EnvironmentKeys
      * @var string
      */
     const SESSION_ID = 'appserver_io.appserver.core.utilities.environment_keys.session_id';
+
+    /**
+     * The environment key for the application instance of the actual execution environment.
+     *
+     * @var string
+     */
+    const APPLICATION = 'appserver_io.appserver.core.utilities.environment_keys.application';
 }

@@ -158,6 +158,9 @@ class RequestHandler extends \Thread
             RequestHandler::$requestContext = $servletRequest;
             RequestHandler::$applicationContext = $application;
 
+            // add the application instance to the environment
+            Environment::singleton()->setAttribute(EnvironmentKeys::APPLICATION, $application);
+
             // create a simulated request/session ID whereas session equals request ID (as long as session has NOT been started)
             Environment::singleton()->setAttribute(EnvironmentKeys::REQUEST_ID, $requestId = SessionUtils::generateRandomString());
             Environment::singleton()->setAttribute(EnvironmentKeys::SESSION_ID, $requestId);

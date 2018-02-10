@@ -158,6 +158,9 @@ class TimedObjectInvoker extends GenericStackable implements TimedObjectInvokerI
             $initialContext = new InitialContext();
             $initialContext->injectApplication($application);
 
+            // add the application instance to the environment
+            Environment::singleton()->setAttribute(EnvironmentKeys::APPLICATION, $application);
+
             // create s simulated request/session ID whereas session equals request ID
             Environment::singleton()->setAttribute(EnvironmentKeys::SESSION_ID, $sessionId = SessionUtils::generateRandomString());
             Environment::singleton()->setAttribute(EnvironmentKeys::REQUEST_ID, $sessionId);

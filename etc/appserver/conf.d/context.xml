@@ -19,6 +19,15 @@
             type="AppserverIo\Appserver\Core\ProxyClassLoader"
             factory="AppserverIo\Appserver\Core\ProxyClassLoaderFactory"/>
         <classLoader
+            name="FileClassLoader"
+            interface="ClassLoaderInterface"
+            type="AppserverIo\Appserver\Core\FileClassLoader"
+            factory="AppserverIo\Appserver\Core\FileClassLoaderFactory">
+            <directories>
+                <directory>${base.dir}/src/functions/application/*.php</directory>
+            </directories>
+        </classLoader>
+        <classLoader
             name="ComposerClassLoader"
             interface="ClassLoaderInterface"
             type="AppserverIo\Appserver\Core\ComposerClassLoader"
@@ -50,7 +59,7 @@
         <logger channelName="system" name="SystemLogger" type="\AppserverIo\Logger\Logger">
             <handlers>
                 <handler type="\AppserverIo\Logger\Handlers\CustomFileHandler">
-                    <formatter type="\AppserverIo\Logger\Formatters\StandardFormatter"/>
+                    <formatter type="\AppserverIo\Appserver\Logger\Formatters\VarDumperFormatter"/>
                     <params>
                         <param name="logFile" type="string">${var.log.dir}/${webapp.name}-errors.log</param>
                         <param name="logLevel" type="string">info</param>

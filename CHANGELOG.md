@@ -9,6 +9,8 @@ Version 1.1.5-beta2
 
 * Refactor DI integration for compatibility with psr/container
 * Clean-Up log messages during appserver/application bootstrap process
+* Switch to VarDumpertFormatter for system logger to allow logging ALL instances, including recursive ones and passing objects without converting them to strings
+* Add helper functions for all log levels (alert, info, debug etc.) to make logging more comfortable
 
 Version 1.1.5-beta1
 
