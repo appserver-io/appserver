@@ -21,25 +21,22 @@
 
 namespace AppserverIo\Appserver\ServletEngine\Security;
 
-use Psr\Log\LoggerInterface;
-use AppserverIo\Lang\String;
-use AppserverIo\Collections\HashMap;
-use AppserverIo\Collections\MapInterface;
-use AppserverIo\Storage\StorageInterface;
 use AppserverIo\Psr\Security\Utils\Constants;
 use AppserverIo\Psr\Auth\AuthenticatorInterface;
 use AppserverIo\Psr\Auth\AuthenticationManagerInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
-use AppserverIo\Psr\Servlet\Utils\RequestHandlerKeys;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
-use AppserverIo\Http\Authentication\AuthenticationException;
-use AppserverIo\Appserver\Core\AbstractManager;
-use AppserverIo\Appserver\Naming\Utils\NamingDirectoryKeys;
-use AppserverIo\Appserver\ServletEngine\Security\DependencyInjection\DeploymentDescriptorParser;
 use AppserverIo\Psr\Auth\RealmInterface;
 use AppserverIo\Psr\Auth\MappingInterface;
 use AppserverIo\Psr\Security\SecurityException;
+use AppserverIo\Lang\String;
+use AppserverIo\Collections\HashMap;
+use AppserverIo\Collections\MapInterface;
+use AppserverIo\Storage\StorageInterface;
+use AppserverIo\Http\Authentication\AuthenticationException;
+use AppserverIo\Appserver\Core\AbstractManager;
+use AppserverIo\Appserver\ServletEngine\Security\DependencyInjection\DeploymentDescriptorParser;
 
 /**
  * The authentication manager handles request which need Http authentication.
@@ -212,87 +209,59 @@ class StandardAuthenticationManager extends AbstractManager implements Authentic
         // iterate over all servlets and return the matching one
         /** @var \AppserverIo\Appserver\ServletEngine\Security\MappingInterface $mapping */
         foreach ($this->getMappings() as $mapping) {
-            try {
-                // query whether or not the URI matches against the URL pattern
-                if ($mapping->match($servletRequest)) {
-                    // query whether or not the the HTTP method has to be denied or authenticated
-                    if (in_array($servletRequest->getMethod(), $mapping->getHttpMethodOmissions())) {
-                        // this resource has to be omitted
-                        $authenticated = false;
+            // query whether or not the URI matches against the URL pattern
+            if ($mapping->match($servletRequest)) {
+                // query whether or not the the HTTP method has to be denied or authenticated
+                if (in_array($servletRequest->getMethod(), $mapping->getHttpMethodOmissions())) {
+                    // this resource has to be omitted
+                    $authenticated = false;
 
-                    } elseif (in_array($servletRequest->getMethod(), $mapping->getHttpMethods())) {
-                        // load the authentication method and authenticate the request
-                        $authenticator = $this->getAuthenticator($mapping);
+                } elseif (in_array($servletRequest->getMethod(), $mapping->getHttpMethods())) {
+                    // load the authentication method and authenticate the request
+                    $authenticator = $this->getAuthenticator($mapping);
 
-                        // if we've an user principal, query the roles
-                        if ($authenticator->authenticate($servletRequest, $servletResponse)) {
-                            // query whether or not the mapping has roles the user has to be assigned to
-                            if (sizeof($mapping->getRoleNames()) === 0) {
-                                // if not, we're authenticated
-                                return $authenticated;
-                            }
+                    // if we've an user principal, query the roles
+                    if ($authenticator->authenticate($servletRequest, $servletResponse)) {
+                        // query whether or not the mapping has roles the user has to be assigned to
+                        if (sizeof($mapping->getRoleNames()) === 0) {
+                            // if not, we're authenticated
+                            return $authenticated;
+                        }
 
-                            // initialize the roles flag
-                            $inRole = false;
+                        // initialize the roles flag
+                        $inRole = false;
 
-                            // query whether or not the user has at least one of the requested roles
-                            foreach ($mapping->getRoleNames() as $role) {
-                                if ($servletRequest->isUserInRole(new String($role))) {
-                                    $inRole = true;
-                                    break;
-                                }
-                            }
-
-                            // if not, throw an SecurityException
-                            if ($inRole === false) {
-                                throw new SecurityException(sprintf('User doesn\'t have necessary privileges for resource %s', $servletRequest->getUri()), 403);
+                        // query whether or not the user has at least one of the requested roles
+                        foreach ($mapping->getRoleNames() as $role) {
+                            if ($servletRequest->isUserInRole(new String($role))) {
+                                $inRole = true;
+                                break;
                             }
                         }
 
-                    } else {
-                        // load the session
-                        if ($session = $servletRequest->getSession(true)) {
-                            //  start it, if not already done
-                            if ($session->isStarted() === false) {
-                                $session->start();
-                            }
-
-                            // and query whether or not the session contains a user principal
-                            if ($session->hasKey(Constants::PRINCIPAL)) {
-                                $servletRequest->setUserPrincipal($session->getData(Constants::PRINCIPAL));
-                            }
+                        // if not, throw an SecurityException
+                        if ($inRole === false) {
+                            throw new SecurityException(sprintf('User doesn\'t have necessary privileges for resource %s', $servletRequest->getUri()), 403);
                         }
                     }
 
-                    // stop processing, because we're authenticated
-                    break;
+                } else {
+                    // load the session
+                    if ($session = $servletRequest->getSession(true)) {
+                        //  start it, if not already done
+                        if ($session->isStarted() === false) {
+                            $session->start();
+                        }
+
+                        // and query whether or not the session contains a user principal
+                        if ($session->hasKey(Constants::PRINCIPAL)) {
+                            $servletRequest->setUserPrincipal($session->getData(Constants::PRINCIPAL));
+                        }
+                    }
                 }
 
-            } catch (SecurityException $se) {
-                // load the system logger and debug log the exception
-                /** @var \Psr\Log\LoggerInterface $systemLogger */
-                if ($systemLogger = $this->getApplication()->getNamingDirectory()->search(NamingDirectoryKeys::SYSTEM_LOGGER)) {
-                    $systemLogger->error($se->__toString());
-                }
-
-                // stop processing, because authentication failed for some reason
-                $servletResponse->setStatusCode($se->getCode());
-                $servletRequest->setAttribute(RequestHandlerKeys::ERROR_MESSAGE, $se->__toString());
-                $servletRequest->setDispatched(true);
-                return false;
-
-            } catch (\Exception $e) {
-                // load the system logger and debug log the exception
-                /** @var \Psr\Log\LoggerInterface $systemLogger */
-                if ($systemLogger = $this->getApplication()->getNamingDirectory()->search(NamingDirectoryKeys::SYSTEM_LOGGER)) {
-                    $systemLogger->error($e->__toString());
-                }
-
-                // stop processing, because authentication failed for some reason
-                $servletResponse->setStatusCode(500);
-                $servletRequest->setAttribute(RequestHandlerKeys::ERROR_MESSAGE, $e->__toString());
-                $servletRequest->setDispatched(true);
-                return false;
+                // stop processing, because we're authenticated
+                break;
             }
         }
 
