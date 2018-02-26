@@ -2,6 +2,7 @@ Version 1.1.5-beta2
 
 ## Bugfixes
 
+* Fixed bug with invalid session handling in provisioning
 * Fixed bug with invalid session data leading to a 500 without error page rendered
 * Make protected function in Threads/Stackables public to avoid unnecessary locking
 
