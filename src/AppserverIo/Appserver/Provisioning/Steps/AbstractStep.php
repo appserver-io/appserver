@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\Provisioning\Steps;
 
+use AppserverIo\Psr\Servlet\SessionUtils;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\Core\Api\Node\StepNode;
 use AppserverIo\Appserver\Core\Api\Node\DatasourceNode;
@@ -263,6 +264,10 @@ abstract class AbstractStep extends \Thread implements StepInterface
 
         // add the application instance to the environment
         Environment::singleton()->setAttribute(EnvironmentKeys::APPLICATION, $application);
+
+        // create s simulated request/session ID whereas session equals request ID
+        Environment::singleton()->setAttribute(EnvironmentKeys::SESSION_ID, $sessionId = SessionUtils::generateRandomString());
+        Environment::singleton()->setAttribute(EnvironmentKeys::REQUEST_ID, $sessionId);
 
         // execute the step functionality
         $this->execute();
