@@ -131,8 +131,10 @@ class StandardSessionMarshaller implements SessionMarshallerInterface
         $servletSession->init($id, $name, $lifetime, $maximumAge, $domain, $path, $secure, $httpOnly, $lastActivityTimestamp);
 
         // append the session data
-        foreach ($data as $key => $value) {
-            $servletSession->putData($key, unserialize($value));
+        if (null !== $data) {
+            foreach ($data as $key => $value) {
+                $servletSession->putData($key, unserialize($value));
+            }
         }
     }
 }
