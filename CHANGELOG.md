@@ -1,3 +1,13 @@
+Version 1.1.5-beta3
+
+## Bugfixes
+
+* Fixed invalid ResultDescriptor usage in appserver-io/routlt library
+
+## Features
+
+* None
+
 Version 1.1.5-beta2
 
 ## Bugfixes

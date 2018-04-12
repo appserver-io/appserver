@@ -28,7 +28,7 @@
         "appserver-io/http": "2.2.*",
         "appserver-io/lang": "3.0.*",
         "appserver-io/logger": "1.0.*",
-        "appserver-io/routlt": "2.2.0-beta6",
+        "appserver-io/routlt": "2.2.0-beta7",
         "appserver-io/storage": "2.0.*",
         "appserver-io/messaging": "3.0.*",
         "appserver-io/microcron": "1.0.*",
