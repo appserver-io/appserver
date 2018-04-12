@@ -237,6 +237,6 @@ class Realm implements RealmInterface
         }
 
         // return the resulting Principal for our authenticated user
-        return new GenericPrincipal($username, null, $roles, $userPrincipal, $loginContext);
+        return new GenericPrincipal($username, null, $roles, $userPrincipal);
     }
 }

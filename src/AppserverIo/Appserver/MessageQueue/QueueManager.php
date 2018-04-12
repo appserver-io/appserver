@@ -29,7 +29,6 @@ use AppserverIo\Psr\Pms\QueueContextInterface;
 use AppserverIo\Psr\Pms\ResourceLocatorInterface;
 use AppserverIo\Psr\Pms\QueueInterface;
 use AppserverIo\Psr\Pms\MessageInterface;
-use AppserverIo\Psr\Naming\NamingException;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\Core\AbstractManager;
 use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
@@ -141,7 +140,7 @@ class QueueManager extends AbstractManager implements QueueContextInterface, Man
      *
      * @return void
      */
-    protected function registerMessageQueues(ApplicationInterface $application)
+    public function registerMessageQueues(ApplicationInterface $application)
     {
 
         // build up META-INF directory var
@@ -181,6 +180,7 @@ class QueueManager extends AbstractManager implements QueueContextInterface, Man
                 // append the application specific properties
                 $properties->add(SystemPropertyKeys::WEBAPP, $webappPath = $application->getWebappPath());
                 $properties->add(SystemPropertyKeys::WEBAPP_NAME, basename($webappPath));
+                $properties->add(SystemPropertyKeys::WEBAPP_DATA, $application->getDataDir());
                 $properties->add(SystemPropertyKeys::WEBAPP_CACHE, $application->getCacheDir());
                 $properties->add(SystemPropertyKeys::WEBAPP_SESSION, $application->getSessionDir());
 
@@ -219,7 +219,7 @@ class QueueManager extends AbstractManager implements QueueContextInterface, Man
      *
      * @return void
      */
-    protected function registeMessageQueue(MessageQueueNodeInterface $messageQueueNode)
+    public function registeMessageQueue(MessageQueueNodeInterface $messageQueueNode)
     {
 
         // load destination queue and receiver type
@@ -238,16 +238,6 @@ class QueueManager extends AbstractManager implements QueueContextInterface, Man
 
         // initialize the queues storage for the priorities
         $this->queues[$messageQueue->getName()] = $messageQueue;
-
-        // prepare the naming directory to bind the callback to
-        $path = explode('/', $destination);
-        for ($i = 0; $i < sizeof($path) - 1; $i++) {
-            try {
-                $this->directories[$i]->search(sprintf('php:global/%s/%s', $this->getApplication()->getUniqueName(), $path[$i]));
-            } catch (NamingException $ne) {
-                $this->directories[$i + 1] = $this->directories[$i]->createSubdirectory(sprintf('php:global/%s/%s', $this->getApplication()->getUniqueName(), $path[$i]));
-            }
-        }
 
         // bind the callback for creating a new MQ sender instance to the naming directory => necessary for DI provider
         $this->getApplication()->getNamingDirectory()->bindCallback(sprintf('php:global/%s/%s', $this->getApplication()->getUniqueName(), $destination), array(&$this, 'createSenderForQueue'), array($destination));

@@ -1,4 +1,19 @@
-# Version 1.1.5
+Version 1.1.5-beta2
+
+## Bugfixes
+
+* Fixed bug with invalid session handling in provisioning
+* Fixed bug with invalid session data leading to a 500 without error page rendered
+* Make protected function in Threads/Stackables public to avoid unnecessary locking
+
+## Features
+
+* Refactor DI integration for compatibility with psr/container
+* Clean-Up log messages during appserver/application bootstrap process
+* Switch to VarDumpertFormatter for system logger to allow logging ALL instances, including recursive ones and passing objects without converting them to strings
+* Add helper functions for all log levels (alert, info, debug etc.) to make logging more comfortable
+
+Version 1.1.5-beta1
 
 ## Bugfixes
 

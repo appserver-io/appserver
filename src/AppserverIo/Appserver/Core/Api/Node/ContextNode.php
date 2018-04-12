@@ -141,6 +141,7 @@ class ContextNode extends AbstractNode
      */
     public function initDefaultDirectories()
     {
+        $this->setParam(DirectoryKeys::DATA, ParamNode::TYPE_STRING, '/data');
         $this->setParam(DirectoryKeys::CACHE, ParamNode::TYPE_STRING, '/cache');
         $this->setParam(DirectoryKeys::SESSION, ParamNode::TYPE_STRING, '/session');
     }

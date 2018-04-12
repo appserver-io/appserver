@@ -26,6 +26,7 @@ use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\Core\Api\Node\ManagerNodeInterface;
 use AppserverIo\Appserver\Core\Interfaces\ManagerFactoryInterface;
+use AppserverIo\Appserver\PersistenceContainer\RemoteMethodInvocation\RemoteProxyGenerator;
 
 /**
  * The bean manager handles the message and session beans registered for the application.
@@ -54,6 +55,13 @@ class BeanManagerFactory implements ManagerFactoryInterface
         // initialize the bean locator
         $beanLocator = new BeanLocator();
 
+        // initialize the proxy generator
+        $remoteProxyGenerator = new RemoteProxyGenerator();
+        $remoteProxyGenerator->injectApplication($application);
+
+        // initialize the request context
+        $requestContext = array();
+
         // initialize the stackable for the data, the stateful + singleton session beans and the naming directory
         $data = new StackableStorage();
         $instances = new GenericStackable();
@@ -81,8 +89,10 @@ class BeanManagerFactory implements ManagerFactoryInterface
         $beanManager->injectApplication($application);
         $beanManager->injectResourceLocator($beanLocator);
         $beanManager->injectObjectFactory($objectFactory);
+        $beanManager->injectRequestContext($requestContext);
         $beanManager->injectGarbageCollector($garbageCollector);
         $beanManager->injectManagerSettings($beanManagerSettings);
+        $beanManager->injectRemoteProxyGenerator($remoteProxyGenerator);
         $beanManager->injectStatefulSessionBeans($statefulSessionBeans);
         $beanManager->injectSingletonSessionBeans($singletonSessionBeans);
         $beanManager->injectDirectories($managerConfiguration->getDirectories());

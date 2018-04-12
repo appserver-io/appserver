@@ -260,7 +260,7 @@ class TimerService extends GenericStackable implements TimerServiceInterface, Se
      *
      * @return \AppserverIo\Psr\EnterpriseBeans\TimerInterface Returns the newly created timer
      */
-    protected function createTimer(\DateTime $initialExpiration, $intervalDuration = 0, \Serializable $info = null, $persistent = true)
+    public function createTimer(\DateTime $initialExpiration, $intervalDuration = 0, \Serializable $info = null, $persistent = true)
     {
 
         // create the timer
@@ -283,7 +283,7 @@ class TimerService extends GenericStackable implements TimerServiceInterface, Se
      *
      * @return void
      */
-    protected function startTimer(TimerInterface $timer)
+    public function startTimer(TimerInterface $timer)
     {
         $this->registerTimer($timer);
         $timer->scheduleTimeout(true);
@@ -296,7 +296,7 @@ class TimerService extends GenericStackable implements TimerServiceInterface, Se
      *
      * @return void
      */
-    protected function registerTimer(TimerInterface $timer)
+    public function registerTimer(TimerInterface $timer)
     {
         $this->timers[$timer->getId()] = $timer;
     }

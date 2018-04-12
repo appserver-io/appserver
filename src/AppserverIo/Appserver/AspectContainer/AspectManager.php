@@ -370,4 +370,15 @@ class AspectManager implements AspectManagerInterface, ManagerInterface
 
         return $pointcutPointcut;
     }
+
+    /**
+     * Stops the manager instance.
+     *
+     * @return void
+     * @see \AppserverIo\Psr\Application\ManagerInterface::stop()
+     */
+    public function stop()
+    {
+        // Still not implemented yet
+    }
 }

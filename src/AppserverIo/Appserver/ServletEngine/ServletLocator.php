@@ -20,6 +20,8 @@
 
 namespace AppserverIo\Appserver\ServletEngine;
 
+use AppserverIo\Psr\Di\ProviderInterface;
+use AppserverIo\Psr\Di\ObjectManagerInterface;
 use AppserverIo\Psr\Servlet\ServletContextInterface;
 
 /**
@@ -41,8 +43,8 @@ class ServletLocator implements ResourceLocatorInterface
      * @param string                                           $servletPath    The servlet path to return the servlet for
      *
      * @return \AppserverIo\Psr\Servlet\ServletInterface The requested servlet
-     * @see \AppserverIo\Appserver\ServletEngine\ResourceLocator::locate()
      * @throws \AppserverIo\Appserver\ServletEngine\ServletNotFoundException Is thrown if no servlet can be found for the passed request
+     * @see \AppserverIo\Appserver\ServletEngine\ServletLocator::locate()
      */
     public function locate(ServletContextInterface $servletContext, $servletPath)
     {
@@ -50,13 +52,28 @@ class ServletLocator implements ResourceLocatorInterface
         // iterate over all servlets and return the matching one
         foreach ($servletContext->getServletMappings() as $urlPattern => $servletName) {
             if (fnmatch($urlPattern, $servletPath)) {
-                return $servletContext->getServlet($servletName);
+                // load the object manager instance
+                /** @var \AppserverIo\Psr\Di\ObjectManagerInterface $objectManager */
+                $objectManager = $servletContext->getApplication()->search(ObjectManagerInterface::IDENTIFIER);
+
+                // load the provider instance
+                /** @var \AppserverIo\Psr\Di\ProviderInterface $provider */
+                $provider = $servletContext->getApplication()->search(ProviderInterface::IDENTIFIER);
+
+                // load the object descriptor and re-inject the dependencies
+                $provider->injectDependencies(
+                    $objectManager->getObjectDescriptor($servletName),
+                    $instance = $servletContext->getServlet($servletName)
+                );
+
+                // finally return the instance
+                return $instance;
             }
         }
 
         // throw an exception if no servlet matches the servlet path
         throw new ServletNotFoundException(
-            sprintf("Can't find servlet for requested path %s", $servletPath)
+            sprintf('Can\'t find servlet for requested path "%s"', $servletPath)
         );
     }
 }

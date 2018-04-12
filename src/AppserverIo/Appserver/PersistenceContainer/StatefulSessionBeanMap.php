@@ -38,23 +38,12 @@ use AppserverIo\Collections\IndexOutOfBoundsException;
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
+ *
+ * @property \AppserverIo\Storage\GenericStackable $lifetime Contains the lifetime of the items
+ * @property \AppserverIo\Storage\GenericStackable $items    The items the map contains
  */
 class StatefulSessionBeanMap extends GenericStackable implements MapInterface
 {
-
-    /**
-     * Array containing the lifetime of the items.
-     *
-     * @var \AppserverIo\Storage\GenericStackable
-     */
-    protected $lifetime;
-
-    /**
-     * The items the map contains.
-     *
-     * @var \AppserverIo\Storage\GenericStackable
-     */
-    protected $items;
 
     /**
      * Initializes the map.
@@ -135,7 +124,7 @@ class StatefulSessionBeanMap extends GenericStackable implements MapInterface
      * @throws \AppserverIo\Collections\InvalidKeyException Is thrown if the passed key is NOT an integer
      * @throws \AppserverIo\Lang\NullPointerException Is thrown if the passed key OR value are NULL
      * @throws \AppserverIo\Collections\IndexOutOfBoundsException Is thrown if no element with the passed key exists in the Collection
-     * @see \AppserverIo\Collections\Collection::get($key)
+     * @see \AppserverIo\Collections\CollectionInterface::get($key)
      */
     public function get($key)
     {
@@ -266,7 +255,7 @@ class StatefulSessionBeanMap extends GenericStackable implements MapInterface
      *
      * @return boolean TRUE if the item has timed out, else FALSE
      */
-    protected function isTimedOut($key)
+    public function isTimedOut($key)
     {
         // if the item is available and has timed out, return TRUE
         if (array_key_exists($key, $this->lifetime) && $this->lifetime[$key] < time()) {
@@ -291,7 +280,7 @@ class StatefulSessionBeanMap extends GenericStackable implements MapInterface
      * with the keys and the related values.
      *
      * @return array Holds the array with keys and values
-     * @see \AppserverIo\Collections\Map::toIndexedArray()
+     * @see \AppserverIo\Collections\MapInterface::toIndexedArray()
      */
     public function toIndexedArray()
     {

@@ -20,7 +20,6 @@
 
 namespace AppserverIo\Appserver\Server\Contexts;
 
-use Psr\Log\LoggerInterface;
 use AppserverIo\Psr\Naming\NamingException;
 use AppserverIo\Server\Contexts\ServerContext;
 use AppserverIo\Server\Exceptions\ServerException;

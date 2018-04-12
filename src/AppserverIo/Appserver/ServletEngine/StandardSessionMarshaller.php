@@ -41,7 +41,7 @@ class StandardSessionMarshaller implements SessionMarshallerInterface
      * @param \AppserverIo\Psr\Servlet\ServletSessionInterface $servletSession The session to be transformed
      *
      * @return string The JSON encoded session representation
-     * @see \AppserverIo\Appserver\ServletEngine\SessionMarshaller::marshall()
+     * @see \AppserverIo\Appserver\ServletEngine\SessionMarshallerInterface::marshall()
      */
     public function marshall(ServletSessionInterface $servletSession)
     {
@@ -81,13 +81,39 @@ class StandardSessionMarshaller implements SessionMarshallerInterface
      * @param string                                           $marshalled     The marshaled session representation
      *
      * @return \AppserverIo\Psr\Servlet\ServletSessionInterface The decoded session instance
-     * @see \AppserverIo\Appserver\ServletEngine\SessionMarshaller::unmarshall()
+     * @throws \AppserverIo\Appserver\ServletEngine\SessionDataNotReadableException Is thrown, if the session data can not be unmarshalled
+     * @see \AppserverIo\Appserver\ServletEngine\SessionMarshallerInterface::unmarshall()
      */
     public function unmarshall(ServletSessionInterface $servletSession, $marshalled)
     {
 
-        // decode the string
+        // try to decode the string
         $decodedSession = json_decode($marshalled);
+
+        // query whether or not the session data has been decoded successfully
+        switch (json_last_error()) {
+            case JSON_ERROR_NONE:
+                // do nothing here, everything went fine
+                break;
+            case JSON_ERROR_DEPTH:
+                throw new SessionDataNotReadableException('Maximum stack depth exceeded');
+                break;
+            case JSON_ERROR_STATE_MISMATCH:
+                throw new SessionDataNotReadableException('Underflow or the modes mismatch');
+                break;
+            case JSON_ERROR_CTRL_CHAR:
+                throw new SessionDataNotReadableException('Unexpected control character found');
+                break;
+            case JSON_ERROR_SYNTAX:
+                throw new SessionDataNotReadableException('Syntax error, malformed JSON');
+                break;
+            case JSON_ERROR_UTF8:
+                throw new SessionDataNotReadableException('Malformed UTF-8 characters, possibly incorrectly encoded');
+                break;
+            default:
+                throw new SessionDataNotReadableException('Unknown error');
+                break;
+        }
 
         // extract the values
         $id = $decodedSession->id;

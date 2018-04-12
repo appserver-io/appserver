@@ -62,6 +62,13 @@ class DirectoryKeys
     const WEBAPPS = 'webapps.dir';
 
     /**
+     * Key for the vendor directory.
+     *
+     * @var string
+     */
+    const VENDOR = 'vendor.dir';
+
+    /**
      * Key for the var/tmp directory.
      *
      * @var string
@@ -116,6 +123,13 @@ class DirectoryKeys
      * @var string
      */
     const SESSION = 'session.dir';
+
+    /**
+     * Path the to the application specific data directory.
+     *
+     * @var string
+     */
+    const DATA = 'data.dir';
 
     /**
      * This is a utility class, so protect it against direct
@@ -195,6 +209,7 @@ class DirectoryKeys
     public static function getApplicationDirectoryKeys()
     {
         return array(
+            DirectoryKeys::DATA,
             DirectoryKeys::CACHE,
             DirectoryKeys::SESSION
         );

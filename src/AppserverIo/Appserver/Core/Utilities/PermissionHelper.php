@@ -20,8 +20,6 @@
 
 namespace AppserverIo\Appserver\Core\Utilities;
 
-use AppserverIo\Appserver\Core\Utilities\FileSystem;
-
 /**
  * Helper utility which is used to manage permission related issues
  *

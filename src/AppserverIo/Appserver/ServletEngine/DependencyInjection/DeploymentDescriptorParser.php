@@ -21,6 +21,7 @@
 namespace AppserverIo\Appserver\ServletEngine\DependencyInjection;
 
 use AppserverIo\Appserver\Core\Api\Node\WebAppNode;
+use AppserverIo\Psr\Di\ObjectManagerInterface;
 use AppserverIo\Psr\Servlet\ServletContextInterface;
 
 /**
@@ -101,7 +102,7 @@ class DeploymentDescriptorParser
 
         // load the object manager instance
         /** @var \AppserverIo\Psr\Di\ObjectManagerInterface $objectManager */
-        $objectManager = $this->getApplication()->search('ObjectManagerInterface');
+        $objectManager = $this->getApplication()->search(ObjectManagerInterface::IDENTIFIER);
 
         // prepare and initialize the configuration node
         $webAppNode = new WebAppNode();

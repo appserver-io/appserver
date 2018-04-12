@@ -138,7 +138,7 @@ class RoboFile extends AbstractRoboFile
         // run the copy past detector
         $this->_exec(
             sprintf(
-                '%s/bin/phpcpd --names-exclude=DirectoryParser.php %s --log-pmd %s/reports/pmd-cpd.xml',
+                '%s/bin/phpcpd --names-exclude=DirectoryParser.php,EntityManagerFactory.php,QueueManager.php %s --log-pmd %s/reports/pmd-cpd.xml',
                 $this->getVendorDir(),
                 $this->getSrcDir(),
                 $this->getTargetDir()

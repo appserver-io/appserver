@@ -78,7 +78,7 @@ class ConnectionUtil
      *
      * @param \AppserverIo\Psr\Application\ApplicationInterface $application The application instance
      *
-     * @return \AppserverIo\Appserver\Doctrine\Utils\DoctrineHelper The instance
+     * @return \AppserverIo\Appserver\Doctrine\Utils\ConnectionUtil The instance
      */
     public static function get(ApplicationInterface $application)
     {
@@ -89,7 +89,7 @@ class ConnectionUtil
      * Creates an array with the connection parameters for a Doctrine DBAL connection from
      * the passed database node.
      *
-     * @param AppserverIo\Appserver\Core\Api\Node\DatabaseNodeInterface $databaseNode The database node to create the connection parameters from
+     * @param \AppserverIo\Appserver\Core\Api\Node\DatabaseNodeInterface $databaseNode The database node to create the connection parameters from
      *
      * @return array The DBAL connection parameters
      */

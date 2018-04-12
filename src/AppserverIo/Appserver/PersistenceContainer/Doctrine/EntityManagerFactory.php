@@ -42,6 +42,18 @@ class EntityManagerFactory
 {
 
     /**
+     * The application instance.
+     *
+     * @var \AppserverIo\Psr\Application\ApplicationInterface
+     */
+    protected $application;
+
+    /**
+     *  @var \AppserverIo\Appserver\Core\Api\Node\PersistenceUnitNodeInterface
+     */
+    protected $persistenceUnitNode;
+
+    /**
      * Mapping metadata type to factory method.
      *
      * @var array
@@ -53,34 +65,44 @@ class EntityManagerFactory
     );
 
     /**
-     * Creates a new entity manager instance based on the passed configuration.
      *
-     * @param \AppserverIo\Psr\Application\ApplicationInterface                 $application         The application instance to create the entity manager for
-     * @param \AppserverIo\Appserver\Core\Api\Node\PersistenceUnitNodeInterface $persistenceUnitNode The datasource configuration
+     * @param \AppserverIo\Psr\Application\ApplicationInterface                 $application         The application instance
+     * @param \AppserverIo\Appserver\Core\Api\Node\PersistenceUnitNodeInterface $persistenceUnitNode The persistence unit configuration node
+     */
+    public function __construct(
+        ApplicationInterface $application,
+        PersistenceUnitNodeInterface $persistenceUnitNode
+    ) {
+        $this->application = application;
+        $this->persistenceUnitNode = $persistenceUnitNode;
+    }
+
+    /**
+     * Creates a new entity manager instance based on the passed configuration.
      *
      * @return object The entity manager instance
      */
-    public static function factory(ApplicationInterface $application, PersistenceUnitNodeInterface $persistenceUnitNode)
+    public static function factory()
     {
 
         // register additional annotation libraries
-        foreach ($persistenceUnitNode->getAnnotationRegistries() as $annotationRegistry) {
+        foreach ($this->persistenceUnitNode->getAnnotationRegistries() as $annotationRegistry) {
             AnnotationRegistry::registerAutoloadNamespace(
                 $annotationRegistry->getNamespace(),
-                $annotationRegistry->getDirectoriesAsArray($application->getWebappPath())
+                $annotationRegistry->getDirectoriesAsArray($this->application->getWebappPath())
             );
         }
 
         // globally ignore configured annotations to ignore
-        foreach ($persistenceUnitNode->getIgnoredAnnotations() as $ignoredAnnotation) {
+        foreach ($this->persistenceUnitNode->getIgnoredAnnotations() as $ignoredAnnotation) {
             AnnotationReader::addGlobalIgnoredName($ignoredAnnotation->getNodeValue()->__toString());
         }
 
         // load the metadata configuration
-        $metadataConfiguration = $persistenceUnitNode->getMetadataConfiguration();
+        $metadataConfiguration = $this->persistenceUnitNode->getMetadataConfiguration();
 
         // prepare the setup properties
-        $absolutePaths = $metadataConfiguration->getDirectoriesAsArray($application->getWebappPath());
+        $absolutePaths = $metadataConfiguration->getDirectoriesAsArray($this->application->getWebappPath());
         $proxyDir = $metadataConfiguration->getParam(MetadataConfigurationNode::PARAM_PROXY_DIR);
         $isDevMode = $metadataConfiguration->getParam(MetadataConfigurationNode::PARAM_IS_DEV_MODE);
         $useSimpleAnnotationReader = $metadataConfiguration->getParam(MetadataConfigurationNode::PARAM_USE_SIMPLE_ANNOTATION_READER);
@@ -93,8 +115,8 @@ class EntityManagerFactory
 
         // load the datasource node
         $datasourceNode = null;
-        foreach ($application->getInitialContext()->getSystemConfiguration()->getDatasources() as $datasourceNode) {
-            if ($datasourceNode->getName() === $persistenceUnitNode->getDatasource()->getName()) {
+        foreach ($this->application->getInitialContext()->getSystemConfiguration()->getDatasources() as $datasourceNode) {
+            if ($datasourceNode->getName() === $this->persistenceUnitNode->getDatasource()->getName()) {
                 break;
             }
         }
@@ -104,7 +126,7 @@ class EntityManagerFactory
             throw new \Exception(
                 sprintf(
                     'Can\'t find a datasource node for persistence unit %s',
-                    $persistenceUnitNode->getName()
+                    $this->persistenceUnitNode->getName()
                 )
             );
         }
@@ -117,7 +139,7 @@ class EntityManagerFactory
             throw new \Exception(
                 sprintf(
                     'Can\'t find database node for persistence unit %s',
-                    $persistenceUnitNode->getName()
+                    $this->persistenceUnitNode->getName()
                 )
             );
         }
@@ -130,14 +152,14 @@ class EntityManagerFactory
             throw new \Exception(
                 sprintf(
                     'Can\'t find driver node for persistence unit %s',
-                    $persistenceUnitNode->getName()
+                    $this->persistenceUnitNode->getName()
                 )
             );
         }
 
         // initialize and return a entity manager decorator instance
         return new DoctrineEntityManagerDecorator(
-            EntityManager::create(ConnectionUtil::get($application)->fromDatabaseNode($databaseNode), $configuration)
+            EntityManager::create(ConnectionUtil::get($this->application)->fromDatabaseNode($databaseNode), $configuration)
         );
     }
 }

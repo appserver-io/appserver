@@ -1,7 +1,7 @@
 <?php
 
 /**
- * \AppserverIo\Appserver\ServletEngine\Http
+ * \AppserverIo\Appserver\ServletEngine\Http\Part
  *
  * NOTICE OF LICENSE
  *
@@ -95,6 +95,10 @@ class Part implements PartInterface
         $servletPart->setName($httpPart->getName());
         $servletPart->setFilename($httpPart->getFilename());
         $servletPart->setTmpFilename($tmpFilename);
+
+        // initialize the headers the the size
+        $servletPart->headers = $httpPart->getHeaders();
+        $servletPart->size = $httpPart->getSize();
 
         // return the servlet part instance
         return $servletPart;

@@ -14,12 +14,26 @@
 
     <classLoaders>
         <classLoader
+            name="ProxyClassLoader"
+            interface="ClassLoaderInterface"
+            type="AppserverIo\Appserver\Core\ProxyClassLoader"
+            factory="AppserverIo\Appserver\Core\ProxyClassLoaderFactory"/>
+        <classLoader
+            name="FileClassLoader"
+            interface="ClassLoaderInterface"
+            type="AppserverIo\Appserver\Core\FileClassLoader"
+            factory="AppserverIo\Appserver\Core\FileClassLoaderFactory">
+            <directories>
+                <directory>${base.dir}/src/functions/application/*.php</directory>
+            </directories>
+        </classLoader>
+        <classLoader
             name="ComposerClassLoader"
             interface="ClassLoaderInterface"
             type="AppserverIo\Appserver\Core\ComposerClassLoader"
             factory="AppserverIo\Appserver\Core\ComposerClassLoaderFactory">
             <directories>
-                <directory>/vendor</directory>
+                <directory>${webapp.dir}/vendor</directory>
             </directories>
         </classLoader>
         <classLoader
@@ -34,26 +48,26 @@
                 <param name="processing" type="string">logging</param>
             </params>
             <directories>
-                <directory enforced="true">/common/classes</directory>
-                <directory enforced="true">/WEB-INF/classes</directory>
-                <directory enforced="true">/META-INF/classes</directory>
+                <directory enforced="true">${webapp.dir}/common/classes</directory>
+                <directory enforced="true">${webapp.dir}/WEB-INF/classes</directory>
+                <directory enforced="true">${webapp.dir}/META-INF/classes</directory>
             </directories>
         </classLoader>
     </classLoaders>
 
     <loggers>
-        <logger channelName="system" name="System" type="\AppserverIo\Logger\Logger">
+        <logger channelName="system" name="SystemLogger" type="\AppserverIo\Logger\Logger">
             <handlers>
                 <handler type="\AppserverIo\Logger\Handlers\CustomFileHandler">
-                    <formatter type="\AppserverIo\Logger\Formatters\StandardFormatter"/>
+                    <formatter type="\AppserverIo\Appserver\Logger\Formatters\VarDumperFormatter"/>
                     <params>
-                        <param name="logFile" type="string">var/log/${webapp.name}-errors.log</param>
+                        <param name="logFile" type="string">${var.log.dir}/${webapp.name}-errors.log</param>
                         <param name="logLevel" type="string">info</param>
                     </params>
                 </handler>
             </handlers>
         </logger>
-        <logger channelName="access" name="Access" type="\AppserverIo\Logger\Logger">
+        <logger channelName="access" name="AccessLogger" type="\AppserverIo\Logger\Logger">
             <handlers>
                 <handler type="\AppserverIo\Logger\Handlers\CustomFileHandler">
                     <formatter type="\AppserverIo\Logger\Formatters\StandardFormatter">
@@ -62,7 +76,7 @@
                         </params>
                     </formatter>
                     <params>
-                        <param name="logFile" type="string">var/log/${webapp.name}-access.log</param>
+                        <param name="logFile" type="string">${var.log.dir}/${webapp.name}-access.log</param>
                         <param name="logLevel" type="string">info</param>
                     </params>
                 </handler>
@@ -73,11 +87,15 @@
     <managers>
         <manager name="ObjectManagerInterface" type="AppserverIo\Appserver\DependencyInjectionContainer\ObjectManager" factory="AppserverIo\Appserver\DependencyInjectionContainer\ObjectManagerFactory">
             <descriptors>
+                <descriptor>AppserverIo\Description\PreferenceDescriptor</descriptor>
+                <descriptor>AppserverIo\Description\BeanDescriptor</descriptor>
                 <descriptor>AppserverIo\Description\ServletDescriptor</descriptor>
                 <descriptor>AppserverIo\Description\MessageDrivenBeanDescriptor</descriptor>
                 <descriptor>AppserverIo\Description\StatefulSessionBeanDescriptor</descriptor>
                 <descriptor>AppserverIo\Description\SingletonSessionBeanDescriptor</descriptor>
                 <descriptor>AppserverIo\Description\StatelessSessionBeanDescriptor</descriptor>
+                <descriptor>AppserverIo\Routlt\Description\PathDescriptor</descriptor>
+                <descriptor>AppserverIo\Routlt\Description\ResultDescriptor</descriptor>
             </descriptors>
         </manager>
         <manager name="ProviderInterface" type="AppserverIo\Appserver\DependencyInjectionContainer\Provider" factory="AppserverIo\Appserver\DependencyInjectionContainer\ProviderFactory"/>
@@ -89,7 +107,9 @@
                 <param name="garbageCollectionProbability" type="float">0.1</param>
             </params>
             <directories>
-                <directory>/META-INF/classes</directory>
+                <directory>${webapp.dir}/common/classes</directory>
+                <directory>${webapp.dir}/WEB-INF/classes</directory>
+                <directory>${webapp.dir}/META-INF/classes</directory>
             </directories>
         </manager>
         <manager name="QueueContextInterface" type="AppserverIo\Appserver\MessageQueue\QueueManager" factory="AppserverIo\Appserver\MessageQueue\QueueManagerFactory">
@@ -103,7 +123,8 @@
                 <param name="baseDirectory" type="string">WEB-INF</param>
             </params>
             <directories>
-                <directory>/WEB-INF/classes</directory>
+                <directory>${vendor.dir}/appserver-io/routlt/src</directory>
+                <directory>${webapp.dir}/WEB-INF/classes</directory>
             </directories>
         </manager>
         <manager name="SessionManagerInterface" type="AppserverIo\Appserver\ServletEngine\StandardSessionManager" factory="AppserverIo\Appserver\ServletEngine\StandardSessionManagerFactory">

@@ -69,7 +69,7 @@ class QueueLocator implements ResourceLocatorInterface
      * @param \AppserverIo\Psr\Pms\QueueInterface        $queue        The queue request
      *
      * @return \AppserverIo\Psr\Pms\QueueInterface The requested queue instance
-     * @see \AppserverIo\Appserver\MessageQueue\ResourceLocator::locate()
+     * @see \AppserverIo\Psr\Pms\ResourceLocatorInterface::locate()
      */
     public function locate(QueueContextInterface $queueManager, QueueInterface $queue)
     {

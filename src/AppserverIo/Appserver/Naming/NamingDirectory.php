@@ -112,6 +112,18 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
     }
 
     /**
+     * Query whether or not a value for the passed name is bound to the naming directory.
+     *
+     * @param string $name The name to query for
+     *
+     * @return boolean TRUE if a value has been bound, else FALSE
+     */
+    public function isBound($name)
+    {
+        return $this->hasAttribute($this->stripSchema($name));
+    }
+
+    /**
      * Binds the passed instance with the name to the naming directory.
      *
      * @param string $name  The name to bind the value with
@@ -363,7 +375,7 @@ class NamingDirectory extends GenericStackable implements NamingDirectoryInterfa
      *
      * @param string $name The name to prepare the directory with
      *
-     * @return The prepared path
+     * @return string The prepared path
      */
     public function prepareDirectory($name)
     {

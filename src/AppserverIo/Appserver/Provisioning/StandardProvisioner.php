@@ -91,6 +91,7 @@ class StandardProvisioner extends AbstractProvisioner
                     // append the application specific properties
                     $properties->add(SystemPropertyKeys::WEBAPP, $webappPath);
                     $properties->add(SystemPropertyKeys::WEBAPP_NAME, basename($webappPath));
+                    $properties->add(SystemPropertyKeys::WEBAPP_DATA, $application->getDataDir());
                     $properties->add(SystemPropertyKeys::WEBAPP_CACHE, $application->getCacheDir());
                     $properties->add(SystemPropertyKeys::WEBAPP_SESSION, $application->getSessionDir());
 

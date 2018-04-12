@@ -223,7 +223,7 @@ class DoctrineEntityManagerProxy implements RemoteObjectInterface, EntityManager
      *
      * @param string $dql The DQL string.
      *
-     * @return Query
+     * @return \Doctrine\ORM\Query
      */
     public function createQuery($dql = '')
     {
@@ -354,8 +354,8 @@ class DoctrineEntityManagerProxy implements RemoteObjectInterface, EntityManager
      *
      * @return void
      *
-     * @throws OptimisticLockException
-     * @throws PessimisticLockException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\PessimisticLockException
      */
     public function lock($entity, $lockMode, $lockVersion = null)
     {
@@ -375,10 +375,10 @@ class DoctrineEntityManagerProxy implements RemoteObjectInterface, EntityManager
      *
      * @return object|null The entity instance or NULL if the entity can not be found.
      *
-     * @throws OptimisticLockException
-     * @throws ORMInvalidArgumentException
-     * @throws TransactionRequiredException
-     * @throws ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\ORMInvalidArgumentException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     * @throws \Doctrine\ORM\ORMException
      */
     public function find($entityName, $id, $lockMode = null, $lockVersion = null)
     {
@@ -467,7 +467,7 @@ class DoctrineEntityManagerProxy implements RemoteObjectInterface, EntityManager
     * @param integer $hydrationMode The hydration mode to use
      *
      * @return \Doctrine\ORM\Internal\Hydration\AbstractHydrator
-     * @throws ORMException
+     * @throws \Doctrine\ORM\ORMException
      */
     public function newHydrator($hydrationMode)
     {

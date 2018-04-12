@@ -49,19 +49,16 @@ class DgClassLoaderFactory implements ClassLoaderFactoryInterface
     public static function visit(ApplicationInterface $application, ClassLoaderNodeInterface $configuration)
     {
 
-        // load the web application path we want to register the class loader for
-        $webappPath = $application->getWebappPath();
-
         // initialize the class path and the enforcement directories
         $classPath = array();
         $enforcementDirs = array();
 
         // add the possible class path if folder is available
         foreach ($configuration->getDirectories() as $directory) {
-            if (is_dir($webappPath . $directory->getNodeValue())) {
-                array_push($classPath, $webappPath . $directory->getNodeValue());
+            if (is_dir($directory->getNodeValue())) {
+                array_push($classPath, $directory->getNodeValue());
                 if ($directory->isEnforced()) {
-                    array_push($enforcementDirs, $webappPath . $directory->getNodeValue());
+                    array_push($enforcementDirs, $directory->getNodeValue());
                 }
             }
         }

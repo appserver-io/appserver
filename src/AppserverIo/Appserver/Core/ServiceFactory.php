@@ -46,7 +46,7 @@ class ServiceFactory
      * @param string $serviceType The service classname to instantiate
      * @param string $refInstance The optional refInstance class to inject on ctor
      *
-     * @return \AppserverIo\Lab\Bootstrap\array
+     * @return object The requested service
      * @Synchronized
      */
     public function get($serviceType, $refInstance = null)

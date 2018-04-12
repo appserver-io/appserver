@@ -27,6 +27,7 @@ use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
 use AppserverIo\RemoteMethodInvocation\RemoteMethodProtocol;
 use AppserverIo\RemoteMethodInvocation\RemoteExceptionWrapper;
+use AppserverIo\RemoteMethodInvocation\SessionInterface;
 
 /**
  * Valve implementation that will be executed by the servlet engine to handle
@@ -56,6 +57,10 @@ class PersistenceContainerValve implements ValveInterface
         try {
             // unpack the remote method call
             $remoteMethod = RemoteMethodProtocol::unpack($servletRequest->getBodyContent());
+
+            // start the session
+            $servletRequest->setRequestedSessionName(SessionInterface::SESSION_NAME);
+            $servletRequest->getSession(true);
 
             // load the application context
             /** @var \AppserverIo\Appserver\Application\Application $application */

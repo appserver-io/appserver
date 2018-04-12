@@ -364,10 +364,10 @@ class DgClassLoader extends \Stackable implements ClassLoaderInterface
     protected function refillCache()
     {
 
-        // Lets clear the cache so we can fill it anew
+        // lets clear the cache so we can fill it anew
         foreach (new \DirectoryIterator($this->getConfig()->getValue('cache/dir')) as $fileInfo) {
-            if (!$fileInfo->isDot()) {
-                // Unlink the file
+            if (!$fileInfo->isDot() && !$fileInfo->isDir()) {
+                // unlink the file
                 unlink($fileInfo->getPathname());
             }
         }

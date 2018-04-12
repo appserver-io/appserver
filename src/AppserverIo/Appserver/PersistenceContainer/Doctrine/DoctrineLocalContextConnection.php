@@ -42,7 +42,7 @@ class DoctrineLocalContextConnection extends LocalContextConnection
      * @param \AppserverIo\RemoteMethodInvocation\RemoteMethodInterface $remoteMethod The remote method instance
      *
      * @return mixed The response from the container
-     * @see AppserverIo\RemoteMethodInvocation\ConnectionInterface::send()
+     * @see \AppserverIo\RemoteMethodInvocation\ConnectionInterface::send()
      */
     public function send(RemoteMethodInterface $remoteMethod)
     {

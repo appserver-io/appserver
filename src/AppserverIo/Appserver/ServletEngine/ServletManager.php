@@ -22,8 +22,8 @@ namespace AppserverIo\Appserver\ServletEngine;
 
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Storage\StorageInterface;
-use AppserverIo\Lang\Reflection\ReflectionClass;
 use AppserverIo\Appserver\Core\AbstractEpbManager;
+use AppserverIo\Psr\Di\ObjectManagerInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Psr\Servlet\ServletInterface;
 use AppserverIo\Psr\Servlet\ServletContextInterface;
@@ -206,7 +206,7 @@ class ServletManager extends AbstractEpbManager implements ServletContextInterfa
 
         // load the object manager instance
         /** @var \AppserverIo\Psr\Di\ObjectManagerInterface $objectManager */
-        $objectManager = $this->getApplication()->search('ObjectManagerInterface');
+        $objectManager = $this->getApplication()->search(ObjectManagerInterface::IDENTIFIER);
 
         // register the beans located by annotations and the XML configuration
         /** \AppserverIo\Psr\Deployment\DescriptorInterface $objectDescriptor */
@@ -229,14 +229,19 @@ class ServletManager extends AbstractEpbManager implements ServletContextInterfa
     {
 
         try {
-            // create a new reflection class instance
-            $reflectionClass = new ReflectionClass($descriptor->getClassName());
-
-            // instantiate the servlet
-            $instance = $reflectionClass->newInstance();
-
             // load servlet name
             $servletName = $descriptor->getName();
+
+            // prepend the url-pattern - servlet mapping to the servlet mappings
+            foreach ($descriptor->getUrlPatterns() as $pattern) {
+                $this->addServletMapping($pattern, $servletName);
+            }
+
+            // register's the servlet's references
+            $this->registerReferences($descriptor);
+
+            // instantiate the servlet
+            $instance = $this->get($descriptor->getName());
 
             // initialize the servlet configuration
             $servletConfig = new ServletConfiguration();
@@ -253,26 +258,6 @@ class ServletManager extends AbstractEpbManager implements ServletContextInterfa
 
             // the servlet is added to the dictionary using the complete request path as the key
             $this->addServlet($servletName, $instance);
-
-            // prepend the url-pattern - servlet mapping to the servlet mappings
-            foreach ($descriptor->getUrlPatterns() as $pattern) {
-                $this->addServletMapping($pattern, $servletName);
-            }
-
-            // register the EPB references
-            foreach ($descriptor->getEpbReferences() as $epbReference) {
-                $this->registerEpbReference($epbReference);
-            }
-
-            // register the resource references
-            foreach ($descriptor->getResReferences() as $resReference) {
-                $this->registerResReference($resReference);
-            }
-
-            // register the persistence unit references
-            foreach ($descriptor->getPersistenceUnitReferences() as $persistenceUnitReference) {
-                $this->registerPersistenceUnitReference($persistenceUnitReference);
-            }
 
         } catch (\Exception $e) {
             // log the exception
@@ -500,7 +485,7 @@ class ServletManager extends AbstractEpbManager implements ServletContextInterfa
      * @param array                                                     $args           The arguments passed to the servlet constructor
      *
      * @return \AppserverIo\Psr\Servlet\ServletInterface The requested servlet
-     * @see \AppserverIo\Appserver\ServletEngine\ResourceLocator::locate()
+     * @see \AppserverIo\Appserver\ServletEngine\ServletLocator::locate()
      */
     public function locate(HttpServletRequestInterface $servletRequest, array $args = array())
     {
@@ -512,7 +497,7 @@ class ServletManager extends AbstractEpbManager implements ServletContextInterfa
         $sessionId = null;
 
         // if no session has already been load, initialize the session manager
-        if ($manager = $this->getApplication()->search('SessionManagerInterface')) {
+        if ($manager = $this->getApplication()->search(SessionManagerInterface::IDENTIFIER)) {
             $requestedSessionName = $manager->getSessionSettings()->getSessionName();
             if ($servletRequest->hasCookie($requestedSessionName)) {
                 $sessionId = $servletRequest->getCookie($requestedSessionName)->getValue();
@@ -528,23 +513,13 @@ class ServletManager extends AbstractEpbManager implements ServletContextInterfa
      * session ID.
      *
      * @param string $servletPath The servlet path
-     * @param string $sessionId   The session ID
      * @param array  $args        The arguments passed to the servlet constructor
      *
-     * @return \AppserverIo\Psr\Servlet\GenericServlet The requested servlet
+     * @return \AppserverIo\Psr\Servlet\ServletInterface The requested servlet
      */
-    public function lookup($servletPath, $sessionId = null, array $args = array())
+    public function lookup($servletPath, array $args = array())
     {
-
-        // load the servlet instance
-        $instance = $this->getResourceLocator()->locate($this, $servletPath, $sessionId, $args);
-
-        // inject the dependencies
-        $dependencyInjectionContainer = $this->getApplication()->search('ProviderInterface');
-        $dependencyInjectionContainer->injectDependencies($instance, $sessionId);
-
-        // return the instance
-        return $instance;
+        return $this->getResourceLocator()->locate($this, $servletPath, $args);
     }
 
     /**

@@ -195,8 +195,8 @@ class AppService extends AbstractFileOperationService
      * Soaks the passed archive into from a location in the filesystem
      * to the deploy directory.
      *
-     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerInterface $containerNode The container the archive is bound to
-     * @param \SplFileInfo                                            $archive       The archive to soak
+     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode The container the archive is bound to
+     * @param \SplFileInfo                                                $archive       The archive to soak
      *
      * @return void
      */
@@ -210,8 +210,8 @@ class AppService extends AbstractFileOperationService
      * Adds the .dodeploy flag file in the deploy folder, therefore the
      * app will be deployed with the next restart.
      *
-     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerInterface $containerNode The container the app is bound to
-     * @param \AppserverIo\Configuration\Interfaces\NodeInterface     $appNode       The application node object
+     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode The container the app is bound to
+     * @param \AppserverIo\Configuration\Interfaces\NodeInterface         $appNode       The application node object
      *
      * @return void
      */
@@ -232,8 +232,8 @@ class AppService extends AbstractFileOperationService
      * Removes the .deployed flag file from the deploy folder, therefore the
      * app will be undeployed with the next restart.
      *
-     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerInterface $containerNode The container the app is bound to
-     * @param string                                                  $uuid          UUID of the application to delete
+     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode The container the app is bound to
+     * @param string                                                      $uuid          UUID of the application to delete
      *
      * @return void
      * @todo Add functionality to delete the deployed app
@@ -268,6 +268,7 @@ class AppService extends AbstractFileOperationService
         // create the directory we want to store the sessions in
         $tmpFolders = array(
             new \SplFileInfo($application->getTmpDir()),
+            new \SplFileInfo($application->getDataDir()),
             new \SplFileInfo($application->getCacheDir()),
             new \SplFileInfo($application->getSessionDir())
         );
@@ -289,10 +290,10 @@ class AppService extends AbstractFileOperationService
     public function cleanUpFolders(ApplicationInterface $application)
     {
 
-        // create the directory we want to store the sessions in
+        // load the directories we want to clean-up on appserver restart
         $cleanUpFolders = array(new \SplFileInfo($application->getCacheDir()));
 
-        // create the applications temporary directories
+        // clean-up the directories
         foreach ($cleanUpFolders as $cleanUpFolder) {
             $this->cleanUpDir($cleanUpFolder);
         }

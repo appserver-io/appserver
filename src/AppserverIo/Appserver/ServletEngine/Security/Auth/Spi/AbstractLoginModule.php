@@ -26,7 +26,6 @@ use AppserverIo\Collections\ArrayList;
 use AppserverIo\Collections\MapInterface;
 use AppserverIo\Collections\CollectionInterface;
 use AppserverIo\Psr\Security\Auth\Subject;
-use AppserverIo\Psr\Security\PrincipalInterface;
 use AppserverIo\Psr\Security\Acl\GroupInterface;
 use AppserverIo\Psr\Security\Auth\Spi\LoginModuleInterface;
 use AppserverIo\Psr\Security\Auth\Callback\NameCallback;
@@ -36,7 +35,6 @@ use AppserverIo\Appserver\ServletEngine\Security\SimpleGroup;
 use AppserverIo\Appserver\ServletEngine\Security\SimplePrincipal;
 use AppserverIo\Appserver\ServletEngine\Security\Utils\ParamKeys;
 use AppserverIo\Appserver\ServletEngine\Security\Utils\SharedStateKeys;
-use AppserverIo\Psr\Security\Auth\Login\LoginException;
 
 /**
  * An abstract login module implementation.
@@ -60,7 +58,7 @@ abstract class AbstractLoginModule implements LoginModuleInterface
     /**
      * The callback handler to obtain username and password.
      *
-     * @var AppserverIo\Psr\Security\Auth\Callback\CallbackHandlerInterface
+     * @var \AppserverIo\Psr\Security\Auth\Callback\CallbackHandlerInterface
      */
     protected $callbackHandler;
 
@@ -172,7 +170,7 @@ abstract class AbstractLoginModule implements LoginModuleInterface
      * it sets loginOk to FALSE. Perform the authentication of username and password.
      *
      * @return boolean TRUE if the login credentials are available in the sharedMap, else FALSE
-     * @throws \AppserverIo\Appserver\Psr\Security\Auth\Login\LoginException Is thrown if an error during login occured
+     * @throws \AppserverIo\Psr\Security\Auth\Login\LoginException Is thrown if an error during login occured
      */
     public function login()
     {
@@ -200,7 +198,7 @@ abstract class AbstractLoginModule implements LoginModuleInterface
      * Remove the user identity and roles added to the Subject during commit.
      *
      * @return boolean Always TRUE
-     * @throws \AppserverIo\Appserver\Psr\Security\Auth\Login\LoginException Is thrown if an error during login occured
+     * @throws \AppserverIo\Psr\Security\Auth\Login\LoginException Is thrown if an error during login occured
      */
     public function logout()
     {
@@ -227,10 +225,8 @@ abstract class AbstractLoginModule implements LoginModuleInterface
      * It also adds the members of each Group returned by getRoleSets()
      * to the subject getPrincipals() Set.
      *
-     * @see javax.security.auth.Subject;
-     * @see java.security.acl.Group;
      * @return true always.
-     * @throws \AppserverIo\Appserver\Psr\Security\Auth\Login\LoginException If login can't be committed'
+     * @throws \AppserverIo\Psr\Security\Auth\Login\LoginException If login can't be committed'
      */
     public function commit()
     {
@@ -275,7 +271,7 @@ abstract class AbstractLoginModule implements LoginModuleInterface
      * Method to abort the authentication process (phase 2).
      *
      * @return boolean Alaways TRUE
-     * @throws \AppserverIo\Appserver\Psr\Security\Auth\Login\LoginException Is thrown if abort has not been successfully
+     * @throws \AppserverIo\Psr\Security\Auth\Login\LoginException Is thrown if abort has not been successfully
      */
     public function abort()
     {
@@ -287,7 +283,7 @@ abstract class AbstractLoginModule implements LoginModuleInterface
      * authentication. This method does no validation of either.
      *
      * @return array Array with name and password, e. g. array(0 => $name, 1 => $password)
-     * @throws \AppserverIo\Appserver\Psr\Security\Auth\Login\LoginException Is thrown if name and password can't be loaded
+     * @throws \AppserverIo\Psr\Security\Auth\Login\LoginException Is thrown if name and password can't be loaded
      */
     public function getUsernameAndPassword()
     {
@@ -312,7 +308,7 @@ abstract class AbstractLoginModule implements LoginModuleInterface
      *
      * @param \AppserverIo\Lang\String $name The name of the principal
      *
-     * @return Principal The principal instance
+     * @return \AppserverIo\Psr\Security\PrincipalInterface The principal instance
      * @throws \Exception Is thrown if the custom principal type cannot be created
      */
     public function createIdentity(String $name)

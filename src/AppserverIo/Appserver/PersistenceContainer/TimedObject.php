@@ -32,6 +32,7 @@ use AppserverIo\Psr\EnterpriseBeans\Annotations\Stateful;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Stateless;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Timeout;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Resource;
+use AppserverIo\Psr\EnterpriseBeans\Annotations\Inject;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\EnterpriseBean;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\PersistenceUnit;
 
@@ -91,7 +92,8 @@ class TimedObject extends ReflectionClass
                 Stateless::ANNOTATION       => Stateless::__getClass(),
                 Timeout::ANNOTATION         => Timeout::__getClass(),
                 EnterpriseBean::ANNOTATION  => EnterpriseBean::__getClass(),
-                Resource::ANNOTATION        => Resource::__getClass()
+                Resource::ANNOTATION        => Resource::__getClass(),
+                Inject::ANNOTATION          => Inject::__getClass()
             )
         );
 

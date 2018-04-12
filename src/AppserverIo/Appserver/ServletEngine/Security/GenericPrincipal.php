@@ -23,7 +23,6 @@ namespace AppserverIo\Appserver\ServletEngine\Security;
 use AppserverIo\Lang\String;
 use AppserverIo\Collections\ArrayList;
 use AppserverIo\Psr\Security\PrincipalInterface;
-use AppserverIo\Psr\Security\Auth\Login\LoginContextInterface;
 
 /**
  * A simple String based implementation of Principal. Typically a SimplePrincipal is
@@ -67,34 +66,24 @@ class GenericPrincipal extends SimplePrincipal
     protected $userPrincipal;
 
     /**
-     * The actual login context instance.
-     *
-     * @var \AppserverIo\Psr\Security\Auth\Login\LoginContextInterface
-     */
-    protected $loginContext;
-
-    /**
      * Initializes the principal with the data from the passed objects.
      *
-     * @param \AppserverIo\Lang\String                                   $username      The principal's username
-     * @param \AppserverIo\Lang\String                                   $password      The principal's password
-     * @param \AppserverIo\Collection\ArrayList                          $roles         The principal's roles
-     * @param \AppserverIo\Psr\Security\PrincipalInterface               $userPrincipal The user principal instance that will be returned from the request
-     * @param \AppserverIo\Psr\Security\Auth\Login\LoginContextInterface $loginContext  The actual login context instance
+     * @param \AppserverIo\Lang\String                     $username      The principal's username
+     * @param \AppserverIo\Lang\String                     $password      The principal's password
+     * @param \AppserverIo\Collection\ArrayList            $roles         The principal's roles
+     * @param \AppserverIo\Psr\Security\PrincipalInterface $userPrincipal The user principal instance that will be returned from the request
      */
     public function __construct(
         String $username = null,
         String $password = null,
         ArrayList $roles = null,
-        PrincipalInterface $userPrincipal = null,
-        LoginContextInterface $loginContext = null
+        PrincipalInterface $userPrincipal = null
     ) {
 
         // set the passed instances
         $this->username = $username;
         $this->password = $password;
         $this->userPrincipal = $userPrincipal;
-        $this->loginContext = $loginContext;
 
         // set the roles or initialize an empty ArrayList
         if ($roles == null) {
@@ -142,15 +131,5 @@ class GenericPrincipal extends SimplePrincipal
     public function getUserPrincipal()
     {
         return $this->userPrincipal;
-    }
-
-    /**
-     * Return's the actual login context instance.
-     *
-     * @return the \AppserverIo\Psr\Security\Auth\Login\LoginContextInterface The login context instance
-     */
-    public function getLoginContext()
-    {
-        return $this->loginContext;
     }
 }

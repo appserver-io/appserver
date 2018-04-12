@@ -24,14 +24,15 @@ use AppserverIo\Lang\String;
 use AppserverIo\Lang\Boolean;
 use AppserverIo\Collections\HashMap;
 use AppserverIo\Collections\MapInterface;
+use AppserverIo\Psr\Security\PrincipalInterface;
 use AppserverIo\Psr\Security\Auth\Subject;
 use AppserverIo\Psr\Security\Auth\Login\LoginException;
 use AppserverIo\Psr\Security\Auth\Login\FailedLoginException;
 use AppserverIo\Psr\Security\Auth\Callback\CallbackHandlerInterface;
-use AppserverIo\Appserver\ServletEngine\Security\SecurityException;
 use AppserverIo\Appserver\ServletEngine\Security\Utils\Util;
 use AppserverIo\Appserver\ServletEngine\Security\Utils\ParamKeys;
 use AppserverIo\Appserver\ServletEngine\Security\Utils\SharedStateKeys;
+use AppserverIo\Psr\Security\SecurityException;
 
 /**
  * This valve will check if the actual request needs authentication.
@@ -154,11 +155,12 @@ abstract class UsernamePasswordLoginModule extends AbstractLoginModule
     public function login()
     {
 
+        // invoke the parent method
         if (parent::login()) {
-            // Setup our view of the user
+            // if login has been successfully, setup our view of the user
             $name = new String($this->sharedState->get(SharedStateKeys::LOGIN_NAME));
-
-            if ($name instanceof Principal) {
+            // query whether or not we alredy hava a principal
+            if ($name instanceof PrincipalInterface) {
                 $this->identity = name;
             } else {
                 $name = $name->__toString();
@@ -170,18 +172,11 @@ abstract class UsernamePasswordLoginModule extends AbstractLoginModule
                 }
             }
 
-            $password = new String($this->sharedState->get(SharedStateKeys::LOGIN_PASSWORD));
-
-            /* if ($password instanceof char[] ) {
-                credential = (char[]) password;
-            } elseif (password != null) {
-                String tmp = password.toString();
-                credential = tmp.toCharArray();
-            } */
-
+            // return immediately
             return true;
         }
 
+        // else, reset the login flag
         $this->loginOk = false;
 
         // array containing the username and password from the user's input
@@ -250,7 +245,7 @@ abstract class UsernamePasswordLoginModule extends AbstractLoginModule
      * @param \AppserverIo\Lang\String $password The password string to be hashed
      *
      * @return \AppserverIo\Lang\String The hashed password
-     * @throws \AppserverIo\Appserver\ServletEngine\Security\SecurityException Is thrown if there is a failure to load the digestCallback
+     * @throws \AppserverIo\Psr\Security\SecurityException Is thrown if there is a failure to load the digestCallback
      */
     protected function createPasswordHash(String $name, String $password)
     {

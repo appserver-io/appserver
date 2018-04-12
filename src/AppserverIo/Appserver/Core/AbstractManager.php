@@ -21,8 +21,10 @@
 
 namespace AppserverIo\Appserver\Core;
 
+use Psr\Container\ContainerInterface;
 use AppserverIo\Storage\StorageInterface;
 use AppserverIo\Storage\GenericStackable;
+use AppserverIo\Psr\Di\ProviderInterface;
 use AppserverIo\Psr\Application\ManagerInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Psr\Application\ManagerConfigurationInterface;
@@ -43,7 +45,7 @@ use AppserverIo\Psr\Naming\InitialContext as NamingDirectory;
  * @property \AppserverIo\Psr\Application\ApplicationInterface          $application          The application to manage
  * @property \AppserverIo\Psr\Application\ManagerConfigurationInterface $managerConfiguration The application to manage
  */
-abstract class AbstractManager extends GenericStackable implements ManagerInterface
+abstract class AbstractManager extends GenericStackable implements ManagerInterface, ContainerInterface
 {
 
     /**
@@ -90,6 +92,16 @@ abstract class AbstractManager extends GenericStackable implements ManagerInterf
     public function getApplication()
     {
         return $this->application;
+    }
+
+    /**
+     * Return the storage with the naming directory.
+     *
+     * @return \AppserverIo\Storage\StorageInterface The storage with the naming directory
+     */
+    public function getNamingDirectory()
+    {
+        return $this->getApplication()->getNamingDirectory();
     }
 
     /**
@@ -147,6 +159,18 @@ abstract class AbstractManager extends GenericStackable implements ManagerInterf
     }
 
     /**
+     * Query's whether or not the attribute is available.
+     *
+     * @param string $key The key of the attribute to query for
+     *
+     * @return boolean TRUE if the attribute is set, else FALSE
+     */
+    public function hasAttribute($key)
+    {
+        return $this->data->has($key);
+    }
+
+    /**
      * Registers the value with the passed key in the container.
      *
      * @param string $key   The key to register the value with
@@ -182,7 +206,7 @@ abstract class AbstractManager extends GenericStackable implements ManagerInterf
      */
     public function newReflectionClass($className)
     {
-        return $this->getApplication()->search('ProviderInterface')->newReflectionClass($className);
+        return $this->getApplication()->search(ProviderInterface::IDENTIFIER)->newReflectionClass($className);
     }
 
     /**
@@ -205,7 +229,7 @@ abstract class AbstractManager extends GenericStackable implements ManagerInterf
      */
     public function getReflectionClass($className)
     {
-        return $this->getApplication()->search('ProviderInterface')->getReflectionClass($className);
+        return $this->getApplication()->search(ProviderInterface::IDENTIFIER)->getReflectionClass($className);
     }
 
     /**
@@ -219,21 +243,77 @@ abstract class AbstractManager extends GenericStackable implements ManagerInterf
      */
     public function getReflectionClassForObject($instance)
     {
-        return $this->getApplication()->search('ProviderInterface')->getReflectionClassForObject($instance);
+        return $this->getApplication()->search(ProviderInterface::IDENTIFIER)->getReflectionClassForObject($instance);
     }
 
     /**
      * Returns a new instance of the passed class name.
      *
-     * @param string      $className The fully qualified class name to return the instance for
-     * @param string|null $sessionId The session-ID, necessary to inject stateful session beans (SFBs)
-     * @param array       $args      Arguments to pass to the constructor of the instance
+     * @param string $className The fully qualified class name to return the instance for
+     * @param array  $args      Arguments to pass to the constructor of the instance
      *
      * @return object The instance itself
      */
-    public function newInstance($className, $sessionId = null, array $args = array())
+    public function newInstance($className, array $args = array())
     {
-        return $this->getApplication()->search('ProviderInterface')->newInstance($className, $sessionId, $args);
+        return $this->getApplication()->search(ProviderInterface::IDENTIFIER)->newInstance($className, $args);
+    }
+
+    /**
+     * Finds an entry of the container by its identifier and returns it.
+     *
+     * @param string $id Identifier of the entry to look for
+     *
+     * @throws \Psr\Container\NotFoundExceptionInterface  No entry was found for **this** identifier.
+     * @throws \Psr\Container\ContainerExceptionInterface Error while retrieving the entry.
+     *
+     * @return mixed Entry.
+     */
+    public function get($id)
+    {
+        return $this->getApplication()->search(ProviderInterface::IDENTIFIER)->get($id);
+    }
+
+    /**
+     * Returns true if the container can return an entry for the given identifier.
+     * Returns false otherwise.
+     *
+     * `has($id)` returning TRUE does not mean that `get($id)` will not throw an exception.
+     * It does however mean that `get($id)` will not throw a `NotFoundExceptionInterface`.
+     *
+     * @param string $id Identifier of the entry to look for.
+     *
+     * @return boolean TRUE if an entroy for the given identifier exists, else FALSE
+     */
+    public function has($id)
+    {
+        return $this->getApplication()->search(ProviderInterface::IDENTIFIER)->has($id);
+    }
+
+    /**
+     * Register's the passed value with the passed ID.
+     *
+     * @param string $id    The ID of the value to add
+     * @param string $value The value to add
+     *
+     * @return void
+     * @throws \AppserverIo\Appserver\DependencyInjectionContainer\ContainerException Is thrown, if a value with the passed key has already been added
+     */
+    public function set($id, $value)
+    {
+        return $this->getApplication()->search(ProviderInterface::IDENTIFIER)->set($id, $value);
+    }
+
+    /**
+     * Query's whether or not an instance of the passed already exists.
+     *
+     * @param string $id Identifier of the entry to look for
+     *
+     * @return boolean TRUE if an instance exists, else FALSE
+     */
+    public function exists($id)
+    {
+        return $this->getApplication()->search(ProviderInterface::IDENTIFIER)->exists($id);
     }
 
     /**

@@ -38,6 +38,16 @@ use AppserverIo\Psr\EnterpriseBeans\ScheduleExpression;
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
+ *
+ * @property string                                                 $id                The unique identifier for this timer
+ * @property boolean                                                $persistent        TRUE if this timer has persistent guarantees
+ * @property string                                                 $initialExpiration The first expiry of this timer
+ * @property integer                                                $intervalDuration  The duration (in microseconds) between timeouts
+ * @property string                                                 $timedObjectId     The ID of the timed object the timer is bound to
+ * @property string                                                 $previousRun       The date of the previous run
+ * @property integer                                                $timerState        The timer state
+ * @property \Serializable                                          $info              The Serializable object that was passed in at timer creation
+ * @property \AppserverIo\Psr\EnterpriseBeans\TimerServiceInterface $timerService      The timer service instance
  */
 class Timer extends GenericStackable implements TimerInterface
 {
@@ -48,69 +58,6 @@ class Timer extends GenericStackable implements TimerInterface
      * @var string
      */
     const DATE_FORMAT = 'Y-m-d H:i:s';
-
-    /**
-     * The unique identifier for this timer.
-     *
-     * @var string
-     */
-    protected $id;
-
-    /**
-     * The timer service instance.
-     *
-     * @var \AppserverIo\Psr\EnterpriseBeans\TimerServiceInterface
-     */
-    protected $timerService;
-
-    /**
-     * The Serializable object that was passed in at timer creation.
-     *
-     * @var \Serializable
-     */
-    protected $info;
-
-    /**
-     * TRUE if this timer has persistent guarantees.
-     *
-     * @var boolean
-     */
-    protected $persistent = true;
-
-    /**
-     *  The first expiry of this timer.
-     *
-     * @var string
-     */
-    protected $initialExpiration;
-
-    /**
-     * The duration (in microseconds) between timeouts.
-     *
-     * @var integer
-     */
-    protected $intervalDuration = 0;
-
-    /**
-     * The ID of the timed object the timer is bound to.
-     *
-     * @var string
-     */
-    protected $timedObjectId;
-
-    /**
-     * The date of the previous run.
-     *
-     * @var string
-     */
-    protected $previousRun;
-
-    /**
-     * The timer state.
-     *
-     * @var integer
-     */
-    protected $timerState;
 
     /**
      * Initializes the timer with the necessary data.

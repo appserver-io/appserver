@@ -40,7 +40,7 @@ use AppserverIo\Psr\Application\ApplicationInterface;
  * @link      http://www.appserver.io
  *
  * @property array                                 $configuredDescriptors Descriptors used to parse deployment descriptors and annotations from the managers configuration
- * @property \AppserverIo\Storage\StorageInterface $objectDescriptors     Storage for our collected descriptors
+ * @property \AppserverIo\Storage\StorageInterface $objectDescriptors     Storage for our collected object descriptors
  */
 class ObjectManager extends AbstractManager implements ObjectManagerInterface
 {
@@ -115,18 +115,61 @@ class ObjectManager extends AbstractManager implements ObjectManagerInterface
      *
      * @return void
      */
+    public function addPreference(DescriptorInterface $objectDescriptor, $merge = false)
+    {
+
+        // query whether or not an existing preference has to be overwritten
+        if ($this->hasAttribute($interface = $objectDescriptor->getInterface()) && !$merge) {
+            return;
+        }
+
+        // add the new preference
+        $this->setAttribute($interface, $objectDescriptor->getClassName());
+    }
+
+    /**
+     * Return's the preference for the passed class name.
+     *
+     * @param string $className The class name to return the preference for
+     *
+     * @return string The preference or the original class name
+     */
+    public function getPreference($className)
+    {
+
+        // query whether or not we've a preference
+        if ($this->hasAttribute($className)) {
+            return $this->getAttribute($className);
+        }
+
+        // if not, return the original class name
+        return $className;
+    }
+
+    /**
+     * Adds the passed object descriptor to the object manager. If the merge flag is TRUE, then
+     * we check if already an object descriptor for the class exists before they will be merged.
+     *
+     * When we merge object descriptors this means, that the values of the passed descriptor
+     * will override the existing ones.
+     *
+     * @param \AppserverIo\Psr\Deployment\DescriptorInterface $objectDescriptor The object descriptor to add
+     * @param boolean                                         $merge            TRUE if we want to merge with an existing object descriptor
+     *
+     * @return void
+     */
     public function addObjectDescriptor(DescriptorInterface $objectDescriptor, $merge = false)
     {
 
         // query whether we've to merge the configuration found in annotations
-        if ($this->hasObjectDescriptor($objectDescriptor->getClassName()) && $merge) {
+        if ($this->hasObjectDescriptor($objectDescriptor->getName()) && $merge) {
             // load the existing descriptor
-            $existingDescriptor = $this->getObjectDescriptor($objectDescriptor->getClassName());
+            $existingDescriptor = $this->getObjectDescriptor($objectDescriptor->getName());
             $existingDescriptorType = get_class($existingDescriptor);
             // log on info level to make overwriting more obvious
             $this->getApplication()->getInitialContext()->getSystemLogger()->info(
                 sprintf(
-                    'Overwriting descriptor %s of webapp %s from XML configuration.',
+                    'Overriding descriptor "%s" of webapp "%s" from XML configuration.',
                     $existingDescriptor->getName(),
                     $this->getApplication()->getName()
                 )
@@ -166,40 +209,40 @@ class ObjectManager extends AbstractManager implements ObjectManagerInterface
      */
     public function setObjectDescriptor(DescriptorInterface $objectDescriptor)
     {
-        $this->objectDescriptors->set($objectDescriptor->getClassName(), $objectDescriptor);
+        $this->objectDescriptors->set($objectDescriptor->getName(), $objectDescriptor);
     }
 
     /**
-     * Query if we've an object descriptor for the passed class name.
+     * Query if we've an object descriptor for the passed name.
      *
-     * @param string $className The class name we query for a object descriptor
+     * @param string $name The name we query for a object descriptor
      *
      * @return boolean TRUE if an object descriptor has been registered, else FALSE
      */
-    public function hasObjectDescriptor($className)
+    public function hasObjectDescriptor($name)
     {
-        return $this->objectDescriptors->has($className);
+        return $this->objectDescriptors->has($name);
     }
 
     /**
      * Returns the object descriptor if we've registered it.
      *
-     * @param string $className The class name we want to return the object descriptor for
+     * @param string $name The name we want to return the object descriptor for
      *
      * @return \AppserverIo\Psr\Deployment\DescriptorInterface|null The requested object descriptor instance
      * @throws \AppserverIo\Psr\Di\UnknownObjectDescriptorException Is thrown if someone tries to access an unknown object desciptor
      */
-    public function getObjectDescriptor($className)
+    public function getObjectDescriptor($name)
     {
 
         // query if we've an object descriptor registered
-        if ($this->hasObjectDescriptor($className)) {
+        if ($this->hasObjectDescriptor($name)) {
             // return the object descriptor
-            return $this->objectDescriptors->get($className);
+            return $this->objectDescriptors->get($name);
         }
 
         // throw an exception is object descriptor has not been registered
-        throw new UnknownObjectDescriptorException(sprintf('Object Descriptor for class %s has not been registered', $className));
+        throw new UnknownObjectDescriptorException(sprintf('Object Descriptor with name "%s" has not been registered', $name));
     }
 
     /**

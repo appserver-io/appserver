@@ -21,7 +21,6 @@
 namespace AppserverIo\Appserver\Core\Listeners;
 
 use League\Event\EventInterface;
-use AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface;
 
 /**
  * Listener that loads and initializes the inital context instance.

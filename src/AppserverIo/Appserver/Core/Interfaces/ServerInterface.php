@@ -21,10 +21,6 @@
 namespace AppserverIo\Appserver\Core\Interfaces;
 
 use AppserverIo\Appserver\Core\InitialContext;
-use AppserverIo\Appserver\Core\Interfaces\ScannerInterface;
-use AppserverIo\Appserver\Core\Interfaces\ExtractorInterface;
-use AppserverIo\Appserver\Core\Interfaces\ContainerInterface;
-use AppserverIo\Appserver\Core\Interfaces\SystemConfigurationInterface;
 
 /**
  * Interface for the application server implementation
@@ -129,7 +125,7 @@ interface ServerInterface
      * Start the container threads.
      *
      * @return void
-     * @see \AppserverIo\Appserver\Core\ServerInterface::watch();
+     * @see \AppserverIo\Appserver\Core\Interfaces\ServerInterface::watch();
      */
     public function start();
 
@@ -148,7 +144,7 @@ interface ServerInterface
      * monitor is running exclusively like the start() method.
      *
      * @return void
-     * @see \AppserverIo\Appserver\Core\ServerInterface::start();
+     * @see \AppserverIo\Appserver\Core\Interfaces\ServerInterface::start();
      */
     public function watch();
 

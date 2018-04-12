@@ -28,12 +28,13 @@ use AppserverIo\Psr\HttpMessage\PartInterface;
 use AppserverIo\Psr\HttpMessage\CookieInterface;
 use AppserverIo\Psr\HttpMessage\RequestInterface;
 use AppserverIo\Psr\Security\PrincipalInterface;
-use AppserverIo\Psr\Security\Auth\Subject;
 use AppserverIo\Psr\Servlet\SessionUtils;
 use AppserverIo\Psr\Servlet\ServletException;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
 use AppserverIo\Psr\Auth\AuthenticationManagerInterface;
+use AppserverIo\Appserver\Core\Environment;
+use AppserverIo\Appserver\Core\Utilities\EnvironmentKeys;
 use AppserverIo\Appserver\ServletEngine\SessionManagerInterface;
 
 /**
@@ -282,13 +283,23 @@ class Request implements HttpServletRequestInterface, ContextInterface
      * @param string $key The key of the value to return from the context.
      *
      * @return mixed The requested attribute
-     * @see \AppserverIo\Psr\Context\Context::getAttribute($key)
+     * @see \AppserverIo\Psr\Context\ContextInterface::getAttribute($key)
      */
     public function getAttribute($key)
     {
         if (isset($this->attributes[$key])) {
             return $this->attributes[$key];
         }
+    }
+
+    /**
+     * Returns the attributes from the context.
+     *
+     * @return array The array with the attributes
+     */
+    public function getAttributes()
+    {
+        return $this->attributes;
     }
 
     /**
@@ -866,7 +877,7 @@ class Request implements HttpServletRequestInterface, ContextInterface
 
         // if no session has already been load, initialize the session manager
         /** @var \AppserverIo\Appserver\ServletEngine\SessionManagerInterface $manager */
-        $manager = $this->getContext()->search('SessionManagerInterface');
+        $manager = $this->getContext()->search(SessionManagerInterface::IDENTIFIER);
 
         // if no session manager was found, we don't support sessions
         if ($manager == null) {
@@ -962,6 +973,9 @@ class Request implements HttpServletRequestInterface, ContextInterface
         $wrapper = new SessionWrapper();
         $wrapper->injectSession($session);
         $wrapper->injectRequest($this);
+
+        // set the session ID in the execution environment
+        Environment::singleton()->setAttribute(EnvironmentKeys::SESSION_ID, $id);
 
         // return the found session
         return $wrapper;
@@ -1360,7 +1374,7 @@ class Request implements HttpServletRequestInterface, ContextInterface
      * Use the container login mechanism configured for the servlet context to authenticate the user making this
      * request. This method may modify and commit the passed servlet response.
      *
-     * @param AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse The servlet response
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse The servlet response
      *
      * @return boolean TRUE when non-null values were or have been established as the values returned by getRemoteUser, else FALSE
      */

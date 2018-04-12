@@ -630,6 +630,16 @@
             </xs:simpleContent>
         </xs:complexType>
     </xs:element>
+    <xs:element name="injection-target-method-parameter-name">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
     <xs:element name="injection-target-property">
         <xs:complexType>
             <xs:simpleContent>
@@ -644,7 +654,9 @@
         <xs:complexType>
             <xs:all>
                 <xs:element ref="appserver:injection-target-class"/>
+                <xs:element ref="appserver:description" minOccurs="0"/>
                 <xs:element ref="appserver:injection-target-method" minOccurs="0"/>
+                <xs:element ref="appserver:injection-target-method-parameter-name" minOccurs="0"/>
                 <xs:element ref="appserver:injection-target-property" minOccurs="0"/>
             </xs:all>
             <xs:attribute name="uuid" type="xs:string"/>
@@ -1161,6 +1173,48 @@
             </xs:simpleContent>
         </xs:complexType>
     </xs:element>
+    <xs:element name="bean-ref">
+        <xs:complexType>
+            <xs:all>
+                <xs:element ref="appserver:bean-ref-name"/>
+                <xs:element ref="appserver:bean-link" minOccurs="0"/>
+                <xs:element ref="appserver:bean-ref-type" minOccurs="0"/>
+                <xs:element ref="appserver:injection-target" minOccurs="0"/>
+            </xs:all>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="bean-ref-name">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="bean-link">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="bean-ref-type">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
     <xs:element name="rewrites">
         <xs:complexType>
             <xs:choice maxOccurs="unbounded">
@@ -1578,14 +1632,16 @@
                 <xs:element ref="appserver:epb-class"/>
                 <xs:element ref="appserver:local"/>
                 <xs:element ref="appserver:remote"/>
-                <xs:element ref="appserver:init-on-startup" minOccurs="0"/>
-                <xs:element ref="appserver:remove-method" minOccurs="0"/>
-                <xs:element ref="appserver:post-construct" minOccurs="0"/>
-                <xs:element ref="appserver:pre-destroy" minOccurs="0"/>
-                <xs:element ref="appserver:post-detach" minOccurs="0"/>
-                <xs:element ref="appserver:pre-attach" minOccurs="0"/>
+                <xs:element ref="appserver:shared" minOccurs="0"/>
                 <xs:element ref="appserver:epb-ref" minOccurs="0"/>
                 <xs:element ref="appserver:res-ref" minOccurs="0"/>
+                <xs:element ref="appserver:bean-ref" minOccurs="0"/>
+                <xs:element ref="appserver:pre-attach" minOccurs="0"/>
+                <xs:element ref="appserver:pre-destroy" minOccurs="0"/>
+                <xs:element ref="appserver:post-detach" minOccurs="0"/>
+                <xs:element ref="appserver:remove-method" minOccurs="0"/>
+                <xs:element ref="appserver:post-construct" minOccurs="0"/>
+                <xs:element ref="appserver:init-on-startup" minOccurs="0"/>
                 <xs:element ref="appserver:persistence-unit-ref" minOccurs="0"/>
             </xs:choice>
             <xs:attribute name="uuid" type="xs:string"/>
@@ -2033,8 +2089,10 @@
             <xs:choice maxOccurs="unbounded">
                 <xs:element ref="appserver:epb-name"/>
                 <xs:element ref="appserver:epb-class"/>
+                <xs:element ref="appserver:shared" minOccurs="0"/>
                 <xs:element ref="appserver:epb-ref" minOccurs="0"/>
                 <xs:element ref="appserver:res-ref" minOccurs="0"/>
+                <xs:element ref="appserver:bean-ref" minOccurs="0"/>
                 <xs:element ref="appserver:persistence-unit-ref" minOccurs="0"/>
             </xs:choice>
             <xs:attribute name="uuid" type="xs:string"/>
@@ -2240,6 +2298,122 @@
                     <xs:attribute ref="xml:base"/>
                 </xs:extension>
             </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="name">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="shared">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:boolean">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="class">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="method">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="factory">
+        <xs:complexType>
+            <xs:all>
+                <xs:element ref="appserver:name"/>
+                <xs:element ref="appserver:method"/>
+                <xs:element ref="appserver:class" minOccurs="0"/>
+                <xs:element ref="appserver:injection-target" minOccurs="0"/>
+            </xs:all>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="interface">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="di">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="appserver:preferences" minOccurs="0"/>
+                <xs:element ref="appserver:beans" minOccurs="0"/>
+            </xs:choice>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="preferences">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="appserver:preference" minOccurs="0"/>
+            </xs:choice>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="beans">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="appserver:bean" minOccurs="0"/>
+            </xs:choice>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="preference">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="appserver:interface"/>
+                <xs:element ref="appserver:class"/>
+            </xs:choice>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="bean">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="appserver:name"/>
+                <xs:element ref="appserver:class"/>
+                <xs:element ref="appserver:factory" minOccurs="0"/>
+                <xs:element ref="appserver:shared" minOccurs="0"/>
+                <xs:element ref="appserver:epb-ref" minOccurs="0"/>
+                <xs:element ref="appserver:res-ref" minOccurs="0"/>
+                <xs:element ref="appserver:bean-ref" minOccurs="0"/>
+                <xs:element ref="appserver:persistence-unit-ref" minOccurs="0"/>
+            </xs:choice>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
         </xs:complexType>
     </xs:element>
 </xs:schema>

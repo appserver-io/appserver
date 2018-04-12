@@ -186,7 +186,7 @@ class GenericDeployment extends AbstractDeployment
                         $namingDirectory->bind(sprintf('php:env/%s/ds/%s', $container->getName(), $datasourceNode->getName()), $datasourceNode);
 
                         // log a message that the datasource has been deployed
-                        $this->getInitialContext()->getSystemLogger()->info(
+                        $this->getInitialContext()->getSystemLogger()->debug(
                             sprintf('Successfully deployed datasource %s', $datasourceNode->getName())
                         );
                     }
@@ -233,7 +233,7 @@ class GenericDeployment extends AbstractDeployment
             }
 
             // log a message that the application has been initialized and started
-            $this->getInitialContext()->getSystemLogger()->info(
+            $this->getInitialContext()->getSystemLogger()->debug(
                 sprintf('Successfully initialized and started application %s', $context->getName())
             );
         }

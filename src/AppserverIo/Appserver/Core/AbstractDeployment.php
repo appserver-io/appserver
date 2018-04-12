@@ -20,7 +20,6 @@
 
 namespace AppserverIo\Appserver\Core;
 
-use AppserverIo\Appserver\Core\InitialContext;
 use AppserverIo\Psr\Deployment\DeploymentInterface;
 use AppserverIo\Appserver\Core\Interfaces\ContainerInterface;
 

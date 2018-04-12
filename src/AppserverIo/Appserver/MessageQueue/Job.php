@@ -22,6 +22,7 @@ namespace AppserverIo\Appserver\MessageQueue;
 
 use AppserverIo\Psr\Pms\JobInterface;
 use AppserverIo\Psr\Pms\MessageInterface;
+use AppserverIo\Psr\Pms\QueueContextInterface;
 use AppserverIo\Psr\Naming\InitialContext;
 use AppserverIo\Psr\Application\ApplicationInterface;
 
@@ -113,7 +114,7 @@ class Job extends \Thread implements JobInterface
             $sessionId = $message->getSessionId();
 
             // lookup the queue and process the message
-            if ($queue = $application->search('QueueContextInterface')->locate($queueProxy)) {
+            if ($queue = $application->search(QueueContextInterface::IDENTIFIER)->locate($queueProxy)) {
                 // the queues receiver type
                 $queueType = $queue->getType();
 

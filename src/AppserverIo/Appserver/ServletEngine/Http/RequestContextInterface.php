@@ -44,7 +44,7 @@ interface RequestContextInterface extends ContextInterface
     /**
      * Returns the authentication manager instance associated with this request.
      *
-     * @return \AppserverIo\Appserver\ServletEngine\Authentication\AuthenticationManagerInterface The authentication manager instance
+     * @return \AppserverIo\Psr\Auth\AuthenticationManagerInterface The authentication manager instance
      */
     public function getAuthenticationManager();
 }

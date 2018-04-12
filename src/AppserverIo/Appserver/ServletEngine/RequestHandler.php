@@ -21,13 +21,15 @@
 namespace AppserverIo\Appserver\ServletEngine;
 
 use AppserverIo\Logger\LoggerUtils;
+use AppserverIo\Appserver\Core\Environment;
+use AppserverIo\Appserver\Core\Utilities\EnvironmentKeys;
 use AppserverIo\Psr\HttpMessage\ResponseInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Psr\Auth\AuthenticationManagerInterface;
+use AppserverIo\Psr\Servlet\SessionUtils;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
 use AppserverIo\Appserver\ServletEngine\Utils\Error;
-use AppserverIo\Appserver\ServletEngine\Http\Response;
 use AppserverIo\Appserver\ServletEngine\Utils\ErrorUtil;
 
 /**
@@ -155,6 +157,13 @@ class RequestHandler extends \Thread
             // initialize static request and application context
             RequestHandler::$requestContext = $servletRequest;
             RequestHandler::$applicationContext = $application;
+
+            // add the application instance to the environment
+            Environment::singleton()->setAttribute(EnvironmentKeys::APPLICATION, $application);
+
+            // create a simulated request/session ID whereas session equals request ID (as long as session has NOT been started)
+            Environment::singleton()->setAttribute(EnvironmentKeys::REQUEST_ID, $requestId = SessionUtils::generateRandomString());
+            Environment::singleton()->setAttribute(EnvironmentKeys::SESSION_ID, $requestId);
 
             // process the valves
             foreach ($valves as $valve) {

@@ -21,25 +21,24 @@
 namespace AppserverIo\Appserver\PersistenceContainer;
 
 use AppserverIo\Collections\ArrayList;
-use AppserverIo\Collections\CollectionUtils;
 use AppserverIo\Collections\CollectionInterface;
-use AppserverIo\Storage\GenericStackable;
-use AppserverIo\Configuration\Configuration;
+use AppserverIo\Psr\Di\ObjectManagerInterface;
+use AppserverIo\Psr\Application\ApplicationInterface;
+use AppserverIo\Psr\EnterpriseBeans\PersistenceContextInterface;
+use AppserverIo\Appserver\Core\Environment;
 use AppserverIo\Appserver\Core\AbstractManager;
 use AppserverIo\Appserver\Core\Api\Node\PersistenceNode;
 use AppserverIo\Appserver\Core\Api\InvalidConfigurationException;
 use AppserverIo\Appserver\Core\Api\Node\PersistenceUnitNodeInterface;
+use AppserverIo\Appserver\Core\Utilities\EnvironmentKeys;
 use AppserverIo\Appserver\Core\Utilities\SystemPropertyKeys;
 use AppserverIo\Appserver\Core\Utilities\AppEnvironmentHelper;
-use AppserverIo\Psr\Servlet\SessionUtils;
-use AppserverIo\Psr\Application\ApplicationInterface;
-use AppserverIo\Psr\EnterpriseBeans\PersistenceContextInterface;
-use AppserverIo\Psr\EnterpriseBeans\EntityManagerLookupException;
+use AppserverIo\Appserver\PersistenceContainer\Description\PersistenceUnitDescriptor;
+use AppserverIo\Appserver\PersistenceContainer\Doctrine\DoctrineLocalContextConnection;
 use AppserverIo\Appserver\Application\Interfaces\ManagerSettingsAwareInterface;
 use AppserverIo\Appserver\Application\Interfaces\ManagerSettingsInterface;
+use AppserverIo\Appserver\PersistenceContainer\Description\PersistenceUnitFactoryDescriptor;
 use AppserverIo\RemoteMethodInvocation\RemoteMethodInterface;
-use AppserverIo\RemoteMethodInvocation\FilterSessionPredicate;
-use AppserverIo\Appserver\PersistenceContainer\Doctrine\DoctrineLocalContextConnection;
 
 /**
  * The persistence manager handles the entity managers registered for the application.
@@ -57,28 +56,6 @@ class PersistenceManager extends AbstractManager implements PersistenceContextIn
 {
 
     /**
-     * Injects the storage for the entity manager configurations.
-     *
-     * @param \AppserverIo\Storage\GenericStackable $entityManagers The storage for the entity manager configurations
-     *
-     * @return void
-     */
-    public function injectEntityManagers(GenericStackable $entityManagers)
-    {
-        $this->entityManagers = $entityManagers;
-    }
-
-    /**
-     * Returns the storage with the registered entity manager configurations.
-     *
-     * @return \AppserverIo\Storage\GenericStackable The storage with the entity manager configurations
-     */
-    public function getEntityManagers()
-    {
-        return $this->entityManagers;
-    }
-
-    /**
      * Injects the bean manager settings.
      *
      * @param \AppserverIo\Appserver\PersistenceContainer\BeanManagerSettingsInterface $managerSettings The bean manager settings
@@ -93,7 +70,7 @@ class PersistenceManager extends AbstractManager implements PersistenceContextIn
     /**
      * Return's the bean manager settings.
      *
-     * @return \AppserverIo\Appserver\PersistenceContainer\PersistenceContainerSettingsInterface The bean manager settings
+     * @return \AppserverIo\Appserver\PersistenceContainer\BeanManagerSettingsInterface The bean manager settings
      */
     public function getManagerSettings()
     {
@@ -157,6 +134,7 @@ class PersistenceManager extends AbstractManager implements PersistenceContextIn
                 // append the application specific properties
                 $properties->add(SystemPropertyKeys::WEBAPP, $webappPath = $application->getWebappPath());
                 $properties->add(SystemPropertyKeys::WEBAPP_NAME, basename($webappPath));
+                $properties->add(SystemPropertyKeys::WEBAPP_DATA, $application->getDataDir());
                 $properties->add(SystemPropertyKeys::WEBAPP_CACHE, $application->getCacheDir());
                 $properties->add(SystemPropertyKeys::WEBAPP_SESSION, $application->getSessionDir());
 
@@ -191,25 +169,35 @@ class PersistenceManager extends AbstractManager implements PersistenceContextIn
     /**
      * Deploys the entity manager described by the passed XML node.
      *
-     * @param \AppserverIo\Psr\Application\ApplicationInterface            $application         The application instance
-     * @param \AppserverIo\Appserver\Core\Api\PersistenceUnitNodeInterface $persistenceUnitNode The XML node that describes the entity manager
+     * @param \AppserverIo\Psr\Application\ApplicationInterface                 $application         The application instance
+     * @param \AppserverIo\Appserver\Core\Api\Node\PersistenceUnitNodeInterface $persistenceUnitNode The XML node that describes the entity manager
      *
      * @return void
      */
     public function registerEntityManager(ApplicationInterface $application, PersistenceUnitNodeInterface $persistenceUnitNode)
     {
 
-        // initialize the the entity manager instance
-        $this->entityManagers[$lookupName = $persistenceUnitNode->getName()] = $persistenceUnitNode;
-
-        // bind the callback for the entity manager instance to the
-        // naming directory => necessary for DI provider
+        // bind the callback for the Entity Manager instance to the naming directory
         $application->getNamingDirectory()
                     ->bind(
-                        sprintf('php:global/%s/%s', $application->getUniqueName(), $lookupName),
+                        sprintf('php:global/%s/%s', $application->getUniqueName(), $lookupName = $persistenceUnitNode->getName()),
                         array(&$this, 'lookup'),
                         array($lookupName)
                     );
+
+        // bind the Entity Manager's configuration to the naming directory
+        $application->getNamingDirectory()
+                    ->bind(
+                        sprintf('php:global/%s/%sConfiguration', $application->getUniqueName(), $lookupName),
+                        $persistenceUnitNode
+                    );
+
+        // load the object manager instance
+        $objectManager = $this->getApplication()->search(ObjectManagerInterface::IDENTIFIER);
+
+        // add the descriptors, necesseary to create the Entity Manaager instance, to the object manager
+        $objectManager->addObjectDescriptor(PersistenceUnitDescriptor::newDescriptorInstance()->fromConfiguration($persistenceUnitNode));
+        $objectManager->addObjectDescriptor(PersistenceUnitFactoryDescriptor::newDescriptorInstance()->fromConfiguration($persistenceUnitNode));
     }
 
     /**
@@ -225,34 +213,17 @@ class PersistenceManager extends AbstractManager implements PersistenceContextIn
      */
     public function lookup($lookupName)
     {
-
-        // query whether the entity manager has been registered or not
-        if (isset($this->entityManagers[$lookupName])) {
-            // load the entity manager configuration
-            $persistenceUnitNode = $this->entityManagers[$lookupName];
-
-            // load the factory class from the configuration
-            $factoryClass = $persistenceUnitNode->getFactory();
-
-            // create a new entity manager instance from the configuration
-            return $factoryClass::factory($this->getApplication(), $persistenceUnitNode);
-        }
-
-        // throw an exception if the requested entity manager has not been registered
-        throw new EntityManagerLookupException(
-            sprintf('Entity Manager with lookup name %s has not been registered in application %s', $lookupName, $this->getApplication()->getName())
-        );
+        return $this->get($lookupName);
     }
 
     /**
      * This returns a proxy to the requested session bean.
      *
      * @param string $lookupName The lookup name for the requested session bean
-     * @param string $sessionId  The session-ID if available
      *
      * @return \AppserverIo\RemoteMethodInvocation\RemoteObjectInterface The proxy instance
      */
-    public function lookupProxy($lookupName, $sessionId = null)
+    public function lookupProxy($lookupName)
     {
 
         // initialize the remote method call parser and the session storage
@@ -266,14 +237,8 @@ class PersistenceManager extends AbstractManager implements PersistenceContextIn
         // initialize the context session
         $session = $connection->createContextSession();
 
-        // check if we've a HTTP session ID passed
-        if ($sessionId == null) {
-            // simulate a unique session ID
-            $session->setSessionId(SessionUtils::generateRandomString());
-        } else {
-            // else, set the passed session ID
-            $session->setSessionId($sessionId);
-        }
+        // set the session ID from the environment
+        $session->setSessionId(Environment::singleton()->getAttribute(EnvironmentKeys::SESSION_ID));
 
         // lookup and return the requested remote bean instance
         return $session->createInitialContext()->lookup($lookupName);
@@ -294,31 +259,9 @@ class PersistenceManager extends AbstractManager implements PersistenceContextIn
         $className  = $remoteMethod->getClassName();
         $methodName = $remoteMethod->getMethodName();
         $parameters = $remoteMethod->getParameters();
-        $sessionId  = $remoteMethod->getSessionId();
-
-        // load the application instance
-        $application = $this->getApplication();
-
-        // try to load the session with the ID passed in the remote method
-        $session = CollectionUtils::find($sessions, new FilterSessionPredicate($sessionId));
-
-        // query whether the session is available or not
-        if ($session instanceof CollectionInterface) {
-            // query whether we already have an instance in the session container
-            if ($instance = $session->exists($className)) {
-                $instance = $session->get($className);
-            }
-        }
 
         // load a fresh bean instance and add it to the session container
-        if ($instance == null) {
-            $instance = $application->getNamingDirectory()->search($className);
-        }
-
-        // query whether we already have an instance in the session container
-        if ($session instanceof CollectionInterface) {
-            $session->add($className, $instance);
-        }
+        $instance = $this->lookup($className);
 
         // invoke the remote method call on the local instance
         return call_user_func_array(array($instance, $methodName), $parameters);

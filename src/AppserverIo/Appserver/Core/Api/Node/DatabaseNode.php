@@ -231,7 +231,7 @@ class DatabaseNode extends AbstractNode implements DatabaseNodeInterface
     /**
      * Returns the database driver options.
      *
-     * @return \AppserverIo\Appserver\Core\Api\Node\DriverOpionsNode The database driver options
+     * @return \AppserverIo\Appserver\Core\Api\Node\DriverOptionsNode The database driver options
      */
     public function getDriverOptions()
     {
