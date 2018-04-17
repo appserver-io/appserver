@@ -44,7 +44,7 @@ interface MessageQueueNodeInterface extends NodeInterface
     /**
      * Return's the message queue's destination information.
      *
-     * @return \AppserverIo\Appserver\Core\Api\Node\ValueNode The message queue destination information
+     * @return \AppserverIo\Description\Api\Node\ValueNode The message queue destination information
      */
     public function getDestination();
 }

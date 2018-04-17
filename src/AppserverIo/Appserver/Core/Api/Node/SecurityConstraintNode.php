@@ -62,7 +62,7 @@ class SecurityConstraintNode extends AbstractNode implements SecurityConstraintN
     /**
      * Initializes the node with the passed values.
      *
-     * @param \AppserverIo\Appserver\Core\Api\Node\NodeValueInterface          $displayName            The display name information
+     * @param \AppserverIo\Configuration\Interfaces\NodeValueInterface         $displayName            The display name information
      * @param array                                                            $webResourceCollections The array with the web resource collection information
      * @param \AppserverIo\Appserver\Core\Api\Node\AuthConstraintNodeInterface $authConstraint         The auth constraint information
      */
