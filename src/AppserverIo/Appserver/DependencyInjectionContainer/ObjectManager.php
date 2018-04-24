@@ -39,6 +39,7 @@ use AppserverIo\Psr\Application\ApplicationInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  *
+ * @property array                                 $directories           The additional directories to be parsed for available deployment descriptors
  * @property array                                 $configuredDescriptors Descriptors used to parse deployment descriptors and annotations from the managers configuration
  * @property \AppserverIo\Storage\StorageInterface $objectDescriptors     Storage for our collected object descriptors
  */
@@ -71,6 +72,18 @@ class ObjectManager extends AbstractManager implements ObjectManagerInterface
     }
 
     /**
+     * Injects the additional directories to be parsed when looking for servlets.
+     *
+     * @param array $directories The additional directories to be parsed
+     *
+     * @return void
+     */
+    public function injectDirectories(array $directories)
+    {
+        $this->directories = $directories;
+    }
+
+    /**
      * Returns the storage with the object descriptors.
      *
      * @return \AppserverIo\Storage\StorageInterface The storage with the object descriptors
@@ -91,6 +104,16 @@ class ObjectManager extends AbstractManager implements ObjectManagerInterface
     }
 
     /**
+     * Returns all the additional directories to be parsed for servlets.
+     *
+     * @return array The additional directories
+     */
+    public function getDirectories()
+    {
+        return $this->directories;
+    }
+
+    /**
      * Has been automatically invoked by the container after the application
      * instance has been created.
      *
@@ -101,6 +124,11 @@ class ObjectManager extends AbstractManager implements ObjectManagerInterface
      */
     public function initialize(ApplicationInterface $application)
     {
+
+        // initialize the deployment descriptor parser and parse the web application's deployment descriptor for beans
+        $deploymentDescriptorParser = new DeploymentDescriptorParser();
+        $deploymentDescriptorParser->injectObjectManager($this);
+        $deploymentDescriptorParser->parse();
     }
 
     /**
@@ -167,7 +195,7 @@ class ObjectManager extends AbstractManager implements ObjectManagerInterface
             $existingDescriptor = $this->getObjectDescriptor($objectDescriptor->getName());
             $existingDescriptorType = get_class($existingDescriptor);
             // log on info level to make overwriting more obvious
-            $this->getApplication()->getInitialContext()->getSystemLogger()->info(
+            $this->getApplication()->getInitialContext()->getSystemLogger()->debug(
                 sprintf(
                     'Overriding descriptor "%s" of webapp "%s" from XML configuration.',
                     $existingDescriptor->getName(),

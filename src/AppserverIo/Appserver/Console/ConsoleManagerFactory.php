@@ -1,7 +1,7 @@
 <?php
 
 /**
- * \AppserverIo\Appserver\DependencyInjectionContainer\ObjectManagerFactory
+ * \AppserverIo\Appserver\Console\ConsoleManagerFactory
  *
  * NOTICE OF LICENSE
  *
@@ -12,29 +12,28 @@
  * PHP version 5
  *
  * @author    Tim Wagner <tw@appserver.io>
- * @copyright 2015 TechDivision GmbH <info@appserver.io>
+ * @copyright 2018 TechDivision GmbH <info@appserver.io>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
 
-namespace AppserverIo\Appserver\DependencyInjectionContainer;
+namespace AppserverIo\Appserver\Console;
 
-use AppserverIo\Appserver\Core\Interfaces\ManagerFactoryInterface;
-use AppserverIo\Storage\StackableStorage;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\Core\Api\Node\ManagerNodeInterface;
+use AppserverIo\Appserver\Core\Interfaces\ManagerFactoryInterface;
 
 /**
- * The factory for the object manager.
+ * The factory implemenation for the console manager instance.
  *
  * @author    Tim Wagner <tw@appserver.io>
- * @copyright 2015 TechDivision GmbH <info@appserver.io>
+ * @copyright 2018 TechDivision GmbH <info@appserver.io>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class ObjectManagerFactory implements ManagerFactoryInterface
+class ConsoleManagerFactory implements ManagerFactoryInterface
 {
 
     /**
@@ -48,22 +47,11 @@ class ObjectManagerFactory implements ManagerFactoryInterface
     public static function visit(ApplicationInterface $application, ManagerNodeInterface $managerConfiguration)
     {
 
-        // load the configured descriptors from the configuration
-        $configuredDescriptors = $managerConfiguration->getDescriptors();
-
-        // create the storage for the data and the bean descriptors
-        $data = new StackableStorage();
-        $objectDescriptors = new StackableStorage();
-
-        // create and initialize the object manager instance
-        $objectManager = new ObjectManager();
-        $objectManager->injectData($data);
-        $objectManager->injectApplication($application);
-        $objectManager->injectObjectDescriptors($objectDescriptors);
-        $objectManager->injectConfiguredDescriptors($configuredDescriptors);
-        $objectManager->injectDirectories($managerConfiguration->getDirectories());
+        // initialize the console manager
+        $consoleManager = new ConsoleManager();
+        $consoleManager->injectApplication($application);
 
         // attach the instance
-        $application->addManager($objectManager, $managerConfiguration);
+        $application->addManager($consoleManager, $managerConfiguration);
     }
 }

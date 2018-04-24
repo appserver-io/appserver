@@ -2411,9 +2411,30 @@
                 <xs:element ref="appserver:res-ref" minOccurs="0"/>
                 <xs:element ref="appserver:bean-ref" minOccurs="0"/>
                 <xs:element ref="appserver:persistence-unit-ref" minOccurs="0"/>
+                <xs:element ref="appserver:method-invocation" minOccurs="0"/>
             </xs:choice>
             <xs:attribute name="uuid" type="xs:string"/>
             <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="method-invocation">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="appserver:method-name"/>
+                <xs:element ref="appserver:argument" minOccurs="0"/>
+            </xs:choice>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="argument">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
         </xs:complexType>
     </xs:element>
 </xs:schema>

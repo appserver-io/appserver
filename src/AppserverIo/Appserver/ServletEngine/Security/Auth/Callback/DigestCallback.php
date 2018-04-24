@@ -37,7 +37,7 @@ class DigestCallback
     /**
      * Initializes the callback with the configuration params.
      *
-     * @param AppserverIo\Collections\HashMap $params The configuration params
+     * @param \AppserverIo\Collections\HashMap $params The configuration params
      *
      * @return void
      */

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Commands\CommandFactory
+ * \AppserverIo\Appserver\Console\ConsoleContextInterface
  *
  * NOTICE OF LICENSE
  *
@@ -18,10 +18,10 @@
  * @link      http://www.appserver.io
  */
 
-namespace AppserverIo\Appserver\Core\Commands;
+namespace AppserverIo\Appserver\Console;
 
 /**
- * Factory to create new command instances.
+ * The interface for console manager implementations.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -29,20 +29,13 @@ namespace AppserverIo\Appserver\Core\Commands;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class CommandFactory implements CommandFactoryInterface
+interface ConsoleContextInterface
 {
 
     /**
-     * Creates and returns a new command instance of the command with the passed name.
+     * The unique identifier to be registered in the application context.
      *
-     * @param string $name            ass name of the command to create the instance for
-     * @param array  $constructorArgs The arguments passed to the constructor
-     *
-     * @return \AppserverIo\Appserver\Core\Commands\CommandInterface The command instance
+     * @var string
      */
-    public static function factory($name, array $constructorArgs = array())
-    {
-        $reflectionClass = new \ReflectionClass(sprintf('AppserverIo\Appserver\Core\Commands\%sCommand', ucfirst($name)));
-        return $reflectionClass->newInstanceArgs($constructorArgs);
-    }
+    const IDENTIFIER = 'ConsoleContextInterface';
 }

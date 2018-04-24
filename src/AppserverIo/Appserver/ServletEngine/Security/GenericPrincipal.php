@@ -54,7 +54,7 @@ class GenericPrincipal extends SimplePrincipal
     /**
      * The principal's roles.
      *
-     * @var \AppserverIo\Collection\ArrayList
+     * @var \AppserverIo\Collections\ArrayList
      */
     protected $roles;
 
@@ -70,7 +70,7 @@ class GenericPrincipal extends SimplePrincipal
      *
      * @param \AppserverIo\Lang\String                     $username      The principal's username
      * @param \AppserverIo\Lang\String                     $password      The principal's password
-     * @param \AppserverIo\Collection\ArrayList            $roles         The principal's roles
+     * @param \AppserverIo\Collections\ArrayList           $roles         The principal's roles
      * @param \AppserverIo\Psr\Security\PrincipalInterface $userPrincipal The user principal instance that will be returned from the request
      */
     public function __construct(
@@ -96,7 +96,7 @@ class GenericPrincipal extends SimplePrincipal
     /**
      * Return's the principal's username.
      *
-     * @return the \AppserverIo\Lang\String The username
+     * @return \AppserverIo\Lang\String The username
      */
     public function getUsername()
     {
@@ -106,7 +106,7 @@ class GenericPrincipal extends SimplePrincipal
     /**
      * Return's the principal's password.
      *
-     * @return the \AppserverIo\Lang\String The password
+     * @return \AppserverIo\Lang\String The password
      */
     public function getPassword()
     {
@@ -116,7 +116,7 @@ class GenericPrincipal extends SimplePrincipal
     /**
      * Return's the principal's roles.
      *
-     * @return the \AppserverIo\Collection\ArrayList The roles
+     * @return \AppserverIo\Collections\ArrayList The roles
      */
     public function getRoles()
     {
@@ -126,7 +126,7 @@ class GenericPrincipal extends SimplePrincipal
     /**
      * Return's the user principal instance that will be returned from the request.
      *
-     * @return the \AppserverIo\Psr\Security\PrincipalInterface The user principal
+     * @return \AppserverIo\Psr\Security\PrincipalInterface The user principal
      */
     public function getUserPrincipal()
     {

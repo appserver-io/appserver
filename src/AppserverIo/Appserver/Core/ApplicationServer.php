@@ -669,4 +669,3 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
         $service->switchSetupMode($newMode, $configurationFilename, $currentUser);
     }
 }
-

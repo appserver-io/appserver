@@ -22,8 +22,8 @@ namespace AppserverIo\Appserver\ServletEngine\Security;
 
 use AppserverIo\Lang\String;
 use AppserverIo\Collections\ArrayList;
-use AppserverIo\Configuration\Configuration;
 use AppserverIo\Psr\Auth\RealmInterface;
+use AppserverIo\Psr\Auth\AuthenticationManagerInterface;
 use AppserverIo\Psr\Security\Auth\Subject;
 use AppserverIo\Psr\Security\PrincipalInterface;
 use AppserverIo\Psr\Security\Acl\GroupInterface;
@@ -34,7 +34,7 @@ use AppserverIo\Appserver\Naming\Utils\NamingDirectoryKeys;
 use AppserverIo\Appserver\ServletEngine\Security\Utils\Util;
 use AppserverIo\Appserver\Core\Api\Node\SecurityDomainNodeInterface;
 use AppserverIo\Appserver\ServletEngine\Security\Auth\Callback\SecurityAssociationHandler;
-use AppserverIo\Psr\Auth\AuthenticationManagerInterface;
+use AppserverIo\Psr\Security\Auth\Login\SecurityDomainConfigurationInterface;
 
 /**
  * Security domain implementation.
@@ -58,14 +58,14 @@ class Realm implements RealmInterface
     /**
      * The security domain's login modules.
      *
-     * @var \AppserverIo\Appserver\ServletEngine\Security\SecurityDomainInterface
+     * @var  \AppserverIo\Psr\Security\Auth\Login\SecurityDomainConfigurationInterface
      */
-    protected $configruation;
+    protected $configuration;
 
     /**
      * The authentication manager instance.
      *
-     * @var \AppserverIo\Appserver\ServletEngine\Security\AuthenticationManagerInterface
+     * @var \AppserverIo\Psr\Auth\AuthenticationManagerInterface
      */
     protected $authenticationManager;
 
@@ -106,29 +106,29 @@ class Realm implements RealmInterface
     /**
      * Inject the realm's configuration.
      *
-     * @param \AppserverIo\Appserver\ServletEngine\Security\SecurityDomainInterface $configuration The realm's configuration
+     * @param \AppserverIo\Psr\Security\Auth\Login\SecurityDomainConfigurationInterface $configuration The realm's configuration
      *
      * @return void
      */
-    public function injectConfiguration(SecurityDomainNodeInterface $configuration)
+    public function injectConfiguration(SecurityDomainConfigurationInterface $configuration)
     {
-        $this->configruation = $configuration;
+        $this->configuration = $configuration;
     }
 
     /**
      * Return's the realm's configuration.
      *
-     * @return \AppserverIo\Appserver\ServletEngine\Security\SecurityDomainInterface The realm's configuration
+     * @return \AppserverIo\Psr\Security\Auth\Login\SecurityDomainConfigurationInterface The realm's configuration
      */
     public function getConfiguration()
     {
-        return $this->configruation;
+        return $this->configuration;
     }
 
     /**
      * Return's the authentication manager instance.
      *
-     * @return \AppserverIo\Appserver\ServletEngine\Security\AuthenticationManagerInterface The authentication manager instance
+     * @return \AppserverIo\Psr\Auth\AuthenticationManagerInterface The authentication manager instance
      */
     public function getAuthenticationManager()
     {
@@ -151,7 +151,7 @@ class Realm implements RealmInterface
      * @param \AppserverIo\Lang\String                                         $username        The name of the user to authenticate
      * @param \AppserverIo\Psr\Security\Auth\Callback\CallbackHandlerInterface $callbackHandler The callback handler used to load the credentials
      *
-     * @return \AppserverIo\Security\PrincipalInterface|null The authenticated user principal
+     * @return \AppserverIo\Psr\Security\PrincipalInterface|null The authenticated user principal
      */
     public function authenticateByUsernameAndCallbackHandler(String $username, CallbackHandlerInterface $callbackHandler)
     {
@@ -185,7 +185,7 @@ class Realm implements RealmInterface
      * @param \AppserverIo\Lang\String $username The name of the user to authenticate
      * @param \AppserverIo\Lang\String $password The password used for authentication
      *
-     * @return \AppserverIo\Security\PrincipalInterface|null The authenticated user principal
+     * @return \AppserverIo\Psr\Security\PrincipalInterface|null The authenticated user principal
      */
     public function authenticate(String $username, String $password)
     {
@@ -210,7 +210,7 @@ class Realm implements RealmInterface
      * @param \AppserverIo\Psr\Security\Auth\Subject                     $subject      The Subject representing the logged-in user
      * @param \AppserverIo\Psr\Security\Auth\Login\LoginContextInterface $loginContext Associated with the Principal so {@link LoginContext#logout()} can be called later
      *
-     * @return \AppserverIo\Security\PrincipalInterface the principal object
+     * @return \AppserverIo\Psr\Security\PrincipalInterface the principal object
      */
     protected function createPrincipal(String $username, Subject $subject, LoginContextInterface $loginContext)
     {

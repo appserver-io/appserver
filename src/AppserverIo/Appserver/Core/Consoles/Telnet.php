@@ -172,12 +172,15 @@ class Telnet extends \Thread implements ConsoleInterface
                     $params = Arguments::split($data);
                     $commandName = array_shift($params);
 
-                    // initialize and execute the command
-                    $command = CommandFactory::factory($commandName, array($conn, $applicationServer));
-                    $command->execute($params);
+                    try {
+                        // initialize and execute the command
+                        $command = CommandFactory::factory($commandName, array($conn, $applicationServer));
+                        $command->execute($params);
 
-                } catch (\ReflectionException $re) {
-                    $conn->write("Unknown commandERROR\n");
+                    } catch (\ReflectionException $re) {
+                        $conn->write(sprintf("Unknown command %sERROR\n", $commandName));
+                    }
+
                 } catch (\Exception $e) {
                     $conn->write("{$e->__toString()}ERROR\n");
                 }

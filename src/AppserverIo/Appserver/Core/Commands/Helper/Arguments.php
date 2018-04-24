@@ -59,7 +59,8 @@ class Arguments
 
         while (true) {
             // skip all whitespace characters
-            for(;isset($command[$i]) && in_array($command[$i], $ws); ++$i);
+            for (; isset($command[$i]) && in_array($command[$i], $ws); ++$i) {
+            }
 
             // command string ended
             if (!isset($command[$i])) {

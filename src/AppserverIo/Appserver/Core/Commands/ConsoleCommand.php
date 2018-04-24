@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Commands\AbstractCommand
+ * AppserverIo\Appserver\Core\Commands\ConsoleCommand
  *
  * NOTICE OF LICENSE
  *
@@ -22,9 +22,10 @@ namespace AppserverIo\Appserver\Core\Commands;
 
 use React\Socket\ConnectionInterface;
 use AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface;
+use AppserverIo\Appserver\Console\ConsoleContextInterface;
 
 /**
- * An abstract command implementation.
+ * The command implementation for application based commands.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -32,8 +33,15 @@ use AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-abstract class AbstractCommand implements CommandInterface
+class ConsoleCommand extends AbstractCommand
 {
+
+    /**
+     * The unique command name.
+     *
+     * @var string
+     */
+    const COMMAND = 'console';
 
     /**
      * The connection instance.
@@ -63,44 +71,46 @@ abstract class AbstractCommand implements CommandInterface
     }
 
     /**
-     * Returns the naming directory instance.
+     * Executes the command.
      *
-     * @return \AppserverIo\Psr\Naming\NamingDirectoryInterface $namingDirectory The default naming directory
+     * @param array $params The arguments passed to the command
+     *
+     * @return mixed|null The result of the command
+     * @see \AppserverIo\Appserver\Core\Commands\CommandInterface::execute()
      */
-    protected function getNamingDirectory()
+    public function execute(array $params = array())
     {
-        return $this->applicationServer->getNamingDirectory();
+        $this->doExcute($params);
     }
 
     /**
-     * Returns the deployment service instance.
+     * Execute the Doctrine CLI tool.
      *
-     * @return \AppserverIo\Appserver\Core\Api\DeploymentService The deployment service instance
+     * @param array $command The Doctrine command to be executed
+     *
+     * @return string The commands output
      */
-    protected function getDeploymentService()
+    protected function doExcute(array $command = array())
     {
-        return $this->applicationServer->newService('AppserverIo\Appserver\Core\Api\DeploymentService');
-    }
 
-    /**
-     * Return's the system logger instance.
-     *
-     * @return \Psr\Log\LoggerInterface The system logger instance
-     */
-    protected function getSystemLogger()
-    {
-        return $this->applicationServer->getSystemLogger();
-    }
+        try {
+            // prepare the application's lookup name with the first argument, which has to be the application name
+            $lookupName = sprintf('php:global/combined-appserver/%s/ApplicationInterface', array_shift($command));
 
-    /**
-     * Write's the passed data to the actual connection.
-     *
-     * @param mixed $data The data to write
-     *
-     * @return void
-     */
-    protected function write($data)
-    {
-        $this->connection->write($data);
+            // try to load the application
+            /** \AppserverIo\Psr\Application\ApplicationInterface $application */
+            $application = $this->getNamingDirectory()->search($lookupName);
+
+            // try to load the application's console manager and execute the command
+            /** @var \AppserverIo\Appserver\Console\ConsoleContextInterface $consoleManager */
+            $consoleManager = $application->search(ConsoleContextInterface::IDENTIFIER);
+            $consoleManager->execute($this->connection, $command);
+
+        } catch (\Exception $e) {
+            // log the exception
+            $this->getSystemLogger()->error($e->__toString());
+            // write the error message to the output
+            $this->write("{$e->__toString()}ERROR\n");
+        }
     }
 }

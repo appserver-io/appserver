@@ -96,8 +96,13 @@
                 <descriptor>AppserverIo\Description\StatelessSessionBeanDescriptor</descriptor>
                 <descriptor>AppserverIo\Routlt\Description\PathDescriptor</descriptor>
                 <descriptor>AppserverIo\Routlt\Description\ResultDescriptor</descriptor>
+                <descriptor>AppserverIo\Console\Server\Doctrine\DBAL\Migrations\Description\MigrationDescriptor</descriptor>
             </descriptors>
+            <directories>
+                <directory>${vendor.dir}/appserver-io/console/etc/appserver/conf.d</directory>
+            </directories>
         </manager>
+        <manager name="ConsoleContextInterface" type="AppserverIo\Appserver\Console\ConsoleManager" factory="AppserverIo\Appserver\Console\ConsoleManagerFactory"/>
         <manager name="ProviderInterface" type="AppserverIo\Appserver\DependencyInjectionContainer\Provider" factory="AppserverIo\Appserver\DependencyInjectionContainer\ProviderFactory"/>
         <manager name="PersistenceContextInterface" type="AppserverIo\Appserver\PersistenceContainer\PersistenceManager" factory="AppserverIo\Appserver\PersistenceContainer\PersistenceManagerFactory" contextFactory="AppserverIo\Appserver\Naming\NamingContextFactory"/>
         <manager name="BeanContextInterface" type="AppserverIo\Appserver\PersistenceContainer\BeanManager" factory="AppserverIo\Appserver\PersistenceContainer\BeanManagerFactory" contextFactory="AppserverIo\Appserver\Naming\NamingContextFactory">

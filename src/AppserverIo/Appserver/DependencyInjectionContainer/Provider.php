@@ -28,6 +28,8 @@ use AppserverIo\Lang\Reflection\AnnotationInterface;
 use AppserverIo\Description\NameAwareDescriptorInterface;
 use AppserverIo\Description\ReferenceDescriptorInterface;
 use AppserverIo\Description\FactoryAwareDescriptorInterface;
+use AppserverIo\Description\MethodInvocationDescriptorInterface;
+use AppserverIo\Description\MethodInvocationAwareDescriptorInterface;
 use AppserverIo\Appserver\Core\Environment;
 use AppserverIo\Appserver\Core\Utilities\EnvironmentKeys;
 use AppserverIo\Psr\Servlet\Annotations\Route;
@@ -91,14 +93,7 @@ class Provider extends GenericStackable implements ProviderInterface
      */
     public function initialize(ApplicationInterface $application)
     {
-
-        // the array with injection target dependencies
         $this->dependencies = array();
-
-        // initialize the deployment descriptor parser and parse the web application's deployment descriptor for beans
-        $deploymentDescriptorParser = new DeploymentDescriptorParser();
-        $deploymentDescriptorParser->injectProviderContext($this);
-        $deploymentDescriptorParser->parse();
     }
 
     /**
@@ -304,10 +299,7 @@ class Provider extends GenericStackable implements ProviderInterface
         }
 
         // initialize the array with the dependencies
-        $dependencies = array('method' =>  array(), 'property' => array(), 'constructor' => array());
-
-        // check if a reflection class instance has been passed or is already available
-        $reflectionClass = $this->getReflectionClass($objectDescriptor->getClassName());
+        $dependencies = array('method' =>  array(), 'property' => array());
 
         // check for declared EPB and resource references
         /** @var \AppserverIo\Description\ReferenceDescriptorInterface $reference */
@@ -319,25 +311,13 @@ class Provider extends GenericStackable implements ProviderInterface
                     // append the property dependency
                     $dependencies['property'][$targetName] = $this->loadDependency($reference);
                 } elseif ($targetName = $injectionTarget->getTargetMethod()) {
-                    // load the reflection method instance
-                    $reflectionMethod = $reflectionClass->getMethod($targetName);
-
                     // prepare the array with the method dependencies
                     if (!isset($dependencies['method'][$targetName])) {
                         $dependencies['method'][$targetName] = array();
                     }
 
-                    // iterate over the method's parameters and try to find the one that matches the reference
-                    foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
-                        // query whether the reflection parameter name equals the inject target method parameter name
-                        if ($reference->equals($reflectionParameter)) {
-                            // append the method/constructor dependency
-                            $dependencies['method'][$targetName][$reflectionParameter->getPosition()] = $this->loadDependency($reference);
-                        }
-                    }
-
-                    // finally sort them them by their position
-                    ksort($dependencies['method'][$targetName]);
+                    // append the method/constructor dependency
+                    $dependencies['method'][$targetName][] = $this->loadDependency($reference);
 
                 } else {
                     // throw an exception
@@ -420,6 +400,28 @@ class Provider extends GenericStackable implements ProviderInterface
     }
 
     /**
+     * Loads the dependencies for the passed method invocation descriptor.
+     *
+     * @param \AppserverIo\Description\MethodInvocationDescriptorInterface $descriptor The descriptor to load the dependencies for
+     *
+     * @return array The array with the initialized dependencies
+     */
+    public function loadDependenciesByMethodInvocation(MethodInvocationDescriptorInterface $descriptor)
+    {
+
+        // initialize the array with the dependencies
+        $dependencies = array();
+
+        // load the dependencies from the DI provider
+        foreach ($descriptor->getArguments() as $argument) {
+            $dependencies[] = $this->get((string) $argument);
+        }
+
+        // return the dependencies
+        return $dependencies;
+    }
+
+    /**
      * Creates a new instance with the dependencies defined by the passed descriptor.
      *
      * @param \AppserverIo\Description\NameAwareDescriptorInterface $objectDescriptor The object descriptor with the dependencies
@@ -474,12 +476,12 @@ class Provider extends GenericStackable implements ProviderInterface
         // load the dependencies for the passed descriptor
         $dependencies = $this->loadDependencies($objectDescriptor);
 
-        // inject dependencies by method
+        // iterate over all methods and inject the dependencies
         foreach ($dependencies['method'] as $methodName => $toInject) {
             // query whether or not the method exists
             if ($reflectionClass->hasMethod($methodName)) {
                 // inject the target by invoking the method
-                $instance->$methodName($toInject);
+                call_user_func_array(array($instance, $methodName), $toInject);
             }
         }
 
@@ -571,6 +573,18 @@ class Provider extends GenericStackable implements ProviderInterface
                     } else {
                         // create the instance and inject the dependencies
                         $instance = $this->createInstance($objectDescriptor);
+                    }
+
+                    // query whether or not method invocations has been configured
+                    if ($objectDescriptor instanceof MethodInvocationAwareDescriptorInterface) {
+                        // iterate over all configured method invocations
+                        foreach ($objectDescriptor->getMethodInvocations() as $methodInvocation) {
+                            // invoke the method with the configured arguments
+                            call_user_func_array(
+                                array($instance, $methodInvocation->getMethodName()),
+                                $this->loadDependenciesByMethodInvocation($methodInvocation)
+                            );
+                        }
                     }
 
                     // add the initialized instance to the request context if has to be shared

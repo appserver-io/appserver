@@ -72,7 +72,7 @@ class SecurityAssociationHandler implements CallbackHandlerInterface
      * @param \AppserverIo\Collections\CollectionInterface $callbacks The collection with the callbacks
      *
      * @return void
-     * @throws AppserverIo\Psr\Security\Auth\Callback\UnsupporedCallbackException Is thrown if any callback of type other than NameCallback or PasswordCallback has been passed
+     * @throws \AppserverIo\Psr\Security\Auth\Callback\UnsupportedCallbackException Is thrown if any callback of type other than NameCallback or PasswordCallback has been passed
      */
     public function handle(CollectionInterface $callbacks)
     {
