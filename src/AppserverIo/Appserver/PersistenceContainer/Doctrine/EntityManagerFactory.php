@@ -82,7 +82,7 @@ class EntityManagerFactory
      *
      * @return object The entity manager instance
      */
-    public static function factory()
+    public function factory()
     {
 
         // register additional annotation libraries

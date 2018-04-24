@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\Core\Commands\DoctrineCommand
+ * AppserverIo\Appserver\Core\Commands\AbstractCommand
  *
  * NOTICE OF LICENSE
  *
@@ -24,7 +24,7 @@ use React\Socket\ConnectionInterface;
 use AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface;
 
 /**
- * The doctrine command implementation.
+ * An abstract command implementation.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -32,15 +32,22 @@ use AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class DoctrineCommand implements CommandInterface
+abstract class AbstractCommand implements CommandInterface
 {
 
     /**
-     * The unique command name.
+     * The connection instance.
      *
-     * @var string
+     * @var \React\Socket\ConnectionInterface
      */
-    const COMMAND = 'doctrine';
+    protected $connection;
+
+    /**
+     * The application server instance.
+     *
+     * @var \AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface
+     */
+    protected $applicationServer;
 
     /**
      * Initializes the command with the connection and the application server
@@ -56,15 +63,44 @@ class DoctrineCommand implements CommandInterface
     }
 
     /**
-     * Executes the command.
+     * Returns the naming directory instance.
      *
-     * @param array $params The arguments passed to the command
-     *
-     * @return mixed|null The result of the command
-     * @see \AppserverIo\Appserver\Core\Commands\CommandInterface::execute()
+     * @return \AppserverIo\Psr\Naming\NamingDirectoryInterface $namingDirectory The default naming directory
      */
-    public function execute(array $params = array())
+    protected function getNamingDirectory()
     {
-        $this->applicationServer->doctrine($this->connection, $params);
+        return $this->applicationServer->getNamingDirectory();
+    }
+
+    /**
+     * Returns the deployment service instance.
+     *
+     * @return \AppserverIo\Appserver\Core\Api\DeploymentService The deployment service instance
+     */
+    protected function getDeploymentService()
+    {
+        return $this->applicationServer->newService('AppserverIo\Appserver\Core\Api\DeploymentService');
+    }
+
+    /**
+     * Return's the system logger instance.
+     *
+     * @return \Psr\Log\LoggerInterface The system logger instance
+     */
+    protected function getSystemLogger()
+    {
+        return $this->applicationServer->getSystemLogger();
+    }
+
+    /**
+     * Write's the passed data to the actual connection.
+     *
+     * @param mixed $data The data to write
+     *
+     * @return void
+     */
+    protected function write($data)
+    {
+        $this->connection->write($data);
     }
 }

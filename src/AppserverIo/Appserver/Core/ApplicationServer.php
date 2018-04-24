@@ -22,15 +22,12 @@ namespace AppserverIo\Appserver\Core;
 
 use League\Event\Emitter;
 use React\Socket\ConnectionInterface;
-use Doctrine\ORM\Tools\Console\ConsoleRunner;
-use Symfony\Component\Console\Output\BufferedOutput;
 use AppserverIo\Logger\Logger;
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Psr\Naming\NamingException;
 use AppserverIo\Psr\Naming\NamingDirectoryInterface;
 use AppserverIo\Appserver\Core\Commands\ModeCommand;
 use AppserverIo\Appserver\Core\Commands\InitCommand;
-use AppserverIo\Appserver\Core\Commands\DoctrineCommand;
 use AppserverIo\Appserver\Core\Api\Node\BootstrapNode;
 use AppserverIo\Appserver\Core\Utilities\Runlevels;
 use AppserverIo\Appserver\Naming\Utils\NamingDirectoryKeys;
@@ -151,7 +148,7 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
     /**
      * Returns the naming directory instance.
      *
-     * @return NamingDirectoryInterface $namingDirectory The default naming directory
+     * @return \AppserverIo\Psr\Naming\NamingDirectoryInterface $namingDirectory The default naming directory
      */
     public function getNamingDirectory()
     {
@@ -315,49 +312,6 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
             $self->notify();
 
         }, $this, $runlevel);
-    }
-
-    /**
-     * Executes a Doctrine command.
-     *
-     * @param \React\Socket\ConnectionInterface $conn    The connection resource
-     * @param array                             $command The array with the command elements to execute
-     *
-     * @return void
-     */
-    public function doctrine($conn, $command)
-    {
-
-        // switch to the new runlevel
-        $result = $this->synchronized(function ($self, $cmd) {
-            // wait till the previous commands has been finished
-            while ($self->locked === true) {
-                sleep(1);
-            }
-
-            // set connection and command name
-            $self->command = DoctrineCommand::COMMAND;
-
-            // lock process
-            $self->locked = true;
-            $self->params = $cmd;
-            $self->result = null;
-
-            // notify the AS to execute the command
-            $self->notify();
-
-            // wait for the result of the command
-            while ($self->result == null) {
-                $self->wait(10000);
-            }
-
-            // return the result
-            return $self->result;
-
-        }, $this, $command);
-
-        // write the result to the output
-        $conn->write($result);
     }
 
     /**
@@ -568,22 +522,6 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
 
                         break;
 
-                    case DoctrineCommand::COMMAND:
-
-                        // execute the Doctrine command
-                        $this->result = $this->doDoctrine($this->params);
-
-                        // singal that we've finished setting umask and wait
-                        $this->locked = false;
-                        $this->command = null;
-
-                        // wait for a new command
-                        $this->synchronized(function ($self) {
-                            $self->wait();
-                        }, $this);
-
-                        break;
-
                     default:
 
                         // print a message and wait
@@ -729,70 +667,5 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
         /** @var \AppserverIo\Appserver\Core\Api\ContainerService $service */
         $service = $this->newService('AppserverIo\Appserver\Core\Api\ContainerService');
         $service->switchSetupMode($newMode, $configurationFilename, $currentUser);
-    }
-
-    /**
-     * Execute the Doctrine CLI tool.
-     *
-     * @param array $command The Doctrine command to be executed
-     *
-     * @return string The commands output
-     */
-    protected function doDoctrine(array $command = array())
-    {
-
-        try {
-            // create a local naming directory instance
-            /** \AppserverIo\Psr\Naming\NamingDirectoryInterface $namingDirectory */
-            $namingDirectory = $this->getNamingDirectory();
-
-            // the first arguement has to be the application name
-            $applicationName = array_shift($command);
-
-            // try to load the application
-            /** \AppserverIo\Psr\Application\ApplicationInterface $application */
-            $application = $namingDirectory->search(sprintf('php:global/%s/env/ApplicationInterface', $applicationName));
-
-            // the second arguement has to be the persistence unit name
-            $persistenUnitName = array_shift($command);
-
-            // try to load the application's entity manager
-            /** \Doctrine\ORM\EntityManagerInterface $entityManager */
-            $entityManager = $application->search($persistenUnitName);
-
-            // initialize the helper set with the entity manager instance
-            /** \Symfony\Component\Console\Helper\HelperSet $helperSet */
-            $helperSet = ConsoleRunner::createHelperSet($entityManager);
-
-            // create the Symfony Console application
-            /** \Symfony\Component\Console\Application $app */
-            $app = \Doctrine\ORM\Tools\Console\ConsoleRunner::createApplication($helperSet);
-            $app->setAutoExit(false);
-
-            // register the applications class loaders
-            $application->registerClassLoaders();
-
-            // as Doctrine CLI uses Symfony Console component, we've to simulate the commandline args
-            $argv = array('doctrine');
-            $argv = array_merge($argv, $command);
-
-            // create a new instance of the commandline args
-            $argvInput = new \Symfony\Component\Console\Input\ArgvInput($argv);
-
-            // run the Symfony Console application
-            $app->run($argvInput, $buffer = new BufferedOutput());
-
-            // log a debug message with the output
-            $this->getSystemLogger()->debug($result = $buffer->fetch());
-
-            // return the output
-            return $result;
-
-        } catch (\Exception $e) {
-            // log the exception
-            $this->getSystemLogger()->error($e->__toString());
-            // return the stack trace
-            return $e->getMessage() . PHP_EOL;
-        }
     }
 }

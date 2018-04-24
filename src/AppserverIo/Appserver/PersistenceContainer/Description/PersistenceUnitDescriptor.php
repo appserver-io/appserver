@@ -155,10 +155,10 @@ class PersistenceUnitDescriptor extends AbstractNameAwareDescriptor implements P
         }
 
         // load the factory information from the reflection class
-        if ($factory = $configuration->getFactory()) {
+        if ($configuration->getFactory()) {
             // initialize and set the factory descriptor for the persistence unit
             $factoryDescriptor = FactoryDescriptor::newDescriptorInstance();
-            $factoryDescriptor->setName($factoryLookup = sprintf('%sFactory', $name));
+            $factoryDescriptor->setName(sprintf('%sFactory', $name));
             $factoryDescriptor->setMethod('factory');
             $this->setFactory($factoryDescriptor);
         }

@@ -78,11 +78,11 @@ class WebResourceCollectionNode extends AbstractNode implements WebResourceColle
     /**
      * Initializes the node with the passed values.
      *
-     * @param \AppserverIo\Appserver\Core\Api\Node\NodeValueInterface $webResourceName     The web resource name information
-     * @param \AppserverIo\Appserver\Core\Api\Node\NodeValueInterface $description         The description information
-     * @param array                                                   $urlPatterns         The array with the URL pattern information
-     * @param array                                                   $httpMethods         The array with the HTTP method information
-     * @param array                                                   $httpMethodOmissions The array with the HTTP method omission information
+     * @param \AppserverIo\Configuration\Interfaces\NodeValueInterface $webResourceName     The web resource name information
+     * @param \AppserverIo\Configuration\Interfaces\NodeValueInterface $description         The description information
+     * @param array                                                    $urlPatterns         The array with the URL pattern information
+     * @param array                                                    $httpMethods         The array with the HTTP method information
+     * @param array                                                    $httpMethodOmissions The array with the HTTP method omission information
      */
     public function __construct(
         NodeValueInterface $webResourceName = null,

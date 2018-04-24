@@ -49,14 +49,14 @@ interface ErrorPageNodeInterface
     /**
      * Return's the HTTP response code pattern the error page is defined for.
      *
-     * @return \AppserverIo\Appserver\Core\Api\Node\ValueNode The HTTP response code pattern
+     * @return \AppserverIo\Description\Api\Node\ValueNode The HTTP response code pattern
      */
     public function getErrorCodePattern();
 
     /**
      * Return's the location to redirect to.
      *
-     * @return \AppserverIo\Appserver\Core\Api\Node\ValueNode The location
+     * @return \AppserverIo\Description\Api\Node\ValueNode The location
      */
     public function getErrorLocation();
 }

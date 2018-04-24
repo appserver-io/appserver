@@ -80,7 +80,7 @@ class HandlerNode extends AbstractNode
      * Returns the nodes primary key, the name by default.
      *
      * @return string The nodes primary key
-     * @see \AppserverIo\Appserver\Core\Api\Node\AbstractNode::getPrimaryKey()
+     * @see \AppserverIo\Description\Api\Node\AbstractNode::getPrimaryKey()
      */
     public function getPrimaryKey()
     {

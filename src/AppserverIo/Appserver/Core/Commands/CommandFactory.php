@@ -35,7 +35,7 @@ class CommandFactory implements CommandFactoryInterface
     /**
      * Creates and returns a new command instance of the command with the passed name.
      *
-     * @param string $name            The name of the command to create the instance for
+     * @param string $name            ass name of the command to create the instance for
      * @param array  $constructorArgs The arguments passed to the constructor
      *
      * @return \AppserverIo\Appserver\Core\Commands\CommandInterface The command instance

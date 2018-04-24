@@ -1,3 +1,14 @@
+Version 1.1.5-beta4
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Integrate Doctrine ORM, DBAL and Migrations console commands
+* Extend DI functionality for method invocation on instanciated objects
+
 Version 1.1.5-beta3
 
 ## Bugfixes

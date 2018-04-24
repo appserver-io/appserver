@@ -1,7 +1,7 @@
 <?php
 
 /**
- * \AppserverIo\Appserver\Core\Api\Node\MessageQueueNodeInterface
+ * \AppserverIo\Appserver\Console\ConsoleContextInterface
  *
  * NOTICE OF LICENSE
  *
@@ -18,12 +18,10 @@
  * @link      http://www.appserver.io
  */
 
-namespace AppserverIo\Appserver\Core\Api\Node;
-
-use AppserverIo\Configuration\Interfaces\NodeInterface;
+namespace AppserverIo\Appserver\Console;
 
 /**
- * Interface for a message queue DTO implementation.
+ * The interface for console manager implementations.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -31,20 +29,13 @@ use AppserverIo\Configuration\Interfaces\NodeInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-interface MessageQueueNodeInterface extends NodeInterface
+interface ConsoleContextInterface
 {
 
     /**
-     * Return's the message queue's receiver type.
+     * The unique identifier to be registered in the application context.
      *
-     * @return string|null The receiver type
+     * @var string
      */
-    public function getType();
-
-    /**
-     * Return's the message queue's destination information.
-     *
-     * @return \AppserverIo\Description\Api\Node\ValueNode The message queue destination information
-     */
-    public function getDestination();
+    const IDENTIFIER = 'ConsoleContextInterface';
 }

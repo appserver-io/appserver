@@ -79,6 +79,7 @@ class PersistenceUnitFactoryDescriptor extends BeanDescriptor implements Persist
         $applicationReference = ResReferenceDescriptor::newDescriptorInstance($this);
         $applicationReference->setName('Application');
         $applicationReference->setType(ApplicationInterface::IDENTIFIER);
+        $applicationReference->setPosition(0);
 
         // initialize and set the injection target for the reference to the application
         $injectionTarget = InjectionTargetDescriptor::newDescriptorInstance();
@@ -94,6 +95,7 @@ class PersistenceUnitFactoryDescriptor extends BeanDescriptor implements Persist
         $configurationReference = ResReferenceDescriptor::newDescriptorInstance($this);
         $configurationReference->setName('PersistenceUnitNode');
         $configurationReference->setType(sprintf('%sConfiguration', DescriptorUtil::trim($name)));
+        $configurationReference->setPosition(1);
 
         // initialize and set the injection target for the reference to the configuration
         $injectionTarget = InjectionTargetDescriptor::newDescriptorInstance();

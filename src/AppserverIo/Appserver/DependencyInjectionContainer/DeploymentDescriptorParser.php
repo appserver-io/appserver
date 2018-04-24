@@ -20,7 +20,6 @@
 
 namespace AppserverIo\Appserver\DependencyInjectionContainer;
 
-use AppserverIo\Psr\Di\ProviderInterface;
 use AppserverIo\Psr\Di\ObjectManagerInterface;
 use AppserverIo\Appserver\Core\Api\Node\DiNode;
 use AppserverIo\Appserver\Core\Utilities\AppEnvironmentHelper;
@@ -39,32 +38,32 @@ class DeploymentDescriptorParser
 {
 
     /**
-     * The provider context we want to parse the deployment descriptor for.
+     * The object manager we want to parse the deployment descriptor for.
      *
-     * @var \AppserverIo\Psr\Di\ProviderInterface
+     * @var \AppserverIo\Psr\Di\ObjectManagerInterface
      */
-    protected $providerContext;
+    protected $objectManager;
 
     /**
-     * Inject the provider context instance.
+     * Inject the object manager instance.
      *
-     * @param \AppserverIo\Psr\Di\ProviderInterface $providerContext The provider context instance
+     * @param \AppserverIo\Psr\Di\ObjectManagerInterface $objectManager The object manager instance
      *
      * @return void
      */
-    public function injectProviderContext(ProviderInterface $providerContext)
+    public function injectObjectManager(ObjectManagerInterface $objectManager)
     {
-        $this->providerContext = $providerContext;
+        $this->objectManager = $objectManager;
     }
 
     /**
-     * Returns the provider context instance.
+     * Returns the object manager instance.
      *
-     * @return \AppserverIo\Psr\Di\ProviderInterface The provider context instance
+     * @return \AppserverIo\Psr\Di\ObjectManagerInterface The object manager instance
      */
-    public function getProviderContext()
+    public function getObjectManager()
     {
-        return $this->providerContext;
+        return $this->objectManager;
     }
 
     /**
@@ -74,7 +73,7 @@ class DeploymentDescriptorParser
      */
     public function getApplication()
     {
-        return $this->getProviderContext()->getApplication();
+        return $this->getObjectManager()->getApplication();
     }
 
     /**
@@ -89,38 +88,57 @@ class DeploymentDescriptorParser
         // load the web application base directory
         $webappPath = $this->getApplication()->getWebappPath();
 
-        // prepare the deployment descriptor
-        $deploymentDescriptor = AppEnvironmentHelper::getEnvironmentAwareGlobPattern($webappPath, 'META-INF' . DIRECTORY_SEPARATOR . 'di');
+        // load the deployment service
+        /** @var \AppserverIo\Appserver\Core\Api\DeploymentService $deploymentService */
+        $deploymentService = $this->getApplication()->newService('AppserverIo\Appserver\Core\Api\DeploymentService');
 
-        // query whether we found epb.xml deployment descriptor file
-        if (file_exists($deploymentDescriptor) === false) {
-            return;
+        // prepare the array with the deployment descriptor with the fallback deployment descriptor
+        $deploymentDescriptors = array($deploymentService->getConfdDir('di.xml'));
+
+        // try to locate deployment descriptors in the configured directories
+        foreach ($this->getObjectManager()->getDirectories() as $directory) {
+            array_push($deploymentDescriptors, sprintf('%s/di.xml', $directory));
         }
 
-        // validate the passed configuration file
-        /** @var \AppserverIo\Appserver\Core\Api\ConfigurationService $configurationService */
-        $configurationService = $this->getApplication()->newService('AppserverIo\Appserver\Core\Api\ConfigurationService');
-        $configurationService->validateFile($deploymentDescriptor, null, true);
+        // finally append the deployment descriptor of the application
+        // (this allows to overwrite all other deployment descriptors)
+        array_push(
+            $deploymentDescriptors,
+            AppEnvironmentHelper::getEnvironmentAwareGlobPattern($webappPath, 'META-INF' . DIRECTORY_SEPARATOR . 'di')
+        );
 
-        // prepare and initialize the configuration node
-        $diNode = new DiNode();
-        $diNode->initFromFile($deploymentDescriptor);
-
-        // query whether or not the deployment descriptor contains any preferences
-        if ($preferences = $diNode->getPreferences()) {
-            // parse the preferences of the deployment descriptor
-            /** @var \AppserverIo\Description\Api\Node\PreferenceNode $preferenceNode */
-            foreach ($preferences as $preferenceNode) {
-                $this->processPreferenceNode($preferenceNode);
+        // parse the deployment descriptors from the conf.d and the application's META-INF directory
+        foreach ($deploymentDescriptors as $deploymentDescriptor) {
+            // query whether we found epb.xml deployment descriptor file
+            if (file_exists($deploymentDescriptor) === false) {
+                return;
             }
-        }
 
-        // query whether or not the deployment descriptor contains any beans
-        if ($beans = $diNode->getBeans()) {
-            // parse the beans from the deployment descriptor
-            /** @var \AppserverIo\Description\Api\Node\BeanNode $beanNode */
-            foreach ($beans as $beanNode) {
-                $this->processBeanNode($beanNode);
+            // validate the passed configuration file
+            /** @var \AppserverIo\Appserver\Core\Api\ConfigurationService $configurationService */
+            $configurationService = $this->getApplication()->newService('AppserverIo\Appserver\Core\Api\ConfigurationService');
+            $configurationService->validateFile($deploymentDescriptor, null, true);
+
+            // prepare and initialize the configuration node
+            $diNode = new DiNode();
+            $diNode->initFromFile($deploymentDescriptor);
+
+            // query whether or not the deployment descriptor contains any preferences
+            if ($preferences = $diNode->getPreferences()) {
+                // parse the preferences of the deployment descriptor
+                /** @var \AppserverIo\Description\Api\Node\PreferenceNode $preferenceNode */
+                foreach ($preferences as $preferenceNode) {
+                    $this->processPreferenceNode($preferenceNode);
+                }
+            }
+
+            // query whether or not the deployment descriptor contains any beans
+            if ($beans = $diNode->getBeans()) {
+                // parse the beans from the deployment descriptor
+                /** @var \AppserverIo\Description\Api\Node\BeanNode $beanNode */
+                foreach ($beans as $beanNode) {
+                    $this->processBeanNode($beanNode);
+                }
             }
         }
     }

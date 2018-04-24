@@ -21,7 +21,6 @@
 namespace AppserverIo\Appserver\Core\Api\Node;
 
 use AppserverIo\Description\Api\Node\AbstractNode;
-use AppserverIo\Description\Api\Node\ValueNode;
 use AppserverIo\Configuration\Interfaces\NodeValueInterface;
 
 /**
@@ -39,7 +38,7 @@ class ErrorPageNode extends AbstractNode implements ErrorPageNodeInterface
     /**
      * The HTTP response code pattern the error page is defined for.
      *
-     * @var \AppserverIo\Appserver\Core\Api\Node\ValueNode
+     * @var \AppserverIo\Description\Api\Node\ValueNode
      * @AS\Mapping(nodeName="error-code-pattern", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $errorCodePattern;
@@ -47,7 +46,7 @@ class ErrorPageNode extends AbstractNode implements ErrorPageNodeInterface
     /**
      * The location to redirect to.
      *
-     * @var \AppserverIo\Appserver\Core\Api\Node\ValueNode
+     * @var \AppserverIo\Description\Api\Node\ValueNode
      * @AS\Mapping(nodeName="error-location", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $errorLocation;
@@ -69,7 +68,7 @@ class ErrorPageNode extends AbstractNode implements ErrorPageNodeInterface
     /**
      * Return's the HTTP response code pattern the error page is defined for.
      *
-     * @return \AppserverIo\Appserver\Core\Api\Node\ValueNode The HTTP response code pattern
+     * @return \AppserverIo\Description\Api\Node\ValueNode The HTTP response code pattern
      */
     public function getErrorCodePattern()
     {
@@ -79,7 +78,7 @@ class ErrorPageNode extends AbstractNode implements ErrorPageNodeInterface
     /**
      * Return's the location to redirect to.
      *
-     * @return \AppserverIo\Appserver\Core\Api\Node\ValueNode The location
+     * @return \AppserverIo\Description\Api\Node\ValueNode The location
      */
     public function getErrorLocation()
     {

@@ -68,7 +68,7 @@ trait IgnoredAnnotationsNodeTrait
      *
      * @param string $prepend Prepend to each ignored annotation
      *
-     * @return The array with the ignored annotations as string
+     * @return array The array with the ignored annotations as string
      */
     public function getIgnoredAnnotationsAsArray($prepend = null)
     {

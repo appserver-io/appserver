@@ -21,8 +21,9 @@
 namespace AppserverIo\Appserver\Core\Consoles;
 
 use AppserverIo\Appserver\Core\Commands\CommandFactory;
-use AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface;
+use AppserverIo\Appserver\Core\Commands\Helper\Arguments;
 use AppserverIo\Appserver\Core\Api\Node\ConsoleNodeInterface;
+use AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface;
 
 /**
  * A Telnet based management console implementation using a React PHP socket server.
@@ -164,31 +165,25 @@ class Telnet extends \Thread implements ConsoleInterface
 
         // wait for connections
         $socket->on('connection', function ($conn) use ($applicationServer) {
-
-            // write the appserver.io logo to the console
-            $conn->write(Telnet::$logo);
-            $conn->write("$ ");
-
             // wait for user input => usually a command
             $conn->on('data', function ($data) use ($conn, $applicationServer) {
-
                 try {
                     // extract command name and parameters
-                    list ($commandName, ) = explode(' ', $data);
-                    $params = explode(' ', trim(substr($data, strlen($commandName))));
+                    $params = Arguments::split($data);
+                    $commandName = array_shift($params);
 
-                    // initialize and execute the command
-                    $command = CommandFactory::factory(trim($commandName), array($conn, $applicationServer));
-                    $command->execute($params);
+                    try {
+                        // initialize and execute the command
+                        $command = CommandFactory::factory($commandName, array($conn, $applicationServer));
+                        $command->execute($params);
 
-                } catch (\ReflectionException $re) {
-                    $conn->write("Unknown command $commandName");
+                    } catch (\ReflectionException $re) {
+                        $conn->write(sprintf("Unknown command %sERROR\n", $commandName));
+                    }
+
                 } catch (\Exception $e) {
-                    $conn->write($e->__toString());
+                    $conn->write("{$e->__toString()}ERROR\n");
                 }
-
-                // write the command prompt
-                $conn->write("$ ");
             });
         });
 
