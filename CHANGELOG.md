@@ -1,3 +1,13 @@
+Version 1.1.5-beta5
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Switch to latest appserver-io/console version 2.0.0
+
 Version 1.1.5-beta4
 
 ## Bugfixes

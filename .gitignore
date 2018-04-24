@@ -23,7 +23,6 @@
 /var/run
 /var/tmp/localhost
 /build.properties
-/composer.lock
 /composer.phar
 /*.iml
 .is-installed
