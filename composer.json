@@ -10,7 +10,6 @@
         "react/socket": "0.4.*",
         "react/socket-client": "0.5.0",
         "doctrine/orm": "2.5.*",
-        "doctrine/migrations" : "1.5.0",
         "league/event": "2.1.*",
         "symfony/var-dumper": "3.4.7",
         "zendframework/zend-diactoros" : "1.4.*",
