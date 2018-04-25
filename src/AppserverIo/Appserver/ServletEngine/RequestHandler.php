@@ -29,8 +29,8 @@ use AppserverIo\Psr\Auth\AuthenticationManagerInterface;
 use AppserverIo\Psr\Servlet\SessionUtils;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
-use AppserverIo\Appserver\ServletEngine\Utils\Error;
 use AppserverIo\Appserver\ServletEngine\Utils\ErrorUtil;
+use AppserverIo\Appserver\Core\Utilities\ErrorInterface;
 
 /**
  * This is a request handler that is necessary to process each request of an
@@ -237,12 +237,15 @@ class RequestHandler extends \Thread
     {
 
         // query whether or not we've to handle the passed error
-        if ($errno < error_reporting()) {
+        if ($errno > error_reporting()) {
             return true;
         }
 
         // add the passed error information to the array with the errors
-        $this->addError(new Error($errno, $errstr, $errfile, $errline));
+        $error = ErrorUtil::singleton()->fromArray(array($errno, $errstr, $errfile, $errline));
+
+        // add the passed error information to the array with the errors
+        $this->addError($error);
         return true;
     }
 
@@ -279,11 +282,11 @@ class RequestHandler extends \Thread
     /**
      * Append the passed error to the request handler's stack.
      *
-     * @param \AppserverIo\Appserver\ServletEngine\Utils\Error $error The error to append
+     * @param \AppserverIo\Appserver\ServletEngine\Utils\ErrorInterface $error The error to append
      *
      * @return void
      */
-    public function addError(Error $error)
+    public function addError(ErrorInterface $error)
     {
         // create a local copy of the error stack
         $errors = $this->errors;

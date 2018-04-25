@@ -25,9 +25,9 @@ use React\Socket\ConnectionInterface;
 use AppserverIo\Psr\Servlet\SessionUtils;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\Core\Environment;
+use AppserverIo\Appserver\Core\Utilities\ErrorUtil;
 use AppserverIo\Appserver\Core\Utilities\LoggerUtils;
 use AppserverIo\Appserver\Core\Utilities\EnvironmentKeys;
-use AppserverIo\Appserver\ServletEngine\Utils\ErrorUtil;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -158,7 +158,17 @@ class ExecutionContext extends \Thread
      */
     public function errorHandler($errno, $errstr, $errfile, $errline)
     {
-        LoggerUtils::log(LogLevel::ERROR, sprintf('PHP %s: %s in %s on line %d', ErrorUtil::singleton()->mapErrorCode($errno), $errstr, $errfile, $errline));
+
+        // query whether or not we've to handle the passed error
+        if ($errno > error_reporting()) {
+            return true;
+        }
+
+        // add the passed error information to the array with the errors
+        $error = ErrorUtil::singleton()->fromArray(array($errno, $errstr, $errfile, $errline));
+        // log the error messge and return TRUE, to prevent execution of additinoal error handlers
+        LoggerUtils::log(LogLevel::ERROR, ErrorUtil::singleton()->prepareMessage($error));
+        return true;
     }
 
     /**
@@ -169,8 +179,13 @@ class ExecutionContext extends \Thread
      */
     public function shutdown()
     {
+
+        // query whether or not, class has been shutdown by an unhandled error
         if ($lastError = error_get_last()) {
-            LoggerUtils::log(LogLevel::ERROR, $lastError);
+            // add the passed error information to the array with the errors
+            $error = ErrorUtil::singleton()->fromArray($lastError);
+            // log the error messge and return TRUE, to prevent execution of additinoal error handlers
+            LoggerUtils::log(LogLevel::ERROR, ErrorUtil::singleton()->prepareMessage($error));
         }
     }
 }

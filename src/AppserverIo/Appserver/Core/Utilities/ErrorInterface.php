@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AppserverIo\Appserver\ServletEngine\Utils\ErrorInterface
+ * AppserverIo\Appserver\Core\Utilities\ErrorInterface
  *
  * NOTICE OF LICENSE
  *
@@ -18,7 +18,7 @@
  * @link      http://www.appserver.io
  */
 
-namespace AppserverIo\Appserver\ServletEngine\Utils;
+namespace AppserverIo\Appserver\Core\Utilities;
 
 /**
  * Interface for wrapper implementations of errors triggered by PHP's default error handling.
@@ -29,13 +29,34 @@ namespace AppserverIo\Appserver\ServletEngine\Utils;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-interface ErrorInterface extends \AppserverIo\Appserver\Core\Utilities\ErrorInterface
+interface ErrorInterface
 {
 
     /**
-     * Return's the HTTP status code that has to be send back with the response.
+     * Return's the error type.
      *
-     * @return integer The HTTP status code
+     * @return integer The error type
      */
-    public function getStatusCode();
+    public function getType();
+
+    /**
+     * Return's the error message.
+     *
+     * @return integer The error message
+     */
+    public function getMessage();
+
+    /**
+     * Return's the name of the file where the error has been triggered.
+     *
+     * @return integer The filename
+     */
+    public function getFile();
+
+    /**
+     * Return's the line in the file where the error has been triggered.
+     *
+     * @return integer The line number
+     */
+    public function getLine();
 }
