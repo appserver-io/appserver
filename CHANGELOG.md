@@ -1,3 +1,13 @@
+Version 1.1.5-beta6
+
+## Bugfixes
+
+* Fix and optimize error handling in console execution and request handler context
+
+## Features
+
+* None
+
 Version 1.1.5-beta5
 
 ## Bugfixes

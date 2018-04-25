@@ -29,36 +29,8 @@ namespace AppserverIo\Appserver\ServletEngine\Utils;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class Error implements ErrorInterface
+class Error extends \AppserverIo\Appserver\Core\Utilities\Error implements ErrorInterface
 {
-
-    /**
-     * The error type.
-     *
-     * @var integer
-     */
-    protected $type;
-
-    /**
-     * The error message.
-     *
-     * @var integer
-     */
-    protected $message;
-
-    /**
-     * The name of the file where the error has been triggered.
-     *
-     * @var integer
-     */
-    protected $file;
-
-    /**
-     * The line in the file where the error has been triggered.
-     *
-     * @var integer
-     */
-    protected $line;
 
     /**
      * The HTTP status code that has to be send back with the response.
@@ -76,53 +48,14 @@ class Error implements ErrorInterface
      * @param integer $line       The line in the file where the error has been triggered
      * @param integer $statusCode The HTTP status code that has to be send back with the response
      */
-    public function __construct($type, $message, $file, $line, $statusCode = 500)
+    public function __construct($type, $message, $file, $line, $statusCode = 0)
     {
-        $this->type = $type;
-        $this->message = $message;
-        $this->file = $file;
-        $this->line = $line;
+
+        // invoke the parent method
+        parent::__construct($type, $message, $file, $line);
+
+        // initialize the status code
         $this->statusCode = $statusCode;
-    }
-
-    /**
-     * Return's the error type.
-     *
-     * @return integer The error type
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
-
-    /**
-     * Return's the error message.
-     *
-     * @return integer The error message
-     */
-    public function getMessage()
-    {
-        return $this->message;
-    }
-
-    /**
-     * Return's the name of the file where the error has been triggered.
-     *
-     * @return integer The filename
-     */
-    public function getFile()
-    {
-        return $this->file;
-    }
-
-    /**
-     * Return's the line in the file where the error has been triggered.
-     *
-     * @return integer The line number
-     */
-    public function getLine()
-    {
-        return $this->line;
     }
 
     /**

@@ -20,19 +20,15 @@
 
 namespace AppserverIo\Appserver\ServletEngine\Utils;
 
-use Psr\Log\LogLevel;
 use AppserverIo\Lang\String;
 use AppserverIo\Lang\Boolean;
-use AppserverIo\Logger\LoggerUtils;
 use AppserverIo\Psr\Servlet\ServletException;
 use AppserverIo\Psr\Servlet\ServletContextInterface;
 use AppserverIo\Psr\Servlet\Utils\RequestHandlerKeys;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
 use AppserverIo\Appserver\ServletEngine\RequestHandler;
-
-// define a custom user exception constant
-define('E_EXCEPTION', 0);
+use AppserverIo\Appserver\Core\Utilities\LoggerUtils;
 
 /**
  * Utility class that providing functionality to handle PHP errors.
@@ -43,62 +39,15 @@ define('E_EXCEPTION', 0);
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class ErrorUtil
+class ErrorUtil extends \AppserverIo\Appserver\Core\Utilities\ErrorUtil
 {
-
-    /**
-     * The singleton instance.
-     *
-     * @var \AppserverIo\Appserver\ServletEngine\Utils\ErrorUtil
-     */
-    protected static $instance;
-
-    /**
-     * Create's and return's the singleton instance.
-     *
-     * @return \AppserverIo\Appserver\ServletEngine\Utils\ErrorUtil The singleton instance
-     */
-    public static function singleton()
-    {
-
-        // query whether or not the instance has already been created
-        if (ErrorUtil::$instance == null) {
-            ErrorUtil::$instance = new ErrorUtil();
-        }
-
-        // return the singleton instance
-        return ErrorUtil::$instance;
-    }
-
-    /**
-     * Create's a new error instance with the values from the passed array.
-     *
-     * @param array $error The array containing the error information
-     *
-     * @return \AppserverIo\Appserver\ServletEngine\Utils\ErrorInterface The error instance
-     */
-    public function fromArray(array $error)
-    {
-
-        // initialize the variables
-        $type  = 0;
-        $message = '';
-        $file = '';
-        $line = 0;
-
-        // extract the array with the error information
-        extract($error);
-
-        // initialize and return the error instance
-        return new Error($type, $message, $file, $line);
-    }
 
     /**
      * Create's a new error instance from the passed exception.
      *
      * @param \Exception $e The exception to create the error instance from
      *
-     * @return \AppserverIo\Appserver\ServletEngine\Utils\ErrorInterface The error instance
+     * @return \AppserverIo\Appserver\Core\Utilities\ErrorInterface The error instance
      */
     public function fromException(\Exception $e)
     {
@@ -106,109 +55,20 @@ class ErrorUtil
     }
 
     /**
-     * Prepare's the error message for logging/rendering purposes.
+     * Create's a new error instance with the values from the passed array.
      *
-     * @param \AppserverIo\Appserver\ServletEngine\Utils\ErrorInterface $error The error instance to create the message from
+     * @param array $error The array containing the error information
      *
-     * @return string The error message
+     * @return \AppserverIo\Appserver\Core\Utilities\ErrorInterface The error instance
      */
-    public function prepareMessage(ErrorInterface $error)
-    {
-        return sprintf('PHP %s: %s in %s on line %d', $this->mapErrorCode($error), $error->getMessage(), $error->getFile(), $error->getLine());
-    }
-
-    /**
-     * Return's the log level for the passed error instance.
-     *
-     * @param \AppserverIo\Appserver\ServletEngine\Utils\ErrorInterface $error The error instance to map the log level for
-     *
-     * @return string
-     */
-    public function mapLogLevel(ErrorInterface $error)
+    public function fromArray(array $error)
     {
 
-        // initialize the log level, default is 'error'
-        $logLevel = LogLevel::ERROR;
+        // extract the array with the error information
+        list ($type, $message, $file, $line) = array_values($error);
 
-        // query the error type
-        switch ($error->getType()) {
-            case E_WARNING:
-            case E_USER_WARNING:
-            case E_COMPILE_WARNING:
-            case E_RECOVERABLE_ERROR:
-                $logLevel = LogLevel::WARNING;
-                break;
-
-            case E_NOTICE:
-            case E_USER_NOTICE:
-            case E_STRICT:
-            case E_DEPRECATED:
-            case E_USER_DEPRECATED:
-                $logLevel = LogLevel::NOTICE;
-                break;
-
-            default:
-                break;
-        }
-
-        // return the log level
-        return $logLevel;
-    }
-
-    /**
-     * Return's the a human readable error representation for the passed error instance.
-     *
-     * @param \AppserverIo\Appserver\ServletEngine\Utils\ErrorInterface $error The error instance
-     *
-     * @return string The human readable error representation
-     */
-    public function mapErrorCode(ErrorInterface $error)
-    {
-
-        // initialize the error representation
-        $wrapped = 'Unknown';
-
-        // query the error type
-        switch ($error->getType()) {
-            case E_EXCEPTION:
-                $wrapped = 'Exception';
-                break;
-
-            case E_PARSE:
-            case E_ERROR:
-            case E_CORE_ERROR:
-            case E_COMPILE_ERROR:
-            case E_USER_ERROR:
-                $wrapped = 'Fatal Error';
-                break;
-
-            case E_WARNING:
-            case E_USER_WARNING:
-            case E_COMPILE_WARNING:
-            case E_RECOVERABLE_ERROR:
-                $wrapped = 'Warning';
-                break;
-
-            case E_NOTICE:
-            case E_USER_NOTICE:
-                $wrapped = 'Notice';
-                break;
-
-            case E_STRICT:
-                $wrapped = 'Strict';
-                break;
-
-            case E_DEPRECATED:
-            case E_USER_DEPRECATED:
-                $wrapped = 'Deprecated';
-                break;
-
-            default:
-                break;
-        }
-
-        // return the human readable error representation
-        return $wrapped;
+        // initialize and return the error instance
+        return new Error($type, $message, $file, $line, ErrorUtil::singleton()->isFatal($type) ? 500 : 0);
     }
 
     /**
@@ -239,26 +99,20 @@ class ErrorUtil
 
             // query whether or not we have to log the error
             if (Boolean::valueOf(new String(ini_get('log_errors')))->booleanValue()) {
-                // create a local copy of the application
-                if ($application = $servletRequest->getContext()) {
-                    // try to load the system logger from the application
-                    if ($systemLogger = $application->getLogger(LoggerUtils::SYSTEM)) {
-                        $systemLogger->log($this->mapLogLevel($error), $message);
-                    }
-                }
+                LoggerUtils::log(ErrorUtil::mapLogLevel($error), $message);
+            }
+
+            // we prepend the errors to the body stream if display_errors is on
+            if (Boolean::valueOf(new String(ini_get('display_errors')))->booleanValue()) {
+                $bodyContent = $servletResponse->getBodyContent();
+                $servletResponse->resetBodyStream();
+                $servletResponse->appendBodyStream(sprintf('%s<br/>%s', $message, $bodyContent));
             }
 
             // query whether or not, the error has an status code
             if ($statusCode = $error->getStatusCode()) {
                 $servletResponse->setStatusCode($statusCode);
             }
-        }
-
-        // we add the error to the servlet request
-        $servletRequest->setAttribute(RequestHandlerKeys::ERROR_MESSAGES, $errors);
-        // we append the the errors to the body stream if display_errors is on
-        if (Boolean::valueOf(new String(ini_get('display_errors')))->booleanValue()) {
-            $servletResponse->appendBodyStream(implode('<br/>', $errors));
         }
 
         // query whether or not we've a client or an server error
@@ -302,6 +156,13 @@ class ErrorUtil
                 $servletRequest->prepare();
                 // reset the body stream to remove content, that has already been appended
                 $servletResponse->resetBodyStream();
+                // we add the filtered errors (status code > 399) to the servlet request
+                $servletRequest->setAttribute(
+                    RequestHandlerKeys::ERROR_MESSAGES,
+                    array_filter($errors, function ($message) {
+                        return $message->getStatusCode() > 399;
+                    })
+                );
                 // load the servlet path and session-ID
                 $servletPath = $servletRequest->getServletPath();
                 $sessionId = $servletRequest->getProposedSessionId();
