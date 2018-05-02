@@ -15,9 +15,10 @@ before_install:
   - pecl install xdebug-2.5.5
   - phpenv rehash
   - wget https://scrutinizer-ci.com/ocular.phar
+  - wget https://getcomposer.org/composer.phar
 
 script:
-  - php -d memory_limit=-1 composer update
+  - php -d memory_limit=-1 composer.phar update
   - vendor/bin/robo build
   - php ocular.phar code-coverage:upload --format=php-clover $TRAVIS_BUILD_DIR/target/reports/unit/clover.xml
 
