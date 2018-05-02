@@ -16,6 +16,9 @@ before_install:
   - phpenv rehash
   - wget https://scrutinizer-ci.com/ocular.phar
 
+before_script:
+  - phpenv config-add travis.php.ini
+
 script:
   - composer update
   - vendor/bin/robo build
