@@ -39,6 +39,7 @@ use AppserverIo\Appserver\Application\Interfaces\ManagerSettingsAwareInterface;
 use AppserverIo\Appserver\Application\Interfaces\ManagerSettingsInterface;
 use AppserverIo\Appserver\PersistenceContainer\Description\PersistenceUnitFactoryDescriptor;
 use AppserverIo\RemoteMethodInvocation\RemoteMethodInterface;
+use AppserverIo\Storage\StorageInterface;
 
 /**
  * The persistence manager handles the entity managers registered for the application.
@@ -49,11 +50,45 @@ use AppserverIo\RemoteMethodInvocation\RemoteMethodInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  *
- * @property \AppserverIo\Appserver\PersistenceContainer\BeanManagerSettingsInterface  $managerSettings Settings for the bean manager
- * @property \AppserverIo\Storage\GenericStackable                                     $entityManagers  The the storage for the entity manager instances
+ * @property \AppserverIo\Appserver\PersistenceContainer\BeanManagerSettingsInterface $managerSettings    Settings for the bean manager
+ * @property \AppserverIo\Storage\StorageInterface                                    $entityManagerNames The the storage for the entity manage names
  */
 class PersistenceManager extends AbstractManager implements PersistenceContextInterface, ManagerSettingsAwareInterface
 {
+
+    /**
+     * Injects the storage for the entity manager names.
+     *
+     * @param \AppserverIo\Storage\StorageInterface $entityManagerNames The storage for the entity manager names
+     *
+     * @return void
+     */
+    public function injectEntityManagerNames(StorageInterface $entityManagerNames)
+    {
+        $this->entityManagerNames = $entityManagerNames;
+    }
+
+    /**
+     * Return's the storage for the entity manager names.
+     *
+     * @return \AppserverIo\Storage\StorageInterface The storage for the entity manager names
+     */
+    public function getEntityManagerNames()
+    {
+        return $this->entityManagerNames;
+    }
+
+    /**
+     * Add the passed entity manager name to the persistenc manager.
+     *
+     * @param string $entityManagerName The entity manager name to add
+     *
+     * @return void
+     */
+    public function addEntityManagerName($entityManagerName)
+    {
+        $this->getEntityManagerNames()->set(sizeof($this->getEntityManagerNames()->getAllKeys()), $entityManagerName);
+    }
 
     /**
      * Injects the bean manager settings.
@@ -191,6 +226,9 @@ class PersistenceManager extends AbstractManager implements PersistenceContextIn
                         sprintf('php:global/%s/%sConfiguration', $application->getUniqueName(), $lookupName),
                         $persistenceUnitNode
                     );
+
+        // register the entity manager's configuration in the persistence manager
+        $this->addEntityManagerName($lookupName);
 
         // load the object manager instance
         $objectManager = $this->getApplication()->search(ObjectManagerInterface::IDENTIFIER);

@@ -126,7 +126,7 @@ class ExecutionContext extends \Thread
 
         } catch (\Exception $e) {
             // log the exception
-            LoggerUtils::log(LogLevel::ERROR, $e->__toString());
+            \error($e->__toString());
         }
     }
 

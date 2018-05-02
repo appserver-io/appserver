@@ -96,6 +96,7 @@
                 <descriptor>AppserverIo\Description\StatelessSessionBeanDescriptor</descriptor>
                 <descriptor>AppserverIo\Routlt\Description\PathDescriptor</descriptor>
                 <descriptor>AppserverIo\Routlt\Description\ResultDescriptor</descriptor>
+                <descriptor>AppserverIo\Console\Server\Doctrine\Fixtures\Description\FixtureDescriptor</descriptor>
                 <descriptor>AppserverIo\Console\Server\Doctrine\DBAL\Migrations\Description\MigrationDescriptor</descriptor>
             </descriptors>
             <directories>
