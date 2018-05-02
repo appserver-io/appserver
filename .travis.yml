@@ -16,11 +16,8 @@ before_install:
   - phpenv rehash
   - wget https://scrutinizer-ci.com/ocular.phar
 
-before_script:
-  - phpenv config-add .travis.php.ini
-
 script:
-  - composer update
+  - php -d memory_limit=-1 composer update
   - vendor/bin/robo build
   - php ocular.phar code-coverage:upload --format=php-clover $TRAVIS_BUILD_DIR/target/reports/unit/clover.xml
 
